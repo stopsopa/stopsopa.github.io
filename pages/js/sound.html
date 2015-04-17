@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .body textarea {
+        width: 100%;
+        height: 80vh;
+        font-size: 13px;
+        font-family: monospace;
+        background-color: #222222;
+        color: #b2b285;
+      }
+      .other label > span {
+        width: 100px;
+        display: inline-block;
+      }
+      .other input[type="range"] {
+        width: 50%;
+      }
+      .other .radio input {
+        margin-right: 5px;
+      }
+      .other .radio label {
+        margin-right: 20px;
+      }
+      .mode label {
+        margin-left: 40px;
+      }
+      img.type {
+        vertical-align: middle;
+        margin-right: 4px;
+        width: 16px;
+        height: 16px;
+      }
+      .notes button {
+        padding: 0;
+      }
+      .notes button.blue {
+        background-color: rgb(109, 142, 233);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="body">
+      <div class="inside">
+        <p>202-11-11 - this is my boundary of hearing 12866 Hz, I can't hear higher than that</p>
+        <div id="app"></div>
+      </div>
+    </div>
+
+    <script src="/public/preprocessed.js"></script>
+    <script src="/dist/sound.bundle.js"></script>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

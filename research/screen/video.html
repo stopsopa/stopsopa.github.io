@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SCREEN</title>
+
+    <style>
+      .container {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .screen-capture,
+      .display-area {
+        width: 400px;
+        height: 300px;
+        border: 1px solid #333;
+      }
+      .screen-capture {
+        width: 400px;
+        height: 300px;
+        border: 1px solid #000;
+        overflow: hidden;
+      }
+
+      .display-area {
+        width: 400px;
+        height: 300px;
+        border: 1px solid #333;
+      }
+      video {
+        width: 200px;
+        height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    capture
+
+    <div class="screen-capture">
+      <img
+        src="https://images-platform.99static.com//mLc9l0q0VgY7wPU3siouHIf_IWw=/fit-in/500x500/projects-files/38/3805/380579/33427002-611c-4898-be73-8e39e30fe889.gif"
+        alt=""
+      />
+      <!-- Captured content will be displayed here -->
+    </div>
+
+    <div class="display-area">
+      <video id="video" autoplay></video>
+    </div>
+    <script>
+      const screenCapture = document.querySelector(".screen-capture");
+      const displayArea = document.querySelector("#video");
+
+      // Get user media for screen capture
+      navigator.mediaDevices
+        .getDisplayMedia({
+          video: {
+            logicalSurface: false,
+          },
+          audio: false,
+        })
+        .then((stream) => {
+          displayArea.srcObject = stream;
+
+          // // Attach the stream to the display area
+          // const track = stream.getVideoTracks()[0];
+          // displayArea.srcObject = new MediaStream([track]);
+        });
+    </script>
+
+    <a href="https://codepen.io/a2sheppy/pen/RqeMaL">https://codepen.io/a2sheppy/pen/RqeMaL</a>
+  </body>
+</html>

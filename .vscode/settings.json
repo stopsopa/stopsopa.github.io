@@ -1,0 +1,37 @@
+// this file is not actually used by vscode in this location. The purpose of this file is to server as a template.
+// in order to really apply config from this file you have to copy it's settings to main vscode settings.json file
+// Code -> Settings... -> https://i.imgur.com/EMl2IM7.png
+{
+  "javascript.preferences.importModuleSpecifierEnding": "js", // https://stackoverflow.com/a/61645194
+  "path-autocomplete.extensionOnImport": true,
+  "search.exclude": {
+    ".git/": true,
+    ".vscode/": true,
+    "build/": true,
+    "designer/": true,
+    "docker/": true,
+    "docs/": true,
+    "migrations/": true,
+    "/dist/": true,
+    "/var/": true,
+    "var/": true,
+    "**/node_modules": false,
+    "noprettier/": true,
+    "pages/bash/xx/*.bundled.gitignored.*": true
+  },
+  "files.watcherExclude": {
+    ".git/": true,
+    ".vscode/": true,
+    "build/": true,
+    "designer/": true,
+    "docker/": true,
+    "docs/": true,
+    "migrations/": true,
+    "/dist/": true,
+    "/var/": true,
+    "var/": true,
+    "pages/bash/xx/*.bundled.gitignored.*": true
+  },
+  "editor.rulers": [120],
+  "prettier.printWidth": 120
+}

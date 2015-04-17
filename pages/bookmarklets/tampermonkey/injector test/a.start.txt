@@ -1,0 +1,6 @@
+
+# test by running:
+# node injector.js "pages/bookmarklets/tampermonkey/injector test/a.start.txt"
+a
+/// injector: ../injector test/mid.txt  
+a end

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      [type="range"] {
+        width: 70%;
+      }
+      span {
+        cursor: pointer;
+        color: gray;
+      }
+      span.easeInElastic,
+      span.easeInOutQuint,
+      span.easeInExpo,
+      span.easeOutExpo {
+        color: green;
+      }
+      span.active,
+      span:hover {
+        box-shadow: 0 0 10px 4px #00f;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="range" id="range" name="volume" min="0" max="300" value="20" />
+    <div id="easing"></div>
+
+    <pre></pre>
+    <script src="/dist/range.test.bundle.js"></script>
+  </body>
+</html>

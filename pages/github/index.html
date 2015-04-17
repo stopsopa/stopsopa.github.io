@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="github-actions.html">Github Actions</a></li>
+          </ul>
+        </div>
+        <h2>Deleted commits/forks/branches are alwys availabe</h2>
+        <a href="https://trufflesecurity.com/blog/anyone-can-access-deleted-and-private-repo-data-github">https://trufflesecurity.com/blog/anyone-can-access-deleted-and-private-repo-data-github</a>
+        <h2>useful</h2>
+        <script type="editor" data-lang="sh">
+
+          ProTip! Add .patch or .diff to the end of URLs for Git’s plaintext views.
+        </script>
+
+        <h2>PR filtering tags</h2>
+        <a href="https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests"
+          >g(You can search for issues and pull requests on GitHub and narrow the results using these search qualifiers
+          in any combination)</a
+        >
+        <script type="editor" data-lang="sh">
+
+          author:@me
+          -author:@me
+            - is for negation
+          draft:true   OR   draft:false
+          author:sdzialowski
+          review:none    - matches pull requests that have not been reviewed.
+          review:required   - matches pull requests that require a review before they can be merged.
+          review:changes_requested   - matches pull requests in which a reviewer has asked for changes.
+          -reviewed-by:@me    - matches pull requests reviewed by a particular person.
+          review-requested:USERNAME   - matches pull requests where a specific person is requested for review. Requested reviewers are no longer listed in the search results after they review a pull request.
+          user-review-requested:@me    - matches pull requests that you have directly been asked to review.
+          is:merged   OR   is:unmerged
+          archived:true
+
+
+          # combinations
+          is:open is:pr author:@me
+          is:open is:pr -author:@me
+          is:pr is:open -author:@me -assignee:@me
+        </script>
+        <h2>Age of repository:</h2>
+        <script type="editor" data-lang="sh">
+
+          https://api.github.com/repos/{:owner}/{:repository}
+              # and look for field: created_at
+                  # from: https://stackoverflow.com/a/23612723
+        </script>
+        <h2>Search in github and it's limitations</h2>
+        <a href="https://stackoverflow.com/a/33237640">link</a>
+        <h2>Github Actions</h2>
+        <script type="editor" data-lang="sh">
+
+          # open pull request from action:
+          https://github.com/nodejs/node/blob/8a4d7ac6b50ff425b22a0a0a2ad7ec0ae9f31587/.github/workflows/timezone-update.yml#L42
+        </script>
+        <h2>Size of the repository</h2>
+        <script type="editor" data-lang="sh">
+
+          curl -u stopsopa:ghp_57DCxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDw https://api.github.com/repos/stopsopa/gigant | jq '.size' | numfmt --from-unit=K --to=iec
+            # to generate token go to: https://github.com/settings/tokens
+            # current token can be found in google notes "github - Personal access tokens"
+        </script>
+        <br />
+        <br />
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

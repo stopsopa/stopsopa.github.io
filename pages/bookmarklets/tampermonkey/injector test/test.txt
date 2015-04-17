@@ -1,0 +1,4 @@
+
+    test 1
+/// injector: test2/deep.js
+    test 2
