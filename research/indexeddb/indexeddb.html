@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      table {
+        width: 600px;
+      }
+      table,
+      th,
+      td {
+        /* https://www.w3schools.com/html/html_table_borders.asp */
+        border: 1px solid black;
+        border-collapse: collapse;
+        white-space: nowrap;
+      }
+      .flex {
+        display: flex;
+      }
+      .flex > * {
+        margin-left: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>IndexedDB</h3>
+    <a href="" id="home">
+      home
+      <script>
+        document.querySelector("#home").setAttribute("href", location.pathname);
+      </script>
+    </a>
+
+    <div class="flex">
+      <div class="autoincrement"></div>
+      <div class="keypath"></div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
+      integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script src="/libs/IndexedDBPromised.js"></script>
+
+    <script>
+      const logc =
+        (prefix) =>
+        (...args) =>
+          console.log(`${prefix}:`, ...args);
+
+      const loge =
+        (prefix) =>
+        (...args) =>
+          console.error(`${prefix}:`, ...args);
+
+      const log = logc("main");
+
+      const error = loge("main");
+
+      log("start script");
+
+      const url = new URL(location.href);
+
+      const searchParams = url.searchParams;
+
+      log("action:", searchParams.get("action"));
+
+      async function fetchTemplate(file, mountElementSelector) {
+        const response = await fetch(file);
+
+        const text = await response.text();
+
+        log(`${file} fetched`);
+
+        const template = _.template(text);
+
+        const element = document.querySelector(mountElementSelector);
+
+        return (data) => {
+          element.innerHTML = template(data);
+        };
+      }
+
+      // 0 &&
+      1 &&
+        (async function () {
+          const template = await fetchTemplate("template_test_keyPath.html", ".keypath");
+
+          const dbname = "test_keyPath";
+
+          const objectStoreName = "customers";
+
+          // every time you bump the version the onupgradeneeded is triggered and triggering this event
+          // is the only place where you can alter the structure of the database
+          // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#using_a_key_generator:~:text=the%20only%20place%20where%20you%20can%20alter%20the%20structure%20of%20the%20database
+          const version = 1;
+
+          const log = (...args) => console.log(`db:${dbname}`, `os:${objectStoreName}`, ...args);
+
+          const error = (...args) => console.error(`db:${dbname}`, `os:${objectStoreName}`, ...args);
+
+          // const customerData = [
+          //   { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
+          //   { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+          // ];
+
+          const IndexedDBPromisedInstance = new IndexedDBPromised({
+            dbname,
+            storeNames: objectStoreName,
+            // objectStoreConfiguration: { keyPath: "ssn" },
+            objectStoreConfiguration: (db, opt) => {
+              const objectStore = db.createObjectStore(opt.storeNames, { keyPath: opt.keyPath });
+
+              // Create an index to search customers by name. We may have duplicates
+              // so we can't use a unique index.
+              objectStore.createIndex("name", "name", { unique: false });
+
+              // Create an index to search customers by email. We want to ensure that
+              // no two customers have the same email, so use a unique index.
+              objectStore.createIndex("email", "email", { unique: true });
+            },
+            // this is extra param which is consumed by update method
+            // in order to find key value from given object
+            keyPath: "key",
+          });
+
+          IndexedDBPromisedInstance.init();
+
+          var db = await IndexedDBPromisedInstance.getDb();
+
+          log("database configured", db);
+
+          const template_data = {
+            added_user: "null",
+            deleted_user: "null",
+            get_user: false,
+            list: {},
+          };
+
+          switch (searchParams.get("action")) {
+            case "keyPath_add_john":
+              log("action: keyPath_add_john");
+
+              template_data.added_user = await IndexedDBPromisedInstance.insert({
+                key: IndexedDBPromisedInstance.uniq(),
+                name: "John",
+                age: 40,
+                email: IndexedDBPromisedInstance.uniq() + "@google.com",
+              });
+
+              break;
+            case "keyPath_delete":
+              log("action: keyPath_delete");
+              {
+                const id = searchParams.get("key");
+
+                template_data.deleted_user = await IndexedDBPromisedInstance.delete(id);
+              }
+
+              break;
+            case "keyPath_get":
+              log("action: keyPath_get");
+
+              {
+                const id = searchParams.get("key");
+
+                template_data.get_user = await IndexedDBPromisedInstance.get(id);
+              }
+              break;
+            case "keyPath_update":
+              log("action: keyPath_update");
+
+              {
+                const id = searchParams.get("key");
+
+                await IndexedDBPromisedInstance.update((entity) => {
+                  const tmp = structuredClone(entity);
+
+                  entity.name = entity.name + "_test";
+
+                  tmp.extra = "some extra stuff";
+
+                  delete tmp.age;
+
+                  return tmp;
+                }, id);
+              }
+
+              break;
+          }
+
+          template_data.list = await IndexedDBPromisedInstance.getAll();
+
+          log("rendering template", JSON.stringify(template_data, null, 4));
+
+          template(template_data);
+        })();
+
+      // 0 &&
+      1 &&
+        (async function () {
+          const template = await fetchTemplate("template_test_autoIncrement.html", ".autoincrement");
+
+          const dbname = "test_autoIncrement";
+
+          const objectStoreName = "objects";
+
+          const log = logc(`db:${dbname}`, `os:${objectStoreName}`);
+
+          const error = loge(`db:${dbname}`, `os:${objectStoreName}`);
+
+          // every time you bump the version the onupgradeneeded is triggered and triggering this event
+          // is the only place where you can alter the structure of the database
+          // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#using_a_key_generator:~:text=the%20only%20place%20where%20you%20can%20alter%20the%20structure%20of%20the%20database
+          const version = 1;
+
+          // const customerData = [
+          //   { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
+          //   { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+          // ];
+
+          const IndexedDBPromisedInstance = new IndexedDBPromised({
+            dbname,
+            storeNames: objectStoreName,
+            objectStoreConfiguration: {
+              autoIncrement: true,
+            },
+          });
+
+          IndexedDBPromisedInstance.init();
+
+          var db = await IndexedDBPromisedInstance.getDb();
+
+          log("database configured", db);
+
+          const template_data = {
+            added_user: "null",
+            deleted_user: "null",
+            get_user: false,
+            list: {},
+          };
+
+          switch (searchParams.get("action")) {
+            case "autoIncrement_add_john":
+              log("action: autoIncrement_add_john");
+
+              template_data.added_user = await IndexedDBPromisedInstance.insert({
+                ssn: "444-44-4844",
+                name: "John",
+                age: 40,
+                email: "john@google.com",
+              });
+
+              break;
+            case "autoIncrement_delete":
+              log("action: autoIncrement_delete");
+
+              {
+                const id = parseInt(searchParams.get("key"), 10);
+
+                template_data.deleted_user = await IndexedDBPromisedInstance.delete(id);
+              }
+
+              break;
+            case "autoIncrement_get":
+              log("action: autoIncrement_get");
+
+              {
+                const id = parseInt(searchParams.get("key"), 10);
+
+                template_data.get_user = await IndexedDBPromisedInstance.get(id);
+              }
+              break;
+            case "autoIncrement_update":
+              log("action: autoIncrement_update");
+
+              {
+                const id = parseInt(searchParams.get("key"), 10);
+
+                await IndexedDBPromisedInstance.update((entity) => {
+                  const tmp = structuredClone(entity);
+
+                  tmp.email = "modified@gmail.com";
+
+                  tmp.extra = "some extra stuff";
+
+                  delete tmp.age;
+
+                  return tmp;
+                }, id);
+              }
+
+              break;
+          }
+
+          template_data.list = await IndexedDBPromisedInstance.getAll();
+
+          log("rendering template", JSON.stringify(template_data, null, 4));
+
+          template(template_data);
+        })();
+    </script>
+  </body>
+</html>

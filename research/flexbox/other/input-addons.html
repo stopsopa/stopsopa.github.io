@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      * {
+        font-family: "Open Sans", sans-serif;
+      }
+
+      .test {
+        width: 200px;
+        height: 30px;
+      }
+
+      .test {
+        display: flex;
+      }
+      .test div {
+        padding-left: 6px;
+        padding-right: 6px;
+        text-align: center;
+        border: 1px solid silver;
+        border-right: none;
+        background-color: #f4f3f1;
+        border-radius: 2px 0 0 2px;
+        display: flex;
+        align-items: center;
+      }
+      .test input {
+        flex: 1;
+        border-radius: 0 2px 2px 0;
+        border: 1px solid silver;
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+
+      .test2 {
+        width: 200px;
+        height: 30px;
+      }
+
+      .test2 {
+        display: flex;
+      }
+      .test2 div {
+        order: 1;
+
+        padding-left: 6px;
+        padding-right: 6px;
+        text-align: center;
+        border: 1px solid silver;
+        border-left: 0;
+        background-color: #f4f3f1;
+        border-radius: 0 2px 2px 0;
+        display: flex;
+        align-items: center;
+      }
+      .test2 input {
+        flex: 1;
+        border-radius: 2px 0 0 2px;
+        border: 1px solid silver;
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test">
+      <div>😀</div>
+      <input type="text" />
+    </div>
+
+    <br />
+
+    <div class="test2">
+      <div>😀</div>
+      <input type="text" />
+    </div>
+
+    <br />
+
+    <div class="test2">
+      <div>label</div>
+      <input type="text" />
+    </div>
+
+    <br />
+
+    <div class="test">
+      <div>label</div>
+      <input type="text" />
+    </div>
+
+    <br />
+
+    <a href="https://philipwalton.github.io/solved-by-flexbox/demos/input-add-ons/" target="_blank"
+      >https://philipwalton.github.io/solved-by-flexbox/demos/input-add-ons/</a
+    >
+  </body>
+</html>

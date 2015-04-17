@@ -1,0 +1,13 @@
+/*.syntax,
+.editor {
+  margin: 20px; 
+  height: 300px;
+  width: 80%;
+}*/
+.syntax > div,
+.editor > div { 
+/*  height: 300px;
+  width: 80%;*/
+  font-family: monaco,Consolas,Lucida Console,monospace;
+  font-size: 12px;
+}

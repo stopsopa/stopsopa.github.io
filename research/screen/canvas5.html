@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SCREEN</title>
+    <style>
+      textarea {
+        width: 80%;
+        height: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <button>button</button>
+    <button id="destroy">destroy</button>
+    <script src="/pages/bookmarklets/periscope.uglify.js"></script>
+    <a href="https://www.youtube.com/watch?v=Jqf9haCd6mM" target="_blank" style="font-size: 20px; color: red"
+      >https://www.youtube.com/watch?v=Jqf9haCd6mM</a
+    >
+
+    <a href="https://codepen.io/a2sheppy/pen/RqeMaL">https://codepen.io/a2sheppy/pen/RqeMaL</a>
+    <br />
+    <a href="https://webrtc.internaut.com/iit-2019/screen-capture/"
+      >https://webrtc.internaut.com/iit-2019/screen-capture/</a
+    >
+    <br />
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Manipulating_video_using_canvas"
+      >https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Manipulating_video_using_canvas</a
+    >
+    <textarea onclick="this.select()">
+      var head = document.head || document.getElementsByTagName("head")[0],
+      script = document.createElement("script");
+
+    script.setAttribute("src", url);
+
+    head.appendChild(script);    
+    </textarea>
+  </body>
+</html>

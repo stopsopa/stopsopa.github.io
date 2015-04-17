@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout">
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <h2>Http protocol</h2>
+          <div class="card">
+            <h3>Browser cache control</h3>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#Conditionals"
+              >https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#Conditionals</a
+            >
+            <br />
+            <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Directives"
+              >https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Directives</a
+            >
+            <h2>POST GET PUT DELETE</h2>
+            <a href="https://www.bezkoder.com/spring-boot-swagger-3/">springboot example of using each methods</a>
+            <h2>idempotent</h2>
+
+            <a href="https://www.restapitutorial.com/lessons/idempotency.html"
+              >https://www.restapitutorial.com/lessons/idempotency.html</a
+            >
+            <br />
+            <a href="https://developer.mozilla.org/en-US/docs/Glossary/Idempotent">g(MDN Idempotent)</a>
+            <script type="editor" data-lang="python">
+
+              Create     - use POST
+              Retrieve   - use GET
+              Update     - use PUT or PATCH
+              Delete     - use DELETE
+
+              verb -   noun
+              GET  -   /authors/2/books/5
+
+              GET  -   /authors-books/2/books/5    - good
+              GET  -   /authorsBooks/2/books/5     - not good
+
+              GET - is idempotent (READ) - To retrieve resource (get data from server).
+                no body
+                GET /user/1234
+                GET /users/page/1
+                  can read multiple times with the same result
+                  GET should never be used to change state
+
+              POST - is NOT idempotent - Creates a new resource.
+                body present
+                POST /user
+                  no id here so each call will create new user
+
+              PUT - is idempotent (UPDATE) - Updates resource (replaces it's state with new one).
+                body present
+                PUT /users/1234
+                  put sent with the same id and data should be idempotent
+
+              PATCH - is idempotent - Updates resource (updates only provided fields).
+                body present
+
+              DELETE - is idempotent - Deletes resource from the server (removes the data).
+                no body
+                DELETE /user/1234
+                  this one is weird because that will be easier if we do soft DELETE
+                  but when we are removing for real then next time called it might result in NOT FOUD 404
+                  Let's call it: Appropriate compromise
+            </script>
+            <img src="https://i.imgur.com/gJHfYTO.png" style="width: 600px" />
+            <h2>Useful response codes</h2>
+            <script type="editor" data-lang="python">
+
+              200 OK - everything ok
+
+              201 Created - new resource has been created on the server
+
+              202 Accepted - processing asynchronously
+
+              301 Moved Permanently - to indicate endpoint was migrated
+
+              400 Bad Request - to indicate that the request is invalid
+
+              401 Unauthorized - the server requires user to be authenticated
+
+              403 Forbidden - user is authenticated, but doesn't have enough permissions
+
+              500 Internal Server Error - unexpected internal server error
+
+              501 Not Implemented - feature is not implemented or disabled
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>
