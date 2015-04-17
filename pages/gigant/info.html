@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* https://www.w3schools.com/html/html_table_borders.asp */
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      table > tbody > tr > td:nth-child(2),
+      table > tbody > tr > tH:nth-child(4) {
+        white-space: nowrap;
+      }
+      * {
+        font-family: "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS",
+          Verdana, "Verdana Ref", sans-serif;
+      }
+      #toc {
+        position: fixed;
+        top: 5px;
+        right: 50%;
+        z-index: 1000;
+      }
+      body.notoc table tbody tr td:nth-child(6) * {
+        display: none;
+      }
+      body #toc .off {
+        display: none;
+      }
+      body.notoc #toc .off {
+        display: inline;
+      }
+      body.notoc #toc .on {
+        display: none;
+      }
+      table > tbody > tr > td:first-child,
+      table > tbody > tr > td:nth-child(1),
+      table > tbody > tr > td:nth-child(2),
+      table > tbody > tr > td:nth-child(3),
+      table > tbody > tr > td:nth-child(4) {
+        text-align: center;
+      }
+      table > thead > tr > th:first-child {
+        width: 30px;
+      }
+      .red {
+        color: red;
+        background-color: #f0d9dd;
+      }
+      .green {
+        color: green;
+      }
+    </style>
+  </head>
+  <body class="notoc">
+    <a href="https://pl.wikipedia.org/wiki/Komiks_Gigant">Read more: https://pl.wikipedia.org/wiki/Komiks_Gigant</a>
+    <br />
+    <a href="?test">test</a>
+    <div id="root"></div>
+    <script type="template">
+
+      <% Object.entries(data).forEach(([key, value]) => { %>
+        <h4><%= key %></h4>
+        <table>
+          <thead>
+            <tr>
+            <th>#</th>
+            <th>Number</th>
+            <th>Cover</th>
+            <th>[BOOK] | [PDF]</th>
+            <th>Title</th>
+            <th>Table of content</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% value.forEach(({title, img, nr, toc, processed: {pdf, book}, filename}, i) => { %>
+              <tr>
+                <td><%= i + 1 %></td>
+                <td><%= nr %></td>
+                <td>
+                  <img src="<%= img %>" alt="" height="265px" />
+                </td>
+                <td><% if (pdf) { %><%- "[PDF]" %><% } %> <% if (book) { %><%- "[BOOK]" %><% } %></td>
+                <td><%= title %></td>
+                <td>
+                  <ul>
+                    <% toc.forEach((t, i) => { %>
+                      <li><%= t %></li>
+                    <% }) %>
+                  </ul>
+                </td>
+                <td class="file"><%= filename %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% }) %>
+
+      <button id="toc">
+        <span class="on">TOC: ON</span>
+        <span class="off">TOC: OFF</span>
+      </button>
+    </script>
+
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans",
+          "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
+      }
+      body.media {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      body.media img,
+      body.media video {
+        max-width: 100%;
+        max-height: 100vh;
+        width: auto;
+        height: auto;
+        display: block;
+      }
+
+      video:focus {
+        outline: none;
+      }
+
+      .video-container {
+        position: relative;
+        display: none;
+      }
+
+      .play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background-color: rgba(0, 0, 0, 0.6);
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+      }
+
+      .play-button:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      .play-button::after {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-left: 30px solid white;
+        margin-left: 8px;
+      }
+
+      #doc {
+        display: none;
+      }
+      input {
+        width: 90%;
+        padding: 5px;
+        font-size: 17px;
+      }
+    </style>
+  </head>
+  <body>
+    <img style="display: none" />
+    <div class="video-container">
+      <video controls loop style="display: block"></video>
+      <div class="play-button"></div>
+    </div>
+    <div id="doc">
+      <pre>
+Just put url to any image to use this document to present it.
+
+Mainly it was created for imgur.com images which once loaded directly redirects to imgur.com ui
+
+Probably because it detects request header accept: text/html
+      </pre>
+
+      <div>
+        <label>
+          type img url:
+          <input type="text" id="url" value="" />
+        </label>
+      </div>
+
+      <br />
+
+      <div>
+        <a href=""></a>
+      </div>
+
+      <br />
+
+      <div>
+        <label>
+          generated link
+          <input type="text" id="link" value="" />
+        </label>
+      </div>
+
+      <br />
+
+      <div>
+        <a href="i.html">reset</a>
+      </div>
+
+      <br />
+
+      <div>
+        direct link to original
+        <a href="https://i.imgur.com/q3CHEJs.png" target="_blank">https://i.imgur.com/q3CHEJs.png</a> - will redirect to
+        https://imgur.com/q3CHEJs
+      </div>
+
+      <br />
+
+      <div>
+        the same image (https://i.imgur.com/q3CHEJs.png) but handled with this document -
+        <a href="?i=https://i.imgur.com/q3CHEJs.png">link</a>
+      </div>
+
+      <br />
+
+      <div>
+        <a href="?i=https://i.imgur.com/CjDxZsm.png">big image example</a>
+      </div>
+
+      <br />
+
+      <div>
+        <a href="?i=https://i.imgur.com/6N0MVlA.png">small image example</a>
+      </div>
+
+      <br />
+
+      <div>
+        <a href="?i=https://i.imgur.com/9yR28qL.mp4">video example (mp4)</a>
+      </div>
+    </div>
+  </body>
+  <script>
+    const i = new URLSearchParams(window.location.search).get("i");
+
+    if (i) {
+      // Check if the URL is an MP4 file
+      const isVideo = i.toLowerCase().endsWith(".mp4");
+
+      if (isVideo) {
+        const videoContainer = document.querySelector(".video-container");
+        const videoElement = document.querySelector("video");
+        const playButton = document.querySelector(".play-button");
+
+        videoElement.src = i;
+        videoContainer.style.display = "block";
+
+        // Add click event to the play button
+        playButton.addEventListener("click", function () {
+          videoElement.muted = false; // Ensure sound is on
+          videoElement
+            .play()
+            .then(() => {
+              // Hide play button when video plays successfully
+              playButton.style.display = "none";
+            })
+            .catch((e) => {
+              console.log("Play failed:", e);
+            });
+        });
+
+        // Show play button again when video ends if not looping
+        videoElement.addEventListener("ended", function () {
+          if (!videoElement.loop) {
+            playButton.style.display = "flex";
+          }
+        });
+
+        // Show play button if video is paused
+        videoElement.addEventListener("pause", function () {
+          playButton.style.display = "flex";
+        });
+
+        // Hide play button if video is playing
+        videoElement.addEventListener("playing", function () {
+          playButton.style.display = "none";
+        });
+      } else {
+        const imgElement = document.querySelector("img");
+        imgElement.src = i;
+        imgElement.style.display = "block";
+      }
+
+      document.body.classList.add("media");
+    } else {
+      document.querySelector("#doc").removeAttribute("id");
+
+      const input = document.querySelector("#url");
+      const a = document.querySelector("a");
+      const link = document.querySelector("#link");
+
+      input.addEventListener("input", (e) => {
+        const url = `${location.origin}${location.pathname}?i=${encodeURIComponent(e.target.value)}`;
+        a.href = url;
+        a.innerText = url;
+        link.value = url;
+      });
+
+      link.addEventListener("focus", (e) => {
+        e.target.select();
+        // copy on focus
+        // and change input background to green for 1 sec
+        e.target.style.backgroundColor = "green";
+        setTimeout(() => {
+          e.target.style.backgroundColor = "";
+        }, 1000);
+        // copy to clipboard
+        navigator.clipboard.writeText(e.target.value).then(
+          () => {
+            console.log("Copying to clipboard was successful!");
+          },
+          (err) => {
+            console.error("Could not copy text: ", err);
+          }
+        );
+      });
+    }
+  </script>
+</html>

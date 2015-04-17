@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homepage - Bento Box</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        margin: 0;
+        background: #f0f2f5;
+        font-family: "Poppins", sans-serif;
+        padding: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+      .bento {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        grid-auto-rows: 150px;
+        gap: 1rem;
+        max-width: 900px;
+        width: 100%;
+      }
+      .box {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        text-decoration: none;
+        color: #1c1e21;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+      .box:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+      }
+      .box-large {
+        grid-column: span 2;
+        grid-row: span 2;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+      .box-wide {
+        grid-column: span 2;
+      }
+      .box-tall {
+        grid-row: span 2;
+      }
+      .icon {
+        font-size: 2rem;
+      }
+      .box-large .icon {
+        font-size: 4rem;
+      }
+      .title {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+      .box-large .title {
+        font-size: 1.5rem;
+      }
+
+      /* Specific styling */
+      .gh {
+        background: #24292e;
+        color: white;
+      }
+      .yt {
+        background: #ff0000;
+        color: white;
+      }
+      .cg {
+        background: #10a37f;
+        color: white;
+      }
+
+      @media (max-width: 600px) {
+        .bento {
+          grid-template-columns: 1fr 1fr;
+        }
+        .box-large,
+        .box-wide {
+          grid-column: span 2;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bento">
+      <a href="https://google.com" class="box box-large">
+        <div class="icon">🔍</div>
+        <div class="title">Google Search</div>
+      </a>
+      <a href="https://chatgpt.com" class="box box-tall cg">
+        <div class="icon">🤖</div>
+        <div class="title">ChatGPT</div>
+      </a>
+      <a href="https://youtube.com" class="box yt">
+        <div class="icon">▶️</div>
+        <div class="title">YouTube</div>
+      </a>
+      <a href="https://calendar.google.com" class="box">
+        <div class="icon">📅</div>
+        <div class="title">Calendar</div>
+      </a>
+      <a href="https://github.com" class="box box-wide gh">
+        <div class="icon">🐙</div>
+        <div class="title">GitHub</div>
+      </a>
+      <a href="http://example.net" class="box box-wide">
+        <div class="icon">🌐</div>
+        <div class="title">Example.net</div>
+      </a>
+    </div>
+  </body>
+</html>

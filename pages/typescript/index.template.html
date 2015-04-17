@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>TypeScript - Setup, Types & Configuration Guide</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="jsdoc.html">JSDoc</a></li>
+            <li><a href="npm_package_exports/index.html">experimenting with npm package exports **</a></li>
+          </ul>
+        </div>
+        <h2>types list</h2>
+        <script type="editor" data-lang="python">
+
+          /// <reference types="node" />
+
+          https://github.com/DefinitelyTyped/DefinitelyTyped
+            https://definitelytyped.org/
+            https://github.blog/changelog/2020-12-16-npm-displays-packages-with-bundled-typescript-declarations/
+
+          node   "@types/node": "^22.13.10"
+          express   "@types/express": "^5.0.0"
+          jest     "@types/jest": "^29.5.13",
+          react   "@types/react": "^18.3.3",
+          react-dom   "@types/react-dom": "^18.3.0",
+
+          const { parseArgs } = require('node:util');
+            # npm install @types/node
+        </script>
+        <h2>Setup</h2>
+        <script type="editor" data-lang="python">
+
+          # clean setup:
+            https://github.com/stopsopa/ts-setup
+
+          # see articles:
+            https://blog.logrocket.com/express-typescript-node/
+
+          # look for more types: https://github.com/icare-health/icare/blob/master/package.json
+          /bin/bash bash/swap-files-v2.sh package.json package.dev.json -- yarn add -D typescript @types/node
+
+          # to just check
+          tsc --noEmit
+
+
+          # setup for libraries export to npm
+          npx tsc --init --rootDir src --outDir dist \
+          --esModuleInterop  \
+          --module nodenext
+            # from: https://khalilstemmler.com/blogs/typescript/node-starter-project/#Create-a-tsconfigjson
+            # from: https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html
+
+          nodenext vs ESNext
+            # more: https://www.typescriptlang.org/tsconfig/#module
+            # https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html
+          # Conclusion: It seems it is better to use nodenext when working with node
+            but for that you can't have  "type": "module" in package.json
+        </script>
+        <h2>Force native function to use my types</h2>
+        <script type="editor" data-lang="sh">
+
+          // https://www.typescriptlang.org/play/?ssl=11&ssc=4&pln=2&pc=1#code/FASwdgLgpgTgZgQwMZQAQGED2BbADgsAT1QG9hVUBJAEwC5UBnCGcAcwG5zUA5BbKekxZgOwAL7AkmME1RS8BQvSwKiAbQC6qALypNnYAAoA8gCMAVlCQQAdAGsohBofn4iASlQIGqQw8KYcBg4boTumu42cJgwAKLIABaGfo6e2gB8pFz+OqgARHmoAPRFqBAJID4A7gjEOUgEqNIANsQJCABuaB0IzQCuUD55NIUx+bz8eVwlqDY24u7sQA
+          interface Company {
+            Id: string;
+            Name: string;
+          }
+          const company: Company[] = [];
+
+          (Object.keys(company) as (keyof Company)[]).forEach((key) => {
+            key = "" // this way key can only have values "Id" or "Name"
+            // ..
+          });
+        </script>
+        <h2>npm publish preparations PUBLISH TYPESCRIPT</h2>
+
+        <script type="editor" data-lang="sh">
+
+          # recommendation as of 2025-10-24 how to ship packages (taking into consideration only ESM + CJS):
+            # https://youtu.be/I0jvOJW7NaI?t=860
+            # Great goal — you can publish a single package that works for both require() and import. The modern,
+              # reliable way is:
+              # • build two artifacts (ESM + CJS),
+              # • expose them via conditional exports in package. json,
+              # • ship one set of types,
+              # • and (optionally) keep a legacy main for very old tooling.
+              # Below is a battle-tested template you can copy.
+
+            # more about package.json: https://youtu.be/I0jvOJW7NaI?t=1072
+            # WARNING: WATCH FURTHER BEYOND THAT TIMESTAMP
+            {
+              "type": "module"
+                "exports": {
+                ".": {
+                  // Supply CommonS version to require() - need to make sure that
+                  // states can be duplicated or shared states live in the same graph
+                  "require": "./dist/index.cjs",
+                  // Supply ESM version to import and others
+                  "import": "./index.js",
+                  "default": " /index.js"
+                }
+            }
+
+          # latest the best setup
+            https://github.com/stopsopa/tsdi-lite
+
+          # typescript doc about publishing
+            https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html
+
+          # some articles (generally a mess):
+            https://github.com/nodejs/package-examples
+            https://lirantal.com/blog/typescript-in-2025-with-esm-and-cjs-npm-publishing
+            https://blog.mastykarz.nl/create-npm-package-commonjs-esm-typescript/
+
+          node.js exports and package.json:
+            https://nodejs.org/api/packages.html#dual-commonjses-module-packages
+            https://nodejs.org/api/packages.html#package-entry-points
+            https://nodejs.org/api/packages.html#exports
+          npm:
+            https://docs.npmjs.com/cli/v10/configuring-npm/package-json
+
+          # other examples of configuration for publish
+            https://github.com/kesla/hash-of-directory/tree/main
+
+          # for example look: https://github.com/stopsopa/envprocessor
+          # INFO: so far this reporsitory seems to do the best job exporting CJS, ESM and types the best I can
+          # some examples of good config:
+          # mkdir __examples && cd __examples && echo "{}" > package.json && yarn add dotenv axios zod
+          {
+            ...
+            "license": "MIT",
+            "module": "./dist/cjs/env.cjs", // that is just for older nodes, but not required for new
+            "types": "./dist/types/env.d.ts",
+            "bin": {
+              "envprocessor": "./dist/esm/cli.js"
+            },
+            "types": "./dist/types/env.d.ts",
+            // only when I've added this line ts icon have appeared in the npm:
+            // https://i.imgur.com/0SACeIC.png
+            "exports": {
+              ".": {
+                "types": "./dist/types/env.d.ts", // have to be first, othervise vitest will generate warning: https://i.imgur.com/gFDyLC3.png
+                "import": "./dist/esm/env.js", // this will be used if in consuming library "type": "module"
+                "require": "./dist/cjs/env.cjs" // this will be used if in consuming library "type" not defined
+              },
+              "./*": {
+                "types": "./dist/types/*.d.ts",
+                "import": "./dist/esm/*.js",
+                "require": "./dist/cjs/*.cjs"
+              }
+            },
+            ...
+          }
+        </script>
+        <h2>TSGO - Go port of typescript</h2>
+        <script type="editor" data-lang="sh">
+
+          // https://devblogs.microsoft.com/typescript/announcing-typescript-native-previews/
+        </script>
+        <h2>type Promise</h2>
+        <script type="editor" data-lang="sh">
+
+          // Types for the result object with discriminated union
+          type Success<T> = {
+            data: T;
+            error: null;
+          };
+
+          type Failure<E> = {
+            data: null;
+            error: E;
+          };
+
+          type Result<T, E = Error> = Success<T> | Failure<E>;
+
+          // Main wrapper function
+          export async function tryCatch<T, E = Error>(
+            promise: Promise<T>,
+          ): Promise<Result<T, E>> {
+            try {
+              const data = await promise;
+              return { data, error: null };
+            } catch (error) {
+              return { data: null, error: error as E };
+            }
+          }
+          # from:
+            https://youtu.be/Y6jT-IkV0VM?t=238
+            https://gist.github.com/t3dotgg/a486c4ae66d32bf17c09c73609dacc5b
+        </script>
+        <h2>transpile in place</h2>
+        <script type="editor" data-lang="sh">
+
+          npx tsc --module ESNext --target ESNext --moduleResolution Node --skipLibCheck  lib/cachePromise.ts
+            # that will just strip ts syntax and generate lib/cachePromise.js in esm
+        </script>
+        <h2>Default tsconfig.json</h2>
+
+        <script type="editor" data-lang="sh">
+
+          # new rewriteRelativeImportExtensions: https://youtu.be/I0jvOJW7NaI?t=1045
+
+          // configure:
+            https://youtu.be/413C1PlYIko?t=35
+
+          // TSConfig Reference
+            // in search for default values of tsconfig.json
+            // https://www.typescriptlang.org/tsconfig/
+            // just go to https://www.typescriptlang.org/ and search (top right corner) "search" -> TSConfig Reference
+
+          urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/defaults/index.html
+          /bin/bash pages/typescript/defaults/getconfig.sh
+          /bin/bash pages/typescript/defaults/getconfig-some.sh
+
+          ----
+
+          some params function from tsconfig.base.json:
+
+          rootDir: Decide WHERE files go in outDir.
+            It "crop" common path from source files.
+            If rootDir is './':
+              select.ts -> dist/select.js
+              composition/Manager.ts -> dist/composition/Manager.js
+            If rootDir was 'composition':
+              composition/Manager.ts -> dist/Manager.js (path before Manager.ts gone).
+
+          'include' & 'exclude'
+            TS look at 'include' -> "I want these files".
+            TS look at 'exclude' -> "But I must skip these".
+            so 'exclude' always wins
+              if 'exclude' not defined Default exclude (like node_modules) still apply.
+            NOTE: If you use 'files' property (explicit list), exclude cannot stop them. files is Super Win. You not use it here, so exclude keep power.
+        </script>
+
+        <h2>Glossary</h2>
+
+        <script type="editor" data-lang="ts">
+
+          Type Argument Inference || Type Parameter Instantiation
+            # It's a placeholder for a type that is supplied when a generic type is instantiated, or a generic method or function is invoked
+            # like:
+            this.myMethod<MyType>(...args);
+
+            # still waiting to be implemented??? https://github.com/microsoft/TypeScript/issues/27387
+        </script>
+        <h2>Dependency Injection</h2>
+
+        <script type="editor" data-lang="ts">
+
+          // https://www.typescriptlang.org/play/?#code/MYewdgzgLgBAJgS2FB4CGAnAnjAvDAbwF8Y0IYARAUwAcqw57gsBJMAKyuVTABUs6AbgBQwqAKqVa9RmGZtO3cPzp5CwmDHBUAXDGgYEYAOYjNUAO4g9Bo6Y0woACwxVdMMAFcAtgCMqGCJEIsKuxgjQAQDKAQBuSFQAFABE2skANDCpYFSxaAA2yQCUImERUNFxCSmWIBlZtXmFMADUMMZUUDEY8cBJ2VTFJaFU4ZEY3b39zq6DmQCsw2ISlEgo6NgA0lQ4+ADWOyAAZo4Sx-BrPJhYIeKqm3eS+4cn1HQMTKwcXOt8EiGgSCwZxqRLeCDGGxQQwmIp4AB8HioFhgAFEMBgQBhEgADN4yT4wBQ-HgwAKYjB6AAkBHBxiIOKWgOgMAOWHI+AA8r5FFAAHRsiCJRBKMDXOFkVai67bLAAbQAuiIqAAPGhY2BHTxyX4wMrjSYJAA8mzJKoqDHIFEuGywsvhiTZek2mSannciUe5xFv3Fcs2CrhBAcCBOjp2ED5RmA+U8jCFbKKQYc5hcIBRzlxbJgNLZJAKrjQcBwqvK5CMjickn10KwjLMMCIok0Pqu2DlbIVajdVCCwlV6owmu1ovanUNfRNZotcCtNrFWx2DqdME2RT0nrOJ1btqK-q7wc0oZgiQAhIKo3JY-Hw1gk+pNKnMRmnFmdjmCHmPCBNSBtXAYArZxq1GcpsHrBwmwcVwoE8DAwAuaV207PthGZWAjGgNA5CeMcuiqPoaisYoAXAFlMKgbC+gAJjUDp8J6apkhmNwSKAA
+          // https://www.typescriptlang.org/play/?#code/KYDwDg9gTgLgBAYwDYEMDOa4BFhmAOwBMCEBPASXwCtgEYBLCfAHgBUA+OAbwCg44wUCDFojCcQvTqN8KKKQBccVgG4+AoSLrBxAa2Ck0SgBT7SEAGbKAlAG0AumvUImaGFACudaMevd1-DAAFvRoAHSS0kxypHAAvNwAvnDoymr8gSHhZpgJDulwiTzqUMAA5qEiUADKwFAAblLAzADScKAiRJhmlsrspgZKLQA0cPUoSB7AJjCkeL3BoRFSDNHydi32frwZcPRWxovZBuH0+MgexGgDpNbbARnBQgDucPjArwCiUEJQxgAGMDQkgAtEh6CJ2j9oEozHB2AASLhw1JuKBnMqJZgpJClFCEWKgSqYM5wYLAOClCpo0j-awFfhFB5HZZRWTyWxmezxMYTKYMslZMI5HkAeQARjQ6MKTochZFVuzYqkIJLRH5Ujdeqw7I51Ez+GVgDBag0mq12iBOoRugZtf0zENrDM5sAFvKVjIYhtuTsMvs4MYAIQsnJhM4XK43O7+XaZF5vD5wb6-AFA0HgyF1X6wgzwpEozBojFYt7COAWCAeIh7fCCilUyryOkCg0ZUowDxQOsshVejlcgpFJmzPDYXAEYjnCjUUQyViunl+pjTODF-BlAowZ4QJTrzfqJ7AVf4DwAW3FdTUiScLnwbgk9B571eODwRBIM6liuYb8nn8ob951dfp6WKSQwkbNw6lNRoEGAYwACIV0Q0ZkPecYkEQsCIKgqpYKaJDtwgVC4EQ4jMMQuAAGpHzCI0TTqOCEPQ4BsJw+hIPKSoYKYwjyKCUo2NGABWMCeDvB8zjcFBzgpBIIIYgj4KIndsNvVx4GkmBZPggAmHlFONZSWKPNj6SAA
+
+          export class DependencyInjection<T> {
+            protected dictionary: T;
+            protected keys: (keyof T)[];
+
+            constructor() {
+              this.dictionary = {} as T;
+              this.keys = [];
+            }
+
+            registerService<K extends keyof T>(key: K, value: (typeof this.dictionary)[K]) {
+              if (this.keys.includes(key)) {
+                throw new Error(`tsdi-lite error: key >${key as string}< already exists in the registry`);
+              }
+
+              this.dictionary[key] = value;
+              this.keys = Object.keys(this.dictionary as object) as (keyof T)[];
+            }
+
+            getService<K extends keyof T>(key: K): (typeof this.dictionary)[K] {
+              if (!this.keys.includes(key)) {
+                throw new Error(`tsdi-lite error: key >${key as string}< not found in the registry`);
+              }
+
+              return this.dictionary[key];
+            }
+          }
+
+          type DependencyInjectionType = {
+            one: string;
+            two: string;
+            three: number;
+          };
+
+          const di = new DependencyInjection<DependencyInjectionType>();
+
+          di.registerService("one", "oneval");
+          di.registerService("two", "twoval" + di.getService("one"));
+          di.registerService("three", 5);
+
+          const instance = di.getService("two");
+
+          const instance2 = di.getService("three");
+        </script>
+        <h2>doc</h2>
+
+        <script type="editor" data-lang="python">
+
+          https://wojciechkrysiak.medium.com/typescript-jsdoc-better-docs-7c03b6ea04df
+            https://typedoc.org/
+            https://github.com/microsoft/tsdoc
+        </script>
+        <h2>source maps</h2>
+        <script type="editor" data-lang="js">
+
+          # https://github.com/WICG/import-maps
+            # from: https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html
+          <script type="importmap">
+          {
+            "imports": {
+              "moment": "/node_modules/moment/src/moment.js",
+              "lodash": "/node_modules/lodash-es/lodash.js"
+            }
+          }
+        </script>
+        <h2>express path params</h2>
+        <script type="editor" data-lang="ts">
+
+          // https://www.typescriptlang.org/play/?#code/PQKhCgAIUgVALAlgZ0gM0QGwKaQCbYC2A9gHbIAuATgIYXarzEDukFxk2AHtTQMYVIABxq1C2elVRoqxQpBqQAqgCUAMpEpVEpAOaQArsh26oMWAE8h2AMp9tQigHJUsIkMx1caxJJqY4KwYFUjxIKmw+AylEADdcCiDIHTRsCNI+bAA6M2BwcGBgSABGLMgbD182eFwtE2TSdgVlUkQySGI0TWxdcUbUAAps3TKAIiM00cgAH0hRgC55iaoASTwp2dGhYkpRgEpwROtIAHEJGx6+imQAHlhOHmxQ1Dq9AD5IAF44B-pnyAABgASADeKTSkAACqIKABfYCg8FUSAqBhwgGQAD8UJhM1O50uT2uN1RlA+8zgAG58oVIAAmMoAMSwkkMrXaTTImAsDT4mAMBG6vSJLwoMPqzF88EgTkWThCYTqQmquCEEQwXEOSVgxGhYgAcjRxHdfk88KLtO8vj9uH9zYDFojSKlkYbxLCMdi3bgKaRsPEqNSCkUAMxlACCyGQRAARjgVR0YwArSKCIz1ADS2B5qMINCEQnqAycNGQTgOR1wAFEeLQBCpiAZ6Hqjbd7razRaTB9viCoJAANoZhr4igXYX9O4fUtwXWiI3em4Zt4AXQpr101NhQcgu8gtIAtEfIFWABrhgCykLUVZskAA8ozIAAJKtqSFVlRwACaH7vA2fYgAw6YCKBqaMRwsRtkRWAARKsAEI9kgI8D0gWIMP7Pc91pUpR3HK5UBjCIaAAazwFhSHmLDsP3IoVkEZBKmuBMN0gGMeScYB5RoUJIHsbAvFQRQlHZUgOi6fwAhEKhrhyWi90rcpCX6GsjQ8XBvjOMcVOJUZgGWYBFmWNZgG2SgjPmcyKDWUY3mpBTd1pUkDEwCgKVGDY5mWLyFiWaNVnWPEth2ChfMWazbPyRy6PpModRbQhvXYkjyMo6iYtpBiXEgTBEFI3BFAwNy0jKBjkl0UhiAiVAqqoPMAmjCcWN4sIuR5PMhFQWV5nlJrCLYDgwOwRBkVII0GHkxylO9YprQS+ckomm4-JM9Z7Nily3I8tbRho7CZomul5rnA1lvGAK7MpTaGFc9zID9YCBgQFA2GwTBMFcII7AcQQmlGZBSMQIQpjA16Cp5ZganEzrCz0A59pw0MygAYTkGMdHqYbCAyxzaW0giRUgXQ4mCIxmjyygJLmPhWsQPAhNGKaFNpBazvEdAWTSVAwLoXKUEECjmFIZnaKUgA1fx6e9ZA1MIDSTsSxcCd0259MM4yAtM6zLMi9b7MRpyii2+6LrSWzgr1vbsMPY8z0va9bwfJ9X3fT8fz-SAAKAiEfeRYaIJ0SAoOiSA4MQ5DUMgAA9WOaSKBlIFgogyC0Og2lIcA0AMDIKAz-BsAwP0GybbAbmhMDTX+Dc3gGEQwIpCv4AAGkgeBWpwKgKTrxbkApGteHrRtm178u6HgN5kM+D5YmIenkL7Xc+FT4gcCyTBiF0AYARL+gC6L7A8ApUF6-gD09i3ePDGQGhdGwaiCAP3fsAGdWAsstazNC3XQtMkgIksv-bAtlW49zEMgKeHxF6xUAsBP2MoZKtnlE0aMuBfA8yCAhfsWVBCvSqqwRQfJBLiWIMmVMFIQTX3NkfTQ1ATDXT1uuOhehrpALWEwy0m5ICwn7Mvcgq9sgby3ogwgyAshrQvrwlea8hFgNbFkPWkil7SMEZvORoishsLwJI7BRQRFiJ0LEKWeBrqsyQKgZgjZMBhBjIVQI1gfrA0EGkWQVAsFG34io9eaj9FZEMcYyRsIdGgAgNAE8p5rzhn1OGWAKx7z6gyqEmAeE3Dy08HvHwfgAiWGsH3exth7BOP4rxOYG9iCkQaMYAgUwNyoEQF0YaHU6B8GlIoeukgRZmGwsCEEG5YTzCdC6HEYgPQKA+iwVwd4mi2jrH9GowhcQ0DQKyYaniN6dOgF0xOqIogxHiGHZ0aQniZApAgXAAIB6zOfolZAGIlIFWwF1YpH16joPemgLpe4c55wCMNCICh-lVUgEAoUA0cDLJHKsjc8kkmQDDAcyQ0YBD5xyQwCkShjB6EBAAMgxOIKgd8ebzJ0HgOI9MDD+AWWICQvsyECGQJ83cQwsgjFbgCSha0OH1FhJAbFkBKGMNoZw7hAJkI6E5H6Tm41flBBhV05894ADqcB7ynHvPeE4N4w6wESShOYqLHGODgO4dJ3hfBpEpai5A1sYBoVGAawpRrUUHhwPEAINhmH6AvLxYGrl05kBtXq0YOzojGH2akjwXhICZItdkoI1qul2r1BBNiTQlIOt+javIQA
+
+          /**
+           * This file demonstrates how to extract parameters from a URL string using
+           * TypeScript's Template Literal Types and recursive type inference.
+           */
+
+          // 1. Split the string into a Union of segments (e.g. "user" | "::userId" | "post")
+          type GetSegments<T extends string> = T extends `${infer Part}/${infer Rest}` ? Part | GetSegments<Rest> : T;
+
+          // 2. Filter union to only include segments starting with '::' and strip the prefix
+          type ToParamName<T extends string> = T extends `::${infer Name}` ? Name : never;
+
+          // 3. Assemble the object using Key Remapping ('as')
+          type ExtractRouteParams<T extends string> = {
+            [K in GetSegments<T> as ToParamName<K>]: string;
+          };
+
+              // --- EXAMPLES OF HELPER TYPES (Hover over these in your IDE!) --- vvv
+                  // 1. GetSegments breakdown:
+                  // It splits the string by '/' and creates a Union of all parts.
+                  type SegmentsExample = GetSegments<"/user/::userId/post/::postId">;
+                  // Result: "" | "user" | "::userId" | "post" | "::postId"
+
+                  // 2. ToParamName breakdown:
+                  // It's like a filter. It ignores normal segments and only maps '::' segments to their names.
+                  type Name1 = ToParamName<"::userId">; // Result: "userId"
+                  type Name2 = ToParamName<"user">; // Result: never (This tells TypeScript to "skip" this key when mapping)
+
+                  // 3. Combining them:
+                  // GetSegments gives us a list of "candidates".
+                  // ToParamName filters that list down.
+                  type ValidNamesExample = ToParamName<GetSegments<"/user/::userId/post/::postId">>;
+                  // Result: "userId" | "postId"
+              // --- EXAMPLES OF HELPER TYPES (Hover over these in your IDE!) --- ^^^
+
+          // 2. Demonstration
+          function defineRoute<Path extends string>(path: Path, handler: (params: ExtractRouteParams<Path>) => void) {
+            console.log(`Route defined: ${path}`);
+          }
+
+          // usage:
+          defineRoute("/user/::userId/post/::postId/more/::moreId", (params) => {
+            // Hover over 'params' to see its type!
+            // It is now a clean object: { userId: string; postId: string; moreId: string; }
+            console.log(params.userId);
+            console.log(params.postId);
+            console.log(params.moreId);
+
+            // params.invalid; // This would be a TypeScript error!
+            // console.log(params.invalid);
+          });
+
+          /**
+           * EXPLANATION:
+           *
+           * 1. Template Literal Types: TypeScript can "look inside" strings if they match a pattern.
+           *    `${string}:${infer Param}` allows TS to extract the part after the colon.
+           *
+           * 2. Recursive Inference: The `ExtractRouteParams` type keeps calling itself
+           *    until there are no more segments left in the string.
+           *
+           * 3. Intersection Types: Using `&` merges the individual parameter objects
+           *    (e.g., `{ userId: string } & { postId: string }`) into one final type.
+           *
+           * HOW TO GOOGLE IT:
+           * - "TypeScript Template Literal Types"
+           * - "TypeScript Type-level String Manipulation"
+           * - "Recursive Template Literal Types"
+           * - "Parse string to type TypeScript"
+           */
+        </script>
+        <h2>TS watch mode for DEV</h2>
+        <script type="editor" data-lang="python">
+
+          # ts-node/register:
+            # I've used it in : https://github.com/stopsopa/argyle
+            # from: https://www.learnwithjason.dev/blog/modern-node-server-typescript-2024/
+              # WARNING: remove "type": "module" from package.json to make ts-node/register work again
+                # from: https://github.com/TypeStrong/ts-node/issues/2122#issuecomment-2328371035
+                # https://dev.to/tsamaya/how-to-set-up-a-node-project-using-typescript-in-2024-1ikm
+              # ACTUALLY the fact that "type": "module" breaks everything is not acceptable
+
+
+          # ciąg dalszy "type": "module" problemu z ts-node/register oraz ts-node-dev
+          https://typestrong.org/ts-node/docs/recipes/watching-and-restarting
+
+          final conclusion seems to be here:
+          https://blog.logrocket.com/configuring-nodemon-typescript/
+
+          just stick to nodemon:
+          npx nodemon server/index.ts
+        </script>
+
+        <h2>--experimental-strip-types</h2>
+        <a href="https://nodejs.org/en/blog/release/v22.6.0#2024-08-06-version-2260-current-rafaelgss"
+          >g(site:nodejs.org Experimental TypeScript support via strip types)</a
+        >
+        <script type="editor" data-lang="js">
+
+          // WARNING: GOOD EXAMPLE HOW TO WORK WITH --experimental-transform-types: https://github.com/stopsopa/kafka/tree/experimental-transform-types
+
+          // --experimental-strip-types timeline
+            // Initially was introduced in v22.6.0
+            //   https://github.com/nodejs/node/releases/tag/v22.6.0
+            //
+            // First time enabled by default (Current version) - Jan 7, 2025
+            //   https://github.com/nodejs/node/releases/tag/v23.6.0
+            //
+            // Node.js v22.18.0 (LTS), type stripping was enabled by default was backported to LTS - Jul 31, 2025
+            //   (UNFLAGGED - made the default behavior) (so the flag is no longer required to strip types).
+            //   https://github.com/nodejs/node/releases/tag/v22.18.0
+            //
+            // Typescript support in node is stable since 25.2.0
+            //     https://nodejs.org/en/blog/release/v25.2.0
+            //     https://github.com/nodejs/node/releases/tag/v25.2.0\
+            //       The "Stability" (Warning Removed)
+            //
+            // For Full TypeScript support still use tsx: https://nodejs.org/api/typescript.html#full-typescript-support
+            //
+            // For Type Stripping: https://nodejs.org/api/typescript.html#type-stripping
+            //   More details about stripping: https://nodejs.org/api/typescript.html#typescript-features
+            //   Node.js does not read tsconfig.json files and does not support features that depend on settings within tsconfig.json, such as paths or converting newer JavaScript syntax into older standards.
+            //   adding `import type` is needed: https://nodejs.org/api/typescript.html#importing-types-without-type-keyword
+            //     use verbatimModuleSyntax to match this behaviour: https://www.typescriptlang.org/tsconfig/#verbatimModuleSyntax
+            //   Node.js does not generate them. When --experimental-transform-types is enabled, source-maps are enabled by default.
+            //     from: https://nodejs.org/api/typescript.html#source-maps
+            //   To discourage package authors from publishing packages written in TypeScript, Node.js refuses to handle TypeScript files inside folders under a node_modules path.
+            //   Paths aliases - not supported: https://nodejs.org/api/typescript.html#paths-aliases
+
+          // --experimental-transform-types has little different timeline
+            // flag introduced in https://github.com/nodejs/node/releases/tag/v22.7.0
+            //   without this flag ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX will be thrown when enums, namespaces, parameter properties used
+            // as of January 2026 still stays opt-in, so still experminental. Researching Stability
+            //
+            // TIP: if you want to avoid using this flag, use erasableSyntaxOnly: true in tsconfig
+            //      https://www.typescriptlang.org/tsconfig/#erasableSyntaxOnly
+            // LONG STORY SHORT (as of 21 Jan 2026) still use --experimental‑transform‑types and it is (semi) safe to use since LTS v22.18.0
+
+          // add to tsconfig.json
+            // for --experimental-strip-types // https://nodejs.org/api/typescript.html#type-stripping
+            "noEmit": true, // Optional - see note below
+            "target": "ESNext",
+            "module": "NodeNext",
+            "rewriteRelativeImportExtensions": true,
+            "erasableSyntaxOnly": true, // add this one if you will not use --experimental-transform-types
+            "verbatimModuleSyntax": true
+
+          // WARNING: GOOD EXAMPLE HOW TO WORK WITH --experimental-transform-types: https://github.com/stopsopa/kafka/tree/experimental-transform-types
+
+
+
+          // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Ftypescript%2Fnode%2Ftstest.ts
+
+          // INTERESTING TALK, HOW require(ESM): https://youtu.be/YRueCer2kig
+
+          PORT=8080 HOST=0.0.0.0 /bin/bash node_modules/.bin/nodemon -e js,html -x "node --experimental-strip-types" server/index.ts
+
+          more about type stripping:
+            https://nodejs.org/en/learn/typescript/run-natively
+            https://nodejs.org/docs/latest-v23.x/api/typescript.html#typescript-features
+            https://nodejs.org/api/typescript.html#type-stripping
+              says: Since v23.6.0, Node.js enables "type stripping" by default
+              also --experimental-transform-types implies --experimental-strip-types
+
+          run with transpilation:
+            https://nodejs.org/en/learn/typescript/run
+            tsx: https://gist.github.com/ggemre/83219067c5fc0623e92e086e45fe4e8e
+
+
+          // ------------------ try --experimental-strip-types
+          <%inject /pages/typescript/node/tstest.ts %>
+
+          // ------------------ try --experimental-transform-types
+          <%inject /pages/typescript/node/transform-types.ts %>
+        </script>
+        <h2>strip types from CLI [es.ts] **</h2>
+        <script type="editor" data-lang="js">
+
+          wget --no-cache urlwizzard.schema://urlwizzard.hostnegotiated/es.ts
+          wget --no-cache urlwizzard.schema://urlwizzard.hostnegotiated/es.mjs
+            # VERY USEFUL
+            # VERY USEFUL
+            # VERY USEFUL
+            # VERY USEFUL
+            # see more interesting stuff urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2FTRANSPILATION.md
+
+          yarn add -D esbuild
+          and then run:
+          node es.ts
+          # or
+          node es.mjs
+
+          wget https://stopsopa.github.io/gitignore_to_find/gitignore.js
+            // see more: https://stopsopa.github.io/gitignore_to_find
+          find . -path './node_modules' -prune -o -path './.git' -prune -o -type f -name '*.ts' -print \
+            | NODE_OPTIONS="" node gitignore.js .esignore \
+            | NODE_OPTIONS="" DEBUG=true /bin/bash ts.sh es.ts --produce-gitignore --update
+
+          Good example: urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fes.sh
+        </script>
+        <h2>--experimental-config-file=node.config.json</h2>
+        <script type="editor" data-lang="python">
+
+          cat <<EEE > ts.ts
+
+          enum MyEnum {
+            A,
+            B,
+          }
+          console.log(`enum position B>${MyEnum.B}<`);
+
+          EEE
+
+          NODE_OPTIONS="" node --no-warnings --experimental-strip-types --experimental-transform-types ts.ts
+          # or
+          NODE_OPTIONS="--no-warnings --experimental-strip-types --experimental-transform-types" node ts.ts
+
+          // -- now let's see how to use config file for node
+
+          // https://nodejs.org/en/blog/release/v23.10.0#introducing---experimental-config-file
+          // https://nodejs.org/api/cli.html#cli_experimental_config_file_config
+            // from: https://youtu.be/KayS7U-ivNo?t=877
+
+          cat <<EEE > node.config.json
+          {
+            "\$schema": "https://nodejs.org/dist/$(node -v)/docs/node-config-schema.json",
+            "nodeOptions": {
+              "import": [
+                "amaro/strip"
+              ],
+              "watch-path": "src",
+              "watch-preserve-output": true
+            },
+            "testRunner": {
+              "test-isolation": "process"
+            }
+          }
+          EEE
+
+          cat <<EEE > node.config.json
+          {
+            "\$schema": "https://nodejs.org/dist/$(node -v)/docs/node-config-schema.json",
+            "nodeOptions": {
+              "no-warnings": true,
+              "experimental-strip-types": true,
+              "experimental-transform-types": true
+            }
+          }
+          EEE
+
+          # Node.js v24.11.0 - and it doesn't work still
+          node --experimental-config-file=node.config.json ts.ts
+          node --experimental-default-config-file ts.ts
+        </script>
+
+        <h2>ts-node & tsimp & tsx && SWC</h2>
+        <script type="editor" data-lang="python">
+
+          // https://youtu.be/-7dNs1ggKRs
+          // https://nodejs.org/en/learn/typescript/run
+          cat <<EEE > tsconfig.check.json
+          {
+              "extends": "./tsconfig.json",
+              "compilerOptions": {
+                "target": "esnext",
+                "module": "esnext",
+                "noEmit": true
+              },
+              "exclude": ["vitest.config.ts", "server"]
+          }
+          EEE
+          cat <<EEE > tsx.sh
+          set -e;
+          npx tsc -p tsconfig.check.json
+          # before node 20??
+          /bin/bash node_modules/.bin/ts-node-esm ${@}
+          # since node 20?
+          node --no-warnings=ExperimentalWarning --loader ts-node/esm/transpile-only ${@}
+          EEE
+
+          // or instead of above
+          cat <<EEE > tsx.sh
+          set -e
+          npx tsc -p tsconfig.check.json
+          /bin/bash node_modules/.bin/tsx
+
+          EEE
+
+          // ====== tsx.sh ====== vvv
+          wget --help 1> /dev/null 2> /dev/null
+          if [ "$?" = "0" ]; then
+            wget --no-cache -O "tsx.sh" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/tsx.sh"
+          else # curl
+            curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/tsx.sh" -o "tsx.sh"
+          fi
+          if [ "$(printf "sha384-$(cat "tsx.sh" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/typescript/tsx.sh" ]; then
+            echo "checksum verified"
+            cat <<EEE
+
+            Now try:
+
+            /bin/bash tsx.sh [**/*.ts]
+
+          EEE
+          else
+            echo "checksum corrupted - deleting file"
+            rm "tsx.sh"
+          fi
+          // ====== tsx.sh ====== ^^^
+
+          // ------- older
+
+          node -r ts-node/register --experimental-loader ./get_format.mjs main.ts
+            # from: https://gist.github.com/Bnaya/0d544f4fba966af37da079ee7e8ec08d
+
+          better is tsx but it doesn't check the types:
+          https://youtu.be/jn370WEIvjs?t=842
+
+          another alternative:
+          https://github.com/tapjs/tsimp
+        </script>
+
+        <h2>Read</h2>
+
+        <script type="editor" data-lang="python">
+
+
+          # node --experimental-strip-types
+            # https://nodejs.org/en/blog/release/v22.6.0
+
+          # tsx ts configuration
+            # https://tsx.is/typescript
+            # read also: https://dev.to/_staticvoid/how-to-run-typescript-natively-in-nodejs-with-tsx-3a0c
+
+          # NODE.JS NATIVE TS
+           # https://nodejs.org/en/learn/getting-started/nodejs-with-typescript
+
+          # my GitHub repo research
+            # https://github.com/stopsopa/typescript-research/blob/main/README.md
+
+          # Burton lib
+            # https://github.com/connorjburton/hmac-auth-express
+
+          # typescript-eslint
+            # https://typescript-eslint.io/getting-started
+
+          # Learning
+            # https://www.builder.io/blog/utility-types
+        </script>
+
+        <h2>Useful</h2>
+        <script type="editor" data-lang="ts">
+
+          tsconfig.json
+          {
+            "compilerOptions": {
+              "target": "es5",
+              "lib": ["esnext", "dom"]
+            },
+            "files": ["./line.ts"],
+            "include": ["**/*.ts"]
+          }
+          // from: https://github.com/stopsopa/line
+
+          // to see config
+          npx tsc line.ts --showConfig
+        </script>
+
+        <h2>Generics</h2>
+        <a
+          href="https://www.typescriptlang.org/play?#code/C4TwDgpgBAwg9gVwHbAE4igXigcgAoAyOUAPrgCICixZOAYgEo24CqA0jgNwBQ3okUAOJ4EqAMYALAIYBnCAB4AKvGRoQAGiiKAblOAA+LFADe3KOahjEKdAC4tKmxrMXdwRVIAe9nXvUvzJCkAWwh7GTQASyQAc38LKCQIYDxUSLEwxIRggCMIVH8AX15+aBFxaTkjAKFyyVkFfCJND08AfUJDMhrhUXq5eRwqHBavNqouqB66ysbGEa0xxknpvtnBwgXWjoJ9bh4+cGhtwiMABlIoM4A6M4BWS5uzgA5H64AmAGYeUsX2qnObwA7G8AIwATh+Rz+bUYgLIT3eoLe9weCOuyPR7yhAm27HhV1uaMJ7zOBysSAiUDAawaMnsMwaAG0ALpGJk1UwJBJWVR2XCbeLc8xuVr2J53O5C4VBUL2HAAE2yYAANtEYjIRjUEkkUmkMvZQWcztKoIVTVzhZZrGp5cNTQlRV5xRiHRZZZkcAAhACCAHUfQwAJI+gByUC9lEoTDdgWSqXSmVJJpq5s52osvKc8vmsagTu8hNReY98oAZqg4BqtVbEvH9ZlPsbTWmEpbhVnbQLmhmRXoxUXJSWQp6IDENVAAGRQHJSCk1q26hMGqAAFmbqf8LKAA"
+          >Playground</a
+        >
+        <script type="editor" data-lang="ts">
+
+          # enforce React component type
+          const ReactJson: React.ComponentType<any> = ReactJsonRaw;
+          const ReactDiffViewer: React.ComponentType<any> = ReactDiffViewerRaw;
+
+          type Country = 'PL' | 'DE' | 'FR' | 'UK';
+
+          type GPurchase<TCountry, Tvat> = {
+              country: TCountry,
+              vatTax: Tvat,
+              name: string,
+              netPrice: number,
+          }
+
+          type Purchase =
+              GPurchase<'PL', Tax_PL> |
+              GPurchase<'DE', Tax_DE> |
+              GPurchase<'FR', Tax_FR> |
+              GPurchase<'PL', Tax_PL>
+          ;
+
+          type Tax_PL = 0 | 0.05 | 0.08 | 0.23;
+          type Tax_DE = 0 | 0.7 | 0.19;
+          type Tax_FR = 0 | 0.021 | 0.055 | 0.1 | 0.2;
+          type Tax_UK = 0 | 0.05 | 0.20;
+
+          const purchases: Purchase[] = [
+              {
+                  country: 'PL',
+                  vatTax: 0.055,
+                  name: 'dumplings',
+                  netPrice: 100,
+              },
+              {
+                  country: 'DE',
+                  vatTax: 0.1,
+                  name: 'BAWARIAN BEER',
+                  netPrice: 200,
+              },
+              {
+                  country: 'FR',
+                  vatTax: 0.055,
+                  name: 'frogs',
+                  netPrice: 300,
+              },
+              {
+                  country: 'PL',
+                  vatTax: 0.055,
+                  name: 'eggs & bacon',
+                  netPrice: 400,
+              },
+          ]
+        </script>
+        <h2>Function Overloads & Generics - together</h2>
+        <a
+          href="https://www.typescriptlang.org/play/?#code/FDBmFcDsGMBcEsD2kAEAHATogJuaBTAHgBUA+ACnkjXFgC4ViAaFAa3wE8B5DAVTWwBDWPgwNyAShQBeUowkNiKAN7AUbTj35CRGSWpQZ8scBlQBnWBjwmj2AMIAbZPkrVaEgNzAAviAgwCMgo5sYkFFQ09Iws7Nx8AsKi4gBuDJYYVADmUrIxKCmCjuD46VbZCowqBnFaibrkhcX4EgZGthZWNqb4Ds6QrpEe3n7AsBxo+CgAYpDhMijk2BiCoNHEuXJKAD4oUNj4oFS93mMTU-bglogAtgAKWLgExOcLqurhblGKsZoJOskZnMyJViN4PmQvrQfhp4tokmIQuVIFkULsMtkANoAXRYTRKDEEkA4oJGp2gyEsKGgV1gtweODwpRQl2u90eTJekwW5AMQ2iRI4TBqf3hukJxOF6nx+AA-BKOMBKoKZHJ3ih4KBFuNJogtbV-giZNJpCgAOQBOBISBmqTq9TtUyoTCMghQ2C-OH1UReAyjB3GJ0hYzuz11AEYPFFEq+nynHVTYhKU3KFAiSxlTIolBxkAUyBUxyKZMqNP4DPm3BoQRmnPkymwNgLGlshlPVyOFhm9OwM1dquCABMttOrAAdD3BwszQOAMxm+sFxCOfBj5xZchm1gMPtsCRAA"
+          >Playground</a
+        >
+        <br />
+        <a href="https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads"
+          >https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads</a
+        >
+        <script type="editor" data-lang="ts">
+
+          function produce<T>(input: T, keyOrUpdater: () => T): T {
+            keyOrUpdater()
+            return structuredClone(input);
+          }
+
+          function set<T>(input: T, keyOrUpdater: (v: string) => T, value: string): T {
+            keyOrUpdater(value)
+            return structuredClone(input);
+          }
+
+          type Fn<T> = (draft: T) => T | undefined;
+
+          type CustomProduceType = {
+            <T>(input: T, keyOrUpdater: Fn<T>): T;
+            <T>(input: T, keyOrUpdater: string | string[], value: any): T;
+          };
+
+          const customProduce: CustomProduceType = (
+            input: any,
+            keyOrUpdater: any,
+            value?: any
+          ): any => {
+            if (typeof keyOrUpdater === 'function') {
+              return produce(input, keyOrUpdater);
+            }
+
+            return set(input, keyOrUpdater, value);
+          };
+
+          type TT = { test: string };
+
+          const l: TT = { test: 'dupa' };
+
+          const k = customProduce(l, 'test', 'dupa2');
+
+          k.test2 = 'dupa3';
+
+          console.log('k: ', k)
+
+          // ---------------------- second example
+
+          export default function <T>(instance: T): T;
+          export default function (): Container;
+          export default function <T>(instance?: T): T | Container {
+            if (typeof instance !== "undefined") {
+              return instance;
+            }
+            return container;
+          }
+
+          // from: https://github.com/stopsopa/argyle/pull/1/files
+        </script>
+        <h2>build with rollup</h2>
+        <script type="editor" data-lang="ts">
+
+          https://github.com/StoneCypher/jssm/blob/5.104.1/package.json#L54
+        </script>
+        <h2>JSONType</h2>
+
+        <script type="editor" data-lang="ts">
+
+          // https://www.typescriptlang.org/play/?ssl=23&ssc=23&pln=2&pc=1#code/FDAuE8AcFMAICkDKB5AcgNQIYBsCucBeWYWWAH1gGdQAnASwDsBzE82B3AWwCNobWK3APZDs0TAwHtc2bFKRoAgjRqZw8lKmTcAVtADGoANwgIMBJuWrwsIlbUAeBRhz4AfCeCNQfAGaZ9OGdtPUNYAG9WAG0Aa2hwAC4qWkYmAF0k5yw8aBMAX1MoIM0AFSLbCyUVNTZg3QNjEH0hBmpYUEzS8qJwzG59JKiAIh9qIbS8z2bW0FgYzrQy8yIo0AAado2h6DG0qZa26AXUJcJ2oyA
+
+          type JSONType = string | number | boolean | null | JSONArray | JSONObject;
+          type JSONArray = Array<JSONType>;
+          interface JSONObject {
+            [key: string]: JSONType;
+          }
+
+          const t: JSONType = {abc: ["test"]};
+
+          const k: JSONType = [t, t, "est"];
+
+          const e: JSONType = t;
+        </script>
+        <h2>Omit</h2>
+
+        <script type="editor" data-lang="ts">
+
+          type OriginalType = {
+            field1: string;
+            field2: number;
+            field3: boolean;
+          };
+
+          type DerivedType = Omit<OriginalType, 'field2' | 'field3'>;
+        </script>
+        <h2>Union</h2>
+
+        <script type="editor" data-lang="ts">
+
+          type OriginalType = StepGdshopFulfillmentNamespaceLookupProps;
+
+          type ExtraFields = {
+            extraField1: string;
+            extraField2: number;
+          };
+
+          type DerivedType = OriginalType & ExtraFields;
+        </script>
+        <h2>Some fileds from optional to Required</h2>
+
+        <script type="editor" data-lang="ts">
+
+          // make all fields optional
+          type AllOptional = Partial<MyOtherType>;
+
+          // making all fields Required
+          type OriginalType = useStepGdshopFulfillmentNamespaceLookupCloneProps;
+          type DerivedType = Required<OriginalType>;
+
+          // making only selected fields Required
+          type OriginalType = useStepGdshopFulfillmentNamespaceLookupCloneProps;
+          type MandatoryFields = Required<Pick<OriginalType, 'list'>>;
+          type DerivedType = MandatoryFields & Omit<OriginalType, 'list'>;
+
+          // makins some fields Optional and leaving reast as is
+          type OriginalType = StepGdshopFulfillmentNamespaceLookupProps;
+          type OptionalFields = Partial<Pick<OriginalType, 'gdshopFulfillmentNamespaceLookupID' | 'gdshopProductTypeID'>>;
+          type DerivedType = OptionalFields & Omit<OriginalType, 'gdshopFulfillmentNamespaceLookupID' | 'gdshopProductTypeID'>;
+
+          // derrive new type where all fields are optional ------------- vvv
+          export type PlProductGroup = {
+            plProductGroupID: number | null;
+            description: string | null;
+            createNewInDb: boolean;
+            plProductGroupResellerType: Array<PlProductGroupResellerType>;
+          };
+          // Deriving PlProductGroupOptional with all fields optional
+          type PlProductGroupOptional = Partial<PlProductGroup>;
+          // then you can create function like this
+          export const getPlProductGroup = (plProductGroup?: Partial<PlProductGroup>): PlProductGroup => ({
+            plProductGroupID: null,
+            description: '',
+            createNewInDb: null,
+            plProductGroupResellerType: [],
+            ...plProductGroup
+          });
+          // which can be provided only some fields and it will fill in the rest
+          getPlProductGroup({createNewInDb:true})
+          // derrive new type where all fields are optional ------------- ^^^
+        </script>
+        <h2>Determine @types/* library for current typescript</h2>
+        <script type="editor" data-lang="ts">
+
+          NODE_OPTIONS="" npm info kafkajs types
+          NODE_OPTIONS="" npm info express types
+            # returns nothing -> means no types bundled with the library,
+            # then try npm install -D @types/express  - relays on DefinitelyTyped
+          # why is it good? because it checks {  "types": "...",  "typings": "..." }
+
+          npm dist-tags @types/chai
+          # from: https://stackoverflow.com/a/65026470
+        </script>
+        <h2>Object with any keys value</h2>
+        <script type="editor" data-lang="ts">
+
+          type fetchDataOptionsType = {
+            env: 'test' | 'dev' | 'prod';
+          } & Record<string, any>;
+
+          also
+
+          export type CreateProductTypeFormErrors = {
+            mode: string;
+            questions: {
+              [key: string]: string;
+            };
+          };
+        </script>
+
+        <h2>process.env</h2>
+        <script type="editor" data-lang="ts">
+
+          // from: https://www.totaltypescript.com/how-to-strongly-type-process-env
+        </script>
+
+        <h2>React.CSSProperties</h2>
+        <script type="editor" data-lang="ts">
+
+          type Props = {
+            parentStyle?: React.CSSProperties;
+          };
+          function Component({ parentStyle }: Props) {
+            return <div style={parentStyle} />;
+          }
+        </script>
+
+        <h2>React.FC</h2>
+        <a
+          href="https://www.typescriptlang.org/play?ssl=16&ssc=2&pln=1&pc=1#code/FASwtgDg9gTgLgAgEoFMCGBjRAzGUwIDkM6WhA3MKAHZwozaYoICyAngAp4QDOCA3sATCEAEzRw0ALgTUArmABG9ADRCRUCHBBRqaADYARCWgD8M+UtXAAvlQD09hBl09EAYXzRqKWjNSYcAB0AGLuADzsXJo8AHwIALwIENx8CfHhsfwpMUHikjbh9rHAjs6uHl66vohJABT8YiYINjJRqQCUiRlZ+WiFxaVOLtRuCJ6Q1bSJCA19raycqQgAZALOABYg+qIk1P6kwQFYAHJQosw2XekImfzzRSUjYxPeNQeBoRHtMfH1ObxrvFBCIECQ4HIYNRZupQcJwqIQAA3LIAnh5EwDREo2EIDq2IA"
+          >Playground</a
+        >
+        <br />
+        <a href="https://youtu.be/jjso3UGVn08?t=1359">https://youtu.be/jjso3UGVn08?t=1359</a>
+        <script type="editor" data-lang="ts">
+
+          import React, { useMemo, ReactNode } from 'react';
+
+          interface MyProps {
+              data: number,
+              optionalData?: number,
+          }
+
+          // const Component: ReactNode;
+          // const Component: React.FC<MyProps> = props => <>{props.data}</>
+          // const Component = ({ data }: MyProps) => <>{data}</>
+          // const Component = ({data}: MyProps & { children: React.ReactNode }) => <>{data}</>
+          const Component: React.FC<MyProps> = (props) => {
+              return (
+                  <div>{props.data}</div>
+              )
+          }
+        </script>
+        <h2>Index access</h2>
+        <a
+          href="https://www.typescriptlang.org/play?noUncheckedIndexedAccess=true&ts=4.0.5#code/FASwtgDg9gTgLgAgEoFMCGBjOAaBBvAVwGcUBlONOFAXwQDMYowEByGdLFgbmGADc0MBADsCYAEYohAXgQBtAIy4ATLgDMuACy4ArAF0eAekMIBQuiBhFEs0RKlyADAeDHTghFAJwA8nSRowgDmKAi2YpIwcvo8oMJUMHSYoQAKUkRQwvjACLkiaGAoAFwI1jAgwdjA1LwVCUkYqYwQRNl5CCBUYEQlaVaZcnpVNcAYmdYIAMJM0MIo8SWomHAAdABikwA8Kc1EAHxhCAAUeDl5nSjdwwCUYQenZ7ljwhNyIAAmAB64JHAAkl89IdiGQKFRNnZInsjo5rrF2s8JiQADYoLAod6HC7dN6ArgINwVd4oT4ITCNIitXjtdhwAgwLKbPYotFUTEQdKZEp4Fno94rYQFGibQx7aq8RGIFDIw6baaQTLzRDYojSPCDWiioA"
+          >runtime error - ts 4.0.5</a
+        >
+        <br />
+        <a
+          href="https://www.typescriptlang.org/play?noUncheckedIndexedAccess=true&ts=4.2.3#code/FASwtgDg9gTgLgAgEoFMCGBjOAaBBvAVwGcUBlONOFAXwQDMYowEByGdLFgbmGADc0MBADsCYAEYohAXgQBtAIy4ATLgDMuACy4ArAF0eAekMIBQuiBhFEs0RKlyADAeDHTghFAJwA8nSRowgDmKAi2YpIwcvo8oMJUMHSYoQAKUkRQwvjACLkiaGAoAFwI1jAgwdjA1LwVCUkYqYwQRNl5CCBUYEQlaVaZcnpVNcAYmdYIAMJM0MIo8SWomHAAdABikwA8Kc1EAHxhCAAUeDl5nSjdwwCUYQenZ7ljwhNyIAAmAB64JHAAkl89IdiGQKFRNnZInsjo5rrF2s8JiQADYoLAod6HC7dN6ArgINwVd4oT4ITCNIitXjtdhwAgwLKbPYotFUTEQdKZEp4Fno94rYQFGibQx7aq8RGIFDIw6baaQTLzRDYojSPCDWiioA"
+          >compile time error - ts 4.2.3</a
+        >
+        <br />
+        <a
+          href="https://www.typescriptlang.org/play?noUncheckedIndexedAccess=true&ts=4.0.5#code/FASwtgDg9gTgLgAgEoFMCGBjOAaBBvAVwGcUBlONOFAXwQDMYowEByGdLFgbmGADc0MBADsCYAEYohAXgQBtAIy4ATLgDMuACy4ArAF0eAekMIBQuiBhFEs0RKlyADAeDHTghFAJwA8nSRowgDmKAi2YpIwcvo8oMJUMHSYoQAKUkRQwvjACLkiaGAoAFwI1jAgwdjA1LwVCUkYqYwQRNl5CCBUYEQlaVaZcnpVNcAYmdYIAMJM0MIo8SWomHAAdABikwA8Kc1EAHxhCAAUeDl5nSjdwwCUYQenZ7ljwhNyIAAmAB64JHAAkl89IdiGQKFRNnZInsjo5rjx2o8EG4Ku8UJ8EJhGkRWoi3M8JiQADYoLAod6HC7dN6ArhIkySOiwUIAWhEUEQQSgUHJeV47XxiCJJKo5NklKI1M+QLQrT6GSyAB8EARhKiLHN3rTkaq0RiMFicYj2HACDAsps9kLSeSIOlMiU8FaRSthAUaJtDHtqrwBQgUITDptppBMvNEOLpHhBrRPUA"
+          >runtime error - ts 4.0.5 (fixed)</a
+        >
+        <br />
+        <script type="editor" data-lang="ts">
+
+          import React, {useState} from 'react';
+
+          var number = [1, 2, 3, 4, 5];
+          // var first = number[0];
+          // var outOfRange = number[5];
+
+          interface Person {
+              name: string,
+          }
+
+          interface Props {
+              items: Person[],
+          }
+
+          const Component: React.FC<Props> = ({
+              items,
+          }) => {
+
+              const [idx, setIdx] = useState<number>(0);
+
+              const selected = items[idx]; // index access
+
+              return <>selected person: {selected.name}</>
+          }
+
+          const el = <Component items={[]} />
+        </script>
+        <h2>React</h2>
+        <script type="editor" data-lang="ts">
+
+          // Generic component vvv
+            type ListImporterProps<T> = {
+              loadOptionsToChooseFrom: (inputValue: string) => Promise<SelectOptions[]>;
+              optionFormatter: (option: SelectOptions) => React.ReactNode | string;
+              setFormFieldOverrided: (
+                list: T[]
+              ) => void;
+              loadFinalList: (inputValue: string) => Promise<T[]>;
+            };
+
+            export default <T,>({
+              setFormFieldOverrided,
+              loadOptionsToChooseFrom,
+              loadFinalList,
+              optionFormatter
+            }: ListImporterProps<T>) => {
+              const [loading, setLoading] = useState(false);
+            ...
+
+          // then use it like this
+
+            export type GdshopFulfillmentNamespaceLookup = {
+              gdshopFulfillmentNamespaceLookupID: number | null;
+              fulfillmentNamespace: string | null;
+              // ...
+            };
+
+            <StepGdshopFulfillmentNamespaceLookupClone<GdshopFulfillmentNamespaceLookup>
+              loadOptionsToChooseFrom={async (inputValue) => {
+                // ...
+              }}
+          // Generic component ^^^
+        </script>
+        <h2>no-implicit-any-catch</h2>
+        <a href="https://youtu.be/jjso3UGVn08?t=2317">yt</a>
+        <br />
+        <script type="editor" data-lang="ts">
+
+          import axios, { AxiosError } from 'axios';
+
+          declare const handle: Function;
+          function handleAxiosError(e: AxiosError) {
+              handle(e.config, e.response);
+          }
+
+          export const isAxiosError = (e: any): e is AxiosError<unknown> => {
+              return (e.isAxiosError as boolean)
+          }
+
+          export async function asyncCall() {
+              try {
+
+                  const response = await axios.get<object[]>('api.com/data');
+
+                  return response.data.length;
+              }
+              catch (e: unknown) {
+
+                  if (isAxiosError(e)) {
+
+                      handleAxiosError(e);
+                  }
+                  else {
+
+                      handleGenericError(e);
+                  }
+              }
+
+              return;
+          }
+        </script>
+
+        <h2>Generics</h2>
+        <a href="https://youtu.be/jjso3UGVn08?t=2840">https://youtu.be/jjso3UGVn08?t=2840</a>
+        <br />
+        <a
+          href="https://www.typescriptlang.org/play?noUncheckedIndexedAccess=true&ts=4.0.5#code/FASwtgDg9gTgLgAgEoFMCGBjRAzGUwIDkM6WhA3MKAHZwozaYoICSdYAMiAM5wAKeCNwA8AFTYowAPgQBvYAkUIQ7bgC4E49gG0AugBoFSktQAm9CWA0AKFZI1bJASgQBeGakxwAdJ6wA5KHNDAF8qbABXaiwQKGpWVS5eMUsEFAAPOjNuOWVTDV4YEGoAcwQQqWsIQXUEyST+GpT2KRd5I0UMON5cuzBufQQTcxhUkLcEaqghSg6hlDgImHjrOaUEYQiAGyk19aVZZVVvMDQIa2Z3Da2QBABrFABPV1kUbxBTCsPhi3YLlxCwgA9DdWuU9opgdtdusnMAQkA"
+          >Generics - ts sandbox</a
+        >
+        <br />
+        <script type="editor" data-lang="ts">
+
+          import React from 'react';
+
+          interface ItemListProps<TItem> {
+              items: TItem[],
+              renderItem: (item: TItem) => React.ReactNode,
+          }
+
+          function ItemsList<TItem extends { id: string }>(props: ItemListProps<TItem>) {
+
+              const { items, renderItem } = props;
+
+              return (
+                  <ul>
+                      { items.map(e => <li key={e.id}>{ renderItem(e) }</li>) }
+                  </ul>
+              )
+          }
+        </script>
+
+        <h2>Generics gimnastics</h2>
+        <a
+          href="https://www.typescriptlang.org/play/?#code/JYWwDg9gTgLgBAJQKYEMDGMA0cDecCuAzkgMowoxJwC+cAZlBCHAORSoYsDcAUD2hAB2heAEFCAT0FoSSADZIMcALy5qPGBLBUAwk0iCkgmAAVGYQgHVgMABYR8MZHQA8AFQB8KxIugATFxEoYEEAc2xPPk1tOHEpGXlFGGs7ABEkACMHaSQ-ABkIFD83LSpVHB44Krg5Qr8AeTAYYCFCAC44AAoQsEcANRQ5fCQOoJDQgEoVLxRBCUxK6tCkGEbmoTyUDPkOzogmlsEO2Ykp5Rm5heq4IR1bWeXdgDdB47mzi-nFquBCAqLxh0shAFLMeNReHR8NJ1oJYpJpLIFBgUrZ0lloWhcv8-J0wOZ2vD4kikqj0dksfk6iVtFMKtd2DB8FA4S4-MAnnAAPQecFRUpExGJDCpcx+CAAd0EZn2hHc2D6XnKi1qRTWh0IbggdwgEGIADFGCBdj1+oNhqMYMEwh84DKQL8kC4+gBtAC6Hl4VX2sP10BAFEoUF2PsOHT6tp86BgADoAFIkAAaMYAogoQEYYF6anU4tIAEIoYgNQQ64iCAZDEZdYjIygNA5CcO2+2O9yexa3e5haudb5wIvxHG5QvF+ql+zlysWuBuRa2p4QYB+Xi0ABkcD04CEmZlFlRDicSFc0SQEDogoSdY7-FaYgRV6Sov24ql3nlcEVnXpNwnDyQVw5mqjbCFqOp6kghpMIBqp+HmaCjrk45lkY04AZ2IF+lAAYwEGgExgR7AiOCHTwSSIpipK0oEh+iq2j+AjCPALqweM2DEDAOLjG63hEKQ5CUJ0dCDMQEy8Isg7SPQmKwkBcEPohJYoRW5pIAAksYSAsoMnS1kkSEgc2uD9hxXFhJ0VrDGJfDXIxIhwAAVoQQjeCgEooDYcnwYpyGTqhqm6cK9bqkI1kmSsZmhEJIlIGF1zABeFmlOev53P+KjKKoLBQjChwsHS-ben+PadE5oXZlU6iVTZcCMsycJ9tcLhkUFZKZBS2J1IVckhcIyg4LBvWatq9gQVBIBVdccDLKsIGbNscj9XshmfvR3VVHVLI3Jh-qBlpy2wlMRYEIIADWghUQOhBwGMYQVdU1CTdcXb-v1sHeUWSEThBKlVhpQaCIMT3VL8kVvXU4zA1UOAETGREwMDPLzqu4lclycB2EYcACNuhjGNjsxwNsBDFjUwCnUg-IxDKaB5L8MBqX4qLzfIyCEAYxApsYNgSN4P7Lh0gj4CA2xQNmchbDsN1WuMKMaAKADifiEPYYDpE0fOLH4SBNIzgvC6LcAAD5wELchyNm2tNAAcigGaWtaoTZmg7AUEg1tIBKGmpBkQK6qCghyzlGCHPQKxoLYcbOYIeIULYDtsdtsKEAA-G8pzp8ZfLB7J7CCNrUCdAVDIrPVXTrXAzUPuRMDPmAr6CC4Ssq-s6tYHajC0-TjPM5LchsxzSBc80mi8lN489SBw3gQaRr9ZJaBdKaMBoWtE-r9jd6OdHrnuZ5dDh5H0edCwlAiPl4kbxPdnwKGrQdDTdMiD3Ni2Cz-dIOzrRD9zmjut4ZVBAxgDGATonRqwnFtN+CuV8qgvCrB0JAMZlyAVgRPCWC1EExgwfIGBE9qATDimg6om04R32EPddej08Heh2thPaUAlrkLXsQjapctqBDALMDwOByHYL7tQFwXJ2bcMofgqG6DcwKU+kpPyv1hjzwfDWIKBlDrTGMmgm+28XKqDch5eAB8YARyjkIToAADLkTwABMXJ8QQD8PgDAABaaAEdP5WgoIcLkoRlaqzblyAAJDgPSGBVGHGQX4agZjsA-lYUYJ4HQWDayeCwGhNAiFX1IdouEx1m5+J1lmNJ1C0EvR7EtHxLc1YFJYawtGcBYZFIkePViYQACyn9CAoGWEtW0LBIrTQgKkIofgJAxj8FkGMFTVYAH0raxgIiwJpU0LpDXaYQTp3ScBF3USwMgKBYAYy0OMDGEAbqoCgBHAZQy-AjLGRMqZ+xZkFKJrzOZ0zAYZlhostJYAJZYnsHIAuygABEeyDnRGOTAU5xB9mXNCIM4ZozxkQEmb4x5cyXlwDeR8qg0A4DLlhsCiuSNrgTHBEAA"
+          >https://www.typescriptlang.org/play/?#code/JYWwDg9gTgLgBAJQKYEMDGMA0cDecCuAzkgMowoxJwC+cAZlBCHAORSoYsDcAUD2hAB2heAEFCAT0FoSSADZIMcALy5qPGBLBUAwk0iCkgmAAVGYQgHVgMABYR8MZHQA8AFQB8KxIugATFxEoYEEAc2xPPk1tOHEpGXlFGGs7ABEkACMHaSQ-ABkIFD83LSpVHB44Krg5Qr8AeTAYYCFCAC44AAoQsEcANRQ5fCQOoJDQgEoVLxRBCUxK6tCkGEbmoTyUDPkOzogmlsEO2Ykp5Rm5heq4IR1bWeXdgDdB47mzi-nFquBCAqLxh0shAFLMeNReHR8NJ1oJYpJpLIFBgUrZ0lloWhcv8-J0wOZ2vD4kikqj0dksfk6iVtFMKtd2DB8FA4S4-MAnnAAPQecFRUpExGJDCpcx+CAAd0EZn2hHc2D6XnKi1qRTWh0IbggdwgEGIADFGCBdj1+oNhqMYMEwh84DKQL8kC4+gBtAC6Hl4VX2sP10BAFEoUF2PsOHT6tp86BgADoAFIkAAaMYAogoQEYYF6anU4tIAEIoYgNQQ64iCAZDEZdYjIygNA5CcO2+2O9yexa3e5haudb5wIvxHG5QvF+ql+zlysWuBuRa2p4QYB+Xi0ABkcD04CEmZlFlRDicSFc0SQEDogoSdY7-FaYgRV6Sov24ql3nlcEVnXpNwnDyQVw5mqjbCFqOp6kghpMIBqp+HmaCjrk45lkY04AZ2IF+lAAYwEGgExgR7AiOCHTwSSIpipK0oEh+iq2j+AjCPALqweM2DEDAOLjG63hEKQ5CUJ0dCDMQEy8Isg7SPQmKwkBcEPohJYoRW5pIAAksYSAsoMnS1kkSEgc2uD9hxXFhJ0VrDGJfDXIxIhwAAVoQQjeCgEooDYcnwYpyGTqhqm6cK9bqkI1kmSsZmhEJIlIGF1zABeFmlOev53P+KjKKoLBQjChwsHS-ben+PadE5oXZlU6iVTZcCMsycJ9tcLhkUFZKZBS2J1IVckhcIyg4LBvWatq9gQVBIBVdccDLKsIGbNscj9XshmfvR3VVHVLI3Jh-qBlpy2wlMRYEIIADWghUQOhBwGMYQVdU1CTdcXb-v1sHeUWSEThBKlVhpQaCIMT3VL8kVvXU4zA1UOAETGREwMDPLzqu4lclycB2EYcACNuhjGNjsxwNsBDFjUwCnUg-IxDKaB5L8MBqX4qLzfIyCEAYxApsYNgSN4P7Lh0gj4CA2xQNmchbDsN1WuMKMaAKADifiEPYYDpE0fOLH4SBNIzgvC6LcAAD5wELchyNm2tNAAcigGaWtaoTZmg7AUEg1tIBKGmpBkQK6qCghyzlGCHPQKxoLYcbOYIeIULYDtsdtsKEAA-G8pzp8ZfLB7J7CCNrUCdAVDIrPVXTrXAzUPuRMDPmAr6CC4Ssq-s6tYHajC0-TjPM5LchsxzSBc80mi8lN489SBw3gQaRr9ZJaBdKaMBoWtE-r9jd6OdHrnuZ5dDh5H0edCwlAiPl4kbxPdnwKGrQdDTdMiD3Ni2Cz-dIOzrRD9zmjut4ZVBAxgDGATonRqwnFtN+CuV8qgvCrB0JAMZlyAVgRPCWC1EExgwfIGBE9qATDimg6om04R32EPddej08Heh2thPaUAlrkLXsQjapctqBDALMDwOByHYL7tQFwXJ2bcMofgqG6DcwKU+kpPyv1hjzwfDWIKBlDrTGMmgm+28XKqDch5eAB8YARyjkIToAADLkTwABMXJ8QQD8PgDAABaaAEdP5WgoIcLkoRlaqzblyAAJDgPSGBVGHGQX4agZjsA-lYUYJ4HQWDayeCwGhNAiFX1IdouEx1m5+J1lmNJ1C0EvR7EtHxLc1YFJYawtGcBYZFIkePViYQACyn9CAoGWEtW0LBIrTQgKkIofgJAxj8FkGMFTVYAH0raxgIiwJpU0LpDXaYQTp3ScBF3USwMgKBYAYy0OMDGEAbqoCgBHAZQy-AjLGRMqZ+xZkFKJrzOZ0zAYZlhostJYAJZYnsHIAuygABEeyDnRGOTAU5xB9mXNCIM4ZozxkQEmb4x5cyXlwDeR8qg0A4DLlhsCiuSNrgTHBEAA</a
+        >
+        <script type="editor" data-lang="ts">
+
+          import React, { useState } from 'react';
+
+          const AsyncSelect = {}
+          type ComponentPropsWithoutRef<T> = Record<string, T>
+
+          type AsyncSelectWithDebouncedLoadType = {
+              loadOptions: (inputValue: string) => any,
+              getOptionLabel: (option: any) => any,
+              onChange: (val: any) => any,
+              isLoading: boolean
+          };
+          function AsyncSelectWithDebouncedLoad(props: AsyncSelectWithDebouncedLoadType) {
+              return <div />
+          }
+
+          type AsyncSelectDropdownProps<T, V> = {
+            loadOptionsToChooseFrom: (inputValue: string) => Promise<V[]>;
+            optionFormatter: (option: V) =>  React.JSX.Element;
+            loadAsyncBasedOnChosenValue: (selectedOption: V) => Promise<T>;
+            onChange: (
+              asyncLoadedBasedOnChosenValue: T
+            ) => void;
+          } & ComponentPropsWithoutRef<typeof AsyncSelect>;
+
+          const AsyncSelectDropdown = <T, V>({
+            onChange,
+            loadOptionsToChooseFrom,
+            loadAsyncBasedOnChosenValue,
+            optionFormatter,
+            ...rest
+          }: AsyncSelectDropdownProps<T, V>) => {
+            const [loading, setLoading] = useState(false);
+
+            async function loadAsyncBasedOnChosenValueInternal(selectedOption: V) {
+              setLoading(true);
+
+              const json = await loadAsyncBasedOnChosenValue(selectedOption);
+
+              setLoading(false);
+
+              if (typeof onChange === 'function') {
+                onChange(json);
+              }
+            }
+
+            return (
+              <AsyncSelectWithDebouncedLoad
+                loadOptions={loadOptionsToChooseFrom}
+                getOptionLabel={(option: V) => {
+                  return optionFormatter(option) as unknown as string;
+                }}
+                onChange={loadAsyncBasedOnChosenValueInternal}
+                isLoading={loading}
+                {...rest}
+              />
+            );
+          };
+
+          // then component can be used like
+
+          type ProcListIdWithLabelResponseEntity = {
+            id: number;
+            label: string;
+          };
+          type GdshopDept = {
+            deptId: number | null;
+            deptName: string;
+            createNewInDb: boolean;
+          };
+          function fetchJson(path: string, options?: any): any {
+
+          }
+          function render() {
+              return (
+                  <AsyncSelectDropdown<GdshopDept, ProcListIdWithLabelResponseEntity>
+                      loadOptionsToChooseFrom={async (inputValue) => {
+                          const json = await fetchJson('test');
+
+                          const options: ProcListIdWithLabelResponseEntity[] = json.map((e: any) => ({
+                              value: e.id,
+                              label: e.label
+                          }));
+
+                          return options;
+                      }}
+                      optionFormatter={(option) => {
+                          return <span>{option.label}</span>;
+                      }}
+                      loadAsyncBasedOnChosenValue={async (selectedOption) => {
+                      const json = await fetchJson(`/v2/product-orchestration/gdshopDept/${selectedOption.id}`, {
+                          env: 'dev'
+                      });
+
+                      return json as GdshopDept;
+                      }}
+                      onChange={(gdshopDept) => {
+                          // ...
+                      }}
+                      loadingMessage={() => 'Loading goDaddy.dbo.gdshop_dept...'}
+                      noOptionsMessage={() => 'Start typing to search goDaddy.dbo.gdshop_dept by dept_name...'}
+                      placeholder="Start typing to search goDaddy.dbo.gdshop_dept by dept_name or id..."
+                  />
+              )
+          }
+        </script>
+
+        <h2>conditional types</h2>
+        <a
+          href="https://www.typescriptlang.org/play?noUncheckedIndexedAccess=true&ts=4.0.5#code/FASwtgDg9gTgLgAgEoFMCGBjRAzGUwIDkM6WhA3MKAHZwozaYoICikANlAJ4rMDewBEIQgAJgC4E1AK5gARvQA0g4dhAwAznAByaMCklaYIagHNlwhOzRbd+w3GNmLwjWmswukmfKUqhcCBw7AYIApaW0BpBIFDUDk7m-hEoAB4Q9CAo1BihPgowLkIAvsClwHBcGQgA8tTsXHbMALwIAAogGADWADxsEJw8KIpEapo6eiiECAA+RNa2k9NzhIHBUwB8lBVVzADqQQAWUNJwAJKiCK01YEF9HNy8I4RihFtUAPQfCBhxojFxdwISoZDQ7ap1BoAZUcJlMGiu7U6vX6gyeYWSAG02iJqAguiguFBsKwHkMALoJOEINJ0aiiBGox4obHkhAAfnaCG8KAAbvQypiCUSSUyKRsgA"
+          >ts sandbox</a
+        >
+        <script type="editor" data-lang="ts">
+
+          import React from 'react';
+
+          interface Employee {
+              id: number,
+              firstName: string,
+              lastName: string,
+              salary: number,
+              title: {
+                  position: string,
+                  experience: number,
+              }
+          }
+
+          type OnlyName = Pick<Employee, 'firstName' | 'lastName' | 'title'>;
+
+          type WithoutId = Omit<Employee, 'id'>;
+
+          // conditional types
+          type OnlyStrings = Pick<Employee, {
+              [P in keyof Employee]: string extends Employee[P] ? P : never
+          }[keyof Employee]>
+        </script>
+
+        <h2>Constant object</h2>
+
+        <script type="editor" data-lang="ts">
+          export const STEPSKKEYS = {
+            configuration: 'configuration',
+            product_type: 'product_type',
+            summary: 'summary'
+          } as const;
+
+          export type StepsValues = (typeof STEPSKKEYS)[keyof typeof STEPSKKEYS];
+
+          function setup(step: StepsValues) {/*  */}
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

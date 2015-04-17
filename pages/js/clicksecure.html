@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+            p {
+              margin-top: 5px;
+              margin-bottom: 0;
+            }
+            textarea {
+              width: 90%;
+              font-family: monospace;
+              font-size: 11px;
+            }
+            script.show {
+              display: block;
+              white-space: pre-wrap;
+              background-color: gainsboro;
+              font-family: monospace;
+              font-size: 11px;
+            }
+            .blink{
+        animation-name:blink;
+        width:280px;
+        animation-duration:0.1s;
+        animation-timing-function:ease-in;
+        animation-iteration-count:Infinite;
+        }
+
+      @keyframes blink{
+        0%{color:red;}
+        50%{color:white;}
+        100%{color:red;}
+    </style>
+    <script type="template1">
+      {
+        var c={
+          w:()=>{var d=new Date();d.setFullYear(d.getFullYear()+1);document.cookie=`clicksecure_cookie=x; expires=${d.getDate()} ${"Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")[d.getMonth()]} ${d.getFullYear()} 00:00:00 UTC; path=/`},
+          r:()=>document.cookie.replace(/(?:(?:^|.*;\s*)clicksecure_cookie\s*\=\s*([^;]*).*$)|^.*$/,"$1")
+        };
+        function password(check, callback) {
+          let x = "";
+          function event({key}) {
+            if (key === "Enter") {
+              return (x = "");
+            }
+            x += key;
+            if (check(x)) {
+              document.removeEventListener("keypress", event);
+              callback();
+            }
+          }
+          document.addEventListener("keypress", event);
+        }
+        if(!c.r() && typeof (new URLSearchParams(location.search)).get('clicksecure') !== 'string' && !location.pathname.startsWith('//')) {
+            document.body.innerHTML='<input type="text" />';
+            var s=document.createElement("style");
+            document.getElementsByTagName("head")[0].appendChild(s);
+            s.type="text/css";
+            s.appendChild(document.createTextNode(`i{position:fixed;bottom:0;left:30%;width:20px;height:20px;cursor:pointer;content:' ';}`));
+            var i=document.createElement('i');
+            document.body.appendChild(i);
+            var t;
+            i.addEventListener('click', () => {
+              if(t&&(new Date())-t<130){c.w();location.href=location.href};
+              t=new Date();
+            });
+            password((x) => {
+              const k = ["open", "start", "run"];
+              const y = k.includes(x.toLowerCase());
+              if (y) {
+                console && console.log && console.log(k);
+              }
+              return y;
+            },() => {c.w();location.href=location.href});
+        }
+      }
+    </script>
+    <script type="template2">
+      &lt;script>
+      var s=document.createElement("script");
+      s.innerHTML=atob('xxx');
+      document.getElementsByTagName("head")[0].appendChild(s);
+      &lt;/script>
+    </script>
+  </head>
+  <body>
+    <p>code which do the job - something what we are fighting for to run in the browser</p>
+    <p style="color: red">
+      keep this one ready to minimize - all semicolons at the end of each line should be in place
+    </p>
+    <textarea id="execute" style="height: 560px"></textarea>
+    <p>above minimized</p>
+    <textarea id="mini" style="height: 75px"></textarea>
+    <p>above encrypted in base64</p>
+    <textarea id="base64" style="height: 83px"></textarea>
+    <p>the code which will be - template form</p>
+    <p style="color: red">
+      keep this one ready to minimize - all semicolons at the end of each line should be in place
+    </p>
+    <textarea id="level1" style="height: 65px"></textarea>
+    <p>
+      final version to inject to each html file
+
+      <span class="blink"> update .github/clicksecure.sh using this final block </span>
+    </p>
+    <textarea id="level2" style="height: 112px"></textarea>
+    <script>
+      const execute = document.querySelector("#execute");
+      const mini = document.querySelector("#mini");
+      const base64 = document.querySelector("#base64");
+      const level1 = document.querySelector("#level1");
+      const level2 = document.querySelector("#level2");
+      const template1 = document.querySelector(`[type="template1"]`);
+      const template2 = document.querySelector(`[type="template2"]`);
+
+      const executeCode = template1.innerText
+        .split("\n")
+        .filter((t) => t.trim())
+        .join("\n");
+      execute.value = executeCode;
+
+      const miniCode = executeCode
+        .split("\n")
+        .map((t) => t.trim())
+        .join("");
+      mini.value = miniCode;
+
+      const base = btoa(miniCode);
+      base64.value = base;
+
+      const level1Code = template2.innerText
+        .replace(/&lt;/g, "<")
+        .split("\n")
+        .map((t) => t.trim())
+        .join("\n")
+        .trim();
+      level1.value = level1Code.replace(/xxx/, btoa(`alert('go')`));
+
+      const level2Code = level1Code
+        .split("\n")
+        .map((t) => t.trim())
+        .join("")
+        .replace(/xxx/, base);
+      level2.value = level2Code;
+    </script>
+    <hr />
+    <h4>also here is code for detecting keys combination</h4>
+    <script class="show">
+      /**
+       * password(x => ['open','start','run'].includes(x.toLowerCase()), ()=> {... do my stuff once combination detected ...});
+       */
+      function password(check, callback) {
+        let x = "";
+        function event({ key }) {
+          if (key === "Enter") {
+            return (x = "");
+          }
+          x += key;
+          if (check(x)) {
+            document.removeEventListener("keypress", event);
+            callback();
+          }
+        }
+        document.addEventListener("keypress", event);
+      }
+      password(
+        (x) => {
+          const k = ["open", "start", "run"];
+          const y = k.includes(x.toLowerCase());
+          if (y) {
+            console.log(k);
+          }
+          return y;
+        },
+        () => {
+          console.log("do my stuff");
+        }
+      );
+    </script>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+  </body>
+</html>

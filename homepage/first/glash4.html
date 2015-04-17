@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Cyberpunk</title>
+    <style>
+      :root {
+        --bg: #050505;
+        --neon-blue: #00f2ff;
+        --neon-pink: #ff00ff;
+        --grid-color: rgba(0, 242, 255, 0.05);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg);
+        background-image: linear-gradient(var(--grid-color) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 30px 30px;
+        color: var(--neon-blue);
+        font-family: "JetBrains Mono", "Fira Code", monospace;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      .cyber-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 160px);
+        gap: 20px;
+        padding: 40px;
+        position: relative;
+      }
+
+      .cyber-card {
+        height: 100px;
+        border: 1px solid var(--neon-blue);
+        background: rgba(0, 242, 255, 0.02);
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        transition: all 0.3s ease;
+        clip-path: polygon(0 0, 100% 0, 100% 80%, 85% 100%, 0 100%);
+      }
+
+      .cyber-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(0, 242, 255, 0.1), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .cyber-card:hover {
+        background: rgba(0, 242, 255, 0.1);
+        box-shadow: 0 0 20px var(--neon-blue);
+        transform: translateY(-5px);
+      }
+
+      .cyber-card:hover::before {
+        transform: translateX(100%);
+      }
+
+      .card-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-top: 8px;
+      }
+
+      .card-icon {
+        font-size: 1.5rem;
+      }
+
+      .status-dot {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 6px;
+        height: 6px;
+        background: var(--neon-blue);
+        border-radius: 50%;
+        box-shadow: 0 0 10px var(--neon-blue);
+        animation: blink 2s infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .cyber-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cyber-grid">
+      <a href="https://google.com" class="cyber-card" id="link-google">
+        <div class="status-dot"></div>
+        <div class="card-icon">SRCH</div>
+        <div class="card-label">Google</div>
+      </a>
+      <a href="https://calendar.google.com" class="cyber-card" id="link-calendar">
+        <div class="status-dot"></div>
+        <div class="card-icon">TIME</div>
+        <div class="card-label">Calendar</div>
+      </a>
+      <a href="https://youtube.com" class="cyber-card" id="link-youtube">
+        <div class="status-dot"></div>
+        <div class="card-icon">STRM</div>
+        <div class="card-label">YouTube</div>
+      </a>
+      <a href="https://chatgpt.com" class="cyber-card" id="link-chatgpt">
+        <div class="status-dot"></div>
+        <div class="card-icon">AI_01</div>
+        <div class="card-label">ChatGPT</div>
+      </a>
+      <a href="https://github.com" class="cyber-card" id="link-github">
+        <div class="status-dot"></div>
+        <div class="card-icon">REPO</div>
+        <div class="card-label">GitHub</div>
+      </a>
+      <a href="https://example.net" class="cyber-card" id="link-example">
+        <div class="status-dot"></div>
+        <div class="card-icon">HTTP</div>
+        <div class="card-label">Example</div>
+      </a>
+    </div>
+  </body>
+</html>

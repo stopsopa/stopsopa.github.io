@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Git - Version Control, Commands & Workflows</title>
+    <script>
+      <!-- optional to do something before binding ACE editor -->
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll('[class="domain' + '.com"]')).forEach(function (tag) {
+            var text = tag.innerHTML;
+
+            text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host);
+
+            tag.innerHTML = text;
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+    <style>
+      #timestaxxxxmp-table {
+        .timestamp {
+          height: 168px;
+          font-size: 11px;
+          width: 98%;
+        }
+        [name="hash"] {
+          width: 100%;
+        }
+      }
+      #commit-msg-output {
+        height: 168px;
+        font-size: 11px;
+        width: 98%;
+      }
+      #commit-msg-hash {
+        width: 100%;
+      }
+      #commit-msg-text {
+        width: 100%;
+        min-height: 80px;
+        overflow-y: hidden;
+        resize: none;
+      }
+    </style>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Learn</h2>
+        <script type="editor" data-lang="sh">
+
+          best explanation out there:
+            https://youtu.be/Ala6PHlYjmw
+            for checkout, reset, revert,
+            also reflog: https://youtu.be/Ala6PHlYjmw?t=712
+
+          to explore:
+          https://www.youtube.com/playlist?list=PLp3qkYQbU5kexG03Z79eU7SpoWtTv7Ww3
+            I have stopped at "Go beyond git stash & pop" https://i.imgur.com/pdBGdoU.png
+
+            (cd .. && tar -zcvf gittest_interac.tar.gz gittest)
+            cd ../ && rm -rf gittest && tar -zxvf gittest_interac.tar.gz && cd gittest
+        </script>
+
+        <h2>basics</h2>
+        <script type="editor" data-lang="python">
+
+          # sourcetree seems to add to all commands
+            --no-optional-locks
+
+          # status
+            git status
+            # check if it is safe to switch branches:
+            # if the is not modified files. or any new files to be added
+              [ -z "$(git status -s)" ] && echo true || echo false
+
+          # git reset HEAD
+
+          # add
+            git add -f -- features.txt
+              # -f here is --force - will add even if gitignored
+              # -- is useful when file is named '-myfile.txt', without -- it would be considered to be an option
+
+          # commit
+            git commit -m "commit message"
+            git commit -F- <<EOF
+            Your commit title
+
+            Your detailed commit message explaining what changes were made.
+            EOF
+
+            git commit --amend -m "new message"
+              # to change last commit message
+              # if pushed then it will require force push
+
+            git commit -am 'my message'
+
+          # diff    https://graphite.dev/guides/git-diff-ignore-whitespace
+            git diff -w
+              # Ignoring all whitespace changes
+            git diff --ignore-space-change
+              # Ignoring changes in spaces and tabs
+            git diff --ignore-space-at-eol
+              # Ignoring whitespace at the end of lines
+            git diff --ignore-blank-lines
+              # Ignoring changes whose lines are all blank
+
+
+          # push
+            git push -v --tags --set-upstream origin refs/heads/master:refs/heads/master
+            git push -v --tags --set-upstream origin refs/heads/xxx:refs/heads/xxx
+            git push -v --tags --set-upstream origin master
+              # but it might push a tag named 'master' instead of the branch
+
+            git push -v --tags origin refs/heads/master:refs/heads/master
+
+          # pull
+            # regular
+              git fetch origin
+              git pull --no-commit
+                # or
+              git pull --no-commit origin master
+                # gives you chance to review pulled chnages before committing - if there are conflicts or not
+                # if there are changes then edit and handle conflicting files with either
+                  git add [file]
+                  # or
+                  git rm [file]
+                # after that run (won't work without add/rm)
+                  git rebase --continue
+
+            # rebase
+              # WARNING:
+                # git pull will behave this way by default if:
+                  git config --global pull.rebase true
+                # to check if it is on run:
+                  git config -l | grep rebase
+                # to turn off:
+                  git config --global --unset pull.rebase
+                  # or
+                  git config --global pull.rebase false
+
+              git pull --rebase
+                # wrongly explained: https://youtu.be/xN1-2p06Urc?t=117
+                # in case of conflict that will print:
+                  # Auto-merging additional-xxx.txt
+                  # CONFLICT (content): Merge conflict in additional-xxx.txt
+                  # error: could not apply 48fe8d8... my changes
+                  # hint: Resolve all conflicts manually, mark them as resolved with
+                  # hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+                  # hint: You can instead skip this commit: run "git rebase --skip".
+                                        ^-- THAT IS ACTUALLY DANGEROUS BECAUSE IT REMOVES YOUR COMMIT
+                  # hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+                                        ^-- this one is safe, it will just restore what was before git pull --rebase
+                  # hint: Disable this message with "git config advice.mergeConflict false"
+              # interactive rebase
+                git config --global core.editor "/Users/user/Workspace/vscode/javascript/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code --wait"
+                git rebase --interactive bba257f22ebc64b36247746b1f29996115c22aaa
+                git rebase            -i bba257f22ebc64b36247746b1f29996115c22aaa
+
+                    Regular message git-rebase-todo will look like something like:
+
+                      pick e499d89 Delete CNAME
+                      pick 0c39034 Better README
+                      pick f7fde4a Change the commit message but push the same commit.
+
+                      # Rebase 9fdb3bd..f7fde4a onto 9fdb3bd
+                      #
+                      # Commands:
+                      # p, pick = use commit
+                      # r, reword = use commit, but edit the commit message
+                      # e, edit = use commit, but stop for amending
+                      # s, squash = use commit, but meld into previous commit
+                      # f, fixup = like "squash", but discard this commit's log message
+                      # x, exec = run command (the rest of the line) using shell
+                      #
+                      # These lines can be re-ordered; they are executed from top to bottom.
+                      #
+                      # If you remove a line here THAT COMMIT WILL BE LOST.
+                      #
+                      # However, if you remove everything, the rebase will be aborted.
+                      #
+                      # Note that empty commits are commented out
+                        # from: https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/changing-a-commit-message
+
+                # more advanced - even adding commits: https://youtu.be/42392W7SgnE?t=313
+                # also there is
+                    git commit --fixup fb6388
+                    git commit --squash fb6388
+                    git rebase -i --autosquash
+                    # from: https://youtu.be/ecK3EnyGD8o?t=370
+              # git rebase
+                # https://youtu.be/DkWDHzmMvyg?t=135
+
+
+          # branch
+            # see local branches
+              git branch
+            # see remote branches
+              git branch -r
+              git ls-remote --heads origin
+            # see all branches
+              git branch -a
+
+            # switch branch
+              git branch newbranch
+            git checkout newbranch
+
+            # might be useful too always run that after every git checkout
+              git submodule update --init
+
+          # git checkout
+            # Changes your working directory to match the commit history of another branch. All files in the working directory are updated to reflect the selected branch's state.
+
+            Version 1 with TRACKING)
+              # This creates a new local branch stopsopa_main that tracks the remote branch stopsopa/main.
+              # Tracking means Git remembers the relationship, so you can run git pull or git push without
+              # needing to specify the remote or branch each time — useful for ongoing work that follows a remote branch.
+                git checkout -b stopsopa_main --track stopsopa/main
+
+            Version 2 without TRACKING)
+              # Creates branch with tracking like Version 1, but then disables tracking.
+              # Result: local branch based on stopsopa/main but no tracking relationship.
+                git checkout -b stopsopa_main --track stopsopa/main
+                git branch --unset-upstream
+
+            Version 3 without TRACKING)
+              # Creates local branch pointing to stopsopa/main without tracking, then switches to it.
+                git branch stopsopa_main stopsopa/main
+                git checkout stopsopa_main
+
+            Version 4 without TRACKING)
+              # Creates local branch based on stopsopa/main without tracking and switches to it.
+                git checkout -b stopsopa_main stopsopa/main
+
+            Version 4 without TRACKING - and includes MERGE of newly created branch stopsopa_main with stopsopa/main)
+              # Creates stopsopa_main based on your current branch, then merges stopsopa/main into it.
+              # This is NOT A CLEAN copy of stopsopa/main — it combines histories and may cause conflicts.
+                git fetch stopsopa
+                git checkout -b stopsopa_main
+                git merge stopsopa/main
+
+          # delete branch
+            # locally
+              git branch -d masddd
+                -d, --delete
+                  Delete a branch. The branch must be fully merged in its upstream branch,
+                  or in HEAD if no upstream was set with --track or --set-upstream-to.
+
+            # delete only remote branch
+              git push origin --delete feature-xyz
+              git push origin --delete refs/heads/feature-xyz
+
+            # delete branch remotely
+              # first remove locally
+                git branch -D masddd
+                  -D  Shortcut for --delete --force.
+
+              # delete a remote-tracking branch (not an actual remote branch)
+                git branch -D -r origin/masddd
+
+              git push origin :masddd
+
+          # git fetch
+            git fetch --prune origin
+              # --prune - removes any stale remote-tracking branches that no longer exist on the remote
+
+            git fetch --tags --prune origin
+              # fetch and store all tags locally
+
+          # git reset (BE CAREFUL)
+            git reset -q --soft 4797645f2931295d9671a66bf9c1def1b169122c
+            git reset -q --hard 4797645f2931295d9671a66bf9c1def1b169122c
+
+          # clear
+            git clean -df
+            git checkout .
+
+          # cherry pick
+            https://youtu.be/WPCxtFkLa7g?t=270
+            git cherry-pick -n 4ecb4ebb613c96da7d4bb0a1d78e94fed19f87e4
+
+          # merge
+            git merge --no-commit simplebranch
+
+          # tags
+            #list remote tags
+              git ls-remote --tags origin
+            # list local tags
+              git tag
+            # remove tag locally
+              git tag -d 1.0.0
+            # remove tag remotely
+              git push origin :refs/tags/1.0.0
+            # create tag
+              git tag -a 1.0.0 -m "version 1.0.0"
+            # push tag
+              git push origin 1.0.0
+
+          # git log
+
+            git log --graph --oneline --decorate
+            git log --graph --oneline --decorate --abbrev-commit
+
+            git log --graph --abbrev-commit --decorate --all \
+            --format=format:"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) \
+            - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)"
+
+            # more complite in comparison to sourcetree
+            git log --graph --abbrev-commit --date-order --decorate --all \
+            --format=format:"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) \
+            - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n \
+            %C(white)%s%C(reset)" \
+            --branches --remotes \
+            HEAD $(git diff --quiet HEAD || echo $(git write-tree | xargs git commit-tree -p HEAD -m "$(echo -e '\033[7m Unstaged changes \033[0m')"))
+
+          # git reflog
+
+            git log --graph --oneline --all --simplify-by-decoration
+             # get a concise view of the branch structure and tags in a repository.
+
+
+
+          # git stash
+              git stash & git pop
+              # or
+              git stash save [name]
+              git stash list
+              git stash apply [index]
+
+              git stash drop
+              git stash pop
+
+          # git worktree
+            https://www.youtube.com/watch?v=ntM7utSjeVU
+            git worktree add ../worktree_branchname branchname
+            git worktree remove ../worktree_branchname
+
+          # git reset || git revert
+          # check if pushed
+            git log --online --branches --not --remotes
+            if commit is listed - means it was not yet pushed -> use git reset
+            # from: https://youtu.be/GytsxgB4-HU?t=35
+            just to undo last command
+              git reset HEAD^
+              or
+              git reset HEAD~1
+              the same thing in this case
+              # from: https://youtu.be/GytsxgB4-HU?t=53
+              # git revert
+              git revert --no-edit [commitsha]
+              # from: https://youtu.be/GytsxgB4-HU?t=143
+        </script>
+        <h2>Useful</h2>
+        <script type="editor" data-lang="sh">
+
+          git status -u
+            # list all files it sees
+
+          # Pull changes from a remote branch
+          git branch -a
+
+          #switch to remote branch
+          git checkout -b feat/branch_name origin/feat/branch_name
+
+          git push --set-upstream origin <branch>
+          git push -u origin <branch>
+
+          git commit --no-verify
+          git push --no-verify -u origin feat/name
+
+          # delete local branch
+          git branch -d feature/login
+
+          # delete remote branch
+          git push origin --delete feature/login
+
+          git reset HEAD^
+
+          # checkout file to particular commit
+          git checkout f08a63ff4fa7b8479f8c698e5998ee1afcac3a4e js/github.js
+
+          # diff for particular commit and file
+          git diff 81ee4e3ad73^ 81ee4e3ad73 -- src/infrastructure/locksmith/testFixtures/index.js
+
+          # checkout changes from other commit to see difference:
+          git checkout commit_hash  -- tartufo.toml
+          git reset -- tartufo.toml
+          git diff tartufo.toml
+
+          # obtain only the remote URL:
+          git config --get remote.origin.url
+        </script>
+        <h2>git config</h2>
+
+        <script type="editor" data-lang="sh">
+
+          git config --global user.email x.y@gmail.com
+          git config --global user.name "Name Surname"
+
+
+          # listing git config (locally and globally)
+            git config -l
+            git config --global -l | egrep "(user\.name|user\.email)"
+            # to read just one value
+              git config --get core.ignoreCase
+
+          # editing config (locally and globally)
+            git config -e
+            # editor
+                git config --global -e
+              # setting default editor
+                git config --global core.editor vi
+
+          # ----------------- about gitignore ----------- vvv
+          # more about gitignore: https://gist.github.com/subfuzion/db7f57fff2fb6998a16c
+
+          # gitignore
+            gitignore generator: https://www.toptal.com/developers/gitignore g(topal gitignore.io)
+          # this is required to tell git to use global gitignore:
+            git config --global core.excludesfile ~/.gitignore_global
+          cat <<EOF > ~/.gitignore_global
+          .DS_Store
+          EOF
+
+          # switching to use local .gitignore
+            git config core.excludesFile .git/.gitignore_local
+            # INFO: probably it would be good idea to add   git config core.excludesFile .git/.gitignore_local   also to xx.cjs to xx help command
+              # this .git/.gitignore_local will work also from root directory of the project, just like extension of regular <pwd>/.gitignore
+              # but with the difference that it's content will not be visible in the git repository
+
+              # WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+                # using .git/.gitignore_local disables usage of ~/.gitignore_global for this repository,
+              # WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+
+            git config --unset core.excludesFile
+            # to test above setting use git itself
+              git config -l > git_config.txt
+
+          # other tricks to ignore changes (locked)
+            git update-index --assume-unchanged <file>
+            To reverse it
+            git update-index --no-assume-unchanged <file>
+
+            # to list files which are aleady marked as assume-unchanged
+              git ls-files -v | grep "^h "
+          # ----------------- about gitignore ----------- ^^^
+
+          # some other settings (~/.gitconfig)
+            # ignore file permissions
+            git config --global core.fileMode false
+              # https://stackoverflow.com/a/1580644
+            git config --global core.autocrlf false
+            git config --global rebase.autoStash true
+            git config --global core.ignorecase false
+            git config --global color.ui auto
+            git config --global --add merge.ff false
+            git config --global pull.rebase true
+              # alternative git config --global pull.ff only
+              # more about: https://blog.sffc.xyz/post/185195398930/why-you-should-use-git-pull-ff-only
+
+          # or setup one of above locally
+          git config core.fileMode false
+            # this will be visible in .git/config of your current repository
+        </script>
+        <h2>Sourcetree</h2>
+        <script type="editor" data-lang="python">
+
+          First version for m1: https://isapplesiliconready.com/en/app/SourceTree
+            first version compiled for M1: 4.1.6
+            but 4.1.9 seems to not throw:
+                'git log' failed with code 128:'error: unsupported value for gpg.format: ssh
+                fatal: bad config variable 'gpg.format' in file '/Users/szdz/.gitconfig' at line 26
+
+          Download from here:
+            https://www.sourcetreeapp.com/download-archives
+
+          Setup after installation:
+            Add "View remote" button to top menu: https://i.imgur.com/AvA0TLO.png
+            Go to -> 'Sourcetree' in main menu -> Settings...
+              -> Tab "General"
+                -> untick "Offer to create bookmarks for newly opened repositories"
+                -> Window restoration -> Don't restore windows on startup
+              -> Tab "Git"
+                -> untick "Check submodules before commit & push"
+              -> Tab "Update"
+                -> untick "Automatically check for updates"
+              -> Tab "Advanced"
+                -> untick "Keep backups on destructive operations"
+        </script>
+
+        <h2>Automation - common branch - multiple repos</h2>
+        <script type="editor" data-lang="sh">
+
+          # let's assume 'common' branch should be the same across two remotes 'origin' and 'stopsopa'
+          git remote add origin git@github.com:xxx/project.git
+          git remote add stopsopa git@github.com:stopsopa/project.git
+
+          # Ensure common is NOT tracking one specific remote. You want to treat it as a purely local integration branch.
+          git branch -vv
+
+          # If it’s tracking something (e.g., [origin/common]), remove the tracking:
+          git branch --unset-upstream
+
+          # Pull changes into local branches separately
+          git fetch origin common
+          git fetch stopsopa common
+
+          # You can merge both into your local common in a controlled way:
+          git checkout common
+
+          # Merge both remotes
+          git merge origin/common --no-edit
+          git merge stopsopa/common --no-edit
+          git commit -m 'merge' --amend
+
+          # Now common is up to date with both remotes. If there are conflicts, you resolve them once here.
+
+          # Push the merged result to both remotes
+          sshh 1
+          git push origin common:common
+          sshh 2
+          git push stopsopa common:common
+
+          ----
+          # Recommended Script Flow
+          # Ensure SSH identities
+          sshh 1  # xxx key
+          git fetch origin common
+
+          sshh 2  # Stopsopa key
+          git fetch stopsopa common
+
+          # Merge both remote versions into local common
+          git checkout common
+          git merge origin/common --no-edit
+          git merge stopsopa/common --no-edit
+          git commit -m 'merge' --amend
+
+          # Push to both remotes (must switch SSH keys accordingly)
+          sshh 1
+          git push origin common:common
+
+          sshh 2
+          git push stopsopa common:common
+
+          # Merge common into master/main
+          sshh 1
+          git checkout master
+          git pull origin master
+          git merge common --no-edit
+          git push origin master:master
+
+          sshh 2
+          git checkout stopsopa_main
+          git pull stopsopa main
+          git merge common --no-edit
+          git push stopsopa stopsopa_main:main
+        </script>
+        <h2>gitflow</h2>
+        <a href="https://nvie.com/posts/a-successful-git-branching-model/"
+          >https://nvie.com/posts/a-successful-git-branching-model/</a
+        >
+        <h2>git tricks</h2>
+
+        <script type="editor" data-lang="sh">
+
+          # --- sign commit --- vvv
+
+          git config --global gpg.format ssh
+            # from: https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key#telling-git-about-your-ssh-key
+
+          git config --global commit.gpgsign true
+            # from: https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key#telling-git-about-your-gpg-key
+            # point 6
+
+          git config --global user.signingkey /Volumes/xxxx/xx/stopsopa.pub
+            # configure which ssh key to use
+            # in my case I use the same key for signing and auth
+
+          # WARNING it is important to also register that *.pub key in Github as "Signing Key"
+            General Github Settings -> SSH and GPG keys -> New SSH Key -> https://i.imgur.com/ZEdqfPz.png
+
+          # so in one go
+            git config --global commit.gpgsign true
+            git config --global gpg.format ssh
+            git config user.signingkey /Volumes/xxxx/xx/stopsopa.pub
+
+
+          # QUESTION: how to sign commits? find out...
+          git config gpg.format ssh
+          git config user.signingkey ~/.ssh/key.pub
+          # then
+          git commit -S -a -m 'verify me'
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1220
+          # --- sign commit --- ^^^
+
+          # more: https://blog.gitbutler.com/ & https://github.com/gitbutlerapp/gitbutler
+            # from: https://youtu.be/aolI_Rz0ZqY?t=2154
+
+          # dealing with big files:
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1429
+
+          # TASK: track files changes when I'm working
+            # idea from: https://youtu.be/aolI_Rz0ZqY?t=2632
+            # apparently https://github.com/gitbutlerapp/gitbutler is doing that
+
+
+          git push --signed
+            # signing pushes ??!!
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1320
+
+          git maintainance start
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1364
+
+          git push --force-with-lease --force-if-includes
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1138
+            # QUESTION: can this be enabled globally as default behaviour for regular git push --force?
+
+          git config --global alias.staash 'statsh --all'
+            # from: https://youtu.be/aolI_Rz0ZqY?t=417
+
+          git config --global alias.bb !better-branch.sh
+            # from: https://youtu.be/aolI_Rz0ZqY?t=466
+
+          git diff --word-diff
+            # from: https://youtu.be/aolI_Rz0ZqY?t=892
+
+          git config --global branch.sort -committerdate
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1005
+            # sorts branches by their latests commit
+
+          seq 1 24 | git column --mode=column --padding=5
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1060
+
+          git config --global rere.enabled true
+            # when dealing with repeatitive merges, the same merge multiple time
+            # git will remember how it was resolved
+            # from: https://youtu.be/aolI_Rz0ZqY?t=949
+
+          # put in the config
+          [includeif "gitdir:~/projects/oss/"]
+            path = ~/projects/oss/.gitconfig
+            # from: https://youtu.be/aolI_Rz0ZqY?t=543
+
+            # from:
+
+
+            # from:
+        </script>
+        <h2>tar.gz all except .git</h2>
+        <script type="editor" data-lang="sh">
+
+          tar \
+            --exclude='node_modules' \
+            --exclude='.git' \
+            -czvf archive.tar.gz .
+        </script>
+        <h2>git instaweb</h2>
+        <script type="editor" data-lang="sh">
+
+          brew install lighttpd
+          git instaweb
+
+          # https://renenyffenegger.ch/notes/development/version-control-systems/git/commands/instaweb
+        </script>
+        <h2>Try later</h2>
+        <script type="editor" data-lang="sh">
+
+          'https://github.com/stopsopa/nlab'.replace(/^https?:\/\/github.com\/([^\/]+)\/([^\/]+).*$/, 'git@github.com:$1/$2.git')
+          'git@github.com:stopsopa/nlab.git'.replace(/^git@github\.com:([^\/]+)\/([^\/]+)\.git.*$/, 'https://github.com/$1/$2')
+
+          echo -n "https://github.com/stopsopa/nlab" | sed -E 's/https?:\/\/github\.com\/([^/]+)\/([^/]+)/git@github.com:\1\/\2.git/g'
+          echo -n "git@github.com:stopsdopa/nlgab.git" | sed -E 's/git@github\.com:([^/]+)\/([^\.]+)\.git/https:\/\/github.com\/\1\/\2/g'
+
+          git commit -v
+          git add -p
+        </script>
+        <h2>7.2 Git Tools - Interactive Staging</h2>
+        <a href="https://git-scm.com/book/en/v2/Git-Tools-Interactive-Staging"
+          >https://git-scm.com/book/en/v2/Git-Tools-Interactive-Staging</a
+        >
+        <h2>Merge Strategies</h2>
+
+        <script type="editor" data-lang="sh">
+          squash vs --no-ff vs fast forward
+            https://stackoverflow.com/a/52157972
+
+          diff between squash and --no-ff
+            https://stackoverflow.com/questions/11983749/what-are-the-differences-between-squash-and-no-ff-no-commit
+        </script>
+        <h2>Fork by tar.gz</h2>
+
+        <script type="editor" data-lang="sh">
+
+          SOURCE_ABS_DIR="/Users/user/Workspace/STOPSOPA__netlilearn/STOPSOPA__netlilearn"
+          TARGET_ABS_DIR="/Users/user/Workspace/STOPSOPA__learnglitch/STOPSOPA__learnglitch"
+          cd "${SOURCE_ABS_DIR}"
+          pwd
+          if [ -e "all.tar.gz" ]; then
+            unlink all.tar.gz
+          fi
+          if [ -e "${TARGET_ABS_DIR}/all.tar.gz" ]; then
+            unlink "${TARGET_ABS_DIR}/all.tar.gz"
+          fi
+          tar --exclude='node_modules' --exclude='.git' --exclude='all.tar.gz' -zcvf all.tar.gz .
+          mv all.tar.gz "${TARGET_ABS_DIR}/"
+          cd "${TARGET_ABS_DIR}"
+          tar -zxvf all.tar.gz
+          rm -rf all.tar.gz
+        </script>
+
+        <h2>Anyone can Access Deleted and Private Repository Data on GitHub</h2>
+
+        <script type="editor" data-lang="sh">
+          Anyone can Access Deleted and Private Repository Data on GitHub
+            from: https://trufflesecurity.com/blog/anyone-can-access-deleted-and-private-repo-data-github
+
+          So here is my attempt to exploit that with particular case:
+          https://news.ycombinator.com/item?id=41549218#41552633
+
+          mkdir xxx && cd xxx
+          git clone git@github.com:GustavoMelloGit/movie-web.git .
+          git fetch origin c6fe62ae8acc9948bbf6c4292ebb555c006931eb
+          git reset --hard FETCH_HEAD
+        </script>
+        <h2>gitstorage-core.sh !</h2>
+        <script type="editor" data-lang="sh">
+
+          # when you have installed gits then just run
+          # gits init
+
+          wget --help 1> /dev/null 2> /dev/null
+          if [ "$?" = "0" ]; then
+            wget --no-cache -O ".git/gitstorage-core.sh" "urlwizzard.schema://urlwizzard.hostnegotiated/gitstorage-core.sh"
+          else # curl
+            curl "urlwizzard.schema://urlwizzard.hostnegotiated/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
+          fi
+          if [ "$(printf "sha384-$(cat ".git/gitstorage-core.sh" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::gitstorage-core.sh" ]; then
+            echo "checksum verified"
+            /bin/bash ".git/gitstorage-core.sh"
+          else
+            echo "checksum corrupted - deleting file"
+            rm ".git/gitstorage-core.sh"
+          fi
+        </script>
+        more info: <a href="https://github.com/stopsopa/gitstorage">https://github.com/stopsopa/gitstorage</a>
+        <br />
+
+        modifying target repository:
+        <script type="editor" data-lang="sh">
+
+          # /bin/bash ".git/gitstorage-core.sh" --core_repository "git@your-repository.git"
+
+          # alias store="/bin/bash .git/gitstorage.sh";
+        </script>
+        <br />
+        <script type="editor" data-lang="sh">
+
+          if [ "$(alias | grep gitstorage)" = "" ]; then
+          cat <<EEE >> ~/.zshrc
+          gits='/bin/bash .git/gitstorage.sh'
+          EEE
+          source ~/.zshrc
+          else
+            echo already registered
+          fi
+        </script>
+        <h2>How git works</h2>
+        <a href="https://www.youtube.com/watch?v=RxHJdapz2p0">https://www.youtube.com/watch?v=RxHJdapz2p0</a>
+        <h2>gitstorage.sh</h2>
+        <script type="editor" data-lang="sh">
+
+          if [ -f gitstorage.sh ]; then
+              echo 'file gitstorage.sh already exist';
+          else
+            wget --help 1> /dev/null 2> /dev/null
+            if [ "$?" = "0" ]; then
+              wget --no-cache -O "gitstorage.sh" "https://raw.githubusercontent.com/stopsopa/host.com/master/gitstorage.sh"
+            else # curl
+              curl "https://raw.githubusercontent.com/stopsopa/host.com/master/gitstorage.sh" -o "gitstorage.sh"
+            fi
+          fi
+          /bin/bash gitstorage.sh --create
+          vi gitstorage-config.sh
+        </script>
+        <h2>gitstorage files without extension</h2>
+        <script type="editor" data-lang="sh">
+
+          *
+          !*/
+          !*.*
+          !.gitignore # but you have to still unignore files with dot and no extension
+          # trick from: https://stackoverflow.com/a/31326382
+        </script>
+        <a href="https://github.com/stopsopa/gitstorage">github</a>
+
+        <h2>search in git history</h2>
+        <script type="editor" data-lang="sh">
+
+          git log -S"searchTerm" --all -p
+          git log -G"searchTerm" --all -p
+        </script>
+        <h2>pull.sh</h2>
+        <script type="editor" data-lang="sh">
+
+          wget --help 1> /dev/null 2> /dev/null
+          if [ "$?" = "0" ]; then
+            wget --no-cache -O "pull.sh" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/git/pull.sh"
+          else # curl
+            curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/git/pull.sh" -o "pull.sh"
+          fi
+        </script>
+
+        <h2>find | node gitignore.js</h2>
+        <script type="editor" data-lang="sh">
+
+          https://github.com/stopsopa/gitignore_to_find
+          # see also:
+          https://stopsopa.github.io.local:4339/pages/typescript/index.rendered.html#strip-types-from-cli-es-ts
+        </script>
+        <h2>Husky</h2>
+        <a href="/pages/node/index.html#husky">node section - husky</a>
+        <h2>useful</h2>
+        <script type="editor" data-lang="sh">
+
+          # clone single file
+          git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD:public index.html | tar -x
+          git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD: .env.kub | tar -x
+          git archive --remote=git@bitbucket.org:xxx/xxx.git feature_branch: .env.kub | tar -x
+              # from: https://stackoverflow.com/a/18712703
+
+          # print 'email =' section from each found .git/config file skipping search in node_modules
+          while read -r dir ; do echo "${dir}";cat "${dir}/config" | grep 'email =' ; done <<< "$(find . -type d -name 'node_modules' -prune -o -type d -name .git -print)"
+
+          # automated fix script for above
+          cat <<EEE > fix.sh
+          LIST=\$(cat <<END
+          ./path/to/directory/.git
+          ./path/to/directory2/.git
+          END
+          );
+          while read -r line
+          do
+            (
+              cd "\$(dirname "\${line}")"
+              git config user.email email@gmail.com && cat .git/config
+            )
+          done <<< "\${LIST}"
+          EEE
+          /bin/bash fix.sh
+          rm -rf fix.sh
+        </script>
+
+        <h2>git log</h2>
+        <script type="editor" data-lang="sh">
+
+          git log --graph --abbrev-commit --decorate --all \
+              --format=format:"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) \
+              - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)"
+
+          git log --graph --decorate --abbrev-commit --all --pretty=oneline  --pretty=format:"%h%x09%an%x09%ad%x09%s"
+        </script>
+        <h2>Stash</h2>
+        <script type="editor" data-lang="sh">
+
+
+          # clear stach (10 latest)
+          git stash list
+          git stash drop stash@{0}
+          for i in {0..10}; do git stash drop stash@{0}; done
+
+          git config --global rebase.autoStash true
+
+          # rename stash
+          # you first remove stash - command will return hash
+          # then you use that hash to create new stash in this point of history
+
+            git stash list
+              # first list and pick the number
+
+            git stash drop stash@{11111}
+              # remove using id and get the git hash
+
+            git stash store -m "New name" 9dd04c8d17569b3f4cb6c4c511fe86b7b94f96a2
+        </script>
+        <h2>Mirror / Duplicate repository (instead of fork)</h2>
+        <a
+          href="https://trufflesecurity.com/blog/anyone-can-access-deleted-and-private-repo-data-github?utm_source=chatgpt.com#:~:text=Accessing%20Deleted%20Fork%20Data"
+          >g(Accessing Deleted Fork Data Truffle Security Co.)</a
+        >
+        <br />
+        <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/duplicating-a-repository"
+          >link</a
+        >
+        <h2>change commit timestamp</h2>
+        <script type="editor" data-lang="sh">
+
+          export FILTER_BRANCH_SQUELCH_WARNING=1
+          git filter-branch -f --env-filter  \
+              'if [ $GIT_COMMIT = d06798b8722b52c9643bbd72f3f07bd7598777d4 ]
+               then
+                   export GIT_AUTHOR_DATE="2000-05-06 03:04:05"
+                   export GIT_COMMITTER_DATE="2000-05-06 03:04:05"
+               fi'
+        </script>
+        <script>
+          {
+            document.addEventListener("DOMContentLoaded", () => {
+              const parent = document.querySelector("#timestaxxxxmp-table");
+
+              const offsetRange = parent.querySelector(`[name="offset"]`);
+              const offsetOutput = parent.querySelector(`[name="offset-output"]`);
+              const offsetButton = parent.querySelector(`[name="offset-button"]`);
+
+              const nowButton = parent.querySelector(`[name="now"]`);
+
+              var year = (function (target) {
+                var current = new Date().getFullYear();
+
+                var first = new Date();
+
+                first.setTime(first.getTime() - 60 * 60 * 24 * 365 * 1000 * 5);
+
+                for (var i = 0; i < 11; i += 1) {
+                  var k = document.createElement("option");
+
+                  k.value = k.innerText = first.getFullYear();
+
+                  if (k.value == current) {
+                    k.setAttribute("selected", "selected");
+                  }
+
+                  manipulation.append(target, k);
+
+                  first.setTime(first.getTime() + 60 * 60 * 24 * 365 * 1000);
+                }
+
+                return target;
+              })(parent.querySelector('[name="year"]'));
+
+              var month = (function (target) {
+                const monthNames = [
+                  "January",
+                  "February",
+                  "March",
+                  "April",
+                  "May",
+                  "June",
+                  "July",
+                  "August",
+                  "September",
+                  "October",
+                  "November",
+                  "December",
+                ];
+
+                var current = new Date().getMonth();
+
+                monthNames.forEach(function (name, i) {
+                  var k = document.createElement("option");
+
+                  k.value = i;
+
+                  k.innerText = monthNames[i];
+
+                  if (i == current) {
+                    k.setAttribute("selected", "selected");
+                  }
+
+                  manipulation.append(target, k);
+                });
+
+                return target;
+              })(parent.querySelector('[name="month"]'));
+
+              var day = (function (target) {
+                var current = new Date().getDate();
+
+                for (var i = 1; i < 32; i += 1) {
+                  var k = document.createElement("option");
+
+                  k.value = k.innerText = i;
+
+                  if (i == current) {
+                    k.setAttribute("selected", "selected");
+                  }
+
+                  manipulation.append(target, k);
+                }
+
+                return target;
+              })(parent.querySelector('[name="day"]'));
+
+              var hour = (function (target) {
+                var current = new Date().getHours();
+
+                for (var i = 1; i < 25; i += 1) {
+                  var k = document.createElement("option");
+
+                  k.value = i % 24;
+
+                  k.innerText = i;
+
+                  if (i == current) {
+                    k.setAttribute("selected", "selected");
+                  }
+
+                  manipulation.append(target, k);
+                }
+
+                return target;
+              })(parent.querySelector('[name="hour"]'));
+
+              var minute = (function (target) {
+                var current = new Date().getMinutes();
+
+                for (var i = 0; i < 60; i += 1) {
+                  var k = document.createElement("option");
+
+                  k.value = k.innerText = i;
+
+                  if (i == current) {
+                    k.setAttribute("selected", "selected");
+                  }
+
+                  manipulation.append(target, k);
+                }
+
+                return target;
+              })(parent.querySelector('[name="minute"]'));
+
+              var seconds = (function (target) {
+                var current = new Date().getSeconds();
+
+                for (var i = 0; i < 60; i += 1) {
+                  var k = document.createElement("option");
+
+                  k.value = k.innerText = i;
+
+                  if (i == current) {
+                    k.setAttribute("selected", "selected");
+                  }
+
+                  manipulation.append(target, k);
+                }
+
+                return target;
+              })(parent.querySelector('[name="seconds"]'));
+
+              var hash = (function (d) {
+                d.addEventListener("click", function () {
+                  d.select();
+                });
+                d.addEventListener("input", function (e) {
+                  var d = getInputsTime();
+                  update(d);
+                });
+                return d;
+              })(parent.querySelector('[name="hash"]'));
+
+              range(offsetRange, (v) => {
+                var d = getInputsTime();
+
+                offsetOutput.textContent = d.toISOString() + " - " + humanReadable(v);
+              });
+
+              function humanReadable(seconds) {
+                var h = Math.floor(seconds / 3600);
+                var m = Math.floor((seconds % 3600) / 60);
+                var s = seconds % 60;
+
+                var res = [];
+                if (h > 0) res.push(h + "h");
+                if (m > 0) res.push(m + "m");
+                if (s > 0 || res.length === 0) res.push(s + "s");
+
+                return res.join(" ");
+              }
+
+              function getInputsTime() {
+                var d = new Date();
+
+                d.setFullYear(year.value);
+                d.setMonth(month.value);
+                d.setDate(day.value);
+                d.setHours(hour.value);
+                d.setMinutes(minute.value);
+                d.setSeconds(seconds.value);
+                d.setMilliseconds(0);
+
+                return d;
+              }
+
+              function setInputsWithDate(d) {
+                year.value = d.getFullYear();
+                month.value = d.getMonth();
+                day.value = d.getDate();
+                hour.value = d.getHours();
+                minute.value = d.getMinutes();
+                seconds.value = d.getSeconds();
+              }
+
+              function getDateWithOffset() {
+                var d = getInputsTime();
+
+                var offset = parseInt(offsetRange.value, 10);
+
+                var randomMs = Math.floor(Math.random() * 1000);
+
+                d.setSeconds(d.getSeconds() + offset);
+
+                d.setMilliseconds(randomMs);
+
+                return d;
+              }
+
+              nowButton.addEventListener("click", function () {
+                var d = new Date();
+
+                setInputsWithDate(d);
+
+                update(d);
+              });
+
+              offsetButton.addEventListener("click", function () {
+                var d = getDateWithOffset();
+
+                var offset = parseInt(offsetRange.value, 10);
+
+                offsetOutput.textContent = d.toISOString() + " - " + humanReadable(offset);
+
+                setInputsWithDate(d);
+
+                update(d);
+              });
+
+              var update = (function () {
+                var element = parent.querySelector(".timestamp");
+
+                element.addEventListener("click", function (e) {
+                  element.select();
+                });
+
+                var pre = element.value;
+
+                return function (d) {
+                  d = d ?? getInputsTime();
+
+                  element.value = pre.replace(/xxx/g, d.toISOString()).replace(/yyy/g, hash.value);
+                };
+              })();
+
+              [year, month, day, hour, minute, seconds].forEach(function (e) {
+                e.addEventListener("change", update);
+              });
+
+              update();
+
+              function range(element, event, onLoad = true) {
+                function hc() {
+                  event(parseInt(element.value, 10));
+                }
+                element.addEventListener("change", hc);
+                element.addEventListener("input", hc);
+                if (onLoad) {
+                  hc();
+                }
+              }
+            });
+          }
+        </script>
+        <table width="100%" id="timestaxxxxmp-table">
+          <tbody>
+            <tr>
+              <td width="40%">
+                <textarea class="timestamp">
+
+ export FILTER_BRANCH_SQUELCH_WARNING=1
+ git filter-branch -f --env-filter  \
+    'if [ $GIT_COMMIT = yyy ]
+     then
+         export GIT_AUTHOR_DATE="xxx"
+         export GIT_COMMITTER_DATE="xxx"
+     fi'
+
+</textarea
+                >
+                <a href="https://stackoverflow.com/a/454750">https://stackoverflow.com/a/454750</a>
+              </td>
+              <td>
+                <div>
+                  <select name="year"></select>
+                  -
+                  <select name="month"></select>
+                  -
+                  <select name="day"></select>
+                  &nbsp; &nbsp; &nbsp;
+                  <select name="hour"></select>
+                  :
+                  <select name="minute"></select>
+                  :
+                  <select name="seconds"></select>
+                  <button name="now">now</button>
+                </div>
+                <div>
+                  <input type="text" name="hash" value="d06798b8722b52c9643bbd72f3f07bd7598777d4" />
+                </div>
+                <div>
+                  <br />
+                  <br />
+                  <br />
+                  <input type="range" name="offset" min="0" max="21600" step="1" value="0" style="width: 100%" />
+                </div>
+                <div>
+                  <pre name="offset-output"></pre>
+                </div>
+                <div>
+                  <button name="offset-button">apply</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h2>change commit message</h2>
+        <script type="editor" data-lang="sh">
+
+          COMMIT="d06798b8722b52c9643bbd72f3f07bd7598777d4"
+          NEW_CMT_MSG="feat: new commit message"
+          BASE=$(git rev-parse "${COMMIT}^")
+          GIT_SEQUENCE_EDITOR="sed -i '' -e 's/^pick ${COMMIT:0:7}/edit ${COMMIT:0:7}/'" \
+          git rebase -i "$BASE"
+          git commit --amend -m "$NEW_CMT_MSG"
+          git rebase --continue
+        </script>
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            (function () {
+              const hashInput = document.querySelector("#commit-msg-hash");
+              const textInput = document.querySelector("#commit-msg-text");
+              const outputElement = document.querySelector("#commit-msg-output");
+
+              outputElement.addEventListener("click", function (e) {
+                outputElement.select();
+              });
+
+              const template = outputElement.value;
+
+              const sh = (str) => {
+                return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\$/g, "\\$").replace(/`/g, "\\`");
+              };
+
+              const updateMsg = function () {
+                outputElement.value = template
+                  .replace(/yyy/g, sh(hashInput.value))
+                  .replace(/mmm/g, sh(textInput.value));
+              };
+
+              const autoGrow = function () {
+                textInput.style.height = "5px";
+                textInput.style.height = textInput.scrollHeight + "px";
+              };
+
+              hashInput.addEventListener("input", updateMsg);
+              textInput.addEventListener("input", function () {
+                updateMsg();
+                autoGrow();
+              });
+              hashInput.addEventListener("click", function () {
+                hashInput.select();
+              });
+
+              updateMsg();
+              autoGrow();
+            })();
+          });
+        </script>
+        <table width="100%">
+          <tbody>
+            <tr>
+              <td width="50%">
+                <textarea id="commit-msg-output">
+COMMIT="yyy"
+NEW_CMT_MSG="mmm"
+BASE=$(git rev-parse "${COMMIT}^")
+GIT_SEQUENCE_EDITOR="sed -i '' -e 's/^pick ${COMMIT:0:7}/edit ${COMMIT:0:7}/'" \
+git rebase -i "$BASE"
+git commit --amend -m "$NEW_CMT_MSG"
+git rebase --continue
+</textarea
+                >
+              </td>
+              <td>
+                <div>
+                  <input
+                    type="text"
+                    id="commit-msg-hash"
+                    value="d06798b8722b52c9643bbd72f3f07bd7598777d4"
+                    placeholder="commit hash"
+                  />
+                </div>
+                <div>
+                  <textarea id="commit-msg-text" placeholder="new commit message"></textarea>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h2>GUI - list</h2>
+        <script type="editor" data-lang="sh">
+
+          git log --all --pretty=oneline  --pretty=format:"%ad" --date=iso8601 | awk '{print $1}' | uniq -u | wc -l
+
+          read: https://news.ycombinator.com/item?id=33740619
+            g(ycombinator best gui git)
+
+          https://www.sublimemerge.com/ $?
+          https://git-scm.com/downloads/guis
+          https://git-fork.com/ || https://fork.dev/ $
+          https://gitextensions.github.io/
+          https://rowanj.github.io/gitx/
+          https://gitup.co/
+
+          some other interesing tools:
+            https://www.scootersoftware.com/home
+        </script>
+        <h2>count separate days by commits</h2>
+        <script type="editor" data-lang="sh">
+
+          git log --all --pretty=oneline  --pretty=format:"%ad" --date=iso8601 | awk '{print $1}' | uniq -u | wc -l
+        </script>
+        <h2>remove merged branches</h2>
+        <br />
+        Listing branches (not taking into account squash)
+        <br />
+        <script type="editor" data-lang="sh">
+
+          # to list branches (list needs to be reviewed manually)
+
+          _REMOTE="origin"
+          _BRANCH="develop"
+          git branch -r --merged "${_REMOTE}/${_BRANCH}" | xargs -L1 echo | grep "^${_REMOTE}" | grep -v HEAD | grep -v master | grep -v "${_BRANCH}" | sed -E "s/^${_REMOTE}\/(.*)/\1/"
+
+          # then when you sure about list:
+        </script>
+        <br />
+        <br />
+        Listing merged | notmerged branches (no matter if squashed or not - it will checked the hard way)
+        <br />
+        <script type="editor" data-lang="sh">
+
+          wget --help 1> /dev/null 2> /dev/null
+          if [ "$?" = "0" ]; then
+            wget --no-cache -O ".git/list-relative-branches.sh" "urlwizzard.schema://urlwizzard.hostnegotiated/bash/git/list-relative-branches.sh"
+          else # curl
+            curl "urlwizzard.schema://urlwizzard.hostnegotiated/bash/git/list-relative-branches.sh" -o ".git/list-relative-branches.sh"
+          fi
+          if [ "$(printf "sha384-$(cat ".git/list-relative-branches.sh" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::bash/git/list-relative-branches.sh" ]; then
+            echo "checksum verified"
+            /bin/bash ".git/list-relative-branches.sh"
+          else
+            echo "checksum corrupted - deleting file"
+            rm ".git/list-relative-branches.sh"
+          fi
+
+          # then run
+
+          /bin/bash ".git/list-relative-branches.sh" develop merged
+
+          # or
+
+          /bin/bash ".git/list-relative-branches.sh" develop notmerged
+
+          # or against different remote
+
+          /bin/bash ".git/list-relative-branches.sh" develop notmerged different_remote_name
+        </script>
+        Removing branches:
+        <br />
+        <script type="editor" data-lang="sh">
+
+          _REMOTE="origin"
+          while read -r BRANCH
+          do
+            git push "${_REMOTE}" --delete "${BRANCH}"
+          done <<< "PASTE_LIST_HERE"
+        </script>
+        <h2>Why I don't like squash</h2>
+        <a href="https://stackoverflow.com/questions/55225918/git-detect-squash-and-merged-branches">stackoverflow</a>
+        <h2>remove from history (filter-branch)</h2>
+        based on
+        <a
+          href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository"
+          >manual github</a
+        >
+        <script type="editor" data-lang="sh">
+
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install git-filter-repo
+
+          REPO=https://github.com/YOUR-USERNAME/YOUR-REPOSITORY
+
+          git clone "${REPO}" __tmp
+          cd __tmp
+
+          while read -r FILE
+          do
+            git filter-repo --invert-paths --path "${FILE}" --force
+          done <<< "scripts/transformMessages.js
+          docs/MIGRATION.md"
+
+          git remote add origin "${REPO}"
+
+          git push origin --force --all
+          cd .. && rm -rf __tmp
+        </script>
+        filter-branch version
+        <script type="editor" data-lang="sh">
+
+          export FILTER_BRANCH_SQUELCH_WARNING=1
+          git filter-branch --force --index-filter \
+          'git rm -rf --cached --ignore-unmatch plik1 katalog1' \
+          --prune-empty --tag-name-filter cat -- --all && \
+          rm -rf .git/refs/original/ && \
+          git reflog expire --expire=now --all && \
+          git gc --prune=now && \
+          git gc --aggressive --prune=now
+
+          # find biggest files: from: https://stackoverflow.com/a/42544963
+          git rev-list --objects --all |
+            git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' |
+            sed -n 's/^blob //p' |
+            sort --numeric-sort --key=2 |
+            cut -c 1-12,41- |
+            $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+
+          # cut manually which files you want from long list and paste it here to filter out further
+          cat <<III | awk '{print $3}' | uniq | tr '\n' ' '
+          ...
+          III
+
+          # then just paste the result in to the first command in this "remove from history (filter-branch)" section
+        </script>
+        <h2>Remove list of local branches</h2>
+        <script type="editor" data-lang="sh">
+
+          # to list local branches
+          git branch
+
+          LIST=$(cat <<EOF
+          brancha
+          branchb
+          EOF
+          );
+
+          while read -r LINE
+          do
+            echo ">>${LINE}<<"
+            git branch -d "${LINE}"
+          done <<< "${LIST}"
+
+          # to force removing branch use:
+          git branch -D "${LINE}"
+          # to handle error when -d is used:   error: The branch 'brancha' is not fully merged.
+        </script>
+        <h2>Change the author</h2>
+        <script type="editor" data-lang="sh">
+          # https://git-scm.com/docs/git-filter-branch/2.2.3
+          # https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables
+
+          git filter-branch --env-filter '
+          OLD_EMAIL="youroldemail@example.com"
+          CORRECT_NAME="YourCorrectName"
+          CORRECT_EMAIL="yourcorrectemail@example.com"
+          if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
+          then
+              export GIT_COMMITTER_NAME="$CORRECT_NAME"
+              export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+          fi
+          if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
+          then
+              export GIT_AUTHOR_NAME="$CORRECT_NAME"
+              export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
+          fi
+          ' --tag-name-filter cat -- --branches --tags
+        </script>
+        <a href="https://stackoverflow.com/a/750182">from</a>
+
+        <h2>list all contributor from the repository</h2>
+        <script type="editor" data-lang="sh">
+
+          git shortlog -sne --all
+
+          # from: https://stackoverflow.com/a/9597462
+
+          git shortlog -sne --all | perl -pe 's#^[^<]+<(.*)$#\1#' | perl -pe 's#^([^>]*)>.*$#\1#' | uniq | sort
+          # will filter out even empty email from example:
+          # Name Surname <>
+        </script>
+        <h2>search files by path - return commits where changes</h2>
+        <script type="editor" data-lang="sh">
+
+          # more info
+            git log --name-status --date=iso \
+              --format="COMMIT %H | %ad | %an | %s" \
+              -- \
+                test/zod/simplifyErrors.parallel.test.ts \
+                docker/docker-compose.sh
+
+          # find commits where this file was modifie - more compact
+            git log --pretty=format:"%H %ad %s" --date=iso \
+              -- \
+                test/zod/simplifyErrors.parallel.test.ts \
+                docker/docker-compose.sh
+
+          # just count
+            git rev-list --count HEAD -- \
+              test/zod/simplifyErrors.parallel.test.ts \
+              docker/docker-compose.sh
+        </script>
+        <h2>
+          find big files, from <a href="https://stackoverflow.com/a/42544963">https://stackoverflow.com/a/42544963</a>
+        </h2>
+        <script type="editor" data-lang="sh">
+
+          git rev-list --objects --all \
+          | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
+          | sed -n 's/^blob //p' \
+          | sort --numeric-sort --key=2 \
+          | cut -c 1-12,41- \
+          | $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+        </script>
+        <a href="https://stackoverflow.com/a/42544963">https://stackoverflow.com/a/42544963</a>
+
+        <h2>Sublime Merge</h2>
+
+        <a href="https://github.com/sublimehq/sublime_merge/issues/2084">Feature request</a>
+
+        <script type="editor" data-lang="sh">
+
+          urlwizzard.schema://urlwizzard.hostnegotiated/pages/windows/index.html#sourcetree-open-from-vscode-cli
+          urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=pages%2Fgit%2Ffind_up.sh
+          see also Finder section:
+             urlwizzard.schema://urlwizzard.hostnegotiated/pages/mac/index.rendered.html#finder
+        </script>
+        <img src="https://i.imgur.com/MHuBnPu.png" />
+        <h2>tig</h2>
+        <a href="https://jonas.github.io/tig/doc/tig.1.html#_examples"
+          >https://jonas.github.io/tig/doc/tig.1.html#_examples</a
+        >
+        <br />
+        <a href="https://linux.die.net/man/5/tigrc">https://linux.die.net/man/5/tigrc</a>
+        <br />
+        <a href="https://github.com/jonas/tig/blob/master/tigrc">https://github.com/jonas/tig/blob/master/tigrc</a>
+        <br />
+        <a href="https://www.youtube.com/watch?v=z0mb0NteYjg">https://www.youtube.com/watch?v=z0mb0NteYjg</a>
+        <script type="editor" data-lang="sh">
+
+          # mac, tig version tig-2.5.4
+
+          tig --all
+
+          tig refs
+
+          tig master..develop
+
+          tig master..origin/feat/DF
+            # show what would be brought to the master if we would try to merge origin/feat/DF with it
+
+          # run
+             tig
+          # and then press
+             h
+          # to see full help
+
+          cat <<EOF > ~/.tigrc
+          set main-options = --exclude=refs/stash --all
+              # https://stackoverflow.com/a/25976240
+              # https://stackoverflow.com/a/32159992
+
+          set horizontal-scroll = 10%
+
+          set main-view-commit-title-overflow = 50
+          set main-view = line-number:yes,interval=1 id:yes date:default author:full commit-title:yes,graph,refs,overflow=yes
+          set line-graphics = utf-8
+              # from: https://fossies.org/diffs/tig/2.4.1_vs_2.5.0/tigrc-diff.html
+
+          color main-head         yellow blue    default
+
+          bind stash  a   ?git stash apply %(stash)
+          bind generic    p   view-pager
+          bind stash  p   ?git stash pop %(stash)
+
+          #set main-view-date = custom
+          #set main-view-date-format = "%Y-%m-%d %H:%M"
+              # from: man tigrc
+
+          bind generic   <PageUp>   move-half-page-up
+          bind generic   <PageDown>   move-half-page-down
+
+              # inspired by https://github.com/jonas/tig/blob/master/contrib/vim.tigrc vvv
+          bind generic v  none
+          bind generic vm view-main
+          bind generic vd view-diff
+          bind generic vl view-log
+          bind generic vt view-tree
+          bind generic vb view-blob
+          bind generic vx view-blame
+          bind generic vr view-refs
+          bind generic vs view-status
+          bind generic vu view-stage
+          bind generic vy view-stash
+          bind generic vg view-grep
+          bind generic vp view-pager
+          bind generic vh view-help
+
+          bind generic g  none
+          bind generic gg move-first-line
+
+          bind main    G move-last-line
+          bind generic G move-last-line
+              # inspired by https://github.com/jonas/tig/blob/master/contrib/vim.tigrc ^^^
+
+          EOF
+
+            # see more help (press "h" after entering tig) section "Option toggling:"
+            # or https://jonas.github.io/tig/doc/manual.html
+            # or man tigrc
+            # and more: https://fossies.org/diffs/tig/2.4.1_vs_2.5.0/tigrc-diff.html
+            # default: https://github.com/jonas/tig/blob/master/tigrc
+
+          # how to safe current settings to file
+          # https://stackoverflow.com/a/32505815
+          :save-options file-name.txt
+        </script>
+        <h2>Clear local and remote branches</h2>
+        <p>Clear remote repository without removing it</p>
+        <script type="editor" data-lang="sh">
+
+          SKIP="master"
+
+          git checkout -b ${SKIP} origin/${SKIP} || true
+          git checkout ${SKIP}
+          LIST="$(git branch | grep -v ${SKIP})"
+          while read -r BRANCH
+          do
+              echo "del local branch ${BRANCH}"
+              git branch -D ${BRANCH}
+          done <<< "${LIST}"
+
+          LIST="$(git branch -r)"
+          while read -r BRANCH
+          do
+              ORIGIN="$(echo ${BRANCH} | sed -E 's/^ *([^\/]+)\/.*$/\1/')"
+              RB="$(echo ${BRANCH} | sed -E 's/^ *[^\/]+\/(.*)$/\1/')"
+              echo "del remote branch ${BRANCH} >> ${ORIGIN} :${RB}"
+              git branch -D -r ${BRANCH}
+              git push ${ORIGIN} :${RB}
+          done <<< "${LIST}"
+        </script>
+        <h2></h2>
+        <script type="editor" data-lang="sh">
+
+          du -sh .git
+            # inspect the size of the repo now
+
+          git reset --soft [commit]
+          git reset --soft 8afd5dd14ebb31f58b07f7c297080f0c2cdfd392
+            # reset all to first (or any desired) point in history
+
+          git add .
+          git commit --amend --no-edit
+            # commit all changes into that commit
+
+          # nuke the history -
+          git reflog expire --expire=now --all
+            # Git keeps references to old commits in the reflog.
+          git gc --prune=now --aggressive
+            # Run aggressive garbage collection
+            # Removes unreachable objects
+            # Re-packs everything efficiently
+
+          git push --force origin main
+            # push new history - --force required
+
+          du -sh .git
+            # inspect the size of the repo again
+        </script>
+        <h2>rebase vs squash vs merge</h2>
+        <script type="editor" data-lang="sh">
+
+          https://youtube.com/watch?v=8km76k3dNKI
+        </script>
+        <h2>lint</h2>
+        <a href="lint.sh">lint.sh</a>
+        wishful thinking:
+        <a href="https://github.com/jonas/tig/issues/406">https://github.com/jonas/tig/issues/406</a>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

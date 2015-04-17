@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
+      <div class="inside">
+        <div class="cards">
+          <h2>CLI</h2>
+          <script type="editor" data-lang="sh">
+
+            # install pi
+                https://pi.dev/
+
+            # on start
+              /settings
+                Auto compact - false
+                Install telemetry - false
+                Default project trust - Always trust
+              /hotkeys
+
+            # daily use
+            /new      - starts new session https://pi.dev/docs/latest/quickstart#continue-later
+            /resume   - pi -c # Continue most recent session
+            /model    - change model (Ctrl+S to set as default)
+
+            # interesting
+            https://pi.dev/docs/latest/quickstart#non-interactive-mode
+          </script>
+          <h2>Mac mini Gemma 4 12B QAT</h2>
+          <script type="editor" data-lang="sh">
+
+            // see article: https://patloeber.com/gemma-4-pi-agent/
+                // g(How to run a local coding agent with Gemma 4 and Pi site:https://patloeber.com/)
+
+            # configure lmstudio
+                on mac mini run lmstudio and run model but also at the top press "Run server" button
+                and then "Server Settings" and check "Server on Local Networ"
+
+                then on macbook you should be able to run
+
+                curl http://192.168.8.49:1234/v1/models
+
+            # install pi
+                https://pi.dev/
+                # configure pi https://patloeber.com/gemma-4-pi-agent/#6-configure-the-local-model-in-pi
+              WARNING: For mac it will be necessary to go to:
+              System Settings -> Privacy & Security -> Local Network -> enable Antigravity IDE.app
+
+            # either edit in vscode ~/.pi/agent/models.json
+            # or create fresh
+
+            cat <<EEE > ~/.pi/agent/models.json
+            {
+              "providers": {
+                "gemma4-e4b": {
+                  "baseUrl": "http://192.168.8.49:8080/v1",
+                  "api": "openai-completions",
+                  "apiKey": "none",
+                  "models": [
+                    {
+                      "id": "unsloth/gemma-4-E4B-it-UD-MLX-4bit",
+                      "input": ["text", "image"]
+                    }
+                  ]
+                },
+                "gemma4-12B": {
+                  "baseUrl": "http://192.168.8.49:2345/v1",
+                  "api": "openai-completions",
+                  "apiKey": "none",
+                  "models": [
+                    {
+                      "id": "unsloth/gemma-4-12b-it-GGUF",
+                      "input": ["text", "image"]
+                    }
+                  ]
+                },
+
+                "lmstudio": {
+                  "baseUrl": "http://192.168.8.49:1234/v1",
+                  "api": "openai-completions",
+                  "apiKey": "lm-studio",
+                  "models": [
+                    {
+                      "id": "google/gemma-4-12b-qat",
+                      "input": ["text", "image"]
+                    }
+                  ]
+                },
+
+                "bonsai2-27b-local": {
+                  "baseUrl": "http://0.0.0.0:8080/v1",
+                  "api": "openai-completions",
+                  "apiKey": "none",
+                  "models": [
+                    {
+                      "id": "Bonsai-2-27B",
+                      "input": ["text", "image"]
+                    }
+                  ]
+                },
+
+                "bonsai2-27b-M4": {
+                  "baseUrl": "http://192.168.8.49:8080/v1",
+                  "api": "openai-completions",
+                  "apiKey": "none",
+                  "models": [
+                    {
+                      "id": "Bonsai-2-27B",
+                      "input": ["text", "image"]
+                    }
+                  ]
+                },
+
+                "freellmapi": {
+                  "baseUrl": "http://127.0.0.1:31415/v1",
+                  "api": "openai-completions",
+                  "apiKey": "freellmapi-332xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxa2",
+                  "models": [
+                    {
+                      "id": "auto",
+                      "input": ["text"]
+                    }
+                  ]
+                }
+              }
+            }
+            EEE
+
+
+            # see later also Open WebUI https://youtu.be/fTf-LZaGnpM
+          </script>
+          <h2>Shift + Enter</h2>
+          <script type="editor" data-lang="sh">
+
+            vi ~/.pi/agent/keybindings.json
+            # put
+            {
+              "tui.input.newLine": ["shift+enter", "ctrl+j"]
+            }
+          </script>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

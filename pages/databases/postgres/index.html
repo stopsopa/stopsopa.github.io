@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Awesome</h2>
+        <script type="editor" data-lang="sh">
+
+          To read:
+              https://github.com/maahl/awesome-postgres-resources
+
+          Awesome Postgres:
+              https://github.com/dhamaniasad/awesome-postgres
+              https://gitee.com/SHUKE001/awesome-postgres
+              https://github.com/pg-tr/awesome-postgres
+        </script>
+
+        <div class="cards">
+          <h2>Index</h2>
+          <script type="editor" data-lang="sh"></script>
+          <h2>Interesting SQL</h2>
+          <script type="editor" data-lang="sh">
+
+            select * from generate_series(1,1000) as x
+              # generate artificial fake rows
+
+            #insert and return in one go
+              https://youtu.be/_0A2BnRYVCo?t=68
+              -- and if you want to modify it in the same transaction
+              INSERT INTO users (email, name)
+              VALUES ('alice@example.com', 'Alice')
+              ON CONFLICT (email) DO SELECT FOR UPDATE
+              RETURNING id, name;
+          </script>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

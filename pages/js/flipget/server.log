@@ -1,0 +1,96 @@
+Starting benchmark... Versions found: 11
+
+--- Testing module: v1.js ---
+✅ Verification passed.
+Running 1000000 iterations...
+Time: 1819.71 ms
+Memory Diff: 0.68 MB
+
+
+--- Testing module: v10_array_from.js ---
+✅ Verification passed.
+Running 1000000 iterations...
+Time: 3183.23 ms
+Memory Diff: -1.56 MB
+
+
+--- Testing module: v11_uint16_decode.js ---
+✅ Verification passed.
+Running 1000000 iterations...
+Time: 943.93 ms
+Memory Diff: 0.11 MB
+
+
+--- Testing module: v2_regex.js ---
+✅ Verification passed.
+Running 1000000 iterations...
+Time: 1382.40 ms
+Memory Diff: 1.06 MB
+
+
+--- Testing module: v3_concat.js ---
+✅ Verification passed.
+Running 1000000 iterations...
+Time: 1289.52 ms
+Memory Diff: 0.65 MB
+
+
+--- Testing module: v4_charcode.js ---
+✅ Verification passed.
+Running 1000000 iterations...
+Time: 581.43 ms
+Memory Diff: -1.87 MB
+
+
+--- Testing module: v5_map.js ---
+✅ Verification passed.
+Running 1000000 iterations...
+Time: 1677.67 ms
+Memory Diff: -0.05 MB
+
+
+--- Testing module: v6_regex_dynamic.js ---
+✅ Verification passed.
+Running 1000000 iterations...
+Time: 1401.02 ms
+Memory Diff: -0.97 MB
+
+
+--- Testing module: v7_regex_hardcoded.js ---
+✅ Verification passed.
+Running 1000000 iterations...
+Time: 1345.85 ms
+Memory Diff: 2.80 MB
+
+
+--- Testing module: v8_for_of.js ---
+✅ Verification passed.
+Running 1000000 iterations...
+Time: 1531.48 ms
+Memory Diff: -2.11 MB
+
+
+--- Testing module: v9_reduce.js ---
+✅ Verification passed.
+Running 1000000 iterations...
+Time: 1266.68 ms
+Memory Diff: 2.97 MB
+
+
+Done.
+
+┌─────────┬─────────────────────────┬───────────┬──────────────────┬──────┐
+│ (index) │ Script Name             │ Time (ms) │ Memory Diff (MB) │ Pass │
+├─────────┼─────────────────────────┼───────────┼──────────────────┼──────┤
+│ 0       │ 'v4_charcode.js'        │ '581.43'  │ '-1.87'          │ '✅' │
+│ 1       │ 'v11_uint16_decode.js'  │ '943.93'  │ '0.11'           │ '✅' │
+│ 2       │ 'v9_reduce.js'          │ '1266.68' │ '2.97'           │ '✅' │
+│ 3       │ 'v3_concat.js'          │ '1289.52' │ '0.65'           │ '✅' │
+│ 4       │ 'v7_regex_hardcoded.js' │ '1345.85' │ '2.80'           │ '✅' │
+│ 5       │ 'v2_regex.js'           │ '1382.40' │ '1.06'           │ '✅' │
+│ 6       │ 'v6_regex_dynamic.js'   │ '1401.02' │ '-0.97'          │ '✅' │
+│ 7       │ 'v8_for_of.js'          │ '1531.48' │ '-2.11'          │ '✅' │
+│ 8       │ 'v5_map.js'             │ '1677.67' │ '-0.05'          │ '✅' │
+│ 9       │ 'v1.js'                 │ '1819.71' │ '0.68'           │ '✅' │
+│ 10      │ 'v10_array_from.js'     │ '3183.23' │ '-1.56'          │ '✅' │
+└─────────┴─────────────────────────┴───────────┴──────────────────┴──────┘

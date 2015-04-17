@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Caesar Cipher - Encryption Tool for Children</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div id="encryptor">
+          <style>
+            #encryptor {
+              max-width: 800px;
+              margin: 0 auto;
+              padding: 24px;
+              background: #f5f3ef;
+              border-radius: 16px;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", sans-serif;
+
+              h2 {
+                color: #1a1a1a;
+                font-size: 24px;
+                font-weight: 500;
+                text-align: center;
+                margin-bottom: 16px;
+                letter-spacing: -0.02em;
+              }
+
+              label {
+                display: block;
+                margin-bottom: 6px;
+                background: #ffffff;
+                padding: 12px 14px;
+                border-radius: 10px;
+                border: 1px solid #e8e5df;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+                transition: border-color 0.2s, box-shadow 0.2s;
+
+                &:hover {
+                  border-color: #d4cfc4;
+                  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+                }
+              }
+
+              & > span {
+                display: inline-block;
+                width: 100px;
+                font-weight: 500;
+                color: #6b6b6b;
+                font-size: 14px;
+              }
+
+              input,
+              textarea {
+                font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+                font-size: 13px;
+                width: calc(100% - 120px);
+                padding: 8px 10px;
+                border: 1px solid #d9d4ca;
+                border-radius: 8px;
+                background: #fefefe;
+                color: #1a1a1a;
+                transition: border-color 0.2s, box-shadow 0.2s;
+
+                &:focus {
+                  outline: none;
+                  border-color: #cc9966;
+                  box-shadow: 0 0 0 3px rgba(204, 153, 102, 0.08);
+                  background: #ffffff;
+                }
+              }
+
+              textarea {
+                height: 100px;
+                resize: vertical;
+                line-height: 1.4;
+              }
+
+              textarea:not(.encrypted) {
+                text-wrap: nowrap;
+              }
+
+              .key {
+                input {
+                  width: 60px;
+                  text-align: center;
+                  font-size: 18px;
+                  font-weight: 600;
+                  margin-right: 16px;
+                }
+
+                span:not(.curkey):not(.maxIndex) {
+                  color: #8a8a8a;
+                  font-size: 13px;
+                  margin-right: 12px;
+                }
+
+                .curkey,
+                .maxIndex {
+                  font-weight: 600;
+                  color: #cc9966;
+                }
+
+                button {
+                  margin: 0 4px;
+                  padding: 8px 16px;
+                  background: #2a2724;
+                  color: #f5f3ef;
+                  border: none;
+                  border-radius: 8px;
+                  cursor: pointer;
+                  font-weight: 500;
+                  font-size: 13px;
+                  transition: background 0.2s, transform 0.1s;
+
+                  &:hover {
+                    background: #3d3834;
+                  }
+
+                  &:active {
+                    transform: scale(0.98);
+                  }
+                }
+              }
+
+              .alphabet input {
+                background-color: #f9f8f6;
+                cursor: not-allowed;
+                color: #8a8a8a;
+              }
+
+              button.encrypt,
+              button.decrypt {
+                width: 100%;
+                margin-top: 10px;
+                padding: 10px 18px;
+                background: #2a2724;
+                color: #f5f3ef;
+                border: none;
+                border-radius: 10px;
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background 0.2s, transform 0.1s;
+                letter-spacing: 0.01em;
+
+                &:hover {
+                  background: #3d3834;
+                }
+
+                &:active {
+                  transform: scale(0.99);
+                }
+              }
+
+              button.decrypt {
+                background: #cc9966;
+                color: #ffffff;
+
+                &:hover {
+                  background: #b88859;
+                }
+              }
+
+              .bgred {
+                background-color: #fff0f0;
+                border-color: #f0c5c5;
+              }
+
+              .bggreen {
+                background-color: #f0f9f4;
+                border-color: #c5e8d5;
+              }
+
+              .comparison-legend {
+                margin-top: 6px;
+                padding: 10px;
+                background: #ffffff;
+                border-radius: 10px;
+                border: 1px solid #e8e5df;
+                text-align: center;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+                & > div {
+                  display: inline-block;
+                  margin: 0 10px;
+                  font-size: 12px;
+                  font-weight: 500;
+                  color: #6b6b6b;
+
+                  span:first-child {
+                    display: inline-block;
+                    width: 14px;
+                    height: 14px;
+                    vertical-align: middle;
+                    margin-right: 5px;
+                    border-radius: 3px;
+                    border: 1px solid #e8e5df;
+                  }
+
+                  span:last-child {
+                    vertical-align: middle;
+                  }
+                }
+
+                & > div:first-child span:first-child {
+                  background-color: #f0f9f4;
+                  border-color: #c5e8d5;
+                }
+
+                & > div:last-child span:first-child {
+                  background-color: #fff0f0;
+                  border-color: #f0c5c5;
+                }
+              }
+            }
+          </style>
+          <h2>🔐 Caesar Cipher Encryptor</h2>
+          <label class="key">
+            <span>Key:</span>
+            <input type="text" />
+            <span>Current key: <span class="curkey"></span>, maxIndex <span class="maxIndex"></span></span>
+            <button class="up">⬆ Up</button>
+            <button class="down">⬇ Down</button>
+          </label>
+          <label class="alphabet">
+            <span>Alphabet:</span>
+            <input type="text" readonly />
+          </label>
+          <label>
+            <span>Message:</span>
+            <textarea class="message">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Etiam molestie pulvinar consequat.
+Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</textarea
+            >
+            <button class="encrypt">🔒 Encrypt</button>
+          </label>
+          <label>
+            <span>Encrypted:</span>
+            <textarea class="encrypted" wrap="soft"></textarea>
+            <button class="decrypt">🔓 Decrypt</button>
+          </label>
+          <label>
+            <span>Decrypted:</span>
+            <textarea class="decrypted"></textarea>
+          </label>
+          <div class="comparison-legend">
+            <div>
+              <span></span>
+              <span>Exactly equal</span>
+            </div>
+            <div>
+              <span></span>
+              <span>Not exactly equal</span>
+            </div>
+          </div>
+        </div>
+        <script type="module" src="bind.js"></script>
+        <script type="editor" data-lang="ts">
+          <%inject moduleCaesarCypher.ts %>
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

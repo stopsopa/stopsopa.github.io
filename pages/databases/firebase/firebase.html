@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Firebase - Google Backend & Real-time Database</title>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <a href="https://console.firebase.google.com/">https://console.firebase.google.com/</a>
+
+        <div id="app"></div>
+      </div>
+    </div>
+
+    <script src="/public/preprocessed.js?cjs-firebase.html"></script>
+    <!-- despite get parameter preprocessed.js will be browser cached anyway even when loading more than one. Even when mixing techniques -> CJS | ESM -->
+    <script type="module" src="/dist/firebase.core.entry.bundle.js"></script>
+    <script type="module" src="/dist/firebase.entry.bundle.js"></script>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

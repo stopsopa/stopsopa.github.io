@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Glassmorphism</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Outfit", sans-serif;
+        background: linear-gradient(45deg, #0f172a, #1e1b4b, #312e81);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        overflow: hidden;
+      }
+
+      @keyframes gradient {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .glass-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        justify-content: center;
+        padding: 2rem;
+        max-width: 900px;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      }
+
+      .glass-link {
+        width: 140px;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+      }
+
+      .glass-link:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .icon {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+      }
+
+      .label {
+        font-size: 0.8rem;
+        font-weight: 300;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      /* Decorative circles */
+      .circle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: -1;
+        filter: blur(40px);
+      }
+
+      .c1 {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        left: -100px;
+        background: #3b82f6;
+      }
+      .c2 {
+        width: 250px;
+        height: 250px;
+        bottom: -50px;
+        right: -50px;
+        background: #ec4899;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+
+    <div class="glass-container">
+      <a href="https://google.com" class="glass-link" id="link-google">
+        <span class="icon">G</span>
+        <span class="label">Google</span>
+      </a>
+      <a href="https://calendar.google.com" class="glass-link" id="link-calendar">
+        <span class="icon">📅</span>
+        <span class="label">Calendar</span>
+      </a>
+      <a href="https://youtube.com" class="glass-link" id="link-youtube">
+        <span class="icon">▶️</span>
+        <span class="label">YouTube</span>
+      </a>
+      <a href="https://chatgpt.com" class="glass-link" id="link-chatgpt">
+        <span class="icon">💬</span>
+        <span class="label">ChatGPT</span>
+      </a>
+      <a href="https://github.com" class="glass-link" id="link-github">
+        <span class="icon">GH</span>
+        <span class="label">GitHub</span>
+      </a>
+      <a href="https://example.net" class="glass-link" id="link-example">
+        <span class="icon">🌐</span>
+        <span class="label">Example</span>
+      </a>
+    </div>
+  </body>
+</html>

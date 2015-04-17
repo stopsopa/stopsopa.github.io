@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Reading - Articles & Resources</title>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <h2>Great quotes</h2>
+
+        <script type="editor" data-lang="sh">
+
+          "Advocate for pragmatic utilitarianism over theoretical purity ..."
+            .. or to make it sound a bit more conversational:
+            "Advocate for pragmatic, utilitarian design over theoretical purity."
+
+          Software estimates have never worked and never will by David Heinemeier Hansson
+            https://world.hey.com/dhh/software-estimates-have-never-worked-and-never-will-a41a9c71
+              from: https://www.youtube.com/watch?v=HDs02D8kg4c
+
+          "lives in the ivory tower, and is fully decoupled from the autocorrective mechanism of reality" from: https://youtube.com/shorts/cPofRaNJFns
+        </script>
+        <h2>DHH about complexity (when talking about SQlite)</h2>
+        <a href="https://www.youtube.com/watch?v=0rlATWBNvMw">https://www.youtube.com/watch?v=0rlATWBNvMw</a>
+        <h2>Complexity and lowered standards in demand for quality</h2>
+        <a href="https://youtu.be/82JpGhctWpU?t=658">https://youtu.be/82JpGhctWpU?t=658</a>
+        <h2>What do you regret most about programming</h2>
+        <a href="https://www.youtube.com/watch?v=ehTIhQpj9ys">g(10 regrets of experienced programmers - Fireship)</a>
+        <h2>Abstraction good takes XD</h2>
+        <a href="https://youtu.be/FjfgIImzhxc?t=1165">Abstraction feels soooo good and then +1 - epic ;)</a>
+        <br />
+        <a href="https://www.youtube.com/watch?v=GfNBZ7awHGo"
+          >"An idiot admires complexity, a genius admires simplicity"</a
+        >
+        <br />
+        <a href="https://youtu.be/fqoi_c8-eOc?t=1431">"Don't abstract until you have damn good reason to"</a>
+        <br />
+        <a href="https://www.scattered-thoughts.net/writing/reflections-on-a-decade-of-coding/"
+          >Reflections on a decade of coding</a
+        >
+        <br />
+
+        <a href="https://www.youtube.com/watch?v=vPr7Lk3kjv8&t=1108s">My 20 Year Career Is Tech Debt</a>
+        <h2>Violin Experiment</h2>
+        <a href="https://woodpecker.com/blogs/joshua_bell_subway.html"
+          >https://woodpecker.com/blogs/joshua_bell_subway.html</a
+        >
+        <h2>The Future of Programming with Jonathan Edwards | Philomatics Podcast #1</h2>
+        <a href="https://youtu.be/BdoWZPvfZSE?t=1913">main link to yt video</a>
+        <ul>
+          <li>
+            <a href="https://youtu.be/BdoWZPvfZSE?t=1913"
+              >"Why aren't programmers interested in making things simpler?..."</a
+            >
+          </li>
+          <li>
+            <a href="https://youtu.be/BdoWZPvfZSE?t=3855"
+              >"You learn the most about programming by carrying a beeper for 10 years. When you get beeped and woken up
+              at 3 a.m. because of a bug, you start to appreciate simple code. You shouldn't be writing code at the peak
+              of your mental powers, because at 3 a.m., you’re not at the peak of your mental powers anymore. You should
+              be writing code that anyone can understand. It's just that simple."</a
+            >
+          </li>
+          <li><a href="https://youtu.be/BdoWZPvfZSE?t=4259">Different personalities/types of programmers</a></li>
+          <li><a href="https://youtu.be/BdoWZPvfZSE?t=4855">against DRY - Don't repeat yourself</a></li>
+        </ul>
+        <a href="https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch"
+          >Object–relational impedance mismatch</a
+        >
+        <h2>Dependency Injection</h2>
+        <a href="https://www.youtube.com/watch?v=CK_OY_gZrCE">https://www.youtube.com/watch?v=CK_OY_gZrCE</a>
+        <br />
+        <a href="https://www.youtube.com/watch?v=J1f5b4vcxCQ">https://www.youtube.com/watch?v=J1f5b4vcxCQ</a>
+
+        <script type="editor" data-lang="sh">
+
+          "All problems in computer science can be solved by another level of indirection"
+          "But that usually will create another problem."
+          -- David Wheeler
+
+          "...except for the problem of too many layers of indirection."
+          -- Kevlin Henney
+
+          Good video elaborating on this phenomenon: https://youtu.be/nAK6o0GZrVs?t=221
+        </script>
+        <h2>Coding at Google</h2>
+        <script type="editor" data-lang="sh">
+
+          DESIGN DOCS:
+          https://youtu.be/E8ZlSNcVV_U?t=315
+            • WHAT EXACTLY IS THE PROBLEM?
+            • WHAT ARE ALL THE ALTERNATIVE SOLUTIONS?
+            • WHAT TRADEOFFS ARE YOU MAKING?
+            • WHAT IS THE STATUS QUO?
+            • HOW WILL THIS BEHAVE AT SCALE?
+            • WHAT HAPPENS IN PARTIAL FAILURES?
+            • HOW DO YOU ROLL OUT CHANGES INCREMENTALLY?
+            • HOW DO YOU ROLL THEM BACK?
+
+          TESTING:
+          https://youtu.be/E8ZlSNcVV_U?t=347
+
+            GOOGLE'S TESTING CULTURE FOCUSES ON
+            BEHAVIOR DRIVEN TESTING:
+              • SPEED
+                  UNIT TESTS RUN FASTEST, SO YOU CATCH ISSUES SOONER
+              • MAINTAINABILITY
+                  LARGER, MORE INTEGRATED TESTS ARE HARDER TO DEBUG AND MAINTAIN AS DEPENDENCIES CHANGE
+              • UTILIZATION
+                  LEAN TESTS USE FEWER RESOURCES; UNIT TESTS TYPICALLY SCALE BEST
+              • RELIABILITY
+                  GOOD TESTS FAIL ONLY ON REAL ISSUES; BIGGER SYSTEMS INTRODUCE FLAKINESS AND NONDETERMINISM
+              • FIDELITY
+                  HIGHER-FIDELITY TESTS (INTEGRATION, END-TO-END) BETTER MIRROR REAL PRODUCTION BEHAVIOR, WHILE UNIT TESTS RELY ON SIMULATION THAT CAN DRIFT FROM REALITY
+            Also:
+              TESTS PROTECTS GUARANTEES NOT STRUCTURE
+
+          WHAT IS FOR SRE IT'S ALSO FOR DEVS:
+            SITE RELIABILITY ENGINEERS
+              FAILURE IS NOT AN EDGE CASE IT'S THE DEFAULT STATE
+            DESIGN FOR FAILURES: https://youtu.be/E8ZlSNcVV_U?t=403
+              THIS MEANS
+                • DESIGNING RETRIES WITH EXPONENTIAL BACKOFF AND JITTER
+                • NEVER HAMMERING A STRUGGLING SERVICE WITH BLIND RETRY STORMS
+                • ENSURING IDEMPOTENT WRITES
+          GOOD FAILURE HANDLING REQUIRES: https://youtu.be/E8ZlSNcVV_U?t=430
+            • CIRCUIT BREAKERS
+            • LOADSHEDDING
+            • ADAPTIVE THROTTLING
+          TO PROTECT DOWNSTREAM SYSTEMS AND PREVENT CASCADING FAILURES
+        </script>
+        <h2>Naming and definition of tests</h2>
+        <script type="editor" data-lang="sh">
+
+          I would call it:      They are calling it
+          unit                  unit
+          integration           integration test (start the vscode instance, run operation user would do)
+          e2e                   smoke testing (goes more into ui details, test as there would be mouse and click around...)
+          ...                   sanity test: https://youtu.be/BDU63r4bS9Q?t=4774
+            # from: https://youtu.be/BDU63r4bS9Q?t=4344
+            in vscode integration tests are using internal api to "poke" the functionalities to run scenarious
+            where e2e tests are really interacting with ui components as I would do this in playwright
+
+          Summary: so our definition and approach is pretty much the same. It's just our e2e tests they call "smoke tests"
+        </script>
+        <h2>Built fast for demo, became project which have to be updated every day</h2>
+        <a href="https://stackoverflow.blog/2024/09/05/the-hidden-cost-of-speed/"
+          >https://stackoverflow.blog/2024/09/05/the-hidden-cost-of-speed/</a
+        >
+        from
+
+        <a href="https://www.youtube.com/watch?v=_1Q6YW_bx8o">https://www.youtube.com/watch?v=_1Q6YW_bx8o</a>
+        <br />
+        <h2>The Perfect Dependency - SQLite Case Study</h2>
+        <a href="https://youtu.be/ZP7ef4eVnac">https://youtu.be/ZP7ef4eVnac</a>
+        <h2>DRY or decouple?</h2>
+        <div class="card">
+          <a href="https://medium.com/standard-bank/microservices-dont-create-shared-libraries-2e803b033552"
+            >Shared Libraries and Coupling</a
+          >
+          <br />
+          <a href="https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/"
+            >It’s harder to read code than to write it.</a
+          >
+        </div>
+        <a href="https://youtu.be/nAK6o0GZrVs?t=183"
+          >argument against splitting all into smaller and smaller functions/methods</a
+        >
+        <h2>React is the greatest thing .. one year later</h2>
+        <a href="https://www.youtube.com/watch?v=MLxGtH4XQTU">https://www.youtube.com/watch?v=MLxGtH4XQTU</a>
+        <h2>Object-Oriented Programming is Embarrassing: 4 Short Examples</h2>
+        <a href="https://www.youtube.com/watch?v=IRTfhkiAqPw">https://www.youtube.com/watch?v=IRTfhkiAqPw</a>
+        <h2>about microservices</h2>
+        <a href="https://renegadeotter.com/2023/09/10/death-by-a-thousand-microservices.html"
+          ><img src="https://i.imgur.com/cQZ6xVH.png" style="width: 300px"
+        /></a>
+        <h2>Jordan Kaye Software engineering is about thinking, not typing</h2>
+        <a href="https://jordankaye.dev/posts/thinking-not-typing/"
+          >g(Jordan Kaye - Jordan Kaye Software engineering is about thinking, not typing)</a
+        >
+        <script type="editor" data-lang="sh">
+
+
+          "The goal is to search for the ideas that exist within the problem itself so that we can build our technical boundaries along the conceptual boundaries that exist within the core of the problem at hand"
+        </script>
+        <h2>You've just joined Google and you have to upgrade project written in Angular 1.6 to react</h2>
+        <a href="https://youtu.be/fdkRGkCrml4?t=1585">https://youtu.be/fdkRGkCrml4?t=1585</a>
+        <h2>Shared mental model</h2>
+        <a href="https://youtu.be/2JB1_e5wZmU?t=317">https://youtu.be/2JB1_e5wZmU?t=317</a>
+        <h2>Motivation for programming</h2>
+        <a href="https://www.youtube.com/watch?v=96VlfN7ViyE">https://www.youtube.com/watch?v=96VlfN7ViyE</a>
+        <h2>Funny:</h2>
+        <script type="editor" data-lang="sh">
+
+          OOP: obfuscation-oriented programming
+          How Every “Modern” Code Base Is A DUMPSTER FIRE https://www.youtube.com/watch?v=xiFM9bcLGn0
+        </script>
+        <a href="https://grugbrain.dev/#grug-on-complexity">grug</a> | from
+        <a
+          href="https://unplannedobsolescence.com/blog/less-htmx-is-more/#:~:text=should%20stick%20with%20the%20simplest%20tool%20available%3A%20a"
+          >g(The Grug Brained Developer A layman's guide to thinking like the self-aware smol brained)</a
+        >
+        <h2>Deep</h2>
+        <script type="editor" data-lang="sh">
+
+          “Whenever a king sees that his people are about to revolt against him, he starts a war with another country.”
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Xor</title>
+  </head>
+  <body>
+    <input type="text" style="width: 80%" />
+    <p id="error"></p>
+    <br />
+    <textarea style="width: 80%; height: 200px" id="in" placeholder="data to encode">
+× ÷ ± ∞ π ∅ ≤ ≥ ≠ ≈ ∧ ∨ ∩ ∪ ∈ ∀ ∃ ∄ ∑ ∏ ← ↑ → ↓ ↵ ↔ ↕ ↖ ↗ ↘ ↙ ↺ ↻ ⇒ ⇔ “ ” ‘ ’ « » … ° © ® ™ • ½ ¼ ¾ ⅓ ⅔ † ‡ µ ¢ £ € ♠ ♣ ♥ ♦ ✓ ✨ α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ τ υ φ χ ψ ω 😀 😂 🤣 😉 😎 🤔 😐 🙄 🤑 😨 😱 😈 👽 💩 🖖 ✋ 👍 👎 ✊ 💣 💥 🍿 🍩 🌎 🌐 🛑 ✈ 🔥 ✨ 🎉 🏆 ☎ 💾 🎥 💡 💰 ✉ 🔧 🇨🇦 🇬🇧 🇺🇸</textarea
+    >
+    <textarea style="width: 80%; height: 200px" id="out" placeholder="encoded data"></textarea>
+    <textarea style="width: 80%; height: 200px" id="back" placeholder="data decoded back"></textarea>
+
+    <script>
+      var log = (function () {
+        try {
+          return console.log;
+        } catch (e) {
+          return function () {};
+        }
+      })();
+
+      var cypher = (function () {
+        function xor(data, key) {
+          var ret = "",
+            l = key.length;
+          for (var i = 0; i < data.length; i++) {
+            ret += String.fromCharCode(key.charCodeAt(i % l) ^ data.charCodeAt(i));
+          }
+          return ret;
+        }
+
+        // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/btoa#Unicode_strings
+        function utoa(str) {
+          return window.btoa(unescape(encodeURIComponent(str)));
+        }
+        function atou(str) {
+          return decodeURIComponent(escape(window.atob(str)));
+        }
+
+        return function (key, callback) {
+          callback || (callback = function () {});
+          this.encode = function (data) {
+            var ret;
+            try {
+              ret = utoa(xor(data, key));
+              callback();
+              return ret;
+            } catch (e) {
+              callback(e);
+            }
+          };
+          this.decode = function (data) {
+            var ret;
+            try {
+              ret = xor(atou(data), key);
+              callback();
+              return ret;
+            } catch (e) {
+              callback(e);
+            }
+          };
+          this.xor = xor;
+        };
+      })();
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var input = document.getElementById("in");
+
+        var output = document.getElementById("out");
+
+        var back = document.getElementById("back");
+
+        var inputkey = document.querySelector("input");
+
+        var error = document.getElementById("error");
+
+        inputkey.value = location.href.split("?")[1] || "defaultkey";
+
+        var instance, inter;
+
+        var create = function () {
+          instance = new cypher(inputkey.value, function (e) {
+            error.innerText = e || "";
+          });
+        };
+
+        function encode() {
+          if (input.value) {
+            output.value = instance.encode(input.value);
+          }
+
+          back.value = "";
+
+          clearTimeout(inter);
+
+          inter = setTimeout(function () {
+            back.value = output.value ? instance.decode(output.value) : "";
+          }, 300);
+        }
+
+        create();
+
+        encode();
+
+        inputkey.addEventListener("keyup", function () {
+          create();
+
+          encode();
+        });
+
+        input.addEventListener("keyup", encode);
+
+        output.addEventListener("keyup", encode);
+
+        input.addEventListener("paste", encode);
+
+        output.addEventListener("paste", function () {
+          input.value = "";
+          encode();
+        });
+      });
+    </script>
+  </body>
+</html>

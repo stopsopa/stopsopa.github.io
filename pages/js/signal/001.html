@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button>go</button>
+    <div>updated <span></span></div>
+    <script>
+      // from: https://www.youtube.com/watch?v=1TSLEzNzGQM
+      // http://0.0.0.0:4777/signal/001.html
+      let subscriber = null;
+
+      function signal(value) {
+        const subscriptions = new Set();
+
+        return {
+          get value() {
+            if (subscriber) {
+              subscriptions.add(subscriber);
+            }
+            return value;
+          },
+          set value(updated) {
+            value = updated;
+            for (const subscription of subscriptions) {
+              subscription();
+            }
+          },
+        };
+      }
+
+      function effect(fn) {
+        subscriber = fn;
+        console.log("effect", fn);
+        fn();
+        subscriber = null;
+      }
+
+      let count = signal(0);
+
+      const btn = document.querySelector("button");
+
+      const span = document.querySelector("span");
+
+      btn.addEventListener("click", () => {
+        count.value++;
+      });
+
+      effect(() => {
+        span.innerText = count.value;
+      });
+    </script>
+  </body>
+</html>

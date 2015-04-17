@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Databases - SQL, NoSQL & Management</title>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="dbeaver/index.html">Dbeaver</a></li>
+            <li><a href="mysql/index.html">MySQL</a></li>
+            <li><a href="dynamodb/index.html">DynamoDB</a></li>
+            <li><a href="es/index.html">Elasticsearch</a></li>
+            <li><a href="firebase/firebase.html">Firebase</a></li>
+            <li><a href="redis/index.html">Redis</a></li>
+            <li><a href="sqlserver/index.html">SQL Server</a></li>
+            <li><a href="graphql.html">Graph QL</a></li>
+            <li><a href="sqlite/index.html">SQLite</a></li>
+            <li><a href="postgres/index.html">Postgres</a></li>
+          </ul>
+        </div>
+        <h2></h2>
+
+        <script type="editor" data-lang="python">
+
+          https://dbdiagram.io/d/698f4c8bbd82f5fce2aa871b (g*****@gmail.com)
+        </script>
+        <div data-vanilla-tabs>
+          <div data-buttons>
+            <span>One to Many #1</span>
+            <span>One to Many #2</span>
+            <span>One to Many #3</span>
+            <span>One to One</span>
+            <span>Composite foreign keys</span>
+            <span>Enum</span>
+            <span>Partial</span>
+            <span>Various</span>
+          </div>
+          <div data-tabs>
+            <div>
+              <script type="editor" data-lang="python">
+
+                Table users {
+                  id integer [primary key, ref: < follows.following_user_id, ref: < F.followed_user_id]
+                  username varchar
+                  email varchar [unique, not null]
+                }
+
+                Table follows as F {
+                  following_user_id integer
+                  followed_user_id integer
+                  created_at timestamp
+                }
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                Table users as U {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                }
+
+                Table follows as F {
+                  following_user_id integer
+                  followed_user_id integer
+                  created_at timestamp
+                }
+
+                Ref: U.id < F.following_user_id
+                Ref: U.id < F.followed_user_id
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                Table users as U {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                }
+
+                Table follows as F {
+                  following_user_id integer [ref: > users.id]
+                  followed_user_id integer [ref: > users.id]
+                  created_at timestamp
+                }
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                Table users as U {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                }
+
+                Table Bio as B {
+                  id integer [pk]
+                  user_id integer [ref: - users.id]
+                }
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                Table users as U {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                }
+
+                Table Account as A {
+                  id integer [pk]
+                  email varchar
+                  user_id integer
+                }
+                Ref: A.(user_id, email) > U.(id, email) [delete: cascade, update: no action]
+                  # where entire [] block is optional https://dbml.dbdiagram.io/docs/#relationship-settings
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+                Table users as U {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                  grade grade [default: null]
+                }
+
+                enum grade {
+                  "A+"
+                  "A"
+                  "A-"
+                  "Not Yet Set"
+                }
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                TablePartial base_template [headerColor: #ff0000] {
+                  id int [pk, not null]
+                  created_at timestamp [default: `now()`]
+                  updated_at timestamp [default: `now()`]
+                }
+                TablePartial soft_delete_template {
+                  delete_status boolean [not null]
+                  deleted_at timestamp [default: `now()`]
+                }
+                TablePartial email_index {
+                  email varchar [unique]
+
+                  indexes {
+                    email [unique]
+                  }
+                }
+
+                Table users as U [note: 'test'] {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                  ~soft_delete_template
+                  ~base_template
+                  ~email_index
+                }
+                # https://dbml.dbdiagram.io/docs/#tablepartial
+                # more about conflict resolution: https://dbml.dbdiagram.io/docs/#tablepartial:~:text=unique%5D%0A%20%20%7D%0A%7D-,Conflict%20Resolution,-When%20multiple%20partials
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                // Use DBML to define your database structure
+                // Docs: https://dbml.dbdiagram.io/docs
+
+                Table follows as F {
+                  following_user_id integer
+                  followed_user_id integer
+                  created_at timestamp
+                }
+                Ref: U.id < F.following_user_id
+                Ref: U.id < F.followed_user_id
+
+                Table users as U [] {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                  role varchar(255) [default: 1]
+                  role2 varchar
+                  created_at timestamp [default: `now() - interval '5 days'`]
+                  index number [increment]
+                  wealth integer
+                  debt integer
+                  checks { // https://dbml.dbdiagram.io/docs/#check-definition
+                    `debt + wealth >= 0` [name: 'chk_positive_money']
+                  }
+                  indexes {
+                    (id, email) [pk] // composite primary key
+                    created_at [name: 'created_at_index', note: 'Date']
+                    (username, email) [unique]
+                  }
+                  Note: '''
+                  💸 1 = processing,
+                  ✔️ 2 = shipped,
+                  ❌ 3 = cancelled,
+                  😔 4 = refunded
+                  # DBML - Database Markup Language
+                  DBML (database markup language) is a simple, readable DSL language designed to define database structures.
+
+                  ## Benefits
+
+                  * It is simple, flexible and highly human-readable
+                  * It is database agnostic, focusing on the essential database structure definition without worrying about the detailed syntaxes of each database
+                  * Comes with a free, simple database visualiser at [dbdiagram.io](http://dbdiagram.io)
+                  '''
+                }
+
+                Table posts as P {
+                  id integer [pk, note: 'pk == primary key']
+                  title varchar
+                  body text [note: 'Content of the post']
+                  // user_id integer [not null, note: 'null & note'] // #1
+                  user_id integer [ref: > users.id] // many-to-one #2
+                  status varchar
+                  created_at timestamp
+                  Note: 'Posts of the user'
+                }
+              </script>
+            </div>
+          </div>
+        </div>
+        <h2>Database normalization</h2>
+        <a href="https://youtu.be/GFQaEYEc8_8">link</a>
+        <script type="editor" data-lang="python">
+
+          # see also: https://orm.drizzle.team/docs/relations-schema-declaration
+
+          First Normal Form (INF)
+              1. Using row order to convey information is not permitted
+              2. Mixing data types within the same column is not permitted
+              3. Having a table without a primary keg is not permitted
+              4. Repeating groups are not permitted
+
+          Second Normal Form (2NF)
+              Each non-keg attribute in the table must be dependent on the entire primary keg.
+
+          Third Normal Form (3NF)
+              Each non-keg attribute in the table must depend on the keg, the whole keg, and nothing but the keg.
+
+          Boyce-Codd Normal Form (BCNF)
+              Each attribute in the table must depend on the keg, the whole keg, and nothing but the keg.
+
+          Fourth Normal Form (4NF)
+              The only kinds of multivalued dependency allowed in a table are multivalued dependencies on the keg.
+
+          Fifth Normal Form (SNF)
+              It must not be possible to describe the table as being the logical result of joining some other tables together.
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

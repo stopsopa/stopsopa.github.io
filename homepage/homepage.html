@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homepage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg-color: #1e1e1e; /* VS Code dark grey */
+        --sidebar-bg: #252526;
+        --text-color: #cccccc;
+        --text-bright: #ffffff;
+        --accent-color: #3794ff; /* IDE blue */
+        --hover-bg: #2a2d2e;
+        --line-color: #444444;
+        --sidebar-width: 320px;
+        --font-main: "JetBrains Mono", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: var(--font-main);
+        font-size: 13px;
+        line-height: 1.4;
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--sidebar-bg);
+        border-right: 1px solid #333;
+        height: 100vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        padding: 20px 0;
+        position: fixed;
+        left: 0;
+        top: 0;
+      }
+
+      .header {
+        padding: 0 20px 20px 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 11px;
+        color: #888;
+        font-weight: 500;
+      }
+
+      .tree-container {
+        padding: 0 10px;
+      }
+
+      details {
+        margin-bottom: 2px;
+      }
+
+      summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 4px 10px;
+        display: flex;
+        align-items: center;
+        border-radius: 4px;
+        user-select: none;
+        position: relative;
+      }
+
+      summary:hover {
+        background-color: var(--hover-bg);
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      /* Custom icons in summary instead of default folders */
+
+      /* Chevron */
+      summary::after {
+        content: "›";
+        position: absolute;
+        right: 12px;
+        transform: rotate(0deg);
+        transition: transform 0.2s;
+        color: #666;
+        font-size: 16px;
+      }
+
+      details[open] > summary::after {
+        transform: rotate(90deg);
+      }
+
+      details div {
+        margin-left: 18px;
+        border-left: 1px solid var(--line-color);
+        padding-left: 5px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      details div a {
+        display: flex;
+        align-items: center;
+        padding: 4px 10px;
+        text-decoration: none;
+        color: var(--text-color);
+        border-radius: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        position: relative;
+      }
+
+      details div a:hover {
+        background-color: var(--hover-bg);
+        color: var(--text-bright);
+      }
+
+      details div a::before {
+        content: "";
+        position: absolute;
+        left: -6px;
+        top: 50%;
+        width: 5px;
+        border-top: 1px solid var(--line-color);
+      }
+
+      summary img,
+      details div a img {
+        width: 14px;
+        height: 14px;
+        margin-right: 8px;
+        flex-shrink: 0;
+        object-fit: contain;
+      }
+
+      details div a span {
+        flex-grow: 1;
+      }
+
+      /* Custom Scrollbar */
+      .sidebar::-webkit-scrollbar {
+        width: 5px;
+      }
+      .sidebar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .sidebar::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 10px;
+      }
+      .sidebar::-webkit-scrollbar-thumb:hover {
+        background: #444;
+      }
+
+      .status-bar {
+        margin-top: auto;
+        padding: 10px 20px;
+        border-top: 1px solid #333;
+        font-size: 11px;
+        color: #666;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .main-content {
+        margin-left: var(--sidebar-width);
+        flex-grow: 1;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        color: #444;
+        user-select: none;
+      }
+
+      .placeholder-logo {
+        font-size: 48px;
+        opacity: 0.1;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="header">Explorer</div>
+
+      <div class="tree-container">
+        <details open>
+          <summary><img src="img/tools.png" />Tools</summary>
+          <div>
+            <a href="https://mail.google.com/">
+              <img src="img/gmail.png" />
+              <span>Gmail</span>
+            </a>
+            <a href="https://drive.google.com/">
+              <img src="img/google_drive.png" />
+              <span>Google Drive</span>
+            </a>
+            <a href="https://calendar.google.com/">
+              <img src="img/google_calendar.png" />
+              <span>Google Calendar</span>
+            </a>
+            <a href="https://keep.google.com/">
+              <img src="img/google_keep.png" />
+              <span>Google Keep</span>
+            </a>
+            <a href="https://www.google.com/maps">
+              <img src="img/google_maps.png" />
+              <span>Google Maps</span>
+            </a>
+            <a href="https://www.youtube.com/">
+              <img src="img/youtube.png" />
+              <span>YouTube</span>
+            </a>
+            <a href="https://www.timeanddate.com/">
+              <img src="img/timeanddate.png" />
+              <span>TimeAndDate</span>
+            </a>
+          </div>
+        </details>
+
+        <details>
+          <summary><img src="img/ai.png" />AI slop</summary>
+          <div>
+            <a href="https://chatgpt.com/">
+              <img src="img/chatgpt.png" />
+              <span>ChatGPT</span>
+            </a>
+            <a href="https://gemini.google.com/">
+              <img src="img/gemini.png" />
+              <span>Gemini</span>
+            </a>
+            <a href="https://claude.ai/">
+              <img src="img/claude.png" />
+              <span>Claude</span>
+            </a>
+            <a href="https://www.perplexity.ai/">
+              <img src="img/perplexity.png" />
+              <span>Perplexity</span>
+            </a>
+            <a href="https://t3.chat/">
+              <img src="img/t3chat.png" />
+              <span>T3Chat</span>
+            </a>
+          </div>
+        </details>
+      </div>
+
+      <div class="status-bar">
+        <a
+          href="https://github.com/stopsopa/stopsopa.github.io/edit/master/homepage/homepage.html"
+          style="color: inherit; text-decoration: none"
+          >edit page</a
+        >
+        <a href="https://stopsopa.github.io.local:4339" style="color: inherit; text-decoration: none">image.html</a>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="placeholder-logo">{}</div>
+    </div>
+
+    <script>
+      // Handle link selection
+      document.querySelectorAll("details div a").forEach((item) => {
+        item.addEventListener("click", function () {
+          document.querySelectorAll("details div a").forEach((i) => {
+            i.style.backgroundColor = "";
+            i.style.color = "";
+          });
+          this.style.backgroundColor = "var(--accent-color)";
+          this.style.color = "var(--text-bright)";
+        });
+      });
+
+      // Persist details state
+      const STORAGE_KEY = "homepage_details_state";
+
+      function saveDetailsState() {
+        const states = {};
+        document.querySelectorAll(".tree-container details").forEach((details) => {
+          const summary = details.querySelector("summary").textContent.trim();
+          states[summary] = details.open;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(states));
+      }
+
+      function loadDetailsState() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return;
+
+        try {
+          const states = JSON.parse(saved);
+          document.querySelectorAll(".tree-container details").forEach((details) => {
+            const summary = details.querySelector("summary").textContent.trim();
+            if (states[summary] !== undefined) {
+              details.open = states[summary];
+            }
+          });
+        } catch (e) {
+          console.error("Failed to load details state", e);
+        }
+      }
+
+      // Initialize state
+      loadDetailsState();
+
+      // Listen for toggles
+      document.querySelectorAll(".tree-container details").forEach((details) => {
+        details.addEventListener("toggle", saveDetailsState);
+      });
+    </script>
+  </body>
+</html>

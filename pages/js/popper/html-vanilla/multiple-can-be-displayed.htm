@@ -1,0 +1,26 @@
+<style>
+  [id*="mypopup-mul"]:popover-open {
+    position: fixed;
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    --tx: -50%;
+    --ty: -50%;
+    transform: translate(var(--tx), var(--ty));
+  }
+  #mypopup-mul-1 {
+    --tx: 20%;
+  }
+  #mypopup-mul-2 {
+    --tx: -120%;
+  }
+</style>
+<button popovertarget="mypopup-mul-1" popovertargetaction="show">Show popover #1</button>
+<button popovertarget="mypopup-mul-1" popovertargetaction="hide">Hide popover #1</button>
+<hr />
+<button popovertarget="mypopup-mul-2" popovertargetaction="show">Show popover #2</button>
+<button popovertarget="mypopup-mul-2" popovertargetaction="hide">Hide popover #2</button>
+
+<div id="mypopup-mul-1" popover="manual">Popover content #1</div>
+<div id="mypopup-mul-2" popover="manual">Popover content #2</div>
+<!-- from: https://mdn.github.io/dom-examples/popover-api/#:~:text=multiple%20manual%20popovers%20can%20be%20displayed%20at%20once%2C%20bt%20they%20can%E2%80%99t%20be%20light%2Ddismissed -->

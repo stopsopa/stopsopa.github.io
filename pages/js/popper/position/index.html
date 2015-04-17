@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #parent {
+        padding-left: 10px;
+        padding-top: 15px;
+
+        & > .child1 {
+          border: 30px solid lightblue;
+          margin-top: 14px;
+          margin-left: 18px;
+          & > .child2 {
+            zoom: 0.5;
+            & > .child3 {
+              width: 100px;
+              height: 106px;
+              background-color: red;
+            }
+          }
+        }
+      }
+      #abs {
+        position: fixed;
+        box-shadow: 0 0 4px black;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>position</h2>
+    <script src="https://stopsopa.github.io/floating-ui/packages/core/dist/floating-ui.core.umd.js"></script>
+    <script src="https://stopsopa.github.io/floating-ui/packages/dom/dist/floating-ui.dom.umd.js"></script>
+
+    <div id="parent">
+      <div class="child1">
+        <div class="child2">
+          <div class="child3"></div>
+        </div>
+      </div>
+    </div>
+    <div id="abs"></div>
+    <a href="https://github.com/stopsopa/floating-ui">https://github.com/stopsopa/floating-ui</a>
+    <br />
+
+    <script>
+      const {
+        computePosition,
+        autoUpdate,
+        flip,
+        shift,
+        limitShift,
+        offset,
+        autoPlacement,
+        arrow,
+
+        getBoundingClientRect,
+        getCssDimensions,
+        getDocumentRect,
+        getHTMLOffset,
+        getRectRelativeToOffsetParent,
+        getViewportRect,
+        getVisualOffsets,
+        getWindowScrollBarX,
+        isStaticPositioned,
+        unwrapElement,
+      } = FloatingUIDOM;
+
+      const d = getBoundingClientRect(document.querySelector(".child3"));
+
+      const abc = document.querySelector("#abs");
+
+      abc.style.left = d.left + "px";
+      abc.style.top = d.top + "px";
+      abc.style.width = d.width + "px";
+      abc.style.height = d.height + "px";
+
+      console.log(d);
+    </script>
+  </body>
+</html>

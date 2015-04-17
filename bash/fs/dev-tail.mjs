@@ -1,0 +1,169 @@
+/**
+ * node bash/fs/dev-tail.mjs var/tail.log var/server_js_https.log var/server_js_http.log
+ *
+ * This script will attach and do 'tail -f var/tail.log' continuously
+ * and also on every keystroke will dumpt to process.stdout.write() content of any file after the first argument
+ * in our case these are:
+ *    var/server_js_https.log
+ *    var/server_js_http.log
+ *
+ * node bash/fs/dev-tail.mjs var/tail.log var/server_js_https.log var/server_js_http.log --flag <flag_value>
+ *    this flag will be ignored but it useful to find process by custom flag with ps aux
+ */
+
+import readline from "readline";
+import { promises as fsPromises, watch, createReadStream, statSync } from "fs";
+import fss from "fs";
+import { resolve } from "path";
+
+import path from "path";
+import { fileURLToPath } from "url";
+
+// handle live 'tail'ing file
+// handle live 'tail'ing file
+// handle live 'tail'ing file
+
+const args = process.argv.slice(2);
+const filteredArgs = [];
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === "--flag") {
+    i++; // Skip the flag and its argument
+  } else {
+    filteredArgs.push(args[i]);
+  }
+}
+
+// Get the file path from command line arguments
+const filePath = filteredArgs[0];
+const files = filteredArgs.slice(1);
+
+if (!filePath || !fss.existsSync(filePath)) {
+  console.error("Please provide a file path as an argument");
+  console.error("Usage: node wait2.js <file_path>");
+  process.exit(1);
+}
+
+// Resolve to absolute path
+const absolutePath = resolve(filePath);
+
+// Variables to track file position
+let fileSize = 0;
+
+// Function to read and print file content from a specific position
+const readFromPosition = (position) => {
+  try {
+    const stats = statSync(absolutePath);
+    const currentSize = stats.size;
+
+    if (currentSize > position) {
+      const stream = createReadStream(absolutePath, {
+        start: position,
+        end: currentSize - 1,
+      });
+
+      stream.on("data", (chunk) => process.stdout.write(chunk));
+
+      stream.on("end", () => {
+        fileSize = currentSize;
+      });
+
+      stream.on("error", (err) => {
+        console.error(`Error reading file: ${err.message}`);
+      });
+    }
+  } catch (err) {
+    console.error(`Error accessing file: ${err.message}`);
+  }
+};
+
+// Main function to handle file watching
+const tailFile = async () => {
+  // Initial read of the entire file
+  console.log(`Monitoring file: ${absolutePath}`);
+
+  readFromPosition(0);
+
+  // Watch for changes
+  const watcher = watch(absolutePath, (eventType, filename) => {
+    if (eventType === "change") {
+      readFromPosition(fileSize);
+    }
+  });
+
+  return watcher;
+};
+
+// Start monitoring
+const watcher = await tailFile();
+
+// now let's handle stdin
+// now let's handle stdin
+// now let's handle stdin
+
+const __filename = fileURLToPath(import.meta.url);
+const rel_script = path.relative(process.cwd(), __filename);
+
+let i = 0;
+
+/**
+ * Some "files" passed as arguments may actually be pipes or special fds
+ * created by bash process substitution: <(cat <<'EOF' ... EOF)
+ * e.g. /dev/fd/63
+ *
+ * A pipe can only be read once - after the first readFileSync the fd is
+ * exhausted and subsequent reads return empty string.
+ *
+ * Solution: detect non-regular files at startup, read them immediately
+ * and store the content in a cache. Regular files are re-read on every
+ * keystroke so live edits are reflected.
+ */
+const fileCache = new Map();
+for (const file of files) {
+  try {
+    const st = fss.statSync(file);
+    // isFIFO covers named pipes; !isFile covers /dev/fd/* character-like fds
+    if (st.isFIFO() || !st.isFile()) {
+      fileCache.set(file, fss.readFileSync(file, "utf8"));
+    }
+  } catch (err) {
+    console.error(`Error pre-reading file ${file}: ${err.message}`);
+  }
+}
+
+function keypressed(key) {
+  i += 1;
+
+  process.stdout.write(`\n${rel_script}: ${i}`);
+
+  files.forEach((file) => {
+    // Use cached content for pipes/fds, re-read from disk for regular files
+    const content = fileCache.has(file) ? fileCache.get(file) : fss.readFileSync(file, "utf8");
+    process.stdout.write(content);
+  });
+}
+
+// Configure stdin
+readline.emitKeypressEvents(process.stdin);
+
+if (process.stdin.isTTY) {
+  process.stdin.setRawMode(true);
+}
+
+// Set up event listener for keypress events
+process.stdin.on("keypress", (str, key) => {
+  // Exit on ctrl+c
+  if (key.ctrl && key.name === "c") {
+    watcher.close();
+    process.exit();
+  }
+  // if enter key pressed
+  if (key.name === "return") {
+    process.stdout.write("\n");
+  } else {
+    // Call the keypressed function with the key information
+    keypressed(str);
+  }
+});
+
+console.log(`${rel_script}: Keyboard listener activated. Press any key to trigger the keypressed function.`);
+console.log("Press Ctrl+C to exit.");

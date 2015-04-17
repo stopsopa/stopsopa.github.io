@@ -1,0 +1,7 @@
+
+# comment
+
+node_modules
+
+# some more comments
+/pages/node/libs/lib.ts

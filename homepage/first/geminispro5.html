@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homepage - Neumorphism</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #e0e5ec;
+        --text: #4a5568;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        font-family: "Nunito", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 2rem;
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+      h1 {
+        color: var(--text);
+        font-size: 2.5rem;
+        margin-bottom: 4rem;
+        text-shadow: 2px 2px 4px rgba(163, 177, 198, 0.6), -2px -2px 4px rgba(255, 255, 255, 0.5);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 3rem;
+        width: 100%;
+        max-width: 900px;
+        justify-items: center;
+      }
+      .neu-button {
+        width: 140px;
+        height: 140px;
+        border-radius: 30px;
+        background: var(--bg);
+        box-shadow: 9px 9px 16px rgb(163, 177, 198, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: var(--text);
+        transition: all 0.2s ease-in-out;
+      }
+      .neu-button:hover {
+        box-shadow: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.5), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8);
+        color: #2b6cb0;
+      }
+      .neu-button .icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.9;
+        transition: transform 0.3s;
+      }
+      .neu-button:hover .icon {
+        transform: scale(1.1);
+      }
+      .neu-button .title {
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Dashboard</h1>
+    <div class="grid">
+      <a href="https://google.com" class="neu-button">
+        <div class="icon">🔍</div>
+        <div class="title">Google</div>
+      </a>
+      <a href="https://calendar.google.com" class="neu-button">
+        <div class="icon">📅</div>
+        <div class="title">Calendar</div>
+      </a>
+      <a href="https://youtube.com" class="neu-button">
+        <div class="icon">▶️</div>
+        <div class="title">YouTube</div>
+      </a>
+      <a href="https://chatgpt.com" class="neu-button">
+        <div class="icon">🤖</div>
+        <div class="title">ChatGPT</div>
+      </a>
+      <a href="https://github.com" class="neu-button">
+        <div class="icon">🐙</div>
+        <div class="title">GitHub</div>
+      </a>
+      <a href="http://example.net" class="neu-button">
+        <div class="icon">🌐</div>
+        <div class="title">Example</div>
+      </a>
+    </div>
+  </body>
+</html>

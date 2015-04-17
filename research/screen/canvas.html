@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SCREEN</title>
+
+    <style>
+      video {
+        width: 200px;
+        height: 200px;
+        border: 1px solid red;
+      }
+      canvas {
+        border: 1px solid green;
+        width: 200px;
+        height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas></canvas>
+    <video playsinline autoplay></video>
+    <script>
+      const canvas = document.querySelector("canvas");
+      // canvas.width = 480;
+      // canvas.height = 360;
+      const video = document.querySelector("video");
+
+      // canvas.width = video.videoWidth;
+      // canvas.height = video.videoHeight;
+      canvas.width = 480;
+      canvas.height = 360;
+
+      // capture camera
+      // navigator.mediaDevices
+      //   .getUserMedia({
+      //     video: {
+      //       logicalSurface: false,
+      //     },
+      //     audio: false,
+      //   })
+      //   .then((stream) => {
+      //     window.stream = stream; // make stream available to browser console
+      //     video.srcObject = stream;
+      //   });
+
+      // capture screen
+      navigator.mediaDevices
+        .getDisplayMedia({
+          audio: false,
+          video: true,
+        })
+        .then((stream) => {
+          video.srcObject = stream;
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+        });
+    </script>
+
+    <a href="https://codepen.io/a2sheppy/pen/RqeMaL">https://codepen.io/a2sheppy/pen/RqeMaL</a>
+  </body>
+</html>

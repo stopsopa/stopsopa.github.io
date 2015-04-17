@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home — Grid</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        background: #1a1a2e;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 10px;
+        width: 100%;
+        max-width: 700px;
+      }
+
+      .grid a {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        color: #e0e0e0;
+        text-decoration: none;
+        font-size: 13px;
+        transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      }
+
+      .grid a:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+      }
+
+      .grid a img {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid">
+      <a href="https://www.google.com"> <img src="https://www.google.com/favicon.ico" alt="" />Google </a>
+      <a href="https://calendar.google.com">
+        <img src="https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico" alt="" />Calendar
+      </a>
+      <a href="https://www.youtube.com"> <img src="https://www.youtube.com/favicon.ico" alt="" />YouTube </a>
+      <a href="https://example.net"> <img src="https://example.net/favicon.ico" alt="" />example.net </a>
+      <a href="https://chatgpt.com"> <img src="https://chatgpt.com/favicon.ico" alt="" />ChatGPT </a>
+      <a href="https://github.com"> <img src="https://github.com/favicon.ico" alt="" />GitHub </a>
+      <!-- add more links here -->
+    </div>
+  </body>
+</html>

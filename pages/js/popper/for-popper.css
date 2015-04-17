@@ -1,0 +1,75 @@
+.example1 {
+  /*
+   * vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+   * All of styles in .vanilla-tooltip are needed only for vanilla js tooltip
+   * so add .vanilla-tooltip class to the parent element 
+   */
+  &.vanilla-tooltip {
+    .tooltipstyle {
+      display: none;
+      &[data-tooltip-id] {
+        display: block;
+      }
+      /**
+       * Adding these classes is not needed in react version
+       */
+      &.tooltip-hide-on-click-outside,
+      &.tooltip-toggle-click,
+      &.tooltip-on-hover {
+        display: none;
+        &.show {
+          display: block;
+        }
+      }
+    }
+  }
+  /*
+  * All of styles in .vanilla-tooltip are needed only for vanilla js tooltip
+  * so add .vanilla-tooltip class to the parent element 
+  * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   */
+  [data-tooltipselector] {
+    &.show {
+      background-color: rosybrown;
+    }
+  }
+  .tooltipstyle {
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    .arrow,
+    .arrow::before {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: inherit;
+    }
+
+    .arrow {
+      visibility: hidden;
+    }
+
+    .arrow::before {
+      visibility: visible;
+      content: "";
+      transform: rotate(45deg);
+    }
+    &[data-popper-placement^="top"] > .arrow {
+      bottom: -4px;
+    }
+
+    &[data-popper-placement^="bottom"] > .arrow {
+      top: -4px;
+    }
+
+    &[data-popper-placement^="left"] > .arrow {
+      right: -4px;
+    }
+
+    &[data-popper-placement^="right"] > .arrow {
+      left: -4px;
+    }
+  }
+}

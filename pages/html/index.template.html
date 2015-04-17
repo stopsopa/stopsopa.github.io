@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>HTML - Web Development Guide</title>
+    <style>
+      .toggle {
+        display: none;
+        &.show {
+          display: block;
+        }
+      }
+    </style>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll("[data-html]")).forEach(function (tag) {
+            var selector = tag.getAttribute("data-html");
+
+            const parent = document.querySelector(selector);
+
+            if (!parent) {
+              throw new Error(`parent not found ${selector}`);
+            }
+
+            const html = tag.innerText.replace("</scr ipt>", "</scr" + "ipt>").trim();
+            console.log("html", html);
+
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = html;
+
+            Array.from(tempDiv.childNodes).forEach((child) => {
+              if (child.nodeType === 1) {
+                if (child.tagName === "SCRIPT") {
+                  const script = document.createElement("script");
+                  if (child.src) {
+                    script.src = child.src;
+                  } else {
+                    script.textContent = child.textContent;
+                  }
+                  parent.appendChild(script);
+                } else {
+                  parent.appendChild(child);
+                }
+              }
+            });
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="canvas/index.html">canvas</a></li>
+            <li><a href="video.html">video tag example</a></li>
+            <li><a href="/pages/js/popper/index.html">Popover API - tooltip - hint</a></li>
+            <li><a href="float-label-pattern/index.html">Float Label Pattern - Floating Label Input GCP</a></li>
+            <li><a href="input/index.html">input[type="text"]</a></li>
+          </ul>
+        </div>
+        <h2>Lorem Ipsum</h2>
+        <h2>&lt;dialog&gt;</h2>
+        <a href="https://youtu.be/GDzzIlRhEzM">https://youtu.be/GDzzIlRhEzM</a>
+        <h2>News - to learn later</h2>
+        <script type="editor" data-lang="html">
+
+          Streaming HTML: https://youtu.be/l1cWUrG_vNs?t=117
+          HTML inside Canvas: https://youtu.be/l1cWUrG_vNs?t=312
+        </script>
+
+        <h2>generator</h2>
+        <a href="https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs"
+          >https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs</a
+        >
+        <h2>Tabs</h2>
+        <a href="https://github.com/stopsopa/tabs">https://github.com/stopsopa/tabs</a>
+        <h2>input + datalist</h2>
+        <script type="editor" data-lang="html" data-html="#input_datalist">
+          <form>
+            <input type="text" list="browsers" />
+            <datalist id="browsers">
+              <option value="ie">Internet Explorer</option>
+              <option value="ff">Firefox</option>
+              <option value="ch">Chrome</option>
+              <option value="op">Opera</option>
+              <option value="sa">Safari</option>
+            </datalist>
+            <input type="submit">
+          </form>
+          &lt;script>
+            const div = document.querySelector("#input_datalist");
+            const form = div.querySelector('form')
+            form.addEventListener('submit', e => {
+              e.preventDefault();
+              alert(`form submitted >${form.querySelector('input').value}<`);
+            })
+          &lt;/script>
+        </script>
+
+        <div id="input_datalist"></div>
+
+        <h2>a</h2>
+        <script type="editor" data-lang="html">
+
+          when you are on page
+            http://google.com/dir/index.html?get1=value#test
+          to navigate to
+            http://google.com/dir/index.html
+          you can create link
+            <a href="javascript:location.href=location.href.split('?')[0]">off</a>
+
+          for react:
+            <a href={window.location.href.split("?")[0]} className="gcp-css">off</a>
+
+          another version
+            <a href="javascript:location.search=''">off</a>
+            but that will result in link
+              http://google.com/dir/index.html?#test
+              that will leave "?" and hash
+        </script>
+        <h2>redirect in html</h2>
+
+        <script type="editor" data-lang="html">
+
+
+          <meta http-equiv="refresh" content="0; url=demo/vanilla.html">
+        </script>
+        <h2>input[type="range"]</h2>
+        <div id="range">
+          <style>
+            #range pre {
+              border: 1px solid #ccc;
+            }
+          </style>
+          <script type="editor" data-lang="js" data-eval>
+            // <input type="range" id="height" min="1" max="100" step="1" value="80"/>
+
+            const parent = document.querySelector("#range");
+            const rangeEl = parent.querySelector("input[type='range']");
+            const pre = parent.querySelector("pre");
+
+            function log(...args) {
+              pre.textContent = args.join(" ") + "\n" + pre.textContent;
+              const lines = pre.textContent.split("\n");
+              pre.textContent = lines.slice(0, 10).join("\n");
+            }
+            function range(element, event, onLoad = true) {
+              function hc() {
+                event(parseInt(element.value, 10));
+              }
+              element.addEventListener("change", hc);
+              element.addEventListener("input", hc);
+              if (onLoad) {
+                hc();
+              }
+            }
+            range(rangeEl, (v) => {
+              // this will trigger once only when attached to dom element
+              log("h", v);
+            });
+          </script>
+          <input type="range" id="height" min="1" max="100" step="1" value="80" />
+          <pre></pre>
+        </div>
+        <h2>input[type="color"]</h2>
+        <script type="editor" data-lang="html">
+          <input type="color" id="color" value="#000" autocomplete="off" />
+          &lt;script>
+            const color = document.querySelector("#color");
+            color.addEventListener("input", watchColorPicker, false); // triggered many times while you playing with opened color picker
+            color.addEventListener("change", watchColorPicker, false); // triggered at the end when you close the color picker
+            function watchColorPicker(e) {
+              e.target.value;
+            }
+          &lt;/script>
+        </script>
+
+        <div class="cards">
+          <h2>input[type="radio"]</h2>
+          <p>See also <a href="handleRadio.html">handleRadio.js example</a></p>
+
+          <div class="radios">
+            <label> <input type="radio" name="mode" value="one" /> one </label>
+            <br />
+            <label> <input type="radio" name="mode" value="two" /> two </label>
+            <br />
+            <label> <input type="radio" name="mode" value="three" checked="checked" /> three </label>
+            <pre style="border: 1px solid #ccc"></pre>
+          </div>
+
+          <script type="editor" data-lang="html">
+
+            <div class="radios">
+              <label> <input type="radio" name="mode" value="one" /> one </label>
+              <br />
+              <label> <input type="radio" name="mode" value="two" checked="checked" /> two </label>
+              <br />
+              <label> <input type="radio" name="mode" value="three" /> three </label>
+              <pre style="border: 1px solid #ccc;"></pre>
+            </div>
+
+            <script type="module">
+              <%script radio.js %>
+            &lt;/script>
+          </script>
+          <script type="module">
+            <%inject radio.js %>
+          </script>
+        </div>
+
+        <h2>input[type="checkbox"]</h2>
+
+        <a href="checkbox/index.html">WARNING: SEE MORE: checkbox/index.html</a>
+        <script type="editor" data-lang="html">
+
+          <input type="checkbox" id="allon" autocomplete="off" />
+
+          &lt;script>
+            {
+              const allon = document.querySelector("#allon");
+              let state = false;
+              allon.checked = state;
+              function action() {
+                console.log('state', state);
+              }
+              allon.addEventListener("change", (e) => {
+                state = e.target.checked;
+                action();
+              });
+              action();
+            }
+          &lt;/script>
+        </script>
+        <h2>Select - Option</h2>
+
+        <script type="editor" data-lang="html">
+
+          One slide from here:
+            https://github.com/una/back-to-the-future-of-web-dev
+        </script>
+        <h2>fieldset -&gt; legend</h2>
+        <form action="/action_page.php">
+          <fieldset>
+            <legend>Personalia:</legend>
+            <label for="fname">First name:</label>
+            <input type="text" id="fname" name="fname" /><br /><br />
+            <label for="lname">Last name:</label>
+            <input type="text" id="lname" name="lname" /><br /><br />
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" /><br /><br />
+            <label for="birthday">Birthday:</label>
+            <input type="date" id="birthday" name="birthday" /><br /><br />
+            <input type="submit" value="Submit" />
+          </fieldset>
+        </form>
+        <script type="editor" data-lang="html">
+
+          <form action="/action_page.php">
+            <fieldset>
+              <legend>Personalia:</legend>
+              <label for="fname">First name:</label>
+              <input type="text" id="fname" name="fname"><br><br>
+              <label for="lname">Last name:</label>
+              <input type="text" id="lname" name="lname"><br><br>
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email"><br><br>
+              <label for="birthday">Birthday:</label>
+              <input type="date" id="birthday" name="birthday"><br><br>
+              <input type="submit" value="Submit">
+            </fieldset>
+          </form>
+        </script>
+        <h2>textarea autoresize</h2>
+        <a href="https://youtu.be/3u72wGo7nbU?t=338">WARNING: PURE CSS SOLUTION https://youtu.be/3u72wGo7nbU?t=338</a>
+        <br />
+        <a href="https://github.com/stopsopa/telazekah/blob/main/src/components/TextareaResize.ts"
+          >Best: https://github.com/stopsopa/telazekah/blob/main/src/components/TextareaResize.ts</a
+        >
+
+        <a href="/viewer.html?file=%2Fpages%2Fhumanjson%2Fhumanjson.entry.js"
+          >/viewer.html?file=%2Fpages%2Fhumanjson%2Fhumanjson.entry.js</a
+        >
+        <br />
+        <a href="/viewer.html?file=%2Fjs%2Ftextarea-autoresize.js">/viewer.html?file=%2Fjs%2Ftextarea-autoresize.js</a>
+        <script type="editor" data-lang="js">
+
+          // https://stephanwagner.me/auto-resizing-textarea-with-vanilla-javascript
+          function textareaAutoResize() {
+            function resize(element) {
+              var offset = element.offsetHeight - element.clientHeight;
+              element.style.height = "auto";
+              element.style.height = element.scrollHeight + offset + "px";
+            }
+            document.querySelectorAll("[data-autoresize]").forEach(function (element) {
+              element.style.boxSizing = "border-box";
+              element.addEventListener("input", function (event) {
+                resize(event.target);
+              });
+              element.removeAttribute("data-autoresize");
+              element.setAttribute("data-autoresize-attached", "true");
+            });
+
+            return () => {
+              document.querySelectorAll("[data-autoresize-attached]").forEach(function (element) {
+                resize(element);
+              });
+            };
+          }
+
+          window.resizeTextareas = (function () {
+            const trigger = textareaAutoResize();
+
+            return () => {
+              window.requestAnimationFrame(trigger);
+            };
+          })();
+
+          tex.addEventListener("input", function (e) {
+
+            tex.value = ...
+
+            // trigger manually to resize if anything else is at play
+            resizeTextareas();
+          });
+        </script>
+        <h2>details - summary - collapsible - accordion</h2>
+
+        <a href="https://youtu.be/3u72wGo7nbU?t=296"
+          >WARNING: HOW TO ANIMATE GO TO https://youtu.be/3u72wGo7nbU?t=296</a
+        >
+
+        <style>
+          details.styled {
+            border: 1px solid gray;
+            margin: 0 auto 0.5rem;
+            overflow: hidden;
+
+            summary {
+              padding: 1rem;
+              display: block;
+              padding-left: 2.2rem;
+              position: relative;
+              cursor: pointer;
+              user-select: none;
+              background-color: #ccc;
+
+              &::before {
+                content: "";
+                color: gray;
+                border-width: 0.4rem;
+                border-style: solid;
+                border-color: transparent transparent transparent gray;
+                position: absolute;
+                top: 1.3rem;
+                left: 1rem;
+                transform: rotate(0);
+                transform-origin: 0.2rem 50%;
+                transition: 0.25s transform ease;
+              }
+
+              &::-webkit-details-marker {
+                display: none;
+              }
+            }
+
+            &::details-content {
+              block-size: 0;
+              overflow: hidden;
+              transition-property: block-size, content-visibility;
+              transition-duration: 0.1s;
+              transition-behavior: allow-discrete;
+              padding-right: 10px;
+              padding-left: 10px;
+            }
+
+            &[open] {
+              &::details-content {
+                block-size: auto;
+                block-size: calc-size(auto, size);
+              }
+
+              > summary {
+                border-bottom: 1px solid gray;
+
+                &::before {
+                  transform: rotate(90deg);
+                }
+              }
+            }
+          }
+        </style>
+        <hr />
+        <div class="tistp">
+          <p>To enable shadow dom for details &gt; summary</p>
+          <p>Browser -> dev tools -> settings -> Elements -> Show user agent shadow DOM</p>
+
+          <p><a href="https://youtu.be/Vzj3jSUbMtI?t=280">https://youtu.be/Vzj3jSUbMtI?t=280</a></p>
+        </div>
+        <hr />
+        <details>
+          <summary>Raw</summary>
+          Something small enough to escape casual notice.
+        </details>
+        <hr />
+        <details class="styled" name="accordion">
+          <summary>Details 1</summary>
+          <p>Something small enough to escape casual notice.</p>
+          <p>Lorem ipsum ..</p>
+        </details>
+        <details class="styled" name="accordion">
+          <summary>Details 2</summary>
+          <p>Something small enough to escape casual notice.</p>
+          <p>Lorem ipsum ..</p>
+        </details>
+        <details class="styled" name="accordion">
+          <summary>Details 3</summary>
+          <p>Something small enough to escape casual notice.</p>
+          <p>Lorem ipsum ..</p>
+        </details>
+        <details class="styled" name="accordion2">
+          <summary>Details 4 - different name argument</summary>
+          <p>Something small enough to escape casual notice.</p>
+          <p>Lorem ipsum ..</p>
+        </details>
+        <script type="editor" data-lang="html">
+
+          <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details -->
+
+          &lt;details>
+            &lt;summary>Details&lt;/summary>
+            Something small enough to escape casual notice.
+          &lt;/details>
+        </script>
+        <h2>element size width height</h2>
+
+        <a href="https://www.javascripttutorial.net/javascript-dom/javascript-width-height/"
+          >https://www.javascripttutorial.net/javascript-dom/javascript-width-height/</a
+        >
+        <br />
+        <p>see also src/lib/getAbsoluteHeightOfElement.js in icare</p>
+
+        <style>
+          #box-size {
+            background-color: antiquewhite;
+            border: 10px solid black;
+            margin: 12px;
+            padding: 15px;
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+          }
+          #box-size-target {
+            font-family: monospace;
+            font-size: 12px;
+          }
+          .flex {
+            display: flex;
+            align-items: center;
+          }
+        </style>
+        <div class="flex">
+          <div id="box-size"></div>
+          <pre id="box-size-target"></pre>
+        </div>
+        <script>
+          var box = document.querySelector("#box-size");
+          var boxt = document.querySelector("#box-size-target");
+          const domRect = box.getBoundingClientRect();
+          let style = getComputedStyle(box);
+
+          boxt.innerText = `
+#box-size {
+  border: 10px solid black;
+  margin: 12px;
+  padding: 15px;
+  width: 100px;
+  height: 100px;
+}
+
+box.offsetHeight = ${box.offsetHeight} // excluding margin
+box.clientWidth  = ${box.clientWidth} // excluding margin & border
+const domRect = box.getBoundingClientRect();
+console.log('domRect:',${JSON.stringify(domRect, null, 4)})
+let style = getComputedStyle(box);
+style.borderLeftWidth = ${style.borderLeftWidth}
+style.marginLeft = ${style.marginLeft}
+`;
+        </script>
+
+        <h2>Web Components (various) - ribbon</h2>
+
+        <script type="editor" data-lang="html">
+
+          // Homepage: https://marketingpipeline.github.io/GitHub-Ribbon-Web-Component/
+          // Warning: see also https://github.blog/news-insights/github-ribbons/
+
+          // https://github.com/MarketingPipeline/GitHub-Ribbon-Web-Component
+          <script
+            src="https://cdn.jsdelivr.net/gh/MarketingPipeline/GitHub-Ribbon-Web-Component/dist/github-ribbon-wc.min.js"
+            defer
+          >&lt;/script>
+          // then use
+          <github-ribbon link="https://github.com/stopsopa/ace-editor-webcomponent" type="right" color="#679d2c"
+            >Fork me on GitHub</github-ribbon
+          >
+
+          @media print {
+            #hide, github-ribbon {
+              display: none;
+            }
+          }
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="http://">ekstra link</a></li>
+          </ul>
+        </div>
+
+        <h2>Course</h2>
+        <script type="editor" data-lang="sh">
+          # more materials to read (mentioned in the video):
+            https://mywiki.wooledge.org/BashPitfalls from: https://youtu.be/Sx9zG7wa4FA?t=25224
+
+          # REPL - Read Evaluate Print Loop https://youtu.be/Sx9zG7wa4FA?t=414
+
+          cat /usr/share/dict/words
+              # interesting https://youtu.be/Sx9zG7wa4FA
+
+          # loop https://youtu.be/Sx9zG7wa4FA?t=4414
+            for thing in foo bar baz bat; do
+              echo "thing is $thing"
+            done
+
+            for thing in "$@"; do
+              echo "thing is $thing"
+            done
+              # from: https://youtu.be/Sx9zG7wa4FA?t=4956
+
+          # syntax checker - that will check if file syntax is correct
+              bash -n ttt.sh
+              # use also shellcheck [our script] - but it have to be installed
+
+          for thing in {1..5}; do
+            echo "thing is $thing"
+          done
+              # from: https://youtu.be/Sx9zG7wa4FA?t=6026
+
+          for ((i=1; i<=5; i++)); do
+            echo "thing is $i"
+          done
+              # from: https://youtu.be/Sx9zG7wa4FA?t=6084
+
+          while read -r line; do
+            echo "line is $line"
+          done
+              # cat /usr/share/dict/words | /bin/bash ttt.sh
+              # from: https://youtu.be/Sx9zG7wa4FA?t=6412
+
+          # hexdump
+              echo hello | hexdump
+              echo hello | hexdump -C
+              echo -n hello | hexdump -C   # '0a' is new line
+              echo hello | od
+              echo hello | xxd
+                  # from: https://youtu.be/Sx9zG7wa4FA?t=6478
+          while read -r line || [[ -n $line ]]; do
+            echo "line is $line"
+          done
+              # [[ -n $line ]] - makes it more bullet proof because it will accept line from
+                # echo -n test | /bin/bash ttt.sh
+              # cat /usr/share/dict/words | /bin/bash ttt.sh\
+              # from: https://youtu.be/Sx9zG7wa4FA?t=6573
+
+          /bin/bash ttt.sh < /usr/share/dict/words
+          < /usr/share/dict/words /bin/bash ttt.sh
+              # Useless CAT - avoided
+
+          # case
+              s=$1
+              case "$s" in
+              dave)
+                  echo "hi dave"
+                  ;;
+              buddy* | test*)
+                  # anything starting with 'buddy' or 'test'
+                  echo "ohhh there he is"
+                  ;;
+              guy)
+                  echo "hi guy"
+                  ;;
+              *)
+                  echo who are you $s "?"
+                  ;;
+              esac
+
+              # or
+
+              s=$1
+              case "$s" in
+                  dave)echo "hi dave";;
+                  buddy)echo "ohhh there he is";;
+                  guy)echo "hi guy";;
+                  *)echo who are you $s "?";;
+              esac
+
+              # /bin/bash ttt.sh fdafs
+              $ from: https://youtu.be/Sx9zG7wa4FA?t=7251
+
+
+              # always fallthrough
+              # WARNING: case with ;;& won't work with bash 3.2 from mac (check /bin/bash --version)
+              # let's use ubuntu via docker
+              urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/index.html#bash-versions
+
+
+
+                  s=$1
+                  case "$s" in
+                      d*)echo "dave star";;&
+                      dave)echo "hi dave";;&
+                      buddy)echo "ohhh there he is";;&
+                      guy)echo "hi guy";;&
+                      *)echo who are you $s "?";;&
+                  esac
+
+                  # from: https://youtu.be/Sx9zG7wa4FA?t=7492
+
+          # array: https://youtu.be/Sx9zG7wa4FA?t=7842
+
+              # array=( # this syntax will do too
+              declare -a array=(
+                  "dave"
+                  "buddy"
+                  "guy"
+                  "hey there friend"
+              )
+
+              echo ${array[@]}
+
+              echo ----
+              echo ${array[0]}
+              echo ${array[1]}
+              echo ${array[2]}
+
+              echo ---idx
+              idx=1
+              echo ${array[idx]}
+
+              echo ---loop
+              # for i in ${array[@]}; do # this one is incorrect - will process each word separately
+              # for i in "${array[*]}"; do # this one means cast array to string, so one iteration for the whole array
+              # WARNING:
+              # ${arr[*]} → joins elements using first character of IFS
+              # ${arr[@]} → preserves elements as separate words
+              for i in "${array[@]}"; do # only that will process correctly
+                  echo $i
+              done
+
+              echo ---copied
+
+              array2=(on start "${array[@]}" some [45]=more)
+              array2+=(and more) # push to array
+              for i in "${array2[@]}"; do
+                  echo $i
+              done
+
+              echo ---inspect array
+              declare -p array2
+              # will print https://youtu.be/Sx9zG7wa4FA?t=8278
+              # declare -a array2='([0]="on" [1]="start" [2]="dave" [3]="buddy" [4]="guy" [5]="hey there friend" [6]="some" [45]="more" [46]="and" [47]="more")'
+
+              echo ---length of array
+              echo "${#array2[@]}"
+              echo ">$(echo ${#array2[@]})<"
+              echo ">$((${#array2[47]}))<"  # get length of specific element
+
+          # associative-arrays https://youtu.be/Sx9zG7wa4FA?t=8370
+
+          # /bin/bash pages/bash/ysap/associative_array.sh
+             <%inject associative_array.sh %>
+
+          # arithmetic expression https://youtu.be/Sx9zG7wa4FA?t=9866
+
+          # /bin/bash pages/bash/ysap/arithmetic_expression.sh
+             <%inject arithmetic_expression.sh %>
+
+          set and positional parameters
+          IFS=,
+          set -- a,b,c
+          echo ">$1<" ">$2<" ">$3<"
+
+          IFS=,
+          read a b c <<< "one,two,three"
+          echo ">$a<" ">$b<" ">$c<"
+
+            Once consequence of using IFS - some gotchas
+            touch "first file.txt" "second file.txt"
+            for file in $(ls *.txt); do
+              echo ">$file<"
+            done
+              # this is incorrect
+
+            for file in *.txt; do
+              echo ">$file<"
+            done
+              # this is fine
+
+            ls *.txt | while IFS= read -r file; do
+              echo ">${file}<"
+            done
+              # this is fine
+
+            readarray -t files < <(ls *.txt)
+            for file in "${files[@]}"; do
+              echo ">${file}<"
+            done
+              # this is fine
+              # WARNING: THIS ONLY WORKS IN BASH 4.0+ not in ZSH
+
+          # csv processing https://youtu.be/Sx9zG7wa4FA?t=11684
+
+          # /bin/bash pages/bash/ysap/csv_parser.sh
+             <%inject csv_parser.sh %>
+
+          # man 5 passwd
+          cat /etc/passwd | cut -d : -f 1
+          cut -d : -f 1 /etc/passwd
+
+          # https://youtu.be/Sx9zG7wa4FA?t=13543
+          PS4="[debug]: " /bin/bash pages/bash/ysap/csv_parser.sh
+
+          # /bin/bash pages/bash/ysap/undefined.sh
+          # /bin/bash -u pages/bash/ysap/undefined.sh
+          # /bin/bash -n pages/bash/ysap/undefined.sh
+          # /bin/bash -u -n pages/bash/ysap/undefined.sh
+          # NOTE: -u doesn't work with -n -> which means -u is detecting during runtime, not statically
+             <%inject undefined.sh %>
+
+          # source https://youtu.be/Sx9zG7wa4FA?t=14732
+
+          # /bin/bash pages/bash/ysap/greetings_main.sh
+            <%inject greetings_main.sh %>
+
+          # ARRAY EXPANSION: https://youtu.be/Sx9zG7wa4FA?t=16906
+          # /bin/bash pages/bash/ysap/array_expansion.sh
+            <%inject array_expansion.sh %>
+
+          # GLOBS https://youtu.be/Sx9zG7wa4FA?t=17159
+          # /bin/bash pages/bash/ysap/globs.sh
+            <%inject globs.sh %>
+
+            # shopt  https://youtu.be/Sx9zG7wa4FA?t=17369
+              # options
+            shopt
+              # to list all options and if enabled or not
+            shaopt extglob
+              # test just one option
+            shopt -s extglob
+              # enable option (SET)
+            shopt -u extglob
+              # disable option (UNSET)
+
+            # apparently it is good idea to turn on set -H https://youtu.be/Sx9zG7wa4FA?t=17377
+
+          # BRACE EXPANSION
+            echo file{1,5}.txt
+              # file1.txt file5.txt
+            echo file{1..5}.txt
+              # file1.txt file2.txt file3.txt file4.txt file5.txt
+            echo file{0..6..2}.{json,txt}
+              # file0.json file0.txt file2.json file2.txt file4.json file4.txt file6.json file6.txt
+
+            echo file{a,b{1,2},c}.{json,txt}
+              # filea.json filea.txt fileb1.json fileb1.txt fileb2.json fileb2.txt filec.json filec.txt
+
+            mv report{,_old}.txt
+              # mv report.txt report_old.txt
+
+            for i in {1..3}; do echo "Run $i"; done
+              # Run 1
+              # Run 2
+              # Run 3
+
+            # spaces breaks expansion
+            echo {a, b, c}
+              # {a, b, c}
+
+            x=5
+            echo {1..$x}
+              # THAT WON'T WORK, IT WILL PRINT {1..5}
+
+            eval echo {1..$x}
+              # 1 2 3 4 5
+
+            # quoting also disables expansion
+            echo "{a,b,c}"
+              # {a,b,c}
+
+            YEAR=$(date +%Y)
+
+            for i in {1995..$YEAR}; do
+              echo ">${i}<"
+            done
+
+            for (( i=1995; i<=YEAR; i++ )); do
+              echo ">${i}<"
+            done
+
+          # PRINTF https://youtu.be/Sx9zG7wa4FA?t=18884
+
+            printf '%s\n' {1..3}
+            s="Hello world"
+            printf 'message >%s<\n' "$s"
+
+            # padding on the left
+            printf "[%10s][%10s]\n" hi there
+              # prints >[     hi][     there] <
+
+            # padding on the right
+            printf "[%-10s][%-10s]\n" hi there
+              # prints >[hi        ][there     ]<
+
+            # control how much to pad (ON THE LEFT)
+            printf "[%*s]\n" 10 hi
+            printf "[%*s]\n" 30 hi
+
+            # control how much to pad (ON THE RIGHT)
+            printf "[%-*s]\n" 10 hi
+            printf "[%-*s]\n" 30 hi
+
+            # number
+            printf '[%d]\n' 123
+              # print >[123]<
+            printf '[%5d]\n' 123
+              # print >[  123]<
+            printf '[%-5d]\n' 123
+              # print >[123  ]<
+            printf '[%05d]\n' 123
+              # print >[00123]<
+            printf '[%08d]\n' 123456
+              # print >[00123456]<
+            printf '[%-08d]\n' 123456 # <-that won't work and there is not verison nor %0-8d - that is not valid too
+
+          # DATE FORMATTING https://youtu.be/Sx9zG7wa4FA?t=19506
+            datefmt="%Y-%M-%d %H:%M:%S"
+            date +"$datefmt"  # the thing is that this might not always work - depending on the shell
+              # I haven't been able to make it fail with versions from
+              # urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/index.html?admin:password#bash-versions
+              # prints >2025-35-29 15:35:28<
+            # apparently better way is to use printf
+            printf '%(%Y/%m/%d %H:%M:%S)T\n'
+              # aaaand actually this is bullshit, because printf with dates actually fails in some shells
+              # where date +fmt didn't faile anywhere
+        </script>
+        <h2>Program detection</h2>
+        <script type="editor" data-lang="sh">
+          if ! command -v jq >/dev/null 2>&1; then
+              echo "Error: jq is not installed. Please install it to use this script." >&2
+              exit 1
+          fi
+        </script>
+        <h2>Colors and controlling cursor</h2>
+        <script type="editor" data-lang="sh">
+          # COLORS: https://youtu.be/Sx9zG7wa4FA?t=22253
+            # introduction:
+              # we can take 61 HEX 'a' character and LF character 0a HEX' from ASCII table and use it with printf
+
+              printf "%b" '\x61' '\x0a'
+                # that will print 'a' and then new line
+
+              printf "%b" '\x61' '\x0a' | xxd
+              # that will print
+              # >00000000: 610a                                     a.<
+
+            # we will need ESC ascii character: https://www.ascii-code.com/#:~:text=1B-,00011011,-ESC
+              # so let's use that one with printf
+              printf "%b" '\x1b'
+              printf '%b' '\033'  # the same thing but octal
+              printf "%b" '\x1b' | xxd
+               # >00000000: 1b                                       .<
+              # printf though have special symbol for that character \e
+              printf '%b' '\e' | xxd
+               # >00000000: 1b                                       .<
+              # so let's use it and make text bold
+              # I know that 'w' in ascii is 77 HEX
+              printf '%b' '\e[1m' 'w' '\e[0m'
+              printf '%b' '\e[1m' 'w' '\e[0m' | xxd
+                # we can read each HEX pair what is what from ascii table above
+              # the same can be achieved with:
+                tput setaf 3; echo hi; tput sgr0
+
+              # we can use range of 255 colors:
+                for i in {0..255}; do printf "\e[38;5;%dmColor %d\e[0m\n" "$i" "$i"; done
+              # true color pallete here we just see all red colors with green 0 value and blue 0 value:
+                for i in {0..255}; do printf "\e[38;2;%d;0;0mColor %d\e[0m\n" "$i" "$i"; done
+
+                # play with different RGB manually:
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 100 100 100
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 200 0 0
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 0 200 0
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 0 0 200
+
+          # apparently more to explore is here: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+            # g(fnky ansi.md ansi escape sequences)
+            # mentioned in: https://youtu.be/Sx9zG7wa4FA?t=22989
+
+          # how 'clear' command works
+            clear | xxd
+            # >00000000: 1b5b 334a 1b5b 481b 5b32 4a              .[3J.[H.[2J<
+            # we can replicate this manually
+            # printf '\e[3J\e[H\e[2J'
+
+          # control the cursor: https://youtu.be/Sx9zG7wa4FA?t=23237
+            /bin/bash pages/bash/ysap/control_cursor.sh
+              <%inject control_cursor.sh %>
+        </script>
+
+        <h2>IS TTY?</h2>
+        <script type="editor" data-lang="sh">
+          # https://youtu.be/Sx9zG7wa4FA?t=23397
+
+          # man isatty
+
+          # /bin/bash pages/bash/ysap/is_a_terminal.sh
+            <%inject is_a_terminal.sh %>
+
+          # General advice is to allow user to modify manually behaviour of coloring or not
+          # good example is 'ls' command
+          # ls --color=always
+          # ls --color=never
+          # ls --color=auto
+        </script>
+
+        <h2>PIPESTATUS</h2>
+        <script type="editor" data-lang="sh">
+          # instead of using
+            set -o pipefail
+
+          # ${PIPESTATUS}  https://youtu.be/Sx9zG7wa4FA?t=14038
+
+          # /bin/bash pages/bash/ysap/pipestatus.sh
+          <%inject pipestatus.sh %>
+        </script>
+
+        <h2>PROCESS SIGNALS & TRAP</h2>
+        <script type="editor" data-lang="sh">
+          # https://youtu.be/Sx9zG7wa4FA?t=21175
+
+          trap -l # print all possible signals - works only in bash
+          SIGINT - sent to process when you hit Ctrl+C
+          SIGINFO - sent to process when you hit Ctrl+T
+          SIGWINCH - sent to process when you resize the window
+          SIGTERM - sent to process when you kill it
+          SIGKILL - sent to process when you kill it with kill -9
+          SIGSTOP - sent to process when you stop it with kill -STOP
+          SIGTSTP - sent to process when you stop it with kill -TSTP or Ctrl+Z is pressed in terminal
+
+           1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL       5) SIGTRAP
+            6) SIGABRT      7) SIGBUS       8) SIGFPE       9) SIGKILL     10) SIGUSR1
+            11) SIGSEGV     12) SIGUSR2     13) SIGPIPE     14) SIGALRM     15) SIGTERM
+            16) SIGSTKFLT   17) SIGCHLD     18) SIGCONT     19) SIGSTOP     20) SIGTSTP
+            21) SIGTTIN     22) SIGTTOU     23) SIGURG      24) SIGXCPU     25) SIGXFSZ
+            26) SIGVTALRM   27) SIGPROF     28) SIGWINCH    29) SIGIO       30) SIGPWR
+            31) SIGSYS      34) SIGRTMIN    35) SIGRTMIN+1  36) SIGRTMIN+2  37) SIGRTMIN+3
+            38) SIGRTMIN+4  39) SIGRTMIN+5  40) SIGRTMIN+6  41) SIGRTMIN+7  42) SIGRTMIN+8
+            43) SIGRTMIN+9  44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12 47) SIGRTMIN+13
+            48) SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14 51) SIGRTMAX-13 52) SIGRTMAX-12
+            53) SIGRTMAX-11 54) SIGRTMAX-10 55) SIGRTMAX-9  56) SIGRTMAX-8  57) SIGRTMAX-7
+            58) SIGRTMAX-6  59) SIGRTMAX-5  60) SIGRTMAX-4  61) SIGRTMAX-3  62) SIGRTMAX-2
+            63) SIGRTMAX-1  64) SIGRTMAX
+
+          cleanup() {
+            echo "cleaning up"
+            exit 8 # exit with error code 8 - because normally in the function you would use return
+                   # but in this case since we are using exit we are ending process here
+          }
+
+          # --- you you can trap SIGINT: https://youtu.be/Sx9zG7wa4FA?t=21474
+
+          # /bin/bash pages/bash/ysap/SIGINT.sh
+            <%inject SIGINT.sh %>
+        </script>
+
+        <h2>REGEX</h2>
+        <script type="editor" data-lang="sh">
+          #  https://youtu.be/Sx9zG7wa4FA?t=20116
+
+          # /bin/bash pages/bash/ysap/regex.sh
+            <%inject regex.sh %>
+        </script>
+
+        <h2>Parameter Expansion</h2>
+        <script type="editor" data-lang="sh">
+          # https://youtu.be/Sx9zG7wa4FA?t=16123
+
+          # /bin/bash pages/bash/ysap/parameter_expansion.sh
+          <%inject parameter_expansion.sh %>
+        </script>
+
+        <h2>Named pipe</h2>
+        <script type="editor" data-lang="sh">
+          # https://youtu.be/Sx9zG7wa4FA?t=21546
+
+          mkfifo ./pipe
+          # now we can write to it
+          echo test > ./pipe
+          # and read from it (in other terminal)
+          cat ./pipe
+          # when you read from pipe. echo will finish and exit and cat will get what was written to pipe
+
+          # EXAMPLE 2 -----------
+          # let's create read_pipe.sh
+            <%inject read_pipe.sh %>
+
+          # EXAMPLE 3 -----------
+          # https://youtu.be/Sx9zG7wa4FA?t=21778
+
+            # [read_pipe.sh]
+              <%inject read_pipe.sh %>
+
+            # [write_pipe.sh]
+              <%inject write_pipe.sh %>
+
+            # now run in one terminal
+              /bin/bash pages/bash/ysap/read_pipe.sh
+            # and in another three commands:
+              /bin/bash pages/bash/ysap/write_pipe.sh foo &
+              /bin/bash pages/bash/ysap/write_pipe.sh bar &
+              /bin/bash pages/bash/ysap/write_pipe.sh baz &
+
+            # you will see all three processes are writing to the pipe
+            # and read_pipe.sh will read what have collected there constantly
+
+          # EXAMPLE 4  -----------
+          # https://youtu.be/Sx9zG7wa4FA?t=21874
+
+            # we can open descriptor 3
+             exec 3>/dev/null
+            # and then we can write to it so data will go to /dev/null
+            echo "test" >&3
+            # we can close it
+            exec 3>&-
+
+            # let's try something new [pipe_parllel_and_read.sh]
+            # https://youtu.be/Sx9zG7wa4FA?t=21964
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

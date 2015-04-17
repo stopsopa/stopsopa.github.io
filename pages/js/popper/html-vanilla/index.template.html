@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>HTML Vanilla Popper - Pure JS Implementation</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Menu</h2>
+        <ul>
+          <li><a href="menu-v1.html">Menu v1</a></li>
+          <li><a href="menu-mine-1.html">Menu mine 1</a></li>
+        </ul>
+        <h2>Hint</h2>
+        <ul>
+          <li><a href="hint-v1.html">Hint v1</a></li>
+          <li><a href="hint-v2.html">popover.css + bindHover.js &lt;-----------</a></li>
+          <li><a href="anchor1.html">anchor1</a></li>
+          <li><a href="interestfor.html">interestfor &lt;-----------</a></li>
+          <li>
+            <a href="anchor-position/index.html">copy of original</a>
+          </li>
+          <li>
+            <a href="anchor-position/anchor-position.html">anchor-position</a> demo from
+            <a href="https://github.com/una/anchor-tool">github.com/una/anchor-tool</a>
+          </li>
+          <li>
+            <a href="anchor-position/anchor-position-global.html">anchor-position-global</a> demo from
+            <a href="https://github.com/una/anchor-tool">github.com/una/anchor-tool &lt;------- new window tester</a>
+          </li>
+        </ul>
+        <h2>Toast</h2>
+        <ul>
+          <li><a href="toast-v1.html">Toast v1</a></li>
+        </ul>
+        <h2>Basics</h2>
+        <script type="editor" data-lang="sh">
+
+          # https://developer.mozilla.org/en-US/docs/Web/API/Popover_API
+          # https://youtu.be/0_wgyB64a8I
+          # https://youtu.be/55uUK-iJeNM?t=153
+        </script>
+
+        <h2>Simplest</h2>
+
+        <div hidden>Hidden content</div>
+
+        <script type="editor" data-lang="html">
+          <%inject simplest.htm %>
+        </script>
+        <%inject simplest.htm %>
+
+        <h2>only one auto popover can be displayed at a time</h2>
+        <div class="stnostte">
+          adding popover="auto" (or just default "popover" without value) tell browser that you expect automatic
+          behaviour of light-dismissed popovers Therefore you can't open two popovers at the same time, because clicking
+          one button to open will mean closing any other popovers that are open
+        </div>
+        <script type="editor" data-lang="html">
+          <%inject only-one-at-a-time.htm %>
+        </script>
+        <%inject only-one-at-a-time.htm %>
+
+        <h2>popover="manual" popovers can be displayed at once, bt they cant be light-dismissed</h2>
+        <div class="stnostte">
+          adding popover="manual" tell browser that you will take control over opening and closing - (for example
+          clicking on the background will not close popup - light-dismissed)
+        </div>
+        <script type="editor" data-lang="html">
+          <%inject multiple-can-be-displayed.htm %>
+        </script>
+        <%inject multiple-can-be-displayed.htm %>
+
+        <h2>With close button</h2>
+        <div class="stnostte">
+          defining regular just `popover` without value (which will be `auto` by default) means you expect
+          light-dismissed popovers. But clicking in the popover won't auto-close it. so you can introduce special
+          element with attr [popovertargetaction="hide"] that will close the popover even from within the popover
+        </div>
+        <script type="editor" data-lang="html">
+
+          <%inject with-close-button.html %>
+          ------
+          think about it this way:
+          both buttons points to element with [popover] by it's id.
+          but button inside elmenet [popover] is different because have attr [popovertargetaction="hide"]
+        </script>
+        <%inject with-close-button.html %>
+
+        <h2>Manual</h2>
+        <div class="stnostte">
+          kinda redundant example but shows that button can toggle and at the same time we might have button to close
+          from within the popover
+        </div>
+        <script type="editor" data-lang="html">
+          <%inject manual.html %>
+          ------
+
+
+
+          think about it this way:
+          the same as basic example but the [popover] element has [popover="manual"] attribute
+          which will open popover when button outside is clicked but nothing will close it
+          unless you click button inside popover with [popovertargetaction="hide"]
+        </script>
+        <%inject manual.html %>
+
+        <h2>::backdrop & :popover-open</h2>
+        <script type="editor" data-lang="html">
+          <%inject backdrop.html %>
+          ------
+          think about it this way:
+          the same as simplest example but we have some extra css
+          https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#css_features
+
+          https://mdn.github.io/dom-examples/popover-api/#:~:text=Shows%20how%20you%20can%20add%20styling%20to%20the%20content%20behind%20the%20popover%20using%20the
+            from: https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#examples
+        </script>
+        <%inject backdrop.html %>
+
+        <h2>Instance methods & events</h2>
+        <script type="editor" data-lang="html">
+          HTMLElement.hidePopover()
+          Hides a popover element by removing it from the top layer and styling it with display: none.
+
+          HTMLElement.showPopover()
+          Shows a popover element by adding it to the top layer.
+
+          HTMLElement.togglePopover()
+          Toggles a popover element between the showing and hidden states.
+            # https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#instance_methods
+
+          beforetoggle event
+          Fired just before a popover element's state changes between showing and hidden, or vice versa. Can be used to prevent a popover from opening, or to update other elements that need to be triggered by popover state.
+
+          toggle event
+          Fired just after a popover element's state changes between showing and hidden, or vice versa.
+
+          interest Experimental
+          Fired on an interest invoker's target element when interest is shown, allowing code to be run in response.
+
+          loseinterest Experimental
+          Fired on an interest invoker's target element when interest is lost, allowing code to be run in response.
+            # https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#events
+
+          ------
+
+          <%script instance-methods.html %>
+        </script>
+        <%inject instance-methods.html %>
+
+        <h2>Anchor Scoping</h2>
+        <script type="editor" data-lang="html">
+          <%inject anchor-scoping.htm %>
+          ------
+          Each .scoped element creates its own scope for the --my-anchor name.
+          Without anchor-scope, all .positioned elements would anchor to the last .anchor defined with that name.
+        </script>
+        <%inject anchor-scoping.htm %>
+      </div>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

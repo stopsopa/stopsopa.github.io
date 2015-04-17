@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Video - Mac Recording, Editing & Tutorials</title>
+  </head>
+  <body class="layout bg" foot head toc>
+    <div class="body" toc>
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort></ul>
+        </div>
+        <div class="card">
+          <h2>QuickTime trim</h2>
+          <script type="editor" data-lang="sh">
+
+            - Load video to Quicktime: File -> Open File...
+            - Edit -> Trim...
+            - trim
+            - Press button on the right bottom "Trim"
+            - File -> Save...
+
+                All above will save loosles version.
+                This method will just discard part of the video on specified sides
+                and save remaining video as is - no recompression involved.
+          </script>
+          <h2>Virtual Camera</h2>
+          <script type="editor" data-lang="sh">
+
+            error "Could not find the virtual camera system process":
+              https://romanzipp.com/blog/fix-obs-could-not-find-the-virtual-camera-system-process-on-macos
+
+            How to configure:
+              Have to be loged in: https://youtu.be/aaVttwb-nQA
+                inspired by: https://youtu.be/lokwQ8_oDRI?t=33
+          </script>
+          <h2>OBS screen recording</h2>
+          <a href="https://youtu.be/Uijhyy7GvME">https://youtu.be/Uijhyy7GvME</a>
+          <script type="editor" data-lang="sh">
+
+            Blur background:
+              https://github.com/royshil/obs-backgroundremoval
+
+            Record with resolution: 2880x1620
+              Normally we would think 1920x1080 would be good but let's scale it by 1.5 to aspect ratio is: 16 : 9 above
+              using formula: ((1920 * 1.5) / 16) * 9 = 1620
+
+            Always fit screen: https://youtu.be/IXr9gY8xHsI
+
+            Problem with Display Capture not listing physical screens:
+               - I've turned off the mac
+               - Then unplugged the screens physically
+               - Started Mac again
+               - plugged the screens back
+               - disabled OBS
+               - went to mac settings -> "Privacy & Security" -> disabled for OBS "Screen & System Audio Recording"
+               - launched OBS - didn't list the screens
+               - disabled OBS
+               - went to mac settings -> "Privacy & Security" -> enabled back for OBS "Screen & System Audio Recording"
+               - launched OBS - didn't list the screens
+               - then I've removed "Display Capture" from "source" in OBS and added it back again and it worked
+            I'm not sure which step exactly helped. I would start next time from last point first.
+
+            ----
+
+            When using "Display Capture" in OBS to setup size of output:
+            - Go to "Settings" -> "Video" tab -> set "base" and "output" to 1920x1080 -> Close settings
+            - right click on the canvas -> "Transform" -> "Fit to screen"
+          </script>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

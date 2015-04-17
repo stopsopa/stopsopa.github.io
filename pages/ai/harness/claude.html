@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Claude Code - Setup, Configuration & Usage Guide</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Claude Code</h2>
+        <script type="editor" data-lang="python">
+
+          I've been using:
+            claude-sonnet-4-5-20250929
+              https://docs.claude.com/en/docs/about-claude/models/overview
+              extended thinking capabilities
+              Pricing remains the same as Claude Sonnet 4, at $3/$15 per million
+              https://www.anthropic.com/news/claude-sonnet-4-5
+
+          # from: https://youtu.be/SUysp3sJHbA
+
+          # install
+          # then add to vscode extension "Claude Code for VS Code" from anthropic
+          # see: https://youtu.be/SUysp3sJHbA
+
+          # setup with custom api:
+            export GOCODE_API_TOKEN=sk-ZI-lxxxxxxxxxxxxxxxxxA
+            export ANTHROPIC_BASE_URL=https://xxx.net
+            export ANTHROPIC_AUTH_TOKEN=$GOCODE_API_TOKEN
+            export ANTHROPIC_MODEL=claude-sonnet-4-5-20250929
+
+            # extra one env var was needed to make /context work
+              export ANTHROPIC_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
+              # or
+              export ANTHROPIC_SMALL_FAST_MODEL=claude-3-5-haiku-20241022
+
+          # configure multiline, add to ~/Workspace/vscode/javascript/code-portable-data/user-data/User/keybindings.json
+          {
+            "key": "shift+enter",
+            "command": "-claudeCode.sendMessage",
+            "when": "claudeCodeChatFocused || inChat"
+          },
+          {
+            "key": "shift+enter",
+            "command": "workbench.action.terminal.sendSequence",
+            "args": { "text": "\\\n" }, // btw this one is good in general for terminals - nice finding
+            "when": "terminalFocus"
+          }
+
+          # apparently it should be possible to achieve this with /terminal-setup
+          # but that didn't work for me ¯\_(ツ)_/¯
+
+          /init - Initialize a new CLAUDE.md file with codebase documentation
+
+          # and add your instruction to memorise - it will ask where to save it
+             ./CLAUDE.md | ./CLAUDE.local.md | ~/.claude/CLAUDE.md
+          ./CLAUDE.local.md - this one should normally be gitignored and with stuff you prefer
+            # CLAUDE.local.md seems to be deprecated: https://docs.claude.com/en/docs/claude-code/memory#determine-memory-type
+
+          @ symbol is for adding files/directories to context
+
+          # tokens usage
+          # improving UI for page pages/encryptor/index.rendered.html took around 700 tokens
+          #
+
+
+          # working with UI (to make claude to "see"):
+            # https://youtu.be/NjOqPbUecC4
+            # https://github.com/microsoft/playwright-mcp
+            # https://github.com/ChromeDevTools/chrome-devtools-mcp/
+
+          # slash commands
+            # create custom "Slash Command" https://youtu.be/52KBhQqqHuc?t=126
+              https://docs.claude.com/en/docs/claude-code/slash-commands#project-commands
+              WARNING: From what I've withessed it seems any change to .claude/commands/gc.md (for example)
+                       requires reloading claude (exit and start again) to take effect
+
+          /status - shows current status of claude like:
+            > /status
+          ────────────────────────────────────────────────────────
+             Settings:  [Status]   Config   Usage   (tab to cycle)
+
+             Version: 2.0.20
+             Session ID: 06b6ea45-0cfa-4ee0-bd52-d565d7bba5a2
+             cwd: /Users/xxx/Workspace/xxx_web/xxx_web
+             Auth token: ANTHROPIC_AUTH_TOKEN
+             Anthropic base URL: https://xxx.net
+
+             Model: claude-sonnet-4-5-20250929
+             IDE: Connected to VS Code extension version 2.0.20
+             Memory: project (CLAUDE.md)
+             Setting sources: User settings, Shared project settings, Local, Command line arguments, Enterprise managed policies
+             Esc to exit
+          ────────────────────────────────────────────────────────
+           Settings:  Status   Config   Usage   (tab to cycle)
+           Configure Claude Code preferences
+
+           ❯ Auto-compact                              true
+             Show tips                                 true     <- you can disable tips here for example
+             Rewind code (checkpoints)                 true
+             Verbose output                            false
+             Theme                                     Dark mode (colorblind-friendly)
+             Notifications                             Auto
+             Output style                              default
+             Editor mode                               normal
+             Model                                     claude-sonnet-4-5-20250929  <- you can see model used here too
+             Diff tool                                 auto
+             Auto-install IDE extension                true
+
+           Enter/Space to change · Esc to exit
+
+          /history  - to bring interactive history switcher
+          claude history - to list sessions
+          claude resume <session-id> - resume given session by id
+
+          double ESC - allows to choose previous point in the history to continue from there
+
+          Shift+TAB cycles between:
+            ⏵⏵ accept edits on
+            ⏸ plan mode on
+
+          /resume - allows you bring back previous session interactively
+
+          /context
+              WARNING: TO MAKE THIS ONE WORK I HAD T ADD ANOTHER ENV VAR:
+                export ANTHROPIC_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
+              Context Usage
+             ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛀ ⛁ ⛀   claude-sonnet-4-5-20250929 · 64k/200k tokens (32%)
+             ⛀ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ System prompt: 2.3k tokens (1.2%)
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ System tools: 12.3k tokens (6.2%)
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ MCP tools: 1.3k tokens (0.6%)
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Memory files: 3.2k tokens (1.6%)
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Messages: 8 tokens (0.0%)
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛝ ⛝ ⛝   ⛶ Free space: 136k (67.9%)
+             ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝   ⛝ Autocompact buffer: 45.0k tokens (22.5%)
+             ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝
+
+             MCP tools · /mcp
+             └ mcp__ide__getDiagnostics (ide): 611 tokens
+             └ mcp__ide__executeCode (ide): 682 tokens
+
+             Memory files · /memory
+             └ Project                                                            3.2k
+             (/Users/sdzialowski/Workspace/SPECIAL_web/SPECIAL_web/CLAUDE.md):    tokens
+
+             SlashCommand Tool · 0 commands
+             └ Total: 864 tokens
+
+          /compact - compacts chat & context into a small summary
+            https://youtu.be/oj44Vrh0XyM
+
+          /model - to switch model
+            # to list all models
+            curl -H "Authorization: Bearer sk-xxxxxxx" \
+               https://xxx.net/v1/models | jq '{results: [.data[] | {id, owned_by}]}'
+            curl -H "Authorization: Bearer sk-xxxxxxx" \
+               https://xxx.net/v1/models | jq -r '.data[].id'
+            :[v1:9962b::KEmgH3lbnDF3HBtaCMMxRg==::
+            qe0Wzy77Y032Rx4DfSgMCSBF5FblxDkvnA7ahlVkxFSKlxGHLTGMRINY82fXobW6InAplNDuwH9zaNqGe7pSqRm1AzCmGGcEBS/PB7karXXvyA
+            CBmdJyuN4ppPxcyfHH6NzMz4mkpQj9Pu6/9LdMRZAvWOAA4dZ7bj0d2H5DmjTUpK9s6g57soYD5gl5hPpIHXzPKHaU0Hyo+wt6mxwxexIGwJdN
+            cRn20dJMBcXlevjC3li1aV3DjWcKv6ygY/Pz:]:
+
+          /clear - clear all from context except CLAUDE.md
+
+          # files:
+          cat ~/.claude.json -- seems to hold all my previous prompts
+          there is this main key
+            "projects": {
+              and inside it there are records
+              "/Users/xxx/Workspace/xx/xxxx-service/xxxx-service": {
+                "allowedTools": [],
+                "history": [
+                  {
+                    "display": "/terminal-setup ",
+                    "pastedContents": {}
+                  },
+                  {
+                    "display": "/exit",
+                    "pastedContents": {}
+                  },
+                  {
+                    "display": "how can I switch mode?",
+                    "pastedContents": {}
+                  },
+                  ...
+
+          ~/.claude/history.jsonl
+            also contains all history - in different format though
+
+          ~/.claude/plugins/config.json
+            inspect that later ...
+
+          ~/.claude/.mcp.json
+            inspect that later ...
+
+          # tools:
+            list of all tools: https://docs.claude.com/en/docs/claude-code/settings#tools-available-to-claude
+
+          # thinking https://youtu.be/MTGJuu9CeMk?t=524
+            Swtich to "plan mode on" and in the prompt use "Thinking" or "Think hard" or "ultrathink"... something like this
+            https://docs.claude.com/en/docs/claude-code/common-workflows#use-extended-thinking
+
+          # MCP: https://youtu.be/X7lgIa6guKg?t=332
+            https://docs.claude.com/en/docs/claude-code/mcp#installing-mcp-servers
+            claude mcp list
+            explore some local MCP's:
+              https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
+              g(claude docs add a local stdio server)
+              npm install @modelcontextprotocol/server-filesystem
+              claude mcp add --transport stdio --scope project filesystem -- /bin/bash node_modules/.bin/mcp-server-filesystem ./files
+              claude mcp add --transport stdio --scope project filesystem -- node intercept.js -- /bin/bash node_modules/.bin/mcp-server-filesystem ./pages
+
+                  that will create locally .mcp.json
+                  {
+                    "mcpServers": {
+                      "filesystem": {
+                        "type": "stdio",
+                        "command": "node",
+                        "args": [
+                          "intercept.js",
+                          "--",
+                          "node",
+                          "node_modules/.bin/mcp-server-filesystem",
+                          "./pages"
+                        ],
+                        "env": {}
+                      }
+                    }
+                  }
+                  once that is done try
+                  claude mcp list
+                  # it will not list that particular mcp yet
+                  # only after you create .claude/settings.local.json and add, among others ...
+                  {
+                    "enabledMcpjsonServers": ["playwright", "context7", "filesystem"]
+                  }
+                  claude mcp list
+                  # ... will list it
+                  # use also
+                  claude mcp get filesystem
+                    # WARNING: when given mcp is already added, executing command to add it again with
+                    # different parameters will not give any results
+                    # in this case it is needed to manually remove given mcp from .mcp.json
+                    # and then trying again
+
+              https://github.com/upstash/context7
+                [login with github]
+                claude mcp add --transport http --scope project context7 https://mcp.context7.com/mcp --header "CONTEXT7_API_KEY: xxxxxx-xxxxxxx"
+                  that will add config to .mcp.json in project directory
+              https://github.com/microsoft/playwright-mcp
+                use: claude mcp add playwright --scope project npx @playwright/mcp@latest
+                  that will add config to .mcp.json in project directory
+            /mcp
+
+          # subagents https://youtu.be/Phr7vBx9yFQ?t=203
+            - separate context window
+            - reduces context overload in the main session
+            - claude can delegate tasks to it when it needs too - that keeps main context clean
+            /agents
+
+
+          # plugin (create plugin https://youtu.be/-KusSduAP1A?t=453)
+
+          # github actions: https://youtu.be/7pKN_pjPW04?t=52
+        </script>
+        <h2>bash/zsh option to choose model</h2>
+        <script type="editor" data-lang="sh">
+
+          # load this file in ~/.zshrc
+          #    source ~/claude-bash-aliases
+          #    so this is really also the name for the script
+
+          # Claude Code Aliases - Easy Setup for Local Development
+          #
+          # SETUP INSTRUCTIONS:
+          # 1. Copy this file to your home directory:
+          #    cp claude-bash-aliases ~/claude-bash-aliases
+          #
+          # 2. Add this line to your ~/.bashrc or ~/.zshrc:
+          #    source ~/claude-bash-aliases
+          #
+          # 3. Reload your shell:
+          #    source ~/.bashrc   # for bash
+          #    source ~/.zshrc    # for zsh
+          #
+          # USAGE:
+          # - Use 'cl' for interactive selection of Claude version
+          # - Use 'claude' for the default (currently claude4-sonnet)
+          #
+          # All aliases use AWS Bedrock in us-west-2 region with MCP configuration
+
+          # Map of Claude commands (key => full command string)
+          typeset -A CLAUDE_CMDS
+          CLAUDE_CMDS=(
+            claude3 "AWS_REGION=..."
+            claude4-sonnet "AWS_REGION=..."
+            claude4-opus "AWS_REGION=..."
+          )
+          :[v1:8d2c5::DCr3tM1MTPUiw36DeVAmgA==::
+          zG3RPEC/CoxnrrXQfIgiq5MeN15W+5okKqnBgZ2EQbxyOLdAYG1avANMhfi3fix4jOp7YUJml1xf+wGOgq1OJZu9tiUTAsS1WnGsBppOnWXzes
+          vn0cYlDjoo/J0/bS5qEj2VglhZAvsqClCrOJ9DIxZqbkpGSJELyhc1AunnmzhBrBI9XYW0XDH9G5nIahrs2IrDZWSACujEsB7xFYiA+nn+Pnvb
+          /eAbPDLvYxuZnEmE5xhoyGehvrJeD9SJ/bWzFFCSzi/j1PPApk9fM2AeCG2KqMkMUXqj+i9pOR+jCkA4RxNCoVPgTPXPgtzauPs5DFhHAMtRdz
+          DHxPQipG9+uBbwyLNjDz/A0EMQe0xYHU8lLPli6FJp01f/8g8cBfbSzjxRjEwKhfcspuhd6qBNk1slnQca0LGoNGfxy9gXMWzcYIIrezfw9Rbg
+          Dq8eofkRDI+8gnWPGVhdSsR58TD2EQaHDwVSbfOdU2oLAYY6up7L7HPt4ByjypYgijQhPdmfyhDfyZBxELKZSw/eOsGrrm9Qb8QJ/OUyoC3LSQ
+          dGkIb/EOEOuCT9npIKbXniCJPpy+Pi0kzDnPzX5Yq+73jO5rB0VdIKttO+r08p6y16Q1jqNce9QuX2m34kbUrZH+Cdb6ySR6uF2BYrVechp/87
+          x9LdDNdzBgXL8lsl/UPbZhjXD7TcRbXJOlKYA93KAhqeVRcCJbOC6ZYBYVHYQtU7fH5Yl5cSlfrEpTUZJIZqaouy6ZnSEXx5Jpsg+lv58xCcyW
+          pPZneUWflOIackybfNXAqcnU6FGY9dHjAu+GhcVEpsJRCRxnqv+uA/agjmVf33a0qyoyF8vaji/ZYpIyJ0KUV8NO1ALlars5yWWbxBcfJtednu
+          hEMCEkRDwHq4dlg4qkDy6x6iRraP0UrVVW00FAef6d8N4G/J0PXBXeMqISsE74hFLaspEeianbyfKzXA1aNCK8YO9OEsYGyeQBE9yWC7f3KgUs
+          7JDNEhMvNu9UpvGsOfyEoNNgjoexf7TZJZBJ5Ra/mL4n3n3XCOhmaqJRQrR4OW7S+UeEU0nPBuTxFLsho111kiCXhP2aS41vedMWkzSG6r2uTS
+          LhK1gD2wtQ==:]:
+
+
+
+          # Default alias (runs claude4-sonnet by default)
+          alias claude='eval "${CLAUDE_CMDS[claude4-sonnet]}"'
+
+          # Interactive alias 'cl' to choose Claude version
+          cl() {
+            local -a keys
+            keys=("${(@ko)CLAUDE_CMDS}")
+            local selected=1
+            local total=${#keys[@]}
+
+            # Function to draw menu
+            draw_menu() {
+              clear
+              echo "Select Claude version (use ↑/↓ arrows, Enter to confirm, q to quit):"
+              echo ""
+              for i in {1..$total}; do
+                if [[ $i -eq $selected ]]; then
+                  echo "  → ${keys[$i]}"
+                else
+                  echo "    ${keys[$i]}"
+                fi
+              done
+            }
+
+            # Main loop
+            while true; do
+              draw_menu
+
+              # Read a single character
+              read -k 1 key
+
+              case $key in
+                $'\e')  # Escape sequence for arrow keys
+                  read -k 2 -t 0.01 rest
+                  case $rest in
+                    '[A')  # Up arrow
+                      ((selected > 1)) && ((selected--))
+                      ;;
+                    '[B')  # Down arrow
+                      ((selected < total)) && ((selected++))
+                      ;;
+                  esac
+                  ;;
+                $'\n')  # Enter key
+                  clear
+                  echo "Launching: ${keys[$selected]}"
+                  echo ""
+                  eval "${CLAUDE_CMDS[${keys[$selected]}]} $@"
+                  return 0
+                  ;;
+                q|Q)  # Quit
+                  clear
+                  echo "Cancelled."
+                  return 1
+                  ;;
+              esac
+            done
+          }
+        </script>
+        <h2>Claude alternatives</h2>
+        <script type="editor" data-lang="sh">
+
+          https://github.com/MoonshotAI/kimi-cli
+        </script>
+
+        <div class="cards">
+          <h2>fixing claude</h2>
+          <script type="editor" data-lang="sh">
+
+            cat <<EEE > ~/.claude/.mcp.json
+            {
+              "mcpServers": {}
+            }
+            EEE
+          </script>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

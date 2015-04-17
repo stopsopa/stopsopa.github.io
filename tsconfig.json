@@ -1,0 +1,19 @@
+// transpile all "module*.ts" right next in the same directoris but as *.js
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "declaration": false,
+    "outDir": "./",
+    "rootDir": "./",
+    "allowJs": false,
+    "useUnknownInCatchVariables": false
+  },
+  "include": ["**/*.ts", "pages/services/map_points/map_points.entry.tsx"],
+  "exclude": ["node_modules"]
+}

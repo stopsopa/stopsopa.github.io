@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Xor</title>
+  </head>
+  <body>
+    <script>
+      var log = (function () {
+        try {
+          return console.log;
+        } catch (e) {
+          return function () {};
+        }
+      })();
+
+      var cypher = (function () {
+        function xor(data, key) {
+          var ret = "",
+            l = key.length;
+          for (var i = 0; i < data.length; i++) {
+            ret += String.fromCharCode(key.charCodeAt(i % l) ^ data.charCodeAt(i));
+          }
+          return ret;
+        }
+        // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/btoa#Unicode_strings
+        function utoa(str) {
+          return window.btoa(unescape(encodeURIComponent(str)));
+        }
+        function atou(str) {
+          return decodeURIComponent(escape(window.atob(str)));
+        }
+
+        return function (key) {
+          this.encode = function (data) {
+            return utoa(xor(data, key));
+          };
+          this.decode = function (data) {
+            return xor(atou(data), key);
+          };
+          this.xor = xor;
+        };
+      })();
+
+      var data =
+        "× ÷ ± ∞ π ∅ ≤ ≥ ≠ ≈ ∧ ∨ ∩ ∪ ∈ ∀ ∃ ∄ ∑ ∏ ← ↑ → ↓ ↵ ↔ ↕ ↖ ↗ ↘ ↙ ↺ ↻ ⇒ ⇔ “ ” ‘ ’ « » … ° © ® ™ • ½ ¼ ¾ ⅓ ⅔ † ‡ µ ¢ £ € ♠ ♣ ♥ ♦ ✓ ✨ α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ τ υ φ χ ψ ω 😀 😂 🤣 😉 😎 🤔 😐 🙄 🤑 😨 😱 😈 👽 💩 🖖 ✋ 👍 👎 ✊ 💣 💥 🍿 🍩 🌎 🌐 🛑 ✈ 🔥 ✨ 🎉 🏆 ☎ 💾 🎥 💡 💰 ✉ 🔧 🇨🇦 🇬🇧 🇺🇸";
+      var key = "klucz";
+
+      var tool = new cypher(key);
+
+      log(tool.encode(data));
+
+      log(tool.decode(tool.encode(data)));
+    </script>
+  </body>
+</html>

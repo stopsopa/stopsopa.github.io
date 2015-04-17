@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>MCP Server - Model Context Protocol Setup & Configuration</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Launch MCP server</h2>
+        <script type="editor" data-lang="sh">
+
+          Generally larn about MCP from here:
+            https://github.com/modelcontextprotocol/servers
+            npx @modelcontextprotocol/server-filesystem .
+              # This is good example of very simple MCP server
+              # I wrote a http wrapper on it: https://github.com/stopsopa/mcp
+              # from: https://github.com/modelcontextprotocol/servers/tree/2025.9.25/src/filesystem
+
+            MCP uses JSON-RPC 2.0 over stdio, with one JSON object per line, delimited by newline (\n).
+        </script>
+
+        <h2>Inspect MCP</h2>
+        <script type="editor" data-lang="sh">
+
+          # from: https://github.com/modelcontextprotocol/inspector/tree/0.17.2?tab=readme-ov-file#docker-container
+
+            # docker:
+              docker run --rm --network host -p 6274:6274 -p 6277:6277 ghcr.io/modelcontextprotocol/inspector:latest
+
+            # local:
+              npm install @modelcontextprotocol/inspector
+              DANGEROUSLY_OMIT_AUTH=true npm install @modelcontextprotocol/inspector
+
+              # then when I have server:
+                /bin/bash node_modules/.bin/mcp-server-filesystem .
+                  # from: https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
+
+              # Then to debug it run:
+              /bin/bash node_modules/.bin/mcp-inspector /bin/bash node_modules/.bin/mcp-server-filesystem
+                # this should launch something like:
+                  http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#tools
+        </script>
+
+        <h2>MCP - worth knowing list</h2>
+        <script type="editor" data-lang="sh">
+
+          https://svelte.dev/docs/mcp/overview  g(svelte-autofixer)
+            # from: https://youtu.be/PLKrSVuT-Dg?t=142
+
+          payment MCP's stripe paypal:
+            https://docs.claude.com/en/docs/claude-code/mcp#:~:text=hubspot.com/anthropic-,Payments%20%26%20Commerce,-PayPal
+            # from: https://youtu.be/PLKrSVuT-Dg?t=185
+        </script>
+        <h2>mcp-server-fetch</h2>
+        <script type="editor" data-lang="sh">
+
+          # from: https://github.com/modelcontextprotocol/servers/tree/main/src/fetch#debugging
+          asdf list all uv
+          asdf install uv 0.9.5
+          uv --help
+          uvx --help
+          asdf global uv 0.9.5
+            # without this it might scream:
+            No version is set for command uvx
+            Consider adding one of the following versions in your config file at /Users/sdzialowski/.tool-versions
+            uv 0.9.5
+          # first try:
+            NODE_OPTIONS="" uvx mcp-server-fetch
+
+          npm install @modelcontextprotocol/inspector
+          /bin/bash node_modules/.bin/mcp-inspector uvx mcp-server-fetch
+          DANGEROUSLY_OMIT_AUTH=true /bin/bash node_modules/.bin/mcp-inspector uvx mcp-server-fetch
+          # after launching setup:
+            Transport Type: STDIO
+            Command: uvx
+            Arguments: mcp-server-fetch .
+        </script>
+
+        <div class="cards">
+          <h2>Intercept.js</h2>
+          <script type="editor" data-lang="sh">
+
+            wget --help 1> /dev/null 2> /dev/null
+            if [ "$?" = "0" ]; then
+              wget --no-cache -O "intercept.js" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/ai/intercept.js"
+            else # curl
+              curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/ai/intercept.js" -o "intercept.js"
+            fi
+            if [ "$(printf "sha384-$(cat "intercept.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/ai/intercept.js" ]; then
+              echo "checksum verified"
+            else
+              echo "checksum corrupted - deleting file"
+              rm "intercept.js"
+            fi
+
+            node intercept.js var/mcp-server-filesystem -- /bin/bash node_modules/.bin/mcp-server-filesystem .
+          </script>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

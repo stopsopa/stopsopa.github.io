@@ -1,0 +1,223 @@
+# /bin/bash dev.sh
+#   will not open browser nor ide
+#
+# /bin/bash dev.sh browser
+#   will open browser
+#
+# /bin/bash dev.sh launch_ide
+#   will open browser and ide
+#
+_SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
+_SHELL="$(basename ${_SHELL//-/})"
+case ${_SHELL} in
+  zsh)
+    _DIR="$( cd "$( dirname "${(%):-%x}" )" && pwd -P )"
+    ;;
+  sh)
+    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+    ;;
+  *)
+    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+    ;;
+esac
+
+cd "${_DIR}"
+
+OPENBROWSER="0"
+OPENIDE="0"
+if [ "${1}" = "browser" ]; then
+  OPENBROWSER="1"
+fi
+if [ "${1}" = "launch_ide" ]; then
+  OPENBROWSER="1"
+  OPENIDE="1"
+fi
+
+# export NODE_OPTIONS=""
+
+set -e
+
+# -------------------------------------------------------
+# Check TLS cert exists and has more than 30 days left
+# cert-info.sh --machine returns the integer days remaining
+# and exits 1 if the cert file is missing/unreadable
+# -------------------------------------------------------
+_CERT_DAYS="$(/bin/bash "${_DIR}/cert/cert-info.sh" --machine)" || {
+  cat <<EEE
+
+${0} error: could not read TLS cert - it may be missing or corrupted.
+  Generate fresh certs by running:
+
+    /bin/bash cert/refresh.sh
+
+EEE
+  exit 1
+}
+
+if [[ "${_CERT_DAYS}" -le 30 ]]; then
+  cat <<EEE
+
+${0} error: TLS cert expires in =>${_CERT_DAYS}<= days (30-day minimum required).
+  Generate fresh certs by running:
+
+    /bin/bash cert/refresh.sh
+
+EEE
+  exit 1
+fi
+
+if [ ! -d "${_DIR}/node_modules" ]; then
+
+  yarn
+fi
+
+mkdir -p public
+cp node_modules/envprocessor/dist/esm/env.js public/env.js
+
+source "${_DIR}/bash/colours.sh";
+
+export DLOGGERN=12
+export DLOGGERN_COLOR=true
+
+# -L file       True if file exists and is a symbolic link.
+if [ ! -L _______index.html ]; then
+
+  set +e
+  ln -s index.html _______index.html
+fi
+
+if [ ! -L _______index.html ]; then
+    { red "${0} error: _______index.html is not a symbolic link and it can't be created"; } 2>&3
+
+    exit 1
+fi
+
+ENV=".env"
+
+if [ ! -f "${ENV}" ]; then
+
+    { red "${0} error: file >${ENV}< doesn't exist"; } 2>&3
+
+    exit 1
+fi
+
+eval "$(node bash/exportsource.ts "${ENV}")"
+
+source ".env.sh"
+
+__HOST="0.0.0.0"
+
+if [ "${LOCAL_HOSTS}" != "" ]; then
+
+  __HOST="${LOCAL_HOSTS}"
+fi
+
+LOGFILE="${_DIR}/var/log.log"
+
+function _kill {
+
+  echo "final cleanup: kill"
+
+  ps aux | grep "_${FLAG}" | grep -v grep | awk '{print $2}' | xargs kill
+
+  kill "${PID1}" 1> /dev/null 2> /dev/null || :
+
+  kill "${PID2}" 1> /dev/null 2> /dev/null || :
+
+  kill "${PID3}" 1> /dev/null 2> /dev/null || :
+
+  kill "${PID4}" 1> /dev/null 2> /dev/null || :
+
+  kill "${PID6}" 1> /dev/null 2> /dev/null || :
+
+  kill "${PID7}" 1> /dev/null 2> /dev/null || :
+
+  /bin/bash .github/stop-server.sh
+
+  cat <<EEE
+
+  In case of error, inspect: ${LOGFILE}
+  
+EEE
+
+}
+
+trap _kill EXIT;
+
+# node libs/preprocessor.js
+node node_modules/envprocessor/dist/esm/cli.js --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
+
+
+
+rm -rf "${LOGFILE}"
+/bin/bash bundle.sh bundle.ignore --watch --name "${FLAG}__bundle.js" 1> >(/bin/bash bash/dlogger.sh " " bundle.sh >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e bundle.sh >> "${LOGFILE}") &
+PID1="${!}"  
+
+/bin/bash transpile.sh transpile.ignore --watch --name "${FLAG}__transpile.js" 1> >(/bin/bash bash/dlogger.sh " " transpile.sh >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e transpile.sh >> "${LOGFILE}") &
+PID3="${!}"
+
+/bin/bash .github/injector.sh watch "${FLAG}__injector.js" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
+PID4="${!}"
+
+/bin/bash scripts/template.sh # just call it once to process all - and btw I've removed --initial from below chokidar call
+/bin/bash node_modules/.bin/chokidar '**/*.template.html' --ignore '**/node_modules/**/*' -c "/bin/bash scripts/template.sh {path} \"${FLAG}__chokidar__template.sh\"" 1> >(/bin/bash bash/dlogger.sh " " template >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e template >> "${LOGFILE}") &
+PID6="${!}"
+
+npx tsc --preserveWatchOutput --watch 1> >(/bin/bash bash/dlogger.sh " " typescript >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e typescript >> "${LOGFILE}") &
+PID7="${!}"
+
+WAITINGMESSAGE="exbuilddone2" # this text shows at the end of esbuild build
+
+cat <<EEE
+
+
+  Now let's wait for esbuild to spit '${WAITINGMESSAGE}' message
+  if it takes too long go and inspect 
+    ${LOGFILE}
+
+
+EEE
+
+while [ "$(cat "${LOGFILE}" | grep "${WAITINGMESSAGE}")" = "" ]
+do
+  sleep 1;
+
+  echo "================================ waiting for esbuild to finish build ================================" 1> >(/bin/bash bash/dlogger.sh " " server >> "${LOGFILE}") 
+done
+
+# /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "2_${FLAG}" \
+# node server.js --flag "3_${FLAG}" 2>&1 >> "${LOGFILE}" &
+node server.js --flag "${FLAG}__server.js" 1> >(/bin/bash bash/dlogger.sh " " server >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e server >> "${LOGFILE}") &
+PID2="${!}"  
+
+if [ "${OPENBROWSER}" = "1" ]; then
+  sleep 3 && /bin/bash "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_API_PORT}/index.html 1> >(/bin/bash bash/dlogger.sh " " opencli >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e opencli >> "${LOGFILE}") &
+fi
+
+if [ "${OPENIDE}" = "1" ]; then
+
+  code "${_DIR}"
+fi
+
+set -e
+
+/bin/bash bash/proc/pid-is-running.sh ${PID1} "esbuild2 process" 
+
+/bin/bash bash/proc/pid-is-running.sh ${PID2} "server process" 
+
+/bin/bash bash/proc/pid-is-running.sh ${PID3} "esbuild1 process" 
+
+/bin/bash bash/proc/pid-is-running.sh ${PID4} "injector process" 
+
+/bin/bash bash/proc/pid-is-running.sh ${PID6} "template process" 
+
+/bin/bash bash/proc/pid-is-running.sh ${PID7} "typescript process" 
+
+# tail -n 10000 -f "${LOGFILE}"
+
+# /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "tail_${FLAG}" tail -n 10000 -f "${LOGFILE}"
+
+node bash/fs/dev-tail.mjs "${LOGFILE}" var/server_js_https.log var/server_js_http.log
+
+
+

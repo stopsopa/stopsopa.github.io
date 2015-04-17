@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>FFmpeg - Video Processing Guide</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>download</h2>
+        <a href="https://www.osxexperts.net/">https://www.osxexperts.net/</a> from
+        <a href="https://www.reddit.com/r/ffmpeg/comments/s3snv6/m1_mac_arm_binary_of_ffmpeg/"
+          >https://www.reddit.com/r/ffmpeg/comments/s3snv6/m1_mac_arm_binary_of_ffmpeg/</a
+        >
+        <h2>imagemagick</h2>
+        <a href="/pages/docker/images.html">zobacz też użytkowanie w docker /pages/docker/images.html</a>
+        <script type="editor" data-lang="sh">
+
+          Instalacja imagemagick jest dosyć upierdliwa, na przyklad format HEIC nie jest dostępny przy standardowej procedurze instalcji jak tutaj:
+
+
+            sudo apt -y install build-essential make gcc
+            sudo apt -y install libx11-dev libxext-dev zlib1g-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev
+
+            # some addition document with help to install ImageMagick:
+            https://www.joelotz.com/blog/2022/building-imagemagick-71-with-heic-support-from-source.html
+            # and also for ubuntu 22.04 jammy
+
+              mkdir imei
+              cd imei
+              git clone git@github.com:SoftCreatR/imei.git .
+              git fetch --tags
+              git switch -c 6.11.2
+              chmod +x imei.sh
+              sudo /bin/bash imei.sh
+              # solution made due to the issue: https://github.com/SoftCreatR/imei/issues/117
+
+
+            cd
+            mkdir imagick
+            cd imagick
+
+            wget -O ImageMagick.tar.gz https://download.imagemagick.org/archive/ImageMagick-7.1.1-29.tar.gz
+            TARGZ_FILE="$(find . -maxdepth 1 -type f | tail -n 1| awk '{$1=$1};1' | tr -d '\n')"
+            echo ">${TARGZ_FILE}<"
+            tar -zxvf "${TARGZ_FILE}"
+
+            TARGZ_DIR="$(find . -maxdepth 1 -type d | tail -n 1| awk '{$1=$1};1' | tr -d '\n')"
+            echo ">${TARGZ_DIR}<"
+            mv "${TARGZ_DIR}" ImageMagick
+            cd ImageMagick
+
+            ./configure
+            make -j4
+            sudo make install
+            sudo ldconfig /usr/local/lib
+
+          Dobrze jest więc zrobić build używając:
+            https://github.com/SoftCreatR/imei
+        </script>
+
+        <h2>ffmpeg buddy</h2>
+        <a href="https://evanhahn.github.io/ffmpeg-buddy/">https://evanhahn.github.io/ffmpeg-buddy/</a>
+        <h2>cwebp -> jpg|bmp|png|gif to webp</h2>
+
+        <script type="editor" data-lang="sh">
+
+          cwebp -quiet 8.jpeg -resize 0 265 -metadata all -q 60 -o 8.webp
+          # more about it: https://github.com/stopsopa/gphotos-research/blob/master/tools/convert-img.sh
+        </script>
+        <h2>HEIC to PNG</h2>
+
+        <h2>FFMPEG: webm to mp3 and so on]</h2>
+        <script type="editor" data-lang="sh">
+
+          # feeding loop from string new line separated
+            files=()
+            while IFS= read -r -d '' file; do
+                files+=("$file")
+            done < <(find . -maxdepth 1 -name "*.webm" -print0)
+
+            printf '%s\n' "${files[@]}"
+
+            # Get total count of files
+            COUNT=${#files[@]}
+            echo "${COUNT}"
+
+            for ((i = 1; i <= COUNT; i++)); do
+                FILE="${files[i-1]}"
+                [[ -z "$FILE" ]] && continue
+                echo -e "\n    Processing $i of $COUNT: $FILE\n"
+                ffmpeg -nostdin -i "$FILE" -b:a 320k "${FILE%.webm}.mp3"
+            done
+
+          # extracting list using find and piping stdout directly to command
+            find . -maxdepth 1 -name "*.webm" -print0 | while IFS= read -r -d '' FILE
+            do
+                echo "Processing: ${FILE}"
+                ffmpeg -nostdin -i "${FILE}" -b:a 320k "${FILE%.webm}.mp3"
+            done
+        </script>
+
+        <script type="editor" data-lang="sh">
+
+          export HOMEBREW_NO_AUTO_UPDATE=1 brew install imagemagick
+          magick mogrify -monitor -format jpg IMG_6465-2.HEIC
+            # will create file with the same name but different extension next to it
+            # test: 1.5mb HEIC file was converted to 2.6mb JPG file
+        </script>
+        <h2>Cut video</h2>
+
+        <h2>gif to sheep.webm</h2>
+
+        <script type="editor" data-lang="sh">
+
+          INPUT="sheep.gif"
+          OUTPUT="sheep.webm"
+          ffmpeg -i "${INPUT}" -an -c:v libvpx-vp9 -pix_fmt yuv420p -crf 20 -b:v 0 "${OUTPUT}"
+        </script>
+
+        <h2>gif to mp4 (socialmedia)</h2>
+
+        <script type="editor" data-lang="sh">
+
+          # MP4 with H.264
+
+          INPUT="sheep.gif"
+          OUTPUT="sheep.mp4"
+          ffmpeg -i "${INPUT}" -an -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -pix_fmt yuv420p -crf 20 -preset slow -movflags +faststart "${OUTPUT}"
+        </script>
+        <h2>Two pass encoding</h2>
+        <script type="editor" data-lang="sh">
+
+          # explanation: https://i.imgur.com/Aj3oJuG.png
+
+          ffmpeg -loglevel error -i "input.mp4" -c:v libvpx-vp9 -b:v 3000k -minrate 1500k -maxrate 4350k -tile-columns 2 -threads 4 -g 240 -quality good -crf 31 -speed 4 -an -pass 1 -f null /dev/null
+
+          ffmpeg -loglevel error -progress - -i "input.mp4" -c:v libvpx-vp9 -b:v 3000k -minrate 1500k -maxrate 4350k -tile-columns 2 -threads 4 -g 240 -quality good -crf 31 -speed 2 -c:a libopus -pass 2 -metadata creation_time="2026-01-27T01:18:49.116Z" -metadata comment="sayonara" -y "./input.webm"
+
+          WARNING:
+            I've added `-progress -` later, this is useful for tracking progress.
+            Unfortunately adding it to first pass doesn't seem to do much (apparently because VP9 encoder libvpx-vp9 ¯\_(ツ)_/¯)
+
+          see more:
+            https://github.com/stopsopa/WebMCompressor/blob/main/electron/tools/cli.sh
+            and from its internals:
+              https://github.com/stopsopa/WebMCompressor/blob/main/electron/tools/generateFFMPEGParams.ts
+              https://github.com/stopsopa/WebMCompressor/blob/main/electron/tools/generateFFMPEGParams.test.ts
+        </script>
+        <h2>Generate GIF/webP from video & Cut video</h2>
+
+        <script type="editor" data-lang="sh">
+
+          # mov -> gif - rescale by width - keep ratio
+            ffmpeg -i /Users/szdz/Desktop/d.mov \
+              -vf "fps=15,scale=400:-1:flags=lanczos" \
+              /Users/szdz/Desktop/d.webm
+
+          # mov -> gif - rescale by height - keep ratio
+            ffmpeg -i /Users/szdz/Desktop/d.mov \
+              -vf "fps=15,scale=-1:300:flags=lanczos" \
+              /Users/szdz/Desktop/d.webm
+
+          # add
+             -ss 00:00:17.250 -to 00:00:22.750
+          to control from where to cut to where
+
+          NOTE: BUT REALLY BETTER USE QUICKTIME TO TRIM AND THEN CONVERT
+        </script>
+        <h2>Extract info</h2>
+
+        <script type="editor" data-lang="sh">
+
+          ffprobe -v verbose myfile.mov > log.log 2>&1
+        </script>
+        <h2>append-repeat.sh</h2>
+
+        <script type="editor" data-lang="sh">
+
+          #
+          # Appends REPEAT copies of REPEAT_SEGMENT to FIRST and produces OUTPUT.
+          #
+          # Usage:
+          #   /bin/bash append-repeat.sh REPEAT FIRST REPEAT_SEGMENT OUTPUT
+          #
+          # Example:
+          #   /bin/bash append-repeat.sh 5 first.mp4 second.mp4 output.mp4
+          #
+          # This produces:
+          #   first.mp4 + second.mp4 + second.mp4 + second.mp4 + second.mp4 + second.mp4
+          #
+
+          REPEAT="${1}"
+
+          if [[ ! ${REPEAT} =~ ^[0-9]+$ ]]; then
+              echo "${0} error: REPEAT is not a number >${REPEAT}<"
+              exit 1
+          fi
+
+          FIRST="${2}"
+
+          if [ ! -f "${FIRST}" ]; then
+              echo "${0} error: FIRST is not a file >${FIRST}<"
+              exit 1
+          fi
+
+          REPEAT_SEGMENT="${3}"
+
+          if [ ! -f "${REPEAT_SEGMENT}" ]; then
+              echo "${0} error: REPEAT_SEGMENT is not a file >${REPEAT_SEGMENT}<"
+              exit 1
+          fi
+
+          OUTPUT="${4}"
+
+          if [ -f "${OUTPUT}" ]; then
+              echo "${0} error: OUTPUT already exists >${OUTPUT}<"
+              exit 1
+          fi
+
+          CONCAT_FILE="./.append-repeat-$$.txt"
+
+          trap 'rm -f "${CONCAT_FILE}"' EXIT
+
+          {
+              printf "file '%s'\n" "${FIRST}"
+
+              for ((i = 0; i < REPEAT; i++)); do
+                  printf "file '%s'\n" "${REPEAT_SEGMENT}"
+              done
+          } > "${CONCAT_FILE}"
+
+          ffmpeg \
+              -f concat \
+              -safe 0 \
+              -i "${CONCAT_FILE}" \
+              -c copy \
+              "${OUTPUT}"
+        </script>
+        <h2>merge two files</h2>
+        <script type="editor" data-lang="sh">
+
+          cat <<EEE > files.txt
+          file '/path/to/file/example/a.mov'
+          file '/path/to/file/example/b.mov'
+          EEE
+
+          ffmpeg -loglevel error \
+            -f concat \
+            -safe 0 \
+            -i files.txt \
+            -c copy \
+            -y /path/to/file/example/join.mov
+
+          # don't try to pipe list on stdin - you will run into all sorts of issues
+        </script>
+        <script type="editor" data-lang="sh">
+
+          ffmpeg -nostdin -y -i screen-20240306-162509.mp4 -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" -loop 0 gif.gif
+            // this command generated filesize 1.2 mb
+          ffmpeg -nostdin -y -i screen-20240306-162509.mp4 -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" -loop 0 output.webp
+            // this command generated filesize 449kb
+
+          // width 320
+          // speed 10x faster (0.1*PTS) (0.04 is even faster, but will result in smaller filesize) (0.1 means it will be presented using 10% of original time, 0.04 means it will be 4% of original time)
+          // start at 5.0 sec
+          // go to 100th second
+          // -loop 0      - loop forever (btw it matters also for webp, withut it even webp will not loop)
+          // fps=10,   reduce frames per second to 10 (from default 60)
+          // -y    - to make it to not ask "File './07 bay/02/bay02.webp' already exists. Overwrite? [y/N]"
+          //  -nostdin - make sure for ffmpeg to not be confused by the while loop
+
+
+          // or doing this in batch
+          LIST="$(find . -type f | grep -v "SRT$" | grep -v "DS_Store$" | grep -v "\/DJI_" | grep -v "\/screen-" | grep "\.mp4$" )"
+
+          echo ">${LIST}<"
+
+
+          if [ "${LIST}" = "" ]; then
+            cat <<EEE
+
+            nothing found
+
+          EEE
+          else
+            COUNT="$(echo "${LIST}" | wc -l | awk '{$1=$1};1')"
+            I="0"
+            while read -r FILE
+            do
+              I="$(($I + 1))"
+
+              PD="$(dirname "${FILE}")"
+              PB="$(basename "${FILE}")"
+              EXTENSION="${PB##*.}"
+              FILENAME="${PB%.*}"
+              if [ "${FILENAME}" = "" ]; then
+                  FILENAME="${PB}"
+                  EXTENSION=""
+              fi
+              if [ "${FILENAME}" = "${PB}" ]; then
+                  EXTENSION=""
+              fi
+
+              cat <<EEE
+          >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}
+          FILE="${FILE}"
+          FILENAME="${FILENAME}"
+          EXTENSION="${EXTENSION}"
+          PD="${PD}"
+
+          running:
+          ffmpeg -nostdin -y -i "${FILE}" -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" "${PD}/${FILENAME}_temp.webp" && mv "${PD}/${FILENAME}_temp.webp" "${PD}/${FILENAME}.webp"
+
+          EEE
+
+              if [ -f "${PD}/${FILENAME}.webp" ]; then
+                  echo "                      --- skipping generating ${PD}/${FILENAME}.webp ----- already exist"
+              else
+                  ffmpeg -nostdin -y -i "${FILE}" -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" "${PD}/${FILENAME}_temp.webp" && mv "${PD}/${FILENAME}_temp.webp" "${PD}/${FILENAME}.webp"
+              fi
+
+            done <<< "${LIST}"
+          fi
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

@@ -1,0 +1,134 @@
+# OKLCH Color Tool Specification
+
+This document defines the requirements and behavior for the `oklch.html` tool, which allows users to define, manage, and edit colors using the OKLCH color space.
+
+## 1. High-Level Layout
+
+The application follows a two-column sidebar layout:
+
+- **Left Column (Sidebar)**: Scrollable list of color definitions.
+- **Right Column (Editor)**: Control panel for the currently selected color.
+
+## 2. Color Sidebar (Left Column)
+
+The sidebar displays the collection of colors.
+
+### Color Item (Box)
+
+- **Visuals**:
+  - **Box Size**: 200px width × 50px height.
+  - **Border**: 1px solid black.
+  - **Label**: The current OKLCH value string (e.g., `oklch(60% 0.15 250)`) centered inside the box.
+  - **Text Color**: Automatically contrast with background (white text for dark colors, black for light).
+  - **Transparency Support**: When Alpha (A) is used, the box must have a checkered background to visualize transparency:
+    `background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);`
+    To achieve this, use two nested divs:
+    - Inner div 1: Contains the checkered background.
+    - Inner div 2: Overlays the OKLCH color.
+  - **Global Toggle**: There must be a global checkbox in the UI to enable/disable this transparency background pattern. Toggling this should add or remove a specific class (e.g., `show-transparency-grid`) on the `body` element.
+- **Interactions**:
+  - **Select**: Clicking the box selects it for editing. The selected box should have a distinct highlight (e.g., thicker border).
+  - **Copy to Clipboard**: Clicking the text/box copies the `oklch(...)` string to the clipboard.
+  - **Feedback**: A tooltip or "toast" message appears saying "Copied!" for 1-2 seconds.
+- **Item Actions**:
+  - **Integrated Buttons**: Action buttons are positioned inside the color box in the top-right corner
+  - **Hover Reveal**: Buttons are hidden by default and appear on hover with smooth fade-in animation
+  - **Duplicate**: Small "Dup" button clones the color and adds it below
+  - **Remove**: Small "×" button deletes the color from the list
+  - **Compact Design**: Buttons use minimal padding and abbreviated labels to save space
+
+### List Actions
+
+- **Add Color Button**: Adds a new color initialized to "perfect gray": `oklch(50% 0 0)`.
+
+## 3. Editor Panel (Right Column)
+
+The editor manipulates the state of the **currently selected** color item. Colors are defined using the format: `oklch(L C H[ / A])`.
+
+### Parameter Controls:
+
+#### Lightness (L)
+
+- **Unit Toggle**: Radio buttons to choose between:
+  - `Percentage` (0% to 100%, e.g., `40.1%`)
+  - `Number` (0 to 1, e.g., `0.401`)
+- **Inputs**: Slider and numeric input field.
+
+#### Chroma (C)
+
+- **Unit Toggle**: Radio buttons to choose between:
+  - `Number` (0 to 0.5, e.g., `0.123`)
+  - `Percentage` (0% to 100%)
+- **Inputs**: Slider and numeric input field.
+
+#### Hue (H)
+
+- **Interactive Component**: A custom **Hue Wheel** for visual selection.
+- **Unit Toggle**: Radio buttons to choose between units (e.g., `deg`, `rad`, `grad`, `turn`, or unitless number).
+- **Inputs**: Clicking/dragging on the wheel updates the value; numeric input field for manual entry.
+- **Sync**: The wheel reflects the value regardless of the unit selected.
+
+#### Alpha (A) - Optional
+
+- **Toggle**: A checkbox (or radio) to enable/disable Alpha in the output string.
+- **Unit Toggle**: (Visible only if Alpha is enabled) Radio buttons to choose between:
+  - `Number` (0 to 1, e.g., `0.5`)
+  - `Percentage` (0% to 100%, e.g., `50%`)
+- **Inputs**: Slider and numeric input field.
+
+#### Actions
+
+- **Duplicate Button**: A button to clone the currently selected color and add it to the list.
+
+### Output/Preview
+
+- **Live String**: Displays the generated CSS string, e.g., `oklch(59.69% 0.156 49.77 / .5)`.
+- **Large Preview**: A primary preview area showing the color.
+  - **Transparency Support**: When Alpha (A) is used, must show the checkered background pattern (same as sidebar boxes) using a two-div overlay approach.
+- **Background Comparison**: Preview against light and dark backgrounds.
+  - **Transparency Support**: The color blocks in comparison areas must also show the checkered background under the color when Alpha is enabled.
+
+## 4. State Persistence & URL Serialization
+
+The tool maintains its state exclusively in the URL to allow sharing and session recovery.
+
+### URL Serialization
+
+- **Format**: The list of colors is serialized into a URL query parameter `?colors=...` using a compact format.
+- **Compact Format**: Each color is represented as comma-separated values: `L,C,H[,A]`
+  - Example: `60~,0.15,250deg` or `60~,0.15,250deg,0.5`
+  - The `oklch()` wrapper is omitted to reduce URL length
+  - Units are preserved in the serialized format (e.g., `~`, `deg`, `rad`, `turn`)
+- **Percent Character Encoding**: To avoid URL encoding issues where `%` becomes `%25`:
+  - When serializing to URL: Replace `%` with `~` (e.g., `60%` → `60~`)
+  - When deserializing from URL: Replace `~` back to `%` (e.g., `60~` → `60%`)
+  - The `~` character is URL-safe and won't be encoded (unlike `:` which becomes `%3A`)
+  - This optimization significantly reduces URL length and improves readability
+  - The replacement is only applied during URL storage/retrieval, not in the internal state or display
+- **Color Separator**: Individual colors are separated by the `|` (pipe) character.
+- **Example URL**: `oklch.html?colors=60~,0.15,250|40~,0.1,20deg,0.5`
+  - This represents two colors:
+    - `oklch(60% 0.15 250)`
+    - `oklch(40% 0.1 20deg / 0.5)`
+  - Before encoding: The URL would have been `...?colors=60%,0.15,250|40%,0.1,20deg,0.5`
+  - After URL encoding: Would become `...?colors=60%25,0.15,250|40%25,0.1,20deg,0.5` (ugly!)
+  - With `~` replacement: `...?colors=60~,0.15,250|40~,0.1,20deg,0.5` (clean!)
+- **Live Updates**: Every change to any color or the list should immediately update the browser's URL using `history.replaceState`.
+- **Benefits**: This compact format with percent-to-tilde encoding significantly reduces URL length compared to storing full `oklch()` strings, making URLs more shareable and readable.
+
+### Deserialization (Loading)
+
+- On page load, the app parses the `colors` parameter from the URL.
+- **Unit Reconstruction**: The UI control states (radio buttons) are inferred from the string format:
+  - If a value ends with `~` (representing `%`), the corresponding unit radio button is set to `Percentage`.
+  - Otherwise, it is set to `Number`.
+- **Fallback**: If the URL parameter is missing or invalid, fall back to the default initial color: `oklch(50% 0 0)`.
+
+## 5. Design & Aesthetics
+
+- **Hue Wheel**: Smooth, high-fidelity rendering with a clear marker.
+- **Typography**: Modern sans-serif (Inter, Outfit).
+- **Glassmorphism**: Subtle blur effects for the sidebar and panels.
+- **Custom Sliders**: Styled to match the premium theme.
+- **Micro-animations**: Smooth movement when switching boxes or toggling units.
+- **Color Gamut Safety**: Indicate when a color is out of sRGB gamut.

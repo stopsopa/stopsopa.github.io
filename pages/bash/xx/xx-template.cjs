@@ -1,0 +1,453 @@
+// to install go to: https://stopsopa.github.io//pages/bash/index.html#xx
+
+// viewer       : https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fbash%2Fxx%2Fxx-template.cjs
+// github edit  : https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/xx/xx-template.cjs
+
+// in order to run any xx command with custom export env var:
+// (shopt -s expand_aliases; export ENVFILE=.env.ci; xx "docker up")
+
+// 🚀 -
+// ✅ -
+// ⚙️  -
+// 🗑️  -
+// 🛑 -
+// to call other xx commands from inside any xx command use:
+//    shopt -s expand_aliases && source ~/.bashrc
+// after that just do:
+//   xx <command_name>
+const S = "\\";
+const GRAY = "\x1b[38;5;244m",
+  BLACK = "\x1b[30m",
+  RED = "\x1b[31m",
+  GREEN = "\x1b[32m",
+  YELLOW = "\x1b[33m",
+  BLUE = "\x1b[34m",
+  MAGENTA = "\x1b[35m",
+  CYAN = "\x1b[36m",
+  WHITE = "\x1b[37m",
+  BOLD = "\x1b[1m",
+  REVERSE = "\x1b[7m",
+  RESET = "\x1b[0m";
+
+const enter = `printf '\n${GREEN}Press Enter to continue (any other key exits)...${RESET}\n';old=$(stty -g);stty -icanon -echo
+IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
+[ -n "$k" ]&&exit 0;`;
+
+const esc = `printf '\n${GREEN}Press any key to continue (Esc to exit)...${RESET}\n';old=$(stty -g);stty -icanon -echo
+IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
+[ "$k" = "$(printf '\\033')" ]&&exit 0;`;
+
+module.exports = (setup) => {
+  return {
+    [`esc`]: {
+      command: `
+${esc}
+echo continue 
+`,
+      confirm: false,
+    },
+    [`enter`]: {
+      command: `
+${enter}
+echo continue 
+`,
+      confirm: false,
+    },
+    help: {
+      command: `
+set -e  
+# git config core.excludesFile .git/.gitignore_local
+
+# echo -e "\n      Press enter to continue\n"
+# read
+
+# source .env
+# source .env.sh
+export NODE_OPTIONS=""
+        
+cat <<EEE
+
+  🐙 GitHub: $(git ls-remote --get-url origin | awk '{\$1=\$1};1' | tr -d '\\n' | sed -E 's/git@github\\.com:([^/]+)\\/(.+)\\.git/https:\\/\\/github.com\\/\\1\\/\\2/g')
+
+  arango admin:
+    http://localhost:\${DYNAMO_ADMIN_PORT}
+
+-- DEV NOTES --
+
+EEE
+
+      `,
+      description: "Status of all things",
+      source: false,
+      confirm: false,
+    },
+    [`yarn`]: {
+      command: `
+cat <<EEE
+
+/bin/bash bash/swap-files-v2.sh package.json package.dev.json -- yarn   
+
+EEE
+
+echo -e "\n      Press enter to continue\n"
+read
+
+/bin/bash bash/swap-files-v2.sh package.json package.dev.json -- yarn   
+`,
+      description: `swap and yarn`,
+      confirm: false,
+    },
+    [`~/help`]: {
+      command: `
+set -e
+        
+cat <<EEE
+
+  🐙 GitHub: $(git ls-remote --get-url origin | awk '{\$1=\$1};1' | tr -d '\\n' | sed -E 's/git@github\\.com:([^/]+)\\/(.+)\\.git/https:\\/\\/github.com\\/\\1\\/\\2/g')
+
+EEE
+`,
+      description: `help from ~/xx.cjs`,
+      confirm: false,
+    },
+    [`coverage`]: {
+      command: `   
+FILE="coverage/index.html"
+FILE="target/site/jacoco/index.html"
+if [ ! -f "\${FILE}" ]; then
+
+  cat <<EEE
+
+  file >\${FILE}< doesn't exist
+  
+  to generate manually
+  mvn clean test jacoco:report
+
+EEE
+  
+  exit 1
+fi  
+
+FILE="file://\$(realpath "\${FILE}")"   
+
+cat <<EEE
+
+Ways to open:
+    open "\${FILE}"
+    open -a "Google Chrome" "\${FILE}"
+
+EEE
+
+echo -e "\\n      Press enter to continue\\n"
+read
+
+open "\${FILE}"
+      `,
+      confirm: false,
+    },
+    [`docker up`]: {
+      command: `
+set -e
+
+CMD="$(cat <<EOF
+PFX="PROJECT1" /bin/bash prefix.sh /bin/bash "docker/docker-compose.sh" up
+EOF
+)"
+
+cat <<EEE
+
+\${CMD}
+
+EEE
+
+echo -e "\n      Press enter to continue\n"
+read
+
+eval "\${CMD}"
+`,
+      confirm: false,
+    },
+    [`xx`]: {
+      command: `
+shopt -s expand_aliases && source ~/.bashrc
+function cleanup {
+  xx --unlock
+}
+trap cleanup EXIT;
+xx --lock    
+echo do something after lock           
+`,
+      description: `run catalog-ui-service`,
+      confirm: false,
+    },
+    [`echo`]: {
+      command: `echo global test - \${1} - \${2} -- \${@} -end; exit 54`,
+      description: `run catalog-ui-service`,
+      // order: 1001,
+    },
+
+    [`coverage server`]: {
+      command: `
+PORT="4286"
+cat <<EEE
+    http://localhost:\${PORT}
+EEE
+
+echo -e "\n      Press enter to continue\n"
+read
+
+TARGET="./coverage"
+
+# detect python version and run one or another version
+cd "\${TARGET}"
+if python3 -c "import http.server" > /dev/null 2>&1; then
+    echo -e "\nrunning: python3 -m http.server \${PORT}\n"
+    python3 -m http.server \${PORT}
+elif python -c "import http.server" > /dev/null 2>&1; then
+    echo -e "\nrunning: python -m http.server \${PORT}\n"
+    python -m http.server \${PORT}
+elif python -c "import SimpleHTTPServer" > /dev/null 2>&1; then
+    echo -e "\nrunning: python -m SimpleHTTPServer \${PORT}\n"
+    python -m SimpleHTTPServer \${PORT}
+else
+    echo -e "\nPython http server module not found\n"
+    exit 1
+fi
+`,
+      confirm: false,
+    },
+    [`type`]: {
+      command: `
+set -e
+
+RED=$'\\033[0;31m'
+RESET=$'\\033[0m'
+YELLOW=$'\\033[1;33m'
+CYAN=$'\\033[1;36m'
+GREEN=$'\\033[0;32m'
+
+NODE_OPTIONS="" node ./node_modules/typescript/bin/tsc
+
+cat <<EEE
+
+  \${GREEN}🎉 All valid!\${RESET}
+
+EEE
+`,
+      confirm: false,
+    },
+    [`sonar`]: {
+      command: `
+set -e
+USER="sdzialowski"
+BRANCH="\$(git rev-parse --abbrev-ref HEAD | sed -E 's/\\/+/--/g')"
+PROJECT_NAME="\${USER}_\${BRANCH}"
+echo "USER>\${USER}<"
+echo "BRANCH>\${BRANCH}<"
+echo "PROJECT_NAME>\${PROJECT_NAME}<"
+echo "http://p3dw-sonar.cloud.phx3.gdg:9000/dashboard?id=\${PROJECT_NAME}"
+# look for link above in ~/.m2/settings.xml
+
+echo -e "\n      Press enter to continue\n"
+read
+
+mvn clean test -DskipITs -B sonar:sonar -Dsonar.projectKey="\${PROJECT_NAME}" -Dsonar.projectName="\${PROJECT_NAME}"
+`,
+      confirm: false,
+    },
+    [`transpile`]: {
+      command: `
+S="\\\\"      
+cat <<EEE
+
+/bin/bash transpile.sh choice.js/select.ts
+
+/bin/bash transpile.sh choice.js/composition/SelectedListManager.ts
+
+/bin/bash transpile.sh \${S}
+  choice.js/select.ts \${S}
+  choice.js/composition/SelectedListManager.ts \${S}
+  js/CenterResizer.ts
+
+EEE
+      `,
+      description: "Transpile choice.js/select.ts to choice.js/select.js",
+      source: false,
+      confirm: false,
+    },
+    [`google-java-format list`]: {
+      command: `
+set -e
+google-java-format -version 1> /dev/null 2> /dev/null
+if [ "\${?}" != "0" ]; then
+    cat <<EEE
+google-java-format not installed
+    mac: 
+        export HOMEBREW_NO_AUTO_UPDATE=1 && brew install google-java-format
+EEE
+    exit 1
+fi
+gjf --list
+`,
+      description: `gjf --list`,
+      confirm: false,
+    },
+    [`google-java-format format`]: {
+      command: `
+set -e
+google-java-format -version 1> /dev/null 2> /dev/null
+if [ "\${?}" != "0" ]; then
+    cat <<EEE
+google-java-format not installed
+    mac: 
+        export HOMEBREW_NO_AUTO_UPDATE=1 && brew install google-java-format
+EEE
+    exit 1
+fi
+gjf --format
+`,
+      description: `gjf --format`,
+      confirm: false,
+    },
+    [`style:check`]: {
+      command: `
+set -e
+/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --check .
+./node_modules/.bin/prettier --config prettier.config.cjs --check .
+`,
+      description: `style_check`,
+      confirm: false,
+    },
+    [`style:fix`]: {
+      command: `
+set -e
+/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write .
+./node_modules/.bin/prettier --config prettier.config.cjs --write .
+`,
+      description: `style_list`,
+      confirm: false,
+    },
+    [`style:list`]: {
+      command: `
+set -e
+/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --list-different .
+./node_modules/.bin/prettier --config prettier.config.cjs --list-different .
+`,
+      description: `style_list`,
+      confirm: false,
+    },
+    [`git sync`]: {
+      command: `
+set -e
+shopt -s expand_aliases && source ~/.bashrc
+cat <<EEE
+sshh 2
+git push stopsopa stopsopa_main:main --force --set-upstream
+git push stopsopa common:common --force --set-upstream
+sshh 1
+git push origin main:main --force --set-upstream
+EEE
+echo -e "\n      Press enter to continue\n"
+read
+if [ ! -z "\$(git status -s)" ]; then
+  echo "\nERROR: first commit changes\n"
+  exit 1;
+fi
+sshh 1
+echo "============ vv 1"
+ssh-add -L
+echo "============ ^^"
+sshh 2
+echo "============ vv 2"
+ssh-add -L
+echo "============ ^^"
+# -c color.branch=false -c color.diff=false -c color.status=false -c diff.mnemonicprefix=false -c core.quotepath=false -c credential.helper=sourcetree
+set -x
+git checkout common
+git pull stopsopa common  
+git push stopsopa common:common
+set +x
+sshh 1
+echo "============ vv 3"
+ssh-add -L
+echo "============ ^^"
+set -x
+git pull origin common  
+git push origin common:common
+git checkout main
+git pull origin main
+git merge common --no-edit
+git push origin main:main
+set +x
+sshh 2
+echo "============ vv 4"
+ssh-add -L
+echo "============ ^^"
+set -x
+git checkout stopsopa_main
+git pull stopsopa main
+git merge common  --no-edit
+git push stopsopa stopsopa_main:main
+set +x
+cat <<EEE
+All good!
+EEE
+`,
+      description: `sync`,
+      confirm: false,
+    },
+    dependencies: {
+      command: `
+set -e
+mvn dependency:list | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\\[[0-9]{1,3}m//g" | grep -i -E '^\\[INFO\\]' | tee dependencies_list.txt
+mvn dependency:tree | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\\[[0-9]{1,3}m//g" | grep -i -E '^\\[INFO\\]' | tee dependencies_tree.txt
+echo all good
+      `,
+      description: "Status of all things",
+      source: false,
+      confirm: false,
+    },
+
+    // python
+    activate: {
+      command: `
+                source venv/bin/activate
+                      `,
+      description: "Activate virtual environment",
+      confirm: false,
+      source: true,
+    },
+    deactivate: {
+      command: `
+                deactivate
+                      `,
+      description: "Deactivate virtual environment",
+      confirm: false,
+      source: true,
+    },
+    freeze: {
+      command: `
+                pip freeze > requirements.txt
+                      `,
+      description: "Freeze requirements.txt",
+      confirm: false,
+    },
+    server: {
+      command: `
+                if [ -n "\${VIRTUAL_ENV}" ]; then
+                    echo "venv is active: \${VIRTUAL_ENV}"
+                else
+                    echo "no venv active, activating"
+                    source venv/bin/activate
+                fi
+                
+                /bin/bash start.sh
+                      `,
+      description: "Activate virtual environment",
+      confirm: false,
+      source: false,
+    },
+
+    ...setup,
+  };
+};

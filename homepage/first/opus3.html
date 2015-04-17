@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home — Tags</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        background: #1c1c1c;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        max-width: 600px;
+        justify-content: center;
+      }
+
+      .wrap a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: #2a2a2a;
+        border: 1px solid #333;
+        border-radius: 100px;
+        color: #aaa;
+        text-decoration: none;
+        font-size: 12px;
+        white-space: nowrap;
+        transition: background 0.2s, color 0.2s, border-color 0.2s;
+      }
+
+      .wrap a:hover {
+        background: #363636;
+        color: #fff;
+        border-color: #555;
+      }
+
+      .wrap a img {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <a href="https://www.google.com"><img src="https://www.google.com/favicon.ico" alt="" />Google</a>
+      <a href="https://calendar.google.com"
+        ><img
+          src="https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico"
+          alt=""
+        />Calendar</a
+      >
+      <a href="https://www.youtube.com"><img src="https://www.youtube.com/favicon.ico" alt="" />YouTube</a>
+      <a href="https://example.net"><img src="https://example.net/favicon.ico" alt="" />example.net</a>
+      <a href="https://chatgpt.com"><img src="https://chatgpt.com/favicon.ico" alt="" />ChatGPT</a>
+      <a href="https://github.com"><img src="https://github.com/favicon.ico" alt="" />GitHub</a>
+      <!-- add more links here -->
+    </div>
+  </body>
+</html>

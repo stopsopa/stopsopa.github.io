@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>CSS - Styling & Design Guide</title>
+    <style>
+      .test {
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        /*border: 1px solid #454545;*/
+        box-shadow: 0 0 4px black;
+        margin: 10px;
+      }
+    </style>
+
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll("[replace]")).forEach(function (tag) {
+            var id = tag.getAttribute("replace");
+
+            const target = document.querySelector(id);
+
+            if (!target) {
+              console.error("target not found for id:", id);
+
+              return;
+            }
+
+            target.innerHTML = tag.innerHTML;
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="light-dark.html">Dark mode</a></li>
+            <li><a href="../html/float-label-pattern/index.html">Float Label Pattern - Floating Label Input GCP</a></li>
+          </ul>
+        </div>
+        <h2>Learn</h2>
+
+        <script type="editor" data-lang="css" data-w="95%">
+
+          contrast-color(): rom: https://youtu.be/XVasJ3
+
+          # from: https://youtu.be/XVasJ3shTYo?t=58
+          - container queries
+          - :has() selector
+          - view transitions
+        </script>
+        <h2>Rules</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          50 to 75 characters per line
+          letter spacing -1.2px - -1.3px
+        </script>
+        <h2>Ideas</h2>
+        <a href="https://www.youtube.com/shorts/v_CuehIfxUA">toast nice styling</a>
+        <h2>Various</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          font-size: clamp(0.5rem, 3.5vw, 10rem); https://youtu.be/TUD1AWZVgQ8?t=1082
+
+          all: unset;
+            /* from: https://youtube.com/shorts/lVk6EXvQDkM?feature=share */
+        </script>
+        <h2>tricks</h2>
+        <a href="https://youtu.be/Xc6G3oV24yE">https://youtu.be/Xc6G3oV24yE</a>
+
+        <h2>Holy grail layout</h2>
+
+        <a href="holy-grail/001/index.html">holy-grail/001/index.html</a>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          // https://github.com/stopsopa/telazekah/tree/main/public/grail
+          // https://codefronts.com/layouts/css-grid-layouts
+          // MDN: https://developer.mozilla.org/en-US/docs/Web/CSS/How_to/Layout_cookbook
+          // https://www.smashingmagazine.com/guides/css-layout
+          // https://www.joshwcomeau.com/css/interactive-guide-to-grid
+          // Colors:
+          //   https://www.radix-ui.com/colors
+          //   https://tailwindcss.com/docs/colors
+          //
+          //
+          //
+        </script>
+        <h2>Web Components</h2>
+
+        <a href="/pages/css/examples/index.html">/pages/css/examples/index.html</a>
+
+        <h2>Css grid</h2>
+        <a href="https://una.github.io/thebestjsisnojs/">https://una.github.io/thebestjsisnojs/</a>
+        <br />
+        <a href="https://youtu.be/JRwIFETSxoc">https://youtu.be/JRwIFETSxoc</a>
+
+        <br />
+        <a href="/pages/css/css-grid/index.html">css grid (subpage)</a>
+        <br />
+        <a href="https://youtu.be/TUD1AWZVgQ8?t=865">g(grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)))</a>
+
+        <h2>Selectors</h2>
+        <a href="/other/selectors/">selectors</a>
+
+        <h2>align-content</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          // align vertically:
+          align-content: center; // works only if there is space
+            // from: https://youtu.be/55uUK-iJeNM?t=721
+        </script>
+        <h2>Nice design - UI</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          https://getcroc.com/
+          https://posthog.com/careers
+          https://youtu.be/gJmz31JywM0?t=364
+
+          invoices:
+            https://youtu.be/G8P4kBAjqgU?t=359
+        </script>
+        <h2>Flexbox</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          // center horizontal vertical (WORKS ONLY ON PARENT ELEMENT)
+            // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Aligning_items_in_a_flex_container
+        </script>
+
+        <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/"
+          >https://css-tricks.com/snippets/css/a-guide-to-flexbox/</a
+        >
+        <br />
+        <a href="/research/flexbox/layouts/card-layouts.html">/research/flexbox/layouts/card-layouts.html</a>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          /* from: https://youtu.be/sanswTlz4ZY */
+          flex: 1;
+          /* is equal to */
+          flex: 1 1 0;
+          /* is equal to */
+          flex-grow: 1;
+          flex-shrink: 1;
+          flex-basis: 0;
+        </script>
+        <h2>Auto text color mutation based on background</h2>
+        <a href="https://stopsopa.github.io/history/color/experiment5.html"
+          >https://stopsopa.github.io/history/color/experiment5.html</a
+        >
+        <h2>oklch colors</h2>
+        <a href="oklch.html">oklch.html</a>
+
+        <script type="editor" data-lang="css" data-w="95%">
+
+          background-color: oklch(from var(--base-teal) calc(l + 0.15) c h);
+              from: https://youtu.be/1NX2kmvbWFQ?t=381
+        </script>
+        <h2>SVG to URL</h2>
+        <a href="https://svgencode.com/">https://svgencode.com/</a>
+        <h2>background stripes</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);
+        </script>
+        test:
+        <br />
+        <div class="test"></div>
+        <br />
+        done with
+        <a href="https://www.coffee-break-designs.com/labs/svg_stripe_generator/"
+          >https://www.coffee-break-designs.com/labs/svg_stripe_generator/</a
+        >
+        and
+        <a href="https://base64.guru/converter/encode/image/svg">https://base64.guru/converter/encode/image/svg</a>
+
+        <h2>scroll marker</h2>
+
+        <script type="editor" data-lang="css">
+
+          https://una.github.io/back-to-the-future-of-web-dev/
+        </script>
+        <h2>Masonry</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          https://www.cssplay.co.uk/menu/cssplay-masonry-emulation.html
+          https://www.cssplay.co.uk/menu/cssplay-masonry-emulation-v2.html
+          https://www.cssplay.co.uk/menu/cssplay-masonry-emulation-horizontal.html
+          https://www.cssplay.co.uk/menu/cssplay-masonry-for-images-and-text.html
+          https://www.cssplay.co.uk/menu/cssplay-masonry-for-images.html
+          https://youtu.be/Vcv01Czsq2Y?t=852
+        </script>
+        <h2>Menu</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          https://www.cssplay.co.uk/menus/index.html
+        </script>
+        <h2>CSS shape-outside with transparent background image</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          https://www.cssplay.co.uk/menu/cssplay-shape-outside-with-image-transparency.html
+        </script>
+        <h2>variables in js</h2>
+        <a href="variables.html">variables.html</a>
+
+        <h2>cubic-bezier</h2>
+        <a href="/pages/bash/xx/lib/index.html">/pages/bash/xx/lib/index.html</a>
+        <br />
+        <a href="https://easings.net/#">from: https://github.com/ai/easings.net</a>
+        <br />
+        <a
+          href="https://github.com/ai/easings.net/blob/0577741e8eab192d8c5928a825271f10490eabfd/src/easings/easingsFunctions.ts"
+          >Easing functions</a
+        >
+        <h2>icons</h2>
+        <script type="editor" data-lang="sh">
+
+          https://www.radix-ui.com/icons
+          https://www.magnific.com/icons/crop-image
+        </script>
+
+        <h2>Google</h2>
+        <a href="https://fonts.google.com/specimen/Architects+Daughter">Architects Daughter</a>
+        <br />
+        <a href="https://fonts.google.com/specimen/The+Girl+Next+Door">The Girl Next Door</a>
+        <script type="editor" data-lang="sh"></script>
+
+        <h2>even odd nth-child</h2>
+
+        <script type="editor" data-lang="css">
+
+          /* even odd childrens vvv */
+          :nth-child(2n+1) /* targets all odd rows - first will be affected*/
+          :nth-child(2n) /* targets all even rows - second will be affected */
+          :nth-child(3) /* just third element element */
+          :first-child
+          :last-child
+          /* even odd childrens ^^^ */
+        </script>
+        <h2>box-sizing</h2>
+
+        <script type="editor" data-lang="css">
+
+          box-sizing: content-box(default)|border-box|initial|inherit; /* def(content-box) czy border ma być częścią width czy nie */
+
+          ----------------------------------------------------------- --- [nie ma]
+          |                         margin                          |
+          |    ------------------------------------------------     | --- border-box
+          |    |                    border                    |     |
+          |    |    -------------------------------------     |     | --- padding-box
+          |    |    |               padding              |    |     |
+          |    |    |   ------------------------------   |    |     | --- content-box (default)
+          |    |    |   |           content          |   |    |     |
+          |    |    |   ------------------------------   |    |     |
+          |    |    |                                    |    |     |
+          |    |    -------------------------------------     |     |
+          |    |                                              |     |
+          |    ------------------------------------------------     |
+          |                                                         |
+          -----------------------------------------------------------
+        </script>
+
+        <h2>display: block flex;</h2>
+        <script type="editor" data-lang="css">
+
+          // https://www.youtube.com/watch?v=JY0FN71vCbw
+        </script>
+        <h2>box-shadow</h2>
+        <script type="editor" data-lang="css">
+
+          box-shadow: 0 0 7px red;
+
+          /*     left-right, up-down, shadow distance, colour  */
+            -webkit-box-shadow: 0 0 3px #727272;
+                    box-shadow: 0 0 3px #727272;
+          /*
+               -moz-box-shadow: 0 0 3px #727272;
+                -ms-box-shadow: 0 0 3px #727272;
+                 -o-box-shadow: 0 0 3px #727272;
+          */
+
+            -webkit-box-shadow: inset 0 0 5px #000;
+                    box-shadow: inset 0 0 5px #000;
+          /*
+               -moz-box-shadow: inset 0 0 5px #000;
+                -ms-box-shadow: inset 0 0 5px #000;
+                 -o-box-shadow: inset 0 0 5px #000;
+          */
+
+          /*     left-right, up-down, shadow distance, blurr, colour  */
+          text-shadow: 0 0 1px yellow;
+          text-shadow: 0 0 4px white, 0 -5px 4px #FFFF33, 2px -10px 6px #FFDD33; /* flame effect - multiple shadows*/
+          box-shadow: 5px 5px 5px rgba(0,0,0,.75); /* [IE 9] */
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+
+          /*  multiple  */
+
+          box-shadow: 0 0 10px 4px #00f, 0 0 20px 30px #008000, 30px 0 20px 30px #ff1493, -30px -30px 20px 30px #ff4500;
+
+            /* from https://www.entheosweb.com/tutorials/css/multiple_shadows.asp */
+        </script>
+        <h2>extract colors from image</h2>
+        <script type="editor" data-lang="css">
+
+          https://lokeshdhakar.com/projects/color-thief/
+        </script>
+
+        <h2>clamp</h2>
+
+        <script type="editor" data-lang="css">
+
+          // https://youtu.be/rIOIeoX6QNw
+
+          h1 {
+            font-size: clamp(50px, 8vw, 100px);
+            text-align: center;
+          }
+        </script>
+        <h2>colors list in CSS</h2>
+
+        <script type="editor" data-lang="css">
+
+          https://www.w3.org/TR/css-color-4/#named-colors
+          https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/named-color
+          https://www.w3.org/TR/SVG11/types.html#ColorKeywords
+        </script>
+        <h2>view() function rotate scroll</h2>
+
+        <a href="https://youtu.be/Vcv01Czsq2Y?t=600">read even newer stuff about view()</a>
+
+        <style replace="#replace_virus_rotate_target">
+          .virus_rotate {
+            width: 150px;
+            animation-name: rotateAnimation;
+            animation-timeline: view();
+          }
+          @keyframes rotateAnimation {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
+            }
+          }
+          /* from: https://youtu.be/pFtxR-O78sY */
+        </style>
+        <img src="./virus.svg" class="virus_rotate" />
+        <script type="editor" data-lang="css" id="replace_virus_rotate_target"></script>
+
+        <hr />
+        <hr />
+        <hr />
+        <style replace="#replace_header_fade_in_target">
+          .header_fade_in {
+            font-size: 30px;
+            font-weight: 900;
+            animation: headerFadeIn both;
+            animation-timeline: view(70% 5%);
+          }
+          @keyframes headerFadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(200px) scale(0.3);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+        </style>
+        <p class="header_fade_in">My header</p>
+        <div class="header_fade_in">
+          <script type="editor" data-lang="css" id="replace_header_fade_in_target" class="header_fade_in"></script>
+        </div>
+
+        <hr />
+        <hr />
+        <hr />
+        <style replace="#replace_auto_blur_target">
+          .auto_blur {
+            font-size: 50px;
+            font-weight: 900;
+            animation: autoBlurAnimation both;
+            animation-timeline: view();
+          }
+          @keyframes autoBlurAnimation {
+            0% {
+              filter: blur(40px);
+            }
+            45%,
+            55% {
+              filter: blur(0px);
+            }
+            100% {
+              filter: blur(40px);
+            }
+          }
+        </style>
+        <p class="auto_blur">Lorem ipsum dolor sit amet</p>
+        <p class="auto_blur">&nbsp; &nbsp; &nbsp; &nbsp; consectetur adipiscing elit</p>
+        <p class="auto_blur">Cras a libero a enim malesuada</p>
+        <p class="auto_blur">&nbsp; &nbsp; Mauris id posuere tortor</p>
+        <p class="auto_blur">sit amet scelerisque nisi</p>
+        <p class="auto_blur">&nbsp; &nbsp; &nbsp; &nbsp; Duis quis accumsan ex</p>
+
+        <script type="editor" data-lang="css" id="replace_auto_blur_target"></script>
+
+        <hr />
+        <hr />
+        <hr />
+        <h2>
+          <script type="editor" data-lang="css">
+
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+                -ms-transform: translate(-50%, -50%);
+                    transform: translate(-50%, -50%);
+
+            Interesting case:
+              urlwizzard.schema://urlwizzard.hostnegotiated/pages/js/popper/html-vanilla/index.rendered.html#multiple-manual-popovers-can-be-displayed-at-once-bt-they-cant-be-light-dismissed
+          </script>
+          center element
+        </h2>
+        <h2>Blur elements</h2>
+
+        <script type="editor" data-lang="css">
+
+          // https://youtu.be/PL3Odw-k8W4?t=193
+        </script>
+        <h2>Gradient text</h2>
+        <script type="editor" data-lang="css">
+
+          // https://youtu.be/PL3Odw-k8W4?t=334
+        </script>
+
+        <div class="gradienttext">
+          <style>
+            .gradienttext {
+              display: inline-block;
+              width: 350px;
+              background: linear-gradient(to right, red, blue);
+              background-clip: text;
+              color: transparent;
+              font-size: 50px;
+              font-weight: bold;
+            }</style
+          >Hello World
+        </div>
+
+        <h2>Carousel</h2>
+        <script type="editor" data-lang="css">
+
+          https://una.github.io/back-to-the-future-of-web-dev/
+        </script>
+        <h2>Class-swapper</h2>
+
+        <script type="editor" data-lang="css">
+
+          /* https://youtu.be/PL3Odw-k8W4?t=466 */
+
+          .wrapper {
+            scroll-snap-type: x mandatory;
+            scroll-snap-type: x proximity;
+            .card {
+
+              scroll-snap-align: center;
+            }
+          }
+        </script>
+        <div class="cssswapper">
+          <style>
+            .cssswapper {
+              padding: 30px;
+              .wrapper {
+                box-shadow: 0 0 4px black;
+                display: flex;
+                gap: 20px;
+                width: 300px;
+                overflow-x: scroll;
+                scroll-snap-type: x mandatory;
+                scroll-snap-type: x proximity;
+                .card {
+                  scroll-snap-align: center;
+                  box-sizing: border-box;
+                  padding: 20px 30px;
+                  flex-shrink: 0;
+                  width: 300px;
+                  background-color: white;
+                  border-radius: 14px;
+                  text-align: center;
+                }
+              }
+            }
+          </style>
+          <div class="wrapper">
+            <div class="card">
+              <h3>Card 1</h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            </div>
+            <div class="card">
+              <h3>Card 2</h3>
+              <p>Consectetur adipisicing elit. Quisquam, quidem.</p>
+            </div>
+            <div class="card">
+              <h3>Card 3</h3>
+              <p>Adipisicing elit. Quisquam, quidem. Lorem ipsum dolor sit amet.</p>
+            </div>
+            <div class="card">
+              <h3>Card 4</h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quidem.</p>
+            </div>
+            <div class="card">
+              <h3>Card 5</h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            </div>
+            <div class="card">
+              <h3>Card 6</h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quidem.</p>
+            </div>
+          </div>
+        </div>
+        <h2>New Morphism</h2>
+        <a href="https://youtu.be/PL3Odw-k8W4?t=28">https://youtu.be/PL3Odw-k8W4?t=28</a>
+        <style>
+          .morphism {
+            position: relative;
+            background-color: #f9f9f9;
+            height: 200px;
+            .element {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              padding: 40px;
+              transition: box-shadow 0.3s ease;
+            }
+            .element:hover {
+              box-shadow: 12px 12px 12px rgba(0, 0, 0, 0.1), -12px -12px 12px white;
+            }
+          }
+        </style>
+
+        <div class="morphism">
+          <div class="element">Hover me</div>
+        </div>
+        <h2>image reset</h2>
+
+        <script type="editor" data-lang="css">
+
+          img {
+            font-style: italic;
+            background-repeat: no-repeat;
+            background-size: cover;
+            shape-margin: 1rem;
+            max-width: 100%;
+            height: auto;
+            vertical-align; middle;
+          }
+
+          /* from: https://www.youtube.com/watch?v=345V2MU3E_w */
+        </script>
+        <h2>animations</h2>
+        <a href="https://codepen.io/stopsopa/pen/MWzdYbd">Glowing animated background</a>
+        <br />
+        <a href="https://codepen.io/raulghm/pen/EjdwoO">Simple Glow Effect</a>
+        <br />
+        <a href="https://codepen.io/leandrosimoes/pen/VqZxaG">Pure CSS Button Hover Glow Effect</a>
+
+        <h2>Fonts</h2>
+        <script type="editor" data-lang="css">
+
+          Google fonts:
+            https://fonts.google.com/specimen/IBM+Plex+Mono
+              from: https://terminaltrove.com/compare/ai-coding-agents/
+            https://fonts.google.com/specimen/Google+Sans+Flex
+            https://fonts.google.com/specimen/Merriweather
+            https://fonts.google.com/specimen/Geist+Mono
+            https://fonts.google.com/specimen/Nunito+Sans
+            https://fonts.google.com/specimen/Libre+Baskerville
+
+
+          Interesting nice fonts:
+            https://fonts.google.com/specimen/Geist+Mono
+              from: https://local.ai/energy
+            https://interfaze.ai/
+            https://www.madooei.com/posts/on-fullstack-and-ai/
+
+          https://fonts.google.com/specimen/Jost
+            from: https://databasus.com/images/index/dashboard.svg
+
+          https://www.cdnfonts.com/jetbrains-mono.font
+        </script>
+
+        <p>
+          Font tester
+          <a href="https://www.cssplay.co.uk/menu/cssplay-variable-fonts.html"
+            >https://www.cssplay.co.uk/menu/cssplay-variable-fonts.html</a
+          >
+        </p>
+        <p>
+          Check also font "rubik font" <a href="https://fonts.google.com/specimen/Rubik">Google</a> &
+          <a href="https://fonts.adobe.com/fonts/rubik">Adobe</a> <br />
+          found:
+          <a href="https://mightandmagic.fandom.com/wiki/List_of_Heroes_III_artifacts"
+            >https://mightandmagic.fandom.com/wiki/List_of_Heroes_III_artifacts</a
+          >
+        </p>
+
+        <p>
+          <b>WARNING:</b> choosing font from any tool like google fonts pay attention to numeric values of font-weight
+          in css, more about it
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight"
+            >https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight</a
+          >
+        </p>
+        <script type="editor" data-lang="css">
+
+          /* from: https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight */
+          font-weight: normal;
+          font-weight: bold;
+
+          /* <font-weight-absolute> numeric values [1,1000] */
+          font-weight: 100; /* thin */
+          font-weight: 200;
+          font-weight: 300;
+          font-weight: 400; /* normal */
+          font-weight: 500;
+          font-weight: 600;
+          font-weight: 700; /* bold */
+          font-weight: 800;
+          font-weight: 900; /* heavy */
+
+          /* Keyword values relative to the parent */
+          font-weight: lighter;
+          font-weight: bolder;
+
+
+          /*
+          normally I would take probably something like:
+          //fonts.googleapis.com/css?family=Open+Sans:300,400,500,700,900
+          */
+        </script>
+        <style>
+          /* from: https://css-tricks.com/snippets/css/font-stacks/ */
+          .font1 {
+            /* Times New Roman-based stack */
+            font-family: Cambria, "Hoefler Text", Utopia, "Liberation Serif", "Nimbus Roman No9 L Regular", Times,
+              "Times New Roman", serif;
+          }
+
+          .font2 {
+            /* Modern Georgia-based serif stack */
+            font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif",
+              "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+          }
+
+          .font3 {
+            /* Traditional Garamond-based serif stack */
+            font-family: "Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Baskerville,
+              "Bookman Old Style", "Bitstream Charter", "Nimbus Roman No9 L", Garamond, "Apple Garamond",
+              "ITC Garamond Narrow", "New Century Schoolbook", "Century Schoolbook", "Century Schoolbook L", Georgia,
+              serif;
+          }
+
+          .font4 {
+            /* Helvetica/Arial-based sans serif stack */
+            font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro",
+              Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue",
+              Helvetica, Arial, sans-serif;
+          }
+
+          .font5 {
+            /* Verdana-based sans serif stack */
+            font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans",
+              "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
+          }
+
+          .font6 {
+            /* Trebuchet-based sans serif stack */
+            font-family: "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans",
+              "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;
+          }
+
+          .font7 {
+            /* Impact-based sans serif stack */
+            font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat",
+              "Bitstream Vera Sans Bold", "Arial Black", sans-serif;
+          }
+
+          .font8 {
+            /* Monospace stack */
+            font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter",
+              "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New",
+              Courier, monospace;
+          }
+          .font9 {
+            font-family: "Open Sans";
+            font-size: 12px;
+          }
+          .font10 {
+            font-family: monaco, Consolas, Lucida Console, monospace;
+            font-size: 12px;
+          }
+        </style>
+        <p class="font1">
+          Times New Roman-based stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est eget
+          mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus ipsum
+          sapien
+        </p>
+        <p class="font2">
+          Modern Georgia-based serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est
+          eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+        </p>
+        <p class="font3">
+          Traditional Garamond-based serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor
+          est eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+        </p>
+        <p class="font4">
+          Helvetica/Arial-based sans serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor
+          est eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+        </p>
+        <p class="font5">
+          Verdana-based sans serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est
+          eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+        </p>
+        <p class="font6">
+          Trebuchet-based sans serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est
+          eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+        </p>
+        <p class="font7">
+          Impact-based sans serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est eget
+          mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus ipsum
+          sapien
+        </p>
+        <p class="font8">
+          Monospace stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est eget mi
+          condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus ipsum sapien
+        </p>
+        <p class="font9">
+          Monospace stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est eget mi
+          condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus ipsum sapien
+        </p>
+        <p class="font10">
+          Monaco CSS Font Stack (monospace) - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est
+          eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+          <a href="https://www.cssfontstack.com/Monaco">https://www.cssfontstack.com/Monaco</a>
+        </p>
+        <h2>Font Iter</h2>
+
+        <script type="editor" data-lang="css">
+
+          homepage: https://rsms.me/inter/download/ by Rasmus Andersson (RSMS)
+            first saw: https://www.blockchain.com/explorer/transactions/eth/0x47cc7d1d0d06a304b67f9e31f710e44aa4ba499e5ca8624ee8f23c1ae8ca4461
+
+          // all we need
+
+          <link rel="preconnect" href="https://rsms.me/" />
+          <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+           <style>
+            .iter {
+              font-family: "Inter", sans-serif;
+              font-feature-settings:
+                "liga" 1,
+                "calt" 1,
+                "zero",
+                "ss01";
+            }
+
+            .noiter {
+              font-family: revert;
+              font-feature-settings: revert;
+            }
+
+            @supports (font-variation-settings: normal) {
+              .iter {
+                font-family: "Inter var", sans-serif;
+              }
+            }
+          </style>
+        </script>
+
+        <!-- use it here too vvv -->
+        <!-- use it here too vvv -->
+        <!-- use it here too vvv -->
+        <!-- use it here too vvv -->
+        <!-- use it here too vvv -->
+        <!-- use it here too vvv -->
+        <link rel="preconnect" href="https://rsms.me/" />
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        <style>
+          .iter {
+            font-family: "Inter", sans-serif;
+            font-feature-settings: "liga" 1, "calt" 1, "zero", "ss01";
+          }
+
+          .noiter {
+            font-family: revert;
+            font-feature-settings: revert;
+          }
+
+          @supports (font-variation-settings: normal) {
+            .iter {
+              font-family: "Inter var", sans-serif;
+            }
+          }
+        </style>
+        <!-- use it here too ^^^ -->
+        <!-- use it here too ^^^ -->
+        <!-- use it here too ^^^ -->
+        <!-- use it here too ^^^ -->
+        <!-- use it here too ^^^ -->
+        <!-- use it here too ^^^ -->
+
+        // test
+        <p class="iter">
+          font: Inter - This transaction was first broadcasted on the Ethereum network on August 09, 2022 at 03:08 AM
+          GMT+1. The transaction currently has 5,310,353 confirmations on the network. The current value of this
+          transaction is now $5,361.50. 1.9944871497470729 Ether Value 1.9940497464044795 Ether (1,994,049,746 Gwei)
+          $5,361.50 Fee 0.00043740334259341 Ether
+        </p>
+
+        <h2>attr()</h2>
+        <div id="attr"></div>
+        <!-- <style>
+          .one {
+            background-color: attr(data-color type(<color>));
+          }
+        </style> -->
+        <script type="editor" data-lang="js" data-eval>
+
+          // https://youtu.be/WcNWf6edIcc
+
+          import addCss from '../../js/addCss.js';
+
+          const parent = document.querySelector('#attr');
+
+          parent.innerHTML = `
+            <p class="one" data-color="#008000">lorem ipsum</p>
+            <p class="two" data-font-size="34">lorem ipsum</p>
+            <p class="three" data-customvar="error">lorem ipsum</p>
+            <p class="three" data-customvar="loading">lorem ipsum</p>
+            <span  >different element</span>
+          `;
+
+          addCss(`
+            * {
+            }
+            #attr {
+              .one {
+                background-color: attr(data-color type(<color>), red);
+              }
+              .two {
+                font-size: attr(data-font-size px);
+                margin-top: attr(data-margin px, 0);
+                margin-bottom: attr(data-margin px, 0);
+              }
+              .three {
+                --customvar: attr(data-customvar); /* https://youtu.be/WcNWf6edIcc?t=432 */
+                background-color: if(
+                  style(--customvar: "loading"): green;
+                  style(--customvar: "error"): red;
+                  else: blue;
+                );
+              }
+            }
+          `)
+        </script>
+
+        <h2>filter: drop-shadow</h2>
+        <div>
+          <div>
+            <div>
+              <div>
+                <div>
+                  <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow#browser_compatibility"
+                    >https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow#browser_compatibility</a
+                  >
+                  | <a href="https://www.youtube.com/shorts/r0tG1JZ2i8g">from</a>
+                  <img src="https://i.imgur.com/q3CHEJs.png" class="toggle_drop_shadow_cls" width="200" />
+                  <style>
+                    .toggle_drop_shadow_cls {
+                      transition: filter 0.23s ease-in-out;
+                      &:hover {
+                        filter: drop-shadow(0px 0px 12px red);
+                      }
+                    }
+                  </style>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h2>filter: grayscale</h2>
+        <div>
+          <div>
+            <div>
+              <div>
+                <div>
+                  <a href="https://www.youtube.com/shorts/u9PycXAcWNo">from</a>
+                  <br />
+                  <img src="https://i.imgur.com/q3CHEJs.png" class="toggle_grayscale_cls" width="200" />
+                  <p>to see the effect hover over the image</p>
+                  <style>
+                    .toggle_grayscale_cls {
+                      filter: grayscale(100%);
+                      transition: filter 0.23s ease-in-out;
+                      &:hover {
+                        filter: grayscale(0%);
+                      }
+                    }
+                  </style>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h2>url: gradient, img()</h2>
+        <div class="url_gradient_img">
+          <div class="bground"><div>Lorem ipsum dolor sit amet</div></div>
+          <input type="range" min="0" max="100" value="50" step="1" />
+          <style>
+            .url_gradient_img {
+              .bground {
+                background-image: url("data:image/jpeg;base64,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");
+                background-size: calc(82px * 5) calc(46px * 5);
+                background-repeat: no-repeat;
+                width: calc(82px * 5);
+                height: calc(46px * 5);
+
+                display: flex; /* activate flex-box */
+                justify-content: center; /* horizontal centering */
+                align-items: center; /* vertical   centering */
+                & > div {
+                  color: white;
+                  font-weight: bold;
+                  text-align: center; /* center the text inside the inner div */
+                }
+              }
+            }
+          </style>
+
+          <!-- <script type="editor" data-lang="css" data-eval> -->
+          <script>
+            const parent = document.querySelector(".url_gradient_img ");
+
+            const bground = parent.querySelector(".bground");
+
+            const url = window.getComputedStyle(bground, null).getPropertyValue("background-image");
+
+            function range(element, event) {
+              function hc() {
+                event(parseInt(element.value, 10));
+              }
+              element.addEventListener("change", hc);
+              element.addEventListener("input", hc);
+              hc();
+            }
+
+            const rangeEl = parent.querySelector("input[type='range']");
+
+            range(rangeEl, (v) => {
+              const c = ((1 / 100) * v).toFixed(2);
+
+              bground.style.backgroundImage = `linear-gradient(hsl(0 0% 0% / ${c}) 0 0), ${url}`;
+            });
+          </script>
+        </div>
+
+        <h2>Button rotate</h2>
+        <div class="button_rotate">
+          <button>Hover me</button>
+        </div>
+        <style>
+          @property --angle {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+          }
+          @keyframes rotate {
+            to {
+              --angle: 1turn;
+            }
+          }
+          .button_rotate {
+            button {
+              font: inherit;
+              color: black;
+              padding: 0.5em 1.25em;
+              border-radius: 100vw;
+              border: 5px solid transparent;
+              background: linear-gradient(white) padding-box,
+                conic-gradient(from var(--angle), blue, red, blue) border-box;
+              animation: rotate 1s linear infinite;
+              animation-play-state: paused;
+            }
+            button:hover,
+            button:focus-visible {
+              animation-play-state: running;
+            }
+          }
+        </style>
+        <h2>Glow shine css</h2>
+        <a href="glow/hover.html">glow/hover.html</a>
+        <br />
+        <a href="glow/hover2.html">glow/hover2.html</a>
+        <h2>transform</h2>
+        <div class="different_transform">
+          <div>
+            <div>
+              <div>
+                <div>
+                  <a href="https://www.youtube.com/shorts/1ULiXjvw0F0">from</a>
+                  <br />
+
+                  <div class="rect up"></div>
+                  <div class="rect rotate"></div>
+                  <div class="rect skew"></div>
+                  <div class="rect scale"></div>
+                  <div class="rect matrix">glitchy</div>
+                  <div class="rect matrix_fixed"><div>matrix_fixed</div></div>
+                  <style>
+                    .different_transform {
+                      div.rect {
+                        float: left;
+                        margin-top: 10px;
+                        margin-left: 10px;
+                        margin-bottom: 10px;
+                        font-family: "Open Sans";
+                        font-size: 12px;
+                        text-align: center;
+                        line-height: 89px;
+                        &:not(.matrix_fixed),
+                        &.matrix_fixed > div {
+                          border: 3px solid #4e4b4b;
+                          background-color: #5282ca;
+                          width: 100px;
+                          height: 100px;
+                          transition: transform 0.3s ease;
+                        }
+                        &.up:hover {
+                          transform: translate(-7px, -7px);
+                        }
+                        &.rotate:hover {
+                          transform: rotate(8deg);
+                        }
+                        &.skew:hover {
+                          transform: skew(-5deg, -10deg);
+                        }
+                        &.scale:hover {
+                          transform: scale(0.87);
+                        }
+                        &.matrix:hover {
+                          transform: matrix(0, 1, 1, 0, 0, 0);
+                        }
+                        &.matrix_fixed {
+                          box-shadow: 0 0 7px red;
+                          &:hover {
+                            div {
+                              transform: matrix(0, 1, 1, 0, 0, 0);
+                            }
+                          }
+                        }
+                      }
+                    }
+                  </style>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+// sw.js
+const CACHE_NAME = "service_worker";
+
+self.addEventListener("fetch", (event) => {
+  // Only cache GET requests.
+  if (event.request.method !== "GET") {
+    return;
+  }
+
+  const url = new URL(event.request.url);
+
+  if (url.origin !== location.origin || !url.pathname.endsWith(".js")) {
+    return;
+  }
+
+  event.respondWith(
+    (async () => {
+      try {
+        const cache = await caches.open(CACHE_NAME);
+
+        console.log(
+          `sw.js trace: event.request.method >${event.request.method}< event.request.url >${event.request.url}<`
+        );
+
+        const cached = await cache.match(event.request);
+
+        if (cached) {
+          return cached;
+        }
+
+        const response = await fetch(event.request);
+
+        if (response.ok) {
+          await cache.put(event.request, response.clone());
+        }
+
+        return response;
+      } catch (err) {
+        console.error("Failed to serve JS file:", err);
+
+        // Try cache again as a fallback
+        const cache = await caches.open(CACHE_NAME);
+        const cached = await cache.match(event.request);
+
+        if (cached) {
+          return cached;
+        }
+
+        throw err;
+      }
+    })()
+  );
+});

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Paste Tool - Code Sharing Utility</title>
+    <style>
+      img {
+        max-width: 70%;
+      }
+      textarea {
+        width: 95%;
+      }
+      table {
+        width: 100%;
+      }
+      table > tbody > tr > td:first-child {
+        width: 30px;
+      }
+    </style>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <div id="app"></div>
+      </div>
+    </div>
+
+    <script src="/public/preprocessed.js?pastetool"></script>
+    <!-- despite get parameter preprocessed.js will be browser cached anyway even when loading more than one. Even when mixing techniques -> CJS | ESM -->
+    <script type="module" src="/dist/firebase.core.entry.bundle.js"></script>
+    <script type="module" src="/dist/pastetool.entry.bundle.js"></script>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Co-Author Generator</title>
+    <meta name="description" content="Generate Git Co-authored-by lines from GitHub profiles easily." />
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <h1>GitHub Co-Author Generator</h1>
+        <p>
+          Quickly generate Git attribution lines from GitHub profile URLs. This tool fetches user IDs and formats them
+          for commit messages.
+        </p>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 2rem; margin-top: 2rem">
+          <input
+            type="text"
+            id="github-url"
+            placeholder="https://github.com/username"
+            autocomplete="off"
+            style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem"
+          />
+          <button
+            id="generate-btn"
+            style="
+              padding: 10px 20px;
+              background: #0366d6;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              font-weight: 600;
+              font-size: 1rem;
+            "
+          >
+            Generate
+          </button>
+        </div>
+
+        <ace-editor id="result-editor" lang="python" min-height-px="200">
+          <script type="ace"></script>
+        </ace-editor>
+
+        <div style="margin-top: 1rem; font-size: 0.85rem; color: #586069">
+          Quick test:
+          <a
+            href="urlwizzard.schema://urlwizzard.hostnegotiated//pages/github/co-author.html?url=https%3A%2F%2Fgithub.com%2Fclaude"
+            style="margin-left: 0.5rem"
+            >claude</a
+          >
+          <a
+            href="urlwizzard.schema://urlwizzard.hostnegotiated//pages/github/co-author.html?url=https%3A%2F%2Fgithub.com%2Fgemini-cli"
+            style="margin-left: 1rem"
+            >gemini-cli</a
+          >
+          <a
+            href="urlwizzard.schema://urlwizzard.hostnegotiated//pages/github/co-author.html?url=https://github.com/gemini-code-assist"
+            style="margin-left: 0.5rem"
+            >gemini-code-assist</a
+          >
+        </div>
+
+        <div id="profile-preview" style="display: none; margin-top: 2rem; align-items: center; gap: 1rem">
+          <img
+            id="profile-icon"
+            src=""
+            alt="Profile Icon"
+            style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid #ccc"
+          />
+          <div>
+            <div style="font-weight: 600; font-size: 0.9rem">Commit Attribution Preview</div>
+            <div style="font-size: 0.85rem">
+              <span id="profile-name" style="color: #16191f; font-weight: 500"></span>
+              <span
+                id="profile-type"
+                style="
+                  color: #586069;
+                  margin-left: 0.5rem;
+                  font-size: 0.75rem;
+                  background: #f1f8ff;
+                  padding: 2px 6px;
+                  border-radius: 10px;
+                  border: 1px solid #c8e1ff;
+                "
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Core Project Logic -->
+    <script type="module" src="/js/github.js"></script>
+
+    <!-- Ace Editor Web Component -->
+    <script
+      type="module"
+      src="https://stopsopa.github.io/ace-editor-webcomponent/ace-web-component.js"
+      data-main-ace="https://stopsopa.github.io/ace-editor-webcomponent/noprettier/ace/ace-builds-1.43.4/src-min-noconflict/ace.js"
+    ></script>
+
+    <script type="module">
+      const resultEditor = document.getElementById("result-editor");
+      const urlInput = document.getElementById("github-url");
+      const generateBtn = document.getElementById("generate-btn");
+      const profilePreview = document.getElementById("profile-preview");
+      const profileIcon = document.getElementById("profile-icon");
+      const profileName = document.getElementById("profile-name");
+      const profileType = document.getElementById("profile-type");
+
+      async function generate() {
+        const rawUrl = urlInput.value.trim();
+        if (!rawUrl) return;
+
+        resultEditor.value = "\nFetching user data...\n";
+        generateBtn.disabled = true;
+        profilePreview.style.display = "none";
+
+        try {
+          // Extract username
+          const username = rawUrl.replace(/\/+$/, "").split("/").pop();
+
+          if (!username || username === "github.com") {
+            throw new Error("Invalid GitHub URL");
+          }
+
+          const response = await fetch(`https://api.github.com/users/${username}`);
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || `GitHub API error: ${response.status}`);
+          }
+
+          if (!data.id) {
+            throw new Error("User ID not found in GitHub response");
+          }
+
+          // Show profile preview
+          if (data.avatar_url) {
+            profileIcon.src = data.avatar_url;
+            profileName.textContent = data.login;
+            profileType.textContent = data.type;
+            profilePreview.style.display = "flex";
+          }
+
+          if (data.type !== "User") {
+            throw new Error(
+              `Refusing to generate co-author footer for account type "${data.type}". Only "User" accounts are supported as commit authors.`
+            );
+          }
+
+          const coAuthorLine = `Co-authored-by: ${data.login} <${data.id}+${data.login}@users.noreply.github.com>`;
+          resultEditor.value = `\n\`\`\`\ncomment\n\n${coAuthorLine}\n\`\`\`\n`;
+
+          // Update URL parameter
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.set("url", rawUrl);
+          window.history.replaceState({}, "", newUrl);
+        } catch (err) {
+          resultEditor.value = `\nError: ${err.message}\n`;
+        } finally {
+          generateBtn.disabled = false;
+        }
+      }
+
+      generateBtn.addEventListener("click", generate);
+
+      urlInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          generate();
+        }
+      });
+
+      // Wait for editor potentially to be ready, but web component handles early value setting too
+      const params = new URLSearchParams(window.location.search);
+      const urlParam = params.get("url");
+
+      if (urlParam) {
+        urlInput.value = urlParam;
+        // Small delay to ensure editor can receive the first update if needed,
+        // though the web component is designed to handle it.
+        setTimeout(generate, 100);
+      }
+    </script>
+  </body>
+</html>
