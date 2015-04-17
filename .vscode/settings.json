@@ -1,0 +1,32 @@
+{
+  "javascript.preferences.importModuleSpecifierEnding": "js", // https://stackoverflow.com/a/61645194
+  "path-autocomplete.extensionOnImport": true,
+  "search.exclude": {
+    ".git/": true,
+    ".vscode/": true,
+    "build/": true,
+    "designer/": true,
+    "docker/": true,
+    "docs/": true,
+    "migrations/": true,
+    "/dist/": true,
+    "/var/": true,
+    "var/": true,
+    "**/node_modules": false,
+    "noprettier/": true
+  },
+  "files.watcherExclude": {
+    ".git/": true,
+    ".vscode/": true,
+    "build/": true,
+    "designer/": true,
+    "docker/": true,
+    "docs/": true,
+    "migrations/": true,
+    "/dist/": true,
+    "/var/": true,
+    "var/": true
+  },
+  "editor.rulers": [120],
+  "prettier.printWidth": 120
+}

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+
+    <script src="/public/preprocessed.js"></script>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        // <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/bash/rsync.sh">rsync.sh</a>
+        document.addEventListener("DOMContentLoaded", () => {
+          const GITHUB_SOURCES_PREFIX = env("GITHUB_SOURCES_PREFIX");
+
+          if (typeof GITHUB_SOURCES_PREFIX !== "string" || !GITHUB_SOURCES_PREFIX.trim()) {
+            throw new Error(`GITHUB_SOURCES_PREFIX is not defined`);
+          }
+
+          const reg = /^GITHUB_SOURCES_PREFIX(.*)/;
+
+          const buff = {
+            reg,
+            a_match: [],
+            a_notmatch: [],
+          };
+
+          document.querySelectorAll("a").forEach((a) => {
+            const href = a.getAttribute("href");
+
+            if (reg.test(href)) {
+              buff.a_match.push(href);
+
+              const newhref = href.replace(/^GITHUB_SOURCES_PREFIX(.*)/, `${GITHUB_SOURCES_PREFIX}$1`);
+
+              a.setAttribute("href", newhref);
+            } else {
+              buff.a_notmatch.push(href);
+            }
+          });
+
+          console.log(JSON.stringify(buff, null, 4));
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+  </head>
+  <body class="layout" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <h2>WSL - static ip</h2>
+          <a href="https://github.com/microsoft/WSL/issues/4210#issuecomment-648570493">static ip</a>
+
+          <h2>ssH Server on windows</h2>
+          <a href="https://websiteforstudents.com/how-to-install-openssh-server-on-windows-11/"
+            >https://websiteforstudents.com/how-to-install-openssh-server-on-windows-11/</a
+          >
+
+          <h2>Programms</h2>
+          <ul>
+            <li>Turn on Clipboard History</li>
+            <li><a href="https://lockhunter.com/startdownload.htm">https://lockhunter.com/startdownload.htm</a></li>
+            <li>Install Chrome and disable chrome auto sign in</li>
+            <li>Setup Explorer Quick Access settings in Folders options</li>
+            <li>IrfanView</li>
+            <li>Notepad++</li>
+            <li>Disable adaptive brightness</li>
+            <li>TreeSizeFree</li>
+            <li>LockHunter</li>
+            <li>ContextConsole Shell Extension-2.1.0</li>
+            <li>Telegram</li>
+            <li>Win+r -> shell:startup</li>
+            <li>Bring back bin on the screen</li>
+            <li>Opera</li>
+            <li><a href="https://github.com/vhanla/winxcorners">WinXcorners</a></li>
+            <li>powercfg -h off - turn off hibernation</li>
+            <li>g(disable system recovery windows 11)</li>
+            <li>g(windows 11 turn off autoplay)</li>
+          </ul>
+          <h2>Services to disable</h2>
+          <p>start -> search for "Services" -> open app</p>
+          <ul>
+            <li>
+              Windows Search
+              <a href="https://www.elevenforum.com/t/enable-or-disable-search-indexing-in-windows-11.2943/#option2"
+                >g(Enable or Disable Search Indexing in Windows 11)</a
+              >
+            </li>
+            <li>Windows Push Notifications Users Service_xxxxxx</li>
+          </ul>
+          <h2>Enable or Disable Search Indexing in Windows 11</h2>
+          from
+          <a href="https://www.saintlad.com/disable-antimalware-service-windows-11/#use-the-registry-editor"
+            >g(Enable or Disable Search Indexing in Windows 11)</a
+          >
+
+          <h2>Free [win|ctrl]+shift+s shortuct ()</h2>
+          <a
+            href="https://www.tenforums.com/software-apps/128305-how-disable-hotkey-snipping-tool-win-shift-s.html#post1588708"
+            >https://www.tenforums.com/software-apps/128305-how-disable-hotkey-snipping-tool-win-shift-s.html#post1588708</a
+          >
+          <br />
+          Create and run reg file:
+          <script type="editor" data-lang="python">
+
+            Windows Registry Editor Version 5.00
+
+            [HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+            "DisabledHotkeys"="S"
+          </script>
+          <h2>git bash pull.sh</h2>
+          <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/windows/pull.sh">rsync.sh</a>
+          <script type="editor" data-lang="python">
+
+            in registry enter:
+            Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender
+            create key of type "DWORD (32-bit) Value"
+            give it value HEXADECIMAL "1"
+            save
+            restart windows
+          </script>
+          <h2>Installing Windows 11 without MS account</h2>
+          <a href="https://youtu.be/s1wqOHo9Lb0?t=435"
+            >we will see when they patch that - that will be definitely Windows over for me ( psst: already is over ...
+            ;) )</a
+          >
+          <h2>Useful</h2>
+          <script type="editor" data-lang="python">
+
+            mmsys.cpl
+          </script>
+          <h2>git bash pull.sh</h2>
+          <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/windows/pull.sh">rsync.sh</a>
+          <h2>Rebooting in the middle of the night</h2>
+          <img src="https://i.imgur.com/Z4S8wrl.png" style="width: 480px" />
+          <h2>IrfanView</h2>
+          <script type="editor" data-lang="python">
+
+            # crop
+            select area in the image and then ctrl+y to crop
+          </script>
+          <h2>Remap keyboard</h2>
+          <a href="https://www.randyrants.com/2019/01/sharpkeys-3-9/"
+            >https://www.randyrants.com/2019/01/sharpkeys-3-9/</a
+          >
+          <h2>Partition backup</h2>
+          <a href="https://www.windowscentral.com/how-create-windows-10-usb-bootable-media-uefi-support">link</a>
+
+          <h2>Launching Windows Special Folders</h2>
+          <a href="https://docs.rainmeter.net/tips/launching-windows-special-folders/"
+            >https://docs.rainmeter.net/tips/launching-windows-special-folders/</a
+          >
+
+          <script type="editor" data-lang="python">
+
+            shell:Common Startup
+            shell:Start Menu
+          </script>
+          <h2>Caffeine - lock screen</h2>
+          <a href="https://www.zhornsoftware.co.uk/caffeine/"
+            >g(Zhorn Software Caffeine Prevent your computer from going to sleep)</a
+          >
+          <h2>SourceTree open from VSCode cli</h2>
+          <script type="editor" data-lang="python">
+            # copy that script to /c/Users/szdz/bin/stree.cmd (using git bash terminal)
+            # WARNING: you might need to change path in >set sourcetreepath=< section, just find location to sourcetree and update
+            # vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+            @echo off
+            setlocal enabledelayedexpansion
+
+            set sourcetreepath="C:\Users\szdz\AppData\Local\SourceTree\SourceTree.exe"
+
+            REM Convert the first argument to a full path
+            set directory=%~f1
+            REM If the first argument is empty use the current directory
+            if "%directory%" == "" set directory=%CD%
+
+            REM If the first argument is not a directory (e.g. a file) remove the filename
+            if not exist "%directory%\*" (
+                set directory=%~dp1
+            )
+
+            REM go to the target directory
+            pushd "%directory%"
+
+            REM get the root of the repository
+            for /f "delims=" %%i in ('git rev-parse --show-toplevel') do set directory=%%i
+            git rev-parse --show-toplevel 1> nul 2> nul
+
+            if %errorlevel% EQU 0 (
+                start "" "%sourcetreepath%" -f "%directory:/=\%"
+            )
+
+            popd
+            endlocal
+            # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            # above from: https://github.com/ArloL/dotfiles/blob/6f2699d68c681a867cdc540260210cd32928365f/bin/stree.cmd
+
+            then execute (in git bash terminal)
+
+            cat <<EEE > /c/Users/szdz/.bash_profile
+            alias stree="/c/Users/szdz/bin/stree.cmd"
+            EEE
+
+            # from now on just open VSCode then open GIT BASH terminal (yes you can choose type of terminal in VSCode)
+            # and simply run
+            stree
+            # but run it in directory with .git directory
+          </script>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

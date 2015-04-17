@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="github-actions.html">Github Actions</a></li>
+          </ul>
+        </div>
+        <div class="cards">
+          <h2>useful</h2>
+          <script type="editor" data-lang="sh">
+
+            ProTip! Add .patch or .diff to the end of URLs for Git’s plaintext views.
+          </script>
+
+          <h2>PR filtering tags</h2>
+          <script type="editor" data-lang="sh">
+
+            author:@me
+            author:sdzialowski
+          </script>
+          <h2>Age of repository:</h2>
+          <script type="editor" data-lang="sh">
+
+            https://api.github.com/repos/{:owner}/{:repository}
+                # and look for field: created_at
+                    # from: https://stackoverflow.com/a/23612723
+          </script>
+          <h2>Search in github and it's limitations</h2>
+          <a href="https://stackoverflow.com/a/33237640">link</a>
+          <h2>Github Actions</h2>
+          <script type="editor" data-lang="sh">
+
+            # open pull request from action:
+            https://github.com/nodejs/node/blob/8a4d7ac6b50ff425b22a0a0a2ad7ec0ae9f31587/.github/workflows/timezone-update.yml#L42
+          </script>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

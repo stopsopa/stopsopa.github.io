@@ -1,0 +1,4 @@
+
+    mid 1
+/// injector: test.js
+    mid 2

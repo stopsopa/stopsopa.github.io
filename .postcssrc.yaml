@@ -1,0 +1,9 @@
+# https://github.com/webpack-contrib/postcss-loader#config-files
+# regular postcss.config.js doesnt seem to be working in my project config,
+# probably because "CommonJS module exporting an object (recommended)" -> https://github.com/webpack-contrib/postcss-loader#config-files:~:text=CommonJS%20module%20exporting%20an%20object%20(recommended)
+# and my project is configured to use esmodule system
+plugins:
+  - postcss-preset-env
+# postcss-preset-env requires .browserlistrc
+# to test different configs use: https://autoprefixer.github.io/
+

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Inheritance</title>
+    <script>
+      function log() {
+        try {
+          window.console.log.apply(window.console, arguments);
+        } catch (e) {}
+      }
+
+      // finally it should look like this
+      var _tick = (function (d) {
+        try {
+          process.nextTick(d);
+          return process.nextTick;
+        } catch (e) {}
+        try {
+          setImmediate(d);
+          return setImmediate;
+        } catch (e) {}
+        return function (f) {
+          setTimeout(f, 0);
+        };
+      })(function () {});
+
+      // class shape vvv
+      function Shape(sideLength) {
+        "use strict";
+        this._name = "";
+        this.sl = sideLength;
+
+        //                if (Shape.prototype.count === undefined) { // static variable: http://stackoverflow.com/questions/7307243/how-to-declare-a-static-variable-in-javascript
+        //                    Shape.prototype.count = -3; // thats how it is possible to create static variable
+        //                }
+
+        Shape.prototype.count += 1;
+        log("static count: " + Shape.prototype.count);
+      }
+      Shape.prototype.count = 0;
+
+      Shape.prototype.getArea = function () {
+        return "shape area";
+      };
+
+      log("before _tick");
+      _tick(function () {
+        log("here we have tick");
+      });
+      log("after _tick");
+
+      // class shape ^^^
+
+      // class rect vvv
+      function Rectangle(sideLengths) {
+        "use strict";
+
+        if (!(this instanceof Rectangle)) {
+          return new Rectangle(sideLengths);
+        }
+
+        Shape.call(this, [sideLengths[0], sideLengths[1], sideLengths[0], sideLengths[1]]);
+        this._name = "Triangle";
+
+        log("Rectangle constructor");
+      }
+      Rectangle.prototype = Object.create(Shape.prototype);
+      Rectangle.prototype.constructor = Rectangle;
+      // and now methods
+      Rectangle.prototype.getArea = function () {
+        return "rect area";
+      };
+      // class rect ^^^
+
+      var shape1 = new Shape([5, 6, 7, 1]);
+      var shape2 = new Shape([5, 6, 7, 2]);
+      var shape3 = new Shape([5, 6, 7, 3]);
+      var shape4 = new Shape([5, 6, 7, 4]);
+      var shape5 = new Shape([5, 6, 7, 5]);
+      var rect = new Rectangle([5, 6, 7, 8]);
+    </script>
+  </head>
+  <body>
+    Only function can have prototype
+  </body>
+</html>

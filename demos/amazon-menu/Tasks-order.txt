@@ -1,0 +1,8 @@
+
+1 - position of elements:
+    - in different relative
+    - margins
+    - paddings
+    - border width
+    - transform: translate(-50%, -50%);
+    - check box-sizing: https://github.com/necolas/normalize.css/blob/master/normalize.css#L54

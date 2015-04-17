@@ -1,0 +1,441 @@
+
+_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
+case ${_SHELL} in
+  zsh)
+    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+    ;;
+  sh)
+    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+    ;;
+  *)
+    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+    ;;
+esac
+
+REVERSE=$'\e[7m'
+RESET=$'\e[0m'
+
+_PWD="$(pwd)"
+
+trim() {
+    local var="${*}"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "${var}"
+}
+
+XX_GENERATED=".git/xx_generated.sh"
+
+SETUP_FILE=".git/xx.cjs"
+
+if [ "${1}" = "--help" ]; then
+    cat <<EEE
+
+--help - this help page
+--gen  - just generate file after picking up command
+--init - init file ${SETUP_FILE}
+
+--copy - just copy files from .git/xxlockdir
+--lock - copy and lock files from .git/xxlockdir
+    --lock debug
+--unlock - git checkout files from .git/xxlockdir and unlock them
+    above works with
+    gits lock [path to files to add]
+
+    https://stopsopa.github.io/viewer.html?file=xx.cjs
+
+global config path:
+    ${_DIR}/global-setup.cjs
+
+gits:
+    "xx.cjs::\${GITSTORAGETARGETDIR}/xx.cjs"
+
+EEE
+
+exit 0
+
+fi
+
+if [ "${1}" = "--lock" ] || [ "${1}" = "--unlock" ] || [ "${1}" = "--copy" ]; then
+
+    if [ "${1}" = "--copy" ]; then  
+        /bin/bash "${0}" --unlock     
+    fi
+
+cat <<EEE
+
+    MODE: ${1};
+
+EEE
+
+    LOCKDIR=".git/xxlockdir"
+
+    if [ ! -d "${LOCKDIR}" ]; then
+
+        cat <<EEE
+        
+        ${0} error: directory '${LOCKDIR}' doesn't exist"
+
+        mkdir -p "${LOCKDIR}"
+
+EEE
+        exit 1
+    fi
+
+    cd "${LOCKDIR}"
+
+    LIST="$(find . -type f)"
+
+    cd "${_PWD}"
+
+    if [ "${LIST}" = "" ]; then
+
+  cat <<EEE
+
+  nothing found in ${LOCKDIR}
+
+EEE
+    else           
+        CHANGED=""
+        GITIGNORE="" 
+        COUNT="$(echo "${LIST}" | wc -l)"
+        COUNT="$(trim "${COUNT}")"
+        I="0"
+        while read -r xxx
+        do
+            REASON="" 
+
+            # basename and file extension
+            PD="$(dirname "${xxx}")"
+            PB="$(basename "${xxx}")"
+            EXTENSION="${PB##*.}"
+            FILENAME="${PB%.*}"
+            if [ "${FILENAME}" = "" ]; then
+                FILENAME="${PB}"
+                EXTENSION=""
+            fi
+            if [ "${FILENAME}" = "${PB}" ]; then
+                EXTENSION=""
+            fi
+
+            # echo "PD=${PD}"
+            # echo "PB=${PB}"
+            # echo "EXTENSION=${EXTENSION}"
+            # echo "FILENAME=${FILENAME}"
+
+            if [ "${1}" = "--copy" ]; then           
+
+                mkdir -p "${PD}"
+
+                STATUS="0"
+
+                # check if file is tracked by git
+                if git ls-files --error-unmatch "${xxx}" &>/dev/null; then
+                    # check if file is changed in comparison to last commited state
+                    git --no-pager diff --exit-code "${xxx}" 1> /dev/null 2> /dev/null   
+
+                    STATUS="${?}"
+                    if [ "${STATUS}" != "0" ]; then
+                        REASON="DIFF : "
+                    fi
+                else
+                    if [ -f "${xxx}" ]; then
+                        diff "${LOCKDIR}/${xxx}" "${xxx}"
+
+                        STATUS="${?}"
+                        if [ "${STATUS}" != "0" ]; then
+                            REASON="EXIST: "
+                        fi
+                    fi
+                fi
+
+                if [ "${STATUS}" = "0" ]; then
+
+                    cp "${LOCKDIR}/${xxx}" "${xxx}"
+
+                    cat <<EEE
+
+cp "${LOCKDIR}/${xxx}" "${xxx}"
+EEE
+                else
+                    CHANGED="$(echo -e "${CHANGED}\n${REASON}${xxx}")"
+                fi
+            fi
+
+            if [ "${1}" = "--lock" ]; then
+
+                mkdir -p "${PD}"
+
+                STATUS="0"
+
+                # check if file is tracked by git
+                if git ls-files --error-unmatch "${xxx}" &>/dev/null; then
+
+                    SWITCH="0"
+                    if git ls-files -v | grep "^h " | grep "${xxx}"; then
+                        SWITCH="1"
+                    fi
+
+                    if [ "${SWITCH}" = "1" ]; then
+                        git update-index --no-assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null       
+                    fi
+
+                    # check if file is changed in comparison to last commited state
+                    git --no-pager diff --exit-code "${xxx}" 1> /dev/null 2> /dev/null   
+
+                    STATUS="${?}"
+                    if [ "${STATUS}" != "0" ]; then
+                        REASON="DIFF : "
+                    fi
+
+                    if [ "${SWITCH}" = "1" ]; then
+                        git update-index --assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null  
+                    fi
+                else
+                    if [ -f "${xxx}" ]; then
+                        diff "${LOCKDIR}/${xxx}" "${xxx}"
+
+                        STATUS="${?}"
+                        if [ "${STATUS}" != "0" ]; then
+                            REASON="EXIST: "
+                        fi
+                    fi
+                fi
+
+                if [ "${STATUS}" = "0" ]; then
+
+                    cp "${LOCKDIR}/${xxx}" "${xxx}"
+                    git update-index --assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null
+
+                    if [ "${?}" != "0" ]; then
+                        GITIGNORE="$(echo -e "${GITIGNORE}\n${xxx}")"
+                    fi
+
+                    if [ "${2}" != "" ]; then
+
+                        cat <<EEE
+
+cp "${LOCKDIR}/${xxx}" "${xxx}"
+git update-index --assume-unchanged "${xxx}"
+EEE
+                    fi
+                else
+                    CHANGED="$(echo -e "${CHANGED}\n${REASON}${xxx}")"
+                fi
+            fi
+
+            if [ "${1}" = "--unlock" ]; then
+                STATUS="0"
+
+                # check if file is tracked by git
+                if git ls-files --error-unmatch "${xxx}" &>/dev/null; then
+
+                    SWITCH="0"
+                    if git ls-files -v | grep "^h " | grep "${xxx}"; then
+                        SWITCH="1"
+                    fi
+
+                    if [ "${SWITCH}" = "1" ]; then
+                        git update-index --no-assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null       
+                    fi
+
+                    # check if file is changed in comparison to last commited state
+                    git --no-pager diff --exit-code "${xxx}" 1> /dev/null 2> /dev/null   
+
+                    STATUS="${?}"
+                    if [ "${STATUS}" != "0" ]; then
+                        REASON="DIFF : "
+                    fi
+
+                    if [ "${SWITCH}" = "1" ]; then
+                        git update-index --assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null  
+                    fi
+                else
+                    if [ -f "${xxx}" ]; then
+                        diff "${LOCKDIR}/${xxx}" "${xxx}"
+
+                        STATUS="${?}"
+                        if [ "${STATUS}" != "0" ]; then
+                            REASON="EXIST: "
+                        fi
+                    fi
+                fi
+
+                # if [ -f "${xxx}" ]; then
+                #     diff "${LOCKDIR}/${xxx}" "${xxx}" 1> /dev/null 2> /dev/null
+                #     STATUS="${?}"
+                # fi
+
+                git update-index --no-assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null           
+
+                if [ "${2}" != "" ]; then
+                    cat <<EEE
+
+diff exit code: ${STATUS}
+git update-index --no-assume-unchanged "${xxx}"
+EEE
+                fi
+
+                if [ "${STATUS}" = "0" ]; then
+                    git checkout "${xxx}" 1> /dev/null 2> /dev/null    
+
+                    if [ "${?}" != "0" ]; then
+                        rm "${xxx}" 1> /dev/null 2> /dev/null    
+                    fi
+                    if [ "${2}" != "" ]; then
+                        
+                        echo "git checkout \"${xxx}\""
+                    fi
+                else
+                    CHANGED="$(echo -e "${CHANGED}\n${xxx}")"
+                fi
+            fi
+
+        done <<< "${LIST}"
+
+        if [ "${1}" = "--lock" ] || [ "${1}" = "--copy" ]; then
+            if [ "${CHANGED}" != "" ]; then
+        cat <<EEE
+${REVERSE}
+${0} error: 
+
+        DIFF : git detected differences 
+        EXIST: file exist but is different
+${CHANGED}
+${RESET}
+EEE
+exit 1
+            fi
+
+            if [ "${1}" = "--copy" ]; then
+                exit 0
+            fi
+        fi
+
+        if [ "${1}" = "--unlock" ]; then
+            if [ "${CHANGED}" != "" ]; then
+        cat <<EEE
+${REVERSE}
+${0} error: 
+files with differences which were not reverted:
+${CHANGED}
+${RESET}
+EEE
+exit 1
+            fi
+
+            exit 0
+        fi
+
+        COREEXCLUDESFILE="$(git config --get core.excludesFile)"
+
+        RESULT="$(node "${_DIR}/xx.lock.gits-update-config.node.bundled.gitignored.cjs" "${_PWD}" ".git/gitstorage-config.sh" ".git/.gitignore_local" "${GITIGNORE}" "${COREEXCLUDESFILE}")"
+
+        cat <<EEE
+${RESULT}
+
+EEE
+
+    fi
+
+    exit 0
+fi
+
+if [ "${1}" = "--init" ]; then
+
+    if [ -e "${SETUP_FILE}" ]; then
+
+        echo "${0} error: file >${SETUP_FILE}< already exist"
+
+        exit 1
+    fi
+    
+    cp "${_DIR}/xx-template.cjs" "${SETUP_FILE}"
+
+cat <<EEE
+    file: 
+        ${SETUP_FILE}
+    generated
+EEE
+
+exit 0
+
+fi
+
+LOAD_CONFIG=".git/xx.cjs";
+
+if [ ! -f "${LOAD_CONFIG}" ]; then
+    LOAD_CONFIG="xx.cjs";
+fi
+
+if [ ! -f "${LOAD_CONFIG}" ]; then
+    
+    USER_CONFIG="$(/bin/bash "${_DIR}/../../../bash/realpath.sh" ~/xx.cjs)"   
+
+    if [ "${USER_CONFIG}" = "" ]; then
+
+        echo "${0} error: USER_CONFIG>${USER_CONFIG}< seems to be empty, and it shouldn't";
+
+        exit 1
+    fi 
+
+    if [ ! -f "${USER_CONFIG}" ]; then
+
+        echo "${0} error: USER_CONFIG>${USER_CONFIG}< nor USER_CONFIG>${USER_CONFIG}< exist"
+
+        exit 1;
+    fi
+
+    XX_GENERATED="xx_generated.sh"
+
+    LOAD_CONFIG="${USER_CONFIG}"
+fi
+
+node "${_DIR}/xx.node.bundled.gitignored.cjs" "${LOAD_CONFIG}" "${XX_GENERATED}" "${@}"
+
+CODE="${?}"
+
+# to fix dissapearing carret when inquirier.js interupted with ctrl+c
+# https://unix.stackexchange.com/a/512630
+tput cnorm
+
+if [ "${CODE}" = "10" ]; then
+
+    cat <<EEE   
+
+    ${0} info: generating ${XX_GENERATED} success - no confirmation to execute
+
+EEE
+
+    exit ${CODE}
+fi
+
+if [ "${CODE}" != "0" ]; then
+
+    cat <<EEE    
+
+    ${0} error: generating ${XX_GENERATED} failed
+
+EEE
+
+    exit ${CODE}
+fi
+
+if [ "${1}" = "--gen" ]; then
+    cat <<EEE
+${0}: script generated >${XX_GENERATED}<, content: 
+$(cat "${XX_GENERATED}")
+
+EEE
+
+else
+
+    set -e
+
+    /bin/bash "${XX_GENERATED}" "${@}"
+
+fi
+
+
