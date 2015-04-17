@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>importmap-dynamic</h2>
+        <!-- <script> -->
+        <script type="editor" data-lang="js" data-eval>
+          // so this code is also executed in the type="module" mode so whatever importmaps we are defining after
+          // then those will be done work interchangeably with the importmaps and modules loaded one after another
+          // so what it means we are not longer bound to load importmaps before first module will be loaded
+
+          const parent = document.querySelector(".inside");
+
+          const load = document.querySelector("button");
+
+          function createButton(opt) {
+            const { parent, id, text, onclick } = opt;
+            const go = document.createElement("button");
+            text && (go.textContent = text);
+            id && go.setAttribute("id", id);
+            parent.appendChild(go);
+            onclick && go.addEventListener("click", onclick);
+          }
+
+          async function loadFn2() {
+            createImportMap({
+              imports: {
+                example2: "./lib/example2.js",
+              },
+            });
+            createButton({
+              id: "go2",
+              text: "go2",
+              parent,
+            });
+
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+
+            createScript(`
+              import example from "example2";
+
+              document.querySelector("#go2").addEventListener("click", () => {
+                alert(example());
+              });
+            `);
+          }
+
+          async function loadFn1() {
+            // create button
+            createButton({
+              id: "go",
+              text: "go",
+              parent,
+            });
+
+            // create importmap
+            createImportMap({
+              imports: {
+                example: "./lib/example.js",
+              },
+            });
+
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+
+            // create script
+            createScript(`
+              import example from "example";
+
+              document.querySelector("#go").addEventListener("click", () => {
+                alert(example());
+              });
+            `);
+
+            // unbind bind function from load
+            load.removeEventListener("click", loadFn1);
+            load.setAttribute("disabled", "disabled");
+
+            // second level
+
+            createButton({
+              id: "loadFn2",
+              text: "loadFn2 - 3s",
+              parent,
+              onclick: loadFn2,
+            });
+          }
+
+          // NOTE: We can see that loading libraries happens when first module is executed
+          // not when sourcemap is loaded
+          load.addEventListener("click", loadFn1);
+        </script>
+        <button>loadFn after 5s</button>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

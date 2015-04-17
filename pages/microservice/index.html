@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>PROS & CONS</h2>
+
+        <script type="editor" data-lang="sh">
+
+          MICROSERVICES:
+
+          PROS:
+            - separation of responsibility.
+            - faster deployment.
+            - easier to onboard a virtually unlimited number of developers without blocking them.
+            - ability to leverage the strengths of different languages or technologies in separate services,
+                    each service optimized for specific tasks and connected to the rest of the services via API
+
+          CONS:
+            - hard to keep APIs consistent; changes are harder to communicate across teams,
+              whereas in a monolith, it simply wouldn’t compile.
+              - derrived problem: some changes will require multiple microservices to be deployed at the same time
+            - internal data passing (by value or reference) turns into network traffic.
+              (which will slow down the app and might not be cheap)
+            - it’s much harder to achieve atomic operations -> logic will have tendency to stuck in broken state.
+              - derived problem: usually it is harder to implement and test solutions for fixing broken states.
+            - generally harder to debug and trace events.
+            - long-term development probably will slow down as more time is spent debugging
+              obscure errors and fixing broken states in every sprint.
+            - harder to identify who is responsible for errors (teams might shift blame), leading to confusion.
+            - much harder to maintain consistent coding styles, as different
+              services may use different techniques or technologies.
+            - more challenging to launch a local instance of all services.
+            - harder to conduct real end-to-end testing and cleanup afterward.
+
+          General Conclusion:
+            Microservices are effective for certain problems,
+            but it’s crucial to keep the number of microservices low — only use them when absolutely necessary.
+            Might be initially beneficial to keep development velocity high but it brings a lot of challenges down the line.
+            It's a tradeof as many things in programming.
+        </script>
+        <h2>To read</h2>
+
+        <a href="https://ajay-yadav109458.medium.com/basics-of-microservice-architecture-208ed81c558d"
+          >https://ajay-yadav109458.medium.com/basics-of-microservice-architecture-208ed81c558d</a
+        >
+
+        <script type="editor" data-lang="sh"></script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

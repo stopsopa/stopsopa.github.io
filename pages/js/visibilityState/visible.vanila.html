@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>vanilla</h2>
+        <p>On when page is visible</p>
+        <p>To test first launch <a href="/pages/js/sound.html">/pages/js/sound.html</a></p>
+        <script type="editor" data-lang="js" data-eval>
+          {
+
+            const handleVisibilityChange = () => {
+              if (document.visibilityState === "visible") {
+                localStorage.setItem('sound-experiment', 830.61);
+                document.querySelector('.state').innerHTML = 'visible';
+              } else {
+                localStorage.setItem('sound-experiment', 415.3);
+                document.querySelector('.state').innerHTML = 'not visible';
+              }
+            };
+            document.addEventListener("visibilitychange", handleVisibilityChange);
+            handleVisibilityChange();
+          }
+        </script>
+        <div class="state"></div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

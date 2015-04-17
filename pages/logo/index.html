@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>instructions</h2>
+        <a href="https://people.eecs.berkeley.edu/~bh/usermanual">https://people.eecs.berkeley.edu/~bh/usermanual</a>
+        <br />
+        <a href="https://www.calculator.net/triangle-calculator.html">Triangle Calculator</a>
+        <script type="editor" data-lang="sh">
+          ucblogo
+
+          TURTLE MOTION
+          -------------
+          fd 10       # forward
+          bk 10       # backward
+          lt 10       # left turn
+          rt 10       # right turn
+          setpos [10 20]
+          setxy 40 50
+          setx 20
+          sety 50
+          pu          # pen up
+          pd          # pen down
+          ppt         # PENPAINT sets the pen's position to DOWN and mode to PAINT.
+          pe          # PENERASE sets the pen's position to DOWN and mode to ERASE.
+          px          # PENREVERSE pen down and reverse color
+          setpc       # set pen color
+              0  black    1  blue     2  green     3  cyan
+              4  red      5  magenta  6  yellow    7  white
+              8  brown    9  tan      10 forest    11 aqua
+              12 salmon   13 purple   14 orange    15 grey
+          SETPENSIZE 5 #    thickness of the pen
+          setbg 2 # set background to green
+
+          seth 90     # turns the turtle to a new absolute heading
+
+          home        # the sime like: SETPOS [0 0] SETHEADING 0
+
+          arc 90 50   # angle radius
+
+          st          # showturtle
+          ht          # hideturtle
+          clean       # erase screen, leave turtle where he is
+          cs          # erase screen, reset turtle too
+          wrap        # if you go beyond border it will appear on the opposite side of the screen
+          window      # if you go beyond border it will not be visible
+          fence       # can't go beyond borders WARNING: WILL THROW AN ERROR
+        </script>
+        <h2>procedures</h2>
+        <a href="http://webhost.bridgew.edu/hburgiel/COMP203/procedures.html">procedures</a>
+        <script type="editor" data-lang="sh">
+          to triangle :size
+           repeat 3 [forward :size right 120]
+          end
+
+          read further from:
+          VARIABLE DEFINITION
+          -------------------
+        </script>
+        <h2>examples</h2>
+        <a href="https://fmslogo.sourceforge.io/workshop/random.shtml"
+          >https://fmslogo.sourceforge.io/workshop/random.shtml</a
+        >
+        <h2>more links</h2>
+        <a href="https://people.eecs.berkeley.edu/~bh/logo.html">https://people.eecs.berkeley.edu/~bh/logo.html</a>
+        <br />
+        <a href="https://github.com/jrincayc/ucblogo-code">https://github.com/jrincayc/ucblogo-code</a>
+        <br />
+        <a href="https://people.eecs.berkeley.edu/~bh/docs/html/usermanual_6.html#SETPOS"
+          >https://people.eecs.berkeley.edu/~bh/docs/html/usermanual_6.html#SETPOS</a
+        >
+        <br />
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

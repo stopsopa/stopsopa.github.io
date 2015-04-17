@@ -1,0 +1,21 @@
+.ace_editor[data-record="1"] {
+  box-shadow: 0 0 10px 6px #0ccbf9;
+}
+body .ace_hidden-cursors .ace_cursor {
+  opacity: 1;
+}
+body .ace-idle-fingers .ace_cursor {
+  color: #ff0000;
+}
+.single .mounting {
+  display: block !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 1 !important;
+}
+.single .mounting > div {
+  display: block !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 1 !important;
+}

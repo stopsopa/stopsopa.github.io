@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="vscode/index.html">Visual Studio Code</a></li>
+            <li><a href="vs/index.html">Visual Studio</a></li>
+            <li><a href="jetbrains/index.html">JetBrains</a></li>
+          </ul>
+        </div>
+
+        <h2>shortcuts:</h2>
+        <script type="editor" data-lang="python">
+
+          .editorconfig
+          # from: https://editorconfig.org/
+          # first saw: https://github.com/stopsopa/movie-web
+
+          # go to:
+          # Command Palette (⇧⌘P)   ->   >Preferences: Open Keyboard Shortcuts (JSON)
+          #     more about it: https://code.visualstudio.com/docs/getstarted/keybindings#_advanced-customization
+
+          Go to File... alt|option + ⇧shift +o
+          # https://i.imgur.com/50b8r4c.png
+          # https://i.imgur.com/oeu9IWk.png
+            ⌘P - also called "Go to File..." in VSCode
+
+          editor.action.copyLinesDownAction
+          # https://i.imgur.com/xBYML58.png
+
+          editor.action.moveLinesUpAction
+          # https://i.imgur.com/9jLeYjw.png
+
+          editor.action.moveLinesDownAction
+          # https://i.imgur.com/H0Gp3Z0.png
+
+          # toggle current CodeGlance (called in VSCode: View -> Appearance -> Minimap)
+          ⌘ + M - editor.action.toggleMinimap
+
+          # replace in one/current file
+          # "Replace" command
+          # IntelliJ: https://i.imgur.com/4umBemU.png (DO ZMIANY I UPDATE)
+          # VSC: ⌘cmd + G editor.action.startFindReplaceAction , title: Replace
+
+          ⇧shift + F - "Find" in one/current file
+          # IntelliJ: Main Menu -> Edit -> Find -> Find...
+          # VSC:  actions.find        https://i.imgur.com/i3fOk4C.png
+            # WARNING: cmd+h HAVE TO BE FIRST UNLOCKED WITH KARABINER
+            # BUT ANYWAY YOU WON'T BE ABLE TO MAP IT TO ANYTHING IN ANY IDE
+            # SO FORGET ABOUT IT
+            # urlwizzard.schema://urlwizzard.hostnegotiated/pages/mac/index.html#karabiner-elements-remap-keyboard
+
+          # Find in files
+          # Search: Find in Files
+          # ⇧shift + ⌘cmd + F
+          # IntelliJ: https://i.imgur.com/4fIcHk6.png  Main Menu -> Edit -> Find -> Find in Files...
+          # VSC: workbench.action.findInFiles title: Search: Find in Files
+
+          # "Replace in Files"
+          # ⇧shift + ⌘cmd + g
+          # IntelliJ: https://i.imgur.com/H47pM4x.png (DO ZMIANY I UPDATE)
+          # VSC:      workbench.action.replaceInFiles , title: Search: Replace in Files
+
+          ⇧shift + ⌘cmd + t - reopen recently closed tab
+          # https://i.imgur.com/h5I27Ex.png
+
+          workbench.action.navigateBack
+          workbench.action.navigateForward
+          # https://i.imgur.com/CTGfLlV.png
+
+          editor.action.commentLine
+          # comment line  [cmd mac|ctrl win]+ ⇧shift +c
+          # ⌘cmd and button below on the edge of keyboard + c
+
+          renameFile
+          # F2
+
+          editor.action.rename - Rename Symbol
+          # ⌘cmd + F2
+            # mentioned in in Command Palette (⇧⌘P) type "java tips" -> from: https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack
+
+          # How do I search for files in Visual Studio Code?
+          ⌘cmd + p
+
+          # cursorTop
+          # scroll page to top
+          # right-ctrl + home
+
+          # cursorBottom
+          # scroll page to bottom
+          # right-ctrl + end
+
+          # Go to line
+          Go to Line:Column...
+          ⌘cmd + g
+
+          cmd + ⇧shift +s
+            # WEBstorm -> prettier plugin
+              # reformat with prettier
+              # install prettier plugin to WebStorm
+              # go to: Settings -> Lang & Frame -> Javascript -> Prettier
+              # specify path: /Users/user/.nvm/versions/node/v16.13.0/lib/node_modules/prettier/
+              # npm install -g prettier && npm root -g
+            # IntelliJ:
+              # https://github.com/google/google-java-format/blob/master/README.md#intellij-android-studio-and-other-jetbrains-ides
+              # from g(google-java-format intellij)
+              # https://i.imgur.com/ORfD37B.png
+            # VScode
+              # thread: https://github.com/redhat-developer/vscode-java/issues/419
+              # https://marketplace.visualstudio.com/items?itemName=ilkka.google-java-format
+              # export HOMEBREW_NO_AUTO_UPDATE=1 && brew install google-java-format
+              # block for settings.json (user)
+              #  "[java]": {
+              #      "editor.defaultFormatter": "ilkka.google-java-format",
+              #  },
+              #  "google-java-format.executable-path": "/opt/homebrew/bin/google-java-format"
+
+
+          # remove all function from function keys
+          #    ⌃R, ⌃D, ⌘F2, F3, F4, F5, F6, F7, ⌥⇧F7, F8, ⇧F8, F9, ⌥F9, ⌥F10, F12,
+          # then assign it to debugging buttons
+
+          oJB   - originally JetBrains (- means not defined)
+          oVSC  - originally Visual Studio Code (- means not defined)
+
+          NOTICE: avoid f7 and f11 before you start debugging those can be assigned to debugging actions used after starting debuggin
+          because on windows F7 in VSCode it seems to be used for launching main search tool or something (anyway, it's blocked and causes issues)
+          on mac though F11 seems to be attached to "Mission Control" -> "Show Desktop" (but it can be freed, after doing that it's fine to use it anyway you like)
+
+          # Ranking of most useful (IMO) debugging actions:
+          # ⌘R - Run
+          #     VSC: : C_Cpp.BuildAndRunFile
+          #     JB : : [Main Menu -> Run -> Run]
+          # ⌘D - Debug
+          #     VSC: : workbench.action.debug.start
+          #     JB : : [Main Menu -> Run -> Debug]
+          # ⌘B - Build
+          #     VSC: : workbench.action.tasks.build
+          #     JB : :
+
+          # F12 Show Execution Point
+          #     VSC: doesn't exist in VSCode https://stackoverflow.com/q/74904981
+          #          UPDATE: It does exist it is called: "Navigate to Top of Call Stack" command id: workbench.action.debug.callStackTop
+          #          from: https://stackoverflow.com/a/56270324
+          #     JB : ⌥F10: [Main Menu -> Run -> Debugging Actions -> Show Execution Point]
+          # F10 Run to Cursor
+          #     VSC: Unassigned: editor.debug.action.runToCursor
+          #     JB : ⌥F9: [Main Menu -> Run -> Debugging Actions -> Run to Cursor]
+          # F8 Resume Program
+          #     VSC: F5: workbench.action.debug.continue
+          #     JB : ⌥⌘R :  [Main Menu -> Run -> Debugging Action -> Resume Program]
+          # F9 Toggle Breakpoint
+          #     VSC: editor.debug.action.toggleBreakpoint
+          #     JB : :
+          # F5 Step Over
+          #     VSC: F10: workbench.action.debug.stepOver
+          #     JB : F8: [Main Menu -> Run -> Debugging Actions -> Step Over]
+          # F6 Step Into
+          #     VSC: F11: workbench.action.debug.stepInto
+          #     JB : F7: [Main Menu -> Run -> Debugging Actions -> Step Into]
+          # F7 Step Out
+          #     VSC: ⇧F11: workbench.action.debug.stepOut
+          #     JB : ⇧F8: [Main Menu -> Run -> Debugging Actions -> Step Out]
+          #             NOTE:   This one was very useful
+          # F4 Stop Program
+          #     VSC: ⇧F5: workbench.action.debug.stop
+          #     JB : ⌘F2:  [Main Menu -> Run -> Stop]
+          #
+          # more about VSCode: https://www.jetbrains.com/help/idea/stepping-through-the-program.html
+
+          # other useful ==============================
+
+          # Organize Imports :
+          #      VSC: ⇧+⌥+o
+        </script>
+
+        <img src="https://i.imgur.com/dU4BndA.png" style="width: 80%" />
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

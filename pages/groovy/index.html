@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>useful</h2>
+        <script type="editor" data-lang="groovy">
+
+          // debug variables
+          println "Type of myVariable: ${data.getClass()}"
+          println "Properties of myVariable: ${data.toString()}"
+          //try {
+          //    data.properties.each { prop ->
+          //      println "${prop.key}: ${prop.value}"
+          //    }
+          //} catch(Exception e) {
+          //   println("Catching the exception \${e}");
+          //}
+
+
+
+
+
+
+
+          def multilineString = '''
+          This is the first line.
+          This is the second line.
+          &second&
+          This is the third line.
+          &&secondd&&
+          second line
+          last
+          '''
+
+          def extractToken(String multilineString) {
+              def lines = multilineString.split(/\n/)
+
+              def regex = /^&&(.+)&&$/;
+
+              def found = lines.findAll { word -> word =~ regex }
+
+              if (found.size() != 1) {
+                  throw new Error("Can't find single secret from sh")
+              }
+
+              def token = found[0].replaceFirst(regex, "\$1");
+
+              //found.each { word ->
+              //    println word
+              //}
+
+              return token;
+          }
+
+          def token = extractToken(multilineString);
+
+          println "after  ->${token}<-"
+          // after  ->second<-
+
+
+
+
+
+
+
+          import java.util.regex.Pattern
+          # unfortunately Jenkins might not allow running importing Patter util
+          # then look for extractToken in X repository
+
+          def multilineString = '''
+          This is the first line.
+          This is the second line.
+          &second&
+          This is the third line.
+          &&secondd&& some data
+          second line
+          last
+          '''
+
+          def extractToken(String name, String multilineString) {
+
+              def metacharacters = ['.', '?', '+', '*', '(', ')', '[', ']', '{', '}', '|', '\\', '^', '$']
+
+              metacharacters.each { name = name.replace(it, "\\$it") }
+
+              def lines = multilineString.split(/\n/)
+
+          //    lines.each { word ->
+          //        println "line >${word}<"
+          //    }
+
+              def regex = Pattern.compile("^&&${name}&&(.*)\$");
+
+              def found = lines.findAll { word -> word =~ regex }
+
+              if (found.size() != 1) {
+                  throw new Error("Can't find single secret from sh - found >${found.size()}<")
+              }
+
+              def token = found[0].replaceFirst(regex, "\$1");
+
+              //found.each { word ->
+              //    println word
+              //}
+
+              return token;
+          }
+
+          def token = extractToken("secondd", multilineString);
+
+          println "after  ->${token}<-"
+        </script>
+        <h2>regex match</h2>
+        <script type="editor" data-lang="groovy">
+
+
+          def text = "featabc"
+
+          def btype = text.replaceAll('^(([^/]+)/)?(.*)$', '$2')
+
+          def bname = text.replaceAll('^(([^/]+)/)?(.*)$', '$3')
+
+          println "btype: >${btype}<"
+          println "bname: >${bname}<"
+
+          // text = "featabc"
+          // btype: ><
+          // bname: >featabc<
+
+          // text = "feat/abc"
+          // btype: >feat<
+          // bname: >abc<
+
+          // text = "feat/abc/zz"
+          // btype: >feat<
+          // bname: >abc/zz<
+        </script>
+
+        <h2>regex replaceAll</h2>
+        <script type="editor" data-lang="groovy">
+
+          def text = "https://github.org/repo/api.git"
+
+          def btype = text.replaceAll('[^a-z0-9]+', '_')
+
+          println "btype: >${btype}<"
+          // btype: >https_github_org_repo_api_git<
+        </script>
+        <h2>toJson</h2>
+        <script type="editor" data-lang="groovy">
+
+          import groovy.json.JsonOutput;
+
+          def args = [
+              deploymentProd: "v",
+              deploymentDev: "d",
+          ];
+
+          def toJson(a) {
+
+              def args_string = JsonOutput.toJson(a)
+
+              def args_json = JsonOutput.prettyPrint(args_string);
+
+              return args_json;
+          }
+
+          def json = toJson(getConfig(args));
+
+          def getConfig(Map params) {
+
+            return [
+              dc: params.deploymentProd ? params.deploymentProd : "${params.name}-api-prod"
+            ]
+          }
+
+          println(sprintf('>>%5s<<\n', json));
+        </script>
+        <h2>Read more</h2>
+        <a href="https://groovy-lang.org/documentation.html">https://groovy-lang.org/documentation.html</a>
+        <br />
+        <a href="https://groovy-lang.org/operators.html">https://groovy-lang.org/operators.html</a>
+        <br />
+        <a href="http://groovy-lang.org/syntax.html#_maps">Maps</a>
+        <br />
+        <a href="http://groovy-lang.org/semantics.html">Semantics</a>
+
+        <h2>Files</h2>
+        <script type="editor" data-lang="groovy">
+
+          def validateDockerIgnore() {
+
+              def file = ".dockerignofre";
+
+              def handler = new File(".dockerignore")
+
+              if (! handler.exists()) {
+
+                  throw new Exception("file '${file}' doesn't exist");
+              }
+
+              if (! handler.canRead()) {
+
+                  throw new Exception("file '${file}' can't be read");
+              }
+
+              def fileArray = handler.text.split( '\n' );
+
+          def required = """
+
+          .DS_Store
+          .env
+          .git/
+          /.github/
+          /.husky/
+          .gitignore
+          /.ci
+          /.ci@tmp
+          /.nyc_output/
+          /coverage/
+          /docs/
+          /lib/
+          /server/
+          /var/*
+          !/var/.gitignore
+          node_modules/
+          /local.env.sh
+          /tartufo.toml
+
+          """
+
+              def requiredArray = required.split( '\n' );
+
+              for(String val in requiredArray) {
+
+                  val = val.trim();
+
+                  if (val && !fileArray.contains(val)) {
+
+                      throw new Exception("'${file}' doesn't contain '${val}' exclusion, it should contain >>${required}<<");
+                  }
+              }
+          }
+
+          validateDockerIgnore();
+        </script>
+
+        <h2>Jenkinsfile examples</h2>
+        look for phrases in X repository
+
+        <script type="editor" data-lang="groovy">
+
+          Groovy postprocessing
+        </script>
+
+        <br />
+        <script type="editor" data-lang="groovy">
+
+          def getConfig(String key) {
+
+              def environment = 'stage';
+
+              def tmp;
+
+              if (env.TESTPROD == 'true') {
+
+                  environment = 'prod';
+              }
+
+              switch (environment) {
+                  case "ote":
+                      tmp = [
+                          OS_SERVER: "...",
+                          OS_PROJECT: "...",
+                          OS_TOKEN: env.TOKEN_OTE,
+                      ];
+                      break;
+                  case "prod":
+                      tmp = [
+                          OS_SERVER: "...",
+                          OS_PROJECT: "...",
+                          OS_TOKEN: env.TOKEN_OTE,
+                      ];
+                      break;
+                  default:
+                      throw new Exception("getConfig error: environment [${environment}] not recognized");
+              }
+
+              if (!tmp.containsKey(key)) {
+                  throw new Exception("getConfig error: for environment [${environment}] can't find key [${key}]");
+              }
+
+              return tmp.get(key);
+          }
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

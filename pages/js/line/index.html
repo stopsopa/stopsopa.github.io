@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      #state {
+        background-color: #404040;
+        color: #bc9458;
+      }
+      .unselectable {
+        user-select: none; /* Standard syntax */
+        -webkit-user-select: none; /* Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+      }
+    </style>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <div class="btspa">
+          <div class="alert alert-info unselectable">
+            <i class="glyphicon glyphicon-info-sign"></i> Just draw lines on screen using mouse...
+          </div>
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <table class="unselectable">
+                    <tbody>
+                      <tr>
+                        <td>width:</td>
+                        <td>
+                          <span id="width"></span>
+                          <button class="up">up</button>
+                          <button class="down">down</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>color:</td>
+                        <td>
+                          <input type="color" id="color" value="#000" autocomplete="off" />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>style:</td>
+                        <td id="styles">
+                          <label
+                            ><input
+                              type="radio"
+                              name="style"
+                              value="solid"
+                              autocomplete="off"
+                              checked="checked"
+                            />solid</label
+                          >
+                          <label><input type="radio" name="style" value="dotted" autocomplete="off" />dotted</label>
+                          <label><input type="radio" name="style" value="dashed" autocomplete="off" />dashed</label>
+                          <label><input type="radio" name="style" value="double" autocomplete="off" />double</label>
+                          <br />
+                          <label><input type="radio" name="style" value="groove" autocomplete="off" />groove</label>
+                          <label><input type="radio" name="style" value="ridge" autocomplete="off" />ridge</label>
+                          <label><input type="radio" name="style" value="inset" autocomplete="off" />inset</label>
+                          <label><input type="radio" name="style" value="outset" autocomplete="off" />outset</label>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>correct:</td>
+                        <td>
+                          <span id="correct">true</span>
+                          <button class="up">up</button>
+                          <button class="down">down</button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>always on:</td>
+                        <td id="switch">
+                          <label
+                            ><input type="radio" name="correctpos" value="normal" autocomplete="off" />normal</label
+                          >
+                          <!-- checked="checked" -->
+                          <label><input type="radio" name="correctpos" value="top" autocomplete="off" />top</label>
+                          <label
+                            ><input type="radio" name="correctpos" value="bottom" autocomplete="off" />bottom</label
+                          >
+                          <label><input type="radio" name="correctpos" value="left" autocomplete="off" />left</label>
+                          <label><input type="radio" name="correctpos" value="right" autocomplete="off" />right</label>
+                          <br />
+                          <label><input type="checkbox" id="measure" autocomplete="off" /> measure</label>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+                <td>
+                  <pre id="state"></pre>
+                </td>
+                <td>
+                  <pre id="code"></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <a href="" data-reset>reset state</a>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+
+    <script src="/pages/js/line/dependencies/uint8-to-b64.js"></script>
+    <script src="/pages/js/line/dependencies/protobuf.min.js"></script>
+
+    <script src="/dist/line.bundle.js"></script>
+  </body>
+</html>

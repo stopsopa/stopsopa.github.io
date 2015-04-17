@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <style>
+    body.layout .inside {
+      max-width: 90%;
+      margin-left: 80px;
+      margin-top: 30px;
+    }
+    table {
+      width: 100%;
+    }
+    table > tbody > tr > td {
+      width: 50%;
+    }
+    textarea {
+      width: 90%;
+      border: 1px solid #ccc;
+    }
+  </style>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <table>
+          <tbody>
+            <tr>
+              <td id="paste" valign="top">
+                paste here:
+                <br />
+                <textarea data-autoresize></textarea>
+              </td>
+              <td id="copy" valign="top">
+                copy from here:
+                <br />
+                <textarea data-autoresize></textarea>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+    <script src="/dist/humanjson.bundle.js"></script>
+  </body>
+</html>

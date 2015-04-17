@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      .toggle {
+        display: none;
+        &.show {
+          display: block;
+        }
+      }
+    </style>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll("[data-html]")).forEach(function (tag) {
+            var selector = tag.getAttribute("data-html");
+
+            const parent = document.querySelector(selector);
+
+            if (!parent) {
+              throw new Error(`parent not found ${selector}`);
+            }
+
+            const html = tag.innerText.replace("</scr ipt>", "</scr" + "ipt>").trim();
+            console.log("html", html);
+
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = html;
+
+            Array.from(tempDiv.childNodes).forEach((child) => {
+              if (child.nodeType === 1) {
+                if (child.tagName === "SCRIPT") {
+                  const script = document.createElement("script");
+                  if (child.src) {
+                    script.src = child.src;
+                  } else {
+                    script.textContent = child.textContent;
+                  }
+                  parent.appendChild(script);
+                } else {
+                  parent.appendChild(child);
+                }
+              }
+            });
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="canvas/index.html">canvas</a></li>
+          </ul>
+        </div>
+        <h2>Lorem Ipsum</h2>
+        <h2>&lt;dialog&gt;</h2>
+        <a href="https://youtu.be/GDzzIlRhEzM">https://youtu.be/GDzzIlRhEzM</a>
+        <h2>generator</h2>
+        <a href="https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs"
+          >https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs</a
+        >
+        <h2>Tabs</h2>
+        <a href="https://github.com/stopsopa/tabs">https://github.com/stopsopa/tabs</a>
+        <h2>input + datalist</h2>
+        <script type="editor" data-lang="html" data-html="#input_datalist">
+          <form>
+            <input type="text" list="browsers" />
+            <datalist id="browsers">
+              <option value="ie">Internet Explorer</option>
+              <option value="ff">Firefox</option>
+              <option value="ch">Chrome</option>
+              <option value="op">Opera</option>
+              <option value="sa">Safari</option>
+            </datalist>
+            <input type="submit">
+          </form>
+          <script>
+            const div = document.querySelector("#input_datalist");
+            const form = div.querySelector('form')
+            form.addEventListener('submit', e => {
+              e.preventDefault();
+              alert(`form submitted >${form.querySelector('input').value}<`);
+            })
+          </scr ipt>
+        </script>
+        <div id="input_datalist"></div>
+
+        <h2>redirect in html</h2>
+
+        <script type="editor" data-lang="html">
+
+
+          <meta http-equiv="refresh" content="0; url=demo/vanilla.html">
+        </script>
+        <h2>input[type="range"]</h2>
+        <script type="editor" data-lang="html">
+
+          <input type="range" id="height" min="1" max="100" step="1" value="80" />
+          &lt;script>
+            const log = console.log;
+            const h = document.querySelector("#height");
+
+            function range(element, event) {
+              function hc() {
+                event(parseInt(element.value, 10));
+              }
+              element.addEventListener("change", hc);
+              element.addEventListener("input", hc);
+              hc();
+            }
+
+            range(h, (v) => {
+              // this will trigger once only when attached to dom element
+              console.log("h", v);
+            });
+          &lt;/script>
+        </script>
+        <h2>input[type="color"]</h2>
+        <script type="editor" data-lang="html">
+          <input type="color" id="color" value="#000" autocomplete="off" />
+          &lt;script>
+            const color = document.querySelector("#color");
+            color.addEventListener("input", watchColorPicker, false); // triggered many times while you playing with opened color picker
+            color.addEventListener("change", watchColorPicker, false); // triggered at the end when you close the color picker
+            function watchColorPicker(e) {
+              e.target.value;
+            }
+          &lt;/script>
+        </script>
+
+        <div class="cards">
+          <h2>input[type="radio"]</h2>
+          <script type="editor" data-lang="html">
+
+            <div class="radios">
+              <label> <input type="radio" name="mode" value="single" checked="checked" /> single player </label>
+              <br />
+              <label> <input type="radio" name="mode" value="double" /> two players </label>
+            </div>
+
+            &lt;script>
+
+              const state = 'single';
+              const parent = docment.querySelector('.radios');
+              parent.querySelector(`input[type="radio"][value="${state}"]`).checked = true;
+
+              // to get value on change
+              parent.addEventListener("click", (e) => {
+                const target = e.target;
+
+                var match = target.matches(`input[type="radio"][name="mode"]`);
+
+                if (match) {
+                  console.log("radio", target.value);
+                }
+              });
+
+              // to switch programatically using event delegation
+              document.addEventListener("keydown", (e) => {
+                switch (e.key) {
+                  case "s":
+                    document.querySelector(`input[type="radio"][name="mode"][value="single"]`).checked = true
+                    break;
+                  case "d":
+                    document.querySelector(`input[type="radio"][name="mode"][value="double"]`).checked = true
+                    break;
+                }
+              });
+
+            &lt;/script>
+          </script>
+        </div>
+
+        <h2>input[type="checkbox"]</h2>
+        <script type="editor" data-lang="html">
+
+          <input type="checkbox" id="allon" autocomplete="off" />
+
+          &lt;script>
+            {
+              const allon = document.querySelector("#allon");
+              let state = false;
+              allon.checked = state;
+              function action() {
+                console.log('state', state);
+              }
+              allon.addEventListener("change", (e) => {
+                state = e.target.checked;
+                action();
+              });
+              action();
+            }
+          &lt;/script>
+        </script>
+        <h2>fieldset -&gt; legend</h2>
+
+        <form action="/action_page.php">
+          <fieldset>
+            <legend>Personalia:</legend>
+            <label for="fname">First name:</label>
+            <input type="text" id="fname" name="fname" /><br /><br />
+            <label for="lname">Last name:</label>
+            <input type="text" id="lname" name="lname" /><br /><br />
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" /><br /><br />
+            <label for="birthday">Birthday:</label>
+            <input type="date" id="birthday" name="birthday" /><br /><br />
+            <input type="submit" value="Submit" />
+          </fieldset>
+        </form>
+        <script type="editor" data-lang="html">
+
+          <form action="/action_page.php">
+            <fieldset>
+              <legend>Personalia:</legend>
+              <label for="fname">First name:</label>
+              <input type="text" id="fname" name="fname"><br><br>
+              <label for="lname">Last name:</label>
+              <input type="text" id="lname" name="lname"><br><br>
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email"><br><br>
+              <label for="birthday">Birthday:</label>
+              <input type="date" id="birthday" name="birthday"><br><br>
+              <input type="submit" value="Submit">
+            </fieldset>
+          </form>
+        </script>
+        <h2>textarea autoresize</h2>
+
+        <a href="/viewer.html?file=%2Fpages%2Fhumanjson%2Fhumanjson.entry.js"
+          >/viewer.html?file=%2Fpages%2Fhumanjson%2Fhumanjson.entry.js</a
+        >
+        <br />
+        <a href="/viewer.html?file=%2Fjs%2Ftextarea-autoresize.js">/viewer.html?file=%2Fjs%2Ftextarea-autoresize.js</a>
+        <script type="editor" data-lang="js">
+
+          // https://stephanwagner.me/auto-resizing-textarea-with-vanilla-javascript
+          function textareaAutoResize() {
+            function resize(element) {
+              var offset = element.offsetHeight - element.clientHeight;
+              element.style.height = "auto";
+              element.style.height = element.scrollHeight + offset + "px";
+            }
+            document.querySelectorAll("[data-autoresize]").forEach(function (element) {
+              element.style.boxSizing = "border-box";
+              element.addEventListener("input", function (event) {
+                resize(event.target);
+              });
+              element.removeAttribute("data-autoresize");
+              element.setAttribute("data-autoresize-attached", "true");
+            });
+
+            return () => {
+              document.querySelectorAll("[data-autoresize-attached]").forEach(function (element) {
+                resize(element);
+              });
+            };
+          }
+
+          window.resizeTextareas = (function () {
+            const trigger = textareaAutoResize();
+
+            return () => {
+              window.requestAnimationFrame(trigger);
+            };
+          })();
+
+          tex.addEventListener("input", function (e) {
+
+            tex.value = ...
+
+            // trigger manually to resize if anything else is at play
+            resizeTextareas();
+          });
+        </script>
+        <h2>details - summary - collapsible</h2>
+
+        <style>
+          details.styled {
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            padding: 0.5em 0.5em 0;
+
+            summary {
+              font-weight: bold;
+              margin: -0.5em -0.5em 0;
+              padding: 0.5em;
+            }
+
+            &[open] {
+              padding: 0.5em;
+            }
+
+            &[open] summary {
+              border-bottom: 1px solid #aaa;
+              margin-bottom: 0.5em;
+            }
+          }
+        </style>
+        <details class="styled">
+          <summary>Details 1</summary>
+          Something small enough to escape casual notice.
+        </details>
+        <hr />
+        <details>
+          <summary class="styled">Details 2</summary>
+          Something small enough to escape casual notice.
+        </details>
+        <script type="editor" data-lang="html">
+
+          <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details -->
+
+          &lt;details>
+            &lt;summary>Details&lt;/summary>
+            Something small enough to escape casual notice.
+          &lt;/details>
+
+
+          &lt;style>
+            details.styled {
+              border: 1px solid #aaa;
+              border-radius: 4px;
+              padding: 0.5em 0.5em 0;
+
+              summary {
+                font-weight: bold;
+                margin: -0.5em -0.5em 0;
+                padding: 0.5em;
+              }
+
+              &[open] {
+                padding: 0.5em;
+              }
+
+              &[open] summary {
+                border-bottom: 1px solid #aaa;
+                margin-bottom: 0.5em;
+              }
+            }
+          &lt;/style>
+        </script>
+        <h2>element size width height</h2>
+
+        <a href="https://www.javascripttutorial.net/javascript-dom/javascript-width-height/"
+          >https://www.javascripttutorial.net/javascript-dom/javascript-width-height/</a
+        >
+        <br />
+        <p>see also src/lib/getAbsoluteHeightOfElement.js in icare</p>
+
+        <style>
+          #box-size {
+            background-color: antiquewhite;
+            border: 10px solid black;
+            margin: 12px;
+            padding: 15px;
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+          }
+          #box-size-target {
+            font-family: monospace;
+            font-size: 12px;
+          }
+          .flex {
+            display: flex;
+            align-items: center;
+          }
+        </style>
+        <div class="flex">
+          <div id="box-size"></div>
+          <pre id="box-size-target"></pre>
+        </div>
+        <script>
+          var box = document.querySelector("#box-size");
+          var boxt = document.querySelector("#box-size-target");
+          const domRect = box.getBoundingClientRect();
+          let style = getComputedStyle(box);
+
+          boxt.innerText = `
+#box-size {
+  border: 10px solid black;
+  margin: 12px;
+  padding: 15px;
+  width: 100px;
+  height: 100px;
+}
+
+box.offsetHeight = ${box.offsetHeight} // excluding margin
+box.clientWidth  = ${box.clientWidth} // excluding margin & border
+const domRect = box.getBoundingClientRect();
+console.log('domRect:',${JSON.stringify(domRect, null, 4)})
+let style = getComputedStyle(box);
+style.borderLeftWidth = ${style.borderLeftWidth}
+style.marginLeft = ${style.marginLeft}
+`;
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

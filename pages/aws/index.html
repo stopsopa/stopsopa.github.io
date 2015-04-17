@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="http://">ekstra link</a></li>
+          </ul>
+        </div>
+        <h2>Glossary</h2>
+        <script type="editor" data-lang="python">
+
+          # more about https://github.com/stopsopa/aws
+
+          # PII - personally identifiable information
+          # IAM - Identity and Access Management
+        </script>
+        <h2>RDS connect from MySQL Workbench</h2>
+        <script type="editor" data-lang="python">
+
+          1) Enable public access: https://repost.aws/knowledge-center/rds-connectivity-instance-subnet-vpc
+
+          2) And also make sure to add your ip address to allowed https://stackoverflow.com/a/60976842
+
+          3) and then follow: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToInstance.EndpointAndPort.html
+
+          # Or use PHPMyAdmin
+          # do 1) and 2) and try:
+
+          cat <<EEE > config.inc.5.1.1.php
+          <?php
+          \$cfg['MaxNavigationItems'] = 200;
+          \$cfg['MaxTableList'] = 200;
+          EEE
+
+          docker run \
+            -it \
+            --name aws_mysql \
+            -p "8900:80" \
+            -v "$(pwd)/config.inc.5.1.1.php:/etc/phpmyadmin/config.user.inc.php" \
+            -e PMA_HOST="test-db1.xxxxxxx.eu-west-2.rds.amazonaws.com" \
+            -e PMA_USER="admin" \
+            -e PMA_PASSWORD="xxxxxxx" \
+          phpmyadmin/phpmyadmin:5.1.1
+
+          # then open in the browser
+          http://0.0.0.0:8900/
+        </script>
+
+        <h2>Ip address</h2>
+        <script type="editor" data-lang="python">
+
+          Detach IP address
+
+          # Solution is based on : https://stackoverflow.com/a/54153371
+          # But solution in that link doesn't necessarily work anymore
+          # but it seems that's not an issue because there is this tickbox available:
+          # https://i.imgur.com/PWcM8zC.png
+
+          Regarding charges for IP address
+          https://aws.amazon.com/blogs/aws/new-aws-public-ipv4-address-charge-public-ip-insights
+
+          Ip ranges:
+          https://ip-ranges.amazonaws.com/ip-ranges.json
+            # from: https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html
+        </script>
+        <h2>Ipv6</h2>
+        <script type="editor" data-lang="python">
+
+          # from: https://www.ipify.org/
+          curl 'https://api.ipify.org?format=json'
+          curl 'https://api64.ipify.org?format=json'
+
+          # also for ipv4
+          curl https://checkip.amazonaws.com/
+          # or for ipv6
+          curl -6 icanhazip.com
+
+          # open in the browser
+          https://ip6.me/
+          # or this one:
+          https://nsx.de/
+            # will show ipv6 format if it works and ipv4 if you can't use ipv6
+
+          # test ipv6 connectivity
+          https://test-ipv6.com/
+          nslookup example.com
+          dig AAAA example.com
+
+          # find ipv6 for given domain
+          dig +short AAAA reqres.in
+          host -t AAAA reqres.in
+
+          # switch to use ipv6
+          https://developers.google.com/speed/public-dns/docs/using#macos
+
+          # RFC: https://www.ietf.org/rfc/rfc2732.txt
+
+          # mastering curl
+          https://ipv6.net/blog/mastering-curl-with-ipv6-addresses-10-beginner-friendly-examples-for-linux-users/
+
+          # WORKING:
+          curl  -g -6 'http://[2606:2800:220:1:248:1893:25c8:1946]:80/index.html' -H 'Host: www.example.com'
+
+          host -t AAAA reqres.in
+          curl -g -6 -L 'http://[2606:4700:20::ac43:49ad]:80/api/users' -H "Host: reqres.in" | jq
+            # Will work also in the browser when https://chromewebstore.google.com/detail/modheader-modify-http-hea/idgpnmonknjnojddfkpgkljpfnnfcklj?hl=en
+            # used and >Host: reqres.in< is set
+
+          host -t AAAA jsonplaceholder.typicode.com
+          curl -g -6 -L 'http://[2606:4700:3031::ac43:a797]:80/posts/1' -H "Host: jsonplaceholder.typicode.com" | jq
+
+          host -t AAAA fakestoreapi.com
+          curl -g -6 -L 'http://[2606:4700:3037::ac43:c281]:80/products' -H "Host: fakestoreapi.com" | jq
+        </script>
+
+        <h2>Lambda</h2>
+        <script type="editor" data-lang="python">
+
+          # create
+          https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html
+
+          # url and access
+          https://docs.aws.amazon.com/lambda/latest/dg/urls-configuration.html#create-url-console
+
+          # configure and call from node:
+          https://github.com/stopsopa/aws/tree/main/lambda
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

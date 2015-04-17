@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+          Array.prototype.slice.call(document.querySelectorAll('[class="domain' + '.com"]')).forEach(function (tag) {
+            var text = tag.innerHTML;
+
+            text = text.replace(/domain\.com/g, location.origin);
+
+            tag.innerHTML = text;
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+    <style>
+      #semversort textarea {
+        width: 100%;
+        min-height: 100px;
+      }
+    </style>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Useful commands</h2>
+        <script type="editor" data-lang="sh">
+
+          ssh-keygen -t rsa -b 4096 -C "dev+build@myorg.com"
+              # from: https://buildkite.com/docs/agent/v3/ssh-keys#creating-a-single-ssh-key
+              # g(Buildkite Agent SSH Keys Creating a single SSH key)
+
+          ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa
+              # generate key without prompt
+
+          ssh-keyscan "<host>" >> "~/.ssh/known_hosts"
+              # from: https://buildkite.com/docs/agent/v3/securing#disabling-automatic-ssh-keyscan
+              # try also
+                # ssh-keyscan -H "<host>" >> /root/.ssh/known_hosts
+        </script>
+
+        <h2>sshh - manually swap ssh key</h2>
+
+        Just paste this code to your terminal:
+        <script type="editor" data-lang="sh">
+
+          # in order to tell the script where is the directory with keys to switch between it is necessary to
+          # define SSHH_DIR_WITH_KEYS env var in the shell ~/.zshrc, ~/.bashrc and ~/.bash_profile
+            export SSHH_DIR_WITH_KEYS="/Volumes/truecrypt/ssh/ssh"
+            alias sshh="/bin/bash /Volumes/truecrypt/ssh/ssh/sshh.sh"
+                # command: /bin/bash ~/sshh.sh --dir "/Volumes/truecrypt/ssh/ssh"
+                # install should already register alias in ~/.bash_profile and ~/.bashrc but it's always worth checking
+
+          # WARNING:
+          # /Volumes/truecrypt/ssh/ssh/sshh.sh contains really:
+          # /bin/bash /Users/xxxxx/Workspace/stopsopa.github.io/runtime/pages/ssh/sshh.sh $@
+
+          # now, once we have clarified all those things, let's install the script:
+          rm -rf ~/sshh.sh
+          mkdir ~/.ssh
+          chmod 700 .ssh/
+          wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/ssh/sshh.sh -O ~/sshh.sh
+          /bin/bash ~/sshh.sh --dir "/Volumes/truecrypt/ssh/ssh" install
+          source ~/.bash_profile
+          source ~/.bashrc
+
+          # to automatically select specific keys
+          /bin/bash /Users/linuxuser/Workspace/stopsopa.github.io.git/runtime/pages/ssh/add.sh -d /Volumes/truecrypt/ssh/ssh first falcon
+
+          # strucuture of directory where SSHH_DIR_WITH_KEYS is pointing:
+
+          /Volumes/truecrypt/ssh/ssh linuxuser √ ls -la
+          total 26
+          drwxrwxrwx  1 linuxuser  staff  1024 17 Mar 09:53 .
+          drwxrwxrwx  1 linuxuser  staff  1024 14 Feb 17:56 ..
+          -rwxrwxrwx  1 linuxuser  staff   353 15 Jul  2021 add.sh
+          -rwxrwxrwx  1 linuxuser  staff  2610 14 Feb 17:04 gd
+          -rwxrwxrwx  1 linuxuser  staff   577 14 Feb 17:04 gd.pub
+          -rwxrwxrwx  1 linuxuser  staff   131 14 Feb 17:04 gd.sh
+          -rwxrwxrwx  1 linuxuser  staff  1679 15 Jul  2021 sd
+          -rwxrwxrwx  1 linuxuser  staff   409 15 Jul  2021 sd.pub
+          -rwxrwxrwx  1 linuxuser  staff   129 17 Mar 01:23 sd.sh
+          -rwxrwxrwx  1 linuxuser  staff   448 14 Feb 16:55 sshh.sh
+
+
+          /Volumes/truecrypt/ssh/ssh linuxuser √ cat add.sh
+          #!/bin/bash
+
+          # normally you would import content of the file
+          # https://stopsopa.github.io/pages/ssh/add.sh
+          # but for debugging purposes i've linked original one straight from local copy git source
+
+          # see more: https://stopsopa.github.io/pages/ssh/index.html
+
+          # WARNING:
+          # /Volumes/truecrypt/ssh/ssh/add.sh contains really:
+          # /bin/bash /Users/xxxxx/Workspace/stopsopa.github.io/runtime/pages/ssh/add.sh $@
+
+
+          /Volumes/truecrypt/ssh/ssh linuxuser √ cat sshh.sh
+          #!/bin/bash
+
+          # normally you would import content of the file
+          # https://stopsopa.github.io/pages/ssh/sshh.sh
+          # but for debugging purposes i've linked original one straight from local copy git source
+
+          # see more: https://stopsopa.github.io/pages/ssh/index.html
+
+          #/bin/bash /Users/linuxuser/Workspace/projects/stopsopa.github.io/runtime/pages/ssh/sshh.sh $@
+          /bin/bash /Users/linuxuser/Workspace/stopsopa.github.io.git/runtime/pages/ssh/sshh.sh $@
+
+
+          /Volumes/truecrypt/ssh/ssh linuxuser √ cat sd.sh
+          # git config --global -l
+          git config --global user.email linuxuser@gmail.com
+          git config --global user.name "Simon D."
+        </script>
+
+        <h2>auto add single key</h2>
+        <script type="editor" data-lang="sh">
+          add to ~/.bashrc
+          /bin/bash /Volumes/WINSCP/ssh/ssh/add.sh first falcon
+          # you might want to change __DIR and DEFKEY environment variables in add.sh script
+        </script>
+
+        <h2>authorized_keys</h2>
+        <script type="editor" data-lang="sh">
+
+          touch ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+
+          # chmod 750 ~/ - don't touch if not needed
+          chmod 755 ~/.ssh
+          chmod 644 ~/.ssh/authorized_keys # file should be 600 (from: https://www.debian.org/devel/passwordlessssh)
+          chmod 600 ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_dsa
+          chmod 644 ~/.ssh/id_rsa.pub
+          chmod 644 ~/.ssh/id_dsa.pub
+          chmod 644 ~/.ssh/known_hosts
+
+          drwx------  2 user user 4096 Jun  9  2014 .
+          drwxr-xr-x 11 user user 4096 Jul 26 19:14 ..
+          -rw-r--r--  1 user user  396 Mar 24 20:37 authorized_keys
+          -rw-------  1 user user  668 Jul 25  2013 id_dsa
+          -rw-r--r--  1 user user  609 Jul 25  2013 id_dsa.pub
+          -rw-r--r--  1 user user 2652 Oct 14  2013 known_hosts
+
+          # in other situation I had situation like this:
+          $ ls -la ~/.ssh/
+          total 28
+          drwx------  2 simon simon 4096 Feb  5 22:28 .
+          drwxr-x--- 24 simon simon 4096 Apr  8 11:29 ..
+          -rw-------  1 simon simon  804 Feb  5 22:26 authorized_keys
+          -rw-------  1 simon simon 2602 Feb  5 14:18 id_rsa
+          -rw-r--r--  1 simon simon  567 Feb  5 14:18 id_rsa.pub
+          -rw-------  1 simon simon  506 Feb  5 22:28 known_hosts
+
+          # user home directory have to have permissions as follow
+          drwxr-x--- 28 simon simon  4096 Jul  6 20:44 .
+
+          # ... and all worked too
+        </script>
+
+        <h2>OpenSSH</h2>
+        <script type="editor" data-lang="sh">
+
+          openssl genrsa -out mykey.pem 2048
+          openssl rsa -in mykey.pem -outform PEM -pubout -out mykey.pub
+
+          cat <<EEE > xxx.pem
+          -----BEGIN CERTIFICATE
+          ...
+          -----END CERTIFICATE-----
+          EEE
+          openssl x509 -noout -text -in xxx.pem
+          rm -rf xxx.pem
+
+          # from: https://www.baeldung.com/linux/openssl-extract-certificate-info#1-extracting-the-subject
+        </script>
+        <h2>generate .p12 from .key and .crt</h2>
+        <script type="editor" data-lang="sh">
+
+          openssl pkcs12 -export \
+            -inkey domain.key \
+            -in domain.key.crt \
+            -name domain.key > domain.key.p12
+
+          # it will ask for passwords:
+          Enter Export Password:
+          Verifying - Enter Export Password:
+
+          # provide the password expected in the app
+                keystorePath: ${json.SENSITIVE_CONFIG_PATH}
+                keystorePassword: XXXX
+        </script>
+
+        <h2>execute inline HEREDOC</h2>
+        <script type="editor" data-lang="sh">
+
+          ssh simon@xx.xx.xx.xx << EEE
+          ls -la
+          echo stuff
+          exit 3
+          EEE
+          # will forward exit code too - as it should
+        </script>
+
+        <h2>Change keys manually from any directory</h2>
+
+        <script type="editor" data-lang="sh">
+
+          export SSHH_DIR_WITH_KEYS="/path/to/dir/with/keys"
+          KEY_FILE="stopsopa"
+
+          mkdir ~/.ssh/
+          chmod 700 ~/.ssh/
+          cp "${SSHH_DIR_WITH_KEYS}/${KEY_FILE}" ~/.ssh/
+          chmod 600 ~/.ssh/${KEY_FILE}
+          ssh-add ~/.ssh/${KEY_FILE}
+          rm ~/.ssh/${KEY_FILE}
+          ssh-add -L
+        </script>
+        <h2>ssh agent on Windows</h2>
+
+        <script type="editor" data-lang="sh">
+
+          ssh-keygen -t rsa -b 4096 -C "szymon.dzialowski@gmail.com"
+            # use regular RSA format
+            # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key
+
+          # add public key to github account
+
+          eval "$(ssh-agent -s)"
+            # to launch ssh-agent https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent
+
+          ssh-add ~/.ssh/id_rsa
+
+          ssh-add -L
+            # to verify if added
+
+          # ---------- other stuff ------------
+
+          OpenSSH vs Pagent from Putty:
+            # https://stackoverflow.com/a/35116084
+
+          # convert ssh key to .ppk format using PuTTYgen from Putty project
+            # install https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
+
+          # launch Pagent and add the .ppk key
+
+          cat <<EEE > ~/.ssh/config
+          Host github.com
+            AddKeysToAgent yes
+
+            UseKeychain yes
+            # comment UseKeychain if no passphrase assigned to ssh key
+
+            IdentityFile ~/.ssh/id_rsa
+          EEE
+
+            # from: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

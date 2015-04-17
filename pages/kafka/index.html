@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Install MAC</h2>
+        <script type="editor" data-lang="sh">
+
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install kafka
+
+          ### Kafka and Zookeeper
+          zookeeper-server-start /usr/local/etc/kafka/zookeeper.properties
+          kafka-server-start /usr/local/etc/kafka/server.properties
+
+          kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic notifications_topic
+          kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic notifications-command
+          kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic barter-notification
+
+
+          kafka-topics --list --zookeeper localhost:2181
+
+          ### Kafka send message
+          kafka-console-producer -broker-list localhost:9092 -topic recomm_payments.notifications
+        </script>
+        from:
+        <a href="https://medium.com/@Ankitthakur/apache-kafka-installation-on-mac-using-homebrew-a367cdefd273"
+          >https://medium.com/@Ankitthakur/apache-kafka-installation-on-mac-using-homebrew-a367cdefd273</a
+        >
+        <br />
+
+        <a href="https://formulae.brew.sh/formula/kafka#default">brew repository page</a>
+        <h2>UI and exploring</h2>
+        <a href="https://github.com/obsidiandynamics/kafdrop">kafdrop (desktop)</a>
+        <br />
+        <a href="https://github.com/redpanda-data/console">Redpanda Console (Web in docker)</a>
+        <p>and</p>
+        <a href="https://github.com/consdata/kouncil">Kouncil for Apache Kafka (web in docker)</a>
+        <script type="editor" data-lang="sh">
+
+          from: https://dev.to/dariusx/recommend-a-simple-kafka-ui-tool-5gob
+
+          docker run -p 4241:8080 -e KAFKA_BROKERS=x_x_x_x:9092 docker.redpanda.com/vectorized/console:master-0a8fce8
+              # and visit: http://localhost:4241
+
+          docker run -p 4245:8080 -e bootstrapServers="x_x_x_x:9092" consdata/kouncil:latest
+              # and visit: http://localhost:4245
+        </script>
+        <br />
+        <a href="https://www.kafkatool.com/">Offset Explorer</a>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

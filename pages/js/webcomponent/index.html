@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Read</h2>
+        <script type="editor" data-lang="python">
+
+          https://github.com/mdn/web-components-examples
+          https://mdn.github.io/web-components-examples/
+              from: https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#examples
+        </script>
+        <h2>autonomous custom element (custom1.js)</h2>
+        <div class="custom1">
+          <script src="./001/custom1.js"></script>
+          <custom-1></custom-1>
+          <button class="add">add attr</button>
+          <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements"
+            >https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements</a
+          >
+          <script type="editor" data-lang="js" data-eval>
+            console.log('custom1 script');
+            const parent = document.querySelector('.custom1');
+
+            const wc = document.createElement('custom-1');
+
+            const add = document.querySelector(".add");
+            add.addEventListener('click', () => {
+                console.log('set color');
+                wc.setAttribute('color', 'green');
+            });
+          </script>
+        </div>
+        <h2>Custom states (custom2.js)</h2>
+        <div class="custom2">
+          <script src="./002/custom2.js"></script>
+          <custom-2>custom-2 <b>CLICK ME</b></custom-2>
+          <br />
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#custom_states_and_custom_state_pseudo-class_css_selectors"
+            >g(mdn web components Using custom elements Custom states and custom state pseudo-class CSS selectors)</a
+          >
+          <br />
+          <a href="https://css-tricks.com/custom-state-pseudo-classes-in-chrome/"
+            >https://css-tricks.com/custom-state-pseudo-classes-in-chrome/</a
+          >
+          <style>
+            custom-2 {
+              cursor: pointer;
+              &:hover {
+                color: green;
+              }
+            }
+            custom-2:--red {
+              color: red;
+            }
+            custom-2:state(--red) {
+              /* https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#examples */
+              border: 1px solid red;
+            }
+          </style>
+          <hr />
+          <button class="toggle">toggle state (doesn't work)</button>
+          <script type="editor" data-lang="js" data-eval>
+            // attempt to trigger with attribute toggle
+
+            console.log('custom2 script');
+
+            const parent = document.querySelector('.custom2');
+
+            const wc = document.createElement('custom-2');
+
+            const toggle = document.querySelector(".toggle");
+
+            toggle.addEventListener('click', () => {
+                console.log('toggle custom2');
+                if (wc.hasAttribute('redon')) {
+                    wc.removeAttribute('redon');
+                }
+                else {
+                    wc.setAttribute('redon', '');
+                }
+            });
+          </script>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

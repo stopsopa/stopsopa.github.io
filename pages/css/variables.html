@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <style>
+      div {
+        display: inline-block;
+        width: 1000px;
+        height: 500px;
+        background-image: radial-gradient(
+          at calc(100% * var(--mouse-x, 0.5)) calc(100% * var(--mouse-y, 0.5)),
+          transparent,
+          black
+        );
+      }
+    </style>
+  </head>
+  <body>
+    <div></div>
+    <a href="https://youtu.be/UQRSaG1hQ20?t=2640">https://youtu.be/UQRSaG1hQ20?t=2640</a>
+
+    <script>
+      var root = document.documentElement;
+
+      var innerWidth = 1000;
+      var innerHeight = 500;
+
+      document.addEventListener("mousemove", function (e) {
+        var x = e.clientX / innerWidth;
+        var y = e.clientY / innerHeight;
+
+        root.style.setProperty("--mouse-x", x);
+        root.style.setProperty("--mouse-y", y);
+      });
+
+      // // get variable from inline style
+      // element.style.getPropertyValue('--foo');
+      //
+      // // get variable from wherever
+      // getComputedStyle(element).getPropertyValue('--foo');
+      //
+      // // set variable on inline style
+      // element.style.setProperty('--foo', 38 + 4);
+    </script>
+  </body>
+</html>

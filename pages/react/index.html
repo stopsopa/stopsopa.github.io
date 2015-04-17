@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="react-testing-library/index.html">React Testing Library</a></li>
+          </ul>
+        </div>
+        <h2>Components</h2>
+        <script type="editor" data-lang="jsx">
+
+          toast:
+            https://sonner.emilkowal.ski/
+            https://react-hot-toast.com/docs/toast
+
+          editor:
+            https://www.blocknotejs.org/examples
+        </script>
+
+        <h2>codepen, jsfiddle, codesandbox</h2>
+        <a href="https://codesandbox.io/s/rjj38yzm14">codesandbox template</a>
+        <br />
+        <a href="https://codepen.io/stopsopa/pen/MWzLRmK?editors=0010">react basic form</a>
+        <h2>React - es6 syntax snippets</h2>
+        <a href="https://gist.github.com/stopsopa/3f076fd92b03136cc28b8b91a1ffdad8#file-js-es6-jsx-L323"
+          >https://gist.github.com/stopsopa/3f076fd92b03136cc28b8b91a1ffdad8#file-js-es6-jsx-L323</a
+        >
+        <h2>React - Textarea</h2>
+        <script type="editor" data-lang="jsx">
+
+          import React, { useRef, useState, useEffect } from 'react';
+
+          // https://stackoverflow.com/a/5346855
+          var observe;
+          if (window.attachEvent) {
+            observe = function (element, event, handler) {
+              element.attachEvent('on'+event, handler);
+            };
+          }
+          else {
+            observe = function (element, event, handler) {
+              element.addEventListener(event, handler, false);
+            };
+          }
+          function init (text, correct) {
+            function resize () {
+              console && console.log && console.log('fun resize', text)
+              //text.style.height = 'auto';
+              var h = text.scrollHeight;
+              if (Number.isInteger(correct)) {
+                h += correct;
+              }
+              text.style.height = h+'px';
+            }
+            /* 0-timeout to get the already changed text */
+            function delayedResize () {
+              window.setTimeout(resize, 0);
+            }
+            observe(text, 'change',  resize);
+            observe(text, 'cut',     delayedResize);
+            observe(text, 'paste',   delayedResize);
+            observe(text, 'drop',    delayedResize);
+            observe(text, 'keydown', delayedResize);
+
+            // text.focus();
+            // text.select();
+            resize();
+
+            return function () {resize()}
+          }
+
+          export default props => {
+
+            const el = useRef(null);
+
+            const [ resize, setResize ] = useState({});
+
+            const [ mounted, setMounted ] = useState(false);
+
+            const {
+              value,
+            } = props;
+
+            const {
+              correct,
+              ...rest
+            } = props
+
+            useEffect(() => {
+
+              let _resize = resize._resize;
+
+              if ( ! mounted && el.current ) {
+
+                setMounted(true);
+
+                _resize = init(el.current, correct);
+
+                setResize({
+                  _resize: _resize
+                });
+              }
+
+              try {
+
+                _resize();
+              }
+              catch (e) {
+
+                console && console.log && console.log(`Textarea.js _resize() trigger error: ${e}`);
+              }
+            }, [value]);
+
+            return (
+              <textarea ref={el} {...rest} />
+            )
+          }
+        </script>
+        <h2>useCallback useMemo</h2>
+        <script type="editor" data-lang="jsx">
+          How is useMemo different, but similar?
+          useMemo is similar to useCallback except it allows you to apply memoization to any value type (not just functions). It does this by accepting a function which returns the value and then that function is only called when the value needs to be retrieved (which typically will only happen once each time an element in the dependencies array changes between renders).
+        </script>
+        <h2>useMemo - limit rendering child element</h2>
+        <script type="editor" data-lang="jsx">
+
+          // from https://dev.to/bhavzlearn/demystifying-useref-and-usememo-in-react-4jcl#:~:text=be%20re%2Drendered.-,Where%20to%20use%20useMemo,-Let%27s%20take%20an
+          import { useState, useMemo } from "react";
+          import WelcomeCard from "./WelcomeCard";
+          import "./styles.css";
+
+          const App = () => {
+            const [ctr, setCtr] = useState(0);
+            const memoizedWelcomeCard = useMemo(() => {
+              return <WelcomeCard />;
+            }, []);
+
+            return (
+              <div className="App">
+                <h1>Application</h1>
+                <button onClick={() => setCtr(ctr + 1)}>
+                  You clicked me {ctr} times.
+                </button>
+                {memoizedWelcomeCard}
+              </div>
+            );
+          };
+
+          export default App;
+        </script>
+        <a href="https://kentcdodds.com/blog/usememo-and-usecallback">link</a>
+        <h2>Auto scroll if bottom</h2>
+        <script type="editor" data-lang="jsx">
+
+          /**
+           *
+           .xxx {
+              max-height: 200px;
+              box-shadow: 0 0 5px black;
+              overflow-x: hidden;
+              overflow-y: auto;
+              & > div {
+              }
+          }
+           */
+
+          import React, { useRef, useState } from 'react';
+
+          import log from 'inspc';
+
+          import './Scroll.scss';
+
+          import alphaid from 'nlab/alphaid';
+
+          const next = (function () {
+            let i = 1000;
+            return () => i++;
+          }());
+
+          const t = alphaid('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+
+          export default () => {
+
+            const scrollElement = useRef(null);
+
+            const [ list, setList ] = useState((function (l) {
+
+              for (let i = 0 ; i < 11 ; i += 1) {
+
+                l.push(next());
+              }
+              return l;
+            }([])));
+
+            (function () {
+
+              if (scrollElement.current) {
+
+                const cond = scrollElement.current.offsetHeight + scrollElement.current.scrollTop === scrollElement.current.scrollHeight;
+
+                if (cond) {
+
+                  // log.dump('scroll')
+
+                  setTimeout(() => {
+
+                    scrollElement.current.scrollTop = scrollElement.current.scrollHeight;
+
+                  }, 0);
+                }
+                // else {
+                //
+                //   log.dump('not scroll')
+                // }
+              }
+            }());
+
+            return (
+              <div>
+                <div className="xxx" ref={scrollElement}>
+                  <div>
+                    {list.map(i => (
+                      <div key={i}>{i} {t.encode(i)}</div>
+                    ))}
+                  </div>
+                </div>
+                <button onClick={() => setList(list => {
+                  list.push(next())
+                  return [...list];
+                })}>add</button>
+              </div>
+            )
+          }
+
+          // /// --- P.js
+          //
+          // import React, { useRef, useState } from 'react';
+          //
+          // import Scroll from './Scroll'
+          //
+          // export default () => {
+          //
+          //   const [ mount, setMount ] = useState(false);
+          //
+          //   return (
+          //     <div>
+          //       <button onClick={() => setMount(m => !m)}>on</button>
+          //       {mount ? (
+          //         <Scroll />
+          //       ) : (
+          //         'not mount'
+          //       )}
+          //     </div>
+          //   )
+          // }
+        </script>
+
+        <h2>Context state</h2>
+
+        <script type="editor" data-lang="jsx">
+
+          import * as React from "react";
+          export default function useQuery(url) {
+            const [data, setData] = React.useState(null);
+            const [isLoading, setIsLoading] = React.useState(true);
+            const [error, setError] = React.useState(null);
+            React.useEffect(() => {
+              let ignore = false;
+              const handleFetch = async () => {
+                setData(null);
+                setIsLoading(true);
+                setError(null);
+                try {
+                  const res = await fetch(url);
+                  if (ignore) {
+                    return;
+                  }
+                  if (res.ok === false) {
+                    throw new Error("A network error occurred.");
+                  }
+                  const json = await res.json();
+
+                  setData(json);
+                  setIsLoading(false);
+                } catch (e) {
+                  setError(e.message);
+                  setIsLoading(false);
+                }
+              };
+              handleFetch();
+              return () => {
+                ignore = true;
+              };
+            }, [url]);
+            return { data, isLoading, error };
+          }
+
+          const queryContext = React.createContext([{}, () => {}]);
+          export function QueryProvider({ children }) {
+            const tuple = React.useState({});
+
+            return <queryContext.Provider value={tuple}>{children}</queryContext.Provider>;
+          }
+          export default function useQuery(url) {
+            const [state, setState] = React.useContext(queryContext);
+
+            React.useEffect(() => {
+              const update = (newState) =>
+                setState((prevState) => ({
+                  ...prevState,
+                  [url]: { ...prevState[url], ...newState },
+                }));
+              let ignore = false;
+              const handleFetch = async () => {
+                update({ data: null, isLoading: true, error: null });
+
+                try {
+                  const res = await fetch(url);
+
+                  if (ignore) {
+                    return;
+                  }
+
+                  if (res.ok === false) {
+                    throw new Error("A network error occurred.");
+                  }
+
+                  const data = await res.json();
+
+                  update({ data, isLoading: false, error: null });
+                } catch (e) {
+                  update({ error: e.message, isLoading: false, data: null });
+                }
+              };
+              handleFetch();
+            }, [url]);
+            return state[url] || { data: null, isLoading: true, error: null };
+          }
+        </script>
+        <h2>React - IntervalInput</h2>
+        <a href="https://streamich.github.io/react-use">react-use</a>
+        <br />
+        <script type="editor" data-lang="jsx">
+
+          import React, { useReducer, useEffect } from 'react';
+
+          import './IntervalInput.scss'
+
+          const msg = msg => `IntervalInput component error: ${msg}`;
+
+          const log = (function () {
+            try {
+              return console.log;
+            }
+            catch (e) {
+              return () => {}
+            }
+          }());
+
+          const ms        = require('nlab/ms');
+
+          const generate  = ms.generate;
+
+          const raw       = ms.raw;
+
+          const shift     = ms.shift;
+
+          const shiftKeys = Object.keys(shift);
+
+          const shiftTrans = {
+            ms: `Milliseconds`,
+            s: `Seconds`,
+            m: `Minutes`,
+            h: `Hours`,
+            d: `Days`,
+            y: `Years`,
+          }
+
+          const reg = /^\d+$/;
+
+          export default ({
+            value,
+            onChange = () => {},
+            valueunit = 'ms', // https://github.com/stopsopa/nlab/blob/master/README.md#ms
+            rangestart = 's',
+            rangeend = 'h',
+          }) => {
+
+            if ( ! shiftKeys.includes(valueunit) ) {
+
+              log(msg(`valueunit is not on the list of available units '${shiftKeys.join(', ')}'`));
+
+              valueunit = 'ms';
+            }
+
+            if ( ! shiftKeys.includes(rangestart) ) {
+
+              log(msg(`rangestart is not on the list of available units '${shiftKeys.join(', ')}'`));
+
+              rangestart = 'ms';
+            }
+
+            if ( ! shiftKeys.includes(rangeend) ) {
+
+              log(msg(`rangeend is not on the list of available units '${shiftKeys.join(', ')}'`));
+
+              rangeend = 'h';
+            }
+
+            let slice = shiftKeys.slice(shiftKeys.indexOf(rangestart), shiftKeys.lastIndexOf(rangeend) + 1).reverse()
+
+            if ( ! reg.test(value) ) {
+
+              log(msg(`value don't match /^\\d+$/`));
+
+              value = 0;
+            }
+
+            const [ interval, dispatch ] = useReducer(function (state, action) {
+
+              if ( ! reg.test(action.value) ) {
+
+                log(msg(`action.value don't match /^\\d+$/`));
+
+                return state;
+              }
+
+              const value = parseInt(action.value, 10);
+
+              if ( value < 0 ) {
+
+                log(msg(`value < 0`));
+
+                return state;
+              }
+
+              if ( ! slice.includes(action.type) ) {
+
+                log(msg(`action.type '${action.type}' is not on the list of allowed values ${slice.join(', ')}`));
+
+                return state;
+              }
+
+              // log({
+              //   reducer: {
+              //     ...state,
+              //     [action.type]: value,
+              //   },
+              //   valueunit,
+              // })
+
+              return {
+                ...state,
+                [action.type]: value,
+              }
+            }, raw(value, valueunit));
+
+            // log({
+            //   value,
+            //   valueunit,
+            //   init: raw(value, valueunit),
+            // })
+
+            useEffect(() => onChange(generate(interval, valueunit)), [interval]);
+
+            return (
+              <table className="interval-input">
+                <tbody>
+                <tr>
+                  {slice.map(u => (
+                    <td key={u}>{shiftTrans[u]}</td>
+                  ))}
+                </tr>
+                <tr>
+                  {slice.map(u => (
+                    <td key={u}>
+                      <input value={interval[u]}
+                             className="interval-input"
+                             onChange={e => dispatch({type: u, value: e.target.value})}
+                             onClick={(event) => event.target.select()}
+                             autoComplete="nope"
+                      />
+                    </td>
+                  ))}
+                </tr>
+                </tbody>
+              </table>
+            )
+          }
+        </script>
+
+        <h2>hook useSwap</h2>
+        <script type="editor" data-lang="jsx">
+
+          /**
+           * Usecase:
+           *    we generally wan't to prevent navigating with <Prompt/> when states change
+           *    but on the other hand we have link to download file and it internally requires to change url
+           *    when it is clicked.
+           *    This is though specific case to allow just for that one link
+           *    so when user onMouseEnter button we will temporarly switch state for <Prompt /> to false
+           *    but onMouseLeave will bring back last state, no matter if it was false or true before we onMouseEnter
+           * in render:
+           *
+                  const [ block, setBlock, swapHandler ] = useSwap(false);
+
+                  const [ form, setValue ] = useState({});
+
+                  const editField = (key, value) => {
+
+                      setBlock(true);
+
+                      setValue(v => ({
+                          ...v,
+                          [key]: value
+                      })
+                  }
+
+                  const onSubmit = async () => {
+
+                      await fetch(...);
+
+                      setBlock(false);
+
+                      setSending(false);
+                  }
+           *
+                  <form onSubmit={e => {
+                      e.preventDefault();
+                      onSubmit();
+                  }}>
+                       <Prompt
+                           when={block}
+                           message={location => `Form contains unsaved data, do you really want to discard changes without saving by navigating to: ${location.pathname} ?`}
+                           unloadMessage="Form contains unsaved data..."
+                       />
+                       <input value={form.name} onChange={e => setValue('name', e.target.value)} />
+                       {
+                          form.id && <Button
+                              onMouseEnter={swapHandler.swap}
+                              onMouseLeave={swapHandler.restore}
+                              as="a"
+                              href={`/api/admin/report-xlsx/${form.id}`}
+                          >
+                              download xlsx report
+                          </Button>
+                       }
+                  <form>
+           */
+          const useSwap = init => {
+
+              const [ state, setInnerState ]       = useState(init);
+
+              let setState;
+
+              let cache = init;
+
+              const ref = useRef({
+                  swap: () => {
+                      // log('swap', false, 'cache: ', cache);
+                      setInnerState(false)
+                  },
+                  restore: () => {
+                      // log('restore', cache)
+                      setState(cache)
+                  },
+                  set: v => {
+                      // log('set', v)
+                      cache = v;
+                  }
+              });
+
+              setState = v => {
+
+                  // log('setState', v)
+
+                  setInnerState(v)
+
+                  ref.current.set(v);
+              }
+
+              return [ state, setState, ref.current ];
+          }
+        </script>
+
+        <br />
+        <script type="editor" data-lang="scss">
+
+          .interval-input {
+              input.interval-input[class] { /* weird selector I know - but it is like this only to increase css specificity */
+                  width: 82px;
+              }
+          }
+        </script>
+
+        <h2>React - no webpack template</h2>
+        <a href="https://reactjs.org/docs/add-react-to-a-website.html">Add React to a Website</a>
+        <script type="editor" data-lang="html">
+
+          <!doctype html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport"
+                    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+              <meta http-equiv="X-UA-Compatible" content="ie=edge">
+              <title>Document</title>
+              <script>
+                  window.Promise || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.min.js"><\/script>');
+                  window.fetch || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"><\/script>');
+              &lt;/script>
+              <script src="public/react/umd/react.production.min.js">&lt;/script>
+              <script src="public/react-dom/umd/react-dom.production.min.js">&lt;/script>
+              <script src="public/@babel/standalone/babel.min.js">&lt;/script>
+                  <!--
+                      yarn add @babel/standalone
+                      homepage github repo:
+                          https://github.com/babel/babel-standalone
+                      from cdn:
+                          https://reactjs.org/docs/add-react-to-a-website.html#quickly-try-jsx
+                  -->
+              <script>window.React || document.write("run server using 'make start' it will link node_modules where it should be");&lt;/script>
+          </head>
+          <body>
+              <div id="app">
+                  Loading ...
+              </div>
+              <script type="text/babel">
+
+                  const log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+                  const delay = (time, data) =>
+                      new Promise(
+                          resolve => time ? setTimeout(resolve, time, data) : resolve(data)
+                      )
+                  ;
+
+                  class Root extends React.Component {
+                      constructor(...args) {
+
+                          super(...args);
+
+                          this.state = {
+                          }
+                      }
+                      render() {
+                          return (
+                              <div>It's working...</div>
+                          );
+                      }
+                  }
+                  ReactDOM.render(
+                      <Root
+                      />,
+                      document.getElementById('app')
+                  );
+              &lt;/script>
+          </body>
+          </html>
+        </script>
+        <h2>React hooks</h2>
+        <a href="https://www.youtube.com/watch?v=TNhaISOUy6Q"
+          >https://www.youtube.com/watch?v=TNhaISOUy6Q rough overview</a
+        >
+        <script type="editor" data-lang="jsx"></script>
+        <h2>Form - checkbox</h2>
+        <a href="./react-checkbox/index.html">react-checkbox</a>
+        <script type="editor" data-lang="jsx">
+
+          import React from 'react';
+
+          import { createRoot } from "react-dom/client";
+
+          import {
+            BrowserRouter as Router,
+            Switch,
+            Route,
+            Link,
+            useParams,
+            useRouteMatch,
+            useHistory,
+            useLocation
+          } from "react-router-dom";
+
+          const root = createRoot(document.getElementById("app"));
+
+          root.render(
+            <React.StrictMode>
+              <Router>
+                <App />
+              </Router>
+            </React.StrictMode>
+          );
+
+          function App() {
+            let history = useHistory();
+
+            let match = useRouteMatch({ // from: https://reacttraining.com/blog/react-router-v5-1/#useroutematch
+              path: '/BLOG/:slug/',
+              strict: true,
+              sensitive: true
+            });
+
+            return (
+              <div>
+                {match ? <BlogPost match={match} /> : <NotFound />}
+                <button
+                  onClick={() => {
+                    auth.signout(() => history.push("/"));
+                  }}
+                >
+                  Sign out
+                </button>
+                <Switch>
+                  <Redirect from="about" to="about-us" /> {/* no more of that */}
+                  <Route path="about" render={() => <Redirect to="about-us" />} /> {/* use that instead */}
+                  {/* from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#remove-redirects-inside-switch */}
+                </Switch>
+              </div>
+            );
+          }
+
+          // this.props: {
+          //     "history": {
+          //         "length": 50,
+          //         "action": "PUSH",
+          //         "location": {
+          //             "pathname": "/router/001/router/5",
+          //             "search": "",
+          //             "hash": "",
+          //             "key": "nujv8c"
+          //         }
+          //     },
+          //     "location": {
+          //         "pathname": "/router/001/router/5",
+          //         "search": "",
+          //         "hash": "",
+          //         "key": "nujv8c"
+          //     },
+          //     "match": {
+          //         "path": "/router/001/router/:num",
+          //         "url": "/router/001/router/5",
+          //         "isExact": true,
+          //         "params": {
+          //             "num": "5"
+          //         }
+          //     }
+          // }
+        </script>
+        <h2>React</h2>
+
+        <script type="editor" data-lang="jsx">
+
+          // double mounting components in react 18: https://youtu.be/HPoC-k7Rxwo?t=1340
+        </script>
+        <h2>React Router 5</h2>
+        <a href="https://stopsopa.github.io/roderic-legacy/router/001/app.html"
+          >DEMO - https://stopsopa.github.io/roderic-legacy/router/001/app.html</a
+        >
+        <h2>React Router 6</h2>
+        <a href="https://github.com/remix-run/react-router/discussions/8753">Official v5 to v6 Migration Guide</a>
+        <br />
+        <a href="https://v5.reactrouter.com/web/api/Switch">React Router v5</a>
+        <br />
+        <a href="https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md">Upgrading from v5</a>
+        <script type="editor" data-lang="jsx">
+
+          // update
+          // npm install react-router-dom  or  yarn add react-router-dom
+          // react-router-dom will bring dependency react-router
+          // from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#upgrade-to-react-router-v6
+
+          import { Routes, Route, Navigate, useNavigate,
+            useMatch, // more: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#replace-useroutematch-with-usematch
+          } from "react-router-dom";
+          import { StaticRouter } from "react-router-dom/server";
+            // https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#get-staticrouter-from-react-router-domserver
+
+          function App() {
+            let navigate = useNavigate();
+            function handleClick() {
+              navigate("/home"); // push by default
+              // or: navigate(to, { replace: true, state })
+              // from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#use-usenavigate-instead-of-usehistory
+              // navigate(-2) or navigate(1)
+            }
+            if (true) {
+              return <button onClick={handleClick}>go home</button>
+            }
+            return (
+              <Routes>
+                <Route path="/home" element={<Home />} />
+                <Route path="/" element={<Navigate replace to="/home" />} />
+                {/*
+          happens in a React.useEffect()
+            from: https://gist.github.com/mjackson/b5748add2795ce7448a366ae8f8ae3bb#not-server-rendering
+                */}
+
+                <Route path="users/*" element={<Users />} /> {/* exact is gone */}
+                {/*
+          *-wildcard may be used only at the end of a path, not in the middle
+            from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#note-on-route-path-patterns
+                */}
+
+                <Route path="users" element={<Users />}>
+                  <Route path="me" element={<OwnUserProfile />} />
+                  <Route path=":id" element={<UserProfile />} />
+                </Route>
+                {/* from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#advantages-of-route-element */}
+              </Routes>
+            );
+          }
+
+          function Users() {
+            // from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#relative-routes-and-links
+            return (
+              <div>
+                <nav>
+                  <Link to="me">My Profile</Link>
+                </nav>
+
+                <Routes>
+                  <Route path=":id" element={<UserProfile />} />
+                  <Route path="me" element={<OwnUserProfile />} />
+                </Routes>
+              </div>
+            );
+          }
+        </script>
+        <h2>Redux Toolkit</h2>
+        <script type="editor" data-lang="jsx">
+
+          reducer, action and stuff...
+            https://redux.js.org/tutorials/essentials/part-2-app-structure#the-counter-example-app
+
+          action - object with type and playload
+          action creator - funciton which is simplified and flattened interface for creating action
+          reducer(state, action) - it updates pece of 'state' based on given 'action'
+            it's important to know that reducer should return new object if it's changing something and exactly the same object (by reference) if it doesn't
+            in other words: it have to change state in 'immutable' fashion ALWAYS
+            another important aspect is that it have to be always synchronous, also no other side effects
+          store - central place where all state tree lives, it has dispatch(action) method, and getState() method
+          selector - set of functions which when called return particular piece of data from particular branch from state tree
+
+          DEMO:
+            https://codesandbox.io/s/github/reduxjs/redux-essentials-counter-example/tree/master/?from-embed=&file=/src/features/counter/Counter.js
+
+          # launch locally
+            npx create-react-app redux-essentials-example --template redux
+            echo v18.7.0 > redux-essentials-example/.nvmrc
+            echo "PORT=4263" > redux-essentials-example/.env
+            cd redux-essentials-example
+            yarn start
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

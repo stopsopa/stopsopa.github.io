@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll('[class="domain' + '.com"]')).forEach(function (tag) {
+            var text = tag.innerHTML;
+
+            text = text.replace(/domain\.com/g, location.origin);
+
+            tag.innerHTML = text;
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Types of environments for Docker</h2>
+        <a href="https://stackoverflow.com/a/48252608">https://stackoverflow.com/a/48252608</a>
+        <h2>Images - Dockerfile</h2>
+        <a href="./images.html">Images - Dockerfile</a>
+
+        <h2>Install docker</h2>
+
+        <script type="editor" data-lang="sh">
+
+          Ubuntu 22.04     lsb_release -cs     -> jammy
+          https://www.cherryservers.com/blog/install-docker-ubuntu-22-04
+        </script>
+
+        <h2>Public registries</h2>
+
+        <script type="editor" data-lang="sh">
+
+          https://docs.aws.amazon.com/AmazonECR/latest/public/public-registries.html
+        </script>
+
+        <h2>Useful commands</h2>
+        <script type="editor" data-lang="sh">
+
+          docker run --init -it -p "3000:80" nginxdemos/hello
+
+          # in case of error:
+          #    the input device is not a TTY
+          # remove -t
+
+          docker run -u $(id -u):$(id -g) args...
+          docker run --init -u $(id -u):$(id -g) args...
+            # to handle properly SIGTERM on Ctrl+C
+
+          # -i
+          # -t
+          # running in pipelines without -t
+          # this can be tested with
+          cat <<EOF | docker run -it busybox sh
+          echo test
+          exit 1
+          EOF
+
+          $ docker run --user $(id -u):$(id -g) -i image_name command args
+          $ CURRENT_UID=$(id -u):$(id -g) docker-compose up
+
+          docker history --format "\t{{.Size}}\t\t{{.CreatedBy}}" 1de239ccac3e --no-trunc
+
+          # determine docker resources usage
+          docker system df
+
+          # determine image size
+          docker system df -v | grep 695ab6fa12ce
+              # to get IMAGE ID
+              docker images | grep cypress/included
+
+          docker image prune -a --force --filter "until=480h"
+          docker system prune --all --volumes --force
+              # from: https://docs.docker.com/config/pruning/
+              # even more: https://www.digitalocean.com/community/tutorials/how-to-remove-docker-images-containers-and-volumes
+          docker volume prune
+            # pruning just volumes
+
+          # print entrypoint of an image:
+          docker inspect IMAGENAME | jq '.[0].ContainerConfig.Entrypoint[0]' -r
+          docker image inspect IMAGENAME | jq '.[].Config.WorkingDir'
+
+          docker container rm puppeteer-test -f
+              # stop and remove container immediately
+
+          DOCKER_BUILDKIT=1 docker build . --platform linux/amd64 -f docker/Dockerfile -t xxx:latest
+              # https://github.com/docker/docker.github.io/issues/12231
+          # passing env as is
+          $ CYPRESS_VIDEO=false
+          $ docker run --name name --rm -d -it -v $PWD:/e2e -w /e2e -e CYPRESS_VIDEO -e "PORT=8089" -p "8089:8089" --entrypoint="" cypress/included:3.2.0 node -v
+
+          host.docker.internal
+              # from: https://docs.docker.com/docker-for-mac/networking/#use-cases-and-workarounds
+              g(Networking features in Docker Desktop for Mac Use cases and workarounds I WANT TO CONNECT FROM A CONTAINER TO A SERVICE ON THE HOST)
+              # on linux you can use:
+                  https://stackoverflow.com/a/48547074
+
+          docker login https://docker-registry.xxx.com --username=yourhubusername --password=yourpassword
+
+          # https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#build-an-image-using-a-dockerfile-from-stdin-without-sending-build-context
+          # inline Dockerfile
+          cat <<EOF | docker build --rm -t local_c7_systemd -
+          FROM centos:7
+          ...
+          EOF
+
+          docker run --rm -it local_c7_systemd bash
+          docker run --init --rm -it local_c7_systemd bash
+            # to handle properly SIGTERM on Ctrl+C
+
+          # pushing image
+          # nvm ls-remote
+          docker run -it privaterepo.com/node:13.14.0-alpine sh
+          docker pull node:13.14.0-alpine
+          docker tag node:13.14.0-alpine privaterepo.com/node:13.14.0-alpine
+          docker push privaterepo.com/node:13.14.0-alpine
+
+          # run inline bash script in container
+          # to run pod without stopping
+          docker run -i --name test --rm -d alpine:3.14.2 tail -f /dev/null
+          # then run script
+          cat <<EOF | docker exec -i test /bin/sh
+          echo a b c | awk '{print \$2}'
+          EOF
+          # or run as run straight away
+          cat <<EOF | docker run -i --name test --rm alpine:3.14.2 /bin/sh
+          echo a b c | awk '{print \$2}'
+          EOF
+
+          cat <<EOF | docker build --progress=plain -t project:node-multi_tl -
+          FROM node:14.17.4-alpine AS base_stage
+          RUN apk --no-cache add curl
+          RUN apk update && apk upgrade && apk add curl
+          ENV TEST_ENV="test..."
+          ENTRYPOINT ["tail", "-f", "/dev/null"]
+          EOF
+          docker run -it project:node-multi_tl
+          # if you need to restrict amount of memory or CPU power the
+          # container can use, see
+          # https://docs.docker.com/config/containers/resource_constraints/
+          # restrict total memory
+          # --memory=600m --memory-swap=600m
+          # restrict CPU share
+          # --cpus=0.3
+
+          # checking healthcheck of container
+          docker inspect --format "{{json .State.Health }}" cypress_app_container | jq
+          # example of healtheck section in docker-compose (using 0s will not work for interval nor start_period, use 1s instead):
+            healthcheck: # https://docs.docker.com/compose/compose-file/compose-file-v3/#healthcheck ANS https://docs.docker.com/engine/reference/builder/#healthcheck
+              test: ["CMD", "node", "healthcheck.js"]
+              start_period: 1s
+              interval: 1s
+              timeout: 5s
+              retries: 3
+
+          docker inspect cypress_app | grep -A 5 -B 5 RestartPolicy
+            # based on https://docs.docker.com/config/containers/start-containers-automatically/
+        </script>
+        <h2>list all versions of given tag</h2>
+        <script type="editor" data-lang="sh">
+
+          # use
+          pull nginx
+          pull mongo
+
+          function pull {
+              if [ "${1}" = "" ]; then
+                  echo "${0} error: provide an image name"
+              else
+                  URL="https://registry.hub.docker.com/v2/repositories/library/${1}/tags?page_size=100"
+                  openssl help 1> /dev/null 2> /dev/null
+                  if [ "${?}" = "0" ]; then
+                      if [ "${FILE}" = "" ]; then
+                          while true
+                          do
+                              FILE="$(openssl rand -hex 2).log"
+                              if [ ! -e "${FILE}" ]; then
+                                  break;
+                              fi
+                          done
+                      fi
+
+                      echo "" > "${FILE}"
+
+                      while [ "${URL}" != "null" ]; do
+                          echo "${URL}" >&2
+                          RESPONSE="$(curl -s "${URL}")"
+                          echo "${RESPONSE}" | jq -r '.results[].name' >> "${FILE}"
+                          URL="$(echo "${RESPONSE}" | jq -r '.next')"
+                      done
+
+                      cat "${FILE}" | uniq | sort
+
+                      rm -f "${FILE}"
+                  else
+                      echo "${0} error: openssl is not installed"
+                  fi
+              fi
+          }
+        </script>
+        <h2>network</h2>
+
+        <script type="editor" data-lang="sh">
+
+          docker network create asgard
+          docker network ls
+          docker run -itd --rm --network asgard --name loki busybox
+          docker run -itd --rm --network asgard --name odin busybox
+          ip address show
+          bridge link
+          docker inspect asgard
+          # from: https://youtu.be/bKFMS5C4CG0?t=713
+        </script>
+        <h2>Docker Compose hostname</h2>
+        <a href="https://stackoverflow.com/a/29926476/5560682">https://stackoverflow.com/a/29926476/5560682</a>
+        <h2>Docker build</h2>
+        <script type="editor" data-lang="sh">
+
+          https://dev.to/thakkaryash94/how-many-ways-to-build-a-container-image-4g3p#open-container-initiative-oci
+            # from: https://aws.amazon.com/blogs/containers/how-to-build-container-images-with-amazon-eks-on-fargate/#:~:text=New%20tools%20have%20emerged%20in%20the%20past%20few%20years%20to%20address%20the%20problem%20of%20building%20container%20images%20without%20requiring%20privileged%20mode
+            # generally talks about https://github.com/containers/buildah
+        </script>
+
+        <h2>docker-compose.yaml syntax</h2>
+        <script type="editor" data-lang="sh">
+
+          mongodb: https://github.com/stopsopa/sr-code-challenge2/blob/main/docker-compose.yml
+
+          version: "3.8"
+          services:
+            mysql:
+              build:
+                context: mysql
+                dockerfile: Dockerfile
+              container_name: ${PROJECT_NAME}_mysql
+              ports:
+                - "${MYSQL_PORT}:3306"
+              environment:
+                MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
+                MYSQL_ROOT_HOST: "%"
+              entrypoint: ""
+              command: bash -c "
+                  mkdir -p /var/lib/mysql_
+                  &&
+                  chown mysql:mysql /var/lib/mysql_
+                  &&
+                  /bin/bash /entrypoint.sh mysqld
+                "
+        </script>
+        <h2>Working with HOST MACHINE</h2>
+        <script type="editor" data-lang="sh">
+
+          How to communicate with service/server that lives on the host machine from within container
+          # MAC
+          # use from inside the host.docker.internal
+          # more
+          #     https://docs.docker.com/desktop/mac/networking/
+
+          # LINUX
+          # use --net=host in cli
+          # also --add-host=host.docker.internal:host-gateway
+          #        or
+          #      --add-host host.docker.internal:host-gateway
+          # more
+          #     https://docs.docker.com/network/host/
+          #     https://stackoverflow.com/a/24326540
+
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+              _HOSTHANDLER="--env NODE_API_HOST=host.docker.internal -e MYSQL_HOST=host.docker.internal"
+          else
+              _HOSTHANDLER="--net host"
+          fi
+        </script>
+
+        <h2>Docker registry urls</h2>
+        <script type="editor" data-lang="sh">
+
+          https://domain.co.uk/v2/_catalog
+          https://domain.co.uk/v2/username/appname/tags/list
+
+          https://hub.docker.com/v2/search/repositories/?query=browserless
+
+          https://hub.docker.com/v2/repositories/browserless
+          https://hub.docker.com/v2/repositories/browserless/chrome/
+          https://hub.docker.com/v2/repositories/browserless/chrome/tags
+
+          ls -la /var/lib/docker/registry/docker/registry/v2/repositories
+          # rm -rf /var/lib/docker/registry/docker/registry/v2/reposit...
+
+          # removing image:
+          curl -v --silent -H "authorization: Basic YWRta...akc=" -X DELETE https://docker-registry.domain.co.uk/v2/puppeteer-1-20-0/manifests/sha256:ef75836309692....53dff9e325167
+        </script>
+        <h2>Docker Multi-stage - multistage</h2>
+
+        <script type="editor" data-lang="sh">
+
+          FROM node:20.15.0-alpine AS base_stage
+          USER node:node
+          WORKDIR /usr/src/app
+          COPY --chown=node:node ./package.json ./yarn.lock ./.yarnrc ./
+          #COPY --chown=node:node ./package.json ./yarn.lock ./.yarnrc ./yalc.lock ./
+          #COPY --chown=node:node ./.yalc ./.yalc
+          RUN yarn install --frozen-lockfile --production=false && yarn cache clean
+          COPY --chown=node:node . .
+          ENTRYPOINT echo "base_stage Dockerfile stage"
+
+          FROM node:20.15.0-alpine AS scan
+          USER node:node
+          WORKDIR /venv/bin
+          ARG GIT_PREVIOUS_SUCCESSFUL_COMMIT
+          COPY --from=base_stage --chown=node:node /usr/src/app /usr/src/app
+          RUN ./tartufo --config /usr/src/app/tartufo.toml scan-local-repo /usr/src/app
+          ENTRYPOINT echo "scan Dockerfile stage"
+
+          FROM base_stage AS lint
+          RUN yarn lint
+          RUN yarn style:check
+          ENTRYPOINT echo "lint Dockerfile stage"
+
+          FROM base_stage AS build
+          RUN NODE_ENV="production" yarn build
+          ENTRYPOINT echo "build Dockerfile stage"
+
+          FROM build AS unit
+          RUN yarn test:unit
+          ENTRYPOINT echo "unit Dockerfile stage"
+
+          FROM node:20.15.0-alpine AS image
+          USER node:node
+          WORKDIR /usr/src/app
+          ENV NODE_CONFIG_DIR="environments"
+          COPY --chown=node:node ./package.json ./yarn.lock ./.yarnrc ./
+          #COPY --chown=node:node ./package.json ./yarn.lock ./.yarnrc ./yalc.lock ./
+          #COPY --chown=node:node ./.yalc ./.yalc
+          RUN yarn install --frozen-lockfile --production=true && yarn cache clean
+          COPY --from=build --chown=node:node /usr/src/app/docs ./docs
+          COPY --from=build --chown=node:node /usr/src/app/environments ./environments
+          COPY --from=build --chown=node:node /usr/src/app/helpers ./helpers
+          COPY --from=build --chown=node:node /usr/src/app/server ./server
+          ENTRYPOINT /bin/sh helpers/bash/env-var-inspect-node.sh server/main.js
+
+          # docker build --progress=plain --target base_stage -t project:node-multi_tl -f docker/app/Dockerfile .    \
+          # && docker build --progress=plain --target lint  -f docker/app/Dockerfile .    \
+          # && docker build --progress=plain --target unit  -f docker/app/Dockerfile .    \
+          # && docker build --progress=plain --target build -f docker/app/Dockerfile .    \
+          # && docker build --progress=plain --target image -t project:node-multi -f docker/app/Dockerfile .    \
+          # && echo all good
+
+          # for local testing in docker image
+          # docker run -it -v "$(pwd):/usr/src/app" --entrypoint="" project:node-multi_tl sh
+          # then yarn test:unit
+
+          # for post release tests like yarn test:api
+          # docker run -i --entrypoint="" project:node-multi_tl yarn test:api
+
+
+          # example .dockerignore for above
+          .gitignore
+          node_modules
+          /var/*
+          !/var/.gitignore
+          /playwright-report/
+          .DS_Store
+          /docker/
+          /migrations/
+          /docs/
+        </script>
+
+        <h2>Multi-platform images - linux/amd64,linux/arm64 builds</h2>
+        <a href="https://github.com/stopsopa/playwright-research?tab=readme-ov-file#build-custom-image"
+          >follow this link
+        </a>
+        <h2>Ssh servers in docker</h2>
+        <script type="editor" data-lang="sh">
+
+
+          # # first enter empty directory then
+          # mkdir pubkey
+          # cd pubkey
+          # ssh-keygen -t rsa -C admin@gmail.com
+          # # and provide ./id_rsa
+          # cd ..
+          # # add all below to run.sh and run it
+          # /bin/bash run.sh
+          # # then you can just run any of ssh -vvvvA methods below
+
+
+          docker stop ds1
+          docker stop ds2
+          docker stop ds3
+
+          # based on https://github.com/linuxserver/docker-openssh-server
+          # key added
+          docker run \
+              --name ds1 \
+              --rm \
+              -d \
+              -it \
+              -e PUBLIC_KEY_FILE="/parent/pubkey/id_rsa.pub" \
+              -e USER_NAME=user \
+              -v "$(pwd)/:/parent" \
+              -v "$(pwd)/ds1:/shared" \
+              --workdir /shared \
+              -p "4264:2222" \
+              --name=ds1 \
+              --hostname=ds1 \
+              lscr.io/linuxserver/openssh-server:latest
+          # ssh -vvvvA -i ./pubkey/id_rsa -p 4264 user@0.0.0.0
+
+          # key added
+          docker run \
+              --name ds2 \
+              --rm \
+              -d \
+              -it \
+              -e PUBLIC_KEY_FILE="/parent/pubkey/id_rsa.pub" \
+              -e USER_NAME=user \
+              -v "$(pwd)/:/parent" \
+              -v "$(pwd)/ds2:/shared" \
+              --workdir /shared \
+              -p "4265:2222" \
+              --name=ds2 \
+              --hostname=ds2 \
+              lscr.io/linuxserver/openssh-server:latest
+          # ssh -vvvvA -i ./pubkey/id_rsa -p 4265 user@0.0.0.0
+
+          # key not added
+          docker run \
+              --name ds3 \
+              --rm \
+              -d \
+              -it \
+              -e USER_NAME=user \
+              -v "$(pwd)/ds3:/shared" \
+              --workdir /shared \
+              -p "4266:2222" \
+              --name=ds3 \
+              --hostname=ds3 \
+              lscr.io/linuxserver/openssh-server:latest
+          # ssh -vvvvA -i ./pubkey/id_rsa -p 4266 user@0.0.0.0
+
+
+
+          # for HOST MACHINE
+          # tail -f ~/.ssh/known_hosts
+
+          # vi ~/.ssh/known_hosts
+          # Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+          # It is also possible that a host key has just been changed.
+          # The fingerprint for the ED25519 key sent by the remote host is
+          # SHA256:53dmv2ssuMIHQmx8fkybQw45nGni5zvRQfSOf6gmX7U.
+          # Please contact your system administrator.
+          # Add correct host key in /Users/szdz/.ssh/known_hosts to get rid of this message.
+          # Offending ECDSA key in /Users/szdz/.ssh/known_hosts:7
+          # Host key for [0.0.0.0]:4265 has changed and you have requested strict checking.
+          # Host key verification failed.
+
+
+
+          docker ps
+
+          sleep
+
+          docker ps
+        </script>
+        <a href="https://github.com/docker/distribution/blob/master/docs/spec/api.md#detail"
+          >https://github.com/docker/distribution/blob/master/docs/spec/api.md#detail</a
+        >
+        <a href="./listtags.html">List tags tool</a>
+
+        <h2>Distroless images</h2>
+        <a href="https://github.com/fluent/fluent-bit-docker-image/issues/19"
+          >https://github.com/fluent/fluent-bit-docker-image/issues/19</a
+        >
+        <h2>Images - Dockerfile</h2>
+        <a href="https://github.com/moby/moby/issues/32868#issuecomment-297870441"
+          >About Multi-stage and Dockerfile syntax</a
+        >
+        <br />
+        <a href="https://github.com/moby/moby/issues/32925">Origin of Buildkit</a>
+        <h2>How docker generates names of containers</h2>
+        <a
+          href="https://github.com/moby/moby/blob/8bb58153e75b4310f3ae9ec6d03924aa286fbf20/pkg/namesgenerator/names-generator.go"
+          >https://github.com/moby/moby/blob/8bb58153e75b4310f3ae9ec6d03924aa286fbf20/pkg/namesgenerator/names-generator.go</a
+        >
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

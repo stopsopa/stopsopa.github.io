@@ -1,0 +1,4243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll('[class="domain' + '.com"]')).forEach(function (tag) {
+            var text = tag.innerHTML;
+
+            text = text.replace(/domain\.com/g, location.origin);
+
+            tag.innerHTML = text;
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort></ul>
+        </div>
+
+        <h2>Read</h2>
+        <a href="https://nodejs.org/api/test.html">node native test library</a>
+        <br />
+        <a href="https://npmtrends.com/">https://npmtrends.com/</a>
+        <br />
+        <a href="https://youtu.be/zPOHY-cZ1wE?t=247">CREATOR OF SVELTE From TS TO JSDoc??</a>
+
+        <h2>Useful</h2>
+        <script type="editor" data-lang="js">
+
+          // VSCODE disable exposing node port - no debug
+          export NODE_OPTIONS="--inspect=0"
+          # or THE ONE HERE IS PREFFEREABLE
+          export NODE_OPTIONS=""
+
+          // or
+
+          NODE_OPTIONS="" node script.js
+
+          # -- trick to enable for a while
+          # run just once in vscode
+            export NODE_OPTIONS_TMP="${NODE_OPTIONS}"
+
+          # then somewhere in your /bin/bash my_script.sh
+            export NODE_OPTIONS="${NODE_OPTIONS_TMP}"
+            COMMAND="node bash/node/array.js --group test --block iteration --index"
+            EXPECTED_STDOUT="0"
+            EXPECTED_STDERR=""
+            EXPECTED_CODE="0"
+            test "check index after end";
+            export NODE_OPTIONS=""
+
+          # and carry on with your stuff
+        </script>
+
+        <h2>Installation</h2>
+        <script type="editor" data-lang="sh">
+
+          # https://nodejs.org/en/download/package-manager
+            # Download Node.js®
+
+          # https://github.com/nodesource/distributions#installation-instructions-1
+            # install on linux
+        </script>
+
+        <h2>ES modules - ESModules, ESM</h2>
+        <a href="esm/index.html">esm/index.html</a>
+        <script type="editor" data-lang="js">
+
+          https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/
+        </script>
+
+        <h2>UMD (Universal Module Definition)</h2>
+        <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
+        <script type="editor" data-lang="js">
+
+          function getGlobal() {
+            try {
+              if (typeof window !== "undefined") {
+                return window
+              }
+            } catch (e) {e}
+            try {
+              if (typeof global !== "undefined") {
+                return global
+              }
+            } catch (e) {e}
+            throw new Error(`getGlobal error: can't find global`)
+          }
+
+
+
+          (function (root, factory) {
+            if (typeof define === "function" && define.amd) {
+
+              // list of dependencies here to check vvv
+              define(["jquery", "underscore"], factory);
+
+            } else if (typeof exports === "object") {
+
+              // list of dependencies here to check vvv
+              module.exports = factory(require("jquery"), require("underscore"));
+
+            } else {
+
+              // global name of library to set
+              var name = '__MY_LIBRARY_GLOBAL_NAME';
+
+              var original = root[name];
+
+              // list of dependencies here to check vvv
+              var lib = factory(root.$, root._);
+
+              root[name] = lib;
+
+              root['__' + name + 'NoConflict'] = function () {
+
+                root[name] = original;
+
+                return lib;
+              };
+            }
+            // list of dependencies here to check vvv
+          })(this, function ($, _) {
+
+            var tool = {}; // this object will be your library
+
+            return tool;
+          });
+        </script>
+        <h2>Docker images</h2>
+
+        <a href="https://github.com/nodejs/docker-node">https://github.com/nodejs/docker-node</a>
+        <script type="editor" data-lang="sh">
+
+          https://github.com/nodejs/docker-node
+
+          docker pull node:18.7.0-alpine
+        </script>
+        <h2>About Node.js</h2>
+        <a href="https://medium.datadriveninvestor.com/the-node-js-architecture-f86e2337bcd2"
+          >The Node.js Architecture!</a
+        >
+        <br />
+        <a href="https://nodejs.dev/learn/understanding-setimmediate"
+          >https://nodejs.dev/learn/understanding-setimmediate</a
+        >
+        <br />
+        <a href="https://github.com/nodejs/node/releases/tag/v18.0.0">v18 release</a>
+        <br />
+        <a href="https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/"
+          >The Node.js Event Loop, Timers, and process.nextTick()</a
+        >
+        <h2>Find LTS</h2>
+        <script type="editor" data-lang="sh">
+
+          curl -s https://nodejs.org/dist/index.json | jq -r '.[] | select(.lts != false) | .version' | head -1
+          
+          # find all lts versions:
+          curl -s https://nodejs.org/dist/index.json | jq -r '
+          map(select(.lts != false)) 
+          | group_by(.version | capture("v(?<major>\\d+)").major | tonumber) 
+          | map(max_by(.version)) 
+          | .[].version'
+          
+        </script>
+
+        <h2>useful</h2>
+        <script type="editor" data-lang="sh">
+
+          npx envinfo
+
+          NODE_OPTIONS="..." # https://nodejs.org/api/cli.html#node_optionsoptions
+        </script>
+
+        <h2>detect calling script directly</h2>
+        <script type="editor" data-lang="js">
+
+          // check whether the current module is being run as the main entry point of the program.
+          
+          // commonjs
+          if (require.main === module) {
+          } else {
+          }
+
+          // esm
+          if (import.meta.main) {
+            console.log("This module is running as the main script.");
+          } else {
+            console.log("This module was imported.");
+          }
+
+          import path from "path";
+          import process from "process";
+          import { createRequire } from "module";
+          import { fileURLToPath } from "url";
+          export function stripExt(name) {
+            const extension = path.extname(name);
+            if (!extension) return name;
+            return name.slice(0, -extension.length);
+          }
+          function esMain(meta) {
+            // https://github.com/tschaub/es-main/blob/main/main.js
+            if (!meta || !process.argv[1]) return false;
+            const require = createRequire(meta.url);
+            const scriptPath = require.resolve(process.argv[1]);
+            const modulePath = fileURLToPath(meta.url);
+            const extension = path.extname(scriptPath);
+            if (extension) return modulePath === scriptPath;
+            return stripExt(modulePath) === scriptPath;
+          }
+
+          if (esMain(import.meta)) {
+            console.log("DIRECTLY");
+          } else {
+            console.log("NOT DIRECTLY");
+          }
+        </script>
+        <h2>Understand CommonJS and ESM</h2>
+
+        <script type="editor" data-lang="sh">
+
+          # algorithm for
+            # CommonJS require(...)
+              https://nodejs.org/api/modules.html#modules_all_together
+            # for ESM import '...'
+              https://nodejs.org/api/esm.html#esm_resolution_algorithm_specification
+
+          # npm: walks up the directories
+            https://docs.npmjs.com/cli/v9/configuring-npm/folders#cycles-conflicts-and-folder-parsimony
+
+          # Dual CommonJS/ES module packages:
+            https://nodejs.org/api/packages.html#packages_dual_commonjs_es_module_packages
+        </script>
+        <h2>isNode - testing type</h2>
+        <script type="editor" data-lang="sh">
+
+
+          /**
+           * https://stackoverflow.com/a/384380
+           */
+          function isNode(o: any): o is Node {
+            return typeof Node === "object"
+              ? o instanceof Node
+              : o &&
+                  typeof o === "object" &&
+                  typeof o.nodeType === "number" &&
+                  typeof o.nodeName === "string";
+          }
+
+          // this way you can use
+          // to ensure typescript that from now on o.create is really isNode
+          if (!isNode(o.create)) {
+            o.create = document.createElement("div");
+          }
+        </script>
+
+        <h2>jsr</h2>
+        <script type="editor" data-lang="python">
+          // https://socket.dev/blog/jsr-working-group-kicks-off-with-ambitious-roadmap
+          // first set "type": "module" in package.json // https://youtu.be/MFCn4ce5dVc&t=912
+
+          // WARNING: don't forget to add homepage field to package.json - just to link github repository to don't waste time looking for it later
+          {
+            "type": "module",
+            "homepage": "https://github.com/stopsopa/jsr-ts-nlab-test"
+          }
+
+          // also add LICENSE file - npx jsr publish will complain if not created https://github.com/stopsopa/nlab/blob/1bdd6d16d9193c7f3b72ca08d689f6c5748822fd/LICENSE
+            // more about it: https://jsr.io/docs/troubleshooting#missinglicense
+
+          // just that, rest will be generated automatically
+          {
+            "name": "@stopsopa/line",
+            "version": "0.1.1",
+            "exports": "./line.ts" // https://jsr.io/docs/using-packages#entrypoints
+          } // https://jsr.io/docs/package-configuration#json-schema
+
+
+          tsc index.ts // that will output commonjs by default
+          tsc index.ts --module nodenext // thats better https://youtu.be/MFCn4ce5dVc&t=1039
+
+          # create jsr.json as in the page: https://jsr.io/@stopsopa/line/publish  // from: https://youtu.be/MFCn4ce5dVc&t=1186
+          npx jsr publish
+          npx jsr publish --dry-run  // from: https://jsr.io/docs/publishing-packages#verifying-your-package
+          # to bump the version go to
+          jsr.json
+          # change version and run 'publish' like above again
+
+          # github actions:
+          https://jsr.io/docs/publishing-packages#publishing-from-github-actions
+
+          .npmignore
+          https://jsr.io/docs/publishing-packages#filtering-files
+          add to jsr.json
+          {
+            ...
+            "publish": {
+              "exclude": [
+                "bash/",
+                "**/*.sh",
+                "package.dev.json",
+                ".tool-versions",
+                "Makefile",
+                "README.md",
+                "dist/",
+                "libs/",
+                "index.html"
+              ],
+              "include": [
+                "!line.js"
+              ]
+            }
+          }
+          # and test using two commands
+          git add . && git commit -m exclude
+          npx jsr publish --dry-run
+
+          writting docs
+          https://jsr.io/docs/writing-docs
+
+          how to import
+          https://jsr.io/docs/native-imports
+
+          badges
+          https://jsr.io/docs/badges
+
+
+          // --------------- multiexports like lodash
+          In order to see how to export library with multiple standalone packages like lodash see:
+          https://github.com/stopsopa/jsr-ts-nlab-test
+          // and then look how it is used in this repository
+          https://github.com/stopsopa/argyle
+           // from: https://github.com/jsr-io/jsr/issues/767#issuecomment-2422243122
+        </script>
+        <h2>execute directly from cmd</h2>
+        <script type="editor" data-lang="sh">
+
+          cat <<EEE | node -e "$(cat)"
+          const fs = require('fs');
+          const path = require('path');
+          const json = require('./package.json')
+          json.eslintConfig.rules.complexity = 'off'
+          fs.writeFileSync('./package.json', JSON.stringify(json, null, 2) + require('os').EOL);
+          EEE
+
+          # or simpler just:
+          # cat <<EEE | node
+          # will work too
+          # but intercepting with "$(cat)" is interesting too
+        </script>
+        <h2>create require</h2>
+        <script type="editor" data-lang="js">
+
+          import { createRequire } from 'module';
+          const require = createRequire(import.meta.url);
+
+          const uuidPath = require.resolve('uuid');
+        </script>
+        <h2>serialize function</h2>
+
+        <script type="editor" data-lang="js">
+
+          // https://github.com/stopsopa/webdriver/blob/master/lib/rootrequire.js
+          // https://github.com/stopsopa/webdriver/blob/master/test/minefield/serializefunction.test.js
+          // https://github.com/FormidableLabs/react-live/blob/293ef06dd1963055d10384c6ac34845c0e4e68d3/packages/react-live/src/utils/transpile/evalCode.ts
+
+          module.exports = {
+              encode: function (fn) {
+
+                  if (typeof fn === 'function') {
+
+                      return fn.toString();
+                  }
+
+                  return false;
+              },
+              decode: function (fnstr) {
+
+                  if (typeof fnstr === 'string') {
+
+                      eval('var __tmp__ = ' + fnstr);
+
+                      if (typeof __tmp__ === 'function') {
+
+                          return __tmp__;
+                      }
+                  }
+
+                  return false;
+              }
+          };
+
+          // tests
+          const serializefn = require('../../minefield/serializefunction');
+
+          const test = (a, b)=>a + b;
+
+          describe('serialize function', () => {
+
+              it('is function', () => expect(typeof test).toBe('function'));
+
+              it('serialized', () => {
+
+                  const tmp = serializefn.encode(test);
+
+                  expect(typeof tmp).toBe('string')
+
+                  expect(tmp).toBe("(a, b) => a + b");
+              });
+
+              it('decode', () => {
+
+                  const tmp = serializefn.encode(test);
+
+                  const tmp2 = serializefn.decode(tmp);
+
+                  expect(typeof tmp2).toBe('function')
+
+                  expect(tmp).toBe("(a, b) => a + b");
+              });
+
+              it('arythmetic test', () => {
+
+                  const tmp = serializefn.encode(test);
+
+                  const tmp2 = serializefn.decode(tmp);
+
+                  expect(tmp2(6, 8)).toBe(14);
+              });
+          });
+        </script>
+        <h2>Semantic release</h2>
+        <script type="editor" data-lang="sh">
+
+          /bin/bash bash/swap-files-v2.sh package.json package.dev.json -- yarn add -D semantic-release conventional-changelog-conventionalcommits
+            # from: https://github.com/semantic-release/semantic-release/issues/1652#issuecomment-714150790
+
+          cat <<EEE > release.config.js
+          module.exports = {
+            preset: 'conventionalcommits',
+          };
+          EEE
+
+            # from:  https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#configuration-file
+
+          node node_modules/.bin/semantic-release
+
+          # npx semantic-release - will not work if conventional used
+
+          # ----------------------
+          <type>(<scope>): <description|short summary>
+            │       │             │
+            │       │             └─⫸ Summary in present tense. Not capitalized. No period at the end.
+            │       │
+            │       └─⫸ Commit Scope: animations|bazel|benchpress|common|compiler|compiler-cli|core|
+            │                          elements|forms|http|language-service|localize|platform-browser|
+            │                          platform-browser-dynamic|platform-server|router|service-worker|
+            │                          upgrade|zone.js|packaging|changelog|docs-infra|migrations|ngcc|ve|
+            │                          devtools
+            │
+            └─⫸ Commit Type: build ci docs feat fix perf refactor test                    - angular
+                              build ci docs feat fix perf refactor test chore revert style - conventional
+
+
+          [optional body]
+
+          [optional footer(s)]
+
+          # --------------------
+
+          # alternative Angular Commit Message Conventions.
+          https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format
+            # there is even more: https://github.com/conventional-changelog/commitlint/#shared-configuration
+
+             mentioned in: https://github.com/semantic-release/semantic-release#commit-message-format
+        </script>
+        <br />
+        <a href="https://i.imgur.com/LLOtsyy.png" target="_blank"
+          ><img src="https://i.imgur.com/LLOtsyy.png" style="width: 1000px"
+        /></a>
+
+        <br />
+        <a href="https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716"
+          >https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716</a
+        >
+        <br />
+        <a href="https://github.com/semantic-release/semantic-release#commit-message-format"
+          >More about "BREAKING CHANGE:"</a
+        >
+        <br />
+        <a href="https://github.com/semantic-release/semantic-release"
+          >https://github.com/semantic-release/semantic-release</a
+        >
+        <br />
+        <a href="https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716"
+          >https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716</a
+        >
+        <br />
+        <a href="https://www.conventionalcommits.org/en/v1.0.0/">https://www.conventionalcommits.org/en/v1.0.0/</a>
+        <br />
+        <a href="https://conventionalcomments.org/">https://conventionalcomments.org/</a>
+        <br />
+
+        <h2>husky</h2>
+        <h2>commitlint</h2>
+        <script type="editor" data-lang="sh">
+
+          npx husky init
+            # new way of instalation: https://github.com/typicode/husky/releases/tag/v9.0.1
+
+          install prettier:
+            https://prettier.io/docs/en/precommit.html#option-3-git-format-stagedhttpsgithubcomhallettjgit-format-staged
+
+          # alternative
+             # https://www.npmjs.com/package/simple-git-hooks
+               # from: https://tsx.is/typescript#pre-commit-hook
+
+          yarn add -D husky
+
+          cat .git/config
+          ls -la .husky
+          npm set-script prepare "husky install"
+          npx husky init
+          cat .git/config
+          ls -la .husky
+
+          yarn add @commitlint/cli @commitlint/config-conventional husky -D
+          echo 'module.exports = { extends: ["@commitlint/config-conventional"] };' > commitlint.config.js
+
+            # from: https://github.com/conventional-changelog/commitlint/tree/f85c549dd7f32c4e50799a06d5ce1817fc7058a0#getting-started
+
+
+          yarn husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
+
+          # or
+
+          cat <<EEE > .husky/commit-msg
+            #!/bin/sh
+            . "\$(dirname "\$0")/_/husky.sh"
+
+            npx --no -- commitlint --edit "\${1}"
+          EEE
+        </script>
+        <h2>Custom loader</h2>
+
+        <script type="editor" data-lang="js">
+          
+//loader.mjs
+import { stat } from 'node:fs/promises';
+
+export async function resolve(specifier, context, nextResolve) {
+  if (!specifier.startsWith('.') && !specifier.startsWith('/')) {
+    return nextResolve(specifier, context);
+  }
+
+  try {
+    // Check if file exists as-is
+    await stat(new URL(specifier, context.parentURL));
+    return nextResolve(specifier, context);
+  } catch {
+    // If not found, try adding .js
+    try {
+      return nextResolve(`${specifier}.js`, context);
+    } catch {
+      throw new Error(`Module not found: ${specifier}`);
+    }
+  }
+}
+          
+// node --loader ./loader.mjs index.js
+
+// but that in node ver v20.15.0 generates warning
+// (node:17) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+// --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./loader.mjs", pathToFileURL("./"));'
+// (Use `node --trace-warnings ...` to show where the warning was created)
+
+// so then fix can be done with extra file loader-register.js
+
+import { register } from 'node:module';
+import { pathToFileURL } from 'node:url';
+
+register('./loader.mjs', pathToFileURL('./'));
+
+// and using this we can register command in package.json
+
+"scripts": {
+  "start": "node --import ./loader-register.js dist/server.js",
+          
+        </script>
+        
+        <h2>serialize-error</h2>
+
+        <script type="editor" data-lang="js">
+
+          yarn add serialize-error@7.0.1
+            # version which can be imported using commonjs syntax
+            # const { serializeError } = require('serialize-error');
+        </script>
+        <h2>esbuild</h2>
+
+        <script type="editor" data-lang="js">
+          // "esbuild@0.20.2"
+          // "esbuild-plugin-sass@1.0.1"
+          const esbuild = require("esbuild");
+          const sassPlugin = require("esbuild-plugin-sass");
+          const fs = require("fs");
+
+          const entryPoints = ["app/front.entry.js"];
+          const outfile = "public/dist/front.bundle.js";
+
+          const config = {
+            entryPoints,
+            outfile,
+            bundle: true,
+            target: "es2017",
+            jsxFactory: "React.createElement",
+            jsxFragment: "React.Fragment",
+            plugins: [sassPlugin()],
+            loader: { ".js": "jsx" },
+            metafile: true,
+          };
+
+          if (typeof process.argv[2] === "string") {
+            if (process.argv[2] !== "watch") {
+              console.log('invalid argument - should be "watch"');
+
+              process.exit(1);
+            }
+
+            (async function () {
+              let ctx = await esbuild.context(config);
+
+              await ctx.watch();
+
+              console.log("watching...");
+            })();
+          } else {
+            (async function () {
+              try {
+                const result = await esbuild.build(config);
+
+                const stats = await esbuild.analyzeMetafile(result.metafile, {
+                  verbose: true,
+                });
+
+                console.log(stats);
+
+                console.log("finished building");
+              } catch (e) {
+                console.error(`general esbuild error: ${e}`);
+
+                process.exit(1);
+              }
+            })();
+          }
+        </script>
+        <h2>esbuild - bundle for browser</h2>
+        <script type="editor" data-lang="sh">
+
+          yarn add uint8-to-b64
+
+          node node_modules/.bin/esbuild libs/line.entry.js --bundle --outfile=dist/index.js --format=iife --loader:.js=js
+
+          cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js
+          import base from "uint8-to-b64";
+          window.base = base;
+          EEE
+        </script>
+        <h2>Server-Sent Events - return json chunks from server and event handling then in the browser</h2>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events"
+          >More: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events</a
+        >
+        <br />
+        <br />
+        <a href="sse/index.html" download="index.html">download sse/index.html</a> -
+        <a href="/viewer.html?file=pages%2Fnode%2Fsse%2Findex.html">view sse/index.html</a>
+        <br />
+        <a href="sse/package.json" download="package.json">download sse/package.json</a> -
+        <a href="/viewer.html?file=pages%2Fnode%2Fsse%2Fpackage.json">view sse/package.json</a>
+        <br />
+        <a href="sse/server.js" download="server.js">download sse/server.js</a> -
+        <a href="/viewer.html?file=pages%2Fnode%2Fsse%2Fserver.js">view sse/server.js</a>
+        <br />
+        <h2>prettier setup</h2>
+        <script type="editor" data-lang="sh">
+
+          # INFO: see also svg formatting setup: urlwizzard.schema://urlwizzard.hostnegotiated/pages/ide/vscode/index.html#settings-json-user
+
+          yarn add -D prettier
+
+          // ESM
+          # Requires NPM >=v7
+          npm set-script "style:check" "yarn prettier --config prettier.config.mjs --check ."
+          npm set-script "style:fix" "yarn prettier --config prettier.config.mjs --write ."
+          npm set-script "style:list" "yarn prettier --config prettier.config.mjs --list-different ."
+
+          # or just add manually to package.json for older version of NPM:
+          "style:check": "yarn prettier --config prettier.config.mjs --check .",
+          "style:fix": "yarn prettier --config prettier.config.mjs --write .",
+          "style:list": "yarn prettier --config prettier.config.mjs --list-different ."
+
+          cat <<EEE > prettier.config.mjs
+          export default {
+            printWidth: 120,
+            // semi: false,
+          };
+          EEE
+
+          // COMMON JS
+          # Requires NPM >=v7
+          npm set-script "style:check" "yarn prettier --config prettier.config.cjs --check ."
+          npm set-script "style:fix" "yarn prettier --config prettier.config.cjs --write ."
+          npm set-script "style:list" "yarn prettier --config prettier.config.cjs --list-different ."
+
+          # or just add manually to package.json for older version of NPM:
+          "style:check": "yarn prettier --config prettier.config.cjs --check .",
+          "style:fix": "yarn prettier --config prettier.config.cjs --write .",
+          "style:list": "yarn prettier --config prettier.config.cjs --list-different ."
+
+          cat <<EEE > prettier.config.cjs
+          module.exports = {
+            printWidth: 120,
+            // semi: false,
+          };
+          EEE
+
+          // optionally add   // semi: false,
+
+            # declaring it as .mjs file is important because of this issue: https://stackoverflow.com/questions/71184604/prettier-fails-when-declaring-type-module-in-package-json
+
+
+          cat <<EEE > .prettierignore
+          /.ci
+          /lib
+          /coverage
+          /.nyc_output
+          /flow-typed
+          /package.json
+          /var/
+          EEE
+
+          # by default .prettierignore seems to include all .gitignore files from project
+          # (search for DEFAULT_IGNORE in github repository and follow it's logic)
+
+
+          npx prettier --write src
+              # https://prettier.io/docs/en/cli.html#docsNav
+
+          # vscode keybindings (global)
+          [
+            {
+              "key": "shift+cmd+s",
+              "command": "-workbench.action.files.saveLocalFile",
+              "when": "remoteFileDialogVisible"
+            },
+            {
+              "key": "shift+cmd+s",
+              "command": "-workbench.action.files.saveAs"
+            },
+            {
+              "key": "shift+cmd+s",
+              "command": "prettier.forceFormatDocument"
+            },
+            {
+              "key": "shift+cmd+s",
+              "command": "editor.action.formatDocument",
+              "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
+            },
+            {
+              "key": "shift+cmd+s",
+              "command": "editor.action.formatDocument.none",
+              "when": "editorTextFocus && !editorHasDocumentFormattingProvider && !editorReadonly"
+            }
+          ]
+          # vscode extensions .vscode/extensions.json
+          {
+            "recommendations": ["esbenp.prettier-vscode"]
+          }
+        </script>
+        <h2>prettier configuration</h2>
+        <script type="editor" data-lang="sh">
+
+          // example of setup: https://github.com/mattpocock/ts-reset/blob/v0.4.2/package.json#L88
+
+          npm init @eslint/config@latest
+
+          prettier-plugin-curly
+            # https://github.com/JoshuaKGoldberg/prettier-plugin-curly
+            # from: https://youtu.be/E2tbZoTjcQA?t=683
+
+          prettier-plugin-packagejson
+            # https://github.com/matzkoh/prettier-plugin-packagejson
+            # from: https://youtu.be/E2tbZoTjcQA?t=696
+
+          # prettier.config.js - for commonjs
+          yarn add -D prettier-plugin-packagejson prettier-plugin-curly prettier
+          cat <<EEE > prettier.config.js
+          module.exports = {
+            printWidth: 120,
+            plugins: ["prettier-plugin-packagejson", "prettier-plugin-curly"],
+          };
+          EEE
+
+          # test prettier
+          # every time you update prettier config it will work only after restarting vscode
+            # https://github.com/prettier/prettier-vscode/issues/3179
+          # but you can just restart vscode prettier plugin, plugin id:
+          # esbenp.prettier-vscode
+
+          # setup ruler for vscode:
+          # click CMD+,
+          # then search editor.rulers
+          # then switch to workspace
+          # then put 120 in
+          {
+            "editor.rulers": [120]
+          }
+
+          # setup keybinding in vscode
+          # hold CMD then press K and S
+          # then search prettier.forceFormatDocument
+          # bind CMD + Shift + S
+
+
+          # Then create file with content
+          cat <<EEE > prettiertest.js
+          test("prettier", "wrap", "prettier", "wrap", "prettier", "wrap", "prettier", "wrap", "prettier", "120 if not wrapped");
+          // if not wrapped then printWidth: 120 works
+          // if wrapped then it doesn't
+          EEE
+
+
+          # vscode: .vscode/settings.json
+          # setup default formatter in vscode
+          {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+          }
+
+          # setup husky:
+            # https://youtu.be/E2tbZoTjcQA?t=859
+            # in package.json
+            {
+              ...
+              "lint-staged": {
+                "*": "prettier --ignore-unknown --write"
+              }
+              ...
+            }
+        </script>
+
+        <h2>read entire stdin into string variable</h2>
+        <script type="editor" data-lang="sh">
+
+          // this works for sure
+          // deals properly with newlines, not adding too many and not stripping any
+          function promiseStdin() {
+            return new Promise((resolve, reject) => {
+              var rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout,
+                terminal: false,
+              });
+
+              let buff = "";
+
+              rl.on("line", (line) => {
+                if (buff !== "") {
+                  buff += "\n";
+                }
+                buff += line; // Append a newline character to each line
+              });
+
+              rl.on("close", () => {
+                resolve(buff);
+              });
+            });
+          }
+
+          // older implementation
+          async function readStdIn() {
+            return new Promise((resolve) => {
+              let stdinString = "";
+
+              process.stdin.setEncoding("utf8");
+
+              process.stdin.on("readable", () => {
+                let chunk;
+                while ((chunk = process.stdin.read()) !== null) {
+                  stdinString += chunk;
+                }
+              });
+
+              process.stdin.on("end", () => {
+                resolve(stdinString);
+              });
+            });
+          }
+        </script>
+        <h2>Extract engines script</h2>
+        <script type="editor" data-lang="sh">
+
+          wget --help 1> /dev/null 2> /dev/null
+          if [ "$?" = "0" ]; then
+            wget --no-cache -O "vault.sh" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/engines.js"
+          else # curl
+            curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/engines.js" -o "vault.sh"
+          fi
+          if [ "$(printf "sha384-$(cat "vault.sh" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/vault/vault.sh" ]; then
+            echo "checksum verified"
+            /bin/bash vault.sh jest
+          else
+            echo "checksum corrupted - deleting file"
+            rm "vault.sh"
+          fi
+        </script>
+        <h2>hash pbkdf2</h2>
+        <script type="editor" data-lang="sh">
+
+          const { promisify } = require("util");
+
+          const { performance } = require("node:perf_hooks");
+
+          const crypto = require("crypto");
+
+          const log = console.log;
+
+          async function pbkdf2(password, salt, cost = 200000, digest = "sha512") {
+
+            const derivedKey = await promisify(crypto.pbkdf2)(password, salt, cost, 32, digest);
+
+            return derivedKey.toString("hex");
+          }
+
+          async function time(password, salt, cost = 200000, digest = "sha512") {
+            const start = performance.now();
+
+            const hash = await pbkdf2(password, salt, cost, digest)
+
+            const end = performance.now();
+
+            log(password, cost, hash, digest, start, end);
+          }
+
+          const salt = crypto.randomBytes(32);
+
+          const password = "abcdef";
+
+          time(password, salt);
+          time(password, salt);
+        </script>
+        <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">Check compliance</a>
+
+        <h2>Best practices</h2>
+
+        <a href="https://github.com/goldbergyoni/nodebestpractices"
+          >https://github.com/goldbergyoni/nodebestpractices</a
+        >
+        <br />
+        <h2>yarn</h2>
+        <script type="editor" data-lang="sh">
+
+          # list all versions available of given library:
+            npm show next versions --json | jq -r '.[]'
+
+          yarn list --pattern playwright --json | jq
+          # the same as
+            npm list playwright \@playwright/test --depth=0 --json
+
+          yarn set version berry
+          yarn set version 1.22.10
+              # https://github.com/yarnpkg/yarn/releases
+
+          yarn outdated
+          yarn upgrade-interactive
+          yarn upgrade-interactive --latest
+
+          yarn install --frozen-lockfile
+            # the same as npm ci
+
+          yarn install --production
+            # npm equivalnet of
+            npm prune --production
+
+          yarn install --production=true  # no devDependencies
+          yarn install --production=false # with devDependencies
+              # from: https://classic.yarnpkg.com/en/docs/cli/install/#toc-yarn-install-production-true-false
+
+          yarn why library
+              # to see why library is in deps
+              # for npm it will be:
+                npm ls @fast-csv/parse
+              # generates something like
+                cataloguiapp@0.0.418
+                  └─┬ exceljs@4.4.0
+                    └─┬ fast-csv@4.3.6
+                      └── @fast-csv/parse@4.3.6
+
+          yarn cache clean --force
+              # Remove the shared cache files. https://yarnpkg.com/cli/cache/clean
+
+          yarn audit
+        </script>
+        <h2>dotenv</h2>
+        <script type="editor" data-lang="js">
+
+          NOTICE: since node 20 there is param
+            node --env-file=.env --env-file=.development.env script.js
+            # more: https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs
+            # Note: if the same variable is defined in the environment and in the file, the value from the environment takes precedence.
+          nodemon --env-file=.env index.js run
+            # this will work too - nodemon seems to be accepting --env-file=.env too
+
+          const fs = require('fs');
+
+          const path = require('path');
+
+          const env = path.resolve(path.dirname(__dirname), '.env');
+
+          if ( ! fs.existsSync(env) ) {
+
+            throw new Error(`File ${env} doesn't exist`);
+          }
+
+          require('dotenv').config({
+            path: env,
+          });
+
+          console.log('env', process.env);
+
+
+          # index.mjs (ESM)
+
+          import fs from "fs";
+
+          import path from "path";
+
+          import { fileURLToPath } from "url";
+          const __filename = fileURLToPath(import.meta.url);
+          const __dirname = path.dirname(__filename); // or use path.dirname('')
+
+          const env = path.resolve(__dirname, "..", ".env");
+
+          if (!fs.existsSync(env)) {
+            throw new Error(`File ${env} doesn't exist`);
+          }
+
+          import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+
+          dotenv.config({
+            path: env,
+          });
+
+          // --------
+          import { fileURLToPath } from "url";
+          import path from "path";
+          /**
+           * use:
+           *   const { __dirname } = extract(import.meta.url);
+           *
+           * @param {string} url
+           * @returns {{
+           *    __filename: string,
+           *    __dirname: string,
+           *    filename: string,
+           *    extension: string,
+           *    basename: string
+           * }}
+           */
+          export default function extract(url) {
+            const __filename = fileURLToPath(url);
+
+            const __dirname = path.dirname(__filename);
+
+            const filename = path.basename(url, path.extname(url));
+
+            const extension = path.extname(url).substring(1);
+
+            const basename = path.basename(url);
+
+            return {
+              __filename,
+              __dirname,
+              filename,
+              extension,
+              basename,
+            };
+          }
+        </script>
+
+        <h2>htmlencode htmldecode</h2>
+        <script type="editor" data-lang="js">
+
+          // based on lodash implementation
+          const log = console.log;
+
+          var escape = (function () {
+            var htmlEscapes = {
+              "&": "&amp;amp;",
+              "<": "&amp;lt;",
+              ">": "&amp;gt;",
+              '"': "&amp;quot;",
+              "'": "&amp;#39;",
+            };
+
+            var escapeHtmlChar = (key) => htmlEscapes[key];
+
+            var reUnescapedHtml = /[&<>"']/g,
+              reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
+
+            return function (string) {
+              string = String(string);
+              return string && reHasUnescapedHtml.test(string) ? string.replace(reUnescapedHtml, escapeHtmlChar) : string;
+            };
+          })();
+
+          var unescape = (function () {
+            var htmlUnescapes = {
+              "&amp;amp;": "&",
+              "&amp;lt;": "<",
+              "&amp;gt;": ">",
+              "&amp;quot;": '"',
+              "&amp;#39;": "'",
+            };
+
+            var unescapeHtmlChar = (key) => htmlUnescapes[key];
+
+            var reEscapedHtml = /&(?:amp|lt|gt|quot|#39);/g,
+              reHasEscapedHtml = RegExp(reEscapedHtml.source);
+
+            return function (string) {
+              string = String(string);
+              return string && reHasEscapedHtml.test(string) ? string.replace(reEscapedHtml, unescapeHtmlChar) : string;
+            };
+          })();
+
+          const str = ` abc & & < mid > < x " yy ' d '`;
+
+          const enc = escape(str);
+
+          const tmp = {
+            str,
+            dec: unescape(enc),
+            enc,
+          };
+
+          tmp.eq = tmp.str === tmp.dec;
+
+          log(tmp);
+        </script>
+        <h2>nodemon & chokidar</h2>
+        <script type="editor" data-lang="sh">
+
+          nodemon -e js,html server.js
+          nodemon -x "node --experimental-specifier-resolution=node" -e js,html server.js
+        </script>
+        If it's not about running again server but command everytime file changes then use chokidar, like:
+        <script type="editor" data-lang="sh">
+          npm install -g chokidar-cli
+
+          node node_modules/.bin/chokidar '**/*.inject.js' --ignore '**/node_modules/**/*' -c '/bin/bash injector.sh {path}'
+            # this will not run immediately only after you touch the *.inject.js file
+            # --initial flag doesn't seem to do the job
+
+          node node_modules/.bin/chokidar 'tests/**/*.spec.js' --initial -c 'npx playwright test --headed --forbid-only --project=chromium --workers=1 --retries=0 tests/001request.spec.js'
+
+          # WARNING; now you can't use just chokidar for CLI
+          # yarn add chokidar-cli
+        </script>
+        more:
+        <a href="https://github.com/open-cli-tools/chokidar-cli">https://github.com/open-cli-tools/chokidar-cli</a>
+        <br />
+        <a href="https://github.com/microsoft/playwright/issues/7035"
+          >https://github.com/microsoft/playwright/issues/7035</a
+        >
+        <br />
+        <a href="https://stackoverflow.com/a/13807906">about fswatch</a>
+        <h2>streams</h2>
+        <script type="editor" data-lang="js">
+
+          // https://github.com/substack/stream-handbook
+          // from: https://github.com/nkzawa/socket.io-stream
+
+          // https://nodesource.com/blog/understanding-streams-in-nodejs/
+
+
+          // https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
+          // Create big file using stream
+          const fs = require('fs');
+          const file = fs.createWriteStream('./big.file');
+
+          for(let i=0; i<= 1e6; i++) {
+            file.write('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n');
+          }
+
+          file.end();
+
+
+
+          # https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
+          # more: https://jscomplete.com/learn/node-beyond-basics/node-streams  g(node beyond basics)
+
+          # https://www.sitepoint.com/basics-node-js-streams/
+          # http://2ality.com/2018/04/async-iter-nodejs.html
+          # http://2ality.com/2018/05/child-process-streams.html
+
+          # read file to http response:
+          const stream = fs.createReadStream(file);
+          stream.pipe(res);
+
+          # write http response to file:
+          const stream = fs.createWriteStream(file);
+          res.pipe(stream);
+
+          readableStream.pipe(writableStream);
+
+          # pipe stream error handling
+          await new Promise((resolve, reject ) => {
+
+            var stream = res.pipe(fs.createWriteStream(file));
+
+            stream.on('finish', () => resolve());
+
+            stream.on('error', e => reject({
+              writable_stream_error: e
+            }));
+          });
+
+          # unzip
+          var fs = require('fs');
+          var zlib = require('zlib');
+
+          fs.createReadStream('input.txt.gz')
+            .pipe(zlib.createGunzip())
+            .pipe(fs.createWriteStream('output.txt'));
+        </script>
+        <h2>Signleton (kinda) module template</h2>
+        <script type="editor" data-lang="js">
+
+          const CachePromise = require('./CachePromise');
+
+          const instances = {};
+
+          const name = 'CachePromiseModule';
+
+          const th = msg => new Error(`${name}.js error: ${msg}`);
+
+          module.exports = (name = 'default', opt) => {
+
+            if ( typeof name !== 'string' ) {
+
+              throw th(`name is not a string`);
+            }
+
+            if ( instances[name] ) {
+
+              return instances[name];
+            }
+
+            if ( ! isObject(opt) ) {
+
+              throw th(`opt is not an object. Usually it means you are trying to get the instance before initialising it. Use first ${name}(name, opt) then ${name}(name)`);
+            }
+
+            return instances[name] = new CachePromise(opt);
+          }
+
+          function isObject(o) {
+            return Object.prototype.toString.call(o) === '[object Object]';
+          }
+        </script>
+        <h2>path</h2>
+        <script type="editor" data-lang="js">
+          __filename = '/directory/AsyncSelectDropdown.test.tsx'
+          const basename = path.basename(__filename);
+              // 'AsyncSelectDropdown.test.tsx'
+
+          const extension = path.extname(basename);
+              // '.tsx'
+
+          const filename = path.basename(basename, extension);
+              // 'AsyncSelectDropdown.test'
+
+          # in php :
+          $path_parts = pathinfo('/www/htdocs/inc/lib.inc.php');
+
+          echo $path_parts['basename'], "\n"; // lib.inc.php
+              // path.basename(test)
+          echo $path_parts['extension'], "\n"; // php
+              // path.extname(test).substring(1)
+          echo $path_parts['dirname'], "\n"; // /www/htdocs/inc
+              // path.dirname(test)
+          echo $path_parts['filename'], "\n"; // since PHP 5.2.0 // lib.inc
+              // path.basename(test, path.extname(test))
+        </script>
+        <h2>file fs</h2>
+        <script type="editor" data-lang="js">
+
+
+          # read files: https://lemire.me/blog/2024/03/12/how-to-read-files-quickly-in-javascript/
+
+          var fs          = require('fs');
+
+          if (fs.existsSync(dirfile)) { // warning: if under dirfile there will be broken link (pointing to something nonexisting) then this function will return false even if link DO EXIST but it's broken
+
+
+
+          }
+          // file exist
+
+
+          function pathExist(target) { // this function detects even broken symlink
+
+            try {
+
+              if ( fs.existsSync(target) ) {
+
+                return true;
+              }
+
+              const sym = fs.readlinkSync(target);
+
+              if ( typeof sym === 'string' ) {
+
+                return true;
+              }
+            }
+            catch (e) {
+
+              // throw new Error('one' + `-- ${e}`);
+            }
+
+            return false;
+          }
+
+          // read sync
+          const content = fs.readFileSync(file, options).toString();
+          const content = fs.readFileSync(file, 'utf8').toString();
+
+          fs.lstatSync(path_string).isDirectory()  // https://stackoverflow.com/a/15630832
+          fs.lstatSync(path_string).isFile()
+          fs.lstatSync(path_string).isBlockDevice()
+          fs.lstatSync(path_string).isCharacterDevice()
+          fs.lstatSync(path_string).isSymbolicLink() // (only valid with fs.lstat())
+          fs.lstatSync(path_string).isFIFO()
+          fs.lstatSync(path_string).isSocket()
+
+
+          // write sync
+          fs.writeFileSync(file.source, content);
+          fs.appendFileSync(file.source, content);
+
+
+          // delete remove file
+
+          fs.unlinkSync(file);
+
+
+
+          // https://nodejs.org/api/fs.html#fs_fs_access_path_mode_callback
+
+
+              if ( ! fs.existsSync(file)) {
+
+                  throw `file '${file}' doesn't exist`;
+              }
+
+              try {
+                  fs.accessSync(file, fs.constants.R_OK);
+              }
+              catch (e) {
+
+                  throw `file '${file}' is not readdable`;
+              }
+
+              try {
+                  fs.accessSync(file, fs.constants.W_OK);
+              }
+              catch (e) {
+
+                  throw `file '${file}' is not writtable`;
+              }
+              // handle like this becaue without try catch it's ugly, not telling explicitely if file is not readdalbe or not writtable
+
+              // WARNING: Synchronous version of fs.access(). This throws if any accessibility checks fail, and does nothing otherwise.
+
+
+
+
+              const path                  = require('path');
+
+              const fs                    = require('fs');
+
+              const listFilesSync = (dir, l = 0) => {
+
+                  let pa, s;
+
+                  let list = [];
+
+                  fs.readdirSync(dir).forEach(p => {
+
+                      pa  = path.resolve(dir, p);
+
+                      s   = fs.lstatSync(pa);
+
+                      // console.log('file: ', s.isFile() ? 'F' : 'D', ': ', ' '.repeat(l),  p);
+
+                      // is_file is file
+                      if (s.isFile()) {
+
+                          list.push(['f', pa]);
+                      }
+
+                      if (s.isDirectory()) {
+
+                          list.push(['d', pa]);
+
+                          list = list.concat(listFilesSync(pa, l + 4));
+                      }
+                  })
+
+                  return list;
+              }
+              ==== walk iterate through directories files recursively recursive ====== ^^^
+
+
+
+              ==== find files list recursively ===== vvv
+
+              const fs            = require('fs');
+
+              var walkSync = function(dir, filelist) { // https://gist.github.com/kethinov/6658166#gistcomment-1603591
+
+                  var p, files = fs.readdirSync(dir);
+
+                  filelist = filelist || [];
+
+                  files.forEach(function(file) {
+
+                      p = path.resolve(dir, file);
+
+                      if (fs.statSync(p).isDirectory()) { // is directory is_dir isdirectory
+
+                          filelist = walkSync(p, filelist);
+                      }
+                      else {
+
+                          filelist.push(p);
+                      }
+                  });
+
+                  return filelist;
+              };
+        </script>
+        <h2>Modules: ECMAScript modules</h2>
+        <a href="https://philipwalton.com/articles/deploying-es2015-code-in-production-today/"
+          >https://philipwalton.com/articles/deploying-es2015-code-in-production-today/</a
+        >
+        <br />
+        <a href="https://nodejs.org/api/esm.html#enabling">Enabling ECMAScript module loader for project/library</a>
+        <br />
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import">MDN import</a>
+        <br />
+        <a href="https://nodejs.org/api/packages.html#modules-loaders"
+          >Modules: Packages -&gt; Modules loaders (ECMAScript module loader & CommonJS module loader)</a
+        >
+        <script type="editor" data-lang="sh">
+
+          "type": "module",
+
+          node --experimental-specifier-resolution=node scripts.mjs
+
+
+          import path from 'path';
+
+          import {fileURLToPath} from 'url';
+
+          const __filename = fileURLToPath(import.meta.url);
+
+          const __dirname = path.dirname(__filename);
+
+
+
+          import bootstrapVaultModule from "lib/from/node_modules/with/export/default";
+
+          const bootstrapVault = bootstrapVaultModule.default;
+
+          # To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+          # (probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype,
+          # a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
+
+          # VSCode fix regexp:
+          (?:var|const) ([^\s]+) = require\(['"]([^\)]+)['"]\)
+          import $1 from "$2"
+
+          # ECMAScript module loader facts
+          *
+          Within a package, the package.json "type" field defines how Node.js should interpret .js files.
+          If a package.json file does not have a "type" field, .js files are treated as CommonJS.
+          A package.json "type" value of "module" tells Node.js to
+          interpret .js files within that package as using ES module syntax.
+          The "type" field applies not only to initial entry points (node my-app.js) but also to
+          files referenced by import statements and import() expressions.
+              ...also...
+          Files ending with .mjs are always loaded as ES modules regardless of the nearest parent package.json.
+          Files ending with .cjs are always loaded as CommonJS regardless of the nearest parent package.json.
+              # from: https://nodejs.org/api/packages.html#packagejson-and-file-extensions
+
+          *
+          ECMAScript module loader https://nodejs.org/api/packages.html#modules-loaders:
+          - It does not support folders as modules, directory indexes (e.g. './startup/index.js') must be fully specified.
+              it can be though skipped if >node  --experimental-specifier-resolution=node [your_script.js]< provided
+              # from: https://nodejs.dev/en/api/v18/esm/#customizing-esm-specifier-resolution-algorithm
+              # alternative: https://github.com/nodejs/loaders-test/tree/main/commonjs-extension-resolution-loader
+              # WARNING:
+                # (node:94253) ExperimentalWarning: The Node.js specifier resolution flag is experimental.
+                # It could change or be removed at any time.
+
+          *
+          About Create React App:
+          Because we have introduced "type": "module" in package.json
+          Create React App will switch to ECMAScript module loader, therefore use
+          import { fetchJson } from "./lib/transport.js";
+          instead of
+          import { fetchJson } from "./lib/transport";
+              providing --experimental-specifier-resolution=node
+              node --experimental-specifier-resolution=node node_modules/.bin/react-scripts start
+              will not help
+
+          *
+          The CommonJS module require always treats the files it references as CommonJS.
+          Using require to load an ES module is not supported because ES modules have asynchronous execution.
+          Instead, use import() to load an ES module from a CommonJS module.
+              # from: https://nodejs.dev/en/api/v18/esm/#require
+
+          *
+          Difference between 'import' and 'require'
+          https://nodejs.org/api/esm.html#interoperability-with-commonjs
+        </script>
+        <p>asm.sh</p>
+        <script type="editor" data-lang="sh">
+
+
+          #
+          # This script is to cover case when you have to use in node script two libraries
+          # "dotenv" to load environment variables from .env and then
+          # "config" which relays on those to properly read config
+          # together
+          # The occurs when you use ESM module system in node by executing .mjs file
+          # or by turning on "type": "module", flag in package.json (more: https://nodejs.org/api/esm.html#enabling)
+          # from that point even when you try to load both:
+          #
+          # import * as dotenv from "dotenv";
+          #
+          # dotenv.config({
+          #   path: env,
+          # });
+          #
+          # import config from "config";
+          #
+          # config will be executed first anyway
+          # therefor one of solutions might be to load .env environment vars first and then executing
+          # desired script
+          #
+          # then now you can just run:
+          # /bin/bash esm.sh your_script.mjs
+          #
+
+          # keep in mind that this path will be resolved from CWD - Current working directory
+          ENV=".env"
+
+          if [ ! -f "${ENV}" ]; then
+
+            echo "${0} error: '${NEV}' file doesn't exist"
+
+            exit 1
+          fi
+
+          # will import env vars from file
+          source "${ENV}"
+
+          # will export all
+          export $(cut -d= -f1 "${ENV}" | grep -v -E "^#" | tr "\n" " ")
+
+          function quote {
+            echo "$1" | sed -E 's/\"/\\"/g'
+          }
+
+          # preparing arguments passed to this script for evaluation
+          _EVAL=""
+          while (( "$#" )); do
+              if [ "$1" = "&&" ]; then
+                  _EVAL="$_EVAL &&"
+              else
+                if [ "$_EVAL" = "" ]; then
+                    _EVAL="\"$(quote "$1")\""
+                else
+                    _EVAL="$_EVAL \"$(quote "$1")\""
+                fi
+              fi
+              shift;
+          done
+
+          set -e
+
+
+          eval "node --experimental-specifier-resolution=node $_EVAL"
+        </script>
+        <h2>node.js testing (native)</h2>
+        <a
+          href="https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V19.md#2022-11-14-version-1910-current-rafaelgss"
+          >https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V19.md#2022-11-14-version-1910-current-rafaelgss</a
+        >
+        <h2>fs/promises</h2>
+        <script type="editor" data-lang="js">
+
+          const fsPromises = require("node:fs/promises");
+
+          // based on: https://github.com/nodejs/node/issues/39960#issuecomment-909444667
+          // more about fs/promises: https://nodejs.org/api/fs.html#fspromisesstatpath-options
+          // also some good advice: https://gist.github.com/joepie91/bbf495e044da043de2ba
+          async function notExist(file) {
+            try {
+              await fsPromises.stat(file);
+              return false;
+            } catch (e) {
+              return e;
+            }
+          };
+
+          (async () => {
+            try {
+              {
+                const nExist = await notExist(templateFile);
+
+                if (nExist) {
+                  throw th(`template file '${templateFile}' doesn't exist (${nExist.message})`);
+                }
+              }
+
+              let template;
+
+              {
+                const result = await fsPromises.readFile(templateFile, "utf8");
+
+                template = result.toString();
+              }
+
+            } catch (e) {
+              log(`
+
+          Global catch:
+
+              `);
+
+              throw e;
+            }
+          })();
+        </script>
+        <h2>eslint</h2>
+        <script type="editor" data-lang="python">
+
+          # eslint standard
+          https://github.com/standard/eslint-config-standard
+            # good talk: https://standardjs.com/#why-should-i-use-javascript-standard-style
+
+          # to make it work with the prettier:
+            # https://github.com/prettier/eslint-config-prettier
+
+          # ------------
+
+          # raw config
+          https://github.com/standard/eslint-config-standard/blob/master/eslintrc.json
+          https://eslint.org/docs/rules/
+
+          # error levels:
+          https://eslint.org/docs/user-guide/getting-started#configuration
+
+          https://eslint.org/docs/1.0.0/rules/padded-blocks
+        </script>
+        <h2>npm benchmark</h2>
+        <a
+          href="https://p.datadoghq.eu/sb/d2wdprp9uki7gfks-c562c42f4dfd0ade4885690fa719c818?fromUser=false&refresh_mode=sliding&tpl_var_npm%5B0%5D=%2A&tpl_var_pnpm%5B0%5D=%2A&tpl_var_yarn-classic%5B0%5D=%2A&tpl_var_yarn-modern%5B0%5D=%2A&tpl_var_yarn-nm%5B0%5D=%2A&tpl_var_yarn-pnpm%5B0%5D=no&from_ts=1720267619233&to_ts=1728043619233&live=true"
+          >benchmark</a
+        >
+        <h2>npm</h2>
+        <script type="editor" data-lang="sh">
+
+          (rm -rf __npm_test && mkdir __npm_test && cd __npm_test && echo "{}" > package.json && npm install "express" && cat package.json)
+          # or simpler
+          npm dist-tag ls express
+          mv .npmrc .npmrc_ ; npm dist-tag ls express ; mv .npmrc_ .npmrc
+            # that might help if custom .npmrc is present
+
+          npm list playwright \@playwright/test --depth=0 --json
+          # the same as
+            yarn list --pattern playwright --json | jq
+
+          # list versions of the library
+            npm info @lib/header-nav versions
+
+          # troubleshooting
+            npm config fix
+
+          # see all dependencies in the form of a tree
+            npm ls --all
+
+          npm ci
+            # the same as  yarn install --frozen-lockfile
+
+          npm install library@^2400 --legacy-peer-deps
+            # more: https://docs.npmjs.com/cli/v7/using-npm/config#strict-peer-deps
+            # will force installation of it's peer dependencies even when those
+            # won't match the deps on the main level of package.json
+            in order to mark this dep permanently in package.json add:
+            {
+              // ...existing code...
+              "dependencies": {
+                // ...existing dependencies...
+                "library": "^2400"
+              },
+              "overrides": {
+                "library": {
+                  "react-intl": "~6.6.8"
+                }
+              }
+            }
+            # more:
+              https://docs.npmjs.com/cli/v9/configuring-npm/package-json#overrides
+
+          # list all dependencies - to inspect dependencies
+            npm ls --depth=9999 | tee dep.log
+
+          npm install --production       # no devDependencies
+            # it will emit message:
+              # npm warn config production Use `--omit=dev` instead.
+          npm install --production=false # with devDependencies
+              # from: https://docs.npmjs.com/cli/v7/commands/npm-install
+
+              # apparently --production parameter is deperecated, I saw an error message:
+                  $ npm install --production
+                  chatgpt: npm WARN config production Use `--omit=dev` instead.
+                  The warning message you're seeing is because the --production flag is deprecated in npm v7.0.0 and later.
+                  The new way to omit the devDependencies when installing packages is to use the --omit=dev flag.
+              use instead
+                npm install --omit=dev
+
+          # running using custom .npmrc
+          cat <<EEE > $NPM_RC
+          registry=https://xxxxx.jfrog.io/artifactory/api/npm/node-virt/
+          _auth=Y2lfY......................................................Da2M3ajM=
+          email=noreply@xxx.com
+          always-auth=true
+          EEE
+          npm ci --userconfig=$NPM_RC
+
+             npm prune:
+                  This command removes "extraneous" packages. Extraneous packages are packages that are not listed on the parent package's dependencies list.
+             --production:
+                  When you add this flag, the command will remove the packages listed in your devDependencies.
+                  These are typically packages that are only needed for development and not for running your application in production.
+
+          $(npm bin)/cypress open
+              # from: https://docs.cypress.io/guides/getting-started/installing-cypress.html#Opening-Cypress
+
+          npm root -g
+              # npm global node_module
+
+          npm init
+          npm init --scope=stopsopa
+              {
+                "name"    : "@stopsopa/line",
+                "version"    : "2.0.0",
+                "description"    : "Lib to draw lines using one div and css",
+                "main"    : "line.js",
+                "scripts": {
+                  "test"    : "echo \"Error: no test specified\" && exit 1",
+                  "start"    : "node server.js"
+                },
+                "repository": {
+                  "type"    : "git",
+                  "url"    : "git@github.com:stopsopa/line.git"
+                },
+                "author"    : "Szymon Dzialowski",
+                "license"    : "MIT",
+                "homepage"    : "https://github.com/stopsopa/line"
+              }
+          npm login
+          npm config ls
+          .npmignore
+              # testing .npmignore run "npm pack" - https://docs.npmjs.com/misc/developers#testing-whether-your-npmignore-or-files-config-works
+
+          npx: https://docs.npmjs.com/files/package.json#bin
+
+          npm version patch
+          npm publish --access=public
+
+          https://badge.fury.io/for/js/bash-make-lifecycle - badge generator
+
+          npm link    # https://www.youtube.com/watch?v=nKFe1lhGSk0 usefull if you are in the process of development of something
+              # known issues: https://github.com/npm/npm/issues/20954#issuecomment-397114152
+
+          # pre scripts
+          # https://www.google.com/search?q=npm+Pre+and+Post+Scripts
+          # https://docs.npmjs.com/cli/v8/using-npm/scripts
+
+          npm cache clean --force
+              # Remove the shared cache files. https://docs.npmjs.com/cli/v7/commands/npm-cache
+
+          resolution:
+
+          package.json:
+          {
+            "resolutions": {
+              "**/elastic-apm-node": "3.39.0"
+              // about ^ and ~ https://docs.npmjs.com/cli/v7/configuring-npm/package-json#dependencies
+              // https://stackoverflow.com/a/25861938
+            },
+            "packageComments": {
+              "": "some comment"
+            }
+          }
+
+          # updating dependency hell
+          npm outdated -- to see what npm update will bring
+          npm update
+
+          moduleAliases in package.json on the top level:
+
+            "_moduleAliases": {
+              "@gasket/data": "./plugins/data"
+            },
+        </script>
+
+        <h2>Dependencies - analysing</h2>
+        <a href="https://npmgraph.js.org/?q=nlab">https://npmgraph.js.org/?q=nlab</a>
+        <h2>Type annotations syntax</h2>
+        <a href="https://github.com/tc39/proposal-type-annotations"
+          >https://github.com/tc39/proposal-type-annotations</a
+        >
+        <h2>Native test runner - native tests</h2>
+        <a href="https://nodejs.org/download/nightly/v18.0.0-nightly20220403561885152e/docs/api/test.html"
+          >https://nodejs.org/download/nightly/v18.0.0-nightly20220403561885152e/docs/api/test.html</a
+        >
+        <h2>CORS</h2>
+        <a href="https://livebook.manning.com/book/cors-in-action/chapter-5/">Read more about CORS</a>
+        <script type="editor" data-lang="sh">
+
+          // CORS
+          (function () {
+
+            const th = msg => new Error(`Cors configuration error: ${msg}`)
+
+            const trim = require('nlab/trim');
+
+            const negotiatePort = require('nlab/negotiatePort');
+
+            function isObject(o) {
+              return Object.prototype.toString.call(o) === '[object Object]';
+            }
+
+            if ( ! process.env.PROTECTED_CORS_ALLOWED_DOMAINS ) {
+
+              throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS is not defined`);
+            }
+
+            const whitelist = process.env.PROTECTED_CORS_ALLOWED_DOMAINS
+              .split(' ')
+              .map(t => trim(t))
+              .filter(Boolean)
+              .map(t => {
+
+                try {
+
+                  t = new URL(t);
+
+                  return t.protocol + "//" + t.hostname + negotiatePort(t.protocol, t.port, ':');
+                }
+                catch (e) {
+
+                  throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS processing part '${t}' failed: ${e}`);
+                }
+              })
+            ;
+
+            console.log(JSON.stringify({
+              PROTECTED_CORS_ALLOWED_DOMAINS: whitelist,
+            }, null, 4))
+
+            if ( ! whitelist.length ) {
+
+              throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS after processing is an empty list`);
+            }
+
+            var cors = require('cors');
+
+            app.use((req, res, next) => {
+
+              if (isObject(req.headers) && typeof req.headers.origin === 'string' && trim(req.headers.origin)) {
+
+                console.log(`request: ${req.method} ${req.url} - handle cors true ${req.headers.origin}`)
+
+                return cors({
+                  exposedHeaders: 'X-session',
+                  origin: function (origin, callback) {
+                    if (whitelist.includes(origin)) {
+                      callback(null, true)
+                    } else {
+                      callback(new Error(`${origin} Not allowed by CORS`))
+                    }
+                  }
+                })(req, res, next);
+              }
+
+              console.log(`request: ${req.method} ${req.url} - handle cors next`)
+
+              next();
+            })
+          }());
+        </script>
+
+        <h2>processing url uri</h2>
+        <script type="editor" data-lang="js">
+
+          // ---- query params manipulation -----
+
+          const params = new URLSearchParams(location.search);
+
+          var val = params.get(key);
+
+          // you can also work from URL object level
+          var uri = new URL(location.href);
+
+          // to reset search just use
+          uri.search = ''
+
+          // and then you can set values one by one
+          uri.searchParams.set(key, flipget(JSON.stringify(data)));
+
+          // and serialize back to string
+          const url = uri.toString();
+
+            // or extract in the form of an object:
+            var uri = new URL(location.href);
+            var uri = new URL('https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.appdata&access_type=offline&include_granted_scopes=true&redirect_uri=https%3A%2F%2Fauth.tampermonkey.net%2Foauth.php&response_type=code&service=lso&o2v=2&theme=mn&flowName=GeneralOAuthFlow&a=ab&a=bc&b[]=test&b[]=dwa');
+            var params = Array.from(uri.searchParams.entries()).reduce((acc, [key, value]) => {
+                if (typeof acc[key] !== 'undefined') {
+                    if (!Array.isArray(acc[key])) {
+                        acc[key] = [acc[key]]
+                    }
+                    acc[key].push(value);
+                }
+                else {
+                    acc[key] = value;
+                }
+              return acc;
+            }, {});
+            console.log(params);
+
+          // ---- query params manipulation -----
+
+
+          const originalUrl = require('original-url'); // yarn add original-url
+
+          const original = originalUrl(req);
+
+          const requestIp = require('request-ip');
+
+          app.use(requestIp.mw()); // get ip                  req.clientIp
+
+          log.dump({
+              original,
+              headers             : req.headers,
+              originalUrl         : req.originalUrl, // https://expressjs.com/en/api.html#req.originalUrl
+              url                 : req.url,
+              method              : req.method,
+              host                : req.get('host'),
+              origin              : req.get('origin'),
+              protocol            : req.protocol,
+              secure              : req.secure,  //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
+              reconstrucred       : req.protocol + '://' + req.get('host') + req.url, //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
+          })
+          Object {// for https://amlstage.phaseiilabs.com:8080/tester/tester?raz=dwa behind nginx proxy
+              "original": {
+                  "raw"    : "/tester/tester?raz=dwa",
+                  "protocol"    : "http:", // WARNING: will be "https:" if X-Forwarded-Proto $scheme; OR(I'VE TESTED THIS 'OR' IN BOTH CASES WILL WORK, COMMEND ONE OR ANOTHER) X-Forwarded-SSL   on; added
+                  "hostname"    : "212.67.96.161", // WARNING: becareful it might return ip address WARNING WARNING
+                  "port": 8080, // key exist only if [proxy_set_header X-Forwarded-Port $server_port;] added to nginx
+                  "pathname"    : "/tester/tester",
+                  "search"    : "?raz=dwa",
+                  "full"    : "http://212.67.96.161:8080/tester/tester?raz=dwa"
+              },
+              "headers": {
+                  "connection"    : "upgrade",
+                  "host"    : "amlstage.phaseiilabs.com",
+                  "x-real-ip"    : "212.67.96.161",
+                  "x-forwarded-for"    : "212.67.96.161",
+                  "x-forwarded-host"    : "212.67.96.161",
+                      "x-forwarded-port"    : "8080",     // will appear only if [proxy_set_header X-Forwarded-Port $server_port;] added to nginx config
+                      "x-forwarded-proto"    : "https",   // will appear only if [proxy_set_header X-Forwarded-Proto $scheme;] added to nginx config
+                      "x-forwarded-ssl"    : "on",        // will appear only if [proxy_set_header X-Forwarded-SSL on;] added to nginx config
+                  "cache-control"    : "max-age=0",
+                  "upgrade-insecure-requests"    : "1",
+                  "user-agent"    : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+                  "sec-fetch-dest"    : "document",
+                  "accept"    : "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                  "sec-fetch-site"    : "none",
+                  "sec-fetch-mode"    : "navigate",
+                  "sec-fetch-user"    : "?1",
+                  "accept-encoding"    : "gzip, deflate, br",
+                  "accept-language"    : "en-GB,en-US;q=0.9,en;q=0.8,pl;q=0.7,it;q=0.6,fr;q=0.5,es;q=0.4,de;q=0.3,ru;q=0.2,mt;q=0.1,pt;q=0.1,id;q=0.1",
+                  "cookie"    : "_ga=GA1.2.477192506.1582642627; _hjid=38ba37f0-33bc-48ad-bf45-a82f453729f2; _gid=GA1.2.250183521.1583161185; jwt_cookie=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZXMiOlsiYWRtaW4iLCJ1c2VyIl0sImlhdCI6MTU4MzI0NTc5MCwiZXhwIjoxNTgzMjc4MTkwfQ.IYyoBu4QQ0lEKk3G4XjIczha68XezAZs8ds4RbEak80",
+                  "if-none-match"    : "W/\"19f-eK38WW4dYefk0hfT3dbOw33zsbo\""
+              },
+              "originalUrl"    : "/tester/tester?raz=dwa",
+              "url"    : "/tester/tester?raz=dwa",
+              "method"    : "GET",
+              "host"    : "amlstage.phaseiilabs.com",
+              "protocol"    : "http",
+              "secure": false, // adding X-Forwarded-Proto $scheme; or X-Forwarded-SSL   on; will not help here, use "original-url" to resolve headers and then use original.protocol (it will be equal "https:")
+              "reconstrucred"    : "http://amlstage.phaseiilabs.com/tester/tester?raz=dwa"
+          }
+
+          --- express headers ----- vvv
+          log.dump({
+              originalUrl         : req.originalUrl, // https://expressjs.com/en/api.html#req.originalUrl
+              url                 : req.url,
+              method              : req.method,
+              host                : req.get('host'),
+              origin              : req.get('origin'),
+              protocol            : req.protocol,
+              secure              : req.secure,  //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
+              'original.protocol' : original.protocol,
+              reconstrucred       : req.protocol + '://' + req.get('host') + req.url, //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
+          }, 4)
+          Object {
+            <originalUrl> [String]: >/sockjs-node/info?t=1582335313746< len: 33
+            <url> [String]: >/sockjs-node/info?t=1582335313746< len: 33
+            <method> [String]: >GET< len: 3
+            <host> [String]: >localhost:1025< len: 14
+            <origin> [Undefined]: >undefined<
+            <protocol> [String]: >http< len: 4
+            <secure> [Boolean]: >false<
+            <original.protocol> [String]: >https<
+            <reconstrucred> [String]: >http://localhost:1025/sockjs-node/info?t=1582335313746< len: 54
+          }
+
+          --- express headers ----- ^^^
+
+          const URL           = require('url').URL;
+
+          const log           = require('inspc');
+
+          const target = `https://usertes:pasword@sub.domain.co.uk:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang`;
+
+          const uri   = new URL(target);
+
+          log.dump({ // https://nodejs.org/docs/latest-v7.x/api/url.html#url_url_parse_urlstring_parsequerystring_slashesdenotehost
+              hash____    : uri.hash,
+              host____    : uri.host,
+              hostname    : uri.hostname,
+              href____    : uri.href,
+              origin__    : uri.origin,
+              password    : uri.password,
+              pathname    : uri.pathname,
+              port____    : uri.port,
+              protocol    : uri.protocol,
+              search__    : uri.search,
+              searchParams: uri.searchParams, // https://nodejs.org/docs/latest-v7.x/api/url.html#url_class_urlsearchparams
+              username    : uri.username,,
+              target,
+              path: uri.pathname + uri.search + uri.hash
+
+              https___    : uri.protocol.indexOf('https') > -1,
+              searchParams_all: Array.from(uri.searchParams.keys()).reduce((acc, key) => {
+                  acc[key] = uri.searchParams.getAll(key)
+                  return acc;
+              }, {}), // https://nodejs.org/docs/latest-v7.x/api/url.html#url_class_urlsearchparams
+
+              'using with http.request():'         : {
+                  hostname    : uri.hostname,
+                  port        : uri.port,
+                  path        : uri.pathname,
+                  method      : 'POST',
+                  headers     : {
+                      'Content-Type': 'application/json'
+                  },
+                  // timeout: 2000,
+              },
+              'url.parse': require('url').parse(target)
+          }, 5)
+
+          // 2019-04-26 10:23:42 /Users/sd/Workspace/projects/z_roderic_new/roderic-project/url.js:11
+          // Object {
+          //   <hash____> [String]: >#hash_bang< len: 10
+          //   <host____> [String]: >sub.domain.co.uk:1025< len: 19
+          //   <hostname> [String]: >sub.domain.co.uk< len: 14
+          //   <href____> [String]: >https://usertes:pasword@sub.domain.co.uk:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang< len: 111
+          //   <origin__> [String]: >https://sub.domain.co.uk:1025< len: 27
+          //   <password> [String]: >pasword< len: 7
+          //   <pathname> [String]: >/curl< len: 5
+          //   <port____> [String]: >1025< len: 4
+          //   <protocol> [String]: >https:< len: 6
+          //   <search__> [String]: >?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 53
+          //   <searchParams> [URLSearchParams]: >one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three<
+          //   <username> [String]: >usertes< len: 7
+          //   <target> [String]: >https://usertes:pasword@sub.domain.co.uk:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: x
+          //   <path> [String]: >/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: x
+          //   <https___> [Boolean]: >true<
+          //   <searchParams_all> Object {
+          //     <one> Array [
+          //       <0> [String]: >two< len: 3
+          //       <1> [String]: >three< len: 5
+          //     ]
+          //     <three> Array [
+          //       <0> [String]: >rour< len: 4
+          //     ]
+          //     <q> Array [
+          //       <0> [String]: >89.67.167.34< len: 12
+          //     ]
+          //     <dwa> Array [
+          //       <0> [String]: >trzy< len: 4
+          //     ]
+          //   }
+          //   <using with http.request():> Object {
+          //     <hostname> [String]: >sub.domain.co.uk< len: 14
+          //     <port> [String]: >1025< len: 4
+          //     <path> [String]: >/curl< len: 5
+          //     <method> [String]: >POST< len: 4
+          //     <headers> Object {
+          //       <Content-Type> [String]: >application/json< len: 16
+          //     }
+          //   }
+          //   <url.parse> Url {
+          //     <protocol> [String]: >https:< len: 6
+          //     <slashes> [Boolean]: >true<
+          //     <auth> [String]: >usertes:pasword< len: 15
+          //     <host> [String]: >sub.domain.co.uk:1025< len: 19
+          //     <port> [String]: >1025< len: 4
+          //     <hostname> [String]: >sub.domain.co.uk< len: 14
+          //     <hash> [String]: >#hash_bang< len: 10
+          //     <search> [String]: >?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 53
+          //     <query> [String]: >one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 52
+          //     <pathname> [String]: >/curl< len: 5
+          //     <path> [String]: >/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 58
+          //     <href> [String]: >https://usertes:pasword@sub.domain.co.uk:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang< len: 111
+          //   }
+          // }
+        </script>
+
+        <h2>uncaughtException unhandledRejection</h2>
+        <script type="editor" data-lang="sh">
+
+
+          process.on("uncaughtException", (e) => {
+            if (e instanceof Error) {
+              console.log("global uncaughtException Error: ", {
+                message: e && e.message ? e.message : '',
+                stack: e && e.stack ? e.stack : '',
+              });
+            } else {
+              console.log("global uncaughtException not Error: ", String(e));
+            }
+          });
+
+          process.on("unhandledRejection", (e) => {
+            if (e instanceof Error) {
+              console.log("global unhandledRejection Error: ", {
+                message: e && e.message ? e.message : '',
+                stack: e && e.stack ? e.stack : '',
+              });
+            } else {
+              console.log("global unhandledRejection not Error: ", String(e));
+            }
+          });
+        </script>
+
+        <h2>component search</h2>
+        <a href="https://openbase.io/js/node-xlsx">https://openbase.io/js/node-xlsx</a>
+
+        <h2>safe console.log</h2>
+        <script type="editor" data-lang="js">
+
+          // just log
+          var log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+          // tlog
+          const tlog = (function () {
+
+              var log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+              const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
+
+              return (...args) => {
+                  log.call(this, time(), ...args.map(a => a + ''));
+              }
+          }());
+
+          // module
+          const log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+          const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
+
+          module.exports = (...args) => {
+              log.call(this, time(), ...args.map(a => a + ''));
+          }
+
+          // node inspect
+          const i = require('util').inspect;
+
+          console.log(i(t, {
+              depth:  50,
+              colors: true,
+              compact: true,
+              // breakLength: 80,
+          }))
+        </script>
+        <h2>cli arguments manual processing</h2>
+        <script type="editor" data-lang="js">
+
+          // read more about -- option terminator
+          // https://2ality.com/2022/08/node-util-parseargs.html#option-terminators
+
+          import { parseArgs } from "node:util";
+          // const { parseArgs } = require('node:util');
+          const { values, positionals } = parseArgs({
+            // node args.js --bar abc.txt bcd.txt --file cde.txt --file def.txt --color
+            // node args.js --bar abc.txt bcd.txt --file cde.txt --file=def.txt --color   # yes --option=value is allowed too
+            // node args.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --color
+            // node args.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --no-color
+            args: process.argv.slice(2),
+            options: {
+              bar: {
+                type: "string",
+                short: "b",
+              },
+              file: {
+                type: "string",
+                multiple: true,
+              },
+              color: { type: "boolean" },
+            },
+            /*, tokens: true, */
+            strict: true,
+            allowPositionals: true,
+            allowNegative: true,
+            // allowNegative seems to be working only since node 20.17.0,
+            // if not then the solution is here: https://nodejs.org/api/util.html#parseargs-tokens
+          });
+          if (typeof values.color === "undefined") {
+            throw new Error("--color is not defined");
+          }
+          // {
+          //     "values": {
+          //         "bar": "b",
+          //         "file": [
+          //            "cde.txt",
+          //            "def.txt"
+          //         ],
+          //         "color": true
+          //            // passing --no-color thanks to allowNegative: true,
+          //            // will result in "color": false
+          //            // if neither --color or --no-color is passed then "color" will not be present in "values" (means it will be undefined)
+          //     },
+          //     "positionals": [ // these are gathered thanks to allowPositionals: true,
+          //                      // without this it would throw
+          //                      // TypeError [ERR_PARSE_ARGS_UNEXPECTED_POSITIONAL]:
+          //                      // Unexpected argument 'abc.txt'. This command does not take positional arguments
+          //         "abc.txt",
+          //         "bcd.txt"
+          //     ]
+          // }
+
+          // -------------------------------------------------------------
+
+          const args =  collectArgs();
+
+          function collectArgs() {
+            var obj = {};
+            var tmp;
+            process.argv.slice(2).map((a) => {
+              if (a.indexOf("--") === 0) {
+                tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, "$1");
+
+                if (tmp) {
+                  obj[tmp] = typeof obj[tmp] === "undefined" ? true : obj[tmp];
+                }
+
+                return;
+              }
+
+              if (a === "true") {
+                a = true;
+              }
+
+              if (a === "false") {
+                a = false;
+              }
+
+              if (tmp !== null) {
+                if (obj[tmp] === true) {
+                  return (obj[tmp] = [a]);
+                }
+
+                try {
+                  obj[tmp].push(a);
+                } catch (e) {}
+              }
+            });
+
+            Object.keys(obj).map((k) => {
+              obj[k] !== true && obj[k].length === 1 && (obj[k] = obj[k][0]);
+              obj[k] === "false" && (obj[k] = false);
+            });
+
+            return {
+              count: () => Object.keys(obj).length,
+              all: () => JSON.parse(JSON.stringify(obj)),
+              get: (key, def) => {
+                var t = JSON.parse(JSON.stringify(obj));
+
+                if (typeof def === "undefined") return t[key];
+
+                return typeof t[key] === "undefined" ? def : t[key];
+              },
+              getThrow: (key) => {
+                if (typeof key !== "string" || !key.trim()) {
+                  throw new Error(`args.js error: argument --${key} is required`);
+                }
+
+                var t = JSON.parse(JSON.stringify(obj));
+
+                if (typeof t[key] === "undefined") {
+                  throw new Error(`args.js error: argument --${key} is not provided`);
+                }
+
+                return t[key];
+              },
+              string: (key, def) => {
+                var t = JSON.parse(JSON.stringify(obj));
+
+                return typeof t[key] === "string" ? t[key] : def;
+              },
+            };
+          };
+        </script>
+        <h2>jest</h2>
+        <a href="https://github.com/stopsopa/roderic-legacy/tree/master/test/jest"
+          >https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a
+        >
+
+        <h2>interesting technique</h2>
+        <script type="editor" data-lang="sh">
+
+          import { setStateXXXX } from '../../components/Dropdown';
+
+          jest.mock('react-redux', () => {
+            let setStateXXXX = (function () {
+              let state = null;
+              return {
+                set: (s) => {
+                  state = s;
+                },
+                get: () => state
+              };
+            })();
+            return {
+              __esModule: true,
+              ...jest.requireActual("react-redux"),
+              Dropdown: ({ className, onChange, ...props }) => (
+                <div
+                  {...props}
+                  onClick={(e) => onChange(setStateXXXX())}
+                  className={`${className} Dropdown`.trim()}
+                />
+              ),
+              setStateXXXX,
+            };
+          });
+
+          test(done => {
+            const { mockService } = require('../../../myLib');
+
+            setStateXXXX([8, { isSuccess: false }]);
+
+            // ...
+          })
+
+          //
+
+          jest.mock('@ux/text-input', () => {
+            let mockServiceInput = (function () {
+              let state = { onClick: ['default onClick'] };
+              return {
+                set: (key, s) => {
+                  state[key] = s;
+                },
+                get: (key) => {
+                  const value = state[key];
+
+                  return value;
+                }
+              };
+            })();
+
+            return {
+              __esModule: true,
+              default: ({ name, className, onChange, onBlur, ...props }) => (
+                <div {...props} className={`${className} TextInput`.trim()}>
+                  <button onClick={() => onChange(...mockServiceInput.get('onClick'))} data-test={`TextInput__${name}__onChange`}>
+                    onBlur
+                  </button>
+                  {onBlur && (
+                    <button onClick={onBlur} data-test={`TextInput__${name}__onBlur`}>
+                      TextInput__onBlur
+                    </button>
+                  )}
+                </div>
+              ),
+              mockServiceInput
+            };
+          });
+        </script>
+
+        <h2>update.sh - shell script</h2>
+        <script type="editor" data-lang="sh">
+
+
+          #!/bin/bash
+
+          set -e
+
+          set -x
+
+          ORIGIN="origin"
+          LOCALBRANCH="master"
+          REMOTEBRANCH="master"
+
+          trim() {
+              local var="$*"
+              # remove leading whitespace characters
+              var="${var#"${var%%[![:space:]]*}"}"
+              # remove trailing whitespace characters
+              var="${var%"${var##*[![:space:]]}"}"
+              echo -n "$var"
+          }
+
+          function red {
+              printf "\e[31m$1\e[0m\n"
+          }
+
+          function green {
+              printf "\e[32m$1\e[0m\n"
+          }
+
+          if [ "$(git rev-parse --abbrev-ref HEAD)" != $LOCALBRANCH ]; then
+
+              red "switch first branch to <$LOCALBRANCH>"
+
+              exit 1;
+          fi
+
+          green "\ncurrent branch: $LOCALBRANCH";
+
+          DIFF="$(git diff --numstat)"
+
+          DIFF="$(trim "$DIFF")"
+
+          if [ "$DIFF" != "" ]; then
+
+              red "\n\n    Error: First commit changes ...\n\n";
+
+              exit 2;
+          fi
+
+          DIFF="$(git diff --numstat $LOCALBRANCH $ORIGIN/$REMOTEBRANCH)"
+
+          DIFF="$(trim "$DIFF")"
+
+          if [ "$DIFF" != "" ]; then
+
+              git push $ORIGIN $REMOTEBRANCH --tags
+
+              if [ "$?" != "0" ]; then
+
+                  red "\n\nCan't git push - stop bumping version\n"
+
+                  exit 3;
+              fi
+
+              npm version patch
+
+                                      # node version-dep.js
+                                      # git add package.json
+                                      # git commit --amend --no-edit
+
+              git push $ORIGIN $REMOTEBRANCH
+
+              if [ "$?" = "0" ]; then
+
+                  npm publish
+
+                  if [ "$?" != "0" ]; then
+
+                      red "\n\nCan't npm publish\n"
+
+                      exit 4;
+                  fi
+
+                  git push --tags --force
+
+              else
+
+                  red "\n\nCan't git push\n"
+
+                  exit 5
+              fi
+
+          else
+
+              red "\n\n    Nothing new to publish\n\n";
+          fi
+        </script>
+
+        <h2>Node clock controlled crash</h2>
+        <script type="editor" data-lang="js">
+
+          /*
+
+          usage in server script:
+
+          require('dotenv-up')({
+            override    : false,
+            deep        : 5,
+          }, false, '..................');
+
+          (function () {
+
+            const atomclock = require('./app/lib/atomclock');
+
+            atomclock.crashServer(process.env.PROTECTED_MYSQL_MAX_TIME_DIFF);
+          }());
+
+          */
+
+          const log = require('inspc');
+
+          const jsonfetch = require('./jsonfetch');
+
+          const promiseany = require('nlab/promiseany');
+
+          // const promiseall = require('nlab/promiseall');
+
+          const emsg = msg => `atomclock.js error: ${msg}`
+
+          const th = msg => new Error(emsg(msg));
+
+          // module.exports = (warning = true) => promiseall([
+          const tool = (warning = true) => promiseany([
+            async atom => {
+
+              try {
+
+                atom = await jsonfetch('http://worldtimeapi.org/api/timezone/Etc/UTC', {
+                  timeout: 2000,
+                });
+
+                if ( ! Number.isInteger(atom.body.unixtime) ) {
+
+                  throw th(`http://worldtimeapi.org/api/timezone/Etc/UTC unixtime is not an integer`);
+                }
+
+                return atom.body.unixtime;
+
+              }
+              catch (e) {
+
+                if (warning) {
+
+                  log.dump({
+                    atomclick_js_warning: e
+                  })
+                }
+
+                throw e;
+              }
+            },
+            async atom => {
+
+              try {
+
+                atom = await jsonfetch('http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now', {
+                  timeout: 2000,
+                });
+
+                if (atom.status !== 200) {
+
+                  throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom.status !== 200`);
+                }
+
+                if ( ! /^\d+$/.test(atom.body.UnixTimeStamp) ) {
+
+                  throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom.body.UnixTimeStamp don't match /^\\d+$/`);
+                }
+
+                atom = parseInt(atom.body.UnixTimeStamp, 10);
+
+                if ( ! Number.isInteger(atom) ) {
+
+                  throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom is not an integer`);
+                }
+
+                return atom;
+
+              }
+              catch (e) {
+
+                if (warning) {
+
+                  log.dump({
+                    atomclick_js_warning: e
+                  })
+                }
+
+                throw e;
+              }
+            },
+            async atom => {
+
+              try {
+
+                atom = await jsonfetch('http://widget.time.is/', {
+                  timeout: 2000,
+                });
+
+                if (atom.status !== 200) {
+
+                  throw th(`http://worldclockapi.com/api/json/utc/now atom.status !== 200`);
+                }
+
+                atom = atom.body.replace(/^[^\d]+(\d+).*$/, '$1');
+
+                if ( ! /^\d+$/.test(atom) ) {
+
+                  throw th(`http://worldclockapi.com/api/json/utc/now atom.status don't match /^\\d+$/`);
+                }
+
+                return parseInt(parseInt(atom, 10) / 1000, 10);
+
+              }
+              catch (e) {
+
+                if (warning) {
+
+                  log.dump({
+                    atomclick_js_warning: e
+                  })
+                }
+
+                throw e;
+              }
+            },
+          ]);
+
+          tool.crashServer = async function (diff) {
+
+            try {
+
+              if ( typeof diff !== 'string' ) {
+
+                throw th(`diff is not a string`);
+              }
+
+              if ( ! /^\d+$/.test(diff || '') ) {
+
+                throw th(`atomclock.js diff (value: '${diff}') is not defined or it doesn't match /^\\d+$/`);
+              }
+
+              const crashnodeifdiffgreaterthansec = parseInt(diff, 10);
+
+              const at = await tool(false);
+
+              const now = parseInt((new Date()).getTime() / 1000, 10)
+
+              const abs = Math.abs(at - now);
+
+              if (abs > crashnodeifdiffgreaterthansec) {
+
+                throw th(`atomclock.js time - node UTC time differance '${abs}' is greater than '${crashnodeifdiffgreaterthansec}' sec`);
+              }
+
+              console.log(`Time differance between atomclock.js time and node.js clock time is '${abs}', should be smaller than ${crashnodeifdiffgreaterthansec}`)
+
+              console.log("Time diff is small enough 👍")
+            }
+            catch (e) {
+
+              log.dump({
+                atomclick_general_error: e
+              })
+
+              throw e;
+            }
+          }
+
+          module.exports = tool;
+        </script>
+
+        <h2>Express template</h2>
+
+        <div data-vanilla-tabs>
+          <div data-buttons>
+            <span class="active">esm</span>
+            <span>commonjs</span>
+          </div>
+          <div data-tabs>
+            <div>
+              <script type="editor" data-lang="js">
+
+                // express extension: https://raw.githubusercontent.com/stopsopa/roderic/86495ef554314d388e7f6ef10ee4de6d12bcbcff/libs/express-extend-res.js?token=GHSAT0AAAAAACVQ4Q66S6J6DLZRVFB5DQLSZXEOC2Q
+
+                import path from 'path';
+
+                import fs from 'fs';
+
+                import express from 'express';
+
+                import template from 'lodash/template';
+
+                // https://www.npmjs.com/package/cookie-parser
+                import cookieParser from 'cookie-parser';
+
+                // https://stackoverflow.com/a/23613092
+                import serveIndex from 'serve-index';
+
+                const log = (function(){try{return console.log}catch(e){return function (){}}}());
+
+                const host      = process.env.HOST;
+
+                const port      = process.env.PORT;
+
+                const web = path.resolve(__dirname, 'public');
+
+                const readFile = file => fs.readFileSync(file).toString();
+
+                const app       = express();
+
+                app.use(cookieParser())
+
+                app.use(express.urlencoded({extended: false}));
+
+                app.use(express.json());
+
+                app.all('/save', (req, res) => {
+
+                    const cookies = decodeURIComponent(req.headers.cookie || '').split(';').reduce((acc, coo) => {
+                        const tmp   = coo.split('=');
+                        const name  = tmp.shift().trim();
+                        const value = tmp.join('=').trim();
+                        name && (acc[name] = value);
+                        return acc;
+                    }, {});
+
+                    log('save');
+                    log(JSON.stringify(req.body));
+
+                    res.setHeader('Content-type', 'application/json; charset=utf-8');
+                    res.end(JSON.stringify({
+                        ok: true
+                    }));
+                })
+
+                app.all('/root', (req, res) => {
+
+                    const html  = readFile(path.resolve(__dirname, 'public', '_index.html'));
+
+                    const svg   = readFile(path.resolve(__dirname, 'public', 'tree.svg'));
+
+                    const tmp = template(html);
+
+                    res.end(tmp({
+                        svg
+                    }));
+                });
+
+                app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
+                    // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
+                    maxAge: '356 days', // in milliseconds max-age=30758400
+                    setHeaders: (res, path) => {
+
+                        if (/\.bmp$/i.test(path)) { // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
+
+                            res.setHeader('Content-type', 'image/bmp')
+                        }
+
+                        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+                        // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
+                        // res.setHeader('Cache-Control', 'public, only-if-cached')
+                    }
+                }), serveIndex(web, {
+                  icons: true,
+                  view: "details",
+                  hidden: false, // Display hidden (dot) files. Defaults to false.
+                }));
+
+                app.listen(port, host, () => {
+
+                    console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`)
+                });
+              </script>
+
+              <script type="editor" data-lang="json">
+                {
+                  "dependencies": {
+                    "body-parser"    : "^1.18.3",
+                    "express"    : "^4.16.3",
+                    "lodash"    : "^4.17.10",
+                    "serve-index"    : "^1.9.1"
+                  }
+                }
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="js">
+
+                // express extension: https://raw.githubusercontent.com/stopsopa/roderic/86495ef554314d388e7f6ef10ee4de6d12bcbcff/libs/express-extend-res.js?token=GHSAT0AAAAAACVQ4Q66S6J6DLZRVFB5DQLSZXEOC2Q
+
+                const path      = require('path');
+
+                const fs        = require('fs');
+
+                const express   = require('express');
+
+                const template  = require('lodash/template');
+
+                // https://www.npmjs.com/package/cookie-parser
+                const cookieParser = require('cookie-parser');
+
+                // https://stackoverflow.com/a/23613092
+                const serveIndex    = require('serve-index');
+
+                const log       = (function(){try{return console.log}catch(e){return function (){}}}());
+
+                const host      = process.env.HOST;
+
+                const port      = process.env.PORT;
+
+                const web = path.resolve(__dirname, 'public');
+
+                const readFile = file => fs.readFileSync(file).toString();
+
+                const app       = express();
+
+                app.use(cookieParser())
+
+                app.use(express.urlencoded({extended: false}));
+
+                app.use(express.json());
+
+                app.all('/save', (req, res) => {
+
+                    const cookies = decodeURIComponent(req.headers.cookie || '').split(';').reduce((acc, coo) => {
+                        const tmp   = coo.split('=');
+                        const name  = tmp.shift().trim();
+                        const value = tmp.join('=').trim();
+                        name && (acc[name] = value);
+                        return acc;
+                    }, {});
+
+                    log('save');
+                    log(JSON.stringify(req.body));
+
+                    res.setHeader('Content-type', 'application/json; charset=utf-8');
+                    res.end(JSON.stringify({
+                        ok: true
+                    }));
+                })
+
+                app.all('/root', (req, res) => {
+
+                    const html  = readFile(path.resolve(__dirname, 'public', '_index.html'));
+
+                    const svg   = readFile(path.resolve(__dirname, 'public', 'tree.svg'));
+
+                    const tmp = template(html);
+
+                    res.end(tmp({
+                        svg
+                    }));
+                });
+
+                app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
+                    // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
+                    maxAge: '356 days', // in milliseconds max-age=30758400
+                    setHeaders: (res, path) => {
+
+                        if (/\.bmp$/i.test(path)) { // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
+
+                            res.setHeader('Content-type', 'image/bmp')
+                        }
+
+                        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+                        // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
+                        // res.setHeader('Cache-Control', 'public, only-if-cached')
+                    }
+                }), serveIndex(web, {
+                  icons: true,
+                  view: "details",
+                  hidden: false, // Display hidden (dot) files. Defaults to false.
+                }));
+
+                app.listen(port, host, () => {
+
+                    console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`)
+                });
+              </script>
+
+              <script type="editor" data-lang="json">
+                {
+                  "dependencies": {
+                    "body-parser"    : "^1.18.3",
+                    "express"    : "^4.16.3",
+                    "lodash"    : "^4.17.10",
+                    "serve-index"    : "^1.9.1"
+                  }
+                }
+              </script>
+            </div>
+          </div>
+        </div>
+
+        <h2>express-extend-res</h2>
+        <script type="editor" data-lang="js">
+
+
+          const http = require('http');
+
+          /**
+           * https://raw.githubusercontent.com/stopsopa/roderic/86495ef554314d388e7f6ef10ee4de6d12bcbcff/libs/express-extend-res.js?token=GHSAT0AAAAAACVQ4Q66S6J6DLZRVFB5DQLSZXEOC2Q
+           *
+           const app = express();
+
+           app.use(require('libs/express-extend-res'));
+           * @param req
+           * @param res
+           * @param next
+           */
+          module.exports = (prod = true, modifyresbeforesend, debugLevel = false) => function (req, res, next) {
+
+              res.req = req;
+
+              if (debugLevel === true) {
+
+                  debugLevel = 2
+              }
+
+              if ( ! res.constructor.prototype.extended ) {
+
+                  res.constructor.prototype.extended = true;
+
+                  res.constructor.prototype.jsonNoCache = function (json) {
+
+                      this.set({
+                          'Cache-Control' : 'no-store, no-cache, must-revalidate',
+                          'Pragma'        : 'no-cache',
+                          'Content-type'  : 'application/json; charset=utf-8',
+                          'Expires'       : new Date().toUTCString(),
+                      })
+
+                      if (prod) {
+
+                          return this.json(json);
+                      }
+
+                      return this.end(JSON.stringify(json, null, 4));
+                  };
+
+                  res.constructor.prototype.jsonError = function (errstring) {
+                      return this.status(409).jsonNoCache({
+                          error: errstring
+                      });
+                  };
+
+                  res.constructor.prototype.notFound = function (msg) {
+
+                      return this.status(400).jsonNoCache({
+                          error: msg
+                      });
+                  };
+
+                  res.constructor.prototype.accessDenied = function (msg) {
+
+                      return this.status(403).jsonNoCache({
+                          error: msg
+                      });
+                  };
+
+                  ['writeHead', 'end', 'send', 'writeHeader'].forEach(m => {
+
+                      (function (old) {
+
+                          res.constructor.prototype[m] = function () {
+
+                              debugLevel && console.log(m.padEnd(10, ' '), 'headersSent: ', this.headersSent ? 'true' : 'false');
+
+                              if ( ! this.headersSent && ! this.__executed) {
+
+                                  debugLevel && console.log(m, 'modifyresbeforesend(res)');
+
+                                  this.__executed = true;
+
+                                  if (this && this.req) {
+
+                                      modifyresbeforesend(({res: this, req: this.req}));
+                                  }
+                              }
+
+                              return old.apply(this, arguments);
+                          };
+
+                      }(res.constructor.prototype[m]))
+                  });
+              }
+
+              next();
+          }
+
+          # --------------------- how to use
+
+          require('dotenv').config({
+            path: path.resolve(__dirname, '..', '.env.Local')
+          });
+          const yes = []; // if empty then accept all
+          const no = [/^\/api\/is/, /^\/api\/auth/, /^\/api\/product-creation\/intake\//]; // and here is for exclusion
+          const testYes = (url) => (yes.length === 0 ? true : yes.find((f) => url.match(f)));
+          const testNo = (url) => (no.length === 0 ? false : no.find((f) => url.match(f)));
+          const dir =
+            '/Users/user/project/.git/autojson';
+
+          let patch, access;
+          patch = access = (req, res, next) => next();
+          if (process.env.COLLECT_JSON) {
+            access = (req, res, next) => {
+              const originalSend = res.send;
+              const originalJson = res.json;
+
+              res.send = function (body) {
+                res.body = body;
+                return originalSend.apply(this, arguments);
+              };
+
+              res.json = function (body) {
+                res.body = body;
+                return originalJson.apply(this, arguments);
+              };
+
+              next();
+            };
+            patch = require('../.git/express-extend-res')(
+              true,
+              ({ res, req }) => {
+                try {
+                  const ct = res.get('content-type');
+                  const body = res?.body;
+                  const url = req?.url;
+
+                  if (ct && typeof ct === 'string') {
+                    if (ct.includes('application/json') && typeof body !== 'undefined') {
+                      if (testYes(url) && !testNo(url)) {
+                        const file = url.replace('/v2/product-orchestration/', '').replace(/[^a-z\d_-]+/gi, '__') + '.json';
+
+                        const target = path.join(dir, file);
+
+                        const payload = JSON.stringify(
+                          {
+                            url,
+                            data: JSON.parse(body)
+                          },
+                          null,
+                          4
+                        );
+
+                        fs.writeFileSync(target, payload);
+
+                        res.set('X-express-extend-res', file);
+                      } else {
+                        res.set('X-express-extend-res', 'FALSE');
+                      }
+                    }
+                  }
+                } catch (e) {
+                  console.log('express_extend_res_warning', e);
+                }
+              },
+              false
+            );
+          }
+        </script>
+
+        <h2>colors</h2>
+        <a href="https://www.npmjs.com/package/colors">NPM - colors</a>
+        <table width="100%">
+          <tbody>
+            <tr>
+              <td>
+                <script type="editor" data-lang="js">
+
+                  // node.js native stuff for colors: https://nodejs.org/api/util.html#utilstyletextformat-text
+
+                  require('colors');
+                  const l = c => console.log(`${c} [` + (`test string`[c]) + ']');
+                  console.log("\n\n");
+                  // text colors
+                  l('black');
+                  l('red');
+                  l('green');
+                  l('yellow');
+                  l('blue');
+                  l('magenta');
+                  l('cyan');
+                  l('white');
+                  l('gray');
+                  l('grey');
+                  // bg colors
+                  l('bgBlack');
+                  l('bgRed');
+                  l('bgGreen');
+                  l('bgYellow');
+                  l('bgBlue');
+                  l('bgMagenta');
+                  l('bgCyan');
+                  l('bgWhite');
+                  //styles
+                  l('reset');
+                  l('bold');
+                  l('dim');
+                  l('italic');
+                  l('underline');
+                  l('inverse');
+                  l('hidden');
+                  l('strikethrough');
+                  //extras
+                  l('rainbow');
+                  l('zebra');
+                  l('america');
+                  l('trap');
+                  l('random');
+                  console.log("\n\n")
+                </script>
+              </td>
+              <td width="257">
+                <img src="/img/node/colors.png" height="624" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table width="100%">
+          <tbody>
+            <tr>
+              <td>
+                <script type="editor" data-lang="js">
+
+                  const c = {
+                    Bright      : "\x1b[1m",
+                    Dim         : "\x1b[2m",
+                    Underscore  : "\x1b[4m",
+                    Blink       : "\x1b[5m",
+                    Reverse     : "\x1b[7m",
+                    Hidden      : "\x1b[8m",
+                    FgBlack     : "\x1b[30m",
+                    FgRed       : "\x1b[31m", // red
+                    FgGreen     : "\x1b[32m", // green
+                    FgYellow    : "\x1b[33m", // yellow
+                    FgBlue      : "\x1b[34m",
+                    FgMagenta   : "\x1b[35m", // magenta
+                    FgCyan      : "\x1b[36m", // cyan
+                    FgWhite     : "\x1b[37m",
+                    BgBlack     : "\x1b[40m",
+                    BgRed       : "\x1b[41m",
+                    BgGreen     : "\x1b[42m",
+                    BgYellow    : "\x1b[43m",
+                    BgBlue      : "\x1b[44m",
+                    BgMagenta   : "\x1b[45m",
+                    BgCyan      : "\x1b[46m",
+                    BgWhite     : "\x1b[47m",
+                    r           : "\x1b[31m", // red
+                    g           : "\x1b[32m", // green
+                    y           : "\x1b[33m", // yellow
+                    m           : "\x1b[35m", // magenta
+                    c           : "\x1b[36m", // cyan
+                    reset       : "\x1b[0m",
+                  };
+
+                  # generating image on the right
+                  // Object.keys(c).forEach((key) => {
+                  //   console.log(`${c[key]}${key} ${key} ${key}${c.reset} >${key}<`);
+                  // });
+
+                  Object.keys(c).forEach((k) => {
+                    if (k !== "reset") {
+                      (function (name, value) {
+                        // c[name] = (...args) => console.log(value, ...args, c.reset);
+                        c[name] = (...args) => {
+                          process.stdout.write(value);
+                          args.forEach((arg) => process.stdout.write(arg));
+                          process.stdout.write(c.reset);
+                        };
+                      })(k, c[k]);
+                    }
+                  });
+                </script>
+              </td>
+              <td width="257">
+                <img src="https://i.imgur.com/bawTURW.png" style="width: 480px" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>fetch timeout</h2>
+        <script type="editor" data-lang="js">
+
+          (async function () {
+            try {
+              const resp = await fetch("http://localhost:4299/api/timeout", {
+                signal: AbortSignal.timeout(2000),
+              });
+
+              console.log("resp: ", resp);
+            } catch (e) {
+              console.log("catch: ", e);
+            }
+          })();
+          // from: https://medium.com/deno-the-complete-reference/timeout-fetch-request-in-node-js-4231f33a9b95
+        </script>
+        <h2>request.js</h2>
+        <script type="editor" data-lang="js">
+
+          // tests: https://github.com/stopsopa/vault/blob/master/test/request.test.js
+
+          const URL = require('url').URL;
+
+          const https = require('https');
+
+          const http = require('http');
+
+          // npm WARN deprecated querystring@0.2.0: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
+          const querystring = require('querystring');
+
+          const se = require('nlab/se');
+
+          const th = msg => new Error(`request: ${String(msg)}`);
+
+          const log = console.log;
+
+          const isObject = require('nlab/isObject');
+
+          module.exports = function request(url, opt = {}) {
+
+              let {
+                  method = 'GET',
+                  body = undefined,
+                  query = {},
+                  headers = {},
+                  timeout = 30 * 1000, // 30 sec
+                  verbose = false,
+                  decodeJson = true,
+              } = opt;
+
+              if (typeof method !== 'string') {
+
+                  throw th(`method is not a string`);
+              }
+
+              method = method.toUpperCase();
+
+              let rq;
+
+              return new Promise((resolve, reject) => {
+
+                  const uri = new URL(url);
+
+                  const lib = (uri.protocol === 'https:') ? https : http;
+
+                  query = querystring.stringify(query);
+
+                  rq = {
+                      hostname: uri.hostname,
+                      port: uri.port || ((uri.protocol === 'https:') ? '443' : '80'),
+                      path: uri.pathname + uri.search + (query ? (uri.search.includes('?') ? '&' : '?') + query : ''),
+                      method,
+                      headers,
+                  };
+
+                  if (Array.isArray(body) || isObject(body)) {
+
+                      if (method === 'GET') {
+
+                          throw th(`body looks like json payload but request method is GET`);
+                      }
+
+                      // modyfying original 'rq' by reference
+                      headers['Content-type'] = 'application/json; charset=utf-8';
+                  }
+
+                  if (verbose) {
+
+                      log({
+                          'request.js': rq,
+                      })
+                  }
+
+                  var req = lib.request(rq, res => {
+
+                      res.setEncoding('utf8');
+
+                      let body = '';
+
+                      res.on('data', chunk => {
+
+                          body += chunk
+                      });
+
+                      res.on('end', () => {
+
+                          try {
+
+                              if (decodeJson && (res.headers['content-type'] || '').includes('application/json')) {
+
+                                  body = JSON.parse(body);
+                              }
+
+                              resolve({
+                                  status: res.statusCode,
+                                  headers: res.headers,
+                                  body,
+                              })
+                          }
+                          catch (e) {
+
+                              if (verbose) {
+
+                                  log({
+                                      request_resolve_exception_catch: se(e),
+                                  })
+                              }
+
+                              reject({
+                                  type: 'endevent',
+                                  data: se(e),
+                              });
+                          }
+                      });
+                  });
+
+                  req.on('socket', function (socket) { // uncomment this to have timeout
+
+                      socket.setTimeout(timeout);
+
+                      socket.on('timeout', () => { // https://stackoverflow.com/a/9910413
+
+                          try {
+                              req.destroy();
+                          }
+                          catch (e) {
+                              try {
+                                  req.abort(); // since v14.1.0 Use request.destroy() instead
+                              }
+                              catch (e) { }
+                          }
+
+                          reject({
+                              type: 'timeout',
+                              data: `timeout (${timeout}ms)`,
+                          })
+                      });
+                  });
+
+                  req.on('error', e => reject({
+                      type: 'error',
+                      data: se(e)
+                  }));
+
+                  if (Array.isArray(body) || isObject(body)) {
+
+                      req.write(JSON.stringify(body));
+                  }
+
+                  req.end();
+              });
+          }
+        </script>
+
+        <h2>lightfetch.js</h2>
+        <a href="https://github.com/stopsopa/nlab/blob/master/src/lightFetch.js"
+          >https://github.com/stopsopa/nlab/blob/master/src/lightFetch.js</a
+        >
+        <h2>curl polyfill</h2>
+        <script type="editor" data-lang="sh">
+
+          wget --help 1> /dev/null 2> /dev/null
+          if [ "$?" = "0" ]; then
+            wget --no-cache -O "curl.js" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/curl.js"
+          else # curl
+            curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/curl.js" -o "curl.js"
+          fi
+          if [ "$(printf "sha384-$(cat "curl.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/node/curl.js" ]; then
+            echo "checksum verified"
+            /bin/bash "curl.js"
+          else
+            echo "checksum corrupted - deleting file"
+            rm "curl.js"
+          fi
+
+          URL="https://domain:8443/" node --input-type module <<HEREDOC
+          try {
+              const res = await fetch(process.env.URL, { signal: AbortSignal.timeout(50000) });
+              const body = await res.text();
+              
+              console.log({status: res.status, headers: Object.fromEntries(res.headers)});
+              console.log(\`Body: >\${body.substring(0, 1000)}<\`);
+          
+              process.exit(res.ok ? 0 : 1);
+          } catch (e) {
+              console.error('Main catch:', e);
+              process.exit(1);
+          }
+          HEREDOC
+
+          // healtcheck for docker:
+            # healthcheck:
+            #   test:
+            #     - "CMD-SHELL"
+            #     # there is no CURL in the node alpine image, but we have node for sure
+            #     - 'node -e "fetch(''http://localhost:${NODE_PORT}/api/healthcheck'', { signal: AbortSignal.timeout(1000) }).then(res => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1));"'
+            #   interval: 10s
+            #   timeout: 10s
+            #   retries: 3
+            #   start_period: 10s
+          
+        </script>
+        <a href="https://httpstat.us/">https://httpstat.us/</a>
+
+        <h2>fetchData & fetchJson (transport.js)</h2>
+        <script type="editor" data-lang="js">
+
+
+          // yarn add nlab node-fetch cross-fetch
+
+          const isNode        = require('nlab/isNode');
+
+          const negotiatePort = require('nlab/negotiatePort');
+
+          const isObject      = require("nlab/isObject");
+
+          const log           = (function(){try{return console.log}catch(e){return()=>{}}}());
+
+          const th = msg => new Error(`transport.js error: ${msg}`);
+
+          let fakeFetch;
+
+          let origin;
+
+          /**
+            PROTOCOL="http"
+            HOST="0.0.0.0"
+            PORT="8080"
+          */
+          function setFetch(PROTOCOL, HOST, PORT) {
+
+            if ( ! /^https?$/.test(PROTOCOL) ) {
+
+              throw th(`PROTOCOL (${PROTOCOL}) don't match /^https?$/`);
+            }
+
+            if ( typeof HOST !== 'string' ) {
+
+              throw th(`HOST (${HOST}) is not a string`);
+            }
+
+            if ( ! HOST.trim() ) {
+
+              throw th(`HOST is an empty string`);
+            }
+
+            origin = `${PROTOCOL}://${HOST}` + negotiatePort(PROTOCOL, PORT, ':');
+          }
+
+          if ( isNode ) {
+
+            fakeFetch = eval('require')('node-fetch');
+          }
+          else {
+
+            (function (old) {
+
+              const fetchPolyfill = require('cross-fetch');
+
+              console.log('fetchPolyfill', fetchPolyfill)
+
+              fakeFetch = window.fakeFetch = (url, opt) => {
+
+                log(`ajax fetch polyfill ${url}`);
+
+                return fetchPolyfill(url, opt);
+              };
+
+              if (old) {
+
+                window.fetch = (url, opt) => {
+
+                  log(`native fetch ${url}`);
+
+                  return old(url, opt);
+                };
+              }
+            })(window.fetch);
+          }
+
+          const fetchData = async (path, options) => {
+
+            if (typeof options === "undefined") {
+
+              options = {};
+            }
+
+            if ( origin && ! /^https?:\/\//.test(path) ) {
+
+              path = origin + path;
+            }
+
+            log(`fetchData path: ${path}`);
+
+            options.headers = {
+              "x-requested-with"    : "fetch",
+              ...options.headers,
+            };
+
+            const { delay, native, ...rest } = options;
+
+            options = rest;
+
+            if (Number.isInteger(delay) && delay > 0) {
+
+              await new Promise(res => setTimeout(res, delay));
+            }
+
+            if ( native && ! isNode && window.fetch) {
+
+              return window.fetch(path, options);
+            }
+
+            return fakeFetch(path, options);
+          };
+
+          const fetchJson = (path, options) => {
+
+            if (typeof options === "undefined") {
+
+              options = {};
+            }
+
+            options.headers = {
+              "Content-Type"    : "application/json; charset=utf-8",
+              Accept    : "application/json",
+              ...options.headers,
+            };
+
+            if (isObject(options.body) || Array.isArray(options.body)) {
+
+              options.body = JSON.stringify(options.body || {}, null, 4);
+
+              options.method = options.method || "POST";
+            } else {
+
+              options.method = options.method || "GET";
+            }
+
+            const { rawResponse, ...rest } = options;
+
+            const res = fetchData(path, rest);
+
+            if (rawResponse) {
+
+              return res;
+            }
+
+            return res.then(res => res.json());
+          };
+
+          if ( ! isNode ) {
+
+            window.fetchData = fetchData;
+
+            window.fetchJson = fetchJson;
+          }
+
+          module.exports = {
+            fakeFetch,
+            fetchData,
+            fetchJson,
+            setFetch,
+          }
+        </script>
+
+        <h2>nvm</h2>
+        <a href="https://nodejs.org/en/about/releases/">https://nodejs.org/en/about/releases/</a>
+        <script type="editor" data-lang="sh">
+
+          nvm install --lts
+          nvm ls
+          nvm install [version]
+          nvm use [version]
+          .nvmrc
+          nvm alias default v22.11.0
+          nvm ls-remote
+
+          nvm install --lts
+          nvm use --lts
+        </script>
+        <h2>csv</h2>
+        <a href="https://www.npmjs.com/package/@fast-csv/format">https://www.npmjs.com/package/@fast-csv/format</a>
+
+        <h2>base64</h2>
+        <script type="editor" data-lang="sh">
+
+          Buffer.from(json).toString('base64')
+          Buffer.from(base64, 'base64').toString('ascii');
+        </script>
+        <h2>md5</h2>
+        <script type="editor" data-lang="sh">
+
+          const crypto = require('crypto');
+
+          // equal to:
+          // echo -n fdsadas | md5
+          function md5(str, cut) {
+            const md5 = crypto.createHash("md5").update(str).digest("hex");
+
+            if (typeof cut === "number" && Number.isInteger(cut)) {
+              if (cut < 5) {
+                throw new Error(`md5 cut is smaller than 5`);
+              }
+
+              return md5.substring(0, cut);
+            }
+
+            return md5;
+          }
+        </script>
+        <h2>Read more</h2>
+        <a href="https://fjolt.com/article/javascript-shadowrealms"
+          >https://fjolt.com/article/javascript-shadowrealms</a
+        >
+
+        <h2>excel xlsx</h2>
+        <script type="editor" data-lang="js">
+
+          const express   = require('express'); // "exceljs"    : "3.8.0" for node version v8.15.1
+
+          const host      = '0.0.0.0';
+
+          const port      = 8989;
+
+          const app       = express();
+
+          const Excel = require('exceljs');
+
+          app.all('/root', async (req, res) => {
+
+            console.log('/root')
+
+            // https://stackoverflow.com/a/55166212
+            const workbook = new Excel.Workbook();
+            const worksheet = workbook.addWorksheet("My Sheet");
+
+            worksheet.columns = [
+              {header: 'Id', key: 'id', width: 10},
+              {header: 'Name', key: 'name', width: 32},
+              {header: 'D.O.B.', key: 'dob', width: 15,}
+            ];
+
+            worksheet.addRow({
+              id: 1,
+              name: 'John Doe',
+              dob: new Date(1970, 1, 1)
+            });
+
+            // save under export.xlsx
+            // await workbook.xlsx.writeFile('export.xlsx');
+
+            // https://github.com/exceljs/exceljs/issues/37#issuecomment-181772680
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader("Content-Disposition", "attachment; filename=" + "export.xlsx");
+
+            await workbook.xlsx.write(res);
+
+            res.end();
+          });
+
+          app.listen(port, host, () => {
+
+            console.log(`\n 🌎  Server is running ` + `${host}:${port}\n`)
+          });
+        </script>
+
+        <h2>cmd promise</h2>
+        <script type="editor" data-lang="js">
+
+          const { spawn } = require("child_process");
+
+          const se = require('nlab/se');
+
+          const th    = msg => new Error(`${__filename} error: ${msg}`);
+
+          /**
+           * Running:
+           *
+           const data = await cmd([
+           'ls',
+           '-la',
+           '/Users/sd/Workspace/projects/monorepo/monorepo-master/a b c/test'
+           ]);
+           will work for directory with spacec in name
+           */
+
+          module.exports = (cmd, opt) => new Promise((resolve, reject) => {
+
+            if (typeof cmd === 'string') {
+
+              cmd = cmd.trim();
+
+              if ( ! cmd ) {
+
+                throw th(`cmd is an empty string`);
+              }
+
+              cmd = cmd.split(/\s+/);
+            }
+
+            if ( ! Array.isArray(cmd) ) {
+
+              throw th(`cmd is not an array`);
+            }
+
+            if ( ! cmd.length) {
+
+              throw th(`cmd is an empty array`);
+            }
+
+            const {
+              verbose = false,
+            } = {...opt};
+
+            verbose && console.log(`executing command ${c.g(cmd.join(' '))}`)
+
+            const [command, ...args] = cmd;
+
+            const process = spawn(command, args);
+
+            let stdout = '';
+
+            let stderr = '';
+
+            process.stdout.on("data", data => {
+              stdout += String(data);
+            });
+
+            process.stderr.on("data", data => {
+              stderr += String(data);
+            });
+
+            process.on('error', (e) => {
+
+              verbose && console.log(`error: ${e.message}`);
+
+              reject({
+                cmd,
+                stdout,
+                stderr,
+                e: se(e)
+              });
+            });
+
+            process.on("close", code => {
+
+              verbose && console.log(`child process ${c.g(cmd.join(' '))} exited with code ${code}`);
+
+              if (code !== 0) {
+
+                return reject({
+                  cmd,
+                  stdout,
+                  stderr,
+                  code,
+                });
+              }
+
+              resolve({
+                cmd,
+                stdout,
+                stderr,
+                code,
+              });
+            });
+          })
+        </script>
+        global settings and other stuff:
+
+        <script type="editor" data-lang="sh">
+
+          cat <<EEE > ~/.huskyrc
+          export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
+          EEE
+          # concluded from: https://github.com/typicode/husky/issues/898
+
+          yarn husky add .husky/pre-commit 'docker run --rm -v "$(pwd):/git" ggg/tartufo --output-dir /git/.tartufo --config /git/tartufo.toml pre-commit'
+          yarn husky add .husky/pre-push 'echo pre push'
+        </script>
+        <a href="https://github.com/semantic-release/semantic-release">see also semantic-release</a>
+
+        <h2>Learning promises</h2>
+        <h5>Always await promises before returning to avoid a partial stacktrace</h5>
+        <a
+          href="https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace"
+          >https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace</a
+        >
+        <br />
+        <a
+          href="https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/returningpromises.md"
+          >https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/returningpromises.md</a
+        >
+        <script type="editor" data-lang="js">
+
+          /**
+           * https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace
+           * Always await promises before returning to avoid a partial stacktrace
+           */
+
+          function wait (ms) {
+
+            return new Promise(res => setTimeout(res, ms, `wait ${ms}`))
+          }
+
+          async function th() {
+
+            await wait(200);
+
+            throw new Error(`th error`);
+          }
+
+          async function b() {
+
+            await wait(200);
+
+            // return th(); // uncomment this line to see error without one stack point, as below
+            // {
+            //   main_catch: {
+            //     message: 'th error',
+            //       stack: 'Error: th error\n' +
+            //     '    at th (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:16:9)\n' +
+            //     '    at async /Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:49:5'
+            //   }
+            // }
+
+            return await th();
+            // {
+            //   main_catch: {
+            //     message: 'th error',
+            //       stack: 'Error: th error\n' +
+            //     '    at th (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:16:9)\n' +
+            //     '    at async b (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:33:10)\n' +
+            //     '    at async /Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:49:5'
+            //   }
+            // }
+          };
+
+          (async function () {
+
+            try {
+
+              await b()
+            }
+            catch (e) {
+
+              console.log({
+                main_catch: {
+                  message: e.message,
+                  stack: e.stack,
+                }
+              })
+            }
+          }());
+        </script>
+        <h2>pm2 - deamons</h2>
+        <script type="editor" data-lang="sh">
+
+          sudo npm install -g pm2
+
+          sudo pm2 start index.js --interpreter $(which node)
+            # to force it to use right node version - usually provided by nvm
+
+          sudo pm2 start index.js
+          sudo pm2 delete index.js
+          sudo pm2 status
+          sudo pm2 restart index.js
+
+          # more: https://pm2.keymetrics.io/docs/usage/quick-start/#cheatsheet
+
+          # register to autostart with the system
+          sudo pm2 save --force
+          sudo pm2 startup systemd
+        </script>
+        <h2>yield</h2>
+        <script type="editor" data-lang="js">
+
+          const t = ['one', 'two', 'three', 'four'];
+          let error;
+          // error = 1;
+          // error = 2;
+          function* foo(t) {
+            console.log('start');
+            if (error === 1) {
+              throw new Error(`What's happened?! 1`);
+            }
+            for (let i = 0, l = t.length ; i < l ; i += 1 ) {
+              console.log(`stop: ${i}`);
+              if (error === 2) {
+                throw new Error(`What's happened?! 2`);
+              }
+              yield `${t[i]} yield`;
+            }
+            return 'finish'
+          }
+          let iterator;
+          try {
+            iterator = foo(t);
+            console.log('after iterator');
+          }
+          catch (e) {
+            console.log('generalerror: ', String(e));
+          }
+          try {
+            console.log('1:', iterator.next());
+            console.log('2:', iterator.next('myval'));
+            console.log('3:', iterator.next());
+            console.log('4:', iterator.next());
+            console.log('5:', iterator.next());
+            console.log('6:', iterator.next());
+          }
+          catch (e) {
+            console.log('generalerror 2: ', String(e));
+          }
+
+          // // for error = undefined
+          // after iterator
+          // start
+          // stop: 0
+          // 1: { value: 'one yield', done: false }
+          // stop: 1
+          // 2: { value: 'two yield', done: false }
+          // stop: 2
+          // 3: { value: 'three yield', done: false }
+          // stop: 3
+          // 4: { value: 'four yield', done: false }
+          // 5: { value: 'finish', done: true }
+          // 6: { value: undefined, done: true }
+          //
+          // // for error = 1
+          // after iterator
+          // start
+          // generalerror 2:  Error: What's happened?! 1
+          //
+          // // for error = 2
+          // after iterator
+          // start
+          // stop: 0
+          // generalerror 2:  Error: What's happened?! 2
+        </script>
+        <h2>env.ts</h2>
+        <script type="editor" data-lang="js">
+
+/**
+ * look into preprocessor.js to learn how to expose individual env vars to the browser context
+ *
+ * After following it's instructions use this script in the browser and also in the node.js context
+ *
+ * But in the browser you will only be able to access env vars that were exposed by preprocessor.js
+ * In the node.js context you will be able to access all env vars
+ *
+ * Works together with:
+ *  - plugins/preprocessorMiddleware.js
+ *  - lib/PreprocessedLoader.tsx
+ */
+
+import isNode from 'detect-node';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+declare const window: any;
+
+const th = (msg: string) => new Error(`env.ts: ${msg}`);
+
+let env: Record<string, string>;
+if (isNode) {
+  env = process.env as Record<string, string>;
+} else if (typeof window !== 'undefined') {
+  env = window.process.env as Record<string, string>;
+} else {
+  throw th('neither node.js nor browser context detected');
+}
+
+const commonMsg = 'usually it means node preprocessor.js was not triggered';
+
+/**
+ * For testing purposes, it is possible to substitute the object process.env with a custom object.
+ */
+export function mockEnv(map: Record<string, string>) {
+  env = map;
+}
+
+export function has(key: string): boolean {
+  if (typeof env[key] === 'undefined') {
+    return false;
+  }
+
+  return true;
+}
+
+export function get(key: string): string | undefined {
+  return env[key];
+}
+
+/**
+ * @throws {Error} If the environment variable is not defined.
+ */
+export function getThrow(key: string, msg?: string) {
+  if (has(key)) {
+    return env[key] as string;
+  }
+
+  throw th(msg || `env var ${key} is not defined`);
+}
+
+export function getDefault(key: string, defaultValue: string | number): string | number {
+  if (has(key)) {
+    return env[key] as string;
+  }
+
+  return defaultValue;
+}
+
+const regNum = /^\d+$/;
+export function getInteger(key: string): number {
+  const value = getThrow(key);
+
+  if (!regNum.test(value)) {
+    throw th(`env var ${key} is not a number. value >${value}<, doesn't match regex >${regNum}<`);
+  }
+
+  return parseInt(value, 10);
+}
+
+/**
+ * Some default validation on load
+ */
+if (typeof env === 'undefined') {
+  throw th(`process.env is undefined, ${commonMsg}`);
+}
+
+if (!has('CI')) {
+  // check some mandatory env vars
+  // but not do that in the GitHub Actions CI because this is the only environment it will not be defined
+  getThrow('ENV_NAME', `ENV_NAME is not defined, ${commonMsg} or ENV_NAME is not defined`);
+}
+
+
+
+
+          
+        </script>
+        <h2>Stress test - artillery</h2>
+        <a href="https://www.npmjs.com/package/autocannon">alternatively there can be used "autocannon"</a>
+        <script type="editor" data-lang="js">
+          /*
+
+          # there is issue reported regarding second request: https://github.com/artilleryio/artillery/issues/1508
+
+          mkdir __test
+          cd __test
+          echo "{}" > package.json
+          yarn add "express@4.18.1" "nodemon@2.0.19" "serve-index@1.9.1"
+
+          echo -e "this one will be sent whole\nadmiring\nadoring\naffectionate\nagitated\namazing\nangry\nawesome\nbeautiful\nblissful\nbold\nboring\nbrave\nbusy\ncharming\nclever\ncool\ncompassionate\ncompetent\ncondescending\nconfident\ncranky\ncrazy\ndazzling\ndetermined\ndistracted\ndreamy\neager\necstatic\nelastic\nelated\nelegant\neloquent\nepic\nexciting\nfervent\nfestive\nflamboyant\nfocused\nfriendly\nfrosty\nfunny\ngallant\ngifted\ngoofy\ngracious\ngreat\nhappy\nhardcore\nheuristic\nhopeful\nhungry\ninfallible\ninspiring\nintelligent\ninteresting\njolly\njovial\nkeen\nkind\nlaughing\nloving\nlucid\nmagical\nmystifying\nmodest\nmusing\nnaughty\nnervous\nnice\nnifty\nnostalgic\nobjective\noptimistic\npeaceful\npedantic\npensive\npractical\npriceless\nquirky\nquizzical\nrecursing\nrelaxed\nreverent\nromantic\nsad\nserene\nsharp\nsilly\nsleepy\nstoic\nstrange\nstupefied\nsuspicious\nsweet\ntender\nthirsty\ntrusting\nunruffled\nupbeat\nvibrant\nvigilant\nvigorous\nwizardly\nwonderful\nxenodochial\nyouthful\nzealous\nzen\nagnesi\nalbattani\nallen\nalmeida\nantonelli\narchimedes\nardinghelli\naryabhata\naustin\nbabbage\nbanach\nbanzai\nbardeen\nbartik\nbassi\nbeaver\nbell\nbenz\nbhabha\nbhaskara\nblack\nblackburn\nblackwell\nbohr\nbooth\nborg\nbose\nbouman\nboyd\nbrahmagupta\nbrattain\nbrown\nbuck\nburnell\ncannon\ncarson\ncartwright\ncarver\ncerf\nchandrasekhar\nchaplygin\nchatelet\nchatterjee\nchaum\nchebyshev\nclarke\ncohen\ncolden\ncori\ncray\ncurran\ncurie\ndarwin\ndavinci\ndewdney\ndhawan\ndiffie\ndijkstra\ndirac\ndriscoll\ndubinsky\neasley\nedison\neinstein\nelbakyan\nelgamal\nelion\nellis\nengelbart\neuclid\neuler\nfaraday\nfeistel\nfermat\nfermi\nfeynman\nfranklin\ngagarin\ngalileo\ngalois\nganguly\ngates\ngauss\ngermain\ngoldberg\ngoldstine\ngoldwasser\ngolick\ngoodall\ngould\ngreider\ngrothendieck\nhaibt\nhamilton\nhaslett\nhawking\nhellman\nheisenberg\nhermann\nherschel\nhertz\nheyrovsky\nhodgkin\nhofstadter\nhoover\nhopper\nhugle\nhypatia\nishizaka\njackson\njang\njemison\njennings\njepsen\njohnson\njoliot\njones\nkalam\nkapitsa\nkare\nkeldysh\nkeller\nkepler\nkhayyam\nkhorana\nkilby\nkirch\nknuth\nkowalevski\nlalande\nlamarr\nlamport\nleakey\nleavitt\nlederberg\nlehmann\nlewin\nlichterman\nliskov\nlovelace\nlumiere\nmahavira\nmargulis\nmatsumoto\nmaxwell\nmayer\nmccarthy\nmcclintock\nmclaren\nmclean\nmcnulty\nmendel\nmendeleev\nmeitner\nmeninsky\nmerkle\nmestorf\nmirzakhani\nmontalcini\nmoore\nmorse\nmurdock\nmoser\nnapier\nnash\nneumann\nnewton\nnightingale\nnobel\nnoether\nnorthcutt\nnoyce\npanini\npare\npascal\npasteur\npayne\nperlman\npike\npoincare\npoitras\nproskuriakova\nptolemy\nraman\nramanujan\nride\nritchie\nrhodes\nrobinson\nroentgen\nrosalind\nrubin\nsaha\nsammet\nsanderson\nsatoshi\nshamir\nshannon\nshaw\nshirley\nshockley\nshtern\nsinoussi\nsnyder\nsolomon\nspence\nstonebraker\nsutherland\nswanson\nswartz\nswirles\ntaussig\ntereshkova\ntesla\ntharp\nthompson\ntorvalds\ntu\nturing\nvarahamihira\nvaughan\nvillani\nvisvesvaraya\nvolhard\nwescoff\nwilbur\nwiles\nwilliams\nwilliamson\nwilson\nwing\nwozniak\nwright\nwu\nyalow\nyonath\nzhukovsky" > keywords.csv
+          # from https://github.com/moby/moby/blob/master/pkg/namesgenerator/names-generator.go
+
+          cat <<EOF > artillery.yaml
+          config:
+            target: http://0.0.0.0:4236
+            phases:
+              - duration: 15
+                arrivalRate: 5
+                name: Warm up
+              - duration: 15
+                arrivalRate: 5
+                rampTo: 50
+                name: Ramp up load
+              - duration: 15
+                arrivalRate: 50
+                name: Sustained load
+            payload:
+              path: keywords.csv
+              fields:
+                - keyword
+          before:
+            flow:
+              - log: "Get auth token"
+              - post:
+                  url: "/artillery"
+                  json:
+                    jeb: "sie"
+                  capture:
+                    - json: "\$.body.jeb"
+                      as: "nohoho"
+          scenarios:
+            - name: "Search and buy"
+              flow:
+                - post:
+                    url: "/artillery/{{ nohoho }}"
+                    json:
+                      auth: "c:{{ nohoho }}"
+                      first_param: "{{ keyword }}"
+                    capture:
+                      - json: "\$.body.postparam"
+                        as: "cap1"
+                - think: 1
+                - get:
+                    url: "/artillery/{{ cap1 }}"
+
+          EOF
+
+          create server.js, code for it you'll find when you scroll down
+
+          # in one terminal
+
+          node node_modules/.bin/nodemon server.js
+
+          # then in second
+
+          curl -H "Content-type: application/json; charset=utf-8" -XPOST -d '{"postparam":"bodyval"}' "http://0.0.0.0:4236/artillery/something?abc=def&ghi=jkl"
+
+          artillery run --output report.json artillery.yaml
+          artillery report report.json
+
+          then visit
+              http://0.0.0.0:4236/report.json.html
+
+          # more:
+          # https://www.artillery.io/docs/guides/guides/command-line
+          # https://www.artillery.io/docs/guides/getting-started/writing-your-first-test
+
+          */
+
+
+          const express = require("express");
+
+          const serveIndex = require("serve-index");
+
+          const app = express();
+
+          app.use(express.json());
+
+          app.set("json spaces", 4);
+
+          let i = 0;
+          app.all("/artillery/:param?", (req, res, next) => {
+            let k = ++i;
+
+            console.log(
+              JSON.stringify([
+                String(k).padEnd(6, " "),
+                req.method,
+                req.url,
+                "query:",
+                req.query,
+                "body:",
+                req.body,
+              ])
+            );
+
+            res.json({
+              method: req.method,
+              url: req.url,
+              headers: req.headers,
+              query: req.query,
+              body: req.body,
+              params: req.params,
+            });
+          });
+
+          app.use(
+            express.static(__dirname),
+            serveIndex(__dirname, {
+              icons: true,
+              view: "details",
+            })
+          );
+
+          const host = "0.0.0.0";
+
+          const port = 4236;
+
+          app.listen(port, host, () => {
+            console.log("\n 🌎  Server is running http://" + host + ":" + port + "\n");
+          });
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <h2>Version of Tomcat used by Spring</h2>
+        <br />
+        <a href="spring.html#determine-spring-ver">How to find Spring version</a>
+        <a href="https://stackoverflow.com/a/41241526">Find Tomcat version in Spring pom.xml</a>
+        <script type="editor" data-lang="sh">
+
+          # run:
+            mvn dependency:tree
+
+          # and look for:
+
+          [INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:9.0.60:compile
+        </script>
+
+        <table border="1">
+          <thead>
+            <tr>
+              <th>Tomcat version:</th>
+              <th>Used in spring version:</th>
+              <th>checking date:</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>9.0.60</td>
+              <td>5.3.18</td>
+              <td>2022-04-18</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

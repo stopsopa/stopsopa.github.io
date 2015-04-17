@@ -1,0 +1,22 @@
+# https://prettier.io/docs/en/ignore.html
+
+node_modules
+/dist/
+/var/
+/noprettier/
+/coverage/
+/pages/coverage/
+preprocessed.js
+/pages/portsregistry/lists/ports-generated.json
+*.min.js
+*.min.old.js
+/public/coverage/
+/99.html
+*.node.bundled.gitignored.js
+*.node.bundled.gitignored.mjs
+*.node.bundled.gitignored.cjs
+**/*.rendered.html
+/pages/bookmarklets/fragmentDirective/src/
+pages/utf8/index.html
+pages/utf8/Unicode_Chart.html
+/pages/windows/winutil.json

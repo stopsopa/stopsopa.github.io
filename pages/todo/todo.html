@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      * {
+        font-family: Monaco, monospace;
+      }
+      textarea {
+        width: 100%;
+      }
+      input[type="text"] {
+        width: 100%;
+      }
+      .row {
+        display: flex;
+        cursor: pointer;
+        color: #5d5d5d;
+        line-height: 24px;
+      }
+      .row * {
+        cursor: pointer;
+      }
+      .row:nth-child(2n) {
+        background-color: #f5f5f5;
+      }
+      .row > :first-child {
+        flex-grow: 1;
+        flex-shrink: 0;
+      }
+      .row > :last-child {
+        flex-grow: 0;
+        flex-shrink: 1;
+      }
+      .row:hover {
+        background-color: #bfbfbf;
+      }
+      .row.edit {
+        background-color: #ababab;
+      }
+      .row.completed {
+        text-decoration: line-through;
+      }
+      .row span {
+        font-size: 11px;
+        margin-right: 5px;
+      }
+      h4 {
+        color: #2d2d2d;
+      }
+      .list {
+        padding: 8px;
+        border: 1px solid gray;
+      }
+      #body .inside {
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body class="layout bg" id="body">
+    <div class="body">
+      <div class="inside">
+        <div id="app"></div>
+      </div>
+    </div>
+
+    <script src="/public/preprocessed.js"></script>
+    <script src="/dist/firebase.core.bundle.js"></script>
+    <script src="/dist/todo.bundle.js"></script>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

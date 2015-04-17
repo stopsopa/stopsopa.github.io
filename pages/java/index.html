@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="doubts/index.html">Doubts</a></li>
+            <li><a href="spring.html">Spring Framework</a></li>
+            <li><a href="tomcat.html">Tomcat Server</a></li>
+            <li><a href="maven.html">Maven</a></li>
+            <li><a href="https://sdkman.io/usage">SDKMAN</a></li>
+          </ul>
+        </div>
+        <h2>To learn</h2>
+
+        <script type="editor" data-lang="sh">
+
+          static initialization block:
+            found in POS class src/main/java/com/hhh/service/productorchestrationservice/model/statemachine/ProductIntakeStateMachine.java
+        </script>
+        <h2>Detect version of java</h2>
+        <script type="editor" data-lang="sh">
+          # this seems to be good method of detecting location of java from terminal or from ide
+          # just compile and run this class from terminal or compile it and run in IDE
+          cat <<EEE > JavaHomeExample.java
+          public class JavaHomeExample {
+              public static void main(String[] args) {
+                  String javaHome = System.getProperty("java.home");
+                  System.out.println("Java Home Directory: " + javaHome);
+              }
+          }
+          EEE
+          javac JavaHomeExample.java
+          java JavaHomeExample
+          rm JavaHomeExample.java
+          rm JavaHomeExample.class
+
+
+          # then if it returns for example
+          #/Users/***/.asdf/installs/java/temurin-17.0.8+101
+          # simply run
+          ~/.asdf/installs/java/temurin-17.0.8+101/bin/java -version
+
+          # Why is that useful
+          # because sometimes when using tools managers like asdf running just which java
+          # might return something like
+          /Users/***/.asdf/shims/java
+        </script>
+        <h2>Installation</h2>
+        <script type="editor" data-lang="sh">
+
+          # On Mac OS X 10.5 or later, we can use /usr/libexec/java_home to return the location of the default JDK.
+            /usr/libexec/java_home
+            # will return something like: /Library/Java/JavaVirtualMachines/jdk-18.0.2+9/Contents/Home
+
+
+          # List Versions
+          # find all installed JDKs.
+            /usr/libexec/java_home -V
+              # might print something like
+                # Matching Java Virtual Machines (4):
+                # 18.0.2 (arm64) "Eclipse Adoptium" - "OpenJDK 18.0.2" /Library/Java/JavaVirtualMachines/jdk-18.0.2+9/Contents/Home
+                # 17.0.4.1 (arm64) "Oracle Corporation" - "Java SE 17.0.4.1" /Library/Java/JavaVirtualMachines/jdk-17.0.4.1.jdk/Contents/Home
+                # 16.0.1 (x86_64) "AdoptOpenJDK" - "AdoptOpenJDK 16" /Library/Java/JavaVirtualMachines/adoptopenjdk-16.jdk/Contents/Home
+                # 1.8.0_345 (x86_64) "Eclipse Temurin" - "Eclipse Temurin 8" /Library/Java/JavaVirtualMachines/jdk8u345-b01/Contents/Home
+                  # which can be installed from: https://adoptium.net/en-GB/temurin/releases/?os=windows&arch=x64&package=jdk&version=17
+          # run specific JDK:
+            /usr/libexec/java_home -v1.8
+
+          # setup
+            vi ~/.zshenv
+            # add
+              export JAVA_HOME=$(/usr/libexec/java_home)
+              #or
+              export JAVA_HOME=$(/usr/libexec/java_home -v1.8)
+              source ~/.zshenv
+              echo ${JAVA_HOME}
+
+            # from: https://mkyong.com/java/how-to-set-java_home-environment-variable-on-mac-os-x/
+
+          # INSTALLATION USING BREW
+
+          # Add the location of the install
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew tap AdoptOpenJDK/openjdk
+
+          # Install OpenJDK 16
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install adoptopenjdk16
+
+          # apparently it can be also installed:
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install --cask temurin
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install --cask adoptopenjdk8
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install --cask caskroom/versions/adoptopenjdk8
+
+          # different sources of java:
+          # https://code.visualstudio.com/docs/languages/java#_install-a-java-development-kit-jdk
+
+            # Eclipse Adoptium's Temurin - AdoptOpenJDK - temurin-17.0.8+101
+            # OpenJDK Java Platform, Standard Edition (Java SE) - openjdk-17 (lack of commercial support)
+
+            # Red Hat build of OpenJDK - no redhat distros in asdf ???
+            # Amazon Corretto - corretto-17.0.8.8.1
+            # Oracle Java SE (offers commercial support) - oracle-17 {{DON'T USE ORACLE IN GODADDY}}
+
+            # Azul Systems Zulu OpenJDK - zulu-17.44.53
+            # IBM Semeru Runtimes
+            # Microsoft Build of OpenJDK
+            # SapMachine (OpenJDK by SAP) - sapmachine-17
+            # GraalVM
+            # OpenJDK Kona - kona-17.0.8.b1
+            # Liberica JDK - BellSoft
+            # Semeru Runtimes OpenJDK - semeru-jre-openj9-11.0.17+8_openj9-0.35.0
+
+
+          # Switch Versions
+          export JAVA_HOME=$(/usr/libexec/java_home -v 16.0.1)
+          java -version
+
+          # Install Maven
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install maven
+
+
+          # INSTALLATION BY DOWNLOADING BINARY:
+
+          # look for tar.gz file with java in one of links listed below this snippet
+          # WARNING: for m1 look for aarch64 packages not x64
+          # unzipping java SDK files: /Library/Java/JavaVirtualMachines/
+          # then introduce env var
+          export JAVA_HOME="/Library/Java/JavaVirtualMachines/temurin-11.jdk/Contents/Home/"
+          # or
+          export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk8u345-b01/Contents/Home
+          # generally you have to mount directory with 'bin', 'conf', 'lib' and 'man' directory
+          # then you can check if java works
+          java -version
+        </script>
+        <a href="https://www.baeldung.com/spring-bean-scopes">https://www.baeldung.com/spring-bean-scopes</a>
+        <h3>Download java</h3>
+        <a href="https://www.oracle.com/java/technologies/java-se-support-roadmap.html">LTS Schedule</a>
+        <br />
+        <a href="https://www.oracle.com/java/technologies/downloads/"
+          >Oracle - Java Download [PREFERRED] - can be found also by going to http://java.sun.com/</a
+        >
+        <br />
+        <p>Alternatively download from jdk.java.net</p>
+        <br />
+        <a href="https://jdk.java.net/">jdk.java.net</a>
+        <br />
+        There is also nice page in VSCode manual listing different sources where JDK can be
+        <a href="https://code.visualstudio.com/docs/languages/java#_install-a-java-development-kit-jdk">downloaded</a>
+        from
+        <br />
+        <h2>log-wizzard</h2>
+        <a href="https://stopsopa.github.io/log-wizzard/">log-wizzard</a>
+        <h2>CLI</h2>
+        <script type="editor" data-lang="sh">
+
+          cat <<EE > HelloWorld.java
+
+          class HelloWorld {
+              public static void main (String[] args) {
+                  System.out.println("Hello world");
+              }
+          }
+
+          EE
+
+          # compile and run
+          javac HelloWorld.java
+          java HelloWorld
+
+          # or Since Java 11 you can use a single command (this will not generate *.class file)
+          java HelloWorld.java
+        </script>
+        <h2>JShell</h2>
+        <a href="https://docs.oracle.com/en/java/javase/17/jshell/index.html">Java Shell User’s Guide</a>
+        <script type="editor" data-lang="sh">
+          # launch
+          $ jshell
+          # then
+          $> /help
+          $> /vars        - prints all variables defined up to this point
+          $> /exit
+          $> /list -all
+          $> /list -start
+          # multiline code type {
+        </script>
+        <h2>Libraries Repositories</h2>
+        <a href="https://mvnrepository.com/search?q=hibernate">MVNrepository</a>
+        <br />
+        <a href="https://search.maven.org/">https://search.maven.org/</a>
+        <h2>Libraries</h2>
+        <a href="https://commons.apache.org/">https://commons.apache.org/</a>
+        <br />
+        <a href="https://github.com/google/guava">https://github.com/google/guava</a>
+        <br />
+        <a href="https://site.mockito.org/">https://site.mockito.org/</a>
+        <br />
+        <a href="https://hibernate.org/">https://hibernate.org/</a>
+        <br />
+        <a href="https://hc.apache.org/">https://hc.apache.org/ HTTP</a>
+        <br />
+        <a href=""></a>
+        <br />
+        <a href=""></a>
+        <br />
+        <h2>Online Java Compiler</h2>
+        <a href="https://www.programiz.com/java-programming/online-compiler/">Online Java Compiler</a>
+        <br />
+        <a href="https://www.tutorialspoint.com/compile_java8_online.php"
+          >https://www.tutorialspoint.com/compile_java8_online.php</a
+        >
+        <h2>IO files</h2>
+        <script type="editor" data-lang="java">
+
+          import java.io.File;
+          import java.nio.charset.StandardCharsets;
+          import org.apache.commons.io.FileUtils;
+          final var configFile = new File(classicRoDbConfigurationFilePath);
+          String classicDBConfiguration = FileUtils.readFileToString(configFile, StandardCharsets.UTF_8);
+        </script>
+        <h2>Features</h2>
+        <script type="editor" data-lang="java">
+
+          // from: Java SE 7:
+          //   try-with-resources - https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
+        </script>
+        <h2>Object to JSON</h2>
+
+        <script type="editor" data-lang="sh">
+
+          try {
+              ObjectMapper objectMapper = new ObjectMapper();
+              objectMapper.registerModule(new JavaTimeModule());
+              objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+              System.out.println(objectMapper.writeValueAsString(request));
+          } catch (Exception e) {
+              throw new RuntimeException(e);
+          }
+        </script>
+        <h2>asdf</h2>
+        <a href="https://asdf-vm.com/manage/commands.html">more commands</a>
+        <br />
+        <a href="https://github.com/ohmyzsh/ohmyzsh/tree/cdd7dab5db4c668b962f908b57e244aa1ff4b574/plugins/asdf"
+          >g(Adds integration with asdf, the extendable version manager, with support for Ruby, Node.js, Elixir, Erlang
+          and more.)</a
+        >
+        <br />
+        <a href="https://github.com/asdf-community/asdf-direnv/blob/master/README.md#asdf-direnv"
+          >Check also asdf-direnv for loading different sets of env vars when changing directories in CLI</a
+        >
+        <script type="editor" data-lang="sh">
+
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install gpg gawk
+          # follow:
+          #     https://asdf-vm.com/guide/getting-started.html#official-download
+          # then
+          #     https://asdf-vm.com/guide/getting-started.html#_3-install-asdf:~:text=ZSH%20%26%20Git,-ZSH%20%26%20Homebrew
+
+          # DON'T DO THAT - just option
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install coreutils curl git asdf
+          #export HOMEBREW_NO_AUTO_UPDATE=1 && arch -arm64 brew install coreutils curl git asdf
+
+          asdf install
+            # when you have .tool-versions but not necessarly installed all from it
+
+          asdf plugin list
+            # list locally installed plugins
+          asdf plugin list all
+            # list all available plugins
+            # https://github.com/asdf-vm/asdf-plugins
+
+          asdf plugin add java
+          # or
+          asdf plugin-add java https://github.com/halcyon/asdf-java.git
+            # from: https://github.com/halcyon/asdf-java
+
+          asdf list all java
+          asdf list-all java
+            # list all available versions of java
+          asdf list java
+            # list all installed versions of java
+
+          asdf where java
+            # where exactly is binary behind asdf
+
+          asdf install java corretto-17.0.8.8.1
+          # or
+          asdf install java latest:corretto-17
+            # corretto --means-> amazon java
+
+          asdf local java corretto-17.0.8.8.1
+            # to generate .tool-versions
+
+          asdf current
+          asdf current nodejs
+
+          # MAVEN:
+          asdf plugin add maven
+
+          # NODE.JS
+          # .nvmrc support
+          # https://github.com/asdf-vm/asdf-nodejs#nvmrc-and-node-version-support
+          asdf plugin add nodejs
+
+          asdf global nodejs latest
+            # to generate global .tool-versions
+        </script>
+        <h2>Something resulting in an error</h2>
+
+        <script type="editor" data-lang="java">
+
+          int[] number = new int[2];
+          int value = number[4];
+        </script>
+
+        <h2>Testing</h2>
+        <a href="https://site.mockito.org/">Mockito</a>
+
+        <script type="editor" data-lang="java">
+
+          // better comperator
+          import static org.assertj.core.api.Assertions.assertThat;
+
+          assertThat(violations).containsExactlyInAnyOrderEntriesOf(expected);
+        </script>
+        <h2>Data types</h2>
+        <a href="https://www.simplilearn.com/tutorials/java-tutorial/java-collection">Collection</a>
+        <h2>Learning</h2>
+        <a href="https://docs.oracle.com/javase/tutorial/">Oracle the java tutorials</a>
+        <br />
+        <a href="https://nl1lib.org/book/18056772/e9ba1c">https://nl1lib.org/book/18056772/e9ba1c</a>
+        <h2>Features</h2>
+        <a href="https://www.youtube.com/watch?v=zNaUasfC84Y">Modern Java - Top Features of Java 9 to 17</a>
+        <br />
+        <a
+          href="https://docs.oracle.com/javase/specs/jls/se7/html/jls-5.html#:~:text=Despite%20the%20fact%20that%20overflow%2C%20underflow"
+          >overflow, underflow</a
+        >
+        <h2>google-java-format</h2>
+        <a href="/viewer.html?file=/bash/java/gjf.sh">/viewer.html?file=/bash/java/gjf.sh</a>
+        <br />
+        <a href="https://github.com/redhat-developer/vscode-java/issues/419"
+          >https://github.com/redhat-developer/vscode-java/issues/419</a
+        >
+        <br />
+        <a href="https://marketplace.visualstudio.com/items?itemName=ilkka.google-java-format"
+          >https://marketplace.visualstudio.com/items?itemName=ilkka.google-java-format</a
+        >
+        <script type="editor" data-lang="java">
+
+          wget --help 1> /dev/null 2> /dev/null
+          if [ "$?" = "0" ]; then
+              sudo wget --no-cache -O "/usr/local/bin/gjf" "urlwizzard.schema://urlwizzard.hostnegotiated/bash/java/gjf.sh"
+          else # curl
+              sudo curl "urlwizzard.schema://urlwizzard.hostnegotiated/bash/java/gjf.sh" -o "/usr/local/bin/gjf"
+          fi
+          if [ "$(printf "sha384-$(sudo cat "/usr/local/bin/gjf" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::bash/java/gjf.sh" ]; then
+            echo "checksum verified"
+            sudo chmod +x /usr/local/bin/gjf
+            gjf
+          else
+            echo "checksum corrupted - deleting file"
+            sudo rm "/usr/local/bin/gjf"
+          fi
+
+
+
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install google-java-format
+
+          # there also some informations for IDE:
+          # urlwizzard.schema://urlwizzard.hostnegotiated/pages/ide/index.html#shortcuts
+
+
+              [`google-java-format list`]: {
+                command: `
+          set -e
+
+          google-java-format -version 1> /dev/null 2> /dev/null
+          if [ "\${?}" != "0" ]; then
+              cat <<EEE
+          google-java-format not installed
+              mac:
+                  export HOMEBREW_NO_AUTO_UPDATE=1 && brew install google-java-format
+          EEE
+              exit 1
+          fi
+
+          gjf --list
+
+          `,
+                description: `gjf --list`,
+                confirm: false,
+              },
+              [`google-java-format format`]: {
+                command: `
+          set -e
+
+          google-java-format -version 1> /dev/null 2> /dev/null
+          if [ "\${?}" != "0" ]; then
+              cat <<EEE
+          google-java-format not installed
+              mac:
+                  export HOMEBREW_NO_AUTO_UPDATE=1 && brew install google-java-format
+          EEE
+              exit 1
+          fi
+
+          gjf --format
+
+          `,
+                description: `gjf --format`,
+                confirm: false,
+              },
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

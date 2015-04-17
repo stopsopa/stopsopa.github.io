@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      canvas {
+        box-shadow: 0 0 5px black;
+      }
+      .control {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+      }
+      .control > label {
+        display: flex;
+        flex-grow: 1;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="001canvas.html">001canvas.html</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>basic html canvas element</h2>
+          <div class="control">
+            <label><span>width:</span> <input type="range" min="50" max="300" id="slider_width" /></label>
+
+            <label> <span>height:</span> <input type="range" min="50" max="300" id="slider_height" /></label>
+          </div>
+          <canvas id="tutorial1" width="150" height="150">
+            <img src="https://i.imgur.com/d7XjnZK.png" />
+          </canvas>
+          <script>
+            const l = (function () {
+              try {
+                return console.log;
+              } catch (e) {
+                return function () {};
+              }
+            })();
+            function drag(element, listener, fetch) {
+              let pageX = 0;
+              let pageY = 0;
+              let down = false;
+              let fetchX;
+              let fetchY;
+              function mousedown(e) {
+                down = true;
+                pageX = e.pageX;
+                pageY = e.pageY;
+                if (typeof fetch === "function") {
+                  ({ x: fetchX, y: fetchY } = fetch());
+                } else {
+                  fetchX = fetchY = 0;
+                }
+                listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousedown");
+                function mousemove(e) {
+                  if (down) {
+                    listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousemove");
+                  }
+                }
+                document.addEventListener("mouseup", (e) => {
+                  document.removeEventListener("mousemove", mousemove);
+                  if (down) {
+                    down = false;
+                    listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mouseup");
+                  }
+                });
+                document.addEventListener("mousemove", mousemove);
+              }
+              element.addEventListener("mousedown", mousedown);
+            }
+            function onRangeChange(rangeInputElmt, listener) {
+              // from: https://stackoverflow.com/a/37623959/5560682
+              var inputEvtHasNeverFired = true;
+
+              var rangeValue = { current: undefined, mostRecent: undefined };
+
+              rangeInputElmt.addEventListener("input", function (evt) {
+                inputEvtHasNeverFired = false;
+                rangeValue.current = evt.target.value;
+                if (rangeValue.current !== rangeValue.mostRecent) {
+                  listener(evt);
+                }
+                rangeValue.mostRecent = rangeValue.current;
+              });
+
+              rangeInputElmt.addEventListener("change", function (evt) {
+                if (inputEvtHasNeverFired) {
+                  listener(evt);
+                }
+              });
+            }
+
+            const canvas = document.getElementById("tutorial1");
+            const slider_height = document.querySelector("#slider_height");
+            const slider_width = document.querySelector("#slider_width");
+            slider_width.value = parseInt(canvas.getAttribute("width"), 10);
+            slider_height.value = parseInt(canvas.getAttribute("height"), 10);
+
+            let ctx;
+            let x = 60;
+            let y = 60;
+            function draw() {
+              if (!canvas.getContext) {
+                return console.log(`canvas not supported`);
+              }
+              ctx = canvas.getContext("2d");
+
+              ctx.fillStyle = "rgb(200, 0, 0)";
+              ctx.fillRect(10, 10, 50, 50);
+
+              ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+              ctx.fillRect(30, 30, 50, 50);
+
+              ctx.fillStyle = "rgba(0, 100, 200, 0.5)";
+              ctx.fillRect(x, y, 50, 50);
+            }
+
+            let i = 0;
+            onRangeChange(slider_height, (e) => {
+              // canvas.setAttribute("height", e.target.value); // this will work too
+              ctx.canvas.height = e.target.value;
+              draw();
+            });
+            onRangeChange(slider_width, (e) => {
+              // canvas.setAttribute("width", e.target.value); // this will work too
+              ctx.canvas.width = e.target.value;
+              draw();
+            });
+            drag(
+              canvas,
+              (_x, _y, ev) => {
+                x = _x;
+                y = _y;
+                log(_x, _y);
+                draw();
+              },
+              () => ({ x, y })
+            );
+            draw();
+          </script>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

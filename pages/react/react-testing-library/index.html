@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Help</h2>
+        <script type="editor" data-lang="python">
+
+          import { render, screen, act, fireEvent, waitFor } from '@testing-library/react';
+
+          const { container } = render(<AutoComplete { ...props } />);
+
+          import fs from 'fs';
+
+          import path from 'path';
+
+          fs.writeFileSync(
+            path.resolve(__dirname, path.basename(__filename, path.extname(__filename)) + `.html`),
+            container.innerHTML
+          );
+
+          ARIA roles
+              https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques#roles
+              https://www.w3.org/TR/html-aria/#docconformance
+              https://testing-library.com/docs/queries/byrole/
+
+          data-testid="custom-element"
+            query using: getByTestId https://testing-library.com/docs/queries/bytestid/
+            import {screen} from '@testing-library/dom'
+            const element = await screen.getByTestId('custom-element')
+
+          ASYNC:
+            async: https://testing-library.com/docs/dom-testing-library/api-async/
+            appearance and disappearance: https://testing-library.com/docs/guide-disappearance/
+            findBy vs getBy vs queryBy vs getAllBy vs findAllBy vs queryAllBy:
+
+            const { getByText } = render(<ViewCuratedOffer />);
+            expect(getByText('Cancel')).toBeInTheDocument();
+            // or
+            render(<FilterComponent { ...props } />);
+            const title = screen.getByText('Filters');
+            expect(title).toBeInTheDocument();
+
+              https://testing-library.com/docs/dom-testing-library/cheatsheet/#queries
+              findBy methods are a combination of getBy queries and waitFor
+                from: https://testing-library.com/docs/dom-testing-library/api-async/#findby-queries
+              IMPORTANT: Returning a falsy condition is not sufficient to trigger a retry, the callback must throw an error in order to retry the condition
+
+            await waitFor(() => {
+              const spinner = document.querySelector('.bg-spinner');
+              expect(spinner).toBeInTheDocument();
+            });
+            // or
+            await waitFor(() =>document.querySelector('.bg-spinner'));
+            // or
+            await waitFor(() =>screen.getByRole('button'));
+
+            // find element by any tekst
+            await screen.findByText(/some text in the document somewhere/);
+
+            // to click when document.querySelector(..) used use fireEvent
+            import { render, screen, act, fireEvent } from '@testing-library/react';
+            fireEvent.click(document.querySelector('.bg-spinner'));
+
+            // other
+
+            await waitForElementToBeRemoved(() => {
+              expect(queryByText('i, robot')).toBeInTheDocument()
+            })
+            // or
+            await waitFor(() => {
+              expect(queryByText('i, robot')).not.toBeInTheDocument()
+            })
+
+          aria-anything="" or aria-role=""
+          role="none"
+            then query with getByRole, more: https://testing-library.com/docs/queries/about/#priority
+            examples: https://testing-library.com/docs/queries/byrole/
+
+            see also logRoles: https://testing-library.com/docs/dom-testing-library/api-accessibility#logroles
+                     getNodeText: https://testing-library.com/docs/dom-testing-library/api-custom-queries#getnodetext
+                     within: https://testing-library.com/docs/dom-testing-library/api-within
+
+            <div role="tablist">
+              <button role="tab" aria-selected="true">Native</button>   screen.getByRole('tab', { selected: true })
+              <button role="tab" aria-selected="false">React</button>
+              <button role="tab" aria-selected="false">Cypress</button>
+            </div>
+
+            <section>
+              <div role="alert" aria-busy="false">Login failed</div>     screen.getByRole('alert', { busy: false })
+              <div role="alert" aria-busy="true">Error: Loading message...</div>
+            </section>
+
+            <section>
+              <button role="checkbox" aria-checked="true">Sugar</button>    screen.getByRole('checkbox', { checked: true })
+              <button role="checkbox" aria-checked="false">Gummy bears</button>
+              <button role="checkbox" aria-checked="false">Whipped cream</button>
+            </section>
+
+            <a href="current/page" aria-current="page">👍</a>       screen.getByRole('link', { current: 'page' })
+            <a href="another/page">👎</a>                           screen.getByRole('link', { current: false })
+
+            <button aria-pressed="true">👍</button>           screen.getByRole('button', { pressed: true })
+            <button aria-pressed="false">👎</button>
+
+            <div role="dialog">...</div>                screen.getByRole('dialog')
+
+            <h1>Heading Level One</h1>                  screen.getByRole('heading', {level: 1})
+            <h2>First Heading Level Two</h2>            screen.getAllByRole('heading', {level: 2}) // h2 & div[aria-level="2"]
+            <h3>Heading Level Three</h3>                screen.getByRole('heading', { level: 3 })
+            <div role="heading" aria-level="2">Second Heading Level Two</div>
+
+          getByText https://testing-library.com/docs/queries/about/#textmatch
+
+          # quide: https://kentcdodds.com/blog/common-mistakes-with-react-testing-library
+
+          https://testing-playground.com/
+            # from: https://testing-library.com/docs/queries/about/#playground
+
+          examples: https://react-testing-examples.netlify.app/
+            # from: https://testing-library.com/docs/example-external
+
+          select option:
+            https://claritydev.net/blog/testing-select-components-react-testing-library
+        </script>
+
+        <h2>interesting technique</h2>
+        <a href="/pages/node/index.html#interesting-technique">/pages/node/index.html#interesting-technique</a>
+
+        <h2>React Testing Library</h2>
+        <a href="https://www.codecademy.com/learn/learn-react-testing/modules/react-testing-library/cheatsheet"
+          >g(Cheatsheets/ Learn React Testing React Testing Library site:codecademy.com)</a
+        >
+        <br />
+        <a href="https://testing-library.com/docs/queries/about#types-of-queries">Types of Queries</a>
+
+        <script type="editor" data-lang="jsx">
+
+          // @testing-library/react
+          const {container} = render(<MyComponent />)
+          const foo = container.querySelector('[data-foo="bar"]')
+            // from: https://testing-library.com/docs/queries/about#manual-queries
+
+          Browser extension
+            // from: https://testing-library.com/docs/queries/about/#browser-extension
+
+          // Testing Playground: https://testing-playground.com/
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

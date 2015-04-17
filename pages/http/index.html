@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <h2>http1, http2, http3</h2>
+        <a href="https://www.youtube.com/watch?v=UMwQjFzTQXw">https://www.youtube.com/watch?v=UMwQjFzTQXw</a>
+        <h2>Http protocol</h2>
+        <div class="card">
+          <h3>Browser cache control</h3>
+          <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#Conditionals"
+            >https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#Conditionals</a
+          >
+          <br />
+          <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Directives"
+            >https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#Directives</a
+          >
+          <h2>POST GET PUT DELETE</h2>
+          <a href="https://www.bezkoder.com/spring-boot-swagger-3/">springboot example of using each methods</a>
+          <h2>idempotent</h2>
+
+          <a href="https://www.youtube.com/watch?v=6dVNdFwqeKs">https://www.youtube.com/watch?v=6dVNdFwqeKs</a> -
+          <a href="https://web.archive.org/web/20240101201325/https://www.restapitutorial.com/lessons/idempotency.html"
+            >from</a
+          >
+          <br />
+          <a href="https://developer.mozilla.org/en-US/docs/Glossary/Idempotent">g(MDN Idempotent)</a>
+          <script type="editor" data-lang="python">
+
+            Create     - use POST
+            Retrieve   - use GET
+            Update     - use PUT or PATCH
+            Delete     - use DELETE
+
+            verb -   noun
+            GET  -   /authors/2/books/5
+
+            GET  -   /authors-books/2/books/5    - good
+            GET  -   /authorsBooks/2/books/5     - not good
+
+            GET - is [IDEMPOTENT] (READ) - To retrieve resource (get data from server).
+              no body
+              GET /user/1234
+              GET /users/page/1
+                can read multiple times with the same result
+                GET should never be used to change state
+
+            POST - is [NOT IDEMPOTENT] - Creates a new resource.
+              body present
+              POST /user
+                no id here so each call will create new user
+              IMPORTANT: every request will create new resource
+                         usually returns id and you further use PUT to replace OR
+
+            ^^^^
+            main distinction is to ask yourself a question: Are we trying to create something new or manipulate existing?
+            do you know the resource or not?
+            vvvv
+
+            PUT - is [IDEMPOTENT] (UPDATE) - Updates resource (replaces it's state with new one).
+              body present
+              PUT /users/1234
+                put sent with the same id and data should be idempotent
+                IMPORTANT: we are either creating or replacing when already exist
+                           either way, we are bringing to existance or replacing particular entity
+
+            PATCH - is [IDEMPOTENT] - Updates resource (updates only provided fields).
+              body present
+
+            DELETE - is [IDEMPOTENT] - Deletes resource from the server (removes the data).
+              no body
+              DELETE /user/1234
+                this one is weird because that will be easier if we do soft DELETE
+                but when we are removing for real then next time called it might result in NOT FOUD 404
+                Let's call it: Appropriate compromise
+          </script>
+          <img src="https://i.imgur.com/gJHfYTO.png" style="width: 600px" />
+
+          <ol>
+            <li>Only use lowercase letters in RESTful API URLs.</li>
+            <li>
+              For white space, use
+              <a href="https://www.theserverside.com/answer/Kebab-vs-camel-case-How-these-naming-conventions-differ"
+                >kebab-case</a
+              >, not <a href="https://www.theserverside.com/definition/Snake-case">snake_case</a> or spaces.
+            </li>
+            <li>Build URIs with nouns, not verbs.</li>
+            <li>
+              Use the appropriate
+              <a
+                href="https://www.techtarget.com/searchapparchitecture/tip/The-5-essential-HTTP-methods-in-RESTful-API-development"
+                >HTTP methods</a
+              >
+              to perform an operation.
+            </li>
+            <li>REST API calls that return a collection should be plural.</li>
+            <li>A URL that returns a unique result should be singular.</li>
+            <li>Don't include file extensions.</li>
+            <li>Use headers to keep URIs clean.</li>
+            <li>
+              Don't identify
+              <a
+                href="https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/The-JPA-and-Hibernate-CRUD-operations-example"
+                >Create, Read, Update and Delete</a
+              >
+              (CRUD) operations in the URL.
+            </li>
+            <li>Structure URIs loosely on your data model's hierarchy.</li>
+            <li>Use query parameters for filtering and search.</li>
+            <li>Don't expose the internal workings of your architecture.</li>
+            <li>Make URLs short, intuitive and readable.</li>
+            <li>Protect yourself against SQL injection.</li>
+            <li>
+              Include the
+              <a href="https://www.techtarget.com/searchapparchitecture/tip/Get-started-with-API-versioning-and-URIs"
+                >REST API version</a
+              >
+              at the base of the URI.
+            </li>
+          </ol>
+
+          <ul>
+            <li>https://www.example.com/v1/sample/uri <span style="color: #2fcc71">#Good.</span></li>
+            <li>https://www.example.com/v1/SampleURI <span style="color: #e74c3c">#Bad.</span></li>
+          </ul>
+
+          <ul>
+            <li>https://www.example.com/v1/<span style="color: #2fcc71">this-is-okay</span></li>
+            <li>https://www.example.com/v1/<span style="color: #e74c3c">THIS_IS_NOT_OKAY</span></li>
+          </ul>
+
+          <ul>
+            <li>https://www.example.com/v1/players/gretzky <span style="color: #2fcc71">#Good.</span></li>
+            <li>https://www.example.com/v1/players/get-gretzky <span style="color: #e74c3c">#Bad.</span></li>
+          </ul>
+
+          <ul>
+            <li>
+              https://www.example.com/v1/teams <span style="color: #2fcc71">#Acts on a collection of teams.</span>
+            </li>
+            <li>
+              https://www.example.com/v1/teams/{identifier} <span style="color: #2fcc71">#Acts on a single team.</span>
+            </li>
+          </ul>
+
+          <ul>
+            <li>
+              https://www.example.com/v1/teams <span style="color: #2fcc71">#Acts on a collection of teams.</span>
+            </li>
+            <li>
+              https://www.example.com/v1/teams/{identifier} <span style="color: #2fcc71">#Acts on a single team.</span>
+            </li>
+          </ul>
+
+          <p>Don't abbreviate words</p>
+          <ul>
+            <li>
+              https://www.example.com/v1/teams <span style="color: #2fcc71">#Acts on a collection of teams.</span>
+            </li>
+            <li>
+              https://www.example.com/v1/teams/{identifier} <span style="color: #2fcc71">#Acts on a single team.</span>
+            </li>
+          </ul>
+
+          <p>Explicitly version</p>
+
+          <ul>
+            <li>https://www.example.com/v2/map/earth/north-america/usa/boston</li>
+          </ul>
+
+          <h2>Useful response codes</h2>
+          <a
+            href="https://learn.microsoft.com/en-us/troubleshoot/developer/webapps/iis/www-administration-management/http-status-code"
+            >https://learn.microsoft.com/en-us/troubleshoot/developer/webapps/iis/www-administration-management/http-status-code</a
+          >
+          <script type="editor" data-lang="python">
+
+            200 OK - everything ok
+
+            201 Created - new resource has been created on the server
+
+            202 Accepted - processing asynchronously
+
+            301 Moved Permanently - to indicate endpoint was migrated
+
+            400 Bad Request - to indicate that the request is invalid
+
+            401 Unauthorized - the server requires user to be authenticated
+
+            403 Forbidden - user is authenticated, but doesn't have enough permissions
+
+            500 Internal Server Error - unexpected internal server error
+
+            501 Not Implemented - feature is not implemented or disabled
+          </script>
+
+          <h2>Get my ip</h2>
+          <script type="editor" data-lang="python">
+
+            curl https://checkip.amazonaws.com/
+             # or open in the browser
+          </script>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

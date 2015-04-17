@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Scripts</h2>
+        <a href="https://www.postman.com/templates/tags/23/Getting-started"
+          >Learning by example - Postman demo templates</a
+        >
+        <script type="editor" data-lang="js">
+          // to save in evnrionments
+
+          pm.request.body.raw
+
+
+          let response = pm.response.json();
+          pm.environment.set("token", response.data);
+
+          // to store something in globals
+          pm.test("reponse must be valid and have a body", function(){
+              pm.response.to.be.ok;
+              pm.response.to.be.json;
+              pm.expect(account.id).to.eql(accountId, "Account with the saved id does not exist.");
+              pm.expect(toAccountStartingBalance + transactionAmount).to.equal(response.account.balance, "Account balance does not match transaction value");
+          });
+
+          var jsonData = JSON.parse(responseBody);
+          pm.globals.set('jwt', jsonData.data);
+
+          # or store in environment
+          pm.environment.set('catalogOfferInstance', JSON.stringify(pm.response.json().offer))
+
+
+          --- testing ----- vvv
+          // use the `pm.*` API to write your test
+          // the `pm.test()` method accepts 2 parameters
+          // the first parameter is the name of your test (be descriptive)
+          // the second parameter is a function whereby if any assertions within your function fail, then the test will fail
+
+          pm.test("Name of the first test", function () {
+              // make an assertion
+              // if your assertion throws an error, this test will fail
+              pm.response.to.have.status(200);
+          });
+
+          pm.test("Name of the second test", function () {
+              // make as many assertions as you'd like as part of this test
+              // if any assertion throws an error, this test will fail
+              pm.response.to.have.status(200);
+              pm.response.to.be.ok;
+              pm.response.to.be.json;
+              pm.response.to.have.header("Content-Type");
+
+              let jsonData = pm.response.json();
+              pm.expect(jsonData.form.someHash).to.match(/^[a-z0-9]{7}$/);
+
+              let jsonData = pm.response.json();
+              pm.expect(jsonData.form.customerName).to.not.include("examplePassword");
+
+              pm.expect(pm.response.json()).to.have.property('token')
+              pm.expect(pm.response.json().token).to.be.a('string')
+          });
+
+          // Note the difference in the test failure message under the **Test Results** tab when using pm.response vs. pm.expect
+          pm.test("Status code is 200 - pm.response", function () {
+              pm.response.to.have.status(201); // written to fail
+          });
+
+          pm.test("Status code is 200 - pm.expect", function () {
+              pm.expect(pm.response.code).to.equal(201); //written to fail
+          });
+
+          // Using a 2nd optional parameter with the pm.expect function to create a custom error message
+          pm.test("Using a custom error message", function () {
+              pm.expect(false, 'nooo why fail??').to.be.ok;
+          });
+          --- testing ----- ^^^
+        </script>
+        <h2>Keyboard</h2>
+        <img src="https://i.imgur.com/BuLvz1J.png" style="width: 100%" />
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

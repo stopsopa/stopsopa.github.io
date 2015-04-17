@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Docs</h2>
+        <a href="https://github.com/stopsopa/spring-research/pulls"
+          >https://github.com/stopsopa/spring-research/pulls</a
+        >
+        <br />
+        <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/index.html"
+          >https://docs.spring.io/spring-boot/docs/current/reference/html/index.html</a
+        >
+        <br />
+        <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html"
+          >https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html</a
+        >
+        <h2>Injecting params from config</h2>
+
+        <script type="editor" data-lang="sh">
+
+          @Value("${spring.application.name}")
+          private String applicationName;
+        </script>
+        <h2>Spring CLI</h2>
+        <a
+          href="https://docs.spring.io/spring-boot/docs/current/reference/html/getting-started.html#getting-started.installing.cli.manual-installation"
+          >Installation spring-boot-cli-3.1.2-bin.zip</a
+        >
+        <script type="editor" data-lang="sh">
+
+          brew tap spring-io/tap
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install spring-boot
+          # to test
+          spring --version
+
+          # run app from cli: https://github.com/stopsopa/spring-research/commit/a60d9124ca31caa339ae967d1a9f61dcca210934
+          mvn spring-boot:run
+              # from: https://www.baeldung.com/spring-boot-main-class
+
+          ./mvnw spring-boot:run
+              # from: https://www.baeldung.com/spring-boot-main-class
+
+          # find current springboot version
+          mvn dependency:list | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\[[0-9]{1,3}m//g" | grep -i -E '^\[INFO\]' | tee .git/dependencies_list.txt
+          mvn dependency:tree | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\[[0-9]{1,3}m//g" | grep -i -E '^\[INFO\]' | tee .git/dependencies_tree.txt
+        </script>
+        <h2>Inteliij IDEA</h2>
+        <img src="https://i.imgur.com/xqBr05m.png" style="width: 800px" />
+        <br />
+        <img src="https://i.imgur.com/mLHptFH.png" style="width: 800px" />
+        <br />
+        <p>Maven might need to have properly set settings.xml</p>
+
+        <img src="https://i.imgur.com/mJ0YGz6.png" style="width: 800px" />
+
+        <p>Also you might need to setup proper version of SDK for project</p>
+
+        <img src="https://i.imgur.com/LoNIEzu.png" style="width: 800px" />
+
+        <h2>Determine Spring Ver</h2>
+        <a href="https://www.baeldung.com/spring-find-version">How to find Spring version</a>
+        <script type="editor" data-lang="xml">
+
+          <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>5.3.18</version>
+          </dependency>
+        </script>
+
+        In Spring itself:
+
+        <script type="editor" data-lang="java">
+
+          import org.springframework.core.SpringVersion;
+
+          SpringVersion.getVersion()
+        </script>
+        <h2>Determine Tomcat from pom.xml</h2>
+        <a href="https://stackoverflow.com/a/41241526">IntelliJ -> pom.xml > Maven > Show effective POM</a>
+        <h2>Install Spring</h2>
+        <a
+          href="https://start.spring.io/#!type=maven-project&language=java&platformVersion=3.2.0-M1&packaging=jar&jvmVersion=17&groupId=com.stopsopa&artifactId=stopsopaartifact&name=stopsopaname&description=Stopsopa%20learning%20Spring%20Boot&packageName=com.stopsopa.stopsopaartifact&dependencies=web"
+          >https://start.spring.io/</a
+        >
+        <br />
+        <a href="https://spring.io/quickstart">https://spring.io/quickstart</a>
+        <img src="https://i.imgur.com/74UyxWP.png" width="100%" />
+
+        <h2>Code Coverage via maven</h2>
+
+        <script type="editor" data-lang="java">
+
+          // https://stackoverflow.com/a/43349327
+
+          // and then run:
+          mvn clean package
+          // this will generate file and it's surrounding target/site/jacoco/index.html
+        </script>
+        <h2>Testing Mockito</h2>
+        <a href="https://www.youtube.com/watch?v=PJNcxY4I1F8">https://www.youtube.com/watch?v=PJNcxY4I1F8</a>
+        <br />
+        <a href="https://www.youtube.com/watch?v=KuqYS9reh2I">https://www.youtube.com/watch?v=KuqYS9reh2I</a>
+        <script type="editor" data-lang="java">
+
+          package com.xxxxx.service.myservice.repository;
+
+          import com.xxxxx.service.myservice.model.product.ProcListResponseEntity;
+          import com.xxxxx.service.myservice.model.product.sqlmaps.Class2;
+          import org.junit.jupiter.api.Test;
+          import org.junit.jupiter.api.extension.ExtendWith;
+          import org.mockito.InjectMocks;
+          import org.mockito.Mock;
+          import org.mockito.Mockito;
+          import org.mockito.Spy;
+          import org.mockito.junit.jupiter.MockitoExtension;
+          import org.springframework.jdbc.core.JdbcTemplate;
+          import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+          import static org.mockito.Mockito.doThrow;
+          import javax.sql.DataSource;
+          import java.sql.*;
+          import java.util.*;
+
+          import static org.junit.jupiter.api.Assertions.*;
+          import static org.mockito.ArgumentMatchers.*;
+          import static org.mockito.Mockito.mock;
+          import static org.mockito.Mockito.when;
+
+          @ExtendWith(MockitoExtension.class)
+          class MyTest {
+
+            @Spy
+            private Class2 class2;
+            @InjectMocks
+            private MyRepository repository;
+            @Mock
+            private JdbcTemplate jdbcTemplate;
+            @Mock
+            private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+            @Test
+            public void testis_WithConnection() throws Exception {
+              // Arrange
+              DataSource dataSource   = mock(DataSource.class);
+              Connection connection   = mock(Connection.class);
+              PreparedStatement stmt  = mock(PreparedStatement.class);
+              ResultSet rs            = mock(ResultSet.class);
+
+              when(namedParameterJdbcTemplate.getJdbcTemplate()).thenReturn(jdbcTemplate);
+          //    when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
+          //    when(dataSource.getConnection()).thenReturn(connection);
+              when(connection.prepareStatement(anyString())).thenReturn(stmt);
+
+              Mockito.doNothing().when(stmt).setString(anyInt(), anyString());
+
+              when(stmt.executeQuery()).thenReturn(rs);
+              // doThrow(new SQLException("Database error")).when(stmt).executeQuery();
+
+          //    Mockito.doNothing().when(connection).commit();
+          //    Mockito.doNothing().when(connection).rollback();
+
+              when(rs.next()).thenReturn(true); // Mocking two rows in the result set
+              when(rs.getInt("c")).thenReturn(1);
+
+              ProcListResponseEntity result1 = ProcListResponseEntity.builder().value("value1").count(1).build();
+              ProcListResponseEntity result2 = ProcListResponseEntity.builder().value("value2").count(2).build();
+
+                    // testing for error thrown vvv
+                    // Act
+                    Exception exception = assertThrows(SQLException.class, () -> {
+                      repository.myTestedMethod(null, "cancelProc");
+                    });
+
+                    String expectedMessage = "Cannot acquire data source";
+                    String actualMessage = exception.getMessage();
+
+                    // Assert
+                    assertTrue(actualMessage.contains(expectedMessage));
+                    assertEquals("Cannot acquire data source", exception.getMessage());
+                    // testing for error thrown ^^^
+
+              // Act
+              Boolean actualResults = repository.myTestedMethod(connection, "cancelProc");
+
+              // Assert
+              assertEquals(true, actualResults);
+
+              doReturn(null).when(productIntakeRepository).update(any(ProductIntake.class));
+              doReturn(productIntake).when(searchService).getProductIntakeById(anyString());
+              doNothing().when(service).normalizeProductTypeIntake(any(), any(), anyBoolean(), anyBoolean());
+            }
+          }
+        </script>
+        <h2>Testing - @Spy & @InjectMocks</h2>
+        <script type="editor" data-lang="java">
+          # this is useful when we have service we want to test and then we want to call one method and test it's logic, but that method
+          # is calling another of it's methods, and then we want to stub that other method.
+
+          # in this case using @InjectMocks is not enought, because that will register Service and inject everything what that service uses
+          # as a dependency and we have occasion to add @Spy to each of those dependencies
+
+          # But that's not good for our case because we are not after depencency of our @InjectMocks class but one of it's own methods
+
+          # In this case we can use @Spy and @InjectMocks (in that order) on our service.
+
+          # This way we can run one of it's method and check it's behaviour but we can also stup other method of the same service
+          # using special syntax doReturn()
+
+
+          import javax.sql.DataSource;
+          ...
+          import static org.mockito.Mockito.*; // to bring doReturn
+          import static org.mockito.Mockito.mock;
+          import static org.mockito.Mockito.when;
+          import static org.junit.jupiter.api.Assertions.*; // to bring assertEquals
+
+          @Test
+          void findPlProductGroupListByNamespace() throws Exception {
+            // Arrange
+
+            DataSource dataSource   = mock(DataSource.class);
+            Connection connection   = mock(Connection.class);
+            PreparedStatement stmt  = mock(PreparedStatement.class);
+            ResultSet rs            = mock(ResultSet.class);
+
+            when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
+            when(dataSource.getConnection()).thenReturn(connection);
+
+            when(connection.prepareStatement(anyString())).thenReturn(stmt);
+
+            when(stmt.executeQuery()).thenReturn(rs);
+
+            when(rs.next()).thenReturn(true, true, false); // Mocking two rows in the result set
+
+            when(rs.getInt("pl_productGroupID")).thenReturn(7, 8, 9, 10);
+            when(rs.getString("description")).thenReturn("description1", "description2");
+
+            // WE ARE MOCKING THIS METHOD ON THE SERVICE repository
+            doReturn(List.of(), List.of()).when(repository).findPlProductGroupResellerTypeListByPlProductGroupID(any());
+            // if method returns void then use doNothing().when(...).xx(any(), ...);
+
+
+            PlProductGroup result1 = PlProductGroup.builder()
+                    .plProductGroupID(7)
+                    .description("description1")
+                    .createNewInDb(false)
+                    .plProductGroupResellerType(List.of())
+                    .build();
+
+            PlProductGroup result2 = PlProductGroup.builder()
+              .plProductGroupID(8)
+              .description("description2")
+              .createNewInDb(false)
+              .plProductGroupResellerType(List.of())
+              .build();
+
+            List<PlProductGroup> expectedResults = Arrays.asList(result1, result2);
+
+            // Act
+            // BUT WE ARE ACTUALLY CALLING REAL METHOD TOO ON OUR SERVICE repository
+            List<PlProductGroup> actualResults = repository.findPlProductGroupListByNamespace("namespace");
+
+            // Assert
+            assertEquals(expectedResults, actualResults);
+          }
+        </script>
+        <h2>Logging control</h2>
+        <script type="editor" data-lang="java">
+
+          # in file: command-handler/src/main/resources/application.yml
+
+          logging:
+            level:
+          #    root: DEBUG
+              org:
+                apache:
+                  kafka:
+                    clients:
+                      NetworkClient: DEBUG
+
+          # or change in src/main/resources/logback-spring.xml
+
+          <?xml version="1.0" encoding="UTF-8"?>
+          <configuration>
+            <jmxConfigurator />
+            <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+            <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+            <springProperty scope="context" name="rootLevel" source="logging.level.root" defaultValue="INFO"/>
+            <springProperty scope="context" name="rootAppender" source="logging.appender.root" defaultValue="CONSOLE_JSON" />
+            <springProperty scope="context" name="auditAppender" source="logging.appender.audit" defaultValue="CONSOLE_JSON" />
+            <springProperty scope="context" name="payloadAppender" source="logging.appender.payload" defaultValue="CONSOLE_JSON" />
+
+            <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
+              <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeContext>false</includeContext>
+                <timeZone>UTC</timeZone>
+                <fieldNames>
+                  <timestamp>timestamp</timestamp>
+                </fieldNames>
+              </encoder>
+            </appender>
+
+            <logger name="...Repository" level="ALL" additivity="false">
+              <appender-ref ref="${auditAppender}" />
+            </logger>
+
+            <logger name="org.zalando.logbook.Logbook" level="ALL" additivity="false">
+              <appender-ref ref="${payloadAppender}" />
+            </logger>
+
+            <logger name="....file" level="INFO" />
+
+            <root level="${rootLevel}">
+              <appender-ref ref="${rootAppender}" />
+            </root>
+          </configuration>
+        </script>
+
+        # to
+        <springProperty scope="context" name="rootLevel" source="logging.level.root" defaultValue="INFO" />
+        <springProperty scope="context" name="rootAppender" source="logging.appender.root" defaultValue="CONSOLE" />
+        <springProperty scope="context" name="auditAppender" source="logging.appender.audit" defaultValue="CONSOLE" />
+        <springProperty
+          scope="context"
+          name="payloadAppender"
+          source="logging.appender.payload"
+          defaultValue="CONSOLE"
+        />
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

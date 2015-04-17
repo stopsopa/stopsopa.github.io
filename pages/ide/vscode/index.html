@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Interesting</h2>
+        <script type="editor" data-lang="sh">
+
+          https://vscode.dev/
+            # from: https://youtu.be/BDU63r4bS9Q
+
+          # press . key in the github and it will open web editor based on vscode
+
+              configure:
+                prettier.forceFormatDocument    bind to cmd+shift+s (unbind the previous binding under this key)
+
+          # vscode is based on Monaco Editor which was build for vscode but still can be used as a standalone component
+          https://microsoft.github.io/monaco-editor/
+        </script>
+
+        <h2>Portable Mode</h2>
+        <a href="https://code.visualstudio.com/docs/editor/portable">g(visual studio code Portable Mode)</a>
+        <script type="editor" data-lang="sh">
+
+          # this is required to make portable mode work
+          xattr -dr com.apple.quarantine Visual\ Studio\ Code.app
+              # from: https://code.visualstudio.com/docs/editor/portable#_macos
+
+          # to check if portable mode is enabled
+          # Menu -> Code -> "Settings..." -> "Keyboard Shortcuts" -> https://i.imgur.com/EMl2IM7.png
+          # the if it will open file in location something like: ~/Workspace/vscode/javascript/code-portable-data/user-data/User/keybindings.json
+          # the it means it's in portable mode
+        </script>
+        <h2>VSCdode glossary</h2>
+        <ul>
+          <li>Command Palette (⇧⌘P)</li>
+          <li>
+            <a href="https://code.visualstudio.com/docs/languages/java#_vs-code-workspaces">VS Code Workspaces</a>
+          </li>
+        </ul>
+        <h2>Launching from the command line</h2>
+        <a href="https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line"
+          >https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line</a
+        >
+        <h2>Extensions: Show Recommended Extensions</h2>
+        <script type="editor" data-lang="sh">
+
+          # creating .vscode/extensions.json -> open extensions tab -> right click on any plugin -> Add to Workspace Recommendations
+
+          # show recomended extensions from
+            # Command Palette (⌘⇧p) -> Extensions: Show Recommended Extensions
+            # from: https://code.visualstudio.com/docs/editor/extension-marketplace#_workspace-recommended-extensions:~:text=Extensions%3A%20Show%20Recommended%20Extensions
+
+          # To generate .vscode/settings.json
+            # Command Palette (⌘⇧p) -> Preferences: Open Workspace Settings (JSON)
+
+          # user keybindings.json
+            # Command Palette (⌘⇧p) -> Preferences: Open Keyboard Shortcuts (JSON)
+        </script>
+        <h2>Disable peek feature - when navigating code</h2>
+        <script type="editor" data-lang="sh">
+
+          gotoLocation multiple references option with "goto" value does not seem to work #87106
+              https://github.com/microsoft/vscode/issues/87106#issuecomment-566448163
+              DOESN'T WORK ANYMORE
+
+          cmd+click skip typescript definition and go to source? #68782
+              https://github.com/microsoft/vscode/issues/68782
+
+          Somehow I found these:
+              "typescript.preferGoToSourceDefinition": true,
+              "javascript.preferGoToSourceDefinition": true
+        </script>
+
+        <h2>Java setup</h2>
+        <a href="https://github.com/stopsopa/java-research">g(visual studio code Java in Visual Studio Code)</a>
+        <h2>Release Notes</h2>
+        <a href="https://code.visualstudio.com/updates/v1_72"
+          >g(vscode release notes: 1.72.2 September 2022 (version 1.72))</a
+        >
+        <h2>Plugins</h2>
+        <ul>
+          <li>
+            <a href="https://marketplace.visualstudio.com/items?itemName=stuart.unique-window-colors"
+              >https://marketplace.visualstudio.com/items?itemName=stuart.unique-window-colors</a
+            >
+          </li>
+          <li><a href=""></a></li>
+          <li><a href=""></a></li>
+        </ul>
+        <img src="https://i.imgur.com/7oJXmnb.png" style="width: 400px" />
+
+        <h2>Code coverage - for javascript</h2>
+        <script type="editor" data-lang="sh">
+
+          install extension id: Orta.vscode-jest
+          https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest
+          https://github.com/jest-community/vscode-jest/tree/master
+
+          # WARNING: every time I've changed anything in the configuration it seems I had to toggle code coverage:
+          cmd + P -> search ">jest: toggle" -> choose "Jest: Toggle Coverage"
+          # in order to start seeing coverage in the IDE
+
+          # add to .vscode/settings.json
+          {
+            "jest.coverageColors": {
+              "covered": "#95c697",
+              "notCovered": "#e1a9a5"
+            },
+            "jest.coverageFormatter": "GutterFormatter",
+            "jest.runMode": {
+              "type": "watch"
+            },
+            //"jest.jestCommandLine": "node_modules/.bin/jest" -- only when needed, by default it seems to run 'npm run test'
+          }
+
+          # generally about vscode coverage configuration and some changes around it:
+            https://github.com/jest-community/vscode-jest/blob/master/README.md#how-to-use-code-coverage
+
+          # try setup:
+            https://github.com/jest-community/vscode-jest/blob/master/setup-wizard.md#how-does-it-work
+          # ISSUE:
+            # https://stackoverflow.com/a/58675202/5560682
+            # solution:
+              brew install watchman
+
+          # customize executed jest commnd executed:
+            https://github.com/jest-community/vscode-jest/blob/master/README.md#settings
+            # example
+              "jest.jestCommandLine": "node_modules/.bin/jest"
+        </script>
+        <h2>Auto Attach: Always - prevent from binding</h2>
+        <script type="editor" data-lang="sh">
+
+              # WITH DEBUGGER
+              cat <<EEE > te.js
+          setTimeout(() => console.log('te.js log WITH █Debugger attached.█ above ^^^'), 1000)
+          EEE
+
+              cat <<EEE > te.sh
+          node te.js
+          EEE
+              /bin/bash te.sh
+
+              # WITHOUT DEBUGGER
+
+              cat <<EEE > te.js
+          setTimeout(() => console.log('te.js log NO █Debugger attached.█ above ^^^'), 1000)
+          EEE
+
+              cat <<EEE > te.sh
+          NODE_OPTIONS="--inspect=0" node te.js
+          # or
+          NODE_OPTIONS="" node te.js
+          EEE
+              /bin/bash te.sh
+        </script>
+        <h2>settings.json defaults</h2>
+        <a href="https://code.visualstudio.com/docs/getstarted/settings#_default-settings"
+          >https://code.visualstudio.com/docs/getstarted/settings#_default-settings</a
+        >
+        <h2>settings.json - Workspace</h2>
+        <script type="editor" data-lang="sh">
+
+          {
+            "debug.javascript.autoAttachFilter": "always", // https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_auto-attach
+            "workbench.editor.showTabs": "multiple",
+            "workbench.editor.wrapTabs": true // multiple rows of tabs
+            "search.exclude": {
+              "**/bower_components": false,
+              ".git/": true,
+              ".vscode/": true,
+              "build/": true,
+              "designer/": true,
+              "docker/": true,
+              "docs/": true,
+              "migrations/": true,
+              "var/": true
+            },
+            "files.watcherExclude": {
+              ".git/": true,
+              ".vscode/": true,
+              "build/": true,
+              "designer/": true,
+              "docker/": true,
+              "docs/": true,
+              "migrations/": true,
+              "var/": true
+            }
+          }
+        </script>
+        <h2>settings.json - User</h2>
+        <a href="https://github.com/stopsopa/gitstorage/tree/master/git%40github.com%3Astopsopa__gitstorage.git/vscode"
+          >https://github.com/stopsopa/gitstorage/tree/master/git%40github.com%3Astopsopa__gitstorage.git/vscode</a
+        >
+        <script type="editor" data-lang="sh">
+          {
+              "workbench.tree.renderIndentGuides": "always",
+              "workbench.editor.revealIfOpen": true, // https://github.com/microsoft/vscode/issues/238517
+              "workbench.tree.indent": 20,
+              "editor.accessibilitySupport": "off",
+              "explorer.confirmDelete": false,
+              "files.autoSave": "afterDelay",
+              "git.autofetch": true,
+              "prettier.printWidth": 120,
+              "[javascript]": {
+                  "editor.defaultFormatter": "esbenp.prettier-vscode"
+              },
+              "files.exclude": {
+                  "**/.git": false
+              },
+              "workbench.colorTheme": "Default Light+",
+              "explorer.confirmDragAndDrop": false,
+              "redhat.telemetry.enabled": false,
+              "debug.javascript.autoAttachFilter": "always",
+              "cmake.configureOnOpen": true,
+              "git.confirmSync": false,
+              "settingsSync.ignoredExtensions": [
+
+              ],
+              "workbench.colorCustomizations": {
+                "editor.selectionBackground": "#13484c", // https://code.visualstudio.com/api/references/theme-color#editor-colors
+                "editor.selectionHighlightBackground": "#13484c",
+                "editor.inactiveSelectionBackground": "#13484c",
+              }
+
+
+              // prettier svg ---- vvv
+              "prettier.documentSelectors": ["**/*.svg"],
+              "[svg]": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode"
+              },
+
+              // add also to .../current_project/prettier.config.cjs
+              module.exports = {
+                printWidth: 120,
+                overrides: [
+                  {
+                    files: '*.svg',
+                    options: {
+                      parser: 'html',
+                    },
+                  },
+                ],
+              };
+              // prettier svg ---- ^^^
+          }
+        </script>
+        <h2>Create custom snippets</h2>
+        <a href="https://code.visualstudio.com/docs/editor/userdefinedsnippets#_create-your-own-snippets"
+          >https://code.visualstudio.com/docs/editor/userdefinedsnippets#_create-your-own-snippets</a
+        >
+
+        <script type="editor" data-lang="sh">
+          cmd+shift+p  -> "Snippets" -> choose "Snippets: Configure user snippets"
+        </script>
+        <h2>Shortcuts</h2>
+        <script type="editor" data-lang="sh">
+
+          Format Document               shift+alt+f   editor.action.formatDocument
+        </script>
+        <h2>Debug Actions - default shortcuts</h2>
+        <script type="editor" data-lang="sh">
+
+          Continue/Pause        F5
+          Step Over             F10
+          Step Into             F11
+          Step Out              Shift + F11
+          Restart               Ctrl + Shift + F5
+          Stop                  Shift + F5
+
+          From g(Extension Pack for Java)
+          https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack
+          in Command Palette (⇧⌘P) type "java tips"
+        </script>
+        <h2>Uninstall VS Code</h2>
+
+        <script type="editor" data-lang="sh">
+
+          rm -rf "~/.vscode"
+          rm -rf "~/Library/Application Support/Code"
+          rm -rf "~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/com.microsoft.vscode.sfl*"
+          rm -rf "~/Library/Caches/com.microsoft.VSCode.ShipIt"
+          rm -rf "~/Library/Caches/com.microsoft.VSCode"
+          rm -rf "~/Library/Preferences/ByHost/com.microsoft.VSCode.ShipIt.*.plist"
+          rm -rf "~/Library/Preferences/com.microsoft.VSCode.helper.plist"
+          rm -fr "~/Library/Preferences/com.microsoft.VSCode.plist"
+          rm -fr "~/Library/Caches/com.microsoft.VSCode.ShipIt"
+          rm -rf "~/Library/Saved Application State/com.microsoft.VSCode.savedState"
+
+          # and
+          rm -rf ~/.vscode*
+
+          # from: https://github.com/Homebrew/homebrew-cask/blob/16eab891a1b32d7e200e83a70c37e2358954bbef/Casks/visual-studio-code.rb#L29
+          # and from: https://stackoverflow.com/a/47561948
+        </script>
+        <h2>Settings File Location</h2>
+        <a href="https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations">link</a>
+        <h2>Plugins</h2>
+        <script type="editor" data-lang="js">
+
+          // content of .vscode/settings.json
+
+          {
+              "makefile.extensionOutputFolder": "./.vscode",
+              "search.exclude": {
+                  ".git/": true,
+                  "STOPSOPA__cra-with-server/build/static": true
+              }
+          }
+
+          // NOTICE: after defining this, remember about also turning on "gear button"
+          // right next to the "files to exclude" input in search block in VSCode
+        </script>
+        <h2>Bugs</h2>
+        <script type="editor" data-lang="js">
+
+          // https://github.com/microsoft/vscode/issues/238517
+        </script>
+        <h2>Auto Formatting code</h2>
+        <a href="https://code.visualstudio.com/docs/cpp/cpp-ide#_code-formatting">Formatting of c and c++</a>
+        <h2>Auto Attach debugger</h2>
+        <a href="https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_auto-attach"
+          >g(Node.js debugging in VS Code Auto Attach)</a
+        >
+        <img src="https://i.imgur.com/Ql9caFX.png" style="width: 600px" />
+        <br />
+        <a href="https://stackoverflow.com/questions/29973357/how-do-you-format-code-in-visual-studio-code-vscode"
+          >g(How do you format code in Visual Studio Code (VSCode)?)</a
+        >
+        <br />
+        <p>
+          Also search in the extension section in VSCode: "category:formatters xml" for other libraries for formatting
+          xml, and not only...
+        </p>
+        <h2>Different keybinding per file extension (language)</h2>
+        <a href="https://stackoverflow.com/a/71821332">https://stackoverflow.com/a/71821332</a>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

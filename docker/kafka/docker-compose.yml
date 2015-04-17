@@ -1,0 +1,133 @@
+version: "3.8"
+services:
+  mysql:
+    build:
+      context: mysql
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_NAME}_mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - ./mysql/my.cnf:/etc/my.cnf
+      - ./persistence/mysql_db:/var/data
+      - ./persistence/mysql_log:/var/log/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - scoped-network
+
+  phpmyadmin:
+    depends_on:
+      mysql:
+        condition: service_healthy
+    build:
+      context: pma
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_NAME}_pma
+    ports:
+      - "${PHPMYADMIN_PORT}:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASS}
+      PMA_PMADB: ${PMA_PMADB}
+    volumes:
+      - ./pma/config.inc.5.1.1.php:/etc/phpmyadmin/config.inc.php
+    networks:
+      - scoped-network
+
+  # from OTE
+  # redis-server -v
+  # Redis server v=3.2.4 sha=00000000:0 malloc=jemalloc-4.0.3 bits=64 build=231012b0317e2006
+  redis:
+    image: redis:3.2.4
+    container_name: ${PROJECT_NAME}_redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - ./persistence/redis_db/${PROJECT_NAME}:/data
+    networks:
+      - scoped-network
+
+  redisinsight:
+    image: redislabs/redisinsight:1.7.0
+    container_name: ${PROJECT_NAME}_redisinsight
+    ports:
+      - "${REDISINSIGHT_PORT}:8001"
+    networks:
+      - scoped-network
+
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+    container_name: ${PROJECT_NAME}_zookeeper
+    ports:
+      - "${KAFKA_ZOOKEEPER_PORT}:2181"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+      - ./persistence/zookeeper_data:/opt/zookeeper-3.4.13/data
+      - ./persistence/zookeeper_log:/opt/zookeeper-3.4.13/log
+      # from: https://github.com/wurstmeister/kafka-docker/issues/672
+    networks:
+      - scoped-network
+
+  # https://hub.docker.com/r/wurstmeister/kafka/
+  kafka:
+    build:
+      context: kafka
+      dockerfile: Dockerfile
+    ports:
+      - "${KAFKA_PORT}:9092"
+    container_name: ${PROJECT_NAME}_kafka
+    depends_on:
+      - "zookeeper"
+    environment:
+      DOCKER_API_VERSION: 1.22
+
+      # ipconfig getifaddr en0 | cat
+      KAFKA_ADVERTISED_HOST_NAME:
+        "${KAFKA_ADVERTISED_HOST_NAME}"
+        # this version still uses advertised host name: "Advertised hostname" section on the page https://hub.docker.com/r/wurstmeister/kafka/
+        # there is also thing called "advertised.listeners", more on that: https://rmoff.net/2018/08/02/kafka-listeners-explained/
+        # TLDR: Basically you have to provide host machine ip address to KAFKA_ADVERTISED_HOST_NAME
+
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "notifications_topic:1:1,notifications-command:1:1,barter-notification:1:1,extra:1:1"
+
+      KAFKA_LOG_DIRS:
+        "/kafka/kafka-logs"
+        # from: https://github.com/wurstmeister/kafka-docker/issues/672
+        # and https://github.com/wurstmeister/kafka-docker/issues/517#issuecomment-508244919
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+      - ./persistence/kafka:/kafka/kafka-logs
+      # from: https://github.com/wurstmeister/kafka-docker/issues/672
+    networks:
+      - scoped-network
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:3.30.0
+    container_name: ${PROJECT_NAME}_kafdrop
+    restart: "no"
+    ports:
+      - "${KAFKA_KAFDROP_PORT}:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:9092"
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    depends_on:
+      - "kafka"
+    networks:
+      - scoped-network
+
+networks:
+  scoped-network:
+    name: network-${PROJECT_NAME}
+
+    

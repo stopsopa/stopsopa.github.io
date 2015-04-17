@@ -1,0 +1,515 @@
+<!--
+
+WARNING: 
+File was created by /bin/bash template.sh template engine.
+Edit template instead of this file
+WARNING: 
+
+WARNING: 
+File was created by /bin/bash template.sh template engine.
+Edit template instead of this file
+WARNING: 
+
+WARNING: 
+File was created by /bin/bash template.sh template engine.
+Edit template instead of this file
+WARNING: 
+
+WARNING: 
+File was created by /bin/bash template.sh template engine.
+Edit template instead of this file
+WARNING: 
+
+--><!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>🧰 toolbox</h2>
+        <a href="https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bookmarklets/toolbox.js"
+          >https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bookmarklets/toolbox.js</a
+        >
+        <br />
+        <a href="/pages/bookmarklets/toolbox.html">/pages/bookmarklets/toolbox.html</a>
+        <h2>Jira create ticket - script to widen "Project" dropdown</h2>
+        <a href="javascript:var k = !(function () {%22use strict%22;(()=>{(function(){var f=function(){try{return console.log}catch{return function(){}}}(),l=function(n,e){e||(e=document);var t=e.querySelector(n);if(!t)throw new Error(%22cant find element by selector: %22+n);return t};function r(n,e){e||(e={});var t=document.createElement(%22div%22);let u={position:%22fixed%22,zIndex:%2210000000%22,top:%2220%%22,left:%2250%%22,border:%221px solid gray%22,backgroundColor:%22white%22,transform:%22translate(-50%, -50%)%22,padding:%2210px%22,cursor:%22pointer%22};Object.assign(t.style,Object.entries(Object.assign({},u,e.style)).reduce((c,[a,s])=>(s!==!1&&(c[a]=s),c),{})),t.innerHTML=String(n),document.body.appendChild(t);var i=function(){document.body.removeChild(t)};e.autoclose?setTimeout(i,Number.isInteger(e.autoclose)?e.autoclose:1e3):t.addEventListener(%22click%22,i),typeof e.fn==%22function%22&&e.fn(t)}try{var o=l(%22#project-field%22);o.style.maxWidth=%22none%22;var d=o.parentNode;d.style.maxWidth=%22none%22,r(%22All good%22,{autoclose:200})}catch(n){r(n,{style:{minHeight:%22200%22}})}})();})();
+}())"
+          >Jira wide project dropdown - bookmarklet</a
+        >
+        <br />
+        source:
+        <script type="editor" data-lang="js">
+          /**
+ * Jira create ticket - script to widen "Project" dropdown
+ * https://stopsopa.github.io/pages/bookmarklets/index.html#jira-create-ticket-script-to-widen-project-dropdown
+ */
+(function () {
+  var log = (function () {
+    try {
+      return console.log;
+    } catch (e) {
+      return function () {};
+    }
+  })();
+
+  var find = function (selector, parent) {
+    if (!parent) {
+      parent = document;
+    }
+
+    var tmp = parent.querySelector(selector);
+
+    if (!tmp) {
+      throw new Error("cant find element by selector: " + selector);
+    }
+
+    return tmp;
+  };
+
+  function box(content, opt) {
+    if (!opt) {
+      opt = {};
+    }
+
+    var div = document.createElement("div");
+
+    const style = {
+      position: "fixed",
+      zIndex: "10000000",
+      top: "20%",
+      left: "50%",
+      border: "1px solid gray",
+      backgroundColor: "white",
+      transform: "translate(-50%, -50%)",
+      padding: "10px",
+      cursor: "pointer",
+    };
+
+    Object.assign(
+      div.style,
+      Object.entries(Object.assign({}, style, opt.style)).reduce((acc, [key, val]) => {
+        if (val !== false) acc[key] = val;
+        return acc;
+      }, {})
+    );
+
+    div.innerHTML = String(content);
+
+    document.body.appendChild(div);
+
+    var close = function () {
+      document.body.removeChild(div);
+    };
+
+    if (opt.autoclose) {
+      setTimeout(close, Number.isInteger(opt.autoclose) ? opt.autoclose : 1000);
+    } else {
+      div.addEventListener("click", close);
+    }
+
+    typeof opt.fn === "function" && opt.fn(div);
+  }
+
+  try {
+    var doc = find("#project-field");
+
+    doc.style.maxWidth = "none";
+
+    var parent = doc.parentNode;
+
+    parent.style.maxWidth = "none";
+
+    box("All good", { autoclose: 200 });
+  } catch (e) {
+    box(e, { style: { minHeight: "200" } });
+  }
+})();
+
+        </script>
+        <h2>periscope</h2>
+
+        <a href="javascript:var k = !(function () {%22use strict%22;(()=>{(function(){function w(d){var n=document.head||document.getElementsByTagName(%22head%22)[0],e=document.createElement(%22style%22);return n.appendChild(e),e.type=%22text/css%22,e.appendChild(document.createTextNode(d)),{unmountStyle:()=>{e.parentNode.removeChild(e)},styleElement:e}}w(` #periscope_div { position: fixed; width: 200px; height: 200px; overflow: hidden; border: 1px solid gray; top: 0; left: 0; background-color: white; z-index:1000000; } #periscope_div video { border: 1px solid red; opacity: 0.5; height: 100vh; width: 100vw; } #periscope_div canvas { border: 1px solid green; } `);function f(d){let n=localStorage.getItem(d);if(n!==null){let e=parseInt(n,10);return isNaN(e)?n:e}}function h(d,n){n!==null&&typeof n<%22u%22&&localStorage.setItem(d,String(n))}function x(d){return window.getComputedStyle(d)}function y(d,n,e){let r=0,l=0,c=!1,s,i;function a(p){c=!0,r=p.pageX,l=p.pageY,typeof e==%22function%22?{x:s,y:i}=e():s=i=0,n(s+p.pageX-r,i+p.pageY-l,%22mousedown%22);function o(t){c&&n(s+t.pageX-r,i+t.pageY-l,%22mousemove%22)}document.addEventListener(%22mouseup%22,t=>{document.removeEventListener(%22mousemove%22,o),c&&(c=!1,n(s+t.pageX-r,i+t.pageY-l,%22mouseup%22))}),document.addEventListener(%22mousemove%22,o)}d.addEventListener(%22mousedown%22,a)}let b=console.log;navigator.mediaDevices.getDisplayMedia({audio:!1,video:!0,preferCurrentTab:!0}).then(d=>{let n={};document.addEventListener(%22keydown%22,o=>{n[o.key]=!0}),document.addEventListener(%22keyup%22,o=>{n[o.key]=!1});let e=document.createElement(%22div%22);e.setAttribute(%22id%22,%22periscope_div%22);let r=f(%22pw%22);r&&(e.style.width=`${r}px`);let l=f(%22ph%22);l&&(e.style.height=`${l}px`);let c=f(%22pl%22);c&&(e.style.left=`${c}px`);let s=f(%22pt%22);s&&(e.style.top=`${s}px`),y(e,(o,t)=>{if(n.Shift)e.style.width=`${o}px`,e.style.height=`${t}px`,h(%22pw%22,o),h(%22ph%22,t);else if(!n.Meta){e.style.left=`${o}px`,e.style.top=`${t}px`,h(%22pl%22,o),h(%22pt%22,t);return}},()=>{if(n.Shift){let o=x(e);return{x:parseInt(o.width,10)||0,y:parseInt(o.height,10)||0}}return{x:parseInt(e.style.left,10)||0,y:parseInt(e.style.top,10)||0}}),document.body.appendChild(e);let i=document.createElement(%22video%22);window.video=i,i.setAttribute(%22autoplay%22,!0),e.appendChild(i);let a=!1,p=()=>{a=!1};i.addEventListener(%22ended%22,p),i.addEventListener(%22pause%22,p),i.addEventListener(%22play%22,o=>{b(%22play%22);let t=document.createElement(%22canvas%22);y(t,(u,g)=>{if(n.Meta){let v=`translate(${u}px, ${g}px)`;h(%22ct%22,v),t.style.transform=v}},()=>{let u=(t.style.transform||%22%22).match(/(-?\d+).*?(-?\d+)/)||[],g=parseInt(u[1],10)||0,v=parseInt(u[2],10)||0;return{x:g,y:v}}),e.insertBefore(t,e.firstChild),t.width=window.innerWidth,t.height=window.innerHeight,t.style.width=`${window.innerWidth}px`,t.style.height=`${window.innerHeight}px`;let m=f(%22ct%22);m&&(t.style.transform=m),a=!0,function u(){a&&window.requestAnimationFrame(()=>{t.width=window.innerWidth,t.height=window.innerHeight,t.style.width=`${window.innerWidth}px`,t.style.height=`${window.innerHeight}px`,console.log(%22w%22,window.innerWidth,%22h%22,window.innerHeight),t.getContext(%222d%22).drawImage(i,0,0,window.innerWidth,window.innerHeight),u()})}()}),i.srcObject=d})})();})();
+}())">🐟</a>
+        <script type="editor" data-lang="js">
+          (function () {
+  function addCss(css) {
+    var head = document.head || document.getElementsByTagName("head")[0];
+    var styleElement = document.createElement("style");
+    head.appendChild(styleElement);
+    styleElement.type = "text/css";
+    styleElement.appendChild(document.createTextNode(css));
+    return {
+      unmountStyle: () => {
+        styleElement.parentNode.removeChild(styleElement);
+      },
+      styleElement,
+    };
+    return;
+  }
+  addCss(`
+  #periscope_div {
+    position: fixed;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    border: 1px solid gray;
+    top: 0;
+    left: 0;
+    background-color: white;
+    z-index:1000000;
+  }
+  #periscope_div video {
+    border: 1px solid red;
+    opacity: 0.5;
+    height: 100vh;
+    width: 100vw;
+  }
+  #periscope_div canvas {
+    border: 1px solid green;
+  }
+  `);
+  function get(key) {
+    const v = localStorage.getItem(key);
+    if (v !== null) {
+      const tmp = parseInt(v, 10);
+      if (isNaN(tmp)) {
+        return v;
+      }
+      return tmp;
+    }
+  }
+  function set(key, val) {
+    if (val !== null && typeof val !== "undefined") {
+      localStorage.setItem(key, String(val));
+    }
+  }
+  function getStyle(el) {
+    return window.getComputedStyle(el);
+  }
+  function drag(element, listener, fetch) {
+    let pageX = 0;
+    let pageY = 0;
+    let down = false;
+    let fetchX;
+    let fetchY;
+    function mousedown(e) {
+      down = true;
+      pageX = e.pageX;
+      pageY = e.pageY;
+      if (typeof fetch === "function") {
+        ({ x: fetchX, y: fetchY } = fetch());
+      } else {
+        fetchX = fetchY = 0;
+      }
+      listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousedown");
+      function mousemove(e) {
+        if (down) {
+          listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousemove");
+        }
+      }
+      document.addEventListener("mouseup", (e) => {
+        document.removeEventListener("mousemove", mousemove);
+        if (down) {
+          down = false;
+          listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mouseup");
+        }
+      });
+      document.addEventListener("mousemove", mousemove);
+    }
+    element.addEventListener("mousedown", mousedown);
+  }
+  // const button = document.querySelector("button");
+  // const destroy = document.querySelector("#destroy");
+  const log = console.log;
+  // button.addEventListener("click", function () {
+  // log("button");
+  navigator.mediaDevices
+    .getDisplayMedia({
+      audio: false,
+      video: true,
+      preferCurrentTab: true, // https://stackoverflow.com/a/70665376
+    })
+    .then((stream) => {
+      const keys = {};
+      document.addEventListener("keydown", (e) => {
+        keys[e.key] = true;
+        // log("keydown keys", keys);
+      });
+      document.addEventListener("keyup", (e) => {
+        keys[e.key] = false;
+        // log("keyup keys", keys);
+      });
+      const parent = document.createElement("div");
+      parent.setAttribute("id", "periscope_div");
+      const pw = get("pw");
+      if (pw) {
+        // log("lc", "pw", pw);
+        parent.style.width = `${pw}px`;
+      }
+      const ph = get("ph");
+      if (ph) {
+        // log("lc", "ph", ph);
+        parent.style.height = `${ph}px`;
+      }
+      const pl = get("pl");
+      if (pl) {
+        // log("lc", "pl", pl);
+        parent.style.left = `${pl}px`;
+      }
+      const pt = get("pt");
+      if (pt) {
+        // log("lc", "pt", pt);
+        parent.style.top = `${pt}px`;
+      }
+      drag(
+        parent,
+        (x, y) => {
+          if (keys.Shift) {
+            parent.style.width = `${x}px`;
+            parent.style.height = `${y}px`;
+            set("pw", x);
+            set("ph", y);
+          } else {
+            if (!keys.Meta) {
+              parent.style.left = `${x}px`;
+              parent.style.top = `${y}px`;
+              set("pl", x);
+              set("pt", y);
+              return;
+            }
+          }
+        },
+        () => {
+          if (keys.Shift) {
+            const c = getStyle(parent);
+            const t = { x: parseInt(c.width, 10) || 0, y: parseInt(c.height, 10) || 0 };
+            // log("shift", t);
+            return t;
+          }
+          return { x: parseInt(parent.style.left, 10) || 0, y: parseInt(parent.style.top, 10) || 0 };
+        }
+      );
+      document.body.appendChild(parent);
+      const video = document.createElement("video");
+      window.video = video;
+      // video.setAttribute("controls", true);
+      // video.setAttribute("playsinline", true);
+      video.setAttribute("autoplay", true);
+      // video.style.display = "none";
+      // function del() {
+      //   video.parentNode.removeChild(video);
+      //   SimpleObserver.removeEventListener("delete", del);
+      // }
+      // SimpleObserver.addEventListener("delete", del);
+      //<video src="" controls playsinline autoplay></video>
+      parent.appendChild(video);
+      let play = false;
+      const stop = () => {
+        // log("stop");
+        play = false;
+      };
+      video.addEventListener("ended", stop);
+      video.addEventListener("pause", stop);
+      video.addEventListener("play", (event) => {
+        log("play");
+        const canvas = document.createElement("canvas");
+        drag(
+          canvas,
+          (x, y) => {
+            if (keys.Meta) {
+              const trans = `translate(${x}px, ${y}px)`;
+              set("ct", trans);
+              canvas.style.transform = trans;
+            }
+          },
+          () => {
+            const transform = (canvas.style.transform || "").match(/(-?\d+).*?(-?\d+)/) || [];
+            const x = parseInt(transform[1], 10) || 0;
+            const y = parseInt(transform[2], 10) || 0;
+            // log("tran", canvas.style.transform, transform, x, y);
+            return { x, y };
+          }
+        );
+        // parent.appendChild(canvas);
+        parent.insertBefore(canvas, parent.firstChild);
+        // canvas.width = video.videoWidth;
+        // canvas.height = video.videoHeight;
+        // canvas.style.width = `${video.videoWidth}px`;
+        // canvas.style.height = `${video.videoHeight}px`;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.style.width = `${window.innerWidth}px`;
+        canvas.style.height = `${window.innerHeight}px`;
+        const ct = get("ct");
+        // log("lc", "ct", ct);
+        if (ct) {
+          canvas.style.transform = ct;
+        }
+        play = true;
+        (function copy() {
+          if (!play) {
+            return;
+          }
+          // log("play");
+          window.requestAnimationFrame(() => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.style.width = `${window.innerWidth}px`;
+            canvas.style.height = `${window.innerHeight}px`;
+            console.log("w", window.innerWidth, "h", window.innerHeight);
+            // canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+            canvas.getContext("2d").drawImage(video, 0, 0, window.innerWidth, window.innerHeight);
+            copy();
+          });
+        })();
+      });
+      video.srcObject = stream;
+    });
+
+  // test scale block
+  0 &&
+    (function () {
+      function box(content, opt) {
+        if (!opt) {
+          opt = {};
+        }
+
+        var div = document.createElement("div");
+
+        const style = {
+          position: "fixed",
+          zIndex: "10000000",
+          top: "20%",
+          left: "50%",
+          border: "1px solid gray",
+          backgroundColor: "white",
+          // transform: "translate(-50%, -50%)",
+          // padding: "10px",
+          // cursor: "pointer",
+        };
+
+        Object.assign(
+          div.style,
+          Object.entries(Object.assign({}, style, opt.style)).reduce((acc, [key, val]) => {
+            if (val !== false) acc[key] = val;
+            return acc;
+          }, {})
+        );
+
+        if (typeof content === "string") {
+          div.innerHTML = String(content);
+        } else {
+          node.innerHTML = "";
+          div.appendChild(content);
+        }
+
+        document.body.appendChild(div);
+
+        let divClicked = false;
+        div.addEventListener("click", () => {
+          log("div click");
+          divClicked = true;
+        });
+        function bodyclick() {
+          log("body click");
+          if (!divClicked) {
+            close();
+          }
+          divClicked = false;
+        }
+        function close() {
+          log("autoclose");
+          document.body.removeChild(div);
+
+          document.body.removeEventListener("click", bodyclick);
+        }
+
+        // document.body.addEventListener("click", bodyclick);
+
+        if (opt.autoclose) {
+          setTimeout(close, Number.isInteger(opt.autoclose) ? opt.autoclose : 1000);
+        }
+
+        typeof opt.fn === "function" && opt.fn(div);
+
+        return div;
+      }
+
+      box(`<div></div>`, {
+        autoclose: false,
+        style: {
+          position: "fixed",
+          top: "10px",
+          left: "10px",
+          height: "20px",
+          backgroundColor: "blue",
+          width: "20px",
+        },
+      });
+      box(`<div></div>`, {
+        autoclose: false,
+        style: {
+          position: "fixed",
+          top: "10px",
+          left: "800px",
+          height: "20px",
+          backgroundColor: "blue",
+          width: "20px",
+        },
+      });
+      box(`<div></div>`, {
+        autoclose: false,
+        style: {
+          position: "fixed",
+          top: "400px",
+          left: "10px",
+          height: "20px",
+          backgroundColor: "blue",
+          width: "20px",
+        },
+      });
+      // box(`<div></div>`, {
+      //   autoclose: false,
+      //   style: {
+      //     position: "fixed",
+      //     top: "0",
+      //     left: "0",
+      //     transform: "translate(1%, 1%)",
+      //     backgroundColor: "yellow",
+      //     height: "20px",
+      //     height: `${window.innerHeight}px`,
+      //     width: `${window.innerWidth}px`,
+      //   },
+      // });
+    })();
+  // });
+  // destroy.addEventListener("click", function () {
+  //   log("destroy");
+  //   SimpleObserver.dispatchEvent("delete");
+  // });
+})();
+
+// w 2560 h 732
+// w 2142 h 664
+
+// w 2560 h 688
+// w 1880 h 557
+
+        </script>
+
+        <hr />
+        <a href="https://bookmarkify.it/51502">https://bookmarkify.it/51502</a>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

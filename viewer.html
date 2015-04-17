@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <style>
+      body input,
+      #root > label > input,
+      #root > label > a {
+        width: 100%;
+        margin-bottom: 1px;
+        border: 1px solid #f6f6f6;
+        &:hover {
+          border: 1px solid #ccc;
+        }
+      }
+      a,
+      input[type="search"] {
+        font-family: Inter, sans-serif;
+        font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
+      }
+      label {
+        display: flex;
+        span {
+          width: 240px;
+        }
+      }
+      textarea {
+        border: 1px solid gray;
+        width: 100%;
+      }
+      .content {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20px;
+      }
+      .error {
+        border: 1px solid red;
+      }
+    </style>
+  </head>
+  <body class="layout bg" nohead nofoot>
+    <div class="content">
+      <div id="root"></div>
+    </div>
+    <script src="/js/github.js"></script>
+    <script src="/dist/viewer.bundle.js"></script>
+  </body>
+</html>

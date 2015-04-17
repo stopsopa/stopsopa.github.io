@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" foot head>
+    <div class="body">
+      <div class="inside">
+        <h2>Nginx</h2>
+        <div class="card">
+          <h3>Example config</h3>
+          <script type="editor" data-lang="txt" data-w="95%">
+
+
+            server {
+                listen 80;
+                server_name www.example.com;
+                return 301 $scheme://example.com$request_uri;
+            }
+
+            server {
+                listen 80;
+                client_max_body_size 0;
+
+                server_name example.com;
+
+
+                location / {
+                    error_page 500 502 503 504 = /500.html;
+                    proxy_intercept_errors on;
+
+                    proxy_pass http://localhost:119;
+                    proxy_http_version 1.1;
+                    proxy_set_header Upgrade $http_upgrade;
+                    proxy_set_header Connection 'upgrade';
+                    proxy_set_header Host $host;
+
+                    proxy_set_header  X-Real-IP $remote_addr;
+                    proxy_set_header  X-Forwarded-For $remote_addr;
+                    proxy_set_header  X-Forwarded-Host $remote_addr;
+
+                    proxy_set_header   X-Forwarded-Proto $scheme;
+                    proxy_set_header   X-Forwarded-SSL   on;
+                    proxy_set_header   X-Forwarded-Port  $server_port;
+
+                    proxy_cache_bypass $http_upgrade;
+
+                    proxy_redirect      off;
+                }
+                location = /500.html {
+                        root /var/errorhandlers;
+                        internal;
+                }
+            }
+          </script>
+
+          <h3>example 500.html - with reload</h3>
+          <script type="editor" data-lang="html" data-w="95%">
+
+
+            <!doctype html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport"
+                      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+                <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                <title>Document&lt;/title>
+                <meta http-equiv="refresh" content="2">
+            &lt;/head>
+            <body>
+            <div style="color: #faf8fd;">0&lt;/div>
+            <script>
+            var log = (function (){try {return console.log;} catch (e) {return function () {}}})();
+            var div = document.querySelector('div');var i = 0;
+            setInterval(function () {i += 0.1;div.innerHTML = i.toFixed(1);}, 100);
+            &lt;/script>
+            &lt;/body>
+            &lt;/html>
+          </script>
+
+          <h3>Other examples</h3>
+          <a
+            href="https://strapi.io/documentation/developer-docs/latest/setup-deployment-guides/installation/digitalocean-one-click.html#nginx"
+            >https://strapi.io/documentation/developer-docs/latest/setup-deployment-guides/installation/digitalocean-one-click.html#nginx</a
+          >
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

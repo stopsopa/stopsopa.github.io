@@ -1,0 +1,3350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+
+    <style>
+      pre {
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul>
+            <li><a href="sed.html">sed</a></li>
+            <li><a href="awk.html">awk</a></li>
+            <li><a href="yq/index.html">yq</a></li>
+            <li><a href="jq/index.html">jq</a></li>
+          </ul>
+          <h2>interesting</h2>
+          <script type="editor" data-lang="sh">
+
+            https://github.com/cgsdev0
+            https://devhints.io/bash
+          </script>
+
+          <h2>basics</h2>
+          <script type="editor" data-lang="sh">
+
+            # list all functions in zsh - list functions
+            alias lsfn="print -l ${(ok)functions}"
+
+            function _date {
+                date "+%Y-%m-%d"
+            }
+
+            function _time {
+                date "+%H-%M-%S"
+            }
+            date "+%Y_%m_%d_%H_%M_%S"
+
+            // stdout stderr
+            set -e; _exit 1> /dev/null 2> /dev/null
+
+            # output to stderr
+            echo John have a cat
+            echo Cat have a hiv>&2
+
+            ls -la 2>&1
+
+
+            # on Mac
+            bash --version
+            GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin20)
+            Copyright (C) 2007 Free Software Foundation, Inc.
+
+            arch -arm64 brew install bash
+            $ more: https://itnext.io/upgrading-bash-on-macos-7138bd1066ba
+            # add to ~/.bashrc
+            export PATH="/bin:$PATH"
+            # to change back to bash v3
+
+
+
+            # -a FILE        True if file exists.
+            # -e FILE        True if file exists.
+            # -f FILE        True if file exists and is a regular file.
+            # -r FILE        True if file is readable by you.
+            # -s FILE        True if file exists and is not empty.
+            # -w FILE        True if the file is writable by you.
+
+            # Pathname Expansion
+            echo *s
+            # Documents Pictures Templates Videos
+
+            echo [[:upper:]]*
+            # Desktop Documents Music Pictures Public Templates Videos
+
+            echo /usr/*/share
+            # /usr/kerberos/share /usr/local/share
+
+            # Arithmetic Expansion
+            echo echo $(((5**2) * 3))
+            # 75
+
+            # Brace Expansion
+            echo Front-{A,B,C}-Back
+            # Front-A-Back Front-B-Back Front-C-Back
+
+            echo Number_{1..5}
+            # Number_1 Number_2 Number_3 Number_4 Number_5
+
+            echo {Z..A}
+            # Z Y X W V U T S R Q P O N M L K J I H G F E D C B A
+
+            echo {2017..2019}-{09..12}
+            # mac   : 2017-9 2017-10 2017-11 2017-12 2018-9 2018-10 2018-11 2018-12 2019-9 2019-10 2019-11 2019-12
+            # linux : 2017-09 2017-10 2017-11 2017-12 2018-09 2018-10 2018-11 2018-12 2019-09 2019-10 2019-11 2019-12
+
+            echo $(cal)
+            # May 2021 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+
+            echo "$(cal)"
+            #       May 2021
+            # Mo Tu We Th Fr Sa Su
+            #                 1  2
+            #  3  4  5  6  7  8  9
+            # 10 11 12 13 14 15 16
+            # 17 18 19 20 21 22 23
+            # 24 25 26 27 28 29 30
+            # 31
+
+            # https://www.funtoo.org/Bash_by_Example,_Part_1
+            # variable expansion functionality - Chopping strings like a pro
+
+            # IN OTHER WORDS THIS SYNTAX IS FOCUSED ON CHOPPING OFF
+            # NOT IN MATCHING AND RETURNING MATCHES BUT CHOPPING THEM OFF AND RETURNING THE REST
+
+            $ MYVAR=foodforthought.jpg
+            $ echo ${MYVAR##*fo} # cut to the LAST occurence (CUTS INCLUSIVE) CHOPPING GREEDY - LONGEST POSSIBLE MATCH
+            rthought.jpg
+            $ echo ${MYVAR#*fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
+            odforthought.jpg
+
+            # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+            # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+            # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+
+            $ echo ${MYVAR#*Fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
+            foodforthought.jpg
+
+            # TIP/MNEMONIC: look on the keyboard the character $ which is bash variable expansion character
+            # on the left is # so it is for chopping from the beginning
+            # on the right is % so it is for chopping from the end
+
+            # cut string ------ vvv
+            $ MYFOO="chickensoup.tar.gz"
+            $ echo ${MYFOO%%.*} # cut longest possible from the end - GREEDY
+            chickensoup
+            $ echo ${MYFOO%.*} # cut shortest possible from the end - NON GREEDY
+            chickensoup.tar
+
+            TTT="../google/takesomething/"
+            # Remove the trailing slash if it exists
+            TTT="${TTT%/}"
+            echo "$TTT"
+            # cut string ------ ^^^
+
+            # variable expansion based on a specific character offset and length
+            $ EXCLAIM=cowabungazd
+            #         12345678901
+            $ echo ${EXCLAIM:0:3}
+            cow
+            $ echo ${EXCLAIM:3:7}
+            abungaz
+            $ echo ${EXCLAIM:3:17}
+            abungazd
+
+            # default value
+            ${FRANKY:=Franky}
+
+            # IF ELSE FI
+            if [ condition ]
+            then
+                    action
+            elif [ condition2 ]
+            then
+                    action2
+            .
+            .
+            .
+            elif [ condition3 ]
+            then
+
+            else
+                    actionx
+            fi
+
+            # LOOP FOR
+            for x in one two three four "six seven"
+            do
+                echo number $x
+            done
+            # number one
+            # number two
+            # number three
+            # number four
+            # number six seven
+
+
+            for myfile in /etc/r* /tmp/${MYPATH}/*
+            do
+                if [ -d "$myfile" ]
+                then
+                  echo "$myfile (dir)"
+                else
+                  echo "$myfile"
+                fi
+            done
+            # /etc/racoon (dir)
+            # /etc/rc.common
+            # /etc/rc.netboot
+            # /etc/resolv.conf
+            # /etc/rmtab
+            # /etc/rpc
+            # /etc/rtadvd.conf
+            # ../a.sh is a silly file
+            # ../a.txt is a silly file
+            # ../runtime.tar.gz is a silly file
+            # public/coverage is a silly file
+            # public/cypress.html is a silly file
+            # public/sandbox is a silly file
+
+            cat <<EOF > k.sh
+            for thing in "\$@"
+            do
+                echo you typed \${thing}.
+            done
+            EOF
+            chmod a+x k.sh
+            ./k.sh a b c "d e" -- "f g" h
+            # you typed a.
+            # you typed b.
+            # you typed c.
+            # you typed d e.
+            # you typed --.
+            # you typed f g.
+            # you typed h.
+          </script>
+          <h2>useful</h2>
+          <script type="editor" data-lang="sh">
+            #!/usr/bin/env bash
+
+
+            # fix variables in ide
+            WEBSTORM:
+            (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
+            \${$1}
+
+            VSCODE:
+            \$([A-Za-z_\d!]+)
+            ${$1}
+
+
+            if [ "${PROCESS_WITH_PARALLEL_LOG}" = "" ]; then
+                echo "${0} 🚨 PROCESS_WITH_PARALLEL_LOG is not defined"
+                exit 1
+            fi
+
+            echo -n "${!2}"
+            echo "$(eval echo "\$${2}")"
+              # expanding variable value to variable name substitution
+
+            # detecting if shell is interactive but oddly enought it is also detecting data on stdin
+            # kinda weird - revealing I don't understand something
+            if [ -t 0 ] ; then
+                echo "This shell is interactive"
+            else
+                echo "This shell is NOT interactive"
+            fi
+
+            if [ ! -t 0 ] ; then
+                echo "${0} error: MACHINESWITCH is not set and shell is NOT interactive"
+                exit 1
+            fi
+
+            #  -------------- collect user input --------------- vvv
+            while true; do
+              read -p "Enter a number from 0 to 5: " YN
+              if [[ "${YN}" =~ ^[0-5]$ ]]; then
+                  break
+              else
+                  echo "Please enter a valid number from 0 to 5"
+              fi
+            done
+            echo ">${YN}<"
+            #  -------------- collect user input --------------- ^^^
+
+            #---- works in bash and zsh ----------- VVV
+            OPTIONS=(
+                '.env.mac.nucsmall'
+                '.env.mac.nucbig'
+                # Add more options here as needed
+            )
+            echo "Please select an option:"
+            select opt in "${OPTIONS[@]}"
+            do
+                if [[ " ${OPTIONS[*]} " == *" $opt "* ]]; then
+                    echo "You selected '${opt}'"
+                    export MACHINESWITCH="${opt}"
+                    # Here, you can add any logic you want to execute based on the selected option.
+                    # For example, you might want to source the selected environment file:
+                    # source "$opt"
+                    break
+                else
+                    echo "Invalid option $REPLY. Please try again."
+                fi
+            done
+            #---- works in bash and zsh ----------- ^^^
+
+            ubuntu version
+              lsb_release -a
+                No LSB modules are available.
+                Distributor ID:	Ubuntu
+                Description:	Ubuntu 22.04.4 LTS
+                Release:	22.04
+                Codename:	jammy
+              lsb_release -ds
+                Ubuntu 22.04.4 LTS
+              lsb_release -sc
+                jammy
+              uname -m
+                x86_64
+              hostnamectl
+                 Static hostname: simon-desktop
+                       Icon name: computer-desktop
+                         Chassis: desktop
+                      Machine ID: 2d56xxxxxxxxxxxxxxxxxxxxxxxd6c56
+                         Boot ID: 5b47xxxxxxxxxxxxxxxxxxxxxxxxb6e8
+                Operating System: Ubuntu 22.04.4 LTS
+                          Kernel: Linux 6.5.0-41-generic
+                    Architecture: x86-64
+
+            # suppress all - exit code, stdout and stderr
+            # more cross shell (I mean it works in zsh, bash, sh)
+            non_existing_command 1> /dev/null 2> /dev/null || true
+            # less cross shell
+            non_existing_command > /dev/null 2>&1 || true
+
+            # oneliner IF ELSE FI
+            if [ "${_BINARY}" = "/bin/zsh" ]; then read -sk; else read -n 1; fi
+            if [ "${_BINARY}" = "/bin/zsh" ]; then
+              read -sk
+            else
+              read -n 1
+            fi
+
+            extract ${PATH} $PATH, each path in separate line
+              echo ${PATH} | tr ":" '\n'
+
+            clear cache (hash table): "hash entry in your shell"
+              hash -d ffmpeg
+              # or clear all
+              hash -r
+
+            # detect current shell
+            _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
+            _SHELL="$(basename ${_SHELL//-/})"
+            case ${_SHELL} in
+              zsh)
+                _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+                _0="$( basename "${(%):-%N}" )"
+                _SCRIPT="${(%):-%N}"
+                _BINARY="/bin/zsh"
+                _PWD="$(pwd)"
+                ;;
+              sh)
+                # be carefull this will not work when sourcing this file in sh shell
+                # will though work when called /bin/sh my_script.sh from any shell
+                _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+                _0="$( basename "${0}" )"
+                _SCRIPT="${0}"
+                _BINARY="/bin/sh"
+                _PWD="$(pwd)"
+                ;;
+              *)
+                _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+                _0="$( basename "${BASH_SOURCE[0]}" )"
+                _SCRIPT="${BASH_SOURCE[0]}"
+                _BINARY="/bin/bash"
+                _PWD="$(pwd)"
+                ;;
+            esac
+            ROOT="${_DIR}/../.."
+            cd "${ROOT}"
+            ROOT="$(pwd)"
+
+            echo "_SHELL>${_SHELL}<"
+            echo "_DIR>${_DIR}<"
+            echo "_0>${_0}<"
+            echo "_SCRIPT>${_SCRIPT}<"
+            echo "_BINARY>${_BINARY}<"
+            echo "_PWD>${_PWD}<"
+
+            # expand HOME directory
+            TARGET="~/.m2"
+            eval TARGET="${TARGET}"
+            # or simply
+            eval TARGET="~/.m2";
+            echo ">${TARGET}<"
+
+            # --- iterate over lines ---- vvv
+            LIST="$(find . -type f \( -regex '.*/8_.*' -o -regex '.*/7_.*' -o -regex '.*/11_.*' \))"
+            SAVEIFS=$IFS
+            IFS=$'\n'
+            ARR=($LIST)
+            IFS=$SAVEIFS
+            COUNT="$(echo "${LIST}" | wc -l)"
+            I="0"
+
+            for xxx in "${ARR[@]}"
+            do
+                I="$(($I + 1))"
+                echo -e "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}"
+                echo "$xxx"
+            done
+            # --- iterate over lines ---- ^^^
+
+
+            # ------------------ collect stdout for logs --------------------- vvv
+            cat <<EEE > ttt.sh
+            echo John have a cat
+            echo Cat have a hiv>&2
+            exit 4
+            EEE
+            cat <<EEE > tttt.sh
+            set -e
+            function cleanup {
+            cat <<AAA
+            1111[[\${LOG}]]\${?}]]
+            AAA
+            }
+            trap cleanup EXIT;
+            if [ "\${LETGO}" = "" ]; then
+              set +e
+            fi
+            LOG=""
+            LOG+=\$'\n=== tools/convert-img.sh called from batch-one.sh ===\n'"\$(/bin/bash ttt.sh 2>&1)"
+            STATUS="\${?}"
+            cat <<AAA
+            2222[[\${LOG}]]\${STATUS}]]
+            AAA
+            exit 10;
+            EEE
+            echo -----------111
+            /bin/bash tttt.sh
+            echo -----------222
+            LETGO=1 /bin/bash tttt.sh
+
+            # prints
+            -----------111
+            2222[[
+            === tools/convert-img.sh called from batch-one.sh ===
+            John have a cat
+            Cat have a hiv]]4]]
+            1111[[
+            === tools/convert-img.sh called from batch-one.sh ===
+            John have a cat
+            Cat have a hiv]]10]]
+            -----------222
+            1111[[
+            === tools/convert-img.sh called from batch-one.sh ===
+            John have a cat
+            Cat have a hiv]]4]]
+            # ------------------ collect stdout --------------------- ^^^
+
+            # --- pause a script until keypress --------------- vvv
+            read -n 1
+            # --- pause a script until keypress --------------- ^^^
+
+            # ------- find and iterate ------- vvv
+
+
+            # handleExitCode ${?} "oc project"
+            function handleExitCode {
+              if [ "${1}" != "0"  ]; then
+                  echo "handleExitCode: exit code not 0 >${1}< for ${2}"
+                  exit 1
+              fi
+            }
+
+
+
+            trim() {
+                local var="${*}"
+                # remove leading whitespace characters
+                var="${var#"${var%%[![:space:]]*}"}"
+                # remove trailing whitespace characters
+                var="${var%"${var##*[![:space:]]}"}"
+                echo -n "${var}"
+            }
+            # then trim like this
+            COUNT="$(trim "${COUNT}")"
+
+
+            trimstring(){ # from: https://jcgoran.github.io/2021/02/07/bash-string-trimming.html
+                if [ $# -ne 1 ]
+                then
+                    echo "USAGE: trimstring [STRING]"
+                    return 1
+                fi
+                s="${1}"
+                size_before=${#s}
+                size_after=0
+                while [ ${size_before} -ne ${size_after} ]
+                do
+                    size_before=${#s}
+                    s="${s#[[:space:]]}"
+                    s="${s%[[:space:]]}"
+                    size_after=${#s}
+                done
+                echo "${s}"
+                return 0
+            }
+
+            cd "$_P"
+
+
+
+            if [ $# -gt 0 ]; then
+                shift
+                # to prevent:
+                # run:shift:386: shift count must be <= $#
+            fi
+
+
+
+
+            # ------- find and iterate ------- ^^^
+
+            export PATH="${PATH}:/new/path"
+
+            # path interpolation
+
+            mkdir -p ~/__test/one\ two/three/four
+            _SS="~/__test/one two/three/four"
+            _SS="$(echo "${_SS}" | sed -E 's/( )/\\\1/g')"
+            eval _SS="${_SS}"
+            echo ">${_SS}<"
+
+
+            # if some linux tool is missing on mac, use linux
+            docker run -t -v "$(pwd):/opt/code" -w "/opt/code" ubuntu find -type f -executable
+
+            export _KILL="arang"; ps aux | grep "${_KILL}" | grep -v grep;echo "\n    are you sure? (y) \"${_KILL}\"\n"; read VAL; if [ "${VAL}" = "y" ]; then kill $(ps aux | grep "${_KILL}" | grep -v grep | awk '{print $2}'); else echo canceled...; fi
+
+            source ".env"
+            export $(cut -d= -f1 ".env" | grep -v -E "^#" | tr "\n" " ")
+                # from: https://github.com/stopsopa/stopsopa.github.io/blob/master/bash/exportsource.sh
+
+
+
+            # find .git/config with given git source path
+            find . -type f -name config | grep --color=never -v node_modules | grep --color=never /.git/config | xargs -n 1 realpath | xargs -n 1 -- bash -c '
+            FILE="$0" # because it is inline script (bash -c) then first arg is not a 1 arg but 0
+            STDOUT="$(awk "{
+                if (\$0 ~ /git@bitbucket\.org:org\/proj\.git/) {
+                    print \$0
+                }
+            }" "$FILE")"
+
+            if [ "$STDOUT" = "" ]; then
+                echo "$FILE not found"
+            else
+                echo -e "$FILE \033[32mFOUND\e[0m"
+            fi
+            '
+
+            # pick choose by number from the list
+            SSHS="$(echo "${_LIST}" | sed -n "${i} p")"
+
+            # basename and file extension, example FILE="abcdef/ghi/MY_FILE.TXT"
+            PD="$(dirname "${FILE}")"         # abcdef/ghi
+            PB="$(basename "${FILE}")"        # MY_FILE.TXT
+            EXTENSION="${PB##*.}"             # TXT
+            FILENAME="${PB%.*}"               # MY_FILE
+            if [ "${FILENAME}" = "" ]; then
+                FILENAME="${PB}"
+                EXTENSION=""
+            fi
+            if [ "${FILENAME}" = "${PB}" ]; then
+                EXTENSION=""
+            fi
+            EXTENSION_LOWER="$(echo -n "$EXTENSION" | tr '[:upper:]' '[:lower:]')"  # txt
+
+            # extracting unique extensions from directory: --------------- vvv
+              # grep here is needed because awk -F ... can't really handle well paths to files without extension
+              # and it will return the whole path, but full path will have somewhere / so we can use this fact to filter this out
+              ALL_EXTENSIONS="$(find "${PROCESSED_DIR}" -type f | awk -F. '/\./ {print $NF}' | grep -v '/' | sort | uniq | sort)"
+            # extracting unique extensions from directory: --------------- ^^^
+
+            # exists in file, file contains
+            if [ "$(cat ~/.zshrc | grep 'tartufo')" = "" ]; then
+                # yep - it exists
+            fi
+
+
+            # waiting for one character
+            # button press
+            # stop script until button pressed
+            # reading one character in zsh, bash - reading keyboard input
+            { red "${COUNT} files found (more than ${MAX}), are you sure you want to include them to other libraries them? (y|n)\n"; } 2>&3
+            if [ "${_BINARY}" = "/bin/zsh" ]; then
+              read -sk
+            else
+              read -n 1
+            fi
+            echo "REPLY=$REPLY"
+            echo    # (optional) move to a new line
+            if ! [[ $REPLY =~ ^[Yy]$ ]]; then
+              { green "script stopped"; } 2>&3
+              exit 1
+            fi
+
+
+            # pipe stin to function:
+            cat <<FILE > ___test.sh
+            function _osht_xmlencode {
+                sed -e 's/\&/\&amp;/g' -e 's/\"/\&quot;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+                # To be painfully explicit  https://stackoverflow.com/a/14009482
+                # cat - | sed -e 's/\&/\&amp;/g' -e 's/\"/\&quot;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+            }
+            function grephello {
+                grep HELLO
+            }
+            cat <<EOF | _osht_xmlencode
+            VVVVV
+            first & and && ;
+            second " mid > mid
+            almost < near > end
+            ^^^^^^
+            EOF
+            cat <<EOF | grephello
+            VVVVV
+            normal
+            xxx HELLO test
+            mid
+            HELLO
+            end
+            ^^^^^^
+            EOF
+            FILE
+            /bin/bash ___test.sh
+            rm -rf ___test.sh
+
+
+            # cut from beginning
+            echo test | md5 | cut -c 1-5
+
+            /bin/bash -c "while true
+            do
+                date "+%Y_%m_%d_%H_%M_%S"
+                echo test
+                sleep 30
+            done
+            " 2>&1 | tee log.log
+
+
+            function extractValueFromJsonByKey {
+              local INPUT="$(cat)"
+
+              REG="^.*\"${1}\"[[:space:]]*:[[:space:]]*\"([^\"]+)\".*\$"
+
+              if [[ ${INPUT} =~ ${REG} ]]; then
+
+                  echo "${INPUT}" | tr '\n' '\f' | sed -E "s/${REG}/\1/"
+              fi
+            }
+
+            function validateSecret {
+
+              REG="^[a-zA-Z0-9\+\/]+\$"
+
+              if ! [[ ${2} =~ ${REG} ]]; then
+
+                  echo "validateSecret value '${2}' from key '${1}' don't match ${REG}"
+
+                  exit 1;
+              fi
+            }
+
+            # idea from: https://unix.stackexchange.com/a/522054
+            # usage
+            #  divideInTwo "abcde" " ---- "
+            function divideInTwo {
+
+              DELIMITER="${2}"
+
+              if [ "${DELIMITER}" = "" ]; then
+                DELIMITER="<-**->"
+              fi
+
+              printf "${1:0:${#1}/2}${DELIMITER}${1:${#1}/2}"
+            }
+            echo "AWS_ACCESS_KEY_ID >$(divideInTwo "${AWS_ACCESS_KEY_ID}")<"
+
+            # delete empty directories
+            find /path/to/directory -type d -empty -delete
+
+            # -------------- clear line before Carriage Return return caret --- vvv
+            I="$((I+1))"
+            TERMINAL_WIDTH=$(tput cols)
+            printf '\r%*s' "$((TERMINAL_WIDTH - 1))"
+            echo -n -e "\r${I}/${TOTAL} ${FILE}"
+            # -------------- clear line before Carriage Return return caret --- ^^^
+          </script>
+
+          <h2>monitoring tools</h2>
+
+          <script type="editor" data-lang="sh">
+
+            stui
+              stressing cpu and monitoring
+              https://youtu.be/4isEhE2rvmA?si=h4_STlO2MnJMHT_J&t=82
+          </script>
+          <h2>remove/replace lines from special value to special value</h2>
+
+          <script type="editor" data-lang="sh">
+
+            # typescript - filter out all files where errors are detected, deduplicate and sort
+            npx tsc | perl -ne "print if /^([a-z\d\/\._-]+).*/i" | perl -p -e 's#^([a-z\d\/\._-]+).*#$1#ig' | grep -v node_modules | uniq | sort > ../ts.log
+            # and then for each file add @ts-nocheck             # for each line in the file
+
+            ignore_comment="// @ts-nocheck";
+            while IFS= read -r file; do
+              echo "processing >${file}<"
+              (echo "$ignore_comment"; cat "$file") > temp_file && mv temp_file "$file"
+            done < ../ts.log
+
+
+            cat <<EEE | sed '/REMOVEFROMHRE/,/TOHERE/d'
+            a
+            b
+            c
+            REMOVEFROMHRE 001
+            d
+            e
+            f
+            TOHERE 001
+            g
+            h
+            i
+            REMOVEFROMHRE 002
+            j
+            k
+            l
+            TOHERE 002
+            m
+            n
+            EEE
+
+
+
+            NUC_NODE_DIR="/home/sd/nuc_small/node"
+            cat <<EEE | sed "s|${NUC_NODE_DIR}|__NUC_NODE_DIR__REPLACED__|g"
+            rm -rf /home/sd/nuc_small/node/samples/heic/IMG_2558.jpg
+            magick mogrify -monitor -format jpg /home/sd/nuc_small/node/samples/heic/IMG_2558.HEIC /home/sd/nuc_small/node/samples/heic/IMG_2558.jpg
+            ls /home/sd/nuc_small/node/samples/heic/IMG_2558.jpg
+            rm -rf /home/sd/nuc_small/node/samples/heic/IMG_2558.jpg
+            EEE
+          </script>
+          <h2>random</h2>
+          <script type="editor" data-lang="sh">
+            awk -v min=0 -v max=2 'BEGIN{srand(); print min + rand() * (max-min)}' | xargs printf "%.1f"
+            # will generate number between 0 and 2 -> 0.1 or 1.9 for example
+          </script>
+
+          <h2>multiline execute in bash</h2>
+
+          <script type="editor" data-lang="sh">
+
+            bash <<EOF
+            echo test
+            echo end
+            EOF
+          </script>
+          <h2>replace in place</h2>
+          <script type="editor" data-lang="sh">
+
+            perl -pi -e 's#import ([^\s]+) from "(.*?).js";#import \1 from "\2.mjs";#g' "${file}"
+
+            -i[extension]         edit <> files in place (makes backup if extension supplied)
+              # from perl --help
+          </script>
+
+          <h2>running process in background</h2>
+          <script type="editor" data-lang="sh">
+
+            /bin/bash test.sh &
+            /bin/bash test.sh & disown
+            nohup /bin/bash test.sh &
+          </script>
+          <h2>manpages</h2>
+          <script type="editor" data-lang="sh">
+
+            # more to explore: https://www.youtube.com/watch?v=cnmtKv2kUXs
+            # listing all sections
+              find /usr/share/man/man* -type f -exec basename {} \; | sed 's/.*\.\([^.]\+\)\.[^.]\+$/\1/g' | sort | uniq -c | sort -n -r | tee /tmp/1
+                # from: https://youtu.be/cnmtKv2kUXs?t=251
+              man -k . | sed 's/.* (\([^)]\+\)).*- .*/\1/g' | sort | uniq -c | sort -n -r | tee /tmp/2
+                # from: https://youtu.be/cnmtKv2kUXs?t=268
+              # diff
+              vim -d /tmp/1 /tmp/2
+
+            # list all from sections 4 (for example)
+            man -k 4 .
+                # from: https://youtu.be/cnmtKv2kUXs?t=284
+
+            # find out more about "info pages"
+                # https://www.youtube.com/watch?v=vnBCnd2L0dY
+                # from: https://youtu.be/cnmtKv2kUXs?t=341
+
+            # check if program is builtin command
+            type -a alias
+                # from: https://youtu.be/vnBCnd2L0dY?t=320
+                # then use
+                  man bash
+                  # and search for "alias"
+
+            # use also infopages
+                info ed
+                info vim
+
+
+            # https://www.cyberciti.biz/faq/how-to-add-install-man-pages-on-ubuntu-linux/
+            # g(How to install man pages on Ubuntu Linux)
+            # manpages
+            cat <<EOF | docker build -t ubuntu:18.04-man -
+            FROM ubuntu:18.04
+            RUN apt-get update && yes | unminimize && apt install -y manpages manpages-dev manpages-posix manpages-posix-dev manpages-pl manpages-pl-dev
+            EOF
+            docker images | grep ubuntu | grep 18.04-man
+            docker run -it ubuntu:18.04-man bash
+
+            then run
+               lsb_release -a
+
+
+
+            # usage
+            man -d # Print extra debugging information
+            man -w man # Display the location of the manual page instead of the contents of the manual page.
+            man -k mkdir
+              # search in manpages for 'mkdir'
+            man 2 mkdir
+              # open
+
+            # other examples
+            man -k passwd
+            man 8 passwd
+            man 5 passwd
+
+            # lang
+            locale # will print
+            LANG="en_GB.UTF-8"
+            LC_COLLATE="en_GB.UTF-8"
+            LC_CTYPE="en_GB.UTF-8"
+            LC_MESSAGES="en_GB.UTF-8"
+            LC_MONETARY="en_GB.UTF-8"
+            LC_NUMERIC="en_GB.UTF-8"
+            LC_TIME="en_GB.UTF-8"
+            LC_ALL=
+
+            # single execution in different lang
+            man -L pl man
+            # or switch with
+            alias man="man -L pl"
+            unalias man
+          </script>
+
+          <h2>Get exit status of process that's piped to another</h2>
+          <a href="https://unix.stackexchange.com/a/14276">https://unix.stackexchange.com/a/14276</a>
+          <h2>Books and manuals</h2>
+          <a href="https://doc.lagout.org/operating%20system%20/linux/Classic%20Shell%20Scripting.pdf"
+            >Classic Shell Scripting</a
+          >
+          <br />
+          <a href="https://www.google.com/search?q=advanced+bash+scripting+guide+pdf"
+            >g(advanced bash scripting guide pdf)</a
+          >
+          <br />
+          <a href="https://kapeli.com/cheat_sheets/Bash_Test_Operators.docset/Contents/Resources/Documents/index"
+            >g(Bash Test Operators)</a
+          >
+          <h2>check write/read access of all in directory</h2>
+          <script type="editor" data-lang="sh">
+
+            find /path/to/directory -not -writable -exec echo {} does not have write access \;
+            find /path/to/directory -not -readable -exec echo {} does not have read access \;
+
+            find source/  -not -writable -readable -exec echo {} does not have write access \;
+              # this will find files which are at the same time not writtable AND not readdable
+
+            find source/ \( -not -writable -o -not -readable \) -exec echo {} does not have write or read access \;
+              # this will find files which are not writtable OR not readdable
+
+            find source/ \( -not -writable -o -not -readable \) ! -type l -exec echo {} does not have write or read access \;
+              # like above but except don't list links
+          </script>
+
+          <h2>stop system shutdown</h2>
+
+          <script type="editor" data-lang="sh">
+
+            sudo shutdown -r now
+            sudo shutdown -h now
+            sudo poweroff --force
+            sudo poweroff --force --force
+          </script>
+          <h2>forward stdin</h2>
+          <script type="editor" data-lang="sh">
+
+            cat <<EEE > test.sh
+            echo start
+            TEST="\$(cat)"
+            TEST2="\$(cat)"
+            echo "TEST>\${TEST}<"
+            echo "TEST2>\${TEST2}<"
+            EEE
+
+            echo arg1 arg2 | /bin/bash test.sh
+
+            # will print:
+            start
+            TEST>arg1 arg2<
+            TEST2><
+          </script>
+          <h2>Validate https</h2>
+          
+          <script type="editor" data-lang="sh">
+
+            curl -k https://localhost:8443 | head
+              that will return correct response
+              
+            curl -I -v -k https://localhost:8443
+                we can extract CN value in my case it is:
+                  subject: CN=*.mydomian.com
+            
+            also it can look into:
+            openssl s_client -connect localhost:8443 -servername localhost
+                you can check "Certificate chain"
+                and "Verify return code"
+            
+          </script>
+          <h2>http server</h2>
+
+          <script type="editor" data-lang="sh">
+
+            export PPORT="5090" && echo -e "\n    http://localhost:${PPORT} \n" && python3 -m http.server ${PPORT}
+
+            python -m http.server \${JEST_COVERAGE_PORT} --directory ./coverage
+          </script>
+
+          <h2>newline count</h2>
+
+          <script type="editor" data-lang="sh">
+
+            # counting newline new line character
+            echo ">$(cat file.txt | tr -cd '\n' | wc -c | awk '{$1=$1};1')<"
+          </script>
+          <h2>watch</h2>
+
+          <script type="editor" data-lang="sh">
+
+            brew install watch
+
+            while :; do clear; docker ps; sleep 0.5; done
+
+            watch -n 0.5 docker ps
+          </script>
+        </div>
+
+        <h2>Hash table</h2>
+        <a href="https://stackoverflow.com/questions/1494178/how-to-define-hash-tables-in-bash"
+          >https://stackoverflow.com/questions/1494178/how-to-define-hash-tables-in-bash</a
+        >
+        <br />
+        <a href="https://levelup.gitconnected.com/5-less-known-bash-concepts-to-level-up-your-linux-skills-7bcf363804d1"
+          >https://levelup.gitconnected.com/5-less-known-bash-concepts-to-level-up-your-linux-skills-7bcf363804d1</a
+        >
+        <h2>cloc</h2>
+        <script type="editor" data-lang="sh">
+
+          npx cloc . --vcs git
+
+          npx cloc . \
+            --exclude-dir=_sample-content,_site,node_modules \
+            --exclude-ext=yaml,json,svg
+        </script>
+        <h2>xx</h2>
+        <p>INFO: Always copy script from here because it contains sha384 hash guards</p>
+        <script type="editor" data-lang="sh">
+          wget --help 1> /dev/null 2> /dev/null
+          WGETSTATUS="${?}"
+          function wgetshim {
+            eval _SOURCE="${1}"
+            eval _TARGET="${2}"
+            echo -n "\n\nwget downloading "${_SOURCE}" to "${_TARGET}\n\n"
+            if [ "${WGETSTATUS}" = "0" ]; then
+              wget --no-cache -O "${_TARGET}" "${_SOURCE}"
+            else
+              curl "${_SOURCE}" -o "${_TARGET}"
+            fi
+          }
+          mkdir ~/xx
+          wgetshim "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.node.bundled.gitignored.cjs" ~/xx/xx.node.bundled.gitignored.cjs
+          wgetshim "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.sh" ~/xx/xx.sh
+          if \
+            [ "$(printf "sha384-$(cat ~/xx/xx.node.bundled.gitignored.cjs | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.node.bundled.gitignored.cjs" ] \
+          || \
+            [ "$(printf "sha384-$(cat ~/xx/xx.sh | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.sh" ] \
+          ; then
+            echo "checksum verified - installing"
+            eval _SCRIPT="~/xx/xx.sh"
+            BASHADD="alias xx=\"/bin/bash ${_SCRIPT}\" # xx mount"
+            if ! grep -qF "$BASHADD" ~/.bashrc; then
+              echo "$BASHADD" >> ~/.bashrc
+            fi
+            source ~/.bashrc
+            xx
+          else
+            echo "checksum corrupted - deleting file"
+            rm ~/xx/xx.node.bundled.gitignored.cjs
+            rm ~/xx/xx.sh
+          fi
+        </script>
+        <h2>test.sh</h2>
+        <a href="https://github.com/stopsopa/gphotos-research/blob/master/bash/test.sh"
+          >https://github.com/stopsopa/gphotos-research/blob/master/bash/test.sh</a
+        >
+        <br />
+        <a href="https://github.com/stopsopa/gphotos-research/blob/master/bash/node/bash_array_test.sh"
+          >https://github.com/stopsopa/gphotos-research/blob/master/bash/node/bash_array_test.sh</a
+        >
+        <h2>vim</h2>
+
+        <script type="editor" data-lang="sh">
+
+          xxd filename | less
+            # to dump file in hex format
+
+          # edit as hex
+            open file in vim then type
+            :%!xxd
+            # edit file then type
+            :%!xxd -r
+            # and then save file normally
+            :wq
+            # from: https://stackoverflow.com/a/827369
+        </script>
+        <h2>collecting logs in the script</h2>
+
+        <script type="editor" data-lang="sh">
+
+          # declare array for collecting logs
+          declare -a LOG_ARRAY
+          log() {
+            LOG_ARRAY+=("$1")
+          }
+
+          # then start collecting logs
+          log "SUM HEIC \"${SUM}\""
+          log "EXECUTE /bin/bash \"$_DIR/lib/heic-to-jpg.sh\" \"${FOUNDABS}\""
+
+          # you might register trap
+
+          function cleanup {
+
+            log "cleanup function:"
+            for i in "${DELETE[@]}"
+            do
+                echo -e "removing '$i'";
+                log "EXECUTE rm -rf \"$i\""
+                unlink "$i" || true
+            done
+
+            U_DIR="$(generateUnhandledDir)";
+
+            ERRORLOGFILE="$U_DIR/error.log";
+
+            cat <<EEE > "$ERRORLOGFILE"
+          start time: ${STARTTIME}
+          end   time: $(date +%Y-%m-%d_%H-%M-%S)
+          $(printf "%s\n" "${LOG_ARRAY[@]}")
+          EXIT STATUS: ${_EXIT_STATUS}
+          ---- stdout ---- vvv
+          ${_STDOUT}
+          ---- stdout ---- ^^^
+          full error log: ${ERRORLOGFILE}
+          EEE
+          }
+          trap cleanup EXIT;
+        </script>
+        <h2>diff</h2>
+        <script type="editor" data-lang="sh">
+
+          diff <(curl https://foo.com) <(curl https://bar.com)
+
+          # or
+          vim -d /tmp/1 /tmp/2
+              # from: https://youtu.be/cnmtKv2kUXs?si=AYBquX6ENjnD5wST&t=268
+
+          ===== generating diff files =================== vvv
+          mkdir ttt
+          cd ttt
+          cat <<EEE > a.js
+          abc
+          def
+          ghi
+          jkl
+          mno
+          pqr
+          stu
+          wxy
+          z
+          EEE
+
+
+          cat <<EEE > b.js
+          vgr
+          abc
+          ghi
+          jkl
+          new
+          pqr
+          stt
+          wxy
+          z
+          EEE
+
+          diff -u a.js b.js > diff.diff
+
+          # will generate
+          --- a.js	2024-06-19 00:33:14
+          +++ b.js	2024-06-19 00:33:43
+          @@ -1,9 +1,9 @@
+          +vgr
+          abc
+          -def
+          ghi
+          jkl
+          -mno
+          +new
+          pqr
+          -stu
+          +stt
+          wxy
+          z
+          \ No newline at end of file
+          # will generate
+
+          # now once we have that
+          cp a.js restored.js
+          patch restored.js diff.diff
+          # now restored.js will be the same as b.js
+          # we can confirm that running
+          diff -u b.js restored.js
+          # will print nothing and return 0 exit code
+          ===== generating diff files =================== ^^^
+
+          ===== generating diff files == binary ================= vvv
+          cd tttt
+          cd tttt
+          cat <<EEE > main.go
+          package main
+          import "fmt"
+          func main() {fmt.Println("Hello, World!")}
+          EEE
+          cat <<EEE > go.mod
+          module example/hello
+          go 1.22.0
+          EEE
+          go build
+          ./hello
+          # program works
+
+          cp hello broken
+          chmod a+x broken
+          ./broken
+          # working copy of program
+
+
+          cat <<EEE > break.sh
+          FILE="broken"
+          SIZE=\$(stat -f%z "\$FILE")
+          NUM_BITS=3
+            for ((i=0; i<\$NUM_BITS; i++)); do
+            POS=\$(jot -r 1 0 "\$((SIZE - 1))")
+            BYTE=\$(dd if="\$FILE" bs=1 skip="\$POS" count=1 2>/dev/null | od -An -t u1)
+            BIT_POS=\$(jot -r 1 0 7)
+            NEW_BYTE=\$((BYTE ^ (1 << BIT_POS)))
+            echo "i: \$i POS: \$POS BYTE: \$BYTE NEW_BYTE: \$NEW_BYTE"
+            printf "\\\$(printf '%03o' "\$NEW_BYTE")" | dd of="\$FILE" bs=1 seek="\$POS" count=1 conv=notrunc &> /dev/null
+          done
+          EEE
+          /bin/bash break.sh
+          ./broken
+          # now it doesn't work
+
+          # let's generate diff:
+          bsdiff broken hello diff.diff
+          ls -la
+          # let's see how small diff file is
+
+          # let's generate fixed file using broken file and diff
+          bspatch broken fixed diff.diff
+          chmod a+x fixed
+
+          # and now it works back again
+          ./fixed
+
+          ===== generating diff files == binary ================= ^^^
+        </script>
+        <h2>tee</h2>
+        <script type="editor" data-lang="sh">
+
+          sometimes tee will not capture command output:
+            sshfs -odebug,sshfs_debug,loglevel=debug simon@192.168.1.51:/home/simon "/Users/szdz/Workspace/STOPSOPA__gphotos-research/STOPSOPA__gphotos-research/mount_nuc" | tee nuc.log
+
+          in this case change it to:
+            sshfs -odebug,sshfs_debug,loglevel=debug simon@192.168.1.51:/home/simon "/Users/szdz/Workspace/STOPSOPA__gphotos-research/STOPSOPA__gphotos-research/mount_nuc" 2>&1 | tee nuc.log
+        </script>
+        <h2>inode</h2>
+        <script type="editor" data-lang="sh">
+
+          touch -
+          # create file named '-'
+
+          ls -i
+          # list files with its inode name
+
+          find . -inum xxxxx -exec rm {} \;
+          # remove file by inode
+
+            # from: https://developer.ibm.com/articles/au-speakingunix14/#the-ls-command
+        </script>
+        <h2>glob</h2>
+        <a href="https://www.digitalocean.com/community/tools/glob?comments=true"
+          >g(digitalocean Glob ToolTest globs against sets of test strings quickly and easily)</a
+        >
+        <script type="editor" data-lang="sh">
+
+          # testing glob pattern - what files it will find
+          ls -la **/*.spec.js
+
+          echo -n **/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
+          echo -n tests/**/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
+        </script>
+        <h2>crontab</h2>
+        <script type="editor" data-lang="sh">
+
+          https://crontab.guru/#50_16_*_*_MON-FRI
+          # result
+            50 16 * * MON-FRI /usr/bin/osascript -e 'display notification "📅 Fill the worklog" sound name "Sosumi"'
+
+          # see also: https://github.com/stopsopa/ios_notification/blob/main/README.md#cron
+        </script>
+        <h2>curl</h2>
+        <script type="editor" data-lang="sh">
+
+          curl wttr.in/lon
+        </script>
+        <h2>uppercase lowercase</h2>
+        <script type="editor" data-lang="sh">
+
+          echo AEółęĘ |tr '[:upper:]' '[:lower:]'
+          # output >aeółęę<
+        </script>
+        <h2>trim</h2>
+        <a href="/viewer.html?file=/bash/trim.sh">/viewer.html?file=/bash/trim.sh</a>
+        <script type="editor" data-lang="sh">
+
+          # just trim but leave newline character
+            echo ">$(echo "   fds  fff   " | awk '{$1=$1};1')<"
+
+          # this will trim also last new line character
+            git ls-remote --get-url origin | awk '{$1=$1};1' | tr -d '\n'
+
+          # checking if file is empty after trim
+
+          if [ "$(cat file.txt | awk '{$1=$1};1')" = "" ]; then
+
+              echo "${0} error: file.txt seems to be empty"
+          fi
+
+          # remove newline new line from the end
+
+          echo test
+            # will print test with \n at the end
+          echo -n test
+            # will not - but that's not the point because there might be other command
+            # or even chain of command where you will not be able to not have \n at the end but then
+
+          echo test | tr -d '\n'
+            # do that and and you are good
+        </script>
+
+        <h2>rsync</h2>
+        <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/bash/rsync.sh">rsync.sh</a>
+        <script type="editor" data-lang="sh">
+
+          # WARNING: remember if you are copying directories always specify / at the end of paths:
+
+          # examples:
+            rsync -azP root@xxx.xx.xx.xxx:/var/www/ /var/www/
+            rsync -rtlDzPvi root@xxx.xx.xx.xxx:/var/www/ /var/www/
+            # this will copy new files to the target
+            # it is safe to run again and again
+            # it will not remove files in the target if they were removed in the source
+            # -l   - copy links
+            # -z, --compress
+            # -t, --times                 preserve times
+            #                             WARNING: this one is actually very important to add because if not then later
+            #                             in next execution while file comparison will be performed on each file
+            #                             comparision is heavly based on timestamp. Withouth preserving timestamp
+            #                             while copying you will end up with lots of false positive
+            # -P     The -P option is equivalent to --partial --progress
+            # -a, --archive
+            #           This is equivalent to -rlptgoD.
+            #           It is a quick way of saying you want recursion and want to
+            #           preserve almost everything (with -H being a notable omission)
+            # in -rtlDzP I've dropped -ptgo, p-perms, t-times, g-group, o-owner
+
+          # ! might be destructive:
+          # rsync -azP --delete-after root@xxx.xx.xx.xxx:/var/www/ /var/www/ -n
+              # -n -> --dry-run
+              # --delete-after   -> This tells rsync to delete extraneous files from the receiving side
+              # if ok then remove then buckle up, remove -n and execute it
+
+          # TIPS/USEFUL:
+              # --ignore-existing         this will skip updating files on target (even if it have different content).
+              #                           will just check if it exists and if it does it will be skipped
+              # -i, --itemize-changes     to understand why file is considered "different"
+              # --ignore-times            will make sure to really compare content of files
+              #                           more on this one: https://stackoverflow.com/a/13779300
+              # -c, --checksum            skip based on checksum, not mod-time & size
+              #                           very thorough approach if you really care about content match
+              #                           but might be very slow because it reads all data (from source and target) to generate checksum
+              # -v, --verbose             increase verbosity
+
+          # other examples:
+
+            rsync -avzp --rsh='ssh -p23022' /srv/www site@xxx.xx.xx.xxx:/home/www/
+
+          # ISSUES:
+            ON MAC USE BUILDIN VERSION BECAUSE YOU WILL AVOID ISSUE WITH RSYNC COPYING THE SAME LIST OF FILES EVERY TIME YOU TRIGGER RSYNC:
+            https://superuser.com/a/1730435
+        </script>
+        <a href="https://www.andrew.cmu.edu/course/15-749/READINGS/required/cas/tridgell96.pdf"
+          >g(TR-CS-96-05 The rsync algorithm Andrew Tridgell and Paul Mackerras June 1996)</a
+        >
+
+        <h2>prepend date to each stream line</h2>
+
+        <a href="/viewer.html?file=/bash/dlogger.sh">/viewer.html?file=/bash/dlogger.sh</a>
+        <script type="editor" data-lang="sh">
+
+          # latest solution
+
+          cat <<EEE > dlogger.sh
+          #!/bin/bash
+          while IFS= read -r line; do
+            printf '[%s %s %s]%s\n' "\$(date '+%Y-%m-%d %H:%M:%S')" "\$1" "\$2" "\$line"
+          done
+          EEE
+
+
+          # then call
+          rm -rf log.log | true
+
+          node -e "
+          const {EOL} = require('os');
+          let k = 5;
+          (function loop() {
+            if (k !== 0) {
+              setTimeout(loop, 1000);
+            }
+            process.stdout.write('stdout: ' + k + EOL);
+            process.stderr.write('stderr: ' + k + EOL);
+            k -= 1;
+          }());
+          " 1> >(/bin/bash dlogger.sh o devserver >> log.log) 2> >(/bin/bash dlogger.sh e devserver >> log.log)
+
+
+          # older solution
+          node -e "
+          const {EOL} = require('os');
+          let k = 5;
+          (function loop() {
+            if (k !== 0) {
+              setTimeout(loop, 1000);
+            }
+            process.stdout.write('stdout: ' + k + EOL);
+            process.stderr.write('stderr: ' + k + EOL);
+            k -= 1;
+          }());
+          " |& while IFS= read -r line; do printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S') process" "$line"; done
+
+                # from: https://unix.stackexchange.com/a/26729
+        </script>
+
+        <h2>left pad leftPad</h2>
+        <script type="editor" data-lang="sh">
+          turns '30' into '00000030'
+          ITERATION=$(printf "%08d" "${2}")
+        </script>
+        <h2>grep</h2>
+        <script type="editor" data-lang="sh">
+
+          # match multiple at once
+          MATCHING=();
+          if grep -Eq "abc\.def|str\.ghi|hjl\.mno" "$FILE"; then
+
+              # add to the end of array
+              MATCHING+=("${FILE}")
+          fi
+
+          # grep by regex
+          # -i case insensitive - by default grep is case sensitive
+          cat <<EEE | grep -i -E '^[a-f0-9]+$'
+          ff fff
+          fdsa fdjsafds899
+          08850cb8ceb58b51f23fa63148a0ce0306e8697a
+          d 67jk
+
+          EEE
+
+          # grep filter replace
+          echo "google/Takeout/Untitled(272)" | perl -pe 's#[^a-z\d/]+#__#gi' # will print >google/Takeout/Untitled__272__<
+
+          echo "  AccessKeyId: sfreteree" | sed -E 's/^[[:space:]]+AccessKeyId:[[:space:]]+(.*)\$/\1/g'
+          #cat <<EEE | grep -i -E '^settings_[a-z_\-]+\.xml$' | sed -E 's/^settings_([a-z_-]+).xml$/\1/g'
+          cat <<EEE | grep -i -E '^settings_[a-z_\-]+\.xml$' | perl -pe 's#^settings_([a-z_-]+).xml$#\1#g'
+          settings_abc_def-ghi.xml
+          settings_abc.xml
+          settings_abc.xml2
+          dsettings_abc.xml
+
+          end
+          settings_endz.xml
+          EEE
+        </script>
+        <h2>cli keystrokes</h2>
+        <script type="editor" data-lang="sh">
+
+          ctrl + k - cut everything on the right from cursor
+          ctrl + u - cut everything on the right from cursor
+          ctrl + y - paste back what was previously cut with ctrl + k or u
+          ctrl + w - cut one "word" back
+          ctrl + x + e - open buffer in editor, then :wq (if this is vim) to execute;
+
+          reset -
+        </script>
+        <h2>function arguments - processing inside</h2>
+        <script type="editor" data-lang="sh">
+
+          cat <<EEE > ___test.sh
+          function proc {
+
+            echo "--->${0}<"
+
+            echo "proc >${@}<"
+
+            shift
+
+            echo "proc >${@}<"
+          }
+
+          echo "global >${@}<"
+
+          proc ${@}
+
+          proc f g h
+
+          TEST="proc $@";
+
+          ${TEST}
+
+          echo "global >${@}<"
+          EEE
+
+          /bin/bash ___test.sh
+          # will print
+          # global >a b c<
+          # --->ttt.sh<
+          # proc >a b c<
+          # proc >b c<
+          # --->ttt.sh<
+          # proc >f g h<
+          # proc >g h<
+          # --->ttt.sh<
+          # proc >a b c<
+          # proc >b c<
+          # global >a b c<
+        </script>
+        <h2>stream buffer control</h2>
+        <a
+          href="https://stackoverflow.com/questions/71782041/sed-and-tee-when-working-together-no-longer-behaves-like-stream"
+          >Stackoverflow question I've asked</a
+        >
+        <br />
+        <a href="http://www.pixelbeat.org/programming/stdio_buffering/"
+          >http://www.pixelbeat.org/programming/stdio_buffering/</a
+        >
+        <br />
+        <a href="https://mywiki.wooledge.org/BashFAQ/009" style="background-color: blue"
+          >https://mywiki.wooledge.org/BashFAQ/009</a
+        >
+        <br />
+        <a href="https://stackoverflow.com/questions/3465619/how-to-make-output-of-any-shell-command-unbuffered"
+          >https://stackoverflow.com/questions/3465619/how-to-make-output-of-any-shell-command-unbuffered</a
+        >
+        <br />
+        <a href="https://stackoverflow.com/a/33741419">https://stackoverflow.com/a/33741419</a>
+
+        <pre>
+AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it) automatically turns on full buffering and there is nothing you can do about it :-(. "Line buffering" (which is what you want) is only used when reading/writing a terminal. The ugly hacks exactly do this: They connect a program to a pseudo-terminal, so that the other tools in the pipe read/write from that terminal in line buffering mode. The whole problem is described here:          
+
+# from: https://stackoverflow.com/a/3465784
+          </pre
+        >
+        <script type="editor" data-lang="sh">
+
+          # trick 1 (using 'unbuffer' from 'expect' lib)
+          # on mac requires: export HOMEBREW_NO_AUTO_UPDATE=1 && brew install expect
+          # on ubuntu requires: apt-get install expect
+          # after reading man unbuffer:
+            # unbuffer -p may appear to work incorrectly if a process feeding input to unbuffer exits.  Consider:
+            #             process1 | unbuffer -p process2 | process3
+          # after installing proper dependencies it seems to work on both mac and linux
+
+
+          printf "
+
+          first line
+          \e[32msecond\e[0m line
+          \e[33mthird\e[0m line
+          \e[35mfourth\e[0m line
+          \e[31mfifth\e[0m line
+          last line
+
+          " | perl -pe "system 'sleep .3'" | unbuffer -p sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | tee color.txt
+
+
+          # trick 2
+          stdbuf -i0 -o0 -e0 command
+
+          #like (using stdbuf makes this example work on linux, but not on mac)
+
+          printf "
+
+          first line
+          \e[32msecond\e[0m line
+          \e[33mthird\e[0m line
+          \e[35mfourth\e[0m line
+          \e[31mfifth\e[0m line
+          last line
+
+          " | perl -pe "system 'sleep .3'" | stdbuf -i0 -o0 -e0 sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | tee color.txt
+        </script>
+
+        <h2>tmux</h2>
+        <script type="editor" data-lang="sh">
+          # on mac right now it is version
+          $ √ tmux -V
+          tmux 3.4
+
+          Ctrl+b - key combination of a prefix key, 'C-b' (Ctrl-b) by default
+
+          // study more: https://jeongwhanchoi.medium.com/install-tmux-on-osx-and-basics-commands-for-beginners-be22520fd95e
+        </script>
+
+        <h2>xargs</h2>
+        <script type="editor" data-lang="sh">
+
+          # find all png files and no mater where these are copy them to my png/ directory
+            find . -name '*.png' -print0  | xargs -0 -I{} cp {} ./png
+
+          # --- warning ---- vvv
+          find source/ -type f \( -name "*.mov" -o -name "*.mp4" \) -print0 | xargs -0 ls -lSh
+            # this will find list and pass it to xargs and xargs will pass it down to ls -lSh
+            # but when find doesn't list anything then ls -lSh will be called without argument
+            # in that case ls will list content of CURRENT directory, which might be
+            # terrible in it's consequences when processed further with pipe
+
+          # to prevent that use -r with xargs
+          # test
+          mkdir ttt
+          touch ttt/ttt.txt
+          find ttt -type f -print0 | xargs -0 ls -lSh
+          rm -rf ttt/ttt.txt
+          find ttt -type f -print0 | xargs -0 ls -lSh
+            # see, this is not good, but then add -r and problem dissapears
+          find ttt -type f -print0 | xargs -r -0 ls -lSh
+            # even exit code is good now (even when set -o pipefail enabled- yes I've checked that too)
+
+          # --- warning ---- ^^^
+
+          # https://shapeshed.com/unix-xargs/
+          echo -e "one two three\nfour six seven\neight" | xargs -t echo -e xxx
+          # echo -e xxx one two three four six seven eight
+          # -e xxx one two three four six seven eight
+          #    -p  - prompt/user_confirmation mode
+
+          seq 3 | xargs -- echo number
+          # number 1 2 3
+
+          seq 3 | xargs -n 1 -- echo number
+          # number 1
+          # number 2
+          # number 3
+
+          # multiple commands
+          echo -ne "one two three\nfour six seven\neight" | xargs -I % bash -c "echo \">>%<<\"; echo \":%:\""
+          # >>one two three<<
+          # :one two three:
+          # >>four six seven<<
+          # :four six seven:
+          # >>eight<<
+          # :eight:
+
+          # skip blank lines
+          cat <<EOF | xargs -I %% echo ">>%%<<"
+
+          a
+
+          b
+
+          c
+
+          EOF
+          # >>a<<
+          # >>b<<
+          # >>c<<
+
+
+          # newlines to NUL character
+          cat <<EOF | tr '\n' '\0' | xargs -0 -I % -- echo ">>>%<<<"
+
+          a
+
+          b
+
+          c
+
+          EOF
+          # >>><<<
+          # >>>a<<<
+          # >>><<<
+          # >>>b<<<
+          # >>><<<
+          # >>>c<<<
+          # >>><<<
+
+          # multiline to one line
+          # xargs executes echo by default
+          cat <<EOF | xargs
+
+          a
+
+          b
+
+          c
+
+          EOF
+          # a b c
+
+          # manually use NUL character
+          echo -ne 'one\0two\0three four\nsix seven\0end' | xargs -0 -I % echo ">%<"
+          # >one<
+          # >two<
+          # >three four
+          # six seven<
+          # >end<
+
+          # read from file instead of stdin
+          # WARNING: ONLY LINUX - DOESN'T WORK ON MAC
+          xargs -a rss_links.txt
+
+          # different delimiter
+
+          cat <<EOF | xargs -d% -I ^ echo ">>>^<<<"
+          qwer
+          t%yui
+          opasd
+          fg%hjh
+          klzx
+          cvb%
+          nm%
+          %
+          EOF
+          # >>>qwer
+          # t<<<
+          # >>>yui
+          # opasd
+          # fg<<<
+          # >>>hjh
+          # klzx
+          # cvb<<<
+          # >>>
+          # nm<<<
+          # >>>
+          # <<<
+          # >>>
+          # <<<
+        </script>
+        <h2>find</h2>
+        <a href="https://ss64.com/osx/find.html">https://ss64.com/osx/find.html</a>
+        <script type="editor" data-lang="sh">
+
+          # find all png files and no mater where these are copy them to my png/ directory
+            find . -name '*.png' -print0  | xargs -0 -I{} cp {} ./png
+
+          # on mac case sensitive
+            find -E NUC_source/ -type f -regex ".*\.(jpg|jpeg|JPG|png|PNG|HEIC|heic)$"
+          # on mac case sensitive
+            find -E NUC_source/ -type f -regex ".*\.(jpg|jpeg|png|heic)$"
+
+          # for mac alternatively
+            find NUC_source/ -type f | grep -iE ".*\.(jpg|jpeg|png|gif|heic|gif)$"
+
+          # on linux case sensitive
+            find source/ -type f -regextype posix-extended -iregex ".*\.(jpg|jpeg|JPG|png|PNG|HEIC|heic)$"
+          # on linux case insensitive
+            find source/ -type f -regextype posix-extended -iregex ".*\.(jpg|jpeg|png|heic)$"
+
+          # remove all .DS_Store files
+          find . -name '.DS_Store' -type f -delete
+
+          find . -type d -empty -delete
+            # remove empty directories
+
+          find source/ -type f -print0 | xargs -r -0 ls -lhS
+            # -S     sort by file size, largest first - from: man ls
+            find source/ -type f -print0 | xargs -r -0 ls -lhSr
+              # flip the order - -r reverse order while sorting - from: man ls
+            find source/ -type f -print0 | xargs -r -0 ls -lht
+              # -t     sort by time, newest first
+
+
+
+          # remove all directories except one
+          # mindepth 1 is here to skip listing . [dot] - current directory
+          # || true after grep is there because grep is returning non 0 exit code when not even one match found
+          find . -mindepth 1 -maxdepth 1 | grep -v -i -E '^\./jasmine-core$' || true | xargs -I % rm -rf "%"
+
+          # or condition
+          find . -type f \( -regex '.*/8_.*' -o -regex '.*/7_.*' \)
+
+          tar -zcvf /backup/project.tar.gz --exclude "node_modules" /srv/www/
+
+          # find all node_modules directories excluding nested node_modules (-prune)
+          find . -type d -name node_modules -prune -print0 | xargs -0 -I % echo ":%:"
+
+          # find files except matching pattern
+          find . -type f -not -name '*gz'
+
+          # limit depth
+          find . -type d -maxdepth 1
+
+          # find and tar.gz all png files
+          find pages -name "*.png" -type f -print0 | xargs -0 tar -cvzf images.tar.gz
+
+          # remove all found
+          find Downloads -name "DomTerm" -type d -print0 | xargs -0 /bin/rm -v -rf "{}"
+
+          mkdir ttt
+          cd ttt
+          touch a
+          touch "b c"
+          touch e
+          find . -print0 | xargs -0 -I % echo ">>%<<"
+          cd ..
+          rm -rf ttt
+          # >>.<<
+          # >>./a<<
+          # >>./b c<<
+          # >>./e<<
+
+          # excluding search in directory node_modules
+          # WARNING: Note that unlike with -prune, the directory to be excluded is still traversed.
+          mkdir -p xxxtest
+          cd xxxtest
+          function k {
+              echo ">>${1}"
+              DIR="$(dirname "${1}")"
+              mkdir -p "${DIR}"
+              touch "${1}"
+          }
+          k "a/b/c.txt"
+          k "a/node_modules/c.txt"
+          k "a/node_modules/ab/c.txt"
+          k "a/node_modules/ab/c/c.txt"
+          k "c.txt"
+          k "b/c.txt"
+          cd ..
+          echo -e "\nfind all:"
+          find xxxtest
+          echo -e "\nfind excluding node_modules:"
+          find xxxtest -type f ! -path "*/node_modules/*"
+          rm -rf xxxtest
+
+          # more advanced example with -prune
+          # https://unix.stackexchange.com/a/350090
+          find . -type d -name 'node_modules' -prune -o -type d -name .git -print
+              # if this is directory and it's name is node_modules then don't enter it, otherwise, if this is directory and it's name is .git, print it's pathname
+
+              # speed test against huge directory with many project with many big node_modules directories
+              find . -type d -name .git ! -path "*/node_modules/*"                        0.89s user 19.89s system 43% cpu 47.779 total
+              find . -type d -name .git                                                   0.86s user 19.19s system 40% cpu 49.613 total
+              find . -type d -name 'node_modules' -prune -o -type d -name .git -print     0.08s user 1.55s system 46% cpu 3.515 total
+
+              # read more about -prune
+              https://stackoverflow.com/a/4210072
+
+          # multiple prune
+
+          find . \( \
+                  -type d -name node_modules -prune -o \
+                  -type d -name .git -prune -o \
+                  -type d -name coverage -prune -o \
+                  -type d -name noprettier -prune \
+              \) \
+              -o \
+              -type f -name "*.test.js" -print
+
+
+          # here is more complicated:
+          # don't enter some directories but also
+          # match *.jasmine.js OR *.jasmine.unit.js
+          find . \( \
+                  -type d -name node_modules -prune -o \
+                  -type d -name .git -prune -o \
+                  -type d -name coverage -prune -o \
+                  -type d -name noprettier -prune \
+              \) \
+              -o \
+              \( -type f \( -name "*.jasmine.js" -o -name "*.jasmine.unit.js" \) -print \)
+
+
+          EXEFIND="find . \( \
+                -type d -name node_modules -prune -o \
+                -type d -name .git -prune -o \
+                -type d -name coverage -prune \
+            \) \
+            -o \
+            \( -type f \( ${FIND} \) -print \)"
+
+          LIST="$(eval "${EXEFIND}")"
+
+          # printing and also executing or even capturing result for further processing ===== vvv
+          S="\\"
+          FIND="$(cat <<EOF
+          find . \( $S
+              -type d -name node_modules -prune -o $S
+              -type d -name .git -prune -o $S
+              -type d -name coverage -prune $S
+          \) $S
+          -o $S
+          \( -type f \( -name "*.html" -o -name "*.js" -o -name "*.css" -o -name "*.scss" -o -name "*.sh" \) -print \)
+          EOF
+          )"
+
+          printf "\n$FIND\n\n"
+
+          FIND="${FIND//\\$'\n'/}"
+
+          # or just eval
+          eval $FIND
+
+          # or capture result
+          LIST="$(eval "${FIND}")"
+          # printing and also executing or even capturing result for further processing ===== ^^^
+        </script>
+        <h2>GNU Parallel</h2>
+        <a href="https://alexplescan.com/posts/2023/08/20/gnu-parallel/"
+          >https://alexplescan.com/posts/2023/08/20/gnu-parallel/</a
+        >
+        <br />
+        <a href="https://zenodo.org/record/1146014">https://zenodo.org/record/1146014</a>
+        <script type="editor" data-lang="sh">
+
+
+          # content of the file named run.sh -------------------- vvvv
+          # run just once to see if script itself is working
+          # TOTAL=1 PROCESS_WITH_PARALLEL_LOG=parallel.log /bin/bash run.sh 1 run.sh
+          #
+
+          # Added at the beginning of the script redirect all stderr to stdout globally for this script
+          # In other words: script will not output to stderr at all, but whatever it would normally output to stderr it will stderr to stdout
+          # this is needed here because parallel is buffering stdout and stderr of individual execitons
+          # and then dumps stdout first and after that stderr
+          # so natural order will not be maintained
+          exec 2>&1
+          ITERATION="${1}"
+          FILE="${2}"
+          if [ "${ITERATION}" = "" ]; then
+              echo "${0} 🚨 ITERATION is not defined"
+              exit 1
+          fi
+
+          if [ "${TOTAL}" = "" ]; then
+              echo "${0} 🚨 TOTAL is not defined"
+              exit 1
+          fi
+
+          if [ "${PROCESS_WITH_PARALLEL_LOG}" = "" ]; then
+              echo "${0} 🚨 PROCESS_WITH_PARALLEL_LOG is not defined"
+              exit 1
+          fi
+
+          MAX="$((3 + ${ITERATION}))"
+          if [ "${MAX}" -ge "7" ]; then
+              MAX="7"
+          fi
+
+          echo "🏷    ${ITERATION}/${TOTAL} ━━━━ $(date "+%Y-%m-%d %H:%M:%S") START ━┓ ${FILE}" >> "${PROCESS_WITH_PARALLEL_LOG}"
+          echo "┏━━━ ${ITERATION}/${TOTAL} ━━━━ RETURN ━┓ ${FILE}"
+          cat <<EEE
+          ITERATION>${ITERATION}
+          FILE>${FILE}
+          MAX>${MAX}
+          TOTAL>${TOTAL}
+          EEE
+          ls -la "${FILE}"
+          broken${ITERATION} command to see if error will be gathered too
+
+          R=$(awk -v min=1 -v max=${MAX} 'BEGIN{srand(); print min + rand() * (max-min)}' | xargs printf "%.1f")
+          echo ${2} 1111 ${R}
+          sleep ${R}
+          another${ITERATION} command
+          R=$(awk -v min=1 -v max=${MAX} 'BEGIN{srand(); print min + rand() * (max-min)}' | xargs printf "%.1f")
+          echo ${2} 3333 end ${R}
+          sleep ${R}
+
+          echo "┗━━━ ${ITERATION}/${TOTAL} ━━━━ RETURN ━┛ $(date "+%Y-%m-%d %H:%M:%S")"
+
+          exit 0
+          # content of the file named run.sh -------------------- ^^^^
+
+          # preparing - run just once
+          mkdir testdir
+          touch testdir/{a..e}.txt
+          touch "testdir/cfile with spaces in its name.txt"
+          find testdir/ -type f | sort
+
+          # final command with all it's parameters
+          export TOTAL="$(find testdir -type f | wc -l | awk '{$1=$1};1')"
+          export PROCESS_WITH_PARALLEL_LOG="parallel-$(date "+%Y_%m_%d_%H_%M_%S").log"
+          export PROCESS_WITH_PARALLEL_LOG="parallel.log"
+          echo "" > "${PROCESS_WITH_PARALLEL_LOG}"
+          nohup /bin/bash -c "
+          ITERATOR_CAN_BE_PASSED_ALSO_THIS_WAY={#} \
+          find testdir -type f | sort | parallel -j 3 /bin/bash run.sh {#} \"{}\"
+          " >> "${PROCESS_WITH_PARALLEL_LOG}" 2>&1 &
+
+          # then the only solution is to observe the file as a second command
+          tail -f -n 200 parallel.log
+        </script>
+        <h2>GNU Parallel - rush</h2>
+
+        <script type="editor" data-lang="sh">
+
+          # take latest and right architecture from: https://github.com/shenwei356/rush/releases
+          set -e
+          VERSION="v0.5.4"
+          FILE="rush_darwin_arm64.tar.gz"
+          wget "https://github.com/shenwei356/rush/releases/download/${VERSION}/${FILE}"
+          tar -xvf "${FILE}"
+          rm -rf "${FILE}"
+          sudo mv rush /usr/local/bin/
+          sudo chmod +x /usr/local/bin/rush
+          rush --help
+
+          # then just change "parallel" to "rush" in the example above
+
+          # the only difference seems to be that {} have to be surrounded with
+          export TOTAL="$(find testdir -type f | wc -l | awk '{$1=$1};1')"
+          export PROCESS_WITH_PARALLEL_LOG="parallel-$(date "+%Y_%m_%d_%H_%M_%S").log"
+          export PROCESS_WITH_PARALLEL_LOG="parallel.log"
+          echo "" > "${PROCESS_WITH_PARALLEL_LOG}"
+          nohup /bin/bash -c "
+          ITERATOR_CAN_BE_PASSED_ALSO_THIS_WAY={#} \
+          find testdir -type f | sort | parallel -j 3 /bin/bash run.sh {#} '{}'
+          " >> "${PROCESS_WITH_PARALLEL_LOG}" 2>&1 &
+        </script>
+        <h2>stdout stderr</h2>
+        <script type="editor" data-lang="sh">
+
+          # capture stdout stderr and exit code
+          COMMAND="ls -la | grep f"
+          eval "$( eval "${COMMAND}" \
+            2> >(RESULT_STDERR=$(cat); typeset -p RESULT_STDERR) \
+             > >(RESULT_STDOUT=$(cat); typeset -p RESULT_STDOUT); RESULT_CODE=$?; typeset -p RESULT_CODE )"
+          # from: https://stackoverflow.com/a/18086548
+
+          set -o
+            # to list all flags
+
+          # Added at the beginning of the script redirect all stderr to stdout globally for this script
+          # In other words: script will not output to stderr at all, but whatever it would normally output to stderr it will stderr to stdout
+          exec 2>&1
+          # set -e for outer shell
+          set -e
+          set -o pipefail
+          (
+            # set -e again for internal shell
+            set -e
+            # ...
+          ) | node_modules/.bin/pino-pretty
+
+          set -x          # Expand and print each command before executing
+          set -e          # Exit script immediately if any command returns a non-zero exit status.
+          set -u # Exit script immediately if an undefined variable is used (e.g. echo "$UNDEFINED_ENV_VAR").
+          set -o pipefail # more: https://buildkite.com/docs/pipelines/writing-build-scripts#configuring-bash
+            # to turn back on set +o pipefail
+
+          set -euo pipefail
+            # from: https://youtu.be/kUtarOlOT3Y?si=6hwlbksI8AgZp1go&t=473
+
+          shopt -s expand_aliases
+            # from: https://unix.stackexchange.com/a/1498
+
+            to enable aliases in bash script run in sequence (not sure about zsh)
+              shopt -s expand_aliases
+              source ~/.bashrc
+              set -e
+              xx versions
+              mvn clean install
+
+          # lets dive deeper to understand set -e
+          # let's have our script exiting.sh
+          cat <<EEE > exiting.sh
+          echo stdout data
+          echo stderr data >&2
+          if [ "${1}" != "" ]; then
+              exit "${1}"
+          fi
+          EEE
+
+          # this one will exit with 8
+          cat <<EEE > return8.sh
+          /bin/bash exiting.sh 8
+          EEE
+          return8.sh
+          # and stdout >stdout data
+          stderr data<
+
+          # this one will exit with 8
+          cat <<EEE > return0.sh
+          /bin/bash exiting.sh 8
+          echo end
+          EEE
+          return0.sh
+          # and stdout >stdout data
+          stderr data
+          end<
+
+          # this one will exit with 8
+          cat <<EEE > return8again_but_will_stop.sh
+          set -e
+          /bin/bash exiting.sh 8
+          echo end
+          EEE
+          return8again_but_will_stop.sh
+          # and stdout >stdout data
+          stderr data<
+
+
+          # testing current state of the flag
+          echo $-
+          if [[ $- == *e* ]]; then
+              echo "set -e is enabled"
+          else
+              echo "set -e is disabled"
+          fi
+
+          # test is set -e is globally scoped or also works with functions locally
+          # SPOILER ALERT: it is only globally scoped
+
+          set -e
+          echo start
+          function ttt {
+              set +e
+              echo inside funciton
+              something goes wrong
+              if [ "${1}" = "EARLY" ]; then
+                  echo wlazl
+                  # set -e # when this is commented then message "this shouldnt happen" is visible
+                  return
+              fi
+              echo NIE wlazl
+              set -e # and here - so ChatGPT is full of shit
+          }
+          echo function defined
+          ttt ${@}
+          echo but lets continue
+          xxx crash here
+          echo this shouldnt happen
+
+          # $ /bin/bash exiton.sh
+          # start
+          # function defined
+          # inside funciton
+          # exiton.sh: line 6: something: command not found
+          # NIE wlazl
+          # but lets continue
+          # exiton.sh: line 18: xxx: command not found
+
+          # $ /bin/bash exiton.sh EARLY
+          # start
+          # function defined
+          # inside funciton
+          # exiton.sh: line 6: something: command not found
+          # wlazl
+          # but lets continue
+          # exiton.sh: line 18: xxx: command not found
+          # this shouldnt happen <---------------------------- this shouldn't be here if ChatGPT would be right
+        </script>
+        <h2>remove strip color from stream output</h2>
+        <script type="editor" data-lang="sh">
+
+          printf "
+
+          first line
+          \e[32msecond\e[0m line
+          \e[33mthird\e[0m line
+          \e[35mfourth\e[0m line
+          \e[31mfifth\e[0m line
+          last line
+
+          " | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\[[0-9]{1,3}m//g"
+
+          # look for more: https://stackoverflow.com/q/17998978
+        </script>
+        <h2>stream - delay stream</h2>
+        <script type="editor" data-lang="sh">
+
+          perl -pe "system 'sleep .003'" file.txt
+          # or
+          cat  file.txt | perl -pe "system 'sleep .003'"
+            # from: https://superuser.com/a/526249
+        </script>
+        <h2>regex</h2>
+        <script type="editor" data-lang="sh">
+
+          # learn about google/re2: https://github.com/google/re2/wiki/syntax
+            # from: https://youtu.be/DDe-S3uef2w?si=yEyNW3CFqVCkKQQq&t=555
+
+          if [[ ${NAME} =~ ^~{0,1}/.* ]]; then
+
+              echo "match";
+          else
+
+              echo "not match";
+
+              exit 1;
+          fi
+
+          # https://www.networkworld.com/article/2693361/unix-tip-using-bash-s-regular-expressions.html#:~:text=Since%20version%203%20(circa%202004,easier%20to%20read%20and%20maintain.
+
+          NAME="765876"
+
+          TEST="^[0-9]+$"
+
+          if [[ ${NAME} =~ ${TEST} ]]; then
+
+              echo "match";
+          else
+
+              echo "not match";
+
+              exit 1;
+          fi
+
+          # --- case insensitive ----
+          LIST=$(cat <<EOF
+          3gp
+          AVI
+          HEIC
+          JPG
+          MOV
+          MP4
+          PNG
+          gif
+          jpeg
+          jpg
+          json
+          mov
+          mp4
+          png
+          EOF
+          );
+
+          while read -r line
+          do
+              YES="^(avi|jpg|png)$"
+              LOWER="$(echo "${line}" |tr '[:upper:]' '[:lower:]')"
+              if [[ ${YES} =~ "${LOWER}" ]]; then
+                  echo "YES ${LOWER}>>$line<<"
+              else
+                  echo "NO ${LOWER}>>$line<<"
+              fi
+          done <<< "${LIST}"
+          # --- case insensitive ----
+        </script>
+
+        <h2>top</h2>
+        <script type="editor" data-lang="sh">
+
+          interesing alternative
+          sudo apt install bashtop
+
+          z,x,E,e,>>,W
+
+          b - refresh
+          E - change size units (tob summary bar)
+          x - Toggle highlights
+          R - normal/reverse sort
+          s - update interval 0.05
+          W - save settings in ~/.toprc
+          k - kill process
+
+          > <  - change sort table
+        </script>
+
+        <h2>multiline iterate foreach over file over stream</h2>
+
+        <script type="editor" data-lang="sh">
+
+          # converting list to array seems to be safer when calling other scripts in our loop
+          ENVS_LIST="$(find . -name ".env.mac.*")"
+          IFS=$'\n' read -r -d '' -a ENVS_ARRAY <<< "$ENVS_LIST"
+          for ENV_FILE in "${ENVS_ARRAY[@]}"; do
+            echo "Processing $ENV_FILE"
+          done
+
+          # call function for each line (foreach): (multiline)
+          LIST=$(cat <<EOF
+          one
+          two three
+          four
+          six
+
+          seven
+
+          eight
+          EOF
+          );
+          while read -r line ; do echo ">>$line<<" ; done <<< "${LIST}"
+          # >>one<<
+          # >>two three<<
+          # >>four<<
+          # >>six<<
+          # >><<
+          # >>seven<<
+          # >><<
+          # >>eight<<
+
+          # or
+
+          while read -r LINE
+          do
+            echo ">>${LINE}<<"
+          done <<< "${LIST}"
+
+          while read -r LINE
+          do
+            echo ">>${LINE}<<"
+          done < "path/to/your/file"
+
+          # --- iterate over find
+
+          LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name .yarnrc -print)"
+
+          LIST="$(trim "${LIST}")"
+
+          _P="$(pwd)"
+          if [ "${LIST}" = "" ]; then
+
+            cat <<EEE
+
+            nothing found
+
+          EEE
+          else
+            COUNT="$(echo "${LIST}" | wc -l | awk '{$1=$1};1')"
+
+            I="0"
+            while read -r xxx
+            do
+
+              cd "$_P"
+
+              I="$(($I + 1))"
+
+              echo -e "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}"
+              DIR="$(dirname "${xxx}")"
+
+              cd "${DIR}"
+              echo "${xxx}" >> "${_P}/log.log"
+              cat "${_P}/${xxx}" >> "${_P}/log.log"
+              echo -e "\n\n" >> "${_P}/log.log"
+
+            done <<< "${LIST}"
+          fi
+        </script>
+        <h2>useful links</h2>
+        <ul>
+          <li>
+            <a href="https://buildkite.com/docs/pipelines/writing-build-scripts#configuring-bash"
+              >buildkite script guide ("Writing Build Scripts" section in doc)</a
+            >
+          </li>
+        </ul>
+
+        <h2>RAM disk</h2>
+        <script type="editor" data-lang="sh">
+
+          RAMNAME="ramvol"
+          MB="8"
+          if [ "${RAMNAME}" != "" ] && [ ! -d "/Volumes/${RAMNAME}" ] && [[ ${MB} =~ ^[0-9]+$ ]]; then diskutil erasevolume HFS+ ${RAMNAME} $(hdiutil attach -nomount ram://$((${MB} * 2 * 1024))); else; echo conditions false; fi;
+
+          # from: https://superuser.com/a/1480386
+        </script>
+
+        <h2>useful commands</h2>
+        <script type="editor" data-lang="sh">
+
+          # ps -p $$ – Display your current shell name reliably.
+          # echo "$SHELL" – Print the shell for the current user but not necessarily the shell that is running at the movement.
+          # echo $0 – Another reliable and simple method to get the current shell interpreter name on Linux or Unix-like systems.
+          # readlink /proc/$$/exe – Another option to get the current shell name reliably on Linux operating systems.
+          # cat /etc/shells – List pathnames of valid login shells currently installed
+          # grep "^$USER" /etc/passwd – Print the default shell name. The default shell runs when you open a terminal window.
+
+          _0="$(basename "${0}")"
+
+          # current shell name reliably
+          _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
+          _SHELL="$(basename ${_SHELL//-/})"
+          case ${_SHELL} in
+            zsh)
+              _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+              _0="$( basename "${(%):-%N}" )"
+              _SCRIPT="${(%):-%N}"
+              _BINARY="/bin/zsh"
+              _PWD="$(pwd)"
+              ;;
+            sh)
+              _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+              _0="$( basename "${0}" )"
+              _SCRIPT="${0}"
+              _BINARY="/bin/sh"
+              _PWD="$(pwd)"
+              ;;
+            *)
+              _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+              _0="$( basename "${BASH_SOURCE[0]}" )"
+              _SCRIPT="${BASH_SOURCE[0]}"
+              _BINARY="/bin/bash"
+              _PWD="$(pwd)"
+              ;;
+          esac
+
+          # test of above
+          mkdir -p aaaa_aaaa/bbb/ccc
+          cat <<EEE > aaaa_aaaa/bbb/ccc/ddd.sh
+          _SHELL="\$(ps "\${\$}" | grep "\${\$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
+          echo "====\${_SHELL}:\$(if [ "\${_SHELL}" = "sh" ]; then echo sh; else \${_SHELL} --version; fi | head -n 1)===="
+          case \${_SHELL} in
+            zsh)
+              _DIR="\$( cd "\$( dirname "\${(%):-%N}" )" && pwd -P )"
+              _SCRIPT="\${(%):-%N}"
+              _BINARY="/bin/zsh"
+              _PWD="$(pwd)"
+              ;;
+            sh)
+              _DIR="\$( cd "\$( dirname "\${0}" )" && pwd -P )"
+              _SCRIPT="\${0}"
+              _BINARY="/bin/sh"
+              _PWD="$(pwd)"
+              ;;
+            *)
+              _DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd -P )"
+              _SCRIPT="\${BASH_SOURCE[0]}"
+              _BINARY="/bin/bash"
+              _PWD="$(pwd)"
+              ;;
+          esac
+          echo "_ROOT=\${_DIR}"
+          echo "_SCRIPT=\${_SCRIPT}"
+          echo "_BINARY=\${_BINARY}"
+          echo "_PWD=\${_PWD}"
+          EEE
+          docker run -it --rm -v "$(pwd):/code" -w "/code" frapsoft/zsh /bin/zsh aaaa_aaaa/bbb/ccc/ddd.sh \
+          && docker run -it --rm -v "$(pwd):/code" -w "/code" bash:3.2.57 /usr/local/bin/bash aaaa_aaaa/bbb/ccc/ddd.sh \
+          && docker run -it --rm -v "$(pwd):/code" -w "/code" bash:4.4.23 /usr/local/bin/bash aaaa_aaaa/bbb/ccc/ddd.sh \
+          && docker run -it --rm --entrypoint="" -v "$(pwd):/code" -w "/code" bash:5.1.8 /usr/local/bin/bash aaaa_aaaa/bbb/ccc/ddd.sh \
+          && docker run -it --rm -v "$(pwd):/code" -w "/code" alpine:3.14.2 /bin/sh aaaa_aaaa/bbb/ccc/ddd.sh
+          rm -rf aaaa_aaaa
+
+
+          # detect CURRENT USER default shell - that's different than above
+          if [ -n "$ZSH_VERSION" ]; then
+             echo -n 'zsh';
+          elif [ -n "$BASH_VERSION" ]; then
+             echo -n 'bash';
+          else
+             echo -n 'other';
+          fi
+
+          grep 'swap-files' * -rl --exclude-dir={bower_components,node_modules,vendor} --include \*.sh
+
+          arch -arm64 brew install webp
+          sudo xattr -dr com.apple.quarantine /path/ff*
+
+          # get ip
+          IP=$(ipconfig getifaddr en0)
+
+          ps aux --sort=-%mem | head -n 300
+          ps -ef | grep 'garbagecollect' | grep -v grep | awk '{print $2}' | xargs -r kill -9
+              # from: https://stackoverflow.com/a/30515012
+        </script>
+
+        <h2>kill killall</h2>
+        <script type="editor" data-lang="sh">
+
+          #to kill by pattern
+          kill $(pgrep -f "/bin/bash stream.sh")
+
+          # to test by pattern
+          ps -ef | grep "/bin/bash stream.sh"
+
+          # some other stuff
+          for KILLPID in `ps ax | grep 'my_pattern' | awk ' { print $1;}'`; do
+            kill -9 $KILLPID;
+          done
+
+          /bin/bash -c "sleep 5 && kill -- $$" & disown
+        </script>
+
+        <h2>change user home directory</h2>
+        <script type="editor" data-lang="sh">
+
+          kill -9 xxxxxx && usermod -m -d /home/buildkite-agent buildkite-agent
+        </script>
+
+        <h2>verifying default shell</h2>
+        <script type="editor" data-lang="sh">
+
+
+           # change default shell
+           chsh -s /bin/bash
+           chsh -s /bin/zsh
+
+           # to determine currently used shell
+          ps -o comm= $$
+          echo $SHELL
+
+          # list of available shells
+          cat /etc/shells
+
+          zsh --version
+          bash --version
+
+          # from: https://www.howtogeek.com/444596/how-to-change-the-default-shell-to-bash-in-macos-catalina/
+        </script>
+        more about: <a href="https://support.apple.com/en-gb/HT208050">https://support.apple.com/en-gb/HT208050</a>
+
+        <h2>export .env</h2>
+        <script type="editor" data-lang="sh">
+
+          # https://unix.stackexchange.com/a/79084
+          set -a
+          source ".env"
+          set +a
+
+          set -o allexport; source .different.env && python reset.py
+          # or using alias
+          set -o allexport; source .different.env && product_reset
+        </script>
+        <h2>7zip</h2>
+        <a href="/pages/mac/index.html#7zip">There is a section on the mac page</a>
+
+        <h2>trap</h2>
+        <script type="editor" data-lang="sh">
+
+          # ZSH:
+
+          # this will make possible to interupt the script with ctrl+c
+          set -o err_return
+          set -o pipefail
+
+          TRAPVAR="0"
+          function cleanup {
+            if [ "${TRAPVAR}" = "0" ]; then
+              TRAPVAR="1"
+
+            cat <<EEE
+
+          cleanup
+
+          EEE
+
+            rm -rf "${PULLJS}"
+            fi
+          }
+
+          # trap cleanup EXIT INT HUP QUIT TERM DEBUG # that will trigger it many/many times
+          trap cleanup EXIT INT HUP QUIT TERM
+
+          # when triggered manually then TRAPVAR have to be reset
+          cleanup
+          TRAPVAR="0"
+
+
+          # BASH:
+
+                      # this example is little messy but I need it just as an example
+                        # advanced use ------------------------------------------------- vvv
+
+
+
+
+
+          function cleanup {
+
+              kill "${PID1}" 1> /dev/null 2> /dev/null || :
+          }
+
+          trap cleanup EXIT;
+
+          # run some stuff like
+          node server.js &
+
+          PID1="${!}"
+
+
+          # other examples
+
+
+
+          DELETE=("$DOC" "$IGN" "$RUN");
+
+          function cleanup {
+
+            set +x
+
+            for i in "${DELETE[@]}"
+            do
+
+                { yellow "\nremoving '$i'"; } 2>&3
+
+                unlink "$i" || true
+            done
+          }
+
+          trap cleanup EXIT;
+
+          # ...
+          DELETE+=("$DEPLOYMENT_FILE")
+          # ...
+
+          trap - EXIT
+
+            # advanced use ------------------------------------------------- ^^^
+
+
+                  # ===== multiple traps =============== vvv
+
+          TRAPS=()
+
+          function trigger_traps {
+
+            for i in "${TRAPS[@]}"
+            do
+
+                { yellow "\ntriggering trap: '$i'"; } 2>&3
+
+                $i || true
+            done
+          }
+
+          trap trigger_traps EXIT;
+
+
+          function final { { red "\n\ngeneral error...\n\n"; } 2>&3;}
+          TRAPS+=('final')
+
+          # do yours stuff ....
+
+          function final { { green "\n\nall good...\n\n"; } 2>&3;}
+
+          # and then
+
+
+          function cleanup {
+
+            echo "======================== first cleanup ===========================";
+
+            set +x
+
+            for i in "${DELETE[@]}"
+            do
+
+                { yellow "\nremoving '$i'"; } 2>&3
+
+                unlink "$i" || true
+            done
+          }
+
+          TRAPS=("cleanup" "${TRAPS[@]}") # add to beginning of the array
+          TRAPS+=('cleanup') # add to the end of array
+
+                  # ===== multiple traps =============== ^^^
+        </script>
+
+        <h2>zsh colors</h2>
+
+        <script type="editor" data-lang="sh">
+
+          cat <<EOF >> ~/.zshrc
+          unset PROMPT;
+          if [[ "$EUID" = "0" ]]; then
+             PROMPT='%~ %F{#555555}%n%f %(?.%F{#00ff00}√%f.%F{#ff0000}%?%f) '
+          else
+             PROMPT='%~ %F{#ffff00}%n%f %(?.%F{#00ff00}√%f.%F{#ff0000}%?%f) '
+          fi
+          EOF
+          source ~/.zshrc
+        </script>
+        <h2>array</h2>
+        <a href="https://www.geeksforgeeks.org/array-basics-shell-scripting-set-1/"
+          >https://www.geeksforgeeks.org/array-basics-shell-scripting-set-1/</a
+        >
+
+        <script type="editor" data-lang="sh">
+
+          array=(`seq 1 10`)
+
+          declare -A array
+          array[first]='First element'
+          array[second]='Second element'
+
+          # Print last element using subscript syntax
+          echo "${array[-1]}"
+
+          TRAPS=()
+
+          TRAPS=("cleanup" "${TRAPS[@]}") # add to beginning of the array
+          TRAPS+=('cleanup') # add to the end of array
+
+          https://stackoverflow.com/a/8574392
+          containsElement () {
+              local e
+              for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
+              return 1
+          }
+
+          $ array=("something to search for" "a string" "test2000")
+          $ containsElement "a string" "${array[@]}"
+          $ echo $?
+          0
+          $ containsElement "blaha" "${array[@]}"
+          $ echo $?
+          1
+
+          # == learning array ===== VVV https://www.learnshell.org/en/Arrays
+
+          # foreach
+          OPTIONS=('ONE' 'TWO' 'THREE')
+          for ((i = 0; i < ${#OPTIONS[@]}; i++)); do
+              echo "index1 >${i}< value >${OPTIONS[i]}<"
+          done
+          for i in "${!OPTIONS[@]}"; do
+              echo "index2 >${i}< value >${OPTIONS[i]}<"
+          done
+
+          # length
+          my_array=(apple banana "Fruit Basket" orange)
+          echo ${#my_array[@]}   # length of array (in this case 4)
+
+
+          my_array=(apple banana "Fruit Basket" orange)
+          echo ${my_array[3]}                     # orange zero-indexed then
+          my_array[3]="carrot"
+          echo ${my_array[3]}                     # carrot
+          echo ${my_array[${#my_array[@]}-1]}     # carrot - get last element
+
+          # to new line separated list
+          MATCHING=$(printf "%s\n" "${MATCHING[@]}")
+
+          # from newline separated to array
+          IFS=$'\n' read -r -d '' -a ENVS_ARRAY <<< "$ENVS_LIST"
+
+          # to string
+          ARRAY_VARIABLE=(23 45 34 1 2 3)
+          echo ">>${ARRAY_VARIABLE[@]}<<" # >>23 45 34 1 2 3<<
+          printf -v STRING_VARIABLE "%s:" "${ARRAY_VARIABLE[@]}"
+          echo "++$STRING_VARIABLE++"   # ++23:45:34:1:2:3:++     WARNING: WATCH OUT - LAST ":" CHARACTER
+
+
+          # show array content
+            printf '%s\n' "${branches[@]}"
+
+          # merge two arrays array_merge
+            branches=("$main" "${branches[@]}")
+
+          # add to beginning of the array
+          TRAPS=("cleanup" "${TRAPS[@]}")
+          # add to the end of array
+          TRAPS+=('cleanup')
+        </script>
+        <h2>binary files toolset</h2>
+
+        <script type="editor" data-lang="sh">
+
+          binwalk
+            https://www.kali.org/tools/binwalk/
+              from: https://youtu.be/0dUnY1641WM?si=QKC2YBU9quVL3Diy&t=576
+
+          feh
+            https://feh.finalrewind.org/
+              from: https://youtu.be/0dUnY1641WM?si=2AEdXoEZsHGuQ-M-&t=588
+        </script>
+        <h2>bash colors</h2>
+
+        See also: <a href="https://stackoverflow.com/a/24701349/5560682">link</a> also
+        <a href="https://apple.stackexchange.com/q/60206">link</a>
+        <table width="100%">
+          <tbody>
+            <tr>
+              <td>
+                <script type="editor" data-lang="sh">
+
+                  GRAY="\e[38;5;244m"
+                  BLACK="\e[30m"
+                  RED="\e[31m"
+                  GREEN="\e[32m"
+                  YELLOW="\e[33m"
+                  BLUE="\e[34m"
+                  MAGENTA="\e[35m"
+                  CYAN="\e[36m"
+                  WHITE="\e[37m"
+                  BOLD="\e[1m"
+                  REVERSE="\e[7m"
+                  RESET="\e[0m"
+
+                  echo "${GRAY}GRAY${RESET}"
+                  echo "${BLACK}BLACK${RESET}"
+                  echo "${RED}RED${RESET}"
+                  echo "${GREEN}GREEN${RESET}"
+                  echo "${YELLOW}YELLOW${RESET}"
+                  echo "${BLUE}BLUE${RESET}"
+                  echo "${MAGENTA}MAGENTA${RESET}"
+                  echo "${CYAN}CYAN${RESET}"
+                  echo "${WHITE}WHITE${RESET}"
+                  echo "${BOLD}BOLD${RESET}"
+                  echo "${REVERSE}REVERSE${RESET}"
+
+                  # or
+
+                  export TERM="xterm"
+                  GRAY=$(tput setaf 244)
+                  BLACK=$(tput setaf 0)
+                  RED=$(tput setaf 1)
+                  GREEN=$(tput setaf 2)
+                  YELLOW=$(tput setaf 3)
+                  BLUE=$(tput setaf 4)
+                  MAGENTA=$(tput setaf 5)
+                  CYAN=$(tput setaf 6)
+                  WHITE=$(tput setaf 7)
+                  BOLD=$(tput bold)
+                  REVERSE=$(tput rev)
+                  RESET=$(tput sgr0)
+                  RED_BG_WHITE_FG=$(tput setab 1; tput setaf 7)
+                  GREEN_BG_WHITE_FG=$(tput setab 2; tput setaf 7)  # this one not always work, leaves font black
+
+                  to use with heredoc
+                  REVERSE=$'\e[7m'
+                  RESET=$'\e[0m'
+
+                  cat <<EEE
+                  ${REVERSE}
+                      diff list:
+                      my stuff
+                  ${RESET}
+                  EEE
+
+                  # more colors https://help.ubuntu.com/community/CustomizingBashPrompt#Preparing_.bashrc
+                  # g(ubuntu Customizing Bash Prompt)
+                  # ANSI color codes
+                  RS="\[\033[0m\]"    # reset
+                  HC="\[\033[1m\]"    # hicolor
+                  UL="\[\033[4m\]"    # underline
+                  INV="\[\033[7m\]"   # inverse background and foreground
+                  FBLK="\[\033[30m\]" # foreground black
+                  FRED="\[\033[31m\]" # foreground red
+                  FGRN="\[\033[32m\]" # foreground green
+                  FYEL="\[\033[33m\]" # foreground yellow
+                  FBLE="\[\033[34m\]" # foreground blue
+                  FMAG="\[\033[35m\]" # foreground magenta
+                  FCYN="\[\033[36m\]" # foreground cyan
+                  FWHT="\[\033[37m\]" # foreground white
+                  BBLK="\[\033[40m\]" # background black
+                  BRED="\[\033[41m\]" # background red
+                  BGRN="\[\033[42m\]" # background green
+                  BYEL="\[\033[43m\]" # background yellow
+                  BBLE="\[\033[44m\]" # background blue
+                  BMAG="\[\033[45m\]" # background magenta
+                  BCYN="\[\033[46m\]" # background cyan
+                  BWHT="\[\033[47m\]" # background white
+                </script>
+              </td>
+              <td width="150">
+                <img src="https://i.imgur.com/wpJ6go5.png" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <script type="editor" data-lang="sh">
+          # only in bash
+          for i in {0..256}; do printf "\e[${i}m\\\\e[${i}m\e[0m ";if [ 256 == ${i} ]; then echo "color"; fi; done
+
+          printf "start\e[94mtest\e[0mend\n"
+          printf "start\033[32mtest\e[0mend\n"
+
+          # removing colors from stream
+
+          for i in {0..256}; do printf "\e[${i}m\\\\e[${i}m\e[0m ";if [ 256 == ${i} ]; then echo "color"; fi; done | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"
+
+          for i in {0..256}; do printf "\e[${i}m\\\\e[${i}m\e[0m ";if [ 256 == ${i} ]; then echo "color"; fi; done | sed 's/\x1b\[[0-9;]*m//g'
+        </script>
+
+        WARNING: MIGHT BE NECESSARY ON MAC TO FIRST INSTALL:
+
+        <script type="editor" data-lang="sh">
+
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install coreutils
+
+          dircolors -b
+          gdircolors -b
+        </script>
+
+        oneliner:
+        <script type="editor" data-lang="sh">
+          if cat ~/.bashrc 2> /dev/null | grep '#colors mod' > /dev/null; then echo -e "\033[31m -=file .bashrc have been already modified before=-"; else echo -e "\n#colors mod\nexport EDITOR=vi\ncolor_prompt=yes;\nPS1='${debian_chroot:+($debian_chroot)}\[\033[`if [ "$(id -u)" != "0" ]; then echo '00;32'; else echo '1;30'; fi`m\]\u@\h\[\033[00;31m\]:\[\033[01;34m\]\w\[\033[00;33m\]\$ '\neval \"`dircolors -b || gdircolors -b`\"\nexport HISTCONTROL=ignoreboth:erasedups\n" >> ~/.bashrc && source ~/.bashrc && echo -e "\033[32m -= .bashrc has been modified =-"; fi &&        if cat ~/.vimrc 2> /dev/null | grep '" colors mod' > /dev/null; then echo -e "\033[31m -=file .vimrc has been already modified before=-"; else echo -e "\n\" colors mod\n:set number\n:set hlsearch\n:syntax on\n" >> ~/.vimrc && echo -e "\033[32m -= .vimrc has been modified =-"; fi        &&  history -d `history | tail -n 1 | awk '{\$1=\$1;print}' | sed -E 's#^([0-9]*).*#\1#g'` && if [ ! -f ~/.history_backup ] ; then history > ~/.history_backup; fi
+        </script>
+
+        full:
+        <script type="editor" data-lang="sh">
+
+          if cat ~/.bashrc 2> /dev/null | grep '#colors mod' > /dev/null; then
+              echo -e "\033[31m -=file .bashrc have been already modified before=-"
+          else
+              echo -e "\n#colors mod\nexport EDITOR=vi\ncolor_prompt=yes;\nPS1='${debian_chroot:+($debian_chroot)}\[\033[`if [ "$(id -u)" != "0" ]; then echo '00;32'; else echo '1;30'; fi`m\]\u@\h\[\033[00;31m\]:\[\033[01;34m\]\w\[\033[00;33m\]\$ '\neval \"`dircolors -b || gdircolors -b`\"\nexport HISTCONTROL=ignoreboth:erasedups\n" >> ~/.bashrc
+              source ~/.bashrc
+              echo -e "\033[32m -= .bashrc has been modified =-";
+          fi
+
+          if cat ~/.vimrc 2> /dev/null | grep '" colors mod' > /dev/null; then
+              echo -e "\033[31m -=file .vimrc has been already modified before=-"
+          else
+              echo -e "\n\" colors mod\n:set number\n:set hlsearch\n:syntax on\n" >> ~/.vimrc
+              echo -e "\033[32m -= .vimrc has been modified =-";
+          fi
+
+          if [ ! -f ~/.history_backup ] ; then
+              history > ~/.history_backup
+          fi
+        </script>
+
+        <h2>ping through dns</h2>
+        <script type="editor" data-lang="sh">
+
+          while true; do ping -n -q -c1 docker.phaseiilabs.com | grep '('; sleep 2; done
+        </script>
+
+        <h2>Processing arguments</h2>
+        Simple iteration - withouth shift
+        <script type="editor" data-lang="sh">
+
+          if [[ $# -eq 0 ]]; then
+            echo no arguments
+          fi
+
+          I="0"
+          FOUND_HYPHEN_HYPHEN="0"
+          for x in "$@"
+          do
+            I=$((I + 1))
+
+            if [ "${x}" = "--" ]; then
+              FOUND_HYPHEN_HYPHEN="1"
+              break;
+            fi
+
+            echo "element >${x}< [${I}]"
+
+            if [[ $(( I % 2 )) == 0 ]]; then
+              echo even
+            else
+              echo odd
+            fi
+            echo ""
+          done
+
+          if [ "${FOUND_HYPHEN_HYPHEN}" = "0" ]; then
+
+            cat <<EEE
+
+            -- argument not found
+
+          EEE
+
+            exit 1
+          fi
+        </script>
+
+        <br />
+        <script type="editor" data-lang="sh">
+
+
+          echo "args: '$@'"
+
+          function quote {
+            echo "$1" | sed -E 's/\"/\\"/g'
+          }
+
+          _CLEANOLD="0";
+
+          _GEN="gen"
+
+          _DEPLOYMENT_YAML=""
+
+          PARAMS=""
+          _EVAL=""
+          function collect {
+            if [ "$1" = "&&" ]; then
+              PARAMS="$PARAMS \&\&"
+              _EVAL="$_EVAL &&"
+            else
+              if [ "$PARAMS" = "" ]; then
+                PARAMS="\"$(quote "$1")\""
+                _EVAL="\"$(quote "$1")\""
+              else
+                PARAMS="$PARAMS \"$(quote "$1")\""
+                _EVAL="$_EVAL \"$(quote "$1")\""
+                #PARAMS="$(cat <<EOF
+                #$PARAMS
+                #- "$1"
+                #EOF
+                #)"
+              fi
+            fi
+            echo "                PARAMS1>>$PARAMS<<"
+            echo "                _EVAL 2>>$_EVAL<<"
+          }
+          while (( "$#" )); do
+            case "$1" in
+              -c|--clean|--clear)
+                _CLEANOLD="1";
+                shift;
+                ;;
+              -d|--deployment-yaml)
+                if [ "$2" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
+                  echo "$0 error: --deployment-yaml value can't be empty" >&2 # optional
+                  exit 1;                                          # optional
+                fi
+                if ! [ -f "$2" ]; then
+                  echo "$0 error: --deployment-yaml file '$2' doesn't exist" >&2 # optional
+                  exit 1;                                          # optional
+                fi                                           # optional
+                _DEPLOYMENT_YAML="$2";
+                shift 2;
+                ;;
+              -g|--gen)
+                if [ "$2" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
+                  echo "$0 error: --gen value can't be empty" >&2 # optional
+                  exit 1;                                          # optional
+                fi                                                # optional
+                _GEN="$2";
+                shift 2;
+                ;;
+              --) # end argument parsing
+                shift;
+                while (( "$#" )); do          # optional
+                  collect "${1}" "${2}";
+                  shift;                      # optional
+                done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
+                break;
+                ;;
+              -*|--*=) # unsupported flags
+                echo "$0 error: Unsupported flag $1" >&2
+                exit 1;
+                ;;
+              *) # preserve positional arguments
+                collect "${1}" "${2}";
+                shift;
+                ;;
+            esac
+          done
+
+          trim() {
+              local var="$*"
+              # remove leading whitespace characters
+              var="${var#"${var%%[![:space:]]*}"}"
+              # remove trailing whitespace characters
+              var="${var%"${var##*[![:space:]]}"}"
+              echo -n "$var"
+          }
+
+          PARAMS="$(trim "$PARAMS")"
+          _EVAL="$(trim "$_EVAL")"
+
+          #if [ "$_DEPLOYMENT_YAML" = "" ]; then
+          #
+          #    echo -e "\n\n$0 error: parameter _DEPLOYMENT_YAML is not defined - spedify it in --deployment-yaml parameter\n\n";
+          #
+          #    exit 1;
+          #fi
+
+          # set positional arguments in their proper place
+          eval set -- "$PARAMS"
+
+          echo "_CLEANOLD: $_CLEANOLD"
+          echo "_GEN: $_GEN"
+
+          echo "rest: '$@'"
+
+          echo "count: $#"
+
+
+          if [[ $# -gt 0 ]]; then
+
+            echo there are arguments
+
+            while (( "$#" )); do
+              echo "arg: '$1'"
+              shift;
+            done
+          else
+
+            echo there is no arguments
+          fi
+
+          echo "PARAMS>>$PARAMS<<"
+          echo "_EVAL>>$_EVAL<<"
+
+          eval "$_EVAL"
+          # if you want to just pass arguments gathered in PARAMS unchanged to child script use eval, I can't find other reliable method of doing that
+          eval "/bin/bash \"${_DIR}/child.sh\" ${PARAMS}"
+
+          # when you run
+          #   /bin/bash arg.sh --gen test -c -- echo "one"     \&\& pwd \&\& echo "two three"
+          # the output will be:
+
+          #args: '--gen test -c -- echo one && pwd && echo two three'
+          #                PARAMS1>>"echo"<<
+          #                _EVAL 2>>"echo"<<
+          #                PARAMS1>>"echo" "one"<<
+          #                _EVAL 2>>"echo" "one"<<
+          #                PARAMS1>>"echo" "one" \&\&<<
+          #                _EVAL 2>>"echo" "one" &&<<
+          #                PARAMS1>>"echo" "one" \&\& "pwd"<<
+          #                _EVAL 2>>"echo" "one" && "pwd"<<
+          #                PARAMS1>>"echo" "one" \&\& "pwd" \&\&<<
+          #                _EVAL 2>>"echo" "one" && "pwd" &&<<
+          #                PARAMS1>>"echo" "one" \&\& "pwd" \&\& "echo"<<
+          #                _EVAL 2>>"echo" "one" && "pwd" && "echo"<<
+          #                PARAMS1>>"echo" "one" \&\& "pwd" \&\& "echo" "two three"<<
+          #                _EVAL 2>>"echo" "one" && "pwd" && "echo" "two three"<<
+          #_CLEANOLD: 1
+          #_GEN: test
+          #rest: 'echo one && pwd && echo two three'
+          #count: 7
+          #there are arguments
+          #arg: 'echo'
+          #arg: 'one'
+          #arg: '&&'
+          #arg: 'pwd'
+          #arg: '&&'
+          #arg: 'echo'
+          #arg: 'two three'
+          #PARAMS>>"echo" "one" \&\& "pwd" \&\& "echo" "two three"<<
+          #_EVAL>>"echo" "one" && "pwd" && "echo" "two three"<<
+          #one
+          #/Users/sd/Workspace/projects/monorepo/runtime
+          #two three
+
+          # then you can use $_EVAL like this:
+          eval $_EVAL
+        </script>
+        <a href="https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8f"
+          >https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8f</a
+        >
+
+        <h2>basic auth generator</h2>
+        <table>
+          <tbody>
+            <tr>
+              <td width="60">user:</td>
+              <td>
+                <input type="text" id="user" />
+              </td>
+            </tr>
+            <tr>
+              <td>password:</td>
+              <td>
+                <input type="text" id="password" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <input type="text" style="width: 80%" id="raw" readonly onfocus="this.select()" />
+        <input type="text" style="width: 80%" id="header" readonly onfocus="this.select()" />
+        <input type="text" style="width: 80%" id="curl" readonly onfocus="this.select()" />
+
+        <h2>HEREDOC:</h2>
+        <script type="editor" data-lang="sh">
+
+          cat <<EOF | grep def
+
+          abc
+          def a
+          ghi
+          jkl
+          def b
+          zzz
+
+          EOF
+
+          VAR=$(cat <<END
+
+          ..
+
+          END
+          );
+
+          cat <<EOF > .env
+
+          ..
+
+          EOF
+
+          cat <<EOF
+
+          ..
+
+          EOF
+
+
+          <<\DOC_END
+
+          some documentation at the end of file
+
+          DOC_END
+
+
+          # QUOTING TEST vvv
+          export TTTA="outputvariable"
+          export TTTB="outputvalue"
+
+          # one level
+          cat <<EEE
+
+          echo "variable: \$TTTA"
+
+          echo "value: $TTTB"
+
+          EEE
+
+          # two levels
+          cat <<EOF > ./ttt.sh
+
+          cat <<EEE
+
+          echo "variable: \\\$TTTA"
+
+          echo "value: \$TTTB"
+
+          EEE
+
+          EOF
+
+          /bin/bash ttt.sh
+          # QUOTING TEST ^^^
+
+          # preventing variables to expand
+          cat << 'EOF' > aaaa.sh
+          #!/bin/bash
+
+          echo "Using \"\$*\":"
+          for a in "$*"; do
+              echo $a;
+          done
+
+          echo -e "\nUsing \$*:"
+          for a in $*; do
+              echo $a;
+          done
+
+          echo -e "\nUsing \"\$@\":"
+          for a in "$@"; do
+              echo $a;
+          done
+
+          echo -e "\nUsing \$@:"
+          for a in $@; do
+              echo $a;
+          done
+          EOF
+
+          /bin/bash aaaa.sh one two "three four"
+          rm -rf aaaa.sh
+        </script>
+
+        <h2>linux permissions files</h2>
+        <a href="http://linuxcommand.org/lc3_lts0090.php">http://linuxcommand.org/lc3_lts0090.php</a>
+        <br />
+        <img src="file_permissions.png" style="max-width: 400px" />
+        <br />
+        <script type="editor" data-lang="sh">
+
+          # create user
+          adduser --system --shell '/bin/bash' -m mark
+
+          # add group
+          sudo usermod -a -G group-name mark
+          sudo usermod -a -G buildkite-agent mark
+
+
+          ls -l /bin/bash
+          # -rwxr-xr-x 1 root root 1113504 Jun  6  2019 /bin/bash
+          # owner group others
+          # The file "/bin/bash" is owned by user "root"
+          # The superuser has the right to read, write, and execute this file
+          # The file is owned by the group "root"
+          # Members of the group "root" can also read and execute this file
+          # Everybody else can read and execute this file
+
+          # rwx rwx rwx = 111 111 111
+          # rw- rw- rw- = 110 110 110
+          # rwx --- --- = 111 000 000
+
+          # and so on...
+
+          # rwx = 111 in binary = 7
+          # rw- = 110 in binary = 6
+          # r-x = 101 in binary = 5
+          # r-- = 100 in binary = 4
+
+          # (Files that are not programs should not be given the execute permission.)
+
+          # 777	(rwxrwxrwx) No restrictions on permissions. Anybody may do anything.
+          #                   Generally not a desirable setting.
+
+          # 755	(rwxr-xr-x) The file's owner may read, write, and execute the file. All others may read and execute
+          #                   the file. This setting is common for programs that are used by all users.
+
+          # 700	(rwx------) The file's owner may read, write, and execute the file. Nobody else has any rights.
+          #                   This setting is useful for programs that only the owner may use and must be kept private
+          #                   from others.
+
+          # 666	(rw-rw-rw-) All users may read and write the file.
+
+          # 644	(rw-r--r--) The owner may read and write a file, while all others may only read the file.
+          #                   A common setting for data files that everybody may read, but only the owner may change.
+
+          # 600	(rw-------) The owner may read and write a file. All others have no rights. A common setting
+          #                   for data files that the owner wants to keep private.
+
+          chown user:group filename
+          chgrp group_name filename
+
+          chown batman file
+          # chown: changing ownership of 'file': Operation not permitted
+          # you have to be root to change ownershipt of the file/dir
+
+          sudo chown batman: file
+          # will change user and group to 'batman' (colon)
+        </script>
+        <br />
+        <h2>linux permissions directories</h2>
+        <a href="https://youtu.be/Z56Jmr9Z34Q?t=1336">https://youtu.be/Z56Jmr9Z34Q?t=1336</a>
+        <img src="permissions.png" style="max-width: 650px" />
+        source
+        <a href="https://unix.stackexchange.com/a/21263/462348">https://unix.stackexchange.com/a/21263</a>
+        <br />
+        <img src="table.png" style="max-width: 650px" />
+        <script type="editor" data-lang="sh">
+
+          # r - Allows the contents of the directory to be listed if the x attribute is also set.
+          # w - Allows files within the directory to be created, deleted, or renamed if the x attribute is also set.
+          # x - Allows a directory to be entered (i.e. cd dir).
+          #     Being allowed to "enter" a dir and gain possible access to sub-dirs.
+        </script>
+        <h2>Precedence and parenthesis</h2>
+        <a href="https://wiki.bash-hackers.org/commands/classictest#precedence_and_parenthesis"
+          >https://wiki.bash-hackers.org/commands/classictest#precedence_and_parenthesis</a
+        >
+      </div>
+    </div>
+    <script>
+      var user = document.querySelector("#user");
+      var password = document.querySelector("#password");
+      var raw = document.querySelector("#raw");
+      var header = document.querySelector("#header");
+      var curl = document.querySelector("#curl");
+
+      user.addEventListener("input", generate);
+
+      password.addEventListener("input", generate);
+
+      function generate() {
+        setTimeout(function () {
+          var u = user.value;
+          var p = password.value;
+
+          if (u && p) {
+            console.log(u + ":::" + p);
+            var k = btoa(u + ":" + p);
+            raw.value = k;
+            header.value = "Basic " + k;
+            curl.value = 'curl -v --silent -H "authorization: Basic ' + k + '"';
+          }
+        }, 50);
+      }
+
+      (function () {
+        var q = location.search.split("#")[0].substring(1);
+
+        if (q.length > 2 && q.indexOf(":") > -1) {
+          q = q.split(":");
+
+          console.log("q", q[0], "a", q[1]);
+
+          user.value = q[0];
+
+          password.value = q[1];
+
+          generate();
+        } else {
+          generate();
+        }
+      })();
+    </script>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

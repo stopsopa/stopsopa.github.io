@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      .test {
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        /*border: 1px solid #454545;*/
+        box-shadow: 0 0 4px black;
+        margin: 10px;
+      }
+    </style>
+
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll("[replace]")).forEach(function (tag) {
+            var id = tag.getAttribute("replace");
+
+            const target = document.querySelector(id);
+
+            if (!target) {
+              console.error("target not found for id:", id);
+
+              return;
+            }
+
+            target.innerHTML = tag.innerHTML;
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Rules</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          50 to 75 characters per line
+          letter spacing -1.2px - -1.3px
+        </script>
+        <h2>Ideas</h2>
+        <a href="https://www.youtube.com/shorts/v_CuehIfxUA">toast nice styling</a>
+        <h2>Various</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          font-size: clamp(0.5rem, 3.5vw, 10rem); https://youtu.be/TUD1AWZVgQ8?t=1082
+
+          all: unset;
+            /* from: https://youtube.com/shorts/lVk6EXvQDkM?feature=share */
+        </script>
+        <h2>tricks</h2>
+        <a href="https://youtu.be/Xc6G3oV24yE">https://youtu.be/Xc6G3oV24yE</a>
+
+        <h2>Web Components</h2>
+
+        <a href="/pages/css/examples/index.html">/pages/css/examples/index.html</a>
+
+        <h2>Css grid</h2>
+        <a href="/pages/css/css-grid/index.html">css grid (subpage)</a>
+        <br />
+        <a href="https://youtu.be/TUD1AWZVgQ8?t=865">g(grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)))</a>
+
+        <h2>Selectors</h2>
+        <a href="/other/selectors/">selectors</a>
+
+        <h2>Flexbox</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          // center horizontal vertical (WORKS ONLY ON PARENT ELEMENT)
+            // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Aligning_items_in_a_flex_container
+        </script>
+
+        <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/"
+          >https://css-tricks.com/snippets/css/a-guide-to-flexbox/</a
+        >
+        <br />
+        <a href="/research/flexbox/layouts/card-layouts.html">/research/flexbox/layouts/card-layouts.html</a>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          /* from: https://youtu.be/sanswTlz4ZY */
+          flex: 1;
+          /* is equal to */
+          flex: 1 1 0;
+          /* is equal to */
+          flex-grow: 1;
+          flex-shrink: 1;
+          flex-basis: 0;
+        </script>
+        <h2>background stripes</h2>
+        <script type="editor" data-lang="css" data-w="95%">
+
+          background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);
+        </script>
+        test:
+        <br />
+        <div class="test"></div>
+        <br />
+        done with
+        <a href="https://www.coffee-break-designs.com/labs/svg_stripe_generator/"
+          >https://www.coffee-break-designs.com/labs/svg_stripe_generator/</a
+        >
+        and
+        <a href="https://base64.guru/converter/encode/image/svg">https://base64.guru/converter/encode/image/svg</a>
+
+        <h2>variables in js</h2>
+        <a href="variables.html">variables.html</a>
+
+        <h2>cubic-bezier</h2>
+        <a href="/pages/bash/xx/lib/index.html">/pages/bash/xx/lib/index.html</a>
+        <br />
+        <a href="https://easings.net/#">from: https://github.com/ai/easings.net</a>
+        <br />
+        <a
+          href="https://github.com/ai/easings.net/blob/0577741e8eab192d8c5928a825271f10490eabfd/src/easings/easingsFunctions.ts"
+          >Easing functions</a
+        >
+        <h2>Google</h2>
+        <a href="https://fonts.google.com/specimen/Architects+Daughter">Architects Daughter</a>
+        <br />
+        <a href="https://fonts.google.com/specimen/The+Girl+Next+Door">The Girl Next Door</a>
+        <script type="editor" data-lang="sh"></script>
+
+        <h2>even odd nth-child</h2>
+
+        <script type="editor" data-lang="css">
+
+          /* even odd childrens vvv */
+          :nth-child(2n+1) /* targets all odd rows - first will be affected*/
+          :nth-child(2n) /* targets all even rows - second will be affected */
+          :nth-child(3) /* just third element element */
+          :first-child
+          :last-child
+          /* even odd childrens ^^^ */
+        </script>
+        <h2>box-sizing</h2>
+
+        <script type="editor" data-lang="css">
+
+          box-sizing: content-box(default)|border-box|initial|inherit; /* def(content-box) czy border ma być częścią width czy nie */
+
+          ----------------------------------------------------------- --- [nie ma]
+          |                         margin                          |
+          |    ------------------------------------------------     | --- border-box
+          |    |                    border                    |     |
+          |    |    -------------------------------------     |     | --- padding-box
+          |    |    |               padding              |    |     |
+          |    |    |   ------------------------------   |    |     | --- content-box (default)
+          |    |    |   |           content          |   |    |     |
+          |    |    |   ------------------------------   |    |     |
+          |    |    |                                    |    |     |
+          |    |    -------------------------------------     |     |
+          |    |                                              |     |
+          |    ------------------------------------------------     |
+          |                                                         |
+          -----------------------------------------------------------
+        </script>
+
+        <h2>display: block flex;</h2>
+        <script type="editor" data-lang="css">
+
+          // https://www.youtube.com/watch?v=JY0FN71vCbw
+        </script>
+        <h2>box-shadow</h2>
+        <script type="editor" data-lang="css">
+
+          box-shadow: 0 0 7px red;
+
+          /*     left-right, up-down, shadow distance, colour  */
+            -webkit-box-shadow: 0 0 3px #727272;
+                    box-shadow: 0 0 3px #727272;
+          /*
+               -moz-box-shadow: 0 0 3px #727272;
+                -ms-box-shadow: 0 0 3px #727272;
+                 -o-box-shadow: 0 0 3px #727272;
+          */
+
+            -webkit-box-shadow: inset 0 0 5px #000;
+                    box-shadow: inset 0 0 5px #000;
+          /*
+               -moz-box-shadow: inset 0 0 5px #000;
+                -ms-box-shadow: inset 0 0 5px #000;
+                 -o-box-shadow: inset 0 0 5px #000;
+          */
+
+          /*     left-right, up-down, shadow distance, blurr, colour  */
+          text-shadow: 0 0 1px yellow;
+          text-shadow: 0 0 4px white, 0 -5px 4px #FFFF33, 2px -10px 6px #FFDD33; /* flame effect - multiple shadows*/
+          box-shadow: 5px 5px 5px rgba(0,0,0,.75); /* [IE 9] */
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+
+          /*  multiple  */
+
+          box-shadow: 0 0 10px 4px #00f, 0 0 20px 30px #008000, 30px 0 20px 30px #ff1493, -30px -30px 20px 30px #ff4500;
+
+            /* from https://www.entheosweb.com/tutorials/css/multiple_shadows.asp */
+        </script>
+
+        <hr />
+        <hr />
+        <hr />
+        <h2>view() function rotate scroll</h2>
+
+        <style replace="#replace_virus_rotate_target">
+          .virus_rotate {
+            width: 150px;
+            animation-name: rotateAnimation;
+            animation-timeline: view();
+          }
+          @keyframes rotateAnimation {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
+            }
+          }
+          /* from: https://youtu.be/pFtxR-O78sY */
+        </style>
+        <img src="./virus.svg" class="virus_rotate" />
+        <script type="editor" data-lang="css" id="replace_virus_rotate_target"></script>
+
+        <hr />
+        <hr />
+        <hr />
+        <style replace="#replace_header_fade_in_target">
+          .header_fade_in {
+            font-size: 30px;
+            font-weight: 900;
+            animation: headerFadeIn both;
+            animation-timeline: view(70% 5%);
+          }
+          @keyframes headerFadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(200px) scale(0.3);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+        </style>
+        <p class="header_fade_in">My header</p>
+        <div class="header_fade_in">
+          <script type="editor" data-lang="css" id="replace_header_fade_in_target" class="header_fade_in"></script>
+        </div>
+
+        <hr />
+        <hr />
+        <hr />
+        <style replace="#replace_auto_blur_target">
+          .auto_blur {
+            font-size: 50px;
+            font-weight: 900;
+            animation: autoBlurAnimation both;
+            animation-timeline: view();
+          }
+          @keyframes autoBlurAnimation {
+            0% {
+              filter: blur(40px);
+            }
+            45%,
+            55% {
+              filter: blur(0px);
+            }
+            100% {
+              filter: blur(40px);
+            }
+          }
+        </style>
+        <p class="auto_blur">Lorem ipsum dolor sit amet</p>
+        <p class="auto_blur">&nbsp; &nbsp; &nbsp; &nbsp; consectetur adipiscing elit</p>
+        <p class="auto_blur">Cras a libero a enim malesuada</p>
+        <p class="auto_blur">&nbsp; &nbsp; Mauris id posuere tortor</p>
+        <p class="auto_blur">sit amet scelerisque nisi</p>
+        <p class="auto_blur">&nbsp; &nbsp; &nbsp; &nbsp; Duis quis accumsan ex</p>
+
+        <script type="editor" data-lang="css" id="replace_auto_blur_target"></script>
+
+        <hr />
+        <hr />
+        <hr />
+        <h2>center element</h2>
+        <script type="editor" data-lang="css">
+
+          top: 50%;
+          left: 50%;
+          -webkit-transform: translate(-50%, -50%);
+              -ms-transform: translate(-50%, -50%);
+                  transform: translate(-50%, -50%);
+        </script>
+        <h2>image reset</h2>
+
+        <script type="editor" data-lang="css">
+
+          img {
+            font-style: italic;
+            background-repeat: no-repeat;
+            background-size: cover;
+            shape-margin: 1rem;
+            max-width: 100%;
+            height: auto;
+            vertical-align; middle;
+          }
+
+          /* from: https://www.youtube.com/watch?v=345V2MU3E_w */
+        </script>
+        <h2>animations</h2>
+        <a href="https://codepen.io/stopsopa/pen/MWzdYbd">Glowing animated background</a>
+        <br />
+        <a href="https://codepen.io/raulghm/pen/EjdwoO">Simple Glow Effect</a>
+        <br />
+        <a href="https://codepen.io/leandrosimoes/pen/VqZxaG">Pure CSS Button Hover Glow Effect</a>
+
+        <h2>Fonts</h2>
+
+        <p>
+          Check also font "rubik font" <a href="https://fonts.google.com/specimen/Rubik">Google</a> &
+          <a href="https://fonts.adobe.com/fonts/rubik">Adobe</a> <br />
+          found:
+          <a href="https://mightandmagic.fandom.com/wiki/List_of_Heroes_III_artifacts"
+            >https://mightandmagic.fandom.com/wiki/List_of_Heroes_III_artifacts</a
+          >
+        </p>
+
+        <p>
+          <b>WARNING:</b> choosing font from any tool like google fonts pay attention to numeric values of font-weight
+          in css, more about it
+          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight"
+            >https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight</a
+          >
+        </p>
+        <script type="editor" data-lang="css">
+
+          /* from: https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight */
+          font-weight: normal;
+          font-weight: bold;
+
+          /* <font-weight-absolute> numeric values [1,1000] */
+          font-weight: 100; /* thin */
+          font-weight: 200;
+          font-weight: 300;
+          font-weight: 400; /* normal */
+          font-weight: 500;
+          font-weight: 600;
+          font-weight: 700; /* bold */
+          font-weight: 800;
+          font-weight: 900; /* heavy */
+
+          /* Keyword values relative to the parent */
+          font-weight: lighter;
+          font-weight: bolder;
+
+
+          /*
+          normally I would take probably something like:
+          //fonts.googleapis.com/css?family=Open+Sans:300,400,500,700,900
+          */
+        </script>
+        <style>
+          /* from: https://css-tricks.com/snippets/css/font-stacks/ */
+          .font1 {
+            /* Times New Roman-based stack */
+            font-family: Cambria, "Hoefler Text", Utopia, "Liberation Serif", "Nimbus Roman No9 L Regular", Times,
+              "Times New Roman", serif;
+          }
+
+          .font2 {
+            /* Modern Georgia-based serif stack */
+            font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif",
+              "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+          }
+
+          .font3 {
+            /* Traditional Garamond-based serif stack */
+            font-family: "Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Baskerville,
+              "Bookman Old Style", "Bitstream Charter", "Nimbus Roman No9 L", Garamond, "Apple Garamond",
+              "ITC Garamond Narrow", "New Century Schoolbook", "Century Schoolbook", "Century Schoolbook L", Georgia,
+              serif;
+          }
+
+          .font4 {
+            /* Helvetica/Arial-based sans serif stack */
+            font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro",
+              Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue",
+              Helvetica, Arial, sans-serif;
+          }
+
+          .font5 {
+            /* Verdana-based sans serif stack */
+            font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans",
+              "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
+          }
+
+          .font6 {
+            /* Trebuchet-based sans serif stack */
+            font-family: "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans",
+              "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;
+          }
+
+          .font7 {
+            /* Impact-based sans serif stack */
+            font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat",
+              "Bitstream Vera Sans Bold", "Arial Black", sans-serif;
+          }
+
+          .font8 {
+            /* Monospace stack */
+            font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter",
+              "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New",
+              Courier, monospace;
+          }
+          .font9 {
+            font-family: "Open Sans";
+            font-size: 12px;
+          }
+          .font10 {
+            font-family: monaco, Consolas, Lucida Console, monospace;
+            font-size: 12px;
+          }
+        </style>
+        <p class="font1">
+          Times New Roman-based stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est eget
+          mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus ipsum
+          sapien
+        </p>
+        <p class="font2">
+          Modern Georgia-based serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est
+          eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+        </p>
+        <p class="font3">
+          Traditional Garamond-based serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor
+          est eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+        </p>
+        <p class="font4">
+          Helvetica/Arial-based sans serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor
+          est eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+        </p>
+        <p class="font5">
+          Verdana-based sans serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est
+          eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+        </p>
+        <p class="font6">
+          Trebuchet-based sans serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est
+          eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+        </p>
+        <p class="font7">
+          Impact-based sans serif stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est eget
+          mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus ipsum
+          sapien
+        </p>
+        <p class="font8">
+          Monospace stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est eget mi
+          condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus ipsum sapien
+        </p>
+        <p class="font9">
+          Monospace stack - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est eget mi
+          condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus ipsum sapien
+        </p>
+        <p class="font10">
+          Monaco CSS Font Stack (monospace) - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In porttitor est
+          eget mi condimentum semper. Mauris nec tincidunt turpis. Etiam dignissim blandit malesuada. Nullam tempus
+          ipsum sapien
+          <a href="https://www.cssfontstack.com/Monaco">https://www.cssfontstack.com/Monaco</a>
+        </p>
+        <h2>Font Iter</h2>
+
+        <script type="editor" data-lang="css">
+
+          // font: Inter  - open source
+            <link rel="preconnect" href="https://rsms.me/" />
+            <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+            homepage: https://rsms.me/inter/download/ by Rasmus Andersson (RSMS)
+              first saw: https://www.blockchain.com/explorer/transactions/eth/0x47cc7d1d0d06a304b67f9e31f710e44aa4ba499e5ca8624ee8f23c1ae8ca4461
+            .g-inter {
+              font-family: Inter, sans-serif;
+              font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
+            }
+        </script>
+        <style>
+          .g-inter {
+            font-family: Inter, sans-serif;
+            font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
+          }
+        </style>
+        <p class="g-inter">
+          font: Inter - This transaction was first broadcasted on the Ethereum network on August 09, 2022 at 03:08 AM
+          GMT+1. The transaction currently has 5,310,353 confirmations on the network. The current value of this
+          transaction is now $5,361.50. 1.9944871497470729 Ether Value 1.9940497464044795 Ether (1,994,049,746 Gwei)
+          $5,361.50 Fee 0.00043740334259341 Ether
+        </p>
+
+        <h2>filter: drop-shadow</h2>
+        <div>
+          <div>
+            <div>
+              <div>
+                <div>
+                  <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow#browser_compatibility"
+                    >https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow#browser_compatibility</a
+                  >
+                  | <a href="https://www.youtube.com/shorts/r0tG1JZ2i8g">from</a>
+                  <img src="https://i.imgur.com/CBcGC9X.png" class="toggle_drop_shadow_cls" width="200" />
+                  <style>
+                    .toggle_drop_shadow_cls {
+                      transition: filter 0.23s ease-in-out;
+                      &:hover {
+                        filter: drop-shadow(0px 0px 12px grey);
+                      }
+                    }
+                  </style>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h2>filter: grayscale</h2>
+        <div>
+          <div>
+            <div>
+              <div>
+                <div>
+                  <a href="https://www.youtube.com/shorts/u9PycXAcWNo">from</a>
+                  <br />
+                  <img src="https://i.imgur.com/q3CHEJs.png" class="toggle_grayscale_cls" width="200" />
+                  <p>to see the effect hover over the image</p>
+                  <style>
+                    .toggle_grayscale_cls {
+                      filter: grayscale(100%);
+                      transition: filter 0.23s ease-in-out;
+                      &:hover {
+                        filter: grayscale(0%);
+                      }
+                    }
+                  </style>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2>transform</h2>
+        <div class="different_transform">
+          <div>
+            <div>
+              <div>
+                <div>
+                  <a href="https://www.youtube.com/shorts/1ULiXjvw0F0">from</a>
+                  <br />
+
+                  <div class="rect up"></div>
+                  <div class="rect rotate"></div>
+                  <div class="rect skew"></div>
+                  <div class="rect scale"></div>
+                  <div class="rect matrix">glitchy</div>
+                  <div class="rect matrix_fixed"><div>matrix_fixed</div></div>
+                  <style>
+                    .different_transform {
+                      div.rect {
+                        float: left;
+                        margin-top: 10px;
+                        margin-left: 10px;
+                        margin-bottom: 10px;
+                        font-family: "Open Sans";
+                        font-size: 12px;
+                        text-align: center;
+                        line-height: 89px;
+                        &:not(.matrix_fixed),
+                        &.matrix_fixed > div {
+                          border: 3px solid #4e4b4b;
+                          background-color: #5282ca;
+                          width: 100px;
+                          height: 100px;
+                          transition: transform 0.3s ease;
+                        }
+                        &.up:hover {
+                          transform: translate(-7px, -7px);
+                        }
+                        &.rotate:hover {
+                          transform: rotate(8deg);
+                        }
+                        &.skew:hover {
+                          transform: skew(-5deg, -10deg);
+                        }
+                        &.scale:hover {
+                          transform: scale(0.87);
+                        }
+                        &.matrix:hover {
+                          transform: matrix(0, 1, 1, 0, 0, 0);
+                        }
+                        &.matrix_fixed {
+                          box-shadow: 0 0 7px red;
+                          &:hover {
+                            div {
+                              transform: matrix(0, 1, 1, 0, 0, 0);
+                            }
+                          }
+                        }
+                      }
+                    }
+                  </style>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

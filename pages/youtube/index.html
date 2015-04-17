@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>https://cobalt.tools/</h2>
+        <a href="https://cobalt.tools/">https://cobalt.tools/</a>
+        <h2>yt-dlp [BEST - as of now]</h2>
+        <script type="editor" data-lang="sh">
+
+          # list available formats for given video specified with hash
+          yt-dlp -F xv5zQU_6dO8 | grep "audio only"
+
+          # download selected file
+          yt-dlp -f 251 xv5zQU_6dO8
+
+          # to get mp3 format install ffmpeg
+          brew install ffmpeg
+
+          # and then use this command
+          yt-dlp  -x --audio-format mp3  xv5zQU_6dO8
+        </script>
+        <h2>you-get</h2>
+        <a href="https://you-get.org/">https://you-get.org/</a>
+        <script type="editor" data-lang="sh">
+
+          #also try to search:
+          https://yandex.com/search/?text=Dire+Straits+Planet+Of+New+Orleans++flac+index.of&lr=104984
+          # or
+          https://vk.com/search?q=Dire%20Straits%20-%20Once%20upon%20a%20time%20in%20the%20West
+          # and
+          https://flacmusicfinder.top/
+
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install you-get
+
+          you-get -i YOUTUBELINK
+
+          you-get --itag=136 YOUTUBELINK
+        </script>
+        <h2>youtube-dl</h2>
+        <a href="https://github.com/ytdl-org/youtube-dl">https://github.com/ytdl-org/youtube-dl</a>
+        <script type="editor" data-lang="sh">
+
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install youtube-dl
+
+          # show available formats
+            youtube-dl -F YOUTUBELINK | grep -v "video only"
+
+          # download particular version
+            youtube-dl -f 136 YOUTUBELINK
+
+          # WARNING: formats tagged as DASH video only contains the video, while the DASH audio versions contain the audio.
+          #     FROM: https://github.com/ytdl-org/youtube-dl/issues/1752#issuecomment-28238656
+
+
+          export YOUTUBELINK='YOUTUBELINK'
+          youtube-dl -f best "$YOUTUBELINK"
+
+
+          export YOUTUBELINK='YOUTUBELINK'
+          _LIST="$(youtube-dl -F $YOUTUBELINK)"
+          echo $_LIST
+          _YTNR="$(echo "$_LIST" | grep '(best)' | awk '{print $1}')"
+          echo $_YTNR
+          youtube-dl -f "$_YTNR" "$YOUTUBELINK"
+        </script>
+        <h2>Sort chanell by popularity</h2>
+        <a href="https://www.youtube.com/c/glebbahmutov/videos&sort=p">link</a>
+        <h2>AdBlock</h2>
+        <a href="https://adlock.com/blog/how-to-block-youtube-ads-on-iphone/"
+          >https://adlock.com/blog/how-to-block-youtube-ads-on-iphone/</a
+        >
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

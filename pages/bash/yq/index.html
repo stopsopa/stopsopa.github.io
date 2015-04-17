@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>yq</h2>
+        <a href="https://mikefarah.gitbook.io/yq/#quick-usage-guide"
+          >https://mikefarah.gitbook.io/yq/#quick-usage-guide</a
+        >
+        <script type="editor" data-lang="sh">
+
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install yq
+          # or follow: https://mikefarah.gitbook.io/yq/#install
+
+          # just print one value (warning \n character at the end)
+          yq '.server.port' src/test/resources/application-integration.yaml
+
+          # just print one value - NO NEW LINE CHARACTER AT THE END
+          yq '.server.port' src/test/resources/application-integration.yaml | tr -d '\n'
+
+          cat <<EEE > yaml.yaml
+          a: cat
+          b: dog
+          EEE
+
+          yq -i '.a = .b' yaml.yaml
+          # WARNING: this will update the file content
+
+          cat yaml.yaml | yq '.a = .b'
+          # like above but will stdout instead of changing in file in place
+
+
+          cat <<EEE > yaml.yaml
+          - name: bob
+            fruit: apple
+          - name: sally
+            fruit: orange
+          EEE
+
+          cat yaml.yaml | yq '.[] | select(.name == "sally") | .fruit = "mango"'
+          cat yaml.yaml | yq '(.[]) | (select(.name == "sally")) | (.fruit = "mango")'
+          # WRONG: both above wrong - will return only part of the document - selected part
+
+          cat yaml.yaml | yq '(.[] | select(.name == "sally") | .fruit) = "mango"'
+          # GOOD: this will update and also return entire document
+            # more about this: https://mikefarah.gitbook.io/yq/how-it-works#complex-assignment-operator-precedence-rules
+
+          cat <<EEE | yq '(.[] | select(.name == "Foo") | .numBuckets) |= . + 1'
+          - name: Foo
+            numBuckets: 0
+          - name: Bar
+            numBuckets: 0
+          EEE
+
+          cat <<EEE | yq '(  (.[] | select(.name == "Bar") | .numBuckets) |= . + 1  ) | (  (.[] | select(.name == "Foo") | .numBuckets) |= . + 10  ) | del(.[1].name )'
+          - name: Foo
+            numBuckets: 0
+          - name: Bar
+            numBuckets: 0
+          EEE
+            # from: https://mikefarah.gitbook.io/yq/recipes#find-and-update-items-in-an-array
+
+          cat <<EEE | yq 'with(.myArray[]; .name = .name + " - " + .type)'
+          myArray:
+            - name: Foo
+              type: cat
+            - name: Bar
+              type: dog
+          EEE
+
+          # sorting https://mikefarah.gitbook.io/yq/recipes#sort-an-array-by-a-field
+          cat <<EEE | yq '.myArray |= sort_by(.numBuckets)'
+          myArray:
+            - name: Foo
+              numBuckets: 1
+            - name: Bar
+              numBuckets: 0
+          EEE
+
+          # flatten sort uniqe: https://mikefarah.gitbook.io/yq/recipes#filter-flatten-sort-and-unique
+          cat <<EEE | yq '[.[] | select(.type == "foo") | .names] | flatten | sort | unique'
+          - type: foo
+            names:
+              - Fred
+              - Catherine
+          - type: bar
+            names:
+              - Zelda
+          - type: foo
+            names: Fred
+          - type: foo
+            names: Ava
+          EEE
+
+          cat <<EEE | yq '.name.test.two'
+          name:
+            test:
+              two: horse
+          EEE
+          # print >horse<
+
+          cat <<EEE | yq '.name.test.one'
+          name:
+            test:
+              two: horse
+          EEE
+          # print >null<
+
+          cat <<EEE | yq '.name.test.one // "frog"'
+          name:
+            test:
+              two: horse
+          EEE
+          # print >frog<
+            # from: https://mikefarah.gitbook.io/yq/upgrading-from-v3#how-to-do-v3-things-in-v4
+
+          cat <<EEE | yq '.a[] | select(.b.d == "cat") | .f'
+          a:
+            - b:
+                d: frog
+              f: nfrog
+            - b:
+                d: cat
+              f: ncat
+            - b:
+                d: horse
+              f: nhorse
+          EEE
+            # from: https://mikefarah.gitbook.io/yq/upgrading-from-v3#finding-nodes
+
+          cat <<EEE | yq 'del(.a[1])'
+          a:
+            - b:
+                d: frog
+              f: nfrog
+            - b:
+                d: cat
+              f: ncat
+            - b:
+                d: horse
+              f: nhorse
+          EEE
+            # from: https://mikefarah.gitbook.io/yq/upgrading-from-v3#deleting-documents
+
+          # prefix (I would rather call it WRAP)
+
+          cat <<EEE | yq '{"c": {"d": . }}'
+          name:
+            test:
+              two: horse
+          EEE
+            # from: https://mikefarah.gitbook.io/yq/upgrading-from-v3#prefix-yaml
+
+          # validate
+          cat <<EEE | yq 'true'
+              name:
+            test:
+              two: horse
+          EEE
+
+          cat <<EEE | yq 'true'
+          name:
+            test:
+              two: horse
+          EEE
+            # from: https://mikefarah.gitbook.io/yq/upgrading-from-v3#validate-documents
+
+          # prints a new yaml document https://mikefarah.gitbook.io/yq/commands/evaluate#examples
+          yq -n '.a.b.c = "cat"'
+
+          # output format =======
+
+          # no colors https://mikefarah.gitbook.io/yq/usage/output-format
+          cat <<EEE | yq -M '(.[] | select(.name == "Foo") | .numBuckets) |= . + 1'
+          - name: Foo
+            numBuckets: 0
+          - name: Bar
+            numBuckets: 0
+          EEE
+
+          # as json https://mikefarah.gitbook.io/yq/usage/output-format
+          cat <<EEE | yq -j '(.[] | select(.name == "Foo") | .numBuckets) |= . + 1'
+          - name: Foo
+            numBuckets: 0
+          - name: Bar
+            numBuckets: 0
+          EEE
+
+          # indentation (works for json and yaml format) https://mikefarah.gitbook.io/yq/usage/output-format
+          cat <<EEE | yq -j -I4  '(.[] | select(.name == "Foo") | .numBuckets) |= . + 1'
+          - name: Foo
+            numBuckets: 0
+          - name: Bar
+            numBuckets: 0
+          EEE
+
+          # unwrap scalars https://mikefarah.gitbook.io/yq/usage/output-format#unwrap-scalars
+
+          echo 'a: "Things" # cool stuff' | yq '.a'
+          # will print >Things<
+
+          echo 'a: "Things" # cool stuff' | yq --unwrapScalar=false '.a'
+          # will print >a: "Things" # cool stuff<
+
+          # Newline Delimited JSON (ndjson) Format =============== https://mikefarah.gitbook.io/yq/usage/convert
+          echo '{"cat": "meow"}' | yq -P '.'
+          echo '{"a":"Easy! as one two three","b":{"c":2,"d":[3,4]}}' | yq -P '.'
+          echo 'cat: meow' | yq -o=json
+
+          # single line json
+          echo 'cat: meow' | yq -o=json -I0
+                      # or
+          echo 'cat: meow' | yq -o=json -I=0
+
+          #
+          echo 'things: [{stuff: cool}, {whatever: cat}]' | yq -o=json -I=0 '.things[]'
+          # prints >{"stuff":"cool"}
+          {"whatever":"cat"}<
+
+          echo 'things: [{stuff: cool}, {whatever: cat}]' | yq -o=json -I=0 '[.things[]]'
+          # prints >[{"stuff":"cool"},{"whatever":"cat"}]<
+
+          # multiple json (each multiline): https://mikefarah.gitbook.io/yq/usage/convert#roundtrip-multi-document-json
+          cat <<EEE | yq -p=json -o=json -I=0
+          {
+          	"this": "is a multidoc json file"
+          }
+          {
+          	"it": [
+          		"has",
+          		"consecutive",
+          		"json documents"
+          	]
+          }
+          {
+          	"a number": 4
+          }
+          EEE
+          # will print >{"this":"is a multidoc json file"}
+          {"it":["has","consecutive","json documents"]}
+          {"a number":4}<
+
+          cat <<EEE | yq -p=json -o=json -I=0 '(select(di == 1) | .each ) += "cool"'
+          {"this": "is a multidoc json file"}
+          {"each": ["line is a valid json document"]}
+          {"a number": 4}
+          EEE
+          # prints >{"this":"is a multidoc json file"}
+          {"each":["line is a valid json document","cool"]}
+          {"a number":4}<
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

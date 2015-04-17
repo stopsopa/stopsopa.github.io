@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <h2>Online clocks</h2>
+
+        <div class="card">
+          <h2>Read</h2>
+          <a href="https://www.zainrizvi.io/blog/falsehoods-programmers-believe-about-time-zones/"
+            >g(ZAIN RIZVI Falsehoods programmers believe about time zones)</a
+          >
+          <br />
+          <a href="https://github.com/date-fns/date-fns/issues/3482"
+            >https://github.com/date-fns/date-fns/issues/3482</a
+          >
+
+          <h2>Year calendar</h2>
+          <a
+            href="https://www.timeanddate.com/calendar/custom.html?year=2023&country=9&cols=4&cdt=31&cwf=2______2&holm=1&typ=0&display=3&df=1"
+            >2023 Monday first</a
+          >
+          <br />
+          <a
+            href="https://www.timeanddate.com/calendar/custom.html?year=2023&country=9&cols=4&fdow=7&cdt=31&cwf=2______2&holm=1&typ=0&display=3&df=1"
+            >2023 Sunday first</a
+          >
+          <br />
+          <a href="http://www.whatweekisit.org/">http://www.whatweekisit.org/</a>
+          <h3>World Time Buddy</h3>
+          <a
+            href="https://www.timeanddate.com/worldclock/converter.html?iso=20250219T132100&p1=136&p2=234&p3=75&p4=64&p5=179&p6=41&p7=232&p8=367&p9=176"
+            >https://www.timeanddate.com/worldclock/converter.html?iso=20250219T132100&p1=136&p2=234&p3=75&p4=64&p5=179&p6=41&p7=232&p8=367&p9=176</a
+          >
+          <br />
+          <a href="https://www.worldtimebuddy.com/">https://www.worldtimebuddy.com/</a>
+          <h3>Time Zone</h3>
+          <a href="https://24timezones.com/timezone-map">Time Zones</a>
+          <br />
+          <a href="https://www.timeanddate.com/worldclock/converter.html?iso=20180823T100000&p1=136&p2=179&p3=262"
+            >https://www.timeanddate.com/worldclock/converter.html</a
+          >
+          <br />
+          <a href="https://www.timebie.com/std/zulu.php">https://www.timebie.com/std/zulu.php</a>
+          <h2>World Clock RevolverClock</h2>
+          <a href="https://worldclock.revolverclock.com/">https://worldclock.revolverclock.com/</a>
+          <h3>Heroku System clock and time synchronization</h3>
+          <a href="https://devcenter.heroku.com/articles/dynos#system-clock-and-time-synchronization"
+            >https://devcenter.heroku.com/articles/dynos#system-clock-and-time-synchronization</a
+          >
+          <h3>iPhone app</h3>
+          <a href="https://www.google.com/search?q=iphone+world+clock+by+timeanddate.com"
+            >g(world clock by timeanddate.com)</a
+          >
+          <h2>US timezones</h2>
+
+          <script type="editor" data-lang="sh">
+
+            America:
+              Pacific Time Zone: PT (also known as PST during the winter months and PDT during the summer months)
+              Mountain Time Zone: MT (also known as MST during the winter months and MDT during the summer months)
+              Central Time Zone: CT (also known as CST during the winter months and CDT during the summer months)
+              Eastern Time Zone: ET (also known as EST during the winter months and EDT during the summer months)
+
+                After discussion with one guy from US: it seems using PST, MST, CST and EST is the most commonly used
+                Sometimes people say PDT ( I know one anomaly ;) ) but apparently pretty much no one
+                is using MDT, CDT, EDT at all
+                The logic behind it is that shifting hour ahead or behind for summer or winter time is done the same day
+                for all timezones so using PST, MST, CST and EST is just to reflect the time offset in
+                general comunication betwen people from US.
+
+            Note that during the winter months (from early November to early March), each time zone uses
+            the standard time abbreviation (e.g. PST for Pacific Time Zone), and during the
+            summer months (from early March to early November), each time zone uses the daylight
+            saving time abbreviation (e.g. PDT for Pacific Time Zone).
+
+            Europe
+              Greenwich Mean Time (GMT) or Central European Time (CET) - Since many European countries follow GMT (in the UK)
+              CET (like France, Germany, and Poland), these are often used to represent European hours in company-wide schedules.
+          </script>
+          <style>
+            .usamap {
+              position: relative;
+            }
+            .usamap svg {
+              border: 1px solid rgb(200, 198, 198);
+            }
+
+            .state-label {
+              position: absolute;
+              font-size: 12px;
+              font-weight: bold;
+              background: rgba(255, 255, 255, 0.8);
+              padding: 2px 5px;
+              border-radius: 3px;
+              pointer-events: none;
+            }
+
+            .zone {
+              position: absolute;
+            }
+          </style>
+
+          <div class="usamap"><%inject pages/clock/usa.svg %></div>
+          <label id="allon">
+            <input type="checkbox" autocomplete="off" />
+            <span></span>
+          </label>
+          <script>
+            const colors = {
+              PST: "#7DC9B5",
+              MST: "#59B7BE",
+              CST: "#3398BA",
+              EST: "#406FAA",
+              HST: "#F9A6A6",
+              AKST: "#D79294",
+            };
+            const list = [
+              {
+                id: "US-AK",
+                label: "Alaska",
+                tz: "AKST",
+              },
+              {
+                id: "US-AL",
+                label: "Alabama",
+                tz: "CST",
+              },
+              {
+                id: "US-AR",
+                label: "Arkansas",
+                tz: "CST",
+              },
+              {
+                id: "US-AZ",
+                label: "Arizona",
+                tz: "MST",
+              },
+              {
+                id: "US-CA",
+                label: "California",
+                tz: "PST",
+              },
+              {
+                id: "US-CO",
+                label: "Colorado",
+                tz: "MST",
+              },
+              {
+                id: "US-CT",
+                label: "Connecticut",
+                tz: "EST",
+              },
+              {
+                id: "US-DC",
+                label: "Washington, DC",
+                tz: "EST",
+              },
+              {
+                id: "US-DE",
+                label: "Delaware",
+                tz: "EST",
+              },
+              {
+                id: "US-FL",
+                label: "Florida",
+                tz: "EST",
+              },
+              {
+                id: "US-GA",
+                label: "Georgia",
+                tz: "EST",
+              },
+              {
+                id: "US-HI",
+                label: "Hawaii",
+                tz: "HST",
+              },
+              {
+                id: "US-IA",
+                label: "Iowa",
+                tz: "CST",
+              },
+              {
+                id: "US-ID",
+                label: "Idaho",
+                tz: "MST",
+              },
+              {
+                id: "US-IL",
+                label: "Illinois",
+                tz: "CST",
+              },
+              {
+                id: "US-IN",
+                label: "Indiana",
+                tz: "EST",
+              },
+              {
+                id: "US-KS",
+                label: "Kansas",
+                tz: "CST",
+              },
+              {
+                id: "US-KY",
+                label: "Kentucky",
+                tz: "EST",
+              },
+              {
+                id: "US-LA",
+                label: "Louisiana",
+                tz: "CST",
+              },
+              {
+                id: "US-MA",
+                label: "Massachusetts",
+                tz: "EST",
+              },
+              {
+                id: "US-MD",
+                label: "Maryland",
+                tz: "EST",
+              },
+              {
+                id: "US-ME",
+                label: "Maine",
+                tz: "EST",
+              },
+              {
+                id: "US-MI",
+                label: "Michigan",
+                tz: "EST",
+              },
+              {
+                id: "US-MN",
+                label: "Minnesota",
+                tz: "CST",
+              },
+              {
+                id: "US-MO",
+                label: "Missouri",
+                tz: "CST",
+              },
+              {
+                id: "US-MS",
+                label: "Mississippi",
+                tz: "CST",
+              },
+              {
+                id: "US-MT",
+                label: "Montana",
+                tz: "MST",
+              },
+              {
+                id: "US-NC",
+                label: "North Carolina",
+                tz: "EST",
+              },
+              {
+                id: "US-ND",
+                label: "North Dakota",
+                tz: "CST",
+              },
+              {
+                id: "US-NE",
+                label: "Nebraska",
+                tz: "CST",
+              },
+              {
+                id: "US-NH",
+                label: "New Hampshire",
+                tz: "EST",
+              },
+              {
+                id: "US-NJ",
+                label: "New Jersey",
+                tz: "EST",
+              },
+              {
+                id: "US-NM",
+                label: "New Mexico",
+                tz: "MST",
+              },
+              {
+                id: "US-NV",
+                label: "Nevada",
+                tz: "PST",
+              },
+              {
+                id: "US-NY",
+                label: "New York",
+                tz: "EST",
+              },
+              {
+                id: "US-OH",
+                label: "Ohio",
+                tz: "EST",
+              },
+              {
+                id: "US-OK",
+                label: "Oklahoma",
+                tz: "CST",
+              },
+              {
+                id: "US-OR",
+                label: "Oregon",
+                tz: "PST",
+              },
+              {
+                id: "US-PA",
+                label: "Pennsylvania",
+                tz: "EST",
+              },
+              {
+                id: "US-RI",
+                label: "Rhode Island",
+                tz: "EST",
+              },
+              {
+                id: "US-SC",
+                label: "South Carolina",
+                tz: "EST",
+              },
+              {
+                id: "US-SD",
+                label: "South Dakota",
+                tz: "CST",
+              },
+              {
+                id: "US-TN",
+                label: "Tennessee",
+                tz: "CST",
+              },
+              {
+                id: "US-TX",
+                label: "Texas",
+                tz: "CST",
+              },
+              {
+                id: "US-UT",
+                label: "Utah",
+                tz: "MST",
+              },
+              {
+                id: "US-VA",
+                label: "Virginia",
+                tz: "EST",
+              },
+              {
+                id: "US-VT",
+                label: "Vermont",
+                tz: "EST",
+              },
+              {
+                id: "US-WA",
+                label: "Washington",
+                tz: "PST",
+              },
+              {
+                id: "US-WI",
+                label: "Wisconsin",
+                tz: "CST",
+              },
+              {
+                id: "US-WV",
+                label: "West Virginia",
+                tz: "EST",
+              },
+              {
+                id: "US-WY",
+                label: "Wyoming",
+                tz: "MST",
+              },
+            ];
+
+            const xOffset = -100;
+            const width = 1150 + xOffset;
+            const height = 800;
+            const letterWidth = 10;
+
+            const svg = document.querySelector(".usamap svg");
+            const usamapDiv = document.querySelector(".usamap");
+            const statesGroup = svg.querySelector("g");
+
+            function mouseover(e) {
+              const target = e.target;
+              if (target.tagName === "path") {
+                const id = target.getAttribute("id");
+                const text = document.getElementById(`${id}-text`);
+                text.style.display = "block";
+              }
+            }
+
+            function mouseout(e) {
+              const target = e.target;
+              if (target.tagName === "path") {
+                const id = target.getAttribute("id");
+                const text = document.getElementById(`${id}-text`);
+                text.style.display = "none";
+              }
+            }
+
+            const textList = [];
+
+            svg.querySelectorAll("path").forEach((path) => {
+              const title = path.getAttribute("title");
+              if (title) {
+                const bbox = path.getBBox(); // Get bounding box of state
+                const id = path.getAttribute("id");
+
+                // Create SVG text element
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", bbox.x + bbox.width / 2);
+                text.setAttribute("y", bbox.y + bbox.height / 2);
+                text.setAttribute("class", "state-label");
+                text.setAttribute("fill", "black"); // Text color
+                text.setAttribute("font-size", "12px");
+                text.setAttribute("font-weight", "bold");
+                text.setAttribute("text-anchor", "middle"); // Center horizontally
+                text.setAttribute("dominant-baseline", "middle"); // Center vertically
+                text.textContent = title;
+                text.setAttribute("id", `${id}-text`);
+
+                // Append text inside the SVG
+                statesGroup.appendChild(text);
+
+                textList.push(text);
+              }
+            });
+
+            {
+              const allon = document.querySelector("#allon input");
+              const span = document.querySelector("#allon span");
+              let hover = false;
+              allon.checked = hover;
+              function action() {
+                if (hover) {
+                  svg.addEventListener("mouseover", mouseover);
+                  svg.addEventListener("mouseout", mouseout);
+                  textList.forEach((text) => {
+                    text.style.display = "none";
+                  });
+                  span.textContent = "hover on";
+                } else {
+                  svg.removeEventListener("mouseover", mouseover);
+                  svg.removeEventListener("mouseout", mouseout);
+                  textList.forEach((text) => {
+                    text.style.display = "block";
+                  });
+                  span.textContent = "hover off";
+                }
+              }
+              allon.addEventListener("change", (e) => {
+                hover = e.target.checked;
+                action();
+              });
+              action();
+            }
+
+            {
+              list.forEach((item) => {
+                const path = svg.querySelector(`#${item.id}`);
+                console.log("id: ", path, "color: ", colors[item.tz]);
+                if (path) {
+                  path.style.fill = colors[item.tz];
+                }
+              });
+            }
+          </script>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

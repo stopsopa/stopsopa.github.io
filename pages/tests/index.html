@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <h2>Mock | Stub</h2>
+
+        <script type="editor" data-lang="sh">
+
+          Stub:
+            - prevent logic from being executed
+            - replaces (predetermines) what given method should return
+
+          Mock: (simulating object)
+            - prevent logic from being executed
+            - can be predetermined what arguments it takes and what result it retuns
+            List mockedList = mock(List.class);
+
+            mockedList.add("one");
+            mockedList.clear();
+
+            verify(mockedList).add("one");
+            verify(mockedList).clear();
+
+          Spy: (recording interactions with real object - wrapper)
+            - executed real method logic
+            - you can check how (with what arguments) and how many times given method was called
+        </script>
+        <h2>Selenium</h2>
+        <div class="card">
+          <h3>Webdriver</h3>
+          <a href="http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index.html"
+            >http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index.html</a
+          >
+          <br />
+          <a href="https://github.com/stopsopa/webdriver/tree/master/test/examples"
+            >https://github.com/stopsopa/webdriver/tree/master/test/examples</a
+          >
+        </div>
+
+        <h2>Puppeteer</h2>
+        <div class="card">
+          <h3>Test repo</h3>
+          <a href="https://github.com/stopsopa/state-of-puppeteer">https://github.com/stopsopa/state-of-puppeteer</a>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

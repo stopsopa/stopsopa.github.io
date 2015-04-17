@@ -1,0 +1,66 @@
+/**
+ * @author Szymon Działowski
+ * @ver 0.1 - 2015-10-21 - first jQuery based implementation
+ * @ver 0.2 - 2024-12-12 - refactoring the idea to vanilla js
+ * @homepage https://github.com/stopsopa/tabs
+ * @demo http://stopsopa.github.io/submod/tabs/demo/demo.html
+ *
+ * Copyright (c) 2015 Szymon Działowski
+ * Released under the MIT license
+ * http://en.wikipedia.org/wiki/MIT_License
+ */
+ [data-vanilla-tabs] {
+  --background-color: white;
+  --lines-color: #565656;
+}
+[data-vanilla-tabs] > [data-buttons] {
+  /* https://css-tricks.com/fighting-the-space-between-inline-block-elements/ */
+  font-size: 0;
+}
+[data-vanilla-tabs] > [data-buttons] > * {
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 15px;
+  padding: 10px;
+  cursor: pointer;
+  margin-right: -1px;
+  color: var(--lines-color);
+  text-decoration: none;
+  border: 1px solid transparent;
+  display: inline-block;
+  white-space: nowrap;
+  margin-bottom: -1px;
+  outline: 0;
+}
+[data-vanilla-tabs] > [data-buttons] > .active,
+[data-vanilla-tabs] > [data-buttons] > :hover {
+  border: 1px solid var(--lines-color);
+  margin-right: -1px;
+  background-color: var(--background-color);
+}
+[data-vanilla-tabs] > [data-buttons] > .active {
+  border-bottom: 1px solid var(--background-color);
+  background-color: var(--background-color);
+}
+[data-vanilla-tabs] > [data-tabs] > div {
+  border: 1px solid var(--lines-color);
+  padding: 10px;
+  display: none;
+  background-color: var(--background-color);
+  /*display: none;*/
+}
+[data-vanilla-tabs] > [data-tabs] > div.active {
+  display: block;
+}
+/* pixelfix */
+[data-vanilla-tabs] > [data-buttons] > .active {
+  position: relative;
+}
+[data-vanilla-tabs] > [data-buttons] > .active:before {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  width: 1px;
+  height: 1px;
+  background-color: var(--lines-color);
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>nordvpn</h2>
+        <script type="editor" data-lang="sh">
+
+          # install linux version
+            # from: https://support.nordvpn.com/hc/en-us/articles/20196094470929-Installing-NordVPN-on-Linux-distributions
+
+          # login without gui
+            # from: https://support.nordvpn.com/hc/en-us/articles/20226600447633-How-to-log-in-to-NordVPN-on-Linux-devices-without-a-GUI
+
+          # login in the browser: https://my.nordaccount.com/dashboard/nordvpn/
+          # search on the page "token" go there and generate token
+
+          # then do without sudo
+            nordvpn login --token TOKENHERE
+
+          # then it should work
+
+            # list
+              nordvpn cities poland
+              nordvpn cities United_Kingdom
+
+            # list countries
+              nordvpn countries
+
+            # connect to vpn from particular country
+              nordvpn connect poland
+              nordvpn connect United_Kingdom
+
+            # check status
+              nordvpn status
+
+            nordvpn settings
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

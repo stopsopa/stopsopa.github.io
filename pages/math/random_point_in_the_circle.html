@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      .flex {
+        display: flex;
+        width: 100%;
+        .grow {
+          flex-grow: 1;
+        }
+      }
+    </style>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Canvas</h2>
+
+        <div>
+          <a href="https://www.youtube.com/watch?v=4y_nmpv-9lI">from: https://www.youtube.com/watch?v=4y_nmpv-9lI</a>
+
+          <div class="flex random_circle">
+            <div class="grow">
+              <style>
+                .random_circle canvas {
+                  border: 1px solid black;
+                }
+              </style>
+              <script type="editor" data-lang="js" data-eval>
+                const parent = document.querySelector('.random_circle');
+
+                const canvas = parent.querySelector("canvas");
+                // canvas.width = window.innerWidth;
+                // canvas.height = window.innerHeight;
+                canvas.setAttribute('width', `150`);
+                canvas.setAttribute('height', `150`);
+                canvas.style.width = `150px`;
+                canvas.style.height = `150px`;
+                const ctx = canvas.getContext("2d");
+
+                parent.querySelector("button.circle").addEventListener('click', () => {
+                  ctx.beginPath();
+                  const radius = 40; // https://www.w3schools.com/graphics/canvas_circles.asp
+                  const x = 50;
+                  const y = 50;
+                  console.log(`ctx.arc(${x}, ${y}, ${radius}, 0, 2 * Math.PI);`)
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.fillStyle = "#87c289"; // green
+                  ctx.fill();
+                  ctx.lineWidth = 4;
+                  ctx.strokeStyle = "#6b6b6b"; // grey
+                  ctx.stroke();
+                })
+              </script>
+            </div>
+            <div>
+              <button class="circle">circle</button>
+              <br />
+              <canvas></canvas>
+            </div>
+          </div>
+
+          <h2>lineWidth persists between drawings</h2>
+          <div class="flex circle_and_dot">
+            <div class="grow">
+              <style>
+                .circle_and_dot canvas {
+                  border: 1px solid black;
+                }
+              </style>
+              <script type="editor" data-lang="js" data-eval>
+                const parent = document.querySelector('.circle_and_dot');
+                const canvas = parent.querySelector("canvas");
+                const width = 200;
+                const height = 200;
+                canvas.width = width;
+                canvas.height = height;
+                canvas.style.width = `${width}px`;
+                canvas.style.height = `${height}px`;
+                const ctx = canvas.getContext("2d");
+                parent.querySelector("button.clear").addEventListener('click', () => {
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                });
+                parent.querySelector("button.circle").addEventListener('click', () => {
+                  const radius = 98; // https://www.w3schools.com/graphics/canvas_circles.asp
+                  const x = 100;
+                  const y = 100;
+
+                  ctx.beginPath();
+                  console.log(`ctx.arc(${x}, ${y}, ${radius}, 0, 2 * Math.PI);`)
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+
+                  // ctx.lineWidth = 4;
+
+                  ctx.strokeStyle = "#6b6b6b"; // grey
+                  ctx.stroke();
+                })
+
+                parent.querySelector("button.dot").addEventListener('click', () => {
+                  const radius = 0.5; // https://www.w3schools.com/graphics/canvas_circles.asp
+                  const x = 50;
+                  const y = 50;
+
+                  ctx.beginPath();
+                  console.log(`ctx.arc(${x}, ${y}, ${radius}, 0, 2 * Math.PI);`)
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.fillStyle = "black";
+                  ctx.fill();
+
+                  // ctx.lineWidth = 1;
+
+                  ctx.stroke();
+                });
+                parent.querySelector("button.line_1").addEventListener('click', () => {
+                  ctx.lineWidth = 1;
+                });
+                parent.querySelector("button.line_4").addEventListener('click', () => {
+                  ctx.lineWidth = 4;
+                })
+              </script>
+            </div>
+            <div>
+              <button class="clear">clear</button>
+              <br />
+              <button class="line_1">line_1</button>
+              <br />
+              <button class="line_4">line_4</button>
+              <br />
+              <button class="circle">circle</button>
+              <br />
+              <button class="dot">dot</button>
+              <br />
+              <canvas></canvas>
+            </div>
+          </div>
+
+          <h2>Rejection sampling</h2>
+          <a href="https://youtu.be/4y_nmpv-9lI?si=QknfOxc_TjFgkKEj&t=134"
+            >https://youtu.be/4y_nmpv-9lI?si=QknfOxc_TjFgkKEj&t=134</a
+          >
+          <div class="flex rejection_sampling">
+            <div class="grow">
+              <style>
+                .rejection_sampling canvas {
+                  border: 1px solid black;
+                }
+              </style>
+              <script type="editor" data-lang="js" data-eval>
+                const parent = document.querySelector('.rejection_sampling');
+                const canvas = parent.querySelector("canvas");
+                const width = 200;
+                const height = 200;
+                canvas.width = width;
+                canvas.height = height;
+                canvas.style.width = `${width}px`;
+                canvas.style.height = `${height}px`;
+                const ctx = canvas.getContext("2d");
+                parent.querySelector("button.clear").addEventListener('click', () => {
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                  const radius = 98;
+                  const x = width / 2;
+                  const y = height / 2;
+                  ctx.beginPath();
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.strokeStyle = "#6b6b6b"; // grey
+                  ctx.stroke();
+                });
+                function randomXY_() {
+                  // just random dot somewhere in the square
+                  return {
+                    x: Math.random() * width,
+                    y: Math.random() * height
+                  };
+                }
+                function randomXY_factors() {
+                  // https://youtu.be/4y_nmpv-9lI?si=ddk6VE1khCN2sHRM&t=153
+                  while (true) {
+                    let x = Math.random() * 2 - 1;
+                    let y = Math.random() * 2 - 1;
+                    if (x * x + y * y < 1) {
+                      return {x, y};
+                    }
+                  }
+                }
+                function randomXY() {
+                  const {x, y} =  randomXY_factors();
+                  return {
+                    x: width / 2 + x * width / 2,
+                    y: height / 2 + y * height / 2
+                  }
+                }
+                function dot() {
+                  const radius = 0.5;
+                  const {x, y} = randomXY();
+                  ctx.beginPath();
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.fillStyle = "black";
+                  ctx.fill();
+                  ctx.stroke();
+                }
+                parent.querySelector("button.dot").addEventListener('click', dot);
+                parent.querySelector("button.dot_100").addEventListener('click', () => {
+                  for (let i = 0; i < 100; i++) {
+                    dot();
+                  }
+                });
+                parent.querySelector("button.line_1").addEventListener('click', () => {
+                  ctx.lineWidth = 1;
+                });
+                parent.querySelector("button.line_4").addEventListener('click', () => {
+                  ctx.lineWidth = 4;
+                })
+              </script>
+            </div>
+            <div>
+              <button class="clear">clear</button>
+              <br />
+              <button class="line_1">line_1</button>
+              <br />
+              <button class="line_4">line_4</button>
+              <br />
+              <button class="dot">dot</button>
+              <br />
+              <button class="dot_100">dot_100</button>
+              <br />
+              <canvas></canvas>
+            </div>
+          </div>
+
+          <h2>Polar coordinate system</h2>
+          <a href="https://youtu.be/4y_nmpv-9lI?si=hBeEbF2YcqaeAXN3&t=179"
+            >https://youtu.be/4y_nmpv-9lI?si=hBeEbF2YcqaeAXN3&t=179</a
+          >
+          <div class="flex polar_coordinate_system">
+            <div class="grow">
+              <style>
+                .polar_coordinate_system canvas {
+                  border: 1px solid black;
+                }
+              </style>
+              <script type="editor" data-lang="js" data-eval>
+                const parent = document.querySelector('.polar_coordinate_system');
+                const canvas = parent.querySelector("canvas");
+                const width = 200;
+                const height = 200;
+                canvas.width = width;
+                canvas.height = height;
+                canvas.style.width = `${width}px`;
+                canvas.style.height = `${height}px`;
+                const ctx = canvas.getContext("2d");
+                parent.querySelector("button.clear").addEventListener('click', () => {
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                  const radius = 98;
+                  const x = width / 2;
+                  const y = height / 2;
+                  ctx.beginPath();
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.strokeStyle = "#6b6b6b"; // grey
+                  ctx.stroke();
+                });
+                function randomXY_factors() {
+                  const theta = Math.random() * 2 * Math.PI;
+                  const r = Math.random();
+                  return {
+                    x: r * Math.cos(theta),
+                    y: r * Math.sin(theta)
+                  }
+                }
+                function randomXY() {
+                  const {x, y} =  randomXY_factors();
+                  return {
+                    x: width / 2 + x * width / 2,
+                    y: height / 2 + y * height / 2
+                  }
+                }
+                function dot() {
+                  const radius = 0.5;
+                  const {x, y} = randomXY();
+                  ctx.beginPath();
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.fillStyle = "black";
+                  ctx.fill();
+                  ctx.stroke();
+                }
+                parent.querySelector("button.dot").addEventListener('click', dot);
+                parent.querySelector("button.dot_100").addEventListener('click', () => {
+                  for (let i = 0; i < 100; i++) {
+                    dot();
+                  }
+                });
+                parent.querySelector("button.line_1").addEventListener('click', () => {
+                  ctx.lineWidth = 1;
+                });
+                parent.querySelector("button.line_4").addEventListener('click', () => {
+                  ctx.lineWidth = 4;
+                })
+              </script>
+            </div>
+            <div>
+              <button class="clear">clear</button>
+              <br />
+              <button class="line_1">line_1</button>
+              <br />
+              <button class="line_4">line_4</button>
+              <br />
+              <button class="dot">dot</button>
+              <br />
+              <button class="dot_100">dot_100</button>
+              <br />
+              <canvas></canvas>
+            </div>
+          </div>
+
+          <h2>Polar coordinate system - Uniform Radius Distribution (Square Root method)</h2>
+          <a href="https://youtu.be/4y_nmpv-9lI?si=DMdkYqfE7uVwzBRJ&t=613"
+            >https://youtu.be/4y_nmpv-9lI?si=DMdkYqfE7uVwzBRJ&t=613</a
+          >
+          <div class="flex polar_coordinate_system_uniform">
+            <div class="grow">
+              <style>
+                .polar_coordinate_system_uniform canvas {
+                  border: 1px solid black;
+                }
+              </style>
+              <script type="editor" data-lang="js" data-eval>
+                const parent = document.querySelector('.polar_coordinate_system_uniform');
+                const canvas = parent.querySelector("canvas");
+                const width = 200;
+                const height = 200;
+                canvas.width = width;
+                canvas.height = height;
+                canvas.style.width = `${width}px`;
+                canvas.style.height = `${height}px`;
+                const ctx = canvas.getContext("2d");
+                parent.querySelector("button.clear").addEventListener('click', () => {
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                  const radius = 98;
+                  const x = width / 2;
+                  const y = height / 2;
+                  ctx.beginPath();
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.strokeStyle = "#6b6b6b"; // grey
+                  ctx.stroke();
+                });
+                function randomXY_factors() {
+                  const theta = Math.random() * 2 * Math.PI;
+
+                  // the difference is just here vvv
+                  // const r = Math.random();
+                  const r = Math.sqrt(Math.random());
+                  // the difference is just here ^^^
+
+                  return {
+                    x: r * Math.cos(theta),
+                    y: r * Math.sin(theta)
+                  }
+                }
+                function randomXY() {
+                  const {x, y} =  randomXY_factors();
+                  return {
+                    x: width / 2 + x * width / 2,
+                    y: height / 2 + y * height / 2
+                  }
+                }
+                function dot() {
+                  const radius = 0.5;
+                  const {x, y} = randomXY();
+                  ctx.beginPath();
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.fillStyle = "black";
+                  ctx.fill();
+                  ctx.stroke();
+                }
+                parent.querySelector("button.dot").addEventListener('click', dot);
+                parent.querySelector("button.dot_100").addEventListener('click', () => {
+                  for (let i = 0; i < 100; i++) {
+                    dot();
+                  }
+                });
+                parent.querySelector("button.line_1").addEventListener('click', () => {
+                  ctx.lineWidth = 1;
+                });
+                parent.querySelector("button.line_4").addEventListener('click', () => {
+                  ctx.lineWidth = 4;
+                })
+              </script>
+            </div>
+            <div>
+              <button class="clear">clear</button>
+              <br />
+              <button class="line_1">line_1</button>
+              <br />
+              <button class="line_4">line_4</button>
+              <br />
+              <button class="dot">dot</button>
+              <br />
+              <button class="dot_100">dot_100</button>
+              <br />
+              <canvas></canvas>
+            </div>
+          </div>
+
+          <h2>Circle as a triangles</h2>
+          <a href="https://youtu.be/4y_nmpv-9lI?si=ZdtNxPR8ahxaYYXU&t=675"
+            >https://youtu.be/4y_nmpv-9lI?si=ZdtNxPR8ahxaYYXU&t=675</a
+          >
+          <div class="flex circle_as_a_triangles">
+            <div class="grow">
+              <style>
+                .circle_as_a_triangles canvas {
+                  border: 1px solid black;
+                }
+              </style>
+              <script type="editor" data-lang="js" data-eval>
+                const parent = document.querySelector('.circle_as_a_triangles');
+                const canvas = parent.querySelector("canvas");
+                const width = 200;
+                const height = 200;
+                canvas.width = width;
+                canvas.height = height;
+                canvas.style.width = `${width}px`;
+                canvas.style.height = `${height}px`;
+                const ctx = canvas.getContext("2d");
+                parent.querySelector("button.clear").addEventListener('click', () => {
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                  const radius = 98;
+                  const x = width / 2;
+                  const y = height / 2;
+                  ctx.beginPath();
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.strokeStyle = "#6b6b6b"; // grey
+                  ctx.stroke();
+                });
+                function randomXY_factors() {
+                  const theta = Math.random() * 2 * Math.PI;
+                  let r = Math.random() + Math.random();
+                  if (r >= 1) {
+                    r = 2 - r;
+                  }
+                  return {
+                    x: r * Math.cos(theta),
+                    y: r * Math.sin(theta)
+                  }
+                }
+                function randomXY() {
+                  const {x, y} =  randomXY_factors();
+                  return {
+                    x: width / 2 + x * width / 2,
+                    y: height / 2 + y * height / 2
+                  }
+                }
+                function dot() {
+                  const radius = 0.5;
+                  const {x, y} = randomXY();
+                  ctx.beginPath();
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.fillStyle = "black";
+                  ctx.fill();
+                  ctx.stroke();
+                }
+                parent.querySelector("button.dot").addEventListener('click', dot);
+                parent.querySelector("button.dot_100").addEventListener('click', () => {
+                  for (let i = 0; i < 100; i++) {
+                    dot();
+                  }
+                });
+                parent.querySelector("button.line_1").addEventListener('click', () => {
+                  ctx.lineWidth = 1;
+                });
+                parent.querySelector("button.line_4").addEventListener('click', () => {
+                  ctx.lineWidth = 4;
+                })
+              </script>
+            </div>
+            <div>
+              <button class="clear">clear</button>
+              <br />
+              <button class="line_1">line_1</button>
+              <br />
+              <button class="line_4">line_4</button>
+              <br />
+              <button class="dot">dot</button>
+              <br />
+              <button class="dot_100">dot_100</button>
+              <br />
+              <canvas></canvas>
+            </div>
+          </div>
+
+          <h2>Max dist</h2>
+          <a href="https://youtu.be/4y_nmpv-9lI?si=pMRPLNuQfn8YLqMy&t=1003"
+            >https://youtu.be/4y_nmpv-9lI?si=pMRPLNuQfn8YLqMy&t=1003</a
+          >
+          <div class="flex max_dist">
+            <div class="grow">
+              <style>
+                .max_dist canvas {
+                  border: 1px solid black;
+                }
+              </style>
+              <script type="editor" data-lang="js" data-eval>
+                const parent = document.querySelector('.max_dist');
+                const canvas = parent.querySelector("canvas");
+                const width = 200;
+                const height = 200;
+                canvas.width = width;
+                canvas.height = height;
+                canvas.style.width = `${width}px`;
+                canvas.style.height = `${height}px`;
+                const ctx = canvas.getContext("2d");
+                parent.querySelector("button.clear").addEventListener('click', () => {
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                  const radius = 98;
+                  const x = width / 2;
+                  const y = height / 2;
+                  ctx.beginPath();
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.strokeStyle = "#6b6b6b"; // grey
+                  ctx.stroke();
+                });
+                function randomXY_factors() {
+                  const theta = Math.random() * 2 * Math.PI;
+                  let r = Math.random();
+                  const x = Math.random();
+                  if (x > r) {
+                    r = x;
+                  }
+                  return {
+                    x: r * Math.cos(theta),
+                    y: r * Math.sin(theta)
+                  }
+                }
+                function randomXY() {
+                  const {x, y} =  randomXY_factors();
+                  return {
+                    x: width / 2 + x * width / 2,
+                    y: height / 2 + y * height / 2
+                  }
+                }
+                function dot() {
+                  const radius = 0.5;
+                  const {x, y} = randomXY();
+                  ctx.beginPath();
+                  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                  ctx.fillStyle = "black";
+                  ctx.fill();
+                  ctx.stroke();
+                }
+                parent.querySelector("button.dot").addEventListener('click', dot);
+                parent.querySelector("button.dot_100").addEventListener('click', () => {
+                  for (let i = 0; i < 100; i++) {
+                    dot();
+                  }
+                });
+                parent.querySelector("button.line_1").addEventListener('click', () => {
+                  ctx.lineWidth = 1;
+                });
+                parent.querySelector("button.line_4").addEventListener('click', () => {
+                  ctx.lineWidth = 4;
+                })
+              </script>
+            </div>
+            <div>
+              <button class="clear">clear</button>
+              <br />
+              <button class="line_1">line_1</button>
+              <br />
+              <button class="line_4">line_4</button>
+              <br />
+              <button class="dot">dot</button>
+              <br />
+              <button class="dot_100">dot_100</button>
+              <br />
+              <canvas></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>stream</h1>
+    <button>go</button>
+    <script>
+      const button = document.querySelector("button");
+
+      let channel = 0;
+
+      button.addEventListener("click", function () {
+        const c = channel;
+        channel += 1;
+
+        const eventSource = new EventSource(`/stream?channel=${c}`);
+
+        eventSource.addEventListener("message", function (event) {
+          const data = JSON.parse(event.data);
+          console.log(data);
+        });
+
+        eventSource.addEventListener("end", function () {
+          console.log(`Stream ${c} ended`);
+          eventSource.close();
+        });
+      });
+    </script>
+  </body>
+</html>

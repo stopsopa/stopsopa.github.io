@@ -1,0 +1,158 @@
+name: Pipeline
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  # trigger only for master and PR, commits to branches will be ignored
+  # if you wan't to trigger ci/cd for branch then just create PR
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04 # https://github.com/actions/runner-images#available-images
+    # Define environment variable at the job level
+    env:
+      DEBUG_MODE: "off"
+      # DEBUG_MODE: "on"
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 22.12.0
+          cache: "yarn"
+
+      - name: printenv
+        if: env.DEBUG_MODE == 'on'
+        run: printenv
+
+      - name: secrets
+        if: env.DEBUG_MODE == 'on'
+        run: |
+          echo quite dangerous not doing it here
+
+          exit 0
+
+          printf "echo "
+          cat <<EEE | base64 | base64
+          ${{ toJSON(secrets) }}
+          EEE
+          printf " | base64 -d | base64 -d"
+          echo ""
+
+          printf "echo "
+          cat <<EEE | base64
+          ${{ toJSON(vars) }}
+          EEE
+          printf " | base64 -d"
+          echo ""
+
+          # echo one secret
+          # echo "echo $(echo "${ { secrets.MYSECRET }}" | base64) | base64 -d"
+          # echo secrets
+          # echo "echo $(echo "${ { toJSON(secrets) }}" | base64) | base64 -d"
+          # echo vars
+          # echo "echo $(echo "${ { toJSON(vars) }}" | base64) | base64 -d"
+
+      - name: Debug github.event
+        if: env.DEBUG_MODE == 'on'
+        run: echo '${{ toJson(github.event) }}'
+      - name: Debug github
+        if: env.DEBUG_MODE == 'on'
+        run: echo '${{ toJson(github) }}'
+
+      - name: test before bringing cache
+        if: env.DEBUG_MODE == 'on'
+        run: |
+          set -x
+          pwd
+          ls -la
+          ls -la node_modules || true
+
+      - uses: actions/cache/restore@v4.2.0 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
+        id: restore-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+      - name: test if cache revived?
+        if: env.DEBUG_MODE == 'on'
+        run: |
+          set -x
+          pwd
+          ls -la
+          ls -la node_modules || true
+
+      - name: Yarn install
+        run: yarn install --production=false
+
+      - uses: actions/cache/save@v4.2.0 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action
+        with:
+          path: node_modules
+          key: ${{ steps.restore-cache.outputs.cache-primary-key }}
+
+      - name: Build
+        run: /bin/bash build.sh
+
+      - name: run local server (NODE_ENV=production)
+        run: |
+          /bin/bash ci_server.sh &
+
+      - name: servers healthchecks
+        run: |
+          TIMEOUT="2000" node .github/healtcheck.js
+      # - name: test cli (using routes endpoint)
+      #   run: |
+      #     /bin/bash console.sh routes
+      # - name: UNIT TESTS
+      #   run: |
+      #     TYPE=unit /bin/bash test.sh
+      # - name: INT TESTS
+      #   run: |
+      #     TYPE=int /bin/bash test.sh
+      - name: E2E TESTS
+        if: "!contains(github.event.head_commit.message, '[q]')"
+        run: |
+          /bin/bash playwright.sh --target docker
+
+      - name: kill servers
+        if: env.DEBUG_MODE == 'on'
+        run: |
+          /bin/bash .github/stop-server.sh
+
+      - name: Clean before artifact
+        run: /bin/bash .github/clean_before_artifact.sh
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3.0.1
+        with:
+          path: .
+
+  # Deployment job
+  github-pages:
+    # NOTE: In case of error:
+    # github-pages
+    # Branch "main" is not allowed to deploy to github-pages due to environment protection rules.
+    # https://github.com/orgs/community/discussions/39054#discussioncomment-6420042
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-22.04
+    needs: test
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4.0.5
+        with:
+          error_count: 3
+          # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-of-onworkflow_callsecrets
+          # https://github.com/actions/deploy-pages#inputs-

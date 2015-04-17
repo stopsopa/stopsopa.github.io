@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      .parent {
+        margin-bottom: 120px;
+      }
+      .dragme {
+        position: absolute;
+        display: inline-block;
+        width: 160px;
+        height: 80px;
+        background-color: #dddddd;
+        z-index: 5;
+        padding: 5px;
+        border: 3px solid darkgray;
+        cursor: pointer;
+      }
+      .warning {
+        color: red;
+        background-color: white;
+        border: 2px solid pink;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>mine implementation</h2>
+
+        <div class="parent">
+          <div class="dragme" id="mine">mine implementation (drag me)</div>
+        </div>
+
+        <script type="editor" data-lang="sh" data-eval>
+          function getStyle(el) {
+            return window.getComputedStyle(el);
+          }
+          function drag(element, listener, fetch) {
+            let pageX = 0;
+            let pageY = 0;
+            let down = false;
+            let fetchX;
+            let fetchY;
+            function mousedown(e) {
+              down = true;
+              pageX = e.pageX;
+              pageY = e.pageY;
+              if (typeof fetch === "function") {
+                ({ x: fetchX, y: fetchY } = fetch());
+              } else {
+                fetchX = fetchY = 0;
+              }
+              listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousedown");
+              function mousemove(e) {
+                if (down) {
+                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousemove");
+                }
+              }
+              document.addEventListener("mouseup", (e) => {
+                document.removeEventListener("mousemove", mousemove);
+                if (down) {
+                  down = false;
+                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mouseup");
+                }
+              });
+              document.addEventListener("mousemove", mousemove);
+            }
+            element.addEventListener("mousedown", mousedown);
+          }
+
+          const parent = document.querySelector("#mine");
+
+
+          drag(
+            parent,
+            (x, y) => {
+              parent.style.left = `${x}px`;
+              parent.style.top = `${y}px`;
+            },
+            () => {
+              const s = getStyle(parent);
+              return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+            }
+          );
+        </script>
+        <h2>found implementation</h2>
+        <a href="https://samthor.au/2021/observing-dom/"> found in this article</a>
+        <br />
+        <a href="https://codepen.io/samthor/pen/xxEBXjP"
+          >In above article there is a link to CodePen - and solution is at the bottom of this codepen</a
+        >
+
+        <div class="warning">
+          WARNING: this one pointerdown always centers but from positive things it uses pointerdown
+        </div>
+        <div class="parent">
+          <div class="dragme" id="found">found implementation (drag me)</div>
+        </div>
+        <script type="editor" data-lang="sh" data-eval>
+          const gif = document.querySelector("#found");
+
+          const eventHandler = (event) => {
+            if (!(event.buttons & 1)) {
+              return;
+            }
+            document.body.addEventListener("pointermove", eventHandler);
+
+            gif.style.top = `${event.pageY - 64}px`;
+            gif.style.left = `${event.pageX - 64}px`;
+          };
+          gif.addEventListener("pointermove", eventHandler);
+          gif.addEventListener("pointerdown", eventHandler);
+          document.body.addEventListener("pointerup", (event) =>
+            document.body.removeEventListener("pointermove", eventHandler)
+          );
+          gif.addEventListener("dragstart", (event) => event.preventDefault());
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

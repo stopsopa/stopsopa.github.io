@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>IntelliJ IDEA - scopes</h2>
+        <a href="https://youtrack.jetbrains.com/issue/WEB-40220"
+          >JavaScript Debug Console: Font is not readable anymore</a
+        >
+        <script type="editor" data-lang="python">
+
+          Appearance & Behavior -> Scopes -> [+] ... name >!__tests__< -> pattern >!file:*/__tests__//*<
+              # g(Scope language syntax reference IntelliJ IDEA - JetBrains)
+
+          Turn off double quoting:
+              Editor -> General -> Smart Keys -> utick "Insert pair quote"
+
+          when you have code with comment like this
+            v1.get("/purgeCache", httpMethods.purgeCache); // src/api/http/purgeCache.js
+          its easy to jumpt to the file purgeCache. You just have to select src/api/http/purgeCache.js and then click twice shift+shift
+          then you should be able to see popup window with search results
+        </script>
+        <h2>Coverage</h2>
+        <script type="editor" data-lang="python">
+
+          # clear all coverage data
+            # Run - Show Coverage Data... -> then select all and click bin icon
+        </script>
+        <h2>Intellij IDEA shortcuts</h2>
+
+        <script type="editor" data-lang="python">
+
+          alt + enter - Autoimport https://www.jetbrains.com/help/idea/creating-and-optimizing-imports.html#automatically-add-import-statements
+        </script>
+
+        <h2>Show .git directory</h2>
+        <script type="editor" data-lang="python">
+
+          Settings | Editor | File Types -> Ignored files and folders.
+        </script>
+        <h2>Java</h2>
+        <script type="editor" data-lang="python">
+
+          # type
+              psvm
+              # to generate public static void main(String[] args) {}
+
+              sout
+              # to generate System.out.println();
+        </script>
+        <h2>Plugins</h2>
+        <ul>
+          <li>
+            <a
+              href="https://github.com/google/google-java-format/blob/master/README.md#intellij-android-studio-and-other-jetbrains-ides"
+              >g(google-java-format intellij)</a
+            >
+          </li>
+          <li><a href=""></a></li>
+        </ul>
+        <h2>Tab placement - multiple rows</h2>
+
+        <script type="editor" data-lang="python">
+
+          Settings -> Editor -> General -> Editor Tabs -> Appearance -> Show tabs in -> Multiple rows
+
+          # from: https://intellij-support.jetbrains.com/hc/en-us/community/posts/206223649-Tabs-in-multiple-row-how-do-I?page=1#community_comment_360000634900
+        </script>
+        <h2>Ruler</h2>
+        <img src="https://i.imgur.com/LrDA2TL.png" style="width: 800px" />
+        <h2>Analyze stack traces</h2>
+        <a href="https://www.jetbrains.com/help/idea/analyzing-external-stacktraces.html"
+          >https://www.jetbrains.com/help/idea/analyzing-external-stacktraces.html</a
+        >
+        <script type="editor" data-lang="python">
+
+          Shift -> Shift -> search "Analyze stack trace"
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

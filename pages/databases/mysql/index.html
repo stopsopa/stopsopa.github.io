@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>json type</h2>
+        <a href="https://www.youtube.com/watch?v=QZBxgX2OWbI">https://www.youtube.com/watch?v=QZBxgX2OWbI</a>
+        <h2>Read</h2>
+        <a href="https://www.scattered-thoughts.net/writing/materialize-decorrelation"
+          >Materialize - decorrelate arbitrary SQL subqueries</a
+        >
+        <h2>Versions</h2>
+        <a href="https://dev.mysql.com/doc/relnotes/mysql/8.0/en/">link</a>
+        <h2>List all users</h2>
+        <a href="https://dbadiaries.com/no-mysql-show-users-how-to-list-mysql-user-accounts-and-their-privileges"
+          >https://dbadiaries.com/no-mysql-show-users-how-to-list-mysql-user-accounts-and-their-privileges</a
+        >
+        <h2>Removing all tables from db</h2>
+        <script type="editor" data-lang="mysql">
+
+          SET @schema = 'dbname';
+
+          SET @pattern = '%';
+          SET SESSION group_concat_max_len = 1000000;
+          SELECT CONCAT('DROP TABLE ',GROUP_CONCAT(CONCAT(@schema,'.',table_name)),';')
+          INTO @droplike
+          FROM information_schema.TABLES
+          WHERE TABLE_SCHEMA=@schema
+          AND table_name LIKE @pattern;
+          SELECT @droplike;
+          PREPARE stmt FROM @droplike;
+          SET FOREIGN_KEY_CHECKS = 0;
+          EXECUTE stmt;
+          SET FOREIGN_KEY_CHECKS = 1;
+          DEALLOCATE PREPARE stmt;
+
+          // might be useful:
+          SELECT CONCAT('DROP TABLE ',GROUP_CONCAT(CONCAT('\\\`',@schema,'\\\`.\\\`',table_name,'\\\`')),';')
+        </script>
+        <h2>/etc/my.cnf</h2>
+        <script type="editor" data-lang="mysql">
+
+          character-set-server=utf8
+          collation-server=utf8_general_ci
+        </script>
+
+        <h2>backup & restore</h2>
+        <script type="editor" data-lang="python">
+
+          -C - włącza kompresję, Test: zysk 19 sekund na bazie wielkości 116 mb kierunek zrzutu maszyna prod -> vagrant
+
+          # backup
+          mysqldump -C -u ${USER} -p${PASS} -P${PORT} ${PMADB1} ${TABLE1} ${TABLE2} | mysql -u ${USER} -p${PASS} -ppass48\ endw ${PMADB}
+
+          # where ${TABLE1} ${TABLE2} i optional, if skipped then entire database will be dumped, then use --ignore-table
+          # if you would like to skip some tables
+
+          mysqldump --column-statistics=0 -C -h ${HOST} -u ${USER} -p${PASS} ${PMADB} | gzip -9 > "$(date '+%Y-%m-%d_%H-%M-%S')_sql.sql"
+          mysqldump -u ${USER} -p${PASS} ${PMADB} --ignore-table=${PMADB}.table1 --ignore-table=${PMADB}.table2
+          docker exec image mysqldump -u ${USER} -p${PASS} database | gzip -9 > $(date +%Y-%m-%d_%H-%M-%S)_backup.sql.gz
+
+          gunzip [backupfile.sql.gz]
+
+          #restore
+          mysql -h ${HOST} -u ${USER} -p${PASS} ${PMADB} --port=${PORT} ${PMADB} < [backupfile.sql]
+
+          gunzip < [backupfile.sql.gz] | mysql -u ${USER} -p${PASS} ${PMADB}
+
+          If you need to restore a database that already exists,
+          you'll need to use mysqlimport command.
+          The syntax for mysqlimport is as follows:
+          mysqlimport -u [uname] -p[pass] [dbname] [backupfile.sql]
+        </script>
+        <h2>Read more</h2>
+        <a
+          href="https://kinsta.com/blog/mariadb-vs-mysql/#:~:text=MariaDB%20vs%20MySQL%20Differences,lot%20of%20different%20storage%20engines."
+          >MariaDb vs Mysql</a
+        >
+        <h2>Node test</h2>
+        <script type="editor" data-lang="js">
+
+          const path = require('path');
+
+          const env = path.resolve(__dirname, '.env');
+
+          const fsPromises = require('node:fs/promises');
+
+          const th = (msg) => th(`mysql-test.js error: ${msg}`);
+
+          const log = console.log;
+
+          async function notExist(file) {
+            try {
+              await fsPromises.stat(file);
+              return false;
+            } catch (e) {
+              return e;
+            }
+          }
+
+          (async () => {
+            try {
+              {
+                const nExist = await notExist(env);
+
+                if (nExist) {
+                  throw th(`file '${env}' doesn't exist (${nExist.message})`);
+                }
+              }
+
+              require('dotenv').config({path: env});
+
+              if (typeof process.env.MYSQL_HOST !== 'string') {
+                throw th(`MYSQL_HOST in undefined`);
+              }
+
+              if (typeof process.env.MYSQL_PORT !== 'string') {
+                throw th(`MYSQL_PORT in undefined`);
+              }
+
+              if (typeof process.env.MYSQL_USER !== 'string') {
+                throw th(`MYSQL_USER in undefined`);
+              }
+
+              if (typeof process.env.MYSQL_PASS !== 'string') {
+                throw th(`MYSQL_PASS in undefined`);
+              }
+
+              if (typeof process.env.MYSQL_DB !== 'string') {
+                throw th(`MYSQL_DB in undefined`);
+              }
+
+              const knex = require('knex')({
+                client: 'mysql',
+                connection: {
+                  host: process.env.MYSQL_HOST,
+                  port: process.env.MYSQL_PORT,
+                  user: process.env.MYSQL_USER,
+                  password: process.env.MYSQL_PASS,
+                  database: process.env.MYSQL_DB,
+                },
+              });
+
+              const row = await knex.raw('show databases');
+
+              const databases = row[0];
+
+              log(databases);
+
+              knex.destroy();
+            } catch (e) {
+              log(`
+
+          Global catch:
+
+              `);
+
+              throw e;
+            }
+          })();
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

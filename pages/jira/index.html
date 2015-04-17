@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>JQL</h2>
+
+        <script type="editor" data-lang="sh">
+
+          reporter = currentUser() ORDER BY createdDate DESC
+
+          // https://support.atlassian.com/jira-service-management-cloud/docs/use-advanced-search-with-jira-query-language-jql/
+          // https://support.atlassian.com/jira-software-cloud/docs/example-jql-queries-for-board-filters/
+          // https://docs.adaptavist.com/es/latest/run-a-search/jql-keywords
+          reporter - who have created the issue
+          created - date of creation https://community.atlassian.com/t5/Jira-Service-Management/Jira-filter-Created-vs-CreatedDate-what-is-the-difference/qaq-p/2729169#:~:text=Created%20and%20CreateDate%20are%20the,Hope%20this%20helps.
+              created >= -30d
+          type= story (or try issuetype = Story )
+          assignee = issues that are assigned to a particular user
+          assignee WAS jsmith - issues that are currently assigned, or were previously assigned, to John Smith
+
+          // examples
+          summary ~ ignored and reporter = currentUser()
+          reporter = currentUser() and component = "eComm Catalog Tools" ORDER BY created DESC
+          reporter = currentUser() and component = "eComm Catalog Tools" and status != Ready ORDER BY created DESC
+          sprint in closedSprints()
+        </script>
+        <h2>Note, Warning, Tip, Info</h2>
+
+        <script type="editor" data-lang="sh">
+
+          https://confluence.atlassian.com/doc/info-tip-note-and-warning-macros-51872369.html
+            q(Info, Tip, Note, and Warning Macros jira)
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

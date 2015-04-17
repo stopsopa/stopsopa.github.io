@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="http://">ekstra link</a></li>
+          </ul>
+        </div>
+        <h2>Bean Validation - JSR-303 - javax validation</h2>
+        <script type="editor" data-lang="python">
+
+          Well known issues:
+              - First of all, we’re deliberately violating the Single Responsibility Principle. The Person model class knows the validation rules for all the use cases it is validated for. The model class has to change if a validation specific to a certain use case changes.
+              - hard to read
+              - We've Always Done It This Way
+                  #from: https://reflectoring.io/bean-validation-anti-patterns/#:~:text=First%20of%20all%2C%20we%E2%80%99re%20deliberately%20violating%20the%20Single%20Responsibility%20Principle.%20The%20Person%20model%20class%20knows%20the%20validation%20rules%20for%20all%20the%20use%20cases%20it%20is%20validated%20for.%20The%20model%20class%20has%20to%20change%20if%20a%20validation%20specific%20to%20a%20certain%20use%20case%20changes.
+
+              - testing is hard
+                  #from: https://backendhance.com/en/blog/2022/bean-validation-antipattern/#testing-is-hard
+
+          My issues with it:
+              - limited flexibility
+                  In the data validation domain quite often we will encounter the need to do validation of particular field differently based on the value in the other field.
+                  Examples:
+                      - If the person filling out the form is under a certain age (e.g., 18), then the "Parent/Guardian Consent" field may need to be required, meaning the person has to provide consent from their parent or guardian.
+
+                      - If the person is above the age threshold (e.g., 18 or older), then the "Parent/Guardian Consent" field may become optional or even hidden, as it's no longer necessary.
+
+                      apparently solution is CustomValidator but that will work only for simple cases
+                      https://i.imgur.com/1u89asa.png
+        </script>
+        ...
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

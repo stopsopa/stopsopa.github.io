@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="./showfight.css" />
+    <title>tetris</title>
+    <style>
+      .board {
+        /*box-shadow: 5px 10px #888888;*/
+      }
+      .bricks {
+        /*box-shadow: 5px 10px #888888;*/
+      }
+      /*table {*/
+      /*    width: 234px;*/
+      /*}*/
+      /*table > tbody > tr > td:first-child {*/
+      /*    width: 156px;*/
+      /*}*/
+      .field {
+        box-shadow: 0 0 4px green;
+        width: 500px;
+        /*height: 500px;*/
+      }
+      .field svg {
+        box-shadow: 0 0 4px black;
+        /*flex-grow: 1;*/
+        /*width: 100%;*/
+        /*height: 100%;*/
+      }
+    </style>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <input type="range" id="size" name="volume" min="20" max="300" value="100" />
+        <div class="field"></div>
+        <script src="./showfight.js"></script>
+        <script>
+          var log = SnowFight.log;
+
+          var sc = (window.sc = SnowFight({
+            target: document.querySelector(".field"),
+            imagesdir: "./img",
+          }));
+
+          var svg = sc.svg;
+
+          svg.addEventListener("mouseenter", function () {
+            sc.pointerenter();
+          });
+
+          svg.addEventListener("mouseleave", function () {
+            sc.pointerleave();
+          });
+
+          svg.addEventListener("mousemove", function (e) {
+            const pos = e.currentTarget.getBoundingClientRect(); // https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+
+            var x = e.clientX - pos.left;
+            var y = e.clientY - pos.top;
+
+            sc.pointermove(x, y);
+          });
+
+          svg.addEventListener("mousedown", function (e) {
+            const pos = e.currentTarget.getBoundingClientRect(); // https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+
+            var x = e.clientX - pos.left;
+            var y = e.clientY - pos.top;
+
+            sc.pointerdown(x, y);
+          });
+
+          svg.addEventListener("mouseup", function (e) {
+            sc.pointerup();
+          });
+
+          (function () {
+            var field = document.querySelector(".field");
+
+            var originalWidth = field.getBoundingClientRect().width;
+
+            var size = document.querySelector("#size");
+
+            function parse(el) {
+              return parseFloat(parseInt(size.value, 10) / 100).toFixed(2);
+            }
+
+            function execute(percent) {
+              var size = parseInt(originalWidth * percent, 10);
+
+              field.style.width = `${size}px`;
+
+              sc.adjustResize();
+            }
+
+            function event(e) {
+              execute(parse(e.target));
+            }
+
+            size.addEventListener("input", event);
+            size.addEventListener("change", event);
+            execute(parse(size));
+          })();
+        </script>
+
+        <a href="http://nny.com/snowcraft/play/">http://nny.com/snowcraft/play/</a>
+        <br />
+        <a href="https://www.flaticon.com/free-icons/rectangle/3">https://www.flaticon.com/free-icons/rectangle/3</a>
+        <br />
+        <a href="http://www.kevinchiu.info/wp-content/uploads/">http://www.kevinchiu.info/wp-content/uploads/</a>
+        <br />
+        <a href="http://www.kevinchiu.info/2016/10/26/snowcraft-on-apple-watch/"
+          >http://www.kevinchiu.info/2016/10/26/snowcraft-on-apple-watch/</a
+        >
+        <br />
+        <a
+          href="https://ubuntuforums.org/showthread.php?t=966877&s=0dfc10f153e4cc6bc67c3797603ba2f7&p=8836212#post8836212"
+          >https://ubuntuforums.org/showthread.php?t=966877&s=0dfc10f153e4cc6bc67c3797603ba2f7&p=8836212#post8836212</a
+        >
+        <br />
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

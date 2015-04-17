@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Useful</h2>
+        <script type="editor" data-lang="sh">
+
+          python3 -c "import platform;print(platform.architecture()[0]);print(platform.machine())"
+
+          # man package registry seems to be here: https://pypi.org/
+
+          # lts: https://devguide.python.org/versions/
+
+          xcode-select --install
+          brew install swig
+
+          # install dependencies
+          pip install -r requirements.txt
+
+          # get version of python
+          python -V
+
+          # creating a virtual environment
+          python3 -m venv ./venv
+            # then use:
+              source venv/bin/activate
+              deactivate
+
+          # install particular library
+          pip3 install wheel
+            # WARNING: this will not add automatically to requirements.txt
+            # you have to use freeze command to do that
+
+          # get exact versions of dependencies and save them to requirements.txt
+          pip freeze > requirements.txt
+              # from: https://pip.pypa.io/en/stable/cli/pip_freeze/#examples
+        </script>
+        <h2>Tools to learn</h2>
+        <script type="editor" data-lang="sh">
+
+          blake flint - code formatters
+          pytest - defaultowy tool now
+          unittest - starsza biblioteka do testowania
+          read about testing: https://code.visualstudio.com/docs/languages/python#_testing
+          also about vscode configuration: https://code.visualstudio.com/docs/languages/python#_configuration
+        </script>
+        <h2>MAC:</h2>
+        <script type="editor" data-lang="sh">
+
+          # It's worth looking into this tool:
+          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install pyenv pyenv-virtualenv
+
+          # list installed versions of python
+          ls -l /usr/local/bin/python*
+
+          # switching version
+          sudo ln -s -f /usr/local/bin/python[your-latest-version-just-installed] /usr/local/bin/python
+
+          # list installed versions of pip
+          ls -la /usr/local/bin/pip*
+
+          # switching version
+          sudo ln -s -f /usr/local/bin/pip[your-latest-version-just-installed] /usr/local/bin/pip
+        </script>
+
+        <h2>pyenv - Simple Python Version Management</h2>
+        <a href="https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-install"
+          >https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-install</a
+        >
+        <script type="editor" data-lang="sh">
+
+          # on new environment
+          brew install pyenv
+          pyenv install 2.7.18
+          pyenv install 3.12.1
+
+          # list installed versions
+          pyenv versions
+
+          pyenv local 3.12.1
+
+          pyenv local 3.12.1 2.7.18
+            # this is how to work with multiple versions of python
+            # the same it work with   pyenv shell 3.12.1 2.7.18
+            # this way:
+              $ python -V
+              Python 3.12.1
+              $ python2 -V
+              Python 2.7.18
+            # and running   pyenv shell 2.7.18 3.12.1
+              $ python2 -V
+              Python 2.7.18
+              $ python3 -V
+              Python 3.12.1
+
+          echo $PYENV_VERSION
+          pyenv shell 2.7.18
+          echo $PYENV_VERSION
+          pyenv shell 3.12.1
+          echo $PYENV_VERSION
+          # more about pyenv shell: https://github.com/pyenv/pyenv?tab=readme-ov-file#understanding-python-version-selection
+          # shell will take precedence over auto    pyenv local ... with .python-version files on entering directories
+          # in order to fallback to   pyenv global version   and .python-version files on entering directories run:
+          pyenv shell --unset
+
+          # find latest
+          pyenv install --list | grep 2.7
+
+          # or even multiple versions
+          pyenv shell 2.7.18 3.12.1
+
+          # Displays the currently active Python version, along with information on how it was set.
+          pyenv version
+
+          cat ~/.pyenv/version
+          pyenv global 3.10.5
+          cat ~/.pyenv/version
+          # open new terminal
+          python -V
+          pip -V
+            # from: https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-global
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Get Version</h2>
+        <script type="editor" data-lang="sql">
+
+          Select @@version
+
+          select name, compatibility_level , compatibility_level
+          from sys.databases
+        </script>
+
+        <h2>Dynamic SQL - CONCAT</h2>
+        <script type="editor" data-lang="sql">
+
+          USE [mydatabase];
+          -- beware of QUOTENAME AND REPLACE truncation: https://learn.microsoft.com/en-us/sql/relational-databases/security/sql-injection?view=sql-server-ver16#truncation-when-quotenamevariable--and-replace-are-used
+            -- from top section of: https://learn.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-executesql-transact-sql?view=sql-server-ver16
+
+          CREATE FUNCTION dbo.SanitizeNString (@input NVARCHAR(MAX))
+              RETURNS NVARCHAR(MAX)
+          AS
+          BEGIN
+              RETURN N'N''' + REPLACE(@input, '''', '''''') + N'''';
+          END
+          GO
+          SELECT dbo.SanitizeNString('name'' a')
+
+          -- more about it:
+          https://www.sommarskog.se/dynamic_sql.html#SQL_injection
+            from: https://stackoverflow.com/a/5529010
+          https://www.invicti.com/blog/web-security/sql-injection-cheat-sheet/
+          https://learn.microsoft.com/en-us/sql/relational-databases/security/sql-injection?view=sql-server-ver16
+        </script>
+
+        <h2>There is no nested transactions in SQLServer</h2>
+        <a href="https://www.youtube.com/watch?v=rDBqQ_9RGXY">https://www.youtube.com/watch?v=rDBqQ_9RGXY</a>
+        <h2>Useful</h2>
+        <script type="editor" data-lang="sql">
+
+          IMPLICIT_TRANSACTIONS:
+              -- from: https://learn.microsoft.com/en-us/sql/t-sql/statements/set-implicit-transactions-transact-sql?view=sql-server-ver16#remarks
+              DECLARE @IMPLICIT_TRANSACTIONS VARCHAR(3) = 'OFF';
+              IF ( (2 & @@OPTIONS) = 2 ) SET @IMPLICIT_TRANSACTIONS = 'ON';
+              SELECT @IMPLICIT_TRANSACTIONS AS IMPLICIT_TRANSACTIONS;
+        </script>
+
+        <h2>CAST INT and BIT</h2>
+        <script type="editor" data-lang="sql">
+
+          /************************************************************************************************************
+            Purpose:    convert value NULL to string 'NULL' or sanitize string by calling pos_sanitizeNString_fn if not null
+
+                        It is simply short version of
+                        CASE WHEN @input IS NULL THEN 'NULL' ELSE dbo.pos_sanitizeNString_fn(CAST(@input AS VARCHAR(MAX)))
+                        to reduce confusion and allow to write cleaner logic of stored procedures when generating sql for review in dry mode.
+
+            Called By:  ggg.dbo.experiment_EP_66124_product_type_sp
+
+            Notes:      Use carefully and read first: https://learn.microsoft.com/en-us/sql/relational-databases/security/sql-injection?view=sql-server-ver16#truncation-when-quotenamevariable--and-replace-are-used
+
+            When        Who   Project     What
+            09/17/2024  SD    POS         Created func.
+          ************************************************************************************************************/
+          SET ANSI_NULLS ON
+          GO
+          SET QUOTED_IDENTIFIER ON
+          GO
+          CREATE FUNCTION dbo.pos_nullQuoteString_fn (@input NVARCHAR(MAX))
+              RETURNS NVARCHAR(MAX)
+          AS
+          BEGIN
+              RETURN CASE
+                          WHEN @input IS NULL THEN 'NULL'
+                          ELSE dbo.pos_sanitizeNString_fn(CAST(@input AS VARCHAR(MAX)))
+                  END
+          END
+          GO
+
+          DECLARE @test NVARCHAR(10) = N'test';
+          SELECT dbo.pos_nullQuoteString_fn(@test) -- returns N'test'
+          SET @test = NULL;
+          select dbo.pos_nullIntToString_fn(@test) -- returns NULL as a string
+
+          ---------------
+
+          /************************************************************************************************************
+            Purpose:   convert value NULL to string 'NULL' or cast INT to string if not null
+
+                      It is simply short version of
+                      SELECT CASE WHEN @test IS NULL THEN 'NULL' ELSE CAST(@test AS VARCHAR(10)) END
+                      to reduce confusion and allow to write cleaner logic of stored procedures when generating sql for review in dry mode.
+
+                      NOTICE: can be used with BIT type also
+
+            Called By:  ggg.dbo.experiment_EP_66124_product_type_sp
+
+            When        Who   Project     What
+            09/17/2024  SD    POS         Created func.
+          ************************************************************************************************************/
+          SET ANSI_NULLS ON
+          GO
+          SET QUOTED_IDENTIFIER ON
+          GO
+          CREATE FUNCTION dbo.pos_nullIntToString_fn (@input INT)
+              RETURNS NVARCHAR(MAX)
+          AS
+          BEGIN
+              RETURN CASE
+                        WHEN @input IS NULL THEN 'NULL'
+                        ELSE CAST(@input AS VARCHAR(MAX))
+                  END
+          END
+          GO
+
+          DECLARE @test INT = 10
+          select dbo.pos_nullIntToString_fn(@test) -- returns 10 as a string
+          SET @test = NULL;
+          select dbo.pos_nullIntToString_fn(@test) -- returns NULL as a string
+
+          /************************************************************************************************************
+            Purpose:    Surrounds given string with N'' and escapes single quotes.
+
+            Called By:  ggg.dbo.experiment_EP_66124_product_type_sp
+
+            Notes:      Use carefully and read first: https://learn.microsoft.com/en-us/sql/relational-databases/security/sql-injection?view=sql-server-ver16#truncation-when-quotenamevariable--and-replace-are-used
+
+            When        Who   Project     What
+            09/17/2024  SD    POS         Created func.
+          ************************************************************************************************************/
+          SET ANSI_NULLS ON
+          GO
+          SET QUOTED_IDENTIFIER ON
+          GO
+          CREATE FUNCTION dbo.pos_sanitizeNString_fn (@input NVARCHAR(MAX))
+          RETURNS NVARCHAR(MAX)
+          AS
+          BEGIN
+              RETURN N'N''' + REPLACE(@input, '''', '''''') + N'''';
+          END
+          GO
+
+          DECLARE @test NVARCHAR(MAX) = N'test ''quote';
+          select dbo.pos_sanitizeNString_fn(@test) -- returns >N'test ''quote'< as a string
+          SET @test = NULL;
+          select dbo.pos_nullIntToString_fn(@test) -- returns NULL as a string
+
+          -- below we have universal template for writing stored procedures which later can be called one within another
+          -- special thing about this template is that it will create transaction in the stored procedure which was called first (on the top level)
+          -- but all child execution of this way created SP's will inherit the transaction
+          -- also no matter if SP ends with success or with failre the output will be returned in the form of the log
+          -- presence of log with "SUCCESS FINAL" at the end indicates that SP finished with success - that's the only way to distinguish
+          -- but that is ok, because it is better to have full log instead of just single error message for future debugging
+
+          USE [database]
+          GO
+          SET ANSI_NULLS ON
+          GO
+          SET QUOTED_IDENTIFIER ON
+          GO
+          SET NOCOUNT ON
+          GO
+          IF OBJECT_ID('dbo.experiment_test_sp', 'P') IS NULL
+              EXEC('CREATE PROCEDURE [dbo].[experiment_test_sp] AS SELECT 1 AS A')
+          GO
+          ALTER PROCEDURE [dbo].[experiment_test_sp]
+          (
+              @jsonArray nvarchar(max),
+              @dryrun BIT = 1,
+              @calcids BIT = 1
+          )
+          AS
+          /************************************************************************************************************
+             Purpose:    Creates one or two inserts into database.dbo.experiment_table_test table
+          ************************************************************************************************************/
+              SET NOCOUNT ON;
+              SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+          DECLARE
+              @s_error_msg         nvarchar(max),
+              @s_error_prefix      nvarchar(max),
+              @s_procname          SYSNAME = OBJECT_NAME(@@PROCID),
+              @s_dbname            SYSNAME = DB_NAME();
+
+          DECLARE
+              @n_counter INT = 0,
+              @n_max_id INT,
+              @n_trancount int = @@TRANCOUNT,
+              @n NVARCHAR(10) = CHAR(13) + CHAR(10),
+              @s_transaction_started_in_this_pc NVARCHAR(6) = N'NO';
+
+
+          IF OBJECT_ID('tempdb..#work') IS NULL
+              CREATE TABLE #work (
+                  id int identity constraint PK_experiment_test_sp__work primary key,
+                  log nvarchar(MAX) NOT NULL,
+                  type nvarchar(200) NOT NULL,
+                  s_procname nvarchar(200) NOT NULL,
+                  n_trancount int NOT NULL,
+                  s_error_prefix nvarchar(MAX) NULL
+              )
+          BEGIN TRY
+
+              IF ISJSON(@jsonArray) <> 1
+                  RAISERROR (N'json jsonArray is not valid', 15, 1);
+
+              IF @n_trancount = 0
+                  BEGIN
+                      SET @s_transaction_started_in_this_pc = N'YES';
+                      BEGIN TRAN;
+                  END
+
+              INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (
+                  CONCAT(N'starting transaction: ', @s_transaction_started_in_this_pc, N' dry run: ', CASE WHEN @dryrun = 1 THEN N'YES' ELSE N'NO' END, N' calcids:', CASE WHEN @calcids = 1 THEN N'YES' ELSE N'NO' END),
+                  CASE WHEN @n_trancount = 0 THEN N'parent' ELSE N'log' END,
+                  @s_procname, @n_trancount);
+
+              -- main logic of the sp, everything around are just parameters definition and genral sp template code ------------------ vvv
+
+                  IF @calcids = 1
+                      BEGIN
+                          SELECT @n_max_id = COALESCE(MAX(t.testId), 0)
+                          FROM database.dbo.experiment_table_test t (nolock)
+                      END
+
+                  DECLARE
+                      @testId int,  @description NVARCHAR(50)
+                      @cancelProc NVARCHAR(128);
+
+                  DECLARE iterator_cursor_pt CURSOR LOCAL FOR
+                  SELECT
+                      testId,  description,
+                      cancelProc
+                  FROM OPENJSON(@jsonArray) WITH (
+                      testId int '$.columnName', description NVARCHAR(50) '$.description',
+                      cancelProc NVARCHAR(128) '$.cancelProc'
+                  );
+
+                  SET identity_insert database.dbo.experiment_table_test ON;
+
+                  INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (N'SET identity_insert database.dbo.experiment_table_test ON;',
+                  N'test:insert:identity_insert:on', @s_procname, @n_trancount);
+
+                  OPEN iterator_cursor_pt;
+
+                  FETCH NEXT FROM iterator_cursor_pt INTO
+                      @testId,  @description,
+                      @cancelProc;
+
+                  WHILE @@FETCH_STATUS = 0
+                  BEGIN
+
+                      IF @calcids = 1
+                          BEGIN
+                              SET @testId = @n_max_id + @n_counter + 1;
+                              SET @jsonArray = JSON_MODIFY(@jsonArray, CONCAT(N'$[',@n_counter,'].columnName'), @testId)
+                          END
+
+                      -- only now increment counter
+                      SET @n_counter = @n_counter + 1;
+
+                      SET @col1 = @n_counter;
+
+                      SET @col2 = 61;
+
+                      SET @s_error_prefix = CONCAT(N'iteration: ', @n_counter, N' testId: ', @testId);
+
+                      INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (@testId, N'test:id', @s_procname, @n_trancount);
+
+                      IF @description is null
+                          BEGIN
+                              SET @s_error_msg = CONCAT(N'element description on the list number ', @n_counter, N' (1-indexed) is null');
+                              RAISERROR (@s_error_msg, 15, 1);
+                          END
+
+                      IF @testId is null
+                          BEGIN
+                              SET @s_error_msg = CONCAT(N'element testId on the list number ', @n_counter, N' (1-indexed) is null');
+                              RAISERROR (@s_error_msg, 15, 1);
+                          END
+
+                      INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (CONCAT(
+                          N'INSERT database.dbo.experiment_table_test (', @n,
+                          N'  testId,    description,', @n,
+                          N'  cancelProc, ', @n,
+
+                          N') VALUES (', @n,
+
+                          N'  ', @testId, N', ', dbo.pos_nullQuoteString_fn(@description), N', 1, ', @n,
+                          N'  ', dbo.pos_nullIntToString_fn(@cancelProc), N'', @n,
+                          N');', @n
+                      ), N'test:insert:', @s_procname, @n_trancount);
+
+                      INSERT INTO database.dbo.experiment_table_test (
+                          testId,  description,
+                          cancelProc
+                      )
+                      VALUES(
+                          @testId,  @description,  1,
+                          @cancelProc
+                      );
+
+                      FETCH NEXT FROM iterator_cursor_pt INTO
+                          @testId,  @description,
+                          @cancelProc
+                  END;
+
+                  CLOSE iterator_cursor_pt;
+                  DEALLOCATE iterator_cursor_pt;
+
+                  SET identity_insert database.dbo.experiment_table_test OFF;
+
+                  INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (
+                      N'SET identity_insert database.dbo.experiment_table_test OFF;',
+                      N'test:insert:identity_insert:off', @s_procname, @n_trancount
+                  );
+
+              -- main logic of the sp, everything around are just parameters definition and genral sp template code ------------------ ^^^
+
+              IF @n_trancount = 0
+                  BEGIN
+                      IF @dryrun = 1
+                          BEGIN
+                              INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (N'SUCCESS FINAL rollback transaction dry run: YES', N'log', @s_procname, @n_trancount)
+                          END
+                      ELSE
+                          BEGIN
+                              -- in the final log stream look for this log, finding it indicates success
+                              INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (N'SUCCESS FINAL committing transaction dry run: NO', N'log', @s_procname, @n_trancount)
+                          END
+
+                      select * from #work
+
+                      IF @dryRun = 1
+                          ROLLBACK TRAN
+                      ELSE
+                          COMMIT TRAN
+                  END
+              ELSE
+                  BEGIN
+                      -- no commit here, it will be done but up the stack
+                      INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (N'SUCCESS on this level', N'log', @s_procname, @n_trancount)
+                  END
+          END TRY
+          BEGIN CATCH
+              SET @s_error_msg = CONCAT(@s_error_prefix, N'::', ERROR_MESSAGE());
+
+              INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (@s_error_msg, N'catch', @s_procname, @n_trancount);
+
+              IF @n_trancount = 0
+                  BEGIN
+                      -- return list of events and then rollback
+                      select * from #work
+                      ROLLBACK TRAN
+                  END
+              ELSE
+                  BEGIN
+                      -- just throw up the stack. because this is child sp exection scenario
+                      RAISERROR (@s_error_msg, 15, 1);
+                  END
+          END CATCH
+          GO;
+          GRANT EXECUTE ON [dbo].[experiment_test_sp] TO [execprocs] AS [dbo]
+          GO
+        </script>
+        <h2>Create table</h2>
+        <script type="editor" data-lang="sql">
+
+          select * from xxx.dbo.gdshop_product_type t (nolock)
+
+
+          -- experiment_pt
+              IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='experiment_pt' AND xtype='U')
+              BEGIN
+                  CREATE TABLE xxx.dbo.experiment_pt (
+                      id int identity PRIMARY KEY,
+                      name varchar(10) NOT NULL,
+                      createdAt datetime NOT NULL DEFAULT GETDATE()
+                  );
+              END
+
+              select * from xxx.dbo.experiment_pt t (nolock);
+
+              insert into xxx.dbo.experiment_pt (name) values ('a');
+              insert into xxx.dbo.experiment_pt (name) values ('b');
+
+              IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'experiment_pt_sp') DROP PROCEDURE experiment_pt_sp;
+              GO
+              CREATE PROCEDURE experiment_pt_sp
+              @like varchar(10)
+              AS
+              SELECT * FROM xxx.dbo.experiment_pt t where t.name like @like;
+              GO;
+
+              EXEC experiment_pt_sp @like='a';
+
+              -- TRUNCATE TABLE xxx.dbo.experiment_pt;
+              -- DROP TABLE xxx.dbo.experiment_pt;
+        </script>
+
+        <h2>interesting queries</h2>
+
+        <script type="editor" data-lang="sql">
+
+          -- generating sum of all previous rows for each row and using generated values to generate other queries
+          ;WITH SplitBlocks AS (
+              SELECT
+                  ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS listpos,
+                  CAST(value AS INT) AS number
+              FROM STRING_SPLIT('5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,20,20,20,20,20,40,40,40,40,40,40,40,40,40', ',')
+          )
+          SELECT
+              gen.*,
+              1 AS new_column
+          FROM (
+              SELECT
+                  listpos,
+                  number,
+                  COALESCE(
+                      (SELECT SUM(number) FROM SplitBlocks WHERE listpos < s.listpos),
+                      0
+                  ) AS running_sum
+              FROM SplitBlocks s
+          ) gen;
+
+          -- ----------------- using STRING_AGG but still maintaining order ----- vvv
+
+          ;WITH SplitBlocks AS (
+              SELECT
+                  ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS listpos,
+                  CAST(value AS INT) AS number
+              FROM STRING_SPLIT('5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,20,20,20,20,20,40,40,40,40,40,40,40,40,40', ',')
+          )
+          SELECT
+              gen.*,
+              (
+                  select STRING_AGG(forstragg.line, ' # ') WITHIN GROUP (ORDER BY rn) AS xx
+                  from (
+                      select CONCAT('val:', ISNULL(CAST(v AS VARCHAR(MAX)), 'NULL'), ' count:', c ) line, ROW_NUMBER() OVER (ORDER BY c DESC) AS rn
+                      from (
+                          select distinct v, count(*) c
+                          from (
+                              select t.othercolumn as v from table.dbo.column_product_type t
+                              order by t.column_product_typeId desc
+                              offset gen.running_sum rows
+                              fetch next gen.number rows only
+                          ) dictionary
+                          group by v
+                      ) concatanated
+                  ) forstragg
+              ) as finalstats
+          FROM (
+              SELECT
+                  listpos,
+                  number,
+                  COALESCE(
+                      (SELECT SUM(number) FROM SplitBlocks WHERE listpos < s.listpos),
+                      0
+                  ) AS running_sum
+              FROM SplitBlocks s
+          ) gen;
+          -- ----------------- using STRING_AGG but still maintaining order ----- ^^^
+        </script>
+        <h2>transaction</h2>
+        <script type="editor" data-lang="sql">
+          BEGIN TRANSACTION;
+          BEGIN TRY
+
+            -- do your inserts here
+            -- avoid GO here
+
+          COMMIT TRANSACTION;
+          END TRY
+          BEGIN CATCH
+              IF @@TRANCOUNT > 0
+                  ROLLBACK TRANSACTION;
+              THROW
+          END CATCH
+        </script>
+        <h2>STRING_AGG - GROUP_CONCAT</h2>
+        <script type="editor" data-lang="sql">
+
+          select STRING_AGG(line, ' -- ')
+          from (select CONCAT('val:', ISNULL(CAST(val AS VARCHAR(MAX)), 'NULL'), ' count:', c) line
+                from (select distinct mycolumn as val, count(*) c
+                      from my_db.dbo.mytable
+                      group by mycolumn) con) zz
+        </script>
+        <h2>Analyzing values in the table</h2>
+        <script type="editor" data-lang="sql">
+
+          SELECT *
+          FROM databasename.INFORMATION_SCHEMA.COLUMNS
+          WHERE TABLE_NAME = 'Product'
+          ORDER BY TABLE_NAME
+
+          # or using USE
+          USE databasename;
+          GO
+          SELECT *
+          FROM INFORMATION_SCHEMA.COLUMNS
+          WHERE TABLE_NAME = 'Product'
+          ORDER BY TABLE_NAME
+          GO
+
+          SELECT s.name as schema_name, t.name as table_name, c.*
+          FROM databasename.sys.columns AS c
+          INNER JOIN databasename.sys.tables AS t ON t.object_id = c.object_id
+          INNER JOIN databasename.sys.schemas AS s ON s.schema_id = t.schema_id
+          WHERE t.name = 'Product' AND s.name = 'dbo';
+
+          USE orion;
+          GO
+          EXEC sp_help 'ProductAttribute'
+          GO
+          # from: https://learn.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-help-transact-sql?view=sql-server-ver16#a-returning-information-about-all-objects
+
+          --just use different combination of query below:
+          -- 1) execute from point #1 to #2 only
+          -- 2) or execute whole query to extract some data for reports
+          -- 3) uncomment line #2 or #3 as needed
+
+          select STRING_AGG(line, CHAR(10) + '            -- ')
+          from (
+              select CONCAT('val:', ISNULL(CAST(v AS VARCHAR(MAX)), 'NULL'), ' count:', c ) line
+              from (
+                  select * from (
+                      select distinct v, count(*) c     -- #1
+                      from (select mycolumn as v from dddd.dbo.table_name) dictionary
+                      group by v
+                  ) t
+          --         order by CASE WHEN t.v IS NULL THEN 0 ELSE 1 END, t.c desc -- #2
+              ) con
+          --     where con.c >= 3 -- #3
+          ) z
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

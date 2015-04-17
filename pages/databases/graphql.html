@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>example</h2>
+        <script type="editor" data-lang="sh">
+
+          query ExampleQuery($teamId: ID!) {
+            workflowStates(filter: { team: { id: { eq: $teamId } } }) {
+              nodes {
+                id
+                name
+              }
+            }
+          }
+
+          # use in apollo https://studio.apollographql.com/public/Linear-API/variant/current/explorer
+
+          with params Variables:
+          {
+            "teamId": "6f0d1667-97e5-4d0c-beb8-41b4adb2511d"
+          }
+
+          #---------------
+
+          query fetchIssue($linearLabelName: String!, $excludeState: String!) {
+            issues (filter: {
+              and: [
+                {labels: {name: {eq: $linearLabelName}}},
+                {state: {name: {neq: $excludeState}}}
+              ]
+            }) {
+              nodes {
+                id,
+                description,
+                state {
+                  id,
+                  name
+                }
+              }
+            }
+          }
+          with params Variables:
+          {
+            "teamId": "6f0d1667-97e5-4d0c-beb8-41b4adb2511d",
+            "linearLabelName": "linear-test-1",
+            "excludeState": "Done"
+          }
+
+          # example of and query
+          query FindLabelId($teamId: ID!, $linearLabelName: String!) {
+            issueLabels(filter: {and: [{team: {id: {eq: $teamId}}}, {name: {eq: $linearLabelName}}]}){nodes{id,name}}
+          }
+
+          query fetchIssue($linearLabelName: String!, $excludeState: String!) {
+            issues (filter: {
+              and: [
+                {labels: {name: {eq: $linearLabelName}}},
+                {state: {name: {neq: $excludeState}}}
+              ]
+            }) {
+              nodes {
+                id,
+                description,
+                state {
+                  id,
+                  name
+                }
+              }
+            }
+          }
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

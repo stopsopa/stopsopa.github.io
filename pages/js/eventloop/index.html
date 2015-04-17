@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <!-- <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="http://">ekstra link</a></li>
+          </ul>
+        </div> -->
+
+        <h2>Event loop</h2>
+        <img src="eventLoop.png" style="max-width: 650px" />
+        <br />
+        <a href="https://youtu.be/8aGhZQkoFbQ"
+          >g(What the heck is the event loop anyway? | Philip Roberts | JSConf EU)</a
+        >
+        from: <a href="http://latentflip.com/loupe/">http://latentflip.com/loupe/</a>
+        <br />
+
+        <a href="https://www.youtube.com/watch?v=eiC58R16hb8">https://www.youtube.com/watch?v=eiC58R16hb8</a>
+
+        <br />
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide">MDN about microtasks</a>
+        <br />
+        <a
+          href="https://medium.com/@InspireTech/the-anatomy-of-asynchronous-javascript-why-promises-are-microtasks-and-settimeout-is-a-macrotask-fe065ad87f3b"
+          >IMO better explanation</a
+        >
+
+        <h2>Race condition</h2>
+        <script type="editor" data-lang="js">
+
+          // Utility function to simulate some delay (e.g. reading from or writing to a database).
+          // It will take from 0 to 50ms in a random fashion.
+          const randomDelay = () => new Promise(resolve =>
+            setTimeout(resolve, Math.random() * 100)
+          )
+
+          // Our global balance.
+          // In a more complete implementation, this will live in the persistent data storage.
+          let balance = 0
+
+          async function loadBalance () {
+            // simulates random delay to retrieve data from data storage
+            await randomDelay()
+            return balance
+          }
+
+          async function saveBalance (value) {
+            // simulates random delay to write the data to the data storage
+            await randomDelay()
+            balance = value
+          }
+
+          async function sellGrapes () {
+            const balance = await loadBalance()
+            console.log(`sellGrapes - balance loaded: ${balance}`)
+            const newBalance = balance + 50
+            await saveBalance(newBalance)
+            console.log(`sellGrapes - balance updated: ${newBalance}`)
+          }
+
+          async function sellOlives () {
+            const balance = await loadBalance()
+            console.log(`sellOlives - balance loaded: ${balance}`)
+            const newBalance = balance + 50
+            await saveBalance(newBalance)
+            console.log(`sellOlives - balance updated: ${newBalance}`)
+          }
+
+          async function main () {
+            const transaction1 = sellGrapes() // NOTE: no `await`
+            const transaction2 = sellOlives() // NOTE: no `await`
+            await transaction1 // NOTE: awaiting here does not stop `transaction2`
+                               // from being scheduled before transaction 1 is completed
+            await transaction2
+            const balance = await loadBalance()
+            console.log(`Final balance: ${balance}`)
+          }
+
+          main()
+
+          // from
+        </script>
+        <h2>test</h2>
+        <script type="editor" data-lang="js">
+
+          console.log("begins");
+
+          setTimeout(() => {
+              console.log("setTimeout 1");
+              Promise.resolve().then(() => {
+                  console.log("promise 1");
+              });
+          }, 0);
+
+          new Promise(function (resolve, reject) {
+              console.log("promise 2");
+              setTimeout(function () {
+                  console.log("setTimeout 2");
+                  resolve("resolve 1");
+              }, 0);
+          }).then((res) => {
+              console.log("dot then 1");
+              setTimeout(() => {
+                  console.log(res);
+              }, 0);
+          });
+          // begins
+          // promise 2
+
+          // setTimeout 1
+          // promise 1
+
+          // setTimeout 2
+          // do then 1
+          // resolve 1
+
+          async function async1() {
+            console.log("async1 start");
+            await async2();
+            console.log("async1 end");
+          }
+
+          async function async2() {
+            console.log("async2");
+          }
+
+          console.log("script start");
+
+          setTimeout(function () {
+            console.log("setTimeout");
+          }, 0);
+
+          async1();
+
+          new Promise(function (resolve) {
+            console.log("promise1");
+            resolve();
+          }).then(function () {
+            console.log("promise2");
+          });
+
+          console.log("script end");
+
+          // script start
+          // async1 start
+          // async2
+          // promise1
+          // script end
+          // async1 end
+          // promise2
+          // setTimeout
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

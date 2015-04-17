@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+          Array.prototype.slice.call(document.querySelectorAll('[class="domain' + '.com"]')).forEach(function (tag) {
+            var text = tag.innerHTML;
+
+            text = text.replace(/domain\.com/g, location.origin);
+
+            tag.innerHTML = text;
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+    <style>
+      #semversort textarea {
+        width: 100%;
+        min-height: 100px;
+      }
+    </style>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Read more</h2>
+        <a href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands"
+          >https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands</a
+        >
+        <br />
+        <a href="https://cloud.google.com/architecture/best-practices-for-operating-containers"
+          >https://cloud.google.com/architecture/best-practices-for-operating-containers</a
+        >
+        <br />
+        <h2>Cheat Sheet</h2>
+        <a href="Kubernetes-Cheat-Sheet_07182019.pdf">Kubernetes-Cheat-Sheet_07182019.pdf</a>
+        <h2>Kubernetes handy commands</h2>
+        <script type="editor" data-lang="sh">
+
+          kubectl get events
+          kubectl get events --sort-by='.lastTimestamp'
+
+          kubectl api-resources
+            # from kubectl get --help
+
+          kubectl get svc,pod,deploy,job,ingress,secret --show-labels -n namespace
+          kubectl get pv,pvc,rc,rs,svc,pod,deploy,job,ingress,secret  --show-labels -n namespace
+
+          # delete everything from namespace
+          kubectl delete namespace nameofnamespace
+          kubectl create namespace nameofnamespace
+
+              # from: https://stackoverflow.com/a/55838844
+
+          kubectl logs --follow podname
+
+          kubectl scale deployment.v1.apps/nameofdeployment --replicas=1
+
+          kubectl rollout restart deployment/nameofdeployment
+
+          # revert previous version
+          kubectl rollout undo deployment.v1.apps/hub-aml
+              # from: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-to-a-previous-revision
+              # g(Rolling Back to a Previous Revision)
+
+              # restart nginx-ingress-controller
+              kubectl rollout restart deployment/nginx-ingress-controller
+              kubectl get pod -A | grep ingress-nginx
+              kubectl rollout restart deployment/nginx-ingress-controller -n ingress-nginx
+
+          kubectl port-forward hublh55649bcc78b5dvq 7000:80
+          kubectl port-forward service/redismaster 7000:80
+              # https://bit.ly/2YDIyG5
+
+          kubectl get ep
+
+          # To see environment variables: from: https://bit.ly/36bhIII
+          kubectl run curl --image=radial/busyboxplus:curl -i --tty
+
+          # usage
+          kubectl describe node k8sv21mhw
+
+          # trigger cronjob:
+          kubectl create job --from=cronjob/nameofcronjob nameofjobtocreate
+              # from: https://www.craftypenguins.net/how-to-trigger-a-kubernetes-cronjob-manually/
+
+          # https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/
+          kubectl drain nodename
+          kubectl uncordon nodename
+
+          # cleaning docker registry:
+          docker exec -it docker-registry /bin/registry garbage-collect --dry-run /etc/docker/registry/config.yml
+              # from g(Clean Up Your Docker Registry Delete unused digests of docker images and save space) https://medium.com/better-programming/cleanup-your-docker-registry-ef0527673e3a
+
+          printenv | grep -E "(DEP|GIT|NUMBER)"
+
+          kubectl get rc,rs,services,pods,deployments,jobs  --show-labels --all-namespaces
+
+          kubectl get serviceaccounts
+
+          # copy secret from one namespace to another:
+              kubectl get secret secretname --namespace=default -oyaml | grep -v \
+          '^\s*namespace:\s' | kubectl apply --namespace=targetnamespace -f -
+
+              # from: https://stackoverflow.com/a/52326812
+
+          kubectl apply -f - <<EOF
+          apiVersion: v1
+          kind: ServiceAccount
+          metadata:
+            name: build-robot
+          EOF
+
+          oc create configmap api-cm \
+            --from-literal=ARANGO_ENDPOINTS="http://xxx.com:8529" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+          kubectl apply -f - <<EOF
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: nameofnewnamespace
+          EOF
+
+          kubectl apply -f - <<EOF
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: app
+            labels:
+              app: app
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: app
+            template:
+              metadata:
+                labels:
+                  app: app
+              spec:
+                containers:
+                  - name: app
+                    image: "alpine"
+                    command: ["tail", "-f", "/dev/null"]
+                    env:
+                      - name: ARANGO_ENDPOINTS
+                        valueFrom:
+                          configMapKeyRef:
+                            name: api-cm
+                            key: ARANGO_ENDPOINTS
+          EOF
+
+          # problem with rollout status
+
+          # oc rollout status might throw error:
+          #         error: watch closed before Until timeout
+          # in that case let's try again
+          set +e
+          STATUSTMPFILE="$(mktemp)"
+          STATUS=""
+          while true; do
+              oc rollout status dc $OS_DC --request-timeout=0 2>&1 | tee "${STATUSTMPFILE}"
+              STATUS="${PIPESTATUS[0]}"
+              if ! [[ "$(cat "${STATUSTMPFILE}")" =~ "watch closed before Until timeout" ]]; then
+                  break;
+              fi
+              echo "Let's try again"
+          done
+          exit ${STATUS}
+        </script>
+
+        <h2>Kustomize</h2>
+        <a href="https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/"
+          >https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/</a
+        >
+
+        <script type="editor" data-lang="sh">
+
+          Useful:
+          kustomize build kube/overlays/cluster-prod-on-prem/ | yq e '. | select(.kind == "Service" and .metadata.name =="deploy-api-prod")'
+        </script>
+
+        <h2>Secrets</h2>
+        <script type="editor" data-lang="sh">
+
+          # will create, but fired second time will fail
+          kubectl create secret generic db-user-pass --from-literal=abc=def --from-literal=ghi=jkl
+
+          # will create and also update, better version
+          kubectl create secret generic db-user-pass --from-literal=abc=def --from-literal=ghi=jkl --dry-run -o yaml | kubectl apply -f -
+
+          # If you have to edit particular value in existing secret by editing yaml then
+          # be aware that values of secrets are encoded in bas64
+          # so in order to quickly generate value use
+          echo "[your value]" | base64
+          # and
+          kubectl edit secret [name of secret]
+        </script>
+        <h2>Context</h2>
+        <script type="editor" data-lang="sh">
+
+          kubectl config current-context
+          kubectl config get-contexts
+          kubectl config use-context <context_name>
+          cat ~/.kube/config
+        </script>
+
+        <a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">see more</a>
+
+        <h2>kubctl processing output:</h2>
+        <script type="editor" data-lang="sh">
+
+          kubectl get job --output=jsonpath='{.items[*].metadata.name}' | tr " " "\n"
+
+          kubectl get job --output=jsonpath='{.items[*].metadata.name}' --sort-by='{.metadata.creationTimestamp}' | tr " " "\n"
+
+          # reverse order
+          kubectl get job --output=jsonpath='{.items[*].metadata.name}' | (cat && printf "\n") | tr " " "\n" | tac
+        </script>
+
+        <a href="https://gist.github.com/so0k/42313dbb3b547a0f51a547bb968696ba">see more</a>
+
+        <h2>Digital Ocean diagnostic pod</h2>
+        <a href="https://github.com/digitalocean/doks-debug/blob/master/Dockerfile"
+          >https://github.com/digitalocean/doks-debug/blob/master/Dockerfile</a
+        >
+        <h2>Digital Ocean</h2>
+        <script type="editor" data-lang="sh">
+
+          # switch cluster
+
+          doctl kubernetes cluster list
+          doctl kubernetes cluster kubeconfig save k8sclustername
+          kubectl get no
+
+          # listing load balancers
+          doctl compute load-balancer list
+
+
+          # ssl certificates
+          doctl compute certificate list
+          doctl compute certificate create --name certv001 --type lets_encrypt --dns-names domain1.com,domain2.com
+          doctl compute certificate get eebf2fd0-4444-3333-5555-87ce0631869a
+        </script>
+
+        <h2>Digital Ocean - switch cluster tool</h2>
+        Just paste this code to your terminal:
+        <script type="editor" data-lang="sh">
+
+          rm -rf ~/cluster.sh
+          wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/kubernetes/cluster.sh -O ~/cluster.sh
+          /bin/bash ~/cluster.sh install
+          source ~/.bash_profile
+          source ~/.bashrc
+        </script>
+
+        <h2>README.md</h2>
+
+        <div id="semversort">
+          <script type="editor" data-lang="sh">
+
+            https://medium.com/containers-101/kubevious-a-revolutionary-kubernetes-dashboard-for-cross-checking-and-validating-your-kubernetes-22b75dc41648
+          </script>
+        </div>
+
+        <h2>OpenSHIFT</h2>
+        <script type="editor" data-lang="sh">
+
+          kubectl config current-context
+
+          kubectl config get-contexts
+
+          kubectl config use-context <context_name>
+
+          oc project <namespace>
+
+          oc projects
+
+          oc get dc
+            # instead of 'kubectl get deploy' in k8s
+
+          # get currently running pod in deployment
+          oc get po | grep pods | grep Running | awk '{print $1}'
+
+          # node --inspect
+          POD="$(oc get po | grep "NAMEOFDEPLOYMENT" | grep Running | awk '{print $1}' | head -n 1)"
+          echo "${POD}"
+          if [ "${POD}" = "" ]; then echo "pod not found"; else oc port-forward ${POD} 9229:9229; fi;
+
+          cat <<EOF | oc exec -i podname -- /bin/sh
+          echo a b c | awk '{print \$2}'
+          EOF
+        </script>
+        <a href="chrome://inspect" target="_blank">chrome://inspect</a>
+
+        <h2>Semver sort</h2>
+
+        <div id="semversort">
+          <form>
+            <table width="100%">
+              <tbody>
+                <tr>
+                  <td width="45%" valign="top">
+                    <textarea class="textarea1"></textarea>
+                  </td>
+                  <td width="10" valign="top">
+                    <input type="submit" value="sort" />
+                  </td>
+                  <td valign="top">
+                    <textarea class="textarea2"></textarea>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+        </div>
+
+        <script>
+          // https://stackoverflow.com/a/5346855
+          var observe;
+          if (window.attachEvent) {
+            observe = function (element, event, handler) {
+              element.attachEvent("on" + event, handler);
+            };
+          } else {
+            observe = function (element, event, handler) {
+              element.addEventListener(event, handler, false);
+            };
+          }
+          function init(text) {
+            function resize() {
+              text.style.height = "auto";
+              text.style.height = text.scrollHeight + "px";
+            }
+            /* 0-timeout to get the already changed text */
+            function delayedResize() {
+              window.setTimeout(resize, 0);
+            }
+            observe(text, "change", resize);
+            observe(text, "cut", delayedResize);
+            observe(text, "paste", delayedResize);
+            observe(text, "drop", delayedResize);
+            observe(text, "keydown", delayedResize);
+
+            text.focus();
+            text.select();
+            resize();
+
+            return function () {
+              resize();
+            };
+          }
+
+          // document.addEventListener('DOMContentLoad', function () {
+
+          var cmp = (function () {
+            var reg = /^(\d+)\.(\d+)\.(\d+)(.*)$/;
+            // ["0.0.211-hub_lh", "0", "0", "211", "-hub_lh", index: 0, input: "0.0.211-hub_lh", groups: undefined]
+            //   0                 1    2    3      4
+
+            function pad(a) {
+              return a.length < 3 ? pad("0" + a) : a;
+            }
+
+            function trans(a) {
+              var k = a.match(reg);
+              var t = "";
+              for (var i = 1; i < 4; i += 1) {
+                t += pad(String(parseInt(k[i], 10)));
+              }
+              return t;
+            }
+            return function cmp(a, b) {
+              a = trans(a);
+              b = trans(b);
+              if (a === b) {
+                return 0;
+              }
+              return a > b ? -1 : 1;
+            };
+          })();
+
+          var main = document.querySelector("#semversort");
+
+          var textarea1 = main.querySelector(".textarea1");
+
+          var textarea2 = (window.t = main.querySelector(".textarea2"));
+
+          init(textarea1);
+
+          var resize = init(textarea2);
+
+          var form = main.querySelector("form");
+
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            var data = textarea1.value;
+
+            var sem = [];
+
+            var nsem = [];
+
+            data
+              .split("\n")
+              .map(function (t) {
+                return t.replace(/^['"\s,]*(.*?)['"\s,]*$/, "$1");
+              })
+              .filter(function (t) {
+                return Boolean(t);
+              })
+              .map(function (t) {
+                /^\d+\.\d+\.\d+/.test(t) ? sem.push(t) : nsem.push(t);
+              });
+
+            sem.sort(cmp);
+
+            textarea2.value = sem.join("\n") + "\n\n" + nsem.join("\n");
+
+            resize();
+
+            // https://stackoverflow.com/a/11715670
+            window.scrollTo(0, document.body.scrollHeight);
+          });
+
+          // });
+        </script>
+        <h2>About Disaster Recovery</h2>
+        <a href="https://www.druva.com/blog/understanding-rpo-and-rto/"
+          >https://www.druva.com/blog/understanding-rpo-and-rto/</a
+        >
+        <h2>Minikube</h2>
+        <a href="https://minikube.sigs.k8s.io/docs/start/">Installation</a>
+        <script type="editor" data-lang="sh">
+
+          minikube start
+
+          minikube dashboard
+
+          minikube kubectl -- get po -A
+
+          eval $(minikube docker-env)
+          # and then docker build - it will build image in the docker in minikube
+          # then you can use kubectl apply and use regular names of images available locally in minikube docker
+
+          # To go back to using your computer’s own Docker daemon
+          eval $(minikube docker-env -u)
+
+          minikube kubectl -- get po -A
+
+          kubectl get po -A
+
+          # tricks
+          # https://levelup.gitconnected.com/minikube-tips-tricks-739f4b00ac17
+
+          # export service to the host
+          minikube service service-name
+        </script>
+        <h2>Minikube alternatives</h2>
+        <a href="https://kind.sigs.k8s.io/docs/user/loadbalancer/">Kind</a>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

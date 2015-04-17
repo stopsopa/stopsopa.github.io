@@ -1,0 +1,270 @@
+body header {
+  padding: 7px;
+  display: flex;
+  align-items: center;
+}
+body header > a:first-child {
+  margin-left: 40px;
+}
+.ace-idle-fingers .ace_invisible {
+  color: #616161;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+}
+.tabs > div {
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: flex;
+}
+.tabs > div:hover > div:first-child {
+  background-color: rgb(223, 221, 221);
+}
+.tabs > div > div:first-child {
+  flex-grow: 1;
+  padding: 10px;
+  margin-bottom: 2px;
+}
+.tabs > div > div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
+  justify-content: center;
+}
+.tabs > div > div:nth-child(2) > div {
+  font-size: 11px;
+}
+.tabs > div:hover {
+  border: 1px solid lightgray;
+}
+.tabs > .active {
+  border: 1px solid gray;
+}
+.tabs > .active > div:first-child {
+  /* border: 1px solid black;
+    box-shadow: 0 0 1px black; */
+  background-color: rgb(223, 221, 221);
+}
+.tabs > div > div:nth-child(2) > div {
+  flex-grow: 1;
+}
+
+.tabs > div > div:nth-child(2) > div:hover {
+  background-color: rgb(223, 221, 221);
+}
+#parent {
+  min-height: calc(100vh - 48px - 59px);
+}
+
+/* https://popper.js.org/docs/v2/tutorial/ */
+#arrow,
+#arrow::before {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+}
+
+#arrow {
+  visibility: hidden;
+}
+
+#arrow::before {
+  visibility: visible;
+  content: "";
+  transform: rotate(45deg);
+}
+#tooltip[data-popper-placement^="top"] > #arrow {
+  bottom: -4px;
+}
+
+#tooltip[data-popper-placement^="bottom"] > #arrow {
+  top: -4px;
+}
+
+#tooltip[data-popper-placement^="left"] > #arrow {
+  right: -4px;
+}
+
+#tooltip[data-popper-placement^="right"] > #arrow {
+  left: -4px;
+}
+.dropdown-source-wrapper {
+  background-color: aqua;
+}
+.portal {
+  padding-left: 20px;
+}
+.portal > button {
+  background-color: rgb(143, 142, 142);
+  border: none;
+  padding: 8px;
+  border-radius: 3px;
+  margin-right: 5px;
+  cursor: pointer;
+  color: rgb(225, 224, 224);
+}
+.portal > button.record {
+  position: relative;
+  padding-right: 36px;
+}
+.portal > button.record::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background-color: #136913;
+  top: 9px;
+  right: 10px;
+  border-radius: 10px;
+}
+.portal > button.record:hover {
+  background-color: gray;
+}
+.portal > button.record.on::after {
+  background-color: #c22020;
+}
+.on_the_right .editors {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.on_the_right .editors > * {
+  width: 50%;
+  order: 0; /* It is by default 0 but anyway... https://css-tricks.com/snippets/css/a-guide-to-flexbox/#:~:text=order%3A%205%3B%20/*%20default%20is%200%20*/
+}
+.on_the_right .editors > .right {
+  order: 1;
+}
+.on_the_right .editors > div.hidden {
+  width: 0;
+}
+.on_the_right .editors > div.hidden > div:first-child {
+  overflow: hidden;
+}
+.single .editors > div > div {
+  display: none;
+}
+.single .editors > div.active > div {
+  display: block;
+}
+.single .editors > div.hidden {
+  display: none;
+  height: 0 !important;
+  overflow: hidden;
+}
+
+// loader vvv
+.global-loader-component {
+  z-index: 1000;
+  display: inline-block;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+  -ms-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  height: 20px;
+  box-shadow: 0 0 5px #313131;
+  & > * {
+    float: left;
+  }
+  & > span {
+    //padding-left: 4px;
+
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+  &.err,
+  &.msg {
+    font-weight: bold;
+    color: white;
+  }
+  &.err {
+    background-color: #db2828;
+    border-right: 40px solid #db2828;
+    border-left: 40px solid #db2828;
+  }
+  &.msg {
+    background-color: green;
+    border-right: 40px solid green;
+    border-left: 40px solid green;
+  }
+  &.load {
+    background-color: white;
+  }
+}
+body .global-loader-component .ui.loader {
+  top: 3px;
+}
+
+.conflict {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid black;
+  z-index: 1000;
+  padding: 20px;
+}
+.add,
+.sync {
+  background-color: grey;
+  color: white;
+}
+.unsaved {
+  box-shadow: 0px 0px 10px red;
+}
+.bluetab {
+  box-shadow: inset 0px 0px 10px rgb(159, 159, 224);
+}
+.unsaved.bluetab {
+  box-shadow: 0px 0px 10px red, inset 0px 0px 10px rgb(159, 159, 224);
+}
+
+// loader ^^^
+
+// ace editor highlighting color red ------------------- vvv
+body .ace-idle-fingers .ace_marker-layer .ace_selected-word {
+  border: 2px solid rgba(0, 140, 255, 0.88);
+}
+
+/*
+<div class="ace_layer ace_marker-layer">
+  <div class="ace_selection ace_br1 ace_start" style="height: 16px; right: 0px; top: 208px; left: 414.468px;"></div>
+  <div class="ace_selection ace_br12" style="height: 16px; width: 604.9px; top: 416px; left: 4px;"></div>
+  <div class="ace_selection ace_br1" style="height: 192px; right: 0px; top: 224px; left: 4px;"></div>
+</div>
+
+https://i.imgur.com/jrBx46L.png
+
+*/
+body .ace-idle-fingers .ace_marker-layer {
+  & > .ace_selection:first-child {
+    border-top: 2px solid red;
+    border-left: 2px solid red;
+  }
+  & > .ace_selection:nth-child(2) {
+    // this one is actually representing last block
+    border-bottom: 2px solid red;
+    border-right: 2px solid red;
+  }
+  & > .ace_selection:last-child {
+    // this one is middle element
+    // box-shadow: 0 0 11px rgba(0, 115, 255, 0.88), 0 0 11px rgba(0, 128, 255, 0.88);
+  }
+  & > .ace_selection.ace_start {
+    box-sizing: border-box;
+    border-top: 2px solid red;
+    border-left: 2px solid red;
+    &:not(.ace_br1) {
+      border-bottom: 2px solid red;
+      border-right: 2px solid red;
+    }
+  }
+}
+// ace editor highlighting color red ------------------- ^^^

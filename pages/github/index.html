@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="github-actions.html">Github Actions</a></li>
+          </ul>
+        </div>
+
+        <h2>Learn</h2>
+        <script type="editor" data-lang="sh">
+
+          https://github.com/ricardobeat/git-commands
+
+          https://itnext.io/advanced-git-features-you-didnt-know-you-needed-ed8455c45495#9fef
+
+          https://github.com/tj/git-extras/blob/master/Commands.md
+        </script>
+
+        <h2>Nice examples of GitHub homepage</h2>
+
+        <script type="editor" data-lang="sh">
+
+          https://github.com/Ayoub-Mabrouk
+          https://github.com/ChrisTitusTech
+        </script>
+        <h2>Issues and PR's contributions</h2>
+        <a href="https://github.com/SoftCreatR/imei/issues/117">Imagick</a>
+        <br />
+        <a href="https://github.com/exolution/IPromise/issues/1">https://github.com/exolution/IPromise/issues/1</a>
+        <br />
+        <a href="https://github.com/connorjburton/hmac-auth-express/issues/115"
+          >https://github.com/connorjburton/hmac-auth-express/issues/115</a
+        >
+        <br />
+        <a href="https://github.com/microsoft/monaco-editor/issues/4807"
+          >https://github.com/microsoft/monaco-editor/issues/4807</a
+        >
+        <h2>Deleted commits/forks/branches are alwys availabe</h2>
+        <a href="https://trufflesecurity.com/blog/anyone-can-access-deleted-and-private-repo-data-github"
+          >https://trufflesecurity.com/blog/anyone-can-access-deleted-and-private-repo-data-github</a
+        >
+        <h2>Github diff link</h2>
+
+        <script type="editor" data-lang="sh">
+
+          # go to:
+          https://github.com/stopsopa/nlab/compare
+
+          # and there you can pick source branch or tag and target branch or tag
+          https://github.com/stopsopa/nlab/compare/v0.11.0...v0.12.0
+        </script>
+        <h2>useful</h2>
+        <script type="editor" data-lang="sh">
+
+          ProTip! Add .patch or .diff to the end of URLs for Git’s plaintext views.
+        </script>
+
+        <h2>PR filtering tags</h2>
+        <a href="https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests"
+          >g(You can search for issues and pull requests on GitHub and narrow the results using these search qualifiers
+          in any combination)</a
+        >
+        <script type="editor" data-lang="sh">
+
+          author:@me
+          -author:@me
+            - is for negation
+          draft:true   OR   draft:false
+          author:sdzialowski
+          review:none    - matches pull requests that have not been reviewed.
+          review:required   - matches pull requests that require a review before they can be merged.
+          review:changes_requested   - matches pull requests in which a reviewer has asked for changes.
+          -reviewed-by:@me    - matches pull requests reviewed by a particular person.
+          review-requested:USERNAME   - matches pull requests where a specific person is requested for review. Requested reviewers are no longer listed in the search results after they review a pull request.
+          user-review-requested:@me    - matches pull requests that you have directly been asked to review.
+          is:merged   OR   is:unmerged
+          archived:true
+
+
+          # combinations
+          is:open is:pr author:@me
+          is:open is:pr -author:@me
+          is:pr is:open -author:@me -assignee:@me
+        </script>
+        <h2>Release - download latest jar</h2>
+        <a href="https://github.com/stopsopa/kafka/blob/main/kafkavisualizer.sh">https://github.com/stopsopa/kafka/blob/main/kafkavisualizer.sh</a>
+        <h2>Age of repository:</h2>
+        <script type="editor" data-lang="sh">
+
+          https://api.github.com/repos/{:owner}/{:repository}
+              # and look for field: created_at
+                  # from: https://stackoverflow.com/a/23612723
+        </script>
+        <h2>Search in github and it's limitations</h2>
+        <a href="https://stackoverflow.com/a/33237640">link</a>
+
+        <h2>Github - first commit</h2>
+        <script type="editor" data-lang="js">
+
+          first commit:
+            http://farhadg.github.io/init/landing/
+            github repo: https://github.com/farhadg/init
+
+          // Use the github public api to navigate to the
+          // last commit of a GitHub repository
+
+          (function openFirstCommit(args) {
+            // args[1] is the `orgname/repo` url fragment
+            // args[2] is the optional branch or hash
+
+            return fetch('https://api.github.com/repos/' + args[1] + '/commits?sha=' + (args[2] || ''))
+
+              // the link header has additional urls for paging
+              // parse the original JSON for the case where no other pages exist
+              .then(res => Promise.all([res.headers.get('link'), res.json()]))
+
+              // get last page of commits
+              .then(results => {
+                // results[0] is the link
+                // results[1] is the first page of commits
+
+                if (results[0]) {
+                  // the link contains two urls in the form
+                  // <https://github.com/...>; rel=blah, <https://github.com/...>; rel=thelastpage
+                  // split the url out of the string
+                  var pageurl = results[0].split(',')[1].split(';')[0].slice(2, -1);
+                  // fetch the last page
+                  return fetch(pageurl).then(res => res.json());
+                }
+
+                // if no link, we know we're on the only page
+                return results[1];
+              })
+
+              // get the last commit and extract the url
+              .then(commits => commits.pop().html_url)
+
+              // navigate there
+              .then(url => window.location = url);
+          })(window.location.pathname.match(/\/([^\/]+\/[^\/]+)(?:\/tree\/([^\/]+))?/));
+          void(0)
+        </script>
+
+        <h2>Github Actions</h2>
+        <script type="editor" data-lang="sh">
+
+          # open pull request from action:
+          https://github.com/nodejs/node/blob/8a4d7ac6b50ff425b22a0a0a2ad7ec0ae9f31587/.github/workflows/timezone-update.yml#L42
+
+          # buildx
+          https://github.com/docker/setup-buildx-action
+
+
+          # push from Github Actions:
+            https://github.com/andstor/jsdoc-action/blob/master/.github/workflows/node_modules.yml
+            https://github.com/connorjburton/hmac-auth-express/blob/v9.0.0/.github/workflows/release.yml
+        </script>
+        <h2>Size of the repository</h2>
+        <script type="editor" data-lang="sh">
+
+          curl -u stopsopa:ghp_57DCxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDw https://api.github.com/repos/stopsopa/gigant | jq '.size' | numfmt --from-unit=K --to=iec
+            # to generate token go to: https://github.com/settings/tokens
+            # current token can be found in google notes "github - Personal access tokens"
+        </script>
+        <br />
+        <br />
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

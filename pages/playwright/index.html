@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>playwright setup</h2>
+        <a href="https://github.com/stopsopa/playwright-research">https://github.com/stopsopa/playwright-research</a>
+        <script type="editor" data-lang="sh">
+
+          wget --help 1> /dev/null 2> /dev/null
+          if [ "${?}" = "0" ]; then
+            function download {
+              if [ "${2}" = "" ]; then; 2="${1}"; fi
+              mkdir -p "$(dirname "${2}")"
+              wget --no-cache -O "${2}" "https://raw.githubusercontent.com/stopsopa/playwright-research/master/${1}"
+            }
+          else # curl
+            function download {
+              if [ "${2}" = "" ]; then; 2="${1}"; fi
+              mkdir -p "$(dirname "${2}")"
+              curl "https://raw.githubusercontent.com/stopsopa/playwright-research/master/${1}" -o "${2}"
+            }
+          fi
+          # download ".github/workflows/playwright.yml" "optionally/different/target/path/playwright.yml"
+          download "playwright.sh"
+          download "playwright.config.js"
+          download "playwright-async.config.js"
+          download "tests/tools/cmd.js"
+
+
+
+
+          test -f package.json || echo "{}" > package.json
+          yarn add -D playwright @playwright/test dotenv
+        </script>
+        <h2>Flaky Tests</h2>
+        <script type="editor" data-lang="sh">
+
+          # https://semaphoreci.com/blog/flaky-tests-playwright
+          # you can find how to control timeout
+        </script>
+        <h2>Docker dependencies</h2>
+        <script type="editor" data-lang="sh">
+
+          # yarn list --patter playwright | grep playwright
+          # gives
+          # ├─ @playwright/test@1.45.0
+          # │  └─ playwright@1.45.0
+          # ├─ playwright-core@1.45.0
+          # ├─ playwright@1.45.0
+          # │  └─ playwright-core@1.45.0
+          # so theoretically only @playwright/test is needed
+
+          // more: https://github.com/stopsopa/playwright-research?tab=readme-ov-file#build-custom-image
+            // especially special PR over here: https://github.com/stopsopa/playwright/pull/1/files
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

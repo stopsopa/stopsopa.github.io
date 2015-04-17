@@ -1,0 +1,929 @@
+{
+  "seria 1 - 1992-1994": [
+    {
+      "title": "Tajemniczy nektar",
+      "img": "img/ser1/1.webp",
+      "nr": "Nr 1",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "Tajemniczy Nektar",
+        "Indiana Dziób i Dolina 7 Słońc",
+        "Star Kwek",
+        "Brawo Goofy",
+        "Dajnastia",
+        "Superhamulce"
+      ]
+    },
+    {
+      "title": "Bilet numer 1",
+      "img": "img/ser1/2.webp",
+      "nr": "Nr 2",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "Bilet numer jeden cz. I",
+        "Bilet numer jeden cz. II",
+        "Bilet numer jeden cz. III",
+        "Bilet numer jeden cz. IV",
+        "Dick Goof",
+        "Srar Kwęk II",
+        "Pomystowy Goofy",
+        "Teleturniej",
+        "Szkocki surdut"
+      ]
+    },
+    {
+      "title": "Tajemnica dwóch cywilizacji",
+      "img": "img/ser1/3.webp",
+      "nr": "Nr 3",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "Tajemnica dwóch cywilizacji",
+        "Powrót do presztosci",
+        "Reduta Sknerusa",
+        "Opowies produkcyjna",
+        "Sekret Etrusków cz. I",
+        "Sekret Etrusków cz. II",
+        "Zarobek na BOKu cz. I",
+        "Zarobek na BOKu cz. II"
+      ]
+    },
+    {
+      "title": "Prehistoryczny szpieg",
+      "img": "img/ser1/4.webp",
+      "nr": "Nr 4",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "Spokojnie, to tylko hobby",
+        "Tajemnica statuetki cz.1",
+        "Tajemnica statuetki cz.2",
+        "Prehistoryczny spieg",
+        "Poszukiwacze zaginionego koloru",
+        "Kometa Beta",
+        "Muszle"
+      ]
+    },
+    {
+      "title": "Nieprawdopodobna podróż",
+      "img": "img/ser1/5.webp",
+      "nr": "Nr 5",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "Nieprawdopodobna podróz",
+        "Pomylona prysztosó cz.1",
+        "Pomylona prysztosó cz.2",
+        "Dziura ozonowa",
+        "Kto wrobit Czarnego Piotrusia?",
+        "Na tonie natury",
+        "Radosna twórczosc"
+      ]
+    },
+    {
+      "title": "Berło czasu",
+      "img": "img/ser1/6.webp",
+      "nr": "Nr 6",
+      "processed": {
+        "pdf": true
+      },
+      "toc": ["Rodzina Kwaddamsów", "Nie konczaca sie opowieść", "Berto Czasu", "Szafranowy interes"]
+    },
+    {
+      "title": "Nowa przyjaciółka",
+      "img": "img/ser1/7.webp",
+      "nr": "Nr 7",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "Nieoczekiwana zamiana umystów cz. I",
+        "Nieoczekiwana zamiana umystów cz. II",
+        "Operacja „CHAOS\" cz. 1",
+        "Operacja „CHAOS\" cz. II",
+        "Nie igra sie z prestoscia",
+        "Portret wynalazcy z czasów modosci cz. I",
+        "Portret wynalazcy z czasów miodosci cz. II",
+        "Laserowe lody",
+        "Nowa przyjaciótka"
+      ]
+    },
+    {
+      "title": "Wakacje w kosmosie",
+      "img": "img/ser1/8.webp",
+      "nr": "Nr 8",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "Wakacje w kosmosie",
+        "Potworny upal",
+        "Fantazja artysty",
+        "Karnawat kaczogrodzki",
+        "Prebiegty plan Piotrusia",
+        "Agent 006 1/2"
+      ]
+    },
+    {
+      "title": "Skarb na pustyni",
+      "img": "img/ser1/9.webp",
+      "nr": "Nr 9",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "Skarb na pustyni",
+        "Indiana Goofs i Zródto Pieknosci",
+        "Goraczka miedzi",
+        "Latajacy skuter",
+        "Licencja",
+        "Wiadza pierscienia"
+      ]
+    },
+    {
+      "title": "W poszukiwaniu Eliksiru Mtodosci",
+      "img": "img/ser1/10.webp",
+      "nr": "Nr 10",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "W poszukiwaniu Eliksiru Mtodosci",
+        "Gwiazda rocka",
+        "Cierpienia mtodego kaczora",
+        "Dziwni sasiedzi",
+        "Wymuszony mecenat",
+        "Tajemnica fortuny Czarnego Piotrusia"
+      ]
+    }
+  ],
+  "Seria 2 - 1997": [
+    {
+      "title": "",
+      "img": "img/ser2/1.webp",
+      "nr": "1/97",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "ATENSKA ODYSEJA",
+        "KRYMINALY I TORT CZEKOLADOWY",
+        "DOLAROWE MORZE",
+        "DALEKO OD SZOSY",
+        "WIELKA KACZORIADA",
+        "MALO CZASU",
+        "PIRAMIDKA MENTALESA"
+      ]
+    },
+    {
+      "title": "",
+      "img": "img/ser2/2.webp",
+      "nr": "2/97",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "BLEDNY RYCERZ",
+        "CYBORG",
+        "SZTUKA UCIECZKI",
+        "KOSC RODOSA",
+        "NIEZNANI SPRAWCY",
+        "NIEZWYKLE DOCHODZENIE",
+        "STRASZNY SZCZURON"
+      ]
+    },
+    {
+      "title": "",
+      "img": "img/ser2/3.webp",
+      "nr": "3/97",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "PERLY PRZED SWINIE",
+        "INWAZJA REPLIKANTÓW",
+        "DZIOBAS NA WAKACJACH",
+        "CO BY BYLO GDYBY...",
+        "CENA SPÓZNIENIA",
+        "PRZESZLOSCIOWY PASZTET",
+        "WIELKI MIECZ",
+        "POLICJANCI I ZLODZIEJE"
+      ]
+    },
+    {
+      "title": "",
+      "img": "img/ser2/4.webp",
+      "nr": "4/97",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "POWRÓT DO KORZENI",
+        "CZARNY SKARABEUSZ",
+        "ZAWÓD: KIEROWCA",
+        "TO OCZYWISTE...",
+        "POLICJANCI I ZLODZIEJE",
+        "TRZY CHORE KACZATKA",
+        "SLODKI BRZEK MONET",
+        "STRAZNICY CZASU"
+      ]
+    },
+    {
+      "title": "",
+      "img": "img/ser2/5.webp",
+      "nr": "5/97",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "KTO TROPI TROPICIELI",
+        "BOHATER ZDEMASKOWANY",
+        "LOGIKA NIE POPLACA",
+        "NOWE HOBBY HARPAGONA",
+        "NIEZAPOMNIANE WAKACJE",
+        "ASYSTENT DOSKONALY",
+        "PORWANI PRZEZ UFO",
+        "MYSZY | KACZKI",
+        "RYBY MAJA GLOS",
+        "DWA OBLICZA PASKUDY"
+      ]
+    },
+    {
+      "title": "",
+      "img": "img/ser2/6.webp",
+      "nr": "6/97",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "NIE WSZYSTKO ZKOTO",
+        "W STARYM KINIE",
+        "SZKOLA PRZETRWANIA",
+        "AFERA GRZYBOWA",
+        "KOMISARZ MIMO WOLI",
+        "NARZECZONY DLA KSIEZNICZKI"
+      ]
+    }
+  ],
+  "Seria 3 - 1998": [
+    {
+      "title": "Miłość niejedno ma imię",
+      "img": "img/ser3/1.webp",
+      "nr": "1/98",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "DWÓCH NA JEDNEGO",
+        "MROZNA CISZA",
+        "ZNIKAJACY KUZYN",
+        "KACKI W KOSMOSIE",
+        "OKRET WIDM",
+        "MILOS NIEJEDNO MA IMIE",
+        "UPOJNA KWIATÓW WON"
+      ]
+    },
+    {
+      "title": "Indiana Dżems i świątynia małp",
+      "img": "img/ser3/2.webp",
+      "nr": "2/98",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "ZLOTO GÓR LODOWYCH",
+        "Z ARCHIWUM Y",
+        "154 STOPNIE KWARENHEITA",
+        "KOWCY SENSACJI",
+        "INDIANA DZEMS I SWIATYNIA MALP",
+        "POZORY MYLA"
+      ]
+    },
+    {
+      "title": "Złoto dla bardzo zuchwałych",
+      "img": "img/ser3/3.webp",
+      "nr": "3/98",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "ZLOTO DLA BARDZO ZUCHWALYCH",
+        "POSZUKIWACZE ZAGINIONYCH SANDALÓW",
+        "KOZLA SPRAWA",
+        "OD CZASU DO CZASU",
+        "BOHATER NIE W PORE",
+        "GRA POZORÓW"
+      ]
+    },
+    {
+      "title": "Kaczki na wizji",
+      "img": "img/ser3/4.webp",
+      "nr": "4/98",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "TANCZACY Z CHICHOTAMI",
+        "MIEDZY NAMI AGENTAMI",
+        "KACZKI NA WIZJI",
+        "NA KLOPOTY TYLKO BABCIA",
+        "BO FANTAZJA JEST OD TEGO",
+        "POMYLKA CZYNI ZKODZIEJA",
+        "ZLAPAL KOZAK KACZORZYNA"
+      ]
+    },
+    {
+      "title": "Mleka i igrzysk",
+      "img": "img/ser3/5.webp",
+      "nr": "5/98",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "NIEOCZEKIWANA ZMIANA MIEJSC",
+        "WODA ROZUMU NIE DODA",
+        "Z MAGIA NIE MA ZARTÓW",
+        "KACZOR NA OPAK",
+        "SAMOLOT, KTÓREGO NIE BYLO",
+        "SPOKOJNIE, TO TYLKO AWARIA",
+        "HISTORIA LUBI SIE POWTARZAC",
+        "MLEKA I IGRZYSK"
+      ]
+    },
+    {
+      "title": "Łowca cyborgów",
+      "img": "img/ser3/6.webp",
+      "nr": "6/98",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "MOJA LEWA PLETWA",
+        "LOWCA CYBORGÓW",
+        "W KRAINIE BEZ KANGURÓW",
+        "JAK GORYL Z GORYLEM",
+        "GRUNT TO RODZINKA",
+        "DZIECI, RADIO I KROKODYL",
+        "NA PLAZY FORSA PARZY",
+        "TRUDNO BYC DOBRYM"
+      ]
+    },
+    {
+      "title": "Bezsenność w Kaczogrodzie",
+      "img": "img/ser3/7.webp",
+      "nr": "7/98",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "BEZSENNOSC W KACZOGRODZIE",
+        "JAK DWIE KROPLE WODY",
+        "ZASKUZONY ODPOCZYNEK",
+        "SZKOLA MILIARDERÓW",
+        "MUROWANY EFEKT",
+        "SKAZANI NA SING PLING",
+        "MASZYNA CZYNI MISTRZEM",
+        "W KACZYM CIELE ZDROWY DUCH"
+      ]
+    },
+    {
+      "title": "Uprowadzenie kaczki",
+      "img": "img/ser3/8.webp",
+      "nr": "8/98",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "FORTUNA KOLEM SIE TOCZY",
+        "BYT ALBO NIEBYT",
+        "NIE DOTYKAC!",
+        "HEROS W OPERZE",
+        "BAJKA DLA PIOTRUSIA",
+        "NIEMADRY KAOWIEC",
+        "DRESZCZE",
+        "UPROWADZENIE KACZKI"
+      ]
+    },
+    {
+      "title": "W księżycową jasną noc",
+      "img": "img/ser3/9.webp",
+      "nr": "9/98",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "KOMIKSOZERCY",
+        "A MOZE NAD MORZE",
+        "W KSIELYCOWA JASNA NOC",
+        "OD PIERWSZEGO WEJRZENIA",
+        "FATALNE KICHNIECIE",
+        "TAK JAK W KINIE",
+        "ZALOZYLY SIE DWIE KACZKI"
+      ]
+    },
+    {
+      "title": "Siedem kaczych plag",
+      "img": "img/ser3/10.webp",
+      "nr": "10/98",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "U MYSZY NA URODZINACH",
+        "WALKA O KAMIEN",
+        "ZYCIE TO NIE TEATR",
+        "PIORUNUJACA HISTORIA",
+        "WODNY SWIAT",
+        "GOSC ZE WSCHODU",
+        "TAK DALEKO, TAK BLISKO",
+        "SIEDEM KACZYCH PLAG",
+        "POSKROMIENIE KAKOMCZUCHA"
+      ]
+    },
+    {
+      "title": "Planeta skarbów",
+      "img": "img/ser3/11.webp",
+      "nr": "11/98",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "WINOGRONA GNIEWU",
+        "KOLEJ NA KOLEJ",
+        "PLANETA SKARBÓW",
+        "KLIENT NASZ PAN",
+        "TAJEMNICA STATUETKI",
+        "NA ZLOTYM LONDYNSKIM BRUKU",
+        "SZCZESCIE W NIESZCZESCIU"
+      ]
+    },
+    {
+      "title": "Stary mamut mocno śpi",
+      "img": "img/ser3/12.webp",
+      "nr": "12/98",
+      "processed": {
+        "pdf": true,
+        "book": true
+      },
+      "toc": [
+        "Sztuka dla sztuki",
+        "Spotkanie z wampirem",
+        "Co za dużo, to niezdrowo",
+        "Wielkie małe miasto",
+        "Siła spojrzenia",
+        "Stary mamut mocno śpi"
+      ]
+    }
+  ],
+  "Seria 4 - 1999": [
+    {
+      "title": "Między nami artystami",
+      "img": "img/ser4/1.webp",
+      "nr": "1/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "MIEDZY NAMI ARTYSTAMI",
+        "NIEPOGODA DLA BOGACZY",
+        "EFEKTY NIESPECJALNE",
+        "ATRAKCJA TURYSTYCZNA",
+        "SLODKIE KLAMSTWA",
+        "BRAK WIARY W CZARY",
+        "KWARMAZYNOWY PIRAT",
+        "CZARNOKSIEZNIK Z KRAINY DOS"
+      ]
+    },
+    {
+      "title": "Wielkie białe szaleństwo",
+      "img": "img/ser4/2.webp",
+      "nr": "2/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "WYSPA JAK WULKAN GORACA",
+        "KACZA EMIGRACJA",
+        "SWIETNY PATENT",
+        "SZTUKA NIE DLA MAS",
+        "WIELKIE BIALE SZALENSTWO",
+        "INWAZJA MEGAKURCZAKÓW",
+        "LOWY NA GRUBE RYBY",
+        "PRZYJACIÓL POZNAJE SIE W KWANADZIE"
+      ]
+    },
+    {
+      "title": "Wudu kontratakuje",
+      "img": "img/ser4/3.webp",
+      "nr": "3/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "MAGICZNE WOJNY",
+        "GÓRALSKI PRZYSMAK",
+        "SKARBIEC JAK MALOWANY",
+        "K.D. + M.M. = W.N.M.",
+        "IDZ NA SMIALOSC",
+        "POSZUKIWANY, POSZUKIWANY",
+        "WUDU KONTRATAKUJE"
+      ]
+    },
+    {
+      "title": "Rekiny reklamy",
+      "img": "img/ser4/4.webp",
+      "nr": "4/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "ZEMSTA KWANITU",
+        "REKINY REKLAMY",
+        "POLOWANIE NA CZAROWNICE",
+        "ZROBIONY W BALONA",
+        "MYSLA I MIECZEM",
+        "SLUCH ABSOLUTNY",
+        "KOMINIARCZYK I POKOJÓWKA"
+      ]
+    },
+    {
+      "title": "Krótkie spięcie",
+      "img": "img/ser4/5.webp",
+      "nr": "5/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "KACZOGROD TONIE",
+        "SWIATLA IDEA",
+        "DWADZIESCIA LAT W TUBECIE",
+        "POGODOWY ZAWRÓT GLOWY",
+        "NIE UFAJ OBCYM",
+        "KRÓTKIE SPIECIE",
+        "DWÓCH SAMURAJÓW"
+      ]
+    },
+    {
+      "title": "Folwark zwierząt",
+      "img": "img/ser4/6.webp",
+      "nr": "6/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "BYLI SOBIE DWAJ BRACIA",
+        "PROROK WE WASNYM KRAJU",
+        "SPISEK MAGÓW",
+        "KNAJPIANE KANTY",
+        "NA MALUCHA",
+        "JESZCZE JEDEN NOWY DOM",
+        "FOLWARK ZWIERZAT",
+        "MIEDZYWYMIAROWA WOJNA ZMYWAKOWA"
+      ]
+    },
+    {
+      "title": "Dobry, zły i pokąsany",
+      "img": "img/ser4/7.webp",
+      "nr": "7/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "KONCERT ZYCZEN",
+        "DOBRY, ZLY I POKASANY",
+        "WIEDZA TO DO ZLOTA KLUCZ",
+        "CZYSTA FANTASTYKA",
+        "CZAROWNICA MIMO WOLI",
+        "ACH, TE KOBIETY!",
+        "BEZBLEDNY RYCERZ",
+        "MIKOSIERNY KWAMARYTANIN"
+      ]
+    },
+    {
+      "title": "Tajnos Kaczoros",
+      "img": "img/ser4/8.webp",
+      "nr": "8/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "APETYT NA TRUSKAWKI",
+        "ZAGUBIONY W AKCJI",
+        "LATO W MIESCIE",
+        "MÓJ OSOBISTY WRÓG",
+        "W SEKTORZE GÓRNICZYM BEZ ZMIAN",
+        "SPOJRZENIE W PRZYSZLOSC",
+        "PRZEZ WIRTUALNE OKULARY",
+        "TAJNOS KACZOROS"
+      ]
+    },
+    {
+      "title": "Wszyscy na jednego",
+      "img": "img/ser4/9.webp",
+      "nr": "9/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "URODZINY BOHATERA",
+        "CO W KACZORA DUSZY GRA",
+        "OBCY SA WSRÓD NAS",
+        "SKRZYPEK POD DACHEM",
+        "PECHOWIEC I SZCZESCIARZ",
+        "WSZYSCY NA JEDNEGO",
+        "MGLY AKWALONU"
+      ]
+    },
+    {
+      "title": "Kosmiczne wrota",
+      "img": "img/ser4/10.webp",
+      "nr": "10/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "SZYBKI JAK BLYSKAWICA",
+        "POSKROMIENIE ZLOSNIKA",
+        "DETEKTYWI NA SCENE",
+        "WRÓG PUBLICZNY",
+        "KOSMICZNE WROTA",
+        "MILOSC I MATEMATYKA",
+        "NOWY KACZY SWIAT"
+      ]
+    },
+    {
+      "title": "Mroźne widmo",
+      "img": "img/ser4/11.webp",
+      "nr": "11/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "MROZNE WIDMO",
+        "CZTERY ASY - GÓRA KASY",
+        "BUJANIE W OBLOKACH",
+        "W KLONACH SIKA",
+        "ODJAZDOWY ZJAZD",
+        "OBCY KAPITAL",
+        "NIE SPIJ, BO CIE OKRADNA"
+      ]
+    },
+    {
+      "title": "Czarny piątek złotej wyspy",
+      "img": "img/ser4/12.webp",
+      "nr": "12/99",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "PROBLEM ROKU 2000",
+        "SPOSÓB NA CZAROWNICE",
+        "BOHATER GALAKTYKI",
+        "CO RYBA ZJE, NIE UTONIE",
+        "KAMYK ZIELONY",
+        "AWANTURA O KOMIKS",
+        "CZARNY PIATEK ZKOTEJ WYSPY",
+        "PORA NA SENATORA"
+      ]
+    }
+  ],
+  "Seria 5 - 2000": [
+    {
+      "title": "Przez trud do gwiazd",
+      "img": "img/ser5/1.webp",
+      "nr": "1/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "ODYSEJA KOSMICZNA",
+        "STRASZNI KACZOGRODZIANIE",
+        "ZA DUZO SZCZESCIA NARAZ",
+        "PRZEZ TRUD DO GWIAZD",
+        "SLODKA NIESPODZIANKA",
+        "KOSMICZNA GOSCINNOSC",
+        "RÓZNE INNE DÉWIEKI",
+        "PUSTKI W SKARBCU MOIM"
+      ]
+    },
+    {
+      "title": "Żarłok nienażarty",
+      "img": "img/ser5/2.webp",
+      "nr": "2/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "WOLNOSC, KACZOSC, BRATERSTWO",
+        "ROSÓL I DIAMENT",
+        "ZARLOK NIENAZARTY",
+        "EPIDEMIA",
+        "LOTEM SMACZNIEJ",
+        "MUZYCZNA MYSL TECHNICZNA",
+        "PRANIE MÓZGÓW"
+      ]
+    },
+    {
+      "title": "Podróż do źródeł",
+      "img": "img/ser5/3.webp",
+      "nr": "3/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "JAK BRAT Z BRATEM",
+        "AUTOBUSEM PRZEZ GALAKTYKE",
+        "KWIAT GOGUSIOWEGO SEKRETU",
+        "POZORY MYLA",
+        "DZIECI KAPITANA GRANDA",
+        "KACZKA Z MIASTA",
+        "STARE DOBRE MAKZENSTWO",
+        "PODRÓZ DO ZRÓDEL"
+      ]
+    },
+    {
+      "title": "Kamienie Kahuna",
+      "img": "img/ser5/4.webp",
+      "nr": "4/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "KAMIENIE KAHUNA",
+        "DZIÓB NA KLÓDKE",
+        "SZCZESCIE W KIESZENI",
+        "ZIEMIA W OGNIU",
+        "PRZEZ ZOLADEK DO SKARBCA",
+        "KACZY PROBLEM, KACZA GLOWA",
+        "SAGA O KACZKACH LODU"
+      ]
+    },
+    {
+      "title": "Gwiazdą być",
+      "img": "img/ser5/5.webp",
+      "nr": "5/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "CO MA PIERNIK DO KOSMITY",
+        "KWIAT ZDROWIA",
+        "GWIAZDA BYC",
+        "W SAMO POPOLUDNIE",
+        "SZKOLNE LATA",
+        "MIEDZY NAMI KOBIETAMI",
+        "ZLOTO, KTÓRE LECZY",
+        "GOGIN Z LASU KACZWOOD"
+      ]
+    },
+    {
+      "title": "Amatorzy",
+      "img": "img/ser5/6.webp",
+      "nr": "6/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "NIGDY NIE MÓW NIGDY\"",
+        "AMATORZY",
+        "KUJ ZELAZO, PÓKI GORACE",
+        "SWIAT TO ZA DUZO",
+        "WIELKI MALY KACZOR",
+        "PREZENT DLA SIOSTRZENCÓW",
+        "NAJLEPSZY PRZYJACIEL DIODAKA",
+        "KACZOR Z GITARA"
+      ]
+    },
+    {
+      "title": "Kosmici kontra biurokraci",
+      "img": "img/ser5/7.webp",
+      "nr": "7/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "KOSMICI KONTRA BIUROKRACI",
+        "KRUK KRUKOWI OKA NIE WYKOLE",
+        "KACZORY I POTWORY",
+        "NARODZINY GWIAZDORA",
+        "TRAMWAJ ZWANY APETYTEM",
+        "PIRAMIDALNA HISTORIA",
+        "PIATY ZYWIOL"
+      ]
+    },
+    {
+      "title": "Sztuka i technika",
+      "img": "img/ser5/8.webp",
+      "nr": "8/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "TAM I Z POWROTEM",
+        "POKAZOWY PROCES",
+        "ROSLINA NIE SLUGA",
+        "AFERA SZPIEGOWSKA",
+        "SZTUKA I TECHNIKA",
+        "KOSZTOWNE HOBBY",
+        "PETLA CZASU"
+      ]
+    },
+    {
+      "title": "Kapelusz szczęścia",
+      "img": "img/ser5/9.webp",
+      "nr": "9/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "MKODZI SPORTOWCY NA START",
+        "ZIMNA WODA ZLOTA DODA",
+        "WPLYW KSIEZYCA",
+        "KAPELUSZ SZCZESCIA",
+        "CICHY WIELBICIEL",
+        "CZYTANIE TWARZY",
+        "KACZOR I PIRAT"
+      ]
+    },
+    {
+      "title": "Duchy pod poduchy",
+      "img": "img/ser5/10.webp",
+      "nr": "10/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "DUCHY POD PODUCHY",
+        "JEDNO PYTANIE DO MILIARDA",
+        "KOPALNIA WUJA SALMONA",
+        "NIEBEZPIECZNY WYNALAZEK",
+        "ODMIENNE STANY PODSWIADOMOSCI",
+        "NAJLEPSZY PRZYJACIEL KACZORA",
+        "OFIARY PROMOCJI",
+        "PERLISTE KZY"
+      ]
+    },
+    {
+      "title": "Aleja gwiazd",
+      "img": "img/ser5/11.webp",
+      "nr": "11/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "KICHAC NA ZLOTO",
+        "NIESZCZESCIE W SZCZESCIU",
+        "NIESPORTOWA RYWALIZACJA",
+        "DZIN Z LATARKI",
+        "GEM, SET, MECZ",
+        "DUZY MODELARZ",
+        "MILOSC I SZTUKA",
+        "ALEJA GWIAZD",
+        "12 GODZIN",
+        "WALKA O SPOKÓJ"
+      ]
+    },
+    {
+      "title": "Śladami prehistorii",
+      "img": "img/ser5/12.webp",
+      "nr": "12/2000",
+      "processed": {
+        "pdf": true
+      },
+      "toc": [
+        "KWARZAN, WLADCA ZWIERZAT",
+        "ZAZDROSC MATKA WYNALAZKÓW",
+        "SMIECH TO DROWIE",
+        "MARNE STOPY",
+        "OLIWA NIESPRAWIEDLIWA",
+        "SLADAMI PALEONTOLOGII",
+        "MASZYNA W SKUZBIE KACZORA",
+        "WÓZ BEDZIE WIÓZK",
+        "MIASTO PARY I ELEKTRYCZNOSCI"
+      ]
+    }
+  ]
+}

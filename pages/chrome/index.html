@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="media.html">Hardware Media buttons</a></li>
+          </ul>
+        </div>
+        <h2>Chromium</h2>
+        <script type="editor" data-lang="sh">
+
+          brew install chromium --no-quarantine
+          brew cu
+            # from https://dev.to/pixelrena/installing-chromium-on-mac-apple-m2-pro-tutorial-4i4i#install-chromium
+        </script>
+        <h2>Interesting stuff</h2>
+        <script type="editor" data-lang="sh">
+
+          https://www.google.com/earth/about/versions/
+            # from: https://youtube.com/shorts/zHrT4X8FNhI
+
+          chrome://apps
+        </script>
+        <h2>Plugins</h2>
+        <ul>
+          <li>
+            <a
+              href="https://chrome.google.com/webstore/detail/gofullpage-full-page-scre/fdpohaocaechififmbbbbbknoalclacl/related"
+              >g(GoFullPage - Full Page Screen Capture gofullpage.com site:chrome.google.com by:
+              https://gofullpage.com/)</a
+            >
+          </li>
+          <li>
+            <a href="https://www.google.com/search?q=Tampermonkey+tampermonkey.net+site%3Achrome.google.com"
+              >g(Tampermonkey tampermonkey.net site:chrome.google.com)</a
+            >
+          </li>
+          <li>
+            <a href="https://www.google.com/search?q=JSON+Formatter+callumlocke.com+site%3Achrome.google.com"
+              >g(JSON Formatter callumlocke.com site:chrome.google.com)</a
+            >
+          </li>
+          <li>
+            <a href="https://adguard.com/en/adguard-ios/overview.html">AdBlock alternative</a>
+          </li>
+          <li>
+            <a href="https://www.google.com/search?q=Tabs+auto+close+smeleshkin+site%3Achrome.google.com"
+              >g(Tabs auto close by smeleshkin)</a
+            >
+            <ul>
+              <li>adblockplus.org - 4000 - adblockplus\.org</li>
+              <li>getadblock.com - 4000 - getadblock\.com</li>
+              <li></li>
+              <li></li>
+            </ul>
+          </li>
+          <li>
+            <a href="https://www.google.com/search?q=Web+Developer+chrispederick.com+site%3Achrome.google.com"
+              >g(Web Developer chrispederick.com site:chrome.google.com)</a
+            >
+          </li>
+          <li>
+            <a href="https://www.google.com/search?q=wappalyzer+wappalyzer.com+site%3Achrome.google.com"
+              >g(wappalyzer wappalyzer.com site:chrome.google.com)</a
+            >
+          </li>
+          <li>
+            <a href="https://www.google.com/search?q=Github+-+Date+of+creation+by+lvarayut+site%3Achrome.google.com"
+              >g(Github - Date of creation by lvarayut site:chrome.google.com)</a
+            >
+          </li>
+          <li>
+            <a href="https://www.google.com/search?q=GitHub+Repository+Size+site%3Achrome.google.com">
+              g(GitHub Repository Size site:chrome.google.com)
+            </a>
+            - by Harsh+Vakharia
+            <a href="https://github.com/harshjv/github-repo-size#private-repository">private mode</a>
+          </li>
+          <li>
+            <a href="https://www.google.com/search?q=YouTube+NonStop+chrome+by+lawfx+site%3Achrome.google.com"
+              >g(YouTube NonStop chrome by lawfx site:chrome.google.com)</a
+            >
+            this one is for youtube popup "video paused. Continue watching?"
+          </li>
+        </ul>
+
+        <a href="https://httptoolkit.tech/">https://httptoolkit.tech/</a>
+        <br />
+        <h2>Issues</h2>
+        <a href="https://github.com/brave/brave-browser/issues/37041"
+          >https://github.com/brave/brave-browser/issues/37041</a
+        >
+        | <a href="https://stopsopa.github.io/pages/bookmarklets/fragmentDirective/README.md">MORE</a>
+
+        <br />
+
+        <h2>Brave</h2>
+        <script type="editor" data-lang="sh">
+
+          # theme
+          https://chromewebstore.google.com/detail/hokusais-the-great-wave-o/lonejpghplnechighncmcldilpfminkj?pli=1
+        </script>
+        <h2>Dev tools</h2>
+        <script type="editor" data-lang="sh">
+
+          Cmd + Shift + P -> Run
+            use:
+              Show Developer Resources
+                # to see sourcemaps
+                # also:
+                Disable CSS source maps
+                Disable JavaScript source maps
+            Tip: you can set breakpoint in raw file, it will jump to sourcemaped version of file and set bp there
+            # from: https://youtu.be/SkUcO4ML5U0
+
+          Cmd + P -> Open
+
+          Cmd + Alt -> F    - Search: Find text across all loaded resources: https://developer.chrome.com/docs/devtools/search
+        </script>
+        <h2>Disable password manager</h2>
+        <script type="editor" data-lang="sh">
+
+          brave://password-manager/settings
+          chrome://password-manager/settings
+        </script>
+        <h2>Refresh favicons</h2>
+        <script type="editor" data-lang="sh">
+
+          just remove FILE:
+
+          	~/Library/Application Support/Google/Chrome/Default/Favicons
+        </script>
+        <h2>NET::ERR_CERT_DATE_INVALID</h2>
+        <p>solution: <a href="https://stackoverflow.com/a/58957322">https://stackoverflow.com/a/58957322</a></p>
+        <img src="https://i.imgur.com/KX1nBlR.png" style="width: 600px" />
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

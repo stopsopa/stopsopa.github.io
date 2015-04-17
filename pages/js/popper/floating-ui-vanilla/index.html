@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <link rel="stylesheet" href="../for-floating-ui.css" />
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.8"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.12"></script>
+      <div class="inside">
+        <h2>Basics</h2>
+        <script type="editor" data-lang="sh">
+
+          # doc:
+            https://floating-ui.com/docs/getting-started
+            https://floating-ui.com/docs/migration
+        </script>
+
+        <h2>Simple example</h2>
+
+        <div class="example1 vanilla-tooltip">
+          <!-- <script> -->
+          <script type="editor" data-lang="js" data-eval>
+            // import {computePosition} from 'https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.12/+esm';
+            const { computePosition, autoUpdate, flip, shift, limitShift, offset, autoPlacement, arrow } =
+              FloatingUIDOM;
+
+            const setupTooltipGroup = (function () {
+              const instances = {};
+
+              const classes = ["left", "right", "top", "bottom"];
+
+              let i = 0;
+              function getNewId() {
+                return `tooltip-id-${i++}`;
+              }
+
+              function bindDelegatesEvents(selector) {
+                function eventBuilder(event, matchSelector, act) {
+                  return function (e) {
+                    var el = e.target;
+
+                    var match = el.matches(matchSelector);
+
+                    let id;
+
+                    if (match) {
+                      try {
+                        id = el.getAttribute("data-tooltip-id");
+
+                        if (typeof id !== "string" || !id.trim()) {
+                          return;
+                        }
+
+                        const basket = instances[id];
+
+                        if (!basket) {
+                          return;
+                        }
+
+                        act(basket, e);
+                      } catch (e) {
+                        console.error(`tooltip ${event} error [id: ${id}]`, e);
+                      }
+                    }
+                  };
+                }
+
+                // .tooltip-on-hover
+                document.body.addEventListener(
+                  "mouseover",
+                  eventBuilder("mouseover", ".tooltip-on-hover", (basket) => {
+                    const { reposition, show, tooltip } = basket;
+
+                    let delay = parseInt(tooltip.getAttribute("data-tooltip-delay"), 10);
+
+                    if (!(delay > 0)) {
+                      delay = 1000;
+                    }
+
+                    basket.tooltipTimeout = setTimeout(() => {
+                      show();
+                      reposition();
+                    }, delay);
+                  })
+                );
+                document.body.addEventListener(
+                  "mouseout",
+                  eventBuilder("mouseout", ".tooltip-on-hover", (basket) => {
+                    const { hide } = basket;
+                    clearTimeout(basket.tooltipTimeout);
+                    hide();
+                  })
+                );
+                document.body.addEventListener(
+                  "focusin",
+                  eventBuilder("focusin", ".tooltip-on-hover", ({ reposition, show }) => {
+                    show();
+                    reposition();
+                  })
+                );
+                document.body.addEventListener(
+                  "focusout",
+                  eventBuilder("focusout", ".tooltip-on-hover", ({ hide }) => hide())
+                );
+
+                // .tooltip-toggle-click
+                document.body.addEventListener(
+                  "click",
+                  eventBuilder(
+                    "click",
+                    `[${selector}].tooltip-toggle-click`,
+                    ({ tooltip, reposition, show, hide }) => {
+                      if (tooltip.classList.contains("show")) {
+                        hide();
+                      } else {
+                        show();
+                        reposition();
+                      }
+                    }
+                  )
+                );
+
+                // .tooltip-hide-on-click-outside
+                document.body.addEventListener(
+                  "click",
+                  eventBuilder(
+                    "click",
+                    `.tooltip-hide-on-click-outside[${selector}]`,
+                    ({ tooltip, reposition, show }) => {
+                      // when target element clicked then show element
+                      if (!tooltip.classList.contains("show")) {
+                        setTimeout(() => {
+                          show();
+                          reposition();
+                        }, 50);
+                      }
+                    }
+                  )
+                );
+                document.body.addEventListener("click", (e) => {
+                  if (
+                    e.target.matches(`.tooltip-hide-on-click-outside:not([${selector}])`) ||
+                    e.target.matches(`.tooltip-hide-on-click-outside:not([${selector}]) *`)
+                  ) {
+                    e.stopPropagation();
+
+                    return;
+                  }
+
+                  Array.from(
+                    document.querySelectorAll(`.tooltip-hide-on-click-outside:not([${selector}])`)
+                  ).forEach((tooltip, i) => {
+                    try {
+                      id = tooltip.getAttribute("data-tooltip-id");
+
+                      if (typeof id !== "string" || !id.trim()) {
+                        return;
+                      }
+
+                      const basket = instances[id];
+
+                      if (!basket) {
+                        return;
+                      }
+
+                      if (!basket.stop) {
+                        const { hide } = basket;
+
+                        hide();
+                      }
+                    } catch (e) {
+                      console.error(`tooltip ${event} error [id: ${id}]`, e);
+                    }
+                  });
+                });
+              }
+
+              let delegateBound = false;
+
+              return function ({
+                produceOptions = (defaultOptions) => defaultOptions,
+                selector = "data-tooltipselector",
+              }) {
+                const ids = new Set();
+                if (!delegateBound) {
+                  delegateBound = true;
+                  bindDelegatesEvents(selector);
+                }
+                return {
+                  bindNew: function () {
+                    Array.from(document.querySelectorAll(`[${selector}]`)).forEach((target) => {
+                      if (target.hasAttribute("data-tooltip-id")) {
+                        return;
+                      }
+
+                      const childSelector = target.getAttribute(selector);
+
+                      if (typeof childSelector !== "string") {
+                        return;
+                      }
+
+                      const tooltip = document.querySelector(childSelector);
+
+                      if (!tooltip) {
+                        return;
+                      }
+
+                      if (target.classList.contains("tooltip-on-hover")) {
+                        tooltip.classList.add("tooltip-on-hover");
+                      }
+
+                      if (target.classList.contains("tooltip-toggle-click")) {
+                        tooltip.classList.add("tooltip-toggle-click");
+                      }
+
+                      if (target.classList.contains("tooltip-hide-on-click-outside")) {
+                        tooltip.classList.add("tooltip-hide-on-click-outside");
+                      }
+
+                      if (tooltip.classList.contains("show")) {
+                        target.classList.add("show");
+                      }
+
+                      const arrowElement = tooltip.querySelector(":scope > .arrow");
+
+                      const id = getNewId();
+
+                      ids.add(id);
+
+                      function reposition() {
+                        computePosition(
+                          target,
+                          tooltip,
+                          produceOptions({
+                            placement: "top",
+                            middleware: [
+                              flip({
+                                padding: 10, // Adjust for the extra offset or early flipping
+                              }),
+                              shift({
+                                limiter: limitShift(),
+                              }),
+                              offset(10),
+                              arrow({ element: arrowElement }),
+                            ],
+                          })
+                        ).then(({ x, y, middlewareData, placement }) => {
+                          Object.assign(tooltip.style, {
+                            left: `${x}px`,
+                            top: `${y}px`,
+                          });
+
+                          if (middlewareData.arrow) {
+                            const { x, y } = middlewareData.arrow;
+
+                            Object.assign(arrowElement.style, {
+                              left: x != null ? `${x}px` : "",
+                              top: y != null ? `${y}px` : "",
+                            });
+
+                            arrowElement.classList.remove(...classes);
+
+                            arrowElement.classList.add(placement);
+                          }
+                        });
+                      }
+
+                      const cleanup = autoUpdate(target, tooltip, () => {
+                        reposition();
+                      });
+
+                      reposition();
+
+                      instances[id] = {
+                        id,
+                        target,
+                        tooltip,
+                        arrowElement,
+                        reposition,
+                        cleanup,
+                        show: () => {
+                          try {
+                            tooltip.classList.add("show");
+                            target.classList.add("show");
+                          } catch (e) {}
+                        },
+                        hide: () => {
+                          try {
+                            tooltip.classList.remove("show");
+                            target.classList.remove("show");
+                          } catch (e) {}
+                        },
+                      };
+
+                      target.setAttribute("data-tooltip-id", id);
+                      tooltip.setAttribute("data-tooltip-id", id);
+                    });
+                  },
+                  getInstance: (id) => instances[id],
+                  getNewId,
+                };
+              };
+            })();
+
+            if (!Array.isArray(window.allLoaded)) {
+              window.allLoaded = [];
+            }
+            window.allLoaded.push(async function () {
+              const res = await fetch("./template.html");
+
+              const html = await res.text();
+
+              const parent = document.querySelector(".example1");
+
+              const addButton = parent.querySelector(".add");
+
+              const attachButton = parent.querySelector(".attach");
+
+              const tmp = template(html);
+
+              let i = 0;
+              function add() {
+                const newDiv = document.createElement("div");
+                newDiv.innerHTML = tmp({ i });
+                parent.appendChild(newDiv);
+                i += 4;
+              }
+
+              add();
+
+              addButton.addEventListener("click", add);
+
+              const tooltipGroup = setupTooltipGroup({
+                // placement: "right",
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, 8],
+                    },
+                  },
+                ],
+              });
+              tooltipGroup.bindNew();
+
+              attachButton.addEventListener("click", () => {
+                tooltipGroup.bindNew();
+              });
+
+              /**
+               * Just one more delegate event to demonstrate that we can get access to
+               * all we need to control tooltip just by having reference to product of setupTooltipGroup
+               * and reference of DOM element
+               */
+              document.body.addEventListener("click", (e) => {
+                const target = e.target;
+
+                var match = target.matches(".close");
+
+                if (match) {
+                  const parent = target.closest("[data-tooltip-id]");
+
+                  const id = parent.getAttribute("data-tooltip-id");
+
+                  if (typeof id !== "string" || !id.trim()) {
+                    return;
+                  }
+
+                  const { hide } = tooltipGroup.getInstance(id) || {};
+
+                  if (typeof hide === "function") {
+                    hide();
+                  }
+                }
+              });
+            });
+          </script>
+          <button class="add">add element set</button>
+          <button class="attach">attach to new set</button>
+          <div style="color: red; background-color: bisque">
+            For this version don't forget to call cleanup when element removed
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <script src="/js/github.js"></script>
+  </body>
+</html>

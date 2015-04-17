@@ -1,0 +1,2713 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="/pages/node/index.html#semantic-release">Semantic release</a></li>
+            <li><a href="/pages/html/index.html#input-type-range">input[type="range"]</a></li>
+            <li><a href="line/index.html">line</a></li>
+            <li><a href="webcomponent/index.html">WebComponent</a></li>
+            <li><a href="components/index.html">Components</a></li>
+            <li><a href="eventloop/index.html">Event loop</a></li>
+            <li><a href="popper/index.html">popover tooltip (Popper.js)</a></li>
+            <li><a href="drag/index.html">drag element on the page</a></li>
+          </ul>
+        </div>
+
+        <h2>read</h2>
+        <ul>
+          <li>
+            <a href="https://yehudakatz.com/2011/08/11/understanding-javascript-function-invocation-and-this/">this</a>
+          </li>
+          <li>
+            <a href="https://levelup.gitconnected.com/top-lessons-ed-from-working-with-a-10x-developer-51de12383e25"
+              >https://levelup.gitconnected.com/top-lessons-ed-from-working-with-a-10x-developer-51de12383e25</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://medium.com/javascript-in-plain-english/stop-using-objects-and-arrays-to-store-data-289c3edaaa33"
+              >https://medium.com/javascript-in-plain-english/stop-using-objects-and-arrays-to-store-data-289c3edaaa33</a
+            >
+          </li>
+          <li>
+            <a href="https://frontendmasters.com/blog/vanilla-javascript-reactivity/"
+              >https://frontendmasters.com/blog/vanilla-javascript-reactivity/</a
+            >
+          </li>
+          <li><a href="https://auth0.com/blog/the-real-story-behind-es4/">The Real Story Behind ECMAScript 4</a></li>
+          <li><a href=""></a></li>
+          <li><a href=""></a></li>
+        </ul>
+
+        <script type="editor" data-lang="js">
+
+          new RegExp("[a-z]*","g")
+
+          // performance:
+          g(desctructive backtracking)
+          https://javascript.info/regexp-catastrophic-backtracking
+        </script>
+
+        <h2>Useful</h2>
+        <a href="https://github.com/sorrycc/awesome-javascript#regexp">Awesome JavaScript</a>
+        <script type="editor" data-lang="js">
+          // swap two variables
+          b = [a, a = b][0];
+        </script>
+
+        <h2>Regex</h2>
+        <a href="https://regex101.com/">https://regex101.com/</a>
+        <br />
+        <a href="https://regexr.com/">https://regexr.com/</a>
+
+        <h3>lastIndex</h3>
+        <script type="editor" data-lang="js">
+
+          // -------------- what encodes encodeURIComponent() ------------------ vvv
+          var a = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.!~*'()"
+          console.log(JSON.stringify({
+              a,
+              b: encodeURIComponent(a) === a // return true
+          }, null, 4))
+          // -------------- what encodes encodeURIComponent() ------------------ ^^^
+
+          # quote not slashed:
+          https://regex101.com/r/dE1zF5/2
+            # from: https://stackoverflow.com/a/37739573
+          var k = "\"before first slashed quote\\\" before second\\\" now proper quote\" some more data\" end"
+          console.log(k)
+          console.log(JSON.stringify(k.match(/^"(.*?[^\\])"(.*)$/), null, 4))
+          # will print
+          [
+              "\"before first slashed quote\\\" before second\\\" now proper quote\" some more data\" end",
+              "before first slashed quote\\\" before second\\\" now proper quote",
+              " some more data\" end"
+          ]
+
+          var k = "\"before first slashed quote\\\" before second\\\" now proper quote\" some more data\" end"
+          console.log(k)
+          console.log(JSON.stringify(k.match(/^"(.*?[^\\])"(.*)$/), null, 4))
+
+          var k = "'before first slashed quote\\' before second\\' now proper quote' some more data' end"
+          console.log(k)
+          console.log(JSON.stringify(k.match(/^(["'])(.*?[^\\])\1(.*)$/), null, 4))
+
+          // Backreferences https://www.regular-expressions.info/backref.html
+          var k = "\"first slashed quote\\\" before second\\\" now proper quote\" some more data\" end -- 'before second slashed quote\\' before second\\' now proper quote' some more data' end"
+          console.log(k)
+          var arr = [...k.matchAll(/(["'])(.*?[^\\])\1/sg)];
+          console.log(JSON.stringify(arr, null, 4))
+
+
+
+          // https://www.youtube.com/watch?v=TcTSqhpm80Y
+
+          document.designMode = 'on'
+          $('selector') // get one lement
+          $$('selector') // get list of elements
+          $0 // currently selected element
+
+          const log = console.log;
+
+          const a = [];
+
+          // const ht = require('./html');
+          var ht = `
+          <ul class="social-links pull-left">
+          <a href="https://twitter.com/gggg" title="" target="_blank">
+          <li data-ng-if="dataSettings.facebookUrl" class="ng-scope">
+          <a href="https://www.facebook.com/gfs/" title="" target="_blank">
+          <i class="fa fa-facebook-official" aria-hidden="true">
+              `;
+
+          let reset = 5;
+
+          var reg = /<a\s+[^>]*?href\s*=\s*(['"])([^\1]+?)\1[^>]*?>/gi;
+
+          let tmp;
+
+          do {
+            tmp = reg.exec(ht);
+
+            if (tmp) {
+              if (reset) {
+                reset -= 1;
+
+                reg.lastIndex = 0;
+              }
+
+              a.push({
+                found: tmp[2],
+                i: reg.lastIndex,
+              });
+            }
+          } while (tmp);
+
+          log(a);
+          /*
+          print
+          [
+            { found: 'https://twitter.com/gggg', i: 0 },
+            { found: 'https://twitter.com/gggg', i: 0 },
+            { found: 'https://twitter.com/gggg', i: 0 },
+            { found: 'https://twitter.com/gggg', i: 0 },
+            { found: 'https://twitter.com/gggg', i: 0 },
+            { found: 'https://twitter.com/gggg', i: 97 },
+            { found: 'https://www.facebook.com/gfs/', i: 223 }
+          ]
+          */
+        </script>
+        <h2>alert prompt box modal</h2>
+
+        <script type="editor" data-lang="js">
+
+          /**
+           * usage
+           *
+            const div = box(`<input type="text" style="width: 100%" value="test">`, {
+                style: {
+                    backgroundColor: "blue",
+                    width: "50%",
+                },
+            });
+
+            const input = div.querySelector("input");
+
+            input.addEventListener("click", () => {
+                input.select();
+            });
+            */
+          function box(content, opt) {
+            if (!opt) {
+              opt = {};
+            }
+
+            var div = document.createElement("div");
+
+            const style = {
+              position: "fixed",
+              zIndex: "10000000",
+              top: "20%",
+              left: "50%",
+              border: "1px solid gray",
+              backgroundColor: "white",
+              transform: "translate(-50%, -50%)",
+              padding: "10px",
+              cursor: "pointer",
+            };
+
+            Object.assign(
+              div.style,
+              Object.entries(Object.assign({}, style, opt.style)).reduce((acc, [key, val]) => {
+                if (val !== false) acc[key] = val;
+                return acc;
+              }, {})
+            );
+
+            if (typeof content === "string") {
+              div.innerHTML = String(content);
+            } else {
+              node.innerHTML = "";
+              div.appendChild(content);
+            }
+
+            document.body.appendChild(div);
+
+            let divClicked = false;
+            div.addEventListener("click", () => {
+              log("div click");
+              divClicked = true;
+            });
+            function bodyclick() {
+              log("body click");
+              if (!divClicked) {
+                close();
+              }
+              divClicked = false;
+            }
+            function close() {
+              document.body.removeChild(div);
+
+              document.body.removeEventListener("click", bodyclick);
+            }
+
+            document.body.addEventListener("click", bodyclick);
+
+            if (opt.autoclose) {
+              setTimeout(close, Number.isInteger(opt.autoclose) ? opt.autoclose : 1000);
+            }
+
+            typeof opt.fn === "function" && opt.fn(div);
+
+            return {div, close};
+          }
+        </script>
+        <h2>Visibility page visibilitychange visibilityState hidden page document</h2>
+        <a href="visibilityState/focus.vanilla.html">focus.vanilla</a>
+        <br />
+        <a href="visibilityState/focus.react.html">focus.react</a>
+        <br />
+
+        <a href="visibilityState/visible.vanilla.html">visible.vanilla</a>
+        <br />
+        <a href="visibilityState/visible.react.html">visible.react</a>
+        <h2>Keyboard event</h2>
+
+        <script type="editor" data-lang="js">
+          // waiting for keyboard sequence, substring event
+
+          function password(check, callback, opt) {
+              opt = Object.assign({unbind: true}, opt);
+              const ref = {x: ''};
+              function event({key}) {
+                  if (key === "Enter") {
+                      return (ref.x = "");
+                  }
+                  ref.x += key;
+                  if (check(ref)) {
+                      opt.unbind && document.removeEventListener("keypress", event);
+                      callback();
+                  }
+              }
+              document.addEventListener("keypress", event);
+          }
+
+          password(ref => {
+              if (ref.x.endsWith('xxx')) {
+                  ref.x = '';
+                  return true;
+              }
+              ref.x = ref.x.slice(-3);
+          }, () => window.xxx.on(), {unbind: false})
+        </script>
+
+        <h2>signal</h2>
+
+        <script type="editor" data-lang="js">
+
+          // see urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=/pages/js/signal/001.html
+        </script>
+
+        <h3>lookbehind & lookahead</h3>
+        <script type="editor" data-lang="js">
+
+          // lookahead
+            (?=y)     /abc(?=y)/
+            (?!y)     /abc(?!y)/
+
+
+          // lookbehind
+            (?<=y)    /(?<=y)abc/
+            (?<!y)    /(?<!y)abc/
+        </script>
+        <h3>backward reference</h3>
+        <script type="editor" data-lang="js">
+
+          var str = "http://www.webreference.com/js/index.php#piosenka?l=2";
+          var wzor = str.match(/(\w+:\/\/)([^/]+)([^#?]*)([^?]*)\?*(.+)* /);
+
+          document.write('Badany ciąg: ' + str + '<br>');
+          document.write("Wyrazenie z 1 nawiasu: "+ RegExp.$1 +"<br>");
+          document.write("Wyrazenie z 2 nawiasu: "+ RegExp.$2 +"<br>");
+          document.write("Wyrazenie z 3 nawiasu: "+ RegExp.$3 +"<br>");
+          document.write("Wyrazenie z 4 nawiasu: "+ RegExp.$4 +"<br>");
+          document.write("Wyrazenie z 5 nawiasu: "+ RegExp.$5 +"<br>");
+        </script>
+        <h2>get local time DATE</h2>
+
+        <script type="editor" data-lang="js">
+
+          function localFormat(date) {
+            const offset = new Date().getTimezoneOffset() / 60;
+
+            const newDate = new Date(date.getTime() - offset * 3600 * 1000);
+
+            return newDate.toISOString().substring(0, 19).replace("T", " ");
+          }
+        </script>
+        <h2>visible isVisible</h2>
+        <script type="editor" data-lang="js">
+
+          const isVisibleElement = (function () {
+            const list = ["script", "style", "meta", "noscript", "template", "link"];
+
+            return function tool(element) {
+              const tagName = element.tagName.toLowerCase();
+
+              if (list.includes(tagName)) {
+                return tool(element.parentNode);
+              }
+
+              if (tagName === "input" && element.type === "hidden") {
+                return tool(element.parentNode);
+              }
+
+              return element.checkVisibility();
+            };
+          })();
+
+          function filterVisibleList(list) {
+            return list.filter(isVisibleElement);
+          }
+        </script>
+        <h2>focus blur</h2>
+        <script type="editor" data-lang="js">
+
+          // used in tampermonkey script: "Reload on focus - timeanddate.com"
+
+          function focus() {
+            setTimeout(() => {
+              if (document.hidden) {
+                log("focus hidden");
+              } else {
+                log("focus visible");
+              }
+              // for some weird reason there is little delay before we can manipulate DOM
+              reload()
+            }, 100);
+          }
+          function blur() {
+            setTimeout(() => {
+              if (document.hidden) {
+                log("blur hidden");
+              } else {
+                log("blur visible");
+              }
+            }, 100);
+          }
+
+          window.addEventListener("focus", focus);
+          window.addEventListener("blur", blur);
+        </script>
+        <h3>Promise TrackSettled</h3>
+        <script type="editor" data-lang="js">
+
+          function TrackSettled(promise) {
+            this.state = 'pending';
+            this.promise = promise.then(
+              (x) => {
+                this.state = 'resolved';
+                return x;
+              },
+              (y) => {
+                this.state = 'rejected';
+                return y;
+              }
+            );
+          }
+          TrackSettled.prototype.then = function (resolve, reject) {
+            return this.promise.then(resolve, reject);
+          };
+          TrackSettled.prototype.catch = function (reject) {
+            return this.promise.catch(reject);
+          };
+        </script>
+
+        <h2>selectors</h2>
+        <script type="editor" data-lang="js">
+
+          element.querySelector(':scope > .childClass');
+        </script>
+        <h2>easing bezier</h2>
+        <a href="/pages/css/index.html#cubic-bezier">go to css section /pages/css/index.html#cubic-bezier</a>
+
+        <h2>ReadableStream to string</h2>
+        <script type="editor" data-lang="js">
+
+          if (Object.prototype.toString.call(opt.body) === '[object ReadableStream]') {
+            opt.body = await streamToString(opt.body);
+          }
+
+
+          async function streamToString(stream: any) {
+            const reader = stream.getReader();
+            const textDecoder = new TextDecoder();
+            let result = '';
+
+            async function read() {
+              const { done, value } = await reader.read();
+
+              if (done) {
+                return result;
+              }
+
+              result += textDecoder.decode(value, { stream: true });
+              return read();
+            }
+
+            return read();
+          }
+        </script>
+        <h2>Stream response body in the browser</h2>
+
+        <script type="editor" data-lang="js">
+
+          // entire code video & article can be traced using this link: https://github.com/tom-on-the-internet/fetch-demonstration/issues/1
+        </script>
+
+        <h2>position</h2>
+        <a href="https://github.com/stopsopa/floating-ui">BEST SOLUTION: https://github.com/stopsopa/floating-ui</a>
+
+        <br />
+
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect"
+          >getBoundingClientRect() - relative to the viewport</a
+        >
+        <br />
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop"
+          >offsetLeft, offsetTop, offsetParent, relative to the document or parent</a
+        >
+
+        <script type="editor" data-lang="js">
+
+          // https://stackoverflow.com/q/22727751
+          // both below return the same value
+          log("scrollTop", document.documentElement.scrollTop); // <- supposedly better
+          log("pageYOffset", window.pageYOffset); // <- not supported below IE 9
+
+          // because offsetTop and offsetLeft are returning position relative to it's closest RELATIVE
+          // then in case if we would like to create element as a direct child of the body and position it above
+          // particular div which is in it's own RELATIVE element then it is necessary to calculate it's absolute (to document)
+          // position using special functions
+          function getOffsetLeft(elem) {
+            var offsetLeft = 0;
+            do {
+              if (!isNaN(elem.offsetLeft)) {
+                offsetLeft += elem.offsetLeft;
+              }
+            } while ((elem = elem.offsetParent));
+            return offsetLeft;
+          }
+          function getOffsetTop(elem) {
+            var offsetTop = 0;
+            do {
+              if (!isNaN(elem.offsetTop)) {
+                offsetTop += elem.offsetTop;
+              }
+            } while ((elem = elem.offsetParent));
+            return offsetTop;
+          }
+        </script>
+
+        <h2>scroll to element</h2>
+        <script type="editor" data-lang="js">
+
+          element.scrollIntoView({ behavior: "instant", block: "center", inline: "nearest" });
+              # https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+
+          window.scrollTo(0, element.offsetTop - 40);
+              # https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollTo
+
+          // other
+          // chrome Version 86.0.4240.198 (Official Build) (x86_64)
+          // firefox 83.0 (64-bit)
+          // Safari Version 14.0 (15610.4.28.1.9, 15610) macOS Catalina Version 10.15.7
+          // Edge Version 87.0.664.52 (Official build) (64-bit)
+          // IE11 Version: 11.1198.18362.0
+          window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+          # https://stackoverflow.com/a/29971996
+        </script>
+
+        <h3>nth backreference</h3>
+        <a href="https://javascript.info/regexp-backreferences">https://javascript.info/regexp-backreferences</a>
+        <script type="editor" data-lang="js">
+
+          /('|").+?\1/g
+
+
+          // regexp allows inside \' \"
+          /("|')(\\?.)*?\1/g  ->  ""He 'said' \"gi\"!" "another string""
+        </script>
+
+        <h2>About Promises</h2>
+        <a href="https://blog.domenic.me/youre-missing-the-point-of-promises/"
+          >g(You're Missing the Point of Promises)</a
+        >
+        <script type="editor" data-lang="js">
+
+          // here let's explore two examples demonstrating usage of async await and raw
+          // promises and the difference in the call stack returned in case of an error
+          // more: https://mathiasbynens.be/notes/async-stack-traces
+
+          // ---- example with raw promise -----------------
+          const log = console.log;
+          const call = (a) => log("call", a);
+          const res = (a) => log("resolved", a);
+          function a() {
+            call("a");
+            const p = new Promise((resolve, reject) => {
+              setTimeout(() => {
+                res("a");
+                resolve();
+              }, 500);
+            });
+            return p.then(b);
+          }
+          function b() {
+            call("b");
+            const p = new Promise((resolve, reject) => {
+              setTimeout(() => {
+                res("b");
+                resolve();
+              }, 500);
+            });
+            return p.then(c);
+          }
+          function c() {
+            call("c");
+            const p = new Promise((resolve, reject) => {
+              // [[[B]]]
+              // reject('error') // that will not produce stack trace at all, so better use throw
+              throw new Error("error"); // [[[A]]]
+            });
+            return p;
+          }
+          a().catch((e) => log("final catch", e));
+
+          // call a
+          // resolved a
+          // call b
+          // resolved b
+          // call c
+          // final catch Error: error
+          //     at file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise.js:28:11 // [[[A]]]
+          //     at new Promise (<anonymous>)
+          //     at c (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise.js:26:13) // [[[B]]]
+          //     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+          // generally all stack trace logs will lead just to final function which was called
+          // we have nothing in stack trace about calls above that
+
+          // ---- example async await -----------------
+          const log = console.log;
+          const call = (a) => log("call", a);
+          const res = (a) => log("resolved", a);
+          const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+          async function a() {
+            call("a");
+            await delay(500);
+            res("a");
+            const t = await b(); // [[[C]]]
+            return t;
+          }
+          async function b() {
+            call("b");
+            await delay(500);
+            res("b");
+            const t = await c(); // [[[B]]]
+            return t;
+          }
+          async function c() {
+            call("c");
+            await delay(500);
+            res("c");
+            throw new Error("error"); // [[[A]]]
+          }
+          (async function () {
+            try {
+              await a(); // [[[D]]]
+            } catch (e) {
+              log("final catch", e);
+            }
+          })();
+          // call a
+          // resolved a
+          // call b
+          // resolved b
+          // call c
+          // resolved c
+          // final catch Error: error
+          //     at c (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:23:9) // [[[A]]]
+          //     at async b (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:16:13) // [[[B]]]
+          //     at async a (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:9:13) // [[[C]]]
+          //     at async file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:27:5 // [[[D]]]
+
+          // where here we have all more info about entire stack calls
+        </script>
+        <h2>mouseenter, mouseleave, mouseover, mouseout, input[type="range"]</h2>
+        <script type="editor" data-lang="js">
+
+          mouseover, mouseout - will mouseout when start hovering over child in parent
+          mouseenter, mouseleave - mouseleave only when go beyond parent, no matter if hovering over it's children
+
+          # or
+
+          mouseenter, mouseleave - doesn't care if you hover over children
+          mouseover, mouseout - will out if you hover over children
+        </script>
+
+        <h2>new URL()</h2>
+        <a href="/pages/node/index.html#processing-url-uri">/pages/node/index.html#processing-url-uri</a>
+        <h2>findLast</h2>
+        <script type="editor" data-lang="js">
+
+          function findLast(arr, find) {
+            for (let i = arr.length - 1; i > -1; i -= 1) {
+              if (find(arr[i])) {
+                return arr[i];
+              }
+            }
+          }
+
+          console.log(findLast(['a', 'b', 'c', 'ab', 'ae', 'oob'], x => x.includes('b')))
+        </script>
+        <h2>localStorage</h2>
+        <script type="editor" data-lang="js">
+
+          function get(key) {
+            const v = localStorage.getItem(key);
+            if (v !== null) {
+              return parseInt(v, 10);
+            }
+          }
+          function set(key, val) {
+            if (Number.isInteger(val)) {
+              localStorage.setItem(key, val);
+            }
+          }
+        </script>
+        <h2>JSON</h2>
+
+        <script type="editor" data-lang="js">
+
+          https://youtube.com/shorts/7GD1-yb-UXs?feature=share
+
+
+          // version to remove circular references
+          var k = { abc: "def" };
+          k.test = k;
+          const json = JSON.stringify(k, (function () {
+            const seen = new WeakSet();
+            return (key, value) => {
+              if (typeof value === "object" && value !== null) {
+                if (seen.has(value)) {
+                  return;
+                }
+                seen.add(value);
+              }
+              return value;
+            };
+          })());
+          console.log(json);
+
+          // TODO: create version which will return something like 'ref: path.to.the.first.ref'
+        </script>
+        <h2>load js file</h2>
+
+        <script type="editor" data-lang="js">
+
+          function testObj(o) {
+              try {
+                if (typeof o == "string") {
+                  if (eval("(" + o + ")")) return true;
+                }
+                if (o) return true;
+              } catch (e) {
+                return false;
+              }
+              return false;
+            }
+
+            function load(check, url, func, _x) {
+              if (testObj(check)) func();
+              else {
+                _x = document.createElement("script");
+                _x.src = url;
+                (document.getElementsByTagName("head")[0] || document.body).appendChild(_x);
+                (function loop() {
+                  _log("waiting for '" + check + "'...");
+                  if (testObj(check)) {
+                    _log("'" + check + "' loaded...");
+                    func();
+                  } else setTimeout(loop, 100);
+                })();
+              }
+            }
+        </script>
+
+        <h2>isVisible</h2>
+
+        <script type="editor" data-lang="js">
+
+          function isVisible(element) {
+
+              if (!element) {
+
+                  return false;
+              }
+
+              let tmp = element;
+
+              let limit = 100;
+              do {
+
+                  console.log('element: ', tmp, 'display: ', tmp.style.display)
+
+                  if (tmp.style.display === 'none') {
+
+                      return false;
+                  }
+
+                  tmp = tmp.parentNode;
+
+                  if (limit === 0) {
+
+                      break;
+                  }
+                  limit -= 1;
+
+              } while (tmp);
+
+              return true;
+          }
+        </script>
+
+        <h2>mousedrag drag element</h2>
+        <a href="urlwizzard.schema://urlwizzard.hostnegotiated/pages/bookmarklets/toolbox.html"
+          >urlwizzard.schema://urlwizzard.hostnegotiated/pages/bookmarklets/toolbox.html</a
+        >
+        <script type="editor" data-lang="js"></script>
+        <h2>sound - generate sound</h2>
+        <a href="https://github.com/stopsopa/sounds">https://github.com/stopsopa/sounds</a>
+        <br />
+        <a href="/pages/js/sound.html">/pages/js/sound.html</a>
+        <br />
+        <a href="https://musiclab.chromeexperiments.com/Song-Maker/song/6023842427961344"
+          >https://musiclab.chromeexperiments.com/Song-Maker/song/6023842427961344</a
+        >
+        <br />
+        <a href="https://musiclab.chromeexperiments.com/Song-Maker/song/5580147543113728"
+          >https://musiclab.chromeexperiments.com/Song-Maker/song/5580147543113728</a
+        >
+        <br />
+        <a href="https://musiclab.chromeexperiments.com/Song-Maker/song/6242130013585408"
+          >https://musiclab.chromeexperiments.com/Song-Maker/song/6242130013585408</a
+        >
+        <br />
+        <a href="https://musiclab.chromeexperiments.com/Song-Maker/song/6414566163218432"
+          >https://musiclab.chromeexperiments.com/Song-Maker/song/6414566163218432</a
+        >
+        <br />
+        <a href="https://musiclab.chromeexperiments.com/Song-Maker/song/6278629635522560">tetris</a>
+        <br />
+        <a href="https://musiclab.chromeexperiments.com/Song-Maker/song/5929891326984192"
+          >https://musiclab.chromeexperiments.com/Song-Maker/song/5929891326984192</a
+        >
+        <br />
+        <a href="https://www.songmakerpl.us/">alternative</a>
+        <br />
+        <a href="https://musiclab.chromeexperiments.com/Shared-Piano/#XJtkSaZPd">piano</a>
+        <script type="editor" data-lang="js">
+
+          function beep() {
+            var snd = new Audio("data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xA4Tvh9Rz/y8QADBwMWgQAZG/ILNAARQ4GLTcDeIIIhxGOBAuD7hOfBB3/94gcJ3w+o5/5eIAIAAAVwWgQAVQ2ORaIQwEMAJiDg95G4nQL7mQVWI6GwRcfsZAcsKkJvxgxEjzFUgfHoSQ9Qq7KNwqHwuB13MA4a1q/DmBrHgPcmjiGoh//EwC5nGPEmS4RcfkVKOhJf+WOgoxJclFz3kgn//dBA+ya1GhurNn8zb//9NNutNuhz31f////9vt///z+IdAEAAAK4LQIAKobHItEIYCGAExBwe8jcToF9zIKrEdDYIuP2MgOWFSE34wYiR5iqQPj0JIeoVdlG4VD4XA67mAcNa1fhzA1jwHuTRxDUQ//iYBczjHiTJcIuPyKlHQkv/LHQUYkuSi57yQT//uggfZNajQ3Vmz+Zt//+mm3Wm3Q576v////+32///5/EOgAAADVghQAAAAA//uQZAUAB1WI0PZugAAAAAoQwAAAEk3nRd2qAAAAACiDgAAAAAAABCqEEQRLCgwpBGMlJkIz8jKhGvj4k6jzRnqasNKIeoh5gI7BJaC1A1AoNBjJgbyApVS4IDlZgDU5WUAxEKDNmmALHzZp0Fkz1FMTmGFl1FMEyodIavcCAUHDWrKAIA4aa2oCgILEBupZgHvAhEBcZ6joQBxS76AgccrFlczBvKLC0QI2cBoCFvfTDAo7eoOQInqDPBtvrDEZBNYN5xwNwxQRfw8ZQ5wQVLvO8OYU+mHvFLlDh05Mdg7BT6YrRPpCBznMB2r//xKJjyyOh+cImr2/4doscwD6neZjuZR4AgAABYAAAABy1xcdQtxYBYYZdifkUDgzzXaXn98Z0oi9ILU5mBjFANmRwlVJ3/6jYDAmxaiDG3/6xjQQCCKkRb/6kg/wW+kSJ5//rLobkLSiKmqP/0ikJuDaSaSf/6JiLYLEYnW/+kXg1WRVJL/9EmQ1YZIsv/6Qzwy5qk7/+tEU0nkls3/zIUMPKNX/6yZLf+kFgAfgGyLFAUwY//uQZAUABcd5UiNPVXAAAApAAAAAE0VZQKw9ISAAACgAAAAAVQIygIElVrFkBS+Jhi+EAuu+lKAkYUEIsmEAEoMeDmCETMvfSHTGkF5RWH7kz/ESHWPAq/kcCRhqBtMdokPdM7vil7RG98A2sc7zO6ZvTdM7pmOUAZTnJW+NXxqmd41dqJ6mLTXxrPpnV8avaIf5SvL7pndPvPpndJR9Kuu8fePvuiuhorgWjp7Mf/PRjxcFCPDkW31srioCExivv9lcwKEaHsf/7ow2Fl1T/9RkXgEhYElAoCLFtMArxwivDJJ+bR1HTKJdlEoTELCIqgEwVGSQ+hIm0NbK8WXcTEI0UPoa2NbG4y2K00JEWbZavJXkYaqo9CRHS55FcZTjKEk3NKoCYUnSQ0rWxrZbFKbKIhOKPZe1cJKzZSaQrIyULHDZmV5K4xySsDRKWOruanGtjLJXFEmwaIbDLX0hIPBUQPVFVkQkDoUNfSoDgQGKPekoxeGzA4DUvnn4bxzcZrtJyipKfPNy5w+9lnXwgqsiyHNeSVpemw4bWb9psYeq//uQZBoABQt4yMVxYAIAAAkQoAAAHvYpL5m6AAgAACXDAAAAD59jblTirQe9upFsmZbpMudy7Lz1X1DYsxOOSWpfPqNX2WqktK0DMvuGwlbNj44TleLPQ+Gsfb+GOWOKJoIrWb3cIMeeON6lz2umTqMXV8Mj30yWPpjoSa9ujK8SyeJP5y5mOW1D6hvLepeveEAEDo0mgCRClOEgANv3B9a6fikgUSu/DmAMATrGx7nng5p5iimPNZsfQLYB2sDLIkzRKZOHGAaUyDcpFBSLG9MCQALgAIgQs2YunOszLSAyQYPVC2YdGGeHD2dTdJk1pAHGAWDjnkcLKFymS3RQZTInzySoBwMG0QueC3gMsCEYxUqlrcxK6k1LQQcsmyYeQPdC2YfuGPASCBkcVMQQqpVJshui1tkXQJQV0OXGAZMXSOEEBRirXbVRQW7ugq7IM7rPWSZyDlM3IuNEkxzCOJ0ny2ThNkyRai1b6ev//3dzNGzNb//4uAvHT5sURcZCFcuKLhOFs8mLAAEAt4UWAAIABAAAAAB4qbHo0tIjVkUU//uQZAwABfSFz3ZqQAAAAAngwAAAE1HjMp2qAAAAACZDgAAAD5UkTE1UgZEUExqYynN1qZvqIOREEFmBcJQkwdxiFtw0qEOkGYfRDifBui9MQg4QAHAqWtAWHoCxu1Yf4VfWLPIM2mHDFsbQEVGwyqQoQcwnfHeIkNt9YnkiaS1oizycqJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");
+            snd.play();
+          }
+          beep();
+                      // from: https://stackoverflow.com/a/23395136
+        </script>
+
+        <h2>manipulation</h2>
+        <script type="editor" data-lang="js">
+
+          function createElement(tag, opt) {
+            if (!isObject(opt)) {
+              opt = [];
+            }
+
+            const { html, text, attrs } = opt;
+
+            const element = document.createElement(tag);
+
+            if (html) {
+              element.innerHTML = String(html);
+            }
+
+            if (text) {
+              element.innerText = String(text);
+            }
+
+            if (isObject(attrs)) {
+              Object.entries(attrs).forEach(([key, value]) => {
+                element.setAttribute(key, value);
+              });
+            }
+
+            return element;
+          }
+
+          var manipulation = (function () {
+            var domCache = document.createElement("div");
+            function isObjectLike(value) {
+              return value != null && typeof value == "object";
+            }
+            function isPlainObject(value) {
+              // simplified version of isPlainObject then the one in lodash
+              return Object.prototype.toString.call(value) === "[object Object]";
+            }
+            function isNode(value) {
+              return isObjectLike(value) && !isPlainObject(value);
+            }
+            return {
+              // there is alternative
+              // https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentElement
+
+              after: function (referenceNode, newNode) {
+                if (referenceNode.nextSibling) {
+                  return this.before(referenceNode.nextSibling, newNode);
+                }
+                return this.append(referenceNode.parentNode, newNode);
+              },
+              before: function (referenceNode, newNode) {
+                referenceNode.parentNode.insertBefore(newNode, referenceNode);
+                return this;
+              },
+              append: function (parentNode, newNode) {
+                parentNode.appendChild(newNode);
+                return this;
+              },
+              prepend: function (parentNode, newNode) {
+                parentNode.insertBefore(newNode, parentNode.firstChild);
+                return this;
+              },
+              remove: function (node) {
+                node.parentNode.removeChild(node);
+                return this;
+              },
+              replace: function (oldNode, newNode) {
+                oldNode.parentNode.replaceChild(newNode, oldNode);
+              },
+              detach: function (node) {
+                // detach element from DOM, to use it somewhere else
+                this.append(domCache, node);
+                return node;
+              },
+              empty: function (node) {
+                node.innerHTML = "";
+                return this;
+              },
+              isNodeList: function (obj) {
+                return Object.prototype.toString.call(obj) === "[object NodeList]";
+              },
+              isNode: isNode,
+              children: function (parentNode) {
+                try {
+                  // read also about
+                  // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+                  // https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName  - undefined when #text node
+                  // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeName
+                  return Array.prototype.slice.call(parentNode.childNodes);
+                } catch (e) {
+                  throw new Error("manipulation.children() error: " + String(e));
+                }
+              },
+              /**
+               *
+               * @param el
+               * @param firstText - empty string - remove element, non empty string - set element, null|undefined - skip element
+               * @param lastText - empty string - remove element, non empty string - set element, null|undefined - skip element
+               */
+              txt: function (el, firstText, lastText) {
+                var list = Array.prototype.slice.call(el.childNodes);
+                var a,
+                  b,
+                  lastRef,
+                  t = list[0];
+                if (this.isNode(t) && t.nodeType === 3) {
+                  a = t;
+                }
+                if (list.length > 1) {
+                  for (var i = 1, l = list.length; i < l; i += 1) {
+                    if (this.isNode(list[i]) && list[i].nodeType === 3) {
+                      b = list[i];
+                      lastRef = i;
+                    }
+                  }
+                }
+                if (typeof firstText === "string") {
+                  if (firstText) {
+                    if (a) {
+                      if (this.isNode(a) && a.nodeValue !== 3) {
+                        this.replace(a, firstText);
+                        a = firstText;
+                      } else {
+                        a.nodeValue = firstText;
+                      }
+                    } else {
+                      a = document.createTextNode(firstText);
+                      this.prepend(el, a);
+                    }
+                  } else {
+                    if (a) {
+                      this.remove(a);
+                      a = undefined;
+                    }
+                  }
+                }
+                if (typeof lastText === "string") {
+                  if (lastText) {
+                    if (b) {
+                      if (this.isNode(b) && b.nodeType !== 3) {
+                        this.replace(b, lastText);
+                        b = lastText;
+                      } else {
+                        b.nodeValue = lastText;
+                      }
+                    } else {
+                      b = document.createTextNode(lastText);
+                      this.append(el, b);
+                    }
+                  } else {
+                    if (b) {
+                      this.remove(b);
+                      b = undefined;
+                    }
+                  }
+                }
+                var res = {
+                  a: a,
+                  b: b,
+                  at: a ? a.nodeValue : undefined,
+                  bt: b ? b.nodeValue : undefined,
+                  all: "",
+                };
+                if (res.at) {
+                  res.all += res.at;
+                }
+                if (res.bt) {
+                  if (res.all) {
+                    res.all += " ";
+                  }
+                  res.all += res.bt;
+                }
+                return res;
+              },
+            };
+          })();
+
+          // extension closest
+          (function () {
+            // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill
+            if (!Element.prototype.matches) {
+              Element.prototype.matches =
+                Element.prototype.matchesSelector ||
+                Element.prototype.mozMatchesSelector ||
+                Element.prototype.msMatchesSelector ||
+                Element.prototype.oMatchesSelector ||
+                Element.prototype.webkitMatchesSelector ||
+                function (s) {
+                  var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                    i = matches.length;
+                  while (--i >= 0 && matches.item(i) !== this) {}
+                  return i > -1;
+                };
+            }
+            manipulation.closest = function (element, selector) {
+              let el = element;
+              while (el && (el = el.parentNode)) {
+                if (el.matches && el.matches(selector)) {
+                  return el;
+                }
+              }
+              return undefined;
+            };
+          })();
+
+          // extension
+          (function () {
+            /* from lodash */
+            function isNodeList(obj) {
+              return Object.prototype.toString.call(obj) === "[object NodeList]";
+            }
+            /* from lodash */
+            var isNode = (function () {
+              function isObjectLike(value) {
+                return value != null && typeof value == "object";
+              }
+              function isPlainObject(value) {
+                // simplified version of isPlainObject then the one in lodash
+                return Object.prototype.toString.call(value) === "[object Object]";
+              }
+              return function isNode(value) {
+                return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
+              };
+            })();
+            manipulation.custommove = function (newParent, elements) {
+              if (isNode(elements)) {
+                elements = [elements];
+              } else if (isNodeList(elements)) {
+                elements = Array.prototype.slice.call(elements);
+              }
+
+              try {
+                for (var i = 0, l = elements.length; i < l; i += 1) {
+                  newParent.appendChild(elements[i]);
+                }
+              } catch (e) {
+                throw "manipulation.custommove - can't iterate through elements";
+              }
+              return this;
+            };
+          })();
+        </script>
+        <h2>encode msgpack</h2>
+
+        <div id="url_msgpack">
+          <script src="/pages/js/line/dependencies/uint8-to-b64.js"></script>
+          <script src="/pages/js/line/dependencies/msgpack.min.js"></script>
+          <script src="/js/textarea-autoresize.js"></script>
+          <style>
+            #url_msgpack {
+              textarea {
+                width: 100%;
+              }
+            }
+          </style>
+          <fieldset>
+            <legend>source</legend>
+            <textarea class="source" data-autoresize>
+{
+                "data": [
+                  {"id": 1, "value": "example", "type": "alpha"},
+                  {"id": 2, "value": "example", "type": "alpha"},
+                  {"id": 3, "value": "example", "type": "alpha"},
+                  {"id": 4, "value": "example", "type": "alpha"},
+                  {"id": 5, "value": "example", "type": "alpha"},
+                  {"id": 6, "value": "example", "type": "alpha"},
+                  {"id": 7, "value": "example", "type": "alpha"},
+                  {"id": 8, "value": "example", "type": "alpha"},
+                  {"id": 9, "value": "example", "type": "alpha"},
+                  {"id": 10, "value": "example", "type": "alpha"}
+                ],
+                "metadata": {
+                  "source": "generated",
+                  "compression": "targeted"
+                }
+              }</textarea
+            >
+          </fieldset>
+          <fieldset>
+            <legend>encoded:</legend>
+            <textarea class="encoded" data-autoresize></textarea>
+          </fieldset>
+          <fieldset>
+            <legend>decoded:</legend>
+            <textarea class="decoded" data-autoresize></textarea>
+          </fieldset>
+          <fieldset>
+            <legend>ratio:</legend>
+            <div class="ratio"></div>
+          </fieldset>
+
+          <script replace="#url_msgpack_target">
+            {
+              function encoderFactory() {
+                return {
+                  encode: function (obj) {
+                    var buffer = msgpack.encode(obj);
+                    var base64String = base.encode(buffer);
+                    base64String = base64String.replace(/\//g, "_").replace(/=/g, "-");
+                    return base64String;
+                  },
+                  decode: function (string, withRatio) {
+                    string = string.replace(/_/g, "/").replace(/-/g, "=");
+                    const buff = base.decode(string);
+                    const decoded = msgpack.decode(buff);
+                    if (withRatio) {
+                      return {
+                        decoded,
+                        ratio: buff.length / string.length,
+                      };
+                    }
+                    return decoded;
+                  },
+                };
+              }
+              const parent = document.getElementById("url_msgpack");
+              const source = parent.querySelector(".source");
+              const decoded = parent.querySelector(".decoded");
+              const encoded = parent.querySelector(".encoded");
+              const ratio = parent.querySelector(".ratio");
+              function doIt() {
+                const enc = encoderFactory();
+                const a = enc.encode(JSON.parse(source.value));
+                encoded.value = a;
+                const { decoded: dec, ratio: rat } = enc.decode(a, true);
+                console.log("dec", dec, "ratio", rat);
+                const b = JSON.stringify(dec, null, 4);
+                decoded.value = b;
+                ratio.innerText = String(rat.toFixed(2)) + "%";
+              }
+              doIt();
+              parent.addEventListener("input", (e) => {
+                if (e.target.tagName === "TEXTAREA") {
+                  doIt();
+                }
+                autoresize();
+              });
+              const autoresize = textareaAutoResize();
+              autoresize();
+              setTimeout(autoresize, 1000);
+            }
+          </script>
+          <script type="editor" data-lang="html">
+
+            &lt;script src="/pages/js/line/dependencies/uint8-to-b64.js">&lt;/script>
+            &lt;script src="/pages/js/line/dependencies/msgpack.min.js">&lt;/script>
+            <!-- &lt;script
+              src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.26/msgpack.min.js"
+              integrity="sha512-harMiusNxs02ryf3eqc3iQalz2RSd0z38vzOyuFwvQyW046h2m+/47WiDmPW9soh/p71WQMRSkhSynEww3/bOA=="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"
+            >&lt;/script> -->
+
+            &lt;script src="/js/textarea-autoresize.js">&lt;/script>
+            <!-- this one is just for texarea of this example -->
+          </script>
+          <br />
+          <script type="editor" data-lang="js" id="url_msgpack_target"></script>
+        </div>
+
+        <h2>encode protobuf</h2>
+
+        <div id="url_protobuf">
+          <script src="/pages/js/line/dependencies/uint8-to-b64.js"></script>
+
+          <script src="/pages/js/line/dependencies/protobuf.min.js"></script>
+          <script src="/js/textarea-autoresize.js"></script>
+          <style>
+            #url_protobuf {
+              textarea {
+                width: 100%;
+              }
+            }
+          </style>
+
+          <script type="editor" data-lang="js">
+
+            // video: https://www.youtube.com/watch?v=46O73On0gyI
+            // video recomends using this version: https://github.com/protocolbuffers/protobuf/releases/tag/v3.20.3
+
+            // but I've discovered that latest version (as of now): https://github.com/protocolbuffers/protobuf/releases/tag/v27.2
+            // works too but it is needed to install
+            // npm install -g protoc-gen-js
+            // otherwise during compilation of .proto it will throw
+            //      protoc-gen-js: program not found or is not executable
+
+            // DOWNLOAD LIBRARY FROM LINK ABOVE, UNZIP
+            mv bin/protoc /opt/local/bin/ && chmod +x /opt/local/bin/protoc
+            npm -g install protoc-gen-js
+            mkdir -p prottest/generate_here
+            cd prottest
+            cat <<EEE > schema.proto
+            syntax = "proto3";
+            package awesomepackage;
+
+            enum Style {
+              solid = 0;
+              dotted = 1;
+              dashed = 2;
+              double = 3;
+              groove = 4;
+              ridge = 5;
+              inset = 6;
+              outset = 7;
+            }
+
+            message AwesomeMessage {
+              int32 width = 1;
+              Style style = 2;
+            }
+            EEE
+
+            protoc --js_out=import_style=commonjs,binary:generate_here schema.proto
+
+            // NOTE: that's how we would TRY to do it as google suggest but actually below we will
+            // use different approach and library
+          </script>
+          <fieldset>
+            <legend>.proto</legend>
+            <textarea class="proto" data-autoresize>
+              
+syntax = "proto3";
+package awesomepackage;
+
+enum Style {
+  solid = 0; // first value will be used as default if not specified,
+  // and setting any value which is not registered in enum will default to 0
+  // more about default values: https://protobuf.dev/programming-guides/proto3/#default
+  dotted = 1;
+  dashed = 2;
+  double = 3;
+  groove = 4;
+  ridge = 5;
+  inset = 6;
+  outset = 7;
+}
+
+enum Correctpos {
+  normal = 0;
+  top = 1;
+  bottom = 2;
+  left = 3;
+  right = 4;
+}
+
+message AwesomeMessage {
+  string color = 1; // this is not enum so start from 1
+  Style style = 2;
+  int32 width = 3;
+  bool correct = 4;
+  Correctpos correctpos = 5;
+}</textarea
+            >
+            <a href="https://github.com/protobufjs/protobuf.js">https://github.com/protobufjs/protobuf.js</a>
+            <br />
+            <a href="https://protobuf.dev/programming-guides/proto3/"
+              >https://protobuf.dev/programming-guides/proto3/</a
+            >
+            <br />
+            <a href="https://github.com/protocolbuffers/protobuf/releases/tag/v3.20.3">generate using this version</a>
+            <br />
+            <a href="https://stackoverflow.com/a/72889684">https://stackoverflow.com/a/72889684 stackoverflow issue</a>
+          </fieldset>
+          <fieldset>
+            <legend>source</legend>
+            <textarea class="source" data-autoresize>
+              {     
+                "color": "#383838",
+                "style": "groove",
+                "width": 45,
+                "correct": true,
+                "correctpos": "normal"
+            }</textarea
+            >
+          </fieldset>
+          <fieldset>
+            <legend>encoded:</legend>
+            <textarea class="encoded" data-autoresize></textarea>
+          </fieldset>
+          <fieldset>
+            <legend>decoded:</legend>
+            <textarea class="decoded" data-autoresize></textarea>
+          </fieldset>
+          <fieldset>
+            <legend>error:</legend>
+            <textarea class="error" data-autoresize></textarea>
+          </fieldset>
+
+          <script replace="#url_protobuf_target">
+            (async function () {
+              function protoFactory(source, format) {
+                let root;
+                switch (format) {
+                  case "file":
+                    // for this case protoFactory() returns promise
+                    root = protobuf.load(source);
+                    break;
+                  case "string":
+                    // for this case protoFactory() func is synchronous - no wrapping with promise
+                    root = protobuf.parse(source).root;
+
+                    // https://stackoverflow.com/a/70915341 - not documented
+                    // it can be found though in the examples: https://github.com/protobufjs/protobuf.js/blob/master/examples/traverse-types.js
+                    break;
+                  default:
+                    throw Error('protobuf error: format must be "file" or "string"');
+                }
+                return {
+                  encode: function (payload) {
+                    // from: https://github.com/protobufjs/protobuf.js?tab=readme-ov-file#using-proto-files
+
+                    var AwesomeMessage = root.lookupType("awesomepackage.AwesomeMessage");
+
+                    // // ;
+                    // // Verify the payload if necessary (i.e. when possibly incomplete or invalid)
+                    // var errMsg = AwesomeMessage.verify(payload);
+                    // // if you need enum then use approach similar to
+                    // // https://www.sohamkamani.com/javascript/enums/
+                    // // then you can use .verify() method
+                    // // if you wan't to feed and receive object with original values then valid will not work and
+                    // // instead of create you will have to use fromObject(payload)
+
+                    // if (errMsg) {
+                    //   ;
+                    //   throw Error(errMsg);
+                    // }
+
+                    // Create a new message
+                    // var message = AwesomeMessage.create(payload); // or use .fromObject if conversion is necessary
+                    var message = AwesomeMessage.fromObject(payload); // or use .fromObject if conversion is necessary
+
+                    // Encode a message to an Uint8Array (browser) or Buffer (node)
+                    var buffer = AwesomeMessage.encode(message).finish();
+
+                    var base64String = base.encode(buffer);
+
+                    base64String = base64String.replace(/\//g, "_").replace(/=/g, "-");
+
+                    return base64String;
+                  },
+                  decode: function (string) {
+                    string = string.replace(/_/g, "/").replace(/-/g, "=");
+
+                    const buffer = base.decode(string);
+
+                    // from: https://github.com/protobufjs/protobuf.js?tab=readme-ov-file#using-proto-files
+                    var AwesomeMessage = root.lookupType("awesomepackage.AwesomeMessage");
+
+                    // Decode an Uint8Array (browser) or Buffer (node) to a message
+                    var message = AwesomeMessage.decode(buffer);
+                    // ... do something with message
+
+                    // If the application uses length-delimited buffers, there is also encodeDelimited and decodeDelimited.
+
+                    // Maybe convert the message back to a plain object
+                    var object = AwesomeMessage.toObject(message, {
+                      // longs: String,
+                      enums: String,
+                      defaults: true,
+                      // bytes: String,
+                      // see ConversionOptions
+                    });
+
+                    return object;
+                  },
+                };
+              }
+              const parent = document.getElementById("url_protobuf");
+              const proto = parent.querySelector(".proto");
+              const source = parent.querySelector(".source");
+              const decoded = parent.querySelector(".decoded");
+              const encoded = parent.querySelector(".encoded");
+              const error = parent.querySelector(".error");
+              // const enc = await protoFactory("./protobuf/protobuf.proto", "file");
+              async function doIt() {
+                try {
+                  // const p = proto.value
+                  const enc = protoFactory(proto.value, "string");
+                  error.value = "";
+                  const a = enc.encode(JSON.parse(source.value));
+                  encoded.value = a;
+                  const b = JSON.stringify(enc.decode(a, true), null, 4);
+                  decoded.value = b;
+                } catch (e) {
+                  error.value = String(e);
+                }
+              }
+              doIt();
+              parent.addEventListener("input", (e) => {
+                if (e.target.tagName === "TEXTAREA") {
+                  doIt();
+                }
+                autoresize();
+              });
+              const autoresize = textareaAutoResize();
+              autoresize();
+              setTimeout(autoresize, 1000);
+            })();
+          </script>
+          <script type="editor" data-lang="html">
+
+            &lt;script src="/pages/js/line/dependencies/uint8-to-b64.js">&lt;/script>
+            &lt;script src="/pages/js/line/dependencies/protobuf.min.js">&lt;/script>
+            <!-- &lt;script src="https://cdn.jsdelivr.net/npm/protobufjs@7.3.2/dist/protobuf.min.js">&lt;/script> -->
+
+            &lt;script src="/js/textarea-autoresize.js">&lt;/script>
+            <!-- this one is just for texarea of this example -->
+          </script>
+          <br />
+          <script type="editor" data-lang="js" id="url_protobuf_target"></script>
+        </div>
+
+        <h2>pregQuote</h2>
+        <a href="https://github.com/stopsopa/nlab/blob/master/src/pregQuote.js"
+          >https://github.com/stopsopa/nlab/blob/master/src/pregQuote.js</a
+        >
+
+        <script type="editor" data-lang="js">
+
+          const pregQuote = (function () {
+            var matchOperatorsRe = /[|\\{}()[\]^$+*?.-]/g;
+
+            return function pregQuote(str) {
+              if (typeof str !== "string") {
+                return false;
+              }
+
+              return str.replace(matchOperatorsRe, "\\$&");
+            };
+          })();
+
+          function startWith(str, startWith) {
+            return new RegExp(`^${pregQuote(str)}`).test(startWith);
+          }
+        </script>
+        <h2>IndexedDB</h2>
+        <a href="/research/indexeddb/indexeddb.html">/research/indexeddb/indexeddb.html</a>
+        <h2>addCss function</h2>
+        <script type="editor" data-lang="javascript">
+
+
+
+          /**
+           * https://stackoverflow.com/a/524721
+           * sometimes it might throw:
+           * Refused to apply inline style because it violates the following Content Security Policy directive: "style-src 'self'". Either the 'unsafe-inline' keyword, a hash , or a nonce ('nonce-...') is required to enable inline execution.
+           * More about that: https://stackoverflow.com/a/18428346
+
+           * Example page: https://dl.thorium.rocks/
+           * has header:
+           * content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; manifest-src 'self'; font-src 'self'; media-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests
+           */
+          function addCss(css) {
+            var head = document.head || document.getElementsByTagName("head")[0];
+
+            var styleElement = document.createElement("style");
+
+            head.appendChild(styleElement);
+
+            styleElement.type = "text/css";
+
+            styleElement.appendChild(document.createTextNode(css));
+
+            return {
+              unmountStyle: () => {
+                styleElement.parentNode.removeChild(styleElement);
+              },
+              styleElement,
+            };
+            return;
+          }
+        </script>
+        <h2>Observe Track DOM elements</h2>
+        <a href="https://samthor.au/2021/observing-dom/">https://samthor.au/2021/observing-dom/</a>
+        <h2>Templating</h2>
+        <script type="editor" data-lang="javascript">
+          // see also: https://github.com/stopsopa/nlab/blob/master/src/template.js
+          // <script src="https://stopsopa.github.io/pages/gigant/lib/template.js">&lt;/script>
+          // <script src="/pages/gigant/lib/template.js">&lt;/script>
+          // https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fgigant%2Flib%2Ftemplate.js
+
+
+          // from: https://johnresig.com/blog/javascript-micro-templating/
+          // Simple JavaScript Templating
+          // John Resig - https://johnresig.com/ - MIT Licensed
+          (function(){
+            var cache = {};
+
+            window.tmpl = function (str, data) {
+              // Figure out if we're getting a template, or if we need to
+              // load the template - and be sure to cache the result.
+              var fn = !/\W/.test(str) ?
+                cache[str] = cache[str] ||
+                  tmpl(document.getElementById(str).innerHTML) :
+
+                // Generate a reusable function that will serve as a template
+                // generator (and which will be cached).
+                new Function("obj",
+                  "var p=[],print=function(){p.push.apply(p,arguments);};" +
+
+                  // Introduce the data as local variables using with(){}
+                  "with(obj){p.push('" +
+
+                  // Convert the template into pure JavaScript
+                  str
+                    .replace(/[\r\t\n]/g, " ")
+                    .split("<%").join("\t")
+                    .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+                    .replace(/\t=(.*?)%>/g, "',$1,'")
+                    .split("\t").join("');")
+                    .split("%>").join("p.push('")
+                    .split("\r").join("\\'")
+                + "');}return p.join('');");
+
+              // Provide some basic currying to the user
+              return data ? fn( data ) : fn;
+            };
+          })();
+        </script>
+
+        <h2>loadScript</h2>
+        <a href="https://stopsopa.github.io/sounds/">https://stopsopa.github.io/sounds/</a>
+        <script type="editor" data-lang="javascript">
+
+          // no callback
+          function loadScript(url) {
+            var head = document.head || document.getElementsByTagName("head")[0],
+            script = document.createElement("script");
+            script.setAttribute("src", url);
+            head.appendChild(script);
+          }
+
+          // with callback
+          function loadScript(url, callback) {
+              return new Promise((resolve) => {
+                  var head = document.head || document.getElementsByTagName("head")[0],
+                  script = document.createElement("script");
+                  script.type = "text/javascript";
+                  script.src = url;
+                  script.onload = resolve;
+                  head.appendChild(script);
+              });
+          }
+        </script>
+
+        <h2>Map</h2>
+        <a href="https://www.youtube.com/shorts/6Ue4wLlXSV0">https://www.youtube.com/shorts/6Ue4wLlXSV0</a>
+        <br />
+        <a href="https://www.youtube.com/shorts/7GD1-yb-UXs">https://www.youtube.com/shorts/7GD1-yb-UXs</a>
+        <script type="editor" data-lang="javascript">
+
+          // https://youtube.com/shorts/6Ue4wLlXSV0?feature=share
+
+          let m = new Map([
+            [1, 'one'],
+            ['1', 'string'],
+            [2, 'two']
+          ]);
+          console.log(m)
+          console.log(m.has(1)) // true
+          console.log(m.get(1)) // one
+          console.log(m.has('1')) // true
+          console.log(m.get('1')) // string
+          console.log(m.has(10)) // false
+          console.log(m.get(10)) // undefined
+          console.log(m.size) // 3
+
+          // Map(3) { 1 => 'one', '1' => 'string', 2 => 'two' }
+          // keys can be any type not just strings like in object
+
+          console.log(({})['toString']);
+          // [Function: toString]
+          console.log(Object.create(null)['toString']);
+          // undefined
+
+          // == Maps preserve the order of their keys, objects do not
+
+          console.log(m.keys());
+          // [Map Iterator] { 1, '1', 2 } // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators
+
+          for (let value of m.keys()) {
+            console.log(value, typeof value);
+          }
+          // 1 number
+          // 1 string
+          // 2 number
+
+          console.log(m.values());
+          // [Map Iterator] { 'one', 'string', 'two' }
+
+          console.log(m.entries());
+          // [Map Entries] { [ 1, 'one' ], [ '1', 'string' ], [ 2, 'two' ] }
+
+          console.log(Array.from(m))
+          // [ [ 1, 'one' ], [ '1', 'string' ], [ 2, 'two' ] ]
+
+          m.forEach((value, key, map) => {});
+        </script>
+        <h2>eslint</h2>
+        <a href="https://eslint.org/docs/latest/use/configure/rules#disabling-rules"
+          >https://eslint.org/docs/latest/use/configure/rules#disabling-rules</a
+        >
+        <br />
+        <a
+          href="https://typescript-eslint.io/play/#ts=5.3.3&showAST=es&fileType=.tsx&code=PQKgBALgpgzhZhMAUKhyBmBXAdgYwgEsB7HSWCDHACgDcBDAGyygC4wcsBbAIygCcAlGADeyBIQxg6TFmAC8isAEYADMLEIEeUnDD9YWRvHlgGzKIjABmANxotBiFn5kDMIxHsIAvg504eu6eCmayluAALPbi%2BlDOrnEexvZ%2ByAEwxIxQAHSMxADm1NBwVNTKyoKC9kA&eslintrc=N4KABGBEBOCuA2BTAzpAXGUEKQAIBcBPABxQGNoBLY-AWhXkoDt8B6Jge1ukQBNEy8AIY90URNGgdokcGAC%2BIeUA&tsconfig=N4KABGBEDGD2C2AHAlgGwKYCcDyiAuysAdgM6QBcYoEEkJemy0eAcgK6qoDCAFutAGsylBm3TgwAXxCSgA&tokens=false"
+          >https://typescript-eslint.io/play</a
+        >
+        <script type="editor" data-lang="js">
+          /* eslint-disable */
+          // ignore entire file - use above
+
+          const ttt = "xxxxxxxxx"; // eslint-disable-line quotes,no-unused-vars
+
+          // eslint-disable-next-line no-console -- optional comment why this rule was added here
+          console.log("don't ignore this");
+
+          /*eslint no-undef: "error"*/
+          // from: https://eslint.org/docs/latest/rules/no-undef#:~:text=Open%20in%20Playground-,/*eslint%20no%2Dundef%3A%20%22error%22*/,-var%20foo%20%3D
+
+          /* eslint-disable no-alert, no-console */
+          alert('foo');
+          console.log('bar');
+          /* eslint-enable no-alert, no-console */
+        </script>
+
+        <h2>Libraries trends - search quality and popular</h2>
+        <a href="https://www.libhunt.com/search?query=md5">What lib is trendy (libhunt)</a>
+        <br />
+        <a href="https://npmtrends.com/js-md5-vs-md5">What lib is trendy (npmtrends)</a>
+        <br />
+        <a href="https://jster.net/">Catalog of decent libraries (jster)</a>
+        <br />
+        <a href="https://www.javascripting.com/audio/?sort=rating">Catalog (javascripting)</a>
+        <br />
+        <a href="http://microjs.com/#md5">Looking for small library for XXX thing (microjs)</a>
+        <br />
+        <a href="https://bundlephobia.com/">Fint the cost of adding a lib (bundlephobia)</a>
+        <h2>Set</h2>
+        <script type="editor" data-lang="js">
+
+          let obj = {}
+          let s = new Set([1, {}, obj, [], [], {one: 'two'}, ['test']]);
+
+          console.log(s); // Set(7) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ] }
+          s.add('one');
+          s.add('one');
+          s.add('two');
+          console.log(s); // Set(9) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' }
+          console.log(s.has(2)); // false
+          console.log(s.has('one')); // true
+          console.log(s.has('dog')); // false
+          console.log(s.size); // 9
+          console.log(s.has({})); // false
+          console.log(s.has(obj)); // true
+          for (let [key, value] of s.entries()) {
+            console.log('k: ', key, 'v:', value);
+          }
+          // k:  1 v: 1
+          // k:  {} v: {}
+          // k:  {} v: {}
+          // k:  [] v: []
+          // k:  [] v: []
+          // k:  { one: 'two' } v: { one: 'two' }
+          // k:  [ 'test' ] v: [ 'test' ]
+          // k:  one v: one
+          // k:  two v: two
+
+          const arr = [...s];
+          console.log(arr) // [ 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' ]
+          const back_to_set = new Set(arr);
+          console.log(back_to_set) // Set(9) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' }
+
+
+          // Use to remove duplicate elements from the array
+          const numbers = [2,3,4,4,2,3,3,4,4,5,5,6,6,7,5,32,3,4,5]
+          console.log([...new Set(numbers)]) // [2, 3, 4, 5, 6, 7, 32]
+        </script>
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#implementing_basic_set_operations"
+          >g(mdn Implementing basic set operations)</a
+        >
+        <br />
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set"
+          >https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set</a
+        >
+        <h2>Array</h2>
+        <img src="https://i.imgur.com/18NOUgV.gif" />
+        <script type="editor" data-lang="js">
+
+          var k = Array.apply(null, Array(5))
+          console.log(k) // prints [undefined, undefined, undefined, undefined, undefined]
+          console.log(k.length) // prints 5
+        </script>
+        <h2>split - escape character</h2>
+        <script type="editor" data-lang="js">
+
+          "/abc/def/ghi\\/klm/nop\\\\/end".match(/(\\.|[^/])+/g)
+        </script>
+        <a href="https://stackoverflow.com/a/14334054">stackoverflow source</a>
+        <h2>is window scrollable</h2>
+        <script type="editor" data-lang="js">
+
+
+          var log = (function () {try {return console.log}catch (e) {return function () {}}}());
+
+          var minus = document.querySelector('.video-container');
+
+          const isScrollabe = function () {
+
+            // https://javascript.info/size-and-scroll-window
+            let scrollHeight = Math.max(
+                    document.body.scrollHeight, document.documentElement.scrollHeight,
+                    document.body.offsetHeight, document.documentElement.offsetHeight,
+                    document.body.clientHeight, document.documentElement.clientHeight
+            );
+
+            // https://stackoverflow.com/a/33462363
+            var scrollTop = window.scrollY || window.pageYOffset || document.body.scrollTop + (document.documentElement && document.documentElement.scrollTop || 0);
+
+            return Math.abs(window.innerHeight + scrollTop - scrollHeight)
+          };
+
+          function fix() {
+
+            var w = minus.getBoundingClientRect().width;
+
+            if (/^\d+$/.test(String(w))) { // ie11 dont support Number.isInteger
+
+              var s = isScrollabe();
+
+              if (s > 0) {
+
+                w -= s;
+
+                minus.style.width = String(w) + 'px';
+
+              }
+            }
+          }
+
+          window.addEventListener('resize', function () {
+            window.requestAnimationFrame(fix);
+          });
+
+          // it's dirty but nothing stands on the way to fix it
+          fix();
+          setTimeout(fix, 100);
+          setTimeout(fix, 300);
+          setTimeout(fix, 500);
+          setTimeout(fix, 1000);
+          setTimeout(fix, 1500);
+          setTimeout(fix, 2000);
+          setTimeout(fix, 2500);
+          setTimeout(fix, 3000);
+        </script>
+        <h2>cookies</h2>
+        <a href="/pages/js/clicksecure.html">/pages/js/clicksecure.html</a>
+        <script type="editor" data-lang="js">
+
+          function setCookie(key, value) {
+            var d = new Date();
+            d.setFullYear(d.getFullYear() + 1);
+            document.cookie = `${key}=${value}; expires=${d.getDate()} ${
+              'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ')[d.getMonth()]
+            } ${d.getFullYear()} 00:00:00 UTC; path=/`;
+          }
+          function getCookie(key: string): string | null {
+            if (cookieQueue.length > 0) {
+              return cookieQueue.shift();
+            }
+
+            const cookies = document.cookie.split(';');
+            for (const cookie of cookies) {
+              const [cookieKey, cookieValue] = cookie.split('=').map(part => part.trim());
+              if (cookieKey === key) {
+                return cookieValue;
+              }
+            }
+
+            return null;
+          }
+          function getCookie(key) {
+              key = key.replace(/[\^\$\.\*\+\-\?\=\!\:\|\\\/\(\)\[\]\{\}\,]/g, "\\$&");
+              const reg = new RegExp(`(?:(?:^|.*;\\s*)${key}\\s*\\=\\s*([^;]*).*$)|^.*$`, ``);
+              return document.cookie.replace(reg, '$1');
+          }
+          function deleteCookie(key) {
+              document.cookie = key + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
+          }
+          // more about two above: https://stopsopa.github.io/pages/js/clicksecure.html
+        </script>
+        <h2>Polyfill</h2>
+        <a href="https://ungap.github.io/">https://ungap.github.io/</a>
+        <h2>inheritance</h2>
+        <script type="editor" data-lang="js">
+          function Shape () {
+          }
+          function Rectangle () {
+              Shape.apply(this, arguments)
+          }
+          Rectangle.prototype = Object.create(Shape.prototype);
+          Rectangle.prototype.constructor = Rectangle;
+          Rectangle.prototype.getArea = function () {
+          }
+        </script>
+        <h2>htmlencode htmldecode</h2>
+        <script type="editor" data-lang="js">
+
+          function htmlDecode(text){
+              var div = document.createElement("div");
+              div.innerHTML = text;
+              return ("textContent" in div) ? div.textContent : div.innerText ;
+          }
+
+          function htmlEncode(str){
+              var div = document.createElement("div");
+              div[("textContent" in div) ? "textContent" : "innerText"] = str;
+             return div.innerHTML;
+          }
+
+          // from: https://gist.github.com/fernandosavio/5349619
+        </script>
+        <a href="https://alligator.io/js/class-composition/">https://alligator.io/js/class-composition/</a>
+        <h2>debounce throttle</h2>
+        <script type="editor" data-lang="sh">
+
+          // compressed with : https://jscompress.com/
+
+          function debounce(fn, delay) {
+              var timer = null;
+              return function () {
+                  var context = this, args = arguments;
+                  clearTimeout(timer);
+                  timer = setTimeout(function () {
+                      fn.apply(context, args);
+                  }, delay);
+              };
+          };
+
+          function debounce(u,e){var i=null;return function(){var n=this,t=arguments;clearTimeout(i),i=setTimeout(function(){u.apply(n,t)},e)}}
+
+          function throttle(fn, interval) {
+              var wait = false;
+              return function () {
+                  if (!wait) {
+                      fn.apply(this, arguments);
+                      wait = true;
+                      setTimeout(function () {
+                          wait = false;
+                      }, interval);
+                  }
+              }
+          };
+          function throttle(t,n){var i=!1;return function(){i||(t.apply(this,arguments),i=!0,setTimeout(function(){i=!1},n))}}
+        </script>
+        <a href="/research/js/008-inheritance.html">/research/js/008-inheritance.html</a>
+        <h2>instance or function</h2>
+        <script type="editor" data-lang="js">
+
+          const log = console.log;
+
+          log('=== test 1 ===')
+
+          // always new instance
+          function inst(...args) {
+
+              //if (this.constructor != deferred)
+              if ( ! (this instanceof inst) )
+                  return new inst(...args);
+
+          console.log("created:", args);
+
+              this.args = args;
+
+              this.ret = function () {
+                  return this.args;
+              }
+          }
+
+          var a = inst('a');
+          var b = new inst('b');
+
+          log(a.ret())
+          log(b.ret())
+
+          log('=== test 2 ===')
+
+          // can be called only as a function
+          function func(...args) {
+
+              //if (this.constructor != deferred)
+              if ( this instanceof func )
+                  throw new Error( `Can't create instance of function 'func' just use it as a function` );
+
+              console.log("created:", args);
+
+              args.push('end');
+
+              return args;
+          }
+
+          log(func('a'));
+
+          try {
+
+              var b = new func('b');
+          }
+          catch (e) {
+
+              log(String(e))
+          }
+
+          // === test 1 ===
+          // created: [ 'a' ]
+          // created: [ 'b' ]
+          //     [ 'a' ]
+          //     [ 'b' ]
+          // === test 2 ===
+          // created: [ 'a' ]
+          //     [ 'a', 'end' ]
+          // Error: Can't create instance of function 'func' just use it as a function
+
+          // Try also put this code to Typescript playground and see output
+          // take look at generated __extends function
+          // Change output syntax (In "TS Config" tab) to "ES5"
+          // example from: https://www.typescriptlang.org/docs/handbook/classes.html#inheritance
+          class Animal {
+            move(distanceInMeters: number = 0, t: number ) {
+              log(`Animal moved ${distanceInMeters}m.`);
+            }
+          }
+
+          class Dog extends Animal {
+            bark() {
+              log("Woof! Woof!");
+            }
+          }
+
+          const dog = new Dog();
+          dog.bark();
+          dog.move(10, 5);
+          dog.bark();
+        </script>
+        <h2>uniq</h2>
+        <script type="editor" data-lang="js">
+
+          function unique(pattern) {
+            // node.js require('crypto').randomBytes(16).toString('hex');
+            pattern || (pattern = "xyxyxy");
+            return pattern.replace(/[xy]/g, function (c) {
+              var r = (Math.random() * 16) | 0,
+                v = c == "x" ? r : (r & 0x3) | 0x8;
+              return v.toString(16);
+            });
+          }
+
+
+
+          // from: https://github.com/ai/nanoid#install
+          const crypto = require('crypto');
+          // import crypto from 'crypto';
+          function nanoid(l) {
+            if (!Number.isInteger(l) || l < 1) {
+              throw new Error(`nanoid error: length is incorrect: ${l}`);
+            }
+
+            return crypto
+              .getRandomValues(new Uint8Array(l))
+              .reduce(
+                (t, e) =>
+                  (t += (e &= 63) < 36 ? e.toString(36) : e < 62 ? (e - 26).toString(36).toUpperCase() : e > 62 ? "-" : "_"),
+                ""
+              );
+          }
+
+          function myid(n) {
+
+            let k = '';
+
+            while (k.length < n) {
+
+              k += nanoid(n).replace(/[^a-z0-9]/g, '');
+            }
+
+            return k.substring(0, n);
+          }
+        </script>
+        <h2>Date months</h2>
+        <script type="editor" data-lang="js">
+          var monthName = (function () {
+
+              const monthNames = ["January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December"
+              ];
+
+              return function (date) {
+
+                  return monthNames[date.getUTCMonth()];
+              }
+          }());
+        </script>
+        <h2>date-fns</h2>
+        <script type="editor" data-lang="js">
+
+          // day seems to start at 2023-07-03T00:00:00.000Z
+          // where 2023-07-03T05:45:04.000Z  is still the same day
+          // and 2023-07-03T23:59:59.999Z is the last moment of the day
+
+          // but funny thing is that in google calendar when you start event spanning through few days then the event
+          // from 2023-07-03T00:00:00.000Z to 2023-07-05T00:00:00.000Z will show up only as event i days 3td and 4th but not 5th
+          // but  2023-07-03T00:00:00.000Z to 2023-07-05T00:00:01.000Z will cover 5th too
+
+
+          const k = new Date();
+          new Date(k) // making copy of date object
+
+          import { format } from 'date-fns';
+
+          format(new Date(), 'EEEE'); // https://date-fns.org/v2.30.0/docs/fp/format
+
+          import isSameDay from "date-fns/isSameDay";
+
+          isSameDay(today, date);
+
+          // my local timezone
+          const currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+          // list of all timezones
+          const aryIannaTimeZones = Intl.supportedValuesOf("timeZone");
+
+          // to further work with timezones: https://github.com/marnusw/date-fns-tz
+            // example: https://github.com/marnusw/date-fns-tz/blob/v2.0.0/src/utcToZonedTime/index.js
+
+          // setup .env
+          // TZ="UTC"
+          // TZ="Europe/London"
+          // access in node.js: process.env.TZ
+
+          // some further tests
+          const log = console.log;
+
+          const n = () => new Date();
+
+          function dump() {
+            log();
+            log("-----------", process.env.TZ);
+            log(n().toISOString());
+            log(n().toLocaleString());
+            log(n().toString());
+          }
+
+          // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+          // https://stackoverflow.com/questions/38399465/how-to-get-list-of-all-timezones-in-javascript
+          // https://stackoverflow.com/questions/54459791/why-so-many-iana-time-zones-names
+          dump();
+          process.env.TZ = "Etc/UTC";
+          dump();
+          process.env.TZ = "Europe/London";
+          dump();
+          process.env.TZ = "Europe/Amsterdam";
+          dump();
+          process.env.TZ = "America/Montreal";
+          dump();
+          process.env.TZ = "America/New_York";
+          dump();
+          process.env.TZ = "Asia/Kolkata";
+          dump();
+          process.env.TZ = "Australia/Brisbane";
+          dump();
+
+          var aryIannaTimeZones = Intl.supportedValuesOf("timeZone");
+
+          log(aryIannaTimeZones.filter((x) => String(x).toLowerCase().includes("lon")));
+          log(aryIannaTimeZones.filter((x) => String(x).toLowerCase().includes("york")));
+          log(aryIannaTimeZones.filter((x) => String(x).toLowerCase().includes("india")));
+          log(JSON.stringify(aryIannaTimeZones, null, 4));
+          // log(aryIannaTimeZones)
+
+          // Create a new Date object with the original date and time
+          const originalDate = new Date(); // Current date and time
+
+          // Shift the time forward by 1 hour
+          const shiftedDateForward = new Date(originalDate.getTime() + 1 * 60 * 60 * 1000);
+
+          // Shift the time backward by 30 minutes
+          const shiftedDateBackward = new Date(originalDate.getTime() - 30 * 60 * 1000);
+
+          const zero = new Date(originalDate.getTime());
+
+          zero.setHours(0);
+          zero.setMinutes(0);
+          zero.setSeconds(0);
+          zero.setMilliseconds(0);
+
+          // uncomment that
+          // zero.setUTCHours(0)
+          // zero.setUTCMinutes(0);
+          // zero.setUTCSeconds(0);
+          // zero.setUTCMilliseconds(0);
+
+          // Display the original and shifted dates
+          console.log("Original Date:", originalDate.toString());
+          console.log("Shifted Date Forward:", shiftedDateForward.toString());
+          console.log("Shifted Date Backward:", shiftedDateBackward.toString());
+          console.log("zero:", zero.toString());
+
+          // -------------------------------------- format with zone ----
+
+          process.env.TZ = "Europe/London";
+
+          const dateFormatter = (function () {
+            const formatter = new Intl.DateTimeFormat(undefined, {
+              weekday: "short",
+              year: "numeric",
+              month: "short",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              timeZoneName: "long",
+              hour12: false, // Set this to false for 24-hour formatting
+            });
+
+            function getGMTOffsetString(date) {
+              // old implementation:
+              // const timeZoneAbbreviation = Intl.DateTimeFormat(undefined, { timeZoneName: "short" })
+              //   .formatToParts(date)
+              //   .find((part) => part.type === "timeZoneName").value;
+
+              const timeZoneOffsetInMinutes = date.getTimezoneOffset();
+              const sign = timeZoneOffsetInMinutes >= 0 ? "-" : "+";
+              const hours = Math.floor(Math.abs(timeZoneOffsetInMinutes) / 60);
+              const minutes = Math.abs(timeZoneOffsetInMinutes) % 60;
+
+              return `GMT${sign}${hours.toString().padStart(2, "0")}${minutes.toString().padStart(2, "0")}`;
+            }
+
+            return (date) => {
+              const base = formatter.format(date);
+
+              const m = base.match(/([^\s]+), ([^\s]+) ([^\s]+), ([^\s]+), ([^\s]+)\s(.*)/);
+
+              return `${m[1]} ${m[2]} ${m[3]} ${m[4]} ${m[5]} ${getGMTOffsetString(date)} (${m[6]})`;
+            };
+          })();
+
+          const d = new Date("2023-07-03T14:00:00.000Z");
+
+          console.log(
+            JSON.stringify(
+              {
+                zone__________: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                original______: d,
+                toUTCString___: d.toUTCString(),
+                target________: "Mon Jul 03 2023 15:00:00 GMT+0100 (British Summer Time)",
+                dateFormatter_: dateFormatter(d),
+              },
+              null,
+              4
+            )
+          );
+          /**
+              {
+                  "zone__________": "Europe/London",
+                  "original______": "2023-07-03T14:00:00.000Z",
+                  "toUTCString___": "Mon, 03 Jul 2023 14:00:00 GMT",
+                  "target________": "Mon Jul 03 2023 15:00:00 GMT+0100 (British Summer Time)",
+                  "dateFormatter_": "Mon Jul 03 2023 15:00:00 GMT+0100 (British Summer Time)"
+              }
+           */
+        </script>
+
+        <h2>serializeError</h2>
+        <script type="editor" data-lang="js">
+
+
+          /**
+           * https://github.com/sindresorhus/serialize-error
+           */
+          const serializeError = (function () {
+
+              'use strict';
+
+              const commonProperties = [
+                  {property: 'name', enumerable: false},
+                  {property: 'message', enumerable: false},
+                  {property: 'stack', enumerable: false},
+                  {property: 'code', enumerable: true}
+              ];
+
+              const destroyCircular = ({from, seen, to_, forceEnumerable}) => {
+                  const to = to_ || (Array.isArray(from) ? [] : {});
+
+                  seen.push(from);
+
+                  for (const [key, value] of Object.entries(from)) {
+                      if (typeof value === 'function') {
+                          continue;
+                      }
+
+                      if (!value || typeof value !== 'object') {
+                          to[key] = value;
+                          continue;
+                      }
+
+                      if (!seen.includes(from[key])) {
+                          to[key] = destroyCircular({from: from[key], seen: seen.slice(), forceEnumerable});
+                          continue;
+                      }
+
+                      to[key] = '[Circular]';
+                  }
+
+                  for (const {property, enumerable} of commonProperties) {
+                      if (typeof from[property] === 'string') {
+                          Object.defineProperty(to, property, {
+                              value: from[property],
+                              enumerable: forceEnumerable ? true : enumerable,
+                              configurable: true,
+                              writable: true
+                          });
+                      }
+                  }
+
+                  return to;
+              };
+
+              const serializeError = value => {
+                  if (typeof value === 'object' && value !== null) {
+                      return destroyCircular({from: value, seen: [], forceEnumerable: true});
+                  }
+
+                  // People sometimes throw things besides Error objects…
+                  if (typeof value === 'function') {
+                      // `JSON.stringify()` discards functions. We do too, unless a function is thrown directly.
+                      return `[Function: ${(value.name || 'anonymous')}]`;
+                  }
+
+                  return value;
+              };
+
+              return function (e, native) {
+
+                  e = serializeError(e);
+
+                  if ( ! native ) {
+
+                      if (typeof e.stack === 'string') {
+
+                          e.stack = e.stack.split("\n")
+                      }
+                  }
+
+                  return e;
+              }
+          }());
+        </script>
+        <h2>trim</h2>
+        <script type="editor" data-lang="js">
+
+          /*!
+           * @version 1.0 - 2013-05-21
+           * @author Szymon Działowski
+           * direction : 'rl'|'r'|'l'   -->   (undefined => 'rl')
+           * charlist  : (undefined => " \n")
+           */
+          function trim(string, charlist, direction) {
+            direction = direction || 'rl';
+            charlist  = (charlist || '').replace(/([.?*+^$[\]\\(){}|-])/g,'\\$1');
+            charlist  = charlist || " \\n";
+            (direction.indexOf('r')+1) && (string = string.replace(new RegExp('^(.*?)['+charlist+']*$','gm'),'$1'));
+            (direction.indexOf('l')+1) && (string = string.replace(new RegExp('^['+charlist+']*(.*)$','gm'),'$1'));
+            return string;
+          }
+        </script>
+        <h2>DateTime tricks:</h2>
+        <script type="editor" data-lang="jsx">
+
+          // Extracting browser timezone informations
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          console.log(tz);
+              // https://stackoverflow.com/a/37512371/5560682
+
+          // Extracting browser timezone offset
+          (new Date()).getTimezoneOffset()/60
+        </script>
+        <h2>async await & try catch</h2>
+        <script type="editor" data-lang="js">
+
+          /**
+           * Let's register handler to indicate that we haven't handled errors properly in following code
+           */
+          process.on('uncaughtException', function(err) {
+
+            console.log('')
+
+            console.log("\n\x1b[33mERROR \x1b[31m>>IS NOT<<\x1b[33m HANDLED PROPERLY - global uncaughtException handler:\x1b[0m", err)
+          });
+
+
+          /**
+           * To run this script just run in console:
+           * node async-and-sync-error-catch-example.js
+           */
+
+          var error;
+
+          // error = 'async error'; // comment or uncomment to simulate error
+
+          // ######
+          // CALLBACK EXAMPLE
+          // ######
+
+          const fff = (callback) => {
+
+            // throw new Error('sync error'); // uncomment to test sync error
+
+            setTimeout(() => {
+
+              if (error) {
+
+                callback(error);
+              }
+              else {
+
+                callback(undefined, {
+                  data: 'all good',
+                });
+              }
+            }, 2000);
+          };
+
+          try {
+
+            fff((e, data) => {
+
+              if (e) {
+
+                console.log("\n\x1b[32masynchronous error handled in callback:\x1b[0m", e)
+
+                return;
+              }
+
+              console.log("\n\x1b[33mNO ERRORS - callback:\x1b[0m")
+
+              console.log('data', data);
+            });
+          }
+          catch (e) {
+
+            console.log('\n\x1b[32msynchronous error handled in catch:\x1b[0m', e)
+          }
+          // this example demonstrate that handling synchronous and asynchronous errors of one function have to be done in two places
+          // try catch - it covers only synchronous errors
+          // in callback for asynchronous errors
+
+
+
+          // ######
+          // PROMISE EXAMPLE - better approach
+          // ######
+          // const fff = () => new Promise((res, rej) => {
+          //
+          //   // throw new Error('sync error'); // uncomment to test sync error
+          //   // Interesting thing about throwing excepton in main body of the new Promise is that it is turned into Promise.reject
+          //   // so it means it will be handled in "ERROR >>IS<< HANDLED PROPERLY" catch, that's very good
+          //   // WARNING: but only if it is in main body - not in setTimeout -> called with delay
+          //
+          //   setTimeout(() => {
+          //
+          //     // throw new Error("don't do that");
+          //     // unfortunately this error (because it is delayed) will not be cautch in "ERROR >>IS<< HANDLED PROPERLY" catch
+          //     // and even worse, it will make Promise to never turn into resolved or rejected state because it's existance wil stop further execution logic
+          //     // which will result in not calling rej() nor res()
+          //
+          //     if (error) {
+          //
+          //       rej(error);
+          //     }
+          //     else {
+          //
+          //       res({
+          //         data: 'all good',
+          //       });
+          //     }
+          //   }, 2000);
+          //
+          // });
+          //
+          // (async () => {
+          //
+          //   try {
+          //
+          //     const data = await fff();
+          //
+          //     console.log("\n\x1b[33mNO ERRORS - promise in try block reached the end:\x1b[0m");
+          //
+          //     console.log('data', data);
+          //   }
+          //   catch (e) {
+          //
+          //     console.log('\n\x1b[32mERROR >>IS<< HANDLED PROPERLY - catch around promise in async function\x1b[0m', e)
+          //   }
+          // })();
+          //
+        </script>
+        <h2>react-datepicker display as UTC</h2>
+        <script type="editor" data-lang="jsx">
+
+          <DatePicker
+            selected={(function (datepickerDate) {
+
+              // to make datepicker DISPLAY UTC
+              const n = new Date(datepickerDate.getTime() + (1000 * 60 * datepickerDate.getTimezoneOffset()))
+
+              return n;
+            }(datepickerDate))}
+            onChange={date => setDatepickerDate(date)}
+            dateFormat="yyyy-MM-dd iiii"
+          />
+        </script>
+        Interesting thing is that .getTimezoneOffset() method is returning different values depending how much you
+        offset Date() object:
+        <img src="./getTimezoneOffset.jpg" />
+        <h2>Proxy getter</h2>
+        <script type="editor" data-lang="js">
+          let target = {
+              a: 'b',
+              c: 'd',
+          };
+
+          let handler = {
+              get(target, propKey, receiver) {
+
+                  if (typeof target[propKey] !== 'undefined') {
+
+                      return target[propKey];
+                  }
+
+                  const keys = Object.keys(target);
+
+                  throw `No such manager '${propKey}', registered managers: ` + keys.join(', ');
+              }
+          };
+          let proxy = new Proxy(target, handler);
+
+          console.log(proxy.a);
+          console.log(proxy.c);
+          console.log(proxy.b);
+        </script>
+        <h2>Event Delegation</h2>
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Event_bubbling#event_delegation"
+          >https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Event_bubbling#event_delegation</a
+        >
+        <br />
+        <a href="https://javascript.info/bubbling-and-capturing">https://javascript.info/bubbling-and-capturing</a>
+        <script type="editor" data-lang="js">
+
+          // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill
+          if (!Element.prototype.matches) {
+              Element.prototype.matches =
+                  Element.prototype.matchesSelector ||
+                  Element.prototype.mozMatchesSelector ||
+                  Element.prototype.msMatchesSelector ||
+                  Element.prototype.oMatchesSelector ||
+                  Element.prototype.webkitMatchesSelector ||
+                  function(s) {
+                      var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                          i = matches.length;
+                      while (--i >= 0 && matches.item(i) !== this) {}
+                      return i > -1;
+                  };
+          }
+
+          document.body.addEventListener('click', function (e) {
+
+              var el = e.target;
+
+              var match = el.matches('[data-lang] > .copy');
+
+              if (match) {
+
+              }
+          });
+        </script>
+        <h2>Extract computed css property value</h2>
+        <script type="editor" data-lang="js">
+          parseInt(window.getComputedStyle(document.querySelector('svg'), null).getPropertyValue("width"), 10)
+        </script>
+        <h2>Parsing get parameters, location.search</h2>
+        <script type="editor" data-lang="js">
+          var query = (location.search || '?').substring(1).split('&').filter(a => a).reduce((acc, val) => {
+
+              var
+                  a       = val.split(/=/),
+                  key     = a.shift(),
+                  v       = decodeURIComponent(a.join('='))
+              ;
+
+              if (Array.isArray(acc[key])) {
+                  acc[key].push(v);
+              }
+              else {
+                  if (typeof acc[key] === 'string') {
+                      acc[key] = [acc[key]];
+                      acc[key].push(v)
+                  }
+                  else {
+                      acc[key] = v;
+                  }
+              }
+
+              return acc;
+          }, {});
+
+
+
+          var k = (function (p, h, k) {
+              p.has(k) ? p.delete(k) : p.set(k, '');
+              p = String(p);
+              p ? (p = '?' + p) : (p = '');
+              location.href = (location.href.split('#')[0]).split('?')[0] + p + h;
+          }(new URLSearchParams(location.search), location.hash, 'noprerender'))
+        </script>
+        <h2>fetch</h2>
+        <script type="editor" data-lang="js">
+          // in order to get body and headers fetch require so much magic, this is sick...
+
+          var log = console.log;
+          var r = await fetch('');
+
+          // or:
+          var t = await r.text()
+          log(t.substring(0, 300))
+
+          // or:
+          //var j = await r.json()
+          //log(j)
+
+          const h = {}
+          r.headers.forEach((value, key) => h[key] = value)
+
+          //const h = await Promise.all(r.headers.entries());
+
+          log('headers', h)
+
+          log('oneheader', r.headers.get('Content-type'));
+        </script>
+        <h2>Observer pattern</h2>
+        <script type="editor" data-lang="js">
+          function Newsletter() {
+            this.observers = [];
+          }
+          Newsletter.prototype = {
+            subscribe: function (observer) {
+              this.observers.push(observer);
+            },
+            unsubscribe: function(observer) {
+              this.observers = this.observers.filter(ob => ob !== observer);
+            },
+            notify: function() {
+              this.observers.forEach(observer => console.log(‘Hello ‘ + observer.toString()));
+            }
+          }
+          let subscriber1 = ‘Subscriber 1’;
+          let subscriber2 = ‘Subscriber 2’;
+          let newsletter = new Newsletter();
+          newsletter.subscribe(subscriber1);
+          newsletter.subscribe(subscriber2);
+          newsletter.notify(); // Hello Subscriber 1 Hello Subscriber 2
+          newsletter.unsubscribe(subscriber2);
+          newsletter.notify(); // Hello Subscriber 1
+        </script>
+        <h2>Fake data api</h2>
+        <script type="editor" data-lang="js">
+
+          https://reqres.in/
+        </script>
+        <h2>random</h2>
+        <script type="editor" data-lang="js">
+
+
+          function random(min, max) {
+            if (!Number.isInteger(min)) {
+              throw new Error(`min is not a number`);
+            }
+
+            if (!Number.isInteger(max)) {
+              throw new Error(`max is not a number`);
+            }
+
+            if (min > max) {
+              const tmp = min;
+              min = max;
+              max = tmp;
+            }
+
+            const diff = max - min;
+
+            return Math.round(Math.random() * diff, 10) + min;
+          }
+        </script>
+        <h2>randomize shuffle array</h2>
+        <script type="editor" data-lang="js">
+
+          let list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+          list = list.sort(() => Math.random() - 0.5)
+        </script>
+        <h2>Benchmark</h2>
+        <p>
+          How to Get Unique Values from a JavaScript Array
+
+          <a href="https://jsbm.dev/nlX6skgi5MljO">jsbenchmark.com - FASTER</a> OR
+          <a href="https://jsben.ch/2ePCR">jsben.ch - SLOWER</a>
+        </p>
+        <h3>encodeFunctionToString & decodeFunctionFromString</h3>
+        <script type="editor" data-lang="js">
+
+          function encodeFunctionToString(fn) {
+            if (typeof fn === "function") {
+              return fn.toString();
+            }
+
+            throw new Error("encodeFunction error: fn is not a function");
+          }
+
+          function decodeFunctionFromString(str) {
+            if (typeof str !== "string") {
+              throw new Error("encodeFunction error: str is not a string");
+            }
+
+            let fn;
+
+            try {
+              fn = new Function("return " + str)();
+            } catch (e) {
+              throw new Error(`decodeFunctionFromString error: evaluation of string failed: ${e}`);
+            }
+
+            if (typeof fn === "function") {
+              return fn;
+            }
+
+            throw new Error("decodeFunctionFromString error: decoded string is not a function");
+          }
+
+          const str = encodeFunctionToString(function test(a, b) {
+            console.log("function call", a, b);
+          });
+
+          const fn = decodeFunctionFromString(str);
+
+          fn("a param", "b param");
+        </script>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll("[replace]")).forEach(function (tag) {
+            var id = tag.getAttribute("replace");
+
+            const target = document.querySelector(id);
+
+            if (!target) {
+              console.error("target not found for id:", id);
+
+              return;
+            }
+
+            target.innerHTML = tag.innerHTML;
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Assemble valid json using jq</h2>
+
+        <script type="editor" data-lang="sh">
+
+          COMMENT="autocom\" [] { : }
+
+          mid
+
+          ment"
+
+            # Create the JSON payload using jq to ensure proper escaping
+          JSON_PAYLOAD=$(jq -n --arg issueId "$ISSUE_ID" --arg body "$COMMENT" \
+            '{ query: "mutation { commentCreate(input: { issueId: \"\($issueId)\", body: \"\($body)\" }) { success } }" }')
+
+          cat <<EEE
+
+          JSON_PAYLOAD >${JSON_PAYLOAD}<
+
+          EEE
+
+
+          # ---------- in some special cases dealing with graphql doing this might be needed
+
+          ESCAPED_COMMENT=$(jq -Rn --arg str "$COMMENT" '$str')
+          # finding this was tricky
+          ESCAPED_COMMENT=$(echo "$ESCAPED_COMMENT" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
+
+          echo "${0}: Adding comment to issue ${ISSUE_ID}..."
+
+          STATUS="$(curl ${CURL_VERBOSE} -X POST https://api.linear.app/graphql \
+          -H "Content-Type: application/json" \
+          -H "Authorization: ${LINEAR_API_KEY}" \
+          -d "{
+            \"query\": \"mutation { commentCreate(input: { issueId: \\\"${ISSUE_ID}\\\", body: ${ESCAPED_COMMENT} }) { success } }\"
+          }")"
+        </script>
+        <h2>jq</h2>
+        <a href="https://stedolan.github.io/jq/">https://stedolan.github.io/jq/</a>
+        <br />
+        <a href="https://youtu.be/m9dhrq9iRHA"
+          >g(The Ultimate JQ Tutorial: Everything You Need to Know to Parse JSON Like a Pro)</a
+        >
+        <script type="editor" data-lang="sh">
+
+          # NOTICE, there is a sandbox site for jq: https://jqplay.org/jq
+
+          # when key is literally 'http.port' insteado of escaping like .http\.port you do
+          # .["http.port"]
+          # | tr -d '\n' is to trim last new line character
+          jq -r '.["http.port"]' config/app/config.json | tr -d '\n'
+
+
+          jqs() {
+            FILE="${1}" && echo "$(cat "${FILE}" | jq --sort-keys)" > "${FILE}"
+          }
+
+          jqs="jqs"
+
+
+          # examples
+          cat <<EEE | jq ".abc"
+          {
+            "abc": "def"
+          }
+          EEE
+          # prints >"def"<
+
+          cat <<EEE | jq -r ".abc"
+          {
+            "abc": "def"
+          }
+          EEE
+          # prints >def<
+
+          cat <<EEE | jq "keys"
+          {
+            "abc": "def",
+            "cef": "ghi"
+          }
+          EEE
+          # prints >[
+          #  "abc",
+          #  "cef"
+          #]<
+
+          # arrays ===
+          echo '{
+              "abc": [
+                  {
+                      "name": "test"
+                  },
+                  {
+                      "name": "two"
+                  },
+                  {
+                      "name": "three"
+                  }
+              ]
+          }' | jq '.abc[1]'
+          # will print >{"name": "two"}<
+
+           echo '{
+              "abc": [
+                  {
+                      "name": "test"
+                  },
+                  {
+                      "name": "two"
+                  },
+                  {
+                      "name": "three"
+                  }
+              ]
+          }' | jq '.abc[1:]'
+          # will print >[{"name": "two"},{"name":"three"}]<
+
+          echo '{
+              "abc": [
+                  {
+                      "name": "test"
+                  },
+                  {
+                      "name": "two"
+                  },
+                  {
+                      "name": "three"
+                  }
+              ]
+          }' | jq '.abc[-1]'
+          # will print >{"name":"three"}< - last element
+
+          # also
+          | jq '.abc[-1].name'
+          # will get name property of last element from the array under "abc" key
+
+
+          | jq '.abc[].name'
+          # will print >
+          "test"
+          "two"
+          "three"
+          <
+
+          | jq '.abc[].name' -r
+          # will print >
+          test
+          two
+          three
+          <
+
+          # array constructor =====
+          # using constructor we can repack data to new array (for example)
+          | jq '[.abc[].name]'
+          # will print >
+          [
+            "test",
+            "two",
+            "three"
+          ]
+          <
+
+          # object constructor =====
+          # using constructor we can repack data to new object (for example)
+
+          echo '{"abc":[{"name":"test","nest":{"ver":4}},{"name":"two","nest":{"ver":7}},{"name":"three","nest":{"ver":1}}]}' | jq '.abc[].name, .abc[].nest.ver'
+          # will print
+          >
+          "test"
+          "two"
+          "three"
+          4
+          7
+          1
+          < - not very useful
+
+
+          echo '{"abc":[{"name":"test","nest":{"ver":4}},{"name":"two","nest":{"ver":7}},{"name":"three","nest":{"ver":1}}]}' | jq '{x:.abc[].name, y:.abc[].nest.ver}'
+          # will print >
+          {"x":"test","y":4}
+          {"x":"test","y":7}
+          {"x":"test","y":1}
+          {"x":"two","y":4}
+          {"x":"two","y":7}
+          {"x":"two","y":1}
+          {"x":"three","y":4}
+          {"x":"three","y":7}
+          {"x":"three","y":1}
+          < - so it's cartesian - not what we want
+
+          echo '{"abc":[{"name":"test","nest":{"ver":4}},{"name":"two","nest":{"ver":7}},{"name":"three","nest":{"ver":1}}]}' | jq '[{x:.abc[].name, y:.abc[].nest.ver}]'
+          # print the same way as above (cartesian) just wrap object into array which at least makes it valid json
+          # will print >
+          [
+            {"x":"test","y":4}
+            {"x":"test","y":7}
+            {"x":"test","y":1}
+            {"x":"two","y":4}
+            {"x":"two","y":7}
+            {"x":"two","y":1}
+            {"x":"three","y":4}
+            {"x":"three","y":7}
+            {"x":"three","y":1}
+          ]
+          <
+
+          echo '{"abc":[{"name":"test","nest":{"ver":4}},{"name":"two","nest":{"ver":7}},{"name":"three","nest":{"ver":1}}]}' | jq '[.abc[] | {x:.name, y:.nest.ver}]'
+          # we finally get what we need using pipes
+          # will print >
+          [
+            {
+              "x": "test",
+              "y": 4
+            },
+            {
+              "x": "two",
+              "y": 7
+            },
+            {
+              "x": "three",
+              "y": 1
+            }
+          ]
+          <
+
+          # interesting shortcut
+          echo '{"abc":[{"name":"test","nest":{"ver":4}},{"name":"two","nest":{"ver":7}},{"name":"three","nest":{"ver":1}}]}' | jq '[.abc[] | {name, ver: .nest.ver}]'
+
+          # will print >
+          [
+            {
+              "name": "test",
+              "ver": 4
+            },
+            {
+              "name": "two",
+              "ver": 7
+            },
+            {
+              "name": "three",
+              "ver": 1
+            }
+          ]
+          <
+
+          # sorting and counting ====
+
+          # simple sorting
+          echo '{"abc":[{"name":"test","nest":{"ver":4}},{"name":"two","nest":{"ver":7}},{"name":"three","nest":{"ver":1}}]}' | jq '[.abc[] | {name, ver: .nest.ver}]' | jq 'sort'
+          echo '{"abc":[{"name":"test","nest":{"ver":4}},{"name":"two","nest":{"ver":7}},{"name":"three","nest":{"ver":1}}]}' | jq '[.abc[] | {name, ver: .nest.ver}] | sort'
+
+          # reverse sorting
+          echo '{"abc":[{"name":"test","nest":{"ver":4}},{"name":"two","nest":{"ver":7}},{"name":"three","nest":{"ver":1}}]}' | jq '[.abc[] | {name, ver: .nest.ver}]' | jq 'reverse'
+          echo '{"abc":[{"name":"test","nest":{"ver":4}},{"name":"two","nest":{"ver":7}},{"name":"three","nest":{"ver":1}}]}' | jq '[.abc[] | {name, ver: .nest.ver}] | reverse'
+
+          # length of an array
+          echo '{"abc":[{"name":"test","nest":{"ver":4}},{"name":"two","nest":{"ver":7}},{"name":"three","nest":{"ver":1}}]}' | jq '[.abc[] | {name, ver: .nest.ver}]' | jq 'length'
+          echo '{"abc":[{"name":"test","nest":{"ver":4}},{"name":"two","nest":{"ver":7}},{"name":"three","nest":{"ver":1}}]}' | jq '[.abc[] | {name, ver: .nest.ver}] | length'
+
+          # sort via pipe in each object
+          echo '{"abc":[{"name":"test","nest":{"ver":4},"list":[6,2,8]},{"name":"two","nest":{"ver":7},"list":[9,9,8]},{"name":"three","nest":{"ver":1},"list":[2,8,1]}]}' | jq '[.abc[] | {name, ver: .nest.ver,list:.list | sort}]' -c
+          # will print
+          >[{"name":"test","ver":4,"list":[2,6,8]},{"name":"two","ver":7,"list":[8,9,9]},{"name":"three","ver":1,"list":[1,2,8]}]<
+
+          # sort_by(...)
+          echo '{"abc":[{"name":"test","nest":{"ver":4},"list":[6,2,8]},{"name":"two","nest":{"ver":7},"list":[9,9,8]},{"name":"three","nest":{"ver":1},"list":[2,8,1]}]}' | jq '[.abc[] | {name, ver: .nest.ver,list:.list | sort}] | sort_by(.ver)' -c
+          # will print
+          >[{"name":"three","ver":1,"list":[1,2,8]},{"name":"test","ver":4,"list":[2,6,8]},{"name":"two","ver":7,"list":[8,9,9]}]<
+
+
+          echo '{"abc":[{"name":"test","nest":{"ver":4},"list":[6,2,8,5]},{"name":"two","nest":{"ver":7},"list":[9,9]},{"name":"three","nest":{"ver":1},"list":[2]}]}' | jq '[.abc[] | {name, ver: .nest.ver,list_len:.list | length}] | sort_by(.ver)' -c
+          echo '{"abc":[{"name":"test","nest":{"ver":4},"list":[6,2,8,5]},{"name":"two","nest":{"ver":7},"list":[9,9]},{"name":"three","nest":{"ver":1},"list":[2]}]}' | jq '.abc | map({name, ver: .nest.ver,list_len:.list | length}) | sort_by(.ver)' -c
+          # will print
+          >[{"name":"three","ver":1,"list_len":1},{"name":"test","ver":4,"list_len":4},{"name":"two","ver":7,"list_len":2}]<
+
+          # map =======
+
+          echo '{"abc":[{"name":"test","nest":{"ver":4},"list":[6,2,8,5]},{"name":"two","nest":{"ver":7},"list":[9,9]},{"name":"three","nest":{"ver":1},"list":[2]}]}' | jq '.abc | map({name, ver: .nest.ver,list_len:.list | length}) | map(select(.ver > 1)) | sort_by(.ver)' -c
+          # will print >[{"name":"test","ver":4,"list_len":4},{"name":"two","ver":7,"list_len":2}]<
+
+
+
+          # ===== line separated data to json array with strings
+          cat <<EEE | jq -R -s  'split("\n")[:-1]'
+          Komiks-Gigant-12-2000-Sladami-prehistorii.pdf
+          Komiks-Gigant-4_2000-Kamienie-Kahuna.pdf
+          Komiks_Gigant_s1_4.93_Prehistoryczny_szpieg.pdf
+          EEE
+
+          cat <<EEE | jq -R -s 'split("\n")[:-1][]'
+          Komiks-Gigant-12-2000-Sladami-prehistorii.pdf
+          Komiks-Gigant-4_2000-Kamienie-Kahuna.pdf
+          Komiks_Gigant_s1_4.93_Prehistoryczny_szpieg.pdf
+          EEE
+        </script>
+        <a href="https://stedolan.github.io/jq/manual/">https://stedolan.github.io/jq/manual/</a>
+        <br />
+        <a href="https://ss64.com/bash/syntax.html">https://ss64.com/bash/syntax.html</a>
+        <h2>Examples</h2>
+
+        <script type="editor" data-lang="sh">
+
+          # unwrap .taskDefinition
+          aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | jq ".taskDefinition" > tmp/current-task-definition.json
+
+          # modify .containerDefinitions[0].image to given IMAGE_URI value
+          jq --arg IMAGE_URI "${IMAGE_NAME}:${VERSION}" '.containerDefinitions[0].image = $IMAGE_URI' tmp/current-task-definition.json > tmp/updated-task-definition_image.json
+
+          # format json in both files
+          jq '.' tmp/current-task-definition.json > tmp/temp.json && mv tmp/temp.json tmp/current-task-definition.json
+          jq '.' tmp/updated-task-definition_image.json > tmp/temp.json && mv tmp/temp.json tmp/updated-task-definition_image.json
+
+          diff tmp/current-task-definition.json tmp/updated-task-definition_image.json
+
+          # cleanup by removing some keys
+          jq ". | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .registeredBy, .registeredAt, .compatibilities)" tmp/updated-task-definition_image.json > tmp/updated-task-definition.json
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

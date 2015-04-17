@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>Glossary</h2>
+
+        <script type="editor" data-lang="js">
+
+
+          import {count} from './counter.js';
+          //                  |-------------| - module specifier
+
+          //    from: https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/#:~:text=Finding%20the%20file%20and%20fetching%C2%A0it
+
+          import(`${path}/foo.js`)
+          //    dynamic import, from: https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/#:~:text=To%20make%20this%20possible%20for%20ES%20modules%2C%20there%E2%80%99s%20a%20proposal%20called
+
+          // All modules are parsed as if they had "use strict"
+          //    from: https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/#:~:text=All%20modules%20are%20parsed%20as%20if%20they%20had%20%22use%20strict%22
+
+          // import-maps: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap
+          &lt;script type="importmap">
+          {
+            "imports": {
+              "lodash": "https://cdn.skypack.dev/lodash"
+            },          
+            "integrity": {
+              "./modules/shapes/square.js": "sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC"
+            },                  
+            "scopes": {
+              "/js": {
+                "/app/": "./js-app/"
+              }
+            }
+          }
+          &lt;/script>
+          // WARNING: It seems to be pretty clear that once first module is parsed in the document,
+          // this means sourcemap is settled, no more changes after that.
+          // So basically there can be only one sourcemap per loading of the page,
+          // and it has to be loaded before first module will be loaded.
+          // https://chromestatus.com/feature/5121916248260608
+          // more: https://github.com/WICG/import-maps/issues/235#issuecomment-2676516759
+
+          // generate sha:
+            cat FILENAME.js | openssl dgst -sha384 -binary | openssl base64 -A
+            // from: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity#using_subresource_integrity
+          
+        </script>
+        <h2>Examples</h2>
+        <a href="no-importmap/index.html">no-importmap</a>
+        <br />
+        <a href="importmap/index.html">importmap</a>
+        <br />
+        <a href="importmap-dynamic/index.html">importmap-dynamic</a>
+        <br />
+        <a href="importmap-deep/index.html">importmap-deep</a>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>
