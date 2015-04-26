@@ -1,0 +1,136 @@
+.elkanatooltip {
+    display: none;   
+    z-index: 100;
+    position: absolute !important;
+}
+
+/* animate vvv */
+.elkanatooltip.a-show {
+    display: inline-block;
+    opacity: 0;        
+}
+/* only ie6 doesn't support multiple class selector, who cares */
+.elkanatooltip.a-start.a-anim {
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition:    all 0.3s ease-in-out;
+    -o-transition:      all 0.3s ease-in-out;
+    -ms-transition:     all 0.3s ease-in-out;
+}
+.elkanatooltip[class*=" v-"].a-start.a-stop,
+.elkanatooltip[class*=" h-"].a-start.a-stop,
+.elkanatooltip[class^="v-"].a-start.a-stop,
+.elkanatooltip[class^="h-"].a-start.a-stop,
+.elkanatooltip.a-start.a-anim.a-stop {
+    -ms-transform: translate(0,0);
+    -webkit-transform: translate(0,0);
+    transform: translate(0,0);         
+    opacity: 1;
+}
+/* animate ^^^ */                
+
+.elkanatooltip > div {             
+    background-color: #333;
+    color: white;
+    padding: 3px;
+    -webkit-border-radius: 2px;
+    -khtml-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+}
+.elkanatooltip > i:after {
+    content: "";
+}        
+
+/* test element vvv */
+body span.elkanatooltip.test {
+    /*opacity: 0;*/
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-top: 5px solid transparent !important;
+}
+/* test element ^^^ */
+
+.elkanatooltip > i {
+    position: absolute;
+    display: inline-block;  
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 5px transparent solid;            
+}
+.elkanatooltip[class^="hc-"][class*=" vc-"] > i,
+.elkanatooltip[class^="vc-"][class*=" hc-"] > i,
+.elkanatooltip[class*=" vc-"][class*=" hc-"] > i {
+    border: none;
+}
+.elkanatooltip[class^="hc-"][class*=" vc-"] > div,
+.elkanatooltip[class^="vc-"][class*=" hc-"] > div,
+.elkanatooltip[class*=" vc-"][class*=" hc-"] > div {
+    margin: 3px;
+}
+
+/* tooltip on top vvv */
+    .elkanatooltip.v-b.a-start {
+        -ms-transform: translate(0,-10px); 
+        -webkit-transform: translate(0,-10px); 
+        transform: translate(0,-10px); 
+    }
+    .elkanatooltip.v-b > div {
+        margin-bottom: 10px;
+        margin-right: 1px;
+        margin-left: 1px;
+    }
+    .elkanatooltip.v-b > i {    
+        border-top: 5px #333 solid;
+        border-bottom: none;
+        bottom: 5px;
+    }
+/* tooltip on top ^^^ */
+
+/* tooltip on bottom vvv */
+    .elkanatooltip.v-t.a-start {
+        -ms-transform: translate(0,10px); 
+        -webkit-transform: translate(0,10px); 
+        transform: translate(0,10px); 
+    }
+    .elkanatooltip.v-t > div {
+        margin-top: 10px;
+    }
+    .elkanatooltip.v-t > i { 
+        border-bottom: 5px #333 solid;  
+        border-top: none;
+        top: 5px;
+    }
+/* tooltip on bottom ^^^ */
+
+/* tooltip on left vvv */
+    .elkanatooltip.h-r.a-start {
+        -ms-transform: translate(-10px,0); 
+        -webkit-transform: translate(-10px,0); 
+        transform: translate(-10px,0); 
+    }
+    .elkanatooltip.h-r > div {
+        margin-right: 10px;
+    }
+    .elkanatooltip.h-r > i {
+        border-left: 5px #333 solid;  
+        border-right: none;
+        right: 5px;
+    }
+/* tooltip on left ^^^ */
+
+/* tooltip on right vvv */
+    .elkanatooltip.h-l.a-start {
+        -ms-transform: translate(10px,0); 
+        -webkit-transform: translate(10px,0); 
+        transform: translate(10px,0); 
+    }
+    .elkanatooltip.h-l > div {
+        margin-left: 10px;
+    }
+    .elkanatooltip.h-l > i {
+        border-right: 5px #333 solid;  
+        border-left: none;
+        left: 5px;
+    }
+/* tooltip on right ^^^ */

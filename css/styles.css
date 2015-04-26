@@ -1008,3 +1008,10 @@ footer {
     width: auto;
   }
 }
+
+
+/* own styles vvv */
+.hidden {
+    display: none;
+}
+/* own styles ^^^ */
