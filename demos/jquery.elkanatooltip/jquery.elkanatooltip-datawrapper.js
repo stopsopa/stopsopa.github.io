@@ -51,10 +51,35 @@
 		// Browser globals
 		factory( jQuery );
 	}
-})((function (name) {
+})((function (name, base) {
     return function ($) {
-//        function log(l) {try {console.log(l);}catch (e) {}};
-        function log(l) {};
+        
+        function log(l) {try {console.log(l);}catch (e) {}};
+//        function log(l) {};
+
+        function isObject(obj) {
+            var type = typeof obj;
+            return type === 'function' || type === 'object' && !!obj;
+        };
+        function _a(a) {
+            return Array.prototype.slice.call(a, 0);
+        };
+        
+        return $[name] = function () { 
+            var a = _a(arguments);
+            
+            if (sObject(a[0])) {
+                var o = $.extend({
+                    
+                    elkanatooltip: {} // settings for elkanatooltip
+                }, a[0] || {})
+            }
+            else if (false) {
+                
+            }
+            
+        };
+        
         function error(l) {try {console.error(l);}catch (e) {}};
         function _thw(message) {throw "plugin jQuery(...)."+name+"() : "+message};
 
@@ -378,4 +403,4 @@
             return t;
         }
     }
-})('elkanatooltip')); // to change name of plugin simply change it in this place
+})('elkanatitle', 'elkanadata')); // to change name of plugin simply change it in this place

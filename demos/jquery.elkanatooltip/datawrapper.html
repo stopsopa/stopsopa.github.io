@@ -35,6 +35,7 @@
     
     <!--<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700,800&subset=latin,cyrillic-ext,latin-ext,cyrillic" rel="stylesheet" type="text/css">-->
     <script type="text/javascript" src="jquery.elkanatooltip.js"></script>
+    <script type="text/javascript" src="jquery.elkanatooltip-titlewrapper.js"></script>
     <link rel="stylesheet" type="text/css" href="jquery.elkanatooltip.css" media="all" />
     
     <style type="text/css">  
@@ -87,30 +88,6 @@
             white-space: nowrap;
             background-color: white;
             z-index: 6;
-        }
-        .animated { 
-            -webkit-animation-duration: 1s; 
-            animation-duration: 1s; 
-            -webkit-animation-fill-mode: both; 
-            animation-fill-mode: both; 
-            -webkit-animation-timing-function: linear; 
-            animation-timing-function: linear; 
-            animation-iteration-count:infinite; 
-            -webkit-animation-iteration-count:infinite; 
-        } 
-        @-webkit-keyframes bounce { 
-            0%, 40%, 50%, 60%, 100% {-webkit-transform: translateY(0);} 
-            45% {-webkit-transform: translateY(-5px);} 
-            55% {-webkit-transform: translateY(5px);} 
-        } 
-        @keyframes bounce { 
-            0%, 40%, 50%, 60%, 100% {transform: translateY(0);} 
-            45% {transform: translateY(-5px);} 
-            55% {transform: translateY(5px);} 
-        } 
-        .bounce { 
-            -webkit-animation-name: bounce; 
-            animation-name: bounce; 
         }
     </style>
     
@@ -284,13 +261,6 @@
                     
                 <div class="clear"></div>
                 
-                <div class="btspa">
-                    <span class="animated bounce glyphicon glyphicon-exclamation-sign"></span> See also extension:
-                    <ul>
-                        <li><a href="datawrapper.html">data wrapper extension</a></li>
-                        <li><a href="titlewrapper.html">title wrapper extension</a></li>
-                    </ul>
-                </div>
                 <div class="btspa">
                     <ul>
                         <li>napisać manual</li>
