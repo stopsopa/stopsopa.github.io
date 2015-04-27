@@ -24,7 +24,6 @@
             else {
                 script = that.children('textarea');
                 t = script.html(); 
-                log(t)
             }
             script.remove();
 
