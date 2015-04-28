@@ -299,6 +299,7 @@
             }
 
             o = $.extend(true, {
+                tooltip : false, // content as a string - optional
                 show    : true, // show on start
                 cls     : name, // main class, from this class depend entire layout and animations of tooltip
                 ashow   : 'a-show',
@@ -317,10 +318,22 @@
                 afterShow : $.noop,
                 afterHide : $.noop,
             }, o || {});
+            
+            if (typeof tooltip == 'string') {
+                switch (tooltip) {
+                    case 'destroy':
+                        
+                        
+                        break;
+                    default:
+                        return log('command '+tooltip+' not handled');
+                }
+            }
 
             // preparing mode
-            if (typeof tooltip == 'string')
+            if (typeof o.tooltip == 'string')
                 tooltip = $('<div></div>').html(tooltip);
+            
             try {
                 if (tooltip.parent().hasClass(o.cls)) {
                     tooltip = tooltip.parent();

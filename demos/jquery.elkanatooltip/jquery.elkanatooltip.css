@@ -24,7 +24,7 @@
     -ms-transform: translate(0,0);
     -webkit-transform: translate(0,0);
     transform: translate(0,0);         
-    opacity: 1;
+    opacity: 0.93;
 }
 /* animate ^^^ */                
 
@@ -36,6 +36,8 @@
     -khtml-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;
+  -webkit-box-shadow: 0 0 6px #000;
+          box-shadow: 0 0 6px #000;
 }
 .elkanatooltip > i:after {
     content: "";

@@ -53,10 +53,16 @@
 	}
 })((function (name, base) {
     return function ($) {
-        
-        function log(l) {try {console.log(l);}catch (e) {}};
+        function log(l){try{console.log(l)}catch(e){}};
+        function error(l){try{console.error(l)}catch(e){}};        
 //        function log(l) {};
 
+        function isFunction (a) { // taken from underscore.js
+            return typeof a == 'function' || false;
+        };
+        function isString(a) {
+            return typeof a == 'string';
+        }
         function isObject(obj) {
             var type = typeof obj;
             return type === 'function' || type === 'object' && !!obj;
@@ -65,19 +71,77 @@
             return Array.prototype.slice.call(a, 0);
         };
         
-        return $[name] = function () { 
-            var a = _a(arguments);
+        return $.fn[name] = function () { 
+            var tooltip = arguments[0], o = arguments[1], a = _a(arguments);
             
-            if (sObject(a[0])) {
-                var o = $.extend({
-                    
-                    elkanatooltip: {} // settings for elkanatooltip
-                }, a[0] || {})
-            }
-            else if (false) {
+            o = $.extend({
+                showon              : 'click',      // false, 'click', 'hover', 'hoverclick'
+                hideonclick         : 'document',   // false, 'notooltip', 'target', 'document'
+                hideonmouseleave    : 'both',       // false, 'both', 'target'
+
+                show                : false // parameter of base plugin elkanatooltip, to force hiding of tooltip
+            }, o || {});
+
+            $(this).each(function () {
+                var t = $(this); // target do którego będą dowiązywane eventy pokazująci i chowające - domyślnie jest to source   
+
+                if (typeof tooltip == 'undefined') 
+                    return error("First argument cannot be undefined");
                 
-            }
-            
+                if (isFunction(tooltip)) { // if retrieved by function
+                    tooltip = tooltip.apply(t, a);
+                }
+                else if (typeof tooltip == 'string') { // if selector
+                    tooltip = $(tooltip);
+                }
+
+                t[base].apply(t, a);
+                
+                if (isString(o.showon)) {
+                    switch (true) {
+                        case o.showon.indexOf('click') > -1:
+                            log('click')
+                            break;
+                        case o.showon.indexOf('hover') > -1:
+                            log('hover')
+                            break;          
+                    }                    
+                }
+                else {
+                    log('showon disabled')        
+                }                                
+                
+                if (isString(o.hideonclick)) { // false, 'notooltip', 'target', 'document'
+                    switch (o.hideonclick) {
+                        case 'notooltip':
+                            log('notooltip')
+                            break;
+                        case 'target':
+                            log('target')
+                            break;         
+                        case 'document':
+                            log('document')
+                            break;          
+                    }                    
+                }
+                else {
+                    log('hideonclick disabled')        
+                }
+                
+                if (isString(o.hideonmouseleave)) { // false, 'both', 'target'
+                    switch (o.hideonclick) {
+                        case 'both':
+                            log('both')
+                            break;
+                        case 'target':
+                            log('target')
+                            break;       
+                    }                    
+                }
+                else {
+                    log('hideonmouseleave disabled')        
+                }                
+            });            
         };
         
         function error(l) {try {console.error(l);}catch (e) {}};
@@ -403,4 +467,4 @@
             return t;
         }
     }
-})('elkanatitle', 'elkanadata')); // to change name of plugin simply change it in this place
+})('elkana', 'elkanatooltip')); // to change name of plugin simply change it in this place
