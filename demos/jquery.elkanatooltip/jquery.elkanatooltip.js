@@ -218,12 +218,12 @@
                             else if (k.p.hc === 'l')        c.left      = o.border + 'px';
 
                             if (el.vertical === 'middle') {
-                                if      (k.p.vc === 't')    c.bottom    = o.border + 'px';
-                                else if (k.p.vc === 'b')    c.top       = o.border + 'px';
+                                if      (k.p.vc === 't')    c.top       = o.border + 'px';
+                                else if (k.p.vc === 'b')    c.bottom    = o.border + 'px';
                                 else                        c.top       = ((o.tooltip.outerHeight() / 2) - o.border) + 'px';
                             }
-                            else if (k.p.vc === 'b')        c.bottom    = o.border + 'px';
-                            else if (k.p.vc === 't')        c.top       = o.border + 'px';
+                            else if (k.p.vc === 't')        c.top    = o.border + 'px';
+                            else if (k.p.vc === 'b')        c.bottom       = o.border + 'px';
 
                             o.i.css(c);
                         };
