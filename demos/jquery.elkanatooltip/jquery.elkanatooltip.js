@@ -316,7 +316,7 @@
                     left: false
                 },
                 afterShow : $.noop,
-                afterHide : $.noop,
+                afterHide : $.noop
             }, o || {});
             
             if (typeof tooltip == 'string') {
