@@ -59,7 +59,7 @@
                 var last = false;
                 
                 var thr = 
-                        _.throttle(
+//                        _.throttle(
                         function (e, m, p, c, avg, inside) {
                     
                     if (last) {
@@ -97,21 +97,21 @@
 //                                c.r = uu;
 //                                c.r -= 360;
                                 if (c.l + tol >= ee || c.r - tol <= ee) {
-                                    json('tak 1')   
                                     target.addClass('red');
+                                    json('tak 1');   
                                 }
                                 else {
                                     target.removeClass('red');
-                                    log('nie 1')
+                                    log('nie 1');
                                 }   
                             }
                             else {
                                 if (c.l - tol <= ee && c.r + tol >= ee) {
-                                    json('tak 2')   
+                                    json('tak 2');  
                                     target.addClass('red');                          
                                 }
                                 else {
-                                    log('nie 2')
+                                    log('nie 2');
                                     target.removeClass('red');
                                 }                                
                             }
@@ -129,7 +129,7 @@
                     };
                     
                 }
-                ,200);
+//                ,200);
                 
                 
                 $(document).on('mousemove', thr);
