@@ -9,187 +9,218 @@
     <script type="text/javascript">
         function log(l) {try{console.log(l)}catch(e){}};
         function json(l) {log(JSON.stringify(l))};
-
-        $(function () {
-            /**
-             * Relative to document, od krawędzi bordera do dokuemntu
-             * niezależnie jakiem marginy czy paddingi sa gdziekolwiek
-             * nieważne też czy obiekt znajduje się w body bezpośredio
-             * czy też jest w jakimś pośrednim relative
-             */
-            function docpos(element) { // .offset() based
-                var t = $(element).first();
-
-                t.addClass('red');
-                
-                if (!t.length)
-                    throw "No elemen selected";
-
-                var
-                    o = t.offset(),
-                    k = {
-                        l: o.left,
-                        t: o.top
-                    }
-
-                k.r = k.l + t.outerWidth(false);
-                k.b = k.t + t.outerHeight(false);
-
-                return k;
-            };
-            
-            function relativeToDocument(x, y) {
-                
-            }
-            
+        
+        
+        var findWidestAngles = (function () {
             // count angle in radians
             function calcAngleRad(x1, y1, x2, y2) {
                 return Math.atan2( (y2 - y1) , (x2 - x1) );
             }
+
             // count angle in degrees
             function calcAngle(x1, y1, x2, y2) {
-                var a = calcAngleRad(x1, y1, x2, y2) * (180 / Math.PI); 
+                var a = calcAngleRad(x1, y1, x2, y2) * (180 / Math.PI);
                 return (a < 0) ? (a += 360) : a;
             }
-            
-            
-            var target = $('#absrel2');
+            return function (m, p) {
+                var k = [calcAngle(m.x, m.y, p.l, p.t), calcAngle(m.x, m.y, p.r, p.t), calcAngle(m.x, m.y, p.l, p.b), calcAngle(m.x, m.y, p.r, p.b)];
+
+                if (k[0] > 269 && k[2] < 91) {
+                    return {
+                        l : k[0],
+                        r : k[2]
+                    }
+                }
+
+                k.sort(function(a, b){return a-b});
+
+                return {
+                    l : k[0],
+                    r : k[3]
+                }
+            };
+        })();
+
+        // https://gist.github.com/WebReflection/2953527
+        // http://jsfiddle.net/mwcs8o4e/3/
+        (function(window, nextTick, process, prefixes, i, p, fnc) {
+            p = window[process] || (window[process] = {});
+            while (!fnc && i < prefixes.length) {
+                fnc = window[prefixes[i++] + 'equestAnimationFrame'];
+            }
+            p[nextTick] = p[nextTick] || (fnc && fnc.bind(window)) || window.setImmediate || window.setTimeout;
+        })(window, 'nextTick', 'process', 'r webkitR mozR msR oR'.split(' '), 0);
+
+
+        $(function () {
+
+            var target = $('#absol');
+
             ;(function () {
-                var tol = 20
-                var last = false;
-                
-                var thr = 
-//                        _.throttle(
-                        function (e, m, p, c, avg, inside) {
-                    
-                    if (last) {
-                        m = {
-                            x : e.pageX,
-                            y : e.pageY
-                        };
-                        p = docpos(target);
-                        c = {};
-                        inside = (m.x >= p.l && m.x <= p.r && m.y >= p.t && m.y <= p.b);
 
-                        if (!inside) {
-    //                        var a  = calcAngle(m.x, m.y, p.l + ((p.r - p.l) / 2), p.t + ((p.b - p.t) / 2)); // avarage
-                            var k = [];
-                            k.push(calcAngle(m.x, m.y, p.l, p.t));
-                            k.push(calcAngle(m.x, m.y, p.r, p.t));
-                            k.push(calcAngle(m.x, m.y, p.l, p.b));
-                            k.push(calcAngle(m.x, m.y, p.r, p.b));
-                            k.sort(function(a, b){return a-b})
+                var moveToOrFromElementsEvent = (function () {
+                    /**
+                     * Relative to document, od krawędzi bordera do dokuemntu
+                     * niezależnie jakiem marginy czy paddingi sa gdziekolwiek
+                     * nieważne też czy obiekt znajduje się w body bezpośredio
+                     * czy też jest w jakimś pośrednim relative
+                     */
+                    function docpos(element) { // .offset() based
+                        var t = $(element).first();
 
-                            c = {
-                                l : k[0],
-                                r : k[3]
+                        if (!t.length)
+                            throw "No elemen selected";
+
+                        var
+                            o = t.offset(),
+                            k = {
+                                l: o.left,
+                                t: o.top
                             }
-//                            log('control')
-//                            log(last)
-//                            log(m)
-                            var ee = calcAngle(last.x, last.y, m.x, m.y);
-//                            log('e: '+ee)
-                            if ( Math.abs(c.l - c.r) > 180 ) {
-                                c.jest = Math.abs(c.l - c.r);
-//                                log('nie wiem')
-//                                var uu = c.l;
-//                                c.l = c.r;
-//                                c.r = uu;
-//                                c.r -= 360;
-                                if (c.l + tol >= ee || c.r - tol <= ee) {
-                                    target.addClass('red');
-                                    json('tak 1');   
+
+                        k.r = k.l + t.outerWidth(false);
+                        k.b = k.t + t.outerHeight(false);
+
+                        return k;
+                    };
+
+                    function moveDirection(ld, d) {
+
+                        if (ld > d)
+                            return 1;
+
+                        if (ld < d)
+                            return -1;
+
+                        return 0;
+                    }
+
+                    function calcDistance(x1, y1, x2, y2) { // http://www.gwycon.com/calculating-the-distance-between-two-pixels/
+                        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                    }
+
+                    function calcDist(m, p) {
+                        p.cx = p.l + ((p.r - p.l) / 2);
+                        p.cy = p.t + ((p.b - p.t) / 2);
+                        return parseInt(calcDistance(m.x, m.y, p.cx, p.cy));
+                    }
+
+                    // count angle in radians
+                    function calcAngleRad(x1, y1, x2, y2) {
+                        return Math.atan2( (y2 - y1) , (x2 - x1) );
+                    }
+
+                    // count angle in degrees
+                    function calcAngle(x1, y1, x2, y2) {
+                        var a = calcAngleRad(x1, y1, x2, y2) * (180 / Math.PI);
+                        return (a < 0) ? (a += 360) : a;
+                    }
+                    function isFunction (a) { // taken from underscore.js
+                        return typeof a == 'function' || false;
+                    };
+                    return function (target, forward, backward, everytime) {
+                        var m, p, inside, toward, dist, ldist = false, prevstate = null;
+                        
+                        isFunction(forward)     || (forward     = $.noop);
+                        isFunction(backward)    || (backward    = $.noop);
+                        isFunction(everytime)   || (everytime   = $.noop);
+                        
+                        return function (e) {
+                            m = {
+                                x : e.pageX,
+                                y : e.pageY
+                            };
+
+                            p       = docpos(target);
+                            dist    = calcDist(m, p);
+
+                            if (ldist !== false) {
+
+                                inside = (m.x >= p.l && m.x <= p.r && m.y >= p.t && m.y <= p.b);
+
+                                if (!inside) {
+
+                                    toward = moveDirection(ldist, dist);
+                                    
+                                    if (toward !== 0) {
+                                        
+                                        if (prevstate !== toward) {
+                                            (toward === 1 ? forward : backward).call(target, e, m, p, dist);                                                                                                                        
+                                        }
+                                        
+                                        prevstate   = toward;
+                                        ldist       = dist;
+                                    }
+
+                                    ldist = dist;  
+                                    
+                                    (function (target, e, m, p, dist) {
+                                        everytime.call(target, e, m, p, dist);
+                                    })(target, e, m, p, dist);
+                                    
                                 }
-                                else {
-                                    target.removeClass('red');
-                                    log('nie 1');
-                                }   
                             }
                             else {
-                                if (c.l - tol <= ee && c.r + tol >= ee) {
-                                    json('tak 2');  
-                                    target.addClass('red');                          
-                                }
-                                else {
-                                    log('nie 2');
-                                    target.removeClass('red');
-                                }                                
+                                ldist = dist;
                             }
-//                            c.e = ee;
-//                            json(c)
-                        }                        
+                        }
                     }
-                    else {
-                        log('init');
-                    }
-                    
-                    last = {
-                        x : e.pageX,
-                        y : e.pageY
-                    };
-                    
-                }
-//                ,200);
-                
-                
-                $(document).on('mousemove', thr);
-//                $(document).on('click', thr);
-         
+                })();
+
+
+                var c, lline = $(), rline = $();
+                var event = moveToOrFromElementsEvent(target, function (e, m, p, dist) {
+                    json('tak 2')
+                    target.addClass('red');
+                }, function (e, m, p, dist) {
+                    log('nie 2')
+                    target.removeClass('red');
+                }, function (e, m, p, dist) {
+//                    var target = this;                                       
+                    process.nextTick((function (m, p) {
+                        return function () {
+                            c = findWidestAngles(m, p);
+                            $.line(m.x, m.y, {ang: c.l, dis: 100}, function (div) {
+                                lline.remove();
+                                lline = div;
+                            });
+                            $.line(m.x, m.y, {ang: c.r, dis: 100}, function (div) {
+                                rline.remove();
+                                rline = div;
+                            });
+                        }
+                    })(m, p));
+                })
+
+                $(document).on('mousemove', event);
             })();
-            
-            
-            json(docpos(target));       
-            
-        })
+
+
+        });
     </script>
     <style type="text/css">
         .red {
             color: red !important;
             border-color: red !important;
         }
-        body {
-            border: 13px black solid;
-            margin: 20px;
-            padding: 40px;
-        }
-        #rel {
-            position: relative;
-            margin: 40px;
-            padding: 45px;
-            border: 25px black solid;
-        }
-        #abs {
+        #absol {
             position: absolute;
-            left: 200px;
-            top: 150px;
-        }
-        #absrel2,
-        #absrel,
-        #abs,
-        #test {
+            top: 50%;
+            left: 50%;
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+
             border: 10px solid silver;
             color: #333;
             padding: 15px 30px;
             margin: 25px;
         }
-        #absrel2,
-        #absrel {
-            position: absolute;
-            top: 150px;
-            left: 450px;
-        }
     </style>
 </head>
 <body>
-    <span id="test">test</span>
-    <span id="abs">abs</span>
-    <div id="rel">
-        <span id="absrel">absrel</span>
-    </div>
-    <div id="rel">
-        <div id="rel">
-            <span id="absrel2">absrel2</span>
-        </div>
-    </div>
+    <span id="absol">absol</span>
 </body>
 </html>
