@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="//jquery.com/jquery-wp-content/themes/jquery/js/jquery-1.11.2.min.js"><\/script>')</script>
+    <script type="text/javascript" src="jquery.line.js"></script>
+    <script type="text/javascript" src="../../js/underscore.js"></script>
+    <script type="text/javascript">
+        function log(l) {try{console.log(l)}catch(e){}};
+        function json(l) {log(JSON.stringify(l))};
+        
+        // https://gist.github.com/WebReflection/2953527
+        // http://jsfiddle.net/mwcs8o4e/3/
+        (function(window, nextTick, process, prefixes, i, p, fnc) {
+            p = window[process] || (window[process] = {});
+            while (!fnc && i < prefixes.length) {
+                fnc = window[prefixes[i++] + 'equestAnimationFrame'];
+            }
+            p[nextTick] = p[nextTick] || (fnc && fnc.bind(window)) || window.setImmediate || window.setTimeout;
+        })(window, 'nextTick', 'process', 'r webkitR mozR msR oR'.split(' '), 0);                
+        
+
+        $(function () {
+            /**
+             * Relative to document, od krawędzi bordera do dokuemntu
+             * niezależnie jakiem marginy czy paddingi sa gdziekolwiek
+             * nieważne też czy obiekt znajduje się w body bezpośredio
+             * czy też jest w jakimś pośrednim relative
+             */
+            function docpos(element) { // .offset() based
+                var t = $(element).first();
+                
+                if (!t.length)
+                    throw "No elemen selected";
+
+                var
+                    o = t.offset(),
+                    k = {
+                        l: o.left,
+                        t: o.top
+                    }
+
+                k.r = k.l + t.outerWidth(false);
+                k.b = k.t + t.outerHeight(false);
+
+                return k;
+            };            
+                
+            function isMovingToward(ld, d) {
+                return (ld.lt > d.lt) || (ld.rt > d.rt) || (ld.lb > d.lb) || (ld.rb > d.rb);
+            }
+            
+            function calcDistance(x1, y1, x2, y2) { // http://www.gwycon.com/calculating-the-distance-between-two-pixels/
+                return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            }
+            
+            function calcDist(m, p) {                    
+                return {
+                    lt: calcDistance(m.x, m.y, p.l, p.t),
+                    rt: calcDistance(m.x, m.y, p.r, p.t),
+                    lb: calcDistance(m.x, m.y, p.l, p.b),
+                    rb: calcDistance(m.x, m.y, p.r, p.b)                              
+                }
+            }
+            
+            // count angle in radians
+            function calcAngleRad(x1, y1, x2, y2) {
+                return Math.atan2( (y2 - y1) , (x2 - x1) );
+            }
+            
+            // count angle in degrees
+            function calcAngle(x1, y1, x2, y2) {
+                var a = calcAngleRad(x1, y1, x2, y2) * (180 / Math.PI); 
+                return (a < 0) ? (a += 360) : a;
+            }
+            
+            function findWidestAngles(m, p) {
+                var k = [calcAngle(m.x, m.y, p.l, p.t), calcAngle(m.x, m.y, p.r, p.t), calcAngle(m.x, m.y, p.l, p.b), calcAngle(m.x, m.y, p.r, p.b)];
+                
+                if (k[0] > 269 && k[2] < 91) {                    
+                    return {
+                        l : k[0],
+                        r : k[2]
+                    }
+                }      
+                
+                k.sort(function(a, b){return a-b});
+                
+                return {
+                    l : k[0],
+                    r : k[3]
+                }
+            };             
+            
+            
+            var target = $('#absol');
+            
+            
+            ;(function () {                
+                
+                var thrmouse = (function () {
+                    var m, mm = false, mline = $();                     
+                    return _.throttle(function (e) {
+                        m = {
+                            x : e.pageX,
+                            y : e.pageY
+                        };
+                        
+                        process.nextTick((function (m, mm) {
+                            return function () {
+                                $.line(m.x, m.y, {ang: calcAngle(mm.x, mm.y, m.x, m.y), dis: 100}, function (div) {
+                                    mline.remove();
+                                    mline = div;
+                                }); 
+                            }
+                        })(m, mm));                                 
+                        
+                        mm = m;
+                        
+                    }, 100);
+                })();
+                
+                var thr = (function () {
+                    var p, c, dist, ldist, inside, m, lline = $(), rline = $(), fn = function (e) {
+                        m = {
+                            x : e.pageX,
+                            y : e.pageY
+                        };
+
+                        p       = docpos(target);
+                        dist    = calcDist(m, p);
+
+                        if (ldist) {
+
+                            inside = (m.x >= p.l && m.x <= p.r && m.y >= p.t && m.y <= p.b);                                                
+
+                            if (!inside) {
+                                var toward = isMovingToward(ldist, dist);
+
+                                if (toward) {
+                                    json('tak 1')   
+                                    target.addClass('red');
+                                }
+                                else {
+                                    log('nie 1')
+                                    target.removeClass('red');
+                                }                            
+
+                                process.nextTick((function (m, p) {
+                                    return function () {
+                                        c = findWidestAngles(m, p); 
+                                        $.line(m.x, m.y, {ang: c.l, dis: 100}, function (div) {
+                                            lline.remove();
+                                            lline = div;
+                                        });                                
+                                        $.line(m.x, m.y, {ang: c.r, dis: 100}, function (div) {
+                                            rline.remove();
+                                            rline = div;
+                                        });  
+                                    }
+                                })(m, p));
+                            }                        
+                        }
+                        else {
+                            log('init');
+                        }
+
+                        ldist = dist;
+                    }
+                    
+//                    fn = _.throttle(fn ,50);
+                    
+                    return fn;
+                })();                
+                
+                $(document).on('mousemove', thr);
+                $(document).on('mousemove', thrmouse);         
+            })();
+            
+            
+        })
+    </script>
+    <style type="text/css">
+        .red {
+            color: red !important;
+            border-color: red !important;
+        }
+        #absol {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            
+            border: 10px solid silver;
+            color: #333;
+            padding: 15px 30px;
+            margin: 25px;
+        }
+    </style>
+</head>
+<body>
+    <span id="absol">absol</span>
+</body>
+</html>
