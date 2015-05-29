@@ -54,7 +54,7 @@
 })((function (name, base) {
     return function ($) {
         function log(l){try{console.log(l)}catch(e){}};
-        function error(l){try{console.error(l)}catch(e){}};        
+        function error(l){try{console.error(l)}catch(e){}};
 //        function log(l) {};
 
         function isFunction (a) { // taken from underscore.js
@@ -70,10 +70,10 @@
         function _a(a) {
             return Array.prototype.slice.call(a, 0);
         };
-        
-        return $.fn[name] = function () { 
+
+        return $.fn[name] = function () {
             var tooltip = arguments[0], o = arguments[1], a = _a(arguments);
-            
+
             o = $.extend({
                 showon              : 'click',      // false, 'click', 'hover', 'hoverclick'
                 hideonclick         : 'document',   // false, 'notooltip', 'target', 'document'
@@ -83,11 +83,11 @@
             }, o || {});
 
             $(this).each(function () {
-                var t = $(this); // target do którego będą dowiązywane eventy pokazująci i chowające - domyślnie jest to source   
+                var t = $(this);  // target do którego będą dowiązywane eventy pokazująci i chowające - domyślnie jest to source
 
-                if (typeof tooltip == 'undefined') 
+                if (typeof tooltip == 'undefined')
                     return error("First argument cannot be undefined");
-                
+
                 if (isFunction(tooltip)) { // if retrieved by function
                     tooltip = tooltip.apply(t, a);
                 }
@@ -96,7 +96,7 @@
                 }
 
                 t[base].apply(t, a);
-                
+
                 if (isString(o.showon)) {
                     switch (true) {
                         case o.showon.indexOf('click') > -1:
@@ -104,13 +104,13 @@
                             break;
                         case o.showon.indexOf('hover') > -1:
                             log('hover')
-                            break;          
-                    }                    
+                            break;
+                    }
                 }
                 else {
-                    log('showon disabled')        
-                }                                
-                
+                    log('showon disabled')
+                }
+
                 if (isString(o.hideonclick)) { // false, 'notooltip', 'target', 'document'
                     switch (o.hideonclick) {
                         case 'notooltip':
@@ -118,16 +118,16 @@
                             break;
                         case 'target':
                             log('target')
-                            break;         
+                            break;
                         case 'document':
                             log('document')
-                            break;          
-                    }                    
+                            break;
+                    }
                 }
                 else {
-                    log('hideonclick disabled')        
+                    log('hideonclick disabled')
                 }
-                
+
                 if (isString(o.hideonmouseleave)) { // false, 'both', 'target'
                     switch (o.hideonclick) {
                         case 'both':
@@ -135,15 +135,15 @@
                             break;
                         case 'target':
                             log('target')
-                            break;       
-                    }                    
+                            break;
+                    }
                 }
                 else {
-                    log('hideonmouseleave disabled')        
-                }                
-            });            
+                    log('hideonmouseleave disabled')
+                }
+            });
         };
-        
+
         function error(l) {try {console.error(l);}catch (e) {}};
         function _thw(message) {throw "plugin jQuery(...)."+name+"() : "+message};
 
@@ -324,16 +324,16 @@
                             //.css({position: 'absolute'}) // i don't know why but jQuery UI position setup here 'relative' instead of 'absolute'
                             .addClass(o.astart)
                         ;
-                        
-                        var visible = o.tooltip.is(':visible'), 
+
+                        var visible = o.tooltip.is(':visible'),
                             afterShow = (function () {
                                 var a = _a(arguments);
                                 var t = this;
                                 return function () {
-                                    o.afterShow.apply(t, a);                                
+                                    o.afterShow.apply(t, a);
                                 }
                             }).call(t, o, visiblebefore, k);
-                        
+
                         if (visible) {
                             setTimeout(function() {
                                 o.tooltip
@@ -341,16 +341,16 @@
                                     .addClass(o.astop)
                                 ;
                                 afterShow();
-                            }, 20);                       
+                            }, 20);
                         }
                         else {
-                            process.nextTick(function() {                                
+                            process.nextTick(function() {
                                 o.tooltip
-                                    .one(transitionend, afterShow)                                
+                                    .one(transitionend, afterShow)
                                     .addClass(o.aanim)
                                     .addClass(o.astop)
                                 ;
-                            });                                                        
+                            });
                         }
 
                     })(o.show);
@@ -358,21 +358,21 @@
                     o.show = true;
                 }
                 else { // hide
-                    var visiblebefore = o.tooltip.is(':visible'), 
+                    var visiblebefore = o.tooltip.is(':visible'),
                         afterHide = (function () {
                             var a = _a(arguments);
                             var t = this;
                             return function () {
                                 o.afterHide.apply(t, a);
-                            }                            
+                            }
                         }).call(t, o, visiblebefore);
-                    
+
                     if (getTransitionTime(o.tooltip)) {
                         o.tooltip.one(transitionend, function () {
-                            
-                            if (!o.tooltip.hasClass(o.astop)) 
+
+                            if (!o.tooltip.hasClass(o.astop))
                                 o.tooltip.removeClass(o.aanim+' '+o.astart+' '+o.ashow);
-                            
+
                             afterHide();
                         });
                     }

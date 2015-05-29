@@ -67,49 +67,38 @@
                      */
                     function docpos(element) { // .offset() based
                         var t = $(element).first();
-
                         if (!t.length)
                             throw "No elemen selected";
-
                         var
                             o = t.offset(),
                             k = {
                                 l: o.left,
                                 t: o.top
                             }
-
                         k.r = k.l + t.outerWidth(false);
                         k.b = k.t + t.outerHeight(false);
-
                         return k;
                     };
 
                     function moveDirection(ld, d) {
-
                         if (ld > d)
                             return 1;
-
                         if (ld < d)
                             return -1;
-
                         return 0;
                     }
-
                     function calcDistance(x1, y1, x2, y2) { // http://www.gwycon.com/calculating-the-distance-between-two-pixels/
                         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
                     }
-
                     function calcDist(m, p) {
                         p.cx = p.l + ((p.r - p.l) / 2);
                         p.cy = p.t + ((p.b - p.t) / 2);
                         return parseInt(calcDistance(m.x, m.y, p.cx, p.cy));
                     }
-
                     // count angle in radians
                     function calcAngleRad(x1, y1, x2, y2) {
                         return Math.atan2( (y2 - y1) , (x2 - x1) );
                     }
-
                     // count angle in degrees
                     function calcAngle(x1, y1, x2, y2) {
                         var a = calcAngleRad(x1, y1, x2, y2) * (180 / Math.PI);
