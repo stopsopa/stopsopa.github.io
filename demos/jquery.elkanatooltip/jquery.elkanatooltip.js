@@ -235,16 +235,16 @@
                             //.css({position: 'absolute'}) // i don't know why but jQuery UI position setup here 'relative' instead of 'absolute'
                             .addClass(o.astart)
                         ;
-                        
-                        var visible = o.tooltip.is(':visible'), 
+
+                        var visible = o.tooltip.is(':visible'),
                             afterShow = (function () {
                                 var a = _a(arguments);
                                 var t = this;
                                 return function () {
-                                    o.afterShow.apply(t, a);                                
+                                    o.afterShow.apply(t, a);
                                 }
                             }).call(t, o, visiblebefore, k);
-                        
+
                         if (visible) {
                             setTimeout(function() {
                                 o.tooltip
@@ -252,16 +252,16 @@
                                     .addClass(o.astop)
                                 ;
                                 afterShow();
-                            }, 20);                       
+                            }, 20);
                         }
                         else {
-                            process.nextTick(function() {                                
+                            process.nextTick(function() {
                                 o.tooltip
-                                    .one(transitionend, afterShow)                                
+                                    .one(transitionend, afterShow)
                                     .addClass(o.aanim)
                                     .addClass(o.astop)
                                 ;
-                            });                                                        
+                            });
                         }
 
                     })(o.show);
@@ -269,21 +269,21 @@
                     o.show = true;
                 }
                 else { // hide
-                    var visiblebefore = o.tooltip.is(':visible'), 
+                    var visiblebefore = o.tooltip.is(':visible'),
                         afterHide = (function () {
                             var a = _a(arguments);
                             var t = this;
                             return function () {
                                 o.afterHide.apply(t, a);
-                            }                            
+                            }
                         }).call(t, o, visiblebefore);
-                    
+
                     if (getTransitionTime(o.tooltip)) {
                         o.tooltip.one(transitionend, function () {
-                            
-                            if (!o.tooltip.hasClass(o.astop)) 
+
+                            if (!o.tooltip.hasClass(o.astop))
                                 o.tooltip.removeClass(o.aanim+' '+o.astart+' '+o.ashow);
-                            
+
                             afterHide();
                         });
                     }
@@ -318,12 +318,12 @@
                 afterShow : $.noop,
                 afterHide : $.noop
             }, o || {});
-            
+
             if (typeof tooltip == 'string') {
                 switch (tooltip) {
                     case 'destroy':
-                        
-                        
+
+
                         break;
                     default:
                         return log('command '+tooltip+' not handled');
@@ -333,7 +333,7 @@
             // preparing mode
             if (typeof o.tooltip == 'string')
                 tooltip = $('<div></div>').html(tooltip);
-            
+
             try {
                 if (tooltip.parent().hasClass(o.cls)) {
                     tooltip = tooltip.parent();

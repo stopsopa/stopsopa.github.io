@@ -1,0 +1,368 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery.elkanatooltip by Szymon Działowski</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <meta name="description" content="jQuery.line plugin to draw lines in HTML5 using pure CSS3 by Szymon Działowski">
+    <meta name="keywords" content="jQuery.line plugin draw lines html5 css3">
+
+    <script type="text/javascript" src="../../js/jquery-1.11.2.js"></script>
+    <script type="text/javascript" src="../../js/jquery-ui-draggable.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../../js/bootstrap-3.3.4/css/bootstrap-rewrite.css" media="all" />
+
+    <script type="text/javascript" src="../../js/jquery.minicolors/jquery.minicolors.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../js/jquery.minicolors/jquery.minicolors.css" media="all" />
+
+    <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../../js/aceedit/jquery.aceedit.js"></script>
+    <script type="text/javascript" src="../../js/underscore.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../js/aceedit/jquery.aceedit.css" media="all" />
+
+
+<!--	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script>window.jQuery || document.write(unescape('%3Cscript src="http://jquery.com/jquery-wp-content/themes/jquery/js/jquery-1.9.1.min.js"%3E%3C/script%3E'))</script>
+	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" media="all" />
+	<script type="text/javascript" src="http://httpd.pl/poligon/jquery.line/jquery.minicolors/jquery.minicolors.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://httpd.pl/poligon/jquery.line/jquery.minicolors/jquery.minicolors.css" media="all" />
+
+	<link rel="stylesheet" type="text/css" href="http://stopsopa.bitbucket.org/js/bootstrap/css/bootstrap-rewrite.css" media="all" />   -->
+
+
+
+    <!--<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700,800&subset=latin,cyrillic-ext,latin-ext,cyrillic" rel="stylesheet" type="text/css">-->
+    <script type="text/javascript" src="jquery.elkanatooltip.js"></script>
+    <!--<link data-source rel="stylesheet" type="text/css" href="jquery.elkanatooltip.css" media="all" />-->
+
+    <style type="text/css">
+        body {
+            margin-top: 50px;
+        }
+        #body .ff {
+	    font-family: "Open Sans",Arial,Helvetica,Sans-Serif;
+        }
+        th,
+        .f * ,
+        .f {
+            margin: 0;
+            padding: 0;
+	    font-family: "Open Sans",Arial,Helvetica,Sans-Serif;
+        }
+        #cont {
+            width: 950px;
+            margin: auto;
+        }
+	td {
+	    vertical-align: top;
+	}
+        #test {
+            padding-bottom: 77px;
+            padding-left: 78px;
+            padding-top: 20px;
+        }
+        .clear {
+            clear: both;
+        }
+        .red {
+            color: red;
+        }
+        .col1 {
+            width: 32%;
+        }
+        .col2 {
+            width: 68%;
+        }
+        .col2 > p {
+	    font-family: "Open Sans",Arial,Helvetica,Sans-Serif;
+            margin: 2px;
+        }
+        .left {
+            float: left;
+        }
+        .drag {
+            padding: 10px;
+            border: 1px solid silver;
+	    font-family: "Open Sans",Arial,Helvetica,Sans-Serif;
+            cursor: move;
+            white-space: nowrap;
+            background-color: white;
+            z-index: 6;
+        }
+        .animated {
+            -webkit-animation-duration: 1s;
+            animation-duration: 1s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+            -webkit-animation-timing-function: linear;
+            animation-timing-function: linear;
+            animation-iteration-count:infinite;
+            -webkit-animation-iteration-count:infinite;
+        }
+        @-webkit-keyframes bounce {
+            0%, 40%, 50%, 60%, 100% {-webkit-transform: translateY(0);}
+            45% {-webkit-transform: translateY(-5px);}
+            55% {-webkit-transform: translateY(5px);}
+        }
+        @keyframes bounce {
+            0%, 40%, 50%, 60%, 100% {transform: translateY(0);}
+            45% {transform: translateY(-5px);}
+            55% {transform: translateY(5px);}
+        }
+        .bounce {
+            color: #333;
+            -webkit-animation-name: bounce;
+            animation-name: bounce;
+        }
+    </style>
+
+    <script type="text/javascript">
+        function log(l) {try {console.log(l);} catch (e) {}};
+
+        $(function () {
+
+
+
+            ;(function () {
+
+                var target      = $('[data-target]');
+                var ltmp        = '<style type="text/css" data-source></style>';
+//                <link rel="stylesheet" type="text/css" href="${1:style}.css" media="all" />
+                var head        = $('head');
+
+                var testdivs    = _.template($('[data-testdivs]').html());
+
+                var testdiv     = $('#test');
+
+                target.attr('data-h', ($(window).height() - 120) +'px') //  data-h="48px"
+
+                $.aceedit();
+
+                window.dedit    = target.data('editor');
+
+                $('[data-select]').on('click', function () {
+                    dedit.selectAll();
+                })
+
+                var tmp, option = {
+                    position: {
+                        my: 'top',
+                        at: 'bottom'
+                    },
+                    border: false
+                };
+
+                $.ajax('./jquery.elkanatooltip_tmp.css')
+                    .done(function (tmp) {
+
+                        tmp = _.template(tmp);
+
+                        var edit = _.debounce(function () {
+
+                            testdiv.empty().html(testdivs());
+
+                            var elem        = testdiv.find('.test_element');
+                            var tool        = testdiv.find('.test_tooltip');
+
+                            var style = tmp({json: option});
+//                            var style = tmp({json: option}).replace(/(\/\*[.\S\s]*?\*\/)/g, '');
+
+                            $('[data-source]').remove();
+
+                            $(ltmp).appendTo(head).html(style);
+
+                            dedit.setValue(style.replace(/\n\s*\n/g, '\n'));
+                            dedit.clearSelection();
+                            dedit.getSession().setScrollTop(0);
+
+                            elem.elkanatooltip(tool, option);
+
+                            elem
+                                .draggable({
+                                    drag: function () {
+                                        process.nextTick(function() {
+                                            elem.elkanatooltip(true);
+                                        })
+            //                            edit();
+                                    }
+                                })
+                                .click(function () {
+                                    elem.elkanatooltip(!elem.elkanatooltip().show);
+                                });
+
+
+                            $('table input:radio').unbind('click').click(function () {
+                                var t = $(this);
+                                option.position[t.attr('name')] = t.val();
+                                elem.elkanatooltip(tool, option);
+                            });
+
+                        }, 300);
+
+                        edit();
+
+                    });
+
+
+
+
+            })();
+
+        });
+    </script>
+</head>
+<body id="body">
+    <div id="cont">
+	<div class="btsp">
+<!--            <div class="alert alert-info btsp f">
+                <i class="glyphicon glyphicon-info-sign btsp"></i> Adjust setup and have fun while draging and clicking elements on this page
+            </div> -->
+
+            <div class="col1 left">
+
+                <div class="btsp">
+                    <a href="https://github.com/stopsopa/elkanatooltip" class="btn btn-link btsp f" id="home" target="_blank"><img src="https://github.com/fluidicon.png" height="31" /> manual/download</a>
+                </div>
+
+                <table class="left">
+                    <thead>
+                        <tr>
+                            <th colspan="3">me <sup class="red">*</sup></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="radio" name="my" value="left top" autocomplete="off"/></td>
+                            <td><input type="radio" name="my" value="top" autocomplete="off" checked="checked"/></td>
+                            <td><input type="radio" name="my" value="right top" autocomplete="off"/></td>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="my" value="left" autocomplete="off"/></td>
+                            <td><input type="radio" name="my" value="center center" autocomplete="off"/></td>
+                            <td><input type="radio" name="my" value="right" autocomplete="off"/></td>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="my" value="left bottom" autocomplete="off"/></td>
+                            <td><input type="radio" name="my" value="bottom" autocomplete="off"/></td>
+                            <td><input type="radio" name="my" value="right bottom" autocomplete="off"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="left">
+                    <thead>
+                        <tr>
+                            <th colspan="3">at <sup class="red">*</sup></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="radio" name="at" value="left top" autocomplete="off"/></td>
+                            <td><input type="radio" name="at" value="top" autocomplete="off"/></td>
+                            <td><input type="radio" name="at" value="right top" autocomplete="off"/></td>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="at" value="left" autocomplete="off"/></td>
+                            <td><input type="radio" name="at" value="center center" autocomplete="off"/></td>
+                            <td><input type="radio" name="at" value="right" autocomplete="off"/></td>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="at" value="left bottom" autocomplete="off"/></td>
+                            <td><input type="radio" name="at" value="bottom" autocomplete="off" checked="checked"/></td>
+                            <td><input type="radio" name="at" value="right bottom" autocomplete="off"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="clear"></div>
+
+                <!--<p class="f btspa"><span class="red">*</span>params "me", "at" what's that ??? <br />follow manual of <a href="https://jqueryui.com/position/" target="_blank">jQuery UI position</a></p>-->
+
+
+                <div id="test" class="left f">
+
+<!--
+                     target element vvv
+                        <div id="test_element" class="drag">drag or click</div>
+                     target element ^^^
+
+                     tooltip element vvv
+                        <div id="test_tooltip">first line <br /> second line</div>
+                     tooltip element ^^^
+-->
+
+                </div>
+
+                <div class="clear"></div>
+<!--
+                <div class="btspa">
+                    <span class="animated bounce glyphicon glyphicon-exclamation-sign"></span> See also extension/wrappers:
+                    <ul>
+                        <li><a href="datawrapper.html">data wrapper extension</a></li>
+                        <li><a href="titlewrapper.html">title wrapper extension</a></li>
+                    </ul>
+                </div>
+                <div class="btspa">
+                    <ul>
+                        <li>napisać manual</li>
+                        <li>title wrapper</li>
+                        <li>data-* wrapper</li>
+                    </ul>
+                </div>-->
+            </div>
+
+            <div class="col2 left">
+                <p>Live css styles:</p>
+                <div data-target class="syntax" data-lang="css" data-w="644px">
+                    <script type="text/tmp">
+$font-stack:    Helvetica, sans-serif;
+$primary-color: #333;
+
+body {
+  font: 100% $font-stack;
+  color: $primary-color;
+}
+                    </script>
+                </div>
+
+                <div class="btspa">
+                    <div class="btn-group">
+                        <button class="btn btn-xs btn-success ff" data-select>
+                            <i class="glyphicon glyphicon-copy"></i>
+                            Select all to copy
+                        </button>
+                        <button class="btn btn-xs btn-success ff" data-download>
+                            <i class="glyphicon glyphicon-download"></i>
+                            download
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+	</div>
+    </div>
+
+    <!-- see http://codepo8.github.io/css-fork-on-github-ribbon/ -->
+    <a href="https://github.com/stopsopa/elkanatooltip" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+<script type="text/tmp" data-testdivs>
+    <!-- target element vvv -->
+        <div class="test_element drag">drag or click</div>
+    <!-- target element ^^^ -->
+
+    <!-- tooltip element vvv -->
+        <div class="test_tooltip">first line <br /> second line</div>
+    <!-- tooltip element ^^^ -->
+</script>
+
+<!--    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-52657901-1', 'auto');
+        ga('send', 'pageview');
+    </script>-->
+</body>
+</html>

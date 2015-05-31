@@ -4,8 +4,8 @@ body span.elkanatooltip.test {
     border: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    border-top: 14px solid transparent !important; /* arrowsize */
-    border-bottom: 3px solid transparent !important; /* border existance and width */
+    border-top: 5px solid transparent !important; /* arrowsize */
+    border-bottom: 2px solid transparent !important; /* border existance and width */
 }
 /* test element ^^^ */
 
@@ -42,18 +42,17 @@ body span.elkanatooltip.test {
 /* animate ^^^ */
 
 .elkanatooltip > div {
-    border: 3px solid red;  /* border */
-
     background-color: #333;
-    border-radius: 2px;
     color: white;
     padding: 3px;
     -webkit-border-radius: 2px;
     -khtml-border-radius: 2px;
     -moz-border-radius: 2px;
+    border-radius: 2px;
   -webkit-box-shadow: 0 0 6px #000;
           box-shadow: 0 0 6px #000;
 
+    border: 2px solid red;
 }
 
 .elkanatooltip > i {
@@ -61,7 +60,7 @@ body span.elkanatooltip.test {
     display: inline-block;
     margin: 0 !important;
     padding: 0 !important;
-    border: 14px transparent solid; /* arrowsize */
+    border: 5px transparent solid; /* arrowsize */
 }
 
 /* if border exists vvv */
@@ -71,7 +70,7 @@ body span.elkanatooltip.test {
         display: inline-block;
         margin: 0 !important;
         padding: 0 !important;
-        border: 12px transparent solid; /* arrowsize - border */  /* arrowsize[5] - border[2] = 3    => +1 = 4 */
+        border: 4px transparent solid; /* arrowsize - border */  /* arrowsize[5] - border[2] = 3    => +1 = 4 */
     }
 /* endif ^^^ */
 
@@ -94,26 +93,26 @@ body span.elkanatooltip.test {
         transform: translate(0px, -10px);
     }
     .elkanatooltip.v-b > div {
-        margin-bottom: 19px;  /* arrowsize + 5 offset from target */
+        margin-bottom: 10px;  /* arrowsize + 5 offset from target */
     }
     .elkanatooltip.v-b > i {
         /* if border exists vvv */
-            border-top: 14px red solid;  /* arrowsize */
+            border-top: 5px red solid;  /* arrowsize */
         /* else */
-            /* border-top: 15px #333 solid; */  /* arrowsize */
+            /* border-top: 5px #333 solid; */  /* arrowsize */
         /* endif ^^^ */
         border-bottom: none;
-        bottom: 8px; /* arrowsize - ( 2x border) */
+        bottom: 5px;
     }
     /* if border exists vvv */
         .elkanatooltip.v-b > i:before {
-            border-top: 12px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            border-top: 4px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-bottom: none;
-            bottom: 2px;                                 /** arrowsize[5] - ( 2x border[2] = 3) */
+            bottom: 3px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(-12px, 0px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(-12px, 0px);
-            transform: translate(-12px, 0px);
+            -ms-transform: translate(-4px, 0px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            -webkit-transform: translate(-4px, 0px);
+            transform: translate(-4px, 0px);
         }
     /* endif ^^^ */
 /* tooltip on top ^^^ */
@@ -125,26 +124,26 @@ body span.elkanatooltip.test {
         transform: translate(0px, 10px);
     }
     .elkanatooltip.v-t > div {
-        margin-top: 19px; /* arrowsize + 5 offset from target */
+        margin-top: 10px; /* arrowsize + 5 offset from target */
     }
     .elkanatooltip.v-t > i {
         /* if border exists vvv */
-            border-bottom: 14px red solid; /* arrowsize */
+            border-bottom: 5px red solid; /* arrowsize */
         /* else */
             /* border-bottom: 5px #333 solid; */ /* arrowsize */
         /* endif ^^^ */
         border-top: none;
-        top: 8px; /* arrowsize - ( 2x border) */
+        top: 5px;
     }
     /* if border exists vvv */
         .elkanatooltip.v-t > i:before {
-            border-bottom: 12px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            border-bottom: 4px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-top: none;
-            top: 2px;                                 /** arrowsize[5] - ( 3x border[2] = 3) */
+            top: 3px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(-12px, 0px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(-12px, 0px);
-            transform: translate(-12px, 0px);
+            -ms-transform: translate(-4px, 0px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            -webkit-transform: translate(-4px, 0px);
+            transform: translate(-4px, 0px);
         }
     /* endif ^^^ */
 /* tooltip on bottom ^^^ */
@@ -156,26 +155,26 @@ body span.elkanatooltip.test {
         transform: translate(-10px, 0px);
     }
     .elkanatooltip.h-r > div {
-        margin-right: 19px; /* arrowsize + 5 offset from target */
+        margin-right: 10px; /* arrowsize + 5 offset from target */
     }
     .elkanatooltip.h-r > i {
         /* if border exists vvv */
-            border-left: 14px red solid; /* arrowsize */
+            border-left: 5px red solid; /* arrowsize */
         /* else */
             /* border-left: 5px #333 solid; */ /* arrowsize */
         /* endif ^^^ */
         border-right: none;
-        right: 8px; /* arrowsize - ( 2x border) */
+        right: 5px;
     }
     /* if border exists vvv */
         .elkanatooltip.h-r > i:before {
-            border-left: 12px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            border-left: 4px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-right: none;
-            right: 2px;                                 /** arrowsize[5] - ( 3x border[2] = 3) */
+            right: 3px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(0px, -12px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(0px, -12px);
-            transform: translate(0px, -12px);
+            -ms-transform: translate(0px, -4px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            -webkit-transform: translate(0px, -4px);
+            transform: translate(0px, -4px);
         }
     /* endif ^^^ */
 /* tooltip on left ^^^ */
@@ -187,26 +186,26 @@ body span.elkanatooltip.test {
         transform: translate(10px, 0px);
     }
     .elkanatooltip.h-l > div {
-        margin-left: 19px; /* arrowsize + 5 offset from target */
+        margin-left: 10px; /* arrowsize + 5 offset from target */
     }
     .elkanatooltip.h-l > i {
         /* if border exists vvv */
-            border-right: 14px red solid; /* arrowsize */
+            border-right: 5px red solid; /* arrowsize */
         /* else */
             /* border-right: 5px #333 solid; */ /* arrowsize */
         /* endif ^^^ */
         border-left: none;
-        left: 8px; /* arrowsize - ( 2x border) */
+        left: 5px;
     }
     /* if border exists vvv */
         .elkanatooltip.h-l > i:before {
-            border-right: 12px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            border-right: 4px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-left: none;
-            left: 2px;                                 /** arrowsize[5] - ( 3x border[2] = 3) */
+            left: 3px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(0, -12px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(0, -12px);
-            transform: translate(0, -12px);
+            -ms-transform: translate(0, -4px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            -webkit-transform: translate(0, -4px);
+            transform: translate(0, -4px);
         }
     /* endif ^^^ */
 /* tooltip on right ^^^ */
