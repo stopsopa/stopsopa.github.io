@@ -9,29 +9,28 @@
     <meta name="description" content="jQuery.line plugin to draw lines in HTML5 using pure CSS3 by Szymon Działowski">
     <meta name="keywords" content="jQuery.line plugin draw lines html5 css3">
 
-    <script type="text/javascript" src="../../js/jquery-1.11.2.js"></script>
-    <script type="text/javascript" src="../../js/jquery-ui-draggable.js"></script>
+    <script src="../../js/jquery-1.11.2.js"></script>
+    <script src="../../js/jquery-ui-draggable.js"></script>
 
     <link rel="stylesheet" type="text/css" href="../../js/bootstrap-3.3.4/css/bootstrap-rewrite.css" media="all" />
 
-    <script type="text/javascript" src="../../js/jquery.minicolors/jquery.minicolors.js"></script>
+    <script src="../../js/jquery.minicolors/jquery.minicolors.js"></script>
     <link rel="stylesheet" type="text/css" href="../../js/jquery.minicolors/jquery.minicolors.css" media="all" />
 
-    <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" src="../../js/aceedit/jquery.aceedit.js"></script>
-    <script type="text/javascript" src="../../js/underscore.js"></script>
+    <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="../../js/aceedit/jquery.aceedit.css" media="all" />
-
-
-    <script type="text/javascript" src="../../js/URI.js"></script>
-
-
-
+    <script src="../../js/aceedit/jquery.aceedit.js"></script>
+    
+    <script src="../../js/underscore.js"></script>
+    <script src="../../js/URI.js"></script>
+    <script src="jquery.urlstate.js"></script>        
+    
+    <style type="text/css" data-style></style>
 
 <!--	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script>window.jQuery || document.write(unescape('%3Cscript src="http://jquery.com/jquery-wp-content/themes/jquery/js/jquery-1.9.1.min.js"%3E%3C/script%3E'))</script>
 	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" media="all" />
-	<script type="text/javascript" src="http://httpd.pl/poligon/jquery.line/jquery.minicolors/jquery.minicolors.js"></script>
+	<script src="http://httpd.pl/poligon/jquery.line/jquery.minicolors/jquery.minicolors.js"></script>
 	<link rel="stylesheet" type="text/css" href="http://httpd.pl/poligon/jquery.line/jquery.minicolors/jquery.minicolors.css" media="all" />
 
 	<link rel="stylesheet" type="text/css" href="http://stopsopa.bitbucket.org/js/bootstrap/css/bootstrap-rewrite.css" media="all" />   -->
@@ -39,7 +38,7 @@
 
 
     <!--<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700,800&subset=latin,cyrillic-ext,latin-ext,cyrillic" rel="stylesheet" type="text/css">-->
-    <script type="text/javascript" src="jquery.elkanatooltip.js"></script>
+    <script src="jquery.elkanatooltip.js"></script>
     <!--<link data-source rel="stylesheet" type="text/css" href="jquery.elkanatooltip.css" media="all" />-->
 
     <style type="text/css">
@@ -123,174 +122,10 @@
         }
     </style>
 
-    <script type="text/javascript">
+    <script>
         function log(l) {try {console.log(l);} catch (e) {}};
 
         $(function () {
-
-
-
-
-            ;(function (){
-
-                var flipget = (function (w, c) {
-                    for (var i in c)
-                        c[c[i]] = i;
-                    return function (s) {
-                        s = s.split('');
-                        for (var i = 0, l = s.length ; i < l ; ++i )
-                            if (c[s[i]]) s[i] = c[s[i]];
-                        return s.join('');
-                    };
-                })(this, {
-                    ' ' : '.',
-                    '"' : '!',
-                    ':' : '-',
-                    '{' : '(',
-                    '}' : ")",
-                    '?' : "_",
-                    '&' : "~",
-                    ',' : "*"
-                });
-
-                var key = 'permalink';
-
-                $.urlstate = function (opt) {
-                    function isObject(obj) {
-                        var type = typeof obj;
-                        return type === 'function' || type === 'object' && !!obj;
-                    };
-                    function isArray(obj) {
-                        return Object.prototype.toString.call(obj) === '[object Array]';
-                    };
-                    function each(obj, fn, context) {
-                        if (isArray(obj)) {
-                            for (var i = 0, l = obj.length ; i < l ; ++i)
-                                fn.call(context, obj[i], i);
-                        }
-                        else if (isObject(obj)) {
-                            for (var i in obj)
-                                fn.call(context, obj[i], i);
-                        }
-                    }
-                    function def() {
-                        var d = {};
-                        for (var i in opt.collection) {
-                            d[i] = opt.collection[i]('def');
-                        }
-                        return d;
-                    }
-                    function filtered(collection) {
-                        var d = def();
-
-                        var list = {};
-                        for (var i in collection) {
-                            if (d[i] !== collection[i]) {
-                                list[i] = collection[i];
-                            }
-                        }
-
-                        return clear(list);
-                    }
-                    function clear(d) {
-
-                        each(d, function (val, key) {
-//                           if (typeof val == 'string' && !val) {
-//                               delete d[key];
-//                           }
-                           if (isObject(d) || isArray(d)) {
-                               d[key] = clear(d[key]);
-                               if (jQuery.isEmptyObject(d[key])) {
-                                   delete d[key];
-                               }
-                           }
-                        });
-
-                        return d || {};
-                    }
-
-                    opt = $.extend({
-                        collection: {
-                            // klucz: funkcja -
-                            // klucz to nazwa pod jaką będzie przechowywany (na przykład w url parametr)
-                            // funkjca gdy dostaje true to ma czytać wartość, gdy dostaje false ma ustawić wartość (na przykład w polu input)
-                            // gdy dostaje undefined ma zwrócić wartość domyślną
-//                            j : function (s, value, key) {
-//
-//                                if (s === 'def')
-//                                    return 'defjeden';
-//
-//                                var field = $('[name="jeden"]');
-//
-//                                if (s === 'read')
-//                                    return field.val();
-//
-//                                field.val(value);
-//                            },
-                        },
-                        set: function (data) {
-                            var k = new URI(location.href);
-
-                            var d = {};
-                            d[key] = flipget(JSON.stringify(data));
-
-                            k.query(d);
-
-                            var url = k.toString();
-
-                            url = url.replace(/%28/g, '(');
-                            url = url.replace(/%29/g, ')');
-                            url = url.replace(/%21/g, '!');
-                            url = url.replace(/%5C/g, '\\');
-                            url = url.replace(/%2A/g, '*');
-
-                            history.replaceState({}, "", url);
-
-                            return url;
-                        }, // zapis - na przykład do url
-                        get: function () {
-
-                            var k = new URI(location.href);
-
-                            k = k.query(true);
-
-                            if (k[key])
-                                return JSON.parse(flipget(k[key]));
-
-                            return null;
-                        }, // odczyt - na przykład z url
-                    }, opt || {});
-
-                    var read = opt.get();
-
-                    if (read) {
-                        var d = def();
-
-                        read = $.extend(d, read);
-
-                        for (var i in read) {
-                            if (opt.collection[i]) {
-                                opt.collection[i]('write', read[i]);
-                            }
-                            else {
-                                log("key '"+i+"' is not exist in collection");
-                            }
-                        }
-
-                        log(read)
-                    }
-
-                    return function update() {
-
-                        var read = {}
-                        for (var i in opt.collection) {
-                            read[i] = opt.collection[i]('read');
-                        }
-                        
-                        opt.set(filtered(read));
-                    }
-                }
-            })();
 
             var update = $.urlstate({
                 collection: {
@@ -359,7 +194,7 @@
                     dedit.selectAll();
                 })
 
-                var tmp, option = {
+                var tmp, option = { 
                     position: {
                         my: 'top',
                         at: 'bottom'
@@ -379,8 +214,8 @@
                             var elem        = testdiv.find('.test_element');
                             var tool        = testdiv.find('.test_tooltip');
 
-                            var style = tmp({json: option});
-//                            var style = tmp({json: option}).replace(/(\/\*[.\S\s]*?\*\/)/g, '');
+//                            var style = tmp({json: option});
+                            var style = tmp({json: option}).replace(/(\/\*[.\S\s]*?\*\/)/g, '');
 
                             $('[data-source]').remove();
 
@@ -410,6 +245,7 @@
                                 var t = $(this);
                                 option.position[t.attr('name')] = t.val();
                                 elem.elkanatooltip(tool, option);
+                                edit()
                             });
 
                         }, 300);
@@ -420,9 +256,9 @@
 
 
 
-                function download(filename, text) {
+                function download(filename, content) {
                     var element = document.createElement('a');
-                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
                     element.setAttribute('download', filename);
                     element.style.display = 'none';
                     document.body.appendChild(element);
@@ -431,16 +267,29 @@
                 }
 
                 $('[data-download]').on('click', function () {
-                    log('test');
-                    download('filename'+$.now(),"jedna linia\ndruga linia\n\n\a\n\n")
+                    download('elkanatooltip_'+$.now(), dedit.getValue())
                 });
 
             })();
 
+//
+//
+//
+//            $('button[data-style]').click(function () {
+//                $('style[data-style]').html($('script[data-style]').html())
+//            });
+//            
         });
     </script>
 </head>
 <body id="body">
+<!--    <button data-style>style</button>
+    <script type="text/tmp" data-style>
+        * {
+            color: red !important;
+        }
+    </script>-->
+    
     <div id="cont">
 	<div class="btsp">
 <!--            <div class="alert alert-info btsp f">
@@ -562,6 +411,7 @@
                 <p>Live css styles:</p>
                 <div data-target class="syntax" data-lang="css" data-w="644px">
                     <script type="text/tmp">
+/* testowy css ma być zastąpiony przez javascript */
 $font-stack:    Helvetica, sans-serif;
 $primary-color: #333;
 
