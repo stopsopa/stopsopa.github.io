@@ -4,11 +4,11 @@
  *   https://github.com/ajaxorg/ace/blob/master/lib/ace/ext/modelist.js#L53
  *   https://github.com/ajaxorg/ace/tree/master/lib/ace/mode
  *
-     <div class="editor" data-lang="js">
+     <div class="editor" data-lang="js" data-w="95%">
         <script type="editor">{{ l.jsbody|raw }}</script>
      </div>
 
-     <div class="syntax" data-lang="js">
+     <div class="syntax" data-lang="js" data-w="95%">
         <script type="editor">{{ l.jsbody|raw }}</script>
      </div>
  *
