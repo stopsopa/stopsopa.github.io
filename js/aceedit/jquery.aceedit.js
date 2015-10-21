@@ -3,6 +3,15 @@
  * v 1.1 dodałem w komentarzach link do listy dostępnych języków
  *   https://github.com/ajaxorg/ace/blob/master/lib/ace/ext/modelist.js#L53
  *   https://github.com/ajaxorg/ace/tree/master/lib/ace/mode
+ *
+     <div class="editor" data-lang="js">
+        <script type="editor">{{ l.jsbody|raw }}</script>
+     </div>
+
+     <div class="syntax" data-lang="js">
+        <script type="editor">{{ l.jsbody|raw }}</script>
+     </div>
+ *
  */
 ;(function ($) {
     /**
@@ -47,12 +56,12 @@
             d && editor.getSession().setMode("ace/mode/"+d);
 
             that.hasClass('syntax') && editor.setReadOnly(true);  // false to make it editable
-      //        editor.getSession().setMode("ace/mode/javascript");
+            //        editor.getSession().setMode("ace/mode/javascript");
             editor.setValue(_.unescape(t));
             editor.clearSelection();
             if (!that.data('h')) {
-      //        newh = ((editor.getSession().getDocument().getLength()+1) * editor.renderer.lineHeight) +
-      //               editor.renderer.scrollBar.getWidth();
+                //        newh = ((editor.getSession().getDocument().getLength()+1) * editor.renderer.lineHeight) +
+                //               editor.renderer.scrollBar.getWidth();
                 setTimeout(function () {
                     newh = div.find('.ace_sb > div').height();
                     div.add(that).height(newh);
