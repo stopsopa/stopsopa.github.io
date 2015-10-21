@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
 
         <title>jQuery.tabs by Szymon Działowski</title>
         <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -11,26 +11,26 @@
         <meta name="description" content="jQuery.tabs by Szymon Działowski">
         <meta name="keywords" content="jQuery.tabs">
 
-        <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-        <script type="text/javascript" src="../../js/aceedit/jquery.aceedit.js"></script>
-        <link rel="stylesheet" type="text/css" href="../../js/aceedit/jquery.aceedit.css" media="all" />
-        <link rel="stylesheet" href="jquery.tabs.v0.1.css">
-        <script src="jquery.tabs.v0.1.js"></script>
+        <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" charset="utf-8"></script>
+        <link rel="stylesheet" type="text/css" href="http://httpd.pl/stopsopa.github.io/js/aceedit/jquery.aceedit.css" media="all" />
+        <script src="http://httpd.pl/stopsopa.github.io/js/aceedit/jquery.aceedit.js"></script>
+
+        <script src="http://httpd.pl/stopsopa.github.io/js/underscore.js"></script>
+
+
+        <link rel="stylesheet" href="http://stopsopa.github.io/demos/jquery.tabs/jquery.tabs.v0.1.css">
+        <script src="http://stopsopa.github.io/demos/jquery.tabs/jquery.tabs.v0.1.js"></script>
         <script>
-            (function (fn) {
-                (function call() {
-                    window.$ ? $(fn) : setTimeout(call, 100);
-                }())
-            }(function () {
+            $(function () {
 
-                $('[data-tabs]').on('tabs:change', function (ev) {
-                    ev.stopPropagation();
-                    console.log('tabs:change')
-                }).tabs({
-                    active: 1
-                });
+                $('[data-tabs]').tabs()
+                    .on('tabs:change', function (ev) {
+                        ev.stopPropagation();
+                        console.log('tabs:change')
+                    });
 
-            }));
+                $.aceedit();
+            });
         </script>
         <style>
             .grid {

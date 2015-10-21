@@ -92,6 +92,7 @@
                         t = $(this),
                         i = t.index()
                     ;
+                    //log('event: '+ t.index() +' : '+oninit)
 
                     buttons.children()
                         .not(':eq('+i+')').removeClass('active').end()
@@ -103,7 +104,16 @@
                         .eq(i).addClass('active')
                     ;
 
-                    box.trigger(name+':change', [oninit]);
+                    var data = t.data(key);
+                    var first = !data;
+                    if (!data) {
+                        data = {
+                           first : true
+                        };
+                        t.data(key, data);
+                    }
+
+                    box.triggerHandler(name+':change', [i, t, divs.children().eq(i), first]);
                 };
 
                 fn.buttons  = buttons;
@@ -111,9 +121,9 @@
                 fn.box      = box;
 
                 return fn;
-            }(box, buttons, divs))
+            }(box, buttons, divs));
 
-            buttons.on('click', '> *', change)
+            buttons.on('click', '> *', change);
 
             if (opt.active) {
                 var trigger = buttons.find('> :eq('+opt.active+')');
@@ -128,12 +138,12 @@
                     trigger = buttons.children(':first');
             }
 
-            change.call(trigger, null, ['oninit']);
-
             box.data(key, {
                 widget  : name,
                 change  : change
             });
+
+            change.call(trigger, null, 'oninit');
         });
     };
 

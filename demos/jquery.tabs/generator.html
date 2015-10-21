@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery.tabs by Szymon Działowski</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <meta name="description" content="jQuery.tabs by Szymon Działowski">
+    <meta name="keywords" content="jQuery.tabs">
+
+    <script src="../../js/jquery-1.11.2.js"></script>
+    <!--<script src="../../js/jquery-ui-draggable.js"></script>-->
+
+    <!--<link rel="stylesheet" type="text/css" href="../../js/bootstrap-3.3.4/css/bootstrap-rewrite.css" media="all" />-->
+
+    <!--<script src="../../js/jquery.minicolors/jquery.minicolors.js"></script>-->
+    <!--<link rel="stylesheet" type="text/css" href="../../js/jquery.minicolors/jquery.minicolors.css" media="all" />-->
+
+    <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="../../js/aceedit/jquery.aceedit.css" media="all" />
+    <script src="../../js/aceedit/jquery.aceedit.js"></script>
+    
+    <script src="../../js/underscore.js"></script>
+    <!--<script src="../../js/URI.js"></script>-->
+    <link rel="stylesheet" href="jquery.tabs.v0.1.css">
+    <script src="jquery.tabs.v0.1.js"></script>
+    
+    <style type="text/css" data-style></style>
+
+<!--	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script>window.jQuery || document.write(unescape('%3Cscript src="http://jquery.com/jquery-wp-content/themes/jquery/js/jquery-1.9.1.min.js"%3E%3C/script%3E'))</script>
+	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" media="all" />
+	<script src="http://httpd.pl/poligon/jquery.line/jquery.minicolors/jquery.minicolors.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://httpd.pl/poligon/jquery.line/jquery.minicolors/jquery.minicolors.css" media="all" />
+
+	<link rel="stylesheet" type="text/css" href="http://stopsopa.bitbucket.org/js/bootstrap/css/bootstrap-rewrite.css" media="all" />   -->
+
+
+
+    <!--<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700,800&subset=latin,cyrillic-ext,latin-ext,cyrillic" rel="stylesheet" type="text/css">-->
+    <!--<script src="jquery.elkanatooltip.js"></script>-->
+    <!--<link data-source rel="stylesheet" type="text/css" href="jquery.elkanatooltip.css" media="all" />-->
+
+    <style type="text/css">
+    </style>
+
+    <script>
+        function log(l) {try {console.log(l);} catch (e) {}};
+
+        $(function () {
+
+            var first = $('[data-tabs]:first').on('tabs:change', function (e, i, tab, div, isFirst) {
+                log('tabs:change')
+                log(arguments)
+                if (isFirst) {
+                    div.find('.editor, .syntax').aceedit();
+                    div.find('[data-tabs]').tabs();
+                }
+            })
+            .tabs({
+//                active: 1
+            });
+//            
+        });
+    </script>
+</head>
+<body>
+
+
+            <div data-tabs>
+                <div data-buttons>
+                    <a href="javascript:;" class="active">html</a>
+                    <span>javascript</span>
+                    <span>result</span>
+                </div>
+                <div data-divs>
+                    <div>
+
+
+                        <div data-target class="editor" data-lang="html" data-w="95%">
+                            <script type="text/tmp">
+<div data-tabs>
+    <div data-buttons>
+        <span>                  tab 1   </span>
+        <a href="javascript:;"> tab 2   </a>
+        <span class="active">   tab 3   </span>
+        <span>                  tab 4   </span>
+    </div>
+    <div data-divs>
+        <div>
+            <img src="//i.imgur.com/SkkKinS.jpg" width="110">
+        </div>
+        <div>
+            Lorem ipsum div - second tab
+        </div>
+        <div>
+            <img src="//i.imgur.com/SkkKinS.jpg" width="110" style="float: left; margin-right: 15px;">
+            <p style="margin-top: 0;">Lorem ipsum ... </p>
+            <p>Donec vitae congue ... </p>
+            <p>Mauris at ipsum ... </p>
+        </div>
+        <div>
+            Last tab
+        </div>
+    </div>
+</div>
+</script>
+                        </div>
+                        <div style="clear: both;"></div>
+
+
+                    </div>
+                    <div>
+
+                        <div data-target class="editor" data-lang="html" data-w="95%">
+                            <script type="text/tmp">
+<link rel="stylesheet" href="jquery.tabs.v0.1.css">
+<script src="jquery.tabs.v0.1.js">&lt;/script>
+
+<script>
+    $(function () {
+        $('[data-tabs]')
+            .on('tabs:change', function (e, i, tab, div, isFirst) {
+                // better define .on() events before call .tabs(),
+                // because .tabs() will have no opportunity to call this event during initialization
+                if (isFirst) { // isFirst -> is this a first click on tab?,
+                    div.find('.editor, .syntax').aceedit();
+                }
+            })
+            .tabs()
+    });
+&lt;/script>
+</script>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </div>
+                    <div>
+
+
+                        <div data-tabs>
+                            <div data-buttons>
+                                <span>                  tab 1   </span>
+                                <a href="javascript:;"> tab 2   </a>
+                                <span class="active">   tab 3   </span>
+                                <span>                  tab 4   </span>
+                            </div>
+                            <div data-divs>
+                                <div>
+                                    <img src="//i.imgur.com/SkkKinS.jpg" width="110">
+                                </div>
+                                <div>
+                                    Lorem ipsum div - second tab
+                                </div>
+                                <div>
+                                    <img src="//i.imgur.com/SkkKinS.jpg" width="110" style="float: left; margin-right: 15px;">
+
+                                    <p style="margin-top: 0;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nulla mi, convallis sed
+                                        volutpat lacinia, mattis vel nisi. Donec pretium libero quis sollicitudin elementum. Fusce
+                                        pellentesque fermentum enim ut tempus. Quisque malesuada lacus id tellus hendrerit, mattis
+                                        pharetra est semper. Morbi mi risus, consequat at ornare sed, pellentesque ac dui. Fusce
+                                        malesuada lorem sem, quis semper eros tristique at. Quisque tristique consectetur mollis.
+                                        Phasellus id erat libero. Vestibulum nec erat ante. In accumsan lorem ut pellentesque
+                                        dignissim. Fusce tempor nibh sed eleifend vehicula. Cras ultricies mi magna. Fusce euismod
+                                        ipsum urna, vitae convallis leo rutrum eget.</p>
+
+                                    <p> Donec vitae congue felis. Phasellus eget laoreet ex, aliquet dictum turpis. Integer feugiat ac lectus vitae pulvinar. Vivamus vitae ipsum in sapien posuere pretium a vel enim. Suspendisse molestie accumsan ex in luctus. Donec accumsan pulvinar ex eget sollicitudin. Fusce eu sollicitudin mauris, ut feugiat tellus. In lobortis, ipsum quis congue bibendum, augue dui molestie sapien, ac volutpat ex dui sed odio. Mauris fermentum dolor et est tincidunt viverra. Aliquam eget metus sed ipsum scelerisque egestas.
+
+                                    </p>
+                                    <p>    Mauris at ipsum diam. Maecenas molestie mauris erat, vel tempus enim maximus non. Sed luctus odio nec imperdiet consequat. Mauris malesuada risus ut erat vulputate luctus. Phasellus non lectus posuere, placerat sem vel, facilisis dui. Praesent sodales mattis orci in tristique. Sed blandit varius ligula vel faucibus. Aenean et tincidunt dolor. Nullam semper nisl neque, ac placerat velit malesuada in. Quisque scelerisque, felis vitae sollicitudin tincidunt, neque elit sodales risus, ut tincidunt libero augue sit amet lacus. Praesent tristique semper malesuada.
+                                    </p>
+                                </div>
+                                <div>
+                                    Last tab
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
+</div>
+</body>
+</html>
