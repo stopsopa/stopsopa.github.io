@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+
+        <title>jQuery.tabs by Szymon Działowski</title>
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+        <meta name="description" content="jQuery.tabs by Szymon Działowski">
+        <meta name="keywords" content="jQuery.tabs">
+
+        <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="../../js/aceedit/jquery.aceedit.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../js/aceedit/jquery.aceedit.css" media="all" />
+        <link rel="stylesheet" href="jquery.tabs.v0.1.css">
+        <script src="jquery.tabs.v0.1.js"></script>
+        <script>
+            (function (fn) {
+                (function call() {
+                    window.$ ? $(fn) : setTimeout(call, 100);
+                }())
+            }(function () {
+
+                $('[data-tabs]').on('tabs:change', function (ev) {
+                    ev.stopPropagation();
+                    console.log('tabs:change')
+                }).tabs({
+                    active: 1
+                });
+
+            }));
+        </script>
+        <style>
+            .grid {
+                display: flex;
+            }
+            .grid > div {
+                flex-basis: 0;
+                flex-grow: 1;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="grid">
+            <div>
+
+                <div style="width: 400px;">
+
+                    <div data-tabs>
+                        <div data-buttons>
+                            <span>tab 1</span><a href="javascript:;">tab 2</a>
+                            <span class="active">tab 3</span>
+                            <span>tab 4</span>
+                        </div>
+                        <div data-divs>
+                            <div>Lorem ipsum div 1</div>
+                            <div>
+                                <img src="//i.imgur.com/SkkKinS.jpg" width="110">
+
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nulla mi, convallis sed
+                                    volutpat lacinia, mattis vel nisi. Donec pretium libero quis sollicitudin elementum. Fusce
+                                    pellentesque fermentum enim ut tempus. Quisque malesuada lacus id tellus hendrerit, mattis
+                                    pharetra est semper. Morbi mi risus, consequat at ornare sed, pellentesque ac dui. Fusce
+                                    malesuada lorem sem, quis semper eros tristique at. Quisque tristique consectetur mollis.
+                                    Phasellus id erat libero. Vestibulum nec erat ante. In accumsan lorem ut pellentesque
+                                    dignissim. Fusce tempor nibh sed eleifend vehicula. Cras ultricies mi magna. Fusce euismod
+                                    ipsum urna, vitae convallis leo rutrum eget.</p>
+
+                                <p>Nam euismod dui eget dui dapibus pretium. Vestibulum risus lacus, hendrerit vel lobortis et,
+                                    lacinia vitae tellus. Aenean sit amet magna arcu. Aliquam nec feugiat velit. Ut aliquet, mi
+                                    tincidunt elementum vulputate, libero ligula varius urna, sed hendrerit est arcu at libero.
+                                    Suspendisse venenatis risus non turpis blandit dapibus. Nulla quis rutrum leo.
+                                </p>
+                            </div>
+                            <div>Lorem ipsum div 3</div>
+                            <div>
+                                <p>another tabs:</p>
+                                <div data-tabs>
+                                    <div data-buttons>
+                                        <span>tab 1</span>
+                                        <a href="javascript:;">tab 2</a>
+                                        <span class="active">tab 3</span>
+                                        <span>tab 4</span>
+                                    </div>
+                                    <div data-divs>
+                                        <div>Lorem ipsum div 1</div>
+                                        <div>Lorem ipsum div 2</div>
+                                        <div>Lorem ipsum div 3</div>
+                                        <div>Lorem ipsum div 4</div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+            </div>
+            <div>
+                <p>Przykład użycia</p>
+
+                <div class="editor" data-lang="html">
+                    <div data-tabs>
+                        <div data-buttons>
+                            <span>tab 1</span><a href="javascript:;">tab 2</a>
+                            <span class="active">tab 3</span>
+                            <span>tab 4</span>
+                        </div>
+                        <div data-divs>
+                            <div>Lorem ipsum div 1</div>
+                            <div>
+                                <img src="//i.imgur.com/SkkKinS.jpg" width="110">
+
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nulla mi, convallis sed
+                                    volutpat lacinia, mattis vel nisi. Donec pretium libero quis sollicitudin elementum. Fusce
+                                    pellentesque fermentum enim ut tempus. Quisque malesuada lacus id tellus hendrerit, mattis
+                                    pharetra est semper. Morbi mi risus, consequat at ornare sed, pellentesque ac dui. Fusce
+                                    malesuada lorem sem, quis semper eros tristique at. Quisque tristique consectetur mollis.
+                                    Phasellus id erat libero. Vestibulum nec erat ante. In accumsan lorem ut pellentesque
+                                    dignissim. Fusce tempor nibh sed eleifend vehicula. Cras ultricies mi magna. Fusce euismod
+                                    ipsum urna, vitae convallis leo rutrum eget.</p>
+
+                                <p>Nam euismod dui eget dui dapibus pretium. Vestibulum risus lacus, hendrerit vel lobortis et,
+                                    lacinia vitae tellus. Aenean sit amet magna arcu. Aliquam nec feugiat velit. Ut aliquet, mi
+                                    tincidunt elementum vulputate, libero ligula varius urna, sed hendrerit est arcu at libero.
+                                    Suspendisse venenatis risus non turpis blandit dapibus. Nulla quis rutrum leo.
+                                </p>
+                            </div>
+                            <div>Lorem ipsum div 3</div>
+                            <div>
+                                <p>another tabs:</p>
+                                <div data-tabs>
+                                    <div data-buttons>
+                                        <span>tab 1</span>
+                                        <a href="javascript:;">tab 2</a>
+                                        <span class="active">tab 3</span>
+                                        <span>tab 4</span>
+                                    </div>
+                                    <div data-divs>
+                                        <div>Lorem ipsum div 1</div>
+                                        <div>Lorem ipsum div 2</div>
+                                        <div>Lorem ipsum div 3</div>
+                                        <div>Lorem ipsum div 4</div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p>syntax</p>
+
+                <div class="syntax" data-lang="js">
+                    <script type="editor">{{ l.jsbody|raw }}</script>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+    </body>
+</html>
