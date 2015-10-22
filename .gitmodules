@@ -1,0 +1,3 @@
+[submodule "submod/tabs"]
+	path = submod/tabs
+	url = https://github.com/stopsopa/tabs.git
