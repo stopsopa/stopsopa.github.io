@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en-US">
 <head>
+    <!--http://httpd.pl/stopsopa.github.io/demos/jquery.elkanatooltip/generator.html-->
     <meta charset="UTF-8">
     <title>jQuery.elkanatooltip by Szymon Działowski</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -17,7 +18,7 @@
     <script src="../../js/jquery.minicolors/jquery.minicolors.js"></script>
     <link rel="stylesheet" type="text/css" href="../../js/jquery.minicolors/jquery.minicolors.css" media="all" />
 
-    <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" charset="utf-8"></script>
+    <script src="//d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="../../js/aceedit/jquery.aceedit.css" media="all" />
     <script src="../../js/aceedit/jquery.aceedit.js"></script>
     
@@ -127,6 +128,8 @@
 
         $(function () {
 
+            var edit = $.noop;
+
             var update = $.urlstate({
                 collection: {
                     j : function (s, value) {
@@ -168,9 +171,12 @@
                 }
             });
 
+            window.update = update;
+
             $('[data-change]').on('keyup', function () {
                 var url = update();
                 log('url after change: "'+url+'"')
+                edit();
             })
 
             ;(function () {
@@ -207,54 +213,60 @@
 
                         tmp = _.template(tmp);
 
-                        var edit = _.debounce(function () {
+                        edit = _.debounce(function () {
+                            try {
+                                testdiv.empty().html(testdivs());
 
-                            testdiv.empty().html(testdivs());
+                                var elem        = testdiv.find('.test_element');
+                                var tool        = testdiv.find('.test_tooltip');
 
-                            var elem        = testdiv.find('.test_element');
-                            var tool        = testdiv.find('.test_tooltip');
+    //                            var style = tmp({json: option});
+                                var style = tmp({
+                                    json: option,
+                                    perma: update.get(),
+                                    url: update()
+                                })//.replace(/(\/\*[.\S\s]*?\*\/)/g, '');
 
-//                            var style = tmp({json: option});
-                            var style = tmp({json: option}).replace(/(\/\*[.\S\s]*?\*\/)/g, '');
+                                $('[data-source]').remove();
 
-                            $('[data-source]').remove();
+                                $(ltmp).appendTo(head).html(style);
 
-                            $(ltmp).appendTo(head).html(style);
+//                                dedit.setValue(style.replace(/\n\s*\n/g, '\n'));
+                                dedit.setValue(style);
+                                dedit.clearSelection();
+                                dedit.getSession().setScrollTop(0);
 
-                            dedit.setValue(style.replace(/\n\s*\n/g, '\n'));
-                            dedit.clearSelection();
-                            dedit.getSession().setScrollTop(0);
-
-                            elem.elkanatooltip(tool, option);
-
-                            elem
-                                .draggable({
-                                    drag: function () {
-                                        process.nextTick(function() {
-                                            elem.elkanatooltip(true);
-                                        })
-            //                            edit();
-                                    }
-                                })
-                                .click(function () {
-                                    elem.elkanatooltip(!elem.elkanatooltip().show);
-                                });
-
-
-                            $('table input:radio').unbind('click').click(function () {
-                                var t = $(this);
-                                option.position[t.attr('name')] = t.val();
                                 elem.elkanatooltip(tool, option);
-                                edit()
-                            });
 
+                                elem
+                                    .draggable({
+                                        drag: function () {
+                                            process.nextTick(function() {
+                                                elem.elkanatooltip(true);
+                                            })
+                //                            edit();
+                                        }
+                                    })
+                                    .click(function () {
+                                        elem.elkanatooltip(!elem.elkanatooltip().show);
+                                    });
+
+
+                                $('table input:radio').unbind('click').click(function () {
+                                    var t = $(this);
+                                    option.position[t.attr('name')] = t.val();
+                                    elem.elkanatooltip(tool, option);
+                                    edit()
+                                });
+                            }
+                            catch (e) {
+                                log('To early to call edit(): '+e)
+                            }
                         }, 300);
 
                         edit();
 
                     });
-
-
 
                 function download(filename, content) {
                     var element = document.createElement('a');
@@ -267,7 +279,7 @@
                 }
 
                 $('[data-download]').on('click', function () {
-                    download('elkanatooltip_'+$.now(), dedit.getValue())
+                    download('elkanatooltip_'+$.now()+'.css', dedit.getValue())
                 });
 
             })();
