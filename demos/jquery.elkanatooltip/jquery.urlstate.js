@@ -32,9 +32,17 @@
     });
 
     $('[data-change]').on('keyup', function () {
+        // return entire ulr
         var url = update();
         log('url after change: "'+url+'"')
-    })
+    });
+
+    // get data in object form from url
+    update.get()
+
+    // setup in url
+    update.set({j: "f", d: "s", t: "f"})
+
  */
 ;(function ($){
 
@@ -185,15 +193,20 @@
             log(read)
         }
 
-        return function update() {
+        var up = function update() {
 
             var read = {}
             for (var i in opt.collection) {
                 read[i] = opt.collection[i]('read');
             }
-            log(read);
 
-            opt.set(filtered(read));
+            return opt.set(filtered(read));
         }
+
+        for (var i in opt) {
+            up[i] = opt[i];
+        }
+
+        return up;
     }
 })(jQuery);
