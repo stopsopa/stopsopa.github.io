@@ -44,17 +44,17 @@ body span.elkanatooltip.test {
 /* animate ^^^ */
 
 .elkanatooltip > div {
-    background-color: #333;
+    background-color: <%= perma.b %>;
     color: white;
     padding: 3px;
-    -webkit-border-radius: 2px;
-    -khtml-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
+    -webkit-border-radius: <%= perma.r %>px;
+    -khtml-border-radius: <%= perma.r %>px;
+    -moz-border-radius: <%= perma.r %>px;
+    border-radius: <%= perma.r %>px;
   -webkit-box-shadow: 0 0 6px #000;
           box-shadow: 0 0 6px #000;
 
-    border: 2px solid red;
+    border: 2px solid <%= perma.c %>;
 }
 
 .elkanatooltip > i {
@@ -99,16 +99,16 @@ body span.elkanatooltip.test {
     }
     .elkanatooltip.v-b > i {
         /* if border exists vvv */
-            border-top: 5px red solid;  /* arrowsize */
+            border-top: 5px <%= perma.c %> solid;  /* arrowsize */
         /* else */
-            /* border-top: 5px #333 solid; */  /* arrowsize */
+            /* border-top: 5px <%= perma.c %> solid; */  /* arrowsize */
         /* endif ^^^ */
         border-bottom: none;
         bottom: 5px;
     }
     /* if border exists vvv */
         .elkanatooltip.v-b > i::before {
-            border-top: 4px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            border-top: 4px <%= perma.c %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-bottom: none;
             bottom: 3px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
@@ -130,16 +130,16 @@ body span.elkanatooltip.test {
     }
     .elkanatooltip.v-t > i {
         /* if border exists vvv */
-            border-bottom: 5px red solid; /* arrowsize */
+            border-bottom: 5px <%= perma.c %> solid; /* arrowsize */
         /* else */
-            /* border-bottom: 5px #333 solid; */ /* arrowsize */
+            /* border-bottom: 5px <%= perma.b %> solid; */ /* arrowsize */
         /* endif ^^^ */
         border-top: none;
         top: 5px;
     }
     /* if border exists vvv */
         .elkanatooltip.v-t > i::before {
-            border-bottom: 4px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            border-bottom: 4px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-top: none;
             top: 3px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
@@ -161,16 +161,16 @@ body span.elkanatooltip.test {
     }
     .elkanatooltip.h-r > i {
         /* if border exists vvv */
-            border-left: 5px red solid; /* arrowsize */
+            border-left: 5px <%= perma.c %> solid; /* arrowsize */
         /* else */
-            /* border-left: 5px #333 solid; */ /* arrowsize */
+            /* border-left: 5px <%= perma.b %> solid; */ /* arrowsize */
         /* endif ^^^ */
         border-right: none;
         right: 5px;
     }
     /* if border exists vvv */
         .elkanatooltip.h-r > i::before {
-            border-left: 4px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            border-left: 4px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-right: none;
             right: 3px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
@@ -192,16 +192,16 @@ body span.elkanatooltip.test {
     }
     .elkanatooltip.h-l > i {
         /* if border exists vvv */
-            border-right: 5px red solid; /* arrowsize */
+            border-right: 5px <%= perma.c %> solid; /* arrowsize */
         /* else */
-            /* border-right: 5px #333 solid; */ /* arrowsize */
+            /* border-right: 5px <%= perma.b %> solid; */ /* arrowsize */
         /* endif ^^^ */
         border-left: none;
         left: 5px;
     }
     /* if border exists vvv */
         .elkanatooltip.h-l > i::before {
-            border-right: 4px #333 solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            border-right: 4px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-left: none;
             left: 3px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
