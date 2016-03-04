@@ -40,6 +40,9 @@
     // get data in object form from url
     update.get()
 
+    // the same as .get() but with defaults
+    update.fetch()
+
     // setup in url
     update.set({j: "f", d: "s", t: "f"})
 
@@ -172,9 +175,12 @@
 
                 return null;
             }, // odczyt - na przykład z url
+            fetch: function () {
+                return $.extend(def(), this.get());
+            }
         }, opt || {});
 
-        var read = opt.get();
+        var read = opt.get() || def();
 
         if (read) {
             var d = def();
@@ -189,8 +195,6 @@
                     log("key '"+i+"' is not exist in collection");
                 }
             }
-
-            log(read)
         }
 
         var up = function update() {

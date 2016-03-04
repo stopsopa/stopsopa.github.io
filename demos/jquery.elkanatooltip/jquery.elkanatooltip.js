@@ -301,7 +301,7 @@
             o = $.extend(true, {
                 tooltip : false, // content as a string - optional
                 show    : true, // show on start
-                cls     : name, // main class, from this class depend entire layout and animations of tooltip
+                cls     : name, // main class, from this class depends entire layout and animations of tooltip
                 ashow   : 'a-show',
                 astart  : 'a-start',
                 aanim   : 'a-anim',
@@ -316,7 +316,9 @@
                     left: false
                 },
                 afterShow : $.noop,
-                afterHide : $.noop
+                afterHide : $.noop,
+
+                forceRecalculateBorder: false,
             }, o || {});
 
             if (typeof tooltip == 'string') {
@@ -375,12 +377,14 @@
             }
 
             // get width from css
-            o.border || (o.border = (function (b, w) {
-                b = $('<span></span>').appendTo('body').addClass(o.cls).addClass('test');
-                w = parseInt(b.css('borderTopWidth'));
-                b.remove();
-                return w;
-            })());
+            if (o.forceRecalculateBorder || !o.border) {
+                o.border = (function (b, w) {
+                    b = $('<span></span>').appendTo('body').addClass(o.cls).addClass('test');
+                    w = parseInt(b.css('borderTopWidth'));
+                    b.remove();
+                    return w;
+                })();
+            }
 
             o.tooltip = tooltip;
 

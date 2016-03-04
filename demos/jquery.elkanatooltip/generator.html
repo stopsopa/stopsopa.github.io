@@ -132,42 +132,101 @@
 
             var update = $.urlstate({
                 collection: {
-                    j : function (s, value) {
+                    w : function (s, value) {
+
+                        var def = '2';
 
                         if (s === 'def')
-                            return 'defjeden';
+                            return def;
 
-                        var field = $('[name="jeden"]');
+                        var field = $('[name="width"]');
 
-                        if (s === 'read')
-                            return field.val();
+                        if (s === 'read') {
+                            var v = field.val();
+                            if ((v+'').length) {
+                                return v;
+                            }
+                            return def;
+                        }
 
                         field.val(value);
                     },
-                    d : function (s, value) {
+                    c : function (s, value) {
+
+                        var def = '#ff0000';
 
                         if (s === 'def')
-                            return 'defdwa';
+                            return def;
 
-                        var field = $('[name="dwa"]');
+                        var field = $('[name="color"]');
 
-                        if (s === 'read')
-                            return field.val();
+                        if (s === 'read') {
+                            var v = field.val();
+                            if ((v+'').length) {
+                                return v;
+                            }
+                            return def;
+                        }
 
                         field.val(value);
                     },
-                    t : function (s, value) {
+                    a : function (s, value) {
+
+                        var def = 'deftrzy';
 
                         if (s === 'def')
-                            return 'deftrzy';
+                            return def;
 
-                        var field = $('[name="trzy"]');
+                        var field = $('[name="arrow"]');
 
-                        if (s === 'read')
-                            return field.val();
+                        if (s === 'read') {
+                            var v = field.val();
+                            if ((v+'').length) {
+                                return v;
+                            }
+                            return def;
+                        }
 
                         field.val(value);
                     },
+                    r : function (s, value) {
+
+                        var def = '2';
+
+                        if (s === 'def')
+                            return def;
+
+                        var field = $('[name="radius"]');
+
+                        if (s === 'read') {
+                            var v = field.val();
+                            if ((v+'').length) {
+                                return v;
+                            }
+                            return def;
+                        }
+
+                        field.val(value);
+                    },
+                    b : function (s, value) {
+
+                        var def = '#333333';
+
+                        if (s === 'def')
+                            return def;
+
+                        var field = $('[name="bgcolor"]');
+
+                        if (s === 'read') {
+                            var v = field.val();
+                            if ((v+'').length) {
+                                return v;
+                            }
+                            return def;
+                        }
+
+                        field.val(value);
+                    }
                 }
             });
 
@@ -190,7 +249,7 @@
 
                 var testdiv     = $('#test');
 
-                target.attr('data-h', ($(window).height() - 120) +'px') //  data-h="48px"
+                target.attr('data-h', ($(window).height() - 120) +'px'); //  data-h="48px"
 
                 $.aceedit();
 
@@ -205,7 +264,8 @@
                         my: 'top',
                         at: 'bottom'
                     },
-                    border: false
+                    border: false,
+//                    forceRecalculateBorder: true
                 };
 
                 $.ajax('./jquery.elkanatooltip_tmp.css')
@@ -223,7 +283,7 @@
     //                            var style = tmp({json: option});
                                 var style = tmp({
                                     json: option,
-                                    perma: update.get(),
+                                    perma: update.fetch(),
                                     url: update()
                                 })//.replace(/(\/\*[.\S\s]*?\*\/)/g, '');
 
@@ -368,16 +428,24 @@
                 <table>
                     <tbody>
                         <tr>
-                            <td>jeden</td>
-                            <td><input type="text" value="" name="jeden" data-change/></td>
+                            <td>width</td>
+                            <td><input type="text" value="" name="width" data-change/></td>
                         </tr>
                         <tr>
-                            <td>dwa</td>
-                            <td><input type="text" value="" name="dwa" data-change /></td>
+                            <td>color</td>
+                            <td><input type="text" value="" name="color" data-change /></td>
                         </tr>
                         <tr>
-                            <td>trzy</td>
-                            <td><input type="text" value="" name="trzy" data-change /></td>
+                            <td>arrow</td>
+                            <td><input type="text" value="" name="arrow" data-change /></td>
+                        </tr>
+                        <tr>
+                            <td>radius</td>
+                            <td><input type="text" value="" name="radius" data-change /></td>
+                        </tr>
+                        <tr>
+                            <td>bg color</td>
+                            <td><input type="text" value="" name="bgcolor" data-change /></td>
                         </tr>
                     </tbody>
                 </table>
