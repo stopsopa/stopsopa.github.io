@@ -172,7 +172,7 @@
                     },
                     a : function (s, value) {
 
-                        var def = 'deftrzy';
+                        var def = '5';
 
                         if (s === 'def')
                             return def;
@@ -226,6 +226,25 @@
                         }
 
                         field.val(value);
+                    },
+                    cls : function (s, value) {
+
+                        var def = 'elkanatooltip';
+
+                        if (s === 'def')
+                            return def;
+
+                        var field = $('[name="cls"]');
+
+                        if (s === 'read') {
+                            var v = field.val();
+                            if ((v+'').length) {
+                                return v;
+                            }
+                            return def;
+                        }
+
+                        field.val(value);
                     }
                 }
             });
@@ -265,7 +284,7 @@
                         at: 'bottom'
                     },
                     border: false,
-//                    forceRecalculateBorder: true
+                    forceRecalculateBorder: true
                 };
 
                 $.ajax('./jquery.elkanatooltip_tmp.css')
@@ -274,22 +293,30 @@
                         tmp = _.template(tmp);
 
                         edit = _.debounce(function () {
+
                             try {
                                 testdiv.empty().html(testdivs());
 
                                 var elem        = testdiv.find('.test_element');
                                 var tool        = testdiv.find('.test_tooltip');
 
+                                var d = update.fetch();
+                                d.a = parseInt(d.a)
+                                d.w = parseInt(d.w)
+                                d.r = parseInt(d.r)
+
     //                            var style = tmp({json: option});
-                                var style = tmp({
+                                var style = $.trim(tmp({
                                     json: option,
-                                    perma: update.fetch(),
+                                    perma: d,
                                     url: update()
-                                })//.replace(/(\/\*[.\S\s]*?\*\/)/g, '');
+                                }).replace(/\n\n/, "\n").replace(/\n\n/, "\n"));
+                                //.replace(/(\/\*[.\S\s]*?\*\/)/g, '');
 
                                 $('[data-source]').remove();
-
                                 $(ltmp).appendTo(head).html(style);
+                                option.cls = d.cls;
+
 
 //                                dedit.setValue(style.replace(/\n\s*\n/g, '\n'));
                                 dedit.setValue(style);
@@ -302,13 +329,13 @@
                                     .draggable({
                                         drag: function () {
                                             process.nextTick(function() {
-                                                elem.elkanatooltip(true);
+                                                elem.elkanatooltip(true, d.cls);
                                             })
                 //                            edit();
                                         }
                                     })
                                     .click(function () {
-                                        elem.elkanatooltip(!elem.elkanatooltip().show);
+                                        elem.elkanatooltip(!elem.elkanatooltip(null, d.cls).show, d.cls);
                                     });
 
 
@@ -316,7 +343,6 @@
                                     var t = $(this);
                                     option.position[t.attr('name')] = t.val();
                                     elem.elkanatooltip(tool, option);
-                                    edit()
                                 });
                             }
                             catch (e) {
@@ -339,7 +365,7 @@
                 }
 
                 $('[data-download]').on('click', function () {
-                    download('elkanatooltip_'+$.now()+'.css', dedit.getValue())
+                    download('elkanatooltip_'+$('[name="cls"]').val()+'_'+$.now()+'.css', dedit.getValue())
                 });
 
             })();
@@ -428,6 +454,10 @@
                 <table>
                     <tbody>
                         <tr>
+                            <td>class</td>
+                            <td><input type="text" value="" name="cls" data-change/></td>
+                        </tr>
+                        <tr>
                             <td>width</td>
                             <td><input type="text" value="" name="width" data-change/></td>
                         </tr>
@@ -510,7 +540,7 @@ body {
                         </button>
                         <button class="btn btn-xs btn-success ff" data-download>
                             <i class="glyphicon glyphicon-download"></i>
-                            download
+                            download as a css file
                         </button>
                     </div>
                 </div>

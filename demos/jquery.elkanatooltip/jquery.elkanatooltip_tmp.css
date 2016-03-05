@@ -1,41 +1,39 @@
-/* test element vvv <%= json.position.my %> <%= json.position.at %> */
-/* perma: <%= JSON.stringify(perma) %> */
-/* url: <%= url %> */
-body span.elkanatooltip.test {
-    /*opacity: 0;*/
-    border: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border-top: 5px solid transparent !important; /* arrowsize */
-    border-bottom: 2px solid transparent !important; /* border existance and width */
+<%
+
+var border = perma.a - perma.w - 1;
+var transform = perma.w - perma.a + 1;
+var wa = 0;
+if (perma.w > 2) {
+    wa = 1;
 }
-/* test element ^^^ */
+var offset = 5 + perma.w - wa;
+var transformb = 2 + wa
 
+%>/* url: <%= url %> */
 
-
-.elkanatooltip {
+.<%= perma.cls %> {
     display: none;
     z-index: 100;
-    position: absolute !important;
+    position: absolute;
 }
 
 /* animate vvv */
-.elkanatooltip.a-show {
+.<%= perma.cls %>.a-show {
     display: inline-block;
     opacity: 0;
 }
 /* only ie6 doesn't support multiple class selector, who cares */
-.elkanatooltip.a-start.a-anim {
+.<%= perma.cls %>.a-start.a-anim {
     -webkit-transition: all 0.3s ease-in-out;
     -moz-transition:    all 0.3s ease-in-out;
     -o-transition:      all 0.3s ease-in-out;
     -ms-transition:     all 0.3s ease-in-out;
 }
-.elkanatooltip[class*=" v-"].a-start.a-stop,
-.elkanatooltip[class*=" h-"].a-start.a-stop,
-.elkanatooltip[class^="v-"].a-start.a-stop,
-.elkanatooltip[class^="h-"].a-start.a-stop,
-.elkanatooltip.a-start.a-anim.a-stop {
+.<%= perma.cls %>[class*=" v-"].a-start.a-stop,
+.<%= perma.cls %>[class*=" h-"].a-start.a-stop,
+.<%= perma.cls %>[class^="v-"].a-start.a-stop,
+.<%= perma.cls %>[class^="h-"].a-start.a-stop,
+.<%= perma.cls %>.a-start.a-anim.a-stop {
     -ms-transform: translate(0px, 0px);
     -webkit-transform: translate(0px, 0px);
     transform: translate(0px, 0px);
@@ -43,7 +41,7 @@ body span.elkanatooltip.test {
 }
 /* animate ^^^ */
 
-.elkanatooltip > div {
+.<%= perma.cls %> > div {
     background-color: <%= perma.b %>;
     color: white;
     padding: 3px;
@@ -54,169 +52,180 @@ body span.elkanatooltip.test {
   -webkit-box-shadow: 0 0 6px #000;
           box-shadow: 0 0 6px #000;
 
-    border: 2px solid <%= perma.c %>;
+    border: <%= perma.w %>px solid <%= perma.c %>;
 }
 
-.elkanatooltip > i {
+.<%= perma.cls %> > i {
     position: absolute;
     display: inline-block;
     margin: 0 !important;
     padding: 0 !important;
-    border: 5px transparent solid; /* arrowsize */
+    border: <%= perma.a %>px transparent solid; /* arrowsize */
 }
 
 /* if border exists vvv */
-    .elkanatooltip > i:before {
+    .<%= perma.cls %> > i:before {
         content: "";
         position: absolute;
         display: inline-block;
         margin: 0 !important;
         padding: 0 !important;
-        border: 4px transparent solid; /* arrowsize - border */  /* arrowsize[5] - border[2] = 3    => +1 = 4 */
+        border: <%= border %>px transparent solid; /* arrowsize - border */  /* arrowsize[5] - border[2] = 3    => +1 = 4 */
     }
 /* endif ^^^ */
 
 
-.elkanatooltip[class^="hc-"][class*=" vc-"] > i,
-.elkanatooltip[class^="vc-"][class*=" hc-"] > i,
-.elkanatooltip[class*=" vc-"][class*=" hc-"] > i {
+.<%= perma.cls %>[class^="hc-"][class*=" vc-"] > i,
+.<%= perma.cls %>[class^="vc-"][class*=" hc-"] > i,
+.<%= perma.cls %>[class*=" vc-"][class*=" hc-"] > i {
     border: none;
 }
-.elkanatooltip[class^="hc-"][class*=" vc-"] > div,
-.elkanatooltip[class^="vc-"][class*=" hc-"] > div,
-.elkanatooltip[class*=" vc-"][class*=" hc-"] > div {
+.<%= perma.cls %>[class^="hc-"][class*=" vc-"] > div,
+.<%= perma.cls %>[class^="vc-"][class*=" hc-"] > div,
+.<%= perma.cls %>[class*=" vc-"][class*=" hc-"] > div {
     margin: 3px;
 }
 
 /* tooltip on top vvv */
-    .elkanatooltip.v-b.a-start {
+    .<%= perma.cls %>.v-b.a-start {
         -ms-transform: translate(0px, -10px);
         -webkit-transform: translate(0px, -10px);
         transform: translate(0px, -10px);
     }
-    .elkanatooltip.v-b > div {
-        margin-bottom: 10px;  /* arrowsize + 5 offset from target */
+    .<%= perma.cls %>.v-b > div {
+        margin-bottom: <%= 5 + perma.a %>px;  /* arrowsize + 5 offset from target */
     }
-    .elkanatooltip.v-b > i {
+    .<%= perma.cls %>.v-b > i {
         /* if border exists vvv */
-            border-top: 5px <%= perma.c %> solid;  /* arrowsize */
+            border-top: <%= perma.a %>px <%= perma.c %> solid;  /* arrowsize */
         /* else */
-            /* border-top: 5px <%= perma.c %> solid; */  /* arrowsize */
+            /* border-top: <%= perma.a %>px <%= perma.c %> solid; */  /* arrowsize */
         /* endif ^^^ */
         border-bottom: none;
-        bottom: 5px;
+        bottom: <%= offset %>px;
     }
     /* if border exists vvv */
-        .elkanatooltip.v-b > i::before {
-            border-top: 4px <%= perma.c %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+        .<%= perma.cls %>.v-b > i::before {
+            border-top: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-bottom: none;
-            bottom: 3px;                                 /** arrowsize[5] - border[2] = 3 */
+            bottom: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(-4px, 0px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(-4px, 0px);
-            transform: translate(-4px, 0px);
+            -ms-transform: translate(<%= transform %>px, -<%= transformb %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            -webkit-transform: translate(<%= transform %>px, -<%= transformb %>px);
+            transform: translate(<%= transform %>px, -<%= transformb %>px);
         }
     /* endif ^^^ */
 /* tooltip on top ^^^ */
 
 /* tooltip on bottom vvv */
-    .elkanatooltip.v-t.a-start {
+    .<%= perma.cls %>.v-t.a-start {
         -ms-transform: translate(0px, 10px);
         -webkit-transform: translate(0px, 10px);
         transform: translate(0px, 10px);
     }
-    .elkanatooltip.v-t > div {
-        margin-top: 10px; /* arrowsize + 5 offset from target */
+    .<%= perma.cls %>.v-t > div {
+        margin-top: <%= 5 + perma.a %>px; /* arrowsize + 5 offset from target */
     }
-    .elkanatooltip.v-t > i {
+    .<%= perma.cls %>.v-t > i {
         /* if border exists vvv */
-            border-bottom: 5px <%= perma.c %> solid; /* arrowsize */
+            border-bottom: <%= perma.a %>px <%= perma.c %> solid; /* arrowsize */
         /* else */
-            /* border-bottom: 5px <%= perma.b %> solid; */ /* arrowsize */
+            /* border-bottom: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
         /* endif ^^^ */
         border-top: none;
-        top: 5px;
+        top: <%= offset %>px;
     }
     /* if border exists vvv */
-        .elkanatooltip.v-t > i::before {
-            border-bottom: 4px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+        .<%= perma.cls %>.v-t > i::before {
+            border-bottom: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-top: none;
-            top: 3px;                                 /** arrowsize[5] - border[2] = 3 */
+            top: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(-4px, 0px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(-4px, 0px);
-            transform: translate(-4px, 0px);
+            -ms-transform: translate(<%= transform %>px, <%= transformb %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            -webkit-transform: translate(<%= transform %>px, <%= transformb %>px);
+            transform: translate(<%= transform %>px, <%= transformb %>px);
         }
     /* endif ^^^ */
 /* tooltip on bottom ^^^ */
 
 /* tooltip on left vvv */
-    .elkanatooltip.h-r.a-start {
+    .<%= perma.cls %>.h-r.a-start {
         -ms-transform: translate(-10px, 0px);
         -webkit-transform: translate(-10px, 0px);
         transform: translate(-10px, 0px);
     }
-    .elkanatooltip.h-r > div {
-        margin-right: 10px; /* arrowsize + 5 offset from target */
+    .<%= perma.cls %>.h-r > div {
+        margin-right: <%= 5 + perma.a %>px; /* arrowsize + 5 offset from target */
     }
-    .elkanatooltip.h-r > i {
+    .<%= perma.cls %>.h-r > i {
         /* if border exists vvv */
-            border-left: 5px <%= perma.c %> solid; /* arrowsize */
+            border-left: <%= perma.a %>px <%= perma.c %> solid; /* arrowsize */
         /* else */
-            /* border-left: 5px <%= perma.b %> solid; */ /* arrowsize */
+            /* border-left: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
         /* endif ^^^ */
         border-right: none;
-        right: 5px;
+        right: <%= offset %>px;
     }
     /* if border exists vvv */
-        .elkanatooltip.h-r > i::before {
-            border-left: 4px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+        .<%= perma.cls %>.h-r > i::before {
+            border-left: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-right: none;
-            right: 3px;                                 /** arrowsize[5] - border[2] = 3 */
+            right: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(0px, -4px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(0px, -4px);
-            transform: translate(0px, -4px);
+            -ms-transform: translate(-<%= transformb %>px, <%= transform %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            -webkit-transform: translate(-<%= transformb %>px, <%= transform %>px);
+            transform: translate(-<%= transformb %>px, <%= transform %>px);
         }
     /* endif ^^^ */
 /* tooltip on left ^^^ */
 
 /* tooltip on right vvv */
-    .elkanatooltip.h-l.a-start {
+    .<%= perma.cls %>.h-l.a-start {
         -ms-transform: translate(10px, 0px);
         -webkit-transform: translate(10px, 0px);
         transform: translate(10px, 0px);
     }
-    .elkanatooltip.h-l > div {
-        margin-left: 10px; /* arrowsize + 5 offset from target */
+    .<%= perma.cls %>.h-l > div {
+        margin-left: <%= 5 + perma.a %>px; /* arrowsize + 5 offset from target */
     }
-    .elkanatooltip.h-l > i {
+    .<%= perma.cls %>.h-l > i {
         /* if border exists vvv */
-            border-right: 5px <%= perma.c %> solid; /* arrowsize */
+            border-right: <%= perma.a %>px <%= perma.c %> solid; /* arrowsize */
         /* else */
-            /* border-right: 5px <%= perma.b %> solid; */ /* arrowsize */
+            /* border-right: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
         /* endif ^^^ */
         border-left: none;
-        left: 5px;
+        left: <%= offset %>px;
     }
     /* if border exists vvv */
-        .elkanatooltip.h-l > i::before {
-            border-right: 4px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+        .<%= perma.cls %>.h-l > i::before {
+            border-right: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
             border-left: none;
-            left: 3px;                                 /** arrowsize[5] - border[2] = 3 */
+            left: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
             z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(0, -4px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(0, -4px);
-            transform: translate(0, -4px);
+            -ms-transform: translate(<%= transformb %>px, <%= transform %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+            -webkit-transform: translate(<%= transformb %>px, <%= transform %>px);
+            transform: translate(<%= transformb %>px, <%= transform %>px);
         }
     /* endif ^^^ */
 /* tooltip on right ^^^ */
 
 /* hide arrow on edge vvv */
-.elkanatooltip.h-l.v-b > i::before,
-.elkanatooltip.h-l.v-t > i::before,
-.elkanatooltip.h-r.v-b > i::before,
-.elkanatooltip.h-r.v-t > i::before {
+.<%= perma.cls %>.h-l.v-b > i::before,
+.<%= perma.cls %>.h-l.v-t > i::before,
+.<%= perma.cls %>.h-r.v-b > i::before,
+.<%= perma.cls %>.h-r.v-t > i::before {
     display: none;
 }
 /* hide arrow on edge ^^^ */
+
+/* test element vvv */
+body span.<%= perma.cls %>.test {
+    /*opacity: 0;*/
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-top: <%= perma.a %>px solid transparent !important; /* arrowsize */
+    border-bottom: <%= perma.w %>px solid transparent !important; /* border existance and width */
+}
+/* test element ^^^ */

@@ -52,8 +52,11 @@
 		factory( jQuery );
 	}
 })((function (name) {
+
+    var calculations = {};
+
     return function ($) {
-//        function log(l) {try {console.log(l);}catch (e) {}};
+        //function log(l) {try {console.log(l);}catch (e) {}};
         function log(l) {};
         function error(l) {try {console.error(l);}catch (e) {}};
         function _thw(message) {throw "plugin jQuery(...)."+name+"() : "+message};
@@ -154,7 +157,7 @@
 
             (t.length > 1) && _thw("can't be used on more then one element at once");
 
-            if (typeof tooltip == 'boolean' || !arguments.length) { // show, hide or return settings
+            if (tooltip === true || tooltip === false || tooltip === null || !arguments.length) { // show, hide or return settings
 
                 if (typeof o != 'string')
                     log("No class specified, use default '"+ (o = name) +"'");
@@ -166,7 +169,7 @@
                 if (!arguments.length)
                     return o;
 
-                if (tooltip) { // show
+                if (tooltip === true) { // show
                     o.place && $(o.tooltip).appendTo(o.place);
 
                     ;(function (mid) {
@@ -268,7 +271,7 @@
 
                     o.show = true;
                 }
-                else { // hide
+                else if (tooltip === false) { // hide
                     var visiblebefore = o.tooltip.is(':visible'),
                         afterHide = (function () {
                             var a = _a(arguments);
@@ -279,6 +282,7 @@
                         }).call(t, o, visiblebefore);
 
                     if (getTransitionTime(o.tooltip)) {
+                        log('jest time')
                         o.tooltip.one(transitionend, function () {
 
                             if (!o.tooltip.hasClass(o.astop))
@@ -288,6 +292,7 @@
                         });
                     }
                     else {
+                        log('nie ma time')
                         o.tooltip.removeClass(o.aanim+' '+o.astart+' '+o.ashow);
                         afterHide();
                     }
@@ -295,7 +300,9 @@
                     o.show = false;
                 }
 
-                return t.data(o.cls, o);
+                t.data(o.cls, o);
+
+                return o;
             }
 
             o = $.extend(true, {
@@ -377,14 +384,16 @@
             }
 
             // get width from css
-            if (o.forceRecalculateBorder || !o.border) {
-                o.border = (function (b, w) {
+            if (o.forceRecalculateBorder || typeof calculations[o.cls] === 'undefined') {
+                calculations[o.cls] = (function (b, w) {
                     b = $('<span></span>').appendTo('body').addClass(o.cls).addClass('test');
                     w = parseInt(b.css('borderTopWidth'));
                     b.remove();
                     return w;
                 })();
             }
+
+            o.border = calculations[o.cls];
 
             o.tooltip = tooltip;
 
