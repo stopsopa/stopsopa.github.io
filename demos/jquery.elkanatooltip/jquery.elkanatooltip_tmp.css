@@ -8,6 +8,9 @@ if (perma.w > 2) {
 }
 var offset = 5 + perma.w - wa;
 var transformb = 2 + wa
+var hasb = perma.w > 0;
+var bgcolor = hasb ? perma.c : perma.b;
+var hasa = (perma.a - perma.w) > 2 ? true : false;
 
 %>/* url: <%= url %> */
 
@@ -49,21 +52,27 @@ var transformb = 2 + wa
     -khtml-border-radius: <%= perma.r %>px;
     -moz-border-radius: <%= perma.r %>px;
     border-radius: <%= perma.r %>px;
-  -webkit-box-shadow: 0 0 6px #000;
-          box-shadow: 0 0 6px #000;
+    -webkit-box-shadow: 0 0 6px #000;
+    box-shadow: 0 0 6px #000;
 
-    border: <%= perma.w %>px solid <%= perma.c %>;
+    <% if (hasb) { %>
+        border: <%= perma.w %>px solid <%= perma.c %>;
+    <% } %>
 }
 
 .<%= perma.cls %> > i {
-    position: absolute;
-    display: inline-block;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: <%= perma.a %>px transparent solid; /* arrowsize */
+    <% if (hasa) { %>
+        position: absolute;
+        display: inline-block;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: <%= perma.a %>px transparent solid; /* arrowsize */
+    <% } else { %>
+        display: none;
+    <% } %>
 }
 
-/* if border exists vvv */
+<% if (hasb) { %>
     .<%= perma.cls %> > i:before {
         content: "";
         position: absolute;
@@ -72,14 +81,15 @@ var transformb = 2 + wa
         padding: 0 !important;
         border: <%= border %>px transparent solid; /* arrowsize - border */  /* arrowsize[5] - border[2] = 3    => +1 = 4 */
     }
-/* endif ^^^ */
+<% } %>
 
-
-.<%= perma.cls %>[class^="hc-"][class*=" vc-"] > i,
-.<%= perma.cls %>[class^="vc-"][class*=" hc-"] > i,
-.<%= perma.cls %>[class*=" vc-"][class*=" hc-"] > i {
-    border: none;
-}
+<% if (hasa) { %>
+    .<%= perma.cls %>[class^="hc-"][class*=" vc-"] > i,
+    .<%= perma.cls %>[class^="vc-"][class*=" hc-"] > i,
+    .<%= perma.cls %>[class*=" vc-"][class*=" hc-"] > i {
+        border: none;
+    }
+<% } %>
 .<%= perma.cls %>[class^="hc-"][class*=" vc-"] > div,
 .<%= perma.cls %>[class^="vc-"][class*=" hc-"] > div,
 .<%= perma.cls %>[class*=" vc-"][class*=" hc-"] > div {
@@ -95,26 +105,30 @@ var transformb = 2 + wa
     .<%= perma.cls %>.v-b > div {
         margin-bottom: <%= 5 + perma.a %>px;  /* arrowsize + 5 offset from target */
     }
-    .<%= perma.cls %>.v-b > i {
-        /* if border exists vvv */
-            border-top: <%= perma.a %>px <%= perma.c %> solid;  /* arrowsize */
-        /* else */
-            /* border-top: <%= perma.a %>px <%= perma.c %> solid; */  /* arrowsize */
-        /* endif ^^^ */
-        border-bottom: none;
-        bottom: <%= offset %>px;
-    }
-    /* if border exists vvv */
-        .<%= perma.cls %>.v-b > i::before {
-            border-top: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+
+    <% if (hasa) { %>
+        .<%= perma.cls %>.v-b > i {
+            /* if border exists vvv */
+                border-top: <%= perma.a %>px <%= bgcolor %> solid;  /* arrowsize */
+            /* else */
+                /* border-top: <%= perma.a %>px <%= bgcolor %> solid; */  /* arrowsize */
+            /* endif ^^^ */
             border-bottom: none;
-            bottom: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
-            z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(<%= transform %>px, -<%= transformb %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(<%= transform %>px, -<%= transformb %>px);
-            transform: translate(<%= transform %>px, -<%= transformb %>px);
+            bottom: <%= offset %>px;
         }
-    /* endif ^^^ */
+        <% if (hasb) { %>
+            .<%= perma.cls %>.v-b > i::before {
+                border-top: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                border-bottom: none;
+                bottom: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
+                z-index: 101; /* baze z-index + 1 */
+                -ms-transform: translate(<%= transform %>px, -<%= transformb %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                -webkit-transform: translate(<%= transform %>px, -<%= transformb %>px);
+                transform: translate(<%= transform %>px, -<%= transformb %>px);
+            }
+        <% } %>
+    <% } %>
+
 /* tooltip on top ^^^ */
 
 /* tooltip on bottom vvv */
@@ -126,26 +140,28 @@ var transformb = 2 + wa
     .<%= perma.cls %>.v-t > div {
         margin-top: <%= 5 + perma.a %>px; /* arrowsize + 5 offset from target */
     }
-    .<%= perma.cls %>.v-t > i {
-        /* if border exists vvv */
-            border-bottom: <%= perma.a %>px <%= perma.c %> solid; /* arrowsize */
-        /* else */
-            /* border-bottom: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
-        /* endif ^^^ */
-        border-top: none;
-        top: <%= offset %>px;
-    }
-    /* if border exists vvv */
-        .<%= perma.cls %>.v-t > i::before {
-            border-bottom: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+    <% if (hasa) { %>
+        .<%= perma.cls %>.v-t > i {
+            /* if border exists vvv */
+                border-bottom: <%= perma.a %>px <%= bgcolor %> solid; /* arrowsize */
+            /* else */
+                /* border-bottom: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
+            /* endif ^^^ */
             border-top: none;
-            top: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
-            z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(<%= transform %>px, <%= transformb %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(<%= transform %>px, <%= transformb %>px);
-            transform: translate(<%= transform %>px, <%= transformb %>px);
+            top: <%= offset %>px;
         }
-    /* endif ^^^ */
+        <% if (hasb) { %>
+            .<%= perma.cls %>.v-t > i::before {
+                border-bottom: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                border-top: none;
+                top: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
+                z-index: 101; /* baze z-index + 1 */
+                -ms-transform: translate(<%= transform %>px, <%= transformb %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                -webkit-transform: translate(<%= transform %>px, <%= transformb %>px);
+                transform: translate(<%= transform %>px, <%= transformb %>px);
+            }
+        <% } %>
+    <% } %>
 /* tooltip on bottom ^^^ */
 
 /* tooltip on left vvv */
@@ -157,26 +173,28 @@ var transformb = 2 + wa
     .<%= perma.cls %>.h-r > div {
         margin-right: <%= 5 + perma.a %>px; /* arrowsize + 5 offset from target */
     }
-    .<%= perma.cls %>.h-r > i {
-        /* if border exists vvv */
-            border-left: <%= perma.a %>px <%= perma.c %> solid; /* arrowsize */
-        /* else */
-            /* border-left: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
-        /* endif ^^^ */
-        border-right: none;
-        right: <%= offset %>px;
-    }
-    /* if border exists vvv */
-        .<%= perma.cls %>.h-r > i::before {
-            border-left: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+    <% if (hasa) { %>
+        .<%= perma.cls %>.h-r > i {
+            /* if border exists vvv */
+                border-left: <%= perma.a %>px <%= bgcolor %> solid; /* arrowsize */
+            /* else */
+                /* border-left: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
+            /* endif ^^^ */
             border-right: none;
-            right: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
-            z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(-<%= transformb %>px, <%= transform %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(-<%= transformb %>px, <%= transform %>px);
-            transform: translate(-<%= transformb %>px, <%= transform %>px);
+            right: <%= offset %>px;
         }
-    /* endif ^^^ */
+        <% if (hasb) { %>
+            .<%= perma.cls %>.h-r > i::before {
+                border-left: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                border-right: none;
+                right: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
+                z-index: 101; /* baze z-index + 1 */
+                -ms-transform: translate(-<%= transformb %>px, <%= transform %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                -webkit-transform: translate(-<%= transformb %>px, <%= transform %>px);
+                transform: translate(-<%= transformb %>px, <%= transform %>px);
+            }
+        <% } %>
+    <% } %>
 /* tooltip on left ^^^ */
 
 /* tooltip on right vvv */
@@ -188,35 +206,40 @@ var transformb = 2 + wa
     .<%= perma.cls %>.h-l > div {
         margin-left: <%= 5 + perma.a %>px; /* arrowsize + 5 offset from target */
     }
-    .<%= perma.cls %>.h-l > i {
-        /* if border exists vvv */
-            border-right: <%= perma.a %>px <%= perma.c %> solid; /* arrowsize */
-        /* else */
-            /* border-right: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
-        /* endif ^^^ */
-        border-left: none;
-        left: <%= offset %>px;
-    }
-    /* if border exists vvv */
-        .<%= perma.cls %>.h-l > i::before {
-            border-right: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+    <% if (hasa) { %>
+        .<%= perma.cls %>.h-l > i {
+            /* if border exists vvv */
+                border-right: <%= perma.a %>px <%= bgcolor %> solid; /* arrowsize */
+            /* else */
+                /* border-right: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
+            /* endif ^^^ */
             border-left: none;
-            left: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
-            z-index: 101; /* baze z-index + 1 */
-            -ms-transform: translate(<%= transformb %>px, <%= transform %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
-            -webkit-transform: translate(<%= transformb %>px, <%= transform %>px);
-            transform: translate(<%= transformb %>px, <%= transform %>px);
+            left: <%= offset %>px;
         }
-    /* endif ^^^ */
+        <% if (hasb) { %>
+            .<%= perma.cls %>.h-l > i::before {
+                border-right: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                border-left: none;
+                left: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
+                z-index: 101; /* baze z-index + 1 */
+                -ms-transform: translate(<%= transformb %>px, <%= transform %>px);         /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                -webkit-transform: translate(<%= transformb %>px, <%= transform %>px);
+                transform: translate(<%= transformb %>px, <%= transform %>px);
+            }
+        <% } %>
+    <% } %>
 /* tooltip on right ^^^ */
 
 /* hide arrow on edge vvv */
-.<%= perma.cls %>.h-l.v-b > i::before,
-.<%= perma.cls %>.h-l.v-t > i::before,
-.<%= perma.cls %>.h-r.v-b > i::before,
-.<%= perma.cls %>.h-r.v-t > i::before {
-    display: none;
-}
+
+<% if (hasa && hasb) { %>
+    .<%= perma.cls %>.h-l.v-b > i::before,
+    .<%= perma.cls %>.h-l.v-t > i::before,
+    .<%= perma.cls %>.h-r.v-b > i::before,
+    .<%= perma.cls %>.h-r.v-t > i::before {
+        display: none;
+    }
+<% } %>
 /* hide arrow on edge ^^^ */
 
 /* test element vvv */
