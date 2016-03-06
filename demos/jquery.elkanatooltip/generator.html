@@ -227,6 +227,25 @@
 
                         field.val(value);
                     },
+                    d : function (s, value) {
+
+                        var def = '0';
+
+                        if (s === 'def')
+                            return def;
+
+                        var field = $('[name="distance"]');
+
+                        if (s === 'read') {
+                            var v = field.val();
+                            if ((v+'').length) {
+                                return v;
+                            }
+                            return def;
+                        }
+
+                        field.val(value);
+                    },
                     cls : function (s, value) {
 
                         var def = 'elkanatooltip';
@@ -304,19 +323,22 @@
                                 d.a = parseInt(d.a)
                                 d.w = parseInt(d.w)
                                 d.r = parseInt(d.r)
+                                d.d = parseInt(d.d)
 
     //                            var style = tmp({json: option});
-                                var style = $.trim(tmp({
-                                    json: option,
-                                    perma: d,
-                                    url: update()
-                                }).replace(/\n\n/, "\n").replace(/\n\n/, "\n"));
+                                var style = "/* url: "+update()+" */\n"+$.trim(
+                                    tmp({
+                                        json: option,
+                                        perma: d,
+                                        url: update()
+                                    }).replace(/\n\s*\n/g, "\n").replace(/\n\s*\n/g, "\n")
+                                    .replace(/(\/\*[.\S\s]*?\*\/)/g, '').replace(/\n\s*\n/g, "\n")
+                                );
                                 //.replace(/(\/\*[.\S\s]*?\*\/)/g, '');
 
                                 $('[data-source]').remove();
                                 $(ltmp).appendTo(head).html(style);
                                 option.cls = d.cls;
-
 
 //                                dedit.setValue(style.replace(/\n\s*\n/g, '\n'));
                                 dedit.setValue(style);
@@ -337,7 +359,6 @@
                                     .click(function () {
                                         elem.elkanatooltip(!elem.elkanatooltip(null, d.cls).show, d.cls);
                                     });
-
 
                                 $('table input:radio').unbind('click').click(function () {
                                     var t = $(this);
@@ -476,6 +497,10 @@
                         <tr>
                             <td>bg color</td>
                             <td><input type="text" value="" name="bgcolor" data-change /></td>
+                        </tr>
+                        <tr>
+                            <td>distance</td>
+                            <td><input type="text" value="" name="distance" data-change /></td>
                         </tr>
                     </tbody>
                 </table>
