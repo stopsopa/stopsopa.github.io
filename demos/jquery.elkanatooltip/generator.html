@@ -15,8 +15,8 @@
 
     <link rel="stylesheet" type="text/css" href="../../js/bootstrap-3.3.4/css/bootstrap-rewrite.css" media="all" />
 
-    <script src="../../js/jquery.minicolors/jquery.minicolors.js"></script>
-    <link rel="stylesheet" type="text/css" href="../../js/jquery.minicolors/jquery.minicolors.css" media="all" />
+    <script src="../../js/jquery.minicolors/jquery.minicolors.2.2.3.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../js/jquery.minicolors/jquery.minicolors.2.2.3.css" media="all" />
 
     <script src="//d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="../../js/aceedit/jquery.aceedit.css" media="all" />
@@ -24,8 +24,8 @@
     
     <script src="../../js/underscore.js"></script>
     <script src="../../js/URI.js"></script>
-    <script src="jquery.urlstate.js"></script>        
-    
+    <script src="jquery.urlstate.js"></script>
+
     <style type="text/css" data-style></style>
 
 <!--	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -170,6 +170,25 @@
         .int > span.down:hover::before {
             border-top-color: white;
         }
+        .minicolors-theme-bootstrap .minicolors-swatch {
+            height: 15px;
+        }
+        [data-colors] {
+            width: 99px;
+            padding-left: 2px !important;
+        }
+        .controls {
+            width: 97%;
+        }
+        .controls input {
+            width: 200px;
+        }
+        body .minicolors-theme-bootstrap.minicolors-position-right .minicolors-input {
+            padding: 2px;
+        }
+        .minicolors-theme-bootstrap.minicolors-position-right li.minicolors-swatch {
+            left: 0;
+        }
     </style>
 
     <script>
@@ -218,6 +237,20 @@
                 });
             }( $('[data-int]') ));
 
+            $('[data-colors]').minicolors({
+                control: 'wheel', // hue, brightness, saturation, and wheel. http://labs.abeautifulsite.net/jquery-minicolors/
+                inline: false,
+                letterCase: 'uppercase',
+                position: 'top right',
+                theme: 'bootstrap',
+//                opacity: true,
+                defaultValue: 'transparent',
+//                format: 'rgb',
+//                swatches: ['transparent'],
+                change: function () {
+                    edit();
+                }
+            });
 
             $('[href=""]').attr('href', location.pathname);
 
@@ -301,7 +334,7 @@
                     },
                     b : function (s, value) {
 
-                        var def = '#fff';
+                        var def = 'transparent';
 
                         if (s === 'def')
                             return def;
@@ -566,10 +599,10 @@
 
                 <div class="clear"></div>
 
-                <table>
+                <table class="controls">
                     <tbody>
                         <tr>
-                            <td>class</td>
+                            <td width="79">class</td>
                             <td><input type="text" value="" name="cls" data-change /></td>
                         </tr>
                         <tr>
@@ -578,7 +611,7 @@
                         </tr>
                         <tr>
                             <td>color</td>
-                            <td><input type="text" value="" name="color" data-change /></td>
+                            <td><input type="text" value="" name="color" data-change data-colors /></td>
                         </tr>
                         <tr>
                             <td>arrow</td>
@@ -590,7 +623,7 @@
                         </tr>
                         <tr>
                             <td>bg color</td>
-                            <td><input type="text" value="" name="bgcolor" data-change /></td>
+                            <td><input type="text" value="" name="bgcolor" data-change data-colors/></td>
                         </tr>
                         <tr>
                             <td>distance</td>
