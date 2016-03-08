@@ -37,11 +37,14 @@
         log('url after change: "'+url+'"')
     });
 
-    // get data in object form from url
+    // get data in object form from url (only from url)
     update.get()
 
-    // the same as .get() but with defaults
-    update.fetch()
+     // get defaults and override them by data from url
+     update.defurl()
+
+     // get defaults and override them by data from form
+     update.defform()
 
     // setup in url
     update.set({j: "f", d: "s", t: "f"})
@@ -93,6 +96,13 @@
             var d = {};
             for (var i in opt.collection) {
                 d[i] = opt.collection[i]('def');
+            }
+            return d;
+        }
+        function form() {
+            var d = {};
+            for (var i in opt.collection) {
+                d[i] = opt.collection[i]('read');
             }
             return d;
         }
@@ -173,10 +183,13 @@
                 if (k[key])
                     return JSON.parse(flipget(k[key]));
 
-                return null;
+                return {};
             }, // odczyt - na przykład z url
-            fetch: function () {
+            defurl: function () {
                 return $.extend(def(), this.get());
+            },
+            defform: function () {
+                return $.extend(def(), form());
             }
         }, opt || {});
 

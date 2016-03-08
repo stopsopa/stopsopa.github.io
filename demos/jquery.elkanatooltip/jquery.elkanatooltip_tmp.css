@@ -6,10 +6,13 @@ var wa = 0;
 if (perma.w > 2) {
     wa = 1;
 }
-var offset = 5 + perma.w - wa;
+var offset = -2 + perma.w - wa + perma.d;
+var boxoffset = -2 + perma.a + perma.d;
 var transformb = 2 + wa
 var hasb = perma.w > 0;
-var bgcolor = hasb ? perma.c : perma.b;
+var bcolor = hasb ? perma.c : perma.b;
+bcolor = $.trim(bcolor);
+var bgcolor = $.trim(perma.b) || 'white';
 var hasa = (perma.a - perma.w) > 2 ? true : false;
 
 %>/* url: <%= url %> */
@@ -45,13 +48,16 @@ var hasa = (perma.a - perma.w) > 2 ? true : false;
 /* animate ^^^ */
 
 .<%= perma.cls %> > div {
-    background-color: <%= perma.b %>;
-    color: white;
+    <% if ($.trim(perma.b)) { %>
+        background-color: <%= perma.b %>;
+    <% } %>
     padding: 3px;
-    -webkit-border-radius: <%= perma.r %>px;
-    -khtml-border-radius: <%= perma.r %>px;
-    -moz-border-radius: <%= perma.r %>px;
-    border-radius: <%= perma.r %>px;
+    <% if (perma.r) { %>
+        -webkit-border-radius: <%= perma.r %>px;
+        -khtml-border-radius: <%= perma.r %>px;
+        -moz-border-radius: <%= perma.r %>px;
+        border-radius: <%= perma.r %>px;
+    <% } %>
     -webkit-box-shadow: 0 0 6px #000;
     box-shadow: 0 0 6px #000;
 
@@ -103,22 +109,24 @@ var hasa = (perma.a - perma.w) > 2 ? true : false;
         transform: translate(0px, -10px);
     }
     .<%= perma.cls %>.v-b > div {
-        margin-bottom: <%= 5 + perma.a %>px;  /* arrowsize + 5 offset from target */
+        margin-bottom: <%= boxoffset %>px;  /* arrowsize + 5 offset from target */
     }
 
     <% if (hasa) { %>
         .<%= perma.cls %>.v-b > i {
             /* if border exists vvv */
-                border-top: <%= perma.a %>px <%= bgcolor %> solid;  /* arrowsize */
+            <% if (bcolor) { %>
+                border-top: <%= perma.a %>px <%= bcolor %> solid;  /* arrowsize */
+            <% } %>
             /* else */
-                /* border-top: <%= perma.a %>px <%= bgcolor %> solid; */  /* arrowsize */
+                /* border-top: <%= perma.a %>px <%= bcolor %> solid; */  /* arrowsize */
             /* endif ^^^ */
             border-bottom: none;
             bottom: <%= offset %>px;
         }
         <% if (hasb) { %>
             .<%= perma.cls %>.v-b > i::before {
-                border-top: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                border-top: <%= border %>px <%= bgcolor %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
                 border-bottom: none;
                 bottom: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
                 z-index: 101; /* baze z-index + 1 */
@@ -138,12 +146,14 @@ var hasa = (perma.a - perma.w) > 2 ? true : false;
         transform: translate(0px, 10px);
     }
     .<%= perma.cls %>.v-t > div {
-        margin-top: <%= 5 + perma.a %>px; /* arrowsize + 5 offset from target */
+        margin-top: <%= boxoffset %>px; /* arrowsize + 5 offset from target */
     }
     <% if (hasa) { %>
         .<%= perma.cls %>.v-t > i {
             /* if border exists vvv */
-                border-bottom: <%= perma.a %>px <%= bgcolor %> solid; /* arrowsize */
+            <% if (bcolor) { %>
+                border-bottom: <%= perma.a %>px <%= bcolor %> solid; /* arrowsize */
+            <% } %>
             /* else */
                 /* border-bottom: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
             /* endif ^^^ */
@@ -152,7 +162,7 @@ var hasa = (perma.a - perma.w) > 2 ? true : false;
         }
         <% if (hasb) { %>
             .<%= perma.cls %>.v-t > i::before {
-                border-bottom: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                border-bottom: <%= border %>px <%= bgcolor %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
                 border-top: none;
                 top: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
                 z-index: 101; /* baze z-index + 1 */
@@ -171,12 +181,14 @@ var hasa = (perma.a - perma.w) > 2 ? true : false;
         transform: translate(-10px, 0px);
     }
     .<%= perma.cls %>.h-r > div {
-        margin-right: <%= 5 + perma.a %>px; /* arrowsize + 5 offset from target */
+        margin-right: <%= boxoffset %>px; /* arrowsize + 5 offset from target */
     }
     <% if (hasa) { %>
         .<%= perma.cls %>.h-r > i {
             /* if border exists vvv */
-                border-left: <%= perma.a %>px <%= bgcolor %> solid; /* arrowsize */
+            <% if (bcolor) { %>
+                border-left: <%= perma.a %>px <%= bcolor %> solid; /* arrowsize */
+            <% } %>
             /* else */
                 /* border-left: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
             /* endif ^^^ */
@@ -185,7 +197,7 @@ var hasa = (perma.a - perma.w) > 2 ? true : false;
         }
         <% if (hasb) { %>
             .<%= perma.cls %>.h-r > i::before {
-                border-left: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                border-left: <%= border %>px <%= bgcolor %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
                 border-right: none;
                 right: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
                 z-index: 101; /* baze z-index + 1 */
@@ -204,12 +216,14 @@ var hasa = (perma.a - perma.w) > 2 ? true : false;
         transform: translate(10px, 0px);
     }
     .<%= perma.cls %>.h-l > div {
-        margin-left: <%= 5 + perma.a %>px; /* arrowsize + 5 offset from target */
+        margin-left: <%= boxoffset %>px; /* arrowsize + 5 offset from target */
     }
     <% if (hasa) { %>
         .<%= perma.cls %>.h-l > i {
             /* if border exists vvv */
-                border-right: <%= perma.a %>px <%= bgcolor %> solid; /* arrowsize */
+            <% if (bcolor) { %>
+                border-right: <%= perma.a %>px <%= bcolor %> solid; /* arrowsize */
+            <% } %>
             /* else */
                 /* border-right: <%= perma.a %>px <%= perma.b %> solid; */ /* arrowsize */
             /* endif ^^^ */
@@ -218,7 +232,7 @@ var hasa = (perma.a - perma.w) > 2 ? true : false;
         }
         <% if (hasb) { %>
             .<%= perma.cls %>.h-l > i::before {
-                border-right: <%= border %>px <%= perma.b %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
+                border-right: <%= border %>px <%= bgcolor %> solid;  /* arrowsize */ /** arrowsize[5] - border[2] = 3    => +1 = 4 */
                 border-left: none;
                 left: <%= perma.w - 1 %>px;                                 /** arrowsize[5] - border[2] = 3 */
                 z-index: 101; /* baze z-index + 1 */

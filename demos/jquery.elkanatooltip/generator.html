@@ -60,9 +60,17 @@
             width: 950px;
             margin: auto;
         }
-	td {
-	    vertical-align: top;
-	}
+        .right {
+            float: right;
+        }
+        .reset {
+            float: right;
+            margin-right: 52px;
+            margin-top: 87px;
+        }
+        td {
+            vertical-align: top;
+        }
         #test {
             padding-bottom: 77px;
             padding-left: 78px;
@@ -121,6 +129,47 @@
             -webkit-animation-name: bounce;
             animation-name: bounce;
         }
+
+        .int {
+            position: relative;
+        }
+        .int > span {
+            position: absolute;
+            border: 1px solid gray;
+            right: 0;
+            width: 10px;
+            height: 10px;
+        }
+
+        .int > span:hover {
+            background-color: #2f2e2e;
+        }
+        .int > span.up {
+            top: 0;
+        }
+        .int > span.down {
+            bottom: 0;
+        }
+        .int > span::before {
+            content: "";
+            border: 4px solid transparent;
+            position: absolute;
+            left: 1px;
+        }
+        .int > span.up::before {
+            border-bottom-color: #2f2e2e;
+            bottom: 3px;
+        }
+        .int > span.up:hover::before {
+            border-bottom-color: white;
+        }
+        .int > span.down::before {
+            border-top-color: #2f2e2e;
+            top: 3px;
+        }
+        .int > span.down:hover::before {
+            border-top-color: white;
+        }
     </style>
 
     <script>
@@ -128,13 +177,55 @@
 
         $(function () {
 
-            var edit = $.noop;
+            window.edit = $.noop;
+
+            (function (t) {
+
+                t.each(function () {
+                    var t = $(this);
+
+                    var _t = (t.data('int') || ':').split(':');
+
+                    var min = parseInt(_t[0]);
+                    (isNaN(min)) && (min = null);
+
+                    var max = parseInt(_t[1]);
+                    (isNaN(max)) && (max = null);
+
+                    var p = t.wrap($('<div></div>').addClass('int')).parent();
+
+                    $('<span></span>').addClass('up').appendTo(p).on('click', function () {
+                        var v = parseInt(t.val());
+
+                        if (max !== null && v >= max) {
+                            return;
+                        }
+                        t.val(v + 1);
+
+                        edit();
+                    });
+
+                    $('<span></span>').addClass('down').appendTo(p).on('click', function () {
+                        var v = parseInt(t.val());
+
+                        if (min !== null && v <= min) {
+                            return;
+                        }
+                        t.val(v - 1);
+
+                        edit();
+                    });
+                });
+            }( $('[data-int]') ));
+
+
+            $('[href=""]').attr('href', location.pathname);
 
             var update = $.urlstate({
                 collection: {
                     w : function (s, value) {
 
-                        var def = '2';
+                        var def = '1';
 
                         if (s === 'def')
                             return def;
@@ -153,7 +244,7 @@
                     },
                     c : function (s, value) {
 
-                        var def = '#ff0000';
+                        var def = '#333';
 
                         if (s === 'def')
                             return def;
@@ -172,7 +263,7 @@
                     },
                     a : function (s, value) {
 
-                        var def = '5';
+                        var def = '7';
 
                         if (s === 'def')
                             return def;
@@ -210,7 +301,7 @@
                     },
                     b : function (s, value) {
 
-                        var def = '#333333';
+                        var def = '#fff';
 
                         if (s === 'def')
                             return def;
@@ -229,7 +320,7 @@
                     },
                     d : function (s, value) {
 
-                        var def = '0';
+                        var def = '4';
 
                         if (s === 'def')
                             return def;
@@ -319,7 +410,7 @@
                                 var elem        = testdiv.find('.test_element');
                                 var tool        = testdiv.find('.test_tooltip');
 
-                                var d = update.fetch();
+                                var d = update.defform();
                                 d.a = parseInt(d.a)
                                 d.w = parseInt(d.w)
                                 d.r = parseInt(d.r)
@@ -331,10 +422,12 @@
                                         json: option,
                                         perma: d,
                                         url: update()
-                                    }).replace(/\n\s*\n/g, "\n").replace(/\n\s*\n/g, "\n")
+                                    })
+                                    .replace(/\n\s*\n/g, "\n").replace(/\n\s*\n/g, "\n")
                                     .replace(/(\/\*[.\S\s]*?\*\/)/g, '').replace(/\n\s*\n/g, "\n")
+                                    .replace(/\n\s+/g, "\n    ").replace(/\n\s*}\s*\n\s*/g, "\n}\n")
+                                    .replace(/,\n\s+/g, ',\n')
                                 );
-                                //.replace(/(\/\*[.\S\s]*?\*\/)/g, '');
 
                                 $('[data-source]').remove();
                                 $(ltmp).appendTo(head).html(style);
@@ -352,8 +445,7 @@
                                         drag: function () {
                                             process.nextTick(function() {
                                                 elem.elkanatooltip(true, d.cls);
-                                            })
-                //                            edit();
+                                            });
                                         }
                                     })
                                     .click(function () {
@@ -369,6 +461,7 @@
                             catch (e) {
                                 log('To early to call edit(): '+e)
                             }
+
                         }, 300);
 
                         edit();
@@ -419,6 +512,7 @@
 
                 <div class="btsp">
                     <a href="https://github.com/stopsopa/elkanatooltip" class="btn btn-link btsp f" id="home" target="_blank"><img src="https://github.com/fluidicon.png" height="31" /> manual/download</a>
+                    <a href="" class="reset btn btn-link btsp f">reset</a>
                 </div>
 
                 <table class="left">
@@ -476,11 +570,11 @@
                     <tbody>
                         <tr>
                             <td>class</td>
-                            <td><input type="text" value="" name="cls" data-change/></td>
+                            <td><input type="text" value="" name="cls" data-change /></td>
                         </tr>
                         <tr>
                             <td>width</td>
-                            <td><input type="text" value="" name="width" data-change/></td>
+                            <td><input type="text" value="" name="width" data-change data-int="0:"/></td>
                         </tr>
                         <tr>
                             <td>color</td>
@@ -488,11 +582,11 @@
                         </tr>
                         <tr>
                             <td>arrow</td>
-                            <td><input type="text" value="" name="arrow" data-change /></td>
+                            <td><input type="text" value="" name="arrow" data-change data-int="0:"/></td>
                         </tr>
                         <tr>
                             <td>radius</td>
-                            <td><input type="text" value="" name="radius" data-change /></td>
+                            <td><input type="text" value="" name="radius" data-change data-int="0:"/></td>
                         </tr>
                         <tr>
                             <td>bg color</td>
@@ -500,7 +594,7 @@
                         </tr>
                         <tr>
                             <td>distance</td>
-                            <td><input type="text" value="" name="distance" data-change /></td>
+                            <td><input type="text" value="" name="distance" data-change data-int/></td>
                         </tr>
                     </tbody>
                 </table>
