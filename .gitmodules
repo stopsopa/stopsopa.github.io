@@ -1,6 +1,3 @@
 [submodule "submod/tabs"]
 	path = submod/tabs
 	url = https://github.com/stopsopa/tabs.git
-[submodule "submod/elkanatooltip"]
-	path = submod/elkanatooltip
-	url = https://github.com/stopsopa/elkanatooltip.git
