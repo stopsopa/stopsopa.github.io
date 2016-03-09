@@ -189,6 +189,17 @@
         .minicolors-theme-bootstrap.minicolors-position-right li.minicolors-swatch {
             left: 0;
         }
+        .minicolors-panel {
+            margin-right: 40px;
+        }
+        .t {
+            font-family: "Open Sans",Arial,Helvetica,Sans-Serif;
+        }
+        .tip {
+            font-size: 10px;
+            color: #333;
+            margin: 2px;
+        }
     </style>
 
     <script>
@@ -277,7 +288,7 @@
                     },
                     c : function (s, value) {
 
-                        var def = '#333';
+                        var def = '#333333';
 
                         if (s === 'def')
                             return def;
@@ -334,7 +345,7 @@
                     },
                     b : function (s, value) {
 
-                        var def = '#fff';
+                        var def = '#ffffff';
 
                         if (s === 'def')
                             return def;
@@ -599,7 +610,7 @@
 
                 <div class="clear"></div>
 
-                <table class="controls">
+                <table class="controls t">
                     <tbody>
                         <tr>
                             <td width="79">class</td>
@@ -631,6 +642,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <p class="tip t">* Rest of params change manually in css or override better</p>
 
                 <div class="clear"></div>
 
