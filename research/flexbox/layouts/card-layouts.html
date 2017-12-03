@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+    <title>Document</title>
+    <style>
+        * {
+            font-family: "Open Sans", sans-serif;
+        }
+        .cards {
+            background-color: silver;
+            display: flex;
+            width: 500px;
+            margin: auto;
+            justify-content: space-between;
+            padding: 5px 10px;
+            flex-wrap: wrap;
+        }
+        .cards:hover {
+            background-color: white;
+        }
+        .card {
+            background-color: white;
+            /*margin: 10px;*/
+            box-sizing: border-box;
+            /*flex: 0 0 calc( (100% / 3) - 5px);*/
+            width: calc( (100% / 3) - 5px);
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 5px;
+            margin-top: 5px;
+            box-shadow: 0 0 3px silver;
+        }
+        .card:hover {
+            box-shadow: 0 0 10px black;
+        }
+        .card > img {
+            width: 100%;
+        }
+        .card > .body {
+            padding-left: 10px;
+            padding-right: 10px;
+            flex: 1 0 0;
+        }
+        .card > .body > h3 {
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
+        .card > .body > p {
+            margin-top: 3px;
+            margin-bottom: 3px;
+            font-size: 11px;
+            font-weight: 300;
+        }
+        .card > .foot {
+            background-color: #3e3e3e;
+            color: white;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cards">
+        <div class="card">
+            <img src="//i.imgur.com/kRdf1ME.png">
+            <div class="body">
+                <h3>Header lorem</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed finibus nibh. Nullam sit amet arcu vel metus iaculis molestie. </p>
+                <button>more</button>
+            </div>
+            <div class="foot">
+                footer
+            </div>
+        </div>
+        <div class="card">
+            <img src="//i.imgur.com/kRdf1ME.png">
+            <div class="body">
+                <h3>Header lorem</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed finibus nibh. Nullam sit amet arcu vel metus iaculis molestie. </p>
+                <button>more</button>
+            </div>
+            <div class="foot">
+                footer
+            </div>
+        </div>
+        <div class="card">
+            <img src="//i.imgur.com/kRdf1ME.png">
+            <div class="body">
+                <h3>Header lorem</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed finibus nibh. Nullam sit amet arcu vel metus iaculis molestie. </p>
+                <button>more</button>
+            </div>
+            <div class="foot">
+                footer
+            </div>
+        </div>
+        <div class="card">
+            <img src="//i.imgur.com/kRdf1ME.png">
+            <div class="body">
+                <h3>Header lorem</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed finibus nibh. Nullam sit amet arcu vel metus iaculis molestie. </p>
+                <button>more</button>
+            </div>
+            <div class="foot">
+                footer
+            </div>
+        </div>
+        <div class="card">
+            <img src="//i.imgur.com/kRdf1ME.png">
+            <div class="body">
+                <h3>Header lorem</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed finibus nibh. Nullam sit amet arcu vel metus iaculis molestie. </p>
+                <button>more</button>
+            </div>
+            <div class="foot">
+                footer
+            </div>
+        </div>
+        <div class="card">
+            <img src="//i.imgur.com/kRdf1ME.png">
+            <div class="body">
+                <h3>Header lorem</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed finibus nibh. Nullam sit amet arcu vel metus iaculis molestie. </p>
+                <button>more</button>
+            </div>
+            <div class="foot">
+                footer
+            </div>
+        </div>
+        <div class="card">
+            <img src="//i.imgur.com/kRdf1ME.png">
+            <div class="body">
+                <h3>Header lorem</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed finibus nibh. Nullam sit amet arcu vel metus iaculis molestie. </p>
+                <button>more</button>
+            </div>
+            <div class="foot">
+                footer
+            </div>
+        </div>
+        <div class="card">
+            <img src="//i.imgur.com/kRdf1ME.png">
+            <div class="body">
+                <h3>Header lorem</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed finibus nibh. Nullam sit amet arcu vel metus iaculis molestie. </p>
+                <button>more</button>
+            </div>
+            <div class="foot">
+                footer
+            </div>
+        </div>
+        <div class="card">
+            <img src="//i.imgur.com/kRdf1ME.png">
+            <div class="body">
+                <h3>Header lorem</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed finibus nibh. Nullam sit amet arcu vel metus iaculis molestie. </p>
+                <button>more</button>
+            </div>
+            <div class="foot">
+                footer
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        var manipulation = {
+            after: function (referenceNode, newNode) {
+                return this.before(referenceNode.nextSibling, newNode);
+            },
+            before: function (referenceNode, newNode) {
+                referenceNode.parentNode.insertBefore(newNode, referenceNode);
+                return this;
+            },
+            append: function (parentNode, newNode) {
+                parentNode.appendChild(newNode);
+                return this;
+            },
+            prepend: function (parentNode, newNode) {
+                parentNode.insertBefore(newNode, parentNode.firstChild);
+                return this;
+            },
+            remove: function (node) {
+                node.parentNode.removeChild(node);
+                return this;
+            }
+        };
+
+        var log = console.log;
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            var p = document.querySelector('p');
+
+            document.addEventListener('click', e => {
+
+                if (e.target.tagName.toLowerCase() === 'button') {
+
+                    manipulation.after(e.target, p.cloneNode(true));
+                }
+            });
+        });
+    </script>
+</body>
+</html>
