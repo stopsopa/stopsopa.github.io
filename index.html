@@ -1,13 +1,261 @@
 <!doctype html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Stopsopa</title>
+    <title>stopsopa.github.io</title>
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="favicon.png"/>
+    <style>
+        html {
+            color: #404040;
+        }
+        * {
+            font-family: "Open Sans", sans-serif;
+        }
+        .layout {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        header {
+            background-color: #F4F3F1;
+            display: flex;
+            padding: 15px;
+        }
+        .body {
+            display: flex;
+            flex: 1;
+        }
+        .inside {
+            flex: 1;
+        }
+        footer {
+            background-color: #404040;
+            padding: 20px 15px;
+        }
+
+
+
+        .cards {
+            padding: 5px;
+            display: flex;
+            /*margin: auto;*/
+            justify-content: space-around;
+            flex-direction: column;
+            /*padding: 5px 10px;*/
+            /*flex-wrap: wrap;*/
+        }
+        .cards h2 {
+            padding-left: 4px;
+            margin: 8px 0;
+        }
+        .cards:hover {
+            background-color: white;
+        }
+        .card {
+            background-color: white;
+            /*margin: 10px;*/
+            box-sizing: border-box;
+            /*width: calc( (100% / 3) - 5px);*/
+            /*display: flex;*/
+            /*flex-direction: column;*/
+            margin-bottom: 5px;
+            margin-top: 5px;
+            box-shadow: 0 0 3px silver;
+            padding: 7px;
+        }
+        .card a {
+            padding-right: .2em;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .card a:hover {
+            text-decoration: underline;
+        }
+        .card a::before {
+            content: '🔗';
+            padding-right: .2em;
+        }
+        .card h3 {
+            padding-left: 0;
+            margin: 10px 0;
+            margin-top: 0;
+        }
+        .card ul {
+            margin: 0;
+            list-style-type: none;;
+        }
+        .card:hover {
+            box-shadow: 0 0 10px black;
+        }
+        .card > img {
+            /*width: 100%;*/
+        }
+        /*.card > .body {*/
+            /*padding-left: 10px;*/
+            /*padding-right: 10px;*/
+            /*flex: 1 0 0;*/
+        /*}*/
+        /*.card > .body > h3 {*/
+            /*margin-top: 3px;*/
+            /*margin-bottom: 3px;*/
+        /*}*/
+        /*.card > .body > p {*/
+            /*margin-top: 3px;*/
+            /*margin-bottom: 3px;*/
+            /*font-size: 11px;*/
+            /*font-weight: 300;*/
+        /*}*/
+        /*.card > .foot {*/
+            /*background-color: #3e3e3e;*/
+            /*color: white;*/
+            /*padding: 5px;*/
+        /*}*/
+
+        /* Landscape phone to portrait tablet */
+        @media (min-width: 768px) {
+
+        }
+
+        /* Portrait tablet to landscape and desktop */
+        @media (min-width: 992px) {
+
+        }
+
+        /* Large desktop */
+        @media (min-width: 1200px) {
+            .inside {
+                max-width: 900px;
+                margin: auto;
+            }
+
+        }
+
+    </style>
 </head>
-<body>
-    test
+<body class="layout">
+
+    <header>
+        stopsopa.github.io
+    </header>
+
+    <div class="body">
+        <div class="inside">
+
+            <div class="cards">
+                <h2>Javascript</h2>
+                <div class="card">
+                    <h3>Js</h3>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                </div>
+                <div class="card">
+                    <h3>Js</h3>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                </div>
+                <div class="card">
+                    <h3>Js</h3>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                </div>
+                <div class="card">
+                    <h3>Js</h3>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                </div>
+                <div class="card">
+                    <h3>Js</h3>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                </div>
+                <div class="card">
+                    <h3>Js</h3>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                </div>
+                <div class="card">
+                    <h3>Js</h3>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                </div>
+                <div class="card">
+                    <h3>Js</h3>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                </div>
+                <div class="card">
+                    <h3>Js</h3>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                    <a href="test">link</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        footer
+    </footer>
+
 </body>
 </html>
