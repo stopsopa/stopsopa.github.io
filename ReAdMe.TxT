@@ -5,6 +5,12 @@ http://httpd.pl/stopsopa.github.io/demos/jquery.elkanatooltip/pos.html
 
 
 
+# to maintain:
+http://stopsopa.github.io/demos/jquery.elkanatooltip/katownik.html
+http://stopsopa.github.io/demos/jquery.elkanatooltip/pos.html
+
+
+
 
 
 

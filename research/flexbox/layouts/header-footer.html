@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+
+        * {
+            font-family: "Open Sans", sans-serif;
+        }
+        .layout {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        .layout-body {
+            display: flex;
+            flex: 1;
+        }
+        .layout-content {
+            flex: 1;
+            border: 1px solid green;
+        }
+        .layout-ads {
+            flex: 0 0 12em;
+        }
+        .layout-nav {
+            flex: 0 0 12em;
+            transition:
+                    width .5s ease,
+                    flex .5s ease,
+                    opacity .2s ease-in .3s
+            ;
+            overflow: hidden;
+        }
+        .layout-nav.trans-hide {
+            flex: 0 0 0;
+            opacity: 0;
+            width: 0;
+            transition:
+                    opacity .2s ease,
+                    flex .5s ease .3s,
+                    width .5s ease .3s
+            ;
+        }
+        .layout-nav {
+            /* put the nav on the left */
+            order: -1;
+        }
+        ul {
+            border: 1px solid blue;
+            background-color: #2E2D2E;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        ul > li {
+            flex: 1 0 auto;
+            display: flex;
+        }
+        ul > li > a {
+            color: white;
+            flex: 1 0 auto;
+            text-align: center;
+            line-height: 2em;
+            display: flex;
+        }
+        ul > li > a:hover {
+            color: white;
+        }
+        ul > li > a > div:nth-child(1) {
+            flex: 0 0 3em;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        ul > li > a > div:nth-child(2) {
+            display: flex;
+            flex-direction: column;
+            text-align: start;
+        }
+        ul > li > a > div:nth-child(2) > span {
+            font-size: 9px;
+        }
+        ul > *:hover {
+            background-color: #484748;
+        }
+        footer {
+            border: 1px solid red;
+        }
+
+    </style>
+</head>
+<body class="layout">
+
+    <ul>
+        <li>
+            <a href="javascript:">
+                <div><i class="glyphicon glyphicon-file"></i></div>
+                <div>
+                    Main
+                    <span>main description</span>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:">
+                <div><i class="glyphicon glyphicon-file"></i></div>
+                <div>
+                    menu
+                    <span>menu lorem ipsum</span>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:">
+                <div><i class="glyphicon glyphicon-file"></i></div>
+                <div>
+                    element
+                    <span>element lorem ipsum</span>
+                </div>
+            </a>
+        </li>
+    </ul>
+    <div class="layout-body">
+        <main class="layout-content">
+            main
+            <button>add</button>
+            <p>Lorem ipsum...</p>
+            <p>source: <a href="https://philipwalton.github.io/solved-by-flexbox/demos/holy-grail/" target="_blank">https://philipwalton.github.io/solved-by-flexbox/demos/holy-grail/</a></p>
+        </main>
+        <nav class="layout-nav">
+            nav
+            <button>add</button>
+        </nav>
+        <aside class="layout-ads">
+            <button class="trans-hide">trans-hide</button>
+            aside
+            <button>add</button>
+
+        </aside>
+    </div>
+    <footer>
+        footer
+        <button>add</button>
+    </footer>
+
+    <script>
+
+        var manipulation = {
+            after: function (referenceNode, newNode) {
+                return this.before(referenceNode.nextSibling, newNode);
+            },
+            before: function (referenceNode, newNode) {
+                referenceNode.parentNode.insertBefore(newNode, referenceNode);
+                return this;
+            },
+            append: function (parentNode, newNode) {
+                parentNode.appendChild(newNode);
+                return this;
+            },
+            prepend: function (parentNode, newNode) {
+                parentNode.insertBefore(newNode, parentNode.firstChild);
+                return this;
+            },
+            remove: function (node) {
+                node.parentNode.removeChild(node);
+                return this;
+            }
+        };
+
+        var log = console.log;
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            var p = document.querySelector('p');
+
+            document.addEventListener('click', e => {
+
+                if (e.target.tagName.toLowerCase() === 'button' && !e.target.classList.contains('trans-hide')) {
+
+                    manipulation.after(e.target, p.cloneNode(true));
+                }
+            });
+
+            var nav = document.querySelector('.layout-nav');
+
+            document.querySelector('.trans-hide').addEventListener('click', e => {
+                nav.classList.toggle('trans-hide');
+            });
+        });
+    </script>
+</body>
+</html>
