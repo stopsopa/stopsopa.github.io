@@ -54,11 +54,7 @@
             padding-left: 4px;
             margin: 8px 0;
         }
-        .cards:hover {
-            background-color: white;
-        }
         .card {
-            background-color: white;
             /*margin: 10px;*/
             box-sizing: border-box;
             /*width: calc( (100% / 3) - 5px);*/
@@ -66,56 +62,37 @@
             /*flex-direction: column;*/
             margin-bottom: 5px;
             margin-top: 5px;
-            box-shadow: 0 0 3px silver;
-            padding: 7px;
+            padding: 5px 20px;;
+            position: relative;
         }
-        .card a {
-            padding-right: .2em;
-            text-decoration: none;
-            white-space: nowrap;
+        .card::after {
+            position: absolute;
+            top: 0;
+            bottom: 90%;
+            left: 0;
+            right: 0;
+            content: '';
+            background: #ececec;
+            background: -moz-linear-gradient(top, #ececec 0%, #ffffff 100%);
+            background: -webkit-linear-gradient(top, #ececec 0%,#ffffff 100%);
+            background: linear-gradient(to bottom, #ececec 0%,#ffffff 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ececec', endColorstr='#ffffff',GradientType=0 );
+            z-index: -1;
         }
-        .card a:hover {
-            text-decoration: underline;
+        .card::before {
+            position: absolute;
+            top: 90%;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            content: '';
+            background: #ffffff;
+            background: -moz-linear-gradient(top, #ffffff 0%, #ececec 100%);
+            background: -webkit-linear-gradient(top, #ffffff 0%,#ececec 100%);
+            background: linear-gradient(to bottom, #ffffff 0%,#ececec 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ececec',GradientType=0 );
+            z-index: -1;
         }
-        .card a::before {
-            content: '🔗';
-            padding-right: .2em;
-        }
-        .card h3 {
-            padding-left: 0;
-            margin: 10px 0;
-            margin-top: 0;
-        }
-        .card ul {
-            margin: 0;
-            list-style-type: none;;
-        }
-        .card:hover {
-            box-shadow: 0 0 10px black;
-        }
-        .card > img {
-            /*width: 100%;*/
-        }
-        /*.card > .body {*/
-            /*padding-left: 10px;*/
-            /*padding-right: 10px;*/
-            /*flex: 1 0 0;*/
-        /*}*/
-        /*.card > .body > h3 {*/
-            /*margin-top: 3px;*/
-            /*margin-bottom: 3px;*/
-        /*}*/
-        /*.card > .body > p {*/
-            /*margin-top: 3px;*/
-            /*margin-bottom: 3px;*/
-            /*font-size: 11px;*/
-            /*font-weight: 300;*/
-        /*}*/
-        /*.card > .foot {*/
-            /*background-color: #3e3e3e;*/
-            /*color: white;*/
-            /*padding: 5px;*/
-        /*}*/
 
         /* Landscape phone to portrait tablet */
         @media (min-width: 768px) {
@@ -135,7 +112,6 @@
             }
 
         }
-
     </style>
 </head>
 <body class="layout">
@@ -148,15 +124,21 @@
         <div class="inside">
 
             <div class="cards">
-                <h2>Javascript</h2>
+                <!--<h2>Javascript</h2>-->
+                <!--<div class="card">-->
+                    <!--<h3>Js</h3>-->
+                    <!--<a href="test">link</a>-->
+                    <!--<a href="test">link</a>-->
+                <!--</div>-->
+                <!--<div class="card">-->
+                    <!--<h3>Js</h3>-->
+                    <!--<a href="test">link</a>-->
+                    <!--<a href="test">link</a>-->
+                <!--</div>-->
+                <h2>Css</h2>
+                <h3>Grid</h3>
                 <div class="card">
-                    <h3>Js</h3>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
+                    <h3 id="test-test">Js</h3>
                     <a href="test">link</a>
                     <a href="test">link</a>
                 </div>
@@ -164,10 +146,13 @@
                     <h3>Js</h3>
                     <a href="test">link</a>
                     <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
+                </div>
+
+
+                <h2>Css</h2>
+                <h3>Grid</h3>
+                <div class="card">
+                    <h3>Js</h3>
                     <a href="test">link</a>
                     <a href="test">link</a>
                 </div>
@@ -175,10 +160,13 @@
                     <h3>Js</h3>
                     <a href="test">link</a>
                     <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
+                </div>
+
+
+                <h2>Cssssssss</h2>
+                <h3>Grid</h3>
+                <div class="card">
+                    <h3>Js</h3>
                     <a href="test">link</a>
                     <a href="test">link</a>
                 </div>
@@ -186,10 +174,13 @@
                     <h3>Js</h3>
                     <a href="test">link</a>
                     <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
+                </div>
+
+
+                <h2>Css</h2>
+                <h3>Grid</h3>
+                <div class="card">
+                    <h3>Js</h3>
                     <a href="test">link</a>
                     <a href="test">link</a>
                 </div>
@@ -197,15 +188,37 @@
                     <h3>Js</h3>
                     <a href="test">link</a>
                     <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
+                </div>
+
+
+                <h2>Css</h2>
+                <h3>Grid</h3>
+                <div class="card">
+                    <h3>Js</h3>
                     <a href="test">link</a>
                     <a href="test">link</a>
                 </div>
                 <div class="card">
                     <h3>Js</h3>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
+                    <a href="test">link</a> <br>
                     <a href="test">link</a>
                     <a href="test">link</a>
                     <a href="test">link</a>
@@ -214,31 +227,6 @@
                     <a href="test">link</a>
                     <a href="test">link</a>
                     <a href="test">link</a>
-                </div>
-                <div class="card">
-                    <h3>Js</h3>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                </div>
-                <div class="card">
-                    <h3>Js</h3>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                    <a href="test">link</a>
-                </div>
-                <div class="card">
-                    <h3>Js</h3>
                     <a href="test">link</a>
                     <a href="test">link</a>
                     <a href="test">link</a>
@@ -256,6 +244,9 @@
     <footer>
         footer
     </footer>
+    <script src="./js/polyfill.js"></script>
+    <script src="./js/permalink-my.js"></script>
+    <script>mountpermalink();</script>
 
 </body>
 </html>
