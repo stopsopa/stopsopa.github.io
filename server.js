@@ -139,6 +139,73 @@ const args = (function (obj, tmp) {
     };
 }({}));
 
+if (args.get('help')) {
+
+    process.stdout.write(`
+Standalone static files http server with no dependencies
+    
+@author Szymon Działowski https://github.com/stopsopa
+@license MIT    
+
+parameters:
+
+    --port [port]               def: 8080
+    
+    --dir [path]                def: '.' 
+        relative or absolute path to directory with files to serve
+        
+    --config [filepath.json]    def: false
+    
+        path to config file (json format), file can containe object where 
+        kays are parameters of this script ('config' param in file will be ignored)        
+    
+    --noindex                   def: false  
+        disable indexing directories content if url points to directory
+        
+    --log [level]               def: 1
+    
+        binary mask:
+        
+            0 - show nothing
+            1 - show 404, 
+            2 - show 200, 
+            4 - show 301
+            8 - autoindex
+            
+            more examples:
+                3 - show 404 and 200
+                6 - show 200 and 301
+                7 - show all without autoindex
+                15 - show all
+                
+    --watch [regex]            def: false
+    
+        reload currently opened page in browser when files will change
+        
+        examples:
+            node ${thisScript} --watch                                  - watch all files (can be slow)
+            node ${thisScript} --watch '/\\.js$/i'                       - reload only when files with 'js' extension will change
+            node ${thisScript} --watch '\\.js$'                          - like above but shorter syntax (if no regex flags)
+            node ${thisScript} --watch '/\\.js$/i' --watch '/\\.html$/i'  - reload for 'js' and 'html' files
+            node ${thisScript} --watch '/\\.(js|html)$/i'                - like above but in one regex
+            
+    --ignore [regex]           def: '/^(.*?\\/)?\\.[^\\/]+$/g' (all files starting from ".")
+        
+        ignore watching files (this param takes precedense over --watch param)
+        
+        
+    --debug [true|false]        def: false
+    
+        flag for debugging --watch and --ignore parameters behaviour
+        
+    --dump 
+    
+        output config
+    
+`);
+    process.exit(0);
+}
+
 var config  = args.get('config');
 
 var dump    = args.get('dump');
@@ -205,73 +272,6 @@ function execArgs (args, str) {
     }
 
     return arr;
-}
-
-if (args.get('help')) {
-
-    process.stdout.write(`
-Standalone static files http server with no dependencies
-    
-@author Szymon Działowski https://github.com/stopsopa
-@license MIT    
-
-parameters:
-
-    --port [port]               def: 8080
-    
-    --dir [path]                def: '.' 
-        relative or absolute path to directory with files to serve
-        
-    --config [filepath.json]    def: false
-    
-        path to config file (json format), file can containe object where 
-        kays are parameters of this script ('config' param in file will be ignored)        
-    
-    --noindex                   def: false  
-        disable indexing directories content if url points to directory
-        
-    --log [level]               def: 1
-    
-        binary mask:
-        
-            0 - show nothing
-            1 - show 404, 
-            2 - show 200, 
-            4 - show 301
-            8 - autoindex
-            
-            more examples:
-                3 - show 404 and 200
-                6 - show 200 and 301
-                7 - show all without autoindex
-                15 - show all
-                
-    --watch [regex]            def: false
-    
-        reload currently opened page in browser when files will change
-        
-        examples:
-            node ${thisScript} --watch                                  - watch all files (can be slow)
-            node ${thisScript} --watch '/\\.js$/i'                       - reload only when files with 'js' extension will change
-            node ${thisScript} --watch '\\.js$'                          - like above but shorter syntax (if no regex flags)
-            node ${thisScript} --watch '/\\.js$/i' --watch '/\\.html$/i'  - reload for 'js' and 'html' files
-            node ${thisScript} --watch '/\\.(js|html)$/i'                - like above but in one regex
-            
-    --ignore [regex]           def: '/^(.*?\\/)?\\.[^\\/]+$/g' (all files starting from ".")
-        
-        ignore watching files (this param takes precedense over --watch param)
-        
-        
-    --debug [true|false]        def: false
-    
-        flag for debugging --watch and --ignore parameters behaviour
-        
-    --dump 
-    
-        output config
-    
-`);
-    process.exit(0);
 }
 
 var dir     = path.resolve(__dirname, args.get('dir', '.'));
