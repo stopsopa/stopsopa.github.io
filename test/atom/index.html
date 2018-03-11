@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Atom</title>
+</head>
+<body>
+
+atom...
+<script src="atom.js"></script>
+<script>
+    var log = (function () {
+        try {
+            return console.log;
+        }
+        catch (e) {
+            return function () {};
+        }
+    }());
+
+    var i = 5;
+
+    atomInterval.subscribe(function (t, un) {
+        log('sub 1: ', t, un)
+
+        if (i-- == 0) {
+
+            un();
+        }
+    });
+
+    atomInterval.subscribe(function (t, un) {
+        log('sub 2: ', t, un)
+    });
+</script>
+</body>
+</html>
