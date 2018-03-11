@@ -245,25 +245,25 @@ const diff = function(a, b) {
 function execArgs (args, str) {
     var arr = ['--inject'];
     Object.keys(args).forEach(key => {
-       if (['watch', 'ignore'].indexOf(key) > -1) {
+        if (['watch', 'ignore'].indexOf(key) > -1) {
 
-           return;
-       }
-       if (isArray(args[key])) {
-           args[key].forEach(val => {
-               arr.push('--' + key)
-               arr.push(val)
-           });
-       }
-       else {
-           if (args[key] === true) {
-               arr.push('--' + key)
-           }
-           else {
-               arr.push('--' + key)
-               arr.push(args[key])
-           }
-       }
+            return;
+        }
+        if (isArray(args[key])) {
+            args[key].forEach(val => {
+                arr.push('--' + key)
+                arr.push(val)
+            });
+        }
+        else {
+            if (args[key] === true) {
+                arr.push('--' + key)
+            }
+            else {
+                arr.push('--' + key)
+                arr.push(args[key])
+            }
+        }
     });
 
     if (str) {
@@ -555,7 +555,7 @@ else {
 
             try {
 
-                res.end(addWatcher(fs.readFileSync(file).toString(), type(req, res)));
+                res.end(addWatcher(fs.readFileSync(file), type(req, res)));
             }
             catch (e) {
 

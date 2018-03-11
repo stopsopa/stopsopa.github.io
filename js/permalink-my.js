@@ -8,8 +8,25 @@
     <script src="./js/permalink-my.js"></script>
     <script>mountpermalink();</script>
 
+ * UMD -> https://github.com/umdjs/umd#umd-universal-module-definition -> amdWebGlobal.js
  */
-;(function () {
+
+
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], function () {
+            // Also create a global in case some scripts
+            // that are loaded still are looking for
+            // a global even when an AMD loader is in use.
+            return (root.mountpermalink = factory());
+        });
+    } else {
+        // Browser globals
+        root.mountpermalink = factory();
+    }
+}(typeof self === 'undefined' ? this : self, function () {
+
 
     // from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys#Polyfill
     if (!Object.keys) {
@@ -167,27 +184,27 @@
         styleId: 'permalink-plugin',
         anchorClass: 'permalink-cls',
         style:
-"h1 > a.permalink-cls, h2 > a.permalink-cls, h3 > a.permalink-cls,\n\
-h4 > a.permalink-cls, h5 > a.permalink-cls, h6 > a.permalink-cls {\n\
-    float: left;\n\
-    width: 1ex;\n\
-    height: 1em;\n\
-    color: #29252b;\n\
-    text-decoration: none;\n\
-    display: none;\n\
-    -webkit-transform: translate(-100%, 0);\n\
-    -ms-transform: translate(-100%, 0);\n\
-    transform: translate(-100%, 0);\n\
-    margin-right: -100%;\n\
-    padding-right: 0.4em;\n\
-}\n\
-h1:hover > a.permalink-cls, h2:hover > a.permalink-cls, h3:hover > a.permalink-cls,\n\
-h4:hover > a.permalink-cls, h5:hover > a.permalink-cls, h6:hover > a.permalink-cls {\n\
-    display: inline-block;\n\
-}"
+            "h1 > a.permalink-cls, h2 > a.permalink-cls, h3 > a.permalink-cls,\n\
+            h4 > a.permalink-cls, h5 > a.permalink-cls, h6 > a.permalink-cls {\n\
+                float: left;\n\
+                width: 1ex;\n\
+                height: 1em;\n\
+                color: #29252b;\n\
+                text-decoration: none;\n\
+                display: none;\n\
+                -webkit-transform: translate(-100%, 0);\n\
+                -ms-transform: translate(-100%, 0);\n\
+                transform: translate(-100%, 0);\n\
+                margin-right: -100%;\n\
+                padding-right: 0.4em;\n\
+            }\n\
+            h1:hover > a.permalink-cls, h2:hover > a.permalink-cls, h3:hover > a.permalink-cls,\n\
+            h4:hover > a.permalink-cls, h5:hover > a.permalink-cls, h6:hover > a.permalink-cls {\n\
+                display: inline-block;\n\
+            }"
     };
 
-    window.mountpermalink = function (opt) {
+    var mountpermalink = function (opt) {
 
         opt = Object.assign(def, opt);
 
@@ -195,7 +212,7 @@ h4:hover > a.permalink-cls, h5:hover > a.permalink-cls, h6:hover > a.permalink-c
 
         'h1, h2, h3, h4, h5, h6'.split(',').forEach(function (selector) {
             document.querySelectorAll(trim(selector)).forEach(function (el) {
-                links[unique(links, el.innerHTML)] = el;
+                links[unique(links, el.innerText)] = el;
             });
         });
 
@@ -253,4 +270,6 @@ h4:hover > a.permalink-cls, h5:hover > a.permalink-cls, h6:hover > a.permalink-c
             manipulation.prepend(links[key], link);
         });
     };
-})();
+
+    return mountpermalink;
+}));
