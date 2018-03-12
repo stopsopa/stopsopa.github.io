@@ -1,3 +1,8 @@
+/**
+ * @author Szymon Działowski
+ * @date 2018-03-12 09:00:08
+ * @version v2.0.0
+ */
 ;(function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
@@ -192,74 +197,28 @@
 
 
 
-
-//var trigger = (function () {
-//    var v, stack = [];
-//    var ti = $('[data-time]');
-//    $.atom({
-//        getTimeEvent : function (eventAfterRetrieve) {
-//            $.json('{{ path('reg.atom') }}')
-//                .done(function (json) {
+// atomInterval.runPromise(new Promise(resolve => {
 //
-//                    /*
-//                     * Formatowanie odpowiedzi i wyciągnięcie różnicy między lokalnym czasem a otrzymanym
-//                     * drugie zapytanie z rzędu jest szybsze zazwyczaj
-//                     */
-//                    var i = json.now.split('-'); // 2013-11-09-11-05-51-911664
-//                    var f = new Date();
-//                    var g = new Date();
-//                    g.setFullYear(i[0]);  // 2013
-//                    g.setMonth(i[1] - 1);  // 11
-//                    g.setDate(i[2]);  // 09
-//                    g.setHours(i[3]);  // 11
-//                    g.setMinutes(i[4]);  // 05
-//                    g.setSeconds(i[5]);  // 51
-//                    g.setMilliseconds(i[6] / 1000);  // 911664
-//                    var ab = g.valueOf() - f.valueOf();
-//                    //console.log('source: '+json.now);
-//                    //console.log('diff: '+ab);
-//                    eventAfterRetrieve(ab);
-//                })
-//                .fail(function () {
-//                    alert('error');
-//                })
-//        },
-//        event : function (data) {
-//            var now     = moment(data.now);
-//            ti.text(now.format('YY-MM-DD HH:mm:ss'));
-//            //log('event test: '+now)
+//     // http://www.navi.pl/katalog/time.php
 //
-//            ;(function run(val) {
-//                for (var i = 0 ; i < stack.length ; ++i ) {
-//                    v = stack[i];
-//                    if (v.conditionfn(v, now)) {
+//     var data = '2016-03-12-10-00-00-613479'; // fake for test
 //
-//                        // tutaj wewnętrzna logika
-//                        log('trigger :'+i);
-//                        log('stack before')
-//                        log(stack)
-//                        stack.splice(i, 1)
-//                        log('stack after')
-//                        log(stack)
-//                        log('trigger')
-//                        v.callback(v.time)
-//                        // tutaj wewnetrzna logika
+//     var i = data.split('-'); // 2013-11-09-11-05-51-911664
+//     var f = new Date();
+//     var g = new Date();
+//     g.setFullYear(i[0]);  // 2013
+//     g.setMonth(i[1] - 1);  // 11
+//     g.setDate(i[2]);  // 09
+//     g.setHours(i[3]);  // 11
+//     g.setMinutes(i[4]);  // 05
+//     g.setSeconds(i[5]);  // 51
+//     g.setMilliseconds(i[6] / 1000);  // 911664
 //
-//                        return run(val)
-//                    }
-//                }
-//            })(now);
-//        }
-//    });
+//     resolve(g.valueOf() - f.valueOf());
 //
-//    return function (time, callback, conditionfn) {
-//        conditionfn || (conditionfn = function (v, now) {
-//            return v.time < now
-//        });
-//        stack.push({
-//            time: moment(time),
-//            callback : callback,
-//            conditionfn : conditionfn
-//        });
-//    }
-//})();
+//     // or
+//     //  resolve({
+//     //      milliseconds    : g.valueOf() - f.valueOf(),
+//     //      interval        : 2000
+//     //  });
+// }));
