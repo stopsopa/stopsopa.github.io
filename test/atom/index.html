@@ -35,6 +35,29 @@ atom...
     atomInterval.subscribe(function (t, un) {
         log('sub 2: ', t, un)
     });
+
+
+    atomInterval.runPromise(new Promise(resolve => {
+
+        // http://www.navi.pl/katalog/time.php
+
+        var data = '2016-03-12-10-00-00-613479'; // fake for test
+
+        var i = data.split('-'); // 2013-11-09-11-05-51-911664
+        var f = new Date();
+        var g = new Date();
+        g.setFullYear(i[0]);  // 2013
+        g.setMonth(i[1] - 1);  // 11
+        g.setDate(i[2]);  // 09
+        g.setHours(i[3]);  // 11
+        g.setMinutes(i[4]);  // 05
+        g.setSeconds(i[5]);  // 51
+        g.setMilliseconds(i[6] / 1000);  // 911664
+
+        resolve(g.valueOf() - f.valueOf());
+    }));
+
+
 </script>
 </body>
 </html>
