@@ -71,17 +71,18 @@
 
     document.addEventListener('DOMContentLoaded', () => {
 
-        const a = document.createElement('a');
+        (function () {
+            const a = document.createElement('a');
 
-        a.classList.add('github-link');
+            a.classList.add('github-link');
 
-        a.innerText = 'edit';
+            a.innerText = 'edit';
 
-        a.setAttribute('href', github)
+            a.setAttribute('href', github)
 
-        manipulation.append(document.body, a);
+            manipulation.append(document.body, a);
 
-        const css = `
+            const css = `
 .github-link {
     border: 1px solid #2d2d2d;
     top: 7px;
@@ -99,19 +100,69 @@
     color: #2d2d2d;
     background-color: white;
 }          
-        `;
-        // https://stackoverflow.com/a/524721
-        var head = document.head || document.getElementsByTagName('head')[0],
-            style = document.createElement('style');
+            `;
+            // https://stackoverflow.com/a/524721
+            var head = document.head || document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
 
-        style.type = 'text/css';
-        if (style.styleSheet){
-            style.styleSheet.cssText = css;
-        } else {
-            style.appendChild(document.createTextNode(css));
-        }
+            style.type = 'text/css';
+            if (style.styleSheet){
+                style.styleSheet.cssText = css;
+            } else {
+                style.appendChild(document.createTextNode(css));
+            }
 
-        head.appendChild(style);
+            head.appendChild(style);
+        }());
+
+
+        (function () {
+            const a = document.createElement('a');
+
+            a.classList.add('github-profile');
+
+            a.innerText = 'profile';
+
+            a.setAttribute('href', '//github.com/stopsopa')
+
+            manipulation.append(document.body, a);
+
+            const css = `
+.github-profile {
+    border: 1px solid #2d2d2d;
+    top: 6px;
+    left: -23px;
+    position: fixed;
+    transform: rotate(-38deg);
+    padding-left: 20px;
+    padding-right: 20px;
+    color: white;
+    text-decoration: none;
+    background-color: #2d2d2d;
+    font-size: 15px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+} 
+.github-link:hover {
+    cursor: pointer;
+    color: #2d2d2d;
+    background-color: white;
+}          
+            `;
+            // https://stackoverflow.com/a/524721
+            var head = document.head || document.getElementsByTagName('head')[0],
+                style = document.createElement('style');
+
+            style.type = 'text/css';
+            if (style.styleSheet){
+                style.styleSheet.cssText = css;
+            } else {
+                style.appendChild(document.createTextNode(css));
+            }
+
+            head.appendChild(style);
+        }());
+
     });
 }());
 
