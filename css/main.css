@@ -79,6 +79,7 @@ h6 {
     padding: 5px 20px 13px;
     position: relative;
 }
+/*
 .card::after {
     position: absolute;
     top: 0;
@@ -107,6 +108,7 @@ h6 {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ececec',GradientType=0 );
     z-index: -1;
 }
+*/
 
 /* Landscape phone to portrait tablet */
 @media (min-width: 768px) {
