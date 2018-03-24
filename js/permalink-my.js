@@ -273,3 +273,5 @@
 
     return mountpermalink;
 }));
+
+console && console.log && console.log('defined mountpermalink');

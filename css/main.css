@@ -1,0 +1,128 @@
+html {
+    color: #404040;
+}
+* {
+    font-family: "Open Sans", sans-serif;
+}
+
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+header {
+    background-color: #F4F3F1;
+    display: flex;
+    padding: 15px;
+}
+.body {
+    display: flex;
+    flex: 1;
+}
+.inside {
+    flex: 1;
+}
+footer {
+    background-color: #404040;
+    padding: 20px 15px;
+}
+
+
+h1 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+h2 {
+    margin-top: 9px;
+    margin-bottom: 9px;
+}
+h3 {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+h4 {
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
+h5 {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+h6 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+
+.cards {
+    padding: 5px;
+    display: flex;
+    /*margin: auto;*/
+    justify-content: space-around;
+    flex-direction: column;
+    /*padding: 5px 10px;*/
+    /*flex-wrap: wrap;*/
+}
+.cards h2 {
+    padding-left: 4px;
+    margin: 8px 0;
+}
+.card {
+    /*margin: 10px;*/
+    box-sizing: border-box;
+    /*width: calc( (100% / 3) - 5px);*/
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 5px 20px 13px;
+    position: relative;
+}
+.card::after {
+    position: absolute;
+    top: 0;
+    bottom: 90%;
+    left: 0;
+    right: 0;
+    content: '';
+    background: #ececec;
+    background: -moz-linear-gradient(top, #ececec 0%, #ffffff 100%);
+    background: -webkit-linear-gradient(top, #ececec 0%,#ffffff 100%);
+    background: linear-gradient(to bottom, #ececec 0%,#ffffff 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ececec', endColorstr='#ffffff',GradientType=0 );
+    z-index: -1;
+}
+.card::before {
+    position: absolute;
+    top: 90%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    content: '';
+    background: #ffffff;
+    background: -moz-linear-gradient(top, #ffffff 0%, #ececec 100%);
+    background: -webkit-linear-gradient(top, #ffffff 0%,#ececec 100%);
+    background: linear-gradient(to bottom, #ffffff 0%,#ececec 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ececec',GradientType=0 );
+    z-index: -1;
+}
+
+/* Landscape phone to portrait tablet */
+@media (min-width: 768px) {
+
+}
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 992px) {
+
+}
+
+/* Large desktop */
+@media (min-width: 1200px) {
+    .inside {
+        max-width: 900px;
+        margin: auto;
+    }
+
+}
