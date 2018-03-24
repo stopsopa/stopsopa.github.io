@@ -125,4 +125,33 @@ h6 {
         margin: auto;
     }
 
+    .body {
+        /* 157x5567 top  x/2: 78px 2783px x/4: 39px 1391px x/3: 52px 1855px */
+        /* 167x1144 next x/2: 83px 572px x/4:  */
+        /*background-image: url("/img/tree-next.png");*/
+
+
+        /* temporary vvv */
+
+        background-image: url("/img/tree-top.png");
+        background-size: 52px 1855px;
+        /* temporary ^^^ */
+
+        /*background-size: 83px 572px;*/
+        background-repeat: repeat-y;
+    }
+    /*
+    .body::after {
+        content: '';
+        /*position: absolute;* /
+        border: 1px solid red;
+        /*width: 78px;* /
+        /*top: 48px;* /
+        /*left: 0;* /
+        background-image: url("/img/tree-top.png");
+        background-size: 78px 2783px;
+        background-repeat: no-repeat;
+    }
+    */
+
 }
