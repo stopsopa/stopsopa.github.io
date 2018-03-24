@@ -82,3 +82,6 @@
         }
     }
 })();
+
+
+console && console.log && console.log('defined polyfill');
