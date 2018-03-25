@@ -87,7 +87,7 @@
     border: 1px solid #2d2d2d;
     top: 7px;
     right: -18px;
-    position: fixed;
+    position: absolute;
     transform: rotate(45deg);
     padding-left: 20px;
     padding-right: 20px;
@@ -132,7 +132,7 @@
     border: 1px solid #2d2d2d;
     top: 6px;
     left: -23px;
-    position: fixed;
+    position: absolute;
     transform: rotate(-38deg);
     padding-left: 20px;
     padding-right: 20px;
