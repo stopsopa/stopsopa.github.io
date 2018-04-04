@@ -77,6 +77,8 @@
                         <a href="https://gist.github.com/stopsopa/8297755373fd5be34165cc8e12d35642">gist (UMD - browser global & node module (singleton))</a>
                         <p>building libraries and publishing to npm</p>
                     </div>
+                    <h2>safe console.log</h2>
+                    <pre>var log=(function(){try{return console.log}catch(e){return ()=>{}}}());</pre>
                 </div>
 
                 <h2>Continuous integration</h2>
