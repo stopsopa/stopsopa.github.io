@@ -78,7 +78,7 @@
                         <p>building libraries and publishing to npm</p>
                     </div>
                     <h2>safe console.log</h2>
-                    <pre>var log=(function(){try{return console.log}catch(e){return ()=>{}}}());</pre>
+                    <pre>var log=(function(){try{return console.log}catch(e){return function(){}}}());</pre>
                 </div>
 
                 <h2>Continuous integration</h2>
