@@ -143,7 +143,7 @@
     padding-bottom: 2px;
     padding-top: 2px;
 } 
-.github-link:hover {
+.github-profile:hover {
     cursor: pointer;
     color: #2d2d2d;
     background-color: white;
