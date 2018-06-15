@@ -8,5 +8,6 @@
 .editor > div { 
 /*  height: 300px;
   width: 80%;*/
-  font-family: 'Consolas','lucida console' ,monospace;
+  font-family: monaco,Consolas,Lucida Console,monospace;
+  font-size: 12px;
 }
