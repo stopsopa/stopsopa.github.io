@@ -1,7 +1,7 @@
 html {
     color: #404040;
 }
-* {
+body {
     font-family: "Open Sans", sans-serif;
 }
 
@@ -80,6 +80,18 @@ h6 {
     padding: 5px 20px 13px;
     position: relative;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 .card::after {
     position: absolute;
