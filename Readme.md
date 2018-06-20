@@ -1,13 +1,11 @@
 
 # Ace editor objects syntax:
 
-    <div class="editor|syntax" data-lang="js" data-w="95%">
-        <textarea type="editor">
-            function (a, b, c) {
-                console.log('textarea', a)
-            }
-        </textarea>
-    </div>
+    <script type="editor|syntax" data-lang="js" data-w="95%">
+        function (a, b, c) {
+            console.log('textarea', a)
+        }
+    </script>
     
 [supported syntax](https://github.com/ajaxorg/ace/blob/master/lib/ace/ext/modelist.js#L53)    
 # other   

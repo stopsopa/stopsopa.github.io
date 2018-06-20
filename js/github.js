@@ -18,8 +18,51 @@ var manipulation = {
     remove: function (node) {
         node.parentNode.removeChild(node);
         return this;
+    },
+    move: function (newParent, elements) { // elements - array of elements|single element
+
     }
 };
+
+(function () {
+    /* from lodash */
+    function isNodeList (obj) {
+        return Object.prototype.toString.call(obj) === '[object NodeList]';
+    }
+    /* from lodash */
+    var isNode = (function () {
+        function isObjectLike(value) {
+            return value != null && typeof value == 'object';
+        }
+        function isPlainObject(value) { // simplified version of isPlainObject then the one in lodash
+            return Object.prototype.toString.call(value) === '[object Object]'
+        }
+        return function isNode (value) {
+            return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
+        }
+    }());
+    manipulation.move = function (newParent, elements) {
+
+        if (isNode(elements)) {
+
+            elements = [elements];
+        }
+        else if (isNodeList(elements)) {
+            elements = Array.prototype.slice.call(elements);
+        }
+
+        try {
+            for (var i = 0, l = elements.length ; i < l ; i += 1 ) {
+                newParent.appendChild(elements[i]);
+            }
+        }
+        catch (e) {
+
+            throw "manipulation.move - can't iterate through elements"
+        }
+        return this;
+    }
+}());
 
 (function () {
 
@@ -227,6 +270,7 @@ var manipulation = {
         '/js/permalink-my.js',
         '/js/domcontentloaded.js',
         '/js/lodash-4.17.10.js',
+        '/js/ace/ace-builds-1.3.3/src-min-noconflict/ace.js',
     ].forEach(u => {
 
         // https://stackoverflow.com/a/524721
@@ -252,7 +296,7 @@ var manipulation = {
 
             p = new Promise(function (resolve) {
                 (function run() {
-                    if (window._) {
+                    if (window._ && window.ace && window.ace.edit) {
                         resolve()
                     }
                     else {
@@ -263,7 +307,7 @@ var manipulation = {
         }
 
         p.then(function () {
-            Array.prototype.slice.call(document.querySelectorAll('.editor, .syntax')).forEach(function (el) {
+            Array.prototype.slice.call(document.querySelectorAll('[type="editor"], [type="syntax"]')).forEach(function (el) {
 
                 if (el.classList.contains('handled')) {
 
@@ -274,7 +318,40 @@ var manipulation = {
 
                 var script, editor, div, t = '', d;
 
-                script = el.querySelector('script, textarea');
+                /**
+                 * Lets simplify syntax
+                 * from
+                 *
+                 *  <div class="editor">
+                 *      <script type="editor" data-lang="js" data-w="95%">
+                 *      </script>
+                 *  </div>
+                 *
+                 *  to
+                 *
+                 *  <script class="editor" type="editor" data-lang="js" data-w="95%"></script>
+                 *
+                 *  and then execute old logic
+                 */
+                (function () {
+
+                    div = document.createElement('div');
+
+                    manipulation.after(el, div);
+
+                    manipulation.move(div, el);
+
+                    var attr = Array.prototype.slice.call(el.attributes);
+
+                    for (var i = 0, l = attr.length ; i < l ; i += 1 ) {
+
+                        div.setAttribute(attr[i].name, attr[i].value);
+                    }
+
+                    el = div;
+                })();
+
+                script = el.querySelector('script');
 
                 d = el.dataset.h;
                 d && (el.style.height = d);
