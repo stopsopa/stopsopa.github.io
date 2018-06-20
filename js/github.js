@@ -127,7 +127,7 @@ var manipulation = {
             manipulation.append(document.body, a);
 
             const css = `
-.github-link {
+body .github-link {
     border: 1px solid #2d2d2d;
     top: 7px;
     right: -18px;
@@ -139,7 +139,7 @@ var manipulation = {
     text-decoration: none;
     background-color: #2d2d2d;
 } 
-.github-link:hover {
+body .github-link:hover {
     cursor: pointer;
     color: #2d2d2d;
     background-color: white;
@@ -172,7 +172,7 @@ var manipulation = {
             manipulation.append(document.body, a);
 
             const css = `
-.github-profile {
+body .github-profile {
     border: 1px solid #2d2d2d;
     top: 6px;
     left: -23px;
@@ -187,7 +187,7 @@ var manipulation = {
     padding-bottom: 2px;
     padding-top: 2px;
 } 
-.github-profile:hover {
+body .github-profile:hover {
     cursor: pointer;
     color: #2d2d2d;
     background-color: white;

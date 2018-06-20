@@ -11,6 +11,9 @@ body {
     min-height: 100vh;
     flex-direction: column;
 }
+.layout a {
+    color: #0366d6;
+}
 header {
     background-color: #F4F3F1;
     display: flex;
