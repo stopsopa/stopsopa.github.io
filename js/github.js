@@ -210,6 +210,42 @@ var manipulation = {
     });
 }());
 
+(function () {
+    document.querySelector('body > header') || document.addEventListener('DOMContentLoaded', function () {
+
+        var body = document.body;
+
+        if (body.hasAttribute('head')) {
+
+            var header = document.createElement('header');
+
+            header.innerHTML = `
+    <a href="/index.html">stopsopa.github.io</a>
+`;
+
+            manipulation.prepend(body, header);
+        }
+    });
+}());
+
+(function () {
+    document.querySelector('body > footer') || document.addEventListener('DOMContentLoaded', function () {
+
+        var body = document.body;
+
+        log('foot', body)
+
+        if (body.hasAttribute('foot')) {
+
+            var header = document.createElement('footer');
+
+            header.innerHTML = `footer`;
+
+            manipulation.append(body, header);
+        }
+    });
+}());
+
 // load common css and js
 
 (function () {
@@ -283,6 +319,37 @@ var manipulation = {
 
         head.appendChild(script);
     })
+}());
+
+(function () {
+    document.addEventListener('DOMContentLoaded', function () {
+       Array.prototype.slice.call(document.querySelectorAll('[data-do-sort]')).forEach(function (parent) {
+           var children = Array.prototype.slice.call(parent.children);
+
+           var tmp = [];
+
+           children.forEach(function (child) {
+               tmp.push({
+                   node: child,
+                   text: child.innerText.toLocaleLowerCase()
+               })
+           });
+
+           const newList = tmp.sort(function (a, b) {
+
+               if (a.text === b.text) {
+
+                   return 0
+               }
+
+               return a.text > b.text;
+           }).map(function (n) {return n.node});
+
+           log('newList', newList)
+
+           manipulation.move(parent, newList)
+       });
+    });
 }());
 
 // ace editor
