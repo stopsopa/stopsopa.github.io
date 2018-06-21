@@ -38,7 +38,41 @@
                         <p>building libraries and publishing to npm</p>
                     </div>
                     <h2>safe console.log</h2>
-                    <pre>var log=(function(){try{return console.log}catch(e){return function(){}}}());</pre>
+                    <script type="editor" data-lang="js">
+
+var log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+                    </script>
+                    <h2>Event Delegation</h2>
+                    <script type="editor" data-lang="js">
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill
+    if (!Element.prototype.matches) {
+        Element.prototype.matches =
+            Element.prototype.matchesSelector ||
+            Element.prototype.mozMatchesSelector ||
+            Element.prototype.msMatchesSelector ||
+            Element.prototype.oMatchesSelector ||
+            Element.prototype.webkitMatchesSelector ||
+            function(s) {
+                var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                    i = matches.length;
+                while (--i >= 0 && matches.item(i) !== this) {}
+                return i > -1;
+            };
+    }
+
+    document.body.addEventListener('click', function (e) {
+
+        var el = e.target;
+
+        var match = el.matches('[data-lang] > .copy');
+
+        if (match) {
+
+        }
+    });
+                    </script>
                 </div>
                 
                 

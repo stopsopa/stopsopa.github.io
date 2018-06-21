@@ -7,6 +7,13 @@
         }
     </script>
     
+    attributes:
+    
+    type        - required : editor | syntax
+    data-lang   - required
+    data-w      - optional: any valid css value for width css directive
+    datahw      - optional: any valid css value for height css directive
+    
 [supported syntax](https://github.com/ajaxorg/ace/blob/master/lib/ace/ext/modelist.js#L53)
 
 # attribute helpers

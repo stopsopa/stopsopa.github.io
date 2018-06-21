@@ -173,3 +173,32 @@ h6 {
     */
 
 }
+
+
+/* copy vvv */
+[data-lang] {
+    position: relative;
+}
+[data-lang] > .copy {
+    display: none;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 26px;
+    height: 26px;
+    z-index: 5;
+    cursor: pointer;
+    font-size: 23px;
+}
+[data-lang]:hover > .copy {
+    display: inline-block;
+}
+[data-lang] > .copy:hover {
+    border-color: black;
+    font-size: 25px;
+    top: -6px;
+    left: -6px;
+}
+
+
+/* copy ^^^ */
