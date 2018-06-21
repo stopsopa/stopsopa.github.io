@@ -355,7 +355,33 @@ body .github-profile:hover {
 // ace editor
 (function () {
 
-    var p;
+    // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill
+    if (!Element.prototype.matches) {
+        Element.prototype.matches =
+            Element.prototype.matchesSelector ||
+            Element.prototype.mozMatchesSelector ||
+            Element.prototype.msMatchesSelector ||
+            Element.prototype.oMatchesSelector ||
+            Element.prototype.webkitMatchesSelector ||
+            function(s) {
+                var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                    i = matches.length;
+                while (--i >= 0 && matches.item(i) !== this) {}
+                return i > -1;
+            };
+    }
+
+    function unique(pattern) { // node.js require('crypto').randomBytes(16).toString('hex');
+        pattern || (pattern = 'xyxyxy');
+        return pattern.replace(/[xy]/g,
+            function(c) {
+                var r = Math.random() * 16 | 0,
+                    v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+    }
+
+    var p, editors = {};
 
     window.doace = function () {
 
@@ -364,6 +390,50 @@ body .github-profile:hover {
             p = new Promise(function (resolve) {
                 (function run() {
                     if (window._ && window.ace && window.ace.edit) {
+
+                        document.body.addEventListener('click', function (e) {
+
+                            var el = e.target;
+
+                            var match = el.matches('[data-lang] > .copy');
+
+                            if (match) {
+
+                                var editor = editors[el.parentNode.dataset.ace];
+
+                                if (editor) {
+
+                                    log("found editory, let's copy");
+
+                                    var textarea = document.createElement('textarea');
+                                    manipulation.append(document.body, textarea);
+                                    textarea.value = editor.getValue();
+                                    textarea.select();
+                                    document.execCommand('copy');
+                                    textarea.value = "";
+                                    manipulation.remove(textarea);
+
+                                    (function () {
+
+                                        el.dataset.or = el.dataset.or || el.innerHTML;
+
+                                        el.innerHTML = '☑️';
+
+                                        setTimeout(function () {
+                                            el.innerHTML = el.dataset.or;
+                                        }, 1000);
+
+                                    }());
+                                }
+
+                                log('clicked .copy');
+                            }
+                            else {
+
+                                log('something else clicked');
+                            }
+                        });
+
                         resolve()
                     }
                     else {
@@ -412,6 +482,11 @@ body .github-profile:hover {
 
                     for (var i = 0, l = attr.length ; i < l ; i += 1 ) {
 
+                        if (attr[i].name.toLowerCase() === 'class') {
+
+                            continue;
+                        }
+
                         div.setAttribute(attr[i].name, attr[i].value);
                     }
 
@@ -438,6 +513,10 @@ body .github-profile:hover {
 
                 div = el.cloneNode(false);
 
+                div.removeAttribute('data-lang');
+                div.removeAttribute('data-w');
+                div.removeAttribute('data-h');
+
                 el.classList.add('handled');
 
                 manipulation.append(el, div);
@@ -455,7 +534,17 @@ body .github-profile:hover {
 
                 editor = ace.edit(div);
 
-                window.ed = editor
+                var un = unique();
+
+                editors[un] = editor;
+
+                el.dataset.ace = un;
+
+                var copy = document.createElement('div');
+                copy.classList.add('copy');
+                copy.innerHTML = '📋';
+
+                manipulation.prepend(el, copy);
 
                 editor.getSession().setTabSize(4);
                 editor.setTheme("ace/theme/idle_fingers");
