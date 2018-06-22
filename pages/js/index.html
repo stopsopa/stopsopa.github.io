@@ -67,6 +67,25 @@
 var log=(function(){try{return console.log}catch(e){return function(){}}}());
 
                 </script>
+                <h2>trim</h2>
+                <script>
+
+/*!
+ * @version 1.0 - 2013-05-21
+ * @author Szymon Działowski
+ * direction : 'rl'|'r'|'l'   -->   (undefined => 'rl')
+ * charlist  : (undefined => " \n")
+ */ 
+function trim(string, charlist, direction) {
+  direction = direction || 'rl';
+  charlist  = (charlist || '').replace(/([.?*+^$[\]\\(){}|-])/g,'\\$1');
+  charlist  = charlist || " \\n";
+  (direction.indexOf('r')+1) && (string = string.replace(new RegExp('^(.*?)['+charlist+']*$','gm'),'$1'));
+  (direction.indexOf('l')+1) && (string = string.replace(new RegExp('^['+charlist+']*(.*)$','gm'),'$1'));  
+  return string;  
+}   
+                    
+                </script>
                 <h2>Event Delegation</h2>
                 <script type="editor" data-lang="js">
 
