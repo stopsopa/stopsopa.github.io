@@ -81,6 +81,10 @@ if [ "$DIFF" != "" ]; then
 
     npm version patch
 
+                            # node version-dep.js
+                            # git add package.json
+                            # git commit --amend --no-edit
+
     git push $ORIGIN $REMOTEBRANCH --tags
 
     if [ "$?" = "0" ]; then
