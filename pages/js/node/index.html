@@ -17,11 +17,12 @@
                 <h2>update.sh - shell script</h2>               
                 <script type="editor" data-lang="bash">
 
+
 #!/bin/bash
 
-# set -e
+set -e
 
-# set -o xtrace
+set -x
 
 ORIGIN="origin"
 LOCALBRANCH="master"
@@ -85,7 +86,7 @@ if [ "$DIFF" != "" ]; then
                             # git add package.json
                             # git commit --amend --no-edit
 
-    git push $ORIGIN $REMOTEBRANCH --tags
+    git push $ORIGIN $REMOTEBRANCH
 
     if [ "$?" = "0" ]; then
 
@@ -97,6 +98,9 @@ if [ "$DIFF" != "" ]; then
 
             exit 4;
         fi
+
+        git push --tags --force
+
     else
 
         red "\n\nCan't git push\n"
