@@ -68,6 +68,17 @@
 
 var log=(function(){try{return console.log}catch(e){return function(){}}}());
 
+const tlog = (function () {
+
+    var log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+    const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
+
+    return (...args) => {
+        log.call(this, time(), ...args.map(a => a + ''));
+    }
+}());
+
                 </script>
                 <h2>trim</h2>
                 <script type="editor" data-lang="js">
