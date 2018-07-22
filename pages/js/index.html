@@ -66,8 +66,10 @@
                 <h2>safe console.log</h2>
                 <script type="editor" data-lang="js">
 
+// just log
 var log=(function(){try{return console.log}catch(e){return function(){}}}());
 
+// tlog
 const tlog = (function () {
 
     var log=(function(){try{return console.log}catch(e){return function(){}}}());
@@ -78,6 +80,15 @@ const tlog = (function () {
         log.call(this, time(), ...args.map(a => a + ''));
     }
 }());
+
+// module
+const log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
+
+module.exports = (...args) => {
+    log.call(this, time(), ...args.map(a => a + ''));
+}
 
                 </script>
                 <h2>trim</h2>
