@@ -15,6 +15,8 @@
 
             <div class="cards">
 
+                <h2>Node</h2>
+                <a href="/pages/js/node/index.html">node</a>
                 <h2>React - es6 syntax snippets</h2>
                 <a href="https://gist.github.com/stopsopa/3f076fd92b03136cc28b8b91a1ffdad8">https://gist.github.com/stopsopa/3f076fd92b03136cc28b8b91a1ffdad8</a>
 
@@ -64,8 +66,49 @@
                 <h2>safe console.log</h2>
                 <script type="editor" data-lang="js">
 
+// just log
 var log=(function(){try{return console.log}catch(e){return function(){}}}());
 
+// tlog
+const tlog = (function () {
+
+    var log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+    const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
+
+    return (...args) => {
+        log.call(this, time(), ...args.map(a => a + ''));
+    }
+}());
+
+// module
+const log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
+
+module.exports = (...args) => {
+    log.call(this, time(), ...args.map(a => a + ''));
+}
+
+                </script>
+                <h2>trim</h2>
+                <script type="editor" data-lang="js">
+
+/*!
+ * @version 1.0 - 2013-05-21
+ * @author Szymon Działowski
+ * direction : 'rl'|'r'|'l'   -->   (undefined => 'rl')
+ * charlist  : (undefined => " \n")
+ */ 
+function trim(string, charlist, direction) {
+  direction = direction || 'rl';
+  charlist  = (charlist || '').replace(/([.?*+^$[\]\\(){}|-])/g,'\\$1');
+  charlist  = charlist || " \\n";
+  (direction.indexOf('r')+1) && (string = string.replace(new RegExp('^(.*?)['+charlist+']*$','gm'),'$1'));
+  (direction.indexOf('l')+1) && (string = string.replace(new RegExp('^['+charlist+']*(.*)$','gm'),'$1'));  
+  return string;  
+}   
+                    
                 </script>
                 <h2>Event Delegation</h2>
                 <script type="editor" data-lang="js">

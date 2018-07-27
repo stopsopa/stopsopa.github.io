@@ -13,11 +13,24 @@
     <div class="body">
         <div class="inside">
             <div class="cards">
-                <h2>git</h2>
-                <div class="card">
-                    <h3>Github</h3>
-                    <a href="http://farhadg.github.io/init/landing/">(INIT): http://farhadg.github.io/init/landing/</a>
-                </div>
+                <h2>Github</h2>
+                <a href="http://farhadg.github.io/init/landing/">(INIT): http://farhadg.github.io/init/landing/</a>                
+            </div>
+            <div class="cards">
+                <h2>remove from history (filter-branch)</h2>
+                <script type="editor" data-lang="bash">
+                    
+                    
+  git filter-branch --force --index-filter \
+  'git rm -rf --cached --ignore-unmatch plik1 katalog1' \
+  --prune-empty --tag-name-filter cat -- --all && \
+  rm -rf .git/refs/original/ && \
+  git reflog expire --expire=now --all && \
+  git gc --prune=now && \
+  git gc --aggressive --prune=now
+                    
+                    
+                </script>
             </div>
         </div>
 
