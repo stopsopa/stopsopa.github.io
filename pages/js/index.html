@@ -46,6 +46,7 @@
         tmp = root[name] = root[name] || factory(root, log, node);
     }
     catch (e) {
+        log(`UMD (${name}): can't assign to root`);
     }
 
     if (typeof module === 'object' && module.exports) {
