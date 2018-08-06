@@ -121,9 +121,13 @@ fi
 
 const path      = require('path');
 
+const fs        = require('fs');
+
 const express   = require('express');
 
 const app       = express();
+
+const template  = require('lodash/template');
 
 // https://stackoverflow.com/a/23613092
 const serveIndex    = require('serve-index')
@@ -133,6 +137,21 @@ const host      = process.env.HOST;
 const port      = process.env.PORT;
 
 const web = path.resolve(__dirname, 'public');
+
+const readFile = file => fs.readFileSync(file).toString();
+
+app.all('/root', (req, res) => {
+
+    const html  = readFile(path.resolve(__dirname, 'public', '_index.html'));
+
+    const svg   = readFile(path.resolve(__dirname, 'public', 'tree.svg'));
+
+    const tmp = template(html);
+
+    res.end(tmp({
+        svg
+    }));
+});
 
 app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
     // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
@@ -153,7 +172,7 @@ app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/se
 app.listen(port, host, () => {
 
     console.log(`\n 🌎  Server is running ` + `${host}:${port}\n`)
-});                
+});
                 </script>
             </div>
         </div>
