@@ -127,10 +127,14 @@ const express   = require('express');
 
 const app       = express();
 
+const log       = (function(){try{return console.log}catch(e){return function (){}}}());
+
 const template  = require('lodash/template');
 
 // https://stackoverflow.com/a/23613092
-const serveIndex    = require('serve-index')
+const serveIndex    = require('serve-index');
+
+const bodyParser    = require('body-parser');
 
 const host      = process.env.HOST;
 
@@ -139,6 +143,21 @@ const port      = process.env.PORT;
 const web = path.resolve(__dirname, 'public');
 
 const readFile = file => fs.readFileSync(file).toString();
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(bodyParser.json());
+
+app.all('/save', (req, res) => {
+
+    log('save');
+    log(JSON.stringify(req.body));
+
+    res.setHeader('Content-type', 'application/json; charset=utf-8');
+    res.end(JSON.stringify({
+        ok: true
+    }));
+})
 
 app.all('/root', (req, res) => {
 
@@ -173,7 +192,18 @@ app.listen(port, host, () => {
 
     console.log(`\n 🌎  Server is running ` + `${host}:${port}\n`)
 });
-                </script>
+                </script>             
+                <script type="editor" data-lang="json">
+{
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "lodash": "^4.17.10",
+    "serve-index": "^1.9.1"
+  }
+}
+                
+                </script> 
             </div>
         </div>
     </div>
