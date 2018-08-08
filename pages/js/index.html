@@ -35,7 +35,7 @@
 
                 <script type="editor" data-lang="js">
                 
-(function (root, factory, name, tmp) {
+(function (root, factory, name) {
 
     var log=(function(){try{return console.log}catch(e){return function (){}}}());
 
@@ -50,7 +50,7 @@
         instance.noConflict || (instance.noConflict = function(){root[name]=nc;return instance})
 
         // Browser globals
-        tmp = root[name] = instance;
+        root[name] = instance;
     }
     catch (e) {
         log("UMD (" + name + "): can't assign to root, reason: ", e + '');
@@ -60,8 +60,8 @@
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like environments that support module.exports,
         // like Node.
-        //module.exports = tmp || factory({}, require('b'), log, node);
-        module.exports = tmp || factory(root, log, node);
+        //module.exports = factory({}, require('b'), log, node);
+        module.exports = factory(root, log, node);
     }
 
 }(typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : this), function (root, log, node) {
