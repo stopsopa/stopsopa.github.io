@@ -155,6 +155,59 @@ function trim(string, charlist, direction) {
     });
 
                 </script>
+                <h2>React - no webpack template</h2>
+                <script type="editor" data-lang="html">
+                
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../js/react/react.development.js"></script>
+    <script src="../js/react/react-dom.development.js"></script>
+    <script src="../js/react/babel.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        Loading ...
+    </div>
+    <script type="text/babel">
+
+        const log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+        const delay = (time, data) =>
+            new Promise(
+                resolve => time ? setTimeout(resolve, time, data) : resolve(data)
+            )
+        ;
+
+        class Root extends React.Component {
+            constructor(...args) {
+
+                super(...args);
+
+                this.state = {
+                }
+            }
+            render() {
+                return (
+                    <div>It's working...</div>
+                );
+            }
+        }
+        ReactDOM.render(
+            <Root
+            />,
+            document.getElementById('app')
+        );
+    &lt;/script>
+</body>
+</html>
+        
+                </script>
                 
                 
             </div>
