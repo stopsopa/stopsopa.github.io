@@ -209,6 +209,10 @@ function trim(string, charlist, direction) {
 </html>
         
                 </script>
+                <h2>Extract computed css property value</h2>
+                <script type="editor" data-lang="js">
+parseInt(window.getComputedStyle(document.querySelector('svg'), null).getPropertyValue("width"), 10)
+                </script>
                 
                 
             </div>
