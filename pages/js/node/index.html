@@ -205,6 +205,63 @@ app.listen(port, host, () => {
                 
                 </script> 
             </div>
+
+            <div class="cards">
+                <h2>update.sh - shell script</h2>  
+                <a href="https://www.npmjs.com/package/colors">NPM - colors</a>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                <script type="editor" data-lang="js">
+require('colors');
+const l = c => console.log(`${c} [` + (`test string`[c]) + ']');
+console.log("\n\n");
+// text colors
+l('black');
+l('red');
+l('green');
+l('yellow');
+l('blue');
+l('magenta');
+l('cyan');
+l('white');
+l('gray');
+l('grey');
+// bg colors
+l('bgBlack');
+l('bgRed');
+l('bgGreen');
+l('bgYellow');
+l('bgBlue');
+l('bgMagenta');
+l('bgCyan');
+l('bgWhite');
+//styles
+l('reset');
+l('bold');
+l('dim');
+l('italic');
+l('underline');
+l('inverse');
+l('hidden');
+l('strikethrough');
+//extras
+l('rainbow');
+l('zebra');
+l('america');
+l('trap');
+l('random');
+console.log("\n\n")                
+                </script> 
+                            </td>
+                            <td>
+                                <img src="/img/colors/colors.png" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </body>
