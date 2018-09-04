@@ -35,7 +35,7 @@
 
                 <script type="editor" data-lang="js">
                 
-(function (root, factory, name) {
+(function (root, name, factory) {
 
     var log=(function(){try{return console.log}catch(e){return function (){}}}());
 
@@ -64,7 +64,7 @@
         module.exports = factory(root, log, node);
     }
 
-}(typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : this), function (root, log, node) {
+}(typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : this), 'lib', function (root, log, node) {
 
     // root - is just for access
     // node - to detect if this is node environment
@@ -74,7 +74,7 @@
 
     return tool;
 
-}, 'lib'));
+}));
 
                 </script>
                 <h2>safe console.log</h2>
