@@ -30,6 +30,17 @@
                     <li><a href="/pages/php/index.html">PHP</a></li>
                     <li><a href="/pages/clock/index.html">Clock</a></li>
                 </ul>
+                <a href="" id="heroku" target="_blank">heroku</a>
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const heroku = document.querySelector('#heroku');
+                        const event = () => {
+                            heroku.removeEventListener('mouseenter', event);
+                            heroku.setAttribute('href', 'https://stopsopa.herokuapp.com');
+                        };
+                        heroku.addEventListener('mouseenter', event)
+                    });
+                </script>
 
                 
             </div>
