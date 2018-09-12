@@ -23,9 +23,9 @@
                 <h2>inheritance</h2>
                 <a href="/research/js/008-inheritance.html">/research/js/008-inheritance.html</a>
                 <h2>jest</h2>
-                <a href="https://github.com/stopsopa/roderic/tree/master/test/jest">https://github.com/stopsopa/roderic/tree/master/test/jest</a>
+                <a href="https://github.com/stopsopa/roderic-legacy/tree/master/test/jest">https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a>
 
-                <h2>mouseenter, mouseleave, mouseover, mouseout</h2>
+                <h2>mouseenter, mouseleave, mouseover, mouseout, input[type="range"]</h2>
                 <a href="/other/selectors/#hover">hover</a>
 
                 <h2>UMD (Universal Module Definition)</h2>
@@ -35,7 +35,7 @@
 
                 <script type="editor" data-lang="js">
                 
-(function (root, factory, name) {
+(function (root, name, factory) {
 
     var log=(function(){try{return console.log}catch(e){return function (){}}}());
 
@@ -64,7 +64,7 @@
         module.exports = factory(root, log, node);
     }
 
-}(typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : this), function (root, log, node) {
+}(typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : this), 'lib', function (root, log, node) {
 
     // root - is just for access
     // node - to detect if this is node environment
@@ -74,7 +74,7 @@
 
     return tool;
 
-}, 'lib'));
+}));
 
                 </script>
                 <h2>safe console.log</h2>
