@@ -105,6 +105,17 @@ module.exports = (...args) => {
 }
 
                 </script>
+                <h2>inheritance</h2>
+                <script type="editor" data-lang="js">
+        function Shape () {
+        }
+        function Rectangle () {
+        }
+        Rectangle.prototype = Object.create(Shape.prototype);
+        Rectangle.prototype.constructor = Rectangle;
+        Rectangle.prototype.getArea = function () {
+        }
+                </script>
                 <h2>trim</h2>
                 <script type="editor" data-lang="js">
 
