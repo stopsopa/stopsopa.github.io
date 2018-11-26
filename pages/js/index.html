@@ -110,6 +110,7 @@ module.exports = (...args) => {
         function Shape () {
         }
         function Rectangle () {
+            Shape.apply(this, arguments)
         }
         Rectangle.prototype = Object.create(Shape.prototype);
         Rectangle.prototype.constructor = Rectangle;
