@@ -225,6 +225,18 @@ function trim(string, charlist, direction) {
                 <script type="editor" data-lang="js">
 parseInt(window.getComputedStyle(document.querySelector('svg'), null).getPropertyValue("width"), 10)
                 </script>
+                <h2>log - inspect</h2>
+                <script type="editor" data-lang="js">
+
+const i = require('util').inspect;
+
+console.log(i(t, {
+    depth:  50,
+    colors: true,
+    compact: true,
+    // breakLength: 80,
+}))                
+                </script>
                 <h2>codepen, jsfiddle, codesandbox</h2>
                 <a href="https://codesandbox.io/s/rjj38yzm14">codesandbox template</a>
             </div>
