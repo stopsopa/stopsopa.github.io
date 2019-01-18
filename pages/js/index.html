@@ -146,6 +146,32 @@ function trim(string, charlist, direction) {
 }   
                     
                 </script>
+                <h2>Proxy getter</h2>
+                <script type="editor" data-lang="js">
+let target = {
+    a: 'b',
+    c: 'd',
+};
+
+let handler = {
+    get(target, propKey, receiver) {
+
+        if (typeof target[propKey] !== 'undefined') {
+
+            return target[propKey];
+        }
+
+        const keys = Object.keys(target);
+
+        throw `No such manager '${propKey}', registered managers: ` + keys.join(', ');
+    }
+};
+let proxy = new Proxy(target, handler);
+
+console.log(proxy.a);
+console.log(proxy.c);
+console.log(proxy.b);           
+                </script>
                 <h2>Event Delegation</h2>
                 <script type="editor" data-lang="js">
 
