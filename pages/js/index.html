@@ -277,17 +277,27 @@ parseInt(window.getComputedStyle(document.querySelector('svg'), null).getPropert
                 </script>
                 <h2>fetch</h2>
                 <script type="editor" data-lang="js">
-// in order to get body and headers fetch require so much magic, this is sick...                
-var r = await fetch('http://jsonorhtmlfeed');
+// in order to get body and headers fetch require so much magic, this is sick... 
+  
+var log = console.log;             
+var r = await fetch('http://json_or_html_feed');
+
+// or:
 var t = await r.text()
 log(t.substring(0, 300))
+
+// or:
 //var j = await r.json()
-//var log = console.log;
-log(j)
-log(r)
-const h = await Promise.all(r.headers.entries());
+//log(j)
+
+const h = {}
+r.headers.forEach((value, key) => h[key] = value)
+
+//const h = await Promise.all(r.headers.entries());
 
 log('headers', h)
+
+log('oneheader', r.headers.get('Content-type'));
                 </script>
                 <h2>codepen, jsfiddle, codesandbox</h2>
                 <a href="https://codesandbox.io/s/rjj38yzm14">codesandbox template</a>
