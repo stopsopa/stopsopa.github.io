@@ -150,6 +150,14 @@ app.use(bodyParser.json());
 
 app.all('/save', (req, res) => {
 
+    const cookies = decodeURIComponent(req.headers.cookie || '').split(';').reduce((acc, coo) => {
+        const tmp   = coo.split('=');
+        const name  = tmp.shift().trim();
+        const value = tmp.join('=').trim();
+        name && (acc[name] = value);
+        return acc;
+    }, {});
+
     log('save');
     log(JSON.stringify(req.body));
 
