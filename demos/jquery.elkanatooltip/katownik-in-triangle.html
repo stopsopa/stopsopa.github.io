@@ -7,7 +7,14 @@
     <script type="text/javascript" src="jquery.line.js"></script>
     <script type="text/javascript" src="../../js/underscore.js"></script>
     <script type="text/javascript">
-        function log(l) {try{console.log(l)}catch(e){}};
+        const log = (function () {
+            try {
+                return console.log;
+            }
+            catch (e) {
+                return function () {};
+            }
+        }())
         function json(l) {log(JSON.stringify(l))};
         
         // https://gist.github.com/WebReflection/2953527
@@ -168,28 +175,28 @@
             
             ;(function () {                
                 
-                var thrmouse = (function () {
-                    var m, mm = false, mline = $();                     
-                    return _.throttle(function (e) {
-                        m = {
-                            x : e.pageX,
-                            y : e.pageY
-                        };
-                        
-                        process.nextTick((function (m, mm) {
-                            return function () {
-                                $.line(m.x, m.y, {ang: calcAngle(mm.x, mm.y, m.x, m.y), dis: 100}, function (div) {
-                                    mline.remove();
-                                    mline = div;
-                                }); 
-                            }
-                        })(m, mm));                                 
-                        
-                        mm = m;
-                        
-                    }, 100);
-                })();
-                
+                // var thrmouse = (function () {
+                //     var m, mm = false, mline = $();
+                //     return _.throttle(function (e) {
+                //         m = {
+                //             x : e.pageX,
+                //             y : e.pageY
+                //         };
+                //
+                //         process.nextTick((function (m, mm) {
+                //             return function () {
+                //                 $.line(m.x, m.y, {ang: calcAngle(mm.x, mm.y, m.x, m.y), dis: 100}, function (div) {
+                //                     mline.remove();
+                //                     mline = div;
+                //                 });
+                //             }
+                //         })(m, mm));
+                //
+                //         mm = m;
+                //
+                //     }, 100);
+                // })();
+
                 var thr = (function () {
 
                     var lx = false;
@@ -258,6 +265,7 @@
 
                                 process.nextTick((function (m, p) {
                                     return function () {
+                                        log('ang: ' + calcAngle(m.x, m.y, c[0].x, c[0].y));
                                         // c = findWidestAngles(m, p);
                                         // c = findClosestCorners(m, p);
                                         // $.line(m.x, m.y, {ang: c.l, dis: 100}, function (div) {
