@@ -127,6 +127,74 @@ console.log(i(t, {
         Rectangle.prototype.getArea = function () {
         }
                 </script>
+                <h2>instance or function</h2>
+                <script type="editor" data-lang="js">
+
+const log = console.log;
+
+log('=== test 1 ===')
+
+// always new instance
+function inst(...args) {
+
+    //if (this.constructor != deferred)
+    if ( ! (this instanceof inst) )
+        return new inst(...args);
+
+console.log("created:", args);
+
+    this.args = args;
+
+    this.ret = function () {
+        return this.args;
+    }
+}
+
+var a = inst('a');
+var b = new inst('b');
+
+log(a.ret())
+log(b.ret())
+
+log('=== test 2 ===')
+
+// can be called only as a function
+function func(...args) {
+
+    //if (this.constructor != deferred)
+    if ( this instanceof func )
+        throw new Error( `Can't create instance of function 'func' just use it as a function` );
+
+    console.log("created:", args);
+
+    args.push('end');
+
+    return args;
+}
+
+log(func('a'));
+
+try {
+
+    var b = new func('b');
+}
+catch (e) {
+
+    log(String(e))
+}
+
+// === test 1 ===
+// created: [ 'a' ]
+// created: [ 'b' ]
+//     [ 'a' ]
+//     [ 'b' ]
+// === test 2 ===
+// created: [ 'a' ]
+//     [ 'a', 'end' ]
+// Error: Can't create instance of function 'func' just use it as a function    
+
+
+                </script>
                 <h2>system info</h2>
                 <script type="editor" data-lang="js">
                 
