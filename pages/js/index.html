@@ -343,6 +343,32 @@ console.log(proxy.b);
                 <script type="editor" data-lang="js">
 parseInt(window.getComputedStyle(document.querySelector('svg'), null).getPropertyValue("width"), 10)
                 </script>
+                <h2>Parsing get parameters, location.search</h2>
+                <script type="editor" data-lang="js">
+var query = (location.search || '?').substring(1).split('&').filter(a => a).reduce((acc, val) => {
+
+    var
+        a       = val.split(/=/),
+        key     = a.shift(),
+        v       = decodeURIComponent(a.join('='))
+    ;
+
+    if (Array.isArray(acc[key])) {
+        acc[key].push(v);
+    }
+    else {
+        if (typeof acc[key] === 'string') {
+            acc[key] = [acc[key]];
+            acc[key].push(v)
+        }
+        else {
+            acc[key] = v;
+        }
+    }
+
+    return acc;
+}, {});                
+                </script>
                 <h2>fetch</h2>
                 <script type="editor" data-lang="js">
 // in order to get body and headers fetch require so much magic, this is sick... 
