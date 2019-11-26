@@ -32,6 +32,21 @@
                     
                 </script>
             </div>
+            <div class="cards">
+                <h2>find big files, from <a href="https://stackoverflow.com/a/42544963/5560682">https://stackoverflow.com/a/42544963/5560682</a></h2>
+                <script type="editor" data-lang="bash">
+                    
+                    
+git rev-list --objects --all \
+| git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
+| sed -n 's/^blob //p' \
+| sort --numeric-sort --key=2 \
+| cut -c 1-12,41- \
+| $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+                    
+                    
+                </script>
+            </div>
         </div>
 
     </div>
