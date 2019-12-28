@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Heartbeat</title>
+</head>
+<body>
+    <div>[Enter] - to reload browser, [any other key] - mark one heartbeat</div>
+    <div>heartbeat rate: <span class="rate">waiting...</span></div>
+    <hr>
+    Heartbeat rate articles:
+    <br />
+    <a href="https://www.mayoclinic.org/healthy-lifestyle/fitness/expert-answers/heart-rate/faq-20057979">https://www.mayoclinic.org/healthy-lifestyle/fitness/expert-answers/heart-rate/faq-20057979</a>
+    <br />
+    <a href="https://www.smm.org/heart/tools/calculator.html">https://www.smm.org/heart/tools/calculator.html</a>
+    <br />
+    <!-- https://i.imgur.com/5Q0Qez8.png -->
+    <img
+            src="heartbeat.jpg"
+            alt="Resting Heart Rate Chart"
+            width="400"
+    >
+    <br />
+    from:
+    <a href="https://www.lifespanfitness.com/fitness/resources/articles/your-resting-heart-rate-what-is-normal-and-healthy">
+        (Resting Heart Rate Chart)
+    </a>
+
+    <script>
+
+        var div = document.querySelector('.rate');
+
+        const n = function () {
+
+            return (new Date()).getTime();
+        }
+
+        var c       = 0;
+
+        var start   = false;
+
+        var last    = false;
+
+        document.onkeydown = function(e) {
+
+            if (e.keyCode === 13) {
+
+                location.href = location.href;
+
+                return;
+            }
+
+            if ( ! start ) {
+
+                start = n();
+
+                return;
+            }
+
+            last = n();
+
+            c += 1;
+
+            div.innerHTML = parseFloat( (c / ((last - start) / 1000)) * 60 ).toFixed(2) + ' per minute';
+        };
+    </script>
+</body>
+</html>
