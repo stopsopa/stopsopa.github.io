@@ -46,6 +46,15 @@ fi
 
                 </script>
             </div>
+            <div class="cards">
+
+                <h2>ping through dns</h2>
+                <script type="editor" data-lang="bash">
+                
+while true; do ping -n -q -c1 docker.phaseiilabs.com | grep '('; sleep 2; done                
+
+                </script>
+            </div>
         </div>
     </div>
 </body>
