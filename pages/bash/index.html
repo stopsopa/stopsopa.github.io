@@ -55,7 +55,85 @@ while true; do ping -n -q -c1 docker.phaseiilabs.com | grep '('; sleep 2; done
 
                 </script>
             </div>
+            <div class="cards">
+
+                <h2>basic auth generator</h2>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td width="60">
+                            user:
+                        </td>
+                        <td>
+                            <input type="text" id="user">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            password:
+                        </td>
+                        <td>
+                            <input type="text" id="password">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <input type="text" style="width: 80%" id="raw" readonly onfocus="this.select()">
+                <input type="text" style="width: 80%" id="header" readonly onfocus="this.select()">
+                <input type="text" style="width: 80%" id="curl" readonly onfocus="this.select()">
+            </div>
         </div>
     </div>
+    <script>
+        var user        = document.querySelector('#user');
+        var password    = document.querySelector('#password');
+        var raw         = document.querySelector('#raw');
+        var header      = document.querySelector('#header');
+        var curl        = document.querySelector('#curl');
+
+        user.addEventListener('input', generate);
+
+        password.addEventListener('input', generate);
+
+        function generate() {
+
+            setTimeout(function () {
+
+                var u = user.value;
+                var p = password.value;
+
+                if (u && p) {
+                    console.log(u + ':::' + p)
+                    var k = btoa(u + ':' + p)
+                    raw.value = k
+                    header.value = "Basic " + k;
+                    curl.value = 'curl -v --silent -H "authorization: Basic ' + k + '"';
+                }
+            }, 50);
+
+        }
+
+        (function () {
+
+            var q = location.search.split('#')[0].substring(1);
+
+            if (q.length > 2 && q.indexOf(':') > -1) {
+
+                q = q.split(':');
+
+                console.log('q', q[0], 'a', q[1])
+
+                user.value      = q[0];
+
+                password.value  = q[1];
+
+                generate()
+            }
+            else {
+
+                generate()
+            }
+        }());
+    </script>
 </body>
 </html>
