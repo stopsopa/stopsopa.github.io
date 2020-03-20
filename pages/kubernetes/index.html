@@ -26,7 +26,9 @@
 kubectl api-resources
   # from kubectl get --help
 
-kubectl scale deployment.v1.apps/nginx-deployment --replicas=10
+kubectl logs --follow podname
+
+kubectl scale deployment.v1.apps/nginx-deployment --replicas=1
 
 kubectl rollout restart deployment/nameofdeployment
 
