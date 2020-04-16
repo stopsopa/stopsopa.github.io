@@ -2,6 +2,7 @@
 .idea/
 *.tar.gz
 
+node_modules
 
 
 
