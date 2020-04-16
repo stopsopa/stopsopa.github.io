@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "inspc": "^0.0.18",
+    "uglify-js": "^3.9.1"
+  }
+}
