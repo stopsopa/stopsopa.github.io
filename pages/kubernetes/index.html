@@ -42,7 +42,9 @@ kubectl describe node k8sv21mhw
 doctl kubernetes cluster list
 doctl kubernetes cluster kubeconfig save k8sclustername
 
-
+# https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/
+kubectl drain nodename
+kubectl uncordon nodename
 
 
                 </script>
