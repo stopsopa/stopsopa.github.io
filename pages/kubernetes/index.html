@@ -32,12 +32,20 @@ kubectl scale deployment.v1.apps/nameofdeployment --replicas=1
 
 kubectl rollout restart deployment/nameofdeployment
 
-kubectl port-forward hub-lh-55649bcc78-b5dvq 7000:80
+kubectl port-forward hublh55649bcc78b5dvq 7000:80
 
 # usage
 kubectl describe node k8sv21mhw
 
+# switch cluster Digital Ocean
 
+doctl kubernetes cluster list
+doctl kubernetes cluster kubeconfig save k8sclustername
+kubectl get no
+
+# https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/
+kubectl drain nodename
+kubectl uncordon nodename
 
 
                 </script>
