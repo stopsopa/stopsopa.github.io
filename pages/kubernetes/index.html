@@ -37,15 +37,20 @@ kubectl port-forward hublh55649bcc78b5dvq 7000:80
 # usage
 kubectl describe node k8sv21mhw
 
+# https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/
+kubectl drain nodename
+kubectl uncordon nodename
+
+# DIGITAL OCEAN
+
 # switch cluster Digital Ocean
 
 doctl kubernetes cluster list
 doctl kubernetes cluster kubeconfig save k8sclustername
 kubectl get no
 
-# https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/
-kubectl drain nodename
-kubectl uncordon nodename
+# listing load balancers
+doctl compute load-balancer list
 
 
                 </script>
