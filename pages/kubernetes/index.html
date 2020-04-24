@@ -41,9 +41,13 @@ kubectl describe node k8sv21mhw
 kubectl drain nodename
 kubectl uncordon nodename
 
-# DIGITAL OCEAN
+                </script>
+                <a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">see more</a>
 
-# switch cluster Digital Ocean
+                <h2>Digital Ocean</h2>
+                <script type="editor" data-lang="bash">
+
+# switch cluster 
 
 doctl kubernetes cluster list
 doctl kubernetes cluster kubeconfig save k8sclustername
@@ -52,9 +56,7 @@ kubectl get no
 # listing load balancers
 doctl compute load-balancer list
 
-
                 </script>
-                <a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">see more</a>
             </div>
         </div>
     </div>
