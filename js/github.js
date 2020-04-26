@@ -1,28 +1,59 @@
 
-var manipulation = {
-    after: function (referenceNode, newNode) {
-        return this.before(referenceNode.nextSibling, newNode);
-    },
-    before: function (referenceNode, newNode) {
-        referenceNode.parentNode.insertBefore(newNode, referenceNode);
-        return this;
-    },
-    append: function (parentNode, newNode) {
-        parentNode.appendChild(newNode);
-        return this;
-    },
-    prepend: function (parentNode, newNode) {
-        parentNode.insertBefore(newNode, parentNode.firstChild);
-        return this;
-    },
-    remove: function (node) {
-        node.parentNode.removeChild(node);
-        return this;
-    },
-    move: function (newParent, elements) { // elements - array of elements|single element
+var manipulation = (function () {
 
-    }
-};
+    var domCache = document.createElement('div');
+
+    return {
+        after: function (referenceNode, newNode) {
+            return this.before(referenceNode.nextSibling, newNode);
+        },
+        before: function (referenceNode, newNode) {
+            referenceNode.parentNode.insertBefore(newNode, referenceNode);
+            return this;
+        },
+        append: function (parentNode, newNode) {
+            parentNode.appendChild(newNode);
+            return this;
+        },
+        prepend: function (parentNode, newNode) {
+            parentNode.insertBefore(newNode, parentNode.firstChild);
+            return this;
+        },
+        remove: function (node) {
+            node.parentNode.removeChild(node);
+            return this;
+        },
+        detach: function (element) { // detach element from DOM, to use it somewhere else
+
+            this.append(domCache, element);
+
+            return element;
+        },
+        children: function (parent) {
+            try {
+                // read also about
+                // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+                // https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName  - undefined when #text node
+                // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeName
+                return Array.prototype.slice.call(parent.childNodes)
+            }
+            catch (e) {
+
+                throw new Error("manipulation.children() error: " + String(e));
+            }
+        },
+
+    };
+}());
+
+function trim(string, charlist, direction) {
+    direction = direction || 'rl';
+    charlist  = (charlist || '').replace(/([.?*+^$[\]\\(){}|-])/g,'\\$1');
+    charlist  = charlist || " \\n";
+    (direction.indexOf('r')+1) && (string = string.replace(new RegExp('^(.*?)['+charlist+']*$','gm'),'$1'));
+    (direction.indexOf('l')+1) && (string = string.replace(new RegExp('^['+charlist+']*(.*)$','gm'),'$1'));
+    return string;
+}
 
 (function () {
 
@@ -364,14 +395,19 @@ body .github-profile:hover {
 (function () {
     document.addEventListener('DOMContentLoaded', function () {
        Array.prototype.slice.call(document.querySelectorAll('[data-do-sort]')).forEach(function (parent) {
-           var children = Array.prototype.slice.call(parent.children);
+
+           var children = manipulation.children(parent)
 
            var tmp = [];
 
            children.forEach(function (child) {
-               tmp.push({
+
+               var text = trim(child.tagName ? child.innerText.toLocaleLowerCase() : String(child.textContent));
+
+               text && tmp.push({
+                   tagName: child.tagName,
                    node: child,
-                   text: child.innerText.toLocaleLowerCase()
+                   text: text,
                })
            });
 
@@ -382,12 +418,12 @@ body .github-profile:hover {
                    return 0
                }
 
-               return a.text > b.text;
-           }).map(function (n) {return n.node});
+               return a.text < b.text ? 1 : -1;
+           })
+           .map(function (n) {
 
-           log('newList', newList)
-
-           manipulation.move(parent, newList)
+               manipulation.prepend(parent, n.node)
+           });
        });
     });
 }());
