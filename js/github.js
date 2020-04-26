@@ -92,47 +92,6 @@ function trim(string, charlist, direction) {
             manipulation.after(h, e)
         });
     });
-
-}());
-
-(function () {
-    /* from lodash */
-    function isNodeList (obj) {
-        return Object.prototype.toString.call(obj) === '[object NodeList]';
-    }
-    /* from lodash */
-    var isNode = (function () {
-        function isObjectLike(value) {
-            return value != null && typeof value == 'object';
-        }
-        function isPlainObject(value) { // simplified version of isPlainObject then the one in lodash
-            return Object.prototype.toString.call(value) === '[object Object]'
-        }
-        return function isNode (value) {
-            return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
-        }
-    }());
-    manipulation.move = function (newParent, elements) {
-
-        if (isNode(elements)) {
-
-            elements = [elements];
-        }
-        else if (isNodeList(elements)) {
-            elements = Array.prototype.slice.call(elements);
-        }
-
-        try {
-            for (var i = 0, l = elements.length ; i < l ; i += 1 ) {
-                newParent.appendChild(elements[i]);
-            }
-        }
-        catch (e) {
-
-            throw "manipulation.move - can't iterate through elements"
-        }
-        return this;
-    }
 }());
 
 (function () {
@@ -282,11 +241,53 @@ body .github-profile:hover {
 }());
 
 (function () {
+    /* from lodash */
+    function isNodeList (obj) {
+        return Object.prototype.toString.call(obj) === '[object NodeList]';
+    }
+    /* from lodash */
+    var isNode = (function () {
+        function isObjectLike(value) {
+            return value != null && typeof value == 'object';
+        }
+        function isPlainObject(value) { // simplified version of isPlainObject then the one in lodash
+            return Object.prototype.toString.call(value) === '[object Object]'
+        }
+        return function isNode (value) {
+            return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
+        }
+    }());
+    manipulation.custommove = function (newParent, elements) {
+
+        if (isNode(elements)) {
+
+            elements = [elements];
+        }
+        else if (isNodeList(elements)) {
+            elements = Array.prototype.slice.call(elements);
+        }
+
+        try {
+            for (var i = 0, l = elements.length ; i < l ; i += 1 ) {
+                newParent.appendChild(elements[i]);
+            }
+        }
+        catch (e) {
+
+            throw "manipulation.custommove - can't iterate through elements"
+        }
+        return this;
+    }
+}());
+
+(function () {
     document.querySelector('body > header') || document.addEventListener('DOMContentLoaded', function () {
 
         var body = document.body;
 
-        if (body.hasAttribute('head')) {
+        log('nohead attr in body', body)
+
+        if ( ! body.hasAttribute('nohead')) {
 
             var header = document.createElement('header');
 
@@ -304,9 +305,9 @@ body .github-profile:hover {
 
         var body = document.body;
 
-        log('foot', body)
+        log('nofoot attr in body', body)
 
-        if (body.hasAttribute('foot')) {
+        if ( ! body.hasAttribute('nofoot')) {
 
             var header = document.createElement('footer');
 
@@ -316,6 +317,25 @@ body .github-profile:hover {
         }
     });
 }());
+
+// Table of Contents
+// (function () {
+//     document.querySelector('body > footer') || document.addEventListener('DOMContentLoaded', function () {
+//
+//         var body = document.body;
+//
+//         log('notoc attr in body', body)
+//
+//         if ( ! body.hasAttribute('notoc')) {
+//
+//             var header = document.createElement('footer');
+//
+//             header.innerHTML = `footer`;
+//
+//             manipulation.append(body, header);
+//         }
+//     });
+// }());
 
 // load common css and js
 
@@ -552,7 +572,7 @@ body .github-profile:hover {
 
                     manipulation.after(el, div);
 
-                    manipulation.move(div, el);
+                    manipulation.custommove(div, el);
 
                     var attr = Array.prototype.slice.call(el.attributes);
 
