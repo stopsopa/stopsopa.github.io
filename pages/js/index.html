@@ -118,33 +118,51 @@ console.log(i(t, {
                 <h2>manipulation</h2>
                 <script type="editor" data-lang="js">
 
-var manipulation = {
-    after: function (referenceNode, newNode) {
-        return this.before(referenceNode.nextSibling, newNode);
-    },
-    before: function (referenceNode, newNode) {
-        referenceNode.parentNode.insertBefore(newNode, referenceNode);
-        return this;
-    },
-    append: function (parentNode, newNode) {
-        parentNode.appendChild(newNode);
-        return this;
-    },
-    prepend: function (parentNode, newNode) {
-        parentNode.insertBefore(newNode, parentNode.firstChild);
-        return this;
-    },
-    remove: function (node) {
-        node.parentNode.removeChild(node);
-        return this;
-    },
-    empty: function (node) {
-        while(node.firstChild){
-            node.removeChild(node.firstChild);
-        }
-        return this;
-    }
-};
+var manipulation = (function () {
+
+    var domCache = document.createElement('div');
+
+    return {
+        after: function (referenceNode, newNode) {
+            return this.before(referenceNode.nextSibling, newNode);
+        },
+        before: function (referenceNode, newNode) {
+            referenceNode.parentNode.insertBefore(newNode, referenceNode);
+            return this;
+        },
+        append: function (parentNode, newNode) {
+            parentNode.appendChild(newNode);
+            return this;
+        },
+        prepend: function (parentNode, newNode) {
+            parentNode.insertBefore(newNode, parentNode.firstChild);
+            return this;
+        },
+        remove: function (node) {
+            node.parentNode.removeChild(node);
+            return this;
+        },
+        detach: function (element) { // detach element from DOM, to use it somewhere else
+
+            this.append(domCache, element);
+
+            return element;
+        },
+        children: function (parent) {
+            try {
+                // read also about
+                // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+                // https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName  - undefined when #text node
+                // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeName
+                return Array.prototype.slice.call(parent.childNodes)
+            }
+            catch (e) {
+
+                throw new Error("manipulation.children() error: " + String(e));
+            }
+        },
+    };
+}());
 
                 </script>
                 <h2>inheritance</h2>
