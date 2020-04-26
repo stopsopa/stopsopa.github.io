@@ -27,7 +27,6 @@
     }
 }(typeof self === 'undefined' ? this : self, function () {
 
-
     // from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys#Polyfill
     if (!Object.keys) {
         Object.keys = (function() {
@@ -274,4 +273,4 @@
     return mountpermalink;
 }));
 
-console && console.log && console.log('defined mountpermalink');
+// console && console.log && console.log('defined mountpermalink');

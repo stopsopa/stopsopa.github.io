@@ -40,4 +40,4 @@ if (!Object.keys) {
     }());
 }
 
-console && console.log && console.log('defined github');
+// console && console.log && console.log('defined github');

@@ -20,9 +20,9 @@
 
     <div data-do-sort>... children nodes...</div> - sorts all children based on innerText
     
-    <body nohead nofoot notoc>
+    <body nohead nofoot toc>
     
-        notoc - no Table of Content
+        toc - no Table of Content
         nohead - no header
         nofoot - no footer
     

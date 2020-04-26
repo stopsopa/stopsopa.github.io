@@ -1,5 +1,7 @@
 
 
-console && console.log && console.log('defined final dom loaded');
+console && console.log && console.log('executing domcontetloaded.js:');
 
-mountpermalink();
+window.mountpermalink();
+
+window.toc();
