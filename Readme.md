@@ -19,7 +19,12 @@
 # attribute helpers
 
     <div data-do-sort>... children nodes...</div> - sorts all children based on innerText
-    <body head foot> - add respectively header and footer to page
+    
+    <body nohead nofoot notoc>
+    
+        notoc - no Table of Content
+        nohead - no header
+        nofoot - no footer
     
 # new page template
 
