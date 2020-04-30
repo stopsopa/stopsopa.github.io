@@ -62,15 +62,15 @@ doctl compute load-balancer list
                 Just paste this code to your terminal:
                 <script type="editor" data-lang="bash">
 
+
 cat << EOF > ~/cluster.sh
 <%sh switch %>
 EOF
 
-echo 'alias cluster="/bin/bash ~/cluster.sh"' >> ~/.bashrc
+/bin/bash ~/cluster.sh install
 
-source ~/.bashrc
 
-echo -e "now just use\n\n    cluster\n\nto switch between DigitalOcean clusters"
+
 
                 </script>
             </div>
