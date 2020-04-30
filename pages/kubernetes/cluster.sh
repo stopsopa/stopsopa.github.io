@@ -12,6 +12,8 @@ if [ "$1" = "install" ]; then
 
       echo 'alias cluster="/bin/bash ~/cluster.sh"' >> ~/.bashrc
 
+      echo 'alias cluster="/bin/bash ~/cluster.sh"' >> ~/.bash_profile
+
       source ~/.bashrc
 
       echo "now just use"
