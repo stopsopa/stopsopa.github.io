@@ -65,19 +65,19 @@ fi
 
 echo "Choose from available DigitalOcean clusters:"
 
-i="1"
-for name in $_LIST
-do
-    echo "$i) ${name}"
-
-    i=$(($i + 1))
-done
-
 CLUSTER=""
 
 TEST="^[0-9]+$"
 
 while : ; do
+
+    i="1"
+    for name in $_LIST
+    do
+        echo "$i) ${name}"
+
+        i=$(($i + 1))
+    done
 
     printf ">"
 
