@@ -1,4 +1,29 @@
 
+if [ "$1" = "install" ]; then
+
+  TEST="alias cluster=\"/bin/bash ~/cluster.sh\""
+
+  CONTENT="$(cat ~/.bashrc)"
+
+  if [[ $CONTENT =~ $TEST ]]; then
+
+      echo "already installed just use"
+  else
+
+      echo 'alias cluster="/bin/bash ~/cluster.sh"' >> ~/.bashrc
+
+      source ~/.bashrc
+
+      echo "now just use"
+
+  fi
+
+  echo -e "\n    cluster\n\nto switch between DigitalOcean clusters"
+
+  exit 0
+
+fi
+
 trim() {
     local var="$*"
     # remove leading whitespace characters
@@ -56,7 +81,16 @@ while : ; do
 
     printf ">"
 
-    read i
+    if [ "$_LINES" -lt "10" ]; then
+
+      read -n1 i
+    else
+
+      read i
+    fi
+
+    echo ""
+    echo "executing..."
 
     if ! [[ $i =~ $TEST ]]; then
 
@@ -102,4 +136,4 @@ fi
 
 kubectl get no
 
-echo -e "\n    all good switched to cluster $CLUSTER\n"
+echo -e "\n    all good - switched to cluster $CLUSTER\n"
