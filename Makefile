@@ -3,5 +3,6 @@ start:
 
 build:
 	/bin/bash pages/bookmarklets/compress.sh
+	/bin/bash pages/kubernetes/compress.sh
 
 
