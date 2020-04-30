@@ -35,6 +35,8 @@ trim() {
 
 _CMD="doctl kubernetes cluster list --format \"Name\" --no-header"
 
+echo -e "executing command:\n\n    $_CMD\n"
+
 _LIST="$(eval "$_CMD")"
 
 _CODE="$?"
@@ -90,7 +92,6 @@ while : ; do
     fi
 
     echo ""
-    echo "executing..."
 
     if ! [[ $i =~ $TEST ]]; then
 
@@ -116,6 +117,8 @@ while : ; do
 done
 
 _CMD="doctl kubernetes cluster kubeconfig save \"$CLUSTER\""
+
+echo -e "executing command:\n\n    $_CMD\n"
 
 _LIST="$(eval "$_CMD")"
 
