@@ -35,7 +35,7 @@ trim() {
 
 _CMD="doctl kubernetes cluster list --format \"Name\" --no-header"
 
-echo -e "executing command:\n\n    $_CMD"
+echo -e "executing command:\n\n    $_CMD\n"
 
 _LIST="$(eval "$_CMD")"
 
@@ -118,7 +118,7 @@ done
 
 _CMD="doctl kubernetes cluster kubeconfig save \"$CLUSTER\""
 
-echo -e "executing command:\n\n    $_CMD"
+echo -e "executing command:\n\n    $_CMD\n"
 
 _LIST="$(eval "$_CMD")"
 
