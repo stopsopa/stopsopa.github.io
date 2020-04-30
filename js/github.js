@@ -550,61 +550,74 @@ body .github-profile:hover {
 
     window.doace = function () {
 
+        var _waitForPromise;
+
+        if ( typeof window.waitForPromise === 'function' ) {
+
+            _waitForPromise = Promise.resolve(window.waitForPromise());
+        }
+        else {
+
+            _waitForPromise = Promise.resolve();
+        }
+
         if (!p) {
 
-            p = new Promise(function (resolve) {
-                (function run() {
-                    if (window._ && window.ace && window.ace.edit) {
+            p = _waitForPromise.then(function () {
+                return new Promise(function (resolve) {
+                    (function run() {
+                        if (window._ && window.ace && window.ace.edit) {
 
-                        document.body.addEventListener('click', function (e) {
+                            document.body.addEventListener('click', function (e) {
 
-                            var el = e.target;
+                                var el = e.target;
 
-                            var match = el.matches('[data-lang] > .copy');
+                                var match = el.matches('[data-lang] > .copy');
 
-                            if (match) {
+                                if (match) {
 
-                                var editor = editors[el.parentNode.dataset.ace];
+                                    var editor = editors[el.parentNode.dataset.ace];
 
-                                if (editor) {
+                                    if (editor) {
 
-                                    log("found editory, let's copy");
+                                        log("found editory, let's copy");
 
-                                    var textarea = document.createElement('textarea');
-                                    manipulation.append(document.body, textarea);
-                                    textarea.value = editor.getValue();
-                                    textarea.select();
-                                    document.execCommand('copy');
-                                    textarea.value = "";
-                                    manipulation.remove(textarea);
+                                        var textarea = document.createElement('textarea');
+                                        manipulation.append(document.body, textarea);
+                                        textarea.value = editor.getValue();
+                                        textarea.select();
+                                        document.execCommand('copy');
+                                        textarea.value = "";
+                                        manipulation.remove(textarea);
 
-                                    (function () {
+                                        (function () {
 
-                                        el.dataset.or = el.dataset.or || el.innerHTML;
+                                            el.dataset.or = el.dataset.or || el.innerHTML;
 
-                                        el.innerHTML = '☑️';
+                                            el.innerHTML = '☑️';
 
-                                        setTimeout(function () {
-                                            el.innerHTML = el.dataset.or;
-                                        }, 1000);
+                                            setTimeout(function () {
+                                                el.innerHTML = el.dataset.or;
+                                            }, 1000);
 
-                                    }());
+                                        }());
+                                    }
+
+                                    log('clicked .copy');
                                 }
+                                else {
 
-                                log('clicked .copy');
-                            }
-                            else {
+                                    log('something else clicked');
+                                }
+                            });
 
-                                log('something else clicked');
-                            }
-                        });
-
-                        resolve()
-                    }
-                    else {
-                        setTimeout(run, 100);
-                    }
-                }());
+                            resolve()
+                        }
+                        else {
+                            setTimeout(run, 100);
+                        }
+                    }());
+                });
             });
         }
 
