@@ -36,6 +36,35 @@
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>stopsopa.github.io</title>
+        
+                <script> <!-- optional to do something before binding ACE editor -->
+                    (function () {
+                        var resolve;
+                        var p = new Promise(function (res) {
+                            resolve = res;
+                        });
+            
+                        document.addEventListener('DOMContentLoaded', () => {
+            
+                            Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+            
+                                var text = tag.innerHTML;
+            
+                                text = text.replace(/domain\.com/g, location.origin)
+            
+                                tag.innerHTML = text;
+                            });
+            
+                            resolve();
+                        });
+            
+                        window.waitForPromise = function () {
+            
+                            return p;
+                        }
+                    }())
+                </script>
+                
         <script src="/js/github.js"></script>
     </head>
     <body class="layout" head foot>

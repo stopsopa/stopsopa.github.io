@@ -134,9 +134,18 @@ if [ "$_CODE" != "0" ]; then
     echo "has crushed with status code: >>$_CODE<<"
     echo ""
 
-    exit $_CODE;
+
+
+    exit 1;
 fi
+
+
 
 kubectl get no
 
+
 echo -e "\n    all good - switched to cluster $CLUSTER\n"
+
+
+
+

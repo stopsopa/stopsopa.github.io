@@ -6,6 +6,33 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>stopsopa.github.io</title>
+    <script>
+        (function () {
+            var resolve;
+            var p = new Promise(function (res) {
+                resolve = res;
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+                Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+
+                    var text = tag.innerHTML;
+
+                    text = text.replace(/domain\.com/g, location.origin)
+
+                    tag.innerHTML = text;
+                });
+
+                resolve();
+            });
+
+            window.waitForPromise = function () {
+
+                return p;
+            }
+        }())
+    </script>
     <script src="/js/github.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -60,16 +87,13 @@ doctl compute load-balancer list
 
                 <h2>Digital Ocean - switch cluster tool</h2>
                 Just paste this code to your terminal:
-                <script type="editor" data-lang="bash">
+                <script type="editor" data-lang="bash" class="domain.com">
 
+rm -rf ~/cluster.sh
 
-cat << EOF > ~/cluster.sh
-<%sh switch %>
-EOF
+wget domain.com/pages/kubernetes/cluster.sh -O ~/cluster.sh
 
 /bin/bash ~/cluster.sh install
-
-
 
 
                 </script>
