@@ -15,13 +15,11 @@ if [ "$1" = "install" ]; then
       source ~/.bashrc
 
       echo "now just use"
-
   fi
 
   echo -e "\n    cluster\n\nto switch between DigitalOcean clusters"
 
   exit 0
-
 fi
 
 trim() {
@@ -35,7 +33,7 @@ trim() {
 
 _CMD="doctl kubernetes cluster list --format \"Name\" --no-header"
 
-echo -e "executing command:\n\n    $_CMD\n"
+echo -e "executing command:\n\n    $_CMD"
 
 _LIST="$(eval "$_CMD")"
 
@@ -118,7 +116,7 @@ done
 
 _CMD="doctl kubernetes cluster kubeconfig save \"$CLUSTER\""
 
-echo -e "executing command:\n\n    $_CMD\n"
+echo -e "executing command:\n\n    $_CMD"
 
 _LIST="$(eval "$_CMD")"
 
@@ -134,15 +132,10 @@ if [ "$_CODE" != "0" ]; then
     echo "has crushed with status code: >>$_CODE<<"
     echo ""
 
-
-
-    exit 1;
+    exit $_CODE;
 fi
 
-
-
 kubectl get no
-
 
 echo -e "\n    all good - switched to cluster $CLUSTER\n"
 
