@@ -69,7 +69,22 @@ kubectl drain nodename
 kubectl uncordon nodename
 
                 </script>
+                
                 <a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">see more</a>
+                
+                <h2>kubctl processing output:</h2>
+                <script type="editor" data-lang="bash">
+                
+kubectl get job --output=jsonpath='{.items[*].metadata.name}' | tr " " "\n"
+
+kubectl get job --output=jsonpath='{.items[*].metadata.name}' --sort-by='{.metadata.creationTimestamp}' | tr " " "\n"
+
+# reverse order
+kubectl get job --output=jsonpath='{.items[*].metadata.name}' | (cat && printf "\n") | tr " " "\n" | tac
+
+                </script>
+                
+                <a href="https://gist.github.com/so0k/42313dbb3b547a0f51a547bb968696ba">see more</a>
 
                 <h2>Digital Ocean</h2>
                 <script type="editor" data-lang="bash">
