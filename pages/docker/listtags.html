@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>stopsopa.github.io</title>
+    <script>
+        (function () {
+            var resolve;
+            var p = new Promise(function (res) {
+                resolve = res;
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+                Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+
+                    var text = tag.innerHTML;
+
+                    text = text.replace(/domain\.com/g, location.origin)
+
+                    tag.innerHTML = text;
+                });
+
+                resolve();
+            });
+
+            window.waitForPromise = function () {
+
+                return p;
+            }
+        }())
+    </script>
+    <script src="/js/github.js"></script>
+    <script>
+
+
+        var isArray = function (o) {
+
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray#Polyfill
+            if ( ! Array.isArray ) {
+
+                Array.isArray = function(arg) {
+
+                    return Object.prototype.toString.call(arg) === '[object Array]';
+                };
+            }
+
+            return Array.isArray(o);
+        }
+
+        function isObject(o) {
+            return Object.prototype.toString.call(o) === '[object Object]';
+        }
+
+        /**
+         * @doc https://github.com/stopsopa/nlab#get
+         *
+         * @param source
+         * @param key
+         * @param jsonIfNotString - for grabbing errors mode - get all but serialized you can then
+         * query again with more direct path
+         * @returns {*}
+         */
+        const get = function (source, key) {
+
+            // log('key', key);
+            // log('source', source)
+
+            if ( ! key ) {
+
+                return source;
+            }
+
+            if (typeof key === 'string' && key.indexOf('.') > -1) {
+
+                key = key.split('.');
+            }
+
+            if ( ! isArray(key)) {
+
+                key = [key];
+            }
+
+            let tmp = source, k;
+
+            while (k = key.shift()) {
+
+                try {
+                    if (key.length) {
+
+                        tmp = tmp[k];
+                    }
+                    else {
+
+                        if (typeof tmp[k] === 'undefined') {
+
+                            return arguments[2];
+                        }
+
+                        return tmp[k];
+                    }
+                }
+                catch (e) {
+
+                    return arguments[2];
+                }
+            }
+        }
+
+        function request(url) {
+
+            return fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
+                .then(response => {
+
+                    if (response.ok) {
+
+                        return response.json();
+                    }
+
+                    throw new Error('Network response was not ok.')
+                })
+                .then(data => {
+
+                    if (typeof data.contents !== 'string') {
+
+                        throw new Error(data);
+                    }
+
+                    return JSON.parse(data.contents);
+                });
+        }
+
+        window.request = request;
+
+        // request('https://hub.docker.com/v2/repositories/browserless/chrome/tags').then(data => console.log(data, null, 4))
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            var pre     = document.querySelector('pre');
+
+            var input   = document.querySelector('input[type="text"]');
+
+            var sort    = document.querySelector('#sort');
+
+            var extract = document.querySelector('#extract');
+
+            var dosort  = document.querySelector('#dosort');
+
+            var soextract  = document.querySelector('#soextract');
+
+            var send    = document.querySelector('#send');
+
+            var desc    = document.querySelector('input[name="desc"]');
+
+            var loadingOn = (function () {
+
+                var loading = document.querySelector('#loading');
+
+                var init = loading.innerText;
+
+                log('init: ', init)
+
+                return function (on) {
+
+                    log('cond: ', typeof on === 'boolean' || typeof on === 'string')
+
+                    if (typeof on === 'boolean' || typeof on === 'string') {
+
+                        loading.style.opacity = on ? '1' : '0';
+                    }
+
+                    var ret = loading.style.opacity === '1';
+
+                    log('ret: ', ret, 'text: ', (ret && typeof on === 'string') ? on : init)
+
+                    loading.innerText = (ret && typeof on === 'string') ? on : init;
+
+                    return ret;
+                }
+            }());
+
+            var data = [];
+
+            var extr = '';
+
+            var sor = '';
+
+            var l = false;
+
+            function render(data) {
+
+                var v = desc.checked ? 1 : -1;
+
+                log('render extr', extr, 'sor: ', sor)
+
+                if (typeof sor === 'string' && sor) {
+
+                    data = [].concat(data);
+
+                    data.sort(function (a, b) {
+
+                        var av = get(a, sor);
+
+                        var bv = get(a, sor);
+
+                        log('av: ', av, 'bv: ', bv, 'v: ', v)
+
+                        if ( ! isObject(av) && ! isArray(av) && ! isObject(bv) && ! isArray(bv)) {
+
+                            return av > bv ? v : -v;
+                        }
+
+                        return 0;
+                    });
+                }
+
+                if (typeof extr === 'string' && extr) {
+
+                    var k = extr.split(",");
+
+                    log('k: ', k)
+
+                    data = data.map(r => {
+
+                        if (k.length === 1) {
+
+                            return get(r, extr);
+                        }
+
+                        var d = {}
+
+                        k.forEach(k => {
+
+                            log('r: ', r, 'k: ', k)
+
+                            d[k] = get(r, k);
+                        })
+
+                        return d;
+                    })
+                }
+
+                pre.innerHTML = JSON.stringify(data, null, 4)
+            }
+
+            send.addEventListener('click', function (e) {
+
+                send.setAttribute('disabled', 'disabled');
+
+                var url = input.value;
+
+                data = [];
+
+                function stop () {
+
+                    send.removeAttribute('disabled');
+
+                    loadingOn(false);
+
+                    render(data);
+                }
+
+                function run() {
+
+                    loadingOn(url);
+
+                    request(url).then(function (json) {
+
+                        if (typeof json.next === 'string' && Array.isArray(json.results) && json.results.length) {
+
+                            url = json.next;
+
+                            data = data.concat(json.results);
+
+                            return run();
+                        }
+
+                        stop();
+
+                    }, stop);
+                }
+
+                run();
+            });
+
+            (function () {
+
+                soextract.addEventListener('click', function (e) {
+
+                    extr = extract.value;
+
+                    render(data)
+                });
+            }());
+
+            (function () {
+
+                dosort.addEventListener('click', function (e) {
+
+                    if (typeof sort.value === 'string') {
+
+                        sor = sort.value;
+
+                        log('sort', sor, desc.checked);
+
+                        render(data)
+                    }
+                });
+            }());
+
+            render(data)
+        });
+    </script>
+</head>
+<body class="layout" nofoot nohead>
+
+    <div class="body" style="padding-left: 60px;padding-top: 50px; display: block;">
+        <table width="70%">
+            <tbody>
+            <tr>
+                <td>
+                    <input type="text" style="width: 100%;" value="https://hub.docker.com/v2/repositories/browserless/chrome/tags"/>
+                </td>
+                <td width="100">
+                    <button id="send">send</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        sort:
+                        <input type="text" id="sort" style="width: 70%" value="last_updated">
+                    </label>
+
+                    <label>
+                        desc:
+                        <input type="checkbox" name="desc" id="">
+                    </label>
+                </td>
+                <td width="100">
+                    <button id="dosort">sort</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        extract
+                        <input type="text" id="extract" style="width: 70%" value="name,images.0.digest">
+                    </label>
+                </td>
+                <td width="100">
+                    <button id="soextract">extract</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div id="loading" style="opacity: 0;">loading...</div>
+        <pre></pre>
+    </div>
+</body>
+</html>

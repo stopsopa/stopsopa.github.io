@@ -67,7 +67,7 @@
                 
         <script src="/js/github.js"></script>
     </head>
-    <body class="layout" head foot>
+    <body class="layout" toc>
     
         <div class="body">
             <div class="inside">
@@ -93,6 +93,12 @@ http://httpd.pl/stopsopa.github.io/demos/jquery.elkanatooltip/pos.html
 # to maintain:
 http://stopsopa.github.io/demos/jquery.elkanatooltip/katownik.html
 http://stopsopa.github.io/demos/jquery.elkanatooltip/pos.html
+
+# cross origin requests: 
+- https://allorigins.win/
+- http://anyorigin.com/
+
+Pull contents from any page via API (as JSON/P or raw) and avoid Same-origin policy problems.
 
 
 
