@@ -86,6 +86,13 @@ while true; do ping -n -q -c1 docker.phaseiilabs.com | grep '('; sleep 2; done
 
                 <h2>Different useful:</h2>
                 <script type="editor" data-lang="bash">
+VAR=$(cat <<END
+
+..
+
+END
+);                
+                
 cat <<EOF > .env
 
 ..
