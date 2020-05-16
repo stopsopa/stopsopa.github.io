@@ -66,6 +66,9 @@ kubectl rollout restart deployment/nameofdeployment
 
 kubectl port-forward hublh55649bcc78b5dvq 7000:80
 
+# To see environment variables: from: https://bit.ly/36bhIII
+kubectl run curl --image=radial/busyboxplus:curl -i --tty
+
 # usage
 kubectl describe node k8sv21mhw
 
