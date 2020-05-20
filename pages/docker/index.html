@@ -50,7 +50,10 @@
                 <h2>Useful commands</h2>
                 <script type="editor" data-lang="bash">
                 
-docker history --format "\t{{.Size}}\t\t{{.CreatedBy}}" 1de239ccac3e --no-trunc                
+docker history --format "\t{{.Size}}\t\t{{.CreatedBy}}" 1de239ccac3e --no-trunc 
+
+docker image prune -a --force --filter "until=480h"
+    # from: https://docs.docker.com/config/pruning/
 
                 </script>
 
