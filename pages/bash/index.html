@@ -57,6 +57,114 @@ while true; do ping -n -q -c1 docker.phaseiilabs.com | grep '('; sleep 2; done
             </div>
             <div class="cards">
 
+                <h2>Processing arguments</h2>
+                <script type="editor" data-lang="bash">
+
+
+    # === parsowanie argumentów ==== vvv https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8fecho "args: '$@'"
+
+echo "args: '$@'"
+
+_CLEANOLD="0";
+
+_GEN="gen"
+
+_DEPLOYMENT_YAML=""
+
+PARAMS=""
+while (( "$#" )); do
+  case "$1" in
+    -c|--clean|--clear)
+      _CLEANOLD="1";
+      shift;
+      ;;
+    -d|--deployment-yaml)
+      if [ "$2" = "" ]; then                            # optional
+        echo "$0 Error: --deployment-yaml value can't be empty" >&2 # optional
+        exit 1;                                          # optional
+      fi
+      if ! [ -f "$2" ]; then
+          echo "$0 Error: --deployment-yaml file '$2' doesn't exist" >&2 # optional
+      fi                                           # optional
+      _DEPLOYMENT_YAML="$2";
+      shift 2;
+      ;;
+    -g|--gen)
+      if [ "$2" = "" ]; then                            # optional
+        echo "$0 Error: --gen value can't be empty" >&2 # optional
+        exit 1;                                          # optional
+      fi                                                # optional
+      _GEN="$2";
+      shift 2;
+      ;;
+    --) # end argument parsing
+      shift;
+      while (( "$#" )); do          # optional                          
+        if [ "$PARAMS" = "" ]; then # optional
+            PARAMS="\"$1\""         # optional
+        else                        # optional
+            PARAMS="$PARAMS \"$1\"" # optional
+        fi                          # optional
+        shift;                      # optional            
+      done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
+      break;
+      ;;
+    -*|--*=) # unsupported flags
+      echo "$0 Error: Unsupported flag $1" >&2
+      exit 1;
+      ;;
+    *) # preserve positional arguments
+      if [ "$PARAMS" = "" ]; then
+          PARAMS="\"$1\""
+      else
+          PARAMS="$PARAMS \"$1\""
+      fi
+      shift;
+      ;;
+  esac
+done
+
+if [ "$_DEPLOYMENT_YAML" = "" ]; then
+  
+    echo -e "\n\n$0 error: parameter _DEPLOYMENT_YAML is not defined - spedify it in --deployment-yaml parameter\n\n";
+
+    exit 1;
+fi
+
+# set positional arguments in their proper place
+eval set -- "$PARAMS"
+
+echo "_CLEANOLD: $_CLEANOLD"
+echo "_GEN: $_GEN"
+
+echo "rest: '$@'"
+
+echo "count: $#"
+
+
+while (( "$#" )); do
+  echo "print: '$1'"
+  shift;
+done
+
+# /bin/bash arg.sh one abc def -- -f test two "a b c"
+# args: 'one abc def -- -f test two a b c'
+# _CLEANOLD: 0
+# _GEN: gen
+# rest: 'one abc def -f test two a b c'
+# count: 7
+# print: 'one'
+# print: 'abc'
+# print: 'def'
+# print: '-f'
+# print: 'test'
+# print: 'two'
+# print: 'a b c'
+
+                </script>
+            </div>
+            <div class="cards">
+
                 <h2>basic auth generator</h2>
                 <table>
                     <tbody>
