@@ -251,6 +251,20 @@ catch (e) {
 npx envinfo
 
                 </script>
+                <h2>Date months</h2>
+                <script type="editor" data-lang="js">
+var monthName = (function () {
+
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    return function (date) {
+
+        return monthNames[date.getMonth()];
+    }
+}());
+                </script>
                 <h2>trim</h2>
                 <script type="editor" data-lang="js">
 
