@@ -22,7 +22,7 @@
     
     <body nohead nofoot toc>
     
-        toc - no Table of Content
+        toc - turn on Table of Content
         nohead - no header
         nofoot - no footer
     
