@@ -190,7 +190,7 @@ done
             </div>
             <div class="cards">
 
-                <h2>Different useful:</h2>
+                <h2>HEREDOC:</h2>
                 <script type="editor" data-lang="bash">
 VAR=$(cat <<END
 
@@ -210,6 +210,36 @@ cat <<EOF
 ..
 
 EOF
+
+# QUOTING TEST vvv
+export TTTA="outputvariable"
+export TTTB="outputvalue"
+
+# one level
+cat <<EEE
+
+echo "variable: \$TTTA"
+
+echo "value: $TTTB"
+
+EEE
+
+# two levels
+cat <<EOF > ./ttt.sh
+
+cat <<EEE
+
+echo "variable: \\\$TTTA"
+
+echo "value: \$TTTB"
+
+EEE
+
+EOF
+
+/bin/bash ttt.sh
+# QUOTING TEST ^^^
+
 
                 </script>
             </div>
