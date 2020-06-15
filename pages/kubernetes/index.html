@@ -125,6 +125,11 @@ wget domain.com/pages/kubernetes/cluster.sh -O ~/cluster.sh
 source ~/.bash_profile
 source ~/.bashrc
 
+# ssl certificates
+doctl compute certificate list
+doctl compute certificate create --name certv001 --type lets_encrypt --dns-names domain1.com,domain2.com
+doctl compute certificate get eebf2fd0-4444-3333-5555-87ce0631869a
+
                 </script>
             </div>
         </div>
