@@ -55,6 +55,8 @@ docker history --format "\t{{.Size}}\t\t{{.CreatedBy}}" 1de239ccac3e --no-trunc
 docker image prune -a --force --filter "until=480h"
 docker system prune --all --volumes --force
     # from: https://docs.docker.com/config/pruning/
+    
+docker system df    
 
                 </script>
 
