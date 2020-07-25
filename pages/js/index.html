@@ -143,9 +143,11 @@ var manipulation = (function () {
             return this;
         },
         detach: function (element) { // detach element from DOM, to use it somewhere else
-
             this.append(domCache, element);
-
+            return element;
+        },
+        empty: function (element) {
+            element.innerHTML = '';
             return element;
         },
         children: function (parent) {
