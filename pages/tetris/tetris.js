@@ -65,27 +65,49 @@ window.Tetris = (function () {
   function th(msg) { return "Tetris.js error: " + String(msg) };
 
   function createOneBrick(parent, n) {
-    var brick = document.createElement('div');
+    var el = document.createElement('div');
     n -= 1;
     if (n > 0) {
-      createOneBrick(brick, n)
+      createOneBrick(el, n)
     }
-    manipulation.append(parent, brick);
-    return brick;
+    manipulation.append(parent, el);
+    return el;
   }
 
-  function clearSquare(square) {
-    square.empty = true;
+  function clearCell(square) {
+    square.on = false;
     square.t = false;
     square.b = false;
     square.l = false;
     square.r = false;
+
+    if (isElement(square.el)) {
+
+      square.el.setAttribute('class', '');
+    }
   }
 
   function clearRow(rowZeroIndex) {
     for ( var k = 0 ; k < opt.width ; k += 1 ) {
-      clearSquare(this.board[rowZeroIndex][k])
+      clearCell(this.board[rowZeroIndex][k])
     }
+  }
+
+  function updateCell(board, cell, newData) {
+
+    clearCell(cell.cell);
+
+    var b = cell.cell.el;
+
+    var c = board[cell.row][cell.col] = Object.assign(newData, {
+      el: b,
+    });
+
+    (c.t) && b.classList.add('t');
+    (c.b) && b.classList.add('b');
+    (c.l) && b.classList.add('l');
+    (c.r) && b.classList.add('r');
+    (c.on) && b.classList.add('on');
   }
 
   // Super rotation system
@@ -331,11 +353,17 @@ window.Tetris = (function () {
 
       for ( var k = 0 ; k < opt.width ; k += 1 ) {
 
+        var el = createOneBrick(opt.board, 3);
+
         const square = {
-          brick: createOneBrick(opt.board, 3),
+          el: el,
         };
 
-        clearSquare(square)
+        el.dataset['row'] = i;
+
+        el.dataset['col'] = k;
+
+        clearCell(square)
 
         t.push(square);
       }
@@ -352,10 +380,10 @@ window.Tetris = (function () {
       for ( var k = 0 ; k < max.w ; k += 1 ) {
 
         const square = {
-          brick: createOneBrick(opt.bricks, 3),
+          el: createOneBrick(opt.bricks, 3),
         };
 
-        clearSquare(square);
+        clearCell(square);
 
         t.push(square);
       }
@@ -397,6 +425,69 @@ window.Tetris = (function () {
 
   Tetris.prototype.rotateL = function () {
 
+  }
+
+  Tetris.prototype.cellOn = function (element) {
+
+    try {
+
+      var cell = this.findCellByDomElement(element);
+
+      updateCell(this.board, cell, {
+        on: true,
+      });
+    }
+    catch (e) {
+
+      throw th("cellOn error: " + String(e));
+    }
+  }
+
+  Tetris.prototype.cellOff = function (element) {
+
+    try {
+
+      var cell = this.findCellByDomElement(element);
+
+      clearCell(cell.cell);
+    }
+    catch (e) {
+
+      throw th("cellOff error: " + String(e));
+    }
+  }
+
+  Tetris.prototype.cellIsOn = function (element) {
+
+    try {
+
+      var cell = this.findCellByDomElement(element);
+
+      return Boolean(cell.cell.on);
+    }
+    catch (e) {
+
+      throw th("cellIsOn error: " + String(e));
+    }
+  }
+
+  Tetris.prototype.findCellByDomElement = function (element) {
+
+    if ( typeof element.dataset['row'] !== 'string' ) {
+
+      throw th("findCellByDomElement element dataset.row is not a string");
+    }
+
+    if ( typeof element.dataset['col'] !== 'string' ) {
+
+      throw th("findCellByDomElement element dataset.row is not a string");
+    }
+
+    return {
+      col: element.dataset['col'],
+      row: element.dataset['row'],
+      cell: this.board[element.dataset['row']][element.dataset['col']],
+    }
   }
 
   Tetris.prototype.keyBind = function (key, fn, triggerEveryMs) {
@@ -577,9 +668,9 @@ window.Tetris = (function () {
 
       for ( var k = 0 ; k < opt.width ; k += 1 ) {
 
-        this.board[i][k].brick.style.width = String(opt.brickWidth) + "px";
+        this.board[i][k].el.style.width = String(opt.brickWidth) + "px";
 
-        this.board[i][k].brick.style.height = String(opt.brickHeight) + "px";
+        this.board[i][k].el.style.height = String(opt.brickHeight) + "px";
       }
     }
 
@@ -592,9 +683,9 @@ window.Tetris = (function () {
 
       for ( var k = 0 ; k < max.w ; k += 1 ) {
 
-        this.bricks[i][k].brick.style.width = String(opt.brickWidth) + "px";
+        this.bricks[i][k].el.style.width = String(opt.brickWidth) + "px";
 
-        this.bricks[i][k].brick.style.height = String(opt.brickHeight) + "px";
+        this.bricks[i][k].el.style.height = String(opt.brickHeight) + "px";
       }
     }
 

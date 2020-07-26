@@ -125,6 +125,34 @@
             return tetris.keyUp('rotateR', { key: e.key });
           }
         });
+
+
+        if (!Element.prototype.matches) {
+          Element.prototype.matches =
+            Element.prototype.matchesSelector ||
+            Element.prototype.mozMatchesSelector ||
+            Element.prototype.msMatchesSelector ||
+            Element.prototype.oMatchesSelector ||
+            Element.prototype.webkitMatchesSelector ||
+            function(s) {
+              var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                i = matches.length;
+              while (--i >= 0 && matches.item(i) !== this) {}
+              return i > -1;
+            };
+        }
+
+        document.body.addEventListener('click', function (e) {
+
+          var el = e.target;
+
+          var match = el.matches('.board > div');
+
+          if (match) {
+
+            tetris.cellIsOn(el) ? tetris.cellOff(el) : tetris.cellOn(el);
+          }
+        });
     </script>
 </div>
 </body>
