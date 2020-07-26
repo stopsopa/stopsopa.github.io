@@ -55,6 +55,8 @@ docker history --format "\t{{.Size}}\t\t{{.CreatedBy}}" 1de239ccac3e --no-trunc
 docker image prune -a --force --filter "until=480h"
 docker system prune --all --volumes --force
     # from: https://docs.docker.com/config/pruning/
+    
+docker system df    
 
                 </script>
 
@@ -72,6 +74,9 @@ https://hub.docker.com/v2/repositories/browserless/chrome/tags
 
 ls -la /var/lib/docker/registry/docker/registry/v2/repositories
 # rm -rf /var/lib/docker/registry/docker/registry/v2/reposit...
+
+# removing image:
+curl -v --silent -H "authorization: Basic YWRta...akc=" -X DELETE https://docker-registry.domain.com/v2/puppeteer-1-20-0/manifests/sha256:ef75836309692....53dff9e325167
 
                 </script>
                 <a href="https://github.com/docker/distribution/blob/master/docs/spec/api.md#detail">https://github.com/docker/distribution/blob/master/docs/spec/api.md#detail</a>

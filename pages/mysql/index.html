@@ -38,7 +38,8 @@ EXECUTE stmt;
 SET FOREIGN_KEY_CHECKS = 1;
 DEALLOCATE PREPARE stmt;
 
-
+// might be useful: 
+SELECT CONCAT('DROP TABLE ',GROUP_CONCAT(CONCAT('\\\`',@schema,'\\\`.\\\`',table_name,'\\\`')),';')
                 </script>
             </div>
 
