@@ -1,0 +1,11 @@
+.board {
+    display: flex;
+    /*border: 1px solid gray;*/
+    flex-wrap: wrap;
+    background-color: lightgray;
+
+}
+.board > div {
+    box-shadow: #cccaca 1px 1px;
+
+}

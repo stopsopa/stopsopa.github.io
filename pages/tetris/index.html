@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./tetris.css">
+    <title>tetris</title>
+
+    <script>
+        (function () {
+            document.addEventListener('DOMContentLoaded', () => {
+
+            });
+        }())
+    </script>
+
+    <script src="/js/github.js"></script>
+    <style>
+        .game {
+            box-shadow: 5px 10px #888888;
+        }
+        .bricks {
+            box-shadow: 5px 10px #888888;
+        }
+    </style>
+</head>
+<body class="layout">
+
+<div class="body">
+    <div class="inside">
+        <div class="cards">
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="board"></div>
+                    </td>
+                    <td>
+                        <div class="bricks"></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="press">0</div>
+        </div>
+    </div>
+    <script src="./tetris.js"></script>
+    <script>
+
+        var log=(function(){try{return console.log}catch(e){return function(){}}}())
+
+        var tetris = Tetris({
+          board: document.querySelector('.board'),
+          bricks: document.querySelector('.bricks'),
+          brickHeight: 15,
+          brickWidth: 15,
+        });
+
+        const press = document.querySelector('.press');
+
+        tetris.keyBind('h', function () {
+          log('h.');
+        }, 100);
+        document.addEventListener('keydown', function (e) {
+          (e.key === 'h') && tetris.keyDown('h');
+        });
+        document.addEventListener('keyup', function (e) {
+          (e.key === 'h') && tetris.keyUp('h');
+        });
+    </script>
+</div>
+</body>
+</html>
