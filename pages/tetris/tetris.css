@@ -9,6 +9,9 @@
     box-shadow: #cccaca 1px 1px;
 
 }
+.board > div.on {
+    background-color: darkgreen;
+}
 
 
 .bricks {
@@ -20,6 +23,5 @@
 }
 .bricks > div {
     box-shadow: #cccaca 1px 1px;
-
 }
 
