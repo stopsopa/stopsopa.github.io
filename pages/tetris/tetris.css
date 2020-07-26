@@ -9,3 +9,17 @@
     box-shadow: #cccaca 1px 1px;
 
 }
+
+
+.bricks {
+    display: flex;
+    /*border: 1px solid gray;*/
+    flex-wrap: wrap;
+    background-color: lightgray;
+
+}
+.bricks > div {
+    box-shadow: #cccaca 1px 1px;
+
+}
+
