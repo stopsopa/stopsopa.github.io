@@ -143,10 +143,12 @@ var manipulation = (function () {
             return this;
         },
         detach: function (element) { // detach element from DOM, to use it somewhere else
-
             this.append(domCache, element);
-
             return element;
+        },
+        empty: function (element) {
+            element.innerHTML = '';
+            return this;
         },
         children: function (parent) {
             try {
@@ -243,6 +245,26 @@ catch (e) {
 //     [ 'a', 'end' ]
 // Error: Can't create instance of function 'func' just use it as a function    
 
+// Try also put this code to Typescript playground and see output
+// take look at generated __extends function
+// Change output syntax (In "TS Config" tab) to "ES5"
+// example from: https://www.typescriptlang.org/docs/handbook/classes.html#inheritance
+class Animal {
+  move(distanceInMeters: number = 0, t: number ) {
+    log(`Animal moved ${distanceInMeters}m.`);
+  }
+}
+
+class Dog extends Animal {
+  bark() {
+    log("Woof! Woof!");
+  }
+}
+
+const dog = new Dog();
+dog.bark();
+dog.move(10, 5);
+dog.bark();
 
                 </script>
                 <h2>system info</h2>

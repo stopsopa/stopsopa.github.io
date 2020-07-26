@@ -65,6 +65,8 @@ kubectl rollout restart deployment/nameofdeployment
     kubectl rollout restart deployment/nginx-ingress-controller -n ingress-nginx
 
 kubectl port-forward hublh55649bcc78b5dvq 7000:80
+kubectl port-forward service/redismaster 7000:80
+    # https://bit.ly/2YDIyG5
 
 # To see environment variables: from: https://bit.ly/36bhIII
 kubectl run curl --image=radial/busyboxplus:curl -i --tty
@@ -80,6 +82,7 @@ kubectl uncordon nodename
 docker exec -it docker-registry /bin/registry garbage-collect --dry-run /etc/docker/registry/config.yml
     # from g(Clean Up Your Docker Registry Delete unused digests of docker images and save space) https://medium.com/better-programming/cleanup-your-docker-registry-ef0527673e3a
 
+printenv | grep -E "(DEP|GIT|NUMBER)"
                 </script>
                 
                 <a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">see more</a>
@@ -121,6 +124,11 @@ wget domain.com/pages/kubernetes/cluster.sh -O ~/cluster.sh
 /bin/bash ~/cluster.sh install
 source ~/.bash_profile
 source ~/.bashrc
+
+# ssl certificates
+doctl compute certificate list
+doctl compute certificate create --name certv001 --type lets_encrypt --dns-names domain1.com,domain2.com
+doctl compute certificate get eebf2fd0-4444-3333-5555-87ce0631869a
 
                 </script>
             </div>
