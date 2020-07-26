@@ -320,6 +320,30 @@ window.Tetris = (function () {
     delete this.opt.board.tetris;
   }
 
+  Tetris.prototype.up = function () {
+
+  }
+
+  Tetris.prototype.down = function () {
+
+  }
+
+  Tetris.prototype.left = function () {
+
+  }
+
+  Tetris.prototype.right = function () {
+
+  }
+
+  Tetris.prototype.rotateR = function () {
+
+  }
+
+  Tetris.prototype.rotateL = function () {
+
+  }
+
   Tetris.prototype.keyBind = function (key, fn, triggerEveryMs) {
 
     if (typeof key !== 'string') {
@@ -383,7 +407,7 @@ window.Tetris = (function () {
     return this;
   }
 
-  Tetris.prototype.keyDown = function (key) {
+  Tetris.prototype.keyDown = function (key, extra) {
 
     // commented out due to optimization reasons
     // if (typeof key !== 'string') {
@@ -410,15 +434,27 @@ window.Tetris = (function () {
 
     this.keys[key].triggered = true;
 
-    this.keys[key].handler = setInterval(this.keys[key].fn, this.keys[key].triggerEveryMs);
+    var fn = this.keys[key].fn;
+
+    this.keys[key].handler = setInterval(function () {
+
+      fn();
+
+      log('keyDown[', extra.key, ']');
+
+    }, this.keys[key].triggerEveryMs);
 
     this.keys[key].fn();
+
+    log('keyDown[', extra.key, ']');
 
     return this;
   }
 
 
-  Tetris.prototype.keyUp = function (key) {
+  Tetris.prototype.keyUp = function (key, extra) {
+
+    // log('keyUp', extra)
 
     // if (typeof key !== 'string') {
     //
