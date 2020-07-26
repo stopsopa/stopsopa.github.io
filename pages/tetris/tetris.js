@@ -65,11 +65,12 @@ window.Tetris = (function () {
 
   function th(msg) { return "Tetris.js error: " + String(msg) };
 
-  function createOneBrick(parent) {
+  function createOneBrick(parent, n) {
     var brick = document.createElement('div');
-    var level = document.createElement('div');
-    manipulation.append(level, document.createElement('div'))
-    manipulation.append(brick, level);
+    n -= 1;
+    if (n > 0) {
+      createOneBrick(brick, n)
+    }
     manipulation.append(parent, brick);
     return brick;
   }
@@ -155,7 +156,7 @@ window.Tetris = (function () {
       for ( var k = 0 ; k < opt.width ; k += 1 ) {
 
         const square = {
-          brick: createOneBrick(opt.board),
+          brick: createOneBrick(opt.board, 3),
         };
 
         clearSquare(square)
@@ -245,6 +246,7 @@ window.Tetris = (function () {
 
   Tetris.prototype.keyDown = function (key) {
 
+    // commented out due to optimization reasons
     // if (typeof key !== 'string') {
     //
     //   throw th("keyDown, key is not a string");
