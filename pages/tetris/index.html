@@ -18,11 +18,17 @@
 
     <script src="/js/github.js"></script>
     <style>
-        .game {
-            box-shadow: 5px 10px #888888;
+        .board {
+            /*box-shadow: 5px 10px #888888;*/
         }
         .bricks {
-            box-shadow: 5px 10px #888888;
+            /*box-shadow: 5px 10px #888888;*/
+        }
+        table {
+            width: 234px;
+        }
+        table > tbody > tr > td:first-child {
+            width: 156px;
         }
     </style>
 </head>
@@ -56,6 +62,7 @@
           bricks: document.querySelector('.bricks'),
           brickHeight: 15,
           brickWidth: 15,
+          next: 2,
         });
 
         const press = document.querySelector('.press');

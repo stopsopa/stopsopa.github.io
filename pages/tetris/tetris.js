@@ -1,5 +1,4 @@
 
-
 window.Tetris = (function () {
 
   var log=(function(){try{return console.log}catch(e){return function(){}}}());
@@ -228,6 +227,28 @@ window.Tetris = (function () {
     ],
   ];
 
+  const max = (function () {
+    var w = 0;
+    var h = 0;
+    tetrominoes.forEach(function (brick) {
+      brick.forEach(function (rotation) {
+        if (rotation.length > h) {
+          h = rotation.length;
+        }
+        rotation.forEach(function (row) {
+          if (row.length > w) {
+            w = row.length;
+          }
+        });
+      });
+    });
+
+    return {
+      w: w,
+      h: h,
+    }
+  }());
+
   /**
     var tetris = new Tetris({
       board: document.querySelector('.board'),
@@ -250,6 +271,7 @@ window.Tetris = (function () {
       height: 20,
       brickHeight: 10,
       brickWidth: 10,
+      next: 3,
     }, opt);
 
     if ( ! isElement(opt.board) ) {
@@ -282,6 +304,21 @@ window.Tetris = (function () {
       throw th("opt.height is smaller than 16 it is '" + opt.height + "'");
     }
 
+    if ( ! Number.isInteger(opt.next) ) {
+
+      throw th("opt.next is not an integer");
+    }
+
+    if ( opt.next < 1 ) {
+
+      throw th("opt.next is smaller than 1 it is '" + opt.next + "'");
+    }
+
+    if ( opt.next > 5 ) {
+
+      throw th("opt.next is greater than 5 it is '" + opt.next + "'");
+    }
+
     log('existing', this.opt.board.tetris);
 
     manipulation.empty(opt.board);
@@ -306,11 +343,29 @@ window.Tetris = (function () {
       this.board.push(t);
     }
 
+    this.bricks = [];
+
+    for ( var i = 0, l = ((max.h + 1) * opt.next) ; i < l ; i += 1 ) {
+
+      var t = [];
+
+      for ( var k = 0 ; k < max.w ; k += 1 ) {
+
+        const square = {
+          brick: createOneBrick(opt.bricks, 3),
+        };
+
+        clearSquare(square);
+
+        t.push(square);
+      }
+
+      this.bricks.push(t);
+    }
+
     this.setSize();
 
     opt.board.tetris = this;
-
-    // keys
 
     this.keys = {};
   };
@@ -451,7 +506,6 @@ window.Tetris = (function () {
     return this;
   }
 
-
   Tetris.prototype.keyUp = function (key, extra) {
 
     // log('keyUp', extra)
@@ -518,6 +572,7 @@ window.Tetris = (function () {
       throw th("opt.brickHeight is smaller than 4 it is '" + opt.brickHeight + "'");
     }
 
+    // board
     for ( var i = 0 ; i < opt.height ; i += 1 ) {
 
       for ( var k = 0 ; k < opt.width ; k += 1 ) {
@@ -531,6 +586,21 @@ window.Tetris = (function () {
     this.opt.board.style.width = String(opt.width * opt.brickWidth) + 'px';
 
     this.opt.board.style.height = String(opt.height * opt.brickHeight) + 'px';
+
+    // bricks
+    for ( var i = 0, l = ((max.h + 1) * opt.next) ; i < l ; i += 1 ) {
+
+      for ( var k = 0 ; k < max.w ; k += 1 ) {
+
+        this.bricks[i][k].brick.style.width = String(opt.brickWidth) + "px";
+
+        this.bricks[i][k].brick.style.height = String(opt.brickHeight) + "px";
+      }
+    }
+
+    this.opt.bricks.style.width = String(max.w * opt.brickWidth) + 'px';
+
+    this.opt.bricks.style.height = String(((max.h + 1) * opt.next) * opt.brickHeight) + 'px';
   };
 
   return Tetris;
