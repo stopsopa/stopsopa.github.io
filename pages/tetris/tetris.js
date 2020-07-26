@@ -89,6 +89,145 @@ window.Tetris = (function () {
     }
   }
 
+  // Super rotation system
+  // https://strategywiki.org/wiki/File:Tetris_rotation_super.png
+  const tetrominoes = [
+    [ // ████
+      [
+        [null],
+        [true, true, true, true],
+      ],
+      [
+        [null, null, true],
+        [null, null, true],
+        [null, null, true],
+        [null, null, true],
+      ],
+      [
+        [null],
+        [null],
+        [true, true, true, true],
+      ],
+      [
+        [null, true],
+        [null, true],
+        [null, true],
+        [null, true],
+      ],
+    ],
+    [ // ▛ ▟
+      [
+        [true],
+        [true, true, true],
+      ],
+      [
+        [null, true, true],
+        [null, true],
+        [null, true],
+      ],
+      [
+        [null],
+        [true, true, true],
+        [null, null, true],
+      ],
+      [
+        [null, true],
+        [null, true],
+        [true, true],
+      ],
+    ],
+    [ // ▙ ▜
+      [
+        [null, null, true],
+        [true, true, true],
+      ],
+      [
+        [null, true],
+        [null, true],
+        [null, true, true],
+      ],
+      [
+        [null],
+        [true, true, true],
+        [true],
+      ],
+      [
+        [true, true],
+        [null, true],
+        [null, true],
+      ],
+    ],
+    [ // ░ ▒ ▓
+      [
+        [null, true, true],
+        [null, true, true],
+      ],
+    ],
+    [ //▗█▘
+      [
+        [null, true, true],
+        [true, true],
+      ],
+      [
+        [null, true],
+        [null, true, true],
+        [null, null, true],
+      ],
+      [
+        [null],
+        [null, true, true],
+        [true, true],
+      ],
+      [
+        [true],
+        [true, true],
+        [null, true],
+      ],
+    ],
+    [ //▝█▖
+      [
+        [true, true],
+        [null, true, true],
+      ],
+      [
+        [null, null, true],
+        [null, true, true],
+        [null, true],
+      ],
+      [
+        [null],
+        [true, true],
+        [null, true, true],
+      ],
+      [
+        [null, true],
+        [true, true],
+        [true],
+      ],
+    ],
+    [ //▗█▖
+      [
+        [null, true],
+        [true, true, true],
+      ],
+      [
+        [null, true],
+        [null, true, true],
+        [null, true],
+      ],
+      [
+        [null],
+        [true, true, true],
+        [null, true],
+      ],
+      [
+        [null, true],
+        [true, true],
+        [null, true],
+      ],
+    ],
+  ];
+
   /**
     var tetris = new Tetris({
       board: document.querySelector('.board'),
