@@ -60,14 +60,63 @@
 
         const press = document.querySelector('.press');
 
-        tetris.keyBind('h', function () {
-          log('h.');
-        }, 100);
+        tetris.keyBind('up', function () {
+          tetris.up()
+        }, 200);
+        tetris.keyBind('down', function () {
+          tetris.down()
+        }, 200);
+        tetris.keyBind('left', function () {
+          tetris.left()
+        }, 200);
+        tetris.keyBind('right', function () {
+          tetris.right()
+        }, 200);
+        tetris.keyBind('rotateR', function () {
+          tetris.rotateR()
+        }, 200);
+        tetris.keyBind('rotateL', function () {
+          tetris.rotateL()
+        }, 200);
         document.addEventListener('keydown', function (e) {
-          (e.key === 'h') && tetris.keyDown('h');
+          if (['a', 'ArrowLeft'].indexOf(e.key) > -1) {
+            return tetris.keyDown('left', { key: e.key });
+          }
+          if (['d', 'ArrowRight'].indexOf(e.key) > -1) {
+            return tetris.keyDown('right', { key: e.key });
+          }
+          if (['w', 'ArrowUp'].indexOf(e.key) > -1) {
+            return tetris.keyDown('up', { key: e.key });
+          }
+          if (['s', 'ArrowDown', ' '].indexOf(e.key) > -1) {
+            return tetris.keyDown('down', { key: e.key });
+          }
+          if (['[', 'z'].indexOf(e.key) > -1) {
+            return tetris.keyDown('rotateL', { key: e.key });
+          }
+          if ([']', 'x'].indexOf(e.key) > -1) {
+            return tetris.keyDown('rotateR', { key: e.key });
+          }
         });
         document.addEventListener('keyup', function (e) {
-          (e.key === 'h') && tetris.keyUp('h');
+          if (['a', 'ArrowLeft'].indexOf(e.key) > -1) {
+            return tetris.keyUp('left', { key: e.key });
+          }
+          if (['d', 'ArrowRight'].indexOf(e.key) > -1) {
+            return tetris.keyUp('right', { key: e.key });
+          }
+          if (['w', 'ArrowUp'].indexOf(e.key) > -1) {
+            return tetris.keyUp('up', { key: e.key });
+          }
+          if (['s', 'ArrowDown', ' '].indexOf(e.key) > -1) {
+            return tetris.keyUp('down', { key: e.key });
+          }
+          if (['[', 'z'].indexOf(e.key) > -1) {
+            return tetris.keyUp('rotateL', { key: e.key });
+          }
+          if ([']', 'x'].indexOf(e.key) > -1) {
+            return tetris.keyUp('rotateR', { key: e.key });
+          }
         });
     </script>
 </div>
