@@ -590,7 +590,7 @@ window.Tetris = (function () {
 
     }, this.keys[key].triggerEveryMs);
 
-    this.keys[key].fn();
+    fn();
 
     log('keyDown[', extra.key, ']');
 
