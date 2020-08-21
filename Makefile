@@ -1,5 +1,5 @@
 
-start: stop
+start: stop testport
 	/bin/bash bash/proc/start.sh ../../.env PROJECT_NAME /bin/bash run.sh
 
 stop:
@@ -12,4 +12,6 @@ build:
 	/bin/bash pages/bookmarklets/compress.sh
 	/bin/bash pages/kubernetes/compress.sh
 
+testport:
+	/bin/bash testport.sh
 

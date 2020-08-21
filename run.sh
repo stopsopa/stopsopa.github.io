@@ -49,8 +49,7 @@ echo -e "\n\n\n-----v $(_datetime) v----->>>\n" >> $LOGFILE
 
 sleep 0.5 && node "$_DIR/node_modules/.bin/open-cli" http://0.0.0.0:$NODE_PORT/index.html &
 
-/bin/bash "$_DIR/bash/proc/run-with-flag-and-kill.sh" "$FLAG-main" \
-node server.js --port $NODE_PORT --log 15
+node server.js --port $NODE_PORT --log 15 --flag "$FLAG-main"
 
 
 
