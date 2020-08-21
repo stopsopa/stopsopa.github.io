@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "dotenv-up": "^1.0.30"
+  }
+}

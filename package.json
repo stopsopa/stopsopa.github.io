@@ -1,6 +1,10 @@
 {
   "dependencies": {
+    "forever": "^3.0.0",
     "inspc": "^0.0.18",
     "uglify-js": "^3.9.1"
+  },
+  "devDependencies": {
+    "open-cli": "^6.0.1"
   }
 }

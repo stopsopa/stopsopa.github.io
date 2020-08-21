@@ -13,7 +13,7 @@
                 resolve = res;
             });
 
-            document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('DOMContentLoaded', function () {
 
                 Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
 
@@ -34,13 +34,14 @@
         }())
     </script>
     <script src="/js/github.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-        });
-    </script>
+    <style>
+        #semversort textarea {
+            width: 100%;
+            min-height: 100px;
+        }
+    </style>
 </head>
-<body class="layout">
+<body class="layout" toc>
 
     <div class="body">
         <div class="inside">
@@ -130,6 +131,145 @@ doctl compute certificate list
 doctl compute certificate create --name certv001 --type lets_encrypt --dns-names domain1.com,domain2.com
 doctl compute certificate get eebf2fd0-4444-3333-5555-87ce0631869a
 
+                </script>
+
+
+
+                <h2>Semver sort</h2>
+
+                <div id="semversort">
+
+                    <form>
+                        <table width="100%">
+                            <tbody>
+                            <tr>
+                                <td width="50%" valign="top">
+                                    <textarea class="textarea1"></textarea>
+                                </td>
+                                <td width="10"></td>
+                                <td valign="top">
+                                    <textarea class="textarea2"></textarea>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <input type="submit" value="sort">
+                    </form>
+
+
+                </div>
+
+                <script>
+
+                  // https://stackoverflow.com/a/5346855
+                  var observe;
+                  if (window.attachEvent) {
+                    observe = function (element, event, handler) {
+                      element.attachEvent('on'+event, handler);
+                    };
+                  }
+                  else {
+                    observe = function (element, event, handler) {
+                      element.addEventListener(event, handler, false);
+                    };
+                  }
+                  function init (text) {
+                    function resize () {
+                      text.style.height = 'auto';
+                      text.style.height = text.scrollHeight+'px';
+                    }
+                    /* 0-timeout to get the already changed text */
+                    function delayedResize () {
+                      window.setTimeout(resize, 0);
+                    }
+                    observe(text, 'change',  resize);
+                    observe(text, 'cut',     delayedResize);
+                    observe(text, 'paste',   delayedResize);
+                    observe(text, 'drop',    delayedResize);
+                    observe(text, 'keydown', delayedResize);
+
+                    text.focus();
+                    text.select();
+                    resize();
+
+                    return function () {resize()}
+                  }
+
+
+                    // document.addEventListener('DOMContentLoad', function () {
+
+                    var cmp = (function () {
+
+                      var reg = /^(\d+)\.(\d+)\.(\d+)(.*)$/;
+                      // ["0.0.211-hub_lh", "0", "0", "211", "-hub_lh", index: 0, input: "0.0.211-hub_lh", groups: undefined]
+                      //   0                 1    2    3      4
+
+                      function pad(a) {
+                        return (a.length < 3) ? pad('0' + a) : a;
+                      }
+
+                      function trans(a) {
+                        var k = a.match(reg);
+                        var t = '';
+                        for (var i = 1 ; i < 4 ; i += 1 ) {
+                          t += pad(String(parseInt(k[i], 10)));
+                        }
+                        return t;
+                      }
+                      return function cmp(a, b) {
+                        a = trans(a);
+                        b = trans(b);
+                        if (a === b) {
+                          return 0;
+                        }
+                        return a > b ? -1 : 1;
+                      };
+                    }())
+
+
+                    var main = document.querySelector('#semversort');
+
+                    var textarea1 = main.querySelector('.textarea1');
+
+                    var textarea2 = window.t = main.querySelector('.textarea2');
+
+                    init(textarea1)
+
+                    var resize = init(textarea2)
+
+                    var form = main.querySelector('form');
+
+                    form.addEventListener('submit', function (e) {
+
+                      e.preventDefault();
+
+                      var data = textarea1.value;
+
+                      var sem = [];
+
+                      var nsem = [];
+
+                      data
+                        .split("\n")
+                        .map(function (t) {
+                          return t.replace(/^['"\s,]*(.*?)['"\s,]*$/, "$1");
+                        })
+                        .filter(function (t) {
+                          return Boolean(t);
+                        })
+                        .map(function (t) {
+                          /^\d+\.\d+\.\d+/.test(t) ? sem.push(t) : nsem.push(t);
+                        })
+                      ;
+
+                      sem.sort(cmp);
+
+                      textarea2.value = sem.join("\n") + "\n\n" + nsem.join("\n");
+
+                      resize();
+                    })
+
+                    // });
                 </script>
             </div>
         </div>
