@@ -267,6 +267,9 @@ doctl compute certificate get eebf2fd0-4444-3333-5555-87ce0631869a
                       textarea2.value = sem.join("\n") + "\n\n" + nsem.join("\n");
 
                       resize();
+
+                      // https://stackoverflow.com/a/11715670
+                      window.scrollTo(0,document.body.scrollHeight);
                     })
 
                     // });
