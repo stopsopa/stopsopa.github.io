@@ -201,6 +201,11 @@ parameters:
     --dump 
     
         output config
+        
+    --flag 
+    
+        just extra allowed flag for searching processes using 'ps aux | grep [flagvalue]'
+    
     
 `);
     process.exit(0);
@@ -240,7 +245,7 @@ const diff = function(a, b) {
 
         process.exit(1);
     }
-}(diff(Object.keys(args.all()), 'port dir noindex log help watch ignore inject debug config dump'.split(' '))));
+}(diff(Object.keys(args.all()), 'port dir noindex log help watch ignore inject debug config dump flag'.split(' '))));
 
 function execArgs (args, str) {
     var arr = ['--inject'];
