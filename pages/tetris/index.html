@@ -118,10 +118,10 @@
           if (['s', 'ArrowDown', ' '].indexOf(e.key) > -1) {
             return tetris.keyUp('down', { key: e.key });
           }
-          if (['[', 'z'].indexOf(e.key) > -1) {
+          if ([',', '[', 'z'].indexOf(e.key) > -1) {
             return tetris.keyUp('rotateL', { key: e.key });
           }
-          if ([']', 'x'].indexOf(e.key) > -1) {
+          if (['.', ']', 'x'].indexOf(e.key) > -1) {
             return tetris.keyUp('rotateR', { key: e.key });
           }
         });

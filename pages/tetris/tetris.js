@@ -114,138 +114,214 @@ window.Tetris = (function () {
   // https://strategywiki.org/wiki/File:Tetris_rotation_super.png
   const tetrominoes = [
     [ // ████                         // one brick
-      [                               // one rotation
-        [null],                       // one row // one square
-        [true, true, true, true],
-      ],
-      [
-        [null, null, true],
-        [null, null, true],
-        [null, null, true],
-        [null, null, true],
-      ],
-      [
-        [null],
-        [null],
-        [true, true, true, true],
-      ],
-      [
-        [null, true],
-        [null, true],
-        [null, true],
-        [null, true],
-      ],
+      {                               // one rotation
+        start: true,
+        rotation: [
+          [null],                     // one row // one square
+          [true, true, true, true],
+        ]
+      },
+      {
+        start: false,
+        rotation: [
+          [null, null, true],
+          [null, null, true],
+          [null, null, true],
+          [null, null, true],
+        ]
+      },
+      {
+        start: false,
+        rotation: [
+          [null],
+          [null],
+          [true, true, true, true],
+        ]
+      },
+      {
+        start: false,
+        rotation: [
+          [null, true],
+          [null, true],
+          [null, true],
+          [null, true],
+        ]
+      },
     ],
     [ // ▛ ▟
-      [
-        [true],
-        [true, true, true],
-      ],
-      [
-        [null, true, true],
-        [null, true],
-        [null, true],
-      ],
-      [
-        [null],
-        [true, true, true],
-        [null, null, true],
-      ],
-      [
-        [null, true],
-        [null, true],
-        [true, true],
-      ],
+      {
+        start: true,
+        rotation:[
+          [true],
+          [true, true, true],
+        ]
+      },
+      {
+        start: true,
+        rotation:[
+          [null, true, true],
+          [null, true],
+          [null, true],
+        ]
+      },
+      {
+        start: false,
+        rotation:[
+          [null],
+          [true, true, true],
+          [null, null, true],
+        ]
+      },
+      {
+        start: true,
+        rotation:[
+          [null, true],
+          [null, true],
+          [true, true],
+        ]
+      },
     ],
     [ // ▙ ▜
-      [
-        [null, null, true],
-        [true, true, true],
-      ],
-      [
-        [null, true],
-        [null, true],
-        [null, true, true],
-      ],
-      [
-        [null],
-        [true, true, true],
-        [true],
-      ],
-      [
-        [true, true],
-        [null, true],
-        [null, true],
-      ],
+      {
+        start: true,
+        rotation:[
+          [null, null, true],
+          [true, true, true],
+        ],
+      },
+      {
+        start: true,
+        rotation:[
+          [null, true],
+          [null, true],
+          [null, true, true],
+        ],
+      },
+      {
+        start: false,
+        rotation:[
+          [null],
+          [true, true, true],
+          [true],
+        ],
+      },
+      {
+        start: true,
+        rotation:[
+          [true, true],
+          [null, true],
+          [null, true],
+        ],
+      },
     ],
     [ // ░ ▒ ▓
-      [
-        [null, true, true],
-        [null, true, true],
-      ],
+      {
+        start: true,
+        rotation:[
+          [null, true, true],
+          [null, true, true],
+        ],
+      },
+
     ],
     [ //▗█▘
-      [
-        [null, true, true],
-        [true, true],
-      ],
-      [
-        [null, true],
-        [null, true, true],
-        [null, null, true],
-      ],
-      [
-        [null],
-        [null, true, true],
-        [true, true],
-      ],
-      [
-        [true],
-        [true, true],
-        [null, true],
-      ],
+      {
+        start: true,
+        rotation:[
+          [null, true, true],
+          [true, true],
+        ],
+      },
+      {
+        start: true,
+        rotation:[
+          [null, true],
+          [null, true, true],
+          [null, null, true],
+        ],
+      },
+      {
+        start: false,
+        rotation:[
+          [null],
+          [null, true, true],
+          [true, true],
+        ],
+      },
+      {
+        start: true,
+        rotation:[
+          [true],
+          [true, true],
+          [null, true],
+        ],
+      },
     ],
     [ //▝█▖
-      [
-        [true, true],
-        [null, true, true],
-      ],
-      [
-        [null, null, true],
-        [null, true, true],
-        [null, true],
-      ],
-      [
-        [null],
-        [true, true],
-        [null, true, true],
-      ],
-      [
-        [null, true],
-        [true, true],
-        [true],
-      ],
+      {
+        start: true,
+        rotation:[
+          [true, true],
+          [null, true, true],
+        ],
+      },
+      {
+        start: true,
+        rotation:[
+          [null, null, true],
+          [null, true, true],
+          [null, true],
+        ],
+      },
+      {
+        start: false,
+        rotation:[
+          [null],
+          [true, true],
+          [null, true, true],
+        ],
+      },
+      {
+        start: true,
+        rotation:[
+          [null, true],
+          [true, true],
+          [true],
+        ],
+      },
     ],
     [ //▗█▖
-      [
-        [null, true],
-        [true, true, true],
-      ],
-      [
-        [null, true],
-        [null, true, true],
-        [null, true],
-      ],
-      [
-        [null],
-        [true, true, true],
-        [null, true],
-      ],
-      [
-        [null, true],
-        [true, true],
-        [null, true],
-      ],
+      {
+        start: true,
+        rotation:[
+          [null, true],
+          [true, true, true],
+        ],
+      },
+      {
+        start: true,
+        rotation:[
+          [null, true],
+          [null, true, true],
+          [null, true],
+        ],
+      },
+      {
+        start: false,
+        rotation:[
+          [null],
+          [true, true, true],
+          [null, true],
+        ],
+      },
+      {
+        start: true,
+        rotation:[
+          [null, true],
+          [true, true],
+          [null, true],
+        ],
+      },
     ],
   ];
 
@@ -254,10 +330,10 @@ window.Tetris = (function () {
     var h = 0;
     tetrominoes.forEach(function (brick) {
       brick.forEach(function (rotation) {
-        if (rotation.length > h) {
-          h = rotation.length;
+        if (rotation.rotation.length > h) {
+          h = rotation.rotation.length;
         }
-        rotation.forEach(function (row) {
+        rotation.rotation.forEach(function (row) {
           if (row.length > w) {
             w = row.length;
           }
@@ -271,14 +347,19 @@ window.Tetris = (function () {
     }
   }());
 
+  const startx = (function () {
+
+    return
+  }());
+
   // extend and add borders
   (function () {
     tetrominoes.forEach(function (brick, ib) {
       brick.forEach(function (rotation, ir) {
-        rotation.forEach(function (row, irow) {
+        rotation.rotation.forEach(function (row, irow) {
           row.forEach(function (square, is) {
             if (square === true) {
-              tetrominoes[ib][ir][irow][is] = {
+              tetrominoes[ib][ir].rotation[irow][is] = {
                 square,
                 borders: {
                   t: (function () {
@@ -286,7 +367,7 @@ window.Tetris = (function () {
                       return true;
                     }
                     try {
-                      return !Boolean(tetrominoes[ib][ir][irow - 1][is]);
+                      return !Boolean(tetrominoes[ib][ir].rotation[irow - 1][is]);
                     }
                     catch (e) {
                       return true;
@@ -297,7 +378,7 @@ window.Tetris = (function () {
                       return true;
                     }
                     try {
-                      return !Boolean(tetrominoes[ib][ir][irow + 1][is]);
+                      return !Boolean(tetrominoes[ib][ir].rotation[irow + 1][is]);
                     }
                     catch (e) {
                       return true;
@@ -308,7 +389,7 @@ window.Tetris = (function () {
                       return true;
                     }
                     try {
-                      return !Boolean(tetrominoes[ib][ir][irow][is - 1]);
+                      return !Boolean(tetrominoes[ib][ir].rotation[irow][is - 1]);
                     }
                     catch (e) {
                       return true;
@@ -319,7 +400,7 @@ window.Tetris = (function () {
                       return true;
                     }
                     try {
-                      return !Boolean(tetrominoes[ib][ir][irow][is + 1]);
+                      return !Boolean(tetrominoes[ib][ir].rotation[irow][is + 1]);
                     }
                     catch (e) {
                       return true;
@@ -333,6 +414,8 @@ window.Tetris = (function () {
       });
     });
   }());
+
+  log('ready: ', tetrominoes)
 
   /**
     var tetris = new Tetris({
