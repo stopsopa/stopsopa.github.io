@@ -436,8 +436,6 @@ window.Tetris = (function () {
 
     this.bricks = [];
 
-    log('max: ', max, opt.next)
-
     for ( var i = 0, l = ((max.h + 1) * opt.next) ; i < l ; i += 1 ) {
 
       var t = [];
@@ -470,26 +468,32 @@ window.Tetris = (function () {
   }
 
   Tetris.prototype.up = function () {
+    log('.up')
 
   }
 
   Tetris.prototype.down = function () {
+    log('.down')
 
   }
 
   Tetris.prototype.left = function () {
 
+    log('.left')
   }
 
   Tetris.prototype.right = function () {
 
+    log('.right')
   }
 
   Tetris.prototype.rotateR = function () {
+    log('.rotateR')
 
   }
 
   Tetris.prototype.rotateL = function () {
+    log('.rotateL')
 
   }
 
