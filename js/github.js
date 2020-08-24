@@ -147,18 +147,31 @@ window.log = log;
     document.addEventListener('DOMContentLoaded', function () {
 
         (function () {
-            var a = document.createElement('a');
 
-            a.classList.add('github-link');
+            var div = document.createElement('div');
+
+            div.classList.add('github-link');
+
+            manipulation.append(document.body, div);
+
+            var a = document.createElement('a');
 
             a.innerText = 'edit';
 
             a.setAttribute('href', github)
 
-            manipulation.append(document.body, a);
+            manipulation.append(div, a);
 
             var css = `
 body .github-link {
+    top: 0;
+    right: 0;
+    height: 47px;
+    width: 47px;
+    position: absolute;
+    overflow: hidden;
+} 
+body .github-link > a {
     border: 1px solid #2d2d2d;
     top: 7px;
     right: -18px;
@@ -170,7 +183,7 @@ body .github-link {
     text-decoration: none;
     background-color: #2d2d2d;
 } 
-body .github-link:hover {
+body .github-link > a:hover {
     cursor: pointer;
     color: #2d2d2d;
     background-color: white;
