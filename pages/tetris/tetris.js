@@ -113,9 +113,9 @@ window.Tetris = (function () {
   // Super rotation system
   // https://strategywiki.org/wiki/File:Tetris_rotation_super.png
   const tetrominoes = [
-    [ // ████
-      [
-        [null],
+    [ // ████                         // one brick
+      [                               // one rotation
+        [null],                       // one row // one square
         [true, true, true, true],
       ],
       [
@@ -271,6 +271,79 @@ window.Tetris = (function () {
     }
   }());
 
+  // extend and add borders
+  (function () {
+    tetrominoes.forEach(function (brick, ib) {
+      brick.forEach(function (rotation, ir) {
+        rotation.forEach(function (row, irow) {
+          row.forEach(function (square, is) {
+            if (square === true) {
+              tetrominoes[ib][ir][irow][is] = {
+                square,
+                borders: {
+                  t: (function () {
+
+                    if (irow === 0) {
+
+                      return true;
+                    }
+                    try {
+                      return !Boolean(tetrominoes[ib][ir][irow - 1][is]);
+                    }
+                    catch (e) {
+                      return true;
+                    }
+                  }()),
+                  b: (function () {
+
+                    if (irow >= (rotation.length - 1)) {
+
+                      return true;
+                    }
+                    try {
+                      return !Boolean(tetrominoes[ib][ir][irow + 1][is]);
+                    }
+                    catch (e) {
+                      return true;
+                    }
+                  }()),
+                  l: (function () {
+
+                    if (is === 0) {
+
+                      return true;
+                    }
+                    try {
+                      return !Boolean(tetrominoes[ib][ir][irow][is - 1]);
+                    }
+                    catch (e) {
+                      return true;
+                    }
+                  }()),
+                  r: (function () {
+
+                    if (is >= (row.length - 1)) {
+
+                      return true;
+                    }
+                    try {
+                      return !Boolean(tetrominoes[ib][ir][irow][is + 1]);
+                    }
+                    catch (e) {
+                      return true;
+                    }
+                  }()),
+                }
+              }
+            }
+          })
+        });
+      });
+    });
+  }());
+
+  log('tetrominoes:', tetrominoes)
+
   /**
     var tetris = new Tetris({
       board: document.querySelector('.board'),
@@ -373,6 +446,8 @@ window.Tetris = (function () {
 
     this.bricks = [];
 
+    log('max: ', max, opt.next)
+
     for ( var i = 0, l = ((max.h + 1) * opt.next) ; i < l ; i += 1 ) {
 
       var t = [];
@@ -399,6 +474,7 @@ window.Tetris = (function () {
   };
 
   Tetris.prototype.destroy = function () {
+    // to implement
 
     delete this.opt.board.tetris;
   }

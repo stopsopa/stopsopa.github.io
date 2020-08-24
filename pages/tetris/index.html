@@ -62,7 +62,7 @@
           bricks: document.querySelector('.bricks'),
           brickHeight: 15,
           brickWidth: 15,
-          next: 2,
+          next: 3,
         });
 
         const press = document.querySelector('.press');
@@ -98,10 +98,10 @@
           if (['s', 'ArrowDown', ' '].indexOf(e.key) > -1) {
             return tetris.keyDown('down', { key: e.key });
           }
-          if (['[', 'z'].indexOf(e.key) > -1) {
+          if ([',', '[', 'z'].indexOf(e.key) > -1) {
             return tetris.keyDown('rotateL', { key: e.key });
           }
-          if ([']', 'x'].indexOf(e.key) > -1) {
+          if (['.', ']', 'x'].indexOf(e.key) > -1) {
             return tetris.keyDown('rotateR', { key: e.key });
           }
         });
