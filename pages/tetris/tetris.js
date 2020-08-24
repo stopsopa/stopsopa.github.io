@@ -282,9 +282,7 @@ window.Tetris = (function () {
                 square,
                 borders: {
                   t: (function () {
-
                     if (irow === 0) {
-
                       return true;
                     }
                     try {
@@ -295,9 +293,7 @@ window.Tetris = (function () {
                     }
                   }()),
                   b: (function () {
-
                     if (irow >= (rotation.length - 1)) {
-
                       return true;
                     }
                     try {
@@ -308,9 +304,7 @@ window.Tetris = (function () {
                     }
                   }()),
                   l: (function () {
-
                     if (is === 0) {
-
                       return true;
                     }
                     try {
@@ -321,9 +315,7 @@ window.Tetris = (function () {
                     }
                   }()),
                   r: (function () {
-
                     if (is >= (row.length - 1)) {
-
                       return true;
                     }
                     try {
@@ -341,8 +333,6 @@ window.Tetris = (function () {
       });
     });
   }());
-
-  log('tetrominoes:', tetrominoes)
 
   /**
     var tetris = new Tetris({
