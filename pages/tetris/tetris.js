@@ -347,11 +347,6 @@ window.Tetris = (function () {
     }
   }());
 
-  const startx = (function () {
-
-    return
-  }());
-
   // extend and add borders
   (function () {
     tetrominoes.forEach(function (brick, ib) {
@@ -414,8 +409,6 @@ window.Tetris = (function () {
       });
     });
   }());
-
-  log('ready: ', tetrominoes)
 
   /**
     var tetris = new Tetris({
@@ -487,6 +480,13 @@ window.Tetris = (function () {
       throw th("opt.next is greater than 5 it is '" + opt.next + "'");
     }
 
+    if ( (opt.width - 2) <= max.w ) {
+
+      throw th("[[ (opt.width - 2) <= max.w ]] where opt.width="+opt.width+", max.w="+max.w);
+    }
+
+    const startx = Math.floor((opt.width - max.w) / 2);
+
     log('existing', this.opt.board.tetris);
 
     manipulation.empty(opt.board);
@@ -543,6 +543,50 @@ window.Tetris = (function () {
 
     this.keys = {};
   };
+
+  var game = (function () {
+
+    // https://tetris.wiki/Tetris_(NES,_Nintendo)#:~:text=Soft%20drop%20speed%20is%201,frames%20longer%20than%20the%20last.
+    // var framesPerSec = 60
+    var framesPerSec = 55 // after correction
+    var msPerFrame = 1000 / framesPerSec; 
+
+    var levels = [
+      msPerFrame * 48, // 0
+      msPerFrame * 43, // 1
+      msPerFrame * 38, // 2
+      msPerFrame * 33, // 3
+      msPerFrame * 28, // 4
+      msPerFrame * 23, // 5
+      msPerFrame * 18, // 6
+      msPerFrame * 13, // 7
+      msPerFrame * 8, // 8
+      msPerFrame * 6, // 9
+      msPerFrame * 5, // 10
+      msPerFrame * 4, // 11
+      msPerFrame * 3, // 12
+    ]
+
+
+
+
+    var handler;
+    // var speed =
+
+    var tool = function () {
+
+    };
+
+    tool.start = function () {
+
+
+    }
+    tool.stop = function () {
+
+    }
+
+    return game;
+  }());
 
   Tetris.prototype.destroy = function () {
     // to implement
