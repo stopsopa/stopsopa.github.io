@@ -40,8 +40,9 @@
     var log = (function () {try {return console.log}catch (e) {return function () {}}}())
 
     // https://tetris.wiki/Tetris_(NES,_Nintendo)#:~:text=Soft%20drop%20speed%20is%201,frames%20longer%20than%20the%20last.
-    var framesPerSec = 60
-    var msPerFrame = 1000 / 60; // 16.66...666
+    // var framesPerSec = 60
+    var framesPerSec = 55 // after correction
+    var msPerFrame = 1000 / framesPerSec; // 16.66...666
 
     var levels = [
         msPerFrame * 48, // 0
