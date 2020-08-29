@@ -567,9 +567,6 @@ window.Tetris = (function () {
       msPerFrame * 3, // 12
     ]
 
-
-
-
     var handler;
     // var speed =
 

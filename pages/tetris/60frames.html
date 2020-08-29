@@ -34,6 +34,10 @@
 <button class="stop">stop</button>
 <button class="up">up</button>
 <button class="down">down</button>
+|
+<button class="boost">boost</button>
+<br>
+press and hold space to test fuze
 
 <script>
 
@@ -43,6 +47,11 @@
     // var framesPerSec = 60
     var framesPerSec = 55 // after correction
     var msPerFrame = 1000 / framesPerSec; // 16.66...666
+
+    var fuzeTime = 2000;
+
+    log('check1', fuzeTime)
+    log('check2', msPerFrame * 48)
 
     var levels = [
         msPerFrame * 48, // 0
@@ -60,18 +69,28 @@
         msPerFrame * 3, // 12
     ]
 
+    var maxlevel = levels.length - 1;
+
     var start = document.querySelector('.start')
     var stop = document.querySelector('.stop')
     var up = document.querySelector('.up')
     var down = document.querySelector('.down')
+    var boost = document.querySelector('.boost')
     var span = document.querySelector('span')
     var a = document.querySelector('.relative > :first-child');
     var b = document.querySelector('.relative > :last-child');
 
     var handler;
     var level = 0;
+    var fuze = false;
+    var fuzeReleased = true;
+
+    var renderLevel = function () {
+      span.innerHTML = level + (fuze ? ' fuze' : '');
+    }
     var run = false;
     function tick() {
+
         clearTimeout(handler);
 
         if (a.classList.contains('black')) {
@@ -84,13 +103,21 @@
         }
 
         if (run) {
-            handler = setTimeout(tick, levels[level]);
+            handler = setTimeout(tick, fuze ? fuzeTime : levels[level]);
         }
+
+        if (fuze) {
+
+            fuze = false;
+
+            fuzeReleased = true;
+        }
+
+        renderLevel()
     }
     start.addEventListener('click', function () {
       run = true;
       tick();
-      span.innerHTML = level;
     });
     stop.addEventListener('click', function () {
       run = false;
@@ -100,13 +127,50 @@
       if (level < ( levels.length - 1)) {
         level += 1;
       }
-      span.innerHTML = level;
+      renderLevel()
     });
     down.addEventListener('click', function () {
       if (level > 0) {
         level -= 1;
       }
-      span.innerHTML = level;
+      renderLevel()
+    });
+
+    (function () {
+
+      var mem;
+
+      boost.addEventListener('mousedown', function () {
+
+        mem = level;
+
+        level = maxlevel;
+
+        tick();
+
+        log('down/;..')
+      });
+
+      boost.addEventListener('mouseup', function () {
+
+        level = mem;
+
+        renderLevel()
+
+        log('up/;..')
+      });
+    }());
+
+    document.addEventListener('keydown', function (e) {
+
+        if ( fuzeReleased && e.key === ' ') {
+
+          fuze = fuzeTime;
+
+          fuzeReleased = false;
+
+          renderLevel()
+        }
     });
 
 
