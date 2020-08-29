@@ -84,6 +84,8 @@ docker exec -it docker-registry /bin/registry garbage-collect --dry-run /etc/doc
     # from g(Clean Up Your Docker Registry Delete unused digests of docker images and save space) https://medium.com/better-programming/cleanup-your-docker-registry-ef0527673e3a
 
 printenv | grep -E "(DEP|GIT|NUMBER)"
+
+kubectl get rc,rs,services,pods,deployments,jobs  --show-labels --all-namespaces
                 </script>
                 
                 <a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">see more</a>
