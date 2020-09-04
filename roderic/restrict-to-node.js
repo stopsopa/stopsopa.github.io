@@ -1,7 +1,7 @@
 /**
  * use:
  *
- * require('roderic/webpack/restrict-to-node')(__filename);
+ * require('roderic/restrict-to-node')(__filename);
  */
 
 module.exports = file => {
