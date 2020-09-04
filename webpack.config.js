@@ -13,10 +13,6 @@ utils.setup(config);
 module.exports = {
   mode: 'production',
   entry: utils.entries(),
-  // output: {
-  //   path: __dirname,
-  //   filename: "es5.js"
-  // },
   module: {
     rules: [
       {
