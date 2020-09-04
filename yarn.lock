@@ -1559,6 +1559,11 @@ chalk@^2.0.0, chalk@^2.4.2:
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
 
+charenc@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/charenc/-/charenc-0.0.2.tgz#c0a1d2f3a7092e03774bfa83f14c0fc5790a8667"
+  integrity sha1-wKHS86cJLgN3S/qD8UwPxXkKhmc=
+
 chokidar@^2.1.8:
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-2.1.8.tgz#804b3a7b6a99358c3c5c61e71d8728f041cff917"
@@ -1831,6 +1836,11 @@ cross-spawn@^7.0.1:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+crypt@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
+  integrity sha1-iNf/fsDfuG9xPch7u0LQRNPmxBs=
 
 crypto-browserify@^3.11.0:
   version "3.12.0"
@@ -2696,10 +2706,15 @@ ini@1.x.x, ini@^1.3.0, ini@^1.3.4, ini@^1.3.5:
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
   integrity sha512-RZY5huIKCMRWDUqZlEi72f/lmXKMvuszcMBduliQ3nnWbx9X/ZBQO7DijMEYS9EhHBb2qacRUMtC7svLwe0lcw==
 
-inspc@^0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/inspc/-/inspc-0.0.18.tgz#b753aa751d28e416ac663cf9cb9016f8e826d70a"
-  integrity sha512-CnEq6DmoFNR4htjJEcM/gmiYD+a2Cqr+pADIyiA9UjPmZtfezQ6hJB+STKWkmtRTUdu1kEQL0MoBXTboobBR4g==
+inspc@^0.0.16:
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/inspc/-/inspc-0.0.16.tgz#5e279df3e30615f969787dadf8841f45c00a8ff4"
+  integrity sha512-ClM+kJZW5WO6Ej2NiPuleS76tUH9v4HdsA5LWJAtSeViVmiiPo1ShLOc8kTc6vxCOyWZllXtoX+I5Wz3d2Axjg==
+
+inspc@^0.0.19:
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/inspc/-/inspc-0.0.19.tgz#ef4ac598e410ca88b4b3beac25b475cfa29493f1"
+  integrity sha512-xp20MQkUSFNbGY71rBt6GtxGbcVlcGKpT22Z81jkbtPb5Yf1H6g64Si3+wkdBbI1+C+BuZF/qS2Jj9WtPEhHdQ==
 
 interpret@^1.4.0:
   version "1.4.0"
@@ -2766,7 +2781,7 @@ is-boolean-object@^1.0.0:
   resolved "https://registry.yarnpkg.com/is-boolean-object/-/is-boolean-object-1.0.1.tgz#10edc0900dd127697a92f6f9807c7617d68ac48e"
   integrity sha512-TqZuVwa/sppcrhUCAYkGBk7w0yxfQQnxq28fjkO53tnK9FQXmdwz2JS5+GjsWQ6RByES1K40nI+yDic5c9/aAQ==
 
-is-buffer@^1.1.5:
+is-buffer@^1.1.5, is-buffer@~1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
   integrity sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==
@@ -3194,6 +3209,15 @@ md5.js@^1.3.4:
     inherits "^2.0.1"
     safe-buffer "^5.1.2"
 
+md5@^2.2.1:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/md5/-/md5-2.3.0.tgz#c3da9a6aae3a30b46b7b0c349b87b110dc3bda4f"
+  integrity sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g==
+  dependencies:
+    charenc "0.0.2"
+    crypt "0.0.2"
+    is-buffer "~1.1.6"
+
 memory-fs@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.4.1.tgz#3a9a20b8462523e447cfbc7e8bb80ed667bfc552"
@@ -3413,6 +3437,15 @@ nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
+
+nlab@^0.0.79:
+  version "0.0.79"
+  resolved "https://registry.yarnpkg.com/nlab/-/nlab-0.0.79.tgz#955bae5a63da667b92640362114d234d3dec18b1"
+  integrity sha512-RH3zKKm5/fwLY6J4Gr1cRfmFwz2Vv2RIsbCdeckfhzC9N5Y1rNoO3fLHe7VzmrrT2B4jx8sbjc5nZkR0wYU3Lw==
+  dependencies:
+    inspc "^0.0.16"
+    md5 "^2.2.1"
+    sjcl "^1.0.8"
 
 node-libs-browser@^2.2.1:
   version "2.2.1"
@@ -4312,6 +4345,11 @@ side-channel@^1.0.2:
   dependencies:
     es-abstract "^1.17.0-next.1"
     object-inspect "^1.7.0"
+
+sjcl@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/sjcl/-/sjcl-1.0.8.tgz#f2ec8d7dc1f0f21b069b8914a41a8f236b0e252a"
+  integrity sha512-LzIjEQ0S0DpIgnxMEayM1rq9aGwGRG4OnZhCdjx7glTaJtf4zRfpg87ImfjSJjoW9vKpagd82McDOwbRT5kQKQ==
 
 snapdragon-node@^2.0.1:
   version "2.1.1"

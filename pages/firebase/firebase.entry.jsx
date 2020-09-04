@@ -1,14 +1,20 @@
 
-// console.log('firebase...');
-//
-// var database = firebase.database();
-
 import React from 'react';
 
 import { render } from 'react-dom';
 
+// const database = window.firebase.database();
+
+const Main = () => {
+  return (
+    <div>
+dd
+    </div>
+  )
+}
+
 render(
-  <div>test... rendered:::</div>,
+  <Main />,
   document.getElementById('app')
 );
 

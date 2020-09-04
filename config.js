@@ -1,5 +1,5 @@
 
-require('./roderic/webpack/restrict-to-node')(__filename);
+require('./roderic/restrict-to-node')(__filename);
 
 const path              = require("path");
 
@@ -19,7 +19,7 @@ require('dotenv-up')({
   deep        : 3,
 }, false, 'config.js');
 
-const env               = require('./roderic/webpack/dotenv');
+const env               = require('./roderic/dotenv');
 
 const webpack           = __dirname;
 

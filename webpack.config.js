@@ -2,7 +2,7 @@
 
 const path                  = require('path');
 
-const utils                 = require('./roderic/webpack/utils');
+const utils                 = require('./roderic/utils');
 
 const config                = require(path.resolve('config.js'))(process.env.NODE_ENV);
 
