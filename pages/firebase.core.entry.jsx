@@ -22,8 +22,6 @@ window.fire = () => {
 
       let inter = setInterval(() => {
 
-        console.log('iter: ', typeof window.env)
-
         if ( typeof window.env === 'function' ) {
 
           clearInterval(inter);
@@ -51,14 +49,14 @@ window.fire = () => {
             // appId: "1:496172961972:web:c9363e230fede3127a07e1",
             // measurementId: "G-F78BC9VYQ5"
 
-            apiKey: env('API_KEY'),
-            authDomain: env('AUTH_DOMAIN'),
-            databaseURL: env('DATABASE_URL'),
-            projectId: env('PROJECT_ID'),
-            storageBucket: env('STORAGE_BUCKET'),
-            messagingSenderId: env('MESSAGING_SENDER_ID'),
-            appId: env('API_ID'),
-            measurementId: env('MEASUREMENT_ID')
+            apiKey            : env('API_KEY'),
+            authDomain        : env('AUTH_DOMAIN'),
+            databaseURL       : env('DATABASE_URL'),
+            projectId         : env('PROJECT_ID'),
+            storageBucket     : env('STORAGE_BUCKET'),
+            messagingSenderId : env('MESSAGING_SENDER_ID'),
+            appId             : env('API_ID'),
+            measurementId     : env('MEASUREMENT_ID')
           };
 
           firebase.initializeApp(firebaseConfig);

@@ -39746,8 +39746,6 @@ var database_dist_index_cjs = __webpack_require__(17);
 var runtime = __webpack_require__(18);
 
 // CONCATENATED MODULE: ./pages/firebase.core.entry.jsx
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 // Firebase App (the core Firebase SDK) is always required and must be listed first
  // If you enabled Analytics in your project, add the Firebase SDK for Analytics
 
@@ -39763,8 +39761,6 @@ window.fire = function () {
   if (!promise) {
     promise = new Promise(function (resolve) {
       var inter = setInterval(function () {
-        console.log('iter: ', _typeof(window.env));
-
         if (typeof window.env === 'function') {
           clearInterval(inter);
           var env = window.env;
