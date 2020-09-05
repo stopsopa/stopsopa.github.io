@@ -35,7 +35,10 @@ module.exports = {
     minimize: false,
   },
   plugins: [
-  ]
+  ],
+  performance: {
+    hints: false,
+  }
 };
 
 console.log( ("\nbuild "+ (new Date()).toISOString().substring(0, 19).replace('T', ' ') + "\n").green );

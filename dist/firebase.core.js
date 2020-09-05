@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 27);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -2045,10 +2045,11 @@ exports.validateIndexedDBOpenable = validateIndexedDBOpenable;
 exports.validateNamespace = validateNamespace;
 //# sourceMappingURL=index.cjs.js.map
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(6)))
 
 /***/ }),
-/* 2 */
+/* 2 */,
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2058,8 +2059,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var tslib = __webpack_require__(0);
 var util = __webpack_require__(1);
-var component = __webpack_require__(3);
-var logger$1 = __webpack_require__(6);
+var component = __webpack_require__(4);
+var logger$1 = __webpack_require__(8);
 
 /**
  * @license
@@ -2729,7 +2730,7 @@ exports.firebase = firebase$1;
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3051,7 +3052,8 @@ exports.Provider = Provider;
 
 
 /***/ }),
-/* 4 */
+/* 5 */,
+/* 6 */
 /***/ (function(module, exports) {
 
 var g;
@@ -3077,7 +3079,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -3267,7 +3269,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3566,14 +3568,13 @@ function setUserLogHandler(logCallback, options) {
 
 
 /***/ }),
-/* 7 */,
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var firebase = __webpack_require__(2);
+var firebase = __webpack_require__(3);
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -3605,9 +3606,9 @@ module.exports = firebase__default['default'];
 
 
 /***/ }),
-/* 9 */,
 /* 10 */,
-/* 11 */
+/* 11 */,
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function (global, factory) {
@@ -3928,12 +3929,11 @@ module.exports = firebase__default['default'];
 
 
 /***/ }),
-/* 12 */,
 /* 13 */,
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {(function() {var firebase = __webpack_require__(2).default;/*
+/* WEBPACK VAR INJECTION */(function(global) {(function() {var firebase = __webpack_require__(3).default;/*
 
  Copyright The Closure Library Authors.
  SPDX-License-Identifier: Apache-2.0
@@ -4367,7 +4367,7 @@ instanceFactory:function(b){b=b.getProvider("auth").getImmediate();return{getUid
 
 //# sourceMappingURL=auth.js.map
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(6)))
 
 /***/ }),
 /* 15 */
@@ -4380,7 +4380,7 @@ Object.defineProperty(exports, "__esModule", {
     value: !0
 });
 
-var t = __webpack_require__(0), e = __webpack_require__(2), n = __webpack_require__(6), r = __webpack_require__(1), i = __webpack_require__(16), o = __webpack_require__(3);
+var t = __webpack_require__(0), e = __webpack_require__(3), n = __webpack_require__(8), r = __webpack_require__(1), i = __webpack_require__(16), o = __webpack_require__(4);
 
 function s(t) {
     return t && "object" == typeof t && "default" in t ? t : {
@@ -20151,7 +20151,7 @@ var lu = {
 pu(u.default), exports.__PRIVATE_registerFirestore = pu;
 //# sourceMappingURL=index.cjs.js.map
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
 
 /***/ }),
 /* 16 */
@@ -21553,7 +21553,7 @@ var esm_5 = esm.XhrIo;
 
 //# sourceMappingURL=index.esm.js.map
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(6)))
 
 /***/ }),
 /* 17 */
@@ -21566,11 +21566,11 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var firebase = _interopDefault(__webpack_require__(2));
+var firebase = _interopDefault(__webpack_require__(3));
 var tslib = __webpack_require__(0);
 var util = __webpack_require__(1);
-var logger$1 = __webpack_require__(6);
-var component = __webpack_require__(3);
+var logger$1 = __webpack_require__(8);
+var component = __webpack_require__(4);
 
 /**
  * @license
@@ -36960,7 +36960,7 @@ exports.enableLogging = enableLogging;
 exports.registerDatabase = registerDatabase;
 //# sourceMappingURL=index.cjs.js.map
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
 
 /***/ }),
 /* 18 */
@@ -37724,7 +37724,8 @@ try {
 /* 23 */,
 /* 24 */,
 /* 25 */,
-/* 26 */
+/* 26 */,
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37732,23 +37733,23 @@ try {
 __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/firebase/app/dist/index.cjs.js
-var index_cjs = __webpack_require__(8);
+var index_cjs = __webpack_require__(9);
 
 // EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.js
 var tslib_es6 = __webpack_require__(0);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/app/dist/index.cjs.js
-var dist_index_cjs = __webpack_require__(2);
+var dist_index_cjs = __webpack_require__(3);
 var dist_index_cjs_default = /*#__PURE__*/__webpack_require__.n(dist_index_cjs);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/component/dist/index.cjs.js
-var component_dist_index_cjs = __webpack_require__(3);
+var component_dist_index_cjs = __webpack_require__(4);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/util/dist/index.cjs.js
 var util_dist_index_cjs = __webpack_require__(1);
 
 // EXTERNAL MODULE: ./node_modules/idb/build/idb.js
-var idb = __webpack_require__(11);
+var idb = __webpack_require__(12);
 
 // CONCATENATED MODULE: ./node_modules/@firebase/installations/dist/index.esm.js
 
@@ -39081,7 +39082,7 @@ registerInstallations(dist_index_cjs_default.a);
 //# sourceMappingURL=index.esm.js.map
 
 // EXTERNAL MODULE: ./node_modules/@firebase/logger/dist/index.esm.js
-var index_esm = __webpack_require__(6);
+var index_esm = __webpack_require__(8);
 
 // CONCATENATED MODULE: ./node_modules/@firebase/analytics/dist/index.esm.js
 
