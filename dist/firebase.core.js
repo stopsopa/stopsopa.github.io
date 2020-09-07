@@ -2049,7 +2049,8 @@ exports.validateNamespace = validateNamespace;
 
 /***/ }),
 /* 2 */,
-/* 3 */
+/* 3 */,
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2059,7 +2060,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var tslib = __webpack_require__(0);
 var util = __webpack_require__(1);
-var component = __webpack_require__(4);
+var component = __webpack_require__(5);
 var logger$1 = __webpack_require__(8);
 
 /**
@@ -2730,7 +2731,7 @@ exports.firebase = firebase$1;
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3052,7 +3053,6 @@ exports.Provider = Provider;
 
 
 /***/ }),
-/* 5 */,
 /* 6 */
 /***/ (function(module, exports) {
 
@@ -3574,7 +3574,7 @@ function setUserLogHandler(logCallback, options) {
 "use strict";
 
 
-var firebase = __webpack_require__(3);
+var firebase = __webpack_require__(4);
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -3933,7 +3933,7 @@ module.exports = firebase__default['default'];
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {(function() {var firebase = __webpack_require__(3).default;/*
+/* WEBPACK VAR INJECTION */(function(global) {(function() {var firebase = __webpack_require__(4).default;/*
 
  Copyright The Closure Library Authors.
  SPDX-License-Identifier: Apache-2.0
@@ -4380,7 +4380,7 @@ Object.defineProperty(exports, "__esModule", {
     value: !0
 });
 
-var t = __webpack_require__(0), e = __webpack_require__(3), n = __webpack_require__(8), r = __webpack_require__(1), i = __webpack_require__(16), o = __webpack_require__(4);
+var t = __webpack_require__(0), e = __webpack_require__(4), n = __webpack_require__(8), r = __webpack_require__(1), i = __webpack_require__(16), o = __webpack_require__(5);
 
 function s(t) {
     return t && "object" == typeof t && "default" in t ? t : {
@@ -21566,11 +21566,11 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var firebase = _interopDefault(__webpack_require__(3));
+var firebase = _interopDefault(__webpack_require__(4));
 var tslib = __webpack_require__(0);
 var util = __webpack_require__(1);
 var logger$1 = __webpack_require__(8);
-var component = __webpack_require__(4);
+var component = __webpack_require__(5);
 
 /**
  * @license
@@ -37739,11 +37739,11 @@ var index_cjs = __webpack_require__(9);
 var tslib_es6 = __webpack_require__(0);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/app/dist/index.cjs.js
-var dist_index_cjs = __webpack_require__(3);
+var dist_index_cjs = __webpack_require__(4);
 var dist_index_cjs_default = /*#__PURE__*/__webpack_require__.n(dist_index_cjs);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/component/dist/index.cjs.js
-var component_dist_index_cjs = __webpack_require__(4);
+var component_dist_index_cjs = __webpack_require__(5);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/util/dist/index.cjs.js
 var util_dist_index_cjs = __webpack_require__(1);
