@@ -99,9 +99,7 @@ if (true) {
 
 
 /***/ }),
-/* 3 */,
-/* 4 */,
-/* 5 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -710,6 +708,8 @@ if (node) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(6), __webpack_require__(7)))
 
 /***/ }),
+/* 4 */,
+/* 5 */,
 /* 6 */
 /***/ (function(module, exports) {
 
@@ -1111,7 +1111,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5);
+/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(inspc__WEBPACK_IMPORTED_MODULE_2__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -1134,7 +1134,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 var now = function now() {
-  return new Date().toISOString().substring(0, 19).replace('T', ' ');
+  return new Date().toISOString().substring(0, 19).replace('T', ' ').replace(/[^\d]/g, '-');
 };
 
 var _require = __webpack_require__(26),
@@ -1152,86 +1152,143 @@ var Main = function Main() {
       authError = _useState4[0],
       setAuthError = _useState4[1];
 
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var _firebase, idToken, accessToken, credential, _user, provider, result, user;
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState6 = _slicedToArray(_useState5, 2),
+      user = _useState6[0],
+      setUser = _useState6[1];
 
-      return regeneratorRuntime.wrap(function _callee$(_context) {
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var set, _firebase, idToken, accessToken, credential, _user, provider, result, user;
+
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
-              _context.prev = 0;
-              _context.next = 3;
+              _context2.prev = 0;
+
+              // make security rules for database like this
+              // {
+              //   "rules": {
+              //     "users": {
+              //       "$email": {
+              //         ".read": true,
+              //         ".write": "$email === auth.token.email.replace('.', ',')",
+              //       }
+              //     }
+              //   }
+              // }
+              set = /*#__PURE__*/function () {
+                var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                  return regeneratorRuntime.wrap(function _callee$(_context) {
+                    while (1) {
+                      switch (_context.prev = _context.next) {
+                        case 0:
+                          _context.prev = 0;
+                          setFirebase(_firebase);
+                          setAuthError(false);
+                          setUser(_firebase.auth().currentUser.email.replace(/\./g, ','));
+                          _context.next = 10;
+                          break;
+
+                        case 6:
+                          _context.prev = 6;
+                          _context.t0 = _context["catch"](0);
+                          _context.t0.customMessage = ">>>>>>>>>>Origin: set() method<<<<<<<<<<<";
+                          throw _context.t0;
+
+                        case 10:
+                        case "end":
+                          return _context.stop();
+                      }
+                    }
+                  }, _callee, null, [[0, 6]]);
+                }));
+
+                return function set() {
+                  return _ref2.apply(this, arguments);
+                };
+              }();
+
+              _context2.next = 4;
               return fire();
 
-            case 3:
-              _firebase = _context.sent;
+            case 4:
+              _firebase = _context2.sent;
               idToken = localStorage.getItem('idToken');
               accessToken = localStorage.getItem('accessToken');
               inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
                 first: _firebase.auth().currentUser
               });
 
-              if (!(idToken && accessToken)) {
-                _context.next = 23;
+              if (!(!_firebase.auth().currentUser && idToken && accessToken)) {
+                _context2.next = 27;
                 break;
               }
 
-              _context.prev = 8;
-              _context.next = 11;
+              _context2.prev = 9;
+              inspc__WEBPACK_IMPORTED_MODULE_2___default()('try: signInWithCredential');
+              _context2.next = 13;
               return _firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
 
-            case 11:
-              credential = _context.sent;
+            case 13:
+              credential = _context2.sent;
               inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
                 credential: credential
               });
-              _context.next = 15;
+              _context2.next = 17;
               return _firebase.auth().signInWithCredential(credential);
 
-            case 15:
-              _user = _context.sent;
+            case 17:
+              _user = _context2.sent;
               inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
                 mode: 'signInWithCredential',
                 user: _user
               });
-              _context.next = 23;
+              _context2.next = 27;
               break;
 
-            case 19:
-              _context.prev = 19;
-              _context.t0 = _context["catch"](8);
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithCredential');
+            case 21:
+              _context2.prev = 21;
+              _context2.t0 = _context2["catch"](9);
+              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithCredential', serializeError(_context2.t0));
               setAuthError({
                 error: {
-                  mode: 'signInWithCredential',
-                  e: serializeError(_context.t0),
-                  user: _firebase.auth().currentUser
+                  mode: 'signInWithCredential -> signOut()',
+                  e: serializeError(_context2.t0),
+                  user: _firebase.auth().currentUser,
+                  truthy: !!_firebase.auth().currentUser
                 }
               });
+              _context2.next = 27;
+              return _firebase.auth().signOut();
 
-            case 23:
+            case 27:
               inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
-                'firebase.auth().currentUser': _firebase.auth().currentUser
+                'firebase.auth().currentUser, before second method': _firebase.auth().currentUser
               });
 
               if (!_firebase.auth().currentUser) {
-                _context.next = 29;
+                _context2.next = 34;
                 break;
               }
 
-              setFirebase(_firebase);
-              setAuthError(false);
-              _context.next = 41;
-              break;
-
-            case 29:
-              provider = new _firebase.auth.GoogleAuthProvider();
-              _context.next = 32;
-              return _firebase.auth().signInWithPopup(provider);
+              inspc__WEBPACK_IMPORTED_MODULE_2___default()('signInWithCredential success, trigger set()');
+              _context2.next = 32;
+              return set();
 
             case 32:
-              result = _context.sent;
+              _context2.next = 47;
+              break;
+
+            case 34:
+              inspc__WEBPACK_IMPORTED_MODULE_2___default()('try: signInWithPopup');
+              provider = new _firebase.auth.GoogleAuthProvider();
+              _context2.next = 38;
+              return _firebase.auth().signInWithPopup(provider);
+
+            case 38:
+              result = _context2.sent;
               idToken = result.credential.idToken;
               accessToken = result.credential.accessToken;
               user = result.user;
@@ -1242,39 +1299,32 @@ var Main = function Main() {
                 user: user,
                 result: result
               });
-              setFirebase(_firebase);
-              setAuthError(false);
               localStorage.setItem('idToken', idToken);
               localStorage.setItem('accessToken', accessToken);
+              _context2.next = 47;
+              return set();
 
-            case 41:
-              _context.next = 47;
+            case 47:
+              _context2.next = 53;
               break;
 
-            case 43:
-              _context.prev = 43;
-              _context.t1 = _context["catch"](0);
-              // // Handle Errors here.
-              // var errorCode = error.code;
-              // var errorMessage = error.message;
-              // // The email of the user's account used.
-              // var email = error.email;
-              // // The firebase.auth.AuthCredential type that was used.
-              // var credential = error.credential;
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithPopup');
+            case 49:
+              _context2.prev = 49;
+              _context2.t1 = _context2["catch"](0);
+              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithPopup', serializeError(_context2.t1));
               setAuthError({
                 error: {
                   mode: 'signInWithPopup',
-                  e: serializeError(_context.t1)
+                  e: serializeError(_context2.t1)
                 }
               });
 
-            case 47:
+            case 53:
             case "end":
-              return _context.stop();
+              return _context2.stop();
           }
         }
-      }, _callee, null, [[0, 43], [8, 19]]);
+      }, _callee2, null, [[0, 49], [9, 21]]);
     }))();
   }, []);
 
@@ -1288,21 +1338,84 @@ var Main = function Main() {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Connecting to firebase...");
   }
 
-  function writeUserData(userId, name, email, imageUrl) {
-    firebase.database().ref("users/".concat(firebase.auth().currentUser.uid, "/").concat(now())).set({
-      userId: userId,
-      name: name,
-      email: email,
-      imageUrl: imageUrl,
-      uid: firebase.auth().currentUser.uid
-    });
+  function writeUserData(_x, _x2, _x3, _x4) {
+    return _writeUserData.apply(this, arguments);
+  }
+
+  function _writeUserData() {
+    _writeUserData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(userId, name, email, imageUrl) {
+      var key, cu, data;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              key = "users/".concat(user);
+              cu = firebase.auth().currentUser;
+              data = {
+                uid: cu.uid,
+                displayName: cu.displayName,
+                email: cu.email,
+                emailVerified: cu.emailVerified,
+                isAnonymous: cu.isAnonymous,
+                metadata: cu.metadata,
+                photoURL: cu.photoURL
+              };
+              _context3.prev = 3;
+              _context3.next = 6;
+              return firebase.database().ref(key).set(data);
+
+            case 6:
+              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
+                'set() saved:': {
+                  key: key,
+                  data: data,
+                  'firebase.auth()': firebase.auth()
+                }
+              });
+              _context3.next = 13;
+              break;
+
+            case 9:
+              _context3.prev = 9;
+              _context3.t0 = _context3["catch"](3);
+              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
+                'set() error:': {
+                  error: serializeError(_context3.t0),
+                  key: key,
+                  data: data,
+                  'firebase.auth()': firebase.auth()
+                }
+              });
+              throw _context3.t0;
+
+            case 13:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[3, 9]]);
+    }));
+    return _writeUserData.apply(this, arguments);
   }
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     onClick: function onClick() {
       return writeUserData('xxx', 'name', 'email@gmail.com', 'img.png');
     }
-  }, "add"));
+  }, "add"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "text",
+    value: user,
+    onChange: function onChange(e) {
+      return setUser(e.target.value);
+    },
+    style: {
+      width: '80%'
+    }
+  }), /[\.#$\[\]]/.test(user) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    style: {
+      color: 'red'
+    }
+  }, "Paths must be non-empty strings and can't contain \".\", \"#\", \"$\", \"[\", or \"]\""));
 };
 
 Object(react_dom__WEBPACK_IMPORTED_MODULE_1__["render"])( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Main, null), document.getElementById('app'));

@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 
 import log from 'inspc';
 
-const now = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ');
+const now = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ').replace(/[^\d]/g, '-');
 
 const {serializeError, deserializeError} = require('serialize-error');
 
@@ -15,6 +15,8 @@ const Main = () => {
 
   const [ authError, setAuthError ] = useState(false);
 
+  const [ user, setUser ] = useState('');
+
   useEffect(() => {
 
     (async function () {
@@ -22,6 +24,37 @@ const Main = () => {
       try {
 
         const firebase = await fire();
+
+        // make security rules for database like this
+        // {
+        //   "rules": {
+        //     "users": {
+        //       "$email": {
+        //         ".read": true,
+        //         ".write": "$email === auth.token.email.replace('.', ',')",
+        //       }
+        //     }
+        //   }
+        // }
+
+        async function set() {
+
+          try {
+
+            setFirebase(firebase);
+
+            setAuthError(false);
+
+            setUser(firebase.auth().currentUser.email.replace(/\./g, ','))
+
+          }
+          catch (e) {
+
+            e.customMessage = ">>>>>>>>>>Origin: set() method<<<<<<<<<<<"
+
+            throw e;
+          }
+        }
 
         let idToken = localStorage.getItem('idToken');
 
@@ -31,9 +64,11 @@ const Main = () => {
           first: firebase.auth().currentUser
         })
 
-        if (idToken && accessToken) {
+        if (!firebase.auth().currentUser && idToken && accessToken) {
 
           try {
+
+            log('try: signInWithCredential')
 
             const credential = await firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
 
@@ -51,29 +86,34 @@ const Main = () => {
           }
           catch (e) {
 
-            log('catch: signInWithCredential')
+            log('catch: signInWithCredential', serializeError(e))
 
             setAuthError({
               error: {
-                mode: 'signInWithCredential',
+                mode: 'signInWithCredential -> signOut()',
                 e: serializeError(e),
-                user: firebase.auth().currentUser
+                user: firebase.auth().currentUser,
+                truthy: !!firebase.auth().currentUser
               }
             });
+
+            await firebase.auth().signOut();
           }
         }
 
         log.dump({
-          'firebase.auth().currentUser': firebase.auth().currentUser,
+          'firebase.auth().currentUser, before second method': firebase.auth().currentUser,
         })
 
         if ( firebase.auth().currentUser ) {
 
-          setFirebase(firebase);
+          log('signInWithCredential success, trigger set()')
 
-          setAuthError(false);
+          await set();
         }
         else {
+
+          log('try: signInWithPopup')
 
           var provider = new firebase.auth.GoogleAuthProvider();
 
@@ -93,25 +133,16 @@ const Main = () => {
             result,
           });
 
-          setFirebase(firebase);
-
-          setAuthError(false);
-
           localStorage.setItem('idToken', idToken);
 
           localStorage.setItem('accessToken', accessToken);
+
+          await set();
         }
       }
       catch (e) {
-        // // Handle Errors here.
-        // var errorCode = error.code;
-        // var errorMessage = error.message;
-        // // The email of the user's account used.
-        // var email = error.email;
-        // // The firebase.auth.AuthCredential type that was used.
-        // var credential = error.credential;
 
-        log('catch: signInWithPopup')
+        log('catch: signInWithPopup', serializeError(e))
 
         setAuthError({
           error: {
@@ -137,19 +168,59 @@ const Main = () => {
     return <div>Connecting to firebase...</div>
   }
 
-  function writeUserData(userId, name, email, imageUrl) {
-    firebase.database().ref(`users/${firebase.auth().currentUser.uid}/${now()}`).set({
-      userId,
-      name,
-      email,
-      imageUrl,
-      uid: firebase.auth().currentUser.uid,
-    });
+  async function writeUserData(userId, name, email, imageUrl) {
+
+    const key = `users/${user}`;
+
+    const cu = firebase.auth().currentUser;
+
+    const data = {
+      uid           : cu.uid,
+      displayName   : cu.displayName,
+      email         : cu.email,
+      emailVerified : cu.emailVerified,
+      isAnonymous   : cu.isAnonymous,
+      metadata      : cu.metadata,
+      photoURL      : cu.photoURL,
+    };
+
+    try {
+
+      await firebase.database()
+        .ref(key)
+        .set(data)
+      ;
+
+      log.dump({
+        'set() saved:': {
+          key,
+          data,
+          'firebase.auth()': firebase.auth()
+        },
+      })
+    }
+    catch (e) {
+
+      log.dump({
+        'set() error:': {
+          error: serializeError(e),
+          key,
+          data,
+          'firebase.auth()': firebase.auth()
+        },
+      })
+
+      throw e;
+
+    }
   }
 
   return (
     <div>
-<button onClick={() => writeUserData('xxx', 'name', 'email@gmail.com', 'img.png')}>add</button>
+      <button onClick={() => writeUserData('xxx', 'name', 'email@gmail.com', 'img.png')}>add</button>
+      <br />
+      <input type="text" value={user} onChange={e => setUser(e.target.value)} style={{width: '80%'}}/>
+      {(/[\.#$\[\]]/.test(user)) && <div style={{color: 'red'}}>Paths must be non-empty strings and can't contain ".", "#", "$", "[", or "]"</div>}
     </div>
   )
 }
