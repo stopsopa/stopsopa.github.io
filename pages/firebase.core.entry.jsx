@@ -39,24 +39,24 @@ window.fire = () => {
             // appId: "1:496172961972:web:c9363e230fede3127a07e1",
             // measurementId: "G-F78BC9VYQ5"
 
-            // apiKey: process.env.API_KEY,
-            // authDomain: process.env.AUTH_DOMAIN,
-            // databaseURL: process.env.DATABASE_URL,
-            // projectId: process.env.PROJECT_ID,
-            // storageBucket: process.env.STORAGE_BUCKET,
-            // messagingSenderId: process.env.MESSAGING_SENDER_ID,
+            // apiKey: process.env.FIREBASE_API_KEY,
+            // authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+            // databaseURL: process.env.FIREBASE_DATABASE_URL,
+            // projectId: process.env.FIREBASE_PROJECT_ID,
+            // storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+            // messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
             //
             // appId: "1:496172961972:web:c9363e230fede3127a07e1",
             // measurementId: "G-F78BC9VYQ5"
 
-            apiKey            : env('API_KEY'),
-            authDomain        : env('AUTH_DOMAIN'),
-            databaseURL       : env('DATABASE_URL'),
-            projectId         : env('PROJECT_ID'),
-            storageBucket     : env('STORAGE_BUCKET'),
-            messagingSenderId : env('MESSAGING_SENDER_ID'),
-            appId             : env('API_ID'),
-            measurementId     : env('MEASUREMENT_ID')
+            apiKey            : env('FIREBASE_API_KEY'),
+            authDomain        : env('FIREBASE_AUTH_DOMAIN'),
+            databaseURL       : env('FIREBASE_DATABASE_URL'),
+            projectId         : env('FIREBASE_PROJECT_ID'),
+            storageBucket     : env('FIREBASE_STORAGE_BUCKET'),
+            messagingSenderId : env('FIREBASE_MESSAGING_SENDER_ID'),
+            appId             : env('FIREBASE_API_ID'),
+            measurementId     : env('FIREBASE_MEASUREMENT_ID')
           };
 
           firebase.initializeApp(firebaseConfig);
