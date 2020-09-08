@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 27);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1739,7 +1739,8 @@ module.exports = {
 /* 23 */,
 /* 24 */,
 /* 25 */,
-/* 26 */
+/* 26 */,
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1750,9 +1751,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(inspc__WEBPACK_IMPORTED_MODULE_2__);
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -1770,10 +1769,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-var now = function now() {
-  return new Date().toISOString().substring(0, 19).replace('T', ' ').replace(/[^\d]/g, '-');
-};
-
 var _require = __webpack_require__(18),
     serializeError = _require.serializeError,
     deserializeError = _require.deserializeError;
@@ -1781,282 +1776,127 @@ var _require = __webpack_require__(18),
 var Main = function Main() {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
       _useState2 = _slicedToArray(_useState, 2),
-      firebase = _useState2[0],
-      setFirebase = _useState2[1];
+      check = _useState2[0],
+      setCheck = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
-      _useState4 = _slicedToArray(_useState3, 2),
-      authError = _useState4[0],
-      setAuthError = _useState4[1];
-
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
-      _useState6 = _slicedToArray(_useState5, 2),
-      user = _useState6[0],
-      setUser = _useState6[1];
-
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var set, _firebase, idToken, accessToken, credential, _user, provider, result, user;
-
-      return regeneratorRuntime.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.prev = 0;
-
-              // make security rules for database like this
-              // {
-              //   "rules": {
-              //     "users": {
-              //       "$email": {
-              //         ".read": true,
-              //         ".write": "$email === auth.token.email.replace('.', ',')",
-              //       }
-              //     }
-              //   }
-              // }
-              set = /*#__PURE__*/function () {
-                var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                  return regeneratorRuntime.wrap(function _callee$(_context) {
-                    while (1) {
-                      switch (_context.prev = _context.next) {
-                        case 0:
-                          _context.prev = 0;
-                          setFirebase(_firebase);
-                          setAuthError(false);
-                          setUser(_firebase.auth().currentUser.email.replace(/\./g, ','));
-                          _context.next = 10;
-                          break;
-
-                        case 6:
-                          _context.prev = 6;
-                          _context.t0 = _context["catch"](0);
-                          _context.t0.customMessage = ">>>>>>>>>>Origin: set() method<<<<<<<<<<<";
-                          throw _context.t0;
-
-                        case 10:
-                        case "end":
-                          return _context.stop();
-                      }
-                    }
-                  }, _callee, null, [[0, 6]]);
-                }));
-
-                return function set() {
-                  return _ref2.apply(this, arguments);
-                };
-              }();
-
-              _context2.next = 4;
-              return fire();
-
-            case 4:
-              _firebase = _context2.sent;
-              idToken = localStorage.getItem('idToken');
-              accessToken = localStorage.getItem('accessToken');
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
-                first: _firebase.auth().currentUser
-              });
-
-              if (!(!_firebase.auth().currentUser && idToken && accessToken)) {
-                _context2.next = 27;
-                break;
-              }
-
-              _context2.prev = 9;
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('try: signInWithCredential');
-              _context2.next = 13;
-              return _firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
-
-            case 13:
-              credential = _context2.sent;
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
-                credential: credential
-              });
-              _context2.next = 17;
-              return _firebase.auth().signInWithCredential(credential);
-
-            case 17:
-              _user = _context2.sent;
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
-                mode: 'signInWithCredential',
-                user: _user
-              });
-              _context2.next = 27;
-              break;
-
-            case 21:
-              _context2.prev = 21;
-              _context2.t0 = _context2["catch"](9);
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithCredential', serializeError(_context2.t0));
-              setAuthError({
-                error: {
-                  mode: 'signInWithCredential -> signOut()',
-                  e: serializeError(_context2.t0),
-                  user: _firebase.auth().currentUser,
-                  truthy: !!_firebase.auth().currentUser
-                }
-              });
-              _context2.next = 27;
-              return _firebase.auth().signOut();
-
-            case 27:
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
-                'firebase.auth().currentUser, before second method': _firebase.auth().currentUser
-              });
-
-              if (!_firebase.auth().currentUser) {
-                _context2.next = 34;
-                break;
-              }
-
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('signInWithCredential success, trigger set()');
-              _context2.next = 32;
-              return set();
-
-            case 32:
-              _context2.next = 47;
-              break;
-
-            case 34:
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('try: signInWithPopup');
-              provider = new _firebase.auth.GoogleAuthProvider();
-              _context2.next = 38;
-              return _firebase.auth().signInWithPopup(provider);
-
-            case 38:
-              result = _context2.sent;
-              idToken = result.credential.idToken;
-              accessToken = result.credential.accessToken;
-              user = result.user;
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
-                mode: 'signInWithPopup',
-                idToken: idToken,
-                accessToken: accessToken,
-                user: user,
-                result: result
-              });
-              localStorage.setItem('idToken', idToken);
-              localStorage.setItem('accessToken', accessToken);
-              _context2.next = 47;
-              return set();
-
-            case 47:
-              _context2.next = 53;
-              break;
-
-            case 49:
-              _context2.prev = 49;
-              _context2.t1 = _context2["catch"](0);
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithPopup', serializeError(_context2.t1));
-              setAuthError({
-                error: {
-                  mode: 'signInWithPopup',
-                  e: serializeError(_context2.t1)
-                }
-              });
-
-            case 53:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2, null, [[0, 49], [9, 21]]);
-    }))();
-  }, []);
-
-  if (authError) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("pre", null, JSON.stringify({
-      authError: authError
-    }, null, 4));
-  }
-
-  if (!firebase) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Connecting to firebase...");
-  }
-
-  function writeUserData(_x, _x2, _x3, _x4) {
-    return _writeUserData.apply(this, arguments);
-  }
-
-  function _writeUserData() {
-    _writeUserData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(userId, name, email, imageUrl) {
-      var key, cu, data;
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
-              key = "users/".concat(user);
-              cu = firebase.auth().currentUser;
-              data = {
-                uid: cu.uid,
-                displayName: cu.displayName,
-                email: cu.email,
-                emailVerified: cu.emailVerified,
-                isAnonymous: cu.isAnonymous,
-                metadata: cu.metadata,
-                photoURL: cu.photoURL
-              };
-              _context3.prev = 3;
-              _context3.next = 6;
-              return firebase.database().ref(key).set(data);
-
-            case 6:
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
-                'set() saved:': {
-                  key: key,
-                  data: data,
-                  'firebase.auth()': firebase.auth()
-                }
-              });
-              _context3.next = 13;
-              break;
-
-            case 9:
-              _context3.prev = 9;
-              _context3.t0 = _context3["catch"](3);
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
-                'set() error:': {
-                  error: serializeError(_context3.t0),
-                  key: key,
-                  data: data,
-                  'firebase.auth()': firebase.auth()
-                }
-              });
-              throw _context3.t0;
-
-            case 13:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3, null, [[3, 9]]);
-    }));
-    return _writeUserData.apply(this, arguments);
-  }
-
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    onClick: function onClick() {
-      return writeUserData('xxx', 'name', 'email@gmail.com', 'img.png');
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+    width: "80%"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+    width: "50%"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "checkbox"
+  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "checkbox"
+  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
+    value: check === 'foo',
+    onChange: function onChange() {
+      return setCheck('foo');
     }
-  }, "add"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "text",
-    value: user,
-    onChange: function onChange(e) {
-      return setUser(e.target.value);
+  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
+    value: check === 'bar',
+    onChange: function onChange() {
+      return setCheck('bar');
+    }
+  }), "bar bar bar bar bar bar"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "checkbox"
+  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "checkbox"
+  }), "foo foo foo foo foo foo")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "radio"
+  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "radio"
+  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
+    value: check === 'foo',
+    onChange: function onChange() {
+      return setCheck('foo');
     },
-    style: {
-      width: '80%'
-    }
-  }), /[\.#$\[\]]/.test(user) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    style: {
-      color: 'red'
-    }
-  }, "Paths must be non-empty strings and can't contain \".\", \"#\", \"$\", \"[\", or \"]\""));
+    className: "radio"
+  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
+    value: check === 'bar',
+    onChange: function onChange() {
+      return setCheck('bar');
+    },
+    className: "radio"
+  }), "bar bar bar bar bar bar"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "radio"
+  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
+    value: check === 'foo',
+    onChange: function onChange() {
+      return setCheck('foo');
+    },
+    className: "radio"
+  }, "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
+    value: check === 'bar',
+    onChange: function onChange() {
+      return setCheck('bar');
+    },
+    className: "radio"
+  }, "bar bar bar bar bar bar"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "radio"
+  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
+    value: check === 'foo',
+    onChange: function onChange() {
+      return setCheck('foo');
+    },
+    className: "radio",
+    before: true
+  }, "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
+    value: check === 'bar',
+    onChange: function onChange() {
+      return setCheck('bar');
+    },
+    className: "radio",
+    before: true
+  }, "bar bar bar bar bar bar"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "radio"
+  }), "foo foo foo foo foo foo")))));
 };
 
 Object(react_dom__WEBPACK_IMPORTED_MODULE_1__["render"])( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Main, null), document.getElementById('app'));
+
+function NoInput(_ref) {
+  var value = _ref.value,
+      onChange = _ref.onChange,
+      className = _ref.className,
+      children = _ref.children,
+      before = _ref.before,
+      props1 = _ref.props1,
+      props2 = _ref.props2,
+      props3 = _ref.props3,
+      propslabel = _ref.propslabel;
+  var cls = ['noinput-checkbox'];
+
+  if (value) {
+    cls.push('checked');
+  }
+
+  if (typeof className === 'string') {
+    cls.push(className);
+  }
+
+  var hasChildren = typeof children !== 'undefined';
+  var component = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", _extends({
+    className: cls.join(' ')
+  }, props1), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", _extends({
+    tabindex: "0",
+    onClick: onChange,
+    onKeyDown: onChange
+  }, props2), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", props3)));
+
+  if (hasChildren) {
+    if (before) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", _extends({
+        onClick: onChange
+      }, propslabel), children, component);
+    }
+
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", _extends({
+      onClick: onChange
+    }, propslabel), component, children);
+  }
+
+  return component;
+}
 
 /***/ })
 /******/ ]);
