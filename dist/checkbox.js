@@ -1788,12 +1788,12 @@ var Main = function Main() {
   }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "checkbox"
   }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    value: check === 'foo',
+    checked: check === 'foo',
     onChange: function onChange() {
       return setCheck('foo');
     }
   }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    value: check === 'bar',
+    checked: check === 'bar',
     onChange: function onChange() {
       return setCheck('bar');
     }
@@ -1806,46 +1806,46 @@ var Main = function Main() {
   }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "radio"
   }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    value: check === 'foo',
+    checked: check === 'foo',
     onChange: function onChange() {
       return setCheck('foo');
     },
-    className: "radio"
+    radio: true
   }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    value: check === 'bar',
+    checked: check === 'bar',
     onChange: function onChange() {
       return setCheck('bar');
     },
-    className: "radio"
+    radio: true
   }), "bar bar bar bar bar bar"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "radio"
   }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    value: check === 'foo',
+    checked: check === 'foo',
     onChange: function onChange() {
       return setCheck('foo');
     },
-    className: "radio"
+    radio: true
   }, "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    value: check === 'bar',
+    checked: check === 'bar',
     onChange: function onChange() {
       return setCheck('bar');
     },
-    className: "radio"
+    radio: true
   }, "bar bar bar bar bar bar"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "radio"
   }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    value: check === 'foo',
+    checked: check === 'foo',
     onChange: function onChange() {
       return setCheck('foo');
     },
-    className: "radio",
+    radio: true,
     before: true
   }, "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    value: check === 'bar',
+    checked: check === 'bar',
     onChange: function onChange() {
       return setCheck('bar');
     },
-    className: "radio",
+    radio: true,
     before: true
   }, "bar bar bar bar bar bar"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "radio"
@@ -1855,7 +1855,7 @@ var Main = function Main() {
 Object(react_dom__WEBPACK_IMPORTED_MODULE_1__["render"])( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Main, null), document.getElementById('app'));
 
 function NoInput(_ref) {
-  var value = _ref.value,
+  var checked = _ref.checked,
       onChange = _ref.onChange,
       className = _ref.className,
       children = _ref.children,
@@ -1863,10 +1863,11 @@ function NoInput(_ref) {
       props1 = _ref.props1,
       props2 = _ref.props2,
       props3 = _ref.props3,
-      propslabel = _ref.propslabel;
+      propslabel = _ref.propslabel,
+      radio = _ref.radio;
   var cls = ['noinput-checkbox'];
 
-  if (value) {
+  if (checked) {
     cls.push('checked');
   }
 
@@ -1874,12 +1875,16 @@ function NoInput(_ref) {
     cls.push(className);
   }
 
+  if (radio) {
+    cls.push('radio');
+  }
+
   var hasChildren = typeof children !== 'undefined';
   var component = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", _extends({
     className: cls.join(' ')
   }, props1), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", _extends({
-    tabindex: "0",
-    onClick: onChange,
+    tabIndex: "0",
+    onClick: hasChildren ? undefined : onChange,
     onKeyDown: onChange
   }, props2), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", props3)));
 

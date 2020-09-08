@@ -33,14 +33,14 @@ const Main = () => {
           <br />
 
           <label>
-            <NoInput value={check === 'foo'} onChange={() => setCheck('foo')}/>
+            <NoInput checked={check === 'foo'} onChange={() => setCheck('foo')}/>
             foo foo foo foo foo foo
           </label>
 
           <br />
 
           <label>
-            <NoInput value={check === 'bar'} onChange={() => setCheck('bar')}/>
+            <NoInput checked={check === 'bar'} onChange={() => setCheck('bar')}/>
             bar bar bar bar bar bar
           </label>
 
@@ -77,14 +77,14 @@ const Main = () => {
           <br />
 
           <label>
-            <NoInput value={check === 'foo'} onChange={() => setCheck('foo')} className="radio"/>
+            <NoInput checked={check === 'foo'} onChange={() => setCheck('foo')} radio/>
             foo foo foo foo foo foo
           </label>
 
           <br />
 
           <label>
-            <NoInput value={check === 'bar'} onChange={() => setCheck('bar')} className="radio"/>
+            <NoInput checked={check === 'bar'} onChange={() => setCheck('bar')} radio/>
             bar bar bar bar bar bar
           </label>
 
@@ -97,11 +97,11 @@ const Main = () => {
 
           <br />
 
-          <NoInput value={check === 'foo'} onChange={() => setCheck('foo')} className="radio">foo foo foo foo foo foo</NoInput>
+          <NoInput checked={check === 'foo'} onChange={() => setCheck('foo')} radio>foo foo foo foo foo foo</NoInput>
 
           <br />
 
-          <NoInput value={check === 'bar'} onChange={() => setCheck('bar')} className="radio">bar bar bar bar bar bar</NoInput>
+          <NoInput checked={check === 'bar'} onChange={() => setCheck('bar')} radio>bar bar bar bar bar bar</NoInput>
 
 
           <br />
@@ -113,11 +113,11 @@ const Main = () => {
 
           <br />
 
-          <NoInput value={check === 'foo'} onChange={() => setCheck('foo')} className="radio" before>foo foo foo foo foo foo</NoInput>
+          <NoInput checked={check === 'foo'} onChange={() => setCheck('foo')} radio before>foo foo foo foo foo foo</NoInput>
 
           <br />
 
-          <NoInput value={check === 'bar'} onChange={() => setCheck('bar')} className="radio" before>bar bar bar bar bar bar</NoInput>
+          <NoInput checked={check === 'bar'} onChange={() => setCheck('bar')} radio before>bar bar bar bar bar bar</NoInput>
 
           <br />
 
@@ -145,7 +145,7 @@ render(
 );
 
 function NoInput({
-  value,
+  checked,
   onChange,
   className,
   children,
@@ -154,11 +154,12 @@ function NoInput({
   props2,
   props3,
   propslabel,
+  radio,
 }) {
 
   const cls = ['noinput-checkbox'];
 
-  if (value) {
+  if (checked) {
 
     cls.push('checked');
   }
@@ -168,13 +169,18 @@ function NoInput({
     cls.push(className);
   }
 
+  if (radio) {
+
+    cls.push('radio');
+  }
+
   const hasChildren = (typeof children !== 'undefined');
 
   const component = (
     <div className={cls.join(' ')} {...props1}>
       <div
-        tabindex="0"
-        onClick={onChange}
+        tabIndex="0"
+        onClick={hasChildren ? undefined : onChange}
         onKeyDown={onChange}
         {...props2}
       >
