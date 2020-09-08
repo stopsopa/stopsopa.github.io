@@ -170,6 +170,7 @@ const Main = () => {
 
   async function writeUserData(userId, name, email, imageUrl) {
 
+    // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
     const key = `users/${user}`;
 
     const cu = firebase.auth().currentUser;
