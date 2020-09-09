@@ -56,7 +56,10 @@ docker image prune -a --force --filter "until=480h"
 docker system prune --all --volumes --force
     # from: https://docs.docker.com/config/pruning/
     
-docker system df    
+docker system df
+
+docker container rm puppeteer-test -f
+    # stop and remove container immediately
 
                 </script>
 
