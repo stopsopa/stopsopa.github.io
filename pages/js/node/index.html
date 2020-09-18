@@ -139,8 +139,6 @@ const template  = require('lodash/template');
 // https://stackoverflow.com/a/23613092
 const serveIndex    = require('serve-index');
 
-const bodyParser    = require('body-parser');
-
 const host      = process.env.HOST;
 
 const port      = process.env.PORT;
@@ -149,9 +147,9 @@ const web = path.resolve(__dirname, 'public');
 
 const readFile = file => fs.readFileSync(file).toString();
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.all('/save', (req, res) => {
 
