@@ -484,8 +484,10 @@ log('headers', h)
 log('oneheader', r.headers.get('Content-type'));
                 </script>
                 <h2>React - Textarea</h2>
-                <script type="editor" data-lang="js">
+                <script type="editor" data-lang="jsx">
 
+
+import React, { useEffect, useState, useRef } from 'react';
 
 const Textarea = (function () {
 
