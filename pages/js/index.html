@@ -483,6 +483,78 @@ log('headers', h)
 
 log('oneheader', r.headers.get('Content-type'));
                 </script>
+                <h2>React - Textarea</h2>
+                <script type="editor" data-lang="js">
+
+
+const Textarea = (function () {
+
+  // https://stackoverflow.com/a/5346855
+  var observe;
+  if (window.attachEvent) {
+    observe = function (element, event, handler) {
+      element.attachEvent('on'+event, handler);
+    };
+  }
+  else {
+    observe = function (element, event, handler) {
+      element.addEventListener(event, handler, false);
+    };
+  }
+  function init (text) {
+    function resize () {
+      console.log('fun resize', text)
+      text.style.height = 'auto';
+      text.style.height = text.scrollHeight+'px';
+    }
+    /* 0-timeout to get the already changed text */
+    function delayedResize () {
+      window.setTimeout(resize, 0);
+    }
+    observe(text, 'change',  resize);
+    observe(text, 'cut',     delayedResize);
+    observe(text, 'paste',   delayedResize);
+    observe(text, 'drop',    delayedResize);
+    observe(text, 'keydown', delayedResize);
+
+    // text.focus();
+    // text.select();
+    resize();
+
+    return function () {resize()}
+  }
+
+  return props => {
+
+    const el = useRef(null);
+
+    const [ resize, setResize ] = useState(false);
+
+    const [ mounted, setMounted ] = useState(false);
+
+    const {
+      value,
+    } = props;
+
+    useEffect(() => {
+
+      if ( ! mounted && el.current ) {
+
+        setMounted(true);
+
+        setResize(init(el.current));
+      }
+
+      (typeof resize === 'function') && resize();
+    }, [value]);
+
+    return (
+      <textarea ref={el} {...props} />
+    )
+  }
+}());
+
+                </script>
                 <h2>codepen, jsfiddle, codesandbox</h2>
                 <a href="https://codesandbox.io/s/rjj38yzm14">codesandbox template</a>
             </div>
