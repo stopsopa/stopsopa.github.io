@@ -503,11 +503,15 @@ const Textarea = (function () {
       element.addEventListener(event, handler, false);
     };
   }
-  function init (text) {
+  function init (text, correct) {
     function resize () {
       console.log('fun resize', text)
       text.style.height = 'auto';
-      text.style.height = text.scrollHeight+'px';
+      var h = text.scrollHeight;
+      if (Number.isInteger(correct)) {
+        h += correct;
+      }
+      text.style.height = h+'px';
     }
     /* 0-timeout to get the already changed text */
     function delayedResize () {
@@ -536,6 +540,7 @@ const Textarea = (function () {
 
     const {
       value,
+      correct,
     } = props;
 
     useEffect(() => {
@@ -544,7 +549,7 @@ const Textarea = (function () {
 
         setMounted(true);
 
-        setResize(init(el.current));
+        setResize(init(el.current, correct));
       }
 
       (typeof resize === 'function') && resize();
