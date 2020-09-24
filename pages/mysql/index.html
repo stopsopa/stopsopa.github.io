@@ -26,6 +26,7 @@
 SET @schema = 'dbname';
 
 SET @pattern = '%';
+SET SESSION group_concat_max_len = 1000000;
 SELECT CONCAT('DROP TABLE ',GROUP_CONCAT(CONCAT(@schema,'.',table_name)),';')
 INTO @droplike
 FROM information_schema.TABLES
