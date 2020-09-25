@@ -81,7 +81,8 @@ while (( "$#" )); do
         exit 1;                                          # optional
       fi
       if ! [ -f "$2" ]; then
-          echo "$0 Error: --deployment-yaml file '$2' doesn't exist" >&2 # optional
+        echo "$0 Error: --deployment-yaml file '$2' doesn't exist" >&2 # optional
+        exit 1;                                          # optional
       fi                                           # optional
       _DEPLOYMENT_YAML="$2";
       shift 2;
@@ -96,13 +97,20 @@ while (( "$#" )); do
       ;;
     --) # end argument parsing
       shift;
-      while (( "$#" )); do          # optional                          
+      while (( "$#" )); do          # optional
         if [ "$PARAMS" = "" ]; then # optional
             PARAMS="\"$1\""         # optional
         else                        # optional
             PARAMS="$PARAMS \"$1\"" # optional
+#            PARAMS="$(cat <<EOF
+#$PARAMS
+#- "$1"
+#EOF
+#)"
+
+
         fi                          # optional
-        shift;                      # optional            
+        shift;                      # optional
       done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
       break;
       ;;
@@ -114,19 +122,24 @@ while (( "$#" )); do
       if [ "$PARAMS" = "" ]; then
           PARAMS="\"$1\""
       else
-          PARAMS="$PARAMS \"$1\""
+          PARAMS="$PARAMS \"$1\"" # optional
+#          PARAMS="$(cat <<EOF
+#$PARAMS
+#- "$1"
+#EOF
+#)"
       fi
       shift;
       ;;
   esac
 done
 
-if [ "$_DEPLOYMENT_YAML" = "" ]; then
-  
-    echo -e "\n\n$0 error: parameter _DEPLOYMENT_YAML is not defined - spedify it in --deployment-yaml parameter\n\n";
-
-    exit 1;
-fi
+#if [ "$_DEPLOYMENT_YAML" = "" ]; then
+#
+#    echo -e "\n\n$0 error: parameter _DEPLOYMENT_YAML is not defined - spedify it in --deployment-yaml parameter\n\n";
+#
+#    exit 1;
+#fi
 
 # set positional arguments in their proper place
 eval set -- "$PARAMS"
@@ -144,19 +157,27 @@ while (( "$#" )); do
   shift;
 done
 
-# /bin/bash arg.sh one abc def -- -f test two "a b c"
-# args: 'one abc def -- -f test two a b c'
-# _CLEANOLD: 0
-# _GEN: gen
-# rest: 'one abc def -f test two a b c'
-# count: 7
-# print: 'one'
-# print: 'abc'
-# print: 'def'
-# print: '-f'
-# print: 'test'
-# print: 'two'
-# print: 'a b c'
+if [[ $# -gt 0 ]]; then
+
+  echo there is more
+else
+
+  echo there is no arguments
+fi
+
+#args: '--gen test -- one --abc def -f test two a b c'
+#_CLEANOLD: 0
+#_GEN: test
+#rest: 'one --abc def -f test two a b c'
+#count: 7
+#print: 'one'
+#print: '--abc'
+#print: 'def'
+#print: '-f'
+#print: 'test'
+#print: 'two'
+#print: 'a b c'
+#there is no arguments
 
                 </script>
                 <a href="https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8f">https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8f</a>
