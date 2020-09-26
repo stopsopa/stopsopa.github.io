@@ -61,6 +61,7 @@ while true; do ping -n -q -c1 docker.phaseiilabs.com | grep '('; sleep 2; done
                 <script type="editor" data-lang="bash">
 
 
+
 echo "args: '$@'"
 
 _CLEANOLD="0";
@@ -182,10 +183,18 @@ echo "rest: '$@'"
 echo "count: $#"
 
 
-while (( "$#" )); do
-  echo "print: '$1'"
-  shift;
-done
+if [[ $# -gt 0 ]]; then
+
+  echo there are arguments
+
+  while (( "$#" )); do
+    echo "arg: '$1'"
+    shift;
+  done
+else
+
+  echo there is no arguments
+fi
 
 if [[ $# -gt 0 ]]; then
 
@@ -219,18 +228,19 @@ eval "$_EVAL"
 #                _EVAL 2>>"echo" "one" && "pwd" && "echo"<<
 #                PARAMS1>>"echo" "one" \&\& "pwd" \&\& "echo" "two three"<<
 #                _EVAL 2>>"echo" "one" && "pwd" && "echo" "two three"<<
-#/Users/sd/Workspace/projects/monorepo/runtime
-#two three
 #_CLEANOLD: 1
 #_GEN: test
-#rest: 'echo one'
-#count: 2
-#print: 'echo'
-#print: 'one'
+#rest: 'echo one && pwd && echo two three'
+#count: 7
+#there are arguments
+#arg: 'echo'
+#arg: 'one'
+#arg: '&&'
+#arg: 'pwd'
+#arg: '&&'
+#arg: 'echo'
+#arg: 'two three'
 #there is no arguments
-#one
-#/Users/sd/Workspace/projects/monorepo/runtime
-#two three
 #PARAMS>>"echo" "one" \&\& "pwd" \&\& "echo" "two three"<<
 #_EVAL>>"echo" "one" && "pwd" && "echo" "two three"<<
 #one
