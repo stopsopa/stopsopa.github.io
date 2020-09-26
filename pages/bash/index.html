@@ -60,6 +60,7 @@ while true; do ping -n -q -c1 docker.phaseiilabs.com | grep '('; sleep 2; done
                 <h2>Processing arguments</h2>
                 <script type="editor" data-lang="bash">
 
+
 echo "args: '$@'"
 
 _CLEANOLD="0";
@@ -69,6 +70,7 @@ _GEN="gen"
 _DEPLOYMENT_YAML=""
 
 PARAMS=""
+_EVAL=""
 while (( "$#" )); do
   case "$1" in
     -c|--clean|--clear)
@@ -76,7 +78,7 @@ while (( "$#" )); do
       shift;
       ;;
     -d|--deployment-yaml)
-      if [ "$2" = "" ]; then                            # optional
+      if [ "$2" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
         echo "$0 Error: --deployment-yaml value can't be empty" >&2 # optional
         exit 1;                                          # optional
       fi
@@ -88,7 +90,7 @@ while (( "$#" )); do
       shift 2;
       ;;
     -g|--gen)
-      if [ "$2" = "" ]; then                            # optional
+      if [ "$2" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
         echo "$0 Error: --gen value can't be empty" >&2 # optional
         exit 1;                                          # optional
       fi                                                # optional
@@ -98,18 +100,25 @@ while (( "$#" )); do
     --) # end argument parsing
       shift;
       while (( "$#" )); do          # optional
-        if [ "$PARAMS" = "" ]; then # optional
-            PARAMS="\"$1\""         # optional
-        else                        # optional
-            PARAMS="$PARAMS \"$1\"" # optional
-#            PARAMS="$(cat <<EOF
+        if [ "$1" = "&&" ]; then
+          PARAMS="$PARAMS \&\&"
+          _EVAL="$_EVAL &&"
+        else
+          if [ "$PARAMS" = "" ]; then
+            PARAMS="\"$1\""
+            _EVAL="\"$1\""
+          else
+            PARAMS="$PARAMS \"$1\""
+            _EVAL="$_EVAL \"$1\""
+#          PARAMS="$(cat <<EOF
 #$PARAMS
 #- "$1"
 #EOF
 #)"
-
-
-        fi                          # optional
+          fi
+        fi
+        echo "                PARAMS1>>$PARAMS<<"
+        echo "                _EVAL 2>>$_EVAL<<"
         shift;                      # optional
       done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
       break;
@@ -119,20 +128,41 @@ while (( "$#" )); do
       exit 1;
       ;;
     *) # preserve positional arguments
-      if [ "$PARAMS" = "" ]; then
-          PARAMS="\"$1\""
+      if [ "$1" = "&&" ]; then
+          PARAMS="$PARAMS \&\&"
+          _EVAL="$_EVAL &&"
       else
-          PARAMS="$PARAMS \"$1\"" # optional
+        if [ "$PARAMS" = "" ]; then
+            PARAMS="\"$1\""
+            _EVAL="\"$1\""
+        else
+          PARAMS="$PARAMS \"$1\""
+            _EVAL="$_EVAL \"$1\""
 #          PARAMS="$(cat <<EOF
 #$PARAMS
 #- "$1"
 #EOF
 #)"
+        fi
       fi
+      echo "                PARAMS2>>$PARAMS<<"
+      echo "                _EVAL 1>>$_EVAL<<"
       shift;
       ;;
   esac
 done
+
+trim() {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "$var"
+}
+
+PARAMS="$(trim "$PARAMS")"
+_EVAL="$(trim "$_EVAL")"
 
 #if [ "$_DEPLOYMENT_YAML" = "" ]; then
 #
@@ -142,7 +172,7 @@ done
 #fi
 
 # set positional arguments in their proper place
-eval set -- "$PARAMS"
+eval set -- "$_EVAL"
 
 echo "_CLEANOLD: $_CLEANOLD"
 echo "_GEN: $_GEN"
@@ -165,23 +195,49 @@ else
   echo there is no arguments
 fi
 
+eval "$_EVAL"
+
+echo "PARAMS>>$PARAMS<<"
+echo "_EVAL>>$_EVAL<<"
+
+eval "$_EVAL"
+
 # when you run
-#   /bin/bash arg.sh --gen test -- one --abc def -f test two "a b c"
+#   /bin/bash arg.sh --gen test -c -- echo "one"     \&\& pwd \&\& echo "two three"
 # the output will be:
 
-#args: '--gen test -- one --abc def -f test two a b c'
-#_CLEANOLD: 0
+#args: '--gen test -c -- echo one && pwd && echo two three'
+#                PARAMS1>>"echo"<<
+#                _EVAL 2>>"echo"<<
+#                PARAMS1>>"echo" "one"<<
+#                _EVAL 2>>"echo" "one"<<
+#                PARAMS1>>"echo" "one" \&\&<<
+#                _EVAL 2>>"echo" "one" &&<<
+#                PARAMS1>>"echo" "one" \&\& "pwd"<<
+#                _EVAL 2>>"echo" "one" && "pwd"<<
+#                PARAMS1>>"echo" "one" \&\& "pwd" \&\&<<
+#                _EVAL 2>>"echo" "one" && "pwd" &&<<
+#                PARAMS1>>"echo" "one" \&\& "pwd" \&\& "echo"<<
+#                _EVAL 2>>"echo" "one" && "pwd" && "echo"<<
+#                PARAMS1>>"echo" "one" \&\& "pwd" \&\& "echo" "two three"<<
+#                _EVAL 2>>"echo" "one" && "pwd" && "echo" "two three"<<
+#/Users/sd/Workspace/projects/monorepo/runtime
+#two three
+#_CLEANOLD: 1
 #_GEN: test
-#rest: 'one --abc def -f test two a b c'
-#count: 7
+#rest: 'echo one'
+#count: 2
+#print: 'echo'
 #print: 'one'
-#print: '--abc'
-#print: 'def'
-#print: '-f'
-#print: 'test'
-#print: 'two'
-#print: 'a b c'
 #there is no arguments
+#one
+#/Users/sd/Workspace/projects/monorepo/runtime
+#two three
+#PARAMS>>"echo" "one" \&\& "pwd" \&\& "echo" "two three"<<
+#_EVAL>>"echo" "one" && "pwd" && "echo" "two three"<<
+#one
+#/Users/sd/Workspace/projects/monorepo/runtime
+#two three
 
                 </script>
                 <a href="https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8f">https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8f</a>
