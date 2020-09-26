@@ -195,14 +195,6 @@ else
   echo there is no arguments
 fi
 
-if [[ $# -gt 0 ]]; then
-
-  echo there is more
-else
-
-  echo there is no arguments
-fi
-
 echo "PARAMS>>$PARAMS<<"
 echo "_EVAL>>$_EVAL<<"
 
@@ -239,7 +231,6 @@ eval "$_EVAL"
 #arg: '&&'
 #arg: 'echo'
 #arg: 'two three'
-#there is no arguments
 #PARAMS>>"echo" "one" \&\& "pwd" \&\& "echo" "two three"<<
 #_EVAL>>"echo" "one" && "pwd" && "echo" "two three"<<
 #one
