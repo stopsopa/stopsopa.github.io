@@ -10,7 +10,7 @@ var glob        = require("glob");
 var path        = require("path");
 require('colors');
 
-const th = msg => new Error(`utils.js error: msg`);
+const th = msg => new Error(`utils.js error: ${msg}`);
 
 function json(data) {
     return JSON.stringify(data, null, '    ').replace(/\\\\/g, '\\');

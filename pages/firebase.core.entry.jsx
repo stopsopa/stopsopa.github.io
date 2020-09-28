@@ -1,6 +1,6 @@
 
 // Firebase App (the core Firebase SDK) is always required and must be listed first
-import * as firebase from "firebase/app";
+import firebase from "firebase/app";
 
 // If you enabled Analytics in your project, add the Firebase SDK for Analytics
 import "firebase/analytics";
@@ -11,6 +11,8 @@ import "firebase/firestore";
 import "firebase/database";
 
 import "regenerator-runtime/runtime.js";
+
+import log from 'inspc';
 
 let promise;
 
@@ -63,6 +65,9 @@ window.fire = () => {
 
           resolve(firebase);
         }
+
+        log('firebase promise lib: waiting for env to load');
+
       }, 300);
     });
   }

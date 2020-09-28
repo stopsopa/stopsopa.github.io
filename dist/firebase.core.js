@@ -339,6 +339,615 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(global, process) {/**
+ * @author Szymon Działowski
+ * @license MIT License (c) copyright 2017-present original author or authors
+ * @homepage https://github.com/stopsopa/roderic
+ */
+
+
+// -- test --- vvv
+
+// const log = require('./logn');
+//
+// (function () {
+//
+//     (function () {
+//
+//         console.log('------------ 1');
+//
+//         log('one')('two')('three');
+//
+//         console.log('------------ 2');
+//
+//         log('-test-')('+test+')('testddd')('next');
+//
+//         console.log('------------ 3');
+//
+//         log.stack(2)('-test-')('+test+')('testddd')('next');
+//
+//         console.log('------------ 4');
+//
+//         log.stack(0).log('stack 0', 'two');
+//
+//         log.stack(1).log('stack 1', 'two');
+//
+//         log.stack(2).log('stack 2', 'two');
+//
+//         console.log('------------ stack default 2');
+//
+//         log.stack(0)('-test-')('+test+')('testddd')('next');
+//
+//         console.log('------------ json');
+//
+//         log.json({one: "two", three: [5, 'eight']})
+//
+//         log.stack(2).json({one: "two", three: [5, 'eight']})({one: "two", three: [5, 'eight']})
+//
+//         console.log('------------ dump');
+//
+//         // only one arg
+//         log.dump({one: "two", three: [5, 'eight']}, 2 /* show levels (must be int > 0) */);
+//
+//         console.log('------------ stack dump ');
+//
+//         // in second cascade call 'level' is not necessary (stil .dump() accept only one ar
+//         log.stack(2).dump({one: "two", three: [5, 'eight']}, 2)({one: "two", three: [5, 'eight']})
+//
+//
+//     }());
+//
+// }());
+
+// -- test --- ^^^
+
+
+
+
+/**
+ * log(arg1, arg2, ...)(arg1, arg2, ...)  - line and args
+ * log.json(arg1, arg2, ...)(arg1, arg2, ...) - line and args as human readdable json
+ * log.dump(arg1, arg2, ...)(arg1, arg2, ...) - line and args (exact description of types)
+ *
+ * log.stack(5)(arg1, arg2, ...)(arg1, arg2, ...)  - line and args
+ * log.stack(5).json(arg1, arg2, ...)(arg1, arg2, ...) - line and args as human readdable json
+ * log.stack(5).dump(arg1, arg2, ...)(arg1, arg2, ...) - line and args (exact description of types)
+ *
+ * and...
+ * var tmp = log.stack(4)('test')
+ *
+ * tmp('test2')
+ *
+ * gives:
+ * /opt/spark_dev/crawler.js:47
+ * test
+ * /opt/spark_dev/crawler.js:47
+ * test2
+ *
+ * buffering (returning output as a string)
+ *
+
+ log.start();
+
+ log.dump('test1');
+
+ log('test2');
+
+ // true or false to additionally flush data to screen after return (def false)
+ const tmp = log.get(true);
+ */
+
+
+// web version
+
+const node = typeof global !== 'undefined' && Object.prototype.toString.call(global.process) === '[object process]';
+
+if ( ! node ) {
+
+    module.exports = __webpack_require__(6);
+}
+
+
+// logic from https://github.com/gavinengel/magic-globals/blob/master/index.js
+// node && (function () {
+// }());
+
+/** returns line number when placing this in your code: __line */
+// Object.defineProperty(global, '__line', {
+//     get: function(){
+//         return String("     " + __stack[2].getLineNumber()).slice(-5);
+//     }
+// });
+
+// /** return filename (without directory path or file extension) when placing this in your code: __file */
+// Object.defineProperty(global, '__file', {
+//     get: function(){
+//         return __stack[2].getFileName();
+//     }
+// });
+
+if (node) {
+
+    global.__stack || Object.defineProperty(global, '__stack', {
+        get: function tmp() {
+            var orig = Error.prepareStackTrace;
+            Error.prepareStackTrace = function(_, stack){ return stack; };
+            var err = new Error;
+            Error.captureStackTrace(err, tmp);
+            // Error.captureStackTrace(err, arguments.callee); // without 'use strict'
+            var stack = err.stack;
+            Error.prepareStackTrace = orig;
+            return stack;
+        }
+    });
+
+    global.__line = (function () {
+
+        function rpad(s, n) {
+
+            (typeof n === 'undefined') && (n = 5);
+
+            try {
+
+                if (s && s.length && s.length >= n) {
+
+                    return s;
+                }
+            }
+            catch (e) {
+                console.log('exception', typeof s, s, e);
+            }
+
+            return String(s + " ".repeat(n)).slice(0, n);
+        }
+
+        var tool = function (n) {
+
+            if (typeof n === 'undefined') {
+
+                let tmp = [];
+
+                for (let i in __stack) {
+
+                    if (__stack.hasOwnProperty(i)) {
+
+                        tmp.push('stack: ' + rpad(i) + ' file:' + __stack[i].getFileName() + ':' + rpad(__stack[i].getLineNumber()) + ' ');
+                    }
+                }
+
+                return tmp;
+            }
+
+            (typeof n === 'undefined') && (n = 1);
+
+            if ( ! __stack[n] ) {
+
+                return `${n} not in stack: ` + tool(n - 1);
+            }
+
+            const file = __stack[n].getFileName();
+
+            if (file === null) {
+
+                return 'corrected:' + tool(n - 1);
+            }
+
+            return (new Date()).toISOString().substring(0, 19).replace('T', ' ') + ' ' + file + ':' + rpad(__stack[n].getLineNumber());
+        };
+
+        return tool;
+    }());
+}
+
+var manualMode = false;
+
+var native = (function () {
+
+    const nat = (function () {
+
+        try {
+            return function () {
+                Array.prototype.slice.call(arguments, 0).forEach(m => {
+                    if (typeof m === 'string') {
+
+                        process.stdout.write(`\n${m}`)
+
+                        return;
+                    }
+                    m = JSON.stringify(m, null, 4);
+
+                    process.stdout.write(`\n${m}`);
+                })
+            };
+            // return console.log.bind(console);
+        }
+        catch (e) {
+
+            return function () {};
+        }
+    }());
+
+    let
+        emmit = true,
+        cache = [];
+    ;
+
+    const tool = function () {
+
+        const args = Array.prototype.slice.call(arguments, 0);
+
+        if (emmit) {
+
+            nat.apply(this, args);
+        }
+        else {
+
+            cache = cache.concat(args);
+        }
+    }
+
+    tool.start = function () {
+
+        if (manualMode) {
+
+            return tool;
+        }
+
+        emmit = true;
+
+        tool.flush();
+
+        emmit = false;
+
+        return tool;
+    };
+
+    tool.get = function (flush) {
+
+        (flush === undefined) && (flush = false);
+
+        manualMode = false;
+
+        var data = cache.join("\n");
+
+        if ( ! flush ) {
+
+            cache = [];
+        }
+
+        tool.flush();
+
+        return data;
+    };
+
+    tool.flush = function () {
+
+        if (manualMode) {
+
+            return tool;
+        }
+
+        emmit = true;
+
+        if (emmit && cache.length) {
+
+            tool.call(this, cache.join("\n"));
+        }
+
+        cache = [];
+
+        return tool;
+    };
+
+    return tool;
+}());
+
+var stack = false;
+
+function log() {
+
+    var s = (stack === false) ? 0 : stack;
+
+    native(__line(s + 2));
+
+    if (this !== true) {
+
+        s += 1;
+    }
+
+    stack = false;
+
+    native.apply(this, Array.prototype.slice.call(arguments, 0));
+
+    return function () {
+
+        return log.stack(s).apply(true, Array.prototype.slice.call(arguments, 0));
+    };
+};
+
+log.native = native;
+
+log.log = function () {
+    return log.apply(this, Array.prototype.slice.call(arguments, 0));
+};
+
+log.start = function () {
+
+    native.start();
+
+    manualMode = true;
+
+    return function () {
+
+        return log.stack(s).apply(true, Array.prototype.slice.call(arguments, 0));
+    };
+}
+
+log.get = function (flush) {
+    return native.get(flush);
+}
+
+log.json = function () {
+
+    var s = (stack === false) ? 0 : stack;
+
+    native(__line(s + 2));
+
+    if (this !== true) {
+
+        s += 1;
+    }
+
+    stack = false;
+
+    native.start();
+
+    Array.prototype.slice.call(arguments).forEach(function (a) {
+        return (JSON.stringify(a, null, 4) + '').split(/\n/g).forEach(function (l) {
+            native(l);
+        });
+    });
+
+    native("");
+
+    native.flush();
+
+    return function () {
+
+        return log.stack(s).json.apply(true, Array.prototype.slice.call(arguments, 0));
+    };
+};
+
+log.stack = function (n /* def: 0 */) {
+
+    if (n === false) {
+
+        stack = n;
+
+        return log;
+    }
+
+    var nn = parseInt(n, 10);
+
+    if (!Number.isInteger(n) || n < 0) {
+
+        throw "Can't setup stack to '" + nn + "' ("+n+")";
+    }
+
+    stack = nn;
+
+    return log;
+};
+
+log.i = __webpack_require__(9);
+
+log.t = __webpack_require__(10);
+
+(function (ll) {
+
+    // http://stackoverflow.com/a/16608045/5560682
+    function isObject(a) {
+        // return (!!a) && (a.constructor === Object);
+        return Object.prototype.toString.call(a) === '[object Object]'; // better in node.js to dealing with RowDataPacket object
+    };
+    function isArray(obj) {
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    };
+
+    var type = (function (t) {
+        return function (n) {
+
+            if (n === undefined) {
+
+                return 'Undefined';
+            }
+
+            if (n === null) {
+
+                return 'Null';
+            }
+
+            t = typeof n;
+
+            if (t === 'Function') {
+
+                return t;
+            }
+
+            if (Number.isNaN(n)) {
+
+                return "NaN";
+            }
+
+            if (t === 'number') {
+
+                return (Number(n) === n && n % 1 === 0) ? 'Integer' : 'Float';
+            }
+
+            return n.constructor ? n.constructor.name : t;
+            // t = Object.prototype.toString.call(n);
+            // if (t.indexOf('[object ') === 0) {
+            //     t = t.substring(8);
+            //     t = t.substring(0, t.length - 1);
+            // }
+            // return t;
+        };
+    }());
+
+    function each(obj, fn, context) {
+        var r;
+        if (isArray(obj)) {
+            for (var i = 0, l = obj.length ; i < l ; ++i) {
+                if (fn.call(context, obj[i], i) === false) {
+                    return;
+                }
+            }
+        }
+        else if (isObject(obj) || count(obj)) {
+            for (var i in obj) {
+                if (obj && obj.hasOwnProperty && obj.hasOwnProperty(i)) {
+                    if (fn.call(context, obj[i], i) === false) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    function toString(o, k) {
+
+        if (typeof o === 'function') {
+
+            k = Object.keys(o).join(',');
+
+            return k ? 'object keys:' + k : '';
+        }
+
+        return o
+    }
+
+    // only for function
+    function count (o) {
+
+        if (typeof o === 'function') {
+
+            for (let i in o) {
+
+                if (o && o.hasOwnProperty && o.hasOwnProperty(i)) {
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    log.dump = function () {
+
+        native.start();
+
+        var args = Array.prototype.slice.call(arguments, 0);
+
+        var limit = args[args.length - 1];
+
+        if (args.length > 1 && args[1] === undefined) {
+
+            args.pop();
+        }
+
+        if (args.length > 1 && Number.isInteger(limit) && limit > 0) {
+
+            args.pop();
+
+            limit -= 1;
+        }
+        else {
+
+            limit = 2;
+        }
+
+        function inner(d, l, index) {
+            (typeof l === 'undefined') && (l = 0);
+            index = (typeof index === 'undefined') ? '' : '<' + index + '> ';
+            var isOb = isObject(d) || count(d);
+            if (isOb || isArray(d)) {
+                ll(('  '.repeat(l)) + index + type(d) + ' ' + ((isOb) ? '{' :'[') );
+                each(d, function (v, i) {
+                    var isOb = isObject(v) || count(v) || isArray(v);
+                    if (limit !== false && l >= limit && isOb) {
+                        ll(
+                            ('  '.repeat(l + 1)) +
+                            ((typeof i === 'undefined') ? '' : '<' + i + '> ') +
+                            '[' + type(v) + ']: ' +
+                            '>>more<<'
+                        );
+                        // inner('... more: ' + type(v), l + 1, i);
+                    }
+                    else {
+                        inner(v, l + 1, i);
+                    }
+                });
+                ll(('  '.repeat(l)) + ((isOb) ? '}' :']') );
+            }
+            else {
+                var t = type(d);
+                var c = toString(d);
+                ll(
+                    ('  '.repeat(l)) +
+                    index +
+                    '[' + t + ']: ' +
+                    '>' + c + '<' +
+                    ( (t === 'String') ? ' len: ' + c.length : '')
+                );
+            }
+        }
+
+        var s = (stack === false) ? 0 : stack;
+
+        native(__line(s + 2));
+
+        if (this !== true) {
+            s += 1;
+        }
+
+        stack = false;
+
+        args.forEach(function (d) {
+            inner(d);
+        });
+
+        native("");
+
+        native.flush();
+
+        return function () {
+
+            var args = Array.prototype.slice.call(arguments, 0);
+
+            if (limit !== false) {
+
+                args = args.concat(limit + 1);
+            }
+
+            return log.stack(s).dump.apply(true, args);
+        };
+    };
+
+}(native));
+
+if (node) {
+
+    module.exports = log;
+}
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5), __webpack_require__(4)))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -2049,7 +2658,6 @@ exports.validateNamespace = validateNamespace;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
-/* 3 */,
 /* 4 */
 /***/ (function(module, exports) {
 
@@ -2270,14 +2878,51 @@ module.exports = g;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/**
+ * @author Szymon Działowski
+ * @license MIT License (c) copyright 2017-present original author or authors
+ * @homepage https://github.com/stopsopa/roderic
+ */
+
+
+
+const log = (function () {
+    try {
+        if (console.log) {
+            return function () {
+                try {
+                    console.log.apply(this, Array.prototype.slice.call(arguments));
+                }
+                catch (e) {
+                }
+                return log;
+            }
+        }
+
+        throw new Error('');
+    }
+    catch (e) {
+        return function () {return log};
+    }
+}());
+
+log.stack = function () {return log};
+
+module.exports = log.dump = log.start = log.get = log.json = log.log = log;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var tslib = __webpack_require__(1);
-var util = __webpack_require__(2);
-var component = __webpack_require__(7);
-var logger$1 = __webpack_require__(10);
+var util = __webpack_require__(3);
+var component = __webpack_require__(8);
+var logger$1 = __webpack_require__(12);
 
 /**
  * @license
@@ -2947,7 +3592,7 @@ exports.firebase = firebase$1;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2956,7 +3601,7 @@ exports.firebase = firebase$1;
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var tslib = __webpack_require__(1);
-var util = __webpack_require__(2);
+var util = __webpack_require__(3);
 
 /**
  * Component for service name T, e.g. `auth`, `auth-internal`
@@ -3269,9 +3914,166 @@ exports.Provider = Provider;
 
 
 /***/ }),
-/* 8 */,
-/* 9 */,
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global, process) {
+
+
+function isObject(x) {
+    return Object.prototype.toString.call(x) === '[object Object]'; // better in node.js to dealing with RowDataPacket object
+}
+
+const node = typeof global !== 'undefined' && Object.prototype.toString.call(global.process) === '[object process]';
+
+let colorscache = null;
+
+if (node) {
+
+    global.__stack || Object.defineProperty(global, '__stack', {
+        get: function tmp() {
+            var orig = Error.prepareStackTrace;
+            Error.prepareStackTrace = function(_, stack){ return stack; };
+            var err = new Error;
+            Error.captureStackTrace(err, tmp);
+            // Error.captureStackTrace(err, arguments.callee); // without 'use strict'
+            var stack = err.stack;
+            Error.prepareStackTrace = orig;
+            return stack;
+        }
+    });
+
+    global.__line = (function () {
+
+        function rpad(s, n) {
+
+            (typeof n === 'undefined') && (n = 5);
+
+            try {
+
+                if (s && s.length && s.length >= n) {
+
+                    return s;
+                }
+            }
+            catch (e) {
+                console.log('exception', typeof s, s, e);
+            }
+
+            return String(s + " ".repeat(n)).slice(0, n);
+        }
+
+        var tool = function (n) {
+
+            if (typeof n === 'undefined') {
+
+                let tmp = [];
+
+                for (let i in __stack) {
+
+                    if (__stack.hasOwnProperty(i)) {
+
+                        tmp.push('stack: ' + rpad(i) + ' file:' + __stack[i].getFileName() + ':' + rpad(__stack[i].getLineNumber()) + ' ');
+                    }
+                }
+
+                return tmp;
+            }
+
+            (typeof n === 'undefined') && (n = 1);
+
+            if ( ! __stack[n] ) {
+
+                return `${n} not in stack: ` + tool(n - 1);
+            }
+
+            const file = __stack[n].getFileName();
+
+            if (file === null) {
+
+                return 'corrected:' + tool(n - 1);
+            }
+
+            return (new Date()).toISOString().substring(0, 19).replace('T', ' ') + ' ' + file + ':' + rpad(__stack[n].getLineNumber());
+        };
+
+        return tool;
+    }());
+
+    const util = eval('require')('util');
+
+    const tool = (obj, depth, colors, stack) => {
+        process.stdout.write(tool.log(obj, depth, colors, stack) + "\n");
+    };
+
+    /**
+     * https://nodejs.org/api/util.html#util_util_inspect_object_options
+     */
+    tool.log = (obj, depth = 2, colors = false, stack = 0) => {
+
+        let opt = {
+            // depth,
+            // colors,
+            // compact: true,
+            // breakLength: 80,
+        };
+
+        if (isObject(depth)) {
+
+            opt = Object.assign({
+                colors: false,
+                compact: false,
+            }, opt);
+        }
+        else {
+
+            opt.depth   = depth;
+
+            opt.colors  = (typeof colorscache === 'boolean') ? colorscache : colors;
+        }
+
+        return __line(stack + 3) + "\n" + util.inspect(obj, opt);
+    };
+
+    tool.colors = c => colorscache = c;
+
+    module.exports = tool;
+}
+else {
+
+    module.exports = __webpack_require__(6);
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5), __webpack_require__(4)))
+
+/***/ }),
 /* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {
+module.exports = (function () {
+    try {
+        return (...args) => {
+
+            args = [
+                (new Date()).toISOString().substring(0, 19).replace('T', ' '),
+                ': ',
+                ...args,
+                "\n"
+            ];
+
+            process.stdout.write(args.join(''));
+        }
+    }
+    catch (e) {
+        return () => {};
+    }
+}());
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
+
+/***/ }),
+/* 11 */,
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3570,8 +4372,6 @@ function setUserLogHandler(logCallback, options) {
 
 
 /***/ }),
-/* 11 */,
-/* 12 */,
 /* 13 */,
 /* 14 */,
 /* 15 */,
@@ -3584,7 +4384,7 @@ function setUserLogHandler(logCallback, options) {
 "use strict";
 
 
-var firebase = __webpack_require__(6);
+var firebase = __webpack_require__(7);
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -3940,7 +4740,7 @@ module.exports = firebase__default['default'];
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {(function() {var firebase = __webpack_require__(6).default;/*
+/* WEBPACK VAR INJECTION */(function(global) {(function() {var firebase = __webpack_require__(7).default;/*
 
  Copyright The Closure Library Authors.
  SPDX-License-Identifier: Apache-2.0
@@ -4387,7 +5187,7 @@ Object.defineProperty(exports, "__esModule", {
     value: !0
 });
 
-var t = __webpack_require__(1), e = __webpack_require__(6), n = __webpack_require__(10), r = __webpack_require__(2), i = __webpack_require__(23), o = __webpack_require__(7);
+var t = __webpack_require__(1), e = __webpack_require__(7), n = __webpack_require__(12), r = __webpack_require__(3), i = __webpack_require__(23), o = __webpack_require__(8);
 
 function s(t) {
     return t && "object" == typeof t && "default" in t ? t : {
@@ -21573,11 +22373,11 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var firebase = _interopDefault(__webpack_require__(6));
+var firebase = _interopDefault(__webpack_require__(7));
 var tslib = __webpack_require__(1);
-var util = __webpack_require__(2);
-var logger$1 = __webpack_require__(10);
-var component = __webpack_require__(7);
+var util = __webpack_require__(3);
+var logger$1 = __webpack_require__(12);
+var component = __webpack_require__(8);
 
 /**
  * @license
@@ -37735,19 +38535,20 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/firebase/app/dist/index.cjs.js
 var index_cjs = __webpack_require__(19);
+var index_cjs_default = /*#__PURE__*/__webpack_require__.n(index_cjs);
 
 // EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.js
 var tslib_es6 = __webpack_require__(1);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/app/dist/index.cjs.js
-var dist_index_cjs = __webpack_require__(6);
+var dist_index_cjs = __webpack_require__(7);
 var dist_index_cjs_default = /*#__PURE__*/__webpack_require__.n(dist_index_cjs);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/component/dist/index.cjs.js
-var component_dist_index_cjs = __webpack_require__(7);
+var component_dist_index_cjs = __webpack_require__(8);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/util/dist/index.cjs.js
-var util_dist_index_cjs = __webpack_require__(2);
+var util_dist_index_cjs = __webpack_require__(3);
 
 // EXTERNAL MODULE: ./node_modules/idb/build/idb.js
 var idb = __webpack_require__(20);
@@ -39083,7 +39884,7 @@ registerInstallations(dist_index_cjs_default.a);
 //# sourceMappingURL=index.esm.js.map
 
 // EXTERNAL MODULE: ./node_modules/@firebase/logger/dist/index.esm.js
-var index_esm = __webpack_require__(10);
+var index_esm = __webpack_require__(12);
 
 // CONCATENATED MODULE: ./node_modules/@firebase/analytics/dist/index.esm.js
 
@@ -39746,11 +40547,16 @@ var database_dist_index_cjs = __webpack_require__(24);
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
 var runtime = __webpack_require__(25);
 
+// EXTERNAL MODULE: ./node_modules/inspc/logn.js
+var logn = __webpack_require__(2);
+var logn_default = /*#__PURE__*/__webpack_require__.n(logn);
+
 // CONCATENATED MODULE: ./pages/firebase.core.entry.jsx
 // Firebase App (the core Firebase SDK) is always required and must be listed first
  // If you enabled Analytics in your project, add the Firebase SDK for Analytics
 
  // Add the Firebase products that you want to use
+
 
 
 
@@ -39793,9 +40599,11 @@ window.fire = function () {
             appId: env('FIREBASE_API_ID'),
             measurementId: env('FIREBASE_MEASUREMENT_ID')
           };
-          index_cjs["initializeApp"](firebaseConfig);
-          resolve(index_cjs);
+          index_cjs_default.a.initializeApp(firebaseConfig);
+          resolve(index_cjs_default.a);
         }
+
+        logn_default()('firebase promise lib: waiting for env to load');
       }, 300);
     });
   }
