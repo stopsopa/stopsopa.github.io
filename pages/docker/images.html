@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>stopsopa.github.io</title>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+          Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+
+            var text = tag.innerHTML;
+
+            text = text.replace(/domain\.com/g, location.origin)
+
+            tag.innerHTML = text;
+          });
+
+          resolve();
+        });
+
+        window.waitForPromise = function () {
+
+          return p;
+        }
+      }())
+    </script>
+    <script src="/js/github.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+
+      });
+    </script>
+</head>
+<body class="layout" toc>
+
+<div class="body">
+    <div class="inside">
+
+        <div class="cards">
+
+            <h2>ubuntu:18.04 && ImageMagick</h2>
+            <script type="editor" data-lang="bash">
+
+DIR="./docker"
+FILE="Dockerfile"
+
+cd "$DIR"
+
+cat <<EOF > "$FILE"
+
+FROM ubuntu:18.04
+
+# docker run -it ubuntu:18.04 bash
+#    1  apt-get update
+#    2  apt-get install build-essential
+#    3  wget https://www.imagemagick.org/download/ImageMagick.tar.gz
+#    4  apt-get install wget
+#    5  wget https://www.imagemagick.org/download/ImageMagick.tar.gz
+#    6  ls -la
+#    7  tar xvzf ImageMagick.tar.gz
+#    8  ls -la
+#    9  cd "$(ls ImageMagick-*)"
+#   10  ls ImageMagick-7.0.10-31/
+#   11  ls ImageMagick-7.0.10-31
+#   12  ls ImageMagick-7.0.10-3
+#   13  ls ImageMagick-7.0.10-3*
+#   14  ls -la
+#   15  ls
+#   16  ls -b
+#   17  ls -d
+#   18  ls -d */
+#   19  ls -l
+#   20  find . -maxdepth 1
+#   21  find . -maxdepth 1 -type f
+#   22  find . -maxdepth 1 -type f | grep ImageMagick-
+#   23  find . -maxdepth 1 -type f | grep ImageMagick
+#   24  find . -maxdepth 1 -type d | grep ImageMagick
+#   25  cd "$(find . -maxdepth 1 -type d | grep ImageMagick)"
+#   26  ./configure
+#   27  make
+#   28  make install
+#   29  ldconfig /usr/local/lib
+#   30  magick -version
+#   31  cd ..
+#   32  du -sh *
+#   33  cd ImageMagick-7.0.10-31/
+#   34  cd ..
+#   35  convert -v
+#   36  history
+
+RUN apt-get update && apt-get -y install \
+            build-essential \
+            wget \
+         && wget https://www.imagemagick.org/download/ImageMagick.tar.gz \
+         && tar xvzf ImageMagick.tar.gz \
+         && cd "$(find . -maxdepth 1 -type d | grep ImageMagick)" \
+         && ./configure \
+         && make \
+         && make install \
+         && ldconfig /usr/local/lib \
+         && magick -version
+
+EOF
+
+docker build . -t ubuntu:imagemagick
+
+
+            </script>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
