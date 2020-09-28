@@ -60,6 +60,7 @@ while true; do ping -n -q -c1 docker.phaseiilabs.com | grep '('; sleep 2; done
                 <h2>Processing arguments</h2>
                 <script type="editor" data-lang="bash">
 
+
 echo "args: '$@'"
 
 _CLEANOLD="0";
@@ -69,6 +70,7 @@ _GEN="gen"
 _DEPLOYMENT_YAML=""
 
 PARAMS=""
+_EVAL=""
 while (( "$#" )); do
   case "$1" in
     -c|--clean|--clear)
@@ -76,18 +78,19 @@ while (( "$#" )); do
       shift;
       ;;
     -d|--deployment-yaml)
-      if [ "$2" = "" ]; then                            # optional
+      if [ "$2" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
         echo "$0 Error: --deployment-yaml value can't be empty" >&2 # optional
         exit 1;                                          # optional
       fi
       if ! [ -f "$2" ]; then
-          echo "$0 Error: --deployment-yaml file '$2' doesn't exist" >&2 # optional
+        echo "$0 Error: --deployment-yaml file '$2' doesn't exist" >&2 # optional
+        exit 1;                                          # optional
       fi                                           # optional
       _DEPLOYMENT_YAML="$2";
       shift 2;
       ;;
     -g|--gen)
-      if [ "$2" = "" ]; then                            # optional
+      if [ "$2" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
         echo "$0 Error: --gen value can't be empty" >&2 # optional
         exit 1;                                          # optional
       fi                                                # optional
@@ -96,13 +99,27 @@ while (( "$#" )); do
       ;;
     --) # end argument parsing
       shift;
-      while (( "$#" )); do          # optional                          
-        if [ "$PARAMS" = "" ]; then # optional
-            PARAMS="\"$1\""         # optional
-        else                        # optional
-            PARAMS="$PARAMS \"$1\"" # optional
-        fi                          # optional
-        shift;                      # optional            
+      while (( "$#" )); do          # optional
+        if [ "$1" = "&&" ]; then
+          PARAMS="$PARAMS \&\&"
+          _EVAL="$_EVAL &&"
+        else
+          if [ "$PARAMS" = "" ]; then
+            PARAMS="\"$1\""
+            _EVAL="\"$1\""
+          else
+            PARAMS="$PARAMS \"$1\""
+            _EVAL="$_EVAL \"$1\""
+#          PARAMS="$(cat <<EOF
+#$PARAMS
+#- "$1"
+#EOF
+#)"
+          fi
+        fi
+        echo "                PARAMS1>>$PARAMS<<"
+        echo "                _EVAL 2>>$_EVAL<<"
+        shift;                      # optional
       done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
       break;
       ;;
@@ -111,22 +128,48 @@ while (( "$#" )); do
       exit 1;
       ;;
     *) # preserve positional arguments
-      if [ "$PARAMS" = "" ]; then
-          PARAMS="\"$1\""
+      if [ "$1" = "&&" ]; then
+          PARAMS="$PARAMS \&\&"
+          _EVAL="$_EVAL &&"
       else
+        if [ "$PARAMS" = "" ]; then
+            PARAMS="\"$1\""
+            _EVAL="\"$1\""
+        else
           PARAMS="$PARAMS \"$1\""
+            _EVAL="$_EVAL \"$1\""
+#          PARAMS="$(cat <<EOF
+#$PARAMS
+#- "$1"
+#EOF
+#)"
+        fi
       fi
+      echo "                PARAMS2>>$PARAMS<<"
+      echo "                _EVAL 1>>$_EVAL<<"
       shift;
       ;;
   esac
 done
 
-if [ "$_DEPLOYMENT_YAML" = "" ]; then
-  
-    echo -e "\n\n$0 error: parameter _DEPLOYMENT_YAML is not defined - spedify it in --deployment-yaml parameter\n\n";
+trim() {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "$var"
+}
 
-    exit 1;
-fi
+PARAMS="$(trim "$PARAMS")"
+_EVAL="$(trim "$_EVAL")"
+
+#if [ "$_DEPLOYMENT_YAML" = "" ]; then
+#
+#    echo -e "\n\n$0 error: parameter _DEPLOYMENT_YAML is not defined - spedify it in --deployment-yaml parameter\n\n";
+#
+#    exit 1;
+#fi
 
 # set positional arguments in their proper place
 eval set -- "$PARAMS"
@@ -139,24 +182,60 @@ echo "rest: '$@'"
 echo "count: $#"
 
 
-while (( "$#" )); do
-  echo "print: '$1'"
-  shift;
-done
+if [[ $# -gt 0 ]]; then
 
-# /bin/bash arg.sh one abc def -- -f test two "a b c"
-# args: 'one abc def -- -f test two a b c'
-# _CLEANOLD: 0
-# _GEN: gen
-# rest: 'one abc def -f test two a b c'
-# count: 7
-# print: 'one'
-# print: 'abc'
-# print: 'def'
-# print: '-f'
-# print: 'test'
-# print: 'two'
-# print: 'a b c'
+  echo there are arguments
+
+  while (( "$#" )); do
+    echo "arg: '$1'"
+    shift;
+  done
+else
+
+  echo there is no arguments
+fi
+
+echo "PARAMS>>$PARAMS<<"
+echo "_EVAL>>$_EVAL<<"
+
+eval "$_EVAL"
+
+# when you run
+#   /bin/bash arg.sh --gen test -c -- echo "one"     \&\& pwd \&\& echo "two three"
+# the output will be:
+
+#args: '--gen test -c -- echo one && pwd && echo two three'
+#                PARAMS1>>"echo"<<
+#                _EVAL 2>>"echo"<<
+#                PARAMS1>>"echo" "one"<<
+#                _EVAL 2>>"echo" "one"<<
+#                PARAMS1>>"echo" "one" \&\&<<
+#                _EVAL 2>>"echo" "one" &&<<
+#                PARAMS1>>"echo" "one" \&\& "pwd"<<
+#                _EVAL 2>>"echo" "one" && "pwd"<<
+#                PARAMS1>>"echo" "one" \&\& "pwd" \&\&<<
+#                _EVAL 2>>"echo" "one" && "pwd" &&<<
+#                PARAMS1>>"echo" "one" \&\& "pwd" \&\& "echo"<<
+#                _EVAL 2>>"echo" "one" && "pwd" && "echo"<<
+#                PARAMS1>>"echo" "one" \&\& "pwd" \&\& "echo" "two three"<<
+#                _EVAL 2>>"echo" "one" && "pwd" && "echo" "two three"<<
+#_CLEANOLD: 1
+#_GEN: test
+#rest: 'echo one && pwd && echo two three'
+#count: 7
+#there are arguments
+#arg: 'echo'
+#arg: 'one'
+#arg: '&&'
+#arg: 'pwd'
+#arg: '&&'
+#arg: 'echo'
+#arg: 'two three'
+#PARAMS>>"echo" "one" \&\& "pwd" \&\& "echo" "two three"<<
+#_EVAL>>"echo" "one" && "pwd" && "echo" "two three"<<
+#one
+#/Users/sd/Workspace/projects/monorepo/runtime
+#two three
 
                 </script>
                 <a href="https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8f">https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8f</a>
