@@ -68,6 +68,8 @@ kubectl rollout restart deployment/nameofdeployment
 kubectl port-forward hublh55649bcc78b5dvq 7000:80
 kubectl port-forward service/redismaster 7000:80
     # https://bit.ly/2YDIyG5
+    
+kubectl get ep    
 
 # To see environment variables: from: https://bit.ly/36bhIII
 kubectl run curl --image=radial/busyboxplus:curl -i --tty
@@ -86,6 +88,15 @@ docker exec -it docker-registry /bin/registry garbage-collect --dry-run /etc/doc
 printenv | grep -E "(DEP|GIT|NUMBER)"
 
 kubectl get rc,rs,services,pods,deployments,jobs  --show-labels --all-namespaces
+
+kubectl get serviceaccounts
+
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: build-robot
+EOF
                 </script>
                 
                 <a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">see more</a>
@@ -104,6 +115,8 @@ kubectl get job --output=jsonpath='{.items[*].metadata.name}' | (cat && printf "
                 
                 <a href="https://gist.github.com/so0k/42313dbb3b547a0f51a547bb968696ba">see more</a>
 
+                <h2>Digital Ocean diagnostic pod</h2>
+                <a href="https://github.com/digitalocean/doks-debug/blob/master/Dockerfile">https://github.com/digitalocean/doks-debug/blob/master/Dockerfile</a>
                 <h2>Digital Ocean</h2>
                 <script type="editor" data-lang="bash">
 
