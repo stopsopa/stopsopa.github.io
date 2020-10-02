@@ -1,6 +1,19 @@
 
 __DIR="/Volumes/WINSCP/ssh/ssh"
 
+exec 3<> /dev/null
+function green {
+    printf "\e[32m$1\e[0m\n"
+}
+
+function red {
+    printf "\e[31m$1\e[0m\n"
+}
+
+function yellow {
+    printf "\e[33m$1\e[0m\n"
+}
+
 ssh-add -l
 
 if [ "$1" = "install" ]; then
@@ -37,7 +50,7 @@ trim() {
     echo -n "$var"
 }
 
-_CMD="find \"$__DIR\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$'"
+_CMD="find \"$__DIR\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
 
 echo -e "executing command:\n\n    $_CMD\n"
 
@@ -49,11 +62,17 @@ _LIST="$(trim "$_LIST")"
 
 if [ "$_CODE" != "0" ]; then
 
-    echo ""
-    echo "$0 error:"
-    echo -e "command:\n    $_CMD"
-    echo "has crushed with status code: >>$_CODE<<"
-    echo ""
+{ red "$(cat <<END
+
+$0 error:
+command:
+
+  $_CMD
+
+has crushed with status code: >>$_CODE<<
+
+END
+)"; } 2>&3
 
     exit $_CODE;
 fi
@@ -64,7 +83,7 @@ _LINES="$(trim "$_LINES")"
 
 if [ "$_LIST" = "" ] || [ "$_LINES" -lt "1" ]; then
 
-    echo "No keys found"
+    { red "\n\n   No keys found\n\n"; } 2>&3
 
     exit 1
 fi
@@ -102,18 +121,28 @@ while : ; do
 
     if ! [[ $i =~ $TEST ]]; then
 
-        echo "given value ($i) should be an integer"
+{ red "$(cat <<END
 
-        echo "try again:"
+given value ($i) should be an integer
+
+try again:
+
+END
+)"; } 2>&3
 
         continue;
     fi
 
     if [[ "$i" -lt "1" ]] || [ "$i" -gt "$_LINES" ]; then
 
-        echo "given value ($i) should be an integer > 0 but <= than $_LINES"
+{ red "$(cat <<END
 
-        echo "try again:"
+given value ($i) should be an integer > 0 but <= than $_LINES
+
+try again:
+
+END
+)"; } 2>&3
 
         continue;
     fi
@@ -147,20 +176,50 @@ _CODE="$?"
 
 rm ~/.ssh/$key
 
+GITCONFIG="$__DIR/$key.sh"
+
+if [ -f "$GITCONFIG" ]; then
+
+  /bin/bash "$GITCONFIG"
+else
+
+{ yellow "$(cat <<END
+
+  WARNING:
+
+  git config file '$GITCONFIG' not found
+
+  check config:
+
+    git config --global -l
+
+
+END
+)"; } 2>&3
+
+fi
+
 if [ "$_CODE" != "0" ]; then
 
-    echo ""
-    echo "$0 error:"
-    echo -e "command:\n    $_CMD"
-    echo "has crushed with status code: >>$_CODE<<"
-    echo ""
+{ red "$(cat <<END
+
+$0 error:
+command:
+
+  $_CMD
+
+has crushed with status code: >>$_CODE<<
+
+END
+)"; } 2>&3
 
     exit $_CODE;
 fi
 
 ssh-add -l
 
-echo -e "\n    all good\n"
+{ green "\n\n   all good\n\n"; } 2>&3
+
 
 
 
