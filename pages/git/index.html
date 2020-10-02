@@ -36,10 +36,10 @@
                 <h2>remove from history (filter-branch)</h2>
                 <script type="editor" data-lang="bash">
                     
-                    git filter-branch --env-filter '
-OLD_EMAIL="your-old-email@example.com"
-CORRECT_NAME="Your Correct Name"
-CORRECT_EMAIL="your-correct-email@example.com"
+git filter-branch --env-filter '
+OLD_EMAIL="youroldemail@example.com"
+CORRECT_NAME="YourCorrectName"
+CORRECT_EMAIL="yourcorrectemail@example.com"
 if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
 then
     export GIT_COMMITTER_NAME="$CORRECT_NAME"
