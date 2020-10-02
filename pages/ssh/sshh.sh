@@ -1,7 +1,11 @@
 
+__DIR="/Volumes/WINSCP/ssh/ssh"
+
+ssh-add -l
+
 if [ "$1" = "install" ]; then
 
-  TEST="alias cluster=\"/bin/bash ~/cluster.sh\""
+  TEST="alias sshh=\"/bin/bash ~/sshh.sh\""
 
   CONTENT="$(cat ~/.bashrc)"
 
@@ -10,16 +14,16 @@ if [ "$1" = "install" ]; then
       echo "already installed just use"
   else
 
-      echo 'alias cluster="/bin/bash ~/cluster.sh"' >> ~/.bashrc
+      echo 'alias sshh="/bin/bash ~/sshh.sh"' >> ~/.bashrc
 
-      echo 'alias cluster="/bin/bash ~/cluster.sh"' >> ~/.bash_profile
+      echo 'alias sshh="/bin/bash ~/sshh.sh"' >> ~/.bash_profile
 
       source ~/.bashrc
 
       echo "now just use"
   fi
 
-  echo -e "\n    cluster\n\nto switch between DigitalOcean clusters"
+  echo -e "\n    sshh\n\nto switch ssh key"
 
   exit 0
 fi
@@ -33,7 +37,7 @@ trim() {
     echo -n "$var"
 }
 
-_CMD="doctl kubernetes cluster list --format \"Name\" --no-header"
+_CMD="find \"$__DIR\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$'"
 
 echo -e "executing command:\n\n    $_CMD\n"
 
@@ -60,14 +64,14 @@ _LINES="$(trim "$_LINES")"
 
 if [ "$_LIST" = "" ] || [ "$_LINES" -lt "1" ]; then
 
-    echo "No clusters found"
+    echo "No keys found"
 
     exit 1
 fi
 
-echo "Choose from available DigitalOcean clusters:"
+echo "Choose key to add:"
 
-CLUSTER=""
+SSHS=""
 
 TEST="^[0-9]+$"
 
@@ -76,6 +80,9 @@ while : ; do
     i="1"
     for name in $_LIST
     do
+
+        name="$(echo "$name" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
+
         echo "$i) ${name}"
 
         i=$(($i + 1))
@@ -111,20 +118,34 @@ while : ; do
         continue;
     fi
 
-    CLUSTER="$(echo "$_LIST" | sed -n "$i p")"
+    SSHS="$(echo "$_LIST" | sed -n "$i p")"
 
     break;
 done
 
-_CMD="doctl kubernetes cluster kubeconfig save \"$CLUSTER\""
+for name in $_LIST
+do
 
-echo -e "executing command:\n\n    $_CMD\n"
+    key="$(echo "$name" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
 
-_LIST="$(eval "$_CMD")"
+    echo "unregister) ${key}"
+
+    ssh-add -D "$name"
+done
+
+key="$(echo "$SSHS" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
+
+cp "$SSHS" ~/.ssh/
+chmod 600 ~/.ssh/$key
+ssh-add ~/.ssh/$key
+
+echo -e "executing command:\n\n    ssh-add ~/.ssh/$key\n"
+
+ssh-add ~/.ssh/$key
 
 _CODE="$?"
 
-_LIST="$(trim "$_LIST")"
+rm ~/.ssh/$key
 
 if [ "$_CODE" != "0" ]; then
 
@@ -137,9 +158,9 @@ if [ "$_CODE" != "0" ]; then
     exit $_CODE;
 fi
 
-kubectl get no
+ssh-add -l
 
-echo -e "\n    all good - switched to cluster $CLUSTER\n"
+echo -e "\n    all good\n"
 
 
 

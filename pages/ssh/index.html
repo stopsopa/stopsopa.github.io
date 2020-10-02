@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>stopsopa.github.io</title>
+    <script>
+        (function () {
+            var resolve;
+            var p = new Promise(function (res) {
+                resolve = res;
+            });
+
+            document.addEventListener('DOMContentLoaded', function () {
+
+                Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+
+                    var text = tag.innerHTML;
+
+                    text = text.replace(/domain\.com/g, location.origin)
+
+                    tag.innerHTML = text;
+                });
+
+                resolve();
+            });
+
+            window.waitForPromise = function () {
+
+                return p;
+            }
+        }())
+    </script>
+    <script src="/js/github.js"></script>
+    <style>
+        #semversort textarea {
+            width: 100%;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body class="layout" toc>
+
+    <div class="body">
+        <div class="inside">
+
+            <div class="cards">
+
+                <h2>ssh key tool</h2>
+                Just paste this code to your terminal:
+                <script type="editor" data-lang="bash" class="domain.com">
+
+rm -rf ~/sshh.sh
+wget domain.com/pages/ssh/sshh.sh -O ~/sshh.sh
+/bin/bash ~/sshh.sh install
+source ~/.bash_profile
+source ~/.bashrc
+
+                </script>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
