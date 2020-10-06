@@ -413,6 +413,7 @@ module.exports = function request(url, opt = {}) {
                 <h2>jsonfetch.js</h2>  
                 <script type="editor" data-lang="js">
 
+
 const URL           = require('url').URL;
 
 const https         = require('https');
@@ -436,6 +437,7 @@ module.exports = function jsonfetch (url, opt = {}) {
     timeout     = 30 * 1000,
     get         = {},
     headers     = {},
+    debug       = false,
     body,
   } = opt;
 
@@ -481,9 +483,12 @@ module.exports = function jsonfetch (url, opt = {}) {
       headers,
     };
 
-    // log.dump({
-    //   rq,
-    // }, 6);
+    if (debug) {
+
+      log.dump({
+        rq,
+      }, 6);
+    }
 
     var req = lib.request(rq, res => {
 
@@ -549,6 +554,7 @@ module.exports = function jsonfetch (url, opt = {}) {
     req.end();
   });
 }
+
 
 
 
