@@ -1,5 +1,13 @@
+#!/bin/bash
 
-__DIR="/Volumes/WINSCP/ssh/ssh"
+# to use it , just add to ~/.bash_profile
+#        /bin/bash /Volumes/WINSCP/ssh/ssh/add.sh
+
+# and then also use sshh script from:
+# https://stopsopa.github.io/pages/ssh/index.html#ssh-key-tool
+
+DEFKEY="first"
+
 
 exec 3<> /dev/null
 function green {
@@ -14,31 +22,19 @@ function yellow {
     printf "\e[33m$1\e[0m\n"
 }
 
+
+
+THISFILE=${BASH_SOURCE[0]}
+
+DIR="$( cd "$( dirname "${THISFILE}" )" && pwd -P )"
+
 ssh-add -l
 
-if [ "$1" = "install" ]; then
+if [ "$?" = "0" ]; then
 
-  TEST="alias sshh=\"/bin/bash ~/sshh.sh\""
+	echo "there is already key registered"
 
-  CONTENT="$(cat ~/.bashrc)"
-
-  if [[ $CONTENT =~ $TEST ]]; then
-
-      echo "already installed just use"
-  else
-
-      echo 'alias sshh="/bin/bash ~/sshh.sh"' >> ~/.bashrc
-
-      echo 'alias sshh="/bin/bash ~/sshh.sh"' >> ~/.bash_profile
-
-      source ~/.bashrc
-
-      echo "now just use"
-  fi
-
-  echo -e "\n    sshh\n\nto switch ssh key"
-
-  exit 0
+	exit 0
 fi
 
 trim() {
@@ -50,9 +46,7 @@ trim() {
     echo -n "$var"
 }
 
-_CMD="find \"$__DIR\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
-
-echo -e "executing command:\n\n    $_CMD\n"
+_CMD="find \"$DIR\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
 
 _LIST="$(eval "$_CMD")"
 
@@ -62,17 +56,11 @@ _LIST="$(trim "$_LIST")"
 
 if [ "$_CODE" != "0" ]; then
 
-{ red "$(cat <<END
-
-$0 error:
-command:
-
-  $_CMD
-
-has crushed with status code: >>$_CODE<<
-
-END
-)"; } 2>&3
+    echo ""
+    echo "$0 error:"
+    echo -e "command:\n    $_CMD"
+    echo "has crushed with status code: >>$_CODE<<"
+    echo ""
 
     exit $_CODE;
 fi
@@ -83,88 +71,22 @@ _LINES="$(trim "$_LINES")"
 
 if [ "$_LIST" = "" ] || [ "$_LINES" -lt "1" ]; then
 
-    { red "\n\n   No keys found\n\n"; } 2>&3
+    echo "No keys found"
 
     exit 1
 fi
-
-echo "Choose key to add:"
-
-SSHS=""
-
-TEST="^[0-9]+$"
-
-while : ; do
-
-    i="1"
-    for name in $_LIST
-    do
-
-        name="$(echo "$name" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
-
-        echo "$i) ${name}"
-
-        i=$(($i + 1))
-    done
-
-    printf ">"
-
-    if [ "$_LINES" -lt "10" ]; then
-
-      read -n1 i
-    else
-
-      read i
-    fi
-
-    echo ""
-
-    if ! [[ $i =~ $TEST ]]; then
-
-{ red "$(cat <<END
-
-given value ($i) should be an integer
-
-try again:
-
-END
-)"; } 2>&3
-
-        continue;
-    fi
-
-    if [[ "$i" -lt "1" ]] || [ "$i" -gt "$_LINES" ]; then
-
-{ red "$(cat <<END
-
-given value ($i) should be an integer > 0 but <= than $_LINES
-
-try again:
-
-END
-)"; } 2>&3
-
-        continue;
-    fi
-
-    SSHS="$(echo "$_LIST" | sed -n "$i p")"
-
-    break;
-done
 
 for name in $_LIST
 do
 
     key="$(echo "$name" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
 
-    echo "unregister) ${key}"
-
     ssh-add -D "$name"
 done
 
-key="$(echo "$SSHS" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
+key="$DEFKEY"
 
-cp "$SSHS" ~/.ssh/
+cp "$DIR/$DEFKEY" ~/.ssh/
 chmod 600 ~/.ssh/$key
 ssh-add ~/.ssh/$key
 
@@ -176,11 +98,15 @@ _CODE="$?"
 
 rm ~/.ssh/$key
 
-GITCONFIG="$__DIR/$key.sh"
+GITCONFIG="$DIR/$key.sh"
 
 if [ -f "$GITCONFIG" ]; then
 
+  echo "Executing '$GITCONFIG'"
+
   /bin/bash "$GITCONFIG"
+
+  git config --global -l | egrep "(user\.name|user\.email)"
 else
 
 { yellow "$(cat <<END
@@ -192,7 +118,6 @@ else
   check config:
 
     git config --global -l
-
 
 END
 )"; } 2>&3
@@ -219,8 +144,6 @@ fi
 ssh-add -l
 
 { green "\n\n   all good\n\n"; } 2>&3
-
-
 
 
 
