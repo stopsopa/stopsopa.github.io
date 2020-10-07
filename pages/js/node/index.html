@@ -469,7 +469,7 @@ module.exports = function jsonfetch (url, opt = {}) {
       }
       catch (e) {
 
-        reject(emsg(`JSON.stringify error: ${e}`));
+        return reject(emsg(`JSON.stringify error: ${e}`));
       }
 
       headers['Content-Type'] = 'application/json; charset=utf-8';
