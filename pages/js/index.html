@@ -612,6 +612,7 @@ export default props => {
   const {
     value,
     correct,
+    ...rest
   } = props;
 
   useEffect(() => {
@@ -627,7 +628,7 @@ export default props => {
   }, [value]);
 
   return (
-    <textarea ref={el} {...props} />
+    <textarea ref={el} {...rest} />
   )
 }
                 </script>
