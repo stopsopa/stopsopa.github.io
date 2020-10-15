@@ -69,9 +69,9 @@ GITSTORAGESOURCE="git@github.com:stopsopa/gitstorage.git"
 # notice this paths will be always resolved relative
 # to location of this gitstorage-config.sh file
 GITSTORAGELIST=(
-    'test/one.log::xxx/one1.log'
-    'test/two.log::xxx/two2.log'
-    'source/file/relative/to/this/config.log::location/in/git/repository.log'
+    'test/one.log::github-stopsopa.github.io/one1.log'
+    'test/two.log::bitbucket-stopsopa.github.io/two2.log'
+    'gitstorage-config.sh::github-stopsopa.github.io/gitstorage-config.sh'
 )
 
 # example:
