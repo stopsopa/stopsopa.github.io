@@ -22,6 +22,7 @@ _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
 _CONFIG="$_DIR/gitstorage-config.sh";
 _HELP="0"
+_CREATE="0"
 _FORCE="0"
 
 PARAMS=""
@@ -32,11 +33,15 @@ while (( "$#" )); do
       _FORCE="1";
       shift;
       ;;
+    --create)
+      _CREATE="1";
+      shift;
+      ;;
     -h|--help)
       _HELP="1";
       shift;
       ;;
-    -c|--config)                         
+    -c|--config)
       _CONFIG="$2";
       shift 2;
       ;;
@@ -55,13 +60,7 @@ while (( "$#" )); do
   esac
 done
 
-if [ "$_HELP" = "1" ]; then
-
-cat << EOF
-
-Just create config file gitstorage-config.sh like:
-
->>>>>>>
+CONFIG=$(cat <<END
 #!/bin/bash
 
 GITSTORAGESOURCE="git@github.com:stopsopa/gitstorage.git"
@@ -78,6 +77,38 @@ GITSTORAGELIST=(
 # 'test/one.log::xxx/one1.log'
 
 # use xxx as a folder to describe project
+END
+);
+
+if [ "$_CREATE" = "1" ]; then
+
+  if [ -f gitstorage-config.sh ]; then
+
+    echo "file gitstorage-config.sh already exist"
+  else
+
+    echo "$CONFIG" > gitstorage-config.sh
+
+    echo "file gitstorage-config.sh created"
+  fi
+
+  exit 0;
+fi
+
+if [ "$_HELP" = "1" ]; then
+
+cat << EOF
+
+Just create config file gitstorage-config.sh like:
+
+  use command
+
+    /bin/bash "$0" --create
+
+  to create it
+
+>>>>>>>
+$CONFIG
 <<<<<<<<
 
 
@@ -100,14 +131,14 @@ if [ "$_CONFIG" = "" ]; then
 
   { red "$0 error: --config value can't be empty"; } 2>&3
 
-  exit 1;                                          
+  exit 1;
 fi
 
 if ! [ -f "$_CONFIG" ]; then
 
   { red "$0 error: --config file '$_CONFIG' doesn't exist"; } 2>&3
 
-  exit 1;                                          
+  exit 1;
 fi
 
 source "$_CONFIG";
@@ -350,4 +381,3 @@ if [ $MODE = "pull" ]; then
 
   exit 0;
 fi
-
