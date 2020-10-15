@@ -65,18 +65,12 @@ CONFIG=$(cat <<END
 
 GITSTORAGESOURCE="git@github.com:stopsopa/gitstorage.git"
 
-# notice this paths will be always resolved relative
-# to location of this gitstorage-config.sh file
+GITSTORAGETARGETDIR="github-stopsopa.github.io"
+
 GITSTORAGELIST=(
-    'test/one.log::github-stopsopa.github.io/one1.log'
-    'test/two.log::bitbucket-stopsopa.github.io/two2.log'
-    'gitstorage-config.sh::github-stopsopa.github.io/gitstorage-config.sh'
+    ".env::\$GITSTORAGETARGETDIR/.env"
+    "gitstorage-config.sh::\$GITSTORAGETARGETDIR/gitstorage-config.sh"
 )
-
-# example:
-# 'test/one.log::xxx/one1.log'
-
-# use xxx as a folder to describe project
 END
 );
 
@@ -84,12 +78,12 @@ if [ "$_CREATE" = "1" ]; then
 
   if [ -f gitstorage-config.sh ]; then
 
-    echo "file gitstorage-config.sh already exist"
+    { red "\n    file gitstorage-config.sh already exist\n"; } 2>&3
   else
 
     echo "$CONFIG" > gitstorage-config.sh
 
-    echo "file gitstorage-config.sh created"
+    { green "\n    file gitstorage-config.sh created\n"; } 2>&3
   fi
 
   exit 0;
