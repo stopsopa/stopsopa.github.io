@@ -8,4 +8,3 @@ GITSTORAGELIST=(
     ".env::$GITSTORAGETARGETDIR/.env"
     "gitstorage-config.sh::$GITSTORAGETARGETDIR/gitstorage-config.sh"
 )
-
