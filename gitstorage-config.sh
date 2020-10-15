@@ -2,8 +2,10 @@
 
 GITSTORAGESOURCE="git@github.com:stopsopa/gitstorage.git"
 
+GITSTORAGETARGETDIR="github-stopsopa.github.io"
+
 GITSTORAGELIST=(
-    '.env::github-stopsopa.github.io/.env'
-    'gitstorage-config.sh::github-stopsopa.github.io/gitstorage-config.sh'
+    ".env::$GITSTORAGETARGETDIR/.env"
+    "gitstorage-config.sh::$GITSTORAGETARGETDIR/gitstorage-config.sh"
 )
 
