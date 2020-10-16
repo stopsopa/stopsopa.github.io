@@ -8,7 +8,7 @@ const targets = [
   // path.resolve(__dirname, "..", "public", "preprocessed.js"),
   // path.resolve(__dirname, "..", "build", "preprocessed.js"),
 
-  path.resolve(__dirname, "..", "dist", "preprocessed.js"),
+  path.resolve(__dirname, "..", "preprocessed.js"),
 ];
 
 const env = require("dotenv-up")(
