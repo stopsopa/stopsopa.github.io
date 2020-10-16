@@ -274,5 +274,3 @@
 }));
 
 window.async.triggers.permalink();
-
-log.gray('finished', 'permalink-my.js')
