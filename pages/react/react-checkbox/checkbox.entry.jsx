@@ -5,7 +5,7 @@ import { render } from 'react-dom';
 
 import log from 'inspc';
 
-const {serializeError, deserializeError} = require('serialize-error');
+const se = require('nlab/se');
 
 const Main = () => {
 
