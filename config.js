@@ -5,14 +5,18 @@ const path              = require("path");
 
 const root              = path.resolve(__dirname);
 
+const webpack           = root;
+
+const vardir            = path.resolve(root, 'var');
+
 // relative path to public server directory
-const web               = path.resolve(root, 'dist');
+const output            = path.resolve(root, 'public', 'dist');
 
 const node_modules      = path.join(root, 'node_modules');
 
 const app               = path.resolve(root, 'pages');
 
-      const override          = path.resolve(root, 'override');
+const override          = path.resolve(root, 'override');
 
 require('dotenv-up')({
   override    : false,
@@ -21,16 +25,15 @@ require('dotenv-up')({
 
 const env               = require('./roderic/dotenv');
 
-const webpack           = __dirname;
-
 module.exports = mode => ({
   // just name for this project, it's gonna show up in some places
   name: env('PROJECT_NAME'),
   root,
-  web,
   app,
   webpack,
   node_modules,
+  vardir,
+  output,
   resolve: [ // where to search by require and files to watch
 
     app,
@@ -44,7 +47,6 @@ module.exports = mode => ({
       app,
       // ...
     ],
-    outputForWeb    : web,
   },
 });
 
