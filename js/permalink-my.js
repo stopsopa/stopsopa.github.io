@@ -239,8 +239,6 @@
 
             if (firstChild && firstChild.getAttribute) {
 
-                var href = firstChild.getAttribute('href') || '';
-
                 if (firstChild.getAttribute('class') === opt.anchorClass) {
 
                     // link already created
