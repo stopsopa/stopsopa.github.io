@@ -14,11 +14,54 @@
         <div class="inside">
 
             <div class="cards">
+                <h2>UMD (Universal Module Definition)</h2>
+                <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
                 <h2>Installation on linux</h2>      
                 <a href="https://github.com/nodesource/distributions#installation-instructions-1">Installation nodesource</a>
             </div>
 
             <div class="cards">
+                <h2>safe console.log</h2>
+                <script type="editor" data-lang="js">
+
+// just log
+var log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+// tlog
+const tlog = (function () {
+
+    var log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+    const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
+
+    return (...args) => {
+        log.call(this, time(), ...args.map(a => a + ''));
+    }
+}());
+
+// module
+const log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
+
+module.exports = (...args) => {
+    log.call(this, time(), ...args.map(a => a + ''));
+}
+
+// node inspect
+const i = require('util').inspect;
+
+console.log(i(t, {
+    depth:  50,
+    colors: true,
+    compact: true,
+    // breakLength: 80,
+}))
+
+                </script>
+                <h2>jest</h2>
+                <a href="https://github.com/stopsopa/roderic-legacy/tree/master/test/jest">https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a>
+
                 <h2>update.sh - shell script</h2>               
                 <script type="editor" data-lang="bash">
 
@@ -118,6 +161,191 @@ else
     red "\n\n    Nothing new to publish\n\n";
 fi
 
+                </script>
+            </div>
+            <div class="cards">
+                <h2>Node clock controlled crush</h2>
+                <script type="editor" data-lang="js">
+
+/*
+
+usage in server script:
+
+require('dotenv-up')({
+  override    : false,
+  deep        : 5,
+}, false, '..................');
+
+(function () {
+
+  const atomclock = require('./app/lib/atomclock');
+
+  atomclock.crashServer(process.env.PROTECTED_MYSQL_MAX_TIME_DIFF);
+}());
+
+*/
+
+const log = require('inspc');
+
+const jsonfetch = require('./jsonfetch');
+
+const promiseany = require('nlab/promiseany');
+
+// const promiseall = require('nlab/promiseall');
+
+const emsg = msg => `atomclock.js error: ${msg}`
+
+const th = msg => new Error(emsg(msg));
+
+// module.exports = (warning = true) => promiseall([
+const tool = (warning = true) => promiseany([
+  async atom => {
+
+    try {
+
+      atom = await jsonfetch('http://worldtimeapi.org/api/timezone/Etc/UTC', {
+        timeout: 2000,
+      });
+
+      if ( ! Number.isInteger(atom.body.unixtime) ) {
+
+        throw th(`http://worldtimeapi.org/api/timezone/Etc/UTC unixtime is not an integer`);
+      }
+
+      return atom.body.unixtime;
+
+    }
+    catch (e) {
+
+      if (warning) {
+
+        log.dump({
+          atomclick_js_warning: e
+        })
+      }
+
+      throw e;
+    }
+  },
+  async atom => {
+
+    try {
+
+      atom = await jsonfetch('http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now', {
+        timeout: 2000,
+      });
+
+      if (atom.status !== 200) {
+
+        throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom.status !== 200`);
+      }
+
+      if ( ! /^\d+$/.test(atom.body.UnixTimeStamp) ) {
+
+        throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom.body.UnixTimeStamp don't match /^\\d+$/`);
+      }
+
+      atom = parseInt(atom.body.UnixTimeStamp, 10);
+
+      if ( ! Number.isInteger(atom) ) {
+
+        throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom is not an integer`);
+      }
+
+      return atom;
+
+    }
+    catch (e) {
+
+      if (warning) {
+
+        log.dump({
+          atomclick_js_warning: e
+        })
+      }
+
+      throw e;
+    }
+  },
+  async atom => {
+
+    try {
+
+      atom = await jsonfetch('http://widget.time.is/', {
+        timeout: 2000,
+      });
+
+      if (atom.status !== 200) {
+
+        throw th(`http://worldclockapi.com/api/json/utc/now atom.status !== 200`);
+      }
+
+      atom = atom.body.replace(/^[^\d]+(\d+).*$/, '$1');
+
+      if ( ! /^\d+$/.test(atom) ) {
+
+        throw th(`http://worldclockapi.com/api/json/utc/now atom.status don't match /^\\d+$/`);
+      }
+
+      return parseInt(parseInt(atom, 10) / 1000, 10);
+
+    }
+    catch (e) {
+
+      if (warning) {
+
+        log.dump({
+          atomclick_js_warning: e
+        })
+      }
+
+      throw e;
+    }
+  },
+]);
+
+tool.crashServer = async function (diff) {
+
+  try {
+
+    if ( typeof diff !== 'string' ) {
+
+      throw th(`diff is not a string`);
+    }
+
+    if ( ! /^\d+$/.test(diff || '') ) {
+
+      throw th(`atomclock.js diff (value: '${diff}') is not defined or it doesn't match /^\\d+$/`);
+    }
+
+    const crushnodeifdiffgreaterthansec = parseInt(diff, 10);
+
+    const at = await tool(false);
+
+    const now = parseInt((new Date()).getTime() / 1000, 10)
+
+    const abs = Math.abs(at - now);
+
+    if (abs > crushnodeifdiffgreaterthansec) {
+
+      throw th(`atomclock.js time - node UTC time differance '${abs}' is greater than '${crushnodeifdiffgreaterthansec}' sec`);
+    }
+
+    console.log(`Time differance between atomclock.js time and node.js clock time is '${abs}', should be smaller than ${crushnodeifdiffgreaterthansec}`)
+
+    console.log("Time diff is small enough 👍")
+  }
+  catch (e) {
+
+    log.dump({
+      atomclick_general_error: e
+    })
+
+    throw e;
+  }
+}
+
+module.exports = tool;
                 </script>
             </div>
             <div class="cards">
@@ -272,6 +500,45 @@ console.log("\n\n")
                         </tr>
                     </tbody>
                 </table>
+                <script type="editor" data-lang="js">
+
+// https://i.imgur.com/mWzuQWP.png
+const color = (function (c) {
+    return (...args) => c[args.pop()] + args.join('') + c.reset;
+}({
+    Bright      : "\x1b[1m",
+    Dim         : "\x1b[2m",
+    Underscore  : "\x1b[4m",
+    Blink       : "\x1b[5m",
+    Reverse     : "\x1b[7m",
+    Hidden      : "\x1b[8m",
+    FgBlack     : "\x1b[30m",
+    FgRed       : "\x1b[31m", // red
+    FgGreen     : "\x1b[32m", // green
+    FgYellow    : "\x1b[33m", // yellow
+    FgBlue      : "\x1b[34m",
+    FgMagenta   : "\x1b[35m", // magenta
+    FgCyan      : "\x1b[36m", // cyan
+    FgWhite     : "\x1b[37m",
+    BgBlack     : "\x1b[40m",
+    BgRed       : "\x1b[41m",
+    BgGreen     : "\x1b[42m",
+    BgYellow    : "\x1b[43m",
+    BgBlue      : "\x1b[44m",
+    BgMagenta   : "\x1b[45m",
+    BgCyan      : "\x1b[46m",
+    BgWhite     : "\x1b[47m",
+    r           : "\x1b[31m", // red
+    g           : "\x1b[32m", // green
+    y           : "\x1b[33m", // yellow
+    m           : "\x1b[35m", // magenta
+    c           : "\x1b[36m", // cyan
+    reset       : "\x1b[0m",
+}));
+
+const c = (...args) => process.stdout.write(color(...args));
+
+                </script>
             </div>
 
             <div class="cards">
@@ -289,7 +556,7 @@ const http          = require('http');
 
 const querystring   = require('querystring');
 
-const {serializeError, deserializeError} = require('serialize-error');
+const se = require('nlab/se');
 
 const th            = msg => new Error(`request: ${String(msg)}`);
 
@@ -362,7 +629,7 @@ module.exports = function request(url, opt = {}) {
           if (verbose) {
 
             log.dump({
-              request_resolve_exception_catch: serializeError(e),
+              request_resolve_exception_catch: se(e),
             })
           }
           else {
@@ -561,52 +828,6 @@ module.exports = function jsonfetch (url, opt = {}) {
                 </script> 
             </div>
             
-            
-            <div class="cards">
-                <h2>colors</h2>  
-                <script type="editor" data-lang="js">
-                
-// https://i.imgur.com/mWzuQWP.png
-const color = (function (c) {
-    return (...args) => c[args.pop()] + args.join('') + c.reset;
-}({
-    Bright      : "\x1b[1m",
-    Dim         : "\x1b[2m",
-    Underscore  : "\x1b[4m",
-    Blink       : "\x1b[5m",
-    Reverse     : "\x1b[7m",
-    Hidden      : "\x1b[8m",
-    FgBlack     : "\x1b[30m",
-    FgRed       : "\x1b[31m", // red
-    FgGreen     : "\x1b[32m", // green
-    FgYellow    : "\x1b[33m", // yellow
-    FgBlue      : "\x1b[34m",
-    FgMagenta   : "\x1b[35m", // magenta
-    FgCyan      : "\x1b[36m", // cyan
-    FgWhite     : "\x1b[37m",
-    BgBlack     : "\x1b[40m",
-    BgRed       : "\x1b[41m",
-    BgGreen     : "\x1b[42m",
-    BgYellow    : "\x1b[43m",
-    BgBlue      : "\x1b[44m",
-    BgMagenta   : "\x1b[45m",
-    BgCyan      : "\x1b[46m",
-    BgWhite     : "\x1b[47m",
-    r           : "\x1b[31m", // red
-    g           : "\x1b[32m", // green
-    y           : "\x1b[33m", // yellow
-    m           : "\x1b[35m", // magenta
-    c           : "\x1b[36m", // cyan
-    reset       : "\x1b[0m",
-}));
-
-const c = (...args) => process.stdout.write(color(...args));
-
-                </script> 
-            </div>
-            
-            
-            
             <div class="cards">
                 <h2>nvm</h2>  
                 <script type="editor" data-lang="bash">
@@ -637,7 +858,7 @@ Buffer.from(base64, 'base64').toString('ascii');
                 
 const { spawn } = require("child_process");
 
-const serializeError   = require('./serializeError');
+const se = require('nlab/se');
 
 const th    = msg => new Error(`${__filename} error: ${msg}`);
 
@@ -706,7 +927,7 @@ module.exports = (cmd, opt) => new Promise((resolve, reject) => {
       cmd,
       stdout,
       stderr,
-      e: serializeError(e)
+      e: se(e)
     });
   });
 

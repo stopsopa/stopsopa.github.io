@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 27);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -92,7 +92,7 @@
 
 
 if (true) {
-  module.exports = __webpack_require__(14);
+  module.exports = __webpack_require__(15);
 } else {}
 
 
@@ -502,9 +502,9 @@ log.stack = function (n /* def: 0 */) {
     return log;
 };
 
-log.i = __webpack_require__(9);
+log.i = __webpack_require__(10);
 
-log.t = __webpack_require__(10);
+log.t = __webpack_require__(11);
 
 (function (ll) {
 
@@ -966,6 +966,13 @@ module.exports = log.dump = log.start = log.get = log.json = log.log = log;
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
+
+module.exports = __webpack_require__(19);
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, process) {
 
@@ -1096,7 +1103,7 @@ else {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5), __webpack_require__(4)))
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {
@@ -1121,7 +1128,7 @@ module.exports = (function () {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1218,8 +1225,8 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 12 */,
-/* 13 */
+/* 13 */,
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1248,12 +1255,12 @@ if (true) {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(15);
+  module.exports = __webpack_require__(16);
 } else {}
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1266,7 +1273,7 @@ if (true) {
  * LICENSE file in the root directory of this source tree.
  */
 
-var l=__webpack_require__(11),n="function"===typeof Symbol&&Symbol.for,p=n?Symbol.for("react.element"):60103,q=n?Symbol.for("react.portal"):60106,r=n?Symbol.for("react.fragment"):60107,t=n?Symbol.for("react.strict_mode"):60108,u=n?Symbol.for("react.profiler"):60114,v=n?Symbol.for("react.provider"):60109,w=n?Symbol.for("react.context"):60110,x=n?Symbol.for("react.forward_ref"):60112,y=n?Symbol.for("react.suspense"):60113,z=n?Symbol.for("react.memo"):60115,A=n?Symbol.for("react.lazy"):
+var l=__webpack_require__(12),n="function"===typeof Symbol&&Symbol.for,p=n?Symbol.for("react.element"):60103,q=n?Symbol.for("react.portal"):60106,r=n?Symbol.for("react.fragment"):60107,t=n?Symbol.for("react.strict_mode"):60108,u=n?Symbol.for("react.profiler"):60114,v=n?Symbol.for("react.provider"):60109,w=n?Symbol.for("react.context"):60110,x=n?Symbol.for("react.forward_ref"):60112,y=n?Symbol.for("react.suspense"):60113,z=n?Symbol.for("react.memo"):60115,A=n?Symbol.for("react.lazy"):
 60116,B="function"===typeof Symbol&&Symbol.iterator;function C(a){for(var b="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=1;c<arguments.length;c++)b+="&args[]="+encodeURIComponent(arguments[c]);return"Minified React error #"+a+"; visit "+b+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}
 var D={isMounted:function(){return!1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},E={};function F(a,b,c){this.props=a;this.context=b;this.refs=E;this.updater=c||D}F.prototype.isReactComponent={};F.prototype.setState=function(a,b){if("object"!==typeof a&&"function"!==typeof a&&null!=a)throw Error(C(85));this.updater.enqueueSetState(this,a,b,"setState")};F.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate")};
 function G(){}G.prototype=F.prototype;function H(a,b,c){this.props=a;this.context=b;this.refs=E;this.updater=c||D}var I=H.prototype=new G;I.constructor=H;l(I,F.prototype);I.isPureReactComponent=!0;var J={current:null},K=Object.prototype.hasOwnProperty,L={key:!0,ref:!0,__self:!0,__source:!0};
@@ -1285,7 +1292,7 @@ exports.useLayoutEffect=function(a,b){return Z().useLayoutEffect(a,b)};exports.u
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1301,7 +1308,7 @@ exports.useLayoutEffect=function(a,b){return Z().useLayoutEffect(a,b)};exports.u
 /*
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var aa=__webpack_require__(0),n=__webpack_require__(11),r=__webpack_require__(16);function u(a){for(var b="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=1;c<arguments.length;c++)b+="&args[]="+encodeURIComponent(arguments[c]);return"Minified React error #"+a+"; visit "+b+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}if(!aa)throw Error(u(227));
+var aa=__webpack_require__(0),n=__webpack_require__(12),r=__webpack_require__(17);function u(a){for(var b="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=1;c<arguments.length;c++)b+="&args[]="+encodeURIComponent(arguments[c]);return"Minified React error #"+a+"; visit "+b+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}if(!aa)throw Error(u(227));
 function ba(a,b,c,d,e,f,g,h,k){var l=Array.prototype.slice.call(arguments,3);try{b.apply(c,l)}catch(m){this.onError(m)}}var da=!1,ea=null,fa=!1,ha=null,ia={onError:function(a){da=!0;ea=a}};function ja(a,b,c,d,e,f,g,h,k){da=!1;ea=null;ba.apply(ia,arguments)}function ka(a,b,c,d,e,f,g,h,k){ja.apply(this,arguments);if(da){if(da){var l=ea;da=!1;ea=null}else throw Error(u(198));fa||(fa=!0,ha=l)}}var la=null,ma=null,na=null;
 function oa(a,b,c){var d=a.type||"unknown-event";a.currentTarget=na(c);ka(d,b,void 0,a);a.currentTarget=null}var pa=null,qa={};
 function ra(){if(pa)for(var a in qa){var b=qa[a],c=pa.indexOf(a);if(!(-1<c))throw Error(u(96,a));if(!sa[c]){if(!b.extractEvents)throw Error(u(97,a));sa[c]=b;c=b.eventTypes;for(var d in c){var e=void 0;var f=c[d],g=b,h=d;if(ta.hasOwnProperty(h))throw Error(u(99,h));ta[h]=f;var k=f.phasedRegistrationNames;if(k){for(e in k)k.hasOwnProperty(e)&&ua(k[e],g,h);e=!0}else f.registrationName?(ua(f.registrationName,g,h),e=!0):e=!1;if(!e)throw Error(u(98,d,a));}}}}
@@ -1584,19 +1591,19 @@ exports.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!gk(c))throw Er
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 if (true) {
-  module.exports = __webpack_require__(17);
+  module.exports = __webpack_require__(18);
 } else {}
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1624,132 +1631,136 @@ exports.unstable_shouldYield=function(){var a=exports.unstable_now();V(a);var b=
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
+/**
+ * Logic from https://github.com/sindresorhus/serialize-error
+ * Just adopted to node version 8
+ * and added splitting 'stack' field
+ */
+
 class NonError extends Error {
-	constructor(message) {
-		super(NonError._prepareSuperMessage(message));
-		Object.defineProperty(this, 'name', {
-			value: 'NonError',
-			configurable: true,
-			writable: true
-		});
+    constructor(message) {
+        super(NonError._prepareSuperMessage(message));
+        Object.defineProperty(this, 'name', {
+            value: 'NonError',
+            configurable: true,
+            writable: true
+        });
 
-		if (Error.captureStackTrace) {
-			Error.captureStackTrace(this, NonError);
-		}
-	}
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, NonError);
+        }
+    }
 
-	static _prepareSuperMessage(message) {
-		try {
-			return JSON.stringify(message);
-		} catch (_) {
-			return String(message);
-		}
-	}
+    static _prepareSuperMessage(message) {
+        try {
+            return JSON.stringify(message);
+        } catch (_) {
+            return String(message);
+        }
+    }
 }
 
 const commonProperties = [
-	{property: 'name', enumerable: false},
-	{property: 'message', enumerable: false},
-	{property: 'stack', enumerable: false},
-	{property: 'code', enumerable: true}
+    {property: 'name', enumerable: false},
+    {property: 'message', enumerable: false},
+    {property: 'stack', enumerable: false},
+    {property: 'code', enumerable: true}
 ];
 
 const destroyCircular = ({from, seen, to_, forceEnumerable}) => {
-	const to = to_ || (Array.isArray(from) ? [] : {});
+    const to = to_ || (Array.isArray(from) ? [] : {});
 
-	seen.push(from);
+    seen.push(from);
 
-	for (const [key, value] of Object.entries(from)) {
-		if (typeof value === 'function') {
-			continue;
-		}
+    for (const [key, value] of Object.entries(from)) {
+        if (typeof value === 'function') {
+            continue;
+        }
 
-		if (!value || typeof value !== 'object') {
-			to[key] = value;
-			continue;
-		}
+        if (!value || typeof value !== 'object') {
+            to[key] = value;
+            continue;
+        }
 
-		if (!seen.includes(from[key])) {
-			to[key] = destroyCircular({from: from[key], seen: seen.slice(), forceEnumerable});
-			continue;
-		}
+        if (!seen.includes(from[key])) {
+            to[key] = destroyCircular({from: from[key], seen: seen.slice(), forceEnumerable});
+            continue;
+        }
 
-		to[key] = '[Circular]';
-	}
+        to[key] = '[Circular]';
+    }
 
-	for (const {property, enumerable} of commonProperties) {
-		if (typeof from[property] === 'string') {
-			Object.defineProperty(to, property, {
-				value: from[property],
-				enumerable: forceEnumerable ? true : enumerable,
-				configurable: true,
-				writable: true
-			});
-		}
-	}
+    for (const {property, enumerable} of commonProperties) {
+        if (typeof from[property] === 'string') {
+            Object.defineProperty(to, property, {
+                value: from[property],
+                enumerable: forceEnumerable ? true : enumerable,
+                configurable: true,
+                writable: true
+            });
+        }
+    }
 
-	return to;
+    return to;
 };
 
 const serializeError = value => {
-	if (typeof value === 'object' && value !== null) {
-		return destroyCircular({from: value, seen: [], forceEnumerable: true});
-	}
+    if (typeof value === 'object' && value !== null) {
+        return destroyCircular({from: value, seen: [], forceEnumerable: true});
+    }
 
-	// People sometimes throw things besides Error objects…
-	if (typeof value === 'function') {
-		// `JSON.stringify()` discards functions. We do too, unless a function is thrown directly.
-		return `[Function: ${(value.name || 'anonymous')}]`;
-	}
+    // People sometimes throw things besides Error objects…
+    if (typeof value === 'function') {
+        // `JSON.stringify()` discards functions. We do too, unless a function is thrown directly.
+        return `[Function: ${(value.name || 'anonymous')}]`;
+    }
 
-	return value;
+    return value;
 };
 
-const deserializeError = value => {
-	if (value instanceof Error) {
-		return value;
-	}
+module.exports = function (e, native) {
 
-	if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-		const newError = new Error();
-		destroyCircular({from: value, seen: [], to_: newError});
-		return newError;
-	}
+    e = serializeError(e);
 
-	return new NonError(value);
-};
+    if ( ! native ) {
 
-module.exports = {
-	serializeError,
-	deserializeError
-};
+        if (typeof e.stack === 'string') {
+
+            e.stack = e.stack.split("\n")
+        }
+    }
+
+    return e;
+}
 
 
 /***/ }),
-/* 19 */,
 /* 20 */,
 /* 21 */,
 /* 22 */,
 /* 23 */,
 /* 24 */,
 /* 25 */,
-/* 26 */
+/* 26 */,
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(inspc__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9);
+/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(nlab_se__WEBPACK_IMPORTED_MODULE_3__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -1774,9 +1785,7 @@ var now = function now() {
   return new Date().toISOString().substring(0, 19).replace('T', ' ').replace(/[^\d]/g, '-');
 };
 
-var _require = __webpack_require__(18),
-    serializeError = _require.serializeError,
-    deserializeError = _require.deserializeError;
+
 
 var Main = function Main() {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
@@ -1888,11 +1897,11 @@ var Main = function Main() {
             case 21:
               _context2.prev = 21;
               _context2.t0 = _context2["catch"](9);
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithCredential', serializeError(_context2.t0));
+              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithCredential', nlab_se__WEBPACK_IMPORTED_MODULE_3___default()(_context2.t0));
               setAuthError({
                 error: {
                   mode: 'signInWithCredential -> signOut()',
-                  e: serializeError(_context2.t0),
+                  e: nlab_se__WEBPACK_IMPORTED_MODULE_3___default()(_context2.t0),
                   user: _firebase.auth().currentUser,
                   truthy: !!_firebase.auth().currentUser
                 }
@@ -1948,11 +1957,11 @@ var Main = function Main() {
             case 49:
               _context2.prev = 49;
               _context2.t1 = _context2["catch"](0);
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithPopup', serializeError(_context2.t1));
+              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithPopup', nlab_se__WEBPACK_IMPORTED_MODULE_3___default()(_context2.t1));
               setAuthError({
                 error: {
                   mode: 'signInWithPopup',
-                  e: serializeError(_context2.t1)
+                  e: nlab_se__WEBPACK_IMPORTED_MODULE_3___default()(_context2.t1)
                 }
               });
 

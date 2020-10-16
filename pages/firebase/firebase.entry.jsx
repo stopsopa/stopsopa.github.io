@@ -7,7 +7,7 @@ import log from 'inspc';
 
 const now = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ').replace(/[^\d]/g, '-');
 
-const {serializeError, deserializeError} = require('serialize-error');
+import se from 'nlab/se';
 
 const Main = () => {
 
@@ -86,12 +86,12 @@ const Main = () => {
           }
           catch (e) {
 
-            log('catch: signInWithCredential', serializeError(e))
+            log('catch: signInWithCredential', se(e))
 
             setAuthError({
               error: {
                 mode: 'signInWithCredential -> signOut()',
-                e: serializeError(e),
+                e: se(e),
                 user: firebase.auth().currentUser,
                 truthy: !!firebase.auth().currentUser
               }
@@ -142,12 +142,12 @@ const Main = () => {
       }
       catch (e) {
 
-        log('catch: signInWithPopup', serializeError(e))
+        log('catch: signInWithPopup', se(e))
 
         setAuthError({
           error: {
             mode: 'signInWithPopup',
-            e: serializeError(e),
+            e: se(e),
           }
         });
       }
