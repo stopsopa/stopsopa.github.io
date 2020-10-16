@@ -18,7 +18,7 @@
             </div>
             <div class="cards">
                 <h2>remove from history (filter-branch)</h2>
-                <script type="editor" data-lang="bash">
+                <script type="editor" data-lang="sh">
                     
                     
   git filter-branch --force --index-filter \
@@ -34,7 +34,7 @@
             </div>
             <div class="cards">
                 <h2>Change the author</h2>
-                <script type="editor" data-lang="bash">
+                <script type="editor" data-lang="sh">
                     
 git filter-branch --env-filter '
 OLD_EMAIL="youroldemail@example.com"
@@ -58,7 +58,7 @@ fi
             </div>
             <div class="cards">
                 <h2>find big files, from <a href="https://stackoverflow.com/a/42544963/5560682">https://stackoverflow.com/a/42544963/5560682</a></h2>
-                <script type="editor" data-lang="bash">
+                <script type="editor" data-lang="sh">
                     
                     
 git rev-list --objects --all \
@@ -73,7 +73,7 @@ git rev-list --objects --all \
             </div>
             <div class="cards">
                 <h2>gitstorage.sh</h2>
-                <script type="editor" data-lang="bash">
+                <script type="editor" data-lang="sh">
                  
                  
 # wget         

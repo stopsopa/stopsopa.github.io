@@ -1,6 +1,7 @@
 /nbproject
 .idea/
 *.tar.gz
+*.zip
 /.env
 node_modules
 

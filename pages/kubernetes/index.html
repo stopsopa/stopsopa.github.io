@@ -49,7 +49,7 @@
             <div class="cards">
 
                 <h2>Kubernetes handy commands</h2>
-                <script type="editor" data-lang="bash">
+                <script type="editor" data-lang="sh">
                 
 kubectl api-resources
   # from kubectl get --help
@@ -102,7 +102,7 @@ EOF
                 <a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">see more</a>
                 
                 <h2>kubctl processing output:</h2>
-                <script type="editor" data-lang="bash">
+                <script type="editor" data-lang="sh">
                 
 kubectl get job --output=jsonpath='{.items[*].metadata.name}' | tr " " "\n"
 
@@ -118,7 +118,7 @@ kubectl get job --output=jsonpath='{.items[*].metadata.name}' | (cat && printf "
                 <h2>Digital Ocean diagnostic pod</h2>
                 <a href="https://github.com/digitalocean/doks-debug/blob/master/Dockerfile">https://github.com/digitalocean/doks-debug/blob/master/Dockerfile</a>
                 <h2>Digital Ocean</h2>
-                <script type="editor" data-lang="bash">
+                <script type="editor" data-lang="sh">
 
 # switch cluster 
 
@@ -139,7 +139,7 @@ doctl compute certificate get eebf2fd0-4444-3333-5555-87ce0631869a
 
                 <h2>Digital Ocean - switch cluster tool</h2>
                 Just paste this code to your terminal:
-                <script type="editor" data-lang="bash" class="domain.com">
+                <script type="editor" data-lang="sh" class="domain.com">
 
 rm -rf ~/cluster.sh
 wget domain.com/pages/kubernetes/cluster.sh -O ~/cluster.sh
