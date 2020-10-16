@@ -266,9 +266,11 @@
 
             manipulation.prepend(links[key], link);
         });
+
+        log.blue('executed', 'permalink-my', '[function executed in domcontentloaded.js]')
     };
 
     return mountpermalink;
 }));
 
-// console && console.log && console.log('defined mountpermalink');
+log.gray('finished', 'permalink-my.js')

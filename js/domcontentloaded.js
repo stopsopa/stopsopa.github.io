@@ -1,7 +1,7 @@
 
 
-console && console.log && console.log('executing domcontetloaded.js:');
-
 window.mountpermalink();
 
 window.toc();
+
+log.gray('finished', 'domcontentloaded.js')
