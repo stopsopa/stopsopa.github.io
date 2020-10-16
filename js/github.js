@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     },
     ace                 : {
-        lib: '/js/ace/ace-builds-1.3.3/src-min-noconflict/ace.js',
+        lib: '/js/ace/ace-builds-1.4.12/src-min-noconflict/ace.js',
         test: function () {
             try {
                 return typeof window.ace.edit === 'function';
