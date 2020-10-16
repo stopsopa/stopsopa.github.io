@@ -11,7 +11,7 @@ status:
 
 build:
 	/bin/bash pages/bookmarklets/compress.sh
-	/bin/bash pages/kubernetes/compress.sh
+	#/bin/bash pages/kubernetes/compress.sh
 
 testport:
 	/bin/bash testport.sh
