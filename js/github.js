@@ -88,6 +88,12 @@ window.log = log;
     log.green('defined', 'log & log[red|green|blue|gray]')
 }());
 
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    log.yellow('async', 'DOMContentLoaded');
+});
+
 // load additional js files
 (function (list) {
 
@@ -334,7 +340,7 @@ log.green('defined', 'window.trim');
             manipulation.after(h, e)
         });
 
-        log.blue('executed', 'setting favicon', '[triggered in github.js, delayed async due to DOMContentLoaded]')
+        log.blue('DOMContentLoaded', 'setting favicon', '[triggered in github.js]')
     });
 }());
 
@@ -435,7 +441,7 @@ body .github-link > a:hover {
 
             head.appendChild(style);
 
-            log.blue('executed', 'adding github-link div', '[triggered in github.js, delayed async due to DOMContentLoaded]')
+            log.blue('DOMContentLoaded', 'adding edit ribbon link', '[triggered in github.js]')
         }());
 
 
@@ -485,7 +491,7 @@ body .github-profile:hover {
 
             head.appendChild(style);
 
-            log.blue('executed', 'adding github-profile div', '[triggered in github.js, delayed async due to DOMContentLoaded]')
+            log.blue('DOMContentLoaded', 'adding profile ribbon link', '[triggered in github.js]')
         }());
 
     });
@@ -554,7 +560,7 @@ body .github-profile:hover {
             manipulation.prepend(body, header);
         }
 
-        log.blue('executed NOHEAD', 'handling nohead attr finished', '[triggered in github.js, delayed async due to DOMContentLoaded]')
+        log.blue('DOMContentLoaded NOHEAD', 'handling nohead attr finished', '[triggered in github.js]')
     });
 
     log.blue('executed NOHEAD', 'handling nohead attr')
@@ -576,7 +582,7 @@ body .github-profile:hover {
             manipulation.append(body, header);
         }
 
-        log.blue('executed NOFOOT', 'handling nofoot attr finished', '[triggered in github.js, delayed async due to DOMContentLoaded]')
+        log.blue('DOMContentLoaded NOFOOT', 'handling nofoot attr finished', '[triggered in github.js]')
     });
 
     log.blue('executed NOFOOT', 'handling nofoot attr')
@@ -605,7 +611,7 @@ body .github-profile:hover {
 
             window.toc = function () {
 
-                log.blue('executed TOC', '[toc] not found', '[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded and window.async.permalink.then]')
+                log.blue('DOMContentLoaded TOC', '[toc] not found', '[triggered in domcontentloaded.js, delayed async due to window.async.permalink.then]')
             }
 
             if ( body.hasAttribute('toc') ) {
@@ -697,7 +703,7 @@ body .github-profile:hover {
 
                     // header.innerHTML = `footer`;
 
-                    log.blue('executed TOC', '[toc] found', '[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded and window.async.permalink.then]')
+                    log.blue('DOMContentLoaded TOC', '[toc] found', '[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded and window.async.permalink.then]')
                 }
             }
 
@@ -775,7 +781,7 @@ body .github-profile:hover {
            });
        });
 
-        log.blue('executed', 'handling [data-do-sort]', '[defined & triggered in github.js, delayed async due to DOMContentLoaded]')
+        log.blue('DOMContentLoaded', 'handling [data-do-sort]', '[defined & triggered in github.js]')
     });
 }());
 
@@ -1070,7 +1076,7 @@ body .github-profile:hover {
 
         window.doace();
 
-        log.blue('executed', 'window.doace [triggered in github.js, delayed async due to DOMContentLoaded]')
+        log.blue('DOMContentLoaded', 'window.doace [triggered in github.js]')
     })
 
 }());
