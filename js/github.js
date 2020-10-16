@@ -111,6 +111,8 @@ window.log = log;
 
                     log.yellow('async', 'window.async.' +key+ '(), window.async.' +key+ '.then() promise resolved');
 
+                    isString && log.gray('finished', url)
+
                     resolve(param)
                 });
 
@@ -129,8 +131,14 @@ window.log = log;
 
                                 clearInterval(handler);
 
+                                // log.yellow('async', 'window.async.' +key+ '() solved');
+
                                 async.triggers[key]();
                             }
+                            // else {
+                            //
+                            //     log.yellow('async', 'window.async.' +key+ '() wait');
+                            // }
                         }, 100);
                     }(k, lib.test))
 
@@ -162,26 +170,20 @@ window.log = log;
         lib: '/js/lodash-4.17.10.js',
         test: function () {
             try {
-
                 return typeof _.VERSION === 'string';
             }
-            catch (e) {
-
-                return false;
-            }
+            catch (e) {}
+            return false;
         }
     },
     ace                 : {
         lib: '/js/ace/ace-builds-1.3.3/src-min-noconflict/ace.js',
         test: function () {
             try {
-
                 return typeof window.ace.edit === 'function';
             }
-            catch (e) {
-
-                return false;
-            }
+            catch (e) {}
+            return false;
         }
     }
 }));
