@@ -71,4 +71,6 @@ if (typeof Object.assign != 'function') {
   });
 }
 
+window.async.triggers.polyfill();
+
 log.gray('finished', 'polyfill.js')

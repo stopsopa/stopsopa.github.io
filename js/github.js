@@ -8,6 +8,8 @@ var log = (function () {
     }
 }());
 
+window.log = log;
+
 (function () {
 
     // https://stackoverflow.com/a/13017382/5560682
@@ -67,7 +69,8 @@ var log = (function () {
         red     : 'background: #C90000; color: white',
         green   : 'background: #00B700; color: white',
         blue    : 'background: #2CA5E0; color: white',
-        gray   : 'background: #3B4045; color: white',
+        gray    : 'background: #3B4045; color: white',
+        yellow  : 'background: #ffe686; color: black',
     }).map(function (entry) {
 
         log[entry[0]] = define(entry[1]);
@@ -85,7 +88,103 @@ var log = (function () {
     log.green('defined', 'log & log[red|green|blue|gray]')
 }());
 
-window.log = log;
+// load additional js files
+(function (list) {
+
+    var async = {
+        triggers: {},
+    };
+
+    for (var k in list) {
+
+        var lib = list[k];
+
+        if (list.hasOwnProperty(k)) {
+
+            (function (isString, key, url, lib) {
+
+                // https://stackoverflow.com/a/524721
+                var head = document.head || document.getElementsByTagName('head')[0],
+                  script = document.createElement('script');
+
+                async[key] = new Promise(resolve => async.triggers[key] = function (param) {
+
+                    log.yellow('async', 'window.async.' +key+ '(), window.async.' +key+ '.then() promise resolved');
+
+                    resolve(param)
+                });
+
+                if ( ! isString ) {
+
+                    if (typeof lib.test !== 'function') {
+
+                        throw new Error("lib.test should be a function for " + k + " async loader");
+                    }
+
+                    (function (key, test) {
+
+                        var handler = setInterval(function () {
+
+                            if (test()) {
+
+                                clearInterval(handler);
+
+                                async.triggers[key]();
+                            }
+                        }, 100);
+                    }(k, lib.test))
+
+                    lib = lib.lib;
+                }
+
+                // script.async = false;
+
+                script.setAttribute('src', url);
+
+                head.appendChild(script);
+            }(
+                typeof lib === 'string',                    // isString
+                k,                                          // key
+                (typeof lib === 'string') ? lib : lib.lib,  // url
+                lib                                         // lib
+            ));
+        }
+    }
+
+    window.async = async;
+
+    log.blue('executed', 'adding extra js')
+}({
+    polyfill            : '/js/polyfill.js',
+    permalink           : '/js/permalink-my.js',
+    domcontentloaded    : '/js/domcontentloaded.js',
+    lodash                 : {
+        lib: '/js/lodash-4.17.10.js',
+        test: function () {
+            try {
+
+                return typeof _.VERSION === 'string';
+            }
+            catch (e) {
+
+                return false;
+            }
+        }
+    },
+    ace                 : {
+        lib: '/js/ace/ace-builds-1.3.3/src-min-noconflict/ace.js',
+        test: function () {
+            try {
+
+                return typeof window.ace.edit === 'function';
+            }
+            catch (e) {
+
+                return false;
+            }
+        }
+    }
+}));
 
 var manipulation = (function () {
 
@@ -498,113 +597,116 @@ body .github-profile:hover {
 
     document.querySelector('body > footer') || document.addEventListener('DOMContentLoaded', function () {
 
-        var body = document.body;
+        window.async.permalink.then(function () {
 
-        window.toc = function () {
-
-            log.blue('executed TOC', '[toc] not found', '[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded]')
-        }
-
-        if ( body.hasAttribute('toc') ) {
+            var body = document.body;
 
             window.toc = function () {
 
-                var toc = document.createElement('div');
+                log.blue('executed TOC', '[toc] not found', '[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded and window.async.permalink.then]')
+            }
 
-                toc.classList.add('cards');
+            if ( body.hasAttribute('toc') ) {
 
-                toc.classList.add('toc');
+                window.toc = function () {
 
-                // Table of content
-                (function () {
-                    var head = document.createElement('h1');
+                    var toc = document.createElement('div');
 
-                    head.innerText = 'Table of Contents';
+                    toc.classList.add('cards');
 
-                    manipulation.append(toc, head)
-                })();
+                    toc.classList.add('toc');
 
-                // links
-                (function () {
+                    // Table of content
+                    (function () {
+                        var head = document.createElement('h1');
 
-                    var ul = document.createElement('ul');
+                        head.innerText = 'Table of Contents';
 
-                    Array.prototype.slice.call(document.querySelectorAll('h2[id]')).forEach(function (el) {
+                        manipulation.append(toc, head)
+                    })();
+
+                    // links
+                    (function () {
+
+                        var ul = document.createElement('ul');
+
+                        Array.prototype.slice.call(document.querySelectorAll('h2[id]')).forEach(function (el) {
+
+                            var a = document.createElement('a');
+
+                            a.setAttribute('href', "#" + el.getAttribute('id'))
+
+                            a.innerText = trim(el.innerText, " ¶\n");
+
+                            var li = document.createElement('li');
+
+                            manipulation.append(li, a);
+
+                            manipulation.append(ul, li);
+
+                        });
+
+                        manipulation.append(toc, ul)
+                    }());
+
+                    // hr at the end
+                    (function () {
+
+                        var hr = document.createElement('div');
+
+                        hr.style.border = '1px solid darkgray'
+                        manipulation.append(toc, hr);
+                    }());
+
+                    // return to top button
+                    (function() {
 
                         var a = document.createElement('a');
 
-                        a.setAttribute('href', "#" + el.getAttribute('id'))
+                        a.innerText = '^';
 
-                        a.innerText = trim(el.innerText, " ¶\n");
+                        a.setAttribute('href', 'javascript:void(0)');
 
-                        var li = document.createElement('li');
+                        a.addEventListener('click', function () {
+                            window.scrollTo(0, 0);
+                        })
 
-                        manipulation.append(li, a);
+                        a.style.border = '1px solid blue';
+                        a.style.padding = '10px';
+                        a.style.fontSize = '30px';
+                        a.style.position = 'fixed';
+                        a.style.right = '2px'
+                        a.style.bottom = '2px';
+                        a.style.backgroundColor = 'white';
 
-                        manipulation.append(ul, li);
+                        manipulation.append(body, a);
+                    }());
 
-                    });
+                    var inside = document.querySelector('.inside');
 
-                    manipulation.append(toc, ul)
-                }());
+                    if (inside) {
 
-                // hr at the end
-                (function () {
+                        manipulation.prepend(inside, toc);
+                    }
+                    else {
 
-                    var hr = document.createElement('div');
+                        manipulation.prepend(body, toc);
+                    }
 
-                    hr.style.border = '1px solid darkgray'
-                    manipulation.append(toc, hr);
-                }());
+                    // header.innerHTML = `footer`;
 
-                // return to top button
-                (function() {
-
-                    var a = document.createElement('a');
-
-                    a.innerText = '^';
-
-                    a.setAttribute('href', 'javascript:void(0)');
-
-                    a.addEventListener('click', function () {
-                        window.scrollTo(0, 0);
-                    })
-
-                    a.style.border = '1px solid blue';
-                    a.style.padding = '10px';
-                    a.style.fontSize = '30px';
-                    a.style.position = 'fixed';
-                    a.style.right = '2px'
-                    a.style.bottom = '2px';
-                    a.style.backgroundColor = 'white';
-
-                    manipulation.append(body, a);
-                }());
-
-                var inside = document.querySelector('.inside');
-
-                if (inside) {
-
-                    manipulation.prepend(inside, toc);
+                    log.blue('executed TOC', '[toc] found', '[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded and window.async.permalink.then]')
                 }
-                else {
-
-                    manipulation.prepend(body, toc);
-                }
-
-                // header.innerHTML = `footer`;
-
-                log.blue('executed TOC', '[toc] found', '[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded]')
             }
-        }
 
-        if (trigger) {
+            if (trigger) {
 
-            window.toc();
-        }
+                window.toc();
+            }
+
+            log.green('defined TOC', 'window.toc')
+        });
     });
-
-    log.green('defined TOC', 'window.toc')
 }());
 
 // load common css and js
@@ -634,34 +736,6 @@ body .github-profile:hover {
     });
 
     log.blue('executed', 'adding extra styles')
-}());
-
-// load additional js files
-(function () {
-
-    // <script src="./js/polyfill.js"></script>
-    // <script src="./js/permalink-my.js"></script>
-
-    [
-        '/js/polyfill.js',
-        '/js/permalink-my.js',
-        '/js/domcontentloaded.js',
-        '/js/lodash-4.17.10.js',
-        '/js/ace/ace-builds-1.3.3/src-min-noconflict/ace.js',
-    ].forEach(function (u) {
-
-        // https://stackoverflow.com/a/524721
-        var head = document.head || document.getElementsByTagName('head')[0],
-            script = document.createElement('script');
-
-        // script.async = false;
-
-        script.setAttribute('src', u);
-
-        head.appendChild(script);
-    })
-
-    log.blue('executed', 'adding extra js')
 }());
 
 // sorting lists [data-do-sort] attribute
@@ -1018,6 +1092,8 @@ body .github-profile:hover {
             log.blue('executed', 'window.scrollToHash found element [' + Boolean(found) + ']')
 
             if (found) {
+
+                // https://stackoverflow.com/a/5007606
 
                 location.href = selector;
             }
