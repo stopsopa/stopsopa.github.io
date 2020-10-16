@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>stopsopa.github.io</title>
+    <script src="/js/github.js"></script>
+</head>
+<body class="layout" toc>
+
+<div class="body">
+    <div class="inside">
+
+        <div class="cards">
+            <h2>codepen, jsfiddle, codesandbox</h2>
+            <a href="https://codesandbox.io/s/rjj38yzm14">codesandbox template</a>
+            <h2>React - es6 syntax snippets</h2>
+            <a href="https://gist.github.com/stopsopa/3f076fd92b03136cc28b8b91a1ffdad8#file-js-es6-jsx-L323">https://gist.github.com/stopsopa/3f076fd92b03136cc28b8b91a1ffdad8#file-js-es6-jsx-L323</a>
+
+            <h2>React - Textarea</h2>
+            <script type="editor" data-lang="jsx">
+
+
+import React, { useRef, useState, useEffect } from 'react';
+
+// https://stackoverflow.com/a/5346855
+var observe;
+if (window.attachEvent) {
+  observe = function (element, event, handler) {
+    element.attachEvent('on'+event, handler);
+  };
+}
+else {
+  observe = function (element, event, handler) {
+    element.addEventListener(event, handler, false);
+  };
+}
+function init (text, correct) {
+  function resize () {
+    console.log('fun resize', text)
+    //text.style.height = 'auto';
+    var h = text.scrollHeight;
+    if (Number.isInteger(correct)) {
+      h += correct;
+    }
+    text.style.height = h+'px';
+  }
+  /* 0-timeout to get the already changed text */
+  function delayedResize () {
+    window.setTimeout(resize, 0);
+  }
+  observe(text, 'change',  resize);
+  observe(text, 'cut',     delayedResize);
+  observe(text, 'paste',   delayedResize);
+  observe(text, 'drop',    delayedResize);
+  observe(text, 'keydown', delayedResize);
+
+  // text.focus();
+  // text.select();
+  resize();
+
+  return function () {resize()}
+}
+
+export default props => {
+
+  const el = useRef(null);
+
+  const [ resize, setResize ] = useState(false);
+
+  const [ mounted, setMounted ] = useState(false);
+
+  const {
+    value,
+  } = props;
+
+  const {
+    correct,
+    ...rest
+  } = props
+
+  useEffect(() => {
+
+    if ( ! mounted && el.current ) {
+
+      setMounted(true);
+
+      setResize(init(el.current, correct));
+    }
+
+    (typeof resize === 'function') && resize();
+  }, [value]);
+
+  return (
+    <textarea ref={el} {...rest} />
+  )
+}
+                </script>
+            <h2>React - IntervalInput</h2>
+            <script type="editor" data-lang="jsx">
+
+import React, { useReducer, useEffect } from 'react';
+
+import './IntervalInput.scss'
+
+const reg = /^\d+$/;
+
+const msg = msg => `IntervalInput component error: ${msg}`;
+
+const log = (function () {
+  try {
+    return console.log;
+  }
+  catch (e) {
+    return () => {}
+  }
+}());
+
+const ms        = require('nlab/ms');
+
+const generate  = ms.generate;
+
+const raw       = ms.raw;
+
+const shift     = ms.shift;
+
+const shiftKeys = Object.keys(shift);
+
+const shiftTrans = {
+  ms: `Milliseconds`,
+  s: `Seconds`,
+  m: `Minutes`,
+  h: `Hours`,
+  d: `Days`,
+  y: `Years`,
+}
+
+export default ({
+  value,
+  onChange = () => {},
+  unit = 'ms', // https://github.com/stopsopa/nlab/blob/master/README.md#ms
+  include = 'h',
+}) => {
+
+  if ( ! shiftKeys.includes(unit) ) {
+
+    log(msg(`unit is not on the list of available units '${shiftKeys.join(', ')}'`));
+
+    unit = 'ms';
+  }
+
+  if ( ! shiftKeys.includes(include) ) {
+
+    log(msg(`include is not on the list of available units '${shiftKeys.join(', ')}'`));
+
+    include = 'h';
+  }
+
+  let slice = shiftKeys.slice(shiftKeys.indexOf(unit), shiftKeys.lastIndexOf(include) + 1).reverse()
+
+  if ( ! reg.test(value) ) {
+
+    log(msg(`value don't match /^\\d+$/`));
+
+    value = 0;
+  }
+
+  const [ interval, dispatch ] = useReducer(function (state, action) {
+
+    if ( ! reg.test(action.value) ) {
+
+      log(msg(`action.value don't match /^\\d+$/`));
+
+      return state;
+    }
+
+    const value = parseInt(action.value, 10);
+
+    if ( value < 0 ) {
+
+      log(msg(`value < 0`));
+
+      return state;
+    }
+
+    if ( ! slice.includes(action.type) ) {
+
+      log(msg(`action.type '${action.type}' is not on the list of allowed values ${slice.join(', ')}`));
+
+      return state;
+    }
+
+    return {
+      ...state,
+      [action.type]: value,
+    }
+  }, raw(value));
+
+  useEffect(() => onChange(generate(interval, unit)), [interval]);
+
+  return (
+    <table className="interval-input">
+      <tbody>
+      <tr>
+        {slice.map(u => (
+          <td key={u}>{shiftTrans[u]}</td>
+        ))}
+      </tr>
+      <tr>
+        {slice.map(u => (
+          <td key={u}>
+            <input value={interval[u]}
+                   className="interval-input"
+                   onChange={e => dispatch({type: u, value: e.target.value})}
+                   onClick={(event) => event.target.select()}
+                   autoComplete="nope"
+            />
+          </td>
+        ))}
+      </tr>
+      </tbody>
+    </table>
+  )
+}
+
+                </script>
+            <br>
+            <script type="editor" data-lang="scss">
+
+.interval-input {
+    input.interval-input[class] { /* weird selector I know - but it is like this only to increase css specificity */
+        width: 82px;
+    }
+}
+
+            </script>
+
+            <h2>React - no webpack template</h2>
+            <a href="https://reactjs.org/docs/add-react-to-a-website.html">Add React to a Website</a>
+            <script type="editor" data-lang="html">
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script>
+        window.Promise || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.min.js"><\/script>');
+        window.fetch || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"><\/script>');
+    &lt;/script>
+    <script src="public/react/umd/react.production.min.js">&lt;/script>
+    <script src="public/react-dom/umd/react-dom.production.min.js">&lt;/script>
+    <script src="public/@babel/standalone/babel.min.js">&lt;/script>
+        <!--
+            yarn add @babel/standalone
+            homepage github repo:
+                https://github.com/babel/babel-standalone
+            from cdn:
+                https://reactjs.org/docs/add-react-to-a-website.html#quickly-try-jsx
+        -->
+    <script>window.React || document.write("run server using 'make start' it will link node_modules where it should be");&lt;/script>
+</head>
+<body>
+    <div id="app">
+        Loading ...
+    </div>
+    <script type="text/babel">
+
+        const log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+        const delay = (time, data) =>
+            new Promise(
+                resolve => time ? setTimeout(resolve, time, data) : resolve(data)
+            )
+        ;
+
+        class Root extends React.Component {
+            constructor(...args) {
+
+                super(...args);
+
+                this.state = {
+                }
+            }
+            render() {
+                return (
+                    <div>It's working...</div>
+                );
+            }
+        }
+        ReactDOM.render(
+            <Root
+            />,
+            document.getElementById('app')
+        );
+    &lt;/script>
+</body>
+</html>
+
+                </script>
+            <h2>Form - checkbox</h2>
+            <a href="./react-checkbox/index.html">react-checkbox</a>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
