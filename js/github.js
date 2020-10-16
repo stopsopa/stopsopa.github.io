@@ -1,4 +1,92 @@
 
+var log = (function () {
+    try {
+        return console.log
+    }
+    catch (e) {
+        return function () {}
+    }
+}());
+
+(function () {
+
+    // https://stackoverflow.com/a/13017382/5560682
+
+    log.c = function () {
+
+        var a = Array.prototype.slice.call(arguments);
+
+        a[a.length - 1] += ' '
+
+        a = a.concat(['background: #3B4045; color: white']);
+
+        a[0] = '%c ' + a[0];
+
+        log.apply(log, a)
+    }
+
+    function define (color) {
+
+        return function define() {
+
+            var a = Array.prototype.slice.call(arguments);
+
+            var l = a.length;
+
+            var tmp = ''
+
+            var colours = [];
+
+            for (var i = 0 ; i < l ; i += 1 ) {
+
+                if (i === 0) {
+
+                    tmp += '%c ' + a[i] + ' ';
+
+                    colours = colours.concat(color);
+                }
+                else {
+
+                    tmp += '%c ' + a[i];
+
+                    colours = colours.concat('background: white; color: black');
+                }
+            }
+
+            colours.unshift(tmp);
+
+            // log('args',colours )
+
+            log.apply(log, colours)
+
+            // console.log('%c Oh my heavens! %c rest', 'background: #222; color: #bada55', 'background: white; color: black');
+        }
+    }
+
+    Object.entries({
+        red     : 'background: #C90000; color: white',
+        green   : 'background: #00B700; color: white',
+        blue    : 'background: #2CA5E0; color: white',
+        gray   : 'background: #3B4045; color: white',
+    }).map(function (entry) {
+
+        log[entry[0]] = define(entry[1]);
+    });
+
+    /* now use
+
+    log.red('abc')
+    log.green('abc')
+    log.blue('abc')
+    log.gray('abc')
+
+     */
+
+    log.green('defined', 'log & log[red|green|blue|gray]')
+}());
+
+window.log = log;
+
 var manipulation = (function () {
 
     var domCache = document.createElement('div');
@@ -48,6 +136,8 @@ var manipulation = (function () {
 
 window.manipulation = manipulation;
 
+log.green('defined', 'window.manipulation');
+
 function trim(string, charlist, direction) {
     direction = direction || 'rl';
     charlist  = (charlist || '').replace(/([.?*+^$[\]\\(){}|-])/g,'\\$1');
@@ -55,7 +145,56 @@ function trim(string, charlist, direction) {
     (direction.indexOf('r')+1) && (string = string.replace(new RegExp('^(.*?)['+charlist+']*$','gm'),'$1'));
     (direction.indexOf('l')+1) && (string = string.replace(new RegExp('^['+charlist+']*(.*)$','gm'),'$1'));
     return string;
-}
+};
+
+log.green('defined', 'window.trim');
+
+(function () {
+
+    var th = function (msg) {
+        return new Error("window.trigger error: " + String(msg));
+    }
+
+    const list = [];
+
+    window.trigger = function (label) {
+
+        if (typeof label !== 'string') {
+
+            throw th("window.trigger: typeof label !== 'string'");
+        }
+
+        log.blue('executed', 'window.trigger() by ' + label)
+
+        setTimeout(function () {
+
+            list.forEach(f => f());
+
+            log.blue('executed', 'window.trigger() by ' + label + ' debounced !!!')
+        }, 100)
+
+    }
+
+    window.trigger.add = function (trigger, label) {
+
+        if (typeof trigger !== 'function') {
+
+            throw th("window.trigger.add: typeof trigger !== 'function'");
+        }
+
+        if (typeof label !== 'string') {
+
+            throw th("window.trigger.add: typeof label !== 'string'");
+        }
+
+        log.blue('executed', 'window.trigger.add('+label+')')
+
+        list.push(trigger);
+    }
+
+    log.green('defined', 'window.trigger && window.trigger.add');
+}());
+
 
 (function () {
 
@@ -93,19 +232,10 @@ function trim(string, charlist, direction) {
         Array.prototype.slice.call(tmp.children).forEach(function (e) {
             manipulation.after(h, e)
         });
+
+        log.blue('executed', 'setting favicon', '[triggered in github.js, delayed async due to DOMContentLoaded]')
     });
 }());
-
-var log = (function () {
-    try {
-        return console.log
-    }
-    catch (e) {
-        return function () {}
-    }
-}());
-
-window.log = log;
 
 // edit & profile ribbons
 (function () {
@@ -143,6 +273,8 @@ window.log = log;
         return github;
 
     }("stopsopa.github.io"));
+
+    log.green('defined', 'window.github - link of edit page on github: ' + github)
 
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -201,6 +333,8 @@ body .github-link > a:hover {
             }
 
             head.appendChild(style);
+
+            log.blue('executed', 'adding github-link div', '[triggered in github.js, delayed async due to DOMContentLoaded]')
         }());
 
 
@@ -249,6 +383,8 @@ body .github-profile:hover {
             }
 
             head.appendChild(style);
+
+            log.blue('executed', 'adding github-profile div', '[triggered in github.js, delayed async due to DOMContentLoaded]')
         }());
 
     });
@@ -271,6 +407,9 @@ body .github-profile:hover {
             return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
         }
     }());
+
+    log.green('defined', 'window.isNode');
+
     manipulation.custommove = function (newParent, elements) {
 
         if (isNode(elements)) {
@@ -292,6 +431,8 @@ body .github-profile:hover {
         }
         return this;
     }
+
+    log.green('defined', 'manipulation.custommove [extension]')
 }());
 
 (function () {
@@ -311,7 +452,11 @@ body .github-profile:hover {
 
             manipulation.prepend(body, header);
         }
+
+        log.blue('executed NOHEAD', 'handling nohead attr finished', '[triggered in github.js, delayed async due to DOMContentLoaded]')
     });
+
+    log.blue('executed NOHEAD', 'handling nohead attr')
 }());
 
 (function () {
@@ -329,7 +474,11 @@ body .github-profile:hover {
 
             manipulation.append(body, header);
         }
+
+        log.blue('executed NOFOOT', 'handling nofoot attr finished', '[triggered in github.js, delayed async due to DOMContentLoaded]')
     });
+
+    log.blue('executed NOFOOT', 'handling nofoot attr')
 }());
 
 // Table of Contents
@@ -339,109 +488,123 @@ body .github-profile:hover {
 // WARNING: it has to be executed in domcontentloaded.js after permalink-my.js
 // WARNING: it has to be executed in domcontentloaded.js after permalink-my.js
 (function () {
+
+    var trigger = false;
+
+    window.toc = function () {
+
+        trigger = true;
+    }
+
     document.querySelector('body > footer') || document.addEventListener('DOMContentLoaded', function () {
 
         var body = document.body;
 
-        log('attr in body - toc:', body)
-
-        window.toc = function () {}
-
-        if ( ! body.hasAttribute('toc') ) {
-
-            console.log('[toc] not found - table of content will not be rendered')
-
-            return;
-        }
-
         window.toc = function () {
 
-            var toc = document.createElement('div');
+            log.blue('executed TOC', '[toc] not found', '[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded]')
+        }
 
-            toc.classList.add('cards');
+        if ( body.hasAttribute('toc') ) {
 
-            toc.classList.add('toc');
+            window.toc = function () {
 
-            // Table of content
-            (function () {
-                var head = document.createElement('h1');
+                var toc = document.createElement('div');
 
-                head.innerText = 'Table of Contents';
+                toc.classList.add('cards');
 
-                manipulation.append(toc, head)
-            })();
+                toc.classList.add('toc');
 
-            // links
-            (function () {
+                // Table of content
+                (function () {
+                    var head = document.createElement('h1');
 
-                var ul = document.createElement('ul');
+                    head.innerText = 'Table of Contents';
 
-                Array.prototype.slice.call(document.querySelectorAll('h2[id]')).forEach(function (el) {
+                    manipulation.append(toc, head)
+                })();
+
+                // links
+                (function () {
+
+                    var ul = document.createElement('ul');
+
+                    Array.prototype.slice.call(document.querySelectorAll('h2[id]')).forEach(function (el) {
+
+                        var a = document.createElement('a');
+
+                        a.setAttribute('href', "#" + el.getAttribute('id'))
+
+                        a.innerText = trim(el.innerText, " ¶\n");
+
+                        var li = document.createElement('li');
+
+                        manipulation.append(li, a);
+
+                        manipulation.append(ul, li);
+
+                    });
+
+                    manipulation.append(toc, ul)
+                }());
+
+                // hr at the end
+                (function () {
+
+                    var hr = document.createElement('div');
+
+                    hr.style.border = '1px solid darkgray'
+                    manipulation.append(toc, hr);
+                }());
+
+                // return to top button
+                (function() {
 
                     var a = document.createElement('a');
 
-                    a.setAttribute('href', "#" + el.getAttribute('id'))
+                    a.innerText = '^';
 
-                    a.innerText = trim(el.innerText, " ¶\n");
+                    a.setAttribute('href', 'javascript:void(0)');
 
-                    var li = document.createElement('li');
+                    a.addEventListener('click', function () {
+                        window.scrollTo(0, 0);
+                    })
 
-                    manipulation.append(li, a);
+                    a.style.border = '1px solid blue';
+                    a.style.padding = '10px';
+                    a.style.fontSize = '30px';
+                    a.style.position = 'fixed';
+                    a.style.right = '2px'
+                    a.style.bottom = '2px';
+                    a.style.backgroundColor = 'white';
 
-                    manipulation.append(ul, li);
+                    manipulation.append(body, a);
+                }());
 
-                });
+                var inside = document.querySelector('.inside');
 
-                manipulation.append(toc, ul)
-            }());
+                if (inside) {
 
-            // hr at the end
-            (function () {
+                    manipulation.prepend(inside, toc);
+                }
+                else {
 
-                var hr = document.createElement('div');
+                    manipulation.prepend(body, toc);
+                }
 
-                hr.style.border = '1px solid darkgray'
-                manipulation.append(toc, hr);
-            }());
+                // header.innerHTML = `footer`;
 
-            // return to top button
-            (function() {
-
-                var a = document.createElement('a');
-
-                a.innerText = '^';
-
-                a.setAttribute('href', 'javascript:void(0)');
-
-                a.addEventListener('click', function () {
-                    window.scrollTo(0, 0);
-                })
-
-                a.style.border = '1px solid blue';
-                a.style.padding = '10px';
-                a.style.fontSize = '30px';
-                a.style.position = 'fixed';
-                a.style.right = '2px'
-                a.style.bottom = '2px';
-                a.style.backgroundColor = 'white';
-
-                manipulation.append(body, a);
-            }());
-
-            var inside = document.querySelector('.inside');
-
-            if (inside) {
-
-                manipulation.prepend(inside, toc);
+                log.blue('executed TOC', '[toc] found', '[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded]')
             }
-            else {
+        }
 
-                manipulation.prepend(body, toc);
-            }
+        if (trigger) {
 
-            // header.innerHTML = `footer`;
+            window.toc();
         }
     });
+
+    log.green('defined TOC', 'window.toc')
 }());
 
 // load common css and js
@@ -468,7 +631,9 @@ body .github-profile:hover {
         style.setAttribute('href', u);
 
         head.appendChild(style);
-    })
+    });
+
+    log.blue('executed', 'adding extra styles')
 }());
 
 // load additional js files
@@ -495,6 +660,8 @@ body .github-profile:hover {
 
         head.appendChild(script);
     })
+
+    log.blue('executed', 'adding extra js')
 }());
 
 // sorting lists [data-do-sort] attribute
@@ -531,6 +698,8 @@ body .github-profile:hover {
                manipulation.prepend(parent, n.node)
            });
        });
+
+        log.blue('executed', 'handling [data-do-sort]', '[defined & triggered in github.js, delayed async due to DOMContentLoaded]')
     });
 }());
 
@@ -571,9 +740,13 @@ body .github-profile:hover {
 
         if ( typeof window.waitForPromise === 'function' ) {
 
+            log.blue('executed', 'window.doace() waiting for window.waitForPromise() found')
+
             _waitForPromise = Promise.resolve(window.waitForPromise());
         }
         else {
+
+            log.blue('executed', 'window.doace() waiting for window.waitForPromise() NOT found')
 
             _waitForPromise = Promise.resolve();
         }
@@ -585,6 +758,8 @@ body .github-profile:hover {
                     (function run() {
                         if (window._ && window.ace && window.ace.edit) {
 
+                            log.blue('executed', 'window.doace() inside - window.ace.edit found, binding body click for copy code from editor feature')
+
                             document.body.addEventListener('click', function (e) {
 
                                 var el = e.target;
@@ -592,6 +767,8 @@ body .github-profile:hover {
                                 var match = el.matches('[data-lang] > .copy');
 
                                 if (match) {
+
+                                    log.blue('executed', 'clicked [data-lang] > .copy')
 
                                     var editor = editors[el.parentNode.dataset.ace];
 
@@ -619,12 +796,10 @@ body .github-profile:hover {
 
                                         }());
                                     }
-
-                                    log('clicked .copy');
                                 }
                                 else {
 
-                                    log('something else clicked');
+                                    log.blue('executed', 'clicked something else than [data-lang] > .copy')
                                 }
                             });
 
@@ -639,11 +814,18 @@ body .github-profile:hover {
         }
 
         p.then(function () {
-            Array.prototype.slice.call(document.querySelectorAll('[type="editor"], [type="syntax"]')).forEach(function (el) {
+
+            var selector = '[type="editor"]:not(.handled), [type="syntax"]:not(.handled)';
+
+            const found = Array.prototype.slice.call(document.querySelectorAll(selector));
+
+            log.blue('executed', 'window.doace() inside - handling '+selector+' - adding '+found.length+' editors')
+
+            found.forEach(function (el) {
 
                 if (el.classList.contains('handled')) {
 
-                    log('ace - handled')
+                    log('[type="editor"], [type="syntax"] handled')
 
                     return true;
                 }
@@ -658,10 +840,12 @@ body .github-profile:hover {
                  *      <script type="editor" data-lang="js" data-w="95%">
                  *      </script>
                  *  </div>
+                 *    // this is actually processed structure
                  *
                  *  to
                  *
                  *  <script class="editor" type="editor" data-lang="js" data-w="95%"></script>
+                 *      // this is for user convenience
                  *
                  *  and then execute old logic
                  */
@@ -685,7 +869,11 @@ body .github-profile:hover {
                         div.setAttribute(attr[i].name, attr[i].value);
                     }
 
+                    el.classList.add('handled');
+
                     el = div;
+
+                    el.classList.add('handled');
                 })();
 
                 script = el.querySelector('script');
@@ -711,8 +899,6 @@ body .github-profile:hover {
                 div.removeAttribute('data-lang');
                 div.removeAttribute('data-w');
                 div.removeAttribute('data-h');
-
-                el.classList.add('handled');
 
                 manipulation.append(el, div);
 
@@ -796,11 +982,51 @@ body .github-profile:hover {
                 editor.getSession().on('change', heightUpdateFunction);
 
             })
+
+
+            window.trigger('window.doace()')
         });
     }
 
+    log.green('defined', 'window.doace()')
+
     document.addEventListener('DOMContentLoaded', function () {
+
         window.doace();
+
+        log.blue('executed', 'window.doace [triggered in github.js, delayed async due to DOMContentLoaded]')
     })
 
 }());
+
+// scroll to # permalink
+(function () {
+
+    window.scrollToHash = function () {
+
+        log.blue('executed', 'window.scrollToHash location.hash empty')
+    };
+
+    if (location.hash !== "") {
+
+        window.scrollToHash = function () {
+
+            var selector = '#' + trim(location.hash, '#')
+
+            var found = document.querySelector(selector);
+
+            log.blue('executed', 'window.scrollToHash found element [' + Boolean(found) + ']')
+
+            if (found) {
+
+                location.href = selector;
+            }
+        };
+    }
+
+    log.green('defined', 'window.scrollToHash() : location.hash == "'+location.hash+'"')
+
+    window.trigger.add(window.scrollToHash, 'window.scrollToHash')
+}());
+
+log.gray('finished', 'github.js')
