@@ -347,95 +347,97 @@ body .github-profile:hover {
 
         window.toc = function () {}
 
-        if ( body.hasAttribute('toc')) {
+        if ( ! body.hasAttribute('toc') ) {
 
-            window.toc = function () {
+            console.log('[toc] not found - table of content will not be rendered')
+        }
 
-                var toc = document.createElement('div');
+        window.toc = function () {
 
-                toc.classList.add('cards');
+            var toc = document.createElement('div');
 
-                toc.classList.add('toc');
+            toc.classList.add('cards');
 
-                // Table of content
-                (function () {
-                    var head = document.createElement('h1');
+            toc.classList.add('toc');
 
-                    head.innerText = 'Table of Contents';
+            // Table of content
+            (function () {
+                var head = document.createElement('h1');
 
-                    manipulation.append(toc, head)
-                })();
+                head.innerText = 'Table of Contents';
 
-                // links
-                (function () {
+                manipulation.append(toc, head)
+            })();
 
-                    var ul = document.createElement('ul');
+            // links
+            (function () {
 
-                    Array.prototype.slice.call(document.querySelectorAll('h2[id]')).forEach(function (el) {
+                var ul = document.createElement('ul');
 
-                        var a = document.createElement('a');
-
-                        a.setAttribute('href', "#" + el.getAttribute('id'))
-
-                        a.innerText = el.innerText;
-
-                        var li = document.createElement('li');
-
-                        manipulation.append(li, a);
-
-                        manipulation.append(ul, li);
-
-                    });
-
-                    manipulation.append(toc, ul)
-                }());
-
-                // hr at the end
-                (function () {
-
-                    var hr = document.createElement('div');
-
-                    hr.style.border = '1px solid darkgray'
-                    manipulation.append(toc, hr);
-                }());
-
-                // return to top button
-                (function() {
+                Array.prototype.slice.call(document.querySelectorAll('h2[id]')).forEach(function (el) {
 
                     var a = document.createElement('a');
 
-                    a.innerText = '^';
+                    a.setAttribute('href', "#" + el.getAttribute('id'))
 
-                    a.setAttribute('href', 'javascript:void(0)');
+                    a.innerText = trim(el.innerText, " ¶\n");
 
-                    a.addEventListener('click', function () {
-                        window.scrollTo(0, 0);
-                    })
+                    var li = document.createElement('li');
 
-                    a.style.border = '1px solid blue';
-                    a.style.padding = '10px';
-                    a.style.fontSize = '30px';
-                    a.style.position = 'fixed';
-                    a.style.right = '2px'
-                    a.style.bottom = '2px';
-                    a.style.backgroundColor = 'white';
+                    manipulation.append(li, a);
 
-                    manipulation.append(body, a);
-                }());
+                    manipulation.append(ul, li);
 
-                var inside = document.querySelector('.inside');
+                });
 
-                if (inside) {
+                manipulation.append(toc, ul)
+            }());
 
-                    manipulation.prepend(inside, toc);
-                }
-                else {
+            // hr at the end
+            (function () {
 
-                    manipulation.prepend(body, toc);
-                }
+                var hr = document.createElement('div');
 
-                // header.innerHTML = `footer`;
+                hr.style.border = '1px solid darkgray'
+                manipulation.append(toc, hr);
+            }());
+
+            // return to top button
+            (function() {
+
+                var a = document.createElement('a');
+
+                a.innerText = '^';
+
+                a.setAttribute('href', 'javascript:void(0)');
+
+                a.addEventListener('click', function () {
+                    window.scrollTo(0, 0);
+                })
+
+                a.style.border = '1px solid blue';
+                a.style.padding = '10px';
+                a.style.fontSize = '30px';
+                a.style.position = 'fixed';
+                a.style.right = '2px'
+                a.style.bottom = '2px';
+                a.style.backgroundColor = 'white';
+
+                manipulation.append(body, a);
+            }());
+
+            var inside = document.querySelector('.inside');
+
+            if (inside) {
+
+                manipulation.prepend(inside, toc);
             }
+            else {
+
+                manipulation.prepend(body, toc);
+            }
+
+            // header.innerHTML = `footer`;
         }
     });
 }());
