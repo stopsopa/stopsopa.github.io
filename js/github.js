@@ -850,7 +850,7 @@ body .github-profile:hover {
 
                                     if (editor) {
 
-                                        log("found editory, let's copy");
+                                        log("found editor, let's copy");
 
                                         var textarea = document.createElement('textarea');
                                         manipulation.append(document.body, textarea);
