@@ -14,4 +14,4 @@ fi
 
 node "$ROOT/node_modules/.bin/uglifyjs" "$DIR/jira-create.js" -o "$DIR/jira-create.min.js" -m -c toplevel,sequences=false --mangle-props
 
-node "$DIR/template.js"
+(cd "$DIR" && node template.js)
