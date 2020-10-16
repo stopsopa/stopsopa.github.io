@@ -350,6 +350,8 @@ body .github-profile:hover {
         if ( ! body.hasAttribute('toc') ) {
 
             console.log('[toc] not found - table of content will not be rendered')
+
+            return;
         }
 
         window.toc = function () {
