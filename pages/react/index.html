@@ -105,8 +105,6 @@ import React, { useReducer, useEffect } from 'react';
 
 import './IntervalInput.scss'
 
-const reg = /^\d+$/;
-
 const msg = msg => `IntervalInput component error: ${msg}`;
 
 const log = (function () {
@@ -137,28 +135,38 @@ const shiftTrans = {
   y: `Years`,
 }
 
+const reg = /^\d+$/;
+
 export default ({
   value,
   onChange = () => {},
-  unit = 'ms', // https://github.com/stopsopa/nlab/blob/master/README.md#ms
-  include = 'h',
+  valueunit = 'ms', // https://github.com/stopsopa/nlab/blob/master/README.md#ms
+  rangestart = 's',
+  rangeend = 'h',
 }) => {
 
-  if ( ! shiftKeys.includes(unit) ) {
+  if ( ! shiftKeys.includes(valueunit) ) {
 
-    log(msg(`unit is not on the list of available units '${shiftKeys.join(', ')}'`));
+    log(msg(`valueunit is not on the list of available units '${shiftKeys.join(', ')}'`));
 
-    unit = 'ms';
+    valueunit = 'ms';
   }
 
-  if ( ! shiftKeys.includes(include) ) {
+  if ( ! shiftKeys.includes(rangestart) ) {
 
-    log(msg(`include is not on the list of available units '${shiftKeys.join(', ')}'`));
+    log(msg(`rangestart is not on the list of available units '${shiftKeys.join(', ')}'`));
 
-    include = 'h';
+    rangestart = 'ms';
   }
 
-  let slice = shiftKeys.slice(shiftKeys.indexOf(unit), shiftKeys.lastIndexOf(include) + 1).reverse()
+  if ( ! shiftKeys.includes(rangeend) ) {
+
+    log(msg(`rangeend is not on the list of available units '${shiftKeys.join(', ')}'`));
+
+    rangeend = 'h';
+  }
+
+  let slice = shiftKeys.slice(shiftKeys.indexOf(rangestart), shiftKeys.lastIndexOf(rangeend) + 1).reverse()
 
   if ( ! reg.test(value) ) {
 
@@ -192,13 +200,27 @@ export default ({
       return state;
     }
 
+    // log({
+    //   reducer: {
+    //     ...state,
+    //     [action.type]: value,
+    //   },
+    //   valueunit,
+    // })
+
     return {
       ...state,
       [action.type]: value,
     }
-  }, raw(value));
+  }, raw(value, valueunit));
 
-  useEffect(() => onChange(generate(interval, unit)), [interval]);
+  // log({
+  //   value,
+  //   valueunit,
+  //   init: raw(value, valueunit),
+  // })
+
+  useEffect(() => onChange(generate(interval, valueunit)), [interval]);
 
   return (
     <table className="interval-input">
