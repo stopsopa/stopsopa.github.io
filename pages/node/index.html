@@ -661,9 +661,9 @@ module.exports = function request(url, opt = {}) {
 
     if ( typeof opt.json !== 'undefined' ) {
 
-      if (opt.method === 'get') {
+      if (opt.method === 'GET') {
 
-        throw th(`opt.json is given but method is still get`);
+        throw th(`opt.json is given but method is still GET`);
       }
 
       req.write(JSON.stringify(opt.json));
