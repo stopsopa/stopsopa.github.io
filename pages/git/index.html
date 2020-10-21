@@ -96,6 +96,30 @@ vi gitstorage-config.sh
                 </script>
                 <a href="https://github.com/stopsopa/gitstorage">github</a>
             </div>
+            <div class="cards">
+                <h2>git config</h2>
+                <script type="editor" data-lang="sh">
+                 
+git config --global -l | egrep "(user\.name|user\.email)"
+
+git config --global core.fileMode false
+git config --global core.autocrlf false
+git config --global rebase.autoStash true
+git config --global core.ignorecase false
+git config --global color.ui auto
+
+git config core.fileMode false
+
+# to read config
+    git config --get core.ignoreCase
+                    
+git config --global user.email x.y@gmail.com
+git config --global user.name "Name Surname"                     
+
+
+                </script>
+                <a href="https://github.com/stopsopa/gitstorage">github</a>
+            </div>
         </div>
 
     </div>
