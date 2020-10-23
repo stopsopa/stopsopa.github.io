@@ -387,6 +387,22 @@ function trim(string, charlist, direction) {
 }   
                     
                 </script>
+                <h2>react-datepicker display as UTC</h2>
+                <script type="editor" data-lang="js">
+
+<DatePicker
+  selected={(function (datepickerDate) {
+
+    // to make datepicker DISPLAY UTC
+    const n = new Date(datepickerDate.getTime() + (1000 * 60 * datepickerDate.getTimezoneOffset()))
+
+    return n;
+  }(datepickerDate))}
+  onChange={date => setDatepickerDate(date)}
+  dateFormat="yyyy-MM-dd iiii"
+/>
+                    
+                </script>
                 <h2>Proxy getter</h2>
                 <script type="editor" data-lang="js">
 let target = {
