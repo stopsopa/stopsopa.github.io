@@ -388,7 +388,7 @@ function trim(string, charlist, direction) {
                     
                 </script>
                 <h2>react-datepicker display as UTC</h2>
-                <script type="editor" data-lang="js">
+                <script type="editor" data-lang="jsx">
 
 <DatePicker
   selected={(function (datepickerDate) {
@@ -403,6 +403,8 @@ function trim(string, charlist, direction) {
 />
                     
                 </script>
+                Interesting thing is that .getTimezoneOffset() method is returning different values depending how much you offset Date() object:
+                <img src="./getTimezoneOffset.jpg">
                 <h2>Proxy getter</h2>
                 <script type="editor" data-lang="js">
 let target = {
