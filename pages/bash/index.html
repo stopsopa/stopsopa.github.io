@@ -21,6 +21,18 @@ grep 'swap-files' * -rl --exclude-dir={bower_components,node_modules,vendor} --i
 
                 </script>
             </div>
+            <div class="cards">
+
+                <h2>export .env</h2>
+                <script type="editor" data-lang="sh">
+                
+# https://unix.stackexchange.com/a/79084
+set -a
+source ".env"
+set +a   
+
+                </script>
+            </div>
 
             <div class="cards">
 
