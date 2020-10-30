@@ -349,7 +349,7 @@ module.exports = tool;
                 </script>
             </div>
             <div class="cards">
-                <h2>Server template</h2>               
+                <h2>Express template</h2>               
                 <script type="editor" data-lang="js">
 
 const path      = require('path');
@@ -358,11 +358,12 @@ const fs        = require('fs');
 
 const express   = require('express');
 
-const app       = express();
-
 const log       = (function(){try{return console.log}catch(e){return function (){}}}());
 
 const template  = require('lodash/template');
+
+// https://www.npmjs.com/package/cookie-parser
+const cookieParser = require('cookie-parser'); 
 
 // https://stackoverflow.com/a/23613092
 const serveIndex    = require('serve-index');
@@ -374,6 +375,10 @@ const port      = process.env.PORT;
 const web = path.resolve(__dirname, 'public');
 
 const readFile = file => fs.readFileSync(file).toString();
+
+const app       = express();
+
+app.use(cookieParser())
 
 app.use(express.urlencoded({extended: false}));
 
