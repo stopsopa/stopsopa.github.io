@@ -77,6 +77,10 @@ kubectl run curl --image=radial/busyboxplus:curl -i --tty
 # usage
 kubectl describe node k8sv21mhw
 
+# trigger cronjob: 
+kubectl create job --from=cronjob/nameofcronjob nameofjobtocreate
+    # from: https://www.craftypenguins.net/how-to-trigger-a-kubernetes-cronjob-manually/
+
 # https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/
 kubectl drain nodename
 kubectl uncordon nodename
