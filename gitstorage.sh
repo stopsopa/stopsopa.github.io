@@ -63,6 +63,9 @@ done
 CONFIG=$(cat <<END
 #!/bin/bash
 
+# used in
+# git@bitbucket.org:xxx/xxx.git
+
 GITSTORAGESOURCE="git@github.com:stopsopa/gitstorage.git"
 
 GITSTORAGETARGETDIR="github-stopsopa.github.io"
