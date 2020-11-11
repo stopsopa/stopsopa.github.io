@@ -447,6 +447,8 @@ else {
         jpg     : 'image/jpeg',
         png     : 'image/png',
         pdf     : 'application/pdf',
+        svg     : 'image/svg+xml',
+        ico     : 'image/x-icon',
     }))));
 
     function time() {
@@ -560,7 +562,10 @@ else {
 
             try {
 
-                res.end(addWatcher(fs.readFileSync(file), type(req, res)));
+                // setTimeout(function () {
+
+                    res.end(addWatcher(fs.readFileSync(file), type(req, res)));
+                // }, 300);
             }
             catch (e) {
 
