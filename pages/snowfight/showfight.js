@@ -36,7 +36,7 @@ window.SnowFight = (function () {
   var xml = "http://www.w3.org/2000/svg";
 
   var viewBoxX = 1000;
-  var viewBoxY = 540
+  var viewBoxY = 540;
 
   var log=(function(){try{return console.log}catch(e){return function(){}}}());
 
