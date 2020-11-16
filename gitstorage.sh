@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GITSTORAGESOURCE="git@github.com:stopsopa/gitstorage.git"
+GITSTORAGESOURCE="git@github.com:xxx/gitstorage.git"
 
 exec 3<> /dev/null
 function green {
@@ -63,12 +63,9 @@ done
 CONFIG=$(cat <<END
 #!/bin/bash
 
-# used in
-# git@bitbucket.org:xxx/xxx.git
+GITSTORAGESOURCE="git@github.com:xxx/gitstorage.git"
 
-GITSTORAGESOURCE="git@github.com:stopsopa/gitstorage.git"
-
-GITSTORAGETARGETDIR="github-stopsopa.github.io"
+GITSTORAGETARGETDIR="github-xxx.github.io"
 
 GITSTORAGELIST=(
     ".env::\$GITSTORAGETARGETDIR/.env"
@@ -112,6 +109,7 @@ $CONFIG
 and use this script like:
 
 /bin/bash $0 isinsync
+/bin/bash $0 diff
 /bin/bash $0 pull
 /bin/bash $0 push
 
@@ -180,7 +178,7 @@ mkdir -p "$_TARGETGITDIR"
 
 MODE="$1"
 
-TEST="^(isinsync|pull|push)$"
+TEST="^(isinsync|diff|pull|push)$"
 
 if ! [[ $MODE =~ $TEST ]]; then
 
@@ -234,6 +232,55 @@ if [ $MODE = "isinsync" ]; then
   { green "\n    files are not in sync\n"; } 2>&3
 
   (cd "$_TARGETGITDIR" && git status)
+
+  exit 1;
+fi
+
+
+if [ $MODE = "diff" ]; then
+
+  (cd "$_TARGETGITDIR" && git clone "$GITSTORAGESOURCE" .)
+
+  for index in "${GITSTORAGELIST[@]}"; do
+
+    _S="${index%%::*}"
+
+    _T="${index##*::}"
+
+    _S="$_CONFIGDIR/$_S"
+
+    if [ -f "$_S" ]; then
+
+      _T="$_TARGETGITDIR/$_T"
+
+      _TMPDIR="$(dirname "$_T")"
+
+      mkdir -p "$_TMPDIR";
+
+      cp "$_S" "$_T"
+
+    else
+
+      { red "$0 error: source file '$_S' doesn't exist"; } 2>&3
+
+    fi
+
+  done
+
+  DIFFSTATUS="$(cd "$_TARGETGITDIR" && git status -s)"
+
+  if [ "$DIFFSTATUS" = "" ] ; then
+
+      { green "\n    files are in sync\n"; } 2>&3
+
+      exit 0;
+  fi
+
+  { green "\n    files are not in sync\n"; } 2>&3
+
+  (cd "$_TARGETGITDIR/$GITSTORAGETARGETDIR" && git diff)
+
+  (cd "$_TARGETGITDIR/$GITSTORAGETARGETDIR" && git status)
 
   exit 1;
 fi

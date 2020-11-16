@@ -881,7 +881,7 @@ body .github-profile:hover {
                                 }
                                 else {
 
-                                    log.blue('executed', 'clicked something else than [data-lang] > .copy')
+                                    // log.blue('executed', 'clicked something else than [data-lang] > .copy')
                                 }
                             });
 
