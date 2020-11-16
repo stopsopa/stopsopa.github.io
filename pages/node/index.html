@@ -21,6 +21,11 @@
             </div>
 
             <div class="cards">
+                <h2>component search</h2>
+                <a href="https://openbase.io/js/node-xlsx">https://openbase.io/js/node-xlsx</a>
+            </div>
+
+            <div class="cards">
                 <h2>safe console.log</h2>
                 <script type="editor" data-lang="js">
 
@@ -860,6 +865,60 @@ nvm ls-remote
                 
 Buffer.from(json).toString('base64')
 Buffer.from(base64, 'base64').toString('ascii');
+
+                </script> 
+            </div>
+            
+            <div class="cards">
+                <h2>excel xlsx</h2>  
+                <script type="editor" data-lang="js">
+
+const express   = require('express'); // "exceljs": "3.8.0" for node version v8.15.1
+
+const host      = '0.0.0.0';
+
+const port      = 8989;
+
+const app       = express();
+
+const Excel = require('exceljs');
+
+app.all('/root', async (req, res) => {
+
+  console.log('/root')
+
+  // https://stackoverflow.com/a/55166212
+  const workbook = new Excel.Workbook();
+  const worksheet = workbook.addWorksheet("My Sheet");
+
+  worksheet.columns = [
+    {header: 'Id', key: 'id', width: 10},
+    {header: 'Name', key: 'name', width: 32},
+    {header: 'D.O.B.', key: 'dob', width: 15,}
+  ];
+
+  worksheet.addRow({
+    id: 1,
+    name: 'John Doe',
+    dob: new Date(1970, 1, 1)
+  });
+
+  // save under export.xlsx
+  // await workbook.xlsx.writeFile('export.xlsx');
+
+  // https://github.com/exceljs/exceljs/issues/37#issuecomment-181772680
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader("Content-Disposition", "attachment; filename=" + "export.xlsx");
+
+  await workbook.xlsx.write(res);
+
+  res.end();
+});
+
+app.listen(port, host, () => {
+
+  console.log(`\n 🌎  Server is running ` + `${host}:${port}\n`)
+});
 
                 </script> 
             </div>
