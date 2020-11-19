@@ -423,6 +423,34 @@ EOF
 /bin/bash ttt.sh
 # QUOTING TEST ^^^
 
+# preventing variables to expand
+cat << 'EOF' > aaaa.sh
+#!/bin/bash
+
+echo "Using \"\$*\":"
+for a in "$*"; do
+    echo $a;
+done
+
+echo -e "\nUsing \$*:"
+for a in $*; do
+    echo $a;
+done
+
+echo -e "\nUsing \"\$@\":"
+for a in "$@"; do
+    echo $a;
+done
+
+echo -e "\nUsing \$@:"
+for a in $@; do
+    echo $a;
+done
+EOF
+
+/bin/bash aaaa.sh one two "three four"
+rm -rf aaaa.sh
+
 
                 </script>
             </div>
