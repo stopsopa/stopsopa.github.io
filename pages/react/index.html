@@ -98,6 +98,108 @@ export default props => {
   )
 }
                 </script>
+            <h2>Auto scroll if bottom</h2>
+            <script type="editor" data-lang="jsx">
+            
+/**
+ *
+ .xxx {
+    max-height: 200px;
+    box-shadow: 0 0 5px black;
+    overflow-x: hidden;
+    overflow-y: auto;
+    & > div {
+    }
+}
+ */
+
+import React, { useRef, useState } from 'react';
+
+import log from 'inspc';
+
+import './Scroll.scss';
+
+import alphaid from 'nlab/alphaid';
+
+const next = (function () {
+  let i = 1000;
+  return () => i++;
+}());
+
+const t = alphaid('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+
+export default () => {
+
+  const el = useRef(null);
+
+  const [ list, setList ] = useState((function (l) {
+
+    for (let i = 0 ; i < 100 ; i += 1) {
+
+      l.push(next());
+    }
+    return l;
+  }([])));
+
+  return (
+    <div>
+      <div className="xxx" ref={el}>
+        <div>
+          {list.map(i => (
+            <div key={i}>{i} {t.encode(i)}</div>
+          ))}
+        </div>
+      </div>
+      <button onClick={() => setList(list => {
+
+        list.push(next())
+
+        const cond = el.current.offsetHeight + el.current.scrollTop === el.current.scrollHeight;
+
+        if (cond) {
+
+          log.dump('cond yes')
+
+          setTimeout(() => {
+
+            el.current.scrollTop = el.current.scrollHeight;
+
+          }, 0);
+        }
+        else {
+
+          log.dump('cond no')
+        }
+
+        return [...list];
+      })}>add</button>
+    </div>
+  )
+}
+
+/// --- P.js
+
+import React, { useRef, useState } from 'react';
+
+import Scroll from './Scroll'
+
+export default () => {
+
+  const [ mount, setMount ] = useState(false);
+
+  return (
+    <div>
+      <button onClick={() => setMount(m => !m)}>on</button>
+      {mount ? (
+        <Scroll />
+      ) : (
+        'not mount'
+      )}
+    </div>
+  )
+}
+
+                </script>
             <h2>React - IntervalInput</h2>
             <script type="editor" data-lang="jsx">
 
