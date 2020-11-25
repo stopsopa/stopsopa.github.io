@@ -229,7 +229,7 @@ if [ $MODE = "isinsync" ]; then
       exit 0;
   fi
 
-  { green "\n    files are not in sync\n"; } 2>&3
+  { red "\n    files are not in sync\n"; } 2>&3
 
   (cd "$_TARGETGITDIR" && git status)
 
@@ -276,7 +276,7 @@ if [ $MODE = "diff" ]; then
       exit 0;
   fi
 
-  { green "\n    files are not in sync\n"; } 2>&3
+  { red "\n    files are not in sync\n"; } 2>&3
 
   (cd "$_TARGETGITDIR/$GITSTORAGETARGETDIR" && git diff)
 
