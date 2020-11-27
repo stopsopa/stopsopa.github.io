@@ -449,11 +449,11 @@ const useSwap = init => {
 
     const ref = useRef({
         swap: () => {
-            // log('enter', false, 'cache: ', cache);
+            // log('swap', false, 'cache: ', cache);
             setInnerState(false)
         },
         restore: () => {
-            // log('leave', cache)
+            // log('restore', cache)
             setState(cache)
         },
         set: v => {
