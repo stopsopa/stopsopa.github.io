@@ -204,6 +204,21 @@ export default () => {
 // }
 
                 </script>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             <h2>React - IntervalInput</h2>
             <script type="editor" data-lang="jsx">
 
@@ -354,6 +369,129 @@ export default ({
 }
 
                 </script>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <h2>hook useSwap</h2>
+            <script type="editor" data-lang="jsx">
+
+/**
+ * Usage:
+ * in render:
+ *
+        const [ block, setBlock, swapHandler ] = useSwap(false);
+
+        const [ form, setValue ] = useState({});
+
+        const editField = (key, value) => {
+
+            setBlock(true);
+
+            setValue(v => ({
+                ...v,
+                [key]: value
+            })
+        }
+
+        const onSubmit = async () => {
+
+            await fetch(...);
+
+            setBlock(false);
+
+            setSending(false);
+        }
+ *
+        <form onSubmit={e => {
+            e.preventDefault();
+            onSubmit();
+        }}>
+             <Prompt
+                 when={block}
+                 message={location => `Form contains unsaved data, do you really want to discard changes without saving by navigating to: ${location.pathname} ?`}
+                 unloadMessage="Form contains unsaved data..."
+             />
+             <input value={form.name} onChange={e => setValue('name', e.target.value)} />
+             {
+                form.id && <Button
+                    onMouseEnter={swapHandler.swap}
+                    onMouseLeave={swapHandler.restore}
+                    as="a"
+                    href={`/api/admin/report-xlsx/${form.id}`}
+                >
+                    download xlsx report
+                </Button>
+             }
+        <form>
+ */
+const useSwap = init => {
+
+    const [ state, setInnerState ]       = useState(init);
+
+    let setState;
+
+    let cache = init;
+
+    const ref = useRef({
+        swap: () => {
+            // log('enter', false, 'cache: ', cache);
+            setInnerState(false)
+        },
+        restore: () => {
+            // log('leave', cache)
+            setState(cache)
+        },
+        set: v => {
+            // log('set', v)
+            cache = v;
+        }
+    });
+
+    setState = v => {
+
+        // log('setState', v)
+
+        setInnerState(v)
+
+        ref.current.set(v);
+    }
+
+    return [ state, setState, ref.current ];
+}
+
+                </script>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             <br>
             <script type="editor" data-lang="scss">
 
