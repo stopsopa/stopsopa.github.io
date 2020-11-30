@@ -186,6 +186,34 @@ yarn upgrade-interactive
     
 
                 </script>
+                <h2>debounce throttle</h2>
+                <script type="editor" data-lang="sh">
+
+function debounce(fn, delay) {
+    var timer = null;
+    return function () {
+        var context = this, args = arguments;
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+            fn.apply(context, args);
+        }, delay);
+    };
+};
+
+function throttle(fn, interval) {
+    var wait = false;
+    return function () {
+        if (!wait) {
+            fn.apply(this, arguments);
+            wait = true;
+            setTimeout(function () {
+                wait = false;
+            }, interval);
+        }
+    }
+};
+
+                </script>
                 <a href="/research/js/008-inheritance.html">/research/js/008-inheritance.html</a>
                 <h2>instance or function</h2>
                 <script type="editor" data-lang="js">
