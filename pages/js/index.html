@@ -201,7 +201,7 @@ function fix() {
 
   var w = minus.getBoundingClientRect().width;
 
-  if (Number.isInteger(w)) {
+  if (/^\d+$/.test(String(w))) { // ie11 dont support Number.isInteger
 
     var s = isScrollabe();
 
