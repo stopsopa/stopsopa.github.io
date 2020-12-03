@@ -168,6 +168,34 @@ window.scrollTo(0, document.body.scrollHeight || document.documentElement.scroll
 # https://stackoverflow.com/a/29971996/5560682
 
                 </script>
+                <h2>is window scrollable</h2>
+                <script type="editor" data-lang="js">
+                
+const calc = function (e) {
+
+  // https://javascript.info/size-and-scroll-window
+  let scrollHeight = Math.max(
+          document.body.scrollHeight, document.documentElement.scrollHeight,
+          document.body.offsetHeight, document.documentElement.offsetHeight,
+          document.body.clientHeight, document.documentElement.clientHeight
+  );
+
+  // https://stackoverflow.com/a/33462363/5560682
+  var scrollTop = window.scrollY || window.pageYOffset || document.body.scrollTop + (document.documentElement && document.documentElement.scrollTop || 0);
+
+  return Math.abs(window.innerHeight + scrollTop - scrollHeight) < 2
+};
+
+function show() {
+    console.log('calc()', calc());
+}
+
+window.addEventListener('resize', function () {
+  window.requestAnimationFrame(show);
+});
+show();
+
+                </script>
                 <h2>inheritance</h2>
                 <script type="editor" data-lang="js">
         function Shape () {
