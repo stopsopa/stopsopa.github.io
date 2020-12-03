@@ -177,7 +177,12 @@ window.scrollTo(0, document.body.scrollHeight || document.documentElement.scroll
                 <h2>is window scrollable</h2>
                 <script type="editor" data-lang="js">
                 
-const calc = function (e) {
+
+var log = (function () {try {return console.log}catch (e) {return function () {}}}());
+
+var minus = document.querySelector('.video-container');
+
+const isScrollabe = function () {
 
   // https://javascript.info/size-and-scroll-window
   let scrollHeight = Math.max(
@@ -189,17 +194,41 @@ const calc = function (e) {
   // https://stackoverflow.com/a/33462363/5560682
   var scrollTop = window.scrollY || window.pageYOffset || document.body.scrollTop + (document.documentElement && document.documentElement.scrollTop || 0);
 
-  return Math.abs(window.innerHeight + scrollTop - scrollHeight) < 2
+  return Math.abs(window.innerHeight + scrollTop - scrollHeight)
 };
 
-function show() {
-    console.log('calc()', calc());
+function fix() {
+
+  var w = minus.getBoundingClientRect().width;
+
+  if (Number.isInteger(w)) {
+
+    var s = isScrollabe();
+
+    if (s > 0) {
+
+      w -= s;
+
+      minus.style.width = String(w) + 'px';
+
+    }
+  }
 }
 
 window.addEventListener('resize', function () {
-  window.requestAnimationFrame(show);
+  window.requestAnimationFrame(fix);
 });
-show();
+
+// it's dirty but nothing stands on the way to fix it
+fix();
+setTimeout(fix, 100);
+setTimeout(fix, 300);
+setTimeout(fix, 500);
+setTimeout(fix, 1000);
+setTimeout(fix, 1500);
+setTimeout(fix, 2000);
+setTimeout(fix, 2500);
+setTimeout(fix, 3000);
 
                 </script>
                 <h2>inheritance</h2>
