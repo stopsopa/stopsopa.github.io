@@ -659,7 +659,7 @@ module.exports = function request(url, opt = {}) {
         req.abort();
 
         reject({
-          type: 'timeout',
+          type: `timeout (${timeout}ms)`,
         })
       });
     });
@@ -827,7 +827,7 @@ module.exports = function jsonfetch (url, opt = {}) {
 
         req.abort();
 
-        reject(emsg(`timeout`))
+        reject(emsg(`timeout (${timeout}ms)`))
       });
     });
 
