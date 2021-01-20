@@ -734,6 +734,8 @@ module.exports = function jsonfetch (url, opt = {}) {
 
     const query = querystring.stringify(get)
 
+    let rawBody = body;
+
     if (isObject(body) || Array.isArray(body)) {
 
       if (method === 'GET') {
@@ -760,6 +762,13 @@ module.exports = function jsonfetch (url, opt = {}) {
       method,
       headers,
     };
+
+    if (debug === 'body') {
+
+      rq.body = body;
+
+      rq.rawBody = rawBody;
+    }
 
     if (debug) {
 
