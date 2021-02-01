@@ -1,5 +1,19 @@
 
-__DIR="/Volumes/WINSCP/ssh/ssh"
+# This script is for manual change of keys
+# There is another though to autmaticaly register key
+# everytime you run terminal called add.sh
+# To install visit link:
+#     https://stopsopa.github.io/pages/ssh/index.html#sshh-manually-swap-ssh-key
+
+
+
+
+# To clear all keys in ssh agent
+# ssh-add -D
+# to list added
+# ssh-add -L
+
+DIR="/Volumes/WINSCP/ssh/ssh"
 
 exec 3<> /dev/null
 function green {
@@ -14,7 +28,10 @@ function yellow {
     printf "\e[33m$1\e[0m\n"
 }
 
+echo "currently loade files"
 ssh-add -l
+
+echo ""
 
 if [ "$1" = "install" ]; then
 
@@ -50,7 +67,7 @@ trim() {
     echo -n "$var"
 }
 
-_CMD="find \"$__DIR\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
+_CMD="find \"$DIR\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
 
 echo -e "executing command:\n\n    $_CMD\n"
 
@@ -62,7 +79,7 @@ _LIST="$(trim "$_LIST")"
 
 if [ "$_CODE" != "0" ]; then
 
-{ red "$(cat <<END
+{ red "$0 error:$(cat <<END
 
 $0 error:
 command:
@@ -83,9 +100,9 @@ _LINES="$(trim "$_LINES")"
 
 if [ "$_LIST" = "" ] || [ "$_LINES" -lt "1" ]; then
 
-    { red "\n\n   No keys found\n\n"; } 2>&3
+  { red "\n$0 error:   No keys found\n"; } 2>&3
 
-    exit 1
+  exit 1
 fi
 
 echo "Choose key to add:"
@@ -121,7 +138,7 @@ while : ; do
 
     if ! [[ $i =~ $TEST ]]; then
 
-{ red "$(cat <<END
+{ red "$0 error: $(cat <<END
 
 given value ($i) should be an integer
 
@@ -130,12 +147,12 @@ try again:
 END
 )"; } 2>&3
 
-        continue;
+        exit 0;
     fi
 
     if [[ "$i" -lt "1" ]] || [ "$i" -gt "$_LINES" ]; then
 
-{ red "$(cat <<END
+{ red "$0 error: $(cat <<END
 
 given value ($i) should be an integer > 0 but <= than $_LINES
 
@@ -144,7 +161,7 @@ try again:
 END
 )"; } 2>&3
 
-        continue;
+        exit 0;
     fi
 
     SSHS="$(echo "$_LIST" | sed -n "$i p")"
@@ -152,21 +169,20 @@ END
     break;
 done
 
-for name in $_LIST
-do
+ssh-add -D
 
-    key="$(echo "$name" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
-
-    echo "unregister) ${key}"
-
-    ssh-add -D "$name"
-done
+#for name in $_LIST
+#do
+#
+#    key="$(echo "$name" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
+#
+#    ssh-add -D "$name"
+#done
 
 key="$(echo "$SSHS" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
 
 cp "$SSHS" ~/.ssh/
 chmod 600 ~/.ssh/$key
-ssh-add ~/.ssh/$key
 
 echo -e "executing command:\n\n    ssh-add ~/.ssh/$key\n"
 
@@ -176,7 +192,7 @@ _CODE="$?"
 
 rm ~/.ssh/$key
 
-GITCONFIG="$__DIR/$key.sh"
+GITCONFIG="$DIR/$key.sh"
 
 if [ -f "$GITCONFIG" ]; then
 
@@ -207,7 +223,7 @@ fi
 
 if [ "$_CODE" != "0" ]; then
 
-{ red "$(cat <<END
+{ red "$0 error: $(cat <<END
 
 $0 error:
 command:
@@ -219,14 +235,9 @@ has crushed with status code: >>$_CODE<<
 END
 )"; } 2>&3
 
-    exit $_CODE;
+  exit $_CODE;
 fi
 
 ssh-add -l
 
-{ green "\n\n   all good\n\n"; } 2>&3
-
-
-
-
-
+{ green "\n   all good\n"; } 2>&3
