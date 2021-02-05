@@ -18,11 +18,76 @@
             </div>
             <div class="cards">
                 <h2>Raw​Line​Edit</h2>
-                <a href="https://github.com/facelessuser/RawLineEdit/blob/master/docs/src/markdown/installation.md">Raw​Line​Edit homepage</a>
+                <a href="https://github.com/facelessuser/RawLineEdit/blob/master/docs/src/markdown/installation.md">Raw​Line​Edit homepage - Installation</a>
                 <pre>
 Open the command palette        Win/Linux: ctrl+shift+p, 	Mac: cmd+shift+p
 type:
     Raw Line Edit: Toggle
+                </pre>
+                <h2>Indent using spaces</h2>
+                <pre>
+                
+View -> Indentation -> Indent Using Spaces
+View -> Indentation -> Tab width: 4  
+# Make it always on https://stackoverflow.com/a/15843149/5560682
+#Preferences -> Settings - User -> and add on the main level
+"translate_tabs_to_spaces": true
+                
+                </pre>
+                <h2>Show white spaces</h2>
+                <pre>
+                
+
+#Preferences -> Settings - User -> and add on the main level
+"draw_white_space": "all",             
+                
+                </pre>
+                <h2>Key binding modifiers</h2>
+                <pre>
+                
+http://sublimetext.info/docs/en/reference/key_bindings.html#modifiers
+	shift
+	ctrl
+	alt
+	super (Windows key, Command key…)     
+     
+
+# see also: https://github.com/dzhibas/SublimePrettyJson/blob/77a8fbab60164161085a154025cae3f1c0889425/Default%20(Windows).sublime-keymap
+	
+		user shortcuts (Sublime Text -> Preferences -> Key Bindings):
+[	
+	{ "keys": ["super+shift+down"], "command": "duplicate_line" },
+	{ "keys": ["shift+alt+up"], "command": "swap_line_up" },
+	{ "keys": ["shift+alt+down"], "command": "swap_line_down" },
+    { "keys": [ "super+b" ], "command": "pretty_json" },
+    { "keys": [ "super+shift+b" ], "command": "un_pretty_json" },
+    	{ "keys": ["shift+super+ctrl+alt+r"], "command": "show_overlay", "args": {"overlay": "goto", "text": "@"} },
+    { "keys": ["super+r"], "command": "show_panel", "args": {"panel": "replace", "reverse": false} },
+]
+                
+                </pre>
+                <h2>Pretty JSON</h2>
+                <a href="https://blog.adriaan.io/sublime-pretty-json.html">Pretty JSON</a>
+                <pre>
+                
+json formatting script:
+    g(Sublime Text 3 pretty JSON)
+    https://blog.adriaan.io/sublime-pretty-json.html
+
+interesting default shortcuts:
+	shift+cmd+v - paste multiple lines but add to each line spaces at the beginning
+
+own shortcuts:
+	cmd+b 				- format json
+	cmd+shift+b 		- compress json	
+	ctrl+shift+down 	- duplicate line
+	alt+shfit+up 		- move up
+	alt+shfit+down 		- move down
+	super+r           	- replace (zamaina istniejącego skrótu na inny)
+
+test sample
+{"":{"d":[5,4]}}               
+                
                 </pre>
             </div>
         </div>
