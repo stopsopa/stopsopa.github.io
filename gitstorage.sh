@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GITSTORAGESOURCE="git@github.com:xxx/gitstorage.git"
+#GITSTORAGESOURCE="git@github.com:xxx/gitstorage.git"
 
 exec 3<> /dev/null
 function green {
@@ -62,6 +62,9 @@ done
 
 CONFIG=$(cat <<END
 #!/bin/bash
+
+# used in
+# https://github.com/user/repositiry
 
 GITSTORAGESOURCE="git@github.com:xxx/gitstorage.git"
 

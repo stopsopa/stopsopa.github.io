@@ -37,6 +37,17 @@ const Main = () => {
         //   }
         // }
 
+        // {
+        //   "rules": {
+        //     "users": {
+        //       "$email": {
+        //         ".read": "$email === auth.token.email.replace('.', ',')",
+        //           ".write": "$email === auth.token.email.replace('.', ',')",
+        //       }
+        //     }
+        //   }
+        // }
+
         async function set() {
 
           try {
@@ -204,7 +215,7 @@ const Main = () => {
 
       log.dump({
         'set() error:': {
-          error: serializeError(e),
+          error: se(e),
           key,
           data,
           'firebase.auth()': firebase.auth()

@@ -38,15 +38,14 @@ window.env = (function (e) {
     }
 }({
     "PROJECT_NAME": "stopsopatools",
-    "NODE_PORT": "7898",
-    "FIREBASE_API_KEY": "AIzaSyBwjXbJQTXj258mLFMcHswgy6FgKHVHMLs",
-    "FIREBASE_AUTH_DOMAIN": "github-ae2af.firebaseapp.com",
-    "FIREBASE_DATABASE_URL": "https://github-ae2af.firebaseio.com",
-    "FIREBASE_PROJECT_ID": "github-ae2af",
-    "FIREBASE_STORAGE_BUCKET": "github-ae2af.appspot.com",
-    "FIREBASE_MESSAGING_SENDER_ID": "496172961972",
-    "FIREBASE_API_ID": "1:496172961972:web:c9363e230fede3127a07e1",
-    "FIREBASE_MEASUREMENT_ID": "G-F78BC9VYQ5"
+    "NODE_PORT": "80",
+    "FIREBASE_API_KEY": "AIzaSyB6lAe7IMCxkjIJMHEXpS26emx-yLQOol8",
+    "FIREBASE_AUTH_DOMAIN": "github-f6a5f.firebaseapp.com",
+    "FIREBASE_DATABASE_URL": "https://github-f6a5f.firebaseio.com",
+    "FIREBASE_PROJECT_ID": "github-f6a5f",
+    "FIREBASE_STORAGE_BUCKET": "github-f6a5f.appspot.com",
+    "FIREBASE_MESSAGING_SENDER_ID": "389489861217",
+    "FIREBASE_API_ID": "1:389489861217:web:c7effb017403f3c45ac020"
 }))
 
 log("const env = window.env;")

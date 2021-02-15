@@ -2,7 +2,7 @@
 
 const path                  = require('path');
 
-const utils                 = require('./roderic/utils');
+const utils                   = require('./roderic/utils');
 
 const webpack                 = require('webpack');
 
@@ -12,13 +12,46 @@ const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
 
 const log                     = require('inspc');
 
-const config                = require('./config')(process.env.NODE_ENV);
+const config                  = require('./config')(process.env.NODE_ENV);
 
 require('colors');
 
 utils.setup(config);
 
 const isProd = process.env.NODE_ENV === 'production';
+
+const after = mode => {
+  // https://i.imgur.com/mWzuQWP.png
+  const color = (function (c) {
+    return (...args) => c[args.pop()] + args.join('') + c.reset;
+  }({
+    BgBlue      : "\x1b[44m",
+    reset       : "\x1b[0m",
+  }));
+
+  const c = (...args) => color(...args);
+
+  let   port      = process.env.NODE_PORT;
+  port = (port == 80) ? '' : `:${port}`;
+  function debounce(fn, delay) {
+    var timer = null;
+    return function () {
+      var context = this, args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        fn.apply(context, args);
+      }, delay);
+    };
+  };
+  const d = debounce(e => {
+    console.log(c(`\n http://0.0.0.0${port}/index.html`, `BgBlue`))
+  }, 2000);
+  return ({
+    apply: (compiler) => {
+      compiler.hooks.done.tap('done', () => { d('done'); return true; });
+    }
+  })
+}
 
 module.exports = {
   mode: 'production',
@@ -94,6 +127,7 @@ module.exports = {
     new webpack.DefinePlugin({ // https://webpack.js.org/plugins/define-plugin/
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
+    after(process.env.NODE_ENV)
   ],
   performance: {
     hints: false,
