@@ -38,7 +38,7 @@ window.env = (function (e) {
     }
 }({
     "PROJECT_NAME": "stopsopatools",
-    "NODE_PORT": "80",
+    "NODE_PORT": "7898",
     "LOCAL_HOSTS": "stopsopa.github.io.local",
     "FIREBASE_API_KEY": "AIzaSyB6lAe7IMCxkjIJMHEXpS26emx-yLQOol8",
     "FIREBASE_AUTH_DOMAIN": "github-f6a5f.firebaseapp.com",
