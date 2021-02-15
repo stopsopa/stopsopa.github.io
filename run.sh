@@ -47,7 +47,14 @@ LOGFILE="$LOGDIR/$(_time).log"
 
 echo -e "\n\n\n-----v $(_datetime) v----->>>\n" >> $LOGFILE
 
-sleep 0.5 && node "$_DIR/node_modules/.bin/open-cli" http://0.0.0.0:$NODE_PORT/index.html &
+__HOST="0.0.0.0"
+
+if [ "$LOCAL_HOSTS" != "" ]; then
+
+  __HOST="$LOCAL_HOSTS"
+fi
+
+sleep 0.5 && node "$_DIR/node_modules/.bin/open-cli" http://$__HOST:$NODE_PORT/index.html &
 
 node server.js --port $NODE_PORT --log 15 --flag "$FLAG-main"
 
