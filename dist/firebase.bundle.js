@@ -30140,10 +30140,10 @@ var th = function th(msg) {
 
   var _useState3 = Object(react["useState"])(false),
       _useState4 = _slicedToArray(_useState3, 2),
-      authError = _useState4[0],
-      setAuthError = _useState4[1];
+      error = _useState4[0],
+      setError = _useState4[1];
 
-  var _useState5 = Object(react["useState"])(''),
+  var _useState5 = Object(react["useState"])(false),
       _useState6 = _slicedToArray(_useState5, 2),
       user = _useState6[0],
       setUser = _useState6[1];
@@ -30187,7 +30187,7 @@ var th = function th(msg) {
                         case 0:
                           _context.prev = 0;
                           setFirebase(_firebase);
-                          setAuthError(false);
+                          setError(false);
                           setUser(_firebase.auth().currentUser.email.replace(/\./g, ','));
                           _context.next = 10;
                           break;
@@ -30253,7 +30253,7 @@ var th = function th(msg) {
               _context2.prev = 21;
               _context2.t0 = _context2["catch"](9);
               logn_default()('firebase_catch: signInWithCredential', se_default()(_context2.t0));
-              setAuthError({
+              setError({
                 error: {
                   mode: 'signInWithCredential -> signOut()',
                   e: se_default()(_context2.t0),
@@ -30313,7 +30313,7 @@ var th = function th(msg) {
               _context2.prev = 49;
               _context2.t1 = _context2["catch"](0);
               logn_default()('catch: signInWithPopup', se_default()(_context2.t1));
-              setAuthError({
+              setError({
                 error: {
                   mode: 'signInWithPopup',
                   e: se_default()(_context2.t1)
@@ -30400,6 +30400,8 @@ var th = function th(msg) {
     return _set2.apply(this, arguments);
   }
 
+  window.firebaseGet = get;
+
   function get(_x2) {
     return _get.apply(this, arguments);
   }
@@ -30459,7 +30461,7 @@ var th = function th(msg) {
 
   return {
     firebase: firebase,
-    authError: authError,
+    error: error,
     user: user,
     set: set,
     get: get
@@ -30482,20 +30484,18 @@ var firebase_entry_Main = function Main() {
     section: "!!!useFirebase_test_can_be_safely_removed"
   }),
       firebase = _useFirebase.firebase,
-      authError = _useFirebase.authError,
+      error = _useFirebase.error,
       user = _useFirebase.user,
       set = _useFirebase.set,
       get = _useFirebase.get;
 
-  window.get = get;
-
-  if (authError) {
+  if (error) {
     return /*#__PURE__*/react_default.a.createElement("pre", null, JSON.stringify({
-      authError: authError
+      error: error
     }, null, 4));
   }
 
-  if (!firebase) {
+  if (!user) {
     return /*#__PURE__*/react_default.a.createElement("div", null, "Connecting to firebase...");
   }
 
