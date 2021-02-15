@@ -99,6 +99,14 @@ otherwise you end up with issue:
     more:
         https://firebase.google.com/docs/auth/admin/errors
 
+explore api:
+
+https://firebase.google.com/docs/reference/js/firebase.database.Reference
+       Explore api: 
+       g(firebase. database. Reference)
+read write:
+    https://firebase.google.com/docs/database/web/read-and-write
+
 
 # to maintain:
 http://stopsopa.github.io/demos/jquery.elkanatooltip/katownik.html
