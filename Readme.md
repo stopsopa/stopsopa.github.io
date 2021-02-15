@@ -111,6 +111,20 @@ https://firebase.google.com/docs/reference/js/firebase.database.Reference
 read write:
     https://firebase.google.com/docs/database/web/read-and-write
 
+add rules to database:
+
+
+    {
+      "rules": {
+        "users": {
+          "$email": {
+            ".read": "$email === auth.token.email.replace('.', ',')",
+              ".write": "$email === auth.token.email.replace('.', ',')",
+          }
+        }
+      }
+    }
+
 
 # to maintain:
 http://stopsopa.github.io/demos/jquery.elkanatooltip/katownik.html
