@@ -14,6 +14,16 @@
         <div class="inside">
             <div class="cards">
 
+                <h2>useful commands</h2>
+                <script type="editor" data-lang="sh">
+                
+grep 'swap-files' * -rl --exclude-dir={bower_components,node_modules,vendor} --include \*.sh   
+
+arch -arm64 brew install webp
+sudo xattr -dr com.apple.quarantine /path/ff*
+
+                </script>
+
                 <h2>verifying default shell</h2>
                 <script type="editor" data-lang="sh">
                 
@@ -22,15 +32,6 @@
  # change default shell
  chsh -s /bin/bash
  chsh -s /bin/zsh
-
-                </script>
-
-                <h2>useful commands</h2>
-                <script type="editor" data-lang="sh">
-                
-grep 'swap-files' * -rl --exclude-dir={bower_components,node_modules,vendor} --include \*.sh   
-
-arch -arm64 brew install webp
 
                 </script>
             </div>
