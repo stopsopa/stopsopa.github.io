@@ -13,9 +13,9 @@ export default ({
 
   const [ firebase, setFirebase ] = useState(false);
 
-  const [ authError, setAuthError ] = useState(false);
+  const [ error, setError ] = useState(false);
 
-  const [ user, setUser ] = useState('');
+  const [ user, setUser ] = useState(false);
 
   useEffect(() => {
 
@@ -54,7 +54,7 @@ export default ({
 
             setFirebase(firebase);
 
-            setAuthError(false);
+            setError(false);
 
             setUser(firebase.auth().currentUser.email.replace(/\./g, ','))
 
@@ -99,7 +99,7 @@ export default ({
 
             log('firebase_catch: signInWithCredential', se(e))
 
-            setAuthError({
+            setError({
               error: {
                 mode: 'signInWithCredential -> signOut()',
                 e: se(e),
@@ -155,7 +155,7 @@ export default ({
 
         log('catch: signInWithPopup', se(e))
 
-        setAuthError({
+        setError({
           error: {
             mode: 'signInWithPopup',
             e: se(e),
@@ -227,7 +227,7 @@ export default ({
     }
   }
 
-
+  window.firebaseGet = get;
 
   async function get(key) {
 
@@ -273,7 +273,7 @@ export default ({
 
   return {
     firebase,
-    authError,
+    error,
     user,
     set,
     get,

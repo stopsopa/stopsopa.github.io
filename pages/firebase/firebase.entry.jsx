@@ -15,7 +15,7 @@ const Main = () => {
 
   const {
     firebase,
-    authError,
+    error,
     user,
     set,
     get,
@@ -23,16 +23,14 @@ const Main = () => {
     section: `!!!useFirebase_test_can_be_safely_removed`
   });
 
-  window.get = get;
-
-  if ( authError ) {
+  if ( error ) {
 
     return <pre>{JSON.stringify({
-      authError,
+      error,
     }, null, 4)}</pre>
   }
 
-  if ( ! firebase ) {
+  if ( ! user ) {
 
     return <div>Connecting to firebase...</div>
   }
