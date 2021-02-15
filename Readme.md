@@ -89,6 +89,8 @@ http://httpd.pl/dropdown
 http://httpd.pl/stopsopa.github.io/demos/jquery.elkanatooltip/pos.html
 
 # firebase 
+firebase console: https://console.firebase.google.com/
+
 In order to configure firebase database get credentails from:
 https://i.imgur.com/oVsGuVT.png
 and then enable 
