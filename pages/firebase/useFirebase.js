@@ -5,7 +5,11 @@ import log from 'inspc'
 
 import se from 'nlab/se'
 
-export default () => {
+const th = msg => new Error(`useFirebase hook error: ${msg}`);
+
+export default ({
+  section
+}) => {
 
   const [ firebase, setFirebase ] = useState(false);
 
@@ -163,9 +167,64 @@ export default () => {
 
   }, []);
 
-  return [
+  async function write({
+                         data,
+    key
+  }) {
+
+    if (typeof section !== 'string' || !section.trim()) {
+
+      throw th(`section is not specified`);
+    }
+
+    if (Array.isArray(key)) {
+
+      key = key.join('/')
+    }
+
+    // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+    let internalkey = `users/${user}/${section}`;
+
+    if ( typeof key === 'string' ) {
+
+      internalkey += '/' + key;
+    }
+
+    try {
+
+      await firebase.database()
+        .ref(internalkey)
+        .set(data)
+      ;
+
+      log.dump({
+        'write': {
+          key,
+          internalkey,
+          data,
+          // 'firebase.auth()': firebase.auth()
+        },
+      })
+    }
+    catch (e) {
+
+      log.dump({
+        'write() error:': {
+          error: se(e),
+          key,
+          internalkey,
+          data,
+        },
+      })
+
+      throw e;
+    }
+  }
+
+  return {
     firebase,
     authError,
     user,
-  ];
+    write,
+  };
 }

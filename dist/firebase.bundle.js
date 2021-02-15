@@ -30125,7 +30125,14 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-/* harmony default export */ var useFirebase = (function () {
+
+var th = function th(msg) {
+  return new Error("useFirebase hook error: ".concat(msg));
+};
+
+/* harmony default export */ var useFirebase = (function (_ref) {
+  var section = _ref.section;
+
   var _useState = Object(react["useState"])(false),
       _useState2 = _slicedToArray(_useState, 2),
       firebase = _useState2[0],
@@ -30173,7 +30180,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
               //   }
               // }
               set = /*#__PURE__*/function () {
-                var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
                   return regeneratorRuntime.wrap(function _callee$(_context) {
                     while (1) {
                       switch (_context.prev = _context.next) {
@@ -30200,7 +30207,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
                 }));
 
                 return function set() {
-                  return _ref2.apply(this, arguments);
+                  return _ref3.apply(this, arguments);
                 };
               }();
 
@@ -30321,25 +30328,86 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       }, _callee2, null, [[0, 49], [9, 21]]);
     }))();
   }, []);
-  return [firebase, authError, user];
+
+  function write(_x) {
+    return _write.apply(this, arguments);
+  }
+
+  function _write() {
+    _write = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref4) {
+      var data, key, internalkey;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              data = _ref4.data, key = _ref4.key;
+
+              if (!(typeof section !== 'string' || !section.trim())) {
+                _context3.next = 3;
+                break;
+              }
+
+              throw th("section is not specified");
+
+            case 3:
+              if (Array.isArray(key)) {
+                key = key.join('/');
+              } // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+
+
+              internalkey = "users/".concat(user, "/").concat(section);
+
+              if (typeof key === 'string') {
+                internalkey += '/' + key;
+              }
+
+              _context3.prev = 6;
+              _context3.next = 9;
+              return firebase.database().ref(internalkey).set(data);
+
+            case 9:
+              logn_default.a.dump({
+                'write': {
+                  key: key,
+                  internalkey: internalkey,
+                  data: data // 'firebase.auth()': firebase.auth()
+
+                }
+              });
+              _context3.next = 16;
+              break;
+
+            case 12:
+              _context3.prev = 12;
+              _context3.t0 = _context3["catch"](6);
+              logn_default.a.dump({
+                'write() error:': {
+                  error: se_default()(_context3.t0),
+                  key: key,
+                  internalkey: internalkey,
+                  data: data
+                }
+              });
+              throw _context3.t0;
+
+            case 16:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[6, 12]]);
+    }));
+    return _write.apply(this, arguments);
+  }
+
+  return {
+    firebase: firebase,
+    authError: authError,
+    user: user,
+    write: write
+  };
 });
 // CONCATENATED MODULE: ./pages/firebase/firebase.entry.jsx
-function firebase_entry_asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function firebase_entry_asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { firebase_entry_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { firebase_entry_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function firebase_entry_slicedToArray(arr, i) { return firebase_entry_arrayWithHoles(arr) || firebase_entry_iterableToArrayLimit(arr, i) || firebase_entry_unsupportedIterableToArray(arr, i) || firebase_entry_nonIterableRest(); }
-
-function firebase_entry_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function firebase_entry_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return firebase_entry_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return firebase_entry_arrayLikeToArray(o, minLen); }
-
-function firebase_entry_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function firebase_entry_iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function firebase_entry_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 
 
 
@@ -30352,11 +30420,13 @@ var now = function now() {
 
 
 var firebase_entry_Main = function Main() {
-  var _useFirebase = useFirebase(),
-      _useFirebase2 = firebase_entry_slicedToArray(_useFirebase, 3),
-      firebase = _useFirebase2[0],
-      authError = _useFirebase2[1],
-      user = _useFirebase2[2];
+  var _useFirebase = useFirebase({
+    section: "ports"
+  }),
+      firebase = _useFirebase.firebase,
+      authError = _useFirebase.authError,
+      user = _useFirebase.user,
+      write = _useFirebase.write;
 
   if (authError) {
     return /*#__PURE__*/react_default.a.createElement("pre", null, JSON.stringify({
@@ -30368,70 +30438,23 @@ var firebase_entry_Main = function Main() {
     return /*#__PURE__*/react_default.a.createElement("div", null, "Connecting to firebase...");
   }
 
-  function writeUserData(_x, _x2, _x3, _x4) {
-    return _writeUserData.apply(this, arguments);
-  }
-
-  function _writeUserData() {
-    _writeUserData = firebase_entry_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(userId, name, email, imageUrl) {
-      var key, cu, data;
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
-              key = "users/".concat(user);
-              cu = firebase.auth().currentUser;
-              data = {
-                uid: cu.uid,
-                displayName: cu.displayName,
-                email: cu.email,
-                emailVerified: cu.emailVerified,
-                isAnonymous: cu.isAnonymous,
-                metadata: cu.metadata,
-                photoURL: cu.photoURL
-              };
-              _context.prev = 3;
-              _context.next = 6;
-              return firebase.database().ref(key).set(data);
-
-            case 6:
-              logn_default.a.dump({
-                'set() saved:': {
-                  key: key,
-                  data: data,
-                  'firebase.auth()': firebase.auth()
-                }
-              });
-              _context.next = 13;
-              break;
-
-            case 9:
-              _context.prev = 9;
-              _context.t0 = _context["catch"](3);
-              logn_default.a.dump({
-                'set() error:': {
-                  error: se_default()(_context.t0),
-                  key: key,
-                  data: data,
-                  'firebase.auth()': firebase.auth()
-                }
-              });
-              throw _context.t0;
-
-            case 13:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee, null, [[3, 9]]);
-    }));
-    return _writeUserData.apply(this, arguments);
-  }
-
   return /*#__PURE__*/react_default.a.createElement("div", null, /*#__PURE__*/react_default.a.createElement("button", {
     onClick: function onClick() {
-      return writeUserData('xxx', 'name', 'email@gmail.com', 'img.png');
+      var cu = firebase.auth().currentUser;
+      var data = {
+        uid: cu.uid,
+        displayName: cu.displayName,
+        email: cu.email,
+        emailVerified: cu.emailVerified,
+        isAnonymous: cu.isAnonymous,
+        metadata: cu.metadata,
+        photoURL: cu.photoURL,
+        extra: 'data'
+      };
+      return write({
+        key: 'xxx',
+        data: data
+      });
     }
   }, "add"), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("input", {
     type: "text",
