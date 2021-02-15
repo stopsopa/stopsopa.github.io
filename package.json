@@ -10,7 +10,7 @@
     "css-loader": "^5.0.0",
     "dotenv-up": "^1.0.30",
     "firebase": "^7.19.1",
-    "forever": "^3.0.0",
+    "forever": "^3.0.4",
     "inspc": "^0.0.19",
     "mini-css-extract-plugin": "^1.0.0",
     "mkdirp": "^1.0.4",

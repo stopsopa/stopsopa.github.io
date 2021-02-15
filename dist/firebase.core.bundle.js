@@ -40605,8 +40605,8 @@ window.fire = function () {
             projectId: env('FIREBASE_PROJECT_ID'),
             storageBucket: env('FIREBASE_STORAGE_BUCKET'),
             messagingSenderId: env('FIREBASE_MESSAGING_SENDER_ID'),
-            appId: env('FIREBASE_API_ID'),
-            measurementId: env('FIREBASE_MEASUREMENT_ID')
+            appId: env('FIREBASE_API_ID') // measurementId     : env('FIREBASE_MEASUREMENT_ID')
+
           };
           index_cjs_default.a.initializeApp(firebaseConfig);
           resolve(index_cjs_default.a);

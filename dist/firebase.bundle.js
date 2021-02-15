@@ -30157,6 +30157,16 @@ var Main = function Main() {
               //     }
               //   }
               // }
+              // {
+              //   "rules": {
+              //     "users": {
+              //       "$email": {
+              //         ".read": "$email === auth.token.email.replace('.', ',')",
+              //           ".write": "$email === auth.token.email.replace('.', ',')",
+              //       }
+              //     }
+              //   }
+              // }
               set = /*#__PURE__*/function () {
                 var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
                   return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -30360,7 +30370,7 @@ var Main = function Main() {
               _context3.t0 = _context3["catch"](3);
               inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
                 'set() error:': {
-                  error: serializeError(_context3.t0),
+                  error: nlab_se__WEBPACK_IMPORTED_MODULE_3___default()(_context3.t0),
                   key: key,
                   data: data,
                   'firebase.auth()': firebase.auth()

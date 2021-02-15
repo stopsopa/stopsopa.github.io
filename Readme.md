@@ -88,6 +88,16 @@ http://httpd.pl/stopsopa.github.io/demos/jquery.elkanatooltip/demo.html
 http://httpd.pl/dropdown
 http://httpd.pl/stopsopa.github.io/demos/jquery.elkanatooltip/pos.html
 
+# firebase 
+In order to configure firebase database get credentails from:
+https://i.imgur.com/oVsGuVT.png
+and then enable 
+https://i.imgur.com/gYnXKfm.png
+otherwise you end up with issue:
+    auth/operation-not-allowed	The provided sign-in provider is disabled for your Firebase project. 
+    Enable it from the Sign-in Method section of the Firebase console.
+    more:
+        https://firebase.google.com/docs/auth/admin/errors
 
 
 # to maintain:
