@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 35);
+/******/ 	return __webpack_require__(__webpack_require__.s = 37);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -209,7 +209,7 @@ const node = typeof global !== 'undefined' && Object.prototype.toString.call(glo
 
 if ( ! node ) {
 
-    module.exports = __webpack_require__(7);
+    module.exports = __webpack_require__(8);
 }
 
 
@@ -1026,6 +1026,13 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
+
+module.exports = __webpack_require__(27);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /**
  * @author Szymon Działowski
@@ -1060,15 +1067,8 @@ log.stack = function () {return log};
 module.exports = log.dump = log.start = log.get = log.json = log.log = log;
 
 /***/ }),
-/* 8 */,
 /* 9 */,
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-module.exports = __webpack_require__(27);
-
-/***/ }),
+/* 10 */,
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1197,7 +1197,7 @@ if (node) {
 }
 else {
 
-    module.exports = __webpack_require__(7);
+    module.exports = __webpack_require__(8);
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5), __webpack_require__(4)))
 
@@ -30081,19 +30081,31 @@ module.exports = function (e, native) {
 /* 32 */,
 /* 33 */,
 /* 34 */,
-/* 35 */
+/* 35 */,
+/* 36 */,
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
-/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(inspc__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(10);
-/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(nlab_se__WEBPACK_IMPORTED_MODULE_3__);
+
+// EXTERNAL MODULE: ./node_modules/react/index.js
+var react = __webpack_require__(0);
+var react_default = /*#__PURE__*/__webpack_require__.n(react);
+
+// EXTERNAL MODULE: ./node_modules/react-dom/index.js
+var react_dom = __webpack_require__(16);
+
+// EXTERNAL MODULE: ./node_modules/inspc/logn.js
+var logn = __webpack_require__(2);
+var logn_default = /*#__PURE__*/__webpack_require__.n(logn);
+
+// EXTERNAL MODULE: ./node_modules/nlab/se.js
+var se = __webpack_require__(7);
+var se_default = /*#__PURE__*/__webpack_require__.n(se);
+
+// CONCATENATED MODULE: ./pages/firebase/useFirebase.js
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -30113,30 +30125,23 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-
-var now = function now() {
-  return new Date().toISOString().substring(0, 19).replace('T', ' ').replace(/[^\d]/g, '-');
-};
-
-
-
-var Main = function Main() {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+/* harmony default export */ var useFirebase = (function () {
+  var _useState = Object(react["useState"])(false),
       _useState2 = _slicedToArray(_useState, 2),
       firebase = _useState2[0],
       setFirebase = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+  var _useState3 = Object(react["useState"])(false),
       _useState4 = _slicedToArray(_useState3, 2),
       authError = _useState4[0],
       setAuthError = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+  var _useState5 = Object(react["useState"])(''),
       _useState6 = _slicedToArray(_useState5, 2),
       user = _useState6[0],
       setUser = _useState6[1];
 
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+  Object(react["useEffect"])(function () {
     _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
       var set, _firebase, idToken, accessToken, credential, _user, provider, result, user;
 
@@ -30206,8 +30211,8 @@ var Main = function Main() {
               _firebase = _context2.sent;
               idToken = localStorage.getItem('idToken');
               accessToken = localStorage.getItem('accessToken');
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
-                first: _firebase.auth().currentUser
+              logn_default.a.dump({
+                firebase_first: _firebase.auth().currentUser
               });
 
               if (!(!_firebase.auth().currentUser && idToken && accessToken)) {
@@ -30216,22 +30221,22 @@ var Main = function Main() {
               }
 
               _context2.prev = 9;
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('try: signInWithCredential');
+              logn_default()('firebase_try: signInWithCredential');
               _context2.next = 13;
               return _firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
 
             case 13:
               credential = _context2.sent;
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
-                credential: credential
+              logn_default.a.dump({
+                firebase_credential: credential
               });
               _context2.next = 17;
               return _firebase.auth().signInWithCredential(credential);
 
             case 17:
               _user = _context2.sent;
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
-                mode: 'signInWithCredential',
+              logn_default.a.dump({
+                firebase_mode: 'signInWithCredential',
                 user: _user
               });
               _context2.next = 27;
@@ -30240,11 +30245,11 @@ var Main = function Main() {
             case 21:
               _context2.prev = 21;
               _context2.t0 = _context2["catch"](9);
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithCredential', nlab_se__WEBPACK_IMPORTED_MODULE_3___default()(_context2.t0));
+              logn_default()('firebase_catch: signInWithCredential', se_default()(_context2.t0));
               setAuthError({
                 error: {
                   mode: 'signInWithCredential -> signOut()',
-                  e: nlab_se__WEBPACK_IMPORTED_MODULE_3___default()(_context2.t0),
+                  e: se_default()(_context2.t0),
                   user: _firebase.auth().currentUser,
                   truthy: !!_firebase.auth().currentUser
                 }
@@ -30253,7 +30258,7 @@ var Main = function Main() {
               return _firebase.auth().signOut();
 
             case 27:
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
+              logn_default.a.dump({
                 'firebase.auth().currentUser, before second method': _firebase.auth().currentUser
               });
 
@@ -30262,7 +30267,7 @@ var Main = function Main() {
                 break;
               }
 
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('signInWithCredential success, trigger set()');
+              logn_default()('firebase_signInWithCredential success, trigger set()');
               _context2.next = 32;
               return set();
 
@@ -30271,7 +30276,7 @@ var Main = function Main() {
               break;
 
             case 34:
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('try: signInWithPopup');
+              logn_default()('try: signInWithPopup');
               provider = new _firebase.auth.GoogleAuthProvider();
               _context2.next = 38;
               return _firebase.auth().signInWithPopup(provider);
@@ -30281,7 +30286,7 @@ var Main = function Main() {
               idToken = result.credential.idToken;
               accessToken = result.credential.accessToken;
               user = result.user;
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
+              logn_default.a.dump({
                 mode: 'signInWithPopup',
                 idToken: idToken,
                 accessToken: accessToken,
@@ -30300,11 +30305,11 @@ var Main = function Main() {
             case 49:
               _context2.prev = 49;
               _context2.t1 = _context2["catch"](0);
-              inspc__WEBPACK_IMPORTED_MODULE_2___default()('catch: signInWithPopup', nlab_se__WEBPACK_IMPORTED_MODULE_3___default()(_context2.t1));
+              logn_default()('catch: signInWithPopup', se_default()(_context2.t1));
               setAuthError({
                 error: {
                   mode: 'signInWithPopup',
-                  e: nlab_se__WEBPACK_IMPORTED_MODULE_3___default()(_context2.t1)
+                  e: se_default()(_context2.t1)
                 }
               });
 
@@ -30316,15 +30321,51 @@ var Main = function Main() {
       }, _callee2, null, [[0, 49], [9, 21]]);
     }))();
   }, []);
+  return [firebase, authError, user];
+});
+// CONCATENATED MODULE: ./pages/firebase/firebase.entry.jsx
+function firebase_entry_asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function firebase_entry_asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { firebase_entry_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { firebase_entry_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function firebase_entry_slicedToArray(arr, i) { return firebase_entry_arrayWithHoles(arr) || firebase_entry_iterableToArrayLimit(arr, i) || firebase_entry_unsupportedIterableToArray(arr, i) || firebase_entry_nonIterableRest(); }
+
+function firebase_entry_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function firebase_entry_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return firebase_entry_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return firebase_entry_arrayLikeToArray(o, minLen); }
+
+function firebase_entry_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function firebase_entry_iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function firebase_entry_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+var now = function now() {
+  return new Date().toISOString().substring(0, 19).replace('T', ' ').replace(/[^\d]/g, '-');
+};
+
+
+
+
+var firebase_entry_Main = function Main() {
+  var _useFirebase = useFirebase(),
+      _useFirebase2 = firebase_entry_slicedToArray(_useFirebase, 3),
+      firebase = _useFirebase2[0],
+      authError = _useFirebase2[1],
+      user = _useFirebase2[2];
 
   if (authError) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("pre", null, JSON.stringify({
+    return /*#__PURE__*/react_default.a.createElement("pre", null, JSON.stringify({
       authError: authError
     }, null, 4));
   }
 
   if (!firebase) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Connecting to firebase...");
+    return /*#__PURE__*/react_default.a.createElement("div", null, "Connecting to firebase...");
   }
 
   function writeUserData(_x, _x2, _x3, _x4) {
@@ -30332,11 +30373,11 @@ var Main = function Main() {
   }
 
   function _writeUserData() {
-    _writeUserData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(userId, name, email, imageUrl) {
+    _writeUserData = firebase_entry_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(userId, name, email, imageUrl) {
       var key, cu, data;
-      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context.prev = _context.next) {
             case 0:
               // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
               key = "users/".concat(user);
@@ -30350,49 +30391,49 @@ var Main = function Main() {
                 metadata: cu.metadata,
                 photoURL: cu.photoURL
               };
-              _context3.prev = 3;
-              _context3.next = 6;
+              _context.prev = 3;
+              _context.next = 6;
               return firebase.database().ref(key).set(data);
 
             case 6:
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
+              logn_default.a.dump({
                 'set() saved:': {
                   key: key,
                   data: data,
                   'firebase.auth()': firebase.auth()
                 }
               });
-              _context3.next = 13;
+              _context.next = 13;
               break;
 
             case 9:
-              _context3.prev = 9;
-              _context3.t0 = _context3["catch"](3);
-              inspc__WEBPACK_IMPORTED_MODULE_2___default.a.dump({
+              _context.prev = 9;
+              _context.t0 = _context["catch"](3);
+              logn_default.a.dump({
                 'set() error:': {
-                  error: nlab_se__WEBPACK_IMPORTED_MODULE_3___default()(_context3.t0),
+                  error: se_default()(_context.t0),
                   key: key,
                   data: data,
                   'firebase.auth()': firebase.auth()
                 }
               });
-              throw _context3.t0;
+              throw _context.t0;
 
             case 13:
             case "end":
-              return _context3.stop();
+              return _context.stop();
           }
         }
-      }, _callee3, null, [[3, 9]]);
+      }, _callee, null, [[3, 9]]);
     }));
     return _writeUserData.apply(this, arguments);
   }
 
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+  return /*#__PURE__*/react_default.a.createElement("div", null, /*#__PURE__*/react_default.a.createElement("button", {
     onClick: function onClick() {
       return writeUserData('xxx', 'name', 'email@gmail.com', 'img.png');
     }
-  }, "add"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+  }, "add"), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("input", {
     type: "text",
     value: user,
     onChange: function onChange(e) {
@@ -30401,14 +30442,14 @@ var Main = function Main() {
     style: {
       width: '80%'
     }
-  }), /[\.#$\[\]]/.test(user) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }), /[\.#$\[\]]/.test(user) && /*#__PURE__*/react_default.a.createElement("div", {
     style: {
       color: 'red'
     }
   }, "Paths must be non-empty strings and can't contain \".\", \"#\", \"$\", \"[\", or \"]\""));
 };
 
-Object(react_dom__WEBPACK_IMPORTED_MODULE_1__["render"])( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Main, null), document.getElementById('app'));
+Object(react_dom["render"])( /*#__PURE__*/react_default.a.createElement(firebase_entry_Main, null), document.getElementById('app'));
 
 /***/ })
 /******/ ]);

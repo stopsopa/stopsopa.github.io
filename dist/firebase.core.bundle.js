@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 37);
+/******/ 	return __webpack_require__(__webpack_require__.s = 36);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -444,7 +444,7 @@ const node = typeof global !== 'undefined' && Object.prototype.toString.call(glo
 
 if ( ! node ) {
 
-    module.exports = __webpack_require__(7);
+    module.exports = __webpack_require__(8);
 }
 
 
@@ -2875,7 +2875,8 @@ module.exports = g;
 
 /***/ }),
 /* 6 */,
-/* 7 */
+/* 7 */,
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2912,7 +2913,7 @@ log.stack = function () {return log};
 module.exports = log.dump = log.start = log.get = log.json = log.log = log;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2922,7 +2923,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var tslib = __webpack_require__(1);
 var util = __webpack_require__(3);
-var component = __webpack_require__(9);
+var component = __webpack_require__(10);
 var logger$1 = __webpack_require__(15);
 
 /**
@@ -3593,7 +3594,7 @@ exports.firebase = firebase$1;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3915,7 +3916,6 @@ exports.Provider = Provider;
 
 
 /***/ }),
-/* 10 */,
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4044,7 +4044,7 @@ if (node) {
 }
 else {
 
-    module.exports = __webpack_require__(7);
+    module.exports = __webpack_require__(8);
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5), __webpack_require__(4)))
 
@@ -4393,7 +4393,7 @@ function setUserLogHandler(logCallback, options) {
 "use strict";
 
 
-var firebase = __webpack_require__(8);
+var firebase = __webpack_require__(9);
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -4749,7 +4749,7 @@ module.exports = firebase__default['default'];
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {(function() {var firebase = __webpack_require__(8).default;/*
+/* WEBPACK VAR INJECTION */(function(global) {(function() {var firebase = __webpack_require__(9).default;/*
 
  Copyright The Closure Library Authors.
  SPDX-License-Identifier: Apache-2.0
@@ -5196,7 +5196,7 @@ Object.defineProperty(exports, "__esModule", {
     value: !0
 });
 
-var t = __webpack_require__(1), e = __webpack_require__(8), n = __webpack_require__(15), r = __webpack_require__(3), i = __webpack_require__(32), o = __webpack_require__(9);
+var t = __webpack_require__(1), e = __webpack_require__(9), n = __webpack_require__(15), r = __webpack_require__(3), i = __webpack_require__(32), o = __webpack_require__(10);
 
 function s(t) {
     return t && "object" == typeof t && "default" in t ? t : {
@@ -22382,11 +22382,11 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var firebase = _interopDefault(__webpack_require__(8));
+var firebase = _interopDefault(__webpack_require__(9));
 var tslib = __webpack_require__(1);
 var util = __webpack_require__(3);
 var logger$1 = __webpack_require__(15);
-var component = __webpack_require__(9);
+var component = __webpack_require__(10);
 
 /**
  * @license
@@ -38534,8 +38534,7 @@ try {
 
 /***/ }),
 /* 35 */,
-/* 36 */,
-/* 37 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -38550,11 +38549,11 @@ var index_cjs_default = /*#__PURE__*/__webpack_require__.n(index_cjs);
 var tslib_es6 = __webpack_require__(1);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/app/dist/index.cjs.js
-var dist_index_cjs = __webpack_require__(8);
+var dist_index_cjs = __webpack_require__(9);
 var dist_index_cjs_default = /*#__PURE__*/__webpack_require__.n(dist_index_cjs);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/component/dist/index.cjs.js
-var component_dist_index_cjs = __webpack_require__(9);
+var component_dist_index_cjs = __webpack_require__(10);
 
 // EXTERNAL MODULE: ./node_modules/@firebase/util/dist/index.cjs.js
 var util_dist_index_cjs = __webpack_require__(3);

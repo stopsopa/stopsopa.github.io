@@ -44,7 +44,15 @@ const after = mode => {
     };
   };
   const d = debounce(e => {
-    console.log(c(`\n http://0.0.0.0${port}/index.html`, `BgBlue`))
+
+    let host = '0.0.0.0'
+
+    if (process.env.LOCAL_HOSTS) {
+
+      host = process.env.LOCAL_HOSTS;
+    }
+
+    console.log(c(`\n http://${host}${port}/index.html`, `BgBlue`))
   }, 2000);
   return ({
     apply: (compiler) => {
