@@ -30150,7 +30150,7 @@ var th = function th(msg) {
 
   Object(react["useEffect"])(function () {
     _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-      var set, _firebase, idToken, accessToken, credential, _user, provider, result, user;
+      var _set, _firebase, idToken, accessToken, credential, _user, provider, result, user;
 
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
@@ -30179,7 +30179,7 @@ var th = function th(msg) {
               //     }
               //   }
               // }
-              set = /*#__PURE__*/function () {
+              _set = /*#__PURE__*/function () {
                 var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
                   return regeneratorRuntime.wrap(function _callee$(_context) {
                     while (1) {
@@ -30206,7 +30206,7 @@ var th = function th(msg) {
                   }, _callee, null, [[0, 6]]);
                 }));
 
-                return function set() {
+                return function _set() {
                   return _ref3.apply(this, arguments);
                 };
               }();
@@ -30276,7 +30276,7 @@ var th = function th(msg) {
 
               logn_default()('firebase_signInWithCredential success, trigger set()');
               _context2.next = 32;
-              return set();
+              return _set();
 
             case 32:
               _context2.next = 47;
@@ -30303,7 +30303,7 @@ var th = function th(msg) {
               localStorage.setItem('idToken', idToken);
               localStorage.setItem('accessToken', accessToken);
               _context2.next = 47;
-              return set();
+              return _set();
 
             case 47:
               _context2.next = 53;
@@ -30329,12 +30329,12 @@ var th = function th(msg) {
     }))();
   }, []);
 
-  function write(_x) {
-    return _write.apply(this, arguments);
+  function set(_x) {
+    return _set2.apply(this, arguments);
   }
 
-  function _write() {
-    _write = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref4) {
+  function _set2() {
+    _set2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref4) {
       var data, key, internalkey;
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
@@ -30397,14 +30397,72 @@ var th = function th(msg) {
         }
       }, _callee3, null, [[6, 12]]);
     }));
-    return _write.apply(this, arguments);
+    return _set2.apply(this, arguments);
+  }
+
+  function get(_x2) {
+    return _get.apply(this, arguments);
+  }
+
+  function _get() {
+    _get = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(key) {
+      var internalkey;
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              if (!(typeof section !== 'string' || !section.trim())) {
+                _context4.next = 2;
+                break;
+              }
+
+              throw th("section is not specified");
+
+            case 2:
+              if (Array.isArray(key)) {
+                key = key.join('/');
+              } // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+
+
+              internalkey = "users/".concat(user, "/").concat(section);
+
+              if (typeof key === 'string') {
+                internalkey += '/' + key;
+              }
+
+              _context4.prev = 5;
+              return _context4.abrupt("return", firebase.database().ref(internalkey).once('value').then(function (snapshot) {
+                return snapshot.val();
+              }));
+
+            case 10:
+              _context4.prev = 10;
+              _context4.t0 = _context4["catch"](5);
+              logn_default.a.dump({
+                'get() error:': {
+                  error: se_default()(_context4.t0),
+                  key: key,
+                  internalkey: internalkey
+                }
+              });
+              throw _context4.t0;
+
+            case 14:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, null, [[5, 10]]);
+    }));
+    return _get.apply(this, arguments);
   }
 
   return {
     firebase: firebase,
     authError: authError,
     user: user,
-    write: write
+    set: set,
+    get: get
   };
 });
 // CONCATENATED MODULE: ./pages/firebase/firebase.entry.jsx
@@ -30421,12 +30479,15 @@ var now = function now() {
 
 var firebase_entry_Main = function Main() {
   var _useFirebase = useFirebase({
-    section: "ports"
+    section: "!!!useFirebase_test_can_be_safely_removed"
   }),
       firebase = _useFirebase.firebase,
       authError = _useFirebase.authError,
       user = _useFirebase.user,
-      write = _useFirebase.write;
+      set = _useFirebase.set,
+      get = _useFirebase.get;
+
+  window.get = get;
 
   if (authError) {
     return /*#__PURE__*/react_default.a.createElement("pre", null, JSON.stringify({
@@ -30451,7 +30512,7 @@ var firebase_entry_Main = function Main() {
         photoURL: cu.photoURL,
         extra: 'data'
       };
-      return write({
+      return set({
         key: 'xxx',
         data: data
       });

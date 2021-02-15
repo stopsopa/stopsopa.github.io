@@ -17,10 +17,13 @@ const Main = () => {
     firebase,
     authError,
     user,
-    write,
+    set,
+    get,
   } = useFirebase({
-    section: `ports`
+    section: `!!!useFirebase_test_can_be_safely_removed`
   });
+
+  window.get = get;
 
   if ( authError ) {
 
@@ -52,7 +55,7 @@ const Main = () => {
             extra: 'data'
           };
 
-          return write({
+          return set({
             key: 'xxx',
             data,
           });

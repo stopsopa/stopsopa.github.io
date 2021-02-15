@@ -167,8 +167,8 @@ export default ({
 
   }, []);
 
-  async function write({
-                         data,
+  async function set({
+    data,
     key
   }) {
 
@@ -191,6 +191,12 @@ export default ({
     }
 
     try {
+
+      /**
+       * Explore api:
+       * g(firebase. database. Reference)
+       * https://firebase.google.com/docs/reference/js/firebase.database.Reference
+       */
 
       await firebase.database()
         .ref(internalkey)
@@ -221,10 +227,55 @@ export default ({
     }
   }
 
+
+
+  async function get(key) {
+
+    if (typeof section !== 'string' || !section.trim()) {
+
+      throw th(`section is not specified`);
+    }
+
+    if (Array.isArray(key)) {
+
+      key = key.join('/')
+    }
+
+    // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+    let internalkey = `users/${user}/${section}`;
+
+    if ( typeof key === 'string' ) {
+
+      internalkey += '/' + key;
+    }
+
+    try {
+
+      return firebase.database()
+        .ref(internalkey)
+        .once('value')
+        .then(snapshot => snapshot.val()); // https://firebase.google.com/docs/database/web/read-and-write#read_data_once_with_an_observer
+      ;
+    }
+    catch (e) {
+
+      log.dump({
+        'get() error:': {
+          error: se(e),
+          key,
+          internalkey,
+        },
+      })
+
+      throw e;
+    }
+  }
+
   return {
     firebase,
     authError,
     user,
-    write,
+    set,
+    get,
   };
 }
