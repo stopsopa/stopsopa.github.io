@@ -271,11 +271,56 @@ export default ({
     }
   }
 
+
+  async function del(key) {
+
+    if (typeof section !== 'string' || !section.trim()) {
+
+      throw th(`section is not specified`);
+    }
+
+    if (Array.isArray(key)) {
+
+      key = key.join('/')
+    }
+
+    // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+    let internalkey = `users/${user}/${section}`;
+
+    if ( typeof key === 'string' ) {
+
+      internalkey += '/' + key;
+    }
+
+    try {
+
+      alert(internalkey)
+
+      return firebase.database()
+        .ref(internalkey)
+        .remove(); // https://firebase.google.com/docs/database/web/read-and-write#delete_data
+      ;
+    }
+    catch (e) {
+
+      log.dump({
+        'del() error:': {
+          error: se(e),
+          key,
+          internalkey,
+        },
+      })
+
+      throw e;
+    }
+  }
+
   return {
     firebase,
     error,
     user,
     set,
     get,
+    del,
   };
 }

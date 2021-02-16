@@ -19,6 +19,7 @@ const Main = () => {
     user,
     set,
     get,
+    del,
   } = useFirebase({
     section: `!!!useFirebase_test_can_be_safely_removed`
   });
@@ -59,12 +60,7 @@ const Main = () => {
           });
         }
       }>add</button>
-      <br />
-      <input type="text" value={user} onChange={e => setUser(e.target.value)} style={{width: '80%'}}/>
-      {
-        (/[\.#$\[\]]/.test(user)) &&
-        <div style={{color: 'red'}}>Paths must be non-empty strings and can't contain ".", "#", "$", "[", or "]"</div>
-      }
+      <button onClick={() => del('xxx')}>delete</button>
     </div>
   )
 }

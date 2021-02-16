@@ -30459,12 +30459,69 @@ var th = function th(msg) {
     return _get.apply(this, arguments);
   }
 
+  function del(_x3) {
+    return _del.apply(this, arguments);
+  }
+
+  function _del() {
+    _del = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(key) {
+      var internalkey;
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              if (!(typeof section !== 'string' || !section.trim())) {
+                _context5.next = 2;
+                break;
+              }
+
+              throw th("section is not specified");
+
+            case 2:
+              if (Array.isArray(key)) {
+                key = key.join('/');
+              } // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+
+
+              internalkey = "users/".concat(user, "/").concat(section);
+
+              if (typeof key === 'string') {
+                internalkey += '/' + key;
+              }
+
+              _context5.prev = 5;
+              alert(internalkey);
+              return _context5.abrupt("return", firebase.database().ref(internalkey).remove());
+
+            case 11:
+              _context5.prev = 11;
+              _context5.t0 = _context5["catch"](5);
+              logn_default.a.dump({
+                'del() error:': {
+                  error: se_default()(_context5.t0),
+                  key: key,
+                  internalkey: internalkey
+                }
+              });
+              throw _context5.t0;
+
+            case 15:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5, null, [[5, 11]]);
+    }));
+    return _del.apply(this, arguments);
+  }
+
   return {
     firebase: firebase,
     error: error,
     user: user,
     set: set,
-    get: get
+    get: get,
+    del: del
   };
 });
 // CONCATENATED MODULE: ./pages/firebase/firebase.entry.jsx
@@ -30487,7 +30544,8 @@ var firebase_entry_Main = function Main() {
       error = _useFirebase.error,
       user = _useFirebase.user,
       set = _useFirebase.set,
-      get = _useFirebase.get;
+      get = _useFirebase.get,
+      del = _useFirebase.del;
 
   if (error) {
     return /*#__PURE__*/react_default.a.createElement("pre", null, JSON.stringify({
@@ -30517,20 +30575,11 @@ var firebase_entry_Main = function Main() {
         data: data
       });
     }
-  }, "add"), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("input", {
-    type: "text",
-    value: user,
-    onChange: function onChange(e) {
-      return setUser(e.target.value);
-    },
-    style: {
-      width: '80%'
+  }, "add"), /*#__PURE__*/react_default.a.createElement("button", {
+    onClick: function onClick() {
+      return del('xxx');
     }
-  }), /[\.#$\[\]]/.test(user) && /*#__PURE__*/react_default.a.createElement("div", {
-    style: {
-      color: 'red'
-    }
-  }, "Paths must be non-empty strings and can't contain \".\", \"#\", \"$\", \"[\", or \"]\""));
+  }, "delete"));
 };
 
 Object(react_dom["render"])( /*#__PURE__*/react_default.a.createElement(firebase_entry_Main, null), document.getElementById('app'));
