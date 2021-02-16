@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 
 import { render } from 'react-dom';
 
+import unique from 'nlab/unique'
+
 import log from 'inspc';
 
 const now = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ').replace(/[^\d]/g, '-');
@@ -10,6 +12,8 @@ const now = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ').
 import se from 'nlab/se';
 
 import useFirebase from './useFirebase'
+
+const section = `!!!useFirebase_test_can_be_safely_removed`;
 
 const Main = () => {
 
@@ -20,8 +24,10 @@ const Main = () => {
     set,
     get,
     del,
+    push,
+    getroot,
   } = useFirebase({
-    section: `!!!useFirebase_test_can_be_safely_removed`
+    section,
   });
 
   if ( error ) {
@@ -60,7 +66,21 @@ const Main = () => {
           });
         }
       }>add</button>
+      <button onClick={
+        () => {
+
+          const uniq = unique();
+
+          return push({
+            key: 'posts',
+            data: {
+              uniq
+            },
+          });
+        }
+      }>push</button>
       <button onClick={() => del('xxx')}>delete</button>
+      user: {user}
     </div>
   )
 }

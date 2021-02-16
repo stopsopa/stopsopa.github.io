@@ -7,6 +7,9 @@ import se from 'nlab/se'
 
 const th = msg => new Error(`useFirebase hook error: ${msg}`);
 
+/**
+ * to see how to use this hook look for firebase.entry.jsx
+ */
 export default ({
   section
 }) => {
@@ -167,14 +170,41 @@ export default ({
 
   }, []);
 
+  function getroot (key) {
+
+    if (typeof section !== 'string' || !section.trim()) {
+
+      throw th(`getroot: section is not specified`);
+    }
+
+    if (Array.isArray(key)) {
+
+      key = key.join('/')
+    }
+
+    // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+    let internalkey = `users/${user}/${section}`;
+
+    if ( typeof key === 'string' ) {
+
+      internalkey += '/' + key;
+    }
+
+    log.dump({
+      firebase_getroot: internalkey,
+    })
+
+    return internalkey;
+  }
+
   async function set({
-    data,
+    data = {},
     key
   }) {
 
     if (typeof section !== 'string' || !section.trim()) {
 
-      throw th(`section is not specified`);
+      throw th(`set: section is not specified`);
     }
 
     if (Array.isArray(key)) {
@@ -204,7 +234,7 @@ export default ({
       ;
 
       log.dump({
-        'write': {
+        'set': {
           key,
           internalkey,
           data,
@@ -215,7 +245,7 @@ export default ({
     catch (e) {
 
       log.dump({
-        'write() error:': {
+        'set() error:': {
           error: se(e),
           key,
           internalkey,
@@ -229,11 +259,14 @@ export default ({
 
   window.firebaseGet = get;
 
-  async function get(key) {
+  async function push({
+    data = {},
+    key
+  }) {
 
     if (typeof section !== 'string' || !section.trim()) {
 
-      throw th(`section is not specified`);
+      throw th(`push: section is not specified`);
     }
 
     if (Array.isArray(key)) {
@@ -251,11 +284,77 @@ export default ({
 
     try {
 
-      return firebase.database()
+      var ref = firebase.database().ref(internalkey);
+
+      var newPostRef = ref.push();
+
+      await newPostRef.set(data);
+
+      const newid = `${internalkey}/${newPostRef.key}`;
+
+      log.dump({
+        'push': {
+          key,
+          newid,
+          internalkey,
+          data,
+          // 'firebase.auth()': firebase.auth()
+        },
+      })
+
+      return newid;
+    }
+    catch (e) {
+
+      log.dump({
+        'push() error:': {
+          error: se(e),
+          key,
+          internalkey,
+          data,
+        },
+      })
+
+      throw e;
+    }
+  }
+
+  async function get(key) {
+
+    if (typeof section !== 'string' || !section.trim()) {
+
+      throw th(`get: section is not specified`);
+    }
+
+    if (Array.isArray(key)) {
+
+      key = key.join('/')
+    }
+
+    // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+    let internalkey = `users/${user}/${section}`;
+
+    if ( typeof key === 'string' ) {
+
+      internalkey += '/' + key;
+    }
+
+    try {
+
+      // https://firebase.google.com/docs/database/web/read-and-write#read_data_once_with_an_observer
+      const data = await firebase.database()
         .ref(internalkey)
         .once('value')
-        .then(snapshot => snapshot.val()); // https://firebase.google.com/docs/database/web/read-and-write#read_data_once_with_an_observer
       ;
+
+      const snapshot = await data.val();
+
+      log.dump({
+        useFirebase_get: snapshot,
+        internalkey,
+      })
+
+      return snapshot;
     }
     catch (e) {
 
@@ -271,12 +370,11 @@ export default ({
     }
   }
 
-
   async function del(key) {
 
     if (typeof section !== 'string' || !section.trim()) {
 
-      throw th(`section is not specified`);
+      throw th(`del: section is not specified`);
     }
 
     if (Array.isArray(key)) {
@@ -294,9 +392,11 @@ export default ({
 
     try {
 
-      alert(internalkey)
+      log.dump({
+        firebase_del: internalkey,
+      })
 
-      return firebase.database()
+      return await firebase.database()
         .ref(internalkey)
         .remove(); // https://firebase.google.com/docs/database/web/read-and-write#delete_data
       ;
@@ -322,5 +422,7 @@ export default ({
     set,
     get,
     del,
+    push,
+    getroot,
   };
 }

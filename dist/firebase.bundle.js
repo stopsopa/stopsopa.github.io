@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 37);
+/******/ 	return __webpack_require__(__webpack_require__.s = 36);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -92,9 +92,9 @@
 
 
 if (undefined === 'production') {
-  module.exports = __webpack_require__(17);
+  module.exports = __webpack_require__(16);
 } else {
-  module.exports = __webpack_require__(18);
+  module.exports = __webpack_require__(17);
 }
 
 
@@ -504,9 +504,9 @@ log.stack = function (n /* def: 0 */) {
     return log;
 };
 
-log.i = __webpack_require__(11);
+log.i = __webpack_require__(14);
 
-log.t = __webpack_require__(12);
+log.t = __webpack_require__(15);
 
 (function (ll) {
 
@@ -706,10 +706,16 @@ if (node) {
     module.exports = log;
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5), __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(6), __webpack_require__(4)))
 
 /***/ }),
-/* 3 */,
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(26);
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
@@ -900,7 +906,8 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 5 */
+/* 5 */,
+/* 6 */
 /***/ (function(module, exports) {
 
 var g;
@@ -924,13 +931,6 @@ try {
 
 module.exports = g;
 
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-module.exports = __webpack_require__(27);
 
 /***/ }),
 /* 7 */
@@ -1067,9 +1067,177 @@ log.stack = function () {return log};
 module.exports = log.dump = log.start = log.get = log.json = log.log = log;
 
 /***/ }),
-/* 9 */,
-/* 10 */,
-/* 11 */
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var printWarning = function() {};
+
+if (undefined !== 'production') {
+  var ReactPropTypesSecret = __webpack_require__(18);
+  var loggedTypeFailures = {};
+  var has = Function.call.bind(Object.prototype.hasOwnProperty);
+
+  printWarning = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+}
+
+/**
+ * Assert that the values match with the type specs.
+ * Error messages are memorized and will only be shown once.
+ *
+ * @param {object} typeSpecs Map of name to a ReactPropType
+ * @param {object} values Runtime values that need to be type-checked
+ * @param {string} location e.g. "prop", "context", "child context"
+ * @param {string} componentName Name of the component for error messages.
+ * @param {?Function} getStack Returns the component stack.
+ * @private
+ */
+function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+  if (undefined !== 'production') {
+    for (var typeSpecName in typeSpecs) {
+      if (has(typeSpecs, typeSpecName)) {
+        var error;
+        // Prop type validation may throw. In case they do, we don't want to
+        // fail the render phase where it didn't fail before. So we log it.
+        // After these have been cleaned up, we'll let them throw.
+        try {
+          // This is intentionally an invariant that gets caught. It's the same
+          // behavior as without this statement except with a better message.
+          if (typeof typeSpecs[typeSpecName] !== 'function') {
+            var err = Error(
+              (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
+              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.'
+            );
+            err.name = 'Invariant Violation';
+            throw err;
+          }
+          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+        } catch (ex) {
+          error = ex;
+        }
+        if (error && !(error instanceof Error)) {
+          printWarning(
+            (componentName || 'React class') + ': type specification of ' +
+            location + ' `' + typeSpecName + '` is invalid; the type checker ' +
+            'function must return `null` or an `Error` but returned a ' + typeof error + '. ' +
+            'You may have forgotten to pass an argument to the type checker ' +
+            'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' +
+            'shape all require an argument).'
+          );
+        }
+        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+          // Only monitor this failure once because there tends to be a lot of the
+          // same error.
+          loggedTypeFailures[error.message] = true;
+
+          var stack = getStack ? getStack() : '';
+
+          printWarning(
+            'Failed ' + location + ' type: ' + error.message + (stack != null ? stack : '')
+          );
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Resets warning cache when testing.
+ *
+ * @private
+ */
+checkPropTypes.resetWarningCache = function() {
+  if (undefined !== 'production') {
+    loggedTypeFailures = {};
+  }
+}
+
+module.exports = checkPropTypes;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+if (undefined === 'production') {
+  module.exports = __webpack_require__(20);
+} else {
+  module.exports = __webpack_require__(21);
+}
+
+
+/***/ }),
+/* 11 */,
+/* 12 */,
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function checkDCE() {
+  /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
+  if (
+    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined' ||
+    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== 'function'
+  ) {
+    return;
+  }
+  if (undefined !== 'production') {
+    // This branch is unreachable because this function is only called
+    // in production, but the condition is true only in development.
+    // Therefore if the branch is still here, dead code elimination wasn't
+    // properly applied.
+    // Don't change the message. React DevTools relies on it. Also make sure
+    // this message doesn't occur elsewhere in this function, or it will cause
+    // a false positive.
+    throw new Error('^_^');
+  }
+  try {
+    // Verify that the code above has been dead code eliminated (DCE'd).
+    __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(checkDCE);
+  } catch (err) {
+    // DevTools shouldn't crash React, no matter what.
+    // We should still report in case we break this code.
+    console.error(err);
+  }
+}
+
+if (undefined === 'production') {
+  // DCE check should happen before ReactDOM bundle executes so that
+  // DevTools can report bad minification during injection.
+  checkDCE();
+  module.exports = __webpack_require__(19);
+} else {
+  module.exports = __webpack_require__(22);
+}
+
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1199,10 +1367,10 @@ else {
 
     module.exports = __webpack_require__(8);
 }
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5), __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(6), __webpack_require__(4)))
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {
@@ -1227,176 +1395,7 @@ module.exports = (function () {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-
-
-var printWarning = function() {};
-
-if (undefined !== 'production') {
-  var ReactPropTypesSecret = __webpack_require__(19);
-  var loggedTypeFailures = {};
-  var has = Function.call.bind(Object.prototype.hasOwnProperty);
-
-  printWarning = function(text) {
-    var message = 'Warning: ' + text;
-    if (typeof console !== 'undefined') {
-      console.error(message);
-    }
-    try {
-      // --- Welcome to debugging React ---
-      // This error was thrown as a convenience so that you can use this stack
-      // to find the callsite that caused this warning to fire.
-      throw new Error(message);
-    } catch (x) {}
-  };
-}
-
-/**
- * Assert that the values match with the type specs.
- * Error messages are memorized and will only be shown once.
- *
- * @param {object} typeSpecs Map of name to a ReactPropType
- * @param {object} values Runtime values that need to be type-checked
- * @param {string} location e.g. "prop", "context", "child context"
- * @param {string} componentName Name of the component for error messages.
- * @param {?Function} getStack Returns the component stack.
- * @private
- */
-function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
-  if (undefined !== 'production') {
-    for (var typeSpecName in typeSpecs) {
-      if (has(typeSpecs, typeSpecName)) {
-        var error;
-        // Prop type validation may throw. In case they do, we don't want to
-        // fail the render phase where it didn't fail before. So we log it.
-        // After these have been cleaned up, we'll let them throw.
-        try {
-          // This is intentionally an invariant that gets caught. It's the same
-          // behavior as without this statement except with a better message.
-          if (typeof typeSpecs[typeSpecName] !== 'function') {
-            var err = Error(
-              (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
-              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.'
-            );
-            err.name = 'Invariant Violation';
-            throw err;
-          }
-          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
-        } catch (ex) {
-          error = ex;
-        }
-        if (error && !(error instanceof Error)) {
-          printWarning(
-            (componentName || 'React class') + ': type specification of ' +
-            location + ' `' + typeSpecName + '` is invalid; the type checker ' +
-            'function must return `null` or an `Error` but returned a ' + typeof error + '. ' +
-            'You may have forgotten to pass an argument to the type checker ' +
-            'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' +
-            'shape all require an argument).'
-          );
-        }
-        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
-          // Only monitor this failure once because there tends to be a lot of the
-          // same error.
-          loggedTypeFailures[error.message] = true;
-
-          var stack = getStack ? getStack() : '';
-
-          printWarning(
-            'Failed ' + location + ' type: ' + error.message + (stack != null ? stack : '')
-          );
-        }
-      }
-    }
-  }
-}
-
-/**
- * Resets warning cache when testing.
- *
- * @private
- */
-checkPropTypes.resetWarningCache = function() {
-  if (undefined !== 'production') {
-    loggedTypeFailures = {};
-  }
-}
-
-module.exports = checkPropTypes;
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-if (undefined === 'production') {
-  module.exports = __webpack_require__(21);
-} else {
-  module.exports = __webpack_require__(22);
-}
-
-
-/***/ }),
-/* 15 */,
 /* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-function checkDCE() {
-  /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
-  if (
-    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined' ||
-    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== 'function'
-  ) {
-    return;
-  }
-  if (undefined !== 'production') {
-    // This branch is unreachable because this function is only called
-    // in production, but the condition is true only in development.
-    // Therefore if the branch is still here, dead code elimination wasn't
-    // properly applied.
-    // Don't change the message. React DevTools relies on it. Also make sure
-    // this message doesn't occur elsewhere in this function, or it will cause
-    // a false positive.
-    throw new Error('^_^');
-  }
-  try {
-    // Verify that the code above has been dead code eliminated (DCE'd).
-    __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(checkDCE);
-  } catch (err) {
-    // DevTools shouldn't crash React, no matter what.
-    // We should still report in case we break this code.
-    console.error(err);
-  }
-}
-
-if (undefined === 'production') {
-  // DCE check should happen before ReactDOM bundle executes so that
-  // DevTools can report bad minification during injection.
-  checkDCE();
-  module.exports = __webpack_require__(20);
-} else {
-  module.exports = __webpack_require__(23);
-}
-
-
-/***/ }),
-/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1428,7 +1427,7 @@ exports.useLayoutEffect=function(a,b){return Z().useLayoutEffect(a,b)};exports.u
 
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1450,7 +1449,7 @@ if (undefined !== "production") {
 'use strict';
 
 var _assign = __webpack_require__(7);
-var checkPropTypes = __webpack_require__(13);
+var checkPropTypes = __webpack_require__(9);
 
 var ReactVersion = '16.13.1';
 
@@ -3347,7 +3346,7 @@ exports.version = ReactVersion;
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3366,7 +3365,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3382,7 +3381,7 @@ module.exports = ReactPropTypesSecret;
 /*
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var aa=__webpack_require__(0),n=__webpack_require__(7),r=__webpack_require__(14);function u(a){for(var b="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=1;c<arguments.length;c++)b+="&args[]="+encodeURIComponent(arguments[c]);return"Minified React error #"+a+"; visit "+b+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}if(!aa)throw Error(u(227));
+var aa=__webpack_require__(0),n=__webpack_require__(7),r=__webpack_require__(10);function u(a){for(var b="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=1;c<arguments.length;c++)b+="&args[]="+encodeURIComponent(arguments[c]);return"Minified React error #"+a+"; visit "+b+" for the full message or use the non-minified dev environment for full errors and additional helpful warnings."}if(!aa)throw Error(u(227));
 function ba(a,b,c,d,e,f,g,h,k){var l=Array.prototype.slice.call(arguments,3);try{b.apply(c,l)}catch(m){this.onError(m)}}var da=!1,ea=null,fa=!1,ha=null,ia={onError:function(a){da=!0;ea=a}};function ja(a,b,c,d,e,f,g,h,k){da=!1;ea=null;ba.apply(ia,arguments)}function ka(a,b,c,d,e,f,g,h,k){ja.apply(this,arguments);if(da){if(da){var l=ea;da=!1;ea=null}else throw Error(u(198));fa||(fa=!0,ha=l)}}var la=null,ma=null,na=null;
 function oa(a,b,c){var d=a.type||"unknown-event";a.currentTarget=na(c);ka(d,b,void 0,a);a.currentTarget=null}var pa=null,qa={};
 function ra(){if(pa)for(var a in qa){var b=qa[a],c=pa.indexOf(a);if(!(-1<c))throw Error(u(96,a));if(!sa[c]){if(!b.extractEvents)throw Error(u(97,a));sa[c]=b;c=b.eventTypes;for(var d in c){var e=void 0;var f=c[d],g=b,h=d;if(ta.hasOwnProperty(h))throw Error(u(99,h));ta[h]=f;var k=f.phasedRegistrationNames;if(k){for(e in k)k.hasOwnProperty(e)&&ua(k[e],g,h);e=!0}else f.registrationName?(ua(f.registrationName,g,h),e=!0):e=!1;if(!e)throw Error(u(98,d,a));}}}}
@@ -3665,7 +3664,7 @@ exports.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!gk(c))throw Er
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3693,7 +3692,7 @@ exports.unstable_shouldYield=function(){var a=exports.unstable_now();V(a);var b=
 
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4558,7 +4557,7 @@ exports.unstable_wrapCallback = unstable_wrapCallback;
 
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4581,9 +4580,9 @@ if (undefined !== "production") {
 
 var React = __webpack_require__(0);
 var _assign = __webpack_require__(7);
-var Scheduler = __webpack_require__(14);
-var checkPropTypes = __webpack_require__(13);
-var tracing = __webpack_require__(24);
+var Scheduler = __webpack_require__(10);
+var checkPropTypes = __webpack_require__(9);
+var tracing = __webpack_require__(23);
 
 var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED; // Prevent newer renderers from RTE when used with older react package versions.
 // Current owner and dispatcher used to share the same ref,
@@ -29577,21 +29576,21 @@ exports.version = ReactVersion;
 
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 if (undefined === 'production') {
-  module.exports = __webpack_require__(25);
+  module.exports = __webpack_require__(24);
 } else {
-  module.exports = __webpack_require__(26);
+  module.exports = __webpack_require__(25);
 }
 
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29608,7 +29607,7 @@ var b=0;exports.__interactionsRef=null;exports.__subscriberRef=null;exports.unst
 
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29964,7 +29963,7 @@ exports.unstable_wrap = unstable_wrap;
 
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30074,38 +30073,17 @@ module.exports = function (e, native) {
 
 
 /***/ }),
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */
+/* 27 */,
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// EXTERNAL MODULE: ./node_modules/react/index.js
-var react = __webpack_require__(0);
-var react_default = /*#__PURE__*/__webpack_require__.n(react);
-
-// EXTERNAL MODULE: ./node_modules/react-dom/index.js
-var react_dom = __webpack_require__(16);
-
-// EXTERNAL MODULE: ./node_modules/inspc/logn.js
-var logn = __webpack_require__(2);
-var logn_default = /*#__PURE__*/__webpack_require__.n(logn);
-
-// EXTERNAL MODULE: ./node_modules/nlab/se.js
-var se = __webpack_require__(6);
-var se_default = /*#__PURE__*/__webpack_require__.n(se);
-
-// CONCATENATED MODULE: ./pages/firebase/useFirebase.js
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(inspc__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(nlab_se__WEBPACK_IMPORTED_MODULE_2__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -30129,26 +30107,30 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var th = function th(msg) {
   return new Error("useFirebase hook error: ".concat(msg));
 };
+/**
+ * to see how to use this hook look for firebase.entry.jsx
+ */
 
-/* harmony default export */ var useFirebase = (function (_ref) {
+
+/* harmony default export */ __webpack_exports__["a"] = (function (_ref) {
   var section = _ref.section;
 
-  var _useState = Object(react["useState"])(false),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
       _useState2 = _slicedToArray(_useState, 2),
       firebase = _useState2[0],
       setFirebase = _useState2[1];
 
-  var _useState3 = Object(react["useState"])(false),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
       _useState4 = _slicedToArray(_useState3, 2),
       error = _useState4[0],
       setError = _useState4[1];
 
-  var _useState5 = Object(react["useState"])(false),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
       _useState6 = _slicedToArray(_useState5, 2),
       user = _useState6[0],
       setUser = _useState6[1];
 
-  Object(react["useEffect"])(function () {
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
       var _set, _firebase, idToken, accessToken, credential, _user, provider, result, user;
 
@@ -30218,7 +30200,7 @@ var th = function th(msg) {
               _firebase = _context2.sent;
               idToken = localStorage.getItem('idToken');
               accessToken = localStorage.getItem('accessToken');
-              logn_default.a.dump({
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
                 firebase_first: _firebase.auth().currentUser
               });
 
@@ -30228,13 +30210,13 @@ var th = function th(msg) {
               }
 
               _context2.prev = 9;
-              logn_default()('firebase_try: signInWithCredential');
+              inspc__WEBPACK_IMPORTED_MODULE_1___default()('firebase_try: signInWithCredential');
               _context2.next = 13;
               return _firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
 
             case 13:
               credential = _context2.sent;
-              logn_default.a.dump({
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
                 firebase_credential: credential
               });
               _context2.next = 17;
@@ -30242,7 +30224,7 @@ var th = function th(msg) {
 
             case 17:
               _user = _context2.sent;
-              logn_default.a.dump({
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
                 firebase_mode: 'signInWithCredential',
                 user: _user
               });
@@ -30252,11 +30234,11 @@ var th = function th(msg) {
             case 21:
               _context2.prev = 21;
               _context2.t0 = _context2["catch"](9);
-              logn_default()('firebase_catch: signInWithCredential', se_default()(_context2.t0));
+              inspc__WEBPACK_IMPORTED_MODULE_1___default()('firebase_catch: signInWithCredential', nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t0));
               setError({
                 error: {
                   mode: 'signInWithCredential -> signOut()',
-                  e: se_default()(_context2.t0),
+                  e: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t0),
                   user: _firebase.auth().currentUser,
                   truthy: !!_firebase.auth().currentUser
                 }
@@ -30265,7 +30247,7 @@ var th = function th(msg) {
               return _firebase.auth().signOut();
 
             case 27:
-              logn_default.a.dump({
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
                 'firebase.auth().currentUser, before second method': _firebase.auth().currentUser
               });
 
@@ -30274,7 +30256,7 @@ var th = function th(msg) {
                 break;
               }
 
-              logn_default()('firebase_signInWithCredential success, trigger set()');
+              inspc__WEBPACK_IMPORTED_MODULE_1___default()('firebase_signInWithCredential success, trigger set()');
               _context2.next = 32;
               return _set();
 
@@ -30283,7 +30265,7 @@ var th = function th(msg) {
               break;
 
             case 34:
-              logn_default()('try: signInWithPopup');
+              inspc__WEBPACK_IMPORTED_MODULE_1___default()('try: signInWithPopup');
               provider = new _firebase.auth.GoogleAuthProvider();
               _context2.next = 38;
               return _firebase.auth().signInWithPopup(provider);
@@ -30293,7 +30275,7 @@ var th = function th(msg) {
               idToken = result.credential.idToken;
               accessToken = result.credential.accessToken;
               user = result.user;
-              logn_default.a.dump({
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
                 mode: 'signInWithPopup',
                 idToken: idToken,
                 accessToken: accessToken,
@@ -30312,11 +30294,11 @@ var th = function th(msg) {
             case 49:
               _context2.prev = 49;
               _context2.t1 = _context2["catch"](0);
-              logn_default()('catch: signInWithPopup', se_default()(_context2.t1));
+              inspc__WEBPACK_IMPORTED_MODULE_1___default()('catch: signInWithPopup', nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t1));
               setError({
                 error: {
                   mode: 'signInWithPopup',
-                  e: se_default()(_context2.t1)
+                  e: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t1)
                 }
               });
 
@@ -30329,25 +30311,48 @@ var th = function th(msg) {
     }))();
   }, []);
 
+  function getroot(key) {
+    if (typeof section !== 'string' || !section.trim()) {
+      throw th("getroot: section is not specified");
+    }
+
+    if (Array.isArray(key)) {
+      key = key.join('/');
+    } // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+
+
+    var internalkey = "users/".concat(user, "/").concat(section);
+
+    if (typeof key === 'string') {
+      internalkey += '/' + key;
+    }
+
+    inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+      firebase_getroot: internalkey
+    });
+    return internalkey;
+  }
+
   function set(_x) {
     return _set2.apply(this, arguments);
   }
 
   function _set2() {
     _set2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref4) {
-      var data, key, internalkey;
+      var _ref4$data, data, key, internalkey;
+
       return regeneratorRuntime.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              data = _ref4.data, key = _ref4.key;
+              _ref4$data = _ref4.data, data = _ref4$data === void 0 ? {} : _ref4$data, key = _ref4.key;
 
               if (!(typeof section !== 'string' || !section.trim())) {
                 _context3.next = 3;
                 break;
               }
 
-              throw th("section is not specified");
+              throw th("set: section is not specified");
 
             case 3:
               if (Array.isArray(key)) {
@@ -30366,8 +30371,8 @@ var th = function th(msg) {
               return firebase.database().ref(internalkey).set(data);
 
             case 9:
-              logn_default.a.dump({
-                'write': {
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'set': {
                   key: key,
                   internalkey: internalkey,
                   data: data // 'firebase.auth()': firebase.auth()
@@ -30380,9 +30385,9 @@ var th = function th(msg) {
             case 12:
               _context3.prev = 12;
               _context3.t0 = _context3["catch"](6);
-              logn_default.a.dump({
-                'write() error:': {
-                  error: se_default()(_context3.t0),
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'set() error:': {
+                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context3.t0),
                   key: key,
                   internalkey: internalkey,
                   data: data
@@ -30402,25 +30407,28 @@ var th = function th(msg) {
 
   window.firebaseGet = get;
 
-  function get(_x2) {
-    return _get.apply(this, arguments);
+  function push(_x2) {
+    return _push.apply(this, arguments);
   }
 
-  function _get() {
-    _get = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(key) {
-      var internalkey;
+  function _push() {
+    _push = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref5) {
+      var _ref5$data, data, key, internalkey, ref, newPostRef, newid;
+
       return regeneratorRuntime.wrap(function _callee4$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
+              _ref5$data = _ref5.data, data = _ref5$data === void 0 ? {} : _ref5$data, key = _ref5.key;
+
               if (!(typeof section !== 'string' || !section.trim())) {
-                _context4.next = 2;
+                _context4.next = 3;
                 break;
               }
 
-              throw th("section is not specified");
+              throw th("push: section is not specified");
 
-            case 2:
+            case 3:
               if (Array.isArray(key)) {
                 key = key.join('/');
               } // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
@@ -30432,40 +30440,55 @@ var th = function th(msg) {
                 internalkey += '/' + key;
               }
 
-              _context4.prev = 5;
-              return _context4.abrupt("return", firebase.database().ref(internalkey).once('value').then(function (snapshot) {
-                return snapshot.val();
-              }));
+              _context4.prev = 6;
+              ref = firebase.database().ref(internalkey);
+              newPostRef = ref.push();
+              _context4.next = 11;
+              return newPostRef.set(data);
 
-            case 10:
-              _context4.prev = 10;
-              _context4.t0 = _context4["catch"](5);
-              logn_default.a.dump({
-                'get() error:': {
-                  error: se_default()(_context4.t0),
+            case 11:
+              newid = "".concat(internalkey, "/").concat(newPostRef.key);
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'push': {
                   key: key,
-                  internalkey: internalkey
+                  newid: newid,
+                  internalkey: internalkey,
+                  data: data // 'firebase.auth()': firebase.auth()
+
+                }
+              });
+              return _context4.abrupt("return", newid);
+
+            case 16:
+              _context4.prev = 16;
+              _context4.t0 = _context4["catch"](6);
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'push() error:': {
+                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context4.t0),
+                  key: key,
+                  internalkey: internalkey,
+                  data: data
                 }
               });
               throw _context4.t0;
 
-            case 14:
+            case 20:
             case "end":
               return _context4.stop();
           }
         }
-      }, _callee4, null, [[5, 10]]);
+      }, _callee4, null, [[6, 16]]);
     }));
+    return _push.apply(this, arguments);
+  }
+
+  function get(_x3) {
     return _get.apply(this, arguments);
   }
 
-  function del(_x3) {
-    return _del.apply(this, arguments);
-  }
-
-  function _del() {
-    _del = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(key) {
-      var internalkey;
+  function _get() {
+    _get = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(key) {
+      var internalkey, data, snapshot;
       return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
@@ -30475,7 +30498,7 @@ var th = function th(msg) {
                 break;
               }
 
-              throw th("section is not specified");
+              throw th("get: section is not specified");
 
             case 2:
               if (Array.isArray(key)) {
@@ -30490,27 +30513,102 @@ var th = function th(msg) {
               }
 
               _context5.prev = 5;
-              alert(internalkey);
-              return _context5.abrupt("return", firebase.database().ref(internalkey).remove());
+              _context5.next = 8;
+              return firebase.database().ref(internalkey).once('value');
+
+            case 8:
+              data = _context5.sent;
+              _context5.next = 11;
+              return data.val();
 
             case 11:
-              _context5.prev = 11;
+              snapshot = _context5.sent;
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                useFirebase_get: snapshot,
+                internalkey: internalkey
+              });
+              return _context5.abrupt("return", snapshot);
+
+            case 16:
+              _context5.prev = 16;
               _context5.t0 = _context5["catch"](5);
-              logn_default.a.dump({
-                'del() error:': {
-                  error: se_default()(_context5.t0),
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'get() error:': {
+                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context5.t0),
                   key: key,
                   internalkey: internalkey
                 }
               });
               throw _context5.t0;
 
-            case 15:
+            case 20:
             case "end":
               return _context5.stop();
           }
         }
-      }, _callee5, null, [[5, 11]]);
+      }, _callee5, null, [[5, 16]]);
+    }));
+    return _get.apply(this, arguments);
+  }
+
+  function del(_x4) {
+    return _del.apply(this, arguments);
+  }
+
+  function _del() {
+    _del = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(key) {
+      var internalkey;
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              if (!(typeof section !== 'string' || !section.trim())) {
+                _context6.next = 2;
+                break;
+              }
+
+              throw th("del: section is not specified");
+
+            case 2:
+              if (Array.isArray(key)) {
+                key = key.join('/');
+              } // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+
+
+              internalkey = "users/".concat(user, "/").concat(section);
+
+              if (typeof key === 'string') {
+                internalkey += '/' + key;
+              }
+
+              _context6.prev = 5;
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                firebase_del: internalkey
+              });
+              _context6.next = 9;
+              return firebase.database().ref(internalkey).remove();
+
+            case 9:
+              return _context6.abrupt("return", _context6.sent);
+
+            case 13:
+              _context6.prev = 13;
+              _context6.t0 = _context6["catch"](5);
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'del() error:': {
+                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context6.t0),
+                  key: key,
+                  internalkey: internalkey
+                }
+              });
+              throw _context6.t0;
+
+            case 17:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6, null, [[5, 13]]);
     }));
     return _del.apply(this, arguments);
   }
@@ -30521,10 +30619,37 @@ var th = function th(msg) {
     user: user,
     set: set,
     get: get,
-    del: del
+    del: del,
+    push: push,
+    getroot: getroot
   };
 });
-// CONCATENATED MODULE: ./pages/firebase/firebase.entry.jsx
+
+/***/ }),
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var nlab_unique__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(40);
+/* harmony import */ var nlab_unique__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(nlab_unique__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
+/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(inspc__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3);
+/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(nlab_se__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _useFirebase__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(28);
+
 
 
 
@@ -30535,29 +30660,32 @@ var now = function now() {
 
 
 
+var section = "!!!useFirebase_test_can_be_safely_removed";
 
-var firebase_entry_Main = function Main() {
-  var _useFirebase = useFirebase({
-    section: "!!!useFirebase_test_can_be_safely_removed"
+var Main = function Main() {
+  var _useFirebase = Object(_useFirebase__WEBPACK_IMPORTED_MODULE_5__[/* default */ "a"])({
+    section: section
   }),
       firebase = _useFirebase.firebase,
       error = _useFirebase.error,
       user = _useFirebase.user,
       set = _useFirebase.set,
       get = _useFirebase.get,
-      del = _useFirebase.del;
+      del = _useFirebase.del,
+      push = _useFirebase.push,
+      getroot = _useFirebase.getroot;
 
   if (error) {
-    return /*#__PURE__*/react_default.a.createElement("pre", null, JSON.stringify({
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("pre", null, JSON.stringify({
       error: error
     }, null, 4));
   }
 
   if (!user) {
-    return /*#__PURE__*/react_default.a.createElement("div", null, "Connecting to firebase...");
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Connecting to firebase...");
   }
 
-  return /*#__PURE__*/react_default.a.createElement("div", null, /*#__PURE__*/react_default.a.createElement("button", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     onClick: function onClick() {
       var cu = firebase.auth().currentUser;
       var data = {
@@ -30575,14 +30703,55 @@ var firebase_entry_Main = function Main() {
         data: data
       });
     }
-  }, "add"), /*#__PURE__*/react_default.a.createElement("button", {
+  }, "add"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    onClick: function onClick() {
+      var uniq = nlab_unique__WEBPACK_IMPORTED_MODULE_2___default()();
+      return push({
+        key: 'posts',
+        data: {
+          uniq: uniq
+        }
+      });
+    }
+  }, "push"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     onClick: function onClick() {
       return del('xxx');
     }
-  }, "delete"));
+  }, "delete"), "user: ", user);
 };
 
-Object(react_dom["render"])( /*#__PURE__*/react_default.a.createElement(firebase_entry_Main, null), document.getElementById('app'));
+Object(react_dom__WEBPACK_IMPORTED_MODULE_1__["render"])( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Main, null), document.getElementById('app'));
+
+/***/ }),
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(41);
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports) {
+
+
+function unique(pattern) { // node.js require('crypto').randomBytes(16).toString('hex');
+
+    pattern || (pattern = 'xyxyxy');
+
+    return pattern.replace(
+        /[xy]/g,
+        function(c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        }
+    );
+}
+
+module.exports = unique;
 
 /***/ })
 /******/ ]);

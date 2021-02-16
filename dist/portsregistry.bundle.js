@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 37);
+/******/ 	return __webpack_require__(__webpack_require__.s = 39);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -30074,27 +30074,19 @@ module.exports = function (e, native) {
 
 /***/ }),
 /* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
-/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(inspc__WEBPACK_IMPORTED_MODULE_2__);
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(inspc__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(nlab_se__WEBPACK_IMPORTED_MODULE_2__);
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -30112,137 +30104,844 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-var se = __webpack_require__(3);
+var th = function th(msg) {
+  return new Error("useFirebase hook error: ".concat(msg));
+};
+/**
+ * to see how to use this hook look for firebase.entry.jsx
+ */
 
-var Main = function Main() {
+
+/* harmony default export */ __webpack_exports__["a"] = (function (_ref) {
+  var section = _ref.section;
+
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
       _useState2 = _slicedToArray(_useState, 2),
-      check = _useState2[0],
-      setCheck = _useState2[1];
+      firebase = _useState2[0],
+      setFirebase = _useState2[1];
 
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
-    width: "80%"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
-    width: "50%"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "checkbox"
-  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "checkbox"
-  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    checked: check === 'foo',
-    onChange: function onChange() {
-      return setCheck('foo');
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      error = _useState4[0],
+      setError = _useState4[1];
+
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      user = _useState6[0],
+      setUser = _useState6[1];
+
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var _set, _firebase, idToken, accessToken, credential, _user, provider, result, user;
+
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+
+              // make security rules for database like this
+              // {
+              //   "rules": {
+              //     "users": {
+              //       "$email": {
+              //         ".read": true,
+              //         ".write": "$email === auth.token.email.replace('.', ',')",
+              //       }
+              //     }
+              //   }
+              // }
+              // {
+              //   "rules": {
+              //     "users": {
+              //       "$email": {
+              //         ".read": "$email === auth.token.email.replace('.', ',')",
+              //           ".write": "$email === auth.token.email.replace('.', ',')",
+              //       }
+              //     }
+              //   }
+              // }
+              _set = /*#__PURE__*/function () {
+                var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                  return regeneratorRuntime.wrap(function _callee$(_context) {
+                    while (1) {
+                      switch (_context.prev = _context.next) {
+                        case 0:
+                          _context.prev = 0;
+                          setFirebase(_firebase);
+                          setError(false);
+                          setUser(_firebase.auth().currentUser.email.replace(/\./g, ','));
+                          _context.next = 10;
+                          break;
+
+                        case 6:
+                          _context.prev = 6;
+                          _context.t0 = _context["catch"](0);
+                          _context.t0.customMessage = ">>>>>>>>>>Origin: set() method<<<<<<<<<<<";
+                          throw _context.t0;
+
+                        case 10:
+                        case "end":
+                          return _context.stop();
+                      }
+                    }
+                  }, _callee, null, [[0, 6]]);
+                }));
+
+                return function _set() {
+                  return _ref3.apply(this, arguments);
+                };
+              }();
+
+              _context2.next = 4;
+              return fire();
+
+            case 4:
+              _firebase = _context2.sent;
+              idToken = localStorage.getItem('idToken');
+              accessToken = localStorage.getItem('accessToken');
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                firebase_first: _firebase.auth().currentUser
+              });
+
+              if (!(!_firebase.auth().currentUser && idToken && accessToken)) {
+                _context2.next = 27;
+                break;
+              }
+
+              _context2.prev = 9;
+              inspc__WEBPACK_IMPORTED_MODULE_1___default()('firebase_try: signInWithCredential');
+              _context2.next = 13;
+              return _firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
+
+            case 13:
+              credential = _context2.sent;
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                firebase_credential: credential
+              });
+              _context2.next = 17;
+              return _firebase.auth().signInWithCredential(credential);
+
+            case 17:
+              _user = _context2.sent;
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                firebase_mode: 'signInWithCredential',
+                user: _user
+              });
+              _context2.next = 27;
+              break;
+
+            case 21:
+              _context2.prev = 21;
+              _context2.t0 = _context2["catch"](9);
+              inspc__WEBPACK_IMPORTED_MODULE_1___default()('firebase_catch: signInWithCredential', nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t0));
+              setError({
+                error: {
+                  mode: 'signInWithCredential -> signOut()',
+                  e: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t0),
+                  user: _firebase.auth().currentUser,
+                  truthy: !!_firebase.auth().currentUser
+                }
+              });
+              _context2.next = 27;
+              return _firebase.auth().signOut();
+
+            case 27:
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'firebase.auth().currentUser, before second method': _firebase.auth().currentUser
+              });
+
+              if (!_firebase.auth().currentUser) {
+                _context2.next = 34;
+                break;
+              }
+
+              inspc__WEBPACK_IMPORTED_MODULE_1___default()('firebase_signInWithCredential success, trigger set()');
+              _context2.next = 32;
+              return _set();
+
+            case 32:
+              _context2.next = 47;
+              break;
+
+            case 34:
+              inspc__WEBPACK_IMPORTED_MODULE_1___default()('try: signInWithPopup');
+              provider = new _firebase.auth.GoogleAuthProvider();
+              _context2.next = 38;
+              return _firebase.auth().signInWithPopup(provider);
+
+            case 38:
+              result = _context2.sent;
+              idToken = result.credential.idToken;
+              accessToken = result.credential.accessToken;
+              user = result.user;
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                mode: 'signInWithPopup',
+                idToken: idToken,
+                accessToken: accessToken,
+                user: user,
+                result: result
+              });
+              localStorage.setItem('idToken', idToken);
+              localStorage.setItem('accessToken', accessToken);
+              _context2.next = 47;
+              return _set();
+
+            case 47:
+              _context2.next = 53;
+              break;
+
+            case 49:
+              _context2.prev = 49;
+              _context2.t1 = _context2["catch"](0);
+              inspc__WEBPACK_IMPORTED_MODULE_1___default()('catch: signInWithPopup', nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t1));
+              setError({
+                error: {
+                  mode: 'signInWithPopup',
+                  e: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t1)
+                }
+              });
+
+            case 53:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[0, 49], [9, 21]]);
+    }))();
+  }, []);
+
+  function getroot(key) {
+    if (typeof section !== 'string' || !section.trim()) {
+      throw th("getroot: section is not specified");
     }
-  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    checked: check === 'bar',
-    onChange: function onChange() {
-      return setCheck('bar');
+
+    if (Array.isArray(key)) {
+      key = key.join('/');
+    } // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+
+
+    var internalkey = "users/".concat(user, "/").concat(section);
+
+    if (typeof key === 'string') {
+      internalkey += '/' + key;
     }
-  }), "bar bar bar bar bar bar"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "checkbox"
-  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "checkbox"
-  }), "foo foo foo foo foo foo")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "radio"
-  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "radio"
-  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    checked: check === 'foo',
-    onChange: function onChange() {
-      return setCheck('foo');
-    },
-    radio: true
-  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    checked: check === 'bar',
-    onChange: function onChange() {
-      return setCheck('bar');
-    },
-    radio: true
-  }), "bar bar bar bar bar bar"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "radio"
-  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    checked: check === 'foo',
-    onChange: function onChange() {
-      return setCheck('foo');
-    },
-    radio: true
-  }, "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    checked: check === 'bar',
-    onChange: function onChange() {
-      return setCheck('bar');
-    },
-    radio: true
-  }, "bar bar bar bar bar bar"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "radio"
-  }), "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    checked: check === 'foo',
-    onChange: function onChange() {
-      return setCheck('foo');
-    },
-    radio: true,
-    before: true
-  }, "foo foo foo foo foo foo"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(NoInput, {
-    checked: check === 'bar',
-    onChange: function onChange() {
-      return setCheck('bar');
-    },
-    radio: true,
-    before: true
-  }, "bar bar bar bar bar bar"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "radio"
-  }), "foo foo foo foo foo foo")))));
+
+    inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+      firebase_getroot: internalkey
+    });
+    return internalkey;
+  }
+
+  function set(_x) {
+    return _set2.apply(this, arguments);
+  }
+
+  function _set2() {
+    _set2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref4) {
+      var _ref4$data, data, key, internalkey;
+
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _ref4$data = _ref4.data, data = _ref4$data === void 0 ? {} : _ref4$data, key = _ref4.key;
+
+              if (!(typeof section !== 'string' || !section.trim())) {
+                _context3.next = 3;
+                break;
+              }
+
+              throw th("set: section is not specified");
+
+            case 3:
+              if (Array.isArray(key)) {
+                key = key.join('/');
+              } // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+
+
+              internalkey = "users/".concat(user, "/").concat(section);
+
+              if (typeof key === 'string') {
+                internalkey += '/' + key;
+              }
+
+              _context3.prev = 6;
+              _context3.next = 9;
+              return firebase.database().ref(internalkey).set(data);
+
+            case 9:
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'set': {
+                  key: key,
+                  internalkey: internalkey,
+                  data: data // 'firebase.auth()': firebase.auth()
+
+                }
+              });
+              _context3.next = 16;
+              break;
+
+            case 12:
+              _context3.prev = 12;
+              _context3.t0 = _context3["catch"](6);
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'set() error:': {
+                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context3.t0),
+                  key: key,
+                  internalkey: internalkey,
+                  data: data
+                }
+              });
+              throw _context3.t0;
+
+            case 16:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[6, 12]]);
+    }));
+    return _set2.apply(this, arguments);
+  }
+
+  window.firebaseGet = get;
+
+  function push(_x2) {
+    return _push.apply(this, arguments);
+  }
+
+  function _push() {
+    _push = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref5) {
+      var _ref5$data, data, key, internalkey, ref, newPostRef, newid;
+
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _ref5$data = _ref5.data, data = _ref5$data === void 0 ? {} : _ref5$data, key = _ref5.key;
+
+              if (!(typeof section !== 'string' || !section.trim())) {
+                _context4.next = 3;
+                break;
+              }
+
+              throw th("push: section is not specified");
+
+            case 3:
+              if (Array.isArray(key)) {
+                key = key.join('/');
+              } // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+
+
+              internalkey = "users/".concat(user, "/").concat(section);
+
+              if (typeof key === 'string') {
+                internalkey += '/' + key;
+              }
+
+              _context4.prev = 6;
+              ref = firebase.database().ref(internalkey);
+              newPostRef = ref.push();
+              _context4.next = 11;
+              return newPostRef.set(data);
+
+            case 11:
+              newid = "".concat(internalkey, "/").concat(newPostRef.key);
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'push': {
+                  key: key,
+                  newid: newid,
+                  internalkey: internalkey,
+                  data: data // 'firebase.auth()': firebase.auth()
+
+                }
+              });
+              return _context4.abrupt("return", newid);
+
+            case 16:
+              _context4.prev = 16;
+              _context4.t0 = _context4["catch"](6);
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'push() error:': {
+                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context4.t0),
+                  key: key,
+                  internalkey: internalkey,
+                  data: data
+                }
+              });
+              throw _context4.t0;
+
+            case 20:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, null, [[6, 16]]);
+    }));
+    return _push.apply(this, arguments);
+  }
+
+  function get(_x3) {
+    return _get.apply(this, arguments);
+  }
+
+  function _get() {
+    _get = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(key) {
+      var internalkey, data, snapshot;
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              if (!(typeof section !== 'string' || !section.trim())) {
+                _context5.next = 2;
+                break;
+              }
+
+              throw th("get: section is not specified");
+
+            case 2:
+              if (Array.isArray(key)) {
+                key = key.join('/');
+              } // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+
+
+              internalkey = "users/".concat(user, "/").concat(section);
+
+              if (typeof key === 'string') {
+                internalkey += '/' + key;
+              }
+
+              _context5.prev = 5;
+              _context5.next = 8;
+              return firebase.database().ref(internalkey).once('value');
+
+            case 8:
+              data = _context5.sent;
+              _context5.next = 11;
+              return data.val();
+
+            case 11:
+              snapshot = _context5.sent;
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                useFirebase_get: snapshot,
+                internalkey: internalkey
+              });
+              return _context5.abrupt("return", snapshot);
+
+            case 16:
+              _context5.prev = 16;
+              _context5.t0 = _context5["catch"](5);
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'get() error:': {
+                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context5.t0),
+                  key: key,
+                  internalkey: internalkey
+                }
+              });
+              throw _context5.t0;
+
+            case 20:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5, null, [[5, 16]]);
+    }));
+    return _get.apply(this, arguments);
+  }
+
+  function del(_x4) {
+    return _del.apply(this, arguments);
+  }
+
+  function _del() {
+    _del = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(key) {
+      var internalkey;
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              if (!(typeof section !== 'string' || !section.trim())) {
+                _context6.next = 2;
+                break;
+              }
+
+              throw th("del: section is not specified");
+
+            case 2:
+              if (Array.isArray(key)) {
+                key = key.join('/');
+              } // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+
+
+              internalkey = "users/".concat(user, "/").concat(section);
+
+              if (typeof key === 'string') {
+                internalkey += '/' + key;
+              }
+
+              _context6.prev = 5;
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                firebase_del: internalkey
+              });
+              _context6.next = 9;
+              return firebase.database().ref(internalkey).remove();
+
+            case 9:
+              return _context6.abrupt("return", _context6.sent);
+
+            case 13:
+              _context6.prev = 13;
+              _context6.t0 = _context6["catch"](5);
+              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+                'del() error:': {
+                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context6.t0),
+                  key: key,
+                  internalkey: internalkey
+                }
+              });
+              throw _context6.t0;
+
+            case 17:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6, null, [[5, 13]]);
+    }));
+    return _del.apply(this, arguments);
+  }
+
+  return {
+    firebase: firebase,
+    error: error,
+    user: user,
+    set: set,
+    get: get,
+    del: del,
+    push: push,
+    getroot: getroot
+  };
+});
+
+/***/ }),
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// EXTERNAL MODULE: ./node_modules/react/index.js
+var react = __webpack_require__(0);
+var react_default = /*#__PURE__*/__webpack_require__.n(react);
+
+// EXTERNAL MODULE: ./node_modules/react-dom/index.js
+var react_dom = __webpack_require__(13);
+
+// EXTERNAL MODULE: ./node_modules/inspc/logn.js
+var logn = __webpack_require__(2);
+
+// EXTERNAL MODULE: ./pages/firebase/useFirebase.js
+var useFirebase = __webpack_require__(28);
+
+// CONCATENATED MODULE: ./pages/useCustomState.js
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+
+
+/**
+ * This is universal custom state mechanism which at the moment is based on firebase
+ * but it might be based on anything really what is able to store tree like structures
+ * as long as it provides basic methods:
+ * set, get, del
+ */
+
+/* harmony default export */ var useCustomState = (function (_ref) {
+  var section = _ref.section;
+
+  if (typeof section !== 'string') {
+    throw new Error("useCustemState error: section is not a string");
+  }
+
+  var _useFirebase = Object(useFirebase["a" /* default */])({
+    section: section
+  }),
+      firebase = _useFirebase.firebase,
+      user = _useFirebase.user,
+      rest = _objectWithoutProperties(_useFirebase, ["firebase", "user"]);
+
+  rest.id = user;
+  return rest;
+});
+// EXTERNAL MODULE: ./node_modules/nlab/isObject.js
+var isObject = __webpack_require__(42);
+var isObject_default = /*#__PURE__*/__webpack_require__.n(isObject);
+
+// CONCATENATED MODULE: ./pages/portsregistry/portsregistry.entry.jsx
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+var portsregistry_entry_section = 'portsregistry';
+
+
+var portsregistry_entry_Main = function Main() {
+  var _useState = Object(react["useState"])(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      groupslist = _useState2[0],
+      setGroupslist = _useState2[1];
+
+  var _useState3 = Object(react["useState"])(''),
+      _useState4 = _slicedToArray(_useState3, 2),
+      groupname = _useState4[0],
+      setGroupnameRaw = _useState4[1];
+
+  var _useCustomState = useCustomState({
+    section: portsregistry_entry_section
+  }),
+      error = _useCustomState.error,
+      id = _useCustomState.id,
+      set = _useCustomState.set,
+      get = _useCustomState.get,
+      del = _useCustomState.del,
+      push = _useCustomState.push;
+
+  var refreshGroupList = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var list;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return get("groupslist");
+
+            case 2:
+              list = _context.sent;
+              setGroupslist(list);
+
+            case 4:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function refreshGroupList() {
+      return _ref.apply(this, arguments);
+    };
+  }();
+
+  Object(react["useEffect"])(function () {
+    if (id) {
+      refreshGroupList();
+    }
+  }, [id]);
+
+  if (error) {
+    return /*#__PURE__*/react_default.a.createElement("pre", null, JSON.stringify({
+      error: error
+    }, null, 4));
+  }
+
+  if (!id) {
+    return /*#__PURE__*/react_default.a.createElement("div", null, "Connecting to custom state...");
+  }
+
+  var setGroupname = function setGroupname(name) {
+    if (typeof name === 'string') {
+      name = name.trim();
+    }
+
+    setGroupnameRaw(name);
+  };
+
+  return /*#__PURE__*/react_default.a.createElement("div", null, /*#__PURE__*/react_default.a.createElement("h4", null, "Add group:"), /*#__PURE__*/react_default.a.createElement("form", {
+    onSubmit: /*#__PURE__*/function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
+        var list;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                e.preventDefault();
+                list = [];
+
+                if (isObject_default()(groupslist)) {
+                  list = Object.keys(groupslist).map(function (key) {
+                    return groupslist[key].groupname.toLowerCase();
+                  });
+                }
+
+                if (!groupname) {
+                  _context2.next = 11;
+                  break;
+                }
+
+                if (!list.includes(groupname.toLowerCase())) {
+                  _context2.next = 6;
+                  break;
+                }
+
+                return _context2.abrupt("return", alert("group by name '".concat(groupname, "' already exist")));
+
+              case 6:
+                _context2.next = 8;
+                return push({
+                  key: "groupslist",
+                  data: {
+                    groupname: groupname
+                  }
+                });
+
+              case 8:
+                setGroupname('');
+                _context2.next = 11;
+                return refreshGroupList();
+
+              case 11:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+
+      return function (_x) {
+        return _ref2.apply(this, arguments);
+      };
+    }()
+  }, /*#__PURE__*/react_default.a.createElement("label", null, "name:", /*#__PURE__*/react_default.a.createElement("input", {
+    type: "text",
+    value: groupname,
+    onChange: function onChange(e) {
+      return setGroupname(e.target.value);
+    }
+  }), " ", groupname), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("button", {
+    type: "submit"
+  }, "add")), /*#__PURE__*/react_default.a.createElement("br", null), "groups:", /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("ul", null, isObject_default()(groupslist) && Object.keys(groupslist).map(function (key) {
+    var g = groupslist[key];
+    return /*#__PURE__*/react_default.a.createElement("li", {
+      key: key,
+      "data-key": key
+    }, g.groupname, " ", /*#__PURE__*/react_default.a.createElement("button", {
+      onClick: /*#__PURE__*/function () {
+        var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
+          return regeneratorRuntime.wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  _context3.next = 2;
+                  return del("groupslist/".concat(key));
+
+                case 2:
+                  _context3.next = 4;
+                  return refreshGroupList();
+
+                case 4:
+                case "end":
+                  return _context3.stop();
+              }
+            }
+          }, _callee3);
+        }));
+
+        return function (_x2) {
+          return _ref3.apply(this, arguments);
+        };
+      }()
+    }, "del"));
+  })), /*#__PURE__*/react_default.a.createElement("hr", null));
 };
 
-Object(react_dom__WEBPACK_IMPORTED_MODULE_1__["render"])( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Main, null), document.getElementById('app'));
+Object(react_dom["render"])( /*#__PURE__*/react_default.a.createElement(portsregistry_entry_Main, null), document.getElementById('app'));
 
-function NoInput(_ref) {
-  var checked = _ref.checked,
-      onChange = _ref.onChange,
-      className = _ref.className,
-      children = _ref.children,
-      before = _ref.before,
-      props1 = _ref.props1,
-      props2 = _ref.props2,
-      props3 = _ref.props3,
-      propslabel = _ref.propslabel,
-      radio = _ref.radio;
-  var cls = ['noinput-checkbox'];
+/***/ }),
+/* 40 */,
+/* 41 */,
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
 
-  if (checked) {
-    cls.push('checked');
-  }
 
-  if (typeof className === 'string') {
-    cls.push(className);
-  }
+module.exports = __webpack_require__(43);
 
-  if (radio) {
-    cls.push('radio');
-  }
+/***/ }),
+/* 43 */
+/***/ (function(module, exports) {
 
-  var hasChildren = typeof children !== 'undefined';
-  var component = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", _extends({
-    className: cls.join(' ')
-  }, props1), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", _extends({
-    tabIndex: "0",
-    onClick: hasChildren ? undefined : onChange,
-    onKeyDown: onChange
-  }, props2), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", props3)));
 
-  if (hasChildren) {
-    if (before) {
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", _extends({
-        onClick: onChange
-      }, propslabel), children, component);
-    }
+// @doc https://github.com/stopsopa/nlab#isobject
 
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", _extends({
-      onClick: onChange
-    }, propslabel), component, children);
-  }
+// const a = function () {};
+// a.prototype.other = 'other';
+// const b = function (t) { this.id = t };
+// b.prototype = Object.create(a.prototype);
+// b.prototype.constructor = b;
 
-  return component;
+// WARNING: above EXTENDED OBJECT is an object according to this test
+// WARNING: array is not an object according to this
+// to summarize:
+// isObject([])                     -> false
+// isObject(() => {})               -> false
+// isObject(new b(1))               -> true     - better
+// isObject(new function () {})     -> true
+// isObject({})                     -> true
+// ALSO WORTH TO MENTION:
+// this function doesn't care if new b(1) has or not has 'toString' function implemented, so it's rather safe
+
+//  ✓isObject - {}                                                  -> true
+//  ✓isObject - using with object that have implemented toString()  -> true
+//  ✓isObject - extended object                                     -> true
+//  ✓isObject - new function () {}                                  -> true
+//  ✓isObject - []                                                  -> false
+//  ✓isObject - function () {}                                      -> false
+//  ✓isObject - () => {}                                            -> false
+//  ✓isObject - null                                                -> false
+//  ✓isObject - true                                                -> false
+//  ✓isObject - false                                               -> false
+//  ✓isObject - NaN                                                 -> false
+//  ✓isObject - undefined                                           -> false
+//  ✓isObject - no arg                                              -> false
+//  ✓isObject - 4                                                   -> false
+//  ✓isObject - string                                              -> false
+//  ✓isObject - Symbol('test')
+
+function isObject(o) {
+    return Object.prototype.toString.call(o) === '[object Object]';
 }
+
+module.exports = isObject;
 
 /***/ })
 /******/ ]);

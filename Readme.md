@@ -113,7 +113,6 @@ read write:
 
 add rules to database:
 
-
     {
       "rules": {
         "users": {
