@@ -60,6 +60,9 @@ kubectl scale deployment.v1.apps/nameofdeployment --replicas=1
 
 kubectl rollout restart deployment/nameofdeployment
 
+# revert previous version
+kubectl rollout undo deployment.v1.apps/hub-aml
+
     # restart nginx-ingress-controller
     kubectl rollout restart deployment/nginx-ingress-controller
     kubectl get pod -A | grep ingress-nginx
