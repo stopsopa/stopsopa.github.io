@@ -30,6 +30,15 @@ helm version
 helm ls --all
 helm delete gitlab-runner
 
+
+    helm delete --namespace gitlab gitlab-runner
+    
+    helm ls --namespace gitlab --all
+
+    helm upgrade --namespace gitlab gitlab-runner \
+        --set gitlabUrl=https://gitlab.xxx.com/,runnerRegistrationToken=xxx \
+        gitlab/gitlab-runner
+
             </script>
             </div>
         </div>
