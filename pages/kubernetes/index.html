@@ -106,6 +106,13 @@ kind: ServiceAccount
 metadata:
   name: build-robot
 EOF
+
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nameofnewnamespace
+EOF
                 </script>
                 
                 <a href="https://kubernetes.io/docs/reference/kubectl/cheatsheet/">see more</a>
