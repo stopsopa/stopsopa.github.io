@@ -58,6 +58,7 @@ then install docker
                 
 # add user buildkite-agent to docker group:
     usermod -a -G docker buildkite-agent
+    systemctl restart buildkite-agent
     
 sudo su -s /bin/bash buildkite-agent
 
