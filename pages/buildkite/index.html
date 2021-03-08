@@ -49,7 +49,10 @@
 
                 <h2>Useful commands</h2>
                 <script type="editor" data-lang="sh">
-                
+
+# add user buildkite-agent to docker group:
+    usermod -a -G docker buildkite-agent
+    
 sudo su -s /bin/bash buildkite-agent
 
                 </script>
