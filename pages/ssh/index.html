@@ -47,6 +47,17 @@
         <div class="inside">
 
             <div class="cards">
+                <h2>Useful commands</h2>
+                <script type="editor" data-lang="sh">
+                
+ssh-keygen -t rsa -b 4096 -C "dev+build@myorg.com"
+    # from: https://buildkite.com/docs/agent/v3/ssh-keys#creating-a-single-ssh-key
+    # g(Buildkite Agent SSH Keys Creating a single SSH key)
+    
+ssh-keyscan "<host>" >> "~/.ssh/known_hosts"
+    # from: https://buildkite.com/docs/agent/v3/securing#disabling-automatic-ssh-keyscan
+
+                </script>
 
                 <h2>sshh - manually swap ssh key</h2>
                 Just paste this code to your terminal:
