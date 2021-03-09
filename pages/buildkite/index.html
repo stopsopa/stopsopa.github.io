@@ -63,6 +63,21 @@ then install docker
 sudo su -s /bin/bash buildkite-agent
 
                 </script>
+                
+                <h2>Detecting merge requests</h2>
+                <script type="editor" data-lang="sh">
+                
+pull request:
+BUILDKITE_PULL_REQUEST="2"
+BUILDKITE_PULL_REQUEST_BASE_BRANCH="master"
+BUILDKITE_PULL_REQUEST_REPO="https://bitbucket.org/stopsopa/buildkite.git"
+
+NOT pull request:
+BUILDKITE_PULL_REQUEST="false"
+BUILDKITE_PULL_REQUEST_BASE_BRANCH=""
+BUILDKITE_PULL_REQUEST_REPO=""
+
+                </script>
 
                 <h2>Emoji</h2>
                 <a href="https://github.com/buildkite/emojis">emojis</a>
