@@ -24,6 +24,8 @@ _CONFIG="$_DIR/gitstorage-config.sh";
 _HELP="0"
 _CREATE="0"
 _FORCE="0"
+_BACKUP="0"
+_RESTORE="0"
 
 PARAMS=""
 
@@ -44,6 +46,15 @@ while (( "$#" )); do
     -c|--config)
       _CONFIG="$2";
       shift 2;
+      ;;
+
+    --backup)
+      _BACKUP="1";
+      shift;
+      ;;
+    --restore)
+      _RESTORE="1";
+      shift;
       ;;
     -*|--*=) # unsupported flags
       { red "$0 error: Unsupported flag $1"; } 2>&3
@@ -155,7 +166,97 @@ fi
 # set positional arguments in their proper place
 eval set -- "$PARAMS"
 
+MODE="$1"
+
+shift;
+
+TEST="^(isinsync|diff|pull|push|backup|restore)$"
+
+if ! [[ $MODE =~ $TEST ]]; then
+
+  { red "$0 error: mode $MODE don't match pattern $TEST"; } 2>&3
+
+  exit 1;
+fi
+
+TEST="^(backup|restore)$"
+
+if [[ $MODE =~ $TEST ]]; then
+
+  if [ "$1" = "" ]; then
+
+    { red "$0 error: mode $MODE - directory not specified"; } 2>&3
+  fi
+
+  mkdir -p "$1";
+fi
+
 _CONFIGDIR="$(dirname "$_CONFIG")"
+
+if [ $MODE = "backup" ]; then
+
+  _TARGETGITDIR="$1"
+
+  for index in "${GITSTORAGELIST[@]}"; do
+
+    _S="${index%%::*}"
+
+    if [ -f "$_S" ]; then
+
+      _T="$_TARGETGITDIR/$_S"
+
+      _TMPDIR="$(dirname "$_T")"
+
+      mkdir -p "$_TMPDIR";
+
+      { yellow "'$_S' -> '$_T'"; } 2>&3
+
+      cp "$_S" "$_T"
+
+    else
+
+      { red "$0 error: source file '$_S' doesn't exist"; } 2>&3
+    fi
+
+  done
+
+  { green "\n    files backup created\n"; } 2>&3
+
+  exit 0;
+fi
+
+if [ $MODE = "restore" ]; then
+
+  _TARGETGITDIR="$1"
+
+  for index in "${GITSTORAGELIST[@]}"; do
+
+    _T="${index%%::*}"
+
+    _S="$_TARGETGITDIR/$_T"
+
+    _TT="$_CONFIGDIR/$_T"
+
+    if [ -f "$_S" ]; then
+
+      _TMPDIR="$(dirname "$_TT")"
+
+      mkdir -p "$_TMPDIR";
+
+      { yellow "'$_S' -> '$_T'"; } 2>&3
+
+      cp "$_S" "$_TT"
+    else
+
+      { red "file '$_S' doesn't exist in backup directory"; } 2>&3
+    fi
+
+  done
+
+  { green "\n    files restored\n"; } 2>&3
+
+  exit 0;
+fi
 
 _TARGETGITDIR="";
 
@@ -178,17 +279,6 @@ function cleanup {
 trap cleanup EXIT
 
 mkdir -p "$_TARGETGITDIR"
-
-MODE="$1"
-
-TEST="^(isinsync|diff|pull|push)$"
-
-if ! [[ $MODE =~ $TEST ]]; then
-
-  { red "$0 error: mode $MODE don't match pattern $TEST"; } 2>&3
-
-  exit 1;
-fi
 
 
 
@@ -343,9 +433,9 @@ if [ $MODE = "push" ]; then
 
       mkdir -p "$_TMPDIR";
 
-      cp "$_S" "$_T"
-
       { yellow "'$_S' -> '$_T'"; } 2>&3
+
+      cp "$_S" "$_T"
 
     else
 
@@ -414,9 +504,9 @@ if [ $MODE = "pull" ]; then
 
       mkdir -p "$_TMPDIR";
 
-      cp "$_T" "$_S"
-
       { yellow "'$_T' -> '$_S'"; } 2>&3
+
+      cp "$_T" "$_S"
     else
 
       { red "file '$_T' doesn't exist in repository, it might be worth to remove it from config file '$_CONFIG'"; } 2>&3
