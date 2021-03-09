@@ -427,15 +427,15 @@ if [ $MODE = "push" ]; then
 
     if [ -f "$_S" ]; then
 
-      _T="$_TARGETGITDIR/$_T"
+      _TT="$_TARGETGITDIR/$_T"
 
-      _TMPDIR="$(dirname "$_T")"
+      _TMPDIR="$(dirname "$_TT")"
 
       mkdir -p "$_TMPDIR";
 
       { yellow "'$_S' -> '$_T'"; } 2>&3
 
-      cp "$_S" "$_T"
+      cp "$_S" "$_TT"
 
     else
 
@@ -459,6 +459,8 @@ if [ $MODE = "push" ]; then
   (cd "$_TARGETGITDIR" && git commit -a --allow-empty-message -m '')
 
   (cd "$_TARGETGITDIR" && git push origin master)
+
+  { green "\n    files pushed\n"; } 2>&3
 
   exit 0;
 fi
@@ -496,9 +498,9 @@ if [ $MODE = "pull" ]; then
 
     _S="$_CONFIGDIR/$_S"
 
-    _T="$_TARGETGITDIR/$_T"
+    _TT="$_TARGETGITDIR/$_T"
 
-    if [ -f "$_T" ]; then
+    if [ -f "$_TT" ]; then
 
       _TMPDIR="$(dirname "$_S")"
 
@@ -506,15 +508,15 @@ if [ $MODE = "pull" ]; then
 
       { yellow "'$_T' -> '$_S'"; } 2>&3
 
-      cp "$_T" "$_S"
+      cp "$_TT" "$_S"
     else
 
-      { red "file '$_T' doesn't exist in repository, it might be worth to remove it from config file '$_CONFIG'"; } 2>&3
+      { red "file '$_TT' doesn't exist in repository, it might be worth to remove it from config file '$_CONFIG'"; } 2>&3
     fi
 
   done
 
-  { green "\n    files copied\n"; } 2>&3
+  { green "\n    files pulled\n"; } 2>&3
 
   exit 0;
 fi
