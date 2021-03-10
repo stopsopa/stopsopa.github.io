@@ -36,6 +36,198 @@ yarn upgrade-interactive --latest
 
                 </script>
             </div>
+            <div class="cards">
+                
+                <h2>processing url uri </h2>
+                <script type="editor" data-lang="js">
+
+
+const originalUrl = require('original-url'); // yarn add original-url
+
+const original = originalUrl(req);
+
+const requestIp = require('request-ip');
+
+app.use(requestIp.mw()); // get ip                  req.clientIp
+
+log.dump({
+    original,
+    headers             : req.headers,
+    originalUrl         : req.originalUrl, // https://expressjs.com/en/api.html#req.originalUrl
+    url                 : req.url,
+    method              : req.method,
+    host                : req.get('host'),
+    origin              : req.get('origin'),
+    protocol            : req.protocol,
+    secure              : req.secure,  //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto        
+    reconstrucred       : req.protocol + '://' + req.get('host') + req.url, //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
+})
+Object {// for https://amlstage.phaseiilabs.com:8080/tester/tester?raz=dwa behind nginx proxy 
+    "original": {
+        "raw": "/tester/tester?raz=dwa",
+        "protocol": "http:", // WARNING: will be "https:" if X-Forwarded-Proto $scheme; OR(I'VE TESTED THIS 'OR' IN BOTH CASES WILL WORK, COMMEND ONE OR ANOTHER) X-Forwarded-SSL   on; added
+        "hostname": "212.67.96.161", // WARNING: becareful it might return ip address WARNING WARNING
+        "port": 8080, // key exist only if [proxy_set_header X-Forwarded-Port $server_port;] added to nginx
+        "pathname": "/tester/tester",
+        "search": "?raz=dwa",
+        "full": "http://212.67.96.161:8080/tester/tester?raz=dwa"
+    },
+    "headers": {
+        "connection": "upgrade",
+        "host": "amlstage.phaseiilabs.com",
+        "x-real-ip": "212.67.96.161",
+        "x-forwarded-for": "212.67.96.161",
+        "x-forwarded-host": "212.67.96.161",
+            "x-forwarded-port": "8080",     // will appear only if [proxy_set_header X-Forwarded-Port $server_port;] added to nginx config
+            "x-forwarded-proto": "https",   // will appear only if [proxy_set_header X-Forwarded-Proto $scheme;] added to nginx config
+            "x-forwarded-ssl": "on",        // will appear only if [proxy_set_header X-Forwarded-SSL on;] added to nginx config
+        "cache-control": "max-age=0",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+        "sec-fetch-dest": "document",
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "sec-fetch-site": "none",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-user": "?1",
+        "accept-encoding": "gzip, deflate, br",
+        "accept-language": "en-GB,en-US;q=0.9,en;q=0.8,pl;q=0.7,it;q=0.6,fr;q=0.5,es;q=0.4,de;q=0.3,ru;q=0.2,mt;q=0.1,pt;q=0.1,id;q=0.1",
+        "cookie": "_ga=GA1.2.477192506.1582642627; _hjid=38ba37f0-33bc-48ad-bf45-a82f453729f2; _gid=GA1.2.250183521.1583161185; jwt_cookie=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZXMiOlsiYWRtaW4iLCJ1c2VyIl0sImlhdCI6MTU4MzI0NTc5MCwiZXhwIjoxNTgzMjc4MTkwfQ.IYyoBu4QQ0lEKk3G4XjIczha68XezAZs8ds4RbEak80",
+        "if-none-match": "W/\"19f-eK38WW4dYefk0hfT3dbOw33zsbo\""
+    },        
+    "originalUrl": "/tester/tester?raz=dwa",
+    "url": "/tester/tester?raz=dwa",
+    "method": "GET",
+    "host": "amlstage.phaseiilabs.com",
+    "protocol": "http",
+    "secure": false, // adding X-Forwarded-Proto $scheme; or X-Forwarded-SSL   on; will not help here, use "original-url" to resolve headers and then use original.protocol (it will be equal "https:")
+    "reconstrucred": "http://amlstage.phaseiilabs.com/tester/tester?raz=dwa"
+}    
+
+--- express headers ----- vvv
+log.dump({
+    originalUrl         : req.originalUrl, // https://expressjs.com/en/api.html#req.originalUrl
+    url                 : req.url,
+    method              : req.method,
+    host                : req.get('host'),
+    origin              : req.get('origin'),
+    protocol            : req.protocol,
+    secure              : req.secure,  //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
+    'original.protocol' : original.protocol,
+    reconstrucred       : req.protocol + '://' + req.get('host') + req.url, //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
+}, 4)
+Object {
+  <originalUrl> [String]: >/sockjs-node/info?t=1582335313746< len: 33
+  <url> [String]: >/sockjs-node/info?t=1582335313746< len: 33
+  <method> [String]: >GET< len: 3
+  <host> [String]: >localhost:1025< len: 14
+  <origin> [Undefined]: >undefined<
+  <protocol> [String]: >http< len: 4
+  <secure> [Boolean]: >false<
+  <original.protocol> [String]: >https< 
+  <reconstrucred> [String]: >http://localhost:1025/sockjs-node/info?t=1582335313746< len: 54
+}
+
+--- express headers ----- ^^^
+
+const URL           = require('url').URL;
+
+const log           = require('inspc');
+
+const target = `https://usertes:pasword@sub.domain.com:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang`;
+
+const uri   = new URL(target);
+
+log.dump({ // https://nodejs.org/docs/latest-v7.x/api/url.html#url_url_parse_urlstring_parsequerystring_slashesdenotehost
+    hash____    : uri.hash,
+    host____    : uri.host,
+    hostname    : uri.hostname,
+    href____    : uri.href,
+    origin__    : uri.origin,
+    password    : uri.password,
+    pathname    : uri.pathname,
+    port____    : uri.port,
+    protocol    : uri.protocol,
+    search__    : uri.search,
+    searchParams: uri.searchParams, // https://nodejs.org/docs/latest-v7.x/api/url.html#url_class_urlsearchparams
+    username    : uri.username,
+
+    https___    : uri.protocol.indexOf('https') > -1,
+    searchParams_all: Array.from(uri.searchParams.keys()).reduce((acc, key) => {
+        acc[key] = uri.searchParams.getAll(key)
+        return acc;
+    }, {}), // https://nodejs.org/docs/latest-v7.x/api/url.html#url_class_urlsearchparams
+
+    'using with http.request():'         : {
+        hostname    : uri.hostname,
+        port        : uri.port,
+        path        : uri.pathname,
+        method      : 'POST',
+        headers     : {
+            'Content-Type': 'application/json'
+        },
+        // timeout: 2000,
+    },
+    'url.parse': require('url').parse(target)
+}, 5)
+
+// 2019-04-26 10:23:42 /Users/sd/Workspace/projects/z_roderic_new/roderic-project/url.js:11
+// Object {
+//   <hash____> [String]: >#hash_bang< len: 10
+//   <host____> [String]: >sub.domain.com:1025< len: 19
+//   <hostname> [String]: >sub.domain.com< len: 14
+//   <href____> [String]: >https://usertes:pasword@sub.domain.com:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang< len: 111
+//   <origin__> [String]: >https://sub.domain.com:1025< len: 27
+//   <password> [String]: >pasword< len: 7
+//   <pathname> [String]: >/curl< len: 5
+//   <port____> [String]: >1025< len: 4
+//   <protocol> [String]: >https:< len: 6
+//   <search__> [String]: >?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 53
+//   <searchParams> [URLSearchParams]: >one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three<
+//   <username> [String]: >usertes< len: 7
+//   <https___> [Boolean]: >true<
+//   <searchParams_all> Object {
+//     <one> Array [
+//       <0> [String]: >two< len: 3
+//       <1> [String]: >three< len: 5
+//     ]
+//     <three> Array [
+//       <0> [String]: >rour< len: 4
+//     ]
+//     <q> Array [
+//       <0> [String]: >89.67.167.34< len: 12
+//     ]
+//     <dwa> Array [
+//       <0> [String]: >trzy< len: 4
+//     ]
+//   }
+//   <using with http.request():> Object {
+//     <hostname> [String]: >sub.domain.com< len: 14
+//     <port> [String]: >1025< len: 4
+//     <path> [String]: >/curl< len: 5
+//     <method> [String]: >POST< len: 4
+//     <headers> Object {
+//       <Content-Type> [String]: >application/json< len: 16
+//     }
+//   }
+//   <url.parse> Url {
+//     <protocol> [String]: >https:< len: 6
+//     <slashes> [Boolean]: >true<
+//     <auth> [String]: >usertes:pasword< len: 15
+//     <host> [String]: >sub.domain.com:1025< len: 19
+//     <port> [String]: >1025< len: 4
+//     <hostname> [String]: >sub.domain.com< len: 14
+//     <hash> [String]: >#hash_bang< len: 10
+//     <search> [String]: >?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 53
+//     <query> [String]: >one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 52
+//     <pathname> [String]: >/curl< len: 5
+//     <path> [String]: >/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 58
+//     <href> [String]: >https://usertes:pasword@sub.domain.com:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang< len: 111
+//   }
+// }
+    
+
+                </script>
+            </div>
 
             <div class="cards">
                 <h2>component search</h2>
