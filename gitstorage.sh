@@ -423,9 +423,9 @@ if [ $MODE = "push" ]; then
       fi
 
 
-    _S="$_CONFIGDIR/$_S"
+    _SS="$_CONFIGDIR/$_S"
 
-    if [ -f "$_S" ]; then
+    if [ -f "$_SS" ]; then
 
       _TT="$_TARGETGITDIR/$_T"
 
@@ -435,11 +435,11 @@ if [ $MODE = "push" ]; then
 
       { yellow "'$_S' -> '$_T'"; } 2>&3
 
-      cp "$_S" "$_TT"
+      cp "$_SS" "$_TT"
 
     else
 
-      { red "$0 error: source file '$_S' doesn't exist"; } 2>&3
+      { red "$0 error: source file '$_SS' doesn't exist"; } 2>&3
 
     fi
 
@@ -496,19 +496,19 @@ if [ $MODE = "pull" ]; then
 
     _T="${index##*::}"
 
-    _S="$_CONFIGDIR/$_S"
+    _SS="$_CONFIGDIR/$_S"
 
     _TT="$_TARGETGITDIR/$_T"
 
     if [ -f "$_TT" ]; then
 
-      _TMPDIR="$(dirname "$_S")"
+      _TMPDIR="$(dirname "$_SS")"
 
       mkdir -p "$_TMPDIR";
 
       { yellow "'$_T' -> '$_S'"; } 2>&3
 
-      cp "$_TT" "$_S"
+      cp "$_TT" "$_SS"
     else
 
       { red "file '$_TT' doesn't exist in repository, it might be worth to remove it from config file '$_CONFIG'"; } 2>&3
