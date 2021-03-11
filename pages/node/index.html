@@ -32,10 +32,9 @@ yarn outdated
 yarn upgrade-interactive   
 yarn upgrade-interactive --latest
 
-yarn install --production=true
+yarn install --production=true  # no devDependencies
+yarn install --production=false # with devDependencies
     # from: https://classic.yarnpkg.com/en/docs/cli/install/#toc-yarn-install-production-true-false
-    
-    
 
                 </script>
             </div>
@@ -44,10 +43,9 @@ yarn install --production=true
                 <h2>npm</h2>
                 <script type="editor" data-lang="sh">
 
-npm install --production
+npm install --production       # no devDependencies
+npm install --production=false # with devDependencies
     # from: https://docs.npmjs.com/cli/v7/commands/npm-install
-    
-    
 
                 </script>
             </div>
