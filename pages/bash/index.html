@@ -14,6 +14,17 @@
         <div class="inside">
             <div class="cards">
                 
+                <h2>debug</h2>
+                <script type="editor" data-lang="sh">
+                
+set -x          # Expand and print each command before executing
+set -e          # Exit script immediately if any command returns a non-zero exit status.
+set -o pipefail # more: https://buildkite.com/docs/pipelines/writing-build-scripts#configuring-bash
+
+set -u # Exit script immediately if an undefined variable is used (e.g. echo "$UNDEFINED_ENV_VAR").
+
+                </script>
+                
                 <h2>useful links</h2>
                 <ul>
                     <li><a href="https://buildkite.com/docs/pipelines/writing-build-scripts#configuring-bash">buildkite script guide ("Writing Build Scripts" section in doc)</a></li>
