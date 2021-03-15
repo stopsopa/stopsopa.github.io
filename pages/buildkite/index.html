@@ -84,6 +84,19 @@ BUILDKITE_PULL_REQUEST_REPO=""
 
                 <h2>Emoji</h2>
                 <a href="https://github.com/buildkite/emojis">emojis</a>
+                
+                
+                <h2>Adding tags to agent</h2>
+                First find where is the config on the machine (section "Agents v3" -> "AGENT INSTALLERS"): <a href="https://buildkite.com/docs/agent/v3">https://buildkite.com/docs/agent/v3</a>
+                <script type="editor" data-lang="sh">
+                
+vi /etc/buildkite-agent/buildkite-agent.cfg
+
+# tags="machine=registry"
+# name="machine-registry"
+systemctl restart buildkite-agent
+
+                </script>
 
             </div>
         </div>
