@@ -273,8 +273,8 @@ git filter-branch -f --env-filter  \
                     <td width="50%">
 <textarea id="timestamp">
 
-export FILTER_BRANCH_SQUELCH_WARNING=1
-git filter-branch -f --env-filter  \
+ export FILTER_BRANCH_SQUELCH_WARNING=1
+ git filter-branch -f --env-filter  \
     'if [ $GIT_COMMIT = yyy ]
      then
          export GIT_AUTHOR_DATE="xxx"
