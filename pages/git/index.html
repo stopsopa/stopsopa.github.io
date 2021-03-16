@@ -6,30 +6,308 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>stopsopa.github.io</title>
+    <script> <!-- optional to do something before binding ACE editor -->
+    (function () {
+      var resolve
+      var p = new Promise(function (res) {
+        resolve = res
+      })
+
+      document.addEventListener('DOMContentLoaded', () => {
+
+        // var text = tag.innerHTML;
+        //
+        // text = text.replace(/domain\.com/g, location.origin)
+        //
+        // tag.innerHTML = text;
+
+        var year = (function (target) {
+
+          var current = (new Date()).getFullYear()
+
+          var first = new Date()
+
+          first.setTime(first.getTime() - (60 * 60 * 24 * 365 * 1000 * 5));
+
+          for (var i = 0 ; i < 11 ; i += 1 ) {
+
+            var k = document.createElement('option');
+
+            k.value = k.innerText = first.getFullYear();
+
+            if (k.value == current) {
+
+              k.setAttribute('selected', 'selected')
+            }
+
+            manipulation.append(target, k);
+
+            first.setTime(first.getTime() + (60 * 60 * 24 * 365 * 1000));
+          }
+
+          return target;
+
+        }(document.querySelector('[name="year"]')));
+
+        var month = (function (target) {
+
+          const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+          ];
+
+          var current = (new Date()).getMonth()
+
+          monthNames.forEach(function (name, i) {
+
+            var k = document.createElement('option');
+
+            k.value = i
+
+            k.innerText = monthNames[i];
+
+            if (i == current) {
+
+              k.setAttribute('selected', 'selected')
+            }
+
+            manipulation.append(target, k);
+          });
+
+          return target;
+
+        }(document.querySelector('[name="month"]')));
+
+        var day = (function (target) {
+
+          var current = (new Date()).getDate();
+
+          for (var i = 1 ; i < 32 ; i += 1 ) {
+
+            var k = document.createElement('option');
+
+            k.value = k.innerText = i;
+
+            if (i == current) {
+
+              k.setAttribute('selected', 'selected')
+            }
+
+            manipulation.append(target, k);
+          }
+
+          return target;
+
+        }(document.querySelector('[name="day"]')));
+
+        var hour = (function (target) {
+
+          var current = (new Date()).getHours()
+
+          for (var i = 1 ; i < 25 ; i += 1 ) {
+
+            var k = document.createElement('option');
+
+            k.value = i % 24
+
+            k.innerText = i;
+
+            if (i == current) {
+
+              k.setAttribute('selected', 'selected')
+            }
+
+            manipulation.append(target, k);
+          }
+
+          return target;
+
+        }(document.querySelector('[name="hour"]')));
+
+        var minute = (function (target) {
+
+          var current = (new Date()).getMinutes()
+
+          for (var i = 0 ; i < 60 ; i += 1 ) {
+
+            var k = document.createElement('option');
+
+            k.value = k.innerText = i;
+
+            if (i == current) {
+
+              k.setAttribute('selected', 'selected')
+            }
+
+            manipulation.append(target, k);
+          }
+
+          return target;
+
+        }(document.querySelector('[name="minute"]')));
+
+        var seconds = (function (target) {
+
+          var current = (new Date()).getSeconds()
+
+          for (var i = 0 ; i < 60 ; i += 1 ) {
+
+            var k = document.createElement('option');
+
+            k.value = k.innerText = i;
+
+            if (i == current) {
+
+              k.setAttribute('selected', 'selected')
+            }
+
+            manipulation.append(target, k);
+          }
+
+          return target;
+
+        }(document.querySelector('[name="seconds"]')));
+
+        var hash = (function (d) {
+          d.addEventListener('click', function () {
+            d.select();
+          });
+          d.addEventListener('input', function (e) {
+            log('input', e.target.value)
+            update();
+          });
+          return d;
+        }(document.querySelector('#hash')));
+
+        var update = (function () {
+
+          var element = document.querySelector('#timestamp');
+
+          element.addEventListener('click', function (e) {
+            element.select();
+          })
+
+          var pre = element.value;
+
+          return function () {
+
+            var d = new Date();
+
+            d.setFullYear(year.value)
+            d.setMonth(month.value)
+            d.setDate(day.value)
+            d.setHours(hour.value)
+            d.setMinutes(minute.value)
+            d.setSeconds(seconds.value)
+
+            element.value = pre.replace(/xxx/g, d.toISOString()).replace(/yyy/g, hash.value);
+          }
+        }());
+
+        [year, month, day, hour, minute, seconds].forEach(function (e) {
+
+          e.addEventListener('change', update)
+        });
+
+        update();
+
+        resolve()
+      });
+
+
+      window.waitForPromise = function () {
+
+        return p
+      }
+    }())
+    </script>
+    <style>
+        #timestamp {
+            height: 168px;
+            font-size: 11px;
+            width: 98%;
+        }
+        #hash {
+            width: 100%;
+        }
+    </style>
     <script src="/js/github.js"></script>
 </head>
-<body class="layout">
+<body class="layout" toc>
 
-    <div class="body">
-        <div class="inside">
-            <div class="cards">
-                <h2>Github</h2>
-                <a href="http://farhadg.github.io/init/landing/">(INIT): http://farhadg.github.io/init/landing/</a>                
-            </div>
-            <div class="cards">
-                <h2>useful</h2>
-                <script type="editor" data-lang="sh">
+<div class="body">
+    <div class="inside">
+        <div class="cards">
+            <h2>Github</h2>
+            <a href="http://farhadg.github.io/init/landing/">(INIT): http://farhadg.github.io/init/landing/</a>
+        </div>
+        <div class="cards">
+            <h2>useful</h2>
+            <script type="editor" data-lang="sh">
                     
 git stash list
 git stash drop stash@{0}   
 
 for i in {0..10}; do git stash drop stash@{0}; done
                     
-                </script>
-            </div>
-            <div class="cards">
-                <h2>remove from history (filter-branch)</h2>
-                <script type="editor" data-lang="sh">
+
+
+            </script>
+        </div>
+        <div class="cards">
+            <h2>change commit timestamp</h2>
+            <script type="editor" data-lang="sh">
+
+export FILTER_BRANCH_SQUELCH_WARNING=1
+git filter-branch -f --env-filter  \
+    'if [ $GIT_COMMIT = d06798b8722b52c9643bbd72f3f07bd7598777d4 ]
+     then
+         export GIT_AUTHOR_DATE="2000-05-06 03:04:05"
+         export GIT_COMMITTER_DATE="2000-05-06 03:04:05"
+     fi'
+
+            </script>
+            <table width="100%">
+                <tbody>
+                <tr>
+                    <td width="50%">
+<textarea id="timestamp">
+
+export FILTER_BRANCH_SQUELCH_WARNING=1
+git filter-branch -f --env-filter  \
+    'if [ $GIT_COMMIT = yyy ]
+     then
+         export GIT_AUTHOR_DATE="xxx"
+         export GIT_COMMITTER_DATE="xxx"
+     fi'
+
+</textarea>
+                    </td>
+                    <td>
+                        <div>
+                            <select name="year"></select>
+                            -
+                            <select name="month"></select>
+                            -
+                            <select name="day"></select>
+                            &nbsp; &nbsp; &nbsp;
+                            <select name="hour"></select>
+                            :
+                            <select name="minute"></select>
+                            :
+                            <select name="seconds"></select>
+                        </div>
+                        <div>
+                            <input type="text" id="hash" value="d06798b8722b52c9643bbd72f3f07bd7598777d4">
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="cards">
+            <h2>remove from history (filter-branch)</h2>
+            <script type="editor" data-lang="sh">
                     
                     
   git filter-branch --force --index-filter \
@@ -41,11 +319,13 @@ for i in {0..10}; do git stash drop stash@{0}; done
   git gc --aggressive --prune=now
                     
                     
-                </script>
-            </div>
-            <div class="cards">
-                <h2>Change the author</h2>
-                <script type="editor" data-lang="sh">
+
+
+            </script>
+        </div>
+        <div class="cards">
+            <h2>Change the author</h2>
+            <script type="editor" data-lang="sh">
                     
 git filter-branch --env-filter '
 OLD_EMAIL="youroldemail@example.com"
@@ -64,12 +344,15 @@ fi
 ' --tag-name-filter cat -- --branches --tags
                     
                     
-                </script>
-                <a href="https://stackoverflow.com/a/750182">from</a>
-            </div>
-            <div class="cards">
-                <h2>find big files, from <a href="https://stackoverflow.com/a/42544963/5560682">https://stackoverflow.com/a/42544963/5560682</a></h2>
-                <script type="editor" data-lang="sh">
+
+
+            </script>
+            <a href="https://stackoverflow.com/a/750182">from</a>
+        </div>
+        <div class="cards">
+            <h2>find big files, from <a href="https://stackoverflow.com/a/42544963/5560682">https://stackoverflow.com/a/42544963/5560682</a>
+            </h2>
+            <script type="editor" data-lang="sh">
                     
                     
 git rev-list --objects --all \
@@ -80,11 +363,13 @@ git rev-list --objects --all \
 | $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
                     
                     
-                </script>
-            </div>
-            <div class="cards">
-                <h2>gitstorage.sh</h2>
-                <script type="editor" data-lang="sh">
+
+
+            </script>
+        </div>
+        <div class="cards">
+            <h2>gitstorage.sh</h2>
+            <script type="editor" data-lang="sh">
                  
                  
 # wget         
@@ -104,12 +389,14 @@ if [ -f gitstorage.sh ]; then echo 'file gitstorage.sh already exist'; else curl
 vi gitstorage-config.sh
 
                     
-                </script>
-                <a href="https://github.com/stopsopa/gitstorage">github</a>
-            </div>
-            <div class="cards">
-                <h2>git config</h2>
-                <script type="editor" data-lang="sh">
+
+
+            </script>
+            <a href="https://github.com/stopsopa/gitstorage">github</a>
+        </div>
+        <div class="cards">
+            <h2>git config</h2>
+            <script type="editor" data-lang="sh">
                  
 git config --global -l | egrep "(user\.name|user\.email)"
 
@@ -130,11 +417,13 @@ git config --global user.email x.y@gmail.com
 git config --global user.name "Name Surname"                     
 
 
-                </script>
-                <a href="https://github.com/stopsopa/gitstorage">github</a>
-            </div>
-        </div>
 
+
+            </script>
+            <a href="https://github.com/stopsopa/gitstorage">github</a>
+        </div>
     </div>
+
+</div>
 </body>
 </html>
