@@ -66,6 +66,10 @@ docker container rm puppeteer-test -f
     
 docker build . --platform linux/amd64 -t xxx:latest 
 
+# passing env as is
+$ CYPRESS_VIDEO=false
+$ docker run -it -v $PWD:/e2e -w /e2e -e CYPRESS_VIDEO cypress/included:3.2.0
+
                 </script>
 
                 <h2>Docker registry urls</h2>
