@@ -15,12 +15,6 @@
 
       document.addEventListener('DOMContentLoaded', () => {
 
-        // var text = tag.innerHTML;
-        //
-        // text = text.replace(/domain\.com/g, location.origin)
-        //
-        // tag.innerHTML = text;
-
         var year = (function (target) {
 
           var current = (new Date()).getFullYear()
@@ -173,7 +167,6 @@
             d.select();
           });
           d.addEventListener('input', function (e) {
-            log('input', e.target.value)
             update();
           });
           return d;
