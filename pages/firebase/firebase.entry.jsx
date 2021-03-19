@@ -3,32 +3,46 @@ import React, { useEffect, useState } from 'react';
 
 import { render } from 'react-dom';
 
-import unique from 'nlab/unique'
-
 import log from 'inspc';
 
-const now = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ').replace(/[^\d]/g, '-');
+import useCustomState from '../useCustomState'
 
-import se from 'nlab/se';
+const section = 'test';
 
-import useFirebase from './useFirebase'
-
-const section = `!!!useFirebase_test_can_be_safely_removed`;
+import isObject from 'nlab/isObject';
 
 const Main = () => {
 
+  const [ groupslist, setGroupslist ] = useState(false);
+
+  const [ groupname, setGroupnameRaw ] = useState('');
+
   const {
-    firebase,
     error,
-    user,
+    id,
     set,
     get,
     del,
     push,
-    getroot,
-  } = useFirebase({
+  } = useCustomState({
     section,
   });
+
+  const refreshGroupList = async function () {
+
+    let list = await get(`groupslist`);
+
+    setGroupslist(list);
+  };
+
+  useEffect(() => {
+
+    if (id) {
+
+      refreshGroupList();
+    }
+
+  }, [id]);
 
   if ( error ) {
 
@@ -37,50 +51,88 @@ const Main = () => {
     }, null, 4)}</pre>
   }
 
-  if ( ! user ) {
+  if ( ! id ) {
 
-    return <div>Connecting to firebase...</div>
+    return <div>Connecting to custom state...</div>
+  }
+
+  const setGroupname = name => {
+
+    if (typeof name === 'string') {
+
+      name = name.trim();
+    }
+
+    setGroupnameRaw(name);
   }
 
   return (
     <div>
-      <button onClick={
-        () => {
+      <h4>Add group:</h4>
+      <form onSubmit={async e => {
 
-          const cu = firebase.auth().currentUser;
+        e.preventDefault();
 
-          const data = {
-            uid           : cu.uid,
-            displayName   : cu.displayName,
-            email         : cu.email,
-            emailVerified : cu.emailVerified,
-            isAnonymous   : cu.isAnonymous,
-            metadata      : cu.metadata,
-            photoURL      : cu.photoURL,
-            extra: 'data'
-          };
+        let list = [];
 
-          return set({
-            key: 'xxx',
-            data,
-          });
+        if (isObject(groupslist)) {
+
+          list = Object.keys(groupslist).map(key => groupslist[key].groupname.toLowerCase());
         }
-      }>add</button>
-      <button onClick={
-        () => {
 
-          const uniq = unique();
+        if (groupname) {
 
-          return push({
-            key: 'posts',
+          if ( list.includes(groupname.toLowerCase()) ) {
+
+            return alert(`group by name '${groupname}' already exist`);
+          }
+
+          await push({
+            key: `groupslist`,
             data: {
-              uniq
+              groupname,
             },
           });
+
+          setGroupname('');
+
+          await refreshGroupList();
         }
-      }>push</button>
-      <button onClick={() => del('xxx')}>delete</button>
-      user: {user}
+
+      }}>
+        <label>
+          name:
+          <input type="text" value={groupname} onChange={e => setGroupname(e.target.value)}/> {groupname}
+        </label>
+        <br/>
+        <button type="submit">add</button>
+      </form>
+
+      <br/>
+
+      groups:
+      <br/>
+      {/*<pre>{JSON.stringify(groupslist, null, 4)}</pre>*/}
+      <ul>
+        {isObject(groupslist) && Object.keys(groupslist).map(key => {
+
+          const g = groupslist[key];
+
+          return (
+            <li key={key} data-key={key}>{g.groupname} <button onClick={async e => {
+
+              await del(`groupslist/${key}`);
+
+              await refreshGroupList();
+            }}>del</button></li>
+          )
+        })}
+      </ul>
+
+      <hr/>
+
+
+
     </div>
   )
 }
