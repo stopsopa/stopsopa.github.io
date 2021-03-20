@@ -9,6 +9,7 @@ const g = gg();
 
 g.addList(require('./mephux-ports')());
 g.addList(require('./stoutZero_commonly-used-ports')());
+g.addList(require('./web_mit_edu')());
 
 const file = path.resolve(__dirname, 'ports-generated.json');
 
