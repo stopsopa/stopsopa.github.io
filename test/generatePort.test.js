@@ -69,7 +69,7 @@ describe('generatePort', () => {
 
     // console.log(JSON.stringify(generate.getList().length, null, 4));
 
-    expect(generate.getList().length).toEqual(5058);
+    expect(generate.getList().length).toEqual(10216);
 
     done();
   })
@@ -101,14 +101,14 @@ describe('generatePort', () => {
     // console.log(JSON.stringify(list, null, 4));
 
     expect(list).toEqual([
-      3009,
-      3010,
-      3011,
-      3012,
-      3013,
-      3014,
-      3015,
-      3016
+      3324,
+      3325,
+      3368,
+      3369,
+      3370,
+      3371,
+      4202,
+      4203
     ]);
 
     done();
