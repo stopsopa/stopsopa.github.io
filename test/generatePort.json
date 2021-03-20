@@ -1,0 +1,126 @@
+{
+  "0": [
+    {
+      "description": "Reserved",
+      "udp": true,
+      "status": "Official",
+      "port": "0",
+      "tcp": false
+    }
+  ],
+  "1": [
+    {
+      "description": "TCP Port Service Multiplexer (TCPMUX)",
+      "udp": true,
+      "status": "Official",
+      "port": "1",
+      "tcp": true
+    }
+  ],
+  "2": [
+    {
+      "description": "CompressNET[2] Management Utility[3]",
+      "udp": true,
+      "status": "Official",
+      "port": "2",
+      "tcp": true
+    }
+  ],
+  "3": [
+    {
+      "description": "CompressNET[2] Compression Process[4]",
+      "udp": true,
+      "status": "Official",
+      "port": "3",
+      "tcp": true
+    }
+  ],
+  "4": [
+    {
+      "description": "Unassigned",
+      "udp": true,
+      "status": "Official",
+      "port": "4",
+      "tcp": true
+    }
+  ],
+  "5": [
+    {
+      "description": "Remote Job Entry",
+      "udp": true,
+      "status": "Official",
+      "port": "5",
+      "tcp": true
+    }
+  ],
+  "7": [
+    {
+      "description": "Echo Protocol",
+      "udp": true,
+      "status": "Official",
+      "port": "7",
+      "tcp": true
+    }
+  ],
+  "8": [
+    {
+      "description": "Unassigned",
+      "udp": true,
+      "status": "Official",
+      "port": "8",
+      "tcp": true
+    }
+  ],
+  "9": [
+    {
+      "description": "Discard Protocol",
+      "udp": true,
+      "status": "Official",
+      "port": "9",
+      "tcp": true
+    },
+    {
+      "description": "Wake-on-LAN",
+      "udp": true,
+      "status": "Unofficial",
+      "port": "9",
+      "tcp": false
+    }
+  ],
+  "10": [
+    {
+      "description": "Unassigned",
+      "udp": true,
+      "status": "Official",
+      "port": "10",
+      "tcp": true
+    }
+  ],
+  "11": [
+    {
+      "description": "Active Users (systat service)[5][6]",
+      "udp": true,
+      "status": "Official",
+      "port": "11",
+      "tcp": true
+    }
+  ],
+  "12": [
+    {
+      "description": "Unassigned",
+      "udp": true,
+      "status": "Official",
+      "port": "12",
+      "tcp": true
+    }
+  ],
+  "13": [
+    {
+      "description": "Daytime Protocol (RFC 867)",
+      "udp": true,
+      "status": "Official",
+      "port": "13",
+      "tcp": true
+    }
+  ]
+}

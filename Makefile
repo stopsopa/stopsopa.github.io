@@ -10,6 +10,7 @@ status:
 	/bin/bash bash/proc/status.sh ../../.env PROJECT_NAME
 
 build:
+	node pages/portsregistry/lists/generateInNode.js
 	/bin/bash pages/bookmarklets/compress.sh
 	#/bin/bash pages/kubernetes/compress.sh
 
