@@ -5,6 +5,8 @@ import { render } from 'react-dom';
 
 import log from 'inspc';
 
+import classnames from 'classnames';
+
 import nget from 'nlab/get';
 
 import nset from 'nlab/set';
@@ -14,6 +16,14 @@ import useCustomState from '../useCustomState'
 const section = 'portsregistry';
 
 import isObject from 'nlab/isObject';
+
+
+const generatePort = require('./generatePort');
+
+const generate = generatePort();
+
+generate.addList(require('./lists/ports-generated.json'));
+
 
 const Main = () => {
 
@@ -85,6 +95,11 @@ const Main = () => {
         return alert(`port '${input.port}' is already registered`);
       }
 
+      if ( ! generate.isFree(input.port) ) {
+
+        return alert(`port '${input.port}' is already reserved`);
+      }
+
       input.created_at = (new Date()).toISOString().substring(0, 19).replace('T', ' ')
 
       await push({
@@ -96,6 +111,13 @@ const Main = () => {
 
       await refreshPortsList();
     }
+  }
+
+  let cls = undefined;
+
+  if (input.port && input.port.trim().length > 0) {
+
+    cls = generate.isFree(input.port) ? 'green' : 'red';
   }
 
   return (
@@ -114,7 +136,9 @@ const Main = () => {
               port:
             </td>
             <td>
-              <input type="text" value={input.port || ''} onChange={e => setInput('port', e.target.value)}/>
+              <input type="text" value={input.port || ''} onChange={e => setInput('port', e.target.value)}
+                     className={cls}
+              />
             </td>
           </tr>
           <tr>
