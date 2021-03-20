@@ -30761,6 +30761,11 @@ var Main = function Main() {
       expanded = _useState6[0],
       setExpanded = _useState6[1];
 
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(true),
+      _useState8 = _slicedToArray(_useState7, 2),
+      firstLoad = _useState8[0],
+      setFirstLoad = _useState8[1];
+
   var setInput = function setInput(key, value) {
     setInputRaw(nlab_set__WEBPACK_IMPORTED_MODULE_5___default()(_objectSpread({}, input), key, value));
   };
@@ -30787,9 +30792,25 @@ var Main = function Main() {
 
             case 2:
               list = _context.sent;
+
+              if (firstLoad) {
+                setFirstLoad(false);
+                generate.addList(Object.entries(list).reduce(function (acc, _ref2) {
+                  var _ref3 = _slicedToArray(_ref2, 2),
+                      key = _ref3[0],
+                      value = _ref3[1];
+
+                  if (value.port) {
+                    acc.push(value.port);
+                  }
+
+                  return acc;
+                }, []));
+              }
+
               setPortsList(list);
 
-            case 4:
+            case 5:
             case "end":
               return _context.stop();
           }
@@ -30819,7 +30840,7 @@ var Main = function Main() {
   }
 
   var submit = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
       var foundNegative, save;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
@@ -30831,7 +30852,7 @@ var Main = function Main() {
               save = !foundNegative;
 
               if (!(save && /^\d+$/.test(input.port))) {
-                _context2.next = 13;
+                _context2.next = 14;
                 break;
               }
 
@@ -30861,11 +30882,12 @@ var Main = function Main() {
               });
 
             case 10:
+              generate.addList([input.port]);
               setInputRaw(defaultInput());
-              _context2.next = 13;
+              _context2.next = 14;
               return refreshPortsList();
 
-            case 13:
+            case 14:
             case "end":
               return _context2.stop();
           }
@@ -30874,7 +30896,7 @@ var Main = function Main() {
     }));
 
     return function submit() {
-      return _ref2.apply(this, arguments);
+      return _ref4.apply(this, arguments);
     };
   }();
 
@@ -30886,7 +30908,7 @@ var Main = function Main() {
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Add port:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
     onSubmit: /*#__PURE__*/function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
+      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -30903,7 +30925,7 @@ var Main = function Main() {
       }));
 
       return function (_x) {
-        return _ref3.apply(this, arguments);
+        return _ref5.apply(this, arguments);
       };
     }()
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "port:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
@@ -30947,7 +30969,7 @@ var Main = function Main() {
         valign: "top"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         onClick: /*#__PURE__*/function () {
-          var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
+          var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
             return regeneratorRuntime.wrap(function _callee4$(_context4) {
               while (1) {
                 switch (_context4.prev = _context4.next) {
@@ -30973,7 +30995,7 @@ var Main = function Main() {
           }));
 
           return function (_x2) {
-            return _ref4.apply(this, arguments);
+            return _ref6.apply(this, arguments);
           };
         }()
       }, "del")), function (d) {
@@ -30991,10 +31013,10 @@ var Main = function Main() {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, d);
       }(g.description));
     });
-  }(Object.entries(ports).reduce(function (acc, _ref5) {
-    var _ref6 = _slicedToArray(_ref5, 2),
-        key = _ref6[0],
-        value = _ref6[1];
+  }(Object.entries(ports).reduce(function (acc, _ref7) {
+    var _ref8 = _slicedToArray(_ref7, 2),
+        key = _ref8[0],
+        value = _ref8[1];
 
     acc.push(_objectSpread({
       key: key

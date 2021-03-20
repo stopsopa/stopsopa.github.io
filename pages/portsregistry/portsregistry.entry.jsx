@@ -38,6 +38,8 @@ const Main = () => {
 
   const [ expanded, setExpanded ] = useState([]);
 
+  const [ firstLoad, setFirstLoad ] = useState(true);
+
   const setInput = (key, value) => {
 
     setInputRaw(nset({...input}, key, value));
@@ -57,6 +59,21 @@ const Main = () => {
   const refreshPortsList = async function () {
 
     let list = await get(`ports`);
+
+    if (firstLoad) {
+
+      setFirstLoad(false);
+
+      generate.addList(Object.entries(list).reduce((acc, [key, value]) => {
+
+        if (value.port) {
+
+          acc.push(value.port);
+        }
+
+        return acc;
+      }, []));
+    }
 
     setPortsList(list);
   };
@@ -106,6 +123,8 @@ const Main = () => {
         key: `ports`,
         data: input,
       });
+
+      generate.addList([input.port]);
 
       setInputRaw(defaultInput());
 
