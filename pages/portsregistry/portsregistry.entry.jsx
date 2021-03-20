@@ -30,7 +30,7 @@ const Main = () => {
   const [ ports, setPortsList ] = useState(false);
 
   const defaultInput = () => ({
-    port: '',
+    port: String(generate()),
     description: ''
   });
 
@@ -159,12 +159,17 @@ const Main = () => {
                      className={cls}
               />
             </td>
+            <td>
+              <button onClick={() => {
+                setInput('port', String(generate()));
+              }}>next</button>
+            </td>
           </tr>
           <tr>
             <td>
               description:
             </td>
-            <td>
+            <td colSpan={2}>
               <textarea value={input.description || ""} onChange={e => setInput('description', e.target.value)}/>
             </td>
           </tr>

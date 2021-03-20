@@ -43,17 +43,17 @@ describe('generatePort', () => {
 
     expect(generate.getList()).toEqual([
       0,
+      1,
+      2,
+      3,
+      4,
+      5,
       6,
       7,
       8,
       9,
       10,
       11,
-      1,
-      2,
-      3,
-      4,
-      5,
       12,
       13
     ]);
@@ -70,6 +70,46 @@ describe('generatePort', () => {
     // console.log(JSON.stringify(generate.getList().length, null, 4));
 
     expect(generate.getList().length).toEqual(5058);
+
+    done();
+  })
+
+  it('generate', done => {
+
+    const generate = generatePort();
+
+    generate.addList(require('../pages/portsregistry/lists/ports-generated.json'));
+
+    generate.addList([3000, 3004]);
+
+    const list = (function () {
+
+      const list = [];
+
+      for (let i = 0, t ; i < 8 ; i += 1 ) {
+
+        t = generate();
+
+        generate.addList([t]);
+
+        list.push(t);
+      }
+
+      return list;
+    }());
+
+    // console.log(JSON.stringify(list, null, 4));
+
+    expect(list).toEqual([
+      3009,
+      3010,
+      3011,
+      3012,
+      3013,
+      3014,
+      3015,
+      3016
+    ]);
 
     done();
   })
