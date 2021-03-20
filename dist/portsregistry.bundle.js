@@ -30953,7 +30953,7 @@ var Main = function Main() {
 
       return a.created_at > b.created_at ? 1 : -1;
     });
-    return list.map(function (g) {
+    return list.reverse().map(function (g) {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
         key: g.key,
         "data-key": g.key

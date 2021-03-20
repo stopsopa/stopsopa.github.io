@@ -189,7 +189,7 @@ const Main = () => {
               return a.created_at > b.created_at ? 1 : -1;
             });
 
-            return list.map(g => (
+            return list.reverse().map(g => (
               <tr key={g.key} data-key={g.key}>
                 <td valign="top">
                   <span className="date">{g.created_at}</span>
