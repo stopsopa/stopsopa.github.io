@@ -10,6 +10,7 @@ const g = gg();
 g.addList(require('./mephux-ports')());
 g.addList(require('./stoutZero_commonly-used-ports')());
 g.addList(require('./web_mit_edu')());
+g.addList(require('./www_iana_org')());
 
 const file = path.resolve(__dirname, 'ports-generated.json');
 
