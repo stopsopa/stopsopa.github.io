@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 39);
+/******/ 	return __webpack_require__(__webpack_require__.s = 32);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -30078,12 +30078,19 @@ module.exports = function (e, native) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(inspc__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
-/* harmony import */ var nlab_se__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(nlab_se__WEBPACK_IMPORTED_MODULE_2__);
+
+// EXTERNAL MODULE: ./node_modules/react/index.js
+var react = __webpack_require__(0);
+
+// EXTERNAL MODULE: ./node_modules/inspc/logn.js
+var logn = __webpack_require__(2);
+var logn_default = /*#__PURE__*/__webpack_require__.n(logn);
+
+// EXTERNAL MODULE: ./node_modules/nlab/se.js
+var se = __webpack_require__(3);
+var se_default = /*#__PURE__*/__webpack_require__.n(se);
+
+// CONCATENATED MODULE: ./pages/firebase/useFirebase.js
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -30112,25 +30119,25 @@ var th = function th(msg) {
  */
 
 
-/* harmony default export */ __webpack_exports__["a"] = (function (_ref) {
+/* harmony default export */ var useFirebase = (function (_ref) {
   var section = _ref.section;
 
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+  var _useState = Object(react["useState"])(false),
       _useState2 = _slicedToArray(_useState, 2),
       firebase = _useState2[0],
       setFirebase = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+  var _useState3 = Object(react["useState"])(false),
       _useState4 = _slicedToArray(_useState3, 2),
       error = _useState4[0],
       setError = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+  var _useState5 = Object(react["useState"])(false),
       _useState6 = _slicedToArray(_useState5, 2),
       user = _useState6[0],
       setUser = _useState6[1];
 
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+  Object(react["useEffect"])(function () {
     _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
       var _set, _firebase, idToken, accessToken, credential, _user, provider, result, user;
 
@@ -30200,7 +30207,7 @@ var th = function th(msg) {
               _firebase = _context2.sent;
               idToken = localStorage.getItem('idToken');
               accessToken = localStorage.getItem('accessToken');
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 firebase_first: _firebase.auth().currentUser
               });
 
@@ -30210,13 +30217,13 @@ var th = function th(msg) {
               }
 
               _context2.prev = 9;
-              inspc__WEBPACK_IMPORTED_MODULE_1___default()('firebase_try: signInWithCredential');
+              logn_default()('firebase_try: signInWithCredential');
               _context2.next = 13;
               return _firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
 
             case 13:
               credential = _context2.sent;
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 firebase_credential: credential
               });
               _context2.next = 17;
@@ -30224,7 +30231,7 @@ var th = function th(msg) {
 
             case 17:
               _user = _context2.sent;
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 firebase_mode: 'signInWithCredential',
                 user: _user
               });
@@ -30234,11 +30241,11 @@ var th = function th(msg) {
             case 21:
               _context2.prev = 21;
               _context2.t0 = _context2["catch"](9);
-              inspc__WEBPACK_IMPORTED_MODULE_1___default()('firebase_catch: signInWithCredential', nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t0));
+              logn_default()('firebase_catch: signInWithCredential', se_default()(_context2.t0));
               setError({
                 error: {
                   mode: 'signInWithCredential -> signOut()',
-                  e: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t0),
+                  e: se_default()(_context2.t0),
                   user: _firebase.auth().currentUser,
                   truthy: !!_firebase.auth().currentUser
                 }
@@ -30247,7 +30254,7 @@ var th = function th(msg) {
               return _firebase.auth().signOut();
 
             case 27:
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 'firebase.auth().currentUser, before second method': _firebase.auth().currentUser
               });
 
@@ -30256,7 +30263,7 @@ var th = function th(msg) {
                 break;
               }
 
-              inspc__WEBPACK_IMPORTED_MODULE_1___default()('firebase_signInWithCredential success, trigger set()');
+              logn_default()('firebase_signInWithCredential success, trigger set()');
               _context2.next = 32;
               return _set();
 
@@ -30265,7 +30272,7 @@ var th = function th(msg) {
               break;
 
             case 34:
-              inspc__WEBPACK_IMPORTED_MODULE_1___default()('try: signInWithPopup');
+              logn_default()('try: signInWithPopup');
               provider = new _firebase.auth.GoogleAuthProvider();
               _context2.next = 38;
               return _firebase.auth().signInWithPopup(provider);
@@ -30275,7 +30282,7 @@ var th = function th(msg) {
               idToken = result.credential.idToken;
               accessToken = result.credential.accessToken;
               user = result.user;
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 mode: 'signInWithPopup',
                 idToken: idToken,
                 accessToken: accessToken,
@@ -30294,11 +30301,11 @@ var th = function th(msg) {
             case 49:
               _context2.prev = 49;
               _context2.t1 = _context2["catch"](0);
-              inspc__WEBPACK_IMPORTED_MODULE_1___default()('catch: signInWithPopup', nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t1));
+              logn_default()('catch: signInWithPopup', se_default()(_context2.t1));
               setError({
                 error: {
                   mode: 'signInWithPopup',
-                  e: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context2.t1)
+                  e: se_default()(_context2.t1)
                 }
               });
 
@@ -30327,7 +30334,7 @@ var th = function th(msg) {
       internalkey += '/' + key;
     }
 
-    inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+    logn_default.a.dump({
       firebase_getroot: internalkey
     });
     return internalkey;
@@ -30371,7 +30378,7 @@ var th = function th(msg) {
               return firebase.database().ref(internalkey).set(data);
 
             case 9:
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 'set': {
                   key: key,
                   internalkey: internalkey,
@@ -30385,9 +30392,9 @@ var th = function th(msg) {
             case 12:
               _context3.prev = 12;
               _context3.t0 = _context3["catch"](6);
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 'set() error:': {
-                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context3.t0),
+                  error: se_default()(_context3.t0),
                   key: key,
                   internalkey: internalkey,
                   data: data
@@ -30448,7 +30455,7 @@ var th = function th(msg) {
 
             case 11:
               newid = "".concat(internalkey, "/").concat(newPostRef.key);
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 'push': {
                   key: key,
                   newid: newid,
@@ -30462,9 +30469,9 @@ var th = function th(msg) {
             case 16:
               _context4.prev = 16;
               _context4.t0 = _context4["catch"](6);
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 'push() error:': {
-                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context4.t0),
+                  error: se_default()(_context4.t0),
                   key: key,
                   internalkey: internalkey,
                   data: data
@@ -30523,7 +30530,7 @@ var th = function th(msg) {
 
             case 11:
               snapshot = _context5.sent;
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 useFirebase_get: snapshot,
                 internalkey: internalkey
               });
@@ -30532,9 +30539,9 @@ var th = function th(msg) {
             case 16:
               _context5.prev = 16;
               _context5.t0 = _context5["catch"](5);
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 'get() error:': {
-                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context5.t0),
+                  error: se_default()(_context5.t0),
                   key: key,
                   internalkey: internalkey
                 }
@@ -30582,7 +30589,7 @@ var th = function th(msg) {
               }
 
               _context6.prev = 5;
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 firebase_del: internalkey
               });
               _context6.next = 9;
@@ -30594,9 +30601,9 @@ var th = function th(msg) {
             case 13:
               _context6.prev = 13;
               _context6.t0 = _context6["catch"](5);
-              inspc__WEBPACK_IMPORTED_MODULE_1___default.a.dump({
+              logn_default.a.dump({
                 'del() error:': {
-                  error: nlab_se__WEBPACK_IMPORTED_MODULE_2___default()(_context6.t0),
+                  error: se_default()(_context6.t0),
                   key: key,
                   internalkey: internalkey
                 }
@@ -30624,38 +30631,6 @@ var th = function th(msg) {
     getroot: getroot
   };
 });
-
-/***/ }),
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// EXTERNAL MODULE: ./node_modules/react/index.js
-var react = __webpack_require__(0);
-var react_default = /*#__PURE__*/__webpack_require__.n(react);
-
-// EXTERNAL MODULE: ./node_modules/react-dom/index.js
-var react_dom = __webpack_require__(13);
-
-// EXTERNAL MODULE: ./node_modules/inspc/logn.js
-var logn = __webpack_require__(2);
-
-// EXTERNAL MODULE: ./pages/firebase/useFirebase.js
-var useFirebase = __webpack_require__(28);
-
 // CONCATENATED MODULE: ./pages/useCustomState.js
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
@@ -30670,14 +30645,14 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
  * set, get, del
  */
 
-/* harmony default export */ var useCustomState = (function (_ref) {
+/* harmony default export */ var useCustomState = __webpack_exports__["a"] = (function (_ref) {
   var section = _ref.section;
 
   if (typeof section !== 'string') {
     throw new Error("useCustemState error: section is not a string");
   }
 
-  var _useFirebase = Object(useFirebase["a" /* default */])({
+  var _useFirebase = useFirebase({
     section: section
   }),
       firebase = _useFirebase.firebase,
@@ -30687,14 +30662,52 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
   rest.id = user;
   return rest;
 });
-// EXTERNAL MODULE: ./node_modules/nlab/isObject.js
-var isObject = __webpack_require__(42);
-var isObject_default = /*#__PURE__*/__webpack_require__.n(isObject);
 
-// CONCATENATED MODULE: ./pages/portsregistry/portsregistry.entry.jsx
+/***/ }),
+/* 29 */,
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(40);
+
+/***/ }),
+/* 31 */,
+/* 32 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
+/* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(inspc__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var nlab_get__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(43);
+/* harmony import */ var nlab_get__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(nlab_get__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var nlab_set__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(45);
+/* harmony import */ var nlab_set__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(nlab_set__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _useCustomState__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(28);
+/* harmony import */ var nlab_isObject__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(30);
+/* harmony import */ var nlab_isObject__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(nlab_isObject__WEBPACK_IMPORTED_MODULE_6__);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -30712,22 +30725,40 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-var portsregistry_entry_section = 'portsregistry';
 
 
-var portsregistry_entry_Main = function Main() {
-  var _useState = Object(react["useState"])(false),
+var section = 'portsregistry';
+
+
+var Main = function Main() {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
       _useState2 = _slicedToArray(_useState, 2),
-      groupslist = _useState2[0],
-      setGroupslist = _useState2[1];
+      ports = _useState2[0],
+      setPortsList = _useState2[1];
 
-  var _useState3 = Object(react["useState"])(''),
+  var defaultInput = function defaultInput() {
+    return {
+      port: '',
+      description: ''
+    };
+  };
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(defaultInput()),
       _useState4 = _slicedToArray(_useState3, 2),
-      groupname = _useState4[0],
-      setGroupnameRaw = _useState4[1];
+      input = _useState4[0],
+      setInputRaw = _useState4[1];
 
-  var _useCustomState = useCustomState({
-    section: portsregistry_entry_section
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState6 = _slicedToArray(_useState5, 2),
+      expanded = _useState6[0],
+      setExpanded = _useState6[1];
+
+  var setInput = function setInput(key, value) {
+    setInputRaw(nlab_set__WEBPACK_IMPORTED_MODULE_4___default()(_objectSpread({}, input), key, value));
+  };
+
+  var _useCustomState = Object(_useCustomState__WEBPACK_IMPORTED_MODULE_5__[/* default */ "a"])({
+    section: section
   }),
       error = _useCustomState.error,
       id = _useCustomState.id,
@@ -30736,7 +30767,7 @@ var portsregistry_entry_Main = function Main() {
       del = _useCustomState.del,
       push = _useCustomState.push;
 
-  var refreshGroupList = /*#__PURE__*/function () {
+  var refreshPortsList = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       var list;
       return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -30744,11 +30775,11 @@ var portsregistry_entry_Main = function Main() {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return get("groupslist");
+              return get("ports");
 
             case 2:
               list = _context.sent;
-              setGroupslist(list);
+              setPortsList(list);
 
             case 4:
             case "end":
@@ -30758,146 +30789,244 @@ var portsregistry_entry_Main = function Main() {
       }, _callee);
     }));
 
-    return function refreshGroupList() {
+    return function refreshPortsList() {
       return _ref.apply(this, arguments);
     };
   }();
 
-  Object(react["useEffect"])(function () {
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     if (id) {
-      refreshGroupList();
+      refreshPortsList();
     }
   }, [id]);
 
   if (error) {
-    return /*#__PURE__*/react_default.a.createElement("pre", null, JSON.stringify({
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("pre", null, JSON.stringify({
       error: error
     }, null, 4));
   }
 
   if (!id) {
-    return /*#__PURE__*/react_default.a.createElement("div", null, "Connecting to custom state...");
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Connecting to custom state...");
   }
 
-  var setGroupname = function setGroupname(name) {
-    if (typeof name === 'string') {
-      name = name.trim();
-    }
+  var submit = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var foundNegative, save;
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              foundNegative = Object.values(input).find(function (v) {
+                return !Boolean(v);
+              }) !== undefined;
+              save = !foundNegative;
 
-    setGroupnameRaw(name);
-  };
+              if (!(save && /^\d+$/.test(input.port))) {
+                _context2.next = 11;
+                break;
+              }
 
-  return /*#__PURE__*/react_default.a.createElement("div", null, /*#__PURE__*/react_default.a.createElement("h4", null, "Add group:"), /*#__PURE__*/react_default.a.createElement("form", {
+              if (!Object.values(ports || {}).find(function (o) {
+                return o.port === input.port;
+              })) {
+                _context2.next = 5;
+                break;
+              }
+
+              return _context2.abrupt("return", alert("port '".concat(input.port, "' is already registered")));
+
+            case 5:
+              input.created_at = new Date().toISOString().substring(0, 19).replace('T', ' ');
+              _context2.next = 8;
+              return push({
+                key: "ports",
+                data: input
+              });
+
+            case 8:
+              setInputRaw(defaultInput());
+              _context2.next = 11;
+              return refreshPortsList();
+
+            case 11:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    return function submit() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Add port:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
     onSubmit: /*#__PURE__*/function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
-        var list;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 e.preventDefault();
-                list = [];
+                submit();
 
-                if (isObject_default()(groupslist)) {
-                  list = Object.keys(groupslist).map(function (key) {
-                    return groupslist[key].groupname.toLowerCase();
-                  });
-                }
-
-                if (!groupname) {
-                  _context2.next = 11;
-                  break;
-                }
-
-                if (!list.includes(groupname.toLowerCase())) {
-                  _context2.next = 6;
-                  break;
-                }
-
-                return _context2.abrupt("return", alert("group by name '".concat(groupname, "' already exist")));
-
-              case 6:
-                _context2.next = 8;
-                return push({
-                  key: "groupslist",
-                  data: {
-                    groupname: groupname
-                  }
-                });
-
-              case 8:
-                setGroupname('');
-                _context2.next = 11;
-                return refreshGroupList();
-
-              case 11:
+              case 2:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2);
+        }, _callee3);
       }));
 
       return function (_x) {
-        return _ref2.apply(this, arguments);
+        return _ref3.apply(this, arguments);
       };
     }()
-  }, /*#__PURE__*/react_default.a.createElement("label", null, "name:", /*#__PURE__*/react_default.a.createElement("input", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "port:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "text",
-    value: groupname,
+    value: input.port || '',
     onChange: function onChange(e) {
-      return setGroupname(e.target.value);
+      return setInput('port', e.target.value);
     }
-  }), " ", groupname), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("button", {
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "description:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
+    value: input.description || "",
+    onChange: function onChange(e) {
+      return setInput('description', e.target.value);
+    }
+  }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     type: "submit"
-  }, "add")), /*#__PURE__*/react_default.a.createElement("br", null), "groups:", /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("ul", null, isObject_default()(groupslist) && Object.keys(groupslist).map(function (key) {
-    var g = groupslist[key];
-    return /*#__PURE__*/react_default.a.createElement("li", {
-      key: key,
-      "data-key": key
-    }, g.groupname, " ", /*#__PURE__*/react_default.a.createElement("button", {
-      onClick: /*#__PURE__*/function () {
-        var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
-          return regeneratorRuntime.wrap(function _callee3$(_context3) {
-            while (1) {
-              switch (_context3.prev = _context3.next) {
-                case 0:
-                  _context3.next = 2;
-                  return del("groupslist/".concat(key));
+  }, "add")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+    className: "list",
+    border: "0"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, nlab_isObject__WEBPACK_IMPORTED_MODULE_6___default()(ports) && function (list) {
+    list.sort(function (a, b) {
+      if (a.created_at === b.created_at) {
+        return 0;
+      }
 
-                case 2:
-                  _context3.next = 4;
-                  return refreshGroupList();
+      return a.created_at > b.created_at ? 1 : -1;
+    });
+    return list.map(function (g) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
+        key: g.key,
+        "data-key": g.key
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+        valign: "top"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "date"
+      }, g.created_at)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+        valign: "top"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "port"
+      }, g.port)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+        valign: "top"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: /*#__PURE__*/function () {
+          var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
+            return regeneratorRuntime.wrap(function _callee4$(_context4) {
+              while (1) {
+                switch (_context4.prev = _context4.next) {
+                  case 0:
+                    if (!confirm("Delete?")) {
+                      _context4.next = 5;
+                      break;
+                    }
 
-                case 4:
-                case "end":
-                  return _context3.stop();
+                    _context4.next = 3;
+                    return del("ports/".concat(g.key));
+
+                  case 3:
+                    _context4.next = 5;
+                    return refreshPortsList();
+
+                  case 5:
+                  case "end":
+                    return _context4.stop();
+                }
               }
-            }
-          }, _callee3);
-        }));
+            }, _callee4);
+          }));
 
-        return function (_x2) {
-          return _ref3.apply(this, arguments);
-        };
-      }()
-    }, "del"));
-  })), /*#__PURE__*/react_default.a.createElement("hr", null));
+          return function (_x2) {
+            return _ref4.apply(this, arguments);
+          };
+        }()
+      }, "del")), function (d) {
+        if (d.length > 50 && !expanded.includes(g.key)) {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, d.substring(0, 50), " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+            onClick: function onClick() {
+              return setExpanded(function (d) {
+                d.push(g.key);
+                return d;
+              }(_toConsumableArray(expanded)));
+            }
+          }, "..."));
+        }
+
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, d);
+      }(g.description));
+    });
+  }(Object.entries(ports).reduce(function (acc, _ref5) {
+    var _ref6 = _slicedToArray(_ref5, 2),
+        key = _ref6[0],
+        value = _ref6[1];
+
+    acc.push(_objectSpread({
+      key: key
+    }, value));
+    return acc;
+  }, [])))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null));
 };
 
-Object(react_dom["render"])( /*#__PURE__*/react_default.a.createElement(portsregistry_entry_Main, null), document.getElementById('app'));
+Object(react_dom__WEBPACK_IMPORTED_MODULE_1__["render"])( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Main, null), document.getElementById('app'));
 
 /***/ }),
-/* 40 */,
-/* 41 */,
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */
+/***/ (function(module, exports) {
 
 
-module.exports = __webpack_require__(43);
+// @doc https://github.com/stopsopa/nlab#isarray
+
+//  ✓isObject - []                                                  -> true
+//  ✓isObject - {}                                                  -> false
+//  ✓isObject - using with object that have implemented toString()  -> false
+//  ✓isObject - extended object                                     -> false
+//  ✓isObject - new function () {}                                  -> false
+//  ✓isObject - function () {}                                      -> false
+//  ✓isObject - () => {}                                            -> false
+//  ✓isObject - true                                                -> false
+//  ✓isObject - false                                               -> false
+//  ✓isObject - NaN                                                 -> false
+//  ✓isObject - undefined                                           -> false
+//  ✓isObject - no arg                                              -> false
+//  ✓isObject - 4                                                   -> false
+//  ✓isObject - string                                              -> false
+//  ✓isObject - Symbol('test')                                      -> false
+
+module.exports = function (o) {
+
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray#Polyfill
+    if ( ! Array.isArray ) {
+
+        Array.isArray = function(arg) {
+
+            return Object.prototype.toString.call(arg) === '[object Array]';
+        };
+    }
+
+    return Array.isArray(o);
+}
 
 /***/ }),
-/* 43 */
+/* 40 */
 /***/ (function(module, exports) {
 
 
@@ -30942,6 +31071,238 @@ function isObject(o) {
 }
 
 module.exports = isObject;
+
+/***/ }),
+/* 41 */,
+/* 42 */,
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(44);
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+const isArray   = __webpack_require__(39);
+
+/**
+ * @doc https://github.com/stopsopa/nlab#get
+ *
+ * @param source
+ * @param key
+ * @param jsonIfNotString - for grabbing errors mode - get all but serialized you can then
+ * query again with more direct path
+ * @returns {*}
+ */
+const get = function (source, key) {
+
+    // log('key', key);
+    // log('source', source)
+
+    if ( ! key ) {
+
+        return source;
+    }
+
+    if (typeof key === 'string' && key.indexOf('.') > -1) {
+
+        key = key.split('.');
+    }
+
+    if ( ! isArray(key)) {
+
+        key = [key];
+    }
+
+    let tmp = source, k;
+
+    while (k = key.shift()) {
+
+        try {
+            if (key.length) {
+
+                tmp = tmp[k];
+            }
+            else {
+
+                if (typeof tmp[k] === 'undefined') {
+
+                    return arguments[2];
+                }
+
+                return tmp[k];
+            }
+        }
+        catch (e) {
+
+            return arguments[2];
+        }
+    }
+}
+
+module.exports = get;
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(46);
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+
+const isArray = __webpack_require__(39);
+
+const isObject = __webpack_require__(40);
+
+/**
+ * @doc https://github.com/stopsopa/nlab#set
+ */
+function set(source, key, value) {
+
+    if (typeof key === 'string') {
+
+        key = key.split('.');
+    }
+
+    if (typeof key === 'number') {
+
+        key = key + '';
+    }
+
+    if ( isObject(key) ) {
+
+        key = Object.values(key).map(a => a += '');
+    }
+
+    if (typeof key !== 'string' && ! key && key !== '0' && key !== '') {
+
+        key = [];
+    }
+
+    if ( ! isArray(key) ) {
+
+        key = [key];
+    }
+
+    if (key.length) {
+
+        let first = true;
+
+        let ar = isArray(source);
+
+        if ( ! ar && ! isObject(source) ) {
+
+            source = {};
+        }
+
+        let kt;
+
+        let tmp     = source;
+
+        let tmp2    = source;
+
+        let obb, arr;
+
+        while (key.length) {
+
+            kt = key.shift();
+
+            if (first) {
+
+                first = false;
+
+                if ( ar && !/^\d+$/.test(kt) && kt !== '') {
+
+                    throw `if source is array and key is not integer nor empty string then its not possible to add to array, given key: ` + JSON.stringify(kt)
+                }
+            }
+
+            tmp = tmp2;
+
+            if ( key.length ) {
+
+                obb         = isObject(tmp[kt]);
+
+                arr         = isArray(tmp[kt]);
+
+                if ( obb || arr ) {
+
+                    tmp2 = tmp[kt];
+                }
+                else {
+
+                    if (key[0] === '') {
+
+                        const t = [];
+
+                        if (isArray(tmp)) {
+
+                            tmp.push(t);
+
+                            tmp2 = t;
+                        }
+                        else {
+
+                            tmp2 = tmp[kt] = t;
+                        }
+                    }
+                    else {
+
+                        const t = {};
+
+                        if (isArray(tmp)) {
+
+                            tmp.push(t);
+
+                            tmp2 = t;
+                        }
+                        else {
+
+                            tmp2 = tmp[kt] = t;
+                        }
+                    }
+                }
+            }
+            else {
+
+                if (isArray(tmp)) {
+
+                    if (kt === '') {
+
+                        tmp.push(value);
+                    }
+                    else {
+
+                        tmp[kt] = value
+                    }
+                }
+                else {
+
+                    tmp[kt] = value;
+                }
+
+                return source;
+            }
+        }
+    }
+
+    return value;
+}
+
+module.exports = set;
 
 /***/ })
 /******/ ]);
