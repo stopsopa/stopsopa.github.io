@@ -1,6 +1,7 @@
 /**
  * Execute this snippet on the page:
  * https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xml
+ * g(Service Name and Transport Protocol Port Number Registry)
  */
 
 // // from: https://stackoverflow.com/a/14438954
