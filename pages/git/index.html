@@ -248,6 +248,20 @@ for i in {0..10}; do git stash drop stash@{0}; done
             </script>
         </div>
         <div class="cards">
+            <h2>git log</h2>
+            <script type="editor" data-lang="sh">
+                    
+git log --graph --abbrev-commit --decorate --all \
+    --format=format:"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) \
+    - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)"
+    
+git log --graph --decorate --abbrev-commit --all --pretty=oneline  --pretty=format:"%h%x09%an%x09%ad%x09%s"      
+                    
+
+
+            </script>
+        </div>
+        <div class="cards">
             <h2>change commit timestamp</h2>
             <script type="editor" data-lang="sh">
 
