@@ -54,6 +54,9 @@
 kubectl api-resources
   # from kubectl get --help
 
+kubectl get svc,pod,deploy,job,ingress,secret --show-labels -n namespace  
+kubectl get pv,pvc,rc,rs,svc,pod,deploy,job,ingress,secret  --show-labels -n namespace  
+
 kubectl logs --follow podname
 
 kubectl scale deployment.v1.apps/nameofdeployment --replicas=1
