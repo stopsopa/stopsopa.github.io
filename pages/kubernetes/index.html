@@ -100,6 +100,10 @@ kubectl get rc,rs,services,pods,deployments,jobs  --show-labels --all-namespaces
 
 kubectl get serviceaccounts
 
+# copy secret from one namespace to another:
+    kubectl get secret secretname --namespace=default -oyaml | grep -v \
+'^\s*namespace:\s' | kubectl apply --namespace=targetnamespace -f -
+
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: ServiceAccount
