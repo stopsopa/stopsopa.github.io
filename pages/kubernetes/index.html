@@ -104,6 +104,8 @@ kubectl get serviceaccounts
     kubectl get secret secretname --namespace=default -oyaml | grep -v \
 '^\s*namespace:\s' | kubectl apply --namespace=targetnamespace -f -
 
+    # from: https://stackoverflow.com/a/52326812
+
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: ServiceAccount
