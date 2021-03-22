@@ -237,10 +237,10 @@
         <div class="cards">
             <h2>useful</h2>
             <script type="editor" data-lang="sh">
-                    
+
+# clear stach (10 latest)
 git stash list
 git stash drop stash@{0}   
-
 for i in {0..10}; do git stash drop stash@{0}; done
                     
 
