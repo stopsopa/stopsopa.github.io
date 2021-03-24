@@ -71,15 +71,12 @@ vi /lib/systemd/system/buildkite-agent.service
 #vipw
 #    # from: https://unix.stackexchange.com/a/102336
 
-
 systemctl stop buildkite-agent
 systemctl disable buildkite-agent
 systemctl enable --now buildkite-agent@1
 systemctl enable --now buildkite-agent@2
     #from: https://buildkite.com/docs/tutorials/parallel-builds
-
-
-
+    
                 </script>
 
                 <h2>Useful commands</h2>
