@@ -62,6 +62,7 @@ systemctl stop buildkite-agent
 kill -9 xxxxxx && usermod -m -d /home/buildkite-agent buildkite-agent
 sed -i -r "s/Environment=HOME=\/var\/lib\/buildkite-agent/Environment=HOME=\/home\/buildkite-agent/g" /lib/systemd/system/buildkite-agent.service
 sed -i -r "s/Environment=HOME=\/var\/lib\/buildkite-agent/Environment=HOME=\/home\/buildkite-agent/g" /lib/systemd/system/buildkite-agent@.service
+sed -i -r "s/build-path=\"\/var\/lib\/buildkite-agent\/builds\"/build-path=\"\/home\/buildkite-agent\/builds\"/g" /etc/buildkite-agent/buildkite-agent.cfg
 systemctl start buildkite-agent
 
 vi /lib/systemd/system/buildkite-agent.service
