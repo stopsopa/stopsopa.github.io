@@ -53,6 +53,28 @@ Use centos machine, add iptables before you start intalling docker
 then install docker
                 <a href="https://docs.docker.com/engine/install/centos/#install-using-the-repository">link </a>
 
+                <h2>change user home directory</h2>
+                <script type="editor" data-lang="sh">
+                
+# WARNING: run as root
+
+vi /lib/systemd/system/buildkite-agent.service
+
+systemctl stop buildkite-agent
+sed -i -r "s/Environment=HOME=\/var\/lib\/buildkite-agent/Environment=HOME=\/home\/buildkite-agent/g" /lib/systemd/system/buildkite-agent.service
+sed -i -r "s/Environment=HOME=\/var\/lib\/buildkite-agent/Environment=HOME=\/home\/buildkite-agent/g" /lib/systemd/system/buildkite-agent@.service
+systemctl start buildkite-agent
+
+systemctl stop buildkite-agent
+kill -9 xxxxxx && usermod -m -d /home/buildkite-agent buildkite-agent
+systemctl start buildkite-agent
+
+#sed -i -r "s/^(buildkite-agent.+)\/var\/lib\/buildkite-agent(.+)\$/\1\/home\/buildkite-agent\2/g" passwd
+#vipw
+#    # from: https://unix.stackexchange.com/a/102336
+
+                </script>
+
                 <h2>Useful commands</h2>
                 <script type="editor" data-lang="sh">
                 
