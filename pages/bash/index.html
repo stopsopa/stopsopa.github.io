@@ -60,6 +60,13 @@ IP=$(ipconfig getifaddr en0)
 
                 </script>
 
+                <h2>change user home directory</h2>
+                <script type="editor" data-lang="sh">
+                
+kill -9 xxxxxx && usermod -m -d /home/buildkite-agent buildkite-agent
+
+                </script>
+
                 <h2>verifying default shell</h2>
                 <script type="editor" data-lang="sh">
                 
