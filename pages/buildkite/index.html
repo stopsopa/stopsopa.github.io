@@ -58,16 +58,13 @@ then install docker
                 
 # WARNING: run as root
 
-vi /lib/systemd/system/buildkite-agent.service
-
 systemctl stop buildkite-agent
+kill -9 xxxxxx && usermod -m -d /home/buildkite-agent buildkite-agent
 sed -i -r "s/Environment=HOME=\/var\/lib\/buildkite-agent/Environment=HOME=\/home\/buildkite-agent/g" /lib/systemd/system/buildkite-agent.service
 sed -i -r "s/Environment=HOME=\/var\/lib\/buildkite-agent/Environment=HOME=\/home\/buildkite-agent/g" /lib/systemd/system/buildkite-agent@.service
 systemctl start buildkite-agent
 
-systemctl stop buildkite-agent
-kill -9 xxxxxx && usermod -m -d /home/buildkite-agent buildkite-agent
-systemctl start buildkite-agent
+vi /lib/systemd/system/buildkite-agent.service
 
 #sed -i -r "s/^(buildkite-agent.+)\/var\/lib\/buildkite-agent(.+)\$/\1\/home\/buildkite-agent\2/g" passwd
 #vipw
