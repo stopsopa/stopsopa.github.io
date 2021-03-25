@@ -58,6 +58,8 @@ sudo xattr -dr com.apple.quarantine /path/ff*
 # get ip
 IP=$(ipconfig getifaddr en0)
 
+ps -ef | grep 'garbage-collect' | grep -v grep | awk '{print $2}' | xargs -r kill -9
+
                 </script>
 
                 <h2>change user home directory</h2>
