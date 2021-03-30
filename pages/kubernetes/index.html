@@ -55,7 +55,8 @@ kubectl api-resources
   # from kubectl get --help
 
 kubectl get svc,pod,deploy,job,ingress,secret --show-labels -n namespace  
-kubectl get pv,pvc,rc,rs,svc,pod,deploy,job,ingress,secret  --show-labels -n namespace  
+kubectl get pv,pvc,rc,rs,svc,pod,deploy,job,ingress,secret  --show-labels -n namespace 
+#kubectl delete all --all -n symposium
 
 kubectl logs --follow podname
 
