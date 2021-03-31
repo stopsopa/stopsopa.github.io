@@ -242,6 +242,12 @@
 git stash list
 git stash drop stash@{0}   
 for i in {0..10}; do git stash drop stash@{0}; done
+
+# clone single file
+git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD:public index.html | tar -x
+git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD: .env.kub | tar -x
+git archive --remote=git@bitbucket.org:xxx/xxx.git feature_branch: .env.kub | tar -x
+    # from: https://stackoverflow.com/a/18712703
                     
 
 
