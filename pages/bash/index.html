@@ -61,7 +61,7 @@ sudo xattr -dr com.apple.quarantine /path/ff*
 IP=$(ipconfig getifaddr en0)
 
 ps aux --sort=-%mem | head -n 300
-ps -ef | grep 'garbage-collect' | grep -v grep | awk '{print $2}' | xargs -r kill -9
+ps -ef | grep 'garbagecollect' | grep -v grep | awk '{print $2}' | xargs -r kill -9
     # from: https://stackoverflow.com/a/30515012
 for KILLPID in `ps ax | grep 'my_pattern' | awk ' { print $1;}'`; do 
   kill -9 $KILLPID;
