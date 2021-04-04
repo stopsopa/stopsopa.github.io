@@ -629,6 +629,31 @@ log('headers', h)
 
 log('oneheader', r.headers.get('Content-type'));
                 </script>
+                <h2>Observer pattern</h2>
+                <script type="editor" data-lang="js">
+function Newsletter() {
+  this.observers = [];
+}
+Newsletter.prototype = {
+  subscribe: function (observer) {
+    this.observers.push(observer);
+  },
+  unsubscribe: function(observer) {
+    this.observers = this.observers.filter(ob => ob !== observer);
+  },
+  notify: function() {
+    this.observers.forEach(observer => console.log(‘Hello ‘ + observer.toString()));
+  }
+}
+let subscriber1 = ‘Subscriber 1’;
+let subscriber2 = ‘Subscriber 2’;
+let newsletter = new Newsletter();
+newsletter.subscribe(subscriber1);
+newsletter.subscribe(subscriber2);
+newsletter.notify(); // Hello Subscriber 1 Hello Subscriber 2
+newsletter.unsubscribe(subscriber2);
+newsletter.notify(); // Hello Subscriber 1                
+                </script>
                 <h2>read</h2>
                 <ul>
                     <li><a href="https://levelup.gitconnected.com/top-lessons-learned-from-working-with-a-10x-developer-51de12383e25">https://levelup.gitconnected.com/top-lessons-learned-from-working-with-a-10x-developer-51de12383e25</a></li>
