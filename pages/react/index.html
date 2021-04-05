@@ -98,6 +98,12 @@ export default props => {
   )
 }
                 </script>
+            <h2>useCallback useMemo</h2>
+            <script type="editor" data-lang="jsx">
+How is useMemo different, but similar?
+useMemo is similar to useCallback except it allows you to apply memoization to any value type (not just functions). It does this by accepting a function which returns the value and then that function is only called when the value needs to be retrieved (which typically will only happen once each time an element in the dependencies array changes between renders).            
+            </script>
+            <a href="https://kentcdodds.com/blog/usememo-and-usecallback">link</a>
             <h2>Auto scroll if bottom</h2>
             <script type="editor" data-lang="jsx">
             
