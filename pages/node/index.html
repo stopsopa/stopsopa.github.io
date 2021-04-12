@@ -67,6 +67,12 @@ $(npm bin)/cypress open
 // CORS
 (function () {
 
+  const th = msg => new Error(`Cors configuration error: ${msg}`)
+  
+  const trim = require('nlab/trim');
+  
+  const negotiatePort = require('nlab/negotiatePort');
+
   function isObject(o) {
     return Object.prototype.toString.call(o) === '[object Object]';
   }
@@ -110,7 +116,7 @@ $(npm bin)/cypress open
 
     if (isObject(req.headers) && typeof req.headers.origin === 'string' && trim(req.headers.origin)) {
 
-      console.log('handle cors true')
+      console.log(`request: ${req.method} ${req.url} - handle cors true ${req.headers.origin}`)
 
       return cors({
         origin: function (origin, callback) {
@@ -122,7 +128,8 @@ $(npm bin)/cypress open
         }
       })(req, res, next);
     }
-    console.log('handle cors next')
+    
+    console.log(`request: ${req.method} ${req.url} - handle cors next`)
 
     next();
   })
