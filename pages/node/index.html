@@ -58,6 +58,78 @@ $(npm bin)/cypress open
 
                 </script>
             </div>
+            
+            <div class="cards">
+                
+                <h2>CORS</h2>
+                <script type="editor" data-lang="sh">
+
+// CORS
+(function () {
+
+  function isObject(o) {
+    return Object.prototype.toString.call(o) === '[object Object]';
+  }
+
+  if ( ! process.env.PROTECTED_CORS_ALLOWED_DOMAINS ) {
+
+    throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS is not defined`);
+  }
+
+  const whitelist = process.env.PROTECTED_CORS_ALLOWED_DOMAINS
+    .split(' ')
+    .map(t => trim(t))
+    .filter(Boolean)
+    .map(t => {
+
+      try {
+
+        t = new URL(t);
+
+        return t.protocol + "//" + t.hostname + negotiatePort(t.protocol, t.port, ':');
+      }
+      catch (e) {
+
+        throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS processing part '${t}' failed: ${e}`);
+      }
+    })
+  ;
+
+  console.log(JSON.stringify({
+    PROTECTED_CORS_ALLOWED_DOMAINS: whitelist,
+  }, null, 4))
+
+  if ( ! whitelist.length ) {
+
+    throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS after processing is an empty list`);
+  }
+
+  var cors = require('cors');
+
+  app.use((req, res, next) => {
+
+    if (isObject(req.headers) && typeof req.headers.origin === 'string' && trim(req.headers.origin)) {
+
+      console.log('handle cors true')
+
+      return cors({
+        origin: function (origin, callback) {
+          if (whitelist.includes(origin)) {
+            callback(null, true)
+          } else {
+            callback(new Error(`${origin} Not allowed by CORS`))
+          }
+        }
+      })(req, res, next);
+    }
+    console.log('handle cors next')
+
+    next();
+  })
+}());
+
+                </script>
+            </div>
             <div class="cards">
                 
                 <h2>processing url uri </h2>
