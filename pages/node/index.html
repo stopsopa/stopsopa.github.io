@@ -120,6 +120,7 @@ $(npm bin)/cypress open
       console.log(`request: ${req.method} ${req.url} - handle cors true ${req.headers.origin}`)
 
       return cors({
+        exposedHeaders: 'X-session',
         origin: function (origin, callback) {
           if (whitelist.includes(origin)) {
             callback(null, true)
