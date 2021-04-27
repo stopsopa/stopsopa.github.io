@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 38);
+/******/ 	return __webpack_require__(__webpack_require__.s = 48);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -92,9 +92,9 @@
 
 
 if (undefined === 'production') {
-  module.exports = __webpack_require__(16);
-} else {
   module.exports = __webpack_require__(17);
+} else {
+  module.exports = __webpack_require__(18);
 }
 
 
@@ -713,7 +713,7 @@ if (node) {
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(26);
+module.exports = __webpack_require__(27);
 
 /***/ }),
 /* 4 */
@@ -1083,7 +1083,7 @@ module.exports = log.dump = log.start = log.get = log.json = log.log = log;
 var printWarning = function() {};
 
 if (undefined !== 'production') {
-  var ReactPropTypesSecret = __webpack_require__(18);
+  var ReactPropTypesSecret = __webpack_require__(19);
   var loggedTypeFailures = {};
   var has = Function.call.bind(Object.prototype.hasOwnProperty);
 
@@ -1183,9 +1183,9 @@ module.exports = checkPropTypes;
 
 
 if (undefined === 'production') {
-  module.exports = __webpack_require__(20);
-} else {
   module.exports = __webpack_require__(21);
+} else {
+  module.exports = __webpack_require__(22);
 }
 
 
@@ -1230,9 +1230,9 @@ if (undefined === 'production') {
   // DCE check should happen before ReactDOM bundle executes so that
   // DevTools can report bad minification during injection.
   checkDCE();
-  module.exports = __webpack_require__(19);
+  module.exports = __webpack_require__(20);
 } else {
-  module.exports = __webpack_require__(22);
+  module.exports = __webpack_require__(23);
 }
 
 
@@ -1398,6 +1398,13 @@ module.exports = (function () {
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
+
+module.exports = __webpack_require__(30);
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /** @license React v16.13.1
  * react.production.min.js
@@ -1427,7 +1434,7 @@ exports.useLayoutEffect=function(a,b){return Z().useLayoutEffect(a,b)};exports.u
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3346,7 +3353,7 @@ exports.version = ReactVersion;
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3365,7 +3372,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3664,7 +3671,7 @@ exports.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!gk(c))throw Er
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3692,7 +3699,7 @@ exports.unstable_shouldYield=function(){var a=exports.unstable_now();V(a);var b=
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4557,7 +4564,7 @@ exports.unstable_wrapCallback = unstable_wrapCallback;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4582,7 +4589,7 @@ var React = __webpack_require__(0);
 var _assign = __webpack_require__(7);
 var Scheduler = __webpack_require__(10);
 var checkPropTypes = __webpack_require__(9);
-var tracing = __webpack_require__(23);
+var tracing = __webpack_require__(24);
 
 var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED; // Prevent newer renderers from RTE when used with older react package versions.
 // Current owner and dispatcher used to share the same ref,
@@ -29576,21 +29583,21 @@ exports.version = ReactVersion;
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 if (undefined === 'production') {
-  module.exports = __webpack_require__(24);
-} else {
   module.exports = __webpack_require__(25);
+} else {
+  module.exports = __webpack_require__(26);
 }
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29607,7 +29614,7 @@ var b=0;exports.__interactionsRef=null;exports.__subscriberRef=null;exports.unst
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29963,7 +29970,7 @@ exports.unstable_wrap = unstable_wrap;
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30073,8 +30080,8 @@ module.exports = function (e, native) {
 
 
 /***/ }),
-/* 27 */,
-/* 28 */
+/* 28 */,
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -30664,12 +30671,51 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 });
 
 /***/ }),
-/* 29 */,
 /* 30 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
 
-module.exports = __webpack_require__(40);
+// @doc https://github.com/stopsopa/nlab#isobject
+
+// const a = function () {};
+// a.prototype.other = 'other';
+// const b = function (t) { this.id = t };
+// b.prototype = Object.create(a.prototype);
+// b.prototype.constructor = b;
+
+// WARNING: above EXTENDED OBJECT is an object according to this test
+// WARNING: array is not an object according to this
+// to summarize:
+// isObject([])                     -> false
+// isObject(() => {})               -> false
+// isObject(new b(1))               -> true     - better
+// isObject(new function () {})     -> true
+// isObject({})                     -> true
+// ALSO WORTH TO MENTION:
+// this function doesn't care if new b(1) has or not has 'toString' function implemented, so it's rather safe
+
+//  ✓isObject - {}                                                  -> true
+//  ✓isObject - using with object that have implemented toString()  -> true
+//  ✓isObject - extended object                                     -> true
+//  ✓isObject - new function () {}                                  -> true
+//  ✓isObject - []                                                  -> false
+//  ✓isObject - function () {}                                      -> false
+//  ✓isObject - () => {}                                            -> false
+//  ✓isObject - null                                                -> false
+//  ✓isObject - true                                                -> false
+//  ✓isObject - false                                               -> false
+//  ✓isObject - NaN                                                 -> false
+//  ✓isObject - undefined                                           -> false
+//  ✓isObject - no arg                                              -> false
+//  ✓isObject - 4                                                   -> false
+//  ✓isObject - string                                              -> false
+//  ✓isObject - Symbol('test')
+
+function isObject(o) {
+    return Object.prototype.toString.call(o) === '[object Object]';
+}
+
+module.exports = isObject;
 
 /***/ }),
 /* 31 */,
@@ -30679,7 +30725,17 @@ module.exports = __webpack_require__(40);
 /* 35 */,
 /* 36 */,
 /* 37 */,
-/* 38 */
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -30690,8 +30746,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var inspc__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(inspc__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _useCustomState__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(28);
-/* harmony import */ var nlab_isObject__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(30);
+/* harmony import */ var _useCustomState__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(29);
+/* harmony import */ var nlab_isObject__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(16);
 /* harmony import */ var nlab_isObject__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(nlab_isObject__WEBPACK_IMPORTED_MODULE_4__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -30887,54 +30943,6 @@ var Main = function Main() {
 };
 
 Object(react_dom__WEBPACK_IMPORTED_MODULE_1__["render"])( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Main, null), document.getElementById('app'));
-
-/***/ }),
-/* 39 */,
-/* 40 */
-/***/ (function(module, exports) {
-
-
-// @doc https://github.com/stopsopa/nlab#isobject
-
-// const a = function () {};
-// a.prototype.other = 'other';
-// const b = function (t) { this.id = t };
-// b.prototype = Object.create(a.prototype);
-// b.prototype.constructor = b;
-
-// WARNING: above EXTENDED OBJECT is an object according to this test
-// WARNING: array is not an object according to this
-// to summarize:
-// isObject([])                     -> false
-// isObject(() => {})               -> false
-// isObject(new b(1))               -> true     - better
-// isObject(new function () {})     -> true
-// isObject({})                     -> true
-// ALSO WORTH TO MENTION:
-// this function doesn't care if new b(1) has or not has 'toString' function implemented, so it's rather safe
-
-//  ✓isObject - {}                                                  -> true
-//  ✓isObject - using with object that have implemented toString()  -> true
-//  ✓isObject - extended object                                     -> true
-//  ✓isObject - new function () {}                                  -> true
-//  ✓isObject - []                                                  -> false
-//  ✓isObject - function () {}                                      -> false
-//  ✓isObject - () => {}                                            -> false
-//  ✓isObject - null                                                -> false
-//  ✓isObject - true                                                -> false
-//  ✓isObject - false                                               -> false
-//  ✓isObject - NaN                                                 -> false
-//  ✓isObject - undefined                                           -> false
-//  ✓isObject - no arg                                              -> false
-//  ✓isObject - 4                                                   -> false
-//  ✓isObject - string                                              -> false
-//  ✓isObject - Symbol('test')
-
-function isObject(o) {
-    return Object.prototype.toString.call(o) === '[object Object]';
-}
-
-module.exports = isObject;
 
 /***/ })
 /******/ ]);

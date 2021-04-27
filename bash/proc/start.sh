@@ -17,13 +17,18 @@ if [ "$#" -lt "3" ]; then
     exit 1
 fi
 
-ENVFILE="$_DIR/$1";
+ENVFILE="$1";
 
-if [ ! -e "$ENVFILE" ]; then
+if [ ! -f "$ENVFILE" ]; then
 
-    { red "$0 error: file: '$ENVFILE' doesn't exist"; } 2>&3
+    ENVFILE="$_DIR/$1";
 
-    exit 1;
+    if [ ! -f "$ENVFILE" ]; then
+
+        { red "$0 error: file: '$ENVFILE' nor '$1' doesn't exist"; } 2>&3
+
+        exit 1;
+    fi
 fi
 
 { yellow "importing $ENVFILE vvv"; } 2>&3
