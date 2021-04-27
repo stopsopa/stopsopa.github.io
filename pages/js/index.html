@@ -165,6 +165,99 @@ var manipulation = (function () {
 }());
 
                 </script>
+                <h2>Map</h2>
+                <script type="editor" data-lang="js">
+
+let m = new Map([
+  [1, 'one'],
+  ['1', 'string'],
+  [2, 'two']
+]);
+console.log(m)
+console.log(m.has(1)) // true
+console.log(m.get(1)) // one
+console.log(m.has('1')) // true
+console.log(m.get('1')) // string
+console.log(m.has(10)) // false
+console.log(m.get(10)) // undefined
+console.log(m.size) // 3
+
+// Map(3) { 1 => 'one', '1' => 'string', 2 => 'two' }
+// keys can be any type not just strings like in object
+
+console.log(({})['toString']);
+// [Function: toString]
+console.log(Object.create(null)['toString']);
+// undefined
+
+// == Maps preserve the order of their keys, objects do not
+
+console.log(m.keys());
+// [Map Iterator] { 1, '1', 2 } // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators
+
+for (let value of m.keys()) {
+  console.log(value, typeof value);
+}
+// 1 number
+// 1 string
+// 2 number
+
+console.log(m.values());
+// [Map Iterator] { 'one', 'string', 'two' }
+
+console.log(m.entries());
+// [Map Entries] { [ 1, 'one' ], [ '1', 'string' ], [ 2, 'two' ] }
+
+console.log(Array.from(m))
+// [ [ 1, 'one' ], [ '1', 'string' ], [ 2, 'two' ] ]
+
+m.forEach((value, key, map) => {});
+
+                </script>
+                <h2>Set</h2>
+                <script type="editor" data-lang="js">
+
+let obj = {}
+let s = new Set([1, {}, obj, [], [], {one: 'two'}, ['test']]);
+
+console.log(s); // Set(7) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ] }
+s.add('one');
+s.add('one');
+s.add('two');
+console.log(s); // Set(9) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' }
+console.log(s.has(2)); // false
+console.log(s.has('one')); // true
+console.log(s.has('dog')); // false
+console.log(s.size); // 9
+console.log(s.has({})); // false
+console.log(s.has(obj)); // true
+for (let [key, value] of s.entries()) {
+  console.log('k: ', key, 'v:', value);
+}
+// k:  1 v: 1
+// k:  {} v: {}
+// k:  {} v: {}
+// k:  [] v: []
+// k:  [] v: []
+// k:  { one: 'two' } v: { one: 'two' }
+// k:  [ 'test' ] v: [ 'test' ]
+// k:  one v: one
+// k:  two v: two
+
+const arr = [...s];
+console.log(arr) // [ 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' ]
+const back_to_set = new Set(arr);
+console.log(back_to_set) // Set(9) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' }
+
+
+// Use to remove duplicate elements from the array
+const numbers = [2,3,4,4,2,3,3,4,4,5,5,6,6,7,5,32,3,4,5]
+console.log([...new Set(numbers)]) // [2, 3, 4, 5, 6, 7, 32]
+
+                </script>
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#implementing_basic_set_operations">g(mdn Implementing basic set operations)</a>
+                </br>
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set</a>
                 <h2>scroll to bottom</h2>
                 <script type="editor" data-lang="js">
 
