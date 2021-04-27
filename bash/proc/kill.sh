@@ -26,11 +26,11 @@ fi
 
 ENVFILE="$1";
 
-if [ ! -e "$ENVFILE" ]; then
+if [ ! -f "$ENVFILE" ]; then
 
     ENVFILE="$_DIR/$1";
 
-    if [ ! -e "$ENVFILE" ]; then
+    if [ ! -f "$ENVFILE" ]; then
 
         { red "$0 error: file: '$ENVFILE' nor '$1' doesn't exist"; } 2>&3
 
