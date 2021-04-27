@@ -16,6 +16,25 @@
     
 [supported syntax](https://github.com/ajaxorg/ace/blob/master/lib/ace/ext/modelist.js#L53)
 
+## You can add manually TOC to the document in order to add some extra links to TOC
+
+```html
+<body class="layout" toc>
+    <div class="body">
+        <div class="inside">
+            <div class="cards toc">
+                <h1>Table of Contents</h1>
+                <ul>
+                    <li><a href="http://">ekstra link</a></li>
+                </ul>
+            </div>
+            <div class="cards">
+                <h2>debug</h2>
+                <script type="editor" data-lang="sh">
+                    ...
+                </script>
+                ...
+```
 # attribute helpers
 
     <div data-do-sort>... children nodes...</div> - sorts all children based on innerText

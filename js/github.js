@@ -618,25 +618,45 @@ body .github-profile:hover {
 
                 window.toc = function () {
 
-                    var toc = document.createElement('div');
+                    var toc = document.querySelector('div.cards.toc');
 
-                    toc.classList.add('cards');
+                    if ( ! toc ) {
 
-                    toc.classList.add('toc');
+                        toc = document.createElement('div');
+
+                        toc.classList.add('cards');
+
+                        toc.classList.add('toc');
+                    }
 
                     // Table of content
                     (function () {
-                        var head = document.createElement('h1');
+
+                        var head = toc.querySelector('h1');
+
+                        if ( ! head ) {
+
+                            head = document.createElement('h1');
+
+                            manipulation.append(toc, head)
+                        }
 
                         head.innerText = 'Table of Contents';
-
-                        manipulation.append(toc, head)
                     })();
 
                     // links
                     (function () {
 
-                        var ul = document.createElement('ul');
+                        var ul = toc.querySelector('ul');
+
+                        var found = true;
+
+                        if ( ! ul ) {
+
+                            found = false;
+
+                            ul = document.createElement('ul');
+                        }
 
                         Array.prototype.slice.call(document.querySelectorAll('h2[id]')).forEach(function (el) {
 
@@ -651,19 +671,27 @@ body .github-profile:hover {
                             manipulation.append(li, a);
 
                             manipulation.append(ul, li);
-
                         });
 
-                        manipulation.append(toc, ul)
+                        if ( ! found) {
+
+                            manipulation.append(toc, ul)
+                        }
                     }());
 
                     // hr at the end
                     (function () {
 
-                        var hr = document.createElement('div');
+                        var hr = toc.querySelector('div');
+
+                        if ( ! hr ) {
+
+                            hr = document.createElement('div');
+
+                            manipulation.append(toc, hr);
+                        }
 
                         hr.style.border = '1px solid darkgray'
-                        manipulation.append(toc, hr);
                     }());
 
                     // return to top button
