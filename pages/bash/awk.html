@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>stopsopa.github.io</title>
+    <script src="/js/github.js"></script>
+</head>
+<body class="layout">
+
+<div class="body">
+    <div class="inside">
+        <div class="cards">
+
+            <h2>SED</h2>
+            <a href="https://pubs.opengroup.org/onlinepubs/9699919799/utilities/awk.html">https://pubs.opengroup.org/onlinepubs/9699919799/utilities/awk.html</a>
+            <br>
+            <a href="https://www.funtoo.org/Awk_by_Example,_Part_1">g(In awk, curly braces are used to group blocks of code together, similar to C. Inside our block of code, we have a single print command Awk by Example, Part 1)</a>
+            <script type="editor" data-lang="python">
+
+
+
+# RECORDS are separated by newline characters
+
+# RS -> RECORD SEPARATOR (def "\n") a <newline> by default
+# FS -> FIELD SEPARATOR (def " ") Input field separator regular expression; a <space> by default.
+# ORS -> OUTPUT RECORD SEPARATOR (def "\n") The output record separator, by default a newline.
+# OFS -> OUTPUT FIELD SEPARATOR (def " ") The output field separator, a space by default.
+
+# JUST PRINT ALL LINES:
+awk '{ print }' /etc/passwd
+awk '{ print $0 }' /etc/passwd
+  $0 - represent entire line
+
+# PICK COLUMNS BY GIVEN DELIMITER
+awk -F":" '{ print $1 " - " $3 }' /etc/passwd
+awk -F":" '{ print "username: " $1 " uid: " $3 }' /etc/passwd
+
+# BLOCKS BEGIN END
+cat <<EOF | awk '
+BEGIN {
+  print "START"
+}
+/x/ { print "found x: " $0 }
+/a/ { print "found a: " $0 }
+{ print length() }
+END {
+  print "END"
+}'
+abcx
+defxx
+ghixxx
+abc
+jklxxxx
+mnox
+pr
+s
+wxy
+EOF
+# will print
+    START
+    found x: abcx
+    found a: abcx
+    4
+    found x: defxx
+    5
+    found x: ghixxx
+    6
+    found a: abc
+    3
+    found x: jklxxxx
+    7
+    found x: mnox
+    4
+    2
+    1
+    found x: wxy
+    3
+    END
+
+# FROM SCRIPT
+cat <<EOF > script.awk
+{
+  print "username: " \$1 " uid: " \$3
+}
+EOF
+awk -F":" -f script.awk /etc/passwd
+
+# EXECUTABLE SCRIPT
+cat <<EOF > script.awk
+#!/usr/bin/awk -f
+BEGIN {
+  FS=":"
+  # Field separators
+  # FS="\t+" # can be regular expression
+  # FS="[[:space:]]+" # space or tab
+    # /(G|D)([[:digit:][:alpha:]]*)/ from: https://pubs.opengroup.org/onlinepubs/9699919799/utilities/awk.html#tag_20_06_17
+  # FS="foo[0-9][0-9][0-9]" # foo and three digits
+}
+{ print $1 }
+EOF
+chmod +x script.awk
+./script.awk /etc/passwd
+
+# THE SAME BUT FROM CLI
+cat <<EOF | awk '
+BEGIN {
+  FS=":"
+}
+{ print $1 " - " $2 }'
+one:two:three, one two three
+four:three:two one
+one:hundred
+EOF
+
+# FILTERING
+cat <<EOF | awk '/foo/ { print }'
+one:two:three, one foo three
+four:three:two one
+one:foo
+EOF
+
+# CONDITION EQUAL
+cat <<EOF | awk '$1 == "fred" { print $3 }'
+one:two:three, one foo three
+four:three:two one
+fred test xxx
+one:foo
+EOF
+
+# C LIKE STATEMENT
+cat <<EOF | awk '{
+    if ( $5 ~ /^root/ ) {
+        print $3 ":"  $5
+    }
+}'
+one two three one foo three
+fourthree two one
+fred test xxx
+one foo a b roottest
+mid
+one foo ab b root
+end
+EOF
+
+# NESTED CONDITIONS
+cat <<EOF | awk '{
+    if ( $1 == "fred" ) {
+        if ( $3 == "foo" ) {
+            print "found fred: " $1 ":" $3
+        } else {
+            print "fred but no foo: " $0
+        }
+    } else if ($5 ~ /^root/ ) {
+        print "found root: " $0
+    } else {
+        print "not root: " $0
+    }
+}'
+one two three one foo three
+fourthree two one
+fred test foo
+one foo a b roottest
+fred mid
+one foo ab b root
+end
+EOF
+
+# NOT
+cat <<EOF | awk '! /match/ { print $1 $3 $4 }'
+match a b c
+notma c d e
+x match f g h
+mid
+stomatch i j k
+end
+EOF
+# will print
+  notmade
+  mid
+  end
+
+# NOT DIFFERENT WAY (same result as above)
+cat <<EOF | awk '{
+    if ( $0 !~ /match/ ) {
+        print $1 $3 $4
+    }
+}'
+match a b c
+notma c d e
+x match f g h
+mid
+stomatch i j k
+end
+EOF
+# will print
+  notmade
+  mid
+  end
+
+# BOOLEAN
+cat <<EOF | awk '( $1 == "foo" ) && ( $2 == "bar" ) { print }'
+match bar b c
+foo bar abc
+foo mid
+foo bar ttt
+stomatch i j k
+EOF
+# will print
+  foo bar abc
+  foo bar ttt
+
+# BOOLEAN &&
+cat <<EOF | awk '( $1 == "foo" ) && ( $2 == "bar" ) { print }'
+match bar b c
+foo bar abc
+foo mid
+foo bar ttt
+stomatch i j k
+EOF
+# will print
+  foo bar abc
+  foo bar ttt
+
+# BOOLEAN ||
+cat <<EOF | awk '( $1 == "foo" ) || ( $2 == "bar" ) { print }'
+match bar b c
+foo bar abc
+foo mid
+foo bar ttt
+stomatch i j k
+EOF
+# will print
+  match bar b c
+  foo bar abc
+  foo mid
+  foo bar ttt
+
+# COUNTING BLANK LINES, VARIABLES
+cat <<EOF | awk 'BEGIN { x=0 }
+#/^$/  { x=x+1 }
+#/^$/  { x++ }
+#/^$/  { ++x }
+/^$/  { x+=1 }
+END   { print "I found " x " blank lines. :)" } '
+match bar b c
+foo bar abc
+
+foo mid
+
+foo bar ttt
+stomatch i j k
+
+EOF
+
+# VARIABLES ARE STRINGS BUT CAN BE TREATED AS NUMERIC VALUE
+echo '' | awk '{ x="1.01" }
+{ x=x+1 }
+{ print x }'
+
+# OTHER EXAMPLES
+cat <<EOF | awk '{ print "(" $1 "^2)+1 = " ($1^2)+1 }'
+1
+2
+3
+4
+5
+EOF
+# will print
+  (1^2)+1 = 2
+  (2^2)+1 = 5
+  (3^2)+1 = 10
+  (4^2)+1 = 17
+  (5^2)+1 = 26
+
+cat <<EOF | awk '{ print $1 "%3=" $1%3 }'
+1
+2
+3
+4
+5
+EOF
+# will print
+  1%3=1
+  2%3=2
+  3%3=0
+  4%3=1
+  5%3=2
+
+# NUMBER OF FIELDS
+cat <<EOF | awk '{ print "num: " NF }'
+1 h jjjj k
+22
+3 n
+4444 hh
+5
+EOF
+# will print
+  num: 4
+  num: 1
+  num: 2
+  num: 2
+  num: 1
+
+# RECORD NUMBER
+cat <<EOF | awk '{ print "row: " NR " >> " $0 " >> " NR * 2 }'
+1 h jjjj k
+22
+3 n
+4444 hh
+5
+EOF
+# will print
+  row: 1 >> 1 h jjjj k
+  row: 2 >> 22
+  row: 3 >> 3 n
+  row: 4 >> 4444 hh
+  row: 5 >> 5
+
+# MULTI-LINE RECORDS
+cat <<EOF | awk '
+BEGIN {
+  FS="\n"
+  RS=""
+}
+{ print $1 ", " $2 ", " $3 }'
+Jimmy the Weasel
+100 Pleasant Drive
+San Francisco, CA 12345
+
+Big Tony
+200 Incognito Ave.
+Suburbia, WA 67890
+EOF
+  # By setting RS to "", we also tell awk that each address record is separated by a blank line
+
+# OFS VARIABLE
+echo "" | awk '{print "Hello", "there", "Jim!"}'
+# will print
+  Hello there Jim!
+
+cat <<EOF | awk '
+BEGIN {
+    FS="\n"
+    RS=""
+    OFS=", "
+}
+{ print $1, $2, $3 }'
+Jimmy the Weasel
+100 Pleasant Drive
+San Francisco, CA 12345
+
+Big Tony
+200 Incognito Ave.
+Suburbia, WA 67890
+EOF
+# will print
+  Jimmy the Weasel, 100 Pleasant Drive, San Francisco, CA 12345
+  Big Tony, 200 Incognito Ave., Suburbia, WA 67890
+
+# ORS VARIABLE (output record separator)
+cat <<EOF | awk '
+BEGIN {
+    FS="\n"
+    RS=""
+    OFS=", "
+    ORS="\n---\n"
+}
+{ print $1, $2, $3 }'
+Jimmy the Weasel
+100 Pleasant Drive
+San Francisco, CA 12345
+
+Big Tony
+200 Incognito Ave.
+Suburbia, WA 67890
+EOF
+# will print
+  Jimmy the Weasel, 100 Pleasant Drive, San Francisco, CA 12345
+  ---
+  Big Tony, 200 Incognito Ave., Suburbia, WA 67890
+  ---
+
+cat <<EOF | awk '
+BEGIN {
+    FS="\n"
+    RS=""
+    ORS=""
+    OFS=" -- "
+}
+
+{
+    x=1
+    while ( x<NF ) {
+        print $x " -- "
+        x++
+    }
+    print "::: " $NF "\n"
+}'
+Jimmy the Weasel
+100 Pleasant Drive
+San Francisco, CA 12345
+
+Cousin Vinnie
+Vinnie's Auto Shop
+300 City Alley
+Sosueme, OR 76543
+
+Big Tony
+200 Incognito Ave.
+Suburbia, WA 67890
+EOF
+
+# EXPLODE SPLIT PATH
+echo "" | awk '
+BEGIN  {
+        n = split (ENVIRON["PATH"], path, ":")
+        for (i = 1; i <= n; ++i)
+        print path[i]
+}
+'
+# will print
+  Jimmy the Weasel -- 100 Pleasant Drive -- ::: San Francisco, CA 12345
+  Cousin Vinnie -- Vinnie's Auto Shop -- 300 City Alley -- ::: Sosueme, OR 76543
+  Big Tony -- 200 Incognito Ave. -- ::: Suburbia, WA 67890
+    # from: https://pubs.opengroup.org/onlinepubs/9699919799/utilities/awk.html#tag_20_06_17
+
+# DO WHILE LOOP
+echo "" | awk '{
+    count=1
+    do {
+        print "I get printed at least once no matter what"
+    } while ( count != 1 )
+}'
+
+# FOR LOOP
+echo "" | awk '{
+  for ( x = 1; x <= 4; x++ ) {
+      print "iteration",x
+  }
+}'
+# will print
+  iteration 1
+  iteration 2
+  iteration 3
+  iteration 4
+
+# WHILE LOOP - BREAK, CONTINUE
+echo "" | awk '{
+  x=1
+  while(1) {
+      print "iteration",x
+      if ( x == 10 ) {
+          break
+      }
+      x++
+  }
+}'
+
+echo "" | awk '{
+  x=1
+  while (1) {
+      if ( x == 3 ) {
+          x++
+          continue
+      }
+      if ( x > 6 ) {
+          break
+      }
+      print "iteration",x
+      x++
+  }
+}'
+
+# ARRAY (arrays in awk are indexed from 1)
+echo "" | awk '{
+
+  myarray[0]="zero"
+  # will break the order of printing - don`t use 0
+
+  myarray[1]="jim"
+  myarray[2]=456
+  for ( x in myarray ) {
+    print myarray[x]
+  }
+}'
+# ARRAY DELETE
+echo "" | awk '{
+
+  myarray[0]="zero"
+  # will break the order of printing - don`t use 0
+
+  myarray[1]="jim"
+  myarray[2]=456
+  if ( 1 in myarray ) {
+    print "1 Ayep!  It`s there."
+  } else {
+      print "1 Nope!  Can`t find it."
+  }
+  if ( 0 in myarray ) {
+    print "2 Ayep!  It`s there."
+  } else {
+      print "2 Nope!  Can`t find it."
+  }
+
+  delete myarray[0];
+  delete myarray[1];
+
+  if ( 1 in myarray ) {
+    print "1 Ayep!  It`s there."
+  } else {
+      print "1 Nope!  Can`t find it."
+  }
+  if ( 0 in myarray ) {
+    print "2 Ayep!  It`s there."
+  } else {
+      print "2 Nope!  Can`t find it."
+  }
+}'
+
+# printf sprintf
+echo "" | awk 'BEGIN {
+  x=1
+  b="foo"
+  printf("%s got a %d on the last test\n","Jim",83)
+  myout=sprintf("%s-%d",b,x)
+  print myout
+}'
+# will print
+  Jim got a 83 on the last test
+  foo-1
+
+# index
+echo "" | awk 'BEGIN {
+print index("abyouc","you")
+}'
+
+# tolower toupper
+echo "" | awk 'BEGIN {
+mystring="aBcD"
+print mystring
+print tolower(mystring)
+print toupper(mystring)
+}'
+
+# substr
+echo "" | awk 'BEGIN {
+s="aBcDeFgHiJkLmNoPrStUwXyZ"
+print substr(s, 4, 4)
+}'
+
+# match
+echo "" | awk 'BEGIN {
+IGNORECASE = 1
+s="aBcDeFgHiJkLmNoPrStUwXyZ"
+match(s,/[h-l]+/)
+print "RSTART:" RSTART " RLENGTH:" RLENGTH " >>" substr(s, RSTART, RLENGTH) "<<"
+}'
+
+# String substitution sub
+echo "" | awk 'BEGIN {
+s="how are you doing today?"
+sub(/o/,"O",s)
+print s
+gsub(/o/,"O",s)
+print s
+}'
+# will print
+  hOw are you doing today?
+  hOw are yOu dOing tOday?
+
+# String substitution sub
+echo "" | awk 'BEGIN {
+numelements=split("Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",mymonths,",")
+print "numelements: " numelements " " mymonths[1] "," mymonths[5] "," mymonths[12]
+}'
+numelements: 12 Jan,May,Dec
+
+# DROP LAST ARGUMENT
+# A quick note -- when calling length(), sub(), or gsub(),
+# you can drop the last argument and awk will apply the function call to $0
+# (the entire current line). To print the length of each line in a file, use this awk script:
+cat <<EOF | awk '{
+      print length()
+}'
+1 h jjjj k
+22
+3 n
+4444 hh
+5
+EOF
+
+# functions
+# https://www.funtoo.org/Awk_by_Example,_Part_3#Financial_fun
+cat <<EOF | awk '
+function test(arg) {
+  return sprintf("str: %s\tlen: %d", arg, length(arg));
+}
+{ print test($2) }
+END {
+  print "END"
+}'
+a abcx
+a defxx
+a ghixxx
+a jklxxxx
+a mnox
+a pr
+a s
+a wxy
+EOF
+
+
+            </script>
+        </div>
+    </div>
+</div>
+</body>
+</html>
