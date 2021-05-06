@@ -48,6 +48,124 @@ k - kill process
 
                 </script>
                 
+                <h2>basics</h2>
+                <script type="editor" data-lang="sh">
+                
+# https://www.funtoo.org/Bash_by_Example,_Part_1
+# variable expansion functionality - Chopping strings like a pro
+
+# IN OTHER WORDS THIS SYNTAX IS FOCUSED ON CHOPPING OFF
+# NOT IN MATCHING AND RETURNING MATCHES BUT CHOPPING THEM OFF AND RETURNING THE REST
+
+$ MYVAR=foodforthought.jpg
+$ echo ${MYVAR##*fo} # cut to the LAST occurence (CUTS INCLUSIVE) CHOPPING GREEDY - LONGEST POSSIBLE MATCH
+rthought.jpg
+$ echo ${MYVAR#*fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
+odforthought.jpg
+
+# WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+# WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+# WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+
+$ echo ${MYVAR#*Fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
+foodforthought.jpg
+
+# TIP/MNEMONIC: look on the keyboard the character $ which is bash variable expansion character
+# on the left is # so it is for chopping from the beginning
+# on the right is % so it is for chopping from the end
+
+$ MYFOO="chickensoup.tar.gz"
+$ echo ${MYFOO%%.*} # cut longest possible from the end - GREEDY
+chickensoup
+$ echo ${MYFOO%.*} # cut shortest possible from the end - NON GREEDY
+chickensoup.tar
+
+# variable expansion based on a specific character offset and length
+$ EXCLAIM=cowabungazd
+#         12345678901 
+$ echo ${EXCLAIM:0:3}
+cow
+$ echo ${EXCLAIM:3:7}
+abungaz
+$ echo ${EXCLAIM:3:17}
+abungazd
+
+# default value
+${FRANKY:=Franky}
+
+# IF ELSE FI
+if [ condition ]
+then 
+        action
+elif [ condition2 ]
+then
+        action2
+.
+.
+.
+elif [ condition3 ]
+then
+
+else
+        actionx
+fi
+
+# LOOP FOR
+for x in one two three four "six seven" 
+do
+    echo number $x
+done
+# number one
+# number two
+# number three
+# number four
+# number six seven
+
+
+for myfile in /etc/r* /tmp/${MYPATH}/*
+do
+    if [ -d "$myfile" ] 
+    then
+      echo "$myfile (dir)"
+    else
+      echo "$myfile"
+    fi
+done
+# /etc/racoon (dir)
+# /etc/rc.common
+# /etc/rc.netboot
+# /etc/resolv.conf
+# /etc/rmtab
+# /etc/rpc
+# /etc/rtadvd.conf
+# ../a.sh is a silly file
+# ../a.txt is a silly file
+# ../runtime.tar.gz is a silly file
+# public/coverage is a silly file
+# public/cypress.html is a silly file
+# public/sandbox is a silly file
+
+cat <<EOF > k.sh
+#!/usr/bin/env bash
+for thing in "\$@"
+do
+    echo you typed \${thing}.
+done
+EOF
+chmod a+x k.sh
+./k.sh a b c "d e" -- "f g" h
+# you typed a.
+# you typed b.
+# you typed c.
+# you typed d e.
+# you typed --.
+# you typed f g.
+# you typed h.
+
+
+
+                </script>
+                
                 <h2>useful links</h2>
                 <ul>
                     <li><a href="https://buildkite.com/docs/pipelines/writing-build-scripts#configuring-bash">buildkite script guide ("Writing Build Scripts" section in doc)</a></li>
