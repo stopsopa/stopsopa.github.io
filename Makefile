@@ -12,6 +12,7 @@ status:
 build:
 	node pages/portsregistry/lists/ports-generator.js
 	/bin/bash pages/bookmarklets/compress.sh
+	/bin/bash remove-not-changed-builds.sh
 	#/bin/bash pages/kubernetes/compress.sh
 
 testport:
