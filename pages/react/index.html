@@ -22,7 +22,6 @@
             <h2>React - Textarea</h2>
             <script type="editor" data-lang="jsx">
 
-
 import React, { useRef, useState, useEffect } from 'react';
 
 // https://stackoverflow.com/a/5346855
@@ -39,7 +38,7 @@ else {
 }
 function init (text, correct) {
   function resize () {
-    console.log('fun resize', text)
+    console && console.log && console.log('fun resize', text)
     //text.style.height = 'auto';
     var h = text.scrollHeight;
     if (Number.isInteger(correct)) {
@@ -68,7 +67,7 @@ export default props => {
 
   const el = useRef(null);
 
-  const [ resize, setResize ] = useState(false);
+  const [ resize, setResize ] = useState({});
 
   const [ mounted, setMounted ] = useState(false);
 
@@ -83,14 +82,27 @@ export default props => {
 
   useEffect(() => {
 
+    let _resize = resize._resize;
+
     if ( ! mounted && el.current ) {
 
       setMounted(true);
 
-      setResize(init(el.current, correct));
+      _resize = init(el.current, correct);
+
+      setResize({
+        _resize: _resize
+      });
     }
 
-    (typeof resize === 'function') && resize();
+    try {
+
+      _resize();
+    }
+    catch (e) {
+
+      console && console.log && console.log(`Textarea.js _resize() trigger error: ${e}`);
+    }
   }, [value]);
 
   return (
