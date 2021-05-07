@@ -19,8 +19,14 @@
             <br>
             <a href="https://www.funtoo.org/Awk_by_Example,_Part_1">g(In awk, curly braces are used to group blocks of code together, similar to C. Inside our block of code, we have a single print command Awk by Example, Part 1)</a>
             <script type="editor" data-lang="python">
+            
+find pages | awk '{
+    if ($0 ~ /\.entry\.jsx?$/ ) {
+        print $0
+    }
+}'
 
-
+# ---- learning ----
 
 # RECORDS are separated by newline characters
 
