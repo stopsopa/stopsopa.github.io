@@ -20,9 +20,143 @@
                 </ul>
             </div>
             <div class="cards">
+                <h2>xargs</h2>
+                <script type="editor" data-lang="sh">
+
+# https://shapeshed.com/unix-xargs/
+echo -e "one two three\nfour six seven\neight" | xargs -t echo -e xxx
+# echo -e xxx one two three four six seven eight
+# -e xxx one two three four six seven eight
+#    -p  - prompt/user_confirmation mode
+
+# multiple commands
+echo -ne "one two three\nfour six seven\neight" | xargs -I % bash -c "echo \">>%<<\"; echo \":%:\""
+# >>one two three<<
+# :one two three:
+# >>four six seven<<
+# :four six seven:
+# >>eight<<
+# :eight:
+
+# skip blank lines
+cat <<EOF | xargs -I %% echo ">>%%<<"
+
+a
+
+b
+
+c
+
+EOF
+# >>a<<
+# >>b<<
+# >>c<<
+
+
+# newlines to NUL character
+cat <<EOF | tr '\n' '\0' | xargs -0 -I % -- echo ">>>%<<<"
+
+a
+
+b
+
+c
+
+EOF
+# >>><<<
+# >>>a<<<
+# >>><<<
+# >>>b<<<
+# >>><<<
+# >>>c<<<
+# >>><<<
+
+# multiline to one line
+# xargs executes echo by default
+cat <<EOF | xargs
+
+a
+
+b
+
+c
+
+EOF
+# a b c
+
+mkdir ttt
+cd ttt
+touch a
+touch "b c"
+touch e
+find . -print0 | xargs -0 -I % echo ">>%<<"
+cd ..
+rm -rf ttt
+# >>.<<
+# >>./a<<
+# >>./b c<<
+# >>./e<<
+
+# find and tar.gz all png files
+find pages -name "*.png" -type f -print0 | xargs -0 tar -cvzf images.tar.gz
+
+# remove all found
+find Downloads -name "DomTerm" -type d -print0 | xargs -0 /bin/rm -v -rf "{}"
+
+# manually use NUL character
+echo -ne 'one\0two\0three four\nsix seven\0end' | xargs -0 -I % echo ">%<"
+# >one<
+# >two<
+# >three four
+# six seven<
+# >end<
+
+# read from file instead of stdin
+# WARNING: ONLY LINUX - DOESN'T WORK ON MAC
+xargs -a rss_links.txt
+
+# different delimiter
+
+cat <<EOF | xargs -d% -I ^ echo ">>>^<<<"
+qwer
+t%yui
+opasd
+fg%hjh
+klzx
+cvb%
+nm%
+%
+EOF
+# >>>qwer
+# t<<<
+# >>>yui
+# opasd
+# fg<<<
+# >>>hjh
+# klzx
+# cvb<<<
+# >>>
+# nm<<<
+# >>>
+# <<<
+# >>>
+# <<<
+
+                </script>
+                <h2>find</h2>
+                <a href="https://ss64.com/osx/find.html">https://ss64.com/osx/find.html</a>
+                <script type="editor" data-lang="sh">
+
+# find all node_modules directories excluding nested node_modules (-prune)
+find . -type d -name node_modules -prune -print0 | xargs -0 -I % echo ":%:"
+
+# find files except matching pattern
+find . -type f -not -name '*gz'
+
+                </script>
                 <h2>debug</h2>
                 <script type="editor" data-lang="sh">
-                
+
 set -x          # Expand and print each command before executing
 set -e          # Exit script immediately if any command returns a non-zero exit status.
 set -o pipefail # more: https://buildkite.com/docs/pipelines/writing-build-scripts#configuring-bash

@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 103);
+/******/ 	return __webpack_require__(__webpack_require__.s = 104);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1393,16 +1393,7 @@ module.exports = (function () {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
-/* 14 */,
-/* 15 */,
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-module.exports = __webpack_require__(29);
-
-/***/ }),
-/* 17 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1990,6 +1981,15 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
   rest.id = user;
   return rest;
 });
+
+/***/ }),
+/* 15 */,
+/* 16 */,
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(29);
 
 /***/ }),
 /* 18 */
@@ -30762,13 +30762,6 @@ module.exports = function (o) {
 /* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-
-module.exports = __webpack_require__(40);
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
   Copyright (c) 2017 Jed Watson.
   Licensed under the MIT License (MIT), see
@@ -30821,6 +30814,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 	} else {}
 }());
 
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(40);
 
 /***/ }),
 /* 38 */
@@ -31108,7 +31108,8 @@ module.exports = set;
 /* 100 */,
 /* 101 */,
 /* 102 */,
-/* 103 */
+/* 103 */,
+/* 104 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -31124,23 +31125,22 @@ var react_dom = __webpack_require__(11);
 
 // EXTERNAL MODULE: ./node_modules/inspc/logn.js
 var logn = __webpack_require__(1);
-var logn_default = /*#__PURE__*/__webpack_require__.n(logn);
 
 // EXTERNAL MODULE: ./node_modules/classnames/index.js
-var classnames = __webpack_require__(37);
+var classnames = __webpack_require__(36);
 var classnames_default = /*#__PURE__*/__webpack_require__.n(classnames);
 
 // EXTERNAL MODULE: ./node_modules/nlab/get.js
 var nlab_get = __webpack_require__(38);
 
 // EXTERNAL MODULE: ./node_modules/nlab/set.js
-var nlab_set = __webpack_require__(36);
+var nlab_set = __webpack_require__(37);
 
 // EXTERNAL MODULE: ./pages/useCustomState.js + 1 modules
-var useCustomState = __webpack_require__(17);
+var useCustomState = __webpack_require__(14);
 
 // EXTERNAL MODULE: ./node_modules/nlab/isObject.js
-var isObject = __webpack_require__(16);
+var isObject = __webpack_require__(17);
 
 // CONCATENATED MODULE: ./components/Textarea.js
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -31247,6 +31247,10 @@ function init(text, correct) {
   }, rest));
 });
 // CONCATENATED MODULE: ./pages/todo/todo.entry.jsx
+function todo_entry_objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = todo_entry_objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function todo_entry_objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -31350,15 +31354,9 @@ var todo_entry_List = function List(_ref7) {
         completed: completed
       }),
       onClick: function onClick() {
-        // if (edit.id && edit.id === id) {
-        //
-        // }
-        // else {
-        //
-        // }
-        setEdit(edit.id && edit.id === id ? {} : _objectSpread({
+        return setEdit(edit.id && edit.id === id ? {} : _objectSpread(_objectSpread({}, v), {}, {
           id: id
-        }, v));
+        }));
       }
     }, /*#__PURE__*/react_default.a.createElement("div", null, v.title), /*#__PURE__*/react_default.a.createElement("div", null, /*#__PURE__*/react_default.a.createElement("span", null, v.created), /*#__PURE__*/react_default.a.createElement("button", {
       onClick: /*#__PURE__*/function () {
@@ -31406,43 +31404,24 @@ var todo_entry_List = function List(_ref7) {
                   e.stopPropagation();
                   sort = processList(list, false);
                   _sort$splice = sort.splice(i, 1), _sort$splice2 = todo_entry_slicedToArray(_sort$splice, 1), element = _sort$splice2[0];
-                  logn_default.a.dump({
-                    before: sort.map(function (_ref12) {
-                      var _ref13 = todo_entry_slicedToArray(_ref12, 2),
-                          _ = _ref13[0],
-                          e = _ref13[1];
-
-                      return e.title;
-                    })
-                  });
                   sort.splice(i - 1, 0, element);
-                  sort.forEach(function (_ref14, i) {
-                    var _ref15 = todo_entry_slicedToArray(_ref14, 2),
-                        _ = _ref15[0],
-                        e = _ref15[1];
+                  sort.forEach(function (_ref12, i) {
+                    var _ref13 = todo_entry_slicedToArray(_ref12, 2),
+                        _ = _ref13[0],
+                        e = _ref13[1];
 
                     return e.sort = i + 1;
                   });
-                  logn_default.a.dump({
-                    element: element['1'].title,
-                    after: sort.map(function (_ref16) {
-                      var _ref17 = todo_entry_slicedToArray(_ref16, 2),
-                          _ = _ref17[0],
-                          e = _ref17[1];
-
-                      return e.title;
-                    })
-                  });
-                  _context2.next = 10;
+                  _context2.next = 8;
                   return set({
                     data: _objectSpread({}, list)
                   });
 
-                case 10:
-                  _context2.next = 12;
+                case 8:
+                  _context2.next = 10;
                   return refreshList();
 
-                case 12:
+                case 10:
                 case "end":
                   return _context2.stop();
               }
@@ -31457,7 +31436,7 @@ var todo_entry_List = function List(_ref7) {
       disabled: i === 0
     }, "\u2B06"), completed === false && /*#__PURE__*/react_default.a.createElement("button", {
       onClick: /*#__PURE__*/function () {
-        var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
+        var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
           var sort, _sort$splice3, _sort$splice4, element;
 
           return regeneratorRuntime.wrap(function _callee3$(_context3) {
@@ -31469,33 +31448,23 @@ var todo_entry_List = function List(_ref7) {
                   sort = processList(list, false);
                   _sort$splice3 = sort.splice(i, 1), _sort$splice4 = todo_entry_slicedToArray(_sort$splice3, 1), element = _sort$splice4[0];
                   sort.splice(i + 1, 0, element);
-                  sort.forEach(function (_ref19, i) {
-                    var _ref20 = todo_entry_slicedToArray(_ref19, 2),
-                        _ = _ref20[0],
-                        e = _ref20[1];
+                  sort.forEach(function (_ref15, i) {
+                    var _ref16 = todo_entry_slicedToArray(_ref15, 2),
+                        _ = _ref16[0],
+                        e = _ref16[1];
 
                     return e.sort = i + 1;
                   });
-                  logn_default.a.dump({
-                    element: element['1'].title,
-                    after: sort.map(function (_ref21) {
-                      var _ref22 = todo_entry_slicedToArray(_ref21, 2),
-                          _ = _ref22[0],
-                          e = _ref22[1];
-
-                      return e.title;
-                    })
-                  });
-                  _context3.next = 9;
+                  _context3.next = 8;
                   return set({
                     data: _objectSpread({}, list)
                   });
 
-                case 9:
-                  _context3.next = 11;
+                case 8:
+                  _context3.next = 10;
                   return refreshList();
 
-                case 11:
+                case 10:
                 case "end":
                   return _context3.stop();
               }
@@ -31504,13 +31473,13 @@ var todo_entry_List = function List(_ref7) {
         }));
 
         return function (_x3) {
-          return _ref18.apply(this, arguments);
+          return _ref14.apply(this, arguments);
         };
       }(),
       disabled: i === arrList.length - 1
     }, "\u2B07"), /*#__PURE__*/react_default.a.createElement("button", {
       onClick: /*#__PURE__*/function () {
-        var _ref23 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
+        var _ref17 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
           return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
               switch (_context4.prev = _context4.next) {
@@ -31540,7 +31509,7 @@ var todo_entry_List = function List(_ref7) {
         }));
 
         return function (_x4) {
-          return _ref23.apply(this, arguments);
+          return _ref17.apply(this, arguments);
         };
       }()
     }, "\uD83D\uDDD1\uFE0F")));
@@ -31569,7 +31538,7 @@ var todo_entry_Main = function Main() {
       setEdit = _useState4[1];
 
   var refreshList = /*#__PURE__*/function () {
-    var _ref24 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+    var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
       var list;
       return regeneratorRuntime.wrap(function _callee5$(_context5) {
         while (1) {
@@ -31601,7 +31570,7 @@ var todo_entry_Main = function Main() {
     }));
 
     return function refreshList() {
-      return _ref24.apply(this, arguments);
+      return _ref18.apply(this, arguments);
     };
   }();
 
@@ -31622,43 +31591,51 @@ var todo_entry_Main = function Main() {
   }
 
   var submit = /*#__PURE__*/function () {
-    var _ref25 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+    var _ref19 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+      var _id, data;
+
       return regeneratorRuntime.wrap(function _callee6$(_context6) {
         while (1) {
           switch (_context6.prev = _context6.next) {
             case 0:
-              if (!edit.id) {
-                _context6.next = 5;
+              if (!(typeof edit.title !== 'string' || !edit.title.trim())) {
+                _context6.next = 2;
                 break;
               }
 
-              _context6.next = 3;
+              return _context6.abrupt("return");
+
+            case 2:
+              if (!edit.id) {
+                _context6.next = 8;
+                break;
+              }
+
+              _id = edit.id, data = todo_entry_objectWithoutProperties(edit, ["id"]);
+              _context6.next = 6;
               return set({
                 key: edit.id,
-                data: {
-                  title: edit.title,
-                  description: edit.description
-                }
+                data: data
               });
 
-            case 3:
-              _context6.next = 7;
+            case 6:
+              _context6.next = 10;
               break;
 
-            case 5:
-              _context6.next = 7;
+            case 8:
+              _context6.next = 10;
               return push({
                 data: _objectSpread(_objectSpread({}, edit), {}, {
                   created: new Date().toISOString().substring(0, 19).replace('T', ' ')
                 })
               });
 
-            case 7:
+            case 10:
               setEdit({});
-              _context6.next = 10;
+              _context6.next = 13;
               return refreshList();
 
-            case 10:
+            case 13:
             case "end":
               return _context6.stop();
           }
@@ -31667,13 +31644,13 @@ var todo_entry_Main = function Main() {
     }));
 
     return function submit() {
-      return _ref25.apply(this, arguments);
+      return _ref19.apply(this, arguments);
     };
   }();
 
   return /*#__PURE__*/react_default.a.createElement("div", null, /*#__PURE__*/react_default.a.createElement("h4", null, "Todo:"), /*#__PURE__*/react_default.a.createElement("form", {
     onSubmit: /*#__PURE__*/function () {
-      var _ref26 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
+      var _ref20 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
         return regeneratorRuntime.wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
@@ -31690,7 +31667,7 @@ var todo_entry_Main = function Main() {
       }));
 
       return function (_x5) {
-        return _ref26.apply(this, arguments);
+        return _ref20.apply(this, arguments);
       };
     }()
   }, /*#__PURE__*/react_default.a.createElement("input", {
@@ -31710,7 +31687,8 @@ var todo_entry_Main = function Main() {
     value: edit.description || '',
     correct: -4
   }), /*#__PURE__*/react_default.a.createElement("br", null), /*#__PURE__*/react_default.a.createElement("button", {
-    type: "submit"
+    type: "submit",
+    disabled: typeof edit.title !== 'string' || !edit.title.trim()
   }, edit.id ? 'edit' : 'create')), /*#__PURE__*/react_default.a.createElement("h4", null, "Todo:"), /*#__PURE__*/react_default.a.createElement(todo_entry_List, {
     edit: edit,
     list: list,
@@ -31723,19 +31701,7 @@ var todo_entry_Main = function Main() {
     completed: true,
     refreshList: refreshList,
     setEdit: setEdit
-  }), /*#__PURE__*/react_default.a.createElement("button", {
-    onClick: function onClick() {
-      logn_default.a.dump({
-        click: list
-      });
-      Object.keys(list).forEach(function (key, i) {
-        list[key].sort = i + 1;
-      });
-      set({
-        data: list
-      });
-    }
-  }, "click"));
+  }));
 };
 
 Object(react_dom["render"])( /*#__PURE__*/react_default.a.createElement(todo_entry_Main, null), document.getElementById('app'));

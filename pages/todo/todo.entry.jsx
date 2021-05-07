@@ -77,16 +77,7 @@ const List = ({
         <div key={id} className={classnames('row', {
           edit: edit.id === id,
           completed,
-        })} onClick={() => {
-
-          // if (edit.id && edit.id === id) {
-          //
-          // }
-          // else {
-          //
-          // }
-          setEdit((edit.id && edit.id === id) ? {} : {id,...v})
-        }}>
+        })} onClick={() => setEdit((edit.id && edit.id === id) ? {} : {...v, id})}>
           <div>{v.title}</div>
           <div>
             <span>{v.created}</span>
@@ -111,18 +102,9 @@ const List = ({
 
                 const [element] = sort.splice(i, 1);
 
-                log.dump({
-                  before: sort.map(([_, e]) => e.title)
-                });
-
                 sort.splice(i - 1, 0, element);
 
                 sort.forEach(([_, e], i) => (e.sort = i + 1));
-
-                log.dump({
-                  element: element['1'].title,
-                  after: sort.map(([_, e]) => e.title)
-                });
 
                 await set({
                   data: {
@@ -145,11 +127,6 @@ const List = ({
                 sort.splice(i + 1, 0, element);
 
                 sort.forEach(([_, e], i) => (e.sort = i + 1));
-
-                log.dump({
-                  element: element['1'].title,
-                  after: sort.map(([_, e]) => e.title)
-                });
 
                 await set({
                   data: {
@@ -223,14 +200,21 @@ const Main = () => {
 
   const submit = async () => {
 
+    if ( typeof edit.title !== 'string' || ! edit.title.trim() ) {
+
+      return;
+    }
+
     if (edit.id) {
+
+      const {
+        id,
+        ...data
+      } = edit;
 
       await set({
         key   : edit.id,
-        data  : {
-          title: edit.title,
-          description: edit.description,
-        },
+        data,
       });
     }
     else {
@@ -252,9 +236,7 @@ const Main = () => {
     <div>
       <h4>Todo:</h4>
       <form onSubmit={async e => {
-
         e.preventDefault();
-
         submit();
       }}>
         <input type="text"
@@ -268,7 +250,9 @@ const Main = () => {
           correct={-4}
         />
         <br/>
-        <button type="submit">{edit.id ? 'edit' : 'create'}</button>
+        <button type="submit"
+                disabled={ typeof edit.title !== 'string' || ! edit.title.trim() }
+        >{edit.id ? 'edit' : 'create'}</button>
       </form>
       <h4>Todo:</h4>
       <List
@@ -286,24 +270,6 @@ const Main = () => {
         refreshList={refreshList}
         setEdit={setEdit}
       />
-      <button onClick={() => {
-
-        log.dump({
-          click: list,
-        });
-
-        Object.keys(list).forEach((key, i) => {
-          list[key].sort = i + 1;
-        });
-
-        set({
-          data: list,
-        })
-
-
-
-
-      }}>click</button>
     </div>
   )
 }
