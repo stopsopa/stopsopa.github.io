@@ -29,6 +29,14 @@ echo -e "one two three\nfour six seven\neight" | xargs -t echo -e xxx
 # -e xxx one two three four six seven eight
 #    -p  - prompt/user_confirmation mode
 
+seq 3 | xargs -- echo number
+# number 1 2 3
+
+seq 3 | xargs -n 1 -- echo number
+# number 1
+# number 2
+# number 3
+
 # multiple commands
 echo -ne "one two three\nfour six seven\neight" | xargs -I % bash -c "echo \">>%<<\"; echo \":%:\""
 # >>one two three<<
