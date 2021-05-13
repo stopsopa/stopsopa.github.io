@@ -12,6 +12,27 @@
 
     <div class="body">
         <div class="inside">
+                
+                <h2>useful</h2>
+                <script type="editor" data-lang="sh">
+                
+                
+find . -type f -name config | grep --color=never -v node_modules | grep --color=never /.git/config | xargs -n 1 realpath | xargs -n 1 -- bash -c '
+FILE="$0" # because it is inline script (bash -c) then first arg is not a 1 arg but 0
+STDOUT="$(awk "{
+    if (\$0 ~ /git@bitbucket\.org:org\/proj\.git/) {
+        print \$0
+    }
+}" "$FILE")"
+
+if [ "$STDOUT" = "" ]; then
+    echo "$FILE not found"
+else
+    echo -e "$FILE \033[32mFOUND\e[0m"
+fi
+'
+
+                </script>
             <div class="cards toc">
                 <h1>Table of Contents</h1>
                 <ul>
