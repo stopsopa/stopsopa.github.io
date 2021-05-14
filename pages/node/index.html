@@ -1146,7 +1146,15 @@ module.exports = function jsonfetch (url, opt = {}) {
 
       socket.on('timeout', () => { // https://stackoverflow.com/a/9910413/5560682
 
-        req.abort();
+        try {
+          req.destroy();
+        }
+        catch (e) {
+          try {
+            req.abort(); // since v14.1.0 Use request.destroy() instead
+          }
+          catch (e) {}
+        }
 
         reject(emsg(`timeout (${timeout}ms)`))
       });
