@@ -184,7 +184,48 @@ k - kill process
                 
                 <h2>basics</h2>
                 <script type="editor" data-lang="sh">
-                
+
+# Pathname Expansion
+echo *s
+# Documents Pictures Templates Videos
+
+echo [[:upper:]]*
+# Desktop Documents Music Pictures Public Templates Videos
+
+echo /usr/*/share
+# /usr/kerberos/share /usr/local/share
+
+# Arithmetic Expansion
+echo echo $(((5**2) * 3))
+# 75
+
+# Brace Expansion
+echo Front-{A,B,C}-Back
+# Front-A-Back Front-B-Back Front-C-Back
+
+echo Number_{1..5}
+# Number_1 Number_2 Number_3 Number_4 Number_5
+
+echo {Z..A}
+# Z Y X W V U T S R Q P O N M L K J I H G F E D C B A
+
+echo {2017..2019}-{09..12}
+# mac   : 2017-9 2017-10 2017-11 2017-12 2018-9 2018-10 2018-11 2018-12 2019-9 2019-10 2019-11 2019-12
+# linux : 2017-09 2017-10 2017-11 2017-12 2018-09 2018-10 2018-11 2018-12 2019-09 2019-10 2019-11 2019-12
+
+echo $(cal)
+# May 2021 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+
+echo "$(cal)"
+#       May 2021
+# Mo Tu We Th Fr Sa Su
+#                 1  2
+#  3  4  5  6  7  8  9
+# 10 11 12 13 14 15 16
+# 17 18 19 20 21 22 23
+# 24 25 26 27 28 29 30
+# 31
+
 # https://www.funtoo.org/Bash_by_Example,_Part_1
 # variable expansion functionality - Chopping strings like a pro
 
@@ -788,6 +829,87 @@ EOF
 /bin/bash aaaa.sh one two "three four"
 rm -rf aaaa.sh
 
+
+                </script>
+
+                <h2>linux permissions files</h2>
+                <a href="http://linuxcommand.org/lc3_lts0090.php">http://linuxcommand.org/lc3_lts0090.php</a>
+                <br>
+                <img src="file_permissions.png" style="max-width: 400px" />
+                <br>
+                <script type="editor" data-lang="sh">
+
+# create user
+adduser --system --shell '/bin/bash' -m mark
+
+# add group
+sudo usermod -a -G group-name mark
+sudo usermod -a -G buildkite-agent mark
+
+
+ls -l /bin/bash
+# -rwxr-xr-x 1 root root 1113504 Jun  6  2019 /bin/bash
+# The file "/bin/bash" is owned by user "root"
+# The superuser has the right to read, write, and execute this file
+# The file is owned by the group "root"
+# Members of the group "root" can also read and execute this file
+# Everybody else can read and execute this file
+
+# rwx rwx rwx = 111 111 111
+# rw- rw- rw- = 110 110 110
+# rwx --- --- = 111 000 000
+
+# and so on...
+
+# rwx = 111 in binary = 7
+# rw- = 110 in binary = 6
+# r-x = 101 in binary = 5
+# r-- = 100 in binary = 4
+
+# (Files that are not programs should not be given the execute permission.)
+
+# 777	(rwxrwxrwx) No restrictions on permissions. Anybody may do anything.
+#                   Generally not a desirable setting.
+
+# 755	(rwxr-xr-x) The file's owner may read, write, and execute the file. All others may read and execute
+#                   the file. This setting is common for programs that are used by all users.
+
+# 700	(rwx------) The file's owner may read, write, and execute the file. Nobody else has any rights.
+#                   This setting is useful for programs that only the owner may use and must be kept private
+#                   from others.
+
+# 666	(rw-rw-rw-) All users may read and write the file.
+
+# 644	(rw-r--r--) The owner may read and write a file, while all others may only read the file.
+#                   A common setting for data files that everybody may read, but only the owner may change.
+
+# 600	(rw-------) The owner may read and write a file. All others have no rights. A common setting
+#                   for data files that the owner wants to keep private.
+
+chown user:group filename
+chgrp group_name filename
+
+chown batman file
+# chown: changing ownership of 'file': Operation not permitted
+# you have to be root to change ownershipt of the file/dir
+
+sudo chown batman: file
+# will change user and group to 'batman' (colon)
+
+                </script>
+                <br>
+                <h2>linux permissions directories</h2>
+                <img src="permissions.png" style="max-width: 650px" />
+                source
+                <a href="https://unix.stackexchange.com/a/21263/462348">https://unix.stackexchange.com/a/21263</a>
+                <br>
+                <img src="table.png" style="max-width: 650px" />
+                <script type="editor" data-lang="sh">
+
+# r - Allows the contents of the directory to be listed if the x attribute is also set.
+# w - Allows files within the directory to be created, deleted, or renamed if the x attribute is also set.
+# x - Allows a directory to be entered (i.e. cd dir).
+#     Being allowed to "enter" a dir and gain possible access to sub-dirs.
 
                 </script>
             </div>
