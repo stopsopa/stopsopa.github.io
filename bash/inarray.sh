@@ -1,5 +1,5 @@
 
-# https://stackoverflow.com/a/8574392/5560682
+# https://stackoverflow.com/a/8574392
 inArray () {
     local e
     for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done

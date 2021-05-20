@@ -3,7 +3,7 @@
 #echo "$T"
 #
 ## escaping [
-## https://stackoverflow.com/a/27973573/5560682
+## https://stackoverflow.com/a/27973573
 #echo "$T" | sed -E "s/([][|\\{}()^$\\+*\\?\\.\/])/\\\\\1/g"
 
 echo "$1" | sed -E "s/([][|\\{}()^$\\+*\\?\\.\/])/\\\\\1/g"

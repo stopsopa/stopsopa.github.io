@@ -12,7 +12,7 @@ window.log = log;
 
 (function () {
 
-    // https://stackoverflow.com/a/13017382/5560682
+    // https://stackoverflow.com/a/13017382
 
     log.c = function () {
 

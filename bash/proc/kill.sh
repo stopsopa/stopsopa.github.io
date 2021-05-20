@@ -67,8 +67,8 @@ LIST=$(ps aux | grep "$FLAG" | grep -v grep | grep -v " $THISFILE") || true
 
 if [ "$#" -gt 1 ]; then
 
-    # https://stackoverflow.com/a/1336245/5560682
-    # https://stackoverflow.com/a/2390870/5560682
+    # https://stackoverflow.com/a/1336245
+    # https://stackoverflow.com/a/2390870
     IGNORE=("${@:2}") || true
 
     # to see what's inside array:

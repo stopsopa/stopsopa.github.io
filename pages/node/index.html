@@ -1144,7 +1144,7 @@ module.exports = function jsonfetch (url, opt = {}) {
 
       socket.setTimeout(timeout);
 
-      socket.on('timeout', () => { // https://stackoverflow.com/a/9910413/5560682
+      socket.on('timeout', () => { // https://stackoverflow.com/a/9910413
 
         req.abort();
 

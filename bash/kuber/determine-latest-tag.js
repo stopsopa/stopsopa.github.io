@@ -19,7 +19,7 @@ let list = process.argv.filter(r => Boolean(r.trim())).map(ver => {
 });
 
 /**
- * https://stackoverflow.com/a/6832706/5560682
+ * https://stackoverflow.com/a/6832706
  */
 function compare(a, b) {
 
