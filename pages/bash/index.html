@@ -32,6 +32,16 @@ else
 fi
 '
 
+# iterater through lines from variable
+FILES="$(find "$FIXTURE" -type f)"
+
+echo "$FILES"
+
+while IFS= read -r line; do
+    echo "... $line ..."
+done <<< "$FILES"
+# from: https://superuser.com/a/284226
+
                 </script>
             <div class="cards toc">
                 <h1>Table of Contents</h1>
