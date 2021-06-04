@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>stopsopa.github.io</title>
+    <script src="/js/github.js"></script>
+</head>
+<body class="layout" toc>
+
+    <div class="body">
+        <div class="inside">
+            <div class="cards">
+
+                <h2>Generics</h2>
+                <a href="https://www.typescriptlang.org/play?#code/C4TwDgpgBAwg9gVwHbAE4igXigcgAoAyOUAPrgCICixZOAYgEo24CqA0jgNwBQ3okUAOJ4EqAMYALAIYBnCAB4AKvGRoQAGiiKAblOAA+LFADe3KOahjEKdAC4tKmxrMXdwRVIAe9nXvUvzJCkAWwh7GTQASyQAc38LKCQIYDxUSLEwxIRggCMIVH8AX15+aBFxaTkjAKFyyVkFfCJND08AfUJDMhrhUXq5eRwqHBavNqouqB66ysbGEa0xxknpvtnBwgXWjoJ9bh4+cGhtwiMABlIoM4A6M4BWS5uzgA5H64AmAGYeUsX2qnObwA7G8AIwATh+Rz+bUYgLIT3eoLe9weCOuyPR7yhAm27HhV1uaMJ7zOBysSAiUDAawaMnsMwaAG0ALpGJk1UwJBJWVR2XCbeLc8xuVr2J53O5C4VBUL2HAAE2yYAANtEYjIRjUEkkUmkMvZQWcztKoIVTVzhZZrGp5cNTQlRV5xRiHRZZZkcAAhACCAHUfQwAJI+gByUC9lEoTDdgWSqXSmVJJpq5s52osvKc8vmsagTu8hNReY98oAZqg4BqtVbEvH9ZlPsbTWmEpbhVnbQLmhmRXoxUXJSWQp6IDENVAAGRQHJSCk1q26hMGqAAFmbqf8LKAA">Playground</a>
+                <script type="editor" data-lang="typescript">
+                
+type Country = 'PL' | 'DE' | 'FR' | 'UK';
+
+type GPurchase<TCountry, Tvat> = {
+    country: TCountry,
+    vatTax: Tvat,
+    name: string,
+    netPrice: number,
+}
+
+type Purchase =
+    GPurchase<'PL', Tax_PL> |
+    GPurchase<'DE', Tax_DE> |
+    GPurchase<'FR', Tax_FR> |
+    GPurchase<'PL', Tax_PL>
+;
+
+type Tax_PL = 0 | 0.05 | 0.08 | 0.23;
+type Tax_DE = 0 | 0.7 | 0.19;
+type Tax_FR = 0 | 0.021 | 0.055 | 0.1 | 0.2;
+type Tax_UK = 0 | 0.05 | 0.20;
+
+const purchases: Purchase[] = [
+    {
+        country: 'PL',
+        vatTax: 0.055,
+        name: 'dumplings',
+        netPrice: 100,
+    },
+    {
+        country: 'DE',
+        vatTax: 0.1,
+        name: 'BAWARIAN BEER',
+        netPrice: 200,
+    },
+    {
+        country: 'FR',
+        vatTax: 0.055,
+        name: 'frogs',
+        netPrice: 300,
+    },
+    {
+        country: 'PL',
+        vatTax: 0.055,
+        name: 'eggs & bacon',
+        netPrice: 400,
+    },
+]
+                </script>
+
+                <h2>React.FC</h2>
+                <a href="https://www.typescriptlang.org/play?ssl=16&ssc=2&pln=1&pc=1#code/FASwtgDg9gTgLgAgEoFMCGBjRAzGUwIDkM6WhA3MKAHZwozaYoICyAngAp4QDOCA3sATCEAEzRw0ALgTUArmABG9ADRCRUCHBBRqaADYARCWgD8M+UtXAAvlQD09hBl09EAYXzRqKWjNSYcAB0AGLuADzsXJo8AHwIALwIENx8CfHhsfwpMUHikjbh9rHAjs6uHl66vohJABT8YiYINjJRqQCUiRlZ+WiFxaVOLtRuCJ6Q1bSJCA19raycqQgAZALOABYg+qIk1P6kwQFYAHJQosw2XekImfzzRSUjYxPeNQeBoRHtMfH1ObxrvFBCIECQ4HIYNRZupQcJwqIQAA3LIAnh5EwDREo2EIDq2IA">Playground</a>
+                <br>
+                <a href="https://youtu.be/jjso3UGVn08?t=1359">https://youtu.be/jjso3UGVn08?t=1359</a>
+                <script type="editor" data-lang="typescript">
+
+import React from 'react';
+
+interface MyProps {
+    data: number,
+    optionalData?: number,
+}
+
+// const Component: React.FC<MyProps> = props => <>{props.data}</>
+// const Component = ({ data }: MyProps) => <>{data}</>
+// const Component = ({data}: MyProps & { children: React.ReactNode }) => <>{data}</>
+const Component: React.FC<MyProps> = (props) => {
+    return (
+        <div>{props.data}</div>
+    )
+}
+                </script>
+                <h2>Index access</h2>
+                <a href="https://www.typescriptlang.org/play?noUncheckedIndexedAccess=true&ts=4.0.5#code/FASwtgDg9gTgLgAgEoFMCGBjOAaBBvAVwGcUBlONOFAXwQDMYowEByGdLFgbmGADc0MBADsCYAEYohAXgQBtAIy4ATLgDMuACy4ArAF0eAekMIBQuiBhFEs0RKlyADAeDHTghFAJwA8nSRowgDmKAi2YpIwcvo8oMJUMHSYoQAKUkRQwvjACLkiaGAoAFwI1jAgwdjA1LwVCUkYqYwQRNl5CCBUYEQlaVaZcnpVNcAYmdYIAMJM0MIo8SWomHAAdABikwA8Kc1EAHxhCAAUeDl5nSjdwwCUYQenZ7ljwhNyIAAmAB64JHAAkl89IdiGQKFRNnZInsjo5rrF2s8JiQADYoLAod6HC7dN6ArgINwVd4oT4ITCNIitXjtdhwAgwLKbPYotFUTEQdKZEp4Fno94rYQFGibQx7aq8RGIFDIw6baaQTLzRDYojSPCDWiioA">runtime error - ts 4.0.5</a>
+                <br>
+                <a href="https://www.typescriptlang.org/play?noUncheckedIndexedAccess=true&ts=4.2.3#code/FASwtgDg9gTgLgAgEoFMCGBjOAaBBvAVwGcUBlONOFAXwQDMYowEByGdLFgbmGADc0MBADsCYAEYohAXgQBtAIy4ATLgDMuACy4ArAF0eAekMIBQuiBhFEs0RKlyADAeDHTghFAJwA8nSRowgDmKAi2YpIwcvo8oMJUMHSYoQAKUkRQwvjACLkiaGAoAFwI1jAgwdjA1LwVCUkYqYwQRNl5CCBUYEQlaVaZcnpVNcAYmdYIAMJM0MIo8SWomHAAdABikwA8Kc1EAHxhCAAUeDl5nSjdwwCUYQenZ7ljwhNyIAAmAB64JHAAkl89IdiGQKFRNnZInsjo5rrF2s8JiQADYoLAod6HC7dN6ArgINwVd4oT4ITCNIitXjtdhwAgwLKbPYotFUTEQdKZEp4Fno94rYQFGibQx7aq8RGIFDIw6baaQTLzRDYojSPCDWiioA">compile time error - ts 4.2.3</a>
+                <br>
+                <a href="https://www.typescriptlang.org/play?noUncheckedIndexedAccess=true&ts=4.0.5#code/FASwtgDg9gTgLgAgEoFMCGBjOAaBBvAVwGcUBlONOFAXwQDMYowEByGdLFgbmGADc0MBADsCYAEYohAXgQBtAIy4ATLgDMuACy4ArAF0eAekMIBQuiBhFEs0RKlyADAeDHTghFAJwA8nSRowgDmKAi2YpIwcvo8oMJUMHSYoQAKUkRQwvjACLkiaGAoAFwI1jAgwdjA1LwVCUkYqYwQRNl5CCBUYEQlaVaZcnpVNcAYmdYIAMJM0MIo8SWomHAAdABikwA8Kc1EAHxhCAAUeDl5nSjdwwCUYQenZ7ljwhNyIAAmAB64JHAAkl89IdiGQKFRNnZInsjo5rjx2o8EG4Ku8UJ8EJhGkRWoi3M8JiQADYoLAod6HC7dN6ArhIkySOiwUIAWhEUEQQSgUHJeV47XxiCJJKo5NklKI1M+QLQrT6GSyAB8EARhKiLHN3rTkaq0RiMFicYj2HACDAsps9kLSeSIOlMiU8FaRSthAUaJtDHtqrwBQgUITDptppBMvNEOLpHhBrRPUA">runtime error - ts 4.0.5 (fixed)</a>
+                <br>
+                <script type="editor" data-lang="typescript">
+
+import React, {useState} from 'react';
+
+var number = [1, 2, 3, 4, 5];
+// var first = number[0];
+// var outOfRange = number[5];
+
+interface Person {
+    name: string,
+}
+
+interface Props {
+    items: Person[],
+}
+
+const Component: React.FC<Props> = ({
+    items,
+}) => {
+
+    const [idx, setIdx] = useState<number>(0);
+
+    const selected = items[idx]; // index access
+
+    return <>selected person: {selected.name}</>
+}
+
+const el = <Component items={[]} />
+
+                </script>
+                <h2>no-implicit-any-catch</h2>
+                <a href="https://youtu.be/jjso3UGVn08?t=2317">yt</a>
+                <br>
+                <script type="editor" data-lang="typescript">
+
+import axios, { AxiosError } from 'axios';
+
+declare const handle: Function;
+function handleAxiosError(e: AxiosError) {
+    handle(e.config, e.response);
+}
+
+export const isAxiosError = (e: any): e is AxiosError<unknown> => {
+    return (e.isAxiosError as boolean)
+}
+
+export async function asyncCall() {
+    try {
+
+        const response = await axios.get<object[]>('api.com/data');
+
+        return response.data.length;
+    }
+    catch (e: unknown) {
+
+        if (isAxiosError(e)) {
+
+            handleAxiosError(e);
+        }
+        else {
+
+            handleGenericError(e);
+        }
+    }
+
+    return;
+}
+
+                </script>
+
+                <h2>Generics</h2>
+                <a href="https://youtu.be/jjso3UGVn08?t=2840">https://youtu.be/jjso3UGVn08?t=2840</a>
+                <br>
+                <a href="https://www.typescriptlang.org/play?noUncheckedIndexedAccess=true&ts=4.0.5#code/FASwtgDg9gTgLgAgEoFMCGBjRAzGUwIDkM6WhA3MKAHZwozaYoICSdYAMiAM5wAKeCNwA8AFTYowAPgQBvYAkUIQ7bgC4E49gG0AugBoFSktQAm9CWA0AKFZI1bJASgQBeGakxwAdJ6wA5KHNDAF8qbABXaiwQKGpWVS5eMUsEFAAPOjNuOWVTDV4YEGoAcwQQqWsIQXUEyST+GpT2KRd5I0UMON5cuzBufQQTcxhUkLcEaqghSg6hlDgImHjrOaUEYQiAGyk19aVZZVVvMDQIa2Z3Da2QBABrFABPV1kUbxBTCsPhi3YLlxCwgA9DdWuU9opgdtdusnMAQkA">Generics - ts sandbox</a>
+                <br>
+                <script type="editor" data-lang="typescript">
+
+import React from 'react';
+
+interface ItemListProps<TItem> {
+    items: TItem[],
+    renderItem: (item: TItem) => React.ReactNode,
+}
+
+function ItemsList<TItem extends { id: string }>(props: ItemListProps<TItem>) {
+
+    const { items, renderItem } = props;
+
+    return (
+        <ul>
+            { items.map(e => <li key={e.id}>{ renderItem(e) }</li>) }
+        </ul>
+    )
+}
+                </script>
+
+                <h2>conditional types</h2>
+                <a href="https://www.typescriptlang.org/play?noUncheckedIndexedAccess=true&ts=4.0.5#code/FASwtgDg9gTgLgAgEoFMCGBjRAzGUwIDkM6WhA3MKAHZwozaYoICikANlAJ4rMDewBEIQgAJgC4E1AK5gARvQA0g4dhAwAznAByaMCklaYIagHNlwhOzRbd+w3GNmLwjWmswukmfKUqhcCBw7AYIApaW0BpBIFDUDk7m-hEoAB4Q9CAo1BihPgowLkIAvsClwHBcGQgA8tTsXHbMALwIAAogGADWADxsEJw8KIpEapo6eiiECAA+RNa2k9NzhIHBUwB8lBVVzADqQQAWUNJwAJKiCK01YEF9HNy8I4RihFtUAPQfCBhxojFxdwISoZDQ7ap1BoAZUcJlMGiu7U6vX6gyeYWSAG02iJqAguiguFBsKwHkMALoJOEINJ0aiiBGox4obHkhAAfnaCG8KAAbvQypiCUSSUyKRsgA">ts sandbox</a>
+                <script type="editor" data-lang="typescript">
+
+import React from 'react';
+
+interface Employee {
+    id: number,
+    firstName: string,
+    lastName: string,
+    salary: number,
+    title: {
+        position: string,
+        experience: number,
+    }
+}
+
+type OnlyName = Pick<Employee, 'firstName' | 'lastName' | 'title'>;
+
+type WithoutId = Omit<Employee, 'id'>;
+
+// conditional types
+type OnlyStrings = Pick<Employee, {
+    [P in keyof Employee]: string extends Employee[P] ? P : never
+}[keyof Employee]>
+                </script>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
