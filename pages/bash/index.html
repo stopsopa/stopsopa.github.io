@@ -42,6 +42,19 @@ while IFS= read -r line; do
 done <<< "$FILES"
 # from: https://superuser.com/a/284226
 
+# basename and file extension
+EXTENSION="${PB##*.}"
+FILENAME="${PB%.*}"
+if [ "$FILENAME" = "" ]; then
+
+  FILENAME="$PB"
+  EXTENSION=""
+fi
+if [ "$FILENAME" = "$PB" ]; then
+
+  EXTENSION=""
+fi
+
                 </script>
             <div class="cards toc">
                 <h1>Table of Contents</h1>
