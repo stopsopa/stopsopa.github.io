@@ -182,6 +182,9 @@ find . -type d -name node_modules -prune -print0 | xargs -0 -I % echo ":%:"
 # find files except matching pattern
 find . -type f -not -name '*gz'
 
+# limit depth
+find . -type d -maxdepth 1
+
                 </script>
                 <h2>debug</h2>
                 <script type="editor" data-lang="sh">
