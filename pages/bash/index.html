@@ -32,6 +32,29 @@ else
 fi
 '
 
+# iterater through lines from variable
+FILES="$(find "$FIXTURE" -type f)"
+
+echo "$FILES"
+
+while IFS= read -r line; do
+    echo "... $line ..."
+done <<< "$FILES"
+# from: https://superuser.com/a/284226
+
+# basename and file extension
+EXTENSION="${PB##*.}"
+FILENAME="${PB%.*}"
+if [ "$FILENAME" = "" ]; then
+
+  FILENAME="$PB"
+  EXTENSION=""
+fi
+if [ "$FILENAME" = "$PB" ]; then
+
+  EXTENSION=""
+fi
+
                 </script>
             <div class="cards toc">
                 <h1>Table of Contents</h1>
@@ -181,6 +204,9 @@ find . -type d -name node_modules -prune -print0 | xargs -0 -I % echo ":%:"
 
 # find files except matching pattern
 find . -type f -not -name '*gz'
+
+# limit depth
+find . -type d -maxdepth 1
 
                 </script>
                 <h2>debug</h2>
