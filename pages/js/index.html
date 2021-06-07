@@ -595,12 +595,12 @@ function trim(string, charlist, direction) {
                 <h2>DateTime tricks:</h2>
                 <script type="editor" data-lang="jsx">
                 
-# Extracting browser timezone informations
+// Extracting browser timezone informations
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 console.log(tz);     
-    # https://stackoverflow.com/a/37512371/5560682
+    // https://stackoverflow.com/a/37512371/5560682
     
-# Extracting browser timezone offset
+// Extracting browser timezone offset
 (new Date()).getTimezoneOffset()/60
 
                 </script>
