@@ -974,7 +974,15 @@ module.exports = function request(url, opt = {}) {
 
       socket.on('timeout', () => { // https://stackoverflow.com/a/9910413
 
-        req.abort();
+        try {
+          req.destroy();
+        }
+        catch (e) {
+          try {
+            req.abort(); // since v14.1.0 Use request.destroy() instead
+          }
+          catch (e) {}
+        }
 
         reject({
           type: `timeout (${timeout}ms)`,
