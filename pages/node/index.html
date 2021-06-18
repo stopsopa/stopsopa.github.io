@@ -1201,6 +1201,8 @@ const isObject      = require("nlab/isObject");
 
 const log           = (function(){try{return console.log}catch(e){return()=>{}}}());
 
+const th = msg => new Error(`transport.js error: ${msg}`);
+
 let fakeFetch;
 
 let origin;
@@ -1211,6 +1213,21 @@ let origin;
   PORT="8080"
 */
 function setFetch(PROTOCOL, HOST, PORT) {
+
+  if ( /^https?$/.test(PROTOCOL) ) {
+
+    throw th(`PROTOCOL (${PROTOCOL}) don't match /^https?$/`);
+  }
+
+  if ( typeof HOST !== 'string' ) {
+
+    throw th(`HOST (${HOST}) is not a string`);
+  }
+
+  if ( ! HOST.trim() ) {
+
+    throw th(`HOST is an empty string`);
+  }
 
   origin = `${PROTOCOL}://${HOST}` + negotiatePort(PROTOCOL, PORT, ':');
 }
