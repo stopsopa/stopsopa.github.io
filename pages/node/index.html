@@ -1215,7 +1215,7 @@ let origin;
 */
 function setFetch(PROTOCOL, HOST, PORT) {
 
-  if ( /^https?$/.test(PROTOCOL) ) {
+  if ( ! /^https?$/.test(PROTOCOL) ) {
 
     throw th(`PROTOCOL (${PROTOCOL}) don't match /^https?$/`);
   }
