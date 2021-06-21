@@ -1192,7 +1192,7 @@ module.exports = function jsonfetch (url, opt = {}) {
                 <script type="editor" data-lang="js">
 
 
-// yarn add nlab node-fetch whatwg-fetch
+// yarn add nlab node-fetch cross-fetch
 
 const isNode        = require('nlab/isNode');
 
@@ -1235,23 +1235,21 @@ function setFetch(PROTOCOL, HOST, PORT) {
 
 if ( isNode ) {
 
-  fakeFetch = require('node-fetch');
+  fakeFetch = eval('require')('node-fetch');
 }
 else {
 
   (function (old) {
 
-    window.fetch = undefined;
+    const fetchPolyfill = require('cross-fetch');
 
-    require("whatwg-fetch");
-
-    const fake = window.fetch;
+    console.log('fetchPolyfill', fetchPolyfill)
 
     fakeFetch = window.fakeFetch = (url, opt) => {
 
       log(`ajax fetch polyfill ${url}`);
 
-      return fake(url, opt);
+      return fetchPolyfill(url, opt);
     };
 
     if (old) {
@@ -1336,6 +1334,13 @@ const fetchJson = (path, options) => {
 
   return res.then(res => res.json());
 };
+
+if ( ! isNode ) {
+
+  window.fetchData = fetchData;
+
+  window.fetchJson = fetchJson;
+}
 
 module.exports = {
   fetchData,
