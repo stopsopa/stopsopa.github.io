@@ -16,7 +16,20 @@
 
             <h2>SED</h2>
             <script type="editor" data-lang="python">
-
+	    
+-e script, --expression=script
+-i[SUFFIX], --in-place[=SUFFIX] - change in file, in place
+-n  By default, each line of input is echoed to the standard output after all of the
+	commands have been applied to it.  The -n option sup-
+     	presses this behavior.
+	
+# replace in file
+cat <<EOF | sed 's/one/ONE/'
+one two three, one two three
+four three two one
+one hundred
+EOF
+sed -i -r "s/model.images/model.resources/g" app/console/commands/migration/resources-to-spaces.command.js
 
 # line by line - replace one time per line:
 cat <<EOF | sed 's/one/ONE/'
