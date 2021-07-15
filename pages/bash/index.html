@@ -462,6 +462,7 @@ kill -9 xxxxxx && usermod -m -d /home/buildkite-agent buildkite-agent
  chsh -s /bin/zsh
 
                 </script>
+                more about: <a href="https://support.apple.com/en-gb/HT208050">https://support.apple.com/en-gb/HT208050</a>
             </div>
             <div class="cards">
 
@@ -570,9 +571,20 @@ printf "start\033[32mtest\e[0mend\n"
 
                 </script>
                 
+                WARNING: MIGHT BE NECESSARY ON MAC TO FIRST INSTALL: 
+                
+                <script type="editor" data-lang="sh">
+
+HOMEBREW_NO_AUTO_UPDATE=1 brew install coreutils
+
+dircolors -b
+gdircolors -b
+
+                </script>
+                
                 oneliner:
                 <script type="editor" data-lang="sh">
-if cat ~/.bashrc 2> /dev/null | grep '#colors mod' > /dev/null; then echo -e "\033[31m -=file .bashrc have been already modified before=-"; else echo -e "\n#colors mod\nexport EDITOR=vi\ncolor_prompt=yes;\nPS1='${debian_chroot:+($debian_chroot)}\[\033[`if [ "$(id -u)" != "0" ]; then echo '00;32'; else echo '1;30'; fi`m\]\u@\h\[\033[00;31m\]:\[\033[01;34m\]\w\[\033[00;33m\]\$ '\nalias ls='ls --color=auto'\nalias dir='dir --color=auto'\nalias ll='ls -alF'\nalias vdir='vdir --color=auto'\nalias grep='grep --color=auto'\nalias fgrep='fgrep --color=auto'\nalias egrep='egrep --color=auto'\neval \"`dircolors -b`\"\nexport HISTCONTROL=ignoreboth:erasedups\nalias con=\"php app/console\"\nalias c=\"/bin/bash clean.sh\"\n" >> ~/.bashrc && source ~/.bashrc && echo -e "\033[32m -= .bashrc has been modified =-"; fi &&        if cat ~/.vimrc 2> /dev/null | grep '" colors mod' > /dev/null; then echo -e "\033[31m -=file .vimrc has been already modified before=-"; else echo -e "\n\" colors mod\n:set number\n:set hlsearch\n:syntax on\n" >> ~/.vimrc && echo -e "\033[32m -= .vimrc has been modified =-"; fi        &&  history -d `history | tail -n 1 | sed -r 's#\s*([0-9]*).*#\1#'` && if [ ! -f ~/.history_backup ] ; then history > ~/.history_backup; fi
+if cat ~/.bashrc 2> /dev/null | grep '#colors mod' > /dev/null; then echo -e "\033[31m -=file .bashrc have been already modified before=-"; else echo -e "\n#colors mod\nexport EDITOR=vi\ncolor_prompt=yes;\nPS1='${debian_chroot:+($debian_chroot)}\[\033[`if [ "$(id -u)" != "0" ]; then echo '00;32'; else echo '1;30'; fi`m\]\u@\h\[\033[00;31m\]:\[\033[01;34m\]\w\[\033[00;33m\]\$ '\neval \"`dircolors -b || gdircolors -b`\"\nexport HISTCONTROL=ignoreboth:erasedups\n" >> ~/.bashrc && source ~/.bashrc && echo -e "\033[32m -= .bashrc has been modified =-"; fi &&        if cat ~/.vimrc 2> /dev/null | grep '" colors mod' > /dev/null; then echo -e "\033[31m -=file .vimrc has been already modified before=-"; else echo -e "\n\" colors mod\n:set number\n:set hlsearch\n:syntax on\n" >> ~/.vimrc && echo -e "\033[32m -= .vimrc has been modified =-"; fi        &&  history -d `history | tail -n 1 | awk '{\$1=\$1;print}' | sed -E 's#^([0-9]*).*#\1#g'` && if [ ! -f ~/.history_backup ] ; then history > ~/.history_backup; fi
                 </script>
 
                 full:
@@ -581,7 +593,7 @@ if cat ~/.bashrc 2> /dev/null | grep '#colors mod' > /dev/null; then echo -e "\0
 if cat ~/.bashrc 2> /dev/null | grep '#colors mod' > /dev/null; then
     echo -e "\033[31m -=file .bashrc have been already modified before=-"
 else
-    echo -e "\n#colors mod\nexport EDITOR=vi\ncolor_prompt=yes;\nPS1='${debian_chroot:+($debian_chroot)}\[\033[`if [ "$(id -u)" != "0" ]; then echo '00;32'; else echo '1;30'; fi`m\]\u@\h\[\033[00;31m\]:\[\033[01;34m\]\w\[\033[00;33m\]\$ '\nalias ls='ls --color=auto'\nalias dir='dir --color=auto'\nalias vdir='vdir --color=auto'\nalias grep='grep --color=auto'\nalias fgrep='fgrep --color=auto'\nalias egrep='egrep --color=auto'\neval \"`dircolors -b`\"\nexport HISTCONTROL=ignoreboth:erasedups\nalias con=\"php app/console\"\nalias c=\"/bin/bash clean.sh\"\n" >> ~/.bashrc
+    echo -e "\n#colors mod\nexport EDITOR=vi\ncolor_prompt=yes;\nPS1='${debian_chroot:+($debian_chroot)}\[\033[`if [ "$(id -u)" != "0" ]; then echo '00;32'; else echo '1;30'; fi`m\]\u@\h\[\033[00;31m\]:\[\033[01;34m\]\w\[\033[00;33m\]\$ '\neval \"`dircolors -b || gdircolors -b`\"\nexport HISTCONTROL=ignoreboth:erasedups\n" >> ~/.bashrc
     source ~/.bashrc
     echo -e "\033[32m -= .bashrc has been modified =-";
 fi
@@ -981,6 +993,7 @@ sudo chown batman: file
                 </script>
                 <br>
                 <h2>linux permissions directories</h2>
+                <a href="https://youtu.be/Z56Jmr9Z34Q?t=1336">https://youtu.be/Z56Jmr9Z34Q?t=1336</a>
                 <img src="permissions.png" style="max-width: 650px" />
                 source
                 <a href="https://unix.stackexchange.com/a/21263/462348">https://unix.stackexchange.com/a/21263</a>
