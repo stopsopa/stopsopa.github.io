@@ -91,6 +91,8 @@ has crushed with status code: >>$_CODE<<
 END
 )"; } 2>&3
 
+    sleep 4
+
     exit $_CODE;
 fi
 
@@ -101,6 +103,8 @@ _LINES="$(trim "$_LINES")"
 if [ "$_LIST" = "" ] || [ "$_LINES" -lt "1" ]; then
 
   { red "\n$0 error:   No keys found\n"; } 2>&3
+
+  sleep 4
 
   exit 1
 fi
@@ -147,6 +151,8 @@ try again:
 END
 )"; } 2>&3
 
+        sleep 4
+
         exit 0;
     fi
 
@@ -160,6 +166,8 @@ try again:
 
 END
 )"; } 2>&3
+
+        sleep 4
 
         exit 0;
     fi
@@ -234,6 +242,8 @@ has crushed with status code: >>$_CODE<<
 
 END
 )"; } 2>&3
+
+  sleep 4
 
   exit $_CODE;
 fi
