@@ -55,7 +55,7 @@ if [ "$1" = "install" ]; then
 
   echo -e "\n    sshh\n\nto switch ssh key"
 
-  exit 0
+  _exit 2> /dev/null || true
 fi
 
 trim() {
@@ -91,9 +91,9 @@ has crushed with status code: >>$_CODE<<
 END
 )"; } 2>&3
 
-    sleep 4
+    echo exit $_CODE;
 
-    exit $_CODE;
+    _exit 2> /dev/null || true
 fi
 
 _LINES="$(echo "$_LIST" | wc -l)"
@@ -104,9 +104,7 @@ if [ "$_LIST" = "" ] || [ "$_LINES" -lt "1" ]; then
 
   { red "\n$0 error:   No keys found\n"; } 2>&3
 
-  sleep 4
-
-  exit 1
+  _exit 2> /dev/null || true
 fi
 
 echo "Choose key to add:"
@@ -151,9 +149,7 @@ try again:
 END
 )"; } 2>&3
 
-        sleep 4
-
-        exit 0;
+      _exit 2> /dev/null || true
     fi
 
     if [[ "$i" -lt "1" ]] || [ "$i" -gt "$_LINES" ]; then
@@ -167,9 +163,7 @@ try again:
 END
 )"; } 2>&3
 
-        sleep 4
-
-        exit 0;
+      _exit 2> /dev/null || true
     fi
 
     SSHS="$(echo "$_LIST" | sed -n "$i p")"
@@ -243,9 +237,7 @@ has crushed with status code: >>$_CODE<<
 END
 )"; } 2>&3
 
-  sleep 4
-
-  exit $_CODE;
+  _exit 2> /dev/null || true
 fi
 
 ssh-add -l
