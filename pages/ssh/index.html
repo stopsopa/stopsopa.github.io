@@ -67,10 +67,15 @@ rm -rf ~/sshh.sh
 mkdir ~/.ssh
 chmod 700 .ssh/
 wget domain.com/pages/ssh/sshh.sh -O ~/sshh.sh
-/bin/bash ~/sshh.sh install
+/bin/bash ~/sshh.sh --dir "/Volumes/truecrypt/ssh/ssh" install
 source ~/.bash_profile
 source ~/.bashrc
 # you might want to change __DIR environment variable in sshh.sh script
+
+
+
+# you might also want to add to ~/.bash_profile
+/bin/bash /Users/sdzialowski/Workspace/stopsopa.github.io.git/runtime/pages/ssh/add.sh -d /Volumes/truecrypt/ssh/ssh first falcon
 
                 </script>
 
