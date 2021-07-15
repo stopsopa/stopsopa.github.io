@@ -13,7 +13,85 @@
 # to list added
 # ssh-add -L
 
-DIR="/Volumes/WINSCP/ssh/ssh"
+# DIR="/Volumes/WINSCP/ssh/ssh"
+
+PARAMS=""
+_EVAL=""
+while (( "$#" )); do
+  case "$1" in
+    -d|--dir)
+      DIR="$2";
+      shift 2;
+      ;;
+    --) # end argument parsing
+      shift;
+      while (( "$#" )); do          # optional
+        if [ "$1" = "&&" ]; then
+          PARAMS="$PARAMS \&\&"
+          _EVAL="$_EVAL &&"
+        else
+          if [ "$PARAMS" = "" ]; then
+            PARAMS="\"$1\""
+            _EVAL="\"$1\""
+          else
+            PARAMS="$PARAMS \"$1\""
+            _EVAL="$_EVAL \"$1\""
+#          PARAMS="$(cat <<EOF
+#$PARAMS
+#- "$1"
+#EOF
+#)"
+          fi
+        fi
+        echo "                PARAMS1>>$PARAMS<<"
+        echo "                _EVAL 2>>$_EVAL<<"
+        shift;                      # optional
+      done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
+      break;
+      ;;
+    -*|--*=) # unsupported flags
+      echo "$0 Error: Unsupported flag $1" >&2
+      exit 1;
+      ;;
+    *) # preserve positional arguments
+      if [ "$1" = "&&" ]; then
+          PARAMS="$PARAMS \&\&"
+          _EVAL="$_EVAL &&"
+      else
+        if [ "$PARAMS" = "" ]; then
+            PARAMS="\"$1\""
+            _EVAL="\"$1\""
+        else
+          PARAMS="$PARAMS \"$1\""
+            _EVAL="$_EVAL \"$1\""
+#          PARAMS="$(cat <<EOF
+#$PARAMS
+#- "$1"
+#EOF
+#)"
+        fi
+      fi
+      # echo "                PARAMS2>>$PARAMS<<"
+      # echo "                _EVAL 1>>$_EVAL<<"
+      shift;
+      ;;
+  esac
+done
+
+trim() {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "$var"
+}
+
+PARAMS="$(trim "$PARAMS")"
+_EVAL="$(trim "$_EVAL")"
+
+# set positional arguments in their proper place
+eval set -- "$PARAMS"
 
 exec 3<> /dev/null
 function green {
@@ -27,6 +105,15 @@ function red {
 function yellow {
     printf "\e[33m$1\e[0m\n"
 }
+
+if [ "$DIR" = "" ]; then
+
+
+  { red "\n$0 error:   --dir is not specified\n"; } 2>&3
+
+
+  _exit 2> /dev/null
+fi
 
 echo "currently loade files"
 ssh-add -l
@@ -57,15 +144,6 @@ if [ "$1" = "install" ]; then
 
   _exit 2> /dev/null || true
 fi
-
-trim() {
-    local var="$*"
-    # remove leading whitespace characters
-    var="${var#"${var%%[![:space:]]*}"}"
-    # remove trailing whitespace characters
-    var="${var%"${var##*[![:space:]]}"}"
-    echo -n "$var"
-}
 
 _CMD="find \"$DIR\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
 
