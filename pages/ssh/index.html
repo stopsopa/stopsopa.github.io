@@ -64,6 +64,8 @@ ssh-keyscan "<host>" >> "~/.ssh/known_hosts"
                 <script type="editor" data-lang="sh" class="domain.com">
 
 rm -rf ~/sshh.sh
+mkdir ~/.ssh
+chmod 700 .ssh/
 wget domain.com/pages/ssh/sshh.sh -O ~/sshh.sh
 /bin/bash ~/sshh.sh install
 source ~/.bash_profile
