@@ -27,6 +27,40 @@ sips -Z 2500 hhh.png
                 </script>
             </div>
             <div class="card">
+                <h3>How to Fix the Home and End Buttons</h3>
+                <script type="editor" data-lang="sh">
+
+Basically what you need to do is:
+cd ~/Library
+mkdir KeyBindings
+cd KeyBindings
+vi DefaultKeyBinding.dict
+paste to the file DefaultKeyBinding.dict kinda json below and restart mac
+
+{
+	/* Remap Home / End keys */
+	/* Home Button*/
+	"\UF729" = "moveToBeginningOfLine:"; 
+	/* End Button */
+	"\UF72B" = "moveToEndOfLine:"; 
+	/* Shift + Home Button */
+	"$\UF729" = "moveToBeginningOfLineAndModifySelection:"; 
+	/* Shift + End Button */
+	"$\UF72B" = "moveToEndOfLineAndModifySelection:"; 
+	/* Ctrl + Home Button */
+	"^\UF729" = "moveToBeginningOfDocument:"; 
+	/* Ctrl + End Button */
+	"^\UF72B" = "moveToEndOfDocument:"; 
+	 /* Shift + Ctrl + Home Button */
+	"$^\UF729" = "moveToBeginningOfDocumentAndModifySelection:";
+	/* Shift + Ctrl + End Button*/
+	"$^\UF72B" = "moveToEndOfDocumentAndModifySelection:"; 
+}
+
+                </script>
+                <a href="https://www.maketecheasier.com/fix-home-end-button-for-external-keyboard-mac/">g(How to Fix the Home and End Buttons for an External Keyboard in Mac)</a>
+            </div>
+            <div class="card">
                 <h3>Images resizing from cli</h3>
                 <script type="editor" data-lang="sh">
 
