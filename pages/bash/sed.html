@@ -15,8 +15,32 @@
         <div class="cards">
 
             <h2>SED</h2>
+            <a href="http://sed.sourceforge.net/sedfaq3.html">http://sed.sourceforge.net/sedfaq3.html</a>
             <script type="editor" data-lang="python">
-
+        
+-e script, --expression=script
+-i[SUFFIX], --in-place[=SUFFIX] - change in file, in place
+-n  By default, each line of input is echoed to the standard output after all of the
+    commands have been applied to it.  The -n option sup-
+        presses this behavior.
+    
+# replace in file
+rm -rf aaaa.txt
+cat << EOF > aaaa.txt
+#!/bin/bash
+model.images
+xxx
+aaa model.images bbb
+end
+EOF
+sed -i -E "s/model.images/model.resources/g" aaaa.txt
+cat aaaa.txt
+## will print
+# #!/bin/bash
+# model.resources
+# xxx
+# aaa model.resources bbb
+# end
 
 # line by line - replace one time per line:
 cat <<EOF | sed 's/one/ONE/'
@@ -243,7 +267,7 @@ six
    # seven
 
 eight
-	# nine
+    # nine
 ten
 # eleven
 EOF
@@ -772,7 +796,7 @@ TIPS:
 
 # escaping [
 # https://stackoverflow.com/a/27973573
-    echo "$T" | sed -r "s/([][|\\{}()^$\\+*\\?\\.\/])/ <<\1>> /g"
+    echo "$T" | sed -E "s/([][|\\{}()^$\\+*\\?\\.\/])/ <<\1>> /g"
 
 
 cat <<EOF | sed -nr "/[0-9]+\.[0-9]+\.[0-9]+$/p"
@@ -798,11 +822,11 @@ commit e6c456f6ae1e6e56d2faae99ce474346f9cf9055 (tag: v0.0.2)
 EOF
 
 # single line
-echo "commit 6586a29034699b520bc3722270f7fb0af9bf6965 (tag: green)" | sed -r "s/^[^:]+: ([^\),]+).*$/\1/"
-echo "one-two-three" | sed -r "s/-two-/-xxx-/"
+echo "commit 6586a29034699b520bc3722270f7fb0af9bf6965 (tag: green)" | sed -E "s/^[^:]+: ([^\),]+).*$/\1/"
+echo "one-two-three" | sed -E "s/-two-/-xxx-/"
 
 # multiple mode
-echo "one-two-three-two-end" | sed -r "s/-two-/-xxx-/g"
+echo "one-two-three-two-end" | sed -E "s/-two-/-xxx-/g"
 
 
             </script>
