@@ -895,6 +895,73 @@ newsletter.notify(); // Hello Subscriber 1
                     <li><a href="https://medium.com/javascript-in-plain-english/stop-using-objects-and-arrays-to-store-data-289c3edaaa33">https://medium.com/javascript-in-plain-english/stop-using-objects-and-arrays-to-store-data-289c3edaaa33</a></li>
                     <li><a href=""></a></li>
                 </ul>
+                <h2>flow</h2>
+                <script type="editor" data-lang="js">    
+
+// About Number, NaN, and Infinity - https://flow.org/en/docs/types/primitives/#toc-numbers
+
+function bothRequired(a: string, b: number) {} // obvious - both required
+// both must be present and the same type
+bothRequired('a', 4);               // Works!
+bothRequired('a', NaN);             // NaN is oddly a number in js ¯\_(ツ)_/¯ 
+bothRequired('a', Infinity);        // Infinity is oddly a number in js ¯\_(ツ)_/¯ 
+// bothRequired('a', '4');          // Error! - wrong type
+// bothRequired('a');               // Error! - can't be missing, after all it's required
+// bothRequired('a', undefined);    // Error - the same as above
+// bothRequired('a', null);         // Error - specified but wrong type 
+//   (after all null is a value but indicate a "lack of value" logically)
+//   (so null means specifying explicitly that "there is no value" it's not like skipping argument)
+
+// https://flow.org/en/docs/types/maybe/
+// "Maybe types" accept the provided type as well as null or undefined. 
+// So ?number would mean number, null, or undefined.
+function maybeType(a: string, b: ?number) {} 
+maybeType('a', 8);
+maybeType('a', NaN);        // NaN is oddly a number in js ¯\_(ツ)_/¯ 
+maybeType('a', Infinity);   // Infinity is oddly a number in js ¯\_(ツ)_/¯ 
+maybeType('a', undefined);
+maybeType('a'); // skipping works like passing undefined
+maybeType('a', null);
+// maybeType('a', false);   // Error! - different type
+// maybeType('a', 'b');     // Error! - different type
+
+function acceptLiteralType(value: 2) {} // thats "Literal Types" - that's the different thing
+// https://flow.org/en/docs/types/literals/
+
+function defaultValue(a: string, b: number = 5) {}
+defaultValue('a', 6);
+defaultValue('a', NaN);        // NaN is oddly a number in js ¯\_(ツ)_/¯ 
+defaultValue('a', Infinity);   // Infinity is oddly a number in js ¯\_(ツ)_/¯ 
+defaultValue('a', undefined)   // default 5
+defaultValue('a');             // skipping works like passing undefined, so default 5
+// defaultValue('a', null); // Error! - specified but wrong type
+
+// >Optional parameters< will accept missing, undefined, or matching types. But they will not accept null.
+// https://flow.org/en/docs/types/functions/#toc-optional-parameters
+function optionalParameter(a: string, b?: number) {}
+optionalParameter('a', 6);
+optionalParameter('a', NaN);      // NaN is oddly a number in js ¯\_(ツ)_/¯ 
+optionalParameter('a', Infinity); // Infinity is oddly a number in js ¯\_(ツ)_/¯ 
+optionalParameter('a');           // ... missing ...
+optionalParameter('a', undefined) // ... undefined ...
+// optionalParameter('a', null); // ... but not null, for this only "maybe type" will help - Error!
+
+function optionalParameterWithDefault(a: string, b?: number = 5) {}
+// using optional parameter with default value makes no sense 
+// because optional parameter is focused to allow missed or undefined param
+// but default value have higher priority in both above cases to fallback to default
+// so in this case using optional parameter is redundant when default is specified
+// null is still not allowed because null is only allowed with "maybe type"
+optionalParameterWithDefault('a', 6);
+optionalParameterWithDefault('a', NaN);      // NaN is oddly a number in js ¯\_(ツ)_/¯ 
+optionalParameterWithDefault('a', Infinity); // Infinity is oddly a number in js ¯\_(ツ)_/¯ 
+optionalParameterWithDefault('a');           // def 5
+optionalParameterWithDefault('a', undefined) // def 5
+// optionalParameterWithDefault('a', null); // for this only "maybe type" will help - Error!
+
+
+
+                </script>
             </div>
         </div>
     </div>
