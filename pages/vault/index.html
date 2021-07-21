@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>stopsopa.github.io</title>
+    
+    <script> 
+        (function () {
+            var resolve;
+            var p = new Promise(function (res) {
+                resolve = res;
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+                Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+
+                    var text = tag.innerHTML;
+
+                    text = text.replace(/domain\.com/g, location.origin)
+
+                    tag.innerHTML = text;
+                });
+
+                resolve();
+            });
+
+            window.waitForPromise = function () {
+
+                return p;
+            }
+        }())
+    </script>
+    <script src="/js/github.js"></script>
+</head>
+<body class="layout" foot head toc>
+
+<div class="body"> 
+    <div class="inside">
+        <div class="cards">
+            <div class="card">
+                <h2>Docker</h2>      
+                <a href="https://hub.docker.com/_/vault">Docker image</a>
+                <script type="editor" data-lang="sh">
+
+# GD:
+docker run --rm -p 8200:8200 -e VAULT_ADDR=0.0.0.0 -e VAULT_DEV_ROOT_TOKEN_ID=devtoken vault:0.11.4;   
+
+docker run -d --rm --name vault_latest -p 8201:8200 -e VAULT_ADDR=0.0.0.0 -e VAULT_DEV_ROOT_TOKEN_ID=devtoken vault:1.7.3;    
+
+docker logs vault_latest 
+
+                </script>
+                <h2>Install CLI</h2>   
+                <a href="https://www.vaultproject.io/downloads">Installation of CLI</a>
+                <script type="editor" data-lang="sh">
+
+HOMEBREW_NO_AUTO_UPDATE=1 brew tap hashicorp/tap
+HOMEBREW_NO_AUTO_UPDATE=1 brew install hashicorp/tap/vault
+
+# tell the CLI where is the server
+export VAULT_ADDR='http://0.0.0.0:8201'
+
+# for
+# Unseal Key: VA4evNFyzqeq9hxxxxxxxxxxxxxxxx2ITvEjjDsWRl4=
+# Root Token: devtoken
+# run
+export VAULT_TOKEN="devtoken"
+    # from : https://learn.hashicorp.com/tutorials/vault/getting-started-dev-server?in=vault/getting-started#starting-the-dev-server
+    # from : https://www.vaultproject.io/docs/commands#vault_token
+
+vault status    
+
+                </script>
+                <h2>set get</h2>
+                <a href="https://learn.hashicorp.com/tutorials/vault/getting-started-first-secret?in=vault/getting-started">Your First Secret</a>
+                <script type="editor" data-lang="sh">
+
+vault kv put secret/hello foo=world2 second=true
+
+vault kv get -format=json secret/hello
+
+vault kv delete secret/hello
+
+vault secrets enable -path=kv kv
+# equivalent
+vault secrets enable kv
+# Success! Enabled the kv secrets engine at: kv/
+
+vault secrets list
+
+# using new engine
+vault kv put kv/hello target=world
+vault kv get kv/hello
+vault kv put kv/my-secret value="s3c(eT"
+vault kv get kv/my-secret
+vault kv delete kv/my-secret
+vault kv list kv/
+
+# disable secret engine
+vault secrets disable kv/
+
+                </script>
+
+                <h2>Prod instance</h2>
+                <a href="https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started">https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started</a>
+                <script type="editor" data-lang="sh">
+
+unset VAULT_TOKEN 
+
+cat <<EOF > config.hcl
+
+storage "raft" {
+    path    = "./vault/data"
+    node_id = "node1"
+}
+
+# disable_mlock = true
+
+listener "tcp" {
+    address     = "127.0.0.1:8202"
+    tls_disable = "true"
+}
+
+api_addr = "http://127.0.0.1:8202"
+cluster_addr = "https://127.0.0.1:8203"
+ui = true
+
+EOF
+
+mkdir -p ./vault/data
+
+vault server -config=config.hcl
+
+# in separate container
+export VAULT_ADDR='http://127.0.0.1:8202'
+vault status
+vault operator init
+
+# save keys
+
+cat <<EOF | xargs -I %% vault operator unseal %%
+yI0fnFtsYnGkxxxxxxxxxxxxxxxxxxlnGSR9x6NYi8iL
+9jxxxxxxxxxxxxxxxx4ahF5nS0YeK5F3coxxmIQIq6g4
+udxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3dba48q
+EOF
+
+
+                </script>
+                <h2>Local persistant instance (script bash)</h2>
+                <script type="editor" data-lang="sh" class="domain.com">
+
+wget domain.com/pages/vault/vault.sh
+
+curl domain.com/pages/vault/vault.sh --output vault.sh
+
+/bin/bash vault.sh
+
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

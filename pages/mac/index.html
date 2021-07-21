@@ -9,17 +9,17 @@
     <title>stopsopa.github.io</title>
     <script src="/js/github.js"></script>
 </head>
-<body class="layout" foot head>
+<body class="layout" foot head toc>
 
 <div class="body" toc>
     <div class="inside">
         <div class="cards">
             <div class="card">
-                <h3 id="test-test">Optimization (Mac)</h3>
+                <h2 id="test-test">Optimization (Mac)</h2>
                 <a href="https://imageoptim.com/howto.html">ImageOptim v1.7.3 (08-03-2018)</a>
             </div>
             <div class="card">
-                <h3>Images resizing from cli</h3>
+                <h2>Images resizing from cli</h2>
                 <script type="editor" data-lang="sh">
 
 sips -Z 2500 hhh.png
@@ -27,7 +27,7 @@ sips -Z 2500 hhh.png
                 </script>
             </div>
             <div class="card">
-                <h3>How to Fix the Home and End Buttons</h3>
+                <h2>How to Fix the Home and End Buttons</h2>
                 <script type="editor" data-lang="sh">
 
 Basically what you need to do is:
@@ -61,7 +61,15 @@ paste to the file DefaultKeyBinding.dict kinda json below and restart mac
                 <a href="https://www.maketecheasier.com/fix-home-end-button-for-external-keyboard-mac/">g(How to Fix the Home and End Buttons for an External Keyboard in Mac)</a>
             </div>
             <div class="card">
-                <h3>Images resizing from cli</h3>
+                <h2>Brew</h2>
+                <script type="editor" data-lang="sh">
+
+HOMEBREW_NO_AUTO_UPDATE=1 brew install lib
+
+HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install lib
+
+                </script>
+                <h2>Images resizing from cli</h2>
                 <script type="editor" data-lang="sh">
 
 HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install
@@ -70,7 +78,7 @@ HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install
                 </script>
             </div>
             <div class="card">
-                <h3 id="test-test">Autostart</h3>
+                <h2 id="test-test">Autostart</h2>
                 <a href="https://stackoverflow.com/a/6445525">Create app to autostart</a>
                 <br />
                 <a href="/pages/mac/startup.app.tar.gz">binary version</a>
