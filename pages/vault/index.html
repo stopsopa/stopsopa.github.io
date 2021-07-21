@@ -161,6 +161,12 @@ curl domain.com/pages/vault/vault.sh --output vault.sh
 /bin/bash vault.sh
 
                 </script>
+                <h2>In Docker</h2> 
+                <script type="editor" data-lang="sh">
+                    
+docker run -d --rm -p 8200:8200 -e VAULT_ADDR=0.0.0.0 -e VAULT_DEV_ROOT_TOKEN_ID=devtoken vault:0.11.4
+
+                </script>
             </div>
         </div>
     </div>
