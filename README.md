@@ -14,6 +14,9 @@
     data-w      - optional: any valid css value for width css directive
     datahw      - optional: any valid css value for height css directive
     
+    Warning: Just specify type="typescript" and script on site will load
+             /js/ace/ace-builds-1.4.12/src-min-noconflict/mode-typescript.js
+    
 [supported syntax](https://github.com/ajaxorg/ace/blob/master/lib/ace/ext/modelist.js#L53)
 
 ## You can add manually TOC to the document in order to add some extra links to TOC
@@ -35,6 +38,8 @@
                 </script>
                 ...
 ```
+
+
 # attribute helpers
 
     <div data-do-sort>... children nodes...</div> - sorts all children based on innerText
