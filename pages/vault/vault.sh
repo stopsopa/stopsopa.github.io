@@ -22,7 +22,7 @@ function yellow {
     printf "\e[33m$1\e[0m\n"
 }
 
-function kill {
+function stop {
     ps aux | grep "vault server" | grep "_config.hcl" | grep -v grep
     ps aux | grep "vault server" | grep "_config.hcl" | grep -v grep | awk '{print $2}' | xargs kill
 }
@@ -31,11 +31,11 @@ function kill {
 
 export VAULT_ADDR="http://127.0.0.1:${PORT}"
 
-if [ "$1" = "kill" ]; then
+if [ "$1" = "stop" ]; then
 
-    { green "killing server"; } 2>&3
+    { green "stopping server"; } 2>&3
 
-    kill
+    stop
 
     vault status
 
@@ -44,11 +44,11 @@ if [ "$1" = "kill" ]; then
     _exit 2> /dev/null
 fi
 
-if [ "$1" = "clean" ]; then
+if [ "$1" = "destroy" ]; then
 
-    { green "cleaning"; } 2>&3
+    { green "destroying"; } 2>&3
 
-    /bin/bash "$0" kill
+    /bin/bash "$0" stop
 
     rm -rf db    
     rm -rf logs
@@ -168,7 +168,7 @@ LOGFILE="logs/log-$(date +"%H-%m-%d_%H-%M-%S").log"
 
 { green "stopping server..."; } 2>&3
 
-/bin/bash "$0" kill
+/bin/bash "$0" stop
 
 { green "starting server..."; } 2>&3
 
@@ -209,8 +209,12 @@ EOF
 
     cat "${INITFILE}" | grep "^Unseal Key [0-9]:" | awk '{ print $4 }' > "${UNSEALKEYSFILE}"
 
-    cat "${INITFILE}" | grep "^Initial Root Token" | awk '{ print $4}' > "${ROOTTOKENFILE}"
+    cat "${INITFILE}" | grep "^Initial Root Token" | awk '{ print $4 }' > "${ROOTTOKENFILE}"
 fi
+
+{ green "export VAULT_TOKEN='$(cat "${ROOTTOKENFILE}")'"; } 2>&3
+
+export VAULT_TOKEN="$(cat "${ROOTTOKENFILE}")"
 
 if [ -f "${UNSEALKEYSFILE}" ]; then
 
@@ -241,7 +245,13 @@ tail -n 40 -f "${LOGFILE}"
 
 http://0.0.0.0:${PORT}
 
-root token: $(cat "${ROOTTOKENFILE}")
+export VAULT_ADDR='http://0.0.0.0:${PORT}'
+export VAULT_TOKEN="$(cat "${ROOTTOKENFILE}")"
+vault status
+
+vault secrets enable -path=test kv
+
+vault kv put test/hello target=world
 
 EOF
 
@@ -252,9 +262,20 @@ else
 
 cat <<EOF
 
+You might change some parameters at the beginning of this file, the default values are:
+DIR="."
+PORT="8202"
+CLUSTERPORT="8203"
+RELATIVEDBDIRPATH="db"
+INITFILE="_init.txt"
+UNSEALKEYSFILE="_unseal_keys.txt"
+ROOTTOKENFILE="_root_token.txt"
+
+Then just run one of commands:
+
 /bin/bash $0 start
-/bin/bash $0 kill
-/bin/bash $0 clean
+/bin/bash $0 stop
+/bin/bash $0 destroy
 
 EOF
 
