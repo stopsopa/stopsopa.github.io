@@ -9,6 +9,11 @@ INITFILE="_init.txt"
 UNSEALKEYSFILE="_unseal_keys.txt"
 ROOTTOKENFILE="_root_token.txt"
 
+if [ "${VAULT_DIRECTORY}" != "" ]; then
+
+    DIR="${VAULT_DIRECTORY}"
+fi
+
 exec 3<> /dev/null
 function green {
     printf "\e[32m$1\e[0m\n"
@@ -27,9 +32,14 @@ function stop {
     ps aux | grep "vault server" | grep "_config.hcl" | grep -v grep | awk '{print $2}' | xargs kill
 }
 
-{ green "export VAULT_ADDR='http://127.0.0.1:${PORT}'"; } 2>&3
-
 export VAULT_ADDR="http://127.0.0.1:${PORT}"
+
+cd "${DIR}"
+
+if [ "$1" != "" ]; then
+    
+    echo "mode: $1"
+fi
 
 if [ "$1" = "stop" ]; then
 
@@ -95,8 +105,6 @@ if [ "${IS_VAULT_INSTALLED}" != "0" ]; then
 fi
 
 unset VAULT_TOKEN
-
-cd "${DIR}"
 
 { green "entered directory '${DIR}'"; } 2>&3
 
@@ -212,8 +220,6 @@ EOF
     cat "${INITFILE}" | grep "^Initial Root Token" | awk '{ print $4 }' > "${ROOTTOKENFILE}"
 fi
 
-{ green "export VAULT_TOKEN='$(cat "${ROOTTOKENFILE}")'"; } 2>&3
-
 export VAULT_TOKEN="$(cat "${ROOTTOKENFILE}")"
 
 if [ -f "${UNSEALKEYSFILE}" ]; then
@@ -263,13 +269,21 @@ else
 cat <<EOF
 
 You might change some parameters at the beginning of this file, the default values are:
-DIR="."
-PORT="8202"
-CLUSTERPORT="8203"
-RELATIVEDBDIRPATH="db"
-INITFILE="_init.txt"
-UNSEALKEYSFILE="_unseal_keys.txt"
-ROOTTOKENFILE="_root_token.txt"
+DIR="${DIR}"
+PORT="${PORT}"
+CLUSTERPORT="${CLUSTERPORT}"
+RELATIVEDBDIRPATH="${RELATIVEDBDIRPATH}"
+INITFILE="${INITFILE}"
+UNSEALKEYSFILE="${UNSEALKEYSFILE}"
+ROOTTOKENFILE="${ROOTTOKENFILE}"
+
+you might also define to override local DIR variable
+export VAULT_DIRECTORY="${DIR}"
+
+You might also consider adding alias with above variable to ~/.bashrc
+
+export VAULT_DIRECTORY="${DIR}"
+alias pvault='/bin/bash "${DIR}/vault.sh"'
 
 Then just run one of commands:
 
@@ -279,5 +293,19 @@ Then just run one of commands:
 
 EOF
 
+if [ -f "${ROOTTOKENFILE}" ]; then
+
+cat <<EOF
+export VAULT_ADDR='http://127.0.0.1:${PORT}';
+export VAULT_TOKEN='$(cat "${ROOTTOKENFILE}")';
+vault status
+vault token lookup
+
+EOF
+
 fi
+
+fi
+    
+
 

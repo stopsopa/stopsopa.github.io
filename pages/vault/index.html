@@ -165,6 +165,62 @@ curl domain.com/pages/vault/vault.sh --output vault.sh
                 <script type="editor" data-lang="sh">
                     
 docker run -d --rm -p 8200:8200 -e VAULT_ADDR=0.0.0.0 -e VAULT_DEV_ROOT_TOKEN_ID=devtoken vault:0.11.4
+                    
+                </script>
+                <h2>Policy and Token</h2>
+                <a href="https://www.hashicorp.com/blog/authenticating-applications-with-vault-approle">https://www.hashicorp.com/blog/authenticating-applications-with-vault-approle</a>
+                <br />
+                <a href="https://www.vaultproject.io/docs/auth/approle#via-the-cli-1">https://www.vaultproject.io/docs/auth/approle#via-the-cli-1</a>
+                <script type="editor" data-lang="sh">
+
+vault auth enable approle     
+    # https://www.vaultproject.io/docs/commands/auth/enable
+
+vault policy write hello-world - << EOF
+path "secret/hello-world" {
+    capabilities = ["read", "list"]
+   }
+EOF
+
+# Next, an operator can create a role in Vault and associate the policy with that role.
+vault write auth/approle/role/hello-world  secret_id_ttl=120m  token_ttl=60m  token_max_tll=120m  policies="hello-world"
+
+# getting the Role ID: (this can be embeded in the docker image and even in the github repo code)
+vault read auth/approle/role/hello-world/role-id
+
+# CI/CD get the Secret ID
+vault write -field=token -f auth/approle/role/hello-world/secret-id
+
+vault write auth/approle/login role_id=ROLE_ID secret_id=SECRET_ID
+
+# testing policy
+export VAULT_TOKEN="$(vault token create -field token -policy=hello-world)"   
+    # https://learn.hashicorp.com/tutorials/vault/getting-started-policies?in=vault/getting-started#test-the-policy
+
+vault token lookup
+    # https://www.vaultproject.io/docs/commands/token/lookup
+
+vault kv put secret/hello-world/data/test password="my-long-password"
+                </script>
+                <h2>Giving access jomax</h2>
+                <script type="edit" data-lang="sh">
+
+vault read auth/JOMAX/users/xxx
+# this will initially fail with:
+# Error reading from: auth/JOMAX/users/dyates 404
+
+vault write auth/JOMAX/groups/dev-group policies=default,pxx
+# create group of policies
+
+vault write auth/JOMAX/users/xxx groups=dev-group
+# creating user and adding group
+
+vault read auth/JOMAX/users/xxx
+# will return
+Key      Value
+groups   dev-group
+policies []
+
 
                 </script>
             </div>
