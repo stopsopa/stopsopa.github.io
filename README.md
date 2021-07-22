@@ -159,8 +159,49 @@ http://stopsopa.github.io/demos/jquery.elkanatooltip/pos.html
 
 Pull contents from any page via API (as JSON/P or raw) and avoid Same-origin policy problems.
 
+# Dev notes
 
 
+
+```bash
+
+# clone repository
+# then enter main directory
+
+cat <<EOF > .env
+
+PROJECT_NAME="testtools"
+NODE_PORT=7898
+LOCAL_HOSTS="test.github.io.local"
+FIREBASE_API_KEY="xxx"
+FIREBASE_AUTH_DOMAIN="github-xxxx.firebaseapp.com"
+FIREBASE_DATABASE_URL="https://github-xxxx.firebaseio.com"
+FIREBASE_PROJECT_ID="github-xxxx"
+FIREBASE_STORAGE_BUCKET="github-xxxx.appspot.com"
+FIREBASE_MESSAGING_SENDER_ID="3896666666217"
+FIREBASE_API_ID="1:38666666667:web:c7effb066666666666"
+#FIREBASE_MEASUREMENT_ID="G-F76666666"
+
+EOF
+
+sudo -i
+echo "127.0.0.1 test.github.io.local" >> /etc/hosts
+exit
+
+# make sure to have node version specified in .nvmrc
+
+yarn
+
+make start
+
+# to publish changes
+
+make build
+
+# commit all changes and push to github pages
+
+
+```
 
 
 
