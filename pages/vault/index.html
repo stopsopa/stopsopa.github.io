@@ -55,6 +55,8 @@ docker run -d --rm --name vault_latest -p 8201:8200 -e VAULT_ADDR=0.0.0.0 -e VAU
 docker logs vault_latest 
 
                 </script>
+                <h2>Older version</h2>
+                <a href="https://releases.hashicorp.com/vault/">https://releases.hashicorp.com/vault/</a>
                 <h2>Install CLI</h2>   
                 <a href="https://www.vaultproject.io/downloads">Installation of CLI</a>
                 <script type="editor" data-lang="sh">
@@ -106,7 +108,7 @@ vault secrets disable kv/
 
                 </script>
 
-                <h2>Prod instance</h2>
+                <h2>Prod instance - g(deploy vault)</h2>
                 <a href="https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started">https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started</a>
                 <script type="editor" data-lang="sh">
 
@@ -167,31 +169,48 @@ curl domain.com/pages/vault/vault.sh --output vault.sh
 docker run -d --rm -p 8200:8200 -e VAULT_ADDR=0.0.0.0 -e VAULT_DEV_ROOT_TOKEN_ID=devtoken vault:0.11.4
                     
                 </script>
-                <h2>Policy and Token</h2>
+                <h2>Policy and Token - Approle</h2>
+                <a href="https://learn.hashicorp.com/tutorials/vault/approle">https://learn.hashicorp.com/tutorials/vault/approle</a>
+                <br />
                 <a href="https://www.hashicorp.com/blog/authenticating-applications-with-vault-approle">https://www.hashicorp.com/blog/authenticating-applications-with-vault-approle</a>
                 <br />
                 <a href="https://www.vaultproject.io/docs/auth/approle#via-the-cli-1">https://www.vaultproject.io/docs/auth/approle#via-the-cli-1</a>
+                <br />
+                <a href="https://codersociety.com/blog/articles/hashicorp-vault-node">https://codersociety.com/blog/articles/hashicorp-vault-node</a>
                 <script type="editor" data-lang="sh">
-
+vault auth list
 vault auth enable approle     
-    # https://www.vaultproject.io/docs/commands/auth/enable
+# https://www.vaultproject.io/docs/commands/auth/enable
+vault auth list
 
-vault policy write hello-world - << EOF
-path "secret/hello-world" {
+vault_1.4.1 policy write hello-world - << EOF
+path "secret/hello-world/*" {
     capabilities = ["read", "list"]
-   }
+}
 EOF
+# https://www.vaultproject.io/docs/concepts/policies
 
 # Next, an operator can create a role in Vault and associate the policy with that role.
-vault write auth/approle/role/hello-world  secret_id_ttl=120m  token_ttl=60m  token_max_tll=120m  policies="hello-world"
+vault_1.4.1 write auth/approle/role/hello-world  secret_id_ttl=120m  token_ttl=60m  token_max_tll=120m  policies="hello-world"
 
 # getting the Role ID: (this can be embeded in the docker image and even in the github repo code)
-vault read auth/approle/role/hello-world/role-id
+vault read -field=role_id auth/approle/role/hello-world/role-id
 
 # CI/CD get the Secret ID
-vault write -field=token -f auth/approle/role/hello-world/secret-id
+vault_1.4.1 write -field=secret_id -f auth/approle/role/hello-world/secret-id
 
+# The hello-world application can authenticate with Vault using the Role ID, and Secret ID
 vault write auth/approle/login role_id=ROLE_ID secret_id=SECRET_ID
+vault write auth/approle/login \
+    role_id="$(vault read -field=role_id auth/approle/role/hello-world/role-id)" \
+    secret_id="$(vault write -field=secret_id -f auth/approle/role/hello-world/secret-id)" \
+    | grep 'token ' | awk '{ print $2 }'
+
+# login local cli with token generated using role_id and secret_id
+export VAULT_TOKEN="$(vault write auth/approle/login  \
+    role_id="$(vault read -field=role_id auth/approle/role/hello-world/role-id)" \
+    secret_id="$(vault write -field=secret_id -f auth/approle/role/hello-world/secret-id)" \
+    | grep 'token ' | awk '{ print $2 }')"      
 
 # testing policy
 export VAULT_TOKEN="$(vault token create -field token -policy=hello-world)"   
@@ -200,8 +219,23 @@ export VAULT_TOKEN="$(vault token create -field token -policy=hello-world)"
 vault token lookup
     # https://www.vaultproject.io/docs/commands/token/lookup
 
-vault kv put secret/hello-world/data/test password="my-long-password"
-                </script>
+vault secrets enable -path=secret kv    
+vault kv put secret/hello-world/data/test password="my-long-password" xxx="yyy"
+
+vault kv get -format=json secret/hello-world/data/test
+vault kv get -output-curl-string -format=json secret/hello-world/data/test
+    # to see curl request underneath
+
+
+
+vault write -wrap-ttl=2m -f auth/approle/role/hello-world/secret-id
+Key                              Value
+---                              -----
+wrapping_token:                  8LEZFOxTBNKpjoYaAtcBwS7v
+wrapping_accessor:               3cE1v6pDt9b5BVPfVbv5Ql8e
+
+
+                </script>            
                 <h2>Giving access jomax</h2>
                 <script type="edit" data-lang="sh">
 
@@ -221,6 +255,51 @@ Key      Value
 groups   dev-group
 policies []
 
+                </script>
+                <h2>Curl</h2>
+                <a href="https://learn.hashicorp.com/tutorials/vault/getting-started-apis">https://learn.hashicorp.com/tutorials/vault/getting-started-apis</a>
+                <br />
+                <a href="https://joachim8675309.medium.com/hashicorp-vault-with-approle-auth-724178503903">https://joachim8675309.medium.com/hashicorp-vault-with-approle-auth-724178503903</a>
+                <script type="edit" data-lang="sh">
+
+vault token lookup -output-curl-string    
+curl -H "X-Vault-Request: true" -H "X-Vault-Token: s.UADhBiA81ImFluwMx0XmCPX8" \
+    http://0.0.0.0:8202/v1/auth/token/lookup-self | python -m json.tool   
+    # https://www.vaultproject.io/api/auth/token#lookup-a-token-self    
+    
+    curl -H "X-Vault-Request: true" -H "X-Vault-Token: $(vault print token)" http://0.0.0.0:8202/v1/auth/token/lookup-self    
+
+curl \
+    -H "X-Vault-Token: CdzVzE3fDFQOR6siaOSbcipY" \
+    http://0.0.0.0:8202/v1/sys/health | python -m json.tool
+    
+    # from: https://www.vaultproject.io/api/system/seal-status   
+    
+curl \
+    -H "X-Vault-Token: s.CdzVzE3fDFQOR6siaOSbcipY" \
+    http://0.0.0.0:8202/v1/sys/policies/acl?list=true | python -m json.tool
+ 
+curl \
+    -H "X-Vault-Token: s.CdzVzE3fDFQOR6siaOSbcipY" \
+    http://0.0.0.0:8202/v1/secret?list=true | python -m json.tool
+    
+curl \
+    -H "X-Vault-Token: s.CdzVzE3fDFQOR6siaOSbcipY" \
+    http://0.0.0.0:8202/v1/secret/hello-world/data?list=true | python -m json.tool
+
+# get final values
+curl \
+    -H "X-Vault-Token: s.CdzVzE3fDFQOR6siaOSbcipY" \
+    http://0.0.0.0:8202/v1/secret/hello-world/data/test | python -m json.tool
+
+# generate token based on role_id and secret_id
+curl --request POST \
+--data '{"role_id": "463b4a3c-180d-885d-7587-589f1aadf103", "secret_id": "e3e0df1e-2269-7fff-b562-6726f0f2c9d8"}' \
+http://0.0.0.0:3370/v1/auth/approle/login | python -m json.tool    
+
+# get values
+vault kv get  -output-curl-string -format=json secret/hello-world/data/test
+curl -H "X-Vault-Token: $(vault print token)" -H "X-Vault-Request: true" http://0.0.0.0:3370/v1/secret/hello-world/data/test    
 
                 </script>
             </div>
