@@ -1,17 +1,48 @@
 
 # https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started#seal-unseal
 # target directory where vault should be created
-DIR="."
-PORT="8202"
-CLUSTERPORT="8203"
-RELATIVEDBDIRPATH="db"
-INITFILE="_init.txt"
-UNSEALKEYSFILE="_unseal_keys.txt"
-ROOTTOKENFILE="_root_token.txt"
+_DIR="."
+_PORT="8202"
+_CLUSTERPORT="8203"
+_RELATIVEDBDIRPATH="db"
+_INITFILE="_init.txt"
+_UNSEALKEYSFILE="_unseal_keys.txt"
+_ROOTTOKENFILE="_root_token.txt"
+_BINARY="vault"
 
-if [ "${VAULT_DIRECTORY}" != "" ]; then
+if [ "${VAULT_DIR}" != "" ]; then
 
-    DIR="${VAULT_DIRECTORY}"
+    _DIR="${VAULT_DIR}"
+fi
+
+if [ "${VAULT_PORT}" != "" ]; then
+
+    _PORT="${VAULT_PORT}"
+fi
+
+if [ "${VAULT_CLUSTERPORT}" != "" ]; then
+
+    _CLUSTERPORT="${VAULT_CLUSTERPORT}"
+fi
+
+if [ "${VAULT_INITFILE}" != "" ]; then
+
+    _INITFILE="${VAULT_INITFILE}"
+fi
+
+if [ "${VAULT_UNSEALKEYSFILE}" != "" ]; then
+
+    _UNSEALKEYSFILE="${VAULT_UNSEALKEYSFILE}"
+fi
+
+if [ "${VAULT_ROOTTOKENFILE}" != "" ]; then
+
+    _ROOTTOKENFILE="${VAULT_ROOTTOKENFILE}"
+fi
+
+if [ "${VAULT_BINARY}" != "" ]; then
+
+    _BINARY="${VAULT_BINARY}"
 fi
 
 exec 3<> /dev/null
@@ -32,7 +63,7 @@ function stop {
     ps aux | grep "vault server" | grep "_config.hcl" | grep -v grep | awk '{print $2}' | xargs kill
 }
 
-export VAULT_ADDR="http://127.0.0.1:${PORT}"
+export VAULT_ADDR="http://0.0.0.0:${_PORT}"
 
 cd "${DIR}"
 
@@ -47,7 +78,7 @@ if [ "$1" = "stop" ]; then
 
     stop
 
-    vault status
+    eval $_BINARY status
 
     set -e
     
@@ -62,9 +93,10 @@ if [ "$1" = "destroy" ]; then
 
     rm -rf db    
     rm -rf logs
-    rm -rf "${INITFILE}"
-    rm -rf "${ROOTTOKENFILE}"
-    rm -rf "${UNSEALKEYSFILE}"
+    rm -rf _config.hcl
+    rm -rf "${_INITFILE}"
+    rm -rf "${_ROOTTOKENFILE}"
+    rm -rf "${_UNSEALKEYSFILE}"
 
     ls -la
 
@@ -77,36 +109,38 @@ if [ "$1" = "start" ]; then
 
 # --------------------- start -------------------------- vvvv
 
-vault --help 2> /dev/null
+echo "::::::::: (cd '$_DIR' && $_BINARY --help)"
+
+$($_BINARY --help 2> /dev/null)
 
 IS_VAULT_INSTALLED="$?"
 
 REG="^[0-9]+$";
 
-if ! [[ ${PORT} =~ ${REG} ]]; then
+if ! [[ ${_PORT} =~ ${REG} ]]; then
 
-    { red "\nPORT (${PORT}) don't match regex ${REG}"; } 2>&3
+    { red "\nPORT (${_PORT}) don't match regex ${REG}"; } 2>&3
 
     _exit 2> /dev/null
 fi
 
-if ! [[ ${CLUSTERPORT} =~ ${REG} ]]; then
+if ! [[ ${_CLUSTERPORT} =~ ${REG} ]]; then
 
-    { red "\nCLUSTERPORT (${CLUSTERPORT}) don't match regex ${REG}"; } 2>&3
+    { red "\n_CLUSTERPORT (${_CLUSTERPORT}) don't match regex ${REG}"; } 2>&3
 
     _exit 2> /dev/null
 fi
 
 if [ "${IS_VAULT_INSTALLED}" != "0" ]; then
 
-    { red "vault cli is not installed, visit: https://www.vaultproject.io/downloads"; } 2>&3
+    { red "vault cli ($_BINARY) is not installed, visit: https://www.vaultproject.io/downloads or for old version: https://releases.hashicorp.com/vault"; } 2>&3
 
     _exit 2> /dev/null
 fi
 
 unset VAULT_TOKEN
 
-{ green "entered directory '${DIR}'"; } 2>&3
+{ green "entered directory '${_DIR}'"; } 2>&3
 
 if [ -f "_config.hcl" ]; then
 
@@ -118,37 +152,37 @@ else
 cat <<EOF > _config.hcl
 
 storage "raft" {
-    path    = "./${RELATIVEDBDIRPATH}"
+    path    = "./${_RELATIVEDBDIRPATH}"
     node_id = "node1"
 }
 
-# disable_mlock = true
+disable_mlock = true
 
 listener "tcp" {
-    address     = "127.0.0.1:${PORT}"
+    address     = "0.0.0.0:${_PORT}"
     tls_disable = "true"
 }
 
-api_addr = "http://127.0.0.1:${PORT}"
-cluster_addr = "https://127.0.0.1:${CLUSTERPORT}"
+api_addr = "http://0.0.0.0:${_PORT}"
+cluster_addr = "https://0.0.0.0:${_CLUSTERPORT}"
 ui = true
 
 EOF
 
 fi
 
-if [ -d "${RELATIVEDBDIRPATH}" ]; then
+if [ -d "${_RELATIVEDBDIRPATH}" ]; then
 
-    { green "directory ${RELATIVEDBDIRPATH} already exist"; } 2>&3
+    { green "directory ${_RELATIVEDBDIRPATH} already exist"; } 2>&3
 else
 
-    { green "creating directory ${RELATIVEDBDIRPATH}"; } 2>&3
+    { green "creating directory ${_RELATIVEDBDIRPATH}"; } 2>&3
 
-    mkdir -p "${RELATIVEDBDIRPATH}"
+    mkdir -p "${_RELATIVEDBDIRPATH}"
 
-    if [ ! -d "${RELATIVEDBDIRPATH}" ]; then
+    if [ ! -d "${_RELATIVEDBDIRPATH}" ]; then
 
-        { red "can't create directory ${RELATIVEDBDIRPATH}"; } 2>&3
+        { red "can't create directory ${_RELATIVEDBDIRPATH}"; } 2>&3
 
         _exit 2> /dev/null
     fi
@@ -181,18 +215,20 @@ LOGFILE="logs/log-$(date +"%H-%m-%d_%H-%M-%S").log"
 { green "starting server..."; } 2>&3
 
 DBFILEEXIST="0"
-if [ -f "${RELATIVEDBDIRPATH}/vault.db" ]; then
+if [ -f "${_RELATIVEDBDIRPATH}/vault.db" ]; then
     
     DBFILEEXIST="1"    
 fi
 
-vault server -config=_config.hcl >> "${LOGFILE}" & disown
+echo "::::::::: (cd '$_DIR' && $_BINARY server -config=_config.hcl)"
+
+$($_BINARY server -config=_config.hcl >> "${LOGFILE}" & disown)
 
 sleep 5
 
 if [ "$(ps aux | grep vault | grep _config.hcl)" = "" ]; then
 
-    { red "server crushed, last lines of log of the server ${LOGFILE}:"; } 2>&3
+    { red "server crushed, last lines of log of the server ${_DIR}/${LOGFILE}:"; } 2>&3
 
     tail -n 40 "${LOGFILE}"
 
@@ -203,9 +239,11 @@ if [ "${DBFILEEXIST}" = "0" ]; then
 
     { green "this is first server run, initialising database"; } 2>&3
 
-    INIT="$(vault operator init)"
+    echo "::::::::: (cd '$_DIR' && $_BINARY operator init)"
 
-    echo "${INIT}" > "${INITFILE}"
+    INIT="$($_BINARY operator init)"
+
+    echo "${INIT}" > "${_INITFILE}"
 
 cat <<EOF
 
@@ -215,25 +253,27 @@ ${INIT}
 
 EOF
 
-    cat "${INITFILE}" | grep "^Unseal Key [0-9]:" | awk '{ print $4 }' > "${UNSEALKEYSFILE}"
+    cat "${_INITFILE}" | grep "^Unseal Key [0-9]:" | awk '{ print $4 }' > "${_UNSEALKEYSFILE}"
 
-    cat "${INITFILE}" | grep "^Initial Root Token" | awk '{ print $4 }' > "${ROOTTOKENFILE}"
+    cat "${_INITFILE}" | grep "^Initial Root Token" | awk '{ print $4 }' > "${_ROOTTOKENFILE}"
 fi
 
-export VAULT_TOKEN="$(cat "${ROOTTOKENFILE}")"
+export VAULT_TOKEN="$(cat "${_ROOTTOKENFILE}")"
 
-if [ -f "${UNSEALKEYSFILE}" ]; then
+if [ -f "${_UNSEALKEYSFILE}" ]; then
 
     { green "unsealing vault"; } 2>&3
 
-    cat "${UNSEALKEYSFILE}" | xargs -I %% vault operator unseal %%
+    cat "${_UNSEALKEYSFILE}" | xargs -I %% vault operator unseal %%
 
-    vault status | grep Sealed
+    echo "::::::::: (cd '$_DIR' && $_BINARY status)"    
+
+    $($_BINARY status | grep Sealed)
 
 cat <<EOFF
 
-cat <<EOF | xargs -I %% vault operator unseal %%
-$(cat "${UNSEALKEYSFILE}")
+cat <<EOF | xargs -I %% $_BINARY operator unseal %%
+$(cat "${_UNSEALKEYSFILE}")
 EOF
 
 EOFF
@@ -247,17 +287,17 @@ ls -la
 
 cat <<EOF
 
-tail -n 40 -f "${LOGFILE}"
+tail -n 40 -f "${_DIR}/${LOGFILE}"
 
-http://0.0.0.0:${PORT}
+http://0.0.0.0:${_PORT}
 
-export VAULT_ADDR='http://0.0.0.0:${PORT}'
-export VAULT_TOKEN="$(cat "${ROOTTOKENFILE}")"
-vault status
+export VAULT_ADDR='http://0.0.0.0:${_PORT}'
+export VAULT_TOKEN="$(cat "${_ROOTTOKENFILE}")"
+$_BINARY status
 
-vault secrets enable -path=test kv
+$_BINARY secrets enable -path=test kv
 
-vault kv put test/hello target=world
+$_BINARY kv put test/hello target=world
 
 EOF
 
@@ -268,22 +308,32 @@ else
 
 cat <<EOF
 
+current vault version: $($_BINARY --version)
+
 You might change some parameters at the beginning of this file, the default values are:
-DIR="${DIR}"
-PORT="${PORT}"
-CLUSTERPORT="${CLUSTERPORT}"
-RELATIVEDBDIRPATH="${RELATIVEDBDIRPATH}"
-INITFILE="${INITFILE}"
-UNSEALKEYSFILE="${UNSEALKEYSFILE}"
-ROOTTOKENFILE="${ROOTTOKENFILE}"
+_DIR="${_DIR}"
+_PORT="${_PORT}"
+_CLUSTERPORT="${_CLUSTERPORT}"
+_RELATIVEDBDIRPATH="${_RELATIVEDBDIRPATH}"
+_INITFILE="${_INITFILE}"
+_UNSEALKEYSFILE="${_UNSEALKEYSFILE}"
+_ROOTTOKENFILE="${_ROOTTOKENFILE}"
+_BINARY="${_BINARY}"
 
-you might also define to override local DIR variable
-export VAULT_DIRECTORY="${DIR}"
+you might also define environment varialbes to override local variables used in the script 
+export VAULT_DIR="${_DIR}"
+export VAULT_PORT="${_PORT}"
+export VAULT_CLUSTERPORT="${_CLUSTERPORT}"
+export VAULT_RELATIVEDBDIRPATH="${_RELATIVEDBDIRPATH}"
+export VAULT_INITFILE="${_INITFILE}"
+export VAULT_UNSEALKEYSFILE="${_UNSEALKEYSFILE}"
+export VAULT_ROOTTOKENFILE="${_ROOTTOKENFILE}"
+export VAULT_BINARY="${_BINARY}"
 
-You might also consider adding alias with above variable to ~/.bashrc
+You might also consider adding alias to ~/.bashrc
 
-export VAULT_DIRECTORY="${DIR}"
-alias pvault='/bin/bash "${DIR}/vault.sh"'
+export VAULT_DIR="${_DIR}"
+alias pvault='/bin/bash "${_DIR}/vault.sh"'
 
 Then just run one of commands:
 
@@ -291,15 +341,29 @@ Then just run one of commands:
 /bin/bash $0 stop
 /bin/bash $0 destroy
 
+or using alias
+
+pvault start
+pvault stop
+pvault destroy
+
 EOF
 
-if [ -f "${ROOTTOKENFILE}" ]; then
+if [ -f "${_ROOTTOKENFILE}" ]; then
 
 cat <<EOF
-export VAULT_ADDR='http://127.0.0.1:${PORT}';
-export VAULT_TOKEN='$(cat "${ROOTTOKENFILE}")';
-vault status
-vault token lookup
+
+steps to connect local vault cli with vault server
+export VAULT_ADDR='http://0.0.0.0:${_PORT}';
+export VAULT_TOKEN='$(cat "${_ROOTTOKENFILE}")';
+$_BINARY status
+$_BINARY token lookup
+
+every time you need this credentials just run
+
+/bin/bash $0
+or 
+pvault
 
 EOF
 
