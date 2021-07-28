@@ -65,7 +65,7 @@ function stop {
 
 export VAULT_ADDR="http://0.0.0.0:${_PORT}"
 
-cd "${DIR}"
+cd "${_DIR}"
 
 if [ "$1" != "" ]; then
     
