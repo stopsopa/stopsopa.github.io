@@ -59,8 +59,18 @@ function yellow {
 }
 
 function stop {
-    ps aux | grep "vault server" | grep "_config.hcl" | grep -v grep
-    ps aux | grep "vault server" | grep "_config.hcl" | grep -v grep | awk '{print $2}' | xargs kill
+
+    { green "stopping server"; } 2>&3
+
+    set -x
+
+    BASE="$(basename "$_BINARY")"
+
+    ps aux | grep "$BASE server" | grep "_config.hcl" | grep -v grep
+
+    ps aux | grep "$BASE server" | grep "_config.hcl" | grep -v grep | awk '{print $2}' | xargs kill
+
+    set +x
 }
 
 export VAULT_ADDR="http://0.0.0.0:${_PORT}"
@@ -73,8 +83,6 @@ if [ "$1" != "" ]; then
 fi
 
 if [ "$1" = "stop" ]; then
-
-    { green "stopping server"; } 2>&3
 
     stop
 
@@ -220,6 +228,8 @@ if [ -f "${_RELATIVEDBDIRPATH}/vault.db" ]; then
     DBFILEEXIST="1"    
 fi
 
+{ green "DBFILEEXIST $DBFILEEXIST"; } 2>&3
+
 echo "::::::::: (cd '$_DIR' && $_BINARY server -config=_config.hcl)"
 
 $($_BINARY server -config=_config.hcl >> "${LOGFILE}" & disown)
@@ -266,9 +276,9 @@ if [ -f "${_UNSEALKEYSFILE}" ]; then
 
     cat "${_UNSEALKEYSFILE}" | xargs -I %% vault operator unseal %%
 
-    echo "::::::::: (cd '$_DIR' && $_BINARY status)"    
+    echo "::::::::: (cd '$_DIR' && $_BINARY status)" 
 
-    $($_BINARY status | grep Sealed)
+    $_BINARY status | grep Sealed
 
 cat <<EOFF
 
