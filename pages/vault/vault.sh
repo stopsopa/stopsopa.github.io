@@ -73,7 +73,7 @@ function stop {
     set +x
 }
 
-export VAULT_ADDR="http://0.0.0.0:${_PORT}"
+export VAULT_ADDR="http://127.0.0.1:${_PORT}"
 
 cd "${_DIR}"
 
@@ -167,12 +167,12 @@ storage "raft" {
 disable_mlock = true
 
 listener "tcp" {
-    address     = "0.0.0.0:${_PORT}"
+    address     = "127.0.0.1:${_PORT}"
     tls_disable = "true"
 }
 
-api_addr = "http://0.0.0.0:${_PORT}"
-cluster_addr = "https://0.0.0.0:${_CLUSTERPORT}"
+api_addr = "http://127.0.0.1:${_PORT}"
+cluster_addr = "https://127.0.0.1:${_CLUSTERPORT}"
 ui = true
 
 EOF
@@ -299,9 +299,9 @@ cat <<EOF
 
 tail -n 40 -f "${_DIR}/${LOGFILE}"
 
-http://0.0.0.0:${_PORT}
+http://127.0.0.1:${_PORT}
 
-export VAULT_ADDR='http://0.0.0.0:${_PORT}'
+export VAULT_ADDR='http://127.0.0.1:${_PORT}'
 export VAULT_TOKEN="$(cat "${_ROOTTOKENFILE}")"
 $_BINARY status
 
@@ -364,7 +364,7 @@ if [ -f "${_ROOTTOKENFILE}" ]; then
 cat <<EOF
 
 steps to connect local vault cli with vault server
-export VAULT_ADDR='http://0.0.0.0:${_PORT}';
+export VAULT_ADDR='http://127.0.0.1:${_PORT}';
 export VAULT_TOKEN='$(cat "${_ROOTTOKENFILE}")';
 $_BINARY status
 $_BINARY token lookup
