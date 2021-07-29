@@ -51,7 +51,248 @@ yarn install --production=false # with devDependencies
                 </script>
             </div>
             <div class="cards">
-                
+                <h2>nodemon</h2>
+                <script type="editor" data-lang="sh">
+nodemon -e js,html server.js                  
+                </script>                
+                <h2>streams</h2>
+                <script type="editor" data-lang="js">
+
+// https://github.com/substack/stream-handbook
+// from: https://github.com/nkzawa/socket.io-stream
+
+// https://nodesource.com/blog/understanding-streams-in-nodejs/
+
+
+// https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
+// Create big file using stream
+const fs = require('fs');
+const file = fs.createWriteStream('./big.file');
+
+for(let i=0; i<= 1e6; i++) {
+  file.write('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n');
+}
+
+file.end();
+
+
+
+# https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
+# more: https://jscomplete.com/learn/node-beyond-basics/node-streams  g(node beyond basics)
+
+# https://www.sitepoint.com/basics-node-js-streams/
+# http://2ality.com/2018/04/async-iter-nodejs.html
+# http://2ality.com/2018/05/child-process-streams.html
+
+# read file to http response:
+const stream = fs.createReadStream(file);                
+stream.pipe(res);
+
+# write http response to file:    
+const stream = fs.createWriteStream(file);
+res.pipe(stream);   
+
+readableStream.pipe(writableStream);
+
+# pipe stream error handling
+await new Promise((resolve, reject ) => {
+
+  var stream = res.pipe(fs.createWriteStream(file));
+
+  stream.on('finish', () => resolve());
+
+  stream.on('error', e => reject({
+    writable_stream_error: e
+  }));
+});
+
+# unzip
+var fs = require('fs');
+var zlib = require('zlib');
+
+fs.createReadStream('input.txt.gz')
+  .pipe(zlib.createGunzip())
+  .pipe(fs.createWriteStream('output.txt'));   
+
+                </script>
+                <h2>path</h2>
+                <script type="editor" data-lang="js">
+# in php :    
+$path_parts = pathinfo('/www/htdocs/inc/lib.inc.php');
+
+echo $path_parts['basename'], "\n"; // lib.inc.php
+    // path.basename(test)
+echo $path_parts['extension'], "\n"; // php
+    // path.extname(test).substring(1)
+echo $path_parts['dirname'], "\n"; // /www/htdocs/inc
+    // path.dirname(test)
+echo $path_parts['filename'], "\n"; // since PHP 5.2.0 // lib.inc
+    // path.basename(test, path.extname(test))                  
+                </script>
+                <h2>fs</h2>
+                <script type="editor" data-lang="js">
+
+var fs          = require('fs');
+
+if (fs.existsSync(dirfile)) { // warning: if under dirfile there will be broken link (pointing to something nonexisting) then this function will return false even if link DO EXIST but it's broken
+
+
+
+}
+// file exist
+
+
+function pathExist(target) { // this function detects even broken symlink
+
+  try {
+
+    if ( fs.existsSync(target) ) {
+
+      return true;
+    }
+
+    const sym = fs.readlinkSync(target);
+
+    if ( typeof sym === 'string' ) {
+
+      return true;
+    }
+  }
+  catch (e) {
+
+    // throw new Error('one' + `-- ${e}`);
+  }
+
+  return false;
+}
+
+// read sync
+const content = fs.readFileSync(file, options).toString();
+const content = fs.readFileSync(file, 'utf8').toString();
+
+fs.lstatSync(path_string).isDirectory()  // https://stackoverflow.com/a/15630832
+
+
+// write sync
+fs.writeFileSync(file.source, content);
+fs.appendFileSync(file.source, content);
+
+
+// delete remove file 
+
+fs.unlinkSync(file);   
+
+
+
+// https://nodejs.org/api/fs.html#fs_fs_access_path_mode_callback
+
+
+    if ( ! fs.existsSync(file)) {
+
+        throw `file '${file}' doesn't exist`;
+    }
+
+    try {
+        fs.accessSync(file, fs.constants.R_OK);
+    }
+    catch (e) {
+
+        throw `file '${file}' is not readdable`;
+    }
+
+    try {
+        fs.accessSync(file, fs.constants.W_OK);
+    }
+    catch (e) {
+
+        throw `file '${file}' is not writtable`;
+    }
+    // handle like this becaue without try catch it's ugly, not telling explicitely if file is not readdalbe or not writtable
+
+    // WARNING: Synchronous version of fs.access(). This throws if any accessibility checks fail, and does nothing otherwise.
+
+
+
+
+    const path                  = require('path');
+
+    const fs                    = require('fs');
+    
+    const listFilesSync = (dir, l = 0) => {
+    
+        let pa, s;
+    
+        let list = [];
+    
+        fs.readdirSync(dir).forEach(p => {
+    
+            pa  = path.resolve(dir, p);
+    
+            s   = fs.lstatSync(pa);
+    
+            // console.log('file: ', s.isFile() ? 'F' : 'D', ': ', ' '.repeat(l),  p);
+    
+            // is_file is file 
+            if (s.isFile()) {
+    
+                list.push(['f', pa]);
+            }
+    
+            if (s.isDirectory()) {
+    
+                list.push(['d', pa]);
+    
+                list = list.concat(listFilesSync(pa, l + 4));
+            }
+        })
+    
+        return list;
+    }
+    ==== walk iterate through directories files recursively recursive ====== ^^^
+    
+    
+    
+    ==== find files list recursively ===== vvv
+    
+    const fs            = require('fs');
+    
+    var walkSync = function(dir, filelist) { // https://gist.github.com/kethinov/6658166#gistcomment-1603591
+    
+        var p, files = fs.readdirSync(dir);
+    
+        filelist = filelist || [];
+    
+        files.forEach(function(file) {
+    
+            p = path.resolve(dir, file);
+    
+            if (fs.statSync(p).isDirectory()) { // is directory is_dir isdirectory
+    
+                filelist = walkSync(p, filelist);
+            }
+            else {
+    
+                filelist.push(p);
+            }
+        });
+    
+        return filelist;
+    };
+
+
+                </script>
+                <h2>eslint</h2>
+                <script type="editor" data-lang="python">
+
+# raw config
+https://github.com/standard/eslint-config-standard/blob/master/eslintrc.json
+https://eslint.org/docs/rules/
+
+# error levels: 
+https://eslint.org/docs/user-guide/getting-started#configuration    
+
+https://eslint.org/docs/1.0.0/rules/padded-blocks                   
+                </script>
                 <h2>npm</h2>
                 <script type="editor" data-lang="sh">
 
@@ -61,6 +302,40 @@ npm install --production=false # with devDependencies
     
 $(npm bin)/cypress open
     # from: https://docs.cypress.io/guides/getting-started/installing-cypress.html#Opening-Cypress
+
+npm init
+npm init --scope=stopsopa
+    {
+      "name": "@stopsopa/line",
+      "version": "2.0.0",
+      "description": "Lib to draw lines using one div and css",
+      "main": "line.js",
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server.js"
+      },
+      "repository": {
+        "type": "git",
+        "url": "git@github.com:stopsopa/line.git"
+      },
+      "author": "Szymon Dzialowski",
+      "license": "MIT",
+      "homepage": "https://github.com/stopsopa/line"
+    }    
+npm login
+npm config ls
+.npmignore
+    # testing .npmignore run "npm pack" - https://docs.npmjs.com/misc/developers#testing-whether-your-npmignore-or-files-config-works
+
+npx: https://docs.npmjs.com/files/package.json#bin 
+
+npm version patch
+npm publish --access=public
+
+https://badge.fury.io/for/js/bash-make-lifecycle - badge generator
+
+npm link    # https://www.youtube.com/watch?v=nKFe1lhGSk0 usefull if you are in the process of development of something
+    # known issues: https://github.com/npm/npm/issues/20954#issuecomment-397114152    
 
                 </script>
             </div>
