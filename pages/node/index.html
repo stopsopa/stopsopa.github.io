@@ -6,6 +6,33 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>stopsopa.github.io</title>
+    <script> 
+        (function () {
+            var resolve;
+            var p = new Promise(function (res) {
+                resolve = res;
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+                Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+
+                    var text = tag.innerHTML;
+
+                    text = text.replace(/domain\.com/g, location.origin)
+
+                    tag.innerHTML = text;
+                });
+
+                resolve();
+            });
+
+            window.waitForPromise = function () {
+
+                return p;
+            }
+        }())
+    </script>
     <script src="/js/github.js"></script>
 </head>
 <body class="layout" toc>
@@ -28,7 +55,17 @@ npx envinfo
 
                 </script>
             <div class="cards">
-                
+                <h2>Extract engines script</h2>
+                <script type="editor" data-lang="sh" class="domain.com">
+
+wget domain.com/pages/node/engines.js
+
+curl domain.com/pages/node/engines.js --output vault.sh
+
+node engines.js jest
+
+                </script>
+
                 <h2>Best practices</h2>
 
                 <a href="https://github.com/goldbergyoni/nodebestpractices">https://github.com/goldbergyoni/nodebestpractices</a>
