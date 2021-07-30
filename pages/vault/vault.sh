@@ -77,6 +77,8 @@ export VAULT_ADDR="http://127.0.0.1:${_PORT}"
 
 cd "${_DIR}"
 
+echo "WORKING DIRECTORY ${_DIR}"
+
 if [ "$1" != "" ]; then
     
     echo "mode: $1"
