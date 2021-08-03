@@ -2,8 +2,8 @@
 # https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started#seal-unseal
 # target directory where vault should be created
 _DIR="."
-_PORT="8202"
-_CLUSTERPORT="8203"
+_PORT="8200"
+_CLUSTERPORT="8201"
 _RELATIVEDBDIRPATH="db"
 _INITFILE="_init.txt"
 _UNSEALKEYSFILE="_unseal_keys.txt"
@@ -45,6 +45,19 @@ if [ "${VAULT_BINARY}" != "" ]; then
     _BINARY="${VAULT_BINARY}"
 fi
 
+# source "$DIR/../trim.sh"
+
+# FLAG="$(trim "$FLAG")"
+
+trim() {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "$var"
+}
+
 exec 3<> /dev/null
 function green {
     printf "\e[32m$1\e[0m\n"
@@ -77,10 +90,61 @@ export VAULT_ADDR="http://127.0.0.1:${_PORT}"
 
 cd "${_DIR}"
 
+if [ "$1" = "endpoint" ]; then
+
+  if [ -f "${_ROOTTOKENFILE}" ]; then
+
+    echo -n "http://127.0.0.1:${_PORT}"
+
+  else
+
+    { red "\n${_ROOTTOKENFILE} doesn't exist yet"; } 2>&3
+  fi
+
+  exit 0
+fi
+
+if [ "$1" = "token" ]; then
+
+  if [ -f "${_ROOTTOKENFILE}" ]; then
+
+    echo -n "$(trim "$(cat "${_ROOTTOKENFILE}")")"
+
+  else
+
+    { red "\n${_ROOTTOKENFILE} doesn't exist yet"; } 2>&3
+  fi
+
+  exit 0
+fi
+
+if [ "$1" = "eval" ]; then
+
+  if [ -f "${_ROOTTOKENFILE}" ]; then
+
+cat <<EOF
+# run
+#     eval "\$(/bin/bash "$0" eval)"
+export VAULT_ADDR='http://127.0.0.1:${_PORT}';
+export VAULT_TOKEN='$(cat "${_ROOTTOKENFILE}")';
+echo VAULT_ADDR=$VAULT_ADDR
+echo VAULT_TOKEN=$VAULT_TOKEN
+$_BINARY status
+$_BINARY token lookup
+EOF
+
+  else
+
+    { red "\n${_ROOTTOKENFILE} doesn't exist yet"; } 2>&3
+  fi
+
+  exit 0
+fi
+
 echo "WORKING DIRECTORY ${_DIR}"
 
 if [ "$1" != "" ]; then
-    
+
     echo "mode: $1"
 fi
 
@@ -358,6 +422,10 @@ or using alias
 pvault start
 pvault stop
 pvault destroy
+pvault endpoint
+pvault token
+pvault eval
+eval "\$(pvault eval)"
 
 EOF
 
