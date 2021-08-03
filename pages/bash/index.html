@@ -839,6 +839,18 @@ eval $_EVAL
 
                 <h2>HEREDOC:</h2>
                 <script type="editor" data-lang="sh">
+
+cat <<EOF | grep def
+
+abc
+def a
+ghi
+jkl
+def b
+zzz
+
+EOF                
+                
 VAR=$(cat <<END
 
 ..
