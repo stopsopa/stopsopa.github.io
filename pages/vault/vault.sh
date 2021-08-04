@@ -9,6 +9,7 @@ _INITFILE="_init.txt"
 _UNSEALKEYSFILE="_unseal_keys.txt"
 _ROOTTOKENFILE="_root_token.txt"
 _BINARY="vault"
+_CONFIGFILE="_config.hcl"
 
 if [ "${VAULT_DIR}" != "" ]; then
 
@@ -79,9 +80,9 @@ function stop {
 
     BASE="$(basename "$_BINARY")"
 
-    ps aux | grep "$BASE server" | grep "_config.hcl" | grep -v grep
+    ps aux | grep "$BASE server" | grep "${_CONFIGFILE}" | grep -v grep
 
-    ps aux | grep "$BASE server" | grep "_config.hcl" | grep -v grep | awk '{print $2}' | xargs kill
+    ps aux | grep "$BASE server" | grep "${_CONFIGFILE}" | grep -v grep | awk '{print $2}' | xargs kill
 
     set +x
 }
@@ -167,7 +168,7 @@ if [ "$1" = "destroy" ]; then
 
     rm -rf db    
     rm -rf logs
-    rm -rf _config.hcl
+    rm -rf "${_CONFIGFILE}"
     rm -rf "${_INITFILE}"
     rm -rf "${_ROOTTOKENFILE}"
     rm -rf "${_UNSEALKEYSFILE}"
@@ -216,14 +217,14 @@ unset VAULT_TOKEN
 
 { green "entered directory '${_DIR}'"; } 2>&3
 
-if [ -f "_config.hcl" ]; then
+if [ -f "${_CONFIGFILE}" ]; then
 
-    { green "_config.hcl already exist"; } 2>&3
+    { green "${_CONFIGFILE} already exist"; } 2>&3
 else
 
-    { green "creating _config.hcl"; } 2>&3
+    { green "creating ${_CONFIGFILE}"; } 2>&3
 
-cat <<EOF > _config.hcl
+cat <<EOF > "${_CONFIGFILE}"
 
 storage "raft" {
     path    = "./${_RELATIVEDBDIRPATH}"
@@ -296,13 +297,13 @@ fi
 
 { green "DBFILEEXIST $DBFILEEXIST"; } 2>&3
 
-echo "::::::::: (cd '$_DIR' && $_BINARY server -config=_config.hcl)"
+echo "::::::::: (cd '$_DIR' && $_BINARY server -config="${_CONFIGFILE}")"
 
-$($_BINARY server -config=_config.hcl >> "${LOGFILE}" & disown)
+$($_BINARY server -config="${_CONFIGFILE}" >> "${LOGFILE}" & disown)
 
 sleep 5
 
-if [ "$(ps aux | grep vault | grep _config.hcl)" = "" ]; then
+if [ "$(ps aux | grep vault | grep "${_CONFIGFILE}")" = "" ]; then
 
     { red "server crushed, last lines of log of the server ${_DIR}/${LOGFILE}:"; } 2>&3
 
@@ -428,6 +429,16 @@ pvault eval
 eval "\$(pvault eval)"
 
 EOF
+
+STATUS="$(ps aux | grep -v grep | grep "${_CONFIGFILE}")"
+
+if [ "$STATUS" = "" ]; then
+
+  { red "SERVER STATUS: NOT WORKING"; } 2>&3;
+else
+
+  { green "SERVER STATUS: WORKING\n${STATUS}"; } 2>&3;
+fi
 
 if [ -f "${_ROOTTOKENFILE}" ]; then
 
