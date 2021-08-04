@@ -219,6 +219,25 @@ set -o pipefail # more: https://buildkite.com/docs/pipelines/writing-build-scrip
 set -u # Exit script immediately if an undefined variable is used (e.g. echo "$UNDEFINED_ENV_VAR").
 
                 </script>
+                <h2>regex</h2>
+                <script type="editor" data-lang="sh">
+
+
+NAME="765876"
+
+TEST="^[0-9]+$"
+
+if [[ $NAME =~ $TEST ]]; then
+
+    echo "match";
+else
+
+    echo "not match";
+
+    exit 1;
+fi
+
+                </script>
                 
                 <h2>top</h2>
                 <script type="editor" data-lang="sh">
