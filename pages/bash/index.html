@@ -227,7 +227,7 @@ NAME="765876"
 
 TEST="^[0-9]+$"
 
-if [[ $NAME =~ $TEST ]]; then
+if [[ ${NAME} =~ ${TEST} ]]; then
 
     echo "match";
 else
