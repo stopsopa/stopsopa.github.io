@@ -88,6 +88,27 @@ yarn install --production=false # with devDependencies
     # from: https://classic.yarnpkg.com/en/docs/cli/install/#toc-yarn-install-production-true-false
 
                 </script>
+                <h2>dotenv</h2>
+                <script type="editor" data-lang="sh">
+
+const fs = require('fs');
+
+const path = require('path');
+
+const env = path.resolve(path.dirname(__dirname), '.env');
+
+if ( ! fs.existsSync(env) ) {
+
+  throw new Error(`File ${env} doesn't exist`);
+}
+
+require('dotenv').config({
+  path: env,
+});
+
+console.log('env', process.env);
+
+                </script>
             </div>
             <div class="cards">
                 <h2>nodemon</h2>
