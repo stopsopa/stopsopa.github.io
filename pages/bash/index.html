@@ -432,6 +432,28 @@ chmod a+x k.sh
 # you typed h.
 
 
+# call function for each line (foreach):
+LIST=$(cat <<EOF
+one
+two three
+four
+six
+
+seven
+
+eight
+EOF
+); 
+echo -e "${LIST}" | while read line ; do echo ">>$line<<" ; done
+# >>one<<
+# >>two three<<
+# >>four<<
+# >>six<<
+# >><<
+# >>seven<<
+# >><<
+# >>eight<<  
+
 
                 </script>
                 
