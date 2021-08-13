@@ -3,7 +3,7 @@ if [ "$1" = "" ] || [ "$1" = "--help" ]; then
 
 cat <<EOF
 
-Cript will try to detect wget then url, and use first found tool to dowload a file from url
+Script will try to detect wget then url, and use first found tool to dowload a file from url
 
 /bin/bash "$0" https?://domain.com/path/to/file.txt [optional target path to save]
 
