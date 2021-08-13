@@ -669,6 +669,10 @@ while true; do ping -n -q -c1 docker.phaseiilabs.com | grep '('; sleep 2; done
 
 echo "args: '$@'"
 
+function quote {
+  echo "$1" | sed -E 's/\"/\\"/g'
+}
+
 _CLEANOLD="0";
 
 _GEN="gen"
@@ -711,11 +715,11 @@ while (( "$#" )); do
           _EVAL="$_EVAL &&"
         else
           if [ "$PARAMS" = "" ]; then
-            PARAMS="\"$1\""
-            _EVAL="\"$1\""
+            PARAMS="\"$(quote "$1")\""
+            _EVAL="\"$(quote "$1")\""
           else
-            PARAMS="$PARAMS \"$1\""
-            _EVAL="$_EVAL \"$1\""
+            PARAMS="$PARAMS \"$(quote "$1")\""
+            _EVAL="$_EVAL \"$(quote "$1")\""
 #          PARAMS="$(cat <<EOF
 #$PARAMS
 #- "$1"
@@ -739,11 +743,11 @@ while (( "$#" )); do
           _EVAL="$_EVAL &&"
       else
         if [ "$PARAMS" = "" ]; then
-            PARAMS="\"$1\""
-            _EVAL="\"$1\""
+            PARAMS="\"$(quote "$1")\""
+            _EVAL="\"$(quote "$1")\""
         else
-          PARAMS="$PARAMS \"$1\""
-            _EVAL="$_EVAL \"$1\""
+          PARAMS="$PARAMS \"$(quote "$1")\""
+            _EVAL="$_EVAL \"$(quote "$1")\""
 #          PARAMS="$(cat <<EOF
 #$PARAMS
 #- "$1"
