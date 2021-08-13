@@ -663,11 +663,11 @@ while (( "$#" )); do
       ;;
     -d|--deployment-yaml)
       if [ "$2" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
-        echo "$0 Error: --deployment-yaml value can't be empty" >&2 # optional
+        echo "$0 error: --deployment-yaml value can't be empty" >&2 # optional
         exit 1;                                          # optional
       fi
       if ! [ -f "$2" ]; then
-        echo "$0 Error: --deployment-yaml file '$2' doesn't exist" >&2 # optional
+        echo "$0 error: --deployment-yaml file '$2' doesn't exist" >&2 # optional
         exit 1;                                          # optional
       fi                                           # optional
       _DEPLOYMENT_YAML="$2";
@@ -675,7 +675,7 @@ while (( "$#" )); do
       ;;
     -g|--gen)
       if [ "$2" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
-        echo "$0 Error: --gen value can't be empty" >&2 # optional
+        echo "$0 error: --gen value can't be empty" >&2 # optional
         exit 1;                                          # optional
       fi                                                # optional
       _GEN="$2";
@@ -708,7 +708,7 @@ while (( "$#" )); do
       break;
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 Error: Unsupported flag $1" >&2
+      echo "$0 error: Unsupported flag $1" >&2
       exit 1;
       ;;
     *) # preserve positional arguments

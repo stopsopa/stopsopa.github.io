@@ -28,7 +28,7 @@ while (( "$#" )); do
       ;;
     --hash)
       if [ "$2" = "" ]; then
-        echo "$0 Error: --hash value can't be empty" >&2
+        echo "$0 error: --hash value can't be empty" >&2
         exit 1;
       fi
       _HASH="$2"
@@ -36,7 +36,7 @@ while (( "$#" )); do
       ;;
     --limit)
       if [ "$2" = "" ]; then
-        echo "$0 Error: --limit value can't be empty" >&2
+        echo "$0 error: --limit value can't be empty" >&2
         exit 1;
       fi
       TEST="^[0-9]+$"
@@ -53,14 +53,14 @@ while (( "$#" )); do
       ;;
     --tag)
       if [ "$2" = "" ]; then
-        echo "$0 Error: --tag value can't be empty" >&2
+        echo "$0 error: --tag value can't be empty" >&2
         exit 1;
       fi
       _TAG="$2"
       shift 2;
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 Error: Unsupported flag $1" >&2
+      echo "$0 error: Unsupported flag $1" >&2
       exit 1;
       ;;
     *) # preserve positional arguments
