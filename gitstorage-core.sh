@@ -14,14 +14,16 @@ function yellow {
 }
 
 REMOTE="origin";
-STORAGE="origin";
+PROD_SCHEMA="https"; # @substitute
+PROD_HOST="stopsopa.github.io"; # @substitute
+STORAGE="git@github.com:stopsopa/gitstorage.git"; # @substitute
 
 PARAMS=""
 while (( "$#" )); do
   case "$1" in
     -r|--remote)
       if [ "$2" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
-        { red "$0 Error: --remote value can't be empty"; } 2>&3
+        { red "$0 error: --remote value can't be empty"; } 2>&3
         exit 1;                                          # optional
       fi                                  # optional
       REMOTE="$2";
@@ -29,7 +31,7 @@ while (( "$#" )); do
       ;;
     -s|--storage)
       if [ "$2" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
-        { red "$0 Error: --storage value can't be empty"; } 2>&3
+        { red "$0 error: --storage value can't be empty"; } 2>&3
         exit 1;                                          # optional
       fi                                  # optional
       STORAGE="$2";
@@ -52,7 +54,7 @@ while (( "$#" )); do
       break;
       ;;
     -*|--*=) # unsupported flags
-      { red "$0 Error: Unsupported flag $1"; } 2>&3
+      { red "$0 error: Unsupported flag $1"; } 2>&3
       exit 2;
       ;;
     *) # preserve positional arguments
@@ -110,10 +112,10 @@ if [ "${?}" != "0" ]; then
     exit 6
 fi
 
-#echo "REMOTE=$REMOTE"
-#echo "REPOURL=$REPOURL"
-#echo "$@"
+REPOURL="$(echo "${REPOURL}"| sed -E 's/\//__/g')"
 
-
+echo "REMOTE=$REMOTE"
+echo "REPOURL=$REPOURL"
+echo "$@"
 
 
