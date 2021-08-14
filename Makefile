@@ -10,10 +10,7 @@ status:
 	/bin/bash bash/proc/status.sh .env PROJECT_NAME
 
 build:
-	node pages/portsregistry/lists/ports-generator.js
-	/bin/bash pages/bookmarklets/compress.sh
-	/bin/bash remove-not-changed-builds.sh
-	#/bin/bash pages/kubernetes/compress.sh
+    /bin/bash build.sh
 
 testport:
 	/bin/bash testport.sh
