@@ -399,9 +399,9 @@ git rev-list --objects --all \
             <script type="editor" data-lang="sh" class="domain.com">
 
 wget --help 1> /dev/null 2> /dev/null
-if [ "$?" = "0" ]; then # curl
+if [ "$?" = "0" ]; then # wget
   wget -O ".git/gitstorage-core.sh" "domain.com/gitstorage-core.sh"
-else # wget
+else # curl
   curl "domain.com/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
 fi
 /bin/bash ".git/gitstorage-core.sh"
