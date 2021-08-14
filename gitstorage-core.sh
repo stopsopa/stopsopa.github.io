@@ -27,7 +27,7 @@ function yellow {
 
 __METHOD="wget"
 
-wget --help 1> /dev/null 2> /dev/null
+wglet --help 1> /dev/null 2> /dev/null
 
 if [ "$?" != "0" ]; then
 
@@ -156,7 +156,7 @@ GITSTORAGETARGETDIR="$(echo "${REPOURL}"| sed -E 's/\//__/g')"
 
 if [ "${__METHOD}" = "wget" ]; then
 
-  wget -O ".git/wget.sh" "${PROD}/bash/wget.sh"
+  wget --no-cache -O ".git/wget.sh" "${PROD}/bash/wget.sh"
 else
 
   curl "${PROD}/bash/wget.sh" -o ".git/wget.sh"
@@ -169,14 +169,15 @@ if [ ! -f ".git/wget.sh" ]; then
   exit 1
 fi
 
+GITSTORAGESCRIPT=".git/gitstorage.sh"
 
-{ yellow "downloading .git/gitstorage.sh"; } 2>&3
+{ yellow "downloading ${GITSTORAGESCRIPT}"; } 2>&3
 
-/bin/bash .git/wget.sh "${PROD}/gitstorage.sh" ".git/gitstorage.sh"
+/bin/bash .git/wget.sh "${PROD}/gitstorage.sh" "${GITSTORAGESCRIPT}"
 
-if [ ! -f ".git/gitstorage.sh" ]; then
+if [ ! -f "${GITSTORAGESCRIPT}" ]; then
 
-  { red "$0 error: can't download file .git/gitstorage.sh"; } 2>&3
+  { red "$0 error: can't download file ${GITSTORAGESCRIPT}"; } 2>&3
 
   exit 1
 fi
@@ -191,16 +192,17 @@ GITDIR_CONFIGFILE=".git/${CONFIGFILE}"
 
 function allgood {
 
-{ yellow "$(cat <<END
+cat <<END
+
+Now check config file:
+
+vi ${GITDIR_CONFIGFILE}
 
 Now run:
 
-  /bin/bash .git/gitstorage.sh
-
-
+/bin/bash "${GITSTORAGESCRIPT}"
 
 END
-)"; } 2>&3
 
 }
 

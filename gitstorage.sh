@@ -98,6 +98,36 @@ if [ "$_CREATE" = "1" ]; then
   exit 0;
 fi
 
+if [ "$_CONFIG" = "" ]; then
+
+  { red "$0 error: --config value can't be empty"; } 2>&3
+
+  exit 1;
+fi
+
+if ! [ -f "$_CONFIG" ]; then
+
+  { red "$0 error: --config file '$_CONFIG' doesn't exist"; } 2>&3
+
+  exit 1;
+fi
+
+source "$_CONFIG";
+
+# this will check if array exist and it will count it,
+# if it doesn't exist and can't be counted then this will return 0
+_COUNT="${#GITSTORAGELIST[@]}";
+
+if [ $_COUNT -lt 1 ] ; then
+
+  { red "$0 error: list GITSTORAGELIST in config '$_CONFIG' shouldn't be empty"; } 2>&3
+
+  exit 1;
+fi
+
+# set positional arguments in their proper place
+eval set -- "$PARAMS"
+
 if [ "$1" = "" ] || [ "$1" = "--help" ]; then
 
 cat << EOF
@@ -130,36 +160,6 @@ EOF
 
   exit 0
 fi
-
-if [ "$_CONFIG" = "" ]; then
-
-  { red "$0 error: --config value can't be empty"; } 2>&3
-
-  exit 1;
-fi
-
-if ! [ -f "$_CONFIG" ]; then
-
-  { red "$0 error: --config file '$_CONFIG' doesn't exist"; } 2>&3
-
-  exit 1;
-fi
-
-source "$_CONFIG";
-
-# this will check if array exist and it will count it,
-# if it doesn't exist and can't be counted then this will return 0
-_COUNT="${#GITSTORAGELIST[@]}";
-
-if [ $_COUNT -lt 1 ] ; then
-
-  { red "$0 error: list GITSTORAGELIST in config '$_CONFIG' shouldn't be empty"; } 2>&3
-
-  exit 1;
-fi
-
-# set positional arguments in their proper place
-eval set -- "$PARAMS"
 
 MODE="$1"
 
