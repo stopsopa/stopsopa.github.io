@@ -23,7 +23,7 @@ EOF
 /bin/bash "$0" abc.sh -- ABC "[]-.*" BCD "-" VAR "changed"
 
 # to change delimiter
-/bin/bash "bash/substitute-variables.sh" abc.sh --commented "# @xxx" -- ABC "[]-.mmm*" BCD "-mmmm" VAR "changed"
+/bin/bash "$0" abc.sh --commented "# @xxx" -- ABC "[]-.mmm*" BCD "-mmmm" VAR "changed"
 
 --commented   tells to change only lines with this comment
 
