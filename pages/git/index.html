@@ -15,6 +15,15 @@
 
       document.addEventListener('DOMContentLoaded', () => {
 
+        Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+
+          var text = tag.innerHTML;
+
+          text = text.replace(/domain\.com/g, location.origin)
+
+          tag.innerHTML = text;
+        });
+
         var year = (function (target) {
 
           var current = (new Date()).getFullYear()
@@ -386,6 +395,18 @@ git rev-list --objects --all \
             </script>
         </div>
         <div class="cards">
+            <h2>gitstorage-core.sh</h2>
+            <script type="editor" data-lang="sh" class="domain.com">
+
+wget --help 1> /dev/null 2> /dev/null
+if [ "$?" = "0" ]; then # curl
+  wget -O ".git/gitstorage-core.sh" "domain.com/gitstorage-core.sh"
+else # wget
+  curl "domain.com/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
+fi
+/bin/bash ".git/gitstorage-core.sh"
+
+            </script>
             <h2>gitstorage.sh</h2>
             <script type="editor" data-lang="sh">
                  

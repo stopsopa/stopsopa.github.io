@@ -46,7 +46,7 @@ fi
 REMOTE="origin";
 PROD_SCHEMA="https"; # @substitute
 PROD_HOST="stopsopa.github.io"; # @substitute
-GITSTORAGE_CORE_REPOSITORY="git@github.com:stopsopa/storage-test.git"; # @substitute
+GITSTORAGE_CORE_REPOSITORY="git@github.com:stopsopa/gitstorage.git"; # @substitute
 
 PROD="${PROD_SCHEMA}://${PROD_HOST}"
 
@@ -244,8 +244,6 @@ set -e
 set +e
 
 _TARGETCONFIG="$_TARGETGITDIR/${GITSTORAGETARGETDIR}/${CONFIGFILE}"
-
-set -x
 
 if [ -f "${_TARGETCONFIG}" ]; then
 
