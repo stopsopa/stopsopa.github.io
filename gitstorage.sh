@@ -21,7 +21,6 @@ set -e
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
 _CONFIG="$_DIR/gitstorage-config.sh";
-_HELP="0"
 _CREATE="0"
 _FORCE="0"
 _BACKUP="0"
@@ -37,10 +36,6 @@ while (( "$#" )); do
       ;;
     --create)
       _CREATE="1";
-      shift;
-      ;;
-    -h|--help)
-      _HELP="1";
       shift;
       ;;
     -c|--config)
@@ -103,7 +98,7 @@ if [ "$_CREATE" = "1" ]; then
   exit 0;
 fi
 
-if [ "$_HELP" = "1" ]; then
+if [ "$1" = "" ] || [ "$1" = "--help" ]; then
 
 cat << EOF
 
