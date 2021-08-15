@@ -262,8 +262,7 @@ fi
             </script>
             <h2>gitstorage.sh</h2>
             <script type="editor" data-lang="sh">
-                 
-                 
+
 # wget         
 
 if [ -f gitstorage.sh ]; then echo 'file gitstorage.sh already exist'; else wget https://raw.githubusercontent.com/stopsopa/stopsopa.github.io/master/gitstorage.sh; fi
@@ -278,10 +277,7 @@ if [ -f gitstorage.sh ]; then echo 'file gitstorage.sh already exist'; else curl
 
 /bin/bash gitstorage.sh --create
 
-vi gitstorage-config.sh
-
-                    
-
+vi gitstorage-config.sh  
 
             </script>
             <a href="https://github.com/stopsopa/gitstorage">github</a>
@@ -300,8 +296,6 @@ git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD:public index.html | tar 
 git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD: .env.kub | tar -x
 git archive --remote=git@bitbucket.org:xxx/xxx.git feature_branch: .env.kub | tar -x
     # from: https://stackoverflow.com/a/18712703
-                    
-
 
             </script>
         </div>
@@ -313,9 +307,7 @@ git log --graph --abbrev-commit --decorate --all \
     --format=format:"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) \
     - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)"
     
-git log --graph --decorate --abbrev-commit --all --pretty=oneline  --pretty=format:"%h%x09%an%x09%ad%x09%s"      
-                    
-
+git log --graph --decorate --abbrev-commit --all --pretty=oneline  --pretty=format:"%h%x09%an%x09%ad%x09%s"  
 
             </script>
         </div>
@@ -374,8 +366,7 @@ git filter-branch -f --env-filter  \
         <div class="cards">
             <h2>remove from history (filter-branch)</h2>
             <script type="editor" data-lang="sh">
-                    
-                    
+
   git filter-branch --force --index-filter \
   'git rm -rf --cached --ignore-unmatch plik1 katalog1' \
   --prune-empty --tag-name-filter cat -- --all && \
@@ -383,9 +374,6 @@ git filter-branch -f --env-filter  \
   git reflog expire --expire=now --all && \
   git gc --prune=now && \
   git gc --aggressive --prune=now
-                    
-                    
-
 
             </script>
         </div>
@@ -408,10 +396,6 @@ then
     export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
 fi
 ' --tag-name-filter cat -- --branches --tags
-                    
-                    
-
-
             </script>
             <a href="https://stackoverflow.com/a/750182">from</a>
         </div>
@@ -419,17 +403,13 @@ fi
             <h2>find big files, from <a href="https://stackoverflow.com/a/42544963">https://stackoverflow.com/a/42544963</a>
             </h2>
             <script type="editor" data-lang="sh">
-                    
-                    
+
 git rev-list --objects --all \
 | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
 | sed -n 's/^blob //p' \
 | sort --numeric-sort --key=2 \
 | cut -c 1-12,41- \
 | $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
-                    
-                    
-
 
             </script>
         </div>
