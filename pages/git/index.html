@@ -248,6 +248,45 @@
             <a href="https://github.com/tj/git-extras/blob/master/Commands.md">https://github.com/tj/git-extras/blob/master/Commands.md</a>
         </div>
         <div class="cards">
+            <h2>gitstorage-core.sh</h2>
+            <script type="editor" data-lang="sh" class="domain.com">
+
+wget --help 1> /dev/null 2> /dev/null
+if [ "$?" = "0" ]; then # wget
+  wget -O ".git/gitstorage-core.sh" "domain.com/gitstorage-core.sh"
+else # curl
+  curl "domain.com/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
+fi
+/bin/bash ".git/gitstorage-core.sh"
+
+            </script>
+            <h2>gitstorage.sh</h2>
+            <script type="editor" data-lang="sh">
+                 
+                 
+# wget         
+
+if [ -f gitstorage.sh ]; then echo 'file gitstorage.sh already exist'; else wget https://raw.githubusercontent.com/stopsopa/stopsopa.github.io/master/gitstorage.sh; fi
+
+/bin/bash gitstorage.sh --create
+
+vi gitstorage-config.sh
+
+# curl
+
+if [ -f gitstorage.sh ]; then echo 'file gitstorage.sh already exist'; else curl https://raw.githubusercontent.com/stopsopa/stopsopa.github.io/master/gitstorage.sh -o gitstorage.sh; fi
+
+/bin/bash gitstorage.sh --create
+
+vi gitstorage-config.sh
+
+                    
+
+
+            </script>
+            <a href="https://github.com/stopsopa/gitstorage">github</a>
+        </div>
+        <div class="cards">
             <h2>useful</h2>
             <script type="editor" data-lang="sh">
 
@@ -393,45 +432,6 @@ git rev-list --objects --all \
 
 
             </script>
-        </div>
-        <div class="cards">
-            <h2>gitstorage-core.sh</h2>
-            <script type="editor" data-lang="sh" class="domain.com">
-
-wget --help 1> /dev/null 2> /dev/null
-if [ "$?" = "0" ]; then # wget
-  wget -O ".git/gitstorage-core.sh" "domain.com/gitstorage-core.sh"
-else # curl
-  curl "domain.com/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
-fi
-/bin/bash ".git/gitstorage-core.sh"
-
-            </script>
-            <h2>gitstorage.sh</h2>
-            <script type="editor" data-lang="sh">
-                 
-                 
-# wget         
-
-if [ -f gitstorage.sh ]; then echo 'file gitstorage.sh already exist'; else wget https://raw.githubusercontent.com/stopsopa/stopsopa.github.io/master/gitstorage.sh; fi
-
-/bin/bash gitstorage.sh --create
-
-vi gitstorage-config.sh
-
-# curl
-
-if [ -f gitstorage.sh ]; then echo 'file gitstorage.sh already exist'; else curl https://raw.githubusercontent.com/stopsopa/stopsopa.github.io/master/gitstorage.sh -o gitstorage.sh; fi
-
-/bin/bash gitstorage.sh --create
-
-vi gitstorage-config.sh
-
-                    
-
-
-            </script>
-            <a href="https://github.com/stopsopa/gitstorage">github</a>
         </div>
         <div class="cards">
             <h2>git config</h2>
