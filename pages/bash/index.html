@@ -505,6 +505,14 @@ kill -9 xxxxxx && usermod -m -d /home/buildkite-agent buildkite-agent
 ps -o comm= $$   
 echo $SHELL 
 
+# list of available shells
+cat /etc/shells
+
+zsh --version
+bash --version
+
+# from: https://www.howtogeek.com/444596/how-to-change-the-default-shell-to-bash-in-macos-catalina/
+
                 </script>
                 more about: <a href="https://support.apple.com/en-gb/HT208050">https://support.apple.com/en-gb/HT208050</a>
             </div>
