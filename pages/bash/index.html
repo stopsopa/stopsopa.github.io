@@ -495,12 +495,15 @@ kill -9 xxxxxx && usermod -m -d /home/buildkite-agent buildkite-agent
 
                 <h2>verifying default shell</h2>
                 <script type="editor" data-lang="sh">
-                
- echo $SHELL 
+             
  
  # change default shell
  chsh -s /bin/bash
  chsh -s /bin/zsh
+ 
+ # to determine currently used shell
+ps -o comm= $$   
+echo $SHELL 
 
                 </script>
                 more about: <a href="https://support.apple.com/en-gb/HT208050">https://support.apple.com/en-gb/HT208050</a>
