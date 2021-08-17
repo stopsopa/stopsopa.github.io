@@ -72,6 +72,16 @@ host.docker.internal
         https://stackoverflow.com/a/48547074
 
 docker login https://docker-registry.xxx.com --username=yourhubusername --password=yourpassword
+
+# inline Dockerfile
+
+cat <<EOF | docker build --rm -t local_c7_systemd -
+FROM centos:7
+...
+EOF
+
+docker run --rm -it local_c7_systemd bash
+
                 </script>
 
                 <h2>Docker registry urls</h2>
