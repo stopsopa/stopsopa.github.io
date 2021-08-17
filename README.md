@@ -74,7 +74,7 @@
             
                                 var text = tag.innerHTML;
             
-                                text = text.replace(/domain\.com/g, location.origin)
+                                text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host)
             
                                 tag.innerHTML = text;
                             });
