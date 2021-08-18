@@ -114,6 +114,25 @@ fi
 
 source "$_CONFIG";
 
+
+echo "https://github.com/stopsopa/gitstorage/tree/master/git%40github.secureserver.net:sdzialowski__PEX_dev.git"
+echo "https://bitbucket.org/stopsopa/buildkite/raw/master/.buildkite/hooks/_colours.sh"
+
+#https://github.com/stopsopa/gitstorage/tree/master/git%40github.secureserver.net:sdzialowski__PEX_dev.git
+#        git@github.com:stopsopa/gitstorage.git
+# git@bitbucket.org:stopsopa/buildkite.git
+# git@github.com:stopsopa/gitstorage.git
+
+_GITHUB="^git@github"
+
+if [[ ${GITSTORAGESOURCE} =~ ${_GITHUB} ]]; then
+
+  URL="$(echo "$GITSTORAGESOURCE" | sed -E "s/^git@([^:]+):([^\/]+)\/([^\.]+).*/https:\/\/\1\/\2\/\3/")/tree/master/${GITSTORAGETARGETDIR}"
+else
+
+  URL="$(echo "$GITSTORAGESOURCE" | sed -E "s/^git@([^:]+):([^\/]+)\/([^\.]+).*/https:\/\/\1\/\2\/\3/")/raw/master/${GITSTORAGETARGETDIR}"
+fi
+
 # this will check if array exist and it will count it,
 # if it doesn't exist and can't be counted then this will return 0
 _COUNT="${#GITSTORAGELIST[@]}";
@@ -321,6 +340,8 @@ if [ $MODE = "isinsync" ]; then
 
   (cd "$_TARGETGITDIR" && git status)
 
+  echo "final url ${URL}";
+
   exit 1;
 fi
 
@@ -370,6 +391,8 @@ if [ $MODE = "diff" ]; then
 
   (cd "$_TARGETGITDIR/$GITSTORAGETARGETDIR" && git status)
 
+  echo "final url ${URL}";
+
   exit 1;
 fi
 
@@ -386,10 +409,14 @@ if [ $MODE = "push" ]; then
 
     if [ "$?" = "0" ]; then
 
+      echo "final url ${URL}";
+
       exit 0;
     else
 
       { red "$0 error: files are not in sync, if you sure that you want to push them add --force param"; } 2>&3
+
+      echo "final url ${URL}";
 
       exit 1;
     fi
@@ -446,6 +473,8 @@ if [ $MODE = "push" ]; then
 
       { green "\n    files are in sync\n"; } 2>&3
 
+      echo "final url ${URL}";
+
       exit 0;
   fi
 
@@ -456,6 +485,8 @@ if [ $MODE = "push" ]; then
   (cd "$_TARGETGITDIR" && git push origin master)
 
   { green "\n    files pushed\n"; } 2>&3
+
+  echo "final url ${URL}";
 
   exit 0;
 fi
@@ -472,10 +503,14 @@ if [ $MODE = "pull" ]; then
 
     if [ "$?" = "0" ]; then
 
+      echo "final url ${URL}";
+
       exit 0;
     else
 
       { red "$0 error: files are not in sync, if you sure that you want to pull them add --force param"; } 2>&3
+
+      echo "final url ${URL}";
 
       exit 1;
     fi
@@ -512,6 +547,8 @@ if [ $MODE = "pull" ]; then
   done
 
   { green "\n    files pulled\n"; } 2>&3
+
+  echo "final url ${URL}";
 
   exit 0;
 fi
