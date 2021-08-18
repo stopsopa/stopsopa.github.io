@@ -624,7 +624,21 @@ TRAPS+=('cleanup') # add to the end of array
             </div>
 
             <div class="cards">
+                <h2>zsh colors</h2>
 
+                <script type="editor" data-lang="sh">
+
+cat <<EOF >> ~/.zshrc
+unset PROMPT;
+if [[ "$EUID" = "0" ]]; then
+   PROMPT='%~ %F{#555555}%n%f %(?.%F{#00ff00}√%f.%F{#ff0000}%?%f) '
+else
+   PROMPT='%~ %F{#ffff00}%n%f %(?.%F{#00ff00}√%f.%F{#ff0000}%?%f) '
+fi
+EOF
+source ~/.zshrc
+
+                </script>
                 <h2>bash colors</h2>
 
                 
