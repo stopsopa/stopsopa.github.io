@@ -1405,6 +1405,7 @@ module.exports = function request(url, opt = {}) {
                 <h2>jsonfetch.js</h2>  
                 <script type="editor" data-lang="js">
                 
+
 const URL           = require('url').URL;
 
 const https         = require('https');
@@ -1422,14 +1423,17 @@ const th            = msg => new Error(emsg(msg));
 module.exports = function fetch (url, opt = {}) {
 
   let {
-    method      = 'GET',
-    timeout     = 30 * 1000,
-    get         = {},
-    headers     = {},
-    debug       = false,
+    method                = 'GET',
+    timeout               = 30 * 1000,
+    get                   = {},
+    headers               = {},
+    debug                 = false,
     body,
-    nobody      = false,
-    decodejson  = false,
+    nobody                = false,
+    decodejson            = false,
+    resolvingstatuscodes  = code => {
+      return code >= 200 && code < 300;
+    },
   } = opt;
 
   if ( typeof method !== 'string' ) {
@@ -1524,6 +1528,11 @@ module.exports = function fetch (url, opt = {}) {
 
             reject(th(`JSON.parse(response body) error: ${e}`))
           }
+        }
+
+        if ( ! resolvingstatuscodes(res.statusCode) ) {
+
+          return reject(th(`Not resolving response status code (param function 'resolvingstatuscodes'), current status is: ${res.statusCode}`));
         }
 
         const payload = {
