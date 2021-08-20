@@ -175,6 +175,42 @@ fs.createReadStream('input.txt.gz')
   .pipe(fs.createWriteStream('output.txt'));   
 
                 </script>
+                <h2>Signleton (kinda) module template</h2>
+                <script type="editor" data-lang="js">
+
+const CachePromise = require('./CachePromise');
+
+const instances = {};
+
+const name = 'CachePromiseModule';
+
+const th = msg => new Error(`${name}.js error: ${msg}`);
+
+module.exports = (name = 'default', opt) => {
+
+  if ( typeof name !== 'string' ) {
+
+    throw th(`name is not a string`);
+  }
+
+  if ( instances[name] ) {
+
+    return instances[name];
+  }
+
+  if ( ! isObject(opt) ) {
+
+    throw th(`opt is not an object. Usually it means you are trying to get the instance before initialising it. Use first ${name}(name, opt) then ${name}(name)`);
+  }
+
+  return instances[name] = new CachePromise(opt);
+}
+
+function isObject(o) {
+  return Object.prototype.toString.call(o) === '[object Object]';
+}
+
+                </script>
                 <h2>path</h2>
                 <script type="editor" data-lang="js">
 # in php :    
