@@ -1402,10 +1402,12 @@ module.exports = function request(url, opt = {}) {
             </div>
 
             <div class="cards">
-                <h2>jsonfetch.js</h2>  
+                <h2>lightfetch.js</h2>  
                 <script type="editor" data-lang="js">
                 
 "use strict";
+
+// yarn add qs@^6
 
 const URL           = require('url').URL;
 
@@ -1413,9 +1415,11 @@ const https         = require('https');
 
 const http          = require('http');
 
-const querystring   = require('querystring');
+// const querystring   = require('querystring');
 
-const name          = '@libs/fetch';
+const qs            = require('qs');
+
+const name          = '@libs/lightfetch';
 
 const emsg          = msg => `${name}: ${msg}`;
 
@@ -1424,7 +1428,7 @@ const th            = msg => new Error(emsg(msg));
 const def = {
   method                : 'GET',
   timeout               : 30 * 1000,
-  get                   : {},
+  query                 : {},
   headers               : {},
   debug                 : false,
   body                  : undefined,
@@ -1432,12 +1436,13 @@ const def = {
   decodejson            : false,
   resolvingstatuscodes  : code => {
     return code >= 200 && code < 300;
-  }
+  },
+  qsOptions: {}, // https://github.com/ljharb/qs#stringifying
 };
 
 const defKeys = Object.keys(def);
 
-module.exports = function fetch (url, opt = {}) {
+module.exports = function (url, opt = {}) {
 
   Object.keys(opt || {}).forEach(key => {
 
@@ -1447,27 +1452,21 @@ module.exports = function fetch (url, opt = {}) {
     }
   });
 
-  console.log('opt: ', {
-    ...def,
-    ...opt,
-  })
-
   let {
     method,
     timeout,
-    get,
+    query,
     headers,
     debug,
     body,
     nobody,
     decodejson,
     resolvingstatuscodes,
+    qsOptions,
   } = ({
     ...def,
     ...opt,
   });
-
-  console.log('timeout: ', timeout)
 
   if ( typeof method !== 'string' ) {
 
@@ -1484,7 +1483,9 @@ module.exports = function fetch (url, opt = {}) {
 
       const lib   = (uri.protocol === 'https:') ? https : http;
 
-      const query = querystring.stringify(get)
+      // const querystring = querystring.stringify(query)
+
+      const querystring = qs.stringify(query, qsOptions);
 
       let rawBody = body;
 
@@ -1511,7 +1512,7 @@ module.exports = function fetch (url, opt = {}) {
       const rq = {
         hostname    : uri.hostname,
         port        : uri.port || ( (uri.protocol === 'https:') ? '443' : '80'),
-        path        : uri.pathname + uri.search + (query ? (uri.search.includes('?') ? '&' : '?') + query : ''),
+        path        : uri.pathname + uri.search + (querystring ? (uri.search.includes('?') ? '&' : '?') + querystring : ''),
         method,
         headers,
       };
@@ -1591,7 +1592,7 @@ module.exports = function fetch (url, opt = {}) {
         }
       });
 
-      req.on('socket', function (socket) { // uncomment this to have timeout
+      req.on('socket', function (socket) {
 
         try {
 
@@ -1604,7 +1605,7 @@ module.exports = function fetch (url, opt = {}) {
             }
             catch (e) {
               try {
-                req.abort(); // since v14.1.0 Use request.destroy() instead
+                req.abort(); // since node v14.1.0 Use request.destroy() instead
               }
               catch (e) {}
             }
