@@ -1404,8 +1404,7 @@ module.exports = function request(url, opt = {}) {
             <div class="cards">
                 <h2>jsonfetch.js</h2>  
                 <script type="editor" data-lang="js">
-
-
+                
 const URL           = require('url').URL;
 
 const https         = require('https');
@@ -1414,15 +1413,13 @@ const http          = require('http');
 
 const querystring   = require('querystring');
 
-const isObject      = require('nlab/isObject');
+const name          = '@libs/fetch';
 
-const log           = require('inspc');
-
-const emsg          = msg => `jsonfetch: ${msg}`;
+const emsg          = msg => `${name}: ${msg}`;
 
 const th            = msg => new Error(emsg(msg));
 
-module.exports = function jsonfetch (url, opt = {}) {
+module.exports = function fetch (url, opt = {}) {
 
   let {
     method      = 'GET',
@@ -1432,6 +1429,7 @@ module.exports = function jsonfetch (url, opt = {}) {
     debug       = false,
     body,
     nobody      = false,
+    decodejson  = false,
   } = opt;
 
   if ( typeof method !== 'string' ) {
@@ -1451,12 +1449,13 @@ module.exports = function jsonfetch (url, opt = {}) {
 
     let rawBody = body;
 
+    if (body !== undefined && method === 'GET') {
+
+      throw th(`since you have specified the body for request probably method shouldn't be GET`);
+    }
+
+    // body is not a string, so probably it need to be sent as a json
     if (isObject(body) || Array.isArray(body)) {
-
-      if (method === 'GET') {
-
-        method = 'POST';
-      }
 
       try {
 
@@ -1487,11 +1486,9 @@ module.exports = function jsonfetch (url, opt = {}) {
 
     if (debug) {
 
-      log.dump({
-        rq,
-      }, 6);
+      console.log(`${name} debug`, rq);
     }
-
+    
     var req = lib.request(rq, res => {
 
       res.setEncoding('utf8');
@@ -1505,19 +1502,19 @@ module.exports = function jsonfetch (url, opt = {}) {
 
       res.on('end', () => {
 
-        const isJson = (function () {
+        // const decodejson = (function () { // automatic detection will be replaced with manual parameter
+        //
+        //   try {
+        //
+        //     return res.headers['content-type'].includes('application/json');
+        //   }
+        //   catch (e) {
+        //
+        //     return false;
+        //   }
+        // }());
 
-          try {
-
-            return res.headers['content-type'].includes('application/json');
-          }
-          catch (e) {
-
-            return false;
-          }
-        }());
-
-        if (isJson) {
+        if (decodejson) {
 
           try {
 
@@ -1571,8 +1568,9 @@ module.exports = function jsonfetch (url, opt = {}) {
   });
 }
 
-
-
+function isObject(o) {
+  return Object.prototype.toString.call(o) === '[object Object]';
+}
 
                 </script> 
             </div>
