@@ -1463,7 +1463,7 @@ module.exports = function fetch (url, opt = {}) {
       }
       catch (e) {
 
-        return reject(emsg(`JSON.stringify error: ${e}`));
+        return reject(th(`JSON.stringify error: ${e}`));
       }
 
       headers['Content-Type'] = 'application/json; charset=utf-8';
@@ -1488,7 +1488,7 @@ module.exports = function fetch (url, opt = {}) {
 
       console.log(`${name} debug`, rq);
     }
-    
+
     var req = lib.request(rq, res => {
 
       res.setEncoding('utf8');
@@ -1522,7 +1522,7 @@ module.exports = function fetch (url, opt = {}) {
           }
           catch (e) {
 
-            reject(emsg(`JSON.parse(response body) error: ${e}`))
+            reject(th(`JSON.parse(response body) error: ${e}`))
           }
         }
 
@@ -1556,11 +1556,11 @@ module.exports = function fetch (url, opt = {}) {
           catch (e) {}
         }
 
-        reject(emsg(`timeout (${timeout}ms)`))
+        reject(th(`timeout (${timeout}ms)`))
       });
     });
 
-    req.on('error', e => reject(emsg(`on error: ${e}`)));
+    req.on('error', e => reject(th(`on error: ${e}`)));
 
     body && req.write(body);
 
