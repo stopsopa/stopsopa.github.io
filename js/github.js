@@ -452,7 +452,7 @@ body .github-link > a:hover {
 
             a.innerText = 'profile';
 
-            a.setAttribute('href', '//github.com/stopsopa')
+            a.setAttribute('href', '//github.com/stopsopa?tab=repositories')
 
             manipulation.append(document.body, a);
 
