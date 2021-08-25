@@ -431,7 +431,12 @@ git config core.fileMode false
 git config --global core.editor vi    
                     
 git config --global user.email x.y@gmail.com
-git config --global user.name "Name Surname"                     
+git config --global user.name "Name Surname" 
+
+git config --global core.excludesFile '~/.gitignore'
+cat <<EOF > ~/.gitignore
+.DS_Store
+EOF
 
 
 # per repository
