@@ -1985,6 +1985,73 @@ module.exports = (cmd, opt) => new Promise((resolve, reject) => {
 })                
 
                 </script> 
+                
+                <h2>Learning promises</h2>
+                <h5>Always await promises before returning to avoid a partial stacktrace</h5>
+                <a href="https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace">https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace</a>
+                <script type="editor" data-lang="js">
+                
+/**
+ * https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace
+ * Always await promises before returning to avoid a partial stacktrace
+ */
+
+function wait (ms) {
+  
+  return new Promise(res => setTimeout(res, ms, `wait ${ms}`))
+}
+
+async function th() {
+
+  await wait(200);
+
+  throw new Error(`th error`);
+}
+
+async function b() {
+
+  await wait(200);
+
+  // return th(); // uncomment this line to see error without one stack point, as below
+  // {
+  //   main_catch: {
+  //     message: 'th error',
+  //       stack: 'Error: th error\n' +
+  //     '    at th (/code/t.js:18:9)\n' +
+  //     '    at async /code/t.js:32:5'
+  //   }
+  // }
+  
+  return await th();
+  // {
+  //   main_catch: {
+  //     message: 'th error',
+  //       stack: 'Error: th error\n' +
+  //     '    at th (/code/t.js:18:9)\n' +
+  //     '    at async b (/code/t.js:25:10)\n' +
+  //     '    at async /code/t.js:32:5'
+  //   }
+  // }
+};
+
+(async function () {
+
+  try {
+
+    await b()
+  }
+  catch (e) {
+
+    console.log({
+      main_catch: {
+        message: e.message,
+        stack: e.stack,
+      }
+    })
+  }
+}());
+                
+                </script>
             </div>
                         
         </div>
