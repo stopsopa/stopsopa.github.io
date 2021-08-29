@@ -82,6 +82,13 @@ EOF
 
 docker run --rm -it local_c7_systemd bash
 
+# pushing image
+# nvm ls-remote
+docker run -it privaterepo.com/node:13.14.0-alpine sh 
+docker pull node:13.14.0-alpine
+docker tag node:13.14.0-alpine privaterepo.com/node:13.14.0-alpine
+docker push privaterepo.com/node:13.14.0-alpine
+
                 </script>
 
                 <h2>Docker registry urls</h2>
