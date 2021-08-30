@@ -63,7 +63,7 @@ docker build . --platform linux/amd64 -t xxx:latest
 
 # passing env as is
 $ CYPRESS_VIDEO=false
-$ docker run --name name --rm -d -it -v $PWD:/e2e -w /e2e -e CYPRESS_VIDEO -e "PORT=8089" -p "8089:8089" cypress/included:3.2.0
+$ docker run --name name --rm -d -it -v $PWD:/e2e -w /e2e -e CYPRESS_VIDEO -e "PORT=8089" -p "8089:8089" --entrypoint "node test.js" cypress/included:3.2.0
 
 host.docker.internal
     # from: https://docs.docker.com/docker-for-mac/networking/#use-cases-and-workarounds
