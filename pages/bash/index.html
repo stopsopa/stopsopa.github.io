@@ -272,6 +272,15 @@ k - kill process
                 
 set -e; _exit 1> /dev/null 2> /dev/null
 
+# detect shell zsh bash
+if [ -n "$ZSH_VERSION" ]; then
+   echo -n 'zsh';
+elif [ -n "$BASH_VERSION" ]; then
+   echo -n 'bash';   
+else
+   echo -n 'other';
+fi
+
 # on Mac
 bash --version
 GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin20)
