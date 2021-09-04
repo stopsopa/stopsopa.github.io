@@ -487,7 +487,13 @@ echo -e "${LIST}" | while read line ; do echo ">>$line<<" ; done
                 <h2>useful commands</h2>
                 <script type="editor" data-lang="sh">
                 
-_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+if [ "${SHELL}" = "/bin/zsh" ]; then
+
+  _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+else
+
+  _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+fi
                 
 grep 'swap-files' * -rl --exclude-dir={bower_components,node_modules,vendor} --include \*.sh   
 
