@@ -272,15 +272,6 @@ k - kill process
                 
 set -e; _exit 1> /dev/null 2> /dev/null
 
-# detect shell zsh bash
-if [ -n "$ZSH_VERSION" ]; then
-   echo -n 'zsh';
-elif [ -n "$BASH_VERSION" ]; then
-   echo -n 'bash';   
-else
-   echo -n 'other';
-fi
-
 # on Mac
 bash --version
 GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin20)
@@ -494,12 +485,23 @@ echo -e "${LIST}" | while read line ; do echo ">>$line<<" ; done
 # cat /etc/shells – List pathnames of valid login shells currently installed
 # grep "^$USER" /etc/passwd – Print the default shell name. The default shell runs when you open a terminal window.
 
-if [ "${SHELL}" = "/bin/zsh" ]; then
+# current shell name reliably
+_SHELL="$(ps -p $$ | sed -rn "s/.*[-\/]+(bash|zsh).*/\1/p")"; # zsh || bash
+if [ "${_SHELL}" = "/bin/zsh" ]; then
 
   _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
 else
 
   _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+fi
+
+# detect CURRENT USER default shell - that's different than above
+if [ -n "$ZSH_VERSION" ]; then
+   echo -n 'zsh';
+elif [ -n "$BASH_VERSION" ]; then
+   echo -n 'bash';   
+else
+   echo -n 'other';
 fi
                 
 grep 'swap-files' * -rl --exclude-dir={bower_components,node_modules,vendor} --include \*.sh   
