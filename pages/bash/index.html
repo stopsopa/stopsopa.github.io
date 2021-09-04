@@ -486,7 +486,14 @@ echo -e "${LIST}" | while read line ; do echo ">>$line<<" ; done
 
                 <h2>useful commands</h2>
                 <script type="editor" data-lang="sh">
-                
+
+# ps -p $$ – Display your current shell name reliably.
+# echo "$SHELL" – Print the shell for the current user but not necessarily the shell that is running at the movement.
+# echo $0 – Another reliable and simple method to get the current shell interpreter name on Linux or Unix-like systems.
+# readlink /proc/$$/exe – Another option to get the current shell name reliably on Linux operating systems.
+# cat /etc/shells – List pathnames of valid login shells currently installed
+# grep "^$USER" /etc/passwd – Print the default shell name. The default shell runs when you open a terminal window.
+
 if [ "${SHELL}" = "/bin/zsh" ]; then
 
   _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
