@@ -175,6 +175,42 @@ fs.createReadStream('input.txt.gz')
   .pipe(fs.createWriteStream('output.txt'));   
 
                 </script>
+                <h2>Signleton (kinda) module template</h2>
+                <script type="editor" data-lang="js">
+
+const CachePromise = require('./CachePromise');
+
+const instances = {};
+
+const name = 'CachePromiseModule';
+
+const th = msg => new Error(`${name}.js error: ${msg}`);
+
+module.exports = (name = 'default', opt) => {
+
+  if ( typeof name !== 'string' ) {
+
+    throw th(`name is not a string`);
+  }
+
+  if ( instances[name] ) {
+
+    return instances[name];
+  }
+
+  if ( ! isObject(opt) ) {
+
+    throw th(`opt is not an object. Usually it means you are trying to get the instance before initialising it. Use first ${name}(name, opt) then ${name}(name)`);
+  }
+
+  return instances[name] = new CachePromise(opt);
+}
+
+function isObject(o) {
+  return Object.prototype.toString.call(o) === '[object Object]';
+}
+
+                </script>
                 <h2>path</h2>
                 <script type="editor" data-lang="js">
 # in php :    
@@ -1366,9 +1402,12 @@ module.exports = function request(url, opt = {}) {
             </div>
 
             <div class="cards">
-                <h2>jsonfetch.js</h2>  
+                <h2>lightfetch.js</h2>  
                 <script type="editor" data-lang="js">
+                
+"use strict";
 
+// yarn add qs@^6
 
 const URL           = require('url').URL;
 
@@ -1376,27 +1415,58 @@ const https         = require('https');
 
 const http          = require('http');
 
-const querystring   = require('querystring');
+// const querystring   = require('querystring');
 
-const isObject      = require('nlab/isObject');
+const qs            = require('qs');
 
-const log           = require('inspc');
+const name          = '@libs/lightfetch';
 
-const emsg          = msg => `jsonfetch: ${msg}`;
+const emsg          = msg => `${name}: ${msg}`;
 
 const th            = msg => new Error(emsg(msg));
 
-module.exports = function jsonfetch (url, opt = {}) {
+const def = {
+  method                : 'GET',
+  timeout               : 30 * 1000,
+  query                 : {},
+  headers               : {},
+  debug                 : false,
+  body                  : undefined,
+  nobody                : false,
+  decodejson            : false,
+  resolvingstatuscodes  : code => {
+    return code >= 200 && code < 300;
+  },
+  qsOptions: {}, // https://github.com/ljharb/qs#stringifying
+};
+
+const defKeys = Object.keys(def);
+
+module.exports = function (url, opt = {}) {
+
+  Object.keys(opt || {}).forEach(key => {
+
+    if ( ! defKeys.includes(key) ) {
+
+      throw th(`key '${key}' is not on the list of allowed parameters ${defKeys.join(', ')}`);
+    }
+  });
 
   let {
-    method      = 'GET',
-    timeout     = 30 * 1000,
-    get         = {},
-    headers     = {},
-    debug       = false,
+    method,
+    timeout,
+    query,
+    headers,
+    debug,
     body,
-    nobody      = false,
-  } = opt;
+    nobody,
+    decodejson,
+    resolvingstatuscodes,
+    qsOptions,
+  } = ({
+    ...def,
+    ...opt,
+  });
 
   if ( typeof method !== 'string' ) {
 
@@ -1407,136 +1477,164 @@ module.exports = function jsonfetch (url, opt = {}) {
 
   return new Promise((resolve, reject) => {
 
-    const uri   = new URL(url);
+    try {
 
-    const lib   = (uri.protocol === 'https:') ? https : http;
+      const uri   = new URL(url);
 
-    const query = querystring.stringify(get)
+      const lib   = (uri.protocol === 'https:') ? https : http;
 
-    let rawBody = body;
+      // const querystring = querystring.stringify(query)
 
-    if (isObject(body) || Array.isArray(body)) {
+      const querystring = qs.stringify(query, qsOptions);
 
-      if (method === 'GET') {
+      let rawBody = body;
 
-        method = 'POST';
+      if (body !== undefined && method === 'GET') {
+
+        throw th(`since you have specified the body for request probably method shouldn't be GET`);
       }
 
-      try {
-
-        body = JSON.stringify(body);
-      }
-      catch (e) {
-
-        return reject(emsg(`JSON.stringify error: ${e}`));
-      }
-
-      headers['Content-Type'] = 'application/json; charset=utf-8';
-    }
-
-    const rq = {
-      hostname    : uri.hostname,
-      port        : uri.port || ( (uri.protocol === 'https:') ? '443' : '80'),
-      path        : uri.pathname + uri.search + (query ? (uri.search.includes('?') ? '&' : '?') + query : ''),
-      method,
-      headers,
-    };
-
-    if (debug === 'body') {
-
-      rq.body = body;
-
-      rq.rawBody = rawBody;
-    }
-
-    if (debug) {
-
-      log.dump({
-        rq,
-      }, 6);
-    }
-
-    var req = lib.request(rq, res => {
-
-      res.setEncoding('utf8');
-
-      let body = '';
-
-      res.on('data', chunk => {
-
-        body += chunk
-      });
-
-      res.on('end', () => {
-
-        const isJson = (function () {
-
-          try {
-
-            return res.headers['content-type'].includes('application/json');
-          }
-          catch (e) {
-
-            return false;
-          }
-        }());
-
-        if (isJson) {
-
-          try {
-
-            body = JSON.parse(body);
-          }
-          catch (e) {
-
-            reject(emsg(`JSON.parse(response body) error: ${e}`))
-          }
-        }
-
-        const payload = {
-          status: res.statusCode,
-          headers: res.headers,
-        };
-
-        if (nobody === false) {
-
-          payload.body = body;
-        }
-
-        resolve(payload)
-      });
-    });
-
-    req.on('socket', function (socket) { // uncomment this to have timeout
-
-      socket.setTimeout(timeout);
-
-      socket.on('timeout', () => { // https://stackoverflow.com/a/9910413
+      // body is not a string, so probably it need to be sent as a json
+      if (isObject(body) || Array.isArray(body)) {
 
         try {
-          req.destroy();
+
+          body = JSON.stringify(body);
         }
         catch (e) {
-          try {
-            req.abort(); // since v14.1.0 Use request.destroy() instead
-          }
-          catch (e) {}
+
+          return reject(th(`JSON.stringify error: ${e}`));
         }
 
-        reject(emsg(`timeout (${timeout}ms)`))
+        headers['Content-Type'] = 'application/json; charset=utf-8';
+      }
+
+      const rq = {
+        hostname    : uri.hostname,
+        port        : uri.port || ( (uri.protocol === 'https:') ? '443' : '80'),
+        path        : uri.pathname + uri.search + (querystring ? (uri.search.includes('?') ? '&' : '?') + querystring : ''),
+        method,
+        headers,
+      };
+
+      if (debug === 'body') {
+
+        rq.body = body;
+
+        rq.rawBody = rawBody;
+      }
+
+      if (debug) {
+
+        console.log(`${name} debug`, rq);
+      }
+
+      var req = lib.request(rq, res => {
+
+        try {
+
+          res.setEncoding('utf8');
+
+          let body = '';
+
+          res.on('data', chunk => {
+
+            body += chunk
+          });
+
+          res.on('end', () => {
+
+            // const decodejson = (function () { // automatic detection will be replaced with manual parameter
+            //
+            //   try {
+            //
+            //     return res.headers['content-type'].includes('application/json');
+            //   }
+            //   catch (e) {
+            //
+            //     return false;
+            //   }
+            // }());
+
+            if (decodejson) {
+
+              try {
+
+                body = JSON.parse(body);
+              }
+              catch (e) {
+
+                reject(th(`JSON.parse(response body) error: ${e}`))
+              }
+            }
+
+            if ( ! resolvingstatuscodes(res.statusCode) ) {
+
+              return reject(th(`Not resolving response status code (param function 'resolvingstatuscodes'), current status is: ${res.statusCode}`));
+            }
+
+            const payload = {
+              status: res.statusCode,
+              headers: res.headers,
+            };
+
+            if (nobody === false) {
+
+              payload.body = body;
+            }
+
+            resolve(payload)
+          });
+        }
+        catch (e) {
+
+          reject(th(`lib.request error: ${e}`));
+        }
       });
-    });
 
-    req.on('error', e => reject(emsg(`on error: ${e}`)));
+      req.on('socket', function (socket) {
 
-    body && req.write(body);
+        try {
 
-    req.end();
+          socket.setTimeout(timeout);
+
+          socket.on('timeout', () => { // https://stackoverflow.com/a/9910413
+
+            try {
+              req.destroy();
+            }
+            catch (e) {
+              try {
+                req.abort(); // since node v14.1.0 Use request.destroy() instead
+              }
+              catch (e) {}
+            }
+
+            reject(th(`timeout (${timeout}ms)`))
+          });
+        }
+        catch (e) {
+
+          reject(th(`socket timeout error: ${e}`));
+        }
+      });
+
+      req.on('error', e => reject(th(`on error: ${e}`)));
+
+      body && req.write(body);
+
+      req.end();
+    }
+    catch (e) {
+
+      reject(th(`general error: ${e}`));
+    }
   });
 }
 
-
-
+function isObject(o) {
+  return Object.prototype.toString.call(o) === '[object Object]';
+}
 
                 </script> 
             </div>
@@ -1887,6 +1985,75 @@ module.exports = (cmd, opt) => new Promise((resolve, reject) => {
 })                
 
                 </script> 
+                
+                <h2>Learning promises</h2>
+                <h5>Always await promises before returning to avoid a partial stacktrace</h5>
+                <a href="https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace">https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace</a>
+                <br />
+                <a href="https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/returningpromises.md">https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/returningpromises.md</a>
+                <script type="editor" data-lang="js">
+
+/**
+ * https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace
+ * Always await promises before returning to avoid a partial stacktrace
+ */
+
+function wait (ms) {
+
+  return new Promise(res => setTimeout(res, ms, `wait ${ms}`))
+}
+
+async function th() {
+
+  await wait(200);
+
+  throw new Error(`th error`);
+}
+
+async function b() {
+
+  await wait(200);
+
+  // return th(); // uncomment this line to see error without one stack point, as below
+  // {
+  //   main_catch: {
+  //     message: 'th error',
+  //       stack: 'Error: th error\n' +
+  //     '    at th (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:16:9)\n' +
+  //     '    at async /Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:49:5'
+  //   }
+  // }
+
+  return await th();
+  // {
+  //   main_catch: {
+  //     message: 'th error',
+  //       stack: 'Error: th error\n' +
+  //     '    at th (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:16:9)\n' +
+  //     '    at async b (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:33:10)\n' +
+  //     '    at async /Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:49:5'
+  //   }
+  // }
+};
+
+(async function () {
+
+  try {
+
+    await b()
+  }
+  catch (e) {
+
+    console.log({
+      main_catch: {
+        message: e.message,
+        stack: e.stack,
+      }
+    })
+  }
+}());
+
+                </script>
             </div>
                         
         </div>
