@@ -29,7 +29,7 @@ EOF
 
 EEE
 
-    exit 1;
+    set -e; _exit 1> /dev/null 2> /dev/null
 fi
 
 #T="qwe|rt{yu}io(pa)sd[fg]hj^kl\$zx+cv*bn?mq.we/rtyuiopasdfghjklzxcvbnm"
@@ -74,7 +74,7 @@ while (( "$#" )); do
     -c|--commented)
       if [ "$2" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
         { red "$0 error: --remote value can't be empty"; } 2>&3
-        exit 1;                                          # optional
+        set -e; _exit 1> /dev/null 2> /dev/null                                          # optional
       fi                                  # optional
       _TEMPLATE="$2";
       shift 2;
@@ -97,7 +97,7 @@ while (( "$#" )); do
       ;;
     -*|--*=) # unsupported flags
       { red "$0 error: Unsupported flag $1"; } 2>&3
-      exit 2;
+      set -e; _exit 1> /dev/null 2> /dev/null
       ;;
     *) # preserve positional arguments
       if [ "$1" = "&&" ]; then
@@ -124,7 +124,7 @@ if [ ! -f "${FILE}" ]; then
 
     { red "$0 error: file '${FILE}' doesn't exist\n"; } 2>&3
 
-    exit 1;
+    set -e; _exit 1> /dev/null 2> /dev/null
 fi
 
 while (( "$#" )); do
@@ -133,7 +133,7 @@ while (( "$#" )); do
 
     { red "$0 error: name from pair cannot be empty string\n"; } 2>&3
 
-    exit 1;
+    set -e; _exit 1> /dev/null 2> /dev/null
   fi
 
   _ENVVAR="$1";
