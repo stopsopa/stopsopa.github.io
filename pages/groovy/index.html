@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>stopsopa.github.io</title>
+    <script src="/js/github.js"></script>
+</head>
+<body class="layout">
+
+    <div class="body">
+        <div class="inside">
+
+            <div class="cards">
+
+                <h2>regex replace</h2>
+                <script type="editor" data-lang="groovy">
+                
+
+def text = "featabc"
+
+def btype = text.replaceAll('^(([^/]+)/)?(.*)$', '$2')
+
+def bname = text.replaceAll('^(([^/]+)/)?(.*)$', '$3')
+
+println "btype: >${btype}<"
+println "bname: >${bname}<"
+
+// text = "featabc"
+// btype: ><
+// bname: >featabc<
+
+// text = "feat/abc"
+// btype: >feat<
+// bname: >abc<
+
+// text = "feat/abc/zz"
+// btype: >feat<
+// bname: >abc/zz<
+
+
+                </script>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
