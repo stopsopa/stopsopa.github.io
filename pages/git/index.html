@@ -240,6 +240,8 @@
 <div class="body">
     <div class="inside">
         <div class="cards">
+            <h2>gitflow</h2>
+            <a href="https://nvie.com/posts/a-successful-git-branching-model/">https://nvie.com/posts/a-successful-git-branching-model/</a>
             <h2>Github</h2>
             <a href="http://farhadg.github.io/init/landing/">(INIT): http://farhadg.github.io/init/landing/</a>
             <br/>
@@ -248,6 +250,14 @@
             <a href="https://github.com/tj/git-extras/blob/master/Commands.md">https://github.com/tj/git-extras/blob/master/Commands.md</a>
         </div>
         <div class="cards">
+            <h2>Basic operations</h2>
+            <script type="editor" data-lang="sh">
+
+# Pull changes from a remote branch
+git branch -a
+git checkout -b feat/branch_name origin/feat/branch_name  
+
+            </script>
             <h2>gitstorage-core.sh</h2>
             <script type="editor" data-lang="sh" class="domain.com">
 
@@ -258,6 +268,7 @@ else # curl
   curl "domain.com/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
 fi
 /bin/bash ".git/gitstorage-core.sh"
+# /bin/bash ".git/gitstorage-core.sh" --core_repository "git@your-repository.git"
 
             </script>
             <h2>gitstorage.sh</h2>
@@ -431,7 +442,12 @@ git config core.fileMode false
 git config --global core.editor vi    
                     
 git config --global user.email x.y@gmail.com
-git config --global user.name "Name Surname"                     
+git config --global user.name "Name Surname" 
+
+git config --global core.excludesFile '~/.gitignore'
+cat <<EOF > ~/.gitignore
+.DS_Store
+EOF
 
 
 # per repository

@@ -269,6 +269,8 @@ k - kill process
                 
                 <h2>basics</h2>
                 <script type="editor" data-lang="sh">
+                
+set -e; _exit 1> /dev/null 2> /dev/null
 
 # on Mac
 bash --version
@@ -475,8 +477,32 @@ echo -e "${LIST}" | while read line ; do echo ">>$line<<" ; done
 
                 <h2>useful commands</h2>
                 <script type="editor" data-lang="sh">
-                
-_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+
+# ps -p $$ – Display your current shell name reliably.
+# echo "$SHELL" – Print the shell for the current user but not necessarily the shell that is running at the movement.
+# echo $0 – Another reliable and simple method to get the current shell interpreter name on Linux or Unix-like systems.
+# readlink /proc/$$/exe – Another option to get the current shell name reliably on Linux operating systems.
+# cat /etc/shells – List pathnames of valid login shells currently installed
+# grep "^$USER" /etc/passwd – Print the default shell name. The default shell runs when you open a terminal window.
+
+# current shell name reliably
+_SHELL="$(ps -p $$ | sed -rn "s/.*[-\/]+(bash|zsh).*/\1/p")"; # zsh || bash
+if [ "${_SHELL}" = "/bin/zsh" ]; then
+
+  _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+else
+
+  _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+fi
+
+# detect CURRENT USER default shell - that's different than above
+if [ -n "$ZSH_VERSION" ]; then
+   echo -n 'zsh';
+elif [ -n "$BASH_VERSION" ]; then
+   echo -n 'bash';   
+else
+   echo -n 'other';
+fi
                 
 grep 'swap-files' * -rl --exclude-dir={bower_components,node_modules,vendor} --include \*.sh   
 
@@ -1100,6 +1126,8 @@ sudo chown batman: file
 #     Being allowed to "enter" a dir and gain possible access to sub-dirs.
 
                 </script>
+                <h2>Precedence and parenthesis</h2>
+                <a href="https://wiki.bash-hackers.org/commands/classictest#precedence_and_parenthesis">https://wiki.bash-hackers.org/commands/classictest#precedence_and_parenthesis</a>
             </div>
         </div>
     </div>
