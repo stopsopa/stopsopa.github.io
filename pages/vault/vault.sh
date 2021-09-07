@@ -129,7 +129,7 @@ cat <<EOF
 export VAULT_ADDR='http://127.0.0.1:${_PORT}';
 export VAULT_TOKEN='$(cat "${_ROOTTOKENFILE}")';
 echo VAULT_ADDR=$VAULT_ADDR
-echo VAULT_TOKEN=$VAULT_TOKEN
+echo VAULT_TOKEN=$(cat "${_ROOTTOKENFILE}")
 $_BINARY status
 $_BINARY token lookup
 EOF
