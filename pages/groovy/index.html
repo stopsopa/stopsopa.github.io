@@ -15,7 +15,7 @@
 
             <div class="cards">
 
-                <h2>regex replace</h2>
+                <h2>regex match</h2>
                 <script type="editor" data-lang="groovy">
                 
 
@@ -42,6 +42,20 @@ println "bname: >${bname}<"
 
 
                 </script>
+                
+                
+                <h2>regex replaceAll</h2>
+                <script type="editor" data-lang="groovy">
+                
+def text = "https://github.org/repo/api.git"
+
+def btype = text.replaceAll('[^a-z0-9]+', '_')
+
+println "btype: >${btype}<"
+// btype: >https_github_org_repo_api_git<
+
+                </script>
+                
 
             </div>
         </div>
