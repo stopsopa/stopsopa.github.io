@@ -130,6 +130,22 @@ kind: Namespace
 metadata:
   name: nameofnewnamespace
 EOF
+
+# problem with rollout status
+# First rollout status might throw error:
+#         error: watch closed before Until timeout
+STATUSTMPFILE="$(mktemp)"
+STATUS=""
+while true; do
+  oc rollout status dc $OS_DC --request-timeout=0 | tee "${STATUSTMPFILE}"
+  STATUS="${PIPESTATUS[0]}"
+  if ! [[ "$(cat "${STATUSTMPFILE}")" =~ "watch closed before Until timeout" ]]; then
+    break;
+  fi
+  echo "Let's try again"
+done
+exit ${STATUS}
+
                 </script>
                 
                 <h2>Context</h2>
