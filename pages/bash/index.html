@@ -274,6 +274,12 @@ k - kill process
                 
 set -e; _exit 1> /dev/null 2> /dev/null
 
+echo John have a cat
+echo Cat have a hiv>&2
+
+ls -la 2>&1
+
+
 # on Mac
 bash --version
 GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin20)
