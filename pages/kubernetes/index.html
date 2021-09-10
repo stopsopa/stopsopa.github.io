@@ -134,8 +134,10 @@ metadata:
 EOF
 
 # problem with rollout status
-# First rollout status might throw error:
+
+# oc rollout status might throw error:
 #         error: watch closed before Until timeout
+# in that case let's try again
 set +e
 STATUSTMPFILE="$(mktemp)"
 STATUS=""
