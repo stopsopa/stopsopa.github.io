@@ -48,6 +48,8 @@
 
             <div class="cards">
 
+                <h2>Api doc</h1>
+                <a href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands">https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands</a>
                 <h2>Cheat Sheet</h2>
                 <a href="Kubernetes-Cheat-Sheet_07182019.pdf">Kubernetes-Cheat-Sheet_07182019.pdf</a>
                 <h2>Kubernetes handy commands</h2>
@@ -130,6 +132,25 @@ kind: Namespace
 metadata:
   name: nameofnewnamespace
 EOF
+
+# problem with rollout status
+
+# oc rollout status might throw error:
+#         error: watch closed before Until timeout
+# in that case let's try again
+set +e
+STATUSTMPFILE="$(mktemp)"
+STATUS=""
+while true; do
+    oc rollout status dc $OS_DC --request-timeout=0 2>&1 | tee "${STATUSTMPFILE}"
+    STATUS="${PIPESTATUS[0]}"
+    if ! [[ "$(cat "${STATUSTMPFILE}")" =~ "watch closed before Until timeout" ]]; then
+        break;
+    fi
+    echo "Let's try again"
+done
+exit ${STATUS}
+
                 </script>
                 
                 <h2>Context</h2>

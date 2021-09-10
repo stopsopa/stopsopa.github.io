@@ -62,6 +62,8 @@ fi
                     <li><a href="./sed.html">sed</a></li>
                     <li><a href="./awk.html">awk</a></li>
                 </ul>
+                <h1>Get exit status of process that's piped to another</h1>
+                <a href="https://unix.stackexchange.com/a/14276">https://unix.stackexchange.com/a/14276</a>
             </div>
             <div class="cards">
                 <h2>cli keystrokes</h2>
@@ -271,6 +273,12 @@ k - kill process
                 <script type="editor" data-lang="sh">
                 
 set -e; _exit 1> /dev/null 2> /dev/null
+
+echo John have a cat
+echo Cat have a hiv>&2
+
+ls -la 2>&1
+
 
 # on Mac
 bash --version
