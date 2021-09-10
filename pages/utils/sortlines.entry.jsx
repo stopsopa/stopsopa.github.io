@@ -11,7 +11,7 @@ const Main = () => {
 
       str = str.split("\n").map(s => s.trim()).filter(Boolean);
 
-      list.sort(function (a, b) {
+      str.sort(function (a, b) {
           return a.localeCompare(b);
       })
 
@@ -29,6 +29,7 @@ const Main = () => {
     </>
   )
 }
+
 
 render(
   <Main />,
