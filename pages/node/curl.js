@@ -161,7 +161,10 @@ const args = (function (obj) {
   body: undefined,
   method: 'GET',
   help: false,
-  headers: {}
+  headers: {},
+  resolvingstatuscodes  : code => {
+    return true;
+  },
 }));
 
 // log({
