@@ -60,11 +60,14 @@ npx envinfo
                 <h2>Extract engines script</h2>
                 <script type="editor" data-lang="sh" class="domain.com">
 
-wget domain.com/pages/node/engines.js
+wget --help 1> /dev/null 2> /dev/null
+if [ "$?" = "0" ]; then # wget
+  wget -O "vault.sh" "domain.com/pages/node/engines.js"
+else # curl
+  curl "domain.com/pages/node/engines.js" -o "vault.sh"
+fi
 
-curl domain.com/pages/node/engines.js --output vault.sh
-
-node engines.js jest
+/bin/bash vault.sh jest
 
                 </script>
 
@@ -1636,7 +1639,18 @@ function isObject(o) {
   return Object.prototype.toString.call(o) === '[object Object]';
 }
 
-                </script> 
+                </script>
+                <h2>curl polyfill</h2>
+                <script type="editor" data-lang="sh" class="domain.com">
+
+wget --help 1> /dev/null 2> /dev/null
+if [ "$?" = "0" ]; then # wget
+  wget -O "curl.js" "domain.com/pages/node/curl.js"
+else # curl
+  curl "domain.com/pages/node/curl.js" -o "curl.js"
+fi
+
+                </script>
             </div>
             <div class="cards">
                 <h2>fetchData & fetchJson (transport.js)</h2>  
