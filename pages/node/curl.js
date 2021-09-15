@@ -44,6 +44,9 @@ const methods = 'GET POST CONNECT DELETE HEAD OPTIONS PATCH PUT TRACE';
 
 const methods_array = methods.split(" ");
 
+/**
+ * Processing input arguments
+ */
 const args = (function (obj) {
 
   const copy = [...process.argv];
@@ -153,9 +156,15 @@ const args = (function (obj) {
         break;
     }
   }
+
+  if (obj.url === undefined) {
+
+    throw th(`url is not specified`);
+  }
+  
   return obj;
 }({
-  url: null,
+  url: undefined,
   debug: false,
   I: false,
   body: undefined,
@@ -171,6 +180,9 @@ const args = (function (obj) {
 //   final: args
 // });
 
+/**
+ * Handling help page before handling the main logic
+ */
 if (args.help) {
 
   process.stdout.write(` 
@@ -188,6 +200,9 @@ Supported arguments:
   process.exit(1);
 }
 
+/**
+ * Executing the main logic
+ */
 (async function () {
 
   try {
@@ -226,15 +241,9 @@ Supported arguments:
 }());
 
 
-
-
-
-
-
-
-
-
-
+/**
+ * Local toolbox
+ */
 
 function unique(pattern) { // node.js require('crypto').randomBytes(16).toString('hex');
 
