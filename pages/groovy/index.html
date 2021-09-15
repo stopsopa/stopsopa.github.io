@@ -55,6 +55,38 @@ println "btype: >${btype}<"
 // btype: >https_github_org_repo_api_git<
 
                 </script>
+                <h2>toJson</h2>
+                <script type="editor" data-lang="groovy">
+                
+import groovy.json.JsonOutput;
+
+def args = [
+    deploymentProd: "v",
+    deploymentDev: "d",
+];
+
+def toJson(a) {
+
+    def args_string = JsonOutput.toJson(a)
+
+    def args_json = JsonOutput.prettyPrint(args_string);
+
+    return args_json;
+}
+
+def json = toJson(getConfig(args));
+
+def getConfig(Map params) {
+
+  return [
+    dc: params.deploymentProd ? params.deploymentProd : "${params.name}-api-prod"
+  ]
+}
+
+println(sprintf('>>%5s<<\n', json));
+
+
+                </script>
                 
 
             </div>
