@@ -62,7 +62,7 @@ npx envinfo
 
 wget --help 1> /dev/null 2> /dev/null
 if [ "$?" = "0" ]; then # wget
-  wget -O "vault.sh" "domain.com/pages/node/engines.js"
+  wget --no-cache -O "vault.sh" "domain.com/pages/node/engines.js"
 else # curl
   curl "domain.com/pages/node/engines.js" -o "vault.sh"
 fi
@@ -1654,7 +1654,7 @@ function isObject(o) {
 
 wget --help 1> /dev/null 2> /dev/null
 if [ "$?" = "0" ]; then # wget
-  wget -O "curl.js" "domain.com/pages/node/curl.js"
+  wget --no-cache -O "curl.js" "domain.com/pages/node/curl.js"
 else # curl
   curl "domain.com/pages/node/curl.js" -o "curl.js"
 fi

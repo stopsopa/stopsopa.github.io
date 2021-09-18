@@ -263,7 +263,7 @@ git checkout -b feat/branch_name origin/feat/branch_name
 
 wget --help 1> /dev/null 2> /dev/null
 if [ "$?" = "0" ]; then # wget
-  wget -O ".git/gitstorage-core.sh" "domain.com/gitstorage-core.sh"
+  wget --no-cache -O ".git/gitstorage-core.sh" "domain.com/gitstorage-core.sh"
 else # curl
   curl "domain.com/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
 fi
@@ -279,7 +279,7 @@ if [ -f gitstorage.sh ]; then
 else
   wget --help 1> /dev/null 2> /dev/null
   if [ "$?" = "0" ]; then # wget
-    wget -O "gitstorage.sh" "https://raw.githubusercontent.com/stopsopa/host.com/master/gitstorage.sh"
+    wget --no-cache -O "gitstorage.sh" "https://raw.githubusercontent.com/stopsopa/host.com/master/gitstorage.sh"
   else # curl
     curl "https://raw.githubusercontent.com/stopsopa/host.com/master/gitstorage.sh" -o "gitstorage.sh"
   fi

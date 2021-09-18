@@ -73,7 +73,7 @@ else
 
     echo $0 wget mode
 
-    wget -O "$2" "$1"
+    wget --no-cache -O "$2" "$1"
   else
 
     echo $0 curl mode
