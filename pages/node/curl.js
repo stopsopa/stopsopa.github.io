@@ -26,10 +26,10 @@ const def = {
   headers               : {},
   debug                 : false,
   body                  : undefined,
-  nobody                : false,
-  decodejson            : false,
-  resolvingstatuscodes  : code => {
-    return code >= 200 && code < 300;
+  noBody                : false,
+  decodeJson            : false,
+  isResPromiseResolvable  : async res => {
+    return await res.statusCode >= 200 && res.statusCode < 300;
   },
   qsOptions: {}, // https://github.com/ljharb/qs#stringifying
 };
@@ -171,8 +171,8 @@ const args = (function (obj) {
   method: 'GET',
   help: false,
   headers: {},
-  resolvingstatuscodes  : code => {
-    return true;
+  isResPromiseResolvable  : async res => {
+    return await true;
   },
 }));
 
@@ -277,9 +277,9 @@ function transport(url, opt = {}) {
     headers,
     debug,
     body,
-    nobody,
-    decodejson,
-    resolvingstatuscodes,
+    noBody,
+    decodeJson,
+    isResPromiseResolvable,
   } = ({
     ...def,
     ...opt,
@@ -366,9 +366,9 @@ function transport(url, opt = {}) {
             body += chunk
           });
 
-          res.on('end', () => {
+          res.on('end', async () => {
 
-            // const decodejson = (function () { // automatic detection will be replaced with manual parameter
+            // const decodeJson = (function () { // automatic detection will be replaced with manual parameter
             //
             //   try {
             //
@@ -380,7 +380,7 @@ function transport(url, opt = {}) {
             //   }
             // }());
 
-            if (decodejson) {
+            if (decodeJson) {
 
               try {
 
@@ -392,9 +392,18 @@ function transport(url, opt = {}) {
               }
             }
 
-            if ( ! resolvingstatuscodes(res.statusCode) ) {
+            try {
 
-              return reject(th(`Not resolving response status code (param function 'resolvingstatuscodes'), current status is: ${res.statusCode}`));
+              const passed = await isResPromiseResolvable(res);
+
+              if ( ! passed ) {
+
+                return reject(th(`Not resolving response (param function 'isResPromiseResolvable')`));
+              }
+            }
+            catch (e) {
+
+              return reject(th(`Not resolving response (param function 'isResPromiseResolvable'), catch: ${e}`));
             }
 
             const payload = {
@@ -409,7 +418,7 @@ function transport(url, opt = {}) {
               console.log(uniq);
             }
 
-            if (nobody === false) {
+            if (noBody === false) {
 
               payload.body = body;
             }
