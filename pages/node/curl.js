@@ -9,8 +9,6 @@ const http          = require('http');
 
 const querystring_lib            = require('querystring');
 
-// const qs            = require('qs');
-
 const name          = 'curl';
 
 const emsg          = msg => `${name}: ${msg}`;
@@ -31,7 +29,6 @@ const def = {
   isResPromiseResolvable  : async res => {
     return await res.statusCode >= 200 && res.statusCode < 300;
   },
-  qsOptions: {}, // https://github.com/ljharb/qs#stringifying
 };
 
 const defKeys = Object.keys(def);
@@ -307,8 +304,6 @@ function transport(url, opt = {}) {
 
       const querystring = querystring_lib.stringify(query)
 
-      // const querystring = qs.stringify(query, qsOptions);
-
       let rawBody = body;
 
       if (body !== undefined && method === 'GET') {
@@ -367,18 +362,6 @@ function transport(url, opt = {}) {
           });
 
           res.on('end', async () => {
-
-            // const decodeJson = (function () { // automatic detection will be replaced with manual parameter
-            //
-            //   try {
-            //
-            //     return res.headers['content-type'].includes('application/json');
-            //   }
-            //   catch (e) {
-            //
-            //     return false;
-            //   }
-            // }());
 
             if (decodeJson) {
 
