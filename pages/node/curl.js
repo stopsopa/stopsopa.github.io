@@ -377,7 +377,7 @@ function transport(url, opt = {}) {
 
             try {
 
-              const passed = await isResPromiseResolvable(res);
+              const passed = await isResPromiseResolvable(res, body);
 
               if ( ! passed ) {
 
