@@ -371,7 +371,7 @@ function transport(url, opt = {}) {
               }
               catch (e) {
 
-                reject(th(`JSON.parse(response body) error: ${e}`))
+                return reject(th(`JSON.parse(response body) error: ${e}`))
               }
             }
 
