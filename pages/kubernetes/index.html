@@ -246,6 +246,7 @@ oc get dc
 oc get po | grep pods | grep Running | awk '{print $1}'  
 
 # node --inspect
+# chrome://inspect
 oc port-forward $(oc get po | grep pods | grep Running | awk '{print $1}') 9229:9229
 
                 </script>
