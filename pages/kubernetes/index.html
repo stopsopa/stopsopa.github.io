@@ -241,6 +241,9 @@ oc projects
 
 oc get dc
   # instead of 'kubectl get deploy' in k8s
+  
+# get currently running pod in deployment  
+oc get po | grep pods | grep Running | awk '{print $1}'  
 
                 </script>
 
