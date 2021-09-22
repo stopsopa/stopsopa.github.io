@@ -245,6 +245,8 @@ oc get dc
 # get currently running pod in deployment  
 oc get po | grep pods | grep Running | awk '{print $1}'  
 
+oc port-forward $(oc get po | grep pods | grep Running | awk '{print $1}') 9229:9229
+
                 </script>
 
                 <h2>Semver sort</h2>
