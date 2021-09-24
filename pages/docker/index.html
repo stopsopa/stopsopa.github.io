@@ -77,7 +77,6 @@ host.docker.internal
 docker login https://docker-registry.xxx.com --username=yourhubusername --password=yourpassword
 
 # inline Dockerfile
-
 cat <<EOF | docker build --rm -t local_c7_systemd -
 FROM centos:7
 ...
@@ -91,6 +90,18 @@ docker run -it privaterepo.com/node:13.14.0-alpine sh
 docker pull node:13.14.0-alpine
 docker tag node:13.14.0-alpine privaterepo.com/node:13.14.0-alpine
 docker push privaterepo.com/node:13.14.0-alpine
+
+# run inline bash script in container
+# to run pod withoug stopping
+docker run -i --name test --rm node:8.17.0-alpine tail -f /dev/null
+# then run script
+cat <<EOF | docker exec -i test /bin/sh
+echo a b c | awk '{print \$2}'
+EOF
+# or run as run straight away
+cat <<EOF | docker run -i --name test --rm node:8.17.0-alpine /bin/sh
+echo a b c | awk '{print \$2}'
+EOF
 
                 </script>
 
