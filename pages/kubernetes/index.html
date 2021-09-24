@@ -248,6 +248,12 @@ oc get po | grep pods | grep Running | awk '{print $1}'
 # node --inspect
 oc port-forward $(oc get po | grep pods | grep Running | awk '{print $1}') 9229:9229
 
+cat <<EOF | oc exec -i podname -- /bin/sh
+echo a b c | awk '{print \$2}'
+EOF
+
+
+
                 </script>
                 <a href="chrome://inspect" target="_blank">chrome://inspect</a>
 
