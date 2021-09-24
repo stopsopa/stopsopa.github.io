@@ -43,16 +43,6 @@ else
 fi
 '
 
-# iterater through lines from variable
-FILES="$(find "$FIXTURE" -type f)"
-
-echo "$FILES"
-
-while IFS= read -r line; do
-    echo "... $line ..."
-done <<< "$FILES"
-# from: https://superuser.com/a/284226
-
 # basename and file extension
 EXTENSION="${PB##*.}"
 FILENAME="${PB%.*}"
@@ -467,7 +457,7 @@ seven
 eight
 EOF
 ); 
-echo -e "${LIST}" | while read line ; do echo ">>$line<<" ; done
+while read line ; do echo ">>$line<<" ; done <<< "${LIST}"
 # >>one<<
 # >>two three<<
 # >>four<<
@@ -479,10 +469,10 @@ echo -e "${LIST}" | while read line ; do echo ">>$line<<" ; done
 
 # or
 
-echo -e "${LIST}" | while read line
+while read line
 do 
   echo ">>$line<<"
-done
+done <<< "${LIST}"
 
 
                 </script>
