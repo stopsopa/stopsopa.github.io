@@ -92,7 +92,7 @@ docker tag node:13.14.0-alpine privaterepo.com/node:13.14.0-alpine
 docker push privaterepo.com/node:13.14.0-alpine
 
 # run inline bash script in container
-# to run pod withoug stopping
+# to run pod without stopping
 docker run -i --name test --rm -d alpine:3.14.2 tail -f /dev/null
 # then run script
 cat <<EOF | docker exec -i test /bin/sh
