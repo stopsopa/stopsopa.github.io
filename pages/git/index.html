@@ -388,6 +388,8 @@ git filter-branch -f --env-filter  \
         <div class="cards">
             <h2>Change the author</h2>
             <script type="editor" data-lang="sh">
+# https://git-scm.com/docs/git-filter-branch/2.2.3
+# https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables            
                     
 git filter-branch --env-filter '
 OLD_EMAIL="youroldemail@example.com"
