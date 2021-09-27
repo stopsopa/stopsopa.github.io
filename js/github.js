@@ -925,6 +925,48 @@ body .github-profile:hover {
 
         p.then(function () {
 
+            (function () {
+
+                var selector = 'body script';
+
+                const found = Array.prototype.slice.call(document.querySelectorAll(selector));
+
+                const allowed = [
+                  'text/javascript',
+                  'editor',
+                  'syntax'
+                ];
+
+                const list = [];
+
+                found.forEach(e => {
+
+                    const type = e.getAttribute('type');
+
+                    if (typeof type !== 'string') {
+
+                        list.push('not string');
+
+                        return;
+                    }
+
+                    if ( ! trim(type) ) {
+
+                        list.push('an empty string');
+                    }
+
+                    if ( ! allowed.includes(type) ) {
+
+                        list.push(type);
+                    }
+                });
+
+                if (list.length > 0) {
+
+                    alert("there is " + list.length + " <script"+"> tags in <body"+"> with invalid [type] attribute, allowed values are (" + allowed.join(", ") + ") but found: (" + list.join(", ") + ")");
+                }
+            }());
+
             var selector = '[type="editor"]:not(.handled), [type="syntax"]:not(.handled)';
 
             const found = Array.prototype.slice.call(document.querySelectorAll(selector));

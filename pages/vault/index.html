@@ -237,7 +237,7 @@ wrapping_accessor:               3cE1v6pDt9b5BVPfVbv5Ql8e
 
                 </script>            
                 <h2>Giving access jomax</h2>
-                <script type="edit" data-lang="sh">
+                <script type="editor" data-lang="sh">
 
 vault read auth/JOMAX/users/xxx
 # this will initially fail with:
@@ -260,7 +260,7 @@ policies []
                 <a href="https://learn.hashicorp.com/tutorials/vault/getting-started-apis">https://learn.hashicorp.com/tutorials/vault/getting-started-apis</a>
                 <br />
                 <a href="https://joachim8675309.medium.com/hashicorp-vault-with-approle-auth-724178503903">https://joachim8675309.medium.com/hashicorp-vault-with-approle-auth-724178503903</a>
-                <script type="edit" data-lang="sh">
+                <script type="editor" data-lang="sh">
 
 vault token lookup -output-curl-string    
 curl -H "X-Vault-Request: true" -H "X-Vault-Token: s.UADhBiA81ImFluwMx0XmCPX8" \
