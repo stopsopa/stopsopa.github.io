@@ -95,7 +95,7 @@ while (( "$#" )); do
       break;
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 Error: Unsupported flag $1" >&2
+      echo "$0 error: Unsupported flag $1" >&2
       exit 1;
       ;;
     *) # preserve positional argument
@@ -138,13 +138,13 @@ eval set -- "$PARAMS"
 
 if [ "$___CONFIGFILE" = "" ]; then
 
-  echo "$0 Error: -c|--configfile is empty string" >&2
+  echo "$0 error: -c|--configfile is empty string" >&2
 
   exit 1;
 fi
 if ! [ -f "$___CONFIGFILE" ]; then
 
-  echo "$0 Error: -c|--configfile file '$___CONFIGFILE' doesn't exist" >&2
+  echo "$0 error: -c|--configfile file '$___CONFIGFILE' doesn't exist" >&2
 
   exit 1;
 fi
@@ -223,7 +223,7 @@ fi
 
 if [ "$___MODE" != "$__P0MODE" ] && [ "$___MODE" != "$__P1MODE" ]; then
 
-  echo "$0 Error: -m|--mode should be '$__P0MODE' or '$__P1MODE' but it is '$___MODE'" >&2
+  echo "$0 error: -m|--mode should be '$__P0MODE' or '$__P1MODE' but it is '$___MODE'" >&2
 
   exit 1;
 fi
