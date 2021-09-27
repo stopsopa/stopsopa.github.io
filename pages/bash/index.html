@@ -683,6 +683,16 @@ source ~/.zshrc
                 <h2>array</h2>
 
                 <script type="editor" data-lang="sh">
+
+array=(`seq 1 10`)                
+
+declare -A array
+array[first]='First element'
+array[second]='Second element'
+
+# Print last element using subscript syntax
+echo "${array[-1]}"
+
 TRAPS=()
 
 TRAPS=("cleanup" "${TRAPS[@]}") # add to beginning of the array
@@ -702,6 +712,32 @@ $ echo $?
 $ containsElement "blaha" "${array[@]}"
 $ echo $?
 1
+
+# == learning array ===== VVV https://www.learnshell.org/en/Arrays
+
+# length
+my_array=(apple banana "Fruit Basket" orange)
+echo ${#my_array[@]}   # length of array (in this case 4)
+
+
+my_array=(apple banana "Fruit Basket" orange)
+echo ${my_array[3]}                     # orange zero-indexed then
+my_array[3]="carrot"  
+echo ${my_array[3]}                     # carrot 
+echo ${my_array[${#my_array[@]}-1]}     # carrot - get last element
+
+# to string
+ARRAY_VARIABLE=(23 45 34 1 2 3)
+echo ">>${ARRAY_VARIABLE[@]}<<" # >>23 45 34 1 2 3<<
+printf -v STRING_VARIABLE "%s:" "${ARRAY_VARIABLE[@]}"
+echo "++$STRING_VARIABLE++"   # ++23:45:34:1:2:3:++     WARNING: WATCH OUT - LAST ":" CHARACTER
+
+
+# show array content
+  printf '%s\n' "${branches[@]}"
+
+# merge two arrays array_merge
+  branches=("$main" "${branches[@]}")  
 
                 </script>
                 <h2>bash colors</h2>
