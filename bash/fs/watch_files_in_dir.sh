@@ -6,7 +6,7 @@ REG="Wait for a particular event"
 
 if ! [[ $HELP =~ $REG ]]; then
 
-  echo "inotifywait tool is not available, visit: https://github.com/inotify-tools/inotify-tools/wiki for installation instruction";
+  echo -e "\n$0 error: inotifywait tool is not available, visit: https://github.com/inotify-tools/inotify-tools/wiki for installation instruction\n";
 
   exit 1;
 fi
