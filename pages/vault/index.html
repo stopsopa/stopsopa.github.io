@@ -302,6 +302,11 @@ vault kv get  -output-curl-string -format=json secret/hello-world/data/test
 curl -H "X-Vault-Token: $(vault print token)" -H "X-Vault-Request: true" http://0.0.0.0:3370/v1/secret/hello-world/data/test    
 
                 </script>
+                <h2>Refreshing approle</h2>
+                <a href="https://learn.hashicorp.com/tutorials/vault/agent-kubernetes">https://learn.hashicorp.com/tutorials/vault/agent-kubernetes</a>
+                <br />
+                <a href="https://learn.hashicorp.com/tutorials/vault/approle-best-practices?in=vault/auth-methods">https://learn.hashicorp.com/tutorials/vault/approle-best-practices?in=vault/auth-methods</a>
+                <br />
             </div>
         </div>
     </div>
