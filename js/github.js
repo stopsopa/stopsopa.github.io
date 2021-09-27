@@ -932,7 +932,6 @@ body .github-profile:hover {
                 const found = Array.prototype.slice.call(document.querySelectorAll(selector));
 
                 const allowed = [
-                  'text/javascript',
                   'editor',
                   'syntax'
                 ];
@@ -943,27 +942,41 @@ body .github-profile:hover {
 
                     const type = e.getAttribute('type');
 
-                    if (typeof type !== 'string') {
+                    const lang = e.getAttribute('data-lang');
 
-                        list.push('not string');
+                    if ( typeof lang === 'string' &&  trim(lang) ) {
 
-                        return;
+                        if ( typeof type !== 'string' || ! trim(type) ) {
+
+                            list.push('[data-lang]="'+lang+'" defined but [type] is missing');
+
+                            return;
+                        }
+
+                        if ( ! allowed.includes(type) ) {
+
+                            list.push("[data-lang] defined but [type] is not valid: >>"+type+"<<");
+
+                            return;
+                        }
                     }
+                    else {
 
-                    if ( ! trim(type) ) {
+                        if (typeof type === 'string') {
 
-                        list.push('an empty string');
-                    }
+                            if (type !== 'text/javascript') {
 
-                    if ( ! allowed.includes(type) ) {
+                                list.push("[data-lang] not defined so [type] can be only 'text/javascript' but it is: >>"+type+"<<");
 
-                        list.push(type);
+                                return;
+                            }
+                        }
                     }
                 });
 
                 if (list.length > 0) {
 
-                    alert("there is " + list.length + " <script"+"> tags in <body"+"> with invalid [type] attribute, allowed values are (" + allowed.join(", ") + ") but found: (" + list.join(", ") + ")");
+                    alert("there is " + list.length + " <script"+"> tags in <body"+"> with invalid [type] attribute, allowed values are (" + allowed.join(", ") + ") but found: (" + list.join(" ======= ") + ")");
                 }
             }());
 
