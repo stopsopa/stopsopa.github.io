@@ -24,6 +24,13 @@ fi
 
 source "$1";
 
-FLAG_VARIABLE=$2
+#FLAG_VARIABLE=$2
+#echo "$(eval echo "\$$FLAG_VARIABLE")"
 
-echo "$(eval echo "\$$FLAG_VARIABLE")"
+# better way of extracting than using eval:
+# indirect expansion
+# https://stackoverflow.com/a/8515492
+# https://ss64.com/bash/syntax-expand.html
+# g(Shell Parameter Expansion ${ })
+
+echo -n "${!2}"
