@@ -1,18 +1,6 @@
 #!/bin/bash
 
 
-# DEPRECATED: use fs/watch_files_in_dir.sh instead
-# DEPRECATED: use fs/watch_files_in_dir.sh instead
-# DEPRECATED: use fs/watch_files_in_dir.sh instead
-# DEPRECATED: use fs/watch_files_in_dir.sh instead
-# DEPRECATED: use fs/watch_files_in_dir.sh instead
-# DEPRECATED: use fs/watch_files_in_dir.sh instead
-# DEPRECATED: use fs/watch_files_in_dir.sh instead
-# DEPRECATED: use fs/watch_files_in_dir.sh instead
-# DEPRECATED: use fs/watch_files_in_dir.sh instead
-# DEPRECATED: use fs/watch_files_in_dir.sh instead
-
-
 # the idea with this script is to first copy it SOMEWHERE to the target machine.
 # then create run.sh script with desired procedure to run
 # then you need to run it as a root - wait 12 seconds
@@ -96,9 +84,9 @@ _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
 FILE="$_DIR/lock.lock";
 
-if [ ! -f "$_DIR/run.sh" ]; then
+if [ ! -f "$_DIR/run_as_root_cycle.sh" ]; then
 
-  echo "$_DIR/run.sh - doesn't exist";
+  echo "$_DIR/run_as_root_cycle.sh - doesn't exist";
 
   exit 1
 fi
@@ -123,11 +111,11 @@ if [ "$1" = "cron" ]; then
             exit 102;
         fi
 
-        echo -e "\n\n\n$(date +%Y-%m-%d_%H-%M-%S)\n";
+        printf "\n\n\n$(date +%Y-%m-%d_%H-%M-%S)\n";
 
         set -x
 
-        /bin/bash "$_DIR/run.sh"
+        /bin/bash "$_DIR/run_as_root_cycle.sh"
 
         exit 101;
     fi
@@ -157,7 +145,7 @@ function cleanup {
 
         echo "timeout: $TIMEOUTSEC, trapped SIGUSR1: exit code 100";
 
-        echo -e "\nlooks like cronjob is not registered:\n";
+        printf "\nlooks like cronjob is not registered:\n";
 
         ADD="";
         if [ "$FILE" != "$DEF" ]; then
@@ -167,10 +155,10 @@ function cleanup {
 
         FILE="$(basename "$0")"
 
-        LOG="clear_cache_step.log"
+        LOG="run_as_root_cycle.log"
 
-        # * * * * * root  for i in {1..6}; do /bin/bash "/home/jenkins/clear_cache_step.sh" cron 1>> /home/jenkins/clear_cache_step.log 2>> /home/jenkins/clear_cache_step.log & sleep 10; done
-        echo -e "\n    * * * * * root  for i in {1..6}; do cd \"$_DIR\"; /bin/bash \"$0\" cron$ADD 1>> \"$LOG\" 2>> \"$LOG\" & sleep 10; done\n\n";
+        # * * * * * root  for i in {1..6}; do /bin/bash "/home/jenkins/run_as_root_cycle.sh" cron 1>> /home/jenkins/run_as_root_cycle.log 2>> /home/jenkins/run_as_root_cycle.log & sleep 10; done
+        printf "\n    * * * * * root  for i in {1..6}; do cd \"$_DIR\"; /bin/bash \"$0\" cron$ADD 1>> \"$LOG\" 2>> \"$LOG\" & sleep 10; done\n\n";
 
         exit 100;
     fi
@@ -197,7 +185,7 @@ while true; do
 
         sleep $WAITAFTERCLEAN;
 
-        LOG="$_DIR/clear_cache_step.log"
+        LOG="$_DIR/run_as_root_cycle.log"
 
         echo ""
         echo "log file: $LOG"

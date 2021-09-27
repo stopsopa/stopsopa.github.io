@@ -37,7 +37,7 @@ oldrev="$2"
 newrev="$3"
 
 # --- Safety check
-if [ -z "$GIT_DIR" ]; then
+if [ -z "${GIT_DIR}" ]; then
 	echo "Don't run this script from the command line." >&2
 	echo " (if you want, you could supply GIT_DIR then run" >&2
 	echo "  $0 <ref> <oldrev> <newrev>)" >&2
@@ -57,7 +57,7 @@ allowdeletetag=$(git config --bool hooks.allowdeletetag)
 allowmodifytag=$(git config --bool hooks.allowmodifytag)
 
 # check for no description
-projectdesc=$(sed -e '1q' "$GIT_DIR/description")
+projectdesc=$(sed -e '1q' "${GIT_DIR}/description")
 case "$projectdesc" in
 "Unnamed repository"* | "")
 	echo "*** Project description file hasn't been set" >&2

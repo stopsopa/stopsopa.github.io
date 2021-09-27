@@ -8,37 +8,37 @@
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
-_MAINLIBDIR="$(dirname "$_DIR")"
+_MAINLIBDIR="$(dirname "${_DIR}")"
 
-_PROJECTMAINDIR="$(dirname "$_MAINLIBDIR")"
+_PROJECTMAINDIR="$(dirname "${_MAINLIBDIR}")"
 
-A="$_DIR/a.tmp"
+A="${_DIR}/a.tmp"
 
-B="$_DIR/b.tmp"
+B="${_DIR}/b.tmp"
 
-/bin/bash "$_MAINLIBDIR/fs/can-write-to-file.sh" --rm "$A"
+/bin/bash "${_MAINLIBDIR}/fs/can-write-to-file.sh" --rm "${A}"
 
-/bin/bash "$_MAINLIBDIR/fs/can-write-to-file.sh" --rm "$B"
+/bin/bash "${_MAINLIBDIR}/fs/can-write-to-file.sh" --rm "${B}"
 
 function cleanup {
 
     echo "cleanup"
 
-    /bin/bash "$_MAINLIBDIR/fs/can-write-to-file.sh" --rm "$A"
+    /bin/bash "${_MAINLIBDIR}/fs/can-write-to-file.sh" --rm "${A}"
 
-    /bin/bash "$_MAINLIBDIR/fs/can-write-to-file.sh" --rm "$B"
+    /bin/bash "${_MAINLIBDIR}/fs/can-write-to-file.sh" --rm "${B}"
 
-    if [ -e "$_PROJECTMAINDIR/.git/_hooks" ]; then
+    if [ -e "${_PROJECTMAINDIR}/.git/_hooks" ]; then
 
-      mv "$_PROJECTMAINDIR/.git/_hooks" "$_PROJECTMAINDIR/.git/hooks"
+      mv "${_PROJECTMAINDIR}/.git/_hooks" "${_PROJECTMAINDIR}/.git/hooks"
     fi
 }
 
 trap cleanup EXIT
 
-if [ -e "$_PROJECTMAINDIR/.git/hooks" ]; then
+if [ -e "${_PROJECTMAINDIR}/.git/hooks" ]; then
 
-  mv "$_PROJECTMAINDIR/.git/hooks" "$_PROJECTMAINDIR/.git/_hooks"
+  mv "${_PROJECTMAINDIR}/.git/hooks" "${_PROJECTMAINDIR}/.git/_hooks"
 fi
 
 set -e
@@ -59,9 +59,9 @@ fi
 
 PATTERN="$1"
 
-if [ "$PATTERN" = "" ]; then
+if [ "${PATTERN}" = "" ]; then
 
-  echo "$___BASENAME: specify pattern to filter tags"
+  echo "${___BASENAME}: specify pattern to filter tags"
 
   exit 1
 fi
@@ -70,50 +70,50 @@ shift;
 
 REMOTE="$1"
 
-if [ "$REMOTE" = "" ]; then
+if [ "${REMOTE}" = "" ]; then
 
   REMOTE="origin";
 fi
 
 # remote
-NOTMATCHING="$(/bin/bash "$_MAINLIBDIR/git/get-tags-remote.sh" "$REMOTE" | /bin/bash "$_MAINLIBDIR/git/semver-filter-tags.sh" --not "$PATTERN")"
+NOTMATCHING="$(/bin/bash "${_MAINLIBDIR}/git/get-tags-remote.sh" "${REMOTE}" | /bin/bash "${_MAINLIBDIR}/git/semver-filter-tags.sh" --not "${PATTERN}")"
 
-if [ "$NOTMATCHING" = "" ]; then
+if [ "${NOTMATCHING}" = "" ]; then
 
   echo "nothing to delete"
 
   exit 0;
 fi
 
-echo "$NOTMATCHING"
+echo "${NOTMATCHING}"
 
 CONFIRM="y"
 
-if [ "$FORCE" = "0" ]; then
+if [ "${FORCE}" = "0" ]; then
 
-  printf "\n   do you want to remove listed tags from remote:\n\n        $REMOTE\n    \n    y or n ?\n\n"
+  echo -e "\n   do you want to remove listed tags from remote:\n\n        ${REMOTE}\n    \n    y or n ?\n"
 
   read CONFIRM;
 fi
 
-if [ "$CONFIRM" = "y" ]; then
+if [ "${CONFIRM}" = "y" ]; then
 
 #  set -x
 
-  for tag in $NOTMATCHING
+  for tag in ${NOTMATCHING}
   do
       echo -e "\nremoving $tag:";
 
-      if [ "$REMOVELOCAL" = "1" ]; then
+      if [ "${REMOVELOCAL}" = "1" ]; then
 
         git tag -d "$tag" || true
       fi
 
-      git push --delete "$REMOTE" "$tag"
+      git push --delete "${REMOTE}" "$tag"
   done
 else
 
-  echo "You'r anser is '$CONFIRM' skip then..."
+  echo "You'r anser is '${CONFIRM}' skip then..."
 fi
 
 

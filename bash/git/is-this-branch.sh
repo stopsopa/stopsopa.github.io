@@ -4,10 +4,10 @@
 
 main="$1"
 
+THISFILE=${BASH_SOURCE[0]}
+DIR="$( cd "$( dirname "${THISFILE}" )" && pwd -P )"
 
-__DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
-
-source "$__DIR/../colours.sh";
+source "${DIR}/../colours.sh";
 
 set -e
 set -x

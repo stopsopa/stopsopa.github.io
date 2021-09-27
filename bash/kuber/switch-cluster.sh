@@ -73,14 +73,14 @@ if [ "$2" != "" ]; then
   NUM="$2"
 fi
 
-doctl kubernetes cluster kubeconfig save "$1"
-
 echo -e "running until successful $NUM times\n\n    kubectl get no"
 
 for i in $(seq 1 1 $NUM)
 do
 
   echo -e "\nattempt $i:"
+
+  doctl kubernetes cluster kubeconfig save "$1"
 
   kubectl get no
 
@@ -92,7 +92,7 @@ do
       exit 0;
   fi
 
-  sleep 1;
+  sleep 3;
 done
 
 echo -e "\n$0 error: failed to switch to cluster [$1], exit code [$_CODE]"
