@@ -1,7 +1,15 @@
 
+_SHELL="$(ps -p $$ | sed -rn "s/.*[-\/]+(bash|zsh).*/\1/p")"; # zsh || bash
+if [ "${_SHELL}" = "/bin/zsh" ]; then
+
+  _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+else
+
+  _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+fi
+
 # https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started#seal-unseal
 # target directory where vault should be created
-_DIR="."
 _PORT="8200"
 _CLUSTERPORT="8201"
 _RELATIVEDBDIRPATH="db"
@@ -129,7 +137,7 @@ cat <<EOF
 export VAULT_ADDR='http://127.0.0.1:${_PORT}';
 export VAULT_TOKEN='$(cat "${_ROOTTOKENFILE}")';
 echo VAULT_ADDR=$VAULT_ADDR
-echo VAULT_TOKEN=$(cat "${_ROOTTOKENFILE}")
+echo VAULT_TOKEN=$VAULT_TOKEN
 $_BINARY status
 $_BINARY token lookup
 EOF
