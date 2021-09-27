@@ -4,6 +4,22 @@
 node ../../../bash/kuber/setyaml.js ../deployment-cli-3a0b.yaml --block _ --key ttt --yaml "one: two
 three: four"
 
+
+node "$ROOT/bash/kuber/setyaml.js" "$JOBYAML" --block _ --key spec.template.spec.containers.0.command   --yaml "$(cat <<EOF
+$YAMLARGS
+EOF
+)"
+
+    if:
+
+YAMLARGS="$(cat <<EOF
+- /bin/bash
+- command.sh
+- "--url"
+- "http://example.com"
+EOF
+)"
+
 node ../../../bash/kuber/setyaml.js ../deployment-cli-3a0b.yaml --block _ --key ttt --yaml '{"one": "two", "three": "four"}'
 
 node ../../../bash/kuber/setyaml.js ../deployment-cli-3a0b.yaml --block _ --key ttt.raz.a.b.c.d.e --plain 8.5876 --type float[2]
@@ -102,21 +118,11 @@ if ( typeof block !== 'string' ) {
     throw new Error(`${__filename} error: block is not a string, use --block argument`);
 }
 
-if ( typeof block !== 'string' ) {
-
-    throw new Error(`${__filename} error: block is not a string`);
-}
-
 const key       = args.get('key', false);
 
 if ( typeof key !== 'string' ) {
 
     throw new Error(`${__filename} error: key is not a string, use --key argument`);
-}
-
-if ( typeof key !== 'string' ) {
-
-    throw new Error(`${__filename} error: key is not a string`);
 }
 
 let value = undefined;

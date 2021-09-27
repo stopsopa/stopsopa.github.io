@@ -6,6 +6,9 @@
 #
 # /bin/bash "$_DIR/bash/proc/run-with-flag-and-kill.sh" "$FLAG" /bin/bash "$_DIR/ttt.sh" a b "c d" &
 
+# Then you can kill the bash script and it's child with:
+# ps aux | grep "$FLAG"" | grep -v grep | awk '{print $2}' | xargs kill
+
 set -e
 
 FLAG="$1";

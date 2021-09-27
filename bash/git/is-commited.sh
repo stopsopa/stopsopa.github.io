@@ -1,17 +1,28 @@
 
+THISFILE=${BASH_SOURCE[0]}
+DIR="$( cd "$( dirname "${THISFILE}" )" && pwd -P )"
 
+function _datetime {
+    date "+%Y-%m-%d %H:%M:%S"
+}
 
-_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+source "${DIR}/../colours.sh";
 
-source "$_DIR/../colours.sh";
+while true
+do
 
-DIFFSTATUS="$(git status -s)"
+    DIFFSTATUS="$(git status -s)"
 
-if [ "$DIFFSTATUS" != "" ] ; then
+    if [ "${DIFFSTATUS}" = "" ] ; then
+
+        break;
+    fi
 
     { red "[error] first commit changes"; } 2>&3
 
-    { printf "current git status is:\n\n$DIFFSTATUS\n\n"; } 2>&3
+    { yellow "current git status is:\n\n${DIFFSTATUS}\n\n"; } 2>&3
 
-    exit 1;
-fi
+    { yellow "please commit changes and press ENTER, or just stop entire script by Ctrl+C"; } 2>&3
+
+    read trash
+done

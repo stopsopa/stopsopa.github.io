@@ -19,7 +19,7 @@ trim() {
 
 if [ "$#" -lt "2" ]; then
 
-    printf "\ngive any command to execute like\n\n    /bin/bash $0 40 40 /bin/bash script.sh\n\n"
+    echo -e "\ngive any command to execute like\n\n    /bin/bash $0 40 40 /bin/bash script.sh\n\n"
 
     exit 1
 fi
@@ -28,7 +28,7 @@ HEAD="$1"
 
 if [[ ! "$HEAD" =~ ^[0-9]+$ ]]; then
 
-    printf "limit '$HEAD' (first argument) is not a number > 0\n"
+    echo -e "limit '$HEAD' (first argument) is not a number > 0\n"
 
     exit 1
 fi
@@ -39,7 +39,7 @@ TAIL="$1"
 
 if [[ ! "$TAIL" =~ ^[0-9]+$ ]]; then
 
-    printf "limit '$TAIL' (second argument) is not a number > 0\n"
+    echo -e "limit '$TAIL' (second argument) is not a number > 0\n"
 
     exit 1
 fi

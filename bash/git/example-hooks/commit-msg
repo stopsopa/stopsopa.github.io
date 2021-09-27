@@ -20,7 +20,7 @@ exit 0;
 # hook is more suited to it.
 #
 # SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
-# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+# grep -qs "^${SOB}" "$1" || echo "${SOB}" >> "$1"
 
 # This example catches duplicate Signed-off-by lines.
 

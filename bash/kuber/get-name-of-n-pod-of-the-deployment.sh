@@ -1,4 +1,8 @@
 
+# for future improvements
+# https://kubernetes.io/docs/concepts/workloads/controllers/job/#running-an-example-job
+# pods=$(kubectl get pods --selector=job-name=pi --output=jsonpath='{.items[*].metadata.name}')
+# echo $pods
 
 if [ "$1" = "--help" ]; then
 
@@ -13,6 +17,8 @@ cat << EOF
 /bin/bash $0 name-of-deployment 1 [namespace]
    will return first pod name from particular namespace
 
+   INFO: 1 is latest
+
 /bin/bash $0 name-of-deployment all [namespace]
    obviously will return all pods name from particular namespace
 
@@ -21,6 +27,17 @@ cat << EOF
 EOF
 
     exit 0;
+fi
+
+NAMESPACE=""
+
+if [ "$1" = "-n" ]; then
+
+  NAMESPACE=" -n $2"
+
+  shift;
+
+  shift;
 fi
 
 if [ "$1" = "" ]; then
@@ -74,7 +91,9 @@ shift;
 set -e
 set -o pipefail
 
-CMD="kubectl get pod$N -o wide | tail -n +2 | awk '$AWK' | sed -nE \"/^$DEPLOY-/p\"";
+#echo "kubectl get pod$N -o wide --sort-by=.metadata.creationTimestamp | tail -n +2 | tac | awk '$AWK' | sed -nE \"/^$DEPLOY-/p\""
+
+CMD="kubectl get pod$N$NAMESPACE -o wide --sort-by=.metadata.creationTimestamp | tail -n +2 | tac | awk '$AWK' | sed -nE \"/^$DEPLOY-/p\"";
 
 LIST="$(eval $CMD)"
 
@@ -103,6 +122,7 @@ trim() {
 COUNT="$(trim "$COUNT")"
 
 if [ "$NUM" -gt "$COUNT" ] ; then
+
     NUM="$COUNT"
 fi
 

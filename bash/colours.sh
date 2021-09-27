@@ -12,6 +12,10 @@ function yellow {
     printf "\e[33m$1\e[0m\n"
 }
 
+function magenta {
+    printf "\e[35m$1\e[0m\n"
+}
+
 # source "$DIR/../colours.sh"
 
 # from now on:
@@ -26,5 +30,15 @@ function yellow {
 #
 #END
 #)"; } 2>&3
+
+#{ red "
+#
+#multi
+#
+#line
+#
+#
+#"
+#} 2>&3
 
 

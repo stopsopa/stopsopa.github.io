@@ -14,6 +14,17 @@
 # more:
 #         kubectl create secret generic --help
 
+NAMESPACE=""
+
+if [ "$1" = "-n" ]; then
+
+  NAMESPACE=" -n $2"
+
+  shift;
+
+  shift;
+fi
+
 if [ "$1" = "" ]; then
 
     echo "name of secret is not given - first argument is not passed to the script"
@@ -140,7 +151,7 @@ set -e
 set -x
 
 # https://stackoverflow.com/a/45881259
-kubectl create secret generic "$SECRET" $FROMFILE --dry-run -o yaml | kubectl apply -f -
+kubectl create secret generic "$SECRET" $FROMFILE$NAMESPACE --dry-run -o yaml | kubectl apply -f -
 
 kubectl get secrets
 
@@ -148,4 +159,4 @@ kubectl describe secret "$SECRET"
 
 set +x
 
-printf "\n    all good\n"
+echo -e "\n    all good\n"

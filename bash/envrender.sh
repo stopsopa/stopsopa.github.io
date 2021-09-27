@@ -101,7 +101,7 @@ envsubst --help &> /dev/null
 if [ "$?" != "0" ]; then
 
     # https://stackoverflow.com/a/23622446
-    { red "envsubst is not installed run: brew install gettext && brew link --force gettext"; } 2>&3
+    { red "envsubst is not installed run: brew install gettext && brew link --force gettext\nor in linux run apt-get install -y gettext-base"; } 2>&3
 
     exit 1;
 fi

@@ -33,7 +33,7 @@ while (( "$#" )); do
       shift;
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 error: Unsupported flag $1" >&2
+      echo "$0 Error: Unsupported flag $1" >&2
       exit 1;
       ;;
     *) # preserve positional arguments
@@ -66,7 +66,6 @@ if [ "$FILE" != "" ]; then
     FILE="$(basename "$FILE")"
 fi
 
-set -e
 set -x
 
 HOST="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_HOST --env-file "$FILE")"
@@ -77,7 +76,6 @@ DB="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_DB --env-file "$FILE")"
 
 PASS="$(echo "$PASS" | sed -E 's# #\\ #g')"
 
-set +e
 set +x
 
 { yellow "
@@ -124,6 +122,7 @@ function tables {
 CLEAR=$(cat <<END
 SET @schema = '$DB';
 SET @pattern = '%';
+SET SESSION group_concat_max_len = 1000000;
 SELECT CONCAT('DROP TABLE ',GROUP_CONCAT(CONCAT('\\\`',@schema,'\\\`.\\\`',table_name,'\\\`')),';')
 INTO @droplike
 FROM information_schema.TABLES

@@ -53,7 +53,7 @@ while (( "$#" )); do
       ;;
     -g|--gen)
       if [ "$2" = "" ]; then
-        echo "$0 error: --gen value can't be empty" >&2
+        echo "$0 Error: --gen value can't be empty" >&2
         exit 1
       fi
       _GEN="$2";
@@ -64,7 +64,7 @@ while (( "$#" )); do
       break
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 error: Unsupported flag $1" >&2
+      echo "$0 Error: Unsupported flag $1" >&2
       exit 1
       ;;
     *) # preserve positional arguments
@@ -100,14 +100,19 @@ PB="$(basename "$1")"
 EXTENSION="${PB##*.}"
 FILENAME="${PB%.*}"
 if [ "$FILENAME" = "" ]; then
-
   FILENAME="$PB"
   EXTENSION=""
 fi
 if [ "$FILENAME" = "$PB" ]; then
-
   EXTENSION=""
 fi
+
+#EXTENSION="$(echo -n "$EXTENSION" | tr '[:upper:]' '[:lower:]')"
+
+#echo "PD ='$PD'";
+#echo "PB ='$PB'";
+#echo "FILENAME ='$FILENAME'";
+#echo "EXTENSION ='$EXTENSION'";
 
 
 
@@ -123,7 +128,7 @@ if [ "$_CLEANOLD" = "1" ]; then
       EREG="\.$(/bin/bash "$_DIR/preg_quote.sh" "$EXTENSION")"
     fi
 
-    CLEARLIST="$(find "$PD" -type f -maxdepth 1 | sed -nE "/\/$PREG-$_GEN-[a-f0-9]{4}$EREG$/p")"
+    CLEARLIST="$(find -L "$PD" -type f -maxdepth 1 | sed -nE "/\/$PREG-$_GEN-[a-f0-9]{4}$EREG$/p")"
 
     for file in $CLEARLIST
     do

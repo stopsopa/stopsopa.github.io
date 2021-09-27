@@ -5,21 +5,21 @@ TMP="$(git rev-parse --abbrev-ref HEAD)"
 
 TEST="-docker$"
 
-if [[ $TMP =~ $TEST ]]; then
+if [[ ${TMP} =~ ${TEST} ]]; then
 
-    printf "\n\n branch name '$TMP' match docker pattern: '$TEST'\n\n";
+    echo -e "\n\n branch name '${TMP}' match docker pattern: '${TEST}'\n";
 else
 
     exit 0;
 fi
 
-# echo ">>$TMP<<";
+# echo ">>${TMP}<<";
 
 TMP="${TMP/-docker/}"
 
-# printf "\n\ncurrent prefix: '$TMP'\n\n"
+# echo -e "\n\ncurrent prefix: '${TMP}'\n"
 
-node switch.js $TMP
+node switch.js ${TMP}
 
 # echo "script:$0 args: $@"
 

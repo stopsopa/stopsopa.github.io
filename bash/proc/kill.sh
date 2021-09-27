@@ -6,6 +6,9 @@
 # /bin/bash kill.sh flag-name $$
 # /bin/bash kill.sh flag-name $$ something-else-to-ignore "and something else to ignore"
 
+# alternatively as a oneliner
+# ps aux | grep "jfkdsjlkfjdskljfkdsjf" | grep -v grep | awk '{print $2}' | xargs kill
+
 
 set -e
 set -x
