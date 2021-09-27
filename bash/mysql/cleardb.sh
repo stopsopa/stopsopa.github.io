@@ -33,7 +33,7 @@ while (( "$#" )); do
       shift;
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 Error: Unsupported flag $1" >&2
+      echo "$0 error: Unsupported flag $1" >&2
       exit 1;
       ;;
     *) # preserve positional arguments

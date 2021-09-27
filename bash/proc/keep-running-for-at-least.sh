@@ -16,7 +16,7 @@ while (( "$#" )); do
       ;;
     -s|--sec)
       if [ "$2" = "" ]; then                            # optional
-        echo "$0 Error: --gen value can't be empty" >&2 # optional
+        echo "$0 error: --gen value can't be empty" >&2 # optional
         exit 1                                          # optional
       fi                                                # optional
       _KEEP_RUNNING_FOR="$2";
@@ -26,14 +26,14 @@ while (( "$#" )); do
 
       if ! [[ "$_KEEP_RUNNING_FOR" =~ $TEST ]]; then
 
-          echo "$0 Error: --sec \$_KEEP_RUNNING_FOR($_KEEP_RUNNING_FOR) don't match '$TEST'";
+          echo "$0 error: --sec \$_KEEP_RUNNING_FOR($_KEEP_RUNNING_FOR) don't match '$TEST'";
 
           exit 1;
       fi
 
       if [ "$_KEEP_RUNNING_FOR" -lt 1 ]; then
 
-          echo "$0 Error: --sec param \$_KEEP_RUNNING_FOR($_KEEP_RUNNING_FOR) is smaller than '1'";
+          echo "$0 error: --sec param \$_KEEP_RUNNING_FOR($_KEEP_RUNNING_FOR) is smaller than '1'";
 
           exit 1
       fi
@@ -51,7 +51,7 @@ while (( "$#" )); do
       break
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 Error: Unsupported flag $1" >&2
+      echo "$0 error: Unsupported flag $1" >&2
       exit 1
       ;;
     *) # preserve positional arguments
@@ -68,7 +68,7 @@ done
 
 if [ "$_KEEP_RUNNING_FOR" = "" ]; then
 
-    echo "$0 Error: --sec param is not specified";
+    echo "$0 error: --sec param is not specified";
 
     exit 1
 fi

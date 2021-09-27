@@ -39,7 +39,7 @@ if [ "$allownonascii" != "true" ] &&
 	  LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0
 then
 	cat <<\EOF
-Error: Attempt to add a non-ASCII file name.
+error: Attempt to add a non-ASCII file name.
 
 This can cause problems if you want to work with people on other platforms.
 
