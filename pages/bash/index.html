@@ -680,6 +680,30 @@ EOF
 source ~/.zshrc
 
                 </script>
+                <h2>array</h2>
+
+                <script type="editor" data-lang="sh">
+TRAPS=()
+
+TRAPS=("cleanup" "${TRAPS[@]}") # add to beginning of the array
+TRAPS+=('cleanup') # add to the end of array
+
+https://stackoverflow.com/a/8574392
+containsElement () {
+    local e
+    for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
+    return 1
+}
+
+$ array=("something to search for" "a string" "test2000")
+$ containsElement "a string" "${array[@]}"
+$ echo $?
+0
+$ containsElement "blaha" "${array[@]}"
+$ echo $?
+1
+
+                </script>
                 <h2>bash colors</h2>
 
                 
