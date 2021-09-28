@@ -26,6 +26,9 @@
                 
                 <h2>useful</h2>
                 <script type="editor" data-lang="sh">
+# fix variables in ide                
+\$([^\s"(<{'}/:;\\\.\$#+-]+)
+\${$1}
                 
 # find .git/config with given git source path                
 find . -type f -name config | grep --color=never -v node_modules | grep --color=never /.git/config | xargs -n 1 realpath | xargs -n 1 -- bash -c '
@@ -517,7 +520,7 @@ esac
 # test of above
 cat <<EEE > aaa.sh
 _SHELL="\$(ps "\${\$}" | grep "\${\$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
-echo "====\${_SHELL}===="
+echo "====\${_SHELL}:\$(if [ "\${_SHELL}" = "sh" ]; then echo sh; else \${_SHELL} --version; fi | head -n 1)===="
 case \${_SHELL} in
   zsh)
     _DIR="\$( cd "\$( dirname "\${(%):-%N}" )" && pwd -P )"
@@ -532,9 +535,10 @@ esac
 echo "_ROOT=\${_DIR}"
 EEE
 docker run -it -v "$(pwd):/code" -w "/code" frapsoft/zsh /bin/zsh aaa.sh \
-&&  docker run -it -v "$(pwd):/code" -w "/code" ubuntu:18.04 /bin/bash aaa.sh \
-&&  docker run -it -v "$(pwd):/code" -w "/code" node:16-alpine3.11 /bin/sh aaa.sh
-
+&& docker run -it --rm -v "$(pwd):/code" -w "/code" bash:3.2.57 /usr/local/bin/bash aaa.sh \
+&& docker run -it --rm -v "$(pwd):/code" -w "/code" bash:4.4.23 /usr/local/bin/bash aaa.sh \
+&& docker run -it --rm --entrypoint="" -v "$(pwd):/code" -w "/code" bash:5.1.8 /usr/local/bin/bash aaa.sh \
+&& docker run -it --rm -v "$(pwd):/code" -w "/code" alpine:3.14.2 /bin/sh aaa.sh
 
 
 
