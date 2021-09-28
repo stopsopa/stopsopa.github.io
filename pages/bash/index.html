@@ -26,6 +26,9 @@
                 
                 <h2>useful</h2>
                 <script type="editor" data-lang="sh">
+# fix variables in ide                
+\$([^\s"(<{'}/:;\\\.\$#+-]+)
+\${$1}
                 
 # find .git/config with given git source path                
 find . -type f -name config | grep --color=never -v node_modules | grep --color=never /.git/config | xargs -n 1 realpath | xargs -n 1 -- bash -c '
