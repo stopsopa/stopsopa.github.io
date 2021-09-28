@@ -501,14 +501,42 @@ done <<< "${LIST}"
 # grep "^$USER" /etc/passwd – Print the default shell name. The default shell runs when you open a terminal window.
 
 # current shell name reliably
-_SHELL="$(ps $$ | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
-if [ "${_SHELL}" = "/bin/zsh" ]; then
+_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
+case ${_SHELL} in
+  zsh)
+    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )<"
+    ;;
+  sh)
+    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )<"
+    ;;
+  *)
+    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )<"
+    ;;
+esac
 
-  _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
-else
+# test of above
+cat <<EEE > aaa.sh
+_SHELL="\$(ps "\${\$}" | grep "\${\$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
+echo "====\${_SHELL}===="
+case \${_SHELL} in
+  zsh)
+    _DIR="\$( cd "\$( dirname "\${(%):-%N}" )" && pwd -P )<"
+    ;;
+  sh)
+    _DIR="\$( cd "\$( dirname "\${0}" )" && pwd -P )<"
+    ;;
+  *)
+    _DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd -P )<"
+    ;;
+esac
+echo "_ROOT=\${_DIR}"
+EEE
+docker run -it -v "$(pwd):/code" -w "/code" frapsoft/zsh /bin/zsh aaa.sh \
+&&  docker run -it -v "$(pwd):/code" -w "/code" ubuntu:18.04 /bin/bash aaa.sh \
+&&  docker run -it -v "$(pwd):/code" -w "/code" node:16-alpine3.11 /bin/sh aaa.sh
 
-  _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
-fi
+
+
 
 # detect CURRENT USER default shell - that's different than above
 if [ -n "$ZSH_VERSION" ]; then

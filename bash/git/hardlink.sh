@@ -18,19 +18,21 @@ function yellow {
     printf "\e[33m$1\e[0m"
 }
 
-_SHELL="$(ps $$ | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
-
-if [ "${_SHELL}" = "zsh" ]; then
-
-  _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
-
-  BINARY="/bin/zsh"
-else
-
-  _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
-
-  BINARY="/bin/bash"
-fi
+_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
+case ${_SHELL} in
+  zsh)
+    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )<"
+    BINARY="/bin/zsh"
+    ;;
+  sh)
+    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )<"
+    BINARY="/bin/sh"
+    ;;
+  *)
+    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )<"
+    BINARY="/bin/bash"
+    ;;
+esac
 
 _CWD="$(pwd -P)"
 
