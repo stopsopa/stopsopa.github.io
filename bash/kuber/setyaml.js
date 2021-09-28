@@ -5,8 +5,8 @@ node ../../../bash/kuber/setyaml.js ../deployment-cli-3a0b.yaml --block _ --key 
 three: four"
 
 
-node "$ROOT/bash/kuber/setyaml.js" "$JOBYAML" --block _ --key spec.template.spec.containers.0.command   --yaml "$(cat <<EOF
-$YAMLARGS
+node "${ROOT}/bash/kuber/setyaml.js" "${JOBYAML}" --block _ --key spec.template.spec.containers.0.command   --yaml "$(cat <<EOF
+${YAMLARGS}
 EOF
 )"
 
@@ -47,7 +47,7 @@ const args = (function (obj, tmp) {
 
             if (a.indexOf('--') === 0) {
 
-                tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, '$1');
+                tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, '${1}');
 
                 if (tmp) {
 

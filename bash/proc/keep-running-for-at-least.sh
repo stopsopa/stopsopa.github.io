@@ -9,24 +9,24 @@ _DONT_TALK="0";
 
 PARAMS=""
 while (( "$#" )); do
-  case "$1" in
+  case "${1}" in
     -dt|--dont-talk)
       _DONT_TALK="1";
       shift
       ;;
     -s|--sec)
-      if [ "$2" = "" ]; then                            # optional
-        echo "$0 error: --gen value can't be empty" >&2 # optional
+      if [ "${2}" = "" ]; then                            # optional
+        echo "${0} error: --gen value can't be empty" >&2 # optional
         exit 1                                          # optional
       fi                                                # optional
-      _KEEP_RUNNING_FOR="$2";
+      _KEEP_RUNNING_FOR="${2}";
       shift 2
 
       TEST="^[0-9]+$"
 
-      if ! [[ "$_KEEP_RUNNING_FOR" =~ $TEST ]]; then
+      if ! [[ "${_KEEP_RUNNING_FOR}" =~ ${TEST} ]]; then
 
-          echo "$0 error: --sec \$_KEEP_RUNNING_FOR($_KEEP_RUNNING_FOR) don't match '$TEST'";
+          echo "${0} error: --sec \$_KEEP_RUNNING_FOR($_KEEP_RUNNING_FOR) don't match '$TEST'";
 
           exit 1;
       fi

@@ -7,20 +7,20 @@
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
-PR="$_DIR/../.."
+PR="${_DIR}/../.."
 
 set -e
 #set -x
 
-#/bin/bash "$PR/bash/git/is-commited.sh"
+#/bin/bash "${PR}/bash/git/is-commited.sh"
 
-source "$PR/bash/colours.sh"
+source "${PR}/bash/colours.sh"
 
-source "$PR/bash/time-format.sh"
+source "${PR}/bash/time-format.sh"
 
-source "$PR/.env"
+source "${PR}/.env"
 
-if [ "$PROJECT_NAME" = "" ]; then
+if [ "${PROJECT_NAME}" = "" ]; then
 
     { red "\n    PROJECT_NAME environment variable is empty or doesn't exist\n"; } 2>&3
 
@@ -29,6 +29,5 @@ fi
 
 HSH="$(git rev-parse --short HEAD)"
 
-VER="$PROJECT_NAME-$(_datetime _)-$HSH";
-
-echo $VER
+VER="${PROJECT_NAME}-$(_datetime _)-${HSH}";
+echo ${VER}

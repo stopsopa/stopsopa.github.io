@@ -5,11 +5,11 @@ set -e
 # echo -n 'admin:password' | base64
 # YWRtaW46cGFzc3dvcmQ=
 
-if [ "$1" = "--help" ]; then
+if [ "${1}" = "--help" ]; then
 
 cat << EOF
 
-/bin/bash $0 --user admin --pass password
+/bin/bash ${0} --user admin --pass password
 
 EOF
 
@@ -19,42 +19,42 @@ fi
 USER=""
 PASSWORD=""
 
-if [ "$1" = "--user" ]; then
+if [ "${1}" = "--user" ]; then
 
-  USER="$2"
-
-  shift;
-  shift;
-fi
-
-if [ "$1" = "--pass" ]; then
-
-  PASSWORD="$2"
+  USER="${2}"
 
   shift;
   shift;
 fi
 
-if [ "$1" = "--user" ]; then
+if [ "${1}" = "--pass" ]; then
 
-  USER="$2"
+  PASSWORD="${2}"
 
   shift;
   shift;
 fi
 
-if [ "$USER" = "" ]; then
+if [ "${1}" = "--user" ]; then
+
+  USER="${2}"
+
+  shift;
+  shift;
+fi
+
+if [ "${USER}" = "" ]; then
 
     echo "--user param is not given"
 
     exit 1
 fi
 
-if [ "$PASSWORD" = "" ]; then
+if [ "${PASSWORD}" = "" ]; then
 
     echo "--pass param is not given"
 
     exit 1
 fi
 
-echo -n "$USER:$PASSWORD" | base64
+echo -n "${USER:}${PASSWORD}" | base64

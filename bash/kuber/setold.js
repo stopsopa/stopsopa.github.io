@@ -8,11 +8,11 @@
 --- dep1
 
  # default first block
- node $0 001-simple-app/kubernetes/piiapp.yaml _ add new-value
- node $0 001-simple-app/kubernetes/piiapp.yaml 0 add new-value
- node $0 001-simple-app/kubernetes/piiapp.yaml 3 add new-value
- node $0 001-simple-app/kubernetes/piiapp.yaml titlefromdashline add new-value
- node $0 001-simple-app/kubernetes/piiapp.yaml 3 deep.key "multilime value"
+ node ${0} 001-simple-app/kubernetes/piiapp.yaml _ add new-value
+ node ${0} 001-simple-app/kubernetes/piiapp.yaml 0 add new-value
+ node ${0} 001-simple-app/kubernetes/piiapp.yaml 3 add new-value
+ node ${0} 001-simple-app/kubernetes/piiapp.yaml titlefromdashline add new-value
+ node ${0} 001-simple-app/kubernetes/piiapp.yaml 3 deep.key "multilime value"
 
  force type:
  node $0 001-simple-app/kubernetes/piiapp.yaml _spec.replicas key 678.456795645 float[3]

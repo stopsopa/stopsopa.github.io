@@ -12,7 +12,7 @@
 # add to main .gitignore
 # *-tmp-*
 
-if [ "$1" = "--help" ]; then
+if [ "${1}" = "--help" ]; then
 
 cat << EOF
 
@@ -33,7 +33,7 @@ TMP="\$(/bin/bash bash/envrender.sh .env docker/docker-compose.yml --gen tmp)"
 # do something
 function cleanup {
     echo "cleanup...";
-    unlink "\$TMP" || true
+    unlink "\${TMP}" || true
 }
 trap cleanup EXIT
 
@@ -49,8 +49,8 @@ _CLEANOLD="";
 _GEN="gen-tmp"
 
 PARAMS=""
-while (( "$#" )); do
-  case "$1" in
+while (( "${#}" )); do
+  case "${1}" in
     -c|--clean|--clear)
       _CLEANOLD=" --clear";
       shift
@@ -60,11 +60,11 @@ while (( "$#" )); do
       shift
       ;;
     -g|--gen)
-      if [ "$2" = "" ]; then
-        echo "$0 error: --gen value can't be empty" >&2
+      if [ "${2}" = "" ]; then
+        echo "${0} error: --gen value can't be empty" >&2
         exit 1
       fi
-      _GEN="$2";
+      _GEN="${2}";
       shift 2
       ;;
     --) # end argument parsing
@@ -72,11 +72,11 @@ while (( "$#" )); do
       break
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 error: Unsupported flag $1" >&2
+      echo "${0} error: Unsupported flag ${1}" >&2
       exit 1
       ;;
     *) # preserve positional arguments
-      PARAMS="$PARAMS $1"
+      PARAMS="${PARAMS} ${1}"
       shift
       ;;
   esac

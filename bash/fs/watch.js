@@ -4,14 +4,14 @@
 //
 // STATUS="0"
 //
-// while [ "$?" = "0" ]
+// while [ "${?}" = "0" ]
 //   do
 //
-//   /bin/bash "$DIR/start.sh"
+//   /bin/bash "${DIR}/start.sh"
 //
-//   STATUS="$(node "$DIR/bash/fs/watch.js" "$DIR/index.js")"
+//   STATUS="$(node "${DIR}/bash/fs/watch.js" "${DIR}/index.js")"
 //
-//   /bin/bash "$DIR/stop.sh"
+//   /bin/bash "${DIR}/stop.sh"
 // done
 
 const fs = require('fs');

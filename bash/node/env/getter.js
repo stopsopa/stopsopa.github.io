@@ -9,7 +9,7 @@ const args = (function (obj, tmp) {
 
             if (a.indexOf('--') === 0) {
 
-                tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, '$1');
+                tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, '${1}');
 
                 if (tmp) {
 

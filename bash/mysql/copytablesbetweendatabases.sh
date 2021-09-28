@@ -3,10 +3,10 @@ function help {
 
 cat << EOF
 
-  /bin/bash $0 .env.kub.prod .env.kub.stage
-  /bin/bash $0 [source env] [target env]
-  /bin/bash $0 [source env] [target env] [optional segment to search = default 'test']
-  /bin/bash $0 [source env] [target env] --force
+  /bin/bash ${0} .env.kub.prod .env.kub.stage
+  /bin/bash ${0} [source env] [target env]
+  /bin/bash ${0} [source env] [target env] [optional segment to search = default 'test']
+  /bin/bash ${0} [source env] [target env] --force
 
   --force         - flag will copy even despite target database doesn't contain 'test' string in it's name
 
@@ -20,20 +20,20 @@ set -o pipefail
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
-source "$_DIR/../colours.sh";
+source "${_DIR}/../colours.sh";
 
-if [ ! -f "$1" ]; then
+if [ ! -f "${1}" ]; then
 
-    { red "FILE \$1: '$1' doesn't exist"; } 2>&3
+    { red "FILE \${1}: '${1}' doesn't exist"; } 2>&3
 
     help
 
     exit 1;
 fi
 
-if [ ! -f "$2" ]; then
+if [ ! -f "${2}" ]; then
 
-    { red "FILE \$2: '$2' doesn't exist"; } 2>&3
+    { red "FILE \${2}: '${2}' doesn't exist"; } 2>&3
 
     help
 
@@ -44,18 +44,18 @@ FORCE="0"
 
 STOP_IF_NOT_MATCH="test"
 
-if [ "$3" != "" ]; then
+if [ "${3}" != "" ]; then
 
-    if [ "$3" = "--force" ]; then
+    if [ "${3}" = "--force" ]; then
 
         FORCE="1"
     else
 
-        STOP_IF_NOT_MATCH="$(/bin/bash "$_DIR/../preg_quote.sh" "$3")"
+        STOP_IF_NOT_MATCH="$(/bin/bash "${_DIR}/../preg_quote.sh" "${3}")"
     fi
 fi
 
-if [ "$(basename "$1")" = "$(basename "$2")" ]; then
+if [ "$(basename "${1}")" = "$(basename "$2")" ]; then
 
     { red "$0 error: source and target env files is the same file"; } 2>&3
 

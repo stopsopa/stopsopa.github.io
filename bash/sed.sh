@@ -12,32 +12,32 @@
 #   https://stackoverflow.com/a/44864004
 
 PARAMS=""
-while (( "$#" )); do
-  case "$1" in
+while (( "${#}" )); do
+  case "${1}" in
     -i)
       if [ "$(sed --help 2>&1 | grep "i extension" || true)" = "" ]; then
-        if [ "$1" = "&&" ]; then
-          PARAMS="$PARAMS \&\&"
+        if [ "${1}" = "&&" ]; then
+          PARAMS="${PARAMS} \&\&"
         else
-          if [ "$PARAMS" = "" ]; then
-            PARAMS="\"$1\""
+          if [ "${PARAMS}" = "" ]; then
+            PARAMS="\"${1}\""
           else
-            PARAMS="$PARAMS \"$1\""
+            PARAMS="${PARAMS} \"${1}\""
           fi
         fi
       else
-        PARAMS="$PARAMS -i ''"
+        PARAMS="${PARAMS} -i ''"
       fi
       shift;
       ;;
     *) # preserve positional arguments
-      if [ "$1" = "&&" ]; then
-          PARAMS="$PARAMS \&\&"
+      if [ "${1}" = "&&" ]; then
+          PARAMS="${PARAMS} \&\&"
       else
-        if [ "$PARAMS" = "" ]; then
-            PARAMS="\"$1\""
+        if [ "${PARAMS}" = "" ]; then
+            PARAMS="\"${1}\""
         else
-          PARAMS="$PARAMS \"$1\""
+          PARAMS="${PARAMS} \"${1}\""
         fi
       fi
       shift;
@@ -45,6 +45,6 @@ while (( "$#" )); do
   esac
 done
 
-#echo "sed $PARAMS"
+#echo "sed ${PARAMS}"
 
-eval "sed $PARAMS"
+eval "sed ${PARAMS}"

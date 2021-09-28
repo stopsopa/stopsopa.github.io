@@ -1,5 +1,5 @@
 
-# /bin/bash $0 kubersecretname .env.kub .env.targetnameoffileinsecret
+# /bin/bash ${0} kubersecretname .env.kub .env.targetnameoffileinsecret
 # /bin/bash $0 kubersecretname .env.kub .env.targetnameoffileinsecret [.env.kub .env.targetnameoffileinsecret] [.env.kub .env.targetnameoffileinsecret]
 #                                                                      ^                                       ^
 #                                                                      |-- optional another pair of files      |-- and another
@@ -74,9 +74,9 @@ function cleanup {
   for i in "${DELETE[@]}"
   do
 
-      echo -e "\nremoving '$i'";
+      echo -e "\nremoving '${i}'";
 
-      unlink "$i" || true
+      unlink "${i}" || true
   done
 }
 
