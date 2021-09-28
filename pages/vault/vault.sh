@@ -1,5 +1,5 @@
 
-_SHELL="$(ps -p $$ | sed -rn "s/.*[-\/]+(bash|zsh).*/\1/p")"; # zsh || bash
+_SHELL="$(ps $$ | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # zsh || bash
 if [ "${_SHELL}" = "/bin/zsh" ]; then
 
   _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
