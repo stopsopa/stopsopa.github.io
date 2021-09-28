@@ -18,7 +18,7 @@ function yellow {
     printf "\e[33m$1\e[0m"
 }
 
-_SHELL="$(ps -p $$ | sed -rn "s/.*[-\/]+(bash|zsh).*/\1/p")"; # zsh || bash
+_SHELL="$(ps $$ | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # zsh || bash
 
 if [ "${_SHELL}" = "zsh" ]; then
 
