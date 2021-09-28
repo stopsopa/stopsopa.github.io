@@ -30,10 +30,10 @@ echo "$LIST"
 #for tag in $LIST
 #do
 #
-#    echo "$tag";
+#    echo "${tag}";
 #
-#    git tag -d $tag
+#    git tag -d ${tag}
 #
-#    git push --delete origin $tag
+#    git push --delete origin ${tag}
 #done
 

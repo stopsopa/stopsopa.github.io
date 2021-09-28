@@ -180,7 +180,7 @@ function processLine {
 
   echo -e "${LIST}" | while read line ; do
 
-    processLine "$line"
+    processLine "${line}"
 
   done
 

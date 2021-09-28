@@ -4,46 +4,46 @@ HELP="$(inotifywait --help 2>&1)"
 
 REG="Wait for a particular event"
 
-if ! [[ $HELP =~ $REG ]]; then
+if ! [[ ${HELP} =~ ${REG} ]]; then
 
-  echo -e "\n$0 error: inotifywait tool is not available, visit: https://github.com/inotify-tools/inotify-tools/wiki for installation instruction\n";
-
-  exit 1;
-fi
-
-if [ ! -d "$1" ]; then
-
-  echo "first argument '$1' is not a directory";
+  echo -e "\n${0} error: inotifywait tool is not available, visit: https://github.com/inotify-tools/inotify-tools/wiki for installation instruction\n";
 
   exit 1;
 fi
 
-DIR="$1";
+if [ ! -d "${1}" ]; then
+
+  echo "first argument '${1}' is not a directory";
+
+  exit 1;
+fi
+
+DIR="${1}";
 
 shift;
 
-if [ ! -f "$1" ]; then
+if [ ! -f "${1}" ]; then
 
-  echo "second argument '$1' is not a bash script";
+  echo "second argument '${1}' is not a bash script";
 
   exit 1;
 fi
 
-SCRIPT="$1";
+SCRIPT="${1}";
 
 shift;
 
 REG="ISDIR"
 
-inotifywait -mr -e delete -e attrib -e modify "$DIR" | while read -r dir action file; do
+inotifywait -mr -e delete -e attrib -e modify "${DIR}" | while read -r dir action file; do
 
-  if ! [[ $action =~ $REG ]]; then
+  if ! [[ ${action} =~ ${REG} ]]; then
 
     TIME="$(date +"%Y-%m-%d %H:%M:%S")";
 
-    /bin/bash "$SCRIPT" "$(realpath "$dir")" "$file" "$action";
+    /bin/bash "${SCRIPT}" "$(realpath "${dir}")" "${file}" "${action}";
 
-    echo "=== $0 $TIME $action $file exit code: $?";
+    echo "=== ${0} ${TIME} ${action} ${file} exit code: ${?}";
   fi
 done
 

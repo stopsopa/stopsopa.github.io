@@ -3,23 +3,23 @@ function help {
 
 cat << EOF
 
-/bin/bash $0 deploymentname [number-of-container = default 0]
+/bin/bash ${0} deploymentname [number-of-container = default 0]
 
 Will return empty string and non 0 exit code if deployment doesn't exist of connection failed
 
 EOF
 }
 
-if [ "$1" = "--help" ]; then
+if [ "${1}" = "--help" ]; then
 
     help;
 
     exit 0;
 fi
 
-if [ "$1" = "" ]; then
+if [ "${1}" = "" ]; then
 
-    echo "$0 error: name of deployemnt not specified"
+    echo "${0} error: name of deployemnt not specified"
 
     help;
 
@@ -28,25 +28,25 @@ fi
 
 CONTAINER="0";
 
-if [ "$2" != "" ]; then
+if [ "${2}" != "" ]; then
 
-    CONTAINER="$2"
+    CONTAINER="${2}"
 fi
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
 set -e
 
-FILE="$_DIR/$(openssl rand -hex 2).log";
+FILE="${_DIR}/$(openssl rand -hex 2).log";
 
-DELETE=("$FILE");
+DELETE=("${FILE}");
 
 function cleanup {
 
   for i in "${DELETE[@]}"
   do
 
-      unlink "$i" || true
+      unlink "${i}" || true
   done
 }
 

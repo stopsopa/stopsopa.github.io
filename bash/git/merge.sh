@@ -44,9 +44,9 @@ do
   { green "    attempt to merge branch '${target}' to (current branch) '${THISBRANCH}', MODE: ${MODE}\n"; } 2>&3
 
   if [ "${MODE}" = "merge-with-diff" ]; then
-    git merge $target --no-edit
+    git merge ${target} --no-edit
   else
-    git merge $target --no-commit --no-ff --no-edit
+    git merge ${target} --no-commit --no-ff --no-edit
     git reset HEAD .
     git checkout .
     git clean -df
@@ -57,7 +57,7 @@ do
 
   if [ $? = 0 ]; then
 
-      { green "[ok] merging branch '$target' - success"; } 2>&3
+      { green "[ok] merging branch '${target}' - success"; } 2>&3
 
       break;
   fi

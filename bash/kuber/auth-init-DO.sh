@@ -18,16 +18,16 @@
 #
 ## CMD [ "/bin/bash", "cron.sh" ]
 
-if [ "$PROTECTED_KUB_CLUSTER" = "" ]; then
+if [ "${PROTECTED_KUB_CLUSTER}" = "" ]; then
 
-    echo "$0 error: environment variable missing 'PROTECTED_KUB_CLUSTER'";
+    echo "${0} error: environment variable missing 'PROTECTED_KUB_CLUSTER'";
 
     exit 1;
 fi
 
-if [ "$PROTECTED_DIGITAL_OCEAN_ACCESS_TOKEN" = "" ]; then
+if [ "${PROTECTED_DIGITAL_OCEAN_ACCESS_TOKEN}" = "" ]; then
 
-    echo "$0 error: environment variable missing 'PROTECTED_DIGITAL_OCEAN_ACCESS_TOKEN'";
+    echo "${0} error: environment variable missing 'PROTECTED_DIGITAL_OCEAN_ACCESS_TOKEN'";
 
     exit 1;
 fi
@@ -36,19 +36,19 @@ NUM="10"
 
 _GOOD="0"
 
-for i in $(seq 1 1 $NUM)
+for i in $(seq 1 1 ${NUM})
 do
 
-  echo -e "\nattempt $i:"
+  echo -e "\nattempt ${i}:"
 
   set -x
-  doctl auth init --access-token $PROTECTED_DIGITAL_OCEAN_ACCESS_TOKEN
+  doctl auth init --access-token ${PROTECTED_DIGITAL_OCEAN_ACCESS_TOKEN}
 
-  if [ "$?" = "0" ]; then
+  if [ "${?}" = "0" ]; then
 
-      doctl kubernetes cluster kubeconfig save $PROTECTED_KUB_CLUSTER
+      doctl kubernetes cluster kubeconfig save ${PROTECTED_KUB_CLUSTER}
 
-      if [ "$?" = "0" ]; then
+      if [ "${?}" = "0" ]; then
 
         kubectl get no
 

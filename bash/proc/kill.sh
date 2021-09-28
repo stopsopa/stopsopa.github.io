@@ -7,9 +7,9 @@
 # /bin/bash kill.sh flag-name $$ something-else-to-ignore "and something else to ignore"
 
 # alternatively as a oneliner
-# ps aux | grep "jfkdsjlkfjdskljfkdsjf" | grep -v grep | awk '{print $2}' | xargs kill
+# ps aux | grep "jfkdsjlkfjdskljfkdsjf" | grep -v grep | awk '{print ${2}}' | xargs kill
 # or more aggressively
-# ps aux | grep "jfkdsjlkfjdskljfkdsjf" | grep -v grep | awk '{print $2}' | xargs kill -9
+# ps aux | grep "jfkdsjlkfjdskljfkdsjf" | grep -v grep | awk '{print ${2}}' | xargs kill -9
 
 
 set -e
@@ -85,8 +85,8 @@ if [ "$#" -gt 1 ]; then
 
     for i in "${IGNORE[@]}"
     do
-        LIST=$(echo -e "$LIST"  | grep -v "$i") || true;
-        # echo -e "after '$i': >>$LIST<<";
+        LIST=$(echo -e "$LIST"  | grep -v "${i}") || true;
+        # echo -e "after '${i}': >>$LIST<<";
     done
 fi
 
@@ -100,8 +100,8 @@ PIDS=$(echo -e "$LIST" | awk '{print $2}') || true;
 
 for pid in $PIDS
 do
-    { yellow "attempt to kill $pid"; } 2>&3
-    kill -s 9 $pid && echo 'success' || echo 'failure'
+    { yellow "attempt to kill ${pid}"; } 2>&3
+    kill -s 9 ${pid} && echo 'success' || echo 'failure'
 done
 
 { echo -e "\n"; } 2>&3

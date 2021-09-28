@@ -34,10 +34,10 @@ LIST=(
 
 for i in "${LIST[@]}"
 do
-    { green "testing read & write access: $i"; } 2>&3
+    { green "testing read & write access: ${i}"; } 2>&3
 
-    if [ ! -w "$i" ] || [ ! -r "$i" ]; then  # not exist (fnode, directory, socket, etc.)
-        { red "'$i' is not writtable | readable"; } 2>&3
+    if [ ! -w "${i}" ] || [ ! -r "${i}" ]; then  # not exist (fnode, directory, socket, etc.)
+        { red "'${i}' is not writtable | readable"; } 2>&3
         exit 1
     fi
 done

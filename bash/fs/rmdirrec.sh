@@ -3,60 +3,60 @@
 # will not remve symlinks,
 # symlink along the path will stop the chain of removing directories down to the root
 
-TARGETDIR="$(realpath "$1" 2>&1)"
+TARGETDIR="$(realpath "${1}" 2>&1)"
 
-if [ "$?" != "0" ]; then
+if [ "${?}" != "0" ]; then
 
-  echo "$0 error: realpath TARGETDIR error '$TARGETDIR', exit code 1"
+  echo "${0} error: realpath TARGETDIR error '${TARGETDIR}', exit code 1"
 
   exit 1;
 fi
 
-if [ "$1" = "" ]; then
+if [ "${1}" = "" ]; then
 
-  echo "$0 error: target directory not specified"
-
-  exit 1
-fi
-
-if [ ! -d "$TARGETDIR" ]; then
-
-  echo "$0 error: target path '$TARGETDIR' is not a directory"
+  echo "${0} error: target directory not specified"
 
   exit 1
 fi
 
-DIRECTORYTOREMOVE="$(realpath "$2" 2>&1)"
+if [ ! -d "${TARGETDIR}" ]; then
 
-if [ "$?" != "0" ]; then
+  echo "${0} error: target path '${TARGETDIR}' is not a directory"
 
-  echo "$0 error: realpath DIRECTORYTOREMOVE error '$DIRECTORYTOREMOVE', exit code 0"
+  exit 1
+fi
+
+DIRECTORYTOREMOVE="$(realpath "${2}" 2>&1)"
+
+if [ "${?}" != "0" ]; then
+
+  echo "${0} error: realpath DIRECTORYTOREMOVE error '${DIRECTORYTOREMOVE}', exit code 0"
 
   exit 0;
 fi
 
-if [ "$2" = "" ]; then
+if [ "${2}" = "" ]; then
 
-  echo "$0 error: directory to remove parameter is not specified"
-
-  exit 1
-fi
-
-if [ ! -d "$DIRECTORYTOREMOVE" ]; then
-
-  echo "$0 error: directory to remove '$DIRECTORYTOREMOVE' is not a directory"
+  echo "${0} error: directory to remove parameter is not specified"
 
   exit 1
 fi
 
-TMP="$(realpath "$DIRECTORYTOREMOVE" 2>&1)"
+if [ ! -d "${DIRECTORYTOREMOVE}" ]; then
+
+  echo "${0} error: directory to remove '${DIRECTORYTOREMOVE}' is not a directory"
+
+  exit 1
+fi
+
+TMP="$(realpath "${DIRECTORYTOREMOVE}" 2>&1)"
 
 while true
 do
 
-#  echo "$0 error: preparing to remove $TMP";
+#  echo "${0} error: preparing to remove ${TMP}";
 
-  if [ "$TARGETDIR" = "$TMP" ]; then
+  if [ "${TARGETDIR}" = "$TMP" ]; then
 
 #    echo "$0 error: dir is equal to destination"
 

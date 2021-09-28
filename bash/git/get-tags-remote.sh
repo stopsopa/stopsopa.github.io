@@ -7,11 +7,11 @@
 
 #git log --no-color  --decorate=short | grep "^commit " | grep "tag: " | cut -d ' ' -f4 | sed "s/[\),]$//"
 
-REMOTE="$1"
+REMOTE="${1}"
 
-if [ "$REMOTE" = "" ]; then
+if [ "${REMOTE}" = "" ]; then
 
   REMOTE="origin"
 fi
 
-git ls-remote --tags "$REMOTE" | grep -v "{}" | sed -En "s/^.+\/([^\/]+).*$/\1/p"
+git ls-remote --tags "${REMOTE}" | grep -v "{}" | sed -En "s/^.+\/([^\/]+).*$/\1/p"

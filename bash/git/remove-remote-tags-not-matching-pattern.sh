@@ -102,14 +102,14 @@ if [ "${CONFIRM}" = "y" ]; then
 
   for tag in ${NOTMATCHING}
   do
-      echo -e "\nremoving $tag:";
+      echo -e "\nremoving ${tag}:";
 
       if [ "${REMOVELOCAL}" = "1" ]; then
 
-        git tag -d "$tag" || true
+        git tag -d "${tag}" || true
       fi
 
-      git push --delete "${REMOTE}" "$tag"
+      git push --delete "${REMOTE}" "${tag}"
   done
 else
 

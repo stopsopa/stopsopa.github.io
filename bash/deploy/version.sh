@@ -12,49 +12,49 @@
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
-PR="$_DIR/../.."
+PR="${_DIR}/../.."
 
 set -e
 #set -x
 
-#/bin/bash "$PR/bash/git/is-commited.sh"
+#/bin/bash "${PR}/bash/git/is-commited.sh"
 
-source "$PR/bash/colours.sh"
+source "${PR}/bash/colours.sh"
 
-source "$PR/bash/trim.sh"
+source "${PR}/bash/trim.sh"
 
-source "$PR/.env"
+source "${PR}/.env"
 
-if [ "$PROJECT_NAME" = "" ]; then
+if [ "${PROJECT_NAME}" = "" ]; then
 
     { red "\n    PROJECT_NAME environment variable is empty or doesn't exist\n"; } 2>&3
 
     exit 1;
 fi
 
-if [ $# -lt 1 ]; then
+if [ ${#} -lt 1 ]; then
 
-    { red "\nnot enough arguments\n    /bin/bash $0 origin major|minor|patch\n"; } 2>&3
+    { red "\nnot enough arguments\n    /bin/bash ${0} origin major|minor|patch\n"; } 2>&3
 
     exit 1;
 fi
 
-REMOTE="$1";
+REMOTE="${1}";
 
 shift;
 
-if [ "$REMOTE" = "" ]; then
+if [ "${REMOTE}" = "" ]; then
 
     { red "\n    you have to specify REMOTE\n"; } 2>&3
 
     exit 1;
 fi
 
-#MODE="$1";
+#MODE="${1}";
 #
 #shift;
 #
-#if [ "$MODE" = "" ]; then
+#if [ "${MODE}" = "" ]; then
 #
 #    { red "\n    you have to specify MODE (major|minor|patch)\n"; } 2>&3
 #
@@ -63,34 +63,34 @@ fi
 #
 #TEST="^(patch|minor|major)$"
 #
-#if ! [[ $MODE =~ $TEST ]]; then
+#if ! [[ ${MODE} =~ ${TEST} ]]; then
 #
-#    { red "\n    MODE: should match one of values (patch|minor|major) but it is >>>$MODE<<<\n"; } 2>&3
+#    { red "\n    MODE: should match one of values (patch|minor|major) but it is >>>${MODE}<<<\n"; } 2>&3
 #
 #    exit 1;
 #fi
 
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
-if [ "$BRANCH" = "HEAD" ]; then
+if [ "${BRANCH}" = "HEAD" ]; then
 
     { red "\n    BRANCH is HEAD, you are beyound branches\n"; } 2>&3
 
     exit 1;
 fi
 
-BRANCH="-$BRANCH";
+BRANCH="-${BRANCH}";
 
-if [ "$BRANCH" = "-master" ]; then
+if [ "${BRANCH}" = "-master" ]; then
 
     BRANCH="";
 fi
 
-#VER="$(git ls-remote --tags $REMOTE | grep -v "\\^{}$")" || true
-VER="$(git ls-remote --tags --refs $REMOTE)"
+#VER="$(git ls-remote --tags ${REMOTE} | grep -v "\\^{}$")" || true
+VER="$(git ls-remote --tags --refs ${REMOTE)}"
 
 # project-6.4.32-dev - so I'm filtering here last "-dev"
-if [ "$BRANCH" != "" ]; then
+if [ "${BRANCH}" != "" ]; then
 
     VER="$(printf "$VER" | grep "\\$BRANCH$")" || true
 fi

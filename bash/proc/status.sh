@@ -5,13 +5,13 @@ set -x
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
-source "$_DIR/../colours.sh";
+source "${_DIR}/../colours.sh";
 
-source "$_DIR/../trim.sh"
+source "${_DIR}/../trim.sh"
 
-if [ "$#" -lt "2" ]; then
+if [ "${#}" -lt "2" ]; then
 
-    { red "$0 error: run like /bin/bash $0 pathto/.env ENV_NAME_WITH_FLAG"; } 2>&3
+    { red "${0} error: run like /bin/bash $0 pathto/.env ENV_NAME_WITH_FLAG"; } 2>&3
 
     exit 1
 fi

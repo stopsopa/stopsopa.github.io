@@ -1,6 +1,6 @@
 /**
- * node $0 v14.4
- * node $0 --nvmrc .nvmrc
+ * node ${0} v14.4
+ * node ${0} --nvmrc .nvmrc
  *
  * node $0 v14.4.0 --exact
  * node $0 --nvmrc .nvmrc --exact

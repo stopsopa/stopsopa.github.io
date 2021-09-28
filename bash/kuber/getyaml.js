@@ -1,10 +1,10 @@
 /**
  * Require: "js-yaml": "^3.11.0",
  *
- * node $0 file.yaml _ key.key
- * node $0 file.yaml 0 key.key
- * node $0 file.yaml 1 key.key
- * node $0 file.yaml title key.key [plain|yaml|json|jsonh|jsonq]
+ * node ${0} file.yaml _ key.key
+ * node ${0} file.yaml 0 key.key
+ * node ${0} file.yaml 1 key.key
+ * node ${0} file.yaml title key.key [plain|yaml|json|jsonh|jsonq]
  *    yaml - default
  *    where jsonh - is human readable format of json, with indentations
  *    jsonq - will

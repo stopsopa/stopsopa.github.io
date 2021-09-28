@@ -1,8 +1,8 @@
 
-# call with one argument, script will return value of environment variable from .env under $1 name variable
+# call with one argument, script will return value of environment variable from .env under ${1} name variable
 # /bin/bash bash/env.sh ../.env PROTECTED_MYSQL_HOST
 
-if [ "$1" = "--help" ]; then
+if [ "${1}" = "--help" ]; then
 
 cat << EOF
 
@@ -21,10 +21,10 @@ nothing existing already under this path
   --gen test -> "-test-"  --> will generate file like: ttt-test-74ab.sh
   --gen fooo -> "-fooo-"  --> will generate file like: ttt-fooo-74ab.sh
 
-TMP="\$(/bin/bash $0 .env --clear)"
-TMP="\$(/bin/bash $0 .env --clean)"
-TMP="\$(/bin/bash $0 .env -c)"
-TMP="\$(/bin/bash $0 .env --gen 'gen')"
+TMP="\$(/bin/bash ${0} .env --clear)"
+TMP="\$(/bin/bash ${0} .env --clean)"
+TMP="\$(/bin/bash ${0} .env -c)"
+TMP="\$(/bin/bash ${0} .env --gen 'gen')"
 TMP="\$(/bin/bash $0 .env -g 'gen')"
 TMP="\$(/bin/bash $0 .env -g 'gen' -c)"
 
@@ -132,7 +132,7 @@ if [ "$_CLEANOLD" = "1" ]; then
 
     for file in $CLEARLIST
     do
-        unlink "$file" || true
+        unlink "${file}" || true
     done
 fi
 

@@ -10,18 +10,18 @@
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
-source "$_DIR/trim.sh"
+source "${_DIR}/trim.sh"
 
-if [ $# -lt 2 ] ; then
+if [ ${#} -lt 2 ] ; then
 
     echo "not enough arguments";
 
     exit 1;
 fi
 
-FILE="$1";
+FILE="${1}";
 
-if [ ! -e "$FILE" ]; then  # exist
+if [ ! -e "${FILE}" ]; then  # exist
 
     echo "FILE: '$FILE' doesn't exist"
 

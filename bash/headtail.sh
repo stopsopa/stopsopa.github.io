@@ -1,7 +1,7 @@
 
 # USE LIKE:
-# /bin/bash $0 $HEADLINES $TAILLINES /bin/bash other.sh arg1 arg2 ...
-# /bin/bash $0 $HEADLINES $TAILLINES node script.js arg1 arg2 ...
+# /bin/bash ${0} ${HEADLINES} ${TAILLINES} /bin/bash other.sh arg1 arg2 ...
+# /bin/bash ${0} ${HEADLINES} ${TAILLINES} node script.js arg1 arg2 ...
 
 # WARNING:
 # BE AWARE THAT STDOUT AND STDERR OF INTERNAL COMMAND
@@ -9,12 +9,12 @@
 # WARNING:
 
 trim() {
-    local var="$*"
+    local var="${*}"
     # remove leading whitespace characters
     var="${var#"${var%%[![:space:]]*}"}"
     # remove trailing whitespace characters
     var="${var%"${var##*[![:space:]]}"}"
-    echo -n "$var"
+    echo -n "${var}"
 }
 
 if [ "$#" -lt "2" ]; then

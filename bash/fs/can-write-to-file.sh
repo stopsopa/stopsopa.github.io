@@ -9,21 +9,21 @@
 
   #_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
   #
-  #_MAINLIBDIR="$(dirname "$_DIR")"
+  #_MAINLIBDIR="$(dirname "${_DIR}")"
   #
-  #A="$_DIR/a.tmp"
+  #A="${_DIR}/a.tmp"
   #
-  #B="$_DIR/b.tmp"
+  #B="${_DIR}/b.tmp"
   #
-  #/bin/bash "$_MAINLIBDIR/fs/can-write-to-file.sh" --rm "$A"
+  #/bin/bash "${_MAINLIBDIR}/fs/can-write-to-file.sh" --rm "${A}"
   #
-  #/bin/bash "$_MAINLIBDIR/fs/can-write-to-file.sh" --rm "$B"
+  #/bin/bash "${_MAINLIBDIR}/fs/can-write-to-file.sh" --rm "${B}"
   #
   #function cleanup {
   #
-  #    /bin/bash "$_MAINLIBDIR/fs/can-write-to-file.sh" --rm "$A"
+  #    /bin/bash "${_MAINLIBDIR}/fs/can-write-to-file.sh" --rm "${A}"
   #
-  #    /bin/bash "$_MAINLIBDIR/fs/can-write-to-file.sh" --rm "$B"
+  #    /bin/bash "${_MAINLIBDIR}/fs/can-write-to-file.sh" --rm "${B}"
   #}
   #
   #trap cleanup EXIT
@@ -34,16 +34,16 @@
 
 
 RM="0"
-if [ "$1" = "--rm" ]; then
+if [ "${1}" = "--rm" ]; then
 
   shift;
 
   RM="1"
 fi
 
-___DIR="$(dirname "$1")"
+___DIR="$(dirname "${1}")"
 
-___REALFILE="$(realpath "$1")"
+___REALFILE="$(realpath "${1}")"
 
 ___REALDIR="$(realpath "$___DIR")"
 

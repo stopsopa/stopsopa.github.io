@@ -6,22 +6,22 @@ set -x
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
-source "$_DIR/../colours.sh";
+source "${_DIR}/../colours.sh";
 
-source "$_DIR/../trim.sh"
+source "${_DIR}/../trim.sh"
 
-if [ "$#" -lt "3" ]; then
+if [ "${#}" -lt "3" ]; then
 
-    { red "$0 error: run like /bin/bash $0 pathto/.env ENV_NAME_WITH_FLAG /bin/bash something_to_run.sh param1 param2 ..."; } 2>&3
+    { red "${0} error: run like /bin/bash ${0} pathto/.env ENV_NAME_WITH_FLAG /bin/bash something_to_run.sh param1 param2 ..."; } 2>&3
 
     exit 1
 fi
 
-ENVFILE="$1";
+ENVFILE="${1}";
 
-if [ ! -f "$ENVFILE" ]; then
+if [ ! -f "${ENVFILE}" ]; then
 
-    ENVFILE="$_DIR/$1";
+    ENVFILE="${_DIR}/$1";
 
     if [ ! -f "$ENVFILE" ]; then
 
