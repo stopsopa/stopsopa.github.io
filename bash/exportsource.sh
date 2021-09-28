@@ -36,7 +36,7 @@ do
 
     __ENV_VAR_LIST_EXISTING+=("${___ENV}")
   fi
-done <<< "$(printenv | awk 'BEGIN {FS="="}{print ${1}}')"
+done <<< "$(printenv | awk 'BEGIN {FS="="}{print $1}')"
 
 #echo "existing >>${__ENV_VAR_LIST_EXISTING[@]}<<"
 

@@ -7,9 +7,9 @@
 # /bin/bash kill.sh flag-name $$ something-else-to-ignore "and something else to ignore"
 
 # alternatively as a oneliner
-# ps aux | grep "jfkdsjlkfjdskljfkdsjf" | grep -v grep | awk '{print ${2}}' | xargs kill
+# ps aux | grep "jfkdsjlkfjdskljfkdsjf" | grep -v grep | awk '{print $2}' | xargs kill
 # or more aggressively
-# ps aux | grep "jfkdsjlkfjdskljfkdsjf" | grep -v grep | awk '{print ${2}}' | xargs kill -9
+# ps aux | grep "jfkdsjlkfjdskljfkdsjf" | grep -v grep | awk '{print $2}' | xargs kill -9
 
 
 set -e
