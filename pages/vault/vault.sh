@@ -1,12 +1,16 @@
 
-_SHELL="$(ps $$ | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
-if [ "${_SHELL}" = "/bin/zsh" ]; then
-
-  _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
-else
-
-  _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
-fi
+_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
+case ${_SHELL} in
+  zsh)
+    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )<"
+    ;;
+  sh)
+    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )<"
+    ;;
+  *)
+    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )<"
+    ;;
+esac
 
 # https://learn.hashicorp.com/tutorials/vault/getting-started-deploy?in=vault/getting-started#seal-unseal
 # target directory where vault should be created
