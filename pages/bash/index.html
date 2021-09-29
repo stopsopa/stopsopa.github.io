@@ -144,19 +144,6 @@ c
 EOF
 # a b c
 
-mkdir ttt
-cd ttt
-touch a
-touch "b c"
-touch e
-find . -print0 | xargs -0 -I % echo ">>%<<"
-cd ..
-rm -rf ttt
-# >>.<<
-# >>./a<<
-# >>./b c<<
-# >>./e<<
-
 # manually use NUL character
 echo -ne 'one\0two\0three four\nsix seven\0end' | xargs -0 -I % echo ">%<"
 # >one<
@@ -215,6 +202,19 @@ find pages -name "*.png" -type f -print0 | xargs -0 tar -cvzf images.tar.gz
 
 # remove all found
 find Downloads -name "DomTerm" -type d -print0 | xargs -0 /bin/rm -v -rf "{}"
+
+mkdir ttt
+cd ttt
+touch a
+touch "b c"
+touch e
+find . -print0 | xargs -0 -I % echo ">>%<<"
+cd ..
+rm -rf ttt
+# >>.<<
+# >>./a<<
+# >>./b c<<
+# >>./e<<
 
                 </script>
                 <h2>debug</h2>
