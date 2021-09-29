@@ -239,6 +239,17 @@ echo -e "\nfind excluding node_modules:"
 find xxxtest -type f ! -path "*/node_modules/*"
 rm -rf xxxtest
 
+# more advanced example with -prune
+# https://unix.stackexchange.com/a/350090
+find . -type d -name 'node_modules' -prune -o -type d -name .git -print
+    # if this is directory and it's name is node_modules then don't enter it and after applying that, to the rest of traversed object use rule:
+    # if this is directory and it's name is .git then print it
+
+    # speed test
+    find . -type d -name .git ! -path "*/node_modules/*"                        0.89s user 19.89s system 43% cpu 47.779 total
+    find . -type d -name .git                                                   0.86s user 19.19s system 40% cpu 49.613 total
+    find . -type d -name 'node_modules' -prune -o -type d -name .git -print     0.08s user 1.55s system 46% cpu 3.515 total
+
 
 
                 </script>
