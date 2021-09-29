@@ -304,6 +304,9 @@ git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD:public index.html | tar 
 git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD: .env.kub | tar -x
 git archive --remote=git@bitbucket.org:xxx/xxx.git feature_branch: .env.kub | tar -x
     # from: https://stackoverflow.com/a/18712703
+    
+# print 'email =' section from each found .git/config file skipping search in node_modules
+while read -r dir ; do echo "${dir}";cat "${dir}/config" | grep 'email =' ; done <<< "$(find . -type d -name 'node_modules' -prune -o -type d -name .git -print)"
 
             </script>
         </div>
