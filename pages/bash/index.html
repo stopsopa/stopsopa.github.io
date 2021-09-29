@@ -216,6 +216,31 @@ rm -rf ttt
 # >>./b c<<
 # >>./e<<
 
+# excluding search in directory node_modules
+# WARNING: Note that unlike with -prune, the directory to be excluded is still traversed.
+mkdir -p xxxtest
+cd xxxtest
+function k {
+    echo ">>${1}"
+    DIR="$(dirname "${1}")"
+    mkdir -p "${DIR}"
+    touch "${1}"
+}
+k "a/b/c.txt"
+k "a/node_modules/c.txt"
+k "a/node_modules/ab/c.txt"
+k "a/node_modules/ab/c/c.txt"
+k "c.txt"
+k "b/c.txt"
+cd ..
+echo -e "\nfind all:"
+find xxxtest
+echo -e "\nfind excluding node_modules:"
+find xxxtest -type f ! -path "*/node_modules/*"
+rm -rf xxxtest
+
+
+
                 </script>
                 <h2>debug</h2>
                 <script type="editor" data-lang="sh">
