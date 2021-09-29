@@ -247,7 +247,10 @@ find . -type d -name 'node_modules' -prune -o -type d -name .git -print
     # speed test against huge directory with many project with many big node_modules directories
     find . -type d -name .git ! -path "*/node_modules/*"                        0.89s user 19.89s system 43% cpu 47.779 total
     find . -type d -name .git                                                   0.86s user 19.19s system 40% cpu 49.613 total
-    find . -type d -name 'node_modules' -prune -o -type d -name .git -print     0.08s user 1.55s system 46% cpu 3.515 total    
+    find . -type d -name 'node_modules' -prune -o -type d -name .git -print     0.08s user 1.55s system 46% cpu 3.515 total 
+    
+    # read more about -prune
+    https://stackoverflow.com/a/4210072
 
                 </script>
                 <h2>debug</h2>
