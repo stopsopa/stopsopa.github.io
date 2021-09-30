@@ -24,13 +24,14 @@ fi
 
 source "${1}";
 
-#FLAG_VARIABLE=${2}
-#echo "$(eval echo "\$${FLAG_VARIABLE}")"
-
 # better way of extracting than using eval:
 # indirect expansion
 # https://stackoverflow.com/a/8515492
 # https://ss64.com/bash/syntax-expand.html
 # g(Shell Parameter Expansion ${ })
 
-echo -n "${!2}"
+# buuuuuu it' doesn't work with zsh :(, revert to eval ...
+
+#echo -n "${!2}"
+
+echo "$(eval echo "\$${2}")"
