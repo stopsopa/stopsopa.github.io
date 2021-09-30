@@ -11,6 +11,13 @@
 # override mode - true
 # eval "$(/bin/bash bash/exportsource.sh .env.test true)"
 
+if [ ! -f "${1}" ]; then
+
+  echo "$0 error: file '${1}' doesn't exist"
+
+  exit 1
+fi
+
 if [ "${2}" = "" ]; then
 
 #https://stackoverflow.com/a/8574392
@@ -28,24 +35,25 @@ containsElement () {
 #$ echo ${?}
 #1
 
-__ENV_VAR_LIST_EXISTING=();
+ENV_VAR_LIST_EXISTING=();
 
 while read -r ___ENV
 do
   if [ "${___ENV}" != "" ] && [ "${!___ENV}" != "" ]; then
 
-    __ENV_VAR_LIST_EXISTING+=("${___ENV}")
+    ENV_VAR_LIST_EXISTING+=("${___ENV}")
   fi
 done <<< "$(printenv | awk 'BEGIN {FS="="}{print $1}')"
 
-#echo "existing >>${__ENV_VAR_LIST_EXISTING[@]}<<"
+#echo "existing >>${ENV_VAR_LIST_EXISTING[@]}<<"
 
 {
 source "${1}"
 
 cat <<EOF
 
-#echo "override: false"
+# echo "override mode: false"
+# eval "\$(/bin/bash "$0" "${1}")"
 
 EOF
 
@@ -53,7 +61,7 @@ while read -r ___ENV
 do
   if [ "${___ENV}" != "" ] && [ "${!___ENV}" != "" ]; then
 
-    containsElement "${___ENV}" "${__ENV_VAR_LIST_EXISTING[@]}"
+    containsElement "${___ENV}" "${ENV_VAR_LIST_EXISTING[@]}"
 
     if [ "${?}" != "0" ]; then
 
@@ -73,7 +81,8 @@ else
 
 cat <<EOF
 
-#echo "override: true"
+# echo "override mode: true"
+# eval "\$(/bin/bash "$0" "${1}" true)"
 
 source "${1}"
 
