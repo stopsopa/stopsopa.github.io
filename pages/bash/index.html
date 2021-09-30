@@ -27,7 +27,7 @@
                 <h2>useful</h2>
                 <script type="editor" data-lang="sh">
 # fix variables in ide                
-\$([^\s"(<{'}/:;\\\.\$#+-]+)
+\$([^\s"(<{'}/:;\\\.\$\(\)#+`-]+)
 \${$1}
                 
 # find .git/config with given git source path                
@@ -144,25 +144,6 @@ c
 EOF
 # a b c
 
-mkdir ttt
-cd ttt
-touch a
-touch "b c"
-touch e
-find . -print0 | xargs -0 -I % echo ">>%<<"
-cd ..
-rm -rf ttt
-# >>.<<
-# >>./a<<
-# >>./b c<<
-# >>./e<<
-
-# find and tar.gz all png files
-find pages -name "*.png" -type f -print0 | xargs -0 tar -cvzf images.tar.gz
-
-# remove all found
-find Downloads -name "DomTerm" -type d -print0 | xargs -0 /bin/rm -v -rf "{}"
-
 # manually use NUL character
 echo -ne 'one\0two\0three four\nsix seven\0end' | xargs -0 -I % echo ">%<"
 # >one<
@@ -215,6 +196,61 @@ find . -type f -not -name '*gz'
 
 # limit depth
 find . -type d -maxdepth 1
+
+# find and tar.gz all png files
+find pages -name "*.png" -type f -print0 | xargs -0 tar -cvzf images.tar.gz
+
+# remove all found
+find Downloads -name "DomTerm" -type d -print0 | xargs -0 /bin/rm -v -rf "{}"
+
+mkdir ttt
+cd ttt
+touch a
+touch "b c"
+touch e
+find . -print0 | xargs -0 -I % echo ">>%<<"
+cd ..
+rm -rf ttt
+# >>.<<
+# >>./a<<
+# >>./b c<<
+# >>./e<<
+
+# excluding search in directory node_modules
+# WARNING: Note that unlike with -prune, the directory to be excluded is still traversed.
+mkdir -p xxxtest
+cd xxxtest
+function k {
+    echo ">>${1}"
+    DIR="$(dirname "${1}")"
+    mkdir -p "${DIR}"
+    touch "${1}"
+}
+k "a/b/c.txt"
+k "a/node_modules/c.txt"
+k "a/node_modules/ab/c.txt"
+k "a/node_modules/ab/c/c.txt"
+k "c.txt"
+k "b/c.txt"
+cd ..
+echo -e "\nfind all:"
+find xxxtest
+echo -e "\nfind excluding node_modules:"
+find xxxtest -type f ! -path "*/node_modules/*"
+rm -rf xxxtest
+
+# more advanced example with -prune
+# https://unix.stackexchange.com/a/350090
+find . -type d -name 'node_modules' -prune -o -type d -name .git -print
+    # if this is directory and it's name is node_modules then don't enter it, otherwise, if this is directory and it's name is .git, print it's pathname
+
+    # speed test against huge directory with many project with many big node_modules directories
+    find . -type d -name .git ! -path "*/node_modules/*"                        0.89s user 19.89s system 43% cpu 47.779 total
+    find . -type d -name .git                                                   0.86s user 19.19s system 40% cpu 49.613 total
+    find . -type d -name 'node_modules' -prune -o -type d -name .git -print     0.08s user 1.55s system 46% cpu 3.515 total 
+    
+    # read more about -prune
+    https://stackoverflow.com/a/4210072
 
                 </script>
                 <h2>debug</h2>
@@ -534,7 +570,7 @@ case \${_SHELL} in
 esac
 echo "_ROOT=\${_DIR}"
 EEE
-docker run -it -v "$(pwd):/code" -w "/code" frapsoft/zsh /bin/zsh aaa.sh \
+docker run -it --rm -v "$(pwd):/code" -w "/code" frapsoft/zsh /bin/zsh aaa.sh \
 && docker run -it --rm -v "$(pwd):/code" -w "/code" bash:3.2.57 /usr/local/bin/bash aaa.sh \
 && docker run -it --rm -v "$(pwd):/code" -w "/code" bash:4.4.23 /usr/local/bin/bash aaa.sh \
 && docker run -it --rm --entrypoint="" -v "$(pwd):/code" -w "/code" bash:5.1.8 /usr/local/bin/bash aaa.sh \
