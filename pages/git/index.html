@@ -250,6 +250,8 @@
             <a href="https://github.com/tj/git-extras/blob/master/Commands.md">https://github.com/tj/git-extras/blob/master/Commands.md</a>
         </div>
         <div class="cards">
+            <h2>Merge Strategies</h2>
+            <a href="https://stackoverflow.com/a/52157972">https://stackoverflow.com/a/52157972</a>
             <h2>Basic operations</h2>
             <script type="editor" data-lang="sh">
 
@@ -304,6 +306,27 @@ git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD:public index.html | tar 
 git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD: .env.kub | tar -x
 git archive --remote=git@bitbucket.org:xxx/xxx.git feature_branch: .env.kub | tar -x
     # from: https://stackoverflow.com/a/18712703
+    
+# print 'email =' section from each found .git/config file skipping search in node_modules
+while read -r dir ; do echo "${dir}";cat "${dir}/config" | grep 'email =' ; done <<< "$(find . -type d -name 'node_modules' -prune -o -type d -name .git -print)"
+
+# automated fix script for above 
+cat <<EEE > fix.sh
+LIST=\$(cat <<END
+./path/to/directory/.git
+./path/to/directory2/.git
+END
+); 
+while read -r line
+do 
+  (
+    cd "\$(dirname "\${line}")"
+    git config user.email email@gmail.com && cat .git/config
+  )
+done <<< "\${LIST}"
+EEE
+/bin/bash fix.sh
+rm -rf fix.sh
 
             </script>
         </div>
