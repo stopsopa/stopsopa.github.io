@@ -570,7 +570,7 @@ case \${_SHELL} in
 esac
 echo "_ROOT=\${_DIR}"
 EEE
-docker run -it -v "$(pwd):/code" -w "/code" frapsoft/zsh /bin/zsh aaa.sh \
+docker run -it --rm -v "$(pwd):/code" -w "/code" frapsoft/zsh /bin/zsh aaa.sh \
 && docker run -it --rm -v "$(pwd):/code" -w "/code" bash:3.2.57 /usr/local/bin/bash aaa.sh \
 && docker run -it --rm -v "$(pwd):/code" -w "/code" bash:4.4.23 /usr/local/bin/bash aaa.sh \
 && docker run -it --rm --entrypoint="" -v "$(pwd):/code" -w "/code" bash:5.1.8 /usr/local/bin/bash aaa.sh \
