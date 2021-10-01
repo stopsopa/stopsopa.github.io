@@ -1,5 +1,5 @@
 
-_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
+_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
 case ${_SHELL} in
   zsh)
     _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"

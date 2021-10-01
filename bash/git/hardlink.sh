@@ -18,7 +18,7 @@ function yellow {
     printf "\e[33m$1\e[0m"
 }
 
-_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
+_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
 case ${_SHELL} in
   zsh)
     _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
