@@ -540,7 +540,7 @@ done <<< "${LIST}"
 # grep "^$USER" /etc/passwd – Print the default shell name. The default shell runs when you open a terminal window.
 
 # current shell name reliably
-_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
+_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
 case ${_SHELL} in
   zsh)
     _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
@@ -555,7 +555,7 @@ esac
 
 # test of above
 cat <<EEE > aaa.sh
-_SHELL="\$(ps "\${\$}" | grep "\${\$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh).*/\1/p")"; # bash || sh || zsh
+_SHELL="\$(ps "\${\$}" | grep "\${\$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
 echo "====\${_SHELL}:\$(if [ "\${_SHELL}" = "sh" ]; then echo sh; else \${_SHELL} --version; fi | head -n 1)===="
 case \${_SHELL} in
   zsh)
