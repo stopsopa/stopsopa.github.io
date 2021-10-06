@@ -1940,7 +1940,7 @@ module.exports = (cmd, opt) => new Promise((resolve, reject) => {
       throw th(`cmd is an empty string`);
     }
 
-    cmd = commandb.split(/\s+/);
+    cmd = cmd.split(/\s+/);
   }
 
   if ( ! Array.isArray(cmd) ) {
