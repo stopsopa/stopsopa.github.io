@@ -69,13 +69,21 @@ http://sublimetext.info/docs/en/reference/key_bindings.html#modifiers
 	
 		user shortcuts (Sublime Text -> Preferences -> Key Bindings):
 [	
-	{ "keys": ["super+shift+down"], "command": "duplicate_line" },
-	{ "keys": ["shift+alt+up"], "command": "swap_line_up" },
-	{ "keys": ["shift+alt+down"], "command": "swap_line_down" },
-    { "keys": [ "super+b" ], "command": "pretty_json" },
-    { "keys": [ "super+shift+b" ], "command": "un_pretty_json" },
-    	{ "keys": ["shift+super+ctrl+alt+r"], "command": "show_overlay", "args": {"overlay": "goto", "text": "@"} },
-    { "keys": ["super+r"], "command": "show_panel", "args": {"panel": "replace", "reverse": false} },
+    { "keys": ["super+shift+down"], "command": "duplicate_line" },
+    { "keys": ["shift+alt+up"],     "command": "swap_line_up" },
+    { "keys": ["shift+alt+down"],   "command": "swap_line_down" },
+    { "keys": ["super+b"],          "command": "pretty_json" },
+    { "keys": ["super+shift+b"],    "command": "un_pretty_json" },
+    {
+        "keys": ["shift+super+ctrl+alt+r"],
+        "command": "show_overlay",
+        "args": {"overlay": "goto", "text": "@"}
+    },
+    {
+        "keys": ["super+r"],
+        "command": "show_panel",
+        "args": {"panel": "replace", "reverse": false}
+    },
 ]
                 
                 
@@ -107,10 +115,26 @@ test sample
                 </script>
             <div class="card">
                 <h3>Default syntax</h3>
-		    <a href="https://packagecontrol.io/packages/Default%20File%20Type">https://packagecontrol.io/packages/Default%20File%20Type</a>
-                
-		    <br />
-		    <a href="https://forum.sublimetext.com/t/default-syntax-on-3-1-1/37666/2">https://forum.sublimetext.com/t/default-syntax-on-3-1-1/37666/2</a>
+                <script type="editor" data-lang="sh">
+
+# Install plugin itself following section "Without Package Control" on the home page:
+https://packagecontrol.io/packages/Default%20File%20Type
+
+# then
+# Preferences -> Browser Packages
+# this will reveal where sublime is installed
+# go to this directory in bash and enter there directory Packages/Users and execute
+cat <<EOF > default_file_type.sublime-settings
+{
+  "default_new_file_syntax" : "Packages/Python/Python.tmLanguage",
+  "use_current_file_syntax" : false
+}
+EOF
+# restart sublime
+# You might still need to switch syntax for already opened files
+
+                </script>
+                <a href="https://forum.sublimetext.com/t/default-syntax-on-3-1-1/37666/2">https://forum.sublimetext.com/t/default-syntax-on-3-1-1/37666/2</a>
             </div>
             </div>
         </div>
