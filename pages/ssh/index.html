@@ -54,6 +54,9 @@ ssh-keygen -t rsa -b 4096 -C "dev+build@myorg.com"
     # from: https://buildkite.com/docs/agent/v3/ssh-keys#creating-a-single-ssh-key
     # g(Buildkite Agent SSH Keys Creating a single SSH key)
     
+ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa
+    # generate key without prompt
+    
 ssh-keyscan "<host>" >> "~/.ssh/known_hosts"
     # from: https://buildkite.com/docs/agent/v3/securing#disabling-automatic-ssh-keyscan
 
