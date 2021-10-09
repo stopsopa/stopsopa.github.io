@@ -1,4 +1,26 @@
-<!doctype html>
+<!--
+
+WARNING: 
+File was created by /bin/bash template.sh template engine.
+Edit template instead of this file
+WARNING: 
+
+WARNING: 
+File was created by /bin/bash template.sh template engine.
+Edit template instead of this file
+WARNING: 
+
+WARNING: 
+File was created by /bin/bash template.sh template engine.
+Edit template instead of this file
+WARNING: 
+
+WARNING: 
+File was created by /bin/bash template.sh template engine.
+Edit template instead of this file
+WARNING: 
+
+--><!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +30,7 @@
     <title>stopsopa.github.io</title>
     <script src="/js/github.js"></script>
 </head>
-<body class="layout">
+<body class="layout" toc>
 
     <div class="body">
         <div class="inside">
@@ -16,7 +38,176 @@
             <div class="cards">
 
                 <h2>Jira create ticket - script to widen "Project" dropdown</h2>
-                <a href="javascript:var k = !function(){!function(){try{console.log}catch(n){return}}();function t(n,t){t=t||{};var e=document.createElement('div');e.style.position='fixed';e.style.zIndex='10000000';e.style.top='20%';e.style.left='50%';e.style.border='1px solid gray';e.style.backgroundColor='white';e.style.transform='translate(-50%, -50%)';e.style.padding='10px';t.minHeight&&(e.style.minHeight=t.minHeight);e.style.cursor='pointer';e.innerText=String(n);document.body.appendChild(e);function o(){document.body.removeChild(e)}t.t?setTimeout(o,Number.isInteger(t.t)?t.t:1e3):e.addEventListener('click',o)}try{var n=function(n,t){var e=(t=t||document).querySelector(n);if(!e)throw new Error('cant find element by selector: '+n);return e}('#project-field');n.style.maxWidth='none';n.parentNode.style.maxWidth='none';t('All good',{t:200})}catch(n){t(n,{minHeight:'200'})}}();">jira-create</a>
+                <a href="javascript:var k = !(function () {%22use strict%22;!function(){!function(){try{console.log}catch(t){return}}();function n(t,n){n=n||{};var e=document.createElement(%22div%22);e.style.position=%22fixed%22;e.style.zIndex=%2210000000%22;e.style.top=%2220%%22;e.style.left=%2250%%22;e.style.border=%221px solid gray%22;e.style.backgroundColor=%22white%22;e.style.transform=%22translate(-50%, -50%)%22;e.style.padding=%2210px%22;n.minHeight&&(e.style.minHeight=n.minHeight);e.style.cursor=%22pointer%22;e.innerText=String(t);document.body.appendChild(e);function o(){document.body.removeChild(e)}n.t?setTimeout(o,Number.isInteger(n.t)?n.t:1e3):e.addEventListener(%22click%22,o)}try{var t=function(t,n){var e=(n=n||document).querySelector(t);if(!e)throw new Error(%22cant find element by selector: %22+t);return e}(%22#project-field%22);t.style.maxWidth=%22none%22;t.parentNode.style.maxWidth=%22none%22;n(%22All good%22,{t:200})}catch(t){n(t,{minHeight:%22200%22})}}();}())">Jira wide project dropdown - bookmarklet</a>
+                <br />
+                source:
+                <script type="editor" data-lang="js">
+(function () {
+
+    var log = (function () {
+        try {
+
+            return console.log;
+        }
+        catch (e) {
+
+            return function () {}
+        }
+    }());
+
+    var find = function (selector, parent) {
+
+        if ( !parent) {
+
+            parent = document;
+        }
+
+        var tmp= parent.querySelector(selector);
+
+        if ( ! tmp ) {
+
+            throw new Error('cant find element by selector: ' + selector);
+        }
+
+        return tmp;
+    }
+
+    function box(content, opt) {
+
+        if ( ! opt ) {
+
+            opt = {};
+        }
+
+        var div = document.createElement('div');
+
+        div.style.position = 'fixed';
+        div.style.zIndex = '10000000';
+        div.style.top = '20%';
+        div.style.left = '50%';
+        div.style.border = '1px solid gray';
+        div.style.backgroundColor = 'white';
+        div.style.transform = 'translate(-50%, -50%)';
+        div.style.padding = '10px';
+        opt.minHeight && (div.style.minHeight = opt.minHeight);
+        div.style.cursor = 'pointer'
+
+        div.innerText = String(content);
+
+        document.body.appendChild(div);
+
+        var close = function () {
+            document.body.removeChild(div);
+        };
+
+        if (opt.autoclose) {
+
+            setTimeout(close, Number.isInteger(opt.autoclose) ? opt.autoclose : 1000);
+        }
+        else {
+
+            div.addEventListener('click', close);
+        }
+    }
+
+    try {
+
+        var doc = find('#project-field');
+
+        doc.style.maxWidth = 'none';
+
+        var parent = doc.parentNode;
+
+        parent.style.maxWidth = 'none';
+
+        box("All good", {autoclose: 200});
+    }
+    catch (e) {
+
+        box(e, {minHeight: '200'});
+    }
+}());
+                </script>
+
+                <h2>Jenkins: Blueocean redirect</h2>
+                <a href="javascript:var k = !(function () {%22use strict%22;console.log;!function(e){var t=e.match(/^(https?:\/\/[^\/]+\/)(?:blue\/organizations\/jenkins\/)(.*?)\/detail\/(.*?)(?:\/[^\/]+)\/*$/);if(!Array.isArray(t)||4!==t.length)return function(e,t){t=t||{};var n=document.createElement(%22div%22);n.style.position=%22fixed%22;n.style.zIndex=%2210000000%22;n.style.top=%2220%%22;n.style.left=%2250%%22;n.style.border=%221px solid gray%22;n.style.backgroundColor=%22white%22;n.style.transform=%22translate(-50%, -50%)%22;n.style.padding=%2210px%22;t.minHeight&&(n.style.minHeight=t.minHeight);n.style.cursor=%22pointer%22;n.innerText=String(e);document.body.appendChild(n);function o(){document.body.removeChild(n)}t.t?setTimeout(o,Number.isInteger(t.t)?t.t:1e3):n.addEventListener(%22click%22,o)}(%22Can't disassemble input url%22,{t:2e3});var n=decodeURIComponent(t[2]).replace(/([^\/]+\/?)/g,%22job/$1%22);location.href=%22%22.concat(t[1]).concat(n,%22/view/change-requests/job/%22).concat(t[3],%22/console%22)}(location.href);}())">Blueocean - bookmark</a>
+                source:
+                <script type="editor" data-lang="js">
+
+var url = 'https://domain.com/blue/organizations/jenkins/ZSRR%2Fmango%2Fseparate%2Fproject/detail/PR-67/12/pipeline';
+
+var target = 'https://domain.com/job/ZSRR/job/mango/job/separate/job/project/view/change-requests/job/PR-67/12/console';
+
+var log = console.log;
+
+function box(content, opt) {
+
+  if ( ! opt ) {
+
+    opt = {};
+  }
+
+  var div = document.createElement('div');
+
+  div.style.position = 'fixed';
+  div.style.zIndex = '10000000';
+  div.style.top = '20%';
+  div.style.left = '50%';
+  div.style.border = '1px solid gray';
+  div.style.backgroundColor = 'white';
+  div.style.transform = 'translate(-50%, -50%)';
+  div.style.padding = '10px';
+  opt.minHeight && (div.style.minHeight = opt.minHeight);
+  div.style.cursor = 'pointer'
+
+  div.innerText = String(content);
+
+  document.body.appendChild(div);
+
+  var close = function () {
+    document.body.removeChild(div);
+  };
+
+  if (opt.autoclose) {
+
+    setTimeout(close, Number.isInteger(opt.autoclose) ? opt.autoclose : 1000);
+  }
+  else {
+
+    div.addEventListener('click', close);
+  }
+}
+
+function transform(url) {
+
+  var m = url.match(/^(https?:\/\/[^\/]+\/)(?:blue\/organizations\/jenkins\/)(.*?)\/detail\/(.*?)(?:\/[^\/]+)\/*$/);
+
+  if ( ! Array.isArray(m) ||  m.length !== 4) {
+
+    return box(`Can't disassemble input url`, {autoclose: 2000});
+  }
+
+  var d = decodeURIComponent(m[2]).replace(/([^\/]+\/?)/g, 'job/$1');
+
+// {
+//   l: 4,
+//   m: [
+//     'https://domain.com/blue/organizations/jenkins/ZSRR%2Fmango%2Fseparate%2Fproject/detail/PR-67/12/pipeline',
+//     'https://domain.com/',
+//     'ZSRR%2Fmango%2Fseparate%2Fproject',
+//     'PR-67/12',
+//     index: 0,
+//     input: 'https://domain.com/blue/organizations/jenkins/ZSRR%2Fmango%2Fseparate%2Fproject/detail/PR-67/12/pipeline',
+//     groups: undefined
+//   ],
+//   d: 'job/ZSRR/job/mango/job/separate/job/project'
+// }
+
+  location.href = `${m[1]}${d}/view/change-requests/job/${m[3]}/console`;
+}
+
+transform(location.href);
+                </script>
             </div>
         </div>
     </div>
