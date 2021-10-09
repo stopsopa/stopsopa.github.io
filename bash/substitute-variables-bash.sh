@@ -26,6 +26,7 @@ EOF
 /bin/bash "${0}" abc.sh --commented "# @xxx" -- ABC "[]-.mmm*" BCD "-mmmm" VAR "changed"
 
 --commented   tells to change only lines with this comment
+  default is "# @substitute"
 
 EEE
 

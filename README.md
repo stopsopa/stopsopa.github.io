@@ -104,7 +104,26 @@
         </div>
     </body>
     </html>
-    
+
+# uglify
+
+If anywhere in the repository file *.uglify.js will be created it will be processed with babel and next by uglifyjs and exported as *.uglify.min.js
+
+For details look to uglify.js
+
+# templating engine
+
+If you create file *.template.html anywhere in the project during build it will be found and file *.html will be generate right next to original *.template.html.
+
+In template file listed placeholders will be processed:
+
+<%url path/to/file/in/repository.js %> - will import file in-place and replace each " to %22
+
+<%inject path/to/file/in/respository.js %> - will be imported in-place as is
+
+For details look to template.sh    
+
+
 # other   
 
 http://httpd.pl/stopsopa.github.io/index.html
