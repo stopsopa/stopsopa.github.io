@@ -1570,7 +1570,7 @@ module.exports = function (url, opt = {}) {
               }
               catch (e) {
 
-                reject(th(`JSON.parse(response body) error: ${e}`))
+                reject(th(`JSON.parse(response body) error: ${e}, body: >>${body}<<`))
               }
             }
 
