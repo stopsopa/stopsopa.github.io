@@ -103,6 +103,14 @@ cat <<EOF | docker run -i --name test --rm alpine:3.14.2 /bin/sh
 echo a b c | awk '{print \$2}'
 EOF
 
+cat <<EOF | docker build --progress=plain -t project:node-multi_tl -
+FROM node:14.17.4-alpine AS base_stage
+ENV TEST_ENV="test..."
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]
+EOF
+docker run -it project:node-multi_tl
+
                 </script>
 
                 <h2>Docker registry urls</h2>
