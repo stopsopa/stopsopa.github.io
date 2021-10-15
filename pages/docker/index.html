@@ -106,7 +106,6 @@ EOF
 cat <<EOF | docker build --progress=plain -t project:node-multi_tl -
 FROM node:14.17.4-alpine AS base_stage
 ENV TEST_ENV="test..."
-
 ENTRYPOINT ["tail", "-f", "/dev/null"]
 EOF
 docker run -it project:node-multi_tl
