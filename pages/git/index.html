@@ -450,7 +450,10 @@ git rev-list --objects --all \
         <div class="cards">
             <h2>git config</h2>
             <script type="editor" data-lang="sh">
-                 
+
+git config -e
+git config --global -e
+
 git config --global -l | egrep "(user\.name|user\.email)"
 
 git config --global core.fileMode false
