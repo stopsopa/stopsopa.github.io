@@ -484,6 +484,50 @@ alias sdz="git config user.email xxx@gmail.com && cat .git/config"
 
             </script>
             <a href="https://github.com/stopsopa/gitstorage">github</a>
+            <h2>tig</h2>
+            <a href="https://jonas.github.io/tig/doc/tig.1.html#_examples">https://jonas.github.io/tig/doc/tig.1.html#_examples</a>
+            <br />
+            <a href="https://linux.die.net/man/5/tigrc">https://linux.die.net/man/5/tigrc</a>
+            <script type="editor" data-lang="sh">
+
+# mac, tig version tig-2.5.4
+
+tig --all
+
+tig refs
+
+tig master..develop
+    
+tig master..origin/feat/DF
+  # show what would be brought to the master if we would try to merge origin/feat/DF with it
+  
+# run
+   tig
+# and then press
+   h
+# to see full help   
+
+cat <<EOF > ~/.tigrc
+set main-options = --exclude=refs/stash --all
+set horizontal-scroll = 10%
+
+set main-view-commit-title-overflow = 50
+set main-view = line-number:yes,interval=1 id:yes date:default author:full commit-title:yes,graph,refs,overflow=yes
+set line-graphics = utf-8
+    # from: https://fossies.org/diffs/tig/2.4.1_vs_2.5.0/tigrc-diff.html
+
+#set main-view-date = custom
+#set main-view-date-format = "%Y-%m-%d %H:%M"
+    # from: man tigrc
+
+EOF
+
+  # see more help (press "h" after entering tig) section "Option toggling:"
+  # or https://jonas.github.io/tig/doc/manual.html
+  # or man tigrc
+  # and more: https://fossies.org/diffs/tig/2.4.1_vs_2.5.0/tigrc-diff.html
+
+            </script>
         </div>
     </div>
 
