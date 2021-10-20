@@ -813,7 +813,10 @@ echo "++$STRING_VARIABLE++"   # ++23:45:34:1:2:3:++     WARNING: WATCH OUT - LAS
 
                 
                 <script type="editor" data-lang="sh">
+# only in bash
+for i in {0..256}; do printf "\e[${i}m\\\\e[${i}m\e[0m ";if [ 256 == ${i} ]; then echo "color"; fi; done
 
+printf "start\e[94mtest\e[0mend\n"
 printf "start\033[32mtest\e[0mend\n"
 
                 </script>
