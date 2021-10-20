@@ -819,6 +819,12 @@ for i in {0..256}; do printf "\e[${i}m\\\\e[${i}m\e[0m ";if [ 256 == ${i} ]; the
 printf "start\e[94mtest\e[0mend\n"
 printf "start\033[32mtest\e[0mend\n"
 
+# removing colors from stream
+
+for i in {0..256}; do printf "\e[${i}m\\\\e[${i}m\e[0m ";if [ 256 == ${i} ]; then echo "color"; fi; done | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"
+
+for i in {0..256}; do printf "\e[${i}m\\\\e[${i}m\e[0m ";if [ 256 == ${i} ]; then echo "color"; fi; done | sed 's/\x1b\[[0-9;]*m//g'
+
                 </script>
                 
                 WARNING: MIGHT BE NECESSARY ON MAC TO FIRST INSTALL: 
