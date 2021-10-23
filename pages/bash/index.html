@@ -544,12 +544,18 @@ _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?s
 case ${_SHELL} in
   zsh)
     _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+    _SCRIPT="${(%):-%N}"
+    _BINARY="/bin/zsh"
     ;;
   sh)
     _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+    _SCRIPT="${0}"
+    _BINARY="/bin/sh"
     ;;
   *)
     _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+    _SCRIPT="${BASH_SOURCE[0]}"
+    _BINARY="/bin/bash"
     ;;
 esac
 
@@ -560,22 +566,29 @@ echo "====\${_SHELL}:\$(if [ "\${_SHELL}" = "sh" ]; then echo sh; else \${_SHELL
 case \${_SHELL} in
   zsh)
     _DIR="\$( cd "\$( dirname "\${(%):-%N}" )" && pwd -P )"
+    _SCRIPT="\${(%):-%N}"
+    _BINARY="/bin/zsh"
     ;;
   sh)
     _DIR="\$( cd "\$( dirname "\${0}" )" && pwd -P )"
+    _SCRIPT="\${0}"
+    _BINARY="/bin/sh"
     ;;
   *)
     _DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd -P )"
+    _SCRIPT="\${BASH_SOURCE[0]}"
+    _BINARY="/bin/bash"
     ;;
 esac
 echo "_ROOT=\${_DIR}"
+echo "_SCRIPT=\${_SCRIPT}"
+echo "_BINARY=\${_BINARY}"
 EEE
 docker run -it --rm -v "$(pwd):/code" -w "/code" frapsoft/zsh /bin/zsh aaa.sh \
 && docker run -it --rm -v "$(pwd):/code" -w "/code" bash:3.2.57 /usr/local/bin/bash aaa.sh \
 && docker run -it --rm -v "$(pwd):/code" -w "/code" bash:4.4.23 /usr/local/bin/bash aaa.sh \
 && docker run -it --rm --entrypoint="" -v "$(pwd):/code" -w "/code" bash:5.1.8 /usr/local/bin/bash aaa.sh \
 && docker run -it --rm -v "$(pwd):/code" -w "/code" alpine:3.14.2 /bin/sh aaa.sh
-
 
 
 # detect CURRENT USER default shell - that's different than above
