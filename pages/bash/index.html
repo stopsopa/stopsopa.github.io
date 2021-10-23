@@ -47,16 +47,31 @@ fi
 '
 
 # basename and file extension
+PD="$(dirname "${FILE}")"
+PB="$(basename "${FILE}")"
 EXTENSION="${PB##*.}"
 FILENAME="${PB%.*}"
-if [ "$FILENAME" = "" ]; then
-
-  FILENAME="$PB"
-  EXTENSION=""
+if [ "${FILENAME}" = "" ]; then
+    FILENAME="${PB}"
+    EXTENSION=""
 fi
-if [ "$FILENAME" = "$PB" ]; then
+if [ "${FILENAME}" = "${PB}" ]; then
+    EXTENSION=""
+fi
 
-  EXTENSION=""
+
+# reading one character in zsh, bash
+{ red "${COUNT} files found (more than ${MAX}), are you sure you want to include them to other libraries them? (y|n)\n"; } 2>&3
+if [ "${_BINARY}" = "/bin/zsh" ]; then
+  read -sk
+else
+  read -n 1
+fi
+echo "REPLY=$REPLY"
+echo    # (optional) move to a new line
+if ! [[ $REPLY =~ ^[Yy]$ ]]; then
+  { green "script stopped"; } 2>&3
+  exit 1
 fi
 
                 </script>
@@ -544,12 +559,18 @@ _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?s
 case ${_SHELL} in
   zsh)
     _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+    _SCRIPT="${(%):-%N}"
+    _BINARY="/bin/zsh"
     ;;
   sh)
     _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+    _SCRIPT="${0}"
+    _BINARY="/bin/sh"
     ;;
   *)
     _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+    _SCRIPT="${BASH_SOURCE[0]}"
+    _BINARY="/bin/bash"
     ;;
 esac
 
@@ -560,22 +581,29 @@ echo "====\${_SHELL}:\$(if [ "\${_SHELL}" = "sh" ]; then echo sh; else \${_SHELL
 case \${_SHELL} in
   zsh)
     _DIR="\$( cd "\$( dirname "\${(%):-%N}" )" && pwd -P )"
+    _SCRIPT="\${(%):-%N}"
+    _BINARY="/bin/zsh"
     ;;
   sh)
     _DIR="\$( cd "\$( dirname "\${0}" )" && pwd -P )"
+    _SCRIPT="\${0}"
+    _BINARY="/bin/sh"
     ;;
   *)
     _DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd -P )"
+    _SCRIPT="\${BASH_SOURCE[0]}"
+    _BINARY="/bin/bash"
     ;;
 esac
 echo "_ROOT=\${_DIR}"
+echo "_SCRIPT=\${_SCRIPT}"
+echo "_BINARY=\${_BINARY}"
 EEE
 docker run -it --rm -v "$(pwd):/code" -w "/code" frapsoft/zsh /bin/zsh aaa.sh \
 && docker run -it --rm -v "$(pwd):/code" -w "/code" bash:3.2.57 /usr/local/bin/bash aaa.sh \
 && docker run -it --rm -v "$(pwd):/code" -w "/code" bash:4.4.23 /usr/local/bin/bash aaa.sh \
 && docker run -it --rm --entrypoint="" -v "$(pwd):/code" -w "/code" bash:5.1.8 /usr/local/bin/bash aaa.sh \
 && docker run -it --rm -v "$(pwd):/code" -w "/code" alpine:3.14.2 /bin/sh aaa.sh
-
 
 
 # detect CURRENT USER default shell - that's different than above
@@ -813,8 +841,17 @@ echo "++$STRING_VARIABLE++"   # ++23:45:34:1:2:3:++     WARNING: WATCH OUT - LAS
 
                 
                 <script type="editor" data-lang="sh">
+# only in bash
+for i in {0..256}; do printf "\e[${i}m\\\\e[${i}m\e[0m ";if [ 256 == ${i} ]; then echo "color"; fi; done
 
+printf "start\e[94mtest\e[0mend\n"
 printf "start\033[32mtest\e[0mend\n"
+
+# removing colors from stream
+
+for i in {0..256}; do printf "\e[${i}m\\\\e[${i}m\e[0m ";if [ 256 == ${i} ]; then echo "color"; fi; done | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"
+
+for i in {0..256}; do printf "\e[${i}m\\\\e[${i}m\e[0m ";if [ 256 == ${i} ]; then echo "color"; fi; done | sed 's/\x1b\[[0-9;]*m//g'
 
                 </script>
                 

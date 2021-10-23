@@ -450,7 +450,10 @@ git rev-list --objects --all \
         <div class="cards">
             <h2>git config</h2>
             <script type="editor" data-lang="sh">
-                 
+
+git config -e
+git config --global -e
+
 git config --global -l | egrep "(user\.name|user\.email)"
 
 git config --global core.fileMode false
@@ -481,6 +484,95 @@ alias sdz="git config user.email xxx@gmail.com && cat .git/config"
 
             </script>
             <a href="https://github.com/stopsopa/gitstorage">github</a>
+            <h2>tig</h2>
+            <a href="https://jonas.github.io/tig/doc/tig.1.html#_examples">https://jonas.github.io/tig/doc/tig.1.html#_examples</a>
+            <br />
+            <a href="https://linux.die.net/man/5/tigrc">https://linux.die.net/man/5/tigrc</a>
+            <br />
+            <a href="https://github.com/jonas/tig/blob/master/tigrc">https://github.com/jonas/tig/blob/master/tigrc</a>
+            <br />
+            <a href="https://www.youtube.com/watch?v=z0mb0NteYjg">https://www.youtube.com/watch?v=z0mb0NteYjg</a>
+            <script type="editor" data-lang="sh">
+
+# mac, tig version tig-2.5.4
+
+tig --all
+
+tig refs
+
+tig master..develop
+    
+tig master..origin/feat/DF
+  # show what would be brought to the master if we would try to merge origin/feat/DF with it
+  
+# run
+   tig
+# and then press
+   h
+# to see full help   
+
+cat <<EOF > ~/.tigrc
+set main-options = --exclude=refs/stash --all
+    # https://stackoverflow.com/a/25976240
+    
+set horizontal-scroll = 10%
+
+set main-view-commit-title-overflow = 50
+set main-view = line-number:yes,interval=1 id:yes date:default author:full commit-title:yes,graph,refs,overflow=yes
+set line-graphics = utf-8
+    # from: https://fossies.org/diffs/tig/2.4.1_vs_2.5.0/tigrc-diff.html
+
+color main-head         yellow blue    default 
+
+bind stash  a   ?git stash apply %(stash)
+bind generic    p   view-pager
+bind stash  p   ?git stash pop %(stash)
+
+#set main-view-date = custom
+#set main-view-date-format = "%Y-%m-%d %H:%M"
+    # from: man tigrc  
+    
+bind generic   <PageUp>   move-half-page-up   
+bind generic   <PageDown>   move-half-page-down   
+    
+    # inspired by https://github.com/jonas/tig/blob/master/contrib/vim.tigrc vvv
+bind generic v  none
+bind generic vm view-main
+bind generic vd view-diff
+bind generic vl view-log
+bind generic vt view-tree
+bind generic vb view-blob
+bind generic vx view-blame
+bind generic vr view-refs
+bind generic vs view-status
+bind generic vu view-stage
+bind generic vy view-stash
+bind generic vg view-grep
+bind generic vp view-pager
+bind generic vh view-help
+
+bind generic g  none
+bind generic gg move-first-line
+
+bind main    G move-last-line
+bind generic G move-last-line
+    # inspired by https://github.com/jonas/tig/blob/master/contrib/vim.tigrc ^^^
+
+EOF
+
+  # see more help (press "h" after entering tig) section "Option toggling:"
+  # or https://jonas.github.io/tig/doc/manual.html
+  # or man tigrc
+  # and more: https://fossies.org/diffs/tig/2.4.1_vs_2.5.0/tigrc-diff.html
+  # default: https://github.com/jonas/tig/blob/master/tigrc
+  
+# how to safe current settings to file
+# https://stackoverflow.com/a/32505815
+:save-options file-name.txt
+
+            </script>
+            wishful thinking:
+            <a href="https://github.com/jonas/tig/issues/406">https://github.com/jonas/tig/issues/406</a>
         </div>
     </div>
 
