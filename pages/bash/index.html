@@ -47,16 +47,16 @@ fi
 '
 
 # basename and file extension
+PD="$(dirname "${FILE}")"
+PB="$(basename "${FILE}")"
 EXTENSION="${PB##*.}"
 FILENAME="${PB%.*}"
-if [ "$FILENAME" = "" ]; then
-
-  FILENAME="$PB"
-  EXTENSION=""
+if [ "${FILENAME}" = "" ]; then
+    FILENAME="${PB}"
+    EXTENSION=""
 fi
-if [ "$FILENAME" = "$PB" ]; then
-
-  EXTENSION=""
+if [ "${FILENAME}" = "${PB}" ]; then
+    EXTENSION=""
 fi
 
                 </script>
