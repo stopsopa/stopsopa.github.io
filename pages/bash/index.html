@@ -74,6 +74,38 @@ if ! [[ $REPLY =~ ^[Yy]$ ]]; then
   exit 1
 fi
 
+
+# pipe stin to function: 
+cat <<FILE > ___test.sh
+function _osht_xmlencode {
+    sed -e 's/\&/\&amp;/g' -e 's/\"/\&quot;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+    # To be painfully explicit  https://stackoverflow.com/a/14009482
+    # cat - | sed -e 's/\&/\&amp;/g' -e 's/\"/\&quot;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+}
+function grephello {
+    grep HELLO
+}
+cat <<EOF | _osht_xmlencode
+VVVVV
+first & and && ;
+second " mid > mid
+almost < near > end
+^^^^^^
+EOF
+cat <<EOF | grephello
+VVVVV
+normal
+xxx HELLO test
+mid
+HELLO
+end
+^^^^^^
+EOF
+FILE
+/bin/bash ___test.sh
+rm -rf ___test.sh
+
+
                 </script>
             <div class="cards">
                 <h2>cli keystrokes</h2>
