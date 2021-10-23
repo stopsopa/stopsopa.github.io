@@ -59,6 +59,21 @@ if [ "${FILENAME}" = "${PB}" ]; then
     EXTENSION=""
 fi
 
+
+# reading one character in zsh, bash
+{ red "${COUNT} files found (more than ${MAX}), are you sure you want to include them to other libraries them? (y|n)\n"; } 2>&3
+if [ "${_BINARY}" = "/bin/zsh" ]; then
+  read -sk
+else
+  read -n 1
+fi
+echo "REPLY=$REPLY"
+echo    # (optional) move to a new line
+if ! [[ $REPLY =~ ^[Yy]$ ]]; then
+  { green "script stopped"; } 2>&3
+  exit 1
+fi
+
                 </script>
             <div class="cards">
                 <h2>cli keystrokes</h2>
