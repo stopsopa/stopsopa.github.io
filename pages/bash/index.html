@@ -74,6 +74,38 @@ if ! [[ $REPLY =~ ^[Yy]$ ]]; then
   exit 1
 fi
 
+
+# pipe stin to function: 
+cat <<FILE > ___test.sh
+function _osht_xmlencode {
+    sed -e 's/\&/\&amp;/g' -e 's/\"/\&quot;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+    # To be painfully explicit  https://stackoverflow.com/a/14009482
+    # cat - | sed -e 's/\&/\&amp;/g' -e 's/\"/\&quot;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+}
+function grephello {
+    grep HELLO
+}
+cat <<EOF | _osht_xmlencode
+VVVVV
+first & and && ;
+second " mid > mid
+almost < near > end
+^^^^^^
+EOF
+cat <<EOF | grephello
+VVVVV
+normal
+xxx HELLO test
+mid
+HELLO
+end
+^^^^^^
+EOF
+FILE
+/bin/bash ___test.sh
+rm -rf ___test.sh
+
+
                 </script>
             <div class="cards">
                 <h2>cli keystrokes</h2>
@@ -561,21 +593,25 @@ case ${_SHELL} in
     _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
     _SCRIPT="${(%):-%N}"
     _BINARY="/bin/zsh"
+    _PWD="$(pwd)"
     ;;
   sh)
     _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
     _SCRIPT="${0}"
     _BINARY="/bin/sh"
+    _PWD="$(pwd)"
     ;;
   *)
     _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
     _SCRIPT="${BASH_SOURCE[0]}"
     _BINARY="/bin/bash"
+    _PWD="$(pwd)"
     ;;
 esac
 
 # test of above
-cat <<EEE > aaa.sh
+mkdir -p aaaa_aaaa/bbb/ccc
+cat <<EEE > aaaa_aaaa/bbb/ccc/ddd.sh
 _SHELL="\$(ps "\${\$}" | grep "\${\$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
 echo "====\${_SHELL}:\$(if [ "\${_SHELL}" = "sh" ]; then echo sh; else \${_SHELL} --version; fi | head -n 1)===="
 case \${_SHELL} in
@@ -583,27 +619,32 @@ case \${_SHELL} in
     _DIR="\$( cd "\$( dirname "\${(%):-%N}" )" && pwd -P )"
     _SCRIPT="\${(%):-%N}"
     _BINARY="/bin/zsh"
+    _PWD="$(pwd)"
     ;;
   sh)
     _DIR="\$( cd "\$( dirname "\${0}" )" && pwd -P )"
     _SCRIPT="\${0}"
     _BINARY="/bin/sh"
+    _PWD="$(pwd)"
     ;;
   *)
     _DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd -P )"
     _SCRIPT="\${BASH_SOURCE[0]}"
     _BINARY="/bin/bash"
+    _PWD="$(pwd)"
     ;;
 esac
 echo "_ROOT=\${_DIR}"
 echo "_SCRIPT=\${_SCRIPT}"
 echo "_BINARY=\${_BINARY}"
+echo "_PWD=\${_PWD}"
 EEE
-docker run -it --rm -v "$(pwd):/code" -w "/code" frapsoft/zsh /bin/zsh aaa.sh \
-&& docker run -it --rm -v "$(pwd):/code" -w "/code" bash:3.2.57 /usr/local/bin/bash aaa.sh \
-&& docker run -it --rm -v "$(pwd):/code" -w "/code" bash:4.4.23 /usr/local/bin/bash aaa.sh \
-&& docker run -it --rm --entrypoint="" -v "$(pwd):/code" -w "/code" bash:5.1.8 /usr/local/bin/bash aaa.sh \
-&& docker run -it --rm -v "$(pwd):/code" -w "/code" alpine:3.14.2 /bin/sh aaa.sh
+docker run -it --rm -v "$(pwd):/code" -w "/code" frapsoft/zsh /bin/zsh aaaa_aaaa/bbb/ccc/ddd.sh \
+&& docker run -it --rm -v "$(pwd):/code" -w "/code" bash:3.2.57 /usr/local/bin/bash aaaa_aaaa/bbb/ccc/ddd.sh \
+&& docker run -it --rm -v "$(pwd):/code" -w "/code" bash:4.4.23 /usr/local/bin/bash aaaa_aaaa/bbb/ccc/ddd.sh \
+&& docker run -it --rm --entrypoint="" -v "$(pwd):/code" -w "/code" bash:5.1.8 /usr/local/bin/bash aaaa_aaaa/bbb/ccc/ddd.sh \
+&& docker run -it --rm -v "$(pwd):/code" -w "/code" alpine:3.14.2 /bin/sh aaaa_aaaa/bbb/ccc/ddd.sh
+rm -rf aaaa_aaaa
 
 
 # detect CURRENT USER default shell - that's different than above
