@@ -123,13 +123,11 @@ fi
 
 if [ -f "${_CWD}/.git/config" ]; then
 
-  echo '.git/config detected, creating helpers directory'
+  { yellow ".git/config detected, creating helpers directory\n"; } 2>&3
 
   mkdir -p helpers
 
   _CWD="${_CWD}/helpers";
-
-  echo;
 fi
 
 CODE="0";
@@ -237,9 +235,16 @@ if [ "${1}" = "link" ]; then
 
   cd "${_CWD}"
 
-  echo;
-
   LIST="$(find . -type f | grep -v "${_SCRIPTBASENAME}")"
+
+  if [[ "${LIST}" = "" ]]; then
+
+    { yellow "nothing to link in directory '${_CWD}'\n"; } 2>&3
+
+    exit 0
+  fi
+
+  echo;
 
   echo -e "${LIST}" | while read FILE ; do
 
