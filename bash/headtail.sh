@@ -17,60 +17,60 @@ trim() {
     echo -n "${var}"
 }
 
-if [ "$#" -lt "2" ]; then
+if [ "${#}" -lt "2" ]; then
 
-    echo -e "\ngive any command to execute like\n\n    /bin/bash $0 40 40 /bin/bash script.sh\n\n"
-
-    exit 1
-fi
-
-HEAD="$1"
-
-if [[ ! "$HEAD" =~ ^[0-9]+$ ]]; then
-
-    echo -e "limit '$HEAD' (first argument) is not a number > 0\n"
+    echo -e "\ngive any command to execute like\n\n    /bin/bash ${0} 40 40 /bin/bash script.sh\n\n"
 
     exit 1
 fi
 
-shift;
+HEAD="${1}"
 
-TAIL="$1"
+if [[ ! "${HEAD}" =~ ^[0-9]+$ ]]; then
 
-if [[ ! "$TAIL" =~ ^[0-9]+$ ]]; then
-
-    echo -e "limit '$TAIL' (second argument) is not a number > 0\n"
+    echo -e "limit '${HEAD}' (first argument) is not a number > 0\n"
 
     exit 1
 fi
 
 shift;
 
-OUT="$($@ 2>&1)"
+TAIL="${1}"
 
-EXITCODE=$?
+if [[ ! "${TAIL}" =~ ^[0-9]+$ ]]; then
 
-LINES="$(echo "$OUT" | wc -l)"
-LINES="$(trim $LINES)"
+    echo -e "limit '${TAIL}' (second argument) is not a number > 0\n"
 
-SUM=$(($HEAD+$TAIL))
+    exit 1
+fi
 
-#echo "LINES=$LINES"
-#echo "SUM=$SUM"
-#echo "OUT=$OUT"
+shift;
 
-if [ "$LINES" -gt "$SUM" ]; then
+OUT="$(${@} 2>&1)"
 
-    printf "$OUT" | head -n $HEAD;
+EXITCODE=${?}
 
-    echo "==== and $(($LINES-$SUM)) lines more ==="
+LINES="$(echo "${OUT}" | wc -l)"
+LINES="$(trim ${LINES})"
 
-    printf "$OUT" | tail -n $TAIL;
+SUM=$((${HEAD+}${TAIL}))
+
+#echo "LINES=${LINES}"
+#echo "SUM=${SUM}"
+#echo "OUT=${OUT}"
+
+if [ "${LINES}" -gt "${SUM}" ]; then
+
+    printf "${OUT}" | head -n ${HEAD};
+
+    echo "==== and $((${LINES}-${SUM})) lines more ==="
+
+    printf "${OUT}" | tail -n ${TAIL};
 else
 
-    printf "$OUT";
+    printf "${OUT}";
 fi
 
 echo ""
 
-exit $EXITCODE
+exit ${EXITCODE}

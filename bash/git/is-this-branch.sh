@@ -1,8 +1,8 @@
 
-# Script to make sure that current branch is $1
+# Script to make sure that current branch is ${1}
 # /bin/bash is-this-branch.sh master
 
-main="$1"
+main="${1}"
 
 THISFILE=${BASH_SOURCE[0]}
 DIR="$( cd "$( dirname "${THISFILE}" )" && pwd -P )"
@@ -12,9 +12,9 @@ source "${DIR}/../colours.sh";
 set -e
 set -x
 
-if [ "$#" -lt 1 ] ; then
+if [ "${#}" -lt 1 ] ; then
 
-    { red "\n[error] At least one argument expected, like: \n\n    /bin/bash $0 \"branch-name\" \n"; } 2>&3
+    { red "\n[error] At least one argument expected, like: \n\n    /bin/bash ${0} \"branch-name\" \n"; } 2>&3
 
     exit 1;
 fi

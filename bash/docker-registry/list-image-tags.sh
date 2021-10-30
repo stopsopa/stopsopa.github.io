@@ -47,14 +47,14 @@ if [ "${_STATUSCODE}" = "200" ]; then
 
   function cleanup {
 
-      unlink "$_TMPJSONFILE";
+      unlink "${_TMPJSONFILE}";
   }
 
   trap cleanup EXIT;
 
-  curl -s -L -H "authorization: Basic $PROTECTED_DOCKER_REGISTRY_BASICAUTH_HEADER" "$PROTECTED_DOCKER_REGISTRY/v2/$1/tags/list" > "$_TMPJSONFILE"
+  curl -s -L -H "authorization: Basic ${PROTECTED_DOCKER_REGISTRY_BASICAUTH_HEADER}" "${PROTECTED_DOCKER_REGISTRY}/v2/${1}/tags/list" > "${_TMPJSONFILE}"
 
-  LIST="$(node "$_ROOT/node/json/get.js" "$_TMPJSONFILE" tags | node "$_ROOT/node/sortsemver.js")";
+  LIST="$(node "${_ROOT}/node/json/get.js" "${_TMPJSONFILE}" tags | node "${_ROOT}/node/sortsemver.js")";
 
   LIST_ARRAY=(${LIST//$'\n'/ })
 
@@ -62,9 +62,9 @@ if [ "${_STATUSCODE}" = "200" ]; then
   do
       _TMP="$(echo "${i}" | sed "s/[][,\"]//g")"
 
-      if [ "$_TMP" != "" ]; then
+      if [ "${_TMP}" != "" ]; then
 
-        echo "$_TMP";
+        echo "${_TMP}";
       fi
   done
 
@@ -73,7 +73,7 @@ if [ "${_STATUSCODE}" = "200" ]; then
   exit 0;
 fi
 
-echo "ERROR: couldn't get list of tags of repository '$1'"
+echo "ERROR: couldn't get list of tags of repository '${1}'"
 
 exit 1
 

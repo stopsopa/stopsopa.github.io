@@ -92,26 +92,26 @@ VER="$(git ls-remote --tags --refs ${REMOTE)}"
 # project-6.4.32-dev - so I'm filtering here last "-dev"
 if [ "${BRANCH}" != "" ]; then
 
-    VER="$(printf "$VER" | grep "\\$BRANCH$")" || true
+    VER="$(printf "${VER}" | grep "\\$BRANCH$")" || true
 fi
 
 #PROJECT_NAME='v'; # for test
 
 # project-6.4.32-dev - so I'm filtering here "project-" from the beginning
-VER="$(printf "$VER" | grep "/$PROJECT_NAME-")" || true
+VER="$(printf "${VER}" | grep "/${PROJECT_NAME}-")" || true
     # test: printf "df /x/proj-9.4.3-dev\n/x/proj8.8.8-dev\n/x/proj-4.5.4-prod" | grep "/proj-" || true
 
 # after this line VER will be equal: >>17a643f754129ef984f6f0c0a04e082719f03745	refs/tags/v0.1.99<<
-VER="$(printf "$VER" | tail -n 1)"
+VER="$(printf "${VER}" | tail -n 1)"
 
-VER="$(printf "$VER" | cut -d '/' -f3)"
+VER="$(printf "${VER}" | cut -d '/' -f3)"
 
-VER="$(trim "$VER")"
+VER="$(trim "${VER}")"
 
-if [ "$VER" = "" ]; then
+if [ "${VER}" = "" ]; then
 
-    VER="$PROJECT_NAME-0.0.0-$BRANCH";
+    VER="${PROJECT_NAME}-0.0.0-${BRANCH}";
 
 fi
 
-printf $VER
+printf ${VER}

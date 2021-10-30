@@ -4,15 +4,15 @@
 
 exec 3<> /dev/null
 function green {
-  printf "\e[32m$1\e[0m\n"
+  printf "\e[32m${1}\e[0m\n"
 }
 
 function red {
-  printf "\e[31m$1\e[0m\n"
+  printf "\e[31m${1}\e[0m\n"
 }
 
 function yellow {
-  printf "\e[33m$1\e[0m\n"
+  printf "\e[33m${1}\e[0m\n"
 }
 
 set -e
@@ -20,7 +20,7 @@ set -e
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
-_CONFIG="$_DIR/gitstorage-config.sh";
+_CONFIG="${_DIR}/gitstorage-config.sh";
 _CREATE="0"
 _FORCE="0"
 _BACKUP="0"
@@ -28,8 +28,8 @@ _RESTORE="0"
 
 PARAMS=""
 
-while (( "$#" )); do
-  case "$1" in
+while (( "${#}" )); do
+  case "${1}" in
     --force)
       _FORCE="1";
       shift;
@@ -39,7 +39,7 @@ while (( "$#" )); do
       shift;
       ;;
     -c|--config)
-      _CONFIG="$2";
+      _CONFIG="${2}";
       shift 2;
       ;;
 
@@ -52,14 +52,14 @@ while (( "$#" )); do
       shift;
       ;;
     -*|--*=) # unsupported flags
-      { red "$0 error: Unsupported flag $1"; } 2>&3
+      { red "${0} error: Unsupported flag ${1}"; } 2>&3
       exit 1;
       ;;
     *) # preserve positional arguments
-      if [ "$PARAMS" = "" ]; then
-          PARAMS="\"$1\""
+      if [ "${PARAMS}" = "" ]; then
+          PARAMS="\"${1}\""
       else
-          PARAMS="$PARAMS \"$1\""
+          PARAMS="${PARAMS} \"${1}\""
       fi
       shift;
       ;;
@@ -83,14 +83,14 @@ GITSTORAGELIST=(
 END
 );
 
-if [ "$_CREATE" = "1" ]; then
+if [ "${_CREATE}" = "1" ]; then
 
   if [ -f gitstorage-config.sh ]; then
 
     { red "\n    file gitstorage-config.sh already exist\n"; } 2>&3
   else
 
-    echo "$CONFIG" > gitstorage-config.sh
+    echo "${CONFIG}" > gitstorage-config.sh
 
     { green "\n    file gitstorage-config.sh created\n"; } 2>&3
   fi
@@ -98,21 +98,21 @@ if [ "$_CREATE" = "1" ]; then
   exit 0;
 fi
 
-if [ "$_CONFIG" = "" ]; then
+if [ "${_CONFIG}" = "" ]; then
 
-  { red "$0 error: --config value can't be empty"; } 2>&3
-
-  exit 1;
-fi
-
-if ! [ -f "$_CONFIG" ]; then
-
-  { red "$0 error: --config file '$_CONFIG' doesn't exist"; } 2>&3
+  { red "${0} error: --config value can't be empty"; } 2>&3
 
   exit 1;
 fi
 
-source "$_CONFIG";
+if ! [ -f "${_CONFIG}" ]; then
+
+  { red "${0} error: --config file '${_CONFIG}' doesn't exist"; } 2>&3
+
+  exit 1;
+fi
+
+source "${_CONFIG}";
 
 
 echo "https://github.com/stopsopa/gitstorage/tree/master/git%40github.secureserver.net:sdzialowski__PEX_dev.git"
@@ -127,27 +127,27 @@ _GITHUB="^git@github"
 
 if [[ ${GITSTORAGESOURCE} =~ ${_GITHUB} ]]; then
 
-  URL="$(echo "$GITSTORAGESOURCE" | sed -E "s/^git@([^:]+):([^\/]+)\/([^\.]+).*/https:\/\/\1\/\2\/\3/")/tree/master/${GITSTORAGETARGETDIR}"
+  URL="$(echo "${GITSTORAGESOURCE}" | sed -E "s/^git@([^:]+):([^\/]+)\/([^\.]+).*/https:\/\/\1\/\2\/\3/")/tree/master/${GITSTORAGETARGETDIR}"
 else
 
-  URL="$(echo "$GITSTORAGESOURCE" | sed -E "s/^git@([^:]+):([^\/]+)\/([^\.]+).*/https:\/\/\1\/\2\/\3/")/raw/master/${GITSTORAGETARGETDIR}"
+  URL="$(echo "${GITSTORAGESOURCE}" | sed -E "s/^git@([^:]+):([^\/]+)\/([^\.]+).*/https:\/\/\1\/\2\/\3/")/raw/master/${GITSTORAGETARGETDIR}"
 fi
 
 # this will check if array exist and it will count it,
 # if it doesn't exist and can't be counted then this will return 0
 _COUNT="${#GITSTORAGELIST[@]}";
 
-if [ $_COUNT -lt 1 ] ; then
+if [ ${_COUNT} -lt 1 ] ; then
 
-  { red "$0 error: list GITSTORAGELIST in config '$_CONFIG' shouldn't be empty"; } 2>&3
+  { red "${0} error: list GITSTORAGELIST in config '${_CONFIG}' shouldn't be empty"; } 2>&3
 
   exit 1;
 fi
 
 # set positional arguments in their proper place
-eval set -- "$PARAMS"
+eval set -- "${PARAMS}"
 
-if [ "$1" = "" ] || [ "$1" = "--help" ]; then
+if [ "${1}" = "" ] || [ "${1}" = "--help" ]; then
 
 cat << EOF
 
@@ -155,24 +155,24 @@ Just create config file gitstorage-config.sh like:
 
   use command
 
-    /bin/bash "$0" --create
+    /bin/bash "${0}" --create
 
   to create it
 
 >>>>>>>
-$CONFIG
+${CONFIG}
 <<<<<<<<
 
 
 and use this script like:
 
-/bin/bash $0 isinsync
-/bin/bash $0 diff
-/bin/bash $0 pull
-/bin/bash $0 push
+/bin/bash ${0} isinsync
+/bin/bash ${0} diff
+/bin/bash ${0} pull
+/bin/bash ${0} push
 
 # you can specify different config
-/bin/bash $0 -c "gitstorage-config.sh"
+/bin/bash ${0} -c "gitstorage-config.sh"
 
 EOF
 
@@ -180,56 +180,56 @@ EOF
   exit 0
 fi
 
-MODE="$1"
+MODE="${1}"
 
 shift;
 
 TEST="^(isinsync|diff|pull|push|backup|restore)$"
 
-if ! [[ $MODE =~ $TEST ]]; then
+if ! [[ ${MODE} =~ ${TEST} ]]; then
 
-  { red "$0 error: mode $MODE don't match pattern $TEST"; } 2>&3
+  { red "${0} error: mode ${MODE} don't match pattern ${TEST}"; } 2>&3
 
   exit 1;
 fi
 
 TEST="^(backup|restore)$"
 
-if [[ $MODE =~ $TEST ]]; then
+if [[ ${MODE} =~ ${TEST} ]]; then
 
-  if [ "$1" = "" ]; then
+  if [ "${1}" = "" ]; then
 
-    { red "$0 error: mode $MODE - directory not specified"; } 2>&3
+    { red "${0} error: mode ${MODE} - directory not specified"; } 2>&3
   fi
 
-  mkdir -p "$1";
+  mkdir -p "${1}";
 fi
 
-_CONFIGDIR="$(dirname "$_CONFIG")"
+_CONFIGDIR="$(dirname "${_CONFIG}")"
 
-if [ $MODE = "backup" ]; then
+if [ ${MODE} = "backup" ]; then
 
-  _TARGETGITDIR="$1"
+  _TARGETGITDIR="${1}"
 
   for index in "${GITSTORAGELIST[@]}"; do
 
     _S="${index%%::*}"
 
-    if [ -f "$_S" ]; then
+    if [ -f "${_S}" ]; then
 
-      _T="$_TARGETGITDIR/$_S"
+      _T="${_TARGETGITDIR}/${_S}"
 
-      _TMPDIR="$(dirname "$_T")"
+      _TMPDIR="$(dirname "${_T}")"
 
-      mkdir -p "$_TMPDIR";
+      mkdir -p "${_TMPDIR}";
 
-      { yellow "'$_S' -> '$_T'"; } 2>&3
+      { yellow "'${_S}' -> '${_T}'"; } 2>&3
 
-      cp "$_S" "$_T"
+      cp "${_S}" "${_T}"
 
     else
 
-      { red "$0 error: source file '$_S' doesn't exist"; } 2>&3
+      { red "${0} error: source file '${_S}' doesn't exist"; } 2>&3
     fi
 
   done
@@ -239,30 +239,30 @@ if [ $MODE = "backup" ]; then
   exit 0;
 fi
 
-if [ $MODE = "restore" ]; then
+if [ ${MODE} = "restore" ]; then
 
-  _TARGETGITDIR="$1"
+  _TARGETGITDIR="${1}"
 
   for index in "${GITSTORAGELIST[@]}"; do
 
     _T="${index%%::*}"
 
-    _S="$_TARGETGITDIR/$_T"
+    _S="${_TARGETGITDIR}/${_T}"
 
-    _TT="$_CONFIGDIR/$_T"
+    _TT="${_CONFIGDIR}/${_T}"
 
-    if [ -f "$_S" ]; then
+    if [ -f "${_S}" ]; then
 
-      _TMPDIR="$(dirname "$_TT")"
+      _TMPDIR="$(dirname "${_TT}")"
 
-      mkdir -p "$_TMPDIR";
+      mkdir -p "${_TMPDIR}";
 
-      { yellow "'$_S' -> '$_T'"; } 2>&3
+      { yellow "'${_S}' -> '${_T}'"; } 2>&3
 
-      cp "$_S" "$_TT"
+      cp "${_S}" "${_TT}"
     else
 
-      { red "file '$_S' doesn't exist in backup directory"; } 2>&3
+      { red "file '${_S}' doesn't exist in backup directory"; } 2>&3
     fi
 
   done
@@ -277,9 +277,9 @@ _TARGETGITDIR="";
 while true
 do
 
-  _TARGETGITDIR="$_CONFIGDIR/$(openssl rand -hex 2)"
+  _TARGETGITDIR="${_CONFIGDIR}/$(openssl rand -hex 2)"
 
-  if ! [ -d "$_TARGETGITDIR" ]; then
+  if ! [ -d "${_TARGETGITDIR}" ]; then
 
     break;
   fi
@@ -287,19 +287,19 @@ done
 
 function cleanup {
 
-  rm -rf "$_TARGETGITDIR" || true
+  rm -rf "${_TARGETGITDIR}" || true
 }
 
 trap cleanup EXIT
 
-mkdir -p "$_TARGETGITDIR"
+mkdir -p "${_TARGETGITDIR}"
 
 
 
 
-if [ $MODE = "isinsync" ]; then
+if [ ${MODE} = "isinsync" ]; then
 
-  (cd "$_TARGETGITDIR" && git clone "$GITSTORAGESOURCE" .)
+  (cd "${_TARGETGITDIR}" && git clone "${GITSTORAGESOURCE}" .)
 
   for index in "${GITSTORAGELIST[@]}"; do
 
@@ -307,29 +307,29 @@ if [ $MODE = "isinsync" ]; then
 
     _T="${index##*::}"
 
-    _S="$_CONFIGDIR/$_S"
+    _S="${_CONFIGDIR}/${_S}"
 
-    if [ -f "$_S" ]; then
+    if [ -f "${_S}" ]; then
 
-      _T="$_TARGETGITDIR/$_T"
+      _T="${_TARGETGITDIR}/${_T}"
 
-      _TMPDIR="$(dirname "$_T")"
+      _TMPDIR="$(dirname "${_T}")"
 
-      mkdir -p "$_TMPDIR";
+      mkdir -p "${_TMPDIR}";
 
-      cp "$_S" "$_T"
+      cp "${_S}" "${_T}"
 
     else
 
-      { red "$0 error: source file '$_S' doesn't exist"; } 2>&3
+      { red "${0} error: source file '${_S}' doesn't exist"; } 2>&3
 
     fi
 
   done
 
-  DIFFSTATUS="$(cd "$_TARGETGITDIR" && git status -s)"
+  DIFFSTATUS="$(cd "${_TARGETGITDIR}" && git status -s)"
 
-  if [ "$DIFFSTATUS" = "" ] ; then
+  if [ "${DIFFSTATUS}" = "" ] ; then
 
       { green "\n    files are in sync\n"; } 2>&3
 
@@ -338,7 +338,7 @@ if [ $MODE = "isinsync" ]; then
 
   { red "\n    files are not in sync\n"; } 2>&3
 
-  (cd "$_TARGETGITDIR" && git status)
+  (cd "${_TARGETGITDIR}" && git status)
 
   echo "final url ${URL}";
 
@@ -346,9 +346,9 @@ if [ $MODE = "isinsync" ]; then
 fi
 
 
-if [ $MODE = "diff" ]; then
+if [ ${MODE} = "diff" ]; then
 
-  (cd "$_TARGETGITDIR" && git clone "$GITSTORAGESOURCE" .)
+  (cd "${_TARGETGITDIR}" && git clone "${GITSTORAGESOURCE}" .)
 
   for index in "${GITSTORAGELIST[@]}"; do
 
@@ -356,29 +356,29 @@ if [ $MODE = "diff" ]; then
 
     _T="${index##*::}"
 
-    _S="$_CONFIGDIR/$_S"
+    _S="${_CONFIGDIR}/${_S}"
 
-    if [ -f "$_S" ]; then
+    if [ -f "${_S}" ]; then
 
-      _T="$_TARGETGITDIR/$_T"
+      _T="${_TARGETGITDIR}/${_T}"
 
-      _TMPDIR="$(dirname "$_T")"
+      _TMPDIR="$(dirname "${_T}")"
 
-      mkdir -p "$_TMPDIR";
+      mkdir -p "${_TMPDIR}";
 
-      cp "$_S" "$_T"
+      cp "${_S}" "${_T}"
 
     else
 
-      { red "$0 error: source file '$_S' doesn't exist"; } 2>&3
+      { red "${0} error: source file '${_S}' doesn't exist"; } 2>&3
 
     fi
 
   done
 
-  DIFFSTATUS="$(cd "$_TARGETGITDIR" && git status -s)"
+  DIFFSTATUS="$(cd "${_TARGETGITDIR}" && git status -s)"
 
-  if [ "$DIFFSTATUS" = "" ] ; then
+  if [ "${DIFFSTATUS}" = "" ] ; then
 
       { green "\n    files are in sync\n"; } 2>&3
 
@@ -387,9 +387,9 @@ if [ $MODE = "diff" ]; then
 
   { red "\n    files are not in sync\n"; } 2>&3
 
-  (cd "$_TARGETGITDIR/$GITSTORAGETARGETDIR" && git diff)
+  (cd "${_TARGETGITDIR}/${GITSTORAGETARGETDIR}" && git diff)
 
-  (cd "$_TARGETGITDIR/$GITSTORAGETARGETDIR" && git status)
+  (cd "${_TARGETGITDIR}/${GITSTORAGETARGETDIR}" && git status)
 
   echo "final url ${URL}";
 
@@ -399,22 +399,22 @@ fi
 
 
 
-if [ $MODE = "push" ]; then
+if [ ${MODE} = "push" ]; then
 
-  if [ "$_FORCE" = "0" ]; then
+  if [ "${_FORCE}" = "0" ]; then
 
     set +e
 
-    /bin/bash "$0" -c "$_CONFIG" isinsync
+    /bin/bash "${0}" -c "${_CONFIG}" isinsync
 
-    if [ "$?" = "0" ]; then
+    if [ "${?}" = "0" ]; then
 
       echo "final url ${URL}";
 
       exit 0;
     else
 
-      { red "$0 error: files are not in sync, if you sure that you want to push them add --force param"; } 2>&3
+      { red "${0} error: files are not in sync, if you sure that you want to push them add --force param"; } 2>&3
 
       echo "final url ${URL}";
 
@@ -424,7 +424,7 @@ if [ $MODE = "push" ]; then
     set -e
   fi
 
-  (cd "$_TARGETGITDIR" && git clone "$GITSTORAGESOURCE" .)
+  (cd "${_TARGETGITDIR}" && git clone "${GITSTORAGESOURCE}" .)
 
   for index in "${GITSTORAGELIST[@]}"; do
 
@@ -434,42 +434,42 @@ if [ $MODE = "push" ]; then
 
 
       # making sure that file will be copied in at least one directory
-      _TMPDIR="$(dirname "$_T")"
+      _TMPDIR="$(dirname "${_T}")"
 
-      if [ "$_TMPDIR" = "." ]; then
+      if [ "${_TMPDIR}" = "." ]; then
 
-        { red "$0 error: target file '$_T' should be in folder like 'xxx/$_T'"; } 2>&3
+        { red "${0} error: target file '${_T}' should be in folder like 'xxx/${_T}'"; } 2>&3
 
         exit 1
 
       fi
 
 
-    _SS="$_CONFIGDIR/$_S"
+    _SS="${_CONFIGDIR}/${_S}"
 
-    if [ -f "$_SS" ]; then
+    if [ -f "${_SS}" ]; then
 
-      _TT="$_TARGETGITDIR/$_T"
+      _TT="${_TARGETGITDIR}/${_T}"
 
-      _TMPDIR="$(dirname "$_TT")"
+      _TMPDIR="$(dirname "${_TT}")"
 
-      mkdir -p "$_TMPDIR";
+      mkdir -p "${_TMPDIR}";
 
-      { yellow "'$_S' -> '$_T'"; } 2>&3
+      { yellow "'${_S}' -> '${_T}'"; } 2>&3
 
-      cp "$_SS" "$_TT"
+      cp "${_SS}" "${_TT}"
 
     else
 
-      { red "$0 error: source file '$_SS' doesn't exist"; } 2>&3
+      { red "${0} error: source file '${_SS}' doesn't exist"; } 2>&3
 
     fi
 
   done
 
-  DIFFSTATUS="$(cd "$_TARGETGITDIR" && git status -s)"
+  DIFFSTATUS="$(cd "${_TARGETGITDIR}" && git status -s)"
 
-  if [ "$DIFFSTATUS" = "" ] ; then
+  if [ "${DIFFSTATUS}" = "" ] ; then
 
       { green "\n    files are in sync\n"; } 2>&3
 
@@ -478,11 +478,11 @@ if [ $MODE = "push" ]; then
       exit 0;
   fi
 
-  (cd "$_TARGETGITDIR" && git add .)
+  (cd "${_TARGETGITDIR}" && git add .)
 
-  (cd "$_TARGETGITDIR" && git commit -a --allow-empty-message -m '')
+  (cd "${_TARGETGITDIR}" && git commit -a --allow-empty-message -m '')
 
-  (cd "$_TARGETGITDIR" && git push origin master)
+  (cd "${_TARGETGITDIR}" && git push origin master)
 
   { green "\n    files pushed\n"; } 2>&3
 
@@ -493,22 +493,22 @@ fi
 
 
 
-if [ $MODE = "pull" ]; then
+if [ ${MODE} = "pull" ]; then
 
-  if [ "$_FORCE" = "0" ]; then
+  if [ "${_FORCE}" = "0" ]; then
 
     set +e
 
-    /bin/bash "$0" -c "$_CONFIG" isinsync
+    /bin/bash "${0}" -c "${_CONFIG}" isinsync
 
-    if [ "$?" = "0" ]; then
+    if [ "${?}" = "0" ]; then
 
       echo "final url ${URL}";
 
       exit 0;
     else
 
-      { red "$0 error: files are not in sync, if you sure that you want to pull them add --force param"; } 2>&3
+      { red "${0} error: files are not in sync, if you sure that you want to pull them add --force param"; } 2>&3
 
       echo "final url ${URL}";
 
@@ -518,7 +518,7 @@ if [ $MODE = "pull" ]; then
     set -e
   fi
 
-  (cd "$_TARGETGITDIR" && git clone "$GITSTORAGESOURCE" .)
+  (cd "${_TARGETGITDIR}" && git clone "${GITSTORAGESOURCE}" .)
 
   for index in "${GITSTORAGELIST[@]}"; do
 
@@ -526,22 +526,22 @@ if [ $MODE = "pull" ]; then
 
     _T="${index##*::}"
 
-    _SS="$_CONFIGDIR/$_S"
+    _SS="${_CONFIGDIR}/${_S}"
 
-    _TT="$_TARGETGITDIR/$_T"
+    _TT="${_TARGETGITDIR}/${_T}"
 
-    if [ -f "$_TT" ]; then
+    if [ -f "${_TT}" ]; then
 
-      _TMPDIR="$(dirname "$_SS")"
+      _TMPDIR="$(dirname "${_SS}")"
 
-      mkdir -p "$_TMPDIR";
+      mkdir -p "${_TMPDIR}";
 
-      { yellow "'$_T' -> '$_S'"; } 2>&3
+      { yellow "'${_T}' -> '${_S}'"; } 2>&3
 
-      cp "$_TT" "$_SS"
+      cp "${_TT}" "${_SS}"
     else
 
-      { red "file '$_TT' doesn't exist in repository, it might be worth to remove it from config file '$_CONFIG'"; } 2>&3
+      { red "file '${_TT}' doesn't exist in repository, it might be worth to remove it from config file '${_CONFIG}'"; } 2>&3
     fi
 
   done

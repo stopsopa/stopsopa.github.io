@@ -58,30 +58,30 @@ if [ "${VAULT_BINARY}" != "" ]; then
     _BINARY="${VAULT_BINARY}"
 fi
 
-# source "$DIR/../trim.sh"
+# source "${DIR}/../trim.sh"
 
-# FLAG="$(trim "$FLAG")"
+# FLAG="$(trim "${FLAG}")"
 
 trim() {
-    local var="$*"
+    local var="${*}"
     # remove leading whitespace characters
     var="${var#"${var%%[![:space:]]*}"}"
     # remove trailing whitespace characters
     var="${var%"${var##*[![:space:]]}"}"
-    echo -n "$var"
+    echo -n "${var}"
 }
 
 exec 3<> /dev/null
 function green {
-    printf "\e[32m$1\e[0m\n"
+    printf "\e[32m${1}\e[0m\n"
 }
 
 function red {
-    printf "\e[31m\n$1\e[0m\n\n"
+    printf "\e[31m\n${1}\e[0m\n\n"
 }
 
 function yellow {
-    printf "\e[33m$1\e[0m\n"
+    printf "\e[33m${1}\e[0m\n"
 }
 
 function stop {
@@ -90,11 +90,11 @@ function stop {
 
     set -x
 
-    BASE="$(basename "$_BINARY")"
+    BASE="$(basename "${_BINARY}")"
 
-    ps aux | grep "$BASE server" | grep "${_CONFIGFILE}" | grep -v grep
+    ps aux | grep "${BASE} server" | grep "${_CONFIGFILE}" | grep -v grep
 
-    ps aux | grep "$BASE server" | grep "${_CONFIGFILE}" | grep -v grep | awk '{print $2}' | xargs kill
+    ps aux | grep "${BASE} server" | grep "${_CONFIGFILE}" | grep -v grep | awk '{print $2}' | xargs kill
 
     set +x
 }
@@ -103,7 +103,7 @@ export VAULT_ADDR="http://127.0.0.1:${_PORT}"
 
 cd "${_DIR}"
 
-if [ "$1" = "endpoint" ]; then
+if [ "${1}" = "endpoint" ]; then
 
   if [ -f "${_ROOTTOKENFILE}" ]; then
 
@@ -117,7 +117,7 @@ if [ "$1" = "endpoint" ]; then
   exit 0
 fi
 
-if [ "$1" = "token" ]; then
+if [ "${1}" = "token" ]; then
 
   if [ -f "${_ROOTTOKENFILE}" ]; then
 
@@ -131,19 +131,19 @@ if [ "$1" = "token" ]; then
   exit 0
 fi
 
-if [ "$1" = "eval" ]; then
+if [ "${1}" = "eval" ]; then
 
   if [ -f "${_ROOTTOKENFILE}" ]; then
 
 cat <<EOF
 # run
-#     eval "\$(/bin/bash "$0" eval)"
+#     eval "\$(/bin/bash "${0}" eval)"
 export VAULT_ADDR='http://127.0.0.1:${_PORT}';
 export VAULT_TOKEN='$(cat "${_ROOTTOKENFILE}")';
-echo VAULT_ADDR=$VAULT_ADDR
-echo VAULT_TOKEN=$VAULT_TOKEN
-$_BINARY status
-$_BINARY token lookup
+echo VAULT_ADDR=${VAULT_ADDR}
+echo VAULT_TOKEN=${VAULT_TOKEN}
+${_BINARY} status
+${_BINARY} token lookup
 EOF
 
   else
@@ -156,27 +156,27 @@ fi
 
 echo "WORKING DIRECTORY ${_DIR}"
 
-if [ "$1" != "" ]; then
+if [ "${1}" != "" ]; then
 
-    echo "mode: $1"
+    echo "mode: ${1}"
 fi
 
-if [ "$1" = "stop" ]; then
+if [ "${1}" = "stop" ]; then
 
     stop
 
-    eval $_BINARY status
+    eval ${_BINARY} status
 
     set -e
     
     _exit 2> /dev/null
 fi
 
-if [ "$1" = "destroy" ]; then
+if [ "${1}" = "destroy" ]; then
 
     { green "destroying"; } 2>&3
 
-    /bin/bash "$0" stop
+    /bin/bash "${0}" stop
 
     rm -rf db    
     rm -rf logs
@@ -192,15 +192,15 @@ if [ "$1" = "destroy" ]; then
     _exit 2> /dev/null
 fi
 
-if [ "$1" = "start" ]; then
+if [ "${1}" = "start" ]; then
 
 # --------------------- start -------------------------- vvvv
 
-echo "::::::::: (cd '$_DIR' && $_BINARY --help)"
+echo "::::::::: (cd '${_DIR}' && ${_BINARY} --help)"
 
-$($_BINARY --help 2> /dev/null)
+$(${_BINARY} --help 2> /dev/null)
 
-IS_VAULT_INSTALLED="$?"
+IS_VAULT_INSTALLED="${?}"
 
 REG="^[0-9]+$";
 
@@ -220,7 +220,7 @@ fi
 
 if [ "${IS_VAULT_INSTALLED}" != "0" ]; then
 
-    { red "vault cli ($_BINARY) is not installed, visit: https://www.vaultproject.io/downloads or for old version: https://releases.hashicorp.com/vault"; } 2>&3
+    { red "vault cli (${_BINARY}) is not installed, visit: https://www.vaultproject.io/downloads or for old version: https://releases.hashicorp.com/vault"; } 2>&3
 
     _exit 2> /dev/null
 fi
@@ -297,7 +297,7 @@ LOGFILE="logs/log-$(date +"%H-%m-%d_%H-%M-%S").log"
 
 { green "stopping server..."; } 2>&3
 
-/bin/bash "$0" stop
+/bin/bash "${0}" stop
 
 { green "starting server..."; } 2>&3
 
@@ -307,11 +307,11 @@ if [ -f "${_RELATIVEDBDIRPATH}/vault.db" ]; then
     DBFILEEXIST="1"    
 fi
 
-{ green "DBFILEEXIST $DBFILEEXIST"; } 2>&3
+{ green "DBFILEEXIST ${DBFILEEXIST}"; } 2>&3
 
-echo "::::::::: (cd '$_DIR' && $_BINARY server -config="${_CONFIGFILE}")"
+echo "::::::::: (cd '${_DIR}' && ${_BINARY} server -config="${_CONFIGFILE}")"
 
-$($_BINARY server -config="${_CONFIGFILE}" >> "${LOGFILE}" & disown)
+$(${_BINARY} server -config="${_CONFIGFILE}" >> "${LOGFILE}" & disown)
 
 sleep 5
 
@@ -328,9 +328,9 @@ if [ "${DBFILEEXIST}" = "0" ]; then
 
     { green "this is first server run, initialising database"; } 2>&3
 
-    echo "::::::::: (cd '$_DIR' && $_BINARY operator init)"
+    echo "::::::::: (cd '${_DIR}' && ${_BINARY} operator init)"
 
-    INIT="$($_BINARY operator init)"
+    INIT="$(${_BINARY} operator init)"
 
     echo "${INIT}" > "${_INITFILE}"
 
@@ -355,13 +355,13 @@ if [ -f "${_UNSEALKEYSFILE}" ]; then
 
     cat "${_UNSEALKEYSFILE}" | xargs -I %% vault operator unseal %%
 
-    echo "::::::::: (cd '$_DIR' && $_BINARY status)" 
+    echo "::::::::: (cd '${_DIR}' && ${_BINARY} status)"
 
-    $_BINARY status | grep Sealed
+    ${_BINARY} status | grep Sealed
 
 cat <<EOFF
 
-cat <<EOF | xargs -I %% $_BINARY operator unseal %%
+cat <<EOF | xargs -I %% ${_BINARY} operator unseal %%
 $(cat "${_UNSEALKEYSFILE}")
 EOF
 
@@ -382,11 +382,11 @@ http://127.0.0.1:${_PORT}
 
 export VAULT_ADDR='http://127.0.0.1:${_PORT}'
 export VAULT_TOKEN="$(cat "${_ROOTTOKENFILE}")"
-$_BINARY status
+${_BINARY} status
 
-$_BINARY secrets enable -path=test kv
+${_BINARY} secrets enable -path=test kv
 
-$_BINARY kv put test/hello target=world
+${_BINARY} kv put test/hello target=world
 
 EOF
 
@@ -397,7 +397,7 @@ else
 
 cat <<EOF
 
-current vault version: $($_BINARY --version)
+current vault version: $(${_BINARY} --version)
 
 You might change some parameters at the beginning of this file, the default values are:
 _DIR="${_DIR}"
@@ -426,9 +426,9 @@ alias pvault='/bin/bash "${_DIR}/vault.sh"'
 
 Then just run one of commands:
 
-/bin/bash $0 start
-/bin/bash $0 stop
-/bin/bash $0 destroy
+/bin/bash ${0} start
+/bin/bash ${0} stop
+/bin/bash ${0} destroy
 
 or using alias
 
@@ -444,7 +444,7 @@ EOF
 
 STATUS="$(ps aux | grep -v grep | grep "${_CONFIGFILE}")"
 
-if [ "$STATUS" = "" ]; then
+if [ "${STATUS}" = "" ]; then
 
   { red "SERVER STATUS: NOT WORKING"; } 2>&3;
 else
@@ -459,12 +459,12 @@ cat <<EOF
 steps to connect local vault cli with vault server
 export VAULT_ADDR='http://127.0.0.1:${_PORT}';
 export VAULT_TOKEN='$(cat "${_ROOTTOKENFILE}")';
-$_BINARY status
-$_BINARY token lookup
+${_BINARY} status
+${_BINARY} token lookup
 
 every time you need this credentials just run
 
-/bin/bash $0
+/bin/bash ${0}
 or 
 pvault
 

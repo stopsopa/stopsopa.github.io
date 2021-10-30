@@ -1,20 +1,20 @@
 
 exec 3<> /dev/null
 function red {
-    printf "\e[91m$1\e[0m\n"
+    printf "\e[91m${1}\e[0m\n"
 }
 function green {
-    printf "\e[32m$1\e[0m\n"
+    printf "\e[32m${1}\e[0m\n"
 }
 
-if [ "$1" = "--help" ]; then
+if [ "${1}" = "--help" ]; then
 
 cat << EOF
 
-    /bin/bash $0 --help
-    /bin/bash $0 --watch
-    /bin/bash $0 --watchAll
-    /bin/bash $0 --watchAll -t filter_tests_with_this_string
+    /bin/bash ${0} --help
+    /bin/bash ${0} --watch
+    /bin/bash ${0} --watchAll
+    /bin/bash ${0} --watchAll -t filter_tests_with_this_string
 
 EOF
 
@@ -36,17 +36,17 @@ else
     { green "node_modules/.bin/jest - doesn't exist"; } 2>&3
 fi
 
-if [ "$JEST" = "" ]; then
+if [ "${JEST}" = "" ]; then
 
     { green "local jest - not found"; } 2>&3
 
     jest -v > /dev/null
 
-    STAT="$?"
+    STAT="${?}"
 
-    { green "(jest -v) status: $STAT"; } 2>&3
+    { green "(jest -v) status: ${STAT}"; } 2>&3
 
-    if [ "$STAT" = "0" ]; then
+    if [ "${STAT}" = "0" ]; then
 
         { green "global jest - found"; } 2>&3
 
@@ -64,8 +64,8 @@ fi
 
 ## --bail \
 #TEST="$(cat <<END
-#$JEST \
-#$@ \
+#${JEST} \
+#${@} \
 #--roots test \
 #--verbose \
 #--runInBand \
@@ -75,26 +75,26 @@ fi
 
 # --bail \
 TEST="$(cat <<END
-$JEST \
-$@ \
+${JEST} \
+${@} \
 --roots test \
 --verbose \
 --runInBand
 END
 )";
 
-{ green "\n\n    executing tests:\n        $TEST\n\n"; } 2>&3
+{ green "\n\n    executing tests:\n        ${TEST}\n\n"; } 2>&3
 
-$TEST
+${TEST}
 
-STATUS=$?
+STATUS=${?}
 
-if [ "$STATUS" = "0" ]; then
+if [ "${STATUS}" = "0" ]; then
 
     { green "\n    Tests passed\n"; } 2>&3
 else
 
     { red "\n    Tests crashed\n"; } 2>&3
 
-    exit $STATUS
+    exit ${STATUS}
 fi

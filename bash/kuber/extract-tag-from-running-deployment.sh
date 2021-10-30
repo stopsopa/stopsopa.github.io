@@ -52,7 +52,7 @@ function cleanup {
 
 trap cleanup EXIT;
 
-kubectl get deploy "$1" -o yaml 2>> "$FILE" 1>> "$FILE";
+kubectl get deploy "${1}" -o yaml 2>> "${FILE}" 1>> "${FILE}";
 
-node "$_DIR/getyaml.js" "$FILE" _ spec.template.spec.containers.$CONTAINER.image plain | sed -E 's/^(.*:)?(.*)$/\2/'
+node "${_DIR}/getyaml.js" "${FILE}" _ spec.template.spec.containers.${CONTAINER}.image plain | sed -E 's/^(.*:)?(.*)$/\2/'
 

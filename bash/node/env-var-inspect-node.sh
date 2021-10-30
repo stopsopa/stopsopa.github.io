@@ -6,7 +6,7 @@
 #
 # additionally it should also export all variables from .env - if it's present
 #
-# /bin/sh $0 server.js
+# /bin/sh ${0} server.js
 #
 #     it will launch
 #        node server.js
@@ -16,7 +16,7 @@
 #        node --inspect=9000 server.js
 #     when INSPECT_NODE_PORT=9000
 #
-# where $0 is name of THIS script filename (that's standard in bash and other linux shells)
+# where ${0} is name of THIS script filename (that's standard in bash and other linux shells)
 #
 
 # testing:
@@ -26,7 +26,7 @@ cat <<EOF
 
 # to run test execute
 
-# eval "\$(/bin/bash "$0" selftest)"
+# eval "\$(/bin/bash "${0}" selftest)"
 
 # docker run -it -v "\$(pwd):/code" -w "/code" -e "__BASH_SELFTEST=true" frapsoft/zsh /bin/zsh ${0} testscript.js a "b c" d
 # docker run -it --rm -v "\$(pwd):/code" -w "/code" -e "__BASH_SELFTEST=true" alpine:3.14.2 /bin/sh ${0} testscript.js a "b c" d

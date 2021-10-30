@@ -56,23 +56,23 @@ do
 
 #  echo "${0} error: preparing to remove ${TMP}";
 
-  if [ "${TARGETDIR}" = "$TMP" ]; then
+  if [ "${TARGETDIR}" = "${TMP}" ]; then
 
-#    echo "$0 error: dir is equal to destination"
-
-    break;
-  fi
-
-  rmdir "$TMP" 2> /dev/null 1>/dev/null
-
-  if [ "$?" != "0" ]; then
-
-#    echo "$0 error: non zero exit code"
+#    echo "${0} error: dir is equal to destination"
 
     break;
   fi
 
-  TMP="$(dirname "$TMP")"
+  rmdir "${TMP}" 2> /dev/null 1>/dev/null
 
-  TMP="$(realpath "$TMP" 2>&1)"
+  if [ "${?}" != "0" ]; then
+
+#    echo "${0} error: non zero exit code"
+
+    break;
+  fi
+
+  TMP="$(dirname "${TMP}")"
+
+  TMP="$(realpath "${TMP}" 2>&1)"
 done

@@ -55,25 +55,25 @@ if [ "${3}" != "" ]; then
     fi
 fi
 
-if [ "$(basename "${1}")" = "$(basename "$2")" ]; then
+if [ "$(basename "${1}")" = "$(basename "${2}")" ]; then
 
-    { red "$0 error: source and target env files is the same file"; } 2>&3
+    { red "${0} error: source and target env files is the same file"; } 2>&3
 
     help
 
     exit 1;
 fi
 
-PB="$(basename "$1")"
+PB="$(basename "${1}")"
 
 set -e
 set -x
 
-SHOST="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_HOST --env-file "$PB")"
-SUSER="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_USER --env-file "$PB")"
-SPORT="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_PORT --env-file "$PB")"
-SPASS="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_PASS --env-file "$PB")"
-SDB="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_DB --env-file "$PB")"
+SHOST="$(node "${_DIR}/../node/env/getter.js" PROTECTED_MYSQL_HOST --env-file "${PB}")"
+SUSER="$(node "${_DIR}/../node/env/getter.js" PROTECTED_MYSQL_USER --env-file "${PB}")"
+SPORT="$(node "${_DIR}/../node/env/getter.js" PROTECTED_MYSQL_PORT --env-file "${PB}")"
+SPASS="$(node "${_DIR}/../node/env/getter.js" PROTECTED_MYSQL_PASS --env-file "${PB}")"
+SDB="$(node "${_DIR}/../node/env/getter.js" PROTECTED_MYSQL_DB --env-file "${PB}")"
 
 set +e
 set +x
@@ -82,33 +82,33 @@ set +x
 
   source:
 
-    SHOST:  "$SHOST"
-    SUSER:  "$SUSER"
-    SPORT:  "$SPORT"
-    SPASS:  "$SPASS"
-    SDB:    "$SDB"
+    SHOST:  "${SHOST}"
+    SUSER:  "${SUSER}"
+    SPORT:  "${SPORT}"
+    SPASS:  "${SPASS}"
+    SDB:    "${SDB}"
 
 "; } 2>&3
 
-if [ "$SDB" = "" ]; then
+if [ "${SDB}" = "" ]; then
 
-    { red "$0 error: Environment variable PROTECTED_MYSQL_DB is empty or not defined in $1"; } 2>&3
+    { red "${0} error: Environment variable PROTECTED_MYSQL_DB is empty or not defined in ${1}"; } 2>&3
 
     help
 
     exit 1;
 fi
 
-PB="$(basename "$2")"
+PB="$(basename "${2}")"
 
 set -e
 set -x
 
-THOST="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_HOST --env-file "$PB")"
-TUSER="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_USER --env-file "$PB")"
-TPORT="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_PORT --env-file "$PB")"
-TPASS="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_PASS --env-file "$PB")"
-TDB="$(node "$_DIR/../node/env/getter.js" PROTECTED_MYSQL_DB --env-file "$PB")"
+THOST="$(node "${_DIR}/../node/env/getter.js" PROTECTED_MYSQL_HOST --env-file "${PB}")"
+TUSER="$(node "${_DIR}/../node/env/getter.js" PROTECTED_MYSQL_USER --env-file "${PB}")"
+TPORT="$(node "${_DIR}/../node/env/getter.js" PROTECTED_MYSQL_PORT --env-file "${PB}")"
+TPASS="$(node "${_DIR}/../node/env/getter.js" PROTECTED_MYSQL_PASS --env-file "${PB}")"
+TDB="$(node "${_DIR}/../node/env/getter.js" PROTECTED_MYSQL_DB --env-file "${PB}")"
 
 set +e
 set +x
@@ -117,26 +117,26 @@ set +x
 
   target:
 
-    THOST:  "$THOST"
-    TUSER:  "$TUSER"
-    TPORT:  "$TPORT"
-    TPASS:  "$TPASS"
-    TDB:    "$TDB"
+    THOST:  "${THOST}"
+    TUSER:  "${TUSER}"
+    TPORT:  "${TPORT}"
+    TPASS:  "${TPASS}"
+    TDB:    "${TDB}"
 
 "; } 2>&3
 
-if [ "$TDB" = "" ]; then
+if [ "${TDB}" = "" ]; then
 
-    { red "$0 error: Environment variable PROTECTED_MYSQL_DB is empty or not defined in $2"; } 2>&3
+    { red "${0} error: Environment variable PROTECTED_MYSQL_DB is empty or not defined in ${2}"; } 2>&3
 
     help
 
     exit 1;
 fi
 
-if [ "$FORCE" = "0" ] && ! [[ $TDB =~ $STOP_IF_NOT_MATCH ]]; then
+if [ "${FORCE}" = "0" ] && ! [[ ${TDB} =~ ${STOP_IF_NOT_MATCH} ]]; then
 
-    { red "$0 error: Target database name '$TDB' dont match to fuse "$STOP_IF_NOT_MATCH", add --force to proceed"; } 2>&3
+    { red "${0} error: Target database name '${TDB}' dont match to fuse "${STOP_IF_NOT_MATCH}", add --force to proceed"; } 2>&3
 
     help
 
@@ -147,42 +147,42 @@ SOURCE="mysqldump";
 
 COLUMNSTATISTICSEXIST="$(mysqldump --help | grep column-statistics || true)"
 
-if [ "$COLUMNSTATISTICSEXIST" != "" ]; then
+if [ "${COLUMNSTATISTICSEXIST}" != "" ]; then
 
-    SOURCE="$SOURCE --column-statistics=0"
+    SOURCE="${SOURCE} --column-statistics=0"
 fi
 
-if [ "$SHOST" != "" ]; then SOURCE="$SOURCE -h $SHOST"; fi
-if [ "$SUSER" != "" ]; then SOURCE="$SOURCE -u $SUSER"; fi
-if [ "$SPASS" != "" ]; then SOURCE="$SOURCE -p$SPASS"; fi
-if [ "$SPORT" != "" ] && [ "$SPORT" != "3306" ]; then SOURCE="$SOURCE -P$SPORT"; fi
-if [ "$SDB"   != "" ]; then SOURCE="$SOURCE $SDB"; fi
+if [ "${SHOST}" != "" ]; then SOURCE="${SOURCE} -h ${SHOST}"; fi
+if [ "${SUSER}" != "" ]; then SOURCE="${SOURCE} -u ${SUSER}"; fi
+if [ "${SPASS}" != "" ]; then SOURCE="${SOURCE} -p${SPASS}"; fi
+if [ "${SPORT}" != "" ] && [ "${SPORT}" != "3306" ]; then SOURCE="${SOURCE} -P${SPORT}"; fi
+if [ "${SDB}"   != "" ]; then SOURCE="${SOURCE} ${SDB}"; fi
 
 TARGET="mysql";
 
-if [ "$THOST" != "" ]; then TARGET="$TARGET -h $THOST"; fi
-if [ "$TUSER" != "" ]; then TARGET="$TARGET -u $TUSER"; fi
-if [ "$TPASS" != "" ]; then TARGET="$TARGET -p$TPASS"; fi
-if [ "$TPORT" != "" ] && [ "$TPORT" != "3306" ]; then TARGET="$TARGET -P$TPORT"; fi
-if [ "$TDB"   != "" ]; then TARGET="$TARGET $TDB"; fi
+if [ "${THOST}" != "" ]; then TARGET="${TARGET} -h ${THOST}"; fi
+if [ "${TUSER}" != "" ]; then TARGET="${TARGET} -u ${TUSER}"; fi
+if [ "${TPASS}" != "" ]; then TARGET="${TARGET} -p${TPASS}"; fi
+if [ "${TPORT}" != "" ] && [ "${TPORT}" != "3306" ]; then TARGET="${TARGET} -P${TPORT}"; fi
+if [ "${TDB}"   != "" ]; then TARGET="${TARGET} ${TDB}"; fi
 
-/bin/bash "$_DIR/cleardb.sh" "$PB" --force
+/bin/bash "${_DIR}/cleardb.sh" "${PB}" --force
 
 { yellow "
 
   Command to execute:
 
-  $SOURCE | $TARGET
+  ${SOURCE} | ${TARGET}
 
 "; } 2>&3
 
-$SOURCE | $TARGET
+${SOURCE} | ${TARGET}
 
-CODE="$?"
+CODE="${?}"
 
-printf "\nRESULT: $RESULT\n";
+printf "\nRESULT: ${RESULT}\n";
 
-if [ "$CODE" = "0" ]; then
+if [ "${CODE}" = "0" ]; then
 
   { green "\n    database copied \n"; } 2>&3
 else
@@ -190,6 +190,6 @@ else
   { red "\n    general error \n"; } 2>&3
 fi
 
-exit $CODE;
+exit ${CODE};
 
 

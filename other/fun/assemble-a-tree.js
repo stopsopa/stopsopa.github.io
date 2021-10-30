@@ -1,4 +1,4 @@
-https://codepen.io/stopsopa/pen/KKvvxXy
+// https://codepen.io/stopsopa/pen/KKvvxXy?editors=0010
 
 const {
   core: { describe, it, expect, run },
@@ -48,24 +48,24 @@ describe('test', () => {
 
       expect(getTree(list)).toEqual({
         id:4,
-        "children": [
+        children: [
           {id:1},
           {
             id:3,
-            "children": [
+            children: [
               {id:2}
             ]
           },
           {id:5},
           {
             id:6,
-            "children": [
+            children: [
               {
                 id:14,
-                "children": [
+                children: [
                   {
                     id:11,
-                    "children": [
+                    children: [
                       {id:12}
                     ]
                   },
@@ -76,10 +76,10 @@ describe('test', () => {
           },
           {
             id:8,
-            "children": [
+            children: [
               {
                 id:9,
-                "children": [
+                children: [
                   {id:7}
                 ]
               },

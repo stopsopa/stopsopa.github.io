@@ -45,50 +45,50 @@ ___DIR="$(dirname "${1}")"
 
 ___REALFILE="$(realpath "${1}")"
 
-___REALDIR="$(realpath "$___DIR")"
+___REALDIR="$(realpath "${___DIR}")"
 
-___BASENAME="$(basename "$0")"
+___BASENAME="$(basename "${0}")"
 
-if [ -e "$1" ]; then
+if [ -e "${1}" ]; then
 
-  if [ "$RM" = "1" ]; then
+  if [ "${RM}" = "1" ]; then
 
-    unlink "$1"
+    unlink "${1}"
 
-    if [ -e "$1" ]; then
+    if [ -e "${1}" ]; then
 
-      echo "$___BASENAME error: can't remove file '$___REALFILE'"
+      echo "${___BASENAME} error: can't remove file '${___REALFILE}'"
 
       exit 1
     fi
 
-    if [ -w "$___DIR" ]; then
+    if [ -w "${___DIR}" ]; then
 
       exit 0;
     fi
 
-    echo "$___BASENAME error 2: don't have write access to directory '$___REALDIR'"
+    echo "${___BASENAME} error 2: don't have write access to directory '${___REALDIR}'"
 
     exit 1;
   else
 
-    if [ -w "$1" ]; then
+    if [ -w "${1}" ]; then
 
       exit 0;
     fi
 
-    echo "$___BASENAME error 3: don't have write access to file '$___REALFILE'"
+    echo "${___BASENAME} error 3: don't have write access to file '${___REALFILE}'"
 
     exit 1;
   fi
 else
 
-  if [ -w "$___DIR" ]; then
+  if [ -w "${___DIR}" ]; then
 
     exit 0;
   fi
 
-  echo "$___BASENAME error 1: don't have write access to directory '$___REALDIR'"
+  echo "${___BASENAME} error 1: don't have write access to directory '${___REALDIR}'"
 
   exit 1;
 fi

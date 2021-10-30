@@ -27,7 +27,7 @@
                 <h2>useful</h2>
                 <script type="editor" data-lang="sh">
 # fix variables in ide                
-\$([^\s"(<{'}/:;\\\.\$\(\)#+`-]+)
+(?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
 \${$1}
                 
 # find .git/config with given git source path                

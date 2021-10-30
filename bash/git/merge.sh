@@ -2,7 +2,7 @@
 # Script to safely checkout to different branch
 # /bin/bash change-branch.sh master
 
-target="$1"
+target="${1}"
 
 THISFILE=${BASH_SOURCE[0]}
 DIR="$( cd "$( dirname "${THISFILE}" )" && pwd -P )"
@@ -13,27 +13,27 @@ function _datetime {
 
 MODE="merge-with-diff"
 
-if [ "$2" != "" ]; then
+if [ "${2}" != "" ]; then
 
   TEST="^(merge-with-diff|merge-no-diff)$"
 
-  if ! [[ "$2" =~ ${TEST} ]]; then
+  if ! [[ "${2}" =~ ${TEST} ]]; then
 
-    echo "should be: /bin/bash $0 $1 merge-with-diff|merge-no-diff"
+    echo "should be: /bin/bash ${0} ${1} merge-with-diff|merge-no-diff"
 
     exit 1;
   fi
 
-  MODE="$2"
+  MODE="${2}"
 fi
 
 source "${DIR}/../colours.sh";
 
 THISBRANCH="$(git rev-parse --abbrev-ref HEAD)";
 
-if [ "$#" -lt 1 ] ; then
+if [ "${#}" -lt 1 ] ; then
 
-    { red "\n[error] At least one argument expected, like: \n\n    /bin/bash $0 \"branch-to-merge\" \n"; } 2>&3
+    { red "\n[error] At least one argument expected, like: \n\n    /bin/bash ${0} \"branch-to-merge\" \n"; } 2>&3
 
     exit 1;
 fi
@@ -53,9 +53,9 @@ do
     git commit --no-edit
   fi
 
-  echo "code: $?"
+  echo "code: ${?}"
 
-  if [ $? = 0 ]; then
+  if [ ${?} = 0 ]; then
 
       { green "[ok] merging branch '${target}' - success"; } 2>&3
 
