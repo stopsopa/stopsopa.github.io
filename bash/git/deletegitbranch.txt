@@ -16,7 +16,7 @@ LIST="$(git tag | /bin/bash bash/git/semver-filter-tags.sh "v0.0.0")"
 # list all tags and filter (NOT version)
 LIST="$(git tag | /bin/bash bash/git/semver-filter-tags.sh --not "v0.0.0")"
 
-echo "$LIST"
+echo "${LIST}"
 
 
 
@@ -24,10 +24,10 @@ echo "$LIST"
 
 LIST="$(git tag | /bin/bash bash/git/semver-filter-tags.sh --not "v0.0.0")"
 
-echo "$LIST"
+echo "${LIST}"
 
 # to clearn just run:
-#for tag in $LIST
+#for tag in ${LIST}
 #do
 #
 #    echo "${tag}";

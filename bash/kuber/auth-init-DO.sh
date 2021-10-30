@@ -52,7 +52,7 @@ do
 
         kubectl get no
 
-        if [ "$?" = "0" ]; then
+        if [ "${?}" = "0" ]; then
 
             echo "token validated..."
 
@@ -67,9 +67,9 @@ do
   sleep 3;
 done
 
-if [ "$_GOOD" = "0" ]; then
+if [ "${_GOOD}" = "0" ]; then
 
-    echo "$0 error: couldn't establish reliable connection";
+    echo "${0} error: couldn't establish reliable connection";
 
     exit 1;
 fi

@@ -1,10 +1,10 @@
 /**
  * Require: "js-yaml": "^3.11.0",
  *
- * node $0 _ key.key
- * node $0 0 key.key
- * node $0 1 key.key
- * node $0 title key.key
+ * node ${0} _ key.key
+ * node ${0} 0 key.key
+ * node ${0} 1 key.key
+ * node ${0} title key.key
  */
 if (Object.keys(process.argv).length < 4) {
 

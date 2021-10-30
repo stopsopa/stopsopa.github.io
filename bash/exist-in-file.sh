@@ -23,18 +23,18 @@ FILE="${1}";
 
 if [ ! -e "${FILE}" ]; then  # exist
 
-    echo "FILE: '$FILE' doesn't exist"
+    echo "FILE: '${FILE}' doesn't exist"
 
     exit 2;
 fi
 
 shift;
 
-FIND="$1"
+FIND="${1}"
 
-FIND="$(trim $FIND)"
+FIND="$(trim ${FIND})"
 
-if [ "$FIND" = "" ]; then
+if [ "${FIND}" = "" ]; then
 
     echo "FIND argument can't be empty string"
 
@@ -43,7 +43,7 @@ fi
 
 shift;
 
-if [ "$(grep "$FIND" "$FILE")" = "" ]; then
+if [ "$(grep "${FIND}" "${FILE}")" = "" ]; then
 
   echo '0'
 else

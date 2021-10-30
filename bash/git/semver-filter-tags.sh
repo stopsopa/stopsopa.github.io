@@ -54,14 +54,14 @@
 # https://stackoverflow.com/a/23241372
 NOT=""
 
-if [ "$1" = "--not" ]; then
+if [ "${1}" = "--not" ]; then
 
   NOT="!"
 
   shift
 fi
 
-PATTERN="$(echo "$1" | sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\[0-9\]+\\\\.\[0-9\]+\\\\.\[0-9\]+/g")"
+PATTERN="$(echo "${1}" | sed -E "s/([0-9]+)\.([0-9]+)\.([0-9]+)/\[0-9\]+\\\\.\[0-9\]+\\\\.\[0-9\]+/g")"
 
 cat - | sed -nE "/^${PATTERN}$/${NOT}p"
 

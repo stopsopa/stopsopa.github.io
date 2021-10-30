@@ -64,29 +64,29 @@ if [ "${2}" != "" ]; then
 
   if [ ${2} -lt 2 ] ; then
 
-      echo "${0} error: NUM argument given ($2) but it is smaller than 2"
+      echo "${0} error: NUM argument given (${2}) but it is smaller than 2"
       echo ""
 
       exit 1;
   fi
 
-  NUM="$2"
+  NUM="${2}"
 fi
 
-echo -e "running until successful $NUM times\n\n    kubectl get no"
+echo -e "running until successful ${NUM} times\n\n    kubectl get no"
 
-for i in $(seq 1 1 $NUM)
+for i in $(seq 1 1 ${NUM})
 do
 
   echo -e "\nattempt ${i}:"
 
-  doctl kubernetes cluster kubeconfig save "$1"
+  doctl kubernetes cluster kubeconfig save "${1}"
 
   kubectl get no
 
-  _CODE="$?"
+  _CODE="${?}"
 
-  if [ "$_CODE" = "0" ]; then
+  if [ "${_CODE}" = "0" ]; then
 
       echo "switched..."
       exit 0;
@@ -95,9 +95,9 @@ do
   sleep 3;
 done
 
-echo -e "\n$0 error: failed to switch to cluster [$1], exit code [$_CODE]"
+echo -e "\n${0} error: failed to switch to cluster [${1}], exit code [${_CODE}]"
 
-exit $_CODE;
+exit ${_CODE};
 
 
 

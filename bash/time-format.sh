@@ -25,28 +25,28 @@ function _datetime {
 
     C=":"
 
-    if [ "$1" != "" ]; then
+    if [ "${1}" != "" ]; then
 
-      H="$1"
+      H="${1}"
 
-      S="$1"
+      S="${1}"
 
-      C="$1"
+      C="${1}"
     fi
 
-    if [ "$2" != "" ]; then
+    if [ "${2}" != "" ]; then
 
-      C="$2"
+      C="${2}"
     fi
 
-    if [ "$3" != "" ]; then
+    if [ "${3}" != "" ]; then
 
-      S="$2"
+      S="${2}"
 
-      C="$3"
+      C="${3}"
     fi
 
-    date "+%Y$H%m$H%d$S%H$C%M$C%S"
+    date "+%Y${H}%m${H}%d${S}%H${C}%M${C}%S"
 }
 
 function _date {
@@ -57,33 +57,33 @@ function _time {
     date "+%H-%M-%S"
 }
 
-if [ "$TRAVIS" == "true" ]; then
+if [ "${TRAVIS}" == "true" ]; then
 
 
     _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
-    TMP_FILE="$_DIR/tmp.counter"
+    TMP_FILE="${_DIR}/tmp.counter"
 
-    if [ ! -f $TMP_FILE ]; then
+    if [ ! -f ${TMP_FILE} ]; then
 
-        echo '0' > $TMP_FILE
+        echo '0' > ${TMP_FILE}
     fi
 
-    if [ ! -f $TMP_FILE ]; then
+    if [ ! -f ${TMP_FILE} ]; then
 
-        printf "\n\n    can't create tmp file: $TMP_FILE \n\n";
+        printf "\n\n    can't create tmp file: ${TMP_FILE} \n\n";
 
         exit 1
     fi
 
     function _datetime {
 
-        COUNTER="$(cat $TMP_FILE)"
+        COUNTER="$(cat ${TMP_FILE})"
 
         echo "__${COUNTER}__"
 
-        COUNTER=$(($COUNTER + 1))
+        COUNTER=$((${COUNTER} + 1))
 
-        echo $COUNTER > $TMP_FILE
+        echo ${COUNTER} > ${TMP_FILE}
     }
     function _date {
         _datetime

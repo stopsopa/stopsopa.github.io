@@ -25,8 +25,8 @@ TMP="\$(/bin/bash ${0} .env --clear)"
 TMP="\$(/bin/bash ${0} .env --clean)"
 TMP="\$(/bin/bash ${0} .env -c)"
 TMP="\$(/bin/bash ${0} .env --gen 'gen')"
-TMP="\$(/bin/bash $0 .env -g 'gen')"
-TMP="\$(/bin/bash $0 .env -g 'gen' -c)"
+TMP="\$(/bin/bash ${0} .env -g 'gen')"
+TMP="\$(/bin/bash ${0} .env -g 'gen' -c)"
 
 # do something
 function cleanup {
@@ -45,18 +45,18 @@ _CLEANOLD="0";
 _GEN="gen"
 
 PARAMS=""
-while (( "$#" )); do
-  case "$1" in
+while (( "${#}" )); do
+  case "${1}" in
     -c|--clean|--clear)
       _CLEANOLD="1";
       shift
       ;;
     -g|--gen)
-      if [ "$2" = "" ]; then
-        echo "$0 error: --gen value can't be empty" >&2
+      if [ "${2}" = "" ]; then
+        echo "${0} error: --gen value can't be empty" >&2
         exit 1
       fi
-      _GEN="$2";
+      _GEN="${2}";
       shift 2
       ;;
     --) # end argument parsing
@@ -64,24 +64,24 @@ while (( "$#" )); do
       break
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 error: Unsupported flag $1" >&2
+      echo "${0} error: Unsupported flag ${1}" >&2
       exit 1
       ;;
     *) # preserve positional arguments
-      PARAMS="$PARAMS $1"
+      PARAMS="${PARAMS} ${1}"
       shift
       ;;
   esac
 done
 
 # set positional arguments in their proper place
-eval set -- "$PARAMS"
+eval set -- "${PARAMS}"
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
 #realpath . &> /dev/null
 #
-#if [ "$?" != "0" ]; then
+#if [ "${?}" != "0" ]; then
 #
 #    { red "realpath is not installed run: brew install coreutils"; } 2>&3
 #
@@ -92,69 +92,69 @@ set -e
 
 
 
-#P="$(realpath -m "$FILE")"
-PD="$(dirname "$1")"
-PB="$(basename "$1")"
+#P="$(realpath -m "${FILE}")"
+PD="$(dirname "${1}")"
+PB="$(basename "${1}")"
 # https://stackoverflow.com/a/965069
 # https://math-linux.com/linux/bash/article/how-to-get-or-extract-filename-and-extension-in-bash
 EXTENSION="${PB##*.}"
 FILENAME="${PB%.*}"
-if [ "$FILENAME" = "" ]; then
-  FILENAME="$PB"
+if [ "${FILENAME}" = "" ]; then
+  FILENAME="${PB}"
   EXTENSION=""
 fi
-if [ "$FILENAME" = "$PB" ]; then
+if [ "${FILENAME}" = "${PB}" ]; then
   EXTENSION=""
 fi
 
-#EXTENSION="$(echo -n "$EXTENSION" | tr '[:upper:]' '[:lower:]')"
+#EXTENSION="$(echo -n "${EXTENSION}" | tr '[:upper:]' '[:lower:]')"
 
-#echo "PD ='$PD'";
-#echo "PB ='$PB'";
-#echo "FILENAME ='$FILENAME'";
-#echo "EXTENSION ='$EXTENSION'";
-
-
+#echo "PD ='${PD}'";
+#echo "PB ='${PB}'";
+#echo "FILENAME ='${FILENAME}'";
+#echo "EXTENSION ='${EXTENSION}'";
 
 
 
 
-if [ "$_CLEANOLD" = "1" ]; then
 
-    PREG="$(/bin/bash "$_DIR/preg_quote.sh" "$FILENAME")"
+
+if [ "${_CLEANOLD}" = "1" ]; then
+
+    PREG="$(/bin/bash "${_DIR}/preg_quote.sh" "${FILENAME}")"
 
     EREG=""
-    if [ "$EXTENSION" != "" ]; then
-      EREG="\.$(/bin/bash "$_DIR/preg_quote.sh" "$EXTENSION")"
+    if [ "${EXTENSION}" != "" ]; then
+      EREG="\.$(/bin/bash "${_DIR}/preg_quote.sh" "${EXTENSION}")"
     fi
 
-    CLEARLIST="$(find -L "$PD" -type f -maxdepth 1 | sed -nE "/\/$PREG-$_GEN-[a-f0-9]{4}$EREG$/p")"
+    CLEARLIST="$(find -L "${PD}" -type f -maxdepth 1 | sed -nE "/\/${PREG}-${_GEN}-[a-f0-9]{4}${EREG}$/p")"
 
-    for file in $CLEARLIST
+    for file in ${CLEARLIST}
     do
         unlink "${file}" || true
     done
 fi
 
-#echo "FILE $FILE"
-#echo "PD $PD"
-#echo "PB $PB"
-#echo "EXTENSION $EXTENSION"
-#echo "FILENAME $FILENAME"
+#echo "FILE ${FILE}"
+#echo "PD ${PD}"
+#echo "PB ${PB}"
+#echo "EXTENSION ${EXTENSION}"
+#echo "FILENAME ${FILENAME}"
 
 TMPFILE=""
 
 while true
 do
     EX=""
-    if [ "$EXTENSION" != "" ]; then
-      EX=".$EXTENSION"
+    if [ "${EXTENSION}" != "" ]; then
+      EX=".${EXTENSION}"
     fi
-    TMPFILE="$PD/$FILENAME-$_GEN-$(openssl rand -hex 2)$EX"
+    TMPFILE="${PD}/${FILENAME}-${_GEN}-$(openssl rand -hex 2)${EX}"
 
-    if [ ! -e "$TMPFILE" ]; then  # not exist (fnode, directory, socket, etc.)
+    if [ ! -e "${TMPFILE}" ]; then  # not exist (fnode, directory, socket, etc.)
 
-        echo $TMPFILE
+        echo ${TMPFILE}
 
         exit 0;
     fi

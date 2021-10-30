@@ -38,12 +38,12 @@ case ${_SHELL} in
 esac
 
 trim() {
-    local var="$*"
+    local var="${*}"
     # remove leading whitespace characters
     var="${var#"${var%%[![:space:]]*}"}"
     # remove trailing whitespace characters
     var="${var%"${var##*[![:space:]]}"}"
-    echo -n "$var"
+    echo -n "${var}"
 }
 
 PB="$(basename "${_SCRIPT}")"
@@ -98,7 +98,7 @@ function trigger_traps {
   for i in "${TRAPS[@]}"
   do
 
-      $i || true
+      ${i} || true
   done
 }
 

@@ -14,7 +14,7 @@ const reg = /^.*?(\d\.\d+\.\d+).*$/;
 let list = process.argv.filter(r => Boolean(r.trim())).map(ver => {
     return {
         ver,
-        sem: ver.replace(reg, "$1"),
+        sem: ver.replace(reg, "${1}"),
     }
 });
 

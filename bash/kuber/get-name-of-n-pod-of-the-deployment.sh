@@ -58,27 +58,27 @@ fi
 
 shift;
 
-if [ "${NUM}" != "" ] && [ "$NUM" != "all" ] ; then
+if [ "${NUM}" != "" ] && [ "${NUM}" != "all" ] ; then
 
     TEST="^[0-9]+$"
-    if ! [[ $NUM =~ $TEST ]]; then
+    if ! [[ ${NUM} =~ ${TEST} ]]; then
 
-        echo "$0 error: number param($NUM) is not a number or 'all'"
+        echo "${0} error: number param(${NUM}) is not a number or 'all'"
 
         exit 1;
     fi
 fi
 
-N="$1"
+N="${1}"
 
 #AWK="{print \$2}"
 AWK="{print \$2,\" \",\$8}"
 
-if [ "$N" != "" ]; then
-    if [ "$N" = "all" ]; then
+if [ "${N}" != "" ]; then
+    if [ "${N}" = "all" ]; then
         N=" -A"
     else
-        N=" -n \"$N\""
+        N=" -n \"${N}\""
     fi
 else
     N=""
@@ -91,24 +91,24 @@ shift;
 set -e
 set -o pipefail
 
-#echo "kubectl get pod$N -o wide --sort-by=.metadata.creationTimestamp | tail -n +2 | tac | awk '$AWK' | sed -nE \"/^$DEPLOY-/p\""
+#echo "kubectl get pod${N} -o wide --sort-by=.metadata.creationTimestamp | tail -n +2 | tac | awk '${AWK}' | sed -nE \"/^${DEPLOY}-/p\""
 
-CMD="kubectl get pod$N$NAMESPACE -o wide --sort-by=.metadata.creationTimestamp | tail -n +2 | tac | awk '$AWK' | sed -nE \"/^$DEPLOY-/p\"";
+CMD="kubectl get pod${N}${NAMESPACE} -o wide --sort-by=.metadata.creationTimestamp | tail -n +2 | tac | awk '${AWK}' | sed -nE \"/^${DEPLOY}-/p\"";
 
-LIST="$(eval $CMD)"
+LIST="$(eval ${CMD})"
 
-if [ "$NUM" = "all" ]; then
+if [ "${NUM}" = "all" ]; then
 
-    echo "$CMD"
+    echo "${CMD}"
 
-    echo "$LIST"
+    echo "${LIST}"
 
     exit 0
 fi
 
-#echo "$CMD"
+#echo "${CMD}"
 
-COUNT="$(echo "$LIST" | wc -l)"
+COUNT="$(echo "${LIST}" | wc -l)"
 
 trim() {
     local var="${*}"
@@ -119,22 +119,22 @@ trim() {
     echo -n "${var}"
 }
 
-COUNT="$(trim "$COUNT")"
+COUNT="$(trim "${COUNT}")"
 
-if [ "$NUM" -gt "$COUNT" ] ; then
+if [ "${NUM}" -gt "${COUNT}" ] ; then
 
-    NUM="$COUNT"
+    NUM="${COUNT}"
 fi
 
-#echo "DEPLOY=$DEPLOY"
-#echo "NUM=$NUM"
-#echo "N=$N"
-#echo ">>$COUNT<<"
+#echo "DEPLOY=${DEPLOY}"
+#echo "NUM=${NUM}"
+#echo "N=${N}"
+#echo ">>${COUNT}<<"
 #
-#echo "$LIST"
+#echo "${LIST}"
 #
 #echo ----
 
-echo "$LIST" | sed "$NUM!d" | awk '{print $1}'
+echo "${LIST}" | sed "${NUM}!d" | awk '{print $1}'
 
 

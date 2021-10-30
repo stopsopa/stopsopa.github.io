@@ -13,7 +13,7 @@
 
 if [ ! -f "${1}" ]; then
 
-  echo "$0 error: file '${1}' doesn't exist"
+  echo "${0} error: file '${1}' doesn't exist"
 
   exit 1
 fi
@@ -53,7 +53,7 @@ source "${1}"
 cat <<EOF
 
 # echo "override mode: false"
-# eval "\$(/bin/bash "$0" "${1}")"
+# eval "\$(/bin/bash "${0}" "${1}")"
 
 EOF
 
@@ -82,7 +82,7 @@ else
 cat <<EOF
 
 # echo "override mode: true"
-# eval "\$(/bin/bash "$0" "${1}" true)"
+# eval "\$(/bin/bash "${0}" "${1}" true)"
 
 source "${1}"
 

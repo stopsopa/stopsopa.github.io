@@ -83,13 +83,13 @@ while (( "${#}" )); do
 done
 
 # set positional arguments in their proper place
-eval set -- "$PARAMS"
+eval set -- "${PARAMS}"
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
-source "$_DIR/colours.sh";
+source "${_DIR}/colours.sh";
 
-if [ "$#" -lt "2" ]; then
+if [ "${#}" -lt "2" ]; then
 
     { red "There should be at least two arguments given"; } 2>&3
 
@@ -98,7 +98,7 @@ fi
 
 envsubst --help &> /dev/null
 
-if [ "$?" != "0" ]; then
+if [ "${?}" != "0" ]; then
 
     # https://stackoverflow.com/a/23622446
     { red "envsubst is not installed run: brew install gettext && brew link --force gettext\nor in linux run apt-get install -y gettext-base"; } 2>&3
@@ -106,49 +106,49 @@ if [ "$?" != "0" ]; then
     exit 1;
 fi
 
-if [ ! -e "$1" ]; then  # not exist (fnode, directory, socket, etc.)
+if [ ! -e "${1}" ]; then  # not exist (fnode, directory, socket, etc.)
 
     # https://stackoverflow.com/a/23622446
-    { red "$1 file doesn't exist"; } 2>&3
+    { red "${1} file doesn't exist"; } 2>&3
 
     exit 1;
 fi
 
-if [ ! -e "$2" ]; then  # not exist (fnode, directory, socket, etc.)
+if [ ! -e "${2}" ]; then  # not exist (fnode, directory, socket, etc.)
 
     # https://stackoverflow.com/a/23622446
-    { red "$2 file doesn't exist"; } 2>&3
+    { red "${2} file doesn't exist"; } 2>&3
 
     exit 1;
 fi
 
-TMPFILE="$(/bin/bash "$_DIR/cptmp.sh" "$2"${_CLEANOLD} --gen "$_GEN")"
+TMPFILE="$(/bin/bash "${_DIR}/cptmp.sh" "${2}"${_CLEANOLD} --gen "${_GEN}")"
 
 function cleanup {
 
-    unlink "$TMPFILE" || true
+    unlink "${TMPFILE}" || true
 }
 
 trap cleanup EXIT
 
 # https://stackoverflow.com/a/30969768
 set -o allexport
-source "$1"
+source "${1}"
 set +o allexport
 
-TMPTMP="$(envsubst < "$2")"
+TMPTMP="$(envsubst < "${2}")"
 
-if [ "$_REMOVEFIRST" = "1" ]; then
+if [ "${_REMOVEFIRST}" = "1" ]; then
 
-  echo "$TMPTMP" > "$TMPFILE"
+  echo "${TMPTMP}" > "${TMPFILE}"
 
   # https://superuser.com/a/284270
-  TMPTMP="$(awk NR\>1  "$TMPFILE")"
+  TMPTMP="$(awk NR\>1  "${TMPFILE}")"
 fi
 
-echo "$TMPTMP" > "$TMPFILE"
+echo "${TMPTMP}" > "${TMPFILE}"
 
 # clear trap
 trap - EXIT
 
-echo "$TMPFILE"
+echo "${TMPFILE}"

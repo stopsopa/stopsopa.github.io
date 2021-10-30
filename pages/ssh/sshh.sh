@@ -17,99 +17,99 @@
 
 PARAMS=""
 _EVAL=""
-while (( "$#" )); do
-  case "$1" in
+while (( "${#}" )); do
+  case "${1}" in
     -d|--dir)
-      DIR="$2";
+      DIR="${2}";
       shift 2;
       ;;
     --) # end argument parsing
       shift;
-      while (( "$#" )); do          # optional
-        if [ "$1" = "&&" ]; then
-          PARAMS="$PARAMS \&\&"
-          _EVAL="$_EVAL &&"
+      while (( "${#}" )); do          # optional
+        if [ "${1}" = "&&" ]; then
+          PARAMS="${PARAMS} \&\&"
+          _EVAL="${_EVAL} &&"
         else
-          if [ "$PARAMS" = "" ]; then
-            PARAMS="\"$1\""
-            _EVAL="\"$1\""
+          if [ "${PARAMS}" = "" ]; then
+            PARAMS="\"${1}\""
+            _EVAL="\"${1}\""
           else
-            PARAMS="$PARAMS \"$1\""
-            _EVAL="$_EVAL \"$1\""
+            PARAMS="${PARAMS} \"${1}\""
+            _EVAL="${_EVAL} \"${1}\""
 #          PARAMS="$(cat <<EOF
-#$PARAMS
-#- "$1"
+#${PARAMS}
+#- "${1}"
 #EOF
 #)"
           fi
         fi
-        echo "                PARAMS1>>$PARAMS<<"
-        echo "                _EVAL 2>>$_EVAL<<"
+        echo "                PARAMS1>>${PARAMS}<<"
+        echo "                _EVAL 2>>${_EVAL}<<"
         shift;                      # optional
-      done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
+      done                          # optional if you need to pass: /bin/bash ${0} -f -c -- -f "multi string arg"
       break;
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 error: Unsupported flag $1" >&2
+      echo "${0} error: Unsupported flag ${1}" >&2
       exit 1;
       ;;
     *) # preserve positional arguments
-      if [ "$1" = "&&" ]; then
-          PARAMS="$PARAMS \&\&"
-          _EVAL="$_EVAL &&"
+      if [ "${1}" = "&&" ]; then
+          PARAMS="${PARAMS} \&\&"
+          _EVAL="${_EVAL} &&"
       else
-        if [ "$PARAMS" = "" ]; then
-            PARAMS="\"$1\""
-            _EVAL="\"$1\""
+        if [ "${PARAMS}" = "" ]; then
+            PARAMS="\"${1}\""
+            _EVAL="\"${1}\""
         else
-          PARAMS="$PARAMS \"$1\""
-            _EVAL="$_EVAL \"$1\""
+          PARAMS="${PARAMS} \"${1}\""
+            _EVAL="${_EVAL} \"${1}\""
 #          PARAMS="$(cat <<EOF
-#$PARAMS
-#- "$1"
+#${PARAMS}
+#- "${1}"
 #EOF
 #)"
         fi
       fi
-      # echo "                PARAMS2>>$PARAMS<<"
-      # echo "                _EVAL 1>>$_EVAL<<"
+      # echo "                PARAMS2>>${PARAMS}<<"
+      # echo "                _EVAL 1>>${_EVAL}<<"
       shift;
       ;;
   esac
 done
 
 trim() {
-    local var="$*"
+    local var="${*}"
     # remove leading whitespace characters
     var="${var#"${var%%[![:space:]]*}"}"
     # remove trailing whitespace characters
     var="${var%"${var##*[![:space:]]}"}"
-    echo -n "$var"
+    echo -n "${var}"
 }
 
-PARAMS="$(trim "$PARAMS")"
-_EVAL="$(trim "$_EVAL")"
+PARAMS="$(trim "${PARAMS}")"
+_EVAL="$(trim "${_EVAL}")"
 
 # set positional arguments in their proper place
-eval set -- "$PARAMS"
+eval set -- "${PARAMS}"
 
 exec 3<> /dev/null
 function green {
-    printf "\e[32m$1\e[0m\n"
+    printf "\e[32m${1}\e[0m\n"
 }
 
 function red {
-    printf "\e[31m$1\e[0m\n"
+    printf "\e[31m${1}\e[0m\n"
 }
 
 function yellow {
-    printf "\e[33m$1\e[0m\n"
+    printf "\e[33m${1}\e[0m\n"
 }
 
-if [ "$DIR" = "" ]; then
+if [ "${DIR}" = "" ]; then
 
 
-  { red "\n$0 error:   --dir is not specified\n"; } 2>&3
+  { red "\n${0} error:   --dir is not specified\n"; } 2>&3
 
 
   _exit 2> /dev/null
@@ -120,13 +120,13 @@ ssh-add -l
 
 echo ""
 
-if [ "$1" = "install" ]; then
+if [ "${1}" = "install" ]; then
 
   TEST="alias sshh=\"/bin/bash ~/sshh.sh\""
 
   CONTENT="$(cat ~/.bashrc)"
 
-  if [[ $CONTENT =~ $TEST ]]; then
+  if [[ ${CONTENT} =~ ${TEST} ]]; then
 
       echo "already installed just use"
   else
@@ -145,42 +145,42 @@ if [ "$1" = "install" ]; then
   _exit 2> /dev/null || true
 fi
 
-_CMD="find \"$DIR\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
+_CMD="find \"${DIR}\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
 
-echo -e "executing command:\n\n    $_CMD\n"
+echo -e "executing command:\n\n    ${_CMD}\n"
 
-_LIST="$(eval "$_CMD")"
+_LIST="$(eval "${_CMD}")"
 
-_CODE="$?"
+_CODE="${?}"
 
-_LIST="$(trim "$_LIST")"
+_LIST="$(trim "${_LIST}")"
 
-if [ "$_CODE" != "0" ]; then
+if [ "${_CODE}" != "0" ]; then
 
-{ red "$0 error:$(cat <<END
+{ red "${0} error:$(cat <<END
 
-$0 error:
+${0} error:
 command:
 
-  $_CMD
+  ${_CMD}
 
-has crushed with status code: >>$_CODE<<
+has crushed with status code: >>${_CODE}<<
 
 END
 )"; } 2>&3
 
-    echo exit $_CODE;
+    echo exit ${_CODE};
 
     _exit 2> /dev/null || true
 fi
 
-_LINES="$(echo "$_LIST" | wc -l)"
+_LINES="$(echo "${_LIST}" | wc -l)"
 
-_LINES="$(trim "$_LINES")"
+_LINES="$(trim "${_LINES}")"
 
-if [ "$_LIST" = "" ] || [ "$_LINES" -lt "1" ]; then
+if [ "${_LIST}" = "" ] || [ "${_LINES}" -lt "1" ]; then
 
-  { red "\n$0 error:   No keys found\n"; } 2>&3
+  { red "\n${0} error:   No keys found\n"; } 2>&3
 
   _exit 2> /dev/null || true
 fi
@@ -194,19 +194,19 @@ TEST="^[0-9]+$"
 while : ; do
 
     i="1"
-    for name in $_LIST
+    for name in ${_LIST}
     do
 
-        name="$(echo "$name" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
+        name="$(echo "${name}" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
 
-        echo "$i) ${name}"
+        echo "${i}) ${name}"
 
-        i=$(($i + 1))
+        i=$((${i} + 1))
     done
 
     printf ">"
 
-    if [ "$_LINES" -lt "10" ]; then
+    if [ "${_LINES}" -lt "10" ]; then
 
       read -n1 i
     else
@@ -216,25 +216,11 @@ while : ; do
 
     echo ""
 
-    if ! [[ $i =~ $TEST ]]; then
+    if ! [[ ${i} =~ ${TEST} ]]; then
 
-{ red "$0 error: $(cat <<END
+{ red "${0} error: $(cat <<END
 
-given value ($i) should be an integer
-
-try again:
-
-END
-)"; } 2>&3
-
-      _exit 2> /dev/null || true
-    fi
-
-    if [[ "$i" -lt "1" ]] || [ "$i" -gt "$_LINES" ]; then
-
-{ red "$0 error: $(cat <<END
-
-given value ($i) should be an integer > 0 but <= than $_LINES
+given value (${i}) should be an integer
 
 try again:
 
@@ -244,41 +230,55 @@ END
       _exit 2> /dev/null || true
     fi
 
-    SSHS="$(echo "$_LIST" | sed -n "$i p")"
+    if [[ "${i}" -lt "1" ]] || [ "${i}" -gt "${_LINES}" ]; then
+
+{ red "${0} error: $(cat <<END
+
+given value (${i}) should be an integer > 0 but <= than ${_LINES}
+
+try again:
+
+END
+)"; } 2>&3
+
+      _exit 2> /dev/null || true
+    fi
+
+    SSHS="$(echo "${_LIST}" | sed -n "${i} p")"
 
     break;
 done
 
 ssh-add -D
 
-#for name in $_LIST
+#for name in ${_LIST}
 #do
 #
-#    key="$(echo "$name" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
+#    key="$(echo "${name}" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
 #
-#    ssh-add -D "$name"
+#    ssh-add -D "${name}"
 #done
 
-key="$(echo "$SSHS" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
+key="$(echo "${SSHS}" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
 
-cp "$SSHS" ~/.ssh/
-chmod 600 ~/.ssh/$key
+cp "${SSHS}" ~/.ssh/
+chmod 600 ~/.ssh/${key}
 
-echo -e "executing command:\n\n    ssh-add ~/.ssh/$key\n"
+echo -e "executing command:\n\n    ssh-add ~/.ssh/${key}\n"
 
-ssh-add ~/.ssh/$key
+ssh-add ~/.ssh/${key}
 
-_CODE="$?"
+_CODE="${?}"
 
-rm ~/.ssh/$key
+rm ~/.ssh/${key}
 
-GITCONFIG="$DIR/$key.sh"
+GITCONFIG="${DIR}/${key}.sh"
 
-if [ -f "$GITCONFIG" ]; then
+if [ -f "${GITCONFIG}" ]; then
 
-  echo "Executing '$GITCONFIG'"
+  echo "Executing '${GITCONFIG}'"
 
-  /bin/bash "$GITCONFIG"
+  /bin/bash "${GITCONFIG}"
 
   echo ""
   git config --global -l | egrep "(user\.name|user\.email)"
@@ -289,7 +289,7 @@ else
 
   WARNING:
 
-  git config file '$GITCONFIG' not found
+  git config file '${GITCONFIG}' not found
 
   check config:
 
@@ -301,16 +301,16 @@ END
 
 fi
 
-if [ "$_CODE" != "0" ]; then
+if [ "${_CODE}" != "0" ]; then
 
-{ red "$0 error: $(cat <<END
+{ red "${0} error: $(cat <<END
 
-$0 error:
+${0} error:
 command:
 
-  $_CMD
+  ${_CMD}
 
-has crushed with status code: >>$_CODE<<
+has crushed with status code: >>${_CODE}<<
 
 END
 )"; } 2>&3

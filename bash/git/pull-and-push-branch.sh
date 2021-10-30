@@ -42,7 +42,7 @@ while (( "${#}" )); do
       if [ "${PARAMS}" = "" ]; then
           PARAMS="\"${1}\""
       else
-          PARAMS="${PARAMS} \"$1\""
+          PARAMS="${PARAMS} \"${1}\""
       fi
       shift;
       ;;
@@ -50,20 +50,20 @@ while (( "${#}" )); do
 done
 
 # set positional arguments in their proper place
-eval set -- "$PARAMS"
+eval set -- "${PARAMS}"
 
-remote="$1"
-source="$2"
-target="$3"
+remote="${1}"
+source="${2}"
+target="${3}"
 
 THISFILE=${BASH_SOURCE[0]}
 DIR="$( cd "$( dirname "${THISFILE}" )" && pwd -P )"
 
-source "$DIR/../colours.sh";
+source "${DIR}/../colours.sh";
 
-if [ "$#" -lt 3 ] ; then
+if [ "${#}" -lt 3 ] ; then
 
-    { red "\n[error] At least two argument expected, like: \n\n    /bin/bash $0 \"origin\" \"local-branch-name\" \"remote-branch-name\" \n"; } 2>&3
+    { red "\n[error] At least two argument expected, like: \n\n    /bin/bash ${0} \"origin\" \"local-branch-name\" \"remote-branch-name\" \n"; } 2>&3
 
     exit 1;
 fi
@@ -71,18 +71,18 @@ fi
 set -e
 set -x
 
-/bin/bash $DIR/is-this-branch.sh ${source};
+/bin/bash ${DIR}/is-this-branch.sh ${source};
 
 containsElement () {
     local e
-    for e in "${@:2}"; do [[ "${e}" == "$1" ]] && return 0; done
+    for e in "${@:2}"; do [[ "${e}" == "${1}" ]] && return 0; done
     return 1
 }
 
 function fetchbranches {
     giturl=$(git config --get remote.${remote}.url)
 
-    if [[ "$?" != 0 ]]; then
+    if [[ "${?}" != 0 ]]; then
 
         exit 0;
     fi
@@ -114,9 +114,9 @@ fi
 
 set +e
 containsElement "${target}" "${remotebranches[@]}"
-CONTAIN="$?"
+CONTAIN="${?}"
 
-if [[ $CONTAIN != 0 ]]; then
+if [[ ${CONTAIN} != 0 ]]; then
 
     { red "[error] branch '${target}' DOES NOT exist remotely on '${remote}'"; } 2>&3
 
@@ -132,7 +132,7 @@ do
 
     git --no-optional-locks -c color.branch=true -c color.diff=true -c color.status=true pull ${remote} ${target} -v --no-edit
 
-    if [ "$?" = "0" ] ; then
+    if [ "${?}" = "0" ] ; then
 
         break;
     fi
@@ -144,7 +144,7 @@ do
     read trash
 done
 
-if [ "$_DONTPUSH" = "1" ]; then
+if [ "${_DONTPUSH}" = "1" ]; then
 
     { green "[ok] JUST pull to local branch '${source}' to '${remote}' '${target}' - success"; } 2>&3
 
@@ -155,13 +155,13 @@ else
 
     COMMAND="git --no-optional-locks -c color.branch=true -c color.diff=true -c color.status=true push -v --follow-tags --set-upstream ${remote} refs/heads/${source}:refs/heads/${target}"
 
-    $COMMAND;
+    ${COMMAND};
 
-    #COMMAND2="/bin/bash $DIR/../helpers/headtail.sh 9 5 $COMMAND"
+    #COMMAND2="/bin/bash ${DIR}/../helpers/headtail.sh 9 5 ${COMMAND}"
     #
-    #$COMMAND2
+    #${COMMAND2}
 
-    if [[ $? != 0 ]]; then
+    if [[ ${?} != 0 ]]; then
 
         { red "[error] push from local branch '${source}' to '${remote}' '${target}' - failure"; } 2>&3
 

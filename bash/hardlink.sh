@@ -133,12 +133,12 @@ fi
 CODE="0";
 
 trim() {
-    local var="$*"
+    local var="${*}"
     # remove leading whitespace characters
     var="${var#"${var%%[![:space:]]*}"}"
     # remove trailing whitespace characters
     var="${var%"${var##*[![:space:]]}"}"
-    echo -n "$var"
+    echo -n "${var}"
 }
 
 function link {
@@ -371,7 +371,7 @@ if [ "${1}" = "source" ]; then
 
   COUNT="$(echo "${NEWLIST}" | wc -l)"
 
-  COUNT="$(trim "$COUNT")"
+  COUNT="$(trim "${COUNT}")"
 
   if [ "${COUNT}" -gt "${MAX}" ]; then
 
@@ -393,7 +393,7 @@ if [ "${1}" = "source" ]; then
 
     echo;
 
-    if ! [[ $REPLY =~ ^[Yy]$ ]]; then
+    if ! [[ ${REPLY} =~ ^[Yy]$ ]]; then
 
       { green "script stopped\n"; } 2>&3
 

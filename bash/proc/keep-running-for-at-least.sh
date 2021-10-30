@@ -8,7 +8,7 @@ _KEEP_RUNNING_FOR="";
 _DONT_TALK="0";
 
 PARAMS=""
-while (( "$#" )); do
+while (( "${#}" )); do
   case "${1}" in
     -dt|--dont-talk)
       _DONT_TALK="1";
@@ -26,74 +26,74 @@ while (( "$#" )); do
 
       if ! [[ "${_KEEP_RUNNING_FOR}" =~ ${TEST} ]]; then
 
-          echo "${0} error: --sec \$_KEEP_RUNNING_FOR($_KEEP_RUNNING_FOR) don't match '$TEST'";
+          echo "${0} error: --sec \$_KEEP_RUNNING_FOR(${_KEEP_RUNNING_FOR}) don't match '${TEST}'";
 
           exit 1;
       fi
 
-      if [ "$_KEEP_RUNNING_FOR" -lt 1 ]; then
+      if [ "${_KEEP_RUNNING_FOR}" -lt 1 ]; then
 
-          echo "$0 error: --sec param \$_KEEP_RUNNING_FOR($_KEEP_RUNNING_FOR) is smaller than '1'";
+          echo "${0} error: --sec param \$_KEEP_RUNNING_FOR(${_KEEP_RUNNING_FOR}) is smaller than '1'";
 
           exit 1
       fi
       ;;
     --) # end argument parsing
       shift
-                        while (( "$#" )); do          # optional
-                          if [ "$PARAMS" = "" ]; then # optional
-                              PARAMS="\"$1\""         # optional
+                        while (( "${#}" )); do          # optional
+                          if [ "${PARAMS}" = "" ]; then # optional
+                              PARAMS="\"${1}\""         # optional
                           else                        # optional
-                              PARAMS="$PARAMS \"$1\"" # optional
+                              PARAMS="${PARAMS} \"${1}\"" # optional
                           fi                          # optional
                           shift;                      # optional
-                        done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
+                        done                          # optional if you need to pass: /bin/bash ${0} -f -c -- -f "multi string arg"
       break
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 error: Unsupported flag $1" >&2
+      echo "${0} error: Unsupported flag ${1}" >&2
       exit 1
       ;;
     *) # preserve positional arguments
 
-      if [ "$PARAMS" = "" ]; then
-          PARAMS="\"$1\""
+      if [ "${PARAMS}" = "" ]; then
+          PARAMS="\"${1}\""
       else
-          PARAMS="$PARAMS \"$1\""
+          PARAMS="${PARAMS} \"${1}\""
       fi
       shift
       ;;
   esac
 done
 
-if [ "$_KEEP_RUNNING_FOR" = "" ]; then
+if [ "${_KEEP_RUNNING_FOR}" = "" ]; then
 
-    echo "$0 error: --sec param is not specified";
+    echo "${0} error: --sec param is not specified";
 
     exit 1
 fi
 
 # set positional arguments in their proper place
-#eval set -- "$PARAMS"
+#eval set -- "${PARAMS}"
 
 _START="$(date +%s)"
 
-if [ "$_DONT_TALK" = "0" ]; then
+if [ "${_DONT_TALK}" = "0" ]; then
 
-    echo "$0 _KEEP_RUNNING_FOR: $_KEEP_RUNNING_FOR"
+    echo "${0} _KEEP_RUNNING_FOR: ${_KEEP_RUNNING_FOR}"
 
-    echo -e "COMMAND: $PARAMS\n\n>>>>>>"
+    echo -e "COMMAND: ${PARAMS}\n\n>>>>>>"
 fi
 
-eval $PARAMS
+eval ${PARAMS}
 
-_CODE="$?"
+_CODE="${?}"
 
-if [ "$_DONT_TALK" = "0" ]; then
+if [ "${_DONT_TALK}" = "0" ]; then
 
-    echo -e "<<<<<<\n\n$0 executing command:\n\n    $PARAMS\n"
+    echo -e "<<<<<<\n\n${0} executing command:\n\n    ${PARAMS}\n"
 
-    if [ "$_CODE" = "0" ]; then
+    if [ "${_CODE}" = "0" ]; then
 
         printf "succeeded"
     else
@@ -101,27 +101,27 @@ if [ "$_DONT_TALK" = "0" ]; then
         printf "failed"
     fi
 
-    printf " with exit code: $_CODE\n"
+    printf " with exit code: ${_CODE}\n"
 fi
 
-_TOOK=$(( $(date +%s) - $_START ));
+_TOOK=$(( $(date +%s) - ${_START} ));
 
-_DIFF=$(( $_KEEP_RUNNING_FOR - $_TOOK ));
+_DIFF=$(( ${_KEEP_RUNNING_FOR} - ${_TOOK} ));
 
-if [ "$_DIFF" -gt "0" ]; then
+if [ "${_DIFF}" -gt "0" ]; then
 
-    if [ "$_DONT_TALK" = "0" ]; then
+    if [ "${_DONT_TALK}" = "0" ]; then
 
-        echo -e "\nexecuting command:\n\n    $PARAMS\n\ntook less than $_KEEP_RUNNING_FOR seconds so lets wait another $_DIFF seconds\n"
+        echo -e "\nexecuting command:\n\n    ${PARAMS}\n\ntook less than ${_KEEP_RUNNING_FOR} seconds so lets wait another ${_DIFF} seconds\n"
     fi
 
-    sleep "$_DIFF"
+    sleep "${_DIFF}"
 else
 
-    if [ "$_DONT_TALK" = "0" ]; then
+    if [ "${_DONT_TALK}" = "0" ]; then
 
-        echo -e "\nexecuting command:\n\n    $PARAMS\n\ntook more than $_KEEP_RUNNING_FOR seconds ($_TOOK to be exact) no need to wait\n"
+        echo -e "\nexecuting command:\n\n    ${PARAMS}\n\ntook more than ${_KEEP_RUNNING_FOR} seconds (${_TOOK} to be exact) no need to wait\n"
     fi
 fi
 
-exit $_CODE;
+exit ${_CODE};

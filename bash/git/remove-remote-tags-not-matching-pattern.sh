@@ -43,21 +43,21 @@ fi
 
 set -e
 
-___BASENAME="$(basename "$0")"
+___BASENAME="$(basename "${0}")"
 
 REMOVELOCAL="1";
-if [ "$1" = "--dontremovelocal" ]; then
+if [ "${1}" = "--dontremovelocal" ]; then
   REMOVELOCAL="0";
   shift;
 fi
 
 FORCE="0";
-if [ "$1" = "--force" ]; then
+if [ "${1}" = "--force" ]; then
   FORCE="1";
   shift;
 fi
 
-PATTERN="$1"
+PATTERN="${1}"
 
 if [ "${PATTERN}" = "" ]; then
 
@@ -68,7 +68,7 @@ fi
 
 shift;
 
-REMOTE="$1"
+REMOTE="${1}"
 
 if [ "${REMOTE}" = "" ]; then
 

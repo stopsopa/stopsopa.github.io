@@ -15,145 +15,145 @@ DIR="/Volumes/WINSCP/ssh/ssh"
 
 PARAMS=""
 _EVAL=""
-while (( "$#" )); do
-  case "$1" in
+while (( "${#}" )); do
+  case "${1}" in
     -d|--dir)
-      DIR="$2";
+      DIR="${2}";
       shift 2;
       ;;
     --) # end argument parsing
       shift;
-      while (( "$#" )); do          # optional
-        if [ "$1" = "&&" ]; then
-          PARAMS="$PARAMS \&\&"
-          _EVAL="$_EVAL &&"
+      while (( "${#}" )); do          # optional
+        if [ "${1}" = "&&" ]; then
+          PARAMS="${PARAMS} \&\&"
+          _EVAL="${_EVAL} &&"
         else
-          if [ "$PARAMS" = "" ]; then
-            PARAMS="\"$1\""
-            _EVAL="\"$1\""
+          if [ "${PARAMS}" = "" ]; then
+            PARAMS="\"${1}\""
+            _EVAL="\"${1}\""
           else
-            PARAMS="$PARAMS \"$1\""
-            _EVAL="$_EVAL \"$1\""
+            PARAMS="${PARAMS} \"${1}\""
+            _EVAL="${_EVAL} \"${1}\""
 #          PARAMS="$(cat <<EOF
-#$PARAMS
-#- "$1"
+#${PARAMS}
+#- "${1}"
 #EOF
 #)"
           fi
         fi
-        echo "                PARAMS1>>$PARAMS<<"
-        echo "                _EVAL 2>>$_EVAL<<"
+        echo "                PARAMS1>>${PARAMS}<<"
+        echo "                _EVAL 2>>${_EVAL}<<"
         shift;                      # optional
-      done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
+      done                          # optional if you need to pass: /bin/bash ${0} -f -c -- -f "multi string arg"
       break;
       ;;
     -*|--*=) # unsupported flags
-      echo "$0 error: Unsupported flag $1" >&2
+      echo "${0} error: Unsupported flag ${1}" >&2
       exit 1;
       ;;
     *) # preserve positional arguments
-      if [ "$1" = "&&" ]; then
-          PARAMS="$PARAMS \&\&"
-          _EVAL="$_EVAL &&"
+      if [ "${1}" = "&&" ]; then
+          PARAMS="${PARAMS} \&\&"
+          _EVAL="${_EVAL} &&"
       else
-        if [ "$PARAMS" = "" ]; then
-            PARAMS="\"$1\""
-            _EVAL="\"$1\""
+        if [ "${PARAMS}" = "" ]; then
+            PARAMS="\"${1}\""
+            _EVAL="\"${1}\""
         else
-          PARAMS="$PARAMS \"$1\""
-            _EVAL="$_EVAL \"$1\""
+          PARAMS="${PARAMS} \"${1}\""
+            _EVAL="${_EVAL} \"${1}\""
 #          PARAMS="$(cat <<EOF
-#$PARAMS
-#- "$1"
+#${PARAMS}
+#- "${1}"
 #EOF
 #)"
         fi
       fi
-      # echo "                PARAMS2>>$PARAMS<<"
-      # echo "                _EVAL 1>>$_EVAL<<"
+      # echo "                PARAMS2>>${PARAMS}<<"
+      # echo "                _EVAL 1>>${_EVAL}<<"
       shift;
       ;;
   esac
 done
 
 trim() {
-    local var="$*"
+    local var="${*}"
     # remove leading whitespace characters
     var="${var#"${var%%[![:space:]]*}"}"
     # remove trailing whitespace characters
     var="${var%"${var##*[![:space:]]}"}"
-    echo -n "$var"
+    echo -n "${var}"
 }
 
-PARAMS="$(trim "$PARAMS")"
-_EVAL="$(trim "$_EVAL")"
+PARAMS="$(trim "${PARAMS}")"
+_EVAL="$(trim "${_EVAL}")"
 
 # set positional arguments in their proper place
-eval set -- "$PARAMS"
+eval set -- "${PARAMS}"
 
 exec 3<> /dev/null
 function green {
-    printf "\e[32m$1\e[0m\n"
+    printf "\e[32m${1}\e[0m\n"
 }
 
 function red {
-    printf "\e[31m$1\e[0m\n"
+    printf "\e[31m${1}\e[0m\n"
 }
 
 function yellow {
-    printf "\e[33m$1\e[0m\n"
+    printf "\e[33m${1}\e[0m\n"
 }
 
-if [ "$#" = "0" ]; then
+if [ "${#}" = "0" ]; then
 
-  { red "\n$0 error:   specify parameters\n"; } 2>&3
+  { red "\n${0} error:   specify parameters\n"; } 2>&3
 
   exit 1
 fi
 
 LOADED="$(ssh-add -l)"
 
-if [[ ! $LOADED = *"The agent has no identities"* ]]; then
+if [[ ! ${LOADED} = *"The agent has no identities"* ]]; then
 
-  { green "\n$0: Keys already loaded\n"; } 2>&3
+  { green "\n${0}: Keys already loaded\n"; } 2>&3
 
-  echo "$LOADED"
+  echo "${LOADED}"
   
   echo -e "\nto unregister keys run ssh-add -D"
 
   exit 0
 fi
 
-_CMD="find \"$DIR\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
+_CMD="find \"${DIR}\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
 
-_LIST="$(eval "$_CMD")"
+_LIST="$(eval "${_CMD}")"
 
-_CODE="$?"
+_CODE="${?}"
 
-if [ "$_CODE" != "0" ]; then
+if [ "${_CODE}" != "0" ]; then
 
-{ red "$0 error: $(cat <<END
+{ red "${0} error: $(cat <<END
 
-$0 error:
+${0} error:
 command:
 
-  $_CMD
+  ${_CMD}
 
-has crushed with status code: >>$_CODE<<
+has crushed with status code: >>${_CODE}<<
 
 END
 )"; } 2>&3
 
-    exit $_CODE;
+    exit ${_CODE};
 fi
 
-_LINES="$(echo "$_LIST" | wc -l)"
+_LINES="$(echo "${_LIST}" | wc -l)"
 
-_LINES="$(trim "$_LINES")"
+_LINES="$(trim "${_LINES}")"
 
-if [ "$_LIST" = "" ] || [ "$_LINES" -lt "1" ]; then
+if [ "${_LIST}" = "" ] || [ "${_LINES}" -lt "1" ]; then
 
-  { red "\n$0 error:   No keys found\n"; } 2>&3
+  { red "\n${0} error:   No keys found\n"; } 2>&3
 
   exit 1
 fi
@@ -162,7 +162,7 @@ ssh-add -D
 
 while : ; do
 
-  if [ "$1" = "" ]; then
+  if [ "${1}" = "" ]; then
 
     echo -e "\n\n   loaded keys:"
 
@@ -175,42 +175,42 @@ while : ; do
     exit 0
   fi
 
-  KEY="$1"
+  KEY="${1}"
 
   shift;
 
   (
 
-    cd "$DIR";
+    cd "${DIR}";
 
-    if [ ! -e "$DIR/$KEY" ]; then
+    if [ ! -e "${DIR}/${KEY}" ]; then
 
-      { red "\n$0 error:   file '$DIR/$KEY' doesn't exist\n"; } 2>&3
+      { red "\n${0} error:   file '${DIR}/${KEY}' doesn't exist\n"; } 2>&3
 
       exit 1
     fi
 
     chmod 700 ~/.ssh/
 
-    cp "$DIR/$KEY" ~/.ssh/
+    cp "${DIR}/${KEY}" ~/.ssh/
 
-    chmod 600 ~/.ssh/$KEY
+    chmod 600 ~/.ssh/${KEY}
 
-    echo -e "executing command:\n\n    ssh-add ~/.ssh/$KEY\n"
+    echo -e "executing command:\n\n    ssh-add ~/.ssh/${KEY}\n"
 
-    ssh-add ~/.ssh/$KEY
+    ssh-add ~/.ssh/${KEY}
 
-    _CODE="$?"
+    _CODE="${?}"
 
-    rm ~/.ssh/$KEY
+    rm ~/.ssh/${KEY}
 
-    GITCONFIG="$DIR/$KEY.sh"
+    GITCONFIG="${DIR}/${KEY}.sh"
 
-    if [ -f "$GITCONFIG" ]; then
+    if [ -f "${GITCONFIG}" ]; then
 
-      echo "Executing '$GITCONFIG'"
+      echo "Executing '${GITCONFIG}'"
 
-      /bin/bash "$GITCONFIG"
+      /bin/bash "${GITCONFIG}"
 
       git config --global -l | egrep "(user\.name|user\.email)"
     else
@@ -219,7 +219,7 @@ while : ; do
 
   WARNING:
 
-  git config file '$GITCONFIG' not found
+  git config file '${GITCONFIG}' not found
 
   check config:
 
@@ -230,21 +230,21 @@ END
 
     fi
 
-    if [ "$_CODE" != "0" ]; then
+    if [ "${_CODE}" != "0" ]; then
 
-    { red "$0 error:$(cat <<END
+    { red "${0} error:$(cat <<END
 
-$0 error:
+${0} error:
 command:
 
-  $_CMD
+  ${_CMD}
 
-has crushed with status code: >>$_CODE<<
+has crushed with status code: >>${_CODE}<<
 
 END
 )"; } 2>&3
 
-      exit $_CODE;
+      exit ${_CODE};
     fi
 
   )
