@@ -1839,6 +1839,73 @@ async function b() {
 }());
 
                 </script>
+                <h2>yield</h2>
+                <script type="editor" data-lang="js">
+
+const t = ['one', 'two', 'three', 'four'];
+let error;
+// error = 1;
+// error = 2;
+function* foo(t) {
+  console.log('start');
+  if (error === 1) {
+    throw new Error(`What's happened?! 1`);
+  }
+  for (let i = 0, l = t.length ; i < l ; i += 1 ) {
+    console.log(`stop: ${i}`);
+    if (error === 2) {
+      throw new Error(`What's happened?! 2`);
+    }
+    yield `${t[i]} yield`;
+  }
+  return 'finish'
+}
+let iterator;
+try {
+  iterator = foo(t);
+  console.log('after iterator');
+}
+catch (e) {
+  console.log('generalerror: ', String(e));
+}
+try {
+  console.log('1:', iterator.next());
+  console.log('2:', iterator.next('myval'));
+  console.log('3:', iterator.next());
+  console.log('4:', iterator.next());
+  console.log('5:', iterator.next());
+  console.log('6:', iterator.next());
+}
+catch (e) {
+  console.log('generalerror 2: ', String(e));
+}
+
+// // for error = undefined
+// after iterator
+// start
+// stop: 0
+// 1: { value: 'one yield', done: false }
+// stop: 1
+// 2: { value: 'two yield', done: false }
+// stop: 2
+// 3: { value: 'three yield', done: false }
+// stop: 3
+// 4: { value: 'four yield', done: false }
+// 5: { value: 'finish', done: true }
+// 6: { value: undefined, done: true }
+//
+// // for error = 1
+// after iterator
+// start
+// generalerror 2:  Error: What's happened?! 1
+//
+// // for error = 2
+// after iterator
+// start
+// stop: 0
+// generalerror 2:  Error: What's happened?! 2       
+
+                </script>
             </div>
                         
         </div>
