@@ -50,10 +50,13 @@
             <a href="https://medium.datadriveninvestor.com/the-node-js-architecture-f86e2337bcd2">The Node.js Architecture!</a>
             <br />
             <a href="https://nodejs.dev/learn/understanding-setimmediate">https://nodejs.dev/learn/understanding-setimmediate</a>
-                <h2>system info</h2>
+                <h2>useful</h2>
                 <script type="editor" data-lang="sh">
                 
 npx envinfo
+
+npx prettier --write src
+    # https://prettier.io/docs/en/cli.html#docsNav
 
                 </script>
             <div class="cards">
@@ -404,6 +407,9 @@ npm install --production=false # with devDependencies
     
 $(npm bin)/cypress open
     # from: https://docs.cypress.io/guides/getting-started/installing-cypress.html#Opening-Cypress
+
+npm root -g
+    # npm global node_module
 
 npm init
 npm init --scope=stopsopa
@@ -1409,249 +1415,7 @@ module.exports = function request(url, opt = {}) {
 
             <div class="cards">
                 <h2>lightfetch.js</h2>  
-                <script type="editor" data-lang="js">
-                
-"use strict";
-
-// yarn add qs@^6
-
-const URL           = require('url').URL;
-
-const https         = require('https');
-
-const http          = require('http');
-
-// const querystring   = require('querystring');
-
-const qs            = require('qs');
-
-const name          = '@libs/lightfetch';
-
-const emsg          = msg => `${name}: ${msg}`;
-
-const th            = msg => new Error(emsg(msg));
-
-const def = {
-  method                : 'GET',
-  timeout               : 30 * 1000,
-  query                 : {},
-  headers               : {},
-  debug                 : false,
-  body                  : undefined,
-  noBody                : false,
-  decodeJson            : false,
-  isResPromiseResolvable  : async res => {
-    return await res.statusCode >= 200 && res.statusCode < 300;
-  },
-  qsOptions: {}, // https://github.com/ljharb/qs#stringifying
-};
-
-const defKeys = Object.keys(def);
-
-module.exports = function (url, opt = {}) {
-
-  Object.keys(opt || {}).forEach(key => {
-
-    if ( ! defKeys.includes(key) ) {
-
-      throw th(`key '${key}' is not on the list of allowed parameters ${defKeys.join(', ')}`);
-    }
-  });
-
-  let {
-    method,
-    timeout,
-    query,
-    headers,
-    debug,
-    body,
-    noBody,
-    decodeJson,
-    isResPromiseResolvable,
-    qsOptions,
-  } = ({
-    ...def,
-    ...opt,
-  });
-
-  if ( typeof method !== 'string' ) {
-
-    throw th(`method is not a string`);
-  }
-
-  method = method.toUpperCase();
-
-  return new Promise((resolve, reject) => {
-
-    try {
-
-      const uri   = new URL(url);
-
-      const lib   = (uri.protocol === 'https:') ? https : http;
-
-      // const querystring = querystring.stringify(query)
-
-      const querystring = qs.stringify(query, qsOptions);
-
-      let rawBody = body;
-
-      if (body !== undefined && method === 'GET') {
-
-        throw th(`since you have specified the body for request probably method shouldn't be GET`);
-      }
-
-      // body is not a string, so probably it need to be sent as a json
-      if (isObject(body) || Array.isArray(body)) {
-
-        try {
-
-          body = JSON.stringify(body);
-        }
-        catch (e) {
-
-          return reject(th(`JSON.stringify error: ${e}`));
-        }
-
-        headers['Content-Type'] = 'application/json; charset=utf-8';
-      }
-
-      const rq = {
-        hostname    : uri.hostname,
-        port        : uri.port || ( (uri.protocol === 'https:') ? '443' : '80'),
-        path        : uri.pathname + uri.search + (querystring ? (uri.search.includes('?') ? '&' : '?') + querystring : ''),
-        method,
-        headers,
-      };
-
-      if (debug === 'body') {
-
-        rq.body = body;
-
-        rq.rawBody = rawBody;
-      }
-
-      if (debug) {
-
-        console.log(`${name} debug`, rq);
-      }
-
-      var req = lib.request(rq, res => {
-
-        try {
-
-          res.setEncoding('utf8');
-
-          let body = '';
-
-          res.on('data', chunk => {
-
-            body += chunk
-          });
-
-          res.on('end', async () => {
-
-            // const decodeJson = (function () { // automatic detection will be replaced with manual parameter
-            //
-            //   try {
-            //
-            //     return res.headers['content-type'].includes('application/json');
-            //   }
-            //   catch (e) {
-            //
-            //     return false;
-            //   }
-            // }());
-
-            if (decodeJson) {
-
-              try {
-
-                body = JSON.parse(body);
-              }
-              catch (e) {
-
-                reject(th(`JSON.parse(response body) error: ${e}, body: >>${body}<<`))
-              }
-            }
-
-            try {
-
-              const passed = await isResPromiseResolvable(res, body);
-
-              if ( ! passed ) {
-
-                return reject(th(`Not resolving response (param function 'isResPromiseResolvable')`));
-              }
-            }
-            catch (e) {
-
-              return reject(th(`Not resolving response (param function 'isResPromiseResolvable'), catch: ${e}`));
-            }
-
-            const payload = {
-              status: res.statusCode,
-              headers: res.headers,
-            };
-
-            if (noBody === false) {
-
-              payload.body = body;
-            }
-
-            resolve(payload)
-          });
-        }
-        catch (e) {
-
-          reject(th(`lib.request error: ${e}`));
-        }
-      });
-
-      req.on('socket', function (socket) {
-
-        try {
-
-          socket.setTimeout(timeout);
-
-          socket.on('timeout', () => { // https://stackoverflow.com/a/9910413
-
-            try {
-              req.destroy();
-            }
-            catch (e) {
-              try {
-                req.abort(); // since node v14.1.0 Use request.destroy() instead
-              }
-              catch (e) {}
-            }
-
-            reject(th(`timeout (${timeout}ms)`))
-          });
-        }
-        catch (e) {
-
-          reject(th(`socket timeout error: ${e}`));
-        }
-      });
-
-      req.on('error', e => reject(th(`on error: ${e}`)));
-
-      body && req.write(body);
-
-      req.end();
-    }
-    catch (e) {
-
-      reject(th(`general error: ${e}`));
-    }
-  });
-}
-
-function isObject(o) {
-  return Object.prototype.toString.call(o) === '[object Object]';
-}
-
-                </script>
+                <a href="https://github.com/stopsopa/nlab/blob/master/src/lightFetch.js">https://github.com/stopsopa/nlab/blob/master/src/lightFetch.js</a>
                 <h2>curl polyfill</h2>
                 <script type="editor" data-lang="sh" class="domain.com">
 
@@ -1663,6 +1427,7 @@ else # curl
 fi
 
                 </script>
+                <a href="https://httpstat.us/">https://httpstat.us/</a>
             </div>
             <div class="cards">
                 <h2>fetchData & fetchJson (transport.js)</h2>  
@@ -2078,6 +1843,73 @@ async function b() {
     })
   }
 }());
+
+                </script>
+                <h2>yield</h2>
+                <script type="editor" data-lang="js">
+
+const t = ['one', 'two', 'three', 'four'];
+let error;
+// error = 1;
+// error = 2;
+function* foo(t) {
+  console.log('start');
+  if (error === 1) {
+    throw new Error(`What's happened?! 1`);
+  }
+  for (let i = 0, l = t.length ; i < l ; i += 1 ) {
+    console.log(`stop: ${i}`);
+    if (error === 2) {
+      throw new Error(`What's happened?! 2`);
+    }
+    yield `${t[i]} yield`;
+  }
+  return 'finish'
+}
+let iterator;
+try {
+  iterator = foo(t);
+  console.log('after iterator');
+}
+catch (e) {
+  console.log('generalerror: ', String(e));
+}
+try {
+  console.log('1:', iterator.next());
+  console.log('2:', iterator.next('myval'));
+  console.log('3:', iterator.next());
+  console.log('4:', iterator.next());
+  console.log('5:', iterator.next());
+  console.log('6:', iterator.next());
+}
+catch (e) {
+  console.log('generalerror 2: ', String(e));
+}
+
+// // for error = undefined
+// after iterator
+// start
+// stop: 0
+// 1: { value: 'one yield', done: false }
+// stop: 1
+// 2: { value: 'two yield', done: false }
+// stop: 2
+// 3: { value: 'three yield', done: false }
+// stop: 3
+// 4: { value: 'four yield', done: false }
+// 5: { value: 'finish', done: true }
+// 6: { value: undefined, done: true }
+//
+// // for error = 1
+// after iterator
+// start
+// generalerror 2:  Error: What's happened?! 1
+//
+// // for error = 2
+// after iterator
+// start
+// stop: 0
+// generalerror 2:  Error: What's happened?! 2       
 
                 </script>
             </div>

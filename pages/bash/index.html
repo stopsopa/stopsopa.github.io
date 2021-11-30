@@ -106,6 +106,10 @@ FILE
 rm -rf ___test.sh
 
 
+# cut from beginning
+echo test | md5 | cut -c 1-5
+
+
                 </script>
             <div class="cards">
                 <h2>cli keystrokes</h2>
@@ -356,7 +360,8 @@ function _date {
 
 function _time {
     date "+%H-%M-%S"
-}                
+}       
+date "+%Y_%m_%d_%H_%M_%S"
                 
 set -e; _exit 1> /dev/null 2> /dev/null
 
