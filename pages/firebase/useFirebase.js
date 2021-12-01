@@ -7,6 +7,19 @@ import se from 'nlab/se'
 
 const th = msg => new Error(`useFirebase hook error: ${msg}`);
 
+const fix = `
+useEffect(() => {
+
+  if (id) {
+
+    // initialise everything here
+    refreshList();
+  }
+
+}, [id]);
+            
+          `;
+
 /**
  * to see how to use this hook look for firebase.entry.jsx
  */
@@ -250,6 +263,7 @@ export default ({
           key,
           internalkey,
           data,
+          fix,
         },
       })
 
@@ -312,6 +326,7 @@ export default ({
           key,
           internalkey,
           data,
+          fix,
         },
       })
 
@@ -363,6 +378,7 @@ export default ({
           error: se(e),
           key,
           internalkey,
+          fix,
         },
       })
 
@@ -408,6 +424,7 @@ export default ({
           error: se(e),
           key,
           internalkey,
+          fix,
         },
       })
 
