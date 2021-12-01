@@ -89,39 +89,29 @@ const Main = () => {
 
         var items = clipboardData.items;
 
+        let type = 'string';
+
         for (let index in items) {
+
+          var item = items[index];
+
+          if (item.kind === 'file') {
+
+            type = 'file';
+
+            break;
+          }
+        }
+
+        for (let index in items) {
+
+          var item = items[index];
 
           log(`t: ${typeof index} index >${index}<`, items[index].kind, 'file: ', items[index].kind === 'file', 'index == 1',  index == 1)
 
-          if (items[index].kind === 'file' || index == 1) {
+          if (typeof item.kind === 'string') {
 
-            var item = items[index];
-
-            if (item.kind === 'file') {
-
-              var blob = item.getAsFile();
-
-              var reader = new FileReader();
-
-              reader.onload = async function(event){
-
-                reader.onload = () => {}
-
-                await push({
-                  key: `list`,
-                  data: {
-                    mime: 'img',
-                    data: event.target.result,
-                  }
-                });
-
-                await refreshList();
-              };
-
-              reader.readAsDataURL(blob);
-            }
-
-            if (item.kind === 'string') {
+            if (type === 'string') {
 
               await push({
                 key: `list`,
@@ -132,9 +122,42 @@ const Main = () => {
               });
 
               await refreshList();
+
+              break;
             }
 
-            break;
+            if (type === 'file') {
+
+              try {
+
+                var blob = item.getAsFile();
+
+                var reader = new FileReader();
+
+                reader.onload = async function(event){
+
+                  reader.onload = () => {}
+
+                  await push({
+                    key: `list`,
+                    data: {
+                      mime: 'img',
+                      data: event.target.result,
+                    }
+                  });
+
+                  await refreshList();
+                };
+
+                reader.readAsDataURL(blob);
+
+                break;
+              }
+              catch (e) {
+
+                log('processing file error: ', e)
+              }
+            }
           }
         }
       }
