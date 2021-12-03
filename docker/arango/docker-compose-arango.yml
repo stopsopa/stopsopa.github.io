@@ -1,0 +1,129 @@
+# https://www.arangodb.com/docs/stable/deployment-cluster-manual-start.html#manual-start-in-docker
+# https://www.arangodb.com/docs/stable/deployment-cluster-manual-start.html#local-test-db-servers-and-coordinators
+version: "3.5"
+services:
+  agency:
+    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    container_name: ${PROJECT_NAME}_agency
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: >
+      arangod
+      --server.endpoint tcp://0.0.0.0:5001
+      --agency.my-address=tcp://agency:5001
+      --agency.endpoint tcp://agency:5001
+      --server.authentication false
+      --agency.activate true
+      --agency.size 1
+      --agency.supervision true
+      --database.directory /var/lib/arangodb3
+    volumes:
+      - ${ARANGO_DOCKER_DIR:-./arango_db}/${PROJECT_NAME}/agency:/var/lib/arangodb3
+    networks:
+      - scoped-network
+
+  coordinator1:
+    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    container_name: ${PROJECT_NAME}_coordinator1
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: >
+      arangod
+      --server.authentication=false
+      --server.endpoint tcp://0.0.0.0:8529
+      --cluster.my-address tcp://coordinator1:8529
+      --cluster.my-role COORDINATOR
+      --cluster.agency-endpoint tcp://agency:5001
+      --database.directory /var/lib/arangodb3
+    ports: ['${ARANGO_COORDINATOR1}:8529']
+    depends_on:
+      - agency
+    volumes:
+      - ${ARANGO_DOCKER_DIR:-./arango_db}/${PROJECT_NAME}/coordinator1:/var/lib/arangodb3
+    networks:
+      - scoped-network
+  coordinator2:
+    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    container_name: ${PROJECT_NAME}_coordinator2
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: >
+      arangod
+      --server.authentication=false
+      --server.endpoint tcp://0.0.0.0:8529
+      --cluster.my-address tcp://coordinator2:8529
+      --cluster.my-role COORDINATOR
+      --cluster.agency-endpoint tcp://agency:5001
+      --database.directory /var/lib/arangodb3
+    ports: ['${ARANGO_COORDINATOR2}:8529']
+    depends_on:
+      - agency
+    volumes:
+      - ${ARANGO_DOCKER_DIR:-./arango_db}/${PROJECT_NAME}/coordinator2:/var/lib/arangodb3
+    networks:
+      - scoped-network
+
+  db1:
+    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    container_name: ${PROJECT_NAME}_db1
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: >
+      arangod
+      --server.authentication=false
+      --server.endpoint tcp://0.0.0.0:8529
+      --cluster.my-address tcp://db1:8529
+      --cluster.my-role PRIMARY
+      --cluster.agency-endpoint tcp://agency:5001
+      --database.directory /var/lib/arangodb3
+    # to see the id http://0.0.0.0:${ARANGO_DB1}/_admin/server/id
+    # from: https://www.arangodb.com/docs/stable/deployment-cluster-manual-start.html#local-test-db-servers-and-coordinators
+    depends_on:
+      - agency
+    volumes:
+      - ${ARANGO_DOCKER_DIR:-./arango_db}/${PROJECT_NAME}/db1:/var/lib/arangodb3
+    networks:
+      - scoped-network
+  db2:
+    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    container_name: ${PROJECT_NAME}_db2
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: >
+      arangod
+      --server.authentication=false
+      --server.endpoint tcp://0.0.0.0:8529
+      --cluster.my-address tcp://db2:8529
+      --cluster.my-role PRIMARY
+      --cluster.agency-endpoint tcp://agency:5001
+      --database.directory /var/lib/arangodb3
+    #      --cluster.my-local-info db2
+    depends_on:
+      - agency
+    volumes:
+      - ${ARANGO_DOCKER_DIR:-./arango_db}/${PROJECT_NAME}/db2:/var/lib/arangodb3
+    networks:
+      - scoped-network
+  db3:
+    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    container_name: ${PROJECT_NAME}_db3
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: >
+      arangod
+      --server.authentication=false
+      --server.endpoint tcp://0.0.0.0:8529
+      --cluster.my-address tcp://db3:8529
+      --cluster.my-role PRIMARY
+      --cluster.agency-endpoint tcp://agency:5001
+      --database.directory /var/lib/arangodb3
+    depends_on:
+      - agency
+    volumes:
+      - ${ARANGO_DOCKER_DIR:-./arango_db}/${PROJECT_NAME}/db3:/var/lib/arangodb3
+    networks:
+      - scoped-network
+
+networks:
+  scoped-network:
+    name: ${PROJECT_NAME}-arango
