@@ -31,7 +31,23 @@
 \${$1}
 
 _KILL="arang" ps aux | grep "${_KILL}" | grep -v grep;echo "are you sure? (y)"; read VAL; if [ "${VAL}" = "y" ]; then kill $(ps aux | grep "${_KILL}" | grep -v grep | awk '{print $2}'); else echo canceled...; fi
-                
+      
+
+node -e "
+const {EOL} = require('os');
+let k = 5;
+(function loop() {
+  if (k !== 0) {
+    setTimeout(loop, 1000);
+  }
+  process.stdout.write('stdout: ' + k + EOL);
+  process.stderr.write('stderr: ' + k + EOL);
+  k -= 1;
+}());
+" |& while IFS= read -r line; do printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S') process" "$line"; done 
+
+    # from: https://unix.stackexchange.com/a/26729      
+    
 # find .git/config with given git source path                
 find . -type f -name config | grep --color=never -v node_modules | grep --color=never /.git/config | xargs -n 1 realpath | xargs -n 1 -- bash -c '
 FILE="$0" # because it is inline script (bash -c) then first arg is not a 1 arg but 0
