@@ -106,6 +106,7 @@ EOF
 cat <<EOF | docker build --progress=plain -t project:node-multi_tl -
 FROM node:14.17.4-alpine AS base_stage
 RUN apk --no-cache add curl
+RUN apk update && apk upgrade && apk add curl
 ENV TEST_ENV="test..."
 ENTRYPOINT ["tail", "-f", "/dev/null"]
 EOF
