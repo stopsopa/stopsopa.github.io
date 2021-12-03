@@ -29,6 +29,8 @@
 # fix variables in ide                
 (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
 \${$1}
+
+_KILL="arang" ps aux | grep "${_KILL}" | grep -v grep;echo "are you sure? (y)"; read VAL; if [ "${VAL}" = "y" ]; then kill $(ps aux | grep "${_KILL}" | grep -v grep | awk '{print $2}'); else echo canceled...; fi
                 
 # find .git/config with given git source path                
 find . -type f -name config | grep --color=never -v node_modules | grep --color=never /.git/config | xargs -n 1 realpath | xargs -n 1 -- bash -c '
