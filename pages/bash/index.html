@@ -32,6 +32,9 @@
 
 export _KILL="arang"; ps aux | grep "${_KILL}" | grep -v grep;echo "\n    are you sure? (y) \"${_KILL}\"\n"; read VAL; if [ "${VAL}" = "y" ]; then kill $(ps aux | grep "${_KILL}" | grep -v grep | awk '{print $2}'); else echo canceled...; fi
       
+source ".env"
+export $(cut -d= -f1 ".env" | grep -v -E "^#" | tr "\n" " ")
+    # from: https://github.com/stopsopa/stopsopa.github.io/blob/master/bash/exportsource.sh
 
 node -e "
 const {EOL} = require('os');
