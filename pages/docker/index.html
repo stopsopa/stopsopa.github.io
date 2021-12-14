@@ -57,10 +57,10 @@ docker system prune --all --volumes --force
 docker system df
 
 docker container rm puppeteer-test -f
-    # stop and remove container immediately
-    
-docker build . --platform linux/amd64 -f docker/Dockerfile -t xxx:latest 
+    # stop and remove container immediately    
 
+DOCKER_BUILDKIT=1 docker build . --platform linux/amd64 -f docker/Dockerfile -t xxx:latest 
+    # https://github.com/docker/docker.github.io/issues/12231
 # passing env as is
 $ CYPRESS_VIDEO=false
 $ docker run --name name --rm -d -it -v $PWD:/e2e -w /e2e -e CYPRESS_VIDEO -e "PORT=8089" -p "8089:8089" --entrypoint="" cypress/included:3.2.0 node -v
