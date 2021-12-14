@@ -48,6 +48,29 @@ character-set-server=utf8
 collation-server=utf8_general_ci
 
                 </script>
+
+                <h2>backup & restore</h2>
+                <script type="editor" data-lang="python">
+                
+# backup
+mysqldump -C -u ${USER} -p${PASS} -P${PORT} ${PMADB1} ${TABLE1} ${TABLE2} | mysql -u ${USER} -p${PASS} -ppass48\ endw ${PMADB}
+
+mysqldump --column-statistics=0 -C -h ${HOST} -u ${USER} -p${PASS} ${PMADB} | gzip -9 > "$(date '+%Y-%m-%d_%H-%M-%S')_sql.sql"
+mysqldump -u ${USER} -p${PASS} ${PMADB} --ignore-table=${PMADB}.table1 --ignore-table=${PMADB}.table2
+
+gunzip [backupfile.sql.gz]
+
+#restore
+mysql -h ${HOST} -u ${USER} -p${PASS} ${PMADB} --port=${PORT} ${PMADB} < [backupfile.sql]
+
+gunzip < [backupfile.sql.gz] | mysql -u ${USER} -p${PASS} ${PMADB}
+
+If you need to restore a database that already exists,
+you'll need to use mysqlimport command.
+The syntax for mysqlimport is as follows:
+mysqlimport -u [uname] -p[pass] [dbname] [backupfile.sql]
+
+                </script>
             </div>
         </div>
     </div>
