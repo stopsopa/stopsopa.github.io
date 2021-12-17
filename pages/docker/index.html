@@ -67,6 +67,7 @@ $ docker run --name name --rm -d -it -v $PWD:/e2e -w /e2e -e CYPRESS_VIDEO -e "P
 
 # running in pipelines without -t
 $ docker run --user $(id -u):$(id -g) -i image_name command args
+$ CURRENT_UID=$(id -u):$(id -g) docker-compose up
 
 host.docker.internal
     # from: https://docs.docker.com/docker-for-mac/networking/#use-cases-and-workarounds
