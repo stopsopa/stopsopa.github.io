@@ -30,6 +30,7 @@
 (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
 \${$1}
 
+# if some linux tool is missing on mac, use linux
 docker run -t -v "$(pwd):/opt/code" -w "/opt/code" ubuntu find -type f -executable
 
 export _KILL="arang"; ps aux | grep "${_KILL}" | grep -v grep;echo "\n    are you sure? (y) \"${_KILL}\"\n"; read VAL; if [ "${VAL}" = "y" ]; then kill $(ps aux | grep "${_KILL}" | grep -v grep | awk '{print $2}'); else echo canceled...; fi
