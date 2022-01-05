@@ -417,6 +417,8 @@ minikube start
 
 minikube dashboard
 
+minikube kubectl -- get po -A
+
 eval $(minikube docker-env)
 # and then docker build - it will build image in the docker in minikube
 # then you can use kubectl apply and use regular names of images available locally in minikube docker
