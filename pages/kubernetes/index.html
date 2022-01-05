@@ -153,6 +153,16 @@ exit ${STATUS}
 
                 </script>
                 
+                <h2>Secrets</h2>
+                <script type="editor" data-lang="sh">
+
+# will create, but fired second time will fail
+kubectl create secret generic db-user-pass --from-literal=abc=def --from-literal=ghi=jkl
+
+# will create and also update, better version
+kubectl create secret generic db-user-pass --from-literal=abc=def --from-literal=ghi=jkl --dry-run -o yaml | kubectl apply -f -
+
+                </script>
                 <h2>Context</h2>
                 <script type="editor" data-lang="sh">
                 
