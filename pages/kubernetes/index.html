@@ -421,9 +421,18 @@ eval $(minikube docker-env)
 # and then docker build - it will build image in the docker in minikube
 # then you can use kubectl apply and use regular names of images available locally in minikube docker
 
+# To go back to using your computer’s own Docker daemon
+eval $(minikube docker-env -u)
+
 minikube kubectl -- get po -A
 
 kubectl get po -A
+
+# tricks
+# https://levelup.gitconnected.com/minikube-tips-tricks-739f4b00ac17
+
+# export service to the host
+minikube service service-name
 
                 </script>
             </div>
