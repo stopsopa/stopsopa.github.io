@@ -259,8 +259,17 @@
 git branch -a
 git checkout -b feat/branch_name origin/feat/branch_name
 
+git push --set-upstream origin <branch>
+git push -u origin <branch>
+
 git commit --no-verify
-git push --no-verify --set-upstream origin feat/name
+git push --no-verify -u origin feat/name
+
+# delete local branch
+git branch -d feature/login
+
+# delete remote branch
+git push origin --delete feature/login
 
             </script>
             <h2>gitstorage-core.sh</h2>
