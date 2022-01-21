@@ -126,11 +126,44 @@ metadata:
   name: build-robot
 EOF
 
+oc create configmap api-cm \
+  --from-literal=ARANGO_ENDPOINTS="http://xxx.com:8529" \
+  --dry-run=client -o yaml | kubectl apply -f -
+
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Namespace
 metadata:
   name: nameofnewnamespace
+EOF
+
+kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  labels:
+    app: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: app
+          image: "alpine"
+          command: ["tail", "-f", "/dev/null"]  
+          env:
+            - name: ARANGO_ENDPOINTS
+              valueFrom:
+                configMapKeyRef:
+                  name: api-cm
+                  key: ARANGO_ENDPOINTS
 EOF
 
 # problem with rollout status
