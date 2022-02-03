@@ -126,11 +126,44 @@ metadata:
   name: build-robot
 EOF
 
+oc create configmap api-cm \
+  --from-literal=ARANGO_ENDPOINTS="http://xxx.com:8529" \
+  --dry-run=client -o yaml | kubectl apply -f -
+
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Namespace
 metadata:
   name: nameofnewnamespace
+EOF
+
+kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  labels:
+    app: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: app
+          image: "alpine"
+          command: ["tail", "-f", "/dev/null"]  
+          env:
+            - name: ARANGO_ENDPOINTS
+              valueFrom:
+                configMapKeyRef:
+                  name: api-cm
+                  key: ARANGO_ENDPOINTS
 EOF
 
 # problem with rollout status
@@ -153,6 +186,16 @@ exit ${STATUS}
 
                 </script>
                 
+                <h2>Secrets</h2>
+                <script type="editor" data-lang="sh">
+
+# will create, but fired second time will fail
+kubectl create secret generic db-user-pass --from-literal=abc=def --from-literal=ghi=jkl
+
+# will create and also update, better version
+kubectl create secret generic db-user-pass --from-literal=abc=def --from-literal=ghi=jkl --dry-run -o yaml | kubectl apply -f -
+
+                </script>
                 <h2>Context</h2>
                 <script type="editor" data-lang="sh">
                 
@@ -403,11 +446,28 @@ EOF
                 <a href="https://minikube.sigs.k8s.io/docs/start/">Installation</a>
                 <script type="editor" data-lang="sh">
 
-minikube kubectl -- get po -A
+minikube start
 
 minikube dashboard
 
+minikube kubectl -- get po -A
+
+eval $(minikube docker-env)
+# and then docker build - it will build image in the docker in minikube
+# then you can use kubectl apply and use regular names of images available locally in minikube docker
+
+# To go back to using your computer’s own Docker daemon
+eval $(minikube docker-env -u)
+
+minikube kubectl -- get po -A
+
 kubectl get po -A
+
+# tricks
+# https://levelup.gitconnected.com/minikube-tips-tricks-739f4b00ac17
+
+# export service to the host
+minikube service service-name
 
                 </script>
             </div>

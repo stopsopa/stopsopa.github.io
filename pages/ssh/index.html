@@ -96,6 +96,16 @@ add to ~/.bashrc
 touch ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
 
                 </script>
+                
+
+                <h2>OpenSSH</h2>
+                <script type="editor" data-lang="sh" class="domain.com">
+
+openssl genrsa -out mykey.pem 2048
+openssl rsa -in mykey.pem -outform PEM -pubout -out mykey.pub
+
+                </script>
+                
 
             </div>
         </div>
