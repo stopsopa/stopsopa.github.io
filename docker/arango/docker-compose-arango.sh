@@ -5,6 +5,13 @@
 # and created database defined in MYSQL_DB env var
 # it is also packed with checking that all necessary environments are present
 
+# Generally script is here to quickly create local instance of arangodb in dockerized fashion
+# and to control containers name and other parameters from local .env file
+
+# just simply run the script
+#     /bin/bash docker-compose-arango.sh
+# and if something will be missing just follow instructions on the screen
+
 _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
 case ${_SHELL} in
   zsh)
@@ -27,7 +34,9 @@ case ${_SHELL} in
     ;;
 esac
 
-ENV="${_DIR}/../.env"
+ROOT="${_DIR}/..";
+
+ENV="${ROOT}/.env"
 
 if [ ! -f "${ENV}" ]; then
 
@@ -66,16 +75,11 @@ if [ "${ARANGO_COORDINATOR2}" = "" ]; then
   exit 1
 fi
 
-#set -x
-#TMP="$(/bin/bash "${_DIR}/../bash/envrender.sh" "${ENV}" "${_DIR}/docker-compose.yml" --clear -g "doc-up-tmp")"
-#set +x
-
 if [ "${1}" = "up" ]; then
 
     set -e
 
     docker compose --env-file "${ENV}" -f "${_DIR}/docker-compose-arango.yml" up -d --remove-orphans
-#    docker compose -f "${TMP}" up -d
 
     set +x
 
@@ -101,7 +105,15 @@ fi
 if [ "${1}" = "down" ]; then
 
     docker compose --env-file "${ENV}" -f "${_DIR}/docker-compose-arango.yml" down
-#    docker compose -f "${TMP}" down
+
+    docker ps | grep "${PROJECT_NAME}"
+
+    exit 0;
+fi
+
+if [ "${1}" = "rm" ]; then
+
+    docker compose --env-file "${ENV}" -f "${_DIR}/docker-compose-arango.yml" rm
 
     docker ps | grep "${PROJECT_NAME}"
 
@@ -110,10 +122,13 @@ fi
 
 cat << EOF
 
-  # to run container
+  # to run containers
   /bin/bash ${0} up
 
-  # to stop container
+  # to stop containers
   /bin/bash ${0} down
+
+  # to remove containers
+  /bin/bash ${0} rm
 
 EOF
