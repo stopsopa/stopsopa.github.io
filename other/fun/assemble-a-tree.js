@@ -43,51 +43,43 @@ function getTree(list) {
   }
   return root;
 }
-describe('test', () => {
-  it("renders children", () => {
+it("renders children", () => {
 
-      expect(getTree(list)).toEqual({
-        id:4,
-        children: [
-          {id:1},
+  expect(getTree(list)).toEqual({
+    id:4,
+    "children": [
+      {id:1},
+      {
+        id:3,
+        "children": [{id:2}]
+      },
+      {id:5},
+      {
+        id:6,
+        "children": [
           {
-            id:3,
-            children: [
-              {id:2}
-            ]
-          },
-          {id:5},
-          {
-            id:6,
-            children: [
+            id:14,
+            "children": [
               {
-                id:14,
-                children: [
-                  {
-                    id:11,
-                    children: [
-                      {id:12}
-                    ]
-                  },
-                  {id:13}
-                ]
-              }
-            ]
-          },
-          {
-            id:8,
-            children: [
-              {
-                id:9,
-                children: [
-                  {id:7}
-                ]
+                id:11,
+                "children": [{id:12}]
               },
-              {id:10}
+              {id:13}
             ]
           }
         ]
-      });
-  });  
+      },
+      {
+        id:8,
+        "children": [
+          {
+            id:9,
+            "children": [{id:7}]
+          },
+          {id:10}
+        ]
+      }
+    ]
+  });
 });
 prettify.toHTML(run(), document.body);

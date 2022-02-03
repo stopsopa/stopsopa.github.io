@@ -27,7 +27,9 @@ case ${_SHELL} in
     ;;
 esac
 
-ENV="${_DIR}/../.env"
+ROOT="${_DIR}/../..";
+
+ENV="${ROOT}/.env"
 
 if [ ! -f "${ENV}" ]; then
 
