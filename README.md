@@ -27,7 +27,7 @@
         <div class="inside">
             <div class="cards toc">
                 <h1>Table of Contents</h1>
-                <ul>
+                <ul data-do-sort>
                     <li><a href="http://">ekstra link</a></li>
                 </ul>
             </div>
