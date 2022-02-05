@@ -641,7 +641,10 @@ body .github-profile:hover {
                             manipulation.append(toc, head)
                         }
 
-                        head.innerText = 'Table of Contents';
+                        if ( ! head.innerText ) {
+
+                          head.innerText = 'Table of Contents';
+                        }
                     })();
 
                     // links
@@ -729,6 +732,43 @@ body .github-profile:hover {
                         manipulation.prepend(body, toc);
                     }
 
+// sorting lists [data-do-sort] attribute
+                    (function () {
+                      Array.prototype.slice.call(document.querySelectorAll('[data-do-sort]')).forEach(function (parent) {
+
+                        var children = manipulation.children(parent)
+
+                        var tmp = [];
+
+                        children.forEach(function (child) {
+
+                          var text = trim(child.tagName ? child.innerText.toLocaleLowerCase() : String(child.textContent));
+
+                          text && tmp.push({
+                            tagName: child.tagName,
+                            node: child,
+                            text: text,
+                          })
+                        });
+
+                        var newList = tmp.sort(function (a, b) {
+
+                          if (a.text === b.text) {
+
+                            return 0
+                          }
+
+                          return a.text < b.text ? 1 : -1;
+                        })
+                          .map(function (n) {
+
+                            manipulation.prepend(parent, n.node)
+                          });
+                      });
+
+                      log.blue('DOMContentLoaded', 'handling [data-do-sort]', '[defined & triggered in github.js]')
+                    }());
+
                     // header.innerHTML = `footer`;
 
                     log.blue('DOMContentLoaded TOC', '[toc] found', '[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded and window.async.permalink.then]')
@@ -772,45 +812,6 @@ body .github-profile:hover {
     });
 
     log.blue('executed', 'adding extra styles')
-}());
-
-// sorting lists [data-do-sort] attribute
-(function () {
-    document.addEventListener('DOMContentLoaded', function () {
-       Array.prototype.slice.call(document.querySelectorAll('[data-do-sort]')).forEach(function (parent) {
-
-           var children = manipulation.children(parent)
-
-           var tmp = [];
-
-           children.forEach(function (child) {
-
-               var text = trim(child.tagName ? child.innerText.toLocaleLowerCase() : String(child.textContent));
-
-               text && tmp.push({
-                   tagName: child.tagName,
-                   node: child,
-                   text: text,
-               })
-           });
-
-           var newList = tmp.sort(function (a, b) {
-
-               if (a.text === b.text) {
-
-                   return 0
-               }
-
-               return a.text < b.text ? 1 : -1;
-           })
-           .map(function (n) {
-
-               manipulation.prepend(parent, n.node)
-           });
-       });
-
-        log.blue('DOMContentLoaded', 'handling [data-do-sort]', '[defined & triggered in github.js]')
-    });
 }());
 
 // ace editor
