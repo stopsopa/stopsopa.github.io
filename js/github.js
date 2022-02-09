@@ -1069,6 +1069,43 @@ body .github-profile:hover {
 
                 t = script.innerHTML;
 
+                /**
+                * removing redundant spaces at the beginning - mitigating prettier
+                */
+                (function (v) {
+
+                  let diff = 1111;
+
+                  let tmp = v.split("\n");
+
+                  tmp.forEach(line => {
+                    if (!/^\s*$/.test(line)) { // if line isn't just white characters
+                      const length_before = line.length;
+
+                      const length_after = line.replace(/^\s+/,"").length;
+
+                      const d = length_before - length_after;
+
+                      if (d < diff) {
+                        diff = d;
+                      }
+                    }
+                  });
+
+                  if (diff !== 1111 && diff > 0) {
+
+                    tmp = tmp.map(line => line.substring(diff));
+
+                    t = tmp.join("\n");
+
+                    if (tmp[tmp.length - 2].trim() !== "") {
+
+                      t += "\n";
+                    }
+                  }
+
+                }(t));
+
                 manipulation.remove(script);
 
                 div = el.cloneNode(false);

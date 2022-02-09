@@ -1,1927 +1,1904 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-    <script> 
-        (function () {
-            var resolve;
-            var p = new Promise(function (res) {
-                resolve = res;
-            });
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
 
-            document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+            var text = tag.innerHTML;
 
-                Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+            text = text.replace(/domain\.com/g, location.origin);
 
-                    var text = tag.innerHTML;
+            tag.innerHTML = text;
+          });
 
-                    text = text.replace(/domain\.com/g, location.origin)
+          resolve();
+        });
 
-                    tag.innerHTML = text;
-                });
-
-                resolve();
-            });
-
-            window.waitForPromise = function () {
-
-                return p;
-            }
-        }())
+        window.waitForPromise = function () {
+          return p;
+        };
+      })();
     </script>
     <script src="/js/github.js"></script>
-</head>
-<body class="layout" toc>
-
+  </head>
+  <body class="layout" toc>
     <div class="body">
-        <div class="inside">
-            <div class="cards toc">
-              <h1>Table of Contents</h1>
-              <ul data-do-sort>
-              </ul>
-            </div>
-
-            <div class="cards">
-                <h2>UMD (Universal Module Definition)</h2>
-                <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
-                <h2>Installation on linux</h2>      
-                <a href="https://github.com/nodesource/distributions#installation-instructions-1">Installation nodesource</a>
-            </div>
-                <h2>What is Node.js</h2>
-            <a href="https://medium.datadriveninvestor.com/the-node-js-architecture-f86e2337bcd2">The Node.js Architecture!</a>
-            <br />
-            <a href="https://nodejs.dev/learn/understanding-setimmediate">https://nodejs.dev/learn/understanding-setimmediate</a>
-                <h2>useful</h2>
-                <script type="editor" data-lang="sh">
-                
-npx envinfo
-
-npx prettier --write src
-    # https://prettier.io/docs/en/cli.html#docsNav
-
-                </script>
-            <div class="cards">
-                <h2>Extract engines script</h2>
-                <script type="editor" data-lang="sh" class="domain.com">
-
-wget --help 1> /dev/null 2> /dev/null
-if [ "$?" = "0" ]; then # wget
-  wget --no-cache -O "vault.sh" "domain.com/pages/node/engines.js"
-else # curl
-  curl "domain.com/pages/node/engines.js" -o "vault.sh"
-fi
-
-/bin/bash vault.sh jest
-
-                </script>
-
-                <h2>Best practices</h2>
-
-                <a href="https://github.com/goldbergyoni/nodebestpractices">https://github.com/goldbergyoni/nodebestpractices</a>
-                <br />
-                <h2>yarn</h2>
-                <script type="editor" data-lang="sh">
-
-yarn set version berry
-yarn set version 1.22.10
-    # https://github.com/yarnpkg/yarn/releases
-    
-yarn outdated
-yarn upgrade-interactive   
-yarn upgrade-interactive --latest
-
-yarn install --production=true  # no devDependencies
-yarn install --production=false # with devDependencies
-    # from: https://classic.yarnpkg.com/en/docs/cli/install/#toc-yarn-install-production-true-false
-    
-yarn why library 
-    # to see why library is in deps
-
-                </script>
-                <h2>dotenv</h2>
-                <script type="editor" data-lang="js">
-
-const fs = require('fs');
-
-const path = require('path');
-
-const env = path.resolve(path.dirname(__dirname), '.env');
-
-if ( ! fs.existsSync(env) ) {
-
-  throw new Error(`File ${env} doesn't exist`);
-}
-
-require('dotenv').config({
-  path: env,
-});
-
-console.log('env', process.env);
-
-                </script>
-            </div>
-            <div class="cards">
-                <h2>nodemon</h2>
-                <script type="editor" data-lang="sh">
-nodemon -e js,html server.js                  
-                </script>                
-                <h2>streams</h2>
-                <script type="editor" data-lang="js">
-
-// https://github.com/substack/stream-handbook
-// from: https://github.com/nkzawa/socket.io-stream
-
-// https://nodesource.com/blog/understanding-streams-in-nodejs/
-
-
-// https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
-// Create big file using stream
-const fs = require('fs');
-const file = fs.createWriteStream('./big.file');
-
-for(let i=0; i<= 1e6; i++) {
-  file.write('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n');
-}
-
-file.end();
-
-
-
-# https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
-# more: https://jscomplete.com/learn/node-beyond-basics/node-streams  g(node beyond basics)
-
-# https://www.sitepoint.com/basics-node-js-streams/
-# http://2ality.com/2018/04/async-iter-nodejs.html
-# http://2ality.com/2018/05/child-process-streams.html
-
-# read file to http response:
-const stream = fs.createReadStream(file);                
-stream.pipe(res);
-
-# write http response to file:    
-const stream = fs.createWriteStream(file);
-res.pipe(stream);   
-
-readableStream.pipe(writableStream);
-
-# pipe stream error handling
-await new Promise((resolve, reject ) => {
-
-  var stream = res.pipe(fs.createWriteStream(file));
-
-  stream.on('finish', () => resolve());
-
-  stream.on('error', e => reject({
-    writable_stream_error: e
-  }));
-});
-
-# unzip
-var fs = require('fs');
-var zlib = require('zlib');
-
-fs.createReadStream('input.txt.gz')
-  .pipe(zlib.createGunzip())
-  .pipe(fs.createWriteStream('output.txt'));   
-
-                </script>
-                <h2>Signleton (kinda) module template</h2>
-                <script type="editor" data-lang="js">
-
-const CachePromise = require('./CachePromise');
-
-const instances = {};
-
-const name = 'CachePromiseModule';
-
-const th = msg => new Error(`${name}.js error: ${msg}`);
-
-module.exports = (name = 'default', opt) => {
-
-  if ( typeof name !== 'string' ) {
-
-    throw th(`name is not a string`);
-  }
-
-  if ( instances[name] ) {
-
-    return instances[name];
-  }
-
-  if ( ! isObject(opt) ) {
-
-    throw th(`opt is not an object. Usually it means you are trying to get the instance before initialising it. Use first ${name}(name, opt) then ${name}(name)`);
-  }
-
-  return instances[name] = new CachePromise(opt);
-}
-
-function isObject(o) {
-  return Object.prototype.toString.call(o) === '[object Object]';
-}
-
-                </script>
-                <h2>path</h2>
-                <script type="editor" data-lang="js">
-# in php :    
-$path_parts = pathinfo('/www/htdocs/inc/lib.inc.php');
-
-echo $path_parts['basename'], "\n"; // lib.inc.php
-    // path.basename(test)
-echo $path_parts['extension'], "\n"; // php
-    // path.extname(test).substring(1)
-echo $path_parts['dirname'], "\n"; // /www/htdocs/inc
-    // path.dirname(test)
-echo $path_parts['filename'], "\n"; // since PHP 5.2.0 // lib.inc
-    // path.basename(test, path.extname(test))                  
-                </script>
-                <h2>fs</h2>
-                <script type="editor" data-lang="js">
-
-var fs          = require('fs');
-
-if (fs.existsSync(dirfile)) { // warning: if under dirfile there will be broken link (pointing to something nonexisting) then this function will return false even if link DO EXIST but it's broken
-
-
-
-}
-// file exist
-
-
-function pathExist(target) { // this function detects even broken symlink
-
-  try {
-
-    if ( fs.existsSync(target) ) {
-
-      return true;
-    }
-
-    const sym = fs.readlinkSync(target);
-
-    if ( typeof sym === 'string' ) {
-
-      return true;
-    }
-  }
-  catch (e) {
-
-    // throw new Error('one' + `-- ${e}`);
-  }
-
-  return false;
-}
-
-// read sync
-const content = fs.readFileSync(file, options).toString();
-const content = fs.readFileSync(file, 'utf8').toString();
-
-fs.lstatSync(path_string).isDirectory()  // https://stackoverflow.com/a/15630832
-
-
-// write sync
-fs.writeFileSync(file.source, content);
-fs.appendFileSync(file.source, content);
-
-
-// delete remove file 
-
-fs.unlinkSync(file);   
-
-
-
-// https://nodejs.org/api/fs.html#fs_fs_access_path_mode_callback
-
-
-    if ( ! fs.existsSync(file)) {
-
-        throw `file '${file}' doesn't exist`;
-    }
-
-    try {
-        fs.accessSync(file, fs.constants.R_OK);
-    }
-    catch (e) {
-
-        throw `file '${file}' is not readdable`;
-    }
-
-    try {
-        fs.accessSync(file, fs.constants.W_OK);
-    }
-    catch (e) {
-
-        throw `file '${file}' is not writtable`;
-    }
-    // handle like this becaue without try catch it's ugly, not telling explicitely if file is not readdalbe or not writtable
-
-    // WARNING: Synchronous version of fs.access(). This throws if any accessibility checks fail, and does nothing otherwise.
-
-
-
-
-    const path                  = require('path');
-
-    const fs                    = require('fs');
-    
-    const listFilesSync = (dir, l = 0) => {
-    
-        let pa, s;
-    
-        let list = [];
-    
-        fs.readdirSync(dir).forEach(p => {
-    
-            pa  = path.resolve(dir, p);
-    
-            s   = fs.lstatSync(pa);
-    
-            // console.log('file: ', s.isFile() ? 'F' : 'D', ': ', ' '.repeat(l),  p);
-    
-            // is_file is file 
-            if (s.isFile()) {
-    
-                list.push(['f', pa]);
-            }
-    
-            if (s.isDirectory()) {
-    
-                list.push(['d', pa]);
-    
-                list = list.concat(listFilesSync(pa, l + 4));
-            }
-        })
-    
-        return list;
-    }
-    ==== walk iterate through directories files recursively recursive ====== ^^^
-    
-    
-    
-    ==== find files list recursively ===== vvv
-    
-    const fs            = require('fs');
-    
-    var walkSync = function(dir, filelist) { // https://gist.github.com/kethinov/6658166#gistcomment-1603591
-    
-        var p, files = fs.readdirSync(dir);
-    
-        filelist = filelist || [];
-    
-        files.forEach(function(file) {
-    
-            p = path.resolve(dir, file);
-    
-            if (fs.statSync(p).isDirectory()) { // is directory is_dir isdirectory
-    
-                filelist = walkSync(p, filelist);
-            }
-            else {
-    
-                filelist.push(p);
-            }
-        });
-    
-        return filelist;
-    };
-
-
-                </script>
-                <h2>eslint</h2>
-                <script type="editor" data-lang="python">
-
-# raw config
-https://github.com/standard/eslint-config-standard/blob/master/eslintrc.json
-https://eslint.org/docs/rules/
-
-# error levels: 
-https://eslint.org/docs/user-guide/getting-started#configuration    
-
-https://eslint.org/docs/1.0.0/rules/padded-blocks                   
-                </script>
-                <h2>npm</h2>
-                <script type="editor" data-lang="sh">
-
-npm install --production       # no devDependencies
-npm install --production=false # with devDependencies
-    # from: https://docs.npmjs.com/cli/v7/commands/npm-install
-    
-$(npm bin)/cypress open
-    # from: https://docs.cypress.io/guides/getting-started/installing-cypress.html#Opening-Cypress
-
-npm root -g
-    # npm global node_module
-
-npm init
-npm init --scope=stopsopa
-    {
-      "name": "@stopsopa/line",
-      "version": "2.0.0",
-      "description": "Lib to draw lines using one div and css",
-      "main": "line.js",
-      "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node server.js"
-      },
-      "repository": {
-        "type": "git",
-        "url": "git@github.com:stopsopa/line.git"
-      },
-      "author": "Szymon Dzialowski",
-      "license": "MIT",
-      "homepage": "https://github.com/stopsopa/line"
-    }    
-npm login
-npm config ls
-.npmignore
-    # testing .npmignore run "npm pack" - https://docs.npmjs.com/misc/developers#testing-whether-your-npmignore-or-files-config-works
-
-npx: https://docs.npmjs.com/files/package.json#bin 
-
-npm version patch
-npm publish --access=public
-
-https://badge.fury.io/for/js/bash-make-lifecycle - badge generator
-
-npm link    # https://www.youtube.com/watch?v=nKFe1lhGSk0 usefull if you are in the process of development of something
-    # known issues: https://github.com/npm/npm/issues/20954#issuecomment-397114152    
-
-                </script>
-            </div>
-            
-            <div class="cards">
-                
-                <h2>CORS</h2>
-                <a href="https://livebook.manning.com/book/cors-in-action/chapter-5/">Read more about CORS</a>
-                <script type="editor" data-lang="sh">
-
-// CORS
-(function () {
-
-  const th = msg => new Error(`Cors configuration error: ${msg}`)
-  
-  const trim = require('nlab/trim');
-  
-  const negotiatePort = require('nlab/negotiatePort');
-
-  function isObject(o) {
-    return Object.prototype.toString.call(o) === '[object Object]';
-  }
-
-  if ( ! process.env.PROTECTED_CORS_ALLOWED_DOMAINS ) {
-
-    throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS is not defined`);
-  }
-
-  const whitelist = process.env.PROTECTED_CORS_ALLOWED_DOMAINS
-    .split(' ')
-    .map(t => trim(t))
-    .filter(Boolean)
-    .map(t => {
-
-      try {
-
-        t = new URL(t);
-
-        return t.protocol + "//" + t.hostname + negotiatePort(t.protocol, t.port, ':');
-      }
-      catch (e) {
-
-        throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS processing part '${t}' failed: ${e}`);
-      }
-    })
-  ;
-
-  console.log(JSON.stringify({
-    PROTECTED_CORS_ALLOWED_DOMAINS: whitelist,
-  }, null, 4))
-
-  if ( ! whitelist.length ) {
-
-    throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS after processing is an empty list`);
-  }
-
-  var cors = require('cors');
-
-  app.use((req, res, next) => {
-
-    if (isObject(req.headers) && typeof req.headers.origin === 'string' && trim(req.headers.origin)) {
-
-      console.log(`request: ${req.method} ${req.url} - handle cors true ${req.headers.origin}`)
-
-      return cors({
-        exposedHeaders: 'X-session',
-        origin: function (origin, callback) {
-          if (whitelist.includes(origin)) {
-            callback(null, true)
-          } else {
-            callback(new Error(`${origin} Not allowed by CORS`))
-          }
-        }
-      })(req, res, next);
-    }
-    
-    console.log(`request: ${req.method} ${req.url} - handle cors next`)
-
-    next();
-  })
-}());
-
-                </script>
-            </div>
-            <div class="cards">
-                
-                <h2>processing url uri </h2>
-                <script type="editor" data-lang="js">
-
-
-const originalUrl = require('original-url'); // yarn add original-url
-
-const original = originalUrl(req);
-
-const requestIp = require('request-ip');
-
-app.use(requestIp.mw()); // get ip                  req.clientIp
-
-log.dump({
-    original,
-    headers             : req.headers,
-    originalUrl         : req.originalUrl, // https://expressjs.com/en/api.html#req.originalUrl
-    url                 : req.url,
-    method              : req.method,
-    host                : req.get('host'),
-    origin              : req.get('origin'),
-    protocol            : req.protocol,
-    secure              : req.secure,  //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto        
-    reconstrucred       : req.protocol + '://' + req.get('host') + req.url, //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
-})
-Object {// for https://amlstage.phaseiilabs.com:8080/tester/tester?raz=dwa behind nginx proxy 
-    "original": {
-        "raw": "/tester/tester?raz=dwa",
-        "protocol": "http:", // WARNING: will be "https:" if X-Forwarded-Proto $scheme; OR(I'VE TESTED THIS 'OR' IN BOTH CASES WILL WORK, COMMEND ONE OR ANOTHER) X-Forwarded-SSL   on; added
-        "hostname": "212.67.96.161", // WARNING: becareful it might return ip address WARNING WARNING
-        "port": 8080, // key exist only if [proxy_set_header X-Forwarded-Port $server_port;] added to nginx
-        "pathname": "/tester/tester",
-        "search": "?raz=dwa",
-        "full": "http://212.67.96.161:8080/tester/tester?raz=dwa"
-    },
-    "headers": {
-        "connection": "upgrade",
-        "host": "amlstage.phaseiilabs.com",
-        "x-real-ip": "212.67.96.161",
-        "x-forwarded-for": "212.67.96.161",
-        "x-forwarded-host": "212.67.96.161",
-            "x-forwarded-port": "8080",     // will appear only if [proxy_set_header X-Forwarded-Port $server_port;] added to nginx config
-            "x-forwarded-proto": "https",   // will appear only if [proxy_set_header X-Forwarded-Proto $scheme;] added to nginx config
-            "x-forwarded-ssl": "on",        // will appear only if [proxy_set_header X-Forwarded-SSL on;] added to nginx config
-        "cache-control": "max-age=0",
-        "upgrade-insecure-requests": "1",
-        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
-        "sec-fetch-dest": "document",
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-        "sec-fetch-site": "none",
-        "sec-fetch-mode": "navigate",
-        "sec-fetch-user": "?1",
-        "accept-encoding": "gzip, deflate, br",
-        "accept-language": "en-GB,en-US;q=0.9,en;q=0.8,pl;q=0.7,it;q=0.6,fr;q=0.5,es;q=0.4,de;q=0.3,ru;q=0.2,mt;q=0.1,pt;q=0.1,id;q=0.1",
-        "cookie": "_ga=GA1.2.477192506.1582642627; _hjid=38ba37f0-33bc-48ad-bf45-a82f453729f2; _gid=GA1.2.250183521.1583161185; jwt_cookie=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZXMiOlsiYWRtaW4iLCJ1c2VyIl0sImlhdCI6MTU4MzI0NTc5MCwiZXhwIjoxNTgzMjc4MTkwfQ.IYyoBu4QQ0lEKk3G4XjIczha68XezAZs8ds4RbEak80",
-        "if-none-match": "W/\"19f-eK38WW4dYefk0hfT3dbOw33zsbo\""
-    },        
-    "originalUrl": "/tester/tester?raz=dwa",
-    "url": "/tester/tester?raz=dwa",
-    "method": "GET",
-    "host": "amlstage.phaseiilabs.com",
-    "protocol": "http",
-    "secure": false, // adding X-Forwarded-Proto $scheme; or X-Forwarded-SSL   on; will not help here, use "original-url" to resolve headers and then use original.protocol (it will be equal "https:")
-    "reconstrucred": "http://amlstage.phaseiilabs.com/tester/tester?raz=dwa"
-}    
-
---- express headers ----- vvv
-log.dump({
-    originalUrl         : req.originalUrl, // https://expressjs.com/en/api.html#req.originalUrl
-    url                 : req.url,
-    method              : req.method,
-    host                : req.get('host'),
-    origin              : req.get('origin'),
-    protocol            : req.protocol,
-    secure              : req.secure,  //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
-    'original.protocol' : original.protocol,
-    reconstrucred       : req.protocol + '://' + req.get('host') + req.url, //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
-}, 4)
-Object {
-  <originalUrl> [String]: >/sockjs-node/info?t=1582335313746< len: 33
-  <url> [String]: >/sockjs-node/info?t=1582335313746< len: 33
-  <method> [String]: >GET< len: 3
-  <host> [String]: >localhost:1025< len: 14
-  <origin> [Undefined]: >undefined<
-  <protocol> [String]: >http< len: 4
-  <secure> [Boolean]: >false<
-  <original.protocol> [String]: >https< 
-  <reconstrucred> [String]: >http://localhost:1025/sockjs-node/info?t=1582335313746< len: 54
-}
-
---- express headers ----- ^^^
-
-const URL           = require('url').URL;
-
-const log           = require('inspc');
-
-const target = `https://usertes:pasword@sub.domain.com:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang`;
-
-const uri   = new URL(target);
-
-log.dump({ // https://nodejs.org/docs/latest-v7.x/api/url.html#url_url_parse_urlstring_parsequerystring_slashesdenotehost
-    hash____    : uri.hash,
-    host____    : uri.host,
-    hostname    : uri.hostname,
-    href____    : uri.href,
-    origin__    : uri.origin,
-    password    : uri.password,
-    pathname    : uri.pathname,
-    port____    : uri.port,
-    protocol    : uri.protocol,
-    search__    : uri.search,
-    searchParams: uri.searchParams, // https://nodejs.org/docs/latest-v7.x/api/url.html#url_class_urlsearchparams
-    username    : uri.username,
-
-    https___    : uri.protocol.indexOf('https') > -1,
-    searchParams_all: Array.from(uri.searchParams.keys()).reduce((acc, key) => {
-        acc[key] = uri.searchParams.getAll(key)
-        return acc;
-    }, {}), // https://nodejs.org/docs/latest-v7.x/api/url.html#url_class_urlsearchparams
-
-    'using with http.request():'         : {
-        hostname    : uri.hostname,
-        port        : uri.port,
-        path        : uri.pathname,
-        method      : 'POST',
-        headers     : {
-            'Content-Type': 'application/json'
-        },
-        // timeout: 2000,
-    },
-    'url.parse': require('url').parse(target)
-}, 5)
-
-// 2019-04-26 10:23:42 /Users/sd/Workspace/projects/z_roderic_new/roderic-project/url.js:11
-// Object {
-//   <hash____> [String]: >#hash_bang< len: 10
-//   <host____> [String]: >sub.domain.com:1025< len: 19
-//   <hostname> [String]: >sub.domain.com< len: 14
-//   <href____> [String]: >https://usertes:pasword@sub.domain.com:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang< len: 111
-//   <origin__> [String]: >https://sub.domain.com:1025< len: 27
-//   <password> [String]: >pasword< len: 7
-//   <pathname> [String]: >/curl< len: 5
-//   <port____> [String]: >1025< len: 4
-//   <protocol> [String]: >https:< len: 6
-//   <search__> [String]: >?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 53
-//   <searchParams> [URLSearchParams]: >one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three<
-//   <username> [String]: >usertes< len: 7
-//   <https___> [Boolean]: >true<
-//   <searchParams_all> Object {
-//     <one> Array [
-//       <0> [String]: >two< len: 3
-//       <1> [String]: >three< len: 5
-//     ]
-//     <three> Array [
-//       <0> [String]: >rour< len: 4
-//     ]
-//     <q> Array [
-//       <0> [String]: >89.67.167.34< len: 12
-//     ]
-//     <dwa> Array [
-//       <0> [String]: >trzy< len: 4
-//     ]
-//   }
-//   <using with http.request():> Object {
-//     <hostname> [String]: >sub.domain.com< len: 14
-//     <port> [String]: >1025< len: 4
-//     <path> [String]: >/curl< len: 5
-//     <method> [String]: >POST< len: 4
-//     <headers> Object {
-//       <Content-Type> [String]: >application/json< len: 16
-//     }
-//   }
-//   <url.parse> Url {
-//     <protocol> [String]: >https:< len: 6
-//     <slashes> [Boolean]: >true<
-//     <auth> [String]: >usertes:pasword< len: 15
-//     <host> [String]: >sub.domain.com:1025< len: 19
-//     <port> [String]: >1025< len: 4
-//     <hostname> [String]: >sub.domain.com< len: 14
-//     <hash> [String]: >#hash_bang< len: 10
-//     <search> [String]: >?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 53
-//     <query> [String]: >one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 52
-//     <pathname> [String]: >/curl< len: 5
-//     <path> [String]: >/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 58
-//     <href> [String]: >https://usertes:pasword@sub.domain.com:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang< len: 111
-//   }
-// }
-    
-
-                </script>
-            </div>
-
-            <div class="cards">
-                <h2>component search</h2>
-                <a href="https://openbase.io/js/node-xlsx">https://openbase.io/js/node-xlsx</a>
-            </div>
-
-            <div class="cards">
-                <h2>safe console.log</h2>
-                <script type="editor" data-lang="js">
-
-// just log
-var log=(function(){try{return console.log}catch(e){return function(){}}}());
-
-// tlog
-const tlog = (function () {
-
-    var log=(function(){try{return console.log}catch(e){return function(){}}}());
-
-    const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
-
-    return (...args) => {
-        log.call(this, time(), ...args.map(a => a + ''));
-    }
-}());
-
-// module
-const log=(function(){try{return console.log}catch(e){return function(){}}}());
-
-const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
-
-module.exports = (...args) => {
-    log.call(this, time(), ...args.map(a => a + ''));
-}
-
-// node inspect
-const i = require('util').inspect;
-
-console.log(i(t, {
-    depth:  50,
-    colors: true,
-    compact: true,
-    // breakLength: 80,
-}))
-
-                </script>
-                <h2>jest</h2>
-                <a href="https://github.com/stopsopa/roderic-legacy/tree/master/test/jest">https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a>
-
-                <h2>update.sh - shell script</h2>               
-                <script type="editor" data-lang="sh">
-
-
-#!/bin/bash
-
-set -e
-
-set -x
-
-ORIGIN="origin"
-LOCALBRANCH="master"
-REMOTEBRANCH="master"
-
-trim() {
-    local var="$*"
-    # remove leading whitespace characters
-    var="${var#"${var%%[![:space:]]*}"}"
-    # remove trailing whitespace characters
-    var="${var%"${var##*[![:space:]]}"}"
-    echo -n "$var"
-}
-
-function red {
-    printf "\e[31m$1\e[0m\n"
-}
-
-function green {
-    printf "\e[32m$1\e[0m\n"
-}
-
-if [ "$(git rev-parse --abbrev-ref HEAD)" != $LOCALBRANCH ]; then
-
-    red "switch first branch to <$LOCALBRANCH>"
-
-    exit 1;
-fi
-
-green "\ncurrent branch: $LOCALBRANCH";
-
-DIFF="$(git diff --numstat)"
-
-DIFF="$(trim "$DIFF")"
-
-if [ "$DIFF" != "" ]; then
-
-    red "\n\n    Error: First commit changes ...\n\n";
-
-    exit 2;
-fi
-
-DIFF="$(git diff --numstat $LOCALBRANCH $ORIGIN/$REMOTEBRANCH)"
-
-DIFF="$(trim "$DIFF")"
-
-if [ "$DIFF" != "" ]; then
-
-    git push $ORIGIN $REMOTEBRANCH --tags
-
-    if [ "$?" != "0" ]; then
-
-        red "\n\nCan't git push - stop bumping version\n"
-
-        exit 3;
-    fi
-
-    npm version patch
-
-                            # node version-dep.js
-                            # git add package.json
-                            # git commit --amend --no-edit
-
-    git push $ORIGIN $REMOTEBRANCH
-
-    if [ "$?" = "0" ]; then
-
-        npm publish
-
-        if [ "$?" != "0" ]; then
-
-            red "\n\nCan't npm publish\n"
-
-            exit 4;
-        fi
-
-        git push --tags --force
-
-    else
-
-        red "\n\nCan't git push\n"
-
-        exit 5
-    fi
-
-else
-
-    red "\n\n    Nothing new to publish\n\n";
-fi
-
-                </script>
-            </div>
-            <div class="cards">
-                <h2>Node clock controlled crush</h2>
-                <script type="editor" data-lang="js">
-
-/*
-
-usage in server script:
-
-require('dotenv-up')({
-  override    : false,
-  deep        : 5,
-}, false, '..................');
-
-(function () {
-
-  const atomclock = require('./app/lib/atomclock');
-
-  atomclock.crashServer(process.env.PROTECTED_MYSQL_MAX_TIME_DIFF);
-}());
-
-*/
-
-const log = require('inspc');
-
-const jsonfetch = require('./jsonfetch');
-
-const promiseany = require('nlab/promiseany');
-
-// const promiseall = require('nlab/promiseall');
-
-const emsg = msg => `atomclock.js error: ${msg}`
-
-const th = msg => new Error(emsg(msg));
-
-// module.exports = (warning = true) => promiseall([
-const tool = (warning = true) => promiseany([
-  async atom => {
-
-    try {
-
-      atom = await jsonfetch('http://worldtimeapi.org/api/timezone/Etc/UTC', {
-        timeout: 2000,
-      });
-
-      if ( ! Number.isInteger(atom.body.unixtime) ) {
-
-        throw th(`http://worldtimeapi.org/api/timezone/Etc/UTC unixtime is not an integer`);
-      }
-
-      return atom.body.unixtime;
-
-    }
-    catch (e) {
-
-      if (warning) {
-
-        log.dump({
-          atomclick_js_warning: e
-        })
-      }
-
-      throw e;
-    }
-  },
-  async atom => {
-
-    try {
-
-      atom = await jsonfetch('http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now', {
-        timeout: 2000,
-      });
-
-      if (atom.status !== 200) {
-
-        throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom.status !== 200`);
-      }
-
-      if ( ! /^\d+$/.test(atom.body.UnixTimeStamp) ) {
-
-        throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom.body.UnixTimeStamp don't match /^\\d+$/`);
-      }
-
-      atom = parseInt(atom.body.UnixTimeStamp, 10);
-
-      if ( ! Number.isInteger(atom) ) {
-
-        throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom is not an integer`);
-      }
-
-      return atom;
-
-    }
-    catch (e) {
-
-      if (warning) {
-
-        log.dump({
-          atomclick_js_warning: e
-        })
-      }
-
-      throw e;
-    }
-  },
-  async atom => {
-
-    try {
-
-      atom = await jsonfetch('http://widget.time.is/', {
-        timeout: 2000,
-      });
-
-      if (atom.status !== 200) {
-
-        throw th(`http://worldclockapi.com/api/json/utc/now atom.status !== 200`);
-      }
-
-      atom = atom.body.replace(/^[^\d]+(\d+).*$/, '$1');
-
-      if ( ! /^\d+$/.test(atom) ) {
-
-        throw th(`http://worldclockapi.com/api/json/utc/now atom.status don't match /^\\d+$/`);
-      }
-
-      return parseInt(parseInt(atom, 10) / 1000, 10);
-
-    }
-    catch (e) {
-
-      if (warning) {
-
-        log.dump({
-          atomclick_js_warning: e
-        })
-      }
-
-      throw e;
-    }
-  },
-]);
-
-tool.crashServer = async function (diff) {
-
-  try {
-
-    if ( typeof diff !== 'string' ) {
-
-      throw th(`diff is not a string`);
-    }
-
-    if ( ! /^\d+$/.test(diff || '') ) {
-
-      throw th(`atomclock.js diff (value: '${diff}') is not defined or it doesn't match /^\\d+$/`);
-    }
-
-    const crushnodeifdiffgreaterthansec = parseInt(diff, 10);
-
-    const at = await tool(false);
-
-    const now = parseInt((new Date()).getTime() / 1000, 10)
-
-    const abs = Math.abs(at - now);
-
-    if (abs > crushnodeifdiffgreaterthansec) {
-
-      throw th(`atomclock.js time - node UTC time differance '${abs}' is greater than '${crushnodeifdiffgreaterthansec}' sec`);
-    }
-
-    console.log(`Time differance between atomclock.js time and node.js clock time is '${abs}', should be smaller than ${crushnodeifdiffgreaterthansec}`)
-
-    console.log("Time diff is small enough 👍")
-  }
-  catch (e) {
-
-    log.dump({
-      atomclick_general_error: e
-    })
-
-    throw e;
-  }
-}
-
-module.exports = tool;
-                </script>
-            </div>
-            <div class="cards">
-                <h2>Express template</h2>               
-                <script type="editor" data-lang="js">
-
-const path      = require('path');
-
-const fs        = require('fs');
-
-const express   = require('express');
-
-const log       = (function(){try{return console.log}catch(e){return function (){}}}());
-
-const template  = require('lodash/template');
-
-// https://www.npmjs.com/package/cookie-parser
-const cookieParser = require('cookie-parser'); 
-
-// https://stackoverflow.com/a/23613092
-const serveIndex    = require('serve-index');
-
-const host      = process.env.HOST;
-
-const port      = process.env.PORT;
-
-const web = path.resolve(__dirname, 'public');
-
-const readFile = file => fs.readFileSync(file).toString();
-
-const app       = express();
-
-app.use(cookieParser())
-
-app.use(express.urlencoded({extended: false}));
-
-app.use(express.json());
-
-app.all('/save', (req, res) => {
-
-    const cookies = decodeURIComponent(req.headers.cookie || '').split(';').reduce((acc, coo) => {
-        const tmp   = coo.split('=');
-        const name  = tmp.shift().trim();
-        const value = tmp.join('=').trim();
-        name && (acc[name] = value);
-        return acc;
-    }, {});
-
-    log('save');
-    log(JSON.stringify(req.body));
-
-    res.setHeader('Content-type', 'application/json; charset=utf-8');
-    res.end(JSON.stringify({
-        ok: true
-    }));
-})
-
-app.all('/root', (req, res) => {
-
-    const html  = readFile(path.resolve(__dirname, 'public', '_index.html'));
-
-    const svg   = readFile(path.resolve(__dirname, 'public', 'tree.svg'));
-
-    const tmp = template(html);
-
-    res.end(tmp({
-        svg
-    }));
-});
-
-app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
-    // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
-    maxAge: '356 days', // in milliseconds max-age=30758400
-    setHeaders: (res, path) => {
-
-        if (/\.bmp$/i.test(path)) { // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
-
-            res.setHeader('Content-type', 'image/bmp')
-        }
-
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-        // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
-        // res.setHeader('Cache-Control', 'public, only-if-cached')
-    }
-}), serveIndex(web, {'icons': true}));
-
-app.listen(port, host, () => {
-
-    console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`)
-});
-                </script>             
-                <script type="editor" data-lang="json">
-{
-  "dependencies": {
-    "body-parser": "^1.18.3",
-    "express": "^4.16.3",
-    "lodash": "^4.17.10",
-    "serve-index": "^1.9.1"
-  }
-}
-                
-                </script> 
-            </div>
-
-            <div class="cards">
-                <h2>colors</h2>  
-                <a href="https://www.npmjs.com/package/colors">NPM - colors</a>
-                <table width="100%">
-                    <tbody>
-                        <tr>
-                            <td>
-                <script type="editor" data-lang="js">
-require('colors');
-const l = c => console.log(`${c} [` + (`test string`[c]) + ']');
-console.log("\n\n");
-// text colors
-l('black');
-l('red');
-l('green');
-l('yellow');
-l('blue');
-l('magenta');
-l('cyan');
-l('white');
-l('gray');
-l('grey');
-// bg colors
-l('bgBlack');
-l('bgRed');
-l('bgGreen');
-l('bgYellow');
-l('bgBlue');
-l('bgMagenta');
-l('bgCyan');
-l('bgWhite');
-//styles
-l('reset');
-l('bold');
-l('dim');
-l('italic');
-l('underline');
-l('inverse');
-l('hidden');
-l('strikethrough');
-//extras
-l('rainbow');
-l('zebra');
-l('america');
-l('trap');
-l('random');
-console.log("\n\n")                
-                </script> 
-                            </td>
-                            <td width="257">
-                                <img src="/img/node/colors.png" height="624"/>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <script type="editor" data-lang="js">
-
-// https://i.imgur.com/mWzuQWP.png
-const color = (function (c) {
-    return (...args) => c[args.pop()] + args.join('') + c.reset;
-}({
-    Bright      : "\x1b[1m",
-    Dim         : "\x1b[2m",
-    Underscore  : "\x1b[4m",
-    Blink       : "\x1b[5m",
-    Reverse     : "\x1b[7m",
-    Hidden      : "\x1b[8m",
-    FgBlack     : "\x1b[30m",
-    FgRed       : "\x1b[31m", // red
-    FgGreen     : "\x1b[32m", // green
-    FgYellow    : "\x1b[33m", // yellow
-    FgBlue      : "\x1b[34m",
-    FgMagenta   : "\x1b[35m", // magenta
-    FgCyan      : "\x1b[36m", // cyan
-    FgWhite     : "\x1b[37m",
-    BgBlack     : "\x1b[40m",
-    BgRed       : "\x1b[41m",
-    BgGreen     : "\x1b[42m",
-    BgYellow    : "\x1b[43m",
-    BgBlue      : "\x1b[44m",
-    BgMagenta   : "\x1b[45m",
-    BgCyan      : "\x1b[46m",
-    BgWhite     : "\x1b[47m",
-    r           : "\x1b[31m", // red
-    g           : "\x1b[32m", // green
-    y           : "\x1b[33m", // yellow
-    m           : "\x1b[35m", // magenta
-    c           : "\x1b[36m", // cyan
-    reset       : "\x1b[0m",
-}));
-
-const c = (...args) => process.stdout.write(color(...args));
-
-                </script>
-            </div>
-
-            <div class="cards">
-                <h2>request.js</h2>  
-                <script type="editor" data-lang="js">
-
-// tests: https://github.com/stopsopa/vault/blob/master/test/request.test.js                                
-
-const URL = require('url').URL;
-
-const https = require('https');
-
-const http = require('http');
-
-const querystring = require('querystring');
-
-const se = require('nlab/se');
-
-const th = msg => new Error(`request: ${String(msg)}`);
-
-const log = console.log;
-
-const isObject = require('nlab/isObject');
-
-module.exports = function request(url, opt = {}) {
-
-    let {
-        method = 'GET',
-        body = undefined,
-        query = {},
-        headers = {},
-        timeout = 30 * 1000, // 30 sec
-        verbose = false,
-        decodeJson = true,
-    } = opt;
-
-    if (typeof method !== 'string') {
-
-        throw th(`method is not a string`);
-    }
-
-    method = method.toUpperCase();
-
-    let rq;
-
-    return new Promise((resolve, reject) => {
-
-        const uri = new URL(url);
-
-        const lib = (uri.protocol === 'https:') ? https : http;
-
-        query = querystring.stringify(query);
-
-        rq = {
-            hostname: uri.hostname,
-            port: uri.port || ((uri.protocol === 'https:') ? '443' : '80'),
-            path: uri.pathname + uri.search + (query ? (uri.search.includes('?') ? '&' : '?') + query : ''),
-            method,
-            headers,
-        };
-
-        if (Array.isArray(body) || isObject(body)) {
-
-            if (method === 'GET') {
-
-                throw th(`body looks like json payload but request method is GET`);
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort></ul>
+        </div>
+
+        <div class="cards">
+          <h2>UMD (Universal Module Definition)</h2>
+          <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
+          <h2>Installation on linux</h2>
+          <a href="https://github.com/nodesource/distributions#installation-instructions-1">Installation nodesource</a>
+        </div>
+        <h2>What is Node.js</h2>
+        <a href="https://medium.datadriveninvestor.com/the-node-js-architecture-f86e2337bcd2">The Node.js Architecture!</a>
+        <br />
+        <a href="https://nodejs.dev/learn/understanding-setimmediate">https://nodejs.dev/learn/understanding-setimmediate</a>
+        <h2>useful</h2>
+        <script type="editor" data-lang="sh">
+
+          npx envinfo
+
+          npx prettier --write src
+              # https://prettier.io/docs/en/cli.html#docsNav
+        </script>
+        <h2>prettier.config.js</h2>
+        <script type="editor" data-lang="sh">
+
+          module.exports = {
+            printWidth: 120,
+          };
+
+        </script>
+        <div class="cards">
+          <h2>Extract engines script</h2>
+          <script type="editor" data-lang="sh" class="domain.com">
+
+            wget --help 1> /dev/null 2> /dev/null
+            if [ "$?" = "0" ]; then # wget
+              wget --no-cache -O "vault.sh" "domain.com/pages/node/engines.js"
+            else # curl
+              curl "domain.com/pages/node/engines.js" -o "vault.sh"
+            fi
+
+            /bin/bash vault.sh jest
+          </script>
+
+          <h2>Best practices</h2>
+
+          <a href="https://github.com/goldbergyoni/nodebestpractices">https://github.com/goldbergyoni/nodebestpractices</a>
+          <br />
+          <h2>yarn</h2>
+          <script type="editor" data-lang="sh">
+
+            yarn set version berry
+            yarn set version 1.22.10
+                # https://github.com/yarnpkg/yarn/releases
+
+            yarn outdated
+            yarn upgrade-interactive
+            yarn upgrade-interactive --latest
+
+            yarn install --production=true  # no devDependencies
+            yarn install --production=false # with devDependencies
+                # from: https://classic.yarnpkg.com/en/docs/cli/install/#toc-yarn-install-production-true-false
+
+            yarn why library
+                # to see why library is in deps
+          </script>
+          <h2>dotenv</h2>
+          <script type="editor" data-lang="js">
+
+            const fs = require('fs');
+
+            const path = require('path');
+
+            const env = path.resolve(path.dirname(__dirname), '.env');
+
+            if ( ! fs.existsSync(env) ) {
+
+              throw new Error(`File ${env} doesn't exist`);
             }
 
-            // modyfying original 'rq' by reference            
-            headers['Content-type'] = 'application/json; charset=utf-8';
-        }
-
-        if (verbose) {
-
-            log({
-                'request.js': rq,
-            })
-        }
-
-        var req = lib.request(rq, res => {
-
-            res.setEncoding('utf8');
-
-            let body = '';
-
-            res.on('data', chunk => {
-
-                body += chunk
+            require('dotenv').config({
+              path: env,
             });
 
-            res.on('end', () => {
+            console.log('env', process.env);
+          </script>
+        </div>
+        <div class="cards">
+          <h2>nodemon</h2>
+          <script type="editor" data-lang="sh">
+            nodemon -e js,html server.js
+          </script>
+          <h2>streams</h2>
+          <script type="editor" data-lang="js">
+
+            // https://github.com/substack/stream-handbook
+            // from: https://github.com/nkzawa/socket.io-stream
+
+            // https://nodesource.com/blog/understanding-streams-in-nodejs/
+
+
+            // https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
+            // Create big file using stream
+            const fs = require('fs');
+            const file = fs.createWriteStream('./big.file');
+
+            for(let i=0; i<= 1e6; i++) {
+              file.write('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n');
+            }
+
+            file.end();
+
+
+
+            # https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
+            # more: https://jscomplete.com/learn/node-beyond-basics/node-streams  g(node beyond basics)
+
+            # https://www.sitepoint.com/basics-node-js-streams/
+            # http://2ality.com/2018/04/async-iter-nodejs.html
+            # http://2ality.com/2018/05/child-process-streams.html
+
+            # read file to http response:
+            const stream = fs.createReadStream(file);
+            stream.pipe(res);
+
+            # write http response to file:
+            const stream = fs.createWriteStream(file);
+            res.pipe(stream);
+
+            readableStream.pipe(writableStream);
+
+            # pipe stream error handling
+            await new Promise((resolve, reject ) => {
+
+              var stream = res.pipe(fs.createWriteStream(file));
+
+              stream.on('finish', () => resolve());
+
+              stream.on('error', e => reject({
+                writable_stream_error: e
+              }));
+            });
+
+            # unzip
+            var fs = require('fs');
+            var zlib = require('zlib');
+
+            fs.createReadStream('input.txt.gz')
+              .pipe(zlib.createGunzip())
+              .pipe(fs.createWriteStream('output.txt'));
+          </script>
+          <h2>Signleton (kinda) module template</h2>
+          <script type="editor" data-lang="js">
+
+            const CachePromise = require('./CachePromise');
+
+            const instances = {};
+
+            const name = 'CachePromiseModule';
+
+            const th = msg => new Error(`${name}.js error: ${msg}`);
+
+            module.exports = (name = 'default', opt) => {
+
+              if ( typeof name !== 'string' ) {
+
+                throw th(`name is not a string`);
+              }
+
+              if ( instances[name] ) {
+
+                return instances[name];
+              }
+
+              if ( ! isObject(opt) ) {
+
+                throw th(`opt is not an object. Usually it means you are trying to get the instance before initialising it. Use first ${name}(name, opt) then ${name}(name)`);
+              }
+
+              return instances[name] = new CachePromise(opt);
+            }
+
+            function isObject(o) {
+              return Object.prototype.toString.call(o) === '[object Object]';
+            }
+          </script>
+          <h2>path</h2>
+          <script type="editor" data-lang="js">
+            # in php :
+            $path_parts = pathinfo('/www/htdocs/inc/lib.inc.php');
+
+            echo $path_parts['basename'], "\n"; // lib.inc.php
+                // path.basename(test)
+            echo $path_parts['extension'], "\n"; // php
+                // path.extname(test).substring(1)
+            echo $path_parts['dirname'], "\n"; // /www/htdocs/inc
+                // path.dirname(test)
+            echo $path_parts['filename'], "\n"; // since PHP 5.2.0 // lib.inc
+                // path.basename(test, path.extname(test))
+          </script>
+          <h2>fs</h2>
+          <script type="editor" data-lang="js">
+
+            var fs          = require('fs');
+
+            if (fs.existsSync(dirfile)) { // warning: if under dirfile there will be broken link (pointing to something nonexisting) then this function will return false even if link DO EXIST but it's broken
+
+
+
+            }
+            // file exist
+
+
+            function pathExist(target) { // this function detects even broken symlink
+
+              try {
+
+                if ( fs.existsSync(target) ) {
+
+                  return true;
+                }
+
+                const sym = fs.readlinkSync(target);
+
+                if ( typeof sym === 'string' ) {
+
+                  return true;
+                }
+              }
+              catch (e) {
+
+                // throw new Error('one' + `-- ${e}`);
+              }
+
+              return false;
+            }
+
+            // read sync
+            const content = fs.readFileSync(file, options).toString();
+            const content = fs.readFileSync(file, 'utf8').toString();
+
+            fs.lstatSync(path_string).isDirectory()  // https://stackoverflow.com/a/15630832
+
+
+            // write sync
+            fs.writeFileSync(file.source, content);
+            fs.appendFileSync(file.source, content);
+
+
+            // delete remove file
+
+            fs.unlinkSync(file);
+
+
+
+            // https://nodejs.org/api/fs.html#fs_fs_access_path_mode_callback
+
+
+                if ( ! fs.existsSync(file)) {
+
+                    throw `file '${file}' doesn't exist`;
+                }
+
+                try {
+                    fs.accessSync(file, fs.constants.R_OK);
+                }
+                catch (e) {
+
+                    throw `file '${file}' is not readdable`;
+                }
+
+                try {
+                    fs.accessSync(file, fs.constants.W_OK);
+                }
+                catch (e) {
+
+                    throw `file '${file}' is not writtable`;
+                }
+                // handle like this becaue without try catch it's ugly, not telling explicitely if file is not readdalbe or not writtable
+
+                // WARNING: Synchronous version of fs.access(). This throws if any accessibility checks fail, and does nothing otherwise.
+
+
+
+
+                const path                  = require('path');
+
+                const fs                    = require('fs');
+
+                const listFilesSync = (dir, l = 0) => {
+
+                    let pa, s;
+
+                    let list = [];
+
+                    fs.readdirSync(dir).forEach(p => {
+
+                        pa  = path.resolve(dir, p);
+
+                        s   = fs.lstatSync(pa);
+
+                        // console.log('file: ', s.isFile() ? 'F' : 'D', ': ', ' '.repeat(l),  p);
+
+                        // is_file is file
+                        if (s.isFile()) {
+
+                            list.push(['f', pa]);
+                        }
+
+                        if (s.isDirectory()) {
+
+                            list.push(['d', pa]);
+
+                            list = list.concat(listFilesSync(pa, l + 4));
+                        }
+                    })
+
+                    return list;
+                }
+                ==== walk iterate through directories files recursively recursive ====== ^^^
+
+
+
+                ==== find files list recursively ===== vvv
+
+                const fs            = require('fs');
+
+                var walkSync = function(dir, filelist) { // https://gist.github.com/kethinov/6658166#gistcomment-1603591
+
+                    var p, files = fs.readdirSync(dir);
+
+                    filelist = filelist || [];
+
+                    files.forEach(function(file) {
+
+                        p = path.resolve(dir, file);
+
+                        if (fs.statSync(p).isDirectory()) { // is directory is_dir isdirectory
+
+                            filelist = walkSync(p, filelist);
+                        }
+                        else {
+
+                            filelist.push(p);
+                        }
+                    });
+
+                    return filelist;
+                };
+          </script>
+          <h2>eslint</h2>
+          <script type="editor" data-lang="python">
+
+            # raw config
+            https://github.com/standard/eslint-config-standard/blob/master/eslintrc.json
+            https://eslint.org/docs/rules/
+
+            # error levels:
+            https://eslint.org/docs/user-guide/getting-started#configuration
+
+            https://eslint.org/docs/1.0.0/rules/padded-blocks
+          </script>
+          <h2>npm</h2>
+          <script type="editor" data-lang="sh">
+
+            npm install --production       # no devDependencies
+            npm install --production=false # with devDependencies
+                # from: https://docs.npmjs.com/cli/v7/commands/npm-install
+
+            $(npm bin)/cypress open
+                # from: https://docs.cypress.io/guides/getting-started/installing-cypress.html#Opening-Cypress
+
+            npm root -g
+                # npm global node_module
+
+            npm init
+            npm init --scope=stopsopa
+                {
+                  "name": "@stopsopa/line",
+                  "version": "2.0.0",
+                  "description": "Lib to draw lines using one div and css",
+                  "main": "line.js",
+                  "scripts": {
+                    "test": "echo \"Error: no test specified\" && exit 1",
+                    "start": "node server.js"
+                  },
+                  "repository": {
+                    "type": "git",
+                    "url": "git@github.com:stopsopa/line.git"
+                  },
+                  "author": "Szymon Dzialowski",
+                  "license": "MIT",
+                  "homepage": "https://github.com/stopsopa/line"
+                }
+            npm login
+            npm config ls
+            .npmignore
+                # testing .npmignore run "npm pack" - https://docs.npmjs.com/misc/developers#testing-whether-your-npmignore-or-files-config-works
+
+            npx: https://docs.npmjs.com/files/package.json#bin
+
+            npm version patch
+            npm publish --access=public
+
+            https://badge.fury.io/for/js/bash-make-lifecycle - badge generator
+
+            npm link    # https://www.youtube.com/watch?v=nKFe1lhGSk0 usefull if you are in the process of development of something
+                # known issues: https://github.com/npm/npm/issues/20954#issuecomment-397114152
+          </script>
+        </div>
+
+        <div class="cards">
+          <h2>CORS</h2>
+          <a href="https://livebook.manning.com/book/cors-in-action/chapter-5/">Read more about CORS</a>
+          <script type="editor" data-lang="sh">
+
+            // CORS
+            (function () {
+
+              const th = msg => new Error(`Cors configuration error: ${msg}`)
+
+              const trim = require('nlab/trim');
+
+              const negotiatePort = require('nlab/negotiatePort');
+
+              function isObject(o) {
+                return Object.prototype.toString.call(o) === '[object Object]';
+              }
+
+              if ( ! process.env.PROTECTED_CORS_ALLOWED_DOMAINS ) {
+
+                throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS is not defined`);
+              }
+
+              const whitelist = process.env.PROTECTED_CORS_ALLOWED_DOMAINS
+                .split(' ')
+                .map(t => trim(t))
+                .filter(Boolean)
+                .map(t => {
+
+                  try {
+
+                    t = new URL(t);
+
+                    return t.protocol + "//" + t.hostname + negotiatePort(t.protocol, t.port, ':');
+                  }
+                  catch (e) {
+
+                    throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS processing part '${t}' failed: ${e}`);
+                  }
+                })
+              ;
+
+              console.log(JSON.stringify({
+                PROTECTED_CORS_ALLOWED_DOMAINS: whitelist,
+              }, null, 4))
+
+              if ( ! whitelist.length ) {
+
+                throw th(`process.env.PROTECTED_CORS_ALLOWED_DOMAINS after processing is an empty list`);
+              }
+
+              var cors = require('cors');
+
+              app.use((req, res, next) => {
+
+                if (isObject(req.headers) && typeof req.headers.origin === 'string' && trim(req.headers.origin)) {
+
+                  console.log(`request: ${req.method} ${req.url} - handle cors true ${req.headers.origin}`)
+
+                  return cors({
+                    exposedHeaders: 'X-session',
+                    origin: function (origin, callback) {
+                      if (whitelist.includes(origin)) {
+                        callback(null, true)
+                      } else {
+                        callback(new Error(`${origin} Not allowed by CORS`))
+                      }
+                    }
+                  })(req, res, next);
+                }
+
+                console.log(`request: ${req.method} ${req.url} - handle cors next`)
+
+                next();
+              })
+            }());
+          </script>
+        </div>
+        <div class="cards">
+          <h2>processing url uri</h2>
+          <script type="editor" data-lang="js">
+
+
+            const originalUrl = require('original-url'); // yarn add original-url
+
+            const original = originalUrl(req);
+
+            const requestIp = require('request-ip');
+
+            app.use(requestIp.mw()); // get ip                  req.clientIp
+
+            log.dump({
+                original,
+                headers             : req.headers,
+                originalUrl         : req.originalUrl, // https://expressjs.com/en/api.html#req.originalUrl
+                url                 : req.url,
+                method              : req.method,
+                host                : req.get('host'),
+                origin              : req.get('origin'),
+                protocol            : req.protocol,
+                secure              : req.secure,  //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
+                reconstrucred       : req.protocol + '://' + req.get('host') + req.url, //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
+            })
+            Object {// for https://amlstage.phaseiilabs.com:8080/tester/tester?raz=dwa behind nginx proxy
+                "original": {
+                    "raw": "/tester/tester?raz=dwa",
+                    "protocol": "http:", // WARNING: will be "https:" if X-Forwarded-Proto $scheme; OR(I'VE TESTED THIS 'OR' IN BOTH CASES WILL WORK, COMMEND ONE OR ANOTHER) X-Forwarded-SSL   on; added
+                    "hostname": "212.67.96.161", // WARNING: becareful it might return ip address WARNING WARNING
+                    "port": 8080, // key exist only if [proxy_set_header X-Forwarded-Port $server_port;] added to nginx
+                    "pathname": "/tester/tester",
+                    "search": "?raz=dwa",
+                    "full": "http://212.67.96.161:8080/tester/tester?raz=dwa"
+                },
+                "headers": {
+                    "connection": "upgrade",
+                    "host": "amlstage.phaseiilabs.com",
+                    "x-real-ip": "212.67.96.161",
+                    "x-forwarded-for": "212.67.96.161",
+                    "x-forwarded-host": "212.67.96.161",
+                        "x-forwarded-port": "8080",     // will appear only if [proxy_set_header X-Forwarded-Port $server_port;] added to nginx config
+                        "x-forwarded-proto": "https",   // will appear only if [proxy_set_header X-Forwarded-Proto $scheme;] added to nginx config
+                        "x-forwarded-ssl": "on",        // will appear only if [proxy_set_header X-Forwarded-SSL on;] added to nginx config
+                    "cache-control": "max-age=0",
+                    "upgrade-insecure-requests": "1",
+                    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+                    "sec-fetch-dest": "document",
+                    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                    "sec-fetch-site": "none",
+                    "sec-fetch-mode": "navigate",
+                    "sec-fetch-user": "?1",
+                    "accept-encoding": "gzip, deflate, br",
+                    "accept-language": "en-GB,en-US;q=0.9,en;q=0.8,pl;q=0.7,it;q=0.6,fr;q=0.5,es;q=0.4,de;q=0.3,ru;q=0.2,mt;q=0.1,pt;q=0.1,id;q=0.1",
+                    "cookie": "_ga=GA1.2.477192506.1582642627; _hjid=38ba37f0-33bc-48ad-bf45-a82f453729f2; _gid=GA1.2.250183521.1583161185; jwt_cookie=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZXMiOlsiYWRtaW4iLCJ1c2VyIl0sImlhdCI6MTU4MzI0NTc5MCwiZXhwIjoxNTgzMjc4MTkwfQ.IYyoBu4QQ0lEKk3G4XjIczha68XezAZs8ds4RbEak80",
+                    "if-none-match": "W/\"19f-eK38WW4dYefk0hfT3dbOw33zsbo\""
+                },
+                "originalUrl": "/tester/tester?raz=dwa",
+                "url": "/tester/tester?raz=dwa",
+                "method": "GET",
+                "host": "amlstage.phaseiilabs.com",
+                "protocol": "http",
+                "secure": false, // adding X-Forwarded-Proto $scheme; or X-Forwarded-SSL   on; will not help here, use "original-url" to resolve headers and then use original.protocol (it will be equal "https:")
+                "reconstrucred": "http://amlstage.phaseiilabs.com/tester/tester?raz=dwa"
+            }
+
+            --- express headers ----- vvv
+            log.dump({
+                originalUrl         : req.originalUrl, // https://expressjs.com/en/api.html#req.originalUrl
+                url                 : req.url,
+                method              : req.method,
+                host                : req.get('host'),
+                origin              : req.get('origin'),
+                protocol            : req.protocol,
+                secure              : req.secure,  //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
+                'original.protocol' : original.protocol,
+                reconstrucred       : req.protocol + '://' + req.get('host') + req.url, //  WARNING: USE IN FUTURE LIBRARY original-url FROM NPM IF PAGE IS BEHIND PROXY PASS WITH HEADER x-forwarded-ssl OR x-forwarded-proto
+            }, 4)
+            Object {
+              <originalUrl> [String]: >/sockjs-node/info?t=1582335313746< len: 33
+              <url> [String]: >/sockjs-node/info?t=1582335313746< len: 33
+              <method> [String]: >GET< len: 3
+              <host> [String]: >localhost:1025< len: 14
+              <origin> [Undefined]: >undefined<
+              <protocol> [String]: >http< len: 4
+              <secure> [Boolean]: >false<
+              <original.protocol> [String]: >https<
+              <reconstrucred> [String]: >http://localhost:1025/sockjs-node/info?t=1582335313746< len: 54
+            }
+
+            --- express headers ----- ^^^
+
+            const URL           = require('url').URL;
+
+            const log           = require('inspc');
+
+            const target = `https://usertes:pasword@sub.domain.com:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang`;
+
+            const uri   = new URL(target);
+
+            log.dump({ // https://nodejs.org/docs/latest-v7.x/api/url.html#url_url_parse_urlstring_parsequerystring_slashesdenotehost
+                hash____    : uri.hash,
+                host____    : uri.host,
+                hostname    : uri.hostname,
+                href____    : uri.href,
+                origin__    : uri.origin,
+                password    : uri.password,
+                pathname    : uri.pathname,
+                port____    : uri.port,
+                protocol    : uri.protocol,
+                search__    : uri.search,
+                searchParams: uri.searchParams, // https://nodejs.org/docs/latest-v7.x/api/url.html#url_class_urlsearchparams
+                username    : uri.username,
+
+                https___    : uri.protocol.indexOf('https') > -1,
+                searchParams_all: Array.from(uri.searchParams.keys()).reduce((acc, key) => {
+                    acc[key] = uri.searchParams.getAll(key)
+                    return acc;
+                }, {}), // https://nodejs.org/docs/latest-v7.x/api/url.html#url_class_urlsearchparams
+
+                'using with http.request():'         : {
+                    hostname    : uri.hostname,
+                    port        : uri.port,
+                    path        : uri.pathname,
+                    method      : 'POST',
+                    headers     : {
+                        'Content-Type': 'application/json'
+                    },
+                    // timeout: 2000,
+                },
+                'url.parse': require('url').parse(target)
+            }, 5)
+
+            // 2019-04-26 10:23:42 /Users/sd/Workspace/projects/z_roderic_new/roderic-project/url.js:11
+            // Object {
+            //   <hash____> [String]: >#hash_bang< len: 10
+            //   <host____> [String]: >sub.domain.com:1025< len: 19
+            //   <hostname> [String]: >sub.domain.com< len: 14
+            //   <href____> [String]: >https://usertes:pasword@sub.domain.com:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang< len: 111
+            //   <origin__> [String]: >https://sub.domain.com:1025< len: 27
+            //   <password> [String]: >pasword< len: 7
+            //   <pathname> [String]: >/curl< len: 5
+            //   <port____> [String]: >1025< len: 4
+            //   <protocol> [String]: >https:< len: 6
+            //   <search__> [String]: >?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 53
+            //   <searchParams> [URLSearchParams]: >one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three<
+            //   <username> [String]: >usertes< len: 7
+            //   <https___> [Boolean]: >true<
+            //   <searchParams_all> Object {
+            //     <one> Array [
+            //       <0> [String]: >two< len: 3
+            //       <1> [String]: >three< len: 5
+            //     ]
+            //     <three> Array [
+            //       <0> [String]: >rour< len: 4
+            //     ]
+            //     <q> Array [
+            //       <0> [String]: >89.67.167.34< len: 12
+            //     ]
+            //     <dwa> Array [
+            //       <0> [String]: >trzy< len: 4
+            //     ]
+            //   }
+            //   <using with http.request():> Object {
+            //     <hostname> [String]: >sub.domain.com< len: 14
+            //     <port> [String]: >1025< len: 4
+            //     <path> [String]: >/curl< len: 5
+            //     <method> [String]: >POST< len: 4
+            //     <headers> Object {
+            //       <Content-Type> [String]: >application/json< len: 16
+            //     }
+            //   }
+            //   <url.parse> Url {
+            //     <protocol> [String]: >https:< len: 6
+            //     <slashes> [Boolean]: >true<
+            //     <auth> [String]: >usertes:pasword< len: 15
+            //     <host> [String]: >sub.domain.com:1025< len: 19
+            //     <port> [String]: >1025< len: 4
+            //     <hostname> [String]: >sub.domain.com< len: 14
+            //     <hash> [String]: >#hash_bang< len: 10
+            //     <search> [String]: >?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 53
+            //     <query> [String]: >one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 52
+            //     <pathname> [String]: >/curl< len: 5
+            //     <path> [String]: >/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 58
+            //     <href> [String]: >https://usertes:pasword@sub.domain.com:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three#hash_bang< len: 111
+            //   }
+            // }
+          </script>
+        </div>
+
+        <div class="cards">
+          <h2>component search</h2>
+          <a href="https://openbase.io/js/node-xlsx">https://openbase.io/js/node-xlsx</a>
+        </div>
+
+        <div class="cards">
+          <h2>safe console.log</h2>
+          <script type="editor" data-lang="js">
+
+            // just log
+            var log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+            // tlog
+            const tlog = (function () {
+
+                var log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+                const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
+
+                return (...args) => {
+                    log.call(this, time(), ...args.map(a => a + ''));
+                }
+            }());
+
+            // module
+            const log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+            const time = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ')
+
+            module.exports = (...args) => {
+                log.call(this, time(), ...args.map(a => a + ''));
+            }
+
+            // node inspect
+            const i = require('util').inspect;
+
+            console.log(i(t, {
+                depth:  50,
+                colors: true,
+                compact: true,
+                // breakLength: 80,
+            }))
+          </script>
+          <h2>jest</h2>
+          <a href="https://github.com/stopsopa/roderic-legacy/tree/master/test/jest">https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a>
+
+          <h2>update.sh - shell script</h2>
+          <script type="editor" data-lang="sh">
+
+
+            #!/bin/bash
+
+            set -e
+
+            set -x
+
+            ORIGIN="origin"
+            LOCALBRANCH="master"
+            REMOTEBRANCH="master"
+
+            trim() {
+                local var="$*"
+                # remove leading whitespace characters
+                var="${var#"${var%%[![:space:]]*}"}"
+                # remove trailing whitespace characters
+                var="${var%"${var##*[![:space:]]}"}"
+                echo -n "$var"
+            }
+
+            function red {
+                printf "\e[31m$1\e[0m\n"
+            }
+
+            function green {
+                printf "\e[32m$1\e[0m\n"
+            }
+
+            if [ "$(git rev-parse --abbrev-ref HEAD)" != $LOCALBRANCH ]; then
+
+                red "switch first branch to <$LOCALBRANCH>"
+
+                exit 1;
+            fi
+
+            green "\ncurrent branch: $LOCALBRANCH";
+
+            DIFF="$(git diff --numstat)"
+
+            DIFF="$(trim "$DIFF")"
+
+            if [ "$DIFF" != "" ]; then
+
+                red "\n\n    Error: First commit changes ...\n\n";
+
+                exit 2;
+            fi
+
+            DIFF="$(git diff --numstat $LOCALBRANCH $ORIGIN/$REMOTEBRANCH)"
+
+            DIFF="$(trim "$DIFF")"
+
+            if [ "$DIFF" != "" ]; then
+
+                git push $ORIGIN $REMOTEBRANCH --tags
+
+                if [ "$?" != "0" ]; then
+
+                    red "\n\nCan't git push - stop bumping version\n"
+
+                    exit 3;
+                fi
+
+                npm version patch
+
+                                        # node version-dep.js
+                                        # git add package.json
+                                        # git commit --amend --no-edit
+
+                git push $ORIGIN $REMOTEBRANCH
+
+                if [ "$?" = "0" ]; then
+
+                    npm publish
+
+                    if [ "$?" != "0" ]; then
+
+                        red "\n\nCan't npm publish\n"
+
+                        exit 4;
+                    fi
+
+                    git push --tags --force
+
+                else
+
+                    red "\n\nCan't git push\n"
+
+                    exit 5
+                fi
+
+            else
+
+                red "\n\n    Nothing new to publish\n\n";
+            fi
+          </script>
+        </div>
+        <div class="cards">
+          <h2>Node clock controlled crush</h2>
+          <script type="editor" data-lang="js">
+
+            /*
+
+            usage in server script:
+
+            require('dotenv-up')({
+              override    : false,
+              deep        : 5,
+            }, false, '..................');
+
+            (function () {
+
+              const atomclock = require('./app/lib/atomclock');
+
+              atomclock.crashServer(process.env.PROTECTED_MYSQL_MAX_TIME_DIFF);
+            }());
+
+            */
+
+            const log = require('inspc');
+
+            const jsonfetch = require('./jsonfetch');
+
+            const promiseany = require('nlab/promiseany');
+
+            // const promiseall = require('nlab/promiseall');
+
+            const emsg = msg => `atomclock.js error: ${msg}`
+
+            const th = msg => new Error(emsg(msg));
+
+            // module.exports = (warning = true) => promiseall([
+            const tool = (warning = true) => promiseany([
+              async atom => {
 
                 try {
 
-                    if (decodeJson && (res.headers['content-type'] || '').includes('application/json')) {
+                  atom = await jsonfetch('http://worldtimeapi.org/api/timezone/Etc/UTC', {
+                    timeout: 2000,
+                  });
 
-                        body = JSON.parse(body);
-                    }
+                  if ( ! Number.isInteger(atom.body.unixtime) ) {
 
-                    resolve({
-                        status: res.statusCode,
-                        headers: res.headers,
-                        body,
-                    })
+                    throw th(`http://worldtimeapi.org/api/timezone/Etc/UTC unixtime is not an integer`);
+                  }
+
+                  return atom.body.unixtime;
+
                 }
                 catch (e) {
+
+                  if (warning) {
+
+                    log.dump({
+                      atomclick_js_warning: e
+                    })
+                  }
+
+                  throw e;
+                }
+              },
+              async atom => {
+
+                try {
+
+                  atom = await jsonfetch('http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now', {
+                    timeout: 2000,
+                  });
+
+                  if (atom.status !== 200) {
+
+                    throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom.status !== 200`);
+                  }
+
+                  if ( ! /^\d+$/.test(atom.body.UnixTimeStamp) ) {
+
+                    throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom.body.UnixTimeStamp don't match /^\\d+$/`);
+                  }
+
+                  atom = parseInt(atom.body.UnixTimeStamp, 10);
+
+                  if ( ! Number.isInteger(atom) ) {
+
+                    throw th(`http://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now atom is not an integer`);
+                  }
+
+                  return atom;
+
+                }
+                catch (e) {
+
+                  if (warning) {
+
+                    log.dump({
+                      atomclick_js_warning: e
+                    })
+                  }
+
+                  throw e;
+                }
+              },
+              async atom => {
+
+                try {
+
+                  atom = await jsonfetch('http://widget.time.is/', {
+                    timeout: 2000,
+                  });
+
+                  if (atom.status !== 200) {
+
+                    throw th(`http://worldclockapi.com/api/json/utc/now atom.status !== 200`);
+                  }
+
+                  atom = atom.body.replace(/^[^\d]+(\d+).*$/, '$1');
+
+                  if ( ! /^\d+$/.test(atom) ) {
+
+                    throw th(`http://worldclockapi.com/api/json/utc/now atom.status don't match /^\\d+$/`);
+                  }
+
+                  return parseInt(parseInt(atom, 10) / 1000, 10);
+
+                }
+                catch (e) {
+
+                  if (warning) {
+
+                    log.dump({
+                      atomclick_js_warning: e
+                    })
+                  }
+
+                  throw e;
+                }
+              },
+            ]);
+
+            tool.crashServer = async function (diff) {
+
+              try {
+
+                if ( typeof diff !== 'string' ) {
+
+                  throw th(`diff is not a string`);
+                }
+
+                if ( ! /^\d+$/.test(diff || '') ) {
+
+                  throw th(`atomclock.js diff (value: '${diff}') is not defined or it doesn't match /^\\d+$/`);
+                }
+
+                const crushnodeifdiffgreaterthansec = parseInt(diff, 10);
+
+                const at = await tool(false);
+
+                const now = parseInt((new Date()).getTime() / 1000, 10)
+
+                const abs = Math.abs(at - now);
+
+                if (abs > crushnodeifdiffgreaterthansec) {
+
+                  throw th(`atomclock.js time - node UTC time differance '${abs}' is greater than '${crushnodeifdiffgreaterthansec}' sec`);
+                }
+
+                console.log(`Time differance between atomclock.js time and node.js clock time is '${abs}', should be smaller than ${crushnodeifdiffgreaterthansec}`)
+
+                console.log("Time diff is small enough 👍")
+              }
+              catch (e) {
+
+                log.dump({
+                  atomclick_general_error: e
+                })
+
+                throw e;
+              }
+            }
+
+            module.exports = tool;
+          </script>
+        </div>
+        <div class="cards">
+          <h2>Express template</h2>
+          <script type="editor" data-lang="js">
+
+            const path      = require('path');
+
+            const fs        = require('fs');
+
+            const express   = require('express');
+
+            const log       = (function(){try{return console.log}catch(e){return function (){}}}());
+
+            const template  = require('lodash/template');
+
+            // https://www.npmjs.com/package/cookie-parser
+            const cookieParser = require('cookie-parser');
+
+            // https://stackoverflow.com/a/23613092
+            const serveIndex    = require('serve-index');
+
+            const host      = process.env.HOST;
+
+            const port      = process.env.PORT;
+
+            const web = path.resolve(__dirname, 'public');
+
+            const readFile = file => fs.readFileSync(file).toString();
+
+            const app       = express();
+
+            app.use(cookieParser())
+
+            app.use(express.urlencoded({extended: false}));
+
+            app.use(express.json());
+
+            app.all('/save', (req, res) => {
+
+                const cookies = decodeURIComponent(req.headers.cookie || '').split(';').reduce((acc, coo) => {
+                    const tmp   = coo.split('=');
+                    const name  = tmp.shift().trim();
+                    const value = tmp.join('=').trim();
+                    name && (acc[name] = value);
+                    return acc;
+                }, {});
+
+                log('save');
+                log(JSON.stringify(req.body));
+
+                res.setHeader('Content-type', 'application/json; charset=utf-8');
+                res.end(JSON.stringify({
+                    ok: true
+                }));
+            })
+
+            app.all('/root', (req, res) => {
+
+                const html  = readFile(path.resolve(__dirname, 'public', '_index.html'));
+
+                const svg   = readFile(path.resolve(__dirname, 'public', 'tree.svg'));
+
+                const tmp = template(html);
+
+                res.end(tmp({
+                    svg
+                }));
+            });
+
+            app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
+                // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
+                maxAge: '356 days', // in milliseconds max-age=30758400
+                setHeaders: (res, path) => {
+
+                    if (/\.bmp$/i.test(path)) { // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
+
+                        res.setHeader('Content-type', 'image/bmp')
+                    }
+
+                    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+                    // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
+                    // res.setHeader('Cache-Control', 'public, only-if-cached')
+                }
+            }), serveIndex(web, {'icons': true}));
+
+            app.listen(port, host, () => {
+
+                console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`)
+            });
+          </script>
+          <script type="editor" data-lang="json">
+            {
+              "dependencies": {
+                "body-parser": "^1.18.3",
+                "express": "^4.16.3",
+                "lodash": "^4.17.10",
+                "serve-index": "^1.9.1"
+              }
+            }
+          </script>
+        </div>
+
+        <div class="cards">
+          <h2>colors</h2>
+          <a href="https://www.npmjs.com/package/colors">NPM - colors</a>
+          <table width="100%">
+            <tbody>
+              <tr>
+                <td>
+                  <script type="editor" data-lang="js">
+                    require('colors');
+                    const l = c => console.log(`${c} [` + (`test string`[c]) + ']');
+                    console.log("\n\n");
+                    // text colors
+                    l('black');
+                    l('red');
+                    l('green');
+                    l('yellow');
+                    l('blue');
+                    l('magenta');
+                    l('cyan');
+                    l('white');
+                    l('gray');
+                    l('grey');
+                    // bg colors
+                    l('bgBlack');
+                    l('bgRed');
+                    l('bgGreen');
+                    l('bgYellow');
+                    l('bgBlue');
+                    l('bgMagenta');
+                    l('bgCyan');
+                    l('bgWhite');
+                    //styles
+                    l('reset');
+                    l('bold');
+                    l('dim');
+                    l('italic');
+                    l('underline');
+                    l('inverse');
+                    l('hidden');
+                    l('strikethrough');
+                    //extras
+                    l('rainbow');
+                    l('zebra');
+                    l('america');
+                    l('trap');
+                    l('random');
+                    console.log("\n\n")
+                  </script>
+                </td>
+                <td width="257">
+                  <img src="/img/node/colors.png" height="624" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <script type="editor" data-lang="js">
+
+            // https://i.imgur.com/mWzuQWP.png
+            const color = (function (c) {
+                return (...args) => c[args.pop()] + args.join('') + c.reset;
+            }({
+                Bright      : "\x1b[1m",
+                Dim         : "\x1b[2m",
+                Underscore  : "\x1b[4m",
+                Blink       : "\x1b[5m",
+                Reverse     : "\x1b[7m",
+                Hidden      : "\x1b[8m",
+                FgBlack     : "\x1b[30m",
+                FgRed       : "\x1b[31m", // red
+                FgGreen     : "\x1b[32m", // green
+                FgYellow    : "\x1b[33m", // yellow
+                FgBlue      : "\x1b[34m",
+                FgMagenta   : "\x1b[35m", // magenta
+                FgCyan      : "\x1b[36m", // cyan
+                FgWhite     : "\x1b[37m",
+                BgBlack     : "\x1b[40m",
+                BgRed       : "\x1b[41m",
+                BgGreen     : "\x1b[42m",
+                BgYellow    : "\x1b[43m",
+                BgBlue      : "\x1b[44m",
+                BgMagenta   : "\x1b[45m",
+                BgCyan      : "\x1b[46m",
+                BgWhite     : "\x1b[47m",
+                r           : "\x1b[31m", // red
+                g           : "\x1b[32m", // green
+                y           : "\x1b[33m", // yellow
+                m           : "\x1b[35m", // magenta
+                c           : "\x1b[36m", // cyan
+                reset       : "\x1b[0m",
+            }));
+
+            const c = (...args) => process.stdout.write(color(...args));
+          </script>
+        </div>
+
+        <div class="cards">
+          <h2>request.js</h2>
+          <script type="editor" data-lang="js">
+
+            // tests: https://github.com/stopsopa/vault/blob/master/test/request.test.js
+
+            const URL = require('url').URL;
+
+            const https = require('https');
+
+            const http = require('http');
+
+            const querystring = require('querystring');
+
+            const se = require('nlab/se');
+
+            const th = msg => new Error(`request: ${String(msg)}`);
+
+            const log = console.log;
+
+            const isObject = require('nlab/isObject');
+
+            module.exports = function request(url, opt = {}) {
+
+                let {
+                    method = 'GET',
+                    body = undefined,
+                    query = {},
+                    headers = {},
+                    timeout = 30 * 1000, // 30 sec
+                    verbose = false,
+                    decodeJson = true,
+                } = opt;
+
+                if (typeof method !== 'string') {
+
+                    throw th(`method is not a string`);
+                }
+
+                method = method.toUpperCase();
+
+                let rq;
+
+                return new Promise((resolve, reject) => {
+
+                    const uri = new URL(url);
+
+                    const lib = (uri.protocol === 'https:') ? https : http;
+
+                    query = querystring.stringify(query);
+
+                    rq = {
+                        hostname: uri.hostname,
+                        port: uri.port || ((uri.protocol === 'https:') ? '443' : '80'),
+                        path: uri.pathname + uri.search + (query ? (uri.search.includes('?') ? '&' : '?') + query : ''),
+                        method,
+                        headers,
+                    };
+
+                    if (Array.isArray(body) || isObject(body)) {
+
+                        if (method === 'GET') {
+
+                            throw th(`body looks like json payload but request method is GET`);
+                        }
+
+                        // modyfying original 'rq' by reference
+                        headers['Content-type'] = 'application/json; charset=utf-8';
+                    }
 
                     if (verbose) {
 
                         log({
-                            request_resolve_exception_catch: se(e),
+                            'request.js': rq,
                         })
                     }
 
-                    reject({
-                        type: 'endevent',
-                        data: se(e),
-                    });                    
-                }
-            });
-        });
+                    var req = lib.request(rq, res => {
 
-        req.on('socket', function (socket) { // uncomment this to have timeout
+                        res.setEncoding('utf8');
 
-            socket.setTimeout(timeout);
+                        let body = '';
 
-            socket.on('timeout', () => { // https://stackoverflow.com/a/9910413
+                        res.on('data', chunk => {
 
-                try {
-                    req.destroy();
-                }
-                catch (e) {
-                    try {
-                        req.abort(); // since v14.1.0 Use request.destroy() instead
+                            body += chunk
+                        });
+
+                        res.on('end', () => {
+
+                            try {
+
+                                if (decodeJson && (res.headers['content-type'] || '').includes('application/json')) {
+
+                                    body = JSON.parse(body);
+                                }
+
+                                resolve({
+                                    status: res.statusCode,
+                                    headers: res.headers,
+                                    body,
+                                })
+                            }
+                            catch (e) {
+
+                                if (verbose) {
+
+                                    log({
+                                        request_resolve_exception_catch: se(e),
+                                    })
+                                }
+
+                                reject({
+                                    type: 'endevent',
+                                    data: se(e),
+                                });
+                            }
+                        });
+                    });
+
+                    req.on('socket', function (socket) { // uncomment this to have timeout
+
+                        socket.setTimeout(timeout);
+
+                        socket.on('timeout', () => { // https://stackoverflow.com/a/9910413
+
+                            try {
+                                req.destroy();
+                            }
+                            catch (e) {
+                                try {
+                                    req.abort(); // since v14.1.0 Use request.destroy() instead
+                                }
+                                catch (e) { }
+                            }
+
+                            reject({
+                                type: 'timeout',
+                                data: `timeout (${timeout}ms)`,
+                            })
+                        });
+                    });
+
+                    req.on('error', e => reject({
+                        type: 'error',
+                        data: se(e)
+                    }));
+
+                    if (Array.isArray(body) || isObject(body)) {
+
+                        req.write(JSON.stringify(body));
                     }
-                    catch (e) { }
+
+                    req.end();
+                });
+            }
+          </script>
+        </div>
+
+        <div class="cards">
+          <h2>lightfetch.js</h2>
+          <a href="https://github.com/stopsopa/nlab/blob/master/src/lightFetch.js">https://github.com/stopsopa/nlab/blob/master/src/lightFetch.js</a>
+          <h2>curl polyfill</h2>
+          <script type="editor" data-lang="sh" class="domain.com">
+
+            wget --help 1> /dev/null 2> /dev/null
+            if [ "$?" = "0" ]; then # wget
+              wget --no-cache -O "curl.js" "domain.com/pages/node/curl.js"
+            else # curl
+              curl "domain.com/pages/node/curl.js" -o "curl.js"
+            fi
+          </script>
+          <a href="https://httpstat.us/">https://httpstat.us/</a>
+        </div>
+        <div class="cards">
+          <h2>fetchData & fetchJson (transport.js)</h2>
+          <script type="editor" data-lang="js">
+
+
+            // yarn add nlab node-fetch cross-fetch
+
+            const isNode        = require('nlab/isNode');
+
+            const negotiatePort = require('nlab/negotiatePort');
+
+            const isObject      = require("nlab/isObject");
+
+            const log           = (function(){try{return console.log}catch(e){return()=>{}}}());
+
+            const th = msg => new Error(`transport.js error: ${msg}`);
+
+            let fakeFetch;
+
+            let origin;
+
+            /**
+              PROTOCOL="http"
+              HOST="0.0.0.0"
+              PORT="8080"
+            */
+            function setFetch(PROTOCOL, HOST, PORT) {
+
+              if ( ! /^https?$/.test(PROTOCOL) ) {
+
+                throw th(`PROTOCOL (${PROTOCOL}) don't match /^https?$/`);
+              }
+
+              if ( typeof HOST !== 'string' ) {
+
+                throw th(`HOST (${HOST}) is not a string`);
+              }
+
+              if ( ! HOST.trim() ) {
+
+                throw th(`HOST is an empty string`);
+              }
+
+              origin = `${PROTOCOL}://${HOST}` + negotiatePort(PROTOCOL, PORT, ':');
+            }
+
+            if ( isNode ) {
+
+              fakeFetch = eval('require')('node-fetch');
+            }
+            else {
+
+              (function (old) {
+
+                const fetchPolyfill = require('cross-fetch');
+
+                console.log('fetchPolyfill', fetchPolyfill)
+
+                fakeFetch = window.fakeFetch = (url, opt) => {
+
+                  log(`ajax fetch polyfill ${url}`);
+
+                  return fetchPolyfill(url, opt);
+                };
+
+                if (old) {
+
+                  window.fetch = (url, opt) => {
+
+                    log(`native fetch ${url}`);
+
+                    return old(url, opt);
+                  };
                 }
+              })(window.fetch);
+            }
+
+            const fetchData = async (path, options) => {
+
+              if (typeof options === "undefined") {
+
+                options = {};
+              }
+
+              if ( origin && ! /^https?:\/\//.test(path) ) {
+
+                path = origin + path;
+              }
+
+              log(`fetchData path: ${path}`);
+
+              options.headers = {
+                "x-requested-with": "fetch",
+                ...options.headers,
+              };
+
+              const { delay, native, ...rest } = options;
+
+              options = rest;
+
+              if (Number.isInteger(delay) && delay > 0) {
+
+                await new Promise(res => setTimeout(res, delay));
+              }
+
+              if ( native && ! isNode && window.fetch) {
+
+                return window.fetch(path, options);
+              }
+
+              return fakeFetch(path, options);
+            };
+
+            const fetchJson = (path, options) => {
+
+              if (typeof options === "undefined") {
+
+                options = {};
+              }
+
+              options.headers = {
+                "Content-Type": "application/json; charset=utf-8",
+                Accept: "application/json",
+                ...options.headers,
+              };
+
+              if (isObject(options.body) || Array.isArray(options.body)) {
+
+                options.body = JSON.stringify(options.body || {}, null, 4);
+
+                options.method = options.method || "POST";
+              } else {
+
+                options.method = options.method || "GET";
+              }
+
+              const { rawResponse, ...rest } = options;
+
+              const res = fetchData(path, rest);
+
+              if (rawResponse) {
+
+                return res;
+              }
+
+              return res.then(res => res.json());
+            };
+
+            if ( ! isNode ) {
+
+              window.fetchData = fetchData;
+
+              window.fetchJson = fetchJson;
+            }
+
+            module.exports = {
+              fakeFetch,
+              fetchData,
+              fetchJson,
+              setFetch,
+            }
+          </script>
+        </div>
+
+        <div class="cards">
+          <h2>nvm</h2>
+          <a href="https://nodejs.org/en/about/releases/">https://nodejs.org/en/about/releases/</a>
+          <script type="editor" data-lang="sh">
+
+            nvm ls
+            nvm install [version]
+            nvm use [version]
+            .nvmrc
+            nvm alias default v8.15.1
+            nvm ls-remote
+          </script>
+          <h2>csv</h2>
+          <a href="https://www.npmjs.com/package/@fast-csv/format">https://www.npmjs.com/package/@fast-csv/format</a>
+        </div>
+
+        <div class="cards">
+          <h2>base64</h2>
+          <script type="editor" data-lang="sh">
+
+            Buffer.from(json).toString('base64')
+            Buffer.from(base64, 'base64').toString('ascii');
+          </script>
+        </div>
+
+        <div class="cards">
+          <h2>excel xlsx</h2>
+          <script type="editor" data-lang="js">
+
+            const express   = require('express'); // "exceljs": "3.8.0" for node version v8.15.1
+
+            const host      = '0.0.0.0';
+
+            const port      = 8989;
+
+            const app       = express();
+
+            const Excel = require('exceljs');
+
+            app.all('/root', async (req, res) => {
+
+              console.log('/root')
+
+              // https://stackoverflow.com/a/55166212
+              const workbook = new Excel.Workbook();
+              const worksheet = workbook.addWorksheet("My Sheet");
+
+              worksheet.columns = [
+                {header: 'Id', key: 'id', width: 10},
+                {header: 'Name', key: 'name', width: 32},
+                {header: 'D.O.B.', key: 'dob', width: 15,}
+              ];
+
+              worksheet.addRow({
+                id: 1,
+                name: 'John Doe',
+                dob: new Date(1970, 1, 1)
+              });
+
+              // save under export.xlsx
+              // await workbook.xlsx.writeFile('export.xlsx');
+
+              // https://github.com/exceljs/exceljs/issues/37#issuecomment-181772680
+              res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+              res.setHeader("Content-Disposition", "attachment; filename=" + "export.xlsx");
+
+              await workbook.xlsx.write(res);
+
+              res.end();
+            });
+
+            app.listen(port, host, () => {
+
+              console.log(`\n 🌎  Server is running ` + `${host}:${port}\n`)
+            });
+          </script>
+        </div>
+
+        <div class="cards">
+          <h2>cmd promise</h2>
+          <script type="editor" data-lang="js">
+
+            const { spawn } = require("child_process");
+
+            const se = require('nlab/se');
+
+            const th    = msg => new Error(`${__filename} error: ${msg}`);
+
+            /**
+             * Running:
+             *
+             const data = await cmd([
+             'ls',
+             '-la',
+             '/Users/sd/Workspace/projects/monorepo/monorepo-master/a b c/test'
+             ]);
+             will work for directory with spacec in name
+             */
+
+            module.exports = (cmd, opt) => new Promise((resolve, reject) => {
+
+              if (typeof cmd === 'string') {
+
+                cmd = cmd.trim();
+
+                if ( ! cmd ) {
+
+                  throw th(`cmd is an empty string`);
+                }
+
+                cmd = cmd.split(/\s+/);
+              }
+
+              if ( ! Array.isArray(cmd) ) {
+
+                throw th(`cmd is not an array`);
+              }
+
+              if ( ! cmd.length) {
+
+                throw th(`cmd is an empty array`);
+              }
+
+              const {
+                verbose = false,
+              } = {...opt};
+
+              verbose && console.log(`executing command ${c.g(cmd.join(' '))}`)
+
+              const [command, ...args] = cmd;
+
+              const process = spawn(command, args);
+
+              let stdout = '';
+
+              let stderr = '';
+
+              process.stdout.on("data", data => {
+                stdout += String(data);
+              });
+
+              process.stderr.on("data", data => {
+                stderr += String(data);
+              });
+
+              process.on('error', (e) => {
+
+                verbose && console.log(`error: ${e.message}`);
 
                 reject({
-                    type: 'timeout',
-                    data: `timeout (${timeout}ms)`,
+                  cmd,
+                  stdout,
+                  stderr,
+                  e: se(e)
+                });
+              });
+
+              process.on("close", code => {
+
+                verbose && console.log(`child process ${c.g(cmd.join(' '))} exited with code ${code}`);
+
+                if (code !== 0) {
+
+                  return reject({
+                    cmd,
+                    stdout,
+                    stderr,
+                    code,
+                  });
+                }
+
+                resolve({
+                  cmd,
+                  stdout,
+                  stderr,
+                  code,
+                });
+              });
+            })
+          </script>
+
+          <h2>Learning promises</h2>
+          <h5>Always await promises before returning to avoid a partial stacktrace</h5>
+          <a href="https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace"
+            >https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace</a
+          >
+          <br />
+          <a href="https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/returningpromises.md"
+            >https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/returningpromises.md</a
+          >
+          <script type="editor" data-lang="js">
+
+            /**
+             * https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace
+             * Always await promises before returning to avoid a partial stacktrace
+             */
+
+            function wait (ms) {
+
+              return new Promise(res => setTimeout(res, ms, `wait ${ms}`))
+            }
+
+            async function th() {
+
+              await wait(200);
+
+              throw new Error(`th error`);
+            }
+
+            async function b() {
+
+              await wait(200);
+
+              // return th(); // uncomment this line to see error without one stack point, as below
+              // {
+              //   main_catch: {
+              //     message: 'th error',
+              //       stack: 'Error: th error\n' +
+              //     '    at th (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:16:9)\n' +
+              //     '    at async /Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:49:5'
+              //   }
+              // }
+
+              return await th();
+              // {
+              //   main_catch: {
+              //     message: 'th error',
+              //       stack: 'Error: th error\n' +
+              //     '    at th (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:16:9)\n' +
+              //     '    at async b (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:33:10)\n' +
+              //     '    at async /Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:49:5'
+              //   }
+              // }
+            };
+
+            (async function () {
+
+              try {
+
+                await b()
+              }
+              catch (e) {
+
+                console.log({
+                  main_catch: {
+                    message: e.message,
+                    stack: e.stack,
+                  }
                 })
-            });
-        });
-
-        req.on('error', e => reject({
-            type: 'error',
-            data: se(e)
-        }));
-
-        if (Array.isArray(body) || isObject(body)) {
-
-            req.write(JSON.stringify(body));
-        }
-
-        req.end();
-    });
-}                
-                
-
-                </script> 
-            </div>
-
-            <div class="cards">
-                <h2>lightfetch.js</h2>  
-                <a href="https://github.com/stopsopa/nlab/blob/master/src/lightFetch.js">https://github.com/stopsopa/nlab/blob/master/src/lightFetch.js</a>
-                <h2>curl polyfill</h2>
-                <script type="editor" data-lang="sh" class="domain.com">
-
-wget --help 1> /dev/null 2> /dev/null
-if [ "$?" = "0" ]; then # wget
-  wget --no-cache -O "curl.js" "domain.com/pages/node/curl.js"
-else # curl
-  curl "domain.com/pages/node/curl.js" -o "curl.js"
-fi
-
-                </script>
-                <a href="https://httpstat.us/">https://httpstat.us/</a>
-            </div>
-            <div class="cards">
-                <h2>fetchData & fetchJson (transport.js)</h2>  
-                <script type="editor" data-lang="js">
-
-
-// yarn add nlab node-fetch cross-fetch
-
-const isNode        = require('nlab/isNode');
-
-const negotiatePort = require('nlab/negotiatePort');
-
-const isObject      = require("nlab/isObject");
-
-const log           = (function(){try{return console.log}catch(e){return()=>{}}}());
-
-const th = msg => new Error(`transport.js error: ${msg}`);
-
-let fakeFetch;
-
-let origin;
-
-/**
-  PROTOCOL="http"
-  HOST="0.0.0.0"
-  PORT="8080"
-*/
-function setFetch(PROTOCOL, HOST, PORT) {
-
-  if ( ! /^https?$/.test(PROTOCOL) ) {
-
-    throw th(`PROTOCOL (${PROTOCOL}) don't match /^https?$/`);
-  }
-
-  if ( typeof HOST !== 'string' ) {
-
-    throw th(`HOST (${HOST}) is not a string`);
-  }
-
-  if ( ! HOST.trim() ) {
-
-    throw th(`HOST is an empty string`);
-  }
-
-  origin = `${PROTOCOL}://${HOST}` + negotiatePort(PROTOCOL, PORT, ':');
-}
-
-if ( isNode ) {
-
-  fakeFetch = eval('require')('node-fetch');
-}
-else {
-
-  (function (old) {
-
-    const fetchPolyfill = require('cross-fetch');
-
-    console.log('fetchPolyfill', fetchPolyfill)
-
-    fakeFetch = window.fakeFetch = (url, opt) => {
-
-      log(`ajax fetch polyfill ${url}`);
-
-      return fetchPolyfill(url, opt);
-    };
-
-    if (old) {
-
-      window.fetch = (url, opt) => {
-
-        log(`native fetch ${url}`);
-
-        return old(url, opt);
-      };
-    }
-  })(window.fetch);
-}
-
-const fetchData = async (path, options) => {
-
-  if (typeof options === "undefined") {
-
-    options = {};
-  }
-
-  if ( origin && ! /^https?:\/\//.test(path) ) {
-
-    path = origin + path;
-  }
-
-  log(`fetchData path: ${path}`);
-
-  options.headers = {
-    "x-requested-with": "fetch",
-    ...options.headers,
-  };
-
-  const { delay, native, ...rest } = options;
-
-  options = rest;
-
-  if (Number.isInteger(delay) && delay > 0) {
-
-    await new Promise(res => setTimeout(res, delay));
-  }
-
-  if ( native && ! isNode && window.fetch) {
-
-    return window.fetch(path, options);
-  }
-
-  return fakeFetch(path, options);
-};
-
-const fetchJson = (path, options) => {
-
-  if (typeof options === "undefined") {
-
-    options = {};
-  }
-
-  options.headers = {
-    "Content-Type": "application/json; charset=utf-8",
-    Accept: "application/json",
-    ...options.headers,
-  };
-
-  if (isObject(options.body) || Array.isArray(options.body)) {
-
-    options.body = JSON.stringify(options.body || {}, null, 4);
-
-    options.method = options.method || "POST";
-  } else {
-
-    options.method = options.method || "GET";
-  }
-
-  const { rawResponse, ...rest } = options;
-
-  const res = fetchData(path, rest);
-
-  if (rawResponse) {
-
-    return res;
-  }
-
-  return res.then(res => res.json());
-};
-
-if ( ! isNode ) {
-
-  window.fetchData = fetchData;
-
-  window.fetchJson = fetchJson;
-}
-
-module.exports = {
-  fakeFetch,
-  fetchData,
-  fetchJson,
-  setFetch,
-}
-
-                </script> 
-            </div>
-            
-            <div class="cards">
-                <h2>nvm</h2>  
-                <a href="https://nodejs.org/en/about/releases/">https://nodejs.org/en/about/releases/</a>
-                <script type="editor" data-lang="sh">
-                
-nvm ls
-nvm install [version]
-nvm use [version]
-.nvmrc
-nvm alias default v8.15.1
-nvm ls-remote
-
-                </script> 
-                <h2>csv</h2>  
-                <a href="https://www.npmjs.com/package/@fast-csv/format">https://www.npmjs.com/package/@fast-csv/format</a>
-            </div>
-            
-            <div class="cards">
-                <h2>base64</h2>  
-                <script type="editor" data-lang="sh">
-                
-Buffer.from(json).toString('base64')
-Buffer.from(base64, 'base64').toString('ascii');
-
-                </script> 
-            </div>
-            
-            <div class="cards">
-                <h2>excel xlsx</h2>  
-                <script type="editor" data-lang="js">
-
-const express   = require('express'); // "exceljs": "3.8.0" for node version v8.15.1
-
-const host      = '0.0.0.0';
-
-const port      = 8989;
-
-const app       = express();
-
-const Excel = require('exceljs');
-
-app.all('/root', async (req, res) => {
-
-  console.log('/root')
-
-  // https://stackoverflow.com/a/55166212
-  const workbook = new Excel.Workbook();
-  const worksheet = workbook.addWorksheet("My Sheet");
-
-  worksheet.columns = [
-    {header: 'Id', key: 'id', width: 10},
-    {header: 'Name', key: 'name', width: 32},
-    {header: 'D.O.B.', key: 'dob', width: 15,}
-  ];
-
-  worksheet.addRow({
-    id: 1,
-    name: 'John Doe',
-    dob: new Date(1970, 1, 1)
-  });
-
-  // save under export.xlsx
-  // await workbook.xlsx.writeFile('export.xlsx');
-
-  // https://github.com/exceljs/exceljs/issues/37#issuecomment-181772680
-  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-  res.setHeader("Content-Disposition", "attachment; filename=" + "export.xlsx");
-
-  await workbook.xlsx.write(res);
-
-  res.end();
-});
-
-app.listen(port, host, () => {
-
-  console.log(`\n 🌎  Server is running ` + `${host}:${port}\n`)
-});
-
-                </script> 
-            </div>
-            
-            <div class="cards">
-                <h2>cmd promise</h2>  
-                <script type="editor" data-lang="js">
-                
-const { spawn } = require("child_process");
-
-const se = require('nlab/se');
-
-const th    = msg => new Error(`${__filename} error: ${msg}`);
-
-/**
- * Running:
- *
- const data = await cmd([
- 'ls',
- '-la',
- '/Users/sd/Workspace/projects/monorepo/monorepo-master/a b c/test'
- ]);
- will work for directory with spacec in name
- */
-
-module.exports = (cmd, opt) => new Promise((resolve, reject) => {
-
-  if (typeof cmd === 'string') {
-
-    cmd = cmd.trim();
-
-    if ( ! cmd ) {
-
-      throw th(`cmd is an empty string`);
-    }
-
-    cmd = cmd.split(/\s+/);
-  }
-
-  if ( ! Array.isArray(cmd) ) {
-
-    throw th(`cmd is not an array`);
-  }
-
-  if ( ! cmd.length) {
-
-    throw th(`cmd is an empty array`);
-  }
-
-  const {
-    verbose = false,
-  } = {...opt};
-
-  verbose && console.log(`executing command ${c.g(cmd.join(' '))}`)
-
-  const [command, ...args] = cmd;
-
-  const process = spawn(command, args);
-
-  let stdout = '';
-
-  let stderr = '';
-
-  process.stdout.on("data", data => {
-    stdout += String(data);
-  });
-
-  process.stderr.on("data", data => {
-    stderr += String(data);
-  });
-
-  process.on('error', (e) => {
-
-    verbose && console.log(`error: ${e.message}`);
-
-    reject({
-      cmd,
-      stdout,
-      stderr,
-      e: se(e)
-    });
-  });
-
-  process.on("close", code => {
-
-    verbose && console.log(`child process ${c.g(cmd.join(' '))} exited with code ${code}`);
-
-    if (code !== 0) {
-
-      return reject({
-        cmd,
-        stdout,
-        stderr,
-        code,
-      });
-    }
-
-    resolve({
-      cmd,
-      stdout,
-      stderr,
-      code,
-    });
-  });
-})                
-
-                </script> 
-                
-                <h2>Learning promises</h2>
-                <h5>Always await promises before returning to avoid a partial stacktrace</h5>
-                <a href="https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace">https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace</a>
-                <br />
-                <a href="https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/returningpromises.md">https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/errorhandling/returningpromises.md</a>
-                <script type="editor" data-lang="js">
-
-/**
- * https://github.com/goldbergyoni/nodebestpractices#-212-always-await-promises-before-returning-to-avoid-a-partial-stacktrace
- * Always await promises before returning to avoid a partial stacktrace
- */
-
-function wait (ms) {
-
-  return new Promise(res => setTimeout(res, ms, `wait ${ms}`))
-}
-
-async function th() {
-
-  await wait(200);
-
-  throw new Error(`th error`);
-}
-
-async function b() {
-
-  await wait(200);
-
-  // return th(); // uncomment this line to see error without one stack point, as below
-  // {
-  //   main_catch: {
-  //     message: 'th error',
-  //       stack: 'Error: th error\n' +
-  //     '    at th (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:16:9)\n' +
-  //     '    at async /Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:49:5'
-  //   }
-  // }
-
-  return await th();
-  // {
-  //   main_catch: {
-  //     message: 'th error',
-  //       stack: 'Error: th error\n' +
-  //     '    at th (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:16:9)\n' +
-  //     '    at async b (/Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:33:10)\n' +
-  //     '    at async /Users/sdzialowski/Workspace/PEX_dev/PEX__wax-api/runtime/t.js:49:5'
-  //   }
-  // }
-};
-
-(async function () {
-
-  try {
-
-    await b()
-  }
-  catch (e) {
-
-    console.log({
-      main_catch: {
-        message: e.message,
-        stack: e.stack,
-      }
-    })
-  }
-}());
-
-                </script>
-                <h2>yield</h2>
-                <script type="editor" data-lang="js">
-
-const t = ['one', 'two', 'three', 'four'];
-let error;
-// error = 1;
-// error = 2;
-function* foo(t) {
-  console.log('start');
-  if (error === 1) {
-    throw new Error(`What's happened?! 1`);
-  }
-  for (let i = 0, l = t.length ; i < l ; i += 1 ) {
-    console.log(`stop: ${i}`);
-    if (error === 2) {
-      throw new Error(`What's happened?! 2`);
-    }
-    yield `${t[i]} yield`;
-  }
-  return 'finish'
-}
-let iterator;
-try {
-  iterator = foo(t);
-  console.log('after iterator');
-}
-catch (e) {
-  console.log('generalerror: ', String(e));
-}
-try {
-  console.log('1:', iterator.next());
-  console.log('2:', iterator.next('myval'));
-  console.log('3:', iterator.next());
-  console.log('4:', iterator.next());
-  console.log('5:', iterator.next());
-  console.log('6:', iterator.next());
-}
-catch (e) {
-  console.log('generalerror 2: ', String(e));
-}
-
-// // for error = undefined
-// after iterator
-// start
-// stop: 0
-// 1: { value: 'one yield', done: false }
-// stop: 1
-// 2: { value: 'two yield', done: false }
-// stop: 2
-// 3: { value: 'three yield', done: false }
-// stop: 3
-// 4: { value: 'four yield', done: false }
-// 5: { value: 'finish', done: true }
-// 6: { value: undefined, done: true }
-//
-// // for error = 1
-// after iterator
-// start
-// generalerror 2:  Error: What's happened?! 1
-//
-// // for error = 2
-// after iterator
-// start
-// stop: 0
-// generalerror 2:  Error: What's happened?! 2       
-
-                </script>
-            </div>
-                        
+              }
+            }());
+          </script>
+          <h2>yield</h2>
+          <script type="editor" data-lang="js">
+
+            const t = ['one', 'two', 'three', 'four'];
+            let error;
+            // error = 1;
+            // error = 2;
+            function* foo(t) {
+              console.log('start');
+              if (error === 1) {
+                throw new Error(`What's happened?! 1`);
+              }
+              for (let i = 0, l = t.length ; i < l ; i += 1 ) {
+                console.log(`stop: ${i}`);
+                if (error === 2) {
+                  throw new Error(`What's happened?! 2`);
+                }
+                yield `${t[i]} yield`;
+              }
+              return 'finish'
+            }
+            let iterator;
+            try {
+              iterator = foo(t);
+              console.log('after iterator');
+            }
+            catch (e) {
+              console.log('generalerror: ', String(e));
+            }
+            try {
+              console.log('1:', iterator.next());
+              console.log('2:', iterator.next('myval'));
+              console.log('3:', iterator.next());
+              console.log('4:', iterator.next());
+              console.log('5:', iterator.next());
+              console.log('6:', iterator.next());
+            }
+            catch (e) {
+              console.log('generalerror 2: ', String(e));
+            }
+
+            // // for error = undefined
+            // after iterator
+            // start
+            // stop: 0
+            // 1: { value: 'one yield', done: false }
+            // stop: 1
+            // 2: { value: 'two yield', done: false }
+            // stop: 2
+            // 3: { value: 'three yield', done: false }
+            // stop: 3
+            // 4: { value: 'four yield', done: false }
+            // 5: { value: 'finish', done: true }
+            // 6: { value: undefined, done: true }
+            //
+            // // for error = 1
+            // after iterator
+            // start
+            // generalerror 2:  Error: What's happened?! 1
+            //
+            // // for error = 2
+            // after iterator
+            // start
+            // stop: 0
+            // generalerror 2:  Error: What's happened?! 2
+          </script>
         </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
