@@ -1,3 +1,7 @@
+/**
+ * Jira create ticket - script to widen "Project" dropdown
+ * https://stopsopa.github.io/pages/bookmarklets/index.html#jira-create-ticket-script-to-widen-project-dropdown
+ */
 (function () {
 
     var log = (function () {
@@ -29,41 +33,47 @@
     }
 
     function box(content, opt) {
+      if (!opt) {
+        opt = {};
+      }
 
-        if ( ! opt ) {
+      var div = document.createElement("div");
 
-            opt = {};
-        }
+      const style = {
+        position: "fixed",
+        zIndex: "10000000",
+        top: "20%",
+        left: "50%",
+        border: "1px solid gray",
+        backgroundColor: "white",
+        transform: "translate(-50%, -50%)",
+        padding: "10px",
+        cursor: "pointer",
+      };
 
-        var div = document.createElement('div');
+      Object.assign(
+        div.style,
+        Object.entries(Object.assign({}, style, opt.style)).reduce((acc, [key, val]) => {
+          if (val !== false) acc[key] = val;
+          return acc;
+        }, {})
+      );
 
-        div.style.position = 'fixed';
-        div.style.zIndex = '10000000';
-        div.style.top = '20%';
-        div.style.left = '50%';
-        div.style.border = '1px solid gray';
-        div.style.backgroundColor = 'white';
-        div.style.transform = 'translate(-50%, -50%)';
-        div.style.padding = '10px';
-        opt.minHeight && (div.style.minHeight = opt.minHeight);
-        div.style.cursor = 'pointer'
+      div.innerHTML = String(content);
 
-        div.innerText = String(content);
+      document.body.appendChild(div);
 
-        document.body.appendChild(div);
+      var close = function () {
+        document.body.removeChild(div);
+      };
 
-        var close = function () {
-            document.body.removeChild(div);
-        };
+      if (opt.autoclose) {
+        setTimeout(close, Number.isInteger(opt.autoclose) ? opt.autoclose : 1000);
+      } else {
+        div.addEventListener("click", close);
+      }
 
-        if (opt.autoclose) {
-
-            setTimeout(close, Number.isInteger(opt.autoclose) ? opt.autoclose : 1000);
-        }
-        else {
-
-            div.addEventListener('click', close);
-        }
+      typeof opt.fn === "function" && opt.fn(div);
     }
 
     try {
@@ -80,6 +90,6 @@
     }
     catch (e) {
 
-        box(e, {minHeight: '200'});
+        box(e, {style: {minHeight: '200'}});
     }
 }());
