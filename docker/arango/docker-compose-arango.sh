@@ -54,23 +54,23 @@ if [ "${PROJECT_NAME}" = "" ]; then
   exit 1
 fi
 
-if [ "${ARANGO_VERSION}" = "" ]; then
+if [ "${ARANGO_SCRIPTING_VERSION}" = "" ]; then
 
-  echo "${0} error: ARANGO_VERSION is not defined"
-
-  exit 1
-fi
-
-if [ "${ARANGO_COORDINATOR1}" = "" ]; then
-
-  echo "${0} error: ARANGO_COORDINATOR1 is not defined"
+  echo "${0} error: ARANGO_SCRIPTING_VERSION is not defined"
 
   exit 1
 fi
 
-if [ "${ARANGO_COORDINATOR2}" = "" ]; then
+if [ "${ARANGO_SCRIPTING_COORDINATOR1}" = "" ]; then
 
-  echo "${0} error: ARANGO_COORDINATOR2 is not defined"
+  echo "${0} error: ARANGO_SCRIPTING_COORDINATOR1 is not defined"
+
+  exit 1
+fi
+
+if [ "${ARANGO_SCRIPTING_COORDINATOR2}" = "" ]; then
+
+  echo "${0} error: ARANGO_SCRIPTING_COORDINATOR2 is not defined"
 
   exit 1
 fi
@@ -92,10 +92,10 @@ cat << EOF
   visit:
 
     coordinator1:
-      http://0.0.0.0:${ARANGO_COORDINATOR1}
+      http://0.0.0.0:${ARANGO_SCRIPTING_COORDINATOR1}
 
     coordinator2:
-      http://0.0.0.0:${ARANGO_COORDINATOR2}
+      http://0.0.0.0:${ARANGO_SCRIPTING_COORDINATOR2}
 
 EOF
 
@@ -122,10 +122,10 @@ fi
 
 cat << EOF
 
-  # to run containers
+  # to run container
   /bin/bash ${0} up
 
-  # to stop containers
+  # to stop container
   /bin/bash ${0} down
 
   # to remove containers
