@@ -75,6 +75,10 @@ source ~/.bash_profile
 source ~/.bashrc
 # you might want to change __DIR environment variable in sshh.sh script
 
+# script might require for working properly to register SSHH_DIR_WITH_KEYS env var in ~/.zshrc
+export SSHH_DIR_WITH_KEYS="/Volumes/truecrypt/ssh/ssh"
+alias sshh="/bin/bash /Volumes/truecrypt/ssh/ssh/sshh.sh"
+
 
 
 # you might also want to add to ~/.bash_profile
