@@ -13,14 +13,14 @@
 # to list added
 # ssh-add -L
 
-# DIR="/Volumes/WINSCP/ssh/ssh"
+# SSHH_DIR_WITH_KEYS="/Volumes/WINSCP/ssh/ssh"
 
 PARAMS=""
 _EVAL=""
 while (( "${#}" )); do
   case "${1}" in
     -d|--dir)
-      DIR="${2}";
+      SSHH_DIR_WITH_KEYS="${2}";
       shift 2;
       ;;
     --) # end argument parsing
@@ -106,7 +106,7 @@ function yellow {
     printf "\e[33m${1}\e[0m\n"
 }
 
-if [ "${DIR}" = "" ]; then
+if [ "${SSHH_DIR_WITH_KEYS}" = "" ]; then
 
 
   { red "\n${0} error:   --dir is not specified\n"; } 2>&3
@@ -115,7 +115,7 @@ if [ "${DIR}" = "" ]; then
   _exit 2> /dev/null
 fi
 
-echo "currently loade files"
+echo "currently loaded files"
 ssh-add -l
 
 echo ""
@@ -145,7 +145,7 @@ if [ "${1}" = "install" ]; then
   _exit 2> /dev/null || true
 fi
 
-_CMD="find \"${DIR}\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
+_CMD="find \"${SSHH_DIR_WITH_KEYS}\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
 
 echo -e "executing command:\n\n    ${_CMD}\n"
 
@@ -272,7 +272,7 @@ _CODE="${?}"
 
 rm ~/.ssh/${key}
 
-GITCONFIG="${DIR}/${key}.sh"
+GITCONFIG="${SSHH_DIR_WITH_KEYS}/${key}.sh"
 
 if [ -f "${GITCONFIG}" ]; then
 

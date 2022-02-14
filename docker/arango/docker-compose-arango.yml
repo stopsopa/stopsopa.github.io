@@ -35,7 +35,7 @@ services:
       --cluster.my-role COORDINATOR
       --cluster.agency-endpoint tcp://agency:5001
       --database.directory /var/lib/arangodb3
-    ports: ['${ARANGO_SCRIPTING_COORDINATOR1}:8529']
+    ports: ["${ARANGO_SCRIPTING_COORDINATOR1}:8529"]
     depends_on:
       - agency
     volumes:
@@ -55,7 +55,7 @@ services:
       --cluster.my-role COORDINATOR
       --cluster.agency-endpoint tcp://agency:5001
       --database.directory /var/lib/arangodb3
-    ports: ['${ARANGO_SCRIPTING_COORDINATOR2}:8529']
+    ports: ["${ARANGO_SCRIPTING_COORDINATOR2}:8529"]
     depends_on:
       - agency
     volumes:
