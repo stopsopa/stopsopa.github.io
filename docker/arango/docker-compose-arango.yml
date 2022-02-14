@@ -3,7 +3,7 @@
 version: "3.5"
 services:
   agency:
-    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    image: arangodb/arangodb:${ARANGO_SCRIPTING_VERSION:-3.7.12}
     container_name: ${PROJECT_NAME}_agency
     environment:
       - ARANGO_NO_AUTH=1
@@ -23,7 +23,7 @@ services:
       - scoped-network
 
   coordinator1:
-    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    image: arangodb/arangodb:${ARANGO_SCRIPTING_VERSION:-3.7.12}
     container_name: ${PROJECT_NAME}_coordinator1
     environment:
       - ARANGO_NO_AUTH=1
@@ -35,7 +35,7 @@ services:
       --cluster.my-role COORDINATOR
       --cluster.agency-endpoint tcp://agency:5001
       --database.directory /var/lib/arangodb3
-    ports: ['${ARANGO_COORDINATOR1}:8529']
+    ports: ['${ARANGO_SCRIPTING_COORDINATOR1}:8529']
     depends_on:
       - agency
     volumes:
@@ -43,7 +43,7 @@ services:
     networks:
       - scoped-network
   coordinator2:
-    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    image: arangodb/arangodb:${ARANGO_SCRIPTING_VERSION:-3.7.12}
     container_name: ${PROJECT_NAME}_coordinator2
     environment:
       - ARANGO_NO_AUTH=1
@@ -55,7 +55,7 @@ services:
       --cluster.my-role COORDINATOR
       --cluster.agency-endpoint tcp://agency:5001
       --database.directory /var/lib/arangodb3
-    ports: ['${ARANGO_COORDINATOR2}:8529']
+    ports: ['${ARANGO_SCRIPTING_COORDINATOR2}:8529']
     depends_on:
       - agency
     volumes:
@@ -64,7 +64,7 @@ services:
       - scoped-network
 
   db1:
-    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    image: arangodb/arangodb:${ARANGO_SCRIPTING_VERSION:-3.7.12}
     container_name: ${PROJECT_NAME}_db1
     environment:
       - ARANGO_NO_AUTH=1
@@ -85,7 +85,7 @@ services:
     networks:
       - scoped-network
   db2:
-    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    image: arangodb/arangodb:${ARANGO_SCRIPTING_VERSION:-3.7.12}
     container_name: ${PROJECT_NAME}_db2
     environment:
       - ARANGO_NO_AUTH=1
@@ -105,7 +105,7 @@ services:
     networks:
       - scoped-network
   db3:
-    image: arangodb/arangodb:${ARANGO_VERSION:-3.7.12}
+    image: arangodb/arangodb:${ARANGO_SCRIPTING_VERSION:-3.7.12}
     container_name: ${PROJECT_NAME}_db3
     environment:
       - ARANGO_NO_AUTH=1
