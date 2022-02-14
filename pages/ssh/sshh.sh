@@ -262,7 +262,7 @@ ssh-add -D
 key="$(echo "${SSHS}" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
 
 cp "${SSHS}" ~/.ssh/
-chmod 600 ~/.ssh/${key}
+chmod 700 ~/.ssh/${key}
 
 echo -e "executing command:\n\n    ssh-add ~/.ssh/${key}\n"
 
