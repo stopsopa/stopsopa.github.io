@@ -1,118 +1,104 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
     <script>
-        (function () {
-            var resolve;
-            var p = new Promise(function (res) {
-                resolve = res;
-            });
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
 
-            document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener("DOMContentLoaded", function () {
+          Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+            var text = tag.innerHTML;
 
-                Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+            text = text.replace(/domain\.com/g, location.origin);
 
-                    var text = tag.innerHTML;
+            tag.innerHTML = text;
+          });
 
-                    text = text.replace(/domain\.com/g, location.origin)
+          resolve();
+        });
 
-                    tag.innerHTML = text;
-                });
-
-                resolve();
-            });
-
-            window.waitForPromise = function () {
-
-                return p;
-            }
-        }())
+        window.waitForPromise = function () {
+          return p;
+        };
+      })();
     </script>
     <script src="/js/github.js"></script>
     <style>
-        #semversort textarea {
-            width: 100%;
-            min-height: 100px;
-        }
+      #semversort textarea {
+        width: 100%;
+        min-height: 100px;
+      }
     </style>
-</head>
-<body class="layout" toc>
-
+  </head>
+  <body class="layout" toc>
     <div class="body">
-        <div class="inside">
+      <div class="inside">
+        <div class="cards">
+          <h2>Useful commands</h2>
+          <script type="editor" data-lang="sh">
 
-            <div class="cards">
-                <h2>Useful commands</h2>
-                <script type="editor" data-lang="sh">
-                
-ssh-keygen -t rsa -b 4096 -C "dev+build@myorg.com"
-    # from: https://buildkite.com/docs/agent/v3/ssh-keys#creating-a-single-ssh-key
-    # g(Buildkite Agent SSH Keys Creating a single SSH key)
-    
-ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa
-    # generate key without prompt
-    
-ssh-keyscan "<host>" >> "~/.ssh/known_hosts"
-    # from: https://buildkite.com/docs/agent/v3/securing#disabling-automatic-ssh-keyscan
+            ssh-keygen -t rsa -b 4096 -C "dev+build@myorg.com"
+                # from: https://buildkite.com/docs/agent/v3/ssh-keys#creating-a-single-ssh-key
+                # g(Buildkite Agent SSH Keys Creating a single SSH key)
 
-                </script>
+            ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa
+                # generate key without prompt
 
-                <h2>sshh - manually swap ssh key</h2>
-                Just paste this code to your terminal:
-                <script type="editor" data-lang="sh" class="domain.com">
+            ssh-keyscan "<host>" >> "~/.ssh/known_hosts"
+                # from: https://buildkite.com/docs/agent/v3/securing#disabling-automatic-ssh-keyscan
+          </script>
 
-rm -rf ~/sshh.sh
-mkdir ~/.ssh
-chmod 700 .ssh/
-wget domain.com/pages/ssh/sshh.sh -O ~/sshh.sh
-/bin/bash ~/sshh.sh --dir "/Volumes/truecrypt/ssh/ssh" install
-source ~/.bash_profile
-source ~/.bashrc
-# you might want to change __DIR environment variable in sshh.sh script
+          <h2>sshh - manually swap ssh key</h2>
+          Just paste this code to your terminal:
+          <script type="editor" data-lang="sh" class="domain.com">
 
-# script might require for working properly to register SSHH_DIR_WITH_KEYS env var in ~/.zshrc
-export SSHH_DIR_WITH_KEYS="/Volumes/truecrypt/ssh/ssh"
-alias sshh="/bin/bash /Volumes/truecrypt/ssh/ssh/sshh.sh"
+            rm -rf ~/sshh.sh
+            mkdir ~/.ssh
+            chmod 700 .ssh/
+            wget domain.com/pages/ssh/sshh.sh -O ~/sshh.sh
+            /bin/bash ~/sshh.sh --dir "/Volumes/truecrypt/ssh/ssh" install
+            source ~/.bash_profile
+            source ~/.bashrc
+            # you might want to change __DIR environment variable in sshh.sh script
+
+            # script might require for working properly to register SSHH_DIR_WITH_KEYS env var in ~/.zshrc
+            export SSHH_DIR_WITH_KEYS="/Volumes/truecrypt/ssh/ssh"
+            alias sshh="/bin/bash /Volumes/truecrypt/ssh/ssh/sshh.sh"
 
 
 
-# you might also want to add to ~/.bash_profile
-/bin/bash /Users/sdzialowski/Workspace/stopsopa.github.io.git/runtime/pages/ssh/add.sh -d /Volumes/truecrypt/ssh/ssh first falcon
+            # you might also want to add to ~/.bash_profile
+            /bin/bash /Users/sdzialowski/Workspace/stopsopa.github.io.git/runtime/pages/ssh/add.sh -d /Volumes/truecrypt/ssh/ssh first falcon
+          </script>
 
-                </script>
+          <h2>auto add single key</h2>
+          <script type="editor" data-lang="sh" class="domain.com">
+            add to ~/.bashrc
+            /bin/bash /Volumes/WINSCP/ssh/ssh/add.sh first falcon
+            # you might want to change __DIR and DEFKEY environment variables in add.sh script
+          </script>
 
-                <h2>auto add single key</h2>
-                <script type="editor" data-lang="sh" class="domain.com">
-add to ~/.bashrc
-/bin/bash /Volumes/WINSCP/ssh/ssh/add.sh first falcon
-# you might want to change __DIR and DEFKEY environment variables in add.sh script
+          <h2>authorized_keys</h2>
+          <script type="editor" data-lang="sh" class="domain.com">
 
-                </script>
+            touch ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+          </script>
 
-                <h2>authorized_keys</h2>
-                <script type="editor" data-lang="sh" class="domain.com">
+          <h2>OpenSSH</h2>
+          <script type="editor" data-lang="sh" class="domain.com">
 
-touch ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
-
-                </script>
-                
-
-                <h2>OpenSSH</h2>
-                <script type="editor" data-lang="sh" class="domain.com">
-
-openssl genrsa -out mykey.pem 2048
-openssl rsa -in mykey.pem -outform PEM -pubout -out mykey.pub
-
-                </script>
-                
-
-            </div>
+            openssl genrsa -out mykey.pem 2048
+            openssl rsa -in mykey.pem -outform PEM -pubout -out mykey.pub
+          </script>
         </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
