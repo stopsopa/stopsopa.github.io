@@ -19,3 +19,5 @@ jobs:
         uses: alex-page/blazing-fast-gh-pages-deploy@v1.1.0
         with:
           repo-token: ${{ secrets.BLAZING_FAST_GITHUB_PAGES_DEPLOYS }}
+          deploy-branch: master
+          site-directory: .
