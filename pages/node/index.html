@@ -58,7 +58,7 @@
               # https://prettier.io/docs/en/cli.html#docsNav
         </script>
         
-         <h2>execute from stdin</h2>
+         <h2>execute directly from cmd</h2>
         <script type="editor" data-lang="sh">
 
 cat <<EOF | node
@@ -68,6 +68,11 @@ const data = Object.keys(Object.assign({}, json.dependencies, json.devDependenci
   .map((l) => 'yarn add ' + l)
 console.log(data.join(require('os').EOL))
 EOF
+
+node -e "
+console.log('test1');
+console.log('test2');
+"
 
         </script>
         <h2>prettier.config.js</h2>
