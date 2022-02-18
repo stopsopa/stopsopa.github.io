@@ -57,6 +57,19 @@
           npx prettier --write src
               # https://prettier.io/docs/en/cli.html#docsNav
         </script>
+        
+         <h2>execute from stdin</h2>
+        <script type="editor" data-lang="sh">
+
+cat <<EOF | node
+const json = require('./package.json')
+const data = Object.keys(Object.assign({}, json.dependencies, json.devDependencies))
+  .filter((l) => l.includes('babel'))
+  .map((l) => 'yarn add ' + l)
+console.log(data.join(require('os').EOL))
+EOF
+
+        </script>
         <h2>prettier.config.js</h2>
         <script type="editor" data-lang="sh">
 
