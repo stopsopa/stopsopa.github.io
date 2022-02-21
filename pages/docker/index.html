@@ -77,6 +77,7 @@ host.docker.internal
 
 docker login https://docker-registry.xxx.com --username=yourhubusername --password=yourpassword
 
+# https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#build-an-image-using-a-dockerfile-from-stdin-without-sending-build-context
 # inline Dockerfile
 cat <<EOF | docker build --rm -t local_c7_systemd -
 FROM centos:7
