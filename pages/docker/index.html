@@ -50,13 +50,17 @@
                 
 docker history --format "\t{{.Size}}\t\t{{.CreatedBy}}" 1de239ccac3e --no-trunc 
 
+# determine docker resources usage
 docker system df
+
+# determine image size
+docker system df -v | grep 695ab6fa12ce
+    # to get IMAGE ID
+    docker images | grep cypress/included
 
 docker image prune -a --force --filter "until=480h"
 docker system prune --all --volumes --force
     # from: https://docs.docker.com/config/pruning/
-    
-docker system df
 
 docker container rm puppeteer-test -f
     # stop and remove container immediately    
