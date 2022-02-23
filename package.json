@@ -11,7 +11,7 @@
     "colors": "^1.4.0",
     "css-loader": "^5.0.0",
     "dotenv-up": "^1.0.30",
-    "firebase": "^7.19.1",
+    "firebase": "^9.6.6",
     "forever": "^3.0.4",
     "inspc": "^0.0.19",
     "jest": "^26.6.3",

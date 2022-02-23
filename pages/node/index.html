@@ -63,7 +63,6 @@
           module.exports = {
             printWidth: 120,
           };
-
         </script>
         <div class="cards">
           <h2>Extract engines script</h2>
@@ -413,21 +412,21 @@
             npm init
             npm init --scope=stopsopa
                 {
-                  "name": "@stopsopa/line",
-                  "version": "2.0.0",
-                  "description": "Lib to draw lines using one div and css",
-                  "main": "line.js",
+                  "name"    : "@stopsopa/line",
+                  "version"    : "2.0.0",
+                  "description"    : "Lib to draw lines using one div and css",
+                  "main"    : "line.js",
                   "scripts": {
-                    "test": "echo \"Error: no test specified\" && exit 1",
-                    "start": "node server.js"
+                    "test"    : "echo \"Error: no test specified\" && exit 1",
+                    "start"    : "node server.js"
                   },
                   "repository": {
-                    "type": "git",
-                    "url": "git@github.com:stopsopa/line.git"
+                    "type"    : "git",
+                    "url"    : "git@github.com:stopsopa/line.git"
                   },
-                  "author": "Szymon Dzialowski",
-                  "license": "MIT",
-                  "homepage": "https://github.com/stopsopa/line"
+                  "author"    : "Szymon Dzialowski",
+                  "license"    : "MIT",
+                  "homepage"    : "https://github.com/stopsopa/line"
                 }
             npm login
             npm config ls
@@ -551,43 +550,43 @@
             })
             Object {// for https://amlstage.phaseiilabs.com:8080/tester/tester?raz=dwa behind nginx proxy
                 "original": {
-                    "raw": "/tester/tester?raz=dwa",
-                    "protocol": "http:", // WARNING: will be "https:" if X-Forwarded-Proto $scheme; OR(I'VE TESTED THIS 'OR' IN BOTH CASES WILL WORK, COMMEND ONE OR ANOTHER) X-Forwarded-SSL   on; added
-                    "hostname": "212.67.96.161", // WARNING: becareful it might return ip address WARNING WARNING
+                    "raw"    : "/tester/tester?raz=dwa",
+                    "protocol"    : "http:", // WARNING: will be "https:" if X-Forwarded-Proto $scheme; OR(I'VE TESTED THIS 'OR' IN BOTH CASES WILL WORK, COMMEND ONE OR ANOTHER) X-Forwarded-SSL   on; added
+                    "hostname"    : "212.67.96.161", // WARNING: becareful it might return ip address WARNING WARNING
                     "port": 8080, // key exist only if [proxy_set_header X-Forwarded-Port $server_port;] added to nginx
-                    "pathname": "/tester/tester",
-                    "search": "?raz=dwa",
-                    "full": "http://212.67.96.161:8080/tester/tester?raz=dwa"
+                    "pathname"    : "/tester/tester",
+                    "search"    : "?raz=dwa",
+                    "full"    : "http://212.67.96.161:8080/tester/tester?raz=dwa"
                 },
                 "headers": {
-                    "connection": "upgrade",
-                    "host": "amlstage.phaseiilabs.com",
-                    "x-real-ip": "212.67.96.161",
-                    "x-forwarded-for": "212.67.96.161",
-                    "x-forwarded-host": "212.67.96.161",
-                        "x-forwarded-port": "8080",     // will appear only if [proxy_set_header X-Forwarded-Port $server_port;] added to nginx config
-                        "x-forwarded-proto": "https",   // will appear only if [proxy_set_header X-Forwarded-Proto $scheme;] added to nginx config
-                        "x-forwarded-ssl": "on",        // will appear only if [proxy_set_header X-Forwarded-SSL on;] added to nginx config
-                    "cache-control": "max-age=0",
-                    "upgrade-insecure-requests": "1",
-                    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
-                    "sec-fetch-dest": "document",
-                    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                    "sec-fetch-site": "none",
-                    "sec-fetch-mode": "navigate",
-                    "sec-fetch-user": "?1",
-                    "accept-encoding": "gzip, deflate, br",
-                    "accept-language": "en-GB,en-US;q=0.9,en;q=0.8,pl;q=0.7,it;q=0.6,fr;q=0.5,es;q=0.4,de;q=0.3,ru;q=0.2,mt;q=0.1,pt;q=0.1,id;q=0.1",
-                    "cookie": "_ga=GA1.2.477192506.1582642627; _hjid=38ba37f0-33bc-48ad-bf45-a82f453729f2; _gid=GA1.2.250183521.1583161185; jwt_cookie=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZXMiOlsiYWRtaW4iLCJ1c2VyIl0sImlhdCI6MTU4MzI0NTc5MCwiZXhwIjoxNTgzMjc4MTkwfQ.IYyoBu4QQ0lEKk3G4XjIczha68XezAZs8ds4RbEak80",
-                    "if-none-match": "W/\"19f-eK38WW4dYefk0hfT3dbOw33zsbo\""
+                    "connection"    : "upgrade",
+                    "host"    : "amlstage.phaseiilabs.com",
+                    "x-real-ip"    : "212.67.96.161",
+                    "x-forwarded-for"    : "212.67.96.161",
+                    "x-forwarded-host"    : "212.67.96.161",
+                        "x-forwarded-port"    : "8080",     // will appear only if [proxy_set_header X-Forwarded-Port $server_port;] added to nginx config
+                        "x-forwarded-proto"    : "https",   // will appear only if [proxy_set_header X-Forwarded-Proto $scheme;] added to nginx config
+                        "x-forwarded-ssl"    : "on",        // will appear only if [proxy_set_header X-Forwarded-SSL on;] added to nginx config
+                    "cache-control"    : "max-age=0",
+                    "upgrade-insecure-requests"    : "1",
+                    "user-agent"    : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36",
+                    "sec-fetch-dest"    : "document",
+                    "accept"    : "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                    "sec-fetch-site"    : "none",
+                    "sec-fetch-mode"    : "navigate",
+                    "sec-fetch-user"    : "?1",
+                    "accept-encoding"    : "gzip, deflate, br",
+                    "accept-language"    : "en-GB,en-US;q=0.9,en;q=0.8,pl;q=0.7,it;q=0.6,fr;q=0.5,es;q=0.4,de;q=0.3,ru;q=0.2,mt;q=0.1,pt;q=0.1,id;q=0.1",
+                    "cookie"    : "_ga=GA1.2.477192506.1582642627; _hjid=38ba37f0-33bc-48ad-bf45-a82f453729f2; _gid=GA1.2.250183521.1583161185; jwt_cookie=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZXMiOlsiYWRtaW4iLCJ1c2VyIl0sImlhdCI6MTU4MzI0NTc5MCwiZXhwIjoxNTgzMjc4MTkwfQ.IYyoBu4QQ0lEKk3G4XjIczha68XezAZs8ds4RbEak80",
+                    "if-none-match"    : "W/\"19f-eK38WW4dYefk0hfT3dbOw33zsbo\""
                 },
-                "originalUrl": "/tester/tester?raz=dwa",
-                "url": "/tester/tester?raz=dwa",
-                "method": "GET",
-                "host": "amlstage.phaseiilabs.com",
-                "protocol": "http",
+                "originalUrl"    : "/tester/tester?raz=dwa",
+                "url"    : "/tester/tester?raz=dwa",
+                "method"    : "GET",
+                "host"    : "amlstage.phaseiilabs.com",
+                "protocol"    : "http",
                 "secure": false, // adding X-Forwarded-Proto $scheme; or X-Forwarded-SSL   on; will not help here, use "original-url" to resolve headers and then use original.protocol (it will be equal "https:")
-                "reconstrucred": "http://amlstage.phaseiilabs.com/tester/tester?raz=dwa"
+                "reconstrucred"    : "http://amlstage.phaseiilabs.com/tester/tester?raz=dwa"
             }
 
             --- express headers ----- vvv
@@ -1137,10 +1136,10 @@
           <script type="editor" data-lang="json">
             {
               "dependencies": {
-                "body-parser": "^1.18.3",
-                "express": "^4.16.3",
-                "lodash": "^4.17.10",
-                "serve-index": "^1.9.1"
+                "body-parser"    : "^1.18.3",
+                "express"    : "^4.16.3",
+                "lodash"    : "^4.17.10",
+                "serve-index"    : "^1.9.1"
               }
             }
           </script>
@@ -1201,44 +1200,54 @@
               </tr>
             </tbody>
           </table>
-          <script type="editor" data-lang="js">
+          <table width="100%">
+            <tbody>
+              <tr>
+                <td>
+                  <script type="editor" data-lang="js">
 
-            // https://i.imgur.com/mWzuQWP.png
-            const color = (function (c) {
-                return (...args) => c[args.pop()] + args.join('') + c.reset;
-            }({
-                Bright      : "\x1b[1m",
-                Dim         : "\x1b[2m",
-                Underscore  : "\x1b[4m",
-                Blink       : "\x1b[5m",
-                Reverse     : "\x1b[7m",
-                Hidden      : "\x1b[8m",
-                FgBlack     : "\x1b[30m",
-                FgRed       : "\x1b[31m", // red
-                FgGreen     : "\x1b[32m", // green
-                FgYellow    : "\x1b[33m", // yellow
-                FgBlue      : "\x1b[34m",
-                FgMagenta   : "\x1b[35m", // magenta
-                FgCyan      : "\x1b[36m", // cyan
-                FgWhite     : "\x1b[37m",
-                BgBlack     : "\x1b[40m",
-                BgRed       : "\x1b[41m",
-                BgGreen     : "\x1b[42m",
-                BgYellow    : "\x1b[43m",
-                BgBlue      : "\x1b[44m",
-                BgMagenta   : "\x1b[45m",
-                BgCyan      : "\x1b[46m",
-                BgWhite     : "\x1b[47m",
-                r           : "\x1b[31m", // red
-                g           : "\x1b[32m", // green
-                y           : "\x1b[33m", // yellow
-                m           : "\x1b[35m", // magenta
-                c           : "\x1b[36m", // cyan
-                reset       : "\x1b[0m",
-            }));
+                    const c = {
+                      Bright      : "\x1b[1m",
+                      Dim         : "\x1b[2m",
+                      Underscore  : "\x1b[4m",
+                      Blink       : "\x1b[5m",
+                      Reverse     : "\x1b[7m",
+                      Hidden      : "\x1b[8m",
+                      FgBlack     : "\x1b[30m",
+                      FgRed       : "\x1b[31m", // red
+                      FgGreen     : "\x1b[32m", // green
+                      FgYellow    : "\x1b[33m", // yellow
+                      FgBlue      : "\x1b[34m",
+                      FgMagenta   : "\x1b[35m", // magenta
+                      FgCyan      : "\x1b[36m", // cyan
+                      FgWhite     : "\x1b[37m",
+                      BgBlack     : "\x1b[40m",
+                      BgRed       : "\x1b[41m",
+                      BgGreen     : "\x1b[42m",
+                      BgYellow    : "\x1b[43m",
+                      BgBlue      : "\x1b[44m",
+                      BgMagenta   : "\x1b[45m",
+                      BgCyan      : "\x1b[46m",
+                      BgWhite     : "\x1b[47m",
+                      r           : "\x1b[31m", // red
+                      g           : "\x1b[32m", // green
+                      y           : "\x1b[33m", // yellow
+                      m           : "\x1b[35m", // magenta
+                      c           : "\x1b[36m", // cyan
+                      reset       : "\x1b[0m",
+                    };
 
-            const c = (...args) => process.stdout.write(color(...args));
-          </script>
+                    Object.keys(c).forEach((key) => {
+                      console.log(`${c[key]}${key} ${key} ${key}${c.reset} >${key}<`);
+                    });
+                  </script>
+                </td>
+                <td width="257">
+                  <img src="https://i.imgur.com/bawTURW.png" style="width: 480px" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div class="cards">
@@ -1507,7 +1516,7 @@
               log(`fetchData path: ${path}`);
 
               options.headers = {
-                "x-requested-with": "fetch",
+                "x-requested-with"    : "fetch",
                 ...options.headers,
               };
 
@@ -1536,8 +1545,8 @@
               }
 
               options.headers = {
-                "Content-Type": "application/json; charset=utf-8",
-                Accept: "application/json",
+                "Content-Type"    : "application/json; charset=utf-8",
+                Accept    : "application/json",
                 ...options.headers,
               };
 
@@ -1608,7 +1617,7 @@
           <h2>excel xlsx</h2>
           <script type="editor" data-lang="js">
 
-            const express   = require('express'); // "exceljs": "3.8.0" for node version v8.15.1
+            const express   = require('express'); // "exceljs"    : "3.8.0" for node version v8.15.1
 
             const host      = '0.0.0.0';
 

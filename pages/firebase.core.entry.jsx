@@ -58,6 +58,9 @@ window.fire = () => {
             storageBucket     : env('FIREBASE_STORAGE_BUCKET'),
             messagingSenderId : env('FIREBASE_MESSAGING_SENDER_ID'),
             appId             : env('FIREBASE_API_ID'),
+
+            // Your web app's Firebase configuration
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
             // measurementId     : env('FIREBASE_MEASUREMENT_ID')
           };
 
