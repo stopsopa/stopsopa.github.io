@@ -50,11 +50,17 @@
                 
 docker history --format "\t{{.Size}}\t\t{{.CreatedBy}}" 1de239ccac3e --no-trunc 
 
+# determine docker resources usage
+docker system df
+
+# determine image size
+docker system df -v | grep 695ab6fa12ce
+    # to get IMAGE ID
+    docker images | grep cypress/included
+
 docker image prune -a --force --filter "until=480h"
 docker system prune --all --volumes --force
     # from: https://docs.docker.com/config/pruning/
-    
-docker system df
 
 docker container rm puppeteer-test -f
     # stop and remove container immediately    
@@ -77,6 +83,7 @@ host.docker.internal
 
 docker login https://docker-registry.xxx.com --username=yourhubusername --password=yourpassword
 
+# https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#build-an-image-using-a-dockerfile-from-stdin-without-sending-build-context
 # inline Dockerfile
 cat <<EOF | docker build --rm -t local_c7_systemd -
 FROM centos:7
@@ -112,6 +119,13 @@ ENV TEST_ENV="test..."
 ENTRYPOINT ["tail", "-f", "/dev/null"]
 EOF
 docker run -it project:node-multi_tl
+# if you need to restrict amount of memory or CPU power the
+# container can use, see
+# https://docs.docker.com/config/containers/resource_constraints/
+# restrict total memory
+# --memory=600m --memory-swap=600m
+# restrict CPU share
+# --cpus=0.3
 
                 </script>
 
