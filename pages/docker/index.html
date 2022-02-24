@@ -61,6 +61,9 @@ docker system df -v | grep 695ab6fa12ce
 docker image prune -a --force --filter "until=480h"
 docker system prune --all --volumes --force
     # from: https://docs.docker.com/config/pruning/
+    
+# print entrypoint of an image:
+docker inspect IMAGENAME | jq '.[0].ContainerConfig.Entrypoint[0]' -r
 
 docker container rm puppeteer-test -f
     # stop and remove container immediately    
