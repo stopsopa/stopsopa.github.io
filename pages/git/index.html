@@ -599,10 +599,12 @@ EOF
             <h2>Clear local and remote branches</h2>
             <p>Clear remote repository without removing it</p>
             <script type="editor" data-lang="sh" class="domain.com">
-            
-git checkout -b master origin/master || true
-git checkout master
-LIST="$(git branch | grep -v master)"
+
+SKIP="master"
+
+git checkout -b ${SKIP} origin/${SKIP} || true
+git checkout ${SKIP}
+LIST="$(git branch | grep -v ${SKIP})"
 while read -r BRANCH
 do 
     echo "del local branch ${BRANCH}"
