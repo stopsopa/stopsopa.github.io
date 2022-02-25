@@ -596,6 +596,30 @@ EOF
 :save-options file-name.txt
 
             </script>
+            <h2>Clear local and remote branches</h2>
+            <p>Clear remote repository without removing it</p>
+            <script type="editor" data-lang="sh" class="domain.com">
+            
+git checkout -b master origin/master || true
+git checkout master
+LIST="$(git branch | grep -v master)"
+while read -r BRANCH
+do 
+    echo "del local branch ${BRANCH}"
+    git branch -D ${BRANCH}
+done <<< "${LIST}"
+
+LIST="$(git branch -r)"
+while read -r BRANCH
+do 
+    ORIGIN="$(echo ${BRANCH} | sed -E 's/^ *([^\/]+)\/.*$/\1/')"
+    RB="$(echo ${BRANCH} | sed -E 's/^ *[^\/]+\/(.*)$/\1/')"
+    echo "del remote branch ${BRANCH} >> ${ORIGIN} :${RB}"
+    git branch -D -r ${BRANCH}
+    git push ${ORIGIN} :${RB}
+done <<< "${LIST}"
+
+            </script>
             wishful thinking:
             <a href="https://github.com/jonas/tig/issues/406">https://github.com/jonas/tig/issues/406</a>
         </div>
