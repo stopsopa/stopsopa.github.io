@@ -840,6 +840,11 @@ const args = (function (obj, tmp) {
 
             return (typeof t[key] === 'undefined') ? def : t[key] ;
         },
+        string: (key, def) => {
+          var t = JSON.parse(JSON.stringify(obj));
+
+          return typeof t[key] === "string" ? t[key] : def;
+        },
         update: data => {
 
             delete data['config'];
