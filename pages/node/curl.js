@@ -7,6 +7,7 @@ const https         = require('https');
 
 const http          = require('http');
 
+// npm WARN deprecated querystring@0.2.0: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
 const querystring_lib            = require('querystring');
 
 const name          = 'curl';
