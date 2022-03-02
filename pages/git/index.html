@@ -280,6 +280,9 @@ git reset HEAD^
 # checkout file to particular commit
 git checkout f08a63ff4fa7b8479f8c698e5998ee1afcac3a4e js/github.js
 
+# diff for particular commit and file
+git diff 81ee4e3ad73^ 81ee4e3ad73 -- src/infrastructure/locksmith/testFixtures/index.js
+
             </script>
             <h2>gitstorage-core.sh</h2>
             <script type="editor" data-lang="sh" class="domain.com">
@@ -591,6 +594,32 @@ EOF
 # how to safe current settings to file
 # https://stackoverflow.com/a/32505815
 :save-options file-name.txt
+
+            </script>
+            <h2>Clear local and remote branches</h2>
+            <p>Clear remote repository without removing it</p>
+            <script type="editor" data-lang="sh" class="domain.com">
+
+SKIP="master"
+
+git checkout -b ${SKIP} origin/${SKIP} || true
+git checkout ${SKIP}
+LIST="$(git branch | grep -v ${SKIP})"
+while read -r BRANCH
+do 
+    echo "del local branch ${BRANCH}"
+    git branch -D ${BRANCH}
+done <<< "${LIST}"
+
+LIST="$(git branch -r)"
+while read -r BRANCH
+do 
+    ORIGIN="$(echo ${BRANCH} | sed -E 's/^ *([^\/]+)\/.*$/\1/')"
+    RB="$(echo ${BRANCH} | sed -E 's/^ *[^\/]+\/(.*)$/\1/')"
+    echo "del remote branch ${BRANCH} >> ${ORIGIN} :${RB}"
+    git branch -D -r ${BRANCH}
+    git push ${ORIGIN} :${RB}
+done <<< "${LIST}"
 
             </script>
             wishful thinking:
