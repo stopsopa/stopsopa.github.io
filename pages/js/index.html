@@ -1,987 +1,1070 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
     <script src="/js/github.js"></script>
-</head>
-<body class="layout" toc>
-
+  </head>
+  <body class="layout" toc>
     <div class="body">
-        <div class="inside">
-            <div class="cards toc">
-              <h1>Table of Contents</h1>
-              <ul data-do-sort>
-              </ul>
-            </div>
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort></ul>
+        </div>
 
-            <div class="cards">
-                <h2>Event loop</h2>
-                <img src="event-loop.jpeg" style="max-width: 650px" />
-                <br>
-                <a href="https://youtu.be/8aGhZQkoFbQ">https://youtu.be/8aGhZQkoFbQ</a>
-                <br>
-                g(What the heck is the event loop anyway? | Philip Roberts | JSConf EU)
-            </div>
+        <div class="cards">
+          <h2>Event loop</h2>
+          <img src="event-loop.jpeg" style="max-width: 650px" />
+          <br />
+          <a href="https://youtu.be/8aGhZQkoFbQ">https://youtu.be/8aGhZQkoFbQ</a>
+          <br />
+          g(What the heck is the event loop anyway? | Philip Roberts | JSConf EU)
+        </div>
 
-            <div class="cards">
-                <h2>Useful</h2>
-                <a href="https://github.com/sorrycc/awesome-javascript#regexp">Awesome JavaScript</a>
-                <h2>Regex</h2>
-                <a href="https://regex101.com/">https://regex101.com/</a>
-            </div>
-            <div class="cards">
-                
-                <h2>About Promises</h2>
-                <a href="https://blog.domenic.me/youre-missing-the-point-of-promises/">g(You're Missing the Point of Promises)</a>
+        <div class="cards">
+          <h2>Useful</h2>
+          <a href="https://github.com/sorrycc/awesome-javascript#regexp">Awesome JavaScript</a>
+          <h2>Regex</h2>
+          <a href="https://regex101.com/">https://regex101.com/</a>
+          <br />
+          <a href="https://regexr.com/">https://regexr.com/</a>
 
-                <h2>mouseenter, mouseleave, mouseover, mouseout, input[type="range"]</h2>
-                <a href="/other/selectors/#hover">hover</a>
+          <h3>lastIndex</h3>
+          <script type="editor" data-lang="js">
 
-                <br />
-                <a href="https://gist.github.com/stopsopa/8297755373fd5be34165cc8e12d35642">gist (UMD - browser global & node module (singleton))</a>
+            const log = console.log;
 
-                <script type="editor" data-lang="js">
-                
-(function (root, name, factory) {
+            const a = [];
 
-    var log=(function(){try{return console.log}catch(e){return function (){}}}());
+            // const ht = require('./html');
+            var ht = `
+            <ul class="social-links pull-left">
+            <a href="https://twitter.com/gggg" title="" target="_blank">
+            <li data-ng-if="dataSettings.facebookUrl" class="ng-scope">
+            <a href="https://www.facebook.com/gfs/" title="" target="_blank">
+            <i class="fa fa-facebook-official" aria-hidden="true">
+                `;
 
-    var node = typeof global !== 'undefined' && Object.prototype.toString.call(global.process) === '[object process]';
+            let reset = 5;
 
-    try {
-        // const instance = factory(root, root.b, log, node);
-        const instance = factory(root, log, node);
+            var reg = /<a\s+[^>]*?href\s*=\s*(['"])([^\1]+?)\1[^>]*?>/gi;
 
-        const nc = root[name];
+            let tmp;
 
-        instance.noConflict || (instance.noConflict = function(){root[name]=nc;return instance})
+            do {
+              tmp = reg.exec(ht);
 
-        // Browser globals
-        root[name] = instance;
-    }
-    catch (e) {
-        log("UMD (" + name + "): can't assign to root, reason: ", e + '');
-    }
+              if (tmp) {
+                if (reset) {
+                  reset -= 1;
 
-    if (typeof module === 'object' && module.exports) {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like environments that support module.exports,
-        // like Node.
-        //module.exports = factory({}, require('b'), log, node);
-        module.exports = factory(root, log, node);
-    }
+                  reg.lastIndex = 0;
+                }
 
-}(typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : this), 'lib', function (root, log, node) {
+                a.push({
+                  found: tmp[2],
+                  i: reg.lastIndex,
+                });
+              }
+            } while (tmp);
 
-    // root - is just for access
-    // node - to detect if this is node environment
+            log(a);
+            /*
+            print
+            [
+              { found: 'https://twitter.com/gggg', i: 0 },
+              { found: 'https://twitter.com/gggg', i: 0 },
+              { found: 'https://twitter.com/gggg', i: 0 },
+              { found: 'https://twitter.com/gggg', i: 0 },
+              { found: 'https://twitter.com/gggg', i: 0 },
+              { found: 'https://twitter.com/gggg', i: 97 },
+              { found: 'https://www.facebook.com/gfs/', i: 223 }
+            ]
+            */
+          </script>
+          <h3>lookbehind & lookahead</h3>
+          <script type="editor" data-lang="js">
 
-    // just build tool and return, don't worry about attaching do window|object (browser mode)
-    var tool = function () {};
+            // lookahead
+              (?=y)
+              (?!y)
 
-    return tool;
+            // lookbehind
+              (?<=y)
+              (?<!y)
+          </script>
+          <h3>backward reference</h3>
+          <script type="editor" data-lang="js">
 
-}));
+            var str = "http://www.webreference.com/js/index.php#piosenka?l=2";
+            var wzor = str.match(/(\w+:\/\/)([^/]+)([^#?]*)([^?]*)\?*(.+)* /);
 
-                </script>
-                <h2>manipulation</h2>
-                <script type="editor" data-lang="js">
+            document.write('Badany ciąg: ' + str + '<br>');
+            document.write("Wyrazenie z 1 nawiasu: "+ RegExp.$1 +"<br>");
+            document.write("Wyrazenie z 2 nawiasu: "+ RegExp.$2 +"<br>");
+            document.write("Wyrazenie z 3 nawiasu: "+ RegExp.$3 +"<br>");
+            document.write("Wyrazenie z 4 nawiasu: "+ RegExp.$4 +"<br>");
+            document.write("Wyrazenie z 5 nawiasu: "+ RegExp.$5 +"<br>");
+          </script>
+          <h3>to read</h3>
+          <script type="editor" data-lang="js">
 
-var manipulation = (function () {
+            new RegExp("[a-z]*","g")
 
-    var domCache = document.createElement('div');
+            // performance:
+            g(desctructive backtracking)
+            https://javascript.info/regexp-catastrophic-backtracking
+          </script>
+        </div>
+        <div class="cards">
+          <h3>nth backreference</h3>
+          <a href="https://javascript.info/regexp-backreferences">https://javascript.info/regexp-backreferences</a>
+          <script type="editor" data-lang="js">
 
-    return {
-        after: function (referenceNode, newNode) {
-            return this.before(referenceNode.nextSibling, newNode);
-        },
-        before: function (referenceNode, newNode) {
-            referenceNode.parentNode.insertBefore(newNode, referenceNode);
-            return this;
-        },
-        append: function (parentNode, newNode) {
-            parentNode.appendChild(newNode);
-            return this;
-        },
-        prepend: function (parentNode, newNode) {
-            parentNode.insertBefore(newNode, parentNode.firstChild);
-            return this;
-        },
-        remove: function (node) {
-            node.parentNode.removeChild(node);
-            return this;
-        },
-        detach: function (element) { // detach element from DOM, to use it somewhere else
-            this.append(domCache, element);
-            return element;
-        },
-        empty: function (element) {
-            element.innerHTML = '';
-            return this;
-        },
-        children: function (parent) {
+            /('|").+?\1/g
+
+
+            // regexp allows inside \' \"
+            /("|')(\\?.)*?\1/g  ->  ""He 'said' \"gi\"!" "another string""
+          </script>
+          <h2>About Promises</h2>
+          <a href="https://blog.domenic.me/youre-missing-the-point-of-promises/">g(You're Missing the Point of Promises)</a>
+
+          <h2>mouseenter, mouseleave, mouseover, mouseout, input[type="range"]</h2>
+          <a href="/other/selectors/#hover">hover</a>
+
+          <br />
+          <a href="https://gist.github.com/stopsopa/8297755373fd5be34165cc8e12d35642">gist (UMD - browser global & node module (singleton))</a>
+
+          <script type="editor" data-lang="js">
+
+            (function (root, name, factory) {
+
+                var log=(function(){try{return console.log}catch(e){return function (){}}}());
+
+                var node = typeof global !== 'undefined' && Object.prototype.toString.call(global.process) === '[object process]';
+
+                try {
+                    // const instance = factory(root, root.b, log, node);
+                    const instance = factory(root, log, node);
+
+                    const nc = root[name];
+
+                    instance.noConflict || (instance.noConflict = function(){root[name]=nc;return instance})
+
+                    // Browser globals
+                    root[name] = instance;
+                }
+                catch (e) {
+                    log("UMD (" + name + "): can't assign to root, reason: ", e + '');
+                }
+
+                if (typeof module === 'object' && module.exports) {
+                    // Node. Does not work with strict CommonJS, but
+                    // only CommonJS-like environments that support module.exports,
+                    // like Node.
+                    //module.exports = factory({}, require('b'), log, node);
+                    module.exports = factory(root, log, node);
+                }
+
+            }(typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : this), 'lib', function (root, log, node) {
+
+                // root - is just for access
+                // node - to detect if this is node environment
+
+                // just build tool and return, don't worry about attaching do window|object (browser mode)
+                var tool = function () {};
+
+                return tool;
+
+            }));
+          </script>
+          <h2>manipulation</h2>
+          <script type="editor" data-lang="js">
+
+            var manipulation = (function () {
+
+                var domCache = document.createElement('div');
+
+                return {
+                    after: function (referenceNode, newNode) {
+                        return this.before(referenceNode.nextSibling, newNode);
+                    },
+                    before: function (referenceNode, newNode) {
+                        referenceNode.parentNode.insertBefore(newNode, referenceNode);
+                        return this;
+                    },
+                    append: function (parentNode, newNode) {
+                        parentNode.appendChild(newNode);
+                        return this;
+                    },
+                    prepend: function (parentNode, newNode) {
+                        parentNode.insertBefore(newNode, parentNode.firstChild);
+                        return this;
+                    },
+                    remove: function (node) {
+                        node.parentNode.removeChild(node);
+                        return this;
+                    },
+                    detach: function (element) { // detach element from DOM, to use it somewhere else
+                        this.append(domCache, element);
+                        return element;
+                    },
+                    empty: function (element) {
+                        element.innerHTML = '';
+                        return this;
+                    },
+                    children: function (parent) {
+                        try {
+                            // read also about
+                            // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+                            // https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName  - undefined when #text node
+                            // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeName
+                            return Array.prototype.slice.call(parent.childNodes)
+                        }
+                        catch (e) {
+
+                            throw new Error("manipulation.children() error: " + String(e));
+                        }
+                    },
+                };
+            }());
+
+            // extension
+            (function () {
+                /* from lodash */
+                function isNodeList (obj) {
+                    return Object.prototype.toString.call(obj) === '[object NodeList]';
+                }
+                /* from lodash */
+                var isNode = (function () {
+                    function isObjectLike(value) {
+                        return value != null && typeof value == 'object';
+                    }
+                    function isPlainObject(value) { // simplified version of isPlainObject then the one in lodash
+                        return Object.prototype.toString.call(value) === '[object Object]'
+                    }
+                    return function isNode (value) {
+                        return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
+                    }
+                }());
+
+                log.green('defined', 'window.isNode');
+
+                manipulation.custommove = function (newParent, elements) {
+
+                    if (isNode(elements)) {
+
+                        elements = [elements];
+                    }
+                    else if (isNodeList(elements)) {
+                        elements = Array.prototype.slice.call(elements);
+                    }
+
+                    try {
+                        for (var i = 0, l = elements.length ; i < l ; i += 1 ) {
+                            newParent.appendChild(elements[i]);
+                        }
+                    }
+                    catch (e) {
+
+                        throw "manipulation.custommove - can't iterate through elements"
+                    }
+                    return this;
+                }
+            }());
+          </script>
+          <h2>Map</h2>
+          <script type="editor" data-lang="js">
+
+            let m = new Map([
+              [1, 'one'],
+              ['1', 'string'],
+              [2, 'two']
+            ]);
+            console.log(m)
+            console.log(m.has(1)) // true
+            console.log(m.get(1)) // one
+            console.log(m.has('1')) // true
+            console.log(m.get('1')) // string
+            console.log(m.has(10)) // false
+            console.log(m.get(10)) // undefined
+            console.log(m.size) // 3
+
+            // Map(3) { 1 => 'one', '1' => 'string', 2 => 'two' }
+            // keys can be any type not just strings like in object
+
+            console.log(({})['toString']);
+            // [Function: toString]
+            console.log(Object.create(null)['toString']);
+            // undefined
+
+            // == Maps preserve the order of their keys, objects do not
+
+            console.log(m.keys());
+            // [Map Iterator] { 1, '1', 2 } // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators
+
+            for (let value of m.keys()) {
+              console.log(value, typeof value);
+            }
+            // 1 number
+            // 1 string
+            // 2 number
+
+            console.log(m.values());
+            // [Map Iterator] { 'one', 'string', 'two' }
+
+            console.log(m.entries());
+            // [Map Entries] { [ 1, 'one' ], [ '1', 'string' ], [ 2, 'two' ] }
+
+            console.log(Array.from(m))
+            // [ [ 1, 'one' ], [ '1', 'string' ], [ 2, 'two' ] ]
+
+            m.forEach((value, key, map) => {});
+          </script>
+          <h2>Set</h2>
+          <script type="editor" data-lang="js">
+
+            let obj = {}
+            let s = new Set([1, {}, obj, [], [], {one: 'two'}, ['test']]);
+
+            console.log(s); // Set(7) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ] }
+            s.add('one');
+            s.add('one');
+            s.add('two');
+            console.log(s); // Set(9) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' }
+            console.log(s.has(2)); // false
+            console.log(s.has('one')); // true
+            console.log(s.has('dog')); // false
+            console.log(s.size); // 9
+            console.log(s.has({})); // false
+            console.log(s.has(obj)); // true
+            for (let [key, value] of s.entries()) {
+              console.log('k: ', key, 'v:', value);
+            }
+            // k:  1 v: 1
+            // k:  {} v: {}
+            // k:  {} v: {}
+            // k:  [] v: []
+            // k:  [] v: []
+            // k:  { one: 'two' } v: { one: 'two' }
+            // k:  [ 'test' ] v: [ 'test' ]
+            // k:  one v: one
+            // k:  two v: two
+
+            const arr = [...s];
+            console.log(arr) // [ 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' ]
+            const back_to_set = new Set(arr);
+            console.log(back_to_set) // Set(9) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' }
+
+
+            // Use to remove duplicate elements from the array
+            const numbers = [2,3,4,4,2,3,3,4,4,5,5,6,6,7,5,32,3,4,5]
+            console.log([...new Set(numbers)]) // [2, 3, 4, 5, 6, 7, 32]
+          </script>
+          <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#implementing_basic_set_operations">g(mdn Implementing basic set operations)</a>
+          <br />
+          <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set</a>
+          <h2>scroll to bottom</h2>
+          <script type="editor" data-lang="js">
+
+            // works
+            // chrome Version 86.0.4240.198 (Official Build) (x86_64)
+            // firefox 83.0 (64-bit)
+            // Safari Version 14.0 (15610.4.28.1.9, 15610) macOS Catalina Version 10.15.7
+            // Edge Version 87.0.664.52 (Official build) (64-bit)
+            // IE11 Version: 11.1198.18362.0
+            window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+            # https://stackoverflow.com/a/29971996
+          </script>
+          <h2>split - escape character</h2>
+          <script type="editor" data-lang="js">
+
+            "/abc/def/ghi\\/klm/nop\\\\/end".match(/(\\.|[^/])+/g)
+          </script>
+          <a href="https://stackoverflow.com/a/14334054">stackoverflow source</a>
+          <h2>is window scrollable</h2>
+          <script type="editor" data-lang="js">
+
+
+            var log = (function () {try {return console.log}catch (e) {return function () {}}}());
+
+            var minus = document.querySelector('.video-container');
+
+            const isScrollabe = function () {
+
+              // https://javascript.info/size-and-scroll-window
+              let scrollHeight = Math.max(
+                      document.body.scrollHeight, document.documentElement.scrollHeight,
+                      document.body.offsetHeight, document.documentElement.offsetHeight,
+                      document.body.clientHeight, document.documentElement.clientHeight
+              );
+
+              // https://stackoverflow.com/a/33462363
+              var scrollTop = window.scrollY || window.pageYOffset || document.body.scrollTop + (document.documentElement && document.documentElement.scrollTop || 0);
+
+              return Math.abs(window.innerHeight + scrollTop - scrollHeight)
+            };
+
+            function fix() {
+
+              var w = minus.getBoundingClientRect().width;
+
+              if (/^\d+$/.test(String(w))) { // ie11 dont support Number.isInteger
+
+                var s = isScrollabe();
+
+                if (s > 0) {
+
+                  w -= s;
+
+                  minus.style.width = String(w) + 'px';
+
+                }
+              }
+            }
+
+            window.addEventListener('resize', function () {
+              window.requestAnimationFrame(fix);
+            });
+
+            // it's dirty but nothing stands on the way to fix it
+            fix();
+            setTimeout(fix, 100);
+            setTimeout(fix, 300);
+            setTimeout(fix, 500);
+            setTimeout(fix, 1000);
+            setTimeout(fix, 1500);
+            setTimeout(fix, 2000);
+            setTimeout(fix, 2500);
+            setTimeout(fix, 3000);
+          </script>
+          <h2>inheritance</h2>
+          <script type="editor" data-lang="js">
+            function Shape () {
+            }
+            function Rectangle () {
+                Shape.apply(this, arguments)
+            }
+            Rectangle.prototype = Object.create(Shape.prototype);
+            Rectangle.prototype.constructor = Rectangle;
+            Rectangle.prototype.getArea = function () {
+            }
+          </script>
+          <a href="https://alligator.io/js/class-composition/">https://alligator.io/js/class-composition/</a>
+          <h2>debounce throttle</h2>
+          <script type="editor" data-lang="sh">
+
+            function debounce(fn, delay) {
+                var timer = null;
+                return function () {
+                    var context = this, args = arguments;
+                    clearTimeout(timer);
+                    timer = setTimeout(function () {
+                        fn.apply(context, args);
+                    }, delay);
+                };
+            };
+
+            function throttle(fn, interval) {
+                var wait = false;
+                return function () {
+                    if (!wait) {
+                        fn.apply(this, arguments);
+                        wait = true;
+                        setTimeout(function () {
+                            wait = false;
+                        }, interval);
+                    }
+                }
+            };
+          </script>
+          <a href="/research/js/008-inheritance.html">/research/js/008-inheritance.html</a>
+          <h2>instance or function</h2>
+          <script type="editor" data-lang="js">
+
+            const log = console.log;
+
+            log('=== test 1 ===')
+
+            // always new instance
+            function inst(...args) {
+
+                //if (this.constructor != deferred)
+                if ( ! (this instanceof inst) )
+                    return new inst(...args);
+
+            console.log("created:", args);
+
+                this.args = args;
+
+                this.ret = function () {
+                    return this.args;
+                }
+            }
+
+            var a = inst('a');
+            var b = new inst('b');
+
+            log(a.ret())
+            log(b.ret())
+
+            log('=== test 2 ===')
+
+            // can be called only as a function
+            function func(...args) {
+
+                //if (this.constructor != deferred)
+                if ( this instanceof func )
+                    throw new Error( `Can't create instance of function 'func' just use it as a function` );
+
+                console.log("created:", args);
+
+                args.push('end');
+
+                return args;
+            }
+
+            log(func('a'));
+
             try {
-                // read also about
-                // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-                // https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName  - undefined when #text node
-                // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeName
-                return Array.prototype.slice.call(parent.childNodes)
+
+                var b = new func('b');
             }
             catch (e) {
 
-                throw new Error("manipulation.children() error: " + String(e));
-            }
-        },
-    };
-}());
-
-// extension
-(function () {
-    /* from lodash */
-    function isNodeList (obj) {
-        return Object.prototype.toString.call(obj) === '[object NodeList]';
-    }
-    /* from lodash */
-    var isNode = (function () {
-        function isObjectLike(value) {
-            return value != null && typeof value == 'object';
-        }
-        function isPlainObject(value) { // simplified version of isPlainObject then the one in lodash
-            return Object.prototype.toString.call(value) === '[object Object]'
-        }
-        return function isNode (value) {
-            return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
-        }
-    }());
-
-    log.green('defined', 'window.isNode');
-
-    manipulation.custommove = function (newParent, elements) {
-
-        if (isNode(elements)) {
-
-            elements = [elements];
-        }
-        else if (isNodeList(elements)) {
-            elements = Array.prototype.slice.call(elements);
-        }
-
-        try {
-            for (var i = 0, l = elements.length ; i < l ; i += 1 ) {
-                newParent.appendChild(elements[i]);
-            }
-        }
-        catch (e) {
-
-            throw "manipulation.custommove - can't iterate through elements"
-        }
-        return this;
-    }
-}());
-
-                </script>
-                <h2>Map</h2>
-                <script type="editor" data-lang="js">
-
-let m = new Map([
-  [1, 'one'],
-  ['1', 'string'],
-  [2, 'two']
-]);
-console.log(m)
-console.log(m.has(1)) // true
-console.log(m.get(1)) // one
-console.log(m.has('1')) // true
-console.log(m.get('1')) // string
-console.log(m.has(10)) // false
-console.log(m.get(10)) // undefined
-console.log(m.size) // 3
-
-// Map(3) { 1 => 'one', '1' => 'string', 2 => 'two' }
-// keys can be any type not just strings like in object
-
-console.log(({})['toString']);
-// [Function: toString]
-console.log(Object.create(null)['toString']);
-// undefined
-
-// == Maps preserve the order of their keys, objects do not
-
-console.log(m.keys());
-// [Map Iterator] { 1, '1', 2 } // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators
-
-for (let value of m.keys()) {
-  console.log(value, typeof value);
-}
-// 1 number
-// 1 string
-// 2 number
-
-console.log(m.values());
-// [Map Iterator] { 'one', 'string', 'two' }
-
-console.log(m.entries());
-// [Map Entries] { [ 1, 'one' ], [ '1', 'string' ], [ 2, 'two' ] }
-
-console.log(Array.from(m))
-// [ [ 1, 'one' ], [ '1', 'string' ], [ 2, 'two' ] ]
-
-m.forEach((value, key, map) => {});
-
-                </script>
-                <h2>Set</h2>
-                <script type="editor" data-lang="js">
-
-let obj = {}
-let s = new Set([1, {}, obj, [], [], {one: 'two'}, ['test']]);
-
-console.log(s); // Set(7) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ] }
-s.add('one');
-s.add('one');
-s.add('two');
-console.log(s); // Set(9) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' }
-console.log(s.has(2)); // false
-console.log(s.has('one')); // true
-console.log(s.has('dog')); // false
-console.log(s.size); // 9
-console.log(s.has({})); // false
-console.log(s.has(obj)); // true
-for (let [key, value] of s.entries()) {
-  console.log('k: ', key, 'v:', value);
-}
-// k:  1 v: 1
-// k:  {} v: {}
-// k:  {} v: {}
-// k:  [] v: []
-// k:  [] v: []
-// k:  { one: 'two' } v: { one: 'two' }
-// k:  [ 'test' ] v: [ 'test' ]
-// k:  one v: one
-// k:  two v: two
-
-const arr = [...s];
-console.log(arr) // [ 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' ]
-const back_to_set = new Set(arr);
-console.log(back_to_set) // Set(9) { 1, {}, {}, [], [], { one: 'two' }, [ 'test' ], 'one', 'two' }
-
-
-// Use to remove duplicate elements from the array
-const numbers = [2,3,4,4,2,3,3,4,4,5,5,6,6,7,5,32,3,4,5]
-console.log([...new Set(numbers)]) // [2, 3, 4, 5, 6, 7, 32]
-
-                </script>
-                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#implementing_basic_set_operations">g(mdn Implementing basic set operations)</a>
-                </br>
-                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set</a>
-                <h2>scroll to bottom</h2>
-                <script type="editor" data-lang="js">
-
-// works
-// chrome Version 86.0.4240.198 (Official Build) (x86_64)
-// firefox 83.0 (64-bit)
-// Safari Version 14.0 (15610.4.28.1.9, 15610) macOS Catalina Version 10.15.7
-// Edge Version 87.0.664.52 (Official build) (64-bit)
-// IE11 Version: 11.1198.18362.0
-window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
-# https://stackoverflow.com/a/29971996
-
-                </script>
-                <h2>split - escape character</h2>
-                <script type="editor" data-lang="js">
-
-"/abc/def/ghi\\/klm/nop\\\\/end".match(/(\\.|[^/])+/g)
-
-                </script>
-                <a href="https://stackoverflow.com/a/14334054">stackoverflow source</a>
-                <h2>is window scrollable</h2>
-                <script type="editor" data-lang="js">
-                
-
-var log = (function () {try {return console.log}catch (e) {return function () {}}}());
-
-var minus = document.querySelector('.video-container');
-
-const isScrollabe = function () {
-
-  // https://javascript.info/size-and-scroll-window
-  let scrollHeight = Math.max(
-          document.body.scrollHeight, document.documentElement.scrollHeight,
-          document.body.offsetHeight, document.documentElement.offsetHeight,
-          document.body.clientHeight, document.documentElement.clientHeight
-  );
-
-  // https://stackoverflow.com/a/33462363
-  var scrollTop = window.scrollY || window.pageYOffset || document.body.scrollTop + (document.documentElement && document.documentElement.scrollTop || 0);
-
-  return Math.abs(window.innerHeight + scrollTop - scrollHeight)
-};
-
-function fix() {
-
-  var w = minus.getBoundingClientRect().width;
-
-  if (/^\d+$/.test(String(w))) { // ie11 dont support Number.isInteger
-
-    var s = isScrollabe();
-
-    if (s > 0) {
-
-      w -= s;
-
-      minus.style.width = String(w) + 'px';
-
-    }
-  }
-}
-
-window.addEventListener('resize', function () {
-  window.requestAnimationFrame(fix);
-});
-
-// it's dirty but nothing stands on the way to fix it
-fix();
-setTimeout(fix, 100);
-setTimeout(fix, 300);
-setTimeout(fix, 500);
-setTimeout(fix, 1000);
-setTimeout(fix, 1500);
-setTimeout(fix, 2000);
-setTimeout(fix, 2500);
-setTimeout(fix, 3000);
-
-                </script>
-                <h2>inheritance</h2>
-                <script type="editor" data-lang="js">
-        function Shape () {
-        }
-        function Rectangle () {
-            Shape.apply(this, arguments)
-        }
-        Rectangle.prototype = Object.create(Shape.prototype);
-        Rectangle.prototype.constructor = Rectangle;
-        Rectangle.prototype.getArea = function () {
-        }
-                </script>
-            <a href="https://alligator.io/js/class-composition/">https://alligator.io/js/class-composition/</a>
-                <h2>debounce throttle</h2>
-                <script type="editor" data-lang="sh">
-
-function debounce(fn, delay) {
-    var timer = null;
-    return function () {
-        var context = this, args = arguments;
-        clearTimeout(timer);
-        timer = setTimeout(function () {
-            fn.apply(context, args);
-        }, delay);
-    };
-};
-
-function throttle(fn, interval) {
-    var wait = false;
-    return function () {
-        if (!wait) {
-            fn.apply(this, arguments);
-            wait = true;
-            setTimeout(function () {
-                wait = false;
-            }, interval);
-        }
-    }
-};
-
-                </script>
-                <a href="/research/js/008-inheritance.html">/research/js/008-inheritance.html</a>
-                <h2>instance or function</h2>
-                <script type="editor" data-lang="js">
-
-const log = console.log;
-
-log('=== test 1 ===')
-
-// always new instance
-function inst(...args) {
-
-    //if (this.constructor != deferred)
-    if ( ! (this instanceof inst) )
-        return new inst(...args);
-
-console.log("created:", args);
-
-    this.args = args;
-
-    this.ret = function () {
-        return this.args;
-    }
-}
-
-var a = inst('a');
-var b = new inst('b');
-
-log(a.ret())
-log(b.ret())
-
-log('=== test 2 ===')
-
-// can be called only as a function
-function func(...args) {
-
-    //if (this.constructor != deferred)
-    if ( this instanceof func )
-        throw new Error( `Can't create instance of function 'func' just use it as a function` );
-
-    console.log("created:", args);
-
-    args.push('end');
-
-    return args;
-}
-
-log(func('a'));
-
-try {
-
-    var b = new func('b');
-}
-catch (e) {
-
-    log(String(e))
-}
-
-// === test 1 ===
-// created: [ 'a' ]
-// created: [ 'b' ]
-//     [ 'a' ]
-//     [ 'b' ]
-// === test 2 ===
-// created: [ 'a' ]
-//     [ 'a', 'end' ]
-// Error: Can't create instance of function 'func' just use it as a function    
-
-// Try also put this code to Typescript playground and see output
-// take look at generated __extends function
-// Change output syntax (In "TS Config" tab) to "ES5"
-// example from: https://www.typescriptlang.org/docs/handbook/classes.html#inheritance
-class Animal {
-  move(distanceInMeters: number = 0, t: number ) {
-    log(`Animal moved ${distanceInMeters}m.`);
-  }
-}
-
-class Dog extends Animal {
-  bark() {
-    log("Woof! Woof!");
-  }
-}
-
-const dog = new Dog();
-dog.bark();
-dog.move(10, 5);
-dog.bark();
-
-                </script>
-                <h2>Date months</h2>
-                <script type="editor" data-lang="js">
-var monthName = (function () {
-
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-
-    return function (date) {
-
-        return monthNames[date.getUTCMonth()];
-    }
-}());
-                </script>
-                <h2>serializeError</h2>
-                <script type="editor" data-lang="js">
-                
-
-/**
- * https://github.com/sindresorhus/serialize-error
- */
-const serializeError = (function () {
-
-    'use strict';
-
-    const commonProperties = [
-        {property: 'name', enumerable: false},
-        {property: 'message', enumerable: false},
-        {property: 'stack', enumerable: false},
-        {property: 'code', enumerable: true}
-    ];
-
-    const destroyCircular = ({from, seen, to_, forceEnumerable}) => {
-        const to = to_ || (Array.isArray(from) ? [] : {});
-
-        seen.push(from);
-
-        for (const [key, value] of Object.entries(from)) {
-            if (typeof value === 'function') {
-                continue;
+                log(String(e))
             }
 
-            if (!value || typeof value !== 'object') {
-                to[key] = value;
-                continue;
+            // === test 1 ===
+            // created: [ 'a' ]
+            // created: [ 'b' ]
+            //     [ 'a' ]
+            //     [ 'b' ]
+            // === test 2 ===
+            // created: [ 'a' ]
+            //     [ 'a', 'end' ]
+            // Error: Can't create instance of function 'func' just use it as a function
+
+            // Try also put this code to Typescript playground and see output
+            // take look at generated __extends function
+            // Change output syntax (In "TS Config" tab) to "ES5"
+            // example from: https://www.typescriptlang.org/docs/handbook/classes.html#inheritance
+            class Animal {
+              move(distanceInMeters: number = 0, t: number ) {
+                log(`Animal moved ${distanceInMeters}m.`);
+              }
             }
 
-            if (!seen.includes(from[key])) {
-                to[key] = destroyCircular({from: from[key], seen: seen.slice(), forceEnumerable});
-                continue;
+            class Dog extends Animal {
+              bark() {
+                log("Woof! Woof!");
+              }
             }
 
-            to[key] = '[Circular]';
-        }
+            const dog = new Dog();
+            dog.bark();
+            dog.move(10, 5);
+            dog.bark();
+          </script>
+          <h2>Date months</h2>
+          <script type="editor" data-lang="js">
+            var monthName = (function () {
 
-        for (const {property, enumerable} of commonProperties) {
-            if (typeof from[property] === 'string') {
-                Object.defineProperty(to, property, {
-                    value: from[property],
-                    enumerable: forceEnumerable ? true : enumerable,
-                    configurable: true,
-                    writable: true
-                });
+                const monthNames = ["January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+
+                return function (date) {
+
+                    return monthNames[date.getUTCMonth()];
+                }
+            }());
+          </script>
+          <h2>serializeError</h2>
+          <script type="editor" data-lang="js">
+
+
+            /**
+             * https://github.com/sindresorhus/serialize-error
+             */
+            const serializeError = (function () {
+
+                'use strict';
+
+                const commonProperties = [
+                    {property: 'name', enumerable: false},
+                    {property: 'message', enumerable: false},
+                    {property: 'stack', enumerable: false},
+                    {property: 'code', enumerable: true}
+                ];
+
+                const destroyCircular = ({from, seen, to_, forceEnumerable}) => {
+                    const to = to_ || (Array.isArray(from) ? [] : {});
+
+                    seen.push(from);
+
+                    for (const [key, value] of Object.entries(from)) {
+                        if (typeof value === 'function') {
+                            continue;
+                        }
+
+                        if (!value || typeof value !== 'object') {
+                            to[key] = value;
+                            continue;
+                        }
+
+                        if (!seen.includes(from[key])) {
+                            to[key] = destroyCircular({from: from[key], seen: seen.slice(), forceEnumerable});
+                            continue;
+                        }
+
+                        to[key] = '[Circular]';
+                    }
+
+                    for (const {property, enumerable} of commonProperties) {
+                        if (typeof from[property] === 'string') {
+                            Object.defineProperty(to, property, {
+                                value: from[property],
+                                enumerable: forceEnumerable ? true : enumerable,
+                                configurable: true,
+                                writable: true
+                            });
+                        }
+                    }
+
+                    return to;
+                };
+
+                const serializeError = value => {
+                    if (typeof value === 'object' && value !== null) {
+                        return destroyCircular({from: value, seen: [], forceEnumerable: true});
+                    }
+
+                    // People sometimes throw things besides Error objects…
+                    if (typeof value === 'function') {
+                        // `JSON.stringify()` discards functions. We do too, unless a function is thrown directly.
+                        return `[Function: ${(value.name || 'anonymous')}]`;
+                    }
+
+                    return value;
+                };
+
+                return function (e, native) {
+
+                    e = serializeError(e);
+
+                    if ( ! native ) {
+
+                        if (typeof e.stack === 'string') {
+
+                            e.stack = e.stack.split("\n")
+                        }
+                    }
+
+                    return e;
+                }
+            }());
+          </script>
+          <h2>trim</h2>
+          <script type="editor" data-lang="js">
+
+            /*!
+             * @version 1.0 - 2013-05-21
+             * @author Szymon Działowski
+             * direction : 'rl'|'r'|'l'   -->   (undefined => 'rl')
+             * charlist  : (undefined => " \n")
+             */
+            function trim(string, charlist, direction) {
+              direction = direction || 'rl';
+              charlist  = (charlist || '').replace(/([.?*+^$[\]\\(){}|-])/g,'\\$1');
+              charlist  = charlist || " \\n";
+              (direction.indexOf('r')+1) && (string = string.replace(new RegExp('^(.*?)['+charlist+']*$','gm'),'$1'));
+              (direction.indexOf('l')+1) && (string = string.replace(new RegExp('^['+charlist+']*(.*)$','gm'),'$1'));
+              return string;
             }
-        }
+          </script>
+          <h2>DateTime tricks:</h2>
+          <script type="editor" data-lang="jsx">
 
-        return to;
-    };
+            // Extracting browser timezone informations
+            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            console.log(tz);
+                // https://stackoverflow.com/a/37512371/5560682
 
-    const serializeError = value => {
-        if (typeof value === 'object' && value !== null) {
-            return destroyCircular({from: value, seen: [], forceEnumerable: true});
-        }
+            // Extracting browser timezone offset
+            (new Date()).getTimezoneOffset()/60
+          </script>
+          <h2>async await & try catch</h2>
+          <script type="editor" data-lang="js">
 
-        // People sometimes throw things besides Error objects…
-        if (typeof value === 'function') {
-            // `JSON.stringify()` discards functions. We do too, unless a function is thrown directly.
-            return `[Function: ${(value.name || 'anonymous')}]`;
-        }
+            /**
+             * Let's register handler to indicate that we haven't handled errors properly in following code
+             */
+            process.on('uncaughtException', function(err) {
 
-        return value;
-    };
+              console.log('')
 
-    return function (e, native) {
-
-        e = serializeError(e);
-
-        if ( ! native ) {
-
-            if (typeof e.stack === 'string') {
-
-                e.stack = e.stack.split("\n")
-            }
-        }
-
-        return e;
-    }
-}());
-
-                </script>
-                <h2>trim</h2>
-                <script type="editor" data-lang="js">
-
-/*!
- * @version 1.0 - 2013-05-21
- * @author Szymon Działowski
- * direction : 'rl'|'r'|'l'   -->   (undefined => 'rl')
- * charlist  : (undefined => " \n")
- */ 
-function trim(string, charlist, direction) {
-  direction = direction || 'rl';
-  charlist  = (charlist || '').replace(/([.?*+^$[\]\\(){}|-])/g,'\\$1');
-  charlist  = charlist || " \\n";
-  (direction.indexOf('r')+1) && (string = string.replace(new RegExp('^(.*?)['+charlist+']*$','gm'),'$1'));
-  (direction.indexOf('l')+1) && (string = string.replace(new RegExp('^['+charlist+']*(.*)$','gm'),'$1'));  
-  return string;  
-}   
-                    
-                </script>
-                <h2>DateTime tricks:</h2>
-                <script type="editor" data-lang="jsx">
-                
-// Extracting browser timezone informations
-const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-console.log(tz);     
-    // https://stackoverflow.com/a/37512371/5560682
-    
-// Extracting browser timezone offset
-(new Date()).getTimezoneOffset()/60
-
-                </script>
-                <h2>async await & try catch</h2>
-                <script type="editor" data-lang="js">
-
-/**
- * Let's register handler to indicate that we haven't handled errors properly in following code
- */
-process.on('uncaughtException', function(err) {
-
-  console.log('')
-
-  console.log("\n\x1b[33mERROR \x1b[31m>>IS NOT<<\x1b[33m HANDLED PROPERLY - global uncaughtException handler:\x1b[0m", err)
-});
+              console.log("\n\x1b[33mERROR \x1b[31m>>IS NOT<<\x1b[33m HANDLED PROPERLY - global uncaughtException handler:\x1b[0m", err)
+            });
 
 
-/**
- * To run this script just run in console:
- * node async-and-sync-error-catch-example.js
- */
+            /**
+             * To run this script just run in console:
+             * node async-and-sync-error-catch-example.js
+             */
 
-var error;
+            var error;
 
-// error = 'async error'; // comment or uncomment to simulate error
+            // error = 'async error'; // comment or uncomment to simulate error
 
-// ######
-// CALLBACK EXAMPLE
-// ######
+            // ######
+            // CALLBACK EXAMPLE
+            // ######
 
-const fff = (callback) => {
+            const fff = (callback) => {
 
-  // throw new Error('sync error'); // uncomment to test sync error
+              // throw new Error('sync error'); // uncomment to test sync error
 
-  setTimeout(() => {
+              setTimeout(() => {
 
-    if (error) {
+                if (error) {
 
-      callback(error);
-    }
-    else {
+                  callback(error);
+                }
+                else {
 
-      callback(undefined, {
-        data: 'all good',
-      });
-    }
-  }, 2000);
-};
-
-try {
-
-  fff((e, data) => {
-
-    if (e) {
-
-      console.log("\n\x1b[32masynchronous error handled in callback:\x1b[0m", e)
-
-      return;
-    }
-
-    console.log("\n\x1b[33mNO ERRORS - callback:\x1b[0m")
-
-    console.log('data', data);
-  });
-}
-catch (e) {
-
-  console.log('\n\x1b[32msynchronous error handled in catch:\x1b[0m', e)
-}
-// this example demonstrate that handling synchronous and asynchronous errors of one function have to be done in two places
-// try catch - it covers only synchronous errors
-// in callback for asynchronous errors
-
-
-
-// ######
-// PROMISE EXAMPLE - better approach
-// ######
-// const fff = () => new Promise((res, rej) => {
-//
-//   // throw new Error('sync error'); // uncomment to test sync error
-//   // Interesting thing about throwing excepton in main body of the new Promise is that it is turned into Promise.reject
-//   // so it means it will be handled in "ERROR >>IS<< HANDLED PROPERLY" catch, that's very good
-//   // WARNING: but only if it is in main body - not in setTimeout -> called with delay
-//
-//   setTimeout(() => {
-//
-//     // throw new Error("don't do that");
-//     // unfortunately this error (because it is delayed) will not be cautch in "ERROR >>IS<< HANDLED PROPERLY" catch
-//     // and even worse, it will make Promise to never turn into resolved or rejected state because it's existance wil stop further execution logic
-//     // which will result in not calling rej() nor res()
-//
-//     if (error) {
-//
-//       rej(error);
-//     }
-//     else {
-//
-//       res({
-//         data: 'all good',
-//       });
-//     }
-//   }, 2000);
-//
-// });
-//
-// (async () => {
-//
-//   try {
-//
-//     const data = await fff();
-//
-//     console.log("\n\x1b[33mNO ERRORS - promise in try block reached the end:\x1b[0m");
-//
-//     console.log('data', data);
-//   }
-//   catch (e) {
-//
-//     console.log('\n\x1b[32mERROR >>IS<< HANDLED PROPERLY - catch around promise in async function\x1b[0m', e)
-//   }
-// })();
-//
-
-                </script>
-                <h2>react-datepicker display as UTC</h2>
-                <script type="editor" data-lang="jsx">
-
-<DatePicker
-  selected={(function (datepickerDate) {
-
-    // to make datepicker DISPLAY UTC
-    const n = new Date(datepickerDate.getTime() + (1000 * 60 * datepickerDate.getTimezoneOffset()))
-
-    return n;
-  }(datepickerDate))}
-  onChange={date => setDatepickerDate(date)}
-  dateFormat="yyyy-MM-dd iiii"
-/>
-                    
-                </script>
-                Interesting thing is that .getTimezoneOffset() method is returning different values depending how much you offset Date() object:
-                <img src="./getTimezoneOffset.jpg">
-                <h2>Proxy getter</h2>
-                <script type="editor" data-lang="js">
-let target = {
-    a: 'b',
-    c: 'd',
-};
-
-let handler = {
-    get(target, propKey, receiver) {
-
-        if (typeof target[propKey] !== 'undefined') {
-
-            return target[propKey];
-        }
-
-        const keys = Object.keys(target);
-
-        throw `No such manager '${propKey}', registered managers: ` + keys.join(', ');
-    }
-};
-let proxy = new Proxy(target, handler);
-
-console.log(proxy.a);
-console.log(proxy.c);
-console.log(proxy.b);           
-                </script>
-                <h2>Event Delegation</h2>
-                <script type="editor" data-lang="js">
-
-    // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill
-    if (!Element.prototype.matches) {
-        Element.prototype.matches =
-            Element.prototype.matchesSelector ||
-            Element.prototype.mozMatchesSelector ||
-            Element.prototype.msMatchesSelector ||
-            Element.prototype.oMatchesSelector ||
-            Element.prototype.webkitMatchesSelector ||
-            function(s) {
-                var matches = (this.document || this.ownerDocument).querySelectorAll(s),
-                    i = matches.length;
-                while (--i >= 0 && matches.item(i) !== this) {}
-                return i > -1;
+                  callback(undefined, {
+                    data: 'all good',
+                  });
+                }
+              }, 2000);
             };
-    }
 
-    document.body.addEventListener('click', function (e) {
+            try {
 
-        var el = e.target;
+              fff((e, data) => {
 
-        var match = el.matches('[data-lang] > .copy');
+                if (e) {
 
-        if (match) {
+                  console.log("\n\x1b[32masynchronous error handled in callback:\x1b[0m", e)
 
-        }
-    });
+                  return;
+                }
 
-                </script>
-                <h2>Extract computed css property value</h2>
-                <script type="editor" data-lang="js">
-parseInt(window.getComputedStyle(document.querySelector('svg'), null).getPropertyValue("width"), 10)
-                </script>
-                <h2>Parsing get parameters, location.search</h2>
-                <script type="editor" data-lang="js">
-var query = (location.search || '?').substring(1).split('&').filter(a => a).reduce((acc, val) => {
+                console.log("\n\x1b[33mNO ERRORS - callback:\x1b[0m")
 
-    var
-        a       = val.split(/=/),
-        key     = a.shift(),
-        v       = decodeURIComponent(a.join('='))
-    ;
+                console.log('data', data);
+              });
+            }
+            catch (e) {
 
-    if (Array.isArray(acc[key])) {
-        acc[key].push(v);
-    }
-    else {
-        if (typeof acc[key] === 'string') {
-            acc[key] = [acc[key]];
-            acc[key].push(v)
-        }
-        else {
-            acc[key] = v;
-        }
-    }
-
-    return acc;
-}, {});
+              console.log('\n\x1b[32msynchronous error handled in catch:\x1b[0m', e)
+            }
+            // this example demonstrate that handling synchronous and asynchronous errors of one function have to be done in two places
+            // try catch - it covers only synchronous errors
+            // in callback for asynchronous errors
 
 
 
-var k = (function (p, h, k) {
-    p.has(k) ? p.delete(k) : p.set(k, '');
-    p = String(p);
-    p ? (p = '?' + p) : (p = '');
-    location.href = (location.href.split('#')[0]).split('?')[0] + p + h;
-}(new URLSearchParams(location.search), location.hash, 'noprerender'))
+            // ######
+            // PROMISE EXAMPLE - better approach
+            // ######
+            // const fff = () => new Promise((res, rej) => {
+            //
+            //   // throw new Error('sync error'); // uncomment to test sync error
+            //   // Interesting thing about throwing excepton in main body of the new Promise is that it is turned into Promise.reject
+            //   // so it means it will be handled in "ERROR >>IS<< HANDLED PROPERLY" catch, that's very good
+            //   // WARNING: but only if it is in main body - not in setTimeout -> called with delay
+            //
+            //   setTimeout(() => {
+            //
+            //     // throw new Error("don't do that");
+            //     // unfortunately this error (because it is delayed) will not be cautch in "ERROR >>IS<< HANDLED PROPERLY" catch
+            //     // and even worse, it will make Promise to never turn into resolved or rejected state because it's existance wil stop further execution logic
+            //     // which will result in not calling rej() nor res()
+            //
+            //     if (error) {
+            //
+            //       rej(error);
+            //     }
+            //     else {
+            //
+            //       res({
+            //         data: 'all good',
+            //       });
+            //     }
+            //   }, 2000);
+            //
+            // });
+            //
+            // (async () => {
+            //
+            //   try {
+            //
+            //     const data = await fff();
+            //
+            //     console.log("\n\x1b[33mNO ERRORS - promise in try block reached the end:\x1b[0m");
+            //
+            //     console.log('data', data);
+            //   }
+            //   catch (e) {
+            //
+            //     console.log('\n\x1b[32mERROR >>IS<< HANDLED PROPERLY - catch around promise in async function\x1b[0m', e)
+            //   }
+            // })();
+            //
+          </script>
+          <h2>react-datepicker display as UTC</h2>
+          <script type="editor" data-lang="jsx">
 
-                </script>
-                <h2>fetch</h2>
-                <script type="editor" data-lang="js">
-// in order to get body and headers fetch require so much magic, this is sick... 
-  
-var log = console.log;             
-var r = await fetch('');
+            <DatePicker
+              selected={(function (datepickerDate) {
 
-// or:
-var t = await r.text()
-log(t.substring(0, 300))
+                // to make datepicker DISPLAY UTC
+                const n = new Date(datepickerDate.getTime() + (1000 * 60 * datepickerDate.getTimezoneOffset()))
 
-// or:
-//var j = await r.json()
-//log(j)
+                return n;
+              }(datepickerDate))}
+              onChange={date => setDatepickerDate(date)}
+              dateFormat="yyyy-MM-dd iiii"
+            />
+          </script>
+          Interesting thing is that .getTimezoneOffset() method is returning different values depending how much you offset Date() object:
+          <img src="./getTimezoneOffset.jpg" />
+          <h2>Proxy getter</h2>
+          <script type="editor" data-lang="js">
+            let target = {
+                a: 'b',
+                c: 'd',
+            };
 
-const h = {}
-r.headers.forEach((value, key) => h[key] = value)
+            let handler = {
+                get(target, propKey, receiver) {
 
-//const h = await Promise.all(r.headers.entries());
+                    if (typeof target[propKey] !== 'undefined') {
 
-log('headers', h)
+                        return target[propKey];
+                    }
 
-log('oneheader', r.headers.get('Content-type'));
-                </script>
-                <h2>Observer pattern</h2>
-                <script type="editor" data-lang="js">
-function Newsletter() {
-  this.observers = [];
-}
-Newsletter.prototype = {
-  subscribe: function (observer) {
-    this.observers.push(observer);
-  },
-  unsubscribe: function(observer) {
-    this.observers = this.observers.filter(ob => ob !== observer);
-  },
-  notify: function() {
-    this.observers.forEach(observer => console.log(‘Hello ‘ + observer.toString()));
-  }
-}
-let subscriber1 = ‘Subscriber 1’;
-let subscriber2 = ‘Subscriber 2’;
-let newsletter = new Newsletter();
-newsletter.subscribe(subscriber1);
-newsletter.subscribe(subscriber2);
-newsletter.notify(); // Hello Subscriber 1 Hello Subscriber 2
-newsletter.unsubscribe(subscriber2);
-newsletter.notify(); // Hello Subscriber 1                
-                </script>
-                <h2>read</h2>
-                <ul>
-                    <li><a href="https://levelup.gitconnected.com/top-lessons-learned-from-working-with-a-10x-developer-51de12383e25">https://levelup.gitconnected.com/top-lessons-learned-from-working-with-a-10x-developer-51de12383e25</a></li>
-                    <li><a href="https://medium.com/javascript-in-plain-english/stop-using-objects-and-arrays-to-store-data-289c3edaaa33">https://medium.com/javascript-in-plain-english/stop-using-objects-and-arrays-to-store-data-289c3edaaa33</a></li>
-                    <li><a href=""></a></li>
-                </ul>                
-                <h2>randomize shuffle array</h2>
-                <script type="editor" data-lang="js">
+                    const keys = Object.keys(target);
 
-let list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-list = list.sort(() => Math.random() - 0.5)
+                    throw `No such manager '${propKey}', registered managers: ` + keys.join(', ');
+                }
+            };
+            let proxy = new Proxy(target, handler);
 
-                </script>
-                <h2>flow</h2>
-                <script type="editor" data-lang="typescript">    
+            console.log(proxy.a);
+            console.log(proxy.c);
+            console.log(proxy.b);
+          </script>
+          <h2>Event Delegation</h2>
+          <script type="editor" data-lang="js">
 
-// About Number, NaN, and Infinity - https://flow.org/en/docs/types/primitives/#toc-numbers
+            // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill
+            if (!Element.prototype.matches) {
+                Element.prototype.matches =
+                    Element.prototype.matchesSelector ||
+                    Element.prototype.mozMatchesSelector ||
+                    Element.prototype.msMatchesSelector ||
+                    Element.prototype.oMatchesSelector ||
+                    Element.prototype.webkitMatchesSelector ||
+                    function(s) {
+                        var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                            i = matches.length;
+                        while (--i >= 0 && matches.item(i) !== this) {}
+                        return i > -1;
+                    };
+            }
 
-function bothRequired(a: string, b: number) {} // obvious - both required
-// both must be present and the same type
-bothRequired('a', 4);               // Works!
-bothRequired('a', NaN);             // NaN is oddly a number in js ¯\_(ツ)_/¯ 
-bothRequired('a', Infinity);        // Infinity is oddly a number in js ¯\_(ツ)_/¯ 
-// bothRequired('a', '4');          // Error! - wrong type
-// bothRequired('a');               // Error! - can't be missing, after all it's required
-// bothRequired('a', undefined);    // Error - the same as above
-// bothRequired('a', null);         // Error - specified but wrong type 
-//   (after all null is a value but indicate a "lack of value" logically)
-//   (so null means specifying explicitly that "there is no value" it's not like skipping argument)
+            document.body.addEventListener('click', function (e) {
 
-// https://flow.org/en/docs/types/maybe/
-// "Maybe types" accept the provided type as well as null or undefined. 
-// So ?number would mean number, null, or undefined.
-function maybeType(a: string, b: ?number) {} 
-maybeType('a', 8);
-maybeType('a', NaN);        // NaN is oddly a number in js ¯\_(ツ)_/¯ 
-maybeType('a', Infinity);   // Infinity is oddly a number in js ¯\_(ツ)_/¯ 
-maybeType('a', undefined);
-maybeType('a'); // skipping works like passing undefined
-maybeType('a', null);
-// maybeType('a', false);   // Error! - different type
-// maybeType('a', 'b');     // Error! - different type
+                var el = e.target;
 
-function acceptLiteralType(value: 2) {} // thats "Literal Types" - that's the different thing
-// https://flow.org/en/docs/types/literals/
+                var match = el.matches('[data-lang] > .copy');
 
-function defaultValue(a: string, b: number = 5) {}
-defaultValue('a', 6);
-defaultValue('a', NaN);        // NaN is oddly a number in js ¯\_(ツ)_/¯ 
-defaultValue('a', Infinity);   // Infinity is oddly a number in js ¯\_(ツ)_/¯ 
-defaultValue('a', undefined)   // default 5
-defaultValue('a');             // skipping works like passing undefined, so default 5
-// defaultValue('a', null); // Error! - specified but wrong type
+                if (match) {
 
-// >Optional parameters< will accept missing, undefined, or matching types. But they will not accept null.
-// https://flow.org/en/docs/types/functions/#toc-optional-parameters
-function optionalParameter(a: string, b?: number) {}
-optionalParameter('a', 6);
-optionalParameter('a', NaN);      // NaN is oddly a number in js ¯\_(ツ)_/¯ 
-optionalParameter('a', Infinity); // Infinity is oddly a number in js ¯\_(ツ)_/¯ 
-optionalParameter('a');           // ... missing ...
-optionalParameter('a', undefined) // ... undefined ...
-// optionalParameter('a', null); // ... but not null, for this only "maybe type" will help - Error!
+                }
+            });
+          </script>
+          <h2>Extract computed css property value</h2>
+          <script type="editor" data-lang="js">
+            parseInt(window.getComputedStyle(document.querySelector('svg'), null).getPropertyValue("width"), 10)
+          </script>
+          <h2>Parsing get parameters, location.search</h2>
+          <script type="editor" data-lang="js">
+            var query = (location.search || '?').substring(1).split('&').filter(a => a).reduce((acc, val) => {
 
-function optionalParameterWithDefault(a: string, b?: number = 5) {}
-// using optional parameter with default value makes no sense 
-// because optional parameter is focused to allow missed or undefined param
-// but default value have higher priority in both above cases to fallback to default
-// so in this case using optional parameter is redundant when default is specified
-// null is still not allowed because null is only allowed with "maybe type"
-optionalParameterWithDefault('a', 6);
-optionalParameterWithDefault('a', NaN);      // NaN is oddly a number in js ¯\_(ツ)_/¯ 
-optionalParameterWithDefault('a', Infinity); // Infinity is oddly a number in js ¯\_(ツ)_/¯ 
-optionalParameterWithDefault('a');           // def 5
-optionalParameterWithDefault('a', undefined) // def 5
-// optionalParameterWithDefault('a', null); // for this only "maybe type" will help - Error!
+                var
+                    a       = val.split(/=/),
+                    key     = a.shift(),
+                    v       = decodeURIComponent(a.join('='))
+                ;
+
+                if (Array.isArray(acc[key])) {
+                    acc[key].push(v);
+                }
+                else {
+                    if (typeof acc[key] === 'string') {
+                        acc[key] = [acc[key]];
+                        acc[key].push(v)
+                    }
+                    else {
+                        acc[key] = v;
+                    }
+                }
+
+                return acc;
+            }, {});
 
 
 
-                </script>
-            </div>
+            var k = (function (p, h, k) {
+                p.has(k) ? p.delete(k) : p.set(k, '');
+                p = String(p);
+                p ? (p = '?' + p) : (p = '');
+                location.href = (location.href.split('#')[0]).split('?')[0] + p + h;
+            }(new URLSearchParams(location.search), location.hash, 'noprerender'))
+          </script>
+          <h2>fetch</h2>
+          <script type="editor" data-lang="js">
+            // in order to get body and headers fetch require so much magic, this is sick...
+
+            var log = console.log;
+            var r = await fetch('');
+
+            // or:
+            var t = await r.text()
+            log(t.substring(0, 300))
+
+            // or:
+            //var j = await r.json()
+            //log(j)
+
+            const h = {}
+            r.headers.forEach((value, key) => h[key] = value)
+
+            //const h = await Promise.all(r.headers.entries());
+
+            log('headers', h)
+
+            log('oneheader', r.headers.get('Content-type'));
+          </script>
+          <h2>Observer pattern</h2>
+          <script type="editor" data-lang="js">
+            function Newsletter() {
+              this.observers = [];
+            }
+            Newsletter.prototype = {
+              subscribe: function (observer) {
+                this.observers.push(observer);
+              },
+              unsubscribe: function(observer) {
+                this.observers = this.observers.filter(ob => ob !== observer);
+              },
+              notify: function() {
+                this.observers.forEach(observer => console.log(‘Hello ‘ + observer.toString()));
+              }
+            }
+            let subscriber1 = ‘Subscriber 1’;
+            let subscriber2 = ‘Subscriber 2’;
+            let newsletter = new Newsletter();
+            newsletter.subscribe(subscriber1);
+            newsletter.subscribe(subscriber2);
+            newsletter.notify(); // Hello Subscriber 1 Hello Subscriber 2
+            newsletter.unsubscribe(subscriber2);
+            newsletter.notify(); // Hello Subscriber 1
+          </script>
+          <h2>read</h2>
+          <ul>
+            <li>
+              <a href="https://levelup.gitconnected.com/top-lessons-learned-from-working-with-a-10x-developer-51de12383e25"
+                >https://levelup.gitconnected.com/top-lessons-learned-from-working-with-a-10x-developer-51de12383e25</a
+              >
+            </li>
+            <li>
+              <a href="https://medium.com/javascript-in-plain-english/stop-using-objects-and-arrays-to-store-data-289c3edaaa33"
+                >https://medium.com/javascript-in-plain-english/stop-using-objects-and-arrays-to-store-data-289c3edaaa33</a
+              >
+            </li>
+            <li><a href=""></a></li>
+          </ul>
+          <h2>randomize shuffle array</h2>
+          <script type="editor" data-lang="js">
+
+            let list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+            list = list.sort(() => Math.random() - 0.5)
+          </script>
+          <h2>flow</h2>
+          <script type="editor" data-lang="typescript">
+
+            // About Number, NaN, and Infinity - https://flow.org/en/docs/types/primitives/#toc-numbers
+
+            function bothRequired(a: string, b: number) {} // obvious - both required
+            // both must be present and the same type
+            bothRequired('a', 4);               // Works!
+            bothRequired('a', NaN);             // NaN is oddly a number in js ¯\_(ツ)_/¯
+            bothRequired('a', Infinity);        // Infinity is oddly a number in js ¯\_(ツ)_/¯
+            // bothRequired('a', '4');          // Error! - wrong type
+            // bothRequired('a');               // Error! - can't be missing, after all it's required
+            // bothRequired('a', undefined);    // Error - the same as above
+            // bothRequired('a', null);         // Error - specified but wrong type
+            //   (after all null is a value but indicate a "lack of value" logically)
+            //   (so null means specifying explicitly that "there is no value" it's not like skipping argument)
+
+            // https://flow.org/en/docs/types/maybe/
+            // "Maybe types" accept the provided type as well as null or undefined.
+            // So ?number would mean number, null, or undefined.
+            function maybeType(a: string, b: ?number) {}
+            maybeType('a', 8);
+            maybeType('a', NaN);        // NaN is oddly a number in js ¯\_(ツ)_/¯
+            maybeType('a', Infinity);   // Infinity is oddly a number in js ¯\_(ツ)_/¯
+            maybeType('a', undefined);
+            maybeType('a'); // skipping works like passing undefined
+            maybeType('a', null);
+            // maybeType('a', false);   // Error! - different type
+            // maybeType('a', 'b');     // Error! - different type
+
+            function acceptLiteralType(value: 2) {} // thats "Literal Types" - that's the different thing
+            // https://flow.org/en/docs/types/literals/
+
+            function defaultValue(a: string, b: number = 5) {}
+            defaultValue('a', 6);
+            defaultValue('a', NaN);        // NaN is oddly a number in js ¯\_(ツ)_/¯
+            defaultValue('a', Infinity);   // Infinity is oddly a number in js ¯\_(ツ)_/¯
+            defaultValue('a', undefined)   // default 5
+            defaultValue('a');             // skipping works like passing undefined, so default 5
+            // defaultValue('a', null); // Error! - specified but wrong type
+
+            // >Optional parameters< will accept missing, undefined, or matching types. But they will not accept null.
+            // https://flow.org/en/docs/types/functions/#toc-optional-parameters
+            function optionalParameter(a: string, b?: number) {}
+            optionalParameter('a', 6);
+            optionalParameter('a', NaN);      // NaN is oddly a number in js ¯\_(ツ)_/¯
+            optionalParameter('a', Infinity); // Infinity is oddly a number in js ¯\_(ツ)_/¯
+            optionalParameter('a');           // ... missing ...
+            optionalParameter('a', undefined) // ... undefined ...
+            // optionalParameter('a', null); // ... but not null, for this only "maybe type" will help - Error!
+
+            function optionalParameterWithDefault(a: string, b?: number = 5) {}
+            // using optional parameter with default value makes no sense
+            // because optional parameter is focused to allow missed or undefined param
+            // but default value have higher priority in both above cases to fallback to default
+            // so in this case using optional parameter is redundant when default is specified
+            // null is still not allowed because null is only allowed with "maybe type"
+            optionalParameterWithDefault('a', 6);
+            optionalParameterWithDefault('a', NaN);      // NaN is oddly a number in js ¯\_(ツ)_/¯
+            optionalParameterWithDefault('a', Infinity); // Infinity is oddly a number in js ¯\_(ツ)_/¯
+            optionalParameterWithDefault('a');           // def 5
+            optionalParameterWithDefault('a', undefined) // def 5
+            // optionalParameterWithDefault('a', null); // for this only "maybe type" will help - Error!
+          </script>
         </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
