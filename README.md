@@ -1,4 +1,3 @@
-
 # Ace editor objects syntax:
 
     <script type="editor|syntax" data-lang="js" data-w="95%">
@@ -6,50 +5,53 @@
             console.log('textarea', a)
         }
     </script>
-    
+
     attributes:
-    
+
     type        - required : editor | syntax
     data-lang   - required
     data-w      - optional: any valid css value for width css directive
     datahw      - optional: any valid css value for height css directive
-    
+
     Warning: Just specify type="typescript" and script on site will load
              /js/ace/ace-builds-1.4.12/src-min-noconflict/mode-typescript.js
-    
+
 [supported syntax](https://github.com/ajaxorg/ace/blob/master/lib/ace/ext/modelist.js#L53)
 
 ## You can add manually TOC to the document in order to add some extra links to TOC
 
 ```html
 <body class="layout" toc>
-    <div class="body">
-        <div class="inside">
-            <div class="cards toc">
-                <h1>Table of Contents</h1>
-                <ul data-do-sort>
-                    <li><a href="http://">ekstra link</a></li>
-                </ul>
-            </div>
-            <div class="cards">
-                <h2>debug</h2>
-                <script type="editor" data-lang="sh">
-                    ...
-                </script>
-                ...
+  <div class="body">
+    <div class="inside">
+      <div class="cards toc">
+        <h1>Table of Contents</h1>
+        <ul data-do-sort>
+          <li><a href="http://">ekstra link</a></li>
+        </ul>
+      </div>
+      <div class="cards">
+        <h2>debug</h2>
+        <script type="editor" data-lang="sh">
+          ...
+        </script>
+        ...
+      </div>
+    </div>
+  </div>
+</body>
 ```
-
 
 # attribute helpers
 
     <div data-do-sort>... children nodes...</div> - sorts all children based on innerText
-    
+
     <body nohead nofoot toc>
-    
+
         toc - turn on Table of Content
         nohead - no header
         nofoot - no footer
-    
+
 # new page template
 
     <!doctype html>
@@ -60,45 +62,45 @@
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>stopsopa.github.io</title>
-        
+
                 <script> <!-- optional to do something before binding ACE editor -->
                     (function () {
                         var resolve;
                         var p = new Promise(function (res) {
                             resolve = res;
                         });
-            
+
                         document.addEventListener('DOMContentLoaded', () => {
-            
+
                             Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
-            
+
                                 var text = tag.innerHTML;
-            
+
                                 text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host)
-            
+
                                 tag.innerHTML = text;
                             });
-            
+
                             resolve();
                         });
-            
+
                         window.waitForPromise = function () {
-            
+
                             return p;
                         }
                     }())
                 </script>
-                
+
         <script src="/js/github.js"></script>
     </head>
     <body class="layout" toc>
-    
+
         <div class="body">
             <div class="inside">
-    
+
                 <div class="cards">
-                    <h2>Index</h2>               
-                    
+                    <h2>Index</h2>
+
                 </div>
             </div>
         </div>
@@ -107,13 +109,13 @@
 
 # uglify
 
-If anywhere in the repository file *.uglify.js will be created it will be processed with babel and next by uglifyjs and exported as *.uglify.min.js
+If anywhere in the repository file _.uglify.js will be created it will be processed with babel and next by uglifyjs and exported as _.uglify.min.js
 
 For details look to uglify.js
 
 # templating engine
 
-If you create file *.template.html anywhere in the project during build it will be found and file *.html will be generate right next to original *.template.html.
+If you create file _.template.html anywhere in the project during build it will be found and file _.html will be generate right next to original \*.template.html.
 
 In template file listed placeholders will be processed:
 
@@ -121,38 +123,38 @@ In template file listed placeholders will be processed:
 
 <%inject path/to/file/in/respository.js %> - will be imported in-place as is
 
-For details look to template.sh    
+For details look to template.sh
 
-
-# other   
+# other
 
 http://httpd.pl/stopsopa.github.io/index.html
 http://httpd.pl/stopsopa.github.io/demos/jquery.elkanatooltip/demo.html
 http://httpd.pl/dropdown
 http://httpd.pl/stopsopa.github.io/demos/jquery.elkanatooltip/pos.html
 
-# firebase 
+# firebase
+
 firebase console: https://console.firebase.google.com/
 
 In order to configure firebase database get credentails from:
 https://i.imgur.com/oVsGuVT.png
-and then enable 
+and then enable
 https://i.imgur.com/gYnXKfm.png
 otherwise you end up with issue:
-    auth/operation-not-allowed	The provided sign-in provider is disabled for your Firebase project. 
-    Enable it from the Sign-in Method section of the Firebase console.
-    more:
-        https://firebase.google.com/docs/auth/admin/errors
+auth/operation-not-allowed The provided sign-in provider is disabled for your Firebase project.
+Enable it from the Sign-in Method section of the Firebase console.
+more:
+https://firebase.google.com/docs/auth/admin/errors
 and also add domains to section "Authorised domains":
-    https://i.imgur.com/STTaAJ4.png
+https://i.imgur.com/STTaAJ4.png
 
 explore api:
 
 https://firebase.google.com/docs/reference/js/firebase.database.Reference
-       Explore api: 
-       g(firebase. database. Reference)
+Explore api:
+g(firebase. database. Reference)
 read write:
-    https://firebase.google.com/docs/database/web/read-and-write
+https://firebase.google.com/docs/database/web/read-and-write
 
 add rules to database:
 
@@ -167,20 +169,19 @@ add rules to database:
       }
     }
 
-
 # to maintain:
+
 http://stopsopa.github.io/demos/jquery.elkanatooltip/katownik.html
 http://stopsopa.github.io/demos/jquery.elkanatooltip/pos.html
 
-# cross origin requests: 
+# cross origin requests:
+
 - https://allorigins.win/
 - http://anyorigin.com/
 
 Pull contents from any page via API (as JSON/P or raw) and avoid Same-origin policy problems.
 
 # Dev notes
-
-
 
 ```bash
 
@@ -221,8 +222,3 @@ make build
 
 
 ```
-
-
-
-
-

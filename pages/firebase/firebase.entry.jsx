@@ -1,144 +1,128 @@
+import React, { useEffect, useState } from "react";
 
-import React, { useEffect, useState } from 'react';
+import { render } from "react-dom";
 
-import { render } from 'react-dom';
+import log from "inspc";
 
-import log from 'inspc';
+import useCustomState from "../useCustomState";
 
-import useCustomState from '../useCustomState'
+const section = "test";
 
-const section = 'test';
-
-import isObject from 'nlab/isObject';
+import isObject from "nlab/isObject";
 
 const Main = () => {
+  const [groupslist, setGroupslist] = useState(false);
 
-  const [ groupslist, setGroupslist ] = useState(false);
+  const [groupname, setGroupnameRaw] = useState("");
 
-  const [ groupname, setGroupnameRaw ] = useState('');
-
-  const {
-    error,
-    id,
-    set,
-    get,
-    del,
-    push,
-  } = useCustomState({
+  const { error, id, set, get, del, push } = useCustomState({
     section,
   });
 
   const refreshGroupList = async function () {
-
     let list = await get(`groupslist`);
 
     setGroupslist(list);
   };
 
   useEffect(() => {
-
     if (id) {
-
       refreshGroupList();
     }
-
   }, [id]);
 
-  if ( error ) {
-
-    return <pre>{JSON.stringify({
-      error,
-    }, null, 4)}</pre>
+  if (error) {
+    return (
+      <pre>
+        {JSON.stringify(
+          {
+            error,
+          },
+          null,
+          4
+        )}
+      </pre>
+    );
   }
 
-  if ( ! id ) {
-
-    return <div>Connecting to custom state...</div>
+  if (!id) {
+    return <div>Connecting to custom state...</div>;
   }
 
-  const setGroupname = name => {
-
-    if (typeof name === 'string') {
-
+  const setGroupname = (name) => {
+    if (typeof name === "string") {
       name = name.trim();
     }
 
     setGroupnameRaw(name);
-  }
+  };
 
   return (
     <div>
       <h4>Add group:</h4>
-      <form onSubmit={async e => {
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
 
-        e.preventDefault();
+          let list = [];
 
-        let list = [];
-
-        if (isObject(groupslist)) {
-
-          list = Object.keys(groupslist).map(key => groupslist[key].groupname.toLowerCase());
-        }
-
-        if (groupname) {
-
-          if ( list.includes(groupname.toLowerCase()) ) {
-
-            return alert(`group by name '${groupname}' already exist`);
+          if (isObject(groupslist)) {
+            list = Object.keys(groupslist).map((key) => groupslist[key].groupname.toLowerCase());
           }
 
-          await push({
-            key: `groupslist`,
-            data: {
-              groupname,
-            },
-          });
+          if (groupname) {
+            if (list.includes(groupname.toLowerCase())) {
+              return alert(`group by name '${groupname}' already exist`);
+            }
 
-          setGroupname('');
+            await push({
+              key: `groupslist`,
+              data: {
+                groupname,
+              },
+            });
 
-          await refreshGroupList();
-        }
+            setGroupname("");
 
-      }}>
+            await refreshGroupList();
+          }
+        }}
+      >
         <label>
           name:
-          <input type="text" value={groupname} onChange={e => setGroupname(e.target.value)}/> {groupname}
+          <input type="text" value={groupname} onChange={(e) => setGroupname(e.target.value)} /> {groupname}
         </label>
-        <br/>
+        <br />
         <button type="submit">add</button>
       </form>
-
-      <br/>
-
+      <br />
       groups:
-      <br/>
+      <br />
       {/*<pre>{JSON.stringify(groupslist, null, 4)}</pre>*/}
       <ul>
-        {isObject(groupslist) && Object.keys(groupslist).map(key => {
+        {isObject(groupslist) &&
+          Object.keys(groupslist).map((key) => {
+            const g = groupslist[key];
 
-          const g = groupslist[key];
+            return (
+              <li key={key} data-key={key}>
+                {g.groupname}{" "}
+                <button
+                  onClick={async (e) => {
+                    await del(`groupslist/${key}`);
 
-          return (
-            <li key={key} data-key={key}>{g.groupname} <button onClick={async e => {
-
-              await del(`groupslist/${key}`);
-
-              await refreshGroupList();
-            }}>del</button></li>
-          )
-        })}
+                    await refreshGroupList();
+                  }}
+                >
+                  del
+                </button>
+              </li>
+            );
+          })}
       </ul>
-
-      <hr/>
-
-
-
+      <hr />
     </div>
-  )
-}
+  );
+};
 
-render(
-  <Main />,
-  document.getElementById('app')
-);
-
+render(<Main />, document.getElementById("app"));

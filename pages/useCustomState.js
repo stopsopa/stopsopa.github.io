@@ -1,7 +1,6 @@
+import React from "react";
 
-import React from 'react';
-
-import useFirebase from './firebase/useFirebase'
+import useFirebase from "./firebase/useFirebase";
 
 /**
  * This is universal custom state mechanism which at the moment is based on firebase
@@ -9,24 +8,16 @@ import useFirebase from './firebase/useFirebase'
  * as long as it provides basic methods:
  * set, get, del
  */
-export default ({
-  section
-}) => {
-
-  if (typeof section !== 'string') {
-
+export default ({ section }) => {
+  if (typeof section !== "string") {
     throw new Error(`useCustemState error: section is not a string`);
   }
 
-  const {
-    firebase,
-    user,
-    ...rest
-  } = useFirebase({
+  const { firebase, user, ...rest } = useFirebase({
     section,
   });
 
   rest.id = user;
 
   return rest;
-}
+};
