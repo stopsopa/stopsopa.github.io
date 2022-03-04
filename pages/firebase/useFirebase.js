@@ -33,13 +33,32 @@ export default ({
 
   const [ user, setUser ] = useState(false);
 
+  const [ db, setDb ] = useState(false);
+
+  const [ firebaseApp, setFirebaseApp ] = useState(false);
+
   useEffect(() => {
 
     (async function () {
 
       try {
 
-        const firebase = await fire();
+        const {
+          firebaseApp: _firebaseApp,
+          auth: {
+            getAuth,
+            signInWithPopup,
+            GoogleAuthProvider,
+            signInWithCredential,
+            signOut,
+          }
+        } = await fire();
+
+        setFirebaseApp(firebaseApp);
+
+        const auth = getAuth();
+
+        const provider = new GoogleAuthProvider();
 
         // make security rules for database like this
         // {
@@ -72,7 +91,7 @@ export default ({
 
             setError(false);
 
-            setUser(firebase.auth().currentUser.email.replace(/\./g, ','))
+            setUser(auth.currentUser.email.replace(/\./g, ','))
 
           }
           catch (e) {
@@ -88,26 +107,26 @@ export default ({
         let accessToken = localStorage.getItem('accessToken');
 
         log.dump({
-          firebase_first: firebase.auth().currentUser
+          firebase_first: auth.currentUser
         })
 
-        if ( ! firebase.auth().currentUser && idToken && accessToken ) {
+        if ( ! auth.currentUser && idToken && accessToken ) {
 
           try {
 
             log('firebase_try: signInWithCredential')
 
-            const credential = await firebase.auth.GoogleAuthProvider.credential(idToken, accessToken);
+            const credential = await GoogleAuthProvider.credential(idToken, accessToken);
 
             log.dump({
               firebase_credential: credential
             })
 
-            const user = await firebase.auth().signInWithCredential(credential);
+            const result = await signInWithCredential(auth, credential); // https://firebase.google.com/docs/auth/web/account-linking#web-version-9_5
 
             log.dump({
               firebase_mode: 'signInWithCredential',
-              user
+              user: result.user,
             })
 
           }
@@ -119,20 +138,20 @@ export default ({
               error: {
                 mode: 'signInWithCredential -> signOut()',
                 e: se(e),
-                user: firebase.auth().currentUser,
-                truthy: !!firebase.auth().currentUser
+                user: auth.currentUser,
+                truthy: !!auth.currentUser
               }
             });
 
-            await firebase.auth().signOut();
+            await signOut(auth); // https://firebase.google.com/docs/auth/web/google-signin#web-version-9_10
           }
         }
 
         log.dump({
-          'firebase.auth().currentUser, before second method': firebase.auth().currentUser,
+          'auth.currentUser, before second method': auth.currentUser,
         })
 
-        if ( firebase.auth().currentUser ) {
+        if ( auth.currentUser ) {
 
           log('firebase_signInWithCredential success, trigger set()')
         }
@@ -140,13 +159,13 @@ export default ({
 
           log('try: signInWithPopup')
 
-          var provider = new firebase.auth.GoogleAuthProvider();
+          const result = await signInWithPopup(auth, provider); // https://firebase.google.com/docs/auth/web/google-signin#web-version-8_4
 
-          const result = await firebase.auth().signInWithPopup(provider);
+          const credential = GoogleAuthProvider.credentialFromResult(result);
 
-          idToken = result.credential.idToken;
+          idToken = credential.idToken;
 
-          accessToken = result.credential.accessToken;
+          accessToken = credential.accessToken;
 
           var user = result.user;
 
@@ -181,7 +200,7 @@ export default ({
 
   }, []);
 
-  function getroot (key) {
+  const getroot = async (key) => {
 
     if (typeof section !== 'string' || !section.trim()) {
 
@@ -208,10 +227,19 @@ export default ({
     return internalkey;
   }
 
-  async function set({
+  const set = async ({
     data = {},
     key
-  }) {
+  }) => {
+
+    const {
+      firebaseApp,
+      database: {
+        getDatabase,
+        ref,
+        set,
+      },
+    } = await fire();
 
     if (typeof section !== 'string' || !section.trim()) {
 
@@ -232,17 +260,14 @@ export default ({
     }
 
     try {
+      const db = getDatabase(firebaseApp);
+
+      const dbRef = ref(db, internalkey);
 
       /**
-       * Explore api:
-       * g(firebase. database. Reference)
-       * https://firebase.google.com/docs/reference/js/firebase.database.Reference
+       * https://firebase.google.com/docs/database/web/read-and-write#web-version-9_5
        */
-
-      await firebase.database()
-        .ref(internalkey)
-        .set(data)
-      ;
+      await set(dbRef, data)
 
       log.dump({
         'set': {
@@ -269,12 +294,22 @@ export default ({
     }
   }
 
-  window.firebaseGet = get;
 
-  async function push({
+  const push = async ({
     data = {},
     key
-  }) {
+  }) => {
+
+    const {
+      firebaseApp,
+      database: {
+        getDatabase,
+        ref,
+        push,
+        child,
+        update,
+      },
+    } = await fire();
 
     if (typeof section !== 'string' || !section.trim()) {
 
@@ -295,14 +330,17 @@ export default ({
     }
 
     try {
+      const db = getDatabase(firebaseApp);
 
-      var ref = firebase.database().ref(internalkey);
+      const dbRef = ref(db, internalkey);
 
-      var newPostRef = ref.push();
+      const newPostKey = push(child(dbRef, internalkey)).key;
 
-      await newPostRef.set(data);
+      await update(dbRef, {
+        [newPostKey]: data,
+      })
 
-      const newid = `${internalkey}/${newPostRef.key}`;
+      const newid = `${internalkey}/${newPostKey}`;
 
       log.dump({
         'push': {
@@ -332,7 +370,16 @@ export default ({
     }
   }
 
-  async function get(key) {
+  const get = async (key) => {
+
+    const {
+      firebaseApp,
+      database: {
+        getDatabase,
+        ref,
+        onValue,
+      },
+    } = await fire();
 
     if (typeof section !== 'string' || !section.trim()) {
 
@@ -355,19 +402,41 @@ export default ({
     try {
 
       // https://firebase.google.com/docs/database/web/read-and-write#read_data_once_with_an_observer
-      const data = await firebase.database()
-        .ref(internalkey)
-        .once('value')
-      ;
+      const db = getDatabase(firebaseApp);
 
-      const snapshot = await data.val();
+      const dbRef = ref(db, internalkey);
+
+      const snapshot = await new Promise(res => { // https://firebase.google.com/docs/database/web/read-and-write#web-version-9_4
+
+        try {
+
+          onValue(dbRef, (snapshot) => {
+            res(snapshot)
+          }, {
+            onlyOnce: true
+          });
+        }
+        catch (e) {
+
+          log.dump({
+            'get() onValue error:': {
+              error: se(e),
+              key,
+              internalkey,
+              fix,
+            },
+          })
+        }
+      })
+
+      const data = snapshot.val();
 
       log.dump({
-        useFirebase_get: snapshot,
+        useFirebase_get: data,
         internalkey,
       })
 
-      return snapshot;
+      return data;
     }
     catch (e) {
 
@@ -384,7 +453,16 @@ export default ({
     }
   }
 
-  async function del(key) {
+  const del = async (key) => {
+
+    const {
+      firebaseApp,
+      database: {
+        getDatabase,
+        ref,
+        remove,
+      },
+    } = await fire();
 
     if (typeof section !== 'string' || !section.trim()) {
 
@@ -406,14 +484,15 @@ export default ({
 
     try {
 
+      const db = getDatabase(firebaseApp);
+
+      const dbRef = ref(db, internalkey);
+
+      await remove(dbRef, key)
+
       log.dump({
         firebase_del: internalkey,
       })
-
-      return await firebase.database()
-        .ref(internalkey)
-        .remove(); // https://firebase.google.com/docs/database/web/read-and-write#delete_data
-      ;
     }
     catch (e) {
 
@@ -434,6 +513,7 @@ export default ({
     firebase,
     error,
     user,
+    db,
     set,
     get,
     del,
