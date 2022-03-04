@@ -36,7 +36,11 @@ node pages/portsregistry/lists/ports-generator.js
 /bin/bash template.sh
 # call those together in this order ^^^
 
-/bin/bash remove-not-changed-builds.sh
+node roderic/peprocessor.js
+
+node node_modules/.bin/webpack
+
+#/bin/bash remove-not-changed-builds.sh
 #/bin/bash pages/kubernetes/compress.sh
 
 /bin/bash bash/substitute-variables-bash.sh gitstorage-core.sh -- \

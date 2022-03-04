@@ -71,7 +71,7 @@ export default ({ section }) => {
 
             setUser(auth.currentUser.email.replace(/\./g, ","));
           } catch (e) {
-            e.customMessage = ">>>>>>>>>>Origin: set() method<<<<<<<<<<<";
+            e.customMessage = ">>>>>>>>>>Origin: set() method<<<<<<<<<<<<";
 
             throw e;
           }
