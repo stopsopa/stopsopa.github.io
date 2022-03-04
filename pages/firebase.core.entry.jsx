@@ -1,42 +1,21 @@
-
 // Firebase App (the core Firebase SDK) is always required and must be listed first
 import { initializeApp } from "firebase/app";
 
-import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signInWithCredential,
-  signOut
-} from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut } from "firebase/auth";
 
-import {
-  getDatabase,
-  ref,
-  child,
-  onValue,
-  push,
-  update,
-  remove,
-  set,
-} from "firebase/database";
+import { getDatabase, ref, child, onValue, push, update, remove, set } from "firebase/database";
 
 import "regenerator-runtime/runtime.js";
 
-import log from 'inspc';
+import log from "inspc";
 
 let promise;
 
 window.fire = () => {
-
-  if ( ! promise ) {
-
-    promise = new Promise(resolve => {
-
+  if (!promise) {
+    promise = new Promise((resolve) => {
       let inter = setInterval(() => {
-
-        if ( typeof window.env === 'function' ) {
-
+        if (typeof window.env === "function") {
           clearInterval(inter);
 
           const env = window.env;
@@ -62,13 +41,13 @@ window.fire = () => {
             // appId: "1:496172961972:web:c9363e230fede3127a07e1",
             // measurementId: "G-F78BC9VYQ5"
 
-            apiKey            : env('FIREBASE_API_KEY'),
-            authDomain        : env('FIREBASE_AUTH_DOMAIN'),
-            databaseURL       : env('FIREBASE_DATABASE_URL'),
-            projectId         : env('FIREBASE_PROJECT_ID'),
-            storageBucket     : env('FIREBASE_STORAGE_BUCKET'),
-            messagingSenderId : env('FIREBASE_MESSAGING_SENDER_ID'),
-            appId             : env('FIREBASE_API_ID'),
+            apiKey: env("FIREBASE_API_KEY"),
+            authDomain: env("FIREBASE_AUTH_DOMAIN"),
+            databaseURL: env("FIREBASE_DATABASE_URL"),
+            projectId: env("FIREBASE_PROJECT_ID"),
+            storageBucket: env("FIREBASE_STORAGE_BUCKET"),
+            messagingSenderId: env("FIREBASE_MESSAGING_SENDER_ID"),
+            appId: env("FIREBASE_API_ID"),
 
             // Your web app's Firebase configuration
             // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -95,12 +74,11 @@ window.fire = () => {
               update,
               remove,
               set,
-            }
+            },
           });
         }
 
-        log('firebase promise lib: waiting for env to load');
-
+        log("firebase promise lib: waiting for env to load");
       }, 300);
     });
   }
