@@ -135,8 +135,6 @@ export default ({
         if ( firebase.auth().currentUser ) {
 
           log('firebase_signInWithCredential success, trigger set()')
-
-          await set();
         }
         else {
 
@@ -163,9 +161,9 @@ export default ({
           localStorage.setItem('idToken', idToken);
 
           localStorage.setItem('accessToken', accessToken);
-
-          await set();
         }
+
+        await set();
       }
       catch (e) {
 
