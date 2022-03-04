@@ -1,14 +1,25 @@
 
 // Firebase App (the core Firebase SDK) is always required and must be listed first
-import firebase from "firebase/compat/app";
+import { initializeApp } from "firebase/app";
 
-// If you enabled Analytics in your project, add the Firebase SDK for Analytics
-import "firebase/compat/analytics";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithCredential,
+  signOut
+} from "firebase/auth";
 
-// Add the Firebase products that you want to use
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
-import "firebase/compat/database";
+import {
+  getDatabase,
+  ref,
+  child,
+  onValue,
+  push,
+  update,
+  remove,
+  set,
+} from "firebase/database";
 
 import "regenerator-runtime/runtime.js";
 
@@ -64,9 +75,28 @@ window.fire = () => {
             // measurementId     : env('FIREBASE_MEASUREMENT_ID')
           };
 
-          firebase.initializeApp(firebaseConfig);
+          const firebaseApp = initializeApp(firebaseConfig);
 
-          resolve(firebase);
+          resolve({
+            firebaseApp,
+            auth: {
+              getAuth,
+              signInWithPopup,
+              GoogleAuthProvider,
+              signInWithCredential,
+              signOut,
+            },
+            database: {
+              getDatabase,
+              ref,
+              child,
+              onValue,
+              push,
+              update,
+              remove,
+              set,
+            }
+          });
         }
 
         log('firebase promise lib: waiting for env to load');
