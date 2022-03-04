@@ -29,19 +29,12 @@ export default ({ section }) => {
 
   const [user, setUser] = useState(false);
 
-  const [db, setDb] = useState(false);
-
-  const [firebaseApp, setFirebaseApp] = useState(false);
-
   useEffect(() => {
     (async function () {
       try {
         const {
-          firebaseApp: _firebaseApp,
           auth: { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut },
         } = await fire();
-
-        setFirebaseApp(firebaseApp);
 
         const auth = getAuth();
 
@@ -430,7 +423,6 @@ export default ({ section }) => {
     firebase,
     error,
     user,
-    db,
     set,
     get,
     del,
