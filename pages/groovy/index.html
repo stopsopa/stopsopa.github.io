@@ -142,7 +142,7 @@ node_modules/
 
     def requiredArray = required.split( '\n' );
 
-    requiredArray.eachWithIndex { val, idx -> {
+    for(String val in requiredArray) {
 
         val = val.trim();
 
@@ -150,7 +150,7 @@ node_modules/
 
             throw new Exception("'${file}' doesn't contain '${val}' exclusion, it should contain >>${required}<<");
         }
-    }}
+    }
 }
 
 validateDockerIgnore();
