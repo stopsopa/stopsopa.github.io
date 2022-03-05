@@ -36,7 +36,7 @@ done
 
 function cleanup {
 
-    kill -9 $(jobs -p %1) > /dev/null 2> /dev/null || :
+    kill -9 $(pgrep -P $$) > /dev/null 2> /dev/null || :
 }
 
 trap cleanup EXIT;
