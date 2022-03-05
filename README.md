@@ -63,47 +63,44 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>stopsopa.github.io</title>
 
-                <script> <!-- optional to do something before binding ACE editor -->
-                    (function () {
-                        var resolve;
-                        var p = new Promise(function (res) {
-                            resolve = res;
+            <script> <!-- optional to do something before binding ACE editor -->
+                (function () {
+                    var resolve;
+                    var p = new Promise(function (res) {
+                        resolve = res;
+                    });
+
+                    document.addEventListener('DOMContentLoaded', () => {
+
+                        Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+
+                            var text = tag.innerHTML;
+
+                            text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host)
+
+                            tag.innerHTML = text;
                         });
 
-                        document.addEventListener('DOMContentLoaded', () => {
+                        resolve();
+                    });
 
-                            Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+                    window.waitForPromise = function () {
 
-                                var text = tag.innerHTML;
-
-                                text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host)
-
-                                tag.innerHTML = text;
-                            });
-
-                            resolve();
-                        });
-
-                        window.waitForPromise = function () {
-
-                            return p;
-                        }
-                    }())
-                </script>
-
-        <script src="/js/github.js"></script>
+                        return p;
+                    }
+                }())
+            </script>
     </head>
     <body class="layout" toc>
-
         <div class="body">
             <div class="inside">
-
                 <div class="cards">
                     <h2>Index</h2>
 
                 </div>
             </div>
         </div>
+        <script src="/js/github.js"></script>
     </body>
     </html>
 

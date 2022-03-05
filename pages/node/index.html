@@ -29,7 +29,6 @@
         };
       })();
     </script>
-    <script src="/js/github.js"></script>
   </head>
   <body class="layout" toc>
     <div class="body">
@@ -57,23 +56,22 @@
           npx prettier --write src
               # https://prettier.io/docs/en/cli.html#docsNav
         </script>
-        
-         <h2>execute directly from cmd</h2>
+
+        <h2>execute directly from cmd</h2>
         <script type="editor" data-lang="sh">
 
-cat <<EOF | node
-const json = require('./package.json')
-const data = Object.keys(Object.assign({}, json.dependencies, json.devDependencies))
-  .filter((l) => l.includes('babel'))
-  .map((l) => 'yarn add ' + l)
-console.log(data.join(require('os').EOL))
-EOF
+          cat <<EOF | node
+          const json = require('./package.json')
+          const data = Object.keys(Object.assign({}, json.dependencies, json.devDependencies))
+            .filter((l) => l.includes('babel'))
+            .map((l) => 'yarn add ' + l)
+          console.log(data.join(require('os').EOL))
+          EOF
 
-node -e "
-console.log('test1');
-console.log('test2');
-"
-
+          node -e "
+          console.log('test1');
+          console.log('test2');
+          "
         </script>
         <h2>prettier.config.js</h2>
         <script type="editor" data-lang="sh">
@@ -777,89 +775,88 @@ console.log('test2');
           <h2>cli arguments manual processing</h2>
           <script type="editor" data-lang="js">
 
-const args = (function (obj, tmp) {
-    process.argv
-        .slice(2)
-        .map(a => {
+            const args = (function (obj, tmp) {
+                process.argv
+                    .slice(2)
+                    .map(a => {
 
-            if (a.indexOf('--') === 0) {
+                        if (a.indexOf('--') === 0) {
 
-                tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, '$1');
+                            tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, '$1');
 
-                if (tmp) {
+                            if (tmp) {
 
-                    obj[tmp] = (typeof obj[tmp] === 'undefined') ? true : obj[tmp];
-                }
+                                obj[tmp] = (typeof obj[tmp] === 'undefined') ? true : obj[tmp];
+                            }
 
-                return;
-            }
+                            return;
+                        }
 
-            if (a === 'true') {
+                        if (a === 'true') {
 
-                a = true
-            }
+                            a = true
+                        }
 
-            if (a === 'false') {
+                        if (a === 'false') {
 
-                a = false
-            }
+                            a = false
+                        }
 
-            if (tmp !== null) {
+                        if (tmp !== null) {
 
-                if (obj[tmp] === true) {
+                            if (obj[tmp] === true) {
 
-                    return obj[tmp] = [a];
-                }
+                                return obj[tmp] = [a];
+                            }
 
-                try {
+                            try {
 
-                    obj[tmp].push(a);
-                }
-                catch (e) {
+                                obj[tmp].push(a);
+                            }
+                            catch (e) {
 
-                }
-            }
-        })
-    ;
+                            }
+                        }
+                    })
+                ;
 
-    Object.keys(obj).map(k => {
-        (obj[k] !== true && obj[k].length === 1) && (obj[k] = obj[k][0]);
-        (obj[k] === 'false') && (obj[k] = false);
-    });
+                Object.keys(obj).map(k => {
+                    (obj[k] !== true && obj[k].length === 1) && (obj[k] = obj[k][0]);
+                    (obj[k] === 'false') && (obj[k] = false);
+                });
 
-    return {
-        count: () => Object.keys(obj).length,
-        all: () => JSON.parse(JSON.stringify(obj)),
-        get: (key, def) => {
+                return {
+                    count: () => Object.keys(obj).length,
+                    all: () => JSON.parse(JSON.stringify(obj)),
+                    get: (key, def) => {
 
-            var t = JSON.parse(JSON.stringify(obj));
+                        var t = JSON.parse(JSON.stringify(obj));
 
-            if (typeof def === 'undefined')
+                        if (typeof def === 'undefined')
 
-                return t[key];
+                            return t[key];
 
-            return (typeof t[key] === 'undefined') ? def : t[key] ;
-        },
-        string: (key, def) => {
-          var t = JSON.parse(JSON.stringify(obj));
+                        return (typeof t[key] === 'undefined') ? def : t[key] ;
+                    },
+                    string: (key, def) => {
+                      var t = JSON.parse(JSON.stringify(obj));
 
-          return typeof t[key] === "string" ? t[key] : def;
-        },
-        update: data => {
+                      return typeof t[key] === "string" ? t[key] : def;
+                    },
+                    update: data => {
 
-            delete data['config'];
+                        delete data['config'];
 
-            delete data['dump'];
+                        delete data['dump'];
 
-            delete data['help'];
+                        delete data['help'];
 
-            delete data['inject'];
+                        delete data['inject'];
 
-            obj = data;
-        }
-    };
-}({}));
-
+                        obj = data;
+                    }
+                };
+            }({}));
           </script>
           <h2>jest</h2>
           <a href="https://github.com/stopsopa/roderic-legacy/tree/master/test/jest">https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a>
@@ -2015,5 +2012,6 @@ const args = (function (obj, tmp) {
         </div>
       </div>
     </div>
+    <script src="/js/github.js"></script>
   </body>
 </html>
