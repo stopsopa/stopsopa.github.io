@@ -7,7 +7,33 @@ var log = (function () {
 })();
 
 window.log = log;
+/**
+ * Main mounting point in global scope
+ */
+window.sasync = {
+  loaded: {},
+};
 
+(function () {
+  let found;
+  try {
+    found = Boolean(document.body);
+  } catch (e) {}
+
+  if (!found) {
+    document.write(
+      `<h1 style="color: red; position: fixed; top: 30%; background-color: white;">Can't find document.body - it probably means that /github.js is loaded in &lt;head> instead at the end of &lt;body></h1>`
+    );
+  }
+})();
+
+/**
+ * Adding methods:
+ * log.green()
+ * log.red()
+ * ...
+ * and so on to window.log
+ */
 (function () {
   // https://stackoverflow.com/a/13017382
 
@@ -77,107 +103,37 @@ window.log = log;
   log.green("defined", "log & log[red|green|blue|gray]");
 })();
 
-document.addEventListener("DOMContentLoaded", function () {
-  log.yellow("async", "DOMContentLoaded");
-});
+// load common css and js
 
-// load additional js files
-(function (list) {
-  var async = {
-    triggers: {},
-  };
+(function () {
+  // <link rel="stylesheet" href="../../css/normalize.css">
 
-  for (var k in list) {
-    var lib = list[k];
+  ["/css/normalize.css", "/css/main.css", "/js/aceedit/jquery.aceedit.css", "//fonts.googleapis.com/css?family=Open+Sans:300,400"].forEach(function (u) {
+    // https://stackoverflow.com/a/524721
+    var head = document.head || document.getElementsByTagName("head")[0],
+      style = document.createElement("link");
 
-    if (list.hasOwnProperty(k)) {
-      (function (isString, key, url, lib) {
-        // https://stackoverflow.com/a/524721
-        var head = document.head || document.getElementsByTagName("head")[0],
-          script = document.createElement("script");
+    // style.type = 'text/css';
 
-        async[key] = new Promise(
-          (resolve) =>
-            (async.triggers[key] = function (param) {
-              log.yellow("async", "window.async." + key + "(), window.async." + key + ".then() promise resolved");
+    style.setAttribute("rel", "stylesheet");
 
-              isString && log.gray("finished", url);
+    style.setAttribute("href", u);
 
-              resolve(param);
-            })
-        );
+    head.appendChild(style);
+  });
 
-        if (!isString) {
-          if (typeof lib.test !== "function") {
-            throw new Error("lib.test should be a function for " + k + " async loader");
-          }
-
-          (function (key, test) {
-            var handler = setInterval(function () {
-              if (test()) {
-                clearInterval(handler);
-
-                // log.yellow('async', 'window.async.' +key+ '() solved');
-
-                async.triggers[key]();
-              }
-              // else {
-              //
-              //     log.yellow('async', 'window.async.' +key+ '() wait');
-              // }
-            }, 100);
-          })(k, lib.test);
-
-          lib = lib.lib;
-        }
-
-        // script.async = false;
-
-        script.setAttribute("src", url);
-
-        head.appendChild(script);
-      })(
-        typeof lib === "string", // isString
-        k, // key
-        typeof lib === "string" ? lib : lib.lib, // url
-        lib // lib
-      );
-    }
-  }
-
-  window.async = async;
-
-  log.blue("executed", "adding extra js");
-})({
-  polyfill: "/js/polyfill.js",
-  permalink: "/js/permalink-my.js",
-  domcontentloaded: "/js/domcontentloaded.js",
-  lodash: {
-    lib: "/js/lodash-4.17.10.js",
-    test: function () {
-      try {
-        return typeof _.VERSION === "string";
-      } catch (e) {}
-      return false;
-    },
-  },
-  ace: {
-    lib: "/js/ace/ace-builds-1.4.12/src-min-noconflict/ace.js",
-    test: function () {
-      try {
-        return typeof window.ace.edit === "function";
-      } catch (e) {}
-      return false;
-    },
-  },
-});
+  log.blue("executed", "adding extra styles");
+})();
 
 var manipulation = (function () {
   var domCache = document.createElement("div");
 
   return {
     after: function (referenceNode, newNode) {
-      return this.before(referenceNode.nextSibling, newNode);
+      if (referenceNode.nextSibling) {
+        return this.before(referenceNode.nextSibling, newNode);
+      }
+      return this.append(referenceNode.parentNode, newNode);
     },
     before: function (referenceNode, newNode) {
       referenceNode.parentNode.insertBefore(newNode, referenceNode);
@@ -219,239 +175,6 @@ var manipulation = (function () {
 window.manipulation = manipulation;
 
 log.green("defined", "window.manipulation");
-
-function trim(string, charlist, direction) {
-  direction = direction || "rl";
-  charlist = (charlist || "").replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-  charlist = charlist || " \\n";
-  direction.indexOf("r") + 1 && (string = string.replace(new RegExp("^(.*?)[" + charlist + "]*$", "gm"), "$1"));
-  direction.indexOf("l") + 1 && (string = string.replace(new RegExp("^[" + charlist + "]*(.*)$", "gm"), "$1"));
-  return string;
-}
-
-log.green("defined", "window.trim");
-
-(function () {
-  var th = function (msg) {
-    return new Error("window.trigger error: " + String(msg));
-  };
-
-  const list = [];
-
-  window.trigger = function (label) {
-    if (typeof label !== "string") {
-      throw th("window.trigger: typeof label !== 'string'");
-    }
-
-    log.blue("executed", "window.trigger() by " + label);
-
-    setTimeout(function () {
-      list.forEach((f) => f());
-
-      log.blue("executed", "window.trigger() by " + label + " debounced !!!");
-    }, 100);
-  };
-
-  window.trigger.add = function (trigger, label) {
-    if (typeof trigger !== "function") {
-      throw th("window.trigger.add: typeof trigger !== 'function'");
-    }
-
-    if (typeof label !== "string") {
-      throw th("window.trigger.add: typeof label !== 'string'");
-    }
-
-    log.blue("executed", "window.trigger.add(" + label + ")");
-
-    list.push(trigger);
-  };
-
-  log.green("defined", "window.trigger && window.trigger.add");
-})();
-
-(function () {
-  document.addEventListener("DOMContentLoaded", function () {
-    var tmp = document.createElement("div");
-
-    tmp.innerHTML =
-      '\
-            <!-- generated by: https://www.favicon-generator.org/ -->\
-            <!-- generated by: https://realfavicongenerator.net/favicon_result?file_id=p1e6ljeig5qc41s3r1s418k41qv86#.XqKd1NNKgxw -->\
-            <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png?">\
-            <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png?">\
-            <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png?">\
-            <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png?">\
-            <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png?">\
-            <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png?">\
-            <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png?">\
-            <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png?">\
-            <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png?">\
-            <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png?">\
-            <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?">\
-            <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?">\
-            <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?">\
-            <link rel="manifest" href="/manifest.json">\
-            <link rel="manifest" href="/site.webmanifest">\
-            <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">\
-            <meta name="msapplication-TileColor" content="#ffffff">\
-            <meta name="msapplication-TileImage" content="/ms-icon-144x144.png?">\
-            <meta name="theme-color" content="#ffffff">\
-            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">\
-        ';
-
-    var h = document.getElementsByTagName("script")[0];
-
-    Array.prototype.slice.call(tmp.children).forEach(function (e) {
-      manipulation.after(h, e);
-    });
-
-    log.blue("DOMContentLoaded", "setting favicon", "[triggered in github.js]");
-  });
-})();
-
-// edit & profile ribbons
-(function () {
-  // https://github.com/stopsopa/stopsopa.github.io/edit/master/demos/jquery.elkanatooltip/katownik.html
-  // https://stopsopa.github.io/
-  // user stopsopa
-  // path /pages/css-grid/index.html
-  var github = (function (def) {
-    let host = def;
-
-    if (/\.github\.io$/.test(location.host)) {
-      host = location.host;
-    }
-
-    var user = host.replace(/^(.*)\.github\.io$/, "$1");
-
-    // log('user', user)
-
-    let path = location.pathname;
-
-    if (/\/$/.test(path)) {
-      path += "index.html";
-    }
-
-    // log('path', path)
-
-    var github = `//github.com/${user}/${user}.github.io/edit/master/${path}`;
-
-    // log('github', github)
-
-    return github;
-  })("stopsopa.github.io");
-
-  log.green("defined", "window.github - link of edit page on github: " + github);
-
-  document.addEventListener("DOMContentLoaded", function () {
-    (function () {
-      var div = document.createElement("div");
-
-      div.classList.add("github-link");
-
-      manipulation.append(document.body, div);
-
-      var a = document.createElement("a");
-
-      a.innerText = "edit";
-
-      a.setAttribute("href", github);
-
-      manipulation.append(div, a);
-
-      var css = `
-body .github-link {
-    top: 0;
-    right: 0;
-    height: 47px;
-    width: 47px;
-    position: absolute;
-    overflow: hidden;
-} 
-body .github-link > a {
-    border: 1px solid #2d2d2d;
-    top: 7px;
-    right: -18px;
-    position: absolute;
-    transform: rotate(45deg);
-    padding-left: 20px;
-    padding-right: 20px;
-    color: white;
-    text-decoration: none;
-    background-color: #2d2d2d;
-} 
-body .github-link > a:hover {
-    cursor: pointer;
-    color: #2d2d2d;
-    background-color: white;
-}          
-            `;
-      // https://stackoverflow.com/a/524721
-      var head = document.head || document.getElementsByTagName("head")[0],
-        style = document.createElement("style");
-
-      style.type = "text/css";
-      if (style.styleSheet) {
-        style.styleSheet.cssText = css;
-      } else {
-        style.appendChild(document.createTextNode(css));
-      }
-
-      head.appendChild(style);
-
-      log.blue("DOMContentLoaded", "adding edit ribbon link", "[triggered in github.js]");
-    })();
-
-    (function () {
-      var a = document.createElement("a");
-
-      a.classList.add("github-profile");
-
-      a.innerText = "profile";
-
-      a.setAttribute("href", "//github.com/stopsopa?tab=repositories");
-
-      manipulation.append(document.body, a);
-
-      var css = `
-body .github-profile {
-    border: 1px solid #2d2d2d;
-    top: 6px;
-    left: -23px;
-    position: absolute;
-    transform: rotate(-38deg);
-    padding-left: 20px;
-    padding-right: 20px;
-    color: white;
-    text-decoration: none;
-    background-color: #2d2d2d;
-    font-size: 15px;
-    padding-bottom: 2px;
-    padding-top: 2px;
-} 
-body .github-profile:hover {
-    cursor: pointer;
-    color: #2d2d2d;
-    background-color: white;
-}          
-            `;
-      // https://stackoverflow.com/a/524721
-      var head = document.head || document.getElementsByTagName("head")[0],
-        style = document.createElement("style");
-
-      style.type = "text/css";
-      if (style.styleSheet) {
-        style.styleSheet.cssText = css;
-      } else {
-        style.appendChild(document.createTextNode(css));
-      }
-
-      head.appendChild(style);
-
-      log.blue("DOMContentLoaded", "adding profile ribbon link", "[triggered in github.js]");
-    })();
-  });
-})();
 
 (function () {
   /* from lodash */
@@ -495,47 +218,41 @@ body .github-profile:hover {
 })();
 
 (function () {
-  document.querySelector("body > header") ||
-    document.addEventListener("DOMContentLoaded", function () {
-      var body = document.body;
+  var tmp = document.createElement("div");
 
-      log("attr in body - nohead:", body);
+  tmp.innerHTML =
+    '\
+          <!-- generated by: https://www.favicon-generator.org/ -->\
+          <!-- generated by: https://realfavicongenerator.net/favicon_result?file_id=p1e6ljeig5qc41s3r1s418k41qv86#.XqKd1NNKgxw -->\
+          <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png?">\
+          <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png?">\
+          <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png?">\
+          <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png?">\
+          <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png?">\
+          <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png?">\
+          <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png?">\
+          <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png?">\
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png?">\
+          <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png?">\
+          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?">\
+          <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?">\
+          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?">\
+          <link rel="manifest" href="/manifest.json">\
+          <link rel="manifest" href="/site.webmanifest">\
+          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">\
+          <meta name="msapplication-TileColor" content="#ffffff">\
+          <meta name="msapplication-TileImage" content="/ms-icon-144x144.png?">\
+          <meta name="theme-color" content="#ffffff">\
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">\
+      ';
 
-      if (!body.hasAttribute("nohead")) {
-        var header = document.createElement("header");
+  var h = document.getElementsByTagName("head")[0];
 
-        header.innerHTML = `
-    <a href="/index.html">stopsopa.github.io</a>
-`;
+  Array.prototype.slice.call(tmp.children).forEach(function (e) {
+    manipulation.append(h, e);
+  });
 
-        manipulation.prepend(body, header);
-      }
-
-      log.blue("DOMContentLoaded NOHEAD", "handling nohead attr finished", "[triggered in github.js]");
-    });
-
-  log.blue("executed NOHEAD", "handling nohead attr");
-})();
-
-(function () {
-  document.querySelector("body > footer") ||
-    document.addEventListener("DOMContentLoaded", function () {
-      var body = document.body;
-
-      log("attr in body - nofoot:", body);
-
-      if (!body.hasAttribute("nofoot")) {
-        var header = document.createElement("footer");
-
-        header.innerHTML = `footer`;
-
-        manipulation.append(body, header);
-      }
-
-      log.blue("DOMContentLoaded NOFOOT", "handling nofoot attr finished", "[triggered in github.js]");
-    });
-
-  log.blue("executed NOFOOT", "handling nofoot attr");
+  log.blue("DOMContentLoaded", "setting favicon", "[triggered in github.js]");
 })();
 
 // sorting lists [data-do-sort] attribute
@@ -574,8 +291,6 @@ body .github-profile:hover {
 
     log.blue("DOMContentLoaded", "handling [data-do-sort]", "[defined & triggered in github.js]");
   };
-
-  document.addEventListener("DOMContentLoaded", window.do_sort);
 })();
 
 // Table of Contents
@@ -585,180 +300,410 @@ body .github-profile:hover {
 // WARNING: it has to be executed in domcontentloaded.js after permalink-my.js
 // WARNING: it has to be executed in domcontentloaded.js after permalink-my.js
 (function () {
-  var trigger = false;
+  var body = document.body;
 
   window.toc = function () {
-    trigger = true;
+    if (body.hasAttribute("toc")) {
+      var toc = document.querySelector("div.cards.toc");
+
+      if (!toc) {
+        toc = document.createElement("div");
+
+        toc.classList.add("cards");
+
+        toc.classList.add("toc");
+      }
+
+      // Table of content
+      (function () {
+        var head = toc.querySelector("h1");
+
+        if (!head) {
+          head = document.createElement("h1");
+
+          manipulation.append(toc, head);
+        }
+
+        if (!head.innerText) {
+          head.innerText = "Table of Contents";
+        }
+      })();
+
+      // links
+      (function () {
+        var ul = toc.querySelector("ul");
+
+        var found = true;
+
+        if (!ul) {
+          found = false;
+
+          ul = document.createElement("ul");
+        }
+
+        Array.prototype.slice.call(document.querySelectorAll("h2[id]")).forEach(function (el) {
+          var a = document.createElement("a");
+
+          a.setAttribute("href", "#" + el.getAttribute("id"));
+
+          a.innerText = trim(el.innerText, " ¶\n");
+
+          var li = document.createElement("li");
+
+          manipulation.append(li, a);
+
+          manipulation.append(ul, li);
+        });
+
+        if (!found) {
+          manipulation.append(toc, ul);
+        }
+      })();
+
+      // hr at the end
+      (function () {
+        var hr = toc.querySelector("div");
+
+        if (!hr) {
+          hr = document.createElement("div");
+
+          manipulation.append(toc, hr);
+        }
+
+        hr.style.border = "1px solid darkgray";
+      })();
+
+      // return to top button
+      (function () {
+        var a = document.createElement("a");
+
+        a.innerText = "^";
+
+        a.setAttribute("href", "javascript:void(0)");
+
+        a.addEventListener("click", function () {
+          window.scrollTo(0, 0);
+        });
+
+        a.style.border = "1px solid blue";
+        a.style.padding = "10px";
+        a.style.fontSize = "30px";
+        a.style.position = "fixed";
+        a.style.right = "2px";
+        a.style.bottom = "2px";
+        a.style.backgroundColor = "white";
+
+        manipulation.append(body, a);
+      })();
+
+      var inside = document.querySelector(".inside");
+
+      if (inside) {
+        manipulation.prepend(inside, toc);
+      } else {
+        manipulation.prepend(body, toc);
+      }
+
+      // header.innerHTML = `footer`;
+
+      log.blue("TOC", "[toc] found", "[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded and window.async.permalink.then]");
+    } else {
+      log.blue("TOC", "[toc] not found", "[triggered in domcontentloaded.js, delayed async due to window.async.permalink.then]");
+    }
   };
 
-  document.querySelector("body > footer") ||
-    document.addEventListener("DOMContentLoaded", function () {
-      window.async.permalink.then(function () {
-        var body = document.body;
-
-        window.toc = function () {
-          log.blue("DOMContentLoaded TOC", "[toc] not found", "[triggered in domcontentloaded.js, delayed async due to window.async.permalink.then]");
-        };
-
-        if (body.hasAttribute("toc")) {
-          window.toc = function () {
-            var toc = document.querySelector("div.cards.toc");
-
-            if (!toc) {
-              toc = document.createElement("div");
-
-              toc.classList.add("cards");
-
-              toc.classList.add("toc");
-            }
-
-            // Table of content
-            (function () {
-              var head = toc.querySelector("h1");
-
-              if (!head) {
-                head = document.createElement("h1");
-
-                manipulation.append(toc, head);
-              }
-
-              if (!head.innerText) {
-                head.innerText = "Table of Contents";
-              }
-            })();
-
-            // links
-            (function () {
-              var ul = toc.querySelector("ul");
-
-              var found = true;
-
-              if (!ul) {
-                found = false;
-
-                ul = document.createElement("ul");
-              }
-
-              Array.prototype.slice.call(document.querySelectorAll("h2[id]")).forEach(function (el) {
-                var a = document.createElement("a");
-
-                a.setAttribute("href", "#" + el.getAttribute("id"));
-
-                a.innerText = trim(el.innerText, " ¶\n");
-
-                var li = document.createElement("li");
-
-                manipulation.append(li, a);
-
-                manipulation.append(ul, li);
-              });
-
-              if (!found) {
-                manipulation.append(toc, ul);
-              }
-            })();
-
-            // hr at the end
-            (function () {
-              var hr = toc.querySelector("div");
-
-              if (!hr) {
-                hr = document.createElement("div");
-
-                manipulation.append(toc, hr);
-              }
-
-              hr.style.border = "1px solid darkgray";
-            })();
-
-            // return to top button
-            (function () {
-              var a = document.createElement("a");
-
-              a.innerText = "^";
-
-              a.setAttribute("href", "javascript:void(0)");
-
-              a.addEventListener("click", function () {
-                window.scrollTo(0, 0);
-              });
-
-              a.style.border = "1px solid blue";
-              a.style.padding = "10px";
-              a.style.fontSize = "30px";
-              a.style.position = "fixed";
-              a.style.right = "2px";
-              a.style.bottom = "2px";
-              a.style.backgroundColor = "white";
-
-              manipulation.append(body, a);
-            })();
-
-            var inside = document.querySelector(".inside");
-
-            if (inside) {
-              manipulation.prepend(inside, toc);
-            } else {
-              manipulation.prepend(body, toc);
-            }
-
-            // header.innerHTML = `footer`;
-
-            log.blue("DOMContentLoaded TOC", "[toc] found", "[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded and window.async.permalink.then]");
-
-            window.do_sort();
-          };
-        }
-
-        if (trigger) {
-          window.toc();
-        }
-
-        log.green("defined TOC", "window.toc");
-      });
-    });
+  log.green("defined", "window.toc");
 })();
 
-// load common css and js
+(async function () {
+  async function loadJs(name, url, test) {
+    return new Promise((resolve, reject) => {
+      if (typeof test !== "function") {
+        throw new Error("test should be a function for " + name + " async loader");
+      }
+
+      if (typeof url !== "string") {
+        throw new Error("url should be a string for " + name + " async loader");
+      }
+
+      // https://stackoverflow.com/a/524721
+      var head = document.head || document.getElementsByTagName("head")[0],
+        script = document.createElement("script");
+
+      var handler = setInterval(function () {
+        if (test()) {
+          clearInterval(handler);
+
+          log.yellow("loadJs", `${name} loaded`);
+
+          resolve();
+        }
+      }, 100);
+
+      script.setAttribute("src", url);
+
+      head.appendChild(script);
+    });
+  }
+
+  try {
+    await loadJs("polyfill", "/js/polyfill.js", function () {
+      try {
+        return window.sasync.loaded.polyfill_js;
+      } catch (e) {
+        return false;
+      }
+    });
+
+    await Promise.all([
+      loadJs("permalink", "/js/permalink-my.js", function () {
+        try {
+          return typeof window.sasync.loaded.mountpermalink === "function";
+        } catch (e) {
+          return false;
+        }
+      }),
+      loadJs("lodash", "/js/lodash-4.17.10.js", function () {
+        try {
+          return typeof _.VERSION === "string";
+        } catch (e) {}
+        return false;
+      }),
+      loadJs("ace", "/js/ace/ace-builds-1.4.12/src-min-noconflict/ace.js", function () {
+        try {
+          return typeof window.ace.edit === "function";
+        } catch (e) {}
+        return false;
+      }),
+    ]);
+
+    log.blue("Promise.all loadJs loaded");
+
+    window.sasync.loaded.mountpermalink();
+
+    window.toc();
+
+    window.do_sort();
+
+    window.doace();
+
+    window.scrollToHash();
+
+    log.blue("DOMContentLoaded", "window.doace [triggered in github.js]");
+  } catch (e) {
+    log.red(
+      "GLOBAL CATCH ERROR: ",
+      JSON.stringify(
+        {
+          message: e.message,
+          stack: e.stack.split("\n"),
+        },
+        null,
+        4
+      )
+    );
+  }
+})();
+
+function trim(string, charlist, direction) {
+  direction = direction || "rl";
+  charlist = (charlist || "").replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+  charlist = charlist || " \\n";
+  direction.indexOf("r") + 1 && (string = string.replace(new RegExp("^(.*?)[" + charlist + "]*$", "gm"), "$1"));
+  direction.indexOf("l") + 1 && (string = string.replace(new RegExp("^[" + charlist + "]*(.*)$", "gm"), "$1"));
+  return string;
+}
+
+log.green("defined", "window.trim");
 
 (function () {
-  // <link rel="stylesheet" href="../../css/normalize.css">
+  document.querySelector("body > header") ||
+    (function () {
+      var body = document.body;
 
-  ["/css/normalize.css", "/css/main.css", "/js/aceedit/jquery.aceedit.css", "//fonts.googleapis.com/css?family=Open+Sans:300,400"].forEach(function (u) {
+      log("attr in body - nohead:", body);
+
+      if (!body.hasAttribute("nohead")) {
+        var header = document.createElement("header");
+
+        header.innerHTML = `
+    <a href="/index.html">stopsopa.github.io</a>
+`;
+
+        manipulation.prepend(body, header);
+      }
+
+      log.blue("DOMContentLoaded NOHEAD", "handling nohead attr finished", "[triggered in github.js]");
+    })();
+
+  log.blue("executed NOHEAD", "handling nohead attr");
+})();
+
+(function () {
+  document.querySelector("body > footer") ||
+    (function () {
+      var body = document.body;
+
+      log("attr in body - nofoot:", body);
+
+      if (!body.hasAttribute("nofoot")) {
+        var header = document.createElement("footer");
+
+        header.innerHTML = `footer`;
+
+        manipulation.append(body, header);
+      }
+
+      log.blue("DOMContentLoaded NOFOOT", "handling nofoot attr finished", "[triggered in github.js]");
+    })();
+
+  log.blue("executed NOFOOT", "handling nofoot attr");
+})();
+
+// edit & profile ribbons
+(function () {
+  // https://github.com/stopsopa/stopsopa.github.io/edit/master/demos/jquery.elkanatooltip/katownik.html
+  // https://stopsopa.github.io/
+  // user stopsopa
+  // path /pages/css-grid/index.html
+  var github = (function (def) {
+    let host = def;
+
+    if (/\.github\.io$/.test(location.host)) {
+      host = location.host;
+    }
+
+    var user = host.replace(/^(.*)\.github\.io$/, "$1");
+
+    // log('user', user)
+
+    let path = location.pathname;
+
+    if (/\/$/.test(path)) {
+      path += "index.html";
+    }
+
+    // log('path', path)
+
+    var github = `//github.com/${user}/${user}.github.io/edit/master/${path}`;
+
+    // log('github', github)
+
+    return github;
+  })("stopsopa.github.io");
+
+  log.green("defined", "window.github - link of edit page on github: " + github);
+
+  (function () {
+    var div = document.createElement("div");
+
+    div.classList.add("github-link");
+
+    manipulation.append(document.body, div);
+
+    var a = document.createElement("a");
+
+    a.innerText = "edit";
+
+    a.setAttribute("href", github);
+
+    manipulation.append(div, a);
+
+    var css = `
+body .github-link {
+    top: 0;
+    right: 0;
+    height: 47px;
+    width: 47px;
+    position: absolute;
+    overflow: hidden;
+}
+body .github-link > a {
+    border: 1px solid #2d2d2d;
+    top: 7px;
+    right: -18px;
+    position: absolute;
+    transform: rotate(45deg);
+    padding-left: 20px;
+    padding-right: 20px;
+    color: white;
+    text-decoration: none;
+    background-color: #2d2d2d;
+}
+body .github-link > a:hover {
+    cursor: pointer;
+    color: #2d2d2d;
+    background-color: white;
+}
+            `;
     // https://stackoverflow.com/a/524721
     var head = document.head || document.getElementsByTagName("head")[0],
-      style = document.createElement("link");
+      style = document.createElement("style");
 
-    // style.type = 'text/css';
-
-    style.setAttribute("rel", "stylesheet");
-
-    style.setAttribute("href", u);
+    style.type = "text/css";
+    if (style.styleSheet) {
+      style.styleSheet.cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
 
     head.appendChild(style);
-  });
 
-  log.blue("executed", "adding extra styles");
+    log.blue("ribbon link", "adding edit ribbon link", "[triggered in github.js]");
+  })();
+
+  (function () {
+    var a = document.createElement("a");
+
+    a.classList.add("github-profile");
+
+    a.innerText = "profile";
+
+    a.setAttribute("href", "//github.com/stopsopa?tab=repositories");
+
+    manipulation.append(document.body, a);
+
+    var css = `
+body .github-profile {
+    border: 1px solid #2d2d2d;
+    top: 6px;
+    left: -23px;
+    position: absolute;
+    transform: rotate(-38deg);
+    padding-left: 20px;
+    padding-right: 20px;
+    color: white;
+    text-decoration: none;
+    background-color: #2d2d2d;
+    font-size: 15px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+}
+body .github-profile:hover {
+    cursor: pointer;
+    color: #2d2d2d;
+    background-color: white;
+}
+            `;
+    // https://stackoverflow.com/a/524721
+    var head = document.head || document.getElementsByTagName("head")[0],
+      style = document.createElement("style");
+
+    style.type = "text/css";
+    if (style.styleSheet) {
+      style.styleSheet.cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
+
+    head.appendChild(style);
+
+    log.blue("DOMContentLoaded", "adding profile ribbon link", "[triggered in github.js]");
+  })();
 })();
 
 // ace editor
 (function () {
-  // https://developer.mozilla.org/en-US/docs/Web/API/Element/matches#Polyfill
-  if (!Element.prototype.matches) {
-    Element.prototype.matches =
-      Element.prototype.matchesSelector ||
-      Element.prototype.mozMatchesSelector ||
-      Element.prototype.msMatchesSelector ||
-      Element.prototype.oMatchesSelector ||
-      Element.prototype.webkitMatchesSelector ||
-      function (s) {
-        var matches = (this.document || this.ownerDocument).querySelectorAll(s),
-          i = matches.length;
-        while (--i >= 0 && matches.item(i) !== this) {}
-        return i > -1;
-      };
-  }
-
   function unique(pattern) {
     // node.js require('crypto').randomBytes(16).toString('hex');
     pattern || (pattern = "xyxyxy");
@@ -1075,18 +1020,10 @@ body .github-profile:hover {
         // the size again
         editor.getSession().on("change", heightUpdateFunction);
       });
-
-      window.trigger("window.doace()");
     });
   };
 
   log.green("defined", "window.doace()");
-
-  document.addEventListener("DOMContentLoaded", function () {
-    window.doace();
-
-    log.blue("DOMContentLoaded", "window.doace [triggered in github.js]");
-  });
 })();
 
 // scroll to # permalink
@@ -1101,7 +1038,7 @@ body .github-profile:hover {
 
       var found = document.querySelector(selector);
 
-      log.blue("executed", "window.scrollToHash found element [" + Boolean(found) + "]");
+      log.blue("executed", "window.scrollToHash found element [" + Boolean(found) + "] -> selector >" + selector + "<");
 
       if (found) {
         // https://stackoverflow.com/a/5007606
@@ -1112,8 +1049,6 @@ body .github-profile:hover {
   }
 
   log.green("defined", 'window.scrollToHash() : location.hash == "' + location.hash + '"');
-
-  window.trigger.add(window.scrollToHash, "window.scrollToHash");
 })();
 
 log.gray("finished", "github.js");
