@@ -19,8 +19,44 @@ useEffect(() => {
             
           `;
 
+function decodeJwtPayload(token) {
+  if (typeof token === "string" && token.trim()) {
+    const segments = token.split(".");
+
+    // console.log("expirationData segments", segments);
+
+    if (segments.length === 3) {
+      let json;
+
+      try {
+        json = JSON.parse(atob(segments[1]));
+      } catch (e) {
+        console.log("expirationData expirationData decoding json error: ", e);
+      }
+
+      if (json) {
+        json._exp = new Date(json.exp * 1000);
+
+        json._minutes_left = parseInt((json.exp - new Date().getTime() / 1000) / 60, 10);
+
+        return json;
+      }
+    }
+  }
+}
+
+function logCurrentToken(comment = "", token) {
+  if (!token) {
+    token = localStorage.getItem("idToken");
+  }
+
+  console.log("localStorage jwt 'idToken' payload", comment, JSON.stringify(decodeJwtPayload(token), null, 4));
+}
+
 /**
  * to see how to use this hook look for firebase.entry.jsx
+ *
+ * Read more about API: https://firebase.google.com/docs/reference/js
  */
 export default ({ section }) => {
   const [firebase, setFirebase] = useState(false);
@@ -33,7 +69,7 @@ export default ({ section }) => {
     (async function () {
       try {
         const {
-          auth: { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut },
+          auth: { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut, getIdToken },
         } = await fire();
 
         const auth = getAuth();
@@ -63,23 +99,69 @@ export default ({ section }) => {
         //   }
         // }
 
+        let idToken = localStorage.getItem("idToken");
+
+        let accessToken = localStorage.getItem("accessToken");
+
         async function set() {
           try {
             setFirebase(firebase);
 
             setError(false);
 
+            console.log("current user", auth.currentUser);
+
             setUser(auth.currentUser.email.replace(/\./g, ","));
+
+            if (idToken) {
+              logCurrentToken("current");
+
+              window.__refresh = async () => {
+                // const idToken = localStorage.getItem("idToken");
+
+                // console.log("expirationData token", token);
+
+                // if (typeof token === "string" && token.trim()) {
+                //   const segments = token.split(".");
+                //
+                //   console.log("expirationData segments", segments);
+                //
+                //   if (segments.length === 3) {
+                //     let json;
+                //
+                //     try {
+                //       json = JSON.parse(atob(segments[1]));
+                //     } catch (e) {
+                //       console.log("expirationData expirationData decoding json error: ", e);
+                //     }
+                //
+                //     if (json) {
+                //       json._exp = new Date(json.exp * 1000);
+                //
+                //       json._minutes_left = parseInt((json.exp - new Date().getTime() / 1000) / 60, 10);
+                //
+                //       return json;
+                //     }
+                //   }
+                // }
+                //
+                // console.log("expirationData", "no data");
+
+                const token = await getIdToken(auth.currentUser, true);
+
+                logCurrentToken("before");
+
+                localStorage.setItem("idToken", token);
+
+                logCurrentToken("after");
+              };
+            }
           } catch (e) {
             e.customMessage = ">>>>>>>>>>Origin: set() method<<<<<<<<<<<<";
 
             throw e;
           }
         }
-
-        let idToken = localStorage.getItem("idToken");
-
-        let accessToken = localStorage.getItem("accessToken");
 
         log.dump({
           firebase_first: auth.currentUser,
@@ -419,6 +501,24 @@ export default ({ section }) => {
     }
   };
 
+  const expirationData = () => {
+    // https://firebase.google.com/docs/auth/admin/manage-cookies
+    // api v9 https://firebase.google.com/docs/reference/js/auth.md#getidtoken
+    // https://firebase.google.com/docs/reference/js/v8/firebase.User#getidtoken
+    // https://firebase.google.com/docs/reference/js/auth.user.md#usergetidtoken
+    const token = localStorage.getItem("idToken");
+
+    const payload = decodeJwtPayload(token);
+
+    if (payload) {
+      return payload;
+    }
+
+    console.log("expirationData", "no data");
+  };
+
+  window.expirationData = expirationData;
+
   return {
     firebase,
     error,
@@ -428,5 +528,6 @@ export default ({ section }) => {
     del,
     push,
     getroot,
+    expirationData,
   };
 };

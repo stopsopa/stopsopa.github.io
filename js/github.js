@@ -566,10 +566,13 @@ log.green("defined", "window.trim");
   // https://stopsopa.github.io/
   // user stopsopa
   // path /pages/css-grid/index.html
+
+  window.isItLocalhost = true;
   var github = (function (def) {
     let host = def;
 
     if (/\.github\.io$/.test(location.host)) {
+      window.isItLocalhost = false;
       host = location.host;
     }
 
@@ -700,6 +703,18 @@ body .github-profile:hover {
 
     log.blue("DOMContentLoaded", "adding profile ribbon link", "[triggered in github.js]");
   })();
+
+  if (window.isItLocalhost) {
+
+    // for some reason (maybe due to /etc/hosts record to handle local server from domain http://stopsopa.github.io.local/
+    // there is huge delay in the locahost server request from the browser
+    // The idea behind pinging it every few seconds is to maybe somehow keep local dns cache fresh
+    setInterval(() => {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "/ping");
+      xhr.send();
+    }, 5000);
+  }
 })();
 
 // ace editor
@@ -835,7 +850,7 @@ body .github-profile:hover {
 
       found.forEach(function (el) {
         if (el.classList.contains("handled")) {
-          log('[type="editor"], [type="syntax"] handled');
+          log('[type="editor"], [type="syntax"] already handled');
 
           return true;
         }
