@@ -1,7 +1,7 @@
 // Firebase App (the core Firebase SDK) is always required and must be listed first
 import { initializeApp } from "firebase/app";
 
-import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut, getIdToken } from "firebase/auth";
 
 import { getDatabase, ref, child, onValue, push, update, remove, set } from "firebase/database";
 
@@ -64,6 +64,7 @@ window.fire = () => {
               GoogleAuthProvider,
               signInWithCredential,
               signOut,
+              getIdToken,
             },
             database: {
               getDatabase,

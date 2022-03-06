@@ -26,6 +26,10 @@ const web = path.resolve(__dirname);
 
 const app = express();
 
+app.all('/ping', (req, res) => {
+  res.end('ok');
+})
+
 app.use((req, res, next) => {
   log(`${req.method} ${req.url}`);
 
