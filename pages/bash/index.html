@@ -25,6 +25,14 @@
                 
                 <h2>useful</h2>
                 <script type="editor" data-lang="sh">
+                
+cat <<EOF | docker build -t ubuntu:18.04-man -
+FROM ubuntu:18.04
+RUN apt-get update && yes | unminimize
+EOF
+docker images | grep ubuntu | grep 18.04-man
+docker run -it ubuntu:18.04-man bash  
+
 # fix variables in ide                
 (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
 \${$1}
