@@ -93,8 +93,17 @@
           <h2>OpenSSH</h2>
           <script type="editor" data-lang="sh" class="domain.com">
 
-            openssl genrsa -out mykey.pem 2048
-            openssl rsa -in mykey.pem -outform PEM -pubout -out mykey.pub
+openssl genrsa -out mykey.pem 2048
+openssl rsa -in mykey.pem -outform PEM -pubout -out mykey.pub
+
+cat <<EEE > xxx.pem
+-----BEGIN CERTIFICATE
+...
+-----END CERTIFICATE-----
+EEE
+openssl x509 -noout -text -in xxx.pem
+rm -rf xxx.pem
+
           </script>
         </div>
       </div>
