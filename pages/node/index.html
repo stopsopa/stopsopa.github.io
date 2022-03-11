@@ -152,6 +152,7 @@ var escape = (function () {
     '"': "&quot;",
     "'": "&#39;",
   };
+  
   var escapeHtmlChar = (key) => htmlEscapes[key];
 
   var reUnescapedHtml = /[&<>"']/g,
