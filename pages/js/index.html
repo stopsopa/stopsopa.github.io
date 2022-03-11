@@ -549,13 +549,13 @@
           <h2>htmlencode htmldecode</h2>
           <script type="editor" data-lang="js">
           
-function html_decode(text){
+function htmlDecode(text){
     var div = document.createElement("div");
     div.innerHTML = text;
     return ("textContent" in div) ? div.textContent : div.innerText ;
 }
 
-function html_encode(str){
+function htmlEncode(str){
     var div = document.createElement("div");
     div[("textContent" in div) ? "textContent" : "innerText"] = str;
    return div.innerHTML;
