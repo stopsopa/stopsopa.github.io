@@ -147,10 +147,10 @@ const log = console.log;
 var escape = (function () {
   var htmlEscapes = {
     "&": "&amp;amp;",
-    "<": "&lt;lt;",
-    ">": "&gt;gt;",
-    '"': "&quot;quot;",
-    "'": "&#39;#39;",
+    "<": "&amp;lt;",
+    ">": "&amp;gt;",
+    '"': "&amp;quot;",
+    "'": "&amp;#39;",
   };
 
   var escapeHtmlChar = (key) => htmlEscapes[key];
@@ -167,10 +167,10 @@ var escape = (function () {
 var unescape = (function () {
   var htmlUnescapes = {
     "&amp;amp;": "&",
-    "&lt;lt;": "<",
-    "&gt;gt;": ">",
-    "&quot;quot;": '"',
-    "&#39;#39;": "'",
+    "&amp;lt;": "<",
+    "&amp;gt;": ">",
+    "&amp;quot;": '"',
+    "&amp;#39;": "'",
   };
 
   var unescapeHtmlChar = (key) => htmlUnescapes[key];
