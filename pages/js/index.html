@@ -200,6 +200,7 @@
           after: function (referenceNode, newNode) {
             if (referenceNode.nextSibling) {
               return this.before(referenceNode.nextSibling, newNode);
+              a;
             }
             return this.append(referenceNode.parentNode, newNode);
           },
@@ -219,26 +220,29 @@
             node.parentNode.removeChild(node);
             return this;
           },
-          detach: function (element) {
-            // detach element from DOM, to use it somewhere else
-            this.append(domCache, element);
-            return element;
+          replace: function (oldNode, newNode) {
+            oldNode.parentNode.replaceChild(newNode, oldNode);
           },
-          empty: function (element) {
-            element.innerHTML = "";
+          detach: function (node) {
+            // detach element from DOM, to use it somewhere else
+            this.append(domCache, node);
+            return node;
+          },
+          empty: function (node) {
+            node.innerHTML = "";
             return this;
           },
           isNodeList: function (obj) {
             return Object.prototype.toString.call(obj) === "[object NodeList]";
           },
           isNode: isNode,
-          children: function (parent) {
+          children: function (parentNode) {
             try {
               // read also about
               // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
               // https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName  - undefined when #text node
               // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeName
-              return Array.prototype.slice.call(parent.childNodes);
+              return Array.prototype.slice.call(parentNode.childNodes);
             } catch (e) {
               throw new Error("manipulation.children() error: " + String(e));
             }
@@ -269,7 +273,12 @@
             if (typeof firstText === "string") {
               if (firstText) {
                 if (a) {
-                  a.nodeValue = firstText;
+                  if (this.isNode(a) && a.nodeValue !== 3) {
+                    this.replace(a, firstText);
+                    a = firstText;
+                  } else {
+                    a.nodeValue = firstText;
+                  }
                 } else {
                   a = document.createTextNode(firstText);
                   this.prepend(el, a);
@@ -284,7 +293,12 @@
             if (typeof lastText === "string") {
               if (lastText) {
                 if (b) {
-                  b.nodeValue = lastText;
+                  if (this.isNode(b) && b.nodeType !== 3) {
+                    this.replace(b, lastText);
+                    b = lastText;
+                  } else {
+                    b.nodeValue = lastText;
+                  }
                 } else {
                   b = document.createTextNode(lastText);
                   this.append(el, b);
