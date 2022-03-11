@@ -184,100 +184,150 @@
           <h2>manipulation</h2>
           <script type="editor" data-lang="js">
 
-            var manipulation = (function () {
+      var manipulation = (function () {
+        var domCache = document.createElement("div");
 
-                var domCache = document.createElement('div');
-
-                return {
-                    after: function (referenceNode, newNode) {
-                      if (referenceNode.nextSibling) {
-                        return this.before(referenceNode.nextSibling, newNode);
-                      }
-                      return this.append(referenceNode.parentNode, newNode);
-                    },
-                    before: function (referenceNode, newNode) {
-                        referenceNode.parentNode.insertBefore(newNode, referenceNode);
-                        return this;
-                    },
-                    append: function (parentNode, newNode) {
-                        parentNode.appendChild(newNode);
-                        return this;
-                    },
-                    prepend: function (parentNode, newNode) {
-                        parentNode.insertBefore(newNode, parentNode.firstChild);
-                        return this;
-                    },
-                    remove: function (node) {
-                        node.parentNode.removeChild(node);
-                        return this;
-                    },
-                    detach: function (element) { // detach element from DOM, to use it somewhere else
-                        this.append(domCache, element);
-                        return element;
-                    },
-                    empty: function (element) {
-                        element.innerHTML = '';
-                        return this;
-                    },
-                    children: function (parent) {
-                        try {
-                            // read also about
-                            // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-                            // https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName  - undefined when #text node
-                            // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeName
-                            return Array.prototype.slice.call(parent.childNodes)
-                        }
-                        catch (e) {
-
-                            throw new Error("manipulation.children() error: " + String(e));
-                        }
-                    },
-                };
-            }());
-
-            // extension
-            (function () {
-                /* from lodash */
-                function isNodeList (obj) {
-                    return Object.prototype.toString.call(obj) === '[object NodeList]';
+        return {
+          after: function (referenceNode, newNode) {
+            if (referenceNode.nextSibling) {
+              return this.before(referenceNode.nextSibling, newNode);
+            }
+            return this.append(referenceNode.parentNode, newNode);
+          },
+          before: function (referenceNode, newNode) {
+            referenceNode.parentNode.insertBefore(newNode, referenceNode);
+            return this;
+          },
+          append: function (parentNode, newNode) {
+            parentNode.appendChild(newNode);
+            return this;
+          },
+          prepend: function (parentNode, newNode) {
+            parentNode.insertBefore(newNode, parentNode.firstChild);
+            return this;
+          },
+          remove: function (node) {
+            node.parentNode.removeChild(node);
+            return this;
+          },
+          detach: function (element) {
+            // detach element from DOM, to use it somewhere else
+            this.append(domCache, element);
+            return element;
+          },
+          empty: function (element) {
+            element.innerHTML = "";
+            return this;
+          },
+          isNodeList: function (obj) {
+            return Object.prototype.toString.call(obj) === "[object NodeList]";
+          },
+          isNode: (function () {
+            function isObjectLike(value) {
+              return value != null && typeof value == "object";
+            }
+            function isPlainObject(value) {
+              // simplified version of isPlainObject then the one in lodash
+              return Object.prototype.toString.call(value) === "[object Object]";
+            }
+            return function isNode(value) {
+              return isObjectLike(value) && !isPlainObject(value);
+            };
+          })(),
+          children: function (parent) {
+            try {
+              // read also about
+              // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+              // https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName  - undefined when #text node
+              // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeName
+              return Array.prototype.slice.call(parent.childNodes);
+            } catch (e) {
+              throw new Error("manipulation.children() error: " + String(e));
+            }
+          },
+          txt: function (el, firstText, lastText) {
+            var list = Array.prototype.slice.call(el.childNodes);
+            var a,
+              b,
+              lastRef,
+              t = list[0];
+            if (this.isNode(t) && t.nodeType === 3) {
+              a = t;
+            }
+            if (list.length > 1) {
+              for (var i = 1, l = list.length; i < l; i += 1) {
+                if (this.isNode(list[i]) && list[i].nodeType === 3) {
+                  b = list[i];
+                  lastRef = i;
                 }
-                /* from lodash */
-                var isNode = (function () {
-                    function isObjectLike(value) {
-                        return value != null && typeof value == 'object';
-                    }
-                    function isPlainObject(value) { // simplified version of isPlainObject then the one in lodash
-                        return Object.prototype.toString.call(value) === '[object Object]'
-                    }
-                    return function isNode (value) {
-                        return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
-                    }
-                }());
-
-                log.green('defined', 'window.isNode');
-
-                manipulation.custommove = function (newParent, elements) {
-
-                    if (isNode(elements)) {
-
-                        elements = [elements];
-                    }
-                    else if (isNodeList(elements)) {
-                        elements = Array.prototype.slice.call(elements);
-                    }
-
-                    try {
-                        for (var i = 0, l = elements.length ; i < l ; i += 1 ) {
-                            newParent.appendChild(elements[i]);
-                        }
-                    }
-                    catch (e) {
-
-                        throw "manipulation.custommove - can't iterate through elements"
-                    }
-                    return this;
+              }
+            }
+            if (typeof firstText === "string") {
+              if (firstText) {
+                if (a) {
+                  a.nodeValue = firstText;
+                } else {
+                  this.prepend(el, document.createTextNode(firstText));
                 }
-            }());
+              } else {
+                a && this.remove(a);
+              }
+            }
+            if (typeof lastText === "string") {
+              if (lastText) {
+                if (b) {
+                  b.nodeValue = lastText;
+                } else {
+                  this.append(el, document.createTextNode(lastText));
+                }
+              } else {
+                b && this.remove(b);
+              }
+            }
+          },
+        };
+      })();
+
+      // extension
+      (function () {
+        /* from lodash */
+        function isNodeList(obj) {
+          return Object.prototype.toString.call(obj) === "[object NodeList]";
+        }
+        /* from lodash */
+        var isNode = (function () {
+          function isObjectLike(value) {
+            return value != null && typeof value == "object";
+          }
+          function isPlainObject(value) {
+            // simplified version of isPlainObject then the one in lodash
+            return Object.prototype.toString.call(value) === "[object Object]";
+          }
+          return function isNode(value) {
+            return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
+          };
+        })();
+
+        log.green("defined", "window.isNode");
+
+        manipulation.custommove = function (newParent, elements) {
+          if (isNode(elements)) {
+            elements = [elements];
+          } else if (isNodeList(elements)) {
+            elements = Array.prototype.slice.call(elements);
+          }
+
+          try {
+            for (var i = 0, l = elements.length; i < l; i += 1) {
+              newParent.appendChild(elements[i]);
+            }
+          } catch (e) {
+            throw "manipulation.custommove - can't iterate through elements";
+          }
+          return this;
+        };
+      })();
+      
           </script>
           <h2>Map</h2>
           <script type="editor" data-lang="js">
