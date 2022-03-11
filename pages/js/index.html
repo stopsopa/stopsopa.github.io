@@ -271,10 +271,14 @@
                 if (a) {
                   a.nodeValue = firstText;
                 } else {
-                  this.prepend(el, document.createTextNode(firstText));
+                  a = document.createTextNode(firstText);
+                  this.prepend(el, a);
                 }
               } else {
-                a && this.remove(a);
+                if (a) {
+                  this.remove(a);
+                  a = undefined;
+                }
               }
             }
             if (typeof lastText === "string") {
@@ -282,12 +286,33 @@
                 if (b) {
                   b.nodeValue = lastText;
                 } else {
-                  this.append(el, document.createTextNode(lastText));
+                  b = document.createTextNode(lastText);
+                  this.append(el, b);
                 }
               } else {
-                b && this.remove(b);
+                if (b) {
+                  this.remove(b);
+                  b = undefined;
+                }
               }
             }
+            var res = {
+              a: a,
+              b: b,
+              at: a ? a.nodeValue : undefined,
+              bt: b ? b.nodeValue : undefined,
+              all: "",
+            };
+            if (res.at) {
+              res.all += res.at;
+            }
+            if (res.bt) {
+              if (res.all) {
+                res.all += " ";
+              }
+              res.all += res.bt;
+            }
+            return res;
           },
         };
       })();
