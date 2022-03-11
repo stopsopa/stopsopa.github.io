@@ -245,6 +245,10 @@
               throw new Error("manipulation.children() error: " + String(e));
             }
           },
+          /**
+           * @param firstText - empty string - remove element, non empty string - set element, null|undefined - skip element
+           * @param lastText  - empty string - remove element, non empty string - set element, null|undefined - skip element
+           */
           txt: function (el, firstText, lastText) {
             var list = Array.prototype.slice.call(el.childNodes);
             var a,
