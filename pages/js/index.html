@@ -186,7 +186,16 @@
 
       var manipulation = (function () {
         var domCache = document.createElement("div");
-
+        function isObjectLike(value) {
+          return value != null && typeof value == "object";
+        }
+        function isPlainObject(value) {
+          // simplified version of isPlainObject then the one in lodash
+          return Object.prototype.toString.call(value) === "[object Object]";
+        }
+        function isNode(value) {
+          return isObjectLike(value) && !isPlainObject(value);
+        }
         return {
           after: function (referenceNode, newNode) {
             if (referenceNode.nextSibling) {
@@ -222,18 +231,7 @@
           isNodeList: function (obj) {
             return Object.prototype.toString.call(obj) === "[object NodeList]";
           },
-          isNode: (function () {
-            function isObjectLike(value) {
-              return value != null && typeof value == "object";
-            }
-            function isPlainObject(value) {
-              // simplified version of isPlainObject then the one in lodash
-              return Object.prototype.toString.call(value) === "[object Object]";
-            }
-            return function isNode(value) {
-              return isObjectLike(value) && !isPlainObject(value);
-            };
-          })(),
+          isNode: isNode,
           children: function (parent) {
             try {
               // read also about
@@ -246,8 +244,10 @@
             }
           },
           /**
+           *
+           * @param el
            * @param firstText - empty string - remove element, non empty string - set element, null|undefined - skip element
-           * @param lastText  - empty string - remove element, non empty string - set element, null|undefined - skip element
+           * @param lastText - empty string - remove element, non empty string - set element, null|undefined - skip element
            */
           txt: function (el, firstText, lastText) {
             var list = Array.prototype.slice.call(el.childNodes);
@@ -311,9 +311,6 @@
             return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
           };
         })();
-
-        log.green("defined", "window.isNode");
-
         manipulation.custommove = function (newParent, elements) {
           if (isNode(elements)) {
             elements = [elements];
