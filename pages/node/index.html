@@ -138,6 +138,65 @@
           </script>
         </div>
         <div class="cards">
+          <h2>htmlencode htmldecode</h2>
+          <script type="editor" data-lang="js">
+
+const log = console.log;
+
+var escape = (function () {
+  var htmlEscapes = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  };
+  var escapeHtmlChar = (key) => htmlEscapes[key];
+
+  var reUnescapedHtml = /[&<>"']/g,
+    reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
+
+  return function (string) {
+    string = String(string);
+    return string && reHasUnescapedHtml.test(string) ? string.replace(reUnescapedHtml, escapeHtmlChar) : string;
+  };
+})();
+
+var unescape = (function () {
+  var htmlUnescapes = {
+    "&amp;": "&",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&quot;": '"',
+    "&#39;": "'",
+  };
+
+  var unescapeHtmlChar = (key) => htmlUnescapes[key];
+
+  var reEscapedHtml = /&(?:amp|lt|gt|quot|#39);/g,
+    reHasEscapedHtml = RegExp(reEscapedHtml.source);
+
+  return function (string) {
+    string = String(string);
+    return string && reHasEscapedHtml.test(string) ? string.replace(reEscapedHtml, unescapeHtmlChar) : string;
+  };
+})();
+
+const str = ` abc & & < mid > < x " yy ' d '`;
+
+const enc = escape(str);
+
+const tmp = {
+  str,
+  enc,
+  dec: unescape(enc),
+};
+
+tmp.eq = tmp.str === tmp.dec;
+
+log(tmp);
+
+          </script>
           <h2>nodemon</h2>
           <script type="editor" data-lang="sh">
             nodemon -e js,html server.js
