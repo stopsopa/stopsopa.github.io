@@ -152,7 +152,7 @@ var escape = (function () {
     '"': "&quot;",
     "'": "&#39;",
   };
-  
+
   var escapeHtmlChar = (key) => htmlEscapes[key];
 
   var reUnescapedHtml = /[&<>"']/g,
@@ -190,8 +190,8 @@ const enc = escape(str);
 
 const tmp = {
   str,
-  enc,
   dec: unescape(enc),
+  enc,
 };
 
 tmp.eq = tmp.str === tmp.dec;
