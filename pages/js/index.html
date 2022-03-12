@@ -200,7 +200,6 @@
           after: function (referenceNode, newNode) {
             if (referenceNode.nextSibling) {
               return this.before(referenceNode.nextSibling, newNode);
-              a;
             }
             return this.append(referenceNode.parentNode, newNode);
           },
