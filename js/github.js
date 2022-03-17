@@ -419,11 +419,11 @@ log.green("defined", "window.manipulation");
   async function loadJs(name, url, test) {
     return new Promise((resolve, reject) => {
       if (typeof test !== "function") {
-        throw new Error("test should be a function for " + name + " async loader");
+        throw new Error("loadJs error: test should be a function for " + name + " async loader");
       }
 
       if (typeof url !== "string") {
-        throw new Error("url should be a string for " + name + " async loader");
+        throw new Error("loadJs error: url should be a string for " + name + " async loader");
       }
 
       // https://stackoverflow.com/a/524721
