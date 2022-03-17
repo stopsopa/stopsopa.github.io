@@ -270,6 +270,8 @@ EOF
                 <a href="https://ss64.com/osx/find.html">https://ss64.com/osx/find.html</a>
                 <script type="editor" data-lang="sh">
 
+tar -zcvf /backup/project.tar.gz --exclude "node_modules" /srv/www/
+
 # find all node_modules directories excluding nested node_modules (-prune)
 find . -type d -name node_modules -prune -print0 | xargs -0 -I % echo ":%:"
 
