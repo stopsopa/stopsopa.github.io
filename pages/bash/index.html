@@ -140,6 +140,14 @@ rm -rf ___test.sh
 # cut from beginning
 echo test | md5 | cut -c 1-5
 
+/bin/bash -c "while true
+do
+    date "+%Y_%m_%d_%H_%M_%S"
+    echo test
+    sleep 30
+done
+" 2>&1 | tee log.log
+
 
                 </script>
             <div class="cards">
