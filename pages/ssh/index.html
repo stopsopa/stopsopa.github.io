@@ -65,16 +65,64 @@
             /bin/bash ~/sshh.sh --dir "/Volumes/truecrypt/ssh/ssh" install
             source ~/.bash_profile
             source ~/.bashrc
-            # you might want to change __DIR environment variable in sshh.sh script
 
-            # script might require for working properly to register SSHH_DIR_WITH_KEYS env var in ~/.zshrc
-            export SSHH_DIR_WITH_KEYS="/Volumes/truecrypt/ssh/ssh"
-            alias sshh="/bin/bash /Volumes/truecrypt/ssh/ssh/sshh.sh"
+            # in order to tell the script where is the directory with keys to switch between it is necessary to
+            # define SSHH_DIR_WITH_KEYS env var in the shell ~/.zshrc, ~/.bashrc and ~/.bash_profile
+              export SSHH_DIR_WITH_KEYS="/Volumes/truecrypt/ssh/ssh"
+              alias sshh="/bin/bash /Volumes/truecrypt/ssh/ssh/sshh.sh"
+                  # command: /bin/bash ~/sshh.sh --dir "/Volumes/truecrypt/ssh/ssh"
+                  # install should already register alias in ~/.bash_profile and ~/.bashrc but it's always worth checking
+
+            # to automatically select specific keys
+            /bin/bash /Users/linuxuser/Workspace/stopsopa.github.io.git/runtime/pages/ssh/add.sh -d /Volumes/truecrypt/ssh/ssh first falcon
+
+            # strucuture of directory where SSHH_DIR_WITH_KEYS is pointing:
 
 
+            /Volumes/truecrypt/ssh/ssh linuxuser √ ls -la
+            total 26
+            drwxrwxrwx  1 linuxuser  staff  1024 17 Mar 09:53 .
+            drwxrwxrwx  1 linuxuser  staff  1024 14 Feb 17:56 ..
+            -rwxrwxrwx  1 linuxuser  staff   353 15 Jul  2021 add.sh
+            -rwxrwxrwx  1 linuxuser  staff  2610 14 Feb 17:04 gd
+            -rwxrwxrwx  1 linuxuser  staff   577 14 Feb 17:04 gd.pub
+            -rwxrwxrwx  1 linuxuser  staff   131 14 Feb 17:04 gd.sh
+            -rwxrwxrwx  1 linuxuser  staff  1679 15 Jul  2021 sd
+            -rwxrwxrwx  1 linuxuser  staff   409 15 Jul  2021 sd.pub
+            -rwxrwxrwx  1 linuxuser  staff   129 17 Mar 01:23 sd.sh
+            -rwxrwxrwx  1 linuxuser  staff   448 14 Feb 16:55 sshh.sh
 
-            # you might also want to add to ~/.bash_profile
-            /bin/bash /Users/sdzialowski/Workspace/stopsopa.github.io.git/runtime/pages/ssh/add.sh -d /Volumes/truecrypt/ssh/ssh first falcon
+
+            /Volumes/truecrypt/ssh/ssh linuxuser √ cat add.sh
+            #!/bin/bash
+
+            # normally you would import content of the file
+            # https://stopsopa.github.io/pages/ssh/add.sh
+            # but for debugging purposes i've linked original one straight from local copy git source
+
+            # see more: https://stopsopa.github.io/pages/ssh/index.html
+
+            /bin/bash /Users/linuxuser/Workspace/projects/stopsopa.github.io/runtime/pages/ssh/add.sh $@
+
+
+            /Volumes/truecrypt/ssh/ssh linuxuser √ cat sshh.sh
+            #!/bin/bash
+
+            # normally you would import content of the file
+            # https://stopsopa.github.io/pages/ssh/sshh.sh
+            # but for debugging purposes i've linked original one straight from local copy git source
+
+            # see more: https://stopsopa.github.io/pages/ssh/index.html
+
+            #/bin/bash /Users/sdzialowski/Workspace/projects/stopsopa.github.io/runtime/pages/ssh/sshh.sh $@
+            /bin/bash /Users/sdzialowski/Workspace/stopsopa.github.io.git/runtime/pages/ssh/sshh.sh $@
+
+
+            /Volumes/truecrypt/ssh/ssh linuxuser √ cat sd.sh
+            # git config --global -l
+            git config --global user.email linuxuser@gmail.com
+            git config --global user.name "Simon D."
+
           </script>
 
           <h2>auto add single key</h2>

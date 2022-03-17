@@ -108,9 +108,7 @@ function yellow {
 
 if [ "${SSHH_DIR_WITH_KEYS}" = "" ]; then
 
-
-  { red "\n${0} error:   --dir is not specified\n"; } 2>&3
-
+  { red "\n${0} error: --dir or SSHH_DIR_WITH_KEYS env var is not specified\n"; } 2>&3
 
   _exit 2> /dev/null
 fi
@@ -122,18 +120,18 @@ echo ""
 
 if [ "${1}" = "install" ]; then
 
-  TEST="alias sshh=\"/bin/bash ~/sshh.sh\""
+  CMD="alias sshh=\"/bin/bash ~/sshh.sh\""
 
   CONTENT="$(cat ~/.bashrc)"
 
-  if [[ ${CONTENT} =~ ${TEST} ]]; then
+  if [[ ${CONTENT} =~ ${CMD} ]]; then
 
       echo "already installed just use"
   else
 
-      echo 'alias sshh="/bin/bash ~/sshh.sh"' >> ~/.bashrc
+      echo "${CMD}" >> ~/.bashrc
 
-      echo 'alias sshh="/bin/bash ~/sshh.sh"' >> ~/.bash_profile
+      echo "${CMD}" >> ~/.bash_profile
 
       source ~/.bashrc
 
