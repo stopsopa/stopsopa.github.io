@@ -1,0 +1,28 @@
+<body class="layout" toc>
+  <div class="body">
+    <div class="inside">
+      <div class="cards toc">
+        <h1>Table of Contents</h1>
+        <ul data-do-sort>
+          <li><a href="http://">ekstra link</a></li>
+        </ul>
+      </div>
+      <div class="cards">
+        <h2>docker</h2>
+        <script type="editor" data-lang="sh">
+docker run -it redis:6.2.6-alpine
+
+docker exec -it "$(docker ps | grep redis: | awk '{print $1}')" sh
+
+        </script>
+        <h2>redis-cli</h2>
+        <a href="https://redis.io/topics/rediscli">redis-cli</a>
+        <script type="editor" data-lang="sh">
+
+redis-cli
+
+        </script>
+      </div>
+    </div>
+  </div>
+</body>
