@@ -90,6 +90,11 @@ if [ "${FILENAME}" = "${PB}" ]; then
     EXTENSION=""
 fi
 
+# exists in file, file contains
+if [ "$(cat ~/.zshrc | grep 'tartufo')" = "" ]; then
+    # yep - it exists
+fi
+
 
 # reading one character in zsh, bash
 { red "${COUNT} files found (more than ${MAX}), are you sure you want to include them to other libraries them? (y|n)\n"; } 2>&3
