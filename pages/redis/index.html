@@ -20,6 +20,72 @@ docker exec -it "$(docker ps | grep redis: | awk '{print $1}')" sh
         <script type="editor" data-lang="sh">
 
 redis-cli
+redis-cli ping
+
+# auto detection of tty
+redis-cli incr mycounter
+redis-cli incr mycounter | cat
+
+# or turn on human readable by force
+redis-cli --no-raw incr mycounter | cat
+# or force raw mode
+redis-cli --raw incr mycounter 
+
+redis-cli flushall
+
+# CRUD
+redis-cli SET key val
+
+# from stdin using -x
+echo test | redis-cli -x SET ghi
+# or
+printf ttt > val.txt
+redis-cli -x SET ghi < val.txt
+redis-cli get ghi
+
+# append
+redis-cli APPEND ghi zzz
+redis-cli get ghi
+
+# increment
+redis-cli SET x 102
+redis-cli INCR x
+redis-cli get x
+
+# sequence of commands from stdin
+cat <<END | redis-cli | cat
+SET y 106
+INCR y
+SET str "long string"
+GET y
+GET str
+END
+
+# Continuously run the same command
+redis-cli -r 5 -i 1 incr foo
+redis-cli GET foo
+# to run forever
+redis-cli -r -1 -i 1 incr foo
+
+# Mass insertion
+https://redis.io/docs/reference/patterns/bulk-loading/
+
+# lists
+redis-cli lpush abc a b c d
+redis-cli lrange abc 0 -1
+
+# lua
+cat <<END > script.lua
+return redis.call('set',KEYS[1],ARGV[1])
+END
+redis-cli --eval script.lua luakey , bar
+redis-cli GET luakey
+        </script>
+        <h2>rInteractive mode</h2>
+        <a href="https://redis.io/topics/rediscli">redis-cli</a>
+        <script type="editor" data-lang="sh">
+
+
 
         </script>
       </div>
