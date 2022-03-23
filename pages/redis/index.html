@@ -10,6 +10,7 @@
       <div class="cards">
         <h2>docker</h2>
         <script type="editor" data-lang="sh">
+        
 docker run -it redis:6.2.6-alpine
 
 docker exec -it "$(docker ps | grep redis: | awk '{print $1}')" sh
@@ -80,14 +81,53 @@ return redis.call('set',KEYS[1],ARGV[1])
 END
 redis-cli --eval script.lua luakey , bar
 redis-cli GET luakey
+
+# Continuous stats mode
+redis-cli --stat
+
+# Scanning for big keys
+redis-cli --bigkeys
+
+# Getting a list of keys
+redis-cli --scan | head -10
+redis-cli --scan --pattern '*-11*'
+redis-cli --scan --pattern 'user:*' | wc -l
+
+# Pub/sub mode
+redis-cli psubscribe '*'
+
+# Monitoring commands executed in Redis
+redis-cli monitor
+
+# Monitoring the latency of Redis instances
+redis-cli --latency
+redis-cli --latency-history
+
+# Remote backups of RDB files
+redis-cli --rdb dump.rdb
+
+# Replica mode
+redis-cli --replica
+
+
         </script>
-        <h2>rInteractive mode</h2>
+        <h2>Interactive mode</h2>
         <a href="https://redis.io/topics/rediscli">redis-cli</a>
         <script type="editor" data-lang="sh">
 
+# entering interactive mode in simplest form is just running cli with no parameters
+redis-cli 
+
+# help
+help @<TAB>
+
+
+
 
 
         </script>
+        <h2>Read more</h2>
+        <a href="https://redis.io/docs/manual/eviction/">Key eviction</a>
       </div>
     </div>
   </div>
