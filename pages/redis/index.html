@@ -15,6 +15,15 @@ docker run -it redis:6.2.6-alpine
 
 docker exec -it "$(docker ps | grep redis: | awk '{print $1}')" sh
 
+# or redis stack https://redis.io/docs/stack/get-started/install/docker/
+docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+
+visit:
+http://localhost:8001
+
+# for cli
+docker exec -it redis-stack redis-cli  
+  
         </script>
         <h2>redis-cli</h2>
         <a href="https://redis.io/topics/rediscli">redis-cli</a>
