@@ -15,8 +15,8 @@ docker run -it redis:6.2.6-alpine
 
 docker exec -it "$(docker ps | grep redis: | awk '{print $1}')" sh
 
-# or redis stack https://redis.io/docs/stack/get-started/install/docker/
 docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+  # or redis stack (with RedisInsight) https://redis.io/docs/stack/get-started/install/docker/
 
 visit:
 http://localhost:8001
