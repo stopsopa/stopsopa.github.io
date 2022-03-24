@@ -249,7 +249,14 @@ if [ ${MODE} = "restore" ]; then
 
     _S="${_TARGETGITDIR}/${_T}"
 
-    _TT="${_CONFIGDIR}/${_T}"
+    _TT="${_T}"
+
+    if ! [[ ${_T} =~ ^~{0,1}/.* ]]; then
+
+      _TT="${_CONFIGDIR}/${_T}"
+    fi
+
+    eval _TT="${_TT}"
 
     if [ -f "${_S}" ]; then
 
@@ -307,7 +314,12 @@ if [ ${MODE} = "isinsync" ]; then
 
     _T="${index##*::}"
 
-    _S="${_CONFIGDIR}/${_S}"
+    if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
+
+      _S="${_CONFIGDIR}/${_S}"
+    fi
+
+    eval _S="${_S}"
 
     if [ -f "${_S}" ]; then
 
@@ -356,7 +368,12 @@ if [ ${MODE} = "diff" ]; then
 
     _T="${index##*::}"
 
-    _S="${_CONFIGDIR}/${_S}"
+    if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
+
+      _S="${_CONFIGDIR}/${_S}"
+    fi
+
+    eval _S="${_S}"
 
     if [ -f "${_S}" ]; then
 
@@ -444,8 +461,14 @@ if [ ${MODE} = "push" ]; then
 
       fi
 
+    _SS="${_S}"
 
-    _SS="${_CONFIGDIR}/${_S}"
+    if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
+
+      _SS="${_CONFIGDIR}/${_S}"
+    fi
+
+    eval _SS="${_SS}"
 
     if [ -f "${_SS}" ]; then
 
@@ -526,7 +549,14 @@ if [ ${MODE} = "pull" ]; then
 
     _T="${index##*::}"
 
-    _SS="${_CONFIGDIR}/${_S}"
+    _SS="${_S}"
+
+    if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
+
+      _SS="${_CONFIGDIR}/${_S}"
+    fi
+
+    eval _SS="${_SS}"
 
     _TT="${_TARGETGITDIR}/${_T}"
 
