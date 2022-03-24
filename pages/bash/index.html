@@ -25,7 +25,9 @@
                 
                 <h2>useful</h2>
                 <script type="editor" data-lang="sh">
-                
+                                
+export PATH="${PATH}:/new/path"                
+
 cat <<EOF | docker build -t ubuntu:18.04-man -
 FROM ubuntu:18.04
 RUN apt-get update && yes | unminimize
@@ -88,6 +90,11 @@ if [ "${FILENAME}" = "" ]; then
 fi
 if [ "${FILENAME}" = "${PB}" ]; then
     EXTENSION=""
+fi
+
+# exists in file, file contains
+if [ "$(cat ~/.zshrc | grep 'tartufo')" = "" ]; then
+    # yep - it exists
 fi
 
 
@@ -358,6 +365,17 @@ set -u # Exit script immediately if an undefined variable is used (e.g. echo "$U
                 <h2>regex</h2>
                 <script type="editor" data-lang="sh">
 
+if [[ ${NAME} =~ ^~{0,1}/.* ]]; then
+
+    echo "match";
+else
+
+    echo "not match";
+
+    exit 1;
+fi
+
+# https://www.networkworld.com/article/2693361/unix-tip-using-bash-s-regular-expressions.html#:~:text=Since%20version%203%20(circa%202004,easier%20to%20read%20and%20maintain.
 
 NAME="765876"
 
