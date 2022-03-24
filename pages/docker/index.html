@@ -130,6 +130,23 @@ docker run -it project:node-multi_tl
 # --cpus=0.3
 
                 </script>
+                <h2>Working with HOST MACHINE</h2>
+                <script type="editor" data-lang="sh">
+
+How to communicate with service/server that lives on the host machine from within container
+# MAC
+# use from inside the host.docker.internal
+# more
+#     https://docs.docker.com/desktop/mac/networking/
+
+# LINUX
+# use --net=host in cli
+# also --add-host=host.docker.internal:host-gateway    or    --add-host host.docker.internal:host-gateway
+# more
+#     https://docs.docker.com/network/host/
+#     https://stackoverflow.com/a/24326540
+
+                </script>
 
                 <h2>Docker registry urls</h2>
                 <script type="editor" data-lang="sh">
