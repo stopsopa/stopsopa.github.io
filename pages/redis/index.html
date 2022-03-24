@@ -26,7 +26,7 @@ docker exec -it redis-stack redis-cli
 
 # RedisInsight from docker
 4221
-docker run -v redisinsight:/db -p 4221:8001 redislabs/redisinsight:latest
+docker run -d -v redisinsight:/db -p 4221:8001 redislabs/redisinsight:latest
 http://localhost:4221
 
   
