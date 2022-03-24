@@ -114,15 +114,6 @@ fi
 
 source "${_CONFIG}";
 
-
-echo "https://github.com/stopsopa/gitstorage/tree/master/git%40github.secureserver.net:sdzialowski__PEX_dev.git"
-echo "https://bitbucket.org/stopsopa/buildkite/raw/master/.buildkite/hooks/_colours.sh"
-
-#https://github.com/stopsopa/gitstorage/tree/master/git%40github.secureserver.net:sdzialowski__PEX_dev.git
-#        git@github.com:stopsopa/gitstorage.git
-# git@bitbucket.org:stopsopa/buildkite.git
-# git@github.com:stopsopa/gitstorage.git
-
 _GITHUB="^git@github"
 
 if [[ ${GITSTORAGESOURCE} =~ ${_GITHUB} ]]; then
@@ -170,6 +161,7 @@ and use this script like:
 /bin/bash ${0} diff
 /bin/bash ${0} pull
 /bin/bash ${0} push
+/bin/bash ${0} url
 
 # you can specify different config
 /bin/bash ${0} -c "gitstorage-config.sh"
@@ -184,7 +176,7 @@ MODE="${1}"
 
 shift;
 
-TEST="^(isinsync|diff|pull|push|backup|restore)$"
+TEST="^(url|isinsync|diff|pull|push|backup|restore)$"
 
 if ! [[ ${MODE} =~ ${TEST} ]]; then
 
@@ -206,6 +198,13 @@ if [[ ${MODE} =~ ${TEST} ]]; then
 fi
 
 _CONFIGDIR="$(dirname "${_CONFIG}")"
+
+if [ ${MODE} = "url" ]; then
+
+  echo "final url ${URL}";
+
+  exit 0
+fi
 
 if [ ${MODE} = "backup" ]; then
 
