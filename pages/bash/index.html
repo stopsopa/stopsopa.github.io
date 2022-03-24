@@ -25,7 +25,9 @@
                 
                 <h2>useful</h2>
                 <script type="editor" data-lang="sh">
-                
+                                
+export PATH="${PATH}:/new/path"                
+
 cat <<EOF | docker build -t ubuntu:18.04-man -
 FROM ubuntu:18.04
 RUN apt-get update && yes | unminimize
