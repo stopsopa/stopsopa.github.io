@@ -79,6 +79,9 @@ else
 fi
 '
 
+# pick choose by number from the list
+SSHS="$(echo "${_LIST}" | sed -n "${i} p")"
+
 # basename and file extension
 PD="$(dirname "${FILE}")"
 PB="$(basename "${FILE}")"
