@@ -6,7 +6,12 @@
 #     https://stopsopa.github.io/pages/ssh/index.html#sshh-manually-swap-ssh-key
 
 
-
+# usage once installed:
+# just call
+#     sshh
+# or
+#     sshh 2
+# to choose second key from the list
 
 # To clear all keys in ssh agent
 # ssh-add -D
@@ -183,69 +188,76 @@ if [ "${_LIST}" = "" ] || [ "${_LINES}" -lt "1" ]; then
   _exit 2> /dev/null || true
 fi
 
+
+
 echo "Choose key to add:"
 
 SSHS=""
 
 TEST="^[0-9]+$"
 
-while : ; do
+i="1"
 
-    i="1"
-    for name in ${_LIST}
-    do
+if [ "${1}" = "" ]; then
+  while : ; do
+      for name in ${_LIST}
+      do
 
-        name="$(echo "${name}" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
+          name="$(echo "${name}" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
 
-        echo "${i}) ${name}"
+          echo "${i}) ${name}"
 
-        i=$((${i} + 1))
-    done
+          i=$((${i} + 1))
+      done
 
-    printf ">"
+      printf ">"
 
-    if [ "${_LINES}" -lt "10" ]; then
+      if [ "${_LINES}" -lt "10" ]; then
 
-      read -n1 i
-    else
+        read -n1 i
+      else
 
-      read i
-    fi
+        read i
+      fi
 
-    echo ""
+      echo ""
 
-    if ! [[ ${i} =~ ${TEST} ]]; then
+      if ! [[ ${i} =~ ${TEST} ]] || [[ "${i}" -lt "1" ]] || [ "${i}" -gt "${_LINES}" ]; then
 
-{ red "${0} error: $(cat <<END
-
-given value (${i}) should be an integer
-
-try again:
-
-END
-)"; } 2>&3
-
-      _exit 2> /dev/null || true
-    fi
-
-    if [[ "${i}" -lt "1" ]] || [ "${i}" -gt "${_LINES}" ]; then
-
-{ red "${0} error: $(cat <<END
+  { red "${0} error: $(cat <<END
 
 given value (${i}) should be an integer > 0 but <= than ${_LINES}
 
 try again:
 
 END
-)"; } 2>&3
+    )"; } 2>&3
 
-      _exit 2> /dev/null || true
-    fi
+        continue;
+      fi
 
-    SSHS="$(echo "${_LIST}" | sed -n "${i} p")"
+      break;
+  done
+else
+  i="${1}"
 
-    break;
-done
+  if ! [[ ${i} =~ ${TEST} ]] || [[ "${i}" -lt "1" ]] || [ "${i}" -gt "${_LINES}" ]; then
+
+    { red "${0} error: $(cat <<END
+
+given value (${i}) should be an integer > 0 but <= than ${_LINES}
+
+try again:
+
+END
+    )"; } 2>&3
+
+    exit 1
+  fi
+fi
+
+
+SSHS="$(echo "${_LIST}" | sed -n "${i} p")"
 
 ssh-add -D
 
@@ -285,13 +297,13 @@ else
 
 { yellow "$(cat <<END
 
-  WARNING:
+WARNING:
 
-  git config file '${GITCONFIG}' not found
+git config file '${GITCONFIG}' not found
 
-  check config:
+check config:
 
-    git config --global -l
+  git config --global -l
 
 
 END
