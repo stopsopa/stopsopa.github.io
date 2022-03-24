@@ -35,7 +35,11 @@ http://localhost:4221
         <a href="https://redis.io/topics/rediscli">redis-cli</a>
         <script type="editor" data-lang="sh">
 
+
+
 redis-cli
+redis-cli -h my-host -p 1234 -a mypassword ping
+redis-cli -h 127.0.0.1 -a FxxxxxxxxF ping
 redis-cli ping
 
 # auto detection of tty
