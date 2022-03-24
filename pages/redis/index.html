@@ -23,6 +23,12 @@ http://localhost:8001
 
 # for cli
 docker exec -it redis-stack redis-cli  
+
+# RedisInsight from docker
+4221
+docker run -v redisinsight:/db -p 4221:8001 redislabs/redisinsight:latest
+http://localhost:4221
+
   
         </script>
         <h2>redis-cli</h2>
