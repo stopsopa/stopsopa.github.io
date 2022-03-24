@@ -1933,6 +1933,14 @@ log(tmp);
               });
             })
           </script>
+        <h2>husky</h2>
+        <script type="editor" data-lang="sh">
+
+cat <<EEE > ~/.huskyrc
+export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
+EEE
+# concluded from: https://github.com/typicode/husky/issues/898
+        </script>
 
           <h2>Learning promises</h2>
           <h5>Always await promises before returning to avoid a partial stacktrace</h5>
