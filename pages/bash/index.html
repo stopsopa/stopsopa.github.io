@@ -365,6 +365,17 @@ set -u # Exit script immediately if an undefined variable is used (e.g. echo "$U
                 <h2>regex</h2>
                 <script type="editor" data-lang="sh">
 
+if [[ ${NAME} =~ ^~{0,1}/.* ]]; then
+
+    echo "match";
+else
+
+    echo "not match";
+
+    exit 1;
+fi
+
+# https://www.networkworld.com/article/2693361/unix-tip-using-bash-s-regular-expressions.html#:~:text=Since%20version%203%20(circa%202004,easier%20to%20read%20and%20maintain.
 
 NAME="765876"
 
