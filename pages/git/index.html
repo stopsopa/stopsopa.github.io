@@ -475,8 +475,10 @@ git rev-list --objects --all \
             <script type="editor" data-lang="sh">
 
 git config -e
-git config --global -e
+# editor
+    git config --global -e
 
+git config -l
 git config --global -l | egrep "(user\.name|user\.email)"
 
 git config --global core.fileMode false
