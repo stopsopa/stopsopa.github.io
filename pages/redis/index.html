@@ -223,7 +223,18 @@ help @<TAB>
 
 KEYS *
 
+# determine database backup dir
+config get dir
+  # from: https://www.digitalocean.com/community/tutorials/how-to-back-up-and-restore-your-redis-data-on-ubuntu-14-04
 
+config get *
+
+# create a dump from database
+save
+    # https://redis.io/commands/save/
+        # from https://www.digitalocean.com/community/tutorials/how-to-back-up-and-restore-your-redis-data-on-ubuntu-14-04
+
+info
 
         </script>
         <h2>Read more</h2>
