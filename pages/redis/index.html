@@ -40,39 +40,66 @@ http://localhost:4221
         <script type="editor" data-lang="sh">      
         
 cat <<EEE > _redis.js
-const { createClient } = require('redis');
 
-const config = {
-  port: 6379,
-  ttl: {
-    PpeAccessToken: 240,
-    Category: 3600,
-    Price: 300,
-  },
-  host: '0.0.0.0',
-  password: 'ppp',
-};
+var os = require("os");
+
+var hostname = os.hostname();
+
+const { createClient } = require("redis");
+
+let config;
+
+switch (true) {
+  case hostname.includes("xxx"):
+    config = {
+      port: 6379,
+      ttl: {
+        PpeAccessToken: 240,
+        Category: 3600,
+        Price: 300,
+      },
+      host: "0.0.0.0",
+      password: "ppp",
+    };
+    break;
+  default:
+    config = {
+      port: 6379,
+      ttl: {
+        PpeAccessToken: 240,
+        Category: 3600,
+        Price: 300,
+      },
+      host: "0.0.0.0",
+      password: "xxx",
+    };
+    break;
+}
+
+if (!config) {
+  throw new Error(`no config`);
+}
 
 (async () => {
   const client = createClient(config);
 
-  client.on('error', (err) => console.log('Redis Client Error', err));
-
-  await client.connect();
+  client.on("error", (err) => console.log("Redis Client Error", err));
 
   try {
+    await client.connect();
     // await client.set('key', 'value');
 
-    const value = await client.get('test');
+    const value = await client.get("test");
 
     console.log({
       value,
     });
   } catch (e) {
-    console.log('general error', e);
+    console.log("general error", e);
   }
   await client.disconnect();
 })();
+
 
 EEE
 
