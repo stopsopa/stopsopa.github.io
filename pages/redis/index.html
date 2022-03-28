@@ -36,6 +36,51 @@ http://localhost:4221
 
   
         </script>
+        <h2>node</h2>
+        <script type="editor" data-lang="sh">      
+        
+cat <<EEE > _redis.js
+const { createClient } = require('redis');
+
+const config = {
+  port: 6379,
+  ttl: {
+    PpeAccessToken: 240,
+    Category: 3600,
+    Price: 300,
+  },
+  host: '0.0.0.0',
+  password: 'ppp',
+};
+
+(async () => {
+  const client = createClient(config);
+
+  client.on('error', (err) => console.log('Redis Client Error', err));
+
+  await client.connect();
+
+  try {
+    // await client.set('key', 'value');
+
+    const value = await client.get('test');
+
+    console.log({
+      value,
+    });
+  } catch (e) {
+    console.log('general error', e);
+  }
+  await client.disconnect();
+})();
+
+EEE
+
+node _redis.js
+
+rm -rf _redis.js
+  
+        </script>
         <h2>redis-cli</h2>
         <a href="https://redis.io/topics/rediscli">redis-cli</a>
         <script type="editor" data-lang="sh">
