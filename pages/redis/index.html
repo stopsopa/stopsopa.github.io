@@ -80,6 +80,10 @@ if (!config) {
   throw new Error(`no config`);
 }
 
+console.log({
+  config
+});
+
 (async () => {
   const client = createClient(config);
 
