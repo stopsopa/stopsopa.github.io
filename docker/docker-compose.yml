@@ -45,6 +45,25 @@ services:
 #  docker run --name myadmin -d --link mysql_db_server:db -p 8080:80 -v /some/local/directory/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php phpmyadmin
 # from: https://hub.docker.com/r/phpmyadmin/phpmyadmin
 
+
+
+#  redis:
+#    image: redis:3.2.4
+#    container_name: ${PROJECT_NAME}_redis
+#    ports:
+#      - "${REDIS_PORT}:6379"
+#    volumes:
+#      - ${REDIS_DOCKER_DIR:-./redis_db}:/data
+#    networks:
+#      - scoped-network
+#
+#  redisinsight:
+#    image: redislabs/redisinsight:1.7.0
+#    container_name: ${PROJECT_NAME}_redisinsight
+#    ports:
+#      - "${REDISINSIGHT_PORT}:8001"
+#    networks:
+#      - scoped-network
 networks:
   scoped-network:
     name: network-${PROJECT_NAME}
