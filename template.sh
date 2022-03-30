@@ -38,7 +38,7 @@ do
 
   FILENAME2="${FILENAME%.*}"
 
-  MIN="$(realpath "${PD}/${FILENAME2}.${EXTENSION}")"
+  MIN="$(realpath "${PD}/${FILENAME2}.rendered.${EXTENSION}")"
 
   echo "bash: processing \"${FILE}\""
 
