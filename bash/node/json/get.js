@@ -1,35 +1,30 @@
-
 // console.log(JSON.stringify(process.argv, null, 4));
 
 if (Object.keys(process.argv).length < 4) {
-
-    throw `Not enough arguments: run:
+  throw `Not enough arguments: run:
     
     node ${__filename} path/to/json/file.json key.to.value"    
-`
+`;
 }
 
-const path      = require('path');
+const path = require("path");
 
-const fs        = require('fs');
+const fs = require("fs");
 
-const file      = path.resolve(process.cwd() , process.argv[2]);
+const file = path.resolve(process.cwd(), process.argv[2]);
 
-const key       = process.argv[3];
+const key = process.argv[3];
 
 // const value     = process.argv[4];
 
-if ( ! fs.existsSync(file) ) {
-
-    throw `File "${file}" doesn't exist`;
+if (!fs.existsSync(file)) {
+  throw `File "${file}" doesn't exist`;
 }
 
 try {
-    fs.accessSync(file, fs.constants.R_OK);
-}
-catch (e) {
-
-    throw `file '${file}' is not readdable`;
+  fs.accessSync(file, fs.constants.R_OK);
+} catch (e) {
+  throw `file '${file}' is not readdable`;
 }
 
 // try {
@@ -41,12 +36,12 @@ catch (e) {
 // }
 
 function isArray(obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-};
+  return Object.prototype.toString.call(obj) === "[object Array]";
+}
 
 function isObject(obj) {
-    return Object.prototype.toString.call(obj) === '[object Object]';
-};
+  return Object.prototype.toString.call(obj) === "[object Object]";
+}
 
 /**
  *
@@ -57,64 +52,52 @@ function isObject(obj) {
  * @returns {*}
  */
 const get = function (source, key) {
+  // log('key', key);
+  // log('source', source)
 
-    // log('key', key);
-    // log('source', source)
+  if (!key) {
+    return source;
+  }
 
-    if ( ! key ) {
+  if (typeof key === "string" && key.includes(".")) {
+    key = key.split(".");
+  }
 
-        return source;
-    }
+  if (!isArray(key)) {
+    key = [key];
+  }
 
-    if (typeof key === 'string' && key.includes('.')) {
+  let tmp = source,
+    k;
 
-        key = key.split('.');
-    }
-
-    if ( ! isArray(key)) {
-
-        key = [key];
-    }
-
-    let tmp = source, k;
-
-    while (k = key.shift()) {
-
-        try {
-            if (key.length) {
-
-                tmp = tmp[k];
-            }
-            else {
-
-                if (typeof tmp[k] === 'undefined') {
-
-                    return arguments[2];
-                }
-
-                return tmp[k];
-            }
+  while ((k = key.shift())) {
+    try {
+      if (key.length) {
+        tmp = tmp[k];
+      } else {
+        if (typeof tmp[k] === "undefined") {
+          return arguments[2];
         }
-        catch (e) {
 
-            return arguments[2];
-        }
+        return tmp[k];
+      }
+    } catch (e) {
+      return arguments[2];
     }
-}
+  }
+};
 
 const json = require(file);
 
 const ret = get(json, key);
 
 if (isObject(ret) || isArray(ret)) {
+  console.log(JSON.stringify(ret, null, 4));
 
-    console.log(JSON.stringify(ret, null, 4));
-
-    process.exit(0);
+  process.exit(0);
 }
 
 console.log(ret);
-
 
 // test.js
 // node bash/docker-registry/test.js
@@ -131,5 +114,3 @@ console.log(ret);
 //
 //     console.log('call else')
 // }
-
-

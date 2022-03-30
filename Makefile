@@ -7,3 +7,6 @@ build:
 
 testport:
 	/bin/bash testport.sh
+
+fix:
+	yarn style:fix

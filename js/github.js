@@ -479,15 +479,23 @@ log.green("defined", "window.manipulation");
 
     log.blue("Promise.all loadJs loaded");
 
-    window.sasync.loaded.mountpermalink();
+    await window.sasync.loaded.mountpermalink();
 
-    window.toc();
+    await window.toc();
 
-    window.do_sort();
+    await window.do_sort();
 
-    window.doace();
+    if (typeof window.beforeAceEventPromise === "function") {
+      log.blue("executed", "window.doace() waiting for window.beforeAceEventPromise() found");
 
-    window.scrollToHash();
+      await window.beforeAceEventPromise();
+    } else {
+      log.blue("executed", "window.doace() waiting for window.beforeAceEventPromise() NOT found");
+    }
+
+    await window.doace();
+
+    await window.scrollToHash();
 
     log.blue("DOMContentLoaded", "window.doace [triggered in github.js]");
   } catch (e) {
@@ -705,7 +713,6 @@ body .github-profile:hover {
   })();
 
   if (window.isItLocalhost) {
-
     // for some reason (maybe due to /etc/hosts record to handle local server from domain http://stopsopa.github.io.local/
     // there is huge delay in the locahost server request from the browser
     // The idea behind pinging it every few seconds is to maybe somehow keep local dns cache fresh
@@ -733,71 +740,60 @@ body .github-profile:hover {
     editors = {};
 
   window.doace = function () {
-    var _waitForPromise;
-
-    if (typeof window.waitForPromise === "function") {
-      log.blue("executed", "window.doace() waiting for window.waitForPromise() found");
-
-      _waitForPromise = Promise.resolve(window.waitForPromise());
-    } else {
-      log.blue("executed", "window.doace() waiting for window.waitForPromise() NOT found");
-
-      _waitForPromise = Promise.resolve();
-    }
-
     if (!p) {
-      p = _waitForPromise.then(function () {
-        return new Promise(function (resolve) {
-          (function run() {
-            if (window._ && window.ace && window.ace.edit) {
-              log.blue("executed", "window.doace() inside - window.ace.edit found, binding body click for copy code from editor feature");
+      /**
+       * Binding delegation event for copying to clipboard - should be registered once per page
+       */
+      p = new Promise(function (resolve) {
+        (function run() {
+          if (window._ && window.ace && window.ace.edit) {
+            log.blue("executed", "window.doace() inside - window.ace.edit found, binding body click for copy code from editor feature");
 
-              document.body.addEventListener("click", function (e) {
-                var el = e.target;
+            document.body.addEventListener("click", function (e) {
+              var el = e.target;
 
-                var match = el.matches("[data-lang] > .copy");
+              var match = el.matches("[data-lang] > .copy");
 
-                if (match) {
-                  log.blue("executed", "clicked [data-lang] > .copy");
+              if (match) {
+                log.blue("executed", "clicked [data-lang] > .copy");
 
-                  var editor = editors[el.parentNode.dataset.ace];
+                var editor = editors[el.parentNode.dataset.ace];
 
-                  if (editor) {
-                    log("found editor, let's copy");
+                if (editor) {
+                  log("found editor, let's copy");
 
-                    var textarea = document.createElement("textarea");
-                    manipulation.append(document.body, textarea);
-                    textarea.value = editor.getValue();
-                    textarea.select();
-                    document.execCommand("copy");
-                    textarea.value = "";
-                    manipulation.remove(textarea);
+                  var textarea = document.createElement("textarea");
+                  manipulation.append(document.body, textarea);
+                  textarea.value = editor.getValue();
+                  textarea.select();
+                  document.execCommand("copy");
+                  textarea.value = "";
+                  manipulation.remove(textarea);
 
-                    (function () {
-                      el.dataset.or = el.dataset.or || el.innerHTML;
+                  (function () {
+                    el.dataset.or = el.dataset.or || el.innerHTML;
 
-                      el.innerHTML = "☑️";
+                    el.innerHTML = "☑️";
 
-                      setTimeout(function () {
-                        el.innerHTML = el.dataset.or;
-                      }, 1000);
-                    })();
-                  }
-                } else {
-                  // log.blue('executed', 'clicked something else than [data-lang] > .copy')
+                    setTimeout(function () {
+                      el.innerHTML = el.dataset.or;
+                    }, 1000);
+                  })();
                 }
-              });
+              } else {
+                // log.blue('executed', 'clicked something else than [data-lang] > .copy')
+              }
+            });
 
-              resolve();
-            } else {
-              setTimeout(run, 100);
-            }
-          })();
-        });
+            resolve();
+          } else {
+            setTimeout(run, 100);
+          }
+        })();
       });
     }
 
-    p.then(function () {
+    return p.then(function () {
       (function () {
         var selector = "body script";
 
@@ -1043,11 +1039,11 @@ body .github-profile:hover {
 
 // scroll to # permalink
 (function () {
-  window.scrollToHash = function () {
-    log.blue("executed", "window.scrollToHash location.hash empty");
-  };
-
-  if (location.hash !== "") {
+  if (location.hash === "") {
+    window.scrollToHash = function () {
+      log.blue("executed", "window.scrollToHash location.hash empty");
+    };
+  } else {
     window.scrollToHash = function () {
       var selector = "#" + trim(location.hash, "#");
 

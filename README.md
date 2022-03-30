@@ -94,7 +94,7 @@
                         resolve();
                     });
 
-                    window.waitForPromise = function () {
+                    window.beforeAceEventPromise = function () {
 
                         return p;
                     }

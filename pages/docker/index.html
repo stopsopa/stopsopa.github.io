@@ -1,182 +1,172 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
     <script>
-        (function () {
-            var resolve;
-            var p = new Promise(function (res) {
-                resolve = res;
-            });
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
 
-            document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+            var text = tag.innerHTML;
 
-                Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+            text = text.replace(/domain\.com/g, location.origin);
 
-                    var text = tag.innerHTML;
+            tag.innerHTML = text;
+          });
 
-                    text = text.replace(/domain\.com/g, location.origin)
+          resolve();
+        });
 
-                    tag.innerHTML = text;
-                });
-
-                resolve();
-            });
-
-            window.waitForPromise = function () {
-
-                return p;
-            }
-        }())
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
     </script>
-</head>
-<body class="layout" toc>
-
+  </head>
+  <body class="layout" toc>
     <div class="body">
-        <div class="inside">
+      <div class="inside">
+        <div class="cards">
+          <h2>Images - Dockerfile</h2>
+          <a href="./images.html">Images - Dockerfile</a>
 
-            <div class="cards">
+          <h2>Useful commands</h2>
+          <script type="editor" data-lang="sh">
 
-                <h2>Images - Dockerfile</h2>
-                <a href="./images.html">Images - Dockerfile</a>
+            docker history --format "\t{{.Size}}\t\t{{.CreatedBy}}" 1de239ccac3e --no-trunc
 
-                <h2>Useful commands</h2>
-                <script type="editor" data-lang="sh">
-                
-docker history --format "\t{{.Size}}\t\t{{.CreatedBy}}" 1de239ccac3e --no-trunc 
+            # determine docker resources usage
+            docker system df
 
-# determine docker resources usage
-docker system df
+            # determine image size
+            docker system df -v | grep 695ab6fa12ce
+                # to get IMAGE ID
+                docker images | grep cypress/included
 
-# determine image size
-docker system df -v | grep 695ab6fa12ce
-    # to get IMAGE ID
-    docker images | grep cypress/included
+            docker image prune -a --force --filter "until=480h"
+            docker system prune --all --volumes --force
+                # from: https://docs.docker.com/config/pruning/
 
-docker image prune -a --force --filter "until=480h"
-docker system prune --all --volumes --force
-    # from: https://docs.docker.com/config/pruning/
-    
-# print entrypoint of an image:
-docker inspect IMAGENAME | jq '.[0].ContainerConfig.Entrypoint[0]' -r
+            # print entrypoint of an image:
+            docker inspect IMAGENAME | jq '.[0].ContainerConfig.Entrypoint[0]' -r
 
-docker container rm puppeteer-test -f
-    # stop and remove container immediately    
+            docker container rm puppeteer-test -f
+                # stop and remove container immediately
 
-DOCKER_BUILDKIT=1 docker build . --platform linux/amd64 -f docker/Dockerfile -t xxx:latest 
-    # https://github.com/docker/docker.github.io/issues/12231
-# passing env as is
-$ CYPRESS_VIDEO=false
-$ docker run --name name --rm -d -it -v $PWD:/e2e -w /e2e -e CYPRESS_VIDEO -e "PORT=8089" -p "8089:8089" --entrypoint="" cypress/included:3.2.0 node -v
+            DOCKER_BUILDKIT=1 docker build . --platform linux/amd64 -f docker/Dockerfile -t xxx:latest
+                # https://github.com/docker/docker.github.io/issues/12231
+            # passing env as is
+            $ CYPRESS_VIDEO=false
+            $ docker run --name name --rm -d -it -v $PWD:/e2e -w /e2e -e CYPRESS_VIDEO -e "PORT=8089" -p "8089:8089" --entrypoint="" cypress/included:3.2.0 node -v
 
-# running in pipelines without -t
-$ docker run --user $(id -u):$(id -g) -i image_name command args
-$ CURRENT_UID=$(id -u):$(id -g) docker-compose up
+            # running in pipelines without -t
+            $ docker run --user $(id -u):$(id -g) -i image_name command args
+            $ CURRENT_UID=$(id -u):$(id -g) docker-compose up
 
-host.docker.internal
-    # from: https://docs.docker.com/docker-for-mac/networking/#use-cases-and-workarounds
-    g(Networking features in Docker Desktop for Mac Use cases and workarounds I WANT TO CONNECT FROM A CONTAINER TO A SERVICE ON THE HOST)
-    # on linux you can use:
-        https://stackoverflow.com/a/48547074
+            host.docker.internal
+                # from: https://docs.docker.com/docker-for-mac/networking/#use-cases-and-workarounds
+                g(Networking features in Docker Desktop for Mac Use cases and workarounds I WANT TO CONNECT FROM A CONTAINER TO A SERVICE ON THE HOST)
+                # on linux you can use:
+                    https://stackoverflow.com/a/48547074
 
-docker login https://docker-registry.xxx.com --username=yourhubusername --password=yourpassword
+            docker login https://docker-registry.xxx.com --username=yourhubusername --password=yourpassword
 
-# https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#build-an-image-using-a-dockerfile-from-stdin-without-sending-build-context
-# inline Dockerfile
-cat <<EOF | docker build --rm -t local_c7_systemd -
-FROM centos:7
-...
-EOF
+            # https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#build-an-image-using-a-dockerfile-from-stdin-without-sending-build-context
+            # inline Dockerfile
+            cat <<EOF | docker build --rm -t local_c7_systemd -
+            FROM centos:7
+            ...
+            EOF
 
-docker run --rm -it local_c7_systemd bash
+            docker run --rm -it local_c7_systemd bash
 
-# pushing image
-# nvm ls-remote
-docker run -it privaterepo.com/node:13.14.0-alpine sh 
-docker pull node:13.14.0-alpine
-docker tag node:13.14.0-alpine privaterepo.com/node:13.14.0-alpine
-docker push privaterepo.com/node:13.14.0-alpine
+            # pushing image
+            # nvm ls-remote
+            docker run -it privaterepo.com/node:13.14.0-alpine sh
+            docker pull node:13.14.0-alpine
+            docker tag node:13.14.0-alpine privaterepo.com/node:13.14.0-alpine
+            docker push privaterepo.com/node:13.14.0-alpine
 
-# run inline bash script in container
-# to run pod without stopping
-docker run -i --name test --rm -d alpine:3.14.2 tail -f /dev/null
-# then run script
-cat <<EOF | docker exec -i test /bin/sh
-echo a b c | awk '{print \$2}'
-EOF
-# or run as run straight away
-cat <<EOF | docker run -i --name test --rm alpine:3.14.2 /bin/sh
-echo a b c | awk '{print \$2}'
-EOF
+            # run inline bash script in container
+            # to run pod without stopping
+            docker run -i --name test --rm -d alpine:3.14.2 tail -f /dev/null
+            # then run script
+            cat <<EOF | docker exec -i test /bin/sh
+            echo a b c | awk '{print \$2}'
+            EOF
+            # or run as run straight away
+            cat <<EOF | docker run -i --name test --rm alpine:3.14.2 /bin/sh
+            echo a b c | awk '{print \$2}'
+            EOF
 
-cat <<EOF | docker build --progress=plain -t project:node-multi_tl -
-FROM node:14.17.4-alpine AS base_stage
-RUN apk --no-cache add curl
-RUN apk update && apk upgrade && apk add curl
-ENV TEST_ENV="test..."
-ENTRYPOINT ["tail", "-f", "/dev/null"]
-EOF
-docker run -it project:node-multi_tl
-# if you need to restrict amount of memory or CPU power the
-# container can use, see
-# https://docs.docker.com/config/containers/resource_constraints/
-# restrict total memory
-# --memory=600m --memory-swap=600m
-# restrict CPU share
-# --cpus=0.3
+            cat <<EOF | docker build --progress=plain -t project:node-multi_tl -
+            FROM node:14.17.4-alpine AS base_stage
+            RUN apk --no-cache add curl
+            RUN apk update && apk upgrade && apk add curl
+            ENV TEST_ENV="test..."
+            ENTRYPOINT ["tail", "-f", "/dev/null"]
+            EOF
+            docker run -it project:node-multi_tl
+            # if you need to restrict amount of memory or CPU power the
+            # container can use, see
+            # https://docs.docker.com/config/containers/resource_constraints/
+            # restrict total memory
+            # --memory=600m --memory-swap=600m
+            # restrict CPU share
+            # --cpus=0.3
+          </script>
+          <h2>Working with HOST MACHINE</h2>
+          <script type="editor" data-lang="sh">
 
-                </script>
-                <h2>Working with HOST MACHINE</h2>
-                <script type="editor" data-lang="sh">
+            How to communicate with service/server that lives on the host machine from within container
+            # MAC
+            # use from inside the host.docker.internal
+            # more
+            #     https://docs.docker.com/desktop/mac/networking/
 
-How to communicate with service/server that lives on the host machine from within container
-# MAC
-# use from inside the host.docker.internal
-# more
-#     https://docs.docker.com/desktop/mac/networking/
+            # LINUX
+            # use --net=host in cli
+            # also --add-host=host.docker.internal:host-gateway    or    --add-host host.docker.internal:host-gateway
+            # more
+            #     https://docs.docker.com/network/host/
+            #     https://stackoverflow.com/a/24326540
+          </script>
 
-# LINUX
-# use --net=host in cli
-# also --add-host=host.docker.internal:host-gateway    or    --add-host host.docker.internal:host-gateway
-# more
-#     https://docs.docker.com/network/host/
-#     https://stackoverflow.com/a/24326540
+          <h2>Docker registry urls</h2>
+          <script type="editor" data-lang="sh">
 
-                </script>
+            https://domain.com/v2/_catalog
+            https://domain.com/v2/username/appname/tags/list
 
-                <h2>Docker registry urls</h2>
-                <script type="editor" data-lang="sh">
+            https://hub.docker.com/v2/search/repositories/?query=browserless
 
-https://domain.com/v2/_catalog
-https://domain.com/v2/username/appname/tags/list
+            https://hub.docker.com/v2/repositories/browserless
+            https://hub.docker.com/v2/repositories/browserless/chrome/
+            https://hub.docker.com/v2/repositories/browserless/chrome/tags
 
-https://hub.docker.com/v2/search/repositories/?query=browserless
+            ls -la /var/lib/docker/registry/docker/registry/v2/repositories
+            # rm -rf /var/lib/docker/registry/docker/registry/v2/reposit...
 
-https://hub.docker.com/v2/repositories/browserless
-https://hub.docker.com/v2/repositories/browserless/chrome/
-https://hub.docker.com/v2/repositories/browserless/chrome/tags
+            # removing image:
+            curl -v --silent -H "authorization: Basic YWRta...akc=" -X DELETE https://docker-registry.domain.com/v2/puppeteer-1-20-0/manifests/sha256:ef75836309692....53dff9e325167
+          </script>
+          <a href="https://github.com/docker/distribution/blob/master/docs/spec/api.md#detail">https://github.com/docker/distribution/blob/master/docs/spec/api.md#detail</a>
+          <a href="./listtags.html">List tags tool</a>
 
-ls -la /var/lib/docker/registry/docker/registry/v2/repositories
-# rm -rf /var/lib/docker/registry/docker/registry/v2/reposit...
-
-# removing image:
-curl -v --silent -H "authorization: Basic YWRta...akc=" -X DELETE https://docker-registry.domain.com/v2/puppeteer-1-20-0/manifests/sha256:ef75836309692....53dff9e325167
-
-                </script>
-                <a href="https://github.com/docker/distribution/blob/master/docs/spec/api.md#detail">https://github.com/docker/distribution/blob/master/docs/spec/api.md#detail</a>
-                <a href="./listtags.html">List tags tool</a>
-
-                <h2>Images - Dockerfile</h2>
-                <a href="https://github.com/moby/moby/issues/32868#issuecomment-297870441">About Multi-stage and Dockerfile syntax</a>
-                <br />
-                <a href="https://github.com/moby/moby/issues/32925">Origin of Buildkit</a>
-            </div>
+          <h2>Images - Dockerfile</h2>
+          <a href="https://github.com/moby/moby/issues/32868#issuecomment-297870441">About Multi-stage and Dockerfile syntax</a>
+          <br />
+          <a href="https://github.com/moby/moby/issues/32925">Origin of Buildkit</a>
         </div>
+      </div>
     </div>
     <script src="/js/github.js"></script>
-</body>
+  </body>
 </html>

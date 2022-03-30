@@ -34,7 +34,7 @@ const list = require("dotenv").config({
 });
 
 for (const [key, value] of Object.entries(list.parsed)) {
-  if (!process.argv[3] && typeof copy[key] === 'string') {
+  if (!process.argv[3] && typeof copy[key] === "string") {
     continue;
   }
   console.log(`export ${key}="${value}"`);

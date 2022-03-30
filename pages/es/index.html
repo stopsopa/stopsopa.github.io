@@ -1,58 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-</head>
-<body class="layout" toc>
-
+  </head>
+  <body class="layout" toc>
     <div class="body">
-        <div class="inside">
-            <div class="cards toc">
-                <h1>Table of Contents</h1>
-                <ul>
-                    <li><a href="../kibana/index.html">kibana</a></li>
-                </ul>
-            </div>
-            <div class="cards">
-
-                <h2>Elastic Common Schema (ECS)</h2>
-                <a href="https://www.elastic.co/guide/en/ecs/current/index.html">https://www.elastic.co/guide/en/ecs/current/index.html</a>
-                <br>
-                <a href="https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html">ECS Field Referenceedit</a>
-                <h2>Udemy course:</h2>
-                <a href="https://github.com/codingexplained/data-visualization-with-kibana/blob/master/adding-index-templates.md">github index template</a>
-                <br>
-                <script type="editor" data-lang="sh">
-
-helm version
-helm ls --all
-helm delete gitlab-runner
-
-
-    helm delete --namespace gitlab gitlab-runner
-    
-    helm ls --namespace gitlab --all
-
-    helm upgrade --namespace gitlab gitlab-runner \
-        --set gitlabUrl=https://gitlab.xxx.com/,runnerRegistrationToken=xxx \
-        gitlab/gitlab-runner
-        
-helm search repo        
-
-            </script>
-
-                <h2>To learn</h2>
-                <a href="https://www.elastic.co/training/free?baymax=rtp&elektra=docs&storm=sidebar3">ES training</a>
-                <br>
-                <a href="https://github.com/elastic/kibana/issues/58175">Kibana nested datatype issue</a>
-                <br>
-            </div>
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul>
+            <li><a href="../kibana/index.html">kibana</a></li>
+          </ul>
         </div>
+        <div class="cards">
+          <h2>Elastic Common Schema (ECS)</h2>
+          <a href="https://www.elastic.co/guide/en/ecs/current/index.html">https://www.elastic.co/guide/en/ecs/current/index.html</a>
+          <br />
+          <a href="https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html">ECS Field Referenceedit</a>
+          <h2>Udemy course:</h2>
+          <a href="https://github.com/codingexplained/data-visualization-with-kibana/blob/master/adding-index-templates.md">github index template</a>
+          <br />
+          <script type="editor" data-lang="sh">
+
+            helm version
+            helm ls --all
+            helm delete gitlab-runner
+
+
+                helm delete --namespace gitlab gitlab-runner
+
+                helm ls --namespace gitlab --all
+
+                helm upgrade --namespace gitlab gitlab-runner \
+                    --set gitlabUrl=https://gitlab.xxx.com/,runnerRegistrationToken=xxx \
+                    gitlab/gitlab-runner
+
+            helm search repo
+          </script>
+
+          <h2>To learn</h2>
+          <a href="https://www.elastic.co/training/free?baymax=rtp&elektra=docs&storm=sidebar3">ES training</a>
+          <br />
+          <a href="https://github.com/elastic/kibana/issues/58175">Kibana nested datatype issue</a>
+          <br />
+        </div>
+      </div>
     </div>
     <script src="/js/github.js"></script>
-</body>
+  </body>
 </html>

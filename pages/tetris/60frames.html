@@ -1,59 +1,62 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>60 frames</title>
     <style>
-        .relative {
-            position: relative;
-        }
-        .relative > div {
-            float: left;
-            width: 20px;
-            height: 20px;
-            border: 1px solid gray;
-        }
-        .relative > div.black {
-
-            background-color: black;
-        }
+      .relative {
+        position: relative;
+      }
+      .relative > div {
+        float: left;
+        width: 20px;
+        height: 20px;
+        border: 1px solid gray;
+      }
+      .relative > div.black {
+        background-color: black;
+      }
     </style>
-</head>
-<body>
-<div class="relative">
-    <div></div>
-    <div></div>
-</div>
-<div> &nbsp; level: <span></span></div>
-<br>
-<br>
-<button class="start">start</button>
-<button class="stop">stop</button>
-<button class="up">up</button>
-<button class="down">down</button>
-|
-<button class="boost">boost</button>
-<br>
-press and hold space to test fuze
+  </head>
+  <body>
+    <div class="relative">
+      <div></div>
+      <div></div>
+    </div>
+    <div>&nbsp; level: <span></span></div>
+    <br />
+    <br />
+    <button class="start">start</button>
+    <button class="stop">stop</button>
+    <button class="up">up</button>
+    <button class="down">down</button>
+    |
+    <button class="boost">boost</button>
+    <br />
+    press and hold space to test fuze
 
-<script>
+    <script>
+      var log = (function () {
+        try {
+          return console.log;
+        } catch (e) {
+          return function () {};
+        }
+      })();
 
-    var log = (function () {try {return console.log}catch (e) {return function () {}}}())
+      // https://tetris.wiki/Tetris_(NES,_Nintendo)#:~:text=Soft%20drop%20speed%20is%201,frames%20longer%20than%20the%20last.
+      // var framesPerSec = 60
+      var framesPerSec = 55; // after correction
+      var msPerFrame = 1000 / framesPerSec; // 16.66...666
 
-    // https://tetris.wiki/Tetris_(NES,_Nintendo)#:~:text=Soft%20drop%20speed%20is%201,frames%20longer%20than%20the%20last.
-    // var framesPerSec = 60
-    var framesPerSec = 55 // after correction
-    var msPerFrame = 1000 / framesPerSec; // 16.66...666
+      var fuzeTime = 2000;
 
-    var fuzeTime = 2000;
+      log("check1", fuzeTime);
+      log("check2", msPerFrame * 48);
 
-    log('check1', fuzeTime)
-    log('check2', msPerFrame * 48)
-
-    var levels = [
+      var levels = [
         msPerFrame * 48, // 0
         msPerFrame * 43, // 1
         msPerFrame * 38, // 2
@@ -67,115 +70,103 @@ press and hold space to test fuze
         msPerFrame * 5, // 10
         msPerFrame * 4, // 11
         msPerFrame * 3, // 12
-    ]
+      ];
 
-    var maxlevel = levels.length - 1;
+      var maxlevel = levels.length - 1;
 
-    var start = document.querySelector('.start')
-    var stop = document.querySelector('.stop')
-    var up = document.querySelector('.up')
-    var down = document.querySelector('.down')
-    var boost = document.querySelector('.boost')
-    var span = document.querySelector('span')
-    var a = document.querySelector('.relative > :first-child');
-    var b = document.querySelector('.relative > :last-child');
+      var start = document.querySelector(".start");
+      var stop = document.querySelector(".stop");
+      var up = document.querySelector(".up");
+      var down = document.querySelector(".down");
+      var boost = document.querySelector(".boost");
+      var span = document.querySelector("span");
+      var a = document.querySelector(".relative > :first-child");
+      var b = document.querySelector(".relative > :last-child");
 
-    var handler;
-    var level = 0;
-    var fuze = false;
-    var fuzeReleased = true;
+      var handler;
+      var level = 0;
+      var fuze = false;
+      var fuzeReleased = true;
 
-    var renderLevel = function () {
-      span.innerHTML = level + (fuze ? ' fuze' : '');
-    }
-    var run = false;
-    function tick() {
-
+      var renderLevel = function () {
+        span.innerHTML = level + (fuze ? " fuze" : "");
+      };
+      var run = false;
+      function tick() {
         clearTimeout(handler);
 
-        if (a.classList.contains('black')) {
-            a.classList.remove('black')
-            b.classList.add('black');
-        }
-        else {
-            b.classList.remove('black')
-            a.classList.add('black');
+        if (a.classList.contains("black")) {
+          a.classList.remove("black");
+          b.classList.add("black");
+        } else {
+          b.classList.remove("black");
+          a.classList.add("black");
         }
 
         if (run) {
-            handler = setTimeout(tick, fuze ? fuzeTime : levels[level]);
+          handler = setTimeout(tick, fuze ? fuzeTime : levels[level]);
         }
 
         if (fuze) {
+          fuze = false;
 
-            fuze = false;
-
-            fuzeReleased = true;
+          fuzeReleased = true;
         }
 
-        renderLevel()
-    }
-    start.addEventListener('click', function () {
-      run = true;
-      tick();
-    });
-    stop.addEventListener('click', function () {
-      run = false;
-      clearTimeout(handler);
-    });
-    up.addEventListener('click', function () {
-      if (level < ( levels.length - 1)) {
-        level += 1;
+        renderLevel();
       }
-      renderLevel()
-    });
-    down.addEventListener('click', function () {
-      if (level > 0) {
-        level -= 1;
-      }
-      renderLevel()
-    });
-
-    (function () {
-
-      var mem;
-
-      boost.addEventListener('mousedown', function () {
-
-        mem = level;
-
-        level = maxlevel;
-
+      start.addEventListener("click", function () {
+        run = true;
         tick();
-
-        log('down/;..')
+      });
+      stop.addEventListener("click", function () {
+        run = false;
+        clearTimeout(handler);
+      });
+      up.addEventListener("click", function () {
+        if (level < levels.length - 1) {
+          level += 1;
+        }
+        renderLevel();
+      });
+      down.addEventListener("click", function () {
+        if (level > 0) {
+          level -= 1;
+        }
+        renderLevel();
       });
 
-      boost.addEventListener('mouseup', function () {
+      (function () {
+        var mem;
 
-        level = mem;
+        boost.addEventListener("mousedown", function () {
+          mem = level;
 
-        renderLevel()
+          level = maxlevel;
 
-        log('up/;..')
-      });
-    }());
+          tick();
 
-    document.addEventListener('keydown', function (e) {
+          log("down/;..");
+        });
 
-        if ( fuzeReleased && e.key === ' ') {
+        boost.addEventListener("mouseup", function () {
+          level = mem;
 
+          renderLevel();
+
+          log("up/;..");
+        });
+      })();
+
+      document.addEventListener("keydown", function (e) {
+        if (fuzeReleased && e.key === " ") {
           fuze = fuzeTime;
 
           fuzeReleased = false;
 
-          renderLevel()
+          renderLevel();
         }
-    });
-
-
-
-
-</script>
-</body>
+      });
+    </script>
+  </body>
 </html>

@@ -29,426 +29,344 @@ node ../../../bash/kuber/setyaml.js ../deployment-cli-3a0b.yaml --plain 8.5876 -
 
  */
 
-const path      = require('path');
+const path = require("path");
 
-const fs        = require('fs');
+const fs = require("fs");
 
-const yaml      = require('js-yaml');
+const yaml = require("js-yaml");
 
-const log       = function (data) {
-
-    console.log(JSON.stringify(data, null, 4));
-}
+const log = function (data) {
+  console.log(JSON.stringify(data, null, 4));
+};
 
 const args = (function (obj, tmp) {
-    process.argv
-        .slice(2)
-        .map(a => {
+  process.argv.slice(2).map((a) => {
+    if (a.indexOf("--") === 0) {
+      tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, "${1}");
 
-            if (a.indexOf('--') === 0) {
+      if (tmp) {
+        obj[tmp] = typeof obj[tmp] === "undefined" ? true : obj[tmp];
+      }
 
-                tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, '${1}');
+      return;
+    }
 
-                if (tmp) {
+    if (a === "true") {
+      a = true;
+    }
 
-                    obj[tmp] = (typeof obj[tmp] === 'undefined') ? true : obj[tmp];
-                }
+    if (a === "false") {
+      a = false;
+    }
 
-                return;
-            }
+    if (tmp !== null) {
+      if (obj[tmp] === true) {
+        return (obj[tmp] = [a]);
+      }
 
-            if (a === 'true') {
+      try {
+        obj[tmp].push(a);
+      } catch (e) {}
+    }
+  });
 
-                a = true
-            }
+  Object.keys(obj).map((k) => {
+    obj[k] !== true && obj[k].length === 1 && (obj[k] = obj[k][0]);
+    obj[k] === "false" && (obj[k] = false);
+  });
 
-            if (a === 'false') {
+  return {
+    all: () => JSON.parse(JSON.stringify(obj)),
+    get: (key, def) => {
+      var t = JSON.parse(JSON.stringify(obj));
 
-                a = false
-            }
+      if (typeof def === "undefined") return t[key];
 
-            if (tmp !== null) {
+      return typeof t[key] === "undefined" ? def : t[key];
+    },
+    update: (data) => {
+      obj = data;
+    },
+  };
+})({});
 
-                if (obj[tmp] === true) {
+const file = path.resolve(process.cwd(), process.argv[2]);
 
-                    return obj[tmp] = [a];
-                }
+const block = args.get("block", false);
 
-                try {
-
-                    obj[tmp].push(a);
-                }
-                catch (e) {
-
-                }
-            }
-        })
-    ;
-
-    Object.keys(obj).map(k => {
-        (obj[k] !== true && obj[k].length === 1) && (obj[k] = obj[k][0]);
-        (obj[k] === 'false') && (obj[k] = false);
-    });
-
-    return {
-        all: () => JSON.parse(JSON.stringify(obj)),
-        get: (key, def) => {
-
-            var t = JSON.parse(JSON.stringify(obj));
-
-            if (typeof def === 'undefined')
-
-                return t[key];
-
-            return (typeof t[key] === 'undefined') ? def : t[key] ;
-        },
-        update: data => {
-
-            obj = data;
-        }
-    };
-}({}));
-
-const file      = path.resolve(process.cwd() , process.argv[2]);
-
-const block     = args.get('block', false);
-
-if ( typeof block !== 'string' ) {
-
-    throw new Error(`${__filename} error: block is not a string, use --block argument`);
+if (typeof block !== "string") {
+  throw new Error(`${__filename} error: block is not a string, use --block argument`);
 }
 
-const key       = args.get('key', false);
+const key = args.get("key", false);
 
-if ( typeof key !== 'string' ) {
-
-    throw new Error(`${__filename} error: key is not a string, use --key argument`);
+if (typeof key !== "string") {
+  throw new Error(`${__filename} error: key is not a string, use --key argument`);
 }
 
 let value = undefined;
 
 switch (true) {
-    case Boolean(args.get('json', false)):
+  case Boolean(args.get("json", false)):
+    try {
+      value = args.get("json", false);
 
-        try {
+      if (typeof value !== "string") {
+        throw new Error(`value is not a string`);
+      }
 
-            value = args.get('json', false);
+      value = JSON.parse(value);
+    } catch (e) {
+      throw new Error(`${__filename} json parse error: ${e}`);
+    }
 
-            if (typeof value !== 'string') {
+    break;
+  case Boolean(args.get("yaml", false)):
+    try {
+      value = args.get("yaml", false);
 
-                throw new Error(`value is not a string`);
-            }
+      if (typeof value !== "string") {
+        throw new Error(`value is not a string`);
+      }
 
-            value = JSON.parse(value);
-        }
-        catch (e) {
+      value = yaml.safeLoad(value);
+    } catch (e) {
+      throw new Error(`${__filename} yaml parse error: ${e}`);
+    }
 
-            throw new Error(`${__filename} json parse error: ${e}`);
-        }
+    break;
+  case Boolean(args.get("plain", false)):
+    try {
+      value = args.get("plain", false);
 
-        break;
-    case Boolean(args.get('yaml', false)):
+      if (typeof value !== "string") {
+        throw new Error(`value is not a string`);
+      }
 
-        try {
+      let type = args.get("type", false);
 
-            value = args.get('yaml', false);
+      if (type) {
+        const parts = type.split(/[\[\]]/g);
 
-            if (typeof value !== 'string') {
+        const precision = parseInt(parts[1] || "2", 10);
 
-                throw new Error(`value is not a string`);
-            }
-
-            value = yaml.safeLoad(value);
-        }
-        catch (e) {
-
-            throw new Error(`${__filename} yaml parse error: ${e}`);
-        }
-
-        break;
-    case Boolean(args.get('plain', false)):
-
-        try {
-
-            value = args.get('plain', false);
-
-            if (typeof value !== 'string') {
-
-                throw new Error(`value is not a string`);
-            }
-
-            let type = args.get('type', false);
-
-            if (type) {
-
-                const parts = type.split(/[\[\]]/g);
-
-                const precision = parseInt(parts[1] || '2', 10);
-
-                if (parts && parts[0]) {
-
-                    type = parts[0];
-                }
-
-                switch (type) {
-                    case 'integer':
-                    case 'int':
-                        value = parseInt(value, 10);
-                        break;
-                    case 'float':
-                    case 'double':
-                        value = parseFloat(parseFloat(value, 10).toFixed(precision));
-                        break;
-                    case 'boolean':
-                    case 'bool':
-                        value = Boolean(value);
-                        break;
-                    default:
-                        throw new Error(`type have to be one of integer,int,float,float[5],double,boolean,bool but it is '${type}'`);
-                }
-            }
-        }
-        catch (e) {
-
-            throw new Error(`${__filename} plain parse error: ${e}`);
+        if (parts && parts[0]) {
+          type = parts[0];
         }
 
-        break;
+        switch (type) {
+          case "integer":
+          case "int":
+            value = parseInt(value, 10);
+            break;
+          case "float":
+          case "double":
+            value = parseFloat(parseFloat(value, 10).toFixed(precision));
+            break;
+          case "boolean":
+          case "bool":
+            value = Boolean(value);
+            break;
+          default:
+            throw new Error(`type have to be one of integer,int,float,float[5],double,boolean,bool but it is '${type}'`);
+        }
+      }
+    } catch (e) {
+      throw new Error(`${__filename} plain parse error: ${e}`);
+    }
+
+    break;
 }
 
-if ( value === undefined ) {
-
-    throw new Error(`${__filename} value is undefined, use one of parameters --json, --yaml, --plain`);
+if (value === undefined) {
+  throw new Error(`${__filename} value is undefined, use one of parameters --json, --yaml, --plain`);
 }
 
-if ( ! fs.existsSync(file) ) {
-
-    throw `${__filename} error: file "${file}" doesn't exist`;
+if (!fs.existsSync(file)) {
+  throw `${__filename} error: file "${file}" doesn't exist`;
 }
 
 try {
-
-    fs.accessSync(file, fs.constants.R_OK);
-}
-catch (e) {
-
-    throw `${__filename} error: file '${file}' is not readdable`;
+  fs.accessSync(file, fs.constants.R_OK);
+} catch (e) {
+  throw `${__filename} error: file '${file}' is not readdable`;
 }
 
 try {
-
-    fs.accessSync(file, fs.constants.W_OK);
-}
-catch (e) {
-
-    throw `${__filename} error: file '${file}' is not writtable`;
+  fs.accessSync(file, fs.constants.W_OK);
+} catch (e) {
+  throw `${__filename} error: file '${file}' is not writtable`;
 }
 
 function isArray(obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-};
+  return Object.prototype.toString.call(obj) === "[object Array]";
+}
 
 function isObject(obj) {
-    return Object.prototype.toString.call(obj) === '[object Object]';
-};
+  return Object.prototype.toString.call(obj) === "[object Object]";
+}
 
 function set(source, key, value) {
+  if (typeof key === "string") {
+    key = key.split(".");
+  }
 
-    if (typeof key === 'string') {
+  if (typeof key === "number") {
+    key = key + "";
+  }
 
-        key = key.split('.');
+  if (isObject(key)) {
+    key = Object.values(key).map((a) => (a += ""));
+  }
+
+  if (typeof key !== "string" && !key && key !== "0" && key !== "") {
+    key = [];
+  }
+
+  if (!isArray(key)) {
+    key = [key];
+  }
+
+  if (key.length) {
+    let first = true;
+
+    let ar = isArray(source);
+
+    if (!ar && !isObject(source)) {
+      source = {};
     }
 
-    if (typeof key === 'number') {
+    let kt;
 
-        key = key + '';
-    }
+    let tmp = source;
 
-    if ( isObject(key) ) {
+    let tmp2 = source;
 
-        key = Object.values(key).map(a => a += '');
-    }
+    let obb, arr;
 
-    if (typeof key !== 'string' && ! key && key !== '0' && key !== '') {
+    while (key.length) {
+      kt = key.shift();
 
-        key = [];
-    }
+      if (first) {
+        first = false;
 
-    if ( ! isArray(key) ) {
+        if (ar && !/^\d+$/.test(kt) && kt !== "") {
+          throw `if source is array and key is not integer nor empty string then its not possible to add to array, given key: ` + JSON.stringify(kt);
+        }
+      }
 
-        key = [key];
-    }
+      tmp = tmp2;
 
-    if (key.length) {
+      if (key.length) {
+        obb = isObject(tmp[kt]);
 
-        let first = true;
+        arr = isArray(tmp[kt]);
 
-        let ar = isArray(source);
-
-        if ( ! ar && ! isObject(source) ) {
-
-            source = {};
+        if (!(obb || arr)) {
+          if (key[0] === "") {
+            arr || (tmp[kt] = []);
+          } else {
+            obb || (tmp[kt] = {});
+          }
         }
 
-        let kt;
-
-        let tmp     = source;
-
-        let tmp2    = source;
-
-        let obb, arr;
-
-        while (key.length) {
-
-            kt = key.shift();
-
-            if (first) {
-
-                first = false;
-
-                if ( ar && !/^\d+$/.test(kt) && kt !== '') {
-
-                    throw `if source is array and key is not integer nor empty string then its not possible to add to array, given key: ` + JSON.stringify(kt)
-                }
-            }
-
-            tmp = tmp2;
-
-            if ( key.length ) {
-
-                obb = isObject(tmp[kt]);
-
-                arr = isArray(tmp[kt]);
-
-                if ( ! ( obb || arr ) ) {
-
-                    if (key[0] === '') {
-
-                        arr || (tmp[kt] = []);
-                    }
-                    else {
-
-                        obb || (tmp[kt] = {});
-                    }
-                }
-
-                tmp2 = tmp[kt];
-            }
-            else {
-
-                if (isArray(tmp)) {
-
-                    if (kt === '') {
-
-                        tmp.push(value);
-                    }
-                    else {
-
-                        tmp[kt] = value
-                    }
-                }
-                else {
-
-                    tmp[kt] = value;
-                }
-
-                return source;
-            }
+        tmp2 = tmp[kt];
+      } else {
+        if (isArray(tmp)) {
+          if (kt === "") {
+            tmp.push(value);
+          } else {
+            tmp[kt] = value;
+          }
+        } else {
+          tmp[kt] = value;
         }
-    }
 
-    return value;
+        return source;
+      }
+    }
+  }
+
+  return value;
 }
 
 function parse(yml) {
+  const dic = {};
 
-    const dic       = {};
+  if (typeof yml !== "string") {
+    throw new Error(`${__filename} error: parse: yml is not a string`);
+  }
 
-    if ( typeof yml !== 'string' ) {
+  yml = yml.split("\n");
 
-        throw new Error(`${__filename} error: parse: yml is not a string`);
+  let ind = [],
+    i = 0;
+
+  for (let k = 0, l = yml.length; k < l; k += 1) {
+    if (!isObject(dic[i])) {
+      dic[i] = dic._ = ind[i] = { v: "" };
     }
 
-    yml = yml.split("\n");
+    if (yml[k].indexOf("---") === 0) {
+      i += 1;
 
-    let ind = [], i = 0;
+      let label = yml[k]
+        .replace(/^-+(.*)$/, "$1")
+        .trim()
+        .toLowerCase();
 
-    for ( let k = 0, l = yml.length ; k < l ; k += 1 ) {
+      if (!isObject(dic[i])) {
+        dic[i] = ind[i] = { v: "", r: yml[k] };
 
-        if ( ! isObject(dic[i]) ) {
-
-            dic[i] = dic._ = ind[i] = {v: ''};
+        if (isObject(dic[label])) {
+          if (typeof dic[label].v === "string") {
+            dic[label].e = new Error(`${__filename} error: there are more than one sections with label '${label}'`);
+          }
+        } else {
+          dic[label] = ind[i];
         }
+      }
 
-        if ( yml[k].indexOf('---') === 0 ) {
-
-            i += 1;
-
-            let label = yml[k].replace(/^-+(.*)$/, '$1').trim().toLowerCase();
-
-            if ( ! isObject(dic[i]) ) {
-
-                dic[i] = ind[i] = {v: '', r: yml[k]};
-
-                if ( isObject(dic[label]) ) {
-
-                    if ( typeof dic[label].v === 'string' ) {
-
-                        dic[label].e = new Error(`${__filename} error: there are more than one sections with label '${label}'`);
-                    }
-                }
-                else {
-
-                    dic[label] = ind[i];
-                }
-            }
-
-            continue;
-        }
-
-        ind[i].v += yml[k] + "\n";
+      continue;
     }
 
-    for ( let i = 0, l = ind.length ; i < l ; i += 1 ) {
+    ind[i].v += yml[k] + "\n";
+  }
 
-        ind[i].v = yaml.safeLoad(ind[i].v);
-    }
+  for (let i = 0, l = ind.length; i < l; i += 1) {
+    ind[i].v = yaml.safeLoad(ind[i].v);
+  }
 
-    return {
-        ind,
-        dic,
-    }
+  return {
+    ind,
+    dic,
+  };
 }
 
 function dump(data) {
+  let tmp = "";
 
-    let tmp = '';
-
-    for ( let i = 0, l = data.ind.length ; i < l ; i += 1 ) {
-
-        if ( typeof data.ind[i].r === 'string' ) {
-
-            tmp += data.ind[i].r + "\n";
-        }
-
-        tmp += yaml.safeDump(data.ind[i].v).trim() + "\n";
+  for (let i = 0, l = data.ind.length; i < l; i += 1) {
+    if (typeof data.ind[i].r === "string") {
+      tmp += data.ind[i].r + "\n";
     }
 
-    return tmp;
+    tmp += yaml.safeDump(data.ind[i].v).trim() + "\n";
+  }
+
+  return tmp;
 }
 
-let yml = fs.readFileSync(file, 'utf8').toString();
+let yml = fs.readFileSync(file, "utf8").toString();
 
 const data = parse(yml);
 
-if ( ! isObject(data.dic[block]) ) {
-
-    throw new Error(`${__filename} error: block targeted by string '${block}' is not defined in file '${file}'`);
+if (!isObject(data.dic[block])) {
+  throw new Error(`${__filename} error: block targeted by string '${block}' is not defined in file '${file}'`);
 }
 
-if ( !/^\d+$/.test(block) && data.dic[block].e instanceof Error ) {
-
-    throw data.dic[block].e;
+if (!/^\d+$/.test(block) && data.dic[block].e instanceof Error) {
+  throw data.dic[block].e;
 }
 
 set(data.dic[block].v, key, value);
@@ -457,16 +375,14 @@ const saved = dump(data);
 
 fs.writeFileSync(file, saved);
 
-yml = fs.readFileSync(file, 'utf8').toString();
+yml = fs.readFileSync(file, "utf8").toString();
 
 yml = dump(parse(yml));
 
 if (yml !== saved) {
+  console.log("${__filename} error: couldn't change value");
 
-    console.log("${__filename} error: couldn't change value");
-
-    process.exit(1);
+  process.exit(1);
 }
 
-console.log('Success');
-
+console.log("Success");

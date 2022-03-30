@@ -1,129 +1,121 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-</head>
-<body class="layout" foot head toc>
-
-<div class="body" toc>
-    <div class="inside">
+  </head>
+  <body class="layout" foot head toc>
+    <div class="body" toc>
+      <div class="inside">
         <div class="cards">
-            <div class="card">
-                <h2>Cli tools</h2>
-                <script type="editor" data-lang="sh">
+          <div class="card">
+            <h2>Cli tools</h2>
+            <script type="editor" data-lang="sh">
 
-HOMEBREW_NO_AUTO_UPDATE=1 brew install jq
+              HOMEBREW_NO_AUTO_UPDATE=1 brew install jq
+            </script>
+            <h2 id="test-test">Optimization (Mac)</h2>
+            <a href="https://imageoptim.com/howto.html">ImageOptim v1.7.3 (08-03-2018)</a>
+          </div>
+          <div class="card">
+            <h2>Additional software to install</h2>
+            <a href="https://apps.apple.com/us/app/amphetamine/id937984704?mt=12">https://apps.apple.com/us/app/amphetamine/id937984704?mt=12</a>
+            <h2>Images resizing from cli</h2>
+            <script type="editor" data-lang="sh">
 
-                </script>
-                <h2 id="test-test">Optimization (Mac)</h2>
-                <a href="https://imageoptim.com/howto.html">ImageOptim v1.7.3 (08-03-2018)</a>
-            </div>
-            <div class="card">
-		    <h2>Additional software to install</h2>
-		    <a href="https://apps.apple.com/us/app/amphetamine/id937984704?mt=12">https://apps.apple.com/us/app/amphetamine/id937984704?mt=12</a>
-                <h2>Images resizing from cli</h2>
-                <script type="editor" data-lang="sh">
+              sips -Z 2500 hhh.png
+            </script>
+            <h2>KeePass</h2>
+            <a href="https://keepassxc.org/download/#mac">https://keepassxc.org/download/#mac</a>
+            <h2>MonitorControl</h2>
+            <a href="https://github.com/MonitorControl/MonitorControl">https://github.com/MonitorControl/MonitorControl</a>
+            <h2>Increase Keyboard Repeat Rate on Mac</h2>
+            <a href="https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/">https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/</a>
+            <br />
+            <a href="https://apple.stackexchange.com/q/10467">https://apple.stackexchange.com/q/10467</a>
+          </div>
+          <div class="card">
+            <h2>How to Fix the Home and End Buttons</h2>
+            <script type="editor" data-lang="sh">
 
-sips -Z 2500 hhh.png
+              Basically what you need to do is:
+              cd ~/Library
+              mkdir KeyBindings
+              cd KeyBindings
+              vi DefaultKeyBinding.dict
+              paste to the file DefaultKeyBinding.dict kinda json below and restart mac
 
-                </script>
-		<h2>KeePass</h2>
-		<a href="https://keepassxc.org/download/#mac">https://keepassxc.org/download/#mac</a>
-		<h2>MonitorControl</h2>
-		<a href="https://github.com/MonitorControl/MonitorControl">https://github.com/MonitorControl/MonitorControl</a>
-		<h2>Increase Keyboard Repeat Rate on Mac</h2>
-		<a href="https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/">https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/</a>
-	        <br />
-	        <a href="https://apple.stackexchange.com/q/10467">https://apple.stackexchange.com/q/10467</a>
-            </div>
-            <div class="card">
-                <h2>How to Fix the Home and End Buttons</h2>
-                <script type="editor" data-lang="sh">
+              {
+              	/* Remap Home / End keys */
+              	/* Home Button*/
+              	"\UF729" = "moveToBeginningOfLine:";
+              	/* End Button */
+              	"\UF72B" = "moveToEndOfLine:";
+              	/* Shift + Home Button */
+              	"$\UF729" = "moveToBeginningOfLineAndModifySelection:";
+              	/* Shift + End Button */
+              	"$\UF72B" = "moveToEndOfLineAndModifySelection:";
+              	/* Ctrl + Home Button */
+              	"^\UF729" = "moveToBeginningOfDocument:";
+              	/* Ctrl + End Button */
+              	"^\UF72B" = "moveToEndOfDocument:";
+              	 /* Shift + Ctrl + Home Button */
+              	"$^\UF729" = "moveToBeginningOfDocumentAndModifySelection:";
+              	/* Shift + Ctrl + End Button*/
+              	"$^\UF72B" = "moveToEndOfDocumentAndModifySelection:";
+              }
+            </script>
+            <a href="https://www.maketecheasier.com/fix-home-end-button-for-external-keyboard-mac/">g(How to Fix the Home and End Buttons for an External Keyboard in Mac)</a>
+          </div>
+          <div class="card">
+            <h2>Brew</h2>
+            <script type="editor" data-lang="sh">
 
-Basically what you need to do is:
-cd ~/Library
-mkdir KeyBindings
-cd KeyBindings
-vi DefaultKeyBinding.dict
-paste to the file DefaultKeyBinding.dict kinda json below and restart mac
+              HOMEBREW_NO_AUTO_UPDATE=1 brew install lib
 
-{
-	/* Remap Home / End keys */
-	/* Home Button*/
-	"\UF729" = "moveToBeginningOfLine:"; 
-	/* End Button */
-	"\UF72B" = "moveToEndOfLine:"; 
-	/* Shift + Home Button */
-	"$\UF729" = "moveToBeginningOfLineAndModifySelection:"; 
-	/* Shift + End Button */
-	"$\UF72B" = "moveToEndOfLineAndModifySelection:"; 
-	/* Ctrl + Home Button */
-	"^\UF729" = "moveToBeginningOfDocument:"; 
-	/* Ctrl + End Button */
-	"^\UF72B" = "moveToEndOfDocument:"; 
-	 /* Shift + Ctrl + Home Button */
-	"$^\UF729" = "moveToBeginningOfDocumentAndModifySelection:";
-	/* Shift + Ctrl + End Button*/
-	"$^\UF72B" = "moveToEndOfDocumentAndModifySelection:"; 
-}
+              HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install lib
 
-                </script>
-                <a href="https://www.maketecheasier.com/fix-home-end-button-for-external-keyboard-mac/">g(How to Fix the Home and End Buttons for an External Keyboard in Mac)</a>
-            </div>
-            <div class="card">
-                <h2>Brew</h2>
-                <script type="editor" data-lang="sh">
+              HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install
+              # from: https://github.com/Homebrew/brew/issues/1670#issuecomment-267096602
+            </script>
+          </div>
+          <div class="card">
+            <h2 id="test-test">Autostart</h2>
+            <a href="https://stackoverflow.com/a/6445525">Create app to autostart</a>
+            <br />
+            <a href="/pages/mac/startup.app.tar.gz">binary version</a>
+            <br />
+            download and unpack in /Applications. It runs /bin/bash ~/startup
+          </div>
+          <div class="card">
+            <h2>Finder - See hidden folders/files</h2>
+            <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
+            <br />
+            <a href="https://gist.github.com/stopsopa/8297755373fd5be34165cc8e12d35642">gist (UMD - browser global & node module (singleton))</a>
 
-HOMEBREW_NO_AUTO_UPDATE=1 brew install lib
+            <script type="editor" data-lang="sh">
 
-HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install lib
+              ⌘Command + ⇧Shift + .
 
-HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install
-# from: https://github.com/Homebrew/brew/issues/1670#issuecomment-267096602
+              # or try to turn it on permanently
+              defaults write com.apple.finder AppleShowAllFiles YES
+              killall Finder
 
-                </script>
-            </div>
-            <div class="card">
-                <h2 id="test-test">Autostart</h2>
-                <a href="https://stackoverflow.com/a/6445525">Create app to autostart</a>
-                <br />
-                <a href="/pages/mac/startup.app.tar.gz">binary version</a>
-                <br />
-                download and unpack in /Applications. It runs /bin/bash ~/startup
-            </div>
-            <div class="card">
-                <h2>Finder - See hidden folders/files</h2>
-                <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
-                <br />
-                <a href="https://gist.github.com/stopsopa/8297755373fd5be34165cc8e12d35642">gist (UMD - browser global & node module (singleton))</a>
+              open .
 
-                <script type="editor" data-lang="sh">
-
-⌘Command + ⇧Shift + .
-
-# or try to turn it on permanently
-defaults write com.apple.finder AppleShowAllFiles YES
-killall Finder 
-
-open .
-
-	# open current directory in finder
-
-                </script>
-	        <h2>Apps</h2>
-	        <h4>Keep mac awake</h4>
-	        <a href="https://apps.apple.com/de/app/amphetamine/id937984704">Amphetamine Wach bleiben William Gustafson</a>
-	        <br />
-	        <a href="https://formulae.brew.sh/cask/caffeine">https://formulae.brew.sh/cask/caffeine</a>
-            </div>
+              	# open current directory in finder
+            </script>
+            <h2>Apps</h2>
+            <h4>Keep mac awake</h4>
+            <a href="https://apps.apple.com/de/app/amphetamine/id937984704">Amphetamine Wach bleiben William Gustafson</a>
+            <br />
+            <a href="https://formulae.brew.sh/cask/caffeine">https://formulae.brew.sh/cask/caffeine</a>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-<script src="/js/github.js"></script>
-</body>
+    <script src="/js/github.js"></script>
+  </body>
 </html>

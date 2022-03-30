@@ -42,7 +42,7 @@ const max = Object.keys(preprocessed).reduce((acc, val) => {
   return acc;
 }, 0);
 
-Object.keys(preprocessed).map(key => {
+Object.keys(preprocessed).map((key) => {
   const l = key.length;
 
   let k = key;
@@ -54,14 +54,14 @@ Object.keys(preprocessed).map(key => {
   console.log("    ", k, ":", env[key]);
 });
 
-targets.forEach(target => {
+targets.forEach((target) => {
   console.log("");
 
   console.log(`Saving ${target}`);
 
   const dir = path.dirname(target);
 
-  if ( ! fs.existsSync(dir) ) {
+  if (!fs.existsSync(dir)) {
     mkdirp.sync(dir);
   }
 

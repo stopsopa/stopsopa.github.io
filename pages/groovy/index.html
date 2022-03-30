@@ -1,164 +1,152 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-</head>
-<body class="layout">
-
+  </head>
+  <body class="layout">
     <div class="body">
-        <div class="inside">
-
-            <div class="cards">
-
-                <h2>regex match</h2>
-                <script type="editor" data-lang="groovy">
-                
-
-def text = "featabc"
-
-def btype = text.replaceAll('^(([^/]+)/)?(.*)$', '$2')
-
-def bname = text.replaceAll('^(([^/]+)/)?(.*)$', '$3')
-
-println "btype: >${btype}<"
-println "bname: >${bname}<"
-
-// text = "featabc"
-// btype: ><
-// bname: >featabc<
-
-// text = "feat/abc"
-// btype: >feat<
-// bname: >abc<
-
-// text = "feat/abc/zz"
-// btype: >feat<
-// bname: >abc/zz<
+      <div class="inside">
+        <div class="cards">
+          <h2>regex match</h2>
+          <script type="editor" data-lang="groovy">
 
 
-                </script>
-                
-                
-                <h2>regex replaceAll</h2>
-                <script type="editor" data-lang="groovy">
-                
-def text = "https://github.org/repo/api.git"
+            def text = "featabc"
 
-def btype = text.replaceAll('[^a-z0-9]+', '_')
+            def btype = text.replaceAll('^(([^/]+)/)?(.*)$', '$2')
 
-println "btype: >${btype}<"
-// btype: >https_github_org_repo_api_git<
+            def bname = text.replaceAll('^(([^/]+)/)?(.*)$', '$3')
 
-                </script>
-                <h2>toJson</h2>
-                <script type="editor" data-lang="groovy">
-                
-import groovy.json.JsonOutput;
+            println "btype: >${btype}<"
+            println "bname: >${bname}<"
 
-def args = [
-    deploymentProd: "v",
-    deploymentDev: "d",
-];
+            // text = "featabc"
+            // btype: ><
+            // bname: >featabc<
 
-def toJson(a) {
+            // text = "feat/abc"
+            // btype: >feat<
+            // bname: >abc<
 
-    def args_string = JsonOutput.toJson(a)
+            // text = "feat/abc/zz"
+            // btype: >feat<
+            // bname: >abc/zz<
+          </script>
 
-    def args_json = JsonOutput.prettyPrint(args_string);
+          <h2>regex replaceAll</h2>
+          <script type="editor" data-lang="groovy">
 
-    return args_json;
-}
+            def text = "https://github.org/repo/api.git"
 
-def json = toJson(getConfig(args));
+            def btype = text.replaceAll('[^a-z0-9]+', '_')
 
-def getConfig(Map params) {
+            println "btype: >${btype}<"
+            // btype: >https_github_org_repo_api_git<
+          </script>
+          <h2>toJson</h2>
+          <script type="editor" data-lang="groovy">
 
-  return [
-    dc: params.deploymentProd ? params.deploymentProd : "${params.name}-api-prod"
-  ]
-}
+            import groovy.json.JsonOutput;
 
-println(sprintf('>>%5s<<\n', json));
+            def args = [
+                deploymentProd: "v",
+                deploymentDev: "d",
+            ];
 
+            def toJson(a) {
 
-                </script>
-                <h2>Read more</h2>
-                <a href="https://groovy-lang.org/documentation.html">https://groovy-lang.org/documentation.html</a>
-                <br />
-                <a href="https://groovy-lang.org/operators.html">https://groovy-lang.org/operators.html</a>
-                <br />
-                <a href="http://groovy-lang.org/syntax.html#_maps">Maps</a>
-                <br />
-                <a href="http://groovy-lang.org/semantics.html">Semantics</a>
-                
-                <h2>Files</h2>
-                <script type="editor" data-lang="groovy">
-                
-def validateDockerIgnore() {
+                def args_string = JsonOutput.toJson(a)
 
-    def file = ".dockerignofre";
+                def args_json = JsonOutput.prettyPrint(args_string);
 
-    def handler = new File(".dockerignore")
+                return args_json;
+            }
 
-    if (! handler.exists()) {
+            def json = toJson(getConfig(args));
 
-        throw new Exception("file '${file}' doesn't exist");
-    }
+            def getConfig(Map params) {
 
-    if (! handler.canRead()) {
+              return [
+                dc: params.deploymentProd ? params.deploymentProd : "${params.name}-api-prod"
+              ]
+            }
 
-        throw new Exception("file '${file}' can't be read");
-    }
+            println(sprintf('>>%5s<<\n', json));
+          </script>
+          <h2>Read more</h2>
+          <a href="https://groovy-lang.org/documentation.html">https://groovy-lang.org/documentation.html</a>
+          <br />
+          <a href="https://groovy-lang.org/operators.html">https://groovy-lang.org/operators.html</a>
+          <br />
+          <a href="http://groovy-lang.org/syntax.html#_maps">Maps</a>
+          <br />
+          <a href="http://groovy-lang.org/semantics.html">Semantics</a>
 
-    def fileArray = handler.text.split( '\n' );
+          <h2>Files</h2>
+          <script type="editor" data-lang="groovy">
 
-def required = """
+            def validateDockerIgnore() {
 
-.DS_Store
-.env
-.git/
-/.github/
-/.husky/
-.gitignore
-/.ci
-/.ci@tmp
-/.nyc_output/
-/coverage/
-/docs/
-/lib/
-/server/
-/var/*
-!/var/.gitignore
-node_modules/
-/local.env.sh
-/tartufo.toml
+                def file = ".dockerignofre";
 
-"""
+                def handler = new File(".dockerignore")
 
-    def requiredArray = required.split( '\n' );
+                if (! handler.exists()) {
 
-    for(String val in requiredArray) {
+                    throw new Exception("file '${file}' doesn't exist");
+                }
 
-        val = val.trim();
+                if (! handler.canRead()) {
 
-        if (val && !fileArray.contains(val)) {
+                    throw new Exception("file '${file}' can't be read");
+                }
 
-            throw new Exception("'${file}' doesn't contain '${val}' exclusion, it should contain >>${required}<<");
-        }
-    }
-}
+                def fileArray = handler.text.split( '\n' );
 
-validateDockerIgnore();
+            def required = """
 
-                </script>
+            .DS_Store
+            .env
+            .git/
+            /.github/
+            /.husky/
+            .gitignore
+            /.ci
+            /.ci@tmp
+            /.nyc_output/
+            /coverage/
+            /docs/
+            /lib/
+            /server/
+            /var/*
+            !/var/.gitignore
+            node_modules/
+            /local.env.sh
+            /tartufo.toml
 
-            </div>
+            """
+
+                def requiredArray = required.split( '\n' );
+
+                for(String val in requiredArray) {
+
+                    val = val.trim();
+
+                    if (val && !fileArray.contains(val)) {
+
+                        throw new Exception("'${file}' doesn't contain '${val}' exclusion, it should contain >>${required}<<");
+                    }
+                }
+            }
+
+            validateDockerIgnore();
+          </script>
         </div>
+      </div>
     </div>
     <script src="/js/github.js"></script>
-</body>
+  </body>
 </html>

@@ -1,205 +1,169 @@
-
 const log = console.log;
 
-const error = msg => {
+const error = (msg) => {
+  log(`general error: ${msg}`);
 
-    log(`general error: ${msg}`);
-
-    process.exit(1);
-}
+  process.exit(1);
+};
 
 const cmd = (function () {
+  const { spawn } = require("child_process");
 
-    const { spawn } = require("child_process");
-    
-    const th    = msg => new Error(`${__filename} error: ${msg}`);
-    
-    return (cmd, opt) => new Promise((resolve, reject) => {
-    
-    if (typeof cmd === 'string') {
-    
+  const th = (msg) => new Error(`${__filename} error: ${msg}`);
+
+  return (cmd, opt) =>
+    new Promise((resolve, reject) => {
+      if (typeof cmd === "string") {
         cmd = cmd.trim();
-    
-        if ( ! cmd ) {
-    
-        throw th(`cmd is an empty string`);
+
+        if (!cmd) {
+          throw th(`cmd is an empty string`);
         }
-    
+
         cmd = cmd.split(/\s+/);
-    }
-    
-    if ( ! Array.isArray(cmd) ) {
-    
+      }
+
+      if (!Array.isArray(cmd)) {
         throw th(`cmd is not an array`);
-    }
-    
-    if ( ! cmd.length) {
-    
+      }
+
+      if (!cmd.length) {
         throw th(`cmd is an empty array`);
-    }
-    
-    const {
-        verbose = false,
-    } = {...opt};
-    
-    verbose && console.log(`executing command ${cmd.join(' ')}`)
-    
-    const [command, ...args] = cmd;
-    
-    const process = spawn(command, args);
-    
-    let stdout = '';
-    
-    let stderr = '';
-    
-    process.stdout.on("data", data => {
+      }
+
+      const { verbose = false } = { ...opt };
+
+      verbose && console.log(`executing command ${cmd.join(" ")}`);
+
+      const [command, ...args] = cmd;
+
+      const process = spawn(command, args);
+
+      let stdout = "";
+
+      let stderr = "";
+
+      process.stdout.on("data", (data) => {
         stdout += String(data);
-    });
-    
-    process.stderr.on("data", data => {
+      });
+
+      process.stderr.on("data", (data) => {
         stderr += String(data);
-    });
-    
-    process.on('error', (e) => {
-    
+      });
+
+      process.on("error", (e) => {
         verbose && console.log(`error: ${e.message}`);
-    
+
         reject({
-            cmd,
-            stdout,
-            stderr,
-            e,
+          cmd,
+          stdout,
+          stderr,
+          e,
         });
-    });
-    
-    process.on("close", code => {
-    
-        verbose && console.log(`child process ${cmd.join(' ')} exited with code ${code}`);
-    
+      });
+
+      process.on("close", (code) => {
+        verbose && console.log(`child process ${cmd.join(" ")} exited with code ${code}`);
+
         if (code === 0) {
-    
-            resolve({
-                cmd,
-                stdout,
-                stderr,
-                code,
-            });
-        }
-    
-        reject({
+          resolve({
             cmd,
             stdout,
             stderr,
             code,
+          });
+        }
+
+        reject({
+          cmd,
+          stdout,
+          stderr,
+          code,
         });
+      });
     });
-    })
-}());
+})();
 
-
-if (typeof process.argv[2] !== 'string') {
-
-    throw new Error(`Please specify name of library to check in first argument`);
+if (typeof process.argv[2] !== "string") {
+  throw new Error(`Please specify name of library to check in first argument`);
 }
 
 const name = process.argv[2].trim();
 
-if ( ! name ) {
-
-    throw new Error(`Name of library can't be an empty string`);
+if (!name) {
+  throw new Error(`Name of library can't be an empty string`);
 }
 
 async function getEngine(ver) {
+  let res;
 
-    let res;
+  try {
+    res = await cmd(["yarn", "info", `${name}@${ver}`, "--json"]);
 
-    try {
-
-        res = await cmd(['yarn', 'info', `${name}@${ver}`, '--json']);
-
-        if (res.code !== 0) {
-        
-            return 'exec error 1'
-        }
+    if (res.code !== 0) {
+      return "exec error 1";
     }
-    catch (e) {
-        
-        return 'exec error 2'
-    }
+  } catch (e) {
+    return "exec error 2";
+  }
 
-    try {
-        
-        return JSON.parse(res.stdout).data.engines.node;        
-    }
-    catch (e) {
-
-        return '! engines.node';
-    }
+  try {
+    return JSON.parse(res.stdout).data.engines.node;
+  } catch (e) {
+    return "! engines.node";
+  }
 }
 
 (async function () {
+  let res;
 
-    let res;
+  try {
+    res = await cmd(["yarn", "--version"]);
 
-    try {
-
-        res = await cmd(['yarn', '--version']);
-
-        if (res.code !== 0) {
-            
-            error('Yarn is not installed')
-        }
+    if (res.code !== 0) {
+      error("Yarn is not installed");
     }
-    catch (e) {
-        
-        error('Yarn is not installed')
+  } catch (e) {
+    error("Yarn is not installed");
+  }
+
+  try {
+    res = await cmd(["yarn", "info", name, "--json"]);
+
+    if (res.code !== 0) {
+      error(`Can't fetch versions of the library '${name}': yarn info ${name}`);
     }
+  } catch (e) {
+    error(`Can't fetch versions of the library '${name}': yarn info ${name}`);
+  }
 
-    try {
+  let versions;
 
-        res = await cmd(['yarn', 'info', name, '--json']);
+  try {
+    versions = JSON.parse(res.stdout).data.versions;
+  } catch (e) {
+    error(`Can't extract versions from command: yarn info ${name}, ${e}`);
+  }
 
-        if (res.code !== 0) {
-            
-            error(`Can't fetch versions of the library '${name}': yarn info ${name}`)
-        }
-    }
-    catch (e) {
-            
-        error(`Can't fetch versions of the library '${name}': yarn info ${name}`)
-    }
+  const engines = {};
 
-    let versions;
+  log(versions);
 
-    try {        
-        
-        versions = JSON.parse(res.stdout).data.versions;
-    }
-    catch (e) {
-            
-        error(`Can't extract versions from command: yarn info ${name}, ${e}`)
-    }
+  const len = versions.length;
 
-    const engines = {};
-    
-    log(versions)
+  log(`number of versions: ${len}`);
+  log("");
 
-    const len = versions.length;
+  let ver, engine;
+  let i = 0;
+  while ((ver = versions.pop())) {
+    i += 1;
 
-    log(`number of versions: ${len}`);
-    log('');
+    engine = await getEngine(ver);
 
-    let ver, engine;
-    let i = 0;
-    while ( ver = versions.pop() ) {
+    log(String(i).padEnd(5, " "), String(ver).padEnd(20, " "), engine);
+  }
 
-        i += 1;
-
-        engine = await getEngine(ver);
-
-        log(String(i).padEnd(5, ' '), String(ver).padEnd(20, ' '), engine);
-    }
-
-    log('')
-    log('end');
-}());
+  log("");
+  log("end");
+})();

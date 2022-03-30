@@ -1,80 +1,73 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-</head>
-<body class="layout">
-
+  </head>
+  <body class="layout">
     <div class="body">
-        <div class="inside">
+      <div class="inside">
+        <div class="cards">
+          <h2>Removing all tables from db</h2>
+          <script type="editor" data-lang="mysql">
 
-            <div class="cards">
+            SET @schema = 'dbname';
 
-                <h2>Removing all tables from db</h2>
-                <script type="editor" data-lang="mysql">
+            SET @pattern = '%';
+            SET SESSION group_concat_max_len = 1000000;
+            SELECT CONCAT('DROP TABLE ',GROUP_CONCAT(CONCAT(@schema,'.',table_name)),';')
+            INTO @droplike
+            FROM information_schema.TABLES
+            WHERE TABLE_SCHEMA=@schema
+            AND table_name LIKE @pattern;
+            SELECT @droplike;
+            PREPARE stmt FROM @droplike;
+            SET FOREIGN_KEY_CHECKS = 0;
+            EXECUTE stmt;
+            SET FOREIGN_KEY_CHECKS = 1;
+            DEALLOCATE PREPARE stmt;
 
-SET @schema = 'dbname';
-
-SET @pattern = '%';
-SET SESSION group_concat_max_len = 1000000;
-SELECT CONCAT('DROP TABLE ',GROUP_CONCAT(CONCAT(@schema,'.',table_name)),';')
-INTO @droplike
-FROM information_schema.TABLES
-WHERE TABLE_SCHEMA=@schema
-AND table_name LIKE @pattern;
-SELECT @droplike;
-PREPARE stmt FROM @droplike;
-SET FOREIGN_KEY_CHECKS = 0;
-EXECUTE stmt;
-SET FOREIGN_KEY_CHECKS = 1;
-DEALLOCATE PREPARE stmt;
-
-// might be useful: 
-SELECT CONCAT('DROP TABLE ',GROUP_CONCAT(CONCAT('\\\`',@schema,'\\\`.\\\`',table_name,'\\\`')),';')
-                </script>
-            </div>
-
-            <div class="cards">
-
-                <h2>/etc/my.cnf</h2>
-                <script type="editor" data-lang="mysql">
-                
-character-set-server=utf8
-collation-server=utf8_general_ci
-
-                </script>
-
-                <h2>backup & restore</h2>
-                <script type="editor" data-lang="python">
-                
-# backup
-mysqldump -C -u ${USER} -p${PASS} -P${PORT} ${PMADB1} ${TABLE1} ${TABLE2} | mysql -u ${USER} -p${PASS} -ppass48\ endw ${PMADB}
-
-mysqldump --column-statistics=0 -C -h ${HOST} -u ${USER} -p${PASS} ${PMADB} | gzip -9 > "$(date '+%Y-%m-%d_%H-%M-%S')_sql.sql"
-mysqldump -u ${USER} -p${PASS} ${PMADB} --ignore-table=${PMADB}.table1 --ignore-table=${PMADB}.table2
-
-gunzip [backupfile.sql.gz]
-
-#restore
-mysql -h ${HOST} -u ${USER} -p${PASS} ${PMADB} --port=${PORT} ${PMADB} < [backupfile.sql]
-
-gunzip < [backupfile.sql.gz] | mysql -u ${USER} -p${PASS} ${PMADB}
-
-If you need to restore a database that already exists,
-you'll need to use mysqlimport command.
-The syntax for mysqlimport is as follows:
-mysqlimport -u [uname] -p[pass] [dbname] [backupfile.sql]
-
-                </script>
-                <h2>Read more</h2>
-                <a href="https://kinsta.com/blog/mariadb-vs-mysql/#:~:text=MariaDB%20vs%20MySQL%20Differences,lot%20of%20different%20storage%20engines.">MariaDb vs Mysql</a>
-            </div>
+            // might be useful:
+            SELECT CONCAT('DROP TABLE ',GROUP_CONCAT(CONCAT('\\\`',@schema,'\\\`.\\\`',table_name,'\\\`')),';')
+          </script>
         </div>
+
+        <div class="cards">
+          <h2>/etc/my.cnf</h2>
+          <script type="editor" data-lang="mysql">
+
+            character-set-server=utf8
+            collation-server=utf8_general_ci
+          </script>
+
+          <h2>backup & restore</h2>
+          <script type="editor" data-lang="python">
+
+            # backup
+            mysqldump -C -u ${USER} -p${PASS} -P${PORT} ${PMADB1} ${TABLE1} ${TABLE2} | mysql -u ${USER} -p${PASS} -ppass48\ endw ${PMADB}
+
+            mysqldump --column-statistics=0 -C -h ${HOST} -u ${USER} -p${PASS} ${PMADB} | gzip -9 > "$(date '+%Y-%m-%d_%H-%M-%S')_sql.sql"
+            mysqldump -u ${USER} -p${PASS} ${PMADB} --ignore-table=${PMADB}.table1 --ignore-table=${PMADB}.table2
+
+            gunzip [backupfile.sql.gz]
+
+            #restore
+            mysql -h ${HOST} -u ${USER} -p${PASS} ${PMADB} --port=${PORT} ${PMADB} < [backupfile.sql]
+
+            gunzip < [backupfile.sql.gz] | mysql -u ${USER} -p${PASS} ${PMADB}
+
+            If you need to restore a database that already exists,
+            you'll need to use mysqlimport command.
+            The syntax for mysqlimport is as follows:
+            mysqlimport -u [uname] -p[pass] [dbname] [backupfile.sql]
+          </script>
+          <h2>Read more</h2>
+          <a href="https://kinsta.com/blog/mariadb-vs-mysql/#:~:text=MariaDB%20vs%20MySQL%20Differences,lot%20of%20different%20storage%20engines.">MariaDb vs Mysql</a>
+        </div>
+      </div>
     </div>
     <script src="/js/github.js"></script>
-</body>
+  </body>
 </html>

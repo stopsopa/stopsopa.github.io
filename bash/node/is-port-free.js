@@ -1,6 +1,4 @@
-
-if (process.argv[2] === '--help' || process.argv.length < 3) {
-
+if (process.argv[2] === "--help" || process.argv.length < 3) {
   console.log(`
 
 Script checking if port is free and can be allocated, usage:
@@ -32,17 +30,15 @@ Script checking if port is free and can be allocated, usage:
   process.exit(1);
 }
 
-if ( typeof process.argv[2] !== 'string' ) {
-
-  throw new Error(`process.argv[2] !== 'string'`)
+if (typeof process.argv[2] !== "string") {
+  throw new Error(`process.argv[2] !== 'string'`);
 }
 
 const reg = /^(localhost|\d{1,2}\.\d{1,2}\.\d{1,2}\.\d{1,2}):(\d+)$/;
 
 const match = process.argv[2].match(reg);
 
-if ( match === null ) {
-
+if (match === null) {
   throw new Error(`process.argv[2] (${process.argv[2]}) don't match: ${reg}`);
 }
 
@@ -50,50 +46,41 @@ const host = match[1];
 
 const port = parseInt(match[2], 10);
 
-const v = process.argv.includes('--verbose') || process.argv.includes('-v')
+const v = process.argv.includes("--verbose") || process.argv.includes("-v");
 
-const http = require('http');
+const http = require("http");
 
 const app = http.createServer(() => {});
 
-app.listen(port, host, () => {
-
-  if (v) {
-
-    console.log(`node ${__filename}: port ${host}:${port} is free`);
-  }
-  else {
-
-    process.stdout.write('1');
-  }
-
-  process.exit(0);
-
-}).on('error', e => {
-
-  const s = String(e);
-
-  // if (s.includes(' EADDRINUSE ') || s.includes(' EACCES ')) {
-  if (e.code === 'EADDRINUSE' || e.code === 'EACCES') { // https://nodejs.org/api/net.html#net_server_listen
-
+app
+  .listen(port, host, () => {
     if (v) {
-
-      console.log(`node ${__filename} error: port ${host}:${port} is not free: ${s}`);
-
-      process.exit(1);
+      console.log(`node ${__filename}: port ${host}:${port} is free`);
+    } else {
+      process.stdout.write("1");
     }
-    else {
 
-      process.stdout.write('0');
+    process.exit(0);
+  })
+  .on("error", (e) => {
+    const s = String(e);
 
-      process.exit(0);
+    // if (s.includes(' EADDRINUSE ') || s.includes(' EACCES ')) {
+    if (e.code === "EADDRINUSE" || e.code === "EACCES") {
+      // https://nodejs.org/api/net.html#net_server_listen
+
+      if (v) {
+        console.log(`node ${__filename} error: port ${host}:${port} is not free: ${s}`);
+
+        process.exit(1);
+      } else {
+        process.stdout.write("0");
+
+        process.exit(0);
+      }
+    } else {
+      console.log(`node ${__filename} error: port ${host}:${port} is not free due to unknown reason:`);
+
+      throw e;
     }
-  }
-  else {
-
-    console.log(`node ${__filename} error: port ${host}:${port} is not free due to unknown reason:`);
-
-    throw e;
-  }
-});
-
+  });

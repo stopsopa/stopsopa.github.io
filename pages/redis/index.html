@@ -10,107 +10,104 @@
       <div class="cards">
         <h2>docker</h2>
         <script type="editor" data-lang="sh">
-        
-docker run -it redis:6.2.6-alpine
 
-docker exec -it "$(docker ps | grep redis: | awk '{print $1}')" sh
+          docker run -it redis:6.2.6-alpine
 
-# redis-cli from docker
-docker run -it --rm redis redis-cli
+          docker exec -it "$(docker ps | grep redis: | awk '{print $1}')" sh
 
-docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
-  # or redis stack (with RedisInsight) https://redis.io/docs/stack/get-started/install/docker/
+          # redis-cli from docker
+          docker run -it --rm redis redis-cli
 
-visit:
-http://localhost:8001
+          docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+            # or redis stack (with RedisInsight) https://redis.io/docs/stack/get-started/install/docker/
 
-# for cli
-docker exec -it redis-stack redis-cli  
+          visit:
+          http://localhost:8001
 
-# RedisInsight from docker
-4221
-oc port-forward $(oc get po | grep REDISDEPLOYMENTNAME | grep Running | awk '{print $1}' | head -n 1) 6379:6379
-docker run -d -v redisinsight:/db -p 4221:8001 redislabs/redisinsight:latest
-http://localhost:4221
-# then use host.docker.internal as a host if you are on mac
+          # for cli
+          docker exec -it redis-stack redis-cli
 
-  
+          # RedisInsight from docker
+          4221
+          oc port-forward $(oc get po | grep REDISDEPLOYMENTNAME | grep Running | awk '{print $1}' | head -n 1) 6379:6379
+          docker run -d -v redisinsight:/db -p 4221:8001 redislabs/redisinsight:latest
+          http://localhost:4221
+          # then use host.docker.internal as a host if you are on mac
         </script>
         <h2>node</h2>
-        <script type="editor" data-lang="sh">      
-        
-cat <<EEE > _redis.js
+        <script type="editor" data-lang="sh">
 
-var os = require("os");
+          cat <<EEE > _redis.js
 
-var hostname = os.hostname();
+          var os = require("os");
 
-const { createClient } = require("redis");
+          var hostname = os.hostname();
 
-let config;
+          const { createClient } = require("redis");
 
-switch (true) {
-  case hostname.includes("xxx"):
-    config = {
-      port: 6379,
-      ttl: {
-        PpeAccessToken: 240,
-        Category: 3600,
-        Price: 300,
-      },
-      host: "0.0.0.0",
-      password: "ppp",
-    };
-    break;
-  default:
-    config = {
-      port: 6379,
-      ttl: {
-        PpeAccessToken: 240,
-        Category: 3600,
-        Price: 300,
-      },
-      host: "0.0.0.0",
-      password: "xxx",
-    };
-    break;
-}
+          let config;
 
-if (!config) {
-  throw new Error(`no config`);
-}
+          switch (true) {
+            case hostname.includes("xxx"):
+              config = {
+                port: 6379,
+                ttl: {
+                  PpeAccessToken: 240,
+                  Category: 3600,
+                  Price: 300,
+                },
+                host: "0.0.0.0",
+                password: "ppp",
+              };
+              break;
+            default:
+              config = {
+                port: 6379,
+                ttl: {
+                  PpeAccessToken: 240,
+                  Category: 3600,
+                  Price: 300,
+                },
+                host: "0.0.0.0",
+                password: "xxx",
+              };
+              break;
+          }
 
-console.log({
-  config
-});
+          if (!config) {
+            throw new Error(`no config`);
+          }
 
-(async () => {
-  const client = createClient(config);
+          console.log({
+            config
+          });
 
-  client.on("error", (err) => console.log("Redis Client Error", err));
+          (async () => {
+            const client = createClient(config);
 
-  try {
-    await client.connect();
-    // await client.set('key', 'value');
+            client.on("error", (err) => console.log("Redis Client Error", err));
 
-    const value = await client.get("test");
+            try {
+              await client.connect();
+              // await client.set('key', 'value');
 
-    console.log({
-      value,
-    });
-  } catch (e) {
-    console.log("general error", e);
-  }
-  await client.disconnect();
-})();
+              const value = await client.get("test");
+
+              console.log({
+                value,
+              });
+            } catch (e) {
+              console.log("general error", e);
+            }
+            await client.disconnect();
+          })();
 
 
-EEE
+          EEE
 
-node _redis.js
+          node _redis.js
 
-rm -rf _redis.js
-  
+          rm -rf _redis.js
         </script>
         <h2>redis-cli</h2>
         <a href="https://redis.io/topics/rediscli">redis-cli</a>
@@ -118,130 +115,129 @@ rm -rf _redis.js
 
 
 
-redis-cli
-redis-cli -h my-host -p 1234 -a mypassword ping
-redis-cli -h 127.0.0.1 -a FxxxxxxxxF ping
-redis-cli ping
+          redis-cli
+          redis-cli -h my-host -p 1234 -a mypassword ping
+          redis-cli -h 127.0.0.1 -a FxxxxxxxxF ping
+          redis-cli ping
 
-# auto detection of tty
-redis-cli incr mycounter
-redis-cli incr mycounter | cat
+          # auto detection of tty
+          redis-cli incr mycounter
+          redis-cli incr mycounter | cat
 
-# or turn on human readable by force
-redis-cli --no-raw incr mycounter | cat
-# or force raw mode
-redis-cli --raw incr mycounter 
+          # or turn on human readable by force
+          redis-cli --no-raw incr mycounter | cat
+          # or force raw mode
+          redis-cli --raw incr mycounter
 
-redis-cli flushall
+          redis-cli flushall
 
-# CRUD
-redis-cli SET key val
+          # CRUD
+          redis-cli SET key val
 
-# from stdin using -x
-echo test | redis-cli -x SET ghi
-# or
-printf ttt > val.txt
-redis-cli -x SET ghi < val.txt
-redis-cli get ghi
+          # from stdin using -x
+          echo test | redis-cli -x SET ghi
+          # or
+          printf ttt > val.txt
+          redis-cli -x SET ghi < val.txt
+          redis-cli get ghi
 
-# append
-redis-cli APPEND ghi zzz
-redis-cli get ghi
+          # append
+          redis-cli APPEND ghi zzz
+          redis-cli get ghi
 
-# increment
-redis-cli SET x 102
-redis-cli INCR x
-redis-cli get x
+          # increment
+          redis-cli SET x 102
+          redis-cli INCR x
+          redis-cli get x
 
-# sequence of commands from stdin
-cat <<END | redis-cli | cat
-SET y 106
-INCR y
-SET str "long string"
-GET y
-GET str
-END
+          # sequence of commands from stdin
+          cat <<END | redis-cli | cat
+          SET y 106
+          INCR y
+          SET str "long string"
+          GET y
+          GET str
+          END
 
-# Continuously run the same command
-redis-cli -r 5 -i 1 incr foo
-redis-cli GET foo
-# to run forever
-redis-cli -r -1 -i 1 incr foo
+          # Continuously run the same command
+          redis-cli -r 5 -i 1 incr foo
+          redis-cli GET foo
+          # to run forever
+          redis-cli -r -1 -i 1 incr foo
 
-# Mass insertion
-https://redis.io/docs/reference/patterns/bulk-loading/
+          # Mass insertion
+          https://redis.io/docs/reference/patterns/bulk-loading/
 
-# lists
-redis-cli lpush abc a b c d
-redis-cli lrange abc 0 -1
+          # lists
+          redis-cli lpush abc a b c d
+          redis-cli lrange abc 0 -1
 
-# lua
-cat <<END > script.lua
-return redis.call('set',KEYS[1],ARGV[1])
-END
-redis-cli --eval script.lua luakey , bar
-redis-cli GET luakey
+          # lua
+          cat <<END > script.lua
+          return redis.call('set',KEYS[1],ARGV[1])
+          END
+          redis-cli --eval script.lua luakey , bar
+          redis-cli GET luakey
 
-# Continuous stats mode
-redis-cli --stat
+          # Continuous stats mode
+          redis-cli --stat
 
-# Scanning for big keys
-redis-cli --bigkeys
+          # Scanning for big keys
+          redis-cli --bigkeys
 
-# Getting a list of keys
-redis-cli --scan | head -10
-redis-cli --scan --pattern '*-11*'
-redis-cli --scan --pattern 'user:*' | wc -l
+          # Getting a list of keys
+          redis-cli --scan | head -10
+          redis-cli --scan --pattern '*-11*'
+          redis-cli --scan --pattern 'user:*' | wc -l
 
-# Pub/sub mode
-redis-cli psubscribe '*'
+          # Pub/sub mode
+          redis-cli psubscribe '*'
 
-# Monitoring commands executed in Redis
-redis-cli monitor
+          # Monitoring commands executed in Redis
+          redis-cli monitor
 
-# Monitoring the latency of Redis instances
-redis-cli --latency
-redis-cli --latency-history
+          # Monitoring the latency of Redis instances
+          redis-cli --latency
+          redis-cli --latency-history
 
-# Remote backups of RDB files
-redis-cli --rdb dump.rdb
+          # Remote backups of RDB files
+          redis-cli --rdb dump.rdb
 
-# Replica mode
-redis-cli --replica
-
-
+          # Replica mode
+          redis-cli --replica
         </script>
         <h2>Interactive mode</h2>
         <a href="https://redis.io/topics/rediscli">redis-cli</a>
         <script type="editor" data-lang="sh">
 
-# entering interactive mode in simplest form is just running cli with no parameters
-redis-cli 
+          # entering interactive mode in simplest form is just running cli with no parameters
+          redis-cli
 
-# help
-help @<TAB>
+          # help
+          help @<TAB>
 
-KEYS *
+          KEYS *
 
-# determine database backup dir
-config get dir
-  # from: https://www.digitalocean.com/community/tutorials/how-to-back-up-and-restore-your-redis-data-on-ubuntu-14-04
+          # determine database backup dir
+          config get dir
+            # from: https://www.digitalocean.com/community/tutorials/how-to-back-up-and-restore-your-redis-data-on-ubuntu-14-04
 
-config get *
+          config get *
 
-# create a dump from database
-save
-    # https://redis.io/commands/save/
-        # from https://www.digitalocean.com/community/tutorials/how-to-back-up-and-restore-your-redis-data-on-ubuntu-14-04
+          # create a dump from database
+          save
+              # https://redis.io/commands/save/
+                  # from https://www.digitalocean.com/community/tutorials/how-to-back-up-and-restore-your-redis-data-on-ubuntu-14-04
 
-info
-
+          info
         </script>
         <h2>Read more</h2>
         <a href="https://redis.io/docs/manual/eviction/">Key eviction</a>
-        <a href="https://redistogo.com/documentation/introduction_to_redis?language=en#:~:text=Using%20Redis&text=If%20you%20are%20using%20a,is%20no%20password%20by%20default.">Introduction to Redis</a>
+        <a href="https://redistogo.com/documentation/introduction_to_redis?language=en#:~:text=Using%20Redis&text=If%20you%20are%20using%20a,is%20no%20password%20by%20default."
+          >Introduction to Redis</a
+        >
       </div>
     </div>
   </div>
-    <script src="/js/github.js"></script>
+  <script src="/js/github.js"></script>
 </body>

@@ -1,390 +1,349 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-    <script> <!-- optional to do something before binding ACE editor -->
-    (function () {
-      var resolve
-      var p = new Promise(function (res) {
-        resolve = res
-      })
-
-      document.addEventListener('DOMContentLoaded', () => {
-
-        Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
-
-          var text = tag.innerHTML;
-
-          text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host)
-
-          tag.innerHTML = text;
+    <script>
+      <!-- optional to do something before binding ACE editor -->
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
         });
 
-        var year = (function (target) {
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
+            var text = tag.innerHTML;
 
-          var current = (new Date()).getFullYear()
+            text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host);
 
-          var first = new Date()
-
-          first.setTime(first.getTime() - (60 * 60 * 24 * 365 * 1000 * 5));
-
-          for (var i = 0 ; i < 11 ; i += 1 ) {
-
-            var k = document.createElement('option');
-
-            k.value = k.innerText = first.getFullYear();
-
-            if (k.value == current) {
-
-              k.setAttribute('selected', 'selected')
-            }
-
-            manipulation.append(target, k);
-
-            first.setTime(first.getTime() + (60 * 60 * 24 * 365 * 1000));
-          }
-
-          return target;
-
-        }(document.querySelector('[name="year"]')));
-
-        var month = (function (target) {
-
-          const monthNames = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-          ];
-
-          var current = (new Date()).getMonth()
-
-          monthNames.forEach(function (name, i) {
-
-            var k = document.createElement('option');
-
-            k.value = i
-
-            k.innerText = monthNames[i];
-
-            if (i == current) {
-
-              k.setAttribute('selected', 'selected')
-            }
-
-            manipulation.append(target, k);
+            tag.innerHTML = text;
           });
 
-          return target;
+          var year = (function (target) {
+            var current = new Date().getFullYear();
 
-        }(document.querySelector('[name="month"]')));
+            var first = new Date();
 
-        var day = (function (target) {
+            first.setTime(first.getTime() - 60 * 60 * 24 * 365 * 1000 * 5);
 
-          var current = (new Date()).getDate();
+            for (var i = 0; i < 11; i += 1) {
+              var k = document.createElement("option");
 
-          for (var i = 1 ; i < 32 ; i += 1 ) {
+              k.value = k.innerText = first.getFullYear();
 
-            var k = document.createElement('option');
+              if (k.value == current) {
+                k.setAttribute("selected", "selected");
+              }
 
-            k.value = k.innerText = i;
+              manipulation.append(target, k);
 
-            if (i == current) {
-
-              k.setAttribute('selected', 'selected')
+              first.setTime(first.getTime() + 60 * 60 * 24 * 365 * 1000);
             }
 
-            manipulation.append(target, k);
-          }
+            return target;
+          })(document.querySelector('[name="year"]'));
 
-          return target;
+          var month = (function (target) {
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-        }(document.querySelector('[name="day"]')));
+            var current = new Date().getMonth();
 
-        var hour = (function (target) {
+            monthNames.forEach(function (name, i) {
+              var k = document.createElement("option");
 
-          var current = (new Date()).getHours()
+              k.value = i;
 
-          for (var i = 1 ; i < 25 ; i += 1 ) {
+              k.innerText = monthNames[i];
 
-            var k = document.createElement('option');
+              if (i == current) {
+                k.setAttribute("selected", "selected");
+              }
 
-            k.value = i % 24
+              manipulation.append(target, k);
+            });
 
-            k.innerText = i;
+            return target;
+          })(document.querySelector('[name="month"]'));
 
-            if (i == current) {
+          var day = (function (target) {
+            var current = new Date().getDate();
 
-              k.setAttribute('selected', 'selected')
+            for (var i = 1; i < 32; i += 1) {
+              var k = document.createElement("option");
+
+              k.value = k.innerText = i;
+
+              if (i == current) {
+                k.setAttribute("selected", "selected");
+              }
+
+              manipulation.append(target, k);
             }
 
-            manipulation.append(target, k);
-          }
+            return target;
+          })(document.querySelector('[name="day"]'));
 
-          return target;
+          var hour = (function (target) {
+            var current = new Date().getHours();
 
-        }(document.querySelector('[name="hour"]')));
+            for (var i = 1; i < 25; i += 1) {
+              var k = document.createElement("option");
 
-        var minute = (function (target) {
+              k.value = i % 24;
 
-          var current = (new Date()).getMinutes()
+              k.innerText = i;
 
-          for (var i = 0 ; i < 60 ; i += 1 ) {
+              if (i == current) {
+                k.setAttribute("selected", "selected");
+              }
 
-            var k = document.createElement('option');
-
-            k.value = k.innerText = i;
-
-            if (i == current) {
-
-              k.setAttribute('selected', 'selected')
+              manipulation.append(target, k);
             }
 
-            manipulation.append(target, k);
-          }
+            return target;
+          })(document.querySelector('[name="hour"]'));
 
-          return target;
+          var minute = (function (target) {
+            var current = new Date().getMinutes();
 
-        }(document.querySelector('[name="minute"]')));
+            for (var i = 0; i < 60; i += 1) {
+              var k = document.createElement("option");
 
-        var seconds = (function (target) {
+              k.value = k.innerText = i;
 
-          var current = (new Date()).getSeconds()
+              if (i == current) {
+                k.setAttribute("selected", "selected");
+              }
 
-          for (var i = 0 ; i < 60 ; i += 1 ) {
-
-            var k = document.createElement('option');
-
-            k.value = k.innerText = i;
-
-            if (i == current) {
-
-              k.setAttribute('selected', 'selected')
+              manipulation.append(target, k);
             }
 
-            manipulation.append(target, k);
-          }
+            return target;
+          })(document.querySelector('[name="minute"]'));
 
-          return target;
+          var seconds = (function (target) {
+            var current = new Date().getSeconds();
 
-        }(document.querySelector('[name="seconds"]')));
+            for (var i = 0; i < 60; i += 1) {
+              var k = document.createElement("option");
 
-        var hash = (function (d) {
-          d.addEventListener('click', function () {
-            d.select();
+              k.value = k.innerText = i;
+
+              if (i == current) {
+                k.setAttribute("selected", "selected");
+              }
+
+              manipulation.append(target, k);
+            }
+
+            return target;
+          })(document.querySelector('[name="seconds"]'));
+
+          var hash = (function (d) {
+            d.addEventListener("click", function () {
+              d.select();
+            });
+            d.addEventListener("input", function (e) {
+              update();
+            });
+            return d;
+          })(document.querySelector("#hash"));
+
+          var update = (function () {
+            var element = document.querySelector("#timestamp");
+
+            element.addEventListener("click", function (e) {
+              element.select();
+            });
+
+            var pre = element.value;
+
+            return function () {
+              var d = new Date();
+
+              d.setFullYear(year.value);
+              d.setMonth(month.value);
+              d.setDate(day.value);
+              d.setHours(hour.value);
+              d.setMinutes(minute.value);
+              d.setSeconds(seconds.value);
+
+              element.value = pre.replace(/xxx/g, d.toISOString()).replace(/yyy/g, hash.value);
+            };
+          })();
+
+          [year, month, day, hour, minute, seconds].forEach(function (e) {
+            e.addEventListener("change", update);
           });
-          d.addEventListener('input', function (e) {
-            update();
-          });
-          return d;
-        }(document.querySelector('#hash')));
 
-        var update = (function () {
+          update();
 
-          var element = document.querySelector('#timestamp');
-
-          element.addEventListener('click', function (e) {
-            element.select();
-          })
-
-          var pre = element.value;
-
-          return function () {
-
-            var d = new Date();
-
-            d.setFullYear(year.value)
-            d.setMonth(month.value)
-            d.setDate(day.value)
-            d.setHours(hour.value)
-            d.setMinutes(minute.value)
-            d.setSeconds(seconds.value)
-
-            element.value = pre.replace(/xxx/g, d.toISOString()).replace(/yyy/g, hash.value);
-          }
-        }());
-
-        [year, month, day, hour, minute, seconds].forEach(function (e) {
-
-          e.addEventListener('change', update)
+          resolve();
         });
 
-        update();
-
-        resolve()
-      });
-
-
-      window.waitForPromise = function () {
-
-        return p
-      }
-    }())
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
     </script>
     <style>
-        #timestamp {
-            height: 168px;
-            font-size: 11px;
-            width: 98%;
-        }
-        #hash {
-            width: 100%;
-        }
+      #timestamp {
+        height: 168px;
+        font-size: 11px;
+        width: 98%;
+      }
+      #hash {
+        width: 100%;
+      }
     </style>
-</head>
-<body class="layout" toc>
-
-<div class="body">
-    <div class="inside">
+  </head>
+  <body class="layout" toc>
+    <div class="body">
+      <div class="inside">
         <div class="cards">
-            <h2>gitflow</h2>
-            <a href="https://nvie.com/posts/a-successful-git-branching-model/">https://nvie.com/posts/a-successful-git-branching-model/</a>
-            <h2>Github</h2>
-            <a href="http://farhadg.github.io/init/landing/">(INIT): http://farhadg.github.io/init/landing/</a>
-            <br/>
-            <a href="https://itnext.io/advanced-git-features-you-didnt-know-you-needed-ed8455c45495#9fef">Signing Commits</a>
-            <br/>
-            <a href="https://github.com/tj/git-extras/blob/master/Commands.md">https://github.com/tj/git-extras/blob/master/Commands.md</a>
+          <h2>gitflow</h2>
+          <a href="https://nvie.com/posts/a-successful-git-branching-model/">https://nvie.com/posts/a-successful-git-branching-model/</a>
+          <h2>Github</h2>
+          <a href="http://farhadg.github.io/init/landing/">(INIT): http://farhadg.github.io/init/landing/</a>
+          <br />
+          <a href="https://itnext.io/advanced-git-features-you-didnt-know-you-needed-ed8455c45495#9fef">Signing Commits</a>
+          <br />
+          <a href="https://github.com/tj/git-extras/blob/master/Commands.md">https://github.com/tj/git-extras/blob/master/Commands.md</a>
         </div>
         <div class="cards">
-            <h2>Merge Strategies</h2>
-            <a href="https://stackoverflow.com/a/52157972">https://stackoverflow.com/a/52157972</a>
-            <h2>gitignore global</h2>
-            <a href="https://gist.github.com/subfuzion/db7f57fff2fb6998a16c">https://gist.github.com/subfuzion/db7f57fff2fb6998a16c</a>
-            <h2>Useful</h2>
-            <script type="editor" data-lang="sh">
-            
-  
+          <h2>Merge Strategies</h2>
+          <a href="https://stackoverflow.com/a/52157972">https://stackoverflow.com/a/52157972</a>
+          <h2>gitignore global</h2>
+          <a href="https://gist.github.com/subfuzion/db7f57fff2fb6998a16c">https://gist.github.com/subfuzion/db7f57fff2fb6998a16c</a>
+          <h2>Useful</h2>
+          <script type="editor" data-lang="sh">
 
-# Pull changes from a remote branch
-git branch -a
 
-#switch to remote branch
-git checkout -b feat/branch_name origin/feat/branch_name
 
-git push --set-upstream origin <branch>
-git push -u origin <branch>
+            # Pull changes from a remote branch
+            git branch -a
 
-git commit --no-verify
-git push --no-verify -u origin feat/name
+            #switch to remote branch
+            git checkout -b feat/branch_name origin/feat/branch_name
 
-# delete local branch
-git branch -d feature/login
+            git push --set-upstream origin <branch>
+            git push -u origin <branch>
 
-# delete remote branch
-git push origin --delete feature/login
+            git commit --no-verify
+            git push --no-verify -u origin feat/name
 
-git reset HEAD^
+            # delete local branch
+            git branch -d feature/login
 
-# checkout file to particular commit
-git checkout f08a63ff4fa7b8479f8c698e5998ee1afcac3a4e js/github.js
+            # delete remote branch
+            git push origin --delete feature/login
 
-# diff for particular commit and file
-git diff 81ee4e3ad73^ 81ee4e3ad73 -- src/infrastructure/locksmith/testFixtures/index.js
+            git reset HEAD^
 
-            </script>
-            <h2>gitstorage-core.sh !</h2>
-            <script type="editor" data-lang="sh" class="domain.com">
+            # checkout file to particular commit
+            git checkout f08a63ff4fa7b8479f8c698e5998ee1afcac3a4e js/github.js
 
-wget --help 1> /dev/null 2> /dev/null
-if [ "$?" = "0" ]; then # wget
-  wget --no-cache -O ".git/gitstorage-core.sh" "domain.com/gitstorage-core.sh"
-else # curl
-  curl "domain.com/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
-fi
-/bin/bash ".git/gitstorage-core.sh"
-# /bin/bash ".git/gitstorage-core.sh" --core_repository "git@your-repository.git"
+            # diff for particular commit and file
+            git diff 81ee4e3ad73^ 81ee4e3ad73 -- src/infrastructure/locksmith/testFixtures/index.js
+          </script>
+          <h2>gitstorage-core.sh !</h2>
+          <script type="editor" data-lang="sh" class="domain.com">
 
-            </script>
-            <h2>gitstorage.sh</h2>
-            <script type="editor" data-lang="sh" class="domain.com">
+            wget --help 1> /dev/null 2> /dev/null
+            if [ "$?" = "0" ]; then # wget
+              wget --no-cache -O ".git/gitstorage-core.sh" "domain.com/gitstorage-core.sh"
+            else # curl
+              curl "domain.com/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
+            fi
+            /bin/bash ".git/gitstorage-core.sh"
+            # /bin/bash ".git/gitstorage-core.sh" --core_repository "git@your-repository.git"
+          </script>
+          <h2>gitstorage.sh</h2>
+          <script type="editor" data-lang="sh" class="domain.com">
 
-if [ -f gitstorage.sh ]; then
-    echo 'file gitstorage.sh already exist';
-else
-  wget --help 1> /dev/null 2> /dev/null
-  if [ "$?" = "0" ]; then # wget
-    wget --no-cache -O "gitstorage.sh" "https://raw.githubusercontent.com/stopsopa/host.com/master/gitstorage.sh"
-  else # curl
-    curl "https://raw.githubusercontent.com/stopsopa/host.com/master/gitstorage.sh" -o "gitstorage.sh"
-  fi
-fi
-/bin/bash gitstorage.sh --create
-vi gitstorage-config.sh
-
-            </script>
-            <a href="https://github.com/stopsopa/gitstorage">github</a>
+            if [ -f gitstorage.sh ]; then
+                echo 'file gitstorage.sh already exist';
+            else
+              wget --help 1> /dev/null 2> /dev/null
+              if [ "$?" = "0" ]; then # wget
+                wget --no-cache -O "gitstorage.sh" "https://raw.githubusercontent.com/stopsopa/host.com/master/gitstorage.sh"
+              else # curl
+                curl "https://raw.githubusercontent.com/stopsopa/host.com/master/gitstorage.sh" -o "gitstorage.sh"
+              fi
+            fi
+            /bin/bash gitstorage.sh --create
+            vi gitstorage-config.sh
+          </script>
+          <a href="https://github.com/stopsopa/gitstorage">github</a>
         </div>
         <div class="cards">
-            <h2>useful</h2>
-            <script type="editor" data-lang="sh">
+          <h2>useful</h2>
+          <script type="editor" data-lang="sh">
 
-# clear stach (10 latest)
-git stash list
-git stash drop stash@{0}   
-for i in {0..10}; do git stash drop stash@{0}; done
+            # clear stach (10 latest)
+            git stash list
+            git stash drop stash@{0}
+            for i in {0..10}; do git stash drop stash@{0}; done
 
-# clone single file
-git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD:public index.html | tar -x
-git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD: .env.kub | tar -x
-git archive --remote=git@bitbucket.org:xxx/xxx.git feature_branch: .env.kub | tar -x
-    # from: https://stackoverflow.com/a/18712703
-    
-# print 'email =' section from each found .git/config file skipping search in node_modules
-while read -r dir ; do echo "${dir}";cat "${dir}/config" | grep 'email =' ; done <<< "$(find . -type d -name 'node_modules' -prune -o -type d -name .git -print)"
+            # clone single file
+            git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD:public index.html | tar -x
+            git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD: .env.kub | tar -x
+            git archive --remote=git@bitbucket.org:xxx/xxx.git feature_branch: .env.kub | tar -x
+                # from: https://stackoverflow.com/a/18712703
 
-# automated fix script for above 
-cat <<EEE > fix.sh
-LIST=\$(cat <<END
-./path/to/directory/.git
-./path/to/directory2/.git
-END
-); 
-while read -r line
-do 
-  (
-    cd "\$(dirname "\${line}")"
-    git config user.email email@gmail.com && cat .git/config
-  )
-done <<< "\${LIST}"
-EEE
-/bin/bash fix.sh
-rm -rf fix.sh
+            # print 'email =' section from each found .git/config file skipping search in node_modules
+            while read -r dir ; do echo "${dir}";cat "${dir}/config" | grep 'email =' ; done <<< "$(find . -type d -name 'node_modules' -prune -o -type d -name .git -print)"
 
-            </script>
+            # automated fix script for above
+            cat <<EEE > fix.sh
+            LIST=\$(cat <<END
+            ./path/to/directory/.git
+            ./path/to/directory2/.git
+            END
+            );
+            while read -r line
+            do
+              (
+                cd "\$(dirname "\${line}")"
+                git config user.email email@gmail.com && cat .git/config
+              )
+            done <<< "\${LIST}"
+            EEE
+            /bin/bash fix.sh
+            rm -rf fix.sh
+          </script>
         </div>
         <div class="cards">
-            <h2>git log</h2>
-            <script type="editor" data-lang="sh">
-                    
-git log --graph --abbrev-commit --decorate --all \
-    --format=format:"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) \
-    - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)"
-    
-git log --graph --decorate --abbrev-commit --all --pretty=oneline  --pretty=format:"%h%x09%an%x09%ad%x09%s"  
+          <h2>git log</h2>
+          <script type="editor" data-lang="sh">
 
-            </script>
+            git log --graph --abbrev-commit --decorate --all \
+                --format=format:"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) \
+                - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)"
+
+            git log --graph --decorate --abbrev-commit --all --pretty=oneline  --pretty=format:"%h%x09%an%x09%ad%x09%s"
+          </script>
         </div>
         <div class="cards">
-            <h2>change commit timestamp</h2>
-            <script type="editor" data-lang="sh">
+          <h2>change commit timestamp</h2>
+          <script type="editor" data-lang="sh">
 
-export FILTER_BRANCH_SQUELCH_WARNING=1
-git filter-branch -f --env-filter  \
-    'if [ $GIT_COMMIT = d06798b8722b52c9643bbd72f3f07bd7598777d4 ]
-     then
-         export GIT_AUTHOR_DATE="2000-05-06 03:04:05"
-         export GIT_COMMITTER_DATE="2000-05-06 03:04:05"
-     fi'
-
-            </script>
-            <table width="100%">
-                <tbody>
-                <tr>
-                    <td width="50%">
-<textarea id="timestamp">
+            export FILTER_BRANCH_SQUELCH_WARNING=1
+            git filter-branch -f --env-filter  \
+                'if [ $GIT_COMMIT = d06798b8722b52c9643bbd72f3f07bd7598777d4 ]
+                 then
+                     export GIT_AUTHOR_DATE="2000-05-06 03:04:05"
+                     export GIT_COMMITTER_DATE="2000-05-06 03:04:05"
+                 fi'
+          </script>
+          <table width="100%">
+            <tbody>
+              <tr>
+                <td width="50%">
+                  <textarea id="timestamp">
 
  export FILTER_BRANCH_SQUELCH_WARNING=1
  git filter-branch -f --env-filter  \
@@ -394,349 +353,340 @@ git filter-branch -f --env-filter  \
          export GIT_COMMITTER_DATE="xxx"
      fi'
 
-</textarea>
-                    </td>
-                    <td>
-                        <div>
-                            <select name="year"></select>
-                            -
-                            <select name="month"></select>
-                            -
-                            <select name="day"></select>
-                            &nbsp; &nbsp; &nbsp;
-                            <select name="hour"></select>
-                            :
-                            <select name="minute"></select>
-                            :
-                            <select name="seconds"></select>
-                        </div>
-                        <div>
-                            <input type="text" id="hash" value="d06798b8722b52c9643bbd72f3f07bd7598777d4">
-                        </div>
-                        <a href="https://stackoverflow.com/a/454750">https://stackoverflow.com/a/454750</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+</textarea
+                  >
+                </td>
+                <td>
+                  <div>
+                    <select name="year"></select>
+                    -
+                    <select name="month"></select>
+                    -
+                    <select name="day"></select>
+                    &nbsp; &nbsp; &nbsp;
+                    <select name="hour"></select>
+                    :
+                    <select name="minute"></select>
+                    :
+                    <select name="seconds"></select>
+                  </div>
+                  <div>
+                    <input type="text" id="hash" value="d06798b8722b52c9643bbd72f3f07bd7598777d4" />
+                  </div>
+                  <a href="https://stackoverflow.com/a/454750">https://stackoverflow.com/a/454750</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div class="cards">
-            <h2>remove from history (filter-branch)</h2>
-            <script type="editor" data-lang="sh">
+          <h2>remove from history (filter-branch)</h2>
+          <script type="editor" data-lang="sh">
 
-  git filter-branch --force --index-filter \
-  'git rm -rf --cached --ignore-unmatch plik1 katalog1' \
-  --prune-empty --tag-name-filter cat -- --all && \
-  rm -rf .git/refs/original/ && \
-  git reflog expire --expire=now --all && \
-  git gc --prune=now && \
-  git gc --aggressive --prune=now
-
-            </script>
+            git filter-branch --force --index-filter \
+            'git rm -rf --cached --ignore-unmatch plik1 katalog1' \
+            --prune-empty --tag-name-filter cat -- --all && \
+            rm -rf .git/refs/original/ && \
+            git reflog expire --expire=now --all && \
+            git gc --prune=now && \
+            git gc --aggressive --prune=now
+          </script>
         </div>
         <div class="cards">
-            <h2>Change the author</h2>
-            <script type="editor" data-lang="sh">
-# https://git-scm.com/docs/git-filter-branch/2.2.3
-# https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables            
-                    
-git filter-branch --env-filter '
-OLD_EMAIL="youroldemail@example.com"
-CORRECT_NAME="YourCorrectName"
-CORRECT_EMAIL="yourcorrectemail@example.com"
-if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
-then
-    export GIT_COMMITTER_NAME="$CORRECT_NAME"
-    export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
-fi
-if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
-then
-    export GIT_AUTHOR_NAME="$CORRECT_NAME"
-    export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
-fi
-' --tag-name-filter cat -- --branches --tags
+          <h2>Change the author</h2>
+          <script type="editor" data-lang="sh">
+            # https://git-scm.com/docs/git-filter-branch/2.2.3
+            # https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables
 
-            </script>
-            <a href="https://stackoverflow.com/a/750182">from</a>
+            git filter-branch --env-filter '
+            OLD_EMAIL="youroldemail@example.com"
+            CORRECT_NAME="YourCorrectName"
+            CORRECT_EMAIL="yourcorrectemail@example.com"
+            if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
+            then
+                export GIT_COMMITTER_NAME="$CORRECT_NAME"
+                export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+            fi
+            if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
+            then
+                export GIT_AUTHOR_NAME="$CORRECT_NAME"
+                export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
+            fi
+            ' --tag-name-filter cat -- --branches --tags
+          </script>
+          <a href="https://stackoverflow.com/a/750182">from</a>
         </div>
         <div class="cards">
-            <h2>find big files, from <a href="https://stackoverflow.com/a/42544963">https://stackoverflow.com/a/42544963</a>
-            </h2>
-            <script type="editor" data-lang="sh">
+          <h2>find big files, from <a href="https://stackoverflow.com/a/42544963">https://stackoverflow.com/a/42544963</a></h2>
+          <script type="editor" data-lang="sh">
 
-git rev-list --objects --all \
-| git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
-| sed -n 's/^blob //p' \
-| sort --numeric-sort --key=2 \
-| cut -c 1-12,41- \
-| $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
-
-            </script>
+            git rev-list --objects --all \
+            | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
+            | sed -n 's/^blob //p' \
+            | sort --numeric-sort --key=2 \
+            | cut -c 1-12,41- \
+            | $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+          </script>
         </div>
         <div class="cards">
-            <h2>git config</h2>
-            <script type="editor" data-lang="sh">
+          <h2>git config</h2>
+          <script type="editor" data-lang="sh">
 
-git config -e
-# editor
-    git config --global -e
+            git config -e
+            # editor
+                git config --global -e
 
-git config -l
-git config --global -l | egrep "(user\.name|user\.email)"
+            git config -l
+            git config --global -l | egrep "(user\.name|user\.email)"
 
-git config --global core.fileMode false
-git config --global core.autocrlf false
-git config --global rebase.autoStash true
-git config --global core.ignorecase false
-git config --global color.ui auto
-git config --global --add merge.ff false
+            git config --global core.fileMode false
+            git config --global core.autocrlf false
+            git config --global rebase.autoStash true
+            git config --global core.ignorecase false
+            git config --global color.ui auto
+            git config --global --add merge.ff false
 
-git config core.fileMode false
+            git config core.fileMode false
 
-# to read config
-    git config --get core.ignoreCase
-    
-git config --global core.editor vi    
-                    
-git config --global user.email x.y@gmail.com
-git config --global user.name "Name Surname" 
+            # to read config
+                git config --get core.ignoreCase
 
-git config --global core.excludesFile '~/.gitignore'
-cat <<EOF > ~/.gitignore
-.DS_Store
-EOF
+            git config --global core.editor vi
+
+            git config --global user.email x.y@gmail.com
+            git config --global user.name "Name Surname"
+
+            git config --global core.excludesFile '~/.gitignore'
+            cat <<EOF > ~/.gitignore
+            .DS_Store
+            EOF
 
 
-# per repository
-alias sdz="git config user.email xxx@gmail.com && cat .git/config"
+            # per repository
+            alias sdz="git config user.email xxx@gmail.com && cat .git/config"
+          </script>
+          <a href="https://github.com/stopsopa/gitstorage">github</a>
+          <h2>tig</h2>
+          <a href="https://jonas.github.io/tig/doc/tig.1.html#_examples">https://jonas.github.io/tig/doc/tig.1.html#_examples</a>
+          <br />
+          <a href="https://linux.die.net/man/5/tigrc">https://linux.die.net/man/5/tigrc</a>
+          <br />
+          <a href="https://github.com/jonas/tig/blob/master/tigrc">https://github.com/jonas/tig/blob/master/tigrc</a>
+          <br />
+          <a href="https://www.youtube.com/watch?v=z0mb0NteYjg">https://www.youtube.com/watch?v=z0mb0NteYjg</a>
+          <script type="editor" data-lang="sh">
 
-            </script>
-            <a href="https://github.com/stopsopa/gitstorage">github</a>
-            <h2>tig</h2>
-            <a href="https://jonas.github.io/tig/doc/tig.1.html#_examples">https://jonas.github.io/tig/doc/tig.1.html#_examples</a>
-            <br />
-            <a href="https://linux.die.net/man/5/tigrc">https://linux.die.net/man/5/tigrc</a>
-            <br />
-            <a href="https://github.com/jonas/tig/blob/master/tigrc">https://github.com/jonas/tig/blob/master/tigrc</a>
-            <br />
-            <a href="https://www.youtube.com/watch?v=z0mb0NteYjg">https://www.youtube.com/watch?v=z0mb0NteYjg</a>
-            <script type="editor" data-lang="sh">
+            # mac, tig version tig-2.5.4
 
-# mac, tig version tig-2.5.4
+            tig --all
 
-tig --all
+            tig refs
 
-tig refs
+            tig master..develop
 
-tig master..develop
-    
-tig master..origin/feat/DF
-  # show what would be brought to the master if we would try to merge origin/feat/DF with it
-  
-# run
-   tig
-# and then press
-   h
-# to see full help   
+            tig master..origin/feat/DF
+              # show what would be brought to the master if we would try to merge origin/feat/DF with it
 
-cat <<EOF > ~/.tigrc
-set main-options = --exclude=refs/stash --all
-    # https://stackoverflow.com/a/25976240
-    # https://stackoverflow.com/a/32159992
-    
-set horizontal-scroll = 10%
+            # run
+               tig
+            # and then press
+               h
+            # to see full help
 
-set main-view-commit-title-overflow = 50
-set main-view = line-number:yes,interval=1 id:yes date:default author:full commit-title:yes,graph,refs,overflow=yes
-set line-graphics = utf-8
-    # from: https://fossies.org/diffs/tig/2.4.1_vs_2.5.0/tigrc-diff.html
+            cat <<EOF > ~/.tigrc
+            set main-options = --exclude=refs/stash --all
+                # https://stackoverflow.com/a/25976240
+                # https://stackoverflow.com/a/32159992
 
-color main-head         yellow blue    default 
+            set horizontal-scroll = 10%
 
-bind stash  a   ?git stash apply %(stash)
-bind generic    p   view-pager
-bind stash  p   ?git stash pop %(stash)
+            set main-view-commit-title-overflow = 50
+            set main-view = line-number:yes,interval=1 id:yes date:default author:full commit-title:yes,graph,refs,overflow=yes
+            set line-graphics = utf-8
+                # from: https://fossies.org/diffs/tig/2.4.1_vs_2.5.0/tigrc-diff.html
 
-#set main-view-date = custom
-#set main-view-date-format = "%Y-%m-%d %H:%M"
-    # from: man tigrc  
-    
-bind generic   <PageUp>   move-half-page-up   
-bind generic   <PageDown>   move-half-page-down   
-    
-    # inspired by https://github.com/jonas/tig/blob/master/contrib/vim.tigrc vvv
-bind generic v  none
-bind generic vm view-main
-bind generic vd view-diff
-bind generic vl view-log
-bind generic vt view-tree
-bind generic vb view-blob
-bind generic vx view-blame
-bind generic vr view-refs
-bind generic vs view-status
-bind generic vu view-stage
-bind generic vy view-stash
-bind generic vg view-grep
-bind generic vp view-pager
-bind generic vh view-help
+            color main-head         yellow blue    default
 
-bind generic g  none
-bind generic gg move-first-line
+            bind stash  a   ?git stash apply %(stash)
+            bind generic    p   view-pager
+            bind stash  p   ?git stash pop %(stash)
 
-bind main    G move-last-line
-bind generic G move-last-line
-    # inspired by https://github.com/jonas/tig/blob/master/contrib/vim.tigrc ^^^
+            #set main-view-date = custom
+            #set main-view-date-format = "%Y-%m-%d %H:%M"
+                # from: man tigrc
 
-EOF
+            bind generic   <PageUp>   move-half-page-up
+            bind generic   <PageDown>   move-half-page-down
 
-  # see more help (press "h" after entering tig) section "Option toggling:"
-  # or https://jonas.github.io/tig/doc/manual.html
-  # or man tigrc
-  # and more: https://fossies.org/diffs/tig/2.4.1_vs_2.5.0/tigrc-diff.html
-  # default: https://github.com/jonas/tig/blob/master/tigrc
-  
-# how to safe current settings to file
-# https://stackoverflow.com/a/32505815
-:save-options file-name.txt
+                # inspired by https://github.com/jonas/tig/blob/master/contrib/vim.tigrc vvv
+            bind generic v  none
+            bind generic vm view-main
+            bind generic vd view-diff
+            bind generic vl view-log
+            bind generic vt view-tree
+            bind generic vb view-blob
+            bind generic vx view-blame
+            bind generic vr view-refs
+            bind generic vs view-status
+            bind generic vu view-stage
+            bind generic vy view-stash
+            bind generic vg view-grep
+            bind generic vp view-pager
+            bind generic vh view-help
 
-            </script>
-            <h2>Clear local and remote branches</h2>
-            <p>Clear remote repository without removing it</p>
-            <script type="editor" data-lang="sh" class="domain.com">
+            bind generic g  none
+            bind generic gg move-first-line
 
-SKIP="master"
+            bind main    G move-last-line
+            bind generic G move-last-line
+                # inspired by https://github.com/jonas/tig/blob/master/contrib/vim.tigrc ^^^
 
-git checkout -b ${SKIP} origin/${SKIP} || true
-git checkout ${SKIP}
-LIST="$(git branch | grep -v ${SKIP})"
-while read -r BRANCH
-do 
-    echo "del local branch ${BRANCH}"
-    git branch -D ${BRANCH}
-done <<< "${LIST}"
+            EOF
 
-LIST="$(git branch -r)"
-while read -r BRANCH
-do 
-    ORIGIN="$(echo ${BRANCH} | sed -E 's/^ *([^\/]+)\/.*$/\1/')"
-    RB="$(echo ${BRANCH} | sed -E 's/^ *[^\/]+\/(.*)$/\1/')"
-    echo "del remote branch ${BRANCH} >> ${ORIGIN} :${RB}"
-    git branch -D -r ${BRANCH}
-    git push ${ORIGIN} :${RB}
-done <<< "${LIST}"
+              # see more help (press "h" after entering tig) section "Option toggling:"
+              # or https://jonas.github.io/tig/doc/manual.html
+              # or man tigrc
+              # and more: https://fossies.org/diffs/tig/2.4.1_vs_2.5.0/tigrc-diff.html
+              # default: https://github.com/jonas/tig/blob/master/tigrc
 
-            </script>
+            # how to safe current settings to file
+            # https://stackoverflow.com/a/32505815
+            :save-options file-name.txt
+          </script>
+          <h2>Clear local and remote branches</h2>
+          <p>Clear remote repository without removing it</p>
+          <script type="editor" data-lang="sh" class="domain.com">
+
+            SKIP="master"
+
+            git checkout -b ${SKIP} origin/${SKIP} || true
+            git checkout ${SKIP}
+            LIST="$(git branch | grep -v ${SKIP})"
+            while read -r BRANCH
+            do
+                echo "del local branch ${BRANCH}"
+                git branch -D ${BRANCH}
+            done <<< "${LIST}"
+
+            LIST="$(git branch -r)"
+            while read -r BRANCH
+            do
+                ORIGIN="$(echo ${BRANCH} | sed -E 's/^ *([^\/]+)\/.*$/\1/')"
+                RB="$(echo ${BRANCH} | sed -E 's/^ *[^\/]+\/(.*)$/\1/')"
+                echo "del remote branch ${BRANCH} >> ${ORIGIN} :${RB}"
+                git branch -D -r ${BRANCH}
+                git push ${ORIGIN} :${RB}
+            done <<< "${LIST}"
+          </script>
           <h2>lint</h2>
           <script type="editor" data-lang="sh">
 
-# place this script somewhere in ~/ dir and run with "help" param, then follow instructions to register it as alias
+            # place this script somewhere in ~/ dir and run with "help" param, then follow instructions to register it as alias
 
-_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
-case ${_SHELL} in
-  zsh)
-    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
-    _SCRIPT="${(%):-%N}"
-    _BINARY="/bin/zsh"
-    _PWD="$(pwd)"
-    ;;
-  sh)
-    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
-    _SCRIPT="${0}"
-    _BINARY="/bin/sh"
-    _PWD="$(pwd)"
-    ;;
-  *)
-    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
-    _SCRIPT="${BASH_SOURCE[0]}"
-    _BINARY="/bin/bash"
-    _PWD="$(pwd)"
-    ;;
-esac
-
-
-_PWD="$(pwd)"
-
-GIT=".git"
-
-if [ ! -d "${GIT}" ]; then
-
-  echo "directory ${GIT} doesn't exist";
-
-  exit 1
-fi
-
-SCRIPT="${GIT}/lint.sh"
-
-if [ "${1}" = "help" ]; then
-
-  cat <<EEE
-
-  Register it as an aliast by adding this line to ~/.bashrc or ~/.zshrc
-
-  alias lint="/bin/bash ${_DIR}/lint.sh";
-
-EEE
-
-  exit 0
-fi
-
-if [ "${1}" = "create" ]; then
-
-  if [ -f "${SCRIPT}" ]; then
-
-    echo "script ${SCRIPT} already exist";
-
-    exit 1
-  else
-
-    cat <<EEE > "${SCRIPT}"
-
-set -e
-if [ "\${1}" = "fix" ]; then
-  yarn prettier --list-different .
-else
-  yarn prettier --write .
-  yarn lint
-fi
-
-EEE
-
-    echo "script ${SCRIPT} created";
-  fi
-
-  exit 0;
-fi
-
-if [ ! -f "${SCRIPT}" ]; then
-
-  echo -e "script ${SCRIPT} doesn't exist\nrun:\n\n    /bin/bash ${0} create\n\n";
-
-  exit 1
-fi
-
-set -e
-
-cat <<EEE
-
-You might run it in two modes:
-
-  /bin/bash ${SCRIPT}
-
-  or
-
-  /bin/bash ${SCRIPT} fix
-
-EEE
-
-/bin/bash ${SCRIPT}
+            _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
+            case ${_SHELL} in
+              zsh)
+                _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+                _SCRIPT="${(%):-%N}"
+                _BINARY="/bin/zsh"
+                _PWD="$(pwd)"
+                ;;
+              sh)
+                _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+                _SCRIPT="${0}"
+                _BINARY="/bin/sh"
+                _PWD="$(pwd)"
+                ;;
+              *)
+                _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+                _SCRIPT="${BASH_SOURCE[0]}"
+                _BINARY="/bin/bash"
+                _PWD="$(pwd)"
+                ;;
+            esac
 
 
-            </script>
-            wishful thinking:
-            <a href="https://github.com/jonas/tig/issues/406">https://github.com/jonas/tig/issues/406</a>
+            _PWD="$(pwd)"
+
+            GIT=".git"
+
+            if [ ! -d "${GIT}" ]; then
+
+              echo "directory ${GIT} doesn't exist";
+
+              exit 1
+            fi
+
+            SCRIPT="${GIT}/lint.sh"
+
+            if [ "${1}" = "help" ]; then
+
+              cat <<EEE
+
+              Register it as an aliast by adding this line to ~/.bashrc or ~/.zshrc
+
+              alias lint="/bin/bash ${_DIR}/lint.sh";
+
+            EEE
+
+              exit 0
+            fi
+
+            if [ "${1}" = "create" ]; then
+
+              if [ -f "${SCRIPT}" ]; then
+
+                echo "script ${SCRIPT} already exist";
+
+                exit 1
+              else
+
+                cat <<EEE > "${SCRIPT}"
+
+            set -e
+            if [ "\${1}" = "fix" ]; then
+              yarn prettier --list-different .
+            else
+              yarn prettier --write .
+              yarn lint
+            fi
+
+            EEE
+
+                echo "script ${SCRIPT} created";
+              fi
+
+              exit 0;
+            fi
+
+            if [ ! -f "${SCRIPT}" ]; then
+
+              echo -e "script ${SCRIPT} doesn't exist\nrun:\n\n    /bin/bash ${0} create\n\n";
+
+              exit 1
+            fi
+
+            set -e
+
+            cat <<EEE
+
+            You might run it in two modes:
+
+              /bin/bash ${SCRIPT}
+
+              or
+
+              /bin/bash ${SCRIPT} fix
+
+            EEE
+
+            /bin/bash ${SCRIPT}
+          </script>
+          wishful thinking:
+          <a href="https://github.com/jonas/tig/issues/406">https://github.com/jonas/tig/issues/406</a>
         </div>
+      </div>
     </div>
-
-</div>
-<script src="/js/github.js"></script>
-</body>
+    <script src="/js/github.js"></script>
+  </body>
 </html>
