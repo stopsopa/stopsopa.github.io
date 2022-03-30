@@ -21,25 +21,35 @@
 ## You can add manually TOC to the document in order to add some extra links to TOC
 
 ```html
-<body class="layout" toc>
-  <div class="body">
-    <div class="inside">
-      <div class="cards toc">
-        <h1>Table of Contents</h1>
-        <ul data-do-sort>
-          <li><a href="http://">ekstra link</a></li>
-        </ul>
-      </div>
-      <div class="cards">
-        <h2>debug</h2>
-        <script type="editor" data-lang="sh">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="http://">ekstra link</a></li>
+          </ul>
+        </div>
+        <div class="cards">
+          <h2>debug</h2>
+          <script type="editor" data-lang="sh">
+            ...
+          </script>
           ...
-        </script>
-        ...
+        </div>
       </div>
     </div>
-  </div>
-</body>
+    <script src="/js/github.js"></script>
+  </body>
+</html>
 ```
 
 # attribute helpers
