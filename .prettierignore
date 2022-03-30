@@ -4,3 +4,7 @@ node_modules
 /dist/
 /var/
 /js/
+/pages/portsregistry/lists/ports-generated.json
+*.min.js
+*.rendered.html
+/preprocessed.js
