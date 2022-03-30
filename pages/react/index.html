@@ -1,598 +1,541 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-</head>
-<body class="layout" toc>
-
-<div class="body">
-    <div class="inside">
-
+  </head>
+  <body class="layout" toc>
+    <div class="body">
+      <div class="inside">
         <div class="cards">
-            <h2>codepen, jsfiddle, codesandbox</h2>
-            <a href="https://codesandbox.io/s/rjj38yzm14">codesandbox template</a>
-            <h2>React - es6 syntax snippets</h2>
-            <a href="https://gist.github.com/stopsopa/3f076fd92b03136cc28b8b91a1ffdad8#file-js-es6-jsx-L323">https://gist.github.com/stopsopa/3f076fd92b03136cc28b8b91a1ffdad8#file-js-es6-jsx-L323</a>
-
-            <h2>React - Textarea</h2>
-            <script type="editor" data-lang="jsx">
-
-import React, { useRef, useState, useEffect } from 'react';
-
-// https://stackoverflow.com/a/5346855
-var observe;
-if (window.attachEvent) {
-  observe = function (element, event, handler) {
-    element.attachEvent('on'+event, handler);
-  };
-}
-else {
-  observe = function (element, event, handler) {
-    element.addEventListener(event, handler, false);
-  };
-}
-function init (text, correct) {
-  function resize () {
-    console && console.log && console.log('fun resize', text)
-    //text.style.height = 'auto';
-    var h = text.scrollHeight;
-    if (Number.isInteger(correct)) {
-      h += correct;
-    }
-    text.style.height = h+'px';
-  }
-  /* 0-timeout to get the already changed text */
-  function delayedResize () {
-    window.setTimeout(resize, 0);
-  }
-  observe(text, 'change',  resize);
-  observe(text, 'cut',     delayedResize);
-  observe(text, 'paste',   delayedResize);
-  observe(text, 'drop',    delayedResize);
-  observe(text, 'keydown', delayedResize);
-
-  // text.focus();
-  // text.select();
-  resize();
-
-  return function () {resize()}
-}
-
-export default props => {
-
-  const el = useRef(null);
-
-  const [ resize, setResize ] = useState({});
-
-  const [ mounted, setMounted ] = useState(false);
-
-  const {
-    value,
-  } = props;
-
-  const {
-    correct,
-    ...rest
-  } = props
-
-  useEffect(() => {
-
-    let _resize = resize._resize;
-
-    if ( ! mounted && el.current ) {
-
-      setMounted(true);
-
-      _resize = init(el.current, correct);
-
-      setResize({
-        _resize: _resize
-      });
-    }
-
-    try {
-
-      _resize();
-    }
-    catch (e) {
-
-      console && console.log && console.log(`Textarea.js _resize() trigger error: ${e}`);
-    }
-  }, [value]);
-
-  return (
-    <textarea ref={el} {...rest} />
-  )
-}
-                </script>
-            <h2>useCallback useMemo</h2>
-            <script type="editor" data-lang="jsx">
-How is useMemo different, but similar?
-useMemo is similar to useCallback except it allows you to apply memoization to any value type (not just functions). It does this by accepting a function which returns the value and then that function is only called when the value needs to be retrieved (which typically will only happen once each time an element in the dependencies array changes between renders).            
-            </script>
-            <a href="https://kentcdodds.com/blog/usememo-and-usecallback">link</a>
-            <h2>Auto scroll if bottom</h2>
-            <script type="editor" data-lang="jsx">
-            
-/**
- *
- .xxx {
-    max-height: 200px;
-    box-shadow: 0 0 5px black;
-    overflow-x: hidden;
-    overflow-y: auto;
-    & > div {
-    }
-}
- */
-
-import React, { useRef, useState } from 'react';
-
-import log from 'inspc';
-
-import './Scroll.scss';
-
-import alphaid from 'nlab/alphaid';
-
-const next = (function () {
-  let i = 1000;
-  return () => i++;
-}());
-
-const t = alphaid('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
-
-export default () => {
-
-  const scrollElement = useRef(null);
-
-  const [ list, setList ] = useState((function (l) {
-
-    for (let i = 0 ; i < 11 ; i += 1) {
-
-      l.push(next());
-    }
-    return l;
-  }([])));
-
-  (function () {
-
-    if (scrollElement.current) {
-
-      const cond = scrollElement.current.offsetHeight + scrollElement.current.scrollTop === scrollElement.current.scrollHeight;
-
-      if (cond) {
-
-        // log.dump('scroll')
-
-        setTimeout(() => {
-
-          scrollElement.current.scrollTop = scrollElement.current.scrollHeight;
-
-        }, 0);
-      }
-      // else {
-      //
-      //   log.dump('not scroll')
-      // }
-    }
-  }());
-
-  return (
-    <div>
-      <div className="xxx" ref={scrollElement}>
-        <div>
-          {list.map(i => (
-            <div key={i}>{i} {t.encode(i)}</div>
-          ))}
-        </div>
-      </div>
-      <button onClick={() => setList(list => {
-        list.push(next())
-        return [...list];
-      })}>add</button>
-    </div>
-  )
-}
-
-// /// --- P.js
-//
-// import React, { useRef, useState } from 'react';
-//
-// import Scroll from './Scroll'
-//
-// export default () => {
-//
-//   const [ mount, setMount ] = useState(false);
-//
-//   return (
-//     <div>
-//       <button onClick={() => setMount(m => !m)}>on</button>
-//       {mount ? (
-//         <Scroll />
-//       ) : (
-//         'not mount'
-//       )}
-//     </div>
-//   )
-// }
-
-                </script>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            <h2>React - IntervalInput</h2>
-            <script type="editor" data-lang="jsx">
-
-import React, { useReducer, useEffect } from 'react';
-
-import './IntervalInput.scss'
-
-const msg = msg => `IntervalInput component error: ${msg}`;
-
-const log = (function () {
-  try {
-    return console.log;
-  }
-  catch (e) {
-    return () => {}
-  }
-}());
-
-const ms        = require('nlab/ms');
-
-const generate  = ms.generate;
-
-const raw       = ms.raw;
-
-const shift     = ms.shift;
-
-const shiftKeys = Object.keys(shift);
-
-const shiftTrans = {
-  ms: `Milliseconds`,
-  s: `Seconds`,
-  m: `Minutes`,
-  h: `Hours`,
-  d: `Days`,
-  y: `Years`,
-}
-
-const reg = /^\d+$/;
-
-export default ({
-  value,
-  onChange = () => {},
-  valueunit = 'ms', // https://github.com/stopsopa/nlab/blob/master/README.md#ms
-  rangestart = 's',
-  rangeend = 'h',
-}) => {
-
-  if ( ! shiftKeys.includes(valueunit) ) {
-
-    log(msg(`valueunit is not on the list of available units '${shiftKeys.join(', ')}'`));
-
-    valueunit = 'ms';
-  }
-
-  if ( ! shiftKeys.includes(rangestart) ) {
-
-    log(msg(`rangestart is not on the list of available units '${shiftKeys.join(', ')}'`));
-
-    rangestart = 'ms';
-  }
-
-  if ( ! shiftKeys.includes(rangeend) ) {
-
-    log(msg(`rangeend is not on the list of available units '${shiftKeys.join(', ')}'`));
-
-    rangeend = 'h';
-  }
-
-  let slice = shiftKeys.slice(shiftKeys.indexOf(rangestart), shiftKeys.lastIndexOf(rangeend) + 1).reverse()
-
-  if ( ! reg.test(value) ) {
-
-    log(msg(`value don't match /^\\d+$/`));
-
-    value = 0;
-  }
-
-  const [ interval, dispatch ] = useReducer(function (state, action) {
-
-    if ( ! reg.test(action.value) ) {
-
-      log(msg(`action.value don't match /^\\d+$/`));
-
-      return state;
-    }
-
-    const value = parseInt(action.value, 10);
-
-    if ( value < 0 ) {
-
-      log(msg(`value < 0`));
-
-      return state;
-    }
-
-    if ( ! slice.includes(action.type) ) {
-
-      log(msg(`action.type '${action.type}' is not on the list of allowed values ${slice.join(', ')}`));
-
-      return state;
-    }
-
-    // log({
-    //   reducer: {
-    //     ...state,
-    //     [action.type]: value,
-    //   },
-    //   valueunit,
-    // })
-
-    return {
-      ...state,
-      [action.type]: value,
-    }
-  }, raw(value, valueunit));
-
-  // log({
-  //   value,
-  //   valueunit,
-  //   init: raw(value, valueunit),
-  // })
-
-  useEffect(() => onChange(generate(interval, valueunit)), [interval]);
-
-  return (
-    <table className="interval-input">
-      <tbody>
-      <tr>
-        {slice.map(u => (
-          <td key={u}>{shiftTrans[u]}</td>
-        ))}
-      </tr>
-      <tr>
-        {slice.map(u => (
-          <td key={u}>
-            <input value={interval[u]}
-                   className="interval-input"
-                   onChange={e => dispatch({type: u, value: e.target.value})}
-                   onClick={(event) => event.target.select()}
-                   autoComplete="nope"
-            />
-          </td>
-        ))}
-      </tr>
-      </tbody>
-    </table>
-  )
-}
-
-                </script>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            <h2>hook useSwap</h2>
-            <script type="editor" data-lang="jsx">
-
-/**
- * Usage:
- * in render:
- *
-        const [ block, setBlock, swapHandler ] = useSwap(false);
-
-        const [ form, setValue ] = useState({});
-
-        const editField = (key, value) => {
-
-            setBlock(true);
-
-            setValue(v => ({
-                ...v,
-                [key]: value
-            })
-        }
-
-        const onSubmit = async () => {
-
-            await fetch(...);
-
-            setBlock(false);
-
-            setSending(false);
-        }
- *
-        <form onSubmit={e => {
-            e.preventDefault();
-            onSubmit();
-        }}>
-             <Prompt
-                 when={block}
-                 message={location => `Form contains unsaved data, do you really want to discard changes without saving by navigating to: ${location.pathname} ?`}
-                 unloadMessage="Form contains unsaved data..."
-             />
-             <input value={form.name} onChange={e => setValue('name', e.target.value)} />
-             {
-                form.id && <Button
-                    onMouseEnter={swapHandler.swap}
-                    onMouseLeave={swapHandler.restore}
-                    as="a"
-                    href={`/api/admin/report-xlsx/${form.id}`}
-                >
-                    download xlsx report
-                </Button>
-             }
-        <form>
- */
-const useSwap = init => {
-
-    const [ state, setInnerState ]       = useState(init);
-
-    let setState;
-
-    let cache = init;
-
-    const ref = useRef({
-        swap: () => {
-            // log('swap', false, 'cache: ', cache);
-            setInnerState(false)
-        },
-        restore: () => {
-            // log('restore', cache)
-            setState(cache)
-        },
-        set: v => {
-            // log('set', v)
-            cache = v;
-        }
-    });
-
-    setState = v => {
-
-        // log('setState', v)
-
-        setInnerState(v)
-
-        ref.current.set(v);
-    }
-
-    return [ state, setState, ref.current ];
-}
-
-                </script>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            <br>
-            <script type="editor" data-lang="scss">
-
-.interval-input {
-    input.interval-input[class] { /* weird selector I know - but it is like this only to increase css specificity */
-        width: 82px;
-    }
-}
-
-            </script>
-
-            <h2>React - no webpack template</h2>
-            <a href="https://reactjs.org/docs/add-react-to-a-website.html">Add React to a Website</a>
-            <script type="editor" data-lang="html">
-
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <script>
-        window.Promise || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.min.js"><\/script>');
-        window.fetch || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"><\/script>');
-    &lt;/script>
-    <script src="public/react/umd/react.production.min.js">&lt;/script>
-    <script src="public/react-dom/umd/react-dom.production.min.js">&lt;/script>
-    <script src="public/@babel/standalone/babel.min.js">&lt;/script>
-        <!--
-            yarn add @babel/standalone
-            homepage github repo:
-                https://github.com/babel/babel-standalone
-            from cdn:
-                https://reactjs.org/docs/add-react-to-a-website.html#quickly-try-jsx
-        -->
-    <script>window.React || document.write("run server using 'make start' it will link node_modules where it should be");&lt;/script>
-</head>
-<body>
-    <div id="app">
-        Loading ...
-    </div>
-    <script type="text/babel">
-
-        const log=(function(){try{return console.log}catch(e){return function(){}}}());
-
-        const delay = (time, data) =>
-            new Promise(
-                resolve => time ? setTimeout(resolve, time, data) : resolve(data)
-            )
-        ;
-
-        class Root extends React.Component {
-            constructor(...args) {
-
-                super(...args);
-
-                this.state = {
+          <h2>codepen, jsfiddle, codesandbox</h2>
+          <a href="https://codesandbox.io/s/rjj38yzm14">codesandbox template</a>
+          <h2>React - es6 syntax snippets</h2>
+          <a href="https://gist.github.com/stopsopa/3f076fd92b03136cc28b8b91a1ffdad8#file-js-es6-jsx-L323">https://gist.github.com/stopsopa/3f076fd92b03136cc28b8b91a1ffdad8#file-js-es6-jsx-L323</a>
+
+          <h2>React - Textarea</h2>
+          <script type="editor" data-lang="jsx">
+
+            import React, { useRef, useState, useEffect } from 'react';
+
+            // https://stackoverflow.com/a/5346855
+            var observe;
+            if (window.attachEvent) {
+              observe = function (element, event, handler) {
+                element.attachEvent('on'+event, handler);
+              };
+            }
+            else {
+              observe = function (element, event, handler) {
+                element.addEventListener(event, handler, false);
+              };
+            }
+            function init (text, correct) {
+              function resize () {
+                console && console.log && console.log('fun resize', text)
+                //text.style.height = 'auto';
+                var h = text.scrollHeight;
+                if (Number.isInteger(correct)) {
+                  h += correct;
+                }
+                text.style.height = h+'px';
+              }
+              /* 0-timeout to get the already changed text */
+              function delayedResize () {
+                window.setTimeout(resize, 0);
+              }
+              observe(text, 'change',  resize);
+              observe(text, 'cut',     delayedResize);
+              observe(text, 'paste',   delayedResize);
+              observe(text, 'drop',    delayedResize);
+              observe(text, 'keydown', delayedResize);
+
+              // text.focus();
+              // text.select();
+              resize();
+
+              return function () {resize()}
+            }
+
+            export default props => {
+
+              const el = useRef(null);
+
+              const [ resize, setResize ] = useState({});
+
+              const [ mounted, setMounted ] = useState(false);
+
+              const {
+                value,
+              } = props;
+
+              const {
+                correct,
+                ...rest
+              } = props
+
+              useEffect(() => {
+
+                let _resize = resize._resize;
+
+                if ( ! mounted && el.current ) {
+
+                  setMounted(true);
+
+                  _resize = init(el.current, correct);
+
+                  setResize({
+                    _resize: _resize
+                  });
+                }
+
+                try {
+
+                  _resize();
+                }
+                catch (e) {
+
+                  console && console.log && console.log(`Textarea.js _resize() trigger error: ${e}`);
+                }
+              }, [value]);
+
+              return (
+                <textarea ref={el} {...rest} />
+              )
+            }
+          </script>
+          <h2>useCallback useMemo</h2>
+          <script type="editor" data-lang="jsx">
+            How is useMemo different, but similar?
+            useMemo is similar to useCallback except it allows you to apply memoization to any value type (not just functions). It does this by accepting a function which returns the value and then that function is only called when the value needs to be retrieved (which typically will only happen once each time an element in the dependencies array changes between renders).
+          </script>
+          <a href="https://kentcdodds.com/blog/usememo-and-usecallback">link</a>
+          <h2>Auto scroll if bottom</h2>
+          <script type="editor" data-lang="jsx">
+
+            /**
+             *
+             .xxx {
+                max-height: 200px;
+                box-shadow: 0 0 5px black;
+                overflow-x: hidden;
+                overflow-y: auto;
+                & > div {
                 }
             }
-            render() {
-                return (
-                    <div>It's working...</div>
-                );
+             */
+
+            import React, { useRef, useState } from 'react';
+
+            import log from 'inspc';
+
+            import './Scroll.scss';
+
+            import alphaid from 'nlab/alphaid';
+
+            const next = (function () {
+              let i = 1000;
+              return () => i++;
+            }());
+
+            const t = alphaid('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+
+            export default () => {
+
+              const scrollElement = useRef(null);
+
+              const [ list, setList ] = useState((function (l) {
+
+                for (let i = 0 ; i < 11 ; i += 1) {
+
+                  l.push(next());
+                }
+                return l;
+              }([])));
+
+              (function () {
+
+                if (scrollElement.current) {
+
+                  const cond = scrollElement.current.offsetHeight + scrollElement.current.scrollTop === scrollElement.current.scrollHeight;
+
+                  if (cond) {
+
+                    // log.dump('scroll')
+
+                    setTimeout(() => {
+
+                      scrollElement.current.scrollTop = scrollElement.current.scrollHeight;
+
+                    }, 0);
+                  }
+                  // else {
+                  //
+                  //   log.dump('not scroll')
+                  // }
+                }
+              }());
+
+              return (
+                <div>
+                  <div className="xxx" ref={scrollElement}>
+                    <div>
+                      {list.map(i => (
+                        <div key={i}>{i} {t.encode(i)}</div>
+                      ))}
+                    </div>
+                  </div>
+                  <button onClick={() => setList(list => {
+                    list.push(next())
+                    return [...list];
+                  })}>add</button>
+                </div>
+              )
             }
-        }
-        ReactDOM.render(
-            <Root
-            />,
-            document.getElementById('app')
-        );
-    &lt;/script>
-</body>
-</html>
 
-                </script>
-            <h2>Form - checkbox</h2>
-            <a href="./react-checkbox/index.html">react-checkbox</a>
+            // /// --- P.js
+            //
+            // import React, { useRef, useState } from 'react';
+            //
+            // import Scroll from './Scroll'
+            //
+            // export default () => {
+            //
+            //   const [ mount, setMount ] = useState(false);
+            //
+            //   return (
+            //     <div>
+            //       <button onClick={() => setMount(m => !m)}>on</button>
+            //       {mount ? (
+            //         <Scroll />
+            //       ) : (
+            //         'not mount'
+            //       )}
+            //     </div>
+            //   )
+            // }
+          </script>
 
+          <h2>React - IntervalInput</h2>
+          <script type="editor" data-lang="jsx">
+
+            import React, { useReducer, useEffect } from 'react';
+
+            import './IntervalInput.scss'
+
+            const msg = msg => `IntervalInput component error: ${msg}`;
+
+            const log = (function () {
+              try {
+                return console.log;
+              }
+              catch (e) {
+                return () => {}
+              }
+            }());
+
+            const ms        = require('nlab/ms');
+
+            const generate  = ms.generate;
+
+            const raw       = ms.raw;
+
+            const shift     = ms.shift;
+
+            const shiftKeys = Object.keys(shift);
+
+            const shiftTrans = {
+              ms: `Milliseconds`,
+              s: `Seconds`,
+              m: `Minutes`,
+              h: `Hours`,
+              d: `Days`,
+              y: `Years`,
+            }
+
+            const reg = /^\d+$/;
+
+            export default ({
+              value,
+              onChange = () => {},
+              valueunit = 'ms', // https://github.com/stopsopa/nlab/blob/master/README.md#ms
+              rangestart = 's',
+              rangeend = 'h',
+            }) => {
+
+              if ( ! shiftKeys.includes(valueunit) ) {
+
+                log(msg(`valueunit is not on the list of available units '${shiftKeys.join(', ')}'`));
+
+                valueunit = 'ms';
+              }
+
+              if ( ! shiftKeys.includes(rangestart) ) {
+
+                log(msg(`rangestart is not on the list of available units '${shiftKeys.join(', ')}'`));
+
+                rangestart = 'ms';
+              }
+
+              if ( ! shiftKeys.includes(rangeend) ) {
+
+                log(msg(`rangeend is not on the list of available units '${shiftKeys.join(', ')}'`));
+
+                rangeend = 'h';
+              }
+
+              let slice = shiftKeys.slice(shiftKeys.indexOf(rangestart), shiftKeys.lastIndexOf(rangeend) + 1).reverse()
+
+              if ( ! reg.test(value) ) {
+
+                log(msg(`value don't match /^\\d+$/`));
+
+                value = 0;
+              }
+
+              const [ interval, dispatch ] = useReducer(function (state, action) {
+
+                if ( ! reg.test(action.value) ) {
+
+                  log(msg(`action.value don't match /^\\d+$/`));
+
+                  return state;
+                }
+
+                const value = parseInt(action.value, 10);
+
+                if ( value < 0 ) {
+
+                  log(msg(`value < 0`));
+
+                  return state;
+                }
+
+                if ( ! slice.includes(action.type) ) {
+
+                  log(msg(`action.type '${action.type}' is not on the list of allowed values ${slice.join(', ')}`));
+
+                  return state;
+                }
+
+                // log({
+                //   reducer: {
+                //     ...state,
+                //     [action.type]: value,
+                //   },
+                //   valueunit,
+                // })
+
+                return {
+                  ...state,
+                  [action.type]: value,
+                }
+              }, raw(value, valueunit));
+
+              // log({
+              //   value,
+              //   valueunit,
+              //   init: raw(value, valueunit),
+              // })
+
+              useEffect(() => onChange(generate(interval, valueunit)), [interval]);
+
+              return (
+                <table className="interval-input">
+                  <tbody>
+                  <tr>
+                    {slice.map(u => (
+                      <td key={u}>{shiftTrans[u]}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    {slice.map(u => (
+                      <td key={u}>
+                        <input value={interval[u]}
+                               className="interval-input"
+                               onChange={e => dispatch({type: u, value: e.target.value})}
+                               onClick={(event) => event.target.select()}
+                               autoComplete="nope"
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                  </tbody>
+                </table>
+              )
+            }
+          </script>
+
+          <h2>hook useSwap</h2>
+          <script type="editor" data-lang="jsx">
+
+            /**
+             * Usage:
+             * in render:
+             *
+                    const [ block, setBlock, swapHandler ] = useSwap(false);
+
+                    const [ form, setValue ] = useState({});
+
+                    const editField = (key, value) => {
+
+                        setBlock(true);
+
+                        setValue(v => ({
+                            ...v,
+                            [key]: value
+                        })
+                    }
+
+                    const onSubmit = async () => {
+
+                        await fetch(...);
+
+                        setBlock(false);
+
+                        setSending(false);
+                    }
+             *
+                    <form onSubmit={e => {
+                        e.preventDefault();
+                        onSubmit();
+                    }}>
+                         <Prompt
+                             when={block}
+                             message={location => `Form contains unsaved data, do you really want to discard changes without saving by navigating to: ${location.pathname} ?`}
+                             unloadMessage="Form contains unsaved data..."
+                         />
+                         <input value={form.name} onChange={e => setValue('name', e.target.value)} />
+                         {
+                            form.id && <Button
+                                onMouseEnter={swapHandler.swap}
+                                onMouseLeave={swapHandler.restore}
+                                as="a"
+                                href={`/api/admin/report-xlsx/${form.id}`}
+                            >
+                                download xlsx report
+                            </Button>
+                         }
+                    <form>
+             */
+            const useSwap = init => {
+
+                const [ state, setInnerState ]       = useState(init);
+
+                let setState;
+
+                let cache = init;
+
+                const ref = useRef({
+                    swap: () => {
+                        // log('swap', false, 'cache: ', cache);
+                        setInnerState(false)
+                    },
+                    restore: () => {
+                        // log('restore', cache)
+                        setState(cache)
+                    },
+                    set: v => {
+                        // log('set', v)
+                        cache = v;
+                    }
+                });
+
+                setState = v => {
+
+                    // log('setState', v)
+
+                    setInnerState(v)
+
+                    ref.current.set(v);
+                }
+
+                return [ state, setState, ref.current ];
+            }
+          </script>
+
+          <br />
+          <script type="editor" data-lang="scss">
+
+            .interval-input {
+                input.interval-input[class] { /* weird selector I know - but it is like this only to increase css specificity */
+                    width: 82px;
+                }
+            }
+          </script>
+
+          <h2>React - no webpack template</h2>
+          <a href="https://reactjs.org/docs/add-react-to-a-website.html">Add React to a Website</a>
+          <script type="editor" data-lang="html">
+
+            <!doctype html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport"
+                      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+                <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                <title>Document</title>
+                <script>
+                    window.Promise || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.min.js"><\/script>');
+                    window.fetch || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"><\/script>');
+                &lt;/script>
+                <script src="public/react/umd/react.production.min.js">&lt;/script>
+                <script src="public/react-dom/umd/react-dom.production.min.js">&lt;/script>
+                <script src="public/@babel/standalone/babel.min.js">&lt;/script>
+                    <!--
+                        yarn add @babel/standalone
+                        homepage github repo:
+                            https://github.com/babel/babel-standalone
+                        from cdn:
+                            https://reactjs.org/docs/add-react-to-a-website.html#quickly-try-jsx
+                    -->
+                <script>window.React || document.write("run server using 'make start' it will link node_modules where it should be");&lt;/script>
+            </head>
+            <body>
+                <div id="app">
+                    Loading ...
+                </div>
+                <script type="text/babel">
+
+                    const log=(function(){try{return console.log}catch(e){return function(){}}}());
+
+                    const delay = (time, data) =>
+                        new Promise(
+                            resolve => time ? setTimeout(resolve, time, data) : resolve(data)
+                        )
+                    ;
+
+                    class Root extends React.Component {
+                        constructor(...args) {
+
+                            super(...args);
+
+                            this.state = {
+                            }
+                        }
+                        render() {
+                            return (
+                                <div>It's working...</div>
+                            );
+                        }
+                    }
+                    ReactDOM.render(
+                        <Root
+                        />,
+                        document.getElementById('app')
+                    );
+                &lt;/script>
+            </body>
+            </html>
+          </script>
+          <h2>Form - checkbox</h2>
+          <a href="./react-checkbox/index.html">react-checkbox</a>
         </div>
+      </div>
     </div>
-
-</div>
-<script src="/js/github.js"></script>
-</body>
+    <script src="/js/github.js"></script>
+  </body>
 </html>

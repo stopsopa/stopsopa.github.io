@@ -1,197 +1,189 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
     <style>
-        .noinput-checkbox {
-            display: inline-block;
-            position: relative;
-            width: 27px;
-            height: 14px;
-        }
-        .noinput-checkbox > div {
-            display: inline-block;
-            position: absolute;
-            top: 1px;
-            left: 3px;
-            width: 18px;
-            height: 18px;
-            border: 1px solid gray;
-            box-sizing: border-box;
-            outline: none !important;
-            border-radius: 2px;
-            cursor: pointer;
-        }
-        .noinput-checkbox > div > div {
-            position: absolute;
-            left: 2px;
-            top: 2px;
-            width: 12px;
-            height: 12px;
-            border-radius: 2px;
-        }
-        .noinput-checkbox.radio > div {
-            border-radius: 20px;
-        }
-        .noinput-checkbox.radio > div > div {
-            border-radius: 20px;
-        }
-        .noinput-checkbox > div:focus,
-        .noinput-checkbox > div:hover {
-            box-shadow: 0 0 5px #888888;
-        }
-        .noinput-checkbox.checked > div > div {
-            background-color: #444;
-        }
+      .noinput-checkbox {
+        display: inline-block;
+        position: relative;
+        width: 27px;
+        height: 14px;
+      }
+      .noinput-checkbox > div {
+        display: inline-block;
+        position: absolute;
+        top: 1px;
+        left: 3px;
+        width: 18px;
+        height: 18px;
+        border: 1px solid gray;
+        box-sizing: border-box;
+        outline: none !important;
+        border-radius: 2px;
+        cursor: pointer;
+      }
+      .noinput-checkbox > div > div {
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+      }
+      .noinput-checkbox.radio > div {
+        border-radius: 20px;
+      }
+      .noinput-checkbox.radio > div > div {
+        border-radius: 20px;
+      }
+      .noinput-checkbox > div:focus,
+      .noinput-checkbox > div:hover {
+        box-shadow: 0 0 5px #888888;
+      }
+      .noinput-checkbox.checked > div > div {
+        background-color: #444;
+      }
     </style>
-</head>
-<body class="layout">
-
+  </head>
+  <body class="layout">
     <div class="body">
-        <div class="inside">
+      <div class="inside">
+        <div id="app"></div>
 
-            <div id="app"></div>
-
-            <h4>usage</h4>
-            <script type="editor" data-lang="jsx" data-w="95%">
-
-
-<NoInput checked={check === 'foo'} onChange={() => setCheck('foo')}/>
-
-<NoInput checked={check === 'foo'} onChange={() => setCheck('foo')} className="radio"/>
-
-<NoInput checked={} onChange={() => {}} radio>clickable label</NoInput>
-
-<NoInput checked={} onChange={() => {}} radio before>clickable label</NoInput>
+        <h4>usage</h4>
+        <script type="editor" data-lang="jsx" data-w="95%">
 
 
-            </script>
+          <NoInput checked={check === 'foo'} onChange={() => setCheck('foo')}/>
 
-            <h4>NoInput.jsx</h4>
+          <NoInput checked={check === 'foo'} onChange={() => setCheck('foo')} className="radio"/>
 
-            <script type="editor" data-lang="jsx" data-w="95%">
+          <NoInput checked={} onChange={() => {}} radio>clickable label</NoInput>
 
-const React = require('react');
+          <NoInput checked={} onChange={() => {}} radio before>clickable label</NoInput>
+        </script>
 
-require('./NoInput.scss')
+        <h4>NoInput.jsx</h4>
 
-function NoInput({
-  checked,
-  onChange,
-  className,
-  children,
-  before,
-  props1,
-  props2,
-  props3,
-  propslabel,
-  radio,
-}) {
+        <script type="editor" data-lang="jsx" data-w="95%">
 
-  const cls = ['noinput-checkbox'];
+          const React = require('react');
 
-  if (checked) {
+          require('./NoInput.scss')
 
-    cls.push('checked');
-  }
+          function NoInput({
+            checked,
+            onChange,
+            className,
+            children,
+            before,
+            props1,
+            props2,
+            props3,
+            propslabel,
+            radio,
+          }) {
 
-  if (typeof className === 'string') {
+            const cls = ['noinput-checkbox'];
 
-    cls.push(className);
-  }
+            if (checked) {
 
-  if (radio) {
+              cls.push('checked');
+            }
 
-    cls.push('radio');
-  }
+            if (typeof className === 'string') {
 
-  const hasChildren = (typeof children !== 'undefined');
+              cls.push(className);
+            }
 
-  const component = (
-    <div className={cls.join(' ')} {...props1}>
-      <div
-        tabIndex="0"
-        onClick={hasChildren ? undefined : onChange}
-        onKeyDown={onChange}
-        {...props2}
-      >
-        <div {...props3}></div>
+            if (radio) {
+
+              cls.push('radio');
+            }
+
+            const hasChildren = (typeof children !== 'undefined');
+
+            const component = (
+              <div className={cls.join(' ')} {...props1}>
+                <div
+                  tabIndex="0"
+                  onClick={hasChildren ? undefined : onChange}
+                  onKeyDown={onChange}
+                  {...props2}
+                >
+                  <div {...props3}></div>
+                </div>
+              </div>
+            )
+
+            if (hasChildren) {
+
+              if (before) {
+
+                return <label onClick={onChange} {...propslabel}>{children}{component}</label>
+              }
+
+              return <label onClick={onChange} {...propslabel}>{component}{children}</label>
+            }
+
+            return component;
+          }
+
+          module.exports = NoInput;
+        </script>
+        <h4>NoInput.scss</h4>
+        <script type="editor" data-lang="css" data-w="95%">
+
+
+          .noinput-checkbox {
+              display: inline-block;
+              position: relative;
+              width: 27px;
+              height: 14px;
+          }
+          .noinput-checkbox > div {
+              display: inline-block;
+              position: absolute;
+              top: 1px;
+              left: 3px;
+              width: 18px;
+              height: 18px;
+              border: 1px solid gray;
+              box-sizing: border-box;
+              outline: none !important;
+              border-radius: 2px;
+              cursor: pointer;
+          }
+          .noinput-checkbox > div > div {
+              position: absolute;
+              left: 2px;
+              top: 2px;
+              width: 12px;
+              height: 12px;
+              border-radius: 2px;
+          }
+          .noinput-checkbox.radio > div {
+              border-radius: 20px;
+          }
+          .noinput-checkbox.radio > div > div {
+              border-radius: 20px;
+          }
+          .noinput-checkbox > div:focus,
+          .noinput-checkbox > div:hover {
+              box-shadow: 0 0 5px #888888;
+          }
+          .noinput-checkbox.checked > div > div {
+              background-color: #444;
+          }
+        </script>
       </div>
-    </div>
-  )
-
-  if (hasChildren) {
-
-    if (before) {
-
-      return <label onClick={onChange} {...propslabel}>{children}{component}</label>
-    }
-
-    return <label onClick={onChange} {...propslabel}>{component}{children}</label>
-  }
-
-  return component;
-}
-
-module.exports = NoInput;
-
-            </script>
-            <h4>NoInput.scss</h4>
-            <script type="editor" data-lang="css" data-w="95%">
-
-
-.noinput-checkbox {
-    display: inline-block;
-    position: relative;
-    width: 27px;
-    height: 14px;
-}
-.noinput-checkbox > div {
-    display: inline-block;
-    position: absolute;
-    top: 1px;
-    left: 3px;
-    width: 18px;
-    height: 18px;
-    border: 1px solid gray;
-    box-sizing: border-box;
-    outline: none !important;
-    border-radius: 2px;
-    cursor: pointer;
-}
-.noinput-checkbox > div > div {
-    position: absolute;
-    left: 2px;
-    top: 2px;
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
-}
-.noinput-checkbox.radio > div {
-    border-radius: 20px;
-}
-.noinput-checkbox.radio > div > div {
-    border-radius: 20px;
-}
-.noinput-checkbox > div:focus,
-.noinput-checkbox > div:hover {
-    box-shadow: 0 0 5px #888888;
-}
-.noinput-checkbox.checked > div > div {
-    background-color: #444;
-}
-
-            </script>
-
-        </div>
     </div>
 
     <script src="/preprocessed.js"></script>
     <script src="/dist/checkbox.bundle.js"></script>
     <script src="/js/github.js"></script>
-</body>
+  </body>
 </html>

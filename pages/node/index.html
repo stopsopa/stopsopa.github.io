@@ -24,7 +24,7 @@
           resolve();
         });
 
-        window.waitForPromise = function () {
+        window.beforeAceEventPromise = function () {
           return p;
         };
       })();
@@ -141,64 +141,62 @@
           <h2>htmlencode htmldecode</h2>
           <script type="editor" data-lang="js">
 
-// based on lodash implementation
-const log = console.log;
+            // based on lodash implementation
+            const log = console.log;
 
-var escape = (function () {
-  var htmlEscapes = {
-    "&": "&amp;amp;",
-    "<": "&amp;lt;",
-    ">": "&amp;gt;",
-    '"': "&amp;quot;",
-    "'": "&amp;#39;",
-  };
+            var escape = (function () {
+              var htmlEscapes = {
+                "&": "&amp;amp;",
+                "<": "&amp;lt;",
+                ">": "&amp;gt;",
+                '"': "&amp;quot;",
+                "'": "&amp;#39;",
+              };
 
-  var escapeHtmlChar = (key) => htmlEscapes[key];
+              var escapeHtmlChar = (key) => htmlEscapes[key];
 
-  var reUnescapedHtml = /[&<>"']/g,
-    reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
+              var reUnescapedHtml = /[&<>"']/g,
+                reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
 
-  return function (string) {
-    string = String(string);
-    return string && reHasUnescapedHtml.test(string) ? string.replace(reUnescapedHtml, escapeHtmlChar) : string;
-  };
-})();
+              return function (string) {
+                string = String(string);
+                return string && reHasUnescapedHtml.test(string) ? string.replace(reUnescapedHtml, escapeHtmlChar) : string;
+              };
+            })();
 
-var unescape = (function () {
-  var htmlUnescapes = {
-    "&amp;amp;": "&",
-    "&amp;lt;": "<",
-    "&amp;gt;": ">",
-    "&amp;quot;": '"',
-    "&amp;#39;": "'",
-  };
+            var unescape = (function () {
+              var htmlUnescapes = {
+                "&amp;amp;": "&",
+                "&amp;lt;": "<",
+                "&amp;gt;": ">",
+                "&amp;quot;": '"',
+                "&amp;#39;": "'",
+              };
 
-  var unescapeHtmlChar = (key) => htmlUnescapes[key];
+              var unescapeHtmlChar = (key) => htmlUnescapes[key];
 
-  var reEscapedHtml = /&(?:amp|lt|gt|quot|#39);/g,
-    reHasEscapedHtml = RegExp(reEscapedHtml.source);
+              var reEscapedHtml = /&(?:amp|lt|gt|quot|#39);/g,
+                reHasEscapedHtml = RegExp(reEscapedHtml.source);
 
-  return function (string) {
-    string = String(string);
-    return string && reHasEscapedHtml.test(string) ? string.replace(reEscapedHtml, unescapeHtmlChar) : string;
-  };
-})();
+              return function (string) {
+                string = String(string);
+                return string && reHasEscapedHtml.test(string) ? string.replace(reEscapedHtml, unescapeHtmlChar) : string;
+              };
+            })();
 
-const str = ` abc & & < mid > < x " yy ' d '`;
+            const str = ` abc & & < mid > < x " yy ' d '`;
 
-const enc = escape(str);
+            const enc = escape(str);
 
-const tmp = {
-  str,
-  dec: unescape(enc),
-  enc,
-};
+            const tmp = {
+              str,
+              dec: unescape(enc),
+              enc,
+            };
 
-tmp.eq = tmp.str === tmp.dec;
+            tmp.eq = tmp.str === tmp.dec;
 
-log(tmp);
-
-
+            log(tmp);
           </script>
           <h2>nodemon</h2>
           <script type="editor" data-lang="sh">
@@ -1933,15 +1931,14 @@ log(tmp);
               });
             })
           </script>
-        <h2>husky</h2>
-        <script type="editor" data-lang="sh">
+          <h2>husky</h2>
+          <script type="editor" data-lang="sh">
 
-cat <<EEE > ~/.huskyrc
-export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
-EEE
-# concluded from: https://github.com/typicode/husky/issues/898
-
-        </script>
+            cat <<EEE > ~/.huskyrc
+            export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
+            EEE
+            # concluded from: https://github.com/typicode/husky/issues/898
+          </script>
 
           <h2>Learning promises</h2>
           <h5>Always await promises before returning to avoid a partial stacktrace</h5>

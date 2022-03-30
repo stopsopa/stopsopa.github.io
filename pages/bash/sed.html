@@ -1,837 +1,832 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-</head>
-<body class="layout">
-
-<div class="body">
-    <div class="inside">
+  </head>
+  <body class="layout">
+    <div class="body">
+      <div class="inside">
         <div class="cards">
-
-            <h2>SED</h2>
-            <a href="http://sed.sourceforge.net/sedfaq3.html">http://sed.sourceforge.net/sedfaq3.html</a>
-            <script type="editor" data-lang="python">
-        
--e script, --expression=script
--i[SUFFIX], --in-place[=SUFFIX] - change in file, in place
--n  By default, each line of input is echoed to the standard output after all of the
-    commands have been applied to it.  The -n option sup-
-        presses this behavior.
-    
-# replace in file
-rm -rf aaaa.txt
-cat << EOF > aaaa.txt
-#!/bin/bash
-model.images
-xxx
-aaa model.images bbb
-end
-EOF
-sed -i "" -E "s/model.images/model.resources/g" aaaa.txt
-cat aaaa.txt
-## will print
-# #!/bin/bash
-# model.resources
-# xxx
-# aaa model.resources bbb
-# end
-
-# line by line - replace one time per line:
-cat <<EOF | sed 's/one/ONE/'
-one two three, one two three
-four three two one
-one hundred
-EOF
-# ONE two three, one two three
-# four three two ONE
-# ONE hundred
-
-
-# REPLACE EVERY OCCURRENCE
-cat <<EOF | sed 's/one/ONE/g'
-one two three, one two three
-four three two one
-one hundred
-EOF
-
-# REPLACE ONLY SECOND OCCURENCE (WILL NOT WORK ON MAC)
-cat <<EOF | sed 's/one/ONE/2g'
-one two three, one two three
-four three two one
-one hundred
-EOF
-
-# ADD COLON TO EACH LINE ON 10TH PLACE (IF LINE IS LONG ENOUGH) (WORKS ON MAC TOO)
-cat <<EOF | sed 's/./&:/10'
-one two three, one two three
-four three two one
-xx
-one hundred
-EOF
-    # from: https://www.grymoire.com/Unix/Sed.html#uh-8
-
-# MAKE SED WORK LIKE GREP
-cat <<EOF | sed -n 's/one/&/p'
-one two three, one two three
-four three two one
-xx
-one hundred
-EOF
-
-cat <<EOF | sed -n '/one/ p'
-one two three, one two three
-four three two one
-xx
-one hundred
-EOF
-    -n  By default, each line of input is echoed to the standard output after all of the
-        commands have been applied to it.  The -n option sup-
-             presses this behavior.
-    # https://www.grymoire.com/Unix/Sed.html#uh-9
-    # also: https://www.grymoire.com/Unix/Sed.html#uh-15
-    # https://www.grymoire.com/Unix/Sed.html#uh-15b
-
-# CASE INSENSITIVE & MULTIPIPES
-cat <<EOF | sed 's/one/XXX/Ig' | sed 's/three/YYY/g'
-one two three, ONE two three
-four three two ONE
-one hundred
-EOF
-# ANOTHER METHOD FOR MULTIPIPES USING -e
-cat <<EOF | sed -e 's/one/XXX/Ig' -e 's/three/YYY/g'
-one two three, ONE two three
-four three two ONE
-one hundred
-EOF
-    # see also sed -f scriptname https://www.grymoire.com/Unix/Sed.html#toc-uh-16
-    # and sed in shell scripts https://www.grymoire.com/Unix/Sed.html#uh-17
-
-cat <<EOF > ttt.txt
-one two three, one two three
-four three two one
-xx
-one hundred
-EOF
-sed "s/two/TWO/g
-s/TWO/t w o/g
-s/four/SIX/g
-" ttt.txt
-rm -rf ttt.txt
-  # and another one: https://www.grymoire.com/Unix/Sed.html#uh-19
-
-# QUOTING
-sed -n 's/'"$1"'/&/p'
-    # from: https://www.grymoire.com/Unix/Sed.html#uh-22
-
-# RESTRICTING TO SECOND LINE ONLY
-cat <<EOF | sed '2 s/three/xxxxx/'
-one two three, ONE two three
-four three two ONE
-one hundred
-ebc three four
-six
-EOF
-
-# (PATTERNS) DELETE THE FIRST NUMBER ON ALL LINES THAT START WITH A "#," USE:
-cat <<EOF | sed '/^#/ s/[0-9][0-9]*//'
-one two 66 three, ONE two three
-one HJhundred
-# four three 56 two ONE
-ebc three 888 four
-# six 6 and 99
-#9 77
-# END
-EOF
-
-# USING BACKSLASH TO INTRODUCE DIFFERENT DELIMITER IN THE PATTERN
-cat <<EOF | sed '\,^#, s#[0-9][0-9]*##'
-one two 66 three, ONE two three
-one HJhundred
-# four three 56 two ONE
-ebc three 888 four
-# six 6 and 99
-#9 77
-# END
-EOF
-
-# RESTRICT TO RANGE OF LINES (2th inclusive, 4th inclusive)
-cat <<EOF | sed '2,4 s/.*/& xxx/'
-one
-two
-three
-four
-six
-seven
-eight
-nine
-ten
-EOF
-
-# FROM n LINE TO THE END OF FILE (4th inclusive)
-cat <<EOF | sed '4,$ s/.*/& xxx/'
-one
-two
-three
-four
-six
-seven
-eight
-nine
-ten
-EOF
-
-# RANGE BY REGULAR EXPRESSION (substitution will be executed inclusively)
-cat <<EOF | sed '/# four/,/# nine/ s/#.*//'
-# one
-two
-three
-# four
-six
-# seven
-eight
-# nine
-ten
-# eleven
-EOF
-
-# COMBINE TWO STYLES
-cat <<EOF | sed '1,/# seven/ s/#.*//'
-# one
-two
-three
-# four
-six
-# seven
-eight
-# nine
-ten
-# eleven
-EOF
-
-# REMOVE COMMENTS EVERYWHERE EXCEPT THE LINES BETWEEN TWO KEYWORDS
-cat <<EOF | sed -e '1,/# four/ s/#.*//' -e '/# nine/,$ s/#.*//'
-# one
-two
-three
-# four
-six
-# seven
-eight
-# nine
-ten
-# eleven
-EOF
-
-# DELETE/REMOVE MATCHING LINES
-cat <<EOF | sed '4,$ d'
-# one
-two
-three
-# four
-six
-# seven
-eight
-# nine
-ten
-# eleven
-EOF
-
-# DELETING ALL COMMENTS
-cat <<EOF | sed '/^#/ d'
-# one
-two
-three
-# four
-six
-# seven
-eight
-# nine
-ten
-# eleven
-EOF
-
-# REMOVING COMMENTS AND BLANK LINES
-cat <<EOF | sed -e 's/#.*//' -e 's/[ ^I]*$//' -e '/^$/ d'
-# one
-two
-three
-  # four
-six
-
-   # seven
-
-eight
-    # nine
-ten
-# eleven
-EOF
-    # from: https://www.grymoire.com/Unix/Sed.html#uh-30
-
-# GROUPS
-cat <<EOF | sed -nr '
-  /three/,/ten/ {
-       s/#.*//
-       s/[ ^I]*$//
-       /^$/ d
-       p
-  }
-'
-# one
-two
-three
-  # four
-six
-
-   # seven
-
-eight
-  # nine
-ten
-# eleven
-EOF
-
-
-# will print:
-three
-six
-eight
-ten
-
-
-
-# GROUPS WORKS FROM FIRST MATCH TO FIRST MATCH
-cat <<EOF | sed -rn '
-    /start/,/end/ {
-         p
-    }
-'
-b2
-start
-d4
-g7
-start
-a9
-h6
-a7
-end
-b8
-d0
-end
-g3
-h4
-EOF
-
-# will print
-start
-d4
-g7
-start
-a9
-h6
-a7
-end
-
-
-# NESTED GROUPS
-cat <<EOF | sed -nr '
-  5,19 {
-    /start/,/end/ {
-         p
-    }
-  }
-'
-a1
-b2
-start
-d4
-e5--- first group
-f6
-start
-g7
-a9
-b0
-c1
-d2
-e3
-f4
-h6
-a7
-end
-b8
-c9--- first group
-d0
-end
-f2
-g3
-h4
-EOF
-
-# will print
-start
-g7
-a9
-b0
-c1
-d2
-e3
-f4
-h6
-a7
-end
-
-# using in this configuration it doesn't make sense, because it seems like only numbers matter
-cat <<EOF | sed -nr '
-  /start/,/end/ {
-    7,10 {
-       p
-    }
-  }
-'
-a1
-b2
-c3
-start--- first group
-d4
-e5
-f6 - x
-start
-g7
-h6 - x
-a7
-end--- first group
-b8
-c9
-d0
-end
-f2
-g3
-h4
-EOF
-
-# WILL REMOVE COMMENTS EXCEPT IN RANGE
-cat <<EOF | sed -rn '
-  /start/,/end/ !{
-    s/^[^\n#]*#[^\n]*//
-    /^$/d
-    p
-  }
-'
-# a1
-b2
-# d4
-f6
-start
-# g7
-a9
-# b0
-c1
-# d2
-e3
-# f4
-h6
-a7
-#end
-b8
- # d0
-f2
-# g3
-h4
-EOF
-
-# will print
-b2
-f6
-b8
-f2
-h4
-
-# SKIP FIRST AND LAST
-cat <<EOF | sed -rn '
-  /start/,/end/ {
-    /start/n
-    s/^.*$/& mod/
-    p
-  }
-'
-# a1
-b2
-# d4
-f6
-start
-# g7
-a9
-# b0
-c1
-# d2
-e3
-# f4
-h6
-a7
-end
-b8
- # d0
-f2
-# g3
-h4
-EOF
-
-However, skipping over the line that has "end" is trickier.
-If you use the same method you used for "begin" then the sed engine will
-not see the "end" to stop the range - it skips over that as well.
-The solution is to do a substitute on all lines that don't have the "end" by using
-
-#!/bin/sh
-sed '
-    /begin/,/end/ {
-      /begin/n # skip over the line that has "begin" on it
-      /end/ !{
-        s/old/new/
-      }
-    }
-'
-
-cat <<EOF | sed -rn '
-  /start/,/end/ {
-    /start/n
-    /end/ !{
-      # comment
-      s/^.*$/& mod/
-      p
-    }
-  }
-'
-# a1
-b2
-# d4
-f6
-start
-# g7
-a9
-# b0
-c1
-# d2
-e3
-# f4
-h6
-a7
-end
-b8
- # d0
-f2
-# g3
-h4
-EOF
-
-# will print
-# g7 mod
-a9 mod
-# b0 mod
-c1 mod
-# d2 mod
-e3 mod
-# f4 mod
-h6 mod
-a7 mod
-
-# JOIN FILES
-
-cat << 'EOF' > a.txt
-a
-b
-c
-d
-EOF
-cat << 'EOF' > n.txt
-1
-2
-3
-4
-EOF
-sed '/b/ r n.txt' < a.txt > e.txt
-cat e.txt
-    # will print
-a
-b
-1
-2
-3
-4
-c
-d
-
-# ADD LINE AFTER MATCH
-cat <<EOF | sed '
-/c1/ a\
-xxx yyy\
-zzz ccc
-'
-# a1
-# b0
-STARTc1END
-# d2
-# f4
-EOF
-
-  # prints
-# a1
-# b0
-STARTc1END
-xxx yyy
-zzz ccc
-# d2
-# f4
-
-# ADD LINE BEFORE MATCH
-cat <<EOF | sed '
-/c1/ i\
-xxx yyy\
-zzz ccc
-'
-# a1
-# b0
-STARTc1END
-# d2
-# f4
-EOF
-
-  # prints
-# a1
-# b0
-xxx yyy
-zzz ccc
-STARTc1END
-# d2
-# f4
-
-
-# REPLACE MATCHING LINE
-cat <<EOF | sed '
-/c1/ c\
-xxx yyy\
-zzz ccc
-'
-# a1
-# b0
-STARTc1END
-# d2
-# f4
-EOF
-
-  # prints
-# a1
-# b0
-xxx yyy
-zzz ccc
-# d2
-# f4
-
-# COMBINE 3 ACTIONS
-cat <<EOF | sed '
-/c1/ {
-  i\
-  iii before
-  a\
-  aaa after
-  c\
-  ccc replace
-}
-'
-# a1
-# b0
-STARTc1END
-# d2
-# f4
-EOF
-
-  # prints
-# a1
-# b0
-  iii before
-  ccc replace
-  aaa after
-# d2
-# f4
-
-# REPLACE WORK ALSO WITH RANGES
-cat <<EOF | sed '
-/b0/,/d2/ {
-  c\
-  *** replaced ***
-}
-'
-# a1
-# b0
-STARTc1END
-# d2
-# f4
-EOF
-
-  # prints
-# a1
-  *** replaced ***
-  *** replaced ***
-  *** replaced ***
-# f4
-
-# ADD NEWLINE BLANKLINE AFTER EVERY LINE
-cat <<EOF | sed '1,$ {
-  a\
-
-}'
-# a1
-# b0
-STARTc1END
-# d2
-# f4
-EOF
-
-  # prints
-# a1
-  *** replaced ***
-  *** replaced ***
-  *** replaced ***
-# f4
-
-# PRINT LINE NUMBER
-cat <<EOF | sed -n '/b0/,/d2/ {=}'
-# a1
-# b0
-STARTc1END
-# d2
-# f4
-EOF
-
-# COUNT LINES IN FILE:
-echo ">>$(sed -n '$=' abc)<<"
-echo ">>$(wc -l abc | awk '{print $1}' )<<"
-
-# FIND LINE NUMBER BY PATTERN
-cat << 'EOF' > abc
-a
-b
-c
-d
-EOF
-sed -n '/c/ =' abc
-# or
-cat -n abc | grep 'c' | awk '{print $1}'
-
-# JUST PRINT LINE NUMBERS
-cat << 'EOF' > abc
-a
-b
-c
-d
-e
-f
-g
-h
-i
-EOF
-sed -n '/c/,/g/ {
-=
-d
-}' abc
-
-  # prints
-3
-4
-5
-6
-7
-
-# LOVERCASE UPPERCASE
-sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' <uppercase >lowercase
-
-# HEX LOWER TO UPPER
-sed '/0x[0-9a-zA-Z]*/ y/abcdef/ABCDEF' file
-
-
-# DUPLICATE EVERY LINE
-sed 'p'
-
-# DUPLICATE EVERY EMPTY LINE
-sed '/^$/ p'
-seq 3 | sed -n 2p
-    # print only the second input line
-
-# QUIT COMMAND
-sed '10 q'
-  # when sed reach 10th line - abort processing
-  # command takes only one range param
-
-  seq 30 | sed 4q
-
-
-# SKIP EVERY 4-TH LINE: (MAGIC)
-  seq 16 | sed 'n;n;n;n;s/./x/'
-
-# hashing encoding:
-  echo hello world | sed 'y/abcdefghij/0123456789/'
-  # will print '74llo worl3'
-
-# print line number:
-  printf '%s\n' aaa bbb ccc | sed =
-
-# PROCESS MULTIPLE FILES (in this example counting number of lines not staring with #)
-sed 's/^#.*//' f1 f2 f3 | grep -v '^$' | wc -l
-  # REMOVE EMPTY LINES grep
-
-INTERESTING:
-  sed -n '/^[0-9]*[02468]/ w even.txt' <file
-    # write even numbers to file
-
-TIPS:
-  Try using [^\n]* instead of .*:
-  ^I - tab character
-
-# perl replace: very nice
-    echo ' fdsa 45.4.192.45fdsa fds' | perl -pe 's#^.*?(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}).*$#\1#'
-
-# escaping [
-# https://stackoverflow.com/a/27973573
-    echo "$T" | sed -E "s/([][|\\{}()^$\\+*\\?\\.\/])/ <<\1>> /g"
-
-
-cat <<EOF | sed -nr "/[0-9]+\.[0-9]+\.[0-9]+$/p"
-v0.1.67
-v0.0.5
-v1.10
-project-4.5.2-dev
-v0.0.4
-project-4.56.3-dev
-v0.0.3
-project-4.56.4-dev
-v0.0.2
-EOF
-
-# multiline replace
-cat <<EOF | sed -rn "s/^[^:]+: ([^\),]+).*$/\1/p"
-commit 6586a29034699b520bc3722270f7fb0af9bf6965 (tag: green)
-commit 9def3af61c1a6ac1ba359159cfc5c5072f0dbc05 (tag: v0.1.67)
-commit 20464dfe724fb6fb4f7238cd28dcf69bce7e5652 (tag: v0.0.5)
-commit ec2ac7d09a271ca8df2ae5ef467d81fab7a94a24 (tag: v0.0.4)
-commit 10b7bd758dc4b45943caf101aac02661eb875747 (tag: v0.0.3)
-commit e6c456f6ae1e6e56d2faae99ce474346f9cf9055 (tag: v0.0.2)
-EOF
-
-# single line
-echo "commit 6586a29034699b520bc3722270f7fb0af9bf6965 (tag: green)" | sed -E "s/^[^:]+: ([^\),]+).*$/\1/"
-echo "one-two-three" | sed -E "s/-two-/-xxx-/"
-
-# multiple mode
-echo "one-two-three-two-end" | sed -E "s/-two-/-xxx-/g"
-
-
-            </script>
+          <h2>SED</h2>
+          <a href="http://sed.sourceforge.net/sedfaq3.html">http://sed.sourceforge.net/sedfaq3.html</a>
+          <script type="editor" data-lang="python">
+
+            -e script, --expression=script
+            -i[SUFFIX], --in-place[=SUFFIX] - change in file, in place
+            -n  By default, each line of input is echoed to the standard output after all of the
+                commands have been applied to it.  The -n option sup-
+                    presses this behavior.
+
+            # replace in file
+            rm -rf aaaa.txt
+            cat << EOF > aaaa.txt
+            #!/bin/bash
+            model.images
+            xxx
+            aaa model.images bbb
+            end
+            EOF
+            sed -i "" -E "s/model.images/model.resources/g" aaaa.txt
+            cat aaaa.txt
+            ## will print
+            # #!/bin/bash
+            # model.resources
+            # xxx
+            # aaa model.resources bbb
+            # end
+
+            # line by line - replace one time per line:
+            cat <<EOF | sed 's/one/ONE/'
+            one two three, one two three
+            four three two one
+            one hundred
+            EOF
+            # ONE two three, one two three
+            # four three two ONE
+            # ONE hundred
+
+
+            # REPLACE EVERY OCCURRENCE
+            cat <<EOF | sed 's/one/ONE/g'
+            one two three, one two three
+            four three two one
+            one hundred
+            EOF
+
+            # REPLACE ONLY SECOND OCCURENCE (WILL NOT WORK ON MAC)
+            cat <<EOF | sed 's/one/ONE/2g'
+            one two three, one two three
+            four three two one
+            one hundred
+            EOF
+
+            # ADD COLON TO EACH LINE ON 10TH PLACE (IF LINE IS LONG ENOUGH) (WORKS ON MAC TOO)
+            cat <<EOF | sed 's/./&:/10'
+            one two three, one two three
+            four three two one
+            xx
+            one hundred
+            EOF
+                # from: https://www.grymoire.com/Unix/Sed.html#uh-8
+
+            # MAKE SED WORK LIKE GREP
+            cat <<EOF | sed -n 's/one/&/p'
+            one two three, one two three
+            four three two one
+            xx
+            one hundred
+            EOF
+
+            cat <<EOF | sed -n '/one/ p'
+            one two three, one two three
+            four three two one
+            xx
+            one hundred
+            EOF
+                -n  By default, each line of input is echoed to the standard output after all of the
+                    commands have been applied to it.  The -n option sup-
+                         presses this behavior.
+                # https://www.grymoire.com/Unix/Sed.html#uh-9
+                # also: https://www.grymoire.com/Unix/Sed.html#uh-15
+                # https://www.grymoire.com/Unix/Sed.html#uh-15b
+
+            # CASE INSENSITIVE & MULTIPIPES
+            cat <<EOF | sed 's/one/XXX/Ig' | sed 's/three/YYY/g'
+            one two three, ONE two three
+            four three two ONE
+            one hundred
+            EOF
+            # ANOTHER METHOD FOR MULTIPIPES USING -e
+            cat <<EOF | sed -e 's/one/XXX/Ig' -e 's/three/YYY/g'
+            one two three, ONE two three
+            four three two ONE
+            one hundred
+            EOF
+                # see also sed -f scriptname https://www.grymoire.com/Unix/Sed.html#toc-uh-16
+                # and sed in shell scripts https://www.grymoire.com/Unix/Sed.html#uh-17
+
+            cat <<EOF > ttt.txt
+            one two three, one two three
+            four three two one
+            xx
+            one hundred
+            EOF
+            sed "s/two/TWO/g
+            s/TWO/t w o/g
+            s/four/SIX/g
+            " ttt.txt
+            rm -rf ttt.txt
+              # and another one: https://www.grymoire.com/Unix/Sed.html#uh-19
+
+            # QUOTING
+            sed -n 's/'"$1"'/&/p'
+                # from: https://www.grymoire.com/Unix/Sed.html#uh-22
+
+            # RESTRICTING TO SECOND LINE ONLY
+            cat <<EOF | sed '2 s/three/xxxxx/'
+            one two three, ONE two three
+            four three two ONE
+            one hundred
+            ebc three four
+            six
+            EOF
+
+            # (PATTERNS) DELETE THE FIRST NUMBER ON ALL LINES THAT START WITH A "#," USE:
+            cat <<EOF | sed '/^#/ s/[0-9][0-9]*//'
+            one two 66 three, ONE two three
+            one HJhundred
+            # four three 56 two ONE
+            ebc three 888 four
+            # six 6 and 99
+            #9 77
+            # END
+            EOF
+
+            # USING BACKSLASH TO INTRODUCE DIFFERENT DELIMITER IN THE PATTERN
+            cat <<EOF | sed '\,^#, s#[0-9][0-9]*##'
+            one two 66 three, ONE two three
+            one HJhundred
+            # four three 56 two ONE
+            ebc three 888 four
+            # six 6 and 99
+            #9 77
+            # END
+            EOF
+
+            # RESTRICT TO RANGE OF LINES (2th inclusive, 4th inclusive)
+            cat <<EOF | sed '2,4 s/.*/& xxx/'
+            one
+            two
+            three
+            four
+            six
+            seven
+            eight
+            nine
+            ten
+            EOF
+
+            # FROM n LINE TO THE END OF FILE (4th inclusive)
+            cat <<EOF | sed '4,$ s/.*/& xxx/'
+            one
+            two
+            three
+            four
+            six
+            seven
+            eight
+            nine
+            ten
+            EOF
+
+            # RANGE BY REGULAR EXPRESSION (substitution will be executed inclusively)
+            cat <<EOF | sed '/# four/,/# nine/ s/#.*//'
+            # one
+            two
+            three
+            # four
+            six
+            # seven
+            eight
+            # nine
+            ten
+            # eleven
+            EOF
+
+            # COMBINE TWO STYLES
+            cat <<EOF | sed '1,/# seven/ s/#.*//'
+            # one
+            two
+            three
+            # four
+            six
+            # seven
+            eight
+            # nine
+            ten
+            # eleven
+            EOF
+
+            # REMOVE COMMENTS EVERYWHERE EXCEPT THE LINES BETWEEN TWO KEYWORDS
+            cat <<EOF | sed -e '1,/# four/ s/#.*//' -e '/# nine/,$ s/#.*//'
+            # one
+            two
+            three
+            # four
+            six
+            # seven
+            eight
+            # nine
+            ten
+            # eleven
+            EOF
+
+            # DELETE/REMOVE MATCHING LINES
+            cat <<EOF | sed '4,$ d'
+            # one
+            two
+            three
+            # four
+            six
+            # seven
+            eight
+            # nine
+            ten
+            # eleven
+            EOF
+
+            # DELETING ALL COMMENTS
+            cat <<EOF | sed '/^#/ d'
+            # one
+            two
+            three
+            # four
+            six
+            # seven
+            eight
+            # nine
+            ten
+            # eleven
+            EOF
+
+            # REMOVING COMMENTS AND BLANK LINES
+            cat <<EOF | sed -e 's/#.*//' -e 's/[ ^I]*$//' -e '/^$/ d'
+            # one
+            two
+            three
+              # four
+            six
+
+               # seven
+
+            eight
+                # nine
+            ten
+            # eleven
+            EOF
+                # from: https://www.grymoire.com/Unix/Sed.html#uh-30
+
+            # GROUPS
+            cat <<EOF | sed -nr '
+              /three/,/ten/ {
+                   s/#.*//
+                   s/[ ^I]*$//
+                   /^$/ d
+                   p
+              }
+            '
+            # one
+            two
+            three
+              # four
+            six
+
+               # seven
+
+            eight
+              # nine
+            ten
+            # eleven
+            EOF
+
+
+            # will print:
+            three
+            six
+            eight
+            ten
+
+
+
+            # GROUPS WORKS FROM FIRST MATCH TO FIRST MATCH
+            cat <<EOF | sed -rn '
+                /start/,/end/ {
+                     p
+                }
+            '
+            b2
+            start
+            d4
+            g7
+            start
+            a9
+            h6
+            a7
+            end
+            b8
+            d0
+            end
+            g3
+            h4
+            EOF
+
+            # will print
+            start
+            d4
+            g7
+            start
+            a9
+            h6
+            a7
+            end
+
+
+            # NESTED GROUPS
+            cat <<EOF | sed -nr '
+              5,19 {
+                /start/,/end/ {
+                     p
+                }
+              }
+            '
+            a1
+            b2
+            start
+            d4
+            e5--- first group
+            f6
+            start
+            g7
+            a9
+            b0
+            c1
+            d2
+            e3
+            f4
+            h6
+            a7
+            end
+            b8
+            c9--- first group
+            d0
+            end
+            f2
+            g3
+            h4
+            EOF
+
+            # will print
+            start
+            g7
+            a9
+            b0
+            c1
+            d2
+            e3
+            f4
+            h6
+            a7
+            end
+
+            # using in this configuration it doesn't make sense, because it seems like only numbers matter
+            cat <<EOF | sed -nr '
+              /start/,/end/ {
+                7,10 {
+                   p
+                }
+              }
+            '
+            a1
+            b2
+            c3
+            start--- first group
+            d4
+            e5
+            f6 - x
+            start
+            g7
+            h6 - x
+            a7
+            end--- first group
+            b8
+            c9
+            d0
+            end
+            f2
+            g3
+            h4
+            EOF
+
+            # WILL REMOVE COMMENTS EXCEPT IN RANGE
+            cat <<EOF | sed -rn '
+              /start/,/end/ !{
+                s/^[^\n#]*#[^\n]*//
+                /^$/d
+                p
+              }
+            '
+            # a1
+            b2
+            # d4
+            f6
+            start
+            # g7
+            a9
+            # b0
+            c1
+            # d2
+            e3
+            # f4
+            h6
+            a7
+            #end
+            b8
+             # d0
+            f2
+            # g3
+            h4
+            EOF
+
+            # will print
+            b2
+            f6
+            b8
+            f2
+            h4
+
+            # SKIP FIRST AND LAST
+            cat <<EOF | sed -rn '
+              /start/,/end/ {
+                /start/n
+                s/^.*$/& mod/
+                p
+              }
+            '
+            # a1
+            b2
+            # d4
+            f6
+            start
+            # g7
+            a9
+            # b0
+            c1
+            # d2
+            e3
+            # f4
+            h6
+            a7
+            end
+            b8
+             # d0
+            f2
+            # g3
+            h4
+            EOF
+
+            However, skipping over the line that has "end" is trickier.
+            If you use the same method you used for "begin" then the sed engine will
+            not see the "end" to stop the range - it skips over that as well.
+            The solution is to do a substitute on all lines that don't have the "end" by using
+
+            #!/bin/sh
+            sed '
+                /begin/,/end/ {
+                  /begin/n # skip over the line that has "begin" on it
+                  /end/ !{
+                    s/old/new/
+                  }
+                }
+            '
+
+            cat <<EOF | sed -rn '
+              /start/,/end/ {
+                /start/n
+                /end/ !{
+                  # comment
+                  s/^.*$/& mod/
+                  p
+                }
+              }
+            '
+            # a1
+            b2
+            # d4
+            f6
+            start
+            # g7
+            a9
+            # b0
+            c1
+            # d2
+            e3
+            # f4
+            h6
+            a7
+            end
+            b8
+             # d0
+            f2
+            # g3
+            h4
+            EOF
+
+            # will print
+            # g7 mod
+            a9 mod
+            # b0 mod
+            c1 mod
+            # d2 mod
+            e3 mod
+            # f4 mod
+            h6 mod
+            a7 mod
+
+            # JOIN FILES
+
+            cat << 'EOF' > a.txt
+            a
+            b
+            c
+            d
+            EOF
+            cat << 'EOF' > n.txt
+            1
+            2
+            3
+            4
+            EOF
+            sed '/b/ r n.txt' < a.txt > e.txt
+            cat e.txt
+                # will print
+            a
+            b
+            1
+            2
+            3
+            4
+            c
+            d
+
+            # ADD LINE AFTER MATCH
+            cat <<EOF | sed '
+            /c1/ a\
+            xxx yyy\
+            zzz ccc
+            '
+            # a1
+            # b0
+            STARTc1END
+            # d2
+            # f4
+            EOF
+
+              # prints
+            # a1
+            # b0
+            STARTc1END
+            xxx yyy
+            zzz ccc
+            # d2
+            # f4
+
+            # ADD LINE BEFORE MATCH
+            cat <<EOF | sed '
+            /c1/ i\
+            xxx yyy\
+            zzz ccc
+            '
+            # a1
+            # b0
+            STARTc1END
+            # d2
+            # f4
+            EOF
+
+              # prints
+            # a1
+            # b0
+            xxx yyy
+            zzz ccc
+            STARTc1END
+            # d2
+            # f4
+
+
+            # REPLACE MATCHING LINE
+            cat <<EOF | sed '
+            /c1/ c\
+            xxx yyy\
+            zzz ccc
+            '
+            # a1
+            # b0
+            STARTc1END
+            # d2
+            # f4
+            EOF
+
+              # prints
+            # a1
+            # b0
+            xxx yyy
+            zzz ccc
+            # d2
+            # f4
+
+            # COMBINE 3 ACTIONS
+            cat <<EOF | sed '
+            /c1/ {
+              i\
+              iii before
+              a\
+              aaa after
+              c\
+              ccc replace
+            }
+            '
+            # a1
+            # b0
+            STARTc1END
+            # d2
+            # f4
+            EOF
+
+              # prints
+            # a1
+            # b0
+              iii before
+              ccc replace
+              aaa after
+            # d2
+            # f4
+
+            # REPLACE WORK ALSO WITH RANGES
+            cat <<EOF | sed '
+            /b0/,/d2/ {
+              c\
+              *** replaced ***
+            }
+            '
+            # a1
+            # b0
+            STARTc1END
+            # d2
+            # f4
+            EOF
+
+              # prints
+            # a1
+              *** replaced ***
+              *** replaced ***
+              *** replaced ***
+            # f4
+
+            # ADD NEWLINE BLANKLINE AFTER EVERY LINE
+            cat <<EOF | sed '1,$ {
+              a\
+
+            }'
+            # a1
+            # b0
+            STARTc1END
+            # d2
+            # f4
+            EOF
+
+              # prints
+            # a1
+              *** replaced ***
+              *** replaced ***
+              *** replaced ***
+            # f4
+
+            # PRINT LINE NUMBER
+            cat <<EOF | sed -n '/b0/,/d2/ {=}'
+            # a1
+            # b0
+            STARTc1END
+            # d2
+            # f4
+            EOF
+
+            # COUNT LINES IN FILE:
+            echo ">>$(sed -n '$=' abc)<<"
+            echo ">>$(wc -l abc | awk '{print $1}' )<<"
+
+            # FIND LINE NUMBER BY PATTERN
+            cat << 'EOF' > abc
+            a
+            b
+            c
+            d
+            EOF
+            sed -n '/c/ =' abc
+            # or
+            cat -n abc | grep 'c' | awk '{print $1}'
+
+            # JUST PRINT LINE NUMBERS
+            cat << 'EOF' > abc
+            a
+            b
+            c
+            d
+            e
+            f
+            g
+            h
+            i
+            EOF
+            sed -n '/c/,/g/ {
+            =
+            d
+            }' abc
+
+              # prints
+            3
+            4
+            5
+            6
+            7
+
+            # LOVERCASE UPPERCASE
+            sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/' <uppercase >lowercase
+
+            # HEX LOWER TO UPPER
+            sed '/0x[0-9a-zA-Z]*/ y/abcdef/ABCDEF' file
+
+
+            # DUPLICATE EVERY LINE
+            sed 'p'
+
+            # DUPLICATE EVERY EMPTY LINE
+            sed '/^$/ p'
+            seq 3 | sed -n 2p
+                # print only the second input line
+
+            # QUIT COMMAND
+            sed '10 q'
+              # when sed reach 10th line - abort processing
+              # command takes only one range param
+
+              seq 30 | sed 4q
+
+
+            # SKIP EVERY 4-TH LINE: (MAGIC)
+              seq 16 | sed 'n;n;n;n;s/./x/'
+
+            # hashing encoding:
+              echo hello world | sed 'y/abcdefghij/0123456789/'
+              # will print '74llo worl3'
+
+            # print line number:
+              printf '%s\n' aaa bbb ccc | sed =
+
+            # PROCESS MULTIPLE FILES (in this example counting number of lines not staring with #)
+            sed 's/^#.*//' f1 f2 f3 | grep -v '^$' | wc -l
+              # REMOVE EMPTY LINES grep
+
+            INTERESTING:
+              sed -n '/^[0-9]*[02468]/ w even.txt' <file
+                # write even numbers to file
+
+            TIPS:
+              Try using [^\n]* instead of .*:
+              ^I - tab character
+
+            # perl replace: very nice
+                echo ' fdsa 45.4.192.45fdsa fds' | perl -pe 's#^.*?(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}).*$#\1#'
+
+            # escaping [
+            # https://stackoverflow.com/a/27973573
+                echo "$T" | sed -E "s/([][|\\{}()^$\\+*\\?\\.\/])/ <<\1>> /g"
+
+
+            cat <<EOF | sed -nr "/[0-9]+\.[0-9]+\.[0-9]+$/p"
+            v0.1.67
+            v0.0.5
+            v1.10
+            project-4.5.2-dev
+            v0.0.4
+            project-4.56.3-dev
+            v0.0.3
+            project-4.56.4-dev
+            v0.0.2
+            EOF
+
+            # multiline replace
+            cat <<EOF | sed -rn "s/^[^:]+: ([^\),]+).*$/\1/p"
+            commit 6586a29034699b520bc3722270f7fb0af9bf6965 (tag: green)
+            commit 9def3af61c1a6ac1ba359159cfc5c5072f0dbc05 (tag: v0.1.67)
+            commit 20464dfe724fb6fb4f7238cd28dcf69bce7e5652 (tag: v0.0.5)
+            commit ec2ac7d09a271ca8df2ae5ef467d81fab7a94a24 (tag: v0.0.4)
+            commit 10b7bd758dc4b45943caf101aac02661eb875747 (tag: v0.0.3)
+            commit e6c456f6ae1e6e56d2faae99ce474346f9cf9055 (tag: v0.0.2)
+            EOF
+
+            # single line
+            echo "commit 6586a29034699b520bc3722270f7fb0af9bf6965 (tag: green)" | sed -E "s/^[^:]+: ([^\),]+).*$/\1/"
+            echo "one-two-three" | sed -E "s/-two-/-xxx-/"
+
+            # multiple mode
+            echo "one-two-three-two-end" | sed -E "s/-two-/-xxx-/g"
+          </script>
         </div>
+      </div>
     </div>
-</div>
-<script src="/js/github.js"></script>
-</body>
+    <script src="/js/github.js"></script>
+  </body>
 </html>

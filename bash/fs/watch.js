@@ -1,5 +1,3 @@
-
-
 // DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 //
 // STATUS="0"
@@ -14,14 +12,12 @@
 //   /bin/bash "${DIR}/stop.sh"
 // done
 
-const fs = require('fs');
+const fs = require("fs");
 
-if ( ! fs.existsSync(process.argv[2]) ) {
-
+if (!fs.existsSync(process.argv[2])) {
   throw new Error(`file ${process.argv[2]} doesn't exist`);
 }
 
 fs.watchFile(process.argv[2], function () {
-
-  process.exit(0)
+  process.exit(0);
 });

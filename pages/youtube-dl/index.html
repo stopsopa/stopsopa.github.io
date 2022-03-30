@@ -14,22 +14,21 @@
           <a href="https://github.com/ytdl-org/youtube-dl">https://github.com/ytdl-org/youtube-dl</a>
           <script type="editor" data-lang="sh">
 
-# show available formats
-  youtube-dl -F YOUTUBELINK
+            # show available formats
+              youtube-dl -F YOUTUBELINK
 
-# download particular version
-  youtube-dl -f 22
+            # download particular version
+              youtube-dl -f 22
 
-export YOUTUBELINK='YOUTUBELINK'
-youtube-dl -f best "$YOUTUBELINK"
+            export YOUTUBELINK='YOUTUBELINK'
+            youtube-dl -f best "$YOUTUBELINK"
 
-export YOUTUBELINK='YOUTUBELINK'
-_LIST="$(youtube-dl -F $YOUTUBELINK)"
-echo $_LIST
-_YTNR="$(echo "$_LIST" | grep '(best)' | awk '{print $1}')"
-echo $_YTNR
-youtube-dl -f "$_YTNR" "$YOUTUBELINK"
-
+            export YOUTUBELINK='YOUTUBELINK'
+            _LIST="$(youtube-dl -F $YOUTUBELINK)"
+            echo $_LIST
+            _YTNR="$(echo "$_LIST" | grep '(best)' | awk '{print $1}')"
+            echo $_YTNR
+            youtube-dl -f "$_YTNR" "$YOUTUBELINK"
           </script>
         </div>
       </div>
