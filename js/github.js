@@ -1145,7 +1145,7 @@ body .github-profile:hover {
             resolve(un);
           }, 50);
 
-          editor.renderer.on("afterRender", event);
+          editor.renderer.on("afterRender", event); // https://github.com/ajaxorg/ace/issues/2082#issuecomment-1085230125
 
           editors[un] = editor;
 
