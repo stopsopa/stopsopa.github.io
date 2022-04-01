@@ -5,7 +5,7 @@
  * Use:
  * add at the end of the page just before </body>
  *
-    <script src="./js/permalink-my.js"></script>
+    <script src="./noprettier/permalink-my.js"></script>
     <script>mountpermalink();</script>
 
  * UMD -> https://github.com/umdjs/umd#umd-universal-module-definition -> amdWebGlobal.js
