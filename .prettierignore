@@ -3,7 +3,7 @@
 node_modules
 /dist/
 /var/
-/js/
+/noprettier/
 /pages/portsregistry/lists/ports-generated.json
 *.min.js
 *.rendered.html

@@ -57,27 +57,21 @@ window.sasync = {
 
       var tmp = "";
 
-      var colours = [];
+      var buff = [];
 
       for (var i = 0; i < l; i += 1) {
         if (i === 0) {
           tmp += "%c " + a[i] + " ";
 
-          colours = colours.concat(color);
+          buff.push(color);
         } else {
-          tmp += "%c " + a[i];
-
-          colours = colours.concat("background: white; color: black");
+          buff.push(a[i]);
         }
       }
 
-      colours.unshift(tmp);
+      tmp && buff.unshift(tmp);
 
-      // log('args',colours )
-
-      log.apply(log, colours);
-
-      // console.log('%c Oh my heavens! %c rest', 'background: #222; color: #bada55', 'background: white; color: black');
+      log.apply(log, buff);
     };
   }
 
@@ -108,7 +102,7 @@ window.sasync = {
 (function () {
   // <link rel="stylesheet" href="../../css/normalize.css">
 
-  ["/css/normalize.css", "/css/main.css", "/js/aceedit/jquery.aceedit.css", "//fonts.googleapis.com/css?family=Open+Sans:300,400"].forEach(function (u) {
+  ["/css/normalize.css", "/css/main.css", "/noprettier/aceedit/jquery.aceedit.css", "//fonts.googleapis.com/css?family=Open+Sans:300,400"].forEach(function (u) {
     // https://stackoverflow.com/a/524721
     var head = document.head || document.getElementsByTagName("head")[0],
       style = document.createElement("link");
@@ -127,7 +121,16 @@ window.sasync = {
 
 var manipulation = (function () {
   var domCache = document.createElement("div");
-
+  function isObjectLike(value) {
+    return value != null && typeof value == "object";
+  }
+  function isPlainObject(value) {
+    // simplified version of isPlainObject then the one in lodash
+    return Object.prototype.toString.call(value) === "[object Object]";
+  }
+  function isNode(value) {
+    return isObjectLike(value) && !isPlainObject(value);
+  }
   return {
     after: function (referenceNode, newNode) {
       if (referenceNode.nextSibling) {
@@ -151,24 +154,151 @@ var manipulation = (function () {
       node.parentNode.removeChild(node);
       return this;
     },
-    detach: function (element) {
-      // detach element from DOM, to use it somewhere else
-
-      this.append(domCache, element);
-
-      return element;
+    replace: function (oldNode, newNode) {
+      oldNode.parentNode.replaceChild(newNode, oldNode);
     },
-    children: function (parent) {
+    detach: function (node) {
+      // detach element from DOM, to use it somewhere else
+      this.append(domCache, node);
+      return node;
+    },
+    empty: function (node) {
+      node.innerHTML = "";
+      return this;
+    },
+    isNodeList: function (obj) {
+      return Object.prototype.toString.call(obj) === "[object NodeList]";
+    },
+    isNode: isNode,
+    children: function (parentNode) {
       try {
         // read also about
         // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
         // https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName  - undefined when #text node
         // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeName
-        return Array.prototype.slice.call(parent.childNodes);
+        return Array.prototype.slice.call(parentNode.childNodes);
       } catch (e) {
         throw new Error("manipulation.children() error: " + String(e));
       }
     },
+    /**
+     *
+     * @param el
+     * @param firstText - empty string - remove element, non empty string - set element, null|undefined - skip element
+     * @param lastText - empty string - remove element, non empty string - set element, null|undefined - skip element
+     */
+    txt: function (el, firstText, lastText) {
+      var list = Array.prototype.slice.call(el.childNodes);
+      var a,
+        b,
+        lastRef,
+        t = list[0];
+      if (this.isNode(t) && t.nodeType === 3) {
+        a = t;
+      }
+      if (list.length > 1) {
+        for (var i = 1, l = list.length; i < l; i += 1) {
+          if (this.isNode(list[i]) && list[i].nodeType === 3) {
+            b = list[i];
+            lastRef = i;
+          }
+        }
+      }
+      if (typeof firstText === "string") {
+        if (firstText) {
+          if (a) {
+            if (this.isNode(a) && a.nodeValue !== 3) {
+              this.replace(a, firstText);
+              a = firstText;
+            } else {
+              a.nodeValue = firstText;
+            }
+          } else {
+            a = document.createTextNode(firstText);
+            this.prepend(el, a);
+          }
+        } else {
+          if (a) {
+            this.remove(a);
+            a = undefined;
+          }
+        }
+      }
+      if (typeof lastText === "string") {
+        if (lastText) {
+          if (b) {
+            if (this.isNode(b) && b.nodeType !== 3) {
+              this.replace(b, lastText);
+              b = lastText;
+            } else {
+              b.nodeValue = lastText;
+            }
+          } else {
+            b = document.createTextNode(lastText);
+            this.append(el, b);
+          }
+        } else {
+          if (b) {
+            this.remove(b);
+            b = undefined;
+          }
+        }
+      }
+      var res = {
+        a: a,
+        b: b,
+        at: a ? a.nodeValue : undefined,
+        bt: b ? b.nodeValue : undefined,
+        all: "",
+      };
+      if (res.at) {
+        res.all += res.at;
+      }
+      if (res.bt) {
+        if (res.all) {
+          res.all += " ";
+        }
+        res.all += res.bt;
+      }
+      return res;
+    },
+  };
+})();
+
+// extension
+(function () {
+  /* from lodash */
+  function isNodeList(obj) {
+    return Object.prototype.toString.call(obj) === "[object NodeList]";
+  }
+  /* from lodash */
+  var isNode = (function () {
+    function isObjectLike(value) {
+      return value != null && typeof value == "object";
+    }
+    function isPlainObject(value) {
+      // simplified version of isPlainObject then the one in lodash
+      return Object.prototype.toString.call(value) === "[object Object]";
+    }
+    return function isNode(value) {
+      return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
+    };
+  })();
+  manipulation.custommove = function (newParent, elements) {
+    if (isNode(elements)) {
+      elements = [elements];
+    } else if (isNodeList(elements)) {
+      elements = Array.prototype.slice.call(elements);
+    }
+
+    try {
+      for (var i = 0, l = elements.length; i < l; i += 1) {
+        newParent.appendChild(elements[i]);
+      }
+    } catch (e) {
+      throw "manipulation.custommove - can't iterate through elements";
+    }
+    return this;
   };
 })();
 
@@ -447,7 +577,7 @@ log.green("defined", "window.manipulation");
   }
 
   try {
-    await loadJs("polyfill", "/js/polyfill.js", function () {
+    await loadJs("polyfill", "/noprettier/polyfill.js", function () {
       try {
         return window.sasync.loaded.polyfill_js;
       } catch (e) {
@@ -456,20 +586,20 @@ log.green("defined", "window.manipulation");
     });
 
     await Promise.all([
-      loadJs("permalink", "/js/permalink-my.js", function () {
+      loadJs("permalink", "/noprettier/permalink-my.js", function () {
         try {
           return typeof window.sasync.loaded.mountpermalink === "function";
         } catch (e) {
           return false;
         }
       }),
-      loadJs("lodash", "/js/lodash-4.17.10.js", function () {
+      loadJs("lodash", "/noprettier/lodash-4.17.10.js", function () {
         try {
           return typeof _.VERSION === "string";
         } catch (e) {}
         return false;
       }),
-      loadJs("ace", "/js/ace/ace-builds-1.4.12/src-min-noconflict/ace.js", function () {
+      loadJs("ace", "/noprettier/ace/ace-builds-1.4.12/src-min-noconflict/ace.js", function () {
         try {
           return typeof window.ace.edit === "function";
         } catch (e) {}
@@ -793,245 +923,291 @@ body .github-profile:hover {
       });
     }
 
-    return p.then(function () {
-      (function () {
-        var selector = "body script";
+    const onLoadPromiseArray = [];
 
-        const found = Array.prototype.slice.call(document.querySelectorAll(selector));
+    return p
+      .then(function () {
+        (function () {
+          var selector = "body script";
 
-        const allowed = ["editor", "syntax"];
+          const found = Array.prototype.slice.call(document.querySelectorAll(selector));
 
-        const list = [];
+          const allowed = ["editor", "syntax"];
 
-        found.forEach((e) => {
-          const type = e.getAttribute("type");
+          const list = [];
 
-          const lang = e.getAttribute("data-lang");
+          found.forEach((e) => {
+            const type = e.getAttribute("type");
 
-          if (typeof lang === "string" && trim(lang)) {
-            if (typeof type !== "string" || !trim(type)) {
-              list.push('[data-lang]="' + lang + '" defined but [type] is missing');
+            const lang = e.getAttribute("data-lang");
 
-              return;
-            }
-
-            if (!allowed.includes(type)) {
-              list.push("[data-lang] defined but [type] is not valid: >>" + type + "<<");
-
-              return;
-            }
-          } else {
-            if (typeof type === "string") {
-              if (type !== "text/javascript") {
-                list.push("[data-lang] not defined so [type] can be only 'text/javascript' but it is: >>" + type + "<<");
+            if (typeof lang === "string" && trim(lang)) {
+              if (typeof type !== "string" || !trim(type)) {
+                list.push('[data-lang]="' + lang + '" defined but [type] is missing');
 
                 return;
               }
-            }
-          }
-        });
 
-        if (list.length > 0) {
-          alert(
-            "there is " + list.length + " <script" + "> tags in <body" + "> with invalid [type] attribute, allowed values are (" + allowed.join(", ") + ") but found: (" + list.join(" ======= ") + ")"
-          );
-        }
-      })();
+              if (!allowed.includes(type)) {
+                list.push("[data-lang] defined but [type] is not valid: >>" + type + "<<");
 
-      var selector = '[type="editor"]:not(.handled), [type="syntax"]:not(.handled)';
+                return;
+              }
+            } else {
+              if (typeof type === "string") {
+                if (type !== "text/javascript") {
+                  list.push("[data-lang] not defined so [type] can be only 'text/javascript' but it is: >>" + type + "<<");
 
-      const found = Array.prototype.slice.call(document.querySelectorAll(selector));
-
-      log.blue("executed", "window.doace() inside - handling " + selector + " - adding " + found.length + " editors");
-
-      found.forEach(function (el) {
-        if (el.classList.contains("handled")) {
-          log('[type="editor"], [type="syntax"] already handled');
-
-          return true;
-        }
-
-        var script,
-          editor,
-          div,
-          t = "",
-          d;
-
-        /**
-         * Lets simplify syntax
-         * from
-         *
-         *  <div class="editor">
-         *      <script type="editor" data-lang="js" data-w="95%">
-         *      </script>
-         *  </div>
-         *    // this is actually processed structure
-         *
-         *  to
-         *
-         *  <script class="editor" type="editor" data-lang="js" data-w="95%"></script>
-         *      // this is for user convenience
-         *
-         *  and then execute old logic
-         */
-        (function () {
-          div = document.createElement("div");
-
-          manipulation.after(el, div);
-
-          manipulation.custommove(div, el);
-
-          var attr = Array.prototype.slice.call(el.attributes);
-
-          for (var i = 0, l = attr.length; i < l; i += 1) {
-            if (attr[i].name.toLowerCase() === "class") {
-              continue;
-            }
-
-            div.setAttribute(attr[i].name, attr[i].value);
-          }
-
-          el.classList.add("handled");
-
-          el = div;
-
-          el.classList.add("handled");
-        })();
-
-        script = el.querySelector("script");
-
-        d = el.dataset.h;
-        d && (el.style.height = d);
-        d = el.dataset.w;
-        d && (el.style.width = d);
-
-        if (!script) {
-          log("ace - no script child found");
-
-          return true;
-        }
-
-        t = script.innerHTML;
-
-        /**
-         * removing redundant spaces at the beginning - mitigating prettier
-         */
-        (function (v) {
-          let diff = 1111;
-
-          let tmp = v.split("\n");
-
-          tmp.forEach((line) => {
-            if (!/^\s*$/.test(line)) {
-              // if line isn't just white characters
-              const length_before = line.length;
-
-              const length_after = line.replace(/^\s+/, "").length;
-
-              const d = length_before - length_after;
-
-              if (d < diff) {
-                diff = d;
+                  return;
+                }
               }
             }
           });
 
-          if (diff !== 1111 && diff > 0) {
-            tmp = tmp.map((line) => line.substring(diff));
-
-            t = tmp.join("\n");
-
-            if (tmp[tmp.length - 2].trim() !== "") {
-              t += "\n";
-            }
+          if (list.length > 0) {
+            alert(
+              "there is " +
+                list.length +
+                " <script" +
+                "> tags in <body" +
+                "> with invalid [type] attribute, allowed values are (" +
+                allowed.join(", ") +
+                ") but found: (" +
+                list.join(" ======= ") +
+                ")"
+            );
           }
-        })(t);
+        })();
 
-        manipulation.remove(script);
+        var selector = '[type="editor"]:not(.handled), [type="syntax"]:not(.handled)';
 
-        div = el.cloneNode(false);
+        const found = Array.prototype.slice.call(document.querySelectorAll(selector));
 
-        div.removeAttribute("data-lang");
-        div.removeAttribute("data-w");
-        div.removeAttribute("data-h");
+        log.blue("executed", "window.doace() inside - handling " + selector + " - adding " + found.length + " editors");
 
-        manipulation.append(el, div);
+        found.forEach(function (el) {
+          if (el.classList.contains("handled")) {
+            log('[type="editor"], [type="syntax"] already handled');
 
-        div.classList.remove("editor");
-        div.classList.remove("syntax");
+            return true;
+          }
 
-        var clear = document.createElement("div");
+          var script,
+            editor,
+            div,
+            t = "",
+            d;
 
-        clear.style.clear = "both";
+          /**
+           * Lets simplify syntax
+           * from
+           *
+           *  <div class="editor">
+           *      <script type="editor" data-lang="js" data-w="95%">
+           *      </script>
+           *  </div>
+           *    // this is actually processed structure
+           *
+           *  to
+           *
+           *  <script class="editor" type="editor" data-lang="js" data-w="95%"></script>
+           *      // this is for user convenience
+           *
+           *  and then execute old logic
+           */
+          (function () {
+            div = document.createElement("div");
 
-        manipulation.append(el, clear);
+            manipulation.after(el, div);
 
-        // manipulation.after(el, clear.cloneNode(false))
+            manipulation.custommove(div, el);
 
-        editor = ace.edit(div);
+            var attr = Array.prototype.slice.call(el.attributes);
 
-        var un = unique();
+            for (var i = 0, l = attr.length; i < l; i += 1) {
+              if (attr[i].name.toLowerCase() === "class") {
+                continue;
+              }
 
-        editors[un] = editor;
+              div.setAttribute(attr[i].name, attr[i].value);
+            }
 
-        el.dataset.ace = un;
+            el.classList.add("handled");
 
-        var copy = document.createElement("div");
-        copy.classList.add("copy");
-        copy.innerHTML = "📋";
+            el = div;
 
-        manipulation.prepend(el, copy);
+            el.classList.add("handled");
+          })();
 
-        editor.getSession().setTabSize(4);
-        editor.setTheme("ace/theme/idle_fingers");
-        editor.getSession().setUseWrapMode(true);
+          script = el.querySelector("script");
 
-        d = el.dataset.lang;
-        d == "js" && (d = "javascript");
-        d && editor.getSession().setMode("ace/mode/" + d);
+          d = el.dataset.h;
+          d && (el.style.height = d);
+          d = el.dataset.w;
+          d && (el.style.width = d);
 
-        el.classList.contains("syntax") && editor.setReadOnly(true); // false to make it editable
-        //        editor.getSession().setMode("ace/mode/javascript");
-        editor.setValue(_.unescape(t).replace(/^ *\n([\s\S]*?)\n *$/g, "$1"));
-        // editor.setValue(t);
-        editor.clearSelection();
-        // editor.setOptions({
-        //     maxLines: Infinity
-        // });
+          if (!script) {
+            log("ace - no script child found");
 
-        var heightUpdateFunction = function () {
-          // http://stackoverflow.com/questions/11584061/
-          var newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth();
+            return true;
+          }
 
-          // log('new height', newHeight);
+          t = script.innerHTML;
 
-          var h = newHeight.toString();
+          /**
+           * removing redundant spaces at the beginning - mitigating prettier
+           */
+          (function (v) {
+            let diff = 1111;
 
-          // h += 1000;
+            let tmp = v.split("\n");
 
-          h += "px";
+            tmp.forEach((line) => {
+              if (!/^\s*$/.test(line)) {
+                // if line isn't just white characters
+                const length_before = line.length;
 
-          div.style.height = h;
+                const length_after = line.replace(/^\s+/, "").length;
 
-          // Array.prototype.slice.call(document.querySelector('.editor').querySelectorAll('[class]'))
-          //     .map(e => e.style.height = h)
-          // ;
-          // $('#editor').height(newHeight.toString() + "px");
-          // $('#editor-section').height(newHeight.toString() + "px");
+                const d = length_before - length_after;
 
-          // This call is required for the editor to fix all of
-          // its inner structure for adapting to a change in size
-          editor.resize();
-        };
+                if (d < diff) {
+                  diff = d;
+                }
+              }
+            });
 
-        // Set initial size to match initial content
-        heightUpdateFunction();
+            if (diff !== 1111 && diff > 0) {
+              tmp = tmp.map((line) => line.substring(diff));
 
-        // Whenever a change happens inside the ACE editor, update
-        // the size again
-        editor.getSession().on("change", heightUpdateFunction);
-      });
-    });
+              t = tmp.join("\n");
+
+              if (tmp[tmp.length - 2].trim() !== "") {
+                t += "\n";
+              }
+            }
+          })(t);
+
+          manipulation.remove(script);
+
+          div = el.cloneNode(false);
+
+          div.removeAttribute("data-lang");
+          div.removeAttribute("data-w");
+          div.removeAttribute("data-h");
+
+          manipulation.append(el, div);
+
+          div.classList.remove("editor");
+          div.classList.remove("syntax");
+
+          var clear = document.createElement("div");
+
+          clear.style.clear = "both";
+
+          manipulation.append(el, clear);
+
+          // manipulation.after(el, clear.cloneNode(false))
+
+          editor = ace.edit(div);
+
+          let resolve;
+          const onLoadPromise = new Promise((res) => (resolve = res));
+
+          onLoadPromiseArray.push({
+            onLoadPromise,
+            resolve,
+          });
+
+          var un = unique();
+
+          const event = debounceOnce(() => {
+            let text = "";
+
+            (function () {
+              try {
+                let head = div.parentNode.previousSibling;
+
+                while (head.nodeType === 3) {
+                  head = head.previousSibling;
+                }
+
+                if ("h1 h2 h3 h4 h5 h6".split(" ").includes(head.tagName.toLowerCase())) {
+                  text = head.innerText;
+                }
+              } catch (e) {
+                /* I don't care if something crush here */
+              }
+            })();
+
+            log.blue("ace editor loaded", un, ">>>>", text);
+
+            resolve(un);
+          }, 50);
+
+          editor.renderer.on("afterRender", event);
+
+          editors[un] = editor;
+
+          el.dataset.ace = un;
+
+          var copy = document.createElement("div");
+          copy.classList.add("copy");
+          copy.innerHTML = "📋";
+
+          manipulation.prepend(el, copy);
+
+          editor.getSession().setTabSize(4);
+          editor.setTheme("ace/theme/idle_fingers");
+          editor.getSession().setUseWrapMode(true);
+
+          d = el.dataset.lang;
+          d == "js" && (d = "javascript");
+          d && editor.getSession().setMode("ace/mode/" + d);
+
+          el.classList.contains("syntax") && editor.setReadOnly(true); // false to make it editable
+          //        editor.getSession().setMode("ace/mode/javascript");
+          editor.setValue(_.unescape(t).replace(/^ *\n([\s\S]*?)\n *$/g, "$1"));
+          // editor.setValue(t);
+          editor.clearSelection();
+          // editor.setOptions({
+          //     maxLines: Infinity
+          // });
+
+          var heightUpdateFunction = function () {
+            // http://stackoverflow.com/questions/11584061/
+            var newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth();
+
+            // log('new height', newHeight);
+
+            var h = newHeight.toString();
+
+            // h += 1000;
+
+            h += "px";
+
+            div.style.height = h;
+
+            // Array.prototype.slice.call(document.querySelector('.editor').querySelectorAll('[class]'))
+            //     .map(e => e.style.height = h)
+            // ;
+            // $('#editor').height(newHeight.toString() + "px");
+            // $('#editor-section').height(newHeight.toString() + "px");
+
+            // This call is required for the editor to fix all of
+            // its inner structure for adapting to a change in size
+            editor.resize();
+          };
+
+          // Set initial size to match initial content
+          heightUpdateFunction();
+
+          // Whenever a change happens inside the ACE editor, update
+          // the size again
+          editor.getSession().on("change", heightUpdateFunction);
+        });
+      })
+      .then(() => Promise.all(onLoadPromiseArray.map((x) => x.onLoadPromise)));
   };
 
   log.green("defined", "window.doace()");
@@ -1063,3 +1239,36 @@ body .github-profile:hover {
 })();
 
 log.gray("finished", "github.js");
+
+function debounce(fn, delay) {
+  var timer = null;
+  return function () {
+    var context = this,
+      args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      fn.apply(context, args);
+    }, delay);
+  };
+}
+
+function debounceOnce(fn, delay) {
+  var timer = null,
+    stop = false;
+  return function () {
+    if (stop) {
+      return;
+    }
+    var context = this,
+      args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      stop = true;
+      fn.apply(context, args);
+    }, delay);
+  };
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
