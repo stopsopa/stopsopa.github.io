@@ -170,6 +170,49 @@
 
             reset -
           </script>
+          <h2>cli keystrokes</h2>
+          <script type="editor" data-lang="sh">
+
+cat <<EEE > ___test.sh
+function proc {
+
+  echo "--->${0}<"
+
+  echo "proc >${@}<"
+
+  shift
+
+  echo "proc >${@}<"
+}
+
+echo "global >${@}<"
+
+proc ${@}
+
+proc f g h
+
+TEST="proc $@";
+
+${TEST}
+
+echo "global >${@}<"
+EEE
+
+/bin/bash ___test.sh
+# will print
+# global >a b c<
+# --->ttt.sh<
+# proc >a b c<
+# proc >b c<
+# --->ttt.sh<
+# proc >f g h<
+# proc >g h<
+# --->ttt.sh<
+# proc >a b c<
+# proc >b c<
+# global >a b c<
+
+          </script>
           <h2>xargs</h2>
           <script type="editor" data-lang="sh">
 
