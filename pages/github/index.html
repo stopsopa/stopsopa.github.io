@@ -5,30 +5,6 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-    <script>
-      (function () {
-        var resolve;
-        var p = new Promise(function (res) {
-          resolve = res;
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-          Array.prototype.slice.call(document.querySelectorAll('[class="domain.com"]')).forEach(function (tag) {
-            var text = tag.innerHTML;
-
-            text = text.replace(/domain\.com/g, location.origin);
-
-            tag.innerHTML = text;
-          });
-
-          resolve();
-        });
-
-        window.beforeAceEventPromise = function () {
-          return p;
-        };
-      })();
-    </script>
   </head>
   <body class="layout" toc>
     <div class="body">
@@ -41,6 +17,8 @@
                 # and look for field: created_at
                     # from: https://stackoverflow.com/a/23612723
           </script>
+          <h2>Github Actions - node.js</h2>
+          <a href="https://github.com/actions/setup-node/blob/main/docs/advanced-usage.md#node-version-file">https://github.com/actions/setup-node/blob/main/docs/advanced-usage.md#node-version-file</a>
         </div>
       </div>
     </div>
