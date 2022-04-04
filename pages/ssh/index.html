@@ -52,6 +52,8 @@
 
             ssh-keyscan "<host>" >> "~/.ssh/known_hosts"
                 # from: https://buildkite.com/docs/agent/v3/securing#disabling-automatic-ssh-keyscan
+                # try also
+                  # ssh-keyscan -H "<host>" >> /root/.ssh/known_hosts
           </script>
 
           <h2>sshh - manually swap ssh key</h2>
