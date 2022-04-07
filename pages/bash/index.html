@@ -214,6 +214,64 @@ EEE
 # global >a b c<
 
           </script>
+          <h2>buffer control</h2>
+          <a href="https://stackoverflow.com/questions/71782041/sed-and-tee-when-working-together-no-longer-behaves-like-stream">Stackoverflow question I've asked</a>
+          <br />
+          <a href="http://www.pixelbeat.org/programming/stdio_buffering/">http://www.pixelbeat.org/programming/stdio_buffering/</a>
+          <br />
+          <a href="https://mywiki.wooledge.org/BashFAQ/009">https://mywiki.wooledge.org/BashFAQ/009</a>
+          <br />
+          <a href="https://stackoverflow.com/questions/3465619/how-to-make-output-of-any-shell-command-unbuffered">https://stackoverflow.com/questions/3465619/how-to-make-output-of-any-shell-command-unbuffered</a>
+          <br />
+          <a href="https://stackoverflow.com/a/33741419">https://stackoverflow.com/a/33741419</a>
+          
+          <pre>
+AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it) automatically turns on full buffering and there is nothing you can do about it :-(. "Line buffering" (which is what you want) is only used when reading/writing a terminal. The ugly hacks exactly do this: They connect a program to a pseudo-terminal, so that the other tools in the pipe read/write from that terminal in line buffering mode. The whole problem is described here:          
+
+# from: https://stackoverflow.com/a/3465784
+          </pre>
+          <script type="editor" data-lang="sh">
+          
+# trick 1 (using 'unbuffer' from 'expect' lib)
+# on mac requires: HOMEBREW_NO_AUTO_UPDATE=1 brew install expect
+# on ubuntu requires: apt-get install expect
+# after reading man unbuffer:
+  # unbuffer -p may appear to work incorrectly if a process feeding input to unbuffer exits.  Consider:
+  #             process1 | unbuffer -p process2 | process3
+# after installing proper dependencies it seems to work on both mac and linux
+  
+
+printf "
+
+first line
+\e[32msecond\e[0m line
+\e[33mthird\e[0m line
+\e[35mfourth\e[0m line
+\e[31mfifth\e[0m line
+last line
+
+" | perl -pe "system 'sleep .3'" | unbuffer -p sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | tee color.txt
+  
+          
+# trick 2
+stdbuf -i0 -o0 -e0 command
+
+#like (using stdbuf makes this example work on linux, but not on mac)
+
+printf "
+
+first line
+\e[32msecond\e[0m line
+\e[33mthird\e[0m line
+\e[35mfourth\e[0m line
+\e[31mfifth\e[0m line
+last line
+
+" | perl -pe "system 'sleep .3'" | stdbuf -i0 -o0 -e0 sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | tee color.txt
+          
+          
+          </script>
+          
           <h2>xargs</h2>
           <script type="editor" data-lang="sh">
 
