@@ -73,12 +73,21 @@
           console.log('test2');
           "
         </script>
-        <h2>prettier.config.js</h2>
+        <h2>prettier setup</h2>
         <script type="editor" data-lang="sh">
 
-          module.exports = {
-            printWidth: 120,
-          };
+npm set-script "style:check" "yarn prettier --check ."
+npm set-script "style:fix" "yarn prettier --write ."
+npm set-script "style:list" "yarn prettier --list-different ."
+
+yarn add -D prettier
+
+cat <<EEE > prettier.config.js
+module.exports = {
+  printWidth: 120,
+};
+EEE
+
         </script>
         <div class="cards">
           <h2>Extract engines script</h2>
