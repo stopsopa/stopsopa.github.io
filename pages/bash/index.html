@@ -403,6 +403,15 @@ EEE
 
             set -u # Exit script immediately if an undefined variable is used (e.g. echo "$UNDEFINED_ENV_VAR").
           </script>
+          <h2>stream - delay stream</h2>
+          <script type="editor" data-lang="sh">
+          
+perl -pe "system 'sleep .003'" file.txt
+# or
+cat  file.txt | perl -pe "system 'sleep .003'"
+  # from: https://superuser.com/a/526249
+          
+          </script>
           <h2>regex</h2>
           <script type="editor" data-lang="sh">
 
