@@ -403,6 +403,23 @@ EEE
 
             set -u # Exit script immediately if an undefined variable is used (e.g. echo "$UNDEFINED_ENV_VAR").
           </script>
+          <h2>remove strip color from stream output</h2>
+          <script type="editor" data-lang="sh">
+
+printf "
+
+first line
+\e[32msecond\e[0m line
+\e[33mthird\e[0m line
+\e[35mfourth\e[0m line
+\e[31mfifth\e[0m line
+last line
+
+" | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\[[0-9]{1,3}m//g"
+
+# look for more: https://stackoverflow.com/q/17998978
+
+          </script>
           <h2>stream - delay stream</h2>
           <script type="editor" data-lang="sh">
           
