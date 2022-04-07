@@ -95,9 +95,12 @@ cat <<EEE > .prettierignore
 /var/
 EEE
 
+# by default .prettierignore seems to include all .gitignore files from project
+# (search for DEFAULT_IGNORE in github repository and follow it's logic)
 
-          npx prettier --write src
-              # https://prettier.io/docs/en/cli.html#docsNav
+
+npx prettier --write src
+    # https://prettier.io/docs/en/cli.html#docsNav
 
         </script>
         <div class="cards">
