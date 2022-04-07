@@ -1944,10 +1944,38 @@
           <h2>husky</h2>
           <script type="editor" data-lang="sh">
 
-            cat <<EEE > ~/.huskyrc
-            export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
-            EEE
-            # concluded from: https://github.com/typicode/husky/issues/898
+cat <<EEE > ~/.huskyrc
+export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
+EEE
+# concluded from: https://github.com/typicode/husky/issues/898
+
+npm set-script prepare "husky install"
+
+yarn add -D husky
+
+cat .git/config
+ls -la .husky
+npx husky install
+cat .git/config
+ls -la .husky
+
+yarn add @commitlint/cli @commitlint/config-conventional husky -D
+echo "module.exports = { extends: ["@commitlint/config-conventional"] };" > commitlint.config.js
+            
+cat <<EEE > .husky/commit-msg
+#!/bin/sh
+. "\$(dirname "\$0")/_/husky.sh"
+ 
+npx --no -- commitlint --edit "\${1}"
+EEE
+  
+cat <<EEE > .husky/pre-commit
+#!/bin/sh
+. "\$(dirname "\$0")/_/husky.sh"
+ 
+docker run --rm -v "\$(pwd):/git" godaddy/tartufo --output-dir /git/.tartufo --config /git/tartufo.toml pre-commit
+EEE
+
           </script>
 
           <h2>Learning promises</h2>
