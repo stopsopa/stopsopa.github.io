@@ -73,6 +73,7 @@
         <h2>prettier setup</h2>
         <script type="editor" data-lang="sh">
 
+# Requires NPM >=v7
 npm set-script "style:check" "yarn prettier --check ."
 npm set-script "style:fix" "yarn prettier --write ."
 npm set-script "style:list" "yarn prettier --list-different ."
