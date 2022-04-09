@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
+    
+    <style>
+      pre {
+          white-space: pre-wrap;
+      }
+    </style>
   </head>
   <body class="layout" toc>
     <div class="body">
@@ -28,6 +34,7 @@
 
           export PATH="${PATH}:/new/path"
 
+          # manpages
           cat <<EOF | docker build -t ubuntu:18.04-man -
           FROM ubuntu:18.04
           RUN apt-get update && yes | unminimize
@@ -213,6 +220,64 @@ EEE
 # global >a b c<
 
           </script>
+          <h2>stream buffer control</h2>
+          <a href="https://stackoverflow.com/questions/71782041/sed-and-tee-when-working-together-no-longer-behaves-like-stream">Stackoverflow question I've asked</a>
+          <br />
+          <a href="http://www.pixelbeat.org/programming/stdio_buffering/">http://www.pixelbeat.org/programming/stdio_buffering/</a>
+          <br />
+          <a href="https://mywiki.wooledge.org/BashFAQ/009">https://mywiki.wooledge.org/BashFAQ/009</a>
+          <br />
+          <a href="https://stackoverflow.com/questions/3465619/how-to-make-output-of-any-shell-command-unbuffered">https://stackoverflow.com/questions/3465619/how-to-make-output-of-any-shell-command-unbuffered</a>
+          <br />
+          <a href="https://stackoverflow.com/a/33741419">https://stackoverflow.com/a/33741419</a>
+          
+          <pre>
+AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it) automatically turns on full buffering and there is nothing you can do about it :-(. "Line buffering" (which is what you want) is only used when reading/writing a terminal. The ugly hacks exactly do this: They connect a program to a pseudo-terminal, so that the other tools in the pipe read/write from that terminal in line buffering mode. The whole problem is described here:          
+
+# from: https://stackoverflow.com/a/3465784
+          </pre>
+          <script type="editor" data-lang="sh">
+          
+# trick 1 (using 'unbuffer' from 'expect' lib)
+# on mac requires: HOMEBREW_NO_AUTO_UPDATE=1 brew install expect
+# on ubuntu requires: apt-get install expect
+# after reading man unbuffer:
+  # unbuffer -p may appear to work incorrectly if a process feeding input to unbuffer exits.  Consider:
+  #             process1 | unbuffer -p process2 | process3
+# after installing proper dependencies it seems to work on both mac and linux
+  
+
+printf "
+
+first line
+\e[32msecond\e[0m line
+\e[33mthird\e[0m line
+\e[35mfourth\e[0m line
+\e[31mfifth\e[0m line
+last line
+
+" | perl -pe "system 'sleep .3'" | unbuffer -p sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | tee color.txt
+  
+          
+# trick 2
+stdbuf -i0 -o0 -e0 command
+
+#like (using stdbuf makes this example work on linux, but not on mac)
+
+printf "
+
+first line
+\e[32msecond\e[0m line
+\e[33mthird\e[0m line
+\e[35mfourth\e[0m line
+\e[31mfifth\e[0m line
+last line
+
+" | perl -pe "system 'sleep .3'" | stdbuf -i0 -o0 -e0 sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | tee color.txt
+          
+          
+          </script>
+          
           <h2>xargs</h2>
           <script type="editor" data-lang="sh">
 
@@ -402,6 +467,32 @@ EEE
             set -o pipefail # more: https://buildkite.com/docs/pipelines/writing-build-scripts#configuring-bash
 
             set -u # Exit script immediately if an undefined variable is used (e.g. echo "$UNDEFINED_ENV_VAR").
+          </script>
+          <h2>remove strip color from stream output</h2>
+          <script type="editor" data-lang="sh">
+
+printf "
+
+first line
+\e[32msecond\e[0m line
+\e[33mthird\e[0m line
+\e[35mfourth\e[0m line
+\e[31mfifth\e[0m line
+last line
+
+" | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\[[0-9]{1,3}m//g"
+
+# look for more: https://stackoverflow.com/q/17998978
+
+          </script>
+          <h2>stream - delay stream</h2>
+          <script type="editor" data-lang="sh">
+          
+perl -pe "system 'sleep .003'" file.txt
+# or
+cat  file.txt | perl -pe "system 'sleep .003'"
+  # from: https://superuser.com/a/526249
+          
           </script>
           <h2>regex</h2>
           <script type="editor" data-lang="sh">
