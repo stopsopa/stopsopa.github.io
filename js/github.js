@@ -284,46 +284,6 @@ var manipulation = (function () {
       return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
     };
   })();
-  manipulation.custommove = function (newParent, elements) {
-    if (isNode(elements)) {
-      elements = [elements];
-    } else if (isNodeList(elements)) {
-      elements = Array.prototype.slice.call(elements);
-    }
-
-    try {
-      for (var i = 0, l = elements.length; i < l; i += 1) {
-        newParent.appendChild(elements[i]);
-      }
-    } catch (e) {
-      throw "manipulation.custommove - can't iterate through elements";
-    }
-    return this;
-  };
-})();
-
-window.manipulation = manipulation;
-
-log.green("defined", "window.manipulation");
-
-(function () {
-  /* from lodash */
-  function isNodeList(obj) {
-    return Object.prototype.toString.call(obj) === "[object NodeList]";
-  }
-  /* from lodash */
-  var isNode = (function () {
-    function isObjectLike(value) {
-      return value != null && typeof value == "object";
-    }
-    function isPlainObject(value) {
-      // simplified version of isPlainObject then the one in lodash
-      return Object.prototype.toString.call(value) === "[object Object]";
-    }
-    return function isNode(value) {
-      return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value);
-    };
-  })();
 
   log.green("defined", "window.isNode");
 
@@ -346,6 +306,10 @@ log.green("defined", "window.manipulation");
 
   log.green("defined", "manipulation.custommove [extension]");
 })();
+
+window.manipulation = manipulation;
+
+log.green("defined", "window.manipulation");
 
 (function () {
   var tmp = document.createElement("div");

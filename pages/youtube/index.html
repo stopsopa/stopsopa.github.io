@@ -10,6 +10,16 @@
     <div class="body">
       <div class="inside">
         <div class="cards">
+          <h2>you-get</h2>
+          <a href="https://you-get.org/">https://you-get.org/</a>
+          <script type="editor" data-lang="sh">
+
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install you-get
+
+            you-get -i YOUTUBELINK
+
+            you-get --itag=136 YOUTUBELINK
+          </script>
           <h2>youtube-dl</h2>
           <a href="https://github.com/ytdl-org/youtube-dl">https://github.com/ytdl-org/youtube-dl</a>
           <script type="editor" data-lang="sh">
@@ -31,16 +41,6 @@
             _YTNR="$(echo "$_LIST" | grep '(best)' | awk '{print $1}')"
             echo $_YTNR
             youtube-dl -f "$_YTNR" "$YOUTUBELINK"
-          </script>
-          <h2>you-get</h2>
-          <a href="https://you-get.org/">https://you-get.org/</a>
-          <script type="editor" data-lang="sh">
-
-            HOMEBREW_NO_AUTO_UPDATE=1 brew install you-get
-
-            you-get -i YOUTUBELINK
-
-            you-get --itag=136 YOUTUBELINK
           </script>
         </div>
       </div>
