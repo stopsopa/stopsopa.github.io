@@ -52,9 +52,6 @@
         <script type="editor" data-lang="sh">
 
           npx envinfo
-
-          npx prettier --write src
-              # https://prettier.io/docs/en/cli.html#docsNav
         </script>
 
         <h2>execute directly from cmd</h2>
@@ -73,13 +70,46 @@
           console.log('test2');
           "
         </script>
-        <h2>prettier.config.js</h2>
+        <h2>prettier setup</h2>
         <script type="editor" data-lang="sh">
 
-          module.exports = {
-            printWidth: 120,
-          };
+# Requires NPM >=v7
+npm set-script "style:check" "yarn prettier --check ."
+npm set-script "style:fix" "yarn prettier --write ."
+npm set-script "style:list" "yarn prettier --list-different ."
+
+yarn add -D prettier
+
+cat <<EEE > prettier.config.js
+module.exports = {
+  printWidth: 120,
+};
+EEE
+
+cat <<EEE > .prettierignore
+/.ci
+/lib
+/coverage
+/.nyc_output
+/flow-typed
+/package.json
+/var/
+EEE
+
+# by default .prettierignore seems to include all .gitignore files from project
+# (search for DEFAULT_IGNORE in github repository and follow it's logic)
+
+
+npx prettier --write src
+    # https://prettier.io/docs/en/cli.html#docsNav
+
         </script>
+        
+        
+        
+        <h2>Semantic release</h2>
+        <a href="https://github.com/semantic-release/semantic-release">https://github.com/semantic-release/semantic-release</a>
+        
         <div class="cards">
           <h2>Extract engines script</h2>
           <script type="editor" data-lang="sh" class="domain.com">
@@ -518,12 +548,18 @@
 
             npm link    # https://www.youtube.com/watch?v=nKFe1lhGSk0 usefull if you are in the process of development of something
                 # known issues: https://github.com/npm/npm/issues/20954#issuecomment-397114152
+            
+            # pre scripts 
+            # https://www.google.com/search?q=npm+Pre+and+Post+Scripts
+            # https://docs.npmjs.com/cli/v8/using-npm/scripts
+            
+            
           </script>
         </div>
 
         <div class="cards">
           <h2>Dependencies - analysing</h2>
-          <a href="https://npmgraph.js.org/?q=jest">https://npmgraph.js.org/?q=jest</a>
+          <a href="https://npmgraph.js.org/?q=nlab">https://npmgraph.js.org/?q=nlab</a>
           <h2>Type annotations syntax</h2>
           <a href="https://github.com/tc39/proposal-type-annotations">https://github.com/tc39/proposal-type-annotations</a>
           <h2>Type annotations syntax</h2>
@@ -1944,11 +1980,40 @@
           <h2>husky</h2>
           <script type="editor" data-lang="sh">
 
-            cat <<EEE > ~/.huskyrc
-            export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
-            EEE
-            # concluded from: https://github.com/typicode/husky/issues/898
+cat <<EEE > ~/.huskyrc
+export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
+EEE
+# concluded from: https://github.com/typicode/husky/issues/898
+
+npm set-script prepare "husky install"
+
+yarn add -D husky
+
+cat .git/config
+ls -la .husky
+npx husky install
+cat .git/config
+ls -la .husky
+
+yarn add @commitlint/cli @commitlint/config-conventional husky -D
+echo "module.exports = { extends: ["@commitlint/config-conventional"] };" > commitlint.config.js
+            
+cat <<EEE > .husky/commit-msg
+#!/bin/sh
+. "\$(dirname "\$0")/_/husky.sh"
+ 
+npx --no -- commitlint --edit "\${1}"
+EEE
+  
+cat <<EEE > .husky/pre-commit
+#!/bin/sh
+. "\$(dirname "\$0")/_/husky.sh"
+ 
+docker run --rm -v "\$(pwd):/git" godaddy/tartufo --output-dir /git/.tartufo --config /git/tartufo.toml pre-commit
+EEE
+
           </script>
+          <a href="https://github.com/semantic-release/semantic-release">see also semantic-release</a>
 
           <h2>Learning promises</h2>
           <h5>Always await promises before returning to avoid a partial stacktrace</h5>
