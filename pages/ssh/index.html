@@ -69,8 +69,8 @@
                   # install should already register alias in ~/.bash_profile and ~/.bashrc but it's always worth checking
           
             # WARNING:
-            # contains really /Volumes/truecrypt/ssh/ssh
-            # /bin/bash /Users/xxxxx/Workspace/stopsopa.github.io.git/runtime/pages/ssh/sshh.sh $@
+            # /Volumes/truecrypt/ssh/ssh/sshh.sh contains really:
+            # /bin/bash /Users/xxxxx/Workspace/stopsopa.github.io/runtime/pages/ssh/sshh.sh $@
 
             # now, once we have clarified all those things, let's install the script:
             rm -rf ~/sshh.sh
@@ -85,7 +85,6 @@
             /bin/bash /Users/linuxuser/Workspace/stopsopa.github.io.git/runtime/pages/ssh/add.sh -d /Volumes/truecrypt/ssh/ssh first falcon
 
             # strucuture of directory where SSHH_DIR_WITH_KEYS is pointing:
-
 
             /Volumes/truecrypt/ssh/ssh linuxuser √ ls -la
             total 26
@@ -109,8 +108,10 @@
             # but for debugging purposes i've linked original one straight from local copy git source
 
             # see more: https://stopsopa.github.io/pages/ssh/index.html
-
-            /bin/bash /Users/linuxuser/Workspace/projects/stopsopa.github.io/runtime/pages/ssh/add.sh $@
+            
+            # WARNING:
+            # /Volumes/truecrypt/ssh/ssh/add.sh contains really:
+            # /bin/bash /Users/xxxxx/Workspace/stopsopa.github.io/runtime/pages/ssh/add.sh $@
 
 
             /Volumes/truecrypt/ssh/ssh linuxuser √ cat sshh.sh
