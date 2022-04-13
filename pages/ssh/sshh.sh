@@ -12,7 +12,14 @@
 # or
 #     sshh 2
 # to choose second key from the list
-
+#
+#     sshh _
+# to list current key in form of string basename of the key/file loaded, eg: "key1"
+#
+#     sshh _ key1
+# to print number of the key on the list by name, return example "1" - for first, "2" - for second
+# then you can use it to switch to that using: sshh 2
+#
 # To clear all keys in ssh agent
 # ssh-add -D
 # to list added
@@ -118,11 +125,6 @@ if [ "${SSHH_DIR_WITH_KEYS}" = "" ]; then
   _exit 2> /dev/null
 fi
 
-echo "currently loaded files"
-ssh-add -l
-
-echo ""
-
 if [ "${1}" = "install" ]; then
 
   CMD="alias sshh=\"/bin/bash ~/sshh.sh\""
@@ -150,13 +152,11 @@ fi
 
 _CMD="find \"${SSHH_DIR_WITH_KEYS}\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
 
-echo -e "executing command:\n\n    ${_CMD}\n"
-
 _LIST="$(eval "${_CMD}")"
 
-_CODE="${?}"
-
 _LIST="$(trim "${_LIST}")"
+
+_CODE="${?}"
 
 if [ "${_CODE}" != "0" ]; then
 
@@ -177,6 +177,74 @@ END
     _exit 2> /dev/null || true
 fi
 
+if [ "${1}" = "_" ]; then
+
+  if [ "${2}" = "" ]; then
+
+    TODETERMINEPOSITION="$(ssh-add -L | head -n 1 | awk '{print $2}')"
+  else
+
+    TODETERMINEPOSITION="${SSHH_DIR_WITH_KEYS}/${2}.pub"
+
+    if [ ! -f "${TODETERMINEPOSITION}" ]; then
+
+      echo "${0} error: TODETERMINEPOSITION>${TODETERMINEPOSITION}< doesn't exist, list $(ls -la "${SSHH_DIR_WITH_KEYS}")"
+
+      exit 1
+    fi
+
+    TODETERMINEPOSITION="$(cat "${TODETERMINEPOSITION}" | awk '{print $2}')"
+  fi
+
+#cat <<EEE
+#
+#TODETERMINEPOSITION:
+#${TODETERMINEPOSITION}
+#
+#EEE
+
+  N="0"
+  while read -r FILE
+  do
+    N=$((N + 1))
+
+    FILE="${FILE}.pub"
+
+    CONTENT="$(cat "${FILE}" | awk '{print $2}')"
+
+#cat <<EEE
+#
+#FILENAME:
+#>${TODETERMINEPOSITION}<
+#>${CONTENT}<
+#
+#EEE
+
+    if [ "${CONTENT}" = "${TODETERMINEPOSITION}" ]; then
+#      printf " equal ${N}"
+
+      printf ${N};
+      exit 0
+
+#    else
+#      printf " not equal ${N}"
+    fi
+
+#    echo ""
+#    echo ""
+  done <<< "${_LIST}"
+
+  echo "${0} error: key number not found by name >${2}< on the list >${_LIST}<"
+
+  exit 1
+fi
+
+echo "currently loaded files"
+ssh-add -l
+
+echo ""
+echo -e "executing command:\n\n    ${_CMD}\n"
+
 _LINES="$(echo "${_LIST}" | wc -l)"
 
 _LINES="$(trim "${_LINES}")"
@@ -187,8 +255,6 @@ if [ "${_LIST}" = "" ] || [ "${_LINES}" -lt "1" ]; then
 
   _exit 2> /dev/null || true
 fi
-
-
 
 echo "Choose key to add:"
 
@@ -255,7 +321,6 @@ END
     exit 1
   fi
 fi
-
 
 SSHS="$(echo "${_LIST}" | sed -n "${i} p")"
 
