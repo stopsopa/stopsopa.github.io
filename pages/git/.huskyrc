@@ -1,0 +1,42 @@
+echo "executing ~/.huskyrc"
+
+_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
+case ${_SHELL} in
+  zsh)
+    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+    _SCRIPT="${(%):-%N}"
+    _BINARY="/bin/zsh"
+    _PWD="$(pwd)"
+    ;;
+  sh)
+    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+    _SCRIPT="${0}"
+    _BINARY="/bin/sh"
+    _PWD="$(pwd)"
+    ;;
+  *)
+    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+    _SCRIPT="${BASH_SOURCE[0]}"
+    _BINARY="/bin/bash"
+    _PWD="$(pwd)"
+    ;;
+esac
+
+
+echo "_BINARY=${_BINARY}"
+
+
+alias sshh="/bin/bash ~/sshh.sh"
+
+export SSHH_DIR_WITH_KEYS="/Volumes/truecrypt/ssh/ssh"
+
+sshh --auto
+
+
+source ~/.nvm/nvm.sh
+
+nvm use
+
+export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
+
+echo "finished ~/.huskyrc"
