@@ -196,6 +196,8 @@ fi
 
 if [ "${AUTO}" = "1" ]; then
 
+  echo "auto mode"
+
   CURRENTDIR="$(pwd)"
 
   while : ; do
@@ -220,13 +222,40 @@ if [ "${AUTO}" = "1" ]; then
     exit 1
   fi
 
-  SSHHCONFIG="${CURRENTDIR}/sshh";
+  SSHHCONFIG="${CURRENTDIR}/.git/sshh";
 
   if [ ! -f "${SSHHCONFIG}" ]; then
 
     echo "${0} error: SSHHCONFIG [${SSHHCONFIG}] doesn't exit. use -i param to define it"
 
     exit 0
+  fi
+
+  VALUE="$(cat "${SSHHCONFIG}")"
+
+  echo "${VALUE}"
+
+  INDEXCUR="$(/bin/bash "${0}" _)"
+
+  INDEXVAL="$(/bin/bash "${0}" _ "${VALUE}")"
+
+  if [ "${INDEXCUR}" != "${INDEXVAL}" ]; then
+
+    echo "${0}: switching ssh key to >${VALUE}< index >${INDEXVAL}<"
+
+    /bin/bash "${0}" "${INDEXVAL}"
+
+    cat <<EEE
+
+  Now repeat action again because switching is not enough...
+
+
+EEE
+
+    exit 1
+  else
+
+    echo "${0}: key is already >${VALUE}<"
   fi
 
   exit 0
@@ -258,7 +287,7 @@ if [ "${INIT}" = "1" ]; then
     exit 1
   fi
 
-  SSHHCONFIG="${CURRENTDIR}/sshh";
+  SSHHCONFIG="${CURRENTDIR}/.git/sshh";
 
   _LINES="$(echo "${_LIST}" | wc -l)"
 
@@ -328,6 +357,8 @@ END
       FILENAME="${PB}"
   fi
 
+  echo "${FILENAME}" > "${SSHHCONFIG}";
+
   cat <<EEE
 
   ADDING:
@@ -340,8 +371,6 @@ END
 
 
 EEE
-
-  echo "${FILENAME}" > "${SSHHCONFIG}";
 
   exit 0
 fi
