@@ -57,9 +57,22 @@
           </script>
 
           <h2>sshh - manually swap ssh key</h2>
+
           Just paste this code to your terminal:
           <script type="editor" data-lang="sh" class="domain.com">
 
+            # in order to tell the script where is the directory with keys to switch between it is necessary to
+            # define SSHH_DIR_WITH_KEYS env var in the shell ~/.zshrc, ~/.bashrc and ~/.bash_profile
+              export SSHH_DIR_WITH_KEYS="/Volumes/truecrypt/ssh/ssh"
+              alias sshh="/bin/bash /Volumes/truecrypt/ssh/ssh/sshh.sh"
+                  # command: /bin/bash ~/sshh.sh --dir "/Volumes/truecrypt/ssh/ssh"
+                  # install should already register alias in ~/.bash_profile and ~/.bashrc but it's always worth checking
+          
+            # WARNING:
+            # /Volumes/truecrypt/ssh/ssh/sshh.sh contains really:
+            # /bin/bash /Users/xxxxx/Workspace/stopsopa.github.io/runtime/pages/ssh/sshh.sh $@
+
+            # now, once we have clarified all those things, let's install the script:
             rm -rf ~/sshh.sh
             mkdir ~/.ssh
             chmod 700 .ssh/
@@ -68,18 +81,10 @@
             source ~/.bash_profile
             source ~/.bashrc
 
-            # in order to tell the script where is the directory with keys to switch between it is necessary to
-            # define SSHH_DIR_WITH_KEYS env var in the shell ~/.zshrc, ~/.bashrc and ~/.bash_profile
-              export SSHH_DIR_WITH_KEYS="/Volumes/truecrypt/ssh/ssh"
-              alias sshh="/bin/bash /Volumes/truecrypt/ssh/ssh/sshh.sh"
-                  # command: /bin/bash ~/sshh.sh --dir "/Volumes/truecrypt/ssh/ssh"
-                  # install should already register alias in ~/.bash_profile and ~/.bashrc but it's always worth checking
-
             # to automatically select specific keys
             /bin/bash /Users/linuxuser/Workspace/stopsopa.github.io.git/runtime/pages/ssh/add.sh -d /Volumes/truecrypt/ssh/ssh first falcon
 
             # strucuture of directory where SSHH_DIR_WITH_KEYS is pointing:
-
 
             /Volumes/truecrypt/ssh/ssh linuxuser √ ls -la
             total 26
@@ -103,8 +108,10 @@
             # but for debugging purposes i've linked original one straight from local copy git source
 
             # see more: https://stopsopa.github.io/pages/ssh/index.html
-
-            /bin/bash /Users/linuxuser/Workspace/projects/stopsopa.github.io/runtime/pages/ssh/add.sh $@
+            
+            # WARNING:
+            # /Volumes/truecrypt/ssh/ssh/add.sh contains really:
+            # /bin/bash /Users/xxxxx/Workspace/stopsopa.github.io/runtime/pages/ssh/add.sh $@
 
 
             /Volumes/truecrypt/ssh/ssh linuxuser √ cat sshh.sh
