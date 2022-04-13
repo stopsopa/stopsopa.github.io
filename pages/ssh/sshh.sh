@@ -247,7 +247,8 @@ if [ "${AUTO}" = "1" ]; then
 
     cat <<EEE
 
-  Now repeat action again because switching is not enough...
+
+  sshh: now repeat action again because switching is not enough...
 
 
 EEE
@@ -255,7 +256,14 @@ EEE
     exit 1
   else
 
-    echo "${0}: key is already >${VALUE}<"
+  cat <<EEE
+
+
+  sshh: key is already >${VALUE}<
+
+
+EEE
+
   fi
 
   exit 0
