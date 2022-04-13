@@ -1996,21 +1996,12 @@ cat .git/config
 ls -la .husky
 
 yarn add @commitlint/cli @commitlint/config-conventional husky -D
-echo "module.exports = { extends: ["@commitlint/config-conventional"] };" > commitlint.config.js
+echo 'module.exports = { extends: ["@commitlint/config-conventional"] };' > commitlint.config.js
             
-cat <<EEE > .husky/commit-msg
-#!/bin/sh
-. "\$(dirname "\$0")/_/husky.sh"
- 
-npx --no -- commitlint --edit "\${1}"
-EEE
-  
-cat <<EEE > .husky/pre-commit
-#!/bin/sh
-. "\$(dirname "\$0")/_/husky.sh"
- 
-docker run --rm -v "\$(pwd):/git" godaddy/tartufo --output-dir /git/.tartufo --config /git/tartufo.toml pre-commit
-EEE
+yarn husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
+yarn husky add .husky/pre-commit 'docker run --rm -v "$(pwd):/git" godaddy/tartufo --output-dir /git/.tartufo --config /git/tartufo.toml pre-commit'
+
+yarn husky add .husky/pre-push 'echo pre push'
 
           </script>
           <a href="https://github.com/semantic-release/semantic-release">see also semantic-release</a>
