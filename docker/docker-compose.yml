@@ -1,6 +1,7 @@
 version: "3.8"
 services:
   mysql:
+    # https://dev.mysql.com/doc/relnotes/mysql/8.0/en/
     image: mysql/mysql-server:8.0.27
     container_name: ${PROJECT_NAME}_mysql
     ports:
