@@ -20,7 +20,18 @@
             <script type="editor" data-lang="sh">
 
               iFinder:
-                Shift+Cmd+. - show hidden files (files starting with ".")
+                ⌘Command + ⇧Shift + . - show hidden files (files starting with ".")
+                
+              # or try to turn it on permanently
+              defaults write com.apple.finder AppleShowAllFiles YES
+              killall Finder
+                
+            </script>
+            <h2>Command line</h2>
+            <script type="editor" data-lang="sh">
+
+              # open current directory in finder
+              open .
                 
             </script>
             <h2 id="test-test">Optimization (Mac)</h2>
@@ -99,23 +110,6 @@
             <img src="https://i.imgur.com/nLp9vNq.png" width="800"/>
           </div>
           <div class="card">
-            <h2>Finder - See hidden folders/files</h2>
-            <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
-            <br />
-            <a href="https://gist.github.com/stopsopa/8297755373fd5be34165cc8e12d35642">gist (UMD - browser global & node module (singleton))</a>
-
-            <script type="editor" data-lang="sh">
-
-              ⌘Command + ⇧Shift + .
-
-              # or try to turn it on permanently
-              defaults write com.apple.finder AppleShowAllFiles YES
-              killall Finder
-
-              open .
-
-              	# open current directory in finder
-            </script>
             <h2>Apps</h2>
             <h4>Keep mac awake</h4>
             <a href="https://apps.apple.com/de/app/amphetamine/id937984704">Amphetamine Wach bleiben William Gustafson</a>
