@@ -20,6 +20,15 @@
 # to print number of the key on the list by name, return example "1" - for first, "2" - for second
 # then you can use it to switch to that using: sshh 2
 #
+#     sshh -i
+#     sshh --init
+# initialising .git/sshh value
+#
+#     sshh -a
+#     sshh --auto
+# autoswitch based on .git/sshh value
+#
+#
 # To clear all keys in ssh agent
 # ssh-add -D
 # to list added
@@ -31,6 +40,14 @@ PARAMS=""
 _EVAL=""
 while (( "${#}" )); do
   case "${1}" in
+    -a|--auto)
+      AUTO="1";
+      shift 1;
+      ;;
+    -i|--init)
+      INIT="1";
+      shift 1;
+      ;;
     -d|--dir)
       SSHH_DIR_WITH_KEYS="${2}";
       shift 2;
@@ -177,6 +194,158 @@ END
     _exit 2> /dev/null || true
 fi
 
+if [ "${AUTO}" = "1" ]; then
+
+  CURRENTDIR="$(pwd)"
+
+  while : ; do
+
+      GITDIR="${CURRENTDIR}/.git"
+      GITCONFIG="${GITDIR}/config"
+
+#      echo "CURRENTDIR=>${CURRENTDIR}<"
+#      echo "GITDIR=${GITDIR}"
+#      echo "GITCONFIG=${GITCONFIG}"
+
+      [ "${CURRENTDIR}" = "/" ] && break
+      [ -d "${GITDIR}" ] && [ -f "${GITCONFIG}" ] && break
+
+      CURRENTDIR="$(dirname "${CURRENTDIR}")"
+  done
+
+  if [ "${CURRENTDIR}" = "/" ]; then
+
+    echo "${0} error: CURRENTDIR is pointing to /"
+
+    exit 1
+  fi
+
+  SSHHCONFIG="${CURRENTDIR}/sshh";
+
+  if [ ! -f "${SSHHCONFIG}" ]; then
+
+    echo "${0} error: SSHHCONFIG [${SSHHCONFIG}] doesn't exit. use -i param to define it"
+
+    exit 0
+  fi
+
+  exit 0
+fi
+
+if [ "${INIT}" = "1" ]; then
+
+  CURRENTDIR="$(pwd)"
+
+  while : ; do
+
+      GITDIR="${CURRENTDIR}/.git"
+      GITCONFIG="${GITDIR}/config"
+
+#      echo "CURRENTDIR=>${CURRENTDIR}<"
+#      echo "GITDIR=${GITDIR}"
+#      echo "GITCONFIG=${GITCONFIG}"
+
+      [ "${CURRENTDIR}" = "/" ] && break
+      [ -d "${GITDIR}" ] && [ -f "${GITCONFIG}" ] && break
+
+      CURRENTDIR="$(dirname "${CURRENTDIR}")"
+  done
+
+  if [ "${CURRENTDIR}" = "/" ]; then
+
+    echo "${0} error: CURRENTDIR is pointing to /"
+
+    exit 1
+  fi
+
+  SSHHCONFIG="${CURRENTDIR}/sshh";
+
+  _LINES="$(echo "${_LIST}" | wc -l)"
+
+  _LINES="$(trim "${_LINES}")"
+
+  if [ "${_LIST}" = "" ] || [ "${_LINES}" -lt "1" ]; then
+
+    { red "\n${0} error:   No keys found\n"; } 2>&3
+
+    _exit 2> /dev/null || true
+  fi
+
+  echo "Choose key to add to config ${SSHHCONFIG}:"
+
+  SSHS=""
+
+  TEST="^[0-9]+$"
+
+  while : ; do
+
+      i="1"
+
+      for name in ${_LIST}
+      do
+
+          name="$(echo "${name}" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
+
+          echo "${i}) ${name}"
+
+          i=$((${i} + 1))
+      done
+
+      printf ">"
+
+      if [ "${_LINES}" -lt "10" ]; then
+
+        read -n1 i
+      else
+
+        read i
+      fi
+
+      echo ""
+
+      if ! [[ ${i} =~ ${TEST} ]] || [[ "${i}" -lt "1" ]] || [ "${i}" -gt "${_LINES}" ]; then
+
+  { red "${0} error: $(cat <<END
+
+given value (${i}) should be an integer > 0 but <= than ${_LINES}
+
+try again:
+
+END
+    )"; } 2>&3
+
+        continue;
+      fi
+
+      break;
+  done
+
+  SSHS="$(echo "${_LIST}" | sed -n "${i} p")"
+
+  PB="$(basename "${SSHS}")"
+  FILENAME="${PB%.*}"
+  if [ "${FILENAME}" = "" ]; then
+      FILENAME="${PB}"
+  fi
+
+  cat <<EEE
+
+  ADDING:
+
+    ${FILENAME}
+
+  cat file:
+
+    $(cat "${SSHHCONFIG}")
+
+
+EEE
+
+  echo "${FILENAME}" > "${SSHHCONFIG}";
+
+  exit 0
+fi
+
 if [ "${1}" = "_" ]; then
 
   if [ "${2}" = "" ]; then
@@ -262,10 +431,11 @@ SSHS=""
 
 TEST="^[0-9]+$"
 
-i="1"
 
 if [ "${1}" = "" ]; then
   while : ; do
+
+      i="1"
       for name in ${_LIST}
       do
 
