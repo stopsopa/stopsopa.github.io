@@ -23,6 +23,8 @@ case ${_SHELL} in
 esac
 
 
+set -e
+
 echo "_BINARY=${_BINARY}"
 
 
