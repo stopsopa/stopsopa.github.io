@@ -125,6 +125,8 @@ cat << EOF
 
     http://0.0.0.0:${PHPMYADMIN_PORT}
 
+    watch "docker ps -a && docker logs ${CONTAINER}"
+
 EOF
 
     exit 0;
