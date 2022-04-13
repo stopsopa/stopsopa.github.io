@@ -241,7 +241,14 @@ if [ "${AUTO}" = "1" ]; then
 
   if [ "${INDEXCUR}" != "${INDEXVAL}" ]; then
 
-    echo "${0}: switching ssh key to >${VALUE}< index >${INDEXVAL}<"
+    cat <<EEE
+
+
+  sshh: switching ssh key to >${VALUE}< index >${INDEXVAL}<
+  =========================================================
+
+
+EEE
 
     /bin/bash "${0}" "${INDEXVAL}"
 
@@ -249,7 +256,7 @@ if [ "${AUTO}" = "1" ]; then
 
 
   sshh: now repeat action again because switching is not enough...
-
+  ================================================================
 
 EEE
 
@@ -260,7 +267,7 @@ EEE
 
 
   sshh: key is already >${VALUE}<
-
+  ===============================
 
 EEE
 
