@@ -45,6 +45,16 @@
           # fix variables in ide
           (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
           \${$1}
+          
+          
+          # path interpolation
+          
+          mkdir -p ~/__test/one\ two/three/four
+          _SS="~/__test/one two/three/four"
+          _SS="$(echo "${_SS}" | sed -E 's/( )/\\\1/g')"
+          eval _SS="${_SS}"
+          echo ">${_SS}<"          
+          
 
           # if some linux tool is missing on mac, use linux
           docker run -t -v "$(pwd):/opt/code" -w "/opt/code" ubuntu find -type f -executable
@@ -177,7 +187,7 @@
 
             reset -
           </script>
-          <h2>cli keystrokes</h2>
+          <h2>function arguments - processing inside</h2>
           <script type="editor" data-lang="sh">
 
 cat <<EEE > ___test.sh
