@@ -11,25 +11,41 @@
       <div class="inside">
         <div class="cards">
           <div class="card">
-            <h2>Cli tools</h2>
+            <h2>Command line</h2>
             <script type="editor" data-lang="sh">
 
               HOMEBREW_NO_AUTO_UPDATE=1 brew install jq
+
+              # open current directory in finder
+              open .
+              
             </script>
-            <h2 id="test-test">Optimization (Mac)</h2>
+            <h2>Shortcuts</h2>
+            <script type="editor" data-lang="sh">
+
+              iFinder:
+                ⌘Command + ⇧Shift + . - show hidden files (files starting with ".")
+                
+              # or try to turn it on permanently
+              defaults write com.apple.finder AppleShowAllFiles YES
+              killall Finder
+                
+            </script>
+            <h2 id="test-test">Compressing (Optimizing) images/photos</h2>
             <a href="https://imageoptim.com/howto.html">ImageOptim v1.7.3 (08-03-2018)</a>
-          </div>
-          <div class="card">
+            <h2>Auto mount network drive</h2>
+            <a href="https://www.imore.com/how-automatically-mount-network-drives-macos">https://www.imore.com/how-automatically-mount-network-drives-macos</a>
             <h2>Additional software to install</h2>
             <a href="https://apps.apple.com/us/app/amphetamine/id937984704?mt=12">https://apps.apple.com/us/app/amphetamine/id937984704?mt=12</a>
             <h2>Images resizing from cli</h2>
             <script type="editor" data-lang="sh">
 
               sips -Z 2500 hhh.png
+              
             </script>
             <h2>KeePass</h2>
             <a href="https://keepassxc.org/download/#mac">https://keepassxc.org/download/#mac</a>
-            <h2>MonitorControl</h2>
+            <h2>Volume and external screen Control</h2>
             <a href="https://github.com/MonitorControl/MonitorControl">https://github.com/MonitorControl/MonitorControl</a>
             <h2>Increase Keyboard Repeat Rate on Mac</h2>
             <a href="https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/">https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/</a>
@@ -79,10 +95,11 @@
 
               HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install
               # from: https://github.com/Homebrew/brew/issues/1670#issuecomment-267096602
+              
             </script>
-          </div>
-          <div class="card">
-            <h2 id="test-test">Autostart</h2>
+            <h2>Current Path In The Finder Title Bar</h2>
+            <a href="https://www.tekrevue.com/tip/show-path-finder-title-bar/">https://www.tekrevue.com/tip/show-path-finder-title-bar/</a>
+            <h2>Autostart</h2>
             <a href="https://stackoverflow.com/a/6445525">Create app to autostart</a>
             <br />
             <a href="/pages/mac/startup.app.tar.gz">binary version</a>
@@ -90,30 +107,47 @@
             download and unpack in /Applications. It runs /bin/bash ~/startup
             <h2>iterm</h2>
             <img src="https://i.imgur.com/nLp9vNq.png" width="800"/>
-          </div>
-          <div class="card">
-            <h2>Finder - See hidden folders/files</h2>
-            <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
-            <br />
-            <a href="https://gist.github.com/stopsopa/8297755373fd5be34165cc8e12d35642">gist (UMD - browser global & node module (singleton))</a>
-
-            <script type="editor" data-lang="sh">
-
-              ⌘Command + ⇧Shift + .
-
-              # or try to turn it on permanently
-              defaults write com.apple.finder AppleShowAllFiles YES
-              killall Finder
-
-              open .
-
-              	# open current directory in finder
-            </script>
             <h2>Apps</h2>
             <h4>Keep mac awake</h4>
-            <a href="https://apps.apple.com/de/app/amphetamine/id937984704">Amphetamine Wach bleiben William Gustafson</a>
+            <a href="https://apps.apple.com/de/app/amphetamine/id937984704">Amphetamine Wach bleiben William Gustafson (from App Store)</a> - I have been using this one
             <br />
-            <a href="https://formulae.brew.sh/cask/caffeine">https://formulae.brew.sh/cask/caffeine</a>
+            <a href="https://formulae.brew.sh/cask/caffeine">Caffeine (from brew)</a>
+            <br />
+            <a href="">OmniDiskSweeper - finding trash in the mac</a>
+            <h2>Record screen with internal sound</h2>
+            <script type="editor" data-lang="sh">
+            
+https://youtu.be/cLEaQi6H8N0
+see description of the movie
+
+more info:
+https://github.com/ExistentialAudio/BlackHole
+https://www.youtube.com/watch?v=HRwuyPZ4nBM
+              
+            </script>
+            <h2>HeidiSQL</h2>
+            <script type="editor" data-lang="sh">
+            
+g(David Baumgold Installing Wine on Mac)
+	https://www.davidbaumgold.com/tutorials	/wine-mac/
+https://upload.wikimedia.org/wikipedia/commons/3/32/HeidiSQL_logo_image.png
+Making a Dock Icon: https://www.davidbaumgold.com/tutorials/wine-mac/#part-6:-run-windows-programs-using-wine#making-a-dock-icon
+              
+            </script>
+            <h2>Truecrypt</h2>
+            <script type="editor" data-lang="sh">
+            
+INFO: Now use Veracrypt on new mac;
+
+It is necessary to change something here:
+	https://apple.stackexchange.com/a/173880
+
+It is necessary to install first:
+	https://osxfuse.github.io/
+
+WARNING: SOMETIMES IT IS NECESSARY ALSO TO UPDATE OSXFUSE
+              
+            </script>
           </div>
         </div>
       </div>
