@@ -19,6 +19,9 @@
             -n  By default, each line of input is echoed to the standard output after all of the
                 commands have been applied to it.  The -n option sup-
                     presses this behavior.
+                    
+            # replace multiple - Back-references
+            echo "~/Library/Application Support/JetBrains/IntelliJIdea2021.3/scratc hes/scratch.http" | sed -E 's/( )/\\\1/g'
 
             # replace in file
             rm -rf aaaa.txt
