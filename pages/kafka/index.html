@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <h2>Install MAC</h2>
+          <script type="editor" data-lang="sh">
+
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install kafka
+
+            zookeeper-server-start /usr/local/etc/kafka/zookeeper.properties
+            kafka-server-start /usr/local/etc/kafka/server.properties
+
+            ### Kafka and Zookeeper
+            zookeeper-server-start /usr/local/etc/kafka/zookeeper.properties
+            kafka-server-start /usr/local/etc/kafka/server.properties
+
+            kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic notifications_topic
+            kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic notifications-command
+            kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic barter-notification
+
+
+            kafka-topics --list --zookeeper localhost:2181
+
+            ### Kafka send message
+            kafka-console-producer -broker-list localhost:9092 -topic recomm_payments.notifications
+          </script>
+          from:
+          <a href="https://medium.com/@Ankitthakur/apache-kafka-installation-on-mac-using-homebrew-a367cdefd273"
+            >https://medium.com/@Ankitthakur/apache-kafka-installation-on-mac-using-homebrew-a367cdefd273</a
+          >
+          <br />
+
+          <a href="https://formulae.brew.sh/formula/kafka#default">brew repository page</a>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>
