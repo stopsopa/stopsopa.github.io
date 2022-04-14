@@ -4,30 +4,9 @@
 # everytime you run terminal called add.sh
 # To install visit link:
 #     https://stopsopa.github.io/pages/ssh/index.html#sshh-manually-swap-ssh-key
-
-
-# usage once installed:
-# just call
-#     sshh
-# or
-#     sshh 2
-# to choose second key from the list
 #
-#     sshh _
-# to list current key in form of string basename of the key/file loaded, eg: "key1"
-#
-#     sshh _ key1
-# to print number of the key on the list by name, return example "1" - for first, "2" - for second
-# then you can use it to switch to that using: sshh 2
-#
-#     sshh -i
-#     sshh --init
-# initialising .git/sshh value
-#
-#     sshh -a
-#     sshh --auto
-# autoswitch based on .git/sshh value
-#
+# To see help just run
+# /bin/bash ${0} --help
 #
 # To clear all keys in ssh agent
 # ssh-add -D
@@ -36,10 +15,20 @@
 
 # SSHH_DIR_WITH_KEYS="/Volumes/WINSCP/ssh/ssh"
 
+TEST="^[0-9]+$"
+
 PARAMS=""
 _EVAL=""
 while (( "${#}" )); do
   case "${1}" in
+    --help)
+      HELP="1";
+      shift 1;
+      ;;
+    -f|--find)
+      FIND="1";
+      shift 1;
+      ;;
     -a|--auto)
       AUTO="1";
       shift 1;
@@ -72,8 +61,8 @@ while (( "${#}" )); do
 #)"
           fi
         fi
-        echo "                PARAMS1>>${PARAMS}<<"
-        echo "                _EVAL 2>>${_EVAL}<<"
+#        echo "                PARAMS1>>${PARAMS}<<"
+#        echo "                _EVAL 2>>${_EVAL}<<"
         shift;                      # optional
       done                          # optional if you need to pass: /bin/bash ${0} -f -c -- -f "multi string arg"
       break;
@@ -134,6 +123,122 @@ function red {
 function yellow {
     printf "\e[33m${1}\e[0m\n"
 }
+
+if [ "${FIND}" = "1" ]; then
+
+  function help {
+
+    cat <<EEE
+
+    sshh -f
+      # help for find mode
+
+    sshh -f list
+      # list all found .git directories
+
+    sshh -f exec -- ls -la
+      # execute command in each found .git directory (not entering directories "node_modules")
+
+    sshh -f exec -- 15 | tee log.log
+      # special case where we not running "1" command (that wouldn't make much sense)
+      # but running
+        /bin/bash "${0}" -i 15
+
+EEE
+  }
+
+  if [ "${1}" = "" ]; then
+
+    help
+
+    exit 0
+  fi
+
+    case "${1}" in
+      exec)
+        shift 1;
+
+        LIST="$(find . -type d -name 'node_modules' -prune -o -type d -name .git -print)"
+
+        if [[ ${1} =~ ${TEST} ]]; then
+
+          _EVAL="/bin/bash \"${0}\" -i ${1}"
+        fi
+
+        while read -r GITDIR
+        do
+          (
+            cd "${GITDIR}/.."
+
+            { green "$(pwd)"; } 2>&3
+
+            eval "$_EVAL"
+          )
+        done <<< "${LIST}"
+
+        exit 0
+        ;;
+      list)
+
+        LIST="$(find . -type d -name 'node_modules' -prune -o -type d -name .git -print)"
+
+        cat <<EEE
+
+${LIST}
+
+EEE
+
+        exit 0
+        ;;
+    *)
+
+      echo ""
+      echo "${0} error: unhandled arg";
+      ;;
+    esac
+
+  help
+
+  exit 0
+fi
+
+if [ "${HELP}" = "1" ]; then
+
+  cat <<EEE
+
+ usage once installed:
+ just call
+     sshh
+ or
+     sshh 2
+ to choose second key from the list
+
+     sshh _
+ to list current key in form of string basename of the key/file loaded, eg: "key1"
+
+     sshh _ key1
+ to print number of the key on the list by name, return example "1" - for first, "2" - for second
+ then you can use it to switch to that using: sshh 2
+
+     sshh -i
+     sshh --init
+ initialising .git/sshh value in interactive mode
+
+     sshh -i 2
+     sshh --init 2
+ initialising .git/sshh value in non interactive mode - immediately
+
+     sshh -a
+     sshh --auto
+ autoswitch based on .git/sshh value
+
+     sshh -f
+ find mode with its own help page
+
+EEE
+
+  exit 0
+fi
 
 if [ "${SSHH_DIR_WITH_KEYS}" = "" ]; then
 
@@ -315,54 +420,64 @@ if [ "${INIT}" = "1" ]; then
     _exit 2> /dev/null || true
   fi
 
-  echo "Choose key to add to config ${SSHHCONFIG}:"
+  echo ""
+
+  echo "Choose key to add to config:"
+
+  echo "    ${SSHHCONFIG}"
 
   SSHS=""
 
-  TEST="^[0-9]+$"
+  if [[ ${1} =~ ${TEST} ]] && [[ "${1}" -gt "0" ]] && [ "${1}" -le "${_LINES}" ]; then
 
-  while : ; do
+    i="${1}"
+  fi
 
-      i="1"
+  if [ "${i}" = "" ]; then
 
-      for name in ${_LIST}
-      do
+    while : ; do
 
-          name="$(echo "${name}" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
+        i="1"
 
-          echo "${i}) ${name}"
+        for name in ${_LIST}
+        do
 
-          i=$((${i} + 1))
-      done
+            name="$(echo "${name}" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
 
-      printf ">"
+            echo "${i}) ${name}"
 
-      if [ "${_LINES}" -lt "10" ]; then
+            i=$((${i} + 1))
+        done
 
-        read -n1 i
-      else
+        printf ">"
 
-        read i
-      fi
+        if [ "${_LINES}" -lt "10" ]; then
 
-      echo ""
+          read -n1 i
+        else
 
-      if ! [[ ${i} =~ ${TEST} ]] || [[ "${i}" -lt "1" ]] || [ "${i}" -gt "${_LINES}" ]; then
+          read i
+        fi
 
-  { red "${0} error: $(cat <<END
+        echo ""
 
-given value (${i}) should be an integer > 0 but <= than ${_LINES}
+        if ! [[ ${i} =~ ${TEST} ]] || [[ "${i}" -lt "1" ]] || [ "${i}" -gt "${_LINES}" ]; then
 
-try again:
+    { red "${0} error: $(cat <<END
 
-END
-    )"; } 2>&3
+  given value (${i}) should be an integer > 0 but <= than ${_LINES}
 
-        continue;
-      fi
+  try again:
 
-      break;
-  done
+  END
+      )"; } 2>&3
+
+          continue;
+        fi
+
+        break;
+    done
+  fi
 
   SSHS="$(echo "${_LIST}" | sed -n "${i} p")"
 
@@ -375,15 +490,8 @@ END
   echo "${FILENAME}" > "${SSHHCONFIG}";
 
   cat <<EEE
-
-  ADDING:
-
-    ${FILENAME}
-
-  cat file:
-
-    $(cat "${SSHHCONFIG}")
-
+           adding: ${FILENAME}
+    cat from file: $(cat "${SSHHCONFIG}")
 
 EEE
 
