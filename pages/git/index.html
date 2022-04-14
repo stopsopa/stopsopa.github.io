@@ -263,6 +263,20 @@
             
             # alias store="/bin/bash .git/gitstorage.sh";
           </script>
+          <br />
+          <script type="editor" data-lang="sh" class="domain.com">
+
+if [ "$(alias | grep gitstorage)" = "" ]; then
+cat <<EEE >> ~/.zshrc
+gits='/bin/bash .git/gitstorage.sh'
+EEE
+source ~/.zshrc
+else
+  echo already registered
+fi
+
+
+          </script>
           <h2>gitstorage.sh</h2>
           <script type="editor" data-lang="sh" class="domain.com">
 
