@@ -231,6 +231,7 @@ if [ "${HELP}" = "1" ]; then
      sshh -a
      sshh --auto
  autoswitch based on .git/sshh value
+ not switching and exit status 0 if file not found
 
      sshh -f
  find mode with its own help page
