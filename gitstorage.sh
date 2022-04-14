@@ -255,7 +255,7 @@ if [ ${MODE} = "restore" ]; then
       _TT="${_CONFIGDIR}/${_T}"
     fi
 
-    eval _TT="${_TT}"
+    eval _TT="\"${_TT}\""
 
     if [ -f "${_S}" ]; then
 
@@ -318,7 +318,7 @@ if [ ${MODE} = "isinsync" ]; then
       _S="${_CONFIGDIR}/${_S}"
     fi
 
-    eval _S="${_S}"
+    eval _S="\"${_S}\""
 
     if [ -f "${_S}" ]; then
 
@@ -372,7 +372,7 @@ if [ ${MODE} = "diff" ]; then
       _S="${_CONFIGDIR}/${_S}"
     fi
 
-    eval _S="${_S}"
+    eval _S="\"${_S}\""
 
     if [ -f "${_S}" ]; then
 
@@ -467,7 +467,7 @@ if [ ${MODE} = "push" ]; then
       _SS="${_CONFIGDIR}/${_S}"
     fi
 
-    eval _SS="${_SS}"
+    eval _SS="\"${_SS}\""
 
     if [ -f "${_SS}" ]; then
 
@@ -555,7 +555,7 @@ if [ ${MODE} = "pull" ]; then
       _SS="${_CONFIGDIR}/${_S}"
     fi
 
-    eval _SS="${_SS}"
+    eval _SS="\"${_SS}\""
 
     _TT="${_TARGETGITDIR}/${_T}"
 
