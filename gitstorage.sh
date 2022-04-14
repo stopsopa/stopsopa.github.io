@@ -228,7 +228,7 @@ if [ ${MODE} = "backup" ]; then
 
     else
 
-      { red "${0} error: source file '${_S}' doesn't exist"; } 2>&3
+      { red "${0} error: source file1 '${_S}' doesn't exist"; } 2>&3
     fi
 
   done
@@ -255,7 +255,9 @@ if [ ${MODE} = "restore" ]; then
       _TT="${_CONFIGDIR}/${_T}"
     fi
 
-    eval _TT="\"${_TT}\""
+    _TT="$(echo "${_TT}" | sed -E 's/( )/\\\1/g')"
+
+    eval _TT="${_TT}"
 
     if [ -f "${_S}" ]; then
 
@@ -318,7 +320,9 @@ if [ ${MODE} = "isinsync" ]; then
       _S="${_CONFIGDIR}/${_S}"
     fi
 
-    eval _S="\"${_S}\""
+    _S="$(echo "${_S}" | sed -E 's/( )/\\\1/g')"
+
+    eval _S="${_S}"
 
     if [ -f "${_S}" ]; then
 
@@ -332,7 +336,7 @@ if [ ${MODE} = "isinsync" ]; then
 
     else
 
-      { red "${0} error: source file '${_S}' doesn't exist"; } 2>&3
+      { red "${0} error: source file2 '${_S}' doesn't exist"; } 2>&3
 
     fi
 
@@ -372,7 +376,9 @@ if [ ${MODE} = "diff" ]; then
       _S="${_CONFIGDIR}/${_S}"
     fi
 
-    eval _S="\"${_S}\""
+    _S="$(echo "${_S}" | sed -E 's/( )/\\\1/g')"
+
+    eval _S="${_S}"
 
     if [ -f "${_S}" ]; then
 
@@ -386,7 +392,7 @@ if [ ${MODE} = "diff" ]; then
 
     else
 
-      { red "${0} error: source file '${_S}' doesn't exist"; } 2>&3
+      { red "${0} error: source file3 '${_S}' doesn't exist"; } 2>&3
 
     fi
 
@@ -467,7 +473,9 @@ if [ ${MODE} = "push" ]; then
       _SS="${_CONFIGDIR}/${_S}"
     fi
 
-    eval _SS="\"${_SS}\""
+    _SS="$(echo "${_SS}" | sed -E 's/( )/\\\1/g')"
+
+    eval _SS="${_SS}"
 
     if [ -f "${_SS}" ]; then
 
@@ -483,7 +491,7 @@ if [ ${MODE} = "push" ]; then
 
     else
 
-      { red "${0} error: source file '${_SS}' doesn't exist"; } 2>&3
+      { red "${0} error: source file4 '${_SS}' doesn't exist"; } 2>&3
 
     fi
 
@@ -555,7 +563,9 @@ if [ ${MODE} = "pull" ]; then
       _SS="${_CONFIGDIR}/${_S}"
     fi
 
-    eval _SS="\"${_SS}\""
+    _SS="$(echo "${_SS}" | sed -E 's/( )/\\\1/g')"
+
+    eval _SS="${_SS}"
 
     _TT="${_TARGETGITDIR}/${_T}"
 
