@@ -182,11 +182,23 @@ EEE
 
         LIST="$(find . -type d -name 'node_modules' -prune -o -type d -name .git -print)"
 
-        cat <<EEE
+        while read -r GITDIR
+        do
+          (
+            cd "${GITDIR}"
 
-${LIST}
+            echo "$(pwd)";
 
-EEE
+            if [ -f "sshh" ]; then
+              SSHH="$(cat sshh)"
+
+              { green "    ${SSHH}"; } 2>&3
+            else
+
+              { red "    not set"; } 2>&3
+            fi
+          )
+        done <<< "${LIST}"
 
         exit 0
         ;;
@@ -349,17 +361,14 @@ if [ "${AUTO}" = "1" ]; then
 
     cat <<EEE
 
-
   sshh: switching ssh key to >${VALUE}< index >${INDEXVAL}<
   =========================================================
-
 
 EEE
 
     /bin/bash "${0}" "${INDEXVAL}"
 
     cat <<EEE
-
 
   sshh: now repeat action again because switching is not enough...
   ================================================================
@@ -370,7 +379,6 @@ EEE
   else
 
   cat <<EEE
-
 
   sshh: key is already >${VALUE}<
   ===============================
@@ -591,7 +599,6 @@ if [ "${1}" = "" ]; then
       i="1"
       for name in ${_LIST}
       do
-
           name="$(echo "${name}" | perl -pe 's#^.*?\/([^\/]*)$#\1#')"
 
           echo "${i}) ${name}"
