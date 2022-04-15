@@ -112,6 +112,9 @@ _EVAL="$(trim "${_EVAL}")"
 eval set -- "${PARAMS}"
 
 exec 3<> /dev/null
+function gray {
+    printf "\e[90m${1}\e[0m\n"
+}
 function green {
     printf "\e[32m${1}\e[0m\n"
 }
@@ -134,7 +137,7 @@ if [ "${FIND}" = "1" ]; then
       # help for find mode
 
     sshh -f list
-      # list all found .git directories
+      # list all found .git directories ans .git/sshh content in each of them if exists
 
     sshh -f exec -- ls -la
       # execute command in each found .git directory (not entering directories "node_modules")
@@ -160,9 +163,12 @@ EEE
 
         LIST="$(find . -type d -name 'node_modules' -prune -o -type d -name .git -print)"
 
+        SPECIALCASE="0"
         if [[ ${1} =~ ${TEST} ]]; then
 
           _EVAL="/bin/bash \"${0}\" -i ${1}"
+
+          SPECIALCASE="1"
         fi
 
         while read -r GITDIR
@@ -172,7 +178,19 @@ EEE
 
             { green "$(pwd)"; } 2>&3
 
-            eval "$_EVAL"
+            if [ ${SPECIALCASE} = "1" ]; then
+
+              if [ ! -f ".git/sshh" ]; then
+
+                eval "$_EVAL"
+              else
+
+                { gray "    already set: $(cat ".git/sshh")"; } 2>&3
+              fi
+            else
+
+              eval "$_EVAL"
+            fi
           )
         done <<< "${LIST}"
 
@@ -429,11 +447,16 @@ if [ "${INIT}" = "1" ]; then
     _exit 2> /dev/null || true
   fi
 
-  echo ""
+  if [ "${1}" = "" ]; then
 
-  echo "Choose key to add to config:"
+    echo ""
 
-  echo "    ${SSHHCONFIG}"
+    echo "Choose key to add to config:"
+
+    echo "    ${SSHHCONFIG}"
+  else
+    SKIP="1"
+  fi
 
   SSHS=""
 
@@ -501,8 +524,11 @@ if [ "${INIT}" = "1" ]; then
   cat <<EEE
            adding: ${FILENAME}
     cat from file: $(cat "${SSHHCONFIG}")
-
 EEE
+
+  if [ "${1}" != "1" ]; then
+    echo ""
+  fi
 
   exit 0
 fi
