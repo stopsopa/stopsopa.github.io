@@ -143,9 +143,10 @@ if [ "${FIND}" = "1" ]; then
       # execute command in each found .git directory (not entering directories "node_modules")
 
     sshh -f exec -- 15 | tee log.log
-      # special case where we not running "1" command (that wouldn't make much sense)
+      # special case where we not running "15" command (that wouldn't make much sense)
       # but running
         /bin/bash "${0}" -i 15
+      # for each found .git directory
 
 EEE
   }
