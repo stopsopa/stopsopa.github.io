@@ -363,7 +363,12 @@ if [ "${AUTO}" = "1" ]; then
 
   if [ ! -f "${SSHHCONFIG}" ]; then
 
-    echo "${0} error: SSHHCONFIG [${SSHHCONFIG}] doesn't exit. use -i param to define it"
+    cat <<EEE
+
+  sshh: NOTICE: SSHHCONFIG [${SSHHCONFIG}] doesn't exit. use -i param to define it
+  = NOTICE == NOTICE == NOTICE ===================================================
+
+EEE
 
     exit 0
   fi
