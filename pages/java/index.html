@@ -12,7 +12,7 @@
         <div class="cards toc">
           <h1>Table of Contents</h1>
           <ul data-do-sort>
-            <li><a href="sprint.html">Spring Framework</a></li>
+            <li><a href="spring.html">Spring Framework</a></li>
             <li><a href="tomcat.html">Tomcat Server</a></li>
           </ul>
         </div>
@@ -29,6 +29,7 @@
             mvn --version
             # Apache Maven 3.8.1
 
+            mvn dependency:tree | tee dep.txt
 
             rm -rf ~/.m2/repository/com/google/guava
           </script>
