@@ -418,7 +418,11 @@ git rev-list --objects --all |
   $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
   
 # cut manually which files you want from long list and paste it here to filter out further  
-            
+cat <<III | awk '{print $3}' | uniq | tr '\n' ' '
+...
+III
+
+# then just paste the result in to the first command in this "remove from history (filter-branch)" section
             
           </script>
         </div>
