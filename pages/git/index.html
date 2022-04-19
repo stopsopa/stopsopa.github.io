@@ -406,7 +406,7 @@ fi
 
 _REMOTE="origin"
 _BRANCH="develop"
-git branch -r --merged "${_BRANCH}" | xargs -L1 echo | grep "^${_REMOTE}" | grep -v HEAD | grep -v "${_BRANCH}" | sed -E "s/^${_REMOTE}\/(.*)/\1/"
+git branch -r --merged "${_REMOTE}/${_BRANCH}" | xargs -L1 echo | grep "^${_REMOTE}" | grep -v HEAD | grep -v "${_BRANCH}" | sed -E "s/^${_REMOTE}\/(.*)/\1/"
      
 # then when you sure about list:
 
