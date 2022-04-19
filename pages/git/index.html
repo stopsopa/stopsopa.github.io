@@ -398,6 +398,24 @@ fi
           </table>
         </div>
         <div class="cards">
+          <h2>remove merged branches</h2>
+          <script type="editor" data-lang="sh">
+      
+      
+# to list branches (list needs to be reviewed manually)      
+
+_REMOTE="origin"
+_BRANCH="develop"
+git branch -r --merged "${_REMOTE}/${_BRANCH}" | xargs -L1 echo | grep "^${_REMOTE}" | grep -v HEAD | grep -v master | grep -v "${_BRANCH}" | sed -E "s/^${_REMOTE}\/(.*)/\1/"
+     
+# then when you sure about list:
+
+while read -r BRANCH
+do    
+  git push "${_REMOTE}" --delete "${BRANCH}"
+done <<< "PASTE_LIST_HERE"          
+          
+          </script>          
           <h2>remove from history (filter-branch)</h2>
           <script type="editor" data-lang="sh">
 
