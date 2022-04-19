@@ -401,13 +401,25 @@ fi
           <h2>remove from history (filter-branch)</h2>
           <script type="editor" data-lang="sh">
 
-            git filter-branch --force --index-filter \
-            'git rm -rf --cached --ignore-unmatch plik1 katalog1' \
-            --prune-empty --tag-name-filter cat -- --all && \
-            rm -rf .git/refs/original/ && \
-            git reflog expire --expire=now --all && \
-            git gc --prune=now && \
-            git gc --aggressive --prune=now
+git filter-branch --force --index-filter \
+'git rm -rf --cached --ignore-unmatch plik1 katalog1' \
+--prune-empty --tag-name-filter cat -- --all && \
+rm -rf .git/refs/original/ && \
+git reflog expire --expire=now --all && \
+git gc --prune=now && \
+git gc --aggressive --prune=now
+
+# find biggest files: from: https://stackoverflow.com/a/42544963
+git rev-list --objects --all |
+  git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' |
+  sed -n 's/^blob //p' |
+  sort --numeric-sort --key=2 |
+  cut -c 1-12,41- |
+  $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+  
+# cut manually which files you want from long list and paste it here to filter out further  
+            
+            
           </script>
         </div>
         <div class="cards">
