@@ -441,6 +441,10 @@ fi
 git shortlog -sne --all
 
 # from: https://stackoverflow.com/a/9597462
+
+git shortlog -sne --all | perl -pe 's#^[^<]+<(.*)$#\1#' | perl -pe 's#^([^>]*)>.*$#\1#' | uniq | sort
+# will filter out even empty email from example:
+# Name Surname <>
           
           </script>
           <h2>find big files, from <a href="https://stackoverflow.com/a/42544963">https://stackoverflow.com/a/42544963</a></h2>
