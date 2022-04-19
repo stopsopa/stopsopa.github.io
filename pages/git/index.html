@@ -401,16 +401,17 @@ fi
           <h2>remove merged branches</h2>
           <script type="editor" data-lang="sh">
       
+      
 # to list branches (list needs to be reviewed manually)      
 
 _REMOTE="origin"
 _BRANCH="develop"
-git branch -r --merged "${_BRANCH}" | xargs -L1 echo | grep "^${_REMOTE}" | grep -v HEAD | grep -v "${_BRANCH}"
+git branch -r --merged "${_BRANCH}" | xargs -L1 echo | grep "^${_REMOTE}" | grep -v HEAD | grep -v "${_BRANCH}" | sed -E "s/^${_REMOTE}\/(.*)/\1/"
      
 # then when you sure about list:
 
 while read -r BRANCH
-do
+do    
   git push "${_REMOTE}" --delete "${BRANCH}"
 done <<< "PASTE_LIST_HERE"          
           
