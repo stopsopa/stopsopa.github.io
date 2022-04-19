@@ -21,6 +21,10 @@ PARAMS=""
 _EVAL=""
 while (( "${#}" )); do
   case "${1}" in
+    --hook)
+      HOOK="1";
+      shift 1;
+      ;;
     --help)
       HELP="1";
       shift 1;
@@ -148,6 +152,12 @@ if [ "${FIND}" = "1" ]; then
         /bin/bash "${0}" -i 15
       # for each found .git directory
 
+    sshh -f exec -- hook | tee log.log
+      # special case where we not running "hook" command (that wouldn't make much sense)
+      # but running
+        /bin/bash "${0}" --hook
+      # for each found .git directory
+
 EEE
   }
 
@@ -169,7 +179,14 @@ EEE
 
           _EVAL="/bin/bash \"${0}\" -i ${1}"
 
-          SPECIALCASE="1"
+          SPECIALCASE="-i"
+        fi
+
+        if [ "${1}" = "hook" ]; then
+
+          _EVAL="/bin/bash \"${0}\" --hook"
+
+          SPECIALCASE="--hook"
         fi
 
         while read -r GITDIR
@@ -177,9 +194,9 @@ EEE
           (
             cd "${GITDIR}/.."
 
-            { green "$(pwd)"; } 2>&3
+            { green "processing: $(pwd):"; } 2>&3
 
-            if [ ${SPECIALCASE} = "1" ]; then
+            if [ ${SPECIALCASE} = "-i" ]; then
 
               if [ ! -f ".git/sshh" ]; then
 
@@ -188,6 +205,10 @@ EEE
 
                 { gray "    already set: $(cat ".git/sshh")"; } 2>&3
               fi
+
+            elif [ ${SPECIALCASE} = "--hook" ]; then
+
+              eval "$_EVAL"
             else
 
               eval "$_EVAL"
@@ -267,6 +288,9 @@ if [ "${HELP}" = "1" ]; then
      sshh -f
  find mode with its own help page
 
+     sshh --hook
+ mounting standalone ".git/.sshhooks/commit-msg" on husky not detected in git config --get core.hooksPath
+
 EEE
 
   exit 0
@@ -329,6 +353,85 @@ END
     echo exit ${_CODE};
 
     _exit 2> /dev/null || true
+fi
+
+if [ "${HOOK}" = "1" ]; then
+
+  CURRENTDIR="$(pwd)"
+
+  while : ; do
+
+      GITDIR="${CURRENTDIR}/.git"
+      GITCONFIG="${GITDIR}/config"
+
+#      echo "CURRENTDIR=>${CURRENTDIR}<"
+#      echo "GITDIR=${GITDIR}"
+#      echo "GITCONFIG=${GITCONFIG}"
+
+      [ "${CURRENTDIR}" = "/" ] && break
+      [ -d "${GITDIR}" ] && [ -f "${GITCONFIG}" ] && break
+
+      CURRENTDIR="$(dirname "${CURRENTDIR}")"
+  done
+
+  if [ "${CURRENTDIR}" = "/" ]; then
+
+    echo "${0} error: CURRENTDIR 2 is pointing to /"
+
+    exit 1
+  fi
+
+  (
+    cd "${CURRENTDIR}"
+
+    CURRENT="$(git config --get core.hooksPath)"
+
+    if [ "${CURRENT}" = ".husky" ]; then
+
+      { yellow "\n${0} info:\n\nHooks are already controlled by husky\n\n    git config --get core.hooksPath            ${CURRENT}\n"; } 2>&3
+
+      exit 0
+    fi
+
+    HOOKDIR=".git/.sshhooks"
+
+#    if [ "${CURRENT}" = "${HOOKDIR}" ]; then
+#
+#      { green "\n${0} info:\n\nHook is already mounted\n\n    git config --get core.hooksPath            ${CURRENT}\n"; } 2>&3
+#
+#      exit 0
+#    fi
+
+    git config core.hooksPath "${HOOKDIR}"
+
+    mkdir -p "${HOOKDIR}"
+
+    HOOKFILE="${HOOKDIR}/commit-msg"
+
+    cat <<EEE > "${HOOKFILE}"
+if [ -f ~/.huskyrc ]; then
+
+  cat <<III
+
+  ${HOOKDIR} mode:
+
+III
+
+  source ~/.huskyrc
+else
+
+  echo "\${0} error: ~/.huskyrc doesn't exist"
+
+  exit 1
+fi
+EEE
+
+    chmod a+x "${HOOKFILE}"
+
+    echo 'mounted'
+  )
+
+  exit 0
 fi
 
 if [ "${AUTO}" = "1" ]; then
