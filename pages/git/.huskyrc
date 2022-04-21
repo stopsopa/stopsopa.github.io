@@ -37,7 +37,7 @@ sshh --auto
 
 source ~/.nvm/nvm.sh
 
-nvm use
+nvm use || true
 
 export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
 
