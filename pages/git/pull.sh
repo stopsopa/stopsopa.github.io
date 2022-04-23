@@ -67,16 +67,22 @@ function clone() {
 
     cd "${PDIR2}"
 
+    INDEXCUR="$(/bin/bash ~/sshh.sh _)"
+
+    INDEXVAL="$(/bin/bash ~/sshh.sh _ "${2}")"
+
+    if [ "${INDEXCUR}" != "${INDEXVAL}" ]; then
+
+      /bin/bash ~/sshh.sh "${INDEXVAL}"
+    fi
+
     echo "git clone $1 ."
 
     git clone "$1" .
 
-    if [ "${2}" != "" ]; then
+    /bin/bash ~/sshh.sh -i $(/bin/bash ~/sshh.sh _ ${2})
 
-      /bin/bash ~/sshh.sh -i $(/bin/bash ~/sshh.sh _ ${2})
-
-      /bin/bash ~/sshh.sh --hook
-    fi
+    /bin/bash ~/sshh.sh --hook
   )
 }
 

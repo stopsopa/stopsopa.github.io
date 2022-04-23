@@ -269,7 +269,7 @@ if [ "${HELP}" = "1" ]; then
  switch .git/sshh to key given by name xyz
 
      sshh _
- to list current key in form of string basename of the key/file loaded, eg: "key1"
+ index of currently loaded ssh key
 
      sshh _ key1
  to print number of the key on the list by name, return example "1" - for first, "2" - for second
