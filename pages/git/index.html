@@ -301,9 +301,9 @@ fi
 
             wget --help 1> /dev/null 2> /dev/null
             if [ "$?" = "0" ]; then # wget
-              wget --no-cache -O "curl.js" "domain.com/pages/git/pull.sh"
+              wget --no-cache -O "pull.sh" "domain.com/pages/git/pull.sh"
             else # curl
-              curl "domain.com/pages/git/pull.sh" -o "curl.js"
+              curl "domain.com/pages/git/pull.sh" -o "pull.sh"
             fi
 
           </script>
