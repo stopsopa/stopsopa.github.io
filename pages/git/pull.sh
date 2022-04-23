@@ -74,7 +74,7 @@ function clone() {
     if [ "${2}" != "" ]; then
 
       /bin/bash ~/sshh.sh -i $(/bin/bash ~/sshh.sh _ ${2})
-      
+
       /bin/bash ~/sshh.sh --hook
     fi
   )
