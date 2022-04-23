@@ -2,8 +2,7 @@
   "scripts": {
     "style:check": "yarn prettier --check .",
     "style:fix": "yarn prettier --write .",
-    "style:list": "yarn prettier --list-different .",
-    "prepare": "husky install"
+    "style:list": "yarn prettier --list-different ."
   },
   "dependencies": {
     "@babel/cli": "^7.15.7",
@@ -39,9 +38,6 @@
     "webpack": "^4.44.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^16.2.3",
-    "@commitlint/config-conventional": "^16.2.1",
-    "husky": "^7.0.4",
     "open-cli": "^6.0.1",
     "prettier": "^2.6.1",
     "webpack-cli": "^3.3.12"
