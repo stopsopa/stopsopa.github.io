@@ -59,6 +59,7 @@
 
             # print entrypoint of an image:
             docker inspect IMAGENAME | jq '.[0].ContainerConfig.Entrypoint[0]' -r
+            docker image inspect IMAGENAME | jq '.[].Config.WorkingDir'
 
             docker container rm puppeteer-test -f
                 # stop and remove container immediately
