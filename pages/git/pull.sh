@@ -10,11 +10,11 @@ if [ "${?}" != "0" ]; then
   exit 1
 fi
 
-sshh --help 2>&1 > /dev/null
+/bin/bash ~/sshh.sh --help 2>&1 > /dev/null
 
 if [ "${?}" != "0" ]; then
 
-  echo "${0} error: sshh is not installed"
+  echo "${0} error: ~/sshh.sh is not installed"
 
   exit 1
 fi
@@ -73,7 +73,9 @@ function clone() {
 
     if [ "${2}" != "" ]; then
 
-      sshh -i $(sshh _ ${2})
+      /bin/bash ~/sshh.sh -i $(/bin/bash ~/sshh.sh _ ${2})
+      
+      /bin/bash ~/sshh.sh --hook
     fi
   )
 }
