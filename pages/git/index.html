@@ -296,6 +296,17 @@ fi
           <a href="https://github.com/stopsopa/gitstorage">github</a>
         </div>
         <div class="cards">
+          <h2>pull.sh</h2>
+          <script type="editor" data-lang="sh" class="domain.com">
+
+            wget --help 1> /dev/null 2> /dev/null
+            if [ "$?" = "0" ]; then # wget
+              wget --no-cache -O "curl.js" "domain.com/pages/git/pull.sh"
+            else # curl
+              curl "domain.com/pages/git/pull.sh" -o "curl.js"
+            fi
+
+          </script>
           <h2>Husky</h2>
           <a href="/pages/node/index.html#husky">node section - husky</a>
           <h2>useful</h2>
