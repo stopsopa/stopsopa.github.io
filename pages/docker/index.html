@@ -53,9 +53,13 @@
             docker image prune -a --force --filter "until=480h"
             docker system prune --all --volumes --force
                 # from: https://docs.docker.com/config/pruning/
+                # even more: https://www.digitalocean.com/community/tutorials/how-to-remove-docker-images-containers-and-volumes
+            docker volume prune
+              # pruning just volumes
 
             # print entrypoint of an image:
             docker inspect IMAGENAME | jq '.[0].ContainerConfig.Entrypoint[0]' -r
+            docker image inspect IMAGENAME | jq '.[].Config.WorkingDir'
 
             docker container rm puppeteer-test -f
                 # stop and remove container immediately
@@ -122,6 +126,8 @@
             # restrict CPU share
             # --cpus=0.3
           </script>
+          <h2>Docker Compose hostname</h2>
+          <a href="https://stackoverflow.com/a/29926476/5560682">https://stackoverflow.com/a/29926476/5560682</a>
           <h2>Working with HOST MACHINE</h2>
           <script type="editor" data-lang="sh">
 
