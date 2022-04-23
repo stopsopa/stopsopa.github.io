@@ -265,6 +265,9 @@ if [ "${HELP}" = "1" ]; then
      sshh 2
  to choose second key from the list
 
+      sshh -i \$(sshh _ xyz)
+ switch .git/sshh to key given by name xyz
+
      sshh _
  to list current key in form of string basename of the key/file loaded, eg: "key1"
 
