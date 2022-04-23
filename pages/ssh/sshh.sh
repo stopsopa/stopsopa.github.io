@@ -431,7 +431,7 @@ EEE
 
     chmod a+x "${HOOKFILE}"
 
-    echo 'mounted'
+    echo 'hook mounted in .git/.sshhooks mode'
   )
 
   exit 0
