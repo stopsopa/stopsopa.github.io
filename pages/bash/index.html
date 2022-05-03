@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-    
+
     <style>
       pre {
-          white-space: pre-wrap;
+        white-space: pre-wrap;
       }
     </style>
   </head>
@@ -45,16 +45,16 @@
           # fix variables in ide
           (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
           \${$1}
-          
-          
+
+
           # path interpolation
-          
+
           mkdir -p ~/__test/one\ two/three/four
           _SS="~/__test/one two/three/four"
           _SS="$(echo "${_SS}" | sed -E 's/( )/\\\1/g')"
           eval _SS="${_SS}"
-          echo ">${_SS}<"          
-          
+          echo ">${_SS}<"
+
 
           # if some linux tool is missing on mac, use linux
           docker run -t -v "$(pwd):/opt/code" -w "/opt/code" ubuntu find -type f -executable
@@ -190,45 +190,44 @@
           <h2>function arguments - processing inside</h2>
           <script type="editor" data-lang="sh">
 
-cat <<EEE > ___test.sh
-function proc {
+            cat <<EEE > ___test.sh
+            function proc {
 
-  echo "--->${0}<"
+              echo "--->${0}<"
 
-  echo "proc >${@}<"
+              echo "proc >${@}<"
 
-  shift
+              shift
 
-  echo "proc >${@}<"
-}
+              echo "proc >${@}<"
+            }
 
-echo "global >${@}<"
+            echo "global >${@}<"
 
-proc ${@}
+            proc ${@}
 
-proc f g h
+            proc f g h
 
-TEST="proc $@";
+            TEST="proc $@";
 
-${TEST}
+            ${TEST}
 
-echo "global >${@}<"
-EEE
+            echo "global >${@}<"
+            EEE
 
-/bin/bash ___test.sh
-# will print
-# global >a b c<
-# --->ttt.sh<
-# proc >a b c<
-# proc >b c<
-# --->ttt.sh<
-# proc >f g h<
-# proc >g h<
-# --->ttt.sh<
-# proc >a b c<
-# proc >b c<
-# global >a b c<
-
+            /bin/bash ___test.sh
+            # will print
+            # global >a b c<
+            # --->ttt.sh<
+            # proc >a b c<
+            # proc >b c<
+            # --->ttt.sh<
+            # proc >f g h<
+            # proc >g h<
+            # --->ttt.sh<
+            # proc >a b c<
+            # proc >b c<
+            # global >a b c<
           </script>
           <h2>stream buffer control</h2>
           <a href="https://stackoverflow.com/questions/71782041/sed-and-tee-when-working-together-no-longer-behaves-like-stream">Stackoverflow question I've asked</a>
@@ -237,57 +236,57 @@ EEE
           <br />
           <a href="https://mywiki.wooledge.org/BashFAQ/009">https://mywiki.wooledge.org/BashFAQ/009</a>
           <br />
-          <a href="https://stackoverflow.com/questions/3465619/how-to-make-output-of-any-shell-command-unbuffered">https://stackoverflow.com/questions/3465619/how-to-make-output-of-any-shell-command-unbuffered</a>
+          <a href="https://stackoverflow.com/questions/3465619/how-to-make-output-of-any-shell-command-unbuffered"
+            >https://stackoverflow.com/questions/3465619/how-to-make-output-of-any-shell-command-unbuffered</a
+          >
           <br />
           <a href="https://stackoverflow.com/a/33741419">https://stackoverflow.com/a/33741419</a>
-          
+
           <pre>
 AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it) automatically turns on full buffering and there is nothing you can do about it :-(. "Line buffering" (which is what you want) is only used when reading/writing a terminal. The ugly hacks exactly do this: They connect a program to a pseudo-terminal, so that the other tools in the pipe read/write from that terminal in line buffering mode. The whole problem is described here:          
 
 # from: https://stackoverflow.com/a/3465784
           </pre>
           <script type="editor" data-lang="sh">
-          
-# trick 1 (using 'unbuffer' from 'expect' lib)
-# on mac requires: HOMEBREW_NO_AUTO_UPDATE=1 brew install expect
-# on ubuntu requires: apt-get install expect
-# after reading man unbuffer:
-  # unbuffer -p may appear to work incorrectly if a process feeding input to unbuffer exits.  Consider:
-  #             process1 | unbuffer -p process2 | process3
-# after installing proper dependencies it seems to work on both mac and linux
-  
 
-printf "
+            # trick 1 (using 'unbuffer' from 'expect' lib)
+            # on mac requires: HOMEBREW_NO_AUTO_UPDATE=1 brew install expect
+            # on ubuntu requires: apt-get install expect
+            # after reading man unbuffer:
+              # unbuffer -p may appear to work incorrectly if a process feeding input to unbuffer exits.  Consider:
+              #             process1 | unbuffer -p process2 | process3
+            # after installing proper dependencies it seems to work on both mac and linux
 
-first line
-\e[32msecond\e[0m line
-\e[33mthird\e[0m line
-\e[35mfourth\e[0m line
-\e[31mfifth\e[0m line
-last line
 
-" | perl -pe "system 'sleep .3'" | unbuffer -p sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | tee color.txt
-  
-          
-# trick 2
-stdbuf -i0 -o0 -e0 command
+            printf "
 
-#like (using stdbuf makes this example work on linux, but not on mac)
+            first line
+            \e[32msecond\e[0m line
+            \e[33mthird\e[0m line
+            \e[35mfourth\e[0m line
+            \e[31mfifth\e[0m line
+            last line
 
-printf "
+            " | perl -pe "system 'sleep .3'" | unbuffer -p sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | tee color.txt
 
-first line
-\e[32msecond\e[0m line
-\e[33mthird\e[0m line
-\e[35mfourth\e[0m line
-\e[31mfifth\e[0m line
-last line
 
-" | perl -pe "system 'sleep .3'" | stdbuf -i0 -o0 -e0 sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | tee color.txt
-          
-          
+            # trick 2
+            stdbuf -i0 -o0 -e0 command
+
+            #like (using stdbuf makes this example work on linux, but not on mac)
+
+            printf "
+
+            first line
+            \e[32msecond\e[0m line
+            \e[33mthird\e[0m line
+            \e[35mfourth\e[0m line
+            \e[31mfifth\e[0m line
+            last line
+
+            " | perl -pe "system 'sleep .3'" | stdbuf -i0 -o0 -e0 sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | tee color.txt
           </script>
-          
+
           <h2>xargs</h2>
           <script type="editor" data-lang="sh">
 
@@ -481,28 +480,26 @@ last line
           <h2>remove strip color from stream output</h2>
           <script type="editor" data-lang="sh">
 
-printf "
+            printf "
 
-first line
-\e[32msecond\e[0m line
-\e[33mthird\e[0m line
-\e[35mfourth\e[0m line
-\e[31mfifth\e[0m line
-last line
+            first line
+            \e[32msecond\e[0m line
+            \e[33mthird\e[0m line
+            \e[35mfourth\e[0m line
+            \e[31mfifth\e[0m line
+            last line
 
-" | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\[[0-9]{1,3}m//g"
+            " | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\[[0-9]{1,3}m//g"
 
-# look for more: https://stackoverflow.com/q/17998978
-
+            # look for more: https://stackoverflow.com/q/17998978
           </script>
           <h2>stream - delay stream</h2>
           <script type="editor" data-lang="sh">
-          
-perl -pe "system 'sleep .003'" file.txt
-# or
-cat  file.txt | perl -pe "system 'sleep .003'"
-  # from: https://superuser.com/a/526249
-          
+
+            perl -pe "system 'sleep .003'" file.txt
+            # or
+            cat  file.txt | perl -pe "system 'sleep .003'"
+              # from: https://superuser.com/a/526249
           </script>
           <h2>regex</h2>
           <script type="editor" data-lang="sh">
@@ -788,23 +785,28 @@ cat  file.txt | perl -pe "system 'sleep .003'"
             # cat /etc/shells – List pathnames of valid login shells currently installed
             # grep "^$USER" /etc/passwd – Print the default shell name. The default shell runs when you open a terminal window.
 
+            _0="$(basename "${0}")"
+
             # current shell name reliably
             _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
             case ${_SHELL} in
               zsh)
                 _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+                _0="$( basename "${(%):-%N}" )"
                 _SCRIPT="${(%):-%N}"
                 _BINARY="/bin/zsh"
                 _PWD="$(pwd)"
                 ;;
               sh)
                 _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+                _0="$( basename "${0}" )"
                 _SCRIPT="${0}"
                 _BINARY="/bin/sh"
                 _PWD="$(pwd)"
                 ;;
               *)
                 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+                _0="$( basename "${BASH_SOURCE[0]}" )"
                 _SCRIPT="${BASH_SOURCE[0]}"
                 _BINARY="/bin/bash"
                 _PWD="$(pwd)"

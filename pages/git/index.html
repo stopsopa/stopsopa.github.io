@@ -260,22 +260,20 @@
             fi
             /bin/bash ".git/gitstorage-core.sh"
             # /bin/bash ".git/gitstorage-core.sh" --core_repository "git@your-repository.git"
-            
+
             # alias store="/bin/bash .git/gitstorage.sh";
           </script>
           <br />
           <script type="editor" data-lang="sh" class="domain.com">
 
-if [ "$(alias | grep gitstorage)" = "" ]; then
-cat <<EEE >> ~/.zshrc
-gits='/bin/bash .git/gitstorage.sh'
-EEE
-source ~/.zshrc
-else
-  echo already registered
-fi
-
-
+            if [ "$(alias | grep gitstorage)" = "" ]; then
+            cat <<EEE >> ~/.zshrc
+            gits='/bin/bash .git/gitstorage.sh'
+            EEE
+            source ~/.zshrc
+            else
+              echo already registered
+            fi
           </script>
           <h2>gitstorage.sh</h2>
           <script type="editor" data-lang="sh" class="domain.com">
@@ -305,7 +303,6 @@ fi
             else # curl
               curl "domain.com/pages/git/pull.sh" -o "pull.sh"
             fi
-
           </script>
           <h2>Husky</h2>
           <a href="/pages/node/index.html#husky">node section - husky</a>
@@ -411,48 +408,46 @@ fi
         <div class="cards">
           <h2>remove merged branches</h2>
           <script type="editor" data-lang="sh">
-      
-      
-# to list branches (list needs to be reviewed manually)      
 
-_REMOTE="origin"
-_BRANCH="develop"
-git branch -r --merged "${_REMOTE}/${_BRANCH}" | xargs -L1 echo | grep "^${_REMOTE}" | grep -v HEAD | grep -v master | grep -v "${_BRANCH}" | sed -E "s/^${_REMOTE}\/(.*)/\1/"
-     
-# then when you sure about list:
 
-while read -r BRANCH
-do    
-  git push "${_REMOTE}" --delete "${BRANCH}"
-done <<< "PASTE_LIST_HERE"          
-          
-          </script>          
+            # to list branches (list needs to be reviewed manually)
+
+            _REMOTE="origin"
+            _BRANCH="develop"
+            git branch -r --merged "${_REMOTE}/${_BRANCH}" | xargs -L1 echo | grep "^${_REMOTE}" | grep -v HEAD | grep -v master | grep -v "${_BRANCH}" | sed -E "s/^${_REMOTE}\/(.*)/\1/"
+
+            # then when you sure about list:
+
+            while read -r BRANCH
+            do
+              git push "${_REMOTE}" --delete "${BRANCH}"
+            done <<< "PASTE_LIST_HERE"
+          </script>
           <h2>remove from history (filter-branch)</h2>
           <script type="editor" data-lang="sh">
 
-git filter-branch --force --index-filter \
-'git rm -rf --cached --ignore-unmatch plik1 katalog1' \
---prune-empty --tag-name-filter cat -- --all && \
-rm -rf .git/refs/original/ && \
-git reflog expire --expire=now --all && \
-git gc --prune=now && \
-git gc --aggressive --prune=now
+            git filter-branch --force --index-filter \
+            'git rm -rf --cached --ignore-unmatch plik1 katalog1' \
+            --prune-empty --tag-name-filter cat -- --all && \
+            rm -rf .git/refs/original/ && \
+            git reflog expire --expire=now --all && \
+            git gc --prune=now && \
+            git gc --aggressive --prune=now
 
-# find biggest files: from: https://stackoverflow.com/a/42544963
-git rev-list --objects --all |
-  git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' |
-  sed -n 's/^blob //p' |
-  sort --numeric-sort --key=2 |
-  cut -c 1-12,41- |
-  $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
-  
-# cut manually which files you want from long list and paste it here to filter out further  
-cat <<III | awk '{print $3}' | uniq | tr '\n' ' '
-...
-III
+            # find biggest files: from: https://stackoverflow.com/a/42544963
+            git rev-list --objects --all |
+              git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' |
+              sed -n 's/^blob //p' |
+              sort --numeric-sort --key=2 |
+              cut -c 1-12,41- |
+              $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
 
-# then just paste the result in to the first command in this "remove from history (filter-branch)" section
-            
+            # cut manually which files you want from long list and paste it here to filter out further
+            cat <<III | awk '{print $3}' | uniq | tr '\n' ' '
+            ...
+            III
+
+            # then just paste the result in to the first command in this "remove from history (filter-branch)" section
           </script>
         </div>
         <div class="cards">
@@ -482,15 +477,14 @@ III
         <div class="cards">
           <h2>list all contributor from the repository</h2>
           <script type="editor" data-lang="sh">
-          
-git shortlog -sne --all
 
-# from: https://stackoverflow.com/a/9597462
+            git shortlog -sne --all
 
-git shortlog -sne --all | perl -pe 's#^[^<]+<(.*)$#\1#' | perl -pe 's#^([^>]*)>.*$#\1#' | uniq | sort
-# will filter out even empty email from example:
-# Name Surname <>
-          
+            # from: https://stackoverflow.com/a/9597462
+
+            git shortlog -sne --all | perl -pe 's#^[^<]+<(.*)$#\1#' | perl -pe 's#^([^>]*)>.*$#\1#' | uniq | sort
+            # will filter out even empty email from example:
+            # Name Surname <>
           </script>
           <h2>find big files, from <a href="https://stackoverflow.com/a/42544963">https://stackoverflow.com/a/42544963</a></h2>
           <script type="editor" data-lang="sh">

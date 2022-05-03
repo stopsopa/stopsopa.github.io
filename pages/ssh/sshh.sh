@@ -15,6 +15,8 @@
 
 # SSHH_DIR_WITH_KEYS="/Volumes/WINSCP/ssh/ssh"
 
+_0="$(basename "${0}")"
+
 TEST="^[0-9]+$"
 
 PARAMS=""
@@ -194,7 +196,7 @@ EEE
           (
             cd "${GITDIR}/.."
 
-            { green "processing: $(pwd):"; } 2>&3
+            { green "${_0}: processing: $(pwd):"; } 2>&3
 
             if [ ${SPECIALCASE} = "-i" ]; then
 
@@ -439,7 +441,7 @@ fi
 
 if [ "${AUTO}" = "1" ]; then
 
-  echo "auto mode"
+  echo "${_0}: auto mode"
 
   CURRENTDIR="$(pwd)"
 
@@ -471,7 +473,7 @@ if [ "${AUTO}" = "1" ]; then
 
     cat <<EEE
 
-  sshh: NOTICE: SSHHCONFIG [${SSHHCONFIG}] doesn't exit. use -i param to define it
+  ${_0}:  NOTICE: SSHHCONFIG [${SSHHCONFIG}] doesn't exit. use -i param to define it
   = NOTICE == NOTICE == NOTICE ===================================================
 
 EEE
@@ -481,7 +483,7 @@ EEE
 
   VALUE="$(cat "${SSHHCONFIG}")"
 
-  echo "${VALUE}"
+  echo "${_0}: ${VALUE}"
 
   INDEXCUR="$(/bin/bash "${0}" _)"
 
@@ -491,7 +493,7 @@ EEE
 
     cat <<EEE
 
-  sshh: switching ssh key to >${VALUE}< index >${INDEXVAL}<
+  ${_0}:  switching ssh key to >${VALUE}< index >${INDEXVAL}<
   =========================================================
 
 EEE
@@ -500,7 +502,7 @@ EEE
 
     cat <<EEE
 
-  sshh: now repeat action again because switching is not enough...
+  ${_0}:  now repeat action again because switching is not enough...
   ================================================================
 
 EEE
@@ -510,7 +512,7 @@ EEE
 
   cat <<EEE
 
-  sshh: key is already >${VALUE}<
+  ${_0}:  key is already >${VALUE}<
   ===============================
 
 EEE
