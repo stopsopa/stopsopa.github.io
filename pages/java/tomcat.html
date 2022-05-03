@@ -11,35 +11,33 @@
       <div class="inside">
         <div class="cards">
           <h2>Version of Tomcat used by Spring</h2>
-          <br>
+          <br />
           <a href="spring.html#determine-spring-ver">How to find Spring version</a>
           <a href="https://stackoverflow.com/a/41241526">Find Tomcat version in Spring pom.xml</a>
           <script type="editor" data-lang="sh">
 
-# run:
-  mvn dependency:tree
+            # run:
+              mvn dependency:tree
 
-# and look for:
+            # and look for:
 
-[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:9.0.60:compile
-
+            [INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:9.0.60:compile
           </script>
-
 
           <table border="1">
             <thead>
-            <tr>
-              <th>Tomcat version:</th>
-              <th>Used in spring version:</th>
-              <th>checking date:</th>
-            </tr>
+              <tr>
+                <th>Tomcat version:</th>
+                <th>Used in spring version:</th>
+                <th>checking date:</th>
+              </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>9.0.60</td>
-              <td>5.3.18</td>
-              <td>2022-04-18</td>
-            </tr>
+              <tr>
+                <td>9.0.60</td>
+                <td>5.3.18</td>
+                <td>2022-04-18</td>
+              </tr>
             </tbody>
           </table>
         </div>

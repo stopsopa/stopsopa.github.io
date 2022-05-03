@@ -8,3 +8,4 @@ node_modules
 *.min.js
 *.rendered.html
 /preprocessed.js
+/public/coverage/

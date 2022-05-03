@@ -27,6 +27,18 @@ case ${_SHELL} in
     ;;
 esac
 
+function check {
+
+  __VAR_NAME="$(eval echo "\$${1}")"
+
+  if [[ -z "${__VAR_NAME}" ]]; then
+
+    echo "${0} error: env var ${1} is not defined"
+
+    exit 1
+  fi
+}
+
 ENV="${_DIR}/../.env"
 
 if [ ! -f "${ENV}" ]; then
@@ -38,19 +50,11 @@ fi
 
 source "${ENV}"
 
-if [ "${PROJECT_NAME}" = "" ]; then
+check PROJECT_NAME;
 
-  echo "${0} error: PROJECT_NAME is not defined"
+check PHPMYADMIN_PORT;
 
-  exit 1
-fi
-
-if [ "${PHPMYADMIN_PORT}" = "" ]; then
-
-  echo "${0} error: PHPMYADMIN_PORT is not defined"
-
-  exit 1
-fi
+# and so on
 
 if [ "${MYSQL_DB}" = "" ]; then
 

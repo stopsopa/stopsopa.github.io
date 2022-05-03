@@ -4,8 +4,9 @@
 *.zip
 /.env
 node_modules
-public/coverage/
+/public/coverage/
 /_git
+
 
 
 
