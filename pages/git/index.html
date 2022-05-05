@@ -253,7 +253,7 @@
           <script type="editor" data-lang="sh" class="domain.com">
 
             wget --help 1> /dev/null 2> /dev/null
-            if [ "$?" = "0" ]; then # wget
+            if [ "$?" = "0" ]; then
               wget --no-cache -O ".git/gitstorage-core.sh" "domain.com/gitstorage-core.sh"
             else # curl
               curl "domain.com/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
@@ -282,7 +282,7 @@
                 echo 'file gitstorage.sh already exist';
             else
               wget --help 1> /dev/null 2> /dev/null
-              if [ "$?" = "0" ]; then # wget
+              if [ "$?" = "0" ]; then
                 wget --no-cache -O "gitstorage.sh" "https://raw.githubusercontent.com/stopsopa/host.com/master/gitstorage.sh"
               else # curl
                 curl "https://raw.githubusercontent.com/stopsopa/host.com/master/gitstorage.sh" -o "gitstorage.sh"
@@ -298,7 +298,7 @@
           <script type="editor" data-lang="sh" class="domain.com">
 
             wget --help 1> /dev/null 2> /dev/null
-            if [ "$?" = "0" ]; then # wget
+            if [ "$?" = "0" ]; then
               wget --no-cache -O "pull.sh" "domain.com/pages/git/pull.sh"
             else # curl
               curl "domain.com/pages/git/pull.sh" -o "pull.sh"
@@ -407,8 +407,10 @@
         </div>
         <div class="cards">
           <h2>remove merged branches</h2>
+          <br />
+          Listing branches (not taking into account squash)
+          <br />
           <script type="editor" data-lang="sh">
-
 
             # to list branches (list needs to be reviewed manually)
 
@@ -417,11 +419,34 @@
             git branch -r --merged "${_REMOTE}/${_BRANCH}" | xargs -L1 echo | grep "^${_REMOTE}" | grep -v HEAD | grep -v master | grep -v "${_BRANCH}" | sed -E "s/^${_REMOTE}\/(.*)/\1/"
 
             # then when you sure about list:
+          </script>
+          <br />
+          <br />
+          Listing merged | notmerged branches (no matter if squashed or not - it will checked the hard way)
+          <br />
+          <script type="editor" data-lang="sh" class="domain.com">
+
+            wget --help 1> /dev/null 2> /dev/null
+            if [ "$?" = "0" ]; then
+              wget --no-cache -O ".git/list-relative-branches.sh" "domain.com/bash/git/list-relative-branches.sh"
+            else # curl
+              curl "domain.com/bash/git/list-relative-branches.sh" -o ".git/list-relative-branches.sh"
+            fi
+
+            # then run
+            /bin/bash ".git/list-relative-branches.sh" develop
+
+
+          </script>
+          Removing branches:
+          <br />
+          <script type="editor" data-lang="sh">
 
             while read -r BRANCH
             do
               git push "${_REMOTE}" --delete "${BRANCH}"
             done <<< "PASTE_LIST_HERE"
+
           </script>
           <h2>Why I don't like squash</h2>
           <a href="https://stackoverflow.com/questions/55225918/git-detect-squash-and-merged-branches">stackoverflow</a>
