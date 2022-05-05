@@ -434,7 +434,16 @@
             fi
 
             # then run
-            /bin/bash ".git/list-relative-branches.sh" develop
+
+            /bin/bash ".git/list-relative-branches.sh" develop merged
+
+            # or
+
+            /bin/bash ".git/list-relative-branches.sh" develop notmerged
+
+            # or against different remote
+
+            /bin/bash ".git/list-relative-branches.sh" develop notmerged different_remote_name
 
 
           </script>
