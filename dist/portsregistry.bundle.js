@@ -31465,20 +31465,25 @@ var Main = function Main() {
     };
   };
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(defaultInput()),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
       _useState4 = _slicedToArray(_useState3, 2),
-      input = _useState4[0],
-      setInputRaw = _useState4[1];
+      extendAll = _useState4[0],
+      setExtendAll = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(defaultInput()),
       _useState6 = _slicedToArray(_useState5, 2),
-      expanded = _useState6[0],
-      setExpanded = _useState6[1];
+      input = _useState6[0],
+      setInputRaw = _useState6[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(true),
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState8 = _slicedToArray(_useState7, 2),
-      firstLoad = _useState8[0],
-      setFirstLoad = _useState8[1];
+      expanded = _useState8[0],
+      setExpanded = _useState8[1];
+
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(true),
+      _useState10 = _slicedToArray(_useState9, 2),
+      firstLoad = _useState10[0],
+      setFirstLoad = _useState10[1];
 
   var setInput = function setInput(key, value) {
     setInputRaw(nlab_set__WEBPACK_IMPORTED_MODULE_5___default()(_objectSpread({}, input), key, value));
@@ -31661,8 +31666,11 @@ var Main = function Main() {
       return setInput("description", e.target.value);
     }
   }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    type: "submit"
-  }, "add")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+    type: "submit",
+    onClick: function onClick() {
+      return setExtendAll(!extendAll);
+    }
+  }, extendAll ? "Collapse" : "Expand", " all")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
     className: "list",
     border: "0"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, nlab_isObject__WEBPACK_IMPORTED_MODULE_7___default()(ports) && function (list) {
@@ -31719,6 +31727,10 @@ var Main = function Main() {
           };
         }()
       }, "del")), function (d) {
+        if (extendAll) {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, d);
+        }
+
         if (d.length > 50 && !expanded.includes(g.key)) {
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, d.substring(0, 50), " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
             onClick: function onClick() {
