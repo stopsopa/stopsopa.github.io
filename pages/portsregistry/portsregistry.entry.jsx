@@ -30,6 +30,8 @@ const Main = () => {
     description: "",
   });
 
+  const [extendAll, setExtendAll] = useState(false);
+
   const [input, setInputRaw] = useState(defaultInput());
 
   const [expanded, setExpanded] = useState([]);
@@ -159,7 +161,9 @@ const Main = () => {
           </tbody>
         </table>
         <br />
-        <button type="submit">add</button>
+        <button type="submit" onClick={() => setExtendAll(!extendAll)}>
+          {extendAll ? "Collapse" : "Expand"} all
+        </button>
       </form>
 
       <br />
@@ -196,6 +200,9 @@ const Main = () => {
                     </button>
                   </td>
                   {(function (d) {
+                    if (extendAll) {
+                      return <td>{d}</td>;
+                    }
                     if (d.length > 50 && !expanded.includes(g.key)) {
                       return (
                         <td>
