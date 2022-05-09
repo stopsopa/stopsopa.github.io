@@ -161,10 +161,11 @@ const Main = () => {
           </tbody>
         </table>
         <br />
-        <button type="submit" onClick={() => setExtendAll(!extendAll)}>
-          {extendAll ? "Collapse" : "Expand"} all
-        </button>
+        <button type="submit">add</button>
       </form>
+      <br />
+
+      <button onClick={() => setExtendAll(!extendAll)}>{extendAll ? "Collapse" : "Expand"} all</button>
 
       <br />
       <table className="list" border="0">
