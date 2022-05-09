@@ -444,8 +444,6 @@
             # or against different remote
 
             /bin/bash ".git/list-relative-branches.sh" develop notmerged different_remote_name
-
-
           </script>
           Removing branches:
           <br />
@@ -455,7 +453,6 @@
             do
               git push "${_REMOTE}" --delete "${BRANCH}"
             done <<< "PASTE_LIST_HERE"
-
           </script>
           <h2>Why I don't like squash</h2>
           <a href="https://stackoverflow.com/questions/55225918/git-detect-squash-and-merged-branches">stackoverflow</a>
