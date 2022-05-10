@@ -16,7 +16,7 @@
 
             HOMEBREW_NO_AUTO_UPDATE=1 brew install you-get
 
-            you-get -i YOUTUBELINK | grep -v "video only"
+            you-get -i YOUTUBELINK
 
             you-get --itag=136 YOUTUBELINK
           </script>
@@ -25,7 +25,7 @@
           <script type="editor" data-lang="sh">
 
             # show available formats
-              youtube-dl -F YOUTUBELINK
+              youtube-dl -F YOUTUBELINK | grep -v "video only"
 
             # download particular version
               youtube-dl -f 136 YOUTUBELINK
