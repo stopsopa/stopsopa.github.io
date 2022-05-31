@@ -410,6 +410,25 @@
           <h2>pregQuote</h2>
           <a href="https://github.com/stopsopa/nlab/blob/master/src/pregQuote.js">https://github.com/stopsopa/nlab/blob/master/src/pregQuote.js</a>
           
+          <script type="editor" data-lang="js">
+          
+const pregQuote = (function () {
+  var matchOperatorsRe = /[|\\{}()[\]^$+*?.-]/g;
+
+  return function pregQuote(str) {
+    if (typeof str !== "string") {
+      return false;
+    }
+
+    return str.replace(matchOperatorsRe, "\\$&");
+  };
+})();
+
+function startWith(str, startWith) {
+  return new RegExp(`^${pregQuote(str)}`).test(startWith);
+}          
+          
+          </script>
           
           <h2>Map</h2>
           <script type="editor" data-lang="js">
