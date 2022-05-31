@@ -1179,6 +1179,31 @@ function startWith(str, startWith) {
             </li>
             <li><a href=""></a></li>
           </ul>
+          <h2>random</h2>
+          <script type="editor" data-lang="js">
+
+
+      function random(min, max) {
+        if (!Number.isInteger(min)) {
+          throw new Error(`min is not a number`);
+        }
+
+        if (!Number.isInteger(max)) {
+          throw new Error(`max is not a number`);
+        }
+
+        if (min > max) {
+          const tmp = min;
+          min = max;
+          max = tmp;
+        }
+
+        const diff = max - min;
+
+        return Math.round(Math.random() * diff, 10) + min;
+      }
+
+          </script>
           <h2>randomize shuffle array</h2>
           <script type="editor" data-lang="js">
 
