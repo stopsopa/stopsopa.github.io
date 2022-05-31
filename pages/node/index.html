@@ -837,6 +837,34 @@
             // }
           </script>
         </div>
+          <h2>uncaughtException unhandledRejection</h2>
+          <script type="editor" data-lang="sh">
+          
+          
+process.on("uncaughtException", (e) => {
+  if (e instanceof Error) {
+    console.log("global uncaughtException Error: ", {
+      message: e && e.message ? e.message : '',
+      stack: e && e.stack ? e.stack : '',
+    });
+  } else {
+    console.log("global uncaughtException not Error: ", String(e));
+  }
+});
+
+process.on("unhandledRejection", (e) => {
+  if (e instanceof Error) {
+    console.log("global unhandledRejection Error: ", {
+      message: e && e.message ? e.message : '',
+      stack: e && e.stack ? e.stack : '',
+    });
+  } else {
+    console.log("global unhandledRejection not Error: ", String(e));
+  }
+});
+
+
+          </script>
 
         <div class="cards">
           <h2>component search</h2>
