@@ -239,6 +239,10 @@
           <script type="editor" data-lang="sh">
             nodemon -e js,html server.js
           </script>
+          If it's not about running again server but command everytime file changes then use chokidar, like:          
+          <script type="editor" data-lang="sh">
+            	node node_modules/.bin/chokidar 'tests/**/*.spec.js' --initial -c 'npx playwright test --headed --forbid-only --project=chromium --workers=1 --retries=0 tests/001request.spec.js'
+          </script>
           <h2>streams</h2>
           <script type="editor" data-lang="js">
 
