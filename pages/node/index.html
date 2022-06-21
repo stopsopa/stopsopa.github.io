@@ -765,7 +765,9 @@
                 protocol    : uri.protocol,
                 search__    : uri.search,
                 searchParams: uri.searchParams, // https://nodejs.org/docs/latest-v7.x/api/url.html#url_class_urlsearchparams
-                username    : uri.username,
+                username    : uri.username,,
+                target,
+                path: uri.pathname + uri.search + uri.hash
 
                 https___    : uri.protocol.indexOf('https') > -1,
                 searchParams_all: Array.from(uri.searchParams.keys()).reduce((acc, key) => {
@@ -800,6 +802,8 @@
             //   <search__> [String]: >?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: 53
             //   <searchParams> [URLSearchParams]: >one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three<
             //   <username> [String]: >usertes< len: 7
+            //   <target> [String]: >https://usertes:pasword@sub.domain.com:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: x
+            //   <path> [String]: >/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: x            
             //   <https___> [Boolean]: >true<
             //   <searchParams_all> Object {
             //     <one> Array [
