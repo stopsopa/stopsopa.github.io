@@ -450,7 +450,8 @@
           Removing branches:
           <br />
           <script type="editor" data-lang="sh">
-
+          
+            _REMOTE="origin"
             while read -r BRANCH
             do
               git push "${_REMOTE}" --delete "${BRANCH}"
