@@ -460,7 +460,21 @@
           <h2>Why I don't like squash</h2>
           <a href="https://stackoverflow.com/questions/55225918/git-detect-squash-and-merged-branches">stackoverflow</a>
           <h2>remove from history (filter-branch)</h2>
-          <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository">manual github</a>
+          based on <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository">manual github</a>
+          <script type="editor" data-lang="sh">
+          
+HOMEBREW_NO_AUTO_UPDATE=1 brew install git-filter-repo          
+
+while read -r FILE
+do
+  git filter-repo --invert-paths --path "${FILE}" --force 
+done <<< "scripts/transformMessages.js
+docs/MIGRATION.md"
+
+git push origin --force --all          
+          
+          </script>
+          filter-branch version
           <script type="editor" data-lang="sh">
 
             git filter-branch --force --index-filter \
