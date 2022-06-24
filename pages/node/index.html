@@ -1374,7 +1374,11 @@ process.on("unhandledRejection", (e) => {
                     // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
                     // res.setHeader('Cache-Control', 'public, only-if-cached')
                 }
-            }), serveIndex(web, {'icons': true}));
+            }), serveIndex(web, {
+              icons: true,
+              view: "details",
+              hidden: false, // Display hidden (dot) files. Defaults to false.
+            }));
 
             app.listen(port, host, () => {
 
