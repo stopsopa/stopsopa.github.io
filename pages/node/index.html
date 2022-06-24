@@ -2022,17 +2022,11 @@ process.on("unhandledRejection", (e) => {
           <h2>husky</h2>
           <script type="editor" data-lang="sh">
 
-            cat <<EEE > ~/.huskyrc
-            export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
-            EEE
-            # concluded from: https://github.com/typicode/husky/issues/898
-
-            npm set-script prepare "husky install"
-
             yarn add -D husky
 
             cat .git/config
             ls -la .husky
+            npm set-script prepare "husky install"
             npx husky install
             cat .git/config
             ls -la .husky
@@ -2041,9 +2035,20 @@ process.on("unhandledRejection", (e) => {
             echo 'module.exports = { extends: ["@commitlint/config-conventional"] };' > commitlint.config.js
 
             yarn husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
-            yarn husky add .husky/pre-commit 'docker run --rm -v "$(pwd):/git" godaddy/tartufo --output-dir /git/.tartufo --config /git/tartufo.toml pre-commit'
+            
+          </script>
+          global settings and other stuff:
+          
+          <script type="editor" data-lang="sh">
 
+            cat <<EEE > ~/.huskyrc
+            export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
+            EEE
+            # concluded from: https://github.com/typicode/husky/issues/898
+                        
+            yarn husky add .husky/pre-commit 'docker run --rm -v "$(pwd):/git" godaddy/tartufo --output-dir /git/.tartufo --config /git/tartufo.toml pre-commit'            
             yarn husky add .husky/pre-push 'echo pre push'
+
           </script>
           <a href="https://github.com/semantic-release/semantic-release">see also semantic-release</a>
 
