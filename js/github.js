@@ -102,7 +102,7 @@ window.sasync = {
 (function () {
   // <link rel="stylesheet" href="../../css/normalize.css">
 
-  ["/css/normalize.css", "/css/main.css", "/noprettier/aceedit/jquery.aceedit.css", "//fonts.googleapis.com/css?family=Open+Sans:300,400"].forEach(function (u) {
+  ["/css/normalize.css", "/css/main.css", "//fonts.googleapis.com/css?family=Open+Sans:300,400"].forEach(function (u) {
     // https://stackoverflow.com/a/524721
     var head = document.head || document.getElementsByTagName("head")[0],
       style = document.createElement("link");

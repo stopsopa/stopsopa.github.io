@@ -27,12 +27,11 @@
           <a href="https://stedolan.github.io/jq/">https://stedolan.github.io/jq/</a>
           <script type="editor" data-lang="sh">
 
-jqs() {
-  FILE="${1}" && echo "$(cat "${FILE}" | jq --sort-keys)" > "${FILE}"
-}
+            jqs() {
+              FILE="${1}" && echo "$(cat "${FILE}" | jq --sort-keys)" > "${FILE}"
+            }
 
-jqs="jqs"
-
+            jqs="jqs"
           </script>
           <br />
           <a href="https://ss64.com/bash/syntax.html">https://ss64.com/bash/syntax.html</a>
