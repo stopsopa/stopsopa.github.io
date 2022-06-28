@@ -1083,6 +1083,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           </script>
           <h2>bash colors</h2>
 
+          See also: <a href="https://stackoverflow.com/a/24701349/5560682">link</a> also <a href="https://apple.stackexchange.com/q/60206">link</a>
           <script type="editor" data-lang="sh">
             # only in bash
             for i in {0..256}; do printf "\e[${i}m\\\\e[${i}m\e[0m ";if [ 256 == ${i} ]; then echo "color"; fi; done
