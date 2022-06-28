@@ -236,8 +236,6 @@ function deslash {
 
   RENAMEDIRLINK="${BASEURL}/edit/master/${FROM}/gitstorage-config.sh"
 
-  EDITCONFIG="${BASEURL}/edit/master/${TO}/gitstorage-config.sh"
-
 colorred=$(tput setaf 2)
 
 coloryellow=$(tput setaf 3)
