@@ -162,6 +162,7 @@ and use this script like:
 /bin/bash ${0} pull
 /bin/bash ${0} push
 /bin/bash ${0} url
+/bin/bash ${0} move git@xxx:project/source-repo.git git@yyy/target-repo.git
 
 # you can specify different config
 /bin/bash ${0} -c "gitstorage-config.sh"
@@ -176,7 +177,7 @@ MODE="${1}"
 
 shift;
 
-TEST="^(url|isinsync|diff|pull|push|backup|restore)$"
+TEST="^(url|isinsync|diff|pull|push|backup|restore|move)$"
 
 if ! [[ ${MODE} =~ ${TEST} ]]; then
 
@@ -202,6 +203,77 @@ _CONFIGDIR="$(dirname "${_CONFIG}")"
 if [ ${MODE} = "url" ]; then
 
   echo "final url ${URL}";
+
+  exit 0
+fi
+
+
+if [ ${MODE} = "move" ]; then
+
+function deslash {
+  echo "$(echo "${1}"| sed -E 's/\//__/g')"
+}
+
+  echo "${URL}"
+
+  FROM="$(deslash "${1}")"
+
+  shift;
+
+  TO="$(deslash "${1}")"
+
+  shift;
+
+  _GITHUB="^git@github"
+
+  if [[ ${GITSTORAGESOURCE} =~ ${_GITHUB} ]]; then
+
+    BASEURL="$(echo "${GITSTORAGESOURCE}" | sed -E "s/^git@([^:]+):([^\/]+)\/([^\.]+).*/https:\/\/\1\/\2\/\3/")"
+  else
+
+    BASEURL="$(echo "${GITSTORAGESOURCE}" | sed -E "s/^git@([^:]+):([^\/]+)\/([^\.]+).*/https:\/\/\1\/\2\/\3/")"
+  fi
+
+  EDITCONFIG="${BASEURL}/edit/master/${TO}/gitstorage-config.sh"
+
+colorred=$(tput setaf 2)
+
+coloryellow=$(tput setaf 3)
+
+colorreset=$(tput sgr0)
+
+cat <<DOC
+
+Go to repository:
+
+  ${colorred}${BASEURL}${colorreset}
+
+rename directory:
+
+  ${colorred}${FROM}${colorreset}
+
+to:
+
+  ${colorred}${TO}${colorreset}
+
+manual how to do it via GitHub:
+
+  ${coloryellow}https://github.blog/2013-03-15-moving-and-renaming-files-on-github${colorreset}
+
+Then also edit config file:
+
+  ${coloryellow}${EDITCONFIG}${colorreset}
+
+change:
+
+    GITSTORAGETARGETDIR="${FROM}"
+
+    to
+
+    GITSTORAGETARGETDIR="${TO}"
+
+DOC
+
 
   exit 0
 fi
@@ -403,6 +475,8 @@ if [ ${MODE} = "diff" ]; then
   if [ "${DIFFSTATUS}" = "" ] ; then
 
       { green "\n    files are in sync\n"; } 2>&3
+
+      echo "final url ${URL}";
 
       exit 0;
   fi
