@@ -234,6 +234,8 @@ function deslash {
     BASEURL="$(echo "${GITSTORAGESOURCE}" | sed -E "s/^git@([^:]+):([^\/]+)\/([^\.]+).*/https:\/\/\1\/\2\/\3/")"
   fi
 
+  RENAMEDIRLINK="${BASEURL}/edit/master/${FROM}/gitstorage-config.sh"
+
   EDITCONFIG="${BASEURL}/edit/master/${TO}/gitstorage-config.sh"
 
 colorred=$(tput setaf 2)
@@ -244,9 +246,9 @@ colorreset=$(tput sgr0)
 
 cat <<DOC
 
-Go to repository:
+Go to repository and file:
 
-  ${colorred}${BASEURL}${colorreset}
+  ${colorred}${RENAMEDIRLINK}${colorreset}
 
 rename directory:
 
@@ -260,11 +262,7 @@ manual how to do it via GitHub:
 
   ${coloryellow}https://github.blog/2013-03-15-moving-and-renaming-files-on-github${colorreset}
 
-Then also edit config file:
-
-  ${coloryellow}${EDITCONFIG}${colorreset}
-
-change:
+AND ALSO IN ONE MOVE, while you are on that page, change in gitstorage-config.sh itself variable:
 
     GITSTORAGETARGETDIR="${FROM}"
 
