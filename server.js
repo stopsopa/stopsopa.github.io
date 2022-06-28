@@ -57,5 +57,5 @@ app.use(
 );
 
 app.listen(process.env.NODE_PORT, host, () => {
-  console.log(`\n 🌎  Server is running ` + `http://${host}:${process.env.NODE_PORT}\n`);
+  log(`\n 🌎  Server is running ` + `http://${host}:${process.env.NODE_PORT}\n`);
 });
