@@ -352,6 +352,8 @@
 
             git log --graph --decorate --abbrev-commit --all --pretty=oneline  --pretty=format:"%h%x09%an%x09%ad%x09%s"
           </script>
+          <h2>Mirror / Duplicate repository (instead of fork)</h2>
+          <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/duplicating-a-repository">link</a>
         </div>
         <div class="cards">
           <h2>change commit timestamp</h2>
@@ -448,7 +450,8 @@
           Removing branches:
           <br />
           <script type="editor" data-lang="sh">
-
+          
+            _REMOTE="origin"
             while read -r BRANCH
             do
               git push "${_REMOTE}" --delete "${BRANCH}"
@@ -457,6 +460,29 @@
           <h2>Why I don't like squash</h2>
           <a href="https://stackoverflow.com/questions/55225918/git-detect-squash-and-merged-branches">stackoverflow</a>
           <h2>remove from history (filter-branch)</h2>
+          based on <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository">manual github</a>
+          <script type="editor" data-lang="sh">
+                             
+HOMEBREW_NO_AUTO_UPDATE=1 brew install git-filter-repo  
+
+REPO=https://github.com/YOUR-USERNAME/YOUR-REPOSITORY
+
+git clone "${REPO}" __tmp
+cd __tmp
+
+while read -r FILE
+do
+  git filter-repo --invert-paths --path "${FILE}" --force 
+done <<< "scripts/transformMessages.js
+docs/MIGRATION.md"
+
+git remote add origin "${REPO}"
+
+git push origin --force --all   
+cd .. && rm -rf __tmp
+          
+          </script>
+          filter-branch version
           <script type="editor" data-lang="sh">
 
             git filter-branch --force --index-filter \
