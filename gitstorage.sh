@@ -216,11 +216,15 @@ function deslash {
 
   echo "${URL}"
 
-  FROM="$(deslash "${1}")"
+  SOURCE="${1}"
+
+  FROM="$(deslash "${SOURCE}")"
 
   shift;
 
-  TO="$(deslash "${1}")"
+  TARGET="${1}"
+
+  TO="$(deslash "${TARGET}")"
 
   shift;
 
@@ -235,6 +239,8 @@ function deslash {
   fi
 
   RENAMEDIRLINK="${BASEURL}/edit/master/${FROM}/gitstorage-config.sh"
+
+  EDITCONFIG="${BASEURL}/edit/master/${TO}/gitstorage-config.sh"
 
 colorred=$(tput setaf 2)
 
@@ -267,6 +273,30 @@ AND ALSO IN ONE MOVE, while you are on that page, change in gitstorage-config.sh
     to
 
     GITSTORAGETARGETDIR="${TO}"
+
+You can check everything if it's ok on this url after change:
+
+  ${EDITCONFIG}
+
+That would be all about config file and it's location, now we have to move all other files in directory ${FROM}.
+In order to do that open terminal and paste:
+
+rm -rf ____temporary_directory_remove_later
+mkdir ____temporary_directory_remove_later
+cd ____temporary_directory_remove_later
+git clone ${GITSTORAGESOURCE} .
+mv ${FROM}/* ${TO}/
+git add .
+git commit -m "gits move ${SOURCE} ${TARGET}"
+git push
+cd ..
+rm -rf ____temporary_directory_remove_later
+
+and then visit again
+
+  ${EDITCONFIG}
+
+  go one directory up and review all files, espcecially if there is gitstorage-config.sh and next to it other files
 
 DOC
 
