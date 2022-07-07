@@ -125,7 +125,7 @@
             # --memory=600m --memory-swap=600m
             # restrict CPU share
             # --cpus=0.3
-            
+
             # checking healthcheck of container
             docker inspect --format "{{json .State.Health }}" cypress_app_container | jq
             # example of healtheck section in docker-compose (using 0s will not work for interval nor start_period, use 1s instead):
@@ -135,10 +135,9 @@
                 interval: 1s
                 timeout: 5s
                 retries: 3
-                
+
             docker inspect cypress_app | grep -A 5 -B 5 RestartPolicy
               # based on https://docs.docker.com/config/containers/start-containers-automatically/
-                
           </script>
           <h2>Docker Compose hostname</h2>
           <a href="https://stackoverflow.com/a/29926476/5560682">https://stackoverflow.com/a/29926476/5560682</a>

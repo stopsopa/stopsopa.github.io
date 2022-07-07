@@ -260,14 +260,13 @@
             fi
             /bin/bash ".git/gitstorage-core.sh"
           </script>
-          
+
           modifying target repository:
           <script type="editor" data-lang="sh" class="domain.com">
-          
+
             # /bin/bash ".git/gitstorage-core.sh" --core_repository "git@your-repository.git"
 
             # alias store="/bin/bash .git/gitstorage.sh";
-            
           </script>
           <br />
           <script type="editor" data-lang="sh" class="domain.com">
@@ -456,7 +455,7 @@
           Removing branches:
           <br />
           <script type="editor" data-lang="sh">
-          
+
             _REMOTE="origin"
             while read -r BRANCH
             do
@@ -468,25 +467,24 @@
           <h2>remove from history (filter-branch)</h2>
           based on <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository">manual github</a>
           <script type="editor" data-lang="sh">
-                             
-HOMEBREW_NO_AUTO_UPDATE=1 brew install git-filter-repo  
 
-REPO=https://github.com/YOUR-USERNAME/YOUR-REPOSITORY
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install git-filter-repo
 
-git clone "${REPO}" __tmp
-cd __tmp
+            REPO=https://github.com/YOUR-USERNAME/YOUR-REPOSITORY
 
-while read -r FILE
-do
-  git filter-repo --invert-paths --path "${FILE}" --force 
-done <<< "scripts/transformMessages.js
-docs/MIGRATION.md"
+            git clone "${REPO}" __tmp
+            cd __tmp
 
-git remote add origin "${REPO}"
+            while read -r FILE
+            do
+              git filter-repo --invert-paths --path "${FILE}" --force
+            done <<< "scripts/transformMessages.js
+            docs/MIGRATION.md"
 
-git push origin --force --all   
-cd .. && rm -rf __tmp
-          
+            git remote add origin "${REPO}"
+
+            git push origin --force --all
+            cd .. && rm -rf __tmp
           </script>
           filter-branch version
           <script type="editor" data-lang="sh">
@@ -714,110 +712,7 @@ cd .. && rm -rf __tmp
             done <<< "${LIST}"
           </script>
           <h2>lint</h2>
-          <script type="editor" data-lang="sh">
-
-            # place this script somewhere in ~/ dir and run with "help" param, then follow instructions to register it as alias
-
-            _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
-            case ${_SHELL} in
-              zsh)
-                _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
-                _SCRIPT="${(%):-%N}"
-                _BINARY="/bin/zsh"
-                _PWD="$(pwd)"
-                ;;
-              sh)
-                _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
-                _SCRIPT="${0}"
-                _BINARY="/bin/sh"
-                _PWD="$(pwd)"
-                ;;
-              *)
-                _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
-                _SCRIPT="${BASH_SOURCE[0]}"
-                _BINARY="/bin/bash"
-                _PWD="$(pwd)"
-                ;;
-            esac
-
-
-            _PWD="$(pwd)"
-
-            GIT=".git"
-
-            if [ ! -d "${GIT}" ]; then
-
-              echo "directory ${GIT} doesn't exist";
-
-              exit 1
-            fi
-
-            SCRIPT="${GIT}/lint.sh"
-
-            if [ "${1}" = "help" ]; then
-
-              cat <<EEE
-
-              Register it as an aliast by adding this line to ~/.bashrc or ~/.zshrc
-
-              alias lint="/bin/bash ${_DIR}/lint.sh";
-
-            EEE
-
-              exit 0
-            fi
-
-            if [ "${1}" = "create" ]; then
-
-              if [ -f "${SCRIPT}" ]; then
-
-                echo "script ${SCRIPT} already exist";
-
-                exit 1
-              else
-
-                cat <<EEE > "${SCRIPT}"
-
-            set -e
-            if [ "\${1}" = "fix" ]; then
-              yarn prettier --list-different .
-            else
-              yarn prettier --write .
-              yarn lint
-            fi
-            docker run --rm -v "\$(pwd)":/git godaddy/tartufo --output-dir /git/.tartufo --config /git/tartufo.toml scan-local-repo /git
-
-            EEE
-
-                echo "script ${SCRIPT} created";
-              fi
-
-              exit 0;
-            fi
-
-            if [ ! -f "${SCRIPT}" ]; then
-
-              echo -e "script ${SCRIPT} doesn't exist\nrun:\n\n    /bin/bash ${0} create\n\n";
-
-              exit 1
-            fi
-
-            set -e
-
-            cat <<EEE
-
-            You might run it in two modes:
-
-              /bin/bash ${SCRIPT}
-
-              or
-
-              /bin/bash ${SCRIPT} fix
-
-            EEE
-
-            /bin/bash ${SCRIPT}
-          </script>
+          <a href="lint.sh">lint.sh</a>
           wishful thinking:
           <a href="https://github.com/jonas/tig/issues/406">https://github.com/jonas/tig/issues/406</a>
         </div>
