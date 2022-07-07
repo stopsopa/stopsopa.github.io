@@ -286,6 +286,7 @@ mkdir ____temporary_directory_remove_later
 cd ____temporary_directory_remove_later
 git clone ${GITSTORAGESOURCE} .
 mv ${FROM}/* ${TO}/
+mv ${FROM}/.* ${TO}/
 git add .
 git commit -m "gits move ${SOURCE} ${TARGET}"
 git push
