@@ -192,7 +192,7 @@
           </script>
           <h2>manipulation</h2>
           <script type="editor" data-lang="js">
-                  
+
             function createElement(tag, opt) {
               if (!isObject(opt)) {
                 opt = [];
@@ -217,7 +217,7 @@
               }
 
               return element;
-            }          
+            }
 
             var manipulation = (function () {
               var domCache = document.createElement("div");
@@ -430,32 +430,29 @@
               };
             })();
           </script>
-          
-          
-          
+
           <h2>pregQuote</h2>
           <a href="https://github.com/stopsopa/nlab/blob/master/src/pregQuote.js">https://github.com/stopsopa/nlab/blob/master/src/pregQuote.js</a>
-          
+
           <script type="editor" data-lang="js">
-          
-const pregQuote = (function () {
-  var matchOperatorsRe = /[|\\{}()[\]^$+*?.-]/g;
 
-  return function pregQuote(str) {
-    if (typeof str !== "string") {
-      return false;
-    }
+            const pregQuote = (function () {
+              var matchOperatorsRe = /[|\\{}()[\]^$+*?.-]/g;
 
-    return str.replace(matchOperatorsRe, "\\$&");
-  };
-})();
+              return function pregQuote(str) {
+                if (typeof str !== "string") {
+                  return false;
+                }
 
-function startWith(str, startWith) {
-  return new RegExp(`^${pregQuote(str)}`).test(startWith);
-}          
-          
+                return str.replace(matchOperatorsRe, "\\$&");
+              };
+            })();
+
+            function startWith(str, startWith) {
+              return new RegExp(`^${pregQuote(str)}`).test(startWith);
+            }
           </script>
-          
+
           <h2>Map</h2>
           <script type="editor" data-lang="js">
 
@@ -770,17 +767,16 @@ function startWith(str, startWith) {
           </script>
           <h2>uniq</h2>
           <script type="editor" data-lang="js">
-          
-  function unique(pattern) {
-    // node.js require('crypto').randomBytes(16).toString('hex');
-    pattern || (pattern = "xyxyxy");
-    return pattern.replace(/[xy]/g, function (c) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
-  
+
+            function unique(pattern) {
+              // node.js require('crypto').randomBytes(16).toString('hex');
+              pattern || (pattern = "xyxyxy");
+              return pattern.replace(/[xy]/g, function (c) {
+                var r = (Math.random() * 16) | 0,
+                  v = c == "x" ? r : (r & 0x3) | 0x8;
+                return v.toString(16);
+              });
+            }
           </script>
           <h2>Date months</h2>
           <script type="editor" data-lang="js">
@@ -1209,26 +1205,25 @@ function startWith(str, startWith) {
           <script type="editor" data-lang="js">
 
 
-      function random(min, max) {
-        if (!Number.isInteger(min)) {
-          throw new Error(`min is not a number`);
-        }
+            function random(min, max) {
+              if (!Number.isInteger(min)) {
+                throw new Error(`min is not a number`);
+              }
 
-        if (!Number.isInteger(max)) {
-          throw new Error(`max is not a number`);
-        }
+              if (!Number.isInteger(max)) {
+                throw new Error(`max is not a number`);
+              }
 
-        if (min > max) {
-          const tmp = min;
-          min = max;
-          max = tmp;
-        }
+              if (min > max) {
+                const tmp = min;
+                min = max;
+                max = tmp;
+              }
 
-        const diff = max - min;
+              const diff = max - min;
 
-        return Math.round(Math.random() * diff, 10) + min;
-      }
-
+              return Math.round(Math.random() * diff, 10) + min;
+            }
           </script>
           <h2>randomize shuffle array</h2>
           <script type="editor" data-lang="js">

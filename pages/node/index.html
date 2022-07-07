@@ -239,11 +239,12 @@
           <script type="editor" data-lang="sh">
             nodemon -e js,html server.js
           </script>
-          If it's not about running again server but command everytime file changes then use chokidar, like:          
+          If it's not about running again server but command everytime file changes then use chokidar, like:
           <script type="editor" data-lang="sh">
-            	node node_modules/.bin/chokidar 'tests/**/*.spec.js' --initial -c 'npx playwright test --headed --forbid-only --project=chromium --workers=1 --retries=0 tests/001request.spec.js'
+            node node_modules/.bin/chokidar 'tests/**/*.spec.js' --initial -c 'npx playwright test --headed --forbid-only --project=chromium --workers=1 --retries=0 tests/001request.spec.js'
           </script>
-          more: <a href="https://github.com/open-cli-tools/chokidar-cli">https://github.com/open-cli-tools/chokidar-cli</a> <br /> <a href="https://github.com/microsoft/playwright/issues/7035">https://github.com/microsoft/playwright/issues/7035</a>
+          more: <a href="https://github.com/open-cli-tools/chokidar-cli">https://github.com/open-cli-tools/chokidar-cli</a> <br />
+          <a href="https://github.com/microsoft/playwright/issues/7035">https://github.com/microsoft/playwright/issues/7035</a>
           <h2>streams</h2>
           <script type="editor" data-lang="js">
 
@@ -803,7 +804,7 @@
             //   <searchParams> [URLSearchParams]: >one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three<
             //   <username> [String]: >usertes< len: 7
             //   <target> [String]: >https://usertes:pasword@sub.domain.com:1025/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: x
-            //   <path> [String]: >/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: x            
+            //   <path> [String]: >/curl?one=two&three=rour&q=89.67.167.34&dwa=trzy&one=three< len: x
             //   <https___> [Boolean]: >true<
             //   <searchParams_all> Object {
             //     <one> Array [
@@ -846,34 +847,32 @@
             // }
           </script>
         </div>
-          <h2>uncaughtException unhandledRejection</h2>
-          <script type="editor" data-lang="sh">
-          
-          
-process.on("uncaughtException", (e) => {
-  if (e instanceof Error) {
-    console.log("global uncaughtException Error: ", {
-      message: e && e.message ? e.message : '',
-      stack: e && e.stack ? e.stack : '',
-    });
-  } else {
-    console.log("global uncaughtException not Error: ", String(e));
-  }
-});
-
-process.on("unhandledRejection", (e) => {
-  if (e instanceof Error) {
-    console.log("global unhandledRejection Error: ", {
-      message: e && e.message ? e.message : '',
-      stack: e && e.stack ? e.stack : '',
-    });
-  } else {
-    console.log("global unhandledRejection not Error: ", String(e));
-  }
-});
+        <h2>uncaughtException unhandledRejection</h2>
+        <script type="editor" data-lang="sh">
 
 
-          </script>
+          process.on("uncaughtException", (e) => {
+            if (e instanceof Error) {
+              console.log("global uncaughtException Error: ", {
+                message: e && e.message ? e.message : '',
+                stack: e && e.stack ? e.stack : '',
+              });
+            } else {
+              console.log("global uncaughtException not Error: ", String(e));
+            }
+          });
+
+          process.on("unhandledRejection", (e) => {
+            if (e instanceof Error) {
+              console.log("global unhandledRejection Error: ", {
+                message: e && e.message ? e.message : '',
+                stack: e && e.stack ? e.stack : '',
+              });
+            } else {
+              console.log("global unhandledRejection not Error: ", String(e));
+            }
+          });
+        </script>
 
         <div class="cards">
           <h2>component search</h2>
@@ -2039,20 +2038,18 @@ process.on("unhandledRejection", (e) => {
             echo 'module.exports = { extends: ["@commitlint/config-conventional"] };' > commitlint.config.js
 
             yarn husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
-            
           </script>
           global settings and other stuff:
-          
+
           <script type="editor" data-lang="sh">
 
             cat <<EEE > ~/.huskyrc
             export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
             EEE
             # concluded from: https://github.com/typicode/husky/issues/898
-                        
-            yarn husky add .husky/pre-commit 'docker run --rm -v "$(pwd):/git" godaddy/tartufo --output-dir /git/.tartufo --config /git/tartufo.toml pre-commit'            
-            yarn husky add .husky/pre-push 'echo pre push'
 
+            yarn husky add .husky/pre-commit 'docker run --rm -v "$(pwd):/git" godaddy/tartufo --output-dir /git/.tartufo --config /git/tartufo.toml pre-commit'
+            yarn husky add .husky/pre-push 'echo pre push'
           </script>
           <a href="https://github.com/semantic-release/semantic-release">see also semantic-release</a>
 
