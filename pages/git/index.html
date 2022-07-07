@@ -785,6 +785,7 @@ cd .. && rm -rf __tmp
               yarn prettier --write .
               yarn lint
             fi
+            docker run --rm -v "\$(pwd)":/git godaddy/tartufo --output-dir /git/.tartufo --config /git/tartufo.toml scan-local-repo /git
 
             EEE
 
