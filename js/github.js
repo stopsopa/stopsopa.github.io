@@ -476,6 +476,7 @@ log.green("defined", "window.manipulation");
         a.setAttribute("href", "javascript:void(0)");
 
         a.addEventListener("click", function () {
+          history.pushState({}, "", location.pathname);
           window.scrollTo(0, 0);
         });
 
