@@ -2271,6 +2271,7 @@ then visit
 
 */
 
+
 const express = require("express");
 
 const serveIndex = require("serve-index");
@@ -2285,7 +2286,17 @@ let i = 0;
 app.all("/artillery/:param?", (req, res, next) => {
   let k = ++i;
 
-  console.log(JSON.stringify([String(k).padEnd(6, " "), req.method, req.url, "q:", req.query, "b:", req.body]));
+  console.log(
+    JSON.stringify([
+      String(k).padEnd(6, " "),
+      req.method,
+      req.url,
+      "query:",
+      req.query,
+      "body:",
+      req.body,
+    ])
+  );
 
   res.json({
     method: req.method,
@@ -2310,7 +2321,7 @@ const host = "0.0.0.0";
 const port = 4236;
 
 app.listen(port, host, () => {
-  console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`);
+  console.log("\n 🌎  Server is running http://" + host + ":" + port + "\n");
 });
           
           </script>
