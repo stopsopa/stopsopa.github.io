@@ -2190,6 +2190,141 @@
             // stop: 0
             // generalerror 2:  Error: What's happened?! 2
           </script>
+          <h2>Stress test - artillery</h2>
+          <script type="editor" data-lang="js">
+/*
+
+# there is issue reported regarding second request: https://github.com/artilleryio/artillery/issues/1508
+
+mkdir __test
+cd __test
+echo "{}" > package.json
+yarn add "express@4.18.1" "nodemon@2.0.19" "serve-index@1.9.1"
+
+echo -e "this one will be sent whole\nadmiring\nadoring\naffectionate\nagitated\namazing\nangry\nawesome\nbeautiful\nblissful\nbold\nboring\nbrave\nbusy\ncharming\nclever\ncool\ncompassionate\ncompetent\ncondescending\nconfident\ncranky\ncrazy\ndazzling\ndetermined\ndistracted\ndreamy\neager\necstatic\nelastic\nelated\nelegant\neloquent\nepic\nexciting\nfervent\nfestive\nflamboyant\nfocused\nfriendly\nfrosty\nfunny\ngallant\ngifted\ngoofy\ngracious\ngreat\nhappy\nhardcore\nheuristic\nhopeful\nhungry\ninfallible\ninspiring\nintelligent\ninteresting\njolly\njovial\nkeen\nkind\nlaughing\nloving\nlucid\nmagical\nmystifying\nmodest\nmusing\nnaughty\nnervous\nnice\nnifty\nnostalgic\nobjective\noptimistic\npeaceful\npedantic\npensive\npractical\npriceless\nquirky\nquizzical\nrecursing\nrelaxed\nreverent\nromantic\nsad\nserene\nsharp\nsilly\nsleepy\nstoic\nstrange\nstupefied\nsuspicious\nsweet\ntender\nthirsty\ntrusting\nunruffled\nupbeat\nvibrant\nvigilant\nvigorous\nwizardly\nwonderful\nxenodochial\nyouthful\nzealous\nzen\nagnesi\nalbattani\nallen\nalmeida\nantonelli\narchimedes\nardinghelli\naryabhata\naustin\nbabbage\nbanach\nbanzai\nbardeen\nbartik\nbassi\nbeaver\nbell\nbenz\nbhabha\nbhaskara\nblack\nblackburn\nblackwell\nbohr\nbooth\nborg\nbose\nbouman\nboyd\nbrahmagupta\nbrattain\nbrown\nbuck\nburnell\ncannon\ncarson\ncartwright\ncarver\ncerf\nchandrasekhar\nchaplygin\nchatelet\nchatterjee\nchaum\nchebyshev\nclarke\ncohen\ncolden\ncori\ncray\ncurran\ncurie\ndarwin\ndavinci\ndewdney\ndhawan\ndiffie\ndijkstra\ndirac\ndriscoll\ndubinsky\neasley\nedison\neinstein\nelbakyan\nelgamal\nelion\nellis\nengelbart\neuclid\neuler\nfaraday\nfeistel\nfermat\nfermi\nfeynman\nfranklin\ngagarin\ngalileo\ngalois\nganguly\ngates\ngauss\ngermain\ngoldberg\ngoldstine\ngoldwasser\ngolick\ngoodall\ngould\ngreider\ngrothendieck\nhaibt\nhamilton\nhaslett\nhawking\nhellman\nheisenberg\nhermann\nherschel\nhertz\nheyrovsky\nhodgkin\nhofstadter\nhoover\nhopper\nhugle\nhypatia\nishizaka\njackson\njang\njemison\njennings\njepsen\njohnson\njoliot\njones\nkalam\nkapitsa\nkare\nkeldysh\nkeller\nkepler\nkhayyam\nkhorana\nkilby\nkirch\nknuth\nkowalevski\nlalande\nlamarr\nlamport\nleakey\nleavitt\nlederberg\nlehmann\nlewin\nlichterman\nliskov\nlovelace\nlumiere\nmahavira\nmargulis\nmatsumoto\nmaxwell\nmayer\nmccarthy\nmcclintock\nmclaren\nmclean\nmcnulty\nmendel\nmendeleev\nmeitner\nmeninsky\nmerkle\nmestorf\nmirzakhani\nmontalcini\nmoore\nmorse\nmurdock\nmoser\nnapier\nnash\nneumann\nnewton\nnightingale\nnobel\nnoether\nnorthcutt\nnoyce\npanini\npare\npascal\npasteur\npayne\nperlman\npike\npoincare\npoitras\nproskuriakova\nptolemy\nraman\nramanujan\nride\nritchie\nrhodes\nrobinson\nroentgen\nrosalind\nrubin\nsaha\nsammet\nsanderson\nsatoshi\nshamir\nshannon\nshaw\nshirley\nshockley\nshtern\nsinoussi\nsnyder\nsolomon\nspence\nstonebraker\nsutherland\nswanson\nswartz\nswirles\ntaussig\ntereshkova\ntesla\ntharp\nthompson\ntorvalds\ntu\nturing\nvarahamihira\nvaughan\nvillani\nvisvesvaraya\nvolhard\nwescoff\nwilbur\nwiles\nwilliams\nwilliamson\nwilson\nwing\nwozniak\nwright\nwu\nyalow\nyonath\nzhukovsky" > keywords.csv
+# from https://github.com/moby/moby/blob/master/pkg/namesgenerator/names-generator.go
+
+cat <<EOF > artillery.yaml
+config:
+  target: http://0.0.0.0:4236
+  phases:
+    - duration: 15
+      arrivalRate: 5
+      name: Warm up
+    - duration: 15
+      arrivalRate: 5
+      rampTo: 50
+      name: Ramp up load
+    - duration: 15
+      arrivalRate: 50
+      name: Sustained load
+  payload:
+    path: keywords.csv
+    fields:
+      - keyword
+before:
+  flow:
+    - log: "Get auth token"
+    - post:
+        url: "/artillery"
+        json:
+          jeb: "sie"
+        capture:
+          - json: "\$.body.jeb"
+            as: "nohoho"
+scenarios:
+  - name: "Search and buy"
+    flow:
+      - post:
+          url: "/artillery/{{ nohoho }}"
+          json:
+            auth: "c:{{ nohoho }}"
+            first_param: "{{ keyword }}"
+          capture:
+            - json: "\$.body.postparam"
+              as: "cap1"
+      - think: 1
+      - get:
+          url: "/artillery/{{ cap1 }}"
+
+EOF
+
+create server.js, code for it you'll find when you scroll down
+
+# in one terminal
+
+node node_modules/.bin/nodemon server.js
+
+# then in second
+
+curl -H "Content-type: application/json; charset=utf-8" -XPOST -d '{"postparam":"bodyval"}' "http://0.0.0.0:4236/artillery/something?abc=def&ghi=jkl"
+
+artillery run --output report.json artillery.yaml
+artillery report report.json
+
+then visit
+    http://0.0.0.0:4236/report.json.html
+
+# more: 
+# https://www.artillery.io/docs/guides/guides/command-line
+# https://www.artillery.io/docs/guides/getting-started/writing-your-first-test
+
+*/
+
+
+const express = require("express");
+
+const serveIndex = require("serve-index");
+
+const app = express();
+
+app.use(express.json());
+
+app.set("json spaces", 4);
+
+let i = 0;
+app.all("/artillery/:param?", (req, res, next) => {
+  let k = ++i;
+
+  console.log(
+    JSON.stringify([
+      String(k).padEnd(6, " "),
+      req.method,
+      req.url,
+      "query:",
+      req.query,
+      "body:",
+      req.body,
+    ])
+  );
+
+  res.json({
+    method: req.method,
+    url: req.url,
+    headers: req.headers,
+    query: req.query,
+    body: req.body,
+    params: req.params,
+  });
+});
+
+app.use(
+  express.static(__dirname),
+  serveIndex(__dirname, {
+    icons: true,
+    view: "details",
+  })
+);
+
+const host = "0.0.0.0";
+
+const port = 4236;
+
+app.listen(port, host, () => {
+  console.log("\n 🌎  Server is running http://" + host + ":" + port + "\n");
+});
+          
+          </script>
         </div>
       </div>
     </div>
