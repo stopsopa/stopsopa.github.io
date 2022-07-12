@@ -36,7 +36,7 @@ node pages/portsregistry/lists/ports-generator.js
 /bin/bash template.sh
 # call those together in this order ^^^
 
-node roderic/peprocessor.js
+node libs/preprocessor.js
 
 node node_modules/.bin/webpack
 

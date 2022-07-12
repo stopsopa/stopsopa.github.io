@@ -56,7 +56,7 @@ _kill;
 
 trap _kill EXIT;
 
-node roderic/peprocessor.js
+node libs/preprocessor.js
 
 LOGFILE="${_DIR}/var/log.log"
 
