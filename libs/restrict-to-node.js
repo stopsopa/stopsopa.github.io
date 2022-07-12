@@ -1,7 +1,7 @@
 /**
  * use:
  *
- * require('roderic/restrict-to-node')(__filename);
+ * require('libs/restrict-to-node')(__filename);
  */
 
 module.exports = (file) => {

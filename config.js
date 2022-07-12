@@ -1,4 +1,4 @@
-require("./roderic/restrict-to-node")(__filename);
+require("./libs/restrict-to-node")(__filename);
 
 const path = require("path");
 
@@ -26,7 +26,7 @@ require("dotenv-up")(
   "config.js"
 );
 
-const env = require("./roderic/dotenv");
+const env = require("./libs/dotenv");
 
 module.exports = (mode) => ({
   // just name for this project, it's gonna show up in some places

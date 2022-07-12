@@ -2,7 +2,7 @@
 
 const path = require("path");
 
-const utils = require("./roderic/utils");
+const utils = require("./libs/utils");
 
 const webpack = require("webpack");
 
