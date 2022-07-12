@@ -39,6 +39,31 @@
 
         <h2>useful</h2>
         <script type="editor" data-lang="sh">
+        
+        
+        
+          # ------- find and iterate ------- vvv
+          LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name package.json -print)"
+          
+          _P="$(pwd)"
+          COUNT="$(echo $LIST | wc -l)"
+          I="0"
+          while read -r pac
+          do
+
+            cd "$_P"
+            pwd
+
+            I="$(($I + 1))"
+
+            echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}"
+            DIR="$(dirname "${pac}")"
+
+            cd "${DIR}"
+            #pnpm install
+
+          done <<< "${LIST}"
+          # ------- find and iterate ------- ^^^
 
           export PATH="${PATH}:/new/path"
 
