@@ -48,7 +48,20 @@
                 "before first slashed quote\\\" before second\\\" now proper quote",
                 " some more data\" end"
             ]
-
+            
+            var k = "\"before first slashed quote\\\" before second\\\" now proper quote\" some more data\" end"
+            console.log(k)
+            console.log(JSON.stringify(k.match(/^"(.*?[^\\])"(.*)$/), null, 4))
+            
+            var k = "'before first slashed quote\\' before second\\' now proper quote' some more data' end"
+            console.log(k)
+            console.log(JSON.stringify(k.match(/^(["'])(.*?[^\\])\1(.*)$/), null, 4))
+            
+            // Backreferences https://www.regular-expressions.info/backref.html
+            var k = "\"first slashed quote\\\" before second\\\" now proper quote\" some more data\" end -- 'before second slashed quote\\' before second\\' now proper quote' some more data' end"            
+            console.log(k)
+            var arr = [...k.matchAll(/(["'])(.*?[^\\])\1/sg)];
+            console.log(JSON.stringify(arr, null, 4))
             
             
 
