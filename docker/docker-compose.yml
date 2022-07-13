@@ -1,22 +1,24 @@
-version: "3.8"
+version: '3.8'
 services:
   mysql:
-    # https://dev.mysql.com/doc/relnotes/mysql/8.0/en/
-    image: mysql/mysql-server:8.0.27
+    build:
+      context: mysql
+      dockerfile: Dockerfile
     container_name: ${PROJECT_NAME}_mysql
     ports:
-      - "${MYSQL_PORT}:3306"
+      - '${MYSQL_PORT}:3306'
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
-      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_HOST: '%'
     volumes:
       #      - ${MYSQL_DOCKER_DIR}/${PROJECT_NAME}:/var/lib/mysql
-      - ${MYSQL_DOCKER_DIR:-./mysql_db}/${PROJECT_NAME}:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/my.cnf
+      - ${MYSQL_DOCKER_DIR:-./mysql_db}/${PROJECT_NAME}:/var/data
       - ../designer:/var/designer
     networks:
       - scoped-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
       timeout: 20s
       retries: 10
 
@@ -31,7 +33,7 @@ services:
     #    image: phpmyadmin/phpmyadmin:5.1.1
     container_name: ${PROJECT_NAME}_pma
     ports:
-      - "${PHPMYADMIN_PORT}:80"
+      - '${PHPMYADMIN_PORT}:80'
     environment:
       PMA_HOST: mysql
       PMA_USER: ${MYSQL_USER}
