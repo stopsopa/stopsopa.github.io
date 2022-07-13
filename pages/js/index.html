@@ -35,6 +35,22 @@
 
           <h3>lastIndex</h3>
           <script type="editor" data-lang="js">
+          
+            # quote not slashed:
+            https://regex101.com/r/dE1zF5/2
+              # from: https://stackoverflow.com/a/37739573
+            var k = "\"before first slashed quote\\\" before second\\\" now proper quote\" some more data\" end"
+            console.log(k)
+            console.log(JSON.stringify(k.match(/^"(.*?[^\\])"(.*)$/), null, 4))
+            # will print
+            [
+                "\"before first slashed quote\\\" before second\\\" now proper quote\" some more data\" end",
+                "before first slashed quote\\\" before second\\\" now proper quote",
+                " some more data\" end"
+            ]
+
+            
+            
 
             // https://www.youtube.com/watch?v=TcTSqhpm80Y
 
