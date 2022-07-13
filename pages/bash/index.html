@@ -43,24 +43,25 @@
         
         
           # ------- find and iterate ------- vvv
-          LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name package.json -print)"
+          LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name .yarnrc -print)"
 
           _P="$(pwd)"
           COUNT="$(echo $LIST | wc -l)"
           I="0"
-          while read -r pac
+          while read -r xxx
           do
 
             cd "$_P"
-            pwd
 
             I="$(($I + 1))"
 
-            echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}"
-            DIR="$(dirname "${pac}")"
+            echo -e "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}"
+            DIR="$(dirname "${xxx}")"
 
             cd "${DIR}"
-            #pnpm install
+            echo "${xxx}" >> "${_P}/log.log"
+            cat "${_P}/${xxx}" >> "${_P}/log.log"
+            echo -e "\n\n" >> "${_P}/log.log"
 
           done <<< "${LIST}"
           # ------- find and iterate ------- ^^^
