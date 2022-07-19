@@ -59,6 +59,22 @@
               defaults write com.apple.finder AppleShowAllFiles YES
               killall Finder
             </script>
+            <h2>Low Power Mode</h2>
+            <script type="editor" data-lang="sh">
+            
+status:
+  pmset -g|grep "lowpowermode"|tail -c 2  
+  
+turn on:
+  sudo pmset -a lowpowermode 1
+  
+turn off:
+  sudo pmset -a lowpowermode 0
+  
+Extracted from:   https://goodsnooze.gumroad.com/l/cooldown
+            
+            </script>
+            
             <h2 id="test-test">Compressing (Optimizing) images/photos</h2>
             <a href="https://imageoptim.com/howto.html">ImageOptim v1.7.3 (08-03-2018)</a>
             <br />
