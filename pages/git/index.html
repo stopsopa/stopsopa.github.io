@@ -248,12 +248,11 @@
 
             # diff for particular commit and file
             git diff 81ee4e3ad73^ 81ee4e3ad73 -- src/infrastructure/locksmith/testFixtures/index.js
-            
+
             # checkout changes from other commit to see difference:
             git checkout commit_hash  -- tartufo.toml
             git reset -- tartufo.toml
             git diff tartufo.toml
-            
           </script>
           <h2>gitstorage-core.sh !</h2>
           <script type="editor" data-lang="sh" class="domain.com">

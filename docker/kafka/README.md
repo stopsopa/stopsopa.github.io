@@ -1,4 +1,3 @@
-
 # Goals
 
 docker-compose.sh is assisting script which main functions are:

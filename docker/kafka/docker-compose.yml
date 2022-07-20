@@ -15,7 +15,7 @@ services:
       - ./persistence/mysql_db:/var/data
       - ./persistence/mysql_log:/var/log/mysql
     healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
     networks:
@@ -90,7 +90,8 @@ services:
       DOCKER_API_VERSION: 1.22
 
       # ipconfig getifaddr en0 | cat
-      KAFKA_ADVERTISED_HOST_NAME: "${KAFKA_ADVERTISED_HOST_NAME}"
+      KAFKA_ADVERTISED_HOST_NAME:
+        "${KAFKA_ADVERTISED_HOST_NAME}"
         # this version still uses advertised host name: "Advertised hostname" section on the page https://hub.docker.com/r/wurstmeister/kafka/
         # there is also thing called "advertised.listeners", more on that: https://rmoff.net/2018/08/02/kafka-listeners-explained/
         # TLDR: Basically you have to provide host machine ip address to KAFKA_ADVERTISED_HOST_NAME
@@ -98,7 +99,8 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "notifications_topic:1:1,notifications-command:1:1,barter-notification:1:1,extra:1:1"
 
-      KAFKA_LOG_DIRS: "/kafka/kafka-logs"
+      KAFKA_LOG_DIRS:
+        "/kafka/kafka-logs"
         # from: https://github.com/wurstmeister/kafka-docker/issues/672
         # and https://github.com/wurstmeister/kafka-docker/issues/517#issuecomment-508244919
 
