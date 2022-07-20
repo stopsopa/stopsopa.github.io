@@ -514,6 +514,20 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
                 # read more about -prune
                 https://stackoverflow.com/a/4210072
+                
+            # multiple prune
+            
+            find . \( \
+                    -type d -name node_modules -prune -o \
+                    -type d -name .git -prune -o \
+                    -type d -name coverage -prune -o \
+                    -type d -name noprettier -prune \
+                \) \
+                -o \
+                -type f -name "*.test.js" -print
+            
+                
+                
           </script>
           <h2>debug</h2>
           <script type="editor" data-lang="sh">
