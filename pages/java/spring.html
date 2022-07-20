@@ -36,6 +36,22 @@
           <br />
           <a href="https://spring.io/quickstart">https://spring.io/quickstart</a>
           <img src="https://i.imgur.com/74UyxWP.png" width="100%" />
+          
+          <h2>Logging control</h2>
+          <script type="editor" data-lang="java">
+
+# in file: command-handler/src/main/resources/application.yml
+
+logging:
+  level:
+#    root: DEBUG
+    org:
+      apache:
+        kafka:
+          clients:
+            NetworkClient: DEBUG
+            
+          </script>
         </div>
       </div>
     </div>
