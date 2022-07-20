@@ -47,3 +47,5 @@ node node_modules/.bin/webpack
   GITSTORAGE_CORE_REPOSITORY "${GITSTORAGE_CORE_REPOSITORY}" \
   PROD_SCHEMA "${PROD_SCHEMA}" \
   PROD_HOST "${PROD_HOST}"
+
+yarn style:fix
