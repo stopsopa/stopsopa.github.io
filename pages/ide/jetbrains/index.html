@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <h2>IntelliJ IDEA - scopes</h2>
+          <a href="https://youtrack.jetbrains.com/issue/WEB-40220">JavaScript Debug Console: Font is not readable anymore</a>
+          <script type="editor" data-lang="python">
+
+            Appearance & Behavior -> Scopes -> [+] ... name >!__tests__< -> pattern >!file:*/__tests__//*<
+                # g(Scope language syntax reference IntelliJ IDEA - JetBrains)
+
+            Turn off double quoting:
+                Editor -> General -> Smart Keys -> utick "Insert pair quote"
+
+            when you have code with comment like this
+              v1.get("/purgeCache", httpMethods.purgeCache); // src/api/http/purgeCache.js
+            its easy to jumpt to the file purgeCache. You just have to select src/api/http/purgeCache.js and then click twice shift+shift
+            then you should be able to see popup window with search results
+          </script>
+
+          <h2>Show .git directory</h2>
+          <script type="editor" data-lang="python">
+
+            Settings | Editor | File Types -> Ignored files and folders.
+          </script>
+          <h2>Plugins</h2>
+          <ul>
+            <li><a href=""></a></li>
+            <li><a href=""></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

@@ -9,6 +9,14 @@
   <body class="layout" toc>
     <div class="body">
       <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="vscode/index.html">Visual Studio Code</a></li>
+            <li><a href="jetbrains/index.html">JetBrains</a></li>
+          </ul>
+        </div>
+
         <div class="cards">
           <h2>shortcuts:</h2>
           <script type="editor" data-lang="python">
@@ -89,55 +97,6 @@
           </script>
 
           <img src="https://i.imgur.com/dU4BndA.png" style="width: 80%" />
-          <h2>IntelliJ IDEA - scopes</h2>
-          <a href="https://youtrack.jetbrains.com/issue/WEB-40220">JavaScript Debug Console: Font is not readable anymore</a>
-          <script type="editor" data-lang="python">
-
-            Appearance & Behavior -> Scopes -> [+] ... name >!__tests__< -> pattern >!file:*/__tests__//*<
-                # g(Scope language syntax reference IntelliJ IDEA - JetBrains)
-
-            Turn off double quoting:
-                Editor -> General -> Smart Keys -> utick "Insert pair quote"
-
-            when you have code with comment like this
-              v1.get("/purgeCache", httpMethods.purgeCache); // src/api/http/purgeCache.js
-            its easy to jumpt to the file purgeCache. You just have to select src/api/http/purgeCache.js and then click twice shift+shift
-            then you should be able to see popup window with search results
-          </script>
-
-          <h2>Show .git directory</h2>
-          <script type="editor" data-lang="python">
-
-            Settings | Editor | File Types -> Ignored files and folders.
-          </script>
-          <h2>Plugins</h2>
-          <ul>
-            <li><a href="https://marketplace.visualstudio.com/items?itemName=stuart.unique-window-colors">https://marketplace.visualstudio.com/items?itemName=stuart.unique-window-colors</a></li>
-            <li><a href=""></a></li>
-            <li><a href=""></a></li>
-          </ul>
-          <h2>Uninstall VS Code</h2>
-          
-          <script type="editor" data-lang="sh">
-
-rm -rf "~/.vscode"
-rm -rf "~/Library/Application Support/Code"
-rm -rf "~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/com.microsoft.vscode.sfl*"
-rm -rf "~/Library/Caches/com.microsoft.VSCode.ShipIt"
-rm -rf "~/Library/Caches/com.microsoft.VSCode"
-rm -rf "~/Library/Preferences/ByHost/com.microsoft.VSCode.ShipIt.*.plist"
-rm -rf "~/Library/Preferences/com.microsoft.VSCode.helper.plist"
-rm -fr "~/Library/Preferences/com.microsoft.VSCode.plist"
-rm -fr "~/Library/Caches/com.microsoft.VSCode.ShipIt"
-rm -rf "~/Library/Saved Application State/com.microsoft.VSCode.savedState"
-
-# and
-rm -rf ~/.vscode*
-
-# from: https://github.com/Homebrew/homebrew-cask/blob/16eab891a1b32d7e200e83a70c37e2358954bbef/Casks/visual-studio-code.rb#L29
-# and from: https://stackoverflow.com/a/47561948
-
-          </script>
         </div>
       </div>
     </div>
