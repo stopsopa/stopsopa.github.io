@@ -11,14 +11,85 @@
       <div class="inside">
         <div class="cards">
           <div class="card">
-            <h2>Command line</h2>
+            <h2>Brew</h2>
             <script type="editor" data-lang="sh">
 
               HOMEBREW_NO_AUTO_UPDATE=1 brew install jq
 
-              # open current directory in finder
-              open .
+              HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install lib
+
+              HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install
+              # from: https://github.com/Homebrew/brew/issues/1670#issuecomment-267096602
+
+              Accessability -> Pointer Control -> (tab)Mouse & Trackpad -> (button)Trackpad Options... -> (on state for checkbox)Enable dragging -> (option from select)Withou drag lock
             </script>
+            <h2>Apps</h2>
+            <ul>
+              <li>
+                Keep mac awake
+                <ul>
+                  <li><a href="https://apps.apple.com/de/app/amphetamine/id937984704">Amphetamine Wach bleiben William Gustafson (from App Store)</a> - I have been using this one</li>
+                  <li>Alternative: <a href="https://formulae.brew.sh/cask/caffeine">Caffeine (from brew)</a></li>
+                </ul>
+              </li>
+              <li>
+                Disk space/cleaning
+                <ul>
+                  <li>
+                    <a href="https://www.omnigroup.com/more">OmniDiskSweeper - finding trash in the mac</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                Compressing (Optimizing) images/photos and editors
+                <ul>
+                  <li>
+                    <a href="https://paintbrush.sourceforge.io/downloads/">Paint alternative on mac: https://paintbrush.sourceforge.io/downloads/</a>
+                    <br />
+                    create new page 1200 x 1700 to have ration of A4 page
+                  </li>
+                  <li>
+                    <a href="https://imageoptim.com/howto.html">ImageOptim v1.7.3 (08-03-2018)</a>
+                  </li>
+                  <li>
+                    <a href="https://imazing.com/heic/download/macos">imazing</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                Video, screen capture
+                <ul>
+                  <li><a href="https://www.cockos.com/licecap/">LICEcap</a> screen capture as a gif</li>
+                </ul>
+              </li>
+              <li>
+                Multiclipboard
+                <ul>
+                  <li>
+                    <a href="https://apps.apple.com/us/app/copy-em-clipboard-manager/id876540291?mt=12">Copy 'Em (Clipboard Manager)</a>
+                  </li>
+                  <li>
+                    <a href="https://apps.apple.com/us/app/flycut-clipboard-manager/id442160987?mt=12">Flycut (Clipboard Manager)</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                Password Manager
+                <ul>
+                  <li>
+                    <a href="https://keepassxc.org/download/#mac">KeePassXC - https://keepassxc.org/download/#mac</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                External display brightness and volume
+                <ul>
+                  <li>
+                    <a href="https://github.com/MonitorControl/MonitorControl">MonitorControl</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
             <h2>Commander One</h2>
             <a href="https://mac.eltima.com/file-manager.html">Download</a>
             <script type="editor" data-lang="sh">
@@ -47,9 +118,7 @@
               ⌃⌥F5 - Compress file with options [original]
               ⌃F9 - Extract file [original]
             </script>
-            <h2>Disk Space</h2>
-            <a href="https://www.omnigroup.com/more">OmniDiskSweeper</a>
-            <h2>Shortcuts</h2>
+            <h2>Finder Shortcuts</h2>
             <script type="editor" data-lang="sh">
 
               iFinder:
@@ -58,6 +127,11 @@
               # or try to turn it on permanently
               defaults write com.apple.finder AppleShowAllFiles YES
               killall Finder
+            </script>
+            <h2>Images resizing from cli</h2>
+            <script type="editor" data-lang="sh">
+
+              sips -Z 2500 hhh.png
             </script>
             <h2>Low Power Mode</h2>
             <script type="editor" data-lang="sh">
@@ -74,31 +148,10 @@
               Extracted from:   https://goodsnooze.gumroad.com/l/cooldown
             </script>
 
-            <h2 id="test-test">Compressing (Optimizing) images/photos</h2>
-            <a href="https://imageoptim.com/howto.html">ImageOptim v1.7.3 (08-03-2018)</a>
-            <br />
-            <a href="https://imazing.com/heic/download/macos">imazing</a>
             <h2>Auto mount network drive</h2>
             <a href="https://www.imore.com/how-automatically-mount-network-drives-macos">https://www.imore.com/how-automatically-mount-network-drives-macos</a>
-            <h2>Additional software to install</h2>
-            <a href="https://apps.apple.com/us/app/amphetamine/id937984704?mt=12">https://apps.apple.com/us/app/amphetamine/id937984704?mt=12</a>
-            <br />
-            <a href="https://www.cockos.com/licecap/">LICEcap</a>
-            <h2>Images resizing from cli</h2>
-            <script type="editor" data-lang="sh">
-
-              sips -Z 2500 hhh.png
-            </script>
             <h2>M1 ready apps</h2>
             <a href="https://isapplesiliconready.com/">https://isapplesiliconready.com/</a>
-            <h2>Multiclipboard</h2>
-            <a href="https://apps.apple.com/us/app/copy-em-clipboard-manager/id876540291?mt=12">Copy 'Em (Clipboard Manager)</a>
-            <br />
-            <a href="https://apps.apple.com/us/app/flycut-clipboard-manager/id442160987?mt=12">Flycut (Clipboard Manager)</a>
-            <h2>KeePass</h2>
-            <a href="https://keepassxc.org/download/#mac">https://keepassxc.org/download/#mac</a>
-            <h2>Volume and external screen Control</h2>
-            <a href="https://github.com/MonitorControl/MonitorControl">https://github.com/MonitorControl/MonitorControl</a>
             <h2>Increase Keyboard Repeat Rate on Mac</h2>
             <a href="https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/">https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/</a>
             <br />
@@ -140,16 +193,6 @@
             <a href="https://www.maketecheasier.com/fix-home-end-button-for-external-keyboard-mac/">g(How to Fix the Home and End Buttons for an External Keyboard in Mac)</a>
           </div>
           <div class="card">
-            <h2>Brew</h2>
-            <script type="editor" data-lang="sh">
-
-              HOMEBREW_NO_AUTO_UPDATE=1 brew install lib
-
-              HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install lib
-
-              HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install
-              # from: https://github.com/Homebrew/brew/issues/1670#issuecomment-267096602
-            </script>
             <h2>Current Path In The Finder Title Bar</h2>
             <a href="https://www.tekrevue.com/tip/show-path-finder-title-bar/">https://www.tekrevue.com/tip/show-path-finder-title-bar/</a>
             <h2>Autostart</h2>
@@ -160,16 +203,6 @@
             download and unpack in /Applications. It runs /bin/bash ~/startup
             <h2>iterm</h2>
             <img src="https://i.imgur.com/nLp9vNq.png" width="800" />
-            <h2>Apps</h2>
-            <h4>Keep mac awake</h4>
-            <a href="https://apps.apple.com/de/app/amphetamine/id937984704">Amphetamine Wach bleiben William Gustafson (from App Store)</a> - I have been using this one
-            <br />
-            <a href="https://formulae.brew.sh/cask/caffeine">Caffeine (from brew)</a>
-            <br />
-            <a href="https://www.google.com/search?q=OmniDiskSweeper+-+finding+trash+in+the+mac">OmniDiskSweeper - finding trash in the mac</a>
-            <br />
-            <a href="https://paintbrush.sourceforge.io/downloads/">Paint equivalent: https://paintbrush.sourceforge.io/downloads/</a>
-            create new page 1200 x 1700 to have ration of A4 page
             <h2>Record screen with internal sound</h2>
             <script type="editor" data-lang="sh">
 
@@ -203,9 +236,9 @@
 
               WARNING: SOMETIMES IT IS NECESSARY ALSO TO UPDATE OSXFUSE
             </script>
-            <h2>Brew</h2>
+            <h2>Mouse - Enable Dragging with Drag Lock</h2>
             <script type="editor" data-lang="sh">
-              Accessability -> Pointer Control -> (tab)Mouse & Trackpad -> (button)Trackpad Options... -> (on state for checkbox)Enable dragging -> (option from select)Withou drag lock
+              Accessability -> Pointer Control -> (tab)Mouse & Trackpad -> (button)Trackpad Options... -> (on state for checkbox)Enable dragging -> (option from select)Without drag lock
             </script>
             <a
               href="https://news.ycombinator.com/item?id=13048479#:~:text=great%20for%20hackers-,You%20should%20try%20the%20option%20%22Enable%20Dragging%20with%20Drag%20Lock,until%20you%20short%2Dtap%20again."
@@ -214,7 +247,8 @@
             <h2>Issues</h2>
             <ul>
               <li>
-                <a href="https://discussions.apple.com/thread/253164486">thermal throttling</a> - helping solution: <a href="http://tbswitcher.rugarciap.com/">Turbo Boost Switcher for Intel Mac</a>
+                <a href="https://discussions.apple.com/thread/253164486">Intel thermal throttling</a> - helping solution:
+                <a href="http://tbswitcher.rugarciap.com/">Turbo Boost Switcher for Intel Mac (last time when I've checked this app didn't work)</a>
               </li>
             </ul>
           </div>
