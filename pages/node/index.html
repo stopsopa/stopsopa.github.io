@@ -524,6 +524,16 @@ async function notExist(file) {
 }          
 
 
+
+
+let template;
+
+{
+  const result = await fsPromises.readFile(templateFile, "utf8");
+
+  template = result.toString();
+}
+
           
           </script>
           <h2>eslint</h2>
