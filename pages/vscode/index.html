@@ -116,6 +116,25 @@
             <li><a href=""></a></li>
             <li><a href=""></a></li>
           </ul>
+          <h2>Uninstall VS Code</h2>
+          
+          <script type="editor" data-lang="js">
+
+rm -rf "~/.vscode"
+rm -rf "~/Library/Application Support/Code"
+rm -rf "~/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/com.microsoft.vscode.sfl*"
+rm -rf "~/Library/Caches/com.microsoft.VSCode.ShipIt"
+rm -rf "~/Library/Caches/com.microsoft.VSCode"
+rm -rf "~/Library/Preferences/ByHost/com.microsoft.VSCode.ShipIt.*.plist"
+rm -rf "~/Library/Preferences/com.microsoft.VSCode.helper.plist"
+rm -fr "~/Library/Preferences/com.microsoft.VSCode.plist"
+rm -fr "~/Library/Caches/com.microsoft.VSCode.ShipIt"
+rm -rf "~/Library/Saved Application State/com.microsoft.VSCode.savedState"
+
+// from: https://github.com/Homebrew/homebrew-cask/blob/16eab891a1b32d7e200e83a70c37e2358954bbef/Casks/visual-studio-code.rb#L29
+// and from: https://stackoverflow.com/a/47561948
+
+          </script>
         </div>
       </div>
     </div>
