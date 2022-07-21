@@ -521,19 +521,36 @@ async function notExist(file) {
   } catch (e) {
     return e;
   }
-}          
+};         
 
+(async () => {
+  try {
+    {
+      const nExist = await notExist(templateFile);
 
+      if (nExist) {
+        throw th(`template file '${templateFile}' doesn't exist (${nExist.message})`);
+      }
+    }
 
+    let template;
 
-let template;
+    {
+      const result = await fsPromises.readFile(templateFile, "utf8");
 
-{
-  const result = await fsPromises.readFile(templateFile, "utf8");
+      template = result.toString();
+    }    
+    
+  } catch (e) {
+    log(`
+    
+Global catch:     
+    
+    `);
 
-  template = result.toString();
-}
-
+    throw e;
+  }
+})();
           
           </script>
           <h2>eslint</h2>
