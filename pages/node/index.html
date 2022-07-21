@@ -506,6 +506,26 @@
                     return filelist;
                 };
           </script>
+          <h2>fs</h2>
+          <script type="editor" data-lang="js">
+          
+const fsPromises = require("node:fs/promises");
+
+// based on: https://github.com/nodejs/node/issues/39960#issuecomment-909444667
+// more about fs/promises: https://nodejs.org/api/fs.html#fspromisesstatpath-options
+// also some good advice: https://gist.github.com/joepie91/bbf495e044da043de2ba
+async function notExist(file) {
+  try {
+    await fsPromises.stat(file);
+    return false;
+  } catch (e) {
+    return e;
+  }
+}          
+
+
+          
+          </script>
           <h2>eslint</h2>
           <script type="editor" data-lang="python">
 
