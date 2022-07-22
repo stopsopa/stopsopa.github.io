@@ -37,7 +37,23 @@
 
           <a href="https://formulae.brew.sh/formula/kafka#default">brew repository page</a>
           <h2>UI and exploring</h2>
-          <a href="https://github.com/obsidiandynamics/kafdrop">kafdrop</a>
+          <a href="https://github.com/obsidiandynamics/kafdrop">kafdrop</a> (desktop)
+          <br />
+          <a href="https://github.com/redpanda-data/console">Redpanda Console</a> (Web in docker)
+          <p>and</p>
+          <a href="https://github.com/consdata/kouncil">Kouncil for Apache Kafka</a> (web in docker)
+          <script type="editor" data-lang="sh">
+
+from: https://dev.to/dariusx/recommend-a-simple-kafka-ui-tool-5gob
+
+docker run -p 4241:8080 -e KAFKA_BROKERS=x_x_x_x:9092 docker.redpanda.com/vectorized/console:master-0a8fce8   
+    # and visit: http://localhost:4241
+    
+docker run -p 4245:8080 -e bootstrapServers="x_x_x_x:9092" consdata/kouncil:latest   
+    # and visit: http://localhost:4245  
+        
+          
+          </script>
           <br />
           <a href="https://www.kafkatool.com/">Offset Explorer</a>
         </div>
