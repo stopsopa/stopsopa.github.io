@@ -178,20 +178,46 @@
 
           <script type="editor" data-lang="js">
           
+          
 (function (root, factory) {
   if (typeof define === "function" && define.amd) {
+
+    // list of dependencies here to check vvv
     define(["jquery", "underscore"], factory);
+
   } else if (typeof exports === "object") {
+
+    // list of dependencies here to check vvv
     module.exports = factory(require("jquery"), require("underscore"));
+
   } else {
-    root.Requester = factory(root.$, root._);
+
+    // global name of library to set
+    var name = '__MY_LIBRARY_GLOBAL_NAME';
+
+    var original = root[name];
+
+    // list of dependencies here to check vvv
+    var lib = factory(root.$, root._);
+
+    root[name] = lib;
+
+    root['__' + name + 'NoConflict'] = function () {
+
+      root[name] = original;
+
+      return lib;
+    };
   }
-}(this, function ($, _) {
+  // list of dependencies here to check vvv
+})(this, function ($, _) {
 
   var tool = {}; // this object will be your library
 
   return tool;
-}));
+});
+          
+
 
           </script>
           <h2>manipulation</h2>
