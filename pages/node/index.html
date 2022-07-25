@@ -248,6 +248,8 @@
           </script>
           more: <a href="https://github.com/open-cli-tools/chokidar-cli">https://github.com/open-cli-tools/chokidar-cli</a> <br />
           <a href="https://github.com/microsoft/playwright/issues/7035">https://github.com/microsoft/playwright/issues/7035</a>
+          <br />
+          <a href="https://stackoverflow.com/a/13807906">about fswatch</a>
           <h2>streams</h2>
           <script type="editor" data-lang="js">
 
@@ -505,6 +507,53 @@
 
                     return filelist;
                 };
+          </script>
+          <h2>fs/promises</h2>
+          <script type="editor" data-lang="js">
+          
+const fsPromises = require("node:fs/promises");
+
+// based on: https://github.com/nodejs/node/issues/39960#issuecomment-909444667
+// more about fs/promises: https://nodejs.org/api/fs.html#fspromisesstatpath-options
+// also some good advice: https://gist.github.com/joepie91/bbf495e044da043de2ba
+async function notExist(file) {
+  try {
+    await fsPromises.stat(file);
+    return false;
+  } catch (e) {
+    return e;
+  }
+};         
+
+(async () => {
+  try {
+    {
+      const nExist = await notExist(templateFile);
+
+      if (nExist) {
+        throw th(`template file '${templateFile}' doesn't exist (${nExist.message})`);
+      }
+    }
+
+    let template;
+
+    {
+      const result = await fsPromises.readFile(templateFile, "utf8");
+
+      template = result.toString();
+    }    
+    
+  } catch (e) {
+    log(`
+    
+Global catch:     
+    
+    `);
+
+    throw e;
+  }
+})();
+          
           </script>
           <h2>eslint</h2>
           <script type="editor" data-lang="python">

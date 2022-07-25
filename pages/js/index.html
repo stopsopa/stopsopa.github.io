@@ -177,47 +177,48 @@
           <a href="https://gist.github.com/stopsopa/8297755373fd5be34165cc8e12d35642">gist (UMD - browser global & node module (singleton))</a>
 
           <script type="editor" data-lang="js">
+          
+          
+(function (root, factory) {
+  if (typeof define === "function" && define.amd) {
 
-            (function (root, name, factory) {
+    // list of dependencies here to check vvv
+    define(["jquery", "underscore"], factory);
 
-                var log=(function(){try{return console.log}catch(e){return function (){}}}());
+  } else if (typeof exports === "object") {
 
-                var node = typeof global !== 'undefined' && Object.prototype.toString.call(global.process) === '[object process]';
+    // list of dependencies here to check vvv
+    module.exports = factory(require("jquery"), require("underscore"));
 
-                try {
-                    // const instance = factory(root, root.b, log, node);
-                    const instance = factory(root, log, node);
+  } else {
 
-                    const nc = root[name];
+    // global name of library to set
+    var name = '__MY_LIBRARY_GLOBAL_NAME';
 
-                    instance.noConflict || (instance.noConflict = function(){root[name]=nc;return instance})
+    var original = root[name];
 
-                    // Browser globals
-                    root[name] = instance;
-                }
-                catch (e) {
-                    log("UMD (" + name + "): can't assign to root, reason: ", e + '');
-                }
+    // list of dependencies here to check vvv
+    var lib = factory(root.$, root._);
 
-                if (typeof module === 'object' && module.exports) {
-                    // Node. Does not work with strict CommonJS, but
-                    // only CommonJS-like environments that support module.exports,
-                    // like Node.
-                    //module.exports = factory({}, require('b'), log, node);
-                    module.exports = factory(root, log, node);
-                }
+    root[name] = lib;
 
-            }(typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : this), 'lib', function (root, log, node) {
+    root['__' + name + 'NoConflict'] = function () {
 
-                // root - is just for access
-                // node - to detect if this is node environment
+      root[name] = original;
 
-                // just build tool and return, don't worry about attaching do window|object (browser mode)
-                var tool = function () {};
+      return lib;
+    };
+  }
+  // list of dependencies here to check vvv
+})(this, function ($, _) {
 
-                return tool;
+  var tool = {}; // this object will be your library
 
-            }));
+  return tool;
+});
+          
+
+
           </script>
           <h2>manipulation</h2>
           <script type="editor" data-lang="js">
