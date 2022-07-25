@@ -22,6 +22,10 @@
               # from: https://github.com/Homebrew/brew/issues/1670#issuecomment-267096602
 
               Accessability -> Pointer Control -> (tab)Mouse & Trackpad -> (button)Trackpad Options... -> (on state for checkbox)Enable dragging -> (option from select)Withou drag lock
+                           
+              echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/sdzialowski/.zprofile
+              eval "$(/opt/homebrew/bin/brew shellenv)"
+              
             </script>
             <h2>Apps</h2>
             <ul>
@@ -89,7 +93,28 @@
                   </li>
                 </ul>
               </li>
+              <li>
+                Stats
+                <ul>
+                  <li>
+                    <a href="https://bjango.com/mac/istatmenus/">iStat Menus 6 (v6.62 currently)</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                Encrypted volumes
+                <ul>
+                  <li>
+                    <a href="https://www.veracrypt.fr/code/VeraCrypt/">VeraCrypt</a> depends on <a href="https://github.com/osxfuse/osxfuse/releases">macFUSE</a>
+                  </li>
+                  <li>
+                    <a href="https://cryptomator.org/downloads/">Cryptomator</a> depends on <a href="https://github.com/osxfuse/osxfuse/releases">macFUSE</a>
+                  </li>
+                </ul>
+              </li>
             </ul>
+            <h2>Dock, Menu Bar, Spotlight, Notification Centre, Status menus</h2>
+            <a href="https://support.apple.com/en-gb/guide/mac-help/mh35859/mac">link</a>
             <h2>Commander One</h2>
             <a href="https://mac.eltima.com/file-manager.html">Download</a>
             <script type="editor" data-lang="sh">
@@ -153,11 +178,30 @@
             <h2>M1 ready apps</h2>
             <a href="https://isapplesiliconready.com/">https://isapplesiliconready.com/</a>
             <h2>Increase Keyboard Repeat Rate on Mac</h2>
+            <a href="https://apple.stackexchange.com/a/58847">defaults write -g ApplePressAndHoldEnabled -bool false</a>
+            <script type="editor" data-lang="sh">
+                                                
+              # to turn on repeating
+              defaults write -g ApplePressAndHoldEnabled -bool false
+
+              # obviously true to turn it back off
+                                                
+            </script>
+            <img src="https://i.imgur.com/ULGT2KN.png" style="width: 500px;">
+            <br />
             <a href="https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/">https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/</a>
             <br />
             <a href="https://apple.stackexchange.com/q/10467">https://apple.stackexchange.com/q/10467</a>
+            <h2>Karabiner-Elements remap keyboard</h2>
+            <img src="https://i.imgur.com/5qZ55K0.png" style="width: 500px;">
+            <br />
+            <img src="https://i.imgur.com/hsyjamO.png" style="width: 500px;">
             <h2>Mouse pointer - Shake mouse pointer to locate</h2>
             <a href="https://support.apple.com/en-gb/guide/mac-help/mchlp2920/mac">g(Make the pointer easier to see on Mac)</a>
+            <h2>Mouse - Enable Dragging with Drag Lock</h2>
+            <script type="editor" data-lang="sh">
+              Accessability -> Pointer Control -> (tab)Mouse & Trackpad -> (button)Trackpad Options... -> (on state for checkbox)Enable dragging -> (option from select)Without drag lock
+            </script>
           </div>
           <div class="card">
             <h2>How to Fix the Home and End Buttons</h2>
@@ -235,10 +279,6 @@
               	https://osxfuse.github.io/
 
               WARNING: SOMETIMES IT IS NECESSARY ALSO TO UPDATE OSXFUSE
-            </script>
-            <h2>Mouse - Enable Dragging with Drag Lock</h2>
-            <script type="editor" data-lang="sh">
-              Accessability -> Pointer Control -> (tab)Mouse & Trackpad -> (button)Trackpad Options... -> (on state for checkbox)Enable dragging -> (option from select)Without drag lock
             </script>
             <a
               href="https://news.ycombinator.com/item?id=13048479#:~:text=great%20for%20hackers-,You%20should%20try%20the%20option%20%22Enable%20Dragging%20with%20Drag%20Lock,until%20you%20short%2Dtap%20again."
