@@ -353,7 +353,7 @@ if [ -f "${_UNSEALKEYSFILE}" ]; then
 
     { green "unsealing vault"; } 2>&3
 
-    cat "${_UNSEALKEYSFILE}" | xargs -I %% vault operator unseal %%
+    cat "${_UNSEALKEYSFILE}" | xargs -I %% ${_BINARY} operator unseal %%
 
     echo "::::::::: (cd '${_DIR}' && ${_BINARY} status)"
 
