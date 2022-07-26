@@ -58,8 +58,6 @@ if [ "${VAULT_BINARY}" != "" ]; then
     _BINARY="${VAULT_BINARY}"
 fi
 
-# source "${DIR}/../trim.sh"
-
 # FLAG="$(trim "${FLAG}")"
 
 trim() {
