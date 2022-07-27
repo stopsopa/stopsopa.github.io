@@ -30,15 +30,34 @@ echo "${_0}: executing ~/.huskyrc _BINARY=${_BINARY}"
 
 alias sshh="/bin/bash ~/sshh.sh"
 
-export SSHH_DIR_WITH_KEYS="/Volumes/truecrypt/ssh/ssh"
+if [ "${_BINARY}" = "/bin/zsh" ]; then
 
-sshh --auto
+    source ~/.zshrc
+fi
 
+if [ "${_BINARY}" = "/bin/zsh" ]; then
+
+    source ~/.bashrc
+fi
+
+if [ "${SSHH_DIR_WITH_KEYS}" = "" ]; then
+
+    echo ".huskyrc error: SSHH_DIR_WITH_KEYS is not defined"
+    exit 1
+fi
+
+if [ "${NVM_BIN}" = "" ]; then
+
+    echo ".huskyrc error: NVM_BIN is not defined"
+    exit 1
+fi
+
+/bin/bash ~/sshh.sh --auto
 
 source ~/.nvm/nvm.sh
 
 nvm use || true
 
-export PATH="${PATH}:/Users/sdzialowski/.nvm/versions/node/v16.14.0/bin"
+export PATH="${PATH}:${NVM_BIN}"
 
 echo "${_0}: finished ~/.huskyrc"
