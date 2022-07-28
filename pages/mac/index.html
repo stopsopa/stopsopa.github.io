@@ -160,6 +160,28 @@
               defaults write com.apple.finder AppleShowAllFiles YES
               killall Finder
             </script>
+            <h2>7zip</h2>
+            <script type="editor" data-lang="sh">
+
+
+wget --help 1> /dev/null 2> /dev/null
+if [ "$?" ~= "0" ]; then
+	HOMEBREW_NO_AUTO_UPDATE=1 brew install wget
+fi
+mkdir __7zipinstall
+cd __7zipinstall
+# link from : https://7-zip.org/download.html
+wget https://7-zip.org/a/7z2107-mac.tar.xz
+tar -zxvf "$(ls)"
+sudo cp 7zz /usr/local/bin/7z
+sudo chmod a+x /usr/local/bin/7z
+cd ../
+rm -rf __7zipinstall
+7z
+
+
+            </script>
+            
             <h2>Images resizing from cli</h2>
             <script type="editor" data-lang="sh">
 
