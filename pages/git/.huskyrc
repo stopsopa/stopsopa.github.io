@@ -26,9 +26,9 @@ esac
 
 eval __HOME="~"
 
-echo "========================================= execute ${__HOME}/.huskyrc regular vvv"
+echo "========================================= execute ${__HOME}/.huskyrc regular binary: >${_BINARY}< vvv"
 
-if [ "${_BINARY}" = "/bin/sh" ]; then
+if [ "${_BINARY}" = "/bin/sh" ] || [ "${_BINARY}" = "/bin/bash" ]; then
 
     set -e
 
