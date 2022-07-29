@@ -30,12 +30,12 @@
 # protect with password
 7z a -mx7 -snl -snh -sse -ssc -pPASSWD test.7z dir
 
--sse : stop archive creating, if it can't open some input file
--snh : store hard links as links
--snl : store symbolic links as links
--mx7 - compression level
--ssc - case sensitive mode
--mhe - header compression (must provide password if you want to see content)
+# -sse : stop archive creating, if it can't open some input file
+# -snh : store hard links as links
+# -snl : store symbolic links as links
+# -mx7 - compression level
+# -ssc - case sensitive mode
+# -mhe - header compression (must provide password if you want to see content)
 
 # unarchive
 7z x -snld test.7z
