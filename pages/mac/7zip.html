@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <h2>7zip</h2>
+          <script type="editor" data-lang="sh">
+          
+rm -rf test.7z
+rm -rf dir
+mkdir -p dir/a/b/c
+mkdir -p dir/a/b/z
+echo test > dir/a/b/c/test.txt
+echo zzz > dir/a/b/z/zzz.txt
+mkdir -p dir/a/d
+echo dupa > dir/a/d/two.txt
+(cd dir/a/d && ln -s ../b/c/test.txt test-link.txt)
+(cd dir/a/d && ln ../b/c/test.txt test-hard.txt)
+(cd dir/a/d && ln -s ../b/z/zzz.txt zzz-link.txt)
+(cd dir/a/d && ln ../b/z/zzz.txt zzz-hard.txt)
+
+# 7z a -snl -ppassword test.7z dir
+  # archive with password
+
+# 7z x test.7z
+  # extract
+
+#7z a test.7z dir
+      # pack symlinks as separate files, archive is smaller
+        # -rw-r--r--  1 sdzialowski  staff  294 28 Jul 23:32 test.7z
+
+# pack links as links and, archive is bigger (yep bigger)
+7z a -mx7 -snl -snh -sse test.7z dir
+  # -rw-r--r--  1 sdzialowski  staff  331 28 Jul 23:30 test.7z
+      # level of compression: -mx[N] : set compression level: -mx0 (copy mode) -mx1 (fastest) ... -mx9 (ultra)
+      #
+      #Switch -mx0: Don't compress at all.
+      #             This is called "copy mode."
+      #
+      #Switch -mx1: Low compression.
+      #             This is called "fastest" mode.
+      #
+      #Switch -mx3: Fast compression mode.
+      #             Will automatically set various parameters.
+      #
+      #Switch -mx5: Same as above, but "normal."
+      #
+      #Switch -mx7: This means "maximum" compression.
+      #
+      #Switch -mx9: This means "ultra" compression.
+      #             You probably want to use this.
+
+#-sse : stop archive creating, if it can't open some input file
+
+# stream
+# -so : write data to stdout
+
+
+# list content of archive (you will not really see symlinks nor hardlinks in the listing)
+echo "vvvvv"
+7z l test.7z dir
+#7z l -slt test.7z dir
+  # show technical info mode
+
+      # prints -------------------------------- vvv
+      #7-Zip (z) 21.07 (arm64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26
+      # 64-bit arm_v:8 locale=en_GB.UTF-8 Threads:10, ASM
+      #
+      #Scanning the drive for archives:
+      #1 file, 331 bytes (1 KiB)
+      #
+      #Listing archive: test.7z
+      #
+      #--
+      #Path = test.7z
+      #Type = 7z
+      #Physical Size = 331
+      #Headers Size = 288
+      #Method = LZMA2:12
+      #Solid = +
+      #Blocks = 1
+      #
+      #   Date      Time    Attr         Size   Compressed  Name
+      #------------------- ----- ------------ ------------  ------------------------
+      #2022-07-28 23:30:50 D....            0            0  dir
+      #2022-07-28 23:30:50 D....            0            0  dir/a
+      #2022-07-28 23:30:50 D....            0            0  dir/a/b
+      #2022-07-28 23:30:50 D....            0            0  dir/a/b/c
+      #2022-07-28 23:30:50 D....            0            0  dir/a/b/z
+      #2022-07-28 23:30:50 D....            0            0  dir/a/d
+      #2022-07-28 23:30:50 ....A            5           43  dir/a/b/c/test.txt
+      #2022-07-28 23:30:50 ....A            5               dir/a/b/c/zzz.txt
+      #2022-07-28 23:30:50 ....A            5               dir/a/d/test-hard.txt
+      #2022-07-28 23:30:50 ....A           15               dir/a/d/test-link.txt
+      #2022-07-28 23:30:50 ....A            5               dir/a/d/two.txt
+      #2022-07-28 23:30:50 ....A            5               dir/a/d/zzz-hard.txt
+      #2022-07-28 23:30:50 ....A           14               dir/a/d/zzz-link.txt
+      #------------------- ----- ------------ ------------  ------------------------
+      #2022-07-28 23:30:50                 54           43  7 files, 6 folders
+      # prints -------------------------------- ^^^
+echo "^^^^^"
+
+rm -rf dir
+7z x -snld test.7z
+  # unpack
+
+ls -la test.7z
+
+# more
+# test integrity
+  #7z t archive.zip *.doc -r
+
+# INTERESTING: compressing only *.txt files anywhere in the target dir
+#       g(site:www.7-zip.org "Why doesn't -r switch work as expected?")
+
+
+#          Switch: -t7z
+#          Format: 7Z
+#Example filename: archive.7z (default option)
+#
+#          Switch: -tgzip
+#          Format: GZIP
+#Example filename: archive.gzip, archive.gz
+#
+#          Switch: -tzip
+#          Format: ZIP
+#Example filename: archive.zip (compatible)
+#
+#          Switch: -tbzip2
+#          Format: BZIP2
+#Example filename: archive.bzip2
+#
+#          Switch: -ttar
+#          Format: TAR
+#Example filename: tarball.tar (UNIX and Linux)
+#
+#          Switch: -tiso
+#          Format: ISO
+#Example filename: image.iso (may not be supported)
+#
+#          Switch: -tudf
+#          Format: UDF
+#Example filename: disk.udf
+
+
+#time 7z a -mx7 -snl -snh -sse normal.7z GDCORP-BRANDS-RESELLER__dst-api
+#	41M	normal.7z  108.66s user 6.52s system 105% cpu 1:49.56 total
+#
+#
+#time 7z a -mmt4 -mx7 -snl -snh -sse 4cpu.7z GDCORP-BRANDS-RESELLER__dst-api
+#	41M	normal.7z  108.66s user 6.52s system 105% cpu 1:49.56 total
+#
+#
+#time 7z a -m0=lzma2 -snl -snh -sse lzma2.7z GDCORP-BRANDS-RESELLER__dst-api
+#	41M	normal.7z  108.66s user 6.52s system 105% cpu 1:49.56 total
+#
+#time 7z a -mmt=on -snl -snh -sse mmt_on.7z GDCORP-BRANDS-RESELLER__dst-api
+#	47M	mmt_on.7z	87.54s user 6.44s system 95% cpu 1:38.10 total
+#
+#time 7z a -snl -snh -sse plain.7z GDCORP-BRANDS-RESELLER__dst-api
+#	47M plain.7z	85.44s user 6.78s system 81% cpu 1:52.50 total (seems like -mx5 might be default)
+#
+#
+#time 7z a -txz -snl -snh -sse txz.7z GDCORP-BRANDS-RESELLER__dst-api
+#	# E_INVALIDARG : One or more arguments are invalid (when -txz added)
+#
+#time 7z a -v10m -snl -snh -sse v10m.7z GDCORP-BRANDS-RESELLER__dst-api
+#	# will split to 10mb files: v10m.7z.001 v10m.7z.002 v10m.7z.003 v10m.7z.004 v10m.7z.005
+#	# then unpack using:
+#	#	7z x -snld v10m.7z.00
+#	# -snld prevents error "ERROR: Dangerous symbolic link path was ignored"
+#
+#
+#7z -v option supports b k m g (bytes, kilobytes, megabytes, gigabytes)
+
+#stream: https://unix.stackexchange.com/a/590163
+#-si[{name}] : read data from stdin
+#-so : write data to stdout
+
+cat <<EEE > lorem.txt
+Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+when an unknown printer took a galley of type and scrambled it to make a
+type specimen book. It has survived not only five centuries, but also the
+leap into electronic typesetting, remaining essentially unchanged.
+It was popularised in the 1960s with the release of Letraset sheets
+containing Lorem Ipsum passages, and more recently with desktop
+publishing software like Aldus PageMaker including versions of Lorem Ipsum
+EEE
+
+cat lorem.txt | 7z a .xz -si -so | tee encoded.7z
+cat encoded.7z | 7z x -txz -si -so | tee lorem2.txt
+
+cat lorem.txt | 7z a .xz -si -so > encoded2.7z
+cat encoded2.7z | 7z x -txz -si -so > lorem22.txt
+
+cat lorem.txt | 7z a .xz -si -so | tee encoded-stream.7z | 7z x -txz -si -so | tee lorem3.txt
+
+cat lorem.txt | 7z a .xz -si -so | 7z x -txz -si -so > lorem4.txt
+
+          </script>
+
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>
