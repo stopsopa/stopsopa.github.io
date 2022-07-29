@@ -81,6 +81,11 @@
           npm set-script "style:check" "yarn prettier --check ."
           npm set-script "style:fix" "yarn prettier --write ."
           npm set-script "style:list" "yarn prettier --list-different ."
+          
+          # or just add manually to package.json for older version of NPM:
+          "style:check": "yarn prettier --check .",
+          "style:fix": "yarn prettier --write .",
+          "style:list": "yarn prettier --list-different ."
 
           yarn add -D prettier
 
