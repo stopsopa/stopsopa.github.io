@@ -14,8 +14,38 @@
           <a href="https://info.nrao.edu/computing/guide/file-access-and-archiving/7zip/7z-7za-command-line-guide">g(7-Zip is an Archive and File Management utility available in command-line versions for Linux/Mac)</a>
           <br />
           <a href="https://7-zip.org/links.html">and obviously homepage</a>
+          <br />
+          <a href="https://thedeveloperblog.com/7-zip-examples">more examples</a>
           <script type="editor" data-lang="sh">
-          
+
+
+# summary
+
+# archive
+7z a -mx7 -snl -snh -sse -ssc test.7z dir
+
+# archive - split
+7z a -mx7 -snl -snh -sse -ssc -v10m test.7z dir
+
+# protect with password
+7z a -mx7 -snl -snh -sse -ssc -pPASSWD test.7z dir
+
+-sse : stop archive creating, if it can't open some input file
+-snh : store hard links as links
+-snl : store symbolic links as links
+-mx7 - compression level
+-ssc - case sensitive mode
+-mhe - header compression (must provide password if you want to see content)
+
+# unarchive
+7z x -snld test.7z
+
+# list
+7z l test.7z dir
+
+
+
+# bash script test ======= vvvv
 rm -rf test.7z
 rm -rf dir
 mkdir -p dir/a/b/c
