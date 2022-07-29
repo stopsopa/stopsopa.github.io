@@ -24,40 +24,55 @@ case ${_SHELL} in
     ;;
 esac
 
-set -e
+eval __HOME="~"
 
-echo "${_0}: executing ~/.huskyrc _BINARY=${_BINARY}"
+echo "========================================= execute ${__HOME}/.huskyrc regular vvv"
 
-alias sshh="/bin/bash ~/sshh.sh"
+if [ "${_BINARY}" = "/bin/sh" ]; then
 
-if [ "${_BINARY}" = "/bin/zsh" ]; then
+    set -e
 
-    source ~/.zshrc
+    echo "========================================= execute ${__HOME}/.huskyrc in zsh vvv"
+
+    /bin/zsh "${__HOME}/.huskyrc"
+
+    echo "========================================= execute ${__HOME}/.huskyrc in zsh ^^^ all good"
+else
+
+    alias sshh="/bin/bash ~/sshh.sh"
+
+    if [ "${_BINARY}" = "/bin/zsh" ]; then
+
+        echo load ~/.zshrc
+
+        source ~/.zshrc
+    fi
+
+    if [ "${_BINARY}" = "/bin/bash" ]; then
+
+        echo load ~/.bashrc
+
+        source ~/.bashrc
+    fi
+
+    if [ "${SSHH_DIR_WITH_KEYS}" = "" ]; then
+
+        echo ".huskyrc error: SSHH_DIR_WITH_KEYS is not defined"
+        exit 1
+    fi
+
+    if [ "${NVM_BIN}" = "" ]; then
+
+        echo ".huskyrc error: NVM_BIN is not defined"
+        exit 1
+    fi
+
+    nvm use 16
+
+    /bin/bash ~/sshh.sh --auto
+
+
+
 fi
 
-if [ "${_BINARY}" = "/bin/zsh" ]; then
-
-    source ~/.bashrc
-fi
-
-if [ "${SSHH_DIR_WITH_KEYS}" = "" ]; then
-
-    echo ".huskyrc error: SSHH_DIR_WITH_KEYS is not defined"
-    exit 1
-fi
-
-if [ "${NVM_BIN}" = "" ]; then
-
-    echo ".huskyrc error: NVM_BIN is not defined"
-    exit 1
-fi
-
-/bin/bash ~/sshh.sh --auto
-
-source ~/.nvm/nvm.sh
-
-nvm use || true
-
-export PATH="${PATH}:${NVM_BIN}"
-
-echo "${_0}: finished ~/.huskyrc"
+echo "========================================= execute ${__HOME}/.huskyrc regular ^^^ all good"
