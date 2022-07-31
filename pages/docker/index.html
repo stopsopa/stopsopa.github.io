@@ -39,6 +39,12 @@
 
           <h2>Useful commands</h2>
           <script type="editor" data-lang="sh">
+          
+            # -i
+            # -t
+            # running in pipelines without -t
+            $ docker run --user $(id -u):$(id -g) -i image_name command args
+            $ CURRENT_UID=$(id -u):$(id -g) docker-compose up
 
             docker history --format "\t{{.Size}}\t\t{{.CreatedBy}}" 1de239ccac3e --no-trunc
 
@@ -69,10 +75,6 @@
             # passing env as is
             $ CYPRESS_VIDEO=false
             $ docker run --name name --rm -d -it -v $PWD:/e2e -w /e2e -e CYPRESS_VIDEO -e "PORT=8089" -p "8089:8089" --entrypoint="" cypress/included:3.2.0 node -v
-
-            # running in pipelines without -t
-            $ docker run --user $(id -u):$(id -g) -i image_name command args
-            $ CURRENT_UID=$(id -u):$(id -g) docker-compose up
 
             host.docker.internal
                 # from: https://docs.docker.com/docker-for-mac/networking/#use-cases-and-workarounds
