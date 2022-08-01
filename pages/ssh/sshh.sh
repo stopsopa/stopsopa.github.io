@@ -23,6 +23,10 @@ PARAMS=""
 _EVAL=""
 while (( "${#}" )); do
   case "${1}" in
+    --is-loaded)
+      IS_LOADED="1";
+      shift 1;
+      ;;
     --hook)
       HOOK="1";
       shift 1;
@@ -101,6 +105,21 @@ while (( "${#}" )); do
       ;;
   esac
 done
+
+if [ "${IS_LOADED}" != "" ]; then
+
+  LOADED="$(ssh-add -l)"
+
+  if [[ ${LOADED} = *"The agent has no identities"* ]]; then
+
+    echo 'not loaded'
+  else
+
+    echo 'loaded'
+  fi
+
+  exit 0
+fi
 
 trim() {
     local var="${*}"
@@ -259,6 +278,9 @@ fi
 if [ "${HELP}" = "1" ]; then
 
   cat <<EEE
+
+     sshh --is-loaded
+to detect if at least one key is loaded
 
  usage once installed:
  just call
