@@ -3,39 +3,26 @@
 # This script is for registering particular key everytime you run terminal
 # There is another though for manual changing of keys
 # called sshh.sh
-
+#
 # to install it , just add to ~/.bash_profile
 #        /bin/bash /Volumes/WINSCP/ssh/ssh/add.sh firstkey secondkey
-
-# you might specify directory as an argument (to override DIR)
+#
+# you might specify directory as an argument (to override SSHH_DIR_WITH_KEYS)
 #        /bin/bash /Volumes/WINSCP/ssh/ssh/add.sh firstkey secondkey -d path/to/directory/with/keys
-
-# 7z unpack mode:
-#        /bin/bash /Volumes/WINSCP/ssh/ssh/add.sh firstkey secondkey -7z pathto7zfilebefore -7zdel directory/to/delete/after
-# -7zdel - delete in trap function after finishing everything
-
 # and then also use sshh script from:
 # https://stopsopa.github.io/pages/ssh/index.html#sshh-manually-swap-ssh-key
+#
+# you might unzip directory before mounting
+# /bin/bash 7zunseal.sh --7z_file /Users/sdzialowski/.ssh/keys.7z --7z_del_dir /Users/sdzialowski/.ssh/keys -- /bin/bash /Volumes/WINSCP/ssh/ssh/add.sh firstkey secondkey
 
-DIR="/Volumes/WINSCP/ssh/ssh"
-
+#SSHH_DIR_WITH_KEYS="/Volumes/WINSCP/ssh/ssh"
 
 PARAMS=""
 _EVAL=""
-UNPACK7Z=""
-DELAFTER7Z=""
 while (( "${#}" )); do
   case "${1}" in
-    -7z)
-      UNPACK7Z="${2}";
-      shift 2;
-      ;;
-    -7zdel)
-      DELAFTER7Z="${2}";
-      shift 2;
-      ;;
     -d|--dir)
-      DIR="${2}";
+      SSHH_DIR_WITH_KEYS="${2}";
       shift 2;
       ;;
     --) # end argument parsing
@@ -93,6 +80,13 @@ while (( "${#}" )); do
   esac
 done
 
+if [ "${SSHH_DIR_WITH_KEYS}" = "" ]; then
+
+  { red "\n${0} error: --dir or SSHH_DIR_WITH_KEYS env var is not specified\n"; } 2>&3
+
+  _exit 2> /dev/null
+fi
+
 trim() {
     local var="${*}"
     # remove leading whitespace characters
@@ -141,66 +135,7 @@ if [[ ! ${LOADED} = *"The agent has no identities"* ]]; then
   exit 0
 fi
 
-if [ "${UNPACK7Z}" != "" ]; then
-
-  if [ ! -f "${UNPACK7Z}" ]; then
-
-    echo "${0} error: ${UNPACK7Z} doesn't exist or it is not a file"
-
-    exit 1
-  fi
-
-  function trigger_traps {
-
-    echo "removing: >${DELAFTER7Z}<"
-
-    rm -rf "${DELAFTER7Z}"
-  }
-
-  trap trigger_traps EXIT;
-
-  (
-    DIR7Z="$(dirname "${UNPACK7Z}")"
-
-    FILE7Z="$(basename "${UNPACK7Z}")"
-
-    cd "${DIR7Z}"
-
-    7z x -snld "${FILE7Z}"
-
-    if [ "${DELAFTER7Z}" = "" ]; then
-
-      echo "${0} error: when -7z (${UNPACK7Z}) is specified then -7zdel should be too"
-
-      exit 1
-    fi
-
-    if [ ! -d "${DELAFTER7Z}" ]; then
-
-      echo "${0} error: after unpacking -7z (${UNPACK7Z}) the -7zdel (${DELAFTER7Z}) should exist and it should be a directory"
-
-      exit 1
-    fi
-
-    if [ "${?}" != "0" ]; then
-
-      cat <<EEE
-unpacking
-
-  cd "${DIR7Z}"
-  7z x -snld "${FILE7Z}"
-
-failed
-EEE
-
-      exit 1
-    fi
-
-    ls -la
-  )
-fi
-
-_CMD="find \"${DIR}\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
+_CMD="find \"${SSHH_DIR_WITH_KEYS}\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
 
 _LIST="$(eval "${_CMD}")"
 
@@ -257,18 +192,18 @@ while : ; do
 
   (
 
-    cd "${DIR}";
+    cd "${SSHH_DIR_WITH_KEYS}";
 
-    if [ ! -e "${DIR}/${KEY}" ]; then
+    if [ ! -e "${SSHH_DIR_WITH_KEYS}/${KEY}" ]; then
 
-      { red "\n${0} error:   file '${DIR}/${KEY}' doesn't exist\n"; } 2>&3
+      { red "\n${0} error:   file '${SSHH_DIR_WITH_KEYS}/${KEY}' doesn't exist\n"; } 2>&3
 
       exit 1
     fi
 
     chmod 700 ~/.ssh/
 
-    cp "${DIR}/${KEY}" ~/.ssh/
+    cp "${SSHH_DIR_WITH_KEYS}/${KEY}" ~/.ssh/
 
     chmod 600 ~/.ssh/${KEY}
 
@@ -280,7 +215,7 @@ while : ; do
 
     rm ~/.ssh/${KEY}
 
-    GITCONFIG="${DIR}/${KEY}.sh"
+    GITCONFIG="${SSHH_DIR_WITH_KEYS}/${KEY}.sh"
 
     if [ -f "${GITCONFIG}" ]; then
 
