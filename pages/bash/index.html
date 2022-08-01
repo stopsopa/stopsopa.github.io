@@ -40,6 +40,10 @@
         <h2>useful</h2>
         <script type="editor" data-lang="sh">
 
+          # fix variables in ide
+          (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
+          \${$1}
+
 
 
           # ------- find and iterate ------- vvv
@@ -75,10 +79,6 @@
           EOF
           docker images | grep ubuntu | grep 18.04-man
           docker run -it ubuntu:18.04-man bash
-
-          # fix variables in ide
-          (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
-          \${$1}
 
 
           # path interpolation
