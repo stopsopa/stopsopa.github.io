@@ -44,15 +44,13 @@
           <a href="https://github.com/consdata/kouncil">Kouncil for Apache Kafka (web in docker)</a>
           <script type="editor" data-lang="sh">
 
-from: https://dev.to/dariusx/recommend-a-simple-kafka-ui-tool-5gob
+            from: https://dev.to/dariusx/recommend-a-simple-kafka-ui-tool-5gob
 
-docker run -p 4241:8080 -e KAFKA_BROKERS=x_x_x_x:9092 docker.redpanda.com/vectorized/console:master-0a8fce8   
-    # and visit: http://localhost:4241
-    
-docker run -p 4245:8080 -e bootstrapServers="x_x_x_x:9092" consdata/kouncil:latest   
-    # and visit: http://localhost:4245  
-        
-          
+            docker run -p 4241:8080 -e KAFKA_BROKERS=x_x_x_x:9092 docker.redpanda.com/vectorized/console:master-0a8fce8
+                # and visit: http://localhost:4241
+
+            docker run -p 4245:8080 -e bootstrapServers="x_x_x_x:9092" consdata/kouncil:latest
+                # and visit: http://localhost:4245
           </script>
           <br />
           <a href="https://www.kafkatool.com/">Offset Explorer</a>

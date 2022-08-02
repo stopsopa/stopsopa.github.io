@@ -69,88 +69,86 @@
           <a href="https://kinsta.com/blog/mariadb-vs-mysql/#:~:text=MariaDB%20vs%20MySQL%20Differences,lot%20of%20different%20storage%20engines.">MariaDb vs Mysql</a>
           <h2>Node test</h2>
           <script type="editor" data-lang="js">
-          
-const path = require('path');
 
-const env = path.resolve(__dirname, '.env');
+            const path = require('path');
 
-const fsPromises = require('node:fs/promises');
+            const env = path.resolve(__dirname, '.env');
 
-const th = (msg) => th(`mysql-test.js error: ${msg}`);
+            const fsPromises = require('node:fs/promises');
 
-const log = console.log;
+            const th = (msg) => th(`mysql-test.js error: ${msg}`);
 
-async function notExist(file) {
-  try {
-    await fsPromises.stat(file);
-    return false;
-  } catch (e) {
-    return e;
-  }
-}
+            const log = console.log;
 
-(async () => {
-  try {
-    {
-      const nExist = await notExist(env);
+            async function notExist(file) {
+              try {
+                await fsPromises.stat(file);
+                return false;
+              } catch (e) {
+                return e;
+              }
+            }
 
-      if (nExist) {
-        throw th(`file '${env}' doesn't exist (${nExist.message})`);
-      }
-    }
+            (async () => {
+              try {
+                {
+                  const nExist = await notExist(env);
 
-    require('dotenv').config({path: env});
+                  if (nExist) {
+                    throw th(`file '${env}' doesn't exist (${nExist.message})`);
+                  }
+                }
 
-    if (typeof process.env.MYSQL_HOST !== 'string') {
-      throw th(`MYSQL_HOST in undefined`);
-    }
+                require('dotenv').config({path: env});
 
-    if (typeof process.env.MYSQL_PORT !== 'string') {
-      throw th(`MYSQL_PORT in undefined`);
-    }
+                if (typeof process.env.MYSQL_HOST !== 'string') {
+                  throw th(`MYSQL_HOST in undefined`);
+                }
 
-    if (typeof process.env.MYSQL_USER !== 'string') {
-      throw th(`MYSQL_USER in undefined`);
-    }
+                if (typeof process.env.MYSQL_PORT !== 'string') {
+                  throw th(`MYSQL_PORT in undefined`);
+                }
 
-    if (typeof process.env.MYSQL_PASS !== 'string') {
-      throw th(`MYSQL_PASS in undefined`);
-    }
+                if (typeof process.env.MYSQL_USER !== 'string') {
+                  throw th(`MYSQL_USER in undefined`);
+                }
 
-    if (typeof process.env.MYSQL_DB !== 'string') {
-      throw th(`MYSQL_DB in undefined`);
-    }
+                if (typeof process.env.MYSQL_PASS !== 'string') {
+                  throw th(`MYSQL_PASS in undefined`);
+                }
 
-    const knex = require('knex')({
-      client: 'mysql',
-      connection: {
-        host: process.env.MYSQL_HOST,
-        port: process.env.MYSQL_PORT,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASS,
-        database: process.env.MYSQL_DB,
-      },
-    });
+                if (typeof process.env.MYSQL_DB !== 'string') {
+                  throw th(`MYSQL_DB in undefined`);
+                }
 
-    const row = await knex.raw('show databases');
+                const knex = require('knex')({
+                  client: 'mysql',
+                  connection: {
+                    host: process.env.MYSQL_HOST,
+                    port: process.env.MYSQL_PORT,
+                    user: process.env.MYSQL_USER,
+                    password: process.env.MYSQL_PASS,
+                    database: process.env.MYSQL_DB,
+                  },
+                });
 
-    const databases = row[0];
+                const row = await knex.raw('show databases');
 
-    log(databases);
+                const databases = row[0];
 
-    knex.destroy();
-  } catch (e) {
-    log(`
-    
-Global catch:     
-    
-    `);
+                log(databases);
 
-    throw e;
-  }
-})();
+                knex.destroy();
+              } catch (e) {
+                log(`
 
+            Global catch:
 
+                `);
+
+                throw e;
+              }
+            })();
           </script>
         </div>
       </div>
