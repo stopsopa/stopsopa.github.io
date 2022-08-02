@@ -14,9 +14,8 @@
             <h2>Install for cli on new mac</h2>
             <script type="editor" data-lang="sh">
 
-              HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install coreutils
-	      	# without that bash realpath will not work for example
-              
+                    HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install coreutils
+              # without that bash realpath will not work for example
             </script>
             <h2>Brew</h2>
             <script type="editor" data-lang="sh">
@@ -29,10 +28,9 @@
               # from: https://github.com/Homebrew/brew/issues/1670#issuecomment-267096602
 
               Accessability -> Pointer Control -> (tab)Mouse & Trackpad -> (button)Trackpad Options... -> (on state for checkbox)Enable dragging -> (option from select)Withou drag lock
-                           
+
               echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/sdzialowski/.zprofile
               eval "$(/opt/homebrew/bin/brew shellenv)"
-              
             </script>
             <h2>Apps</h2>
             <ul>
@@ -111,12 +109,8 @@
               <li>
                 Encrypted volumes
                 <ul>
-                  <li>
-                    <a href="https://www.veracrypt.fr/code/VeraCrypt/">VeraCrypt</a> depends on <a href="https://github.com/osxfuse/osxfuse/releases">macFUSE</a>
-                  </li>
-                  <li>
-                    <a href="https://cryptomator.org/downloads/">Cryptomator</a> depends on <a href="https://github.com/osxfuse/osxfuse/releases">macFUSE</a>
-                  </li>
+                  <li><a href="https://www.veracrypt.fr/code/VeraCrypt/">VeraCrypt</a> depends on <a href="https://github.com/osxfuse/osxfuse/releases">macFUSE</a></li>
+                  <li><a href="https://cryptomator.org/downloads/">Cryptomator</a> depends on <a href="https://github.com/osxfuse/osxfuse/releases">macFUSE</a></li>
                   <li>
                     If noting above works and you have SD card reader in mac: <a href="https://support.apple.com/en-gb/guide/disk-utility/dskutl35612/mac">Encryption of SD card</a> might be an option
                   </li>
@@ -165,31 +159,29 @@
               defaults write com.apple.finder AppleShowAllFiles YES
               killall Finder
             </script>
-	    <h2>Copy 'Em Version 2.12.2</h2>
-	    <img src="https://i.imgur.com/sSMOaM0.png" style="width: 450px;"/>
+            <h2>Copy 'Em Version 2.12.2</h2>
+            <img src="https://i.imgur.com/sSMOaM0.png" style="width: 450px" />
             <h2>7zip</h2>
-		  <a href="7zip.html">more</a>
+            <a href="7zip.html">more</a>
             <script type="editor" data-lang="sh">
 
 
-wget --help 1> /dev/null 2> /dev/null
-if [ "$?" ~= "0" ]; then
-	HOMEBREW_NO_AUTO_UPDATE=1 brew install wget
-fi
-mkdir __7zipinstall
-cd __7zipinstall
-# link from : https://7-zip.org/download.html
-wget https://7-zip.org/a/7z2107-mac.tar.xz
-tar -zxvf "$(ls)"
-sudo cp 7zz /usr/local/bin/7z
-sudo chmod a+x /usr/local/bin/7z
-cd ../
-rm -rf __7zipinstall
-7z
-
-
+              wget --help 1> /dev/null 2> /dev/null
+              if [ "$?" ~= "0" ]; then
+              	HOMEBREW_NO_AUTO_UPDATE=1 brew install wget
+              fi
+              mkdir __7zipinstall
+              cd __7zipinstall
+              # link from : https://7-zip.org/download.html
+              wget https://7-zip.org/a/7z2107-mac.tar.xz
+              tar -zxvf "$(ls)"
+              sudo cp 7zz /usr/local/bin/7z
+              sudo chmod a+x /usr/local/bin/7z
+              cd ../
+              rm -rf __7zipinstall
+              7z
             </script>
-            
+
             <h2>Images resizing from cli</h2>
             <script type="editor" data-lang="sh">
 
@@ -217,22 +209,21 @@ rm -rf __7zipinstall
             <h2>Increase Keyboard Repeat Rate on Mac</h2>
             <a href="https://apple.stackexchange.com/a/58847">defaults write -g ApplePressAndHoldEnabled -bool false</a>
             <script type="editor" data-lang="sh">
-                                                
+
               # to turn on repeating
               defaults write -g ApplePressAndHoldEnabled -bool false
 
               # obviously true to turn it back off
-                                                
             </script>
-            <img src="https://i.imgur.com/ULGT2KN.png" style="width: 500px;">
+            <img src="https://i.imgur.com/ULGT2KN.png" style="width: 500px" />
             <br />
             <a href="https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/">https://timber.io/snippets/increase-keyboard-repeat-rate-on-mac/</a>
             <br />
             <a href="https://apple.stackexchange.com/q/10467">https://apple.stackexchange.com/q/10467</a>
             <h2>Karabiner-Elements remap keyboard</h2>
-            <img src="https://i.imgur.com/mJ5v87f.png" style="width: 800px;">
+            <img src="https://i.imgur.com/mJ5v87f.png" style="width: 800px" />
             <br />
-            <img src="https://i.imgur.com/9CjBH88.png" style="width: 800px;">
+            <img src="https://i.imgur.com/9CjBH88.png" style="width: 800px" />
             <br />
             <a href="https://github.com/pqrs-org/Karabiner-Elements/issues/2071#issuecomment-558380229">github issue with fix</a>
             <h2>Mouse pointer - Shake mouse pointer to locate</h2>
@@ -309,7 +300,7 @@ rm -rf __7zipinstall
             <h2>Select an Exact Display Resolution</h2>
             Click "Scaled" radio button on "display" tab with Option button pressed
             <h2>Display 4k resolution</h2>
-            <img src="https://i.imgur.com/pb2zbQk.png" style="width: 500px;" >
+            <img src="https://i.imgur.com/pb2zbQk.png" style="width: 500px" />
             <h2>Truecrypt</h2>
             <script type="editor" data-lang="sh">
 

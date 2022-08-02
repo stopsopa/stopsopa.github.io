@@ -43,6 +43,47 @@
           <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
           <h2>Installation on linux</h2>
           <a href="https://github.com/nodesource/distributions#installation-instructions-1">Installation nodesource</a>
+          <script type="editor" data-lang="js">
+
+
+            (function (root, factory) {
+              if (typeof define === "function" && define.amd) {
+
+                // list of dependencies here to check vvv
+                define(["jquery", "underscore"], factory);
+
+              } else if (typeof exports === "object") {
+
+                // list of dependencies here to check vvv
+                module.exports = factory(require("jquery"), require("underscore"));
+
+              } else {
+
+                // global name of library to set
+                var name = '__MY_LIBRARY_GLOBAL_NAME';
+
+                var original = root[name];
+
+                // list of dependencies here to check vvv
+                var lib = factory(root.$, root._);
+
+                root[name] = lib;
+
+                root['__' + name + 'NoConflict'] = function () {
+
+                  root[name] = original;
+
+                  return lib;
+                };
+              }
+              // list of dependencies here to check vvv
+            })(this, function ($, _) {
+
+              var tool = {}; // this object will be your library
+
+              return tool;
+            });
+          </script>
         </div>
         <h2>About Node.js</h2>
         <a href="https://medium.datadriveninvestor.com/the-node-js-architecture-f86e2337bcd2">The Node.js Architecture!</a>
@@ -83,7 +124,7 @@
           npm set-script "style:check" "yarn prettier --check ."
           npm set-script "style:fix" "yarn prettier --write ."
           npm set-script "style:list" "yarn prettier --list-different ."
-          
+
           # or just add manually to package.json for older version of NPM:
           "style:check": "yarn prettier --check .",
           "style:fix": "yarn prettier --write .",
@@ -515,50 +556,49 @@
           </script>
           <h2>fs/promises</h2>
           <script type="editor" data-lang="js">
-          
-const fsPromises = require("node:fs/promises");
 
-// based on: https://github.com/nodejs/node/issues/39960#issuecomment-909444667
-// more about fs/promises: https://nodejs.org/api/fs.html#fspromisesstatpath-options
-// also some good advice: https://gist.github.com/joepie91/bbf495e044da043de2ba
-async function notExist(file) {
-  try {
-    await fsPromises.stat(file);
-    return false;
-  } catch (e) {
-    return e;
-  }
-};         
+            const fsPromises = require("node:fs/promises");
 
-(async () => {
-  try {
-    {
-      const nExist = await notExist(templateFile);
+            // based on: https://github.com/nodejs/node/issues/39960#issuecomment-909444667
+            // more about fs/promises: https://nodejs.org/api/fs.html#fspromisesstatpath-options
+            // also some good advice: https://gist.github.com/joepie91/bbf495e044da043de2ba
+            async function notExist(file) {
+              try {
+                await fsPromises.stat(file);
+                return false;
+              } catch (e) {
+                return e;
+              }
+            };
 
-      if (nExist) {
-        throw th(`template file '${templateFile}' doesn't exist (${nExist.message})`);
-      }
-    }
+            (async () => {
+              try {
+                {
+                  const nExist = await notExist(templateFile);
 
-    let template;
+                  if (nExist) {
+                    throw th(`template file '${templateFile}' doesn't exist (${nExist.message})`);
+                  }
+                }
 
-    {
-      const result = await fsPromises.readFile(templateFile, "utf8");
+                let template;
 
-      template = result.toString();
-    }    
-    
-  } catch (e) {
-    log(`
-    
-Global catch:     
-    
-    `);
+                {
+                  const result = await fsPromises.readFile(templateFile, "utf8");
 
-    throw e;
-  }
-})();
-          
+                  template = result.toString();
+                }
+
+              } catch (e) {
+                log(`
+
+            Global catch:
+
+                `);
+
+                throw e;
+              }
+            })();
           </script>
           <h2>eslint</h2>
           <script type="editor" data-lang="python">
