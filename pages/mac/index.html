@@ -176,7 +176,7 @@
 
 
               wget --help 1> /dev/null 2> /dev/null
-              if [ "$?" ~= "0" ]; then
+              if [ "$?" != "0" ]; then
               	HOMEBREW_NO_AUTO_UPDATE=1 brew install wget
               fi
               mkdir __7zipinstall
