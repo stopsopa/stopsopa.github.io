@@ -278,7 +278,9 @@
             oc get po | grep pods | grep Running | awk '{print $1}'
 
             # node --inspect
-            oc port-forward $(oc get po | grep "NAMEOFDEPLOYMENT" | grep Running | awk '{print $1}' | head -n 1) 9229:9229
+            POD="$(oc get po | grep "NAMEOFDEPLOYMENT" | grep Running | awk '{print $1}' | head -n 1)"
+            echo "${POD}"
+            if [ "${POD}" = "" ]; then echo "pod not found"; else oc port-forward ${POD} 9229:9229; fi;
 
             cat <<EOF | oc exec -i podname -- /bin/sh
             echo a b c | awk '{print \$2}'
