@@ -11,14 +11,12 @@
       <div class="inside">
         <div class="cards">
           <div class="card">
-            <h2>Install for cli on new mac</h2>
-            <script type="editor" data-lang="sh">
-
-                    HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install coreutils
-              # without that bash realpath will not work for example
-            </script>
             <h2>Brew</h2>
             <script type="editor" data-lang="sh">
+
+              HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install coreutils
+
+              HOMEBREW_NO_AUTO_UPDATE=1 brew install --cask dozer
 
               HOMEBREW_NO_AUTO_UPDATE=1 brew install jq
 
