@@ -678,7 +678,7 @@ if [ ${MODE} = "pull" ]; then
 
       { yellow "'${_T}' -> '${_S}'"; } 2>&3
 
-      cp "${_TT}" "${_SS}"
+      cp "${_TT}" "${_SS}" | true
     else
 
       { red "file '${_TT}' doesn't exist in repository, it might be worth to remove it from config file '${_CONFIG}'"; } 2>&3
