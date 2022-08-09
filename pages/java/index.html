@@ -18,15 +18,18 @@
           </ul>
         </div>
         <div class="cards">
-          <h2>Useful</h2>
+          <h2>Installation</h2>
           <script type="editor" data-lang="sh">
 
+            # look for tar.gz file with java in one of links listed below this snippet
             # unzipping java SDK files: /Library/Java/JavaVirtualMachines/
-
+            # then introduce env var
             export JAVA_HOME="/Library/Java/JavaVirtualMachines/temurin-11.jdk/Contents/Home/"
+            # or
+            export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-18.0.2"
+            # generally you have to mount directory with 'bin', 'conf', 'lib' and 'man' directory
+            # then you can check if java works
             java --version
-
-            JAVA_HOME="/usr/local/opt/openjdk/libexec/openjdk.jdk/Contents/Home"
 
             mvn clean install
             mvn --version
