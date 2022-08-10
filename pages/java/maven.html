@@ -15,6 +15,14 @@
 
             mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
               # from: https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html#creating-a-project
+              
+            mvn clean install
+            mvn --version
+            # Apache Maven 3.8.1
+
+            mvn dependency:tree | tee dep.txt
+
+            rm -rf ~/.m2/repository/com/google/guava
           </script>
         </div>
       </div>
