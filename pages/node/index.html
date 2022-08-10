@@ -115,6 +115,101 @@
           console.log('test2');
           "
         </script>
+
+        <h2>Semantic release</h2>
+        <script type="editor" data-lang="sh">
+
+          /bin/bash bash/swap-files.sh -m dev -- yarn add -D semantic-release conventional-changelog-conventionalcommits
+            # from: https://github.com/semantic-release/semantic-release/issues/1652#issuecomment-714150790
+
+          cat <<EEE > release.config.js
+          module.exports = {
+            preset: 'conventionalcommits',
+          };
+          EEE
+
+            # from:  https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#configuration-file
+
+          node node_modules/.bin/semantic-release
+
+          # npx semantic-release - will not work if conventional used
+
+          # ----------------------
+          <type>(<scope>): <description|short summary>
+            │       │             │
+            │       │             └─⫸ Summary in present tense. Not capitalized. No period at the end.
+            │       │
+            │       └─⫸ Commit Scope: animations|bazel|benchpress|common|compiler|compiler-cli|core|
+            │                          elements|forms|http|language-service|localize|platform-browser|
+            │                          platform-browser-dynamic|platform-server|router|service-worker|
+            │                          upgrade|zone.js|packaging|changelog|docs-infra|migrations|ngcc|ve|
+            │                          devtools
+            │
+            └─⫸ Commit Type: build ci docs feat fix perf refactor test                    - angular
+                              build ci docs feat fix perf refactor test chore revert style - conventional
+
+
+          [optional body]
+
+          [optional footer(s)]
+
+          # --------------------
+
+          # alternative Angular Commit Message Conventions.
+          https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format
+            # there is even more: https://github.com/conventional-changelog/commitlint/#shared-configuration
+
+             mentioned in: https://github.com/semantic-release/semantic-release#commit-message-format
+        </script>
+        <br />
+        <a href="https://i.imgur.com/LLOtsyy.png" target="_blank"><img src="https://i.imgur.com/LLOtsyy.png" style="width: 1000px" /></a>
+
+        <br />
+        <a href="https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716">https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716</a>
+        <br />
+        <a href="https://github.com/semantic-release/semantic-release#commit-message-format">More about "BREAKING CHANGE:"</a>
+        <br />
+        <a href="https://github.com/semantic-release/semantic-release">https://github.com/semantic-release/semantic-release</a>
+        <br />
+        <a href="https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716">https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716</a>
+        <br />
+        <a href="https://www.conventionalcommits.org/en/v1.0.0/">https://www.conventionalcommits.org/en/v1.0.0/</a>
+        <br />
+        <a href="https://conventionalcomments.org/">https://conventionalcomments.org/</a>
+        <br />
+
+        <h2>husky</h2>
+        <h2>commitlint</h2>
+        <script type="editor" data-lang="sh">
+
+          yarn add -D husky
+
+          cat .git/config
+          ls -la .husky
+          npm set-script prepare "husky install"
+          npx husky install
+          cat .git/config
+          ls -la .husky
+
+          yarn add @commitlint/cli @commitlint/config-conventional husky -D
+          echo 'module.exports = { extends: ["@commitlint/config-conventional"] };' > commitlint.config.js
+
+            # from: https://github.com/conventional-changelog/commitlint/#getting-started
+
+
+          yarn husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
+
+          # or
+
+          cat <<EEE > .husky/commit-msg
+            #!/bin/sh
+            . "\$(dirname "\$0")/_/husky.sh"
+
+            npx --no -- commitlint --edit "\${1}"
+          EEE
+
+            # from: https://github.com/conventional-changelog/commitlint/#getting-started
+        </script>
         <h2>prettier setup</h2>
         <script type="editor" data-lang="sh">
 
@@ -153,52 +248,6 @@
           npx prettier --write src
               # https://prettier.io/docs/en/cli.html#docsNav
         </script>
-
-        <h2>Semantic release</h2>
-        <a href="https://github.com/semantic-release/semantic-release">https://github.com/semantic-release/semantic-release</a>
-        <br />
-        <a href="https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716">https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716</a>
-        <br />
-        <a href="https://www.conventionalcommits.org/en/v1.0.0/">https://www.conventionalcommits.org/en/v1.0.0/</a>
-        <br />
-        <a href="https://conventionalcomments.org/">https://conventionalcomments.org/</a>
-          <script type="editor" data-lang="sh">
-
-feat      : (new feature for the user, not a new feature for build script)
-fix       : (bug fix for the user, not a fix to a build script)
-docs      : (changes to the documentation)
-style     : (formatting, missing semi colons, etc; no production code change)
-refactor  : (refactoring production code, eg. renaming a variable)
-test      : (adding missing tests, refactoring tests; no production code change)
-chore     : (updating grunt tasks etc; no production code change)
-
-<type>(<scope>): <short summary>
-  │       │             │
-  │       │             └─⫸ Summary in present tense. Not capitalized. No period at the end.
-  │       │
-  │       └─⫸ Commit Scope: animations|bazel|benchpress|common|compiler|compiler-cli|core|
-  │                          elements|forms|http|language-service|localize|platform-browser|
-  │                          platform-browser-dynamic|platform-server|router|service-worker|
-  │                          upgrade|zone.js|packaging|changelog|docs-infra|migrations|ngcc|ve|
-  │                          devtools
-  │
-  └─⫸ Commit Type: build|ci|docs|feat|fix|perf|refactor|test
-from: https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit-message-header  
-   mentioned in: https://github.com/semantic-release/semantic-release#commit-message-format
-   
-   
---- breaking change example:
-vvv
-feat: interface change
-
-BREAKING CHANGE:  
-passing trx and generally passing options reserves first argument in each knex-abstract function
-^^^
-
-          </script>
-        <a href="https://github.com/semantic-release/semantic-release#commit-message-format">More about "BREAKING CHANGE:"</a>
-        <br />
-        <a href="#husky">see also husky and commit lint</a>
 
         <div class="cards">
           <h2>Extract engines script</h2>
@@ -1986,7 +2035,7 @@ passing trx and generally passing options reserves first argument in each knex-a
             nvm install [version]
             nvm use [version]
             .nvmrc
-            nvm alias default v16
+            nvm alias default v16.16.0
             nvm ls-remote
           </script>
           <h2>csv</h2>
@@ -2158,23 +2207,6 @@ passing trx and generally passing options reserves first argument in each knex-a
                 });
               });
             })
-          </script>
-          <h2>husky</h2>
-          <script type="editor" data-lang="sh">
-
-            yarn add -D husky
-
-            cat .git/config
-            ls -la .husky
-            npm set-script prepare "husky install"
-            npx husky install
-            cat .git/config
-            ls -la .husky
-
-            yarn add @commitlint/cli @commitlint/config-conventional husky -D
-            echo 'module.exports = { extends: ["@commitlint/config-conventional"] };' > commitlint.config.js
-
-            yarn husky add .husky/commit-msg 'npx --no -- commitlint --edit "$1"'
           </script>
           global settings and other stuff:
 

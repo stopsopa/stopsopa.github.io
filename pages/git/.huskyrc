@@ -24,55 +24,43 @@ case ${_SHELL} in
     ;;
 esac
 
-eval __HOME="~"
+echo "current shell is: ${_BINARY}"
 
-echo "======= execute ${__HOME}/.huskyrc regular binary: >${_BINARY}< vvv"
+echo DOT_ZPROFILE_LOADED ${DOT_ZPROFILE_LOADED:-false}
+echo DOT_BASH_PROFILE ${DOT_BASH_PROFILE:-false}
 
-if [ "${_BINARY}" = "/bin/sh" ] || [ "${_BINARY}" = "/bin/bash" ]; then
 
-    set -e
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-    echo "======= execute ${__HOME}/.huskyrc in zsh vvv"
+echo ---- nvm use default:
+nvm use default
 
-    /bin/zsh "${__HOME}/.huskyrc"
+export WORKSPACE_DIR="${HOME}/Workspace"
+export __REPO="${WORKSPACE_DIR}/STOPSOPA__stopsopa.github.io/STOPSOPA__stopsopa.github.io"
+function detect_external {
 
-    echo "======= execute ${__HOME}/.huskyrc in zsh ^^^ all good"
-else
-
-    alias sshh="/bin/bash ~/sshh.sh"
-
-    if [ "${_BINARY}" = "/bin/zsh" ]; then
-
-        echo load ~/.zshrc
-
-        source ~/.zshrc
+    if [ -d /Volumes/WINSCP/ssh/ssh ]; then
+        printf 'ssd'
+    else
+        printf 'nossd'
     fi
-
-    if [ "${_BINARY}" = "/bin/bash" ]; then
-
-        echo load ~/.bashrc
-
-        source ~/.bashrc
-    fi
-
-    if [ "${SSHH_DIR_WITH_KEYS}" = "" ]; then
-
-        echo ".huskyrc error: SSHH_DIR_WITH_KEYS is not defined"
-        exit 1
-    fi
-
-    if [ "${NVM_BIN}" = "" ]; then
-
-        echo ".huskyrc error: NVM_BIN is not defined"
-        exit 1
-    fi
-
-    nvm use 16
-
-    /bin/bash ~/sshh.sh --auto
-
-
-
+}
+_EXTERNAL_DRIVE="$(detect_external)"
+if [ "${_EXTERNAL_DRIVE}" = "ssd" ]; then
+    export _SSH_KEYS_DIR="/Volumes/WINSCP/ssh/ssh"
 fi
+if [ "${_EXTERNAL_DRIVE}" = "nossd" ]; then
+    export _SSH_KEYS_DIR="${HOME}/.ssh/keys"
+fi
+export SSHH_DIR_WITH_KEYS="${_SSH_KEYS_DIR}"
+echo "SSHH_DIR_WITH_KEYS ${SSHH_DIR_WITH_KEYS}"
 
-echo "======= execute ${__HOME}/.huskyrc regular ^^^ all good"
+alias sshh="/bin/bash \"${__REPO}/pages/ssh/sshh.sh\""
+
+echo ---- sshh --auto:
+sshh --auto
+
+echo --- end of .huskyrc
+echo ""

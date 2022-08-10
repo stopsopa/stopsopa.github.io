@@ -163,20 +163,19 @@
             # from: https://www.baeldung.com/linux/openssl-extract-certificate-info#1-extracting-the-subject
           </script>
           <h2>Change keys manually from any directory</h2>
-          
+
           <script type="editor" data-lang="sh">
-          
-export SSHH_DIR_WITH_KEYS="/path/to/dir/with/keys"
-KEY_FILE="stopsopa"
 
-mkdir ~/.ssh/
-chmod 700 ~/.ssh/
-cp "${SSHH_DIR_WITH_KEYS}/${KEY_FILE}" ~/.ssh/
-chmod 600 ~/.ssh/${KEY_FILE}
-ssh-add ~/.ssh/${KEY_FILE}
-rm ~/.ssh/${KEY_FILE}
-ssh-add -L
+            export SSHH_DIR_WITH_KEYS="/path/to/dir/with/keys"
+            KEY_FILE="stopsopa"
 
+            mkdir ~/.ssh/
+            chmod 700 ~/.ssh/
+            cp "${SSHH_DIR_WITH_KEYS}/${KEY_FILE}" ~/.ssh/
+            chmod 600 ~/.ssh/${KEY_FILE}
+            ssh-add ~/.ssh/${KEY_FILE}
+            rm ~/.ssh/${KEY_FILE}
+            ssh-add -L
           </script>
         </div>
       </div>
