@@ -31,6 +31,14 @@ while (( "${#}" )); do
       HOOK="1";
       shift 1;
       ;;
+    --unmount)
+      UNMOUNT="1";
+      shift 1;
+      ;;
+    --unregister)
+      UNREGISTER="1";
+      shift 1;
+      ;;
     --help)
       HELP="1";
       shift 1;
@@ -318,6 +326,12 @@ to detect if at least one key is loaded
      sshh --hook
  mounting standalone ".git/.sshhooks/commit-msg" on husky not detected in git config --get core.hooksPath
 
+     sshh --unmount
+ it will unmount every .git/.sshhooks from every directory found in PWD
+
+     sshh --unregister
+ it will unmount every .git/sshh from every directory found in PWD
+
 EEE
 
   exit 0
@@ -380,6 +394,91 @@ END
     echo exit ${_CODE};
 
     _exit 2> /dev/null || true
+fi
+
+if [ "${UNMOUNT}" = "1" ]; then
+  LIST="$(find . -type d -name 'node_modules' -prune -o -type d -name .sshhooks -print | grep '.git/.sshhooks')"
+
+  LIST="$(trim "${LIST}")"
+
+  _P="$(pwd)"
+  if [ "${LIST}" = "" ]; then
+    cat <<EEE
+
+    nothing found
+
+EEE
+  else
+    COUNT="$(echo $LIST | wc -l)"
+
+    I="0"
+    while read -r xxx
+    do
+
+      cd "$_P"
+
+      I="$(($I + 1))"
+      DIR="$(dirname "${xxx}")"
+
+      cd "${DIR}"
+
+      echo -e "\n\n>>>> before >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT} >${xxx}<"
+
+      pwd
+      ls -la
+      
+      rm -rf ".sshhooks"
+
+      echo -e "\n\n>>>> after >>>>"
+      ls -la
+
+    done <<< "${LIST}"
+  fi
+
+  exit 0
+fi
+
+if [ "${UNREGISTER}" = "1" ]; then
+  LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name sshh -print | grep '.git/sshh')"
+
+  LIST="$(trim "${LIST}")"
+
+  _P="$(pwd)"
+  if [ "${LIST}" = "" ]; then
+    cat <<EEE
+
+    nothing found
+
+EEE
+  else
+    COUNT="$(echo "${LIST}" | wc -l)"
+    COUNT="$(trim "${COUNT}")"
+
+    I="0"
+    while read -r xxx
+    do
+
+      cd "$_P"
+
+      I="$(($I + 1))"
+      DIR="$(dirname "${xxx}")"
+
+      cd "${DIR}"
+
+      echo -e "\n\n>>>> before >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT} >${xxx}<"
+
+      pwd
+      ls -la
+      
+      rm "sshh"
+
+      echo -e "\n\n>>>> after >>>>"
+      ls -la
+
+    done <<< "${LIST}"
+  fi
+
+  exit 0
 fi
 
 if [ "${HOOK}" = "1" ]; then
