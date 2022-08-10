@@ -1,3 +1,4 @@
+#!/bin/bash
 
 _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
 case ${_SHELL} in
@@ -26,38 +27,15 @@ esac
 
 echo "current shell is: ${_BINARY}"
 
+
+source ~/.any_shell_common.sh
+
+echo DOT_ANY_SHELL_COMMON ${DOT_ANY_SHELL_COMMON:-false}
 echo DOT_ZPROFILE_LOADED ${DOT_ZPROFILE_LOADED:-false}
 echo DOT_BASH_PROFILE ${DOT_BASH_PROFILE:-false}
 
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-echo ---- nvm use default:
-nvm use default
-
 export WORKSPACE_DIR="${HOME}/Workspace"
 export __REPO="${WORKSPACE_DIR}/STOPSOPA__stopsopa.github.io/STOPSOPA__stopsopa.github.io"
-function detect_external {
-
-    if [ -d /Volumes/WINSCP/ssh/ssh ]; then
-        printf 'ssd'
-    else
-        printf 'nossd'
-    fi
-}
-_EXTERNAL_DRIVE="$(detect_external)"
-if [ "${_EXTERNAL_DRIVE}" = "ssd" ]; then
-    export _SSH_KEYS_DIR="/Volumes/WINSCP/ssh/ssh"
-fi
-if [ "${_EXTERNAL_DRIVE}" = "nossd" ]; then
-    export _SSH_KEYS_DIR="${HOME}/.ssh/keys"
-fi
-export SSHH_DIR_WITH_KEYS="${_SSH_KEYS_DIR}"
-echo "SSHH_DIR_WITH_KEYS ${SSHH_DIR_WITH_KEYS}"
-
-alias sshh="/bin/bash \"${__REPO}/pages/ssh/sshh.sh\""
 
 echo ---- sshh --auto:
 sshh --auto
