@@ -436,6 +436,7 @@ if [ "${HOOK}" = "1" ]; then
     HOOKFILE="${HOOKDIR}/commit-msg"
 
     cat <<EEE > "${HOOKFILE}"
+#!/bin/zsh
 if [ -f ~/.huskyrc ]; then
 
   cat <<III
