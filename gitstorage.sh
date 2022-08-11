@@ -123,6 +123,8 @@ while (( "${#}" )); do
   esac
 done
 
+_P="$(pwd)"
+
 # set positional arguments in their proper place
 eval set -- "${PARAMS}"
 
@@ -150,7 +152,7 @@ function cloneTarget {
 
   function cleanup {
 
-    { yellow "\n${0} cleaning ${_TARGETGITDIR}"; } 2>&3
+    { yellow "\n$(basename "${0}") cleaning ${_TARGETGITDIR}"; } 2>&3
 
     rm -rf "${_TARGETGITDIR}"
   }
@@ -189,7 +191,6 @@ do
 
 done <<< "${LIST}"
 
-_P="$(pwd)"
 if [ "${#LIST_FILTERED[@]}" = "0" ]; then
 
   cat <<EEE
@@ -327,7 +328,7 @@ EEE
 
     else
 
-      cd "${_TARGETGITDIR}"
+      cd "${CLONED_TARGET_DIR}"
 
       DIFFSTATUS="$(git status -s)"
 
@@ -345,9 +346,9 @@ EEE
           cd "$_P"
       fi
     fi
-  
-
   done
+
+  cd "$_P"
 fi
 
   exit 0;
@@ -369,8 +370,6 @@ fi
 LIST="$(find . -type d -name 'node_modules' -prune -o -type d -name ".git" -print)"
 
 LIST="$(trim "${LIST}")"
-
-_P="$(pwd)"
 
 LIST_FILTERED=();
 
@@ -495,7 +494,6 @@ set -e
 
 LIST="$(trim "${LIST}")"
 
-  _P="$(pwd)"
   if [ "${LIST}" = "" ]; then
     cat <<EEE
 
@@ -821,7 +819,18 @@ if [ "${MODE}" = "isinsync" ]; then
 
   done
 
-  DIFFSTATUS="$(cd "${_TARGETGITDIR}" && git status -s)"
+  cd "${_TARGETGITDIR}"
+
+  git status -s
+
+  cd "$_P"
+
+  if [ "${DIFFSTATUS}" = "" ] ; then
+
+      { green "\n    files are in sync\n"; } 2>&3
+
+      exit 0;
+  fi
 
   if [ "${DIFFSTATUS}" = "" ] ; then
 
@@ -842,7 +851,6 @@ fi
 
 if [ "${MODE}" = "diff" ]; then
 
-  _P="$(pwd)"  
   cd "${_TARGETGITDIR}" && 
   git clone "${GITSTORAGESOURCE}" .
   cd "$_P"
@@ -894,8 +902,10 @@ if [ "${MODE}" = "diff" ]; then
 
     exit 1
   fi
-  
+
   cd "${_TARGETGITDIR}"
+
+  pwd
 
   DIFFSTATUS="$(git status -s)"
 
