@@ -25,13 +25,15 @@ case ${_SHELL} in
     ;;
 esac
 
+set -e
+
 echo ".huskyrc: current shell is: ${_BINARY}"
 
 source ~/.any_shell_common.sh
 
-echo DOT_ANY_SHELL_COMMON ${DOT_ANY_SHELL_COMMON:-false}
-echo DOT_ZPROFILE_LOADED ${DOT_ZPROFILE_LOADED:-false}
-echo DOT_BASH_PROFILE ${DOT_BASH_PROFILE:-false}
+echo DOT_ANY_SHELL_COMMON .huskyrc ${DOT_ANY_SHELL_COMMON:-false}
+echo DOT_ZPROFILE_LOADED .huskyrc ${DOT_ZPROFILE_LOADED:-false}
+echo DOT_BASH_PROFILE .huskyrc ${DOT_BASH_PROFILE:-false}
 
 export WORKSPACE_DIR="${HOME}/Workspace"
 export __REPO="${WORKSPACE_DIR}/STOPSOPA__stopsopa.github.io/STOPSOPA__stopsopa.github.io"
