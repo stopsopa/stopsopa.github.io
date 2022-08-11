@@ -1,4 +1,14 @@
 
+
+realpath . &> /dev/null
+
+if [ "${?}" != "0" ]; then
+
+    { red "realpath is not installed run: brew install coreutils"; } 2>&3
+
+    exit 1;
+fi
+
 # /bin/bash ${0} kubersecretname .env.kub .env.targetnameoffileinsecret
 # /bin/bash ${0} kubersecretname .env.kub .env.targetnameoffileinsecret [.env.kub .env.targetnameoffileinsecret] [.env.kub .env.targetnameoffileinsecret]
 #                                                                      ^                                       ^

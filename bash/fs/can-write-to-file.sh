@@ -32,6 +32,14 @@
 
 # template of using it as a library ^^^
 
+realpath . &> /dev/null
+
+if [ "${?}" != "0" ]; then
+
+    { red "realpath is not installed run: brew install coreutils"; } 2>&3
+
+    exit 1;
+fi
 
 RM="0"
 if [ "${1}" = "--rm" ]; then

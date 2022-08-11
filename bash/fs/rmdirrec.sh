@@ -3,6 +3,15 @@
 # will not remve symlinks,
 # symlink along the path will stop the chain of removing directories down to the root
 
+realpath . &> /dev/null
+
+if [ "${?}" != "0" ]; then
+
+    { red "realpath is not installed run: brew install coreutils"; } 2>&3
+
+    exit 1;
+fi
+
 TARGETDIR="$(realpath "${1}" 2>&1)"
 
 if [ "${?}" != "0" ]; then
