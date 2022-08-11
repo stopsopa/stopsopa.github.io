@@ -269,6 +269,35 @@ GITSTORAGETARGETDIR="${GITSTORAGETARGETDIR}"
 GITSTORAGELIST=(
     "${_CONFIG_FILE}::\$GITSTORAGETARGETDIR/${_CONFIG_FILE}"
 )
+
+#set -o pipefail
+#INTELIJ="\$(ls -la ../gdm1_root/Users/sdzialowski/Library/Application\ Support/JetBrains/ | awk '{ print \$9 }' | grep  -i -E "^IntelliJIdea" | sort -r | head -n 1)"
+#
+#if [ "\${?}" = "0" ]; then
+# echo "all good \${INTELIJ}"
+# TRAPS+=("../../gdm1_root/Users/sdzialowski/Library/Application Support/JetBrains/\${INTELIJ}/scratches/scratch.http::\$GITSTORAGETARGETDIR/gdm1_root/Library/Application Support/JetBrains/IntelliJIdeaxxxx.x/scratches/scratch.http")
+# TRAPS+=("../../gdm1_root/Users/sdzialowski/Library/Application Support/JetBrains/\${INTELIJ}/scratches/businessfabric__notifications.http::\$GITSTORAGETARGETDIR/gdm1_root/Library/Application Support/JetBrains/IntelliJIdeaxxxx.x/scratches/businessfabric__notifications.http")
+#else
+# cat <<EEE
+#
+# WARNING:
+# WARNING:
+# WARNING:
+#
+#   couldn't extract INTELIJ current dir with command:
+#     ls -la ../../gdm1_root/Users/sdzialowski/Library/Application\ Support/JetBrains/ | awk '{ print \$9 }' | grep  -i -E "^IntelliJIdea" | sort -r | head -n 1
+#
+#   usually it means you have to install intelij first
+#   some files were skipped due to this, but don't worry, if files were uploaded then they are still there
+#
+# WARNING:
+# WARNING:
+# WARNING:
+#EEE
+#
+#fi
+#set +o pipefail
+
 END
 
   if [ -f "${GITDIR_CONFIGFILE}" ]; then
