@@ -1,4 +1,13 @@
 
+realpath . &> /dev/null
+
+if [ "${?}" != "0" ]; then
+
+    { red "realpath is not installed run: brew install coreutils"; } 2>&3
+
+    exit 1;
+fi
+
 # Usually it's good idea to execute it after /bin/bash uglify.sh
 
 # Finds all *.template.html files in this directory (excluding searching through node_modules)

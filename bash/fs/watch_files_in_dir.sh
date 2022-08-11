@@ -1,5 +1,14 @@
 #!/bin/bash
 
+realpath . &> /dev/null
+
+if [ "${?}" != "0" ]; then
+
+    { red "realpath is not installed run: brew install coreutils"; } 2>&3
+
+    exit 1;
+fi
+
 HELP="$(inotifywait --help 2>&1)"
 
 REG="Wait for a particular event"
