@@ -222,6 +222,8 @@ do
 
  _TARGETGITDIR=".git/__rm__$(openssl rand -hex 2)"
 
+ _TARGETGITDIR="$(realpath "${_TARGETGITDIR}")"
+
  if ! [ -d "${_TARGETGITDIR}" ]; then
 
    break;
