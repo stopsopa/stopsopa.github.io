@@ -35,9 +35,28 @@ _BACKUP="0"
 _RESTORE="0"
 
 PARAMS=""
+REMOTE="origin";
+
+GITSTORAGE_CORE_REPOSITORY="git@github.com:stopsopa/gitstorage.git"; # @substitute
 
 while (( "${#}" )); do
   case "${1}" in
+    -r|--remote)
+      if [ "${2}" = "" ]; then                           
+        { red "${0} error: --remote value can't be empty"; } 2>&3
+        exit 1;                                         
+      fi                                 
+      REMOTE="${2}";
+      shift 2;
+      ;;
+    -s|--core_repository)
+      if [ "${2}" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
+        { red "${0} error: --core_repository value can't be empty"; } 2>&3
+        exit 1;                                          # optional
+      fi                                  # optional
+      GITSTORAGE_CORE_REPOSITORY="${2}";
+      shift 2;
+      ;;
     --force)
       _FORCE="1";
       shift;
@@ -96,7 +115,7 @@ function cloneTarget {
 
   function cleanup {
 
-    { yellow "${0} cleaning ${_TARGETGITDIR}"; } 2>&3
+    { yellow "\n${0} cleaning ${_TARGETGITDIR}"; } 2>&3
 
     rm -rf "${_TARGETGITDIR}"
   }
@@ -271,6 +290,130 @@ fi
 fi
 
 
+if [ ${MODE} = "existing" ]; then
+
+
+git help > /dev/null;
+
+if [ "${?}" != "0" ]; then
+
+    { red "git is not installed"; } 2>&3
+
+    exit 3
+fi
+
+LIST="$(find . -type d -name 'node_modules' -prune -o -type d -name ".git" -print)"
+
+LIST="$(trim "${LIST}")"
+
+echo ">${LIST}<"
+
+_P="$(pwd)"
+
+LIST_FILTERED=();
+
+while read -r xxx
+do
+  cd "${_P}"
+  if [ "${xxx}" != "" ]; then
+    TMP="${xxx}/config"
+    if [ -f "${TMP}" ]; then
+          DIR="$(dirname "${xxx}")"
+          cd "${DIR}"
+          REPOURL="$(git config --get "remote.${REMOTE}.url")"
+          if [ "${?}" = "0" ]; then
+            LIST_FILTERED+=("${xxx}")
+          else
+              { red "git config --get \"remote.${REMOTE}.url\" - failed - tested for '${xxx}'"; } 2>&3
+          fi
+    else
+        { red "${TMP} is not a file - tested for '${xxx}'"; } 2>&3
+    fi
+  fi
+done <<< "${LIST}"
+
+cd "${_P}"
+
+if [ "${#LIST_FILTERED[@]}" = "0" ]; then
+
+  cat <<EEE
+
+  nothing found
+
+EEE
+else
+
+  cloneTarget 
+
+  set -e
+
+  (cd "${_TARGETGITDIR}" && git clone "${GITSTORAGE_CORE_REPOSITORY}" .)
+
+  set +e
+
+  COUNT="${#LIST_FILTERED[@]}"
+  COUNT="$(trim "${COUNT}")"
+  I="0"
+  for xxx in "${LIST_FILTERED[@]}"
+  do
+
+    # echo "xxx: >${xxx}<"
+
+    cd "$_P"
+
+    I="$(($I + 1))"
+
+    echo -e ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT} >${xxx}<"
+    DIR="${xxx}"
+    PROJECT_DIR="$(dirname "${DIR}")"
+
+    cat <<EEE
+  cd "${PROJECT_DIR}"
+
+EEE
+
+  cd "${xxx}"
+
+  REPOURL="$(git config --get "remote.${REMOTE}.url")"
+
+  GITSTORAGETARGETDIR="$(echo "${REPOURL}"| sed -E 's/\//__/g')"
+
+  cd "$_P"
+
+  # echo "GITSTORAGETARGETDIR: >${GITSTORAGETARGETDIR}<"
+
+  GITDIR_CONFIGFILE="${xxx}/${_CONFIG_FILE}"
+
+  # echo "GITDIR_CONFIGFILE: >${GITDIR_CONFIGFILE}<"
+
+  if [ -f "${GITDIR_CONFIGFILE}" ]; then
+
+    { green "${GITDIR_CONFIGFILE} is already present - initialization not needed"; } 2>&3
+  else
+
+    # { yellow "try to download ${GITDIR_CONFIGFILE}"; } 2>&3
+
+    _TARGETCONFIG="${_TARGETGITDIR}/${GITSTORAGETARGETDIR}/${_CONFIG_FILE}"
+
+    if [ -f "${_TARGETCONFIG}" ]; then
+
+      cp "${_TARGETCONFIG}" "${xxx}/"
+
+      { green "${GITDIR_CONFIGFILE} cloned from ${GITSTORAGE_CORE_REPOSITORY}/${GITSTORAGETARGETDIR}"; } 2>&3
+    else
+
+      { red "${_TARGETCONFIG} doesn't exist"; } 2>&3
+    fi
+  fi
+  
+
+  done
+fi
+
+  exit 0;
+fi
+
+
 if [ "${_CONFIG}" = "" ]; then
 
   { red "${0} error: --config value can't be empty"; } 2>&3
@@ -321,6 +464,13 @@ cat << EOF
 
 /bin/bash ${0} state
   # will look for each ${_CONFIG} anywhere in current PWD and check if files pointed by it are up to date
+
+/bin/bash ${0} existing
+  # will look for all .git directories and try to determine if there is gitstorage-config.sh for it
+  # if yes then it will pull it with all tools around it
+
+/bin/bash ${0} clean
+  # will look for all gitstorage-config.sh and remove them in current PWD
 
 # you can specify different config
 /bin/bash ${0} -c "gitstorage-config.sh"

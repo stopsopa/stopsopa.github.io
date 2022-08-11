@@ -184,11 +184,11 @@ else
   fi
 fi
 
-CONFIGFILE="gitstorage-config.sh"
+_CONFIG_FILE="gitstorage-config.sh"
 
-{ yellow "${CONFIGFILE} initialization ..."; } 2>&3
+{ yellow "${_CONFIG_FILE} initialization ..."; } 2>&3
 
-GITDIR_CONFIGFILE=".git/${CONFIGFILE}"
+GITDIR_CONFIGFILE=".git/${_CONFIG_FILE}"
 
 function allgood {
 
@@ -245,7 +245,7 @@ set -e
 
 set +e
 
-_TARGETCONFIG="${_TARGETGITDIR}/${GITSTORAGETARGETDIR}/${CONFIGFILE}"
+_TARGETCONFIG="${_TARGETGITDIR}/${GITSTORAGETARGETDIR}/${_CONFIG_FILE}"
 
 if [ -f "${_TARGETCONFIG}" ]; then
 
@@ -265,9 +265,9 @@ GITSTORAGESOURCE="${GITSTORAGE_CORE_REPOSITORY}"
 
 GITSTORAGETARGETDIR="${GITSTORAGETARGETDIR}"
 
-# paths will be solved from directory where ${CONFIGFILE} is, usually it means from .git directory
+# paths will be solved from directory where ${_CONFIG_FILE} is, usually it means from .git directory
 GITSTORAGELIST=(
-    "${CONFIGFILE}::\$GITSTORAGETARGETDIR/${CONFIGFILE}"
+    "${_CONFIG_FILE}::\$GITSTORAGETARGETDIR/${_CONFIG_FILE}"
 )
 END
 
