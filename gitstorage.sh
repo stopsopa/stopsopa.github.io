@@ -216,7 +216,13 @@ EEE
 
     unset GITSTORAGELIST;
 
-    source "${xxx}";
+    XXX_REAL="$(realpath "${xxx}")"
+
+    cd "${PROJECT_DIR}"
+
+    source "${XXX_REAL}";
+
+    cd "$_P"
 
     _COUNT="${#GITSTORAGELIST[@]}";
 
