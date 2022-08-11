@@ -14,11 +14,22 @@ function red {
 function yellow {
   printf "\e[33m${1}\e[0m\n"
 }
+trim() {
+    local var="${*}"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "${var}"
+}
 
 set -e
 #set -x
 
-_CONFIG=".git/gitstorage-config.sh";
+_CONFIG_FILE="gitstorage-config.sh"
+_CONFIG_DIR=".git"
+_CONFIG="${_CONFIG_DIR}/${_CONFIG_FILE}";
+
 _FORCE="0"
 _BACKUP="0"
 _RESTORE="0"
@@ -58,22 +69,207 @@ while (( "${#}" )); do
   esac
 done
 
-CONFIG=$(cat <<END
-#!/bin/bash
+# set positional arguments in their proper place
+eval set -- "${PARAMS}"
 
-# used in
-# https://github.com/user/repositiry
+MODE="${1}"
 
-GITSTORAGESOURCE="git@github.com:xxx/gitstorage.git"
+shift;
 
-GITSTORAGETARGETDIR="github-xxx.github.io"
+function cloneTarget {
+  _TARGETGITDIR="";
 
-GITSTORAGELIST=(
-    ".env::\$GITSTORAGETARGETDIR/.env"
-    "gitstorage-config.sh::\$GITSTORAGETARGETDIR/gitstorage-config.sh"
-)
-END
-);
+  while true
+  do
+
+    _TARGETGITDIR="$(openssl rand -hex 2)"
+
+    _TARGETGITDIR="$(realpath "${_TARGETGITDIR}")"
+
+    echo "REAL: ${_TARGETGITDIR}"
+
+    if ! [ -d "${_TARGETGITDIR}" ]; then
+
+      break;
+    fi
+  done
+
+  function cleanup {
+
+    { yellow "${0} cleaning ${_TARGETGITDIR}"; } 2>&3
+
+    rm -rf "${_TARGETGITDIR}"
+  }
+
+  trap cleanup EXIT
+
+  mkdir -p "${_TARGETGITDIR}"
+}
+
+
+
+
+if [ ${MODE} = "state" ]; then
+
+LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name "gitstorage-config.sh" -print | grep ".git/gitstorage-config.sh")"
+
+LIST="$(trim "${LIST}")"
+
+# echo ">${LIST}<"
+
+LIST_FILTERED=();
+
+while read -r xxx
+do
+  if [ "${xxx}" != "" ]; then
+
+    DIR="$(dirname "${xxx}")"
+
+    CORE="${DIR}/gitstorage-core.sh"
+
+    if [ -e "${CORE}" ]; then
+
+      LIST_FILTERED+=("${xxx}")
+    fi
+  fi
+
+done <<< "${LIST}"
+
+_P="$(pwd)"
+if [ "${#LIST_FILTERED[@]}" = "0" ]; then
+
+  cat <<EEE
+
+  nothing found
+
+EEE
+else
+
+  cloneTarget 
+
+  COUNT="${#LIST_FILTERED[@]}"
+  COUNT="$(trim "${COUNT}")"
+  I="0"
+  for xxx in "${LIST_FILTERED[@]}"
+  do
+
+    cd "$_P"
+
+    I="$(($I + 1))"
+
+    echo -e ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT} >${xxx}<"
+    DIR="$(dirname "${xxx}")"
+    PROJECT_DIR="$(dirname "${DIR}")"
+
+    cat <<EEE
+
+  cd "${PROJECT_DIR}"
+
+EEE
+
+    unset GITSTORAGELIST;
+
+    source "${xxx}";
+
+    _COUNT="${#GITSTORAGELIST[@]}";
+
+    if [ ${_COUNT} -lt 1 ] ; then
+
+      { red "${0} error: list GITSTORAGELIST in config '${xxx}' shouldn't be empty"; } 2>&3
+
+      exit 1;
+    fi
+
+    if [ "${GITSTORAGESOURCE}" = "" ]; then
+
+      { red "${0} error: GITSTORAGESOURCE not defined in config '${xxx}'"; } 2>&3
+
+      exit 1;
+    fi
+
+    GITSTORAGETARGETDIR="$(echo "${GITSTORAGESOURCE}"| sed -E 's/\//__/g')"
+
+    CLONED_TARGET_DIR="${_TARGETGITDIR}/${GITSTORAGETARGETDIR}"
+
+    if [ -d "${CLONED_TARGET_DIR}" ]; then
+
+      { green "directory '${CLONED_TARGET_DIR}' for '${xxx}' already exist"; } 2>&3
+    else
+      mkdir -p "${CLONED_TARGET_DIR}"
+      
+      { green "cloning directory '${CLONED_TARGET_DIR}' for '${xxx}'"; } 2>&3
+
+      (cd "${CLONED_TARGET_DIR}" && git clone "${GITSTORAGESOURCE}" .)
+    fi
+
+    (
+      cd "${CLONED_TARGET_DIR}"
+
+      git clean -df
+
+      git checkout .
+    )
+
+    # ls -la "${CLONED_TARGET_DIR}/"
+    
+    cd "${PROJECT_DIR}"
+
+    # echo "PROJECT_DIR: ${PROJECT_DIR}"
+
+    for index in "${GITSTORAGELIST[@]}"; do
+
+      _S="${index%%::*}"
+
+      _T="${index##*::}"
+
+      # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+      # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
+      if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
+
+        _S="${_CONFIG_DIR}/${_S}"
+      fi
+
+      _S="$(echo "${_S}" | sed -E 's/( )/\\\1/g')"
+
+      eval _S="${_S}"
+
+      if [ -f "${_S}" ]; then
+
+        _T="${CLONED_TARGET_DIR}/${_T}"
+
+        _TMPDIR="$(dirname "${_T}")"
+
+        mkdir -p "${_TMPDIR}";
+
+        cp "${_S}" "${_T}"
+
+      else
+
+        { red "${0} error: source file3 '${_S}' doesn't exist"; } 2>&3
+      fi
+
+      # echo "moving _S>${_S}< to _T>${_T}<"
+
+    done
+
+    DIFFSTATUS="$(cd "${CLONED_TARGET_DIR}" && git status -s)"
+
+    if [ "${DIFFSTATUS}" = "" ] ; then
+
+        { green "    files are in sync"; } 2>&3
+    else
+
+        { red "    files are not in sync"; } 2>&3
+
+        (cd "${CLONED_TARGET_DIR}" && git status)
+    fi
+
+  done
+fi
+
+  exit 0;
+fi
+
 
 if [ "${_CONFIG}" = "" ]; then
 
@@ -112,9 +308,6 @@ if [ ${_COUNT} -lt 1 ] ; then
   exit 1;
 fi
 
-# set positional arguments in their proper place
-eval set -- "${PARAMS}"
-
 if [ "${1}" = "" ] || [ "${1}" = "--help" ]; then
 
 cat << EOF
@@ -126,20 +319,18 @@ cat << EOF
 /bin/bash ${0} url
 /bin/bash ${0} move git@xxx:project/source-repo.git git@yyy/target-repo.git
 
+/bin/bash ${0} state
+  # will look for each ${_CONFIG} anywhere in current PWD and check if files pointed by it are up to date
+
 # you can specify different config
 /bin/bash ${0} -c "gitstorage-config.sh"
 
 EOF
 
-
   exit 0
 fi
 
-MODE="${1}"
-
-shift;
-
-TEST="^(url|isinsync|diff|pull|push|backup|restore|move)$"
+TEST="^(url|isinsync|diff|pull|push|backup|restore|move|state)$"
 
 if ! [[ ${MODE} =~ ${TEST} ]]; then
 
@@ -159,8 +350,6 @@ if [[ ${MODE} =~ ${TEST} ]]; then
 
   mkdir -p "${1}";
 fi
-
-_CONFIGDIR="$(dirname "${_CONFIG}")"
 
 if [ ${MODE} = "url" ]; then
 
@@ -311,9 +500,11 @@ if [ ${MODE} = "restore" ]; then
 
     _TT="${_T}"
 
+    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+    # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
     if ! [[ ${_T} =~ ^~{0,1}/.* ]]; then
 
-      _TT="${_CONFIGDIR}/${_T}"
+      _TT="${_CONFIG_DIR}/${_T}"
     fi
 
     _TT="$(echo "${_TT}" | sed -E 's/( )/\\\1/g')"
@@ -341,28 +532,9 @@ if [ ${MODE} = "restore" ]; then
   exit 0;
 fi
 
-_TARGETGITDIR="";
 
-while true
-do
 
-  _TARGETGITDIR="${_CONFIGDIR}/$(openssl rand -hex 2)"
-
-  if ! [ -d "${_TARGETGITDIR}" ]; then
-
-    break;
-  fi
-done
-
-function cleanup {
-
-  rm -rf "${_TARGETGITDIR}" || true
-}
-
-trap cleanup EXIT
-
-mkdir -p "${_TARGETGITDIR}"
-
+cloneTarget
 
 
 
@@ -376,9 +548,11 @@ if [ ${MODE} = "isinsync" ]; then
 
     _T="${index##*::}"
 
+    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+    # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
     if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
 
-      _S="${_CONFIGDIR}/${_S}"
+      _S="${_CONFIG_DIR}/${_S}"
     fi
 
     _S="$(echo "${_S}" | sed -E 's/( )/\\\1/g')"
@@ -432,9 +606,11 @@ if [ ${MODE} = "diff" ]; then
 
     _T="${index##*::}"
 
+    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+    # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
     if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
 
-      _S="${_CONFIGDIR}/${_S}"
+      _S="${_CONFIG_DIR}/${_S}"
     fi
 
     _S="$(echo "${_S}" | sed -E 's/( )/\\\1/g')"
@@ -531,9 +707,11 @@ if [ ${MODE} = "push" ]; then
 
     _SS="${_S}"
 
+    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+    # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
     if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
 
-      _SS="${_CONFIGDIR}/${_S}"
+      _SS="${_CONFIG_DIR}/${_S}"
     fi
 
     _SS="$(echo "${_SS}" | sed -E 's/( )/\\\1/g')"
@@ -621,9 +799,11 @@ if [ ${MODE} = "pull" ]; then
 
     _SS="${_S}"
 
+    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+    # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
     if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
 
-      _SS="${_CONFIGDIR}/${_S}"
+      _SS="${_CONFIG_DIR}/${_S}"
     fi
 
     _SS="$(echo "${_SS}" | sed -E 's/( )/\\\1/g')"

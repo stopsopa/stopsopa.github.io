@@ -397,7 +397,7 @@ END
 fi
 
 if [ "${UNMOUNT}" = "1" ]; then
-  LIST="$(find . -type d -name 'node_modules' -prune -o -type d -name .sshhooks -print | grep '.git/.sshhooks')"
+  LIST="$(find . -type d -name 'node_modules' -prune -o -type d -name .sshhooks -print | grep '/.git/.sshhooks')"
 
   LIST="$(trim "${LIST}")"
 
@@ -439,7 +439,7 @@ EEE
 fi
 
 if [ "${UNREGISTER}" = "1" ]; then
-  LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name sshh -print | grep '.git/sshh')"
+  LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name sshh -print | grep '/.git/sshh')"
 
   LIST="$(trim "${LIST}")"
 

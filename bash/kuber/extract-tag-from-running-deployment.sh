@@ -39,6 +39,8 @@ set -e
 
 FILE="${_DIR}/$(openssl rand -hex 2).log";
 
+FILE="$(realpath "${FILE}")"
+
 DELETE=("${FILE}");
 
 function cleanup {
