@@ -18,10 +18,7 @@ function yellow {
 set -e
 #set -x
 
-_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
-
-_CONFIG="${_DIR}/gitstorage-config.sh";
-_CREATE="0"
+_CONFIG=".git/gitstorage-config.sh";
 _FORCE="0"
 _BACKUP="0"
 _RESTORE="0"
@@ -34,15 +31,10 @@ while (( "${#}" )); do
       _FORCE="1";
       shift;
       ;;
-    --create)
-      _CREATE="1";
-      shift;
-      ;;
     -c|--config)
       _CONFIG="${2}";
       shift 2;
       ;;
-
     --backup)
       _BACKUP="1";
       shift;
@@ -82,21 +74,6 @@ GITSTORAGELIST=(
 )
 END
 );
-
-if [ "${_CREATE}" = "1" ]; then
-
-  if [ -f gitstorage-config.sh ]; then
-
-    { red "\n    file gitstorage-config.sh already exist\n"; } 2>&3
-  else
-
-    echo "${CONFIG}" > gitstorage-config.sh
-
-    { green "\n    file gitstorage-config.sh created\n"; } 2>&3
-  fi
-
-  exit 0;
-fi
 
 if [ "${_CONFIG}" = "" ]; then
 
@@ -141,21 +118,6 @@ eval set -- "${PARAMS}"
 if [ "${1}" = "" ] || [ "${1}" = "--help" ]; then
 
 cat << EOF
-
-Just create config file gitstorage-config.sh like:
-
-  use command
-
-    /bin/bash "${0}" --create
-
-  to create it
-
->>>>>>>
-${CONFIG}
-<<<<<<<<
-
-
-and use this script like:
 
 /bin/bash ${0} isinsync
 /bin/bash ${0} diff
