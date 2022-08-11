@@ -1,5 +1,34 @@
 #!/bin/bash
 
+if [ "${1}" = "" ] || [ "${1}" = "--help" ]; then
+
+cat << EOF
+
+/bin/bash ${0} isinsync
+/bin/bash ${0} diff
+/bin/bash ${0} pull
+/bin/bash ${0} push
+/bin/bash ${0} url
+/bin/bash ${0} move git@xxx:project/source-repo.git git@yyy/target-repo.git
+
+/bin/bash ${0} state
+  # will look for each ${_CONFIG} anywhere in current PWD and check if files pointed by it are up to date
+
+/bin/bash ${0} existing
+  # will look for all .git directories and try to determine if there is gitstorage-config.sh for it
+  # if yes then it will pull it with all tools around it
+
+/bin/bash ${0} clean
+  # will look for all gitstorage-config.sh and remove them in current PWD
+
+# you can specify different config
+/bin/bash ${0} -c "gitstorage-config.sh"
+
+EOF
+
+  exit 0
+fi
+
 #GITSTORAGESOURCE="git@github.com:xxx/gitstorage.git"
 
 exec 3<> /dev/null
@@ -22,9 +51,6 @@ trim() {
     var="${var%"${var##*[![:space:]]}"}"
     echo -n "${var}"
 }
-
-set -e
-#set -x
 
 _CONFIG_FILE="gitstorage-config.sh"
 _CONFIG_DIR=".git"
@@ -105,7 +131,7 @@ function cloneTarget {
 
     _TARGETGITDIR="$(realpath "${_TARGETGITDIR}")"
 
-    echo "REAL: ${_TARGETGITDIR}"
+    echo "_TARGETGITDIR: ${_TARGETGITDIR}"
 
     if ! [ -d "${_TARGETGITDIR}" ]; then
 
@@ -128,9 +154,9 @@ function cloneTarget {
 
 
 
-if [ ${MODE} = "state" ]; then
+if [ "${MODE}" = "state" ]; then
 
-LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name "gitstorage-config.sh" -print | grep ".git/gitstorage-config.sh")"
+LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name "gitstorage-config.sh" -print | grep "/.git/gitstorage-config.sh")"
 
 LIST="$(trim "${LIST}")"
 
@@ -176,13 +202,13 @@ else
 
     I="$(($I + 1))"
 
-    echo -e ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT} >${xxx}<"
+    echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT} >${xxx}<"
     DIR="$(dirname "${xxx}")"
     PROJECT_DIR="$(dirname "${DIR}")"
 
     cat <<EEE
 
-  cd "${PROJECT_DIR}"
+  cd "$(realpath "${PROJECT_DIR}")"
 
 EEE
 
@@ -218,22 +244,27 @@ EEE
       
       { green "cloning directory '${CLONED_TARGET_DIR}' for '${xxx}'"; } 2>&3
 
-      (cd "${CLONED_TARGET_DIR}" && git clone "${GITSTORAGESOURCE}" .)
+      cd "${CLONED_TARGET_DIR}" 
+      git clone "${GITSTORAGESOURCE}" .
+      cd "$_P"
+
+      echo cloned..
     fi
 
-    (
-      cd "${CLONED_TARGET_DIR}"
-
-      git clean -df
-
-      git checkout .
-    )
+    cd "${CLONED_TARGET_DIR}"
+    echo before checkout vvv
+    git clean -df
+    git checkout .
+    echo after checkout ^^^
+    cd "$_P"
 
     # ls -la "${CLONED_TARGET_DIR}/"
     
     cd "${PROJECT_DIR}"
 
     # echo "PROJECT_DIR: ${PROJECT_DIR}"
+
+    MISSING="0"
 
     for index in "${GITSTORAGELIST[@]}"; do
 
@@ -264,24 +295,40 @@ EEE
 
       else
 
-        { red "${0} error: source file3 '${_S}' doesn't exist"; } 2>&3
+        MISSING="1"
+
+        { red "${0} error: source file (state) '${_S}' doesn't exist"; } 2>&3
       fi
 
       # echo "moving _S>${_S}< to _T>${_T}<"
 
     done
+  
+    if [ "${MISSING}" = "1" ]; then
 
-    DIFFSTATUS="$(cd "${CLONED_TARGET_DIR}" && git status -s)"
+      { red "\n    files are not in sync - at least one source file is missing\n"; } 2>&3
 
-    if [ "${DIFFSTATUS}" = "" ] ; then
-
-        { green "    files are in sync"; } 2>&3
     else
 
-        { red "    files are not in sync"; } 2>&3
+      cd "${_TARGETGITDIR}"
 
-        (cd "${CLONED_TARGET_DIR}" && git status)
+      DIFFSTATUS="$(git status -s)"
+
+      cd "$_P"
+
+      if [ "${DIFFSTATUS}" = "" ] ; then
+
+          { green "    files are in sync"; } 2>&3
+      else
+
+          { red "    files are not in sync"; } 2>&3
+
+          cd "${CLONED_TARGET_DIR}" 
+          git status
+          cd "$_P"
+      fi
     fi
+  
 
   done
 fi
@@ -290,7 +337,7 @@ fi
 fi
 
 
-if [ ${MODE} = "existing" ]; then
+if [ "${MODE}" = "existing" ]; then
 
 
 git help > /dev/null;
@@ -305,8 +352,6 @@ fi
 LIST="$(find . -type d -name 'node_modules' -prune -o -type d -name ".git" -print)"
 
 LIST="$(trim "${LIST}")"
-
-echo ">${LIST}<"
 
 _P="$(pwd)"
 
@@ -368,7 +413,7 @@ else
     PROJECT_DIR="$(dirname "${DIR}")"
 
     cat <<EEE
-  cd "${PROJECT_DIR}"
+  cd "$(realpath "${PROJECT_DIR}")"
 
 EEE
 
@@ -399,18 +444,77 @@ EEE
 
       cp "${_TARGETCONFIG}" "${xxx}/"
 
+      cd "${PROJECT_DIR}"
+
+      wget --help 1> /dev/null 2> /dev/null
+      if [ "$?" = "0" ]; then
+        wget --no-cache -O ".git/gitstorage-core.sh" "https://stopsopa.github.io/gitstorage-core.sh" 1> /dev/null 2> /dev/null
+      else # curl
+        curl "https://stopsopa.github.io/gitstorage-core.sh" -o ".git/gitstorage-core.sh" 1> /dev/null 2> /dev/null
+      fi
+      /bin/bash ".git/gitstorage-core.sh" 1> /dev/null 2> /dev/null
+
+      cd "$_P"
+
       { green "${GITDIR_CONFIGFILE} cloned from ${GITSTORAGE_CORE_REPOSITORY}/${GITSTORAGETARGETDIR}"; } 2>&3
     else
 
       { red "${_TARGETCONFIG} doesn't exist"; } 2>&3
     fi
-  fi
-  
+  fi  
 
   done
 fi
 
   exit 0;
+fi
+
+
+if [ "${MODE}" = "clean" ]; then
+
+set +e
+LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name "gitstorage-config.sh" -print | grep "/.git/gitstorage-config.sh")"
+set -e
+
+LIST="$(trim "${LIST}")"
+
+  _P="$(pwd)"
+  if [ "${LIST}" = "" ]; then
+    cat <<EEE
+
+    none of gitstorage-config.sh found
+
+EEE
+  else
+    COUNT="$(echo $LIST | wc -l)"
+    COUNT="$(trim "${COUNT}")"
+
+    I="0"
+    while read -r xxx
+    do
+
+      cd "$_P"
+
+      I="$(($I + 1))"
+
+      echo -e "\n\n>>>> before >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT} >${xxx}<"
+      DIR="$(dirname "${xxx}")"
+
+      cd "${DIR}"
+      pwd
+      ls -la
+      
+      rm "gitstorage-config.sh"
+      rm "gitstorage.sh"
+      rm "gitstorage-core.sh"
+
+      echo -e "\n\n>>>> after >>>>"
+      ls -la
+
+    done <<< "${LIST}"
+  fi
+
+  exit 0
 fi
 
 
@@ -451,34 +555,7 @@ if [ ${_COUNT} -lt 1 ] ; then
   exit 1;
 fi
 
-if [ "${1}" = "" ] || [ "${1}" = "--help" ]; then
 
-cat << EOF
-
-/bin/bash ${0} isinsync
-/bin/bash ${0} diff
-/bin/bash ${0} pull
-/bin/bash ${0} push
-/bin/bash ${0} url
-/bin/bash ${0} move git@xxx:project/source-repo.git git@yyy/target-repo.git
-
-/bin/bash ${0} state
-  # will look for each ${_CONFIG} anywhere in current PWD and check if files pointed by it are up to date
-
-/bin/bash ${0} existing
-  # will look for all .git directories and try to determine if there is gitstorage-config.sh for it
-  # if yes then it will pull it with all tools around it
-
-/bin/bash ${0} clean
-  # will look for all gitstorage-config.sh and remove them in current PWD
-
-# you can specify different config
-/bin/bash ${0} -c "gitstorage-config.sh"
-
-EOF
-
-  exit 0
-fi
 
 TEST="^(url|isinsync|diff|pull|push|backup|restore|move|state)$"
 
@@ -501,7 +578,7 @@ if [[ ${MODE} =~ ${TEST} ]]; then
   mkdir -p "${1}";
 fi
 
-if [ ${MODE} = "url" ]; then
+if [ "${MODE}" = "url" ]; then
 
   echo "final url ${URL}";
 
@@ -509,7 +586,7 @@ if [ ${MODE} = "url" ]; then
 fi
 
 
-if [ ${MODE} = "move" ]; then
+if [ "${MODE}" = "move" ]; then
 
 function deslash {
   echo "$(echo "${1}"| sed -E 's/\//__/g')"
@@ -606,7 +683,7 @@ DOC
   exit 0
 fi
 
-if [ ${MODE} = "backup" ]; then
+if [ "${MODE}" = "backup" ]; then
 
   _TARGETGITDIR="${1}"
 
@@ -638,7 +715,7 @@ if [ ${MODE} = "backup" ]; then
   exit 0;
 fi
 
-if [ ${MODE} = "restore" ]; then
+if [ "${MODE}" = "restore" ]; then
 
   _TARGETGITDIR="${1}"
 
@@ -688,7 +765,7 @@ cloneTarget
 
 
 
-if [ ${MODE} = "isinsync" ]; then
+if [ "${MODE}" = "isinsync" ]; then
 
   (cd "${_TARGETGITDIR}" && git clone "${GITSTORAGESOURCE}" .)
 
@@ -746,9 +823,14 @@ if [ ${MODE} = "isinsync" ]; then
 fi
 
 
-if [ ${MODE} = "diff" ]; then
+if [ "${MODE}" = "diff" ]; then
 
-  (cd "${_TARGETGITDIR}" && git clone "${GITSTORAGESOURCE}" .)
+  _P="$(pwd)"  
+  cd "${_TARGETGITDIR}" && 
+  git clone "${GITSTORAGESOURCE}" .
+  cd "$_P"
+
+  MISSING="0"
 
   for index in "${GITSTORAGELIST[@]}"; do
 
@@ -779,13 +861,28 @@ if [ ${MODE} = "diff" ]; then
 
     else
 
+      MISSING="1"
+
       { red "${0} error: source file3 '${_S}' doesn't exist"; } 2>&3
 
     fi
 
   done
+  
+  if [ "${MISSING}" = "1" ]; then
 
-  DIFFSTATUS="$(cd "${_TARGETGITDIR}" && git status -s)"
+    { red "\n    files are not in sync - at least one source file is missing\n"; } 2>&3
+
+    echo "final url ${URL}";
+
+    exit 1
+  fi
+  
+  cd "${_TARGETGITDIR}"
+
+  DIFFSTATUS="$(git status -s)"
+
+  cd "$_P"
 
   if [ "${DIFFSTATUS}" = "" ] ; then
 
@@ -798,9 +895,11 @@ if [ ${MODE} = "diff" ]; then
 
   { red "\n    files are not in sync\n"; } 2>&3
 
-  (cd "${_TARGETGITDIR}/${GITSTORAGETARGETDIR}" && git diff)
+  cd "${_TARGETGITDIR}/${GITSTORAGETARGETDIR}" 
+  
+  git diff
 
-  (cd "${_TARGETGITDIR}/${GITSTORAGETARGETDIR}" && git status)
+  git status
 
   echo "final url ${URL}";
 
@@ -810,7 +909,7 @@ fi
 
 
 
-if [ ${MODE} = "push" ]; then
+if [ "${MODE}" = "push" ]; then
 
   if [ "${_FORCE}" = "0" ]; then
 
@@ -914,7 +1013,7 @@ fi
 
 
 
-if [ ${MODE} = "pull" ]; then
+if [ "${MODE}" = "pull" ]; then
 
   if [ "${_FORCE}" = "0" ]; then
 

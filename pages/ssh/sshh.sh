@@ -410,6 +410,7 @@ if [ "${UNMOUNT}" = "1" ]; then
 EEE
   else
     COUNT="$(echo $LIST | wc -l)"
+    COUNT="$(trim "${COUNT}")"
 
     I="0"
     while read -r xxx
