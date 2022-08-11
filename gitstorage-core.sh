@@ -1,17 +1,5 @@
 #!/bin/bash
 
-#if [ "${1}" = "" ] || [ "${1}" = "--help" ]; then
-#
-#cat <<EOF
-#
-#/bin/bash "${0}" ...
-#
-#EOF
-#
-#  exit 1
-#
-#fi
-
 exec 3<> /dev/null
 function green {
   printf "\e[32m${1}\e[0m\n"
@@ -27,7 +15,7 @@ function yellow {
 
 __METHOD="wget"
 
-wglet --help 1> /dev/null 2> /dev/null
+wget --help 1> /dev/null 2> /dev/null
 
 if [ "${?}" != "0" ]; then
 
@@ -150,8 +138,6 @@ GITSTORAGETARGETDIR="$(echo "${REPOURL}"| sed -E 's/\//__/g')"
 #echo "REPOURL=${REPOURL}"
 #echo "${@}"
 
-#  if [ ! -f ".git/wget.sh" ]; then # let's refresh file every init
-
 { yellow "downloading .git/wget.sh"; } 2>&3
 
 if [ "${__METHOD}" = "wget" ]; then
@@ -168,25 +154,39 @@ if [ ! -f ".git/wget.sh" ]; then
 
   exit 1
 fi
+GITSTORAGESCRIPT="gitstorage.sh"
 
-GITSTORAGESCRIPT=".git/gitstorage.sh"
+GITSTORAGESCRIPT_WITH_RELATIVE_DIR=".git/${GITSTORAGESCRIPT}"
 
-{ yellow "downloading ${GITSTORAGESCRIPT}"; } 2>&3
+unlink "${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}"
 
-/bin/bash .git/wget.sh "${PROD}/gitstorage.sh" "${GITSTORAGESCRIPT}"
+if [ -d "${REPO_DIR}" ] && [ -f "${REPO_DIR}/${GITSTORAGESCRIPT}" ]; then
+  { yellow "linking ${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}"; } 2>&3
+  
+  (cd .git && ln -s "${REPO_DIR}/${GITSTORAGESCRIPT}" gitstorage.sh)
 
-if [ ! -f "${GITSTORAGESCRIPT}" ]; then
+  if [ ! -L "${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}" ]; then
 
-  { red "${0} error: can't download file ${GITSTORAGESCRIPT}"; } 2>&3
+    { red "${0} error: can't download file ${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}"; } 2>&3
 
-  exit 1
+    exit 1
+  fi
+else
+  { yellow "downloading ${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}"; } 2>&3
+
+  /bin/bash .git/wget.sh "${PROD}/gitstorage.sh" "${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}"
+
+  if [ ! -f "${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}" ]; then
+
+    { red "${0} error: can't download file ${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}"; } 2>&3
+
+    exit 1
+  fi
 fi
-
-#  fi
 
 CONFIGFILE="gitstorage-config.sh"
 
-{ yellow "${CONFIGFILE} initialisation ..."; } 2>&3
+{ yellow "${CONFIGFILE} initialization ..."; } 2>&3
 
 GITDIR_CONFIGFILE=".git/${CONFIGFILE}"
 
@@ -200,7 +200,7 @@ vi ${GITDIR_CONFIGFILE}
 
 Now run:
 
-/bin/bash "${GITSTORAGESCRIPT}"
+/bin/bash "${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}"
 
 END
 
@@ -208,7 +208,7 @@ END
 
 if [ -f "${GITDIR_CONFIGFILE}" ]; then
 
-  { green "${GITDIR_CONFIGFILE} is already present - initialisation not needed"; } 2>&3
+  { green "${GITDIR_CONFIGFILE} is already present - initialization not needed"; } 2>&3
 
   allgood
 
