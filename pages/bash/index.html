@@ -1223,6 +1223,45 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         </div>
         <div class="cards">
           <h2>Processing arguments</h2>
+          Simple iteration - withouth shift
+          <script type="editor" data-lang="sh">
+          
+
+I="0"
+FOUND_HYPHEN_HYPHEN="0"
+for x in "$@"
+do
+  I=$((I + 1))
+
+  if [ "${x}" = "--" ]; then
+    FOUND_HYPHEN_HYPHEN="1"
+    break;
+  fi
+
+  echo "element >${x}< [${I}]"
+
+  if [[ $(( I % 2 )) == 0 ]]; then
+    echo even
+  else
+    echo odd
+  fi
+  echo ""
+done
+
+if [ "${FOUND_HYPHEN_HYPHEN}" = "0" ]; then
+
+  cat <<EEE
+
+  -- argument not found
+
+EEE
+
+  exit 1
+fi          
+          
+          </script>
+          
+          <br />
           <script type="editor" data-lang="sh">
 
 
