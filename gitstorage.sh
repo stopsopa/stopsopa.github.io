@@ -219,6 +219,7 @@ else
     cat <<EEE
 
   cd "$(realpath "${PROJECT_DIR}")"
+  gits diff
   
   gits pull --force
 
