@@ -110,19 +110,19 @@ EEE
         continue;
       fi
       
-        # echo "BUFF: ${BUFF}"
-        # echo "ONE: ${ONE}"
-        # echo "TMP: ${TMP}"
+      # echo "BUFF: ${BUFF}"
+      # echo "ONE: ${ONE}"
+      # echo "TMP: ${TMP}"
 
-        echo mv "${BUFF}" "${ONE}"
-        echo mv "${TMP}" "${BUFF}"
+      echo mv "${BUFF}" "${ONE}"
+      echo mv "${TMP}" "${BUFF}"
 
-        mv "${BUFF}" "${ONE}"
-        mv "${TMP}" "${BUFF}"
+      mv "${BUFF}" "${ONE}"
+      mv "${TMP}" "${BUFF}"
 
-        echo ""
-        BUFF=""
-        ONE=""
+      echo ""
+      BUFF=""
+      ONE=""
   done
 }
 
