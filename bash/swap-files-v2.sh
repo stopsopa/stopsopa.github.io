@@ -5,19 +5,6 @@
 
 # /bin/bash bash/swap-files-v2.sh package.json package.dev.json ../directory/.gitignore .npmignore -- ls -la \&\& sleep 10 \&\& echo end
 
-openssl --help 1> /dev/null 2> /dev/null
-
-if [ "${?}" != "0" ]; then
-
-  cat <<EEE
-
-  openssl is not available
-
-EEE
-
-  exit 1
-fi
-
 I="0"
 FOUND_HYPHEN_HYPHEN="0"
 for x in "$@"
