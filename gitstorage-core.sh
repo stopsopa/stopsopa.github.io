@@ -277,6 +277,8 @@ GITSTORAGETARGETDIR="${GITSTORAGETARGETDIR}"
 # paths will be solved from directory where ${_CONFIG_FILE} is, usually it means from .git directory
 GITSTORAGELIST=(
     "${_CONFIG_FILE}::\$GITSTORAGETARGETDIR/${_CONFIG_FILE}"
+    "../.vscode/settings.json::\$GITSTORAGETARGETDIR/.vscode/settings.json"
+    "../../.vscode/settings.json::\$GITSTORAGETARGETDIR/.vscode/parent_settings.json"
 )
 
 #set -o pipefail
