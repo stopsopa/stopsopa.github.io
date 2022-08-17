@@ -263,9 +263,11 @@ EEE
       
       { green "cloning directory '${CLONED_TARGET_DIR}' for '${xxx}'"; } 2>&3
 
+      set -e
       cd "${CLONED_TARGET_DIR}" 
       git clone "${GITSTORAGESOURCE}" .
       cd "$_P"
+      set +e
 
       echo cloned..
     fi
@@ -408,9 +410,9 @@ else
   cloneTarget 
 
   set -e
-
-  (cd "${_TARGETGITDIR}" && git clone "${GITSTORAGE_CORE_REPOSITORY}" .)
-
+  cd "${_TARGETGITDIR}" 
+  git clone "${GITSTORAGE_CORE_REPOSITORY}" .
+  cd "$_P"
   set +e
 
   COUNT="${#LIST_FILTERED[@]}"
@@ -783,7 +785,11 @@ cloneTarget
 
 if [ "${MODE}" = "isinsync" ]; then
 
-  (cd "${_TARGETGITDIR}" && git clone "${GITSTORAGESOURCE}" .)
+  set -e
+  cd "${_TARGETGITDIR}" 
+  git clone "${GITSTORAGESOURCE}" .
+  cd "$_P"
+  set +e
 
   for index in "${GITSTORAGELIST[@]}"; do
 
@@ -852,9 +858,11 @@ fi
 
 if [ "${MODE}" = "diff" ]; then
 
+  set -e
   cd "${_TARGETGITDIR}" && 
   git clone "${GITSTORAGESOURCE}" .
   cd "$_P"
+  set +e
 
   MISSING="0"
 
@@ -962,7 +970,11 @@ if [ "${MODE}" = "push" ]; then
     set -e
   fi
 
-  (cd "${_TARGETGITDIR}" && git clone "${GITSTORAGESOURCE}" .)
+  set -e
+  cd "${_TARGETGITDIR}" 
+  git clone "${GITSTORAGESOURCE}" .
+  cd "$_P"
+  set +e
 
   for index in "${GITSTORAGELIST[@]}"; do
 
@@ -1066,7 +1078,11 @@ if [ "${MODE}" = "pull" ]; then
     set -e
   fi
 
-  (cd "${_TARGETGITDIR}" && git clone "${GITSTORAGESOURCE}" .)
+  set -e
+  cd "${_TARGETGITDIR}" 
+  git clone "${GITSTORAGESOURCE}" .
+  cd "$_P"
+  set +e
 
   for index in "${GITSTORAGELIST[@]}"; do
 
