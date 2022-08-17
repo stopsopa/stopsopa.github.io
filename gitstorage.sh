@@ -19,6 +19,11 @@ cat << EOF
 /bin/bash ${0} push
 /bin/bash ${0} url
 /bin/bash ${0} move git@xxx:project/source-repo.git git@yyy/target-repo.git
+/bin/bash ${0} init 
+  # generate gitstorage-config.sh for the first time for given directory (dir have to contain .git)
+
+/bin/bash ${0} -c "gitstorage-config.sh"
+  # you can specify different config
 
 /bin/bash ${0} state
   # will look for each ${_CONFIG} anywhere in current PWD and check if files pointed by it are up to date
@@ -29,9 +34,6 @@ cat << EOF
 
 /bin/bash ${0} clean
   # will look for all gitstorage-config.sh and remove them in current PWD
-
-# you can specify different config
-/bin/bash ${0} -c "gitstorage-config.sh"
 
 EOF
 
@@ -78,7 +80,7 @@ while (( "${#}" )); do
   case "${1}" in
     -r|--remote)
       if [ "${2}" = "" ]; then                           
-        { red "${0} error: --remote value can't be empty"; } 2>&3
+        { red "$(basename "${0}") error: --remote value can't be empty"; } 2>&3
         exit 1;                                         
       fi                                 
       REMOTE="${2}";
@@ -86,7 +88,7 @@ while (( "${#}" )); do
       ;;
     -s|--core_repository)
       if [ "${2}" = "" ]; then                            # PUT THIS CHECKING ALWAYS HERE IF YOU WAITING FOR VALUE
-        { red "${0} error: --core_repository value can't be empty"; } 2>&3
+        { red "$(basename "${0}") error: --core_repository value can't be empty"; } 2>&3
         exit 1;                                          # optional
       fi                                  # optional
       GITSTORAGE_CORE_REPOSITORY="${2}";
@@ -109,7 +111,7 @@ while (( "${#}" )); do
       shift;
       ;;
     -*|--*=) # unsupported flags
-      { red "${0} error: Unsupported flag ${1}"; } 2>&3
+      { red "$(basename "${0}") error: Unsupported flag ${1}"; } 2>&3
       exit 1;
       ;;
     *) # preserve positional arguments
@@ -162,7 +164,34 @@ function cloneTarget {
   mkdir -p "${_TARGETGITDIR}"
 }
 
+function init {
 
+  if [ ! -d ".git" ]; then
+
+    cat <<EEE
+
+    $(basename "${0}") error: you have to execute it in directory where .git exist
+
+EEE
+ 
+    return 1
+  fi
+
+  wget --help 1> /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    wget --no-cache -O ".git/gitstorage-core.sh" "https://stopsopa.github.io/gitstorage-core.sh"
+  else # curl
+    curl "https://stopsopa.github.io/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
+  fi
+  /bin/bash ".git/gitstorage-core.sh"
+}
+
+
+if [ "${MODE}" = "init" ]; then
+  init
+
+  exit 0
+fi
 
 
 if [ "${MODE}" = "state" ]; then
@@ -239,14 +268,14 @@ EEE
 
     if [ ${_COUNT} -lt 1 ] ; then
 
-      { red "${0} error: list GITSTORAGELIST in config '${xxx}' shouldn't be empty"; } 2>&3
+      { red "$(basename "${0}") error: list GITSTORAGELIST in config '${xxx}' shouldn't be empty"; } 2>&3
 
       exit 1;
     fi
 
     if [ "${GITSTORAGESOURCE}" = "" ]; then
 
-      { red "${0} error: GITSTORAGESOURCE not defined in config '${xxx}'"; } 2>&3
+      { red "$(basename "${0}") error: GITSTORAGESOURCE not defined in config '${xxx}'"; } 2>&3
 
       exit 1;
     fi
@@ -318,7 +347,7 @@ EEE
 
         MISSING="1"
 
-        { red "${0} error: source file (state) '${_S}' doesn't exist"; } 2>&3
+        { red "$(basename "${0}") error: source file (state) '${_S}' doesn't exist"; } 2>&3
       fi
 
       # echo "moving _S>${_S}< to _T>${_T}<"
@@ -465,13 +494,7 @@ EEE
 
       cd "${PROJECT_DIR}"
 
-      wget --help 1> /dev/null 2> /dev/null
-      if [ "$?" = "0" ]; then
-        wget --no-cache -O ".git/gitstorage-core.sh" "https://stopsopa.github.io/gitstorage-core.sh" 1> /dev/null 2> /dev/null
-      else # curl
-        curl "https://stopsopa.github.io/gitstorage-core.sh" -o ".git/gitstorage-core.sh" 1> /dev/null 2> /dev/null
-      fi
-      /bin/bash ".git/gitstorage-core.sh" 1> /dev/null 2> /dev/null
+      init
 
       cd "$_P"
 
@@ -538,14 +561,14 @@ fi
 
 if [ "${_CONFIG}" = "" ]; then
 
-  { red "${0} error: --config value can't be empty"; } 2>&3
+  { red "$(basename "${0}") error: --config value can't be empty"; } 2>&3
 
   exit 1;
 fi
 
 if ! [ -f "${_CONFIG}" ]; then
 
-  { red "${0} error: --config file '${_CONFIG}' doesn't exist"; } 2>&3
+  { red "$(basename "${0}") error: --config file '${_CONFIG}' doesn't exist"; } 2>&3
 
   exit 1;
 fi
@@ -568,7 +591,7 @@ _COUNT="${#GITSTORAGELIST[@]}";
 
 if [ ${_COUNT} -lt 1 ] ; then
 
-  { red "${0} error: list GITSTORAGELIST in config '${_CONFIG}' shouldn't be empty"; } 2>&3
+  { red "$(basename "${0}") error: list GITSTORAGELIST in config '${_CONFIG}' shouldn't be empty"; } 2>&3
 
   exit 1;
 fi
@@ -579,7 +602,7 @@ TEST="^(url|isinsync|diff|pull|push|backup|restore|move|state)$"
 
 if ! [[ ${MODE} =~ ${TEST} ]]; then
 
-  { red "${0} error: mode ${MODE} don't match pattern ${TEST}"; } 2>&3
+  { red "$(basename "${0}") error: mode ${MODE} don't match pattern ${TEST}"; } 2>&3
 
   exit 1;
 fi
@@ -590,7 +613,7 @@ if [[ ${MODE} =~ ${TEST} ]]; then
 
   if [ "${1}" = "" ]; then
 
-    { red "${0} error: mode ${MODE} - directory not specified"; } 2>&3
+    { red "$(basename "${0}") error: mode ${MODE} - directory not specified"; } 2>&3
   fi
 
   mkdir -p "${1}";
@@ -723,7 +746,7 @@ if [ "${MODE}" = "backup" ]; then
 
     else
 
-      { red "${0} error: source file1 '${_S}' doesn't exist"; } 2>&3
+      { red "$(basename "${0}") error: source file1 '${_S}' doesn't exist"; } 2>&3
     fi
 
   done
@@ -820,7 +843,7 @@ if [ "${MODE}" = "isinsync" ]; then
 
     else
 
-      { red "${0} error: source file2 '${_S}' doesn't exist"; } 2>&3
+      { red "$(basename "${0}") error: source file2 '${_S}' doesn't exist"; } 2>&3
 
     fi
 
@@ -897,7 +920,7 @@ if [ "${MODE}" = "diff" ]; then
 
       MISSING="1"
 
-      { red "${0} error: source file3 '${_S}' doesn't exist"; } 2>&3
+      { red "$(basename "${0}") error: source file3 '${_S}' doesn't exist"; } 2>&3
 
     fi
 
@@ -960,7 +983,7 @@ if [ "${MODE}" = "push" ]; then
       exit 0;
     else
 
-      { red "${0} error: files are not in sync, if you sure that you want to push them add --force param"; } 2>&3
+      { red "$(basename "${0}") error: files are not in sync, if you sure that you want to push them add --force param"; } 2>&3
 
       echo "final url ${URL}";
 
@@ -988,7 +1011,7 @@ if [ "${MODE}" = "push" ]; then
 
       if [ "${_TMPDIR}" = "." ]; then
 
-        { red "${0} error: target file '${_T}' should be in folder like 'xxx/${_T}'"; } 2>&3
+        { red "$(basename "${0}") error: target file '${_T}' should be in folder like 'xxx/${_T}'"; } 2>&3
 
         exit 1
 
@@ -1021,7 +1044,7 @@ if [ "${MODE}" = "push" ]; then
 
     else
 
-      { red "${0} error: source file4 '${_SS}' doesn't exist"; } 2>&3
+      { red "$(basename "${0}") error: source file4 '${_SS}' doesn't exist"; } 2>&3
 
     fi
 
@@ -1068,7 +1091,7 @@ if [ "${MODE}" = "pull" ]; then
       exit 0;
     else
 
-      { red "${0} error: files are not in sync, if you sure that you want to pull them add --force param"; } 2>&3
+      { red "$(basename "${0}") error: files are not in sync, if you sure that you want to pull them add --force param"; } 2>&3
 
       echo "final url ${URL}";
 
