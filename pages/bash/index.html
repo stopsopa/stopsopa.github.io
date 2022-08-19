@@ -236,6 +236,28 @@
           done
           " 2>&1 | tee log.log
         </script>
+          <h1>rsync</h1>
+          <script type="editor" data-lang="sh">
+
+# WARNING: remember if you are copying directories always specify / at the end of paths:
+
+# examples:
+  rsync -azP root@xxx.xx.xx.xxx:/var/www/ /var/www/
+  # this will copy new files to the target
+  # it is safe to run again and again
+  # it will not remove files in the target if they were removed in the source
+  # -z, --compress
+  # -P     The -P option is equivalent to --partial --progress
+  # -a, --archive
+              This is equivalent to -rlptgoD. 
+              It is a quick way of saying you want recursion and want to 
+              preserve almost everything (with -H being a notable omission)
+
+# other examples:
+
+  rsync -avzp --rsh='ssh -p23022' /srv/www site@xxx.xx.xx.xxx:/home/www/
+  
+          </script>
         <div class="cards">
           <h2>grep</h2>
           <script type="editor" data-lang="sh">
