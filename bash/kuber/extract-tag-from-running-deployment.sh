@@ -8,6 +8,15 @@ if [ "${?}" != "0" ]; then
     exit 1;
 fi
 
+openssl help 1> /dev/null 2> /dev/null
+
+if [ "${?}" != "0" ]; then
+
+  echo "${0} error: openssl is not installed"
+
+  exit 1
+fi
+
 function help {
 
 cat << EOF

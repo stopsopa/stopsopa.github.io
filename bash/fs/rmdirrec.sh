@@ -3,7 +3,7 @@
 # will not remve symlinks,
 # symlink along the path will stop the chain of removing directories down to the root
 
-realpath . &> /dev/null
+realpath . 1> /dev/null 2> /dev/null
 
 if [ "${?}" != "0" ]; then
 

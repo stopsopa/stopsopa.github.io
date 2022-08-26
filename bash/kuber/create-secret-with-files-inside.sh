@@ -1,6 +1,6 @@
 
 
-realpath . &> /dev/null
+realpath . 1> /dev/null 2> /dev/null
 
 if [ "${?}" != "0" ]; then
 

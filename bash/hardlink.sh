@@ -5,7 +5,7 @@
 # or use alias, to run it from any directory,
 # more about this you will find if you use --help parameter with this script
 
-realpath . &> /dev/null
+realpath . 1> /dev/null 2> /dev/null
 
 if [ "${?}" != "0" ]; then
 
