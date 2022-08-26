@@ -1,3 +1,10 @@
+/**
+ * Example of definig EXPOSE_EXTRA_ENV_VARIABLES in .env:
+ * 
+    # WARNING: remember to use \ just before $ sign
+    EXPOSE_EXTRA_ENV_VARIABLES="/(^PUBLIC_|^FIREBASE_|^(PROJECT_NAME|NODE_PORT|LOCAL_HOSTS|PROD_SCHEMA|PROD_HOST|GITSTORAGE_CORE_REPOSITORY)\$)/"
+ */
+
 const path = require("path");
 
 const fs = require("fs");

@@ -52,37 +52,23 @@ source "${ENV}"
 
 check PROJECT_NAME;
 
+check COMPOSE_PROJECT_NAME;
+
 check PHPMYADMIN_PORT;
 
-# and so on
+check MYSQL_HOST;
 
-if [ "${MYSQL_DB}" = "" ]; then
+check MYSQL_PORT;
 
-  echo "${0} error: MYSQL_DB is not defined"
+check MYSQL_USER;
 
-  exit 1
-fi
+check MYSQL_PASS;
 
-if [ "${MYSQL_PORT}" = "" ]; then
+check MYSQL_DB;
 
-  echo "${0} error: MYSQL_PORT is not defined"
+check PMA_PMADB;
 
-  exit 1
-fi
-
-if [ "${MYSQL_PASS}" = "" ]; then
-
-  echo "${0} error: MYSQL_PASS is not defined"
-
-  exit 1
-fi
-
-if [ "${PMA_PMADB}" = "" ]; then
-
-  echo "${0} error: PMA_PMADB is not defined"
-
-  exit 1
-fi
+check PHPMYADMIN_PORT;
 
 #set -x
 #TMP="$(/bin/bash "${_DIR}/../bash/envrender.sh" "${ENV}" "${_DIR}/docker-compose.yml" --clear -g "doc-up-tmp")"
@@ -92,7 +78,8 @@ if [ "${1}" = "up" ]; then
 
     set -e
 
-    docker compose --env-file "${ENV}" -f "${_DIR}/docker-compose.yml" up -d
+    # regarding --project-name : https://github.com/docker/compose/issues/4939
+    docker compose --project-name "${COMPOSE_PROJECT_NAME}" --env-file "${ENV}" -f "${_DIR}/docker-compose.yml" up -d
 #    docker compose -f "${TMP}" up -d
 
     CONTAINER="${PROJECT_NAME}_mysql"
