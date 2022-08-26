@@ -2,6 +2,15 @@
 # call with one argument, script will return value of environment variable from .env under ${1} name variable
 # /bin/bash bash/env.sh ../.env PROTECTED_MYSQL_HOST
 
+openssl help 1> /dev/null 2> /dev/null
+
+if [ "${?}" != "0" ]; then
+
+  echo "${0} error: openssl is not installed"
+
+  exit 1
+fi
+
 if [ "${1}" = "--help" ]; then
 
 cat << EOF
@@ -79,7 +88,7 @@ eval set -- "${PARAMS}"
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
-#realpath . &> /dev/null
+#realpath . 1> /dev/null 2> /dev/null
 #
 #if [ "${?}" != "0" ]; then
 #
