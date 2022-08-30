@@ -22,6 +22,8 @@ HOMEBREW_NO_AUTO_UPDATE=1 brew install maven
             mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
               # from: https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html#creating-a-project
               
+            mvn compile
+            mvn install
             mvn clean install -U
             mvn --version
             # Apache Maven 3.8.1
@@ -29,6 +31,9 @@ HOMEBREW_NO_AUTO_UPDATE=1 brew install maven
             good idea might be also removing 'target' directory from each sprint module and build again
 
             mvn dependency:tree | tee dep.txt
+            
+            # the main cache for maven is here:
+              ls -ls ~/.m2/repository/
 
             rm -rf ~/.m2/repository/com/google/guava
           </script>
