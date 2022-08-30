@@ -125,7 +125,7 @@ fi
 
 if [ "${1}" = "down" ]; then
 
-    docker compose --env-file "${ENV}" -f "${_DIR}/docker-compose.yml" down
+    docker compose --project-name "${COMPOSE_PROJECT_NAME}" --env-file "${ENV}" -f "${_DIR}/docker-compose.yml" down
 #    docker compose -f "${TMP}" down
 
     docker ps | grep "${PROJECT_NAME}"
