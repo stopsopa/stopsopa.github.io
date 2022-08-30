@@ -565,12 +565,22 @@ log.green("defined", "window.manipulation");
         return false;
       }),
       loadJs("ace", "/noprettier/ace/ace-builds-1.4.12/src-min-noconflict/ace.js", function () {
+        // how to use: https://ace.c9.io/#nav=howto
         try {
           return typeof window.ace.edit === "function";
         } catch (e) {}
         return false;
       }),
     ]);
+
+    await loadJs("ace extension ext-linking", "/noprettier/ace/ace-builds-1.4.12/src-min-noconflict/ext-linking.js", function () {
+      try {
+        return true;
+        return window.sasync.loaded.polyfill_js;
+      } catch (e) {
+        return false;
+      }
+    });
 
     log.blue("Promise.all loadJs loaded");
 
@@ -1127,9 +1137,60 @@ body .github-profile:hover {
       editor.setValue(_.unescape(t).replace(/^ *\n([\s\S]*?)\n *$/g, "$1"));
       // editor.setValue(t);
       editor.clearSelection();
+
       // editor.setOptions({
-      //     maxLines: Infinity
+      //   // maxLines: Infinity
       // });
+
+      {
+        // relays on loading extension ext-linking.js
+        // https://github.com/ajaxorg/ace/issues/2453#issuecomment-98609590
+
+        const findWordAtPosition = (function () {
+          function findLast(arr, find) {
+            for (let i = arr.length - 1; i > -1; i -= 1) {
+              if (find(arr[i])) {
+                return arr[i];
+              }
+            }
+          }
+
+          return function (txt, pos) {
+            let parts = [];
+            txt.replace(/([^\s\t]+)/g, (_, match, match_position) => {
+              parts.push({
+                match,
+                match_position,
+              });
+            });
+
+            const found = findLast(parts, (row) => {
+              return row.match_position <= pos;
+            });
+
+            if (found) {
+              return found.match;
+            }
+          };
+        })();
+
+        editor.setOptions({
+          enableLinking: true,
+        });
+        editor.on("linkClick", function (data) {
+          const clickedText = findWordAtPosition(editor.getValue().split("\n")[data.position.row], data.position.column);
+
+          if (typeof clickedText === "string" && clickedText.trim() && /^https?:\/\//.test(clickedText)) {
+            window.open(data.token.value, "_blank");
+          } else {
+            log(`not a link: >${clickedText}<`);
+          }
+        });
+
+        //   editor.on("linkClick", function() {
+        //     alert(1)
+        // })
+      }
 
       var heightUpdateFunction = function () {
         // http://stackoverflow.com/questions/11584061/
