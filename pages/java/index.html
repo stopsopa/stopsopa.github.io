@@ -35,7 +35,7 @@
           <a href="https://adoptium.net/en-GB/temurin/releases/?version=18">https://adoptium.net/en-GB/temurin/releases/?version=18</a>
           <br />
           <a href="https://www.baeldung.com/spring-bean-scopes">https://www.baeldung.com/spring-bean-scopes</a>
-          <h2>Download java</h2>
+          <h3>Download java</h3>
           <a href="https://www.oracle.com/java/technologies/java-se-support-roadmap.html">LTS Schedule</a>
           <br />
           <a href="https://www.oracle.com/java/technologies/downloads/">Oracle - Java Download</a>
@@ -47,6 +47,27 @@
           There is also nice page in VSCode manual listing different sources where JDK can be
           <a href="https://code.visualstudio.com/docs/languages/java#_install-a-java-development-kit-jdk">downloaded</a> from
           <br />
+          <h2>CLI</h2>
+          <script type="editor" data-lang="sh">
+
+cat <<EE > HelloWorld.java
+
+class HelloWorld {
+    public static void main (String[] args) {
+        System.out.println("Hello world");
+    }
+}  
+
+EE
+
+# compile and run
+javac HelloWorld.java
+java HelloWorld
+
+# or Since Java 11 you can use a single command (this will not generate *.class file)  
+java HelloWorld.java
+          
+          </script>
           <h2>Testing</h2>
           <a href="https://site.mockito.org/">Mockito</a>
           <h2>Learning</h2>
