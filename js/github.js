@@ -1181,7 +1181,8 @@ body .github-profile:hover {
           const clickedText = findWordAtPosition(editor.getValue().split("\n")[data.position.row], data.position.column);
 
           if (typeof clickedText === "string" && clickedText.trim() && /^https?:\/\//.test(clickedText)) {
-            window.open(data.token.value, "_blank");
+            log(`opening >${clickedText}<`)
+            window.open(clickedText, '_blank').focus();
           } else {
             log(`not a link: >${clickedText}<`);
           }
