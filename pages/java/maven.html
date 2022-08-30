@@ -30,6 +30,9 @@ HOMEBREW_NO_AUTO_UPDATE=1 brew install maven
             mvn --version
             # Apache Maven 3.8.1
             
+            mvn deploy
+              # publish of the library
+            
             good idea might be also removing 'target' directory from each sprint module and build again
 
             mvn dependency:tree | tee dep.txt
