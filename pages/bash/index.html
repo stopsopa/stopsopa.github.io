@@ -48,7 +48,7 @@
           WEBSTORM:
           (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
           \${$1}
-          
+
           VSCODE:
           $([A-Za-z_\d!]+)
           ${$1}
@@ -56,8 +56,8 @@
 
 
           # ------- find and iterate ------- vvv
-          
-          
+
+
 
           trim() {
               local var="${*}"
@@ -241,28 +241,27 @@
           done
           " 2>&1 | tee log.log
         </script>
-          <h1>rsync</h1>
-          <script type="editor" data-lang="sh">
+        <h1>rsync</h1>
+        <script type="editor" data-lang="sh">
 
-# WARNING: remember if you are copying directories always specify / at the end of paths:
+          # WARNING: remember if you are copying directories always specify / at the end of paths:
 
-# examples:
-  rsync -azP root@xxx.xx.xx.xxx:/var/www/ /var/www/
-  # this will copy new files to the target
-  # it is safe to run again and again
-  # it will not remove files in the target if they were removed in the source
-  # -z, --compress
-  # -P     The -P option is equivalent to --partial --progress
-  # -a, --archive
-              This is equivalent to -rlptgoD. 
-              It is a quick way of saying you want recursion and want to 
-              preserve almost everything (with -H being a notable omission)
+          # examples:
+            rsync -azP root@xxx.xx.xx.xxx:/var/www/ /var/www/
+            # this will copy new files to the target
+            # it is safe to run again and again
+            # it will not remove files in the target if they were removed in the source
+            # -z, --compress
+            # -P     The -P option is equivalent to --partial --progress
+            # -a, --archive
+                        This is equivalent to -rlptgoD.
+                        It is a quick way of saying you want recursion and want to
+                        preserve almost everything (with -H being a notable omission)
 
-# other examples:
+          # other examples:
 
-  rsync -avzp --rsh='ssh -p23022' /srv/www site@xxx.xx.xx.xxx:/home/www/
-  
-          </script>
+            rsync -avzp --rsh='ssh -p23022' /srv/www site@xxx.xx.xx.xxx:/home/www/
+        </script>
         <div class="cards">
           <h2>grep</h2>
           <script type="editor" data-lang="sh">
@@ -586,7 +585,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             set -x          # Expand and print each command before executing
             set -e          # Exit script immediately if any command returns a non-zero exit status.
             set -o pipefail # more: https://buildkite.com/docs/pipelines/writing-build-scripts#configuring-bash
-              # to turn back on set +o pipefail 
+              # to turn back on set +o pipefail
 
             set -u # Exit script immediately if an undefined variable is used (e.g. echo "$UNDEFINED_ENV_VAR").
           </script>
@@ -1252,42 +1251,41 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           <h2>Processing arguments</h2>
           Simple iteration - withouth shift
           <script type="editor" data-lang="sh">
-          
 
-I="0"
-FOUND_HYPHEN_HYPHEN="0"
-for x in "$@"
-do
-  I=$((I + 1))
 
-  if [ "${x}" = "--" ]; then
-    FOUND_HYPHEN_HYPHEN="1"
-    break;
-  fi
+            I="0"
+            FOUND_HYPHEN_HYPHEN="0"
+            for x in "$@"
+            do
+              I=$((I + 1))
 
-  echo "element >${x}< [${I}]"
+              if [ "${x}" = "--" ]; then
+                FOUND_HYPHEN_HYPHEN="1"
+                break;
+              fi
 
-  if [[ $(( I % 2 )) == 0 ]]; then
-    echo even
-  else
-    echo odd
-  fi
-  echo ""
-done
+              echo "element >${x}< [${I}]"
 
-if [ "${FOUND_HYPHEN_HYPHEN}" = "0" ]; then
+              if [[ $(( I % 2 )) == 0 ]]; then
+                echo even
+              else
+                echo odd
+              fi
+              echo ""
+            done
 
-  cat <<EEE
+            if [ "${FOUND_HYPHEN_HYPHEN}" = "0" ]; then
 
-  -- argument not found
+              cat <<EEE
 
-EEE
+              -- argument not found
 
-  exit 1
-fi          
-          
+            EEE
+
+              exit 1
+            fi
           </script>
-          
+
           <br />
           <script type="editor" data-lang="sh">
 

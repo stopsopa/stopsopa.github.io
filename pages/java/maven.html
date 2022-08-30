@@ -13,30 +13,29 @@
           <h2>Install on Mac</h2>
           <script type="editor" data-lang="sh">
 
-HOMEBREW_NO_AUTO_UPDATE=1 brew install maven
-
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install maven
           </script>
           <h2>Cmd</h2>
           <script type="editor" data-lang="sh">
 
             mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
               # from: https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html#creating-a-project
-              
+
             mvn install
               # npm link odpowiednik w maven omówienie: https://youtu.be/sjiV1Qf35AE?t=1297
-              
+
             mvn compile
             mvn clean install -U
             mvn --version
             # Apache Maven 3.8.1
-            
+
             mvn deploy
               # publish of the library
-            
+
             good idea might be also removing 'target' directory from each sprint module and build again
 
             mvn dependency:tree | tee dep.txt
-            
+
             # the main cache for maven is here:
               ls -ls ~/.m2/repository/
 

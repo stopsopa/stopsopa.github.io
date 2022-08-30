@@ -33,11 +33,6 @@ window.env = (function (e) {
     return val;
   };
 })({
-  PROJECT_NAME: "stopsopatools",
-  NODE_PORT: "7898",
-  LOCAL_HOSTS: "stopsopa.github.io.local",
-  PROD_SCHEMA: "https",
-  PROD_HOST: "stopsopa.github.io",
   FIREBASE_API_KEY: "AIzaSyB6lAe7IMCxkjIJMHEXpS26emx-yLQOol8",
   FIREBASE_AUTH_DOMAIN: "github-f6a5f.firebaseapp.com",
   FIREBASE_DATABASE_URL: "https://github-f6a5f.firebaseio.com",
@@ -45,7 +40,6 @@ window.env = (function (e) {
   FIREBASE_STORAGE_BUCKET: "github-f6a5f.appspot.com",
   FIREBASE_MESSAGING_SENDER_ID: "389489861217",
   FIREBASE_API_ID: "1:389489861217:web:c7effb017403f3c45ac020",
-  GITSTORAGE_CORE_REPOSITORY: "git@github.com:stopsopa/gitstorage.git",
 });
 
 log("const env = window.env");

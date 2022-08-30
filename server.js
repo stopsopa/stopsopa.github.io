@@ -57,5 +57,11 @@ app.use(
 );
 
 app.listen(process.env.NODE_PORT, host, () => {
-  log(`\n 🌎  Server is running ` + `http://${host}:${process.env.NODE_PORT}\n`);
+  log(`
+  
+ 🌎  Server is running http://${host}:${process.env.NODE_PORT}
+
+ \x1b[41mNOTICE: \x1b[33mmake sure to add ${process.env.LOCAL_HOSTS} to /etc/hosts\x1b[0m
+ 
+`);
 });
