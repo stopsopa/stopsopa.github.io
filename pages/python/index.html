@@ -18,8 +18,13 @@
           ls -l /usr/local/bin/python*       
           
           # switching version
-          ln -s -f /usr/local/bin/python[your-latest-version-just-installed] /usr/local/bin/python
+          sudo ln -s -f /usr/local/bin/python[your-latest-version-just-installed] /usr/local/bin/python
           
+          # list installed versions of pip
+          ls -la /usr/local/bin/pip*     
+          
+          # switching version
+          sudo ln -s -f /usr/local/bin/pip[your-latest-version-just-installed] /usr/local/bin/pip
           
           </script>
 
