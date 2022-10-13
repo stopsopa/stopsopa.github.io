@@ -2061,12 +2061,20 @@
 
 // equal to:
 // echo -n fdsadas | md5
-const val = process.argv[2];
+function md5(str, cut) {
+  const md5 = crypto.createHash("md5").update(str).digest("hex");
 
-console.log({
-  val,
-  md5: require("crypto").createHash("md5").update(val).digest("hex"),
-});
+  if (typeof cut === "number" && Number.isInteger(cut)) {
+    if (cut < 5) {
+      throw new Error(`md5 cut is smaller than 5`);
+    }
+
+    return md5.substring(0, cut);
+  }
+
+  return md5;
+}
+
 
 
           </script>
