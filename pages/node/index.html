@@ -532,6 +532,12 @@
             const content = fs.readFileSync(file, 'utf8').toString();
 
             fs.lstatSync(path_string).isDirectory()  // https://stackoverflow.com/a/15630832
+            fs.lstatSync(path_string).isFile()
+            fs.lstatSync(path_string).isBlockDevice()
+            fs.lstatSync(path_string).isCharacterDevice()
+            fs.lstatSync(path_string).isSymbolicLink() // (only valid with fs.lstat())
+            fs.lstatSync(path_string).isFIFO()
+            fs.lstatSync(path_string).isSocket()
 
 
             // write sync
