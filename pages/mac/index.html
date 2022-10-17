@@ -14,17 +14,17 @@
             <h2>Brew</h2>
             <script type="editor" data-lang="sh">
 
-              HOMEBREW_NO_AUTO_UPDATE=1 brew install zsh
+              export HOMEBREW_NO_AUTO_UPDATE=1 && brew install zsh
 
-              HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install coreutils
+              export HOMEBREW_NO_AUTO_UPDATE=1 && arch -arm64 brew install coreutils
 
-              HOMEBREW_NO_AUTO_UPDATE=1 brew install --cask dozer
+              export HOMEBREW_NO_AUTO_UPDATE=1 && brew install --cask dozer
 
-              HOMEBREW_NO_AUTO_UPDATE=1 brew install jq
+              export HOMEBREW_NO_AUTO_UPDATE=1 && brew install jq
 
-              HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install lib
+              export HOMEBREW_NO_AUTO_UPDATE=1 && arch -arm64 brew install lib
 
-              HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install
+              export HOMEBREW_NO_AUTO_UPDATE=1 && arch -arm64 brew install
               # from: https://github.com/Homebrew/brew/issues/1670#issuecomment-267096602
 
               Accessability -> Pointer Control -> (tab)Mouse & Trackpad -> (button)Trackpad Options... -> (on state for checkbox)Enable dragging -> (option from select)Withou drag lock
@@ -187,7 +187,7 @@
 
               wget --help 1> /dev/null 2> /dev/null
               if [ "$?" != "0" ]; then
-              	HOMEBREW_NO_AUTO_UPDATE=1 brew install wget
+              	export HOMEBREW_NO_AUTO_UPDATE=1 && brew install wget
               fi
               mkdir __7zipinstall
               cd __7zipinstall
@@ -318,7 +318,7 @@
               Note:
                 there is an option to install it from brew:
                   https://github.com/ExistentialAudio/BlackHole#option-2-install-via-homebrew
-                  HOMEBREW_NO_AUTO_UPDATE=1 brew install blackhole-2ch
+                  export HOMEBREW_NO_AUTO_UPDATE=1 && brew install blackhole-2ch
 
               Then do the following step by step:
                 1) visit: https://existential.audio/

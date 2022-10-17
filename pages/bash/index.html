@@ -350,7 +350,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           <script type="editor" data-lang="sh">
 
             # trick 1 (using 'unbuffer' from 'expect' lib)
-            # on mac requires: HOMEBREW_NO_AUTO_UPDATE=1 brew install expect
+            # on mac requires: export HOMEBREW_NO_AUTO_UPDATE=1 && brew install expect
             # on ubuntu requires: apt-get install expect
             # after reading man unbuffer:
               # unbuffer -p may appear to work incorrectly if a process feeding input to unbuffer exits.  Consider:
@@ -1206,7 +1206,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
           <script type="editor" data-lang="sh">
 
-            HOMEBREW_NO_AUTO_UPDATE=1 brew install coreutils
+            export HOMEBREW_NO_AUTO_UPDATE=1 && brew install coreutils
 
             dircolors -b
             gdircolors -b
