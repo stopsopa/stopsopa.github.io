@@ -229,7 +229,10 @@ if [ "${#LIST_FILTERED[@]}" = "0" ]; then
 EEE
 else
 
-  cloneTarget 
+  cloneTarget
+
+  COUNT_SUCCESS="0"
+  COUNT_ERROR="0"
 
   COUNT="${#LIST_FILTERED[@]}"
   COUNT="$(trim "${COUNT}")"
@@ -369,9 +372,13 @@ EEE
       if [ "${DIFFSTATUS}" = "" ] ; then
 
           { green "    files are in sync"; } 2>&3
+
+          COUNT_SUCCESS="$((${COUNT_SUCCESS} + 1))"
       else
 
           { red "    files are not in sync"; } 2>&3
+
+          COUNT_ERROR="$((${COUNT_ERROR} + 1))"
 
           cd "${CLONED_TARGET_DIR}" 
           git status
@@ -379,6 +386,11 @@ EEE
       fi
     fi
   done
+
+  echo ""
+  { green "COUNT_SUCCESS : ${COUNT_SUCCESS}"; } 2>&3
+  { red   "COUNT_ERROR   : ${COUNT_ERROR}"; } 2>&3
+  echo ""
 
   cd "$_P"
 fi
