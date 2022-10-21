@@ -122,6 +122,12 @@
         wide.setAttribute("id", u);
         a.dataset.wide = u;
         manipulation.after(a, wide);
+
+        const raw = document.createElement("input");
+        raw.classList.add("wide");
+        raw.classList.add("hide");
+        manipulation.after(a, raw);
+        raw.value = a.getAttribute("data-xor");
       });
 
       const input = document.querySelector(".input"); // input
@@ -141,7 +147,7 @@
           a.setAttribute("href", `javascript:void()`);
           a.setAttribute("disabled", "disabled");
           const u = document.getElementById(a.dataset.wide) || {};
-          u.value = "";
+          u.value = decoded;
           if (decoded.indexOf("data:") === 0) {
             const decodedCut = decoded.substring(5);
             a.classList.add("valid");
