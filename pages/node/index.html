@@ -262,6 +262,42 @@
 
             /bin/bash vault.sh jest
           </script>
+          <h2>hash pbkdf2</h2>
+          <script type="editor" data-lang="sh" class="domain.com">
+
+const { promisify } = require("util");
+
+const { performance } = require("node:perf_hooks");
+
+const crypto = require("crypto");
+
+const log = console.log;
+
+async function pbkdf2(password, salt, cost = 200000, digest = "sha512") {
+
+  const derivedKey = await promisify(crypto.pbkdf2)(password, salt, cost, 32, digest);
+
+  return derivedKey.toString("hex");
+}
+
+async function time(password, salt, cost = 200000, digest = "sha512") {
+  const start = performance.now();
+
+  const hash = await pbkdf2(password, salt, cost, digest)
+
+  const end = performance.now();
+
+  log(password, cost, hash, digest, start, end);
+}
+
+const salt = crypto.randomBytes(32);
+
+const password = "abcdef";
+
+time(password, salt);
+time(password, salt);
+
+          </script>
 
           <h2>Best practices</h2>
 
