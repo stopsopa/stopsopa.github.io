@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      label {
+        display: inline-block;
+        width: 140px;
+        text-align: right;
+      }
+      .block {
+        line-height: 2em;
+      }
+      body a.valid {
+        color: green;
+      }
+      .b {
+        display: inline-block;
+        width: 23px;
+      }
+      .hide .hide {
+        display: none;
+      }
+      body a[disabled] {
+        color: gray;
+      }
+      .wide {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body class="layout hide">
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <h2>Links</h2>
+          <ul>
+            <li>
+              <a data-xor="XQgeDwMBHhpJGlBBFg0YB08MRAlWBg0CXEcJAVRGDhxQHw9BXwYGClwbGUEIADJbUxkQJnQgG1gMOiwICgA6BXgRAF9/PxkUcRo5G19WHx1JVBkGWBsDAF4=">for HMRC</a>
+            </li>
+          </ul>
+          <div>
+            <div class="block hide">
+              <label> input </label>
+              <input type="text" class="input" />
+            </div>
+            <div class="block">
+              <label> password </label>
+              <input type="text" class="pass" />
+            </div>
+            <div class="block hide">
+              <label> decoded: </label>
+              <a class="decoded"></a>
+            </div>
+            <div class="block hide">
+              <label> encoded: </label>
+              <input type="text" class="encoded" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="https://docs.google.com/document/d/1f6vd4sHT-oms6mcmYTZ7J_zXGmYXquFDTzF4UdFOgRo/edit">p</a>
+    <button class="b">b</button>
+    <script src="/js/github.js"></script>
+    <script>
+      function xor(data, key) {
+        if (typeof key !== "string") {
+          throw new Error(`xor.js: key is not a string`);
+        }
+
+        if (!key) {
+          throw new Error(`xor.js: key is an empty string`);
+        }
+
+        if (typeof data !== "string") {
+          throw new Error(`xor.js: data is not a string`);
+        }
+
+        var ret = "",
+          l = key.length;
+
+        for (var i = 0; i < data.length; i++) {
+          ret += String.fromCharCode(key.charCodeAt(i % l) ^ data.charCodeAt(i));
+        }
+
+        return ret;
+      }
+
+      function toBase(data) {
+        return btoa(data);
+      }
+      function fromBase(data) {
+        return atob(data);
+      }
+
+      function encode(data, key) {
+        try {
+          return toBase(xor(`data:${data}`, key));
+        } catch (e) {
+          log("encode error", e);
+          return "";
+        }
+      }
+      function decode(data, key) {
+        try {
+          return xor(fromBase(data), key);
+        } catch (e) {
+          log("decode error", e);
+          return "";
+        }
+      }
+
+      Array.from(document.querySelectorAll("[data-xor]")).forEach((a) => {
+        const wide = document.createElement("input");
+        wide.classList.add("wide");
+        wide.classList.add("hide");
+        const u = unique();
+        wide.setAttribute("id", u);
+        a.dataset.wide = u;
+        manipulation.after(a, wide);
+      });
+
+      const input = document.querySelector(".input"); // input
+      const pass = document.querySelector(".pass"); // input
+      const decoded = document.querySelector(".decoded"); // a
+      const encoded = document.querySelector(".encoded"); // input
+
+      function trigger() {
+        const d = decode(input.value, pass.value);
+        decoded.setAttribute("href", d);
+        decoded.innerText = d;
+        encoded.value = encode(input.value, pass.value);
+        Array.from(document.querySelectorAll("[data-xor]")).forEach((a) => {
+          const encoded = a.getAttribute("data-xor");
+          const decoded = decode(encoded, pass.value);
+          a.classList.remove("valid");
+          a.setAttribute("href", `javascript:void()`);
+          a.setAttribute("disabled", "disabled");
+          const u = document.getElementById(a.dataset.wide) || {};
+          u.value = "";
+          if (decoded.indexOf("data:") === 0) {
+            const decodedCut = decoded.substring(5);
+            a.classList.add("valid");
+            a.setAttribute("href", decodedCut);
+            a.removeAttribute("disabled");
+            window.w = a.dataset.wide;
+            u.value = decodedCut;
+          }
+        });
+      }
+      trigger();
+      input.addEventListener("input", trigger);
+      pass.addEventListener("input", trigger);
+
+      const b = document.querySelector(".b");
+      b.addEventListener("click", () => {
+        document.body.classList.toggle("hide");
+      });
+
+      function unique(pattern) {
+        // node.js require('crypto').randomBytes(16).toString('hex');
+        pattern || (pattern = "xyxyxy");
+        return pattern.replace(/[xy]/g, function (c) {
+          var r = (Math.random() * 16) | 0,
+            v = c == "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        });
+      }
+    </script>
+  </body>
+</html>
