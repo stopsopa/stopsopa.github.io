@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
+    <style>
+      .padding {
+        padding-left: 30px;
+      }
+    </style>
   </head>
   <body class="layout">
     <div class="body">
       <div class="inside">
-        <input value="~🦠💀?👿🎩💥🔪🔇💣🇩🇪🚑💉🎉🦄🌵#⏳⚡🌋😱@✨🔥🚒❄💩🧟¯\_(ツ)_/¯" onclick="javascript:this.select()" />
         <div class="cards">
           <h2>Index</h2>
           <ul data-do-sort>
@@ -85,8 +89,18 @@
           <a href="https://endoflife.date/">https://endoflife.date/</a>
           <br />
         </div>
+        <input value="~🦠💀?👿🎩💥🔪🔇💣🇩🇪🚑💉🎉🦄🌵#⏳⚡🌋😱@✨🔥🚒❄💩🧟¯\_(ツ)_/¯" onclick="javascript:this.select()" />
       </div>
     </div>
     <script src="/js/github.js"></script>
+    <script>
+      var header = document.querySelector("header");
+
+      var a = document.createElement('a');
+      a.innerText = "Short urls"
+      a.setAttribute('href', "/short.html");
+      a.classList.add('padding');
+      manipulation.append(header, a)
+    </script>
   </body>
 </html>
