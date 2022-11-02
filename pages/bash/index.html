@@ -69,6 +69,25 @@
               var="${var%"${var##*[![:space:]]}"}"
               echo -n "${var}"
           }
+          trimstring(){ # from: https://jcgoran.github.io/2021/02/07/bash-string-trimming.html
+              if [ $# -ne 1 ]
+              then
+                  echo "USAGE: trimstring [STRING]"
+                  return 1
+              fi
+              s="${1}"
+              size_before=${#s}
+              size_after=0
+              while [ ${size_before} -ne ${size_after} ]
+              do
+                  size_before=${#s}
+                  s="${s#[[:space:]]}"
+                  s="${s%[[:space:]]}"
+                  size_after=${#s}
+              done
+              echo "${s}"
+              return 0
+          }          
           LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name .yarnrc -print)"
 
           LIST="$(trim "${LIST}")"
