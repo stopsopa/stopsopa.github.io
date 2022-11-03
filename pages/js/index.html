@@ -231,7 +231,10 @@ console.log(findLast(['a', 'b', 'c', 'ab', 'ae', 'oob'], x => x.includes('b')))
               function isNode(value) {
                 return isObjectLike(value) && !isPlainObject(value);
               }
-              return {
+              return { 
+                // there is alternative
+                // https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentElement
+                
                 after: function (referenceNode, newNode) {
                   if (referenceNode.nextSibling) {
                     return this.before(referenceNode.nextSibling, newNode);
