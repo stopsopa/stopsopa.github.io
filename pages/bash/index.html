@@ -289,6 +289,13 @@
                         This is equivalent to -rlptgoD.
                         It is a quick way of saying you want recursion and want to
                         preserve almost everything (with -H being a notable omission)
+                        
+          # ! might be destructive:
+            rsync -azP --delete-after root@xxx.xx.xx.xxx:/var/www/ /var/www/ -n
+              # -n -> --dry-run
+              # --delete-after   -> This tells rsync to delete extraneous files from the receiving side
+              # if ok then remove then buckle up, remove -n and execute it
+            
 
           # other examples:
 
