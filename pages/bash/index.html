@@ -304,6 +304,104 @@
 
             rsync -avzp --rsh='ssh -p23022' /srv/www site@xxx.xx.xx.xxx:/home/www/
         </script>
+        
+        <h2>rsync script</h2>
+        
+          <script type="editor" data-lang="sh">
+          
+
+TARGETDIR="/Volumes/256gb vol2"
+
+# current shell name reliably
+_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
+case ${_SHELL} in
+  zsh)
+    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+    _0="$( basename "${(%):-%N}" )"
+    _SCRIPT="${(%):-%N}"
+    _BINARY="/bin/zsh"
+    _PWD="$(pwd)"
+    ;;
+  sh)
+    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+    _0="$( basename "${0}" )"
+    _SCRIPT="${0}"
+    _BINARY="/bin/sh"
+    _PWD="$(pwd)"
+    ;;
+  *)
+    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+    _0="$( basename "${BASH_SOURCE[0]}" )"
+    _SCRIPT="${BASH_SOURCE[0]}"
+    _BINARY="/bin/bash"
+    _PWD="$(pwd)"
+    ;;
+esac
+
+EXCLUDE_FILE="${_DIR}/__rsync_exclude.txt"
+
+# use rsync with -n itself to optain list what should be excluded
+cat <<EEE > "${EXCLUDE_FILE}"
+System Volume Information
+.Spotlight-V100
+.Trashes
+.fseventsd/
+.fseventsd/fseventsd-uuid
+book
+EEE
+
+CMD="rsync -azP --delete-after --exclude-from \"${EXCLUDE_FILE}\" \"${_DIR}/\" \"${TARGETDIR}/\""
+
+if [ "${1}" = "" ]; then
+
+cat <<EEE
+
+/bin/bash rsync.sh --dry
+    # dry run
+    # will execute
+        ${CMD} -n
+
+/bin/bash rsync.sh --run
+    # execute
+    # will execute
+        ${CMD}
+
+EEE
+
+    exit 0
+fi
+
+set -e
+
+if [ ! -d "${TARGETDIR}" ]; then
+
+    echo "${0} error: '${TARGETDIR}' is not a directory"
+
+    exit 1
+fi
+
+if [ "${1}" = "--run" ]; then
+
+    eval "${CMD}"
+
+    exit 0
+fi
+
+if [ "${1}" = "--dry" ]; then
+
+    CMD="${CMD} -n"
+
+    eval "${CMD}"
+
+    exit 0
+fi
+
+echo "${0} error: param unknown, should be --run or --dry"
+
+exit 1
+          
+          
+        </script>
         <div class="cards">
           <h2>grep</h2>
           <script type="editor" data-lang="sh">
