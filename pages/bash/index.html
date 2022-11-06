@@ -319,7 +319,41 @@
           <script type="editor" data-lang="sh">
           
 
+# Just place this script in source directory
+# and setup TARGETDIR and EXCLUDE_LIST and optionally EXCLUDE_FILE_NAME env var
+#
+# Script this will make sure TARGETDIR exist and is directory then
+# it will generate file with exclusions right next to THIS script - in the same directory based on EXCLUDE_LIST env var
+# then it will execute rsync command:
+#   rsync -azP --delete-after --exclude-from "exclude file" "sourcedir/" "targetdir/"
+
 TARGETDIR="/Volumes/256gb vol2"
+
+# use /bin/bash rsync.sh --dry
+# to obtain list of thing which should be excluded
+# just take paths from output as they are
+# those links are always relative
+EXCLUDE_LIST=$(cat <<EOF
+System Volume Information
+.Spotlight-V100
+.Trashes
+.fseventsd/
+.fseventsd/fseventsd-uuid
+book
+EOF
+);
+
+EXCLUDE_FILE_NAME="__rsync_exclude.txt";
+
+DOCKER_SYNC_IMAGE="instrumentisto/rsync-ssh"
+
+# # for manpages
+# cat <<EOF | docker build -t ubuntu:18.04-man -
+# FROM ubuntu:18.04
+# RUN apt-get update && yes | unminimize
+# EOF
+# # docker images | grep ubuntu | grep 18.04-man
+# # docker run -it ubuntu:18.04-man bash
 
 # current shell name reliably
 _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
@@ -347,33 +381,42 @@ case ${_SHELL} in
     ;;
 esac
 
-EXCLUDE_FILE="${_DIR}/__rsync_exclude.txt"
+EXCLUDE_FILE="${_DIR}/${EXCLUDE_FILE_NAME}"
 
-# use rsync with -n itself to optain list what should be excluded
-cat <<EEE > "${EXCLUDE_FILE}"
-System Volume Information
-.Spotlight-V100
-.Trashes
-.fseventsd/
-.fseventsd/fseventsd-uuid
-book
-EEE
+echo "${EXCLUDE_LIST}" > "${EXCLUDE_FILE}"
 
-CMD="rsync -azP --delete-after --exclude-from \"${EXCLUDE_FILE}\" \"${_DIR}/\" \"${TARGETDIR}/\""
+# CMD="rsync -azP --delete-after --exclude-from \"${EXCLUDE_FILE}\" \"${_DIR}/\" \"${TARGETDIR}/\""
+CMDi="rsync -rtlDzPvi --delete-after --exclude-from \"/source/${EXCLUDE_FILE_NAME}\" /source/ /target/"
+CMD="rsync  -rtlDzPv  --delete-after --exclude-from \"/source/${EXCLUDE_FILE_NAME}\" /source/ /target/"
+
+DOCKER="docker run -i -v \"${_DIR}:/source\" -v \"${TARGETDIR}:/target\" ${DOCKER_SYNC_IMAGE} /bin/sh"
 
 if [ "${1}" = "" ]; then
 
 cat <<EEE
 
+Just place this script in source directory
+and setup TARGETDIR and EXCLUDE_LIST and optionally EXCLUDE_FILE_NAME env var
+
+Script this will make sure TARGETDIR exist and is directory then
+it will generate file with exclusions right next to THIS script - in the same directory based on EXCLUDE_LIST env var
+and depends on --dry or --run it will do rest:
+
 /bin/bash rsync.sh --dry
     # dry run
     # will execute
-        ${CMD} -n
+        echo '${CMDi} -n' | ${DOCKER}
+
+        # version without docker
+            rsync -rlDzPvi --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/" -n
 
 /bin/bash rsync.sh --run
     # execute
     # will execute
-        ${CMD}
+        echo '${CMD}' | ${DOCKER}
+
+        # version without docker
+            rsync -rlDzPv --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/"
 
 EEE
 
@@ -391,16 +434,18 @@ fi
 
 if [ "${1}" = "--run" ]; then
 
-    eval "${CMD}"
+    EVAL="echo '${CMD}' | ${DOCKER}"
+
+    eval "${EVAL}"
 
     exit 0
 fi
 
 if [ "${1}" = "--dry" ]; then
 
-    CMD="${CMD} -n"
+    EVAL="echo '${CMDi} -n' | ${DOCKER}"
 
-    eval "${CMD}"
+    eval "${EVAL}"
 
     exit 0
 fi
@@ -408,6 +453,7 @@ fi
 echo "${0} error: param unknown, should be --run or --dry"
 
 exit 1
+
           
           
         </script>
