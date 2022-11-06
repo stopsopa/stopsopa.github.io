@@ -280,7 +280,7 @@
 
           # examples:
             rsync -azP root@xxx.xx.xx.xxx:/var/www/ /var/www/
-            rsync -rlDzP root@xxx.xx.xx.xxx:/var/www/ /var/www/
+            rsync -rtlDzP root@xxx.xx.xx.xxx:/var/www/ /var/www/
             # this will copy new files to the target
             # it is safe to run again and again
             # it will not remove files in the target if they were removed in the source
@@ -288,23 +288,23 @@
             # -z, --compress
             # -P     The -P option is equivalent to --partial --progress
             # -a, --archive
-                        This is equivalent to -rlptgoD.
-                        It is a quick way of saying you want recursion and want to
-                        preserve almost everything (with -H being a notable omission)
-            # in -rlDzP I've dropped -ptgo, p-perms, t-times, g-group, o-owner
+            #           This is equivalent to -rlptgoD.
+            #           It is a quick way of saying you want recursion and want to
+            #           preserve almost everything (with -H being a notable omission)
+            # in -rtlDzP I've dropped -ptgo, p-perms, t-times, g-group, o-owner
                         
           # ! might be destructive:
-            rsync -azP --delete-after root@xxx.xx.xx.xxx:/var/www/ /var/www/ -n
+          # rsync -azP --delete-after root@xxx.xx.xx.xxx:/var/www/ /var/www/ -n
               # -n -> --dry-run
               # --delete-after   -> This tells rsync to delete extraneous files from the receiving side
               # if ok then remove then buckle up, remove -n and execute it
             
           # TIPS/USEFUL:
               # --ignore-existing         this will skip updating files on target (even if it have different content). 
-                                          will just check if it exists and if it does it will be skipped
+              #                           will just check if it exists and if it does it will be skipped
               # -i, --itemize-changes     to understand why file is considered "different"
               # --ignore-times            will make sure to really compare content of files
-                                          more on this one: https://stackoverflow.com/a/13779300
+              #                           more on this one: https://stackoverflow.com/a/13779300
               # -c, --checksum            skip based on checksum, not mod-time & size
               #                           very thorough approach if you really care about content match
               #                           but might be very slow because it reads all data (from source and target) to generate checksum
