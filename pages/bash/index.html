@@ -305,6 +305,9 @@
               # -i, --itemize-changes     to understand why file is considered "different"
               # --ignore-times            will make sure to really compare content of files
                                           more on this one: https://stackoverflow.com/a/13779300
+              # -c, --checksum            skip based on checksum, not mod-time & size
+              #                           very thorough approach if you really care about content match
+              #                           but might be very slow because it reads all data (from source and target) to generate checksum
 
           # other examples:
 
