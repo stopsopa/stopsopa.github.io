@@ -280,12 +280,17 @@
 
           # examples:
             rsync -azP root@xxx.xx.xx.xxx:/var/www/ /var/www/
-            rsync -rtlDzP root@xxx.xx.xx.xxx:/var/www/ /var/www/
+            rsync -rtlDzPvi root@xxx.xx.xx.xxx:/var/www/ /var/www/
             # this will copy new files to the target
             # it is safe to run again and again
             # it will not remove files in the target if they were removed in the source
             # -l   - copy links
             # -z, --compress
+            # -t, --times                 preserve times
+            #                             WARNING: this one is actually very important to add because if not then later 
+            #                             in next execution while file comparison will be performed on each file
+            #                             comparision is heavly based on timestamp. Withouth preserving timestamp 
+            #                             while copying you will end up with lots of false positive
             # -P     The -P option is equivalent to --partial --progress
             # -a, --archive
             #           This is equivalent to -rlptgoD.
@@ -308,6 +313,7 @@
               # -c, --checksum            skip based on checksum, not mod-time & size
               #                           very thorough approach if you really care about content match
               #                           but might be very slow because it reads all data (from source and target) to generate checksum
+              # -v, --verbose             increase verbosity
 
           # other examples:
 
