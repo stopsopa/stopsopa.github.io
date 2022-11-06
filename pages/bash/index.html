@@ -280,15 +280,18 @@
 
           # examples:
             rsync -azP root@xxx.xx.xx.xxx:/var/www/ /var/www/
+            rsync -rlDzP root@xxx.xx.xx.xxx:/var/www/ /var/www/
             # this will copy new files to the target
             # it is safe to run again and again
             # it will not remove files in the target if they were removed in the source
+            # -l   - copy links
             # -z, --compress
             # -P     The -P option is equivalent to --partial --progress
             # -a, --archive
                         This is equivalent to -rlptgoD.
                         It is a quick way of saying you want recursion and want to
                         preserve almost everything (with -H being a notable omission)
+            # in -rlDzP I've dropped -ptgo, p-perms, t-times, g-group, o-owner
                         
           # ! might be destructive:
             rsync -azP --delete-after root@xxx.xx.xx.xxx:/var/www/ /var/www/ -n
