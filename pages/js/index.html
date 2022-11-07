@@ -178,17 +178,16 @@
 
           <h2>findLast</h2>
           <script type="editor" data-lang="js">
-                    
-function findLast(arr, find) {
-  for (let i = arr.length - 1; i > -1; i -= 1) {
-    if (find(arr[i])) {
-      return arr[i];
-    }
-  }
-}
 
-console.log(findLast(['a', 'b', 'c', 'ab', 'ae', 'oob'], x => x.includes('b')))
+            function findLast(arr, find) {
+              for (let i = arr.length - 1; i > -1; i -= 1) {
+                if (find(arr[i])) {
+                  return arr[i];
+                }
+              }
+            }
 
+            console.log(findLast(['a', 'b', 'c', 'ab', 'ae', 'oob'], x => x.includes('b')))
           </script>
           <h2>manipulation</h2>
           <script type="editor" data-lang="js">
