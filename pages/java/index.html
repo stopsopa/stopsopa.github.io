@@ -50,23 +50,22 @@
           <h2>CLI</h2>
           <script type="editor" data-lang="sh">
 
-cat <<EE > HelloWorld.java
+            cat <<EE > HelloWorld.java
 
-class HelloWorld {
-    public static void main (String[] args) {
-        System.out.println("Hello world");
-    }
-}  
+            class HelloWorld {
+                public static void main (String[] args) {
+                    System.out.println("Hello world");
+                }
+            }
 
-EE
+            EE
 
-# compile and run
-javac HelloWorld.java
-java HelloWorld
+            # compile and run
+            javac HelloWorld.java
+            java HelloWorld
 
-# or Since Java 11 you can use a single command (this will not generate *.class file)  
-java HelloWorld.java
-          
+            # or Since Java 11 you can use a single command (this will not generate *.class file)
+            java HelloWorld.java
           </script>
           <h2>Libraries Repositories</h2>
           <a href="https://mvnrepository.com/search?q=hibernate">MVNrepository</a>

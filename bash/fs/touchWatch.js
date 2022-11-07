@@ -15,7 +15,7 @@ const fsp = require("node:fs/promises");
 
 const file = process.argv[2];
 
-const th = msg => new Error(`watch.js error: ${msg}`);
+const th = (msg) => new Error(`watch.js error: ${msg}`);
 
 if (typeof file !== "string") {
   throw th(`file to watch not specified`);

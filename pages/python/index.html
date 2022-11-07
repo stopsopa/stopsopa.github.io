@@ -9,28 +9,25 @@
   <body class="layout" toc>
     <div class="body">
       <div class="inside">
-
         <div class="cards">
           <h2>MAC:</h2>
           <script type="editor" data-lang="sh">
-          
-          # list installed versions of python
-          ls -l /usr/local/bin/python*       
-          
-          # switching version
-          sudo ln -s -f /usr/local/bin/python[your-latest-version-just-installed] /usr/local/bin/python
-          
-          # list installed versions of pip
-          ls -la /usr/local/bin/pip*     
-          
-          # switching version
-          sudo ln -s -f /usr/local/bin/pip[your-latest-version-just-installed] /usr/local/bin/pip
-                   
-          # install dependencies
-          pip install -r scripts/requirements.txt
-          
-          </script>
 
+            # list installed versions of python
+            ls -l /usr/local/bin/python*
+
+            # switching version
+            sudo ln -s -f /usr/local/bin/python[your-latest-version-just-installed] /usr/local/bin/python
+
+            # list installed versions of pip
+            ls -la /usr/local/bin/pip*
+
+            # switching version
+            sudo ln -s -f /usr/local/bin/pip[your-latest-version-just-installed] /usr/local/bin/pip
+
+            # install dependencies
+            pip install -r scripts/requirements.txt
+          </script>
         </div>
       </div>
     </div>

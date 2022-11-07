@@ -2112,24 +2112,21 @@ time(password, salt);
           <script type="editor" data-lang="sh">
 
 
-// equal to:
-// echo -n fdsadas | md5
-function md5(str, cut) {
-  const md5 = crypto.createHash("md5").update(str).digest("hex");
+            // equal to:
+            // echo -n fdsadas | md5
+            function md5(str, cut) {
+              const md5 = crypto.createHash("md5").update(str).digest("hex");
 
-  if (typeof cut === "number" && Number.isInteger(cut)) {
-    if (cut < 5) {
-      throw new Error(`md5 cut is smaller than 5`);
-    }
+              if (typeof cut === "number" && Number.isInteger(cut)) {
+                if (cut < 5) {
+                  throw new Error(`md5 cut is smaller than 5`);
+                }
 
-    return md5.substring(0, cut);
-  }
+                return md5.substring(0, cut);
+              }
 
-  return md5;
-}
-
-
-
+              return md5;
+            }
           </script>
           <h2>Read more</h2>
           <a href="https://fjolt.com/article/javascript-shadowrealms">https://fjolt.com/article/javascript-shadowrealms</a>
