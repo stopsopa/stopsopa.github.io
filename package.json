@@ -38,6 +38,7 @@
     "webpack": "^4.44.1"
   },
   "devDependencies": {
+    "detect-node": "^2.1.0",
     "open-cli": "^6.0.1",
     "prettier": "^2.6.1",
     "webpack-cli": "^3.3.12"
