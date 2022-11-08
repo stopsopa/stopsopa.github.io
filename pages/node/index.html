@@ -119,7 +119,7 @@
         <h2>Semantic release</h2>
         <script type="editor" data-lang="sh">
 
-          /bin/bash bash/swap-files.sh -m dev -- yarn add -D semantic-release conventional-changelog-conventionalcommits
+          /bin/bash bash/swap-files-v2.sh package.json package.dev.json -- yarn add -D semantic-release conventional-changelog-conventionalcommits
             # from: https://github.com/semantic-release/semantic-release/issues/1652#issuecomment-714150790
 
           cat <<EEE > release.config.js
