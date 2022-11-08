@@ -65,7 +65,8 @@ rm -rf "${LOGFILE}"
 /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "1_${FLAG}" \
   node node_modules/.bin/webpack --watch 2>&1 >> "${LOGFILE}" &
 
-WAITINGMESSAGE="hidden modules" # this text shows at the end of webpack build
+# WAITINGMESSAGE="hidden modules" # this text shows at the end of webpack build
+WAITINGMESSAGE="compiled successfully in" # this text shows at the end of webpack build
 
 set +x
 while [ "$(cat "${LOGFILE}" | grep "${WAITINGMESSAGE}")" = "" ]
