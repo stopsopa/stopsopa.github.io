@@ -265,38 +265,37 @@
           <h2>hash pbkdf2</h2>
           <script type="editor" data-lang="sh" class="domain.com">
 
-const { promisify } = require("util");
+            const { promisify } = require("util");
 
-const { performance } = require("node:perf_hooks");
+            const { performance } = require("node:perf_hooks");
 
-const crypto = require("crypto");
+            const crypto = require("crypto");
 
-const log = console.log;
+            const log = console.log;
 
-async function pbkdf2(password, salt, cost = 200000, digest = "sha512") {
+            async function pbkdf2(password, salt, cost = 200000, digest = "sha512") {
 
-  const derivedKey = await promisify(crypto.pbkdf2)(password, salt, cost, 32, digest);
+              const derivedKey = await promisify(crypto.pbkdf2)(password, salt, cost, 32, digest);
 
-  return derivedKey.toString("hex");
-}
+              return derivedKey.toString("hex");
+            }
 
-async function time(password, salt, cost = 200000, digest = "sha512") {
-  const start = performance.now();
+            async function time(password, salt, cost = 200000, digest = "sha512") {
+              const start = performance.now();
 
-  const hash = await pbkdf2(password, salt, cost, digest)
+              const hash = await pbkdf2(password, salt, cost, digest)
 
-  const end = performance.now();
+              const end = performance.now();
 
-  log(password, cost, hash, digest, start, end);
-}
+              log(password, cost, hash, digest, start, end);
+            }
 
-const salt = crypto.randomBytes(32);
+            const salt = crypto.randomBytes(32);
 
-const password = "abcdef";
+            const password = "abcdef";
 
-time(password, salt);
-time(password, salt);
-
+            time(password, salt);
+            time(password, salt);
           </script>
           <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">Check compliance</a>
 
@@ -324,9 +323,8 @@ time(password, salt);
 
             yarn cache clean --force
                 # Remove the shared cache files. https://yarnpkg.com/cli/cache/clean
-                
+
             yarn audit
-            
           </script>
           <h2>dotenv</h2>
           <script type="editor" data-lang="js">
@@ -797,9 +795,9 @@ time(password, salt);
 
             npm cache clean --force
                 # Remove the shared cache files. https://docs.npmjs.com/cli/v7/commands/npm-cache
-                
+
             resolution:
-            
+
             package.json:
             {
               "resolutions": {
@@ -2092,10 +2090,9 @@ time(password, salt);
             .nvmrc
             nvm alias default v16.16.0
             nvm ls-remote
-            
+
             nvm install --lts
-            nvm use --lts            
-            
+            nvm use --lts
           </script>
           <h2>csv</h2>
           <a href="https://www.npmjs.com/package/@fast-csv/format">https://www.npmjs.com/package/@fast-csv/format</a>

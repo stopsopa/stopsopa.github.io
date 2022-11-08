@@ -83,4 +83,9 @@ set -x
 
 sleep 3 && node "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_PORT}/index.html &
 
+if [ "${2}" = "launch_vs_code" ]; then
+
+    code "${_DIR}"
+fi
+
 tail -f "${LOGFILE}"

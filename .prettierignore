@@ -7,5 +7,5 @@ node_modules
 /pages/portsregistry/lists/ports-generated.json
 *.min.js
 *.rendered.html
-/preprocessed.js
+preprocessed.js
 /public/coverage/
