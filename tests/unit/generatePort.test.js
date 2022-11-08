@@ -1,4 +1,4 @@
-const generatePort = require("../pages/portsregistry/generatePort");
+const generatePort = require("../../pages/portsregistry/generatePort");
 
 const json = require("./generatePort.json");
 
@@ -37,7 +37,7 @@ describe("generatePort", () => {
   it("count", (done) => {
     const generate = generatePort();
 
-    generate.addList(require("../pages/portsregistry/lists/ports-generated.json"));
+    generate.addList(require("../../pages/portsregistry/lists/ports-generated.json"));
 
     // console.log(JSON.stringify(generate.getList().length, null, 4));
 
@@ -49,7 +49,7 @@ describe("generatePort", () => {
   it("generate", (done) => {
     const generate = generatePort();
 
-    generate.addList(require("../pages/portsregistry/lists/ports-generated.json"));
+    generate.addList(require("../../pages/portsregistry/lists/ports-generated.json"));
 
     generate.addList([3000, 3004]);
 

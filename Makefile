@@ -11,6 +11,9 @@ testport:
 fix:
 	yarn style:fix
 
+test:
+	/bin/bash test.sh	
+
 
 
 # preprocessor:
