@@ -8,8 +8,6 @@ const webpack = require("webpack");
 
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-
 const log = require("inspc");
 
 const config = require("./config")(process.env.NODE_ENV);
@@ -18,9 +16,11 @@ require("colors");
 
 utils.setup(config);
 
+process.env.NODE_ENV = "production";
+
 const isProd = process.env.NODE_ENV === "production";
 
-const after = (mode) => {
+const after = (NODE_ENV) => {
   // https://i.imgur.com/mWzuQWP.png
   const color = (function (c) {
     return (...args) => c[args.pop()] + args.join("") + c.reset;
@@ -51,7 +51,7 @@ const after = (mode) => {
       host = process.env.LOCAL_HOSTS;
     }
 
-    console.log(c(`\n http://${host}${port}/index.html`, `BgBlue`));
+    console.log(c(`\n ${NODE_ENV}: http://${host}${port}/index.html`, `BgBlue`));
   }, 2000);
   return {
     apply: (compiler) => {
@@ -123,10 +123,6 @@ module.exports = {
     extensions: [".js", ".jsx"],
   },
   plugins: [
-    // https://webpack.js.org/guides/production/
-    // https://webpack.js.org/guides/output-management/#cleaning-up-the-dist-folder
-    new CleanWebpackPlugin(),
-
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
@@ -142,10 +138,7 @@ module.exports = {
   performance: {
     hints: false,
   },
-  //...
   stats: {
-    colors: {
-      green: "\u001b[32m",
-    },
+    colors: false,
   },
 };

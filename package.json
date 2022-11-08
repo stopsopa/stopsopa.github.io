@@ -12,7 +12,6 @@
     "babel-loader": "^9.1.0",
     "cache-loader": "^4.1.0",
     "classnames": "^2.3.2",
-    "clean-webpack-plugin": "^4.0.0",
     "colors": "^1.4.0",
     "css-loader": "^6.7.1",
     "dotenv": "^16.0.3",
@@ -38,6 +37,7 @@
     "webpack": "^5.74.0"
   },
   "devDependencies": {
+    "crypto-js": "^4.1.1",
     "detect-node": "^2.1.0",
     "open-cli": "^7.1.0",
     "prettier": "^2.7.1",
