@@ -345,6 +345,30 @@
             });
 
             console.log('env', process.env);
+            
+            
+            # index.mjs (ESM)            
+
+            import fs from "fs";
+
+            import path from "path";
+
+            import { fileURLToPath } from "url";
+            const __filename = fileURLToPath(import.meta.url);
+            const __dirname = path.dirname(__filename);
+
+            const env = path.resolve(__dirname, "..", ".env");
+
+            if (!fs.existsSync(env)) {
+              throw new Error(`File ${env} doesn't exist`);
+            }
+
+            import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+
+            dotenv.config({
+              path: env,
+            });    
+            
           </script>
         </div>
         <div class="cards">
