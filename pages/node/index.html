@@ -721,6 +721,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
           
           </script>
+          <p>asm.sh</p>
           <script type="editor" data-lang="sh">          
 
 
@@ -775,7 +776,7 @@ while (( "$#" )); do
     if [ "$1" = "&&" ]; then
         _EVAL="$_EVAL &&"
     else
-      if [ "$PARAMS" = "" ]; then
+      if [ "$_EVAL" = "" ]; then
           _EVAL="\"$(quote "$1")\""
       else
           _EVAL="$_EVAL \"$(quote "$1")\""
@@ -786,7 +787,10 @@ done
 
 set -e
 
+
 eval "node --experimental-specifier-resolution=node $_EVAL"
+
+
 
 
           
