@@ -721,6 +721,11 @@ node --experimental-specifier-resolution=node scripts.mjs
 import {fileURLToPath} from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+
+import bootstrapVaultModule from "lib/from/node_modules/with/export/default";
+
+const bootstrapVault = bootstrapVaultModule.default;
           
           </script>
           <p>asm.sh</p>
