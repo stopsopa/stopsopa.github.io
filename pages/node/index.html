@@ -733,9 +733,16 @@ const bootstrapVault = bootstrapVaultModule.default;
 # To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
 # (probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype, a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
 
-VSCode fix regexp:
+# VSCode fix regexp:
   const ([^\s]+) = require\(['"]([^\)]+)['"]\)
   import $1 from "$2"
+    
+# Because we have introduced "type": "module" in package.json
+# Create React App requires to specify file extension in imports like:
+# import { fetchJson } from "./lib/transport.js";
+# instead of 
+# import { fetchJson } from "./lib/transport";
+
 
           
           </script>
