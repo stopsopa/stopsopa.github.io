@@ -733,6 +733,10 @@ const bootstrapVault = bootstrapVaultModule.default;
 # To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
 # (probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype, a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
 
+VSCode fix regexp:
+  const ([^\s]+) = require\(['"]([^\)]+)['"]\)
+  import $1 from "$2"
+
           
           </script>
           <p>asm.sh</p>
