@@ -740,7 +740,7 @@ const bootstrapVault = bootstrapVaultModule.default;
 # a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
 
 # VSCode fix regexp:
-const ([^\s]+) = require\(['"]([^\)]+)['"]\)
+(var|const) ([^\s]+) = require\(['"]([^\)]+)['"]\)
 import $1 from "$2"
     
 # ECMAScript module loader facts
