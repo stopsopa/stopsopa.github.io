@@ -143,6 +143,31 @@
           </script>
           <h2>Docker Compose hostname</h2>
           <a href="https://stackoverflow.com/a/29926476/5560682">https://stackoverflow.com/a/29926476/5560682</a>
+          <h2>docker-compose.yaml syntax</h2>
+          <script type="editor" data-lang="sh">
+          
+version: "3.8"
+services:
+  mysql:
+    build:
+      context: mysql
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_NAME}_mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
+      MYSQL_ROOT_HOST: "%"
+    entrypoint: ""
+    command: bash -c "
+        mkdir -p /var/lib/mysql_
+        &&
+        chown mysql:mysql /var/lib/mysql_
+        &&
+        /bin/bash /entrypoint.sh mysqld
+      "    
+          
+          </script>
           <h2>Working with HOST MACHINE</h2>
           <script type="editor" data-lang="sh">
 
