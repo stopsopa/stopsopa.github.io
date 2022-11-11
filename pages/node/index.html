@@ -225,11 +225,14 @@
           "style:fix": "yarn prettier --write .",
           "style:list": "yarn prettier --list-different ."
 
-          cat <<EEE > prettier.config.js
-          module.exports = {
+          cat <<EEE > prettier.config.mjs
+          export default {
             printWidth: 120,
           };
           EEE
+          
+            # declaring it as .mjs file is important because of this issue: https://stackoverflow.com/questions/71184604/prettier-fails-when-declaring-type-module-in-package-json
+       
 
           cat <<EEE > .prettierignore
           /.ci
