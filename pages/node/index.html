@@ -715,9 +715,11 @@
                 };
           </script>
           <h2>Modules: ECMAScript modules</h2>
-          <a href="https://nodejs.org/api/esm.html#enabling">how to enable</a>
+          <a href="https://nodejs.org/api/esm.html#enabling">Enabling ECMAScript module loader for project/library</a>
           <br />
           <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import">MDN import</a>
+          <br />
+          <a href="https://nodejs.org/api/packages.html#modules-loaders>Modules: Packages -&gt; Modules loaders (ECMAScript module loader & CommonJS module loader)</a>
           <script type="editor" data-lang="sh">          
 
 "type": "module",          
@@ -740,11 +742,45 @@ const bootstrapVault = bootstrapVaultModule.default;
   const ([^\s]+) = require\(['"]([^\)]+)['"]\)
   import $1 from "$2"
     
-# Because we have introduced "type": "module" in package.json
-# Create React App requires to specify file extension in imports like:
-# import { fetchJson } from "./lib/transport.js";
-# instead of 
-# import { fetchJson } from "./lib/transport";
+# ECMAScript module loader facts
+*
+Within a package, the package.json "type" field defines how Node.js should interpret .js files. If a package.json file does not have a "type" field, .js files are treated as CommonJS.
+A package.json "type" value of "module" tells Node.js to interpret .js files within that package as using ES module syntax.
+The "type" field applies not only to initial entry points (node my-app.js) but also to files referenced by import statements and import() expressions.
+    ...also...
+Files ending with .mjs are always loaded as ES modules regardless of the nearest parent package.json.
+Files ending with .cjs are always loaded as CommonJS regardless of the nearest parent package.json.    
+    # from: https://nodejs.org/api/packages.html#packagejson-and-file-extensions
+
+*
+ECMAScript module loader https://nodejs.org/api/packages.html#modules-loaders:
+- It does not support folders as modules, directory indexes (e.g. './startup/index.js') must be fully specified.
+    it can be though skipped if >node  --experimental-specifier-resolution=node [your_script.js]< provided
+    # from: https://nodejs.dev/en/api/v18/esm/#customizing-esm-specifier-resolution-algorithm
+    # alternative: https://github.com/nodejs/loaders-test/tree/main/commonjs-extension-resolution-loader
+    # WARNING: (node:94253) ExperimentalWarning: The Node.js specifier resolution flag is experimental. It could change or be removed at any time.
+
+*
+About Create React App:
+Because we have introduced "type": "module" in package.json
+Create React App will switch to ECMAScript module loader, therefore use
+import { fetchJson } from "./lib/transport.js";
+instead of 
+import { fetchJson } from "./lib/transport";
+    providing --experimental-specifier-resolution=node 
+    node --experimental-specifier-resolution=node node_modules/.bin/react-scripts start
+    will not help
+
+*
+The CommonJS module require always treats the files it references as CommonJS.
+Using require to load an ES module is not supported because ES modules have asynchronous execution. Instead, use import() to load an ES module from a CommonJS module.    
+    # from: https://nodejs.dev/en/api/v18/esm/#require
+
+*
+Difference between 'import' and 'require'
+https://nodejs.org/api/esm.html#interoperability-with-commonjs    
+
+                                          
 
 
           
