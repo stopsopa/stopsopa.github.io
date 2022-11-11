@@ -132,6 +132,10 @@ In template file listed placeholders will be processed:
 
 For details look to template.sh
 
+# ace editor click link
+
+When you hold CMD button and click any link anywhere in the content of ace editor it will open it in separate tab
+
 # other
 
 http://httpd.pl/stopsopa.github.io/index.html
