@@ -16,7 +16,8 @@
     Warning: Just specify type="typescript" and script on site will load
              /js/ace/ace-builds-1.4.12/src-min-noconflict/mode-typescript.js
 
-[supported syntax](https://github.com/ajaxorg/ace/blob/master/lib/ace/ext/modelist.js#L53)
+[supported syntax](https://github.com/ajaxorg/ace/blob/v1.8.1
+/lib/ace/ext/modelist.js#L53) - (v1.8.1 seems to be last version having this file, look for update in new structure)
 
 ## You can add manually TOC to the document in order to add some extra links to TOC
 
