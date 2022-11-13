@@ -23,6 +23,8 @@
           <h2>youtube-dl</h2>
           <a href="https://github.com/ytdl-org/youtube-dl">https://github.com/ytdl-org/youtube-dl</a>
           <script type="editor" data-lang="sh">
+          
+            export HOMEBREW_NO_AUTO_UPDATE=1 && brew install youtube-dl
 
             # show available formats
               youtube-dl -F YOUTUBELINK | grep -v "video only"
