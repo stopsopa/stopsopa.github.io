@@ -561,6 +561,19 @@ root.render(
   </React.StrictMode>
 );
 
+function App() {
+  let history = useHistory();
+  return (  
+      <button
+        onClick={() => {
+          auth.signout(() => history.push("/"));
+        }}
+      >
+        Sign out
+      </button>
+  );
+}
+
 // this.props: {
 //     "history": {
 //         "length": 50,
