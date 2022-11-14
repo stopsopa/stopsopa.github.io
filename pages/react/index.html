@@ -535,6 +535,33 @@
           <a href="https://stopsopa.github.io/roderic-legacy/router/001/app.html">DEMO</a>
           <h2>Form - checkbox</h2>
           <a href="./react-checkbox/index.html">react-checkbox</a>
+          <script type="editor" data-lang="jsx">
+
+import React from 'react';
+
+import { createRoot } from "react-dom/client";
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useParams,
+  useRouteMatch
+} from "react-router-dom";
+
+const root = createRoot(document.getElementById("app"));
+
+root.render(
+  <React.StrictMode>
+    <Router>
+      <App />
+    </Router>
+  </React.StrictMode>
+);
+
+          
+          </script>
         </div>
       </div>
     </div>
