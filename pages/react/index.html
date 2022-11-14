@@ -564,7 +564,16 @@ root.render(
 
 function App() {
   let history = useHistory();
+  
+  let match = useRouteMatch({ // from: https://reacttraining.com/blog/react-router-v5-1/#useroutematch
+    path: '/BLOG/:slug/',
+    strict: true,
+    sensitive: true
+  });
+  
   return (  
+    <div>
+      {match ? <BlogPost match={match} /> : <NotFound />}
       <button
         onClick={() => {
           auth.signout(() => history.push("/"));
@@ -572,6 +581,7 @@ function App() {
       >
         Sign out
       </button>
+    </div>
   );
 }
 
