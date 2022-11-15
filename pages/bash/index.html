@@ -330,7 +330,6 @@
 
         <script type="editor" data-lang="sh">
 
-
 # Just place this script in source directory
 # and setup TARGETDIR and EXCLUDE_LIST and optionally EXCLUDE_FILE_NAME env var
 #
@@ -459,10 +458,7 @@ docker:
     ${EVAL}    
 
 host:
-    (
-        cd "${_DIR}"
-        rsync  -rltzDPv --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/"
-    )
+    (cd "${_DIR}"; rsync  -rltzDPv --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
 
 EEE
 
@@ -478,11 +474,8 @@ if [ "${1}" = "--dry" ]; then
 docker:
     ${EVAL}    
 
-host: (for mac run this version because it)
-    (
-        cd "${_DIR}"
-        rsync  -rltzDPvin --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/"
-    )
+host: (for mac run this version because it is uses default version of rsync which is doing better job on macs)
+    (cd "${_DIR}"; rsync  -rltzDPvin --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
 
 EEE
 
