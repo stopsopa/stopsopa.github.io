@@ -20,6 +20,25 @@
         <div class="cards">
           <h2>Installation</h2>
           <script type="editor" data-lang="sh">
+          
+            # On Mac OS X 10.5 or later, we can use /usr/libexec/java_home to return the location of the default JDK.
+              /usr/libexec/java_home
+              # will return something like: /Library/Java/JavaVirtualMachines/jdk-18.0.2+9/Contents/Home
+            # find all installed JDKs.
+              /usr/libexec/java_home -V
+            # run specific JDK: 
+              /usr/libexec/java_home -v1.8
+              
+            # setup
+              vi ~/.zshenv
+              # add
+                export JAVA_HOME=$(/usr/libexec/java_home)
+                #or
+                export JAVA_HOME=$(/usr/libexec/java_home -v1.8)
+                source ~/.zshenv
+                echo ${JAVA_HOME}
+              
+              # from: https://mkyong.com/java/how-to-set-java_home-environment-variable-on-mac-os-x/
 
             # look for tar.gz file with java in one of links listed below this snippet
             # WARNING: for m1 look for aarch64 packages not x64
