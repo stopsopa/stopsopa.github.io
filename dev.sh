@@ -84,9 +84,27 @@ set -x
 
 sleep 3 && node "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_PORT}/index.html &
 
-if [ "${2}" = "launch_vs_code" ]; then
+if [ "${2}" = "launch_ide" ]; then
 
-    code "${_DIR}"
+
+    function wstorm {
+      WSTORMTES="${HOME}/Library/Application Support/JetBrains/Toolbox/scripts/webstorm"
+      WSTORMRUN="${HOME}/Library/Application\ Support/JetBrains/Toolbox/scripts/webstorm"
+
+      if [ "${1}" = "detect" ]; then
+        if [ -f "${WSTORMTES}" ]; then echo exist; else echo missing; fi
+      else
+        eval "${WSTORMRUN}" .
+      fi
+    }
+
+    if [ "$(wstorm detect)" = "exist" ]; then
+      cd "${_DIR}"
+      wstorm
+    else
+      code "${_DIR}"
+    fi
+
 fi
 
 tail -f "${LOGFILE}"
