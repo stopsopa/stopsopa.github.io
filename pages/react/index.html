@@ -531,7 +531,7 @@
             </body>
             </html>
           </script>
-          <h2>Router</h2>
+          <h2>React Router 5</h2>
           <a href="https://stopsopa.github.io/roderic-legacy/router/001/app.html">DEMO</a>
           <h2>Form - checkbox</h2>
           <a href="./react-checkbox/index.html">react-checkbox</a>
@@ -581,6 +581,11 @@ function App() {
       >
         Sign out
       </button>
+      <Switch>      
+        <Redirect from="about" to="about-us" /> {/* no more of that */}
+        <Route path="about" render={() => <Redirect to="about-us" />} /> {/* use that instead */}
+        {/* from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#remove-redirects-inside-switch */}
+      </Switch>
     </div>
   );
 }
@@ -612,6 +617,58 @@ function App() {
 //     }
 // }
 
+          
+          </script>
+          <h2>React Router 6</h2>
+          <script type="editor" data-lang="jsx">
+          
+// update 
+// npm install react-router-dom  or  yarn add react-router-dom
+// react-router-dom will bring dependency react-router
+// from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#upgrade-to-react-router-v6
+
+import { Routes, Route, Navigate } from "react-router-dom";
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/home" element={<Home />} />
+      <Route path="/" element={<Navigate replace to="/home" />} /> 
+      {/* 
+happens in a React.useEffect()
+  from: https://gist.github.com/mjackson/b5748add2795ce7448a366ae8f8ae3bb#not-server-rendering
+      */}
+      
+      <Route path="users/*" element={<Users />} /> {/* exact is gone */}
+      {/* 
+*-wildcard may be used only at the end of a path, not in the middle 
+  from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#note-on-route-path-patterns
+      */}
+      
+      <Route path="users" element={<Users />}>
+        <Route path="me" element={<OwnUserProfile />} />
+        <Route path=":id" element={<UserProfile />} />
+      </Route>
+      {/* from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#advantages-of-route-element */}
+    </Routes>
+  );
+}
+
+function Users() { 
+  // from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#relative-routes-and-links
+  return (
+    <div>
+      <nav>
+        <Link to="me">My Profile</Link>
+      </nav>
+
+      <Routes>
+        <Route path=":id" element={<UserProfile />} />
+        <Route path="me" element={<OwnUserProfile />} />
+      </Routes>
+    </div>
+  );
+}
           
           </script>
         </div>
