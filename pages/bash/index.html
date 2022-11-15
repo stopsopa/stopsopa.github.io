@@ -273,6 +273,24 @@
           done
           " 2>&1 | tee log.log
         </script>
+        
+        
+        
+        <h2>inode</h2>
+        <script type="editor" data-lang="sh">
+        
+        touch -
+        # create file named '-'
+        
+        ls -i
+        # list files with its inode name
+        
+        find . -inum xxxxx -exec rm {} \;
+        # remove file by inode
+        
+          # from: https://developer.ibm.com/articles/au-speakingunix14/#the-ls-command
+        
+        </script>
         <h2>rsync</h2>
         <script type="editor" data-lang="sh">
 
