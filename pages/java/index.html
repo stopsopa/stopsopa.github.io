@@ -39,6 +39,25 @@
                 echo ${JAVA_HOME}
               
               # from: https://mkyong.com/java/how-to-set-java_home-environment-variable-on-mac-os-x/
+              
+              
+            # INSTALLATION USING BREW
+            
+            # Add the location of the install
+            export HOMEBREW_NO_AUTO_UPDATE=1 && brew tap AdoptOpenJDK/openjdk
+
+            # Install OpenJDK 16
+            export HOMEBREW_NO_AUTO_UPDATE=1 && brew install adoptopenjdk16
+
+            # List Versions
+            /usr/libexec/java_home -V
+
+            # Switch Versions
+            export JAVA_HOME=`/usr/libexec/java_home -v $1`
+
+            # Install Maven
+            export HOMEBREW_NO_AUTO_UPDATE=1 && brew install maven
+              
 
             # look for tar.gz file with java in one of links listed below this snippet
             # WARNING: for m1 look for aarch64 packages not x64
