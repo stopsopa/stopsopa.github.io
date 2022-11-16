@@ -625,6 +625,9 @@ function App() {
           
           </script>
           <h2>React Router 6</h2>
+          <a href="https://github.com/remix-run/react-router/discussions/8753">Official v5 to v6 Migration Guide</a>
+          <br />
+          <a href="https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md">Upgrading from v5</a>
           <script type="editor" data-lang="jsx">
           
 // update 
@@ -632,9 +635,23 @@ function App() {
 // react-router-dom will bring dependency react-router
 // from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#upgrade-to-react-router-v6
 
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate,
+  useMatch, // more: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#replace-useroutematch-with-usematch
+} from "react-router-dom";
+import { StaticRouter } from "react-router-dom/server";
+  // https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#get-staticrouter-from-react-router-domserver
 
 function App() {
+  let navigate = useNavigate();
+  function handleClick() {
+    navigate("/home"); // push by default
+    // or: navigate(to, { replace: true, state })
+    // from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#use-usenavigate-instead-of-usehistory
+    // navigate(-2) or navigate(1)
+  }
+  if (true) {
+    return <button onClick={handleClick}>go home</button>
+  }
   return (
     <Routes>
       <Route path="/home" element={<Home />} />
