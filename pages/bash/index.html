@@ -1275,103 +1275,103 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         <div class="cards">
           <h2>trap</h2>
           <script type="editor" data-lang="sh">
-            # this example is little messy but I need it just as an example
-              # advanced use ------------------------------------------------- vvv
-              
-              
-              
+                        # this example is little messy but I need it just as an example
+                          # advanced use ------------------------------------------------- vvv
 
 
-function cleanup {
-
-    kill "${PID1}" 1> /dev/null 2> /dev/null || :
-}
-
-trap cleanup EXIT;
-
-# run some stuff like
-node server.js &
-
-PID1="${!}"
 
 
-# other examples
-              
-              
 
-DELETE=("$DOC" "$IGN" "$RUN");
+            function cleanup {
 
-function cleanup {
+                kill "${PID1}" 1> /dev/null 2> /dev/null || :
+            }
 
-  set +x
+            trap cleanup EXIT;
 
-  for i in "${DELETE[@]}"
-  do
+            # run some stuff like
+            node server.js &
 
-      { yellow "\nremoving '$i'"; } 2>&3
-
-      unlink "$i" || true
-  done
-}
-
-trap cleanup EXIT;
-
-# ...
-DELETE+=("$DEPLOYMENT_FILE")
-# ...
-
-trap - EXIT
-
-  # advanced use ------------------------------------------------- ^^^
+            PID1="${!}"
 
 
-        # ===== multiple traps =============== vvv
-
-TRAPS=()
-
-function trigger_traps {
-
-  for i in "${TRAPS[@]}"
-  do
-
-      { yellow "\ntriggering trap: '$i'"; } 2>&3
-
-      $i || true
-  done
-}
-
-trap trigger_traps EXIT;
+            # other examples
 
 
-function final { { red "\n\ngeneral error...\n\n"; } 2>&3;}
-TRAPS+=('final')
 
-# do yours stuff ....
+            DELETE=("$DOC" "$IGN" "$RUN");
 
-function final { { green "\n\nall good...\n\n"; } 2>&3;}
+            function cleanup {
 
-# and then
+              set +x
+
+              for i in "${DELETE[@]}"
+              do
+
+                  { yellow "\nremoving '$i'"; } 2>&3
+
+                  unlink "$i" || true
+              done
+            }
+
+            trap cleanup EXIT;
+
+            # ...
+            DELETE+=("$DEPLOYMENT_FILE")
+            # ...
+
+            trap - EXIT
+
+              # advanced use ------------------------------------------------- ^^^
 
 
-function cleanup {
+                    # ===== multiple traps =============== vvv
 
-  echo "======================== first cleanup ===========================";
+            TRAPS=()
 
-  set +x
+            function trigger_traps {
 
-  for i in "${DELETE[@]}"
-  do
+              for i in "${TRAPS[@]}"
+              do
 
-      { yellow "\nremoving '$i'"; } 2>&3
+                  { yellow "\ntriggering trap: '$i'"; } 2>&3
 
-      unlink "$i" || true
-  done
-}
+                  $i || true
+              done
+            }
 
-TRAPS=("cleanup" "${TRAPS[@]}") # add to beginning of the array
-TRAPS+=('cleanup') # add to the end of array
+            trap trigger_traps EXIT;
 
-        # ===== multiple traps =============== ^^^
+
+            function final { { red "\n\ngeneral error...\n\n"; } 2>&3;}
+            TRAPS+=('final')
+
+            # do yours stuff ....
+
+            function final { { green "\n\nall good...\n\n"; } 2>&3;}
+
+            # and then
+
+
+            function cleanup {
+
+              echo "======================== first cleanup ===========================";
+
+              set +x
+
+              for i in "${DELETE[@]}"
+              do
+
+                  { yellow "\nremoving '$i'"; } 2>&3
+
+                  unlink "$i" || true
+              done
+            }
+
+            TRAPS=("cleanup" "${TRAPS[@]}") # add to beginning of the array
+            TRAPS+=('cleanup') # add to the end of array
+
+                    # ===== multiple traps =============== ^^^
           </script>
         </div>
 

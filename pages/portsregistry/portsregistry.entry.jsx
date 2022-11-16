@@ -22,6 +22,8 @@ const generate = generatePort();
 
 generate.addList(require("./lists/ports-generated.json"));
 
+window.generate = generate;
+
 const Main = () => {
   const [ports, setPortsList] = useState(false);
 
@@ -144,8 +146,15 @@ const Main = () => {
               </td>
               <td>
                 <button
-                  onClick={() => {
-                    setInput("port", String(generate()));
+                  onClick={(e) => {
+                    e.preventDefault();
+                    let current;
+                    if (/^\d+$/.test(String(input.port))) {
+                      current = generate(parseInt(input.port, 10) + 1);
+                    } else {
+                      current = generate();
+                    }
+                    setInput("port", String(current));
                   }}
                 >
                   next

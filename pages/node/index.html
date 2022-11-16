@@ -230,9 +230,9 @@
             printWidth: 120,
           };
           EEE
-          
+
             # declaring it as .mjs file is important because of this issue: https://stackoverflow.com/questions/71184604/prettier-fails-when-declaring-type-module-in-package-json
-       
+
 
           cat <<EEE > .prettierignore
           /.ci
@@ -348,9 +348,9 @@
             });
 
             console.log('env', process.env);
-            
-            
-            # index.mjs (ESM)            
+
+
+            # index.mjs (ESM)
 
             import fs from "fs";
 
@@ -370,8 +370,7 @@
 
             dotenv.config({
               path: env,
-            });    
-            
+            });
           </script>
         </div>
         <div class="cards">
@@ -437,10 +436,9 @@
           </script>
           <h2>nodemon & chokidar</h2>
           <script type="editor" data-lang="sh">
-          
+
             nodemon -e js,html server.js
             nodemon -x "node --experimental-specifier-resolution=node" -e js,html server.js
-            
           </script>
           If it's not about running again server but command everytime file changes then use chokidar, like:
           <script type="editor" data-lang="sh">
@@ -720,153 +718,143 @@
           <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import">MDN import</a>
           <br />
           <a href="https://nodejs.org/api/packages.html#modules-loaders">Modules: Packages -&gt; Modules loaders (ECMAScript module loader & CommonJS module loader)</a>
-          <script type="editor" data-lang="sh">          
+          <script type="editor" data-lang="sh">
 
-"type": "module",          
-          
-node --experimental-specifier-resolution=node scripts.mjs   
+            "type": "module",
 
-import {fileURLToPath} from 'url';
+            node --experimental-specifier-resolution=node scripts.mjs
 
-const __filename = fileURLToPath(import.meta.url);
+            import {fileURLToPath} from 'url';
 
-const __dirname = path.dirname(__filename);
-
-
-import bootstrapVaultModule from "lib/from/node_modules/with/export/default";
-
-const bootstrapVault = bootstrapVaultModule.default;
-
-# To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
-# (probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype, 
-# a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
-
-# VSCode fix regexp:
-(?:var|const) ([^\s]+) = require\(['"]([^\)]+)['"]\)
-import $1 from "$2"
-    
-# ECMAScript module loader facts
-*
-Within a package, the package.json "type" field defines how Node.js should interpret .js files. 
-If a package.json file does not have a "type" field, .js files are treated as CommonJS.
-A package.json "type" value of "module" tells Node.js to 
-interpret .js files within that package as using ES module syntax.
-The "type" field applies not only to initial entry points (node my-app.js) but also to 
-files referenced by import statements and import() expressions.
-    ...also...
-Files ending with .mjs are always loaded as ES modules regardless of the nearest parent package.json.
-Files ending with .cjs are always loaded as CommonJS regardless of the nearest parent package.json.    
-    # from: https://nodejs.org/api/packages.html#packagejson-and-file-extensions
-
-*
-ECMAScript module loader https://nodejs.org/api/packages.html#modules-loaders:
-- It does not support folders as modules, directory indexes (e.g. './startup/index.js') must be fully specified.
-    it can be though skipped if >node  --experimental-specifier-resolution=node [your_script.js]< provided
-    # from: https://nodejs.dev/en/api/v18/esm/#customizing-esm-specifier-resolution-algorithm
-    # alternative: https://github.com/nodejs/loaders-test/tree/main/commonjs-extension-resolution-loader
-    # WARNING: 
-      # (node:94253) ExperimentalWarning: The Node.js specifier resolution flag is experimental. 
-      # It could change or be removed at any time.
-
-*
-About Create React App:
-Because we have introduced "type": "module" in package.json
-Create React App will switch to ECMAScript module loader, therefore use
-import { fetchJson } from "./lib/transport.js";
-instead of 
-import { fetchJson } from "./lib/transport";
-    providing --experimental-specifier-resolution=node 
-    node --experimental-specifier-resolution=node node_modules/.bin/react-scripts start
-    will not help
-
-*
-The CommonJS module require always treats the files it references as CommonJS.
-Using require to load an ES module is not supported because ES modules have asynchronous execution. 
-Instead, use import() to load an ES module from a CommonJS module.    
-    # from: https://nodejs.dev/en/api/v18/esm/#require
-
-*
-Difference between 'import' and 'require'
-https://nodejs.org/api/esm.html#interoperability-with-commonjs    
-
-                                          
+            const __filename = fileURLToPath(import.meta.url);
+            
+            const __dirname = path.dirname(__filename);
 
 
-          
+            import bootstrapVaultModule from "lib/from/node_modules/with/export/default";
+
+            const bootstrapVault = bootstrapVaultModule.default;
+
+            # To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+            # (probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype,
+            # a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
+
+            # VSCode fix regexp:
+            (?:var|const) ([^\s]+) = require\(['"]([^\)]+)['"]\)
+            import $1 from "$2"
+
+            # ECMAScript module loader facts
+            *
+            Within a package, the package.json "type" field defines how Node.js should interpret .js files.
+            If a package.json file does not have a "type" field, .js files are treated as CommonJS.
+            A package.json "type" value of "module" tells Node.js to
+            interpret .js files within that package as using ES module syntax.
+            The "type" field applies not only to initial entry points (node my-app.js) but also to
+            files referenced by import statements and import() expressions.
+                ...also...
+            Files ending with .mjs are always loaded as ES modules regardless of the nearest parent package.json.
+            Files ending with .cjs are always loaded as CommonJS regardless of the nearest parent package.json.
+                # from: https://nodejs.org/api/packages.html#packagejson-and-file-extensions
+
+            *
+            ECMAScript module loader https://nodejs.org/api/packages.html#modules-loaders:
+            - It does not support folders as modules, directory indexes (e.g. './startup/index.js') must be fully specified.
+                it can be though skipped if >node  --experimental-specifier-resolution=node [your_script.js]< provided
+                # from: https://nodejs.dev/en/api/v18/esm/#customizing-esm-specifier-resolution-algorithm
+                # alternative: https://github.com/nodejs/loaders-test/tree/main/commonjs-extension-resolution-loader
+                # WARNING:
+                  # (node:94253) ExperimentalWarning: The Node.js specifier resolution flag is experimental.
+                  # It could change or be removed at any time.
+
+            *
+            About Create React App:
+            Because we have introduced "type": "module" in package.json
+            Create React App will switch to ECMAScript module loader, therefore use
+            import { fetchJson } from "./lib/transport.js";
+            instead of
+            import { fetchJson } from "./lib/transport";
+                providing --experimental-specifier-resolution=node
+                node --experimental-specifier-resolution=node node_modules/.bin/react-scripts start
+                will not help
+
+            *
+            The CommonJS module require always treats the files it references as CommonJS.
+            Using require to load an ES module is not supported because ES modules have asynchronous execution.
+            Instead, use import() to load an ES module from a CommonJS module.
+                # from: https://nodejs.dev/en/api/v18/esm/#require
+
+            *
+            Difference between 'import' and 'require'
+            https://nodejs.org/api/esm.html#interoperability-with-commonjs
           </script>
           <p>asm.sh</p>
-          <script type="editor" data-lang="sh">          
+          <script type="editor" data-lang="sh">
 
 
-#
-# This script is to cover case when you have to use in node script two libraries
-# "dotenv" to load environment variables from .env and then
-# "config" which relays on those to properly read config
-# together
-# The occurs when you use ESM module system in node by executing .mjs file
-# or by turning on "type": "module", flag in package.json (more: https://nodejs.org/api/esm.html#enabling)
-# from that point even when you try to load both:
-#
-# import * as dotenv from "dotenv";
-#
-# dotenv.config({
-#   path: env,
-# });
-#
-# import config from "config";
-#
-# config will be executed first anyway
-# therefor one of solutions might be to load .env environment vars first and then executing
-# desired script
-#
-# then now you can just run:
-# /bin/bash esm.sh your_script.mjs
-#
+            #
+            # This script is to cover case when you have to use in node script two libraries
+            # "dotenv" to load environment variables from .env and then
+            # "config" which relays on those to properly read config
+            # together
+            # The occurs when you use ESM module system in node by executing .mjs file
+            # or by turning on "type": "module", flag in package.json (more: https://nodejs.org/api/esm.html#enabling)
+            # from that point even when you try to load both:
+            #
+            # import * as dotenv from "dotenv";
+            #
+            # dotenv.config({
+            #   path: env,
+            # });
+            #
+            # import config from "config";
+            #
+            # config will be executed first anyway
+            # therefor one of solutions might be to load .env environment vars first and then executing
+            # desired script
+            #
+            # then now you can just run:
+            # /bin/bash esm.sh your_script.mjs
+            #
 
-# keep in mind that this path will be resolved from CWD - Current working directory
-ENV=".env"
+            # keep in mind that this path will be resolved from CWD - Current working directory
+            ENV=".env"
 
-if [ ! -f "${ENV}" ]; then
+            if [ ! -f "${ENV}" ]; then
 
-  echo "${0} error: '${NEV}' file doesn't exist"
+              echo "${0} error: '${NEV}' file doesn't exist"
 
-  exit 1
-fi
+              exit 1
+            fi
 
-# will import env vars from file
-source "${ENV}"
+            # will import env vars from file
+            source "${ENV}"
 
-# will export all
-export $(cut -d= -f1 "${ENV}" | grep -v -E "^#" | tr "\n" " ")
+            # will export all
+            export $(cut -d= -f1 "${ENV}" | grep -v -E "^#" | tr "\n" " ")
 
-function quote {
-  echo "$1" | sed -E 's/\"/\\"/g'
-}
+            function quote {
+              echo "$1" | sed -E 's/\"/\\"/g'
+            }
 
-# preparing arguments passed to this script for evaluation
-_EVAL=""
-while (( "$#" )); do
-    if [ "$1" = "&&" ]; then
-        _EVAL="$_EVAL &&"
-    else
-      if [ "$_EVAL" = "" ]; then
-          _EVAL="\"$(quote "$1")\""
-      else
-          _EVAL="$_EVAL \"$(quote "$1")\""
-      fi
-    fi
-    shift;
-done
+            # preparing arguments passed to this script for evaluation
+            _EVAL=""
+            while (( "$#" )); do
+                if [ "$1" = "&&" ]; then
+                    _EVAL="$_EVAL &&"
+                else
+                  if [ "$_EVAL" = "" ]; then
+                      _EVAL="\"$(quote "$1")\""
+                  else
+                      _EVAL="$_EVAL \"$(quote "$1")\""
+                  fi
+                fi
+                shift;
+            done
 
-set -e
-
-
-eval "node --experimental-specifier-resolution=node $_EVAL"
+            set -e
 
 
-
-
-          
+            eval "node --experimental-specifier-resolution=node $_EVAL"
           </script>
           <h2>fs/promises</h2>
           <script type="editor" data-lang="js">
