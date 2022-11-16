@@ -2,6 +2,7 @@
 start:
 	/bin/bash dev.sh STOPSOPA_IO_FLAG
 
+.PHONY: build
 build:
 	/bin/bash build.sh
 
