@@ -693,6 +693,25 @@ function Users() {
 }
           
           </script>
+          <h2>Redux Toolkit</h2>
+          <script type="editor" data-lang="jsx">
+          
+action - object with type and playload
+action creator - funciton which is simplified and flattened interface for creating action
+reducer(state, action) - it updates pece of 'state' based on given 'action'
+  it's important to know that reducer should return new object if it's changing something and exactly the same object (by reference) if it doesn't
+  in other words: it have to change state in 'immutable' fashion ALWAYS
+  another important aspect is that it have to be always synchronous, also no other side effects
+store - central place where all state tree lives, it has dispatch(action) method, and getState() method
+selector - set of functions which when called return particular piece of data from particular branch from state tree
+
+reducer, action and stuff...
+  https://redux.js.org/tutorials/essentials/part-2-app-structure#the-counter-example-app
+  
+DEMO:
+  https://codesandbox.io/s/github/reduxjs/redux-essentials-counter-example/tree/master/?from-embed=&file=/src/features/counter/Counter.js
+
+          </script>
         </div>
       </div>
     </div>
