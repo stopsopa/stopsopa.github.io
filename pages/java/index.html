@@ -54,6 +54,10 @@
 
             # Install OpenJDK 16
             export HOMEBREW_NO_AUTO_UPDATE=1 && brew install adoptopenjdk16
+            
+            # apparently it can be also installed: 
+            export HOMEBREW_NO_AUTO_UPDATE=1 && brew install --cask adoptopenjdk8
+            export HOMEBREW_NO_AUTO_UPDATE=1 && brew install --cask caskroom/versions/adoptopenjdk8
 
             # List Versions
             /usr/libexec/java_home -V
