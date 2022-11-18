@@ -64,7 +64,8 @@
             /usr/libexec/java_home -V
 
             # Switch Versions
-            export JAVA_HOME=`/usr/libexec/java_home -v $1`
+            export JAVA_HOME=$(/usr/libexec/java_home -v 16.0.1)            
+            java --version
 
             # Install Maven
             export HOMEBREW_NO_AUTO_UPDATE=1 && brew install maven
