@@ -27,6 +27,27 @@
 
             # install dependencies
             pip install -r scripts/requirements.txt
+            
+            # It's worth looking into this tool:
+            export HOMEBREW_NO_AUTO_UPDATE=1 && brew install pyenv pyenv-virtualenv
+            
+              # then Add the following snippet into your .bash_profile or .zshrc and source it
+              eval "$(pyenv init -)"
+              eval "$(pyenv virtualenv-init -)"
+              # Set your global version of Python to 2.7.16
+              pyenv global 2.7.16
+              
+              xcode-select --install
+              
+              # Set your global version of Python to 2.7.16
+              pyenv global 2.7.16
+              
+              # Set your global version of Python to 3.10.5
+              pyenv global 3.10.5
+              
+              # Append the following into your .bash_profile or .zshrc and source it:
+              export PATH="$PATH:$HOME/.local/bin"
+              
           </script>
         </div>
       </div>
