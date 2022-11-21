@@ -49,6 +49,44 @@
               export PATH="$PATH:$HOME/.local/bin"
               
           </script>
+          
+          <h2>pyenv</h2>
+          <a href="https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-install">https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-install</a>
+          <script type="editor" data-lang="sh">
+
+# find latest
+pyenv install --list | grep 2.7
+
+pyenv install 2.7.18
+pyenv install 3.10.5
+pyenv install 2.7:latest
+pyenv install 3:latest
+
+pyenv versions
+
+echo $PYENV_VERSION
+pyenv shell 2.7.18
+echo $PYENV_VERSION
+
+# or even multiple versions
+pyenv shell 2.7.18 3.10.5
+
+# Displays the currently active Python version, along with information on how it was set.
+pyenv version
+
+pyenv global 3.10.5
+cat ~/.pyenv/version
+python -V
+pyenv global 2.7.18
+cat ~/.pyenv/version
+python -V
+  # from: https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-global
+
+
+
+          
+          
+          </script>
         </div>
       </div>
     </div>
