@@ -11,8 +11,7 @@
       <div class="inside">
         <div class="cards toc">
           <h1>Table of Contents</h1>
-          <ul data-do-sort>
-          </ul>
+          <ul data-do-sort></ul>
         </div>
         <div class="cards">
           <h2>codepen, jsfiddle, codesandbox</h2>
@@ -540,94 +539,91 @@
           <a href="./react-checkbox/index.html">react-checkbox</a>
           <script type="editor" data-lang="jsx">
 
-import React from 'react';
+            import React from 'react';
 
-import { createRoot } from "react-dom/client";
+            import { createRoot } from "react-dom/client";
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useParams,
-  useRouteMatch,
-  useHistory,
-  useLocation
-} from "react-router-dom";
+            import {
+              BrowserRouter as Router,
+              Switch,
+              Route,
+              Link,
+              useParams,
+              useRouteMatch,
+              useHistory,
+              useLocation
+            } from "react-router-dom";
 
-const root = createRoot(document.getElementById("app"));
+            const root = createRoot(document.getElementById("app"));
 
-root.render(
-  <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
-  </React.StrictMode>
-);
+            root.render(
+              <React.StrictMode>
+                <Router>
+                  <App />
+                </Router>
+              </React.StrictMode>
+            );
 
-function App() {
-  let history = useHistory();
-  
-  let match = useRouteMatch({ // from: https://reacttraining.com/blog/react-router-v5-1/#useroutematch
-    path: '/BLOG/:slug/',
-    strict: true,
-    sensitive: true
-  });
-  
-  return (  
-    <div>
-      {match ? <BlogPost match={match} /> : <NotFound />}
-      <button
-        onClick={() => {
-          auth.signout(() => history.push("/"));
-        }}
-      >
-        Sign out
-      </button>
-      <Switch>      
-        <Redirect from="about" to="about-us" /> {/* no more of that */}
-        <Route path="about" render={() => <Redirect to="about-us" />} /> {/* use that instead */}
-        {/* from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#remove-redirects-inside-switch */}
-      </Switch>
-    </div>
-  );
-}
+            function App() {
+              let history = useHistory();
 
-// this.props: {
-//     "history": {
-//         "length": 50,
-//         "action": "PUSH",
-//         "location": {
-//             "pathname": "/router/001/router/5",
-//             "search": "",
-//             "hash": "",
-//             "key": "nujv8c"
-//         }
-//     },
-//     "location": {
-//         "pathname": "/router/001/router/5",
-//         "search": "",
-//         "hash": "",
-//         "key": "nujv8c"
-//     },
-//     "match": {
-//         "path": "/router/001/router/:num",
-//         "url": "/router/001/router/5",
-//         "isExact": true,
-//         "params": {
-//             "num": "5"
-//         }
-//     }
-// }
+              let match = useRouteMatch({ // from: https://reacttraining.com/blog/react-router-v5-1/#useroutematch
+                path: '/BLOG/:slug/',
+                strict: true,
+                sensitive: true
+              });
 
-          
+              return (
+                <div>
+                  {match ? <BlogPost match={match} /> : <NotFound />}
+                  <button
+                    onClick={() => {
+                      auth.signout(() => history.push("/"));
+                    }}
+                  >
+                    Sign out
+                  </button>
+                  <Switch>
+                    <Redirect from="about" to="about-us" /> {/* no more of that */}
+                    <Route path="about" render={() => <Redirect to="about-us" />} /> {/* use that instead */}
+                    {/* from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#remove-redirects-inside-switch */}
+                  </Switch>
+                </div>
+              );
+            }
+
+            // this.props: {
+            //     "history": {
+            //         "length": 50,
+            //         "action": "PUSH",
+            //         "location": {
+            //             "pathname": "/router/001/router/5",
+            //             "search": "",
+            //             "hash": "",
+            //             "key": "nujv8c"
+            //         }
+            //     },
+            //     "location": {
+            //         "pathname": "/router/001/router/5",
+            //         "search": "",
+            //         "hash": "",
+            //         "key": "nujv8c"
+            //     },
+            //     "match": {
+            //         "path": "/router/001/router/:num",
+            //         "url": "/router/001/router/5",
+            //         "isExact": true,
+            //         "params": {
+            //             "num": "5"
+            //         }
+            //     }
+            // }
           </script>
           <h2>React</h2>
-          
+
           <script type="editor" data-lang="jsx">
-          
-// double mounting components in react 18: https://youtu.be/HPoC-k7Rxwo?t=1340          
-          
+
+            // double mounting components in react 18: https://youtu.be/HPoC-k7Rxwo?t=1340
           </script>
           <h2>React Router 5</h2>
           <a href="https://stopsopa.github.io/roderic-legacy/router/001/app.html">DEMO</a>
@@ -638,97 +634,93 @@ function App() {
           <br />
           <a href="https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md">Upgrading from v5</a>
           <script type="editor" data-lang="jsx">
-          
-// update 
-// npm install react-router-dom  or  yarn add react-router-dom
-// react-router-dom will bring dependency react-router
-// from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#upgrade-to-react-router-v6
 
-import { Routes, Route, Navigate, useNavigate,
-  useMatch, // more: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#replace-useroutematch-with-usematch
-} from "react-router-dom";
-import { StaticRouter } from "react-router-dom/server";
-  // https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#get-staticrouter-from-react-router-domserver
+            // update
+            // npm install react-router-dom  or  yarn add react-router-dom
+            // react-router-dom will bring dependency react-router
+            // from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#upgrade-to-react-router-v6
 
-function App() {
-  let navigate = useNavigate();
-  function handleClick() {
-    navigate("/home"); // push by default
-    // or: navigate(to, { replace: true, state })
-    // from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#use-usenavigate-instead-of-usehistory
-    // navigate(-2) or navigate(1)
-  }
-  if (true) {
-    return <button onClick={handleClick}>go home</button>
-  }
-  return (
-    <Routes>
-      <Route path="/home" element={<Home />} />
-      <Route path="/" element={<Navigate replace to="/home" />} /> 
-      {/* 
-happens in a React.useEffect()
-  from: https://gist.github.com/mjackson/b5748add2795ce7448a366ae8f8ae3bb#not-server-rendering
-      */}
-      
-      <Route path="users/*" element={<Users />} /> {/* exact is gone */}
-      {/* 
-*-wildcard may be used only at the end of a path, not in the middle 
-  from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#note-on-route-path-patterns
-      */}
-      
-      <Route path="users" element={<Users />}>
-        <Route path="me" element={<OwnUserProfile />} />
-        <Route path=":id" element={<UserProfile />} />
-      </Route>
-      {/* from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#advantages-of-route-element */}
-    </Routes>
-  );
-}
+            import { Routes, Route, Navigate, useNavigate,
+              useMatch, // more: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#replace-useroutematch-with-usematch
+            } from "react-router-dom";
+            import { StaticRouter } from "react-router-dom/server";
+              // https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#get-staticrouter-from-react-router-domserver
 
-function Users() { 
-  // from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#relative-routes-and-links
-  return (
-    <div>
-      <nav>
-        <Link to="me">My Profile</Link>
-      </nav>
+            function App() {
+              let navigate = useNavigate();
+              function handleClick() {
+                navigate("/home"); // push by default
+                // or: navigate(to, { replace: true, state })
+                // from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#use-usenavigate-instead-of-usehistory
+                // navigate(-2) or navigate(1)
+              }
+              if (true) {
+                return <button onClick={handleClick}>go home</button>
+              }
+              return (
+                <Routes>
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/" element={<Navigate replace to="/home" />} />
+                  {/*
+            happens in a React.useEffect()
+              from: https://gist.github.com/mjackson/b5748add2795ce7448a366ae8f8ae3bb#not-server-rendering
+                  */}
 
-      <Routes>
-        <Route path=":id" element={<UserProfile />} />
-        <Route path="me" element={<OwnUserProfile />} />
-      </Routes>
-    </div>
-  );
-}
-          
+                  <Route path="users/*" element={<Users />} /> {/* exact is gone */}
+                  {/*
+            *-wildcard may be used only at the end of a path, not in the middle
+              from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#note-on-route-path-patterns
+                  */}
+
+                  <Route path="users" element={<Users />}>
+                    <Route path="me" element={<OwnUserProfile />} />
+                    <Route path=":id" element={<UserProfile />} />
+                  </Route>
+                  {/* from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#advantages-of-route-element */}
+                </Routes>
+              );
+            }
+
+            function Users() {
+              // from: https://github.com/remix-run/react-router/blob/main/docs/upgrading/v5.md#relative-routes-and-links
+              return (
+                <div>
+                  <nav>
+                    <Link to="me">My Profile</Link>
+                  </nav>
+
+                  <Routes>
+                    <Route path=":id" element={<UserProfile />} />
+                    <Route path="me" element={<OwnUserProfile />} />
+                  </Routes>
+                </div>
+              );
+            }
           </script>
           <h2>Redux Toolkit</h2>
           <script type="editor" data-lang="jsx">
-          
-action - object with type and playload
-action creator - funciton which is simplified and flattened interface for creating action
-reducer(state, action) - it updates pece of 'state' based on given 'action'
-  it's important to know that reducer should return new object if it's changing something and exactly the same object (by reference) if it doesn't
-  in other words: it have to change state in 'immutable' fashion ALWAYS
-  another important aspect is that it have to be always synchronous, also no other side effects
-store - central place where all state tree lives, it has dispatch(action) method, and getState() method
-selector - set of functions which when called return particular piece of data from particular branch from state tree
 
-reducer, action and stuff...
-  https://redux.js.org/tutorials/essentials/part-2-app-structure#the-counter-example-app
-  
-DEMO:
-  https://codesandbox.io/s/github/reduxjs/redux-essentials-counter-example/tree/master/?from-embed=&file=/src/features/counter/Counter.js
+            reducer, action and stuff...
+              https://redux.js.org/tutorials/essentials/part-2-app-structure#the-counter-example-app
 
-# launch locally
-  npx create-react-app redux-essentials-example --template redux
-  echo v18.7.0 > redux-essentials-example/.nvmrc
-  echo "PORT=4263" > redux-essentials-example/.env
-  cd redux-essentials-example
-  yarn start
+            action - object with type and playload
+            action creator - funciton which is simplified and flattened interface for creating action
+            reducer(state, action) - it updates pece of 'state' based on given 'action'
+              it's important to know that reducer should return new object if it's changing something and exactly the same object (by reference) if it doesn't
+              in other words: it have to change state in 'immutable' fashion ALWAYS
+              another important aspect is that it have to be always synchronous, also no other side effects
+            store - central place where all state tree lives, it has dispatch(action) method, and getState() method
+            selector - set of functions which when called return particular piece of data from particular branch from state tree
 
-  
+            DEMO:
+              https://codesandbox.io/s/github/reduxjs/redux-essentials-counter-example/tree/master/?from-embed=&file=/src/features/counter/Counter.js
 
+            # launch locally
+              npx create-react-app redux-essentials-example --template redux
+              echo v18.7.0 > redux-essentials-example/.nvmrc
+              echo "PORT=4263" > redux-essentials-example/.env
+              cd redux-essentials-example
+              yarn start
           </script>
         </div>
       </div>

@@ -17,6 +17,7 @@
              /js/ace/ace-builds-1.4.12/src-min-noconflict/mode-typescript.js
 
 [supported syntax](https://github.com/ajaxorg/ace/blob/master/src/ext/modelist.js#L45)
+
 - (in older versions up to v1.8.1 the file was here: https://github.com/ajaxorg/ace/blob/v1.8.1/lib/ace/ext/modelist.js#L53)
 
 ## You can add manually TOC to the document in order to add some extra links to TOC

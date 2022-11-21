@@ -20,7 +20,7 @@
         <div class="cards">
           <h2>Installation</h2>
           <script type="editor" data-lang="sh">
-          
+
             # On Mac OS X 10.5 or later, we can use /usr/libexec/java_home to return the location of the default JDK.
               /usr/libexec/java_home
               # will return something like: /Library/Java/JavaVirtualMachines/jdk-18.0.2+9/Contents/Home
@@ -32,9 +32,9 @@
                   # 17.0.4.1 (arm64) "Oracle Corporation" - "Java SE 17.0.4.1" /Library/Java/JavaVirtualMachines/jdk-17.0.4.1.jdk/Contents/Home
                   # 16.0.1 (x86_64) "AdoptOpenJDK" - "AdoptOpenJDK 16" /Library/Java/JavaVirtualMachines/adoptopenjdk-16.jdk/Contents/Home
                   # 1.8.0_345 (x86_64) "Eclipse Temurin" - "Eclipse Temurin 8" /Library/Java/JavaVirtualMachines/jdk8u345-b01/Contents/Home
-            # run specific JDK: 
+            # run specific JDK:
               /usr/libexec/java_home -v1.8
-              
+
             # setup
               vi ~/.zshenv
               # add
@@ -43,19 +43,19 @@
                 export JAVA_HOME=$(/usr/libexec/java_home -v1.8)
                 source ~/.zshenv
                 echo ${JAVA_HOME}
-              
+
               # from: https://mkyong.com/java/how-to-set-java_home-environment-variable-on-mac-os-x/
-              
-              
+
+
             # INSTALLATION USING BREW
-            
+
             # Add the location of the install
             export HOMEBREW_NO_AUTO_UPDATE=1 && brew tap AdoptOpenJDK/openjdk
 
             # Install OpenJDK 16
             export HOMEBREW_NO_AUTO_UPDATE=1 && brew install adoptopenjdk16
-            
-            # apparently it can be also installed: 
+
+            # apparently it can be also installed:
             export HOMEBREW_NO_AUTO_UPDATE=1 && brew install --cask temurin
             export HOMEBREW_NO_AUTO_UPDATE=1 && brew install --cask adoptopenjdk8
             export HOMEBREW_NO_AUTO_UPDATE=1 && brew install --cask caskroom/versions/adoptopenjdk8
@@ -64,15 +64,15 @@
             /usr/libexec/java_home -V
 
             # Switch Versions
-            export JAVA_HOME=$(/usr/libexec/java_home -v 16.0.1)            
+            export JAVA_HOME=$(/usr/libexec/java_home -v 16.0.1)
             java --version
 
             # Install Maven
             export HOMEBREW_NO_AUTO_UPDATE=1 && brew install maven
-              
+
 
             # INSTALLATION BY DOWNLOADING BINARY:
-            
+
             # look for tar.gz file with java in one of links listed below this snippet
             # WARNING: for m1 look for aarch64 packages not x64
             # unzipping java SDK files: /Library/Java/JavaVirtualMachines/

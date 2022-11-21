@@ -273,23 +273,20 @@
           done
           " 2>&1 | tee log.log
         </script>
-        
-        
-        
+
         <h2>inode</h2>
         <script type="editor" data-lang="sh">
-        
-        touch -
-        # create file named '-'
-        
-        ls -i
-        # list files with its inode name
-        
-        find . -inum xxxxx -exec rm {} \;
-        # remove file by inode
-        
-          # from: https://developer.ibm.com/articles/au-speakingunix14/#the-ls-command
-        
+
+          touch -
+          # create file named '-'
+
+          ls -i
+          # list files with its inode name
+
+          find . -inum xxxxx -exec rm {} \;
+          # remove file by inode
+
+            # from: https://developer.ibm.com/articles/au-speakingunix14/#the-ls-command
         </script>
         <h2>rsync</h2>
         <script type="editor" data-lang="sh">
@@ -336,11 +333,10 @@
           # other examples:
 
             rsync -avzp --rsh='ssh -p23022' /srv/www site@xxx.xx.xx.xxx:/home/www/
-            
+
           # ISSUES:
             ON MAC USE BUILDIN VERSION BECAUSE YOU WILL AVOID ISSUE WITH RSYNC COPYING THE SAME LIST OF FILES EVERY TIME YOU TRIGGER RSYNC:
             https://superuser.com/a/1730435
-            
         </script>
         <a href="https://www.andrew.cmu.edu/course/15-749/READINGS/required/cas/tridgell96.pdf">g(TR-CS-96-05 The rsync algorithm Andrew Tridgell and Paul Mackerras June 1996)</a>
 
@@ -348,163 +344,161 @@
 
         <script type="editor" data-lang="sh">
 
-# Just place this script in source directory
-# and setup TARGETDIR and EXCLUDE_LIST and optionally EXCLUDE_FILE_NAME env var
-#
-# Script this will make sure TARGETDIR exist and is directory then
-# it will generate file with exclusions right next to THIS script - in the same directory based on EXCLUDE_LIST env var
-# then it will execute rsync command:
-#   rsync -azP --delete-after --exclude-from "exclude file" "sourcedir/" "targetdir/"
+          # Just place this script in source directory
+          # and setup TARGETDIR and EXCLUDE_LIST and optionally EXCLUDE_FILE_NAME env var
+          #
+          # Script this will make sure TARGETDIR exist and is directory then
+          # it will generate file with exclusions right next to THIS script - in the same directory based on EXCLUDE_LIST env var
+          # then it will execute rsync command:
+          #   rsync -azP --delete-after --exclude-from "exclude file" "sourcedir/" "targetdir/"
 
-TARGETDIR="/Volumes/256gb vol2"
+          TARGETDIR="/Volumes/256gb vol2"
 
-# use /bin/bash rsync.sh --dry
-# to obtain list of thing which should be excluded
-# just take paths from output as they are
-# those links are always relative
-EXCLUDE_LIST=$(cat <<EOF
-# this file is generated
-# if you want to modify it edit it in rsync.sh
+          # use /bin/bash rsync.sh --dry
+          # to obtain list of thing which should be excluded
+          # just take paths from output as they are
+          # those links are always relative
+          EXCLUDE_LIST=$(cat <<EOF
+          # this file is generated
+          # if you want to modify it edit it in rsync.sh
 
-System Volume Information
-.Spotlight-V100
-.Trashes
-.fseventsd/
-.fseventsd/fseventsd-uuid
-book
-record
-EOF
-);
+          System Volume Information
+          .Spotlight-V100
+          .Trashes
+          .fseventsd/
+          .fseventsd/fseventsd-uuid
+          book
+          record
+          EOF
+          );
 
-EXCLUDE_FILE_NAME="__rsync_exclude.txt";
+          EXCLUDE_FILE_NAME="__rsync_exclude.txt";
 
-DOCKER_SYNC_IMAGE="instrumentisto/rsync-ssh"
+          DOCKER_SYNC_IMAGE="instrumentisto/rsync-ssh"
 
-# # for manpages
-# cat <<EOF | docker build -t ubuntu:18.04-man -
-# FROM ubuntu:18.04
-# RUN apt-get update && yes | unminimize
-# EOF
-# # docker images | grep ubuntu | grep 18.04-man
-# # docker run -it ubuntu:18.04-man bash
+          # # for manpages
+          # cat <<EOF | docker build -t ubuntu:18.04-man -
+          # FROM ubuntu:18.04
+          # RUN apt-get update && yes | unminimize
+          # EOF
+          # # docker images | grep ubuntu | grep 18.04-man
+          # # docker run -it ubuntu:18.04-man bash
 
-# current shell name reliably
-_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
-case ${_SHELL} in
-  zsh)
-    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
-    _0="$( basename "${(%):-%N}" )"
-    _SCRIPT="${(%):-%N}"
-    _BINARY="/bin/zsh"
-    _PWD="$(pwd)"
-    ;;
-  sh)
-    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
-    _0="$( basename "${0}" )"
-    _SCRIPT="${0}"
-    _BINARY="/bin/sh"
-    _PWD="$(pwd)"
-    ;;
-  *)
-    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
-    _0="$( basename "${BASH_SOURCE[0]}" )"
-    _SCRIPT="${BASH_SOURCE[0]}"
-    _BINARY="/bin/bash"
-    _PWD="$(pwd)"
-    ;;
-esac
+          # current shell name reliably
+          _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
+          case ${_SHELL} in
+            zsh)
+              _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+              _0="$( basename "${(%):-%N}" )"
+              _SCRIPT="${(%):-%N}"
+              _BINARY="/bin/zsh"
+              _PWD="$(pwd)"
+              ;;
+            sh)
+              _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+              _0="$( basename "${0}" )"
+              _SCRIPT="${0}"
+              _BINARY="/bin/sh"
+              _PWD="$(pwd)"
+              ;;
+            *)
+              _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+              _0="$( basename "${BASH_SOURCE[0]}" )"
+              _SCRIPT="${BASH_SOURCE[0]}"
+              _BINARY="/bin/bash"
+              _PWD="$(pwd)"
+              ;;
+          esac
 
-EXCLUDE_FILE="${_DIR}/${EXCLUDE_FILE_NAME}"
+          EXCLUDE_FILE="${_DIR}/${EXCLUDE_FILE_NAME}"
 
-echo "${EXCLUDE_LIST}" > "${EXCLUDE_FILE}"
+          echo "${EXCLUDE_LIST}" > "${EXCLUDE_FILE}"
 
-# CMD="rsync -azP --delete-after --exclude-from \"${EXCLUDE_FILE}\" \"${_DIR}/\" \"${TARGETDIR}/\""
+          # CMD="rsync -azP --delete-after --exclude-from \"${EXCLUDE_FILE}\" \"${_DIR}/\" \"${TARGETDIR}/\""
 
-CMDi="rsync -rltzDPvi  --delete-after --exclude-from \"/source/${EXCLUDE_FILE_NAME}\" /source/ /target/"
-CMD="rsync  -rltzDPv   --delete-after --exclude-from \"/source/${EXCLUDE_FILE_NAME}\" /source/ /target/"
+          CMDi="rsync -rltzDPvi  --delete-after --exclude-from \"/source/${EXCLUDE_FILE_NAME}\" /source/ /target/"
+          CMD="rsync  -rltzDPv   --delete-after --exclude-from \"/source/${EXCLUDE_FILE_NAME}\" /source/ /target/"
 
-DOCKER="docker run -i -v \"${_DIR}:/source\" -v \"${TARGETDIR}:/target\" ${DOCKER_SYNC_IMAGE} /bin/sh"
+          DOCKER="docker run -i -v \"${_DIR}:/source\" -v \"${TARGETDIR}:/target\" ${DOCKER_SYNC_IMAGE} /bin/sh"
 
-if [ "${1}" = "" ]; then
+          if [ "${1}" = "" ]; then
 
-cat <<EEE
+          cat <<EEE
 
-Just place this script in source directory
-and setup TARGETDIR and EXCLUDE_LIST and optionally EXCLUDE_FILE_NAME env var
+          Just place this script in source directory
+          and setup TARGETDIR and EXCLUDE_LIST and optionally EXCLUDE_FILE_NAME env var
 
-Script this will make sure TARGETDIR exist and is directory then
-it will generate file with exclusions right next to THIS script - in the same directory based on EXCLUDE_LIST env var
-and depends on --dry or --run it will do rest:
+          Script this will make sure TARGETDIR exist and is directory then
+          it will generate file with exclusions right next to THIS script - in the same directory based on EXCLUDE_LIST env var
+          and depends on --dry or --run it will do rest:
 
-/bin/bash rsync.sh --dry
-    # dry run
-    # will execute
-        echo '${CMDi} -n' | ${DOCKER}
+          /bin/bash rsync.sh --dry
+              # dry run
+              # will execute
+                  echo '${CMDi} -n' | ${DOCKER}
 
-        # version without docker
-            rsync -rtlDzPvi --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/" -n
+                  # version without docker
+                      rsync -rtlDzPvi --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/" -n
 
-/bin/bash rsync.sh --run
-    # execute
-    # will execute
-        echo '${CMD}' | ${DOCKER}
+          /bin/bash rsync.sh --run
+              # execute
+              # will execute
+                  echo '${CMD}' | ${DOCKER}
 
-        # version without docker
-            rsync -rtlDzPv --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/"
+                  # version without docker
+                      rsync -rtlDzPv --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/"
 
-EEE
+          EEE
 
-    exit 0
-fi
+              exit 0
+          fi
 
-set -e
+          set -e
 
-if [ ! -d "${TARGETDIR}" ]; then
+          if [ ! -d "${TARGETDIR}" ]; then
 
-    echo "${0} error: '${TARGETDIR}' is not a directory"
+              echo "${0} error: '${TARGETDIR}' is not a directory"
 
-    exit 1
-fi
+              exit 1
+          fi
 
-if [ "${1}" = "--run" ]; then
+          if [ "${1}" = "--run" ]; then
 
-    EVAL="echo '${CMD}' | ${DOCKER}"
+              EVAL="echo '${CMD}' | ${DOCKER}"
 
-    cat <<EEE
+              cat <<EEE
 
-docker:
-    ${EVAL}    
+          docker:
+              ${EVAL}
 
-host:
-    (cd "${_DIR}"; rsync  -rltzDPv --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
+          host:
+              (cd "${_DIR}"; rsync  -rltzDPv --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
 
-EEE
+          EEE
 
-    exit 0
-fi
+              exit 0
+          fi
 
-if [ "${1}" = "--dry" ]; then
+          if [ "${1}" = "--dry" ]; then
 
-    EVAL="echo '${CMDi} -n' | ${DOCKER}"
+              EVAL="echo '${CMDi} -n' | ${DOCKER}"
 
-    cat <<EEE
+              cat <<EEE
 
-docker:
-    ${EVAL}    
+          docker:
+              ${EVAL}
 
-host: (for mac run this version because it is uses default version of rsync which is doing better job on macs)
-    (cd "${_DIR}"; rsync  -rltzDPvin --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
+          host: (for mac run this version because it is uses default version of rsync which is doing better job on macs)
+              (cd "${_DIR}"; rsync  -rltzDPvin --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
 
-EEE
+          EEE
 
-    exit 0
-fi
+              exit 0
+          fi
 
-echo "${0} error: param unknown, should be --run or --dry"
+          echo "${0} error: param unknown, should be --run or --dry"
 
-exit 1
-
-
+          exit 1
         </script>
         <div class="cards">
           <h2>grep</h2>
