@@ -107,4 +107,4 @@ if [ "${2}" = "launch_ide" ]; then
 
 fi
 
-tail -f "${LOGFILE}"
+tail -n 10000 -f "${LOGFILE}"
