@@ -38,7 +38,37 @@
             }
 
             jqs="jqs"
+            
+            
+            # examples
+            cat <<EEE | jq ".abc"
+            {
+              "abc": "def"
+            }
+            EEE
+            # prints >"def"<
+
+            cat <<EEE | jq -r ".abc"
+            {
+              "abc": "def"
+            }
+            EEE
+            # prints >def< 
+            
+            cat <<EEE | jq "keys"
+            {
+              "abc": "def",
+              "cef": "ghi"
+            }
+            EEE
+            # prints >[
+            #  "abc",
+            #  "cef"
+            #]<
+            
+            
           </script>
+          <a href="https://stedolan.github.io/jq/manual/">https://stedolan.github.io/jq/manual/</a>
           <br />
           <a href="https://ss64.com/bash/syntax.html">https://ss64.com/bash/syntax.html</a>
         </div>
