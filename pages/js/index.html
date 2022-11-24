@@ -1309,7 +1309,12 @@ function encodeFunctionToString(fn) {
 }
 
 function decodeFunctionFromString(str) {
+  if (typeof str !== "string") {
+    throw new Error("encodeFunction error: str is not a string");
+  }
+
   let fn;
+
   try {
     fn = new Function("return " + str)();
   } catch (e) {
@@ -1330,6 +1335,7 @@ const str = encodeFunctionToString(function test(a, b) {
 const fn = decodeFunctionFromString(str);
 
 fn("a param", "b param");
+
 
 
           </script>
