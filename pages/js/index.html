@@ -1297,6 +1297,42 @@
             optionalParameterWithDefault('a', undefined) // def 5
             // optionalParameterWithDefault('a', null); // for this only "maybe type" will help - Error!
           </script>
+          <h3>encodeFunctionToString & decodeFunctionFromString</h3>
+          <script type="editor" data-lang="js">
+
+function encodeFunctionToString(fn) {
+  if (typeof fn === "function") {
+    return fn.toString();
+  }
+
+  throw new Error("encodeFunction error: fn is not a function");
+}
+
+function decodeFunctionFromString(str) {
+  let fn;
+  try {
+    fn = new Function("return " + str)();
+  } catch (e) {
+    throw new Error(`decodeFunctionFromString error: evaluation of string failed: ${e}`);
+  }
+
+  if (typeof fn === "function") {
+    return fn;
+  }
+
+  throw new Error("decodeFunctionFromString error: decoded string is not a function");
+}
+
+const str = encodeFunctionToString(function test(a, b) {
+  console.log("function call", a, b);
+});
+
+const fn = decodeFunctionFromString(str);
+
+fn("a param", "b param");
+
+
+          </script>
         </div>
       </div>
     </div>
