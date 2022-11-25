@@ -21,60 +21,14 @@
             <li><a href="./sed.html">sed</a></li>
             <li><a href="./awk.html">awk</a></li>
           </ul>
-          <h2>Get exit status of process that's piped to another</h2>
-          <a href="https://unix.stackexchange.com/a/14276">https://unix.stackexchange.com/a/14276</a>
-          <h2>Books and manuals</h2>
-          <a href="https://doc.lagout.org/operating%20system%20/linux/Classic%20Shell%20Scripting.pdf">Classic Shell Scripting</a>
-          <br />
-          <a href="https://www.google.com/search?q=advanced+bash+scripting+guide+pdf">g(advanced bash scripting guide pdf)</a>
-          <br />
-          <a href="https://kapeli.com/cheat_sheets/Bash_Test_Operators.docset/Contents/Resources/Documents/index">g(Bash Test Operators)</a>
-          <h2>jq</h2>
-          <a href="https://stedolan.github.io/jq/">https://stedolan.github.io/jq/</a>
-          <script type="editor" data-lang="sh">
-
-            jqs() {
-              FILE="${1}" && echo "$(cat "${FILE}" | jq --sort-keys)" > "${FILE}"
-            }
-
-            jqs="jqs"
-            
-            
-            # examples
-            cat <<EEE | jq ".abc"
-            {
-              "abc": "def"
-            }
-            EEE
-            # prints >"def"<
-
-            cat <<EEE | jq -r ".abc"
-            {
-              "abc": "def"
-            }
-            EEE
-            # prints >def< 
-            
-            cat <<EEE | jq "keys"
-            {
-              "abc": "def",
-              "cef": "ghi"
-            }
-            EEE
-            # prints >[
-            #  "abc",
-            #  "cef"
-            #]<
-            
-            
-          </script>
-          <a href="https://stedolan.github.io/jq/manual/">https://stedolan.github.io/jq/manual/</a>
-          <br />
-          <a href="https://ss64.com/bash/syntax.html">https://ss64.com/bash/syntax.html</a>
-        </div>
-
         <h2>useful</h2>
         <script type="editor" data-lang="sh">
+        
+          # expand HOME directory
+          TARGET="~/.m2"
+          eval TARGET="${TARGET}"
+          echo ">${TARGET}<"
+
 
           # fix variables in ide
           WEBSTORM:
@@ -303,6 +257,58 @@
           done
           " 2>&1 | tee log.log
         </script>
+
+          <h2>Get exit status of process that's piped to another</h2>
+          <a href="https://unix.stackexchange.com/a/14276">https://unix.stackexchange.com/a/14276</a>
+          <h2>Books and manuals</h2>
+          <a href="https://doc.lagout.org/operating%20system%20/linux/Classic%20Shell%20Scripting.pdf">Classic Shell Scripting</a>
+          <br />
+          <a href="https://www.google.com/search?q=advanced+bash+scripting+guide+pdf">g(advanced bash scripting guide pdf)</a>
+          <br />
+          <a href="https://kapeli.com/cheat_sheets/Bash_Test_Operators.docset/Contents/Resources/Documents/index">g(Bash Test Operators)</a>
+          <h2>jq</h2>
+          <a href="https://stedolan.github.io/jq/">https://stedolan.github.io/jq/</a>
+          <script type="editor" data-lang="sh">
+
+            jqs() {
+              FILE="${1}" && echo "$(cat "${FILE}" | jq --sort-keys)" > "${FILE}"
+            }
+
+            jqs="jqs"
+            
+            
+            # examples
+            cat <<EEE | jq ".abc"
+            {
+              "abc": "def"
+            }
+            EEE
+            # prints >"def"<
+
+            cat <<EEE | jq -r ".abc"
+            {
+              "abc": "def"
+            }
+            EEE
+            # prints >def< 
+            
+            cat <<EEE | jq "keys"
+            {
+              "abc": "def",
+              "cef": "ghi"
+            }
+            EEE
+            # prints >[
+            #  "abc",
+            #  "cef"
+            #]<
+            
+            
+          </script>
+          <a href="https://stedolan.github.io/jq/manual/">https://stedolan.github.io/jq/manual/</a>
+          <br />
+          <a href="https://ss64.com/bash/syntax.html">https://ss64.com/bash/syntax.html</a>
+        </div>
 
         <h2>inode</h2>
         <script type="editor" data-lang="sh">
