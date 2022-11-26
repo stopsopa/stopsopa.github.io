@@ -324,6 +324,16 @@
 
             # from: https://developer.ibm.com/articles/au-speakingunix14/#the-ls-command
         </script>
+        <h2>glob</h2>
+        <script type="editor" data-lang="sh">
+
+# testing glob pattern - what files it will find
+ls -la **/*.spec.js
+
+echo -n **/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
+echo -n tests/**/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
+
+        </script>
         <h2>rsync</h2>
         <script type="editor" data-lang="sh">
 
