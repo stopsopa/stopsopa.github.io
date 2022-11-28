@@ -428,7 +428,7 @@
         <h2>count separate days by commits</h2>
           <script type="editor" data-lang="sh">
           
-git log --decorate --abbrev-commit --all --pretty=oneline  --pretty=format:"%x09%ad" --date=iso8601 | awk '{print $1}' | uniq -u | wc -l          
+   git log --decorate --abbrev-commit --all --pretty=oneline  --pretty=format:"%ad" --date=iso8601 | awk '{print $1}' | uniq -u | wc -l
           
           </script>
         <div class="cards">
