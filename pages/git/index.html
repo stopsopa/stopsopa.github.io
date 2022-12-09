@@ -309,6 +309,17 @@
             /bin/bash gitstorage.sh --create
             vi gitstorage-config.sh
           </script>
+          <h2>gitstorage files without extension</h2>
+          <script type="editor" data-lang="sh" class="domain.com">
+
+*
+!*/
+!*.*
+!.gitignore # but you have to still unignore files with dot and no extension 
+# trick from: https://stackoverflow.com/a/31326382
+
+
+          </script>
           <a href="https://github.com/stopsopa/gitstorage">github</a>
         </div>
         <div class="cards">
