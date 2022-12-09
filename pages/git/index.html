@@ -611,6 +611,9 @@ git log --all --pretty=oneline  --pretty=format:"%ad" --date=iso8601 | awk '{pri
             git config --global pull.rebase true
               # alternative git config --global pull.ff only
               # more about: https://blog.sffc.xyz/post/185195398930/why-you-should-use-git-pull-ff-only
+              
+            git config --global core.fileMode false
+              # https://stackoverflow.com/a/1580644
 
             git config core.fileMode false
 
