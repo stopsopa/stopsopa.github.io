@@ -149,20 +149,7 @@
           export $(cut -d= -f1 ".env" | grep -v -E "^#" | tr "\n" " ")
               # from: https://github.com/stopsopa/stopsopa.github.io/blob/master/bash/exportsource.sh
 
-          node -e "
-          const {EOL} = require('os');
-          let k = 5;
-          (function loop() {
-            if (k !== 0) {
-              setTimeout(loop, 1000);
-            }
-            process.stdout.write('stdout: ' + k + EOL);
-            process.stderr.write('stderr: ' + k + EOL);
-            k -= 1;
-          }());
-          " |& while IFS= read -r line; do printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S') process" "$line"; done
 
-              # from: https://unix.stackexchange.com/a/26729
 
           # find .git/config with given git source path
           find . -type f -name config | grep --color=never -v node_modules | grep --color=never /.git/config | xargs -n 1 realpath | xargs -n 1 -- bash -c '
@@ -388,6 +375,26 @@ echo -n tests/**/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
         </script>
         <a href="https://www.andrew.cmu.edu/course/15-749/READINGS/required/cas/tridgell96.pdf">g(TR-CS-96-05 The rsync algorithm Andrew Tridgell and Paul Mackerras June 1996)</a>
 
+        <h2>prepend date to each stream line</h2>
+        
+        <script type="editor" data-lang="sh">
+        
+node -e "
+const {EOL} = require('os');
+let k = 5;
+(function loop() {
+  if (k !== 0) {
+    setTimeout(loop, 1000);
+  }
+  process.stdout.write('stdout: ' + k + EOL);
+  process.stderr.write('stderr: ' + k + EOL);
+  k -= 1;
+}());
+" |& while IFS= read -r line; do printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S') process" "$line"; done
+
+      # from: https://unix.stackexchange.com/a/26729
+              
+        </script>
         <h2>rsync script</h2>
 
         <script type="editor" data-lang="sh">
