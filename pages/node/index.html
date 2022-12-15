@@ -1342,88 +1342,79 @@
           <h2>cli arguments manual processing</h2>
           <script type="editor" data-lang="js">
 
-            const args = (function (obj, tmp) {
-                process.argv
-                    .slice(2)
-                    .map(a => {
 
-                        if (a.indexOf('--') === 0) {
+const args = (function (obj, tmp) {
+  process.argv
+      .slice(2)
+      .map(a => {
 
-                            tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, '$1');
+        if (a.indexOf('--') === 0) {
 
-                            if (tmp) {
+          tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, '$1');
 
-                                obj[tmp] = (typeof obj[tmp] === 'undefined') ? true : obj[tmp];
-                            }
+          if (tmp) {
 
-                            return;
-                        }
+            obj[tmp] = (typeof obj[tmp] === 'undefined') ? true : obj[tmp];
+          }
 
-                        if (a === 'true') {
+          return;
+        }
 
-                            a = true
-                        }
+        if (a === 'true') {
 
-                        if (a === 'false') {
+          a = true
+        }
 
-                            a = false
-                        }
+        if (a === 'false') {
 
-                        if (tmp !== null) {
+          a = false
+        }
 
-                            if (obj[tmp] === true) {
+        if (tmp !== null) {
 
-                                return obj[tmp] = [a];
-                            }
+          if (obj[tmp] === true) {
 
-                            try {
+            return obj[tmp] = [a];
+          }
 
-                                obj[tmp].push(a);
-                            }
-                            catch (e) {
+          try {
 
-                            }
-                        }
-                    })
-                ;
+            obj[tmp].push(a);
+          }
+          catch (e) {
 
-                Object.keys(obj).map(k => {
-                    (obj[k] !== true && obj[k].length === 1) && (obj[k] = obj[k][0]);
-                    (obj[k] === 'false') && (obj[k] = false);
-                });
+          }
+        }
+      })
+  ;
 
-                return {
-                    count: () => Object.keys(obj).length,
-                    all: () => JSON.parse(JSON.stringify(obj)),
-                    get: (key, def) => {
+  Object.keys(obj).map(k => {
+    (obj[k] !== true && obj[k].length === 1) && (obj[k] = obj[k][0]);
+    (obj[k] === 'false') && (obj[k] = false);
+  });
 
-                        var t = JSON.parse(JSON.stringify(obj));
+  return {
+    count: () => Object.keys(obj).length,
+    all: () => JSON.parse(JSON.stringify(obj)),
+    get: (key, def) => {
 
-                        if (typeof def === 'undefined')
+      var t = JSON.parse(JSON.stringify(obj));
 
-                            return t[key];
+      if (typeof def === 'undefined')
 
-                        return (typeof t[key] === 'undefined') ? def : t[key] ;
-                    },
-                    string: (key, def) => {
-                      var t = JSON.parse(JSON.stringify(obj));
+        return t[key];
 
-                      return typeof t[key] === "string" ? t[key] : def;
-                    },
-                    update: data => {
+      return (typeof t[key] === 'undefined') ? def : t[key] ;
+    },
+    string: (key, def) => {
+      var t = JSON.parse(JSON.stringify(obj));
 
-                        delete data['config'];
+      return typeof t[key] === "string" ? t[key] : def;
+    },
+  };
+}({}));
 
-                        delete data['dump'];
 
-                        delete data['help'];
-
-                        delete data['inject'];
-
-                        obj = data;
-                    }
-                };
-            }({}));
           </script>
           <h2>jest</h2>
           <a href="https://github.com/stopsopa/roderic-legacy/tree/master/test/jest">https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a>
