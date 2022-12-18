@@ -219,18 +219,19 @@
           yarn add -D prettier
 
           # Requires NPM >=v7
-          npm set-script "style:check" "yarn prettier --check ."
-          npm set-script "style:fix" "yarn prettier --write ."
-          npm set-script "style:list" "yarn prettier --list-different ."
+          npm set-script "style:check" "yarn prettier --config prettier.config.cjs --check ."
+          npm set-script "style:fix" "yarn prettier --config prettier.config.cjs --write ."
+          npm set-script "style:list" "yarn prettier --config prettier.config.cjs --list-different ."
 
           # or just add manually to package.json for older version of NPM:
-          "style:check": "yarn prettier --check .",
-          "style:fix": "yarn prettier --write .",
-          "style:list": "yarn prettier --list-different ."
+          "style:check": "yarn prettier --config prettier.config.cjs --check .",
+          "style:fix": "yarn prettier --config prettier.config.cjs --write .",
+          "style:list": "yarn prettier --config prettier.config.cjs --list-different ."
 
           cat <<EEE > prettier.config.mjs
           export default {
             printWidth: 120,
+            // semi: false,
           };
           EEE
           
