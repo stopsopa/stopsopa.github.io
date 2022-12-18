@@ -217,7 +217,26 @@
         <script type="editor" data-lang="sh">
 
           yarn add -D prettier
+          
+          // ESM
+          # Requires NPM >=v7
+          npm set-script "style:check" "yarn prettier --config prettier.config.mjs --check ."
+          npm set-script "style:fix" "yarn prettier --config prettier.config.mjs --write ."
+          npm set-script "style:list" "yarn prettier --config prettier.config.mjs --list-different ."
 
+          # or just add manually to package.json for older version of NPM:
+          "style:check": "yarn prettier --config prettier.config.mjs --check .",
+          "style:fix": "yarn prettier --config prettier.config.mjs --write .",
+          "style:list": "yarn prettier --config prettier.config.mjs --list-different ."
+
+          cat <<EEE > prettier.config.mjs
+          export default {
+            printWidth: 120,
+            // semi: false,
+          };
+          EEE
+          
+          // COMMON JS
           # Requires NPM >=v7
           npm set-script "style:check" "yarn prettier --config prettier.config.cjs --check ."
           npm set-script "style:fix" "yarn prettier --config prettier.config.cjs --write ."
@@ -228,8 +247,8 @@
           "style:fix": "yarn prettier --config prettier.config.cjs --write .",
           "style:list": "yarn prettier --config prettier.config.cjs --list-different ."
 
-          cat <<EEE > prettier.config.mjs
-          export default {
+          cat <<EEE > prettier.config.cjs
+          module.exports = {
             printWidth: 120,
             // semi: false,
           };
