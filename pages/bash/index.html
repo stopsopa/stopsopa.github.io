@@ -1197,6 +1197,17 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             <li><a href="https://buildkite.com/docs/pipelines/writing-build-scripts#configuring-bash">buildkite script guide ("Writing Build Scripts" section in doc)</a></li>
           </ul>
 
+          <h2>RAM disk</h2>
+          <script type="editor" data-lang="sh">
+
+          RAMNAME="ramvol"
+          MB="8"
+          if [ "${RAMNAME}" != "" ] && [ ! -d "/Volumes/${RAMNAME}" ] && [[ ${MB} =~ ^[0-9]+$ ]]; then diskutil erasevolume HFS+ ${RAMNAME} $(hdiutil attach -nomount ram://$((${MB} * 2 * 1024))); else; echo conditions false; fi;          
+          
+          # from: https://superuser.com/a/1480386
+          
+          </script>
+          
           <h2>useful commands</h2>
           <script type="editor" data-lang="sh">
 
