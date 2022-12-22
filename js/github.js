@@ -551,6 +551,13 @@ log.green("defined", "window.manipulation");
     });
 
     await Promise.all([
+      loadJs("preprocessed.js", "/public/preprocessed.js", function () {
+        try {
+          return typeof window.env === "function";
+        } catch (e) {
+          return false;
+        }
+      }),
       loadJs("permalink", "/noprettier/permalink-my.js", function () {
         try {
           return typeof window.sasync.loaded.mountpermalink === "function";

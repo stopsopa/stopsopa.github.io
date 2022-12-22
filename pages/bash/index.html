@@ -11,6 +11,55 @@
         white-space: pre-wrap;
       }
     </style>
+
+    <script src="/public/preprocessed.js"></script>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        // <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/bash/rsync.sh">rsync.sh</a>
+        document.addEventListener("DOMContentLoaded", () => {
+          const GITHUB_SOURCES_PREFIX = env("GITHUB_SOURCES_PREFIX");
+
+          if (typeof GITHUB_SOURCES_PREFIX !== "string" || !GITHUB_SOURCES_PREFIX.trim()) {
+            throw new Error(`GITHUB_SOURCES_PREFIX is not defined`);
+          }
+
+          const reg = /^GITHUB_SOURCES_PREFIX(.*)/;
+
+          const buff = {
+            reg,
+            a_match: [],
+            a_notmatch: [],
+          };
+
+          document.querySelectorAll("a").forEach((a) => {
+            const href = a.getAttribute("href");
+
+            if (reg.test(href)) {
+              buff.a_match.push(href);
+
+              const newhref = href.replace(/^GITHUB_SOURCES_PREFIX(.*)/, `${GITHUB_SOURCES_PREFIX}$1`);
+
+              a.setAttribute("href", newhref);
+            } else {
+              buff.a_notmatch.push(href);
+            }
+          });
+
+          console.log(JSON.stringify(buff, null, 4));
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
   </head>
   <body class="layout" toc>
     <div class="body">
@@ -21,231 +70,231 @@
             <li><a href="./sed.html">sed</a></li>
             <li><a href="./awk.html">awk</a></li>
           </ul>
-        <h2>useful</h2>
-        <script type="editor" data-lang="sh">
-        
-          # expand HOME directory
-          TARGET="~/.m2"
-          eval TARGET="${TARGET}"
-          # or simply
-          eval TARGET="~/.m2";
-          echo ">${TARGET}<"
+          <h2>useful</h2>
+          <script type="editor" data-lang="sh">
+
+            # expand HOME directory
+            TARGET="~/.m2"
+            eval TARGET="${TARGET}"
+            # or simply
+            eval TARGET="~/.m2";
+            echo ">${TARGET}<"
 
 
-          # fix variables in ide
-          WEBSTORM:
-          (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
-          \${$1}
+            # fix variables in ide
+            WEBSTORM:
+            (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
+            \${$1}
 
-          VSCODE:
-          $([A-Za-z_\d!]+)
-          ${$1}
-
-
-
-          # ------- find and iterate ------- vvv
+            VSCODE:
+            $([A-Za-z_\d!]+)
+            ${$1}
 
 
 
+            # ------- find and iterate ------- vvv
 
 
-          trim() {
-              local var="${*}"
-              # remove leading whitespace characters
-              var="${var#"${var%%[![:space:]]*}"}"
-              # remove trailing whitespace characters
-              var="${var%"${var##*[![:space:]]}"}"
-              echo -n "${var}"
-          }
-          trimstring(){ # from: https://jcgoran.github.io/2021/02/07/bash-string-trimming.html
-              if [ $# -ne 1 ]
-              then
-                  echo "USAGE: trimstring [STRING]"
-                  return 1
-              fi
-              s="${1}"
-              size_before=${#s}
-              size_after=0
-              while [ ${size_before} -ne ${size_after} ]
+
+
+
+            trim() {
+                local var="${*}"
+                # remove leading whitespace characters
+                var="${var#"${var%%[![:space:]]*}"}"
+                # remove trailing whitespace characters
+                var="${var%"${var##*[![:space:]]}"}"
+                echo -n "${var}"
+            }
+            trimstring(){ # from: https://jcgoran.github.io/2021/02/07/bash-string-trimming.html
+                if [ $# -ne 1 ]
+                then
+                    echo "USAGE: trimstring [STRING]"
+                    return 1
+                fi
+                s="${1}"
+                size_before=${#s}
+                size_after=0
+                while [ ${size_before} -ne ${size_after} ]
+                do
+                    size_before=${#s}
+                    s="${s#[[:space:]]}"
+                    s="${s%[[:space:]]}"
+                    size_after=${#s}
+                done
+                echo "${s}"
+                return 0
+            }
+            LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name .yarnrc -print)"
+
+            LIST="$(trim "${LIST}")"
+
+            _P="$(pwd)"
+            if [ "${LIST}" = "" ]; then
+
+              cat <<EEE
+
+              nothing found
+
+            EEE
+            else
+              COUNT="$(echo "${LIST}" | wc -l)"
+              COUNT="$(trim "${COUNT}")"
+              I="0"
+              while read -r xxx
               do
-                  size_before=${#s}
-                  s="${s#[[:space:]]}"
-                  s="${s%[[:space:]]}"
-                  size_after=${#s}
-              done
-              echo "${s}"
-              return 0
-          }
-          LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name .yarnrc -print)"
 
-          LIST="$(trim "${LIST}")"
+                cd "$_P"
 
-          _P="$(pwd)"
-          if [ "${LIST}" = "" ]; then
+                I="$(($I + 1))"
 
-            cat <<EEE
+                echo -e "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}"
+                DIR="$(dirname "${xxx}")"
 
-            nothing found
+                cd "${DIR}"
+                echo "${xxx}" >> "${_P}/log.log"
+                cat "${_P}/${xxx}" >> "${_P}/log.log"
+                echo -e "\n\n" >> "${_P}/log.log"
 
-          EEE
-          else
-            COUNT="$(echo "${LIST}" | wc -l)"
-            COUNT="$(trim "${COUNT}")"
-            I="0"
-            while read -r xxx
+              done <<< "${LIST}"
+            fi
+
+            cd "$_P"
+
+
+
+
+
+
+
+            # ------- find and iterate ------- ^^^
+
+            export PATH="${PATH}:/new/path"
+
+            # manpages
+            cat <<EOF | docker build -t ubuntu:18.04-man -
+            FROM ubuntu:18.04
+            RUN apt-get update && yes | unminimize
+            EOF
+            docker images | grep ubuntu | grep 18.04-man
+            docker run -it ubuntu:18.04-man bash
+
+
+            # path interpolation
+
+            mkdir -p ~/__test/one\ two/three/four
+            _SS="~/__test/one two/three/four"
+            _SS="$(echo "${_SS}" | sed -E 's/( )/\\\1/g')"
+            eval _SS="${_SS}"
+            echo ">${_SS}<"
+
+
+            # if some linux tool is missing on mac, use linux
+            docker run -t -v "$(pwd):/opt/code" -w "/opt/code" ubuntu find -type f -executable
+
+            export _KILL="arang"; ps aux | grep "${_KILL}" | grep -v grep;echo "\n    are you sure? (y) \"${_KILL}\"\n"; read VAL; if [ "${VAL}" = "y" ]; then kill $(ps aux | grep "${_KILL}" | grep -v grep | awk '{print $2}'); else echo canceled...; fi
+
+            source ".env"
+            export $(cut -d= -f1 ".env" | grep -v -E "^#" | tr "\n" " ")
+                # from: https://github.com/stopsopa/stopsopa.github.io/blob/master/bash/exportsource.sh
+
+
+
+            # find .git/config with given git source path
+            find . -type f -name config | grep --color=never -v node_modules | grep --color=never /.git/config | xargs -n 1 realpath | xargs -n 1 -- bash -c '
+            FILE="$0" # because it is inline script (bash -c) then first arg is not a 1 arg but 0
+            STDOUT="$(awk "{
+                if (\$0 ~ /git@bitbucket\.org:org\/proj\.git/) {
+                    print \$0
+                }
+            }" "$FILE")"
+
+            if [ "$STDOUT" = "" ]; then
+                echo "$FILE not found"
+            else
+                echo -e "$FILE \033[32mFOUND\e[0m"
+            fi
+            '
+
+            # pick choose by number from the list
+            SSHS="$(echo "${_LIST}" | sed -n "${i} p")"
+
+            # basename and file extension
+            PD="$(dirname "${FILE}")"
+            PB="$(basename "${FILE}")"
+            EXTENSION="${PB##*.}"
+            FILENAME="${PB%.*}"
+            if [ "${FILENAME}" = "" ]; then
+                FILENAME="${PB}"
+                EXTENSION=""
+            fi
+            if [ "${FILENAME}" = "${PB}" ]; then
+                EXTENSION=""
+            fi
+
+            # exists in file, file contains
+            if [ "$(cat ~/.zshrc | grep 'tartufo')" = "" ]; then
+                # yep - it exists
+            fi
+
+
+            # reading one character in zsh, bash
+            { red "${COUNT} files found (more than ${MAX}), are you sure you want to include them to other libraries them? (y|n)\n"; } 2>&3
+            if [ "${_BINARY}" = "/bin/zsh" ]; then
+              read -sk
+            else
+              read -n 1
+            fi
+            echo "REPLY=$REPLY"
+            echo    # (optional) move to a new line
+            if ! [[ $REPLY =~ ^[Yy]$ ]]; then
+              { green "script stopped"; } 2>&3
+              exit 1
+            fi
+
+
+            # pipe stin to function:
+            cat <<FILE > ___test.sh
+            function _osht_xmlencode {
+                sed -e 's/\&/\&amp;/g' -e 's/\"/\&quot;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+                # To be painfully explicit  https://stackoverflow.com/a/14009482
+                # cat - | sed -e 's/\&/\&amp;/g' -e 's/\"/\&quot;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+            }
+            function grephello {
+                grep HELLO
+            }
+            cat <<EOF | _osht_xmlencode
+            VVVVV
+            first & and && ;
+            second " mid > mid
+            almost < near > end
+            ^^^^^^
+            EOF
+            cat <<EOF | grephello
+            VVVVV
+            normal
+            xxx HELLO test
+            mid
+            HELLO
+            end
+            ^^^^^^
+            EOF
+            FILE
+            /bin/bash ___test.sh
+            rm -rf ___test.sh
+
+
+            # cut from beginning
+            echo test | md5 | cut -c 1-5
+
+            /bin/bash -c "while true
             do
-
-              cd "$_P"
-
-              I="$(($I + 1))"
-
-              echo -e "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}"
-              DIR="$(dirname "${xxx}")"
-
-              cd "${DIR}"
-              echo "${xxx}" >> "${_P}/log.log"
-              cat "${_P}/${xxx}" >> "${_P}/log.log"
-              echo -e "\n\n" >> "${_P}/log.log"
-
-            done <<< "${LIST}"
-          fi
-
-          cd "$_P"
-
-
-
-
-
-
-
-          # ------- find and iterate ------- ^^^
-
-          export PATH="${PATH}:/new/path"
-
-          # manpages
-          cat <<EOF | docker build -t ubuntu:18.04-man -
-          FROM ubuntu:18.04
-          RUN apt-get update && yes | unminimize
-          EOF
-          docker images | grep ubuntu | grep 18.04-man
-          docker run -it ubuntu:18.04-man bash
-
-
-          # path interpolation
-
-          mkdir -p ~/__test/one\ two/three/four
-          _SS="~/__test/one two/three/four"
-          _SS="$(echo "${_SS}" | sed -E 's/( )/\\\1/g')"
-          eval _SS="${_SS}"
-          echo ">${_SS}<"
-
-
-          # if some linux tool is missing on mac, use linux
-          docker run -t -v "$(pwd):/opt/code" -w "/opt/code" ubuntu find -type f -executable
-
-          export _KILL="arang"; ps aux | grep "${_KILL}" | grep -v grep;echo "\n    are you sure? (y) \"${_KILL}\"\n"; read VAL; if [ "${VAL}" = "y" ]; then kill $(ps aux | grep "${_KILL}" | grep -v grep | awk '{print $2}'); else echo canceled...; fi
-
-          source ".env"
-          export $(cut -d= -f1 ".env" | grep -v -E "^#" | tr "\n" " ")
-              # from: https://github.com/stopsopa/stopsopa.github.io/blob/master/bash/exportsource.sh
-
-
-
-          # find .git/config with given git source path
-          find . -type f -name config | grep --color=never -v node_modules | grep --color=never /.git/config | xargs -n 1 realpath | xargs -n 1 -- bash -c '
-          FILE="$0" # because it is inline script (bash -c) then first arg is not a 1 arg but 0
-          STDOUT="$(awk "{
-              if (\$0 ~ /git@bitbucket\.org:org\/proj\.git/) {
-                  print \$0
-              }
-          }" "$FILE")"
-
-          if [ "$STDOUT" = "" ]; then
-              echo "$FILE not found"
-          else
-              echo -e "$FILE \033[32mFOUND\e[0m"
-          fi
-          '
-
-          # pick choose by number from the list
-          SSHS="$(echo "${_LIST}" | sed -n "${i} p")"
-
-          # basename and file extension
-          PD="$(dirname "${FILE}")"
-          PB="$(basename "${FILE}")"
-          EXTENSION="${PB##*.}"
-          FILENAME="${PB%.*}"
-          if [ "${FILENAME}" = "" ]; then
-              FILENAME="${PB}"
-              EXTENSION=""
-          fi
-          if [ "${FILENAME}" = "${PB}" ]; then
-              EXTENSION=""
-          fi
-
-          # exists in file, file contains
-          if [ "$(cat ~/.zshrc | grep 'tartufo')" = "" ]; then
-              # yep - it exists
-          fi
-
-
-          # reading one character in zsh, bash
-          { red "${COUNT} files found (more than ${MAX}), are you sure you want to include them to other libraries them? (y|n)\n"; } 2>&3
-          if [ "${_BINARY}" = "/bin/zsh" ]; then
-            read -sk
-          else
-            read -n 1
-          fi
-          echo "REPLY=$REPLY"
-          echo    # (optional) move to a new line
-          if ! [[ $REPLY =~ ^[Yy]$ ]]; then
-            { green "script stopped"; } 2>&3
-            exit 1
-          fi
-
-
-          # pipe stin to function:
-          cat <<FILE > ___test.sh
-          function _osht_xmlencode {
-              sed -e 's/\&/\&amp;/g' -e 's/\"/\&quot;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
-              # To be painfully explicit  https://stackoverflow.com/a/14009482
-              # cat - | sed -e 's/\&/\&amp;/g' -e 's/\"/\&quot;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
-          }
-          function grephello {
-              grep HELLO
-          }
-          cat <<EOF | _osht_xmlencode
-          VVVVV
-          first & and && ;
-          second " mid > mid
-          almost < near > end
-          ^^^^^^
-          EOF
-          cat <<EOF | grephello
-          VVVVV
-          normal
-          xxx HELLO test
-          mid
-          HELLO
-          end
-          ^^^^^^
-          EOF
-          FILE
-          /bin/bash ___test.sh
-          rm -rf ___test.sh
-
-
-          # cut from beginning
-          echo test | md5 | cut -c 1-5
-
-          /bin/bash -c "while true
-          do
-              date "+%Y_%m_%d_%H_%M_%S"
-              echo test
-              sleep 30
-          done
-          " 2>&1 | tee log.log
-        </script>
+                date "+%Y_%m_%d_%H_%M_%S"
+                echo test
+                sleep 30
+            done
+            " 2>&1 | tee log.log
+          </script>
 
           <h2>Get exit status of process that's piped to another</h2>
           <a href="https://unix.stackexchange.com/a/14276">https://unix.stackexchange.com/a/14276</a>
@@ -264,8 +313,8 @@
             }
 
             jqs="jqs"
-            
-            
+
+
             # examples
             cat <<EEE | jq ".abc"
             {
@@ -279,8 +328,8 @@
               "abc": "def"
             }
             EEE
-            # prints >def< 
-            
+            # prints >def<
+
             cat <<EEE | jq "keys"
             {
               "abc": "def",
@@ -291,8 +340,6 @@
             #  "abc",
             #  "cef"
             #]<
-            
-            
           </script>
           <a href="https://stedolan.github.io/jq/manual/">https://stedolan.github.io/jq/manual/</a>
           <br />
@@ -302,7 +349,9 @@
         <h2>Hash table</h2>
         <a href="https://stackoverflow.com/questions/1494178/how-to-define-hash-tables-in-bash">https://stackoverflow.com/questions/1494178/how-to-define-hash-tables-in-bash</a>
         <br />
-        <a href="https://levelup.gitconnected.com/5-less-known-bash-concepts-to-level-up-your-linux-skills-7bcf363804d1">https://levelup.gitconnected.com/5-less-known-bash-concepts-to-level-up-your-linux-skills-7bcf363804d1</a>
+        <a href="https://levelup.gitconnected.com/5-less-known-bash-concepts-to-level-up-your-linux-skills-7bcf363804d1"
+          >https://levelup.gitconnected.com/5-less-known-bash-concepts-to-level-up-your-linux-skills-7bcf363804d1</a
+        >
         <h2>inode</h2>
         <script type="editor" data-lang="sh">
 
@@ -320,14 +369,14 @@
         <h2>glob</h2>
         <script type="editor" data-lang="sh">
 
-# testing glob pattern - what files it will find
-ls -la **/*.spec.js
+          # testing glob pattern - what files it will find
+          ls -la **/*.spec.js
 
-echo -n **/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
-echo -n tests/**/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
-
+          echo -n **/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
+          echo -n tests/**/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
         </script>
         <h2>rsync</h2>
+        <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/bash/rsync.sh">rsync.sh</a>
         <script type="editor" data-lang="sh">
 
           # WARNING: remember if you are copying directories always specify / at the end of paths:
@@ -380,184 +429,23 @@ echo -n tests/**/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
         <a href="https://www.andrew.cmu.edu/course/15-749/READINGS/required/cas/tridgell96.pdf">g(TR-CS-96-05 The rsync algorithm Andrew Tridgell and Paul Mackerras June 1996)</a>
 
         <h2>prepend date to each stream line</h2>
-        
-        <script type="editor" data-lang="sh">
-        
-node -e "
-const {EOL} = require('os');
-let k = 5;
-(function loop() {
-  if (k !== 0) {
-    setTimeout(loop, 1000);
-  }
-  process.stdout.write('stdout: ' + k + EOL);
-  process.stderr.write('stderr: ' + k + EOL);
-  k -= 1;
-}());
-" |& while IFS= read -r line; do printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S') process" "$line"; done
-
-      # from: https://unix.stackexchange.com/a/26729
-              
-        </script>
-        <h2>rsync script</h2>
 
         <script type="editor" data-lang="sh">
 
-          # Just place this script in source directory
-          # and setup TARGETDIR and EXCLUDE_LIST and optionally EXCLUDE_FILE_NAME env var
-          #
-          # Script this will make sure TARGETDIR exist and is directory then
-          # it will generate file with exclusions right next to THIS script - in the same directory based on EXCLUDE_LIST env var
-          # then it will execute rsync command:
-          #   rsync -azP --delete-after --exclude-from "exclude file" "sourcedir/" "targetdir/"
+          node -e "
+          const {EOL} = require('os');
+          let k = 5;
+          (function loop() {
+            if (k !== 0) {
+              setTimeout(loop, 1000);
+            }
+            process.stdout.write('stdout: ' + k + EOL);
+            process.stderr.write('stderr: ' + k + EOL);
+            k -= 1;
+          }());
+          " |& while IFS= read -r line; do printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S') process" "$line"; done
 
-          TARGETDIR="/Volumes/256gb vol2"
-
-          # use /bin/bash rsync.sh --dry
-          # to obtain list of thing which should be excluded
-          # just take paths from output as they are
-          # those links are always relative
-          EXCLUDE_LIST=$(cat <<EOF
-          # this file is generated
-          # if you want to modify it edit it in rsync.sh
-
-          System Volume Information
-          .Spotlight-V100
-          .Trashes
-          .fseventsd/
-          .fseventsd/fseventsd-uuid
-          book
-          record
-          EOF
-          );
-
-          EXCLUDE_FILE_NAME="__rsync_exclude.txt";
-
-          DOCKER_SYNC_IMAGE="instrumentisto/rsync-ssh"
-
-          # # for manpages
-          # cat <<EOF | docker build -t ubuntu:18.04-man -
-          # FROM ubuntu:18.04
-          # RUN apt-get update && yes | unminimize
-          # EOF
-          # # docker images | grep ubuntu | grep 18.04-man
-          # # docker run -it ubuntu:18.04-man bash
-
-          # current shell name reliably
-          _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
-          case ${_SHELL} in
-            zsh)
-              _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
-              _0="$( basename "${(%):-%N}" )"
-              _SCRIPT="${(%):-%N}"
-              _BINARY="/bin/zsh"
-              _PWD="$(pwd)"
-              ;;
-            sh)
-              _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
-              _0="$( basename "${0}" )"
-              _SCRIPT="${0}"
-              _BINARY="/bin/sh"
-              _PWD="$(pwd)"
-              ;;
-            *)
-              _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
-              _0="$( basename "${BASH_SOURCE[0]}" )"
-              _SCRIPT="${BASH_SOURCE[0]}"
-              _BINARY="/bin/bash"
-              _PWD="$(pwd)"
-              ;;
-          esac
-
-          EXCLUDE_FILE="${_DIR}/${EXCLUDE_FILE_NAME}"
-
-          echo "${EXCLUDE_LIST}" > "${EXCLUDE_FILE}"
-
-          # CMD="rsync -azP --delete-after --exclude-from \"${EXCLUDE_FILE}\" \"${_DIR}/\" \"${TARGETDIR}/\""
-
-          CMDi="rsync -rltzDPvi  --delete-after --exclude-from \"/source/${EXCLUDE_FILE_NAME}\" /source/ /target/"
-          CMD="rsync  -rltzDPv   --delete-after --exclude-from \"/source/${EXCLUDE_FILE_NAME}\" /source/ /target/"
-
-          DOCKER="docker run -i -v \"${_DIR}:/source\" -v \"${TARGETDIR}:/target\" ${DOCKER_SYNC_IMAGE} /bin/sh"
-
-          if [ "${1}" = "" ]; then
-
-          cat <<EEE
-
-          Just place this script in source directory
-          and setup TARGETDIR and EXCLUDE_LIST and optionally EXCLUDE_FILE_NAME env var
-
-          Script this will make sure TARGETDIR exist and is directory then
-          it will generate file with exclusions right next to THIS script - in the same directory based on EXCLUDE_LIST env var
-          and depends on --dry or --run it will do rest:
-
-          /bin/bash rsync.sh --dry
-              # dry run
-              # will execute
-                  echo '${CMDi} -n' | ${DOCKER}
-
-                  # version without docker
-                      rsync -rtlDzPvi --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/" -n
-
-          /bin/bash rsync.sh --run
-              # execute
-              # will execute
-                  echo '${CMD}' | ${DOCKER}
-
-                  # version without docker
-                      rsync -rtlDzPv --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/"
-
-          EEE
-
-              exit 0
-          fi
-
-          set -e
-
-          if [ ! -d "${TARGETDIR}" ]; then
-
-              echo "${0} error: '${TARGETDIR}' is not a directory"
-
-              exit 1
-          fi
-
-          if [ "${1}" = "--run" ]; then
-
-              EVAL="echo '${CMD}' | ${DOCKER}"
-
-              cat <<EEE
-
-          docker:
-              ${EVAL}
-
-          host:
-              (cd "${_DIR}"; rsync  -rltzDPv --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
-
-          EEE
-
-              exit 0
-          fi
-
-          if [ "${1}" = "--dry" ]; then
-
-              EVAL="echo '${CMDi} -n' | ${DOCKER}"
-
-              cat <<EEE
-
-          docker:
-              ${EVAL}
-
-          host: (for mac run this version because it is uses default version of rsync which is doing better job on macs)
-              (cd "${_DIR}"; rsync  -rltzDPvin --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
-
-          EEE
-
-              exit 0
-          fi
-
-          echo "${0} error: param unknown, should be --run or --dry"
-
-          exit 1
+                # from: https://unix.stackexchange.com/a/26729
         </script>
         <div class="cards">
           <h2>grep</h2>
@@ -572,7 +460,7 @@ let k = 5;
             d 67jk
 
             EEE
-            
+
             # grep filter replace
             #cat <<EEE | grep -i -E '^settings_[a-z_\-]+\.xml$' | sed -E 's/^settings_([a-z_-]+).xml$/\1/g'
             cat <<EEE | grep -i -E '^settings_[a-z_\-]+\.xml$' | perl -pe 's#^settings_([a-z_-]+).xml$#\1#g'
@@ -584,7 +472,6 @@ let k = 5;
             end
             settings_endz.xml
             EEE
-            
           </script>
           <h2>cli keystrokes</h2>
           <script type="editor" data-lang="sh">
@@ -1200,14 +1087,13 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           <h2>RAM disk</h2>
           <script type="editor" data-lang="sh">
 
-          RAMNAME="ramvol"
-          MB="8"
-          if [ "${RAMNAME}" != "" ] && [ ! -d "/Volumes/${RAMNAME}" ] && [[ ${MB} =~ ^[0-9]+$ ]]; then diskutil erasevolume HFS+ ${RAMNAME} $(hdiutil attach -nomount ram://$((${MB} * 2 * 1024))); else; echo conditions false; fi;          
-          
-          # from: https://superuser.com/a/1480386
-          
+            RAMNAME="ramvol"
+            MB="8"
+            if [ "${RAMNAME}" != "" ] && [ ! -d "/Volumes/${RAMNAME}" ] && [[ ${MB} =~ ^[0-9]+$ ]]; then diskutil erasevolume HFS+ ${RAMNAME} $(hdiutil attach -nomount ram://$((${MB} * 2 * 1024))); else; echo conditions false; fi;
+
+            # from: https://superuser.com/a/1480386
           </script>
-          
+
           <h2>useful commands</h2>
           <script type="editor" data-lang="sh">
 
