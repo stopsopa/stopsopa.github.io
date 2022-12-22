@@ -312,13 +312,11 @@
           <h2>gitstorage files without extension</h2>
           <script type="editor" data-lang="sh" class="domain.com">
 
-*
-!*/
-!*.*
-!.gitignore # but you have to still unignore files with dot and no extension 
-# trick from: https://stackoverflow.com/a/31326382
-
-
+            *
+            !*/
+            !*.*
+            !.gitignore # but you have to still unignore files with dot and no extension
+            # trick from: https://stackoverflow.com/a/31326382
           </script>
           <a href="https://github.com/stopsopa/gitstorage">github</a>
         </div>
@@ -439,11 +437,10 @@
         <h2>GUI - list</h2>
         <a href="https://git-scm.com/downloads/guis">https://git-scm.com/downloads/guis</a>
         <h2>count separate days by commits</h2>
-          <script type="editor" data-lang="sh">
-          
-git log --all --pretty=oneline  --pretty=format:"%ad" --date=iso8601 | awk '{print $1}' | uniq -u | wc -l
-          
-          </script>
+        <script type="editor" data-lang="sh">
+
+          git log --all --pretty=oneline  --pretty=format:"%ad" --date=iso8601 | awk '{print $1}' | uniq -u | wc -l
+        </script>
         <div class="cards">
           <h2>remove merged branches</h2>
           <br />
@@ -613,7 +610,7 @@ git log --all --pretty=oneline  --pretty=format:"%ad" --date=iso8601 | awk '{pri
             git config --global pull.rebase true
               # alternative git config --global pull.ff only
               # more about: https://blog.sffc.xyz/post/185195398930/why-you-should-use-git-pull-ff-only
-              
+
             git config --global core.fileMode false
               # https://stackoverflow.com/a/1580644
 

@@ -779,9 +779,9 @@
                 return v.toString(16);
               });
             }
-            
-            
-            
+
+
+
             // from: https://github.com/ai/nanoid#install
             const crypto = require('crypto');
             // import crypto from 'crypto';
@@ -798,7 +798,6 @@
                   ""
                 );
             }
-
           </script>
           <h2>Date months</h2>
           <script type="editor" data-lang="js">
@@ -1320,44 +1319,41 @@
           <h3>encodeFunctionToString & decodeFunctionFromString</h3>
           <script type="editor" data-lang="js">
 
-function encodeFunctionToString(fn) {
-  if (typeof fn === "function") {
-    return fn.toString();
-  }
+            function encodeFunctionToString(fn) {
+              if (typeof fn === "function") {
+                return fn.toString();
+              }
 
-  throw new Error("encodeFunction error: fn is not a function");
-}
+              throw new Error("encodeFunction error: fn is not a function");
+            }
 
-function decodeFunctionFromString(str) {
-  if (typeof str !== "string") {
-    throw new Error("encodeFunction error: str is not a string");
-  }
+            function decodeFunctionFromString(str) {
+              if (typeof str !== "string") {
+                throw new Error("encodeFunction error: str is not a string");
+              }
 
-  let fn;
+              let fn;
 
-  try {
-    fn = new Function("return " + str)();
-  } catch (e) {
-    throw new Error(`decodeFunctionFromString error: evaluation of string failed: ${e}`);
-  }
+              try {
+                fn = new Function("return " + str)();
+              } catch (e) {
+                throw new Error(`decodeFunctionFromString error: evaluation of string failed: ${e}`);
+              }
 
-  if (typeof fn === "function") {
-    return fn;
-  }
+              if (typeof fn === "function") {
+                return fn;
+              }
 
-  throw new Error("decodeFunctionFromString error: decoded string is not a function");
-}
+              throw new Error("decodeFunctionFromString error: decoded string is not a function");
+            }
 
-const str = encodeFunctionToString(function test(a, b) {
-  console.log("function call", a, b);
-});
+            const str = encodeFunctionToString(function test(a, b) {
+              console.log("function call", a, b);
+            });
 
-const fn = decodeFunctionFromString(str);
+            const fn = decodeFunctionFromString(str);
 
-fn("a param", "b param");
-
-
-
+            fn("a param", "b param");
           </script>
         </div>
       </div>
