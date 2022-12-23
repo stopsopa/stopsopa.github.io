@@ -174,7 +174,10 @@ fi
     exit 0
 fi
 
-if [ ! -d "${TARGETDIR}" ]; then
+if [ -d "${TARGETDIR}" ]; then
+
+    echo "'${TARGETDIR}' exist"
+else    
 
     echo "${0} error: '${TARGETDIR}' is not a directory"
 
