@@ -5,6 +5,55 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
+
+    <script src="/public/preprocessed.js"></script>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        // <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/bash/rsync.sh">rsync.sh</a>
+        document.addEventListener("DOMContentLoaded", () => {
+          const GITHUB_SOURCES_PREFIX = env("GITHUB_SOURCES_PREFIX");
+
+          if (typeof GITHUB_SOURCES_PREFIX !== "string" || !GITHUB_SOURCES_PREFIX.trim()) {
+            throw new Error(`GITHUB_SOURCES_PREFIX is not defined`);
+          }
+
+          const reg = /^GITHUB_SOURCES_PREFIX(.*)/;
+
+          const buff = {
+            reg,
+            a_match: [],
+            a_notmatch: [],
+          };
+
+          document.querySelectorAll("a").forEach((a) => {
+            const href = a.getAttribute("href");
+
+            if (reg.test(href)) {
+              buff.a_match.push(href);
+
+              const newhref = href.replace(/^GITHUB_SOURCES_PREFIX(.*)/, `${GITHUB_SOURCES_PREFIX}$1`);
+
+              a.setAttribute("href", newhref);
+            } else {
+              buff.a_notmatch.push(href);
+            }
+          });
+
+          console.log(JSON.stringify(buff, null, 4));
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
   </head>
   <body class="layout" toc>
     <div class="body">
@@ -45,6 +94,8 @@
 
               mmsys.cpl
             </script>
+            <h2>git bash pull.sh</h2>            
+            <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/windows/pull.sh">rsync.sh</a>
             <h2>Rebooting in the middle of the night</h2>
             <img src="https://i.imgur.com/Z4S8wrl.png" style="width: 480px" />
             <h2>IrfanView</h2>
