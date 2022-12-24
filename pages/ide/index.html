@@ -89,20 +89,47 @@
             # remove all function from function keys
             #    ⌃R, ⌃D, ⌘F2, F3, F4, F5, F6, F7, ⌥⇧F7, F8, ⇧F8, F9, ⌥F9, ⌥F10, F12,
             # then assign it to debugging buttons
+            
+            oJB   - originally JetBrains (- means not defined)
+            oVSC  - originally Visual Studio Code (- means not defined)
+            
+            NOTICE: avoid f7 and f11 before you start debugging those can be assigned to debugging actions used after starting debuggin
+            because on windows F7 in VSCode it seems to be used for launching main search tool or something (anyway, it's blocked and causes issues)
+            on mac though F11 seems to be attached to "Mission Control" -> "Show Desktop" (but it can be freed, after doing that it's fine to use it anyway you like)
 
+            # Ranking of most useful (IMO) debugging actions:
             # ⌃R - Run                    [Main Menu -> Run -> Run] (normally it's assigned to ⌃R)
             # ⌃D - Debug                  [Main Menu -> Run -> Debug] (normally it's assigned to ⌃D)
-            # F9 - Resume Program         [Main Menu -> Run -> Debugging Action -> Resume Program]
-            # F12 - Stop Program          [Main Menu -> Run -> Stop]  (normally it's assigned to ⌘F2)
-
-            # F10 - Show Execution Point  [Main Menu -> Run -> Debugging Actions -> Show Execution Point]
-            # F5 - Step Over              [Main Menu -> Run -> Debugging Actions -> Step Over]
-            # F6 - Step Into              [Main Menu -> Run -> Debugging Actions -> Step Into]
-            # F7 - Force Step Into        [Main Menu -> Run -> Debugging Actions -> Force Step Into]
-            # F8 - Step Out               [Main Menu -> Run -> Debugging Actions -> Step Out]
-            # F4 - Restart Frame          [Plugins -> JavaScript Debugger -> Restart Frame] https://youtu.be/cwk_ETFC-PQ
-            # F3 - Run to Cursor          [Main Menu -> Run -> Debugging Actions -> Run to Cursor]
-            # more: https://www.jetbrains.com/help/idea/stepping-through-the-program.html
+            # ^B - Build 
+                 
+            # F12 Show Execution Point 
+            #     VSC: doesn't exist in VSCode https://stackoverflow.com/q/74904981
+            #     JB : ⌥F10: [Main Menu -> Run -> Debugging Actions -> Show Execution Point]
+            # F10 Run to Cursor 
+            #     VSC: Unassigned: editor.debug.action.runToCursor 
+            #     JB : ⌥F9: [Main Menu -> Run -> Debugging Actions -> Run to Cursor] 
+            # F9 Resume Program  
+            #     VSC: F5: workbench.action.debug.continue
+            #     JB : ⌥⌘R :  [Main Menu -> Run -> Debugging Action -> Resume Program]
+            # F8 Toggle Breakpoint 
+            #     VSC: editor.debug.action.toggleBreakpoint
+            #     JB : :  
+            # F5 Step Over  
+            #     VSC: F10: workbench.action.debug.stepOver
+            #     JB : F8: [Main Menu -> Run -> Debugging Actions -> Step Over] 
+            # F6 Step Into  
+            #     VSC: F11: workbench.action.debug.stepInto
+            #     JB : F7: [Main Menu -> Run -> Debugging Actions -> Step Into] 
+            # F7 Step Out  
+            #     VSC: ⇧F11: workbench.action.debug.stepOut
+            #     JB : ⇧F8: [Main Menu -> Run -> Debugging Actions -> Step Out]  
+            # F4 Stop Program  
+            #     VSC: ⇧F5: workbench.action.debug.stop
+            #     JB : ⌘F2:  [Main Menu -> Run -> Stop]
+            #
+            # more about VSCode: https://www.jetbrains.com/help/idea/stepping-through-the-program.html
+            
+            
           </script>
 
           <img src="https://i.imgur.com/dU4BndA.png" style="width: 80%" />
