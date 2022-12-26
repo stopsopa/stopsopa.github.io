@@ -94,6 +94,18 @@
 
               mmsys.cpl
             </script>
+            <h2>Free [win|ctrl]+shift+s shortuct ()</h2>
+            <a href="https://www.tenforums.com/software-apps/128305-how-disable-hotkey-snipping-tool-win-shift-s.html#post1588708">https://www.tenforums.com/software-apps/128305-how-disable-hotkey-snipping-tool-win-shift-s.html#post1588708</a>
+            <br />
+            Create and run reg file:
+            <script type="editor" data-lang="python">
+
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"DisabledHotkeys"="S"
+
+            </script>
             <h2>git bash pull.sh</h2>            
             <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/windows/pull.sh">rsync.sh</a>
             <h2>Rebooting in the middle of the night</h2>
