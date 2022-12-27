@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <h2>autosave files</h2>
+          <script type="editor" data-lang="sh">
+
+            Tools -> Options -> Environment -> Documents -> Automatically save files when Visual Studio is in the background
+            # from: https://www.talkingdotnet.com/auto-save-files-in-visual-studio-2022/
+          </script>
+          <h2>Autoset startup project</h2>
+          <p>
+            Normally in fresh solution if you create multiple projects everytime you would like to change main.c file to compile you have to switch by right click on project and selecting "Set as
+            Startup Project". There is way to tell VS to switch automatially:
+          </p>
+
+          <script type="editor" data-lang="sh">
+
+            - Right click on solution
+            - choose "Properties"
+            - on the left choose "Common Properties" -> "Startup Project" -> choose "Current selection"
+          </script>
+          <h2>Rename project in solution</h2>
+          <p>Normally you would think that this is nothing easier: just right click on the project and choose "Rename" and voila</p>
+          <p>This though will rename project "IN VISUAL STUDIO" but folder name in solution will stay as before</p>
+          <p>In order to do rename in vs and the folder itself</p>
+
+          <script type="editor" data-lang="sh">
+
+            Open the main MySolution.sln file and there on top you will find
+
+
+            Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "000HelloWorld", "000HelloWorld\HelloWorld.vcxproj", "{F5BECD60-DAF9-4C8F-93DE-C5E668FA6027}"
+            EndProject
+            Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "001HelloWorld", "001HelloWorld\001HelloWorld.vcxproj", "{17F986DA-3D8F-4926-ACC2-40BD7D6F061A}"
+            EndProject
+            Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "002FahrenheitInt", "002FahrenheitInt\002FahrenheitInt.vcxproj", "{AE24AFB8-E52A-44A9-BED5-B7191B31D46B}"
+            EndProject
+            -- change this:
+            Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FahrenheitFloatTest", "FahrenheitFloatTest\003FahrenheitFloat.vcxproj", "{EF26A554-3AF8-4F5F-8537-B101D38D6534}"
+            -- to this:
+            Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "003FahrenheitFloatTest", "003FahrenheitFloatTest\003FahrenheitFloat.vcxproj", "{EF26A554-3AF8-4F5F-8537-B101D38D6534}"
+
+            EndProject
+
+
+            and then rename folder
+            then play with refresh project menu options in visual studio
+            try also closing and opening solution
+          </script>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>

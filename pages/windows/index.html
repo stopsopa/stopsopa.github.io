@@ -86,89 +86,108 @@
             <li>g(disable system recovery windows 11)</li>
             <li>g(windows 11 turn off autoplay)</li>
           </ul>
-          <div class="card">
-            <h2>Installing Windows 11 without MS account</h2>
-            <a href="https://youtu.be/s1wqOHo9Lb0?t=435">we will see when they patch that - that will be definitely Windows over for me ( psst: already is over ... ;) )</a>
-            <h2>Useful</h2>
-            <script type="editor" data-lang="python">
+          <h2>Services to disable</h2>
+          <p>start -> search for "Services" -> open app</p>
+          <ul>
+            <li>Windows Search <a href="https://www.elevenforum.com/t/enable-or-disable-search-indexing-in-windows-11.2943/#option2">g(Enable or Disable Search Indexing in Windows 11)</a></li>
+            <li>Windows Push Notifications Users Service_xxxxxx</li>
+          </ul>
+          <h2>Enable or Disable Search Indexing in Windows 11</h2>
+          from <a href="https://www.saintlad.com/disable-antimalware-service-windows-11/#use-the-registry-editor">g(Enable or Disable Search Indexing in Windows 11)</a>
 
-              mmsys.cpl
-            </script>
-            <h2>Free [win|ctrl]+shift+s shortuct ()</h2>
-            <a href="https://www.tenforums.com/software-apps/128305-how-disable-hotkey-snipping-tool-win-shift-s.html#post1588708">https://www.tenforums.com/software-apps/128305-how-disable-hotkey-snipping-tool-win-shift-s.html#post1588708</a>
-            <br />
-            Create and run reg file:
-            <script type="editor" data-lang="python">
+          <h2>Free [win|ctrl]+shift+s shortuct ()</h2>
+          <a href="https://www.tenforums.com/software-apps/128305-how-disable-hotkey-snipping-tool-win-shift-s.html#post1588708"
+            >https://www.tenforums.com/software-apps/128305-how-disable-hotkey-snipping-tool-win-shift-s.html#post1588708</a
+          >
+          <br />
+          Create and run reg file:
+          <script type="editor" data-lang="python">
 
-Windows Registry Editor Version 5.00
+            Windows Registry Editor Version 5.00
 
-[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
-"DisabledHotkeys"="S"
+            [HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+            "DisabledHotkeys"="S"
+          </script>
+          <h2>git bash pull.sh</h2>
+          <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/windows/pull.sh">rsync.sh</a>
+          <script type="editor" data-lang="python">
 
-            </script>
-            <h2>git bash pull.sh</h2>            
-            <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/windows/pull.sh">rsync.sh</a>
-            <h2>Rebooting in the middle of the night</h2>
-            <img src="https://i.imgur.com/Z4S8wrl.png" style="width: 480px" />
-            <h2>IrfanView</h2>
-            <script type="editor" data-lang="python">
+            in registry enter:
+            Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender
+            create key of type "DWORD (32-bit) Value"
+            give it value HEXADECIMAL "1"
+            save
+            restart windows
+          </script>
+          <h2>Installing Windows 11 without MS account</h2>
+          <a href="https://youtu.be/s1wqOHo9Lb0?t=435">we will see when they patch that - that will be definitely Windows over for me ( psst: already is over ... ;) )</a>
+          <h2>Useful</h2>
+          <script type="editor" data-lang="python">
 
-              # crop
-              select area in the image and then ctrl+y to crop
-            </script>
-            <h2>Remap keyboard</h2>
-            <a href="https://www.randyrants.com/2019/01/sharpkeys-3-9/">https://www.randyrants.com/2019/01/sharpkeys-3-9/</a>
-            <h2>Partition backup</h2>
-            <a href="https://www.windowscentral.com/how-create-windows-10-usb-bootable-media-uefi-support">link</a>
+            mmsys.cpl
+          </script>
+          <h2>git bash pull.sh</h2>
+          <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/windows/pull.sh">rsync.sh</a>
+          <h2>Rebooting in the middle of the night</h2>
+          <img src="https://i.imgur.com/Z4S8wrl.png" style="width: 480px" />
+          <h2>IrfanView</h2>
+          <script type="editor" data-lang="python">
 
-            <h2>SourceTree open from VSCode cli</h2>
-            <script type="editor" data-lang="python">
-              # copy that script to /c/Users/szdz/bin/stree.cmd (using git bash terminal)
-              # WARNING: you might need to change path in >set sourcetreepath=< section, just find location to sourcetree and update
-              # vvvvvvvvvvvvvvvvvvvvvvvvvvvv
-              @echo off
-              setlocal enabledelayedexpansion
+            # crop
+            select area in the image and then ctrl+y to crop
+          </script>
+          <h2>Remap keyboard</h2>
+          <a href="https://www.randyrants.com/2019/01/sharpkeys-3-9/">https://www.randyrants.com/2019/01/sharpkeys-3-9/</a>
+          <h2>Partition backup</h2>
+          <a href="https://www.windowscentral.com/how-create-windows-10-usb-bootable-media-uefi-support">link</a>
 
-              set sourcetreepath="C:\Users\szdz\AppData\Local\SourceTree\SourceTree.exe"
+          <h2>SourceTree open from VSCode cli</h2>
+          <script type="editor" data-lang="python">
+            # copy that script to /c/Users/szdz/bin/stree.cmd (using git bash terminal)
+            # WARNING: you might need to change path in >set sourcetreepath=< section, just find location to sourcetree and update
+            # vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+            @echo off
+            setlocal enabledelayedexpansion
 
-              REM Convert the first argument to a full path
-              set directory=%~f1
-              REM If the first argument is empty use the current directory
-              if "%directory%" == "" set directory=%CD%
+            set sourcetreepath="C:\Users\szdz\AppData\Local\SourceTree\SourceTree.exe"
 
-              REM If the first argument is not a directory (e.g. a file) remove the filename
-              if not exist "%directory%\*" (
-                  set directory=%~dp1
-              )
+            REM Convert the first argument to a full path
+            set directory=%~f1
+            REM If the first argument is empty use the current directory
+            if "%directory%" == "" set directory=%CD%
 
-              REM go to the target directory
-              pushd "%directory%"
+            REM If the first argument is not a directory (e.g. a file) remove the filename
+            if not exist "%directory%\*" (
+                set directory=%~dp1
+            )
 
-              REM get the root of the repository
-              for /f "delims=" %%i in ('git rev-parse --show-toplevel') do set directory=%%i
-              git rev-parse --show-toplevel 1> nul 2> nul
+            REM go to the target directory
+            pushd "%directory%"
 
-              if %errorlevel% EQU 0 (
-                  start "" "%sourcetreepath%" -f "%directory:/=\%"
-              )
+            REM get the root of the repository
+            for /f "delims=" %%i in ('git rev-parse --show-toplevel') do set directory=%%i
+            git rev-parse --show-toplevel 1> nul 2> nul
 
-              popd
-              endlocal
-              # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-              # above from: https://github.com/ArloL/dotfiles/blob/6f2699d68c681a867cdc540260210cd32928365f/bin/stree.cmd
+            if %errorlevel% EQU 0 (
+                start "" "%sourcetreepath%" -f "%directory:/=\%"
+            )
 
-              then execute (in git bash terminal)
+            popd
+            endlocal
+            # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            # above from: https://github.com/ArloL/dotfiles/blob/6f2699d68c681a867cdc540260210cd32928365f/bin/stree.cmd
 
-              cat <<EEE > /c/Users/szdz/.bash_profile
-              alias stree="/c/Users/szdz/bin/stree.cmd"
-              EEE
+            then execute (in git bash terminal)
 
-              # from now on just open VSCode then open GIT BASH terminal (yes you can choose type of terminal in VSCode)
-              # and simply run
-              stree
-              # but run it in directory with .git directory
-            </script>
-          </div>
+            cat <<EEE > /c/Users/szdz/.bash_profile
+            alias stree="/c/Users/szdz/bin/stree.cmd"
+            EEE
+
+            # from now on just open VSCode then open GIT BASH terminal (yes you can choose type of terminal in VSCode)
+            # and simply run
+            stree
+            # but run it in directory with .git directory
+          </script>
         </div>
       </div>
     </div>
