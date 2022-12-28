@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout">
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="mysql/index.html">MySQL</a></li>
+          </ul>
+        </div>
+        <div class="cards">
+          <h2>Database normalization</h2>
+          <a href="https://youtu.be/GFQaEYEc8_8">link</a>
+          <script type="editor" data-lang="python">
+
+            First Normal Form (INF)
+                1. Using row order to convey information is not permitted
+                2. Mixing data types within the same column is not permitted
+                3. Having a table without a primary keg is not permitted
+                4. Repeating groups are not permitted
+
+            Second Normal Form (2NF)
+                Each non-keg attribute in the table must be dependent on the entire primary keg.
+
+            Third Normal Form (3NF)
+                Each non-keg attribute in the table must depend on the keg, the whole keg, and nothing but the keg.
+
+            Boyce-Codd Normal Form (BCNF)
+                Each attribute in the table must depend on the keg, the whole keg, and nothing but the keg.
+
+            Fourth Normal Form (4NF)
+                The only kinds of multivalued dependency allowed in a table are multivalued dependencies on the keg.
+
+            Fifth Normal Form (SNF)
+                It must not be possible to describe the table as being the logical result of joining some other tables together.
+          </script>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>
