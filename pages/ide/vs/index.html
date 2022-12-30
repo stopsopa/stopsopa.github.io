@@ -56,6 +56,18 @@
             then play with refresh project menu options in visual studio
             try also closing and opening solution
           </script>
+          <h2>Debugging with stdin</h2>
+          
+          <script type="editor" data-lang="sh">
+          
+          # right click on project -> Properties -> Configuration Properties -> Debugging -> Command Arguments
+          
+          < $(SolutionDir)input001.txt          
+          // more about those: https://learn.microsoft.com/en-us/cpp/build/reference/common-macros-for-build-commands-and-properties?view=msvc-170
+          
+          # and then right click on solution -> add -> New Item... -> create input001.txt
+          
+          </script>
         </div>
       </div>
     </div>
