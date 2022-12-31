@@ -277,6 +277,29 @@
         </script>
 
         <div class="cards">
+          <h2>read entire stdin into string variable</h2>
+          <script type="editor" data-lang="sh" class="domain.com">
+
+async function readStdIn() {
+  return new Promise((resolve) => {
+    let stdinString = "";
+
+    process.stdin.setEncoding("utf8");
+
+    process.stdin.on("readable", () => {
+      let chunk;
+      while ((chunk = process.stdin.read()) !== null) {
+        stdinString += chunk;
+      }
+    });
+
+    process.stdin.on("end", () => {
+      resolve(stdinString);
+    });
+  });
+}
+
+          </script>
           <h2>Extract engines script</h2>
           <script type="editor" data-lang="sh" class="domain.com">
 
