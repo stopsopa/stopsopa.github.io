@@ -19,6 +19,30 @@
             -n  By default, each line of input is echoed to the standard output after all of the
                 commands have been applied to it.  The -n option sup-
                     presses this behavior.
+                    
+
+            # --- extract exact match using function with sed --- 
+            # https://unix.stackexchange.com/a/152389 
+
+            function extractValue {
+              tr '\n' '\f' | sed -E "s/^.*\"${1}\"[[:space:]]*:[[:space:]]*\"([^\"]+)\".*$/\1/"
+            }
+
+            cat <<EEE | extractValue AccessKeyId
+            ARN: arn:awDDDDDDZmb
+            CreatedDate: '202DD00'
+            Name: /SecDDD
+            SecretString: '{"UserName": "DDD", "AccessKeyId": "AKDIUXMKRZD5",
+              "Status": "Active", "SecretAccessKey": "XXXXX",
+              "CreateDate": "202CCC:00", "DeleteOn": "2DDD0"}'
+            VersionId: e917eDDDa11
+            VersionStages:
+            - ddsfs
+            EEE
+
+            # --- extract exact match using function with sed --- 
+                    
+                    
 
             # replace multiple - Back-references
             echo "~/Library/Application Support/JetBrains/IntelliJIdea2021.3/scratc hes/scratch.http" | sed -E 's/( )/\\\1/g'
