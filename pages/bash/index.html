@@ -302,13 +302,13 @@
             #  divideInTwo "abcde" " ---- "
             function divideInTwo {
 
-              DELIMITER="\${2}"
+              DELIMITER="${2}"
 
-              if [ "\${DELIMITER}" = "" ]; then
+              if [ "${DELIMITER}" = "" ]; then
                 DELIMITER="<-**->"
               fi
 
-              printf "\${1:0:\${#1}/2}\${DELIMITER}\${1:\${#1}/2}"
+              printf "${1:0:${#1}/2}${DELIMITER}${1:${#1}/2}"
             }
             echo "AWS_ACCESS_KEY_ID >$(divideInTwo "${AWS_ACCESS_KEY_ID}")<"
             
