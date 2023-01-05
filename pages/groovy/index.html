@@ -10,6 +10,22 @@
     <div class="body">
       <div class="inside">
         <div class="cards">
+          <h2>useful</h2>
+          <script type="editor" data-lang="groovy">
+          
+// debug variables
+println "Type of myVariable: ${data.getClass()}"
+println "Properties of myVariable: ${data.toString()}"
+//try {
+//    data.properties.each { prop ->
+//      println "${prop.key}: ${prop.value}"
+//    }
+//} catch(Exception e) {
+//   println("Catching the exception \${e}");
+//}
+          
+          
+          </script>
           <h2>regex match</h2>
           <script type="editor" data-lang="groovy">
 
@@ -143,6 +159,142 @@
             }
 
             validateDockerIgnore();
+          </script>
+          
+          
+
+          <h2>Jenkinsfile</h2>
+          <script type="editor" data-lang="groovy">
+
+def getLock() {
+  // converts GIT_URL and GIT_BRANCH from form
+  // git@github.com:user/repository.git develop
+  // to
+  // git_github_com_user_repository_git_develop
+  return "${env.GIT_URL} ${env.GIT_BRANCH}".replaceAll('[^a-z0-9]+', '_')
+}
+
+def getConfig(String key) {
+
+    def environment = 'ote';
+
+    def tmp;
+
+    if (env.TESTPROD == 'true') {
+
+        environment = 'prod';
+    }
+
+    switch (environment) {
+        case "ote":
+            tmp = [
+                OS_SERVER: "...",
+                OS_PROJECT: "...",
+                OS_TOKEN: env.TOKEN_OTE,
+            ];
+            break;
+        case "prod":
+            tmp = [
+                OS_SERVER: "...",
+                OS_PROJECT: "...",
+                OS_TOKEN: env.TOKEN_OTE,
+            ];
+            break;
+        default:
+            throw new Exception("getConfig error: environment [${environment}] not recognized");
+    }
+
+    if (!tmp.containsKey(key)) {
+        throw new Exception("getConfig error: for environment [${environment}] can't find key [${key}]");
+    }
+
+    return tmp.get(key);
+}
+
+def data;
+
+pipeline {
+    agent any
+    parameters {
+        booleanParam(name: 'TESTPROD', defaultValue: false)
+    }
+    environment {
+      DOCKER_BUILDKIT = 1
+      LOCK = getLock()
+
+      // normally I would extract individual keys in the getConfig() function with
+      // credentials('pex-deployer-odin').getInterpolatedStrings()
+      //   more about https://javadoc.jenkins.io/plugin/workflow-cps/org/jenkinsci/plugins/workflow/cps/UninstantiatedDescribableWithInterpolation.html#getInterpolatedStrings()
+      // but the error forces me to do it here in environment section:
+      // Scripts not permitted to use method org.jenkinsci.plugins.workflow.cps.UninstantiatedDescribableWithInterpolation getInterpolatedStrings. Administrators can decide whether to approve or reject this signature.
+      TOKEN_OTE = credentials('...')
+      TOKEN_PROD = credentials('...')
+
+
+      OS_SERVER = getConfig("OS_SERVER")
+      OS_TOKEN = getConfig("OS_TOKEN")
+      OS_PROJECT = getConfig("OS_PROJECT")
+    }
+
+    stages {
+      stage('Refreshing credentials'){
+        steps {
+          lock(env.LOCK) {
+            withCredentials([[
+                $class: 'AmazonWebServicesCredentialsBinding',
+                credentialsId: "${JENKINS_AWS_CREDENTIALS}",
+                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+            ]]) {
+                script {
+                    data = sh script: '''
+#!/bin/bash
+
+set -e
+set -x
+
+BASH_VARIABLE="mydata"
+
+>&2 echo "STDERR>${BASH_VARIABLE}<"
+
+''', returnStdout: true, returnStatus: false
+                    }
+                } // withCredentials
+            }
+        } // steps
+      } //stage
+
+      stage('Update aws credential in Jenkins') { // stage
+        steps { // steps
+          lock(env.LOCK) {
+
+            println "Type of myVariable: ${data.getClass()}"
+            println "Properties of myVariable: ${data.toString()}"
+            println ">>${data}<<"
+            //try {
+            //    data.properties.each { prop ->
+            //      println "${prop.key}: ${prop.value}"
+            //    }
+            //} catch(Exception e) {
+            //   println("Catching the exception \${e}");
+            //}
+
+          }
+        }
+      }
+  } // stages
+} // pipeline
+
+
+
+
+
+
+
+
+
+
+
           </script>
         </div>
       </div>
