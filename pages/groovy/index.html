@@ -43,7 +43,7 @@ last
 def extractToken(String multilineString) {
     def lines = multilineString.split(/\n/)
 
-    def regex = /^-([a-z]+)-$/;
+    def regex = /^&&(.+)&&$/;
 
     def found = lines.findAll { word -> word =~ regex }
 
