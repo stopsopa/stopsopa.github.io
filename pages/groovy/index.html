@@ -23,6 +23,38 @@ println "Properties of myVariable: ${data.toString()}"
 //} catch(Exception e) {
 //   println("Catching the exception \${e}");
 //}
+
+
+
+
+
+def multilineString = '''
+This is the first line.
+This is the second line.
+This is the third line.
+second line
+last
+'''
+
+def lines = multilineString.split(/\n/)
+
+def second = lines.findAll { word -> word =~ /second/ }
+
+println second.size()
+println second[0]
+
+println "aaaa"
+
+second.each { word ->
+    println word
+}
+
+// 2
+// This is the second line.
+// aaaa
+// This is the second line.
+// second line
+
           
           
           </script>
