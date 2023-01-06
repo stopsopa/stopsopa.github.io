@@ -28,32 +28,43 @@ println "Properties of myVariable: ${data.toString()}"
 
 
 
+
+
 def multilineString = '''
 This is the first line.
 This is the second line.
+-second-
 This is the third line.
+--secondd-
 second line
 last
 '''
 
-def lines = multilineString.split(/\n/)
+def extractToken(String multilineString) {
+    def lines = multilineString.split(/\n/)
 
-def second = lines.findAll { word -> word =~ /second/ }
+    def regex = /^-([a-z]+)-$/;
 
-println second.size()
-println second[0]
+    def found = lines.findAll { word -> word =~ regex }
 
-println "aaaa"
+    if (found.size() != 1) {
+        throw new Error("Can't find single secret from sh")
+    }
 
-second.each { word ->
-    println word
+    def token = found[0].replaceFirst(regex, "\$1");
+
+    //found.each { word ->
+    //    println word
+    //}
+
+    return token;
 }
 
-// 2
-// This is the second line.
-// aaaa
-// This is the second line.
-// second line
+def token = extractToken(multilineString);
+
+println "after  ->${token}<-"
+// after  ->second<-
+
 
           
           
