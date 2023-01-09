@@ -503,6 +503,7 @@
             EEE
 
             # grep filter replace
+            echo "  AccessKeyId: sfreteree" | sed -E 's/^[[:space:]]+AccessKeyId:[[:space:]]+(.*)\$/\1/g'
             #cat <<EEE | grep -i -E '^settings_[a-z_\-]+\.xml$' | sed -E 's/^settings_([a-z_-]+).xml$/\1/g'
             cat <<EEE | grep -i -E '^settings_[a-z_\-]+\.xml$' | perl -pe 's#^settings_([a-z_-]+).xml$#\1#g'
             settings_abc_def-ghi.xml
