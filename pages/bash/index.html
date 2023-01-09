@@ -886,6 +886,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             }
             date "+%Y_%m_%d_%H_%M_%S"
 
+            // stdout stderr
             set -e; _exit 1> /dev/null 2> /dev/null
 
             echo John have a cat
