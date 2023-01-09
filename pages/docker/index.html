@@ -43,6 +43,12 @@
             # -i
             # -t
             # running in pipelines without -t
+            # this can be tested with
+            cat <<EOF | docker run -it busybox sh
+            echo test
+            exit 1
+            EOF
+            
             $ docker run --user $(id -u):$(id -g) -i image_name command args
             $ CURRENT_UID=$(id -u):$(id -g) docker-compose up
 
