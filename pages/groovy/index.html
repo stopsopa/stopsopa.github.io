@@ -217,6 +217,22 @@ def getLock() {
   return "${env.GIT_URL} ${env.GIT_BRANCH}".replaceAll('[^a-z0-9]+', '_')
 }
 
+def extractToken(String multilineString) {
+    def lines = multilineString.split(/\n/)
+
+    def regex = /^&&(.+)&&$/;
+
+    def found = lines.findAll { word -> word =~ regex }
+
+    if (found.size() != 1) {
+        throw new Error("Can't find single secret from sh")
+    }
+
+    def token = found[0].replaceFirst(regex, "\$1");
+
+    return token;
+}
+
 def getConfig(String key) {
 
     def environment = 'ote';
@@ -266,7 +282,7 @@ pipeline {
       LOCK = getLock()
 
       // normally I would extract individual keys in the getConfig() function with
-      // credentials('pex-deployer-odin').getInterpolatedStrings()
+      // credentials('pxxx').getInterpolatedStrings()
       //   more about https://javadoc.jenkins.io/plugin/workflow-cps/org/jenkinsci/plugins/workflow/cps/UninstantiatedDescribableWithInterpolation.html#getInterpolatedStrings()
       // but the error forces me to do it here in environment section:
       // Scripts not permitted to use method org.jenkinsci.plugins.workflow.cps.UninstantiatedDescribableWithInterpolation getInterpolatedStrings. Administrators can decide whether to approve or reject this signature.
@@ -293,12 +309,27 @@ pipeline {
                     data = sh script: '''
 #!/bin/bash
 
+source "bash/tools.sh"
+
 set -e
 set -x
 
-BASH_VARIABLE="mydata"
+RAW="\$(
+    docker run --rm -i \
+    -e AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN \
+    docker.com:443/amazon/aws-cli:2.9.12 \
+    secretsmanager get-secret-value --region=${AWS_REGION_FOR_FETCHING_SECRETS} \
+    --output=yaml --secret-id ${JENKINS_CRED_AWS_SECRET_TO_PULL_FROM}
+)"
 
->&2 echo "STDERR>${BASH_VARIABLE}<"
+echo "RAW >\$(divideInTwo "\${RAW}")<"
+
+AWS_SECRET_KEY="\$(echo \${RAW} | extractValueFromJsonByKey SecretAccessKey)"
+validateSecret AWS_SECRET_KEY "\${AWS_SECRET_KEY}"
+
+echo "&&${AWS_SECRET_KEY}&&"
 
 ''', returnStdout: true, returnStatus: false
                     }
@@ -310,17 +341,11 @@ BASH_VARIABLE="mydata"
       stage('Update aws credential in Jenkins') { // stage
         steps { // steps
           lock(env.LOCK) {
+          
+          
+            def AWS_SECRET_KEY = extractToken(data);
 
-            println "Type of myVariable: ${data.getClass()}"
-            println "Properties of myVariable: ${data.toString()}"
             println ">>${data}<<"
-            //try {
-            //    data.properties.each { prop ->
-            //      println "${prop.key}: ${prop.value}"
-            //    }
-            //} catch(Exception e) {
-            //   println("Catching the exception \${e}");
-            //}
 
           }
         }
