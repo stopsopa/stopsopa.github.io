@@ -297,6 +297,29 @@
             
             
             
+            function extractValueFromJsonByKey {
+              local INPUT="$(cat)"
+
+              REG="^.*\"${1}\"[[:space:]]*:[[:space:]]*\"([^\"]+)\".*\$"
+
+              if [[ ${INPUT} =~ ${REG} ]]; then
+
+                  echo "${INPUT}" | tr '\n' '\f' | sed -E "s/${REG}/\1/"
+              fi
+            }
+
+            function validateSecret {
+
+              REG="^[a-zA-Z0-9\+\/]+\$"
+
+              if ! [[ ${2} =~ ${REG} ]]; then
+
+                  echo "validateSecret value '${2}' from key '${1}' don't match ${REG}"
+
+                  exit 1;
+              fi
+            }
+
             # idea from: https://unix.stackexchange.com/a/522054
             # usage
             #  divideInTwo "abcde" " ---- "
