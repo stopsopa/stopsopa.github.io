@@ -214,95 +214,94 @@
           <script type="editor" data-lang="sh">
 
 
-# # first enter empty directory then
-# mkdir pubkey
-# cd pubkey
-# ssh-keygen -t rsa -C admin@gmail.com
-# # and provide ./id_rsa
-# cd ..
-# # add all below to run.sh and run it
-# /bin/bash run.sh
-# # then you can just run any of ssh -vvvvA methods below
+            # # first enter empty directory then
+            # mkdir pubkey
+            # cd pubkey
+            # ssh-keygen -t rsa -C admin@gmail.com
+            # # and provide ./id_rsa
+            # cd ..
+            # # add all below to run.sh and run it
+            # /bin/bash run.sh
+            # # then you can just run any of ssh -vvvvA methods below
 
 
-docker stop ds1
-docker stop ds2
-docker stop ds3
+            docker stop ds1
+            docker stop ds2
+            docker stop ds3
 
-# based on https://github.com/linuxserver/docker-openssh-server
-# key added
-docker run \
-    --name ds1 \
-    --rm \
-    -d \
-    -it \
-    -e PUBLIC_KEY_FILE="/parent/pubkey/id_rsa.pub" \
-    -e USER_NAME=user \
-    -v "$(pwd)/:/parent" \
-    -v "$(pwd)/ds1:/shared" \
-    --workdir /shared \
-    -p "4264:2222" \
-    --name=ds1 \
-    --hostname=ds1 \
-    lscr.io/linuxserver/openssh-server:latest
-# ssh -vvvvA -i ./pubkey/id_rsa -p 4264 user@0.0.0.0      
-    
-# key added    
-docker run \
-    --name ds2 \
-    --rm \
-    -d \
-    -it \
-    -e PUBLIC_KEY_FILE="/parent/pubkey/id_rsa.pub" \
-    -e USER_NAME=user \
-    -v "$(pwd)/:/parent" \
-    -v "$(pwd)/ds2:/shared" \
-    --workdir /shared \
-    -p "4265:2222" \
-    --name=ds2 \
-    --hostname=ds2 \
-    lscr.io/linuxserver/openssh-server:latest
-# ssh -vvvvA -i ./pubkey/id_rsa -p 4265 user@0.0.0.0   
-    
-# key not added    
-docker run \
-    --name ds3 \
-    --rm \
-    -d \
-    -it \
-    -e USER_NAME=user \
-    -v "$(pwd)/ds3:/shared" \
-    --workdir /shared \
-    -p "4266:2222" \
-    --name=ds3 \
-    --hostname=ds3 \
-    lscr.io/linuxserver/openssh-server:latest
-# ssh -vvvvA -i ./pubkey/id_rsa -p 4266 user@0.0.0.0   
+            # based on https://github.com/linuxserver/docker-openssh-server
+            # key added
+            docker run \
+                --name ds1 \
+                --rm \
+                -d \
+                -it \
+                -e PUBLIC_KEY_FILE="/parent/pubkey/id_rsa.pub" \
+                -e USER_NAME=user \
+                -v "$(pwd)/:/parent" \
+                -v "$(pwd)/ds1:/shared" \
+                --workdir /shared \
+                -p "4264:2222" \
+                --name=ds1 \
+                --hostname=ds1 \
+                lscr.io/linuxserver/openssh-server:latest
+            # ssh -vvvvA -i ./pubkey/id_rsa -p 4264 user@0.0.0.0
 
-    
+            # key added
+            docker run \
+                --name ds2 \
+                --rm \
+                -d \
+                -it \
+                -e PUBLIC_KEY_FILE="/parent/pubkey/id_rsa.pub" \
+                -e USER_NAME=user \
+                -v "$(pwd)/:/parent" \
+                -v "$(pwd)/ds2:/shared" \
+                --workdir /shared \
+                -p "4265:2222" \
+                --name=ds2 \
+                --hostname=ds2 \
+                lscr.io/linuxserver/openssh-server:latest
+            # ssh -vvvvA -i ./pubkey/id_rsa -p 4265 user@0.0.0.0
 
-# for HOST MACHINE
-# tail -f ~/.ssh/known_hosts
-
-# vi ~/.ssh/known_hosts
-# Someone could be eavesdropping on you right now (man-in-the-middle attack)!
-# It is also possible that a host key has just been changed.
-# The fingerprint for the ED25519 key sent by the remote host is
-# SHA256:53dmv2ssuMIHQmx8fkybQw45nGni5zvRQfSOf6gmX7U.
-# Please contact your system administrator.
-# Add correct host key in /Users/szdz/.ssh/known_hosts to get rid of this message.
-# Offending ECDSA key in /Users/szdz/.ssh/known_hosts:7
-# Host key for [0.0.0.0]:4265 has changed and you have requested strict checking.
-# Host key verification failed.
+            # key not added
+            docker run \
+                --name ds3 \
+                --rm \
+                -d \
+                -it \
+                -e USER_NAME=user \
+                -v "$(pwd)/ds3:/shared" \
+                --workdir /shared \
+                -p "4266:2222" \
+                --name=ds3 \
+                --hostname=ds3 \
+                lscr.io/linuxserver/openssh-server:latest
+            # ssh -vvvvA -i ./pubkey/id_rsa -p 4266 user@0.0.0.0
 
 
 
-docker ps
+            # for HOST MACHINE
+            # tail -f ~/.ssh/known_hosts
 
-sleep 
+            # vi ~/.ssh/known_hosts
+            # Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+            # It is also possible that a host key has just been changed.
+            # The fingerprint for the ED25519 key sent by the remote host is
+            # SHA256:53dmv2ssuMIHQmx8fkybQw45nGni5zvRQfSOf6gmX7U.
+            # Please contact your system administrator.
+            # Add correct host key in /Users/szdz/.ssh/known_hosts to get rid of this message.
+            # Offending ECDSA key in /Users/szdz/.ssh/known_hosts:7
+            # Host key for [0.0.0.0]:4265 has changed and you have requested strict checking.
+            # Host key verification failed.
 
-docker ps
 
+
+            docker ps
+
+            sleep
+
+            docker ps
           </script>
           <a href="https://github.com/docker/distribution/blob/master/docs/spec/api.md#detail">https://github.com/docker/distribution/blob/master/docs/spec/api.md#detail</a>
           <a href="./listtags.html">List tags tool</a>

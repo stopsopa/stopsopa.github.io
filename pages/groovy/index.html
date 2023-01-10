@@ -12,17 +12,17 @@
         <div class="cards">
           <h2>useful</h2>
           <script type="editor" data-lang="groovy">
-          
-// debug variables
-println "Type of myVariable: ${data.getClass()}"
-println "Properties of myVariable: ${data.toString()}"
-//try {
-//    data.properties.each { prop ->
-//      println "${prop.key}: ${prop.value}"
-//    }
-//} catch(Exception e) {
-//   println("Catching the exception \${e}");
-//}
+
+            // debug variables
+            println "Type of myVariable: ${data.getClass()}"
+            println "Properties of myVariable: ${data.toString()}"
+            //try {
+            //    data.properties.each { prop ->
+            //      println "${prop.key}: ${prop.value}"
+            //    }
+            //} catch(Exception e) {
+            //   println("Catching the exception \${e}");
+            //}
 
 
 
@@ -30,44 +30,40 @@ println "Properties of myVariable: ${data.toString()}"
 
 
 
-def multilineString = '''
-This is the first line.
-This is the second line.
--second-
-This is the third line.
---secondd-
-second line
-last
-'''
+            def multilineString = '''
+            This is the first line.
+            This is the second line.
+            -second-
+            This is the third line.
+            --secondd-
+            second line
+            last
+            '''
 
-def extractToken(String multilineString) {
-    def lines = multilineString.split(/\n/)
+            def extractToken(String multilineString) {
+                def lines = multilineString.split(/\n/)
 
-    def regex = /^&&(.+)&&$/;
+                def regex = /^&&(.+)&&$/;
 
-    def found = lines.findAll { word -> word =~ regex }
+                def found = lines.findAll { word -> word =~ regex }
 
-    if (found.size() != 1) {
-        throw new Error("Can't find single secret from sh")
-    }
+                if (found.size() != 1) {
+                    throw new Error("Can't find single secret from sh")
+                }
 
-    def token = found[0].replaceFirst(regex, "\$1");
+                def token = found[0].replaceFirst(regex, "\$1");
 
-    //found.each { word ->
-    //    println word
-    //}
+                //found.each { word ->
+                //    println word
+                //}
 
-    return token;
-}
+                return token;
+            }
 
-def token = extractToken(multilineString);
+            def token = extractToken(multilineString);
 
-println "after  ->${token}<-"
-// after  ->second<-
-
-
-          
-          
+            println "after  ->${token}<-"
+            // after  ->second<-
           </script>
           <h2>regex match</h2>
           <script type="editor" data-lang="groovy">
@@ -203,12 +199,11 @@ println "after  ->${token}<-"
 
             validateDockerIgnore();
           </script>
-          
-          
 
           <h2>Jenkinsfile</h2>
           <script type="editor" data-lang="groovy">
 
+<<<<<<< HEAD
 def getLock() {
   // converts GIT_URL and GIT_BRANCH from form
   // git@github.com:user/repository.git develop
@@ -334,10 +329,17 @@ echo "&&${AWS_SECRET_KEY}&&"
 ''', returnStdout: true, returnStatus: false
                     }
                 } // withCredentials
+=======
+            def getLock() {
+              // converts GIT_URL and GIT_BRANCH from form
+              // git@github.com:user/repository.git develop
+              // to
+              // git_github_com_user_repository_git_develop
+              return "${env.GIT_URL} ${env.GIT_BRANCH}".replaceAll('[^a-z0-9]+', '_')
+>>>>>>> 88c8c94 (resistor)
             }
-        } // steps
-      } //stage
 
+<<<<<<< HEAD
       stage('Update aws credential in Jenkins') { // stage
         steps { // steps
           lock(env.LOCK) {
@@ -352,17 +354,118 @@ echo "&&${AWS_SECRET_KEY}&&"
       }
   } // stages
 } // pipeline
+=======
+            def getConfig(String key) {
+
+                def environment = 'ote';
+>>>>>>> 88c8c94 (resistor)
+
+                def tmp;
+
+                if (env.TESTPROD == 'true') {
+
+                    environment = 'prod';
+                }
+
+                switch (environment) {
+                    case "ote":
+                        tmp = [
+                            OS_SERVER: "...",
+                            OS_PROJECT: "...",
+                            OS_TOKEN: env.TOKEN_OTE,
+                        ];
+                        break;
+                    case "prod":
+                        tmp = [
+                            OS_SERVER: "...",
+                            OS_PROJECT: "...",
+                            OS_TOKEN: env.TOKEN_OTE,
+                        ];
+                        break;
+                    default:
+                        throw new Exception("getConfig error: environment [${environment}] not recognized");
+                }
+
+                if (!tmp.containsKey(key)) {
+                    throw new Exception("getConfig error: for environment [${environment}] can't find key [${key}]");
+                }
+
+                return tmp.get(key);
+            }
+
+            def data;
+
+            pipeline {
+                agent any
+                parameters {
+                    booleanParam(name: 'TESTPROD', defaultValue: false)
+                }
+                environment {
+                  DOCKER_BUILDKIT = 1
+                  LOCK = getLock()
+
+                  // normally I would extract individual keys in the getConfig() function with
+                  // credentials('pex-deployer-odin').getInterpolatedStrings()
+                  //   more about https://javadoc.jenkins.io/plugin/workflow-cps/org/jenkinsci/plugins/workflow/cps/UninstantiatedDescribableWithInterpolation.html#getInterpolatedStrings()
+                  // but the error forces me to do it here in environment section:
+                  // Scripts not permitted to use method org.jenkinsci.plugins.workflow.cps.UninstantiatedDescribableWithInterpolation getInterpolatedStrings. Administrators can decide whether to approve or reject this signature.
+                  TOKEN_OTE = credentials('...')
+                  TOKEN_PROD = credentials('...')
 
 
+                  OS_SERVER = getConfig("OS_SERVER")
+                  OS_TOKEN = getConfig("OS_TOKEN")
+                  OS_PROJECT = getConfig("OS_PROJECT")
+                }
 
+                stages {
+                  stage('Refreshing credentials'){
+                    steps {
+                      lock(env.LOCK) {
+                        withCredentials([[
+                            $class: 'AmazonWebServicesCredentialsBinding',
+                            credentialsId: "${JENKINS_AWS_CREDENTIALS}",
+                            accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                        ]]) {
+                            script {
+                                data = sh script: '''
+            #!/bin/bash
 
+            set -e
+            set -x
 
+            BASH_VARIABLE="mydata"
 
+            >&2 echo "STDERR>${BASH_VARIABLE}<"
 
+            ''', returnStdout: true, returnStatus: false
+                                }
+                            } // withCredentials
+                        }
+                    } // steps
+                  } //stage
 
+                  stage('Update aws credential in Jenkins') { // stage
+                    steps { // steps
+                      lock(env.LOCK) {
 
+                        println "Type of myVariable: ${data.getClass()}"
+                        println "Properties of myVariable: ${data.toString()}"
+                        println ">>${data}<<"
+                        //try {
+                        //    data.properties.each { prop ->
+                        //      println "${prop.key}: ${prop.value}"
+                        //    }
+                        //} catch(Exception e) {
+                        //   println("Catching the exception \${e}");
+                        //}
 
-
+                      }
+                    }
+                  }
+              } // stages
+            } // pipeline
           </script>
         </div>
       </div>

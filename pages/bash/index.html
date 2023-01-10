@@ -296,7 +296,6 @@
             " 2>&1 | tee log.log
             
             
-            
             function extractValueFromJsonByKey {
               local INPUT="$(cat)"
 
@@ -334,7 +333,6 @@
               printf "${1:0:${#1}/2}${DELIMITER}${1:${#1}/2}"
             }
             echo "AWS_ACCESS_KEY_ID >$(divideInTwo "${AWS_ACCESS_KEY_ID}")<"
-            
           </script>
 
           <h2>Get exit status of process that's piped to another</h2>
