@@ -33,9 +33,9 @@
             def multilineString = '''
             This is the first line.
             This is the second line.
-            -second-
+            &second&
             This is the third line.
-            --secondd-
+            &&secondd&&
             second line
             last
             '''
@@ -64,6 +64,58 @@
 
             println "after  ->${token}<-"
             // after  ->second<-
+            
+            
+            
+            
+            
+            
+            
+            import java.util.regex.Pattern
+
+            def multilineString = '''
+            This is the first line.
+            This is the second line.
+            &second&
+            This is the third line.
+            &&secondd&& some data   
+            second line
+            last
+            '''
+
+            def extractToken(String name, String multilineString) {
+
+                def metacharacters = ['.', '?', '+', '*', '(', ')', '[', ']', '{', '}', '|', '\\', '^', '$']
+
+                metacharacters.each { name = name.replace(it, "\\$it") }
+
+                def lines = multilineString.split(/\n/)
+
+            //    lines.each { word ->
+            //        println "line >${word}<"
+            //    }
+
+                def regex = Pattern.compile("^&&${name}&&(.*)\$");
+
+                def found = lines.findAll { word -> word =~ regex }
+
+                if (found.size() != 1) {
+                    throw new Error("Can't find single secret from sh - found >${found.size()}<")
+                }
+
+                def token = found[0].replaceFirst(regex, "\$1");
+
+                //found.each { word ->
+                //    println word
+                //}
+
+                return token;
+            }
+
+            def token = extractToken("secondd", multilineString);
+
+            println "after  ->${token}<-"
+
           </script>
           <h2>regex match</h2>
           <script type="editor" data-lang="groovy">
