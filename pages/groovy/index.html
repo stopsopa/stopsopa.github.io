@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
   </head>
-  <body class="layout">
+  <body class="layout" toc>
     <div class="body">
       <div class="inside">
         <div class="cards">
@@ -64,21 +64,23 @@
 
             println "after  ->${token}<-"
             // after  ->second<-
-            
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
+
             import java.util.regex.Pattern
+            # unfortunately Jenkins might not allow running importing Patter util
+            # then look for extractToken in X repository
 
             def multilineString = '''
             This is the first line.
             This is the second line.
             &second&
             This is the third line.
-            &&secondd&& some data   
+            &&secondd&& some data
             second line
             last
             '''
@@ -115,7 +117,6 @@
             def token = extractToken("secondd", multilineString);
 
             println "after  ->${token}<-"
-
           </script>
           <h2>regex match</h2>
           <script type="editor" data-lang="groovy">
@@ -252,272 +253,12 @@
             validateDockerIgnore();
           </script>
 
-          <h2>Jenkinsfile</h2>
+          <h2>Jenkinsfile examples</h2>
+          look for phrases in X repository
+
           <script type="editor" data-lang="groovy">
 
-<<<<<<< HEAD
-def getLock() {
-  // converts GIT_URL and GIT_BRANCH from form
-  // git@github.com:user/repository.git develop
-  // to
-  // git_github_com_user_repository_git_develop
-  return "${env.GIT_URL} ${env.GIT_BRANCH}".replaceAll('[^a-z0-9]+', '_')
-}
-
-def extractToken(String multilineString) {
-    def lines = multilineString.split(/\n/)
-
-    def regex = /^&&(.+)&&$/;
-
-    def found = lines.findAll { word -> word =~ regex }
-
-    if (found.size() != 1) {
-        throw new Error("Can't find single secret from sh")
-    }
-
-    def token = found[0].replaceFirst(regex, "\$1");
-
-    return token;
-}
-
-def getConfig(String key) {
-
-    def environment = 'ote';
-
-    def tmp;
-
-    if (env.TESTPROD == 'true') {
-
-        environment = 'prod';
-    }
-
-    switch (environment) {
-        case "ote":
-            tmp = [
-                OS_SERVER: "...",
-                OS_PROJECT: "...",
-                OS_TOKEN: env.TOKEN_OTE,
-            ];
-            break;
-        case "prod":
-            tmp = [
-                OS_SERVER: "...",
-                OS_PROJECT: "...",
-                OS_TOKEN: env.TOKEN_OTE,
-            ];
-            break;
-        default:
-            throw new Exception("getConfig error: environment [${environment}] not recognized");
-    }
-
-    if (!tmp.containsKey(key)) {
-        throw new Exception("getConfig error: for environment [${environment}] can't find key [${key}]");
-    }
-
-    return tmp.get(key);
-}
-
-def data;
-
-pipeline {
-    agent any
-    parameters {
-        booleanParam(name: 'TESTPROD', defaultValue: false)
-    }
-    environment {
-      DOCKER_BUILDKIT = 1
-      LOCK = getLock()
-
-      // normally I would extract individual keys in the getConfig() function with
-      // credentials('pxxx').getInterpolatedStrings()
-      //   more about https://javadoc.jenkins.io/plugin/workflow-cps/org/jenkinsci/plugins/workflow/cps/UninstantiatedDescribableWithInterpolation.html#getInterpolatedStrings()
-      // but the error forces me to do it here in environment section:
-      // Scripts not permitted to use method org.jenkinsci.plugins.workflow.cps.UninstantiatedDescribableWithInterpolation getInterpolatedStrings. Administrators can decide whether to approve or reject this signature.
-      TOKEN_OTE = credentials('...')
-      TOKEN_PROD = credentials('...')
-
-
-      OS_SERVER = getConfig("OS_SERVER")
-      OS_TOKEN = getConfig("OS_TOKEN")
-      OS_PROJECT = getConfig("OS_PROJECT")
-    }
-
-    stages {
-      stage('Refreshing credentials'){
-        steps {
-          lock(env.LOCK) {
-            withCredentials([[
-                $class: 'AmazonWebServicesCredentialsBinding',
-                credentialsId: "${JENKINS_AWS_CREDENTIALS}",
-                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-            ]]) {
-                script {
-                    data = sh script: '''
-#!/bin/bash
-
-source "bash/tools.sh"
-
-set -e
-set -x
-
-RAW="\$(
-    docker run --rm -i \
-    -e AWS_ACCESS_KEY_ID \
-    -e AWS_SECRET_ACCESS_KEY \
-    -e AWS_SESSION_TOKEN \
-    docker.com:443/amazon/aws-cli:2.9.12 \
-    secretsmanager get-secret-value --region=${AWS_REGION_FOR_FETCHING_SECRETS} \
-    --output=yaml --secret-id ${JENKINS_CRED_AWS_SECRET_TO_PULL_FROM}
-)"
-
-echo "RAW >\$(divideInTwo "\${RAW}")<"
-
-AWS_SECRET_KEY="\$(echo \${RAW} | extractValueFromJsonByKey SecretAccessKey)"
-validateSecret AWS_SECRET_KEY "\${AWS_SECRET_KEY}"
-
-echo "&&${AWS_SECRET_KEY}&&"
-
-''', returnStdout: true, returnStatus: false
-                    }
-                } // withCredentials
-=======
-            def getLock() {
-              // converts GIT_URL and GIT_BRANCH from form
-              // git@github.com:user/repository.git develop
-              // to
-              // git_github_com_user_repository_git_develop
-              return "${env.GIT_URL} ${env.GIT_BRANCH}".replaceAll('[^a-z0-9]+', '_')
->>>>>>> 88c8c94 (resistor)
-            }
-
-<<<<<<< HEAD
-      stage('Update aws credential in Jenkins') { // stage
-        steps { // steps
-          lock(env.LOCK) {
-          
-          
-            def AWS_SECRET_KEY = extractToken(data);
-
-            println ">>${data}<<"
-
-          }
-        }
-      }
-  } // stages
-} // pipeline
-=======
-            def getConfig(String key) {
-
-                def environment = 'ote';
->>>>>>> 88c8c94 (resistor)
-
-                def tmp;
-
-                if (env.TESTPROD == 'true') {
-
-                    environment = 'prod';
-                }
-
-                switch (environment) {
-                    case "ote":
-                        tmp = [
-                            OS_SERVER: "...",
-                            OS_PROJECT: "...",
-                            OS_TOKEN: env.TOKEN_OTE,
-                        ];
-                        break;
-                    case "prod":
-                        tmp = [
-                            OS_SERVER: "...",
-                            OS_PROJECT: "...",
-                            OS_TOKEN: env.TOKEN_OTE,
-                        ];
-                        break;
-                    default:
-                        throw new Exception("getConfig error: environment [${environment}] not recognized");
-                }
-
-                if (!tmp.containsKey(key)) {
-                    throw new Exception("getConfig error: for environment [${environment}] can't find key [${key}]");
-                }
-
-                return tmp.get(key);
-            }
-
-            def data;
-
-            pipeline {
-                agent any
-                parameters {
-                    booleanParam(name: 'TESTPROD', defaultValue: false)
-                }
-                environment {
-                  DOCKER_BUILDKIT = 1
-                  LOCK = getLock()
-
-                  // normally I would extract individual keys in the getConfig() function with
-                  // credentials('pex-deployer-odin').getInterpolatedStrings()
-                  //   more about https://javadoc.jenkins.io/plugin/workflow-cps/org/jenkinsci/plugins/workflow/cps/UninstantiatedDescribableWithInterpolation.html#getInterpolatedStrings()
-                  // but the error forces me to do it here in environment section:
-                  // Scripts not permitted to use method org.jenkinsci.plugins.workflow.cps.UninstantiatedDescribableWithInterpolation getInterpolatedStrings. Administrators can decide whether to approve or reject this signature.
-                  TOKEN_OTE = credentials('...')
-                  TOKEN_PROD = credentials('...')
-
-
-                  OS_SERVER = getConfig("OS_SERVER")
-                  OS_TOKEN = getConfig("OS_TOKEN")
-                  OS_PROJECT = getConfig("OS_PROJECT")
-                }
-
-                stages {
-                  stage('Refreshing credentials'){
-                    steps {
-                      lock(env.LOCK) {
-                        withCredentials([[
-                            $class: 'AmazonWebServicesCredentialsBinding',
-                            credentialsId: "${JENKINS_AWS_CREDENTIALS}",
-                            accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                        ]]) {
-                            script {
-                                data = sh script: '''
-            #!/bin/bash
-
-            set -e
-            set -x
-
-            BASH_VARIABLE="mydata"
-
-            >&2 echo "STDERR>${BASH_VARIABLE}<"
-
-            ''', returnStdout: true, returnStatus: false
-                                }
-                            } // withCredentials
-                        }
-                    } // steps
-                  } //stage
-
-                  stage('Update aws credential in Jenkins') { // stage
-                    steps { // steps
-                      lock(env.LOCK) {
-
-                        println "Type of myVariable: ${data.getClass()}"
-                        println "Properties of myVariable: ${data.toString()}"
-                        println ">>${data}<<"
-                        //try {
-                        //    data.properties.each { prop ->
-                        //      println "${prop.key}: ${prop.value}"
-                        //    }
-                        //} catch(Exception e) {
-                        //   println("Catching the exception \${e}");
-                        //}
-
-                      }
-                    }
-                  }
-              } // stages
-            } // pipeline
+            Groovy postprocessing
           </script>
         </div>
       </div>

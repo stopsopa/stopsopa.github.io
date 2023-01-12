@@ -48,7 +48,7 @@
             echo test
             exit 1
             EOF
-            
+
             $ docker run --user $(id -u):$(id -g) -i image_name command args
             $ CURRENT_UID=$(id -u):$(id -g) docker-compose up
 
