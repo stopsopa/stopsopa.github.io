@@ -95,6 +95,13 @@
             # ------- find and iterate ------- vvv
 
 
+            # handleExitCode ${?} "oc project"
+            function handleExitCode {
+              if [ "${1}" != "0"  ]; then
+                  echo "handleExitCode: exit code not 0 >${1}< for ${2}"
+                  exit 1
+              fi
+            }
 
 
 
