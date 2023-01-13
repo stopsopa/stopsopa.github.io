@@ -260,6 +260,48 @@
 
             Groovy postprocessing
           </script>
+
+          <br />
+          <script type="editor" data-lang="groovy">
+          
+            def getConfig(String key) {
+
+                def environment = 'stage';
+
+                def tmp;
+
+                if (env.TESTPROD == 'true') {
+
+                    environment = 'prod';
+                }
+
+                switch (environment) {
+                    case "ote":
+                        tmp = [
+                            OS_SERVER: "...",
+                            OS_PROJECT: "...",
+                            OS_TOKEN: env.TOKEN_OTE,
+                        ];
+                        break;
+                    case "prod":
+                        tmp = [
+                            OS_SERVER: "...",
+                            OS_PROJECT: "...",
+                            OS_TOKEN: env.TOKEN_OTE,
+                        ];
+                        break;
+                    default:
+                        throw new Exception("getConfig error: environment [${environment}] not recognized");
+                }
+
+                if (!tmp.containsKey(key)) {
+                    throw new Exception("getConfig error: for environment [${environment}] can't find key [${key}]");
+                }
+
+                return tmp.get(key);
+            }
+
+          </script>
         </div>
       </div>
     </div>
