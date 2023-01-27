@@ -153,9 +153,8 @@
 
 docker network create asgard
 docker network ls
-docker run -itd --rm --network asgard --name loki
-docker run -itd --rm --network asgard --name odin
-
+docker run -itd --rm --network asgard --name loki busybox
+docker run -itd --rm --network asgard --name odin busybox
 ip address show
 bridge link
 docker inspect asgard
