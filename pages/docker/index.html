@@ -147,6 +147,21 @@
             docker inspect cypress_app | grep -A 5 -B 5 RestartPolicy
               # based on https://docs.docker.com/config/containers/start-containers-automatically/
           </script>
+          <h2>network</h2>
+          
+          <script type="editor" data-lang="sh">
+
+docker network create asgard
+docker network ls
+docker run -itd --rm --network asgard --name loki
+docker run -itd --rm --network asgard --name odin
+
+ip address show
+bridge link
+docker inspect asgard
+# from: https://youtu.be/bKFMS5C4CG0?t=713          
+          
+          </script>
           <h2>Docker Compose hostname</h2>
           <a href="https://stackoverflow.com/a/29926476/5560682">https://stackoverflow.com/a/29926476/5560682</a>
           <h2>docker-compose.yaml syntax</h2>
