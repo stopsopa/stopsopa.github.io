@@ -47,7 +47,7 @@
             # replace multiple - Back-references
             echo "~/Library/Application Support/JetBrains/IntelliJIdea2021.3/scratc hes/scratch.http" | sed -E 's/( )/\\\1/g'
 
-            # replace in file
+            # replace in file in place
             rm -rf aaaa.txt
             cat << EOF > aaaa.txt
             #!/bin/bash
@@ -57,6 +57,8 @@
             end
             EOF
             sed -i "" -E "s/model.images/model.resources/g" aaaa.txt
+            above will actually not work on mac -i causes issues, use for in place:
+            perl -pi -e \"s/test-date-[0-9]{4}-[0-9]{2}-[0-9]{2}/test-date-\$(date '+%Y-%m-%d')/g\" '${file}'
             cat aaaa.txt
             ## will print
             # #!/bin/bash
