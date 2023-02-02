@@ -480,7 +480,7 @@
         
 # latest solution
 
-cat <<EEE > date.sh
+cat <<EEE > dlogger.sh
 #!/bin/bash
 while IFS= read -r line; do
   printf '[%s %s %s]%s\n' "\$(date '+%Y-%m-%d %H:%M:%S')" "\$1" "\$2" "\$line" 
@@ -502,7 +502,7 @@ let k = 5;
   process.stderr.write('stderr: ' + k + EOL);
   k -= 1;
 }());
-" 1> >(/bin/bash date.sh o devserver >> log.log) 2> >(/bin/bash date.sh e devserver >> log.log)
+" 1> >(/bin/bash dlogger.sh o devserver >> log.log) 2> >(/bin/bash dlogger.sh e devserver >> log.log)
         
           
 # older solution
