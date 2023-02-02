@@ -1238,13 +1238,25 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             ps aux --sort=-%mem | head -n 300
             ps -ef | grep 'garbagecollect' | grep -v grep | awk '{print $2}' | xargs -r kill -9
                 # from: https://stackoverflow.com/a/30515012
+          </script>
+
+          <h2>kill killall</h2>
+          <script type="editor" data-lang="sh">
+
+            #to kill by pattern
+            kill $(pgrep -f "/bin/bash stream.sh")
+            
+            # to test by pattern
+            ps -ef | grep "/bin/bash stream.sh"
+
+            # some other stuff
             for KILLPID in `ps ax | grep 'my_pattern' | awk ' { print $1;}'`; do
               kill -9 $KILLPID;
             done
 
             /bin/bash -c "sleep 5 && kill -- $$" & disown
           </script>
-
+          
           <h2>change user home directory</h2>
           <script type="editor" data-lang="sh">
 
