@@ -44,7 +44,7 @@
     </div>
     <script src="/js/github.js"></script>
     <script>
-      const mimes = ["text/html; charset=UTF-8", "application/x-sh", "application/json; charset=UTF-8", "application/javascript; charset=UTF-8"];
+      const mimes = ["text/html; charset=UTF-8", "application/x-sh", "application/json; charset=UTF-8", "application/javascript; charset=UTF-8"].map(a => a.toLowerCase())
 
       const fileUrl = new URL(window.location.href).searchParams.get("file");
 
@@ -102,7 +102,7 @@
           const headers = {};
           res.headers.forEach((value, key) => (headers[key] = value));
 
-          if (typeof headers["content-type"] !== "string" || !headers["content-type"].trim() || !mimes.includes(headers["content-type"]) || res.status !== 200) {
+          if (typeof headers["content-type"] !== "string" || !headers["content-type"].trim() || !mimes.includes(headers["content-type"].toLowerCase()) || res.status !== 200) {
             textarea.value = JSON.stringify(
               {
                 status: res.status,
