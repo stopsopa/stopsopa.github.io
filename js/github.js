@@ -687,14 +687,10 @@ log.green("defined", "window.trim");
   // user stopsopa
   // path /pages/css-grid/index.html
 
-  window.isItLocalhost = true;
+  window.isDevEnvironment = location.port !== "";
+
   var github = (function (def) {
     let host = def;
-
-    if (/\.github\.io$/.test(location.host)) {
-      window.isItLocalhost = false;
-      host = location.host;
-    }
 
     var user = host.replace(/^(.*)\.github\.io$/, "$1");
 
@@ -824,7 +820,7 @@ body .github-profile:hover {
     log.blue("DOMContentLoaded", "adding profile ribbon link", "[triggered in github.js]");
   })();
 
-  if (window.isItLocalhost) {
+  if (window.isDevEnvironment) {
     // for some reason (maybe due to /etc/hosts record to handle local server from domain http://stopsopa.github.io.local/
     // there is huge delay in the locahost server request from the browser
     // The idea behind pinging it every few seconds is to maybe somehow keep local dns cache fresh

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      input {
+        width: 100%;
+      }
+      textarea {
+        border: 1px solid gray;
+        width: 100%;
+      }
+      .content {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20px;
+      }
+      .error {
+        border: 1px solid red;
+      }
+    </style>
+  </head>
+  <body class="layout" nohead nofoot>
+    <div class="content">
+      <form action="">
+        <input type="text" id="url" />
+      </form>
+      <br />
+      <input type="text" id="long" readonly />
+      <br />
+      <input type="text" id="short" readonly />
+      <br />
+      <input type="text" id="raw" readonly />
+      <br />
+      <a href="" id="full"></a>
+      <hr />
+      <a href="" id="direct"></a>
+      <hr />
+      <textarea autocomplete="off" spellcheck="false"></textarea>
+    </div>
+    <script src="/js/github.js"></script>
+    <script>
+      const mimes = ["text/html; charset=UTF-8", "application/x-sh", "application/json; charset=UTF-8", "application/javascript; charset=UTF-8"];
+
+      const fileUrl = new URL(window.location.href).searchParams.get("file");
+
+      const textarea = document.querySelector("textarea");
+      const form = document.querySelector("form");
+      const url = document.querySelector("#url");
+      const long = document.querySelector("#long");
+      const short = document.querySelector("#short");
+      const raw = document.querySelector("#raw");
+      const full = document.querySelector("#full");
+      const direct = document.querySelector("#direct");
+
+      long.addEventListener("click", (e) => long.select());
+      short.addEventListener("click", (e) => short.select());
+      raw.addEventListener("click", (e) => raw.select());
+      textarea.addEventListener("dblclick", (e) => textarea.select());
+
+      function grow(el) {
+        el.style.height = "auto";
+        el.style.height = el.scrollHeight + 30 + "px";
+      }
+
+      async function view(file) {
+        textarea.classList.remove("error");
+
+        try {
+          if (typeof file !== "string" || !file.trim()) {
+            return;
+          }
+
+          log(`fetching >${file}<`);
+
+          const relative = `${location.pathname}?file=${encodeURIComponent(file)}`;
+
+          const final = `${location.protocol}//${location.host}${relative}`;
+
+          const noencode = `${location.pathname}?file=${file}`;
+
+          full.innerHTML = final;
+          full.setAttribute("href", final);
+
+          direct.innerHTML = file;
+          direct.setAttribute("href", file);
+
+          short.value = relative;
+
+          long.value = final;
+
+          raw.value = noencode;
+
+          let res = await fetch(file, {
+            method: "HEAD",
+          });
+
+          const headers = {};
+          res.headers.forEach((value, key) => (headers[key] = value));
+
+          if (typeof headers["content-type"] !== "string" || !headers["content-type"].trim() || !mimes.includes(headers["content-type"]) || res.status !== 200) {
+            textarea.value = JSON.stringify(
+              {
+                status: res.status,
+                headers,
+              },
+              null,
+              4
+            );
+
+            grow(textarea);
+
+            return;
+          }
+
+          textarea.value = "Loading...";
+
+          window.history.pushState({}, "", relative);
+
+          res = await fetch(file);
+
+          const text = await res.text();
+
+          textarea.value = text;
+
+          grow(textarea);
+        } catch (e) {
+          textarea.value = text;
+
+          grow(textarea);
+
+          textarea.classList.add("error");
+        }
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        log("fdsfds");
+
+        view(url.value || fileUrl);
+      });
+
+      if (typeof fileUrl === "string" && fileUrl.trim()) {
+        view(fileUrl);
+      }
+    </script>
+  </body>
+</html>
