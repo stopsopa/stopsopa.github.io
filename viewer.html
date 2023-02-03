@@ -44,7 +44,15 @@
     </div>
     <script src="/js/github.js"></script>
     <script>
-      const mimes = ["text/html; charset=UTF-8", "application/x-sh", "application/json; charset=UTF-8", "application/javascript; charset=UTF-8"].map(a => a.toLowerCase())
+      const mimes = [
+        "text/yaml",
+        "text/html; charset=UTF-8",
+        "text/css; charset=utf-8",
+        "text/markdown",
+        "application/x-sh",
+        "application/json; charset=UTF-8",
+        "application/javascript; charset=UTF-8",
+      ].map((a) => a.toLowerCase());
 
       const fileUrl = new URL(window.location.href).searchParams.get("file");
 
