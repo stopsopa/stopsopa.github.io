@@ -40,8 +40,19 @@ app.use(
   express.static(web, {
     // http://expressjs.com/en/resources/middleware/serve-static.html
     // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
-    maxAge: "356 days", // in milliseconds max-age=30758400
-    setHeaders: (res, path) => {
+    // maxAge: "356 days", // in milliseconds max-age=30758400
+    cacheControl: false,
+    etag: false,
+    immutable: true,
+    lastModified: false,
+    maxAge: false,
+    setHeaders: (res, path, stat) => {
+      // res.setHeader("Last-Modified", stat.mtime.toUTCString());
+
+      // res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      // res.setHeader("Pragma", "no-cache");
+      // res.setHeader("Expires", "0");
+
       if (/\.bmp$/i.test(path)) {
         // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
 
@@ -52,6 +63,14 @@ app.use(
       // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
       // res.setHeader('Cache-Control', 'public, only-if-cached')
     },
+    // fallthrough: (req, res, next) => {
+    //   const ifModifiedSince = req.get("If-Modified-Since");
+    //   if (ifModifiedSince && ifModifiedSince === res.get("Last-Modified")) {
+    //     res.sendStatus(304);
+    //   } else {
+    //     next();
+    //   }
+    // },
   }),
   serveIndex(web, { icons: true })
 );

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      .columns {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+      }
+      .columns textarea {
+        min-height: 200px;
+        flex-grow: 1;
+      }
+      .canvas {
+        border: 1px solid gray;
+      }
+    </style>
+  </head>
+  <body class="layout">
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <canvas id="tutorial" width="150" height="150"></canvas>
+          <div id="app"></div>
+        </div>
+      </div>
+      <script src="/dist/diff.bundle.js"></script>
+      <script src="/js/github.js"></script>
+    </div>
+  </body>
+</html>
