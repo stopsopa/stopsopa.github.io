@@ -29,6 +29,20 @@ if [ "${LOCAL_HOSTS}" = "" ]; then
     exit 1
 fi
 
+if [ "${GITHUB_SOURCES_PREFIX}" = "" ]; then
+
+    echo "env var GITHUB_SOURCES_PREFIX is not defined";
+
+    exit 1
+fi
+
+if [ "${EXPOSE_EXTRA_ENV_VARIABLES}" = "" ]; then
+
+    echo "env var EXPOSE_EXTRA_ENV_VARIABLES is not defined";
+
+    exit 1
+fi
+
 node pages/portsregistry/lists/ports-generator.js
 
 # call those together in this order vvv
