@@ -14,7 +14,7 @@
     datahw      - optional: any valid css value for height css directive
 
     Warning: Just specify type="typescript" and script on site will load
-             /js/ace/ace-builds-1.4.12/src-min-noconflict/mode-typescript.js
+             /js/ace/ace-builds-1.15.0/src-min-noconflict/mode-typescript.js
 
 [supported syntax](https://github.com/ajaxorg/ace/blob/master/src/ext/modelist.js#L45)
 
