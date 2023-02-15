@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      .tabs {
+        display: flex;
+      }
+      .tabs > div {
+        border: 1px solid transparent;
+        padding: 10px;
+        margin-bottom: 2px;
+        cursor: pointer;
+      }
+      .tabs > div:hover {
+        border: 1px solid lightgray;
+      }
+      .tabs > .active {
+        border: 1px solid gray;
+      }
+      .tabs > .active:hover {
+        border: 1px solid black;
+        box-shadow: 0 0 1px black;
+      }
+      .editors > :not(.active) {
+        height: 0 !important;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body class="layout" toc>
+    <div class="body">
+      <div class="inside">
+        <div id="app"></div>
+        <div class="cards">
+          <a href=""></a>
+          <!-- <script type="editor" data-lang="sh">
+
+            editor.getSession().setTabSize(4);
+            editor.setTheme("ace/theme/idle_fingers");
+            editor.getSession().setUseWrapMode(true);
+          </script> -->
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+    <script src="/dist/002multi_tabs.bundle.js"></script>
+  </body>
+</html>
