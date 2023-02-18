@@ -50,6 +50,10 @@ fi
 function _kill {
 
   ps aux | grep "_${FLAG}" | grep -v grep | awk '{print $2}' | xargs kill
+
+
+  kill "${PID1}" 1> /dev/null 2> /dev/null || :
+  kill "${PID2}" 1> /dev/null 2> /dev/null || :
 }
 
 _kill;
@@ -62,25 +66,41 @@ LOGFILE="${_DIR}/var/log.log"
 
 rm -rf "${LOGFILE}"
 
-/bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "1_${FLAG}" \
-  node node_modules/.bin/webpack --watch 2>&1 >> "${LOGFILE}" &
+# /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "1_${FLAG}" \
+# node node_modules/.bin/webpack --watch 2>&1 >> "${LOGFILE}" &
+node node_modules/.bin/webpack --watch 1> >(/bin/bash bash/dlogger.sh o webpack >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e webpack >> "${LOGFILE}") &
+PID1="${!}"  
 
 # WAITINGMESSAGE="hidden modules" # this text shows at the end of webpack build
 WAITINGMESSAGE="compiled successfully in" # this text shows at the end of webpack build
+
+
+cat <<EEE
+
+
+  Now let's wait for webpack to spit '${WAITINGMESSAGE}' message
+  if it takes too long go and inspect 
+    ${LOGFILE}
+
+
+EEE
+
 
 set +x
 while [ "$(cat "${LOGFILE}" | grep "${WAITINGMESSAGE}")" = "" ]
 do
   sleep 0.02;
 
-  echo "================================ waiting for webpack to finish build ================================" >> "${LOGFILE}"
+  # echo "================================ waiting for webpack to finish build ================================" >> "${LOGFILE}"
+  echo "================================ waiting for webpack to finish build ================================" 1> >(/bin/bash bash/dlogger.sh o server_ >> "${LOGFILE}") 
 done
 
-echo "webpack have finish build" >> "${LOGFILE}"
 set -x
 
-/bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "2_${FLAG}" \
-  node server.js --flag "3_${FLAG}" 2>&1 >> "${LOGFILE}" &
+# /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "2_${FLAG}" \
+# node server.js --flag "3_${FLAG}" 2>&1 >> "${LOGFILE}" &
+node server.js --flag "3_${FLAG}" 1> >(/bin/bash bash/dlogger.sh o server_ >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e server_ >> "${LOGFILE}") &
+PID2="${!}"  
 
 sleep 3 && node "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_PORT}/index.html &
 

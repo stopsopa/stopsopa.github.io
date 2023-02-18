@@ -8,8 +8,47 @@ import { set, get } from "nlab/lcstorage";
 
 import Ace from "../Ace";
 
+if (!window.acerecord) {
+  (function () {
+    function enc(e) {}
+    function dec(e) {
+      return {
+        // command:
+      };
+    }
+    window.acerecord = [];
+    window.acerecordReset = (e) => {
+      window.acerecord = [];
+    };
+    window.acerecordAdd = (e) => {
+      window.acerecord.push(e);
+    };
+    window.acerecordList = () => {
+      return window.acerecord;
+    };
+  })();
+}
+
+function ed(cb) {
+  try {
+    const instance = window.editors[Object.keys(window.editors)[0]];
+
+    if (typeof cb === "function") {
+      cb(instance);
+    }
+
+    return instance;
+  } catch (e) {
+    console.log("ed() error: ", e);
+  }
+}
+
+// window.edit = ed;
+
 const Main = () => {
   const [tab, setTab] = useState("one");
+
+  const [recordOn, setRecordOn] = useState(false);
 
   const [valOne, setValOneRaw] = useState(get("one", ""));
 
@@ -32,19 +71,41 @@ const Main = () => {
       <div>
         <button
           onClick={() => {
-            setValOne(valOne + "\nz");
+            setValOne(valOne + "\na");
           }}
         >
           a
-        </button>{" "}
+        </button>
+        <button onClick={() => setRecordOn((x) => !x)}>recordOn {recordOn ? "1" : "0"}</button>
         <button
-          onClick={() => {
-            setValTwo(valTwo + "\nz");
-          }}
+          onClick={() =>
+            ed((editor) => {
+              console.log("getCursorPosition", editor.getCursorPosition());
+            })
+          }
         >
-          b
+          getCursorPosition
+        </button>
+        <button
+          onClick={() =>
+            ed((editor) => {
+              editor.selection.moveCursorLongWordRight();
+            })
+          }
+        >
+          moveCursorLongWordRight
+        </button>
+        <button
+          onClick={() =>
+            ed((editor) => {
+              editor.navigateWordRight();
+            })
+          }
+        >
+          navigateWordRight
         </button>
       </div>
+
       <div className="tabs">
         <div
           className={classnames({
@@ -69,7 +130,7 @@ const Main = () => {
             active: tab === "one",
           })}
         >
-          <Ace content={valOne} onChange={(data) => setValOne(data)} />
+          <Ace content={valOne} onChange={(data) => setValOne(data)} recordOn={recordOn} />
         </div>
         <div
           className={classnames({

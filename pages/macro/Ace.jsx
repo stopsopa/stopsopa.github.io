@@ -4,31 +4,55 @@ import nanoid from "../../libs/nanoid";
 
 import waitForAce from "./lib/waitForAce";
 
-export default ({ content, onChange }) => {
+// import "./Ace.css";
+
+export default ({ content, onChange, recordOn }) => {
   console.log("render................");
 
-  const refId = useRef({
-    id: "react-ace-" + nanoid(10),
-    editor: undefined,
-  });
+  const refId = useRef(
+    (function (id) {
+      return {
+        id,
+        log: function (...args) {
+          try {
+            console.log(id, ...args);
+          } catch (e) {
+            console.log("log error: ", e);
+          }
+        },
+        editor: undefined,
+      };
+    })("react-ace-" + nanoid(10))
+  );
 
-  const ref = useRef(null);
+  const divRef = useRef(null);
+
+  const log = refId.current.log;
 
   useEffect(() => {
-    const div = ref.current;
+    const div = divRef.current;
 
     div.innerText = "Loading...";
+    divRef.current.setAttribute("data-record", "0");
 
     (async function () {
+      log(`---seq []`);
       /**
        * I just need to wait for ace here, because it will be loaded by github.js
        */
       await waitForAce();
 
       refId.current.editor = mountEditor(div, {
+        log,
         content,
         onChange,
       });
+
+      if (!window.editors) {
+        window.editors = {};
+      }
+
+      window.editors[refId.current.id] = refId.current.editor;
 
       // this is here for testing mount and unmount
       //   let mount = false;
@@ -73,20 +97,55 @@ export default ({ content, onChange }) => {
   }, []);
 
   useEffect(() => {
+    log(`---seq [content]`);
     if (typeof content === "string" && refId.current.editor && refId.current.editor.getValue() !== content) {
       console.log("useEffect update", refId.current.editor.getValue() === content);
       refId.current.editor.setValue(content);
     }
-  }, [content]);
+  }, [refId, content]);
 
-  return <div ref={ref} id={refId.current.id} />;
+  function turnRecordOn() {
+    window.acerecordReset();
+    refId.current.editor.commands.on("afterExec", onAfterExec);
+    divRef.current.setAttribute("data-record", "1");
+  }
+
+  function turnRecordOff() {
+    refId.current.editor.commands.off("afterExec", onAfterExec);
+    divRef.current.setAttribute("data-record", "0");
+  }
+
+  useEffect(() => {
+    log(`---seq [recordOn]`, recordOn);
+    if (typeof recordOn === "boolean" && refId.current.editor) {
+      if (recordOn === true) {
+        turnRecordOn();
+      }
+      if (recordOn === false) {
+        turnRecordOff();
+      }
+    }
+    return () => {
+      turnRecordOff();
+    };
+  }, [refId, recordOn]);
+
+  return <div ref={divRef} id={refId.current.id} />;
 };
 
-function mountEditor(div, { content, onChange }) {
+function onAfterExec(...args) {
+  console.log("onAfterExec", ...args);
+  window.acerecordAdd(args);
+}
+
+function mountEditor(div, { log, content, onChange }) {
   const editor = ace.edit(div);
 
   editor.renderer.on("afterRender", () => {
     console.log("afterRender");
+  });
+  editor.commands.on("exec", (...args) => {
+    console.log('this.commands.on("exec"', args);
   });
 
   const session = editor.getSession();
@@ -138,6 +197,14 @@ function mountEditor(div, { content, onChange }) {
     if (typeof onChange === "function") {
       onChange(session.getValue());
     }
+  });
+
+  editor.on("focus", function () {
+    log("focus");
+  });
+
+  editor.on("blur", function () {
+    log("blur");
   });
 
   return editor;
