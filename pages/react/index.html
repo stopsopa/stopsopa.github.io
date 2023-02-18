@@ -378,7 +378,13 @@
           <script type="editor" data-lang="jsx">
 
             /**
-             * Usage:
+             * Usecase:
+             *    we generally wan't to prevent navigating with <Prompt/> when states change 
+             *    but on the other hand we have link to download file and it internally requires to change url
+             *    when it is clicked.
+             *    This is though specific case to allow just for that one link
+             *    so when user onMouseEnter button we will temporarly switch state for <Prompt /> to false
+             *    but onMouseLeave will bring back last state, no matter if it was false or true before we onMouseEnter
              * in render:
              *
                     const [ block, setBlock, swapHandler ] = useSwap(false);
