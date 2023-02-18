@@ -115,6 +115,34 @@
             How is useMemo different, but similar?
             useMemo is similar to useCallback except it allows you to apply memoization to any value type (not just functions). It does this by accepting a function which returns the value and then that function is only called when the value needs to be retrieved (which typically will only happen once each time an element in the dependencies array changes between renders).
           </script>
+          <h2>useMemo - limit rendering child element</h2>
+          <script type="editor" data-lang="jsx">
+          
+// from https://dev.to/bhavzlearn/demystifying-useref-and-usememo-in-react-4jcl#:~:text=be%20re%2Drendered.-,Where%20to%20use%20useMemo,-Let%27s%20take%20an
+import { useState, useMemo } from "react";
+import WelcomeCard from "./WelcomeCard";
+import "./styles.css";
+
+const App = () => {
+  const [ctr, setCtr] = useState(0);
+  const memoizedWelcomeCard = useMemo(() => {
+    return <WelcomeCard />;
+  }, []);
+
+  return (
+    <div className="App">
+      <h1>Application</h1>
+      <button onClick={() => setCtr(ctr + 1)}>
+        You clicked me {ctr} times.
+      </button>
+      {memoizedWelcomeCard}
+    </div>
+  );
+};
+
+export default App;          
+          
+          </script>
           <a href="https://kentcdodds.com/blog/usememo-and-usecallback">link</a>
           <h2>Auto scroll if bottom</h2>
           <script type="editor" data-lang="jsx">
