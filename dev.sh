@@ -12,7 +12,6 @@ case ${_SHELL} in
     ;;
 esac
 
-set -x
 set -e
 
 if [ ! -d "${_DIR}/node_modules" ]; then
@@ -68,7 +67,7 @@ rm -rf "${LOGFILE}"
 
 # /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "1_${FLAG}" \
 # node node_modules/.bin/webpack --watch 2>&1 >> "${LOGFILE}" &
-node node_modules/.bin/webpack --watch 1> >(/bin/bash bash/dlogger.sh o webpack >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e webpack >> "${LOGFILE}") &
+node node_modules/.bin/webpack --watch 1> >(/bin/bash bash/dlogger.sh " " webpack >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e webpack >> "${LOGFILE}") &
 PID1="${!}"  
 
 # WAITINGMESSAGE="hidden modules" # this text shows at the end of webpack build
@@ -85,24 +84,20 @@ cat <<EEE
 
 EEE
 
-
-set +x
 while [ "$(cat "${LOGFILE}" | grep "${WAITINGMESSAGE}")" = "" ]
 do
   sleep 0.02;
 
   # echo "================================ waiting for webpack to finish build ================================" >> "${LOGFILE}"
-  echo "================================ waiting for webpack to finish build ================================" 1> >(/bin/bash bash/dlogger.sh o server_ >> "${LOGFILE}") 
+  echo "================================ waiting for webpack to finish build ================================" 1> >(/bin/bash bash/dlogger.sh " " "server " >> "${LOGFILE}") 
 done
-
-set -x
 
 # /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "2_${FLAG}" \
 # node server.js --flag "3_${FLAG}" 2>&1 >> "${LOGFILE}" &
-node server.js --flag "3_${FLAG}" 1> >(/bin/bash bash/dlogger.sh o server_ >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e server_ >> "${LOGFILE}") &
+node server.js --flag "3_${FLAG}" 1> >(/bin/bash bash/dlogger.sh " " "server " >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "server " >> "${LOGFILE}") &
 PID2="${!}"  
 
-sleep 3 && node "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_PORT}/index.html &
+sleep 3 && node "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_PORT}/index.html 1> >(/bin/bash bash/dlogger.sh " " "opencli" >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "opencli" >> "${LOGFILE}") &
 
 if [ "${2}" = "launch_ide" ]; then
 
