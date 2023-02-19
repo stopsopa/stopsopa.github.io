@@ -4,6 +4,8 @@ import nanoid from "../../libs/nanoid";
 
 import waitForAce from "./lib/waitForAce";
 
+import RecordLog from "./RecordLog";
+
 // import "./Ace.css";
 
 export default ({ content, onChange, recordOn }) => {
@@ -44,6 +46,7 @@ export default ({ content, onChange, recordOn }) => {
 
       refId.current.editor = mountEditor(div, {
         log,
+        refId,
         content,
         onChange,
       });
@@ -98,20 +101,54 @@ export default ({ content, onChange, recordOn }) => {
 
   useEffect(() => {
     log(`---seq [content]`);
-    if (typeof content === "string" && refId.current.editor && refId.current.editor.getValue() !== content) {
+    if (typeof content === "string" && refId.current.editor && refId.current.editor.getValue() !== content && refId.current.update) {
       console.log("useEffect update", refId.current.editor.getValue() === content);
       refId.current.editor.setValue(content);
     }
   }, [refId, content]);
 
+  function exec(e) {
+    // console.log("exec -> position", refId.current.editor.getCursorPosition());
+    RecordLog.position(refId.current.editor.getCursorPosition());
+  }
+  function afterRender(...args) {
+    console.log("afterRender", ...args);
+    // RecordLog.add(args);
+  }
+  function onAfterExec(e) {
+    // console.log("onAfterExec", e);
+    RecordLog.add(refId.current.editor.getCursorPosition(), e);
+  }
+  function reportSelectionChange(...args) {
+    console.log("reportSelectionChange", ...args);
+    // RecordLog.add(args);
+  }
+  function reportCursorChange(...args) {
+    console.log("reportCursorChange", ...args);
+    // RecordLog.add(args);
+  }
+  function reportFind(...args) {
+    console.log("findnext", args);
+  }
+
   function turnRecordOn() {
-    window.acerecordReset();
+    RecordLog.reset();
+    refId.current.editor.commands.on("exec", exec);
     refId.current.editor.commands.on("afterExec", onAfterExec);
+    refId.current.editor.selection.on("changeCursor", reportCursorChange);
+    refId.current.editor.selection.on("changeSelection", reportSelectionChange);
+    refId.current.editor.renderer.on("afterRender", afterRender);
+    refId.current.editor.commands.on("findnext", reportFind);
     divRef.current.setAttribute("data-record", "1");
   }
 
   function turnRecordOff() {
+    refId.current.editor.commands.off("exec", exec);
     refId.current.editor.commands.off("afterExec", onAfterExec);
+    refId.current.editor.selection.off("changeCursor", reportCursorChange);
+    refId.current.editor.selection.off("changeSelection", reportSelectionChange);
+    refId.current.editor.renderer.off("afterRender", afterRender);
+    refId.current.editor.commands.off("findnext", reportFind);
     divRef.current.setAttribute("data-record", "0");
   }
 
@@ -133,20 +170,10 @@ export default ({ content, onChange, recordOn }) => {
   return <div ref={divRef} id={refId.current.id} />;
 };
 
-function onAfterExec(...args) {
-  console.log("onAfterExec", ...args);
-  window.acerecordAdd(args);
-}
+function mountEditor(div, { log, refId, content, onChange }) {
+  refId.current.update = true;
 
-function mountEditor(div, { log, content, onChange }) {
   const editor = ace.edit(div);
-
-  editor.renderer.on("afterRender", () => {
-    console.log("afterRender");
-  });
-  editor.commands.on("exec", (...args) => {
-    console.log('this.commands.on("exec"', args);
-  });
 
   const session = editor.getSession();
 
@@ -159,7 +186,15 @@ function mountEditor(div, { log, content, onChange }) {
   let lang = "javascript";
   session.setMode("ace/mode/" + lang);
   //   editor.setValue(_.unescape(t).replace(/^ *\n([\s\S]*?)\n *$/g, "$1"));
-  typeof content === "string" && editor.setValue(content);
+
+  if (refId.current.update) {
+    log("update on");
+    if (typeof content === "string") {
+      editor.setValue(content);
+    }
+  } else {
+    log("update off");
+  }
   editor.clearSelection();
 
   var heightUpdateFunction = function () {
@@ -201,10 +236,13 @@ function mountEditor(div, { log, content, onChange }) {
 
   editor.on("focus", function () {
     log("focus");
+    refId.current.update = false;
+    RecordLog.focusedEditor(editor);
   });
 
   editor.on("blur", function () {
     log("blur");
+    refId.current.update = true;
   });
 
   return editor;

@@ -4,30 +4,18 @@ import { render } from "react-dom";
 
 import classnames from "classnames";
 
-import { set, get } from "nlab/lcstorage";
+import { set as setraw, get } from "nlab/lcstorage";
 
 import Ace from "../Ace";
 
-if (!window.acerecord) {
-  (function () {
-    function enc(e) {}
-    function dec(e) {
-      return {
-        // command:
-      };
-    }
-    window.acerecord = [];
-    window.acerecordReset = (e) => {
-      window.acerecord = [];
-    };
-    window.acerecordAdd = (e) => {
-      window.acerecord.push(e);
-    };
-    window.acerecordList = () => {
-      return window.acerecord;
-    };
-  })();
-}
+import { debounce } from "lodash";
+
+import RecordLog from "../RecordLog";
+
+const set = debounce((...args) => {
+  // console.log("debounce set", ...args);
+  setraw(...args);
+}, 2000);
 
 function ed(cb) {
   try {
@@ -43,7 +31,7 @@ function ed(cb) {
   }
 }
 
-// window.edit = ed;
+window.ed = ed;
 
 const Main = () => {
   const [tab, setTab] = useState("one");
@@ -69,40 +57,14 @@ const Main = () => {
   return (
     <>
       <div>
-        <button
-          onClick={() => {
-            setValOne(valOne + "\na");
-          }}
-        >
-          a
-        </button>
         <button onClick={() => setRecordOn((x) => !x)}>recordOn {recordOn ? "1" : "0"}</button>
         <button
-          onClick={() =>
-            ed((editor) => {
-              console.log("getCursorPosition", editor.getCursorPosition());
-            })
-          }
+          onClick={() => {
+            setRecordOn(false);
+            RecordLog.play();
+          }}
         >
-          getCursorPosition
-        </button>
-        <button
-          onClick={() =>
-            ed((editor) => {
-              editor.selection.moveCursorLongWordRight();
-            })
-          }
-        >
-          moveCursorLongWordRight
-        </button>
-        <button
-          onClick={() =>
-            ed((editor) => {
-              editor.navigateWordRight();
-            })
-          }
-        >
-          navigateWordRight
+          play
         </button>
       </div>
 

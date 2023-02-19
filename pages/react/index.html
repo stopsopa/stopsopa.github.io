@@ -117,31 +117,30 @@
           </script>
           <h2>useMemo - limit rendering child element</h2>
           <script type="editor" data-lang="jsx">
-          
-// from https://dev.to/bhavzlearn/demystifying-useref-and-usememo-in-react-4jcl#:~:text=be%20re%2Drendered.-,Where%20to%20use%20useMemo,-Let%27s%20take%20an
-import { useState, useMemo } from "react";
-import WelcomeCard from "./WelcomeCard";
-import "./styles.css";
 
-const App = () => {
-  const [ctr, setCtr] = useState(0);
-  const memoizedWelcomeCard = useMemo(() => {
-    return <WelcomeCard />;
-  }, []);
+            // from https://dev.to/bhavzlearn/demystifying-useref-and-usememo-in-react-4jcl#:~:text=be%20re%2Drendered.-,Where%20to%20use%20useMemo,-Let%27s%20take%20an
+            import { useState, useMemo } from "react";
+            import WelcomeCard from "./WelcomeCard";
+            import "./styles.css";
 
-  return (
-    <div className="App">
-      <h1>Application</h1>
-      <button onClick={() => setCtr(ctr + 1)}>
-        You clicked me {ctr} times.
-      </button>
-      {memoizedWelcomeCard}
-    </div>
-  );
-};
+            const App = () => {
+              const [ctr, setCtr] = useState(0);
+              const memoizedWelcomeCard = useMemo(() => {
+                return <WelcomeCard />;
+              }, []);
 
-export default App;          
-          
+              return (
+                <div className="App">
+                  <h1>Application</h1>
+                  <button onClick={() => setCtr(ctr + 1)}>
+                    You clicked me {ctr} times.
+                  </button>
+                  {memoizedWelcomeCard}
+                </div>
+              );
+            };
+
+            export default App;
           </script>
           <a href="https://kentcdodds.com/blog/usememo-and-usecallback">link</a>
           <h2>Auto scroll if bottom</h2>
@@ -407,7 +406,7 @@ export default App;
 
             /**
              * Usecase:
-             *    we generally wan't to prevent navigating with <Prompt/> when states change 
+             *    we generally wan't to prevent navigating with <Prompt/> when states change
              *    but on the other hand we have link to download file and it internally requires to change url
              *    when it is clicked.
              *    This is though specific case to allow just for that one link
