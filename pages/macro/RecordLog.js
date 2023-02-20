@@ -1,5 +1,10 @@
+import { rest } from "lodash";
 import delay from "nlab/delay";
-import { async } from "regenerator-runtime";
+
+/**
+ * tool.list()
+ *   to see what is put to macro stack for play
+ */
 
 const log = console.log;
 
@@ -7,12 +12,6 @@ let list = [];
 let prevPos = null;
 let editor;
 let stopAdding = false;
-
-function dec(e) {
-  return {
-    // command:
-  };
-}
 
 let clipboard = "";
 
@@ -31,7 +30,7 @@ const tool = {
 
     editor.focus();
 
-    for (let command of list) {
+    for (let [i, command] of list.entries()) {
       if (window.debug) {
         log(JSON.stringify(command));
 
@@ -45,6 +44,26 @@ const tool = {
         });
       } else {
         switch (command[0]) {
+          case "_delegation_typefind":
+            {
+              const { needle, ...rest } = command[1];
+              log("triggering find", JSON.stringify([needle, rest]));
+
+              // editor.execCommand("find", command[1]);
+              editor.find(needle, rest);
+            }
+
+            break;
+          case "findnext":
+            {
+              const lastFindType = list
+                .slice(0, i)
+                .reverse()
+                .find((x) => Array.isArray(x) && x[0] === "_delegation_typefind");
+
+              log(`findnext`, lastFindType.needle);
+            }
+            break;
           case "copy":
             clipboard = editor.getSelectedText();
             log(`copy >${clipboard}<`);
@@ -66,7 +85,7 @@ const tool = {
       }
     }
   },
-  add: (curPos, e) => {
+  add: (e, prevPos) => {
     // more: https://github.com/ajaxorg/ace/wiki/Embedding---API#api
 
     // ed().searchBox.isFocused();
@@ -93,17 +112,20 @@ const tool = {
       command: { name },
       args,
     } = e;
-    log("add", prevPos, curPos, e, "name:", name, "args:", args);
+
+    log("add", e, "name:", name, "args:", args);
 
     switch (name) {
       case "insertstring":
-        let last = list.at(-1);
-        if (typeof last === "string") {
-          last = list.pop();
-          last += args;
-          list.push(last);
-        } else {
-          list.push(args);
+        {
+          let last = list.at(-1);
+          if (typeof last === "string") {
+            last = list.pop();
+            last += args;
+            list.push(last);
+          } else {
+            list.push(args);
+          }
         }
         break;
       case "gotoleft":
@@ -121,10 +143,26 @@ const tool = {
       case "selectwordright":
       case "selectlineend":
       case "selectlinestart":
-
+      case "findnext":
       case "del":
       case "backspace":
         list.push([name]);
+        break;
+      case "_delegation_typefind":
+        {
+          let last = list.at(-2);
+          if (Array.isArray(last) && last[0] === "_delegation_typefind") {
+            log("last is _delegation_typefind", last, "args", args);
+            list.pop();
+            last = list.pop();
+            last = ["_delegation_typefind", args];
+            list.push(last);
+          } else {
+            log("last is NOT _delegation_typefind", last, "args", args);
+            list.push(["_delegation_typefind", args]);
+          }
+          list.push(["findnext"]);
+        }
         break;
       case "copy":
         log(`change clipboard on record >${editor.getSelectedText()}<`);

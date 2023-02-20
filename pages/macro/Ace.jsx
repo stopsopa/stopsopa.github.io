@@ -107,48 +107,71 @@ export default ({ content, onChange, recordOn }) => {
     }
   }, [refId, content]);
 
-  function exec(e) {
-    // console.log("exec -> position", refId.current.editor.getCursorPosition());
-    RecordLog.position(refId.current.editor.getCursorPosition());
-  }
-  function afterRender(...args) {
-    console.log("afterRender", ...args);
-    // RecordLog.add(args);
-  }
+  // function exec(e) {
+  //   RecordLog.position(refId.current.editor.getCursorPosition());
+  // }
   function onAfterExec(e) {
-    // console.log("onAfterExec", e);
-    RecordLog.add(refId.current.editor.getCursorPosition(), e);
+    // RecordLog.add(refId.current.editor.getCursorPosition(), e);
+    RecordLog.add(e);
   }
-  function reportSelectionChange(...args) {
-    console.log("reportSelectionChange", ...args);
-    // RecordLog.add(args);
+  function onFindChange() {
+    const query = refId.current.editor.find.query;
+    console.log("User searched for:", query);
   }
-  function reportCursorChange(...args) {
-    console.log("reportCursorChange", ...args);
-    // RecordLog.add(args);
-  }
-  function reportFind(...args) {
-    console.log("findnext", args);
+  function onFindType(e) {
+    var el = e.target;
+
+    var match = el.matches(".ace_search_field");
+
+    if (match) {
+      try {
+        RecordLog.add({
+          command: { name: "_delegation_typefind" },
+          args: (function (a) {
+            // ed().execCommand("find", {
+            //   needle: "zz",
+            //   wrap: true,
+            //   caseSensitive: false,
+            //   wholeWord: false,
+            //   regExp: false,
+            // });
+
+            return {
+              needle: el.value,
+              wrap: a.wrap,
+              caseSensitive: a.caseSensitive || false,
+              wholeWord: a.wholeWord || false,
+              regExp: a.regExp || false,
+            };
+          })(refId.current.editor.$search.$options),
+        });
+      } catch (e) {
+        log("registering _delegation_typefind error: ", e);
+      }
+    }
   }
 
   function turnRecordOn() {
     RecordLog.reset();
-    refId.current.editor.commands.on("exec", exec);
+    // refId.current.editor.commands.on("exec", exec);
     refId.current.editor.commands.on("afterExec", onAfterExec);
-    refId.current.editor.selection.on("changeCursor", reportCursorChange);
-    refId.current.editor.selection.on("changeSelection", reportSelectionChange);
-    refId.current.editor.renderer.on("afterRender", afterRender);
-    refId.current.editor.commands.on("findnext", reportFind);
+
+    Array.from(document.querySelectorAll(".ace_editor")).forEach((el) => {
+      el.addEventListener("input", onFindType);
+    });
+
+    // refId.current.editor.find.addEventListener('change', onFindChange);
     divRef.current.setAttribute("data-record", "1");
   }
 
   function turnRecordOff() {
-    refId.current.editor.commands.off("exec", exec);
+    // refId.current.editor.commands.off("exec", exec);
     refId.current.editor.commands.off("afterExec", onAfterExec);
-    refId.current.editor.selection.off("changeCursor", reportCursorChange);
-    refId.current.editor.selection.off("changeSelection", reportSelectionChange);
-    refId.current.editor.renderer.off("afterRender", afterRender);
-    refId.current.editor.commands.off("findnext", reportFind);
+
+    Array.from(document.querySelectorAll(".ace_editor")).forEach((el) => {
+      el.removeEventListener("input", onFindType);
+    });
+
     divRef.current.setAttribute("data-record", "0");
   }
 
