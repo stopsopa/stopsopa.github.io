@@ -1,3 +1,8 @@
+# WARNING: There is one caveat with this script, it is checking if *.entry.{js|jsx} is changed, then it resets *.bundle.js
+#           but there might be situation that *.entry.{js|jsx} have not changed but it's dependency (import xxx.js) library have changed
+#           then in that case if you changed xxx.js and you wan't to prevent discarding *.bundle.js by this script after webpack build
+#           you will need to change "SOMETHING" in main *.entry.{js|jsx} with the change in xxx.js
+
 
 # internal
 if [ "${1}" = "process_file" ]; then
