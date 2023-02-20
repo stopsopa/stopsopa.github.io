@@ -41,7 +41,7 @@ const tool = {
     list = newList;
   },
   reset: () => {
-    list = [];
+    tool.injectList([]); // use injectList because I don't wan't to be treeshaken
     stopAdding = false;
   },
   focusedEditor: (ed) => (editor = ed),
