@@ -1,9 +1,30 @@
-import { rest } from "lodash";
 import delay from "nlab/delay";
 
 /**
  * tool.list()
  *   to see what is put to macro stack for play
+ * console.log(JSON.stringify(tool.list().list, null, 4))
+ * 
+ * window.debug = true
+ *   to slow down play feature
+ *   look to console when this is turned on, it will print first what it will do after
+ * 
+ * 
+ *  
+ * tool.injectList([["_delegation_typefind",{"needle":"ujm","wrap":true,"caseSensitive":false,"wholeWord":false,"regExp":false}],["gotowordleft"],"-",["gotowordright"],"-",["findnext"],["gotowordleft"],"-",["gotowordright"],"-",["_delegation_typefind",{"needle":"yhn","wrap":true,"caseSensitive":false,"wholeWord":false,"regExp":false}],["gotowordleft"],"-",["gotowordright"],"-"])
+ * window.debug = true;
+ * 
+ * test data for editor:
+
+abc ujm ddd ujm yhn ol end
+abc ujm ddd ujm yhn ol end
+ujm ddd ujm yhn ol end
+abc ujm ujm ol yhn end
+ujm ol  ujm yhn
+
+abc ujm ddd  ujm yhn ol end
+
+
  */
 
 const log = console.log;
@@ -16,6 +37,9 @@ let stopAdding = false;
 let clipboard = "";
 
 const tool = {
+  injectList: (newList) => {
+    list = newList;
+  },
   reset: () => {
     list = [];
     stopAdding = false;
@@ -56,12 +80,23 @@ const tool = {
             break;
           case "findnext":
             {
-              const lastFindType = list
-                .slice(0, i)
-                .reverse()
-                .find((x) => Array.isArray(x) && x[0] === "_delegation_typefind");
+              const copy = Array.from(list);
 
-              log(`findnext`, lastFindType.needle);
+              const slice = copy.slice(0, i + 1);
+
+              // log("find ------ slice", JSON.stringify(slice, null, 4));
+
+              slice.reverse();
+
+              // log("reverse", JSON.stringify(slice, null, 4));
+
+              const lastFindType = slice.find((x) => Array.isArray(x) && x[0] === "_delegation_typefind");
+
+              // log(`findnext`, JSON.stringify(lastFindType, null, 4));
+
+              const { needle, ...rest } = lastFindType[1];
+
+              editor.find(needle, rest);
             }
             break;
           case "copy":
@@ -150,10 +185,9 @@ const tool = {
         break;
       case "_delegation_typefind":
         {
-          let last = list.at(-2);
+          let last = list.at(-1);
           if (Array.isArray(last) && last[0] === "_delegation_typefind") {
             log("last is _delegation_typefind", last, "args", args);
-            list.pop();
             last = list.pop();
             last = ["_delegation_typefind", args];
             list.push(last);
@@ -161,7 +195,6 @@ const tool = {
             log("last is NOT _delegation_typefind", last, "args", args);
             list.push(["_delegation_typefind", args]);
           }
-          list.push(["findnext"]);
         }
         break;
       case "copy":

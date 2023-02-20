@@ -9,8 +9,6 @@ import RecordLog from "./RecordLog";
 // import "./Ace.css";
 
 export default ({ content, onChange, recordOn }) => {
-  console.log("render................");
-
   const refId = useRef(
     (function (id) {
       return {
@@ -27,9 +25,11 @@ export default ({ content, onChange, recordOn }) => {
     })("react-ace-" + nanoid(10))
   );
 
-  const divRef = useRef(null);
-
   const log = refId.current.log;
+
+  window.debug || log("Ace render");
+
+  const divRef = useRef(null);
 
   useEffect(() => {
     const div = divRef.current;
@@ -38,7 +38,7 @@ export default ({ content, onChange, recordOn }) => {
     divRef.current.setAttribute("data-record", "0");
 
     (async function () {
-      log(`---seq []`);
+      window.debug || log(`---seq []`);
       /**
        * I just need to wait for ace here, because it will be loaded by github.js
        */
@@ -100,23 +100,16 @@ export default ({ content, onChange, recordOn }) => {
   }, []);
 
   useEffect(() => {
-    log(`---seq [content]`);
+    window.debug || log(`---seq [content]`);
     if (typeof content === "string" && refId.current.editor && refId.current.editor.getValue() !== content && refId.current.update) {
       console.log("useEffect update", refId.current.editor.getValue() === content);
       refId.current.editor.setValue(content);
     }
   }, [refId, content]);
 
-  // function exec(e) {
-  //   RecordLog.position(refId.current.editor.getCursorPosition());
-  // }
   function onAfterExec(e) {
     // RecordLog.add(refId.current.editor.getCursorPosition(), e);
     RecordLog.add(e);
-  }
-  function onFindChange() {
-    const query = refId.current.editor.find.query;
-    console.log("User searched for:", query);
   }
   function onFindType(e) {
     var el = e.target;
@@ -153,19 +146,16 @@ export default ({ content, onChange, recordOn }) => {
 
   function turnRecordOn() {
     RecordLog.reset();
-    // refId.current.editor.commands.on("exec", exec);
     refId.current.editor.commands.on("afterExec", onAfterExec);
 
     Array.from(document.querySelectorAll(".ace_editor")).forEach((el) => {
       el.addEventListener("input", onFindType);
     });
 
-    // refId.current.editor.find.addEventListener('change', onFindChange);
     divRef.current.setAttribute("data-record", "1");
   }
 
   function turnRecordOff() {
-    // refId.current.editor.commands.off("exec", exec);
     refId.current.editor.commands.off("afterExec", onAfterExec);
 
     Array.from(document.querySelectorAll(".ace_editor")).forEach((el) => {
@@ -176,7 +166,7 @@ export default ({ content, onChange, recordOn }) => {
   }
 
   useEffect(() => {
-    log(`---seq [recordOn]`, recordOn);
+    window.debug || log(`---seq [recordOn]`, recordOn);
     if (typeof recordOn === "boolean" && refId.current.editor) {
       if (recordOn === true) {
         turnRecordOn();
@@ -211,12 +201,12 @@ function mountEditor(div, { log, refId, content, onChange }) {
   //   editor.setValue(_.unescape(t).replace(/^ *\n([\s\S]*?)\n *$/g, "$1"));
 
   if (refId.current.update) {
-    log("update on");
+    window.debug || log("update on");
     if (typeof content === "string") {
       editor.setValue(content);
     }
   } else {
-    log("update off");
+    window.debug || log("update off");
   }
   editor.clearSelection();
 
@@ -258,13 +248,13 @@ function mountEditor(div, { log, refId, content, onChange }) {
   });
 
   editor.on("focus", function () {
-    log("focus");
+    window.debug || log("focus");
     refId.current.update = false;
     RecordLog.focusedEditor(editor);
   });
 
   editor.on("blur", function () {
-    log("blur");
+    window.debug || log("blur");
     refId.current.update = true;
   });
 
