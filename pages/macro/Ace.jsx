@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import nanoid from "../../libs/nanoid";
-
 import waitForAce from "./lib/waitForAce";
 
 import RecordLog from "./RecordLog";
 
 // import "./Ace.css";
 
-export default ({ content, onChange, recordOn }) => {
+// let i = 0;
+
+export default ({ id, content, onChange, recordOn }) => {
   const refId = useRef(
     (function (id) {
+      let resolve;
+      const promise = new Promise((res) => (resolve = res));
       return {
         id,
         log: function (...args) {
@@ -21,15 +23,23 @@ export default ({ content, onChange, recordOn }) => {
           }
         },
         editor: undefined,
+        promise,
+        resolve,
       };
-    })("react-ace-" + nanoid(10))
+    })("react-ace-" + id)
   );
 
   const log = refId.current.log;
 
-  window.debug || log("Ace render");
+  // window.debug || log(`Ace render--------------${id}------------${content}-----<<<<`);
 
   const divRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof refId.current.heightUpdateFunction === "function") {
+      refId.current.heightUpdateFunction();
+    }
+  });
 
   useEffect(() => {
     const div = divRef.current;
@@ -38,7 +48,7 @@ export default ({ content, onChange, recordOn }) => {
     divRef.current.setAttribute("data-record", "0");
 
     (async function () {
-      window.debug || log(`---seq []`);
+      // window.debug || log(`---seq []`);
       /**
        * I just need to wait for ace here, because it will be loaded by github.js
        */
@@ -47,15 +57,17 @@ export default ({ content, onChange, recordOn }) => {
       refId.current.editor = mountEditor(div, {
         log,
         refId,
+        divRef,
         content,
         onChange,
+        id,
       });
 
       if (!window.editors) {
         window.editors = {};
       }
 
-      window.editors[refId.current.id] = refId.current.editor;
+      window.editors[id] = onChange;
 
       // this is here for testing mount and unmount
       //   let mount = false;
@@ -88,7 +100,7 @@ export default ({ content, onChange, recordOn }) => {
 
     return () => {
       if (refId.current.editor) {
-        console.log("useFetch unmount: editor exist: editor.destroy()");
+        // console.log("useFetch unmount: editor exist: editor.destroy()");
         refId.current.editor.destroy();
         refId.current.editor = undefined;
         div.removeAttribute("class");
@@ -100,17 +112,30 @@ export default ({ content, onChange, recordOn }) => {
   }, []);
 
   useEffect(() => {
-    window.debug || log(`---seq [content]`);
-    if (typeof content === "string" && refId.current.editor && refId.current.editor.getValue() !== content && refId.current.update) {
-      console.log("useEffect update", refId.current.editor.getValue() === content);
-      refId.current.editor.setValue(content);
-    }
+    // i += 1;
+    // window.debug || log(`useEffect refId content>${content}<`);
+    refId.current.promise.then((editor) => {
+      if (!refId.current.update) {
+        return log("skip update flag true");
+      }
+      const edContent = editor.getValue();
+      if (edContent !== content) {
+        // log(`useEffect update ace>${edContent}< ref>${content}<`);
+
+        // if (i > 10) {
+        //   return log("stop...");
+        // }
+        editor.setValue(content + "", -1);
+        // refId.current.content = content
+      }
+    });
   }, [refId, content]);
 
   function onAfterExec(e) {
     // RecordLog.add(refId.current.editor.getCursorPosition(), e);
     RecordLog.add(e);
   }
+
   function onFindType(e) {
     var el = e.target;
 
@@ -166,7 +191,8 @@ export default ({ content, onChange, recordOn }) => {
   }
 
   useEffect(() => {
-    window.debug || log(`---seq [recordOn]`, recordOn);
+    // window.debug || log(`---seq [recordOn]`, recordOn);
+
     if (typeof recordOn === "boolean" && refId.current.editor) {
       if (recordOn === true) {
         turnRecordOn();
@@ -175,38 +201,46 @@ export default ({ content, onChange, recordOn }) => {
         turnRecordOff();
       }
     }
+
     return () => {
       turnRecordOff();
     };
   }, [refId, recordOn]);
 
-  return <div ref={divRef} id={refId.current.id} />;
+  return <div ref={divRef} id={id} />;
 };
 
-function mountEditor(div, { log, refId, content, onChange }) {
+function mountEditor(div, { log, divRef, refId, content, onChange, id }) {
   refId.current.update = true;
 
+  divRef.current.parentNode.classList.add("mounting");
+
   const editor = ace.edit(div);
+
+  refId.current.resolve(editor);
 
   const session = editor.getSession();
 
   //   editors[un] = editor;
 
-  session.setTabSize(4);
+  session.setOptions({ tabSize: 4, useSoftTabs: true });
+  // session.setTabSize(4);
   editor.setTheme("ace/theme/idle_fingers");
   session.setUseWrapMode(true);
+
+  editor.setShowInvisibles(true);
 
   let lang = "javascript";
   session.setMode("ace/mode/" + lang);
   //   editor.setValue(_.unescape(t).replace(/^ *\n([\s\S]*?)\n *$/g, "$1"));
 
   if (refId.current.update) {
-    window.debug || log("update on");
+    // window.debug || log("update on", content);
     if (typeof content === "string") {
       editor.setValue(content);
     }
   } else {
-    window.debug || log("update off");
+    // window.debug || log("update off");
   }
   editor.clearSelection();
 
@@ -233,28 +267,38 @@ function mountEditor(div, { log, refId, content, onChange }) {
     // This call is required for the editor to fix all of
     // its inner structure for adapting to a change in size
     editor.resize();
+    editor.focus();
   };
 
   // Set initial size to match initial content
   heightUpdateFunction();
+
+  refId.current.heightUpdateFunction = heightUpdateFunction;
+
+  // setTimeout(() => {
+  divRef.current.parentNode.classList.remove("mounting");
+
+  heightUpdateFunction();
+  // }, 50);
 
   // Whenever a change happens inside the ACE editor, update
   // the size again
   session.on("change", () => {
     heightUpdateFunction();
     if (typeof onChange === "function") {
+      log(`onChange >${session.getValue()}<`);
       onChange(session.getValue());
     }
   });
 
   editor.on("focus", function () {
-    window.debug || log("focus");
+    // window.debug || log("focus");
     refId.current.update = false;
     RecordLog.focusedEditor(editor);
   });
 
   editor.on("blur", function () {
-    window.debug || log("blur");
+    // window.debug || log("blur");
     refId.current.update = true;
   });
 

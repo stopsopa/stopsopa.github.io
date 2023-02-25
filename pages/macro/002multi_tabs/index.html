@@ -6,14 +6,41 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
     <style>
+      body header {
+        padding: 7px;
+        display: flex;
+        align-items: center;
+      }
+      body header > a:first-child {
+        margin-left: 40px;
+      }
+      .ace-idle-fingers .ace_invisible {
+        color: #616161;
+      }
       .tabs {
         display: flex;
       }
       .tabs > div {
         border: 1px solid transparent;
+        cursor: pointer;
+        display: flex;
+      }
+      .tabs > div:hover > div:first-child {
+        background-color: rgb(223, 221, 221);
+      }
+      .tabs > div > div:first-child {
+        flex-grow: 1;
         padding: 10px;
         margin-bottom: 2px;
-        cursor: pointer;
+      }
+      .tabs > div > div:nth-child(2) {
+        display: flex;
+        flex-direction: column;
+        align-content: space-between;
+        justify-content: center;
+      }
+      .tabs > div > div:nth-child(2) > div {
+        font-size: 11px;
       }
       .tabs > div:hover {
         border: 1px solid lightgray;
@@ -21,34 +48,127 @@
       .tabs > .active {
         border: 1px solid gray;
       }
-      .tabs > .active:hover {
-        border: 1px solid black;
-        box-shadow: 0 0 1px black;
+      .tabs > .active > div:first-child {
+        /* border: 1px solid black;
+        box-shadow: 0 0 1px black; */
+        background-color: rgb(223, 221, 221);
       }
-      .editors > :not(.active) {
+      .tabs > div > div:nth-child(2) > div {
+        flex-grow: 1;
+      }
+
+      .tabs > div > div:nth-child(2) > div:hover {
+        background-color: rgb(223, 221, 221);
+      }
+      #parent {
+        min-height: calc(100vh - 48px - 59px);
+      }
+
+      /* https://popper.js.org/docs/v2/tutorial/ */
+      #arrow,
+      #arrow::before {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: inherit;
+      }
+
+      #arrow {
+        visibility: hidden;
+      }
+
+      #arrow::before {
+        visibility: visible;
+        content: "";
+        transform: rotate(45deg);
+      }
+      #tooltip[data-popper-placement^="top"] > #arrow {
+        bottom: -4px;
+      }
+
+      #tooltip[data-popper-placement^="bottom"] > #arrow {
+        top: -4px;
+      }
+
+      #tooltip[data-popper-placement^="left"] > #arrow {
+        right: -4px;
+      }
+
+      #tooltip[data-popper-placement^="right"] > #arrow {
+        left: -4px;
+      }
+      .dropdown-source-wrapper {
+        background-color: aqua;
+      }
+      .portal {
+        padding-left: 20px;
+      }
+      .portal > button {
+        background-color: rgb(143, 142, 142);
+        border: none;
+        padding: 8px;
+        border-radius: 3px;
+        margin-right: 5px;
+        cursor: pointer;
+        color: rgb(225, 224, 224);
+      }
+      .portal > button.record {
+        position: relative;
+        padding-right: 36px;
+      }
+      .portal > button.record::after {
+        content: "";
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        background-color: #136913;
+        top: 9px;
+        right: 10px;
+        border-radius: 10px;
+      }
+      .portal > button.record:hover {
+        background-color: gray;
+      }
+      .portal > button.record.on::after {
+        background-color: #c22020;
+      }
+      .on_the_right .editors {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+      }
+      .on_the_right .editors > * {
+        width: 50%;
+      }
+      .on_the_right .editors > div.hidden {
+        width: 0;
+      }
+      .single .editors > div > div {
+        display: none;
+      }
+      .single .editors > div.active > div {
+        display: block;
+      }
+      .single .editors > div.hidden {
+        display: none;
         height: 0 !important;
         overflow: hidden;
       }
+      /* .editors > .right {
+      } */
     </style>
     <link rel="stylesheet" href="../Ace.css" />
   </head>
-  <body class="layout" toc>
-    <div class="body">
-      <div class="inside">
-        <div id="app"></div>
-        <a href="https://www.trivantis.com/help/Lectora_Online/4.8/en/HelpHTMLs/Content/16.html#:~:text=Command%2DOption%2DF-,Find%20next,-Ctrl%2DK"
-          >Find next win:Ctrl-K mac:Command-G g(Using the Ace editor Ace is the code editor embedded within Lectora Online)</a
-        >
-        <div class="cards">
-          <a href=""></a>
-          <!-- <script type="editor" data-lang="sh">
-
-            editor.getSession().setTabSize(4);
-            editor.setTheme("ace/theme/idle_fingers");
-            editor.getSession().setUseWrapMode(true);
-          </script> -->
-        </div>
-      </div>
+  <body>
+    <div id="parent">
+      <div id="app"></div>
+      <pre>
+        Find             Ctrl-F	Command-F
+        Replace          Ctrl-H	Command-Option-F
+        Find next        Ctrl-K	Command-G
+        Find previous    Ctrl-Shift-K       Command-Shift-G        
+      </pre>
+      <a href="keyboard shortcuts">more keyboard shortcuts</a>
     </div>
     <script src="/js/github.js"></script>
     <script src="/dist/002multi_tabs.bundle.js"></script>

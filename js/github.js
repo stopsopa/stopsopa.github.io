@@ -609,7 +609,23 @@ log.green("defined", "window.manipulation");
 
     await window.scrollToHash();
 
-    log.blue("DOMContentLoaded", "window.doace [triggered in github.js]");
+    window.ready = true;
+
+    log.blue("DOMContentLoaded", "window.doace [triggered in github.js] -> window.ready = true defined (see snippet how to handle it next to this log)");
+
+    // (async function () {
+    //   await new Promise((resolve) => {
+    //     (function repeat() {
+    //       if (window.ready) {
+    //         resolve();
+    //       } else {
+    //         setTimeout(repeat, 50);
+    //       }
+    //     })();
+    //   });
+
+    //   log("do yours stuff");
+    // })();
   } catch (e) {
     log.red(
       "GLOBAL CATCH ERROR: ",

@@ -80,7 +80,11 @@ app.listen(process.env.NODE_PORT, host, () => {
   
  🌎  Server is running http://${host}:${process.env.NODE_PORT}
 
- \x1b[41mNOTICE: \x1b[33mmake sure to add ${process.env.LOCAL_HOSTS} to /etc/hosts\x1b[0m
+ \x1b[41mNOTICE: \x1b[33mmake sure to add ${process.env.LOCAL_HOSTS} to /etc/hosts
+ 
+ and be aware of this issue on mac with /etc/hosts https://superuser.com/a/1297335\x1b[0m
+
+
  
 `);
 });

@@ -7,3 +7,15 @@ body .ace_hidden-cursors .ace_cursor {
 body .ace-idle-fingers .ace_cursor {
   color: #ff0000;
 }
+.single .mounting {
+  display: block !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 1 !important;
+}
+.single .mounting > div {
+  display: block !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 1 !important;
+}

@@ -24,7 +24,6 @@ ujm ol  ujm yhn
 
 abc ujm ddd  ujm yhn ol end
 
-
  */
 
 const log = console.log;
