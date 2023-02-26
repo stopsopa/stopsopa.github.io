@@ -43,7 +43,7 @@ function reducer(state, action) {
 }
 
 /**
- * https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
+ *  https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
  */
 const Main = ({ portal }) => {
   // const [tabs, setTabs] = useState(["one"]);
