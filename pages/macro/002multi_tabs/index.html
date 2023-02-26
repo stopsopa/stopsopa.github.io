@@ -139,6 +139,10 @@
       }
       .on_the_right .editors > * {
         width: 50%;
+        order: 0; /* It is by default 0 but anyway... https://css-tricks.com/snippets/css/a-guide-to-flexbox/#:~:text=order%3A%205%3B%20/*%20default%20is%200%20*/
+      }
+      .on_the_right .editors > .right {
+        order: 1;
       }
       .on_the_right .editors > div.hidden {
         width: 0;
