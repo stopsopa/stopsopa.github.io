@@ -100,13 +100,13 @@ export default ({ id, content, onChange, recordOn }) => {
 
       editor.clearSelection();
 
-      let heightUpdateFunction = function () {
+      let heightUpdateFunction = function (val) {
         // log("heightUpdateFunction");
 
         // http://stackoverflow.com/questions/11584061/
         let newHeight = session.getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth();
 
-        let height = newHeight.toString();
+        let height = Number.isInteger(val) ? val : newHeight.toString();
 
         // 46 rows in ace editor in 735px of window.innerHeight:
         // so: 735 / 46 = 15.97 - pixels per row
@@ -120,13 +120,9 @@ export default ({ id, content, onChange, recordOn }) => {
 
         let minHeight = parseInt(window.innerHeight - reservedHeightPixelsForHeaders, 10);
 
-        minHeight += "px";
+        const finalHeight = minHeight > height ? minHeight : height;
 
-        height += "px";
-
-        div.style.height = minHeight > height ? minHeight : height;
-
-        // log("div.style.height", div.style.height, "minHeight: ", minHeight, "height: ", height, "minHeight > height", minHeight > height);
+        div.style.height = finalHeight + "px";
 
         editor.resize();
       };
