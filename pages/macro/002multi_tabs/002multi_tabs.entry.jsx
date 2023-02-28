@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useReducer, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 import { render, createPortal } from "react-dom";
 
@@ -31,15 +31,14 @@ function ed(id) {
 
 window.ed = ed;
 
-const initialState = {};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "set":
-      return { ...state, [action.key]: action.value };
-    default:
-      throw new Error();
-  }
+const initialStateTab = {
+  lang: "javascript",
+  value: "",
+};
+function generateDefaultTab(tab) {
+  const state = structuredClone(initialStateTab);
+  state.tab = tab;
+  return state;
 }
 
 /**
@@ -55,49 +54,63 @@ const Main = ({ portal }) => {
 
   const [recordOn, setRecordOn] = useState(false);
 
-  const [values, dispatchValue] = useReducer(reducer, initialState);
+  const [values, setValues] = useState([]);
 
-  const [valOne, setValOneRaw] = useState(get("one", ""));
+  function getValue(tab, field, def) {
+    try {
+      const copy = structuredClone(values);
 
-  const [valTwo, setValTwoRaw] = useState("");
+      let found = copy.find((row) => row.tab == tab);
 
-  function setVal(key, val) {
-    set(key, val);
+      if (!found) {
+        found = generateDefaultTab(tab);
+      }
 
-    dispatchValue({
-      type: "set",
-      key,
-      value: val,
+      if (field) {
+        return found[field] || def;
+      } else {
+        return field || def;
+      }
+    } catch (e) {
+      return def;
+    }
+  }
+
+  function setValue(tab, field, value) {
+    setValues((values) => {
+      const copy = structuredClone(values);
+
+      let found;
+
+      for (let i = 0, l = copy.length; i < l; i += 1) {
+        if (copy[i].tab === tab) {
+          if (field) {
+            copy[i][field] = value;
+          } else {
+            copy[i] = value;
+          }
+
+          found = copy[i];
+        }
+      }
+
+      set(tab, found);
+
+      return copy;
     });
   }
 
   useEffect(() => {
-    tabs.forEach((key) => {
-      dispatchValue({
-        type: "set",
-        key,
-        value: get(key, ""),
-      });
+    const list = tabs.map((tab) => {
+      return get(tab, generateDefaultTab(tab));
     });
-    setValTwoRaw(get("two", ""));
+    setValues(list);
   }, []);
 
   function setTab(tab) {
     if (onTheRight !== tab) {
       setTabRaw(tab);
     }
-  }
-
-  function setValOne(data) {
-    set("one", data);
-
-    setValOneRaw(data);
-  }
-
-  function setValTwo(data) {
-    set("two", data);
-
-    setValTwoRaw(data);
   }
 
   return (
@@ -168,16 +181,35 @@ const Main = ({ portal }) => {
           </div>
         </div>
         <div className="editors">
-          {tabs.map((key) => (
+          {tabs.map((tab_) => (
             <div
-              key={key}
+              key={tab_}
               className={classnames({
-                active: tab === key,
-                right: onTheRight === key,
-                hidden: tab !== key && onTheRight !== key,
+                active: tab === tab_,
+                right: onTheRight === tab_,
+                hidden: tab !== tab_ && onTheRight !== tab_,
               })}
             >
-              <Ace id={key} content={values[key] || ""} onChange={(data) => setVal(key, data)} recordOn={recordOn} />
+              <div>
+                <label>
+                  lang:{" "}
+                  <select value={"javascript"}>
+                    <option value="javascript">javascript</option>
+                  </select>
+                </label>
+              </div>
+              <Ace
+                id={tab_}
+                content={(function () {
+                  const data = getValue(tab_, "value", "");
+                  console.log("fetching....", tab_, "value", "", data);
+                  return data;
+                })()}
+                onChange={(data) => {
+                  setValue(tab_, "value", data);
+                }}
+                recordOn={recordOn}
+              />
             </div>
           ))}
         </div>

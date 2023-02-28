@@ -6,7 +6,7 @@ import RecordLog from "./RecordLog";
 
 // import "./Ace.css";
 
-export default ({ id, content, onChange, recordOn }) => {
+export default ({ id, content, onChange, recordOn, lang }) => {
   const refIdMemo = useMemo(() => {
     const id_ = "react-ace-" + id;
 
@@ -62,6 +62,21 @@ export default ({ id, content, onChange, recordOn }) => {
   }, [refId, content]);
 
   useEffect(() => {
+    refId.current.lang = lang;
+    refId.current.promise.then((editor) => {
+      if (typeof refId.current.lang !== "string") {
+        return;
+      }
+
+      const session = editor.getSession();
+
+      session.setMode(`ace/mode/${refId.current.lang}`);
+
+      delete refId.current.lang;
+    });
+  }, [refId, lang]);
+
+  useEffect(() => {
     (async function () {
       const div = divRef.current;
 
@@ -83,16 +98,13 @@ export default ({ id, content, onChange, recordOn }) => {
 
       const session = editor.getSession();
 
-      session.setOptions({ tabSize: 4, useSoftTabs: true, maxLines: Infinity });
+      session.setOptions({ tabSize: 4, useSoftTabs: true });
 
       editor.setTheme("ace/theme/idle_fingers");
 
       session.setUseWrapMode(true);
 
       editor.setShowInvisibles(true);
-
-      let lang = "javascript";
-      session.setMode("ace/mode/" + lang);
 
       if (typeof content === "string") {
         editor.setValue(content);
