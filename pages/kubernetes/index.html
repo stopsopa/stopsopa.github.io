@@ -51,6 +51,7 @@
           <script type="editor" data-lang="sh">
           
             kubectl get events
+            kubectl get events --sort-by='.lastTimestamp'
 
             kubectl api-resources
               # from kubectl get --help
