@@ -15,8 +15,8 @@
 
     Warning: Just specify type="typescript" and script on site will load
              /js/ace/ace-builds-1.15.0/src-min-noconflict/mode-typescript.js
-
-[supported syntax](https://github.com/ajaxorg/ace/blob/master/src/ext/modelist.js#L45)
+             
+[supported syntax](https://github.com/ajaxorg/ace/blob/v1.15.3/src/ext/modelist.js#L44)
 
 - (in older versions up to v1.8.1 the file was here: https://github.com/ajaxorg/ace/blob/v1.8.1/lib/ace/ext/modelist.js#L53)
 
