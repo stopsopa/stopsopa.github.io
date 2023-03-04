@@ -177,7 +177,9 @@ const Main = ({ portal }) => {
           >
             record
           </button>
-          <button onClick={play}>play</button>
+          <button onClick={play} title="(cmd|ctrl)+r">
+            play
+          </button>
         </>,
         portal
       )}
@@ -219,14 +221,19 @@ const Main = ({ portal }) => {
             <div>
               <label>
                 lang:{" "}
-                <select value={"javascript"}>
-                  <option value="javascript">javascript</option>
+                <select value={getValue(tab_, "lang")} onChange={(e) => setValue(tab_, "lang", e.target.value)}>
+                  {(window.languages || ["javascript", "look for window.languages"]).map((l) => (
+                    <option key={l} value={l}>
+                      {l}
+                    </option>
+                  ))}
                 </select>
               </label>
             </div>
             <Ace
               id={tab_}
               content={getValue(tab_, "value", "")}
+              lang={getValue(tab_, "lang", "")}
               onInit={(editor) => setTabs(tab_, "editor", editor)}
               onChange={(data) => {
                 setValue(tab_, "value", data);

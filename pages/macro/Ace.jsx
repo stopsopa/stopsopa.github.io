@@ -231,9 +231,7 @@ export default ({ id, content, onChange, onInit, recordOn, lang }) => {
 
     refId.current.editor.commands.on("afterExec", onAfterExec);
 
-    Array.from(divRef.current.querySelectorAll(".ace_editor")).forEach((el) => {
-      el.addEventListener("input", onFindType);
-    });
+    divRef.current.addEventListener("input", onFindType);
 
     divRef.current.setAttribute("data-record", "1");
   }
@@ -241,9 +239,7 @@ export default ({ id, content, onChange, onInit, recordOn, lang }) => {
   function turnRecordOff() {
     refId.current.editor.commands.off("afterExec", onAfterExec);
 
-    Array.from(divRef.current.querySelectorAll(".ace_editor")).forEach((el) => {
-      el.removeEventListener("input", onFindType);
-    });
+    divRef.current.removeEventListener("input", onFindType);
 
     divRef.current.setAttribute("data-record", "0");
   }

@@ -11,18 +11,91 @@ import delay from "nlab/delay";
  * 
  * 
  *  
- * tool.injectList([["_delegation_typefind",{"needle":"ujm","wrap":true,"caseSensitive":false,"wholeWord":false,"regExp":false}],["gotowordleft"],"-",["gotowordright"],"-",["findnext"],["gotowordleft"],"-",["gotowordright"],"-",["_delegation_typefind",{"needle":"yhn","wrap":true,"caseSensitive":false,"wholeWord":false,"regExp":false}],["gotowordleft"],"-",["gotowordright"],"-"])
+ * tool.injectList([["_delegation_typefind",{"needle":"ujm","wrap":true,"caseSensitive":false,"wholeWord":false,"regExp":false}],["gotowordleft"],"-",["gotowordright"],"-",["findnext"],["gotowordleft"],"-",["gotowordright"],"-",["_delegation_typefind",{"needle":"yhn","wrap":true,"caseSensitive":false,"wholeWord":false,"regExp":false}],["gotowordleft"],"-",["gotowordright"],"-",["gotolinestart"],["selectwordright"],["copy"],["gotowordright"],["paste"]," ",["golinedown"],["gotolinestart"]])
  * window.debug = true;
+ * 
+ * [
+    [
+        "_delegation_typefind",
+        {
+            "needle": "ujm",
+            "wrap": true,
+            "caseSensitive": false,
+            "wholeWord": false,
+            "regExp": false
+        }
+    ],
+    [
+        "gotowordleft"
+    ],
+    "-",
+    [
+        "gotowordright"
+    ],
+    "-",
+    [
+        "findnext"
+    ],
+    [
+        "gotowordleft"
+    ],
+    "-",
+    [
+        "gotowordright"
+    ],
+    "-",
+    [
+        "_delegation_typefind",
+        {
+            "needle": "yhn",
+            "wrap": true,
+            "caseSensitive": false,
+            "wholeWord": false,
+            "regExp": false
+        }
+    ],
+    [
+        "gotowordleft"
+    ],
+    "-",
+    [
+        "gotowordright"
+    ],
+    "-",
+    [
+        "gotolinestart"
+    ],
+    [
+        "selectwordright"
+    ],
+    [
+        "copy"
+    ],
+    [
+        "gotowordright"
+    ],
+    [
+        "paste"
+    ],
+    " ",
+    [
+        "golinedown"
+    ],
+    [
+        "gotolinestart"
+    ]
+]
+ * 
  * 
  * test data for editor:
 
-abc ujm ddd ujm yhn ol end
-abc ujm ddd ujm yhn ol end
-ujm ddd ujm yhn ol end
-abc ujm ujm ol yhn end
-ujm ol  ujm yhn
+aaa abc ujm ddd ujm yhn ol end
+bbb abc ujm ddd ujm yhn ol end
+ccc ujm ddd ujm yhn ol end
+ddd abc ujm ujm ol yhn end
+eee ujm ol  ujm yhn
 
-abc ujm ddd  ujm yhn ol end
+zzz abc ujm ddd  ujm yhn ol end
 
  */
 
