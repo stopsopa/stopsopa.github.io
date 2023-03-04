@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 
 import { render, createPortal } from "react-dom";
-
-import { HotkeysProvider } from "@blueprintjs/core";
 
 import classnames from "classnames";
 
@@ -45,8 +43,7 @@ function generateDefaultTab(tab) {
  *  https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
  */
 const Main = ({ portal }) => {
-  // const [tabs, setTabs] = useState(["one"]);
-  const [tabs, setTabs] = useState(["one", "two", "three"]);
+  const [tabs, setTabsRaw] = useState([{ tab: "one" }, { tab: "two" }, { tab: "three" }]);
 
   const [tab, setTabRaw] = useState("one");
 
@@ -55,6 +52,28 @@ const Main = ({ portal }) => {
   const [recordOn, setRecordOn] = useState(false);
 
   const [values, setValues] = useState([]);
+
+  function play() {
+    console.log("triggering play action in main component");
+    setRecordOn(false);
+    RecordLog.play();
+  }
+
+  function setTabs(tab, key, value) {
+    setTabsRaw((tabs) => {
+      const copy = [...tabs];
+
+      const found = copy.find((row) => row.tab === tab);
+
+      if (!found) {
+        return copy;
+      }
+
+      found[key] = value;
+
+      return copy;
+    });
+  }
 
   function getValue(tab, field, def) {
     try {
@@ -101,120 +120,123 @@ const Main = ({ portal }) => {
   }
 
   useEffect(() => {
-    const list = tabs.map((tab) => {
+    const list = tabs.map(({ tab }) => {
       return get(tab, generateDefaultTab(tab));
     });
     setValues(list);
+
+    function keydown(event) {
+      // Check if the key combination matches Ctrl+R or Cmd+R
+      if ((event.ctrlKey || event.metaKey) && event.keyCode === 82) {
+        // Prevent the default behavior (refreshing the page)
+        event.preventDefault();
+
+        play();
+      }
+    }
+    document.addEventListener("keydown", keydown);
+
+    return () => {
+      document.removeEventListener("keydown", keydown);
+    };
   }, []);
 
   function setTab(tab) {
     if (onTheRight !== tab) {
       setTabRaw(tab);
     }
+    try {
+      const found = tabs.find((row) => row.tab === tab);
+
+      if (found) {
+        console.log("focus: ", found.editor);
+        found.editor.focus();
+      } else {
+        console.log("no focus");
+      }
+    } catch (e) {
+      console.log(`setTab error: `, e);
+    }
   }
 
   return (
-    <HotkeysProvider>
-      <div
-        className={classnames({
-          single: !Boolean(onTheRight),
-          on_the_right: Boolean(onTheRight),
-        })}
-      >
-        {createPortal(
-          <>
-            <button
-              onClick={() => setRecordOn((x) => !x)}
-              className={classnames("record", {
-                on: recordOn,
-              })}
-            >
-              record
-            </button>
-            <button
-              onClick={() => {
-                setRecordOn(false);
-                RecordLog.play();
-              }}
-            >
-              play
-            </button>
-          </>,
-          portal
-        )}
-
-        <div className="tabs">
-          <div
-            className={classnames({
-              active: tab === "one",
+    <div
+      className={classnames({
+        single: !Boolean(onTheRight),
+        on_the_right: Boolean(onTheRight),
+      })}
+      tabIndex={0}
+    >
+      {createPortal(
+        <>
+          <button
+            onClick={() => setRecordOn((x) => !x)}
+            className={classnames("record", {
+              on: recordOn,
             })}
           >
-            <div onClick={() => setTab("one")}>one</div>
-            <div>
-              <div onClick={() => setOnTheRight((v) => (v === "one" ? false : "one"))}>{onTheRight === "one" ? "◄" : "►"}</div>
-              <div>▤</div>
-            </div>
-          </div>
+            record
+          </button>
+          <button onClick={play}>play</button>
+        </>,
+        portal
+      )}
 
-          <div
-            className={classnames({
-              active: tab === "two",
-            })}
-          >
-            <div onClick={() => setTab("two")}>two</div>
-            <div>
-              <div onClick={() => setOnTheRight((v) => (v === "two" ? false : "two"))}>{onTheRight === "two" ? "◄" : "►"}</div>
-              <div>▤</div>
-            </div>
-          </div>
-
-          <div
-            className={classnames({
-              active: tab === "three",
-            })}
-          >
-            <div onClick={() => setTab("three")}>three</div>
-            <div>
-              <div onClick={() => setOnTheRight((v) => (v === "three" ? false : "three"))}>{onTheRight === "three" ? "◄" : "►"}</div>
-              <div>▤</div>
-            </div>
-          </div>
-        </div>
-        <div className="editors">
-          {tabs.map((tab_) => (
+      <div className="tabs">
+        {tabs.map(({ tab: tab_ }) => {
+          return (
             <div
               key={tab_}
               className={classnames({
                 active: tab === tab_,
-                right: onTheRight === tab_,
-                hidden: tab !== tab_ && onTheRight !== tab_,
               })}
             >
+              <div onClick={() => setTab(tab_)}>{tab_}</div>
               <div>
-                <label>
-                  lang:{" "}
-                  <select value={"javascript"}>
-                    <option value="javascript">javascript</option>
-                  </select>
-                </label>
+                <div onClick={() => setOnTheRight((v) => (v === tab_ ? false : tab_))}>{onTheRight === tab_ ? "◄" : "►"}</div>
+                <div>▤</div>
               </div>
-              <Ace
-                id={tab_}
-                content={(function () {
-                  const data = getValue(tab_, "value", "");
-                  console.log("fetching....", tab_, "value", "", data);
-                  return data;
-                })()}
-                onChange={(data) => {
-                  setValue(tab_, "value", data);
-                }}
-                recordOn={recordOn}
-              />
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
-    </HotkeysProvider>
+      {/* <div>
+          <pre>{JSON.stringify({
+            tab,
+            tabs: tabs.map(({editor, ...rest}) => ({...rest}))
+          }, null, 4)}</pre>
+        </div> */}
+      <div className="editors">
+        {tabs.map(({ tab: tab_ }) => (
+          <div
+            key={tab_}
+            className={classnames({
+              active: tab === tab_,
+              right: onTheRight === tab_,
+              hidden: tab !== tab_ && onTheRight !== tab_,
+            })}
+          >
+            <div>
+              <label>
+                lang:{" "}
+                <select value={"javascript"}>
+                  <option value="javascript">javascript</option>
+                </select>
+              </label>
+            </div>
+            <Ace
+              id={tab_}
+              content={getValue(tab_, "value", "")}
+              onInit={(editor) => setTabs(tab_, "editor", editor)}
+              onChange={(data) => {
+                setValue(tab_, "value", data);
+              }}
+              recordOn={recordOn}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 

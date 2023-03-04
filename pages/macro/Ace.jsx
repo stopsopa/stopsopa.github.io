@@ -6,7 +6,7 @@ import RecordLog from "./RecordLog";
 
 // import "./Ace.css";
 
-export default ({ id, content, onChange, recordOn, lang }) => {
+export default ({ id, content, onChange, onInit, recordOn, lang }) => {
   const refIdMemo = useMemo(() => {
     const id_ = "react-ace-" + id;
 
@@ -93,6 +93,8 @@ export default ({ id, content, onChange, recordOn, lang }) => {
       divRef.current.parentNode.classList.add("mounting");
 
       const editor = ace.edit(div);
+
+      onInit(editor);
 
       refId.current.resolve(editor);
 
@@ -189,6 +191,8 @@ export default ({ id, content, onChange, recordOn, lang }) => {
       window.removeEventListener("resize", refId.current.heightUpdateFunction);
 
       document.removeEventListener("scroll", refId.current.heightUpdateFunction);
+
+      onInit(undefined);
     };
   }, []);
 
