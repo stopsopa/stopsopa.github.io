@@ -64,6 +64,10 @@ case ${_SHELL} in
     ;;
 esac
 
+RED="$(tput setaf 1)"
+GREEN="$(tput setaf 2)"
+RESET="$(tput sgr0)"
+
 EXCLUDE_FILE="${_DIR}/${EXCLUDE_FILE_NAME}"
 
 echo "${EXCLUDE_LIST}" > "${EXCLUDE_FILE}"
@@ -75,13 +79,22 @@ CMD="rsync  -rltzDPv  --delete-after --exclude-from \"/source/${EXCLUDE_FILE_NAM
 
 DOCKER="docker run -i -w \"/source\" -v \"${_DIR}:/source\" -v \"${TARGETDIR}:/target\" ${DOCKER_SYNC_IMAGE} /bin/sh"
 
-if [ "${1}" = "" ]; then
-
-RED=$(tput setaf 1)
-RESET=$(tput sgr0)
-
 EXIST=""
-if [ ! -d "${TARGETDIR}" ]; then
+CANRUN="0"
+if [ -d "${TARGETDIR}" ]; then
+
+CANRUN="1"
+
+EXIST=$(cat <<AAA
+
+${GREEN} directory "${TARGETDIR}" does exist - sd card inserted${RESET}
+
+
+AAA
+);
+
+else
+
 EXIST=$(cat <<AAA
 
 ${RED} directory "${TARGETDIR}" doesnt exist - insert sd card${RESET} 
@@ -89,7 +102,11 @@ ${RED} directory "${TARGETDIR}" doesnt exist - insert sd card${RESET}
 
 AAA
 );
+
 fi
+
+
+if [ "${1}" = "" ]; then
 
 cat <<EEE
 
@@ -107,7 +124,7 @@ ${EXIST}
         echo '${CMDi} -n' | ${DOCKER}
 
         # version without docker
-            /bin/bash rsync.sh --cover; rsync -rtlDzPvi --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/" -n
+            /bin/bash rsync.sh --cover && rsync -rtlDzPvi --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/" -n
 
 /bin/bash rsync.sh --run
     # execute
@@ -115,7 +132,7 @@ ${EXIST}
         echo '${CMD}' | ${DOCKER}
 
         # version without docker
-            /bin/bash rsync.sh --cover; rsync -rtlDzPv --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/"
+            /bin/bash rsync.sh --cover && rsync -rtlDzPv --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/"
 
 EEE
 
@@ -170,6 +187,17 @@ else
     )
   done <<< "${LIST}"
 fi
+
+    if [ "${CANRUN}" = "0" ]; then
+
+        cat <<EEE
+
+    ${RED} returning 1 exit code to stop rsync normally executed after this command ${RESET}
+
+EEE
+
+        exit 1
+    fi
 
     exit 0
 fi
