@@ -23,9 +23,9 @@ jobs:
       - name: run local server (NODE_ENV=production)
         run: |
           /bin/bash ci_server.sh &
-      # - name: servers healthchecks
-      #   run: |
-      #     node .github/healtcheck.js api
+      - name: servers healthchecks
+        run: |
+          node .github/healtcheck.mjs
       # - name: test cli (using routes endpoint)
       #   run: |
       #     /bin/bash console.sh routes
