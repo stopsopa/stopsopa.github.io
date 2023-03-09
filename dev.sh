@@ -50,8 +50,8 @@ function _kill {
 
   ps aux | grep "_${FLAG}" | grep -v grep | awk '{print $2}' | xargs kill
 
-
   kill "${PID1}" 1> /dev/null 2> /dev/null || :
+
   kill "${PID2}" 1> /dev/null 2> /dev/null || :
 }
 
