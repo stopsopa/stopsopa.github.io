@@ -1,6 +1,6 @@
-const generatePort = require("../../pages/portsregistry/generatePort");
+import generatePort from "../../pages/portsregistry/generatePort.js";
 
-const json = require("./generatePort.json");
+import json from "./generatePort.json";
 
 const log = require("inspc");
 

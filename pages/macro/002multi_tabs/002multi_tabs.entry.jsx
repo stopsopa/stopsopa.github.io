@@ -248,7 +248,7 @@ const Main = ({ portal }) => {
           >
             <div>
               <label>
-                lang:{" "}
+                lang:
                 <select value={getValue(tab_, "lang")} onChange={(e) => setValue(tab_, "lang", e.target.value)}>
                   {(window.languages || ["javascript", "look for window.languages"]).map((l) => (
                     <option key={l} value={l}>

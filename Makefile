@@ -12,6 +12,10 @@ testport:
 test:
 	/bin/bash test.sh	
 
+.PHONY: testall
+testall:
+	/bin/bash testall.sh	
+
 
 # prettier
 style_check:
