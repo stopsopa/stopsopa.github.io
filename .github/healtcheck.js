@@ -68,27 +68,25 @@ const th = (msg) => new Error(`healtcheck.js error: ${msg}`);
       throw th(`NODE_API_PORT is undefined`);
     }
 
-    await new Promise(async (resolve, reject) => {
-      const server_front_endpoint = `http://0.0.0.0:${process.env.NODE_API_PORT}/healthcheck`;
+    const server_front_endpoint = `http://0.0.0.0:${process.env.NODE_API_PORT}/healthcheck`;
 
-      logger(`attempt to ping front healthcheck endpoint: ${server_front_endpoint}`);
+    logger(`attempt to ping front healthcheck endpoint: ${server_front_endpoint}`);
 
-      const res = await lightFetch(server_front_endpoint, {
-        timeout: 900,
-      });
-
-      if (res.status !== 200) {
-        throw new Error(`res.status !== 200`);
-      }
-
-      if (res.body !== "ok") {
-        throw new Error(`res.body !== 'ok'`);
-      }
-
-      logger(JSON.stringify(res, null, 4));
-
-      logger(`attempt to ping front healthcheck endpoint: ${server_front_endpoint} success`);
+    const res = await lightFetch(server_front_endpoint, {
+      timeout: 900,
     });
+
+    if (res.status !== 200) {
+      throw new Error(`res.status !== 200`);
+    }
+
+    if (res.body !== "ok") {
+      throw new Error(`res.body !== 'ok'`);
+    }
+
+    logger(JSON.stringify(res, null, 4));
+
+    logger(`attempt to ping front healthcheck endpoint: ${server_front_endpoint} success`);
   } catch (e) {
     logger(`
     

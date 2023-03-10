@@ -1,6 +1,11 @@
 // const { test, expect } = require("@playwright/test");
 import { test, expect } from "@playwright/test";
 
+/**
+ * /bin/bash playwright.sh
+ * PWDEBUG=1 /bin/bash playwright.sh
+ * /bin/bash playwright.sh --target docker
+ */
 test.describe("blueprint", () => {
   test("blueprint", async ({ page, browserName }) => {
     await page.goto(`/pages/macro/002multi_tabs/index.html`);
