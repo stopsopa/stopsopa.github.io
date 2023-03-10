@@ -143,9 +143,9 @@ while (( "${#}" )); do
   shift;
   shift;
 
-#cat <<EOF
-#sed -i "" -E "s/^${_ENVVAR}=\".*\"[[:space:]]*;?[[:space:]]*$(preg_quote "${_TEMPLATE}")/${_ENVVAR}=\"$(dquote "$(preg_quote "${_VALUE}")")\"; $(preg_quote "${_TEMPLATE}")/g" "${FILE}"
-#EOF
+cat <<EOF
+sed -i "" -E "s/^${_ENVVAR}=\".*\"[[:space:]]*;?[[:space:]]*$(preg_quote "${_TEMPLATE}")/${_ENVVAR}=\"$(dquote "$(preg_quote "${_VALUE}")")\"; $(preg_quote "${_TEMPLATE}")/g" "${FILE}"
+EOF
 
   sed -i "" -E "s/^${_ENVVAR}=\".*\"[[:space:]]*;?[[:space:]]*$(preg_quote "${_TEMPLATE}")/${_ENVVAR}=\"$(dquote "$(preg_quote "${_VALUE}")")\"; $(preg_quote "${_TEMPLATE}")/g" "${FILE}"
 
