@@ -1,8 +1,8 @@
-const uniq = require("lodash/uniq");
+import uniq from "lodash/uniq.js";
 
 const reg = /^\d+$/;
 
-module.exports = () => {
+export default () => {
   let list = [0];
 
   const tool = (port) => {

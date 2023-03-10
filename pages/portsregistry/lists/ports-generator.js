@@ -1,15 +1,27 @@
-const path = require("path");
+import fs from "fs";
 
-const fs = require("fs");
+import path from "path";
 
-const gg = require("../generatePort");
+import gg from "../generatePort.js";
+
+import mephux from "./mephux-ports/index.js";
+
+import stoutZero from "./stoutZero_commonly-used-ports/index.js";
+
+import web_mit_edu from "./web_mit_edu/index.js";
+
+import www_iana_org from "./www_iana_org/index.js";
+
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const g = gg();
 
-g.addList(require("./mephux-ports")());
-g.addList(require("./stoutZero_commonly-used-ports")());
-g.addList(require("./web_mit_edu")());
-g.addList(require("./www_iana_org")());
+g.addList(mephux());
+g.addList(stoutZero());
+g.addList(web_mit_edu());
+g.addList(www_iana_org());
 
 const file = path.resolve(__dirname, "ports-generated.json");
 

@@ -1,14 +1,18 @@
-const path = require("path");
+import fs from "fs";
 
-const fs = require("fs");
+import path from "path";
 
-const mkdirp = require("mkdirp");
+import mkdirp from "mkdirp";
 
-const node = require("detect-node");
+import node from "detect-node";
 
-const stringToRegex = require("./stringToRegex");
+import stringToRegex from "./stringToRegex.js";
 
-const env = require("./env");
+import env from "./env.js";
+
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const th = (msg) => new Error(`preprocessor.js error: ${msg}`);
 
@@ -17,7 +21,18 @@ const targets = [path.resolve(__dirname, "..", "public", "preprocessed.js"), pat
 if (!node) {
   throw th(`${__dirname} script should not be ever included in browser code`);
 }
-const result = require("dotenv").config();
+
+const envfile = path.resolve(__dirname, "..", ".env");
+
+if (!fs.existsSync(envfile)) {
+  throw new Error(`File ${envfile} doesn't exist`);
+}
+
+import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+
+const result = dotenv.config({
+  path: envfile,
+});
 
 // example of variable:
 // EXPOSE_EXTRA_ENV_VARIABLES="/(^PUBLIC_|^REACT_APP_|^(PROJECT_NAME|PORT)$)/"

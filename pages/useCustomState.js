@@ -1,6 +1,6 @@
 import React from "react";
 
-import useFirebase from "./firebase/useFirebase";
+import useFirebase from "./firebase/useFirebase.js";
 
 /**
  * This is universal custom state mechanism which at the moment is based on firebase

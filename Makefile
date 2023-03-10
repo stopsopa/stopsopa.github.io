@@ -9,11 +9,19 @@ build:
 testport:
 	/bin/bash testport.sh
 
-fix:
-	yarn style:fix
-
 test:
 	/bin/bash test.sh	
+
+
+# prettier
+style_check:
+	node node_modules/.bin/prettier --config prettier.config.cjs --check .
+
+style_fix:
+	node node_modules/.bin/prettier --config prettier.config.cjs --write .
+
+style_list:
+	node node_modules/.bin/prettier --config prettier.config.cjs --list-different .
 
 
 

@@ -1,4 +1,5 @@
 {
+  "javascript.preferences.importModuleSpecifierEnding": "js", // https://stackoverflow.com/a/61645194
   "search.exclude": {
     ".git/": true,
     ".vscode/": true,

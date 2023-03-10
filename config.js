@@ -1,6 +1,19 @@
-require("./libs/restrict-to-node")(__filename);
+import restricttonode from "./libs/restrict-to-node.js";
 
-const path = require("path");
+import fs from "fs";
+
+import path from "path";
+
+import env from "./libs/dotenv.js";
+
+import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+restricttonode(__filename);
 
 const root = path.resolve(__dirname);
 
@@ -17,18 +30,17 @@ const app = path.resolve(root, "pages");
 
 const override = path.resolve(root, "override");
 
-require("dotenv-up")(
-  {
-    override: false,
-    deep: 3,
-  },
-  false,
-  "config.js"
-);
+const envfile = path.resolve(".", ".env");
 
-const env = require("./libs/dotenv");
+if (!fs.existsSync(envfile)) {
+  throw new Error(`File ${envfile} doesn't exist`);
+}
 
-module.exports = (mode) => ({
+dotenv.config({
+  path: envfile,
+});
+
+export default (mode) => ({
   // just name for this project, it's gonna show up in some places
   name: env("PROJECT_NAME"),
   root,

@@ -4,7 +4,7 @@
  * require('libs/restrict-to-node')(__filename);
  */
 
-module.exports = (file) => {
+export default (file) => {
   if (!file) {
     throw `restrict-to-node: file parameter not specified`;
   }

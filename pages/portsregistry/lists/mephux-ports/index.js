@@ -2,10 +2,10 @@
  * from: https://github.com/mephux/ports.json/blob/master/ports.lists.json
  */
 
-const list = require("./ports.lists.json");
+import list from "./ports.lists.json" assert { type: "json" };
 
-const uniq = require("lodash/uniq");
+import uniq from "lodash/uniq.js";
 
-module.exports = () => {
+export default () => {
   return uniq(Object.keys(list));
 };

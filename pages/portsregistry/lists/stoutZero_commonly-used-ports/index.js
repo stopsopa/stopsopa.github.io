@@ -2,10 +2,10 @@
  * from: https://gist.github.com/stoutZero/15d334dea71a604cade777dee2f7a9e5
  */
 
-const list = require("./commonly-used-ports.json");
+import list from "./commonly-used-ports.json" assert { type: "json" };
 
-const uniq = require("lodash/uniq");
+import uniq from "lodash/uniq.js";
 
-module.exports = () => {
+export default () => {
   return uniq(list.map((o) => o.port));
 };

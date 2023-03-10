@@ -1,18 +1,14 @@
-"use strict";
+import utils from "./libs/utils.js";
 
-const path = require("path");
+import webpack from "webpack";
 
-const utils = require("./libs/utils");
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
-const webpack = require("webpack");
+import configLib from "./config.js";
 
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+import "colors";
 
-const log = require("inspc");
-
-const config = require("./config")(process.env.NODE_ENV);
-
-require("colors");
+const config = configLib(process.env.NODE_ENV);
 
 utils.setup(config);
 
@@ -63,7 +59,7 @@ const after = (NODE_ENV) => {
   };
 };
 
-module.exports = {
+export default {
   mode: "production",
   entry: utils.entries(),
   output: {
@@ -82,13 +78,6 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: config.node_modules,
         use: [
-          {
-            // https://webpack.js.org/guides/build-performance/#persistent-cache
-            loader: "cache-loader",
-            options: {
-              cacheDirectory: path.resolve(config.vardir, "cache-loader"),
-            },
-          },
           {
             loader: "babel-loader",
             options: {

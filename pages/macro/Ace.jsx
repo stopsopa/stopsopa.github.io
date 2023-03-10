@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 
-import waitForAce from "./lib/waitForAce";
+import waitForAce from "./lib/waitForAce.js";
 
-import RecordLog from "./RecordLog";
+import RecordLog from "./RecordLog.js";
 
 // import "./Ace.css";
 

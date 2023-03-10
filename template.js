@@ -1,11 +1,16 @@
 /**
  * It's node.js helper for template.sh
  */
-const path = require("path");
 
-const fs = require("fs");
+import path from "path";
 
-const log = require("inspc");
+import fs from "fs";
+
+import log from "inspc";
+
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const cp = [...process.argv];
 

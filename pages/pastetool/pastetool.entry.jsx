@@ -6,17 +6,17 @@ import log from "inspc";
 
 import classnames from "classnames";
 
-import nget from "nlab/get";
+import nget from "nlab/get.js";
 
-import nset from "nlab/set";
+import nset from "nlab/set.js";
 
-import useCustomState from "../useCustomState";
+import useCustomState from "../useCustomState.js";
 
-import Textarea from "../../components/Textarea";
+import Textarea from "../../components/Textarea.js";
 
 const section = "pastetool";
 
-import isObject from "nlab/isObject";
+import isObject from "nlab/isObject.js";
 
 const Wrapper = ({
   error,

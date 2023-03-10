@@ -1,6 +1,16 @@
-const path = require("path");
+import path from "path";
 
-const express = require("express");
+import fs from "fs";
+
+import express from "express";
+
+import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+
+import serveIndex from "serve-index";
+
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const log = console.log;
 
@@ -14,11 +24,17 @@ function check(val, name) {
   }
 }
 
-require("dotenv").config();
+const env = path.resolve(".", ".env");
+
+if (!fs.existsSync(env)) {
+  throw new Error(`File ${env} doesn't exist`);
+}
+
+dotenv.config({
+  path: env,
+});
 
 check(process.env.NODE_PORT, "NODE_PORT");
-
-const serveIndex = require("serve-index");
 
 const host = "0.0.0.0";
 

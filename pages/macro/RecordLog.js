@@ -1,4 +1,4 @@
-import delay from "nlab/delay";
+import delay from "nlab/delay.js";
 
 /**
  * tool.list()

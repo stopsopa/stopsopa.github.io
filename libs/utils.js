@@ -4,11 +4,11 @@
  * @homepage https://github.com/stopsopa/roderic
  */
 
-"use strict";
+import glob from "glob";
 
-var glob = require("glob");
-var path = require("path");
-require("colors");
+import path from "path";
+
+import "colors";
 
 const th = (msg) => new Error(`utils.js error: ${msg}`);
 
@@ -86,4 +86,4 @@ var utils = {
   },
 };
 
-module.exports = utils;
+export default utils;

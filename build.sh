@@ -1,12 +1,39 @@
 
-if [ ! -f ".env" ]; then
+_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
+case ${_SHELL} in
+  zsh)
+    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+    ;;
+  sh)
+    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+    ;;
+  *)
+    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+    ;;
+esac
 
-    echo "file .env doesn't exist";
+ROOT="${_DIR}"
 
-    exit 1
+set -e
+set -x
+
+if [ ! -f "${ROOT}/.env" ]; then
+  
+  echo "${0} error: file ${ROOT}/.env doesn't exist"
+
+  exit 1
 fi
 
-source ".env";
+source "${ROOT}/.env"
+
+if [ ! -f "${ROOT}/.env.sh" ]; then
+  
+  echo "${0} error: file ${ROOT}/.env doesn't exist"
+
+  exit 1
+fi
+
+source "${ROOT}/.env.sh"
 
 if [ "${PROJECT_NAME}" = "" ]; then
 
@@ -18,13 +45,6 @@ fi
 if [ "${GITSTORAGE_CORE_REPOSITORY}" = "" ]; then
 
     echo "env var GITSTORAGE_CORE_REPOSITORY is not defined";
-
-    exit 1
-fi
-
-if [ "${LOCAL_HOSTS}" = "" ]; then
-
-    echo "env var LOCAL_HOSTS is not defined";
 
     exit 1
 fi
@@ -62,4 +82,4 @@ node node_modules/.bin/webpack
   PROD_SCHEMA "${PROD_SCHEMA}" \
   PROD_HOST "${PROD_HOST}"
 
-yarn style:fix
+make style_fix
