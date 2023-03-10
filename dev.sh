@@ -32,9 +32,9 @@ FLAG="${1}";
 
 source "${_DIR}/.env"
 
-if [ "${NODE_PORT}" = "" ]; then
+if [ "${NODE_API_PORT}" = "" ]; then
 
-  echo "${0} error: NODE_PORT is not defined"
+  echo "${0} error: NODE_API_PORT is not defined"
 
   exit 1;
 fi
@@ -97,7 +97,7 @@ done
 node server.js --flag "3_${FLAG}" 1> >(/bin/bash bash/dlogger.sh " " "server " >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "server " >> "${LOGFILE}") &
 PID2="${!}"  
 
-sleep 3 && node "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_PORT}/index.html 1> >(/bin/bash bash/dlogger.sh " " "opencli" >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "opencli" >> "${LOGFILE}") &
+sleep 3 && node "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_API_PORT}/index.html 1> >(/bin/bash bash/dlogger.sh " " "opencli" >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "opencli" >> "${LOGFILE}") &
 
 if [ "${2}" = "launch_ide" ]; then
 

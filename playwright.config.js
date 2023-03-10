@@ -54,18 +54,18 @@ function envcheck(name, ret) {
 if (envcheck("BASE_URL", true)) {
   console.log(`existing BASE_URL: >${process.env.BASE_URL}<`);
 } else {
-  envcheck("NODE_PROTOCOL");
+  envcheck("NODE_API_PROTOCOL");
 
-  envcheck("NODE_HOST");
+  envcheck("NODE_API_HOST");
 
-  if (!["http", "https"].includes(process.env.NODE_PROTOCOL)) {
-    throw th(`process.env.NODE_PROTOCOL should be http or https`);
+  if (!["http", "https"].includes(process.env.NODE_API_PROTOCOL)) {
+    throw th(`process.env.NODE_API_PROTOCOL should be http or https`);
   }
 
-  process.env.BASE_URL = `${process.env.NODE_PROTOCOL}://${process.env.NODE_HOST}`;
+  process.env.BASE_URL = `${process.env.NODE_API_PROTOCOL}://${process.env.NODE_API_HOST}`;
 
-  if (envcheck("NODE_PORT", true)) {
-    process.env.BASE_URL += `:${process.env.NODE_PORT}`;
+  if (envcheck("NODE_API_PORT", true)) {
+    process.env.BASE_URL += `:${process.env.NODE_API_PORT}`;
   }
 
   console.log(`generated BASE_URL: >${process.env.BASE_URL}<`);

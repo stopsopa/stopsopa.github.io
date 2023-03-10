@@ -266,7 +266,7 @@ Pull contents from any page via API (as JSON/P or raw) and avoid Same-origin pol
 cat <<EOF > .env
 
 PROJECT_NAME="testtools"
-NODE_PORT=7898
+NODE_API_PORT=7898
 LOCAL_HOSTS="test.github.io.local"
 FIREBASE_API_KEY="xxx"
 FIREBASE_AUTH_DOMAIN="github-xxxx.firebaseapp.com"

@@ -64,12 +64,12 @@ const th = (msg) => new Error(`healtcheck.js error: ${msg}`);
       path: env,
     });
 
-    if (typeof process.env.NODE_PORT !== "string") {
-      throw th(`NODE_PORT is undefined`);
+    if (typeof process.env.NODE_API_PORT !== "string") {
+      throw th(`NODE_API_PORT is undefined`);
     }
 
     await new Promise(async (resolve, reject) => {
-      const server_front_endpoint = `http://0.0.0.0:${process.env.NODE_PORT}/healthcheck`;
+      const server_front_endpoint = `http://0.0.0.0:${process.env.NODE_API_PORT}/healthcheck`;
 
       logger(`attempt to ping front healthcheck endpoint: ${server_front_endpoint}`);
 

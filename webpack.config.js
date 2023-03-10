@@ -27,7 +27,7 @@ const after = (NODE_ENV) => {
 
   const c = (...args) => color(...args);
 
-  let port = process.env.NODE_PORT;
+  let port = process.env.NODE_API_PORT;
   port = port == 80 ? "" : `:${port}`;
   function debounce(fn, delay) {
     var timer = null;

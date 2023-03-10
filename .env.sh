@@ -1,7 +1,7 @@
 
-if [ "${NODE_PORT}" = "" ]; then
+if [ "${NODE_API_PORT}" = "" ]; then
 
-  echo "${0} error: NODE_PORT is not defined"
+  echo "${0} error: NODE_API_PORT is not defined"
 
   exit 1;
 fi

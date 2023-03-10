@@ -12,11 +12,11 @@ cd "${_DIR}"
 
 source "${_DIR}/.env"
 
-if [ "${NODE_PORT}" = "" ]; then
+if [ "${NODE_API_PORT}" = "" ]; then
 
-  echo "${0} error: NODE_PORT is not defined"
+  echo "${0} error: NODE_API_PORT is not defined"
 
   exit 1;
 fi
 
-node "${_DIR}/bash/node/is-port-free.js" "0.0.0.0:${NODE_PORT}" --verbose
+node "${_DIR}/bash/node/is-port-free.js" "0.0.0.0:${NODE_API_PORT}" --verbose
