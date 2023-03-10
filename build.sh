@@ -77,6 +77,8 @@ node node_modules/.bin/webpack
 /bin/bash remove-not-changed-builds.sh
 #/bin/bash pages/kubernetes/compress.sh
 
+sed --help
+
 /bin/bash bash/substitute-variables-bash.sh gitstorage-core.sh -- \
   GITSTORAGE_CORE_REPOSITORY "${GITSTORAGE_CORE_REPOSITORY}" \
   PROD_SCHEMA "${PROD_SCHEMA}" \
