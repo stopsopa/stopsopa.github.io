@@ -589,7 +589,15 @@ log.green("defined", "window.manipulation");
       }
     });
 
+    if (!/^https?:\/\//.test(env("GITHUB_SOURCES_PREFIX"))) {
+      throw new Error(`GITHUB_SOURCES_PREFIX env var is not defined or invalid`);
+    }
+
     log.blue("Promise.all loadJs loaded");
+
+    await window.buildHeader();
+
+    await window.buildFooter();
 
     await window.sasync.loaded.mountpermalink();
 
@@ -652,7 +660,7 @@ function trim(string, charlist, direction) {
 
 log.green("defined", "window.trim");
 
-(function () {
+window.buildHeader = async function () {
   document.querySelector("body > header") ||
     (function () {
       var body = document.body;
@@ -662,9 +670,25 @@ log.green("defined", "window.trim");
       if (!body.hasAttribute("nohead")) {
         var header = document.createElement("header");
 
-        header.innerHTML = `
-    <a href="/index.html">stopsopa.github.io</a>
-`;
+        var a = document.createElement("a");
+        a.setAttribute("href", "/index.html");
+
+        var img = document.createElement("img");
+        img.setAttribute("src", `${env("GITHUB_SOURCES_PREFIX")}/actions/workflows/tests.yml/badge.svg`);
+
+        manipulation.prepend(a, img);
+        // <a target="_blank"
+        //   rel="noopener noreferrer"
+        //   href="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/tests.yml/badge.svg"
+        // >
+        //   <img
+        //     src="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/tests.yml/badge.svg"
+        //     alt="example workflow"
+        //     style="max-width: 100%;"
+        //   >
+        // </a>
+
+        manipulation.prepend(header, a);
 
         manipulation.prepend(body, header);
       }
@@ -673,9 +697,9 @@ log.green("defined", "window.trim");
     })();
 
   log.blue("executed NOHEAD", "handling nohead attr");
-})();
+};
 
-(function () {
+window.buildFooter = async function () {
   document.querySelector("body > footer") ||
     (function () {
       var body = document.body;
@@ -685,8 +709,6 @@ log.green("defined", "window.trim");
       if (!body.hasAttribute("nofoot")) {
         var header = document.createElement("footer");
 
-        header.innerHTML = `footer`;
-
         manipulation.append(body, header);
       }
 
@@ -694,7 +716,7 @@ log.green("defined", "window.trim");
     })();
 
   log.blue("executed NOFOOT", "handling nofoot attr");
-})();
+};
 
 // edit & profile ribbons
 (function () {
