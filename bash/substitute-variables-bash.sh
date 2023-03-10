@@ -41,7 +41,6 @@ fi
 #echo "${T}" | sed -E "s/([][|\\{}()^$\\+*\\?\\.\/])/\\\\\1/g"
 
 function preg_quote {
-
   echo "${1}" | sed -E "s/([][|\\{}()^$\\+*\\?\\.\/])/\\\\\1/g"
 }
 
@@ -50,7 +49,7 @@ function quote {
 }
 
 function dquote {
-  echo "${1}" | sed -E 's/\"/\\\\"/g'
+  echo "${1}" | sed -E 's/\"/\\\\"/g' | sed -E 's/\//\\\//g'                
 }
 
 
@@ -143,15 +142,15 @@ while (( "${#}" )); do
   shift;
   shift;
 
-cat <<EOF
+# cat <<EOF
 
 
-sed -i "" -E "s/^${_ENVVAR}=\".*\"[[:space:]]*;?[[:space:]]*$(preg_quote "${_TEMPLATE}")/${_ENVVAR}=\"$(dquote "$(preg_quote "${_VALUE}")")\"; $(preg_quote "${_TEMPLATE}")/g" "${FILE}"
+# sed -i "" -E "s/^${_ENVVAR}=\".*\"[[:space:]]*;?[[:space:]]*$(preg_quote "${_TEMPLATE}")/${_ENVVAR}=\"$(dquote "$(preg_quote "${_VALUE}")")\"; $(preg_quote "${_TEMPLATE}")/g" "${FILE}"
 
 
-EOF
+# EOF
 
-  sed -i "" -E "s/^${_ENVVAR}=\".*\"[[:space:]]*;?[[:space:]]*$(preg_quote "${_TEMPLATE}")/${_ENVVAR}=\"$(dquote "$(preg_quote "${_VALUE}")")\"; $(preg_quote "${_TEMPLATE}")/g" "${FILE}"
+/bin/bash bash/sed.sh -i -E "s/^${_ENVVAR}=\".*\"[[:space:]]*;?[[:space:]]*$(preg_quote "${_TEMPLATE}")/${_ENVVAR}=\"$(dquote "$(preg_quote "${_VALUE}")")\"; $(preg_quote "${_TEMPLATE}")/g" "${FILE}"
 
 #ABC 'xxx' BCD eee
 #  sed -i -E "s/^ABC=\"\"[[:space:]]*# @substitute/ABC=\"xxx\" # @substitute/g" "abc.sh"
