@@ -10,7 +10,9 @@
     "migrations/": true,
     "/dist/": true,
     "/var/": true,
-    "var/": true
+    "var/": true,
+    "**/node_modules": false,
+    "noprettier/": true
   },
   "files.watcherExclude": {
     ".git/": true,

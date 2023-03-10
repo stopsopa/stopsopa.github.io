@@ -101,7 +101,6 @@ sleep 3 && node "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_API
 
 if [ "${2}" = "launch_ide" ]; then
 
-
     function wstorm {
       WSTORMTES="${HOME}/Library/Application Support/JetBrains/Toolbox/scripts/webstorm"
       WSTORMRUN="${HOME}/Library/Application\ Support/JetBrains/Toolbox/scripts/webstorm"

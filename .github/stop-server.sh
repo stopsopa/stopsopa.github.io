@@ -111,6 +111,9 @@ function tryToKill {
 }
 
 echo "attempt to kill server:"
-tryToKill "ps aux | grep node | grep stopsopagithubio | grep -v grep"
+tryToKill "ps aux | grep node | grep "${FLAG}" | grep -v grep"
+
+echo "attempt to kill dev mode:"
+tryToKill "ps aux | grep STOPSOPA_IO_FLAG | grep -v grep"
 
 

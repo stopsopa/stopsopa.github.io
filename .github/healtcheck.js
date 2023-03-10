@@ -53,6 +53,14 @@ const logger = (...args) => console.log(new Date().toISOString(), ...args);
 
 const th = (msg) => new Error(`healtcheck.js error: ${msg}`);
 
+let healthcheckTimeoutMilliseconds = 10 * 1000;
+
+if (/^\d+$/.test(process.env.TIMEOUT)) {
+  healthcheckTimeoutMilliseconds = parseInt(process.env.TIMEOUT, 10);
+} else {
+  throw th(`process.env.TIMEOUT is not defined`);
+}
+
 (async () => {
   try {
     if (!fs.existsSync(env)) {
@@ -68,25 +76,51 @@ const th = (msg) => new Error(`healtcheck.js error: ${msg}`);
       throw th(`NODE_API_PORT is undefined`);
     }
 
+    setTimeout(() => {
+      logger(`healthcheck timeout error after ${healthcheckTimeoutMilliseconds} miliseconds (${parseFloat(healthcheckTimeoutMilliseconds / 1000).toFixed(2)} sec)`);
+
+      process.exit(1);
+    }, healthcheckTimeoutMilliseconds);
+
     const server_front_endpoint = `http://0.0.0.0:${process.env.NODE_API_PORT}/healthcheck`;
 
-    logger(`attempt to ping front healthcheck endpoint: ${server_front_endpoint}`);
+    const promise = Promise.all([
+      new Promise((resolve) => {
+        (async function runner() {
+          try {
+            logger(`attempt to ping front healthcheck endpoint: ${server_front_endpoint}`);
 
-    const res = await lightFetch(server_front_endpoint, {
-      timeout: 900,
-    });
+            const res = await lightFetch(server_front_endpoint, {
+              timeout: 900,
+            });
 
-    if (res.status !== 200) {
-      throw new Error(`res.status !== 200`);
-    }
+            if (res.status !== 200) {
+              throw new Error(`res.status !== 200`);
+            }
 
-    if (res.body !== "ok") {
-      throw new Error(`res.body !== 'ok'`);
-    }
+            if (res.body !== "ok") {
+              throw new Error(`res.body !== 'ok'`);
+            }
 
-    logger(JSON.stringify(res, null, 4));
+            logger(JSON.stringify(res, null, 4));
 
-    logger(`attempt to ping front healthcheck endpoint: ${server_front_endpoint} success`);
+            logger(`attempt to ping front healthcheck endpoint: ${server_front_endpoint} success`);
+
+            resolve();
+          } catch (e) {
+            logger(`attempt to ping front healthcheck endpoint: ${server_front_endpoint} failure ${e}`);
+
+            setTimeout(runner, 1000);
+          }
+        })();
+      }),
+    ]);
+
+    await promise;
+
+    logger(`all tests passed - service healthy`);
+
+    process.exit(0);
   } catch (e) {
     logger(`
     

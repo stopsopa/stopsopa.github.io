@@ -27,7 +27,7 @@ jobs:
           /bin/bash ci_server.sh &
       - name: servers healthchecks
         run: |
-          node .github/healtcheck.js
+          TIMEOUT="2000" node .github/healtcheck.js
       # - name: test cli (using routes endpoint)
       #   run: |
       #     /bin/bash console.sh routes
