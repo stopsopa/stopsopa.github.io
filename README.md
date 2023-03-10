@@ -1,3 +1,5 @@
+![example workflow](https://github.com/stopsopa/stopsopa.github.io/actions/workflows/tests.yml/badge.svg)
+
 # Ace editor objects syntax:
 
     <script type="editor|syntax" data-lang="js" data-w="95%">
