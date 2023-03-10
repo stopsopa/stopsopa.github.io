@@ -19,3 +19,17 @@ if [ "${FLAG}" = "" ]; then
 
   exit 1;
 fi
+
+if [ "${PROD_SCHEMA}" = "" ]; then
+
+  echo "${0} error: PROD_SCHEMA is not defined"
+
+  exit 1;
+fi
+
+if [ "${PROD_HOST}" = "" ]; then
+
+  echo "${0} error: PROD_HOST is not defined"
+
+  exit 1;
+fi
