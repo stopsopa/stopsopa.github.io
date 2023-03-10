@@ -67,7 +67,7 @@ rm -rf "${LOGFILE}"
 
 # /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "1_${FLAG}" \
 # node node_modules/.bin/webpack --watch 2>&1 >> "${LOGFILE}" &
-node node_modules/.bin/webpack --watch 1> >(/bin/bash bash/dlogger.sh " " webpack >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e webpack >> "${LOGFILE}") &
+node node_modules/.bin/webpack --watch --name "webpack_${FLAG}" 1> >(/bin/bash bash/dlogger.sh " " webpack >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e webpack >> "${LOGFILE}") &
 PID1="${!}"  
 
 # WAITINGMESSAGE="hidden modules" # this text shows at the end of webpack build
