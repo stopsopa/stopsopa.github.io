@@ -20,6 +20,7 @@ cat <<EOF
 ${MYSQL_DB_CHANGE_DEFAULT} $S
 ${MYSQL_HOST_PASS} $S
 -v "\$(pwd)/pages:/code/pages" $S
+-v "\$(pwd)/lib:/code/lib" $S
 -v "\$(pwd)/package.json:/code/package.json" $S
 -v "\$(pwd)/node_modules:/code/node_modules" $S
 -v "\$(pwd)/playwright-async.config.js:/code/playwright-async.config.js" $S
