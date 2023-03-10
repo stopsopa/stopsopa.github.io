@@ -37,9 +37,9 @@ jobs:
       # - name: INT TESTS
       #   run: |
       #     TYPE=int /bin/bash jest.sh
-      # - name: E2E TESTS
-      #   run: |
-      #     /bin/bash playwright.sh --target docker
+      - name: E2E TESTS
+        run: |
+          /bin/bash playwright.sh --target docker
       - name: kill servers
         run: |
           /bin/bash .github/stop-server.sh

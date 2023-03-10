@@ -166,7 +166,10 @@ export default ({ id, content, onChange, onInit, recordOn, lang }) => {
         refId.current.update = true;
       });
 
-      window.editors[id] = onChange;
+      window.editors[id] = {
+        onChange,
+        editor,
+      };
 
       refId.current.editor = editor;
 

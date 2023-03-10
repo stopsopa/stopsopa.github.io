@@ -126,12 +126,40 @@ const Main = ({ portal }) => {
     setValues(list);
 
     function keydown(event) {
+      // Check if the key combination matches Ctrl+J or Cmd+J
+      if ((event.ctrlKey || event.metaKey) && event.keyCode === 74) {
+        // Prevent the default behavior (refreshing the page)
+        event.preventDefault();
+
+        console.log("window.editors.one.editor.focus()");
+
+        window.editors.one.editor.focus();
+
+        return;
+      }
+
+      // Check if the key combination matches Ctrl+K or Cmd+K
+      if ((event.ctrlKey || event.metaKey) && event.keyCode === 75) {
+        // Prevent the default behavior (refreshing the page)
+        event.preventDefault();
+
+        alert("ctrl+k");
+
+        return;
+      }
+
       // Check if the key combination matches Ctrl+R or Cmd+R
       if ((event.ctrlKey || event.metaKey) && event.keyCode === 82) {
         // Prevent the default behavior (refreshing the page)
         event.preventDefault();
 
         play();
+      } else {
+        console.log({
+          "event.ctrlKey": event.ctrlKey,
+          "event.metaKey": event.metaKey,
+          "event.keyCode": event.keyCode,
+        });
       }
     }
     document.addEventListener("keydown", keydown);

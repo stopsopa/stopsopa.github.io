@@ -7,6 +7,7 @@ node_modules
 /public/coverage/
 /_git
 yarn-error.log
+/playwright-report/
 
 
 
