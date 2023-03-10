@@ -19,11 +19,7 @@ cat <<EOF
 -w "/code" $S
 ${MYSQL_DB_CHANGE_DEFAULT} $S
 ${MYSQL_HOST_PASS} $S
--v "\$(pwd)/tests:/code/tests" $S
--v "\$(pwd)/src:/code/src" $S
--v "\$(pwd)/app:/code/app" $S
--v "\$(pwd)/lib:/code/lib" $S
--v "\$(pwd)/fixtures:/code/fixtures" $S
+-v "\$(pwd)/pages:/code/pages" $S
 -v "\$(pwd)/package.json:/code/package.json" $S
 -v "\$(pwd)/node_modules:/code/node_modules" $S
 -v "\$(pwd)/playwright-async.config.js:/code/playwright-async.config.js" $S
