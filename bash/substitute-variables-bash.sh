@@ -41,6 +41,7 @@ fi
 #echo "${T}" | sed -E "s/([][|\\{}()^$\\+*\\?\\.\/])/\\\\\1/g"
 
 function preg_quote {
+
   echo "${1}" | sed -E "s/([][|\\{}()^$\\+*\\?\\.\/])/\\\\\1/g"
 }
 
@@ -49,7 +50,14 @@ function quote {
 }
 
 function dquote {
-  echo "${1}" | sed -E 's/\"/\\\\"/g' | sed -E 's/\//\\\//g'                
+  echo "${1}" | sed -E 's/\"/\\\\"/g' | sed -E 's/\//\\\//g'    
+  # second sed here is to prevent error
+  #                                                                                                                                               v -- right here, one more \ is needed to make it work properly on mac and linux
+  # sed  -i '' "-E" "s/^GITSTORAGE_CORE_REPOSITORY=".*"[[:space:]]*;?[[:space:]]*# @substitute/GITSTORAGE_CORE_REPOSITORY="gitgithub\.com:stopsopa\/gitstorage\.git"; # @substitute/g" "gitstorage-core.sh"
+  # sed: 1: "s/^GITSTORAGE_CORE_REPO ...": bad flag in substitute command: 't'   
+  #
+  # where in .env you have
+  # GITSTORAGE_CORE_REPOSITORY="gitgithub.com:stopsopa/gitstorage.git"
 }
 
 
@@ -142,13 +150,13 @@ while (( "${#}" )); do
   shift;
   shift;
 
-# cat <<EOF
+cat <<EOF
 
 
-# sed -i "" -E "s/^${_ENVVAR}=\".*\"[[:space:]]*;?[[:space:]]*$(preg_quote "${_TEMPLATE}")/${_ENVVAR}=\"$(dquote "$(preg_quote "${_VALUE}")")\"; $(preg_quote "${_TEMPLATE}")/g" "${FILE}"
+sed -i "" -E "s/^${_ENVVAR}=\".*\"[[:space:]]*;?[[:space:]]*$(preg_quote "${_TEMPLATE}")/${_ENVVAR}=\"$(dquote "$(preg_quote "${_VALUE}")")\"; $(preg_quote "${_TEMPLATE}")/g" "${FILE}"
 
 
-# EOF
+EOF
 
 /bin/bash bash/sed.sh -i -E "s/^${_ENVVAR}=\".*\"[[:space:]]*;?[[:space:]]*$(preg_quote "${_TEMPLATE}")/${_ENVVAR}=\"$(dquote "$(preg_quote "${_VALUE}")")\"; $(preg_quote "${_TEMPLATE}")/g" "${FILE}"
 
