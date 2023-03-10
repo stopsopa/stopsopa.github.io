@@ -126,7 +126,7 @@ const Main = ({ portal }) => {
     setValues(list);
 
     function keydown(event) {
-      // Check if the key combination matches Ctrl+J or Cmd+J
+      // Check if the key combination matches Ctrl+J or Cmd+J.
       if ((event.ctrlKey || event.metaKey) && event.keyCode === 74) {
         // Prevent the default behavior (refreshing the page)
         event.preventDefault();
