@@ -210,7 +210,23 @@
             <h2>Release F11, F14, F15 function buttons</h2>
             <script type="editor" data-lang="sh">
 
+              use f1, f2, etc. keys as standard function keys when this option is selected, press the fn key to use the special features printed on each key.
+              
               Just go to mac settings -> Keyboard -> "Shortcuts" tab -> go through list and uncheck all undesired assignments to function keys
+              
+              # in Mac Ventura
+                Just go to mac settings -> Keyboard -> button "Keyboard Shortucts..." -> tab "Function Keys" -> ... 
+                
+              # from cli:
+
+                defaults write -g com.apple.keyboard.fnState -bool false
+                defaults write -g com.apple.keyboard.fnState -bool true
+                defaults read -g com.apple.keyboard.fnState
+
+              Keyboard Maestro - płatny
+              https://www.hammerspoon.org/ - lua scripts for automation
+              https://www.alfredapp.com/                              
+                
             </script>
             <h2>Disable dictation</h2>
             <img style="width: 800px" src="https://i.imgur.com/BHEfj2X.png" />
