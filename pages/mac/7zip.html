@@ -23,6 +23,15 @@
 
             # summary
 
+            # simplest
+            
+              7z a -sse -ssc -mhe -pPASSWD test.7z dir
+            
+              will leave source file/directory where it is
+
+            # list
+            7z l test.7z dir
+              
             # archive
             7z a -mx7 -snl -snh -sse -ssc test.7z dir
 
@@ -41,9 +50,6 @@
 
             # unarchive
             7z x -snld test.7z
-
-            # list
-            7z l test.7z dir
 
 
 
