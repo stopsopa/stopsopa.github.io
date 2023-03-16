@@ -20,19 +20,17 @@
           <a href="https://thedeveloperblog.com/7-zip-examples">more examples</a>
           <script type="editor" data-lang="sh">
 
+            # simplest - archive, list & unarchive
 
-            # summary
+            TARGET=first_coint.7z
+            SOURCE=first_coin
+            PASS=pass
+            7z a -sse -ssc -mhe -p${PASS} ${TARGET} ${SOURCE}
+            7z l -p${PASS} ${TARGET}
+            7z x -snld -p${PASS} ${TARGET}
 
-            # simplest
-            
-              7z a -sse -ssc -mhe -pPASSWD test.7z dir
-              7z l -pPASSWD test.7z
-            
-              # will leave source file/directory where it is
+              # above will leave source file/directory where it is
 
-            # list
-            7z l test.7z dir
-              
             # archive
             7z a -mx7 -snl -snh -sse -ssc test.7z dir
 
@@ -48,10 +46,6 @@
             # -mx7 - compression level
             # -ssc - case sensitive mode
             # -mhe - header compression (must provide password if you want to see content)
-
-            # unarchive
-            7z x -snld test.7z
-
 
 
             # bash script test ======= vvvv
