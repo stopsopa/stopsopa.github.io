@@ -4,7 +4,7 @@ import waitForAce from "./lib/waitForAce.js";
 
 import RecordLog from "./RecordLog.js";
 
-// import "./Ace.css";
+import "./Ace.css";
 
 export default ({ id, content, onChange, onInit, recordOn, lang }) => {
   const refIdMemo = useMemo(() => {

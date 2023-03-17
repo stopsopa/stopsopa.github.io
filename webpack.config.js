@@ -8,6 +8,8 @@ import configLib from "./config.js";
 
 import "colors";
 
+import path from "path";
+
 const config = configLib(process.env.NODE_ENV);
 
 utils.setup(config);
@@ -88,7 +90,7 @@ export default {
         ],
       },
       {
-        test: /\.s[ac]ss$/i,
+        test: /\.s?[ac]ss$/i,
         // include: [
         //   config.node_modules,
         //   // path.resolve(__dirname, 'path/to/imported/file/dir'),
@@ -100,7 +102,31 @@ export default {
           // Translates CSS into CommonJS
           "css-loader", // https://webpack.js.org/loaders/css-loader/
           // Compiles Sass to CSS
-          "sass-loader", // https://webpack.js.org/loaders/sass-loader/#root
+          // "postcss-loader", // look into postcss.config.js file
+          {
+            loader: "postcss-loader",
+            // options: {
+            //   postcssOptions: {
+            //     plugins: [
+            //       [
+            //         "postcss-preset-env",
+            //         {
+            //           // Options
+            //         },
+            //       ],
+            //     ],
+            //   },
+            // },
+          },
+          // "sass-loader", // https://webpack.js.org/loaders/sass-loader/#root
+
+          {
+            loader: "sass-loader",
+            // options: {
+            //   // Prefer `dart-sass`
+            //   implementation: sass,
+            // },
+          },
         ],
       },
     ],
@@ -113,6 +139,7 @@ export default {
   },
   plugins: [
     new MiniCssExtractPlugin({
+      // based on: https://www.youtube.com/watch?v=kcQAxsl9N-o&ab_channel=HowToCode
       // Options similar to the same options in webpackOptions.output
       // both options are optional
       filename: `[name].bundle.css`,

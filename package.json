@@ -23,10 +23,11 @@
     "node-vault": "^0.9.22",
     "onchange": "^7.1.0",
     "playwright": "^1.31.2",
+    "postcss-loader": "^7.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "regenerator-runtime": "^0.13.10",
-    "sass-loader": "^13.1.0",
+    "sass-loader": "^13.2.0",
     "serialize-error": "^11.0.0",
     "serve-index": "^1.9.1",
     "uglify-js": "^3.17.4",
@@ -37,7 +38,10 @@
     "crypto-js": "^4.1.1",
     "detect-node": "^2.1.0",
     "open-cli": "^7.1.0",
+    "postcss": "^8.4.21",
+    "postcss-preset-env": "^8.0.1",
     "prettier": "^2.8.4",
+    "sass": "^1.59.3",
     "webpack-cli": "^5.0.1"
   },
   "jest": {

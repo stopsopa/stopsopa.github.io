@@ -1,5 +1,6 @@
 {
   "javascript.preferences.importModuleSpecifierEnding": "js", // https://stackoverflow.com/a/61645194
+  "path-autocomplete.extensionOnImport": true,
   "search.exclude": {
     ".git/": true,
     ".vscode/": true,

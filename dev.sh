@@ -86,7 +86,7 @@ EEE
 
 while [ "$(cat "${LOGFILE}" | grep "${WAITINGMESSAGE}")" = "" ]
 do
-  sleep 0.02;
+  sleep 1;
 
   # echo "================================ waiting for webpack to finish build ================================" >> "${LOGFILE}"
   echo "================================ waiting for webpack to finish build ================================" 1> >(/bin/bash bash/dlogger.sh " " "server " >> "${LOGFILE}") 

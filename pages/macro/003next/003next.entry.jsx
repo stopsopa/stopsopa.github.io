@@ -12,7 +12,7 @@ import { debounce } from "lodash";
 
 import RecordLog from "../RecordLog";
 
-import "./002multi_tabs.scss";
+import "./003next.scss";
 
 const set = debounce((...args) => {
   // console.log("debounce set", ...args);
