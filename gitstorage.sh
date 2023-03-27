@@ -19,7 +19,7 @@ cat << EOF
 /bin/bash ${0} push
 /bin/bash ${0} url
 /bin/bash ${0} move git@xxx:project/source-repo.git git@yyy/target-repo.git
-/bin/bash ${0} init 
+/bin/bash ${0} init
   # generate gitstorage-config.sh for the first time for given directory (dir have to contain .git)
 
 /bin/bash ${0} -c "gitstorage-config.sh"
@@ -79,10 +79,10 @@ GITSTORAGE_CORE_REPOSITORY="git@github.com:stopsopa/gitstorage.git"; # @substitu
 while (( "${#}" )); do
   case "${1}" in
     -r|--remote)
-      if [ "${2}" = "" ]; then                           
+      if [ "${2}" = "" ]; then
         { red "$(basename "${0}") error: --remote value can't be empty"; } 2>&3
-        exit 1;                                         
-      fi                                 
+        exit 1;
+      fi
       REMOTE="${2}";
       shift 2;
       ;;
@@ -312,7 +312,7 @@ EEE
       { green "cloning directory '${CLONED_TARGET_DIR}' for '${xxx}'"; } 2>&3
 
       set -e
-      cd "${CLONED_TARGET_DIR}" 
+      cd "${CLONED_TARGET_DIR}"
       git clone "${GITSTORAGESOURCE}" .
       cd "$_P"
       set +e
@@ -341,7 +341,7 @@ EEE
 
       _T="${index##*::}"
 
-      # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+      # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then
       # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
       if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
 
@@ -396,7 +396,7 @@ EEE
 
           COUNT_ERROR="$((${COUNT_ERROR} + 1))"
 
-          cd "${CLONED_TARGET_DIR}" 
+          cd "${CLONED_TARGET_DIR}"
           git status
           cd "$_P"
       fi
@@ -464,10 +464,10 @@ if [ "${#LIST_FILTERED[@]}" = "0" ]; then
 EEE
 else
 
-  cloneTarget 
+  cloneTarget
 
   set -e
-  cd "${_TARGETGITDIR}" 
+  cd "${_TARGETGITDIR}"
   git clone "${GITSTORAGE_CORE_REPOSITORY}" .
   cd "$_P"
   set +e
@@ -531,7 +531,7 @@ EEE
 
       { red "${_TARGETCONFIG} doesn't exist"; } 2>&3
     fi
-  fi  
+  fi
 
   done
 fi
@@ -796,7 +796,7 @@ if [ "${MODE}" = "restore" ]; then
 
     _TT="${_T}"
 
-    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then
     # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
     if ! [[ ${_T} =~ ^~{0,1}/.* ]]; then
 
@@ -837,7 +837,7 @@ cloneTarget
 if [ "${MODE}" = "isinsync" ]; then
 
   set -e
-  cd "${_TARGETGITDIR}" 
+  cd "${_TARGETGITDIR}"
   git clone "${GITSTORAGESOURCE}" .
   cd "$_P"
   set +e
@@ -848,7 +848,7 @@ if [ "${MODE}" = "isinsync" ]; then
 
     _T="${index##*::}"
 
-    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then
     # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
     if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
 
@@ -910,7 +910,7 @@ fi
 if [ "${MODE}" = "diff" ]; then
 
   set -e
-  cd "${_TARGETGITDIR}" && 
+  cd "${_TARGETGITDIR}" &&
   git clone "${GITSTORAGESOURCE}" .
   cd "$_P"
   set +e
@@ -923,7 +923,7 @@ if [ "${MODE}" = "diff" ]; then
 
     _T="${index##*::}"
 
-    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then
     # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
     if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
 
@@ -982,8 +982,8 @@ if [ "${MODE}" = "diff" ]; then
 
   { red "\n    files are not in sync\n"; } 2>&3
 
-  cd "${_TARGETGITDIR}/${GITSTORAGETARGETDIR}" 
-  
+  cd "${_TARGETGITDIR}/${GITSTORAGETARGETDIR}"
+
   git diff
 
   git status
@@ -1022,7 +1022,7 @@ if [ "${MODE}" = "push" ]; then
   fi
 
   set -e
-  cd "${_TARGETGITDIR}" 
+  cd "${_TARGETGITDIR}"
   git clone "${GITSTORAGESOURCE}" .
   cd "$_P"
   set +e
@@ -1047,7 +1047,7 @@ if [ "${MODE}" = "push" ]; then
 
     _SS="${_S}"
 
-    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then
     # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
     if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
 
@@ -1130,7 +1130,7 @@ if [ "${MODE}" = "pull" ]; then
   fi
 
   set -e
-  cd "${_TARGETGITDIR}" 
+  cd "${_TARGETGITDIR}"
   git clone "${GITSTORAGESOURCE}" .
   cd "$_P"
   set +e
@@ -1143,7 +1143,7 @@ if [ "${MODE}" = "pull" ]; then
 
     _SS="${_S}"
 
-    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then 
+    # we are working here form main directory of each project, so if path is not starting from absolute path (/) or home directory (~) then
     # adjust it to project directory, because each path in GITSTORAGELIST should be declared relative to gitstorage-config.sh
     if ! [[ ${_S} =~ ^~{0,1}/.* ]]; then
 

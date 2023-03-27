@@ -43,7 +43,7 @@ fi
 REMOTE="origin";
 PROD_SCHEMA=https; # @substitute
 PROD_HOST=stopsopa.github.io; # @substitute
-GITSTORAGE_CORE_REPOSITORY=gitgithub.com:stopsopa/gitstorage.git; # @substitute
+GITSTORAGE_CORE_REPOSITORY=git@github.com:stopsopa/gitstorage.git; # @substitute
 
 PROD="${PROD_SCHEMA}://${PROD_HOST}"
 

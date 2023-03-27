@@ -185,12 +185,11 @@
 
           <h2>Kustomize</h2>
           <a href="https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/">https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/</a>
-          
+
           <script type="editor" data-lang="sh">
-          
-          Useful:
-          kustomize build kube/overlays/cluster-prod-on-prem/ | yq e '. | select(.kind == "Service" and .metadata.name =="deploy-api-prod")'
-          
+
+            Useful:
+            kustomize build kube/overlays/cluster-prod-on-prem/ | yq e '. | select(.kind == "Service" and .metadata.name =="deploy-api-prod")'
           </script>
 
           <h2>Secrets</h2>
