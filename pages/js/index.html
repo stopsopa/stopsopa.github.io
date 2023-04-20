@@ -818,6 +818,18 @@
                   ""
                 );
             }
+            
+            function myid(n) {
+
+              let k = '';
+
+              while (k.length < n) {
+
+                k += nanoid(n).replace(/[^a-z0-9]/g, '');
+              }
+
+              return k.substring(0, n);
+            }
           </script>
           <h2>Date months</h2>
           <script type="editor" data-lang="js">
