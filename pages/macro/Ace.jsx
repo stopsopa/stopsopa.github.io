@@ -35,11 +35,11 @@ export default ({ id, content, onChange, onInit, recordOn, lang }) => {
 
   const divRef = useRef(null);
 
-  useEffect(() => {
-    if (typeof refId.current.heightUpdateFunction === "function") {
-      refId.current.heightUpdateFunction();
-    }
-  });
+  // useEffect(() => {
+  //   if (typeof refId.current.heightUpdateFunction === "function") {
+  //     refId.current.heightUpdateFunction();
+  //   }
+  // });
 
   useEffect(() => {
     refId.current.content = content;
