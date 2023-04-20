@@ -56,7 +56,7 @@ const Main = ({ portal }) => {
   const [values, setValues] = useState([]);
 
   function play() {
-    console.log("triggering play action in main component");
+    // console.log("triggering play action in main component");
     setRecordOn(false);
     RecordLog.play();
   }
@@ -157,11 +157,11 @@ const Main = ({ portal }) => {
 
         play();
       } else {
-        console.log({
-          "event.ctrlKey": event.ctrlKey,
-          "event.metaKey": event.metaKey,
-          "event.keyCode": event.keyCode,
-        });
+        // console.log('keydown event', {
+        //   "event.ctrlKey": event.ctrlKey,
+        //   "event.metaKey": event.metaKey,
+        //   "event.keyCode": event.keyCode,
+        // });
       }
     }
     document.addEventListener("keydown", keydown);

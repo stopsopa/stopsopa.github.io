@@ -1,3 +1,7 @@
+/**
+ * Good sources:
+ *    https://www.robinwieruch.de/minimal-react-webpack-babel-setup/
+ */
 import utils from "./libs/utils.js";
 
 import webpack from "webpack";
@@ -82,10 +86,11 @@ export default {
         use: [
           {
             loader: "babel-loader",
-            options: {
-              babelrc: false,
-              presets: ["@babel/preset-env", "@babel/preset-react"],
-            },
+            // options: { // no need for all of that, just create babel.config.cjs and control babel from there
+            // babel.config.cjs is better than .babelrc because you can comment in it
+            //   // babelrc: false,
+            //   presets: ["@babel/preset-env", "@babel/preset-react"],
+            // },
           },
         ],
       },

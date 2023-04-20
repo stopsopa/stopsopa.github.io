@@ -4,9 +4,13 @@ import waitForAce from "./lib/waitForAce.js";
 
 import RecordLog from "./RecordLog.js";
 
+import { debounce } from "lodash";
+
 import "./Ace.css";
 
 export default ({ id, content, onChange, onInit, recordOn, lang }) => {
+  // onChange = debounce(onChange, 5000);
+
   const refIdMemo = useMemo(() => {
     const id_ = "react-ace-" + id;
 

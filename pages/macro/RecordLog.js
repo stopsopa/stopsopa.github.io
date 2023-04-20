@@ -128,14 +128,14 @@ const tool = {
 
     for (let [i, command] of list.entries()) {
       if (window.debug) {
-        log(JSON.stringify(command));
+        // log(JSON.stringify(command));
 
         await delay(3000);
       }
       if (typeof command === "string") {
-        log(`typing >${command}<`);
+        // log(`typing >${command}<`);
         Array.from(command).forEach((letter) => {
-          log(`letter >${letter}<`);
+          // log(`letter >${letter}<`);
           editor.execCommand("insertstring", letter);
         });
       } else {
@@ -143,7 +143,7 @@ const tool = {
           case "_delegation_typefind":
             {
               const { needle, ...rest } = command[1];
-              log("triggering find", JSON.stringify([needle, rest]));
+              // log("triggering find", JSON.stringify([needle, rest]));
 
               // editor.execCommand("find", command[1]);
               editor.find(needle, rest);
@@ -173,10 +173,10 @@ const tool = {
             break;
           case "copy":
             clipboard = editor.getSelectedText();
-            log(`copy >${clipboard}<`);
+            // log(`copy >${clipboard}<`);
             break;
           case "paste":
-            log(`paste >${clipboard}<`, JSON.stringify(tool.list(), null, 4));
+            // log(`paste >${clipboard}<`, JSON.stringify(tool.list(), null, 4));
             if (typeof clipboard === "string" && clipboard.length > 0) {
               editor.execCommand("paste", clipboard);
             }
