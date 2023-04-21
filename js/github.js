@@ -617,14 +617,14 @@ log.green("defined", "window.manipulation");
 
     await window.scrollToHash();
 
-    window.ready = true;
+    window.githubJsReady = true;
 
-    log.blue("DOMContentLoaded", "window.doace [triggered in github.js] -> window.ready = true defined (see snippet how to handle it next to this log)");
+    log.blue("DOMContentLoaded", "window.doace [triggered in github.js] -> window.githubJsReady = true defined (see snippet how to handle it next to this log)");
 
     // (async function () {
     //   await new Promise((resolve) => {
     //     (function repeat() {
-    //       if (window.ready) {
+    //       if (window.githubJsReady) {
     //         resolve();
     //       } else {
     //         setTimeout(repeat, 50);

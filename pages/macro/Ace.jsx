@@ -8,7 +8,38 @@ import { debounce } from "lodash";
 
 import "./Ace.css";
 
-export default ({ id, content, onChange, onInit, recordOn, lang }) => {
+// https://github.com/ajaxorg/ace/blob/v1.15.3/src/ext/modelist.js#L44
+export const languages = [
+  "javascript",
+  "python",
+  "typescript",
+  "json",
+  "json5",
+  "yaml",
+  "less",
+  "scss",
+  "lua",
+  "rust",
+  "markdown",
+  "sql",
+  "mysql",
+  "sqlserver",
+  "xml",
+  "html",
+  "svg",
+  "java",
+  "sh",
+  "csharp",
+  "css",
+  "dockerfile",
+  "golang",
+  "groovy",
+  "php",
+];
+
+languages.sort();
+
+export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
   // onChange = debounce(onChange, 5000);
 
   const refIdMemo = useMemo(() => {
@@ -79,6 +110,21 @@ export default ({ id, content, onChange, onInit, recordOn, lang }) => {
       delete refId.current.lang;
     });
   }, [refId, lang]);
+
+  useEffect(() => {
+    refId.current.wrap = wrap;
+    refId.current.promise.then((editor) => {
+      if (typeof refId.current.wrap !== "boolean") {
+        return;
+      }
+
+      const session = editor.getSession();
+
+      session.setUseWrapMode(refId.current.wrap);
+
+      delete refId.current.wrap;
+    });
+  }, [refId, wrap]);
 
   useEffect(() => {
     (async function () {

@@ -6,7 +6,7 @@ import classnames from "classnames";
 
 import { set as setraw, get } from "nlab/lcstorage";
 
-import Ace from "../Ace.jsx";
+import Ace, { languages } from "../Ace.jsx";
 
 import { debounce } from "lodash";
 
@@ -252,18 +252,29 @@ const Main = ({ portal }) => {
               <label>
                 lang:
                 <select value={getValue(tab_, "lang")} onChange={(e) => setValue(tab_, "lang", e.target.value)}>
-                  {(window.languages || ["javascript", "look for window.languages"]).map((l) => (
+                  {languages.map((l) => (
                     <option key={l} value={l}>
                       {l}
                     </option>
                   ))}
                 </select>
               </label>
+              <label>
+                wrap:
+                <input
+                  type="checkbox"
+                  checked={Boolean(getValue(tab_, "wrap"))}
+                  onChange={(e) => {
+                    setValue(tab_, "wrap", e.target.checked);
+                  }}
+                />
+              </label>
             </div>
             <Ace
               id={tab_}
               content={getValue(tab_, "value", "")}
               lang={getValue(tab_, "lang", "")}
+              wrap={Boolean(getValue(tab_, "wrap", false))}
               onInit={(editor) => setTabs(tab_, "editor", editor)}
               onChange={(data) => {
                 setValue(tab_, "value", data);
@@ -280,7 +291,7 @@ const Main = ({ portal }) => {
 (async function () {
   await new Promise((resolve) => {
     (function repeat() {
-      if (window.ready) {
+      if (window.githubJsReady) {
         resolve();
       } else {
         setTimeout(repeat, 50);
