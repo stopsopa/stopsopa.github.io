@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 
+import isObject from "nlab/isObject.js";
+
 import waitForAce from "./lib/waitForAce.js";
 
 import RecordLog from "./RecordLog.js";
@@ -36,6 +38,39 @@ export const languages = [
 ];
 
 languages.sort();
+
+export const bringFocus = (tab, label) => {
+  const found = Object.keys(window.editors).find((t) => t === tab);
+
+  if (found) {
+    try {
+      // console.log(`bring focus [tab >${tab}< ${label}]: `, window.editors[tab].editor);
+      window.editors[tab].editor.focus();
+    } catch (e) {
+      console.log(`bring focus [tab >${tab}< ${label}] error: `, e);
+    }
+  } else {
+    console.log(`bring focus [tab >${tab}< ${label}]: not found tab`);
+  }
+};
+
+export const pokeEditorsToRerenderBecauseSometimesTheyStuck = (fn) => {
+  window.requestAnimationFrame(() => {
+    if (isObject(window.editors)) {
+      Object.keys(window.editors).forEach((key) => {
+        // console.log(`pokeEditorsToRerenderBecauseSometimesTheyStuck process >${key}<`);
+        try {
+          window.editors[key].editor.resize();
+        } catch (e) {
+          console.log(`pokeEditorsToRerenderBecauseSometimesTheyStuck key >${key}< error: `, e);
+        }
+      });
+    } else {
+      console.log(`pokeEditorsToRerenderBecauseSometimesTheyStuck else`);
+    }
+    typeof fn === "function" && fn();
+  });
+};
 
 export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
   // onChange = debounce(onChange, 5000);
@@ -213,13 +248,13 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
       refId.current.update = true;
 
       editor.on("focus", function () {
-        log("focus");
+        // log("focus");
         refId.current.update = false;
         RecordLog.setFocusedEditor(editor);
       });
 
       editor.on("blur", function () {
-        log("blur");
+        // log("blur");
         refId.current.update = true;
       });
 

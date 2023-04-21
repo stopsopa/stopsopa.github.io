@@ -6,7 +6,7 @@ import classnames from "classnames";
 
 import { set as setraw, get } from "nlab/lcstorage";
 
-import Ace, { languages } from "../Ace.jsx";
+import Ace, { languages, bringFocus, pokeEditorsToRerenderBecauseSometimesTheyStuck } from "../Ace.jsx";
 
 import { debounce } from "lodash";
 
@@ -14,33 +14,14 @@ import RecordLog from "../RecordLog";
 
 import "./002multi_tabs.scss";
 
-import isObject from "nlab/isObject.js";
-
 const set = debounce((...args) => {
   // console.log("debounce set", ...args);
   setraw(...args);
 }, 50);
 
-function pokeEditorsToRerenderBecauseSometimesTheyStuck(fn) {
-  window.requestAnimationFrame(() => {
-    if (isObject(window.editors)) {
-      Object.keys(window.editors).forEach((key) => {
-        // console.log(`pokeEditorsToRerenderBecauseSometimesTheyStuck process >${key}<`);
-        try {
-          window.editors[key].editor.resize();
-        } catch (e) {
-          console.log(`pokeEditorsToRerenderBecauseSometimesTheyStuck key >${key}< error: `, e);
-        }
-      });
-    } else {
-      // console.log(`pokeEditorsToRerenderBecauseSometimesTheyStuck else`);
-    }
-    (typeof fn === 'function') && fn();
-  });
-}
-
 const initialStateTab = {
   lang: "javascript",
+  wrap: false,
   value: "",
 };
 function generateDefaultTab(tab) {
@@ -53,6 +34,9 @@ function generateDefaultTab(tab) {
  *  https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
  */
 const Main = ({ portal }) => {
+  // tab key [string]
+  // generateDefaultTab
+  // editor instance of ace
   const [tabs, setTabsRaw] = useState([{ tab: "one" }, { tab: "two" }, { tab: "three" }]);
 
   const [tab, setTabRaw] = useState("one");
@@ -183,21 +167,17 @@ const Main = ({ portal }) => {
     if (onTheRight !== tab) {
       setTabRaw(tab);
     }
-    pokeEditorsToRerenderBecauseSometimesTheyStuck(() => {
-      try {
-        const found = tabs.find((row) => row.tab === tab);
-  
-        if (found) {
-          console.log("focus: ", found.editor);
-          found.editor.focus();
-        } else {
-          console.log("no focus");
-        }
-      } catch (e) {
-        console.log(`setTab error: `, e);
-      }
-    });
   }
+
+  useEffect(() => {
+    if (tab) {
+      pokeEditorsToRerenderBecauseSometimesTheyStuck(() => {
+        if (onTheRight === false) {
+          bringFocus(tab, '!onTheRight');
+        }
+      }); // forcus for every change of tab -> on every click of tab
+    }
+  }, [tab]);
 
   return (
     <div
@@ -220,7 +200,6 @@ const Main = ({ portal }) => {
           <button onClick={play} title="(cmd|ctrl)+r">
             play
           </button>
-          <button onClick={() => window.editors.two.editor.focus()}>focus</button>
         </>,
         portal
       )}
@@ -231,10 +210,19 @@ const Main = ({ portal }) => {
             <div
               key={tab_}
               className={classnames({
-                active: tab === tab_,
+                active: tab_ === tab,
               })}
             >
-              <div onClick={() => setTab(tab_)}>{tab_}</div>
+              <div
+                onClick={() => {
+                  setTab(tab_);
+                  if (onTheRight !== false) {
+                    bringFocus(tab_, 'onTheRight');
+                  }
+                }}
+              >
+                {tab_}
+              </div>
               <div>
                 <div onClick={() => setOnTheRight((v) => (v === tab_ ? false : tab_))}>{onTheRight === tab_ ? "◄" : "►"}</div>
                 <div>▤</div>
@@ -286,7 +274,13 @@ const Main = ({ portal }) => {
               content={getValue(tab_, "value", "")}
               lang={getValue(tab_, "lang", "")}
               wrap={Boolean(getValue(tab_, "wrap", false))}
-              onInit={(editor) => setTabs(tab_, "editor", editor)}
+              onInit={(editor) => {
+                console.log(`editor mounted: `, tab_);
+                setTabs(tab_, "editor", editor);
+                if (tab_ === tab) {
+                  bringFocus(tab); // focus on first load of all tabs
+                }
+              }}
               onChange={(data) => {
                 setValue(tab_, "value", data);
               }}
