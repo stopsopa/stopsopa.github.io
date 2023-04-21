@@ -21,7 +21,7 @@ const set = debounce((...args) => {
   setraw(...args);
 }, 50);
 
-function pokeEditorsToRerenderBecauseSometimesTheyStuck() {
+function pokeEditorsToRerenderBecauseSometimesTheyStuck(fn) {
   window.requestAnimationFrame(() => {
     if (isObject(window.editors)) {
       Object.keys(window.editors).forEach((key) => {
@@ -35,6 +35,7 @@ function pokeEditorsToRerenderBecauseSometimesTheyStuck() {
     } else {
       // console.log(`pokeEditorsToRerenderBecauseSometimesTheyStuck else`);
     }
+    (typeof fn === 'function') && fn();
   });
 }
 
@@ -182,19 +183,20 @@ const Main = ({ portal }) => {
     if (onTheRight !== tab) {
       setTabRaw(tab);
     }
-    try {
-      const found = tabs.find((row) => row.tab === tab);
-
-      if (found) {
-        console.log("focus: ", found.editor);
-        found.editor.focus();
-      } else {
-        console.log("no focus");
+    pokeEditorsToRerenderBecauseSometimesTheyStuck(() => {
+      try {
+        const found = tabs.find((row) => row.tab === tab);
+  
+        if (found) {
+          console.log("focus: ", found.editor);
+          found.editor.focus();
+        } else {
+          console.log("no focus");
+        }
+      } catch (e) {
+        console.log(`setTab error: `, e);
       }
-    } catch (e) {
-      console.log(`setTab error: `, e);
-    }
-    pokeEditorsToRerenderBecauseSometimesTheyStuck();
+    });
   }
 
   return (
@@ -218,6 +220,7 @@ const Main = ({ portal }) => {
           <button onClick={play} title="(cmd|ctrl)+r">
             play
           </button>
+          <button onClick={() => window.editors.two.editor.focus()}>focus</button>
         </>,
         portal
       )}
