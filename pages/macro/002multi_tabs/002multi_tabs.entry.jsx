@@ -47,6 +47,12 @@ const Main = ({ portal }) => {
 
   const [values, setValues] = useState([]);
 
+  function setTab(tab) {
+    if (onTheRight !== tab) {
+      setTabRaw(tab);
+    }
+  }
+
   function play() {
     // console.log("triggering play action in main component");
     setRecordOn(false);
@@ -162,12 +168,6 @@ const Main = ({ portal }) => {
       document.removeEventListener("keydown", keydown);
     };
   }, []);
-
-  function setTab(tab) {
-    if (onTheRight !== tab) {
-      setTabRaw(tab);
-    }
-  }
 
   useEffect(() => {
     if (tab) {
