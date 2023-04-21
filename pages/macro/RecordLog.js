@@ -116,7 +116,7 @@ const tool = {
     tool.injectList([]); // use injectList because I don't wan't to be treeshaken
     stopAdding = false;
   },
-  focusedEditor: (ed) => (editor = ed),
+  setFocusedEditor: (ed) => (editor = ed),
   position: (pos) => (prevPos = pos),
   play: async () => {
     stopAdding = true;

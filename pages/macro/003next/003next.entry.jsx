@@ -19,20 +19,9 @@ const set = debounce((...args) => {
   setraw(...args);
 }, 50);
 
-function ed(id) {
-  const instance = window.editors[id];
-
-  if (typeof instance === "undefined") {
-    throw new Error(`ace editor, couldn't find instance >${id}<`);
-  }
-
-  return instance;
-}
-
-window.ed = ed;
-
 const initialStateTab = {
   lang: "javascript",
+  wrap: false,
   value: "",
 };
 function generateDefaultTab(tab) {
@@ -87,11 +76,7 @@ const Main = ({ portal }) => {
         found = generateDefaultTab(tab);
       }
 
-      if (field) {
-        return found[field] || def;
-      } else {
-        return field || def;
-      }
+      return found[field] || def;
     } catch (e) {
       return def;
     }

@@ -4,8 +4,6 @@ import waitForAce from "./lib/waitForAce.js";
 
 import RecordLog from "./RecordLog.js";
 
-import { debounce } from "lodash";
-
 import "./Ace.css";
 
 // https://github.com/ajaxorg/ace/blob/v1.15.3/src/ext/modelist.js#L44
@@ -68,6 +66,8 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
 
   const log = refId.current.log;
 
+  // log("=============render", `>${content.substring(0, 100)}...<`, typeof content, content.length);
+
   const divRef = useRef(null);
 
   // useEffect(() => {
@@ -78,7 +78,11 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
 
   useEffect(() => {
     refId.current.content = content;
+    // log("=============refId.current.content = content", `>${content.substring(0, 100)}...<`, typeof content, content.length);
     refId.current.promise.then((editor) => {
+      // if (refId?.current?.content) {
+      //   log("=============then", `>${refId.current.content.substring(0, 100)}...<`, typeof refId.current.content, refId.current.content.length);
+      // }
       if (typeof refId.current.content !== "string") {
         return;
       }
@@ -88,6 +92,8 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
       }
 
       const edContent = editor.getValue();
+      // log("=============edContent", `>${edContent.substring(0, 100)}...<`, `>${refId.current.content.substring(0, 100)}...<`, typeof refId.current.content, refId.current.content.length);
+
       if (edContent !== refId.current.content) {
         editor.setValue(refId.current.content + "", -1);
 
@@ -130,8 +136,6 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
     (async function () {
       const div = divRef.current;
 
-      div.innerText = "Loading...";
-
       divRef.current.setAttribute("data-record", "0");
 
       await waitForAce();
@@ -159,7 +163,10 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
       editor.setShowInvisibles(true);
 
       if (typeof content === "string") {
-        editor.setValue(content);
+        const tmp = refId?.current?.content || content;
+        // log("=============init set", `>${tmp.substring(0, 100)}...<`, typeof tmp, tmp.length);
+        editor.setValue(tmp);
+        delete refId?.current?.content;
       }
 
       editor.clearSelection();
@@ -208,13 +215,18 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
       editor.on("focus", function () {
         log("focus");
         refId.current.update = false;
-        RecordLog.focusedEditor(editor);
+        RecordLog.setFocusedEditor(editor);
       });
 
       editor.on("blur", function () {
         log("blur");
         refId.current.update = true;
       });
+
+      // https://ajaxorg.github.io/ace-api-docs/classes/Ace.Editor.html#on
+      // 'input change changeSelectionStyle changeSession copy paste mousewheel click'.split(' ').forEach(name => editor.on(name, function () {
+      //   log(`event ${name}`);
+      // }))
 
       window.editors[id] = {
         onChange,
@@ -246,6 +258,8 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
       document.removeEventListener("scroll", refId.current.heightUpdateFunction);
 
       onInit(undefined);
+
+      delete window.editors[id];
     };
   }, []);
 

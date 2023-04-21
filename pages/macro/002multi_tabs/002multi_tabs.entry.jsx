@@ -14,22 +14,29 @@ import RecordLog from "../RecordLog";
 
 import "./002multi_tabs.scss";
 
+import isObject from "nlab/isObject.js";
+
 const set = debounce((...args) => {
   // console.log("debounce set", ...args);
   setraw(...args);
 }, 50);
 
-function ed(id) {
-  const instance = window.editors[id];
-
-  if (typeof instance === "undefined") {
-    throw new Error(`ace editor, couldn't find instance >${id}<`);
-  }
-
-  return instance;
+function pokeEditorsToRerenderBecauseSometimesTheyStuck() {
+  window.requestAnimationFrame(() => {
+    if (isObject(window.editors)) {
+      Object.keys(window.editors).forEach((key) => {
+        // console.log(`pokeEditorsToRerenderBecauseSometimesTheyStuck process >${key}<`);
+        try {
+          window.editors[key].editor.resize();
+        } catch (e) {
+          console.log(`pokeEditorsToRerenderBecauseSometimesTheyStuck key >${key}< error: `, e);
+        }
+      });
+    } else {
+      // console.log(`pokeEditorsToRerenderBecauseSometimesTheyStuck else`);
+    }
+  });
 }
-
-window.ed = ed;
 
 const initialStateTab = {
   lang: "javascript",
@@ -187,6 +194,7 @@ const Main = ({ portal }) => {
     } catch (e) {
       console.log(`setTab error: `, e);
     }
+    pokeEditorsToRerenderBecauseSometimesTheyStuck();
   }
 
   return (
