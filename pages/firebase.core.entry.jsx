@@ -1,19 +1,17 @@
 // Firebase App (the core Firebase SDK) is always required and must be listed first
 import { initializeApp } from "firebase/app";
 
-import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut, getIdToken } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut, getIdToken, onAuthStateChanged } from "firebase/auth";
 
 import { getDatabase, ref, child, onValue, push, update, remove, set } from "firebase/database";
 
-import "regenerator-runtime/runtime.js";
-
-import log from "inspc";
+// import "regenerator-runtime/runtime.js";
 
 let promise;
 
-window.fire = () => {
-  if (!promise) {
-    promise = new Promise((resolve) => {
+window.firebaseCoreEntry = () => {
+  function rePromise() {
+    return (promise = new Promise((resolve) => {
       let inter = setInterval(() => {
         if (typeof window.env === "function") {
           clearInterval(inter);
@@ -58,6 +56,7 @@ window.fire = () => {
 
           resolve({
             firebaseApp,
+            rePromise,
             auth: {
               getAuth,
               signInWithPopup,
@@ -65,6 +64,7 @@ window.fire = () => {
               signInWithCredential,
               signOut,
               getIdToken,
+              onAuthStateChanged,
             },
             database: {
               getDatabase,
@@ -78,10 +78,12 @@ window.fire = () => {
             },
           });
         }
-
-        log("firebase promise lib: waiting for env to load");
       }, 300);
-    });
+    }));
+  }
+
+  if (!promise) {
+    rePromise();
   }
 
   return promise;

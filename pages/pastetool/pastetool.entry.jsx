@@ -4,19 +4,11 @@ import { render } from "react-dom";
 
 import log from "inspc";
 
-import classnames from "classnames";
-
-import nget from "nlab/get.js";
-
-import nset from "nlab/set.js";
-
 import useCustomState from "../useCustomState.js";
 
 import Textarea from "../../components/Textarea.js";
 
 const section = "pastetool";
-
-import isObject from "nlab/isObject.js";
 
 const Wrapper = ({
   error,
@@ -52,15 +44,65 @@ const Wrapper = ({
   </div>
 );
 
+function unique(pattern) {
+  // node.js require('crypto').randomBytes(16).toString('hex');
+  pattern || (pattern = "xyxyxy");
+  return pattern.replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 const Main = () => {
   const [list, setList] = useState(false);
 
-  const { error, id, set, get, del, push } = useCustomState({
+  const { error, id, set, get, del, push, reCreateSession, signOut } = useCustomState({
     section,
   });
 
-  const refreshList = async function () {
+  async function testPush() {
+    await push({
+      key: `list`,
+      data: {
+        mime: "string",
+        data: "example data",
+      },
+    });
+
+    await refreshList();
+  }
+
+  async function testSet() {
+    await set({
+      key: ["list", "testdata_remove_later"],
+      data: {
+        mime: "string",
+        data: `test-data_remove later ${unique()}`,
+      },
+    });
+
+    await refreshList();
+  }
+
+  async function testGet() {
+    const data = await get("testdata_remove_later");
+
+    console.log("data: ", data);
+
+    await refreshList();
+  }
+
+  const refreshList = async function (nomore) {
     let list = await get(`list`);
+
+    if (!list && !nomore) {
+      await testSet();
+
+      location.href = location.href;
+    }
+
+    console.log("list", list);
 
     setList(list);
   };
@@ -161,50 +203,61 @@ const Main = () => {
     return <div>Loading stored data...</div>;
   }
 
-  return (function (list) {
-    list.reverse();
+  return (
+    <>
+      <button onClick={signOut}>signOut</button>
+      <button onClick={reCreateSession}>reCreateSession</button>
+      <button onClick={refreshList}>refreshList</button>
+      <button onClick={testSet}>testSet</button>
+      <button onClick={testGet}>testGet</button>
+      <button onClick={testPush}>testPush</button>
+      <hr />
+      {(function (list) {
+        list.reverse();
 
-    return list.map(([key, { data, mime }]) => {
-      if (mime === "string") {
-        return (
-          <Wrapper
-            {...{
-              error,
-              id,
-              set,
-              get,
-              del,
-              push,
-              refreshList,
-              key,
-              ckey: key,
-            }}
-          >
-            <Textarea value={data || ""} onClick={(e) => e.target.select()} />
-          </Wrapper>
-        );
-      }
-      if (mime === "img") {
-        return (
-          <Wrapper
-            {...{
-              error,
-              id,
-              set,
-              get,
-              del,
-              push,
-              refreshList,
-              key,
-              ckey: key,
-            }}
-          >
-            <img src={data} />
-          </Wrapper>
-        );
-      }
-    });
-  })(Object.entries(list));
+        return list.map(([key, { data, mime }]) => {
+          if (mime === "string") {
+            return (
+              <Wrapper
+                {...{
+                  error,
+                  id,
+                  set,
+                  get,
+                  del,
+                  push,
+                  refreshList,
+                  key,
+                  ckey: key,
+                }}
+              >
+                <Textarea value={data || ""} onClick={(e) => e.target.select()} />
+              </Wrapper>
+            );
+          }
+          if (mime === "img") {
+            return (
+              <Wrapper
+                {...{
+                  error,
+                  id,
+                  set,
+                  get,
+                  del,
+                  push,
+                  refreshList,
+                  key,
+                  ckey: key,
+                }}
+              >
+                <img src={data} />
+              </Wrapper>
+            );
+          }
+        });
+      })(Object.entries(list))}
+    </>
+  );
 };
 
 render(<Main />, document.getElementById("app"));

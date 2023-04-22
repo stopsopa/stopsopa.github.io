@@ -2,12 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { render } from "react-dom";
 
-import log from "inspc";
-
-import classnames from "classnames";
-
-import nget from "nlab/get";
-
 import nset from "nlab/set";
 
 import useCustomState from "../useCustomState";
@@ -16,7 +10,7 @@ const section = "portsregistry";
 
 import isObject from "nlab/isObject";
 
-const generatePort = require("./generatePort");
+import generatePort from "./generatePort.js";
 
 const generate = generatePort();
 

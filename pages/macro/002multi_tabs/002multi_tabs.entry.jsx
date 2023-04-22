@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 
-import { render, createPortal } from "react-dom";
+import { render } from "react-dom";
 
 import classnames from "classnames";
 
@@ -33,7 +33,7 @@ function generateDefaultTab(tab) {
 /**
  *  https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
  */
-const Main = ({ portal }) => {
+const Main = () => {
   // tab key [string]
   // generateDefaultTab
   // editor instance of ace
@@ -173,121 +173,122 @@ const Main = ({ portal }) => {
     if (tab) {
       pokeEditorsToRerenderBecauseSometimesTheyStuck(() => {
         if (onTheRight === false) {
-          bringFocus(tab, '!onTheRight');
+          bringFocus(tab, "!onTheRight");
         }
       }); // forcus for every change of tab -> on every click of tab
     }
   }, [tab]);
 
   return (
-    <div
-      className={classnames({
-        single: !Boolean(onTheRight),
-        on_the_right: Boolean(onTheRight),
-      })}
-      tabIndex={0}
-    >
-      {createPortal(
-        <>
-          <button
-            onClick={() => setRecordOn((x) => !x)}
-            className={classnames("record", {
-              on: recordOn,
-            })}
-          >
-            record
-          </button>
-          <button onClick={play} title="(cmd|ctrl)+r">
-            play
-          </button>
-        </>,
-        portal
-      )}
-
-      <div className="tabs">
-        {tabs.map(({ tab: tab_ }) => {
-          return (
-            <div
-              key={tab_}
-              className={classnames({
-                active: tab_ === tab,
+    <div className="acelayout">
+      <div
+        className={classnames({
+          single: !Boolean(onTheRight),
+          on_the_right: Boolean(onTheRight),
+        })}
+        tabIndex={0}
+      >
+        {
+          <div className="portal">
+            <button
+              onClick={() => setRecordOn((x) => !x)}
+              className={classnames("record", {
+                on: recordOn,
               })}
             >
+              record
+            </button>
+            <button onClick={play} title="(cmd|ctrl)+r">
+              play
+            </button>
+          </div>
+        }
+
+        <div className="tabs">
+          {tabs.map(({ tab: tab_ }) => {
+            return (
               <div
-                onClick={() => {
-                  setTab(tab_);
-                  if (onTheRight !== false) {
-                    bringFocus(tab_, 'onTheRight');
-                  }
-                }}
+                key={tab_}
+                className={classnames({
+                  active: tab_ === tab,
+                })}
               >
-                {tab_}
+                <div
+                  onClick={() => {
+                    setTab(tab_);
+                    if (onTheRight !== false) {
+                      bringFocus(tab_, "onTheRight");
+                    }
+                  }}
+                >
+                  {tab_}
+                </div>
+                <div>
+                  <div onClick={() => setOnTheRight((v) => (v === tab_ ? false : tab_))}>{onTheRight === tab_ ? "◄" : "►"}</div>
+                  <div>▤</div>
+                </div>
               </div>
-              <div>
-                <div onClick={() => setOnTheRight((v) => (v === tab_ ? false : tab_))}>{onTheRight === tab_ ? "◄" : "►"}</div>
-                <div>▤</div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      {/* <div>
+            );
+          })}
+        </div>
+        {/* <div>
           <pre>{JSON.stringify({
             tab,
             tabs: tabs.map(({editor, ...rest}) => ({...rest}))
           }, null, 4)}</pre>
         </div> */}
-      <div className="editors">
-        {tabs.map(({ tab: tab_ }) => (
-          <div
-            key={tab_}
-            className={classnames({
-              active: tab === tab_,
-              right: onTheRight === tab_,
-              hidden: tab !== tab_ && onTheRight !== tab_,
-            })}
-          >
-            <div>
-              <label>
-                lang:
-                <select value={getValue(tab_, "lang")} onChange={(e) => setValue(tab_, "lang", e.target.value)}>
-                  {languages.map((l) => (
-                    <option key={l} value={l}>
-                      {l}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                wrap:
-                <input
-                  type="checkbox"
-                  checked={Boolean(getValue(tab_, "wrap"))}
-                  onChange={(e) => {
-                    setValue(tab_, "wrap", e.target.checked);
-                  }}
-                />
-              </label>
+        <div className="editors">
+          {tabs.map(({ tab: tab_ }) => (
+            <div
+              key={tab_}
+              className={classnames({
+                active: tab === tab_,
+                right: onTheRight === tab_,
+                hidden: tab !== tab_ && onTheRight !== tab_,
+              })}
+            >
+              <div>
+                <label>
+                  lang:
+                  <select value={getValue(tab_, "lang")} onChange={(e) => setValue(tab_, "lang", e.target.value)}>
+                    {languages.map((l) => (
+                      <option key={l} value={l}>
+                        {l}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  wrap:
+                  <input
+                    type="checkbox"
+                    checked={Boolean(getValue(tab_, "wrap"))}
+                    onChange={(e) => {
+                      setValue(tab_, "wrap", e.target.checked);
+                    }}
+                  />
+                </label>
+              </div>
+              <Ace
+                id={tab_}
+                content={getValue(tab_, "value", "")}
+                lang={getValue(tab_, "lang", "")}
+                wrap={Boolean(getValue(tab_, "wrap", false))}
+                onInit={(editor) => {
+                  console.log(`editor mounted: `, tab_);
+                  setTabs(tab_, "editor", editor);
+                  if (tab_ === tab) {
+                    bringFocus(tab); // focus on first load of all tabs
+                  }
+                }}
+                onChange={(data) => {
+                  setValue(tab_, "value", data);
+                }}
+                recordOn={recordOn}
+              />
             </div>
-            <Ace
-              id={tab_}
-              content={getValue(tab_, "value", "")}
-              lang={getValue(tab_, "lang", "")}
-              wrap={Boolean(getValue(tab_, "wrap", false))}
-              onInit={(editor) => {
-                console.log(`editor mounted: `, tab_);
-                setTabs(tab_, "editor", editor);
-                if (tab_ === tab) {
-                  bringFocus(tab); // focus on first load of all tabs
-                }
-              }}
-              onChange={(data) => {
-                setValue(tab_, "value", data);
-              }}
-              recordOn={recordOn}
-            />
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -304,9 +305,5 @@ const Main = ({ portal }) => {
     })();
   });
 
-  const portal = document.createElement("span");
-  portal.classList.add("portal");
-  manipulation.after(document.querySelector("header > a"), portal);
-
-  render(<Main portal={portal} />, document.getElementById("app"));
+  render(<Main />, document.getElementById("app"));
 })();

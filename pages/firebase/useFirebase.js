@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import log from "inspc";
 
@@ -15,9 +15,8 @@ useEffect(() => {
     refreshList();
   }
 
-}, [id]);
-            
-          `;
+}, [id]);            
+`;
 
 function decodeJwtPayload(token) {
   if (typeof token === "string" && token.trim()) {
@@ -53,6 +52,8 @@ function logCurrentToken(comment = "", token) {
   console.log("localStorage jwt 'idToken' payload", comment, JSON.stringify(decodeJwtPayload(token), null, 4));
 }
 
+let autoTryToReAuthenticate = true;
+
 /**
  * to see how to use this hook look for firebase.entry.jsx
  *
@@ -65,184 +66,189 @@ export default ({ section }) => {
 
   const [user, setUser] = useState(false);
 
-  useEffect(() => {
-    (async function () {
-      try {
-        const {
-          auth: { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut, getIdToken },
-        } = await fire();
+  async function reCreateSession() {
+    try {
+      const {
+        auth: { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut, getIdToken },
+      } = await firebaseCoreEntry();
 
-        const auth = getAuth();
+      const auth = getAuth();
 
-        const provider = new GoogleAuthProvider();
+      // auth.settings.appVerificationDisabledForTesting = true;
+      // auth.settings.sessionDuration = 15; // 15 seconds
 
-        // make security rules for database like this
-        // {
-        //   "rules": {
-        //     "users": {
-        //       "$email": {
-        //         ".read": true,
-        //         ".write": "$email === auth.token.email.replace('.', ',')",
-        //       }
-        //     }
-        //   }
-        // }
+      const provider = new GoogleAuthProvider();
 
-        // {
-        //   "rules": {
-        //     "users": {
-        //       "$email": {
-        //         ".read": "$email === auth.token.email.replace('.', ',')",
-        //           ".write": "$email === auth.token.email.replace('.', ',')",
-        //       }
-        //     }
-        //   }
-        // }
+      // make security rules for database like this
+      // {
+      //   "rules": {
+      //     "users": {
+      //       "$email": {
+      //         ".read": true,
+      //         ".write": "$email === auth.token.email.replace('.', ',')",
+      //       }
+      //     }
+      //   }
+      // }
 
-        let idToken = localStorage.getItem("idToken");
+      // {
+      //   "rules": {
+      //     "users": {
+      //       "$email": {
+      //         ".read": "$email === auth.token.email.replace('.', ',')",
+      //           ".write": "$email === auth.token.email.replace('.', ',')",
+      //       }
+      //     }
+      //   }
+      // }
 
-        let accessToken = localStorage.getItem("accessToken");
+      let idToken = localStorage.getItem("idToken");
 
-        async function set() {
-          try {
-            setFirebase(firebase);
+      let accessToken = localStorage.getItem("accessToken");
 
-            setError(false);
+      async function set() {
+        try {
+          setFirebase(firebase);
 
-            console.log("current user", auth.currentUser);
+          setError(false);
 
-            setUser(auth.currentUser.email.replace(/\./g, ","));
+          console.log("current user", auth.currentUser);
 
-            if (idToken) {
-              logCurrentToken("current");
+          setUser(auth.currentUser.email.replace(/\./g, ","));
 
-              window.__refresh = async () => {
-                // const idToken = localStorage.getItem("idToken");
+          if (idToken) {
+            logCurrentToken("current");
 
-                // console.log("expirationData token", token);
+            window.__refresh = async () => {
+              // const idToken = localStorage.getItem("idToken");
 
-                // if (typeof token === "string" && token.trim()) {
-                //   const segments = token.split(".");
-                //
-                //   console.log("expirationData segments", segments);
-                //
-                //   if (segments.length === 3) {
-                //     let json;
-                //
-                //     try {
-                //       json = JSON.parse(atob(segments[1]));
-                //     } catch (e) {
-                //       console.log("expirationData expirationData decoding json error: ", e);
-                //     }
-                //
-                //     if (json) {
-                //       json._exp = new Date(json.exp * 1000);
-                //
-                //       json._minutes_left = parseInt((json.exp - new Date().getTime() / 1000) / 60, 10);
-                //
-                //       return json;
-                //     }
-                //   }
-                // }
-                //
-                // console.log("expirationData", "no data");
+              // console.log("expirationData token", token);
 
-                const token = await getIdToken(auth.currentUser, true);
+              // if (typeof token === "string" && token.trim()) {
+              //   const segments = token.split(".");
+              //
+              //   console.log("expirationData segments", segments);
+              //
+              //   if (segments.length === 3) {
+              //     let json;
+              //
+              //     try {
+              //       json = JSON.parse(atob(segments[1]));
+              //     } catch (e) {
+              //       console.log("expirationData expirationData decoding json error: ", e);
+              //     }
+              //
+              //     if (json) {
+              //       json._exp = new Date(json.exp * 1000);
+              //
+              //       json._minutes_left = parseInt((json.exp - new Date().getTime() / 1000) / 60, 10);
+              //
+              //       return json;
+              //     }
+              //   }
+              // }
+              //
+              // console.log("expirationData", "no data");
 
-                logCurrentToken("before");
+              const token = await getIdToken(auth.currentUser, true);
 
-                localStorage.setItem("idToken", token);
+              logCurrentToken("before");
 
-                logCurrentToken("after");
-              };
-            }
-          } catch (e) {
-            e.customMessage = ">>>>>>>>>>Origin: set() method<<<<<<<<<<<<";
+              localStorage.setItem("idToken", token);
 
-            throw e;
+              logCurrentToken("after");
+            };
           }
+        } catch (e) {
+          e.customMessage = ">>>>>>>>>>Origin: set() method<<<<<<<<<<<<";
+
+          throw e;
         }
+      }
 
-        log.dump({
-          firebase_first: auth.currentUser,
-        });
+      log.dump({
+        firebase_first: auth.currentUser,
+      });
 
-        if (!auth.currentUser && idToken && accessToken) {
-          try {
-            log("firebase_try: signInWithCredential");
+      if (!auth.currentUser && idToken && accessToken) {
+        try {
+          log("firebase_try: signInWithCredential");
 
-            const credential = await GoogleAuthProvider.credential(idToken, accessToken);
-
-            log.dump({
-              firebase_credential: credential,
-            });
-
-            const result = await signInWithCredential(auth, credential); // https://firebase.google.com/docs/auth/web/account-linking#web-version-9_5
-
-            log.dump({
-              firebase_mode: "signInWithCredential",
-              user: result.user,
-            });
-          } catch (e) {
-            log("firebase_catch: signInWithCredential", se(e));
-
-            setError({
-              error: {
-                mode: "signInWithCredential -> signOut()",
-                e: se(e),
-                user: auth.currentUser,
-                truthy: !!auth.currentUser,
-              },
-            });
-
-            await signOut(auth); // https://firebase.google.com/docs/auth/web/google-signin#web-version-9_10
-          }
-        }
-
-        log.dump({
-          "auth.currentUser, before second method": auth.currentUser,
-        });
-
-        if (auth.currentUser) {
-          log("firebase_signInWithCredential success, trigger set()");
-        } else {
-          log("try: signInWithPopup");
-
-          const result = await signInWithPopup(auth, provider); // https://firebase.google.com/docs/auth/web/google-signin#web-version-8_4
-
-          const credential = GoogleAuthProvider.credentialFromResult(result);
-
-          idToken = credential.idToken;
-
-          accessToken = credential.accessToken;
-
-          var user = result.user;
+          const credential = await GoogleAuthProvider.credential(idToken, accessToken);
 
           log.dump({
-            mode: "signInWithPopup",
-            idToken,
-            accessToken,
-            user,
-            result,
+            firebase_credential: credential,
           });
 
-          localStorage.setItem("idToken", idToken);
+          const result = await signInWithCredential(auth, credential); // https://firebase.google.com/docs/auth/web/account-linking#web-version-9_5
 
-          localStorage.setItem("accessToken", accessToken);
+          log.dump({
+            firebase_mode: "signInWithCredential",
+            user: result.user,
+          });
+        } catch (e) {
+          log("firebase_catch: signInWithCredential", se(e));
+
+          setError({
+            error: {
+              mode: "signInWithCredential -> signOut()",
+              e: se(e),
+              user: auth.currentUser,
+              truthy: !!auth.currentUser,
+            },
+          });
+
+          await signOut(auth); // https://firebase.google.com/docs/auth/web/google-signin#web-version-9_10
         }
-
-        await set();
-      } catch (e) {
-        log("catch: signInWithPopup", se(e));
-
-        setError({
-          error: {
-            mode: "signInWithPopup",
-            e: se(e),
-          },
-        });
       }
-    })();
+
+      log.dump({
+        "auth.currentUser, before second method": auth.currentUser,
+      });
+
+      if (auth.currentUser) {
+        log("firebase_signInWithCredential success, trigger set()");
+      } else {
+        log("try: signInWithPopup");
+
+        const result = await signInWithPopup(auth, provider); // https://firebase.google.com/docs/auth/web/google-signin#web-version-8_4
+
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+
+        idToken = credential.idToken;
+
+        accessToken = credential.accessToken;
+
+        var user = result.user;
+
+        log.dump({
+          mode: "signInWithPopup",
+          idToken,
+          accessToken,
+          user,
+          result,
+        });
+
+        localStorage.setItem("idToken", idToken);
+
+        localStorage.setItem("accessToken", accessToken);
+      }
+
+      await set();
+    } catch (e) {
+      log("catch: signInWithPopup", se(e));
+
+      setError({
+        error: {
+          mode: "signInWithPopup",
+          e: se(e),
+        },
+      });
+    }
+  }
+
+  useEffect(() => {
+    reCreateSession();
   }, []);
 
   const getroot = async (key) => {
@@ -268,28 +274,32 @@ export default ({ section }) => {
     return internalkey;
   };
 
-  const set = async ({ data = {}, key }) => {
-    const {
-      firebaseApp,
-      database: { getDatabase, ref, set },
-    } = await fire();
+  const set = async (opt) => {
+    let { data = {}, key } = { ...opt };
 
-    if (typeof section !== "string" || !section.trim()) {
-      throw th(`set: section is not specified`);
-    }
-
-    if (Array.isArray(key)) {
-      key = key.join("/");
-    }
-
-    // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
-    let internalkey = `users/${user}/${section}`;
-
-    if (typeof key === "string") {
-      internalkey += "/" + key;
-    }
+    let internalkey;
 
     try {
+      const {
+        firebaseApp,
+        database: { getDatabase, ref, set: fbset },
+      } = await firebaseCoreEntry();
+
+      if (typeof section !== "string" || !section.trim()) {
+        throw th(`set: section is not specified`);
+      }
+
+      if (Array.isArray(key)) {
+        key = key.join("/");
+      }
+
+      // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+      internalkey = `users/${user}/${section}`;
+
+      if (typeof key === "string") {
+        internalkey += "/" + key;
+      }
+
       const db = getDatabase(firebaseApp);
 
       const dbRef = ref(db, internalkey);
@@ -297,7 +307,7 @@ export default ({ section }) => {
       /**
        * https://firebase.google.com/docs/database/web/read-and-write#web-version-9_5
        */
-      await set(dbRef, data);
+      await fbset(dbRef, data);
 
       log.dump({
         set: {
@@ -307,6 +317,8 @@ export default ({ section }) => {
           // 'firebase.auth()': firebase.auth()
         },
       });
+
+      autoTryToReAuthenticate = true;
     } catch (e) {
       log.dump({
         "set() error:": {
@@ -318,37 +330,56 @@ export default ({ section }) => {
         },
       });
 
+      if (autoTryToReAuthenticate) {
+        autoTryToReAuthenticate = false;
+
+        await reCreateSession();
+
+        console.log("bf");
+
+        await new Promise((res) => setTimeout(res, 1000, undefined));
+
+        console.log("af");
+
+        return await set(opt);
+      }
+
       throw e;
     }
   };
 
-  const push = async ({ data = {}, key }) => {
-    const {
-      firebaseApp,
-      database: { getDatabase, ref, push, child, update },
-    } = await fire();
+  const push = async (opt) => {
+    console.log("push...", JSON.stringify(opt));
 
-    if (typeof section !== "string" || !section.trim()) {
-      throw th(`push: section is not specified`);
-    }
+    let { data = {}, key } = { ...opt };
 
-    if (Array.isArray(key)) {
-      key = key.join("/");
-    }
-
-    // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
-    let internalkey = `users/${user}/${section}`;
-
-    if (typeof key === "string") {
-      internalkey += "/" + key;
-    }
+    let internalkey;
 
     try {
+      const {
+        firebaseApp,
+        database: { getDatabase, ref, push: fbpush, child, update },
+      } = await firebaseCoreEntry();
+
+      if (typeof section !== "string" || !section.trim()) {
+        throw th(`push: section is not specified`);
+      }
+
+      if (Array.isArray(key)) {
+        key = key.join("/");
+      }
+
+      // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+      internalkey = `users/${user}/${section}`;
+
+      if (typeof key === "string") {
+        internalkey += "/" + key;
+      }
       const db = getDatabase(firebaseApp);
 
       const dbRef = ref(db, internalkey);
 
-      const newPostKey = push(child(dbRef, internalkey)).key;
+      const newPostKey = fbpush(child(dbRef, internalkey)).key;
 
       await update(dbRef, {
         [newPostKey]: data,
@@ -366,6 +397,8 @@ export default ({ section }) => {
         },
       });
 
+      autoTryToReAuthenticate = true;
+
       return newid;
     } catch (e) {
       log.dump({
@@ -378,32 +411,47 @@ export default ({ section }) => {
         },
       });
 
+      if (autoTryToReAuthenticate) {
+        autoTryToReAuthenticate = false;
+
+        console.log("bf");
+
+        await new Promise((res) => setTimeout(res, 1000, undefined));
+
+        console.log("af");
+
+        await reCreateSession();
+
+        return await push(opt);
+      }
+
       throw e;
     }
   };
 
   const get = async (key) => {
-    const {
-      firebaseApp,
-      database: { getDatabase, ref, onValue },
-    } = await fire();
-
-    if (typeof section !== "string" || !section.trim()) {
-      throw th(`get: section is not specified`);
-    }
-
-    if (Array.isArray(key)) {
-      key = key.join("/");
-    }
-
-    // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
-    let internalkey = `users/${user}/${section}`;
-
-    if (typeof key === "string") {
-      internalkey += "/" + key;
-    }
+    let internalkey;
 
     try {
+      const {
+        firebaseApp,
+        database: { getDatabase, ref, onValue },
+      } = await firebaseCoreEntry();
+
+      if (typeof section !== "string" || !section.trim()) {
+        throw th(`get: section is not specified`);
+      }
+
+      if (Array.isArray(key)) {
+        key = key.join("/");
+      }
+
+      // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+      internalkey = `users/${user}/${section}`;
+
+      if (typeof key === "string") {
+        internalkey += "/" + key;
+      }
       // https://firebase.google.com/docs/database/web/read-and-write#read_data_once_with_an_observer
       const db = getDatabase(firebaseApp);
 
@@ -434,12 +482,14 @@ export default ({ section }) => {
         }
       });
 
-      const data = snapshot.val();
+      const data = await snapshot.val();
 
       log.dump({
         useFirebase_get: data,
         internalkey,
       });
+
+      autoTryToReAuthenticate = true;
 
       return data;
     } catch (e) {
@@ -452,32 +502,41 @@ export default ({ section }) => {
         },
       });
 
+      if (autoTryToReAuthenticate) {
+        autoTryToReAuthenticate = false;
+
+        await reCreateSession();
+
+        return await get(key);
+      }
+
       throw e;
     }
   };
 
   const del = async (key) => {
-    const {
-      firebaseApp,
-      database: { getDatabase, ref, remove },
-    } = await fire();
-
-    if (typeof section !== "string" || !section.trim()) {
-      throw th(`del: section is not specified`);
-    }
-
-    if (Array.isArray(key)) {
-      key = key.join("/");
-    }
-
-    // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
-    let internalkey = `users/${user}/${section}`;
-
-    if (typeof key === "string") {
-      internalkey += "/" + key;
-    }
+    let internalkey;
 
     try {
+      const {
+        firebaseApp,
+        database: { getDatabase, ref, remove },
+      } = await firebaseCoreEntry();
+
+      if (typeof section !== "string" || !section.trim()) {
+        throw th(`del: section is not specified`);
+      }
+
+      if (Array.isArray(key)) {
+        key = key.join("/");
+      }
+
+      // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
+      internalkey = `users/${user}/${section}`;
+
+      if (typeof key === "string") {
+        internalkey += "/" + key;
+      }
       const db = getDatabase(firebaseApp);
 
       const dbRef = ref(db, internalkey);
@@ -487,15 +546,25 @@ export default ({ section }) => {
       log.dump({
         firebase_del: internalkey,
       });
+
+      autoTryToReAuthenticate = true;
     } catch (e) {
       log.dump({
-        "del() error:": {
+        "del() error: ": {
           error: se(e),
           key,
           internalkey,
           fix,
         },
       });
+
+      if (autoTryToReAuthenticate) {
+        autoTryToReAuthenticate = false;
+
+        await reCreateSession();
+
+        return await del(key);
+      }
 
       throw e;
     }
@@ -529,5 +598,22 @@ export default ({ section }) => {
     push,
     getroot,
     expirationData,
+    reCreateSession,
+    signOut: async function () {
+      log("destroy session");
+
+      const {
+        auth: { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut, getIdToken },
+      } = await firebaseCoreEntry();
+
+      const auth = getAuth();
+
+      await signOut(auth);
+
+      log("destroy idToken in localstorage");
+
+      localStorage.removeItem("idToken");
+      localStorage.removeItem("accessToken");
+    },
   };
 };

@@ -751,22 +751,23 @@ window.buildFooter = async function () {
 
   log.green("defined", "window.github - link of edit page on github: " + github);
 
-  (function () {
-    var div = document.createElement("div");
+  document.body.hasAttribute("nogithublink") ||
+    (function () {
+      var div = document.createElement("div");
 
-    div.classList.add("github-link");
+      div.classList.add("github-link");
 
-    manipulation.append(document.body, div);
+      manipulation.append(document.body, div);
 
-    var a = document.createElement("a");
+      var a = document.createElement("a");
 
-    a.innerText = "edit";
+      a.innerText = "edit";
 
-    a.setAttribute("href", github);
+      a.setAttribute("href", github);
 
-    manipulation.append(div, a);
+      manipulation.append(div, a);
 
-    var css = `
+      var css = `
 body .github-link {
     top: 0;
     right: 0;
@@ -793,34 +794,35 @@ body .github-link > a:hover {
     background-color: white;
 }
             `;
-    // https://stackoverflow.com/a/524721
-    var head = document.head || document.getElementsByTagName("head")[0],
-      style = document.createElement("style");
+      // https://stackoverflow.com/a/524721
+      var head = document.head || document.getElementsByTagName("head")[0],
+        style = document.createElement("style");
 
-    style.type = "text/css";
-    if (style.styleSheet) {
-      style.styleSheet.cssText = css;
-    } else {
-      style.appendChild(document.createTextNode(css));
-    }
+      style.type = "text/css";
+      if (style.styleSheet) {
+        style.styleSheet.cssText = css;
+      } else {
+        style.appendChild(document.createTextNode(css));
+      }
 
-    head.appendChild(style);
+      head.appendChild(style);
 
-    log.blue("ribbon link", "adding edit ribbon link", "[triggered in github.js]");
-  })();
+      log.blue("ribbon link", "adding edit ribbon link", "[triggered in github.js]");
+    })();
 
-  (function () {
-    var a = document.createElement("a");
+  document.body.hasAttribute("noprofileribbon") ||
+    (function () {
+      var a = document.createElement("a");
 
-    a.classList.add("github-profile");
+      a.classList.add("github-profile");
 
-    a.innerText = "profile";
+      a.innerText = "profile";
 
-    a.setAttribute("href", "//github.com/stopsopa?tab=repositories");
+      a.setAttribute("href", "//github.com/stopsopa?tab=repositories");
 
-    manipulation.append(document.body, a);
+      manipulation.append(document.body, a);
 
-    var css = `
+      var css = `
 body .github-profile {
     border: 1px solid #2d2d2d;
     top: 6px;
@@ -842,21 +844,21 @@ body .github-profile:hover {
     background-color: white;
 }
             `;
-    // https://stackoverflow.com/a/524721
-    var head = document.head || document.getElementsByTagName("head")[0],
-      style = document.createElement("style");
+      // https://stackoverflow.com/a/524721
+      var head = document.head || document.getElementsByTagName("head")[0],
+        style = document.createElement("style");
 
-    style.type = "text/css";
-    if (style.styleSheet) {
-      style.styleSheet.cssText = css;
-    } else {
-      style.appendChild(document.createTextNode(css));
-    }
+      style.type = "text/css";
+      if (style.styleSheet) {
+        style.styleSheet.cssText = css;
+      } else {
+        style.appendChild(document.createTextNode(css));
+      }
 
-    head.appendChild(style);
+      head.appendChild(style);
 
-    log.blue("DOMContentLoaded", "adding profile ribbon link", "[triggered in github.js]");
-  })();
+      log.blue("DOMContentLoaded", "adding profile ribbon link", "[triggered in github.js]");
+    })();
 
   if (window.isDevEnvironment) {
     // for some reason (maybe due to /etc/hosts record to handle local server from domain http://stopsopa.github.io.local/
