@@ -12,6 +12,8 @@ import { debounce } from "lodash";
 
 import RecordLog from "../RecordLog";
 
+import layoutTweaksHook from "../layoutTweaksHook.jsx";
+
 import "./002multi_tabs.scss";
 
 const set = debounce((...args) => {
@@ -34,6 +36,7 @@ function generateDefaultTab(tab) {
  *  https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
  */
 const Main = () => {
+  layoutTweaksHook();
   // tab key [string]
   // generateDefaultTab
   // editor instance of ace
@@ -181,28 +184,20 @@ const Main = () => {
 
   return (
     <div className="acelayout">
-      <div
-        className={classnames({
-          single: !Boolean(onTheRight),
-          on_the_right: Boolean(onTheRight),
-        })}
-        tabIndex={0}
-      >
-        {
-          <div className="portal">
-            <button
-              onClick={() => setRecordOn((x) => !x)}
-              className={classnames("record", {
-                on: recordOn,
-              })}
-            >
-              record
-            </button>
-            <button onClick={play} title="(cmd|ctrl)+r">
-              play
-            </button>
-          </div>
-        }
+      <div className="top">
+        <div className="portal">
+          <button
+            onClick={() => setRecordOn((x) => !x)}
+            className={classnames("record", {
+              on: recordOn,
+            })}
+          >
+            record
+          </button>
+          <button onClick={play} title="(cmd|ctrl)+r">
+            play
+          </button>
+        </div>
 
         <div className="tabs">
           {tabs.map(({ tab: tab_ }) => {
@@ -231,6 +226,15 @@ const Main = () => {
             );
           })}
         </div>
+      </div>
+      <div
+        className={classnames("editors-parent", {
+          single: !Boolean(onTheRight),
+          on_the_right: Boolean(onTheRight),
+        })}
+        tabIndex={0}
+      >
+        <div className="spacer"></div>
         {/* <div>
           <pre>{JSON.stringify({
             tab,

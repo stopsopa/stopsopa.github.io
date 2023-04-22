@@ -85,66 +85,80 @@
   .dropdown-source-wrapper {
     background-color: aqua;
   }
-  .portal {
-    padding-left: 20px;
+  .top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    // height: 200px;
+    background-color: white;
+    z-index: 5;
+    .portal {
+      padding-left: 20px;
+    }
+    .portal > button {
+      background-color: rgb(143, 142, 142);
+      border: none;
+      padding: 8px;
+      border-radius: 3px;
+      margin-right: 5px;
+      cursor: pointer;
+      color: rgb(225, 224, 224);
+    }
+    .portal > button.record {
+      position: relative;
+      padding-right: 36px;
+    }
+    .portal > button.record::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background-color: #136913;
+      top: 9px;
+      right: 10px;
+      border-radius: 10px;
+    }
+    .portal > button.record:hover {
+      background-color: gray;
+    }
+    .portal > button.record.on::after {
+      background-color: #c22020;
+    }
   }
-  .portal > button {
-    background-color: rgb(143, 142, 142);
-    border: none;
-    padding: 8px;
-    border-radius: 3px;
-    margin-right: 5px;
-    cursor: pointer;
-    color: rgb(225, 224, 224);
-  }
-  .portal > button.record {
-    position: relative;
-    padding-right: 36px;
-  }
-  .portal > button.record::after {
-    content: "";
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    background-color: #136913;
-    top: 9px;
-    right: 10px;
-    border-radius: 10px;
-  }
-  .portal > button.record:hover {
-    background-color: gray;
-  }
-  .portal > button.record.on::after {
-    background-color: #c22020;
-  }
-  .on_the_right .editors {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-  }
-  .on_the_right .editors > * {
-    width: 50%;
-    order: 0; /* It is by default 0 but anyway... https://css-tricks.com/snippets/css/a-guide-to-flexbox/#:~:text=order%3A%205%3B%20/*%20default%20is%200%20*/
-  }
-  .on_the_right .editors > .right {
-    order: 1;
-  }
-  .on_the_right .editors > div.hidden {
-    width: 0;
-  }
-  .on_the_right .editors > div.hidden > div:first-child {
-    overflow: hidden;
-  }
-  .single .editors > div > div {
-    display: none;
-  }
-  .single .editors > div.active > div {
-    display: block;
-  }
-  .single .editors > div.hidden {
-    display: none;
-    height: 0 !important;
-    overflow: hidden;
+  .editors-parent {
+    &.single .editors > div > div {
+      display: none;
+    }
+    &.single .editors > div.active > div {
+      display: block;
+    }
+    &.single .editors > div.hidden {
+      display: none;
+      height: 0 !important;
+      overflow: hidden;
+    }
+    &.on_the_right .editors {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+    }
+    &.on_the_right .editors > * {
+      width: 50%;
+      order: 0; /* It is by default 0 but anyway... https://css-tricks.com/snippets/css/a-guide-to-flexbox/#:~:text=order%3A%205%3B%20/*%20default%20is%200%20*/
+    }
+    &.on_the_right .editors > .right {
+      order: 1;
+    }
+    &.on_the_right .editors > div.hidden {
+      width: 0;
+    }
+    &.on_the_right .editors > div.hidden > div:first-child {
+      overflow: hidden;
+    }
+    & > .spacer {
+      // height: 200px;
+    }
   }
 }
 

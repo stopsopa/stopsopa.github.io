@@ -1,7 +1,7 @@
 import useFirebase from "./firebase/useFirebase.js";
 
 /**
- * This is universal custom state mechanism which at the moment is based on firebase
+ * This represents universal custom state interface which at the moment is based on firebase
  * but it might be based on anything really what is able to store tree like structures
  * as long as it provides basic methods:
  * set, get, del
