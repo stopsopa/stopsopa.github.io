@@ -225,6 +225,30 @@ const Main = () => {
               </div>
             );
           })}
+          {/* {(function () {
+            const tmp = [];
+            for (let i = 0 ; i < 30 ; i += 1 ) {
+
+              tmp.push(
+                <div
+                  key={i}
+                >
+                  <div
+                    onClick={() => {
+                    }}
+                  >
+                    test {i}
+                  </div>
+                  <div>
+                    <div ></div>
+                    <div>▤</div>
+                  </div>
+                </div>
+              )
+
+            }
+            return tmp;
+          }())} */}
         </div>
       </div>
       <div

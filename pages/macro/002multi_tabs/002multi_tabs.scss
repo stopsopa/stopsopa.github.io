@@ -4,6 +4,7 @@
   }
   .tabs {
     display: flex;
+    flex-wrap: wrap;
   }
   .tabs > div {
     border: 1px solid transparent;
@@ -17,6 +18,7 @@
     flex-grow: 1;
     padding: 10px;
     margin-bottom: 2px;
+    white-space: nowrap;
   }
   .tabs > div > div:nth-child(2) {
     display: flex;
