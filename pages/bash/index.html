@@ -1447,6 +1447,30 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           <a href="https://www.geeksforgeeks.org/array-basics-shell-scripting-set-1/">https://www.geeksforgeeks.org/array-basics-shell-scripting-set-1/</a>
 
           <script type="editor" data-lang="sh">
+          
+            # multiline to array            
+            echo "" > log.log
+            LIST="$(cat 005.txt)"
+            SAVEIFS=$IFS   # Save current IFS (Internal Field Separator)
+            IFS=$'\n'      # Change IFS to newline char
+            ARR=($LIST) # split the `names` string into an array by the same name
+            IFS=$SAVEIFS   # Restore original IFS
+            COUNT="$(echo "${LIST}" | wc -l)"
+            I="0"
+            for (( i=0; i<${#ARR[@]}; i++ ))
+            do
+                xxx="${ARR[$i]}"
+                I="$(($I + 1))"
+                echo -e "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}"    
+                PID="$(echo "${xxx}" | awk '{print $2}')"
+                NAME="$(echo "${xxx}" | awk '{print $11}')"
+                if [ "${PID}" != "" ] && [ "${NAME}" != "" ]; then
+                    read
+                    echo "    >>{xxx}< pid>${PID}< name>${NAME}<"
+                    echo "${xxx}" >> log.log
+                fi
+            done
+            
 
             array=(`seq 1 10`)
 
