@@ -775,6 +775,9 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           <h2>find</h2>
           <a href="https://ss64.com/osx/find.html">https://ss64.com/osx/find.html</a>
           <script type="editor" data-lang="sh">
+          
+            # or condition
+            find . -type f \( -regex '.*/8_.*' -o -regex '.*/7_.*' \)
 
             tar -zcvf /backup/project.tar.gz --exclude "node_modules" /srv/www/
 
