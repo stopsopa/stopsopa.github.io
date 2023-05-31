@@ -358,6 +358,9 @@
               printf "${1:0:${#1}/2}${DELIMITER}${1:${#1}/2}"
             }
             echo "AWS_ACCESS_KEY_ID >$(divideInTwo "${AWS_ACCESS_KEY_ID}")<"
+            
+            # delete empty directories
+            find /path/to/directory -type d -empty -delete
           </script>
 
           <h2>Get exit status of process that's piped to another</h2>
