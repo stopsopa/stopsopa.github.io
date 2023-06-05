@@ -9,20 +9,15 @@
   <body class="layout" toc>
     <div class="body">
       <div class="inside">
-        <div class="cards toc">
-          <h1>Table of Contents</h1>
-          <ul data-do-sort>
-            <li><a href="http://">ekstra link</a></li>
-          </ul>
-        </div>
+
         <div class="cards">
           <h2>transaction</h2>
-          <script type="editor" data-lang="sh">
+          <script type="editor" data-lang="sql">
 BEGIN TRANSACTION;
 BEGIN TRY
 
-  ... do your inserts here
-  ... avoid GO here
+  -- do your inserts here
+  -- avoid GO here
 
 COMMIT TRANSACTION;
 END TRY
