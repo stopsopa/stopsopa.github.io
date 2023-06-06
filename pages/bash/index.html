@@ -90,6 +90,24 @@
             $([A-Za-z_\d!]+)
             ${$1}
 
+            # --- iterate over lines ---- vvv
+            LIST="$(find . -type f \( -regex '.*/8_.*' -o -regex '.*/7_.*' -o -regex '.*/11_.*' \))"
+            SAVEIFS=$IFS
+            IFS=$'\n'
+            ARR=($LIST)
+            IFS=$SAVEIFS
+            COUNT="$(echo "${LIST}" | wc -l)"
+            I="0"
+
+            for xxx in "${ARR[@]}"
+            do
+                I="$(($I + 1))"
+                echo -e "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}"
+                echo "$xxx"
+            done
+            # --- iterate over lines ---- ^^^
+
+            
 
 
             # ------- find and iterate ------- vvv
@@ -340,6 +358,9 @@
               printf "${1:0:${#1}/2}${DELIMITER}${1:${#1}/2}"
             }
             echo "AWS_ACCESS_KEY_ID >$(divideInTwo "${AWS_ACCESS_KEY_ID}")<"
+            
+            # delete empty directories
+            find /path/to/directory -type d -empty -delete
           </script>
 
           <h2>Get exit status of process that's piped to another</h2>
@@ -775,6 +796,9 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           <h2>find</h2>
           <a href="https://ss64.com/osx/find.html">https://ss64.com/osx/find.html</a>
           <script type="editor" data-lang="sh">
+          
+            # or condition
+            find . -type f \( -regex '.*/8_.*' -o -regex '.*/7_.*' \)
 
             tar -zcvf /backup/project.tar.gz --exclude "node_modules" /srv/www/
 
