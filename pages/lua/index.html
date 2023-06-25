@@ -50,16 +50,17 @@
 # installation
 1) 
     Install app from https://studio.zerobrane.com/download?not-this-time
-
+    WARNING: RUN THE APP NOW
 2)
     Run script:
             
 export APPDIR="/Applications/ZeroBraneStudio.app/Contents/ZeroBraneStudio"
 cd "$(mktemp -d)"
 git clone git@github.com:pkulchenko/ZeroBraneStudio.git .
-# git checkout e91ed23c25a65f780faa5de061f2ed9cdfe2d1bd
-    # latest commit (as of 2023-06-25) of branch: https://github.com/pkulchenko/ZeroBraneStudio/commits/lua54 
+git checkout 996e99a6ee28f89f25913b955fa4144688ae6e73
+    # latest commit (as of 2023-06-25) of branch: https://github.com/pkulchenko/ZeroBraneStudio/commits/master
     # mentioned in https://github.com/pkulchenko/ZeroBraneStudio/issues/1075 and https://stackoverflow.com/a/76548375
+    # actually NO, lua54 branch is mentioned but we have to use master branch
 (cd build; bash ./build-macosx.sh lua 5.4 luasocket) | tee _build.log   
     # expected message >*** Build has been successfully completed ***<
        
@@ -70,6 +71,7 @@ interpreter.skipcompile = true
 return interpreter            
 EEE
     # from https://stackoverflow.com/a/76548375 
+
             
 open ./bin
 open "${APPDIR}/bin"
