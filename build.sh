@@ -75,7 +75,7 @@ node libs/preprocessor.js
 node node_modules/.bin/webpack
 
 # /bin/bash remove-not-changed-builds.sh # not needed since I'm building and releasing that build in github actions
-#/bin/bash pages/kubernetes/compress.sh
+# /bin/bash pages/kubernetes/compress.sh
 
 /bin/bash bash/substitute-variables-bash.sh gitstorage-core.sh -- \
   GITSTORAGE_CORE_REPOSITORY "${GITSTORAGE_CORE_REPOSITORY}" \
