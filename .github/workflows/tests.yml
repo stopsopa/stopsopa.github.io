@@ -1,4 +1,4 @@
-name: Tests
+name: Pipeline
 on:
   push:
     branches:
@@ -6,6 +6,16 @@ on:
   pull_request:
   # trigger only for master and PR, commits to branches will be ignored
   # if you wan't to trigger ci/cd for branch then just create PR
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write   
+
 jobs:
   test:
     runs-on: ubuntu-22.04 # https://github.com/actions/runner-images#available-images
