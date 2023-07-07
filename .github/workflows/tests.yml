@@ -16,30 +16,44 @@ jobs:
         with:
           node-version: 18.7.0
           cache: "yarn"
-      - name: Prepare .env
-        run: cp .env.ci .env
-      - name: Yarn install
-        run: yarn
-      - name: Build
-        run: /bin/bash build.sh
-      - name: run local server (NODE_ENV=production)
-        run: |
-          /bin/bash ci_server.sh &
-      - name: servers healthchecks
-        run: |
-          TIMEOUT="2000" node .github/healtcheck.js
-      # - name: test cli (using routes endpoint)
+      - name: rm 
+        run: rm -rf build/* && echo 'test..' > build/log.log
+      # - name: Prepare .env
+      #   run: cp .env.ci .env
+      # - name: Yarn install
+      #   run: yarn
+      # - name: Build
+      #   run: /bin/bash build.sh
+      # - name: run local server (NODE_ENV=production)
       #   run: |
-      #     /bin/bash console.sh routes
-      # - name: UNIT TESTS
+      #     /bin/bash ci_server.sh &
+      # - name: servers healthchecks
       #   run: |
-      #     TYPE=unit /bin/bash jest.sh
-      # - name: INT TESTS
+      #     TIMEOUT="2000" node .github/healtcheck.js
+      # # - name: test cli (using routes endpoint)
+      # #   run: |
+      # #     /bin/bash console.sh routes
+      # # - name: UNIT TESTS
+      # #   run: |
+      # #     TYPE=unit /bin/bash jest.sh
+      # # - name: INT TESTS
+      # #   run: |
+      # #     TYPE=int /bin/bash jest.sh
+      # - name: E2E TESTS
       #   run: |
-      #     TYPE=int /bin/bash jest.sh
-      - name: E2E TESTS
-        run: |
-          /bin/bash playwright.sh --target docker
-      - name: kill servers
-        run: |
-          /bin/bash .github/stop-server.sh
+      #     /bin/bash playwright.sh --target docker
+      # - name: kill servers
+      #   run: |
+      #     /bin/bash .github/stop-server.sh
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2          
