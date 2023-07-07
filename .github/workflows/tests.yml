@@ -58,6 +58,8 @@ jobs:
       # - name: kill servers
       #   run: |
       #     /bin/bash .github/stop-server.sh
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
 
   # Deployment job
   deploy:
