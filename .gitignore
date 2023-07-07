@@ -9,6 +9,7 @@ node_modules
 yarn-error.log
 /playwright-report/
 /dist/
+/build/
 
 
 
