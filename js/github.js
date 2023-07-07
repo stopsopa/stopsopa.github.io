@@ -674,15 +674,15 @@ window.buildHeader = async function () {
         a.setAttribute("href", "/index.html");
 
         var img = document.createElement("img");
-        img.setAttribute("src", `${env("GITHUB_SOURCES_PREFIX")}/actions/workflows/tests.yml/badge.svg`);
+        img.setAttribute("src", `${env("GITHUB_SOURCES_PREFIX")}/actions/workflows/pipeline.yml/badge.svg`);
 
         manipulation.prepend(a, img);
         // <a target="_blank"
         //   rel="noopener noreferrer"
-        //   href="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/tests.yml/pipeline.svg"
+        //   href="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/pipeline.yml/badge.svg"
         // >
         //   <img
-        //     src="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/tests.yml/pipeline.svg"
+        //     src="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/pipeline.yml/badge.svg"
         //     alt="example workflow"
         //     style="max-width: 100%;"
         //   >
