@@ -16,6 +16,16 @@ import layoutTweaksHook from "../layoutTweaksHook.jsx";
 
 import "./002multi_tabs.scss";
 
+import { useDroppable, useDraggable } from "@dnd-kit/core";
+
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy } from "@dnd-kit/sortable";
+
+import { useSortable } from "@dnd-kit/sortable";
+
+import { CSS } from "@dnd-kit/utilities";
+
 const set = debounce((...args) => {
   // console.log("debounce set", ...args);
   setraw(...args);
@@ -37,10 +47,18 @@ function generateDefaultTab(tab) {
  */
 const Main = () => {
   layoutTweaksHook();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   // tab key [string]
   // generateDefaultTab
   // editor instance of ace
-  const [tabs, setTabsRaw] = useState([{ tab: "one" }, { tab: "two" }, { tab: "three" }]);
+  const [tabs, setTabsRaw] = useState([{ tab: "one" }, { tab: "two" }, { tab: "threethree" }]);
 
   const [tab, setTabRaw] = useState("one");
 
@@ -158,11 +176,11 @@ const Main = () => {
 
         play();
       } else {
-        // console.log('keydown event', {
-        //   "event.ctrlKey": event.ctrlKey,
-        //   "event.metaKey": event.metaKey,
-        //   "event.keyCode": event.keyCode,
-        // });
+        console.log("keydown event", {
+          "event.ctrlKey": event.ctrlKey,
+          "event.metaKey": event.metaKey,
+          "event.keyCode": event.keyCode,
+        });
       }
     }
     document.addEventListener("keydown", keydown);
@@ -182,6 +200,29 @@ const Main = () => {
     }
   }, [tab]);
 
+  function handleDragEnd(event) {
+    const { active, over } = event;
+
+    console.log("handler: ", {
+      active,
+      over,
+    });
+
+    // if (active.id !== over.id) {
+    //   setItems((items) => {
+    //     const oldIndex = items.indexOf(active.id);
+    //     const newIndex = items.indexOf(over.id);
+
+    //     return arrayMove(items, oldIndex, newIndex);
+    //   });
+    // }
+  }
+
+  console.log(
+    "tabs:",
+    tabs.map((t) => t.tab),
+  );
+
   return (
     <div className="acelayout">
       <div className="top">
@@ -199,57 +240,15 @@ const Main = () => {
           </button>
         </div>
 
-        <div className="tabs">
-          {tabs.map(({ tab: tab_ }) => {
-            return (
-              <div
-                key={tab_}
-                className={classnames({
-                  active: tab_ === tab,
-                })}
-              >
-                <div
-                  onClick={() => {
-                    setTab(tab_);
-                    if (onTheRight !== false) {
-                      bringFocus(tab_, "onTheRight");
-                    }
-                  }}
-                >
-                  {tab_}
-                </div>
-                <div>
-                  <div onClick={() => setOnTheRight((v) => (v === tab_ ? false : tab_))}>{onTheRight === tab_ ? "◄" : "►"}</div>
-                  <div>▤</div>
-                </div>
-              </div>
-            );
-          })}
-          {/* {(function () {
-            const tmp = [];
-            for (let i = 0 ; i < 30 ; i += 1 ) {
-
-              tmp.push(
-                <div
-                  key={i}
-                >
-                  <div
-                    onClick={() => {
-                    }}
-                  >
-                    test {i}
-                  </div>
-                  <div>
-                    <div ></div>
-                    <div>▤</div>
-                  </div>
-                </div>
-              )
-
-            }
-            return tmp;
-          }())} */}
-        </div>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <DroppableTabElement>
+            <SortableContext items={tabs.map((t) => t.tab)} strategy={horizontalListSortingStrategy}>
+              {tabs.map(({ tab: tab_ }) => {
+                return <DraggableTabElement key={tab_} tab={tab} tab_={tab_} onTheRight={onTheRight} setOnTheRight={setOnTheRight} setTab={setTab} />;
+              })}
+            </SortableContext>
+          </DroppableTabElement>
+        </DndContext>
       </div>
       <div
         className={classnames("editors-parent", {
@@ -321,6 +320,77 @@ const Main = () => {
     </div>
   );
 };
+
+function DroppableTabElement(props) {
+  const { children, ...childProps } = props;
+
+  // const { isOver, setNodeRef } = useDroppable({
+  //   id: "droppable",
+  // });
+  // const style = {
+  //   color: isOver ? "green" : undefined,
+  // };
+
+  return (
+    <div
+      className="tabs"
+      // style={style}
+      // ref={setNodeRef}
+      {...childProps}
+    >
+      {children}
+    </div>
+  );
+}
+
+function DraggableTabElement(props) {
+
+  const { tab, tab_, onTheRight, setOnTheRight, setTab } = props;
+  // const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  //   id: tab_,
+  // });
+
+  // const style = transform
+  //   ? {
+  //       transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+  //     }
+  //   : undefined;
+
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: tab_ });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      key={tab_}
+      className={classnames({
+        active: tab_ === tab,
+      })}
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+    >
+      <div
+        onClick={() => {
+          setTab(tab_);
+          if (onTheRight !== false) {
+            bringFocus(tab_, "onTheRight");
+          }
+        }}
+      >
+        {tab_}
+      </div>
+      <div>
+        <div onClick={() => setOnTheRight((v) => (v === tab_ ? false : tab_))}>{onTheRight === tab_ ? "◄" : "►"}</div>
+        <div>▤</div>
+      </div>
+    </div>
+  );
+}
 
 (async function () {
   await new Promise((resolve) => {
