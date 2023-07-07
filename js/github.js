@@ -679,10 +679,10 @@ window.buildHeader = async function () {
         manipulation.prepend(a, img);
         // <a target="_blank"
         //   rel="noopener noreferrer"
-        //   href="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/tests.yml/badge.svg"
+        //   href="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/tests.yml/pipeline.svg"
         // >
         //   <img
-        //     src="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/tests.yml/badge.svg"
+        //     src="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/tests.yml/pipeline.svg"
         //     alt="example workflow"
         //     style="max-width: 100%;"
         //   >

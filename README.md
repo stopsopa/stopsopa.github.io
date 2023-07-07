@@ -1,4 +1,4 @@
-![example workflow](https://github.com/stopsopa/stopsopa.github.io/actions/workflows/tests.yml/badge.svg)
+![example workflow](https://github.com/stopsopa/stopsopa.github.io/actions/workflows/pipeline.yml/badge.svg)
 
 # Ace editor objects syntax:
 
