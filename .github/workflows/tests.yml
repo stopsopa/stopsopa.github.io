@@ -26,11 +26,13 @@ jobs:
         with:
           node-version: 18.7.0
           cache: "yarn"
+      - name: before_dist 
+        run: ls -la dist/      
       - name: rm 
-        run: rm -rf build/* && echo 'test..' > build/log.log
+        run: rm -rf dist/* && echo 'test..' > dist/log.log
 
-      - name: rm 
-        run: ls -la build/       
+      - name: dist 
+        run: ls -la dist/       
       # - name: Prepare .env
       #   run: cp .env.ci .env
       # - name: Yarn install
