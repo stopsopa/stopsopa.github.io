@@ -60,6 +60,8 @@ jobs:
       #     /bin/bash .github/stop-server.sh
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
+        with:
+          path: .
 
   # Deployment job
   deploy:
