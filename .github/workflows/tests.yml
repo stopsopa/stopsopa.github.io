@@ -28,6 +28,9 @@ jobs:
           cache: "yarn"
       - name: rm 
         run: rm -rf build/* && echo 'test..' > build/log.log
+
+      - name: rm 
+        run: ls -la build/       
       # - name: Prepare .env
       #   run: cp .env.ci .env
       # - name: Yarn install
