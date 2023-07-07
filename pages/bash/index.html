@@ -363,6 +363,53 @@
             find /path/to/directory -type d -empty -delete
           </script>
 
+          <h2>manpages</h2>
+          <script type="editor" data-lang="sh">
+
+            # https://www.cyberciti.biz/faq/how-to-add-install-man-pages-on-ubuntu-linux/
+            # g(How to install man pages on Ubuntu Linux)
+            # manpages
+cat <<EOF | docker build -t ubuntu:18.04-man -
+FROM ubuntu:18.04
+RUN apt-get update && yes | unminimize && apt install manpages manpages-dev manpages-posix manpages-posix-dev manpages-pl manpages-pl-dev
+EOF
+docker images | grep ubuntu | grep 18.04-man
+docker run -it ubuntu:18.04-man bash
+
+            # usage
+            man -d # Print extra debugging information
+            man -w man # Display the location of the manual page instead of the contents of the manual page.
+            man -k mkdir
+              # search in manpages for 'mkdir'
+            man 2 mkdir
+              # open
+
+            # other examples
+            man -k passwd
+            man 8 passwd
+            man 5 passwd
+
+            # lang
+            locale # will print
+            LANG="en_GB.UTF-8"
+            LC_COLLATE="en_GB.UTF-8"
+            LC_CTYPE="en_GB.UTF-8"
+            LC_MESSAGES="en_GB.UTF-8"
+            LC_MONETARY="en_GB.UTF-8"
+            LC_NUMERIC="en_GB.UTF-8"
+            LC_TIME="en_GB.UTF-8"
+            LC_ALL=
+
+            # single execution in different lang 
+            man -L pl man
+            # or switch with
+            alias man="man -L pl"           
+            unalias man
+            
+
+            
+          </script>
+
           <h2>Get exit status of process that's piped to another</h2>
           <a href="https://unix.stackexchange.com/a/14276">https://unix.stackexchange.com/a/14276</a>
           <h2>Books and manuals</h2>
