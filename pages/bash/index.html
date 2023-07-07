@@ -107,7 +107,7 @@
             done
             # --- iterate over lines ---- ^^^
 
-            
+
 
 
             # ------- find and iterate ------- vvv
@@ -358,7 +358,7 @@
               printf "${1:0:${#1}/2}${DELIMITER}${1:${#1}/2}"
             }
             echo "AWS_ACCESS_KEY_ID >$(divideInTwo "${AWS_ACCESS_KEY_ID}")<"
-            
+
             # delete empty directories
             find /path/to/directory -type d -empty -delete
           </script>
@@ -400,14 +400,11 @@
             LC_TIME="en_GB.UTF-8"
             LC_ALL=
 
-            # single execution in different lang 
+            # single execution in different lang
             man -L pl man
             # or switch with
-            alias man="man -L pl"           
+            alias man="man -L pl"
             unalias man
-            
-
-            
           </script>
 
           <h2>Get exit status of process that's piped to another</h2>
@@ -469,8 +466,7 @@
         <h2>diff</h2>
         <script type="editor" data-lang="sh">
 
-diff <(curl https://foo.com) <(curl https://bar.com)
-
+          diff <(curl https://foo.com) <(curl https://bar.com)
         </script>
         <h2>inode</h2>
         <script type="editor" data-lang="sh">
@@ -849,7 +845,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           <h2>find</h2>
           <a href="https://ss64.com/osx/find.html">https://ss64.com/osx/find.html</a>
           <script type="editor" data-lang="sh">
-          
+
             # or condition
             find . -type f \( -regex '.*/8_.*' -o -regex '.*/7_.*' \)
 

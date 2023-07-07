@@ -9,24 +9,22 @@
   <body class="layout" toc>
     <div class="body">
       <div class="inside">
-
         <div class="cards">
           <h2>transaction</h2>
           <script type="editor" data-lang="sql">
-BEGIN TRANSACTION;
-BEGIN TRY
+            BEGIN TRANSACTION;
+            BEGIN TRY
 
-  -- do your inserts here
-  -- avoid GO here
+              -- do your inserts here
+              -- avoid GO here
 
-COMMIT TRANSACTION;
-END TRY
-BEGIN CATCH
-    IF @@TRANCOUNT > 0
-        ROLLBACK TRANSACTION;
-    THROW
-END CATCH
-
+            COMMIT TRANSACTION;
+            END TRY
+            BEGIN CATCH
+                IF @@TRANCOUNT > 0
+                    ROLLBACK TRANSACTION;
+                THROW
+            END CATCH
           </script>
           ...
         </div>

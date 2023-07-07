@@ -13,7 +13,6 @@ for (let i = 2; i <= 120; i = i + 1) {
   const leave = Math.floor(Object.keys(tmp[i]).length / 2);
 
   tmp[i] = Object.entries(tmp[i]).reduce((acc, [key, val], ii) => {
-    
     if (ii < leave) {
       acc[key] = val;
     }

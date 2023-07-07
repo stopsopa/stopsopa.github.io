@@ -47,56 +47,53 @@
           <a href="https://github.com/pkulchenko/ZeroBraneStudio/issues/1075">https://github.com/pkulchenko/ZeroBraneStudio/issues/1075</a>
           <script type="editor" data-lang="python">
 
-# installation
-1) 
-    Install app from https://studio.zerobrane.com/download?not-this-time
-    WARNING: RUN THE APP NOW
-2)
-    Run script:
-            
-export APPDIR="/Applications/ZeroBraneStudio.app/Contents/ZeroBraneStudio"
-cd "$(mktemp -d)"
-git clone git@github.com:pkulchenko/ZeroBraneStudio.git .
-git checkout 996e99a6ee28f89f25913b955fa4144688ae6e73
-    # latest commit (as of 2023-06-25) of branch: https://github.com/pkulchenko/ZeroBraneStudio/commits/master
-    # mentioned in https://github.com/pkulchenko/ZeroBraneStudio/issues/1075 and https://stackoverflow.com/a/76548375
-    # actually NO, lua54 branch is mentioned but we have to use master branch
-(cd build; bash ./build-macosx.sh lua 5.4 luasocket) | tee _build.log   
-    # expected message >*** Build has been successfully completed ***<
-       
-cat <<EEE > "./interpreters/luadeb54.lua"
-dofile 'interpreters/luabase.lua'
-local interpreter = MakeLuaInterpreter(5.4, ' 5.4')
-interpreter.skipcompile = true
-return interpreter            
-EEE
-    # from https://stackoverflow.com/a/76548375 
+            # installation
+            1)
+                Install app from https://studio.zerobrane.com/download?not-this-time
+                WARNING: RUN THE APP NOW
+            2)
+                Run script:
 
-            
-open ./bin
-open "${APPDIR}/bin"
-  # and copy manually
-mv bin/clibs54 "${APPDIR}/bin/"
-mv bin/lua54 "${APPDIR}/bin/"
-mv bin/liblua54.dylib "${APPDIR}/bin/"
+            export APPDIR="/Applications/ZeroBraneStudio.app/Contents/ZeroBraneStudio"
+            cd "$(mktemp -d)"
+            git clone git@github.com:pkulchenko/ZeroBraneStudio.git .
+            git checkout 996e99a6ee28f89f25913b955fa4144688ae6e73
+                # latest commit (as of 2023-06-25) of branch: https://github.com/pkulchenko/ZeroBraneStudio/commits/master
+                # mentioned in https://github.com/pkulchenko/ZeroBraneStudio/issues/1075 and https://stackoverflow.com/a/76548375
+                # actually NO, lua54 branch is mentioned but we have to use master branch
+            (cd build; bash ./build-macosx.sh lua 5.4 luasocket) | tee _build.log
+                # expected message >*** Build has been successfully completed ***<
 
-open ./interpreters   
-open "${APPDIR}/interpreters"  
-  # then copy manually between these two directories
-interpreters/luadeb54.lua
+            cat <<EEE > "./interpreters/luadeb54.lua"
+            dofile 'interpreters/luabase.lua'
+            local interpreter = MakeLuaInterpreter(5.4, ' 5.4')
+            interpreter.skipcompile = true
+            return interpreter
+            EEE
+                # from https://stackoverflow.com/a/76548375
 
-open ./lualibs/mobdebug   
-open "${APPDIR}/lualibs/mobdebug"          
-  # REPLACE manually mobdebug.lua    
-          
-# app should be ready to run now
 
-# after running the app
-# choose from menu 
-#     Project -> Lua Interpreter -> Lua 5.4
-            
-            
-            
+            open ./bin
+            open "${APPDIR}/bin"
+              # and copy manually
+            mv bin/clibs54 "${APPDIR}/bin/"
+            mv bin/lua54 "${APPDIR}/bin/"
+            mv bin/liblua54.dylib "${APPDIR}/bin/"
+
+            open ./interpreters
+            open "${APPDIR}/interpreters"
+              # then copy manually between these two directories
+            interpreters/luadeb54.lua
+
+            open ./lualibs/mobdebug
+            open "${APPDIR}/lualibs/mobdebug"
+              # REPLACE manually mobdebug.lua
+
+            # app should be ready to run now
+
+            # after running the app
+            # choose from menu
+            #     Project -> Lua Interpreter -> Lua 5.4
           </script>
         </div>
       </div>
