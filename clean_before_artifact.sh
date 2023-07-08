@@ -2,7 +2,6 @@
 set -x
 rm -rf node_modules 
 rm -rf var 
-rm -rf public
 rm -rf playwright-report
 rm -rf bash
 rm -rf demos
