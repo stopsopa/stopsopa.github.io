@@ -59,9 +59,11 @@ jobs:
 
       - name: Build
         run: /bin/bash build.sh
+
       - name: run local server (NODE_ENV=production)
         run: |
           /bin/bash ci_server.sh &
+
       - name: servers healthchecks
         run: |
           TIMEOUT="2000" node .github/healtcheck.js
@@ -77,11 +79,14 @@ jobs:
       - name: E2E TESTS
         run: |
           /bin/bash playwright.sh --target docker
+
       - name: kill servers
         run: |
           /bin/bash .github/stop-server.sh
+
       - name: Clean before artifact
         run: /bin/bash clean_before_artifact.sh
+        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
