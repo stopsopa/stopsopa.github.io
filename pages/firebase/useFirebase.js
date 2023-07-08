@@ -277,7 +277,6 @@ export default ({ section }) => {
   }
 
   async function set(opt) {
-
     let { data = {}, key } = { ...opt };
 
     let internalkey;
