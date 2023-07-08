@@ -2,7 +2,6 @@
 .idea/
 *.tar.gz
 *.zip
-/.env
 node_modules
 /public/coverage/
 /_git

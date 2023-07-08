@@ -26,8 +26,8 @@ jobs:
         with:
           node-version: 18.7.0
           cache: "yarn"
-      - name: Prepare .env
-        run: cp .env.ci .env
+      # - name: Prepare .env
+      #   run: cp .env.ci .env
       - name: Yarn install
         run: yarn
       - name: Build

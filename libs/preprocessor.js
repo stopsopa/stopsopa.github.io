@@ -16,7 +16,9 @@ const __dirname = path.dirname(__filename);
 
 const th = (msg) => new Error(`preprocessor.js error: ${msg}`);
 
-const targets = [path.resolve(__dirname, "..", "public", "preprocessed.js"), path.resolve(__dirname, "..", "build", "preprocessed.js")];
+const targets = [
+  path.resolve(__dirname, "..", "public", "preprocessed.js"), 
+  path.resolve(__dirname, "..", "build", "preprocessed.js")];
 
 if (!node) {
   throw th(`${__dirname} script should not be ever included in browser code`);
