@@ -31,6 +31,7 @@ jobs:
     
       - name: test before bringing cache
         run: |
+          set -x
           pwd
           ls -la
           ls -la node_modules || true
@@ -43,6 +44,7 @@ jobs:
     
       - name: test if cache revived?
         run: |
+          set -x
           pwd
           ls -la
           ls -la node_modules || true
