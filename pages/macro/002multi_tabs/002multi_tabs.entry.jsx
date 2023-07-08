@@ -4,7 +4,7 @@ import { render } from "react-dom";
 
 import classnames from "classnames";
 
-import { set as setraw, get } from "nlab/lcstorage";
+import { set as setraw, get as getraw } from "nlab/lcstorage";
 
 import useCustomState from "../../useCustomState.js";
 
@@ -162,7 +162,7 @@ const Main = () => {
 
   useEffect(() => {
     const list = tabs.map(({ tab }) => {
-      return get(tab, generateDefaultTab(tab));
+      return getraw(tab, generateDefaultTab(tab));
     });
     setValues(list);
 
