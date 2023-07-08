@@ -27,7 +27,7 @@ export default function layoutTweaksHook() {
       const spacer = document.querySelector(".editors-parent > .spacer");
 
       const triggerResize = function () {
-        console.log("triggerResize", top, spacer);
+        // console.log("triggerResize", top, spacer);
         const topHeight = getAbsoluteHeight(top);
 
         spacer.style.height = String(parseInt(topHeight, 10)) + "px";

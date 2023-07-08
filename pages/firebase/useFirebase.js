@@ -112,9 +112,11 @@ export default ({ section }) => {
 
           setError(false);
 
-          console.log("current user", auth.currentUser);
+          const processedUser = auth.currentUser.email.replace(/\./g, ",");
 
-          setUser(auth.currentUser.email.replace(/\./g, ","));
+          console.log("current user", auth.currentUser, "processedUser: ", processedUser);
+
+          setUser(processedUser);
 
           if (idToken) {
             logCurrentToken("current");
@@ -251,7 +253,7 @@ export default ({ section }) => {
     reCreateSession();
   }, []);
 
-  const getroot = async (key) => {
+  async function getroot(key) {
     if (typeof section !== "string" || !section.trim()) {
       throw th(`getroot: section is not specified`);
     }
@@ -272,9 +274,10 @@ export default ({ section }) => {
     });
 
     return internalkey;
-  };
+  }
 
-  const set = async (opt) => {
+  async function set(opt) {
+
     let { data = {}, key } = { ...opt };
 
     let internalkey;
@@ -346,9 +349,9 @@ export default ({ section }) => {
 
       throw e;
     }
-  };
+  }
 
-  const push = async (opt) => {
+  async function push(opt) {
     console.log("push...", JSON.stringify(opt));
 
     let { data = {}, key } = { ...opt };
@@ -427,9 +430,9 @@ export default ({ section }) => {
 
       throw e;
     }
-  };
+  }
 
-  const get = async (key) => {
+  async function get(key) {
     let internalkey;
 
     try {
@@ -512,9 +515,9 @@ export default ({ section }) => {
 
       throw e;
     }
-  };
+  }
 
-  const del = async (key) => {
+  async function del(key) {
     let internalkey;
 
     try {
@@ -568,7 +571,7 @@ export default ({ section }) => {
 
       throw e;
     }
-  };
+  }
 
   const expirationData = () => {
     // https://firebase.google.com/docs/auth/admin/manage-cookies

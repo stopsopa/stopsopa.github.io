@@ -6,6 +6,10 @@ import classnames from "classnames";
 
 import { set as setraw, get } from "nlab/lcstorage";
 
+import useCustomState from "../../useCustomState.js";
+
+const section = "editor";
+
 import Ace, { languages, bringFocus, pokeEditorsToRerenderBecauseSometimesTheyStuck } from "../Ace.jsx";
 
 import { debounce } from "lodash";
@@ -18,7 +22,7 @@ import "./002multi_tabs.scss";
 
 import { useDroppable, useDraggable } from "@dnd-kit/core";
 
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, closestCenter, MouseSensor, KeyboardSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 
@@ -26,7 +30,7 @@ import { useSortable } from "@dnd-kit/sortable";
 
 import { CSS } from "@dnd-kit/utilities";
 
-const set = debounce((...args) => {
+const setLocalStorage = debounce((...args) => {
   // console.log("debounce set", ...args);
   setraw(...args);
 }, 50);
@@ -48,11 +52,27 @@ function generateDefaultTab(tab) {
 const Main = () => {
   layoutTweaksHook();
 
+  const { error, id, set, get, del, push } = useCustomState({
+    section,
+  });
+
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+    useSensor(MouseSensor, {
+      // Require the mouse to move by 10 pixels before activating
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(TouchSensor, {
+      // Press delay of 250ms, with tolerance of 5px of movement
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
     })
+    // useSensor(KeyboardSensor, {
+    //   coordinateGetter: sortableKeyboardCoordinates,
+    // })
   );
 
   // tab key [string]
@@ -134,7 +154,7 @@ const Main = () => {
         }
       }
 
-      set(tab, found);
+      setLocalStorage(tab, found);
 
       return copy;
     });
@@ -191,6 +211,23 @@ const Main = () => {
   }, []);
 
   useEffect(() => {
+    if (id) {
+      (async function () {
+        await set({
+          key: "focus_test",
+          data: "test",
+        });
+
+        window.addEventListener("focus", async function () {
+          const data = await get("focus_test");
+
+          console.log("focus_test", data);
+        });
+      })();
+    }
+  }, [id]);
+
+  useEffect(() => {
     if (tab) {
       pokeEditorsToRerenderBecauseSometimesTheyStuck(() => {
         if (onTheRight === false) {
@@ -203,25 +240,20 @@ const Main = () => {
   function handleDragEnd(event) {
     const { active, over } = event;
 
-    console.log("handler: ", {
-      active,
-      over,
-    });
+    if (active.id !== over.id) {
+      setTabsRaw((tabs) => {
+        const tmp = tabs.map((t) => t.tab);
 
-    // if (active.id !== over.id) {
-    //   setItems((items) => {
-    //     const oldIndex = items.indexOf(active.id);
-    //     const newIndex = items.indexOf(over.id);
+        const oldIndex = tmp.indexOf(active.id);
 
-    //     return arrayMove(items, oldIndex, newIndex);
-    //   });
-    // }
+        const newIndex = tmp.indexOf(over.id);
+
+        const newList = arrayMove(tabs, oldIndex, newIndex); // https://docs.dndkit.com/presets/sortable#connecting-all-the-pieces
+
+        return newList;
+      });
+    }
   }
-
-  console.log(
-    "tabs:",
-    tabs.map((t) => t.tab),
-  );
 
   return (
     <div className="acelayout">
@@ -239,15 +271,23 @@ const Main = () => {
             play
           </button>
         </div>
-
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <DroppableTabElement>
+          <div className="tabs">
             <SortableContext items={tabs.map((t) => t.tab)} strategy={horizontalListSortingStrategy}>
               {tabs.map(({ tab: tab_ }) => {
-                return <DraggableTabElement key={tab_} tab={tab} tab_={tab_} onTheRight={onTheRight} setOnTheRight={setOnTheRight} setTab={setTab} />;
+                return <SortableTabElement key={tab_} tab={tab} tab_={tab_} onTheRight={onTheRight} setOnTheRight={setOnTheRight} setTab={setTab} />;
               })}
+              <div>
+                <div
+                  onClick={() => {
+                    console.log("add...");
+                  }}
+                >
+                  +
+                </div>
+              </div>
             </SortableContext>
-          </DroppableTabElement>
+          </div>
         </DndContext>
       </div>
       <div
@@ -321,42 +361,16 @@ const Main = () => {
   );
 };
 
-function DroppableTabElement(props) {
-  const { children, ...childProps } = props;
-
-  // const { isOver, setNodeRef } = useDroppable({
-  //   id: "droppable",
-  // });
-  // const style = {
-  //   color: isOver ? "green" : undefined,
-  // };
-
-  return (
-    <div
-      className="tabs"
-      // style={style}
-      // ref={setNodeRef}
-      {...childProps}
-    >
-      {children}
-    </div>
-  );
-}
-
-function DraggableTabElement(props) {
-
+function SortableTabElement(props) {
   const { tab, tab_, onTheRight, setOnTheRight, setTab } = props;
-  // const { attributes, listeners, setNodeRef, transform } = useDraggable({
-  //   id: tab_,
-  // });
 
-  // const style = transform
-  //   ? {
-  //       transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-  //     }
-  //   : undefined;
-
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: tab_ });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: tab_,
+    transition: {
+      // duration: 150, // milliseconds
+      // easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+    },
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -392,16 +406,18 @@ function DraggableTabElement(props) {
   );
 }
 
-(async function () {
-  await new Promise((resolve) => {
-    (function repeat() {
-      if (window.githubJsReady) {
-        resolve();
-      } else {
-        setTimeout(repeat, 50);
-      }
-    })();
-  });
+{
+  (async function () {
+    await new Promise((resolve) => {
+      (function repeat() {
+        if (window.githubJsReady) {
+          resolve();
+        } else {
+          setTimeout(repeat, 50);
+        }
+      })();
+    });
 
-  render(<Main />, document.getElementById("app"));
-})();
+    render(<Main />, document.getElementById("app"));
+  })();
+}
