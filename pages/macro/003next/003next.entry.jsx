@@ -4,17 +4,31 @@ import { render, createPortal } from "react-dom";
 
 import classnames from "classnames";
 
-import { set as setraw, get } from "nlab/lcstorage";
+import { set as setraw, get as getraw } from "nlab/lcstorage";
 
-import Ace, { languages } from "../Ace.jsx";
+import useCustomState from "../../useCustomState.js";
+
+const section = "editor";
+
+import Ace, { languages, bringFocus, pokeEditorsToRerenderBecauseSometimesTheyStuck } from "../Ace.jsx";
 
 import { debounce } from "lodash";
 
 import RecordLog from "../RecordLog";
 
+import layoutTweaksHook from "../layoutTweaksHook.jsx";
+
 import "./003next.scss";
 
-const set = debounce((...args) => {
+import { DndContext, closestCenter, MouseSensor, KeyboardSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy } from "@dnd-kit/sortable";
+
+import { useSortable } from "@dnd-kit/sortable";
+
+import { CSS } from "@dnd-kit/utilities";
+
+const setLocalStorage = debounce((...args) => {
   // console.log("debounce set", ...args);
   setraw(...args);
 }, 50);
@@ -34,6 +48,35 @@ function generateDefaultTab(tab) {
  *  https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
  */
 const Main = ({ portal }) => {
+  layoutTweaksHook();
+
+  const { error, id, set, get, del, push } = useCustomState({
+    section,
+  });
+
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      // Require the mouse to move by 10 pixels before activating
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(TouchSensor, {
+      // Press delay of 250ms, with tolerance of 5px of movement
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    })
+    // useSensor(KeyboardSensor, {
+    //   coordinateGetter: sortableKeyboardCoordinates,
+    // })
+  );
+
+  // tab key [string]
+  // generateDefaultTab
+  // editor instance of ace
+
   const [tabs, setTabsRaw] = useState([{ tab: "one" }, { tab: "two" }, { tab: "three" }]);
 
   const [tab, setTabRaw] = useState("one");
@@ -45,7 +88,6 @@ const Main = ({ portal }) => {
   const [values, setValues] = useState([]);
 
   function play() {
-    console.log("triggering play action in main component");
     setRecordOn(false);
     RecordLog.play();
   }
@@ -100,7 +142,7 @@ const Main = ({ portal }) => {
         }
       }
 
-      set(tab, found);
+      setLocalStorage(tab, found);
 
       return copy;
     });
@@ -108,7 +150,7 @@ const Main = ({ portal }) => {
 
   useEffect(() => {
     const list = tabs.map(({ tab }) => {
-      return get(tab, generateDefaultTab(tab));
+      return getraw(tab, generateDefaultTab(tab));
     });
     setValues(list);
 
@@ -156,6 +198,51 @@ const Main = ({ portal }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (id) {
+      (async function () {
+        await set({
+          key: "focus_test",
+          data: "test",
+        });
+
+        window.addEventListener("focus", async function () {
+          const data = await get("focus_test");
+
+          console.log("focus_test", data);
+        });
+      })();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (tab) {
+      pokeEditorsToRerenderBecauseSometimesTheyStuck(() => {
+        if (onTheRight === false) {
+          bringFocus(tab, "!onTheRight");
+        }
+      }); // forcus for every change of tab -> on every click of tab
+    }
+  }, [tab]);
+
+  function handleDragEnd(event) {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setTabsRaw((tabs) => {
+        const tmp = tabs.map((t) => t.tab);
+
+        const oldIndex = tmp.indexOf(active.id);
+
+        const newIndex = tmp.indexOf(over.id);
+
+        const newList = arrayMove(tabs, oldIndex, newIndex); // https://docs.dndkit.com/presets/sortable#connecting-all-the-pieces
+
+        return newList;
+      });
+    }
+  }
+
   function setTab(tab) {
     if (onTheRight !== tab) {
       setTabRaw(tab);
@@ -198,31 +285,24 @@ const Main = ({ portal }) => {
         </>,
         portal
       )}
-
-      <div className="tabs">
-        {tabs.map(({ tab: tab_ }) => {
-          return (
-            <div
-              key={tab_}
-              className={classnames({
-                active: tab === tab_,
-              })}
-            >
-              <div onClick={() => setTab(tab_)}>{tab_}</div>
-              <div>
-                <div onClick={() => setOnTheRight((v) => (v === tab_ ? false : tab_))}>{onTheRight === tab_ ? "◄" : "►"}</div>
-                <div>▤</div>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <div className="tabs">
+          <SortableContext items={tabs.map((t) => t.tab)} strategy={horizontalListSortingStrategy}>
+            {tabs.map(({ tab: tab_ }) => {
+              return <SortableTabElement key={tab_} tab={tab} tab_={tab_} onTheRight={onTheRight} setOnTheRight={setOnTheRight} setTab={setTab} />;
+            })}
+            <div>
+              <div
+                onClick={() => {
+                  console.log("add...");
+                }}
+              >
+                +
               </div>
             </div>
-          );
-        })}
-      </div>
-      {/* <div>
-          <pre>{JSON.stringify({
-            tab,
-            tabs: tabs.map(({editor, ...rest}) => ({...rest}))
-          }, null, 4)}</pre>
-        </div> */}
+          </SortableContext>
+        </div>
+      </DndContext>
       <div className="editors">
         {tabs.map(({ tab: tab_ }) => (
           <div
@@ -244,12 +324,29 @@ const Main = ({ portal }) => {
                   ))}
                 </select>
               </label>
+              <label>
+                wrap:
+                <input
+                  type="checkbox"
+                  checked={Boolean(getValue(tab_, "wrap"))}
+                  onChange={(e) => {
+                    setValue(tab_, "wrap", e.target.checked);
+                  }}
+                />
+              </label>
             </div>
             <Ace
               id={tab_}
               content={getValue(tab_, "value", "")}
               lang={getValue(tab_, "lang", "")}
-              onInit={(editor) => setTabs(tab_, "editor", editor)}
+              wrap={Boolean(getValue(tab_, "wrap", false))}
+              onInit={(editor) => {
+                console.log(`editor mounted: `, tab_);
+                setTabs(tab_, "editor", editor);
+                if (tab_ === tab) {
+                  bringFocus(tab); // focus on first load of all tabs
+                }
+              }}
               onChange={(data) => {
                 setValue(tab_, "value", data);
               }}
@@ -261,6 +358,51 @@ const Main = ({ portal }) => {
     </div>
   );
 };
+
+function SortableTabElement(props) {
+  const { tab, tab_, onTheRight, setOnTheRight, setTab } = props;
+
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: tab_,
+    transition: {
+      // duration: 150, // milliseconds
+      // easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+    },
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      key={tab_}
+      className={classnames({
+        active: tab_ === tab,
+      })}
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+    >
+      <div
+        onClick={() => {
+          setTab(tab_);
+          if (onTheRight !== false) {
+            bringFocus(tab_, "onTheRight");
+          }
+        }}
+      >
+        {tab_}
+      </div>
+      <div>
+        <div onClick={() => setOnTheRight((v) => (v === tab_ ? false : tab_))}>{onTheRight === tab_ ? "◄" : "►"}</div>
+        <div>▤</div>
+      </div>
+    </div>
+  );
+}
 
 (async function () {
   await new Promise((resolve) => {

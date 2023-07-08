@@ -6,10 +6,6 @@ import classnames from "classnames";
 
 import { set as setraw, get as getraw } from "nlab/lcstorage";
 
-import useCustomState from "../../useCustomState.js";
-
-const section = "editor";
-
 import Ace, { languages, bringFocus, pokeEditorsToRerenderBecauseSometimesTheyStuck } from "../Ace.jsx";
 
 import { debounce } from "lodash";
@@ -19,8 +15,6 @@ import RecordLog from "../RecordLog";
 import layoutTweaksHook from "../layoutTweaksHook.jsx";
 
 import "./002multi_tabs.scss";
-
-import { useDroppable, useDraggable } from "@dnd-kit/core";
 
 import { DndContext, closestCenter, MouseSensor, KeyboardSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 
@@ -52,10 +46,6 @@ function generateDefaultTab(tab) {
 const Main = () => {
   layoutTweaksHook();
 
-  const { error, id, set, get, del, push } = useCustomState({
-    section,
-  });
-
   const sensors = useSensors(
     useSensor(MouseSensor, {
       // Require the mouse to move by 10 pixels before activating
@@ -78,7 +68,7 @@ const Main = () => {
   // tab key [string]
   // generateDefaultTab
   // editor instance of ace
-  const [tabs, setTabsRaw] = useState([{ tab: "one" }, { tab: "two" }, { tab: "threethree" }]);
+  const [tabs, setTabsRaw] = useState([{ tab: "one" }, { tab: "two" }, { tab: "three" }]);
 
   const [tab, setTabRaw] = useState("one");
 
@@ -87,12 +77,6 @@ const Main = () => {
   const [recordOn, setRecordOn] = useState(false);
 
   const [values, setValues] = useState([]);
-
-  function setTab(tab) {
-    if (onTheRight !== tab) {
-      setTabRaw(tab);
-    }
-  }
 
   function play() {
     // console.log("triggering play action in main component");
@@ -211,23 +195,6 @@ const Main = () => {
   }, []);
 
   useEffect(() => {
-    if (id) {
-      (async function () {
-        await set({
-          key: "focus_test",
-          data: "test",
-        });
-
-        window.addEventListener("focus", async function () {
-          const data = await get("focus_test");
-
-          console.log("focus_test", data);
-        });
-      })();
-    }
-  }, [id]);
-
-  useEffect(() => {
     if (tab) {
       pokeEditorsToRerenderBecauseSometimesTheyStuck(() => {
         if (onTheRight === false) {
@@ -252,6 +219,12 @@ const Main = () => {
 
         return newList;
       });
+    }
+  }
+
+  function setTab(tab) {
+    if (onTheRight !== tab) {
+      setTabRaw(tab);
     }
   }
 
@@ -298,12 +271,6 @@ const Main = () => {
         tabIndex={0}
       >
         <div className="spacer"></div>
-        {/* <div>
-          <pre>{JSON.stringify({
-            tab,
-            tabs: tabs.map(({editor, ...rest}) => ({...rest}))
-          }, null, 4)}</pre>
-        </div> */}
         <div className="editors">
           {tabs.map(({ tab: tab_ }) => (
             <div
