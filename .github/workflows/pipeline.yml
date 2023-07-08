@@ -33,7 +33,7 @@ jobs:
         run: |
           pwd
           ls -la
-          ls -la node_modules
+          ls -la node_modules || true
 
       - uses: actions/cache/restore@v3 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
         id: restore-cache
@@ -45,7 +45,7 @@ jobs:
         run: |
           pwd
           ls -la
-          ls -la node_modules
+          ls -la node_modules || true
 
       - name: Yarn install
         run: yarn install --production=false
