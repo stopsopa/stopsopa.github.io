@@ -11,6 +11,7 @@ body header > a:first-child {
 }
 .tabs {
   display: flex;
+  flex-wrap: wrap;
 }
 .tabs > div {
   border: 1px solid transparent;

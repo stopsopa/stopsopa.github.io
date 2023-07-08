@@ -21,16 +21,27 @@ function getAbsoluteHeight(el) {
 
 export default function layoutTweaksHook() {
   useEffect(() => {
+    console.log('layoutTweaksHook hook mounted')
     try {
-      const top = document.querySelector(".acelayout > .top");
+      const top = document.querySelector(".this_element_changes_height_and_together_with_header_affect_spacer");
 
-      const spacer = document.querySelector(".editors-parent > .spacer");
+      const spacer = document.querySelector(".dynamic_spacer");
 
       const triggerResize = function () {
-        // console.log("triggerResize", top, spacer);
-        const topHeight = getAbsoluteHeight(top);
+        console.log('triggerResize...', top, spacer)
+        try {
 
-        spacer.style.height = String(parseInt(topHeight, 10)) + "px";
+          // console.log("triggerResize", top, spacer);
+          const topHeight = getAbsoluteHeight(top);
+  
+          spacer.style.height = String(parseInt(topHeight, 10)) + "px";
+        }
+        catch (e) {
+
+          const es = String(e);
+
+          console.error('XXXXXXXXXXXXXXXXXXXXXXXXXXX', es)
+        }
       };
       window.addEventListener("resize", triggerResize);
       document.addEventListener("scroll", triggerResize);

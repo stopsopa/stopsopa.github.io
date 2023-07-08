@@ -230,7 +230,7 @@ const Main = () => {
 
   return (
     <div className="acelayout">
-      <div className="top">
+      <div className="top this_element_changes_height_and_together_with_header_affect_spacer">
         <div className="portal">
           <button
             onClick={() => setRecordOn((x) => !x)}
@@ -247,18 +247,19 @@ const Main = () => {
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <div className="tabs">
             <SortableContext items={tabs.map((t) => t.tab)} strategy={horizontalListSortingStrategy}>
-              {tabs.map(({ tab: tab_ }) => {
-                return <SortableTabElement key={tab_} tab={tab} tab_={tab_} onTheRight={onTheRight} setOnTheRight={setOnTheRight} setTab={setTab} />;
-              })}
               <div>
                 <div
                   onClick={() => {
                     console.log("add...");
+                    setTabsRaw((tabs) => [...tabs, { tab: new Date().getTime() }]);
                   }}
                 >
                   +
                 </div>
               </div>
+              {tabs.map(({ tab: tab_ }) => {
+                return <SortableTabElement key={tab_} tab={tab} tab_={tab_} onTheRight={onTheRight} setOnTheRight={setOnTheRight} setTab={setTab} />;
+              })}
             </SortableContext>
           </div>
         </DndContext>
@@ -270,7 +271,7 @@ const Main = () => {
         })}
         tabIndex={0}
       >
-        <div className="spacer"></div>
+        <div className="dynamic_spacer"></div>
         <div className="editors">
           {tabs.map(({ tab: tab_ }) => (
             <div
