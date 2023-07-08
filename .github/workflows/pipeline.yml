@@ -28,8 +28,33 @@ jobs:
           cache: "yarn"
       # - name: Prepare .env
       #   run: cp .env.ci .env
+    
+      - name: test before bringing cache
+        run: |
+          pwd
+          ls -la
+          ls -la node_modules
+
+      - uses: actions/cache/restore@v3 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
+        id: restore-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+    
+      - name: test if cache revived?
+        run: |
+          pwd
+          ls -la
+          ls -la node_modules
+
       - name: Yarn install
-        run: yarn
+        run: yarn install --production=false
+
+      - uses: actions/cache/save@v3 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action        
+        with:
+          path: node_modules
+          key: ${{ steps.restore-cache.outputs.cache-primary-key }}
+
       - name: Build
         run: /bin/bash build.sh
       - name: run local server (NODE_ENV=production)
