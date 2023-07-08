@@ -26,15 +26,13 @@ jobs:
         with:
           node-version: 18.7.0
           cache: "yarn"
-      # - name: Prepare .env
-      #   run: cp .env.ci .env
     
-      # - name: test before bringing cache
-      #   run: |
-      #     set -x
-      #     pwd
-      #     ls -la
-      #     ls -la node_modules || true
+      - name: test before bringing cache
+        run: |
+          set -x
+          pwd
+          ls -la
+          ls -la node_modules || true
 
       - uses: actions/cache/restore@v3 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
         id: restore-cache
@@ -42,12 +40,12 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
     
-      # - name: test if cache revived?
-      #   run: |
-      #     set -x
-      #     pwd
-      #     ls -la
-      #     ls -la node_modules || true
+      - name: test if cache revived?
+        run: |
+          set -x
+          pwd
+          ls -la
+          ls -la node_modules || true
 
       - name: Yarn install
         run: yarn install --production=false
