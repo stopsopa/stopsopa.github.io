@@ -53,6 +53,8 @@ jobs:
       - name: kill servers
         run: |
           /bin/bash .github/stop-server.sh
+      - name: Clean before artifact
+        run: /bin/bash clean_before_artifact.sh
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

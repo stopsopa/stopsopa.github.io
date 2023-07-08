@@ -21,6 +21,7 @@
     "inspc": "^0.0.19",
     "jest": "^29.5.0",
     "lodash": "^4.17.21",
+    "md5": "^2.3.0",
     "mini-css-extract-plugin": "^2.7.3",
     "mkdirp": "^2.1.5",
     "nlab": "^0.2.0",
