@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
     <style>
@@ -113,7 +116,12 @@
           const headers = {};
           res.headers.forEach((value, key) => (headers[key] = value));
 
-          if (typeof headers["content-type"] !== "string" || !headers["content-type"].trim() || !mimes.includes(headers["content-type"].toLowerCase()) || res.status !== 200) {
+          if (
+            typeof headers["content-type"] !== "string" ||
+            !headers["content-type"].trim() ||
+            !mimes.includes(headers["content-type"].toLowerCase()) ||
+            res.status !== 200
+          ) {
             textarea.value = JSON.stringify(
               {
                 status: res.status,

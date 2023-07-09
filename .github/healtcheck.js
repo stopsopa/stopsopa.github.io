@@ -77,7 +77,11 @@ if (/^\d+$/.test(process.env.TIMEOUT)) {
     }
 
     setTimeout(() => {
-      logger(`healthcheck timeout error after ${healthcheckTimeoutMilliseconds} miliseconds (${parseFloat(healthcheckTimeoutMilliseconds / 1000).toFixed(2)} sec)`);
+      logger(
+        `healthcheck timeout error after ${healthcheckTimeoutMilliseconds} miliseconds (${parseFloat(
+          healthcheckTimeoutMilliseconds / 1000
+        ).toFixed(2)} sec)`
+      );
 
       process.exit(1);
     }, healthcheckTimeoutMilliseconds);

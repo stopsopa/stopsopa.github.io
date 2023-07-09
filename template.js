@@ -61,7 +61,9 @@ data = data.replace(/<%([a-z]+)\s*(.*?)\s*%>/g, (all, type, file) => {
     return data;
   }
 
-  throw new Error(`Template file '${inpufile}' contains unsupported <%${type} ... %> placelholder, supported are <%url ... %> and <%inject ... %>`);
+  throw new Error(
+    `Template file '${inpufile}' contains unsupported <%${type} ... %> placelholder, supported are <%url ... %> and <%inject ... %>`
+  );
 });
 
 fs.writeFileSync(

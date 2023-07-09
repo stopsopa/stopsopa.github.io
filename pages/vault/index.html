@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
 
@@ -70,7 +73,9 @@
               vault status
             </script>
             <h2>set get</h2>
-            <a href="https://learn.hashicorp.com/tutorials/vault/getting-started-first-secret?in=vault/getting-started">Your First Secret</a>
+            <a href="https://learn.hashicorp.com/tutorials/vault/getting-started-first-secret?in=vault/getting-started"
+              >Your First Secret</a
+            >
             <script type="editor" data-lang="sh">
 
               vault kv put secret/hello foo=world2 second=true
@@ -158,13 +163,21 @@
               docker run -d --rm -p 8200:8200 -e VAULT_ADDR=0.0.0.0 -e VAULT_DEV_ROOT_TOKEN_ID=devtoken vault:0.11.4
             </script>
             <h2>Policy and Token - Approle</h2>
-            <a href="https://learn.hashicorp.com/tutorials/vault/approle">https://learn.hashicorp.com/tutorials/vault/approle</a>
+            <a href="https://learn.hashicorp.com/tutorials/vault/approle"
+              >https://learn.hashicorp.com/tutorials/vault/approle</a
+            >
             <br />
-            <a href="https://www.hashicorp.com/blog/authenticating-applications-with-vault-approle">https://www.hashicorp.com/blog/authenticating-applications-with-vault-approle</a>
+            <a href="https://www.hashicorp.com/blog/authenticating-applications-with-vault-approle"
+              >https://www.hashicorp.com/blog/authenticating-applications-with-vault-approle</a
+            >
             <br />
-            <a href="https://www.vaultproject.io/docs/auth/approle#via-the-cli-1">https://www.vaultproject.io/docs/auth/approle#via-the-cli-1</a>
+            <a href="https://www.vaultproject.io/docs/auth/approle#via-the-cli-1"
+              >https://www.vaultproject.io/docs/auth/approle#via-the-cli-1</a
+            >
             <br />
-            <a href="https://codersociety.com/blog/articles/hashicorp-vault-node">https://codersociety.com/blog/articles/hashicorp-vault-node</a>
+            <a href="https://codersociety.com/blog/articles/hashicorp-vault-node"
+              >https://codersociety.com/blog/articles/hashicorp-vault-node</a
+            >
             <script type="editor" data-lang="sh">
               vault auth list
               vault auth enable approle
@@ -242,9 +255,13 @@
               policies []
             </script>
             <h2>Curl</h2>
-            <a href="https://learn.hashicorp.com/tutorials/vault/getting-started-apis">https://learn.hashicorp.com/tutorials/vault/getting-started-apis</a>
+            <a href="https://learn.hashicorp.com/tutorials/vault/getting-started-apis"
+              >https://learn.hashicorp.com/tutorials/vault/getting-started-apis</a
+            >
             <br />
-            <a href="https://joachim8675309.medium.com/hashicorp-vault-with-approle-auth-724178503903">https://joachim8675309.medium.com/hashicorp-vault-with-approle-auth-724178503903</a>
+            <a href="https://joachim8675309.medium.com/hashicorp-vault-with-approle-auth-724178503903"
+              >https://joachim8675309.medium.com/hashicorp-vault-with-approle-auth-724178503903</a
+            >
             <script type="editor" data-lang="sh">
 
               vault token lookup -output-curl-string
@@ -287,7 +304,9 @@
               curl -H "X-Vault-Token: $(vault print token)" -H "X-Vault-Request: true" http://0.0.0.0:3370/v1/secret/hello-world/data/test
             </script>
             <h2>Refreshing approle</h2>
-            <a href="https://learn.hashicorp.com/tutorials/vault/agent-kubernetes">https://learn.hashicorp.com/tutorials/vault/agent-kubernetes</a>
+            <a href="https://learn.hashicorp.com/tutorials/vault/agent-kubernetes"
+              >https://learn.hashicorp.com/tutorials/vault/agent-kubernetes</a
+            >
             <br />
             <a href="https://learn.hashicorp.com/tutorials/vault/approle-best-practices?in=vault/auth-methods"
               >https://learn.hashicorp.com/tutorials/vault/approle-best-practices?in=vault/auth-methods</a

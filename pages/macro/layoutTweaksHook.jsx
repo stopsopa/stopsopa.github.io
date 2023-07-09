@@ -21,26 +21,23 @@ function getAbsoluteHeight(el) {
 
 export default function layoutTweaksHook() {
   useEffect(() => {
-    console.log('layoutTweaksHook hook mounted')
+    console.log("layoutTweaksHook hook mounted");
     try {
       const top = document.querySelector(".this_element_changes_height_and_together_with_header_affect_spacer");
 
       const spacer = document.querySelector(".dynamic_spacer");
 
       const triggerResize = function () {
-        console.log('triggerResize...', top, spacer)
+        console.log("triggerResize...", top, spacer);
         try {
-
           // console.log("triggerResize", top, spacer);
           const topHeight = getAbsoluteHeight(top);
-  
-          spacer.style.height = String(parseInt(topHeight, 10)) + "px";
-        }
-        catch (e) {
 
+          spacer.style.height = String(parseInt(topHeight, 10)) + "px";
+        } catch (e) {
           const es = String(e);
 
-          console.error('XXXXXXXXXXXXXXXXXXXXXXXXXXX', es)
+          console.error("XXXXXXXXXXXXXXXXXXXXXXXXXXX", es);
         }
       };
       window.addEventListener("resize", triggerResize);

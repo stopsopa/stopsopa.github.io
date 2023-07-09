@@ -131,7 +131,14 @@ const Main = () => {
         for (let index in items) {
           var item = items[index];
 
-          log(`t: ${typeof index} index >${index}<`, items[index].kind, "file: ", items[index].kind === "file", "index == 1", index == 1);
+          log(
+            `t: ${typeof index} index >${index}<`,
+            items[index].kind,
+            "file: ",
+            items[index].kind === "file",
+            "index == 1",
+            index == 1
+          );
 
           if (typeof item.kind === "string") {
             if (type === "string") {

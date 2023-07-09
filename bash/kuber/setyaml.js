@@ -168,7 +168,9 @@ switch (true) {
             value = Boolean(value);
             break;
           default:
-            throw new Error(`type have to be one of integer,int,float,float[5],double,boolean,bool but it is '${type}'`);
+            throw new Error(
+              `type have to be one of integer,int,float,float[5],double,boolean,bool but it is '${type}'`
+            );
         }
       }
     } catch (e) {
@@ -251,7 +253,10 @@ function set(source, key, value) {
         first = false;
 
         if (ar && !/^\d+$/.test(kt) && kt !== "") {
-          throw `if source is array and key is not integer nor empty string then its not possible to add to array, given key: ` + JSON.stringify(kt);
+          throw (
+            `if source is array and key is not integer nor empty string then its not possible to add to array, given key: ` +
+            JSON.stringify(kt)
+          );
         }
       }
 

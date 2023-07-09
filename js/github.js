@@ -501,9 +501,17 @@ log.green("defined", "window.manipulation");
 
       // header.innerHTML = `footer`;
 
-      log.blue("TOC", "[toc] found", "[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded and window.async.permalink.then]");
+      log.blue(
+        "TOC",
+        "[toc] found",
+        "[triggered in domcontentloaded.js, delayed async due to DOMContentLoaded and window.async.permalink.then]"
+      );
     } else {
-      log.blue("TOC", "[toc] not found", "[triggered in domcontentloaded.js, delayed async due to window.async.permalink.then]");
+      log.blue(
+        "TOC",
+        "[toc] not found",
+        "[triggered in domcontentloaded.js, delayed async due to window.async.permalink.then]"
+      );
     }
   };
 
@@ -580,14 +588,18 @@ log.green("defined", "window.manipulation");
       }),
     ]);
 
-    await loadJs("ace extension ext-linking", "/noprettier/ace/ace-builds-1.15.0/src-min-noconflict/ext-linking.js", function () {
-      try {
-        return true;
-        return window.sasync.loaded.polyfill_js;
-      } catch (e) {
-        return false;
+    await loadJs(
+      "ace extension ext-linking",
+      "/noprettier/ace/ace-builds-1.15.0/src-min-noconflict/ext-linking.js",
+      function () {
+        try {
+          return true;
+          return window.sasync.loaded.polyfill_js;
+        } catch (e) {
+          return false;
+        }
       }
-    });
+    );
 
     if (!/^https?:\/\//.test(env("GITHUB_SOURCES_PREFIX"))) {
       throw new Error(`GITHUB_SOURCES_PREFIX env var is not defined or invalid`);
@@ -619,7 +631,10 @@ log.green("defined", "window.manipulation");
 
     window.githubJsReady = true;
 
-    log.blue("DOMContentLoaded", "window.doace [triggered in github.js] -> window.githubJsReady = true defined (see snippet how to handle it next to this log)");
+    log.blue(
+      "DOMContentLoaded",
+      "window.doace [triggered in github.js] -> window.githubJsReady = true defined (see snippet how to handle it next to this log)"
+    );
 
     // (async function () {
     //   await new Promise((resolve) => {
@@ -895,7 +910,10 @@ body .github-profile:hover {
       p = new Promise(function (resolve) {
         (function run() {
           if (window._ && window.ace && window.ace.edit) {
-            log.blue("executed", "window.doace() inside - window.ace.edit found, binding body click for copy code from editor feature");
+            log.blue(
+              "executed",
+              "window.doace() inside - window.ace.edit found, binding body click for copy code from editor feature"
+            );
 
             document.body.addEventListener("click", function (e) {
               var el = e.target;
@@ -982,7 +1000,15 @@ body .github-profile:hover {
 
       if (list.length > 0) {
         alert(
-          "there is " + list.length + " <script" + "> tags in <body" + "> with invalid [type] attribute, allowed values are (" + allowed.join(", ") + ") but found: (" + list.join(" ======= ") + ")"
+          "there is " +
+            list.length +
+            " <script" +
+            "> tags in <body" +
+            "> with invalid [type] attribute, allowed values are (" +
+            allowed.join(", ") +
+            ") but found: (" +
+            list.join(" ======= ") +
+            ")"
         );
       }
     })();
@@ -1221,7 +1247,10 @@ body .github-profile:hover {
           enableLinking: true,
         });
         editor.on("linkClick", function (data) {
-          const clickedText = findWordAtPosition(editor.getValue().split("\n")[data.position.row], data.position.column);
+          const clickedText = findWordAtPosition(
+            editor.getValue().split("\n")[data.position.row],
+            data.position.column
+          );
 
           if (typeof clickedText === "string" && clickedText.trim() && /^https?:\/\//.test(clickedText)) {
             log(`opening >${clickedText}<`);
@@ -1238,7 +1267,8 @@ body .github-profile:hover {
 
       var heightUpdateFunction = function () {
         // http://stackoverflow.com/questions/11584061/
-        var newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth();
+        var newHeight =
+          editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth();
 
         // log('new height', newHeight);
 

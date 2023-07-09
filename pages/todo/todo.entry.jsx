@@ -231,7 +231,11 @@ const Main = () => {
       >
         <input type="text" onChange={(e) => setEdit({ ...edit, title: e.target.value })} value={edit.title || ""} />
         <br />
-        <Textarea onChange={(e) => setEdit({ ...edit, description: e.target.value })} value={edit.description || ""} correct={-4} />
+        <Textarea
+          onChange={(e) => setEdit({ ...edit, description: e.target.value })}
+          value={edit.description || ""}
+          correct={-4}
+        />
         <br />
         <button type="submit" disabled={typeof edit.title !== "string" || !edit.title.trim()}>
           {edit.id ? "edit" : "create"}

@@ -16,7 +16,10 @@ const __dirname = path.dirname(__filename);
 
 const th = (msg) => new Error(`preprocessor.js error: ${msg}`);
 
-const targets = [path.resolve(__dirname, "..", "public", "preprocessed.js"), path.resolve(__dirname, "..", "build", "preprocessed.js")];
+const targets = [
+  path.resolve(__dirname, "..", "public", "preprocessed.js"),
+  path.resolve(__dirname, "..", "build", "preprocessed.js"),
+];
 
 if (!node) {
   throw th(`${__dirname} script should not be ever included in browser code`);
@@ -38,7 +41,9 @@ const result = dotenv.config({
 // EXPOSE_EXTRA_ENV_VARIABLES="/(^PUBLIC_|^REACT_APP_|^(PROJECT_NAME|PORT)$)/"
 const EXPOSE_EXTRA_ENV_VARIABLES = (function (e) {
   if (e.includes("$")) {
-    throw new Error(`EXPOSE_EXTRA_ENV_VARIABLES env var should not containe '$' character, replace it with <dollar> instead`);
+    throw new Error(
+      `EXPOSE_EXTRA_ENV_VARIABLES env var should not containe '$' character, replace it with <dollar> instead`
+    );
   }
   return stringToRegex(e.replace(/<dollar>/g, "$"));
 })(env("EXPOSE_EXTRA_ENV_VARIABLES"));

@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: 18.7.0
           cache: "yarn"
-    
+
       - name: test before bringing cache
         run: |
           set -x
@@ -39,7 +39,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-    
+
       - name: test if cache revived?
         run: |
           set -x
@@ -50,7 +50,7 @@ jobs:
       - name: Yarn install
         run: yarn install --production=false
 
-      - uses: actions/cache/save@v3 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action        
+      - uses: actions/cache/save@v3 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action
         with:
           path: node_modules
           key: ${{ steps.restore-cache.outputs.cache-primary-key }}
@@ -84,7 +84,7 @@ jobs:
 
       - name: Clean before artifact
         run: /bin/bash clean_before_artifact.sh
-        
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

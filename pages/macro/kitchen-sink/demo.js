@@ -2,7 +2,11 @@
  * from: https://github.com/ajaxorg/ace/blob/23208f2f19020d1f69b90bc3b02460bda8422072/demo/kitchen-sink/dev_util.js
  */
 
-define("ace/ext/rtl", ["require", "exports", "module", "ace/editor", "ace/config"], function (require, exports, module) {
+define("ace/ext/rtl", ["require", "exports", "module", "ace/editor", "ace/config"], function (
+  require,
+  exports,
+  module
+) {
   "use strict";
   var commands = [
     {
@@ -72,14 +76,17 @@ define("ace/ext/rtl", ["require", "exports", "module", "ace/editor", "ace/config
     }
   }
   function onCommandEmitted(commadEvent) {
-    commadEvent.editor.session.$bidiHandler.isMoveLeftOperation = /gotoleft|selectleft|backspace|removewordleft/.test(commadEvent.command.name);
+    commadEvent.editor.session.$bidiHandler.isMoveLeftOperation = /gotoleft|selectleft|backspace|removewordleft/.test(
+      commadEvent.command.name
+    );
   }
   function onChange(delta, editor) {
     var session = editor.session;
     session.$bidiHandler.currentRow = null;
     if (session.$bidiHandler.isRtlLine(delta.start.row) && delta.action === "insert" && delta.lines.length > 1) {
       for (var row = delta.start.row; row < delta.end.row; row++) {
-        if (session.getLine(row + 1).charAt(0) !== session.$bidiHandler.RLE) session.doc.$lines[row + 1] = session.$bidiHandler.RLE + session.getLine(row + 1);
+        if (session.getLine(row + 1).charAt(0) !== session.$bidiHandler.RLE)
+          session.doc.$lines[row + 1] = session.$bidiHandler.RLE + session.getLine(row + 1);
       }
     }
   }
@@ -112,11 +119,16 @@ define("ace/ext/rtl", ["require", "exports", "module", "ace/editor", "ace/config
   }
 });
 
-define("kitchen-sink/inline_editor", ["require", "exports", "module", "ace/line_widgets", "ace/editor", "ace/virtual_renderer", "ace/lib/dom", "ace/commands/default_commands"], function (
-  require,
-  exports,
-  module
-) {
+define("kitchen-sink/inline_editor", [
+  "require",
+  "exports",
+  "module",
+  "ace/line_widgets",
+  "ace/editor",
+  "ace/virtual_renderer",
+  "ace/lib/dom",
+  "ace/commands/default_commands",
+], function (require, exports, module) {
   "use strict";
 
   var LineWidgets = require("ace/line_widgets").LineWidgets;
@@ -1405,7 +1417,19 @@ define("kitchen-sink/dev_util", [
         var str = JSON.stringify(data).replace(/"(\w+)":/g, " $1: ");
         exports.log(str);
       };
-      var events = ["select", "input", "keypress", "keydown", "keyup", "compositionstart", "compositionupdate", "compositionend", "cut", "copy", "paste"];
+      var events = [
+        "select",
+        "input",
+        "keypress",
+        "keydown",
+        "keyup",
+        "compositionstart",
+        "compositionupdate",
+        "compositionend",
+        "cut",
+        "copy",
+        "paste",
+      ];
       events.forEach(function (name) {
         text.addEventListener(name, addToLog, true);
       });
@@ -1723,7 +1747,15 @@ define("ace/ext/modelist", ["require", "exports", "module"], function (require, 
   };
 });
 
-define("kitchen-sink/file_drop", ["require", "exports", "module", "ace/config", "ace/lib/event", "ace/ext/modelist", "ace/editor"], function (require, exports, module) {
+define("kitchen-sink/file_drop", [
+  "require",
+  "exports",
+  "module",
+  "ace/config",
+  "ace/lib/event",
+  "ace/ext/modelist",
+  "ace/editor",
+], function (require, exports, module) {
   var config = require("ace/config");
   var event = require("ace/lib/event");
   var modelist = require("ace/ext/modelist");
@@ -1933,7 +1965,15 @@ define("ace/ext/whitespace", ["require", "exports", "module", "ace/lib/lang"], f
   ];
 });
 
-define("kitchen-sink/doclist", ["require", "exports", "module", "ace/edit_session", "ace/undomanager", "ace/lib/net", "ace/ext/modelist"], function (require, exports, module) {
+define("kitchen-sink/doclist", [
+  "require",
+  "exports",
+  "module",
+  "ace/edit_session",
+  "ace/undomanager",
+  "ace/lib/net",
+  "ace/ext/modelist",
+], function (require, exports, module) {
   "use strict";
 
   var EditSession = require("ace/edit_session").EditSession;
@@ -2211,7 +2251,10 @@ splitter:hover {\
 
     renderer.screenToTextCoordinates = function (x, y) {
       var pos = this.pixelToScreenCoordinates(x, y);
-      return this.session.screenToDocumentPosition(Math.min(this.session.getScreenLength() - 1, Math.max(pos.row, 0)), Math.max(pos.column, 0));
+      return this.session.screenToDocumentPosition(
+        Math.min(this.session.getScreenLength() - 1, Math.max(pos.row, 0)),
+        Math.max(pos.column, 0)
+      );
     };
 
     renderer.$maxLines = 4;
@@ -2447,7 +2490,11 @@ define("kitchen-sink/util", [
   }
 });
 
-define("ace/ext/elastic_tabstops_lite", ["require", "exports", "module", "ace/editor", "ace/config"], function (require, exports, module) {
+define("ace/ext/elastic_tabstops_lite", ["require", "exports", "module", "ace/editor", "ace/config"], function (
+  require,
+  exports,
+  module
+) {
   "use strict";
   var ElasticTabstopsLite = function (editor) {
     this.$editor = editor;
@@ -2606,7 +2653,9 @@ define("ace/ext/elastic_tabstops_lite", ["require", "exports", "module", "ace/ed
         var strippedPartialLine = partialLine.replace(/\s*$/g, "");
         var ispaces = partialLine.length - strippedPartialLine.length;
         if (difference > 0) {
-          this.$editor.session.getDocument().insertInLine({ row: row, column: it + 1 }, Array(difference + 1).join(" ") + "\t");
+          this.$editor.session
+            .getDocument()
+            .insertInLine({ row: row, column: it + 1 }, Array(difference + 1).join(" ") + "\t");
           this.$editor.session.getDocument().removeInLine(row, it, it + 1);
           bias += difference;
         }
@@ -2665,7 +2714,17 @@ define("ace/ext/elastic_tabstops_lite", ["require", "exports", "module", "ace/ed
   });
 });
 
-define("ace/occur", ["require", "exports", "module", "ace/lib/oop", "ace/range", "ace/search", "ace/edit_session", "ace/search_highlight", "ace/lib/dom"], function (require, exports, module) {
+define("ace/occur", [
+  "require",
+  "exports",
+  "module",
+  "ace/lib/oop",
+  "ace/range",
+  "ace/search",
+  "ace/edit_session",
+  "ace/search_highlight",
+  "ace/lib/dom",
+], function (require, exports, module) {
   "use strict";
   var oop = require("./lib/oop");
   var Range = require("./range").Range;
@@ -2691,7 +2750,8 @@ define("ace/occur", ["require", "exports", "module", "ace/lib/oop", "ace/range",
       return true;
     };
     this.highlight = function (sess, regexp) {
-      var hl = (sess.$occurHighlight = sess.$occurHighlight || sess.addDynamicMarker(new SearchHighlight(null, "ace_occur-highlight", "text")));
+      var hl = (sess.$occurHighlight =
+        sess.$occurHighlight || sess.addDynamicMarker(new SearchHighlight(null, "ace_occur-highlight", "text")));
       hl.setRegexp(regexp);
       sess._emit("changeBackMarker"); // force highlight layer redraw
     };
@@ -2760,7 +2820,15 @@ define("ace/occur", ["require", "exports", "module", "ace/lib/oop", "ace/range",
   exports.Occur = Occur;
 });
 
-define("ace/commands/occur_commands", ["require", "exports", "module", "ace/config", "ace/occur", "ace/keyboard/hash_handler", "ace/lib/oop"], function (require, exports, module) {
+define("ace/commands/occur_commands", [
+  "require",
+  "exports",
+  "module",
+  "ace/config",
+  "ace/occur",
+  "ace/keyboard/hash_handler",
+  "ace/lib/oop",
+], function (require, exports, module) {
   var config = require("../config"),
     Occur = require("../occur").Occur;
   var occurStartCommand = {
@@ -2825,11 +2893,15 @@ define("ace/commands/occur_commands", ["require", "exports", "module", "ace/conf
   exports.occurStartCommand = occurStartCommand;
 });
 
-define("ace/commands/incremental_search_commands", ["require", "exports", "module", "ace/config", "ace/lib/oop", "ace/keyboard/hash_handler", "ace/commands/occur_commands"], function (
-  require,
-  exports,
-  module
-) {
+define("ace/commands/incremental_search_commands", [
+  "require",
+  "exports",
+  "module",
+  "ace/config",
+  "ace/lib/oop",
+  "ace/keyboard/hash_handler",
+  "ace/commands/occur_commands",
+], function (require, exports, module) {
   var config = require("../config");
   var oop = require("../lib/oop");
   var HashHandler = require("../keyboard/hash_handler").HashHandler;
@@ -3025,7 +3097,11 @@ define("ace/commands/incremental_search_commands", ["require", "exports", "modul
     };
     var handleKeyboard$super = this.handleKeyboard;
     this.handleKeyboard = function (data, hashId, key, keyCode) {
-      if (((hashId === 1 /*ctrl*/ || hashId === 8) /*command*/ && key === "v") || (hashId === 1 /*ctrl*/ && key === "y")) return null;
+      if (
+        ((hashId === 1 /*ctrl*/ || hashId === 8) /*command*/ && key === "v") ||
+        (hashId === 1 /*ctrl*/ && key === "y")
+      )
+        return null;
       var cmd = handleKeyboard$super.call(this, data, hashId, key, keyCode);
       if (cmd && cmd.command) {
         return cmd;
@@ -3121,7 +3197,8 @@ define("ace/incremental_search", [
     };
     this.highlight = function (regexp) {
       var sess = this.$editor.session,
-        hl = (sess.$isearchHighlight = sess.$isearchHighlight || sess.addDynamicMarker(new SearchHighlight(null, "ace_isearch-result", "text")));
+        hl = (sess.$isearchHighlight =
+          sess.$isearchHighlight || sess.addDynamicMarker(new SearchHighlight(null, "ace_isearch-result", "text")));
       hl.setRegexp(regexp);
       sess._emit("changeBackMarker"); // force highlight layer redraw
     };
@@ -3249,7 +3326,16 @@ define("ace/incremental_search", [
   });
 });
 
-define("kitchen-sink/token_tooltip", ["require", "exports", "module", "ace/lib/dom", "ace/lib/oop", "ace/lib/event", "ace/range", "ace/tooltip"], function (require, exports, module) {
+define("kitchen-sink/token_tooltip", [
+  "require",
+  "exports",
+  "module",
+  "ace/lib/dom",
+  "ace/lib/oop",
+  "ace/lib/event",
+  "ace/range",
+  "ace/tooltip",
+], function (require, exports, module) {
   "use strict";
 
   var dom = require("ace/lib/dom");
@@ -3366,11 +3452,17 @@ define("kitchen-sink/token_tooltip", ["require", "exports", "module", "ace/lib/d
   exports.TokenTooltip = TokenTooltip;
 });
 
-define("ace/split", ["require", "exports", "module", "ace/lib/oop", "ace/lib/lang", "ace/lib/event_emitter", "ace/editor", "ace/virtual_renderer", "ace/edit_session"], function (
-  require,
-  exports,
-  module
-) {
+define("ace/split", [
+  "require",
+  "exports",
+  "module",
+  "ace/lib/oop",
+  "ace/lib/lang",
+  "ace/lib/event_emitter",
+  "ace/editor",
+  "ace/virtual_renderer",
+  "ace/edit_session",
+], function (require, exports, module) {
   "use strict";
   var oop = require("./lib/oop");
   var lang = require("./lib/lang");
@@ -3551,7 +3643,13 @@ define("ace/ext/menu_tools/settings_menu.css", ["require", "exports", "module"],
     "#ace_settingsmenu, #kbshortcutmenu {\n    background-color: #F7F7F7;\n    color: black;\n    box-shadow: -5px 4px 5px rgba(126, 126, 126, 0.55);\n    padding: 1em 0.5em 2em 1em;\n    overflow: auto;\n    position: absolute;\n    margin: 0;\n    bottom: 0;\n    right: 0;\n    top: 0;\n    z-index: 9991;\n    cursor: default;\n}\n\n.ace_dark #ace_settingsmenu, .ace_dark #kbshortcutmenu {\n    box-shadow: -20px 10px 25px rgba(126, 126, 126, 0.25);\n    background-color: rgba(255, 255, 255, 0.6);\n    color: black;\n}\n\n.ace_optionsMenuEntry:hover {\n    background-color: rgba(100, 100, 100, 0.1);\n    transition: all 0.3s\n}\n\n.ace_closeButton {\n    background: rgba(245, 146, 146, 0.5);\n    border: 1px solid #F48A8A;\n    border-radius: 50%;\n    padding: 7px;\n    position: absolute;\n    right: -8px;\n    top: -8px;\n    z-index: 100000;\n}\n.ace_closeButton{\n    background: rgba(245, 146, 146, 0.9);\n}\n.ace_optionsMenuKey {\n    color: darkslateblue;\n    font-weight: bold;\n}\n.ace_optionsMenuCommand {\n    color: darkcyan;\n    font-weight: normal;\n}\n.ace_optionsMenuEntry input, .ace_optionsMenuEntry button {\n    vertical-align: middle;\n}\n\n.ace_optionsMenuEntry button[ace_selected_button=true] {\n    background: #e7e7e7;\n    box-shadow: 1px 0px 2px 0px #adadad inset;\n    border-color: #adadad;\n}\n.ace_optionsMenuEntry button {\n    background: white;\n    border: 1px solid lightgray;\n    margin: 0px;\n}\n.ace_optionsMenuEntry button:hover{\n    background: #f0f0f0;\n}";
 });
 
-define("ace/ext/menu_tools/overlay_page", ["require", "exports", "module", "ace/lib/dom", "ace/ext/menu_tools/settings_menu.css"], function (require, exports, module) {
+define("ace/ext/menu_tools/overlay_page", [
+  "require",
+  "exports",
+  "module",
+  "ace/lib/dom",
+  "ace/ext/menu_tools/settings_menu.css",
+], function (require, exports, module) {
   /*jslint indent: 4, maxerr: 50, white: true, browser: true, vars: true*/
   "use strict";
   var dom = require("../../lib/dom");
@@ -3582,7 +3680,11 @@ define("ace/ext/menu_tools/overlay_page", ["require", "exports", "module", "ace/
         contentElement.style.pointerEvents = "auto";
       }
     }
-    closer.style.cssText = "margin: 0; padding: 0; " + "position: fixed; top:0; bottom:0; left:0; right:0;" + "z-index: 9990; " + (editor ? "background-color: rgba(0, 0, 0, 0.3);" : "");
+    closer.style.cssText =
+      "margin: 0; padding: 0; " +
+      "position: fixed; top:0; bottom:0; left:0; right:0;" +
+      "z-index: 9990; " +
+      (editor ? "background-color: rgba(0, 0, 0, 0.3);" : "");
     closer.addEventListener("click", function (e) {
       if (!ignoreFocusOut) {
         close();
@@ -3897,7 +3999,15 @@ define("ace/ext/options", [
           "table",
           { role: "presentation", id: "controls" },
           this.renderOptionGroup(optionGroups.Main),
-          ["tr", null, ["td", { colspan: 2 }, ["table", { role: "presentation", id: "more-controls" }, this.renderOptionGroup(optionGroups.More)]]],
+          [
+            "tr",
+            null,
+            [
+              "td",
+              { colspan: 2 },
+              ["table", { role: "presentation", id: "more-controls" }, this.renderOptionGroup(optionGroups.More)],
+            ],
+          ],
           ["tr", null, ["td", { colspan: 2 }, "version " + config.version]],
         ],
         this.container
@@ -4045,7 +4155,12 @@ define("ace/ext/options", [
       var safeKey = "-" + path;
       var safeId = path + "-label";
       var control = this.renderOptionControl(safeKey, option);
-      return ["tr", { class: "ace_optionsMenuEntry" }, ["td", ["label", { for: safeKey, id: safeId }, key]], ["td", control]];
+      return [
+        "tr",
+        { class: "ace_optionsMenuEntry" },
+        ["td", ["label", { for: safeKey, id: safeId }, key]],
+        ["td", control],
+      ];
     };
     this.setOption = function (option, value) {
       if (typeof option == "string") option = this.options[option];
@@ -4066,7 +4181,11 @@ define("ace/ext/options", [
   exports.OptionPanel = OptionPanel;
 });
 
-define("ace/ext/statusbar", ["require", "exports", "module", "ace/lib/dom", "ace/lib/lang"], function (require, exports, module) {
+define("ace/ext/statusbar", ["require", "exports", "module", "ace/lib/dom", "ace/lib/lang"], function (
+  require,
+  exports,
+  module
+) {
   "use strict";
   var dom = require("../lib/dom");
   var lang = require("../lib/lang");
@@ -4652,7 +4771,11 @@ define("ace/snippets", [
       }, this);
       if (!snippet) return false;
       if (options && options.dryRun) return true;
-      editor.session.doc.removeInLine(cursor.row, cursor.column - snippet.replaceBefore.length, cursor.column + snippet.replaceAfter.length);
+      editor.session.doc.removeInLine(
+        cursor.row,
+        cursor.column - snippet.replaceBefore.length,
+        cursor.column + snippet.replaceAfter.length
+      );
       this.variables.M__ = snippet.matchBefore;
       this.variables.T__ = snippet.matchAfter;
       this.insertSnippetForSelection(editor, snippet.content);
@@ -4914,7 +5037,8 @@ define("ace/snippets", [
         this.editor.selection.fromOrientedRange(range);
       }
       this.editor.keyBinding.addKeyboardHandler(this.keyboardHandler);
-      if (this.selectedTabstop && this.selectedTabstop.choices) this.editor.execCommand("startAutocomplete", { matches: this.selectedTabstop.choices });
+      if (this.selectedTabstop && this.selectedTabstop.choices)
+        this.editor.execCommand("startAutocomplete", { matches: this.selectedTabstop.choices });
     };
     this.addTabstops = function (tabstops, start, end) {
       var useLink = this.useLink || !this.editor.getOption("enableMultiselect");
@@ -5324,11 +5448,17 @@ define("ace/ext/emmet", [
   };
 });
 
-define("ace/autocomplete/popup", ["require", "exports", "module", "ace/virtual_renderer", "ace/editor", "ace/range", "ace/lib/event", "ace/lib/lang", "ace/lib/dom"], function (
-  require,
-  exports,
-  module
-) {
+define("ace/autocomplete/popup", [
+  "require",
+  "exports",
+  "module",
+  "ace/virtual_renderer",
+  "ace/editor",
+  "ace/range",
+  "ace/lib/event",
+  "ace/lib/lang",
+  "ace/lib/dom",
+], function (require, exports, module) {
   "use strict";
   var Renderer = require("../virtual_renderer").VirtualRenderer;
   var Editor = require("../editor").Editor;
@@ -5639,7 +5769,8 @@ define("ace/autocomplete/util", ["require", "exports", "module"], function (requ
         if (completer.identifierRegexps) {
           completer.identifierRegexps.forEach(
             function (identifierRegex) {
-              if (!prefix && identifierRegex) prefix = this.retrievePrecedingIdentifier(line, pos.column, identifierRegex);
+              if (!prefix && identifierRegex)
+                prefix = this.retrievePrecedingIdentifier(line, pos.column, identifierRegex);
             }.bind(this)
           );
         }
@@ -5712,7 +5843,8 @@ define("ace/autocomplete", [
       if (!this.popup) this.$init();
       this.popup.autoSelect = this.autoSelect;
       this.popup.setData(this.completions.filtered, this.completions.filterText);
-      if (this.editor.textInput.setAriaOptions) this.editor.textInput.setAriaOptions({ activeDescendant: getAriaId(this.popup.getRow()) });
+      if (this.editor.textInput.setAriaOptions)
+        this.editor.textInput.setAriaOptions({ activeDescendant: getAriaId(this.popup.getRow()) });
       editor.keyBinding.addKeyboardHandler(this.keyboardHandler);
       var renderer = editor.renderer;
       this.popup.setRow(this.autoSelect ? 0 : -1);
@@ -5759,7 +5891,13 @@ define("ace/autocomplete", [
       var text = this.editor.textInput.getElement();
       var fromTooltip = e.relatedTarget && this.tooltipNode && this.tooltipNode.contains(e.relatedTarget);
       var container = this.popup && this.popup.container;
-      if (el != text && el.parentNode != container && !fromTooltip && el != this.tooltipNode && e.relatedTarget != text) {
+      if (
+        el != text &&
+        el.parentNode != container &&
+        !fromTooltip &&
+        el != this.tooltipNode &&
+        e.relatedTarget != text
+      ) {
         this.detach();
       }
     };
@@ -5869,7 +6007,12 @@ define("ace/autocomplete", [
         if (prefix == this.completions.filterText) return;
         this.completions.setFilter(prefix);
         if (!this.completions.filtered.length) return this.detach();
-        if (this.completions.filtered.length == 1 && this.completions.filtered[0].value == prefix && !this.completions.filtered[0].snippet) return this.detach();
+        if (
+          this.completions.filtered.length == 1 &&
+          this.completions.filtered[0].value == prefix &&
+          !this.completions.filtered[0].snippet
+        )
+          return this.detach();
         this.openPopup(this.editor, prefix, keepPopupPosition);
         return;
       }
@@ -5893,7 +6036,8 @@ define("ace/autocomplete", [
         this.completions.setFilter(prefix);
         var filtered = this.completions.filtered;
         if (!filtered.length) return detachIfFinished(results);
-        if (filtered.length == 1 && filtered[0].value == prefix && !filtered[0].snippet) return detachIfFinished(results);
+        if (filtered.length == 1 && filtered[0].value == prefix && !filtered[0].snippet)
+          return detachIfFinished(results);
         if (this.autoInsert && filtered.length == 1 && results.finished) return this.insertMatch(filtered[0]);
         this.openPopup(this.editor, prefix, keepPopupPosition);
       }.bind(this);
@@ -6051,7 +6195,11 @@ define("ace/autocomplete", [
       this.filterText = str;
       matches = this.filterCompletions(matches, this.filterText);
       matches = matches.sort(function (a, b) {
-        return b.exactMatch - a.exactMatch || b.$score - a.$score || (a.caption || a.value).localeCompare(b.caption || b.value);
+        return (
+          b.exactMatch - a.exactMatch ||
+          b.$score - a.$score ||
+          (a.caption || a.value).localeCompare(b.caption || b.value)
+        );
       });
       var prev = null;
       matches = matches.filter(function (item) {
@@ -6107,7 +6255,11 @@ define("ace/autocomplete", [
   exports.FilteredList = FilteredList;
 });
 
-define("ace/autocomplete/text_completer", ["require", "exports", "module", "ace/range"], function (require, exports, module) {
+define("ace/autocomplete/text_completer", ["require", "exports", "module", "ace/range"], function (
+  require,
+  exports,
+  module
+) {
   var Range = require("../range").Range;
   var splitRegex = /[^a-zA-Z_0-9\$\-\u00C0-\u1FFF\u2C00-\uD7FF\w]+/;
   function getWordIndex(doc, pos) {
@@ -6192,7 +6344,8 @@ define("ace/ext/language_tools", [
     getCompletions: function (editor, session, pos, prefix, callback) {
       var scopes = [];
       var token = session.getTokenAt(pos.row, pos.column);
-      if (token && token.type.match(/(tag-name|tag-open|tag-whitespace|attribute-name|attribute-value)\.xml$/)) scopes.push("html-tag");
+      if (token && token.type.match(/(tag-name|tag-open|tag-whitespace|attribute-name|attribute-value)\.xml$/))
+        scopes.push("html-tag");
       else scopes = snippetManager.getActiveScopes(editor);
       var snippetMap = snippetManager.snippetMap;
       var completions = [];
@@ -6214,7 +6367,13 @@ define("ace/ext/language_tools", [
     },
     getDocTooltip: function (item) {
       if (item.type == "snippet" && !item.docHTML) {
-        item.docHTML = ["<b>", lang.escapeHTML(item.caption), "</b>", "<hr></hr>", lang.escapeHTML(transformSnippetTooltip(item.snippet))].join("");
+        item.docHTML = [
+          "<b>",
+          lang.escapeHTML(item.caption),
+          "</b>",
+          "<hr></hr>",
+          lang.escapeHTML(transformSnippetTooltip(item.snippet)),
+        ].join("");
       }
     },
   };
@@ -6323,7 +6482,25 @@ define("ace/ext/beautify", ["require", "exports", "module", "ace/token_iterator"
   function is(token, type) {
     return token.type.lastIndexOf(type + ".xml") > -1;
   }
-  exports.singletonTags = ["area", "base", "br", "col", "command", "embed", "hr", "html", "img", "input", "keygen", "link", "meta", "param", "source", "track", "wbr"];
+  exports.singletonTags = [
+    "area",
+    "base",
+    "br",
+    "col",
+    "command",
+    "embed",
+    "hr",
+    "html",
+    "img",
+    "input",
+    "keygen",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr",
+  ];
   exports.blockTags = [
     "article",
     "aside",
@@ -6387,7 +6564,8 @@ define("ace/ext/beautify", ["require", "exports", "module", "ace/token_iterator"
     var parents = [];
     var caseBody = false;
     var trimNext = function () {
-      if (nextToken && nextToken.value && nextToken.type !== "string.regexp") nextToken.value = nextToken.value.replace(/^\s*/, "");
+      if (nextToken && nextToken.value && nextToken.type !== "string.regexp")
+        nextToken.value = nextToken.value.replace(/^\s*/, "");
     };
     var trimLine = function () {
       var end = code.length - 1;
@@ -6494,7 +6672,10 @@ define("ace/ext/beautify", ["require", "exports", "module", "ace/token_iterator"
               }
             }
             trimLine();
-          } else if ((token.type === "keyword.operator" || token.type === "keyword") && value.match(/^(=|==|===|!=|!==|&&|\|\||and|or|xor|\+=|.=|>|>=|<|<=|=>)$/)) {
+          } else if (
+            (token.type === "keyword.operator" || token.type === "keyword") &&
+            value.match(/^(=|==|===|!=|!==|&&|\|\||and|or|xor|\+=|.=|>|>=|<|<=|=>)$/)
+          ) {
             trimCode();
             trimNext();
             spaceBefore = true;
@@ -6507,7 +6688,12 @@ define("ace/ext/beautify", ["require", "exports", "module", "ace/token_iterator"
           } else if (token.type === "punctuation.operator" && value.match(/^(:|,)$/)) {
             trimCode();
             trimNext();
-            if (value.match(/^(,)$/) && curlyDepth > 0 && roundDepth === 0 && formatOptions.lineBreaksAfterCommasInCurlyBlock) {
+            if (
+              value.match(/^(,)$/) &&
+              curlyDepth > 0 &&
+              roundDepth === 0 &&
+              formatOptions.lineBreaksAfterCommasInCurlyBlock
+            ) {
               rowsToAdd++;
             } else {
               spaceAfter = true;
@@ -6527,7 +6713,11 @@ define("ace/ext/beautify", ["require", "exports", "module", "ace/token_iterator"
           } else if (token.type === "keyword" && value.match(/^(case|default)$/)) {
             if (caseBody) unindent = 1;
           }
-          if (breakBefore && !(token.type.match(/^(comment)$/) && !value.substr(0, 1).match(/^[/#]$/)) && !(token.type.match(/^(string)$/) && !value.substr(0, 1).match(/^['"@]$/))) {
+          if (
+            breakBefore &&
+            !(token.type.match(/^(comment)$/) && !value.substr(0, 1).match(/^[/#]$/)) &&
+            !(token.type.match(/^(string)$/) && !value.substr(0, 1).match(/^['"@]$/))
+          ) {
             indent = lastIndent;
             if (depth > lastDepth) {
               indent++;
@@ -6583,7 +6773,10 @@ define("ace/ext/beautify", ["require", "exports", "module", "ace/token_iterator"
           breakBefore = false;
           spaceBefore = false;
           spaceAfter = false;
-          if ((is(token, "tag-close") && (inBlock || blockTags.indexOf(tagName) !== -1)) || (is(token, "doctype") && value === ">")) {
+          if (
+            (is(token, "tag-close") && (inBlock || blockTags.indexOf(tagName) !== -1)) ||
+            (is(token, "doctype") && value === ">")
+          ) {
             if (inBlock && nextToken && nextToken.value === "</") rowsToAdd = -1;
             else rowsToAdd = 1;
           }

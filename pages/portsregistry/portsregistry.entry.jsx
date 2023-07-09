@@ -136,7 +136,12 @@ const Main = () => {
             <tr>
               <td>port:</td>
               <td>
-                <input type="text" value={input.port || ""} onChange={(e) => setInput("port", e.target.value)} className={cls} />
+                <input
+                  type="text"
+                  value={input.port || ""}
+                  onChange={(e) => setInput("port", e.target.value)}
+                  className={cls}
+                />
               </td>
               <td>
                 <button

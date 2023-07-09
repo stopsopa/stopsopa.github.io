@@ -20,9 +20,22 @@ import layoutTweaksHook from "../layoutTweaksHook.jsx";
 
 import "./003next.scss";
 
-import { DndContext, closestCenter, MouseSensor, KeyboardSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  DndContext,
+  closestCenter,
+  MouseSensor,
+  KeyboardSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  horizontalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 import { useSortable } from "@dnd-kit/sortable";
 
@@ -299,7 +312,16 @@ const Main = ({ portal }) => {
               </div>
             </div>
             {tabs.map(({ tab: tab_ }) => {
-              return <SortableTabElement key={tab_} tab={tab} tab_={tab_} onTheRight={onTheRight} setOnTheRight={setOnTheRight} setTab={setTab} />;
+              return (
+                <SortableTabElement
+                  key={tab_}
+                  tab={tab}
+                  tab_={tab_}
+                  onTheRight={onTheRight}
+                  setOnTheRight={setOnTheRight}
+                  setTab={setTab}
+                />
+              );
             })}
           </SortableContext>
         </div>
