@@ -26,5 +26,6 @@
     "/dist/": true,
     "/var/": true,
     "var/": true
-  }
+  },
+  "editor.rulers": [120]
 }

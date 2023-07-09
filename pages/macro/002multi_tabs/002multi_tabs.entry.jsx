@@ -46,6 +46,8 @@ function generateDefaultTab(tab) {
 const Main = () => {
   layoutTweaksHook();
 
+  const [menuIndex, setMenuIndex] = useState(false);
+
   const sensors = useSensors(
     useSensor(MouseSensor, {
       // Require the mouse to move by 10 pixels before activating
@@ -258,7 +260,7 @@ const Main = () => {
                 </div>
               </div>
               {tabs.map(({ tab: tab_ }) => {
-                return <SortableTabElement key={tab_} tab={tab} tab_={tab_} onTheRight={onTheRight} setOnTheRight={setOnTheRight} setTab={setTab} />;
+                return <SortableTabElement key={tab_} tab={tab} tab_={tab_} onTheRight={onTheRight} setOnTheRight={setOnTheRight} setTab={setTab} setMenuIndex={setMenuIndex} />;
               })}
             </SortableContext>
           </div>
@@ -330,7 +332,7 @@ const Main = () => {
 };
 
 function SortableTabElement(props) {
-  const { tab, tab_, onTheRight, setOnTheRight, setTab } = props;
+  const { tab, tab_, onTheRight, setOnTheRight, setTab, setMenuIndex } = props;
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: tab_,
