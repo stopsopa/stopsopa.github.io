@@ -20,24 +20,9 @@ import "./003next.scss";
 
 import Modal from "../Modal.jsx";
 
-import {
-  DndContext,
-  closestCenter,
-  MouseSensor,
-  KeyboardSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
+import { DndContext, closestCenter, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  horizontalListSortingStrategy,
-} from "@dnd-kit/sortable";
-
-import { useSortable } from "@dnd-kit/sortable";
+import { useSortable, arrayMove, SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 
 import { CSS } from "@dnd-kit/utilities";
 
@@ -51,9 +36,9 @@ const initialStateTab = {
   wrap: false,
   value: "",
 };
-function generateDefaultTab(tab) {
+function generateDefaultTab(index) {
   const state = structuredClone(initialStateTab);
-  state.tab = tab;
+  state.index = index;
   return state;
 }
 
@@ -61,7 +46,32 @@ function generateDefaultTab(tab) {
  *  https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
  */
 const Main = ({ portal }) => {
-  const [menuIndex, setMenuIndex] = useState(true);
+  const [editIndex, setEditIndexDontUseDirectly] = useState(false);
+
+  const [createModal, setCreateModalDontUseDirectly] = useState(false);
+  const [label, setLabel] = useState("");
+
+  function setCreateModal(state) {
+    setLabel("");
+
+    setCreateModalDontUseDirectly(Boolean(state));
+
+    setEditIndexDontUseDirectly(false);
+  }
+
+  function setEditIndex(index) {
+    const found = tabs.find((t) => t.index === index);
+
+    setCreateModalDontUseDirectly(false);
+
+    if (found) {
+      setLabel(found.label);
+
+      setEditIndexDontUseDirectly(index);
+    } else {
+      setEditIndexDontUseDirectly(false);
+    }
+  }
 
   const { error, id, set, get, del, push } = useCustomState({
     section,
@@ -86,15 +96,29 @@ const Main = ({ portal }) => {
     // })
   );
 
-  // tab key [string]
+  // index key [string]
   // generateDefaultTab
   // editor instance of ace
 
-  const [tabs, setTabsRaw] = useState([{ tab: "one" }, { tab: "two" }, { tab: "three" }]);
+  const [tabs, setTabsDontUseDirectly] = useState([
+    { index: "one_indx", label: "one" },
+    { index: "two_indx", label: "two" },
+    { index: "three_indx", label: "three" },
+  ]);
 
-  const [tab, setTabRaw] = useState("one");
+  function generateUniq() {
+    let un;
 
-  const [onTheRight, setOnTheRight] = useState(false);
+    do {
+      un = unique();
+    } while (tabs.find((t) => t.index == un));
+
+    return un;
+  }
+
+  const [index, setIndexRaw] = useState("one");
+
+  const [indexOnTheRight, setIndexOnTheRight] = useState(false);
 
   const [recordOn, setRecordOn] = useState(false);
 
@@ -105,11 +129,11 @@ const Main = ({ portal }) => {
     RecordLog.play();
   }
 
-  function setTabs(tab, key, value) {
-    setTabsRaw((tabs) => {
+  function setTabs(index, key, value) {
+    setTabsDontUseDirectly((tabs) => {
       const copy = [...tabs];
 
-      const found = copy.find((row) => row.tab === tab);
+      const found = copy.find((row) => row.index === index);
 
       if (!found) {
         return copy;
@@ -121,14 +145,14 @@ const Main = ({ portal }) => {
     });
   }
 
-  function getValue(tab, field, def) {
+  function getValue(index, field, def) {
     try {
       const copy = structuredClone(values);
 
-      let found = copy.find((row) => row.tab == tab);
+      let found = copy.find((row) => row.index == index);
 
       if (!found) {
-        found = generateDefaultTab(tab);
+        found = generateDefaultTab(index);
       }
 
       return found[field] || def;
@@ -137,14 +161,14 @@ const Main = ({ portal }) => {
     }
   }
 
-  function setValue(tab, field, value) {
+  function setValue(index, field, value) {
     setValues((values) => {
       const copy = structuredClone(values);
 
       let found;
 
       for (let i = 0, l = copy.length; i < l; i += 1) {
-        if (copy[i].tab === tab) {
+        if (copy[i].index === index) {
           if (field) {
             copy[i][field] = value;
           } else {
@@ -155,15 +179,15 @@ const Main = ({ portal }) => {
         }
       }
 
-      setLocalStorage(tab, found);
+      setLocalStorage(index, found);
 
       return copy;
     });
   }
 
   useEffect(() => {
-    const list = tabs.map(({ tab }) => {
-      return getraw(tab, generateDefaultTab(tab));
+    const list = tabs.map(({ index }) => {
+      return getraw(index, generateDefaultTab(index));
     });
     setValues(list);
 
@@ -229,21 +253,21 @@ const Main = ({ portal }) => {
   }, [id]);
 
   useEffect(() => {
-    if (tab) {
+    if (index) {
       pokeEditorsToRerenderBecauseSometimesTheyStuck(() => {
-        if (onTheRight === false) {
-          bringFocus(tab, "!onTheRight");
+        if (indexOnTheRight === false) {
+          bringFocus(index, "!indexOnTheRight");
         }
-      }); // forcus for every change of tab -> on every click of tab
+      }); // forcus for every change of index -> on every click of index
     }
-  }, [tab]);
+  }, [index]);
 
   function handleDragEnd(event) {
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      setTabsRaw((tabs) => {
-        const tmp = tabs.map((t) => t.tab);
+      setTabsDontUseDirectly((tabs) => {
+        const tmp = tabs.map((t) => t.index);
 
         const oldIndex = tmp.indexOf(active.id);
 
@@ -256,12 +280,12 @@ const Main = ({ portal }) => {
     }
   }
 
-  function setTab(tab) {
-    if (onTheRight !== tab) {
-      setTabRaw(tab);
+  function setTab(index) {
+    if (indexOnTheRight !== index) {
+      setIndexRaw(index);
     }
     try {
-      const found = tabs.find((row) => row.tab === tab);
+      const found = tabs.find((row) => row.index === index);
 
       if (found) {
         console.log("focus: ", found.editor);
@@ -277,26 +301,69 @@ const Main = ({ portal }) => {
   return (
     <div
       className={classnames({
-        single: !Boolean(onTheRight),
-        on_the_right: Boolean(onTheRight),
+        single: !Boolean(indexOnTheRight),
+        on_the_right: Boolean(indexOnTheRight),
       })}
       tabIndex={0}
     >
-      {JSON.stringify({
-        menuIndex,
-      })}
-      {menuIndex && <Modal title="omg" onClose={() => setMenuIndex(false)}>
-        <p>fjkdaslfjds</p>
-        <p>fjkdaslfjds</p>
-        <p>fjkdaslfjds</p>
-        <p>fjkdaslfjds</p>
-        <p>fjkdaslfjds</p>
-        <p>fjkdaslfjds</p>
-        <p>fjkdaslfjds</p>
-        <p>fjkdaslfjds</p>
-        <p>fjkdaslfjds</p>
-        <p>fjkdaslfjds</p>
-        </Modal>}
+      {createModal && (
+        <Modal title="Create tab" onClose={() => setCreateModal(false)}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const lab = label.trim();
+              if (lab) {
+                setTabsDontUseDirectly((tabs) => [...tabs, { index: generateUniq(), label: lab }]);
+                setCreateModal(false);
+              }
+            }}
+          >
+            <label>
+              label: &nbsp;
+              <input
+                type="text"
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                style={{ width: "50%" }}
+                autoFocus
+              />
+              <button type="submit">Create</button>
+            </label>
+          </form>
+        </Modal>
+      )}
+      {editIndex &&
+        (function () {
+          const found = tabs.find((t) => t.index == editIndex);
+          if (found) {
+            return (
+              <Modal title={`Edit tab: ${found.label}`} onClose={() => setEditIndex(false)}>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const lab = label.trim();
+                    if (lab) {
+                      setTabs(editIndex, "label", lab);
+                      setEditIndex(false);
+                    }
+                  }}
+                >
+                  <label>
+                    label: &nbsp;
+                    <input
+                      type="text"
+                      value={label}
+                      onChange={(e) => setLabel(e.target.value)}
+                      style={{ width: "50%" }}
+                      autoFocus
+                    />
+                    <button type="submit">Edit</button>
+                  </label>
+                </form>
+              </Modal>
+            );
+          }
+        })()}
       {createPortal(
         <>
           <button
@@ -315,28 +382,28 @@ const Main = ({ portal }) => {
       )}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <div className="tabs this_element_changes_height_and_together_with_header_affect_spacer">
-          <SortableContext items={tabs.map((t) => t.tab)} strategy={horizontalListSortingStrategy}>
+          <SortableContext items={tabs.map((t) => t.index)} strategy={horizontalListSortingStrategy}>
             <div>
               <div
                 onClick={() => {
-                  console.log("add...");
-                  setTabsRaw((tabs) => [...tabs, { tab: new Date().getTime() }]);
+                  setCreateModal(true);
                 }}
               >
                 +
               </div>
             </div>
 
-            {tabs.map(({ tab: tab_ }) => {
+            {tabs.map(({ index: iterateIndex, label }) => {
               return (
                 <SortableTabElement
-                  key={tab_}
-                  tab={tab}
-                  tab_={tab_}
-                  onTheRight={onTheRight}
-                  setOnTheRight={setOnTheRight}
+                  key={iterateIndex}
+                  index={index}
+                  label={label}
+                  iterateIndex={iterateIndex}
+                  indexOnTheRight={indexOnTheRight}
+                  setIndexOnTheRight={setIndexOnTheRight}
                   setTab={setTab}
-                  setMenuIndex={setMenuIndex}
+                  setEditIndex={setEditIndex}
                 />
               );
             })}
@@ -345,19 +412,22 @@ const Main = ({ portal }) => {
       </DndContext>
       <div className="dynamic_spacer"></div>
       <div className="editors">
-        {tabs.map(({ tab: tab_ }) => (
+        {tabs.map(({ index: iterateIndex }) => (
           <div
-            key={tab_}
+            key={iterateIndex}
             className={classnames({
-              active: tab === tab_,
-              right: onTheRight === tab_,
-              hidden: tab !== tab_ && onTheRight !== tab_,
+              active: index === iterateIndex,
+              right: indexOnTheRight === iterateIndex,
+              hidden: index !== iterateIndex && indexOnTheRight !== iterateIndex,
             })}
           >
             <div>
               <label>
                 lang:
-                <select value={getValue(tab_, "lang")} onChange={(e) => setValue(tab_, "lang", e.target.value)}>
+                <select
+                  value={getValue(iterateIndex, "lang")}
+                  onChange={(e) => setValue(iterateIndex, "lang", e.target.value)}
+                >
                   {languages.map((l) => (
                     <option key={l} value={l}>
                       {l}
@@ -369,27 +439,27 @@ const Main = ({ portal }) => {
                 wrap:
                 <input
                   type="checkbox"
-                  checked={Boolean(getValue(tab_, "wrap"))}
+                  checked={Boolean(getValue(iterateIndex, "wrap"))}
                   onChange={(e) => {
-                    setValue(tab_, "wrap", e.target.checked);
+                    setValue(iterateIndex, "wrap", e.target.checked);
                   }}
                 />
               </label>
             </div>
             <Ace
-              id={tab_}
-              content={getValue(tab_, "value", "")}
-              lang={getValue(tab_, "lang", "")}
-              wrap={Boolean(getValue(tab_, "wrap", false))}
+              id={iterateIndex}
+              content={getValue(iterateIndex, "value", "")}
+              lang={getValue(iterateIndex, "lang", "")}
+              wrap={Boolean(getValue(iterateIndex, "wrap", false))}
               onInit={(editor) => {
-                console.log(`editor mounted: `, tab_);
-                setTabs(tab_, "editor", editor);
-                if (tab_ === tab) {
-                  bringFocus(tab); // focus on first load of all tabs
+                console.log(`editor mounted: `, iterateIndex);
+                setTabs(iterateIndex, "editor", editor);
+                if (iterateIndex === index) {
+                  bringFocus(index); // focus on first load of all tabs
                 }
               }}
               onChange={(data) => {
-                setValue(tab_, "value", data);
+                setValue(iterateIndex, "value", data);
               }}
               recordOn={recordOn}
             />
@@ -401,10 +471,10 @@ const Main = ({ portal }) => {
 };
 
 function SortableTabElement(props) {
-  const { tab, tab_, onTheRight, setOnTheRight, setTab, setMenuIndex } = props;
+  const { index, label, iterateIndex, indexOnTheRight, setIndexOnTheRight, setTab, setEditIndex } = props;
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: tab_,
+    id: iterateIndex,
     transition: {
       // duration: 150, // milliseconds
       // easing: "cubic-bezier(0.25, 1, 0.5, 1)",
@@ -418,9 +488,9 @@ function SortableTabElement(props) {
 
   return (
     <div
-      key={tab_}
+      key={iterateIndex}
       className={classnames({
-        active: tab_ === tab,
+        active: iterateIndex === index,
       })}
       ref={setNodeRef}
       style={style}
@@ -429,17 +499,19 @@ function SortableTabElement(props) {
     >
       <div
         onClick={() => {
-          setTab(tab_);
-          if (onTheRight !== false) {
-            bringFocus(tab_, "onTheRight");
+          setTab(iterateIndex);
+          if (indexOnTheRight !== false) {
+            bringFocus(iterateIndex, "indexOnTheRight");
           }
         }}
       >
-        {tab_}
+        {label}
       </div>
       <div>
-        <div onClick={() => setOnTheRight((v) => (v === tab_ ? false : tab_))}>{onTheRight === tab_ ? "◄" : "►"}</div>
-        <div onClick={() => setMenuIndex(tab_)}>▤</div>
+        <div onClick={() => setIndexOnTheRight((v) => (v === iterateIndex ? false : iterateIndex))}>
+          {indexOnTheRight === iterateIndex ? "◄" : "►"}
+        </div>
+        <div onClick={() => setEditIndex(iterateIndex)}>▤</div>
       </div>
     </div>
   );
@@ -462,3 +534,13 @@ function SortableTabElement(props) {
 
   render(<Main portal={portal} />, document.getElementById("app"));
 })();
+
+function unique(pattern) {
+  // node.js require('crypto').randomBytes(16).toString('hex');
+  pattern || (pattern = "xyxyxy");
+  return pattern.replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
