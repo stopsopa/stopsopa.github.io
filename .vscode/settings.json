@@ -27,5 +27,6 @@
     "/var/": true,
     "var/": true
   },
-  "editor.rulers": [120]
+  "editor.rulers": [120],
+  "prettier.printWidth": 120
 }

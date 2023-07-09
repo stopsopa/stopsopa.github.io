@@ -16,9 +16,9 @@ import { debounce } from "lodash";
 
 import RecordLog from "../RecordLog";
 
-import layoutTweaksHook from "../layoutTweaksHook.jsx";
-
 import "./003next.scss";
+
+import Modal from "../Modal.jsx";
 
 import {
   DndContext,
@@ -61,7 +61,7 @@ function generateDefaultTab(tab) {
  *  https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
  */
 const Main = ({ portal }) => {
-  // layoutTweaksHook();
+  const [menuIndex, setMenuIndex] = useState(true);
 
   const { error, id, set, get, del, push } = useCustomState({
     section,
@@ -282,6 +282,21 @@ const Main = ({ portal }) => {
       })}
       tabIndex={0}
     >
+      {JSON.stringify({
+        menuIndex,
+      })}
+      {menuIndex && <Modal title="omg" onClose={() => setMenuIndex(false)}>
+        <p>fjkdaslfjds</p>
+        <p>fjkdaslfjds</p>
+        <p>fjkdaslfjds</p>
+        <p>fjkdaslfjds</p>
+        <p>fjkdaslfjds</p>
+        <p>fjkdaslfjds</p>
+        <p>fjkdaslfjds</p>
+        <p>fjkdaslfjds</p>
+        <p>fjkdaslfjds</p>
+        <p>fjkdaslfjds</p>
+        </Modal>}
       {createPortal(
         <>
           <button
@@ -311,6 +326,7 @@ const Main = ({ portal }) => {
                 +
               </div>
             </div>
+
             {tabs.map(({ tab: tab_ }) => {
               return (
                 <SortableTabElement
@@ -320,6 +336,7 @@ const Main = ({ portal }) => {
                   onTheRight={onTheRight}
                   setOnTheRight={setOnTheRight}
                   setTab={setTab}
+                  setMenuIndex={setMenuIndex}
                 />
               );
             })}
@@ -384,7 +401,7 @@ const Main = ({ portal }) => {
 };
 
 function SortableTabElement(props) {
-  const { tab, tab_, onTheRight, setOnTheRight, setTab } = props;
+  const { tab, tab_, onTheRight, setOnTheRight, setTab, setMenuIndex } = props;
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: tab_,
@@ -422,7 +439,7 @@ function SortableTabElement(props) {
       </div>
       <div>
         <div onClick={() => setOnTheRight((v) => (v === tab_ ? false : tab_))}>{onTheRight === tab_ ? "◄" : "►"}</div>
-        <div>▤</div>
+        <div onClick={() => setMenuIndex(tab_)}>▤</div>
       </div>
     </div>
   );

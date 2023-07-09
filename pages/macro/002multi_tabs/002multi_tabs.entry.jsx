@@ -59,8 +59,6 @@ function generateDefaultTab(tab) {
 const Main = () => {
   layoutTweaksHook();
 
-  const [menuIndex, setMenuIndex] = useState(false);
-
   const sensors = useSensors(
     useSensor(MouseSensor, {
       // Require the mouse to move by 10 pixels before activating
@@ -281,7 +279,6 @@ const Main = () => {
                     onTheRight={onTheRight}
                     setOnTheRight={setOnTheRight}
                     setTab={setTab}
-                    setMenuIndex={setMenuIndex}
                   />
                 );
               })}
