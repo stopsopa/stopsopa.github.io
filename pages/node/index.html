@@ -295,6 +295,34 @@
 
           npx prettier --write src
               # https://prettier.io/docs/en/cli.html#docsNav
+
+          # vscode keybindings
+          [
+            {
+              "key": "shift+cmd+s",
+              "command": "-workbench.action.files.saveLocalFile",
+              "when": "remoteFileDialogVisible"
+            },
+            {
+              "key": "shift+cmd+s",
+              "command": "-workbench.action.files.saveAs"
+            },
+            {
+              "key": "shift+cmd+s",
+              "command": "prettier.forceFormatDocument"
+            },
+            {
+              "key": "shift+cmd+s",
+              "command": "editor.action.formatDocument",
+              "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
+            },
+            {
+              "key": "shift+cmd+s",
+              "command": "editor.action.formatDocument.none",
+              "when": "editorTextFocus && !editorHasDocumentFormattingProvider && !editorReadonly"
+            }
+          ]
+          
         </script>
 
         <div class="cards">
