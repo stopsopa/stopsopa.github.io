@@ -40,7 +40,7 @@ export const languages = [
 languages.sort();
 
 export const bringFocus = (tab, label) => {
-  const found = Object.keys(window.editors).find((t) => t === tab);
+  const found = Object.keys(window.editors || {}).find((t) => t === tab);
 
   if (found) {
     try {
@@ -50,7 +50,7 @@ export const bringFocus = (tab, label) => {
       console.log(`bring focus [tab >${tab}< ${label}] error: `, e);
     }
   } else {
-    console.log(`bring focus [tab >${tab}< ${label}]: not found tab`);
+    console.error(`bring focus [tab >${tab}< ${label}]: not found tab`);
   }
 };
 
@@ -284,9 +284,13 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
         console.log("useFetch unmount: editor doesn't exist: editor.destroy()");
       }
 
-      div.removeAttribute("class");
+      try {
+        div.removeAttribute("class");
 
-      div.removeAttribute("style");
+        div.removeAttribute("style");
+      } catch (e) {
+        console.error("Ace.jsx error removing class: ", e);
+      }
 
       window.removeEventListener("resize", refId.current.heightUpdateFunction);
 
@@ -339,11 +343,15 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
   }
 
   function turnRecordOff() {
-    refId.current.editor.commands.off("afterExec", onAfterExec);
+    try {
+      refId.current.editor.commands.off("afterExec", onAfterExec);
 
-    divRef.current.removeEventListener("input", onFindType);
+      divRef.current.removeEventListener("input", onFindType);
 
-    divRef.current.setAttribute("data-record", "0");
+      divRef.current.setAttribute("data-record", "0");
+    } catch (e) {
+      console.error("turnRecordOff error: ", e);
+    }
   }
 
   useEffect(() => {

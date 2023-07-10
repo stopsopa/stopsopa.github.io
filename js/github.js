@@ -77,6 +77,7 @@ window.sasync = {
 
   Object.entries({
     red: "background: #C90000; color: white",
+    orange: "background: #c87037; color: white",
     green: "background: #00B700; color: white",
     blue: "background: #2CA5E0; color: white",
     gray: "background: #3B4045; color: white",

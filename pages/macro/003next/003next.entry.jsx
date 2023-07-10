@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
 
 import { render, createPortal } from "react-dom";
 
@@ -26,8 +26,16 @@ import { useSortable, arrayMove, SortableContext, horizontalListSortingStrategy 
 
 import { CSS } from "@dnd-kit/utilities";
 
+import md5 from "md5";
+
+import useStatePromise from "./useStatePromise.js";
+
+import useQueue from "./useQueue.jsx";
+
+import useStateFetcher from './useStateFetcher.jsx';
+
 const setLocalStorage = debounce((...args) => {
-  // console.log("debounce set", ...args);
+  // log("debounce set", ...args);
   setraw(...args);
 }, 50);
 
@@ -46,10 +54,37 @@ function generateDefaultTab(index) {
  *  https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
  */
 const Main = ({ portal }) => {
+  const [loading, setLoading] = (function () {
+    const [loading, setLoading] = useState(false);
+
+    return [
+      loading,
+      (oneOrMinusOne) => {
+        if (oneOrMinusOne !== 1 && oneOrMinusOne !== -1) {
+          throw new Error(`oneOrMinusOne should be 1 or -1`);
+        }
+
+        setLoading((l) => (l += oneOrMinusOne));
+      },
+    ];
+  })();
+
+  const queue = useQueue();
+
   const [editIndex, setEditIndexDontUseDirectly] = useState(false);
 
   const [createModal, setCreateModalDontUseDirectly] = useState(false);
   const [label, setLabel] = useState("");
+
+  // index key [string]
+  // generateDefaultTab
+  // editor instance of ace
+
+  const [tabs, setTabsDontUseDirectly, getTabsFetcher] = useStateFetcher([
+    // { index: "one_indx", label: "one" },
+    // { index: "two_indx", label: "two" },
+    // { index: "three_indx", label: "three" },
+  ]);
 
   function setCreateModal(state) {
     setLabel("");
@@ -95,16 +130,6 @@ const Main = ({ portal }) => {
     //   coordinateGetter: sortableKeyboardCoordinates,
     // })
   );
-
-  // index key [string]
-  // generateDefaultTab
-  // editor instance of ace
-
-  const [tabs, setTabsDontUseDirectly] = useState([
-    { index: "one_indx", label: "one" },
-    { index: "two_indx", label: "two" },
-    { index: "three_indx", label: "three" },
-  ]);
 
   function generateUniq() {
     let un;
@@ -185,6 +210,18 @@ const Main = ({ portal }) => {
     });
   }
 
+  function deleteTab(index) {
+    const newList = tabs.filter((t) => t.index != index);
+
+    newList.forEach((r, i) => (r.zeroIndex = i));
+
+    setTabsDontUseDirectly((tabs) => newList);
+
+    setEditIndex(false);
+
+    queue(() => pushTabs(newList));
+  }
+
   useEffect(() => {
     const list = tabs.map(({ index }) => {
       return getraw(index, generateDefaultTab(index));
@@ -197,7 +234,7 @@ const Main = ({ portal }) => {
         // Prevent the default behavior (refreshing the page)
         event.preventDefault();
 
-        console.log("window.editors.one.editor.focus()");
+        log("window.editors.one.editor.focus()");
 
         window.editors.one.editor.focus();
 
@@ -221,7 +258,7 @@ const Main = ({ portal }) => {
 
         play();
       } else {
-        console.log({
+        log({
           "event.ctrlKey": event.ctrlKey,
           "event.metaKey": event.metaKey,
           "event.keyCode": event.keyCode,
@@ -238,16 +275,15 @@ const Main = ({ portal }) => {
   useEffect(() => {
     if (id) {
       (async function () {
-        await set({
-          key: "focus_test",
-          data: "test",
-        });
-
         window.addEventListener("focus", async function () {
-          const data = await get("focus_test");
-
-          console.log("focus_test", data);
+          queue(() => pullTabs());
         });
+        window.addEventListener("blur", async function () {
+          console.log("blur");
+          queue(() => pushTabs());
+        });
+
+        queue(() => pullTabs());
       })();
     }
   }, [id]);
@@ -275,6 +311,10 @@ const Main = ({ portal }) => {
 
         const newList = arrayMove(tabs, oldIndex, newIndex); // https://docs.dndkit.com/presets/sortable#connecting-all-the-pieces
 
+        newList.forEach((r, i) => (r.zeroIndex = i));
+
+        queue(() => pushTabs(newList));
+
         return newList;
       });
     }
@@ -288,14 +328,64 @@ const Main = ({ portal }) => {
       const found = tabs.find((row) => row.index === index);
 
       if (found) {
-        console.log("focus: ", found.editor);
+        log("focus: ", found.editor);
         found.editor.focus();
       } else {
-        console.log("no focus");
+        log("no focus");
       }
     } catch (e) {
-      console.log(`setTab error: `, e);
+      log(`setTab error: `, e);
     }
+  }
+
+  async function pullTabs() {
+    setLoading(1);
+
+    log.orange("firebase", "pullTabs");
+
+    const result = await get("tabs");
+
+    log.orange("firebase", "pullTabs result", result);
+
+    if (!Array.isArray(tabs) || tabs.length === 0) {
+      const tabsTransformed = Object.entries(result || {}).reduce((acc, [index, obj]) => {
+        const zeroIndex = obj.zeroIndex;
+
+        acc[zeroIndex] = {
+          ...obj,
+          index,
+        };
+
+        return acc;
+      }, []);
+
+      setTabsDontUseDirectly(tabsTransformed);
+    }
+
+    setLoading(-1);
+  }
+
+  async function pushTabs(given) {
+    setLoading(1);
+
+    const tabsTransformed = (given || getTabsFetcher() || []).reduce((acc, val, i) => {
+      const { index, editor, ...rest } = val;
+
+      acc[index] = { ...rest, zeroIndex: i };
+
+      return acc;
+    }, {});
+
+    log.orange("firebase", "pushTabs", tabsTransformed, "given: ", given);
+
+    const result = await set({
+      key: "tabs",
+      data: tabsTransformed,
+    });
+
+    log.orange("firebase", "pushTabs result", result);
+
+    setLoading(-1);
   }
 
   return (
@@ -306,15 +396,23 @@ const Main = ({ portal }) => {
       })}
       tabIndex={0}
     >
-      {createModal && (
+      {loading > 0 && (
+        <div className="global-loader-component load" data-test="loader">
+          <span>Loading: {loading}</span>
+        </div>
+      )}
+      {createModal && ( // one modal for create mode
         <Modal title="Create tab" onClose={() => setCreateModal(false)}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
               const lab = label.trim();
               if (lab) {
-                setTabsDontUseDirectly((tabs) => [...tabs, { index: generateUniq(), label: lab }]);
+                const newList = [...tabs, { index: generateUniq(), label: lab, time: now() }];
+                setTabsDontUseDirectly((tabs) => newList);
                 setCreateModal(false);
+
+                queue(() => pushTabs(newList));
               }
             }}
           >
@@ -332,7 +430,7 @@ const Main = ({ portal }) => {
           </form>
         </Modal>
       )}
-      {editIndex &&
+      {editIndex && // second modal for edit mode
         (function () {
           const found = tabs.find((t) => t.index == editIndex);
           if (found) {
@@ -360,6 +458,14 @@ const Main = ({ portal }) => {
                     <button type="submit">Edit</button>
                   </label>
                 </form>
+                <button
+                  style={{ float: "right" }}
+                  onClick={() => {
+                    deleteTab(editIndex);
+                  }}
+                >
+                  delete
+                </button>
               </Modal>
             );
           }
@@ -452,7 +558,7 @@ const Main = ({ portal }) => {
               lang={getValue(iterateIndex, "lang", "")}
               wrap={Boolean(getValue(iterateIndex, "wrap", false))}
               onInit={(editor) => {
-                console.log(`editor mounted: `, iterateIndex);
+                log(`editor mounted: `, iterateIndex);
                 setTabs(iterateIndex, "editor", editor);
                 if (iterateIndex === index) {
                   bringFocus(index); // focus on first load of all tabs
@@ -542,5 +648,25 @@ function unique(pattern) {
     var r = (Math.random() * 16) | 0,
       v = c == "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
+  });
+}
+
+function now() {
+  return new Date().toISOString();
+}
+
+const num = (function () {
+  let c = 0;
+  return () => {
+    c += 1;
+    return c;
+  };
+})();
+
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
   });
 }
