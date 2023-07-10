@@ -296,7 +296,7 @@
           npx prettier --write src
               # https://prettier.io/docs/en/cli.html#docsNav
 
-          # vscode keybindings
+          # vscode keybindings (global)
           [
             {
               "key": "shift+cmd+s",
@@ -322,6 +322,10 @@
               "when": "editorTextFocus && !editorHasDocumentFormattingProvider && !editorReadonly"
             }
           ]
+          # vscode extensions .vscode/extensions.json
+          {
+            "recommendations": ["esbenp.prettier-vscode"]
+          }
           
         </script>
 
