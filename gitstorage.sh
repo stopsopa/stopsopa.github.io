@@ -94,7 +94,7 @@ while (( "${#}" )); do
       GITSTORAGE_CORE_REPOSITORY="${2}";
       shift 2;
       ;;
-    --force)
+    --yes)
       _FORCE="1";
       shift;
       ;;
@@ -269,7 +269,7 @@ else
   cd "$(realpath "${PROJECT_DIR}")"
   gits diff
   
-  gits pull --force
+  gits pull --yes
 
 EEE
 
@@ -1011,7 +1011,7 @@ if [ "${MODE}" = "push" ]; then
       exit 0;
     else
 
-      { red "$(basename "${0}") error: files are not in sync, if you sure that you want to push them add --force param"; } 2>&3
+      { red "$(basename "${0}") error: files are not in sync, if you sure that you want to push them add --yes param"; } 2>&3
 
       echo "final url ${URL}";
 
@@ -1119,7 +1119,7 @@ if [ "${MODE}" = "pull" ]; then
       exit 0;
     else
 
-      { red "$(basename "${0}") error: files are not in sync, if you sure that you want to pull them add --force param"; } 2>&3
+      { red "$(basename "${0}") error: files are not in sync, if you sure that you want to pull them add --yes param"; } 2>&3
 
       echo "final url ${URL}";
 
