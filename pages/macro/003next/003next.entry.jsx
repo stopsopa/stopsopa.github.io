@@ -51,20 +51,15 @@ function generateDefaultTab(index) {
 const Main = ({ portal }) => {
   const [isPageFocused, setIsPageFocused] = useState(undefined);
 
-  const [loading, setLoading] = (function () {
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoadingRaw] = useState(0);
 
-    return [
-      loading,
-      (oneOrMinusOne) => {
-        if (oneOrMinusOne !== 1 && oneOrMinusOne !== -1) {
-          throw new Error(`oneOrMinusOne should be 1 or -1`);
-        }
+  function setLoading(oneOrMinusOne) {
+    if (oneOrMinusOne !== 1 && oneOrMinusOne !== -1) {
+      throw new Error(`oneOrMinusOne should be 1 or -1`);
+    }
 
-        setLoading((l) => (l += oneOrMinusOne));
-      },
-    ];
-  })();
+    setLoadingRaw((l) => (l += oneOrMinusOne));
+  }
 
   const [queue, getQueue] = useQueue();
 
@@ -326,7 +321,7 @@ const Main = ({ portal }) => {
     let handler;
 
     function sync() {
-      log.orange("sync", "id: ", id, "execute");
+      // log.orange("sync", "id: ", id, "execute");
 
       if (!id) {
         return;
@@ -337,7 +332,7 @@ const Main = ({ portal }) => {
       if (keepLoopGoing) {
         handler = setTimeout(sync, 1000);
       } else {
-        log.orange("sync", "id: ", id, "stopped");
+        // log.orange("sync", "id: ", id, "stopped");
 
         clearTimeout(handler);
 
@@ -352,22 +347,22 @@ const Main = ({ portal }) => {
 
       handler = setTimeout(sync, 1000);
     } else {
-      log.orange(
-        "sync",
-        "id: ",
-        id,
-        "conditions not met to run:",
-        "id: ",
-        id,
-        "isPageFocused:",
-        isPageFocused,
-        "selectedTabIndex: ",
-        selectedTabIndex
-      );
+      // log.orange(
+      //   "sync",
+      //   "id: ",
+      //   id,
+      //   "conditions not met to run:",
+      //   "id: ",
+      //   id,
+      //   "isPageFocused:",
+      //   isPageFocused,
+      //   "selectedTabIndex: ",
+      //   selectedTabIndex
+      // );
     }
 
     return () => {
-      log.orange("sync", "id: ", id, "unmount");
+      // log.orange("sync", "id: ", id, "unmount");
 
       clearTimeout(handler);
 
@@ -415,30 +410,28 @@ const Main = ({ portal }) => {
   async function pullAllTabsDataExceptValues() {
     setLoading(1);
 
-    const currentAllTabsMd5 = md5(JSON.stringify(allTabsDataExceptValues));
+    try {
+      const currentAllTabsMd5 = md5(JSON.stringify(allTabsDataExceptValues));
 
-    log("md5 before", currentAllTabsMd5, JSON.stringify(allTabsDataExceptValues));
+      const result = await get("allTabsDataExceptValues");
 
-    log.orange("firebase", "pullAllTabsDataExceptValues");
+      log.orange("firebase", "pullAllTabsDataExceptValues result", result);
 
-    const result = await get("allTabsDataExceptValues");
+      const tabsTransformed = Object.entries(result || {}).reduce((acc, [index, obj]) => {
+        const zeroIndexOrderTab = obj.zeroIndexOrderTab;
 
-    log.orange("firebase", "pullAllTabsDataExceptValues result", result);
+        acc[zeroIndexOrderTab] = {
+          ...obj,
+          index,
+        };
 
-    const tabsTransformed = Object.entries(result || {}).reduce((acc, [index, obj]) => {
-      const zeroIndexOrderTab = obj.zeroIndexOrderTab;
+        return acc;
+      }, []);
 
-      acc[zeroIndexOrderTab] = {
-        ...obj,
-        index,
-      };
-
-      return acc;
-    }, []);
-
-    if (md5(JSON.stringify(allTabsDataExceptValues)) === currentAllTabsMd5) {
-      setAllTabsDataExceptValuesDontUseDirectly(tabsTransformed);
-    }
+      if (md5(JSON.stringify(allTabsDataExceptValues)) === currentAllTabsMd5) {
+        setAllTabsDataExceptValuesDontUseDirectly(tabsTransformed);
+      }
+    } catch (e) {}
 
     setLoading(-1);
   }
@@ -446,29 +439,31 @@ const Main = ({ portal }) => {
   async function pushAllTabsDataExceptValues(given) {
     setLoading(1);
 
-    const tabsTransformed = (given || getAllTabsDataExceptValuesFetcher() || []).reduce((acc, val, i) => {
-      const { index, editor, ...rest } = val;
+    try {
+      const tabsTransformed = (given || getAllTabsDataExceptValuesFetcher() || []).reduce((acc, val, i) => {
+        const { index, editor, ...rest } = val;
 
-      acc[index] = { ...rest, zeroIndexOrderTab: i };
+        acc[index] = { ...rest, zeroIndexOrderTab: i };
 
-      return acc;
-    }, {});
+        return acc;
+      }, {});
 
-    log.orange("firebase", "pushAllTabsDataExceptValues", tabsTransformed, "given: ", given);
+      await set({
+        key: "allTabsDataExceptValues",
+        data: tabsTransformed,
+      });
 
-    const result = await set({
-      key: "allTabsDataExceptValues",
-      data: tabsTransformed,
-    });
-
-    log.orange("firebase", "pushAllTabsDataExceptValues result", result);
+      log.orange("firebase", "------> pushAllTabsDataExceptValues result");
+    } catch (e) {}
 
     setLoading(-1);
   }
 
   useEffect(() => {
-    pushAllTabsDataExceptValues();
-  }, [allTabsDataExceptValues]);
+    if (Array.isArray(allTabsDataExceptValues) && allTabsDataExceptValues.length > 0) {
+      pushAllTabsDataExceptValues();
+    }
+  }, [md5(JSON.stringify(allTabsDataExceptValues))]);
 
   return (
     <div
