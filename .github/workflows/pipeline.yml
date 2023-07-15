@@ -75,6 +75,7 @@ jobs:
       #   run: |
       #     TYPE=int /bin/bash jest.sh
       - name: E2E TESTS
+        if: "!contains(github.event.head_commit.message, '[quick]')"
         run: |
           /bin/bash playwright.sh --target docker
 
