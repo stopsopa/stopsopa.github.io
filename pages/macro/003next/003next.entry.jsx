@@ -53,31 +53,42 @@ const Main = ({ portal }) => {
 
   const [loading, setLoadingRaw] = useState(0);
 
-  function setLoading(oneOrMinusOne) {
-    if (oneOrMinusOne !== 1 && oneOrMinusOne !== -1) {
-      throw new Error(`oneOrMinusOne should be 1 or -1`);
-    }
-
-    setLoadingRaw((l) => (l += oneOrMinusOne));
-  }
-
-  const [queue, getQueue] = useQueue();
-
   const [editIndex, setEditIndexDontUseDirectly] = useState(false);
 
   const [createModal, setCreateModalDontUseDirectly] = useState(false);
   const [label, setLabel] = useState("");
 
-  // index key [string]
-  // generateDefaultTab
-  // editor instance of ace
+  const [recordOn, setRecordOn] = useState(false);
+
+  const [allEditorsValues, setAllEditorsValues] = useState([]);
+
+  const [queue, getQueue] = useQueue();
 
   const [allTabsDataExceptValues, setAllTabsDataExceptValuesDontUseDirectly, getAllTabsDataExceptValuesFetcher] =
-    useStateFetcher([
-      // { index: "one_indx", label: "one" },
-      // { index: "two_indx", label: "two" },
-      // { index: "three_indx", label: "three" },
-    ]);
+    useStateFetcher([]);
+
+  const { error, id, set, get, del, push } = useCustomState({
+    section,
+  });
+
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      // Require the mouse to move by 10 pixels before activating
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(TouchSensor, {
+      // Press delay of 250ms, with tolerance of 5px of movement
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    })
+    // useSensor(KeyboardSensor, {
+    //   coordinateGetter: sortableKeyboardCoordinates,
+    // })
+  );
 
   let selectedTabIndex;
   try {
@@ -108,6 +119,14 @@ const Main = ({ portal }) => {
     setEditIndexDontUseDirectly(false);
   }
 
+  function setLoading(oneOrMinusOne) {
+    if (oneOrMinusOne !== 1 && oneOrMinusOne !== -1) {
+      throw new Error(`oneOrMinusOne should be 1 or -1`);
+    }
+
+    setLoadingRaw((l) => (l += oneOrMinusOne));
+  }
+
   function setEditIndex(index) {
     const found = allTabsDataExceptValues.find((t) => t.index === index);
 
@@ -122,29 +141,6 @@ const Main = ({ portal }) => {
     }
   }
 
-  const { error, id, set, get, del, push } = useCustomState({
-    section,
-  });
-
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      // Require the mouse to move by 10 pixels before activating
-      activationConstraint: {
-        distance: 10,
-      },
-    }),
-    useSensor(TouchSensor, {
-      // Press delay of 250ms, with tolerance of 5px of movement
-      activationConstraint: {
-        delay: 250,
-        tolerance: 5,
-      },
-    })
-    // useSensor(KeyboardSensor, {
-    //   coordinateGetter: sortableKeyboardCoordinates,
-    // })
-  );
-
   function generateUniq() {
     let un;
 
@@ -154,10 +150,6 @@ const Main = ({ portal }) => {
 
     return un;
   }
-
-  const [recordOn, setRecordOn] = useState(false);
-
-  const [allEditorsValues, setAllEditorsValues] = useState([]);
 
   function play() {
     setRecordOn(false);
@@ -238,6 +230,85 @@ const Main = ({ portal }) => {
     setAllTabsDataExceptValuesDontUseDirectly(() => newList);
 
     setEditIndex(false);
+  }
+
+  function handleDragEnd(event) {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setAllTabsDataExceptValuesDontUseDirectly((allTabsDataExceptValues) => {
+        const tmp = allTabsDataExceptValues.map((t) => t.index);
+
+        const oldIndex = tmp.indexOf(active.id);
+
+        const newIndex = tmp.indexOf(over.id);
+
+        const newList = arrayMove(allTabsDataExceptValues, oldIndex, newIndex); // https://docs.dndkit.com/presets/sortable#connecting-all-the-pieces
+
+        newList.forEach((r, i) => (r.zeroIndexOrderTab = i));
+
+        return newList;
+      });
+    }
+  }
+
+  function setSelectedTab(index) {
+    if (indexOnTheRight !== index) {
+      setAllTabsDataExceptValues(index, "selectedTabIndexLatestDate", now());
+      // setSelectedTabIndexRaw(index);
+    }
+  }
+
+  async function pullAllTabsDataExceptValues() {
+    setLoading(1);
+
+    try {
+      const currentAllTabsMd5 = md5(JSON.stringify(allTabsDataExceptValues));
+
+      const result = await get("allTabsDataExceptValues");
+
+      log.orange("firebase", "pullAllTabsDataExceptValues result", result);
+
+      const tabsTransformed = Object.entries(result || {}).reduce((acc, [index, obj]) => {
+        const zeroIndexOrderTab = obj.zeroIndexOrderTab;
+
+        acc[zeroIndexOrderTab] = {
+          ...obj,
+          index,
+        };
+
+        return acc;
+      }, []);
+
+      if (md5(JSON.stringify(allTabsDataExceptValues)) === currentAllTabsMd5) {
+        setAllTabsDataExceptValuesDontUseDirectly(tabsTransformed);
+      }
+    } catch (e) {}
+
+    setLoading(-1);
+  }
+
+  async function pushAllTabsDataExceptValues(given) {
+    setLoading(1);
+
+    try {
+      const tabsTransformed = (given || getAllTabsDataExceptValuesFetcher() || []).reduce((acc, val, i) => {
+        const { index, editor, ...rest } = val;
+
+        acc[index] = { ...rest, zeroIndexOrderTab: i };
+
+        return acc;
+      }, {});
+
+      await set({
+        key: "allTabsDataExceptValues",
+        data: tabsTransformed,
+      });
+
+      log.orange("firebase", "------> pushAllTabsDataExceptValues result");
+    } catch (e) {}
+
+    setLoading(-1);
   }
 
   useEffect(() => {
@@ -379,85 +450,6 @@ const Main = ({ portal }) => {
       }); // forcus for every change of index -> on every click of index
     }
   }, [selectedTabIndex]);
-
-  function handleDragEnd(event) {
-    const { active, over } = event;
-
-    if (active.id !== over.id) {
-      setAllTabsDataExceptValuesDontUseDirectly((allTabsDataExceptValues) => {
-        const tmp = allTabsDataExceptValues.map((t) => t.index);
-
-        const oldIndex = tmp.indexOf(active.id);
-
-        const newIndex = tmp.indexOf(over.id);
-
-        const newList = arrayMove(allTabsDataExceptValues, oldIndex, newIndex); // https://docs.dndkit.com/presets/sortable#connecting-all-the-pieces
-
-        newList.forEach((r, i) => (r.zeroIndexOrderTab = i));
-
-        return newList;
-      });
-    }
-  }
-
-  function setSelectedTab(index) {
-    if (indexOnTheRight !== index) {
-      setAllTabsDataExceptValues(index, "selectedTabIndexLatestDate", now());
-      // setSelectedTabIndexRaw(index);
-    }
-  }
-
-  async function pullAllTabsDataExceptValues() {
-    setLoading(1);
-
-    try {
-      const currentAllTabsMd5 = md5(JSON.stringify(allTabsDataExceptValues));
-
-      const result = await get("allTabsDataExceptValues");
-
-      log.orange("firebase", "pullAllTabsDataExceptValues result", result);
-
-      const tabsTransformed = Object.entries(result || {}).reduce((acc, [index, obj]) => {
-        const zeroIndexOrderTab = obj.zeroIndexOrderTab;
-
-        acc[zeroIndexOrderTab] = {
-          ...obj,
-          index,
-        };
-
-        return acc;
-      }, []);
-
-      if (md5(JSON.stringify(allTabsDataExceptValues)) === currentAllTabsMd5) {
-        setAllTabsDataExceptValuesDontUseDirectly(tabsTransformed);
-      }
-    } catch (e) {}
-
-    setLoading(-1);
-  }
-
-  async function pushAllTabsDataExceptValues(given) {
-    setLoading(1);
-
-    try {
-      const tabsTransformed = (given || getAllTabsDataExceptValuesFetcher() || []).reduce((acc, val, i) => {
-        const { index, editor, ...rest } = val;
-
-        acc[index] = { ...rest, zeroIndexOrderTab: i };
-
-        return acc;
-      }, {});
-
-      await set({
-        key: "allTabsDataExceptValues",
-        data: tabsTransformed,
-      });
-
-      log.orange("firebase", "------> pushAllTabsDataExceptValues result");
-    } catch (e) {}
-
-    setLoading(-1);
-  }
 
   useEffect(() => {
     if (Array.isArray(allTabsDataExceptValues) && allTabsDataExceptValues.length > 0) {
