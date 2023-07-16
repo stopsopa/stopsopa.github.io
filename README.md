@@ -1,6 +1,7 @@
 ![example workflow](https://github.com/stopsopa/stopsopa.github.io/actions/workflows/pipeline.yml/badge.svg)
 
 # ci skip
+
 use [quick] in git comment to skip test (for fast release) [.github/workflows/pipeline.yml](.github/workflows/pipeline.yml)
 
 # Ace editor objects syntax:

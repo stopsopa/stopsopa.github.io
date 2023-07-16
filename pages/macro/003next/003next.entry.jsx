@@ -12,8 +12,6 @@ const section = "editor";
 
 import Ace, { languages, bringFocus, pokeEditorsToRerenderBecauseSometimesTheyStuck } from "../Ace.jsx";
 
-import { debounce } from "lodash";
-
 import RecordLog from "../RecordLog";
 
 import "./003next.scss";
@@ -35,7 +33,7 @@ import useQueue from "./useQueue.jsx";
 import useStateFetcher from "./useStateFetcher.jsx";
 
 /**
- * dirty loader vvv
+ * dirty loader to reduce renders of main component vvv
  */
 const loadingTrigger = (function () {
   let trigger;
@@ -89,7 +87,7 @@ const Main = ({ portal }) => {
 
   const [recordOn, setRecordOn] = useState(false);
 
-  const [allEditorsValues, setAllEditorsValues] = useState([]);
+  const [allEditorsValues, setAllEditorsValues] = useState({});
 
   const [queue, getQueue] = useQueue();
 
@@ -120,24 +118,33 @@ const Main = ({ portal }) => {
   );
 
   let selectedTabIndex;
-  try {
-    selectedTabIndex = allTabsDataExceptValues[0].index;
-  } catch (e) {}
-  try {
-    let newestDate;
-    allTabsDataExceptValues.forEach((t) => {
-      if (!newestDate || (t.selectedTabIndexLatestDate && t.selectedTabIndexLatestDate > newestDate)) {
-        selectedTabIndex = t.index;
+  function findSelectedTabIndex(data) {
+    let selectedTabIndex;
+    try {
+      selectedTabIndex = (data || allTabsDataExceptValues)[0].index;
+    } catch (e) {}
+    try {
+      let newestDate;
+      (data || allTabsDataExceptValues).forEach((t) => {
+        if (!newestDate || (t.selectedTabIndexLatestDate && t.selectedTabIndexLatestDate > newestDate)) {
+          selectedTabIndex = t.index;
 
-        newestDate = t.selectedTabIndexLatestDate;
-      }
-    });
-  } catch (e) {}
+          newestDate = t.selectedTabIndexLatestDate;
+        }
+      });
+    } catch (e) {}
+
+    return selectedTabIndex;
+  }
+  selectedTabIndex = findSelectedTabIndex();
 
   let indexOnTheRight;
-  try {
-    indexOnTheRight = allTabsDataExceptValues.find((t) => t.indexOnTheRight).index;
-  } catch (e) {}
+  function findIndexOnTheRight(data) {
+    try {
+      return (data || allTabsDataExceptValues).find((t) => t.indexOnTheRight).index;
+    } catch (e) {}
+  }
+  indexOnTheRight = findIndexOnTheRight();
 
   function setCreateModal(state) {
     setLabel("");
@@ -256,7 +263,83 @@ const Main = ({ portal }) => {
          * only then change state, this way I'm reducing unecessary rerenders of main component
          */
         if (md5(JSON.stringify(tabsTransformed)) !== currentAllTabsMd5) {
+          const selectedTabIndex_tabObjectValue = structuredClone(allTabsDataExceptValues[selectedTabIndex]);
+
+          const indexOnTheRight_tabObjectValue = structuredClone(allTabsDataExceptValues[indexOnTheRight]);
+
           setAllTabsDataExceptValuesDontUseDirectly(tabsTransformed);
+
+          // updating selected tab:
+          {
+            const selectedTabIndex = findSelectedTabIndex(tabsTransformed);
+
+            // update opened tab:
+            // console.log(
+            //   "updatetab",
+            //   selectedTabIndex,
+            //   "result[selectedTabIndex]",
+            //   result[selectedTabIndex],
+            //   "selectedTabIndex_tabObjectValue: ",
+            //   selectedTabIndex_tabObjectValue
+            // );
+
+            if (
+              selectedTabIndex &&
+              result[selectedTabIndex] &&
+              result?.[selectedTabIndex]?.valueMD5 &&
+              result?.[selectedTabIndex]?.valueMD5 !== selectedTabIndex_tabObjectValue?.valueMD5
+            ) {
+              const result = await get(["editorsValues", selectedTabIndex]);
+
+              log(
+                "selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex ",
+                selectedTabIndex,
+                result
+              );
+
+              setTimeout(() => {
+                setValue(selectedTabIndex, "");
+                setTimeout(() => {
+                  setValue(selectedTabIndex, result.value);
+                }, 100);
+              }, 100);
+            }
+          }
+
+          // updating selected indexOnTheRight tab:
+          {
+            const indexOnTheRight = findIndexOnTheRight(tabsTransformed);
+
+            // update opened tab:
+            console.log(
+              "indexOnTheRight",
+              indexOnTheRight,
+              "result[indexOnTheRight]",
+              result[indexOnTheRight],
+              "selectedTabIndex_tabObjectValue: ",
+              indexOnTheRight_tabObjectValue
+            );
+
+            if (
+              indexOnTheRight &&
+              result[indexOnTheRight] &&
+              result?.[indexOnTheRight]?.valueMD5 &&
+              result?.[indexOnTheRight]?.valueMD5 !== indexOnTheRight_tabObjectValue?.valueMD5
+            ) {
+              const result = await get(["editorsValues", indexOnTheRight]);
+              log(
+                "indexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRightindexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRight",
+                indexOnTheRight,
+                result
+              );
+
+              setValue(indexOnTheRight, result.value);
+            } else {
+              log(
+                "NNNNNNNNNNNNNNNNNNNNN indexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRightindexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRight"
+              );
+            }
+          }
         }
       }
     } catch (e) {}
@@ -322,39 +405,12 @@ const Main = ({ portal }) => {
   }
   // allTabsDataExceptValues --- setters ----- ^^^
 
-  function getValue(index, field, def) {
-    try {
-      const copy = structuredClone(allEditorsValues);
-
-      let found = copy.find((row) => row.index == index);
-
-      if (!found) {
-        found = generateDefaultTab(index);
-      }
-
-      return found[field] || def;
-    } catch (e) {
-      return def;
-    }
-  }
-
-  function setValue(index, field, value) {
+  function setValue(index, value) {
     setAllEditorsValues((allEditorsValues) => {
-      const copy = structuredClone(allEditorsValues);
-
-      let found;
-
-      for (let i = 0, l = copy.length; i < l; i += 1) {
-        if (copy[i].index === index) {
-          copy[i][field] = value;
-
-          found = copy[i];
-        }
-      }
-
-      log("setLocalStorage: ", index, field, value, "found: ", found, "copy: ", copy);
-
-      return copy;
+      return {
+        ...allEditorsValues,
+        [index]: value,
+      };
     });
   }
 
@@ -422,67 +478,67 @@ const Main = ({ portal }) => {
     queue(() => pullAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
   }, [id]);
 
-  useEffect(() => {
-    // log.orange("isPageFocused useEffect", isPageFocused);
+  // useEffect(() => {
+  //   // log.orange("isPageFocused useEffect", isPageFocused);
 
-    if (typeof isPageFocused !== "boolean") {
-      return;
-    }
+  //   if (typeof isPageFocused !== "boolean") {
+  //     return;
+  //   }
 
-    // log.orange("sync", "bind");
+  //   // log.orange("sync", "bind");
 
-    let keepLoopGoing = false;
-    let handler;
+  //   let keepLoopGoing = false;
+  //   let handler;
 
-    function sync() {
-      // log.orange("sync", "id: ", id, "execute");
+  //   function sync() {
+  //     log.orange("sync", "id: ", id, "execute");
 
-      if (!id) {
-        return;
-      }
+  //     if (!id) {
+  //       return;
+  //     }
 
-      queue(() => pullAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+  //     queue(() => pullAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
 
-      if (keepLoopGoing) {
-        handler = setTimeout(sync, 1000);
-      } else {
-        // log.orange("sync", "id: ", id, "stopped");
+  //     if (keepLoopGoing) {
+  //       handler = setTimeout(sync, 8000);
+  //     } else {
+  //       // log.orange("sync", "id: ", id, "stopped");
 
-        clearTimeout(handler);
+  //       clearTimeout(handler);
 
-        keepLoopGoing = false;
-      }
-    }
+  //       keepLoopGoing = false;
+  //     }
+  //   }
 
-    if (id && isPageFocused && selectedTabIndex) {
-      keepLoopGoing = true;
-      // log.orange("sync", "bind", "setInterval", "on");
-      // handler = setInterval(sync, 15000);
+  //   if (id && isPageFocused && selectedTabIndex) {
+  //     keepLoopGoing = true;
+  //     // log.orange("sync", "bind", "setInterval", "on");
+  //     // handler = setInterval(sync, 15000);
 
-      handler = setTimeout(sync, 1000);
-    } else {
-      // log.orange(
-      //   "sync",
-      //   "id: ",
-      //   id,
-      //   "conditions not met to run:",
-      //   "id: ",
-      //   id,
-      //   "isPageFocused:",
-      //   isPageFocused,
-      //   "selectedTabIndex: ",
-      //   selectedTabIndex
-      // );
-    }
+  //     handler = setTimeout(sync, 8000);
+  //   } else {
+  //     // log.orange(
+  //     //   "sync",
+  //     //   "id: ",
+  //     //   id,
+  //     //   "conditions not met to run:",
+  //     //   "id: ",
+  //     //   id,
+  //     //   "isPageFocused:",
+  //     //   isPageFocused,
+  //     //   "selectedTabIndex: ",
+  //     //   selectedTabIndex
+  //     // );
+  //   }
 
-    return () => {
-      // log.orange("sync", "id: ", id, "unmount");
+  //   return () => {
+  //     // log.orange("sync", "id: ", id, "unmount");
 
-      clearTimeout(handler);
+  //     clearTimeout(handler);
 
-      keepLoopGoing = false;
-    };
-  }, [isPageFocused, id, selectedTabIndex]);
+  //     keepLoopGoing = false;
+  //   };
+  // }, [isPageFocused, id, selectedTabIndex]);
 
   useEffect(() => {
     if (selectedTabIndex) {
@@ -499,6 +555,58 @@ const Main = ({ portal }) => {
       pushAllTabsDataExceptValues();
     }
   }, [md5(JSON.stringify(allTabsDataExceptValues))]);
+
+  const pushValueSelectedTabIndex = useCallback(
+    debounce(async (index, value) => {
+      if (id) {
+        // log(`index: >${index}< -----------------------------------------------XXX >`);
+        if (typeof index === "string" && typeof value === "string" && value.trim()) {
+          // log(`index: >${index}< -----------------------------------------------XXXXXXXXXXXXXXXXXXXXXX >`);
+
+          await set({
+            key: [`editorsValues`, index],
+            data: { value },
+          });
+
+          await set({
+            key: ["allTabsDataExceptValues", index, "valueMD5"],
+            data: md5(value),
+          });
+        }
+      }
+    }, 2000),
+    [id]
+  );
+
+  useEffect(() => {
+    pushValueSelectedTabIndex(selectedTabIndex, allEditorsValues[selectedTabIndex]);
+  }, [md5(allEditorsValues[selectedTabIndex] || "")]);
+
+  const pushValueIndexOnTheRight = useCallback(
+    debounce(async (index, value) => {
+      if (id) {
+        // log(`index: >${index}< -----------------------------------------------XXX >`);
+        if (typeof index === "string" && typeof value === "string" && value.trim()) {
+          // log(`index: >${index}< -----------------------------------------------XXXXXXXXXXXXXXXXXXXXXX >`);
+
+          await set({
+            key: [`editorsValues`, index],
+            data: { value },
+          });
+
+          await set({
+            key: ["allTabsDataExceptValues", index, "valueMD5"],
+            data: md5(value),
+          });
+        }
+      }
+    }, 2000),
+    [id]
+  );
+
+  useEffect(() => {
+    pushValueIndexOnTheRight(indexOnTheRight, allEditorsValues[indexOnTheRight]);
+  }, [md5(allEditorsValues[indexOnTheRight] || "")]);
 
   return (
     <div
@@ -666,11 +774,11 @@ const Main = ({ portal }) => {
               </div>
               <Ace
                 id={iterateIndex}
-                content={getValue(iterateIndex, "value", "")}
+                content={allEditorsValues[iterateIndex] || ""}
                 lang={lang}
                 wrap={wrap}
                 onChange={(data) => {
-                  setValue(iterateIndex, "value", data);
+                  setValue(iterateIndex, data);
                 }}
                 onInit={(editor) => {
                   log(`editor mounted: `, iterateIndex);
@@ -791,4 +899,16 @@ function delay(ms) {
       resolve();
     }, ms);
   });
+}
+
+function debounce(fn, delay) {
+  var timer = null;
+  return function () {
+    var context = this,
+      args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      fn.apply(context, args);
+    }, delay);
+  };
 }
