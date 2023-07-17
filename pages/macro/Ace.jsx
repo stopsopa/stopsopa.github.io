@@ -153,7 +153,9 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap, passRefTo
   }, [refId, lang]);
 
   useEffect(() => {
-    passRefToParent(refId);
+    if (typeof passRefToParent === "function") {
+      passRefToParent(refId);
+    }
 
     refId.current.wrap = wrap;
     refId.current.promise.then((editor) => {
