@@ -32,6 +32,8 @@ import useQueue from "./useQueue.jsx";
 
 import useStateFetcher from "./useStateFetcher.jsx";
 
+const whenUpdated = {};
+
 /**
  * dirty loader to reduce renders of main component vvv
  */
@@ -78,6 +80,8 @@ function LoadingComponent() {
  *  https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
  */
 const Main = ({ portal }) => {
+  log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX render XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+
   const [isPageFocused, setIsPageFocused] = useState(undefined);
 
   const [editIndex, setEditIndexDontUseDirectly] = useState(false);
@@ -241,7 +245,7 @@ const Main = ({ portal }) => {
 
       const result = await get("allTabsDataExceptValues");
 
-      log.orange("firebase", "pullAllTabsDataExceptValues result", result);
+      log.orange("firebase", "<------ pullAllTabsDataExceptValues result", result);
 
       const tabsTransformed = Object.entries(result || {}).reduce((acc, [index, obj]) => {
         const zeroIndexOrderTab = obj.zeroIndexOrderTab;
@@ -289,7 +293,7 @@ const Main = ({ portal }) => {
               result?.[selectedTabIndex]?.valueMD5 &&
               result?.[selectedTabIndex]?.valueMD5 !== selectedTabIndex_tabObjectValue?.valueMD5
             ) {
-              const result = await get(["editorsValues", selectedTabIndex]);
+              const result = await get(["allEditorsValues", selectedTabIndex]);
 
               log(
                 "selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex ",
@@ -297,12 +301,14 @@ const Main = ({ portal }) => {
                 result
               );
 
-              setTimeout(() => {
-                setValue(selectedTabIndex, "");
+              if (typeof result?.value === "string") {
                 setTimeout(() => {
-                  setValue(selectedTabIndex, result.value);
+                  setValue(selectedTabIndex, "");
+                  setTimeout(() => {
+                    setValue(selectedTabIndex, result.value);
+                  }, 100);
                 }, 100);
-              }, 100);
+              }
             }
           }
 
@@ -326,14 +332,21 @@ const Main = ({ portal }) => {
               result?.[indexOnTheRight]?.valueMD5 &&
               result?.[indexOnTheRight]?.valueMD5 !== indexOnTheRight_tabObjectValue?.valueMD5
             ) {
-              const result = await get(["editorsValues", indexOnTheRight]);
+              const result = await get(["allEditorsValues", indexOnTheRight]);
               log(
                 "indexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRightindexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRight",
                 indexOnTheRight,
                 result
               );
 
-              setValue(indexOnTheRight, result.value);
+              if (typeof result?.value === "string") {
+                setTimeout(() => {
+                  setValue(indexOnTheRight, "");
+                  setTimeout(() => {
+                    setValue(indexOnTheRight, result.value);
+                  }, 100);
+                }, 100);
+              }
             } else {
               log(
                 "NNNNNNNNNNNNNNNNNNNNN indexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRightindexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRight"
@@ -407,6 +420,18 @@ const Main = ({ portal }) => {
 
   function setValue(index, value) {
     setAllEditorsValues((allEditorsValues) => {
+      if (
+        typeof allEditorsValues[index] === "string" &&
+        typeof value === "string" &&
+        allEditorsValues[index] &&
+        value &&
+        allEditorsValues[index] !== value
+      ) {
+        const n = now();
+        log.orange("whenUpdated", "setValue", n, "before: ", `>${allEditorsValues[index]}<`, "after: ", `>${value}<`);
+        whenUpdated[selectedTabIndex] = n;
+      }
+
       return {
         ...allEditorsValues,
         [index]: value,
@@ -559,13 +584,31 @@ const Main = ({ portal }) => {
   const pushValueSelectedTabIndex = useCallback(
     debounce(async (index, value) => {
       if (id) {
-        // log(`index: >${index}< -----------------------------------------------XXX >`);
         if (typeof index === "string" && typeof value === "string" && value.trim()) {
-          // log(`index: >${index}< -----------------------------------------------XXXXXXXXXXXXXXXXXXXXXX >`);
+          log.orange("firebase", `======> ${value}`);
+
+          // log("sent::", now());
+
+          // const updated = await get(["allEditorsValues", index, "updated"]);
+
+          // log("remote", updated);
+          // log("local:", whenUpdated[index]);
+
+          // if (typeof updated === "string" && typeof whenUpdated[index] === "string" && updated > whenUpdated[index]) {
+          //   log.orange("time comparison", "false");
+          //   return;
+          // } else {
+          //   log.orange("time comparison", "true");
+          // }
+
+          // if (typeof whenUpdated[index] === "undefined") {
+          //   log.orange("time comparison", "not updated");
+          //   return;
+          // }
 
           await set({
-            key: [`editorsValues`, index],
-            data: { value },
+            key: [`allEditorsValues`, index],
+            data: { value, updated: now() },
           });
 
           await set({
@@ -580,18 +623,17 @@ const Main = ({ portal }) => {
 
   useEffect(() => {
     pushValueSelectedTabIndex(selectedTabIndex, allEditorsValues[selectedTabIndex]);
-  }, [md5(allEditorsValues[selectedTabIndex] || "")]);
+  }, [allEditorsValues[selectedTabIndex]]);
 
   const pushValueIndexOnTheRight = useCallback(
     debounce(async (index, value) => {
       if (id) {
-        // log(`index: >${index}< -----------------------------------------------XXX >`);
         if (typeof index === "string" && typeof value === "string" && value.trim()) {
-          // log(`index: >${index}< -----------------------------------------------XXXXXXXXXXXXXXXXXXXXXX >`);
+          log.orange("firebase", `======> ${value}`);
 
           await set({
-            key: [`editorsValues`, index],
-            data: { value },
+            key: [`allEditorsValues`, index],
+            data: { value, updated: now() },
           });
 
           await set({
@@ -606,7 +648,7 @@ const Main = ({ portal }) => {
 
   useEffect(() => {
     pushValueIndexOnTheRight(indexOnTheRight, allEditorsValues[indexOnTheRight]);
-  }, [md5(allEditorsValues[indexOnTheRight] || "")]);
+  }, [allEditorsValues[indexOnTheRight]]);
 
   return (
     <div
@@ -812,8 +854,6 @@ function SortableTabElement(props) {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-
-  log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX render XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 
   return (
     <div
