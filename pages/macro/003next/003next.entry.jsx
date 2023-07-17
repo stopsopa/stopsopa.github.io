@@ -102,6 +102,8 @@ const Main = ({ portal }) => {
     section,
   });
 
+  const editorsRefs = useRef({});
+
   const sensors = useSensors(
     useSensor(MouseSensor, {
       // Require the mouse to move by 10 pixels before activating
@@ -295,20 +297,15 @@ const Main = ({ portal }) => {
             ) {
               const result = await get(["allEditorsValues", selectedTabIndex]);
 
-              log(
-                "selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex selectedTabIndex ",
-                selectedTabIndex,
-                result
-              );
+              editorsRefs.current[selectedTabIndex].current.update = true;
 
-              if (typeof result?.value === "string") {
-                setTimeout(() => {
-                  setValue(selectedTabIndex, "");
-                  setTimeout(() => {
-                    setValue(selectedTabIndex, result.value);
-                  }, 100);
-                }, 100);
-              }
+              setValue(selectedTabIndex, result.value);
+
+              setTimeout(() => {
+                if (editorsRefs.current[selectedTabIndex].current.focus) {
+                  editorsRefs.current[selectedTabIndex].current.update = false;
+                }
+              }, 500);
             }
           }
 
@@ -333,29 +330,23 @@ const Main = ({ portal }) => {
               result?.[indexOnTheRight]?.valueMD5 !== indexOnTheRight_tabObjectValue?.valueMD5
             ) {
               const result = await get(["allEditorsValues", indexOnTheRight]);
-              log(
-                "indexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRightindexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRight",
-                indexOnTheRight,
-                result
-              );
 
-              if (typeof result?.value === "string") {
-                setTimeout(() => {
-                  setValue(indexOnTheRight, "");
-                  setTimeout(() => {
-                    setValue(indexOnTheRight, result.value);
-                  }, 100);
-                }, 100);
-              }
-            } else {
-              log(
-                "NNNNNNNNNNNNNNNNNNNNN indexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRightindexOnTheRight indexOnTheRight indexOnTheRight indexOnTheRight"
-              );
+              editorsRefs.current[indexOnTheRight].current.update = true;
+
+              setValue(indexOnTheRight, result.value);
+
+              setTimeout(() => {
+                if (editorsRefs.current[indexOnTheRight].current.focus) {
+                  editorsRefs.current[indexOnTheRight].current.update = false;
+                }
+              }, 500);
             }
           }
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      log("pullAllTabsDataExceptValues error: ", e);
+    }
 
     loadingTrigger(-1);
   }
@@ -428,7 +419,6 @@ const Main = ({ portal }) => {
         allEditorsValues[index] !== value
       ) {
         const n = now();
-        log.orange("whenUpdated", "setValue", n, "before: ", `>${allEditorsValues[index]}<`, "after: ", `>${value}<`);
         whenUpdated[selectedTabIndex] = n;
       }
 
@@ -584,38 +574,44 @@ const Main = ({ portal }) => {
   const pushValueSelectedTabIndex = useCallback(
     debounce(async (index, value) => {
       if (id) {
-        if (typeof index === "string" && typeof value === "string" && value.trim()) {
-          log.orange("firebase", `======> ${value}`);
+        loadingTrigger(1);
 
-          // log("sent::", now());
+        try {
+          if (typeof index === "string" && typeof value === "string" && value.trim()) {
+            log.orange("firebase", `======> ${value}`);
 
-          // const updated = await get(["allEditorsValues", index, "updated"]);
+            // log("sent::", now());
 
-          // log("remote", updated);
-          // log("local:", whenUpdated[index]);
+            // const updated = await get(["allEditorsValues", index, "updated"]);
 
-          // if (typeof updated === "string" && typeof whenUpdated[index] === "string" && updated > whenUpdated[index]) {
-          //   log.orange("time comparison", "false");
-          //   return;
-          // } else {
-          //   log.orange("time comparison", "true");
-          // }
+            // log("remote", updated);
+            // log("local:", whenUpdated[index]);
 
-          // if (typeof whenUpdated[index] === "undefined") {
-          //   log.orange("time comparison", "not updated");
-          //   return;
-          // }
+            // if (typeof updated === "string" && typeof whenUpdated[index] === "string" && updated > whenUpdated[index]) {
+            //   log.orange("time comparison", "false");
+            //   return;
+            // } else {
+            //   log.orange("time comparison", "true");
+            // }
 
-          await set({
-            key: [`allEditorsValues`, index],
-            data: { value, updated: now() },
-          });
+            // if (typeof whenUpdated[index] === "undefined") {
+            //   log.orange("time comparison", "not updated");
+            //   return;
+            // }
 
-          await set({
-            key: ["allTabsDataExceptValues", index, "valueMD5"],
-            data: md5(value),
-          });
-        }
+            await set({
+              key: [`allEditorsValues`, index],
+              data: { value, updated: now() },
+            });
+
+            await set({
+              key: ["allTabsDataExceptValues", index, "valueMD5"],
+              data: md5(value),
+            });
+          }
+        } catch (e) {}
+
+        loadingTrigger(-1);
       }
     }, 2000),
     [id]
@@ -628,19 +624,25 @@ const Main = ({ portal }) => {
   const pushValueIndexOnTheRight = useCallback(
     debounce(async (index, value) => {
       if (id) {
-        if (typeof index === "string" && typeof value === "string" && value.trim()) {
-          log.orange("firebase", `======> ${value}`);
+        loadingTrigger(1);
 
-          await set({
-            key: [`allEditorsValues`, index],
-            data: { value, updated: now() },
-          });
+        try {
+          if (typeof index === "string" && typeof value === "string" && value.trim()) {
+            log.orange("firebase", `======> ${value}`);
 
-          await set({
-            key: ["allTabsDataExceptValues", index, "valueMD5"],
-            data: md5(value),
-          });
-        }
+            await set({
+              key: [`allEditorsValues`, index],
+              data: { value, updated: now() },
+            });
+
+            await set({
+              key: ["allTabsDataExceptValues", index, "valueMD5"],
+              data: md5(value),
+            });
+          }
+        } catch (e) {}
+
+        loadingTrigger(-1);
       }
     }, 2000),
     [id]
@@ -829,6 +831,10 @@ const Main = ({ portal }) => {
                   }
                 }}
                 recordOn={recordOn}
+                passRefToParent={(ref) => {
+                  console.log("passRefToParent: ", iterateIndex, ref);
+                  editorsRefs.current[iterateIndex] = ref;
+                }}
               />
             </div>
           );
