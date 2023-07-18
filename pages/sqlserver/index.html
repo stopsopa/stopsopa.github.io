@@ -29,7 +29,16 @@
                 THROW
             END CATCH
           </script>
-          ...
+          <h2>STRING_AGG - GROUP_CONCAT</h2>
+          <script type="editor" data-lang="sql">
+
+select STRING_AGG(line, ' -- ')
+from (select CONCAT('val:', ISNULL(CAST(val AS VARCHAR), 'NULL'), ' count:', c) line
+      from (select distinct gdshop_product_type_groupID as val, count(*) c
+            from GoDaddy.dbo.gdshop_product_type
+            group by gdshop_product_type_groupID) con) zz
+            
+          </script>
         </div>
       </div>
     </div>
