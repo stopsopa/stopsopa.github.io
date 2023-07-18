@@ -230,7 +230,7 @@ Enable it from the Sign-in Method section of the Firebase console.
 more:
 https://firebase.google.com/docs/auth/admin/errors
 and also add domains to section "Authorised domains":
-https://i.imgur.com/STTaAJ4.png
+[https://i.imgur.com/STTaAJ4.png](https://i.imgur.com/MYUE5K6.png)
 
 explore api:
 
