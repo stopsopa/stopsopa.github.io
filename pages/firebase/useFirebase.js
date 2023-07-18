@@ -64,7 +64,7 @@ export default ({ section }) => {
 
   const [error, setError] = useState(false);
 
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState();
 
   async function reCreateSession() {
     try {
@@ -332,6 +332,8 @@ export default ({ section }) => {
         },
       });
 
+      setUser(undefined);
+
       if (autoTryToReAuthenticate) {
         autoTryToReAuthenticate = false;
 
@@ -412,6 +414,8 @@ export default ({ section }) => {
           fix,
         },
       });
+
+      setUser(undefined);
 
       if (autoTryToReAuthenticate) {
         autoTryToReAuthenticate = false;
@@ -504,6 +508,8 @@ export default ({ section }) => {
         },
       });
 
+      setUser(undefined);
+
       if (autoTryToReAuthenticate) {
         autoTryToReAuthenticate = false;
 
@@ -559,6 +565,8 @@ export default ({ section }) => {
           fix,
         },
       });
+
+      setUser(undefined);
 
       if (autoTryToReAuthenticate) {
         autoTryToReAuthenticate = false;

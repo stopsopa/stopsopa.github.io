@@ -72,7 +72,7 @@ export const pokeEditorsToRerenderBecauseSometimesTheyStuck = (fn) => {
   });
 };
 
-export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
+export default ({ id, content, onChange, onInit, recordOn, lang, wrap, passRefToParent }) => {
   // onChange = debounce(onChange, 5000);
 
   const refIdMemo = useMemo(() => {
@@ -153,6 +153,10 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
   }, [refId, lang]);
 
   useEffect(() => {
+    if (typeof passRefToParent === "function") {
+      passRefToParent(refId);
+    }
+
     refId.current.wrap = wrap;
     refId.current.promise.then((editor) => {
       if (typeof refId.current.wrap !== "boolean") {
@@ -249,12 +253,14 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap }) => {
 
       editor.on("focus", function () {
         // log("focus");
+        refId.current.focus = true;
         refId.current.update = false;
         RecordLog.setFocusedEditor(editor);
       });
 
       editor.on("blur", function () {
         // log("blur");
+        refId.current.focus = false;
         refId.current.update = true;
       });
 

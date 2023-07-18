@@ -18,7 +18,7 @@ function delay(ms) {
   });
 }
 function Test({ unique }) {
-  const queue = useQueue(async (data) => {
+  const [queue, getQueue] = useQueue(async (data) => {
     await delay(parseInt(Math.random() * 300 + 100, 10));
     console.log("proc: ", unique, data);
   });  
@@ -50,7 +50,7 @@ export default function useQueue(commonAsyncFunc) {
     if (!lock && ref.current.length > 0) {
       lock = true;
 
-      const data = ref.current.shift();
+      const data = ref.current[0];
 
       if (typeof commonAsyncFunc === "undefined") {
         await data();
@@ -58,15 +58,41 @@ export default function useQueue(commonAsyncFunc) {
         await commonAsyncFunc(data);
       }
 
+      // remove after
+      ref.current.shift();
+
       lock = false;
 
       trigger();
     }
   }
 
-  return (data) => {
-    ref.current.push(data);
+  return [
+    (data, flagName) => {
+      if (
+        typeof data === "function" &&
+        typeof flagName === "string" &&
+        flagName.trim() &&
+        Array.isArray(ref.current) &&
+        ref.current.at(-1)
+      ) {
+        let queueLastFlag;
 
-    trigger();
-  };
+        try {
+          queueLastFlag = ref.current.at(-1)[flagName];
+        } catch (e) {}
+
+        if (!queueLastFlag) {
+          data[flagName] = true;
+
+          ref.current.push(data);
+        }
+      } else {
+        ref.current.push(data);
+      }
+
+      trigger();
+    },
+    () => ref.current,
+  ];
 }

@@ -12,8 +12,6 @@ const section = "editor";
 
 import Ace, { languages, bringFocus, pokeEditorsToRerenderBecauseSometimesTheyStuck } from "../Ace.jsx";
 
-import { debounce } from "lodash";
-
 import RecordLog from "../RecordLog";
 
 import "./003next.scss";
@@ -32,85 +30,79 @@ import useStatePromise from "./useStatePromise.js";
 
 import useQueue from "./useQueue.jsx";
 
-import useStateFetcher from './useStateFetcher.jsx';
+import useStateFetcher from "./useStateFetcher.jsx";
 
-const setLocalStorage = debounce((...args) => {
-  // log("debounce set", ...args);
-  setraw(...args);
-}, 50);
+const whenUpdated = {};
 
-const initialStateTab = {
-  lang: "javascript",
-  wrap: false,
-  value: "",
-};
-function generateDefaultTab(index) {
-  const state = structuredClone(initialStateTab);
-  state.index = index;
-  return state;
+/**
+ * dirty loader to reduce renders of main component vvv
+ */
+const loadingTrigger = (function () {
+  let trigger;
+
+  return function (val) {
+    if (typeof val === "function") {
+      trigger = val;
+
+      return;
+    }
+
+    if (val !== 1 && val !== -1) {
+      throw new Error(`loadingTrigger should be 1 or -1`);
+    }
+
+    if (typeof trigger === "function") {
+      trigger((l) => (l += val));
+    }
+  };
+})();
+
+function LoadingComponent() {
+  const [loadingStateInLoadingComponent, setLoadingStateInLoadingComponent] = useState(0);
+
+  loadingTrigger(setLoadingStateInLoadingComponent);
+
+  if (loadingStateInLoadingComponent > 0) {
+    return (
+      <div className="global-loader-component load" data-test="loader">
+        <span>Loading: {loadingStateInLoadingComponent}</span>
+      </div>
+    );
+  }
+
+  return null;
 }
+/**
+ * dirty loader  ^^^
+ */
 
 /**
  *  https://codesandbox.io/s/wuixn?file=/src/App.js:75-121
  */
 const Main = ({ portal }) => {
-  const [loading, setLoading] = (function () {
-    const [loading, setLoading] = useState(false);
+  log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX render XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 
-    return [
-      loading,
-      (oneOrMinusOne) => {
-        if (oneOrMinusOne !== 1 && oneOrMinusOne !== -1) {
-          throw new Error(`oneOrMinusOne should be 1 or -1`);
-        }
-
-        setLoading((l) => (l += oneOrMinusOne));
-      },
-    ];
-  })();
-
-  const queue = useQueue();
+  const [isPageFocused, setIsPageFocused] = useState(undefined);
 
   const [editIndex, setEditIndexDontUseDirectly] = useState(false);
 
   const [createModal, setCreateModalDontUseDirectly] = useState(false);
-  const [label, setLabel] = useState("");
+  const [label, setLabel] = useState(""); // copy of label for edit mode - for modal
 
-  // index key [string]
-  // generateDefaultTab
-  // editor instance of ace
+  const [recordOn, setRecordOn] = useState(false);
 
-  const [tabs, setTabsDontUseDirectly, getTabsFetcher] = useStateFetcher([
-    // { index: "one_indx", label: "one" },
-    // { index: "two_indx", label: "two" },
-    // { index: "three_indx", label: "three" },
-  ]);
+  const [allEditorsValues, setAllEditorsValues] = useState({});
 
-  function setCreateModal(state) {
-    setLabel("");
+  const [queue, getQueue] = useQueue();
 
-    setCreateModalDontUseDirectly(Boolean(state));
-
-    setEditIndexDontUseDirectly(false);
-  }
-
-  function setEditIndex(index) {
-    const found = tabs.find((t) => t.index === index);
-
-    setCreateModalDontUseDirectly(false);
-
-    if (found) {
-      setLabel(found.label);
-
-      setEditIndexDontUseDirectly(index);
-    } else {
-      setEditIndexDontUseDirectly(false);
-    }
-  }
+  const [allTabsDataExceptValues, setAllTabsDataExceptValuesDontUseDirectly, getAllTabsDataExceptValuesFetcher] =
+    useStateFetcher([]);
 
   const { error, id, set, get, del, push } = useCustomState({
     section,
   });
+
+  const editorsRefs = useRef({});
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -131,32 +123,72 @@ const Main = ({ portal }) => {
     // })
   );
 
+  let selectedTabIndex;
+  function findSelectedTabIndex(data) {
+    let selectedTabIndex;
+    try {
+      selectedTabIndex = (data || allTabsDataExceptValues)[0].index;
+    } catch (e) {}
+    try {
+      let newestDate;
+      (data || allTabsDataExceptValues).forEach((t) => {
+        if (!newestDate || (t.selectedTabIndexLatestDate && t.selectedTabIndexLatestDate > newestDate)) {
+          selectedTabIndex = t.index;
+
+          newestDate = t.selectedTabIndexLatestDate;
+        }
+      });
+    } catch (e) {}
+
+    return selectedTabIndex;
+  }
+  selectedTabIndex = findSelectedTabIndex();
+
+  let indexOnTheRight;
+  function findIndexOnTheRight(data) {
+    try {
+      return (data || allTabsDataExceptValues).find((t) => t.indexOnTheRight).index;
+    } catch (e) {}
+  }
+  indexOnTheRight = findIndexOnTheRight();
+
+  function setCreateModal(state) {
+    setLabel("");
+
+    setCreateModalDontUseDirectly(Boolean(state));
+
+    setEditIndexDontUseDirectly(false);
+  }
+
   function generateUniq() {
     let un;
 
     do {
       un = unique();
-    } while (tabs.find((t) => t.index == un));
+    } while (allTabsDataExceptValues.find((t) => t.index == un));
 
     return un;
   }
-
-  const [index, setIndexRaw] = useState("one");
-
-  const [indexOnTheRight, setIndexOnTheRight] = useState(false);
-
-  const [recordOn, setRecordOn] = useState(false);
-
-  const [values, setValues] = useState([]);
 
   function play() {
     setRecordOn(false);
     RecordLog.play();
   }
 
-  function setTabs(index, key, value) {
-    setTabsDontUseDirectly((tabs) => {
-      const copy = [...tabs];
+  // allTabsDataExceptValues --- setters ----- vvv
+
+  function generateDefaultTab(spreadObject) {
+    return {
+      lang: "javascript",
+      wrap: false,
+      index: generateUniq(),
+      ...spreadObject,
+    };
+  }
+
+  function setAllTabsDataExceptValues(index, key, value) {
+    setAllTabsDataExceptValuesDontUseDirectly((allTabsDataExceptValues) => {
+      const copy = [...allTabsDataExceptValues];
 
       const found = copy.find((row) => row.index === index);
 
@@ -170,73 +202,239 @@ const Main = ({ portal }) => {
     });
   }
 
-  function getValue(index, field, def) {
+  function getAllTabsDataExceptValues(index, key) {
     try {
-      const copy = structuredClone(values);
+      return allTabsDataExceptValues.find((t) => t.index === index)[key];
+    } catch (e) {}
+  }
 
-      let found = copy.find((row) => row.index == index);
-
-      if (!found) {
-        found = generateDefaultTab(index);
-      }
-
-      return found[field] || def;
-    } catch (e) {
-      return def;
+  function setSelectedTab(index) {
+    if (indexOnTheRight !== index) {
+      setAllTabsDataExceptValues(index, "selectedTabIndexLatestDate", now());
+      // setSelectedTabIndexRaw(index);
     }
   }
 
-  function setValue(index, field, value) {
-    setValues((values) => {
-      const copy = structuredClone(values);
+  function setIndexOnTheRight(index) {
+    const copy = structuredClone(allTabsDataExceptValues);
 
-      let found;
-
-      for (let i = 0, l = copy.length; i < l; i += 1) {
-        if (copy[i].index === index) {
-          if (field) {
-            copy[i][field] = value;
-          } else {
-            copy[i] = value;
-          }
-
-          found = copy[i];
-        }
+    copy.forEach((t) => {
+      if (t.index === index) {
+        t.indexOnTheRight = true;
+      } else {
+        delete t.indexOnTheRight;
       }
-
-      setLocalStorage(index, found);
-
-      return copy;
     });
+
+    setAllTabsDataExceptValuesDontUseDirectly(copy);
   }
 
   function deleteTab(index) {
-    const newList = tabs.filter((t) => t.index != index);
+    const newList = allTabsDataExceptValues.filter((t) => t.index != index);
 
-    newList.forEach((r, i) => (r.zeroIndex = i));
+    newList.forEach((r, i) => (r.zeroIndexOrderTab = i));
 
-    setTabsDontUseDirectly((tabs) => newList);
+    setAllTabsDataExceptValuesDontUseDirectly(() => newList);
 
     setEditIndex(false);
+  }
 
-    queue(() => pushTabs(newList));
+  async function pullAllTabsDataExceptValues() {
+    loadingTrigger(1);
+
+    try {
+      const currentAllTabsMd5 = md5(JSON.stringify(allTabsDataExceptValues));
+
+      const result = await get("allTabsDataExceptValues");
+
+      log.orange("firebase", "<------ pullAllTabsDataExceptValues result", result);
+
+      const tabsTransformed = Object.entries(result || {}).reduce((acc, [index, obj]) => {
+        const zeroIndexOrderTab = obj.zeroIndexOrderTab;
+
+        acc[zeroIndexOrderTab] = {
+          ...obj,
+          index,
+        };
+
+        return acc;
+      }, []);
+
+      /**
+       * if allTabsDataExceptValues changed in the meantime
+       */
+      if (md5(JSON.stringify(allTabsDataExceptValues)) === currentAllTabsMd5) {
+        /**
+         * if data that was pulled for allTabsDataExceptValues is really different than data component already have
+         * only then change state, this way I'm reducing unecessary rerenders of main component
+         */
+        if (md5(JSON.stringify(tabsTransformed)) !== currentAllTabsMd5) {
+          const selectedTabIndex_tabObjectValue = structuredClone(allTabsDataExceptValues[selectedTabIndex]);
+
+          const indexOnTheRight_tabObjectValue = structuredClone(allTabsDataExceptValues[indexOnTheRight]);
+
+          setAllTabsDataExceptValuesDontUseDirectly(tabsTransformed);
+
+          // updating selected tab:
+          {
+            const selectedTabIndex = findSelectedTabIndex(tabsTransformed);
+
+            // update opened tab:
+            // console.log(
+            //   "updatetab",
+            //   selectedTabIndex,
+            //   "result[selectedTabIndex]",
+            //   result[selectedTabIndex],
+            //   "selectedTabIndex_tabObjectValue: ",
+            //   selectedTabIndex_tabObjectValue
+            // );
+
+            if (
+              selectedTabIndex &&
+              result[selectedTabIndex] &&
+              result?.[selectedTabIndex]?.valueMD5 &&
+              result?.[selectedTabIndex]?.valueMD5 !== selectedTabIndex_tabObjectValue?.valueMD5
+            ) {
+              const result = await get(["allEditorsValues", selectedTabIndex]);
+
+              editorsRefs.current[selectedTabIndex].current.update = true;
+
+              setValue(selectedTabIndex, result.value);
+
+              setTimeout(() => {
+                if (editorsRefs.current[selectedTabIndex].current.focus) {
+                  editorsRefs.current[selectedTabIndex].current.update = false;
+                }
+              }, 500);
+            }
+          }
+
+          // updating selected indexOnTheRight tab:
+          {
+            const indexOnTheRight = findIndexOnTheRight(tabsTransformed);
+
+            // update opened tab:
+            console.log(
+              "indexOnTheRight",
+              indexOnTheRight,
+              "result[indexOnTheRight]",
+              result[indexOnTheRight],
+              "selectedTabIndex_tabObjectValue: ",
+              indexOnTheRight_tabObjectValue
+            );
+
+            if (
+              indexOnTheRight &&
+              result[indexOnTheRight] &&
+              result?.[indexOnTheRight]?.valueMD5 &&
+              result?.[indexOnTheRight]?.valueMD5 !== indexOnTheRight_tabObjectValue?.valueMD5
+            ) {
+              const result = await get(["allEditorsValues", indexOnTheRight]);
+
+              editorsRefs.current[indexOnTheRight].current.update = true;
+
+              setValue(indexOnTheRight, result.value);
+
+              setTimeout(() => {
+                if (editorsRefs.current[indexOnTheRight].current.focus) {
+                  editorsRefs.current[indexOnTheRight].current.update = false;
+                }
+              }, 500);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      log("pullAllTabsDataExceptValues error: ", e);
+    }
+
+    loadingTrigger(-1);
+  }
+
+  async function pushAllTabsDataExceptValues(given) {
+    loadingTrigger(1);
+
+    try {
+      const tabsTransformed = (given || getAllTabsDataExceptValuesFetcher() || []).reduce((acc, val, i) => {
+        const { index, editor, ...rest } = val;
+
+        acc[index] = { ...rest, zeroIndexOrderTab: i };
+
+        return acc;
+      }, {});
+
+      await set({
+        key: "allTabsDataExceptValues",
+        data: tabsTransformed,
+      });
+
+      log.orange("firebase", "------> pushAllTabsDataExceptValues result");
+    } catch (e) {}
+
+    loadingTrigger(-1);
+  }
+
+  function handleDragEnd(event) {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setAllTabsDataExceptValuesDontUseDirectly((allTabsDataExceptValues) => {
+        const tmp = allTabsDataExceptValues.map((t) => t.index);
+
+        const oldIndex = tmp.indexOf(active.id);
+
+        const newIndex = tmp.indexOf(over.id);
+
+        const newList = arrayMove(allTabsDataExceptValues, oldIndex, newIndex); // https://docs.dndkit.com/presets/sortable#connecting-all-the-pieces
+
+        newList.forEach((r, i) => (r.zeroIndexOrderTab = i));
+
+        return newList;
+      });
+    }
+  }
+
+  function setEditIndex(index) {
+    const found = allTabsDataExceptValues.find((t) => t.index === index);
+
+    setCreateModalDontUseDirectly(false);
+
+    if (found) {
+      setLabel(found.label);
+
+      setEditIndexDontUseDirectly(index);
+    } else {
+      setEditIndexDontUseDirectly(false);
+    }
+  }
+  // allTabsDataExceptValues --- setters ----- ^^^
+
+  function setValue(index, value) {
+    setAllEditorsValues((allEditorsValues) => {
+      if (
+        typeof allEditorsValues[index] === "string" &&
+        typeof value === "string" &&
+        allEditorsValues[index] &&
+        value &&
+        allEditorsValues[index] !== value
+      ) {
+        const n = now();
+        whenUpdated[selectedTabIndex] = n;
+      }
+
+      return {
+        ...allEditorsValues,
+        [index]: value,
+      };
+    });
   }
 
   useEffect(() => {
-    const list = tabs.map(({ index }) => {
-      return getraw(index, generateDefaultTab(index));
-    });
-    setValues(list);
-
     function keydown(event) {
       // Check if the key combination matches Ctrl+J or Cmd+J.
       if ((event.ctrlKey || event.metaKey) && event.keyCode === 74) {
         // Prevent the default behavior (refreshing the page)
         event.preventDefault();
-
-        log("window.editors.one.editor.focus()");
-
-        window.editors.one.editor.focus();
 
         return;
       }
@@ -265,6 +463,7 @@ const Main = ({ portal }) => {
         });
       }
     }
+
     document.addEventListener("keydown", keydown);
 
     return () => {
@@ -273,120 +472,185 @@ const Main = ({ portal }) => {
   }, []);
 
   useEffect(() => {
-    if (id) {
-      (async function () {
-        window.addEventListener("focus", async function () {
-          queue(() => pullTabs());
-        });
-        window.addEventListener("blur", async function () {
-          console.log("blur");
-          queue(() => pushTabs());
-        });
-
-        queue(() => pullTabs());
-      })();
+    if (!id) {
+      return;
     }
+
+    window.addEventListener("focus", function () {
+      setIsPageFocused(true);
+      console.log("focus");
+      queue(() => pullAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+    });
+
+    window.addEventListener("blur", function () {
+      setIsPageFocused(false);
+      console.log("blur");
+      queue(() => pushAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+    });
+
+    setIsPageFocused(document.hasFocus()); // https://developer.mozilla.org/en-US/docs/Web/API/Document/hasFocus
+
+    queue(() => pullAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
   }, [id]);
 
+  // useEffect(() => {
+  //   // log.orange("isPageFocused useEffect", isPageFocused);
+
+  //   if (typeof isPageFocused !== "boolean") {
+  //     return;
+  //   }
+
+  //   // log.orange("sync", "bind");
+
+  //   let keepLoopGoing = false;
+  //   let handler;
+
+  //   function sync() {
+  //     log.orange("sync", "id: ", id, "execute");
+
+  //     if (!id) {
+  //       return;
+  //     }
+
+  //     queue(() => pullAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+
+  //     if (keepLoopGoing) {
+  //       handler = setTimeout(sync, 8000);
+  //     } else {
+  //       // log.orange("sync", "id: ", id, "stopped");
+
+  //       clearTimeout(handler);
+
+  //       keepLoopGoing = false;
+  //     }
+  //   }
+
+  //   if (id && isPageFocused && selectedTabIndex) {
+  //     keepLoopGoing = true;
+  //     // log.orange("sync", "bind", "setInterval", "on");
+  //     // handler = setInterval(sync, 15000);
+
+  //     handler = setTimeout(sync, 8000);
+  //   } else {
+  //     // log.orange(
+  //     //   "sync",
+  //     //   "id: ",
+  //     //   id,
+  //     //   "conditions not met to run:",
+  //     //   "id: ",
+  //     //   id,
+  //     //   "isPageFocused:",
+  //     //   isPageFocused,
+  //     //   "selectedTabIndex: ",
+  //     //   selectedTabIndex
+  //     // );
+  //   }
+
+  //   return () => {
+  //     // log.orange("sync", "id: ", id, "unmount");
+
+  //     clearTimeout(handler);
+
+  //     keepLoopGoing = false;
+  //   };
+  // }, [isPageFocused, id, selectedTabIndex]);
+
   useEffect(() => {
-    if (index) {
+    if (selectedTabIndex) {
       pokeEditorsToRerenderBecauseSometimesTheyStuck(() => {
         if (indexOnTheRight === false) {
-          bringFocus(index, "!indexOnTheRight");
+          bringFocus(selectedTabIndex, "!indexOnTheRight");
         }
       }); // forcus for every change of index -> on every click of index
     }
-  }, [index]);
+  }, [selectedTabIndex]);
 
-  function handleDragEnd(event) {
-    const { active, over } = event;
-
-    if (active.id !== over.id) {
-      setTabsDontUseDirectly((tabs) => {
-        const tmp = tabs.map((t) => t.index);
-
-        const oldIndex = tmp.indexOf(active.id);
-
-        const newIndex = tmp.indexOf(over.id);
-
-        const newList = arrayMove(tabs, oldIndex, newIndex); // https://docs.dndkit.com/presets/sortable#connecting-all-the-pieces
-
-        newList.forEach((r, i) => (r.zeroIndex = i));
-
-        queue(() => pushTabs(newList));
-
-        return newList;
-      });
+  useEffect(() => {
+    if (Array.isArray(allTabsDataExceptValues) && allTabsDataExceptValues.length > 0) {
+      pushAllTabsDataExceptValues();
     }
-  }
+  }, [md5(JSON.stringify(allTabsDataExceptValues))]);
 
-  function setTab(index) {
-    if (indexOnTheRight !== index) {
-      setIndexRaw(index);
-    }
-    try {
-      const found = tabs.find((row) => row.index === index);
+  const pushValueSelectedTabIndex = useCallback(
+    debounce(async (index, value) => {
+      if (id) {
+        loadingTrigger(1);
 
-      if (found) {
-        log("focus: ", found.editor);
-        found.editor.focus();
-      } else {
-        log("no focus");
+        try {
+          if (typeof index === "string" && typeof value === "string" && value.trim()) {
+            log.orange("firebase", `======> ${value}`);
+
+            // log("sent::", now());
+
+            // const updated = await get(["allEditorsValues", index, "updated"]);
+
+            // log("remote", updated);
+            // log("local:", whenUpdated[index]);
+
+            // if (typeof updated === "string" && typeof whenUpdated[index] === "string" && updated > whenUpdated[index]) {
+            //   log.orange("time comparison", "false");
+            //   return;
+            // } else {
+            //   log.orange("time comparison", "true");
+            // }
+
+            // if (typeof whenUpdated[index] === "undefined") {
+            //   log.orange("time comparison", "not updated");
+            //   return;
+            // }
+
+            await set({
+              key: [`allEditorsValues`, index],
+              data: { value, updated: now() },
+            });
+
+            await set({
+              key: ["allTabsDataExceptValues", index, "valueMD5"],
+              data: md5(value),
+            });
+          }
+        } catch (e) {}
+
+        loadingTrigger(-1);
       }
-    } catch (e) {
-      log(`setTab error: `, e);
-    }
-  }
+    }, 2000),
+    [id]
+  );
 
-  async function pullTabs() {
-    setLoading(1);
+  useEffect(() => {
+    pushValueSelectedTabIndex(selectedTabIndex, allEditorsValues[selectedTabIndex]);
+  }, [allEditorsValues[selectedTabIndex]]);
 
-    log.orange("firebase", "pullTabs");
+  const pushValueIndexOnTheRight = useCallback(
+    debounce(async (index, value) => {
+      if (id) {
+        loadingTrigger(1);
 
-    const result = await get("tabs");
+        try {
+          if (typeof index === "string" && typeof value === "string" && value.trim()) {
+            log.orange("firebase", `======> ${value}`);
 
-    log.orange("firebase", "pullTabs result", result);
+            await set({
+              key: [`allEditorsValues`, index],
+              data: { value, updated: now() },
+            });
 
-    if (!Array.isArray(tabs) || tabs.length === 0) {
-      const tabsTransformed = Object.entries(result || {}).reduce((acc, [index, obj]) => {
-        const zeroIndex = obj.zeroIndex;
+            await set({
+              key: ["allTabsDataExceptValues", index, "valueMD5"],
+              data: md5(value),
+            });
+          }
+        } catch (e) {}
 
-        acc[zeroIndex] = {
-          ...obj,
-          index,
-        };
+        loadingTrigger(-1);
+      }
+    }, 2000),
+    [id]
+  );
 
-        return acc;
-      }, []);
-
-      setTabsDontUseDirectly(tabsTransformed);
-    }
-
-    setLoading(-1);
-  }
-
-  async function pushTabs(given) {
-    setLoading(1);
-
-    const tabsTransformed = (given || getTabsFetcher() || []).reduce((acc, val, i) => {
-      const { index, editor, ...rest } = val;
-
-      acc[index] = { ...rest, zeroIndex: i };
-
-      return acc;
-    }, {});
-
-    log.orange("firebase", "pushTabs", tabsTransformed, "given: ", given);
-
-    const result = await set({
-      key: "tabs",
-      data: tabsTransformed,
-    });
-
-    log.orange("firebase", "pushTabs result", result);
-
-    setLoading(-1);
-  }
+  useEffect(() => {
+    pushValueIndexOnTheRight(indexOnTheRight, allEditorsValues[indexOnTheRight]);
+  }, [allEditorsValues[indexOnTheRight]]);
 
   return (
     <div
@@ -396,11 +660,6 @@ const Main = ({ portal }) => {
       })}
       tabIndex={0}
     >
-      {loading > 0 && (
-        <div className="global-loader-component load" data-test="loader">
-          <span>Loading: {loading}</span>
-        </div>
-      )}
       {createModal && ( // one modal for create mode
         <Modal title="Create tab" onClose={() => setCreateModal(false)}>
           <form
@@ -408,11 +667,9 @@ const Main = ({ portal }) => {
               e.preventDefault();
               const lab = label.trim();
               if (lab) {
-                const newList = [...tabs, { index: generateUniq(), label: lab, time: now() }];
-                setTabsDontUseDirectly((tabs) => newList);
+                const newList = [...allTabsDataExceptValues, generateDefaultTab({ label: lab })];
+                setAllTabsDataExceptValuesDontUseDirectly(() => newList);
                 setCreateModal(false);
-
-                queue(() => pushTabs(newList));
               }
             }}
           >
@@ -432,7 +689,7 @@ const Main = ({ portal }) => {
       )}
       {editIndex && // second modal for edit mode
         (function () {
-          const found = tabs.find((t) => t.index == editIndex);
+          const found = allTabsDataExceptValues.find((t) => t.index == editIndex);
           if (found) {
             return (
               <Modal title={`Edit tab: ${found.label}`} onClose={() => setEditIndex(false)}>
@@ -441,7 +698,7 @@ const Main = ({ portal }) => {
                     e.preventDefault();
                     const lab = label.trim();
                     if (lab) {
-                      setTabs(editIndex, "label", lab);
+                      setAllTabsDataExceptValues(editIndex, "label", lab);
                       setEditIndex(false);
                     }
                   }}
@@ -488,7 +745,7 @@ const Main = ({ portal }) => {
       )}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <div className="tabs this_element_changes_height_and_together_with_header_affect_spacer">
-          <SortableContext items={tabs.map((t) => t.index)} strategy={horizontalListSortingStrategy}>
+          <SortableContext items={allTabsDataExceptValues.map((t) => t.index)} strategy={horizontalListSortingStrategy}>
             <div>
               <div
                 onClick={() => {
@@ -499,16 +756,16 @@ const Main = ({ portal }) => {
               </div>
             </div>
 
-            {tabs.map(({ index: iterateIndex, label }) => {
+            {allTabsDataExceptValues.map(({ index: iterateIndex, label }) => {
               return (
                 <SortableTabElement
                   key={iterateIndex}
-                  index={index}
+                  selectedTabIndex={selectedTabIndex}
                   label={label}
                   iterateIndex={iterateIndex}
                   indexOnTheRight={indexOnTheRight}
                   setIndexOnTheRight={setIndexOnTheRight}
-                  setTab={setTab}
+                  setSelectedTab={setSelectedTab}
                   setEditIndex={setEditIndex}
                 />
               );
@@ -518,66 +775,78 @@ const Main = ({ portal }) => {
       </DndContext>
       <div className="dynamic_spacer"></div>
       <div className="editors">
-        {tabs.map(({ index: iterateIndex }) => (
-          <div
-            key={iterateIndex}
-            className={classnames({
-              active: index === iterateIndex,
-              right: indexOnTheRight === iterateIndex,
-              hidden: index !== iterateIndex && indexOnTheRight !== iterateIndex,
-            })}
-          >
-            <div>
-              <label>
-                lang:
-                <select
-                  value={getValue(iterateIndex, "lang")}
-                  onChange={(e) => setValue(iterateIndex, "lang", e.target.value)}
-                >
-                  {languages.map((l) => (
-                    <option key={l} value={l}>
-                      {l}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                wrap:
-                <input
-                  type="checkbox"
-                  checked={Boolean(getValue(iterateIndex, "wrap"))}
-                  onChange={(e) => {
-                    setValue(iterateIndex, "wrap", e.target.checked);
-                  }}
-                />
-              </label>
+        {allTabsDataExceptValues.map(({ index: iterateIndex }) => {
+          const wrap = Boolean(getAllTabsDataExceptValues(iterateIndex, "wrap"));
+
+          const lang = getAllTabsDataExceptValues(iterateIndex, "lang");
+
+          return (
+            <div
+              key={iterateIndex}
+              className={classnames({
+                active: selectedTabIndex === iterateIndex,
+                right: indexOnTheRight === iterateIndex,
+                hidden: selectedTabIndex !== iterateIndex && indexOnTheRight !== iterateIndex,
+              })}
+            >
+              <div>
+                <label>
+                  lang:
+                  <select
+                    value={lang}
+                    onChange={(e) => {
+                      setAllTabsDataExceptValues(iterateIndex, "lang", e.target.value);
+                    }}
+                  >
+                    {languages.map((l) => (
+                      <option key={l} value={l}>
+                        {l}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  wrap:
+                  <input
+                    type="checkbox"
+                    checked={wrap}
+                    onChange={(e) => {
+                      setAllTabsDataExceptValues(iterateIndex, "wrap", e.target.checked);
+                    }}
+                  />
+                </label>
+              </div>
+              <Ace
+                id={iterateIndex}
+                content={allEditorsValues[iterateIndex] || ""}
+                lang={lang}
+                wrap={wrap}
+                onChange={(data) => {
+                  setValue(iterateIndex, data);
+                }}
+                onInit={(editor) => {
+                  log(`editor mounted: `, iterateIndex);
+                  if (iterateIndex === selectedTabIndex) {
+                    bringFocus(selectedTabIndex); // focus on first load of all allTabsDataExceptValues
+                  }
+                }}
+                recordOn={recordOn}
+                passRefToParent={(ref) => {
+                  console.log("passRefToParent: ", iterateIndex, ref);
+                  editorsRefs.current[iterateIndex] = ref;
+                }}
+              />
             </div>
-            <Ace
-              id={iterateIndex}
-              content={getValue(iterateIndex, "value", "")}
-              lang={getValue(iterateIndex, "lang", "")}
-              wrap={Boolean(getValue(iterateIndex, "wrap", false))}
-              onInit={(editor) => {
-                log(`editor mounted: `, iterateIndex);
-                setTabs(iterateIndex, "editor", editor);
-                if (iterateIndex === index) {
-                  bringFocus(index); // focus on first load of all tabs
-                }
-              }}
-              onChange={(data) => {
-                setValue(iterateIndex, "value", data);
-              }}
-              recordOn={recordOn}
-            />
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
 };
 
 function SortableTabElement(props) {
-  const { index, label, iterateIndex, indexOnTheRight, setIndexOnTheRight, setTab, setEditIndex } = props;
+  const { selectedTabIndex, label, iterateIndex, indexOnTheRight, setIndexOnTheRight, setSelectedTab, setEditIndex } =
+    props;
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: iterateIndex,
@@ -596,7 +865,7 @@ function SortableTabElement(props) {
     <div
       key={iterateIndex}
       className={classnames({
-        active: iterateIndex === index,
+        active: iterateIndex === selectedTabIndex,
       })}
       ref={setNodeRef}
       style={style}
@@ -605,7 +874,7 @@ function SortableTabElement(props) {
     >
       <div
         onClick={() => {
-          setTab(iterateIndex);
+          setSelectedTab(iterateIndex);
           if (indexOnTheRight !== false) {
             bringFocus(iterateIndex, "indexOnTheRight");
           }
@@ -614,7 +883,8 @@ function SortableTabElement(props) {
         {label}
       </div>
       <div>
-        <div onClick={() => setIndexOnTheRight((v) => (v === iterateIndex ? false : iterateIndex))}>
+        {/* <div onClick={() => setIndexOnTheRight((v) => (v === iterateIndex ? false : iterateIndex))}> */}
+        <div onClick={() => setIndexOnTheRight(indexOnTheRight === iterateIndex ? false : iterateIndex)}>
           {indexOnTheRight === iterateIndex ? "◄" : "►"}
         </div>
         <div onClick={() => setEditIndex(iterateIndex)}>▤</div>
@@ -638,7 +908,13 @@ function SortableTabElement(props) {
   portal.classList.add("portal");
   manipulation.after(document.querySelector("header > a"), portal);
 
-  render(<Main portal={portal} />, document.getElementById("app"));
+  render(
+    <>
+      <LoadingComponent />
+      <Main portal={portal} />
+    </>,
+    document.getElementById("app")
+  );
 })();
 
 function unique(pattern) {
@@ -669,4 +945,16 @@ function delay(ms) {
       resolve();
     }, ms);
   });
+}
+
+function debounce(fn, delay) {
+  var timer = null;
+  return function () {
+    var context = this,
+      args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      fn.apply(context, args);
+    }, delay);
+  };
 }
