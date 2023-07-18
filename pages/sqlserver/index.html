@@ -33,7 +33,7 @@
           <script type="editor" data-lang="sql">
 
 select STRING_AGG(line, ' -- ')
-from (select CONCAT('val:', ISNULL(CAST(val AS VARCHAR), 'NULL'), ' count:', c) line
+from (select CONCAT('val:', ISNULL(CAST(val AS VARCHAR(MAX)), 'NULL'), ' count:', c) line
       from (select distinct mycolumn as val, count(*) c
             from my_db.dbo.mytable
             group by mycolumn) con) zz
