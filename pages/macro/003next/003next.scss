@@ -199,4 +199,25 @@ body .global-loader-component .ui.loader {
   top: 3px;
 }
 
+.conflict {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid black;
+  z-index: 1000;
+  padding: 20px;
+}
+.add,
+.sync {
+  background-color: grey;
+  color: white;
+}
+.unsaved {
+  background-color: pink;
+}
+
 // loader ^^^

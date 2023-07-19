@@ -32,7 +32,9 @@ import useQueue from "./useQueue.jsx";
 
 import useStateFetcher from "./useStateFetcher.jsx";
 
-const whenUpdated = {};
+import onBeforeUnloadHook from "./onBeforeUnloadHook.js";
+
+const lastRemotePullOfEditorContent = {};
 
 /**
  * dirty loader to reduce renders of main component vvv
@@ -82,6 +84,8 @@ function LoadingComponent() {
 const Main = ({ portal }) => {
   log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX render XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 
+  const [conflict, setConflict] = useState(false);
+
   const [isPageFocused, setIsPageFocused] = useState(undefined);
 
   const [editIndex, setEditIndexDontUseDirectly] = useState(false);
@@ -92,6 +96,8 @@ const Main = ({ portal }) => {
   const [recordOn, setRecordOn] = useState(false);
 
   const [allEditorsValues, setAllEditorsValues] = useState({});
+
+  const [localEditorHasNewChangesTimestamp, setLocalEditorHasNewChangesTimestampDontUseDirectly] = useState({});
 
   const [queue, getQueue] = useQueue();
 
@@ -152,12 +158,28 @@ const Main = ({ portal }) => {
   }
   indexOnTheRight = findIndexOnTheRight();
 
+  onBeforeUnloadHook({
+    block: Object.keys(localEditorHasNewChangesTimestamp).length > 0,
+    message: "Content unsaved",
+  });
+
   function setCreateModal(state) {
     setLabel("");
 
     setCreateModalDontUseDirectly(Boolean(state));
 
     setEditIndexDontUseDirectly(false);
+  }
+
+  function setLocalEditorHasNewChangesTimestamp(index, value) {
+    setLocalEditorHasNewChangesTimestampDontUseDirectly((v) => {
+      const t = { ...v, [index]: value };
+      if (!value) {
+        delete t[index];
+      }
+
+      return t;
+    });
   }
 
   function generateUniq() {
@@ -204,14 +226,28 @@ const Main = ({ portal }) => {
 
   function getAllTabsDataExceptValues(index, key) {
     try {
-      return allTabsDataExceptValues.find((t) => t.index === index)[key];
-    } catch (e) {}
+      const tab = allTabsDataExceptValues.find((t) => t.index === index);
+
+      if (tab) {
+        if (key) {
+          return tab[key];
+        }
+      }
+      return tab;
+    } catch (e) {
+      console.error(`getAllTabsDataExceptValues error: `, e);
+    }
   }
 
   function setSelectedTab(index) {
     if (indexOnTheRight !== index) {
       setAllTabsDataExceptValues(index, "selectedTabIndexLatestDate", now());
       // setSelectedTabIndexRaw(index);
+
+      queue(
+        () => pullAllTabsDataExceptValuesAndSyncEditors(),
+        "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
+      );
     }
   }
 
@@ -239,7 +275,172 @@ const Main = ({ portal }) => {
     setEditIndex(false);
   }
 
-  async function pullAllTabsDataExceptValues() {
+  async function syncEditorValueByIndex(
+    label,
+    index,
+    allTabsDataExceptValues_freshRawRemoteResponseNotTransformed,
+    allEditorsValues_currentValueOfEditorUnderIndex
+  ) {
+    log.orange("firebase", "syncEditorValueByIndex", label);
+
+    const ll = (...args) => log(`syncEditorValueByIndex label>${label}< ::::`, ...args);
+
+    const allEditorsValues_currentValueOfEditorUnderIndex_MD5 = md5(
+      allEditorsValues_currentValueOfEditorUnderIndex || ""
+    );
+
+    // update opened tab:
+    ll("DEBUG", {
+      index,
+      "allTabsDataExceptValues_freshRawRemoteResponseNotTransformed[index]":
+        allTabsDataExceptValues_freshRawRemoteResponseNotTransformed[index],
+      allTabsDataExceptValues,
+      allEditorsValues_currentValueOfEditorUnderIndex,
+      allEditorsValues_currentValueOfEditorUnderIndex_MD5,
+    });
+
+    if (!index) {
+      ll(`no index given`);
+
+      return;
+    }
+
+    if (!allTabsDataExceptValues_freshRawRemoteResponseNotTransformed[index]) {
+      ll(
+        `index>${index}< not found in remote allTabsDataExceptValues - simply put, tab is not found remotely, so can't save or download editor content`
+      );
+
+      return;
+    }
+
+    async function updateRemote() {
+      if (typeof allEditorsValues_currentValueOfEditorUnderIndex === "string") {
+        const n = now();
+
+        lastRemotePullOfEditorContent[index] = n;
+
+        await set({
+          key: [`allEditorsValues`, index],
+          data: { value: allEditorsValues_currentValueOfEditorUnderIndex, updated: n },
+        });
+
+        /**
+         * Thats ok to only update it remotely because with next ctrl+s the first thing we do
+         * is pull entire allTabsDataExceptValues
+         */
+        await set({
+          key: ["allTabsDataExceptValues", index, "valueMD5"],
+          data: allEditorsValues_currentValueOfEditorUnderIndex_MD5,
+        });
+
+        setLocalEditorHasNewChangesTimestamp(index, false);
+      } else {
+        ll("no allEditorsValues_currentValueOfEditorUnderIndex found to sent to firebase");
+      }
+    }
+
+    /**
+     * If there is no md5 saved remotely or is but it's different from md5 generated from my local editor content...
+     */
+    if (
+      !allTabsDataExceptValues_freshRawRemoteResponseNotTransformed[index]?.valueMD5 ||
+      allTabsDataExceptValues_freshRawRemoteResponseNotTransformed[index]?.valueMD5 !==
+        allEditorsValues_currentValueOfEditorUnderIndex_MD5
+    ) {
+      // let's pull remote content, we have to check if update field is there nad what is it's value
+      // that will help us to think what to do next
+      const freshRemoteEditorValueObject = await get(["allEditorsValues", index]);
+
+      /**
+       * if there were never any changes locally then the only thing we can do is just update editor locally from remote content
+       * but from now on we will always can assume safely that there are some changes locally
+       */
+      if (!localEditorHasNewChangesTimestamp[index]) {
+        ll(
+          "no local edits so we can only take what we have pulled if anything exist -> if (freshRemoteEditorValueObject?.value)",
+          {
+            freshRemoteEditorValueObject,
+          }
+        );
+
+        if (typeof freshRemoteEditorValueObject?.value === "string") {
+          lastRemotePullOfEditorContent[index] = freshRemoteEditorValueObject.updated;
+
+          editorsRefs.current[index].current.update = true;
+
+          setValue(index, freshRemoteEditorValueObject.value, false);
+
+          setTimeout(() => {
+            if (editorsRefs.current[index].current.focus) {
+              editorsRefs.current[index].current.update = false;
+            }
+
+            setLocalEditorHasNewChangesTimestamp(index, false);
+          }, 50);
+        }
+
+        return; // and that's the end for this condition
+      }
+
+      /**
+       * If we have local change but there is no remote data for that editor
+       * then the only thing we can do is push editor content
+       */
+      if (typeof freshRemoteEditorValueObject?.value !== "string") {
+        ll(
+          "no freshRemoteEditorValueObject?.updated, in that case the only thing we can do is just push what we have in our editor",
+          {
+            freshRemoteEditorValueObject,
+          }
+        );
+
+        await updateRemote();
+
+        return; // and that's the end for this condition
+      }
+
+      ll(
+        `checking if there are local changes, because then I have to decide if updateLocal | updateRemote or report diffs`,
+        {
+          "localEditorHasNewChangesTimestamp[index]": localEditorHasNewChangesTimestamp[index],
+          freshRemoteEditorValueObject,
+        }
+      );
+
+      if (
+        typeof lastRemotePullOfEditorContent[index] === "string" &&
+        lastRemotePullOfEditorContent[index] === freshRemoteEditorValueObject.updated
+      ) {
+        ll(
+          `editor content I last time pulled is the same as I pulled from remote - updating remote with latest local changes`
+        );
+
+        await updateRemote();
+
+        return;
+      }
+
+      if (lastRemotePullOfEditorContent[index] > freshRemoteEditorValueObject.updated) {
+        ll(`I had latest remote changes and now I have updated it locally and it's time to push it `);
+
+        await updateRemote();
+      } else {
+        ll(
+          `I didn't have latest changes (there is something newer pushed) and I have new local modification - CONFLICT - save local changes and reload page for latest remote changes`,
+          {
+            "lastRemotePullOfEditorContent[index]": lastRemotePullOfEditorContent[index],
+            freshRemoteEditorValueObject,
+          }
+        );
+
+        setConflict(true);
+      }
+    } else {
+      log(`md5 the same remote and local`);
+    }
+  }
+
+  async function pullAllTabsDataExceptValuesAndSyncEditors() {
     loadingTrigger(1);
 
     try {
@@ -247,9 +448,16 @@ const Main = ({ portal }) => {
 
       const result = await get("allTabsDataExceptValues");
 
-      log.orange("firebase", "<------ pullAllTabsDataExceptValues result", result);
+      log.orange(
+        "firebase",
+        "<------ pullAllTabsDataExceptValuesAndSyncEditors result",
+        "allTabsDataExceptValues: ",
+        allTabsDataExceptValues,
+        "result: ",
+        result
+      );
 
-      const tabsTransformed = Object.entries(result || {}).reduce((acc, [index, obj]) => {
+      const tabsTransformedArrayWithIndexProp = Object.entries(result || {}).reduce((acc, [index, obj]) => {
         const zeroIndexOrderTab = obj.zeroIndexOrderTab;
 
         acc[zeroIndexOrderTab] = {
@@ -262,90 +470,48 @@ const Main = ({ portal }) => {
 
       /**
        * if allTabsDataExceptValues changed in the meantime
+       * then stop everything
        */
-      if (md5(JSON.stringify(allTabsDataExceptValues)) === currentAllTabsMd5) {
-        /**
-         * if data that was pulled for allTabsDataExceptValues is really different than data component already have
-         * only then change state, this way I'm reducing unecessary rerenders of main component
-         */
-        if (md5(JSON.stringify(tabsTransformed)) !== currentAllTabsMd5) {
-          const selectedTabIndex_tabObjectValue = structuredClone(allTabsDataExceptValues[selectedTabIndex]);
+      if (md5(JSON.stringify(allTabsDataExceptValues)) !== currentAllTabsMd5) {
+        log(`allTabsDataExceptValues have changed locally before I've pulled data from firebase`);
 
-          const indexOnTheRight_tabObjectValue = structuredClone(allTabsDataExceptValues[indexOnTheRight]);
-
-          setAllTabsDataExceptValuesDontUseDirectly(tabsTransformed);
-
-          // updating selected tab:
-          {
-            const selectedTabIndex = findSelectedTabIndex(tabsTransformed);
-
-            // update opened tab:
-            // console.log(
-            //   "updatetab",
-            //   selectedTabIndex,
-            //   "result[selectedTabIndex]",
-            //   result[selectedTabIndex],
-            //   "selectedTabIndex_tabObjectValue: ",
-            //   selectedTabIndex_tabObjectValue
-            // );
-
-            if (
-              selectedTabIndex &&
-              result[selectedTabIndex] &&
-              result?.[selectedTabIndex]?.valueMD5 &&
-              result?.[selectedTabIndex]?.valueMD5 !== selectedTabIndex_tabObjectValue?.valueMD5
-            ) {
-              const result = await get(["allEditorsValues", selectedTabIndex]);
-
-              editorsRefs.current[selectedTabIndex].current.update = true;
-
-              setValue(selectedTabIndex, result.value);
-
-              setTimeout(() => {
-                if (editorsRefs.current[selectedTabIndex].current.focus) {
-                  editorsRefs.current[selectedTabIndex].current.update = false;
-                }
-              }, 500);
-            }
-          }
-
-          // updating selected indexOnTheRight tab:
-          {
-            const indexOnTheRight = findIndexOnTheRight(tabsTransformed);
-
-            // update opened tab:
-            console.log(
-              "indexOnTheRight",
-              indexOnTheRight,
-              "result[indexOnTheRight]",
-              result[indexOnTheRight],
-              "selectedTabIndex_tabObjectValue: ",
-              indexOnTheRight_tabObjectValue
-            );
-
-            if (
-              indexOnTheRight &&
-              result[indexOnTheRight] &&
-              result?.[indexOnTheRight]?.valueMD5 &&
-              result?.[indexOnTheRight]?.valueMD5 !== indexOnTheRight_tabObjectValue?.valueMD5
-            ) {
-              const result = await get(["allEditorsValues", indexOnTheRight]);
-
-              editorsRefs.current[indexOnTheRight].current.update = true;
-
-              setValue(indexOnTheRight, result.value);
-
-              setTimeout(() => {
-                if (editorsRefs.current[indexOnTheRight].current.focus) {
-                  editorsRefs.current[indexOnTheRight].current.update = false;
-                }
-              }, 500);
-            }
-          }
-        }
+        return;
       }
+
+      /**
+       * if data that was pulled for allTabsDataExceptValues is really different than data component already have
+       * only then change state, this way I'm reducing unecessary rerenders of main component
+       */
+      log({
+        "md5(JSON.stringify(tabsTransformedArrayWithIndexProp)): ": md5(
+          JSON.stringify(tabsTransformedArrayWithIndexProp)
+        ),
+        currentAllTabsMd5,
+      });
+
+      if (md5(JSON.stringify(tabsTransformedArrayWithIndexProp)) !== currentAllTabsMd5) {
+        log("tabs update: setAllTabsDataExceptValuesDontUseDirectly:", tabsTransformedArrayWithIndexProp);
+
+        setAllTabsDataExceptValuesDontUseDirectly(tabsTransformedArrayWithIndexProp);
+      } else {
+        log("tabs update: not tabsTransformedArrayWithIndexProp");
+      }
+
+      // updating selected tab:
+      {
+        const selectedTabIndex = findSelectedTabIndex(tabsTransformedArrayWithIndexProp);
+
+        await syncEditorValueByIndex("selectedTabIndex", selectedTabIndex, result, allEditorsValues[selectedTabIndex]);
+      }
+
+      // updating selected indexOnTheRight tab:
+      // {
+      //   const indexOnTheRight = findIndexOnTheRight(tabsTransformedArrayWithIndexProp);
+
+      //   await syncEditorValueByIndex("indexOnTheRight", indexOnTheRight, result, allEditorsValues[indexOnTheRight]);
+      // }
     } catch (e) {
-      log("pullAllTabsDataExceptValues error: ", e);
+      log("pullAllTabsDataExceptValuesAndSyncEditors error: ", e);
     }
 
     loadingTrigger(-1);
@@ -355,17 +521,20 @@ const Main = ({ portal }) => {
     loadingTrigger(1);
 
     try {
-      const tabsTransformed = (given || getAllTabsDataExceptValuesFetcher() || []).reduce((acc, val, i) => {
-        const { index, editor, ...rest } = val;
+      const tabsTransformedArrayWithIndexProp = (given || getAllTabsDataExceptValuesFetcher() || []).reduce(
+        (acc, val, i) => {
+          const { index, editor, ...rest } = val;
 
-        acc[index] = { ...rest, zeroIndexOrderTab: i };
+          acc[index] = { ...rest, zeroIndexOrderTab: i };
 
-        return acc;
-      }, {});
+          return acc;
+        },
+        {}
+      );
 
       await set({
         key: "allTabsDataExceptValues",
-        data: tabsTransformed,
+        data: tabsTransformedArrayWithIndexProp,
       });
 
       log.orange("firebase", "------> pushAllTabsDataExceptValues result");
@@ -409,17 +578,22 @@ const Main = ({ portal }) => {
   }
   // allTabsDataExceptValues --- setters ----- ^^^
 
-  function setValue(index, value) {
+  function setValue(index, value, registerLocalEditorHasNewChangesTimestamp = true) {
     setAllEditorsValues((allEditorsValues) => {
-      if (
-        typeof allEditorsValues[index] === "string" &&
-        typeof value === "string" &&
-        allEditorsValues[index] &&
-        value &&
-        allEditorsValues[index] !== value
-      ) {
+      // if (
+      //   typeof allEditorsValues[index] === "string" &&
+      //   typeof value === "string" &&
+      //   allEditorsValues[index] &&
+      //   value &&
+      //   allEditorsValues[index] !== value
+      // ) {
+      // }
+      if (registerLocalEditorHasNewChangesTimestamp) {
         const n = now();
-        whenUpdated[selectedTabIndex] = n;
+
+        setLocalEditorHasNewChangesTimestamp(index, n);
+      } else {
+        setLocalEditorHasNewChangesTimestamp(index, false);
       }
 
       return {
@@ -432,34 +606,53 @@ const Main = ({ portal }) => {
   useEffect(() => {
     function keydown(event) {
       // Check if the key combination matches Ctrl+J or Cmd+J.
-      if ((event.ctrlKey || event.metaKey) && event.keyCode === 74) {
+      if ((event.ctrlKey || event.metaKey) && event.key === "j") {
         // Prevent the default behavior (refreshing the page)
         event.preventDefault();
+
+        log("ctrl+j");
 
         return;
       }
 
       // Check if the key combination matches Ctrl+K or Cmd+K
-      if ((event.ctrlKey || event.metaKey) && event.keyCode === 75) {
+      if ((event.ctrlKey || event.metaKey) && event.key === "k") {
         // Prevent the default behavior (refreshing the page)
         event.preventDefault();
 
-        alert("ctrl+k");
+        log("ctrl+k");
+
+        return;
+      }
+
+      // Check if the key combination matches Ctrl+K or Cmd+K
+      if ((event.ctrlKey || event.metaKey) && ["s", "S"].includes(event.key)) {
+        // Prevent the default behavior (refreshing the page)
+        event.preventDefault();
+
+        log("[ctrl|meta]+s");
+
+        queue(
+          () => pullAllTabsDataExceptValuesAndSyncEditors(),
+          "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
+        );
 
         return;
       }
 
       // Check if the key combination matches Ctrl+R or Cmd+R
-      if ((event.ctrlKey || event.metaKey) && event.keyCode === 82) {
+      if ((event.ctrlKey || event.metaKey) && event.key === "r") {
         // Prevent the default behavior (refreshing the page)
         event.preventDefault();
 
         play();
       } else {
+        // event.preventDefault();
         log({
           "event.ctrlKey": event.ctrlKey,
           "event.metaKey": event.metaKey,
           "event.keyCode": event.keyCode,
+          event,
         });
       }
     }
@@ -469,28 +662,28 @@ const Main = ({ portal }) => {
     return () => {
       document.removeEventListener("keydown", keydown);
     };
-  }, []);
+  }, [id, allTabsDataExceptValues, allEditorsValues]);
 
   useEffect(() => {
     if (!id) {
       return;
     }
 
-    window.addEventListener("focus", function () {
-      setIsPageFocused(true);
-      console.log("focus");
-      queue(() => pullAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
-    });
+    // window.addEventListener("focus", function () {
+    //   setIsPageFocused(true);
+    //   console.log("focus");
+    //   queue(() => pullAllTabsDataExceptValuesAndSyncEditors(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+    // });
 
-    window.addEventListener("blur", function () {
-      setIsPageFocused(false);
-      console.log("blur");
-      queue(() => pushAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
-    });
+    // window.addEventListener("blur", function () {
+    //   setIsPageFocused(false);
+    //   console.log("blur");
+    //   queue(() => pushAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+    // });
 
     setIsPageFocused(document.hasFocus()); // https://developer.mozilla.org/en-US/docs/Web/API/Document/hasFocus
 
-    queue(() => pullAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+    queue(() => pullAllTabsDataExceptValuesAndSyncEditors(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
   }, [id]);
 
   // useEffect(() => {
@@ -512,7 +705,7 @@ const Main = ({ portal }) => {
   //       return;
   //     }
 
-  //     queue(() => pullAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+  //     queue(() => pullAllTabsDataExceptValuesAndSyncEditors(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
 
   //     if (keepLoopGoing) {
   //       handler = setTimeout(sync, 8000);
@@ -569,7 +762,8 @@ const Main = ({ portal }) => {
     if (Array.isArray(allTabsDataExceptValues) && allTabsDataExceptValues.length > 0) {
       pushAllTabsDataExceptValues();
     }
-  }, [md5(JSON.stringify(allTabsDataExceptValues))]);
+    // }, [md5(JSON.stringify(allTabsDataExceptValues))]); // TODO: not sure if I need to really generate md5 here , maybe just listening for allTabs... should be ok
+  }, [allTabsDataExceptValues]);
 
   const pushValueSelectedTabIndex = useCallback(
     debounce(async (index, value) => {
@@ -585,16 +779,16 @@ const Main = ({ portal }) => {
             // const updated = await get(["allEditorsValues", index, "updated"]);
 
             // log("remote", updated);
-            // log("local:", whenUpdated[index]);
+            // log("local:", localEditorHasNewChangesTimestamp[index]);
 
-            // if (typeof updated === "string" && typeof whenUpdated[index] === "string" && updated > whenUpdated[index]) {
+            // if (typeof updated === "string" && typeof localEditorHasNewChangesTimestamp[index] === "string" && updated > localEditorHasNewChangesTimestamp[index]) {
             //   log.orange("time comparison", "false");
             //   return;
             // } else {
             //   log.orange("time comparison", "true");
             // }
 
-            // if (typeof whenUpdated[index] === "undefined") {
+            // if (typeof localEditorHasNewChangesTimestamp[index] === "undefined") {
             //   log.orange("time comparison", "not updated");
             //   return;
             // }
@@ -617,9 +811,9 @@ const Main = ({ portal }) => {
     [id]
   );
 
-  useEffect(() => {
-    pushValueSelectedTabIndex(selectedTabIndex, allEditorsValues[selectedTabIndex]);
-  }, [allEditorsValues[selectedTabIndex]]);
+  // useEffect(() => {
+  //   pushValueSelectedTabIndex(selectedTabIndex, allEditorsValues[selectedTabIndex]);
+  // }, [allEditorsValues[selectedTabIndex]]);
 
   const pushValueIndexOnTheRight = useCallback(
     debounce(async (index, value) => {
@@ -649,8 +843,20 @@ const Main = ({ portal }) => {
   );
 
   useEffect(() => {
-    pushValueIndexOnTheRight(indexOnTheRight, allEditorsValues[indexOnTheRight]);
-  }, [allEditorsValues[indexOnTheRight]]);
+    let handler;
+
+    if (conflict) {
+      handler = setTimeout(() => {
+        setConflict(false);
+      }, 1000);
+    }
+
+    return () => clearTimeout(handler);
+  }, [conflict]);
+
+  // useEffect(() => {
+  //   pushValueIndexOnTheRight(indexOnTheRight, allEditorsValues[indexOnTheRight]);
+  // }, [allEditorsValues[indexOnTheRight]]);
 
   return (
     <div
@@ -660,6 +866,7 @@ const Main = ({ portal }) => {
       })}
       tabIndex={0}
     >
+      {conflict && <div className="conflict">conflict</div>}
       {createModal && ( // one modal for create mode
         <Modal title="Create tab" onClose={() => setCreateModal(false)}>
           <form
@@ -751,8 +958,23 @@ const Main = ({ portal }) => {
                 onClick={() => {
                   setCreateModal(true);
                 }}
+                className="add"
               >
                 +
+              </div>
+            </div>
+
+            <div>
+              <div
+                onClick={() => {
+                  queue(
+                    () => pullAllTabsDataExceptValuesAndSyncEditors(),
+                    "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
+                  );
+                }}
+                className="sync"
+              >
+                sync
               </div>
             </div>
 
@@ -767,6 +989,7 @@ const Main = ({ portal }) => {
                   setIndexOnTheRight={setIndexOnTheRight}
                   setSelectedTab={setSelectedTab}
                   setEditIndex={setEditIndex}
+                  localEditorHasNewChangesTimestamp={localEditorHasNewChangesTimestamp}
                 />
               );
             })}
@@ -845,8 +1068,16 @@ const Main = ({ portal }) => {
 };
 
 function SortableTabElement(props) {
-  const { selectedTabIndex, label, iterateIndex, indexOnTheRight, setIndexOnTheRight, setSelectedTab, setEditIndex } =
-    props;
+  const {
+    selectedTabIndex,
+    label,
+    iterateIndex,
+    indexOnTheRight,
+    setIndexOnTheRight,
+    setSelectedTab,
+    setEditIndex,
+    localEditorHasNewChangesTimestamp,
+  } = props;
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: iterateIndex,
@@ -866,6 +1097,7 @@ function SortableTabElement(props) {
       key={iterateIndex}
       className={classnames({
         active: iterateIndex === selectedTabIndex,
+        unsaved: localEditorHasNewChangesTimestamp[iterateIndex],
       })}
       ref={setNodeRef}
       style={style}
