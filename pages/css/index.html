@@ -86,6 +86,29 @@
             :last-child
             /* even odd childrens ^^^ */
           </script>
+          <h2>box-sizing</h2>
+
+          <script type="editor" data-lang="css">
+
+box-sizing: content-box(default)|border-box|initial|inherit; /* def(content-box) czy border ma być częścią width czy nie */
+
+----------------------------------------------------------- --- [nie ma]
+|                         margin                          |
+|    ------------------------------------------------     | --- border-box
+|    |                    border                    |     |
+|    |    -------------------------------------     |     | --- padding-box
+|    |    |               padding              |    |     |
+|    |    |   ------------------------------   |    |     | --- content-box (default)
+|    |    |   |           content          |   |    |     |     
+|    |    |   ------------------------------   |    |     |
+|    |    |                                    |    |     |
+|    |    -------------------------------------     |     |
+|    |                                              |     |
+|    ------------------------------------------------     |
+|                                                         |
+----------------------------------------------------------- 
+
+          </script>
 
           <h2>box-shadow</h2>
           <script type="editor" data-lang="css">
