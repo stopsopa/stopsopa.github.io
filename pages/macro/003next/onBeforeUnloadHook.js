@@ -26,8 +26,6 @@ export default function onBeforeUnloadHook(props) {
 
   const { block, message } = props;
 
-  console.log('blick: ', block)
-
   const [onx, setOnX] = useState(false);
 
   const on = () => {

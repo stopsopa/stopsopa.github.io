@@ -217,7 +217,13 @@ body .global-loader-component .ui.loader {
   color: white;
 }
 .unsaved {
-  background-color: pink;
+  box-shadow: 0px 0px 10px red;
+}
+.bluetab {
+  box-shadow: inset 0px 0px 10px rgb(159, 159, 224);
+}
+.unsaved.bluetab {
+  box-shadow: 0px 0px 10px red, inset 0px 0px 10px rgb(159, 159, 224);
 }
 
 // loader ^^^

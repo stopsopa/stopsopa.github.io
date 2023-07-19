@@ -4,8 +4,6 @@ import { render, createPortal } from "react-dom";
 
 import classnames from "classnames";
 
-import { set as setraw, get as getraw } from "nlab/lcstorage";
-
 import useCustomState from "../../useCustomState.js";
 
 const section = "editor";
@@ -25,8 +23,6 @@ import { useSortable, arrayMove, SortableContext, horizontalListSortingStrategy 
 import { CSS } from "@dnd-kit/utilities";
 
 import md5 from "md5";
-
-import useStatePromise from "./useStatePromise.js";
 
 import useQueue from "./useQueue.jsx";
 
@@ -263,6 +259,13 @@ const Main = ({ portal }) => {
     });
 
     setAllTabsDataExceptValuesDontUseDirectly(copy);
+
+    setTimeout(() => {
+      queue(
+        () => pullAllTabsDataExceptValuesAndSyncEditors(),
+        "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
+      );
+    }, 500);
   }
 
   function deleteTab(index) {
@@ -290,14 +293,14 @@ const Main = ({ portal }) => {
     );
 
     // update opened tab:
-    ll("DEBUG", {
-      index,
-      "allTabsDataExceptValues_freshRawRemoteResponseNotTransformed[index]":
-        allTabsDataExceptValues_freshRawRemoteResponseNotTransformed[index],
-      allTabsDataExceptValues,
-      allEditorsValues_currentValueOfEditorUnderIndex,
-      allEditorsValues_currentValueOfEditorUnderIndex_MD5,
-    });
+    // ll("DEBUG", {
+    //   index,
+    //   "allTabsDataExceptValues_freshRawRemoteResponseNotTransformed[index]":
+    //     allTabsDataExceptValues_freshRawRemoteResponseNotTransformed[index],
+    //   allTabsDataExceptValues,
+    //   allEditorsValues_currentValueOfEditorUnderIndex,
+    //   allEditorsValues_currentValueOfEditorUnderIndex_MD5,
+    // });
 
     if (!index) {
       ll(`no index given`);
@@ -505,11 +508,11 @@ const Main = ({ portal }) => {
       }
 
       // updating selected indexOnTheRight tab:
-      // {
-      //   const indexOnTheRight = findIndexOnTheRight(tabsTransformedArrayWithIndexProp);
+      {
+        const indexOnTheRight = findIndexOnTheRight(tabsTransformedArrayWithIndexProp);
 
-      //   await syncEditorValueByIndex("indexOnTheRight", indexOnTheRight, result, allEditorsValues[indexOnTheRight]);
-      // }
+        await syncEditorValueByIndex("indexOnTheRight", indexOnTheRight, result, allEditorsValues[indexOnTheRight]);
+      }
     } catch (e) {
       log("pullAllTabsDataExceptValuesAndSyncEditors error: ", e);
     }
@@ -589,9 +592,7 @@ const Main = ({ portal }) => {
       // ) {
       // }
       if (registerLocalEditorHasNewChangesTimestamp) {
-        const n = now();
-
-        setLocalEditorHasNewChangesTimestamp(index, n);
+        setLocalEditorHasNewChangesTimestamp(index, now());
       } else {
         setLocalEditorHasNewChangesTimestamp(index, false);
       }
@@ -765,83 +766,6 @@ const Main = ({ portal }) => {
     // }, [md5(JSON.stringify(allTabsDataExceptValues))]); // TODO: not sure if I need to really generate md5 here , maybe just listening for allTabs... should be ok
   }, [allTabsDataExceptValues]);
 
-  const pushValueSelectedTabIndex = useCallback(
-    debounce(async (index, value) => {
-      if (id) {
-        loadingTrigger(1);
-
-        try {
-          if (typeof index === "string" && typeof value === "string" && value.trim()) {
-            log.orange("firebase", `======> ${value}`);
-
-            // log("sent::", now());
-
-            // const updated = await get(["allEditorsValues", index, "updated"]);
-
-            // log("remote", updated);
-            // log("local:", localEditorHasNewChangesTimestamp[index]);
-
-            // if (typeof updated === "string" && typeof localEditorHasNewChangesTimestamp[index] === "string" && updated > localEditorHasNewChangesTimestamp[index]) {
-            //   log.orange("time comparison", "false");
-            //   return;
-            // } else {
-            //   log.orange("time comparison", "true");
-            // }
-
-            // if (typeof localEditorHasNewChangesTimestamp[index] === "undefined") {
-            //   log.orange("time comparison", "not updated");
-            //   return;
-            // }
-
-            await set({
-              key: [`allEditorsValues`, index],
-              data: { value, updated: now() },
-            });
-
-            await set({
-              key: ["allTabsDataExceptValues", index, "valueMD5"],
-              data: md5(value),
-            });
-          }
-        } catch (e) {}
-
-        loadingTrigger(-1);
-      }
-    }, 2000),
-    [id]
-  );
-
-  // useEffect(() => {
-  //   pushValueSelectedTabIndex(selectedTabIndex, allEditorsValues[selectedTabIndex]);
-  // }, [allEditorsValues[selectedTabIndex]]);
-
-  const pushValueIndexOnTheRight = useCallback(
-    debounce(async (index, value) => {
-      if (id) {
-        loadingTrigger(1);
-
-        try {
-          if (typeof index === "string" && typeof value === "string" && value.trim()) {
-            log.orange("firebase", `======> ${value}`);
-
-            await set({
-              key: [`allEditorsValues`, index],
-              data: { value, updated: now() },
-            });
-
-            await set({
-              key: ["allTabsDataExceptValues", index, "valueMD5"],
-              data: md5(value),
-            });
-          }
-        } catch (e) {}
-
-        loadingTrigger(-1);
-      }
-    }, 2000),
-    [id]
-  );
-
   useEffect(() => {
     let handler;
 
@@ -853,10 +777,6 @@ const Main = ({ portal }) => {
 
     return () => clearTimeout(handler);
   }, [conflict]);
-
-  // useEffect(() => {
-  //   pushValueIndexOnTheRight(indexOnTheRight, allEditorsValues[indexOnTheRight]);
-  // }, [allEditorsValues[indexOnTheRight]]);
 
   return (
     <div
@@ -1098,6 +1018,7 @@ function SortableTabElement(props) {
       className={classnames({
         active: iterateIndex === selectedTabIndex,
         unsaved: localEditorHasNewChangesTimestamp[iterateIndex],
+        bluetab: indexOnTheRight === iterateIndex,
       })}
       ref={setNodeRef}
       style={style}
@@ -1161,32 +1082,4 @@ function unique(pattern) {
 
 function now() {
   return new Date().toISOString();
-}
-
-const num = (function () {
-  let c = 0;
-  return () => {
-    c += 1;
-    return c;
-  };
-})();
-
-function delay(ms) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, ms);
-  });
-}
-
-function debounce(fn, delay) {
-  var timer = null;
-  return function () {
-    var context = this,
-      args = arguments;
-    clearTimeout(timer);
-    timer = setTimeout(function () {
-      fn.apply(context, args);
-    }, delay);
-  };
 }
