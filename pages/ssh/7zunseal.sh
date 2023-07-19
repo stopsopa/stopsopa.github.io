@@ -6,6 +6,8 @@
 #   --7z_file /Users/sdzialowski/.ssh/keys.7z \
 #   --7z_del_dir /Users/sdzialowski/.ssh/keys -- \
 #   /bin/bash /Volumes/WINSCP/ssh/ssh/add.sh firstkey secondkey
+
+# for more details where it is used look for /Users/xxx/Workspace/STOPSOPA__gitstorage/STOPSOPA__gitstorage/git@github.com:stopsopa__gitstorage.git/.any_shell_common.sh
 #
 
 function quote {
