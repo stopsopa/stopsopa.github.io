@@ -242,10 +242,7 @@ const Main = ({ portal }) => {
       setAllTabsDataExceptValues(index, "selectedTabIndexLatestDate", now());
       // setSelectedTabIndexRaw(index);
 
-      queue(
-        () => pullAllTabsDataExceptValuesAndSyncEditors(),
-        "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
-      );
+      queue(() => syncAll(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
     }
   }
 
@@ -263,10 +260,7 @@ const Main = ({ portal }) => {
     setAllTabsDataExceptValuesDontUseDirectly(copy);
 
     setTimeout(() => {
-      queue(
-        () => pullAllTabsDataExceptValuesAndSyncEditors(),
-        "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
-      );
+      queue(() => syncAll(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
     }, 500);
   }
 
@@ -445,7 +439,7 @@ const Main = ({ portal }) => {
     }
   }
 
-  async function pullAllTabsDataExceptValuesAndSyncEditors() {
+  async function syncAll() {
     loadingTrigger(1);
 
     try {
@@ -455,7 +449,7 @@ const Main = ({ portal }) => {
 
       log.orange(
         "firebase",
-        "<------ pullAllTabsDataExceptValuesAndSyncEditors result",
+        "<------ syncAll result",
         "allTabsDataExceptValues: ",
         allTabsDataExceptValues,
         "result: ",
@@ -516,7 +510,7 @@ const Main = ({ portal }) => {
         await syncEditorValueByIndex("indexOnTheRight", indexOnTheRight, result, allEditorsValues[indexOnTheRight]);
       }
     } catch (e) {
-      log("pullAllTabsDataExceptValuesAndSyncEditors error: ", e);
+      log("syncAll error: ", e);
     }
 
     loadingTrigger(-1);
@@ -635,10 +629,7 @@ const Main = ({ portal }) => {
 
         log("[ctrl|meta]+s");
 
-        queue(
-          () => pullAllTabsDataExceptValuesAndSyncEditors(),
-          "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
-        );
+        queue(() => syncAll(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
 
         return;
       }
@@ -674,41 +665,42 @@ const Main = ({ portal }) => {
 
     setIsPageFocused(document.hasFocus()); // https://developer.mozilla.org/en-US/docs/Web/API/Document/hasFocus
 
-    queue(() => pullAllTabsDataExceptValuesAndSyncEditors(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+    queue(() => syncAll(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
   }, [id]);
 
-  useEffect(() => {
-    if (!id) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (!id) {
+  //     return;
+  //   }
 
-    let handler;
-    function focus() {
-      handler = setTimeout(() => {
-        queue(
-          () => pullAllTabsDataExceptValuesAndSyncEditors(),
-          "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
-        );
-      }, 1000);
-    }
+  //   const u = unique();
 
-    window.addEventListener("focus", focus);
+  //   let handler;
+  //   function focus() {
+  //     log("focus", u);
+  //     handler = setTimeout(() => {
+  //       queue(() => syncAll(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+  //     }, 2000);
+  //   }
 
-    function blur() {
-      queue(
-        () => pullAllTabsDataExceptValuesAndSyncEditors(),
-        "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
-      );
-    }
+  //   window.addEventListener("focus", focus);
 
-    window.addEventListener("blur", blur);
+  //   function blur() {
+  //     setTimeout(() => {
+  //       log("blur", u);
+  //       queue(() => syncAll(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+  //     }, 100);
+  //   }
 
-    return () => {
-      clearTimeout(handler);
-      window.removeEventListener("focus", focus);
-      window.removeEventListener("blur", blur);
-    };
-  }, [id, allTabsDataExceptValues, allEditorsValues]);
+  //   window.addEventListener("blur", blur);
+
+  //   return () => {
+  //     log("unfocus unblur", u);
+  //     clearTimeout(handler);
+  //     window.removeEventListener("focus", focus);
+  //     window.removeEventListener("blur", blur);
+  //   };
+  // }, [id, allTabsDataExceptValues, allEditorsValues]);
 
   // useEffect(() => {
   //   // log.orange("isPageFocused useEffect", isPageFocused);
@@ -729,7 +721,7 @@ const Main = ({ portal }) => {
   //       return;
   //     }
 
-  //     queue(() => pullAllTabsDataExceptValuesAndSyncEditors(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+  //     queue(() => syncAll(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
 
   //     if (keepLoopGoing) {
   //       handler = setTimeout(sync, 8000);
@@ -910,10 +902,7 @@ const Main = ({ portal }) => {
             <div>
               <div
                 onClick={() => {
-                  queue(
-                    () => pullAllTabsDataExceptValuesAndSyncEditors(),
-                    "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
-                  );
+                  queue(() => syncAll(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
                 }}
                 className="sync"
               >
