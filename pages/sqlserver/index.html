@@ -45,18 +45,21 @@
             -- 1) execute from point #1 to #2 only
             -- 2) or execute whole query to extract some data for reports
             -- 3) uncomment line #2 or #3 as needed
-
+            
             select STRING_AGG(line, CHAR(10) + '            -- ')
             from (
                 select CONCAT('val:', ISNULL(CAST(v AS VARCHAR(MAX)), 'NULL'), ' count:', c ) line
                 from (
-                    select distinct v, count(*) c     -- #1
-                    from (select mycolumn as v from dddd.dbo.table_name) dictionary
-                    group by v
-            --        order by c desc -- #2
+                    select * from (
+                        select distinct v, count(*) c     -- #1
+                        from (select mycolumn as v from dddd.dbo.table_name) dictionary
+                        group by v
+                    ) t
+            --         order by CASE WHEN t.c IS NULL THEN 0 ELSE 1 END, t.c desc -- #2
                 ) con
-            --    where con.c >= 20 -- #3
+            --    where con.c >= 3 -- #3
             ) z
+            
           </script>
         </div>
       </div>
