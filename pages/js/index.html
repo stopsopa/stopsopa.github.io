@@ -564,6 +564,36 @@
               return new RegExp(`^${pregQuote(str)}`).test(startWith);
             }
           </script>
+          <h2>addCss function</h2>
+          <script type="editor" data-lang="javascript">
+
+
+            
+      /**
+       * https://stackoverflow.com/a/524721
+       */
+      function addCss(css) {
+        var head = document.head || document.getElementsByTagName("head")[0];
+
+        var styleElement = document.createElement("style");
+
+        head.appendChild(styleElement);
+
+        styleElement.type = "text/css";
+
+        styleElement.appendChild(document.createTextNode(css));
+
+        return {
+          unmountStyle: () => {
+            styleElement.parentNode.removeChild(styleElement);
+          },
+          styleElement,
+        };
+        return;
+      }
+            
+            
+          </script>
           <h2>date-fns</h2>
           <script type="editor" data-lang="javascript">
 
