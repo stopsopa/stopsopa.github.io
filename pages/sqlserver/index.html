@@ -55,7 +55,7 @@
                         from (select mycolumn as v from dddd.dbo.table_name) dictionary
                         group by v
                     ) t
-            --         order by CASE WHEN t.c IS NULL THEN 0 ELSE 1 END, t.c desc -- #2
+            --        order by CASE WHEN t.v IS NULL THEN 0 ELSE 1 END, t.c desc -- #2
                 ) con
             --    where con.c >= 3 -- #3
             ) z
