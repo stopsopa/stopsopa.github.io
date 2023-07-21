@@ -40,24 +40,23 @@
           </script>
           <h2>Analyzing values in the table</h2>
           <script type="editor" data-lang="sql">
-            
---just use different combination of query below:
--- 1) execute from point #1 to #2 only
--- 2) or execute whole query to extract some data for reports
--- 3) uncomment line #2 or #3 as needed     
-            
-select STRING_AGG(line, CHAR(10) + '            -- ')
-from (
-    select CONCAT('val:', ISNULL(CAST(v AS VARCHAR(MAX)), 'NULL'), ' count:', c ) line
-    from (
-        select distinct v, count(*) c     -- #1
-        from (select mycolumn as v from dddd.dbo.table_name) dictionary
-        group by v
---        order by c desc -- #2
-    ) con
---    where con.c >= 20 -- #3
-) z
-            
+
+            --just use different combination of query below:
+            -- 1) execute from point #1 to #2 only
+            -- 2) or execute whole query to extract some data for reports
+            -- 3) uncomment line #2 or #3 as needed
+
+            select STRING_AGG(line, CHAR(10) + '            -- ')
+            from (
+                select CONCAT('val:', ISNULL(CAST(v AS VARCHAR(MAX)), 'NULL'), ' count:', c ) line
+                from (
+                    select distinct v, count(*) c     -- #1
+                    from (select mycolumn as v from dddd.dbo.table_name) dictionary
+                    group by v
+            --        order by c desc -- #2
+                ) con
+            --    where con.c >= 20 -- #3
+            ) z
           </script>
         </div>
       </div>
