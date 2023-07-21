@@ -682,21 +682,32 @@ const Main = ({ portal }) => {
       return;
     }
 
-    window.addEventListener("focus", function () {
-      setTimeout(() => {
+    let handler;
+    function focus() {
+      handler = setTimeout(() => {
         queue(
           () => pullAllTabsDataExceptValuesAndSyncEditors(),
           "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
         );
       }, 1000);
-    });
+    }
 
-    window.addEventListener("blur", function () {
+    window.addEventListener("focus", focus);
+
+    function blur() {
       queue(
         () => pullAllTabsDataExceptValuesAndSyncEditors(),
         "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue"
       );
-    });
+    }
+
+    window.addEventListener("blur", blur);
+
+    return () => {
+      clearTimeout(handler);
+      window.removeEventListener("focus", focus);
+      window.removeEventListener("blur", blur);
+    };
   }, [id, allTabsDataExceptValues, allEditorsValues]);
 
   // useEffect(() => {
