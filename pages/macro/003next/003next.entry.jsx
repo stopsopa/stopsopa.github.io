@@ -4,6 +4,8 @@ import { render, createPortal } from "react-dom";
 
 import classnames from "classnames";
 
+import { set, get } from "nlab/lcstorage";
+
 import useCustomState from "../../useCustomState.js";
 
 const section = "editor";
