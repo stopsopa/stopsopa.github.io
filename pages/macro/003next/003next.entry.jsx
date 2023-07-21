@@ -672,17 +672,13 @@ const Main = ({ portal }) => {
       return;
     }
 
-    // window.addEventListener("focus", function () {
-    //   setIsPageFocused(true);
-    //   console.log("focus");
-    //   queue(() => pullAllTabsDataExceptValuesAndSyncEditors(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
-    // });
+    window.addEventListener("focus", function () {
+      queue(() => pullAllTabsDataExceptValuesAndSyncEditors(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+    });
 
-    // window.addEventListener("blur", function () {
-    //   setIsPageFocused(false);
-    //   console.log("blur");
-    //   queue(() => pushAllTabsDataExceptValues(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
-    // });
+    window.addEventListener("blur", function () {
+      queue(() => pullAllTabsDataExceptValuesAndSyncEditors(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
+    });
 
     setIsPageFocused(document.hasFocus()); // https://developer.mozilla.org/en-US/docs/Web/API/Document/hasFocus
 
