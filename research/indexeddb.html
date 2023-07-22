@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      table {
+        width: 600px;
+      }
+      table,
+      th,
+      td {
+        /* https://www.w3schools.com/html/html_table_borders.asp */
+        border: 1px solid black;
+        border-collapse: collapse;
+        white-space: nowrap;
+      }
+      .flex {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>IndexedDB</h3>
+    <a href="" id="home">
+      home
+      <script>
+        document.querySelector("#home").setAttribute("href", location.pathname);
+      </script>
+    </a>
+
+    <div class="flex">
+      <div class="object"></div>
+      <div class="autoincrement"></div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
+      integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script>
+      const log = console.log;
+
+      log("start script");
+
+      const url = new URL(location.href);
+
+      const searchParams = url.searchParams;
+
+      log("action: ", searchParams.get("action"));
+
+      async function fetchTemplate(file, mountElementSelector) {
+        const response = await fetch(file);
+
+        const text = await response.text();
+
+        log(`${file} fetched`);
+
+        const template = _.template(text);
+
+        const element = document.querySelector(mountElementSelector);
+
+        return (data) => {
+          element.innerHTML = template(data);
+        };
+      }
+
+      // 0 &&
+      1 &&
+        (async function () {
+          const template = await fetchTemplate("template_test_keyPath.html", ".object");
+
+          const dbname = "test_keyPath";
+
+          const objectStoreName = "customers";
+
+          // every time you bump the version the onupgradeneeded is triggered and triggering this event
+          // is the only place where you can alter the structure of the database
+          // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#using_a_key_generator:~:text=the%20only%20place%20where%20you%20can%20alter%20the%20structure%20of%20the%20database
+          const version = 1;
+
+          const log = (...args) => console.log(`db:${dbname}`, `os:${objectStoreName}`, ...args);
+
+          const error = (...args) => console.error(`db:${dbname}`, `os:${objectStoreName}`, ...args);
+
+          // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#structuring_the_database
+          var request = indexedDB.open(dbname, version);
+
+          const customerData = [
+            { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
+            { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+          ];
+
+          var db = await new Promise((resolve, reject) => {
+            request.onerror = (event) => {
+              error("Why didn't you allow my web app to use IndexedDB?!");
+
+              reject(event);
+            };
+            request.onsuccess = (event) => {
+              const db = event.target.result;
+
+              log("onsuccess");
+
+              resolve(db);
+
+              // db.onerror = (event) => {
+              //   // Generic error handler for all errors targeted at this database's
+              //   // requests!
+              //   error(`Database error: ${event.target.errorCode}`);
+              // };
+            };
+            request.onupgradeneeded = (event) => {
+              log("onupgradeneeded", event);
+
+              const db = event.target.result;
+
+              // Create an objectStore to hold information about our customers. We're
+              // going to use "ssn" as our key path because it's guaranteed to be
+              // unique - or at least that's what I was told during the kickoff meeting.
+              const objectStore = db.createObjectStore(objectStoreName, { keyPath: "ssn" });
+
+              // Create an index to search customers by name. We may have duplicates
+              // so we can't use a unique index.
+              objectStore.createIndex("name", "name", { unique: false });
+
+              // Create an index to search customers by email. We want to ensure that
+              // no two customers have the same email, so use a unique index.
+              objectStore.createIndex("email", "email", { unique: true });
+
+              // Use transaction oncomplete to make sure the objectStore creation is
+              // finished before adding data into it.
+              objectStore.transaction.oncomplete = (event) => {
+                // Store values in the newly created objectStore.
+                const customerObjectStore = db.transaction(objectStoreName, "readwrite").objectStore("customers");
+                customerData.forEach((customer) => {
+                  log("adding: ", customer);
+                  customerObjectStore.add(customer);
+                });
+
+                log("transaction.oncomplete");
+              };
+            };
+          });
+
+          log("database configured", db);
+        })();
+
+      // 0 &&
+      1 &&
+        (async function () {
+          const template = await fetchTemplate("template_test_autoIncrement.html", ".autoincrement");
+
+          const dbname = "test_autoIncrement";
+
+          const objectStoreName = "objects";
+
+          // every time you bump the version the onupgradeneeded is triggered and triggering this event
+          // is the only place where you can alter the structure of the database
+          // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#using_a_key_generator:~:text=the%20only%20place%20where%20you%20can%20alter%20the%20structure%20of%20the%20database
+          const version = 1;
+
+          const log = (...args) => console.log(`db:${dbname}`, `os:${objectStoreName}`, ...args);
+
+          const error = (...args) => console.error(`db:${dbname}`, `os:${objectStoreName}`, ...args);
+
+          // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#using_a_key_generator
+          var request = indexedDB.open(dbname, version);
+
+          const customerData = [
+            { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
+            { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+          ];
+
+          var db = await new Promise((resolve, reject) => {
+            request.onerror = (event) => {
+              error("Why didn't you allow my web app to use IndexedDB?!");
+
+              reject(event);
+            };
+            request.onsuccess = (event) => {
+              const db = event.target.result;
+
+              log("onsuccess");
+
+              resolve(db);
+
+              // db.onerror = (event) => {
+              //   // Generic error handler for all errors targeted at this database's
+              //   // requests!
+              //   error(`Database error: ${event.target.errorCode}`);
+              // };
+            };
+
+            request.onupgradeneeded = (event) => {
+              const db = event.target.result;
+
+              // Create another object store called "names" with the autoIncrement flag set as true.
+              const objStore = db.createObjectStore(objectStoreName, { autoIncrement: true });
+
+              // Because the "names" object store has the key generator, the key for the name value is generated automatically.
+              // The added records would be like:
+              // key : 1 => value : "Bill"
+              // key : 2 => value : "Donna"
+              customerData.forEach((customer) => {
+                log("adding: ", customer);
+                objStore.add(customer);
+                // objStore.add(customer.name);
+              });
+
+              log("objStore:onupgradeneeded");
+            };
+          });
+
+          log("database configured", db);
+
+          // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
+          const transaction = db.transaction([objectStoreName], "readwrite");
+
+          log("created transaction", transaction);
+
+          const template_data = {
+            added_user: "null",
+            deleted_user: "null",
+            list: {},
+          };
+          switch (searchParams.get("action")) {
+            case "object_add_john":
+              log("action: object_add_john");
+
+              template_data.added_user = await new Promise((resolve, reject) => {
+                // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
+                let johns_id;
+                transaction.oncomplete = (event) => {
+                  log("object_add_john transaction.oncomplete johns id: ", johns_id);
+                  resolve(johns_id);
+                };
+
+                transaction.onerror = (event) => {
+                  log("object_add_john transaction.onerror", event);
+                  reject(event);
+                };
+
+                const objectStore = transaction.objectStore(objectStoreName);
+
+                const newCustomers = [
+                  {
+                    ssn: "444-44-4844",
+                    name: "John",
+                    age: 40,
+                    email: "john@google.com",
+                  },
+                ];
+
+                // you can add more than one, but I'm adding just one in this example
+                newCustomers.forEach((customer) => {
+                  const request = objectStore.add(customer);
+                  request.onsuccess = (event) => {
+                    log("object_add_john request.onsuccess", event, customer);
+                    johns_id = event.target.result;
+                  };
+                });
+              });
+              break;
+            case "object_delete":
+              log("action: object_delete");
+
+              template_data.deleted_user = await new Promise((resolve, reject) => {
+                // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#removing_data_from_the_database
+
+                const id = parseInt(searchParams.get("key"), 10);
+
+                const request = db.transaction([objectStoreName], "readwrite").objectStore(objectStoreName).delete(id);
+
+                request.onsuccess = (event) => {
+                  log("object_delete onsuccess", event);
+                  resolve(id);
+                };
+              });
+
+              break;
+          }
+
+          template_data.list = await new Promise((resolve, reject) => {
+            // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#using_a_cursor
+            const objectStore = db.transaction(objectStoreName).objectStore(objectStoreName);
+
+            const list = {};
+
+            objectStore.openCursor().onsuccess = (event) => {
+              const cursor = event.target.result;
+              if (cursor) {
+                list[cursor.key] = cursor.value;
+                cursor.continue();
+              } else {
+                resolve(list);
+              }
+            };
+          });
+
+          log("rendering template", JSON.stringify(template_data, null, 4));
+
+          template(template_data);
+        })();
+    </script>
+  </body>
+</html>

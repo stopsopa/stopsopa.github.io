@@ -1,0 +1,30 @@
+<table>
+  <thead>
+    <tr>
+      <th colspan="2">test_autoIncrement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="?action=object_add_john">?action=object_add_john</a></td>
+      <td>added_user <%= added_user %></td>
+    </tr>
+    <tr>
+      <td>just deleted user id:</td>
+      <td><%- deleted_user %></td>
+    </tr>
+    <tr>
+      <th colspan="2">users:</td>
+    </tr>
+    <% _.forEach(Object.entries(list), function([key, value]) { %>
+    <tr>
+      <td>
+        <pre>id: <%- key %>, <%- JSON.stringify(value) %></pre>
+      </td>
+      <td>
+        <a href="?action=object_delete&key=<%- key %>">delete <%- key %></a>
+      </td>
+    </tr>
+    <% }); %>
+  </tbody>
+</table>
