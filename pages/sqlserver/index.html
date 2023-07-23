@@ -45,7 +45,7 @@
             -- 1) execute from point #1 to #2 only
             -- 2) or execute whole query to extract some data for reports
             -- 3) uncomment line #2 or #3 as needed
-            
+
             select STRING_AGG(line, CHAR(10) + '            -- ')
             from (
                 select CONCAT('val:', ISNULL(CAST(v AS VARCHAR(MAX)), 'NULL'), ' count:', c ) line
@@ -59,7 +59,6 @@
                 ) con
             --    where con.c >= 3 -- #3
             ) z
-            
           </script>
         </div>
       </div>

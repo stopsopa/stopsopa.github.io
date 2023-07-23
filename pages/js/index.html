@@ -570,31 +570,29 @@
           <script type="editor" data-lang="javascript">
 
 
-            
-      /**
-       * https://stackoverflow.com/a/524721
-       */
-      function addCss(css) {
-        var head = document.head || document.getElementsByTagName("head")[0];
 
-        var styleElement = document.createElement("style");
+            /**
+             * https://stackoverflow.com/a/524721
+             */
+            function addCss(css) {
+              var head = document.head || document.getElementsByTagName("head")[0];
 
-        head.appendChild(styleElement);
+              var styleElement = document.createElement("style");
 
-        styleElement.type = "text/css";
+              head.appendChild(styleElement);
 
-        styleElement.appendChild(document.createTextNode(css));
+              styleElement.type = "text/css";
 
-        return {
-          unmountStyle: () => {
-            styleElement.parentNode.removeChild(styleElement);
-          },
-          styleElement,
-        };
-        return;
-      }
-            
-            
+              styleElement.appendChild(document.createTextNode(css));
+
+              return {
+                unmountStyle: () => {
+                  styleElement.parentNode.removeChild(styleElement);
+                },
+                styleElement,
+              };
+              return;
+            }
           </script>
           <h2>date-fns</h2>
           <script type="editor" data-lang="javascript">

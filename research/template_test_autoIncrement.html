@@ -19,12 +19,23 @@
     <% _.forEach(Object.entries(list), function([key, value]) { %>
     <tr>
       <td>
-        <pre>id: <%- key %>, <%- JSON.stringify(value) %></pre>
+        id: <a href="?action=object_get&key=<%- key %>"><%- key %></a>
+        <pre><%- JSON.stringify(value) %></pre>
       </td>
       <td>
-        <a href="?action=object_delete&key=<%- key %>">delete <%- key %></a>
+        <a href="?action=object_delete&key=<%- key %>">delete</a>
+        |
+        <a href="?action=object_update&key=<%- key %>">update</a>
       </td>
     </tr>
     <% }); %>
+    <tr>
+      <th colspan="2">get_user:</th>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <pre><%- JSON.stringify(get_user) %></pre>
+      </td>
+    </tr>
   </tbody>
 </table>

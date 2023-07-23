@@ -51,7 +51,7 @@
 
       const searchParams = url.searchParams;
 
-      log("action: ", searchParams.get("action"));
+      log("action:", searchParams.get("action"));
 
       async function fetchTemplate(file, mountElementSelector) {
         const response = await fetch(file);
@@ -138,7 +138,7 @@
                 // Store values in the newly created objectStore.
                 const customerObjectStore = db.transaction(objectStoreName, "readwrite").objectStore("customers");
                 customerData.forEach((customer) => {
-                  log("adding: ", customer);
+                  log("adding:", customer);
                   customerObjectStore.add(customer);
                 });
 
@@ -182,6 +182,7 @@
 
               reject(event);
             };
+
             request.onsuccess = (event) => {
               const db = event.target.result;
 
@@ -218,14 +219,10 @@
 
           log("database configured", db);
 
-          // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
-          const transaction = db.transaction([objectStoreName], "readwrite");
-
-          log("created transaction", transaction);
-
           const template_data = {
             added_user: "null",
             deleted_user: "null",
+            get_user: false,
             list: {},
           };
           switch (searchParams.get("action")) {
@@ -233,6 +230,12 @@
               log("action: object_add_john");
 
               template_data.added_user = await new Promise((resolve, reject) => {
+                // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
+
+                const transaction = db.transaction([objectStoreName], "readwrite");
+
+                log("object_add_john transaction: ", transaction);
+
                 // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
                 let johns_id;
                 transaction.oncomplete = (event) => {
@@ -246,6 +249,8 @@
                 };
 
                 const objectStore = transaction.objectStore(objectStoreName);
+
+                log("object_delete objectStore:", objectStore);
 
                 const newCustomers = [
                   {
@@ -274,7 +279,15 @@
 
                 const id = parseInt(searchParams.get("key"), 10);
 
-                const request = db.transaction([objectStoreName], "readwrite").objectStore(objectStoreName).delete(id);
+                const transaction = db.transaction([objectStoreName], "readwrite");
+
+                log("object_delete transaction:", transaction);
+
+                const objectStore = transaction.objectStore(objectStoreName);
+
+                log("object_delete objectStore:", objectStore);
+
+                const request = objectStore.delete(id);
 
                 request.onsuccess = (event) => {
                   log("object_delete onsuccess", event);
@@ -283,11 +296,95 @@
               });
 
               break;
+            case "object_get":
+              log("action: object_get");
+
+              template_data.get_user = await new Promise((resolve, reject) => {
+                const id = parseInt(searchParams.get("key"), 10);
+
+                // 'readonly' is by default: https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database:~:text=By%20default%2C%20where%20no%20mode%20is%20specified%2C%20transactions%20open%20in%20readonly%20mode
+                const transaction = db.transaction([objectStoreName], "readonly");
+
+                log("object_get transaction:", transaction);
+
+                const objectStore = transaction.objectStore(objectStoreName);
+
+                log("object_get objectStore:", objectStore);
+
+                const request = objectStore.get(id);
+
+                request.onerror = (event) => {
+                  log("object_get request.onerror", event);
+                  reject(event);
+                };
+
+                request.onsuccess = (event) => {
+                  log("object_get request.onsuccess", event, request);
+                  resolve({
+                    id,
+                    data: event.target.result,
+                    // according to dot on get it was taken from request,
+                    // but taking it from event seems more natural,
+                    // but it shouldn't really matter... right?
+                    // data: request.result,
+                  });
+                };
+              });
+              break;
+            case "object_update":
+              log("action: object_update");
+
+              await new Promise((resolve, reject) => {
+                const id = parseInt(searchParams.get("key"), 10);
+
+                // 'readonly' is by default: https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database:~:text=By%20default%2C%20where%20no%20mode%20is%20specified%2C%20transactions%20open%20in%20readonly%20mode
+                const transaction = db.transaction([objectStoreName], "readwrite");
+
+                log("object_update transaction:", transaction);
+
+                const objectStore = transaction.objectStore(objectStoreName);
+
+                log("object_update objectStore:", objectStore);
+
+                const request = objectStore.get(id);
+
+                request.onerror = (event) => {
+                  log("object_update request.onerror", event);
+                  reject(event);
+                };
+
+                request.onsuccess = (event) => {
+                  const data = event.target.result;
+
+                  log("object_update request.onsuccess", event, request);
+
+                  data.email = "modified@gmail.com";
+
+                  // Put this updated object back into the database.
+                  const requestUpdate = objectStore.put(data, id);
+
+                  requestUpdate.onerror = (event) => {
+                    log("object_update requestUpdate.onerror", event);
+                    reject(event);
+                  };
+
+                  requestUpdate.onsuccess = (event) => {
+                    log("object_update requestUpdate.onsuccess", event, request);
+                    resolve({
+                      id,
+                      event,
+                    });
+                  };
+                };
+              });
+              break;
           }
 
           template_data.list = await new Promise((resolve, reject) => {
+            const transaction = db.transaction(objectStoreName);
+
             // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#using_a_cursor
-            const objectStore = db.transaction(objectStoreName).objectStore(objectStoreName);
+            const objectStore = transaction.objectStore(objectStoreName);
 
             const list = {};
 
