@@ -1,5 +1,44 @@
 const th = (msg) => new Error(`IndexedDBPromised error: ${msg}`);
 
+/**
+ * 
+    const IndexedDBPromisedInstance = new IndexedDBPromised({
+      dbname: 'dbname',
+      storeNames: 'storeNames',
+    });
+
+    await IndexedDBPromisedInstance.init();
+
+    var db = await IndexedDBPromisedInstance.getDb();
+
+
+    template_data.added_user = await IndexedDBPromisedInstance.insert({
+      ssn: "444-44-4844",
+      name: "John",
+      age: 40,
+      email: "john@google.com",
+    });
+
+    template_data.deleted_user = await IndexedDBPromisedInstance.delete(id);
+
+    template_data.get_user = await IndexedDBPromisedInstance.get(id);
+
+    await IndexedDBPromisedInstance.update(id, (entity) => {
+      const tmp = structuredClone(entity);
+
+      tmp.email = "modified@gmail.com";
+
+      tmp.extra = "some extra stuff";
+
+      delete tmp.age;
+
+      return tmp;
+    });
+
+    template_data.list = await IndexedDBPromisedInstance.getAll();
+
+ * @param {*} opt 
+ */
 function IndexedDBPromised(opt) {
   this.opt = {
     log: console.log,
@@ -150,6 +189,7 @@ IndexedDBPromised.prototype.insert = async function (entity) {
 
     // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
     let newInsertId;
+    
     transaction.oncomplete = (event) => {
       log("transaction.oncomplete", event);
 
@@ -169,11 +209,13 @@ IndexedDBPromised.prototype.insert = async function (entity) {
     // you can add more than one, but I'm adding just one in this example
     // newCustomers.forEach((customer) => {
     const request = objectStore.add(entity);
+
     request.onerror = (event) => {
       error("request.onerror", event);
 
       reject(event);
     };
+
     request.onsuccess = (event) => {
       log("request.onsuccess", event);
 
