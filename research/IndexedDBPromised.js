@@ -44,8 +44,13 @@ function IndexedDBPromised(opt) {
     log: console.log,
     error: console.log,
     dbname: undefined,
-    storeNames: undefined,
+    storeNames: undefined, // for now you can only specify string, but originaly you should be able to provide array
     version: 1,
+    objectStoreConfiguration: {
+      // might be function then object store will be configured via function
+      autoIncrement: true,
+      // keyPath: "ssn",
+    },
     ...opt,
   }; // make sure it's an object
 
@@ -83,6 +88,10 @@ function IndexedDBPromised(opt) {
 
   if (!Number.isInteger(this.opt.version) || this.opt.version < 1) {
     throw th(`this.opt.version should be integer and it should be bigger than 0, but it is >${this.opt.version}<`);
+  }
+
+  if (typeof this.opt.objectStoreConfiguration !== "function" && !isObject(this.opt.objectStoreConfiguration)) {
+    throw th(`this.opt.objectStoreConfiguration should be a function or an object`);
   }
 
   this.prepare = (method) => {
@@ -144,12 +153,6 @@ IndexedDBPromised.prototype.init = function () {
       const db = event.target.result;
 
       resolve(db);
-
-      // db.onerror = (event) => {
-      //   // Generic error handler for all errors targeted at this database's
-      //   // requests!
-      //   error(`Database error: ${event.target.errorCode}`);
-      // };
     };
 
     request.onupgradeneeded = (event) => {
@@ -157,25 +160,21 @@ IndexedDBPromised.prototype.init = function () {
 
       const db = event.target.result;
 
-      // // Create another object store called "names" with the autoIncrement flag set as true.
-      db.createObjectStore(this.opt.storeNames, { autoIncrement: true });
+      // read more about configuration of objectStore:
+      // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#structuring_the_database
 
-      // // Because the "names" object store has the key generator, the key for the name value is generated automatically.
-      // // The added records would be like:
-      // // key : 1 => value : "Bill"
-      // // key : 2 => value : "Donna"
-      // customerData.forEach((customer) => {
-      //   log("adding: ", customer);
-      //   objStore.add(customer);
-      //   // objStore.add(customer.name);
-      // });
+      if (typeof this.opt.objectStoreConfiguration === "function") {
+        this.opt.objectStoreConfiguration(db, { ...this.opt });
+      } else {
+        db.createObjectStore(this.opt.storeNames, this.opt.objectStoreConfiguration);
+      }
 
-      // log("objStore:onupgradeneeded");
+      log("objStore:onupgradeneeded");
     };
   });
 };
 
-IndexedDBPromised.prototype.insert = async function (entity) {
+IndexedDBPromised.prototype.insert = async function (entity, id) {
   const { log, error } = this.prepare("insert");
 
   const db = await this.db;
@@ -189,7 +188,7 @@ IndexedDBPromised.prototype.insert = async function (entity) {
 
     // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
     let newInsertId;
-    
+
     transaction.oncomplete = (event) => {
       log("transaction.oncomplete", event);
 
@@ -206,9 +205,11 @@ IndexedDBPromised.prototype.insert = async function (entity) {
 
     log("objectStore", objectStore);
 
+    log("inserting", entity);
+
     // you can add more than one, but I'm adding just one in this example
     // newCustomers.forEach((customer) => {
-    const request = objectStore.add(entity);
+    const request = objectStore.add(entity, id);
 
     request.onerror = (event) => {
       error("request.onerror", event);
@@ -259,6 +260,8 @@ IndexedDBPromised.prototype.delete = async function (id) {
 
     request.onerror = (event) => {
       error("request.onerror", event);
+
+      reject(event);
     };
 
     request.onsuccess = (event) => {
@@ -303,6 +306,8 @@ IndexedDBPromised.prototype.get = async function (id) {
 
     request.onerror = (event) => {
       error("request.onerror", event);
+
+      reject(event);
     };
 
     request.onsuccess = (event) => {
@@ -313,7 +318,7 @@ IndexedDBPromised.prototype.get = async function (id) {
   });
 };
 
-IndexedDBPromised.prototype.update = async function (id, update) {
+IndexedDBPromised.prototype.update = async function (update, id) {
   const { log, error } = this.prepare("update");
 
   const db = await this.db;
@@ -343,16 +348,35 @@ IndexedDBPromised.prototype.update = async function (id, update) {
 
     log("objectStore", objectStore);
 
-    const request = objectStore.get(id);
+    let request;
+    if (id) {
+      request = objectStore.get(id);
+    } else {
+      if (typeof this.opt.keyPath !== "string" || !this.opt.keyPath.trim()) {
+        throw th(`update called without an id, this means you should provide keyPath in the config`);
+      }
+
+      if (!update[this.opt.keyPath]) {
+        throw th(`can't find id>${this.opt.keyPath}< in the given object`);
+      }
+
+      request = objectStore.get(update[this.opt.keyPath]);
+    }
 
     request.onerror = (event) => {
       error("request.onerror", event);
+      
+      reject(event);
     };
 
     request.onsuccess = (event) => {
       const data = event.target.result;
 
       log("request.onsuccess", event, request);
+
+      if (!data) {
+        throw th(`data not found by id >${id}<`);
+      }
 
       // Put this updated object back into the database.
       let entity;
@@ -371,10 +395,20 @@ IndexedDBPromised.prototype.update = async function (id, update) {
         entity = update;
       }
 
-      const requestUpdate = objectStore.put(entity, id);
+      console.log("...", entity, id);
+
+      let requestUpdate;
+
+      if (this.opt.keyPath) {
+        requestUpdate = objectStore.put(entity);
+      } else {
+        requestUpdate = objectStore.put(entity, id);
+      }
 
       requestUpdate.onerror = (event) => {
         error("requestUpdate.onerror", event);
+
+        reject(event);
       };
 
       requestUpdate.onsuccess = (event) => {
@@ -425,6 +459,16 @@ IndexedDBPromised.prototype.getAll = async function () {
   });
 };
 
+IndexedDBPromised.prototype.uniq = function (pattern) {
+  // node.js require('crypto').randomBytes(16).toString('hex');
+  pattern || (pattern = "xyxyxy");
+  return pattern.replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
 IndexedDBPromised.prototype.getDb = async function () {
   this.prepare();
 
@@ -437,4 +481,8 @@ if (isNode) {
   module.exports = IndexedDBPromised;
 } else {
   window.IndexedDBPromised = IndexedDBPromised;
+}
+
+function isObject(o) {
+  return Object.prototype.toString.call(o) === "[object Object]";
 }

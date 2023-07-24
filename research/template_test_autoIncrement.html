@@ -1,12 +1,12 @@
 <table>
   <thead>
     <tr>
-      <th colspan="2">test_autoIncrement</th>
+      <th colspan="2">autoIncrement</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><a href="?action=object_add_john">?action=object_add_john</a></td>
+      <td><a href="?action=autoIncrement_add_john">?action=autoIncrement_add_john</a></td>
       <td>added_user <%= added_user %></td>
     </tr>
     <tr>
@@ -19,13 +19,13 @@
     <% _.forEach(Object.entries(list), function([key, value]) { %>
     <tr>
       <td>
-        id: <a href="?action=object_get&key=<%- key %>"><%- key %></a>
+        id: <a href="?action=autoIncrement_get&key=<%- key %>"><%- key %></a>
         <pre><%- JSON.stringify(value) %></pre>
       </td>
       <td>
-        <a href="?action=object_delete&key=<%- key %>">delete</a>
+        <a href="?action=autoIncrement_delete&key=<%- key %>">delete</a>
         |
-        <a href="?action=object_update&key=<%- key %>">update</a>
+        <a href="?action=autoIncrement_update&key=<%- key %>">update</a>
       </td>
     </tr>
     <% }); %>

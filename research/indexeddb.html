@@ -19,6 +19,9 @@
       .flex {
         display: flex;
       }
+      .flex > * {
+        margin-left: 20px;
+      }
     </style>
   </head>
   <body>
@@ -31,8 +34,8 @@
     </a>
 
     <div class="flex">
-      <div class="object"></div>
       <div class="autoincrement"></div>
+      <div class="keypath"></div>
     </div>
 
     <script
@@ -86,7 +89,7 @@
       // 0 &&
       1 &&
         (async function () {
-          const template = await fetchTemplate("template_test_keyPath.html", ".object");
+          const template = await fetchTemplate("template_test_keyPath.html", ".keypath");
 
           const dbname = "test_keyPath";
 
@@ -101,42 +104,17 @@
 
           const error = (...args) => console.error(`db:${dbname}`, `os:${objectStoreName}`, ...args);
 
-          // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#structuring_the_database
-          var request = indexedDB.open(dbname, version);
+          // const customerData = [
+          //   { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
+          //   { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+          // ];
 
-          const customerData = [
-            { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
-            { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
-          ];
-
-          var db = await new Promise((resolve, reject) => {
-            request.onerror = (event) => {
-              error("Why didn't you allow my web app to use IndexedDB?!");
-
-              reject(event);
-            };
-            request.onsuccess = (event) => {
-              const db = event.target.result;
-
-              log("onsuccess");
-
-              resolve(db);
-
-              // db.onerror = (event) => {
-              //   // Generic error handler for all errors targeted at this database's
-              //   // requests!
-              //   error(`Database error: ${event.target.errorCode}`);
-              // };
-            };
-            request.onupgradeneeded = (event) => {
-              log("onupgradeneeded", event);
-
-              const db = event.target.result;
-
-              // Create an objectStore to hold information about our customers. We're
-              // going to use "ssn" as our key path because it's guaranteed to be
-              // unique - or at least that's what I was told during the kickoff meeting.
-              const objectStore = db.createObjectStore(objectStoreName, { keyPath: "ssn" });
+          const IndexedDBPromisedInstance = new IndexedDBPromised({
+            dbname,
+            storeNames: objectStoreName,
+            // objectStoreConfiguration: { keyPath: "ssn" },
+            objectStoreConfiguration: (db, opt) => {
+              const objectStore = db.createObjectStore(opt.storeNames, { keyPath: opt.keyPath });
 
               // Create an index to search customers by name. We may have duplicates
               // so we can't use a unique index.
@@ -145,23 +123,92 @@
               // Create an index to search customers by email. We want to ensure that
               // no two customers have the same email, so use a unique index.
               objectStore.createIndex("email", "email", { unique: true });
-
-              // Use transaction oncomplete to make sure the objectStore creation is
-              // finished before adding data into it.
-              objectStore.transaction.oncomplete = (event) => {
-                // Store values in the newly created objectStore.
-                const customerObjectStore = db.transaction(objectStoreName, "readwrite").objectStore("customers");
-                customerData.forEach((customer) => {
-                  log("adding:", customer);
-                  customerObjectStore.add(customer);
-                });
-
-                log("transaction.oncomplete");
-              };
-            };
+            },
+            // this is extra param which is consumed by update method
+            // in order to find key value from given object
+            keyPath: "key",
           });
 
+          await IndexedDBPromisedInstance.init();
+
+          var db = await IndexedDBPromisedInstance.getDb();
+
           log("database configured", db);
+
+          const template_data = {
+            added_user: "null",
+            deleted_user: "null",
+            get_user: false,
+            list: {},
+          };
+
+          switch (searchParams.get("action")) {
+            case "keyPath_add_john":
+              log("action: keyPath_add_john");
+
+              template_data.added_user = await IndexedDBPromisedInstance.insert({
+                key: IndexedDBPromisedInstance.uniq(),
+                name: "John",
+                age: 40,
+                email: IndexedDBPromisedInstance.uniq() + "@google.com",
+              });
+
+              break;
+            case "keyPath_delete":
+              log("action: keyPath_delete");
+              {
+                const id = searchParams.get("key");
+
+                template_data.deleted_user = await IndexedDBPromisedInstance.delete(id);
+              }
+
+              break;
+            case "keyPath_get":
+              log("action: keyPath_get");
+
+              {
+                const id = searchParams.get("key");
+
+                template_data.get_user = await IndexedDBPromisedInstance.get(id);
+              }
+              break;
+            case "keyPath_update":
+              log("action: keyPath_update");
+
+              {
+                const id = searchParams.get("key");
+
+                await IndexedDBPromisedInstance.update((entity) => {
+                  const tmp = structuredClone(entity);
+
+                  entity.name = entity.name + "_test";
+
+                  tmp.extra = "some extra stuff";
+
+                  delete tmp.age;
+
+                  return tmp;
+                }, id);
+
+                // const entity = await IndexedDBPromisedInstance.get(id);
+
+                // entity.name = entity.name + "_test";
+
+                // entity.extra = "some extra stuff";
+
+                // delete entity.age;
+
+                // await IndexedDBPromisedInstance.update(entity);
+              }
+
+              break;
+          }
+
+          template_data.list = await IndexedDBPromisedInstance.getAll();
+
+          log("rendering template", JSON.stringify(template_data, null, 4));
+
+          template(template_data);
         })();
 
       // 0 &&
@@ -190,6 +237,9 @@
           const IndexedDBPromisedInstance = new IndexedDBPromised({
             dbname,
             storeNames: objectStoreName,
+            objectStoreConfiguration: {
+              autoIncrement: true,
+            },
           });
 
           await IndexedDBPromisedInstance.init();
@@ -205,8 +255,8 @@
             list: {},
           };
           switch (searchParams.get("action")) {
-            case "object_add_john":
-              log("action: object_add_john");
+            case "autoIncrement_add_john":
+              log("action: autoIncrement_add_john");
 
               template_data.added_user = await IndexedDBPromisedInstance.insert({
                 ssn: "444-44-4844",
@@ -216,8 +266,8 @@
               });
 
               break;
-            case "object_delete":
-              log("action: object_delete");
+            case "autoIncrement_delete":
+              log("action: autoIncrement_delete");
               {
                 const id = parseInt(searchParams.get("key"), 10);
 
@@ -225,8 +275,8 @@
               }
 
               break;
-            case "object_get":
-              log("action: object_get");
+            case "autoIncrement_get":
+              log("action: autoIncrement_get");
 
               {
                 const id = parseInt(searchParams.get("key"), 10);
@@ -234,13 +284,13 @@
                 template_data.get_user = await IndexedDBPromisedInstance.get(id);
               }
               break;
-            case "object_update":
-              log("action: object_update");
+            case "autoIncrement_update":
+              log("action: autoIncrement_update");
 
               {
                 const id = parseInt(searchParams.get("key"), 10);
 
-                await IndexedDBPromisedInstance.update(id, (entity) => {
+                await IndexedDBPromisedInstance.update((entity) => {
                   const tmp = structuredClone(entity);
 
                   tmp.email = "modified@gmail.com";
@@ -250,7 +300,7 @@
                   delete tmp.age;
 
                   return tmp;
-                });
+                }, id);
               }
 
               break;
