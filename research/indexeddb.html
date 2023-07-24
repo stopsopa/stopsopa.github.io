@@ -42,8 +42,22 @@
       referrerpolicy="no-referrer"
     ></script>
 
+    <script src="./IndexedDBPromised.js"></script>
+
     <script>
-      const log = console.log;
+      const logc =
+        (prefix) =>
+        (...args) =>
+          console.log(`${prefix}:`, ...args);
+
+      const loge =
+        (prefix) =>
+        (...args) =>
+          console.error(`${prefix}:`, ...args);
+
+      const log = logc("main");
+
+      const error = loge("main");
 
       log("start script");
 
@@ -159,63 +173,28 @@
 
           const objectStoreName = "objects";
 
+          const log = logc(`db:${dbname}`, `os:${objectStoreName}`);
+
+          const error = loge(`db:${dbname}`, `os:${objectStoreName}`);
+
           // every time you bump the version the onupgradeneeded is triggered and triggering this event
           // is the only place where you can alter the structure of the database
           // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#using_a_key_generator:~:text=the%20only%20place%20where%20you%20can%20alter%20the%20structure%20of%20the%20database
           const version = 1;
 
-          const log = (...args) => console.log(`db:${dbname}`, `os:${objectStoreName}`, ...args);
+          // const customerData = [
+          //   { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
+          //   { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
+          // ];
 
-          const error = (...args) => console.error(`db:${dbname}`, `os:${objectStoreName}`, ...args);
-
-          // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#using_a_key_generator
-          var request = indexedDB.open(dbname, version);
-
-          const customerData = [
-            { ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
-            { ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" },
-          ];
-
-          var db = await new Promise((resolve, reject) => {
-            request.onerror = (event) => {
-              error("Why didn't you allow my web app to use IndexedDB?!");
-
-              reject(event);
-            };
-
-            request.onsuccess = (event) => {
-              const db = event.target.result;
-
-              log("onsuccess");
-
-              resolve(db);
-
-              // db.onerror = (event) => {
-              //   // Generic error handler for all errors targeted at this database's
-              //   // requests!
-              //   error(`Database error: ${event.target.errorCode}`);
-              // };
-            };
-
-            request.onupgradeneeded = (event) => {
-              const db = event.target.result;
-
-              // Create another object store called "names" with the autoIncrement flag set as true.
-              const objStore = db.createObjectStore(objectStoreName, { autoIncrement: true });
-
-              // Because the "names" object store has the key generator, the key for the name value is generated automatically.
-              // The added records would be like:
-              // key : 1 => value : "Bill"
-              // key : 2 => value : "Donna"
-              customerData.forEach((customer) => {
-                log("adding: ", customer);
-                objStore.add(customer);
-                // objStore.add(customer.name);
-              });
-
-              log("objStore:onupgradeneeded");
-            };
+          const IndexedDBPromisedInstance = new IndexedDBPromised({
+            dbname,
+            storeNames: objectStoreName,
           });
+
+          await IndexedDBPromisedInstance.init();
+
+          var db = await IndexedDBPromisedInstance.getDb();
 
           log("database configured", db);
 
@@ -229,175 +208,55 @@
             case "object_add_john":
               log("action: object_add_john");
 
-              template_data.added_user = await new Promise((resolve, reject) => {
-                // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
-
-                const transaction = db.transaction([objectStoreName], "readwrite");
-
-                log("object_add_john transaction: ", transaction);
-
-                // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
-                let johns_id;
-                transaction.oncomplete = (event) => {
-                  log("object_add_john transaction.oncomplete johns id: ", johns_id);
-                  resolve(johns_id);
-                };
-
-                transaction.onerror = (event) => {
-                  log("object_add_john transaction.onerror", event);
-                  reject(event);
-                };
-
-                const objectStore = transaction.objectStore(objectStoreName);
-
-                log("object_delete objectStore:", objectStore);
-
-                const newCustomers = [
-                  {
-                    ssn: "444-44-4844",
-                    name: "John",
-                    age: 40,
-                    email: "john@google.com",
-                  },
-                ];
-
-                // you can add more than one, but I'm adding just one in this example
-                newCustomers.forEach((customer) => {
-                  const request = objectStore.add(customer);
-                  request.onsuccess = (event) => {
-                    log("object_add_john request.onsuccess", event, customer);
-                    johns_id = event.target.result;
-                  };
-                });
+              template_data.added_user = await IndexedDBPromisedInstance.insert({
+                ssn: "444-44-4844",
+                name: "John",
+                age: 40,
+                email: "john@google.com",
               });
+
               break;
             case "object_delete":
               log("action: object_delete");
-
-              template_data.deleted_user = await new Promise((resolve, reject) => {
-                // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#removing_data_from_the_database
-
+              {
                 const id = parseInt(searchParams.get("key"), 10);
 
-                const transaction = db.transaction([objectStoreName], "readwrite");
-
-                log("object_delete transaction:", transaction);
-
-                const objectStore = transaction.objectStore(objectStoreName);
-
-                log("object_delete objectStore:", objectStore);
-
-                const request = objectStore.delete(id);
-
-                request.onsuccess = (event) => {
-                  log("object_delete onsuccess", event);
-                  resolve(id);
-                };
-              });
+                template_data.deleted_user = await IndexedDBPromisedInstance.delete(id);
+              }
 
               break;
             case "object_get":
               log("action: object_get");
 
-              template_data.get_user = await new Promise((resolve, reject) => {
+              {
                 const id = parseInt(searchParams.get("key"), 10);
 
-                // 'readonly' is by default: https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database:~:text=By%20default%2C%20where%20no%20mode%20is%20specified%2C%20transactions%20open%20in%20readonly%20mode
-                const transaction = db.transaction([objectStoreName], "readonly");
-
-                log("object_get transaction:", transaction);
-
-                const objectStore = transaction.objectStore(objectStoreName);
-
-                log("object_get objectStore:", objectStore);
-
-                const request = objectStore.get(id);
-
-                request.onerror = (event) => {
-                  log("object_get request.onerror", event);
-                  reject(event);
-                };
-
-                request.onsuccess = (event) => {
-                  log("object_get request.onsuccess", event, request);
-                  resolve({
-                    id,
-                    data: event.target.result,
-                    // according to dot on get it was taken from request,
-                    // but taking it from event seems more natural,
-                    // but it shouldn't really matter... right?
-                    // data: request.result,
-                  });
-                };
-              });
+                template_data.get_user = await IndexedDBPromisedInstance.get(id);
+              }
               break;
             case "object_update":
               log("action: object_update");
 
-              await new Promise((resolve, reject) => {
+              {
                 const id = parseInt(searchParams.get("key"), 10);
 
-                // 'readonly' is by default: https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database:~:text=By%20default%2C%20where%20no%20mode%20is%20specified%2C%20transactions%20open%20in%20readonly%20mode
-                const transaction = db.transaction([objectStoreName], "readwrite");
+                await IndexedDBPromisedInstance.update(id, (entity) => {
+                  const tmp = structuredClone(entity);
 
-                log("object_update transaction:", transaction);
+                  tmp.email = "modified@gmail.com";
 
-                const objectStore = transaction.objectStore(objectStoreName);
+                  tmp.extra = "some extra stuff";
 
-                log("object_update objectStore:", objectStore);
+                  delete tmp.age;
 
-                const request = objectStore.get(id);
+                  return tmp;
+                });
+              }
 
-                request.onerror = (event) => {
-                  log("object_update request.onerror", event);
-                  reject(event);
-                };
-
-                request.onsuccess = (event) => {
-                  const data = event.target.result;
-
-                  log("object_update request.onsuccess", event, request);
-
-                  data.email = "modified@gmail.com";
-
-                  // Put this updated object back into the database.
-                  const requestUpdate = objectStore.put(data, id);
-
-                  requestUpdate.onerror = (event) => {
-                    log("object_update requestUpdate.onerror", event);
-                    reject(event);
-                  };
-
-                  requestUpdate.onsuccess = (event) => {
-                    log("object_update requestUpdate.onsuccess", event, request);
-                    resolve({
-                      id,
-                      event,
-                    });
-                  };
-                };
-              });
               break;
           }
 
-          template_data.list = await new Promise((resolve, reject) => {
-            const transaction = db.transaction(objectStoreName);
-
-            // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#using_a_cursor
-            const objectStore = transaction.objectStore(objectStoreName);
-
-            const list = {};
-
-            objectStore.openCursor().onsuccess = (event) => {
-              const cursor = event.target.result;
-              if (cursor) {
-                list[cursor.key] = cursor.value;
-                cursor.continue();
-              } else {
-                resolve(list);
-              }
-            };
-          });
+          template_data.list = await IndexedDBPromisedInstance.getAll();
 
           log("rendering template", JSON.stringify(template_data, null, 4));
 
