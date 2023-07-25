@@ -41,6 +41,32 @@
           <h2>Analyzing values in the table</h2>
           <script type="editor" data-lang="sql">
 
+            SELECT *
+            FROM databasename.INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_NAME = 'Product'
+            ORDER BY TABLE_NAME
+
+            # or using USE
+            USE databasename;
+            GO
+            SELECT *
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_NAME = 'Product'
+            ORDER BY TABLE_NAME
+            GO
+
+            SELECT s.name as schema_name, t.name as table_name, c.*
+            FROM databasename.sys.columns AS c
+            INNER JOIN databasename.sys.tables AS t ON t.object_id = c.object_id
+            INNER JOIN databasename.sys.schemas AS s ON s.schema_id = t.schema_id
+            WHERE t.name = 'Product' AND s.name = 'dbo';
+          
+            USE orion;
+            GO
+            EXEC sp_help 'ProductAttribute'
+            GO
+            # from: https://learn.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-help-transact-sql?view=sql-server-ver16#a-returning-information-about-all-objects
+
             --just use different combination of query below:
             -- 1) execute from point #1 to #2 only
             -- 2) or execute whole query to extract some data for reports
