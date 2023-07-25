@@ -7,9 +7,10 @@ const th = (msg) => new Error(`IndexedDBPromised error: ${msg}`);
       storeNames: 'storeNames',
     });
 
+    // but await here is actually optional. needed only if you want to surround it with try catch and catch async errors of it
     await IndexedDBPromisedInstance.init();
 
-    var db = await IndexedDBPromisedInstance.getDb();
+    var db = await IndexedDBPromisedInstance.getDb(); 
 
 
     template_data.added_user = await IndexedDBPromisedInstance.insert({
@@ -70,6 +71,7 @@ function IndexedDBPromised(opt) {
   const storeNamesIsString = typeof this.opt.storeNames === "string";
 
   const storeNamesIsArray = Array.isArray(this.opt.storeNames);
+
   if (storeNamesIsString || storeNamesIsArray) {
     if (storeNamesIsString) {
       if (!this.opt.storeNames.trim()) {
@@ -94,12 +96,14 @@ function IndexedDBPromised(opt) {
     throw th(`this.opt.objectStoreConfiguration should be a function or an object`);
   }
 
-  this.prepare = (method) => {
+  this.prepare = async (method) => {
     if (!this.db) {
       throw th(`getDb error: this.db not defined - call first .init() method`);
     }
 
     if (method) {
+      const db = await this.db;
+
       const log = (type, data) =>
         this.opt.log({
           method,
@@ -115,6 +119,7 @@ function IndexedDBPromised(opt) {
         });
 
       return {
+        db,
         log,
         error,
       };
@@ -175,9 +180,7 @@ IndexedDBPromised.prototype.init = function () {
 };
 
 IndexedDBPromised.prototype.insert = async function (entity, id) {
-  const { log, error } = this.prepare("insert");
-
-  const db = await this.db;
+  const { db, log, error } = await this.prepare("insert");
 
   return await new Promise((resolve, reject) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
@@ -227,9 +230,7 @@ IndexedDBPromised.prototype.insert = async function (entity, id) {
 };
 
 IndexedDBPromised.prototype.delete = async function (id) {
-  const { log, error } = this.prepare("delete");
-
-  const db = await this.db;
+  const { db, log, error } = await this.prepare("delete");
 
   return await new Promise((resolve, reject) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
@@ -271,9 +272,7 @@ IndexedDBPromised.prototype.delete = async function (id) {
 };
 
 IndexedDBPromised.prototype.get = async function (id) {
-  const { log, error } = this.prepare("get");
-
-  const db = await this.db;
+  const { db, log, error } = await this.prepare("get");
 
   return await new Promise((resolve, reject) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
@@ -319,9 +318,7 @@ IndexedDBPromised.prototype.get = async function (id) {
 };
 
 IndexedDBPromised.prototype.update = async function (update, id) {
-  const { log, error } = this.prepare("update");
-
-  const db = await this.db;
+  const { db, log, error } = await this.prepare("update");
 
   return await new Promise((resolve, reject) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database
@@ -365,7 +362,7 @@ IndexedDBPromised.prototype.update = async function (update, id) {
 
     request.onerror = (event) => {
       error("request.onerror", event);
-      
+
       reject(event);
     };
 
@@ -419,9 +416,7 @@ IndexedDBPromised.prototype.update = async function (update, id) {
 };
 
 IndexedDBPromised.prototype.getAll = async function () {
-  const { log, error } = this.prepare("getAll");
-
-  const db = await this.db;
+  const { db, log, error } = await this.prepare("getAll");
 
   return await new Promise((resolve, reject) => {
     // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#adding_data_to_the_database

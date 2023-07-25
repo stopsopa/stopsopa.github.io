@@ -45,7 +45,7 @@
       referrerpolicy="no-referrer"
     ></script>
 
-    <script src="./IndexedDBPromised.js"></script>
+    <script src="/libs/IndexedDBPromised.js"></script>
 
     <script>
       const logc =
@@ -129,7 +129,7 @@
             keyPath: "key",
           });
 
-          await IndexedDBPromisedInstance.init();
+          IndexedDBPromisedInstance.init();
 
           var db = await IndexedDBPromisedInstance.getDb();
 
@@ -232,7 +232,7 @@
             },
           });
 
-          await IndexedDBPromisedInstance.init();
+          IndexedDBPromisedInstance.init();
 
           var db = await IndexedDBPromisedInstance.getDb();
 
@@ -244,6 +244,7 @@
             get_user: false,
             list: {},
           };
+
           switch (searchParams.get("action")) {
             case "autoIncrement_add_john":
               log("action: autoIncrement_add_john");
@@ -258,6 +259,7 @@
               break;
             case "autoIncrement_delete":
               log("action: autoIncrement_delete");
+
               {
                 const id = parseInt(searchParams.get("key"), 10);
 

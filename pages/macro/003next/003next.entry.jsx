@@ -89,6 +89,7 @@ const Main = ({ portal }) => {
   const [editIndex, setEditIndexDontUseDirectly] = useState(false);
 
   const [createModal, setCreateModalDontUseDirectly] = useState(false);
+  
   const [label, setLabel] = useState(""); // copy of label for edit mode - for modal
 
   const [recordOn, setRecordOn] = useState(false);
