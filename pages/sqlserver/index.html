@@ -46,6 +46,15 @@
             WHERE TABLE_NAME = 'Product'
             ORDER BY TABLE_NAME
 
+            # or using USE
+            USE databasename;
+            GO
+            SELECT *
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_NAME = 'Product'
+            ORDER BY TABLE_NAME
+            GO
+
             SELECT s.name as schema_name, t.name as table_name, c.*
             FROM databasename.sys.columns AS c
             INNER JOIN databasename.sys.tables AS t ON t.object_id = c.object_id
