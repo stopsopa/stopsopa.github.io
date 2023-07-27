@@ -596,17 +596,6 @@
               return;
             }
           </script>
-          <h2>date-fns</h2>
-          <script type="editor" data-lang="javascript">
-
-            import { format } from 'date-fns';
-
-            format(new Date(), 'EEEE'); // https://date-fns.org/v2.30.0/docs/fp/format
-
-            import isSameDay from "date-fns/isSameDay";
-
-            isSameDay(today, date);
-          </script>
 
           <h2>Map</h2>
           <a href="https://www.youtube.com/shorts/6Ue4wLlXSV0">https://www.youtube.com/shorts/6Ue4wLlXSV0</a>
@@ -1023,6 +1012,14 @@
           </script>
           <h2>date-fns</h2>
           <script type="editor" data-lang="js">
+          
+            import { format } from 'date-fns';
+
+            format(new Date(), 'EEEE'); // https://date-fns.org/v2.30.0/docs/fp/format
+
+            import isSameDay from "date-fns/isSameDay";
+
+            isSameDay(today, date);
 
             // my local timezone
             const currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
