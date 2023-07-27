@@ -1013,6 +1013,15 @@
           <h2>date-fns</h2>
           <script type="editor" data-lang="js">
 
+            // day seems to start at 2023-07-03T00:00:00.000Z
+            // where 2023-07-03T05:45:04.000Z  is still the same day
+            // and 2023-07-03T23:59:59.999Z is the last moment of the day   
+
+            // but funny thing is that in google calendar when you start event spanning through few days then the event
+            // from 2023-07-03T00:00:00.000Z to 2023-07-05T00:00:00.000Z will show up only as event i days 3td and 4th but not 5th
+            // but  2023-07-03T00:00:00.000Z to 2023-07-05T00:00:01.000Z will cover 5th too
+
+            
             const k = new Date();
             new Date(k) // making copy of date object
           
