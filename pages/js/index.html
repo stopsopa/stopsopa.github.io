@@ -1021,6 +1021,93 @@
                 }
             }());
           </script>
+          <h2>date-fns</h2>
+          <script type="editor" data-lang="js">
+
+            // my local timezone
+            const currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            
+            // list of all timezones
+            const aryIannaTimeZones = Intl.supportedValuesOf("timeZone");
+
+            // to further work with timezones: https://github.com/marnusw/date-fns-tz
+              // example: https://github.com/marnusw/date-fns-tz/blob/v2.0.0/src/utcToZonedTime/index.js
+
+            // setup .env
+            // TZ="UTC"
+            // TZ="Europe/London"
+            // access in node.js: process.env.TZ
+
+            // some further tests
+            const log = console.log;
+
+            const n = () => new Date();
+            
+            function dump() {
+              log();
+              log("-----------", process.env.TZ);
+              log(n().toISOString());
+              log(n().toLocaleString());
+              log(n().toString());
+            }
+            
+            // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+            // https://stackoverflow.com/questions/38399465/how-to-get-list-of-all-timezones-in-javascript
+            // https://stackoverflow.com/questions/54459791/why-so-many-iana-time-zones-names
+            dump();
+            process.env.TZ = "Etc/UTC";
+            dump();
+            process.env.TZ = "Europe/London";
+            dump();
+            process.env.TZ = "Europe/Amsterdam";
+            dump();
+            process.env.TZ = "America/Montreal";
+            dump();
+            process.env.TZ = "America/New_York";
+            dump();
+            process.env.TZ = "Asia/Kolkata";
+            dump();
+            process.env.TZ = "Australia/Brisbane";
+            dump();
+            
+            var aryIannaTimeZones = Intl.supportedValuesOf("timeZone");
+            
+            log(aryIannaTimeZones.filter((x) => String(x).toLowerCase().includes("lon")));
+            log(aryIannaTimeZones.filter((x) => String(x).toLowerCase().includes("york")));
+            log(aryIannaTimeZones.filter((x) => String(x).toLowerCase().includes("india")));
+            log(JSON.stringify(aryIannaTimeZones, null, 4));
+            // log(aryIannaTimeZones)
+            
+            // Create a new Date object with the original date and time
+            const originalDate = new Date(); // Current date and time
+            
+            // Shift the time forward by 1 hour
+            const shiftedDateForward = new Date(originalDate.getTime() + 1 * 60 * 60 * 1000);
+            
+            // Shift the time backward by 30 minutes
+            const shiftedDateBackward = new Date(originalDate.getTime() - 30 * 60 * 1000);
+            
+            const zero = new Date(originalDate.getTime());
+            
+            zero.setHours(0);
+            zero.setMinutes(0);
+            zero.setSeconds(0);
+            zero.setMilliseconds(0);
+            
+            // uncomment that
+            // zero.setUTCHours(0)
+            // zero.setUTCMinutes(0);
+            // zero.setUTCSeconds(0);
+            // zero.setUTCMilliseconds(0);
+            
+            // Display the original and shifted dates
+            console.log("Original Date:", originalDate.toString());
+            console.log("Shifted Date Forward:", shiftedDateForward.toString());
+            console.log("Shifted Date Backward:", shiftedDateBackward.toString());
+            console.log("zero:", zero.toString());
+
+          </script>
+          
           <h2>serializeError</h2>
           <script type="editor" data-lang="js">
 
