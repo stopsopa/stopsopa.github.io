@@ -89,7 +89,7 @@ const Main = ({ portal }) => {
   const [editIndex, setEditIndexDontUseDirectly] = useState(false);
 
   const [createModal, setCreateModalDontUseDirectly] = useState(false);
-  
+
   const [label, setLabel] = useState(""); // copy of label for edit mode - for modal
 
   const [recordOn, setRecordOn] = useState(false);
@@ -883,6 +883,7 @@ const Main = ({ portal }) => {
           <button onClick={play} title="(cmd|ctrl)+r">
             play
           </button>
+          <a href="https://excalidraw.com">https://excalidraw.com</a>
         </>,
         portal
       )}
