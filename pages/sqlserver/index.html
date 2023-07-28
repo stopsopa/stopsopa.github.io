@@ -60,7 +60,7 @@
             INNER JOIN databasename.sys.tables AS t ON t.object_id = c.object_id
             INNER JOIN databasename.sys.schemas AS s ON s.schema_id = t.schema_id
             WHERE t.name = 'Product' AND s.name = 'dbo';
-          
+
             USE orion;
             GO
             EXEC sp_help 'ProductAttribute'

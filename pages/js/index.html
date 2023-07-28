@@ -1015,16 +1015,16 @@
 
             // day seems to start at 2023-07-03T00:00:00.000Z
             // where 2023-07-03T05:45:04.000Z  is still the same day
-            // and 2023-07-03T23:59:59.999Z is the last moment of the day   
+            // and 2023-07-03T23:59:59.999Z is the last moment of the day
 
             // but funny thing is that in google calendar when you start event spanning through few days then the event
             // from 2023-07-03T00:00:00.000Z to 2023-07-05T00:00:00.000Z will show up only as event i days 3td and 4th but not 5th
             // but  2023-07-03T00:00:00.000Z to 2023-07-05T00:00:01.000Z will cover 5th too
 
-            
+
             const k = new Date();
             new Date(k) // making copy of date object
-          
+
             import { format } from 'date-fns';
 
             format(new Date(), 'EEEE'); // https://date-fns.org/v2.30.0/docs/fp/format
@@ -1035,7 +1035,7 @@
 
             // my local timezone
             const currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            
+
             // list of all timezones
             const aryIannaTimeZones = Intl.supportedValuesOf("timeZone");
 
@@ -1051,7 +1051,7 @@
             const log = console.log;
 
             const n = () => new Date();
-            
+
             function dump() {
               log();
               log("-----------", process.env.TZ);
@@ -1059,7 +1059,7 @@
               log(n().toLocaleString());
               log(n().toString());
             }
-            
+
             // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
             // https://stackoverflow.com/questions/38399465/how-to-get-list-of-all-timezones-in-javascript
             // https://stackoverflow.com/questions/54459791/why-so-many-iana-time-zones-names
@@ -1078,45 +1078,44 @@
             dump();
             process.env.TZ = "Australia/Brisbane";
             dump();
-            
+
             var aryIannaTimeZones = Intl.supportedValuesOf("timeZone");
-            
+
             log(aryIannaTimeZones.filter((x) => String(x).toLowerCase().includes("lon")));
             log(aryIannaTimeZones.filter((x) => String(x).toLowerCase().includes("york")));
             log(aryIannaTimeZones.filter((x) => String(x).toLowerCase().includes("india")));
             log(JSON.stringify(aryIannaTimeZones, null, 4));
             // log(aryIannaTimeZones)
-            
+
             // Create a new Date object with the original date and time
             const originalDate = new Date(); // Current date and time
-            
+
             // Shift the time forward by 1 hour
             const shiftedDateForward = new Date(originalDate.getTime() + 1 * 60 * 60 * 1000);
-            
+
             // Shift the time backward by 30 minutes
             const shiftedDateBackward = new Date(originalDate.getTime() - 30 * 60 * 1000);
-            
+
             const zero = new Date(originalDate.getTime());
-            
+
             zero.setHours(0);
             zero.setMinutes(0);
             zero.setSeconds(0);
             zero.setMilliseconds(0);
-            
+
             // uncomment that
             // zero.setUTCHours(0)
             // zero.setUTCMinutes(0);
             // zero.setUTCSeconds(0);
             // zero.setUTCMilliseconds(0);
-            
+
             // Display the original and shifted dates
             console.log("Original Date:", originalDate.toString());
             console.log("Shifted Date Forward:", shiftedDateForward.toString());
             console.log("Shifted Date Backward:", shiftedDateBackward.toString());
             console.log("zero:", zero.toString());
-
           </script>
-          
+
           <h2>serializeError</h2>
           <script type="editor" data-lang="js">
 

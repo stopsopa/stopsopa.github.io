@@ -32,6 +32,8 @@ import useStateFetcher from "./useStateFetcher.jsx";
 
 import onBeforeUnloadHook from "./onBeforeUnloadHook.js";
 
+import useIndexedDBPromised from "../../../libs/useIndexedDBPromised.jsx";
+
 const lastRemotePullOfEditorContent = {};
 
 /**
@@ -81,6 +83,8 @@ function LoadingComponent() {
  */
 const Main = ({ portal }) => {
   log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX render XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+
+  const indexeddb = useIndexedDBPromised(`aceeditor`, "objectstorage");
 
   const [conflict, setConflict] = useState(false);
 
@@ -279,7 +283,8 @@ const Main = ({ portal }) => {
     label,
     index,
     allTabsDataExceptValues_freshRawRemoteResponseNotTransformed,
-    allEditorsValues_currentValueOfEditorUnderIndex
+    allEditorsValues_currentValueOfEditorUnderIndex,
+    indexeddb
   ) {
     log.orange("firebase", "syncEditorValueByIndex", label);
 
@@ -324,6 +329,22 @@ const Main = ({ portal }) => {
           data: { value: allEditorsValues_currentValueOfEditorUnderIndex, updated: n },
         });
 
+        // indexeddb.update((entity) => {
+        //   const tmp = structuredClone(entity);
+
+        //   entity.name = entity.name + "_test";
+
+        //   tmp.extra = "some extra stuff";
+
+        //   delete tmp.age;
+
+        //   return tmp;
+        // }, id);
+        indexeddb.set({
+          key: `allEditorsValues/${index}`,
+          data: allEditorsValues_currentValueOfEditorUnderIndex,
+        });
+
         /**
          * Thats ok to only update it remotely because with next ctrl+s the first thing we do
          * is pull entire allTabsDataExceptValues
@@ -347,7 +368,7 @@ const Main = ({ portal }) => {
       allTabsDataExceptValues_freshRawRemoteResponseNotTransformed[index]?.valueMD5 !==
         allEditorsValues_currentValueOfEditorUnderIndex_MD5
     ) {
-      // let's pull remote content, we have to check if update field is there nad what is it's value
+      // let's pull remote content, we have to check if update field is there and what is it's value
       // that will help us to think what to do next
       const freshRemoteEditorValueObject = await get(["allEditorsValues", index]);
 
@@ -377,6 +398,11 @@ const Main = ({ portal }) => {
 
             setLocalEditorHasNewChangesTimestamp(index, false);
           }, 50);
+
+          indexeddb.set({
+            key: `allEditorsValues/${index}`,
+            data: freshRemoteEditorValueObject.value,
+          });
         }
 
         return; // and that's the end for this condition
@@ -501,7 +527,13 @@ const Main = ({ portal }) => {
       {
         const selectedTabIndex = findSelectedTabIndex(tabsTransformedArrayWithIndexProp);
 
-        await syncEditorValueByIndex("selectedTabIndex", selectedTabIndex, result, allEditorsValues[selectedTabIndex]);
+        await syncEditorValueByIndex(
+          "selectedTabIndex",
+          selectedTabIndex,
+          result,
+          allEditorsValues[selectedTabIndex],
+          indexeddb
+        );
       }
 
       // updating selected indexOnTheRight tab:
@@ -657,17 +689,17 @@ const Main = ({ portal }) => {
     return () => {
       document.removeEventListener("keydown", keydown);
     };
-  }, [id, allTabsDataExceptValues, allEditorsValues]);
+  }, [id, allTabsDataExceptValues, allEditorsValues, indexeddb]);
 
   useEffect(() => {
-    if (!id) {
+    if (!id || !indexeddb) {
       return;
     }
 
     setIsPageFocused(document.hasFocus()); // https://developer.mozilla.org/en-US/docs/Web/API/Document/hasFocus
 
     queue(() => syncAll(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
-  }, [id]);
+  }, [id, indexeddb]);
 
   // useEffect(() => {
   //   if (!id) {

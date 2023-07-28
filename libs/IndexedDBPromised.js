@@ -271,6 +271,22 @@ IndexedDBPromised.prototype.delete = async function (id) {
   });
 };
 
+IndexedDBPromised.prototype.set = async function (entity, id) {
+  const { db, log, error } = await this.prepare("set");
+
+  if (typeof this.opt.keyPath === "string" && this.opt.keyPath.trim()) {
+    id = entity[this.opt.keyPath];
+  }
+
+  await this.delete(id);
+
+  if (this.opt.keyPath) {
+    return await this.insert(entity);
+  } else {
+    return await this.insert(entity, id);
+  }
+};
+
 IndexedDBPromised.prototype.get = async function (id) {
   const { db, log, error } = await this.prepare("get");
 
@@ -472,12 +488,12 @@ IndexedDBPromised.prototype.getDb = async function () {
 
 const isNode = typeof global !== "undefined" && Object.prototype.toString.call(global.process) === "[object process]";
 
-if (isNode) {
-  module.exports = IndexedDBPromised;
-} else {
+if (!isNode) {
   window.IndexedDBPromised = IndexedDBPromised;
 }
 
 function isObject(o) {
   return Object.prototype.toString.call(o) === "[object Object]";
 }
+
+export default IndexedDBPromised;
