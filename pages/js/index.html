@@ -1114,6 +1114,71 @@
             console.log("Shifted Date Forward:", shiftedDateForward.toString());
             console.log("Shifted Date Backward:", shiftedDateBackward.toString());
             console.log("zero:", zero.toString());
+
+            // -------------------------------------- format with zone ----          
+
+            process.env.TZ = "Europe/London";
+            
+            const dateFormatter = (function () {
+              const formatter = new Intl.DateTimeFormat(undefined, {
+                weekday: "short",
+                year: "numeric",
+                month: "short",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                timeZoneName: "long",
+                hour12: false, // Set this to false for 24-hour formatting
+              });
+            
+              function getGMTOffsetString(date) {
+                // old implementation:
+                // const timeZoneAbbreviation = Intl.DateTimeFormat(undefined, { timeZoneName: "short" })
+                //   .formatToParts(date)
+                //   .find((part) => part.type === "timeZoneName").value;
+            
+                const timeZoneOffsetInMinutes = date.getTimezoneOffset();
+                const sign = timeZoneOffsetInMinutes >= 0 ? "-" : "+";
+                const hours = Math.floor(Math.abs(timeZoneOffsetInMinutes) / 60);
+                const minutes = Math.abs(timeZoneOffsetInMinutes) % 60;
+            
+                return `GMT${sign}${hours.toString().padStart(2, "0")}${minutes.toString().padStart(2, "0")}`;
+              }
+            
+              return (date) => {
+                const base = formatter.format(date);
+            
+                const m = base.match(/([^\s]+), ([^\s]+) ([^\s]+), ([^\s]+), ([^\s]+)\s(.*)/);
+            
+                return `${m[1]} ${m[2]} ${m[3]} ${m[4]} ${m[5]} ${getGMTOffsetString(date)} (${m[6]})`;
+              };
+            })();
+            
+            const d = new Date("2023-07-03T14:00:00.000Z");
+            
+            console.log(
+              JSON.stringify(
+                {
+                  zone__________: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  original______: d,
+                  toUTCString___: d.toUTCString(),
+                  target________: "Mon Jul 03 2023 15:00:00 GMT+0100 (British Summer Time)",
+                  dateFormatter_: dateFormatter(d),
+                },
+                null,
+                4
+              )
+            );
+            /**
+                {
+                    "zone__________": "Europe/London",
+                    "original______": "2023-07-03T14:00:00.000Z",
+                    "toUTCString___": "Mon, 03 Jul 2023 14:00:00 GMT",
+                    "target________": "Mon Jul 03 2023 15:00:00 GMT+0100 (British Summer Time)",
+                    "dateFormatter_": "Mon Jul 03 2023 15:00:00 GMT+0100 (British Summer Time)"
+                }
+             */
           </script>
 
           <h2>serializeError</h2>
