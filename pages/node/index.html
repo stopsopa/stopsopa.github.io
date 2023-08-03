@@ -117,18 +117,19 @@
         <h2>execute directly from cmd</h2>
         <script type="editor" data-lang="sh">
 
-          cat <<EOF | node
+          cat <<EEE | node -e "$(cat)"
+          const fs = require('fs');
+          const path = require('path');
           const json = require('./package.json')
-          const data = Object.keys(Object.assign({}, json.dependencies, json.devDependencies))
-            .filter((l) => l.includes('babel'))
-            .map((l) => 'yarn add ' + l)
-          console.log(data.join(require('os').EOL))
-          EOF
+          json.eslintConfig.rules.complexity = 'off'
+          fs.writeFileSync('./package.json', JSON.stringify(json, null, 2) + require('os').EOL);
+          EEE
 
-          node -e "
-          console.log('test1');
-          console.log('test2');
-          "
+          # or simpler just: 
+          # cat <<EEE | node
+          # will work too
+          # but intercepting with "$(cat)" is interesting too
+          
         </script>
 
         <h2>Semantic release</h2>
