@@ -138,7 +138,9 @@ beep({
           </tr>
         </tbody>
       </table>
-      <p>based on: <a href="https://stackoverflow.com/a/41077092">https://stackoverflow.com/a/41077092</a></p>
+      <p>
+        based on: <a href="https://stackoverflow.com/a/41077092">https://stackoverflow.com/a/41077092</a>
+      </p>
     </div>
   );
 };
