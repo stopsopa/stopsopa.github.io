@@ -300,6 +300,44 @@
             log("pageYOffset", window.pageYOffset); // <- not supported below IE 9
           </script>
 
+          <h2>isVisible</h2>
+
+          <script type="editor" data-lang="js">
+
+function isVisible(element) {
+    
+    if (!element) {
+        
+        return false;
+    }
+    
+    let tmp = element;
+    
+    let limit = 100;
+    do {
+        
+        console.log('element: ', tmp, 'display: ', tmp.style.display)
+        
+        if (tmp.style.display === 'none') {
+            
+            return false;
+        }
+        
+        tmp = tmp.parentNode;
+        
+        if (limit === 0) {
+            
+            break;
+        }
+        limit -= 1;
+        
+    } while (tmp);
+    
+    return true;
+}
+
+            
+          </script>
 
           <h2>sound - generate sound</h2>
           <a href="/pages/js/sound.html">/pages/js/sound.html</a>
