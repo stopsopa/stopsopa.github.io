@@ -12,7 +12,18 @@
   </head>
   <body>
     <div id="parent">
-      <div id="app"></div>
+      <div id="app">
+        <a id="badge" href="/index.html"
+          ><img src="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/pipeline.yml/badge.svg"
+        /></a>
+        <style>
+          #badge {
+            position: fixed;
+            top: 12px;
+            left: 47px;
+          }
+        </style>
+      </div>
       <pre>
         Find             Ctrl-F	Command-F
         Replace          Ctrl-H	Command-Option-F
