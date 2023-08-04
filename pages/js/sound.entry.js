@@ -133,7 +133,7 @@ beep({
               <textarea ref={ref} value={value} />
             </td>
             <td width="15%" valign="top">
-              <button onClick={run}>run</button>
+              <button onClick={() => eval(value)}>run</button>
             </td>
           </tr>
         </tbody>
