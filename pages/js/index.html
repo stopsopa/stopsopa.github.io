@@ -716,6 +716,11 @@ beep();
 
             /*eslint no-undef: "error"*/
             // from: https://eslint.org/docs/latest/rules/no-undef#:~:text=Open%20in%20Playground-,/*eslint%20no%2Dundef%3A%20%22error%22*/,-var%20foo%20%3D
+
+            /* eslint-disable no-alert, no-console */
+            alert('foo');
+            console.log('bar');            
+            /* eslint-enable no-alert, no-console */
           </script>
 
           <h2>Libraries trends - search quality and popular</h2>
