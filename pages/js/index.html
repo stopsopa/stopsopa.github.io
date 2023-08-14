@@ -246,6 +246,35 @@
           </script>
         </div>
         <div class="cards">
+          <h2>ReadableStream to string</h2>
+          <script type="editor" data-lang="js">
+            
+            if (Object.prototype.toString.call(opt.body) === '[object ReadableStream]') {
+              opt.body = await streamToString(opt.body);
+            }
+            
+                        
+            async function streamToString(stream: any) {
+              const reader = stream.getReader();
+              const textDecoder = new TextDecoder();
+              let result = '';
+            
+              async function read() {
+                const { done, value } = await reader.read();
+            
+                if (done) {
+                  return result;
+                }
+            
+                result += textDecoder.decode(value, { stream: true });
+                return read();
+              }
+            
+              return read();
+            }
+            
+          </script>
+          
           <h3>nth backreference</h3>
           <a href="https://javascript.info/regexp-backreferences">https://javascript.info/regexp-backreferences</a>
           <script type="editor" data-lang="js">
