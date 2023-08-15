@@ -180,18 +180,22 @@
             mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
               # from: https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html#creating-a-project
 
+            # generate jar
             mvn package
 
+            # after mvn package you can run app from CLI
+             java -jar target/binary.jar
+
+            # npm link odpowiednik w maven omówienie: https://youtu.be/sjiV1Qf35AE?t=1297
             mvn install
-              # npm link odpowiednik w maven omówienie: https://youtu.be/sjiV1Qf35AE?t=1297
 
             mvn compile
             mvn clean install -U
             mvn --version
             # Apache Maven 3.8.1
 
+            # publish of the library
             mvn deploy
-              # publish of the library
 
             good idea might be also removing 'target' directory from each sprint module and build again
 
