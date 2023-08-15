@@ -185,6 +185,13 @@
 
             # after mvn package you can run app from CLI
              java -jar target/binary.jar
+                # theoretically it should also work
+                 java -cp target/binary.jar com.stopsopa.stopsopaartifact.StopsopanameApplication   
+                # but I never got it working with maven
+
+
+            # list content of jar file
+              jar tvf target/binary.jar
 
             # npm link odpowiednik w maven omówienie: https://youtu.be/sjiV1Qf35AE?t=1297
             mvn install
