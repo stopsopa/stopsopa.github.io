@@ -268,8 +268,6 @@ else
 
   cd "$(realpath "${PROJECT_DIR}")"
   gits diff
-  
-  gits pull --yes
 
 EEE
 
