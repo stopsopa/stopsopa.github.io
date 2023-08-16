@@ -45,6 +45,9 @@ ls -la "${TARGET}"
 
 while : ; do
 
+
+    echo "0) unlink all"
+
     i="1"
     for name in ${LIST}
     do
@@ -67,7 +70,7 @@ while : ; do
 
     echo ""
 
-    if ! [[ ${i} =~ ${TEST} ]] || [[ "${i}" -lt "1" ]] || [ "${i}" -gt "${LINES}" ]; then
+    if ! [[ ${i} =~ ${TEST} ]] || [[ "${i}" -lt "0" ]] || [ "${i}" -gt "${LINES}" ]; then
 
 cat <<END
 
@@ -90,7 +93,23 @@ if [ -e "${TARGET}/settings.xml" ]; then
   unlink "${TARGET}/settings.xml"
 fi
 
-(cd "${TARGET}" && ln -s "${CHOSENFILE}" settings.xml)
+if [ "${CHOSENFILE}" = "" ]; then
+  cat <<EEE
+
+  unlinking settings.xml
+EEE
+
+else 
+  cat <<EEE
+
+  linking ${CHOSENFILE}
+
+  cd "${TARGET}" 
+  ln -s "${CHOSENFILE}" settings.xml
+EEE
+
+  (cd "${TARGET}" && ln -s "${CHOSENFILE}" settings.xml)
+fi
 
 cat <<EEE
 
