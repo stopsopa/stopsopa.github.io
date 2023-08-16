@@ -28,6 +28,54 @@
           <a href="https://jitpack.io/">https://jitpack.io/</a>
           <br />
           <a href="https://libraries.io/">https://libraries.io/</a>
+          <h2>Cmd</h2>
+          <script type="editor" data-lang="sh">
+
+            mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+              # from: https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html#creating-a-project
+
+            # generate jar
+            mvn package
+
+            # after mvn package you can run app from CLI
+             java -jar target/binary.jar
+                # theoretically it should also work
+                 java -cp target/binary.jar com.stopsopa.stopsopaartifact.StopsopanameApplication   
+                # but I never got it working with maven
+
+
+            # list content of jar file
+              jar tvf target/binary.jar
+
+            # npm link odpowiednik w maven omówienie: https://youtu.be/sjiV1Qf35AE?t=1297
+            mvn install
+              mvn -DskipTests=true -Djacoco.skip=true -Djacoco.haltOnFailure=false install
+
+            mvn compile
+            mvn clean install -U
+            mvn --version
+            # Apache Maven 3.8.1
+
+            # publish of the library
+            mvn deploy
+
+            good idea might be also removing 'target' directory from each sprint module and build again
+
+            mvn dependency:tree | tee dep.txt
+
+            # the main cache for maven is here:
+              ls -ls ~/.m2/repository/
+
+            rm -rf ~/.m2/repository/com/google/guava
+
+            # listing all installed dependencies and their versions
+            mvn dependency:list
+
+            # run app from cli: https://github.com/stopsopa/spring-research/commit/a60d9124ca31caa339ae967d1a9f61dcca210934
+            mvn spring-boot:run 
+                # from: https://www.baeldung.com/spring-boot-main-class
+            
+          </script>
           
           <h2>QuickStart</h2>
           <a href="https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html">Maven in 5 Minutes</a>
@@ -173,54 +221,6 @@
                     assertTrue( true );
                 }
             }
-          </script>
-          <h2>Cmd</h2>
-          <script type="editor" data-lang="sh">
-
-            mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
-              # from: https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html#creating-a-project
-
-            # generate jar
-            mvn package
-
-            # after mvn package you can run app from CLI
-             java -jar target/binary.jar
-                # theoretically it should also work
-                 java -cp target/binary.jar com.stopsopa.stopsopaartifact.StopsopanameApplication   
-                # but I never got it working with maven
-
-
-            # list content of jar file
-              jar tvf target/binary.jar
-
-            # npm link odpowiednik w maven omówienie: https://youtu.be/sjiV1Qf35AE?t=1297
-            mvn install
-              mvn -DskipTests=true install
-
-            mvn compile
-            mvn clean install -U
-            mvn --version
-            # Apache Maven 3.8.1
-
-            # publish of the library
-            mvn deploy
-
-            good idea might be also removing 'target' directory from each sprint module and build again
-
-            mvn dependency:tree | tee dep.txt
-
-            # the main cache for maven is here:
-              ls -ls ~/.m2/repository/
-
-            rm -rf ~/.m2/repository/com/google/guava
-
-            # listing all installed dependencies and their versions
-            mvn dependency:list
-
-            # run app from cli: https://github.com/stopsopa/spring-research/commit/a60d9124ca31caa339ae967d1a9f61dcca210934
-            mvn spring-boot:run 
-                # from: https://www.baeldung.com/spring-boot-main-class
-            
           </script>
         </div>
       </div>
