@@ -51,6 +51,7 @@
 
             # npm link odpowiednik w maven omówienie: https://youtu.be/sjiV1Qf35AE?t=1297
             mvn install
+              mvn -DskipTests=true install
               mvn -DskipTests=true -Djacoco.skip=true -Djacoco.haltOnFailure=false install
 
             mvn compile
