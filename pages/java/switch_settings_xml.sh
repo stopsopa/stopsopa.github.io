@@ -46,7 +46,7 @@ ls -la "${TARGET}"
 while : ; do
 
 
-    echo "0) unlink all"
+    echo "0) [unlink all]"
 
     i="1"
     for name in ${LIST}
@@ -88,7 +88,7 @@ done
 
 CHOSENFILE="$(echo "${LIST}" | sed -n "${i} p")"
 
-if [ -e "${TARGET}/settings.xml" ]; then
+if [ -L "${TARGET}/settings.xml" ]; then
 
   unlink "${TARGET}/settings.xml"
 fi
