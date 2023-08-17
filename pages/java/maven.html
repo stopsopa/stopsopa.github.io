@@ -224,6 +224,31 @@
                 }
             }
           </script>
+          <h2>settings.xml</h2>
+          
+          <script type="editor" data-lang="xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+
+    <mirrors>
+        <mirror>
+            <!--
+            look for g(Maven Central mirror hosted on Google Cloud Storage)
+            in https://stopsopa.github.io/pages/java/maven.html#repositories
+            -->
+            <id>google-maven-central</id>
+            <name>GCS Maven Central mirror</name>
+            <url>https://maven-central.storage-download.googleapis.com/maven2/</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+    </mirrors>
+</settings>
+            
+          </script>
         </div>
       </div>
     </div>
