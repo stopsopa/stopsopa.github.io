@@ -28,6 +28,9 @@
 
             ./mvnw spring-boot:run 
                 # from: https://www.baeldung.com/spring-boot-main-class
+
+            # find current springboot version
+            mvn dependency:list | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\[[0-9]{1,3}m//g" | grep -i -E '^\[INFO\]    ' | tee dependencies.txt
             
           </script>
           <h2>Inteliij IDEA</h2>
