@@ -1893,6 +1893,8 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             echo "_EVAL>>$_EVAL<<"
 
             eval "$_EVAL"
+            # if you want to just pass arguments gathered in PARAMS unchanged to child script use eval, I can't find other reliable method of doing that
+            eval "/bin/bash \"${_DIR}/child.sh\" ${PARAMS}"
 
             # when you run
             #   /bin/bash arg.sh --gen test -c -- echo "one"     \&\& pwd \&\& echo "two three"
