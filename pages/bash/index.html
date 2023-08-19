@@ -1779,6 +1779,27 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
             PARAMS=""
             _EVAL=""
+            function collect {
+              if [ "$1" = "&&" ]; then
+                PARAMS="$PARAMS \&\&"
+                _EVAL="$_EVAL &&"
+              else
+                if [ "$PARAMS" = "" ]; then
+                  PARAMS="\"$(quote "$1")\""
+                  _EVAL="\"$(quote "$1")\""
+                else
+                  PARAMS="$PARAMS \"$(quote "$1")\""
+                  _EVAL="$_EVAL \"$(quote "$1")\""
+                  #PARAMS="$(cat <<EOF
+                  #$PARAMS
+                  #- "$1"
+                  #EOF
+                  #)"
+                fi
+              fi            
+              echo "                PARAMS1>>$PARAMS<<"
+              echo "                _EVAL 2>>$_EVAL<<"
+            }
             while (( "$#" )); do
               case "$1" in
                 -c|--clean|--clear)
@@ -1808,25 +1829,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                 --) # end argument parsing
                   shift;
                   while (( "$#" )); do          # optional
-                    if [ "$1" = "&&" ]; then
-                      PARAMS="$PARAMS \&\&"
-                      _EVAL="$_EVAL &&"
-                    else
-                      if [ "$PARAMS" = "" ]; then
-                        PARAMS="\"$(quote "$1")\""
-                        _EVAL="\"$(quote "$1")\""
-                      else
-                        PARAMS="$PARAMS \"$(quote "$1")\""
-                        _EVAL="$_EVAL \"$(quote "$1")\""
-            #          PARAMS="$(cat <<EOF
-            #$PARAMS
-            #- "$1"
-            #EOF
-            #)"
-                      fi
-                    fi
-                    echo "                PARAMS1>>$PARAMS<<"
-                    echo "                _EVAL 2>>$_EVAL<<"
+                    collect
                     shift;                      # optional
                   done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
                   break;
@@ -1836,25 +1839,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                   exit 1;
                   ;;
                 *) # preserve positional arguments
-                  if [ "$1" = "&&" ]; then
-                      PARAMS="$PARAMS \&\&"
-                      _EVAL="$_EVAL &&"
-                  else
-                    if [ "$PARAMS" = "" ]; then
-                        PARAMS="\"$(quote "$1")\""
-                        _EVAL="\"$(quote "$1")\""
-                    else
-                      PARAMS="$PARAMS \"$(quote "$1")\""
-                        _EVAL="$_EVAL \"$(quote "$1")\""
-            #          PARAMS="$(cat <<EOF
-            #$PARAMS
-            #- "$1"
-            #EOF
-            #)"
-                    fi
-                  fi
-                  echo "                PARAMS2>>$PARAMS<<"
-                  echo "                _EVAL 1>>$_EVAL<<"
+                  collect
                   shift;
                   ;;
               esac
