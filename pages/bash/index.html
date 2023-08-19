@@ -1829,7 +1829,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                 --) # end argument parsing
                   shift;
                   while (( "$#" )); do          # optional
-                    collect
+                    collect "${1}" "${2}";
                     shift;                      # optional
                   done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
                   break;
@@ -1839,7 +1839,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                   exit 1;
                   ;;
                 *) # preserve positional arguments
-                  collect
+                  collect "${1}" "${2}";
                   shift;
                   ;;
               esac
