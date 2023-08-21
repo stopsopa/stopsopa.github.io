@@ -48,9 +48,22 @@
           <a href="https://youtu.be/zPOHY-cZ1wE?t=247">CREATOR OF SVELTE From TS TO JSDoc??</a>
           <h2>UMD (Universal Module Definition)</h2>
           <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
-          <h2>Installation on linux</h2>
-          <a href="https://github.com/nodesource/distributions#installation-instructions-1">Installation nodesource</a>
           <script type="editor" data-lang="js">
+
+            function getGlobal() {
+              try {
+                if (typeof window !== "undefined") {
+                  return window
+                }
+              } catch (e) {e}
+              try {
+                if (typeof global !== "undefined") {
+                  return global
+                }
+              } catch (e) {e}
+              throw new Error(`getGlobal error: can't find global`)
+            }
+            
 
 
             (function (root, factory) {
@@ -113,6 +126,9 @@
 
           NODE_OPTIONS="..." # https://nodejs.org/api/cli.html#node_optionsoptions
         </script>
+        
+          <h2>Installation on linux</h2>
+          <a href="https://github.com/nodesource/distributions#installation-instructions-1">Installation nodesource</a>
 
         <h2>execute directly from cmd</h2>
         <script type="editor" data-lang="sh">

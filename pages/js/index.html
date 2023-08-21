@@ -246,6 +246,35 @@
           </script>
         </div>
         <div class="cards">
+          <h2>ReadableStream to string</h2>
+          <script type="editor" data-lang="js">
+            
+            if (Object.prototype.toString.call(opt.body) === '[object ReadableStream]') {
+              opt.body = await streamToString(opt.body);
+            }
+            
+                        
+            async function streamToString(stream: any) {
+              const reader = stream.getReader();
+              const textDecoder = new TextDecoder();
+              let result = '';
+            
+              async function read() {
+                const { done, value } = await reader.read();
+            
+                if (done) {
+                  return result;
+                }
+            
+                result += textDecoder.decode(value, { stream: true });
+                return read();
+              }
+            
+              return read();
+            }
+            
+          </script>
+          
           <h3>nth backreference</h3>
           <a href="https://javascript.info/regexp-backreferences">https://javascript.info/regexp-backreferences</a>
           <script type="editor" data-lang="js">
@@ -263,11 +292,6 @@
 
           <h2>mouseenter, mouseleave, mouseover, mouseout, input[type="range"]</h2>
           <a href="/other/selectors/#hover">hover</a>
-
-          <br />
-          <a href="https://gist.github.com/stopsopa/8297755373fd5be34165cc8e12d35642"
-            >gist (UMD - browser global & node module (singleton))</a
-          >
 
           <h2>new URL()</h2>
           <a href="/pages/node/index.html#processing-url-uri">/pages/node/index.html#processing-url-uri</a>
@@ -300,6 +324,44 @@
             log("pageYOffset", window.pageYOffset); // <- not supported below IE 9
           </script>
 
+          <h2>isVisible</h2>
+
+          <script type="editor" data-lang="js">
+
+function isVisible(element) {
+    
+    if (!element) {
+        
+        return false;
+    }
+    
+    let tmp = element;
+    
+    let limit = 100;
+    do {
+        
+        console.log('element: ', tmp, 'display: ', tmp.style.display)
+        
+        if (tmp.style.display === 'none') {
+            
+            return false;
+        }
+        
+        tmp = tmp.parentNode;
+        
+        if (limit === 0) {
+            
+            break;
+        }
+        limit -= 1;
+        
+    } while (tmp);
+    
+    return true;
+}
+
+            
+          </script>
 
           <h2>sound - generate sound</h2>
           <a href="/pages/js/sound.html">/pages/js/sound.html</a>
@@ -675,6 +737,14 @@ beep();
 
             // eslint-disable-next-line no-console
             console.log("don't ignore this");
+
+            /*eslint no-undef: "error"*/
+            // from: https://eslint.org/docs/latest/rules/no-undef#:~:text=Open%20in%20Playground-,/*eslint%20no%2Dundef%3A%20%22error%22*/,-var%20foo%20%3D
+
+            /* eslint-disable no-alert, no-console */
+            alert('foo');
+            console.log('bar');            
+            /* eslint-enable no-alert, no-console */
           </script>
 
           <h2>Libraries trends - search quality and popular</h2>

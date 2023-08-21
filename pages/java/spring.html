@@ -13,6 +13,27 @@
     <div class="body">
       <div class="inside">
         <div class="cards">
+          <h2>Spring CLI</h2>
+          <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/getting-started.html#getting-started.installing.cli.manual-installation">Installation spring-boot-cli-3.1.2-bin.zip</a>
+          <script type="editor" data-lang="sh">
+
+            brew tap spring-io/tap
+            export HOMEBREW_NO_AUTO_UPDATE=1 && brew install spring-boot
+            # to test
+            spring --version
+        
+            # run app from cli: https://github.com/stopsopa/spring-research/commit/a60d9124ca31caa339ae967d1a9f61dcca210934
+            mvn spring-boot:run             
+                # from: https://www.baeldung.com/spring-boot-main-class
+
+            ./mvnw spring-boot:run 
+                # from: https://www.baeldung.com/spring-boot-main-class
+
+            # find current springboot version
+            mvn dependency:list | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\[[0-9]{1,3}m//g" | grep -i -E '^\[INFO\]' | tee dependencies_list.txt
+            mvn dependency:tree | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\[[0-9]{1,3}m//g" | grep -i -E '^\[INFO\]' | tee dependencies_tree.txt
+            
+          </script>
           <h2>Inteliij IDEA</h2>
           <img src="https://i.imgur.com/xqBr05m.png" style="width: 800px" />
           <br />
@@ -48,7 +69,7 @@
           <h2>Determine Tomcat from pom.xml</h2>
           <a href="https://stackoverflow.com/a/41241526">IntelliJ -> pom.xml > Maven > Show effective POM</a>
           <h2>Install Spring</h2>
-          <a href="https://start.spring.io/">https://start.spring.io/</a>
+          <a href="https://start.spring.io/#!type=maven-project&language=java&platformVersion=3.2.0-M1&packaging=jar&jvmVersion=17&groupId=com.stopsopa&artifactId=stopsopaartifact&name=stopsopaname&description=Stopsopa%20learning%20Spring%20Boot&packageName=com.stopsopa.stopsopaartifact&dependencies=web">https://start.spring.io/</a>
           <br />
           <a href="https://spring.io/quickstart">https://spring.io/quickstart</a>
           <img src="https://i.imgur.com/74UyxWP.png" width="100%" />

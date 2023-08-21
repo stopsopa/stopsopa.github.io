@@ -19,9 +19,63 @@
             export HOMEBREW_NO_AUTO_UPDATE=1 && brew install maven
           </script>
           <h2>Repositories</h2>
-          <a href="https://mvnrepository.com/artifact/com.github.slugify/slugify/3.0.2">mvnrepository.com</a>
+          <a href="https://maven-central.storage.googleapis.com/index.html">g(Maven Central mirror hosted on Google Cloud Storage)</a>
+          <br />
+          <a href="https://mvnrepository.com/artifact/com.github.slugify/slugify/3.0.2">mvnrepository.com</a> | <a href="https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies">link to springboot</a>
           <br />
           <a href="https://search.maven.org/">search.maven.org</a>
+          <br />
+          <a href="https://plugins.gradle.org/">https://plugins.gradle.org/</a>
+          <br />
+          <a href="https://jitpack.io/">https://jitpack.io/</a>
+          <br />
+          <a href="https://libraries.io/">https://libraries.io/</a>
+          <h2>Cmd</h2>
+          <script type="editor" data-lang="sh">
+
+            mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+              # from: https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html#creating-a-project
+
+            # generate jar
+            mvn package
+
+            # after mvn package you can run app from CLI
+             java -jar target/binary.jar
+                # theoretically it should also work
+                 java -cp target/binary.jar com.stopsopa.stopsopaartifact.StopsopanameApplication   
+                # but I never got it working with maven
+
+
+            # list content of jar file
+              jar tvf target/binary.jar
+
+            # npm link odpowiednik w maven omówienie: https://youtu.be/sjiV1Qf35AE?t=1297
+            mvn install
+              mvn -DskipTests=true install
+              mvn -DskipTests=true -Djacoco.skip=true -Djacoco.haltOnFailure=false install
+
+            mvn compile
+            mvn clean install -U
+            mvn --version
+            # Apache Maven 3.8.1
+
+            # publish of the library
+            mvn deploy
+
+            good idea might be also removing 'target' directory from each sprint module and build again
+
+            mvn dependency:tree | tee dep.txt
+
+            # the main cache for maven is here:
+              ls -ls ~/.m2/repository/
+
+            rm -rf ~/.m2/repository/com/google/guava
+
+            # listing all installed dependencies and their versions
+            mvn dependency:list
+            
+          </script>
+          
           <h2>QuickStart</h2>
           <a href="https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html">Maven in 5 Minutes</a>
 
@@ -167,33 +221,30 @@
                 }
             }
           </script>
-          <h2>Cmd</h2>
-          <script type="editor" data-lang="sh">
+          <h2>settings.xml</h2>
+          
+          <script type="editor" data-lang="xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
-            mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
-              # from: https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html#creating-a-project
 
-            mvn package
-
-            mvn install
-              # npm link odpowiednik w maven omówienie: https://youtu.be/sjiV1Qf35AE?t=1297
-
-            mvn compile
-            mvn clean install -U
-            mvn --version
-            # Apache Maven 3.8.1
-
-            mvn deploy
-              # publish of the library
-
-            good idea might be also removing 'target' directory from each sprint module and build again
-
-            mvn dependency:tree | tee dep.txt
-
-            # the main cache for maven is here:
-              ls -ls ~/.m2/repository/
-
-            rm -rf ~/.m2/repository/com/google/guava
+    <mirrors>
+        <mirror>
+            <!--
+            look for g(Maven Central mirror hosted on Google Cloud Storage)
+            in https://stopsopa.github.io/pages/java/maven.html#repositories
+            -->
+            <id>google-maven-central</id>
+            <name>GCS Maven Central mirror</name>
+            <url>https://maven-central.storage-download.googleapis.com/maven2/</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+    </mirrors>
+</settings>
+            
           </script>
         </div>
       </div>
