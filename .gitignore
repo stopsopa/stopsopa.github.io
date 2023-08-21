@@ -9,6 +9,7 @@ yarn-error.log
 /playwright-report/
 /dist/
 /build/
+.DS_Store
 
 
 
