@@ -4,70 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SCREEN</title>
-
     <style>
-      video {
-        width: 200px;
-        height: 200px;
-        border: 1px solid red;
-      }
-      canvas {
-        border: 1px solid green;
-        width: 200px;
-        height: 200px;
+      textarea {
+        width: 80%;
+        height: 30px;
       }
     </style>
   </head>
   <body>
     <button>button</button>
-    <canvas></canvas>
-    <video
-      src=""
-      controls
-      playsinline
-      autoplay
-    ></video>
-    <script>
-      // Put variables in global scope to make them available to the browser console.
-      const video = document.querySelector("video");
-
-      const canvas = document.querySelector("canvas");
-
-      const button = document.querySelector("button");
-
-      let play = false;
-      const stop = () => (play = false);
-      video.addEventListener("ended", stop);
-      video.addEventListener("pause", stop);
-      video.addEventListener("play", (event) => {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        play = true;
-        (function copy() {
-          if (!play) {
-            return;
-          }
-          console.log("play");
-          window.requestAnimationFrame(() => {
-            canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-            copy();
-          });
-        })();
-      });
-
-      button.onclick = function () {
-        console.log("button");
-        navigator.mediaDevices
-          .getDisplayMedia({
-            audio: false,
-            video: true,
-          })
-          .then((stream) => {
-            video.srcObject = stream;
-          });
-      };
-    </script>
-    <a href="https://www.youtube.com/watch?v=Jqf9haCd6mM" target="_blank" style="font-size: 20px; color: red;">https://www.youtube.com/watch?v=Jqf9haCd6mM</a>
+    <button id="destroy">destroy</button>
+    <script src="./canvas5.js"></script>
+    <a href="https://www.youtube.com/watch?v=Jqf9haCd6mM" target="_blank" style="font-size: 20px; color: red"
+      >https://www.youtube.com/watch?v=Jqf9haCd6mM</a
+    >
 
     <a href="https://codepen.io/a2sheppy/pen/RqeMaL">https://codepen.io/a2sheppy/pen/RqeMaL</a>
     <br />
@@ -78,5 +28,6 @@
     <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Manipulating_video_using_canvas"
       >https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Manipulating_video_using_canvas</a
     >
+    <textarea onclick="this.select()"></textarea>
   </body>
 </html>
