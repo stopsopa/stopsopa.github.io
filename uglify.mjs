@@ -5,6 +5,8 @@
  * pages/bookmarklets/periscope.uglify.min.old.js
  *
  * so I've switched from uglify.js to esbuild
+ * 
+ * but esbuild natively is not comporessing template strings
  */
 
 import esbuild from "esbuild";
