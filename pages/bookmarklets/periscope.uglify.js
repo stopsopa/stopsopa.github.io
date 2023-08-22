@@ -234,120 +234,121 @@
     });
 
   // test scale block
-  (function () {
-    function box(content, opt) {
-      if (!opt) {
-        opt = {};
-      }
-
-      var div = document.createElement("div");
-
-      const style = {
-        position: "fixed",
-        zIndex: "10000000",
-        top: "20%",
-        left: "50%",
-        border: "1px solid gray",
-        backgroundColor: "white",
-        // transform: "translate(-50%, -50%)",
-        // padding: "10px",
-        // cursor: "pointer",
-      };
-
-      Object.assign(
-        div.style,
-        Object.entries(Object.assign({}, style, opt.style)).reduce((acc, [key, val]) => {
-          if (val !== false) acc[key] = val;
-          return acc;
-        }, {})
-      );
-
-      if (typeof content === "string") {
-        div.innerHTML = String(content);
-      } else {
-        node.innerHTML = "";
-        div.appendChild(content);
-      }
-
-      document.body.appendChild(div);
-
-      let divClicked = false;
-      div.addEventListener("click", () => {
-        log("div click");
-        divClicked = true;
-      });
-      function bodyclick() {
-        log("body click");
-        if (!divClicked) {
-          close();
+  0 &&
+    (function () {
+      function box(content, opt) {
+        if (!opt) {
+          opt = {};
         }
-        divClicked = false;
+
+        var div = document.createElement("div");
+
+        const style = {
+          position: "fixed",
+          zIndex: "10000000",
+          top: "20%",
+          left: "50%",
+          border: "1px solid gray",
+          backgroundColor: "white",
+          // transform: "translate(-50%, -50%)",
+          // padding: "10px",
+          // cursor: "pointer",
+        };
+
+        Object.assign(
+          div.style,
+          Object.entries(Object.assign({}, style, opt.style)).reduce((acc, [key, val]) => {
+            if (val !== false) acc[key] = val;
+            return acc;
+          }, {})
+        );
+
+        if (typeof content === "string") {
+          div.innerHTML = String(content);
+        } else {
+          node.innerHTML = "";
+          div.appendChild(content);
+        }
+
+        document.body.appendChild(div);
+
+        let divClicked = false;
+        div.addEventListener("click", () => {
+          log("div click");
+          divClicked = true;
+        });
+        function bodyclick() {
+          log("body click");
+          if (!divClicked) {
+            close();
+          }
+          divClicked = false;
+        }
+        function close() {
+          log("autoclose");
+          document.body.removeChild(div);
+
+          document.body.removeEventListener("click", bodyclick);
+        }
+
+        // document.body.addEventListener("click", bodyclick);
+
+        if (opt.autoclose) {
+          setTimeout(close, Number.isInteger(opt.autoclose) ? opt.autoclose : 1000);
+        }
+
+        typeof opt.fn === "function" && opt.fn(div);
+
+        return div;
       }
-      function close() {
-        log("autoclose");
-        document.body.removeChild(div);
 
-        document.body.removeEventListener("click", bodyclick);
-      }
-
-      // document.body.addEventListener("click", bodyclick);
-
-      if (opt.autoclose) {
-        setTimeout(close, Number.isInteger(opt.autoclose) ? opt.autoclose : 1000);
-      }
-
-      typeof opt.fn === "function" && opt.fn(div);
-
-      return div;
-    }
-
-    box(`<div></div>`, {
-      autoclose: false,
-      style: {
-        position: "fixed",
-        top: "10px",
-        left: "10px",
-        height: "20px",
-        backgroundColor: "blue",
-        width: "20px",
-      },
-    });
-    box(`<div></div>`, {
-      autoclose: false,
-      style: {
-        position: "fixed",
-        top: "10px",
-        left: "800px",
-        height: "20px",
-        backgroundColor: "blue",
-        width: "20px",
-      },
-    });
-    box(`<div></div>`, {
-      autoclose: false,
-      style: {
-        position: "fixed",
-        top: "400px",
-        left: "10px",
-        height: "20px",
-        backgroundColor: "blue",
-        width: "20px",
-      },
-    });
-    // box(`<div></div>`, {
-    //   autoclose: false,
-    //   style: {
-    //     position: "fixed",
-    //     top: "0",
-    //     left: "0",
-    //     transform: "translate(1%, 1%)",
-    //     backgroundColor: "yellow",
-    //     height: "20px",
-    //     height: `${window.innerHeight}px`,
-    //     width: `${window.innerWidth}px`,
-    //   },
-    // });
-  })();
+      box(`<div></div>`, {
+        autoclose: false,
+        style: {
+          position: "fixed",
+          top: "10px",
+          left: "10px",
+          height: "20px",
+          backgroundColor: "blue",
+          width: "20px",
+        },
+      });
+      box(`<div></div>`, {
+        autoclose: false,
+        style: {
+          position: "fixed",
+          top: "10px",
+          left: "800px",
+          height: "20px",
+          backgroundColor: "blue",
+          width: "20px",
+        },
+      });
+      box(`<div></div>`, {
+        autoclose: false,
+        style: {
+          position: "fixed",
+          top: "400px",
+          left: "10px",
+          height: "20px",
+          backgroundColor: "blue",
+          width: "20px",
+        },
+      });
+      // box(`<div></div>`, {
+      //   autoclose: false,
+      //   style: {
+      //     position: "fixed",
+      //     top: "0",
+      //     left: "0",
+      //     transform: "translate(1%, 1%)",
+      //     backgroundColor: "yellow",
+      //     height: "20px",
+      //     height: `${window.innerHeight}px`,
+      //     width: `${window.innerWidth}px`,
+      //   },
+      // });
+    })();
   // });
   // destroy.addEventListener("click", function () {
   //   log("destroy");
