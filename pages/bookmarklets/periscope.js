@@ -15,24 +15,24 @@
   }
   addCss(`
   #periscope_div {
-  position: fixed;
-  width: 200px;
-  height: 200px;
-  overflow: hidden;
-  border: 1px solid gray;
-  top: 0;
-  left: 0;
-  background-color: white;
+    position: fixed;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    border: 1px solid gray;
+    top: 0;
+    left: 0;
+    background-color: white;
+    z-index:1000000;
   }
   #periscope_div video {
-  width: 200px;
-  height: 200px;
-  border: 1px solid red;
+    border: 1px solid red;
+    opacity: 0.5;
+    height: 100vh;
+    width: 100vw;
   }
   #periscope_div canvas {
-  border: 1px solid green;
-  /* width: 200px;
-  height: 200px; */
+    border: 1px solid green;
   }
   `);
   function get(key) {
@@ -85,9 +85,9 @@
       }
     });
   }
-  const button = document.querySelector("button");
-  const destroy = document.querySelector("#destroy");
-  // const log = console.log;
+  // const button = document.querySelector("button");
+  // const destroy = document.querySelector("#destroy");
+  const log = console.log;
   // button.addEventListener("click", function () {
   // log("button");
   navigator.mediaDevices
@@ -158,10 +158,11 @@
       );
       document.body.appendChild(parent);
       const video = document.createElement("video");
-      video.setAttribute("controls", true);
-      video.setAttribute("playsinline", true);
+      window.video = video;
+      // video.setAttribute("controls", true);
+      // video.setAttribute("playsinline", true);
       video.setAttribute("autoplay", true);
-      video.style.display = "none";
+      // video.style.display = "none";
       // function del() {
       //   video.parentNode.removeChild(video);
       //   SimpleObserver.removeEventListener("delete", del);
@@ -177,7 +178,7 @@
       video.addEventListener("ended", stop);
       video.addEventListener("pause", stop);
       video.addEventListener("play", (event) => {
-        // log("video.videoWidth");
+        log("play");
         const canvas = document.createElement("canvas");
         drag(
           canvas,
@@ -196,11 +197,16 @@
             return { x, y };
           }
         );
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.style.width = `${video.videoWidth}px`;
-        canvas.style.height = `${video.videoHeight}px`;
-        parent.appendChild(canvas);
+        // parent.appendChild(canvas);
+        parent.insertBefore(canvas, parent.firstChild);
+        // canvas.width = video.videoWidth;
+        // canvas.height = video.videoHeight;
+        // canvas.style.width = `${video.videoWidth}px`;
+        // canvas.style.height = `${video.videoHeight}px`;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.style.width = `${window.innerWidth}px`;
+        canvas.style.height = `${window.innerHeight}px`;
         const ct = get("ct");
         // log("lc", "ct", ct);
         if (ct) {
@@ -213,16 +219,144 @@
           }
           // log("play");
           window.requestAnimationFrame(() => {
-            canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.style.width = `${window.innerWidth}px`;
+            canvas.style.height = `${window.innerHeight}px`;
+            console.log("w", window.innerWidth, "h", window.innerHeight);
+            // canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+            canvas.getContext("2d").drawImage(video, 0, 0, window.innerWidth, window.innerHeight);
             copy();
           });
         })();
       });
       video.srcObject = stream;
     });
+
+  // test scale block
+  (function () {
+    function box(content, opt) {
+      if (!opt) {
+        opt = {};
+      }
+
+      var div = document.createElement("div");
+
+      const style = {
+        position: "fixed",
+        zIndex: "10000000",
+        top: "20%",
+        left: "50%",
+        border: "1px solid gray",
+        backgroundColor: "white",
+        // transform: "translate(-50%, -50%)",
+        // padding: "10px",
+        // cursor: "pointer",
+      };
+
+      Object.assign(
+        div.style,
+        Object.entries(Object.assign({}, style, opt.style)).reduce((acc, [key, val]) => {
+          if (val !== false) acc[key] = val;
+          return acc;
+        }, {})
+      );
+
+      if (typeof content === "string") {
+        div.innerHTML = String(content);
+      } else {
+        node.innerHTML = "";
+        div.appendChild(content);
+      }
+
+      document.body.appendChild(div);
+
+      let divClicked = false;
+      div.addEventListener("click", () => {
+        log("div click");
+        divClicked = true;
+      });
+      function bodyclick() {
+        log("body click");
+        if (!divClicked) {
+          close();
+        }
+        divClicked = false;
+      }
+      function close() {
+        log("autoclose");
+        document.body.removeChild(div);
+
+        document.body.removeEventListener("click", bodyclick);
+      }
+
+      // document.body.addEventListener("click", bodyclick);
+
+      if (opt.autoclose) {
+        setTimeout(close, Number.isInteger(opt.autoclose) ? opt.autoclose : 1000);
+      }
+
+      typeof opt.fn === "function" && opt.fn(div);
+
+      return div;
+    }
+
+    box(`<div></div>`, {
+      autoclose: false,
+      style: {
+        position: "fixed",
+        top: "10px",
+        left: "10px",
+        height: "20px",
+        backgroundColor: "blue",
+        width: "20px",
+      },
+    });
+    box(`<div></div>`, {
+      autoclose: false,
+      style: {
+        position: "fixed",
+        top: "10px",
+        left: "800px",
+        height: "20px",
+        backgroundColor: "blue",
+        width: "20px",
+      },
+    });
+    box(`<div></div>`, {
+      autoclose: false,
+      style: {
+        position: "fixed",
+        top: "400px",
+        left: "10px",
+        height: "20px",
+        backgroundColor: "blue",
+        width: "20px",
+      },
+    });
+    // box(`<div></div>`, {
+    //   autoclose: false,
+    //   style: {
+    //     position: "fixed",
+    //     top: "0",
+    //     left: "0",
+    //     transform: "translate(1%, 1%)",
+    //     backgroundColor: "yellow",
+    //     height: "20px",
+    //     height: `${window.innerHeight}px`,
+    //     width: `${window.innerWidth}px`,
+    //   },
+    // });
+  })();
   // });
   // destroy.addEventListener("click", function () {
   //   log("destroy");
   //   SimpleObserver.dispatchEvent("delete");
   // });
 })();
+
+// w 2560 h 732
+// w 2142 h 664
+
+// w 2560 h 688
+// w 1880 h 557
