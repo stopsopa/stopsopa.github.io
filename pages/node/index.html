@@ -63,7 +63,7 @@
               } catch (e) {e}
               throw new Error(`getGlobal error: can't find global`)
             }
-            
+
 
 
             (function (root, factory) {
@@ -126,9 +126,9 @@
 
           NODE_OPTIONS="..." # https://nodejs.org/api/cli.html#node_optionsoptions
         </script>
-        
-          <h2>Installation on linux</h2>
-          <a href="https://github.com/nodesource/distributions#installation-instructions-1">Installation nodesource</a>
+
+        <h2>Installation on linux</h2>
+        <a href="https://github.com/nodesource/distributions#installation-instructions-1">Installation nodesource</a>
 
         <h2>execute directly from cmd</h2>
         <script type="editor" data-lang="sh">
@@ -141,11 +141,10 @@
           fs.writeFileSync('./package.json', JSON.stringify(json, null, 2) + require('os').EOL);
           EEE
 
-          # or simpler just: 
+          # or simpler just:
           # cat <<EEE | node
           # will work too
           # but intercepting with "$(cat)" is interesting too
-          
         </script>
 
         <h2>Semantic release</h2>

@@ -28,6 +28,13 @@
     <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Manipulating_video_using_canvas"
       >https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Manipulating_video_using_canvas</a
     >
-    <textarea onclick="this.select()"></textarea>
+    <textarea onclick="this.select()">
+      var head = document.head || document.getElementsByTagName("head")[0],
+      script = document.createElement("script");
+
+    script.setAttribute("src", url);
+
+    head.appendChild(script);    
+    </textarea>
   </body>
 </html>
