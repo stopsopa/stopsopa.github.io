@@ -19,9 +19,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 set -e
 #set -x
 
-if [ ! -e ""${DIR}/node_modules/.bin/uglifyjs"" ]; then
+if [ ! -e ""${DIR}/node_modules/.bin/esbuild"" ]; then
 
-    echo "${0} error: ${DIR}/node_modules/.bin/uglifyjs doesn't exist"
+    echo "${0} error: ${DIR}/node_modules/.bin/esbuild doesn't exist"
 
     exit 1
 fi

@@ -10,9 +10,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 set -e
 #set -x
 
-if [ ! -e ""${DIR}/node_modules/.bin/uglifyjs"" ]; then
+if [ ! -e ""${DIR}/node_modules/.bin/esbuild"" ]; then
 
-    echo "${0} error: ${DIR}/node_modules/.bin/uglifyjs doesn't exist"
+    echo "${0} error: ${DIR}/node_modules/.bin/esbuild doesn't exist"
 
     exit 1
 fi
@@ -42,7 +42,12 @@ do
 
   node node_modules/.bin/babel "${FILE}" -o "${TMP}"
 
-  node "${DIR}/node_modules/.bin/uglifyjs" "${TMP}" -o "${MIN}" -m -c toplevel,sequences=false --mangle-props
+# node "${DIR}/node_modules/.bin/uglifyjs" "${TMP}" -o "${MIN}" -m -c toplevel,sequences=false --mangle-props
+# node "${DIR}/node_modules/.bin/esbuild" "${TMP}" --bundle --minify --outfile="${MIN}" --target=es6
+
+# after incorporating esbuild-minify-templates https://github.com/maxmilton/esbuild-minify-templates
+node "${DIR}/uglify.mjs" --input "${TMP}" --output "${MIN}"
+
 
   rm -rf "${TMP}"
 
