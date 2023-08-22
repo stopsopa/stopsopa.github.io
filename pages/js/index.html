@@ -308,6 +308,22 @@
 
             console.log(findLast(['a', 'b', 'c', 'ab', 'ae', 'oob'], x => x.includes('b')))
           </script>
+          <h2>localStorage</h2>
+          <script type="editor" data-lang="js">
+
+            function get(key) {
+              const v = localStorage.getItem(key);
+              if (v !== null) {
+                return parseInt(v, 10);
+              }
+            }
+            function set(key, val) {
+              if (Number.isInteger(val)) {
+                localStorage.setItem(key, val);
+              }
+            }
+            
+          </script>
           <h2>JSON</h2>
 
           <script type="editor" data-lang="js">
