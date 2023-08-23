@@ -36,6 +36,10 @@
             download "playwright.config.js"
             download "playwright-async.config.js"
             download "tests/tools/cmd.js"
+
+
+
+            
             test -f package.json || echo "{}" > package.json
             yarn add -D playwright @playwright/test dotenv
           </script>
