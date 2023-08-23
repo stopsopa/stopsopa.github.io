@@ -27,9 +27,6 @@ jobs:
           node-version: 18.7.0
           cache: "yarn"
 
-      - name: Debug Event Object
-        run: echo '${{ toJson(github.event) }}'
-
       - name: Debug all
         run: echo '${{ toJson(github) }}'
 
