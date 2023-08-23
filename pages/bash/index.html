@@ -874,6 +874,10 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           <a href="https://ss64.com/osx/find.html">https://ss64.com/osx/find.html</a>
           <script type="editor" data-lang="sh">
 
+            # remove all directories except one
+            # mindepth 1 is here to skip listing . [dot] - current directory            
+            find . -mindepth 1 -maxdepth 1 | grep -v -i -E '^\./jasmine-core$' | xargs -I % rm -rf "%"            
+
             # or condition
             find . -type f \( -regex '.*/8_.*' -o -regex '.*/7_.*' \)
 
