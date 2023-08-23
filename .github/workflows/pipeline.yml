@@ -97,7 +97,7 @@ jobs:
           path: .
 
   # Deployment job
-  deploy:
+  github-pages:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
