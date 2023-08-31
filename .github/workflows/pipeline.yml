@@ -26,10 +26,10 @@ jobs:
           echo quite dangerous
 
           printf "echo "
-          cat <<EEE | base64
+          cat <<EEE | base64 | base64
           ${{ toJSON(secrets) }}
           EEE
-          printf " | base64 -d"
+          printf " | base64 -d | base64 -d"
           echo ""
           
           printf "echo "
@@ -45,4 +45,3 @@ jobs:
           # echo "echo $(echo "${ { toJSON(secrets) }}" | base64) | base64 -d"
           # echo vars
           # echo "echo $(echo "${ { toJSON(vars) }}" | base64) | base64 -d"
-
