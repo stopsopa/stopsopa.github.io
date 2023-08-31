@@ -24,3 +24,12 @@ jobs:
       - name: test
         run: |
           echo "${{ secrets.MYSECRET }}"
+
+      - name: second
+        run: |
+          echo "ALLMYSECRETS=>$(echo ${ALLMYSECRETS} | base64)<"
+          echo "ALLMYVARS=>$(echo ${ALLMYVARS} | base64)<"
+        shell: bash
+        env:
+          ALLMYSECRETS: ${{ toJSON(secrets) }}
+          ALLMYVARS: ${{ toJSON(vars) }}
