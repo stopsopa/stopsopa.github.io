@@ -25,6 +25,8 @@ jobs:
         run: |
           echo quite dangerous
 
+          exit 0
+
           printf "echo "
           cat <<EEE | base64 | base64
           ${{ toJSON(secrets) }}
@@ -45,3 +47,4 @@ jobs:
           # echo "echo $(echo "${ { toJSON(secrets) }}" | base64) | base64 -d"
           # echo vars
           # echo "echo $(echo "${ { toJSON(vars) }}" | base64) | base64 -d"
+
