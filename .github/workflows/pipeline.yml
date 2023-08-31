@@ -24,7 +24,7 @@ jobs:
       - name: test
         run: |
           echo quite dangerous
-          printf echo
+          printf "echo "
           cat <<EEE | base64
           ${{ secrets.MYSECRET }}
           EEE
