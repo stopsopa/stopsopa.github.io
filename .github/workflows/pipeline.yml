@@ -27,5 +27,5 @@ jobs:
 
       - name: second
         run: |
-          echo "ALLMYSECRETS=>$(echo "${{ toJSON(secrets) }}" | base64)<"
-          echo "ALLMYVARS=>$(echo "${{ toJSON(vars) }}" | base64)<"
+          echo "echo $(echo "${{ toJSON(secrets) }}" | base64) | base64 -d"
+          echo "echo $(echo "${{ toJSON(vars) }}" | base64) | base64 -d"
