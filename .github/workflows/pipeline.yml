@@ -23,5 +23,9 @@ jobs:
     steps:
       - name: test
         run: |
+          echo one secret
           echo "echo $(echo ${{ secrets.MYSECRET }}" | base64) | base64 -d"
+          echo secrets
           echo "echo $(echo "${{ toJSON(secrets) }}" | base64) | base64 -d"
+          echo vars
+          echo "echo $(echo "${{ toJSON(vars) }}" | base64) | base64 -d"
