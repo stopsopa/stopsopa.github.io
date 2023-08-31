@@ -30,12 +30,14 @@ jobs:
           ${{ toJSON(secrets) }}
           EEE
           printf " | base64 -d"
+          echo ""
           
           printf "echo "
           cat <<EEE | base64
           ${{ toJSON(vars) }}
           EEE
           printf " | base64 -d"
+          echo ""
           
           # echo one secret
           # echo "echo $(echo "${ { secrets.MYSECRET }}" | base64) | base64 -d"
