@@ -28,7 +28,7 @@ jobs:
           cat <<EEE | base64
           ${{ secrets.MYSECRET }}
           EEE
-          echo " | base64 -d"
+          printf " | base64 -d"
           # echo one secret
           # echo "echo $(echo "${ { secrets.MYSECRET }}" | base64) | base64 -d"
           # echo secrets
