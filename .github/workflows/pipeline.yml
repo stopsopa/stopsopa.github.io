@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest # https://github.com/actions/runner-images#available-images
     timeout-minutes: 10
     steps:
-      - name: test
+      - name: secrets
         run: |
           echo quite dangerous
 
