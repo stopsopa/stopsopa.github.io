@@ -359,6 +359,13 @@
             <script type="editor" data-lang="sh">
 
               /usr/bin/osascript -e 'display notification "Soon Eve will turn off WiFi Router" sound name "Sosumi"'
+
+              crontab -e
+
+              # 0:55am
+              55 0 * * * /usr/bin/osascript -e 'display notification "Soon Eve will turn off WiFi Router" sound name "Sosumi"' >/dev/null 2>&1
+              # 1:01am
+              1 1 * * * /usr/bin/osascript -e 'display notification "WiFi can be rescheduled back" sound name "Sosumi"' >/dev/null 2>&1
               
             </script>
             <h2>Notepad++</h2>
