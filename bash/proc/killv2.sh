@@ -7,31 +7,19 @@
 _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
 case ${_SHELL} in
   zsh)
-    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
-    _0="$( basename "${(%):-%N}" )"
-    _SCRIPT="${(%):-%N}"
-    _BINARY="/bin/zsh"
-    _PWD="$(pwd)"
+    __DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
     ;;
   sh)
-    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
-    _0="$( basename "${0}" )"
-    _SCRIPT="${0}"
-    _BINARY="/bin/sh"
-    _PWD="$(pwd)"
+    __DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
     ;;
   *)
-    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
-    _0="$( basename "${BASH_SOURCE[0]}" )"
-    _SCRIPT="${BASH_SOURCE[0]}"
-    _BINARY="/bin/bash"
-    _PWD="$(pwd)"
+    __DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
     ;;
 esac
 
 set -e
 
-source "${_DIR}/trim.sh"
+source "${__DIR}/../trim.sh"
 
 set +e
 
@@ -91,14 +79,29 @@ function tryToKill {
     fi
 }
 
-#
-#set -e
-#
-#source "${_DIR}/../env.sh" # to have PROJECT_NAME from .env available
-#
-#set +e
+# # How to use this library:
+# # Just create separate shell script with content like
 
-echo "attempt to kill DynamoDBLocal.jar:"
-tryToKill "ps aux | grep DynamoDBLocal.jar | grep -v grep"
+# ... get _DIR env var with the path to where this new shell script is
+# ... copy it from top of this file
+
+# ROOT="${_DIR}/.."
+
+# cd "${ROOT}"
+
+# ROOT="$(pwd)"
+
+# source "${ROOT}/bash/proc/killv2.sh"
+
+
+# set -e
+
+# source env.sh # to have PROJECT_NAME from .env available
+
+# set +e
+
+# echo "attempt to kill --flag-to-help-filter-ps-aux-to-kill-group-of-processes ${PROJECT_NAME}:"
+# tryToKill "ps aux | grep -v grep | grep \"\--flag-to-help-filter-ps-aux-to-kill-group-of-processes ${PROJECT_NAME}\""
+
 
 
