@@ -1,3 +1,6 @@
+// this file is not actually used by vscode in this location. The purpose of this file is to server as a template.
+// in order to really apply config from this file you have to copy it's settings to main vscode settings.json file
+// Code -> Settings... -> https://i.imgur.com/EMl2IM7.png
 {
   "javascript.preferences.importModuleSpecifierEnding": "js", // https://stackoverflow.com/a/61645194
   "path-autocomplete.extensionOnImport": true,

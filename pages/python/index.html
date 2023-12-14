@@ -82,11 +82,31 @@
             # list installed versions
             pyenv versions 
 
+            pyenv local 3.12.1
+
+            pyenv local 3.12.1 2.7.18
+              # this is how to work with multiple versions of python
+              # the same it work with   pyenv shell 3.12.1 2.7.18
+              # this way:
+                $ python -V
+                Python 3.12.1
+                $ python2 -V
+                Python 2.7.18
+              # and running   pyenv shell 2.7.18 3.12.1
+                $ python2 -V               
+                Python 2.7.18
+                $ python3 -V                  
+                Python 3.12.1
+
             echo $PYENV_VERSION
             pyenv shell 2.7.18
             echo $PYENV_VERSION
             pyenv shell 3.12.1
             echo $PYENV_VERSION
+            # more about pyenv shell: https://github.com/pyenv/pyenv?tab=readme-ov-file#understanding-python-version-selection
+            # shell will take precedence over auto    pyenv local ... with .python-version files on entering directories
+            # in order to fallback to   pyenv global version   and .python-version files on entering directories run:
+            pyenv shell --unset
 
             # find latest
             pyenv install --list | grep 2.7  
