@@ -13,6 +13,19 @@
     <div class="body">
       <div class="inside">
         <div class="cards">
+          <h2>Portable Mode</h2>
+          <a href="https://code.visualstudio.com/docs/editor/portable">g(visual studio code Portable Mode)</a>
+          <script type="editor" data-lang="sh">
+
+            # this is required to make portable mode work
+            xattr -dr com.apple.quarantine Visual\ Studio\ Code.app
+
+            # to check if portable mode is enabled
+            # Menu -> Code -> "Settings..." -> "Keyboard Shortcuts" -> https://i.imgur.com/EMl2IM7.png
+            # the if it will open file in location something like: ~/Workspace/vscode/javascript/code-portable-data/user-data/User/keybindings.json
+            # the it means it's in portable mode
+            
+          </script>
           <h2>VSCdode glossary</h2>
           <ul>
             <li>Command Palette (⇧⌘P)</li>
