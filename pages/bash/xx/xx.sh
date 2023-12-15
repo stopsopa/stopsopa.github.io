@@ -434,7 +434,7 @@ else
 
     set -e
 
-    /bin/bash "${XX_GENERATED}" "${@}"
+    source "${XX_GENERATED}" "${@}"
 
 fi
 
