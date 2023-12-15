@@ -432,8 +432,6 @@ EEE
 
 else
 
-    set -e
-
     source "${XX_GENERATED}" "${@}"
 
 fi
