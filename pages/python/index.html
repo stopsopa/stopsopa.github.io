@@ -19,6 +19,7 @@
             # lts: https://devguide.python.org/versions/
 
             xcode-select --install
+            brew install swig
 
             # install dependencies
             pip install -r requirements.txt
@@ -34,6 +35,8 @@
 
             # install particular library
             pip3 install wheel
+              # WARNING: this will not add automatically to requirements.txt
+              # you have to use freeze command to do that
 
             # get exact versions of dependencies and save them to requirements.txt
             pip freeze > requirements.txt
@@ -46,6 +49,8 @@
             blake flint - code formatters
             pytest - defaultowy tool now
             unittest - starsza biblioteka do testowania
+            read about testing: https://code.visualstudio.com/docs/languages/python#_testing
+            also about vscode configuration: https://code.visualstudio.com/docs/languages/python#_configuration
 
           </script>
           <h2>MAC:</h2>
