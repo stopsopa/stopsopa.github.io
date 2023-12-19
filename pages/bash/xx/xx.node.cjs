@@ -264,4 +264,8 @@ setup = Object.entries(setup).reduce((acc, [key, value]) => {
   if (!run) {
     process.exit(10);
   }
+
+  if (command.source) {
+    process.exit(55);
+  }
 })();

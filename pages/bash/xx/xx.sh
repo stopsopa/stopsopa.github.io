@@ -1,16 +1,39 @@
 
-_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
+_SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
+_SHELL="${_SHELL##*/}"
 case ${_SHELL} in
   zsh)
     _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+    _0="$( basename "${(%):-%N}" )"
+    _SCRIPT="${(%):-%N}"
+    _BINARY="/bin/zsh"
+    _PWD="$(pwd)"
     ;;
   sh)
     _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+    _0="$( basename "${0}" )"
+    _SCRIPT="${0}"
+    _BINARY="/bin/sh"
+    _PWD="$(pwd)"
     ;;
   *)
     _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+    _0="$( basename "${BASH_SOURCE[0]}" )"
+    _SCRIPT="${BASH_SOURCE[0]}"
+    _BINARY="/bin/bash"
+    _PWD="$(pwd)"
     ;;
 esac
+
+# function stop {
+#     if [ "${_BINARY}" = "/bin/zsh" ]; then
+#     read -sk
+#     else
+#     read -n 1
+#     fi
+# }
+
+export NODE_OPTIONS=""
 
 REVERSE=$'\e[7m'
 RESET=$'\e[0m'
@@ -396,6 +419,12 @@ fi
 node "${_DIR}/xx.node.bundled.gitignored.cjs" "${LOAD_CONFIG}" "${XX_GENERATED}" "${@}"
 
 CODE="${?}"
+EXECUTEUSING_SOURCE="0"
+
+if [ "${CODE}" = "55" ]; then
+    EXECUTEUSING_SOURCE="1"
+    CODE="0"
+fi
 
 # to fix dissapearing carret when inquirier.js interupted with ctrl+c
 # https://unix.stackexchange.com/a/512630
@@ -419,21 +448,24 @@ if [ "${CODE}" != "0" ]; then
     ${0} error: generating ${XX_GENERATED} failed
 
 EEE
-
-    exit ${CODE}
-fi
-
-if [ "${1}" = "--gen" ]; then
+else    
+    if [ "${1}" = "--gen" ]; then
     cat <<EEE
 ${0}: script generated >${XX_GENERATED}<, content: 
 $(cat "${XX_GENERATED}")
 
 EEE
 
-else
+    else
 
-    source "${XX_GENERATED}" "${@}"
-
+        if [ "${EXECUTEUSING_SOURCE}" = "1" ]; then
+            # echo 'source block'
+            source "${XX_GENERATED}" "${@}"
+        else
+            # echo 'exec block'
+            /bin/bash "${XX_GENERATED}" "${@}"
+        fi
+    fi
 fi
 
 
