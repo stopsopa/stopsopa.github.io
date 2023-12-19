@@ -45,7 +45,6 @@
             # get exact versions of dependencies and save them to requirements.txt
             pip freeze > requirements.txt
                 # from: https://pip.pypa.io/en/stable/cli/pip_freeze/#examples
-
           </script>
           <h2>Tools to learn</h2>
           <script type="editor" data-lang="sh">
@@ -55,7 +54,6 @@
             unittest - starsza biblioteka do testowania
             read about testing: https://code.visualstudio.com/docs/languages/python#_testing
             also about vscode configuration: https://code.visualstudio.com/docs/languages/python#_configuration
-
           </script>
           <h2>MAC:</h2>
           <script type="editor" data-lang="sh">
@@ -74,7 +72,6 @@
 
             # switching version
             sudo ln -s -f /usr/local/bin/pip[your-latest-version-just-installed] /usr/local/bin/pip
-
           </script>
 
           <h2>pyenv - Simple Python Version Management</h2>
@@ -89,7 +86,7 @@
             pyenv install 3.12.1
 
             # list installed versions
-            pyenv versions 
+            pyenv versions
 
             pyenv local 3.12.1
 
@@ -102,9 +99,9 @@
                 $ python2 -V
                 Python 2.7.18
               # and running   pyenv shell 2.7.18 3.12.1
-                $ python2 -V               
+                $ python2 -V
                 Python 2.7.18
-                $ python3 -V                  
+                $ python3 -V
                 Python 3.12.1
 
             echo $PYENV_VERSION
@@ -118,7 +115,7 @@
             pyenv shell --unset
 
             # find latest
-            pyenv install --list | grep 2.7  
+            pyenv install --list | grep 2.7
 
             # or even multiple versions
             pyenv shell 2.7.18 3.12.1
@@ -128,12 +125,11 @@
 
             cat ~/.pyenv/version
             pyenv global 3.10.5
-            cat ~/.pyenv/version            
+            cat ~/.pyenv/version
             # open new terminal
             python -V
             pip -V
               # from: https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-global
-
           </script>
         </div>
       </div>
