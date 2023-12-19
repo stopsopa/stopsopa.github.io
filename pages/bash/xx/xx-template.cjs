@@ -37,6 +37,7 @@ EEE
 
       `,
       description: "Status of all things",
+      source: true,
       confirm: false,
     },
     [`~/help`]: {
