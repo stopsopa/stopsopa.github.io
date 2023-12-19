@@ -411,7 +411,7 @@ if [ ! -f "${LOAD_CONFIG}" ]; then
         exit 1;
     fi
 
-    XX_GENERATED="xx_generated.sh"
+    XX_GENERATED="$(dirname "${USER_CONFIG}")/xx_generated.sh"
 
     LOAD_CONFIG="${USER_CONFIG}"
 fi
