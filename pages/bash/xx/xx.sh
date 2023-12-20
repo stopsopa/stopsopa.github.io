@@ -25,6 +25,8 @@ case ${_SHELL} in
     ;;
 esac
 
+set +e
+
 # function stop {
 #     if [ "${_BINARY}" = "/bin/zsh" ]; then
 #     read -sk
