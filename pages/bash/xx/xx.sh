@@ -186,12 +186,9 @@ EEE
 
                 if [ "${STATUS}" = "0" ]; then
 
+                    echo cp "${LOCKDIR}/${xxx}" "${xxx}"
+                    
                     cp "${LOCKDIR}/${xxx}" "${xxx}"
-
-                    cat <<EEE
-
-cp "${LOCKDIR}/${xxx}" "${xxx}"
-EEE
                 else
                     CHANGED="$(echo -e "${CHANGED}\n${REASON}${xxx}")"
                 fi
@@ -239,7 +236,10 @@ EEE
 
                 if [ "${STATUS}" = "0" ]; then
 
+                    echo cp "${LOCKDIR}/${xxx}" "${xxx}"
+
                     cp "${LOCKDIR}/${xxx}" "${xxx}"
+
                     git update-index --assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null
 
                     if [ "${?}" != "0" ]; then
@@ -320,6 +320,7 @@ EEE
                     git checkout "${xxx}" 1> /dev/null 2> /dev/null    
 
                     if [ "${?}" != "0" ]; then
+                        echo rm "${xxx}"
                         rm "${xxx}" 1> /dev/null 2> /dev/null    
                     fi
                     if [ "${2}" != "" ]; then
