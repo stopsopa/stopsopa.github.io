@@ -55,6 +55,13 @@ SETUP_FILE=".git/xx.cjs"
 
 if [ "${1}" = "--help" ]; then
     cat <<EEE
+    
+    WARNING: FOR USING xx --lock first register .gitignore_local
+        git config core.excludesFile .git/.gitignore_local
+        touch .git/.gitignore_local
+        gits add .git/.gitignore_local
+
+        cat .git/config 
 
 --help - this help page
 --gen  - just generate file after picking up command
@@ -77,9 +84,12 @@ gits:
 
 EEE
 
-exit 0
+return;
 
 fi
+
+
+function run {
 
 if [ "${1}" = "--lock" ] || [ "${1}" = "--unlock" ] || [ "${1}" = "--copy" ]; then
 
@@ -104,7 +114,7 @@ EEE
         mkdir -p "${LOCKDIR}"
 
 EEE
-        exit 1
+        return; # exit 1
     fi
 
     cd "${LOCKDIR}"
@@ -115,9 +125,9 @@ EEE
 
     if [ "${LIST}" = "" ]; then
 
-  cat <<EEE
+cat <<EEE
 
-  nothing found in ${LOCKDIR}
+nothing found in ${LOCKDIR}
 
 EEE
     else           
@@ -255,12 +265,15 @@ EEE
                 # check if file is tracked by git
                 if git ls-files --error-unmatch "${xxx}" &>/dev/null; then
 
+# echo git ls-files "${xxx}"
                     SWITCH="0"
                     if git ls-files -v | grep "^h " | grep "${xxx}"; then
+                    # echo git ls-files "${xxx}" 1
                         SWITCH="1"
                     fi
 
                     if [ "${SWITCH}" = "1" ]; then
+                    # echo git ls-files "${xxx}" 2
                         git update-index --no-assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null       
                     fi
 
@@ -268,6 +281,7 @@ EEE
                     git --no-pager diff --exit-code "${xxx}" 1> /dev/null 2> /dev/null   
 
                     STATUS="${?}"
+                    # echo git ls-files "${xxx}" "STATUS=>${STATUS}<"
                     if [ "${STATUS}" != "0" ]; then
                         REASON="DIFF : "
                     fi
@@ -276,6 +290,7 @@ EEE
                         git update-index --assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null  
                     fi
                 else
+                # echo git else "${xxx}"
                     if [ -f "${xxx}" ]; then
                         diff "${LOCKDIR}/${xxx}" "${xxx}"
 
@@ -329,11 +344,11 @@ ${0} error:
 ${CHANGED}
 ${RESET}
 EEE
-exit 1
+return; # exit 1
             fi
 
             if [ "${1}" = "--copy" ]; then
-                exit 0
+                return
             fi
         fi
 
@@ -345,11 +360,19 @@ ${0} error:
 files with differences which were not reverted:
 ${CHANGED}
 ${RESET}
+
+    make sure you are using custom global gitignore:
+        cat .git/config 
+
+        git config core.excludesFile .git/.gitignore_local        
+        touch .git/.gitignore_local
+        gits add .git/.gitignore_local
+
 EEE
-exit 1
+return; # exit 1
             fi
 
-            exit 0
+            return
         fi
 
         COREEXCLUDESFILE="$(git config --get core.excludesFile)"
@@ -363,7 +386,7 @@ EEE
 
     fi
 
-    exit 0
+    return
 fi
 
 if [ "${1}" = "--init" ]; then
@@ -372,7 +395,7 @@ if [ "${1}" = "--init" ]; then
 
         echo "${0} error: file >${SETUP_FILE}< already exist"
 
-        exit 1
+        return; # exit 1
     fi
     
     cp "${_DIR}/xx-template.cjs" "${SETUP_FILE}"
@@ -383,7 +406,7 @@ cat <<EEE
     generated
 EEE
 
-exit 0
+return
 
 fi
 
@@ -401,14 +424,14 @@ if [ ! -f "${LOAD_CONFIG}" ]; then
 
         echo "${0} error: USER_CONFIG>${USER_CONFIG}< seems to be empty, and it shouldn't";
 
-        exit 1
+        return; # exit 1
     fi 
 
     if [ ! -f "${USER_CONFIG}" ]; then
 
         echo "${0} error: USER_CONFIG>${USER_CONFIG}< nor USER_CONFIG>${USER_CONFIG}< exist"
 
-        exit 1;
+        return; # exit 1;
     fi
 
     XX_GENERATED="$(dirname "${USER_CONFIG}")/xx_generated.sh"
@@ -468,4 +491,8 @@ EEE
     fi
 fi
 
+
+}
+
+run "${@}"
 
