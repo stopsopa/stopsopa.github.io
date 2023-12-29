@@ -77,7 +77,7 @@ gits:
 
 EEE
 
-exit 0
+return 0
 
 fi
 
@@ -104,7 +104,7 @@ EEE
         mkdir -p "${LOCKDIR}"
 
 EEE
-        exit 1
+        return 1
     fi
 
     cd "${LOCKDIR}"
@@ -329,11 +329,11 @@ ${0} error:
 ${CHANGED}
 ${RESET}
 EEE
-exit 1
+return 1
             fi
 
             if [ "${1}" = "--copy" ]; then
-                exit 0
+                return 0
             fi
         fi
 
@@ -346,10 +346,10 @@ files with differences which were not reverted:
 ${CHANGED}
 ${RESET}
 EEE
-exit 1
+return 1
             fi
 
-            exit 0
+            return 0
         fi
 
         COREEXCLUDESFILE="$(git config --get core.excludesFile)"
@@ -363,7 +363,7 @@ EEE
 
     fi
 
-    exit 0
+    return 0
 fi
 
 if [ "${1}" = "--init" ]; then
@@ -372,7 +372,7 @@ if [ "${1}" = "--init" ]; then
 
         echo "${0} error: file >${SETUP_FILE}< already exist"
 
-        exit 1
+        return 1
     fi
     
     cp "${_DIR}/xx-template.cjs" "${SETUP_FILE}"
@@ -383,7 +383,7 @@ cat <<EEE
     generated
 EEE
 
-exit 0
+return 0
 
 fi
 
@@ -401,14 +401,14 @@ if [ ! -f "${LOAD_CONFIG}" ]; then
 
         echo "${0} error: USER_CONFIG>${USER_CONFIG}< seems to be empty, and it shouldn't";
 
-        exit 1
+        return 1
     fi 
 
     if [ ! -f "${USER_CONFIG}" ]; then
 
         echo "${0} error: USER_CONFIG>${USER_CONFIG}< nor USER_CONFIG>${USER_CONFIG}< exist"
 
-        exit 1;
+        return 1;
     fi
 
     XX_GENERATED="$(dirname "${USER_CONFIG}")/xx_generated.sh"
