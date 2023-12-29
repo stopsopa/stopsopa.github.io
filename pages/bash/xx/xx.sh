@@ -25,6 +25,8 @@ case ${_SHELL} in
     ;;
 esac
 
+set +e
+
 # function stop {
 #     if [ "${_BINARY}" = "/bin/zsh" ]; then
 #     read -sk
@@ -55,6 +57,13 @@ SETUP_FILE=".git/xx.cjs"
 
 if [ "${1}" = "--help" ]; then
     cat <<EEE
+    
+    WARNING: FOR USING xx --lock first register .gitignore_local
+        git config core.excludesFile .git/.gitignore_local
+        touch .git/.gitignore_local
+        gits add .git/.gitignore_local
+
+        cat .git/config 
 
 --help - this help page
 --gen  - just generate file after picking up command
@@ -78,8 +87,10 @@ gits:
 EEE
 
 return 0
-
 fi
+
+
+function run {
 
 if [ "${1}" = "--lock" ] || [ "${1}" = "--unlock" ] || [ "${1}" = "--copy" ]; then
 
@@ -115,9 +126,9 @@ EEE
 
     if [ "${LIST}" = "" ]; then
 
-  cat <<EEE
+cat <<EEE
 
-  nothing found in ${LOCKDIR}
+nothing found in ${LOCKDIR}
 
 EEE
     else           
@@ -176,12 +187,9 @@ EEE
 
                 if [ "${STATUS}" = "0" ]; then
 
+                    echo cp "${LOCKDIR}/${xxx}" "${xxx}"
+                    
                     cp "${LOCKDIR}/${xxx}" "${xxx}"
-
-                    cat <<EEE
-
-cp "${LOCKDIR}/${xxx}" "${xxx}"
-EEE
                 else
                     CHANGED="$(echo -e "${CHANGED}\n${REASON}${xxx}")"
                 fi
@@ -229,7 +237,10 @@ EEE
 
                 if [ "${STATUS}" = "0" ]; then
 
+                    echo cp "${LOCKDIR}/${xxx}" "${xxx}"
+
                     cp "${LOCKDIR}/${xxx}" "${xxx}"
+
                     git update-index --assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null
 
                     if [ "${?}" != "0" ]; then
@@ -255,12 +266,15 @@ EEE
                 # check if file is tracked by git
                 if git ls-files --error-unmatch "${xxx}" &>/dev/null; then
 
+# echo git ls-files "${xxx}"
                     SWITCH="0"
                     if git ls-files -v | grep "^h " | grep "${xxx}"; then
+                    # echo git ls-files "${xxx}" 1
                         SWITCH="1"
                     fi
 
                     if [ "${SWITCH}" = "1" ]; then
+                    # echo git ls-files "${xxx}" 2
                         git update-index --no-assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null       
                     fi
 
@@ -268,6 +282,7 @@ EEE
                     git --no-pager diff --exit-code "${xxx}" 1> /dev/null 2> /dev/null   
 
                     STATUS="${?}"
+                    # echo git ls-files "${xxx}" "STATUS=>${STATUS}<"
                     if [ "${STATUS}" != "0" ]; then
                         REASON="DIFF : "
                     fi
@@ -276,6 +291,7 @@ EEE
                         git update-index --assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null  
                     fi
                 else
+                # echo git else "${xxx}"
                     if [ -f "${xxx}" ]; then
                         diff "${LOCKDIR}/${xxx}" "${xxx}"
 
@@ -305,6 +321,7 @@ EEE
                     git checkout "${xxx}" 1> /dev/null 2> /dev/null    
 
                     if [ "${?}" != "0" ]; then
+                        echo rm "${xxx}"
                         rm "${xxx}" 1> /dev/null 2> /dev/null    
                     fi
                     if [ "${2}" != "" ]; then
@@ -329,6 +346,7 @@ ${0} error:
 ${CHANGED}
 ${RESET}
 EEE
+
 return 1
             fi
 
@@ -345,6 +363,14 @@ ${0} error:
 files with differences which were not reverted:
 ${CHANGED}
 ${RESET}
+
+    make sure you are using custom global gitignore:
+        cat .git/config 
+
+        git config core.excludesFile .git/.gitignore_local        
+        touch .git/.gitignore_local
+        gits add .git/.gitignore_local
+
 EEE
 return 1
             fi
@@ -384,7 +410,6 @@ cat <<EEE
 EEE
 
 return 0
-
 fi
 
 LOAD_CONFIG=".git/xx.cjs";
@@ -468,4 +493,8 @@ EEE
     fi
 fi
 
+
+}
+
+run "${@}"
 

@@ -362,10 +362,13 @@
 
               crontab -e
 
+              # just before midnight
+              57 23 * * * /usr/bin/osascript -e 'display notification "Check Eve schedule" sound name "Sosumi"' >/dev/null 2>&1
               # 0:55am
               55 0 * * * /usr/bin/osascript -e 'display notification "Soon Eve will turn off WiFi Router" sound name "Sosumi"' >/dev/null 2>&1
               # 1:01am
               1 1 * * * /usr/bin/osascript -e 'display notification "WiFi can be rescheduled back" sound name "Sosumi"' >/dev/null 2>&1
+              
             </script>
             <h2>Notepad++</h2>
             <script type="editor" data-lang="sh">
