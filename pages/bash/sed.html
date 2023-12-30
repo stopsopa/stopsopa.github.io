@@ -17,6 +17,18 @@
           <a href="http://sed.sourceforge.net/sedfaq3.html">http://sed.sourceforge.net/sedfaq3.html</a>
           <script type="editor" data-lang="python">
 
+            # https://www.gnu.org/software/sed/manual/sed.html#Character-Classes-and-Bracket-Expressions
+            # [:alnum:]: Alphanumeric characters (letters and digits).
+            # [:alpha:]: Alphabetic characters (letters).
+            # [:digit:]: Numeric characters (digits).
+            # [:lower:]: Lowercase alphabetic characters.
+            # [:upper:]: Uppercase alphabetic characters.
+            # [:punct:]: Punctuation characters.
+            # [:blank:]: Space and tab characters.
+            # [:cntrl:]: Control characters.
+            # [:graph:]: Printable and visible characters (excluding space).
+            # [:print:]: Printable characters.
+
             -e script, --expression=script
             -i[SUFFIX], --in-place[=SUFFIX] - change in file, in place
             -n  By default, each line of input is echoed to the standard output after all of the
