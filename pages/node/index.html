@@ -1579,8 +1579,16 @@
                 },
                 getThrow: (key) => {
                   if (typeof key !== "string" || !key.trim()) {
-                    throw new Error(`arguments.js error: argument >--${key}< is required`);
+                    throw new Error(`args.js error: argument --${key} is required`);
                   }
+            
+                  var t = JSON.parse(JSON.stringify(obj));
+            
+                  if (typeof t[key] === "undefined") {
+                    throw new Error(`args.js error: argument --${key} is not provided`);
+                  }
+            
+                  return t[key];
                 },
                 string: (key, def) => {
                   var t = JSON.parse(JSON.stringify(obj));
