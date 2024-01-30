@@ -5,6 +5,7 @@
 # it will generate file with exclusions right next to THIS script - in the same directory based on EXCLUDE_LIST env var
 # then it will execute rsync command:
 #   rsync -azP --delete-after --exclude-from "exclude file" "sourcedir/" "targetdir/"
+shopt -s expand_aliases && source ~/.bashrc
 
 TARGETDIR="/Volumes/256gb vol2"
 
@@ -124,7 +125,7 @@ ${EXIST}
         echo '${CMDi} -n' | ${DOCKER}
 
         # version without docker
-            /bin/bash rsync.sh --cover && rsync -rtlDzPvi --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/" -n
+            /bin/bash rsync.sh --prepare && rsync -rtlDzPvi --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/" -n
 
 /bin/bash rsync.sh --run
     # execute
@@ -132,7 +133,7 @@ ${EXIST}
         echo '${CMD}' | ${DOCKER}
 
         # version without docker
-            /bin/bash rsync.sh --cover && rsync -rtlDzPv --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/"
+            /bin/bash rsync.sh --prepare && rsync -rtlDzPv --delete-after --exclude-from "${EXCLUDE_FILE}" "${_DIR}/" "${TARGETDIR}/"
 
 EEE
 
@@ -141,7 +142,9 @@ fi
 
 set -e
 
-if [ "${1}" = "--cover" ]; then 
+if [ "${1}" = "--prepare" ]; then 
+
+    normalize "${_DIR}" "remove"
 
     find . -name ".DS_Store" -type f -delete
 
@@ -224,7 +227,7 @@ docker:
     ${EVAL}    
 
 host:
-    (cd "${_DIR}"; /bin/bash rsync.sh --cover; rsync -rltzDPv --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
+    (cd "${_DIR}"; /bin/bash rsync.sh --prepare; rsync -rltzDPv --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
 
 EEE
 
@@ -241,7 +244,7 @@ docker:
     ${EVAL}    
 
 host: (for mac run this version because it is uses default version of rsync which is doing better job on macs)
-    (cd "${_DIR}"; /bin/bash rsync.sh --cover; rsync -rltzDPvin --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
+    (cd "${_DIR}"; /bin/bash rsync.sh --prepare; rsync -rltzDPvin --delete-after --exclude-from "${EXCLUDE_FILE}" "./" "${TARGETDIR}/")
 
 EEE
 

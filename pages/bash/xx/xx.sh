@@ -35,7 +35,7 @@ set +e
 #     fi
 # }
 
-export NODE_OPTIONS=""
+# export NODE_OPTIONS=""
 
 REVERSE=$'\e[7m'
 RESET=$'\e[0m'
