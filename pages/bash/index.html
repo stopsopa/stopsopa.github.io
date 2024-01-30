@@ -1104,6 +1104,63 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             LIST="$(eval "${FIND}")"
             # printing and also executing or even capturing result for further processing ===== ^^^
           </script>
+          <h2>Parallel</h2>
+          <script type="editor" data-lang="sh">
+
+            cat <<EEE | parallel /bin/bash run.sh start {} end
+            abc
+            def
+            ghi
+            jkl
+            EEE
+
+            # more comples test can be done like this:
+
+            cat <<EEE > run.sh
+
+            echo ">>\${@}<<"
+
+            R="\$(python -c "import random; print(round(random.uniform(1, 3), 1))")"
+            echo \${2} 1111 \${R}
+            sleep \${R}
+
+            R="\$(python -c "import random; print(round(random.uniform(1, 3), 1))")"
+            echo \${2} 2222 \${R}
+            sleep \${R}
+
+            R="\$(python -c "import random; print(round(random.uniform(1, 3), 1))")"
+            echo \${2} 3333 end \${R}
+            sleep \${R}
+
+            EEE
+
+            # simples
+            # this will execute in parallel and each stdout from each process will be 
+            # returned in one piece immediately after process finishes
+            cat <<EEE | time parallel /bin/bash run.sh start {} end 2>&1 | tee log.log                                            
+            $(for ((i=1; i<=100; i++)); do echo $i; done)
+            EEE
+            # on my 8 cores mac it will run 8 processes in parallel
+            # will take about 1 min and 20 sec
+
+            # you can check how many processes are running in another terminal
+            ps aux | grep run.sh | grep -v grep
+
+
+            # you can limit number of processes using -j 50%
+            # then it will run 4 processes in parallel
+            
+            cat <<EEE | time parallel -j 50% /bin/bash run.sh start {} end 2>&1 | tee log.log                                            
+            $(for ((i=1; i<=100; i++)); do echo $i; done)
+            EEE
+            # this will take two times longer 2 min and 40 sec
+
+            # injecting the number of line processed
+            cat <<EEE | time parallel /bin/bash run.sh start {} line {#} end 2>&1 | tee log.log                                            
+            $(for ((i=10; i<=110; i++)); do echo $i; done)
+            EEE
+
+          </script>
           <h2>debug</h2>
           <script type="editor" data-lang="sh">
 
