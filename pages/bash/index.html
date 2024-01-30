@@ -516,12 +516,6 @@
             watch -n 0.5 docker ps
           </script>
         </div>
-        <h2>GNU Parallel</h2>
-        <a href="https://alexplescan.com/posts/2023/08/20/gnu-parallel/"
-          >https://alexplescan.com/posts/2023/08/20/gnu-parallel/</a
-        >
-        <br />
-        <a href="https://zenodo.org/record/1146014">https://zenodo.org/record/1146014</a>
 
         <h2>Hash table</h2>
         <a href="https://stackoverflow.com/questions/1494178/how-to-define-hash-tables-in-bash"
@@ -1104,7 +1098,12 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             LIST="$(eval "${FIND}")"
             # printing and also executing or even capturing result for further processing ===== ^^^
           </script>
-          <h2>Parallel</h2>
+          <h2>GNU Parallel</h2>
+          <a href="https://alexplescan.com/posts/2023/08/20/gnu-parallel/"
+            >https://alexplescan.com/posts/2023/08/20/gnu-parallel/</a
+          >
+          <br />
+          <a href="https://zenodo.org/record/1146014">https://zenodo.org/record/1146014</a>
           <script type="editor" data-lang="sh">
 
             cat <<EEE | parallel /bin/bash run.sh start {} end
