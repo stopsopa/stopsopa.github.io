@@ -1148,7 +1148,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
 
             # you can limit number of processes using -j 50%
-            # then it will run 4 processes in parallel
+            # then it will run 4 processes in parallel where 8 processors are available
             
             cat <<EEE | time parallel -j 50% /bin/bash run.sh start {} end 2>&1 | tee log.log                                            
             $(for ((i=1; i<=100; i++)); do echo $i; done)
