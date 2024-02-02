@@ -117,24 +117,6 @@ gjf --list
       description: `gjf --list`,
       confirm: false,
     },
-    [`google-java-format format`]: {
-      command: `
-set -e
-google-java-format -version 1> /dev/null 2> /dev/null
-if [ "\${?}" != "0" ]; then
-    cat <<EEE
-google-java-format not installed
-    mac: 
-        export HOMEBREW_NO_AUTO_UPDATE=1 && brew install google-java-format
-EEE
-    exit 1
-fi
-gjf --format
-`,
-      description: `gjf --format`,
-      confirm: false,
-    },
-
     [`google-java-format list`]: {
       command: `
 set -e
