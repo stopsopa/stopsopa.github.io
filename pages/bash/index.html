@@ -530,6 +530,16 @@
 
           diff <(curl https://foo.com) <(curl https://bar.com)
         </script>
+        <h2>tee</h2>
+        <script type="editor" data-lang="sh">
+
+          sometimes tee will not capture command output:
+            sshfs -odebug,sshfs_debug,loglevel=debug simon@192.168.1.51:/home/simon "/Users/szdz/Workspace/STOPSOPA__gphotos-research/STOPSOPA__gphotos-research/mount_nuc" | tee nuc.log
+
+          in this case change it to:
+            sshfs -odebug,sshfs_debug,loglevel=debug simon@192.168.1.51:/home/simon "/Users/szdz/Workspace/STOPSOPA__gphotos-research/STOPSOPA__gphotos-research/mount_nuc" 2>&1 | tee nuc.log
+          
+        </script>
         <h2>inode</h2>
         <script type="editor" data-lang="sh">
 
