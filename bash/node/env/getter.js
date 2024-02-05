@@ -1,57 +1,98 @@
-// node bash/node/env/getter.js PROTECTED_MYSQL_PASS
+/**
+ * Extract value of particular env var in particular env file
+ * node bash/node/env/getter.js --env-file .env --var PHPMYADMIN_PORT
+ */
 
 const args = (function (obj, tmp) {
-  process.argv.slice(2).map((a) => {
-    if (a.indexOf("--") === 0) {
-      tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, "${1}");
+  process.argv
+      .slice(2)
+      .map(a => {
 
-      if (tmp) {
-        obj[tmp] = typeof obj[tmp] === "undefined" ? true : obj[tmp];
-      }
+        if (a.indexOf('--') === 0) {
 
-      return;
-    }
+          tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, '$1');
 
-    if (a === "true") {
-      a = true;
-    }
+          if (tmp) {
 
-    if (a === "false") {
-      a = false;
-    }
+            obj[tmp] = (typeof obj[tmp] === 'undefined') ? true : obj[tmp];
+          }
 
-    if (tmp !== null) {
-      if (obj[tmp] === true) {
-        return (obj[tmp] = [a]);
-      }
+          return;
+        }
 
-      try {
-        obj[tmp].push(a);
-      } catch (e) {}
-    }
-  });
+        if (a === 'true') {
 
-  Object.keys(obj).map((k) => {
-    obj[k] !== true && obj[k].length === 1 && (obj[k] = obj[k][0]);
-    obj[k] === "false" && (obj[k] = false);
+          a = true
+        }
+
+        if (a === 'false') {
+
+          a = false
+        }
+
+        if (tmp !== null) {
+
+          if (obj[tmp] === true) {
+
+            return obj[tmp] = [a];
+          }
+
+          try {
+
+            obj[tmp].push(a);
+          }
+          catch (e) {
+
+          }
+        }
+      })
+  ;
+
+  Object.keys(obj).map(k => {
+    (obj[k] !== true && obj[k].length === 1) && (obj[k] = obj[k][0]);
+    (obj[k] === 'false') && (obj[k] = false);
   });
 
   return {
+    count: () => Object.keys(obj).length,
     all: () => JSON.parse(JSON.stringify(obj)),
     get: (key, def) => {
+
       var t = JSON.parse(JSON.stringify(obj));
 
-      if (typeof def === "undefined") return t[key];
+      if (typeof def === 'undefined')
 
-      return typeof t[key] === "undefined" ? def : t[key];
+        return t[key];
+
+      return (typeof t[key] === 'undefined') ? def : t[key] ;
     },
-    update: (data) => {
-      obj = data;
+    getThrow: (key) => {
+      if (typeof key !== "string" || !key.trim()) {
+        throw new Error(`args.js error: argument --${key} is required`);
+      }
+
+      var t = JSON.parse(JSON.stringify(obj));
+
+      if (typeof t[key] === "undefined") {
+        throw new Error(`args.js error: argument --${key} is not provided`);
+      }
+
+      return t[key];
+    },
+    string: (key, def) => {
+      var t = JSON.parse(JSON.stringify(obj));
+
+      return typeof t[key] === "string" ? t[key] : def;
     },
   };
-})({});
+}({}));
 
 let envfile = args.get("env-file", ".env");
+
+if (typeof envfile !== "string" || !envfile.trim()) {
+
+  throw new Error(`getter.js error: --env-file is required`);
+}
 
 require("dotenv-up")(
   {
@@ -63,8 +104,12 @@ require("dotenv-up")(
   "react/webpack.config.js"
 );
 
-if (process.argv.length < 3) {
-  throw new Error(`process.argv.length < 3`);
+let extractVar = args.get("var");
+
+if (typeof extractVar !== "string" || !extractVar.trim()) {
+
+  throw new Error(`getter.js error: --var is required`);
 }
 
-console.log(process.env[process.argv[2]]);
+
+console.log(process.env[extractVar]);
