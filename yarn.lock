@@ -6486,10 +6486,10 @@ neo-async@^2.6.2:
   resolved "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-nlab@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/nlab/-/nlab-0.2.0.tgz"
-  integrity sha512-92c6Cs91MgWTnWPU3vp/sEjgaMmAWim6GlR8y5d1H13u5GCZIVikZZ2gL8tsRu0dB5/YIyMFaKrVK5AWLvHITw==
+nlab@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/nlab/-/nlab-0.7.1.tgz#c549535dc7a664e458bfa3886daf6bc9f3de8b23"
+  integrity sha512-28ymnFi4ghDnUUEHg7Zc8PtgOY+9pyw0fn/XAj9UfNxF8y8KQ04CgMUND8hAfANFQQLmkHdp3YVMwr6XrDC3LA==
   dependencies:
     inspc "^0.0.19"
     md5 "^2.2.1"
