@@ -16,7 +16,8 @@
     "/var/": true,
     "var/": true,
     "**/node_modules": false,
-    "noprettier/": true
+    "noprettier/": true,
+    "pages/bash/xx/*.bundled.gitignored.*": true
   },
   "files.watcherExclude": {
     ".git/": true,
@@ -28,7 +29,8 @@
     "migrations/": true,
     "/dist/": true,
     "/var/": true,
-    "var/": true
+    "var/": true,
+    "pages/bash/xx/*.bundled.gitignored.*": true
   },
   "editor.rulers": [120],
   "prettier.printWidth": 120
