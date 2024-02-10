@@ -147,6 +147,21 @@
           <script type="editor" data-lang="sh">
 
             touch ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+
+            chmod 755 ~/.ssh
+            chmod 644 ~/.ssh/authorized_keys # file should be 600 (from: https://www.debian.org/devel/passwordlessssh)
+            chmod 600 ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_dsa
+            chmod 644 ~/.ssh/id_rsa.pub
+            chmod 644 ~/.ssh/id_dsa.pub
+            chmod 644 ~/.ssh/known_hosts
+            
+            drwx------  2 user user 4096 Jun  9  2014 .
+            drwxr-xr-x 11 user user 4096 Jul 26 19:14 ..
+            -rw-r--r--  1 user user  396 Mar 24 20:37 authorized_keys
+            -rw-------  1 user user  668 Jul 25  2013 id_dsa
+            -rw-r--r--  1 user user  609 Jul 25  2013 id_dsa.pub
+            -rw-r--r--  1 user user 2652 Oct 14  2013 known_hosts
           </script>
 
           <h2>OpenSSH</h2>
