@@ -255,6 +255,23 @@
 
             echo '{"abc":[{"name":"test","nest":{"ver":4},"list":[6,2,8,5]},{"name":"two","nest":{"ver":7},"list":[9,9]},{"name":"three","nest":{"ver":1},"list":[2]}]}' | jq '.abc | map({name, ver: .nest.ver,list_len:.list | length}) | map(select(.ver > 1)) | sort_by(.ver)' -c
             # will print >[{"name":"test","ver":4,"list_len":4},{"name":"two","ver":7,"list_len":2}]<
+
+
+
+            # ===== line separated data to json array with strings
+            cat <<EEE | jq -R -s  'split("\n")[:-1]' 
+            Komiks-Gigant-12-2000-Sladami-prehistorii.pdf
+            Komiks-Gigant-4_2000-Kamienie-Kahuna.pdf
+            Komiks_Gigant_s1_4.93_Prehistoryczny_szpieg.pdf
+            EEE
+            
+            cat <<EEE | jq -R -s 'split("\n")[:-1][]' 
+            Komiks-Gigant-12-2000-Sladami-prehistorii.pdf
+            Komiks-Gigant-4_2000-Kamienie-Kahuna.pdf
+            Komiks_Gigant_s1_4.93_Prehistoryczny_szpieg.pdf
+            EEE
+
+            
           </script>
           <a href="https://stedolan.github.io/jq/manual/">https://stedolan.github.io/jq/manual/</a>
           <br />
