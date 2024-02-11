@@ -17,7 +17,15 @@ export const generateFileName = function (
     .trim()
     .replace(/[^\d]+/g, "_");
 
-  return `Komiks-Gigant-seria_${series}-nr_${symbol}-${title}.pdf`;
+  let name = `Komiks-Gigant-seria_${series}-nr_${symbol}`;
+
+  if (title) {
+    name += `-${title}`;
+  }
+
+  name += `.pdf`;
+
+  return name;
 };
 
 export const enrichData = function (data) {

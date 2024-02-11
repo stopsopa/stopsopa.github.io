@@ -176,6 +176,7 @@
       "img": "img/ser2/1.webp",
       "nr": "1/97",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -193,6 +194,7 @@
       "img": "img/ser2/2.webp",
       "nr": "2/97",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -210,6 +212,7 @@
       "img": "img/ser2/3.webp",
       "nr": "3/97",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -228,6 +231,7 @@
       "img": "img/ser2/4.webp",
       "nr": "4/97",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -246,6 +250,7 @@
       "img": "img/ser2/5.webp",
       "nr": "5/97",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -266,6 +271,7 @@
       "img": "img/ser2/6.webp",
       "nr": "6/97",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -284,6 +290,7 @@
       "img": "img/ser3/1.webp",
       "nr": "1/98",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -301,6 +308,7 @@
       "img": "img/ser3/2.webp",
       "nr": "2/98",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -317,6 +325,7 @@
       "img": "img/ser3/3.webp",
       "nr": "3/98",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -333,6 +342,7 @@
       "img": "img/ser3/4.webp",
       "nr": "4/98",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -350,6 +360,7 @@
       "img": "img/ser3/5.webp",
       "nr": "5/98",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -368,6 +379,7 @@
       "img": "img/ser3/6.webp",
       "nr": "6/98",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -404,6 +416,7 @@
       "img": "img/ser3/8.webp",
       "nr": "8/98",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -458,6 +471,7 @@
       "img": "img/ser3/11.webp",
       "nr": "11/98",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
@@ -475,6 +489,7 @@
       "img": "img/ser3/12.webp",
       "nr": "12/98",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
