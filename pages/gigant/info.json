@@ -435,6 +435,7 @@
       "img": "img/ser3/9.webp",
       "nr": "9/98",
       "processed": {
+        "pdf": true,
         "book": true
       },
       "toc": [
