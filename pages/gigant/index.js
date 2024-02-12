@@ -59,7 +59,6 @@ document.querySelector("#toc").addEventListener("click", function (e) {
     const processed = findProcessed(el.innerHTML);
 
     if (!processed.pdf) {
-
       return;
     }
 
@@ -73,6 +72,6 @@ document.querySelector("#toc").addEventListener("click", function (e) {
       el.classList.add("red");
     }
 
-    log('file: ', file, 'processed: ', findProcessed(el.innerHTML))
+    log("file: ", file, "processed: ", findProcessed(el.innerHTML));
   });
 })();

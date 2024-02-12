@@ -259,19 +259,17 @@
 
 
             # ===== line separated data to json array with strings
-            cat <<EEE | jq -R -s  'split("\n")[:-1]' 
-            Komiks-Gigant-12-2000-Sladami-prehistorii.pdf
-            Komiks-Gigant-4_2000-Kamienie-Kahuna.pdf
-            Komiks_Gigant_s1_4.93_Prehistoryczny_szpieg.pdf
-            EEE
-            
-            cat <<EEE | jq -R -s 'split("\n")[:-1][]' 
+            cat <<EEE | jq -R -s  'split("\n")[:-1]'
             Komiks-Gigant-12-2000-Sladami-prehistorii.pdf
             Komiks-Gigant-4_2000-Kamienie-Kahuna.pdf
             Komiks_Gigant_s1_4.93_Prehistoryczny_szpieg.pdf
             EEE
 
-            
+            cat <<EEE | jq -R -s 'split("\n")[:-1][]'
+            Komiks-Gigant-12-2000-Sladami-prehistorii.pdf
+            Komiks-Gigant-4_2000-Kamienie-Kahuna.pdf
+            Komiks_Gigant_s1_4.93_Prehistoryczny_szpieg.pdf
+            EEE
           </script>
           <a href="https://stedolan.github.io/jq/manual/">https://stedolan.github.io/jq/manual/</a>
           <br />
