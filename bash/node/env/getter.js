@@ -4,67 +4,50 @@
  */
 
 const args = (function (obj, tmp) {
-  process.argv
-      .slice(2)
-      .map(a => {
+  process.argv.slice(2).map((a) => {
+    if (a.indexOf("--") === 0) {
+      tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, "$1");
 
-        if (a.indexOf('--') === 0) {
+      if (tmp) {
+        obj[tmp] = typeof obj[tmp] === "undefined" ? true : obj[tmp];
+      }
 
-          tmp = a.substring(2).replace(/^\s*(\S*(\s+\S+)*)\s*$/, '$1');
+      return;
+    }
 
-          if (tmp) {
+    if (a === "true") {
+      a = true;
+    }
 
-            obj[tmp] = (typeof obj[tmp] === 'undefined') ? true : obj[tmp];
-          }
+    if (a === "false") {
+      a = false;
+    }
 
-          return;
-        }
+    if (tmp !== null) {
+      if (obj[tmp] === true) {
+        return (obj[tmp] = [a]);
+      }
 
-        if (a === 'true') {
+      try {
+        obj[tmp].push(a);
+      } catch (e) {}
+    }
+  });
 
-          a = true
-        }
-
-        if (a === 'false') {
-
-          a = false
-        }
-
-        if (tmp !== null) {
-
-          if (obj[tmp] === true) {
-
-            return obj[tmp] = [a];
-          }
-
-          try {
-
-            obj[tmp].push(a);
-          }
-          catch (e) {
-
-          }
-        }
-      })
-  ;
-
-  Object.keys(obj).map(k => {
-    (obj[k] !== true && obj[k].length === 1) && (obj[k] = obj[k][0]);
-    (obj[k] === 'false') && (obj[k] = false);
+  Object.keys(obj).map((k) => {
+    obj[k] !== true && obj[k].length === 1 && (obj[k] = obj[k][0]);
+    obj[k] === "false" && (obj[k] = false);
   });
 
   return {
     count: () => Object.keys(obj).length,
     all: () => JSON.parse(JSON.stringify(obj)),
     get: (key, def) => {
-
       var t = JSON.parse(JSON.stringify(obj));
 
-      if (typeof def === 'undefined')
+      if (typeof def === "undefined") return t[key];
 
-        return t[key];
-
-      return (typeof t[key] === 'undefined') ? def : t[key] ;
+      return typeof t[key] === "undefined" ? def : t[key];
     },
     getThrow: (key) => {
       if (typeof key !== "string" || !key.trim()) {
@@ -85,12 +68,11 @@ const args = (function (obj, tmp) {
       return typeof t[key] === "string" ? t[key] : def;
     },
   };
-}({}));
+})({});
 
 let envfile = args.get("env-file", ".env");
 
 if (typeof envfile !== "string" || !envfile.trim()) {
-
   throw new Error(`getter.js error: --env-file is required`);
 }
 
@@ -107,9 +89,7 @@ require("dotenv-up")(
 let extractVar = args.get("var");
 
 if (typeof extractVar !== "string" || !extractVar.trim()) {
-
   throw new Error(`getter.js error: --var is required`);
 }
-
 
 console.log(process.env[extractVar]);

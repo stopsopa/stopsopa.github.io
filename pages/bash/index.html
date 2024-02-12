@@ -538,7 +538,6 @@
 
           in this case change it to:
             sshfs -odebug,sshfs_debug,loglevel=debug simon@192.168.1.51:/home/simon "/Users/szdz/Workspace/STOPSOPA__gphotos-research/STOPSOPA__gphotos-research/mount_nuc" 2>&1 | tee nuc.log
-          
         </script>
         <h2>inode</h2>
         <script type="editor" data-lang="sh">
@@ -1144,9 +1143,9 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             EEE
 
             # simples
-            # this will execute in parallel and each stdout from each process will be 
+            # this will execute in parallel and each stdout from each process will be
             # returned in one piece immediately after process finishes
-            cat <<EEE | time parallel /bin/bash run.sh start {} end 2>&1 | tee log.log                                            
+            cat <<EEE | time parallel /bin/bash run.sh start {} end 2>&1 | tee log.log
             $(for ((i=1; i<=100; i++)); do echo $i; done)
             EEE
             # on my 8 cores mac it will run 8 processes in parallel
@@ -1158,17 +1157,16 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
             # you can limit number of processes using -j 50%
             # then it will run 4 processes in parallel where 8 processors are available
-            
-            cat <<EEE | time parallel -j 50% /bin/bash run.sh start {} end 2>&1 | tee log.log                                            
+
+            cat <<EEE | time parallel -j 50% /bin/bash run.sh start {} end 2>&1 | tee log.log
             $(for ((i=1; i<=100; i++)); do echo $i; done)
             EEE
             # this will take two times longer 2 min and 40 sec
 
             # injecting the number of line processed
-            cat <<EEE | time parallel /bin/bash run.sh start {} line {#} end 2>&1 | tee log.log                                            
+            cat <<EEE | time parallel /bin/bash run.sh start {} line {#} end 2>&1 | tee log.log
             $(for ((i=10; i<=110; i++)); do echo $i; done)
             EEE
-
           </script>
           <h2>debug</h2>
           <script type="editor" data-lang="sh">
@@ -1967,7 +1965,6 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                     BMAG="\[\033[45m\]" # background magenta
                     BCYN="\[\033[46m\]" # background cyan
                     BWHT="\[\033[47m\]" # background white
-                    
                   </script>
                 </td>
                 <td width="150">
