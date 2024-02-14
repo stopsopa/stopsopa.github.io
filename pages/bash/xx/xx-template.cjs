@@ -80,6 +80,11 @@ cat <<EEE
 EEE
 read -p "\n      Press enter to continue\n"
 python -m http.server \${JEST_COVERAGE_PORT} --directory ./coverage
+
+# for python version 2.7
+
+# cd ./coverage
+# python -m SimpleHTTPServer \${PORT}
 `,
       confirm: false,
     },

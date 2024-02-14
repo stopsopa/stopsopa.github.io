@@ -68,7 +68,10 @@ let ctx = await esbuild[w ? "context" : "build"]({
   outdir: ".",
   outbase: ".",
   entryNames: "[dir]/[name].bundled.gitignored", // https://esbuild.github.io/api/#entry-names
+
   platform: "node",
+  target: "node12.16.3",
+
   logLevel: "info",
   logOverride: {
     // more about logOverride: https://github.com/evanw/esbuild/releases/tag/v0.14.42
