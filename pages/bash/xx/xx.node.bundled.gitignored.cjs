@@ -23,6 +23,28 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
+var __accessCheck = (obj, member, msg2) => {
+  if (!member.has(obj))
+    throw TypeError("Cannot " + msg2);
+};
+var __privateGet = (obj, member, getter) => {
+  __accessCheck(obj, member, "read from private field");
+  return getter ? getter.call(obj) : member.get(obj);
+};
+var __privateAdd = (obj, member, value) => {
+  if (member.has(obj))
+    throw TypeError("Cannot add the same private member more than once");
+  member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
+};
+var __privateSet = (obj, member, value, setter) => {
+  __accessCheck(obj, member, "write to private field");
+  setter ? setter.call(obj, value) : member.set(obj, value);
+  return value;
+};
+var __privateMethod = (obj, member, method) => {
+  __accessCheck(obj, member, "access private method");
+  return method;
+};
 
 // node_modules/core-js/internals/document-all.js
 var require_document_all = __commonJS({
@@ -5459,10 +5481,13 @@ var require_cli_width = __commonJS({
 var require_lib = __commonJS({
   "node_modules/mute-stream/lib/index.js"(exports2, module2) {
     var Stream = require("stream");
+    var _isTTY, _destSrc, destSrc_fn, _proxy, proxy_fn;
     var MuteStream2 = class extends Stream {
-      #isTTY = null;
       constructor(opts = {}) {
         super(opts);
+        __privateAdd(this, _destSrc);
+        __privateAdd(this, _proxy);
+        __privateAdd(this, _isTTY, null);
         this.writable = this.readable = true;
         this.muted = false;
         this.on("pipe", this._onpipe);
@@ -5470,38 +5495,21 @@ var require_lib = __commonJS({
         this._prompt = opts.prompt || null;
         this._hadControl = false;
       }
-      #destSrc(key, def) {
-        if (this._dest) {
-          return this._dest[key];
-        }
-        if (this._src) {
-          return this._src[key];
-        }
-        return def;
-      }
-      #proxy(method, ...args) {
-        if (typeof this._dest?.[method] === "function") {
-          this._dest[method](...args);
-        }
-        if (typeof this._src?.[method] === "function") {
-          this._src[method](...args);
-        }
-      }
       get isTTY() {
-        if (this.#isTTY !== null) {
-          return this.#isTTY;
+        if (__privateGet(this, _isTTY) !== null) {
+          return __privateGet(this, _isTTY);
         }
-        return this.#destSrc("isTTY", false);
+        return __privateMethod(this, _destSrc, destSrc_fn).call(this, "isTTY", false);
       }
       // basically just get replace the getter/setter with a regular value
       set isTTY(val) {
-        this.#isTTY = val;
+        __privateSet(this, _isTTY, val);
       }
       get rows() {
-        return this.#destSrc("rows");
+        return __privateMethod(this, _destSrc, destSrc_fn).call(this, "rows");
       }
       get columns() {
-        return this.#destSrc("columns");
+        return __privateMethod(this, _destSrc, destSrc_fn).call(this, "columns");
       }
       mute() {
         this.muted = true;
@@ -5564,13 +5572,34 @@ var require_lib = __commonJS({
         this.emit("end");
       }
       destroy(...args) {
-        return this.#proxy("destroy", ...args);
+        return __privateMethod(this, _proxy, proxy_fn).call(this, "destroy", ...args);
       }
       destroySoon(...args) {
-        return this.#proxy("destroySoon", ...args);
+        return __privateMethod(this, _proxy, proxy_fn).call(this, "destroySoon", ...args);
       }
       close(...args) {
-        return this.#proxy("close", ...args);
+        return __privateMethod(this, _proxy, proxy_fn).call(this, "close", ...args);
+      }
+    };
+    _isTTY = new WeakMap();
+    _destSrc = new WeakSet();
+    destSrc_fn = function(key, def) {
+      if (this._dest) {
+        return this._dest[key];
+      }
+      if (this._src) {
+        return this._src[key];
+      }
+      return def;
+    };
+    _proxy = new WeakSet();
+    proxy_fn = function(method, ...args) {
+      var _a, _b;
+      if (typeof ((_a = this._dest) == null ? void 0 : _a[method]) === "function") {
+        this._dest[method](...args);
+      }
+      if (typeof ((_b = this._src) == null ? void 0 : _b[method]) === "function") {
+        this._src[method](...args);
       }
     };
     module2.exports = MuteStream2;
@@ -10483,8 +10512,8 @@ var require_source3 = __commonJS({
 var import_structured_clone = __toESM(require_structured_clone2());
 
 // node_modules/@inquirer/core/dist/esm/index.mjs
-var readline = __toESM(require("node:readline"), 1);
-var import_node_async_hooks = require("node:async_hooks");
+var readline = __toESM(require("readline"), 1);
+var import_node_async_hooks = require("async_hooks");
 
 // node_modules/@inquirer/type/dist/esm/index.mjs
 var CancelablePromise = class extends Promise {
@@ -10508,7 +10537,10 @@ var breakLines = (content, width) => content.split("\n").flatMap((line) => (0, i
 
 // node_modules/@inquirer/core/dist/esm/lib/screen-manager.mjs
 var height = (content) => content.split("\n").length;
-var lastLine = (content) => content.split("\n").pop() ?? "";
+var lastLine = (content) => {
+  var _a;
+  return (_a = content.split("\n").pop()) != null ? _a : "";
+};
 var ScreenManager = class {
   rl;
   // These variables are keeping information to allow correct prompt re-rendering
@@ -10689,7 +10721,8 @@ var effectScheduler = {
     const store = context.getStore();
     const { index } = store;
     store.hooksEffect.push(() => {
-      store.hooksCleanup[index]?.();
+      var _a, _b;
+      (_b = (_a = store.hooksCleanup)[index]) == null ? void 0 : _b.call(_a);
       const cleanFn = cb(store.rl);
       if (cleanFn != null && typeof cleanFn !== "function") {
         throw new Error("useEffect return value must be a cleanup function or nothing.");
@@ -10777,9 +10810,10 @@ function usePagination(output, { active, pageSize = 7 }) {
 }
 function createPrompt(view) {
   const prompt = (config, context2) => {
-    const input = context2?.input ?? process.stdin;
+    var _a, _b;
+    const input = (_a = context2 == null ? void 0 : context2.input) != null ? _a : process.stdin;
     const output = new import_mute_stream.default();
-    output.pipe(context2?.output ?? process.stdout);
+    output.pipe((_b = context2 == null ? void 0 : context2.output) != null ? _b : process.stdout);
     const rl = readline.createInterface({
       terminal: true,
       input,
@@ -10805,12 +10839,12 @@ function createPrompt(view) {
         const onExit = import_node_async_hooks.AsyncResource.bind(() => {
           try {
             store.hooksCleanup.forEach((cleanFn) => {
-              cleanFn?.();
+              cleanFn == null ? void 0 : cleanFn();
             });
           } catch (err) {
             reject(err);
           }
-          if (context2?.clearPromptOnDone) {
+          if (context2 == null ? void 0 : context2.clearPromptOnDone) {
             screen.clean();
           } else {
             screen.clearContent();
