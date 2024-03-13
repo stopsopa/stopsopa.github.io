@@ -1249,6 +1249,23 @@
             // and serialize back to string
             const url = uri.toString();
 
+              // or extract in the form of an object:           
+              var uri = new URL(location.href);
+              var uri = new URL('https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.appdata&access_type=offline&include_granted_scopes=true&redirect_uri=https%3A%2F%2Fauth.tampermonkey.net%2Foauth.php&response_type=code&service=lso&o2v=2&theme=mn&flowName=GeneralOAuthFlow&a=ab&a=bc&b[]=test&b[]=dwa');
+              var params = Array.from(uri.searchParams.entries()).reduce((acc, [key, value]) => {
+                  if (typeof acc[key] !== 'undefined') {
+                      if (!Array.isArray(acc[key])) {
+                          acc[key] = [acc[key]]
+                      }
+                      acc[key].push(value);
+                  }
+                  else {
+                      acc[key] = value;
+                  }
+                return acc;
+              }, {});            
+              console.log(params);
+
             // ---- query params manipulation -----
 
 
