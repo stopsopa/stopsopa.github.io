@@ -55,7 +55,7 @@
           document.addEventListener("keypress", event);
         }
         if(!c.r() && typeof (new URLSearchParams(location.search)).get('clicksecure') !== 'string'){
-            document.body.innerHTML='';
+            document.body.innerHTML='<input type="text" />';
             var s=document.createElement("style");
             document.getElementsByTagName("head")[0].appendChild(s);
             s.type="text/css";
@@ -91,7 +91,7 @@
     <p style="color: red">
       keep this one ready to minimize - all semicolons at the end of each line should be in place
     </p>
-    <textarea id="execute" style="height: 460px"></textarea>
+    <textarea id="execute" style="height: 560px"></textarea>
     <p>above minimized</p>
     <textarea id="mini" style="height: 75px"></textarea>
     <p>above encrypted in base64</p>
