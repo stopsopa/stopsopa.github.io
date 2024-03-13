@@ -27,6 +27,23 @@
             cwebp -quiet 8.jpeg -resize 0 265 -metadata all -q 60 -o 8.webp
             # more about it: https://github.com/stopsopa/gphotos-research/blob/master/tools/convert-img.sh
           </script>
+          <h2>Generate GIF/webP from video</h2>
+          
+          <script type="editor" data-lang="sh">
+            
+            ffmpeg -i screen-20240306-162509.mp4 -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" -loop 0 gif.gif
+              // this command generated filesize 1.2 mb
+            ffmpeg -i screen-20240306-162509.mp4 -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" -loop 0 webp.webp
+              // this command generated filesize 449kb
+            
+            // width 320
+            // speed 10x faster (0.1*PTS) (0.04 is even faster, but will result in smaller filesize)
+            // start at 5.0 sec
+            // go to 100th second
+            // -loop 0      - loop forever
+            // fps=10,   reduce frames per second to 10 (from default 60)
+            
+          </script>
         </div>
       </div>
     </div>
