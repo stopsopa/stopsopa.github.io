@@ -85,14 +85,14 @@ EXTENSION="${EXTENSION}"
 PD="${PD}"
 
 running:
-ffmpeg -nostdin -y -i "${FILE}" -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10"  "${PD}/${FILENAME}.webp"
+ffmpeg -nostdin -y -i "${FILE}" -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" "${PD}/${FILENAME}_temp.webp" && mv "${PD}/${FILENAME}_temp.webp" "${PD}/${FILENAME}.webp"
 
 EEE
 
     if [ -f "${PD}/${FILENAME}.webp" ]; then
         echo "                      --- skipping generating ${PD}/${FILENAME}.webp ----- already exist"
     else    
-        ffmpeg -nostdin -y -i "${FILE}" -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" "${PD}/${FILENAME}.webp"
+        ffmpeg -nostdin -y -i "${FILE}" -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" "${PD}/${FILENAME}_temp.webp" && mv "${PD}/${FILENAME}_temp.webp" "${PD}/${FILENAME}.webp"
     fi
 
   done <<< "${LIST}"
