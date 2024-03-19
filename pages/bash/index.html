@@ -180,6 +180,10 @@
                 var="${var%"${var##*[![:space:]]}"}"
                 echo -n "${var}"
             }
+            # then trim like this            
+            COUNT="$(trim "${COUNT}")"
+
+            
             trimstring(){ # from: https://jcgoran.github.io/2021/02/07/bash-string-trimming.html
                 if [ $# -ne 1 ]
                 then
@@ -211,9 +215,9 @@
               nothing found
 
             EEE
-            else
-              COUNT="$(echo "${LIST}" | wc -l)"
-              COUNT="$(trim "${COUNT}")"
+            else          
+              COUNT="$(echo "${LIST}" | wc -l | awk '{$1=$1};1')"
+            
               I="0"
               while read -r xxx
               do
