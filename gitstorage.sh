@@ -222,7 +222,6 @@ EEE
     return 1
   fi
 
-
   GITSTORAGESCRIPT="gitstorage-core.sh"
 
   GITSTORAGESCRIPT_WITH_RELATIVE_DIR=".git/${GITSTORAGESCRIPT}"
@@ -256,7 +255,6 @@ EEE
   /bin/bash ".git/gitstorage-core.sh"
 }
 
-
 if [ "${MODE}" = "add" ]; then
 
   if [ ! -f "${_CONFIG}" ]; then
@@ -281,23 +279,53 @@ if [ "${MODE}" = "lock" ]; then
 
   set +x
 
-  LIST="$(find "${1}" -type f)"
-
-  while read -r FILE
-  do
-
-    PD="$(dirname "${FILE}")"
+  if [ ! -d "${LOCKDIR}" ]; then
 
     cat <<EEE
+
+    directory "${LOCKDIR}" doesn't exist
+
+    create it first:
+
+    mkdir -p "${LOCKDIR}"
+
+EEE
+
+    exit 1
+  fi
+
+  LIST="$(find "${1}" -type f 2> /dev/null)"
+
+  if [ "${LIST}" = "" ]; then
+
+    cat <<EEE
+
+    directory "${LOCKDIR}" is empty
+
+    add some files to it first:
+      gits lock src/main/resources/application-local.yaml
+
+    and register them with gitstorage-config.sh
+      gits add "${LOCKDIR}"
+
+EEE
+
+  else
+    while read -r FILE
+    do
+
+      PD="$(dirname "${FILE}")"
+
+      cat <<EEE
 
 mkdir -p "${LOCKDIR}/${PD}"
 cp "${FILE}" "${LOCKDIR}/${FILE}"
 EEE
 
-    mkdir -p "${LOCKDIR}/${PD}"
-    cp "${FILE}" "${LOCKDIR}/${FILE}"
+      mkdir -p "${LOCKDIR}/${PD}"
+      cp "${FILE}" "${LOCKDIR}/${FILE}"
 
-  done <<< "${LIST}"
+    done <<< "${LIST}"
 
   cat <<EEE
 
@@ -307,6 +335,8 @@ now run:
 
 EEE
 
+  fi
+
   exit 0
 fi
 
@@ -315,7 +345,6 @@ if [ "${MODE}" = "init" ]; then
 
   exit 0
 fi
-
 
 if [ "${MODE}" = "state" ]; then
 
