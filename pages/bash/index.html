@@ -420,6 +420,20 @@
           <script type="editor" data-lang="sh">
 
             # more to explore: https://www.youtube.com/watch?v=cnmtKv2kUXs
+            # listing all sections
+              find /usr/share/man/man* -type f -exec basename {} \; | sed 's/.*\.\([^.]\+\)\.[^.]\+$/\1/g' | sort | uniq -c | sort -n -r
+                # from: https://youtu.be/cnmtKv2kUXs?t=251
+              man -k . | sed 's/.* (\([^)]\+\)).*- .*/\1/g' | sort | uniq -c | sort -n -r
+                # from: https://youtu.be/cnmtKv2kUXs?t=268            
+            
+            # list all from sections 4 (for example)
+            man -k 4 .
+                # from: https://youtu.be/cnmtKv2kUXs?t=284
+
+            # find out more about "info pages"
+                # from: https://youtu.be/cnmtKv2kUXs?t=341
+            
+            
 
             # https://www.cyberciti.biz/faq/how-to-add-install-man-pages-on-ubuntu-linux/
             # g(How to install man pages on Ubuntu Linux)
@@ -535,6 +549,11 @@
         <script type="editor" data-lang="sh">
 
           diff <(curl https://foo.com) <(curl https://bar.com)
+
+          # or 
+          vim -d /tmp/1 /tmp/2          
+              # from: https://youtu.be/cnmtKv2kUXs?si=AYBquX6ENjnD5wST&t=268
+          
         </script>
         <h2>tee</h2>
         <script type="editor" data-lang="sh">
