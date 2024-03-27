@@ -431,8 +431,19 @@
                 # from: https://youtu.be/cnmtKv2kUXs?t=284
 
             # find out more about "info pages"
+                # https://www.youtube.com/watch?v=vnBCnd2L0dY
                 # from: https://youtu.be/cnmtKv2kUXs?t=341
-            
+
+            # check if program is builtin command
+            type -a alias
+                # from: https://youtu.be/vnBCnd2L0dY?t=320
+                # then use 
+                  man bash
+                  # and search for "alias"
+
+            # use also infopages
+                info ed
+                info vim
             
 
             # https://www.cyberciti.biz/faq/how-to-add-install-man-pages-on-ubuntu-linux/
@@ -444,6 +455,11 @@
             EOF
             docker images | grep ubuntu | grep 18.04-man
             docker run -it ubuntu:18.04-man bash
+
+            then run
+               lsb_release -a
+
+            
 
             # usage
             man -d # Print extra debugging information
