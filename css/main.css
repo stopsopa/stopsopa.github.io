@@ -1,6 +1,6 @@
 html {
   color: #404040;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
 }
 body {
   font-family: "Open Sans", sans-serif;
@@ -195,3 +195,17 @@ h6 {
 }
 
 /* copy ^^^ */
+
+.scrollToHashAndHighlight {
+  animation: highlighted-post-fade 3s;
+  animation-timing-function: ease-out;
+}
+@keyframes highlighted-post-fade {
+  0% {
+    background-color: hsl(43, 85%, 88%);
+  }
+
+  100% {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}

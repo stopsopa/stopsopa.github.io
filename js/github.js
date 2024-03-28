@@ -647,6 +647,104 @@ log.green("defined", "window.manipulation");
   log.green("defined", "window.toc");
 })();
 
+(function () {
+  /**
+   * Highlighting in stackoverflow style
+   * 
+    .scrollToHashAndHighlight {
+      animation: highlighted-post-fade 3s;
+      animation-timing-function: ease-out;
+    }
+    @keyframes highlighted-post-fade {
+      0% {
+        background-color: hsl(43, 85%, 88%);
+      }
+      100% {
+        background-color: rgba(0, 0, 0, 0);
+      }
+    }
+   */
+  function hashchange() {
+    try {
+      var selector = "#" + trim(location.hash, "#");
+
+      console.log("hashchange");
+
+      var found = document.querySelector(selector);
+
+      log.blue(
+        "executed",
+        "window.scrollToHashAndHighlight found element [" + Boolean(found) + "] -> selector >" + selector + "<"
+      );
+
+      if (found) {
+
+        const list = [];
+
+        let next = found;
+
+        let i = 50;
+
+        const reg = /^h\d+$/;
+
+        while (true) {
+          i -= 1;
+
+          if (window.getComputedStyle(next, null).getPropertyValue("background-color") == "rgba(0, 0, 0, 0)") {
+            list.push(next);
+          }
+
+          next = next.nextElementSibling;
+
+          if (!next) {
+            break;
+          }
+
+          if (i === 0) {
+            log.red("executed", "window.scrollToHashAndHighlight break by counter");
+
+            break;
+          }
+
+          const tag = next.tagName.toLowerCase();
+
+          if (reg.test(tag) && next.hasAttribute("id")) {
+            break;
+          }
+        }
+
+        const first = list[0];
+        const last = list[list.length - 1];
+
+        const div = document.createElement("div");
+
+        document.body.appendChild(div);
+
+        const overFlow = 20;
+
+        div.style.position = "absolute";
+        div.style.left = first.offsetLeft - overFlow + "px";
+        div.style.top = first.offsetTop - overFlow + "px";
+        div.style.width = last.offsetLeft + last.offsetWidth - first.offsetLeft + 2 * overFlow + "px";
+        div.style.height = last.offsetTop + last.offsetHeight - first.offsetTop + 2 * overFlow + "px";
+        div.style.zIndex = -1;
+
+        div.classList.add("scrollToHashAndHighlight");
+
+        window.scrollTo(0, found.offsetTop - 40);
+      }
+    } catch (e) {
+      log.red("error: ", "window.scrollToHashAndHighlight catch()", e);
+    }
+  }
+
+  window.scrollToHashAndHighlight = function () {
+    hashchange();
+
+    window.addEventListener("hashchange", hashchange);
+  };
+})();
+
 (async function () {
   async function loadJs(name, url, test) {
     return new Promise((resolve, reject) => {
@@ -758,7 +856,7 @@ log.green("defined", "window.manipulation");
 
     await window.doace();
 
-    await window.scrollToHash();
+    await window.scrollToHashAndHighlight();
 
     window.githubJsReady = true;
 
@@ -1424,31 +1522,6 @@ body .github-profile:hover {
   };
 
   log.green("defined", "window.doace()");
-})();
-
-// scroll to # permalink
-(function () {
-  if (location.hash === "") {
-    window.scrollToHash = function () {
-      log.blue("executed", "window.scrollToHash location.hash empty");
-    };
-  } else {
-    window.scrollToHash = function () {
-      var selector = "#" + trim(location.hash, "#");
-
-      var found = document.querySelector(selector);
-
-      log.blue("executed", "window.scrollToHash found element [" + Boolean(found) + "] -> selector >" + selector + "<");
-
-      if (found) {
-        // https://stackoverflow.com/a/5007606
-
-        location.href = selector;
-      }
-    };
-  }
-
-  log.green("defined", 'window.scrollToHash() : location.hash == "' + location.hash + '"');
 })();
 
 log.gray("finished", "github.js");
