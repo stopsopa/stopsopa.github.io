@@ -4,7 +4,8 @@
 # look at the very bottom of this script where exact grep sequences are specified with explanation what is supposed to be killed
 #
 
-_SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
+_SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
+_SHELL="$(basename ${_SHELL//-/})"
 case ${_SHELL} in
   zsh)
     __DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
