@@ -1,6 +1,6 @@
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
-_SHELL="${_SHELL##*/}"
+_SHELL="$(basename ${_SHELL//-/})"
 case ${_SHELL} in
   zsh)
     _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
@@ -10,6 +10,8 @@ case ${_SHELL} in
     _PWD="$(pwd)"
     ;;
   sh)
+    # be carefull this will not work when sourcing this file in sh shell
+    # will though work when called /bin/sh my_script.sh from any shell
     _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
     _0="$( basename "${0}" )"
     _SCRIPT="${0}"
