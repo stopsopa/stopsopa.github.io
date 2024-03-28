@@ -281,6 +281,38 @@
           <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">getBoundingClientRect() - relative to the viewport</a>
         <br />
           <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop">offsetLeft, offsetTop, offsetParent, relative to the document or parent</a>
+          
+          <script type="editor" data-lang="js">
+
+            // https://stackoverflow.com/q/22727751
+            // both below return the same value
+            log("scrollTop", document.documentElement.scrollTop); // <- supposedly better
+            log("pageYOffset", window.pageYOffset); // <- not supported below IE 9
+
+          </script>
+
+          
+          <h2>scroll to bottom</h2>
+          <script type="editor" data-lang="js">
+
+            // NOTICE: best method seems to be 
+            https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+
+            // other
+            // chrome Version 86.0.4240.198 (Official Build) (x86_64)
+            // firefox 83.0 (64-bit)
+            // Safari Version 14.0 (15610.4.28.1.9, 15610) macOS Catalina Version 10.15.7
+            // Edge Version 87.0.664.52 (Official build) (64-bit)
+            // IE11 Version: 11.1198.18362.0
+            window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+            # https://stackoverflow.com/a/29971996
+
+            # read more: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+
+          </script>
+
+
+          
           <h3>nth backreference</h3>
           <a href="https://javascript.info/regexp-backreferences">https://javascript.info/regexp-backreferences</a>
           <script type="editor" data-lang="js">
@@ -291,6 +323,7 @@
             // regexp allows inside \' \"
             /("|')(\\?.)*?\1/g  ->  ""He 'said' \"gi\"!" "another string""
           </script>
+          
           <h2>About Promises</h2>
           <a href="https://blog.domenic.me/youre-missing-the-point-of-promises/"
             >g(You're Missing the Point of Promises)</a
@@ -366,15 +399,6 @@
                   })();
                 }
               }
-          </script>
-          <h2>window.pageYOffset document.documentElement.scrollTop</h2>
-
-          <script type="editor" data-lang="js">
-
-            // https://stackoverflow.com/q/22727751
-            // both below return the same value
-            log("scrollTop", document.documentElement.scrollTop); // <- supposedly better
-            log("pageYOffset", window.pageYOffset); // <- not supported below IE 9
           </script>
 
           <h2>isVisible</h2>
@@ -956,20 +980,6 @@
           <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set"
             >https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set</a
           >
-          <h2>scroll to bottom</h2>
-          <script type="editor" data-lang="js">
-
-            // works
-            // chrome Version 86.0.4240.198 (Official Build) (x86_64)
-            // firefox 83.0 (64-bit)
-            // Safari Version 14.0 (15610.4.28.1.9, 15610) macOS Catalina Version 10.15.7
-            // Edge Version 87.0.664.52 (Official build) (64-bit)
-            // IE11 Version: 11.1198.18362.0
-            window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
-            # https://stackoverflow.com/a/29971996
-
-            # read more: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
-          </script>
           <h2>Array</h2>
           <script type="editor" data-lang="js">
 
