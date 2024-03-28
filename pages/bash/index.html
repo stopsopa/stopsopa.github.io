@@ -180,10 +180,10 @@
                 var="${var%"${var##*[![:space:]]}"}"
                 echo -n "${var}"
             }
-            # then trim like this            
+            # then trim like this
             COUNT="$(trim "${COUNT}")"
 
-            
+
             trimstring(){ # from: https://jcgoran.github.io/2021/02/07/bash-string-trimming.html
                 if [ $# -ne 1 ]
                 then
@@ -215,9 +215,9 @@
               nothing found
 
             EEE
-            else          
+            else
               COUNT="$(echo "${LIST}" | wc -l | awk '{$1=$1};1')"
-            
+
               I="0"
               while read -r xxx
               do
@@ -415,10 +415,10 @@
               find /usr/share/man/man* -type f -exec basename {} \; | sed 's/.*\.\([^.]\+\)\.[^.]\+$/\1/g' | sort | uniq -c | sort -n -r | tee /tmp/1
                 # from: https://youtu.be/cnmtKv2kUXs?t=251
               man -k . | sed 's/.* (\([^)]\+\)).*- .*/\1/g' | sort | uniq -c | sort -n -r | tee /tmp/2
-                # from: https://youtu.be/cnmtKv2kUXs?t=268     
+                # from: https://youtu.be/cnmtKv2kUXs?t=268
               # diff
               vim -d /tmp/1 /tmp/2
-            
+
             # list all from sections 4 (for example)
             man -k 4 .
                 # from: https://youtu.be/cnmtKv2kUXs?t=284
@@ -430,14 +430,14 @@
             # check if program is builtin command
             type -a alias
                 # from: https://youtu.be/vnBCnd2L0dY?t=320
-                # then use 
+                # then use
                   man bash
                   # and search for "alias"
 
             # use also infopages
                 info ed
                 info vim
-            
+
 
             # https://www.cyberciti.biz/faq/how-to-add-install-man-pages-on-ubuntu-linux/
             # g(How to install man pages on Ubuntu Linux)
@@ -452,7 +452,7 @@
             then run
                lsb_release -a
 
-            
+
 
             # usage
             man -d # Print extra debugging information
@@ -559,10 +559,9 @@
 
           diff <(curl https://foo.com) <(curl https://bar.com)
 
-          # or 
-          vim -d /tmp/1 /tmp/2          
+          # or
+          vim -d /tmp/1 /tmp/2
               # from: https://youtu.be/cnmtKv2kUXs?si=AYBquX6ENjnD5wST&t=268
-          
         </script>
         <h2>tee</h2>
         <script type="editor" data-lang="sh">

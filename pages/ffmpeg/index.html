@@ -28,79 +28,75 @@
             # more about it: https://github.com/stopsopa/gphotos-research/blob/master/tools/convert-img.sh
           </script>
           <h2>Generate GIF/webP from video</h2>
-          
+
           <script type="editor" data-lang="sh">
-            
-ffmpeg -nostdin -y -i screen-20240306-162509.mp4 -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" -loop 0 gif.gif
-  // this command generated filesize 1.2 mb
-ffmpeg -nostdin -y -i screen-20240306-162509.mp4 -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" -loop 0 output.webp
-  // this command generated filesize 449kb
 
-// width 320
-// speed 10x faster (0.1*PTS) (0.04 is even faster, but will result in smaller filesize)
-// start at 5.0 sec
-// go to 100th second
-// -loop 0      - loop forever (btw it matters also for webp, withut it even webp will not loop)
-// fps=10,   reduce frames per second to 10 (from default 60)
-// -y    - to make it to not ask "File './07 bay/02/bay02.webp' already exists. Overwrite? [y/N]"
-//  -nostdin - make sure for ffmpeg to not be confused by the while loop 
+            ffmpeg -nostdin -y -i screen-20240306-162509.mp4 -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" -loop 0 gif.gif
+              // this command generated filesize 1.2 mb
+            ffmpeg -nostdin -y -i screen-20240306-162509.mp4 -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" -loop 0 output.webp
+              // this command generated filesize 449kb
 
-
-// or doing this in batch
-LIST="$(find . -type f | grep -v "SRT$" | grep -v "DS_Store$" | grep -v "\/DJI_" | grep -v "\/screen-" | grep "\.mp4$" )"
-
-echo ">${LIST}<"
+            // width 320
+            // speed 10x faster (0.1*PTS) (0.04 is even faster, but will result in smaller filesize)
+            // start at 5.0 sec
+            // go to 100th second
+            // -loop 0      - loop forever (btw it matters also for webp, withut it even webp will not loop)
+            // fps=10,   reduce frames per second to 10 (from default 60)
+            // -y    - to make it to not ask "File './07 bay/02/bay02.webp' already exists. Overwrite? [y/N]"
+            //  -nostdin - make sure for ffmpeg to not be confused by the while loop
 
 
-if [ "${LIST}" = "" ]; then
-  cat <<EEE
+            // or doing this in batch
+            LIST="$(find . -type f | grep -v "SRT$" | grep -v "DS_Store$" | grep -v "\/DJI_" | grep -v "\/screen-" | grep "\.mp4$" )"
 
-  nothing found
-
-EEE
-else
-  COUNT="$(echo "${LIST}" | wc -l | awk '{$1=$1};1')"
-  I="0"
-  while read -r FILE
-  do
-    I="$(($I + 1))"
-
-    PD="$(dirname "${FILE}")"
-    PB="$(basename "${FILE}")"
-    EXTENSION="${PB##*.}"
-    FILENAME="${PB%.*}"
-    if [ "${FILENAME}" = "" ]; then
-        FILENAME="${PB}"
-        EXTENSION=""
-    fi
-    if [ "${FILENAME}" = "${PB}" ]; then
-        EXTENSION=""
-    fi
-
-    cat <<EEE
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}
-FILE="${FILE}"
-FILENAME="${FILENAME}"
-EXTENSION="${EXTENSION}"
-PD="${PD}"
-
-running:
-ffmpeg -nostdin -y -i "${FILE}" -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" "${PD}/${FILENAME}_temp.webp" && mv "${PD}/${FILENAME}_temp.webp" "${PD}/${FILENAME}.webp"
-
-EEE
-
-    if [ -f "${PD}/${FILENAME}.webp" ]; then
-        echo "                      --- skipping generating ${PD}/${FILENAME}.webp ----- already exist"
-    else    
-        ffmpeg -nostdin -y -i "${FILE}" -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" "${PD}/${FILENAME}_temp.webp" && mv "${PD}/${FILENAME}_temp.webp" "${PD}/${FILENAME}.webp"
-    fi
-
-  done <<< "${LIST}"
-fi            
+            echo ">${LIST}<"
 
 
+            if [ "${LIST}" = "" ]; then
+              cat <<EEE
 
-            
+              nothing found
+
+            EEE
+            else
+              COUNT="$(echo "${LIST}" | wc -l | awk '{$1=$1};1')"
+              I="0"
+              while read -r FILE
+              do
+                I="$(($I + 1))"
+
+                PD="$(dirname "${FILE}")"
+                PB="$(basename "${FILE}")"
+                EXTENSION="${PB##*.}"
+                FILENAME="${PB%.*}"
+                if [ "${FILENAME}" = "" ]; then
+                    FILENAME="${PB}"
+                    EXTENSION=""
+                fi
+                if [ "${FILENAME}" = "${PB}" ]; then
+                    EXTENSION=""
+                fi
+
+                cat <<EEE
+            >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${I} : ${COUNT}
+            FILE="${FILE}"
+            FILENAME="${FILENAME}"
+            EXTENSION="${EXTENSION}"
+            PD="${PD}"
+
+            running:
+            ffmpeg -nostdin -y -i "${FILE}" -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" "${PD}/${FILENAME}_temp.webp" && mv "${PD}/${FILENAME}_temp.webp" "${PD}/${FILENAME}.webp"
+
+            EEE
+
+                if [ -f "${PD}/${FILENAME}.webp" ]; then
+                    echo "                      --- skipping generating ${PD}/${FILENAME}.webp ----- already exist"
+                else
+                    ffmpeg -nostdin -y -i "${FILE}" -ss 5.0 -t 200 -vf "scale=320:-1,setpts=0.04*PTS,fps=10" "${PD}/${FILENAME}_temp.webp" && mv "${PD}/${FILENAME}_temp.webp" "${PD}/${FILENAME}.webp"
+                fi
+
+              done <<< "${LIST}"
+            fi
           </script>
         </div>
       </div>

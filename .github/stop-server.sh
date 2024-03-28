@@ -114,10 +114,10 @@ function tryToKill {
     fi
 }
 
-echo "attempt to kill server:"
-tryToKill "ps aux | grep node | grep "${FLAG}" | grep -v grep"
+echo "attempt to kill server (grep "${FLAG}"):"
+tryToKill "ps aux | grep "${FLAG}" | grep -v grep"
 
-echo "attempt to kill dev mode:"
+echo "attempt to kill dev mode (grep STOPSOPA_IO_FLAG):"
 tryToKill "ps aux | grep STOPSOPA_IO_FLAG | grep -v grep"
 
 
