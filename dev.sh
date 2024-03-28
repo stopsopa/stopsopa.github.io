@@ -164,4 +164,7 @@ set -e
 
 /bin/bash bash/proc/pid-is-running.sh ${PID5} "pages/bash/xx/xx.inverse.postprocessor.sh" 
 
-tail -n 10000 -f "${LOGFILE}"
+# tail -n 10000 -f "${LOGFILE}"
+
+/bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "tail_${FLAG}" tail -n 10000 -f "${LOGFILE}"
+
