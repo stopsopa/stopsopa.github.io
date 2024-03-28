@@ -678,7 +678,6 @@ log.green("defined", "window.manipulation");
       );
 
       if (found) {
-
         const list = [];
 
         let next = found;
