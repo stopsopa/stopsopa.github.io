@@ -249,15 +249,6 @@
 
             export PATH="${PATH}:/new/path"
 
-            # manpages
-            cat <<EOF | docker build -t ubuntu:18.04-man -
-            FROM ubuntu:18.04
-            RUN apt-get update && yes | unminimize
-            EOF
-            docker images | grep ubuntu | grep 18.04-man
-            docker run -it ubuntu:18.04-man bash
-
-
             # path interpolation
 
             mkdir -p ~/__test/one\ two/three/four
@@ -421,10 +412,12 @@
 
             # more to explore: https://www.youtube.com/watch?v=cnmtKv2kUXs
             # listing all sections
-              find /usr/share/man/man* -type f -exec basename {} \; | sed 's/.*\.\([^.]\+\)\.[^.]\+$/\1/g' | sort | uniq -c | sort -n -r
+              find /usr/share/man/man* -type f -exec basename {} \; | sed 's/.*\.\([^.]\+\)\.[^.]\+$/\1/g' | sort | uniq -c | sort -n -r | tee /tmp/1
                 # from: https://youtu.be/cnmtKv2kUXs?t=251
-              man -k . | sed 's/.* (\([^)]\+\)).*- .*/\1/g' | sort | uniq -c | sort -n -r
-                # from: https://youtu.be/cnmtKv2kUXs?t=268            
+              man -k . | sed 's/.* (\([^)]\+\)).*- .*/\1/g' | sort | uniq -c | sort -n -r | tee /tmp/2
+                # from: https://youtu.be/cnmtKv2kUXs?t=268     
+              # diff
+              vim -d /tmp/1 /tmp/2
             
             # list all from sections 4 (for example)
             man -k 4 .
@@ -451,7 +444,7 @@
             # manpages
             cat <<EOF | docker build -t ubuntu:18.04-man -
             FROM ubuntu:18.04
-            RUN apt-get update && yes | unminimize && apt install manpages manpages-dev manpages-posix manpages-posix-dev manpages-pl manpages-pl-dev
+            RUN apt-get update && yes | unminimize && apt install -y manpages manpages-dev manpages-posix manpages-posix-dev manpages-pl manpages-pl-dev
             EOF
             docker images | grep ubuntu | grep 18.04-man
             docker run -it ubuntu:18.04-man bash
