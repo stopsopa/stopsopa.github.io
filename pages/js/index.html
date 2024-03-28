@@ -290,13 +290,15 @@
             log("pageYOffset", window.pageYOffset); // <- not supported below IE 9
 
           </script>
-
           
-          <h2>scroll to bottom</h2>
+          <h2>scroll to element</h2>
           <script type="editor" data-lang="js">
+            
+            element.scrollIntoView({ behavior: "instant", block: "center", inline: "nearest" });
+                # https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
 
-            // NOTICE: best method seems to be 
-            https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+            window.scrollTo(0, element.offsetTop - 40);
+                # https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollTo
 
             // other
             // chrome Version 86.0.4240.198 (Official Build) (x86_64)
@@ -306,8 +308,6 @@
             // IE11 Version: 11.1198.18362.0
             window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
             # https://stackoverflow.com/a/29971996
-
-            # read more: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
 
           </script>
 
