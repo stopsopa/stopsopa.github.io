@@ -648,6 +648,47 @@ log.green("defined", "window.manipulation");
 })();
 
 (function () {
+  function getOffsetLeft(elem) {
+    var offsetLeft = 0;
+    do {
+      if (!isNaN(elem.offsetLeft)) {
+        offsetLeft += elem.offsetLeft;
+      }
+    } while ((elem = elem.offsetParent));
+    return offsetLeft;
+  }
+  function getOffsetTop(elem) {
+    var offsetTop = 0;
+    do {
+      if (!isNaN(elem.offsetTop)) {
+        offsetTop += elem.offsetTop;
+      }
+    } while ((elem = elem.offsetParent));
+    return offsetTop;
+  }
+  function maxWidth(list) {
+    let i = 0;
+
+    list.forEach(function (el) {
+      if (el.offsetWidth > i) {
+        i = el.offsetWidth;
+      }
+    });
+
+    return i;
+  }
+  function maxHeight(list) {
+    let i = 0;
+
+    list.forEach(function (el) {
+      if (el.offsetHeight > i) {
+        i = el.offsetHeight;
+      }
+    });
+
+    return i;
+  }
+
   /**
    * Highlighting in stackoverflow style
    * 
@@ -665,16 +706,16 @@ log.green("defined", "window.manipulation");
     }
    */
   function hashchange() {
+    var selector = trim(location.hash, "#");
+
+    console.log("hashchange");
+
     try {
-      var selector = "#" + trim(location.hash, "#");
-
-      console.log("hashchange");
-
-      var found = document.querySelector(selector);
+      var found = document.querySelector(`[id="${selector}"]`) || document.querySelector(`#${selector}`);
 
       log.blue(
         "executed",
-        "window.scrollToHashAndHighlight found element [" + Boolean(found) + "] -> selector >" + selector + "<"
+        `window.scrollToHashAndHighlight found element [" + Boolean(found) + "] -> selector >#${selector}< >[id="${selector}"]<`
       );
 
       if (found) {
@@ -715,6 +756,8 @@ log.green("defined", "window.manipulation");
         const first = list[0];
         const last = list[list.length - 1];
 
+        // console.log("list: ", list, "first: ", first, "last: ", last, "found: ", found);
+
         const div = document.createElement("div");
 
         document.body.appendChild(div);
@@ -722,19 +765,44 @@ log.green("defined", "window.manipulation");
         const overFlowX = 15;
         const overFlowY = 5;
 
+        const maxW = maxWidth(list);
+
+        const firstLeft = getOffsetLeft(first);
+        const firstTop = getOffsetTop(first);
+        const lastLeft = getOffsetLeft(last);
+        const lastTop = getOffsetTop(last);
+
         div.style.position = "absolute";
-        div.style.left = first.offsetLeft - overFlowX + "px";
-        div.style.top = first.offsetTop - overFlowY + "px";
-        div.style.width = last.offsetLeft + last.offsetWidth - first.offsetLeft + 2 * overFlowX + "px";
-        div.style.height = last.offsetTop + last.offsetHeight - first.offsetTop + 2 * overFlowY + "px";
         div.style.zIndex = -1;
+        // div.style.left = first.offsetLeft - overFlowX + "px";
+        // div.style.top = first.offsetTop - overFlowY + "px";
+        // div.style.width = last.offsetLeft - first.offsetLeft + 2 * overFlowX + "px";
+        // div.style.height = last.offsetTop - first.offsetTop + 2 * overFlowY + "px";
+        div.style.left = firstLeft - overFlowX + "px";
+        div.style.top = firstTop - overFlowY + "px";
+        div.style.width = lastLeft - firstLeft + maxW + 2 * overFlowX + "px";
+        div.style.height = lastTop - firstTop + last.offsetHeight + 2 * overFlowY + "px";
+
+        // console.log({
+        //   // "first.offsetLeft": first.offsetLeft,
+        //   // "first.offsetTop": first.offsetTop,
+        //   // "last.offsetLeft": last.offsetLeft,
+        //   // "last.offsetTop": last.offsetTop,
+        //   firstLeft: firstLeft,
+        //   firstTop: firstTop,
+        //   lastLeft: lastLeft,
+        //   lastTop: lastTop,
+        // });
 
         div.classList.add("scrollToHashAndHighlight");
 
-        window.scrollTo(0, found.offsetTop - 100);
+        // setTimeout(() => {
+        // found.scrollIntoView();
+        window.scrollTo(0, getOffsetTop(found) - 100);
+        // }, 1000);
       }
     } catch (e) {
-      log.red("error: ", "window.scrollToHashAndHighlight catch()", e);
+      log.red("error: ", `window.scrollToHashAndHighlight catch(), selector >#${selector}< >[id="${selector}"]<`, e);
     }
   }
 
