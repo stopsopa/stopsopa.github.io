@@ -236,6 +236,37 @@ test page githubpages: /research/urlwizzard/urlwizzard.html
 </head>
 ```
 
+# window.scrollToHashAndHighligh
+
+In order to prevent dislocating yellow background under block pointed out by location.hash usage of .cards elements.
+.cards elements are position:relative and using them to surround the block which height might be changing dynamically might help.
+
+```html
+
+
+    <body class="layout" toc>
+        <div class="body">
+            <div class="inside">
+
+              <div class="cards">
+                <h2>Index</h2>
+                <script type="editor" data-lang="sh">
+                </script>
+              </div>
+
+              <div class="cards">
+                <h2>dynamic content</h2>
+                <button onclick="document.querySelector('.toggle').classList.toggle('show')"></button>
+                <div class="toggle" style="height: 50px;">toggled box</div>
+              </div>
+
+              <div class="cards">
+                <h2>Index</h2>
+                <script type="editor" data-lang="sh">
+                </script>
+              </div>
+```
+
 # uglify
 
 If anywhere in the repository file _.uglify.js will be created it will be processed with babel and next by uglifyjs and exported as _.uglify.min.js
