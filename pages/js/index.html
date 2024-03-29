@@ -292,6 +292,30 @@
             // both below return the same value
             log("scrollTop", document.documentElement.scrollTop); // <- supposedly better
             log("pageYOffset", window.pageYOffset); // <- not supported below IE 9
+
+            // because offsetTop and offsetLeft are returning position relative to it's closest RELATIVE
+            // then in case if we would like to create element as a direct child of the body and position it above 
+            // particular div which is in it's own RELATIVE element then it is necessary to calculate it's absolute (to document)
+            // position using special functions            
+            function getOffsetLeft(elem) {
+              var offsetLeft = 0;
+              do {
+                if (!isNaN(elem.offsetLeft)) {
+                  offsetLeft += elem.offsetLeft;
+                }
+              } while ((elem = elem.offsetParent));
+              return offsetLeft;
+            }
+            function getOffsetTop(elem) {
+              var offsetTop = 0;
+              do {
+                if (!isNaN(elem.offsetTop)) {
+                  offsetTop += elem.offsetTop;
+                }
+              } while ((elem = elem.offsetParent));
+              return offsetTop;
+            }
+            
           </script>
 
           <h2>scroll to element</h2>
