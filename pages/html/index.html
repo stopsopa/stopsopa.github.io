@@ -8,6 +8,14 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
+    <style>
+      .toggle {
+        display: none;
+        &.show {
+          display: block;
+        }
+      }
+    </style>
   </head>
   <body class="layout">
     <div class="body">
@@ -19,34 +27,36 @@
           </ul>
         </div>
         <h2>Lorem Ipsum</h2>
-        <div class="card">
-          <h2>&lt;dialog&gt;</h2>
-          <a href="https://youtu.be/GDzzIlRhEzM">https://youtu.be/GDzzIlRhEzM</a>
-          <h2>generator</h2>
-          <a href="https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs"
-            >https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs</a
-          >
+        <h2>&lt;dialog&gt;</h2>
+        <a href="https://youtu.be/GDzzIlRhEzM">https://youtu.be/GDzzIlRhEzM</a>
+        <h2>generator</h2>
+        <a href="https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs"
+          >https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs</a
+        >
 
-          <h2>input[type="range"]</h2>
-          <script type="editor" data-lang="html">
+        <h2>input[type="range"]</h2>
+        <script type="editor" data-lang="html">
 
-            <input type="range" id="height" min="1" max="100" step="1" value="80" />
-            &lt;script>
-              const log = console.log;
-              const h = document.querySelector("#height");
+          <input type="range" id="height" min="1" max="100" step="1" value="80" />
+          &lt;script>
+            const log = console.log;
+            const h = document.querySelector("#height");
 
-              function range(element, event) {
-                function hc() {
-                  event(parseInt(element.value, 10));
-                }
-                element.addEventListener("change", hc);
-                element.addEventListener("input", hc);
-                hc();
+            function range(element, event) {
+              function hc() {
+                event(parseInt(element.value, 10));
               }
+              element.addEventListener("change", hc);
+              element.addEventListener("input", hc);
+              hc();
+            }
 
-              range(h, (v) => console.log("h", v));
-            &lt;/script>
-          </script>
+            range(h, (v) => console.log("h", v));
+          &lt;/script>
+        </script>
+
+
+        <div style="position: relative">
           <h2>input[type="radio"]</h2>
           <script type="editor" data-lang="html">
 
@@ -85,44 +95,45 @@
 
             &lt;/script>
           </script>
-          <h2>element size width height</h2>
+        </div>
+        <h2>element size width height</h2>
 
-          <a href="https://www.javascripttutorial.net/javascript-dom/javascript-width-height/"
-            >https://www.javascripttutorial.net/javascript-dom/javascript-width-height/</a
-          >
-          <br />
-          <p>see also src/lib/getAbsoluteHeightOfElement.js in icare</p>
+        <a href="https://www.javascripttutorial.net/javascript-dom/javascript-width-height/"
+          >https://www.javascripttutorial.net/javascript-dom/javascript-width-height/</a
+        >
+        <br />
+        <p>see also src/lib/getAbsoluteHeightOfElement.js in icare</p>
 
-          <style>
-            #box-size {
-              background-color: antiquewhite;
-              border: 10px solid black;
-              margin: 12px;
-              padding: 15px;
-              display: inline-block;
-              width: 100px;
-              height: 100px;
-            }
-            #box-size-target {
-              font-family: monospace;
-              font-size: 12px;
-            }
-            .flex {
-              display: flex;
-              align-items: center;
-            }
-          </style>
-          <div class="flex">
-            <div id="box-size"></div>
-            <pre id="box-size-target"></pre>
-          </div>
-          <script>
-            var box = document.querySelector("#box-size");
-            var boxt = document.querySelector("#box-size-target");
-            const domRect = box.getBoundingClientRect();
-            let style = getComputedStyle(box);
+        <style>
+          #box-size {
+            background-color: antiquewhite;
+            border: 10px solid black;
+            margin: 12px;
+            padding: 15px;
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+          }
+          #box-size-target {
+            font-family: monospace;
+            font-size: 12px;
+          }
+          .flex {
+            display: flex;
+            align-items: center;
+          }
+        </style>
+        <div class="flex">
+          <div id="box-size"></div>
+          <pre id="box-size-target"></pre>
+        </div>
+        <script>
+          var box = document.querySelector("#box-size");
+          var boxt = document.querySelector("#box-size-target");
+          const domRect = box.getBoundingClientRect();
+          let style = getComputedStyle(box);
 
-            boxt.innerText = `
+          boxt.innerText = `
 #box-size {
   border: 10px solid black;
   margin: 12px;
@@ -139,8 +150,7 @@ let style = getComputedStyle(box);
 style.borderLeftWidth = ${style.borderLeftWidth}
 style.marginLeft = ${style.marginLeft}
 `;
-          </script>
-        </div>
+        </script>
       </div>
     </div>
     <script src="/js/github.js"></script>

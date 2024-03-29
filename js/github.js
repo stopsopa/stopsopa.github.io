@@ -6,6 +6,39 @@ var log = (function () {
   }
 })();
 
+function debounce(fn, delay) {
+  var timer = null;
+  return function () {
+    var context = this,
+      args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      fn.apply(context, args);
+    }, delay);
+  };
+}
+
+function debounceOnce(fn, delay) {
+  var timer = null,
+    stop = false;
+  return function () {
+    if (stop) {
+      return;
+    }
+    var context = this,
+      args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      stop = true;
+      fn.apply(context, args);
+    }, delay);
+  };
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function trim(string, charlist, direction) {
   direction = direction || "rl";
   charlist = (charlist || "").replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
@@ -705,6 +738,15 @@ log.green("defined", "window.manipulation");
       }
     }
    */
+  function excludeElement(el) {
+    const tag = el.tagName.toLowerCase();
+
+    if (tag === "script") {
+      return true;
+    }
+
+    return false;
+  }
   function hashchange() {
     var selector = trim(location.hash, "#");
 
@@ -715,7 +757,8 @@ log.green("defined", "window.manipulation");
 
       log.blue(
         "executed",
-        `window.scrollToHashAndHighlight found element [" + Boolean(found) + "] -> selector >#${selector}< >[id="${selector}"]<`
+        `window.scrollToHashAndHighlight found element [" + Boolean(found) + "] -> selector >#${selector}< >[id="${selector}"]<`,
+        found
       );
 
       if (found) {
@@ -730,7 +773,10 @@ log.green("defined", "window.manipulation");
         while (true) {
           i -= 1;
 
-          if (window.getComputedStyle(next, null).getPropertyValue("background-color") == "rgba(0, 0, 0, 0)") {
+          if (
+            window.getComputedStyle(next, null).getPropertyValue("background-color") == "rgba(0, 0, 0, 0)" &&
+            !excludeElement(next)
+          ) {
             list.push(next);
           }
 
@@ -757,49 +803,76 @@ log.green("defined", "window.manipulation");
         const last = list[list.length - 1];
 
         // console.log("list: ", list, "first: ", first, "last: ", last, "found: ", found);
-
-        const div = document.createElement("div");
-
-        document.body.appendChild(div);
-
+        /**
+         * Create div with yellow background in offsetParent (closest element with position:relative;)
+         */
+        [...document.querySelectorAll(".scrollToHashAndHighlight")].forEach((e) => {
+          e.remove();
+        });
+        const div = document.createElement("div");        
+        first.offsetParent.appendChild(div);
         const overFlowX = 15;
         const overFlowY = 5;
-
         const maxW = maxWidth(list);
-
-        const firstLeft = getOffsetLeft(first);
-        const firstTop = getOffsetTop(first);
-        const lastLeft = getOffsetLeft(last);
-        const lastTop = getOffsetTop(last);
-
+        const firstLeft = first.offsetLeft
+        const firstTop = first.offsetTop
+        const lastLeft = last.offsetLeft
+        const lastTop = last.offsetTop
         div.style.position = "absolute";
         div.style.zIndex = -1;
-        // div.style.left = first.offsetLeft - overFlowX + "px";
-        // div.style.top = first.offsetTop - overFlowY + "px";
-        // div.style.width = last.offsetLeft - first.offsetLeft + 2 * overFlowX + "px";
-        // div.style.height = last.offsetTop - first.offsetTop + 2 * overFlowY + "px";
         div.style.left = firstLeft - overFlowX + "px";
         div.style.top = firstTop - overFlowY + "px";
         div.style.width = lastLeft - firstLeft + maxW + 2 * overFlowX + "px";
         div.style.height = lastTop - firstTop + last.offsetHeight + 2 * overFlowY + "px";
-
+        div.classList.add("scrollToHashAndHighlight");
+        window.scrollTo(0, getOffsetTop(found) - 100);
+        setTimeout(function () {
+          div.remove();
+        }, 3000);
         // console.log({
-        //   // "first.offsetLeft": first.offsetLeft,
-        //   // "first.offsetTop": first.offsetTop,
-        //   // "last.offsetLeft": last.offsetLeft,
-        //   // "last.offsetTop": last.offsetTop,
-        //   firstLeft: firstLeft,
-        //   firstTop: firstTop,
-        //   lastLeft: lastLeft,
-        //   lastTop: lastTop,
+        //   "div.style.left": firstLeft - overFlowX,
+        //   "div.style.top": firstTop - overFlowY,
+        //   "div.style.width": lastLeft - firstLeft + maxW + 2 * overFlowX,
+        //   "div.style.height": lastTop - firstTop + last.offsetHeight + 2 * overFlowY,
+        //   list,
+        //   offsetParent: first.offsetParent,
         // });
 
-        div.classList.add("scrollToHashAndHighlight");
 
-        // setTimeout(() => {
-        // found.scrollIntoView();
-        window.scrollTo(0, getOffsetTop(found) - 100);
-        // }, 1000);
+        /**
+         * create div with yellow background always in document.body
+         */
+        // [...document.querySelectorAll(".scrollToHashAndHighlight")].forEach((e) => {
+        //   e.remove();
+        // });
+        // const div = document.createElement("div");
+        // document.body.appendChild(div);
+        // const overFlowX = 15;
+        // const overFlowY = 5;
+        // const maxW = maxWidth(list);
+        // const firstLeft = getOffsetLeft(first);
+        // const firstTop = getOffsetTop(first);
+        // const lastLeft = getOffsetLeft(last);
+        // const lastTop = getOffsetTop(last);
+        // div.style.position = "absolute";
+        // div.style.zIndex = -1;
+        // div.style.left = firstLeft - overFlowX + "px";
+        // div.style.top = firstTop - overFlowY + "px";
+        // div.style.width = lastLeft - firstLeft + maxW + 2 * overFlowX + "px";
+        // div.style.height = lastTop - firstTop + last.offsetHeight + 2 * overFlowY + "px";
+        // div.classList.add("scrollToHashAndHighlight");
+        // window.scrollTo(0, getOffsetTop(found) - 100);
+        // // setTimeout(function () {
+        // //   div.remove();
+        // // }, 3000);
+        // console.log({
+        //   "div.style.left": firstLeft - overFlowX,
+        //   "div.style.top": firstTop - overFlowY,
+        //   "div.style.width": lastLeft - firstLeft + maxW + 2 * overFlowX,
+        //   "div.style.height": lastTop - firstTop + last.offsetHeight + 2 * overFlowY,
+        //   list,
+        //   offsetParent: first.offsetParent,
+        // });
       }
     } catch (e) {
       log.red("error: ", `window.scrollToHashAndHighlight catch(), selector >#${selector}< >[id="${selector}"]<`, e);
@@ -812,156 +885,6 @@ log.green("defined", "window.manipulation");
     window.addEventListener("hashchange", hashchange);
   };
 })();
-
-(async function () {
-  async function loadJs(name, url, test) {
-    return new Promise((resolve, reject) => {
-      if (typeof test !== "function") {
-        throw new Error("loadJs error: test should be a function for " + name + " async loader");
-      }
-
-      if (typeof url !== "string") {
-        throw new Error("loadJs error: url should be a string for " + name + " async loader");
-      }
-
-      // https://stackoverflow.com/a/524721
-      var head = document.head || document.getElementsByTagName("head")[0],
-        script = document.createElement("script");
-
-      var handler = setInterval(function () {
-        if (test()) {
-          clearInterval(handler);
-
-          log.yellow("loadJs", `${name} loaded`);
-
-          resolve();
-        }
-      }, 100);
-
-      script.setAttribute("src", url);
-
-      head.appendChild(script);
-    });
-  }
-
-  try {
-    await loadJs("polyfill", "/noprettier/polyfill.js", function () {
-      try {
-        return window.sasync.loaded.polyfill_js;
-      } catch (e) {
-        return false;
-      }
-    });
-
-    await Promise.all([
-      loadJs("preprocessed.js", "/public/preprocessed.js", function () {
-        try {
-          return typeof window.env === "function";
-        } catch (e) {
-          return false;
-        }
-      }),
-      loadJs("permalink", "/noprettier/permalink-my.js", function () {
-        try {
-          return typeof window.sasync.loaded.mountpermalink === "function";
-        } catch (e) {
-          return false;
-        }
-      }),
-      loadJs("lodash", "/noprettier/lodash-4.17.10.js", function () {
-        try {
-          return typeof _.VERSION === "string";
-        } catch (e) {}
-        return false;
-      }),
-      loadJs("ace", "/noprettier/ace/ace-builds-1.15.0/src-min-noconflict/ace.js", function () {
-        // how to use: https://ace.c9.io/#nav=howto
-        try {
-          return typeof window.ace.edit === "function";
-        } catch (e) {}
-        return false;
-      }),
-    ]);
-
-    await loadJs(
-      "ace extension ext-linking",
-      "/noprettier/ace/ace-builds-1.15.0/src-min-noconflict/ext-linking.js",
-      function () {
-        try {
-          return true;
-          return window.sasync.loaded.polyfill_js;
-        } catch (e) {
-          return false;
-        }
-      }
-    );
-
-    if (!/^https?:\/\//.test(env("GITHUB_SOURCES_PREFIX"))) {
-      throw new Error(`GITHUB_SOURCES_PREFIX env var is not defined or invalid`);
-    }
-
-    log.blue("Promise.all loadJs loaded");
-
-    await window.buildHeader();
-
-    await window.buildFooter();
-
-    await window.sasync.loaded.mountpermalink();
-
-    await window.toc();
-
-    await window.do_sort();
-
-    await window.urlwizzard();
-
-    if (typeof window.beforeAceEventPromise === "function") {
-      log.blue("executed", "window.doace() waiting for window.beforeAceEventPromise() found");
-
-      await window.beforeAceEventPromise();
-    } else {
-      log.blue("executed", "window.doace() waiting for window.beforeAceEventPromise() NOT found");
-    }
-
-    await window.doace();
-
-    await window.scrollToHashAndHighlight();
-
-    window.githubJsReady = true;
-
-    log.blue(
-      "DOMContentLoaded",
-      "window.doace [triggered in github.js] -> window.githubJsReady = true defined (see snippet how to handle it next to this log)"
-    );
-
-    // (async function () {
-    //   await new Promise((resolve) => {
-    //     (function repeat() {
-    //       if (window.githubJsReady) {
-    //         resolve();
-    //       } else {
-    //         setTimeout(repeat, 50);
-    //       }
-    //     })();
-    //   });
-
-    //   log("do yours stuff");
-    // })();
-  } catch (e) {
-    log.red(
-      "GLOBAL CATCH ERROR: ",
-      JSON.stringify(
-        {
-          message: e.message,
-          stack: e.stack.split("\n"),
-        },
-        null,
-        4
-      )
-    );
-  }
-})();
-
-log.green("defined", "window.trim");
 
 window.buildHeader = async function () {
   document.querySelector("body > header") ||
@@ -1592,37 +1515,152 @@ body .github-profile:hover {
   log.green("defined", "window.doace()");
 })();
 
-log.gray("finished", "github.js");
+(async function () {
+  async function loadJs(name, url, test) {
+    return new Promise((resolve, reject) => {
+      if (typeof test !== "function") {
+        throw new Error("loadJs error: test should be a function for " + name + " async loader");
+      }
 
-function debounce(fn, delay) {
-  var timer = null;
-  return function () {
-    var context = this,
-      args = arguments;
-    clearTimeout(timer);
-    timer = setTimeout(function () {
-      fn.apply(context, args);
-    }, delay);
-  };
-}
+      if (typeof url !== "string") {
+        throw new Error("loadJs error: url should be a string for " + name + " async loader");
+      }
 
-function debounceOnce(fn, delay) {
-  var timer = null,
-    stop = false;
-  return function () {
-    if (stop) {
-      return;
+      // https://stackoverflow.com/a/524721
+      var head = document.head || document.getElementsByTagName("head")[0],
+        script = document.createElement("script");
+
+      var handler = setInterval(function () {
+        if (test()) {
+          clearInterval(handler);
+
+          log.yellow("loadJs", `${name} loaded`);
+
+          resolve();
+        }
+      }, 100);
+
+      script.setAttribute("src", url);
+
+      head.appendChild(script);
+    });
+  }
+
+  try {
+    await loadJs("polyfill", "/noprettier/polyfill.js", function () {
+      try {
+        return window.sasync.loaded.polyfill_js;
+      } catch (e) {
+        return false;
+      }
+    });
+
+    await Promise.all([
+      loadJs("preprocessed.js", "/public/preprocessed.js", function () {
+        try {
+          return typeof window.env === "function";
+        } catch (e) {
+          return false;
+        }
+      }),
+      loadJs("permalink", "/noprettier/permalink-my.js", function () {
+        try {
+          return typeof window.sasync.loaded.mountpermalink === "function";
+        } catch (e) {
+          return false;
+        }
+      }),
+      loadJs("lodash", "/noprettier/lodash-4.17.10.js", function () {
+        try {
+          return typeof _.VERSION === "string";
+        } catch (e) {}
+        return false;
+      }),
+      loadJs("ace", "/noprettier/ace/ace-builds-1.15.0/src-min-noconflict/ace.js", function () {
+        // how to use: https://ace.c9.io/#nav=howto
+        try {
+          return typeof window.ace.edit === "function";
+        } catch (e) {}
+        return false;
+      }),
+    ]);
+
+    await loadJs(
+      "ace extension ext-linking",
+      "/noprettier/ace/ace-builds-1.15.0/src-min-noconflict/ext-linking.js",
+      function () {
+        try {
+          return true;
+          return window.sasync.loaded.polyfill_js;
+        } catch (e) {
+          return false;
+        }
+      }
+    );
+
+    if (!/^https?:\/\//.test(env("GITHUB_SOURCES_PREFIX"))) {
+      throw new Error(`GITHUB_SOURCES_PREFIX env var is not defined or invalid`);
     }
-    var context = this,
-      args = arguments;
-    clearTimeout(timer);
-    timer = setTimeout(function () {
-      stop = true;
-      fn.apply(context, args);
-    }, delay);
-  };
-}
 
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+    log.blue("Promise.all loadJs loaded");
+
+    await window.buildHeader();
+
+    await window.buildFooter();
+
+    await window.sasync.loaded.mountpermalink();
+
+    await window.toc();
+
+    await window.do_sort();
+
+    await window.urlwizzard();
+
+    if (typeof window.beforeAceEventPromise === "function") {
+      log.blue("executed", "window.doace() waiting for window.beforeAceEventPromise() found");
+
+      await window.beforeAceEventPromise();
+    } else {
+      log.blue("executed", "window.doace() waiting for window.beforeAceEventPromise() NOT found");
+    }
+
+    await window.doace();
+
+    await window.scrollToHashAndHighlight();
+
+    window.githubJsReady = true;
+
+    log.blue(
+      "DOMContentLoaded",
+      "window.doace [triggered in github.js] -> window.githubJsReady = true defined (see snippet how to handle it next to this log)"
+    );
+
+    // (async function () {
+    //   await new Promise((resolve) => {
+    //     (function repeat() {
+    //       if (window.githubJsReady) {
+    //         resolve();
+    //       } else {
+    //         setTimeout(repeat, 50);
+    //       }
+    //     })();
+    //   });
+
+    //   log("do yours stuff");
+    // })();
+  } catch (e) {
+    log.red(
+      "GLOBAL CATCH ERROR: ",
+      JSON.stringify(
+        {
+          message: e.message,
+          stack: e.stack.split("\n"),
+        },
+        null,
+        4
+      )
+    );
+  }
+})();
+
+log.gray("finished loading", "github.js");

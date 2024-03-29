@@ -199,6 +199,8 @@ h6 {
 .scrollToHashAndHighlight {
   animation: highlighted-post-fade 3s;
   animation-timing-function: ease-out;
+
+  /* background-color: hsl(43, 85%, 88%); */
 }
 @keyframes highlighted-post-fade {
   0% {
