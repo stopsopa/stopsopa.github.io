@@ -203,9 +203,11 @@ h6 {
 @keyframes highlighted-post-fade {
   0% {
     background-color: hsl(43, 85%, 88%);
+    transform: scale(1.02, 1.02);
   }
 
   100% {
     background-color: rgba(0, 0, 0, 0);
+    transform: scale(1, 1);
   }
 }

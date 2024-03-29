@@ -719,18 +719,19 @@ log.green("defined", "window.manipulation");
 
         document.body.appendChild(div);
 
-        const overFlow = 20;
+        const overFlowX = 15;
+        const overFlowY = 5;
 
         div.style.position = "absolute";
-        div.style.left = first.offsetLeft - overFlow + "px";
-        div.style.top = first.offsetTop - overFlow + "px";
-        div.style.width = last.offsetLeft + last.offsetWidth - first.offsetLeft + 2 * overFlow + "px";
-        div.style.height = last.offsetTop + last.offsetHeight - first.offsetTop + 2 * overFlow + "px";
+        div.style.left = first.offsetLeft - overFlowX + "px";
+        div.style.top = first.offsetTop - overFlowY + "px";
+        div.style.width = last.offsetLeft + last.offsetWidth - first.offsetLeft + 2 * overFlowX + "px";
+        div.style.height = last.offsetTop + last.offsetHeight - first.offsetTop + 2 * overFlowY + "px";
         div.style.zIndex = -1;
 
         div.classList.add("scrollToHashAndHighlight");
 
-        window.scrollTo(0, found.offsetTop - 40);
+        window.scrollTo(0, found.offsetTop - 100);
       }
     } catch (e) {
       log.red("error: ", "window.scrollToHashAndHighlight catch()", e);
