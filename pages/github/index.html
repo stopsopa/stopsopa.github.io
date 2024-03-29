@@ -18,42 +18,40 @@
             <li><a href="github-actions.html">Github Actions</a></li>
           </ul>
         </div>
-        <div class="cards">
-          <h2>useful</h2>
-          <script type="editor" data-lang="sh">
+        <h2>useful</h2>
+        <script type="editor" data-lang="sh">
 
-            ProTip! Add .patch or .diff to the end of URLs for Git’s plaintext views.
-          </script>
+          ProTip! Add .patch or .diff to the end of URLs for Git’s plaintext views.
+        </script>
 
-          <h2>PR filtering tags</h2>
-          <script type="editor" data-lang="sh">
+        <h2>PR filtering tags</h2>
+        <script type="editor" data-lang="sh">
 
-            author:@me
-            author:sdzialowski
-          </script>
-          <h2>Age of repository:</h2>
-          <script type="editor" data-lang="sh">
+          author:@me
+          author:sdzialowski
+        </script>
+        <h2>Age of repository:</h2>
+        <script type="editor" data-lang="sh">
 
-            https://api.github.com/repos/{:owner}/{:repository}
-                # and look for field: created_at
-                    # from: https://stackoverflow.com/a/23612723
-          </script>
-          <h2>Search in github and it's limitations</h2>
-          <a href="https://stackoverflow.com/a/33237640">link</a>
-          <h2>Github Actions</h2>
-          <script type="editor" data-lang="sh">
+          https://api.github.com/repos/{:owner}/{:repository}
+              # and look for field: created_at
+                  # from: https://stackoverflow.com/a/23612723
+        </script>
+        <h2>Search in github and it's limitations</h2>
+        <a href="https://stackoverflow.com/a/33237640">link</a>
+        <h2>Github Actions</h2>
+        <script type="editor" data-lang="sh">
 
-            # open pull request from action:
-            https://github.com/nodejs/node/blob/8a4d7ac6b50ff425b22a0a0a2ad7ec0ae9f31587/.github/workflows/timezone-update.yml#L42
-          </script>
-          <h2>Size of the repository</h2>
-          <script type="editor" data-lang="sh">
+          # open pull request from action:
+          https://github.com/nodejs/node/blob/8a4d7ac6b50ff425b22a0a0a2ad7ec0ae9f31587/.github/workflows/timezone-update.yml#L42
+        </script>
+        <h2>Size of the repository</h2>
+        <script type="editor" data-lang="sh">
 
-            curl -u stopsopa:ghp_57DCxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDw https://api.github.com/repos/stopsopa/gigant | jq '.size' | numfmt --from-unit=K --to=iec
-              # to generate token go to: https://github.com/settings/tokens
-              # current token can be found in google notes "github - Personal access tokens"
-          </script>
-        </div>
+          curl -u stopsopa:ghp_57DCxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDw https://api.github.com/repos/stopsopa/gigant | jq '.size' | numfmt --from-unit=K --to=iec
+            # to generate token go to: https://github.com/settings/tokens
+            # current token can be found in google notes "github - Personal access tokens"
+        </script>
       </div>
     </div>
     <script src="/js/github.js"></script>

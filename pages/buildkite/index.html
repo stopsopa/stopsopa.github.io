@@ -12,84 +12,82 @@
   <body class="layout" toc>
     <div class="body">
       <div class="inside">
-        <div class="cards">
-          <h2>Preparing DO machine</h2>
-          Use centos machine, add iptables before you start intalling docker
-          <a href="https://linuxize.com/post/how-to-install-iptables-on-centos-7/"> link </a>
-          then install docker
-          <a href="https://docs.docker.com/engine/install/centos/#install-using-the-repository">link </a>
+        <h2>Preparing DO machine</h2>
+        Use centos machine, add iptables before you start intalling docker
+        <a href="https://linuxize.com/post/how-to-install-iptables-on-centos-7/"> link </a>
+        then install docker
+        <a href="https://docs.docker.com/engine/install/centos/#install-using-the-repository">link </a>
 
-          <h2>change user home directory</h2>
-          <script type="editor" data-lang="sh">
+        <h2>change user home directory</h2>
+        <script type="editor" data-lang="sh">
 
-            # WARNING: run as root
+          # WARNING: run as root
 
-            systemctl stop buildkite-agent
-            kill -9 xxxxxx && usermod -m -d /home/buildkite-agent buildkite-agent
-            sed -i -r "s/Environment=HOME=\/var\/lib\/buildkite-agent/Environment=HOME=\/home\/buildkite-agent/g" /lib/systemd/system/buildkite-agent.service
-            sed -i -r "s/Environment=HOME=\/var\/lib\/buildkite-agent/Environment=HOME=\/home\/buildkite-agent/g" /lib/systemd/system/buildkite-agent@.service
-            sed -i -r "s/build-path=\"\/var\/lib\/buildkite-agent\/builds\"/build-path=\"\/home\/buildkite-agent\/builds\"/g" /etc/buildkite-agent/buildkite-agent.cfg
-            systemctl start buildkite-agent
+          systemctl stop buildkite-agent
+          kill -9 xxxxxx && usermod -m -d /home/buildkite-agent buildkite-agent
+          sed -i -r "s/Environment=HOME=\/var\/lib\/buildkite-agent/Environment=HOME=\/home\/buildkite-agent/g" /lib/systemd/system/buildkite-agent.service
+          sed -i -r "s/Environment=HOME=\/var\/lib\/buildkite-agent/Environment=HOME=\/home\/buildkite-agent/g" /lib/systemd/system/buildkite-agent@.service
+          sed -i -r "s/build-path=\"\/var\/lib\/buildkite-agent\/builds\"/build-path=\"\/home\/buildkite-agent\/builds\"/g" /etc/buildkite-agent/buildkite-agent.cfg
+          systemctl start buildkite-agent
 
-            vi /lib/systemd/system/buildkite-agent.service
+          vi /lib/systemd/system/buildkite-agent.service
 
-            #sed -i -r "s/^(buildkite-agent.+)\/var\/lib\/buildkite-agent(.+)\$/\1\/home\/buildkite-agent\2/g" passwd
-            #vipw
-            #    # from: https://unix.stackexchange.com/a/102336
+          #sed -i -r "s/^(buildkite-agent.+)\/var\/lib\/buildkite-agent(.+)\$/\1\/home\/buildkite-agent\2/g" passwd
+          #vipw
+          #    # from: https://unix.stackexchange.com/a/102336
 
-            systemctl stop buildkite-agent
-            systemctl disable buildkite-agent
-            systemctl enable --now buildkite-agent@1
-            systemctl enable --now buildkite-agent@2
-                #from: https://buildkite.com/docs/tutorials/parallel-builds
-          </script>
+          systemctl stop buildkite-agent
+          systemctl disable buildkite-agent
+          systemctl enable --now buildkite-agent@1
+          systemctl enable --now buildkite-agent@2
+              #from: https://buildkite.com/docs/tutorials/parallel-builds
+        </script>
 
-          <h2>Useful commands</h2>
-          <script type="editor" data-lang="sh">
+        <h2>Useful commands</h2>
+        <script type="editor" data-lang="sh">
 
-            # add user buildkite-agent to docker group:
-                usermod -a -G docker buildkite-agent
-                systemctl restart buildkite-agent
+          # add user buildkite-agent to docker group:
+              usermod -a -G docker buildkite-agent
+              systemctl restart buildkite-agent
 
-            sudo su -s /bin/bash buildkite-agent
+          sudo su -s /bin/bash buildkite-agent
 
-            # usually workdir is:
-            /var/lib/buildkite-agent/builds/[agent-name]/[organization]/
-          </script>
+          # usually workdir is:
+          /var/lib/buildkite-agent/builds/[agent-name]/[organization]/
+        </script>
 
-          <h2>Detecting merge requests</h2>
-          <script type="editor" data-lang="sh">
+        <h2>Detecting merge requests</h2>
+        <script type="editor" data-lang="sh">
 
-            pull request:
-            BUILDKITE_PULL_REQUEST="2"
-            BUILDKITE_PULL_REQUEST_BASE_BRANCH="master"
-            BUILDKITE_PULL_REQUEST_REPO="https://bitbucket.org/stopsopa/buildkite.git"
+          pull request:
+          BUILDKITE_PULL_REQUEST="2"
+          BUILDKITE_PULL_REQUEST_BASE_BRANCH="master"
+          BUILDKITE_PULL_REQUEST_REPO="https://bitbucket.org/stopsopa/buildkite.git"
 
-            NOT pull request:
-            BUILDKITE_PULL_REQUEST="false"
-            BUILDKITE_PULL_REQUEST_BASE_BRANCH=""
-            BUILDKITE_PULL_REQUEST_REPO=""
-          </script>
+          NOT pull request:
+          BUILDKITE_PULL_REQUEST="false"
+          BUILDKITE_PULL_REQUEST_BASE_BRANCH=""
+          BUILDKITE_PULL_REQUEST_REPO=""
+        </script>
 
-          <h2>Emoji</h2>
-          <a href="https://github.com/buildkite/emojis">emojis</a>
+        <h2>Emoji</h2>
+        <a href="https://github.com/buildkite/emojis">emojis</a>
 
-          <h2>Adding tags to agent</h2>
-          First find where is the config on the machine (section "Agents v3" -> "AGENT INSTALLERS"):
-          <a href="https://buildkite.com/docs/agent/v3">https://buildkite.com/docs/agent/v3</a>
-          <script type="editor" data-lang="sh">
+        <h2>Adding tags to agent</h2>
+        First find where is the config on the machine (section "Agents v3" -> "AGENT INSTALLERS"):
+        <a href="https://buildkite.com/docs/agent/v3">https://buildkite.com/docs/agent/v3</a>
+        <script type="editor" data-lang="sh">
 
-            vi /etc/buildkite-agent/buildkite-agent.cfg
+          vi /etc/buildkite-agent/buildkite-agent.cfg
 
-            # tags="machine=buildkite"
-            # tags="queue=machine-buildkite"
-            systemctl restart buildkite-agent
+          # tags="machine=buildkite"
+          # tags="queue=machine-buildkite"
+          systemctl restart buildkite-agent
 
-            # default agent hooks directory
-            # https://buildkite.com/docs/pipelines/environment-variables#bk-env-vars-buildkite-hooks-path
-            hooks-path="/etc/buildkite-agent/hooks"
-          </script>
-        </div>
+          # default agent hooks directory
+          # https://buildkite.com/docs/pipelines/environment-variables#bk-env-vars-buildkite-hooks-path
+          hooks-path="/etc/buildkite-agent/hooks"
+        </script>
       </div>
     </div>
     <script src="/js/github.js"></script>

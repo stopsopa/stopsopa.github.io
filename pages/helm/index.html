@@ -12,29 +12,26 @@
   <body class="layout">
     <div class="body">
       <div class="inside">
-        <div class="cards">
-          <a href="https://helm.sh/docs/intro/install/">Installation</a>
-        </div>
-        <div class="cards">
-          <h2>useful commands</h2>
-          <script type="editor" data-lang="sh">
+        <a href="https://helm.sh/docs/intro/install/">Installation</a>
 
-            helm version
-            helm ls --all
-            helm delete gitlab-runner
+        <h2>useful commands</h2>
+        <script type="editor" data-lang="sh">
+
+          helm version
+          helm ls --all
+          helm delete gitlab-runner
 
 
-                helm delete --namespace gitlab gitlab-runner
+              helm delete --namespace gitlab gitlab-runner
 
-                helm ls --namespace gitlab --all
+              helm ls --namespace gitlab --all
 
-                helm upgrade --namespace gitlab gitlab-runner \
-                    --set gitlabUrl=https://gitlab.xxx.com/,runnerRegistrationToken=xxx \
-                    gitlab/gitlab-runner
+              helm upgrade --namespace gitlab gitlab-runner \
+                  --set gitlabUrl=https://gitlab.xxx.com/,runnerRegistrationToken=xxx \
+                  gitlab/gitlab-runner
 
-            helm search repo
-          </script>
-        </div>
+          helm search repo
+        </script>
       </div>
     </div>
     <script src="/js/github.js"></script>

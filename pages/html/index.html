@@ -18,112 +18,111 @@
             <li><a href="canvas/index.html">canvas</a></li>
           </ul>
         </div>
-        <div class="cards">
-          <h2>Lorem Ipsum</h2>
-          <div class="card">
-            <h2>&lt;dialog&gt;</h2>
-            <a href="https://youtu.be/GDzzIlRhEzM">https://youtu.be/GDzzIlRhEzM</a>
-            <h2>generator</h2>
-            <a href="https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs"
-              >https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs</a
-            >
+        <h2>Lorem Ipsum</h2>
+        <div class="card">
+          <h2>&lt;dialog&gt;</h2>
+          <a href="https://youtu.be/GDzzIlRhEzM">https://youtu.be/GDzzIlRhEzM</a>
+          <h2>generator</h2>
+          <a href="https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs"
+            >https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs</a
+          >
 
-            <h2>input[type="range"]</h2>
-            <script type="editor" data-lang="html">
+          <h2>input[type="range"]</h2>
+          <script type="editor" data-lang="html">
 
-              <input type="range" id="height" min="1" max="100" step="1" value="80" />
-              &lt;script>
-                const log = console.log;
-                const h = document.querySelector("#height");
+            <input type="range" id="height" min="1" max="100" step="1" value="80" />
+            &lt;script>
+              const log = console.log;
+              const h = document.querySelector("#height");
 
-                function range(element, event) {
-                  function hc() {
-                    event(parseInt(element.value, 10));
-                  }
-                  element.addEventListener("change", hc);
-                  element.addEventListener("input", hc);
-                  hc();
+              function range(element, event) {
+                function hc() {
+                  event(parseInt(element.value, 10));
                 }
-
-                range(h, (v) => console.log("h", v));
-              &lt;/script>
-            </script>
-            <h2>input[type="radio"]</h2>
-            <script type="editor" data-lang="html">
-
-              <div class="radios">
-                <label> <input type="radio" name="mode" value="single" /> single player </label>
-                <br />
-                <label> <input type="radio" name="mode" value="double" /> two players </label>
-              </dialog>
-
-              &lt;script>
-
-                const parent = docment.querySelector('.radios');
-
-                // to get value on change
-                parent.addEventListener("click", (e) => {
-                  const target = e.target;
-
-                  var match = target.matches(`input[type="radio"][name="mode"]`);
-
-                  if (match) {
-                    console.log("radio", target.value);
-                  }
-                });
-
-                // to switch programatically using event delegation
-                document.addEventListener("keydown", (e) => {
-                  switch (e.key) {
-                    case "s":
-                      document.querySelector(`input[type="radio"][name="mode"][value="single"]`).checked = true
-                      break;
-                    case "d":
-                      document.querySelector(`input[type="radio"][name="mode"][value="double"]`).checked = true
-                      break;
-                  }
-                });
-
-              &lt;/script>
-            </script>
-            <h2>element size width height</h2>
-
-            <a href="https://www.javascripttutorial.net/javascript-dom/javascript-width-height/"
-              >https://www.javascripttutorial.net/javascript-dom/javascript-width-height/</a
-            >
-            <br />
-            <p>see also src/lib/getAbsoluteHeightOfElement.js in icare</p>
-
-            <style>
-              #box-size {
-                background-color: antiquewhite;
-                border: 10px solid black;
-                margin: 12px;
-                padding: 15px;
-                display: inline-block;
-                width: 100px;
-                height: 100px;
+                element.addEventListener("change", hc);
+                element.addEventListener("input", hc);
+                hc();
               }
-              #box-size-target {
-                font-family: monospace;
-                font-size: 12px;
-              }
-              .flex {
-                display: flex;
-                align-items: center;
-              }
-            </style>
-            <div class="flex">
-              <div id="box-size"></div>
-              <pre id="box-size-target"></pre>
-            </div>
-            <script>
-              var box = document.querySelector("#box-size");
-              var boxt = document.querySelector("#box-size-target");
-              const domRect = box.getBoundingClientRect();
-              let style = getComputedStyle(box);
 
-              boxt.innerText = `
+              range(h, (v) => console.log("h", v));
+            &lt;/script>
+          </script>
+          <h2>input[type="radio"]</h2>
+          <script type="editor" data-lang="html">
+
+            <div class="radios">
+              <label> <input type="radio" name="mode" value="single" /> single player </label>
+              <br />
+              <label> <input type="radio" name="mode" value="double" /> two players </label>
+            </dialog>
+
+            &lt;script>
+
+              const parent = docment.querySelector('.radios');
+
+              // to get value on change
+              parent.addEventListener("click", (e) => {
+                const target = e.target;
+
+                var match = target.matches(`input[type="radio"][name="mode"]`);
+
+                if (match) {
+                  console.log("radio", target.value);
+                }
+              });
+
+              // to switch programatically using event delegation
+              document.addEventListener("keydown", (e) => {
+                switch (e.key) {
+                  case "s":
+                    document.querySelector(`input[type="radio"][name="mode"][value="single"]`).checked = true
+                    break;
+                  case "d":
+                    document.querySelector(`input[type="radio"][name="mode"][value="double"]`).checked = true
+                    break;
+                }
+              });
+
+            &lt;/script>
+          </script>
+          <h2>element size width height</h2>
+
+          <a href="https://www.javascripttutorial.net/javascript-dom/javascript-width-height/"
+            >https://www.javascripttutorial.net/javascript-dom/javascript-width-height/</a
+          >
+          <br />
+          <p>see also src/lib/getAbsoluteHeightOfElement.js in icare</p>
+
+          <style>
+            #box-size {
+              background-color: antiquewhite;
+              border: 10px solid black;
+              margin: 12px;
+              padding: 15px;
+              display: inline-block;
+              width: 100px;
+              height: 100px;
+            }
+            #box-size-target {
+              font-family: monospace;
+              font-size: 12px;
+            }
+            .flex {
+              display: flex;
+              align-items: center;
+            }
+          </style>
+          <div class="flex">
+            <div id="box-size"></div>
+            <pre id="box-size-target"></pre>
+          </div>
+          <script>
+            var box = document.querySelector("#box-size");
+            var boxt = document.querySelector("#box-size-target");
+            const domRect = box.getBoundingClientRect();
+            let style = getComputedStyle(box);
+
+            boxt.innerText = `
 #box-size {
   border: 10px solid black;
   margin: 12px;
@@ -140,8 +139,7 @@ let style = getComputedStyle(box);
 style.borderLeftWidth = ${style.borderLeftWidth}
 style.marginLeft = ${style.marginLeft}
 `;
-            </script>
-          </div>
+          </script>
         </div>
       </div>
     </div>

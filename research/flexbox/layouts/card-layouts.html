@@ -13,7 +13,7 @@
       * {
         font-family: "Open Sans", sans-serif;
       }
-      .cards {
+      .parentbox {
         background-color: silver;
         display: flex;
         width: 500px;
@@ -22,10 +22,10 @@
         padding: 5px 10px;
         flex-wrap: wrap;
       }
-      .cards:hover {
+      .parentbox:hover {
         background-color: white;
       }
-      .card {
+      .child {
         background-color: white;
         /*margin: 10px;*/
         box-sizing: border-box;
@@ -37,28 +37,28 @@
         margin-top: 5px;
         box-shadow: 0 0 3px silver;
       }
-      .card:hover {
+      .child:hover {
         box-shadow: 0 0 10px black;
       }
-      .card > img {
+      .child > img {
         width: 100%;
       }
-      .card > .body {
+      .child > .body {
         padding-left: 10px;
         padding-right: 10px;
         flex: 1 0 0;
       }
-      .card > .body > h3 {
+      .child > .body > h3 {
         margin-top: 3px;
         margin-bottom: 3px;
       }
-      .card > .body > p {
+      .child > .body > p {
         margin-top: 3px;
         margin-bottom: 3px;
         font-size: 11px;
         font-weight: 300;
       }
-      .card > .foot {
+      .child > .foot {
         background-color: #3e3e3e;
         color: white;
         padding: 5px;
@@ -66,8 +66,8 @@
     </style>
   </head>
   <body>
-    <div class="cards">
-      <div class="card">
+    <div class="parentbox">
+      <div class="child">
         <img src="//i.imgur.com/kRdf1ME.png" />
         <div class="body">
           <h3>Header lorem</h3>
@@ -79,7 +79,7 @@
         </div>
         <div class="foot">footer</div>
       </div>
-      <div class="card">
+      <div class="child">
         <img src="//i.imgur.com/kRdf1ME.png" />
         <div class="body">
           <h3>Header lorem</h3>
@@ -91,7 +91,7 @@
         </div>
         <div class="foot">footer</div>
       </div>
-      <div class="card">
+      <div class="child">
         <img src="//i.imgur.com/kRdf1ME.png" />
         <div class="body">
           <h3>Header lorem</h3>
@@ -103,7 +103,7 @@
         </div>
         <div class="foot">footer</div>
       </div>
-      <div class="card">
+      <div class="child">
         <img src="//i.imgur.com/kRdf1ME.png" />
         <div class="body">
           <h3>Header lorem</h3>
@@ -115,7 +115,7 @@
         </div>
         <div class="foot">footer</div>
       </div>
-      <div class="card">
+      <div class="child">
         <img src="//i.imgur.com/kRdf1ME.png" />
         <div class="body">
           <h3>Header lorem</h3>
@@ -127,7 +127,7 @@
         </div>
         <div class="foot">footer</div>
       </div>
-      <div class="card">
+      <div class="child">
         <img src="//i.imgur.com/kRdf1ME.png" />
         <div class="body">
           <h3>Header lorem</h3>
@@ -139,7 +139,7 @@
         </div>
         <div class="foot">footer</div>
       </div>
-      <div class="card">
+      <div class="child">
         <img src="//i.imgur.com/kRdf1ME.png" />
         <div class="body">
           <h3>Header lorem</h3>
@@ -151,7 +151,7 @@
         </div>
         <div class="foot">footer</div>
       </div>
-      <div class="card">
+      <div class="child">
         <img src="//i.imgur.com/kRdf1ME.png" />
         <div class="body">
           <h3>Header lorem</h3>
@@ -163,7 +163,7 @@
         </div>
         <div class="foot">footer</div>
       </div>
-      <div class="card">
+      <div class="child">
         <img src="//i.imgur.com/kRdf1ME.png" />
         <div class="body">
           <h3>Header lorem</h3>

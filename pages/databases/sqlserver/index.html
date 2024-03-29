@@ -12,144 +12,142 @@
   <body class="layout" toc>
     <div class="body">
       <div class="inside">
-        <div class="cards">
-          <h2>interesting queries</h2>
+        <h2>interesting queries</h2>
 
-          <script type="editor" data-lang="sql">
+        <script type="editor" data-lang="sql">
 
-            -- generating sum of all previous rows for each row and using generated values to generate other queries
-            ;WITH SplitBlocks AS (
-                SELECT
-                    ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS listpos,
-                    CAST(value AS INT) AS number
-                FROM STRING_SPLIT('5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,20,20,20,20,20,40,40,40,40,40,40,40,40,40', ',')
-            )
-            SELECT
-                gen.*,
-                1 AS new_column
-            FROM (
-                SELECT
-                    listpos,
-                    number,
-                    COALESCE(
-                        (SELECT SUM(number) FROM SplitBlocks WHERE listpos < s.listpos),
-                        0
-                    ) AS running_sum
-                FROM SplitBlocks s
-            ) gen;
+          -- generating sum of all previous rows for each row and using generated values to generate other queries
+          ;WITH SplitBlocks AS (
+              SELECT
+                  ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS listpos,
+                  CAST(value AS INT) AS number
+              FROM STRING_SPLIT('5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,20,20,20,20,20,40,40,40,40,40,40,40,40,40', ',')
+          )
+          SELECT
+              gen.*,
+              1 AS new_column
+          FROM (
+              SELECT
+                  listpos,
+                  number,
+                  COALESCE(
+                      (SELECT SUM(number) FROM SplitBlocks WHERE listpos < s.listpos),
+                      0
+                  ) AS running_sum
+              FROM SplitBlocks s
+          ) gen;
 
-            -- ----------------- using STRING_AGG but still maintaining order ----- vvv
+          -- ----------------- using STRING_AGG but still maintaining order ----- vvv
 
-            ;WITH SplitBlocks AS (
-                SELECT
-                    ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS listpos,
-                    CAST(value AS INT) AS number
-                FROM STRING_SPLIT('5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,20,20,20,20,20,40,40,40,40,40,40,40,40,40', ',')
-            )
-            SELECT
-                gen.*,
-                (
-                    select STRING_AGG(forstragg.line, ' # ') WITHIN GROUP (ORDER BY rn) AS xx
-                    from (
-                        select CONCAT('val:', ISNULL(CAST(v AS VARCHAR(MAX)), 'NULL'), ' count:', c ) line, ROW_NUMBER() OVER (ORDER BY c DESC) AS rn
-                        from (
-                            select distinct v, count(*) c
-                            from (
-                                select t.othercolumn as v from table.dbo.column_product_type t
-                                order by t.column_product_typeId desc
-                                offset gen.running_sum rows
-                                fetch next gen.number rows only
-                            ) dictionary
-                            group by v
-                        ) concatanated
-                    ) forstragg
-                ) as finalstats
-            FROM (
-                SELECT
-                    listpos,
-                    number,
-                    COALESCE(
-                        (SELECT SUM(number) FROM SplitBlocks WHERE listpos < s.listpos),
-                        0
-                    ) AS running_sum
-                FROM SplitBlocks s
-            ) gen;
-            -- ----------------- using STRING_AGG but still maintaining order ----- ^^^
-          </script>
-          <h2>transaction</h2>
-          <script type="editor" data-lang="sql">
-            BEGIN TRANSACTION;
-            BEGIN TRY
+          ;WITH SplitBlocks AS (
+              SELECT
+                  ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS listpos,
+                  CAST(value AS INT) AS number
+              FROM STRING_SPLIT('5,5,5,5,5,5,5,5,5,10,10,10,10,10,10,20,20,20,20,20,40,40,40,40,40,40,40,40,40', ',')
+          )
+          SELECT
+              gen.*,
+              (
+                  select STRING_AGG(forstragg.line, ' # ') WITHIN GROUP (ORDER BY rn) AS xx
+                  from (
+                      select CONCAT('val:', ISNULL(CAST(v AS VARCHAR(MAX)), 'NULL'), ' count:', c ) line, ROW_NUMBER() OVER (ORDER BY c DESC) AS rn
+                      from (
+                          select distinct v, count(*) c
+                          from (
+                              select t.othercolumn as v from table.dbo.column_product_type t
+                              order by t.column_product_typeId desc
+                              offset gen.running_sum rows
+                              fetch next gen.number rows only
+                          ) dictionary
+                          group by v
+                      ) concatanated
+                  ) forstragg
+              ) as finalstats
+          FROM (
+              SELECT
+                  listpos,
+                  number,
+                  COALESCE(
+                      (SELECT SUM(number) FROM SplitBlocks WHERE listpos < s.listpos),
+                      0
+                  ) AS running_sum
+              FROM SplitBlocks s
+          ) gen;
+          -- ----------------- using STRING_AGG but still maintaining order ----- ^^^
+        </script>
+        <h2>transaction</h2>
+        <script type="editor" data-lang="sql">
+          BEGIN TRANSACTION;
+          BEGIN TRY
 
-              -- do your inserts here
-              -- avoid GO here
+            -- do your inserts here
+            -- avoid GO here
 
-            COMMIT TRANSACTION;
-            END TRY
-            BEGIN CATCH
-                IF @@TRANCOUNT > 0
-                    ROLLBACK TRANSACTION;
-                THROW
-            END CATCH
-          </script>
-          <h2>STRING_AGG - GROUP_CONCAT</h2>
-          <script type="editor" data-lang="sql">
+          COMMIT TRANSACTION;
+          END TRY
+          BEGIN CATCH
+              IF @@TRANCOUNT > 0
+                  ROLLBACK TRANSACTION;
+              THROW
+          END CATCH
+        </script>
+        <h2>STRING_AGG - GROUP_CONCAT</h2>
+        <script type="editor" data-lang="sql">
 
-            select STRING_AGG(line, ' -- ')
-            from (select CONCAT('val:', ISNULL(CAST(val AS VARCHAR(MAX)), 'NULL'), ' count:', c) line
-                  from (select distinct mycolumn as val, count(*) c
-                        from my_db.dbo.mytable
-                        group by mycolumn) con) zz
-          </script>
-          <h2>Analyzing values in the table</h2>
-          <script type="editor" data-lang="sql">
+          select STRING_AGG(line, ' -- ')
+          from (select CONCAT('val:', ISNULL(CAST(val AS VARCHAR(MAX)), 'NULL'), ' count:', c) line
+                from (select distinct mycolumn as val, count(*) c
+                      from my_db.dbo.mytable
+                      group by mycolumn) con) zz
+        </script>
+        <h2>Analyzing values in the table</h2>
+        <script type="editor" data-lang="sql">
 
-            SELECT *
-            FROM databasename.INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_NAME = 'Product'
-            ORDER BY TABLE_NAME
+          SELECT *
+          FROM databasename.INFORMATION_SCHEMA.COLUMNS
+          WHERE TABLE_NAME = 'Product'
+          ORDER BY TABLE_NAME
 
-            # or using USE
-            USE databasename;
-            GO
-            SELECT *
-            FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_NAME = 'Product'
-            ORDER BY TABLE_NAME
-            GO
+          # or using USE
+          USE databasename;
+          GO
+          SELECT *
+          FROM INFORMATION_SCHEMA.COLUMNS
+          WHERE TABLE_NAME = 'Product'
+          ORDER BY TABLE_NAME
+          GO
 
-            SELECT s.name as schema_name, t.name as table_name, c.*
-            FROM databasename.sys.columns AS c
-            INNER JOIN databasename.sys.tables AS t ON t.object_id = c.object_id
-            INNER JOIN databasename.sys.schemas AS s ON s.schema_id = t.schema_id
-            WHERE t.name = 'Product' AND s.name = 'dbo';
+          SELECT s.name as schema_name, t.name as table_name, c.*
+          FROM databasename.sys.columns AS c
+          INNER JOIN databasename.sys.tables AS t ON t.object_id = c.object_id
+          INNER JOIN databasename.sys.schemas AS s ON s.schema_id = t.schema_id
+          WHERE t.name = 'Product' AND s.name = 'dbo';
 
-            USE orion;
-            GO
-            EXEC sp_help 'ProductAttribute'
-            GO
-            # from: https://learn.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-help-transact-sql?view=sql-server-ver16#a-returning-information-about-all-objects
+          USE orion;
+          GO
+          EXEC sp_help 'ProductAttribute'
+          GO
+          # from: https://learn.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-help-transact-sql?view=sql-server-ver16#a-returning-information-about-all-objects
 
-            --just use different combination of query below:
-            -- 1) execute from point #1 to #2 only
-            -- 2) or execute whole query to extract some data for reports
-            -- 3) uncomment line #2 or #3 as needed
+          --just use different combination of query below:
+          -- 1) execute from point #1 to #2 only
+          -- 2) or execute whole query to extract some data for reports
+          -- 3) uncomment line #2 or #3 as needed
 
-            select STRING_AGG(line, CHAR(10) + '            -- ')
-            from (
-                select CONCAT('val:', ISNULL(CAST(v AS VARCHAR(MAX)), 'NULL'), ' count:', c ) line
-                from (
-                    select * from (
-                        select distinct v, count(*) c     -- #1
-                        from (select mycolumn as v from dddd.dbo.table_name) dictionary
-                        group by v
-                    ) t
-            --         order by CASE WHEN t.v IS NULL THEN 0 ELSE 1 END, t.c desc -- #2
-                ) con
-            --     where con.c >= 3 -- #3
-            ) z
-          </script>
-        </div>
+          select STRING_AGG(line, CHAR(10) + '            -- ')
+          from (
+              select CONCAT('val:', ISNULL(CAST(v AS VARCHAR(MAX)), 'NULL'), ' count:', c ) line
+              from (
+                  select * from (
+                      select distinct v, count(*) c     -- #1
+                      from (select mycolumn as v from dddd.dbo.table_name) dictionary
+                      group by v
+                  ) t
+          --         order by CASE WHEN t.v IS NULL THEN 0 ELSE 1 END, t.c desc -- #2
+              ) con
+          --     where con.c >= 3 -- #3
+          ) z
+        </script>
       </div>
     </div>
     <script src="/js/github.js"></script>

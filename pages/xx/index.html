@@ -12,27 +12,25 @@
   <body class="layout" toc>
     <div class="body">
       <div class="inside">
-        <div class="cards">
-          <h2>source</h2>
-          <a href="/viewer.html?file=pages/bash/xx/xx.sh">/viewer.html?file=pages/bash/xx/xx.sh</a>
-          <br />
-          <a href="/viewer.html?file=pages/bash/xx/xx.node.cjs">/viewer.html?file=pages/bash/xx/xx.node.cjs</a>
-          <h2>coverage server</h2>
-          <a href="https://github.com/http-party/http-server">https://github.com/http-party/http-server</a>
-          <script type="editor" data-lang="python">
+        <h2>source</h2>
+        <a href="/viewer.html?file=pages/bash/xx/xx.sh">/viewer.html?file=pages/bash/xx/xx.sh</a>
+        <br />
+        <a href="/viewer.html?file=pages/bash/xx/xx.node.cjs">/viewer.html?file=pages/bash/xx/xx.node.cjs</a>
+        <h2>coverage server</h2>
+        <a href="https://github.com/http-party/http-server">https://github.com/http-party/http-server</a>
+        <script type="editor" data-lang="python">
 
-                npm install -g http-server
+              npm install -g http-server
 
-                # =====
+              # =====
 
-                [`coverage server`]: {
-                    command: `
-            set -e
-            http-server -p 5577 target/site/jacoco/
-            `,
-          </script>
-          ...
-        </div>
+              [`coverage server`]: {
+                  command: `
+          set -e
+          http-server -p 5577 target/site/jacoco/
+          `,
+        </script>
+        ...
       </div>
     </div>
     <script src="/js/github.js"></script>

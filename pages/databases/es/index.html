@@ -18,48 +18,46 @@
             <li><a href="../kibana/index.html">kibana</a></li>
           </ul>
         </div>
-        <div class="cards">
-          <h2>Elastic Common Schema (ECS)</h2>
-          <a href="https://www.elastic.co/guide/en/ecs/current/index.html"
-            >https://www.elastic.co/guide/en/ecs/current/index.html</a
-          >
-          <br />
-          <a href="https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html">ECS Field Referenceedit</a>
-          <h2>Udemy course:</h2>
-          <a
-            href="https://github.com/codingexplained/data-visualization-with-kibana/blob/master/adding-index-templates.md"
-            >github index template</a
-          >
-          <br />
-          <script type="editor" data-lang="sh">
+        <h2>Elastic Common Schema (ECS)</h2>
+        <a href="https://www.elastic.co/guide/en/ecs/current/index.html"
+          >https://www.elastic.co/guide/en/ecs/current/index.html</a
+        >
+        <br />
+        <a href="https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html">ECS Field Referenceedit</a>
+        <h2>Udemy course:</h2>
+        <a
+          href="https://github.com/codingexplained/data-visualization-with-kibana/blob/master/adding-index-templates.md"
+          >github index template</a
+        >
+        <br />
+        <script type="editor" data-lang="sh">
 
-            helm version
-            helm ls --all
-            helm delete gitlab-runner
+          helm version
+          helm ls --all
+          helm delete gitlab-runner
 
 
-                helm delete --namespace gitlab gitlab-runner
+              helm delete --namespace gitlab gitlab-runner
 
-                helm ls --namespace gitlab --all
+              helm ls --namespace gitlab --all
 
-                helm upgrade --namespace gitlab gitlab-runner \
-                    --set gitlabUrl=https://gitlab.xxx.com/,runnerRegistrationToken=xxx \
-                    gitlab/gitlab-runner
+              helm upgrade --namespace gitlab gitlab-runner \
+                  --set gitlabUrl=https://gitlab.xxx.com/,runnerRegistrationToken=xxx \
+                  gitlab/gitlab-runner
 
-            helm search repo
-          </script>
+          helm search repo
+        </script>
 
-          <h2>version</h2>
-          <a href="https://youtu.be/7FLXjgB0PQI?t=478">https://youtu.be/7FLXjgB0PQI?t=478</a>
-          <br />
-          <h2>To learn</h2>
-          <a href="https://www.youtube.com/watch?v=7FLXjgB0PQI">https://www.youtube.com/watch?v=7FLXjgB0PQI</a>
-          <br />
-          <a href="https://www.elastic.co/training/free?baymax=rtp&elektra=docs&storm=sidebar3">ES training</a>
-          <br />
-          <a href="https://github.com/elastic/kibana/issues/58175">Kibana nested datatype issue</a>
-          <br />
-        </div>
+        <h2>version</h2>
+        <a href="https://youtu.be/7FLXjgB0PQI?t=478">https://youtu.be/7FLXjgB0PQI?t=478</a>
+        <br />
+        <h2>To learn</h2>
+        <a href="https://www.youtube.com/watch?v=7FLXjgB0PQI">https://www.youtube.com/watch?v=7FLXjgB0PQI</a>
+        <br />
+        <a href="https://www.elastic.co/training/free?baymax=rtp&elektra=docs&storm=sidebar3">ES training</a>
+        <br />
+        <a href="https://github.com/elastic/kibana/issues/58175">Kibana nested datatype issue</a>
+        <br />
       </div>
     </div>
     <script src="/js/github.js"></script>

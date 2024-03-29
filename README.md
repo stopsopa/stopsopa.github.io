@@ -49,13 +49,10 @@ use [q] in git comment to skip test (for fast release) [.github/workflows/pipeli
             <li><a href="http://">ekstra link</a></li>
           </ul>
         </div>
-        <div class="cards">
-          <h2>debug</h2>
-          <script type="editor" data-lang="sh">
-            ...
-          </script>
+        <h2>debug</h2>
+        <script type="editor" data-lang="sh">
           ...
-        </div>
+        </script>
       </div>
     </div>
     <script src="/js/github.js"></script>
@@ -115,10 +112,28 @@ use [q] in git comment to skip test (for fast release) [.github/workflows/pipeli
     <body class="layout" toc>
         <div class="body">
             <div class="inside">
-                <div class="cards">
-                    <h2>Index</h2>
 
-                </div>
+
+              <div class="cards toc">
+                <h1>Table of Contents</h1>
+                <ul data-do-sort>
+                  <li><a href="http://">ekstra link</a></li>
+                </ul>
+              </div>
+
+
+              <h2>Index</h2>
+              <script type="editor" data-lang="sh">
+              </script>
+
+
+              <div class="cards">
+                <h2>Index</h2>
+                <script type="editor" data-lang="sh">
+                </script>
+              </div>
+
+
             </div>
         </div>
         <script src="/js/github.js"></script>

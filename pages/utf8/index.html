@@ -12,52 +12,50 @@
   <body class="layout" toc>
     <div class="body">
       <div class="inside">
-        <div class="cards">
-          <h2>Unicode</h2>
-          <a href="https://github.com/stopsopa/stopsopa.github.io/edit/master/pages/utf8/index.html"
-            >literals for individual characters in different languages</a
-          >
-          <br />
-          <a href="https://www.w3.org/TR/xml-entity-names/025.html">https://www.w3.org/TR/xml-entity-names/025.html</a>
-          <br />
-          <a href="./Unicode_Chart.html">Unicode_Chart.html from(https://www.ssec.wisc.edu/~tomw/java/unicode.html)</a>
-          <br />
-          <a href="https://www.unicode.org/Public/">go to https://www.unicode.org/Public/15.1.0/ucd/UnicodeData.txt</a>
-          <br />
-          <a href="https://character.construction/">https://character.construction/</a>
-          <br />
-          <a href="https://github.com/hackerb9/ugrep">ugrep (CLI tool)</a>
-          <br />
-          <a href="https://symbl.cc/en/">https://symbl.cc/en/</a>
-          <br />
-          <a href="https://github.com/jagracey/Awesome-Unicode?#exploring-deeper-into-unicode-yourself"
-            >https://github.com/jagracey/Awesome-Unicode?#exploring-deeper-into-unicode-yourself</a
-          >
-          <br />
-          <a href="https://github.com/unicode-org/cldr-json/tree/main"
-            >https://github.com/unicode-org/cldr-json/tree/main</a
-          >
-          <h2>UTF-8</h2>
-          <script type="editor" data-lang="python" data-w="95%">
+        <h2>Unicode</h2>
+        <a href="https://github.com/stopsopa/stopsopa.github.io/edit/master/pages/utf8/index.html"
+          >literals for individual characters in different languages</a
+        >
+        <br />
+        <a href="https://www.w3.org/TR/xml-entity-names/025.html">https://www.w3.org/TR/xml-entity-names/025.html</a>
+        <br />
+        <a href="./Unicode_Chart.html">Unicode_Chart.html from(https://www.ssec.wisc.edu/~tomw/java/unicode.html)</a>
+        <br />
+        <a href="https://www.unicode.org/Public/">go to https://www.unicode.org/Public/15.1.0/ucd/UnicodeData.txt</a>
+        <br />
+        <a href="https://character.construction/">https://character.construction/</a>
+        <br />
+        <a href="https://github.com/hackerb9/ugrep">ugrep (CLI tool)</a>
+        <br />
+        <a href="https://symbl.cc/en/">https://symbl.cc/en/</a>
+        <br />
+        <a href="https://github.com/jagracey/Awesome-Unicode?#exploring-deeper-into-unicode-yourself"
+          >https://github.com/jagracey/Awesome-Unicode?#exploring-deeper-into-unicode-yourself</a
+        >
+        <br />
+        <a href="https://github.com/unicode-org/cldr-json/tree/main"
+          >https://github.com/unicode-org/cldr-json/tree/main</a
+        >
+        <h2>UTF-8</h2>
+        <script type="editor" data-lang="python" data-w="95%">
 
-            from: https://stopsopa.github.io/lua/ebook.pdf page 30
+          from: https://stopsopa.github.io/lua/ebook.pdf page 30
 
-            # UTF-8 represents each Unicode character using a variable number of bytes.
-            # For instance, it represents A with one byte, 65; it represents the Hebrew
-            # character Aleph, which has code 1488 in Unicode, with the two-byte
-            # sequence 215–144. UTF-8 represents all characters in the ASCII range
-            # as in ASCII, that is, with a single byte smaller than 128.
-            # It represents all other characters using sequences of bytes where the first
-            # byte is in the range [194,244] and the continuation bytes are in the
-            # range [128,191]. More specifically, the range of the starting bytes
-            # for two-byte sequences is [194,223]; for three-byte sequences, the range
-            # is [224,239]; and for four-byte sequences, it is [240,244].
-            # None of those ranges overlap. This property ensures that the code sequence
-            # of any character never appears as part of the code sequence of any other
-            # character. In particular, a byte smaller than 128 never appears in a
-            # multibyte sequence; it always represents its corresponding ASCII character.
-          </script>
-        </div>
+          # UTF-8 represents each Unicode character using a variable number of bytes.
+          # For instance, it represents A with one byte, 65; it represents the Hebrew
+          # character Aleph, which has code 1488 in Unicode, with the two-byte
+          # sequence 215–144. UTF-8 represents all characters in the ASCII range
+          # as in ASCII, that is, with a single byte smaller than 128.
+          # It represents all other characters using sequences of bytes where the first
+          # byte is in the range [194,244] and the continuation bytes are in the
+          # range [128,191]. More specifically, the range of the starting bytes
+          # for two-byte sequences is [194,223]; for three-byte sequences, the range
+          # is [224,239]; and for four-byte sequences, it is [240,244].
+          # None of those ranges overlap. This property ensures that the code sequence
+          # of any character never appears as part of the code sequence of any other
+          # character. In particular, a byte smaller than 128 never appears in a
+          # multibyte sequence; it always represents its corresponding ASCII character.
+        </script>
       </div>
     </div>
     <script src="/js/github.js"></script>
