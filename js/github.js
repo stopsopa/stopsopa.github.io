@@ -738,10 +738,15 @@ log.green("defined", "window.manipulation");
       }
     }
    */
+  const excludedTags = ["script", "br", "hr"];
   function excludeElement(el) {
     const tag = el.tagName.toLowerCase();
 
-    if (tag === "script") {
+    if (excludedTags.includes(tag)) {
+      return true;
+    }
+
+    if (!el.offsetLeft || !el.offsetTop) {
       return true;
     }
 
@@ -802,6 +807,8 @@ log.green("defined", "window.manipulation");
         const first = list[0];
         const last = list[list.length - 1];
 
+        log.gray("list", `window.scrollToHashAndHighlight list:`, last);
+
         // console.log("list: ", list, "first: ", first, "last: ", last, "found: ", found);
         /**
          * Create div with yellow background in offsetParent (closest element with position:relative;)
@@ -809,15 +816,15 @@ log.green("defined", "window.manipulation");
         [...document.querySelectorAll(".scrollToHashAndHighlight")].forEach((e) => {
           e.remove();
         });
-        const div = document.createElement("div");        
+        const div = document.createElement("div");
         first.offsetParent.appendChild(div);
         const overFlowX = 15;
         const overFlowY = 5;
         const maxW = maxWidth(list);
-        const firstLeft = first.offsetLeft
-        const firstTop = first.offsetTop
-        const lastLeft = last.offsetLeft
-        const lastTop = last.offsetTop
+        const firstLeft = first.offsetLeft;
+        const firstTop = first.offsetTop;
+        const lastLeft = last.offsetLeft;
+        const lastTop = last.offsetTop;
         div.style.position = "absolute";
         div.style.zIndex = -1;
         div.style.left = firstLeft - overFlowX + "px";
@@ -837,7 +844,6 @@ log.green("defined", "window.manipulation");
         //   list,
         //   offsetParent: first.offsetParent,
         // });
-
 
         /**
          * create div with yellow background always in document.body
