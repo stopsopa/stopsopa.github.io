@@ -17,6 +17,7 @@ yarn-error.log
 **/*.rendered.html
 pages/coverage
 /_______index.html
+.cache_ggshield
 
 
 
