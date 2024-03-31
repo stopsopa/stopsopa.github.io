@@ -1566,7 +1566,9 @@ body .github-profile:hover {
   window.addAnchorLinks = function () {
     var links = {};
 
-    "h1, h2, h3, h4, h5, h6".split(",").forEach(function (selector) {
+    const selectors = "h1, h2, h3, h4, h5, h6";
+
+    selectors.split(",").forEach(function (selector) {
       document.querySelectorAll(trim(selector)).forEach(function (el) {
         const newId = unique(links, el.innerText);
 
@@ -1583,7 +1585,7 @@ body .github-profile:hover {
       visible: "always",
       placement: "left",
     };
-    anchors.add();
+    anchors.add(selectors).remove('[id="index"]').remove('[id="table-of-contents"]');
 
     document.body.addEventListener("click", function (e) {
       var el = e.target;
@@ -1594,7 +1596,7 @@ body .github-profile:hover {
         const url = location.href.split("#")[0] + el.getAttribute("href");
 
         console.log("copying to clipboard: ", url);
-        
+
         // // this doesn't seem to be working
         // // Copy the URL to the clipboard
         // navigator.clipboard
