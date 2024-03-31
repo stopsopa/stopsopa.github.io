@@ -6,6 +6,10 @@ var log = (function () {
   }
 })();
 
+function isObject(a) {
+  return !!a && a.constructor === Object;
+}
+
 function debounce(fn, delay) {
   var timer = null;
   return function () {
@@ -1521,6 +1525,119 @@ body .github-profile:hover {
   log.green("defined", "window.doace()");
 })();
 
+(function () {
+  function slug(str) {
+    return trim(
+      str
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "-")
+        .replace(/--+/g, "-"),
+      "-"
+    );
+  }
+
+  function unique(list, str) {
+    if (isObject(list)) {
+      list = Object.keys(list);
+    }
+
+    str = slug(str);
+
+    var i = 0,
+      tmp;
+
+    do {
+      tmp = str || "";
+
+      if (i > 0) {
+        if (tmp) {
+          tmp += "-";
+        }
+
+        tmp += i;
+      }
+
+      i += 1;
+    } while (!tmp || list.indexOf(tmp) > -1);
+
+    return tmp;
+  }
+
+  window.addAnchorLinks = function () {
+    var links = {};
+
+    "h1, h2, h3, h4, h5, h6".split(",").forEach(function (selector) {
+      document.querySelectorAll(trim(selector)).forEach(function (el) {
+        const newId = unique(links, el.innerText);
+
+        links[newId] = el;
+
+        if (!el.hasAttribute("id") || !trim(el.getAttribute())) {
+          el.setAttribute("id", newId);
+        }
+      });
+    });
+
+    const anchors = new window.AnchorJS();
+    anchors.options = {
+      visible: "always",
+      placement: "left",
+    };
+    anchors.add();
+
+    document.body.addEventListener("click", function (e) {
+      var el = e.target;
+
+      var match = el.matches("a.anchorjs-link[href]");
+
+      if (match) {
+        const url = location.href.split("#")[0] + el.getAttribute("href");
+
+        console.log("copying to clipboard: ", url);
+        
+        // // this doesn't seem to be working
+        // // Copy the URL to the clipboard
+        // navigator.clipboard
+        //   .writeText(url)
+        //   .then(() => {
+        //     console.log(`Copied link to clipboard: ${url}`);
+        //   })
+        //   .catch((err) => {
+        //     console.error("Could not copy link to clipboard", err);
+        //   });
+
+        var textarea = document.createElement("textarea");
+        manipulation.append(document.body, textarea);
+        textarea.value = url;
+        textarea.select();
+        document.execCommand("copy");
+        textarea.value = "";
+        manipulation.remove(textarea);
+      }
+    });
+
+    return;
+
+    // Add event listener to headers
+    document.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((header) => {
+      header.addEventListener("click", (event) => {
+        // Get the URL of the header
+        const url = event.target.id ? `${window.location.href.split("#")[0]}#${event.target.id}` : window.location.href;
+
+        // Copy the URL to the clipboard
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            console.log(`Copied link to clipboard: ${url}`);
+          })
+          .catch((err) => {
+            console.error("Could not copy link to clipboard", err);
+          });
+      });
+    });
+  };
+})();
+
 (async function () {
   async function loadJs(name, url, test) {
     return new Promise((resolve, reject) => {
@@ -1569,9 +1686,16 @@ body .github-profile:hover {
           return false;
         }
       }),
-      loadJs("permalink", "/noprettier/permalink-my.js", function () {
+      // loadJs("permalink", "/noprettier/permalink-my.js", function () {
+      //   try {
+      //     return typeof window.sasync.loaded.mountpermalink === "function";
+      //   } catch (e) {
+      //     return false;
+      //   }
+      // }),
+      loadJs("AnchorJS", "/noprettier/anchor.min.js", function () {
         try {
-          return typeof window.sasync.loaded.mountpermalink === "function";
+          return typeof window.AnchorJS == "function";
         } catch (e) {
           return false;
         }
@@ -1614,7 +1738,9 @@ body .github-profile:hover {
 
     await window.buildFooter();
 
-    await window.sasync.loaded.mountpermalink();
+    // await window.sasync.loaded.mountpermalink();
+
+    await window.addAnchorLinks();
 
     await window.toc();
 
