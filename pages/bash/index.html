@@ -83,6 +83,11 @@
             extract ${PATH} $PATH, each path in separate line
               echo ${PATH} | tr ":" '\n'
 
+            clear cache (hash table): "hash entry in your shell"
+              hash -d ffmpeg
+              # or clear all 
+              hash -r
+
             #!/usr/bin/env bash
 
             # detect current shell
