@@ -80,6 +80,9 @@
           <h2>useful</h2>
           <script type="editor" data-lang="sh">
 
+            extract ${PATH} $PATH, each path in separate line
+              echo ${PATH} | tr ":" '\n'
+
             #!/usr/bin/env bash
 
             # detect current shell
