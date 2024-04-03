@@ -803,6 +803,10 @@ log.green("defined", "window.manipulation");
 
           const tag = next.tagName.toLowerCase();
 
+          if (next.classList.contains("cards")) {
+            break;
+          }
+
           if (reg.test(tag) && next.hasAttribute("id")) {
             break;
           }
