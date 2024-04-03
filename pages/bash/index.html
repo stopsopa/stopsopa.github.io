@@ -80,6 +80,14 @@
           <h2>useful</h2>
           <script type="editor" data-lang="sh">
 
+            # oneliner IF ELSE FI
+            if [ "${_BINARY}" = "/bin/zsh" ]; then read -sk; else read -n 1; fi
+            if [ "${_BINARY}" = "/bin/zsh" ]; then
+              read -sk
+            else
+              read -n 1
+            fi
+
             extract ${PATH} $PATH, each path in separate line
               echo ${PATH} | tr ":" '\n'
 
