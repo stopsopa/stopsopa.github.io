@@ -26,6 +26,16 @@
           cwebp -quiet 8.jpeg -resize 0 265 -metadata all -q 60 -o 8.webp
           # more about it: https://github.com/stopsopa/gphotos-research/blob/master/tools/convert-img.sh
         </script>
+        <h2>HEIC to PNG</h2>
+
+        <script type="editor" data-lang="sh">
+
+          export HOMEBREW_NO_AUTO_UPDATE=1 brew install imagemagick
+          magick mogrify -monitor -format jpg IMG_6465-2.HEIC
+            # will create file with the same name but different extension next to it
+            # test: 1.5mb HEIC file was converted to 2.6mb JPG file          
+          
+        </script>
         <h2>Generate GIF/webP from video</h2>
 
         <script type="editor" data-lang="sh">
