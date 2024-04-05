@@ -179,6 +179,18 @@
 
           # from: https://www.baeldung.com/linux/openssl-extract-certificate-info#1-extracting-the-subject
         </script>
+        <h2>execute inline HEREDOC</h2>
+        <script type="editor" data-lang="sh">
+
+          ssh simon@xx.xx.xx.xx << EEE
+          ls -la
+          echo stuff
+          exit 3
+          EEE
+          # will forward exit code too - as it should
+          
+        </script>
+        
         <h2>Change keys manually from any directory</h2>
 
         <script type="editor" data-lang="sh">
