@@ -80,6 +80,9 @@
           <h2>useful</h2>
           <script type="editor" data-lang="sh">
 
+            # suppress all - exit code, stdout and stderr
+            non_existing_command > /dev/null 2>&1 || true
+
             # oneliner IF ELSE FI
             if [ "${_BINARY}" = "/bin/zsh" ]; then read -sk; else read -n 1; fi
             if [ "${_BINARY}" = "/bin/zsh" ]; then
