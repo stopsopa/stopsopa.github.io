@@ -84,15 +84,15 @@ fswatch -0 -r "$src" ${@} | while read -d "" CHANGEDFILE; do
     TARGET="${dst}/${CHANGEDFILE#$src/}"  
 
     if [ -e "${CHANGEDFILE}" ]; then
-        echo "updated >${TARGET}<"
+        echo "updating >${TARGET}<"
         mkdir -p "$(dirname "${TARGET}")"
         cp "${CHANGEDFILE}" "${TARGET}"
     else
         if [ "${DESTRUCTIVE}" = "DESTRUCTIVE" ]; then
-            rm -rf "${TARGET}" 1> /dev/null 2> /dev/null
-            echo "deleted ${TARGET}"
+            echo "deleting ${TARGET}"
+            rm -rf "${TARGET}"
         else
-            echo "deleted DESTRUCTIVE OFF ${TARGET}"
+            echo "deleting DESTRUCTIVE OFF ${TARGET}"
         fi
     fi
 done
