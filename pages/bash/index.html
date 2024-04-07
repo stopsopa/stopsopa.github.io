@@ -80,6 +80,12 @@
           <h2>useful</h2>
           <script type="editor" data-lang="sh">
 
+            # suppress all - exit code, stdout and stderr
+            # more cross shell (I mean it works in zsh, bash, sh)
+            non_existing_command 1> /dev/null 2> /dev/null || true
+            # less cross shell
+            non_existing_command > /dev/null 2>&1 || true
+
             # oneliner IF ELSE FI
             if [ "${_BINARY}" = "/bin/zsh" ]; then read -sk; else read -n 1; fi
             if [ "${_BINARY}" = "/bin/zsh" ]; then
@@ -2432,6 +2438,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
           ls -l /bin/bash
           # -rwxr-xr-x 1 root root 1113504 Jun  6  2019 /bin/bash
+          # owner group others
           # The file "/bin/bash" is owned by user "root"
           # The superuser has the right to read, write, and execute this file
           # The file is owned by the group "root"
