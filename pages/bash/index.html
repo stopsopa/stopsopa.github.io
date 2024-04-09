@@ -80,6 +80,20 @@
           <h2>useful</h2>
           <script type="editor" data-lang="sh">
 
+            ubuntu version
+              lsb_release -a
+                No LSB modules are available.
+                Distributor ID:	Ubuntu
+                Description:	Ubuntu 22.04.4 LTS
+                Release:	22.04
+                Codename:	jammy
+              lsb_release -ds
+                Ubuntu 22.04.4 LTS
+              lsb_release -sc
+                jammy
+              uname -m
+                x86_64
+
             # suppress all - exit code, stdout and stderr
             # more cross shell (I mean it works in zsh, bash, sh)
             non_existing_command 1> /dev/null 2> /dev/null || true
@@ -1033,6 +1047,9 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         <h2>find</h2>
         <a href="https://ss64.com/osx/find.html">https://ss64.com/osx/find.html</a>
         <script type="editor" data-lang="sh">
+
+          # remove all .DS_Store files
+          find . -name '.DS_Store' -type f -delete
 
           # remove all directories except one
           # mindepth 1 is here to skip listing . [dot] - current directory

@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
   </head>
-  <body class="layout">
+  <body class="layout" toc>
     <div class="body">
       <div class="inside">
         <h2>download</h2>
@@ -17,6 +17,39 @@
         <a href="https://www.reddit.com/r/ffmpeg/comments/s3snv6/m1_mac_arm_binary_of_ffmpeg/"
           >https://www.reddit.com/r/ffmpeg/comments/s3snv6/m1_mac_arm_binary_of_ffmpeg/</a
         >
+        <h2>imagemagick</h2>
+        <a href="/pages/docker/images.html">zobacz też użytkowanie w docker /pages/docker/images.html</a>
+        <script type="editor" data-lang="sh">
+
+Instalacja imagemagick jest dosyć upierdliwa, na przyklad format HEIC nie jest dostępny przy standardowej procedurze instalcji jak tutaj:
+          
+  sudo apt -y install build-essential make gcc
+  sudo apt -y install libx11-dev libxext-dev zlib1g-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev
+  
+  cd
+  mkdir imagick
+  cd imagick
+  
+  wget -O ImageMagick.tar.gz https://download.imagemagick.org/archive/ImageMagick-7.1.1-29.tar.gz 
+  TARGZ_FILE="$(find . -maxdepth 1 -type f | tail -n 1| awk '{$1=$1};1' | tr -d '\n')"
+  echo ">${TARGZ_FILE}<"
+  tar -zxvf "${TARGZ_FILE}"
+  
+  TARGZ_DIR="$(find . -maxdepth 1 -type d | tail -n 1| awk '{$1=$1};1' | tr -d '\n')"
+  echo ">${TARGZ_DIR}<"
+  mv "${TARGZ_DIR}" ImageMagick
+  cd ImageMagick
+  
+  ./configure
+  make -j4
+  sudo make install
+  sudo ldconfig /usr/local/lib
+
+Dobrze jest więc zrobić build używając:
+  https://github.com/SoftCreatR/imei
+          
+        </script>
+        
         <h2>ffmpeg buddy</h2>
         <a href="https://evanhahn.github.io/ffmpeg-buddy/">https://evanhahn.github.io/ffmpeg-buddy/</a>
         <h2>cwebp -> jpg|bmp|png|gif to webp</h2>
