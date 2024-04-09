@@ -47,6 +47,16 @@ function tryToKill {
 
     while read -r PID
     do
+        if [ "${KILL_V2_EXCLUDE_PARENT_PID}" != "" ] && [ "${PID}" = "${KILL_V2_EXCLUDE_PARENT_PID}" ]; then
+
+            cat <<EEE
+
+    skipping KILL_V2_EXCLUDE_PARENT_PID >${KILL_V2_EXCLUDE_PARENT_PID}<
+
+EEE
+
+            continue;
+        fi
 
         if [ "${PID}" != "" ]; then
             if [[ ${PID} =~ ^[0-9]+$ ]]; then
