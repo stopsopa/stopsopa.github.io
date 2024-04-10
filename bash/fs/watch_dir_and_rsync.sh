@@ -86,7 +86,13 @@ fswatch -0 -r "$src" ${@} | while read -d "" CHANGEDFILE; do
     if [ -e "${CHANGEDFILE}" ]; then
         echo "updating >${TARGET}<"
         mkdir -p "$(dirname "${TARGET}")"
-        cp "${CHANGEDFILE}" "${TARGET}"
+
+        # # this might cause copying premission failure
+        # # cp: /Users/szdz/Desktop/IMG_4506.HEIC: could not copy extended attributes to /Volumes/samba_nuc_home_share/node/source/IMG_4506.HEIC: Operation not permitted
+        # cp "${CHANGEDFILE}" "${TARGET}"
+
+        # this one though copies just content - shouldn't care about permissions
+        rsync -azP --no-o --no-g "${CHANGEDFILE}" "${TARGET}"
     else
         if [ "${DESTRUCTIVE}" = "DESTRUCTIVE" ]; then
             echo "deleting ${TARGET}"

@@ -227,6 +227,67 @@
           # removing image:
           curl -v --silent -H "authorization: Basic YWRta...akc=" -X DELETE https://docker-registry.domain.co.uk/v2/puppeteer-1-20-0/manifests/sha256:ef75836309692....53dff9e325167
         </script>
+        <h2>Docker Multi-stage - multistage</h2>
+
+        <script type="editor" data-lang="sh">
+
+          FROM ccp.artifactory.ba.heg.com/node:14.17.4-alpine AS base_stage
+          WORKDIR /usr/src/app
+          COPY ./package.json ./yarn.lock ./.yarnrc ./
+          #COPY ./package.json ./yarn.lock ./.yarnrc ./yalc.lock ./
+          #COPY ./.yalc ./.yalc
+          RUN yarn install --frozen-lockfile --production=false
+          COPY . .
+          ENTRYPOINT echo "base_stage Dockerfile stage"
+
+          FROM docker.artifactory.ba.heg.com:443/godaddy/tartufo AS scan
+          ARG GIT_PREVIOUS_SUCCESSFUL_COMMIT
+          WORKDIR /venv/bin
+          COPY --from=base_stage /usr/src/app /usr/src/app
+          RUN ./tartufo --config /usr/src/app/tartufo.toml scan-local-repo /usr/src/app
+          ENTRYPOINT echo "scan Dockerfile stage"
+
+          FROM base_stage AS lint
+          RUN yarn lint
+          RUN yarn style:check
+          ENTRYPOINT echo "lint Dockerfile stage"
+
+          FROM base_stage AS build
+          RUN NODE_ENV="production" yarn build
+          ENTRYPOINT echo "build Dockerfile stage"
+
+          FROM build AS unit
+          RUN yarn test:unit
+          ENTRYPOINT echo "unit Dockerfile stage"
+
+          FROM ccp.artifactory.ba.heg.com/node:14.17.4-alpine AS image
+          ENV NODE_CONFIG_DIR="environments"
+          WORKDIR /usr/src/app
+          COPY ./package.json ./yarn.lock ./.yarnrc ./
+          #COPY ./package.json ./yarn.lock ./.yarnrc ./yalc.lock ./
+          #COPY ./.yalc ./.yalc
+          RUN yarn install --frozen-lockfile --production=true
+          COPY --from=build /usr/src/app/docs ./docs
+          COPY --from=build /usr/src/app/environments ./environments
+          COPY --from=build /usr/src/app/helpers ./helpers
+          COPY --from=build /usr/src/app/server ./server
+          ENTRYPOINT /bin/sh helpers/bash/env-var-inspect-node.sh server/main.js
+
+          # docker build --progress=plain --target base_stage -t project:node-multi_tl -f docker/app/Dockerfile .    \
+          # && docker build --progress=plain --target lint  -f docker/app/Dockerfile .    \
+          # && docker build --progress=plain --target unit  -f docker/app/Dockerfile .    \
+          # && docker build --progress=plain --target build -f docker/app/Dockerfile .    \
+          # && docker build --progress=plain --target image -t project:node-multi -f docker/app/Dockerfile .    \
+          # && echo all good
+
+          # for local testing in docker image
+          # docker run -it -v "$(pwd):/usr/src/app" --entrypoint="" project:node-multi_tl sh
+          # then yarn test:unit
+
+          # for post release tests like yarn test:api
+          # docker run -i --entrypoint="" project:node-multi_tl yarn test:api
+        </script>
+
         <h2>Ssh servers in docker</h2>
         <script type="editor" data-lang="sh">
 
