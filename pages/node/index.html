@@ -303,9 +303,11 @@ if (typeof process.argv[2] === "string") {
     try {
       const result = await esbuild.build(config);
 
-      esbuild
-        .analyzeMetafile(result.metafile, { verbose: true })
-        .then(console.log);
+      const stats = await esbuild.analyzeMetafile(result.metafile, {
+        verbose: true,
+      });
+
+      console.log(stats);
 
       console.log("finished building");
     } catch (e) {
@@ -315,6 +317,7 @@ if (typeof process.argv[2] === "string") {
     }
   })();
 }
+
 
         </script>
         <h2>prettier setup</h2>
