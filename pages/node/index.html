@@ -306,7 +306,8 @@ if (typeof process.argv[2] === "string") {
       esbuild
         .analyzeMetafile(result.metafile, { verbose: true })
         .then(console.log);
-      console.log("watching...");
+
+      console.log("finished building");
     } catch (e) {
       console.error(`general esbuild error: ${e}`);
 
