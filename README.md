@@ -242,29 +242,27 @@ In order to prevent dislocating yellow background under block pointed out by loc
 .cards elements are position:relative and using them to surround the block which height might be changing dynamically might help.
 
 ```html
+<body class="layout" toc>
+  <div class="body">
+    <div class="inside">
+      <div class="cards">
+        <h2>Index</h2>
+        <script type="editor" data-lang="sh"></script>
+      </div>
 
+      <div class="cards">
+        <h2>dynamic content</h2>
+        <button onclick="document.querySelector('.toggle').classList.toggle('show')"></button>
+        <div class="toggle" style="height: 50px;">toggled box</div>
+      </div>
 
-    <body class="layout" toc>
-        <div class="body">
-            <div class="inside">
-
-              <div class="cards">
-                <h2>Index</h2>
-                <script type="editor" data-lang="sh">
-                </script>
-              </div>
-
-              <div class="cards">
-                <h2>dynamic content</h2>
-                <button onclick="document.querySelector('.toggle').classList.toggle('show')"></button>
-                <div class="toggle" style="height: 50px;">toggled box</div>
-              </div>
-
-              <div class="cards">
-                <h2>Index</h2>
-                <script type="editor" data-lang="sh">
-                </script>
-              </div>
+      <div class="cards">
+        <h2>Index</h2>
+        <script type="editor" data-lang="sh"></script>
+      </div>
+    </div>
+  </div>
+</body>
 ```
 
 # uglify

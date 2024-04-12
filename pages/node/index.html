@@ -263,62 +263,60 @@
         <h2>esbuild</h2>
 
         <script type="editor" data-lang="js">
-// "esbuild@0.20.2"
-// "esbuild-plugin-sass@1.0.1"
-const esbuild = require("esbuild");
-const sassPlugin = require("esbuild-plugin-sass");
-const fs = require("fs");
+          // "esbuild@0.20.2"
+          // "esbuild-plugin-sass@1.0.1"
+          const esbuild = require("esbuild");
+          const sassPlugin = require("esbuild-plugin-sass");
+          const fs = require("fs");
 
-const entryPoints = ["app/front.entry.js"];
-const outfile = "public/dist/front.bundle.js";
+          const entryPoints = ["app/front.entry.js"];
+          const outfile = "public/dist/front.bundle.js";
 
-const config = {
-  entryPoints,
-  outfile,
-  bundle: true,
-  target: "es2017",
-  jsxFactory: "React.createElement",
-  jsxFragment: "React.Fragment",
-  plugins: [sassPlugin()],
-  loader: { ".js": "jsx" },
-  metafile: true,
-};
+          const config = {
+            entryPoints,
+            outfile,
+            bundle: true,
+            target: "es2017",
+            jsxFactory: "React.createElement",
+            jsxFragment: "React.Fragment",
+            plugins: [sassPlugin()],
+            loader: { ".js": "jsx" },
+            metafile: true,
+          };
 
-if (typeof process.argv[2] === "string") {
-  if (process.argv[2] !== "watch") {
-    console.log('invalid argument - should be "watch"');
+          if (typeof process.argv[2] === "string") {
+            if (process.argv[2] !== "watch") {
+              console.log('invalid argument - should be "watch"');
 
-    process.exit(1);
-  }
+              process.exit(1);
+            }
 
-  (async function () {
-    let ctx = await esbuild.context(config);
+            (async function () {
+              let ctx = await esbuild.context(config);
 
-    await ctx.watch();
+              await ctx.watch();
 
-    console.log("watching...");
-  })();
-} else {
-  (async function () {
-    try {
-      const result = await esbuild.build(config);
+              console.log("watching...");
+            })();
+          } else {
+            (async function () {
+              try {
+                const result = await esbuild.build(config);
 
-      const stats = await esbuild.analyzeMetafile(result.metafile, {
-        verbose: true,
-      });
+                const stats = await esbuild.analyzeMetafile(result.metafile, {
+                  verbose: true,
+                });
 
-      console.log(stats);
+                console.log(stats);
 
-      console.log("finished building");
-    } catch (e) {
-      console.error(`general esbuild error: ${e}`);
+                console.log("finished building");
+              } catch (e) {
+                console.error(`general esbuild error: ${e}`);
 
-      process.exit(1);
-    }
-  })();
-}
-
-
+                process.exit(1);
+              }
+            })();
+          }
         </script>
         <h2>prettier setup</h2>
         <script type="editor" data-lang="sh">
