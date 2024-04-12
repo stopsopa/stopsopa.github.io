@@ -25,7 +25,7 @@ if [ "${?}" != "0" ]; then
     exit 1
 fi
 
-realpath --version 1> /dev/null 2> /dev/null
+realpath . 1> /dev/null 2> /dev/null
 if [ "${?}" != "0" ]; then
     echo "${0} realpath not installed - on mac run : brew install coreutils";
 
