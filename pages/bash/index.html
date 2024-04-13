@@ -193,16 +193,34 @@
 
 
             # ------------------ collect stdout for logs --------------------- vvv
-            LOG="start"            
-            LOG+=$'\n'"$(/bin/bash ttt.sh 2>&1)"            
-            cat <<EEE            
-            >>${LOG}<<            
+            cat <<EEE > ttt.sh
+            echo John have a cat
+            echo Cat have a hiv>&2
+            exit 4
             EEE
-
-            prints:
-            >>start
-            John have a cat
-            Cat have a hiv<<
+            cat <<EEE > tttt.sh
+            set -e
+            function cleanup {
+            cat <<AAA
+            1111[[\${LOG}]]\${?}]]
+            AAA
+            }
+            trap cleanup EXIT;
+            if [ "\${LETGO}" = "" ]; then
+              set +e
+            fi
+            LOG=""
+            LOG+=\$'\n=== tools/convert-img.sh called from batch-one.sh ===\n'"\$(/bin/bash ttt.sh 2>&1)"
+            STATUS="\${?}"
+            cat <<AAA
+            2222[[\${LOG}]]\${STATUS}]]
+            AAA
+            exit 10;
+            EEE
+            echo -----------111
+            /bin/bash tttt.sh
+            echo -----------222
+            LETGO=1 /bin/bash tttt.sh
             # ------------------ collect stdout --------------------- ^^^
 
             # --- pause a script until keypress --------------- vvv
