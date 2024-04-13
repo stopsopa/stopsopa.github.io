@@ -1349,6 +1349,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           // stdout stderr
           set -e; _exit 1> /dev/null 2> /dev/null
 
+          # output to stderr 
           echo John have a cat
           echo Cat have a hiv>&2
 
