@@ -1309,6 +1309,49 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
               mvn clean install
 
           set -u # Exit script immediately if an undefined variable is used (e.g. echo "$UNDEFINED_ENV_VAR").
+
+          # test is set -e is globally scoped or also works with functions locally
+          # SPOILER ALERT: it is only globally scoped
+
+          set -e
+          echo start
+          function ttt {
+              set +e
+              echo inside funciton 
+              something goes wrong
+              if [ "${1}" = "EARLY" ]; then
+                  echo wlazl    
+                  # set -e # when this is commented then message "this shouldnt happen" is visible
+                  return
+              fi
+              echo NIE wlazl    
+              set -e # and here - so ChatGPT is full of shit
+          }
+          echo function defined
+          ttt ${@}
+          echo but lets continue
+          xxx crash here
+          echo this shouldnt happen
+          
+          # $ /bin/bash exiton.sh 
+          # start
+          # function defined
+          # inside funciton
+          # exiton.sh: line 6: something: command not found
+          # NIE wlazl
+          # but lets continue
+          # exiton.sh: line 18: xxx: command not found
+          
+          # $ /bin/bash exiton.sh EARLY
+          # start
+          # function defined
+          # inside funciton
+          # exiton.sh: line 6: something: command not found
+          # wlazl
+          # but lets continue
+          # exiton.sh: line 18: xxx: command not found
+          # this shouldnt happen <---------------------------- this shouldn't be here if ChatGPT would be right    
+          
         </script>
         <h2>remove strip color from stream output</h2>
         <script type="editor" data-lang="sh">
