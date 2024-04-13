@@ -192,6 +192,18 @@
             # --- iterate over lines ---- ^^^
 
 
+            # ------------------ collect stdout for logs --------------------- vvv
+            LOG="start"            
+            LOG+=$'\n'"$(/bin/bash ttt.sh 2>&1)"            
+            cat <<EEE            
+            >>${LOG}<<            
+            EEE
+
+            prints:
+            >>start
+            John have a cat
+            Cat have a hiv<<
+            # ------------------ collect stdout --------------------- ^^^
 
             # --- pause a script until keypress --------------- vvv
             read -n 1
