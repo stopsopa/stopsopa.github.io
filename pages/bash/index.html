@@ -668,6 +668,8 @@
             if ! grep -qF "$BASHADD" ~/.bashrc; then
               echo doent exist
               echo "$BASHADD" >> ~/.bashrc
+              source ~/.bashrc
+              xx
             else
               echo exist
             fi
