@@ -527,6 +527,8 @@
             node --env-file=.env --env-file=.development.env script.js
             # more: https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs
             # Note: if the same variable is defined in the environment and in the file, the value from the environment takes precedence.
+          nodemon --env-file=.env index.js run
+            # this will work too - nodemon seems to be accepting --env-file=.env too
 
           const fs = require('fs');
 
