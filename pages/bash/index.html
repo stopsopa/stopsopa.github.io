@@ -192,6 +192,52 @@
             # --- iterate over lines ---- ^^^
 
 
+            # ------------------ collect stdout for logs --------------------- vvv
+            cat <<EEE > ttt.sh
+            echo John have a cat
+            echo Cat have a hiv>&2
+            exit 4
+            EEE
+            cat <<EEE > tttt.sh
+            set -e
+            function cleanup {
+            cat <<AAA
+            1111[[\${LOG}]]\${?}]]
+            AAA
+            }
+            trap cleanup EXIT;
+            if [ "\${LETGO}" = "" ]; then
+              set +e
+            fi
+            LOG=""
+            LOG+=\$'\n=== tools/convert-img.sh called from batch-one.sh ===\n'"\$(/bin/bash ttt.sh 2>&1)"
+            STATUS="\${?}"
+            cat <<AAA
+            2222[[\${LOG}]]\${STATUS}]]
+            AAA
+            exit 10;
+            EEE
+            echo -----------111
+            /bin/bash tttt.sh
+            echo -----------222
+            LETGO=1 /bin/bash tttt.sh
+
+            # prints
+            -----------111
+            2222[[
+            === tools/convert-img.sh called from batch-one.sh ===
+            John have a cat
+            Cat have a hiv]]4]]
+            1111[[
+            === tools/convert-img.sh called from batch-one.sh ===
+            John have a cat
+            Cat have a hiv]]10]]
+            -----------222
+            1111[[
+            === tools/convert-img.sh called from batch-one.sh ===
+            John have a cat
+            Cat have a hiv]]4]]            
+            # ------------------ collect stdout --------------------- ^^^
 
             # --- pause a script until keypress --------------- vvv
             read -n 1
@@ -345,6 +391,9 @@
             fi
 
 
+            # waiting for one character
+            # button press
+            # stop script until button pressed
             # reading one character in zsh, bash - reading keyboard input
             { red "${COUNT} files found (more than ${MAX}), are you sure you want to include them to other libraries them? (y|n)\n"; } 2>&3
             if [ "${_BINARY}" = "/bin/zsh" ]; then
@@ -1299,6 +1348,49 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
               mvn clean install
 
           set -u # Exit script immediately if an undefined variable is used (e.g. echo "$UNDEFINED_ENV_VAR").
+
+          # test is set -e is globally scoped or also works with functions locally
+          # SPOILER ALERT: it is only globally scoped
+
+          set -e
+          echo start
+          function ttt {
+              set +e
+              echo inside funciton 
+              something goes wrong
+              if [ "${1}" = "EARLY" ]; then
+                  echo wlazl    
+                  # set -e # when this is commented then message "this shouldnt happen" is visible
+                  return
+              fi
+              echo NIE wlazl    
+              set -e # and here - so ChatGPT is full of shit
+          }
+          echo function defined
+          ttt ${@}
+          echo but lets continue
+          xxx crash here
+          echo this shouldnt happen
+          
+          # $ /bin/bash exiton.sh 
+          # start
+          # function defined
+          # inside funciton
+          # exiton.sh: line 6: something: command not found
+          # NIE wlazl
+          # but lets continue
+          # exiton.sh: line 18: xxx: command not found
+          
+          # $ /bin/bash exiton.sh EARLY
+          # start
+          # function defined
+          # inside funciton
+          # exiton.sh: line 6: something: command not found
+          # wlazl
+          # but lets continue
+          # exiton.sh: line 18: xxx: command not found
+          # this shouldnt happen <---------------------------- this shouldn't be here if ChatGPT would be right    
+          
         </script>
         <h2>remove strip color from stream output</h2>
         <script type="editor" data-lang="sh">
@@ -1385,6 +1477,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           // stdout stderr
           set -e; _exit 1> /dev/null 2> /dev/null
 
+          # output to stderr 
           echo John have a cat
           echo Cat have a hiv>&2
 
