@@ -660,7 +660,7 @@
           if \
             [ "$(printf "sha384-$(cat ~/xx/xx.node.bundled.gitignored.cjs | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.node.bundled.gitignored.cjs" ] \
           || \
-            [ "$(printf "sha384-$(cat ~/xx/vault.sh | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.sh" ] \
+            [ "$(printf "sha384-$(cat ~/xx/xx.sh | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.sh" ] \
           ; then
             echo "checksum verified - installing"
             eval _SCRIPT="~/xx/xx.sh"
