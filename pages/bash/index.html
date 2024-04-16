@@ -655,8 +655,8 @@
             fi
           }
           mkdir ~/xx
-          download "urlwizzard.schema://urlwizzard.hostnegotiated/bash/xx/xx.node.bundled.gitignored.cjs" ~/xx/xx.node.bundled.gitignored.cjs
-          download "urlwizzard.schema://urlwizzard.hostnegotiated/bash/xx/xx.sh" ~/xx/xx.sh
+          download "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.node.bundled.gitignored.cjs" ~/xx/xx.node.bundled.gitignored.cjs
+          download "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.sh" ~/xx/xx.sh
           if \
             [ "$(printf "sha384-$(cat ~/xx/xx.node.bundled.gitignored.cjs | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.node.bundled.gitignored.cjs" ] \
           || \
