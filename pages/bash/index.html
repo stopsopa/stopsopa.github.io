@@ -592,6 +592,42 @@
         <a href="https://levelup.gitconnected.com/5-less-known-bash-concepts-to-level-up-your-linux-skills-7bcf363804d1"
           >https://levelup.gitconnected.com/5-less-known-bash-concepts-to-level-up-your-linux-skills-7bcf363804d1</a
         >
+        <h2>xx</h2>
+        <script type="editor" data-lang="sh">
+          wget --help 1> /dev/null 2> /dev/null
+          WGETSTATUS="${?}"
+          function download {
+            eval _SOURCE="${1}"
+            eval _TARGET="${2}"
+            if [ "${WGETSTATUS}" = "0" ]; then
+              wget --no-cache -O "${_TARGET}" "${_SOURCE}"
+            else # curl
+              curl "${_SOURCE}" -o "${_TARGET}"
+            fi
+          }
+          mkdir ~/xx
+          download "urlwizzard.schema://urlwizzard.hostnegotiated/bash/xx/xx.node.bundled.gitignored.cjs" ~/xx/xx.node.bundled.gitignored.cjs
+          download "urlwizzard.schema://urlwizzard.hostnegotiated/bash/xx/xx.sh" ~/xx/xx.sh
+          if \
+            [ "$(printf "sha384-$(cat ~/xx/xx.node.bundled.gitignored.cjs | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.node.bundled.gitignored.cjs" ] \
+          || \
+            [ "$(printf "sha384-$(cat ~/xx/vault.sh | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.sh" ] \
+          ; then
+            echo "checksum verified - installing"
+            eval _SCRIPT="~/xx/xx.sh"
+            BASHADD="alias xx=\"/bin/bash ${_SCRIPT}\" # xx mount"  
+            if ! grep -qF "$BASHADD" ~/.bashrc; then
+              echo doent exist
+              echo "$BASHADD" >> ~/.bashrc
+            else
+              echo exist
+            fi
+          else
+            echo "checksum corrupted - deleting file"
+            rm ~/xx/xx.node.bundled.gitignored.cjs
+            rm ~/xx/xx.sh
+          fi
+        </script>
         <h2>diff</h2>
         <script type="editor" data-lang="sh">
 

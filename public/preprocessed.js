@@ -7,6 +7,14 @@ window.log = (function () {
     })();
     
     window.env = (function (e) {
+
+      if ( ! window.process ) {
+          
+          window.process = {}
+      }
+      
+      window.process.env = e;
+      
       return function (key, def) {
         if (typeof key === "undefined") {
           return Object.assign({}, e);
