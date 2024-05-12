@@ -666,13 +666,10 @@
             eval _SCRIPT="~/xx/xx.sh"
             BASHADD="alias xx=\"/bin/bash ${_SCRIPT}\" # xx mount"  
             if ! grep -qF "$BASHADD" ~/.bashrc; then
-              echo doent exist
               echo "$BASHADD" >> ~/.bashrc
-              source ~/.bashrc
-              xx
-            else
-              echo exist
             fi
+            source ~/.bashrc
+            xx
           else
             echo "checksum corrupted - deleting file"
             rm ~/xx/xx.node.bundled.gitignored.cjs
