@@ -1150,6 +1150,13 @@
           npm install --production=false # with devDependencies
               # from: https://docs.npmjs.com/cli/v7/commands/npm-install
 
+          npm prune --production
+             npm prune: 
+                  This command removes "extraneous" packages. Extraneous packages are packages that are not listed on the parent package's dependencies list.
+             --production: 
+                  When you add this flag, the command will remove the packages listed in your devDependencies. 
+                  These are typically packages that are only needed for development and not for running your application in production.
+
           $(npm bin)/cypress open
               # from: https://docs.cypress.io/guides/getting-started/installing-cypress.html#Opening-Cypress
 
