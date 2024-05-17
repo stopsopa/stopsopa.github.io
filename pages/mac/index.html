@@ -347,6 +347,16 @@
             7z
           </script>
 
+          <h2>Fixing permission issue for Bartender</h2>
+          <a href="https://www.macbartender.com/Bartender5/PermissionIssues/">https://www.macbartender.com/Bartender5/PermissionIssues/</a>
+          <script type="editor" data-lang="sh">
+            
+            # If that doesn’t help fix it, you can remove Bartenders permissions completely and re-add them, to do this Quit Bartender then run the below command in terminal:
+
+            tccutil reset Accessibility com.surteesstudios.Bartender; tccutil reset ScreenCapture com.surteesstudios.Bartender; 
+            tccutil reset Accessibility com.surteesstudios.Bartender-setapp; tccutil reset ScreenCapture com.surteesstudios.Bartender-setapp
+            
+          </script>
           <h2>Images resizing from cli</h2>
           <script type="editor" data-lang="sh">
 
