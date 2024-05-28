@@ -193,6 +193,7 @@ EEE
                     
                     cp "${LOCKDIR}/${xxx}" "${xxx}"
                 else
+                    echo ADDING3 "reason>${REASON}<" ">${xxx}<"
                     CHANGED="$(echo -e "${CHANGED}\n${REASON}${xxx}")"
                 fi
             fi
@@ -258,6 +259,7 @@ git update-index --assume-unchanged "${xxx}"
 EEE
                     fi
                 else
+                    echo ADDING2 "reason>${REASON}<" ">${xxx}<"
                     CHANGED="$(echo -e "${CHANGED}\n${REASON}${xxx}")"
                 fi
             fi
@@ -284,6 +286,7 @@ EEE
                     git --no-pager diff --exit-code "${xxx}" 1> /dev/null 2> /dev/null   
 
                     STATUS="${?}"
+                    echo SETTING STATUS2 ">${STATUS}<" ">>git --no-pager diff --exit-code "${xxx}" 1> /dev/null 2> /dev/null<<" "result >$(git --no-pager diff --exit-code "${xxx}" 1> /dev/null 2> /dev/null)<"
                     # echo git ls-files "${xxx}" "STATUS=>${STATUS}<"
                     if [ "${STATUS}" != "0" ]; then
                         REASON="DIFF : "
@@ -295,9 +298,12 @@ EEE
                 else
                 # echo git else "${xxx}"
                     if [ -f "${xxx}" ]; then
+                        echo "vvvvvvvvvvvvv" diff "${LOCKDIR}/${xxx}" "${xxx}"
                         diff "${LOCKDIR}/${xxx}" "${xxx}"
+                        echo "^^^^^^^^^^^^^"
 
                         STATUS="${?}"
+                        echo SETTING STATUS ">${STATUS}<"
                         if [ "${STATUS}" != "0" ]; then
                             REASON="EXIST: "
                         fi
@@ -331,6 +337,7 @@ EEE
                         echo "git checkout \"${xxx}\""
                     fi
                 else
+                    echo ADDING ">${xxx}<"
                     CHANGED="$(echo -e "${CHANGED}\n${xxx}")"
                 fi
             fi
