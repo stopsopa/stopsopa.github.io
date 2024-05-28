@@ -1146,9 +1146,28 @@
         <h2>npm</h2>
         <script type="editor" data-lang="sh">
 
+          # see all dependencies in the form of a tree
+            npm ls --all
+
           npm install --production       # no devDependencies
           npm install --production=false # with devDependencies
               # from: https://docs.npmjs.com/cli/v7/commands/npm-install
+
+          # running using custom .npmrc
+          cat <<EEE > $NPM_RC
+          registry=https://xxxxx.jfrog.io/artifactory/api/npm/node-virt/
+          _auth=Y2lfY......................................................Da2M3ajM=
+          email=noreply@xxx.com
+          always-auth=true
+          EEE
+          npm ci --userconfig=$NPM_RC
+
+          npm prune --production
+             npm prune: 
+                  This command removes "extraneous" packages. Extraneous packages are packages that are not listed on the parent package's dependencies list.
+             --production: 
+                  When you add this flag, the command will remove the packages listed in your devDependencies. 
+                  These are typically packages that are only needed for development and not for running your application in production.
 
           $(npm bin)/cypress open
               # from: https://docs.cypress.io/guides/getting-started/installing-cypress.html#Opening-Cypress
