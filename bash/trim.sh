@@ -32,3 +32,20 @@ trim() {
     var="${var%"${var##*[![:space:]]}"}"
     echo -n "${var}"
 }
+
+
+
+# -----
+# alternative to trim just from left but given character
+# trimLeft() {
+#   local str="$1"
+#   local trim_char="$2"
+#   while [[ $str == $trim_char* ]]; do
+#     str="${str#$trim_char}"
+#   done
+#   echo "$str"
+# }
+
+# # Usage
+# trimLeft "./config/sensitive/sensitive-config.json" "."
+# trimLeft "./config/sensitive/sensitive-config.json" "/"
