@@ -268,10 +268,13 @@
             # to test above setting use git itself
               git config -l > git_config.txt
 
-          # other tricks to ignore changes
+          # other tricks to ignore changes (locked)
             git update-index --assume-unchanged <file>
             To reverse it
             git update-index --no-assume-unchanged <file>
+
+            # to list files which are aleady marked as assume-unchanged
+              git ls-files -v | grep "^h "
           # ----------------- about gitignore ----------- ^^^
 
           # some other settings (~/.gitconfig)
