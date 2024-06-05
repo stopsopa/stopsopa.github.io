@@ -232,6 +232,30 @@
           document.write("Wyrazenie z 4 nawiasu: "+ RegExp.$4 +"<br>");
           document.write("Wyrazenie z 5 nawiasu: "+ RegExp.$5 +"<br>");
         </script>
+        <h3>Promise TrackSettled</h3>
+        <script type="editor" data-lang="js">
+
+          function TrackSettled(promise) {
+            this.state = 'pending';
+            this.promise = promise.then(
+              (x) => {
+                this.state = 'resolved';
+                return x;
+              },
+              (y) => {
+                this.state = 'rejected';
+                return y;
+              }
+            );
+          }
+          TrackSettled.prototype.then = function (resolve, reject) {
+            return this.promise.then(resolve, reject);
+          };
+          TrackSettled.prototype.catch = function (reject) {
+            return this.promise.catch(reject);
+          };
+          
+        </script>
 
         <h2>easing bezier</h2>
         <a href="/pages/css/index.html#cubic-bezier">go to css section /pages/css/index.html#cubic-bezier</a>
