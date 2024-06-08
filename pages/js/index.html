@@ -1108,6 +1108,9 @@
               const reg = new RegExp(`(?:(?:^|.*;\\s*)${key}\\s*\\=\\s*([^;]*).*$)|^.*$`, ``);
               return document.cookie.replace(reg, '$1');
           }
+          function deleteCookie(key) {
+              document.cookie = key + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
+          }
           // more about two above: https://stopsopa.github.io/pages/js/clicksecure.html
         </script>
         <h2>Polyfill</h2>
