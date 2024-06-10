@@ -1160,7 +1160,13 @@
           npm install --production=false # with devDependencies
               # from: https://docs.npmjs.com/cli/v7/commands/npm-install
           
-          npm prune --production
+              # apparently --production parameter is deperecated, I saw an error message:
+                  $ npm install --production
+                  chatgpt: npm WARN config production Use `--omit=dev` instead.
+                  The warning message you're seeing is because the --production flag is deprecated in npm v7.0.0 and later. 
+                  The new way to omit the devDependencies when installing packages is to use the --omit=dev flag.
+              use instead
+                npm install --omit=dev                    
 
           # running using custom .npmrc
           cat <<EEE > $NPM_RC
