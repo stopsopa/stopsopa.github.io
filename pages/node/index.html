@@ -518,6 +518,10 @@
           yarn upgrade-interactive
           yarn upgrade-interactive --latest
 
+          yarn install --production
+            # npm equivalnet of 
+            npm prune --production
+
           yarn install --production=true  # no devDependencies
           yarn install --production=false # with devDependencies
               # from: https://classic.yarnpkg.com/en/docs/cli/install/#toc-yarn-install-production-true-false
@@ -1155,6 +1159,8 @@
           npm install --production       # no devDependencies
           npm install --production=false # with devDependencies
               # from: https://docs.npmjs.com/cli/v7/commands/npm-install
+          
+          npm prune --production
 
           # running using custom .npmrc
           cat <<EEE > $NPM_RC
@@ -1165,7 +1171,6 @@
           EEE
           npm ci --userconfig=$NPM_RC
 
-          npm prune --production
              npm prune: 
                   This command removes "extraneous" packages. Extraneous packages are packages that are not listed on the parent package's dependencies list.
              --production: 
