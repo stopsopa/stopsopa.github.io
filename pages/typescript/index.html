@@ -71,6 +71,54 @@
               },
           ]
         </script>
+        <h2>Omit</h2>
+        
+        <script type="editor" data-lang="typescript">
+
+type OriginalType = {
+  field1: string;
+  field2: number;
+  field3: boolean;
+};
+
+type DerivedType = Omit<OriginalType, 'field2' | 'field3'>;
+
+          
+        </script>
+        <h2>Union</h2>
+        
+        <script type="editor" data-lang="typescript">
+
+type OriginalType = StepGdshopFulfillmentNamespaceLookupProps;
+
+type ExtraFields = {
+  extraField1: string;
+  extraField2: number;
+};
+
+type DerivedType = OriginalType & ExtraFields;
+
+          
+        </script>
+        <h2>Some fileds from optional to Required</h2>
+        
+        <script type="editor" data-lang="typescript">
+
+          // making all fields Required          
+          type OriginalType = useStepGdshopFulfillmentNamespaceLookupCloneProps;
+          type DerivedType = Required<OriginalType>;
+
+          // making only selected fields Required
+          type OriginalType = useStepGdshopFulfillmentNamespaceLookupCloneProps;
+          type MandatoryFields = Required<Pick<OriginalType, 'list'>>;          
+          type DerivedType = MandatoryFields & Omit<OriginalType, 'list'>;
+
+          // makins some fields Optional and leaving reast as is
+          type OriginalType = StepGdshopFulfillmentNamespaceLookupProps;
+          type OptionalFields = Partial<Pick<OriginalType, 'gdshopFulfillmentNamespaceLookupID' | 'gdshopProductTypeID'>>;          
+          type DerivedType = OptionalFields & Omit<OriginalType, 'gdshopFulfillmentNamespaceLookupID' | 'gdshopProductTypeID'>;
+
+        </script>
         <h2>Determine @types/* library for current typescript</h2>
         <script type="editor" data-lang="typescript">
 
