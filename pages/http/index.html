@@ -44,32 +44,33 @@
             GET  -   /authors-books/2/books/5    - good
             GET  -   /authorsBooks/2/books/5     - not good
 
-            GET - is idempotent (READ) - To retrieve resource (get data from server).
+            GET - is [IDEMPOTENT] (READ) - To retrieve resource (get data from server).
               no body
               GET /user/1234
               GET /users/page/1
                 can read multiple times with the same result
                 GET should never be used to change state
 
-            POST - is NOT idempotent - Creates a new resource.
+            POST - is [NOT IDEMPOTENT] - Creates a new resource.
               body present
               POST /user
                 no id here so each call will create new user
 
-            PUT - is idempotent (UPDATE) - Updates resource (replaces it's state with new one).
+            PUT - is [IDEMPOTENT] (UPDATE) - Updates resource (replaces it's state with new one).
               body present
               PUT /users/1234
                 put sent with the same id and data should be idempotent
 
-            PATCH - is idempotent - Updates resource (updates only provided fields).
+            PATCH - is [IDEMPOTENT] - Updates resource (updates only provided fields).
               body present
 
-            DELETE - is idempotent - Deletes resource from the server (removes the data).
+            DELETE - is [IDEMPOTENT] - Deletes resource from the server (removes the data).
               no body
               DELETE /user/1234
                 this one is weird because that will be easier if we do soft DELETE
                 but when we are removing for real then next time called it might result in NOT FOUD 404
                 Let's call it: Appropriate compromise
+            
           </script>
           <img src="https://i.imgur.com/gJHfYTO.png" style="width: 600px" />
           <h2>Useful response codes</h2>
