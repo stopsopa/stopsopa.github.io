@@ -72,23 +72,29 @@
           ]
         </script>
         <h2>Function Overloads & Generics - together</h2>
-        <a href="https://www.typescriptlang.org/play/?#code/FDCWFsAcHsCcBcAElbQCYFcDGBTRAzVcRAcgnB1hIG4QIYFEBnHJQ6YkgG3QEMmAFgHoW8GiHgBPSHgBiAOwA8AFQB8iALyIAFGli988AFyJlASk3rliAD6IM8tDnyh5ONLWA4AHgyRSZRABhDCZ4DgAFVExcZWk8LQBvYEREFVVtV0gMY1MAGkQAaxxJAHlYAFVINF54ShMFdLMTZVpU9Mz5bNzlAuKyyura+uZ4WFcAc1tR8fkJgG0AXQKAN14uDBwTXnlJZtNaAF9PHz9ELGh5MPPQ8PAo9Gwt4NvI6Ke4wK1tFMQsnO2uzyv365SqNTqsEBkmBqTWGxwAH5ocB9jtJJZEMlUqB8DoAjhoHjQYMIZRNBotCR8A4sPBQJcSBZsalELBWBhYPJkO9cJ1un0SmChpCzG1EIcQKl2fBOdzRPycoKBuDhrBVutNmLgMcJPFTNYkog6mETGFZlNdcALlckFwWoascacKbSJhILwSBLPDbroVNDcwm9HnyuAUSCaxOH3bwAExMzyFAB0kbQAZIMYAzDQgA">Playground</a>
+        <a href="https://www.typescriptlang.org/play/?#code/FDBmFcDsGMBcEsD2kAEAHATogJuaBTAHgBUA+ACnkjXFgC4ViAaFAa3wE8B5DAVTWwBDWPgwNyAShQBeUowkNiKAN7AUbTj35CRGSWpQZ8scBlQBnWBjwmj2AMIAbZPkrVaEgNzAAviAgwCMgo5sYkFFQ09Iws7Nx8AsKi4gBuDJYYVADmUrIxKCmCjuD46VbZCowqBnFaibrkhcX4EgZGthZWNqb4Ds6QrpEe3n7AsBxo+CgAYpDhMijk2BiCoNHEuXJKAD4oUNj4oFS93mMTU-bglogAtgAKWLgExOcLqurhblGKsZoJOskZnMyJViN4PmQvrQfhp4tokmIQuVIFkULsMtkANoAXRYTRKDEEkA4oJGp2gyEsKGgV1gtweODwpRQl2u90eTJekwW5AMQ2iRI4TBqf3hukJxOF6nx+AA-BKOMBKoKZHJ3ih4KBFuNJogtbV-giZNJpCgAOQBOBISBmqTq9TtUyoTCMghQ2C-OH1UReAyjB3GJ0hYzuz11AEYPFFEq+nynHVTYhKU3KFAiSxlTIolBxkAUyBUxyKZMqNP4DPm3BoQRmnPkymwNgLGlshlPVyOFhm9OwM1dquCABMttOrAAdD3BwszQOAMxm+sFxCOfBj5xZchm1gMPtsCRAA">Playground</a>
         <br />
         <a href="https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads">https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads</a>
         <script type="editor" data-lang="typescript">
 
-          import produce from 'immer';
+          function produce<T>(input: T, keyOrUpdater: () => T): T {
+            keyOrUpdater()
+            return structuredClone(input);
+          }
           
-          import set from 'lodash/set';
+          function set<T>(input: T, keyOrUpdater: (v: string) => T, value: string): T {
+            keyOrUpdater(value)
+            return structuredClone(input);
+          }
           
           type Fn<T> = (draft: T) => T | undefined;
           
-          export type CustomProduceType = {
+          type CustomProduceType = {
             <T>(input: T, keyOrUpdater: Fn<T>): T;
             <T>(input: T, keyOrUpdater: string | string[], value: any): T;
           };
           
-          export const customProduce: CustomProduceType = (
+          const customProduce: CustomProduceType = (
             input: any,
             keyOrUpdater: any,
             value?: any
@@ -106,7 +112,9 @@
           
           const k = customProduce(l, 'test', 'dupa2');
           
-          k.testd = 'dupa3';
+          k.test2 = 'dupa3';
+          
+          console.log('k: ', k)
           
         </script>
         <h2>Omit</h2>
