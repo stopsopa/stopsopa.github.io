@@ -212,6 +212,37 @@
             return div;
           }
         </script>
+        <h2>Keyboard event</h2>
+        
+        <script type="editor" data-lang="js">
+          // waiting for keyboard sequence, substring event          
+
+          function password(check, callback, opt) {
+              opt = Object.assign({unbind: true}, opt);
+              const ref = {x: ''};
+              function event({key}) {
+                  if (key === "Enter") {
+                      return (ref.x = "");
+                  }
+                  ref.x += key;
+                  if (check(ref)) {
+                      opt.unbind && document.removeEventListener("keypress", event);
+                      callback();
+                  }
+              }
+              document.addEventListener("keypress", event);
+          }
+      
+          password(ref => {
+              if (ref.x.endsWith('xxx')) {
+                  ref.x = '';
+                  return true;
+              }
+              ref.x = ref.x.slice(-3);
+          }, () => window.xxx.on(), {unbind: false})
+          
+        </script>
+        
         <h3>lookbehind & lookahead</h3>
         <script type="editor" data-lang="js">
 
