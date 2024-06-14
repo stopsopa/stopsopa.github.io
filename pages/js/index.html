@@ -504,33 +504,27 @@
               down = true;
               pageX = e.pageX;
               pageY = e.pageY;
-              if (typeof fetch === "function") {
+              if (typeof fetch === 'function') {
                 ({ x: fetchX, y: fetchY } = fetch());
               } else {
                 fetchX = fetchY = 0;
               }
-              listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousedown");
-              function stop(e) {
-                log("stop", down);
+              listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, 'mousedown');
+              function mousemove(e) {
+                if (down) {
+                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, 'mousemove');
+                }
+              }
+              document.addEventListener('mouseup', (e) => {
+                document.removeEventListener('mousemove', mousemove);
                 if (down) {
                   down = false;
-                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mouseup");
+                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, 'mouseup');
                 }
-              }
-              function mousemove(e) {
-                log("document mousemove", down);
-                if (down) {
-                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousemove");
-                }
-              }
-              document.addEventListener("mouseup", (e) => {
-                log("document mouseup");
-                document.removeEventListener("mousemove", mousemove);
-                stop(e);
               });
-              document.addEventListener("mousemove", mousemove);
+              document.addEventListener('mousemove', mousemove);
             }
-            element.addEventListener("mousedown", mousedown);
+            element.addEventListener('mousedown', mousedown);
           }
 
           drag(
