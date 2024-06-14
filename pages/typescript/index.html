@@ -249,6 +249,43 @@ type DerivedType = OriginalType & ExtraFields;
 
           const el = <Component items={[]} />
         </script>
+        <h2>React</h2>
+        <script type="editor" data-lang="typescript">
+
+          // Generic component vvv
+            type ListImporterProps<T> = {
+              loadOptionsToChooseFrom: (inputValue: string) => Promise<SelectOptions[]>;
+              optionFormatter: (option: SelectOptions) => React.ReactNode | string;
+              setFormFieldOverrided: (
+                list: T[]
+              ) => void;
+              loadFinalList: (inputValue: string) => Promise<T[]>;
+            };            
+            
+            export default <T,>({
+              setFormFieldOverrided,
+              loadOptionsToChooseFrom,
+              loadFinalList,
+              optionFormatter
+            }: ListImporterProps<T>) => {
+              const [loading, setLoading] = useState(false);
+            ...
+
+          // then use it like this     
+          
+            export type GdshopFulfillmentNamespaceLookup = {
+              gdshopFulfillmentNamespaceLookupID: number | null;
+              fulfillmentNamespace: string | null;
+              // ...
+            };
+          
+            <StepGdshopFulfillmentNamespaceLookupClone<GdshopFulfillmentNamespaceLookup>
+              loadOptionsToChooseFrom={async (inputValue) => {
+                // ...
+              }}
+          // Generic component ^^^
+          
+        </script>
         <h2>no-implicit-any-catch</h2>
         <a href="https://youtu.be/jjso3UGVn08?t=2317">yt</a>
         <br />
