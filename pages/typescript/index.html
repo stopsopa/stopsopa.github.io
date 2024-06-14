@@ -71,6 +71,44 @@
               },
           ]
         </script>
+        <h2>Function Overloads & Generics - together</h2>
+        <a href="https://www.typescriptlang.org/play/?#code/FDCWFsAcHsCcBcAElbQCYFcDGBTRAzVcRAcgnB1hIG4QIYFEBnHJQ6YkgG3QEMmAFgHoW8GiHgBPSHgBiAOwA8AFQB8iALyIAFGli988AFyJlASk3rliAD6IM8tDnyh5ONLWA4AHgyRSZRABhDCZ4DgAFVExcZWk8LQBvYEREFVVtV0gMY1MAGkQAaxxJAHlYAFVINF54ShMFdLMTZVpU9Mz5bNzlAuKyyura+uZ4WFcAc1tR8fkJgG0AXQKAN14uDBwTXnlJZtNaAF9PHz9ELGh5MPPQ8PAo9Gwt4NvI6Ke4wK1tFMQsnO2uzyv365SqNTqsEBkmBqTWGxwAH5ocB9jtJJZEMlUqB8DoAjhoHjQYMIZRNBotCR8A4sPBQJcSBZsalELBWBhYPJkO9cJ1un0SmChpCzG1EIcQKl2fBOdzRPycoKBuDhrBVutNmLgMcJPFTNYkog6mETGFZlNdcALlckFwWoascacKbSJhILwSBLPDbroVNDcwm9HnyuAUSCaxOH3bwAExMzyFAB0kbQAZIMYAzDQgA">Playground</a>
+        <br />
+        <a href="https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads">https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads</a>
+        <script type="editor" data-lang="typescript">
+
+          import produce from 'immer';
+          
+          import set from 'lodash/set';
+          
+          type Fn<T> = (draft: T) => T | undefined;
+          
+          export type CustomProduceType = {
+            <T>(input: T, keyOrUpdater: Fn<T>): T;
+            <T>(input: T, keyOrUpdater: string | string[], value: any): T;
+          };
+          
+          export const customProduce: CustomProduceType = (
+            input: any,
+            keyOrUpdater: any,
+            value?: any
+          ): any => {
+            if (typeof keyOrUpdater === 'function') {
+              return produce(input, keyOrUpdater);
+            }
+          
+            return set(input, keyOrUpdater, value);
+          };
+          
+          type TT = { test: string };
+          
+          const l: TT = { test: 'dupa' };
+          
+          const k = customProduce(l, 'test', 'dupa2');
+          
+          k.testd = 'dupa3';
+          
+        </script>
         <h2>Omit</h2>
         
         <script type="editor" data-lang="typescript">
