@@ -116,6 +116,16 @@
             return tool;
           });
         </script>
+        <h2>Docker images</h2>
+
+        <a href="https://github.com/nodejs/docker-node">https://github.com/nodejs/docker-node</a>
+        <script type="editor" data-lang="sh">
+
+          https://github.com/nodejs/docker-node
+
+          docker pull node:18.7.0-alpine
+          
+        </script>
         <h2>About Node.js</h2>
         <a href="https://medium.datadriveninvestor.com/the-node-js-architecture-f86e2337bcd2"
           >The Node.js Architecture!</a
@@ -259,6 +269,15 @@
 
             npx --no -- commitlint --edit "\${1}"
           EEE
+        </script>
+        <h2>serialize-error</h2>
+        
+        <script type="editor" data-lang="js">
+
+          yarn add serialize-error@7.0.1
+            # version which can be imported using commonjs syntax
+            # const { serializeError } = require('serialize-error');
+          
         </script>
         <h2>esbuild</h2>
 
@@ -517,6 +536,10 @@
           yarn outdated
           yarn upgrade-interactive
           yarn upgrade-interactive --latest
+
+          yarn install --production
+            # npm equivalnet of 
+            npm prune --production
 
           yarn install --production=true  # no devDependencies
           yarn install --production=false # with devDependencies
@@ -1147,11 +1170,22 @@
         <script type="editor" data-lang="sh">
 
           # see all dependencies in the form of a tree
-            npm ls --all
+            npm ls --all          
+
+          npm list --depth 9999
+            # list all dependencies
 
           npm install --production       # no devDependencies
           npm install --production=false # with devDependencies
               # from: https://docs.npmjs.com/cli/v7/commands/npm-install
+          
+              # apparently --production parameter is deperecated, I saw an error message:
+                  $ npm install --production
+                  chatgpt: npm WARN config production Use `--omit=dev` instead.
+                  The warning message you're seeing is because the --production flag is deprecated in npm v7.0.0 and later. 
+                  The new way to omit the devDependencies when installing packages is to use the --omit=dev flag.
+              use instead
+                npm install --omit=dev                    
 
           # running using custom .npmrc
           cat <<EEE > $NPM_RC
@@ -1162,7 +1196,6 @@
           EEE
           npm ci --userconfig=$NPM_RC
 
-          npm prune --production
              npm prune: 
                   This command removes "extraneous" packages. Extraneous packages are packages that are not listed on the parent package's dependencies list.
              --production: 
@@ -2560,7 +2593,8 @@
         </script>
         <h2>md5</h2>
         <script type="editor" data-lang="sh">
-
+          
+          const crypto = require('crypto');
 
           // equal to:
           // echo -n fdsadas | md5

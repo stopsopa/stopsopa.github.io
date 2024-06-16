@@ -27,6 +27,15 @@ case ${_SHELL} in
     ;;
 esac
 
+trimLeft() {
+  local str="$1"
+  local trim_char="$2"
+  while [[ $str == $trim_char* ]]; do
+    str="${str#$trim_char}"
+  done
+  echo "$str"
+}
+
 set +e
 
 # function stop {
@@ -140,7 +149,10 @@ EEE
         COUNT="$(trim "${COUNT}")"
         I="0"
         while read -r xxx
-        do
+        do        
+            xxx="$(trimLeft "${xxx}" ".")"
+            xxx="$(trimLeft "${xxx}" "/")"
+
             REASON="" 
 
             # basename and file extension
@@ -193,6 +205,7 @@ EEE
                     
                     cp "${LOCKDIR}/${xxx}" "${xxx}"
                 else
+                    echo ADDING3 "reason>${REASON}<" ">${xxx}<"
                     CHANGED="$(echo -e "${CHANGED}\n${REASON}${xxx}")"
                 fi
             fi
@@ -205,13 +218,24 @@ EEE
 
                 # check if file is tracked by git
                 if git ls-files --error-unmatch "${xxx}" &>/dev/null; then
-
+                    # echo "file ${xxx} is tracked"
                     SWITCH="0"
+                    # check if file is already on the list of assume-unchanged, then I will have to unlist it temporarly below and mark list it back
                     if git ls-files -v | grep "^h " | grep "${xxx}"; then
-                        SWITCH="1"
+                        SWITCH="1"                    
                     fi
+                    # echo "file SWITCH>${SWITCH}<"
+#                     if [ "${xxx}" = "./config/sensitive/sensitive-config.json" ]; then
+#                     cat <<EEE
+
+# git ls-files -v | grep "^h " | grep "${xxx}"
+# >$(git ls-files -v )<
+
+# EEE
+#                     fi
 
                     if [ "${SWITCH}" = "1" ]; then
+                        # echo 'unlock assume unchanded'
                         git update-index --no-assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null       
                     fi
 
@@ -219,14 +243,18 @@ EEE
                     git --no-pager diff --exit-code "${xxx}" 1> /dev/null 2> /dev/null   
 
                     STATUS="${?}"
+                    # echo "git --no-pager diff --exit-code ${xxx}>${STATUS}< >>$(git  diff  "${xxx}")<<"
+                    # diff "${LOCKDIR}/${xxx}" "${xxx}"
                     if [ "${STATUS}" != "0" ]; then
                         REASON="DIFF : "
                     fi
 
                     if [ "${SWITCH}" = "1" ]; then
+                        # echo 'lock assume unchanded'
                         git update-index --assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null  
                     fi
                 else
+                    # echo "file ${xxx} is NOT tracked"
                     if [ -f "${xxx}" ]; then
                         diff "${LOCKDIR}/${xxx}" "${xxx}"
 
@@ -258,6 +286,7 @@ git update-index --assume-unchanged "${xxx}"
 EEE
                     fi
                 else
+                    echo ADDING2 "reason>${REASON}<" ">${xxx}<"
                     CHANGED="$(echo -e "${CHANGED}\n${REASON}${xxx}")"
                 fi
             fi
@@ -265,59 +294,19 @@ EEE
             if [ "${1}" = "--unlock" ]; then
                 STATUS="0"
 
-                # check if file is tracked by git
+                TRACKED="0"
+
                 if git ls-files --error-unmatch "${xxx}" &>/dev/null; then
-
-# echo git ls-files "${xxx}"
-                    SWITCH="0"
-                    if git ls-files -v | grep "^h " | grep "${xxx}"; then
-                    # echo git ls-files "${xxx}" 1
-                        SWITCH="1"
-                    fi
-
-                    if [ "${SWITCH}" = "1" ]; then
-                    # echo git ls-files "${xxx}" 2
-                        git update-index --no-assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null       
-                    fi
-
-                    # check if file is changed in comparison to last commited state
-                    git --no-pager diff --exit-code "${xxx}" 1> /dev/null 2> /dev/null   
-
-                    STATUS="${?}"
-                    # echo git ls-files "${xxx}" "STATUS=>${STATUS}<"
-                    if [ "${STATUS}" != "0" ]; then
-                        REASON="DIFF : "
-                    fi
-
-                    if [ "${SWITCH}" = "1" ]; then
-                        git update-index --assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null  
-                    fi
-                else
-                # echo git else "${xxx}"
-                    if [ -f "${xxx}" ]; then
-                        diff "${LOCKDIR}/${xxx}" "${xxx}"
-
-                        STATUS="${?}"
-                        if [ "${STATUS}" != "0" ]; then
-                            REASON="EXIST: "
-                        fi
-                    fi
+                    TRACKED="1"
                 fi
 
-                # if [ -f "${xxx}" ]; then
-                #     diff "${LOCKDIR}/${xxx}" "${xxx}" 1> /dev/null 2> /dev/null
-                #     STATUS="${?}"
-                # fi
+                if [ -f "${xxx}" ]; then
+                    diff "${LOCKDIR}/${xxx}" "${xxx}" 1> /dev/null 2> /dev/null
+                    STATUS="${?}"
+                    REASON="DIFF : "
+                fi
 
                 git update-index --no-assume-unchanged "${xxx}" 1> /dev/null 2> /dev/null           
-
-                if [ "${2}" != "" ]; then
-                    cat <<EEE
-
-diff exit code: ${STATUS}
-git update-index --no-assume-unchanged "${xxx}"
-EEE
-                fi
 
                 if [ "${STATUS}" = "0" ]; then
                     git checkout "${xxx}" 1> /dev/null 2> /dev/null    
@@ -331,6 +320,7 @@ EEE
                         echo "git checkout \"${xxx}\""
                     fi
                 else
+                    echo ADDING ">${xxx}<"
                     CHANGED="$(echo -e "${CHANGED}\n${xxx}")"
                 fi
             fi

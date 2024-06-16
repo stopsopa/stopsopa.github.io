@@ -20,6 +20,10 @@
           </ul>
         </div>
 
+        <h2>Learn</h2>
+        <a href="https://yehudakatz.com/2011/08/11/understanding-javascript-function-invocation-and-this/">this</a>
+        <br />
+
         <h2>Event loop</h2>
         <img src="event-loop.jpeg" style="max-width: 650px" />
         <br />
@@ -208,6 +212,37 @@
             return div;
           }
         </script>
+        <h2>Keyboard event</h2>
+        
+        <script type="editor" data-lang="js">
+          // waiting for keyboard sequence, substring event          
+
+          function password(check, callback, opt) {
+              opt = Object.assign({unbind: true}, opt);
+              const ref = {x: ''};
+              function event({key}) {
+                  if (key === "Enter") {
+                      return (ref.x = "");
+                  }
+                  ref.x += key;
+                  if (check(ref)) {
+                      opt.unbind && document.removeEventListener("keypress", event);
+                      callback();
+                  }
+              }
+              document.addEventListener("keypress", event);
+          }
+      
+          password(ref => {
+              if (ref.x.endsWith('xxx')) {
+                  ref.x = '';
+                  return true;
+              }
+              ref.x = ref.x.slice(-3);
+          }, () => window.xxx.on(), {unbind: false})
+          
+        </script>
+        
         <h3>lookbehind & lookahead</h3>
         <script type="editor" data-lang="js">
 
@@ -231,6 +266,30 @@
           document.write("Wyrazenie z 3 nawiasu: "+ RegExp.$3 +"<br>");
           document.write("Wyrazenie z 4 nawiasu: "+ RegExp.$4 +"<br>");
           document.write("Wyrazenie z 5 nawiasu: "+ RegExp.$5 +"<br>");
+        </script>
+        <h3>Promise TrackSettled</h3>
+        <script type="editor" data-lang="js">
+
+          function TrackSettled(promise) {
+            this.state = 'pending';
+            this.promise = promise.then(
+              (x) => {
+                this.state = 'resolved';
+                return x;
+              },
+              (y) => {
+                this.state = 'rejected';
+                return y;
+              }
+            );
+          }
+          TrackSettled.prototype.then = function (resolve, reject) {
+            return this.promise.then(resolve, reject);
+          };
+          TrackSettled.prototype.catch = function (reject) {
+            return this.promise.catch(reject);
+          };
+          
         </script>
 
         <h2>easing bezier</h2>
@@ -476,33 +535,27 @@
               down = true;
               pageX = e.pageX;
               pageY = e.pageY;
-              if (typeof fetch === "function") {
+              if (typeof fetch === 'function') {
                 ({ x: fetchX, y: fetchY } = fetch());
               } else {
                 fetchX = fetchY = 0;
               }
-              listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousedown");
-              function stop(e) {
-                log("stop", down);
+              listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, 'mousedown');
+              function mousemove(e) {
+                if (down) {
+                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, 'mousemove');
+                }
+              }
+              document.addEventListener('mouseup', (e) => {
+                document.removeEventListener('mousemove', mousemove);
                 if (down) {
                   down = false;
-                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mouseup");
+                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, 'mouseup');
                 }
-              }
-              function mousemove(e) {
-                log("document mousemove", down);
-                if (down) {
-                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousemove");
-                }
-              }
-              document.addEventListener("mouseup", (e) => {
-                log("document mouseup");
-                document.removeEventListener("mousemove", mousemove);
-                stop(e);
               });
-              document.addEventListener("mousemove", mousemove);
+              document.addEventListener('mousemove', mousemove);
             }
-            element.addEventListener("mousedown", mousedown);
+            element.addEventListener('mousedown', mousedown);
           }
 
           drag(
@@ -921,6 +974,8 @@
         <a href="https://eslint.org/docs/latest/use/configure/rules#disabling-rules"
           >https://eslint.org/docs/latest/use/configure/rules#disabling-rules</a
         >
+        <br />
+        <a href="https://typescript-eslint.io/play/#ts=5.3.3&showAST=es&fileType=.tsx&code=PQKgBALgpgzhZhMAUKhyBmBXAdgYwgEsB7HSWCDHACgDcBDAGyygC4wcsBbAIygCcAlGADeyBIQxg6TFmAC8isAEYADMLEIEeUnDD9YWRvHlgGzKIjABmANxotBiFn5kDMIxHsIAvg504eu6eCmayluAALPbi%2BlDOrnEexvZ%2ByAEwxIxQAHSMxADm1NBwVNTKyoKC9kA&eslintrc=N4KABGBEBOCuA2BTAzpAXGUEKQAIBcBPABxQGNoBLY-AWhXkoDt8B6Jge1ukQBNEy8AIY90URNGgdokcGAC%2BIeUA&tsconfig=N4KABGBEDGD2C2AHAlgGwKYCcDyiAuysAdgM6QBcYoEEkJemy0eAcgK6qoDCAFutAGsylBm3TgwAXxCSgA&tokens=false">https://typescript-eslint.io/play</a>
         <script type="editor" data-lang="js">
           /* eslint-disable */
           // ignore entire file - use above
@@ -1083,6 +1138,9 @@
               key = key.replace(/[\^\$\.\*\+\-\?\=\!\:\|\\\/\(\)\[\]\{\}\,]/g, "\\$&");
               const reg = new RegExp(`(?:(?:^|.*;\\s*)${key}\\s*\\=\\s*([^;]*).*$)|^.*$`, ``);
               return document.cookie.replace(reg, '$1');
+          }
+          function deleteCookie(key) {
+              document.cookie = key + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
           }
           // more about two above: https://stopsopa.github.io/pages/js/clicksecure.html
         </script>
@@ -1863,8 +1921,8 @@
         <ul>
           <li>
             <a
-              href="https://levelup.gitconnected.com/top-lessons-learned-from-working-with-a-10x-developer-51de12383e25"
-              >https://levelup.gitconnected.com/top-lessons-learned-from-working-with-a-10x-developer-51de12383e25</a
+              href="https://levelup.gitconnected.com/top-lessons-ed-from-working-with-a-10x-developer-51de12383e25"
+              >https://levelup.gitconnected.com/top-lessons-ed-from-working-with-a-10x-developer-51de12383e25</a
             >
           </li>
           <li>
