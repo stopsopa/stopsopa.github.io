@@ -27,6 +27,10 @@
 
           var jsonData = JSON.parse(responseBody);
           pm.globals.set('jwt', jsonData.data);
+
+          # or store in environment
+          pm.environment.set('catalogOfferInstance', JSON.stringify(pm.response.json().offer))
+          
         </script>
       </div>
     </div>
