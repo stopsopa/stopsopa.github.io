@@ -25,11 +25,14 @@
         </script>
 
         <h2>PR filtering tags</h2>
-        <a href="https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests>g(You can search for issues and pull requests on GitHub and narrow the results using these search qualifiers in any combination)</a>
+        <a href="https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests"
+          >g(You can search for issues and pull requests on GitHub and narrow the results using these search qualifiers
+          in any combination)</a
+        >
         <script type="editor" data-lang="sh">
 
           author:@me
-          -author:@me 
+          -author:@me
             - is for negation
           draft:true   OR   draft:false
           author:sdzialowski
@@ -41,12 +44,11 @@
           user-review-requested:@me    - matches pull requests that you have directly been asked to review.
           is:merged   OR   is:unmerged
           archived:true
-          
+
 
           # combinations
-          is:open is:pr author:@me 
-          is:open is:pr -author:@me           
-          
+          is:open is:pr author:@me
+          is:open is:pr -author:@me
         </script>
         <h2>Age of repository:</h2>
         <script type="editor" data-lang="sh">
