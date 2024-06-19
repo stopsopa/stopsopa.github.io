@@ -63,27 +63,27 @@
       down = true;
       pageX = e.pageX;
       pageY = e.pageY;
-      if (typeof fetch === 'function') {
+      if (typeof fetch === "function") {
         ({ x: fetchX, y: fetchY } = fetch());
       } else {
         fetchX = fetchY = 0;
       }
-      listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, 'mousedown');
+      listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousedown");
       function mousemove(e) {
         if (down) {
-          listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, 'mousemove');
+          listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousemove");
         }
       }
-      document.addEventListener('mouseup', (e) => {
-        document.removeEventListener('mousemove', mousemove);
+      document.addEventListener("mouseup", (e) => {
+        document.removeEventListener("mousemove", mousemove);
         if (down) {
           down = false;
-          listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, 'mouseup');
+          listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mouseup");
         }
       });
-      document.addEventListener('mousemove', mousemove);
+      document.addEventListener("mousemove", mousemove);
     }
-    element.addEventListener('mousedown', mousedown);
+    element.addEventListener("mousedown", mousedown);
   }
   // const button = document.querySelector("button");
   // const destroy = document.querySelector("#destroy");

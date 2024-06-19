@@ -137,7 +137,7 @@ WARNING:
         </script>
         <h2>periscope</h2>
 
-        <a href="javascript:var k = !(function () {%22use strict%22;(()=>{(function(){function m(i){var t=document.head||document.getElementsByTagName(%22head%22)[0],e=document.createElement(%22style%22);return t.appendChild(e),e.type=%22text/css%22,e.appendChild(document.createTextNode(i)),{unmountStyle:()=>{e.parentNode.removeChild(e)},styleElement:e}}m(` #periscope_div { position: fixed; width: 200px; height: 200px; overflow: hidden; border: 1px solid gray; top: 0; left: 0; background-color: white; z-index:1000000; } #periscope_div video { border: 1px solid red; opacity: 0.5; height: 100vh; width: 100vw; } #periscope_div canvas { border: 1px solid green; } `);function f(i){let t=localStorage.getItem(i);if(t!==null){let e=parseInt(t,10);return isNaN(e)?t:e}}function h(i,t){t!==null&&typeof t<%22u%22&&localStorage.setItem(i,String(t))}function x(i){return window.getComputedStyle(i)}function y(i,t,e){let l=0,p=0,c=!1,r,o;i.addEventListener(%22mousedown%22,d=>{c=!0,l=d.pageX,p=d.pageY,typeof e==%22function%22?{x:r,y:o}=e():r=o=0,t(r+d.pageX-l,o+d.pageY-p,%22mousedown%22)});function a(d){c&&(c=!1,t(r+d.pageX-l,o+d.pageY-p,%22mouseup%22))}i.addEventListener(%22mouseup%22,a),i.addEventListener(%22mouseout%22,a),i.addEventListener(%22mousemove%22,d=>{c&&t(r+d.pageX-l,o+d.pageY-p,%22mousemove%22)})}let b=console.log;navigator.mediaDevices.getDisplayMedia({audio:!1,video:!0,preferCurrentTab:!0}).then(i=>{let t={};document.addEventListener(%22keydown%22,s=>{t[s.key]=!0}),document.addEventListener(%22keyup%22,s=>{t[s.key]=!1});let e=document.createElement(%22div%22);e.setAttribute(%22id%22,%22periscope_div%22);let l=f(%22pw%22);l&&(e.style.width=`${l}px`);let p=f(%22ph%22);p&&(e.style.height=`${p}px`);let c=f(%22pl%22);c&&(e.style.left=`${c}px`);let r=f(%22pt%22);r&&(e.style.top=`${r}px`),y(e,(s,n)=>{if(t.Shift)e.style.width=`${s}px`,e.style.height=`${n}px`,h(%22pw%22,s),h(%22ph%22,n);else if(!t.Meta){e.style.left=`${s}px`,e.style.top=`${n}px`,h(%22pl%22,s),h(%22pt%22,n);return}},()=>{if(t.Shift){let s=x(e);return{x:parseInt(s.width,10)||0,y:parseInt(s.height,10)||0}}return{x:parseInt(e.style.left,10)||0,y:parseInt(e.style.top,10)||0}}),document.body.appendChild(e);let o=document.createElement(%22video%22);window.video=o,o.setAttribute(%22autoplay%22,!0),e.appendChild(o);let a=!1,d=()=>{a=!1};o.addEventListener(%22ended%22,d),o.addEventListener(%22pause%22,d),o.addEventListener(%22play%22,s=>{b(%22play%22);let n=document.createElement(%22canvas%22);y(n,(u,v)=>{if(t.Meta){let g=`translate(${u}px, ${v}px)`;h(%22ct%22,g),n.style.transform=g}},()=>{let u=(n.style.transform||%22%22).match(/(-?\d+).*?(-?\d+)/)||[],v=parseInt(u[1],10)||0,g=parseInt(u[2],10)||0;return{x:v,y:g}}),e.insertBefore(n,e.firstChild),n.width=window.innerWidth,n.height=window.innerHeight,n.style.width=`${window.innerWidth}px`,n.style.height=`${window.innerHeight}px`;let w=f(%22ct%22);w&&(n.style.transform=w),a=!0,function u(){a&&window.requestAnimationFrame(()=>{n.width=window.innerWidth,n.height=window.innerHeight,n.style.width=`${window.innerWidth}px`,n.style.height=`${window.innerHeight}px`,console.log(%22w%22,window.innerWidth,%22h%22,window.innerHeight),n.getContext(%222d%22).drawImage(o,0,0,window.innerWidth,window.innerHeight),u()})}()}),o.srcObject=i})})();})();
+        <a href="javascript:var k = !(function () {%22use strict%22;(()=>{(function(){function w(d){var n=document.head||document.getElementsByTagName(%22head%22)[0],e=document.createElement(%22style%22);return n.appendChild(e),e.type=%22text/css%22,e.appendChild(document.createTextNode(d)),{unmountStyle:()=>{e.parentNode.removeChild(e)},styleElement:e}}w(` #periscope_div { position: fixed; width: 200px; height: 200px; overflow: hidden; border: 1px solid gray; top: 0; left: 0; background-color: white; z-index:1000000; } #periscope_div video { border: 1px solid red; opacity: 0.5; height: 100vh; width: 100vw; } #periscope_div canvas { border: 1px solid green; } `);function f(d){let n=localStorage.getItem(d);if(n!==null){let e=parseInt(n,10);return isNaN(e)?n:e}}function h(d,n){n!==null&&typeof n<%22u%22&&localStorage.setItem(d,String(n))}function x(d){return window.getComputedStyle(d)}function y(d,n,e){let r=0,l=0,c=!1,s,i;function a(p){c=!0,r=p.pageX,l=p.pageY,typeof e==%22function%22?{x:s,y:i}=e():s=i=0,n(s+p.pageX-r,i+p.pageY-l,%22mousedown%22);function o(t){c&&n(s+t.pageX-r,i+t.pageY-l,%22mousemove%22)}document.addEventListener(%22mouseup%22,t=>{document.removeEventListener(%22mousemove%22,o),c&&(c=!1,n(s+t.pageX-r,i+t.pageY-l,%22mouseup%22))}),document.addEventListener(%22mousemove%22,o)}d.addEventListener(%22mousedown%22,a)}let b=console.log;navigator.mediaDevices.getDisplayMedia({audio:!1,video:!0,preferCurrentTab:!0}).then(d=>{let n={};document.addEventListener(%22keydown%22,o=>{n[o.key]=!0}),document.addEventListener(%22keyup%22,o=>{n[o.key]=!1});let e=document.createElement(%22div%22);e.setAttribute(%22id%22,%22periscope_div%22);let r=f(%22pw%22);r&&(e.style.width=`${r}px`);let l=f(%22ph%22);l&&(e.style.height=`${l}px`);let c=f(%22pl%22);c&&(e.style.left=`${c}px`);let s=f(%22pt%22);s&&(e.style.top=`${s}px`),y(e,(o,t)=>{if(n.Shift)e.style.width=`${o}px`,e.style.height=`${t}px`,h(%22pw%22,o),h(%22ph%22,t);else if(!n.Meta){e.style.left=`${o}px`,e.style.top=`${t}px`,h(%22pl%22,o),h(%22pt%22,t);return}},()=>{if(n.Shift){let o=x(e);return{x:parseInt(o.width,10)||0,y:parseInt(o.height,10)||0}}return{x:parseInt(e.style.left,10)||0,y:parseInt(e.style.top,10)||0}}),document.body.appendChild(e);let i=document.createElement(%22video%22);window.video=i,i.setAttribute(%22autoplay%22,!0),e.appendChild(i);let a=!1,p=()=>{a=!1};i.addEventListener(%22ended%22,p),i.addEventListener(%22pause%22,p),i.addEventListener(%22play%22,o=>{b(%22play%22);let t=document.createElement(%22canvas%22);y(t,(u,g)=>{if(n.Meta){let v=`translate(${u}px, ${g}px)`;h(%22ct%22,v),t.style.transform=v}},()=>{let u=(t.style.transform||%22%22).match(/(-?\d+).*?(-?\d+)/)||[],g=parseInt(u[1],10)||0,v=parseInt(u[2],10)||0;return{x:g,y:v}}),e.insertBefore(t,e.firstChild),t.width=window.innerWidth,t.height=window.innerHeight,t.style.width=`${window.innerWidth}px`,t.style.height=`${window.innerHeight}px`;let m=f(%22ct%22);m&&(t.style.transform=m),a=!0,function u(){a&&window.requestAnimationFrame(()=>{t.width=window.innerWidth,t.height=window.innerHeight,t.style.width=`${window.innerWidth}px`,t.style.height=`${window.innerHeight}px`,console.log(%22w%22,window.innerWidth,%22h%22,window.innerHeight),t.getContext(%222d%22).drawImage(i,0,0,window.innerWidth,window.innerHeight),u()})}()}),i.srcObject=d})})();})();
 }())">🐟</a>
         <script type="editor" data-lang="js">
           (function () {
@@ -201,7 +201,7 @@ WARNING:
     let down = false;
     let fetchX;
     let fetchY;
-    element.addEventListener("mousedown", (e) => {
+    function mousedown(e) {
       down = true;
       pageX = e.pageX;
       pageY = e.pageY;
@@ -211,20 +211,21 @@ WARNING:
         fetchX = fetchY = 0;
       }
       listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousedown");
-    });
-    function stop(e) {
-      if (down) {
-        down = false;
-        listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mouseup");
+      function mousemove(e) {
+        if (down) {
+          listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousemove");
+        }
       }
+      document.addEventListener("mouseup", (e) => {
+        document.removeEventListener("mousemove", mousemove);
+        if (down) {
+          down = false;
+          listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mouseup");
+        }
+      });
+      document.addEventListener("mousemove", mousemove);
     }
-    element.addEventListener("mouseup", stop);
-    element.addEventListener("mouseout", stop);
-    element.addEventListener("mousemove", (e) => {
-      if (down) {
-        listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousemove");
-      }
-    });
+    element.addEventListener("mousedown", mousedown);
   }
   // const button = document.querySelector("button");
   // const destroy = document.querySelector("#destroy");

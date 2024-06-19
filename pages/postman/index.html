@@ -15,9 +15,9 @@
         <h2>Scripts</h2>
         <script type="editor" data-lang="js">
           // to save in evnrionments
-          
+
           let response = pm.response.json();
-          pm.environment.set("token", response.data); 
+          pm.environment.set("token", response.data);
 
           // to store something in globals
           pm.test("reponse must be valid and have a body", function(){
@@ -27,7 +27,6 @@
 
           var jsonData = JSON.parse(responseBody);
           pm.globals.set('jwt', jsonData.data);
-          
         </script>
       </div>
     </div>

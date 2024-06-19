@@ -206,14 +206,13 @@
           #      --add-host host.docker.internal:host-gateway
           # more
           #     https://docs.docker.com/network/host/
-          #     https://stackoverflow.com/a/24326540        
+          #     https://stackoverflow.com/a/24326540
 
           if [[ "$OSTYPE" == "darwin"* ]]; then
               _HOSTHANDLER="--env NODE_API_HOST=host.docker.internal -e MYSQL_HOST=host.docker.internal"
           else
               _HOSTHANDLER="--net host"
           fi
-          
         </script>
 
         <h2>Docker registry urls</h2>

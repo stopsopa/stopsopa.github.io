@@ -217,9 +217,9 @@
           ssh-add -L
         </script>
         <h2>ssh agent on Windows</h2>
-        
+
         <script type="editor" data-lang="sh">
-          
+
           ssh-keygen -t rsa -b 4096 -C "szymon.dzialowski@gmail.com"
             # use regular RSA format
             # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key
@@ -233,29 +233,28 @@
 
           ssh-add -L
             # to verify if added
-          
+
           # ---------- other stuff ------------
 
           OpenSSH vs Pagent from Putty:
             # https://stackoverflow.com/a/35116084
-          
+
           # convert ssh key to .ppk format using PuTTYgen from Putty project
             # install https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
-          
+
           # launch Pagent and add the .ppk key
-          
+
           cat <<EEE > ~/.ssh/config
           Host github.com
             AddKeysToAgent yes
-          
+
             UseKeychain yes
             # comment UseKeychain if no passphrase assigned to ssh key
-          
+
             IdentityFile ~/.ssh/id_rsa
           EEE
 
             # from: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent
-
         </script>
       </div>
     </div>

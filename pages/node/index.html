@@ -124,7 +124,6 @@
           https://github.com/nodejs/docker-node
 
           docker pull node:18.7.0-alpine
-          
         </script>
         <h2>About Node.js</h2>
         <a href="https://medium.datadriveninvestor.com/the-node-js-architecture-f86e2337bcd2"
@@ -271,13 +270,12 @@
           EEE
         </script>
         <h2>serialize-error</h2>
-        
+
         <script type="editor" data-lang="js">
 
           yarn add serialize-error@7.0.1
             # version which can be imported using commonjs syntax
             # const { serializeError } = require('serialize-error');
-          
         </script>
         <h2>esbuild</h2>
 
@@ -338,14 +336,19 @@
           }
         </script>
         <h2>Server-Sent Events - return json chunks from server and event handling then in the browser</h2>
-        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events">More: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events</a>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events"
+          >More: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events</a
+        >
         <br />
         <br />
-        <a href="sse/index.html" download="index.html">download sse/index.html</a> - <a href="/viewer.html?file=pages%2Fnode%2Fsse%2Findex.html">view sse/index.html</a>
+        <a href="sse/index.html" download="index.html">download sse/index.html</a> -
+        <a href="/viewer.html?file=pages%2Fnode%2Fsse%2Findex.html">view sse/index.html</a>
         <br />
-        <a href="sse/package.json" download="package.json">download sse/package.json</a> - <a href="/viewer.html?file=pages%2Fnode%2Fsse%2Fpackage.json">view sse/package.json</a>
+        <a href="sse/package.json" download="package.json">download sse/package.json</a> -
+        <a href="/viewer.html?file=pages%2Fnode%2Fsse%2Fpackage.json">view sse/package.json</a>
         <br />
-        <a href="sse/server.js" download="server.js">download sse/server.js</a> - <a href="/viewer.html?file=pages%2Fnode%2Fsse%2Fserver.js">view sse/server.js</a>
+        <a href="sse/server.js" download="server.js">download sse/server.js</a> -
+        <a href="/viewer.html?file=pages%2Fnode%2Fsse%2Fserver.js">view sse/server.js</a>
         <br />
         <h2>prettier setup</h2>
         <script type="editor" data-lang="sh">
@@ -538,7 +541,7 @@
           yarn upgrade-interactive --latest
 
           yarn install --production
-            # npm equivalnet of 
+            # npm equivalnet of
             npm prune --production
 
           yarn install --production=true  # no devDependencies
@@ -1170,7 +1173,7 @@
         <script type="editor" data-lang="sh">
 
           # see all dependencies in the form of a tree
-            npm ls --all          
+            npm ls --all
 
           npm list --depth 9999
             # list all dependencies
@@ -1178,14 +1181,14 @@
           npm install --production       # no devDependencies
           npm install --production=false # with devDependencies
               # from: https://docs.npmjs.com/cli/v7/commands/npm-install
-          
+
               # apparently --production parameter is deperecated, I saw an error message:
                   $ npm install --production
                   chatgpt: npm WARN config production Use `--omit=dev` instead.
-                  The warning message you're seeing is because the --production flag is deprecated in npm v7.0.0 and later. 
+                  The warning message you're seeing is because the --production flag is deprecated in npm v7.0.0 and later.
                   The new way to omit the devDependencies when installing packages is to use the --omit=dev flag.
               use instead
-                npm install --omit=dev                    
+                npm install --omit=dev
 
           # running using custom .npmrc
           cat <<EEE > $NPM_RC
@@ -1196,10 +1199,10 @@
           EEE
           npm ci --userconfig=$NPM_RC
 
-             npm prune: 
+             npm prune:
                   This command removes "extraneous" packages. Extraneous packages are packages that are not listed on the parent package's dependencies list.
-             --production: 
-                  When you add this flag, the command will remove the packages listed in your devDependencies. 
+             --production:
+                  When you add this flag, the command will remove the packages listed in your devDependencies.
                   These are typically packages that are only needed for development and not for running your application in production.
 
           $(npm bin)/cypress open
@@ -2593,7 +2596,7 @@
         </script>
         <h2>md5</h2>
         <script type="editor" data-lang="sh">
-          
+
           const crypto = require('crypto');
 
           // equal to:
