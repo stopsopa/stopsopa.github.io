@@ -1128,6 +1128,17 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           " | perl -pe "system 'sleep .3'" | stdbuf -i0 -o0 -e0 sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | tee color.txt
         </script>
 
+        <h2>tmux</h2>
+        <script type="editor" data-lang="sh">
+          # on mac right now it is version
+          $ √ tmux -V
+          tmux 3.4
+
+          Ctrl+b - key combination of a prefix key, 'C-b' (Ctrl-b) by default
+
+          // study more: https://jeongwhanchoi.medium.com/install-tmux-on-osx-and-basics-commands-for-beginners-be22520fd95e
+        </script>
+
         <h2>xargs</h2>
         <script type="editor" data-lang="sh">
 
