@@ -292,6 +292,16 @@
 
           # for post release tests like yarn test:api
           # docker run -i --entrypoint="" project:node-multi_tl yarn test:api
+
+
+          # example .dockerignore for above
+          .gitignore
+          node_modules
+          /var/*
+          !/var/.gitignore
+          /playwright-report/
+          .DS_Store
+          
         </script>
 
         <h2>Ssh servers in docker</h2>
