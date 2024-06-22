@@ -42,6 +42,10 @@
         <h2>Useful commands</h2>
         <script type="editor" data-lang="sh">
 
+          # in case of error:
+          #    the input device is not a TTY
+          # remove -t
+
           docker run -u $(id -u):$(id -g) args...
 
           # -i
