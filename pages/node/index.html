@@ -2216,9 +2216,24 @@
                     reset       : "\x1b[0m",
                   };
 
-                  Object.keys(c).forEach((key) => {
-                    console.log(`${c[key]}${key} ${key} ${key}${c.reset} >${key}<`);
+                  # generating image on the right
+                  // Object.keys(c).forEach((key) => {
+                  //   console.log(`${c[key]}${key} ${key} ${key}${c.reset} >${key}<`);
+                  // });                  
+
+                  Object.keys(c).forEach((k) => {
+                    if (k !== "reset") {
+                      (function (name, value) {
+                        // c[name] = (...args) => console.log(value, ...args, c.reset);
+                        c[name] = (...args) => {
+                          process.stdout.write(value);
+                          args.forEach((arg) => process.stdout.write(arg));
+                          process.stdout.write(c.reset);
+                        };
+                      })(k, c[k]);
+                    }
                   });
+                  
                 </script>
               </td>
               <td width="257">
