@@ -372,7 +372,7 @@ return 1
 
         COREEXCLUDESFILE="$(git config --get core.excludesFile)"
 
-        RESULT="$(node "${_DIR}/xx.lock.gits-update-config.node.bundled.gitignored.cjs" "${_PWD}" ".git/gitstorage-config.sh" ".git/.gitignore_local" "${GITIGNORE}" "${COREEXCLUDESFILE}")"
+        RESULT="$(NODE_OPTIONS="" node "${_DIR}/xx.lock.gits-update-config.node.bundled.gitignored.cjs" "${_PWD}" ".git/gitstorage-config.sh" ".git/.gitignore_local" "${GITIGNORE}" "${COREEXCLUDESFILE}")"
 
         cat <<EEE
 ${RESULT}
@@ -433,7 +433,7 @@ if [ ! -f "${LOAD_CONFIG}" ]; then
     LOAD_CONFIG="${USER_CONFIG}"
 fi
 
-node "${_DIR}/xx.node.bundled.gitignored.cjs" "${LOAD_CONFIG}" "${XX_GENERATED}" "${@}"
+NODE_OPTIONS="" node "${_DIR}/xx.node.bundled.gitignored.cjs" "${LOAD_CONFIG}" "${XX_GENERATED}" "${@}"
 
 CODE="${?}"
 EXECUTEUSING_SOURCE="0"

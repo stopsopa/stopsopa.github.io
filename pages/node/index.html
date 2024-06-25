@@ -51,12 +51,12 @@
 
           // VSCODE disable exposing node port - no debug
           export NODE_OPTIONS="--inspect=0"
-          # or
+          # or THE ONE HERE IS PREFFEREABLE
           export NODE_OPTIONS=""
 
           // or
 
-          NODE_OPTIONS="--inspect=0" node script.js
+          NODE_OPTIONS="" node script.js
         </script>
         <h2>UMD (Universal Module Definition)</h2>
         <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
@@ -1171,6 +1171,9 @@
         </script>
         <h2>npm</h2>
         <script type="editor" data-lang="sh">
+
+          # troubleshooting
+            npm config fix
 
           # see all dependencies in the form of a tree
             npm ls --all
