@@ -23,6 +23,10 @@
         >
         <script type="editor" data-lang="typescript">
 
+          # enforce React component type
+          const ReactJson: React.ComponentType<any> = ReactJsonRaw;
+          const ReactDiffViewer: React.ComponentType<any> = ReactDiffViewerRaw;
+
           type Country = 'PL' | 'DE' | 'FR' | 'UK';
 
           type GPurchase<TCountry, Tvat> = {
