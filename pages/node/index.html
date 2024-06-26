@@ -166,7 +166,80 @@
           # will work too
           # but intercepting with "$(cat)" is interesting too
         </script>
+        <h2>serialize function </h2>
+        
+        <script type="editor" data-lang="js">
+          
+          // https://github.com/stopsopa/webdriver/blob/master/lib/rootrequire.js
+          // https://github.com/stopsopa/webdriver/blob/master/test/minefield/serializefunction.test.js
+          
+          module.exports = {
+              encode: function (fn) {
+          
+                  if (typeof fn === 'function') {
+          
+                      return fn.toString();
+                  }
+          
+                  return false;
+              },
+              decode: function (fnstr) {
+          
+                  if (typeof fnstr === 'string') {
+          
+                      eval('var __tmp__ = ' + fnstr);
+          
+                      if (typeof __tmp__ === 'function') {
+          
+                          return __tmp__;
+                      }
+                  }
+          
+                  return false;
+              }
+          };
+          
+          // tests
+          const serializefn = require('../../minefield/serializefunction');
+          
+          const test = (a, b)=>a + b;
+          
+          describe('serialize function', () => {
+          
+              it('is function', () => expect(typeof test).toBe('function'));
+          
+              it('serialized', () => {
+          
+                  const tmp = serializefn.encode(test);
+          
+                  expect(typeof tmp).toBe('string')
+          
+                  expect(tmp).toBe("(a, b) => a + b");
+              });
+          
+              it('decode', () => {
+          
+                  const tmp = serializefn.encode(test);
+          
+                  const tmp2 = serializefn.decode(tmp);
+          
+                  expect(typeof tmp2).toBe('function')
+          
+                  expect(tmp).toBe("(a, b) => a + b");
+              });
+          
+              it('arythmetic test', () => {
+          
+                  const tmp = serializefn.encode(test);
+          
+                  const tmp2 = serializefn.decode(tmp);
+          
+                  expect(tmp2(6, 8)).toBe(14);
+              });
+          });
 
+          
+        </script>
         <h2>Semantic release</h2>
         <script type="editor" data-lang="sh">
 
