@@ -150,6 +150,22 @@
         <h2>Installation on linux</h2>
         <a href="https://github.com/nodesource/distributions#installation-instructions-1">Installation nodesource</a>
 
+        <h2>detect calling script directly</h2>
+        <script type="editor" data-lang="js">
+
+          const isCalledDirectly = () => {
+            const currentFileURL = `file://${__filename}`;
+            return import.meta.url === currentFileURL;
+          };
+          
+          if (isCalledDirectly()) {
+            console.log("This script was called directly");
+          } else {
+            console.log("This script was imported as a module");
+          }
+          
+        </script>
+        
         <h2>execute directly from cmd</h2>
         <script type="editor" data-lang="sh">
 
