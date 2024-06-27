@@ -639,6 +639,10 @@
         <br />
         <h2>yarn</h2>
         <script type="editor" data-lang="sh">
+      
+          yarn list --pattern playwright --json | jq
+          # the same as 
+            npm list playwright \@playwright/test --depth=0 --json
 
           yarn set version berry
           yarn set version 1.22.10
@@ -1282,6 +1286,10 @@
         </script>
         <h2>npm</h2>
         <script type="editor" data-lang="sh">
+
+          npm list playwright \@playwright/test --depth=0 --json
+          # the same as 
+            yarn list --pattern playwright --json | jq
 
           # list versions of the library
             npm info @godaddy/gasket-header-nav versions
