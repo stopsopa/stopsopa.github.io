@@ -19,6 +19,37 @@
         margin: 10px;
       }
     </style>
+
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll("[replace]")).forEach(function (tag) {
+            var id = tag.getAttribute("replace");
+
+            const target = document.querySelector(id);
+
+            if (!target) {
+              console.error("target not found for id:", id);
+
+              return;
+            }
+
+            target.innerHTML = tag.innerHTML;
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
   </head>
   <body class="layout" toc>
     <div class="body">
@@ -164,6 +195,92 @@
 
             /* from https://www.entheosweb.com/tutorials/css/multiple_shadows.asp */
         </script>
+
+        <hr />
+        <hr />
+        <hr />
+        <h2>view() function rotate scroll</h2>
+
+        <style replace="#replace_virus_rotate_target">
+          .virus_rotate {
+            width: 150px;
+            animation-name: rotateAnimation;
+            animation-timeline: view();
+          }
+          @keyframes rotateAnimation {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
+            }
+          }
+          /* from: https://youtu.be/pFtxR-O78sY */
+        </style>
+        <img src="./virus.svg" class="virus_rotate" />
+        <script type="editor" data-lang="css" id="replace_virus_rotate_target"></script>
+
+        <hr />
+        <hr />
+        <hr />
+        <style replace="#replace_header_fade_in_target">
+          .header_fade_in {
+            font-size: 30px;
+            font-weight: 900;
+            animation: headerFadeIn both;
+            animation-timeline: view(70% 5%);
+          }
+          @keyframes headerFadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(200px) scale(0.3);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+        </style>
+        <p class="header_fade_in">My header</p>
+        <div class="header_fade_in">
+          <script type="editor" data-lang="css" id="replace_header_fade_in_target" class="header_fade_in"></script>
+        </div>
+
+        <hr />
+        <hr />
+        <hr />
+        <style replace="#replace_auto_blur_target">
+          .auto_blur {
+            font-size: 50px;
+            font-weight: 900;
+            animation: autoBlurAnimation both;
+            animation-timeline: view();
+          }
+          @keyframes autoBlurAnimation {
+            0% {
+              filter: blur(40px);
+            }
+            45%,
+            55% {
+              filter: blur(0px);
+            }
+            100% {
+              filter: blur(40px);
+            }
+          }
+        </style>
+        <p class="auto_blur">Lorem ipsum dolor sit amet</p>
+        <p class="auto_blur">&nbsp; &nbsp; &nbsp; &nbsp; consectetur adipiscing elit</p>
+        <p class="auto_blur">Cras a libero a enim malesuada</p>
+        <p class="auto_blur">&nbsp; &nbsp; Mauris id posuere tortor</p>
+        <p class="auto_blur">sit amet scelerisque nisi</p>
+        <p class="auto_blur">&nbsp; &nbsp; &nbsp; &nbsp; Duis quis accumsan ex</p>
+
+        <script type="editor" data-lang="css" id="replace_auto_blur_target"></script>
+
+        <hr />
+        <hr />
+        <hr />
         <h2>center element</h2>
         <script type="editor" data-lang="css">
 
