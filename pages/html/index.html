@@ -54,6 +54,18 @@
             range(h, (v) => console.log("h", v));
           &lt;/script>
         </script>
+        <h2>input[type="color"]</h2>
+        <script type="editor" data-lang="html">
+          <input type="color" id="color" value="#000" autocomplete="off" />
+          &lt;script>          
+            const color = document.querySelector("#color");
+            color.addEventListener("input", watchColorPicker, false); // triggered many times while you playing with opened color picker
+            color.addEventListener("change", watchColorPicker, false); // triggered at the end when you close the color picker
+            function watchColorPicker(e) {
+              e.target.value;
+            }
+          &lt;/script>
+        </script>
 
         <div class="cards">
           <h2>input[type="radio"]</h2>
