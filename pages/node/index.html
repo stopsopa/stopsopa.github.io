@@ -150,6 +150,41 @@
         <h2>Installation on linux</h2>
         <a href="https://github.com/nodesource/distributions#installation-instructions-1">Installation nodesource</a>
 
+        <h2>detect calling script directly</h2>
+        <script type="editor" data-lang="js">
+
+          if (require.main === module) {     
+          } else {               
+          }
+
+          import path from "path";
+          import process from "process";
+          import { createRequire } from "module";
+          import { fileURLToPath } from "url";
+          export function stripExt(name) {
+            const extension = path.extname(name);
+            if (!extension) return name;
+            return name.slice(0, -extension.length);
+          }
+          function esMain(meta) {
+            // https://github.com/tschaub/es-main/blob/main/main.js
+            if (!meta || !process.argv[1]) return false;
+            const require = createRequire(meta.url);
+            const scriptPath = require.resolve(process.argv[1]);
+            const modulePath = fileURLToPath(meta.url);
+            const extension = path.extname(scriptPath);
+            if (extension) return modulePath === scriptPath;
+            return stripExt(modulePath) === scriptPath;
+          }
+          
+          if (esMain(import.meta)) {
+            console.log("DIRECTLY");
+          } else {
+            console.log("NOT DIRECTLY");
+          }
+          
+        </script>
+        
         <h2>execute directly from cmd</h2>
         <script type="editor" data-lang="sh">
 
@@ -166,7 +201,80 @@
           # will work too
           # but intercepting with "$(cat)" is interesting too
         </script>
+        <h2>serialize function </h2>
+        
+        <script type="editor" data-lang="js">
+          
+          // https://github.com/stopsopa/webdriver/blob/master/lib/rootrequire.js
+          // https://github.com/stopsopa/webdriver/blob/master/test/minefield/serializefunction.test.js
+          
+          module.exports = {
+              encode: function (fn) {
+          
+                  if (typeof fn === 'function') {
+          
+                      return fn.toString();
+                  }
+          
+                  return false;
+              },
+              decode: function (fnstr) {
+          
+                  if (typeof fnstr === 'string') {
+          
+                      eval('var __tmp__ = ' + fnstr);
+          
+                      if (typeof __tmp__ === 'function') {
+          
+                          return __tmp__;
+                      }
+                  }
+          
+                  return false;
+              }
+          };
+          
+          // tests
+          const serializefn = require('../../minefield/serializefunction');
+          
+          const test = (a, b)=>a + b;
+          
+          describe('serialize function', () => {
+          
+              it('is function', () => expect(typeof test).toBe('function'));
+          
+              it('serialized', () => {
+          
+                  const tmp = serializefn.encode(test);
+          
+                  expect(typeof tmp).toBe('string')
+          
+                  expect(tmp).toBe("(a, b) => a + b");
+              });
+          
+              it('decode', () => {
+          
+                  const tmp = serializefn.encode(test);
+          
+                  const tmp2 = serializefn.decode(tmp);
+          
+                  expect(typeof tmp2).toBe('function')
+          
+                  expect(tmp).toBe("(a, b) => a + b");
+              });
+          
+              it('arythmetic test', () => {
+          
+                  const tmp = serializefn.encode(test);
+          
+                  const tmp2 = serializefn.decode(tmp);
+          
+                  expect(tmp2(6, 8)).toBe(14);
+              });
+          });
 
+          
+        </script>
         <h2>Semantic release</h2>
         <script type="editor" data-lang="sh">
 
@@ -531,6 +639,10 @@
         <br />
         <h2>yarn</h2>
         <script type="editor" data-lang="sh">
+      
+          yarn list --pattern playwright --json | jq
+          # the same as 
+            npm list playwright \@playwright/test --depth=0 --json
 
           yarn set version berry
           yarn set version 1.22.10
@@ -539,6 +651,9 @@
           yarn outdated
           yarn upgrade-interactive
           yarn upgrade-interactive --latest
+
+          yarn install --frozen-lockfile
+            # the same as npm ci
 
           yarn install --production
             # npm equivalnet of
@@ -1172,11 +1287,21 @@
         <h2>npm</h2>
         <script type="editor" data-lang="sh">
 
+          npm list playwright \@playwright/test --depth=0 --json
+          # the same as 
+            yarn list --pattern playwright --json | jq
+
+          # list versions of the library
+            npm info @godaddy/gasket-header-nav versions
+
           # troubleshooting
             npm config fix
 
           # see all dependencies in the form of a tree
             npm ls --all
+          
+          npm ci
+            # the same as  yarn install --frozen-lockfile            
 
           npm list --depth 9999
             # list all dependencies
