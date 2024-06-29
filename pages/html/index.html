@@ -107,6 +107,22 @@
             &lt;/script>
           </script>
         </div>
+        
+          <h2>input[type="checkbox"]</h2>
+          <script type="editor" data-lang="html">
+            
+            <input type="checkbox" id="mesure" autocomplete="off" />
+
+            &lt;script>            
+              {
+                const mesure = document.querySelector("#mesure");
+                mesure.checked = state.mesure;
+                mesure.addEventListener("change", (e) => {
+                  update({ mesure: e.target.checked });
+                });
+              }
+            &lt;/script>
+          </script>
         <h2>element size width height</h2>
 
         <a href="https://www.javascripttutorial.net/javascript-dom/javascript-width-height/"
