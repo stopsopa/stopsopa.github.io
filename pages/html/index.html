@@ -72,14 +72,16 @@
           <script type="editor" data-lang="html">
 
             <div class="radios">
-              <label> <input type="radio" name="mode" value="single" /> single player </label>
+              <label> <input type="radio" name="mode" value="single" checked="checked" /> single player </label>
               <br />
               <label> <input type="radio" name="mode" value="double" /> two players </label>
             </div>
 
             &lt;script>
 
+              const state = 'single';
               const parent = docment.querySelector('.radios');
+              parent.querySelector(`input[type="radio"][value="${state}"]`).checked = true;
 
               // to get value on change
               parent.addEventListener("click", (e) => {
