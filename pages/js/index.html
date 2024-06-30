@@ -837,15 +837,88 @@
           })();
         </script>
         <h2>encode compress get parameters - query arguments</h2>
-        
+
+        <div id="url_encoder">
+          <script src="/pages/js/line/dependencies/PSON.min.js"></script>
+          <script src="/pages/js/line/dependencies/uint8-to-b64.js"></script>
+          <style>
+            #url_encoder {
+              textarea {
+                width: 100%;
+              }
+            }
+          </style>
+          <textarea id="source">
+  { 
+    hello: "onetwo", 
+    three: "abrakadabra" 
+  }</textarea
+          >
+          <br />
+          <textarea id="dictionary">["hello", "onetwo", "three", "abrakadabra"]</textarea>
+          <br />
+          <textarea id="encoded"></textarea>
+          <br />
+          <textarea id="decoded"></textarea>
+          <br />
+
+          <script>
+            function encoder(dictionary) {
+              // https://github.com/dcodeIO/PSON/tree/master?tab=readme-ov-file#example
+              let pson;
+
+              if (typeof dictionary === "undefined") {
+                pson = new PSON.StaticPair();
+              } else {
+                if (!Array.isArray(dictionary || dictionary.length === 0)) {
+                  throw new Error(`PSON encoder error: dictionary provided but it is not an array or is empty.`);
+                }
+                pson = new PSON.ProgressivePair(dictionary);
+              }
+              return {
+                encode: function encode(json) {
+                  var buffer = pson.encode(json);
+                  var base64String = base.encode(buffer.view);
+                  base64String = base64String.replace(/\//g, "_").replace(/=/g, "-");
+                  return base64String;
+                },
+                decode: function decode(string) {
+                  string = string.replace(/_/g, "/").replace(/-/g, "=");
+                  // import base from "uint8-to-b64";
+                  // or build using esbuild and use from window.base
+                  // cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js
+                  // import base from "uint8-to-b64";
+                  // window.base = base;
+                  // EEE
+                  const buff = window.base.decode(string);
+                  const data = pson.decode(buff);
+                  return data;
+                },
+              };
+            }
+            const parent = document.getElementById("url_encoder");
+            const source = parent.querySelector("#source");
+            const dictionary = parent.querySelector("#dictionary");
+            const decoded = parent.querySelector("#decoded");
+            const encoded = parent.querySelector("#encoded");
+            function doIt() {
+              const enc = encoder(JSON.parse(source.value));
+              const a = enc.encode(JSON.parse(dictionary.value));
+              encoded.value = a;
+              const b = JSON.stringify(enc.decode(encoded), null, 4);
+              decoded.value = b;
+            }
+            doIt();
+          </script>
+        </div>
         <script type="editor" data-lang="js">
-          
-          // <script src="http://stopsopa.github.io.local:7898/pages/js/line/dependencies/PSON.min.js"></script>
-          // <script src="http://stopsopa.github.io.local:7898/pages/js/line/dependencies/uint8-to-b64.js"></script>
+
+          // &lt;script src="http://stopsopa.github.io.local:7898/pages/js/line/dependencies/PSON.min.js">&lt;/script>
+          // &lt;script src="http://stopsopa.github.io.local:7898/pages/js/line/dependencies/uint8-to-b64.js">&lt;/script>
           function encoder(dictionary) {
             // https://github.com/dcodeIO/PSON/tree/master?tab=readme-ov-file#example
             let pson;
-        
+
             if (typeof dictionary === "undefined") {
               pson = new PSON.StaticPair();
             //   debugger;
@@ -866,14 +939,14 @@
               },
               decode: function decode(string) {
                 string = string.replace(/_/g, "/").replace(/-/g, "=");
-        
+
                 // import base from "uint8-to-b64";
                 // or build using esbuild and use from window.base
-                // cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js 
+                // cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js
                 // import base from "uint8-to-b64";
                 // window.base = base;
                 // EEE
-        
+
                 const buff = window.base.decode(string);
                 const data = pson.decode(buff);
                 return data;
@@ -883,10 +956,9 @@
           const enc = encoder(["hello", "onetwo", "three", "abrakadabra"]);
           const encNoDic = encoder([]); // no dictionary encoder
           const encoded = enc.encode({"hello":"onetwo", "three": "abrakadabra"});
-          console.log('encoded', encoded)  
+          console.log('encoded', encoded)
           const decoded = JSON.stringify(enc.decode(encoded), null, 4)
           console.log('decoded', decoded)
-                  
         </script>
 
         <h2>pregQuote</h2>
