@@ -57,7 +57,7 @@
         <h2>input[type="color"]</h2>
         <script type="editor" data-lang="html">
           <input type="color" id="color" value="#000" autocomplete="off" />
-          &lt;script>          
+          &lt;script>
             const color = document.querySelector("#color");
             color.addEventListener("input", watchColorPicker, false); // triggered many times while you playing with opened color picker
             color.addEventListener("change", watchColorPicker, false); // triggered at the end when you close the color picker
@@ -109,22 +109,68 @@
             &lt;/script>
           </script>
         </div>
-        
-          <h2>input[type="checkbox"]</h2>
-          <script type="editor" data-lang="html">
-            
-            <input type="checkbox" id="mesure" autocomplete="off" />
 
-            &lt;script>            
-              {
-                const mesure = document.querySelector("#mesure");
-                mesure.checked = state.mesure;
-                mesure.addEventListener("change", (e) => {
-                  update({ mesure: e.target.checked });
-                });
-              }
-            &lt;/script>
-          </script>
+        <h2>input[type="checkbox"]</h2>
+        <script type="editor" data-lang="html">
+
+          <input type="checkbox" id="mesure" autocomplete="off" />
+
+          &lt;script>
+            {
+              const mesure = document.querySelector("#mesure");
+              mesure.checked = state.mesure;
+              mesure.addEventListener("change", (e) => {
+                update({ mesure: e.target.checked });
+              });
+            }
+          &lt;/script>
+        </script>
+        <h2>textarea autoresize</h2>
+
+        <a href="/viewer.html?file=%2Fpages%2Fhumanjson%2Fhumanjson.entry.js"
+          >/viewer.html?file=%2Fpages%2Fhumanjson%2Fhumanjson.entry.js</a
+        >
+        <script type="editor" data-lang="js">
+
+          // https://stephanwagner.me/auto-resizing-textarea-with-vanilla-javascript
+          function mountAutoResize() {
+            function resize(element) {
+              var offset = element.offsetHeight - element.clientHeight;
+              element.style.height = "auto";
+              element.style.height = element.scrollHeight + offset + "px";
+            }
+            document.querySelectorAll("[data-autoresize]").forEach(function (element) {
+              element.style.boxSizing = "border-box";
+              element.addEventListener("input", function (event) {
+                resize(event.target);
+              });
+              element.removeAttribute("data-autoresize");
+              element.setAttribute("data-autoresize-attached", "true");
+            });
+
+            return () => {
+              document.querySelectorAll("[data-autoresize-attached]").forEach(function (element) {
+                resize(element);
+              });
+            };
+          }
+
+          window.resizeTextareas = (function () {
+            const trigger = mountAutoResize();
+
+            return () => {
+              window.requestAnimationFrame(trigger);
+            };
+          })();
+
+          tex.addEventListener("input", function (e) {
+
+            tex.value = ...
+
+            // trigger manually to resize if anything else is at play
+            resizeTextareas();
+          });
+        </script>
         <h2>element size width height</h2>
 
         <a href="https://www.javascripttutorial.net/javascript-dom/javascript-width-height/"

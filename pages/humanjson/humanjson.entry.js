@@ -25,7 +25,13 @@ function mountAutoResize() {
   };
 }
 
-window.resizeTextareas = mountAutoResize();
+window.resizeTextareas = (function () {
+  const trigger = mountAutoResize();
+
+  return () => {
+    window.requestAnimationFrame(trigger);
+  };
+})();
 
 const paste = document.getElementById("paste");
 const pasteT = paste.querySelector("textarea");
@@ -42,7 +48,5 @@ pasteT.addEventListener("input", function (e) {
 
   copyT.value = humanJson(obj, null, 2);
 
-  window.requestAnimationFrame(() => {
-    resizeTextareas();
-  });
+  resizeTextareas();
 });
