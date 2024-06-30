@@ -3,7 +3,7 @@ import humanJson from "nlab/humanJson.js";
 // node_modules/nlab/humanJson.js
 
 // https://stephanwagner.me/auto-resizing-textarea-with-vanilla-javascript
-function mountAutoResize() {
+function textareaAutoResize() {
   function resize(element) {
     var offset = element.offsetHeight - element.clientHeight;
     element.style.height = "auto";
@@ -26,7 +26,7 @@ function mountAutoResize() {
 }
 
 window.resizeTextareas = (function () {
-  const trigger = mountAutoResize();
+  const trigger = textareaAutoResize();
 
   return () => {
     window.requestAnimationFrame(trigger);

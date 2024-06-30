@@ -153,8 +153,8 @@
         <h2>detect calling script directly</h2>
         <script type="editor" data-lang="js">
 
-          if (require.main === module) {     
-          } else {               
+          if (require.main === module) {
+          } else {
           }
 
           import path from "path";
@@ -176,15 +176,14 @@
             if (extension) return modulePath === scriptPath;
             return stripExt(modulePath) === scriptPath;
           }
-          
+
           if (esMain(import.meta)) {
             console.log("DIRECTLY");
           } else {
             console.log("NOT DIRECTLY");
           }
-          
         </script>
-        
+
         <h2>execute directly from cmd</h2>
         <script type="editor" data-lang="sh">
 
@@ -201,79 +200,77 @@
           # will work too
           # but intercepting with "$(cat)" is interesting too
         </script>
-        <h2>serialize function </h2>
-        
+        <h2>serialize function</h2>
+
         <script type="editor" data-lang="js">
-          
+
           // https://github.com/stopsopa/webdriver/blob/master/lib/rootrequire.js
           // https://github.com/stopsopa/webdriver/blob/master/test/minefield/serializefunction.test.js
-          
+
           module.exports = {
               encode: function (fn) {
-          
+
                   if (typeof fn === 'function') {
-          
+
                       return fn.toString();
                   }
-          
+
                   return false;
               },
               decode: function (fnstr) {
-          
+
                   if (typeof fnstr === 'string') {
-          
+
                       eval('var __tmp__ = ' + fnstr);
-          
+
                       if (typeof __tmp__ === 'function') {
-          
+
                           return __tmp__;
                       }
                   }
-          
+
                   return false;
               }
           };
-          
+
           // tests
           const serializefn = require('../../minefield/serializefunction');
-          
+
           const test = (a, b)=>a + b;
-          
+
           describe('serialize function', () => {
-          
+
               it('is function', () => expect(typeof test).toBe('function'));
-          
+
               it('serialized', () => {
-          
+
                   const tmp = serializefn.encode(test);
-          
+
                   expect(typeof tmp).toBe('string')
-          
+
                   expect(tmp).toBe("(a, b) => a + b");
               });
-          
+
               it('decode', () => {
-          
+
                   const tmp = serializefn.encode(test);
-          
+
                   const tmp2 = serializefn.decode(tmp);
-          
+
                   expect(typeof tmp2).toBe('function')
-          
+
                   expect(tmp).toBe("(a, b) => a + b");
               });
-          
+
               it('arythmetic test', () => {
-          
+
                   const tmp = serializefn.encode(test);
-          
+
                   const tmp2 = serializefn.decode(tmp);
-          
+
                   expect(tmp2(6, 8)).toBe(14);
               });
           });
-
-          
         </script>
         <h2>Semantic release</h2>
         <script type="editor" data-lang="sh">
@@ -445,14 +442,13 @@
         </script>
         <h2>esbuild - bundle for browser</h2>
         <script type="editor" data-lang="sh">
-          
+
           yarn add uint8-to-b64
-          
-          cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js 
+
+          cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js
           import base from "uint8-to-b64";
           window.base = base;
           EEE
-
         </script>
         <h2>Server-Sent Events - return json chunks from server and event handling then in the browser</h2>
         <a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events"
@@ -650,9 +646,9 @@
         <br />
         <h2>yarn</h2>
         <script type="editor" data-lang="sh">
-      
+
           yarn list --pattern playwright --json | jq
-          # the same as 
+          # the same as
             npm list playwright \@playwright/test --depth=0 --json
 
           yarn set version berry
@@ -1299,7 +1295,7 @@
         <script type="editor" data-lang="sh">
 
           npm list playwright \@playwright/test --depth=0 --json
-          # the same as 
+          # the same as
             yarn list --pattern playwright --json | jq
 
           # list versions of the library
@@ -1310,9 +1306,9 @@
 
           # see all dependencies in the form of a tree
             npm ls --all
-          
+
           npm ci
-            # the same as  yarn install --frozen-lockfile            
+            # the same as  yarn install --frozen-lockfile
 
           npm list --depth 9999
             # list all dependencies

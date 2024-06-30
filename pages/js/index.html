@@ -17,6 +17,7 @@
           <ul data-do-sort>
             <li><a href="/pages/node/index.html#semantic-release">Semantic release</a></li>
             <li><a href="/pages/html/index.html#input-type-range">input[type="range"]</a></li>
+            <li><a href="line/index.html">line</a></li>
           </ul>
         </div>
 
@@ -839,8 +840,10 @@
         <h2>encode compress get parameters - query arguments</h2>
 
         <div id="url_encoder">
+          <script src="/pages/js/line/bytebuffer.min.js"></script>
           <script src="/pages/js/line/dependencies/PSON.min.js"></script>
           <script src="/pages/js/line/dependencies/uint8-to-b64.js"></script>
+          <script src="/js/textarea-autoresize.js"></script>
           <style>
             #url_encoder {
               textarea {
@@ -848,23 +851,31 @@
               }
             }
           </style>
-          <textarea id="source">
+          <fieldset>
+            <legend>source</legend>
+            <textarea id="source" data-autoresize>
   { 
-    hello: "onetwo", 
-    three: "abrakadabra" 
+    "hello": "onetwo", 
+    "three": "abrakadabra" 
   }</textarea
-          >
-          <br />
-          <textarea id="dictionary">["hello", "onetwo", "three", "abrakadabra"]</textarea>
-          <br />
-          <textarea id="encoded"></textarea>
-          <br />
-          <textarea id="decoded"></textarea>
-          <br />
+            >
+          </fieldset>
+          <fieldset>
+            <legend>dictionary</legend>
+            <textarea id="dictionary" data-autoresize>["hello", "onetwo", "three", "abrakadabra"]</textarea>
+          </fieldset>
+          <fieldset>
+            <legend>encoded</legend>
+            <textarea id="encoded" data-autoresize></textarea>
+          </fieldset>
+          <fieldset>
+            <legend>decoded</legend>
+            <textarea id="decoded" data-autoresize></textarea>
+          </fieldset>
 
-          <script>
+          <script replace="#url_encoder_target">
             function encoder(dictionary) {
-              // https://github.com/dcodeIO/PSON/tree/master?tab=readme-ov-file#example
+              var PSON = dcodeIO.PSON;
               let pson;
 
               if (typeof dictionary === "undefined") {
@@ -902,64 +913,33 @@
             const decoded = parent.querySelector("#decoded");
             const encoded = parent.querySelector("#encoded");
             function doIt() {
-              const enc = encoder(JSON.parse(source.value));
-              const a = enc.encode(JSON.parse(dictionary.value));
+              const enc = encoder(JSON.parse(dictionary.value));
+              const a = enc.encode(JSON.parse(source.value));
               encoded.value = a;
-              const b = JSON.stringify(enc.decode(encoded), null, 4);
+              const b = JSON.stringify(enc.decode(a), null, 4);
               decoded.value = b;
             }
             doIt();
-          </script>
-        </div>
-        <script type="editor" data-lang="js">
-
-          // &lt;script src="http://stopsopa.github.io.local:7898/pages/js/line/dependencies/PSON.min.js">&lt;/script>
-          // &lt;script src="http://stopsopa.github.io.local:7898/pages/js/line/dependencies/uint8-to-b64.js">&lt;/script>
-          function encoder(dictionary) {
-            // https://github.com/dcodeIO/PSON/tree/master?tab=readme-ov-file#example
-            let pson;
-
-            if (typeof dictionary === "undefined") {
-              pson = new PSON.StaticPair();
-            //   debugger;
-            } else {
-              if (!Array.isArray(dictionary || dictionary.length === 0)) {
-                throw new Error(`PSON encoder error: dictionary provided but it is not an array or is empty.`);
+            parent.addEventListener("input", (e) => {
+              if (e.target.tagName === "TEXTAREA") {
+                doIt();
               }
-              pson = new PSON.ProgressivePair(dictionary);
-            //   debugger;
-            }
-            return {
-              encode: function encode(json) {
-                var buffer = pson.encode(json);
-                var base64String = base.encode(buffer.view);
-                base64String = base64String.replace(/\//g, "_").replace(/=/g, "-");
-                // console.log('base64String', base64String)
-                return base64String;
-              },
-              decode: function decode(string) {
-                string = string.replace(/_/g, "/").replace(/-/g, "=");
+              autoresize();
+            });
+            const autoresize = textareaAutoResize();
+            autoresize();
+            setTimeout(autoresize, 1000);
+          </script>
+          <script type="editor" data-lang="js">
+            &lt;script src="http://stopsopa.github.io.local:7898/pages/js/line/bytebuffer.min.js">&lt;/script>
+            &lt;script src="http://stopsopa.github.io.local:7898/pages/js/line/dependencies/PSON.min.js">&lt;/script>
+            &lt;script src="http://stopsopa.github.io.local:7898/pages/js/line/dependencies/uint8-to-b64.js">&lt;/script>
 
-                // import base from "uint8-to-b64";
-                // or build using esbuild and use from window.base
-                // cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js
-                // import base from "uint8-to-b64";
-                // window.base = base;
-                // EEE
-
-                const buff = window.base.decode(string);
-                const data = pson.decode(buff);
-                return data;
-              },
-            };
-          }
-          const enc = encoder(["hello", "onetwo", "three", "abrakadabra"]);
-          const encNoDic = encoder([]); // no dictionary encoder
-          const encoded = enc.encode({"hello":"onetwo", "three": "abrakadabra"});
-          console.log('encoded', encoded)
-          const decoded = JSON.stringify(enc.decode(encoded), null, 4)
-          console.log('decoded', decoded)
-        </script>
+            // https://github.com/dcodeIO/PSON/tree/master?tab=readme-ov-file#example
+          </script>
+          <br />
+          <script type="editor" data-lang="js" id="url_encoder_target"></script>
+        </div>
 
         <h2>pregQuote</h2>
         <a href="https://github.com/stopsopa/nlab/blob/master/src/pregQuote.js"
@@ -2199,6 +2179,36 @@
         </script>
       </div>
     </div>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll("[replace]")).forEach(function (tag) {
+            var id = tag.getAttribute("replace");
+
+            const target = document.querySelector(id);
+
+            if (!target) {
+              console.error("target not found for id:", id);
+
+              return;
+            }
+
+            target.innerHTML = tag.innerHTML;
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
     <script src="/js/github.js"></script>
   </body>
 </html>
