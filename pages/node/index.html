@@ -443,6 +443,17 @@
             })();
           }
         </script>
+        <h2>esbuild - bundle for browser</h2>
+        <script type="editor" data-lang="sh">
+          
+          yarn add uint8-to-b64
+          
+          cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js 
+          import base from "uint8-to-b64";
+          window.base = base;
+          EEE
+
+        </script>
         <h2>Server-Sent Events - return json chunks from server and event handling then in the browser</h2>
         <a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events"
           >More: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events</a
