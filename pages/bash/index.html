@@ -492,6 +492,14 @@
 
             # delete empty directories
             find /path/to/directory -type d -empty -delete
+
+            # -------------- clear line before Carriage Return return caret --- vvv
+            I="$((I+1))"
+            TERMINAL_WIDTH=$(tput cols)
+            printf '\r%*s' "$((TERMINAL_WIDTH - 1))" 
+            echo -n -e "\r${I}/${TOTAL} ${FILE}"    
+            # -------------- clear line before Carriage Return return caret --- ^^^
+            
           </script>
 
           <h2>multiline execute in bash</h2>
