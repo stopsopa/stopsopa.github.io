@@ -887,13 +887,13 @@
                 pson = new PSON.ProgressivePair(dictionary);
               }
               return {
-                encode: function encode(json) {
+                encode: function (json) {
                   var buffer = pson.encode(json);
                   var base64String = base.encode(buffer.view);
                   base64String = base64String.replace(/\//g, "_").replace(/=/g, "-");
                   return base64String;
                 },
-                decode: function decode(string) {
+                decode: function (string) {
                   string = string.replace(/_/g, "/").replace(/-/g, "=");
                   // import base from "uint8-to-b64";
                   // or build using esbuild and use from window.base
