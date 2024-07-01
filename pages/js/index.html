@@ -837,15 +837,19 @@
             };
           })();
         </script>
-        <h2>encode compress get parameters - query arguments</h2>
+        <h2>encode msgpack</h2>
 
-        <div id="url_encoder">
-          <script src="/pages/js/line/bytebuffer.min.js"></script>
-          <script src="/pages/js/line/dependencies/PSON.min.js"></script>
+        <div id="url_msgpack">
           <script src="/pages/js/line/dependencies/uint8-to-b64.js"></script>
+          <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.26/msgpack.min.js"
+            integrity="sha512-harMiusNxs02ryf3eqc3iQalz2RSd0z38vzOyuFwvQyW046h2m+/47WiDmPW9soh/p71WQMRSkhSynEww3/bOA=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+          ></script>
           <script src="/js/textarea-autoresize.js"></script>
           <style>
-            #url_encoder {
+            #url_msgpack {
               textarea {
                 width: 100%;
               }
@@ -853,82 +857,90 @@
           </style>
           <fieldset>
             <legend>source</legend>
-            <textarea id="source" data-autoresize>
-  { 
-    "hello": "onetwo", 
-    "three": "abrakadabra" 
-  }</textarea
+            <textarea class="source" data-autoresize>
+{
+                "data": [
+                  {"id": 1, "value": "example", "type": "alpha"},
+                  {"id": 2, "value": "example", "type": "alpha"},
+                  {"id": 3, "value": "example", "type": "alpha"},
+                  {"id": 4, "value": "example", "type": "alpha"},
+                  {"id": 5, "value": "example", "type": "alpha"},
+                  {"id": 6, "value": "example", "type": "alpha"},
+                  {"id": 7, "value": "example", "type": "alpha"},
+                  {"id": 8, "value": "example", "type": "alpha"},
+                  {"id": 9, "value": "example", "type": "alpha"},
+                  {"id": 10, "value": "example", "type": "alpha"}
+                ],
+                "metadata": {
+                  "source": "generated",
+                  "compression": "targeted"
+                }
+              }</textarea
             >
           </fieldset>
           <fieldset>
-            <legend>dictionary</legend>
-            <textarea id="dictionary" data-autoresize>["hello", "onetwo", "three", "abrakadabra"]</textarea>
+            <legend>encoded:</legend>
+            <textarea class="encoded" data-autoresize></textarea>
           </fieldset>
           <fieldset>
-            <legend>encoded</legend>
-            <textarea id="encoded" data-autoresize></textarea>
+            <legend>decoded:</legend>
+            <textarea class="decoded" data-autoresize></textarea>
           </fieldset>
           <fieldset>
-            <legend>decoded</legend>
-            <textarea id="decoded" data-autoresize></textarea>
+            <legend>ratio:</legend>
+            <div class="ratio"></div>
           </fieldset>
 
-          <script replace="#url_encoder_target">
-            function encoder(dictionary) {
-              var PSON = dcodeIO.PSON;
-              let pson;
-
-              if (typeof dictionary === "undefined") {
-                pson = new PSON.StaticPair();
-              } else {
-                if (!Array.isArray(dictionary || dictionary.length === 0)) {
-                  throw new Error(`PSON encoder error: dictionary provided but it is not an array or is empty.`);
+          <script replace="#url_msgpack_target">
+            {
+              function encoder() {
+                return {
+                  encode: function (obj) {
+                    var buffer = msgpack.encode(obj);
+                    var base64String = base.encode(buffer);
+                    base64String = base64String.replace(/\//g, "_").replace(/=/g, "-");
+                    return base64String;
+                  },
+                  decode: function (string, withRatio) {
+                    string = string.replace(/_/g, "/").replace(/-/g, "=");
+                    const buff = base.decode(string);
+                    const decoded = msgpack.decode(buff);
+                    if (withRatio) {
+                      return {
+                        decoded,
+                        ratio: buff.length / string.length,
+                      };
+                    }
+                    return decoded;
+                  },
+                };
+              }
+              const parent = document.getElementById("url_msgpack");
+              const source = parent.querySelector(".source");
+              const decoded = parent.querySelector(".decoded");
+              const encoded = parent.querySelector(".encoded");
+              const ratio = parent.querySelector(".ratio");
+              function doIt() {
+                const enc = encoder();
+                const a = enc.encode(JSON.parse(source.value));
+                encoded.value = a;
+                const { decoded: dec, ratio: rat } = enc.decode(a, true);
+                console.log("dec", dec, "ratio", rat);
+                const b = JSON.stringify(dec, null, 4);
+                decoded.value = b;
+                ratio.innerText = String(rat.toFixed(2)) + "%";
+              }
+              doIt();
+              parent.addEventListener("input", (e) => {
+                if (e.target.tagName === "TEXTAREA") {
+                  doIt();
                 }
-                pson = new PSON.ProgressivePair(dictionary);
-              }
-              return {
-                encode: function (json) {
-                  var buffer = pson.encode(json);
-                  var base64String = base.encode(buffer.view);
-                  base64String = base64String.replace(/\//g, "_").replace(/=/g, "-");
-                  return base64String;
-                },
-                decode: function (string) {
-                  string = string.replace(/_/g, "/").replace(/-/g, "=");
-                  // import base from "uint8-to-b64";
-                  // or build using esbuild and use from window.base
-                  // cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js
-                  // import base from "uint8-to-b64";
-                  // window.base = base;
-                  // EEE
-                  const buff = window.base.decode(string);
-                  const data = pson.decode(buff);
-                  return data;
-                },
-              };
-            }
-            const parent = document.getElementById("url_encoder");
-            const source = parent.querySelector("#source");
-            const dictionary = parent.querySelector("#dictionary");
-            const decoded = parent.querySelector("#decoded");
-            const encoded = parent.querySelector("#encoded");
-            function doIt() {
-              const enc = encoder(JSON.parse(dictionary.value));
-              const a = enc.encode(JSON.parse(source.value));
-              encoded.value = a;
-              const b = JSON.stringify(enc.decode(a), null, 4);
-              decoded.value = b;
-            }
-            doIt();
-            parent.addEventListener("input", (e) => {
-              if (e.target.tagName === "TEXTAREA") {
-                doIt();
-              }
+                autoresize();
+              });
+              const autoresize = textareaAutoResize();
               autoresize();
-            });
-            const autoresize = textareaAutoResize();
-            autoresize();
-            setTimeout(autoresize, 1000);
+              setTimeout(autoresize, 1000);
+            }
           </script>
           <script type="editor" data-lang="js">
             &lt;script src="http://stopsopa.github.io.local:7898/pages/js/line/bytebuffer.min.js">&lt;/script>
@@ -938,7 +950,237 @@
             // https://github.com/dcodeIO/PSON/tree/master?tab=readme-ov-file#example
           </script>
           <br />
-          <script type="editor" data-lang="js" id="url_encoder_target"></script>
+          <script type="editor" data-lang="js" id="url_msgpack_target"></script>
+        </div>
+
+        <h2>encode protobuf</h2>
+
+        <div id="url_protobuf">
+          <script src="/pages/js/line/dependencies/uint8-to-b64.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/protobufjs@7.3.2/dist/protobuf.min.js"></script>
+          <script src="/js/textarea-autoresize.js"></script>
+          <style>
+            #url_protobuf {
+              textarea {
+                width: 100%;
+              }
+            }
+          </style>
+
+          <script type="editor" data-lang="js">
+
+              // video: https://www.youtube.com/watch?v=46O73On0gyI
+              // video recomends using this version: https://github.com/protocolbuffers/protobuf/releases/tag/v3.20.3
+
+              // but I've discovered that latest version (as of now): https://github.com/protocolbuffers/protobuf/releases/tag/v27.2
+              // works too but it is needed to install
+              // npm install -g protoc-gen-js
+              // otherwise during compilation of .proto it will throw
+              //      protoc-gen-js: program not found or is not executable
+
+              // DOWNLOAD LIBRARY FROM LINK ABOVE, UNZIP
+              mv /opt/local/bin/
+              mkdir -p prottest/generate_here
+              cd prottest
+              cat <<EEE > schema.proto
+            syntax = "proto3";
+            package awesomepackage;
+
+            enum Style {
+              solid = 0;
+              dotted = 1;
+              dashed = 2;
+              double = 3;
+              groove = 4;
+              ridge = 5;
+              inset = 6;
+              outset = 7;
+            }
+
+            message AwesomeMessage {
+                int32 width = 1;
+                Style style = 2;
+            }
+            EEE
+
+            ./bin/protoc --js_out=import_style=commonjs,binary:generate_here schema.proto
+          </script>
+          <fieldset>
+            <legend>.proto</legend>
+            <textarea class="proto" data-autoresize>
+              
+// awesome.proto
+package awesomepackage;
+syntax = "proto3";
+
+enum Style {
+  solid = 0;
+  dotted = 1;
+  dashed = 2;
+  double = 3;
+  groove = 4;
+  ridge = 5;
+  inset = 6;
+  outset = 7;
+}
+
+message AwesomeMessage {
+    int32 width = 1;
+    Style style = 0;
+}</textarea
+            >
+            <a href="https://github.com/protobufjs/protobuf.js">https://github.com/protobufjs/protobuf.js</a>
+            <br />
+            <a href="https://protobuf.dev/programming-guides/proto3/"
+              >https://protobuf.dev/programming-guides/proto3/</a
+            >
+            <br />
+            <a href="https://github.com/protocolbuffers/protobuf/releases/tag/v3.20.3">generate using this version</a>
+            <br />
+            <a href="https://stackoverflow.com/a/72889684">https://stackoverflow.com/a/72889684 stackoverflow issue</a>
+          </fieldset>
+          <fieldset>
+            <legend>source</legend>
+            <textarea class="source" data-autoresize>
+{     
+    "style": "groove",
+    "width": 45 
+}</textarea
+            >
+          </fieldset>
+          <fieldset>
+            <legend>encoded:</legend>
+            <textarea class="encoded" data-autoresize></textarea>
+          </fieldset>
+          <fieldset>
+            <legend>decoded:</legend>
+            <textarea class="decoded" data-autoresize></textarea>
+          </fieldset>
+          <fieldset>
+            <legend>error:</legend>
+            <textarea class="error" data-autoresize></textarea>
+          </fieldset>
+
+          <script replace="#url_protobuf_target">
+            (async function () {
+              function encoder(source, format) {
+                let root;
+                switch (format) {
+                  case "file":
+                    // for this case encoder() returns promise
+                    root = protobuf.load(source);
+                    break;
+                  case "string":
+                    // for this case encoder() func is synchronous - no wrapping with promise
+                    root = protobuf.parse(source).root;
+
+                    // https://stackoverflow.com/a/70915341 - not documented
+                    // it can be found though in the examples: https://github.com/protobufjs/protobuf.js/blob/master/examples/traverse-types.js
+                    break;
+                  default:
+                    throw Error('protobuf error: format must be "file" or "string"');
+                }
+                return {
+                  encode: function (payload) {
+                    // from: https://github.com/protobufjs/protobuf.js?tab=readme-ov-file#using-proto-files
+
+                    var AwesomeMessage = root.lookupType("awesomepackage.AwesomeMessage");
+
+                    // // ;
+                    // // Verify the payload if necessary (i.e. when possibly incomplete or invalid)
+                    // var errMsg = AwesomeMessage.verify(payload);
+                    // // if you need enum then use approach similar to
+                    // // https://www.sohamkamani.com/javascript/enums/
+                    // // then you can use .verify() method
+                    // // if you wan't to feed and receive object with original values then valid will not work and
+                    // // instead of create you will have to use fromObject(payload)
+
+                    // if (errMsg) {
+                    //   ;
+                    //   throw Error(errMsg);
+                    // }
+
+                    // Create a new message
+                    // var message = AwesomeMessage.create(payload); // or use .fromObject if conversion is necessary
+                    var message = AwesomeMessage.fromObject(payload); // or use .fromObject if conversion is necessary
+
+                    // Encode a message to an Uint8Array (browser) or Buffer (node)
+                    var buffer = AwesomeMessage.encode(message).finish();
+
+                    var base64String = base.encode(buffer);
+
+                    base64String = base64String.replace(/\//g, "_").replace(/=/g, "-");
+
+                    return base64String;
+                  },
+                  decode: function (string) {
+                    string = string.replace(/_/g, "/").replace(/-/g, "=");
+
+                    const buffer = base.decode(string);
+
+                    // from: https://github.com/protobufjs/protobuf.js?tab=readme-ov-file#using-proto-files
+                    var AwesomeMessage = root.lookupType("awesomepackage.AwesomeMessage");
+
+                    // Decode an Uint8Array (browser) or Buffer (node) to a message
+                    var message = AwesomeMessage.decode(buffer);
+                    // ... do something with message
+
+                    // If the application uses length-delimited buffers, there is also encodeDelimited and decodeDelimited.
+
+                    // Maybe convert the message back to a plain object
+                    var object = AwesomeMessage.toObject(message, {
+                      // longs: String,
+                      enums: String,
+                      defaults: true,
+                      // bytes: String,
+                      // see ConversionOptions
+                    });
+
+                    return object;
+                  },
+                };
+              }
+              const parent = document.getElementById("url_protobuf");
+              const proto = parent.querySelector(".proto");
+              const source = parent.querySelector(".source");
+              const decoded = parent.querySelector(".decoded");
+              const encoded = parent.querySelector(".encoded");
+              const error = parent.querySelector(".error");
+              // const enc = await encoder("./protobuf/protobuf.proto", "file");
+              async function doIt() {
+                try {
+                  // const p = proto.value
+                  const enc = await encoder(proto.value, "string");
+                  error.value = "";
+                  const a = enc.encode(JSON.parse(source.value));
+                  encoded.value = a;
+                  const b = JSON.stringify(enc.decode(a, true), null, 4);
+                  decoded.value = b;
+                } catch (e) {
+                  error.value = String(e);
+                }
+              }
+              doIt();
+              parent.addEventListener("input", (e) => {
+                if (e.target.tagName === "TEXTAREA") {
+                  doIt();
+                }
+                autoresize();
+              });
+              const autoresize = textareaAutoResize();
+              autoresize();
+              setTimeout(autoresize, 1000);
+            })();
+          </script>
+          <script type="editor" data-lang="js">
+
+            &lt;script src="/pages/js/line/dependencies/uint8-to-b64.js">&lt;/script>
+            &lt;script src="https://cdn.jsdelivr.net/npm/protobufjs@7.3.2/dist/protobuf.min.js">&lt;/script>
+
+            &lt;script src="/js/textarea-autoresize.js">&lt;/script> // this one is just for texarea
+          </script>
+          <br />
+          <script type="editor" data-lang="js" id="url_protobuf_target"></script>
         </div>
 
         <h2>pregQuote</h2>

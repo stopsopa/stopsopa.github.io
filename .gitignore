@@ -3,6 +3,7 @@
 *.tar.gz
 *.zip
 node_modules
+/bin/
 /public/coverage/
 /_git
 yarn-error.log
