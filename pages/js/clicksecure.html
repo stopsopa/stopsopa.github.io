@@ -54,7 +54,7 @@
           }
           document.addEventListener("keypress", event);
         }
-        if(!c.r() && typeof (new URLSearchParams(location.search)).get('clicksecure') !== 'string'){
+        if(!c.r() && (typeof (new URLSearchParams(location.search)).get('clicksecure') !== 'string' || !location.pathname.startsWith('//')) ){
             document.body.innerHTML='<input type="text" />';
             var s=document.createElement("style");
             document.getElementsByTagName("head")[0].appendChild(s);

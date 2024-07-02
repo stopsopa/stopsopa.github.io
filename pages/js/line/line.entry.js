@@ -1,7 +1,7 @@
 import line from "./line.js";
 
 {
-  function encoderFactory(source, format) {
+  function protoFactory(source, format) {
     let root;
     switch (format) {
       case "file":
@@ -79,7 +79,7 @@ import line from "./line.js";
     };
   }
 
-  const encoder = encoderFactory(
+  const encoder = protoFactory(
     `
 syntax = "proto3";
 package awesomepackage;
@@ -411,8 +411,11 @@ message AwesomeMessage {
   window.addEventListener("mousemove", function (e) {
     if (run) {
       t && t.parentNode.removeChild(t);
+      t = undefined;
       a && a.parentNode.removeChild(a);
+      a = undefined;
       b && b.parentNode.removeChild(b);
+      b = undefined;
       t = line(x1, y1, e.pageX, e.pageY, state, callback);
     }
   });

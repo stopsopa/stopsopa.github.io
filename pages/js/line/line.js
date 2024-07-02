@@ -1,13 +1,12 @@
 const pi = Math.PI;
 
 /**
- * @returns jQuery object representing line
  * var linediv =                          line(x1, y1, x2, y2, opt, callback);                  case A
  * var linediv =        line(parentDomElement, x1, y1, x2, y2, opt, callback);                  case B
  *
  * var linediv =                          line(x1, y1, {ang: 45, dis: 200}, opt, callback);     case C
  * var linediv =        line(parentDomElement, x1, y1, {ang: 45, dis: 200}, opt, callback);     case D
- */ //0   1   2   3   4    5
+ */ 
 const tool = function (target, x1, y1, x2, y2, opt, callback) {
   if (!isNode(target)) {
     return tool.apply(this, [document.body].concat(_a(arguments)));

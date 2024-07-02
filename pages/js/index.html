@@ -1009,7 +1009,7 @@
 
             protoc --js_out=import_style=commonjs,binary:generate_here schema.proto
 
-            // NOTE: that's how we would TRY to do it as google suggest but actually below we will 
+            // NOTE: that's how we would TRY to do it as google suggest but actually below we will
             // use different approach and library
           </script>
           <fieldset>
@@ -1085,15 +1085,15 @@ message AwesomeMessage {
 
           <script replace="#url_protobuf_target">
             (async function () {
-              function encoderFactory(source, format) {
+              function protoFactory(source, format) {
                 let root;
                 switch (format) {
                   case "file":
-                    // for this case encoderFactory() returns promise
+                    // for this case protoFactory() returns promise
                     root = protobuf.load(source);
                     break;
                   case "string":
-                    // for this case encoderFactory() func is synchronous - no wrapping with promise
+                    // for this case protoFactory() func is synchronous - no wrapping with promise
                     root = protobuf.parse(source).root;
 
                     // https://stackoverflow.com/a/70915341 - not documented
@@ -1168,11 +1168,11 @@ message AwesomeMessage {
               const decoded = parent.querySelector(".decoded");
               const encoded = parent.querySelector(".encoded");
               const error = parent.querySelector(".error");
-              // const enc = await encoderFactory("./protobuf/protobuf.proto", "file");
+              // const enc = await protoFactory("./protobuf/protobuf.proto", "file");
               async function doIt() {
                 try {
                   // const p = proto.value
-                  const enc = encoderFactory(proto.value, "string");
+                  const enc = protoFactory(proto.value, "string");
                   error.value = "";
                   const a = enc.encode(JSON.parse(source.value));
                   encoded.value = a;
