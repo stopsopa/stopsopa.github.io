@@ -1,6 +1,10 @@
 import line from "./line.js";
 
 {
+  document
+    .querySelector("[data-reset]")
+    .setAttribute("href", `${location.protocol}//${location.host}${location.pathname}`);
+
   function protoFactory(source, format) {
     let root;
     switch (format) {
