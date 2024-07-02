@@ -841,12 +841,7 @@
 
         <div id="url_msgpack">
           <script src="/pages/js/line/dependencies/uint8-to-b64.js"></script>
-          <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.26/msgpack.min.js"
-            integrity="sha512-harMiusNxs02ryf3eqc3iQalz2RSd0z38vzOyuFwvQyW046h2m+/47WiDmPW9soh/p71WQMRSkhSynEww3/bOA=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"
-          ></script>
+          <script src="/pages/js/line/dependencies/msgpack.min.js"></script>
           <script src="/js/textarea-autoresize.js"></script>
           <style>
             #url_msgpack {
@@ -893,7 +888,7 @@
 
           <script replace="#url_msgpack_target">
             {
-              function encoder() {
+              function encoderFactory() {
                 return {
                   encode: function (obj) {
                     var buffer = msgpack.encode(obj);
@@ -921,7 +916,7 @@
               const encoded = parent.querySelector(".encoded");
               const ratio = parent.querySelector(".ratio");
               function doIt() {
-                const enc = encoder();
+                const enc = encoderFactory();
                 const a = enc.encode(JSON.parse(source.value));
                 encoded.value = a;
                 const { decoded: dec, ratio: rat } = enc.decode(a, true);
@@ -942,12 +937,19 @@
               setTimeout(autoresize, 1000);
             }
           </script>
-          <script type="editor" data-lang="js">
-            &lt;script src="http://stopsopa.github.io.local:7898/pages/js/line/bytebuffer.min.js">&lt;/script>
-            &lt;script src="http://stopsopa.github.io.local:7898/pages/js/line/dependencies/PSON.min.js">&lt;/script>
-            &lt;script src="http://stopsopa.github.io.local:7898/pages/js/line/dependencies/uint8-to-b64.js">&lt;/script>
+          <script type="editor" data-lang="html">
 
-            // https://github.com/dcodeIO/PSON/tree/master?tab=readme-ov-file#example
+            &lt;script src="/pages/js/line/dependencies/uint8-to-b64.js">&lt;/script>
+            &lt;script src="/pages/js/line/dependencies/msgpack.min.js">&lt;/script>
+            <!-- &lt;script
+              src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.26/msgpack.min.js"
+              integrity="sha512-harMiusNxs02ryf3eqc3iQalz2RSd0z38vzOyuFwvQyW046h2m+/47WiDmPW9soh/p71WQMRSkhSynEww3/bOA=="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer"
+            >&lt;/script> -->
+
+            &lt;script src="/js/textarea-autoresize.js">&lt;/script>
+            <!-- this one is just for texarea of this example -->
           </script>
           <br />
           <script type="editor" data-lang="js" id="url_msgpack_target"></script>
@@ -957,7 +959,8 @@
 
         <div id="url_protobuf">
           <script src="/pages/js/line/dependencies/uint8-to-b64.js"></script>
-          <script src="https://cdn.jsdelivr.net/npm/protobufjs@7.3.2/dist/protobuf.min.js"></script>
+
+          <script src="/pages/js/line/dependencies/protobuf.min.js"></script>
           <script src="/js/textarea-autoresize.js"></script>
           <style>
             #url_protobuf {
@@ -969,20 +972,21 @@
 
           <script type="editor" data-lang="js">
 
-              // video: https://www.youtube.com/watch?v=46O73On0gyI
-              // video recomends using this version: https://github.com/protocolbuffers/protobuf/releases/tag/v3.20.3
+            // video: https://www.youtube.com/watch?v=46O73On0gyI
+            // video recomends using this version: https://github.com/protocolbuffers/protobuf/releases/tag/v3.20.3
 
-              // but I've discovered that latest version (as of now): https://github.com/protocolbuffers/protobuf/releases/tag/v27.2
-              // works too but it is needed to install
-              // npm install -g protoc-gen-js
-              // otherwise during compilation of .proto it will throw
-              //      protoc-gen-js: program not found or is not executable
+            // but I've discovered that latest version (as of now): https://github.com/protocolbuffers/protobuf/releases/tag/v27.2
+            // works too but it is needed to install
+            // npm install -g protoc-gen-js
+            // otherwise during compilation of .proto it will throw
+            //      protoc-gen-js: program not found or is not executable
 
-              // DOWNLOAD LIBRARY FROM LINK ABOVE, UNZIP
-              mv /opt/local/bin/
-              mkdir -p prottest/generate_here
-              cd prottest
-              cat <<EEE > schema.proto
+            // DOWNLOAD LIBRARY FROM LINK ABOVE, UNZIP
+            mv bin/protoc /opt/local/bin/ && chmod +x /opt/local/bin/protoc
+            npm -g install protoc-gen-js
+            mkdir -p prottest/generate_here
+            cd prottest
+            cat <<EEE > schema.proto
             syntax = "proto3";
             package awesomepackage;
 
@@ -998,23 +1002,27 @@
             }
 
             message AwesomeMessage {
-                int32 width = 1;
-                Style style = 2;
+              int32 width = 1;
+              Style style = 2;
             }
             EEE
 
-            ./bin/protoc --js_out=import_style=commonjs,binary:generate_here schema.proto
+            protoc --js_out=import_style=commonjs,binary:generate_here schema.proto
+
+            // NOTE: that's how we would TRY to do it as google suggest but actually below we will 
+            // use different approach and library
           </script>
           <fieldset>
             <legend>.proto</legend>
             <textarea class="proto" data-autoresize>
               
-// awesome.proto
-package awesomepackage;
 syntax = "proto3";
+package awesomepackage;
 
 enum Style {
-  solid = 0;
+  solid = 0; // first value will be used as default if not specified,
+  // and setting any value which is not registered in enum will default to 0
+  // more about default values: https://protobuf.dev/programming-guides/proto3/#default
   dotted = 1;
   dashed = 2;
   double = 3;
@@ -1024,9 +1032,20 @@ enum Style {
   outset = 7;
 }
 
+enum Correctpos {
+  normal = 0;
+  top = 1;
+  bottom = 2;
+  left = 3;
+  right = 4;
+}
+
 message AwesomeMessage {
-    int32 width = 1;
-    Style style = 0;
+  string color = 1; // this is not enum so start from 1
+  Style style = 2;
+  int32 width = 3;
+  bool correct = 4;
+  Correctpos correctpos = 5;
 }</textarea
             >
             <a href="https://github.com/protobufjs/protobuf.js">https://github.com/protobufjs/protobuf.js</a>
@@ -1042,10 +1061,13 @@ message AwesomeMessage {
           <fieldset>
             <legend>source</legend>
             <textarea class="source" data-autoresize>
-{     
-    "style": "groove",
-    "width": 45 
-}</textarea
+              {     
+                "color": "#383838",
+                "style": "groove",
+                "width": 45,
+                "correct": true,
+                "correctpos": "normal"
+            }</textarea
             >
           </fieldset>
           <fieldset>
@@ -1063,15 +1085,15 @@ message AwesomeMessage {
 
           <script replace="#url_protobuf_target">
             (async function () {
-              function encoder(source, format) {
+              function encoderFactory(source, format) {
                 let root;
                 switch (format) {
                   case "file":
-                    // for this case encoder() returns promise
+                    // for this case encoderFactory() returns promise
                     root = protobuf.load(source);
                     break;
                   case "string":
-                    // for this case encoder() func is synchronous - no wrapping with promise
+                    // for this case encoderFactory() func is synchronous - no wrapping with promise
                     root = protobuf.parse(source).root;
 
                     // https://stackoverflow.com/a/70915341 - not documented
@@ -1146,11 +1168,11 @@ message AwesomeMessage {
               const decoded = parent.querySelector(".decoded");
               const encoded = parent.querySelector(".encoded");
               const error = parent.querySelector(".error");
-              // const enc = await encoder("./protobuf/protobuf.proto", "file");
+              // const enc = await encoderFactory("./protobuf/protobuf.proto", "file");
               async function doIt() {
                 try {
                   // const p = proto.value
-                  const enc = await encoder(proto.value, "string");
+                  const enc = encoderFactory(proto.value, "string");
                   error.value = "";
                   const a = enc.encode(JSON.parse(source.value));
                   encoded.value = a;
@@ -1172,12 +1194,14 @@ message AwesomeMessage {
               setTimeout(autoresize, 1000);
             })();
           </script>
-          <script type="editor" data-lang="js">
+          <script type="editor" data-lang="html">
 
             &lt;script src="/pages/js/line/dependencies/uint8-to-b64.js">&lt;/script>
-            &lt;script src="https://cdn.jsdelivr.net/npm/protobufjs@7.3.2/dist/protobuf.min.js">&lt;/script>
+            &lt;script src="/pages/js/line/dependencies/protobuf.min.js">&lt;/script>
+            <!-- &lt;script src="https://cdn.jsdelivr.net/npm/protobufjs@7.3.2/dist/protobuf.min.js">&lt;/script> -->
 
-            &lt;script src="/js/textarea-autoresize.js">&lt;/script> // this one is just for texarea
+            &lt;script src="/js/textarea-autoresize.js">&lt;/script>
+            <!-- this one is just for texarea of this example -->
           </script>
           <br />
           <script type="editor" data-lang="js" id="url_protobuf_target"></script>

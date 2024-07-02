@@ -113,14 +113,14 @@
         <h2>input[type="checkbox"]</h2>
         <script type="editor" data-lang="html">
 
-          <input type="checkbox" id="mesure" autocomplete="off" />
+          <input type="checkbox" id="measure" autocomplete="off" />
 
           &lt;script>
             {
-              const mesure = document.querySelector("#mesure");
-              mesure.checked = state.mesure;
-              mesure.addEventListener("change", (e) => {
-                update({ mesure: e.target.checked });
+              const measure = document.querySelector("#measure");
+              measure.checked = state.measure;
+              measure.addEventListener("change", (e) => {
+                update({ measure: e.target.checked });
               });
             }
           &lt;/script>
