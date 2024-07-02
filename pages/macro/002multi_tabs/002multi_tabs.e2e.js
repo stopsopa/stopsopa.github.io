@@ -6,7 +6,7 @@ import { test, expect } from "@playwright/test";
  * PWDEBUG=1 /bin/bash playwright.sh
  * /bin/bash playwright.sh --target docker
  */
-test.describe("blueprint", () => {
+test.describe("adeeditor makro", () => {
   test("blueprint", async ({ page, browserName }) => {
     await page.goto(`/pages/macro/002multi_tabs/index.html?clicksecure`);
 
