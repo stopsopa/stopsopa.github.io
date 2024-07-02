@@ -169,16 +169,9 @@ message AwesomeMessage {
 
       const { color, style, width, useincorrect, correctb, correctn, correctpos, measure } = decoded;
 
-      console.log(
-        "raw decoded from url",
-        JSON.stringify({ color, style, width, useincorrect, correctb, correctn, correctpos, measure }, null, 4)
-      );
-
       const extend = { color, style, width, correctpos, measure };
 
       extend.correct = useincorrect === "correctb" ? correctb : correctn;
-
-      console.log("extend", JSON.stringify(extend, null, 4));
 
       Object.assign(state, extend);
 
@@ -192,8 +185,6 @@ message AwesomeMessage {
 
   // if get 's' param exist then apply it on top of state
   fetchGet();
-
-  console.log("state", JSON.stringify(state, null, 4));
 
   function update(opt) {
     Object.assign(state, opt);
@@ -211,11 +202,9 @@ message AwesomeMessage {
       payload.correctn = correct;
     }
 
-    console.log("payload", JSON.stringify(payload, null, 4));
-
     const get = encoder.encode(payload);
 
-    history.pushState({}, "", `${location.pathname}?s=${get}`);
+    history.pushState({}, "", `${location.protocol}//${location.host}${location.pathname}?s=${get}`);
 
     // async function doIt() {
     //   try {
