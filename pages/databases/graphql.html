@@ -56,6 +56,29 @@
             "linearLabelName": "linear-test-1",
             "excludeState": "Done"
           }
+
+          # example of and query
+          query FindLabelId($teamId: ID!, $linearLabelName: String!) {
+            issueLabels(filter: {and: [{team: {id: {eq: $teamId}}}, {name: {eq: $linearLabelName}}]}){nodes{id,name}}
+          }
+
+          query fetchIssue($linearLabelName: String!, $excludeState: String!) { 
+            issues (filter: {
+              and: [
+                {labels: {name: {eq: $linearLabelName}}},
+                {state: {name: {neq: $excludeState}}}
+              ]
+            }) {
+              nodes {
+                id,
+                description,   
+                state {
+                  id,
+                  name
+                }      
+              }    
+            } 
+          }
           
         </script>
       </div>
