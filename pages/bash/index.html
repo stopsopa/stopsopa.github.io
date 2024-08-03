@@ -540,7 +540,7 @@
             # -------------- clear line before Carriage Return return caret --- ^^^
           </script>
 
-          <h2>remove lines from special value to special value</h2>
+          <h2>remove/replace lines from special value to special value</h2>
           
           <script type="editor" data-lang="sh">
             
@@ -563,6 +563,16 @@
             TOHERE 002
             m
             n
+            EEE
+
+
+            
+            NUC_NODE_DIR="/home/sd/nuc_small/node"
+            cat <<EEE | sed "s|${NUC_NODE_DIR}|__NUC_NODE_DIR__REPLACED__|g"
+            rm -rf /home/sd/nuc_small/node/samples/heic/IMG_2558.jpg
+            magick mogrify -monitor -format jpg /home/sd/nuc_small/node/samples/heic/IMG_2558.HEIC /home/sd/nuc_small/node/samples/heic/IMG_2558.jpg
+            ls /home/sd/nuc_small/node/samples/heic/IMG_2558.jpg
+            rm -rf /home/sd/nuc_small/node/samples/heic/IMG_2558.jpg
             EEE
             
           </script>
