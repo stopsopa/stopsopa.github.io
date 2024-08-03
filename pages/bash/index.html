@@ -540,6 +540,32 @@
             # -------------- clear line before Carriage Return return caret --- ^^^
           </script>
 
+          <h2>remove lines from special value to special value</h2>
+          
+          <script type="editor" data-lang="sh">
+            
+            cat <<EEE | sed '/REMOVEFROMHRE/,/TOHERE/d'
+            a
+            b
+            c
+            REMOVEFROMHRE 001
+            d
+            e
+            f
+            TOHERE 001
+            g
+            h
+            i
+            REMOVEFROMHRE 002
+            j
+            k
+            l
+            TOHERE 002
+            m
+            n
+            EEE
+            
+          </script>
           <h2>random</h2>
           <script type="editor" data-lang="sh">
             awk -v min=0 -v max=2 'BEGIN{srand(); print min + rand() * (max-min)}' | xargs printf "%.1f"
