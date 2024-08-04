@@ -77,6 +77,207 @@
           </ul>
           <h2>interesting</h2>
           <a href="https://github.com/cgsdev0">https://github.com/cgsdev0</a>
+          
+        <h2>basics</h2>
+        <script type="editor" data-lang="sh">
+
+          function _date {
+              date "+%Y-%m-%d"
+          }
+
+          function _time {
+              date "+%H-%M-%S"
+          }
+          date "+%Y_%m_%d_%H_%M_%S"
+
+          // stdout stderr
+          set -e; _exit 1> /dev/null 2> /dev/null
+
+          # output to stderr
+          echo John have a cat
+          echo Cat have a hiv>&2
+
+          ls -la 2>&1
+
+
+          # on Mac
+          bash --version
+          GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin20)
+          Copyright (C) 2007 Free Software Foundation, Inc.
+
+          arch -arm64 brew install bash
+          $ more: https://itnext.io/upgrading-bash-on-macos-7138bd1066ba
+          # add to ~/.bashrc
+          export PATH="/bin:$PATH"
+          # to change back to bash v3
+
+
+
+          # -a FILE        True if file exists.
+          # -e FILE        True if file exists.
+          # -f FILE        True if file exists and is a regular file.
+          # -r FILE        True if file is readable by you.
+          # -s FILE        True if file exists and is not empty.
+          # -w FILE        True if the file is writable by you.
+
+          # Pathname Expansion
+          echo *s
+          # Documents Pictures Templates Videos
+
+          echo [[:upper:]]*
+          # Desktop Documents Music Pictures Public Templates Videos
+
+          echo /usr/*/share
+          # /usr/kerberos/share /usr/local/share
+
+          # Arithmetic Expansion
+          echo echo $(((5**2) * 3))
+          # 75
+
+          # Brace Expansion
+          echo Front-{A,B,C}-Back
+          # Front-A-Back Front-B-Back Front-C-Back
+
+          echo Number_{1..5}
+          # Number_1 Number_2 Number_3 Number_4 Number_5
+
+          echo {Z..A}
+          # Z Y X W V U T S R Q P O N M L K J I H G F E D C B A
+
+          echo {2017..2019}-{09..12}
+          # mac   : 2017-9 2017-10 2017-11 2017-12 2018-9 2018-10 2018-11 2018-12 2019-9 2019-10 2019-11 2019-12
+          # linux : 2017-09 2017-10 2017-11 2017-12 2018-09 2018-10 2018-11 2018-12 2019-09 2019-10 2019-11 2019-12
+
+          echo $(cal)
+          # May 2021 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+
+          echo "$(cal)"
+          #       May 2021
+          # Mo Tu We Th Fr Sa Su
+          #                 1  2
+          #  3  4  5  6  7  8  9
+          # 10 11 12 13 14 15 16
+          # 17 18 19 20 21 22 23
+          # 24 25 26 27 28 29 30
+          # 31
+
+          # https://www.funtoo.org/Bash_by_Example,_Part_1
+          # variable expansion functionality - Chopping strings like a pro
+
+          # IN OTHER WORDS THIS SYNTAX IS FOCUSED ON CHOPPING OFF
+          # NOT IN MATCHING AND RETURNING MATCHES BUT CHOPPING THEM OFF AND RETURNING THE REST
+
+          $ MYVAR=foodforthought.jpg
+          $ echo ${MYVAR##*fo} # cut to the LAST occurence (CUTS INCLUSIVE) CHOPPING GREEDY - LONGEST POSSIBLE MATCH
+          rthought.jpg
+          $ echo ${MYVAR#*fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
+          odforthought.jpg
+
+          # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+          # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+          # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+
+          $ echo ${MYVAR#*Fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
+          foodforthought.jpg
+
+          # TIP/MNEMONIC: look on the keyboard the character $ which is bash variable expansion character
+          # on the left is # so it is for chopping from the beginning
+          # on the right is % so it is for chopping from the end
+
+          # cut string ------ vvv
+          $ MYFOO="chickensoup.tar.gz"
+          $ echo ${MYFOO%%.*} # cut longest possible from the end - GREEDY
+          chickensoup
+          $ echo ${MYFOO%.*} # cut shortest possible from the end - NON GREEDY
+          chickensoup.tar
+
+          TTT="../google/takesomething/"
+          # Remove the trailing slash if it exists
+          TTT="${TTT%/}"          
+          echo "$TTT"
+          # cut string ------ ^^^
+
+          # variable expansion based on a specific character offset and length
+          $ EXCLAIM=cowabungazd
+          #         12345678901
+          $ echo ${EXCLAIM:0:3}
+          cow
+          $ echo ${EXCLAIM:3:7}
+          abungaz
+          $ echo ${EXCLAIM:3:17}
+          abungazd
+
+          # default value
+          ${FRANKY:=Franky}
+
+          # IF ELSE FI
+          if [ condition ]
+          then
+                  action
+          elif [ condition2 ]
+          then
+                  action2
+          .
+          .
+          .
+          elif [ condition3 ]
+          then
+
+          else
+                  actionx
+          fi
+
+          # LOOP FOR
+          for x in one two three four "six seven"
+          do
+              echo number $x
+          done
+          # number one
+          # number two
+          # number three
+          # number four
+          # number six seven
+
+
+          for myfile in /etc/r* /tmp/${MYPATH}/*
+          do
+              if [ -d "$myfile" ]
+              then
+                echo "$myfile (dir)"
+              else
+                echo "$myfile"
+              fi
+          done
+          # /etc/racoon (dir)
+          # /etc/rc.common
+          # /etc/rc.netboot
+          # /etc/resolv.conf
+          # /etc/rmtab
+          # /etc/rpc
+          # /etc/rtadvd.conf
+          # ../a.sh is a silly file
+          # ../a.txt is a silly file
+          # ../runtime.tar.gz is a silly file
+          # public/coverage is a silly file
+          # public/cypress.html is a silly file
+          # public/sandbox is a silly file
+
+          cat <<EOF > k.sh
+          for thing in "\$@"
+          do
+              echo you typed \${thing}.
+          done
+          EOF
+          chmod a+x k.sh
+          ./k.sh a b c "d e" -- "f g" h
+          # you typed a.
+          # you typed b.
+          # you typed c.
+          # you typed d e.
+          # you typed --.
+          # you typed f g.
+          # you typed h.
+        </script>
           <h2>useful</h2>
           <script type="editor" data-lang="sh">
             #!/usr/bin/env bash
@@ -1981,199 +2182,6 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           > <  - change sort table
         </script>
 
-        <h2>basics</h2>
-        <script type="editor" data-lang="sh">
-
-          function _date {
-              date "+%Y-%m-%d"
-          }
-
-          function _time {
-              date "+%H-%M-%S"
-          }
-          date "+%Y_%m_%d_%H_%M_%S"
-
-          // stdout stderr
-          set -e; _exit 1> /dev/null 2> /dev/null
-
-          # output to stderr
-          echo John have a cat
-          echo Cat have a hiv>&2
-
-          ls -la 2>&1
-
-
-          # on Mac
-          bash --version
-          GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin20)
-          Copyright (C) 2007 Free Software Foundation, Inc.
-
-          arch -arm64 brew install bash
-          $ more: https://itnext.io/upgrading-bash-on-macos-7138bd1066ba
-          # add to ~/.bashrc
-          export PATH="/bin:$PATH"
-          # to change back to bash v3
-
-
-
-          # -a FILE        True if file exists.
-          # -e FILE        True if file exists.
-          # -f FILE        True if file exists and is a regular file.
-          # -r FILE        True if file is readable by you.
-          # -s FILE        True if file exists and is not empty.
-          # -w FILE        True if the file is writable by you.
-
-          # Pathname Expansion
-          echo *s
-          # Documents Pictures Templates Videos
-
-          echo [[:upper:]]*
-          # Desktop Documents Music Pictures Public Templates Videos
-
-          echo /usr/*/share
-          # /usr/kerberos/share /usr/local/share
-
-          # Arithmetic Expansion
-          echo echo $(((5**2) * 3))
-          # 75
-
-          # Brace Expansion
-          echo Front-{A,B,C}-Back
-          # Front-A-Back Front-B-Back Front-C-Back
-
-          echo Number_{1..5}
-          # Number_1 Number_2 Number_3 Number_4 Number_5
-
-          echo {Z..A}
-          # Z Y X W V U T S R Q P O N M L K J I H G F E D C B A
-
-          echo {2017..2019}-{09..12}
-          # mac   : 2017-9 2017-10 2017-11 2017-12 2018-9 2018-10 2018-11 2018-12 2019-9 2019-10 2019-11 2019-12
-          # linux : 2017-09 2017-10 2017-11 2017-12 2018-09 2018-10 2018-11 2018-12 2019-09 2019-10 2019-11 2019-12
-
-          echo $(cal)
-          # May 2021 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-
-          echo "$(cal)"
-          #       May 2021
-          # Mo Tu We Th Fr Sa Su
-          #                 1  2
-          #  3  4  5  6  7  8  9
-          # 10 11 12 13 14 15 16
-          # 17 18 19 20 21 22 23
-          # 24 25 26 27 28 29 30
-          # 31
-
-          # https://www.funtoo.org/Bash_by_Example,_Part_1
-          # variable expansion functionality - Chopping strings like a pro
-
-          # IN OTHER WORDS THIS SYNTAX IS FOCUSED ON CHOPPING OFF
-          # NOT IN MATCHING AND RETURNING MATCHES BUT CHOPPING THEM OFF AND RETURNING THE REST
-
-          $ MYVAR=foodforthought.jpg
-          $ echo ${MYVAR##*fo} # cut to the LAST occurence (CUTS INCLUSIVE) CHOPPING GREEDY - LONGEST POSSIBLE MATCH
-          rthought.jpg
-          $ echo ${MYVAR#*fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
-          odforthought.jpg
-
-          # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
-          # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
-          # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
-
-          $ echo ${MYVAR#*Fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
-          foodforthought.jpg
-
-          # TIP/MNEMONIC: look on the keyboard the character $ which is bash variable expansion character
-          # on the left is # so it is for chopping from the beginning
-          # on the right is % so it is for chopping from the end
-
-          $ MYFOO="chickensoup.tar.gz"
-          $ echo ${MYFOO%%.*} # cut longest possible from the end - GREEDY
-          chickensoup
-          $ echo ${MYFOO%.*} # cut shortest possible from the end - NON GREEDY
-          chickensoup.tar
-
-          # variable expansion based on a specific character offset and length
-          $ EXCLAIM=cowabungazd
-          #         12345678901
-          $ echo ${EXCLAIM:0:3}
-          cow
-          $ echo ${EXCLAIM:3:7}
-          abungaz
-          $ echo ${EXCLAIM:3:17}
-          abungazd
-
-          # default value
-          ${FRANKY:=Franky}
-
-          # IF ELSE FI
-          if [ condition ]
-          then
-                  action
-          elif [ condition2 ]
-          then
-                  action2
-          .
-          .
-          .
-          elif [ condition3 ]
-          then
-
-          else
-                  actionx
-          fi
-
-          # LOOP FOR
-          for x in one two three four "six seven"
-          do
-              echo number $x
-          done
-          # number one
-          # number two
-          # number three
-          # number four
-          # number six seven
-
-
-          for myfile in /etc/r* /tmp/${MYPATH}/*
-          do
-              if [ -d "$myfile" ]
-              then
-                echo "$myfile (dir)"
-              else
-                echo "$myfile"
-              fi
-          done
-          # /etc/racoon (dir)
-          # /etc/rc.common
-          # /etc/rc.netboot
-          # /etc/resolv.conf
-          # /etc/rmtab
-          # /etc/rpc
-          # /etc/rtadvd.conf
-          # ../a.sh is a silly file
-          # ../a.txt is a silly file
-          # ../runtime.tar.gz is a silly file
-          # public/coverage is a silly file
-          # public/cypress.html is a silly file
-          # public/sandbox is a silly file
-
-          cat <<EOF > k.sh
-          for thing in "\$@"
-          do
-              echo you typed \${thing}.
-          done
-          EOF
-          chmod a+x k.sh
-          ./k.sh a b c "d e" -- "f g" h
-          # you typed a.
-          # you typed b.
-          # you typed c.
-          # you typed d e.
-          # you typed --.
-          # you typed f g.
-          # you typed h.
-        </script>
         <h2>multiline iterate foreach over file over stream</h2>
 
         <script type="editor" data-lang="sh">
