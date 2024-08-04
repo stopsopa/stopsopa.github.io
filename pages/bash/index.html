@@ -404,11 +404,11 @@
             # pick choose by number from the list
             SSHS="$(echo "${_LIST}" | sed -n "${i} p")"
 
-            # basename and file extension
-            PD="$(dirname "${FILE}")"
-            PB="$(basename "${FILE}")"
-            EXTENSION="${PB##*.}"
-            FILENAME="${PB%.*}"
+            # basename and file extension, example FILE="abcdef/ghi/MY_FILE.TXT"
+            PD="$(dirname "${FILE}")"         # abcdef/ghi
+            PB="$(basename "${FILE}")"        # MY_FILE.TXT
+            EXTENSION="${PB##*.}"             # TXT
+            FILENAME="${PB%.*}"               # MY_FILE
             if [ "${FILENAME}" = "" ]; then
                 FILENAME="${PB}"
                 EXTENSION=""
@@ -416,7 +416,7 @@
             if [ "${FILENAME}" = "${PB}" ]; then
                 EXTENSION=""
             fi
-            EXTENSION="$(echo -n "$EXTENSION" | tr '[:upper:]' '[:lower:]')"
+            EXTENSION_LOWER="$(echo -n "$EXTENSION" | tr '[:upper:]' '[:lower:]')"  # txt
 
             # extracting unique extensions from directory: --------------- vvv
               # grep here is needed because awk -F ... can't really handle well paths to files without extension
