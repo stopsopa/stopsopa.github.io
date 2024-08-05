@@ -198,7 +198,18 @@
         <h2>generate .p12 from .key and .crt</h2>
         <script type="editor" data-lang="sh">
 
-          openssl pkcs12 -export -inkey domain.key -in domain.key.crt -out domain.key.p12
+          openssl pkcs12 -export \
+            -inkey domain.key \
+            -in domain.key.crt \
+            -name domain.key > domain.key.p12
+
+          # it will ask for passwords:
+          Enter Export Password:
+          Verifying - Enter Export Password:
+
+          # provide the password expected in the app
+                keystorePath: ${json.SENSITIVE_CONFIG_PATH}
+                keystorePassword: XXXX
           
         </script>
         
