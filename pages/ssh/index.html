@@ -195,6 +195,13 @@
 
           # from: https://www.baeldung.com/linux/openssl-extract-certificate-info#1-extracting-the-subject
         </script>
+        <h2>generate .p12 from .key and .crt</h2>
+        <script type="editor" data-lang="sh">
+
+          openssl pkcs12 -export -inkey domain.key -in domain.key.crt -out domain.key.p12
+          
+        </script>
+        
         <h2>execute inline HEREDOC</h2>
         <script type="editor" data-lang="sh">
 
