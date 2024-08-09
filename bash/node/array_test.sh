@@ -4,6 +4,7 @@
 # chokidar bash/node/*.* --initial -c '/bin/bash bash/node/array_test.sh'
 # 
 # /bin/bash bash/node/array_test.sh
+# NODE_OPTIONS="" /bin/bash bash/node/array_test.sh
 # 
 
 # 
@@ -116,18 +117,85 @@ EXPECTED_CODE="0"
 test "fifteen";
 # testing iteration ^^^
 
+
+
+# testing decrement vvv
+echo 'abcdefcghi' | node bash/node/array.js --group test --block decrement --split "/c/g" --save
+
+COMMAND="node bash/node/array.js --group test --block decrement  --value"
+EXPECTED_STDOUT="ab"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "four";
+
+COMMAND="node bash/node/array.js --group test --block decrement  --hasNext"
+EXPECTED_STDOUT="true"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "siz";
+
+COMMAND="node bash/node/array.js --group test --block decrement  --increment --v"
+EXPECTED_STDOUT="Saved files >_array_test_decrement_index.json<
+1"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "seven";
+
+COMMAND="node bash/node/array.js --group test --block decrement  --value"
+EXPECTED_STDOUT="def"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "decrement def";
+
+COMMAND="node bash/node/array.js --group test --block decrement  --hasPrev"
+EXPECTED_STDOUT="true"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "hasPrev expected true";
+
+COMMAND="node bash/node/array.js --group test --block decrement  --decrement --v"
+EXPECTED_STDOUT="Saved files >_array_test_decrement_index.json<
+0"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "seven";
+
+COMMAND="node bash/node/array.js --group test --block decrement  --value"
+EXPECTED_STDOUT="ab"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "decrement ab again";
+
+COMMAND="node bash/node/array.js --group test --block decrement  --decrement --v"
+EXPECTED_STDOUT="array.js error: decrement >1< from index >0< will result in negative index >-1<"
+EXPECTED_STDERR=""
+EXPECTED_CODE="1"
+test "seven";
+
+COMMAND="node bash/node/array.js --group test --block decrement  --hasPrev"
+EXPECTED_STDOUT="false"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "hasPrev expected false";
+
+
+# testing decrement ^^^
+
+GROUP="test"
+BLOCK="iteration"
+PARAMS="--group ${GROUP} --block ${BLOCK}"
 I="0"
-echo 'abcdefcghi' | node bash/node/array.js --split "/c/g" --save --group test --block iteration
-while [ "$(node bash/node/array.js --group test --block iteration --has)" = "true" ]; do
+echo 'abcdefcghi' | node bash/node/array.js ${PARAMS} --split "/c/g" --save
+while [ "$(node bash/node/array.js ${PARAMS} --has)" = "true" ]; do
     I=$((I+1))
 
-    COMMAND="node bash/node/array.js --group test --block iteration --index"
+    COMMAND="node bash/node/array.js ${PARAMS} --index"
     EXPECTED_STDOUT="$((I - 1))"
     EXPECTED_STDERR=""
     EXPECTED_CODE="0"
     test "index-${I}";
 
-    COMMAND="node bash/node/array.js --group test --block iteration --value"
+    COMMAND="node bash/node/array.js ${PARAMS} --value"
     EXPECTED_STDERR=""
     case $I in
         1)
@@ -144,7 +212,7 @@ while [ "$(node bash/node/array.js --group test --block iteration --has)" = "tru
     EXPECTED_CODE="0"
     test "iteration-${I}";
 
-    node bash/node/array.js --group test --block iteration --increment
+    node bash/node/array.js ${PARAMS} --increment
 done
 
 

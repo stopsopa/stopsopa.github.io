@@ -19,7 +19,6 @@ const Storage = {
   filename: function (group, block, origin, thw = false) {
     const block_processed = block.replace(reg, "_");
 
-
     if (!block_processed.trim()) {
       error(
         `${origin}: group >${group}< after processing turns to empty string`,
@@ -262,8 +261,14 @@ Example: --boolfilter
 --hasNext: Checks if there is a next element in the iteration block.
 Example: --hasNext
 
+--hasPrev: Checks if there is a previous element in the iteration block.
+Example: --hasPrev
+
 --increment: Moves to the next element in the iteration block.
 Example: --increment [inc:def 1]
+
+--decrement: Moves to the previous element in the iteration block.
+Example: --decrement [inc:def 1]
 
 --index: Outputs the current index in the iteration block.
 Example: --index
@@ -329,6 +334,18 @@ Example: --value
     }
   }
 
+  if (args.get("hasPrev")) {
+    const { array, index } = await getInput("hasPrev");
+
+    const next = index - 1;
+
+    if (array[next]) {
+      process.stdout.write("true");
+    } else {
+      process.stdout.write("false");
+    }
+  }
+
   if (args.get("value")) {
     const { array, index } = await getInput("value");
 
@@ -356,6 +373,26 @@ Example: --value
 
     if (args.get("v")) {
       process.stdout.write(String(next));
+    }
+  }
+
+  if (args.get("decrement")) {
+    const { index } = await getInput("decrement");
+
+    let decrement = argInt("decrement", 1, "decrement");
+
+    const prev = index - decrement;
+
+    if (prev >= 0) {
+      saveIndex(prev);
+
+      if (args.get("v")) {
+        process.stdout.write(String(prev));
+      }
+    } else {
+      error(
+        `decrement >${decrement}< from index >${index}< will result in negative index >${prev}<`
+      );
     }
   }
 })();
