@@ -57,6 +57,22 @@
           // or
 
           NODE_OPTIONS="" node script.js
+
+          # -- trick to enable for a while
+          # run just once in vscode
+            export NODE_OPTIONS_TMP="${NODE_OPTIONS}"
+
+          # then somewhere in your /bin/bash my_script.sh          
+            export NODE_OPTIONS="${NODE_OPTIONS_TMP}"
+            COMMAND="node bash/node/array.js --group test --block iteration --index"
+            EXPECTED_STDOUT="0"
+            EXPECTED_STDERR=""
+            EXPECTED_CODE="0"
+            test "check index after end";
+            export NODE_OPTIONS=""
+
+          # and carry on with your stuff
+          
         </script>
         <h2>UMD (Universal Module Definition)</h2>
         <a href="https://github.com/umdjs/umd#tooling">https://github.com/umdjs/umd#tooling</a>
