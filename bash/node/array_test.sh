@@ -1,7 +1,10 @@
 #
+# run first:
+#   export NODE_OPTIONS_TMP="${NODE_OPTIONS}"
+#
 # npm install -g chokidar
 # npm install -g chokidar-cli
-# chokidar bash/node/*.* --initial -c '/bin/bash bash/node/array_test.sh'
+# NODE_OPTIONS="" chokidar bash/node/*.* --initial -c '/bin/bash bash/node/array_test.sh'
 # 
 # /bin/bash bash/node/array_test.sh
 # NODE_OPTIONS="" /bin/bash bash/node/array_test.sh
@@ -46,6 +49,12 @@ test "error1";
 
 # testing iteration vvv
 echo 'abcdefcghi' | node bash/node/array.js --split "/c/g" --save --group test --block iteration
+
+COMMAND="node bash/node/array.js --group test --block iteration --index"
+EXPECTED_STDOUT="0"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "first read index";
 
 COMMAND="node bash/node/array.js --group test --block iteration --value"
 EXPECTED_STDOUT="ab"
@@ -115,6 +124,53 @@ EXPECTED_STDOUT="3"
 EXPECTED_STDERR=""
 EXPECTED_CODE="0"
 test "fifteen";
+
+COMMAND="node bash/node/array.js --group test --block iteration --index"
+EXPECTED_STDOUT="3"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "check index at the end";
+
+COMMAND="node bash/node/array.js --group test --block iteration --home --v"
+EXPECTED_STDOUT="Saved files >_array_test_iteration_index.json<
+0"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "move to home";
+
+COMMAND="node bash/node/array.js --group test --block iteration --index"
+EXPECTED_STDOUT="0"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "check index after home";
+
+COMMAND="node bash/node/array.js --group test --block iteration --value"
+EXPECTED_STDOUT="ab"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "get value after home";
+
+
+COMMAND="node bash/node/array.js --group test --block iteration --end --v"
+EXPECTED_STDOUT="Saved files >_array_test_iteration_index.json<
+2"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "move to end";
+
+COMMAND="node bash/node/array.js --group test --block iteration --index"
+EXPECTED_STDOUT="2"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "check index after end";
+
+COMMAND="node bash/node/array.js --group test --block iteration --value"
+EXPECTED_STDOUT="ghi"
+EXPECTED_STDERR=""
+EXPECTED_CODE="0"
+test "get value after end";
+
+
 # testing iteration ^^^
 
 

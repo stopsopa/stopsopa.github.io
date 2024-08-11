@@ -1,7 +1,5 @@
 const path = require("path");
 
-const fs = require("fs");
-
 const script = path.relative(process.cwd(), __filename);
 
 const th = (msg) => new Error(`${script} error: ${msg}`);

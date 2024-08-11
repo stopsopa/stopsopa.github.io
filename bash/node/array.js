@@ -395,6 +395,28 @@ Example: --value
       );
     }
   }
+
+  if (args.get("home")) {
+    const { index } = await getInput("home");
+
+    saveIndex(0);
+
+    if (args.get("v")) {
+      process.stdout.write(String(0));
+    }
+  }
+
+  if (args.get("end")) {
+    const { array } = await getInput("end");
+
+    const index = array.length - 1;
+
+    saveIndex(index);
+
+    if (args.get("v")) {
+      process.stdout.write(String(index));
+    }
+  }
 })();
 
 function getRegexDelimiter(origin, thw = false) {
