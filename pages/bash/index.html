@@ -1680,6 +1680,9 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             find -E NUC_source/ -type f -regex ".*\.(jpg|jpeg|JPG|png|PNG|HEIC|heic)$"
           # on mac case sensitive
             find -E NUC_source/ -type f -regex ".*\.(jpg|jpeg|png|heic)$"
+
+          # for mac alternatively
+            find NUC_source/ -type f | grep -iE ".*\.(jpg|jpeg|png|gif|heic|gif)$"
           
           # on linux case sensitive
             find source/ -type f -regextype posix-extended -iregex ".*\.(jpg|jpeg|JPG|png|PNG|HEIC|heic)$"
