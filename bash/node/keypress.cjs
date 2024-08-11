@@ -1,3 +1,6 @@
+/**
+ * Nice example of usage of this library is in the file: https://github.com/stopsopa/gphotos-research/blob/master/tools/hash-assist.sh
+ */
 const path = require("path");
 
 const script = path.relative(process.cwd(), __filename);
