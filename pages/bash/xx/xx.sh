@@ -486,7 +486,9 @@ EEE
     else
 
         # shift is needed to properly pass down parameters ${1}, ${2}, ${3} etc.
-        shift;
+        if [ $# -gt 0 ]; then
+            shift
+        fi
         if [ "${EXECUTEUSING_SOURCE}" = "1" ]; then
             # echo 'source block'
             source "${XX_GENERATED}" "${@}"
