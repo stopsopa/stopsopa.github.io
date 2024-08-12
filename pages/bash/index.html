@@ -558,7 +558,12 @@
 
 
 
-
+            if [ $# -gt 0 ]; then
+                shift
+                # to prevent:
+                # run:shift:386: shift count must be <= $#
+            fi
+            
 
 
 
