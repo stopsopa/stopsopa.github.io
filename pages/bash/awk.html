@@ -25,7 +25,7 @@
 
 
           # -------------- WARNING EDGE CASE -------------------- VVV
-          cat <<EEE | awk '{print $9}' 
+          cat <<EEE | awk '{print $9}'
           -rw-r--r-- 1 simon simon 913K Jul  9 12:45 'source/golgle/Takeout/big/Photos_from_2013/WP_000308 (2).jpg'
           -rw-r--r-- 1 simon simon 875K Jul  9 12:42 'source/golgle/Takeout/big/Photos_from_2013/WP_000302 (2).jpg'
           -rw-r--r-- 1 simon simon 803K Jul  9 12:43 'source/golgle/Takeout/big/Photos_from_2013/WP_000278 (2).jpg'
@@ -33,11 +33,11 @@
           -rw-r--r-- 1 simon simon 575K Jul  9 12:46 'source/golgle/Takeout/big/Photos_from_2013/WP_000279 (2).jpg'
           -rw-r--r-- 1 simon simon 411K Jul  9 12:42 'source/golgle/Takeout/big/Photos_from_2013/WP_000286 (2).jpg'
           EEE
-          
-          # this will cut to 
+
+          # this will cut to
           'source/golgle/Takeout/big/Photos_from_2013/WP_000302
               # where is the rest???
-          
+
           cat <<EEE | awk '{for (i=9; i<=NF; i++) printf "%s%s", $i, (i<NF ? OFS : ORS)}'
           -rw-r--r-- 1 simon simon 913K Jul  9 12:45 'source/golgle/Takeout/big/Photos_from_2013/WP_000308 (2).jpg'
           -rw-r--r-- 1 simon simon 875K Jul  9 12:42 'source/golgle/Takeout/big/Photos_from_2013/WP_000302 (2).jpg'
@@ -48,7 +48,7 @@
           EEE
              # this will do the job
           # -------------- WARNING EDGE CASE -------------------- ^^^
-          
+
           # print last segment
           echo "one two three four six"  | awk '{ print $NF }'
           # will print

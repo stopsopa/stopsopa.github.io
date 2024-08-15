@@ -22,24 +22,24 @@
         <script type="editor" data-lang="sh">
 
           Instalacja imagemagick jest dosyć upierdliwa, na przyklad format HEIC nie jest dostępny przy standardowej procedurze instalcji jak tutaj:
-          
+
 
             sudo apt -y install build-essential make gcc
             sudo apt -y install libx11-dev libxext-dev zlib1g-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev
 
             # some addition document with help to install ImageMagick:
             https://www.joelotz.com/blog/2022/building-imagemagick-71-with-heic-support-from-source.html
-            # and also for ubuntu 22.04 jammy   
-          
+            # and also for ubuntu 22.04 jammy
+
               mkdir imei
               cd imei
               git clone git@github.com:SoftCreatR/imei.git .
               git fetch --tags
-              git switch -c 6.11.2 
+              git switch -c 6.11.2
               chmod +x imei.sh
               sudo /bin/bash imei.sh
               # solution made due to the issue: https://github.com/SoftCreatR/imei/issues/117
-            
+
 
             cd
             mkdir imagick

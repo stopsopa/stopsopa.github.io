@@ -14,7 +14,7 @@
       <div class="inside">
         <h2>example</h2>
         <script type="editor" data-lang="sh">
-          
+
           query ExampleQuery($teamId: ID!) {
             workflowStates(filter: { team: { id: { eq: $teamId } } }) {
               nodes {
@@ -33,7 +33,7 @@
 
           #---------------
 
-          query fetchIssue($linearLabelName: String!, $excludeState: String!) { 
+          query fetchIssue($linearLabelName: String!, $excludeState: String!) {
             issues (filter: {
               and: [
                 {labels: {name: {eq: $linearLabelName}}},
@@ -42,14 +42,14 @@
             }) {
               nodes {
                 id,
-                description,   
+                description,
                 state {
                   id,
                   name
-                }      
-              }    
-            } 
-          }          
+                }
+              }
+            }
+          }
           with params Variables:
           {
             "teamId": "6f0d1667-97e5-4d0c-beb8-41b4adb2511d",
@@ -62,7 +62,7 @@
             issueLabels(filter: {and: [{team: {id: {eq: $teamId}}}, {name: {eq: $linearLabelName}}]}){nodes{id,name}}
           }
 
-          query fetchIssue($linearLabelName: String!, $excludeState: String!) { 
+          query fetchIssue($linearLabelName: String!, $excludeState: String!) {
             issues (filter: {
               and: [
                 {labels: {name: {eq: $linearLabelName}}},
@@ -71,15 +71,14 @@
             }) {
               nodes {
                 id,
-                description,   
+                description,
                 state {
                   id,
                   name
-                }      
-              }    
-            } 
+                }
+              }
+            }
           }
-          
         </script>
       </div>
     </div>

@@ -77,212 +77,212 @@
           </ul>
           <h2>interesting</h2>
           <a href="https://github.com/cgsdev0">https://github.com/cgsdev0</a>
-          
-        <h2>basics</h2>
-        <script type="editor" data-lang="sh">
 
-          function _date {
-              date "+%Y-%m-%d"
-          }
+          <h2>basics</h2>
+          <script type="editor" data-lang="sh">
 
-          function _time {
-              date "+%H-%M-%S"
-          }
-          date "+%Y_%m_%d_%H_%M_%S"
+            function _date {
+                date "+%Y-%m-%d"
+            }
 
-          // stdout stderr
-          set -e; _exit 1> /dev/null 2> /dev/null
+            function _time {
+                date "+%H-%M-%S"
+            }
+            date "+%Y_%m_%d_%H_%M_%S"
 
-          # output to stderr
-          echo John have a cat
-          echo Cat have a hiv>&2
+            // stdout stderr
+            set -e; _exit 1> /dev/null 2> /dev/null
 
-          ls -la 2>&1
+            # output to stderr
+            echo John have a cat
+            echo Cat have a hiv>&2
 
-
-          # on Mac
-          bash --version
-          GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin20)
-          Copyright (C) 2007 Free Software Foundation, Inc.
-
-          arch -arm64 brew install bash
-          $ more: https://itnext.io/upgrading-bash-on-macos-7138bd1066ba
-          # add to ~/.bashrc
-          export PATH="/bin:$PATH"
-          # to change back to bash v3
+            ls -la 2>&1
 
 
+            # on Mac
+            bash --version
+            GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin20)
+            Copyright (C) 2007 Free Software Foundation, Inc.
 
-          # -a FILE        True if file exists.
-          # -e FILE        True if file exists.
-          # -f FILE        True if file exists and is a regular file.
-          # -r FILE        True if file is readable by you.
-          # -s FILE        True if file exists and is not empty.
-          # -w FILE        True if the file is writable by you.
-
-          # Pathname Expansion
-          echo *s
-          # Documents Pictures Templates Videos
-
-          echo [[:upper:]]*
-          # Desktop Documents Music Pictures Public Templates Videos
-
-          echo /usr/*/share
-          # /usr/kerberos/share /usr/local/share
-
-          # Arithmetic Expansion
-          echo echo $(((5**2) * 3))
-          # 75
-
-          # Brace Expansion
-          echo Front-{A,B,C}-Back
-          # Front-A-Back Front-B-Back Front-C-Back
-
-          echo Number_{1..5}
-          # Number_1 Number_2 Number_3 Number_4 Number_5
-
-          echo {Z..A}
-          # Z Y X W V U T S R Q P O N M L K J I H G F E D C B A
-
-          echo {2017..2019}-{09..12}
-          # mac   : 2017-9 2017-10 2017-11 2017-12 2018-9 2018-10 2018-11 2018-12 2019-9 2019-10 2019-11 2019-12
-          # linux : 2017-09 2017-10 2017-11 2017-12 2018-09 2018-10 2018-11 2018-12 2019-09 2019-10 2019-11 2019-12
-
-          echo $(cal)
-          # May 2021 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-
-          echo "$(cal)"
-          #       May 2021
-          # Mo Tu We Th Fr Sa Su
-          #                 1  2
-          #  3  4  5  6  7  8  9
-          # 10 11 12 13 14 15 16
-          # 17 18 19 20 21 22 23
-          # 24 25 26 27 28 29 30
-          # 31
-
-          # https://www.funtoo.org/Bash_by_Example,_Part_1
-          # variable expansion functionality - Chopping strings like a pro
-
-          # IN OTHER WORDS THIS SYNTAX IS FOCUSED ON CHOPPING OFF
-          # NOT IN MATCHING AND RETURNING MATCHES BUT CHOPPING THEM OFF AND RETURNING THE REST
-
-          $ MYVAR=foodforthought.jpg
-          $ echo ${MYVAR##*fo} # cut to the LAST occurence (CUTS INCLUSIVE) CHOPPING GREEDY - LONGEST POSSIBLE MATCH
-          rthought.jpg
-          $ echo ${MYVAR#*fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
-          odforthought.jpg
-
-          # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
-          # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
-          # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
-
-          $ echo ${MYVAR#*Fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
-          foodforthought.jpg
-
-          # TIP/MNEMONIC: look on the keyboard the character $ which is bash variable expansion character
-          # on the left is # so it is for chopping from the beginning
-          # on the right is % so it is for chopping from the end
-
-          # cut string ------ vvv
-          $ MYFOO="chickensoup.tar.gz"
-          $ echo ${MYFOO%%.*} # cut longest possible from the end - GREEDY
-          chickensoup
-          $ echo ${MYFOO%.*} # cut shortest possible from the end - NON GREEDY
-          chickensoup.tar
-
-          TTT="../google/takesomething/"
-          # Remove the trailing slash if it exists
-          TTT="${TTT%/}"          
-          echo "$TTT"
-          # cut string ------ ^^^
-
-          # variable expansion based on a specific character offset and length
-          $ EXCLAIM=cowabungazd
-          #         12345678901
-          $ echo ${EXCLAIM:0:3}
-          cow
-          $ echo ${EXCLAIM:3:7}
-          abungaz
-          $ echo ${EXCLAIM:3:17}
-          abungazd
-
-          # default value
-          ${FRANKY:=Franky}
-
-          # IF ELSE FI
-          if [ condition ]
-          then
-                  action
-          elif [ condition2 ]
-          then
-                  action2
-          .
-          .
-          .
-          elif [ condition3 ]
-          then
-
-          else
-                  actionx
-          fi
-
-          # LOOP FOR
-          for x in one two three four "six seven"
-          do
-              echo number $x
-          done
-          # number one
-          # number two
-          # number three
-          # number four
-          # number six seven
+            arch -arm64 brew install bash
+            $ more: https://itnext.io/upgrading-bash-on-macos-7138bd1066ba
+            # add to ~/.bashrc
+            export PATH="/bin:$PATH"
+            # to change back to bash v3
 
 
-          for myfile in /etc/r* /tmp/${MYPATH}/*
-          do
-              if [ -d "$myfile" ]
-              then
-                echo "$myfile (dir)"
-              else
-                echo "$myfile"
-              fi
-          done
-          # /etc/racoon (dir)
-          # /etc/rc.common
-          # /etc/rc.netboot
-          # /etc/resolv.conf
-          # /etc/rmtab
-          # /etc/rpc
-          # /etc/rtadvd.conf
-          # ../a.sh is a silly file
-          # ../a.txt is a silly file
-          # ../runtime.tar.gz is a silly file
-          # public/coverage is a silly file
-          # public/cypress.html is a silly file
-          # public/sandbox is a silly file
 
-          cat <<EOF > k.sh
-          for thing in "\$@"
-          do
-              echo you typed \${thing}.
-          done
-          EOF
-          chmod a+x k.sh
-          ./k.sh a b c "d e" -- "f g" h
-          # you typed a.
-          # you typed b.
-          # you typed c.
-          # you typed d e.
-          # you typed --.
-          # you typed f g.
-          # you typed h.
-        </script>
+            # -a FILE        True if file exists.
+            # -e FILE        True if file exists.
+            # -f FILE        True if file exists and is a regular file.
+            # -r FILE        True if file is readable by you.
+            # -s FILE        True if file exists and is not empty.
+            # -w FILE        True if the file is writable by you.
+
+            # Pathname Expansion
+            echo *s
+            # Documents Pictures Templates Videos
+
+            echo [[:upper:]]*
+            # Desktop Documents Music Pictures Public Templates Videos
+
+            echo /usr/*/share
+            # /usr/kerberos/share /usr/local/share
+
+            # Arithmetic Expansion
+            echo echo $(((5**2) * 3))
+            # 75
+
+            # Brace Expansion
+            echo Front-{A,B,C}-Back
+            # Front-A-Back Front-B-Back Front-C-Back
+
+            echo Number_{1..5}
+            # Number_1 Number_2 Number_3 Number_4 Number_5
+
+            echo {Z..A}
+            # Z Y X W V U T S R Q P O N M L K J I H G F E D C B A
+
+            echo {2017..2019}-{09..12}
+            # mac   : 2017-9 2017-10 2017-11 2017-12 2018-9 2018-10 2018-11 2018-12 2019-9 2019-10 2019-11 2019-12
+            # linux : 2017-09 2017-10 2017-11 2017-12 2018-09 2018-10 2018-11 2018-12 2019-09 2019-10 2019-11 2019-12
+
+            echo $(cal)
+            # May 2021 Mo Tu We Th Fr Sa Su 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+
+            echo "$(cal)"
+            #       May 2021
+            # Mo Tu We Th Fr Sa Su
+            #                 1  2
+            #  3  4  5  6  7  8  9
+            # 10 11 12 13 14 15 16
+            # 17 18 19 20 21 22 23
+            # 24 25 26 27 28 29 30
+            # 31
+
+            # https://www.funtoo.org/Bash_by_Example,_Part_1
+            # variable expansion functionality - Chopping strings like a pro
+
+            # IN OTHER WORDS THIS SYNTAX IS FOCUSED ON CHOPPING OFF
+            # NOT IN MATCHING AND RETURNING MATCHES BUT CHOPPING THEM OFF AND RETURNING THE REST
+
+            $ MYVAR=foodforthought.jpg
+            $ echo ${MYVAR##*fo} # cut to the LAST occurence (CUTS INCLUSIVE) CHOPPING GREEDY - LONGEST POSSIBLE MATCH
+            rthought.jpg
+            $ echo ${MYVAR#*fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
+            odforthought.jpg
+
+            # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+            # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+            # WARNING: BOTH # AND % ARE CASE SENSITIVE !!!!
+
+            $ echo ${MYVAR#*Fo} # cut to the FIRST occurence (CUTS INCLUSIVE) NOT GREEDY - SHORTEST POSSIBLE MATCH
+            foodforthought.jpg
+
+            # TIP/MNEMONIC: look on the keyboard the character $ which is bash variable expansion character
+            # on the left is # so it is for chopping from the beginning
+            # on the right is % so it is for chopping from the end
+
+            # cut string ------ vvv
+            $ MYFOO="chickensoup.tar.gz"
+            $ echo ${MYFOO%%.*} # cut longest possible from the end - GREEDY
+            chickensoup
+            $ echo ${MYFOO%.*} # cut shortest possible from the end - NON GREEDY
+            chickensoup.tar
+
+            TTT="../google/takesomething/"
+            # Remove the trailing slash if it exists
+            TTT="${TTT%/}"
+            echo "$TTT"
+            # cut string ------ ^^^
+
+            # variable expansion based on a specific character offset and length
+            $ EXCLAIM=cowabungazd
+            #         12345678901
+            $ echo ${EXCLAIM:0:3}
+            cow
+            $ echo ${EXCLAIM:3:7}
+            abungaz
+            $ echo ${EXCLAIM:3:17}
+            abungazd
+
+            # default value
+            ${FRANKY:=Franky}
+
+            # IF ELSE FI
+            if [ condition ]
+            then
+                    action
+            elif [ condition2 ]
+            then
+                    action2
+            .
+            .
+            .
+            elif [ condition3 ]
+            then
+
+            else
+                    actionx
+            fi
+
+            # LOOP FOR
+            for x in one two three four "six seven"
+            do
+                echo number $x
+            done
+            # number one
+            # number two
+            # number three
+            # number four
+            # number six seven
+
+
+            for myfile in /etc/r* /tmp/${MYPATH}/*
+            do
+                if [ -d "$myfile" ]
+                then
+                  echo "$myfile (dir)"
+                else
+                  echo "$myfile"
+                fi
+            done
+            # /etc/racoon (dir)
+            # /etc/rc.common
+            # /etc/rc.netboot
+            # /etc/resolv.conf
+            # /etc/rmtab
+            # /etc/rpc
+            # /etc/rtadvd.conf
+            # ../a.sh is a silly file
+            # ../a.txt is a silly file
+            # ../runtime.tar.gz is a silly file
+            # public/coverage is a silly file
+            # public/cypress.html is a silly file
+            # public/sandbox is a silly file
+
+            cat <<EOF > k.sh
+            for thing in "\$@"
+            do
+                echo you typed \${thing}.
+            done
+            EOF
+            chmod a+x k.sh
+            ./k.sh a b c "d e" -- "f g" h
+            # you typed a.
+            # you typed b.
+            # you typed c.
+            # you typed d e.
+            # you typed --.
+            # you typed f g.
+            # you typed h.
+          </script>
           <h2>useful</h2>
           <script type="editor" data-lang="sh">
             #!/usr/bin/env bash
 
-            
+
             # fix variables in ide
             WEBSTORM:
             (?<!\\)(?<!\{\s*print\s)\$([a-zA-Z_\d+]+|[\d+\*#\?@$\!-])
@@ -292,7 +292,7 @@
             \$([A-Za-z_\d!]+)
             ${$1}
 
-            
+
             if [ "${PROCESS_WITH_PARALLEL_LOG}" = "" ]; then
                 echo "${0} 🚨 PROCESS_WITH_PARALLEL_LOG is not defined"
                 exit 1
@@ -563,7 +563,7 @@
                 # to prevent:
                 # run:shift:386: shift count must be <= $#
             fi
-            
+
 
 
 
@@ -747,9 +747,9 @@
           </script>
 
           <h2>remove/replace lines from special value to special value</h2>
-          
+
           <script type="editor" data-lang="sh">
-            
+
             cat <<EEE | sed '/REMOVEFROMHRE/,/TOHERE/d'
             a
             b
@@ -772,7 +772,7 @@
             EEE
 
 
-            
+
             NUC_NODE_DIR="/home/sd/nuc_small/node"
             cat <<EEE | sed "s|${NUC_NODE_DIR}|__NUC_NODE_DIR__REPLACED__|g"
             rm -rf /home/sd/nuc_small/node/samples/heic/IMG_2558.jpg
@@ -780,7 +780,6 @@
             ls /home/sd/nuc_small/node/samples/heic/IMG_2558.jpg
             rm -rf /home/sd/nuc_small/node/samples/heic/IMG_2558.jpg
             EEE
-            
           </script>
           <h2>random</h2>
           <script type="editor" data-lang="sh">
@@ -1014,9 +1013,13 @@
           fi
         </script>
         <h2>test.sh</h2>
-        <a href="https://github.com/stopsopa/gphotos-research/blob/master/bash/test.sh">https://github.com/stopsopa/gphotos-research/blob/master/bash/test.sh</a>
+        <a href="https://github.com/stopsopa/gphotos-research/blob/master/bash/test.sh"
+          >https://github.com/stopsopa/gphotos-research/blob/master/bash/test.sh</a
+        >
         <br />
-        <a href="https://github.com/stopsopa/gphotos-research/blob/master/bash/node/bash_array_test.sh">https://github.com/stopsopa/gphotos-research/blob/master/bash/node/bash_array_test.sh</a>
+        <a href="https://github.com/stopsopa/gphotos-research/blob/master/bash/node/bash_array_test.sh"
+          >https://github.com/stopsopa/gphotos-research/blob/master/bash/node/bash_array_test.sh</a
+        >
         <h2>vim</h2>
 
         <script type="editor" data-lang="sh">
@@ -1403,7 +1406,7 @@
 
           # grep filter replace
           echo "google/Takeout/Untitled(272)" | perl -pe 's#[^a-z\d/]+#__#gi' # will print >google/Takeout/Untitled__272__<
-          
+
           echo "  AccessKeyId: sfreteree" | sed -E 's/^[[:space:]]+AccessKeyId:[[:space:]]+(.*)\$/\1/g'
           #cat <<EEE | grep -i -E '^settings_[a-z_\-]+\.xml$' | sed -E 's/^settings_([a-z_-]+).xml$/\1/g'
           cat <<EEE | grep -i -E '^settings_[a-z_\-]+\.xml$' | perl -pe 's#^settings_([a-z_-]+).xml$#\1#g'
@@ -1553,7 +1556,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           find source/ -type f \( -name "*.mov" -o -name "*.mp4" \) -print0 | xargs -0 ls -lSh
             # this will find list and pass it to xargs and xargs will pass it down to ls -lSh
             # but when find doesn't list anything then ls -lSh will be called without argument
-            # in that case ls will list content of CURRENT directory, which might be 
+            # in that case ls will list content of CURRENT directory, which might be
             # terrible in it's consequences when processed further with pipe
 
           # to prevent that use -r with xargs
@@ -1565,8 +1568,8 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           find ttt -type f -print0 | xargs -0 ls -lSh
             # see, this is not good, but then add -r and problem dissapears
           find ttt -type f -print0 | xargs -r -0 ls -lSh
-            # even exit code is good now (even when set -o pipefail enabled- yes I've checked that too)                      
-          
+            # even exit code is good now (even when set -o pipefail enabled- yes I've checked that too)
+
           # --- warning ---- ^^^
 
           # https://shapeshed.com/unix-xargs/
@@ -1688,7 +1691,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
           # for mac alternatively
             find NUC_source/ -type f | grep -iE ".*\.(jpg|jpeg|png|gif|heic|gif)$"
-          
+
           # on linux case sensitive
             find source/ -type f -regextype posix-extended -iregex ".*\.(jpg|jpeg|JPG|png|PNG|HEIC|heic)$"
           # on linux case insensitive
@@ -1707,7 +1710,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             find source/ -type f -print0 | xargs -r -0 ls -lht
               # -t     sort by time, newest first
 
-          
+
 
           # remove all directories except one
           # mindepth 1 is here to skip listing . [dot] - current directory
@@ -1854,36 +1857,36 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           # content of the file named run.sh -------------------- vvvv
           # run just once to see if script itself is working
           # TOTAL=1 PROCESS_WITH_PARALLEL_LOG=parallel.log /bin/bash run.sh 1 run.sh
-          # 
-          
+          #
+
           # Added at the beginning of the script redirect all stderr to stdout globally for this script
           # In other words: script will not output to stderr at all, but whatever it would normally output to stderr it will stderr to stdout
           # this is needed here because parallel is buffering stdout and stderr of individual execitons
           # and then dumps stdout first and after that stderr
           # so natural order will not be maintained
-          exec 2>&1          
+          exec 2>&1
           ITERATION="${1}"
-          FILE="${2}"          
+          FILE="${2}"
           if [ "${ITERATION}" = "" ]; then
               echo "${0} 🚨 ITERATION is not defined"
               exit 1
           fi
-          
+
           if [ "${TOTAL}" = "" ]; then
               echo "${0} 🚨 TOTAL is not defined"
               exit 1
           fi
-          
+
           if [ "${PROCESS_WITH_PARALLEL_LOG}" = "" ]; then
               echo "${0} 🚨 PROCESS_WITH_PARALLEL_LOG is not defined"
               exit 1
           fi
-          
+
           MAX="$((3 + ${ITERATION}))"
           if [ "${MAX}" -ge "7" ]; then
               MAX="7"
           fi
-          
+
           echo "🏷    ${ITERATION}/${TOTAL} ━━━━ $(date "+%Y-%m-%d %H:%M:%S") START ━┓ ${FILE}" >> "${PROCESS_WITH_PARALLEL_LOG}"
           echo "┏━━━ ${ITERATION}/${TOTAL} ━━━━ RETURN ━┓ ${FILE}"
           cat <<EEE
@@ -1894,46 +1897,43 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           EEE
           ls -la "${FILE}"
           broken${ITERATION} command to see if error will be gathered too
-          
+
           R=$(awk -v min=1 -v max=${MAX} 'BEGIN{srand(); print min + rand() * (max-min)}' | xargs printf "%.1f")
           echo ${2} 1111 ${R}
           sleep ${R}
-          another${ITERATION} command 
+          another${ITERATION} command
           R=$(awk -v min=1 -v max=${MAX} 'BEGIN{srand(); print min + rand() * (max-min)}' | xargs printf "%.1f")
           echo ${2} 3333 end ${R}
           sleep ${R}
-          
+
           echo "┗━━━ ${ITERATION}/${TOTAL} ━━━━ RETURN ━┛ $(date "+%Y-%m-%d %H:%M:%S")"
-          
-          exit 0 
+
+          exit 0
           # content of the file named run.sh -------------------- ^^^^
-          
+
           # preparing - run just once
           mkdir testdir
           touch testdir/{a..e}.txt
           touch "testdir/cfile with spaces in its name.txt"
           find testdir/ -type f | sort
-          
+
           # final command with all it's parameters
           export TOTAL="$(find testdir -type f | wc -l | awk '{$1=$1};1')"
           export PROCESS_WITH_PARALLEL_LOG="parallel-$(date "+%Y_%m_%d_%H_%M_%S").log"
           export PROCESS_WITH_PARALLEL_LOG="parallel.log"
-          echo "" > "${PROCESS_WITH_PARALLEL_LOG}" 
+          echo "" > "${PROCESS_WITH_PARALLEL_LOG}"
           nohup /bin/bash -c "
           ITERATOR_CAN_BE_PASSED_ALSO_THIS_WAY={#} \
           find testdir -type f | sort | parallel -j 3 /bin/bash run.sh {#} \"{}\"
           " >> "${PROCESS_WITH_PARALLEL_LOG}" 2>&1 &
-          
+
           # then the only solution is to observe the file as a second command
           tail -f -n 200 parallel.log
-
-
-          
         </script>
         <h2>GNU Parallel - rush</h2>
-        
+
         <script type="editor" data-lang="sh">
-          
+
           # take latest and right architecture from: https://github.com/shenwei356/rush/releases
           set -e
           VERSION="v0.5.4"
@@ -1945,9 +1945,9 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           sudo chmod +x /usr/local/bin/rush
           rush --help
 
-          # then just change "parallel" to "rush" in the example above 
+          # then just change "parallel" to "rush" in the example above
 
-          # the only difference seems to be that {} have to be surrounded with 
+          # the only difference seems to be that {} have to be surrounded with
           export TOTAL="$(find testdir -type f | wc -l | awk '{$1=$1};1')"
           export PROCESS_WITH_PARALLEL_LOG="parallel-$(date "+%Y_%m_%d_%H_%M_%S").log"
           export PROCESS_WITH_PARALLEL_LOG="parallel.log"
@@ -1956,7 +1956,6 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           ITERATOR_CAN_BE_PASSED_ALSO_THIS_WAY={#} \
           find testdir -type f | sort | parallel -j 3 /bin/bash run.sh {#} '{}'
           " >> "${PROCESS_WITH_PARALLEL_LOG}" 2>&1 &
-
         </script>
         <h2>stdout stderr</h2>
         <script type="editor" data-lang="sh">
@@ -1968,7 +1967,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
              > >(RESULT_STDOUT=$(cat); typeset -p RESULT_STDOUT); RESULT_CODE=$?; typeset -p RESULT_CODE )"
           # from: https://stackoverflow.com/a/18086548
 
-          set -o 
+          set -o
             # to list all flags
 
           # Added at the beginning of the script redirect all stderr to stdout globally for this script
@@ -1976,19 +1975,19 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           exec 2>&1
           # set -e for outer shell
           set -e
-          set -o pipefail          
+          set -o pipefail
           (
             # set -e again for internal shell
             set -e
             # ...
           ) | node_modules/.bin/pino-pretty
-          
+
           set -x          # Expand and print each command before executing
           set -e          # Exit script immediately if any command returns a non-zero exit status.
           set -u # Exit script immediately if an undefined variable is used (e.g. echo "$UNDEFINED_ENV_VAR").
           set -o pipefail # more: https://buildkite.com/docs/pipelines/writing-build-scripts#configuring-bash
             # to turn back on set +o pipefail
-          
+
           shopt -s expand_aliases
             # from: https://unix.stackexchange.com/a/1498
 
@@ -2447,7 +2446,6 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           set -o allexport; source .different.env && python reset.py
           # or using alias
           set -o allexport; source .different.env && product_reset
-          
         </script>
         <h2>7zip</h2>
         <a href="/pages/mac/index.html#7zip">There is a section on the mac page</a>

@@ -111,12 +111,12 @@
             <jmxConfigurator />
             <include resource="org/springframework/boot/logging/logback/defaults.xml" />
             <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
-          
+
             <springProperty scope="context" name="rootLevel" source="logging.level.root" defaultValue="INFO"/>
             <springProperty scope="context" name="rootAppender" source="logging.appender.root" defaultValue="CONSOLE_JSON" />
             <springProperty scope="context" name="auditAppender" source="logging.appender.audit" defaultValue="CONSOLE_JSON" />
             <springProperty scope="context" name="payloadAppender" source="logging.appender.payload" defaultValue="CONSOLE_JSON" />
-          
+
             <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
               <encoder class="net.logstash.logback.encoder.LogstashEncoder">
                 <includeContext>false</includeContext>
@@ -126,30 +126,33 @@
                 </fieldNames>
               </encoder>
             </appender>
-          
+
             <logger name="...Repository" level="ALL" additivity="false">
               <appender-ref ref="${auditAppender}" />
             </logger>
-          
+
             <logger name="org.zalando.logbook.Logbook" level="ALL" additivity="false">
               <appender-ref ref="${payloadAppender}" />
             </logger>
-          
+
             <logger name="....file" level="INFO" />
-          
+
             <root level="${rootLevel}">
               <appender-ref ref="${rootAppender}" />
             </root>
           </configuration>
         </script>
 
-        # to                   
-        <springProperty scope="context" name="rootLevel" source="logging.level.root" defaultValue="INFO"/>
+        # to
+        <springProperty scope="context" name="rootLevel" source="logging.level.root" defaultValue="INFO" />
         <springProperty scope="context" name="rootAppender" source="logging.appender.root" defaultValue="CONSOLE" />
         <springProperty scope="context" name="auditAppender" source="logging.appender.audit" defaultValue="CONSOLE" />
-        <springProperty scope="context" name="payloadAppender" source="logging.appender.payload" defaultValue="CONSOLE" />
-
-          
+        <springProperty
+          scope="context"
+          name="payloadAppender"
+          source="logging.appender.payload"
+          defaultValue="CONSOLE"
+        />
       </div>
     </div>
     <script src="/js/github.js"></script>

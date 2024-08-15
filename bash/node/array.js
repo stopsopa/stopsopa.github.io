@@ -20,10 +20,7 @@ const Storage = {
     const block_processed = block.replace(reg, "_");
 
     if (!block_processed.trim()) {
-      error(
-        `${origin}: group >${group}< after processing turns to empty string`,
-        thw
-      );
+      error(`${origin}: group >${group}< after processing turns to empty string`, thw);
 
       process.exit(1);
     }
@@ -31,10 +28,7 @@ const Storage = {
     const group_processed = group.replace(reg, "_");
 
     if (!group_processed.trim()) {
-      error(
-        `${origin}: group >${group}< after processing turns to empty string`,
-        thw
-      );
+      error(`${origin}: group >${group}< after processing turns to empty string`, thw);
 
       process.exit(1);
     }
@@ -186,10 +180,7 @@ const getJsonFromFile = (function () {
     try {
       json = JSON.parse(content);
     } catch (e) {
-      error(
-        `getJsonFromFile: ${origin}: file >${file}< is not a valid JSON: ${e}`,
-        thw
-      );
+      error(`getJsonFromFile: ${origin}: file >${file}< is not a valid JSON: ${e}`, thw);
     }
 
     return (cache[file] = json);
@@ -287,9 +278,7 @@ Example: --value
 
     let inc = argInt("jsonAll", 0, "jsonAll");
 
-    process.stdout.write(
-      JSON.stringify({ array: filtered(array, "jsonAll"), index }, null, inc)
-    );
+    process.stdout.write(JSON.stringify({ array: filtered(array, "jsonAll"), index }, null, inc));
   }
 
   if (args.get("json")) {
@@ -390,9 +379,7 @@ Example: --value
         process.stdout.write(String(prev));
       }
     } else {
-      error(
-        `decrement >${decrement}< from index >${index}< will result in negative index >${prev}<`
-      );
+      error(`decrement >${decrement}< from index >${index}< will result in negative index >${prev}<`);
     }
   }
 

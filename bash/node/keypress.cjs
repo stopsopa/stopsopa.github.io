@@ -300,8 +300,7 @@ function keypress() {
 
   // Regexes used for ansi escape code splitting
   var metaKeyCodeRe = /^(?:\x1b)([a-zA-Z0-9])$/;
-  var functionKeyCodeRe =
-    /^(?:\x1b+)(O|N|\[|\[\[)(?:(\d+)(?:;(\d+))?([~^$])|(?:1;)?(\d+)?([a-zA-Z]))/;
+  var functionKeyCodeRe = /^(?:\x1b+)(O|N|\[|\[\[)(?:(\d+)(?:;(\d+))?([~^$])|(?:1;)?(\d+)?([a-zA-Z]))/;
 
   function emitKey(stream, s) {
     var ch,
@@ -333,12 +332,7 @@ function keypress() {
     } else if (s === "\t") {
       // tab
       key.name = "tab";
-    } else if (
-      s === "\b" ||
-      s === "\x7f" ||
-      s === "\x1b\x7f" ||
-      s === "\x1b\b"
-    ) {
+    } else if (s === "\b" || s === "\x7f" || s === "\x1b\x7f" || s === "\x1b\b") {
       // backspace or ctrl+h
       key.name = "backspace";
       key.meta = s.charAt(0) === "\x1b";
@@ -370,11 +364,7 @@ function keypress() {
 
       // reassemble the key code leaving out leading \x1b's,
       // the modifier key bitflag and any meaningless "1;" sequence
-      var code =
-          (parts[1] || "") +
-          (parts[2] || "") +
-          (parts[4] || "") +
-          (parts[6] || ""),
+      var code = (parts[1] || "") + (parts[2] || "") + (parts[4] || "") + (parts[6] || ""),
         modifier = (parts[3] || parts[5] || 1) - 1;
 
       // Parse the key modifier
