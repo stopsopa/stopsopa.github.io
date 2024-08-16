@@ -11341,8 +11341,12 @@ setup = Object.entries(setup).reduce((acc, [key, value]) => {
   if (command.confirm === false) {
     run = true;
   }
-  if (typeof command.confirm === "undefined" || command.confirm === true) {
-    run = await esm_default2({ message: `Run command?     ${c.r}${command.name}${c.reset}   ` });
+  if (process.env.XXCONFIRM === "false") {
+    run = true;
+  } else {
+    if (typeof command.confirm === "undefined" || command.confirm === true) {
+      run = await esm_default2({ message: `Run command?     ${c.r}${command.name}${c.reset}   ` });
+    }
   }
   fs.writeFileSync(XX_GENERATED, command.command);
   if (!run) {

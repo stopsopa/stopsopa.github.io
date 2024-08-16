@@ -251,12 +251,16 @@ setup = Object.entries(setup).reduce((acc, [key, value]) => {
     run = true;
   }
 
-  /**
-   * if flag confirm not specified or specified with value "true"
-   * then we ask for permission to run
-   */
-  if (typeof command.confirm === "undefined" || command.confirm === true) {
-    run = await confirm({ message: `Run command?     ${c.r}${command.name}${c.reset}   ` });
+  if (process.env.XXCONFIRM === "false") {
+    run = true;
+  } else {
+    /**
+     * if flag confirm not specified or specified with value "true"
+     * then we ask for permission to run
+     */
+    if (typeof command.confirm === "undefined" || command.confirm === true) {
+      run = await confirm({ message: `Run command?     ${c.r}${command.name}${c.reset}   ` });
+    }
   }
 
   fs.writeFileSync(XX_GENERATED, command.command);

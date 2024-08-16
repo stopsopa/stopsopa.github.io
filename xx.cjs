@@ -1,8 +1,5 @@
 // to install go to: https://stopsopa.github.io//pages/bash/index.html#xx
 
-// https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fbash%2Fxx%2Fxx-template.cjs
-// edit: https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/xx/xx-template.cjs
-
 // https://stopsopa.github.io/viewer.html?file=xx.cjs
 // edit: https://github.com/stopsopa/stopsopa.github.io/blob/master/xx.cjs
 // 🚀 -
@@ -14,6 +11,8 @@
 //    shopt -s expand_aliases && source ~/.bashrc
 // after that just do:
 //   xx <command_name>
+// to override confirm: true
+//   XXCONFIRM=false xx <command_name>
 
 module.exports = (setup) => {
   return {
@@ -46,7 +45,7 @@ export NODE_OPTIONS=""
 /bin/bash build.sh        
 `,
       description: `build is build`,
-      confirm: false,
+      confirm: true,
     },
     [`start`]: {
       command: `
