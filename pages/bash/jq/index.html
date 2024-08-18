@@ -12,6 +12,27 @@
   <body class="layout" toc>
     <div class="body">
       <div class="inside">
+        <h2>Assemble valid json using jq</h2>
+        
+        <script type="editor" data-lang="sh">
+
+COMMENT="autocom\" [] { : }
+
+mid
+
+ment"
+
+  # Create the JSON payload using jq to ensure proper escaping
+JSON_PAYLOAD=$(jq -n --arg issueId "$ISSUE_ID" --arg body "$COMMENT" \
+  '{ query: "mutation { commentCreate(input: { issueId: \"\($issueId)\", body: \"\($body)\" }) { success } }" }')
+
+cat <<EEE
+
+JSON_PAYLOAD >${JSON_PAYLOAD}<
+
+EEE          
+       
+        </script>
         <h2>jq</h2>
         <a href="https://stedolan.github.io/jq/">https://stedolan.github.io/jq/</a>
         <br />
