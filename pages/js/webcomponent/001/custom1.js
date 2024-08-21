@@ -30,4 +30,5 @@ class Custom1 extends HTMLElement {
   }
 }
 logg("load custom1.js");
+
 customElements.define("custom-1", Custom1);
