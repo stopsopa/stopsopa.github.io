@@ -2451,6 +2451,9 @@
             <tr>
               <td>
                 <script type="editor" data-lang="js">
+
+                  // node.js native stuff for colors: https://nodejs.org/api/util.html#utilstyletextformat-text
+                  
                   require('colors');
                   const l = c => console.log(`${c} [` + (`test string`[c]) + ']');
                   console.log("\n\n");
