@@ -1924,14 +1924,14 @@
         <h2>cli arguments manual processing</h2>
         <script type="editor" data-lang="js">
 
-          # read more about -- option terminator
-          # https://2ality.com/2022/08/node-util-parseargs.html#option-terminators
+          // read more about -- option terminator
+          // https://2ality.com/2022/08/node-util-parseargs.html#option-terminators
           
           import { parseArgs } from "node:util";
           // const { parseArgs } = require('node:util');
           const { values, positionals } = parseArgs({
             // node args.js --bar abc.txt bcd.txt --file cde.txt --file def.txt --color
-            // node args.js --bar abc.txt bcd.txt --file cde.txt --file=def.txt --color
+            // node args.js --bar abc.txt bcd.txt --file cde.txt --file=def.txt --color   # yes --option=value is allowed too
             // node args.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --color
             // node args.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --no-color
             args: process.argv.slice(2),
@@ -1964,9 +1964,9 @@
           //            "def.txt"
           //         ],
           //         "color": true
-          //            // passing --no-color thanks to allowPositionals: true,
+          //            // passing --no-color thanks to allowNegative: true,
           //            // will result in "color": false
-          //            // if neither --color or --no-color is passed then "color" will not be present in "values"
+          //            // if neither --color or --no-color is passed then "color" will not be present in "values" (means it will be undefined)
           //     },
           //     "positionals": [ // these are gathered thanks to allowPositionals: true,
           //                      // without this it would throw
@@ -1977,8 +1977,6 @@
           //     ]
           // }
 
-          // -------------------------------------------------------------
-          
           // -------------------------------------------------------------
 
           const args =  collectArgs();
