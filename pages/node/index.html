@@ -1923,9 +1923,59 @@
         </script>
         <h2>cli arguments manual processing</h2>
         <script type="editor" data-lang="js">
+          
+          import { parseArgs } from "node:util";
+          // const { parseArgs } = require('node:util');
+          const { values, positionals } = parseArgs({
+            // node args.js --bar abc.txt bcd.txt --file cde.txt --file def.txt --color
+            // node args.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --color
+            // node args.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --no-color
+            args: process.argv.slice(2),
+            options: {
+              bar: {
+                type: "string",
+                short: "b",
+              },
+              file: {
+                type: "string",
+                multiple: true,
+              },
+              color: { type: "boolean" },
+            },
+            /*, tokens: true, */
+            strict: true,
+            allowPositionals: true,
+            allowNegative: true,
+            // allowNegative seems to be working only since node 20.17.0,
+            // if not then the solution is here: https://nodejs.org/api/util.html#parseargs-tokens
+          });
+          if (typeof values.color === "undefined") {
+            throw new Error("--color is not defined");
+          }
+          // {
+          //     "values": {
+          //         "bar": "b",
+          //         "file": [
+          //            "cde.txt",
+          //            "def.txt"
+          //         ],
+          //         "color": true
+          //            // passing --no-color thanks to allowPositionals: true,
+          //            // will result in "color": false
+          //            // if neither --color or --no-color is passed then "color" will not be present in "values"
+          //     },
+          //     "positionals": [ // these are gathered thanks to allowPositionals: true,
+          //                      // without this it would throw
+          //                      // TypeError [ERR_PARSE_ARGS_UNEXPECTED_POSITIONAL]:
+          //                      // Unexpected argument 'abc.txt'. This command does not take positional arguments
+          //         "abc.txt",
+          //         "bcd.txt"
+          //     ]
+          // }
 
-          // try next time: https://nodejs.org/api/util.html#utilparseargsconfig
-            // from: https://bjornlu.com/blog/im-tired-of-node-builtin-apis
+          // -------------------------------------------------------------
+          
+          // -------------------------------------------------------------
 
           const args =  collectArgs();
 
