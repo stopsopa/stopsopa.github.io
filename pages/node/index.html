@@ -1923,11 +1923,15 @@
         </script>
         <h2>cli arguments manual processing</h2>
         <script type="editor" data-lang="js">
+
+          # read more about -- option terminator
+          # https://2ality.com/2022/08/node-util-parseargs.html#option-terminators
           
           import { parseArgs } from "node:util";
           // const { parseArgs } = require('node:util');
           const { values, positionals } = parseArgs({
             // node args.js --bar abc.txt bcd.txt --file cde.txt --file def.txt --color
+            // node args.js --bar abc.txt bcd.txt --file cde.txt --file=def.txt --color
             // node args.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --color
             // node args.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --no-color
             args: process.argv.slice(2),
