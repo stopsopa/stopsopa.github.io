@@ -12,6 +12,18 @@
   <body class="layout" toc>
     <div class="body">
       <div class="inside">
+        <h2>Create table</h2>
+        <script type="editor" data-lang="sql">
+
+          CREATE TABLE xxx.dbo.experiment_pt (
+            id int identity PRIMARY KEY,
+            name varchar(10) NOT NULL
+          );
+          
+          select * from xxx.dbo.experiment_pt t (nolock);
+          
+        </script>
+        
         <h2>interesting queries</h2>
 
         <script type="editor" data-lang="sql">
