@@ -15,23 +15,44 @@
         <h2>Create table</h2>
         <script type="editor" data-lang="sql">
 
-          IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='experiment_pt' AND xtype='U')
-          BEGIN
-              CREATE TABLE xxx.dbo.experiment_pt (
-                  id int identity PRIMARY KEY,
-                  name varchar(10) NOT NULL,
-                  createdAt datetime NOT NULL DEFAULT GETDATE()
-              );
-          END
-          
-          select * from xxx.dbo.experiment_pt t (nolock);
-          
-          insert into xxx.dbo.experiment_pt (name) values ('a');
-          insert into xxx.dbo.experiment_pt (name) values ('b');
-          
-          TRUNCATE TABLE xxx.dbo.experiment_pt;
-          
-          DROP TABLE xxx.dbo.experiment_pt;
+select * from xxx.dbo.gdshop_product_type t (nolock)
+
+
+-- experiment_pt
+    IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='experiment_pt' AND xtype='U')
+    BEGIN
+        CREATE TABLE xxx.dbo.experiment_pt (
+            id int identity PRIMARY KEY,
+            name varchar(10) NOT NULL,
+            createdAt datetime NOT NULL DEFAULT GETDATE()
+        );
+    END
+
+    select * from xxx.dbo.experiment_pt t (nolock);
+
+    insert into xxx.dbo.experiment_pt (name) values ('a');
+    insert into xxx.dbo.experiment_pt (name) values ('b');
+
+    IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'experiment_pt_sp') DROP PROCEDURE experiment_pt_sp;
+    GO
+    CREATE PROCEDURE experiment_pt_sp
+    @like varchar(10)
+    AS
+    SELECT * FROM xxx.dbo.experiment_pt t where t.name like @like;
+    GO;
+
+    EXEC experiment_pt_sp @like='a';
+
+    -- TRUNCATE TABLE xxx.dbo.experiment_pt;
+    -- DROP TABLE xxx.dbo.experiment_pt;
+
+
+
+
+
+
+
+
           
         </script>
         
