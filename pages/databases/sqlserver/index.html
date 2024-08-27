@@ -15,21 +15,23 @@
         <h2>Create table</h2>
         <script type="editor" data-lang="sql">
 
-
-CREATE TABLE dbo.experiment_pt (
-    id int identity PRIMARY KEY,
-    name varchar(10) NOT NULL,
-    createdAt datetime NOT NULL DEFAULT GETDATE()
-);
-
-select * from xxx.dbo.experiment_pt t (nolock);
-
-insert into xxx.dbo.experiment_pt (name) values ('a');
-insert into xxx.dbo.experiment_pt (name) values ('b');
-
-TRUNCATE TABLE xxx.dbo.experiment_pt;
-
-DROP TABLE xxx.dbo.experiment_pt;
+          IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='experiment_pt' AND xtype='U')
+          BEGIN
+              CREATE TABLE xxx.dbo.experiment_pt (
+                  id int identity PRIMARY KEY,
+                  name varchar(10) NOT NULL,
+                  createdAt datetime NOT NULL DEFAULT GETDATE()
+              );
+          END
+          
+          select * from xxx.dbo.experiment_pt t (nolock);
+          
+          insert into xxx.dbo.experiment_pt (name) values ('a');
+          insert into xxx.dbo.experiment_pt (name) values ('b');
+          
+          TRUNCATE TABLE xxx.dbo.experiment_pt;
+          
+          DROP TABLE xxx.dbo.experiment_pt;
           
         </script>
         
