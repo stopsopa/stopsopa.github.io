@@ -456,16 +456,16 @@
         <h2>Font Iter</h2>
 
         <script type="editor" data-lang="css">
-          
+
           // font: Inter  - open source
             <link rel="preconnect" href="https://rsms.me/" />
-            <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />    
+            <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
             homepage: https://rsms.me/inter/download/ by Rasmus Andersson (RSMS)
               first saw: https://www.blockchain.com/explorer/transactions/eth/0x47cc7d1d0d06a304b67f9e31f710e44aa4ba499e5ca8624ee8f23c1ae8ca4461
             .g-inter {
               font-family: Inter, sans-serif;
               font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
-            }        
+            }
         </script>
         <style>
           .g-inter {
@@ -474,11 +474,40 @@
           }
         </style>
         <p class="g-inter">
-          font: Inter - This transaction was first broadcasted on the Ethereum network on August 09, 2022 at 03:08 AM GMT+1. The
-          transaction currently has 5,310,353 confirmations on the network. The current value of this transaction is now
-          $5,361.50. 1.9944871497470729 Ether Value 1.9940497464044795 Ether (1,994,049,746 Gwei) $5,361.50 Fee
-          0.00043740334259341 Ether
+          font: Inter - This transaction was first broadcasted on the Ethereum network on August 09, 2022 at 03:08 AM
+          GMT+1. The transaction currently has 5,310,353 confirmations on the network. The current value of this
+          transaction is now $5,361.50. 1.9944871497470729 Ether Value 1.9940497464044795 Ether (1,994,049,746 Gwei)
+          $5,361.50 Fee 0.00043740334259341 Ether
         </p>
+
+        <h2>drop-shadow</h2>
+        <div>
+          <div>
+            <div>
+              <div>
+                <div>
+                  <a
+                    href="https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow#browser_compatibility"
+                    >https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow#browser_compatibility</a
+                  >
+                  | <a href="https://www.youtube.com/shorts/r0tG1JZ2i8g">from</a>
+                  <img src="https://i.imgur.com/CBcGC9X.png" class="toggle_drop_shadow_cls" width="200" />
+                  <button id="toggle_drop_shadow">toggle drop-shadow</button>
+                  <style>
+                    .toggle_drop_shadow_cls.on {
+                      filter: drop-shadow(0px 0px 12px grey);
+                    }
+                  </style>
+                  <script>
+                    document.getElementById("toggle_drop_shadow").addEventListener("click", function () {
+                      document.querySelector(".toggle_drop_shadow_cls").classList.toggle("on");
+                    });
+                  </script>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <script src="/js/github.js"></script>
