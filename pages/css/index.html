@@ -57,8 +57,8 @@
   <body class="layout" toc>
     <div class="body">
       <div class="inside">
-        <h2>Examples</h2>
-        <a href="/pages/css/examples/index.html">/pages/css/examples/index.html</a>
+        <h2>Ideas</h2>
+        <a href="https://www.youtube.com/shorts/v_CuehIfxUA">toast nice styling</a>
         <h2>Various</h2>
         <script type="editor" data-lang="css" data-w="95%">
 
@@ -69,6 +69,10 @@
         </script>
         <h2>tricks</h2>
         <a href="https://youtu.be/Xc6G3oV24yE">https://youtu.be/Xc6G3oV24yE</a>
+
+        <h2>Web Components</h2>
+
+        <a href="/pages/css/examples/index.html">/pages/css/examples/index.html</a>
 
         <h2>Css grid</h2>
         <a href="/pages/css/css-grid/index.html">css grid (subpage)</a>
@@ -480,7 +484,7 @@
           $5,361.50 Fee 0.00043740334259341 Ether
         </p>
 
-        <h2>drop-shadow</h2>
+        <h2>filter: drop-shadow</h2>
         <div>
           <div>
             <div>
@@ -503,6 +507,96 @@
                       document.querySelector(".toggle_drop_shadow_cls").classList.toggle("on");
                     });
                   </script>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h2>filter: grayscale</h2>
+        <div>
+          <div>
+            <div>
+              <div>
+                <div>
+                  <a href="https://www.youtube.com/shorts/u9PycXAcWNo">from</a>
+                  <br />
+                  <img src="https://i.imgur.com/q3CHEJs.png" class="toggle_grayscale_cls" width="200" />
+                  <p>to see the effect hover over the image</p>
+                  <style>
+                    .toggle_grayscale_cls {
+                      filter: grayscale(100%);
+                      transition: filter 0.23s ease-in-out;
+                      &:hover {
+                        filter: grayscale(0%);
+                      }
+                    }
+                  </style>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2>transform</h2>
+        <div class="different_transform">
+          <div>
+            <div>
+              <div>
+                <div>
+                  <a href="https://www.youtube.com/shorts/1ULiXjvw0F0">from</a>
+                  <br />
+
+                  <div class="rect up"></div>
+                  <div class="rect rotate"></div>
+                  <div class="rect skew"></div>
+                  <div class="rect scale"></div>
+                  <div class="rect matrix">glitchy</div>
+                  <div class="rect matrix_fixed"><div>matrix_fixed</div></div>
+                  <style>
+                    .different_transform {
+                      div.rect {
+                        float: left;
+                        margin-top: 10px;
+                        margin-left: 10px;
+                        margin-bottom: 10px;
+                        font-family: "Open Sans";
+                        font-size: 12px;
+                        text-align: center;
+                        line-height: 89px;
+                        &:not(.matrix_fixed),
+                        &.matrix_fixed > div {
+                          border: 3px solid #4e4b4b;
+                          background-color: #5282ca;
+                          width: 100px;
+                          height: 100px;
+                          transition: transform 0.3s ease; /* Add transition property */
+                        }
+                        &.up:hover {
+                          transform: translate(-7px, -7px);
+                        }
+                        &.rotate:hover {
+                          transform: rotate(8deg);
+                        }
+                        &.skew:hover {
+                          transform: skew(-5deg, -10deg);
+                        }
+                        &.scale:hover {
+                          transform: scale(0.87);
+                        }
+                        &.matrix:hover {
+                          transform: matrix(0, 1, 1, 0, 0, 0);
+                        }
+                        &.matrix_fixed {
+                          box-shadow: 0 0 7px red;
+                          &:hover {
+                            div {
+                              transform: matrix(0, 1, 1, 0, 0, 0);
+                            }
+                          }
+                        }
+                      }
+                    }
+                  </style>
                 </div>
               </div>
             </div>
