@@ -105,8 +105,43 @@
         
         <script type="editor" data-lang="java">
           
+package com.xxxxx.service.myservice.repository;
+
+import com.xxxxx.service.myservice.model.product.ProcListResponseEntity;
+import com.xxxxx.service.myservice.model.product.sqlmaps.Class2;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import static org.mockito.Mockito.doThrow;
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class MyTest {
+
+  @Spy
+  private Class2 class2;
+  @InjectMocks
+  private MyRepository repository;
+  @Mock
+  private JdbcTemplate jdbcTemplate;
+  @Mock
+  private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
   @Test
-  public void testisNamespaceInDb_WithConnection() throws Exception {
+  public void testis_WithConnection() throws Exception {
     // Arrange
     DataSource dataSource   = mock(DataSource.class);
     Connection connection   = mock(Connection.class);
@@ -118,7 +153,9 @@
     when(connection.prepareStatement(anyString())).thenReturn(stmt);
 
     Mockito.doNothing().when(stmt).setString(anyInt(), anyString());
+          
     when(stmt.executeQuery()).thenReturn(rs);
+    // doThrow(new SQLException("Database error")).when(stmt).executeQuery();
 
 //    Mockito.doNothing().when(connection).commit();
 //    Mockito.doNothing().when(connection).rollback();
@@ -128,10 +165,11 @@
 
     ProcListResponseEntity result1 = ProcListResponseEntity.builder().value("value1").count(1).build();
     ProcListResponseEntity result2 = ProcListResponseEntity.builder().value("value2").count(2).build();
-    
+
+          // testing for error thrown vvv
           // Act
           Exception exception = assertThrows(SQLException.class, () -> {
-            repository.isNamespaceInDb(null, "cancelProc");
+            repository.myTestedMethod(null, "cancelProc");
           });
       
           String expectedMessage = "Cannot acquire data source";
@@ -139,13 +177,15 @@
       
           // Assert
           assertTrue(actualMessage.contains(expectedMessage));
+          // testing for error thrown ^^^
 
     // Act
-    Boolean actualResults = repository.isNamespaceInDb(connection, "cancelProc");
+    Boolean actualResults = repository.myTestedMethod(connection, "cancelProc");
 
     // Assert
     assertEquals(true, actualResults);
   }
+}
           
         </script>
         <h2>Logging control</h2>
