@@ -101,6 +101,53 @@
           // this will generate file and it's surrounding target/site/jacoco/index.html 
           
         </script>
+        <h2>Testing Mockito</h2>
+        
+        <script type="editor" data-lang="java">
+          
+  @Test
+  public void testisNamespaceInDb_WithConnection() throws Exception {
+    // Arrange
+    DataSource dataSource   = mock(DataSource.class);
+    Connection connection   = mock(Connection.class);
+    PreparedStatement stmt  = mock(PreparedStatement.class);
+    ResultSet rs            = mock(ResultSet.class);
+
+//    when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
+//    when(dataSource.getConnection()).thenReturn(connection);
+    when(connection.prepareStatement(anyString())).thenReturn(stmt);
+
+    Mockito.doNothing().when(stmt).setString(anyInt(), anyString());
+    when(stmt.executeQuery()).thenReturn(rs);
+
+//    Mockito.doNothing().when(connection).commit();
+//    Mockito.doNothing().when(connection).rollback();
+
+    when(rs.next()).thenReturn(true); // Mocking two rows in the result set
+    when(rs.getInt("c")).thenReturn(1);
+
+    ProcListResponseEntity result1 = ProcListResponseEntity.builder().value("value1").count(1).build();
+    ProcListResponseEntity result2 = ProcListResponseEntity.builder().value("value2").count(2).build();
+    
+          // Act
+          Exception exception = assertThrows(SQLException.class, () -> {
+            repository.isNamespaceInDb(null, "cancelProc");
+          });
+      
+          String expectedMessage = "Cannot acquire data source";
+          String actualMessage = exception.getMessage();
+      
+          // Assert
+          assertTrue(actualMessage.contains(expectedMessage));
+
+    // Act
+    Boolean actualResults = repository.isNamespaceInDb(connection, "cancelProc");
+
+    // Assert
+    assertEquals(true, actualResults);
+  }
+          
+        </script>
         <h2>Logging control</h2>
         <script type="editor" data-lang="java">
 
