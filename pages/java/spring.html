@@ -150,6 +150,7 @@ class MyTest {
     PreparedStatement stmt  = mock(PreparedStatement.class);
     ResultSet rs            = mock(ResultSet.class);
 
+    when(namedParameterJdbcTemplate.getJdbcTemplate()).thenReturn(jdbcTemplate);
 //    when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
 //    when(dataSource.getConnection()).thenReturn(connection);
     when(connection.prepareStatement(anyString())).thenReturn(stmt);
