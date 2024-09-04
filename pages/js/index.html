@@ -326,6 +326,34 @@
             return newDate.toISOString().substring(0, 19).replace("T", " ");
           }
         </script>
+        <h2>focus blur</h2>
+        <script type="editor" data-lang="js">
+
+          function focus() {
+            setTimeout(() => {
+              if (document.hidden) {
+                log("focus hidden");
+              } else {
+                log("focus visible");
+              }
+        
+            }, 100);
+          }
+          function blur() {
+            setTimeout(() => {
+              if (document.hidden) {
+                log("blur hidden");
+              } else {
+                log("blur visible");
+              }
+              reload()
+            }, 100);
+          }
+        
+          window.addEventListener("focus", focus);
+          window.addEventListener("blur", blur);     
+          
+        </script>
         <h3>Promise TrackSettled</h3>
         <script type="editor" data-lang="js">
 
