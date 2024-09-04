@@ -329,6 +329,7 @@
         <h2>focus blur</h2>
         <script type="editor" data-lang="js">
 
+          
           function focus() {
             setTimeout(() => {
               if (document.hidden) {
@@ -336,7 +337,8 @@
               } else {
                 log("focus visible");
               }
-        
+              // for some weird reason there is little delay before we can manipulate DOM
+              reload()
             }, 100);
           }
           function blur() {
@@ -346,7 +348,6 @@
               } else {
                 log("blur visible");
               }
-              reload()
             }, 100);
           }
         
