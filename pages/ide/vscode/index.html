@@ -84,7 +84,11 @@
               "covered": "#95c697",
               "notCovered": "#e1a9a5"
             },
-            "jest.coverageFormatter": "GutterFormatter"
+            "jest.coverageFormatter": "GutterFormatter",
+            "jest.runMode": {
+              "type": "watch"
+            },
+            //"jest.jestCommandLine": "node_modules/.bin/jest" -- only when needed, by default it seems to run 'npm run test'
           }
 
           # generally about vscode coverage configuration and some changes around it:
@@ -99,7 +103,12 @@
           # ISSUE: 
             # https://stackoverflow.com/a/58675202/5560682
             # solution: 
-              brew install watchman                      
+              brew install watchman       
+
+          # customize executed jest commnd executed:
+            https://github.com/jest-community/vscode-jest/blob/master/README.md#settings
+            # setting versions
+              "jest.jestCommandLine": "node_modules/.bin/jest"
         
         </script>
         <h2>Auto Attach: Always - prevent from binding</h2>
