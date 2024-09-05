@@ -40,7 +40,7 @@ use [q] in git comment to skip test (for fast release) [.github/workflows/pipeli
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
   </head>
-  <body class="layout" toc>
+  <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
         <div class="cards toc">
@@ -109,7 +109,7 @@ use [q] in git comment to skip test (for fast release) [.github/workflows/pipeli
                 }())
             </script>
     </head>
-    <body class="layout" toc>
+    <body class="layout bg" toc>
         <div class="body">
             <div class="inside">
 
@@ -242,7 +242,7 @@ In order to prevent dislocating yellow background under block pointed out by loc
 .cards elements are position:relative and using them to surround the block which height might be changing dynamically might help.
 
 ```html
-<body class="layout" toc>
+<body class="layout bg" toc>
   <div class="body">
     <div class="inside">
       <div class="cards">

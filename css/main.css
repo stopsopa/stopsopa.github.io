@@ -4,6 +4,9 @@ html {
 }
 body {
   font-family: "Open Sans", sans-serif;
+  &.bg {
+    background-image: url("/img/bg.png");
+  }
 }
 
 .layout {
