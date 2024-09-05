@@ -73,10 +73,13 @@
         <h2>Code coverage - for javascript</h2>
         <script type="editor" data-lang="sh">
 
-
           install extension: 
           https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest
           https://github.com/jest-community/vscode-jest/tree/master
+
+          # WARNING: every time I've changed anything in the configuration it seems I had to toggle code coverage:
+          cmd + P -> search ">jest: toggle" -> choose "Jest: Toggle Coverage"
+          # in order to start seeing coverage in the IDE
           
           # add to .vscode/settings.json
           {    
@@ -96,10 +99,6 @@
 
           # try setup:
             https://github.com/jest-community/vscode-jest/blob/master/setup-wizard.md#how-does-it-work
-
-          # WARNING: every time I've changed anything in the configuration it seems I had to toggle code coverage:
-          cmd + P -> search ">jest: toggle" -> choose "Jest: Toggle Coverage"
-
           # ISSUE: 
             # https://stackoverflow.com/a/58675202/5560682
             # solution: 
