@@ -70,6 +70,38 @@
         </ul>
         <img src="https://i.imgur.com/7oJXmnb.png" style="width: 400px" />
 
+        <h2>Code coverage - for javascript</h2>
+        <script type="editor" data-lang="sh">
+
+
+          install extension: 
+          https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest
+          https://github.com/jest-community/vscode-jest/tree/master
+          
+          # add to .vscode/settings.json
+          {    
+            "jest.coverageColors": {
+              "covered": "#95c697",
+              "notCovered": "#e1a9a5"
+            },
+            "jest.coverageFormatter": "GutterFormatter"
+          }
+
+          # generally about vscode coverage configuration and some changes around it:
+            https://github.com/jest-community/vscode-jest/blob/master/README.md#how-to-use-code-coverage
+
+          # try setup:
+            https://github.com/jest-community/vscode-jest/blob/master/setup-wizard.md#how-does-it-work
+
+          # WARNING: every time I've changed anything in the configuration it seems I had to toggle code coverage:
+          cmd + P -> search ">jest: toggle" -> choose "Jest: Toggle Coverage"
+
+          # ISSUE: 
+            # https://stackoverflow.com/a/58675202/5560682
+            # solution: 
+              brew install watchman                      
+        
+        </script>
         <h2>Auto Attach: Always - prevent from binding</h2>
         <script type="editor" data-lang="sh">
 
