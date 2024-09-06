@@ -44,9 +44,13 @@
 
           I would call it:      They are calling it
           unit                  unit
-          e2e/integration       integration test (start the vscode instance, run operation user would do)
+          integration           integration test (start the vscode instance, run operation user would do)
           e2e                   smoke testing (goes more into ui details, test as there would be mouse and click around...)
             # from: https://youtu.be/BDU63r4bS9Q?si=F350jz1E9J_htz8X&t=4344
+            in vscode integration tests are using internal api to "poke" the functionalities to run scenarious
+            where e2e tests are really interacting with ui components as I would do this in playwright
+            
+          Summary: so our definition and approach is pretty much the same. It's just our e2e tests they call "smoke tests"
           
         </script>
         <h2>DRY or decouple?</h2>
