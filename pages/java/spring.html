@@ -24,6 +24,14 @@
         <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html"
           >https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html</a
         >
+        <h2>Injecting params from config</h2>
+        
+        <script type="editor" data-lang="sh">
+
+            @Value("${spring.application.name}")
+            private String applicationName;            
+          
+        </script>
         <h2>Spring CLI</h2>
         <a
           href="https://docs.spring.io/spring-boot/docs/current/reference/html/getting-started.html#getting-started.installing.cli.manual-installation"
