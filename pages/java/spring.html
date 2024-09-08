@@ -199,6 +199,78 @@ class MyTest {
 }
           
         </script>
+        <h2>Testing - @Spy & @InjectMocks</h2>
+        <script type="editor" data-lang="java">
+          # this is useful when we have service we want to test and then we want to call one method and test it's logic, but that method
+          # is calling another of it's methods, and then we want to stub that other method.
+
+          # in this case using @InjectMocks is not enought, because that will register Service and inject everything what that service uses
+          # as a dependency and we have occasion to add @Spy to each of those dependencies
+
+          # But that's not good for our case because we are not after depencency of our @InjectMocks class but one of it's own methods
+
+          # In this case we can use @Spy and @InjectMocks (in that order) on our service.
+
+          # This way we can run one of it's method and check it's behaviour but we can also stup other method of the same service 
+          # using special syntax doReturn()
+
+          
+          import javax.sql.DataSource;
+          ...
+          import static org.mockito.Mockito.*; // to bring doReturn
+          import static org.mockito.Mockito.mock;
+          import static org.mockito.Mockito.when;          
+          import static org.junit.jupiter.api.Assertions.*; // to bring assertEquals
+
+          @Test
+          void findPlProductGroupListByNamespace() throws Exception {
+            // Arrange
+        
+            DataSource dataSource   = mock(DataSource.class);
+            Connection connection   = mock(Connection.class);
+            PreparedStatement stmt  = mock(PreparedStatement.class);
+            ResultSet rs            = mock(ResultSet.class);
+        
+            when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
+            when(dataSource.getConnection()).thenReturn(connection);
+        
+            when(connection.prepareStatement(anyString())).thenReturn(stmt);
+        
+            when(stmt.executeQuery()).thenReturn(rs);
+        
+            when(rs.next()).thenReturn(true, true, false); // Mocking two rows in the result set
+        
+            when(rs.getInt("pl_productGroupID")).thenReturn(7, 8, 9, 10);
+            when(rs.getString("description")).thenReturn("description1", "description2");
+
+            // WE ARE MOCKING THIS METHOD ON THE SERVICE repository
+            doReturn(List.of(), List.of()).when(repository).findPlProductGroupResellerTypeListByPlProductGroupID(any());
+        
+            PlProductGroup result1 = PlProductGroup.builder()
+                    .plProductGroupID(7)
+                    .description("description1")
+                    .createNewInDb(false)
+                    .plProductGroupResellerType(List.of())
+                    .build();
+        
+            PlProductGroup result2 = PlProductGroup.builder()
+              .plProductGroupID(8)
+              .description("description2")
+              .createNewInDb(false)
+              .plProductGroupResellerType(List.of())
+              .build();
+        
+            List<PlProductGroup> expectedResults = Arrays.asList(result1, result2);
+        
+            // Act
+            // BUT WE ARE ACTUALLY CALLING REAL METHOD TOO ON OUR SERVICE repository
+            List<PlProductGroup> actualResults = repository.findPlProductGroupListByNamespace("namespace");
+        
+            // Assert
+            assertEquals(expectedResults, actualResults);
+          }          
+          
+        </script>
         <h2>Logging control</h2>
         <script type="editor" data-lang="java">
 
