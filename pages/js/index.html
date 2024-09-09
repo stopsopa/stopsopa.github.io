@@ -1713,6 +1713,21 @@ message AwesomeMessage {
               'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ')[d.getMonth()]
             } ${d.getFullYear()} 00:00:00 UTC; path=/`;
           }
+          function getCookie(key: string): string | null {
+            if (cookieQueue.length > 0) {
+              return cookieQueue.shift();
+            }
+          
+            const cookies = document.cookie.split(';');
+            for (const cookie of cookies) {
+              const [cookieKey, cookieValue] = cookie.split('=').map(part => part.trim());
+              if (cookieKey === key) {
+                return cookieValue;
+              }
+            }
+          
+            return null;
+          }
           function getCookie(key) {
               key = key.replace(/[\^\$\.\*\+\-\?\=\!\:\|\\\/\(\)\[\]\{\}\,]/g, "\\$&");
               const reg = new RegExp(`(?:(?:^|.*;\\s*)${key}\\s*\\=\\s*([^;]*).*$)|^.*$`, ``);
