@@ -64,7 +64,6 @@
           // swap two variables
           b = [a, a = b][0];
         </script>
-        
 
         <h2>Event loop</h2>
         <img src="event-loop.jpeg" style="max-width: 650px" />
@@ -330,7 +329,7 @@
         <script type="editor" data-lang="js">
 
           // used in tampermonkey script: "Reload on focus - timeanddate.com"
-          
+
           function focus() {
             setTimeout(() => {
               if (document.hidden) {
@@ -351,10 +350,9 @@
               }
             }, 100);
           }
-        
+
           window.addEventListener("focus", focus);
-          window.addEventListener("blur", blur);     
-          
+          window.addEventListener("blur", blur);
         </script>
         <h3>Promise TrackSettled</h3>
         <script type="editor" data-lang="js">
@@ -487,106 +485,104 @@
         >
         <script type="editor" data-lang="js">
 
-// here let's explore two examples demonstrating usage of async await and raw 
-// promises and the difference in the call stack returned in case of an error
-// more: https://mathiasbynens.be/notes/async-stack-traces
+          // here let's explore two examples demonstrating usage of async await and raw
+          // promises and the difference in the call stack returned in case of an error
+          // more: https://mathiasbynens.be/notes/async-stack-traces
 
-// ---- example with raw promise -----------------
-const log = console.log;
-const call = (a) => log("call", a);
-const res = (a) => log("resolved", a);
-function a() {
-  call("a");
-  const p = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      res("a");
-      resolve();
-    }, 500);
-  });
-  return p.then(b);
-}
-function b() {
-  call("b");
-  const p = new Promise((resolve, reject) => {
-    setTimeout(() => {
-      res("b");
-      resolve();
-    }, 500);
-  });
-  return p.then(c);
-}
-function c() {
-  call("c");
-  const p = new Promise((resolve, reject) => {
-    // [[[B]]]
-    // reject('error') // that will not produce stack trace at all, so better use throw
-    throw new Error("error"); // [[[A]]]
-  });
-  return p;
-}
-a().catch((e) => log("final catch", e));
+          // ---- example with raw promise -----------------
+          const log = console.log;
+          const call = (a) => log("call", a);
+          const res = (a) => log("resolved", a);
+          function a() {
+            call("a");
+            const p = new Promise((resolve, reject) => {
+              setTimeout(() => {
+                res("a");
+                resolve();
+              }, 500);
+            });
+            return p.then(b);
+          }
+          function b() {
+            call("b");
+            const p = new Promise((resolve, reject) => {
+              setTimeout(() => {
+                res("b");
+                resolve();
+              }, 500);
+            });
+            return p.then(c);
+          }
+          function c() {
+            call("c");
+            const p = new Promise((resolve, reject) => {
+              // [[[B]]]
+              // reject('error') // that will not produce stack trace at all, so better use throw
+              throw new Error("error"); // [[[A]]]
+            });
+            return p;
+          }
+          a().catch((e) => log("final catch", e));
 
-// call a
-// resolved a
-// call b
-// resolved b
-// call c
-// final catch Error: error
-//     at file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise.js:28:11 // [[[A]]]
-//     at new Promise (<anonymous>)
-//     at c (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise.js:26:13) // [[[B]]]
-//     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+          // call a
+          // resolved a
+          // call b
+          // resolved b
+          // call c
+          // final catch Error: error
+          //     at file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise.js:28:11 // [[[A]]]
+          //     at new Promise (<anonymous>)
+          //     at c (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise.js:26:13) // [[[B]]]
+          //     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
 
-// generally all stack trace logs will lead just to final function which was called
-// we have nothing in stack trace about calls above that
-          
-// ---- example async await -----------------
-const log = console.log;
-const call = (a) => log("call", a);
-const res = (a) => log("resolved", a);
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-async function a() {
-  call("a");
-  await delay(500);
-  res("a");
-  const t = await b(); // [[[C]]]
-  return t;
-}
-async function b() {
-  call("b");
-  await delay(500);
-  res("b");
-  const t = await c(); // [[[B]]]
-  return t;
-}
-async function c() {
-  call("c");
-  await delay(500);
-  res("c");
-  throw new Error("error"); // [[[A]]]
-}
-(async function () {
-  try {
-    await a(); // [[[D]]]
-  } catch (e) {
-    log("final catch", e);
-  }
-})();
-// call a
-// resolved a
-// call b
-// resolved b
-// call c
-// resolved c
-// final catch Error: error
-//     at c (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:23:9) // [[[A]]]
-//     at async b (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:16:13) // [[[B]]]
-//     at async a (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:9:13) // [[[C]]]
-//     at async file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:27:5 // [[[D]]]
+          // generally all stack trace logs will lead just to final function which was called
+          // we have nothing in stack trace about calls above that
 
-// where here we have all more info about entire stack calls
+          // ---- example async await -----------------
+          const log = console.log;
+          const call = (a) => log("call", a);
+          const res = (a) => log("resolved", a);
+          const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+          async function a() {
+            call("a");
+            await delay(500);
+            res("a");
+            const t = await b(); // [[[C]]]
+            return t;
+          }
+          async function b() {
+            call("b");
+            await delay(500);
+            res("b");
+            const t = await c(); // [[[B]]]
+            return t;
+          }
+          async function c() {
+            call("c");
+            await delay(500);
+            res("c");
+            throw new Error("error"); // [[[A]]]
+          }
+          (async function () {
+            try {
+              await a(); // [[[D]]]
+            } catch (e) {
+              log("final catch", e);
+            }
+          })();
+          // call a
+          // resolved a
+          // call b
+          // resolved b
+          // call c
+          // resolved c
+          // final catch Error: error
+          //     at c (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:23:9) // [[[A]]]
+          //     at async b (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:16:13) // [[[B]]]
+          //     at async a (file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:9:13) // [[[C]]]
+          //     at async file:///Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/promise_async.js:27:5 // [[[D]]]
 
-          
+          // where here we have all more info about entire stack calls
         </script>
         <h2>mouseenter, mouseleave, mouseover, mouseout, input[type="range"]</h2>
         <a href="/other/selectors/#hover">hover</a>
@@ -1717,7 +1713,7 @@ message AwesomeMessage {
             if (cookieQueue.length > 0) {
               return cookieQueue.shift();
             }
-          
+
             const cookies = document.cookie.split(';');
             for (const cookie of cookies) {
               const [cookieKey, cookieValue] = cookie.split('=').map(part => part.trim());
@@ -1725,7 +1721,7 @@ message AwesomeMessage {
                 return cookieValue;
               }
             }
-          
+
             return null;
           }
           function getCookie(key) {

@@ -389,6 +389,6 @@ make build
   <summary>👉 <b>Show more details</b></summary>
 
 - Subroutines can appear before the groups they reference.
-- Like backreferences, subroutines can't be used *within* character classes.
+- Like backreferences, subroutines can't be used _within_ character classes.
 - As with all extended syntax in `regex`, subroutines are applied after interpolation, giving them maximal flexibility.
 </details>

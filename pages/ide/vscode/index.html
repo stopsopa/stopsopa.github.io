@@ -22,10 +22,8 @@
 
           # vscode is based on Monaco Editor which was build for vscode but still can be used as a standalone component
           https://microsoft.github.io/monaco-editor/
-        
-        
         </script>
-        
+
         <h2>Portable Mode</h2>
         <a href="https://code.visualstudio.com/docs/editor/portable">g(visual studio code Portable Mode)</a>
         <script type="editor" data-lang="sh">
@@ -94,9 +92,9 @@
           # WARNING: every time I've changed anything in the configuration it seems I had to toggle code coverage:
           cmd + P -> search ">jest: toggle" -> choose "Jest: Toggle Coverage"
           # in order to start seeing coverage in the IDE
-          
+
           # add to .vscode/settings.json
-          {    
+          {
             "jest.coverageColors": {
               "covered": "#95c697",
               "notCovered": "#e1a9a5"
@@ -113,16 +111,15 @@
 
           # try setup:
             https://github.com/jest-community/vscode-jest/blob/master/setup-wizard.md#how-does-it-work
-          # ISSUE: 
+          # ISSUE:
             # https://stackoverflow.com/a/58675202/5560682
-            # solution: 
-              brew install watchman       
+            # solution:
+              brew install watchman
 
           # customize executed jest commnd executed:
             https://github.com/jest-community/vscode-jest/blob/master/README.md#settings
             # example
               "jest.jestCommandLine": "node_modules/.bin/jest"
-        
         </script>
         <h2>Auto Attach: Always - prevent from binding</h2>
         <script type="editor" data-lang="sh">

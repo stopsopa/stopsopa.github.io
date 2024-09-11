@@ -6,15 +6,14 @@
       super();
       this._internals = this.attachInternals();
 
+      this.addEventListener("click", this._onClick.bind(this));
 
-      this.addEventListener('click', this._onClick.bind(this));
+      //   const divElem = document.createElement("div");
+      //   // divElem.textContent = this.getAttribute('text');
+      //   divElem.textContent = name;
 
-    //   const divElem = document.createElement("div");
-    //   // divElem.textContent = this.getAttribute('text');
-    //   divElem.textContent = name;
-
-    //   const shadowRoot = this.attachShadow({ mode: "open" });
-    //   shadowRoot.appendChild(divElem);
+      //   const shadowRoot = this.attachShadow({ mode: "open" });
+      //   shadowRoot.appendChild(divElem);
     }
 
     get checked() {
@@ -33,7 +32,7 @@
     }
 
     _onClick(event) {
-        console.log("onClick: ")
+      console.log("onClick: ");
       this.checked = !this.checked;
     }
 

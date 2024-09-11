@@ -13,41 +13,40 @@
     <div class="body">
       <div class="inside">
         <h2>Assemble valid json using jq</h2>
-        
+
         <script type="editor" data-lang="sh">
 
-COMMENT="autocom\" [] { : }
+          COMMENT="autocom\" [] { : }
 
-mid
+          mid
 
-ment"
+          ment"
 
-  # Create the JSON payload using jq to ensure proper escaping
-JSON_PAYLOAD=$(jq -n --arg issueId "$ISSUE_ID" --arg body "$COMMENT" \
-  '{ query: "mutation { commentCreate(input: { issueId: \"\($issueId)\", body: \"\($body)\" }) { success } }" }')
+            # Create the JSON payload using jq to ensure proper escaping
+          JSON_PAYLOAD=$(jq -n --arg issueId "$ISSUE_ID" --arg body "$COMMENT" \
+            '{ query: "mutation { commentCreate(input: { issueId: \"\($issueId)\", body: \"\($body)\" }) { success } }" }')
 
-cat <<EEE
+          cat <<EEE
 
-JSON_PAYLOAD >${JSON_PAYLOAD}<
+          JSON_PAYLOAD >${JSON_PAYLOAD}<
 
-EEE        
+          EEE
 
 
-# ---------- in some special cases dealing with graphql doing this might be needed
-          
-ESCAPED_COMMENT=$(jq -Rn --arg str "$COMMENT" '$str')
-# finding this was tricky
-ESCAPED_COMMENT=$(echo "$ESCAPED_COMMENT" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
+          # ---------- in some special cases dealing with graphql doing this might be needed
 
-echo "${0}: Adding comment to issue ${ISSUE_ID}..."
+          ESCAPED_COMMENT=$(jq -Rn --arg str "$COMMENT" '$str')
+          # finding this was tricky
+          ESCAPED_COMMENT=$(echo "$ESCAPED_COMMENT" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
 
-STATUS="$(curl ${CURL_VERBOSE} -X POST https://api.linear.app/graphql \
--H "Content-Type: application/json" \
--H "Authorization: ${LINEAR_API_KEY}" \
--d "{
-  \"query\": \"mutation { commentCreate(input: { issueId: \\\"${ISSUE_ID}\\\", body: ${ESCAPED_COMMENT} }) { success } }\"
-}")"
-       
+          echo "${0}: Adding comment to issue ${ISSUE_ID}..."
+
+          STATUS="$(curl ${CURL_VERBOSE} -X POST https://api.linear.app/graphql \
+          -H "Content-Type: application/json" \
+          -H "Authorization: ${LINEAR_API_KEY}" \
+          -d "{
+            \"query\": \"mutation { commentCreate(input: { issueId: \\\"${ISSUE_ID}\\\", body: ${ESCAPED_COMMENT} }) { success } }\"
+          }")"
         </script>
         <h2>jq</h2>
         <a href="https://stedolan.github.io/jq/">https://stedolan.github.io/jq/</a>

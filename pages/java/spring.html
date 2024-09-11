@@ -25,12 +25,11 @@
           >https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html</a
         >
         <h2>Injecting params from config</h2>
-        
+
         <script type="editor" data-lang="sh">
 
-            @Value("${spring.application.name}")
-            private String applicationName;            
-          
+          @Value("${spring.application.name}")
+          private String applicationName;
         </script>
         <h2>Spring CLI</h2>
         <a
@@ -99,105 +98,103 @@
         <img src="https://i.imgur.com/74UyxWP.png" width="100%" />
 
         <h2>Code Coverage via maven</h2>
-        
+
         <script type="editor" data-lang="java">
 
           // https://stackoverflow.com/a/43349327
 
           // and then run:
           mvn clean package
-          // this will generate file and it's surrounding target/site/jacoco/index.html 
-          
+          // this will generate file and it's surrounding target/site/jacoco/index.html
         </script>
         <h2>Testing Mockito</h2>
         <a href="https://www.youtube.com/watch?v=PJNcxY4I1F8">https://www.youtube.com/watch?v=PJNcxY4I1F8</a>
         <br />
         <a href="https://www.youtube.com/watch?v=KuqYS9reh2I">https://www.youtube.com/watch?v=KuqYS9reh2I</a>
         <script type="editor" data-lang="java">
-          
-package com.xxxxx.service.myservice.repository;
 
-import com.xxxxx.service.myservice.model.product.ProcListResponseEntity;
-import com.xxxxx.service.myservice.model.product.sqlmaps.Class2;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import static org.mockito.Mockito.doThrow;
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.*;
+          package com.xxxxx.service.myservice.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+          import com.xxxxx.service.myservice.model.product.ProcListResponseEntity;
+          import com.xxxxx.service.myservice.model.product.sqlmaps.Class2;
+          import org.junit.jupiter.api.Test;
+          import org.junit.jupiter.api.extension.ExtendWith;
+          import org.mockito.InjectMocks;
+          import org.mockito.Mock;
+          import org.mockito.Mockito;
+          import org.mockito.Spy;
+          import org.mockito.junit.jupiter.MockitoExtension;
+          import org.springframework.jdbc.core.JdbcTemplate;
+          import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+          import static org.mockito.Mockito.doThrow;
+          import javax.sql.DataSource;
+          import java.sql.*;
+          import java.util.*;
 
-@ExtendWith(MockitoExtension.class)
-class MyTest {
+          import static org.junit.jupiter.api.Assertions.*;
+          import static org.mockito.ArgumentMatchers.*;
+          import static org.mockito.Mockito.mock;
+          import static org.mockito.Mockito.when;
 
-  @Spy
-  private Class2 class2;
-  @InjectMocks
-  private MyRepository repository;
-  @Mock
-  private JdbcTemplate jdbcTemplate;
-  @Mock
-  private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+          @ExtendWith(MockitoExtension.class)
+          class MyTest {
 
-  @Test
-  public void testis_WithConnection() throws Exception {
-    // Arrange
-    DataSource dataSource   = mock(DataSource.class);
-    Connection connection   = mock(Connection.class);
-    PreparedStatement stmt  = mock(PreparedStatement.class);
-    ResultSet rs            = mock(ResultSet.class);
+            @Spy
+            private Class2 class2;
+            @InjectMocks
+            private MyRepository repository;
+            @Mock
+            private JdbcTemplate jdbcTemplate;
+            @Mock
+            private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    when(namedParameterJdbcTemplate.getJdbcTemplate()).thenReturn(jdbcTemplate);
-//    when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
-//    when(dataSource.getConnection()).thenReturn(connection);
-    when(connection.prepareStatement(anyString())).thenReturn(stmt);
+            @Test
+            public void testis_WithConnection() throws Exception {
+              // Arrange
+              DataSource dataSource   = mock(DataSource.class);
+              Connection connection   = mock(Connection.class);
+              PreparedStatement stmt  = mock(PreparedStatement.class);
+              ResultSet rs            = mock(ResultSet.class);
 
-    Mockito.doNothing().when(stmt).setString(anyInt(), anyString());
-          
-    when(stmt.executeQuery()).thenReturn(rs);
-    // doThrow(new SQLException("Database error")).when(stmt).executeQuery();
+              when(namedParameterJdbcTemplate.getJdbcTemplate()).thenReturn(jdbcTemplate);
+          //    when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
+          //    when(dataSource.getConnection()).thenReturn(connection);
+              when(connection.prepareStatement(anyString())).thenReturn(stmt);
 
-//    Mockito.doNothing().when(connection).commit();
-//    Mockito.doNothing().when(connection).rollback();
+              Mockito.doNothing().when(stmt).setString(anyInt(), anyString());
 
-    when(rs.next()).thenReturn(true); // Mocking two rows in the result set
-    when(rs.getInt("c")).thenReturn(1);
+              when(stmt.executeQuery()).thenReturn(rs);
+              // doThrow(new SQLException("Database error")).when(stmt).executeQuery();
 
-    ProcListResponseEntity result1 = ProcListResponseEntity.builder().value("value1").count(1).build();
-    ProcListResponseEntity result2 = ProcListResponseEntity.builder().value("value2").count(2).build();
+          //    Mockito.doNothing().when(connection).commit();
+          //    Mockito.doNothing().when(connection).rollback();
 
-          // testing for error thrown vvv
-          // Act
-          Exception exception = assertThrows(SQLException.class, () -> {
-            repository.myTestedMethod(null, "cancelProc");
-          });
-      
-          String expectedMessage = "Cannot acquire data source";
-          String actualMessage = exception.getMessage();
-      
-          // Assert
-          assertTrue(actualMessage.contains(expectedMessage));
-          // testing for error thrown ^^^
+              when(rs.next()).thenReturn(true); // Mocking two rows in the result set
+              when(rs.getInt("c")).thenReturn(1);
 
-    // Act
-    Boolean actualResults = repository.myTestedMethod(connection, "cancelProc");
+              ProcListResponseEntity result1 = ProcListResponseEntity.builder().value("value1").count(1).build();
+              ProcListResponseEntity result2 = ProcListResponseEntity.builder().value("value2").count(2).build();
 
-    // Assert
-    assertEquals(true, actualResults);
-  }
-}
-          
+                    // testing for error thrown vvv
+                    // Act
+                    Exception exception = assertThrows(SQLException.class, () -> {
+                      repository.myTestedMethod(null, "cancelProc");
+                    });
+
+                    String expectedMessage = "Cannot acquire data source";
+                    String actualMessage = exception.getMessage();
+
+                    // Assert
+                    assertTrue(actualMessage.contains(expectedMessage));
+                    // testing for error thrown ^^^
+
+              // Act
+              Boolean actualResults = repository.myTestedMethod(connection, "cancelProc");
+
+              // Assert
+              assertEquals(true, actualResults);
+            }
+          }
         </script>
         <h2>Testing - @Spy & @InjectMocks</h2>
         <script type="editor" data-lang="java">
@@ -211,65 +208,64 @@ class MyTest {
 
           # In this case we can use @Spy and @InjectMocks (in that order) on our service.
 
-          # This way we can run one of it's method and check it's behaviour but we can also stup other method of the same service 
+          # This way we can run one of it's method and check it's behaviour but we can also stup other method of the same service
           # using special syntax doReturn()
 
-          
+
           import javax.sql.DataSource;
           ...
           import static org.mockito.Mockito.*; // to bring doReturn
           import static org.mockito.Mockito.mock;
-          import static org.mockito.Mockito.when;          
+          import static org.mockito.Mockito.when;
           import static org.junit.jupiter.api.Assertions.*; // to bring assertEquals
 
           @Test
           void findPlProductGroupListByNamespace() throws Exception {
             // Arrange
-        
+
             DataSource dataSource   = mock(DataSource.class);
             Connection connection   = mock(Connection.class);
             PreparedStatement stmt  = mock(PreparedStatement.class);
             ResultSet rs            = mock(ResultSet.class);
-        
+
             when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
             when(dataSource.getConnection()).thenReturn(connection);
-        
+
             when(connection.prepareStatement(anyString())).thenReturn(stmt);
-        
+
             when(stmt.executeQuery()).thenReturn(rs);
-        
+
             when(rs.next()).thenReturn(true, true, false); // Mocking two rows in the result set
-        
+
             when(rs.getInt("pl_productGroupID")).thenReturn(7, 8, 9, 10);
             when(rs.getString("description")).thenReturn("description1", "description2");
 
             // WE ARE MOCKING THIS METHOD ON THE SERVICE repository
             doReturn(List.of(), List.of()).when(repository).findPlProductGroupResellerTypeListByPlProductGroupID(any());
-        
+
             PlProductGroup result1 = PlProductGroup.builder()
                     .plProductGroupID(7)
                     .description("description1")
                     .createNewInDb(false)
                     .plProductGroupResellerType(List.of())
                     .build();
-        
+
             PlProductGroup result2 = PlProductGroup.builder()
               .plProductGroupID(8)
               .description("description2")
               .createNewInDb(false)
               .plProductGroupResellerType(List.of())
               .build();
-        
+
             List<PlProductGroup> expectedResults = Arrays.asList(result1, result2);
-        
+
             // Act
             // BUT WE ARE ACTUALLY CALLING REAL METHOD TOO ON OUR SERVICE repository
             List<PlProductGroup> actualResults = repository.findPlProductGroupListByNamespace("namespace");
-        
+
             // Assert
             assertEquals(expectedResults, actualResults);
-          }          
-          
+          }
         </script>
         <h2>Logging control</h2>
         <script type="editor" data-lang="java">

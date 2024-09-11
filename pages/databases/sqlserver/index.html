@@ -16,10 +16,9 @@
         <script type="editor" data-lang="sql">
 
           Select @@version
-          
+
           select name, compatibility_level , compatibility_level
           from sys.databases
-          
         </script>
 
         <h2>There is no nested transactions in SQLServer</h2>
@@ -29,56 +28,46 @@
 
           IMPLICIT_TRANSACTIONS:
               -- from: https://learn.microsoft.com/en-us/sql/t-sql/statements/set-implicit-transactions-transact-sql?view=sql-server-ver16#remarks
-              DECLARE @IMPLICIT_TRANSACTIONS VARCHAR(3) = 'OFF';  
-              IF ( (2 & @@OPTIONS) = 2 ) SET @IMPLICIT_TRANSACTIONS = 'ON';  
-              SELECT @IMPLICIT_TRANSACTIONS AS IMPLICIT_TRANSACTIONS;  
-          
+              DECLARE @IMPLICIT_TRANSACTIONS VARCHAR(3) = 'OFF';
+              IF ( (2 & @@OPTIONS) = 2 ) SET @IMPLICIT_TRANSACTIONS = 'ON';
+              SELECT @IMPLICIT_TRANSACTIONS AS IMPLICIT_TRANSACTIONS;
         </script>
-        
+
         <h2>Create table</h2>
         <script type="editor" data-lang="sql">
 
-select * from xxx.dbo.gdshop_product_type t (nolock)
+          select * from xxx.dbo.gdshop_product_type t (nolock)
 
 
--- experiment_pt
-    IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='experiment_pt' AND xtype='U')
-    BEGIN
-        CREATE TABLE xxx.dbo.experiment_pt (
-            id int identity PRIMARY KEY,
-            name varchar(10) NOT NULL,
-            createdAt datetime NOT NULL DEFAULT GETDATE()
-        );
-    END
+          -- experiment_pt
+              IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='experiment_pt' AND xtype='U')
+              BEGIN
+                  CREATE TABLE xxx.dbo.experiment_pt (
+                      id int identity PRIMARY KEY,
+                      name varchar(10) NOT NULL,
+                      createdAt datetime NOT NULL DEFAULT GETDATE()
+                  );
+              END
 
-    select * from xxx.dbo.experiment_pt t (nolock);
+              select * from xxx.dbo.experiment_pt t (nolock);
 
-    insert into xxx.dbo.experiment_pt (name) values ('a');
-    insert into xxx.dbo.experiment_pt (name) values ('b');
+              insert into xxx.dbo.experiment_pt (name) values ('a');
+              insert into xxx.dbo.experiment_pt (name) values ('b');
 
-    IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'experiment_pt_sp') DROP PROCEDURE experiment_pt_sp;
-    GO
-    CREATE PROCEDURE experiment_pt_sp
-    @like varchar(10)
-    AS
-    SELECT * FROM xxx.dbo.experiment_pt t where t.name like @like;
-    GO;
+              IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'experiment_pt_sp') DROP PROCEDURE experiment_pt_sp;
+              GO
+              CREATE PROCEDURE experiment_pt_sp
+              @like varchar(10)
+              AS
+              SELECT * FROM xxx.dbo.experiment_pt t where t.name like @like;
+              GO;
 
-    EXEC experiment_pt_sp @like='a';
+              EXEC experiment_pt_sp @like='a';
 
-    -- TRUNCATE TABLE xxx.dbo.experiment_pt;
-    -- DROP TABLE xxx.dbo.experiment_pt;
-
-
-
-
-
-
-
-
-          
+              -- TRUNCATE TABLE xxx.dbo.experiment_pt;
+              -- DROP TABLE xxx.dbo.experiment_pt;
         </script>
-        
+
         <h2>interesting queries</h2>
 
         <script type="editor" data-lang="sql">
