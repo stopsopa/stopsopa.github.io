@@ -21,6 +21,28 @@
           from sys.databases
         </script>
 
+        <h2>Dynamic SQL - CONCAT</h2>
+        <script type="editor" data-lang="sql">
+
+          USE [mydatabase];
+          CREATE FUNCTION dbo.SanitizeNString (@input NVARCHAR(MAX))
+              RETURNS NVARCHAR(MAX)
+          AS
+          BEGIN
+              RETURN N'N''' + REPLACE(@input, '''', '''''') + N'''';
+          END
+          GO
+          SELECT dbo.SanitizeNString('name'' a')
+
+          -- more about it:
+          https://www.sommarskog.se/dynamic_sql.html#SQL_injection
+            from: https://stackoverflow.com/a/5529010
+          https://www.invicti.com/blog/web-security/sql-injection-cheat-sheet/
+          https://learn.microsoft.com/en-us/sql/relational-databases/security/sql-injection?view=sql-server-ver16
+
+        </script>
+
+
         <h2>There is no nested transactions in SQLServer</h2>
         <a href="https://www.youtube.com/watch?v=rDBqQ_9RGXY">https://www.youtube.com/watch?v=rDBqQ_9RGXY</a>
         <h2>Useful</h2>
