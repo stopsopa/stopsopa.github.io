@@ -208,6 +208,9 @@
 
         <script type="editor" data-lang="typescript">
 
+          // make all fields optional
+          type AllOptional = Partial<MyOtherType>;
+
           // making all fields Required
           type OriginalType = useStepGdshopFulfillmentNamespaceLookupCloneProps;
           type DerivedType = Required<OriginalType>;
