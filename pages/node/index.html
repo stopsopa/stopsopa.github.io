@@ -1051,6 +1051,16 @@
         </script>
         <h2>path</h2>
         <script type="editor" data-lang="js">
+          __filename = '/directory/AsyncSelectDropdown.test.tsx'
+          const basename = path.basename(__filename); 
+              // 'AsyncSelectDropdown.test.tsx'
+
+          const extension = path.extname(basename);
+              // '.tsx'
+
+          const filename = path.basename(basename, extension);
+              // 'AsyncSelectDropdown.test'
+
           # in php :
           $path_parts = pathinfo('/www/htdocs/inc/lib.inc.php');
 
