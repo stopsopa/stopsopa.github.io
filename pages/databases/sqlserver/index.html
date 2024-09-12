@@ -25,6 +25,7 @@
         <script type="editor" data-lang="sql">
 
           USE [mydatabase];
+          -- beware of QUOTENAME AND REPLACE truncation: https://learn.microsoft.com/en-us/sql/relational-databases/security/sql-injection?view=sql-server-ver16#truncation-when-quotenamevariable--and-replace-are-used
           CREATE FUNCTION dbo.SanitizeNString (@input NVARCHAR(MAX))
               RETURNS NVARCHAR(MAX)
           AS
