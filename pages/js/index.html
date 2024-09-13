@@ -1769,6 +1769,8 @@ message AwesomeMessage {
         <h2>debounce throttle</h2>
         <script type="editor" data-lang="sh">
 
+          // compressed with : https://jscompress.com/
+
           function debounce(fn, delay) {
               var timer = null;
               return function () {
@@ -1779,6 +1781,8 @@ message AwesomeMessage {
                   }, delay);
               };
           };
+
+          function debounce(u,e){var i=null;return function(){var n=this,t=arguments;clearTimeout(i),i=setTimeout(function(){u.apply(n,t)},e)}}
 
           function throttle(fn, interval) {
               var wait = false;
@@ -1792,6 +1796,9 @@ message AwesomeMessage {
                   }
               }
           };
+          function throttle(t,n){var i=!1;return function(){i||(t.apply(this,arguments),i=!0,setTimeout(function(){i=!1},n))}}
+
+
         </script>
         <a href="/research/js/008-inheritance.html">/research/js/008-inheritance.html</a>
         <h2>instance or function</h2>
