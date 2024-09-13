@@ -1052,7 +1052,7 @@
         <h2>path</h2>
         <script type="editor" data-lang="js">
           __filename = '/directory/AsyncSelectDropdown.test.tsx'
-          const basename = path.basename(__filename); 
+          const basename = path.basename(__filename);
               // 'AsyncSelectDropdown.test.tsx'
 
           const extension = path.extname(basename);
@@ -2356,6 +2356,8 @@
         <h2>Express template</h2>
         <script type="editor" data-lang="js">
 
+          // express extension: https://raw.githubusercontent.com/stopsopa/roderic/86495ef554314d388e7f6ef10ee4de6d12bcbcff/libs/express-extend-res.js?token=GHSAT0AAAAAACVQ4Q66S6J6DLZRVFB5DQLSZXEOC2Q
+
           const path      = require('path');
 
           const fs        = require('fs');
@@ -2444,6 +2446,174 @@
 
               console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`)
           });
+        </script>
+        <h2>express-extend-res</h2>
+        <script type="editor" data-lang="js">
+
+
+          const http = require('http');
+
+          /**
+           * https://raw.githubusercontent.com/stopsopa/roderic/86495ef554314d388e7f6ef10ee4de6d12bcbcff/libs/express-extend-res.js?token=GHSAT0AAAAAACVQ4Q66S6J6DLZRVFB5DQLSZXEOC2Q
+           *
+           const app = express();
+
+           app.use(require('libs/express-extend-res'));
+           * @param req
+           * @param res
+           * @param next
+           */
+          module.exports = (prod = true, modifyresbeforesend, debugLevel = false) => function (req, res, next) {
+
+              res.req = req;
+
+              if (debugLevel === true) {
+
+                  debugLevel = 2
+              }
+
+              if ( ! res.constructor.prototype.extended ) {
+
+                  res.constructor.prototype.extended = true;
+
+                  res.constructor.prototype.jsonNoCache = function (json) {
+
+                      this.set({
+                          'Cache-Control' : 'no-store, no-cache, must-revalidate',
+                          'Pragma'        : 'no-cache',
+                          'Content-type'  : 'application/json; charset=utf-8',
+                          'Expires'       : new Date().toUTCString(),
+                      })
+
+                      if (prod) {
+
+                          return this.json(json);
+                      }
+
+                      return this.end(JSON.stringify(json, null, 4));
+                  };
+
+                  res.constructor.prototype.jsonError = function (errstring) {
+                      return this.status(409).jsonNoCache({
+                          error: errstring
+                      });
+                  };
+
+                  res.constructor.prototype.notFound = function (msg) {
+
+                      return this.status(400).jsonNoCache({
+                          error: msg
+                      });
+                  };
+
+                  res.constructor.prototype.accessDenied = function (msg) {
+
+                      return this.status(403).jsonNoCache({
+                          error: msg
+                      });
+                  };
+
+                  ['writeHead', 'end', 'send', 'writeHeader'].forEach(m => {
+
+                      (function (old) {
+
+                          res.constructor.prototype[m] = function () {
+
+                              debugLevel && console.log(m.padEnd(10, ' '), 'headersSent: ', this.headersSent ? 'true' : 'false');
+
+                              if ( ! this.headersSent && ! this.__executed) {
+
+                                  debugLevel && console.log(m, 'modifyresbeforesend(res)');
+
+                                  this.__executed = true;
+
+                                  if (this && this.req) {
+
+                                      modifyresbeforesend(({res: this, req: this.req}));
+                                  }
+                              }
+
+                              return old.apply(this, arguments);
+                          };
+
+                      }(res.constructor.prototype[m]))
+                  });
+              }
+
+              next();
+          }
+
+          # --------------------- how to use
+
+          require('dotenv').config({
+            path: path.resolve(__dirname, '..', '.env.Local')
+          });
+          const yes = []; // if empty then accept all
+          const no = [/^\/api\/is/, /^\/api\/auth/, /^\/api\/product-creation\/intake\//]; // and here is for exclusion
+          const testYes = (url) => (yes.length === 0 ? true : yes.find((f) => url.match(f)));
+          const testNo = (url) => (no.length === 0 ? false : no.find((f) => url.match(f)));
+          const dir =
+            '/Users/user/project/.git/autojson';
+
+          let patch, access;
+          patch = access = (req, res, next) => next();
+          if (process.env.COLLECT_JSON) {
+            access = (req, res, next) => {
+              const originalSend = res.send;
+              const originalJson = res.json;
+
+              res.send = function (body) {
+                res.body = body;
+                return originalSend.apply(this, arguments);
+              };
+
+              res.json = function (body) {
+                res.body = body;
+                return originalJson.apply(this, arguments);
+              };
+
+              next();
+            };
+            patch = require('../.git/express-extend-res')(
+              true,
+              ({ res, req }) => {
+                try {
+                  const ct = res.get('content-type');
+                  const body = res?.body;
+                  const url = req?.url;
+
+                  if (ct && typeof ct === 'string') {
+                    if (ct.includes('application/json') && typeof body !== 'undefined') {
+                      if (testYes(url) && !testNo(url)) {
+                        const file = url.replace('/v2/product-orchestration/', '').replace(/[^a-z\d_-]+/gi, '__') + '.json';
+
+                        const target = path.join(dir, file);
+
+                        const payload = JSON.stringify(
+                          {
+                            url,
+                            data: JSON.parse(body)
+                          },
+                          null,
+                          4
+                        );
+
+                        fs.writeFileSync(target, payload);
+
+                        res.set('X-express-extend-res', file);
+                      } else {
+                        res.set('X-express-extend-res', 'FALSE');
+                      }
+                    }
+                  }
+                } catch (e) {
+                  console.log('express_extend_res_warning', e);
+                }
+              },
+              false
+            );
+          }
+          
         </script>
         <script type="editor" data-lang="json">
           {
