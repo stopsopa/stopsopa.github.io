@@ -1446,6 +1446,10 @@ message AwesomeMessage {
            * sometimes it might throw:
            * Refused to apply inline style because it violates the following Content Security Policy directive: "style-src 'self'". Either the 'unsafe-inline' keyword, a hash , or a nonce ('nonce-...') is required to enable inline execution.
            * More about that: https://stackoverflow.com/a/18428346
+
+           * Example page: https://dl.thorium.rocks/
+           * has header: 
+           * content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; manifest-src 'self'; font-src 'self'; media-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests
            */
           function addCss(css) {
             var head = document.head || document.getElementsByTagName("head")[0];
