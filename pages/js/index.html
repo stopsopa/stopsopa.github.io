@@ -1443,6 +1443,9 @@ message AwesomeMessage {
 
           /**
            * https://stackoverflow.com/a/524721
+           * sometimes it might throw:
+           * Refused to apply inline style because it violates the following Content Security Policy directive: "style-src 'self'". Either the 'unsafe-inline' keyword, a hash , or a nonce ('nonce-...') is required to enable inline execution.
+           * More about that: https://stackoverflow.com/a/18428346
            */
           function addCss(css) {
             var head = document.head || document.getElementsByTagName("head")[0];
