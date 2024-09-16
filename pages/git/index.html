@@ -334,6 +334,23 @@
         >
         <h2>Merge Strategies</h2>
         <a href="https://stackoverflow.com/a/52157972">https://stackoverflow.com/a/52157972</a>
+        <h2>Anyone can Access Deleted and Private Repository Data on GitHub</h2>
+        
+        <script type="editor" data-lang="sh">
+          Anyone can Access Deleted and Private Repository Data on GitHub
+            from: https://trufflesecurity.com/blog/anyone-can-access-deleted-and-private-repo-data-github
+
+          So here is my attempt to exploit that with particular case:
+          https://news.ycombinator.com/item?id=41549218#41552633
+
+          mkdir xxx && cd xxx
+          git clone git@github.com:GustavoMelloGit/movie-web.git .
+          git fetch origin c6fe62ae8acc9948bbf6c4292ebb555c006931eb
+          git reset --hard FETCH_HEAD
+          
+        </script>
+
+        
         <h2>Useful</h2>
         <script type="editor" data-lang="sh">
 
