@@ -58,6 +58,53 @@
               SELECT @IMPLICIT_TRANSACTIONS AS IMPLICIT_TRANSACTIONS;
         </script>
 
+        <h2>CAST INT and BIT</h2>
+        <script type="editor" data-lang="sql">
+
+          SET ANSI_NULLS ON
+          GO
+          SET QUOTED_IDENTIFIER ON
+          GO
+          CREATE FUNCTION dbo.pos_nullQuoteString_fn (@input NVARCHAR(MAX))
+              RETURNS NVARCHAR(MAX)
+          AS
+          BEGIN
+              RETURN CASE
+                        WHEN @input IS NULL THEN 'NULL'
+                        ELSE dbo.pos_sanitizeNString_fn(CAST(@input AS VARCHAR(MAX)))
+                  END
+          END
+          GO
+
+          DECLARE @test NVARCHAR(10) = N'test';
+          SELECT dbo.pos_nullQuoteString_fn(@test) -- returns N'test'
+          SET @test = NULL;
+          select dbo.pos_nullIntToString_fn(@test) -- returns NULL as a string
+
+          ---------------
+
+          SET ANSI_NULLS ON
+          GO
+          SET QUOTED_IDENTIFIER ON
+          GO
+          CREATE FUNCTION dbo.pos_nullIntToString_fn (@input INT)
+              RETURNS NVARCHAR(MAX)
+          AS
+          BEGIN
+              RETURN CASE
+                         WHEN @input IS NULL THEN 'NULL'
+                         ELSE CAST(@input AS VARCHAR(MAX))
+                  END
+          END
+          GO
+
+          DECLARE @test INT = 10
+          select dbo.pos_nullIntToString_fn(@test) -- returns 10 as a string
+          SET @test = NULL;
+          select dbo.pos_nullIntToString_fn(@test) -- returns NULL as a string
+
+
+        </script>
         <h2>Create table</h2>
         <script type="editor" data-lang="sql">
 
