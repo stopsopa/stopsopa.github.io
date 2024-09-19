@@ -293,12 +293,14 @@
         <script type="editor" data-lang="js">
 
           // lookahead
-            (?=y)
-            (?!y)
-
+            (?=y)     /abc(?=y)/
+            (?!y)     /abc(?=y)/
+            
+          
           // lookbehind
-            (?<=y)
-            (?<!y)
+            (?<=y)    /(?<=y)abc/
+            (?<!y)    /(?<!y)abc/
+        
         </script>
         <h3>backward reference</h3>
         <script type="editor" data-lang="js">
