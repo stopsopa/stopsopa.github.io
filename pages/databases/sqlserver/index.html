@@ -42,9 +42,7 @@
             from: https://stackoverflow.com/a/5529010
           https://www.invicti.com/blog/web-security/sql-injection-cheat-sheet/
           https://learn.microsoft.com/en-us/sql/relational-databases/security/sql-injection?view=sql-server-ver16
-
         </script>
-
 
         <h2>There is no nested transactions in SQLServer</h2>
         <a href="https://www.youtube.com/watch?v=rDBqQ_9RGXY">https://www.youtube.com/watch?v=rDBqQ_9RGXY</a>
@@ -61,20 +59,20 @@
         <h2>CAST INT and BIT</h2>
         <script type="editor" data-lang="sql">
 
-          /************************************************************************************************************  
+          /************************************************************************************************************
             Purpose:    convert value NULL to string 'NULL' or sanitize string by calling pos_sanitizeNString_fn if not null
-        
-                        It is simply short version of 
+
+                        It is simply short version of
                         CASE WHEN @input IS NULL THEN 'NULL' ELSE dbo.pos_sanitizeNString_fn(CAST(@input AS VARCHAR(MAX)))
                         to reduce confusion and allow to write cleaner logic of stored procedures when generating sql for review in dry mode.
-          
-            Called By:  godaddy.dbo.experiment_EP_66124_product_type_sp  
-          
+
+            Called By:  godaddy.dbo.experiment_EP_66124_product_type_sp
+
             Notes:      Use carefully and read first: https://learn.microsoft.com/en-us/sql/relational-databases/security/sql-injection?view=sql-server-ver16#truncation-when-quotenamevariable--and-replace-are-used
-                                          
-            When        Who   Project     What  
+
+            When        Who   Project     What
             09/17/2024  SD    POS         Created func.
-          ************************************************************************************************************/  
+          ************************************************************************************************************/
           SET ANSI_NULLS ON
           GO
           SET QUOTED_IDENTIFIER ON
@@ -97,18 +95,18 @@
 
           ---------------
 
-          /************************************************************************************************************  
+          /************************************************************************************************************
             Purpose:   convert value NULL to string 'NULL' or cast INT to string if not null
-        
-                      It is simply short version of 
+
+                      It is simply short version of
                       SELECT CASE WHEN @test IS NULL THEN 'NULL' ELSE CAST(@test AS VARCHAR(10)) END
                       to reduce confusion and allow to write cleaner logic of stored procedures when generating sql for review in dry mode.
-        
+
                       NOTICE: can be used with BIT type also
-              
-            Called By:  godaddy.dbo.experiment_EP_66124_product_type_sp  
-                                              
-            When        Who   Project     What  
+
+            Called By:  godaddy.dbo.experiment_EP_66124_product_type_sp
+
+            When        Who   Project     What
             09/17/2024  SD    POS         Created func.
           ************************************************************************************************************/
           SET ANSI_NULLS ON
@@ -131,16 +129,16 @@
           SET @test = NULL;
           select dbo.pos_nullIntToString_fn(@test) -- returns NULL as a string
 
-          /************************************************************************************************************  
-            Purpose:    Surrounds given string with N'' and escapes single quotes. 
-          
-            Called By:  godaddy.dbo.experiment_EP_66124_product_type_sp  
-          
+          /************************************************************************************************************
+            Purpose:    Surrounds given string with N'' and escapes single quotes.
+
+            Called By:  godaddy.dbo.experiment_EP_66124_product_type_sp
+
             Notes:      Use carefully and read first: https://learn.microsoft.com/en-us/sql/relational-databases/security/sql-injection?view=sql-server-ver16#truncation-when-quotenamevariable--and-replace-are-used
-                                          
-            When        Who   Project     What  
+
+            When        Who   Project     What
             09/17/2024  SD    POS         Created func.
-          ************************************************************************************************************/  
+          ************************************************************************************************************/
           SET ANSI_NULLS ON
           GO
           SET QUOTED_IDENTIFIER ON
@@ -183,9 +181,9 @@
               @calcids BIT = 1
           )
           AS
-          /************************************************************************************************************  
-             Purpose:    Creates one or two inserts into database.dbo.experiment_table_test table      
-          ************************************************************************************************************/  
+          /************************************************************************************************************
+             Purpose:    Creates one or two inserts into database.dbo.experiment_table_test table
+          ************************************************************************************************************/
               SET NOCOUNT ON;
               SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
           DECLARE
@@ -193,15 +191,15 @@
               @s_error_prefix      nvarchar(max),
               @s_procname          SYSNAME = OBJECT_NAME(@@PROCID),
               @s_dbname            SYSNAME = DB_NAME();
-          
+
           DECLARE
               @n_counter INT = 0,
               @n_max_id INT,
               @n_trancount int = @@TRANCOUNT,
               @n NVARCHAR(10) = CHAR(13) + CHAR(10),
               @s_transaction_started_in_this_pc NVARCHAR(6) = N'NO';
-          
-          
+
+
           IF OBJECT_ID('tempdb..#work') IS NULL
               CREATE TABLE #work (
                   id int identity constraint PK_experiment_test_sp__work primary key,
@@ -212,97 +210,97 @@
                   s_error_prefix nvarchar(MAX) NULL
               )
           BEGIN TRY
-          
+
               IF ISJSON(@jsonArray) <> 1
                   RAISERROR (N'json jsonArray is not valid', 15, 1);
-          
+
               IF @n_trancount = 0
                   BEGIN
                       SET @s_transaction_started_in_this_pc = N'YES';
                       BEGIN TRAN;
                   END
-          
+
               INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (
                   CONCAT(N'starting transaction: ', @s_transaction_started_in_this_pc, N' dry run: ', CASE WHEN @dryrun = 1 THEN N'YES' ELSE N'NO' END, N' calcids:', CASE WHEN @calcids = 1 THEN N'YES' ELSE N'NO' END),
                   CASE WHEN @n_trancount = 0 THEN N'parent' ELSE N'log' END,
                   @s_procname, @n_trancount);
-          
+
               -- main logic of the sp, everything around are just parameters definition and genral sp template code ------------------ vvv
-          
+
                   IF @calcids = 1
                       BEGIN
                           SELECT @n_max_id = COALESCE(MAX(t.testId), 0)
                           FROM database.dbo.experiment_table_test t (nolock)
                       END
-          
-                  DECLARE 
+
+                  DECLARE
                       @testId int,  @description NVARCHAR(50)
                       @cancelProc NVARCHAR(128);
-          
+
                   DECLARE iterator_cursor_pt CURSOR LOCAL FOR
                   SELECT
-                      testId,  description, 
+                      testId,  description,
                       cancelProc
                   FROM OPENJSON(@jsonArray) WITH (
-                      testId int '$.columnName', description NVARCHAR(50) '$.description', 
+                      testId int '$.columnName', description NVARCHAR(50) '$.description',
                       cancelProc NVARCHAR(128) '$.cancelProc'
                   );
-          
+
                   SET identity_insert database.dbo.experiment_table_test ON;
-          
+
                   INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (N'SET identity_insert database.dbo.experiment_table_test ON;',
                   N'test:insert:identity_insert:on', @s_procname, @n_trancount);
-          
+
                   OPEN iterator_cursor_pt;
-          
+
                   FETCH NEXT FROM iterator_cursor_pt INTO
-                      @testId,  @description, 
+                      @testId,  @description,
                       @cancelProc;
-          
+
                   WHILE @@FETCH_STATUS = 0
                   BEGIN
-          
+
                       IF @calcids = 1
                           BEGIN
-                              SET @testId = @n_max_id + @n_counter + 1;                                         
+                              SET @testId = @n_max_id + @n_counter + 1;
                               SET @jsonArray = JSON_MODIFY(@jsonArray, CONCAT(N'$[',@n_counter,'].columnName'), @testId)
                           END
-          
+
                       -- only now increment counter
                       SET @n_counter = @n_counter + 1;
-          
+
                       SET @col1 = @n_counter;
-          
-                      SET @col2 = 61; 
-          
+
+                      SET @col2 = 61;
+
                       SET @s_error_prefix = CONCAT(N'iteration: ', @n_counter, N' testId: ', @testId);
-          
+
                       INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (@testId, N'test:id', @s_procname, @n_trancount);
-          
+
                       IF @description is null
-                          BEGIN                    
+                          BEGIN
                               SET @s_error_msg = CONCAT(N'element description on the list number ', @n_counter, N' (1-indexed) is null');
                               RAISERROR (@s_error_msg, 15, 1);
                           END
-          
+
                       IF @testId is null
-                          BEGIN                    
+                          BEGIN
                               SET @s_error_msg = CONCAT(N'element testId on the list number ', @n_counter, N' (1-indexed) is null');
                               RAISERROR (@s_error_msg, 15, 1);
                           END
-          
+
                       INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (CONCAT(
                           N'INSERT database.dbo.experiment_table_test (', @n,
                           N'  testId,    description,', @n,
                           N'  cancelProc, ', @n,
-          
+
                           N') VALUES (', @n,
-          
+
                           N'  ', @testId, N', ', dbo.pos_nullQuoteString_fn(@description), N', 1, ', @n,
                           N'  ', dbo.pos_nullIntToString_fn(@cancelProc), N'', @n,
                           N');', @n
                       ), N'test:insert:', @s_procname, @n_trancount);
-          
+
                       INSERT INTO database.dbo.experiment_table_test (
                           testId,  description,
                           cancelProc
@@ -311,24 +309,24 @@
                           @testId,  @description,  1,
                           @cancelProc
                       );
-          
+
                       FETCH NEXT FROM iterator_cursor_pt INTO
-                          @testId,  @description, 
+                          @testId,  @description,
                           @cancelProc
                   END;
-          
-                  CLOSE iterator_cursor_pt;            
+
+                  CLOSE iterator_cursor_pt;
                   DEALLOCATE iterator_cursor_pt;
-          
+
                   SET identity_insert database.dbo.experiment_table_test OFF;
-          
+
                   INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (
                       N'SET identity_insert database.dbo.experiment_table_test OFF;',
                       N'test:insert:identity_insert:off', @s_procname, @n_trancount
                   );
-          
+
               -- main logic of the sp, everything around are just parameters definition and genral sp template code ------------------ ^^^
-          
+
               IF @n_trancount = 0
                   BEGIN
                       IF @dryrun = 1
@@ -340,9 +338,9 @@
                               -- in the final log stream look for this log, finding it indicates success
                               INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (N'SUCCESS FINAL committing transaction dry run: NO', N'log', @s_procname, @n_trancount)
                           END
-          
+
                       select * from #work
-          
+
                       IF @dryRun = 1
                           ROLLBACK TRAN
                       ELSE
@@ -356,9 +354,9 @@
           END TRY
           BEGIN CATCH
               SET @s_error_msg = CONCAT(@s_error_prefix, N'::', ERROR_MESSAGE());
-          
+
               INSERT INTO #work (log, type, s_procname, n_trancount) VALUES (@s_error_msg, N'catch', @s_procname, @n_trancount);
-          
+
               IF @n_trancount = 0
                   BEGIN
                       -- return list of events and then rollback
@@ -373,8 +371,7 @@
           END CATCH
           GO;
           GRANT EXECUTE ON [dbo].[experiment_test_sp] TO [execprocs] AS [dbo]
-          GO          
-
+          GO
         </script>
         <h2>Create table</h2>
         <script type="editor" data-lang="sql">

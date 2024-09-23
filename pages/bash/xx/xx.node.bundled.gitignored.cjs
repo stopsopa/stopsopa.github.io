@@ -10953,7 +10953,7 @@ var esm_default = createPrompt((config, done) => {
       return import_chalk4.default.dim(`- ${line} ${disabledLabel}`);
     }
     if (index === cursorPosition) {
-      return import_chalk4.default.cyan(`${import_figures2.default.pointer} ${line}`);
+      return import_chalk4.default.inverse(`${import_figures2.default.pointer} ${line}`);
     }
     return `  ${line}`;
   }).join("\n");
