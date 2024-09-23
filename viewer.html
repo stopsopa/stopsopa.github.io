@@ -42,6 +42,10 @@
       <br />
       <input type="text" id="raw" readonly />
       <br />
+      <input type="text" id="urlwizz" readonly />
+      <br />
+      <input type="text" id="urlwizzdir" readonly />
+      <br />
       <a href="" id="full"></a>
       <hr />
       <a href="" id="direct"></a>
@@ -77,6 +81,8 @@
         const raw = document.querySelector("#raw");
         const full = document.querySelector("#full");
         const direct = document.querySelector("#direct");
+        const urlwizzdiv = document.querySelector("#urlwizz");
+        const urlwizzdir = document.querySelector("#urlwizzdir");
         document.querySelector("pre").innerText = JSON.stringify(mimes, null, 4);
 
         long.addEventListener("click", (e) => long.select());
@@ -106,10 +112,15 @@
 
             const noencode = `${location.pathname}?file=${file}`;
 
+            const urlwizz = 'urlw'+'izzard.schema://url'+'wizzard.hostnegotiated' + noencode
+
+            const urlwizzdirv = 'urlw'+'izzard.schema://url'+'wizzard.hostnegotiated/' + file
+
             log("urls", {
               relative,
               final,
               noencode,
+              urlwizz,
             });
 
             full.innerHTML = final;
@@ -117,6 +128,10 @@
 
             direct.innerHTML = file;
             direct.setAttribute("href", file);
+
+            urlwizzdir.value = urlwizzdirv;
+
+            urlwizzdiv.value = urlwizz;
 
             short.value = relative;
 
