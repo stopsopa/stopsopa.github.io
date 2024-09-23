@@ -6,21 +6,23 @@ use [q] in git comment to skip test (for fast release) [.github/workflows/pipeli
 
 # Ace editor objects syntax:
 
-    <script type="editor|syntax" data-lang="js" data-w="95%">
-        function (a, b, c) {
-            console.log('textarea', a)
-        }
-    </script>
+```js
+<script type="editor|syntax" data-lang="js" data-w="95%">
+    function (a, b, c) {
+        console.log('textarea', a)
+    }
+</script>
 
-    attributes:
+attributes:
 
-    type        - required : editor | syntax
-    data-lang   - required
-    data-w      - optional: any valid css value for width css directive
-    datahw      - optional: any valid css value for height css directive
+type        - required : editor | syntax
+data-lang   - required
+data-w      - optional: any valid css value for width css directive
+datahw      - optional: any valid css value for height css directive
 
-    Warning: Just specify type="typescript" and script on site will load
-             /js/ace/ace-builds-1.15.0/src-min-noconflict/mode-typescript.js
+Warning: Just specify type="typescript" and script on site will load
+          /js/ace/ace-builds-1.15.0/src-min-noconflict/mode-typescript.js
+```
 
 [supported syntax](https://github.com/ajaxorg/ace/blob/v1.15.3/src/ext/modelist.js#L44)
 
@@ -72,73 +74,67 @@ use [q] in git comment to skip test (for fast release) [.github/workflows/pipeli
 
 # new page template
 
-    <!doctype html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport"
-              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>stopsopa.github.io</title>
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
 
-            <script> <!-- optional to do something before binding ACE editor -->
-                (function () {
-                    var resolve;
-                    var p = new Promise(function (res) {
-                        resolve = res;
-                    });
+    <script>
+      <!-- optional to do something before binding ACE editor -->
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
 
-                    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll('[class="domain' + '.com"]')).forEach(function (tag) {
+            var text = tag.innerHTML;
 
-                        Array.prototype.slice.call(document.querySelectorAll('[class="domain'+'.com"]')).forEach(function (tag) {
+            text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host);
 
-                            var text = tag.innerHTML;
+            tag.innerHTML = text;
+          });
 
-                            text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host)
+          resolve();
+        });
 
-                            tag.innerHTML = text;
-                        });
-
-                        resolve();
-                    });
-
-                    window.beforeAceEventPromise = function () {
-
-                        return p;
-                    }
-                }())
-            </script>
-    </head>
-    <body class="layout bg" toc>
-        <div class="body">
-            <div class="inside">
-
-
-              <div class="cards toc">
-                <h1>Table of Contents</h1>
-                <ul data-do-sort>
-                  <li><a href="http://">ekstra link</a></li>
-                </ul>
-              </div>
-
-
-              <h2>Index</h2>
-              <script type="editor" data-lang="sh">
-              </script>
-
-
-              <div class="cards">
-                <h2>Index</h2>
-                <script type="editor" data-lang="sh">
-                </script>
-              </div>
-
-
-            </div>
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="http://">ekstra link</a></li>
+          </ul>
         </div>
-        <script src="/js/github.js"></script>
-    </body>
-    </html>
+
+        <h2>Index</h2>
+        <script type="editor" data-lang="sh"></script>
+
+        <div class="cards">
+          <h2>Index</h2>
+          <script type="editor" data-lang="sh"></script>
+        </div>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>
+```
 
 # there is feature I call urlwizzard
 
@@ -176,8 +172,7 @@ test page githubpages: /research/urlwizzard/urlwizzard.html
 
 # links to files through github pages
 
-```
-
+```html
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"

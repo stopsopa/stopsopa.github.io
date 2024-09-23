@@ -302,12 +302,14 @@
         <script type="editor" data-lang="js">
 
           // lookahead
-            (?=y)
-            (?!y)
-
+            (?=y)     /abc(?=y)/
+            (?!y)     /abc(?=y)/
+            
+          
           // lookbehind
-            (?<=y)
-            (?<!y)
+            (?<=y)    /(?<=y)abc/
+            (?<!y)    /(?<!y)abc/
+        
         </script>
         <h3>backward reference</h3>
         <script type="editor" data-lang="js">
@@ -416,6 +418,13 @@
 
             return read();
           }
+        </script>
+        <h2>Stream response body in the browser</h2>
+
+        <script type="editor" data-lang="js">
+
+          // entire code video & article can be traced using this link: https://github.com/tom-on-the-internet/fetch-demonstration/issues/1
+          
         </script>
 
         <h2>position</h2>
@@ -1452,6 +1461,13 @@ message AwesomeMessage {
 
           /**
            * https://stackoverflow.com/a/524721
+           * sometimes it might throw:
+           * Refused to apply inline style because it violates the following Content Security Policy directive: "style-src 'self'". Either the 'unsafe-inline' keyword, a hash , or a nonce ('nonce-...') is required to enable inline execution.
+           * More about that: https://stackoverflow.com/a/18428346
+
+           * Example page: https://dl.thorium.rocks/
+           * has header: 
+           * content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; manifest-src 'self'; font-src 'self'; media-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests
            */
           function addCss(css) {
             var head = document.head || document.getElementsByTagName("head")[0];
@@ -1778,6 +1794,8 @@ message AwesomeMessage {
         <h2>debounce throttle</h2>
         <script type="editor" data-lang="sh">
 
+          // compressed with : https://jscompress.com/
+
           function debounce(fn, delay) {
               var timer = null;
               return function () {
@@ -1788,6 +1806,8 @@ message AwesomeMessage {
                   }, delay);
               };
           };
+
+          function debounce(u,e){var i=null;return function(){var n=this,t=arguments;clearTimeout(i),i=setTimeout(function(){u.apply(n,t)},e)}}
 
           function throttle(fn, interval) {
               var wait = false;
@@ -1801,6 +1821,9 @@ message AwesomeMessage {
                   }
               }
           };
+          function throttle(t,n){var i=!1;return function(){i||(t.apply(this,arguments),i=!0,setTimeout(function(){i=!1},n))}}
+
+
         </script>
         <a href="/research/js/008-inheritance.html">/research/js/008-inheritance.html</a>
         <h2>instance or function</h2>

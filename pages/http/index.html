@@ -56,11 +56,20 @@
               body present
               POST /user
                 no id here so each call will create new user
+              IMPORTANT: every request will create new resource
+                         usually returns id and you further use PUT to replace OR
+
+            ^^^^
+            main distinction is to ask yourself a question: Are we trying to create something new or manipulate existing?
+            do you know the resource or not?
+            vvvv
 
             PUT - is [IDEMPOTENT] (UPDATE) - Updates resource (replaces it's state with new one).
               body present
               PUT /users/1234
                 put sent with the same id and data should be idempotent
+                IMPORTANT: we are either creating or replacing when already exist
+                           either way, we are bringing to existance or replacing particular entity
 
             PATCH - is [IDEMPOTENT] - Updates resource (updates only provided fields).
               body present
@@ -73,6 +82,99 @@
                 Let's call it: Appropriate compromise
           </script>
           <img src="https://i.imgur.com/gJHfYTO.png" style="width: 600px" />
+
+          <ol>
+            <li>Only use lowercase letters in RESTful API URLs.</li>
+            <li>
+              For white space, use
+              <a href="https://www.theserverside.com/answer/Kebab-vs-camel-case-How-these-naming-conventions-differ"
+                >kebab-case</a
+              >, not <a href="https://www.theserverside.com/definition/Snake-case">snake_case</a> or spaces.
+            </li>
+            <li>Build URIs with nouns, not verbs.</li>
+            <li>
+              Use the appropriate
+              <a
+                href="https://www.techtarget.com/searchapparchitecture/tip/The-5-essential-HTTP-methods-in-RESTful-API-development"
+                >HTTP methods</a
+              >
+              to perform an operation.
+            </li>
+            <li>REST API calls that return a collection should be plural.</li>
+            <li>A URL that returns a unique result should be singular.</li>
+            <li>Don't include file extensions.</li>
+            <li>Use headers to keep URIs clean.</li>
+            <li>
+              Don't identify
+              <a
+                href="https://www.theserverside.com/blog/Coffee-Talk-Java-News-Stories-and-Opinions/The-JPA-and-Hibernate-CRUD-operations-example"
+                >Create, Read, Update and Delete</a
+              >
+              (CRUD) operations in the URL.
+            </li>
+            <li>Structure URIs loosely on your data model's hierarchy.</li>
+            <li>Use query parameters for filtering and search.</li>
+            <li>Don't expose the internal workings of your architecture.</li>
+            <li>Make URLs short, intuitive and readable.</li>
+            <li>Protect yourself against SQL injection.</li>
+            <li>
+              Include the
+              <a href="https://www.techtarget.com/searchapparchitecture/tip/Get-started-with-API-versioning-and-URIs"
+                >REST API version</a
+              >
+              at the base of the URI.
+            </li>
+          </ol>
+
+          <ul>
+            <li>https://www.example.com/v1/sample/uri <span style="color: #2fcc71;">#Good.</span></li>
+            <li>https://www.example.com/v1/SampleURI <span style="color: #e74c3c;">#Bad.</span></li>
+          </ul>
+
+          <ul>
+            <li>https://www.example.com/v1/<span style="color: #2fcc71;">this-is-okay</span></li>
+            <li>https://www.example.com/v1/<span style="color: #e74c3c;">THIS_IS_NOT_OKAY</span></li>
+          </ul>
+
+          <ul>
+            <li>https://www.example.com/v1/players/gretzky <span style="color: #2fcc71;">#Good.</span></li>
+            <li>https://www.example.com/v1/players/get-gretzky <span style="color: #e74c3c;">#Bad.</span></li>
+          </ul>
+
+          <ul>
+            <li>
+              https://www.example.com/v1/teams <span style="color: #2fcc71;">#Acts on a collection of teams.</span>
+            </li>
+            <li>
+              https://www.example.com/v1/teams/{identifier} <span style="color: #2fcc71;">#Acts on a single team.</span>
+            </li>
+          </ul>
+
+          <ul>
+            <li>
+              https://www.example.com/v1/teams <span style="color: #2fcc71;">#Acts on a collection of teams.</span>
+            </li>
+            <li>
+              https://www.example.com/v1/teams/{identifier} <span style="color: #2fcc71;">#Acts on a single team.</span>
+            </li>
+          </ul>
+
+          <p>Don't abbreviate words</p>
+          <ul>
+            <li>
+              https://www.example.com/v1/teams <span style="color: #2fcc71;">#Acts on a collection of teams.</span>
+            </li>
+            <li>
+              https://www.example.com/v1/teams/{identifier} <span style="color: #2fcc71;">#Acts on a single team.</span>
+            </li>
+          </ul>
+
+          <p>Explicitly version</p>
+
+          <ul>
+            <li>https://www.example.com/v2/map/earth/north-america/usa/boston</li>
+          </ul>
+
           <h2>Useful response codes</h2>
           <script type="editor" data-lang="python">
 
