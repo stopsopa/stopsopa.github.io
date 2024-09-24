@@ -12,6 +12,21 @@
   <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
+        <h2>PROS & CONS</h2>
+        
+        <script type="editor" data-lang="sh">
+
+          PROS:
+            - separation of responsibility
+            - you can deploy faster            
+
+          CONS:
+            - hard to keep apis to match - hard to communicate changes across the team, where in monolyth it would just not compile 
+            - converting internal passing data via values or even references to network traffic
+            - it's much harder to do anything in atomic fashion, logic might stuck in broken states
+              - derrived problem: hard to implement and test solution fixing broken states            
+          
+        </script>
         <h2>To read</h2>
 
         <a href="https://ajay-yadav109458.medium.com/basics-of-microservice-architecture-208ed81c558d"
