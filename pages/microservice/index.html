@@ -18,13 +18,16 @@
 
           PROS:
             - separation of responsibility
-            - you can deploy faster            
+            - you can deploy faster   
+            - easier to onboard pretty much unlimited number of developers and don't block them
 
           CONS:
             - hard to keep apis to match - hard to communicate changes across the team, where in monolyth it would just not compile 
             - converting internal passing data via values or even references to network traffic
             - it's much harder to do anything in atomic fashion, logic might stuck in broken states
-              - derrived problem: hard to implement and test solution fixing broken states            
+              - derrived problem: hard to implement and test solution fixing broken states     
+            - generally harder to debug and harder to trace events
+            - IMO: bigger danger of slowing development with time. more time spent of debugging weird errors and broken states
           
         </script>
         <h2>To read</h2>
