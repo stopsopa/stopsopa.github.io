@@ -307,7 +307,70 @@
         <a href="https://github.com/tj/git-extras/blob/master/Commands.md"
           >https://github.com/tj/git-extras/blob/master/Commands.md</a
         >
+        <h2>git tricks</h2>
+        
+        <script type="editor" data-lang="sh">
 
+          # more: https://blog.gitbutler.com/ & https://github.com/gitbutlerapp/gitbutler
+            # from: https://youtu.be/aolI_Rz0ZqY?t=2154
+
+          # dealing with big files:
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1429
+
+          # TASK: track files changes when I'm working
+            # idea from: https://youtu.be/aolI_Rz0ZqY?t=2632
+            # apparently https://github.com/gitbutlerapp/gitbutler is doing that
+
+          # QUESTION: how to sign commits? find out...
+          git config gpg.format ssh
+          git config user.signingkey ~/.ssh/key.pub
+          # then
+          git commit -S -a -m 'verify me'
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1220
+
+          git push --signed
+            # signing pushes ??!!
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1320
+
+          git maintainance start
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1364
+
+          git push --force-with-lease
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1138
+            # QUESTION: can this be enabled globally as default behaviour for regular git push --force?
+
+          git config --global alias.staash 'statsh --all'
+            # from: https://youtu.be/aolI_Rz0ZqY?t=417
+
+          git config --global alias.bb !better-branch.sh
+            # from: https://youtu.be/aolI_Rz0ZqY?t=466
+
+          git diff --word-diff
+            # from: https://youtu.be/aolI_Rz0ZqY?t=892
+
+          git config --global branch.sort -committerdate
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1005
+            # sorts branches by their latests commit
+
+          seq 1 24 | git column --mode=column --padding=5
+            # from: https://youtu.be/aolI_Rz0ZqY?t=1060
+
+          git config --global rere.enabled true
+            # when dealing with repeatitive merges, the same merge multiple time
+            # git will remember how it was resolved
+            # from: https://youtu.be/aolI_Rz0ZqY?t=949
+
+          # put in the config
+          [includeif "gitdir:~/projects/oss/"]
+            path = ~/projects/oss/.gitconfig
+            # from: https://youtu.be/aolI_Rz0ZqY?t=543
+          
+            # from: 
+
+          
+            # from: 
+          
+        </script>
         <h2>git instaweb</h2>
         <script type="editor" data-lang="sh">
 
