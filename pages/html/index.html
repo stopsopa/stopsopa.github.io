@@ -16,6 +16,54 @@
         }
       }
     </style>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll("[data-html]")).forEach(function (tag) {
+            var selector = tag.getAttribute("data-html");
+
+            const parent = document.querySelector(selector);
+
+            if (!parent) {
+              throw new Error(`parent not found ${selector}`);
+            }
+
+            const html = tag.innerText.replace("</scr ipt>", "</scr" + "ipt>").trim();
+            console.log("html", html);
+
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = html;
+
+            Array.from(tempDiv.childNodes).forEach((child) => {
+              if (child.nodeType === 1) {
+                if (child.tagName === "SCRIPT") {
+                  const script = document.createElement("script");
+                  if (child.src) {
+                    script.src = child.src;
+                  } else {
+                    script.textContent = child.textContent;
+                  }
+                  parent.appendChild(script);
+                } else {
+                  parent.appendChild(child);
+                }
+              }
+            });
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
   </head>
   <body class="layout bg" toc>
     <div class="body">
@@ -33,6 +81,29 @@
         <a href="https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs"
           >https://www.webpagefx.com/tools/lorem-ipsum-generator/loremipsum/paragraphs</a
         >
+        <h2>input + datalist</h2>
+        <script type="editor" data-lang="html" data-html="#input_datalist">
+          <form>
+            <input type="text" list="browsers" />
+            <datalist id="browsers">
+              <option value="ie">Internet Explorer</option>
+              <option value="ff">Firefox</option>
+              <option value="ch">Chrome</option>
+              <option value="op">Opera</option>
+              <option value="sa">Safari</option>
+            </datalist>
+            <input type="submit">
+          </form>
+          <script>
+            const div = document.querySelector("#input_datalist");
+            const form = div.querySelector('form')
+            form.addEventListener('submit', e => {
+              e.preventDefault();
+              alert(`form submitted >${form.querySelector('input').value}<`);
+            })
+          </scr ipt>
+        </script>
+        <div id="input_datalist"></div>
 
         <h2>input[type="range"]</h2>
         <script type="editor" data-lang="html">
