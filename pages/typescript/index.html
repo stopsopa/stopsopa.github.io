@@ -20,11 +20,28 @@
           --module commonjs --allowJs true --noImplicitAny true
             # from: https://khalilstemmler.com/blogs/typescript/node-starter-project/#Create-a-tsconfigjson
 
+          nodenext vs ESNext
+            # more: https://www.typescriptlang.org/tsconfig/#module
+          
+        </script>
+        <h2>TS watch mode for DEV</h2>
+        <script type="editor" data-lang="python">
+
           # ts-node/register:
             # I've used it in : https://github.com/stopsopa/argyle
             # from: https://www.learnwithjason.dev/blog/modern-node-server-typescript-2024/
               # WARNING: remove "type": "module" from package.json to make ts-node/register work again
                 # from: https://github.com/TypeStrong/ts-node/issues/2122#issuecomment-2328371035
+                # https://dev.to/tsamaya/how-to-set-up-a-node-project-using-typescript-in-2024-1ikm
+              # ACTUALLY the fact that "type": "module" breaks everything is not acceptable
+          
+          
+          # ciąg dalszy "type": "module" problemu z ts-node/register oraz ts-node-dev
+          https://typestrong.org/ts-node/docs/recipes/watching-and-restarting
+
+          final conclusion seems to be here:
+          https://blog.logrocket.com/configuring-nodemon-typescript/
+          
           
         </script>
         
