@@ -12,6 +12,22 @@
   <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
+        <h2>Setup</h2>
+        <script type="editor" data-lang="python">
+          
+          npx tsc --init --rootDir src --outDir build \
+          --esModuleInterop --resolveJsonModule --lib es6 \
+          --module commonjs --allowJs true --noImplicitAny true
+            # from: https://khalilstemmler.com/blogs/typescript/node-starter-project/#Create-a-tsconfigjson
+
+          # ts-node/register:
+            # I've used it in : https://github.com/stopsopa/argyle
+            # from: https://www.learnwithjason.dev/blog/modern-node-server-typescript-2024/
+              # WARNING: remove "type": "module" from package.json to make ts-node/register work again
+                # from: https://github.com/TypeStrong/ts-node/issues/2122#issuecomment-2328371035
+          
+        </script>
+        
         <h2>Read</h2>
 
         <script type="editor" data-lang="python">
