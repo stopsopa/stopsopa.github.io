@@ -219,6 +219,47 @@
   <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
+
+        <h2>Useful</h2>
+        <script type="editor" data-lang="sh">
+
+          git status -u
+            # list all files it sees
+
+          # Pull changes from a remote branch
+          git branch -a
+
+          #switch to remote branch
+          git checkout -b feat/branch_name origin/feat/branch_name
+
+          git push --set-upstream origin <branch>
+          git push -u origin <branch>
+
+          git commit --no-verify
+          git push --no-verify -u origin feat/name
+
+          # delete local branch
+          git branch -d feature/login
+
+          # delete remote branch
+          git push origin --delete feature/login
+
+          git reset HEAD^
+
+          # checkout file to particular commit
+          git checkout f08a63ff4fa7b8479f8c698e5998ee1afcac3a4e js/github.js
+
+          # diff for particular commit and file
+          git diff 81ee4e3ad73^ 81ee4e3ad73 -- src/infrastructure/locksmith/testFixtures/index.js
+
+          # checkout changes from other commit to see difference:
+          git checkout commit_hash  -- tartufo.toml
+          git reset -- tartufo.toml
+          git diff tartufo.toml
+
+          # obtain only the remote URL:
+          git config --get remote.origin.url
+        </script>
         <h2>git config</h2>
 
         <script type="editor" data-lang="sh">
@@ -410,46 +451,6 @@
           git clone git@github.com:GustavoMelloGit/movie-web.git .
           git fetch origin c6fe62ae8acc9948bbf6c4292ebb555c006931eb
           git reset --hard FETCH_HEAD
-        </script>
-
-        <h2>Useful</h2>
-        <script type="editor" data-lang="sh">
-
-
-
-          # Pull changes from a remote branch
-          git branch -a
-
-          #switch to remote branch
-          git checkout -b feat/branch_name origin/feat/branch_name
-
-          git push --set-upstream origin <branch>
-          git push -u origin <branch>
-
-          git commit --no-verify
-          git push --no-verify -u origin feat/name
-
-          # delete local branch
-          git branch -d feature/login
-
-          # delete remote branch
-          git push origin --delete feature/login
-
-          git reset HEAD^
-
-          # checkout file to particular commit
-          git checkout f08a63ff4fa7b8479f8c698e5998ee1afcac3a4e js/github.js
-
-          # diff for particular commit and file
-          git diff 81ee4e3ad73^ 81ee4e3ad73 -- src/infrastructure/locksmith/testFixtures/index.js
-
-          # checkout changes from other commit to see difference:
-          git checkout commit_hash  -- tartufo.toml
-          git reset -- tartufo.toml
-          git diff tartufo.toml
-
-          # obtain only the remote URL:
-          git config --get remote.origin.url
         </script>
         <h2>gitstorage-core.sh !</h2>
         <script type="editor" data-lang="sh">
