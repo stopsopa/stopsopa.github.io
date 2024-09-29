@@ -2169,7 +2169,7 @@
           fi
         </script>
 
-        <h2>Node clock controlled crush</h2>
+        <h2>Node clock controlled crash</h2>
         <script type="editor" data-lang="js">
 
           /*
@@ -2323,7 +2323,7 @@
                 throw th(`atomclock.js diff (value: '${diff}') is not defined or it doesn't match /^\\d+$/`);
               }
 
-              const crushnodeifdiffgreaterthansec = parseInt(diff, 10);
+              const crashnodeifdiffgreaterthansec = parseInt(diff, 10);
 
               const at = await tool(false);
 
@@ -2331,12 +2331,12 @@
 
               const abs = Math.abs(at - now);
 
-              if (abs > crushnodeifdiffgreaterthansec) {
+              if (abs > crashnodeifdiffgreaterthansec) {
 
-                throw th(`atomclock.js time - node UTC time differance '${abs}' is greater than '${crushnodeifdiffgreaterthansec}' sec`);
+                throw th(`atomclock.js time - node UTC time differance '${abs}' is greater than '${crashnodeifdiffgreaterthansec}' sec`);
               }
 
-              console.log(`Time differance between atomclock.js time and node.js clock time is '${abs}', should be smaller than ${crushnodeifdiffgreaterthansec}`)
+              console.log(`Time differance between atomclock.js time and node.js clock time is '${abs}', should be smaller than ${crashnodeifdiffgreaterthansec}`)
 
               console.log("Time diff is small enough 👍")
             }
@@ -2745,6 +2745,23 @@
           </tbody>
         </table>
 
+        <h2>fetch timeout</h2>
+        <script type="editor" data-lang="js">
+
+          (async function () {
+            try {
+              const resp = await fetch("http://localhost:4299/api/timeout", {
+                signal: AbortSignal.timeout(2000),
+              });
+          
+              console.log("resp: ", resp);
+            } catch (e) {
+              console.log("catch: ", e);
+            }
+          })();
+          // from: https://medium.com/deno-the-complete-reference/timeout-fetch-request-in-node-js-4231f33a9b95
+
+        </script>
         <h2>request.js</h2>
         <script type="editor" data-lang="js">
 
