@@ -12,6 +12,33 @@
   <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
+        <h2>Default tsconfig.json</h2>
+
+        <script type="editor" data-lang="sh">
+
+          // TSConfig Reference
+            // in search for default values of tsconfig.json
+            // https://www.typescriptlang.org/tsconfig/
+            // just go to https://www.typescriptlang.org/ and search (top right corner) -> TSConfig Reference
+
+          bash -c -e "
+          mkdir -p ~/ts_remove_me_later 
+          cd ~/ts_remove_me_later 
+          asdf local nodejs 20.17.0
+          npm install -g typescript
+          rm -rf tsconfig.json
+          tsc --init 
+          cat <<EEE
+          
+          run
+          CMD + P in VSCode and paste
+          
+          \$(realpath tsconfig.json)
+          
+          EEE
+          "
+
+        </script>
         <h2>Setup</h2>
         <script type="editor" data-lang="python">
           
@@ -112,10 +139,6 @@
           npx tsc line.ts --showConfig
 
 
-          // TSConfig Reference
-            // in search for default values of tsconfig.json
-            // https://www.typescriptlang.org/tsconfig/
-            // just go to https://www.typescriptlang.org/ and search (top right corner) -> TSConfig Reference
         </script>
         <h2>JSDoc</h2>
 
