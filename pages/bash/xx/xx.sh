@@ -492,6 +492,7 @@ EEE
         if [ "${EXECUTEUSING_SOURCE}" = "1" ]; then
             # echo 'source block'
             source "${XX_GENERATED}" "${@}"
+            set +e
         else
             # echo 'exec block'    
             /bin/bash "${XX_GENERATED}" "${@}"
