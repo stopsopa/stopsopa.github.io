@@ -256,6 +256,33 @@
 
           console.log('k: ', k)
         </script>
+        <h2>JSONType</h2>
+
+        <script type="editor" data-lang="typescript">
+
+          type JSONValue = 
+            | string
+            | number
+            | boolean
+            | null
+            | JSONArray
+            | JSONObject;
+          
+          type JSONArray = Array<JSONValue>;
+          
+          interface JSONObject {
+            [key: string]: JSONValue;
+          }
+          
+          type JSONType = JSONArray | JSONObject;
+          
+          const t: JSONType = {abc: ["test"]};
+          
+          const k: JSONType = [t, t, "est"];
+          
+          const e: JSONType = t;
+          
+        </script>
         <h2>Omit</h2>
 
         <script type="editor" data-lang="typescript">
