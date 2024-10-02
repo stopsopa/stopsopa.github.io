@@ -674,6 +674,44 @@
             "recommendations": ["esbenp.prettier-vscode"]
           }
         </script>
+        <h2>prettier configuration</h2>
+        <script type="editor" data-lang="sh">
+
+          npm init @eslint/config@latest
+
+          prettier-plugin-curly
+            # https://github.com/JoshuaKGoldberg/prettier-plugin-curly
+            # from: https://youtu.be/E2tbZoTjcQA?t=683
+
+          prettier-plugin-packagejson
+            # https://github.com/matzkoh/prettier-plugin-packagejson
+            # from: https://youtu.be/E2tbZoTjcQA?t=696
+
+          # prettier.config.js - for commonjs
+          module.exports = {
+            printWidth: 120,
+            plugins: ["prettier-plugin-packagejson", "prettier-plugin-curly"],
+          };
+
+          # vscode: .vscode/settings.json
+          # setup default formatter in vscode
+          {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+          }
+
+          # setup husky:
+            # https://youtu.be/E2tbZoTjcQA?t=859
+            # in package.json
+            {
+              ...
+              "lint-staged": {
+                "*": "prettier --ignore-unknown --write"
+              }
+              ...
+            }
+          
+        </script>
+        
 
         <h2>read entire stdin into string variable</h2>
         <script type="editor" data-lang="sh">
