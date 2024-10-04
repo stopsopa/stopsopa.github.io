@@ -398,13 +398,14 @@
         <a href="https://youtu.be/jjso3UGVn08?t=1359">https://youtu.be/jjso3UGVn08?t=1359</a>
         <script type="editor" data-lang="typescript">
 
-          import React from 'react';
+          import React, { useMemo, ReactNode } from 'react';
 
           interface MyProps {
               data: number,
               optionalData?: number,
           }
 
+          // const Component: ReactNode;
           // const Component: React.FC<MyProps> = props => <>{props.data}</>
           // const Component = ({ data }: MyProps) => <>{data}</>
           // const Component = ({data}: MyProps & { children: React.ReactNode }) => <>{data}</>
