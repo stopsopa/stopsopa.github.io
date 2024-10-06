@@ -23,7 +23,7 @@
           data-testid="custom-element"
             query using: getByTestId https://testing-library.com/docs/queries/bytestid/
             import {screen} from '@testing-library/dom'
-            const element = screen.getByTestId('custom-element')
+            const element = await screen.getByTestId('custom-element')
 
           ASYNC:        
             async: https://testing-library.com/docs/dom-testing-library/api-async/
