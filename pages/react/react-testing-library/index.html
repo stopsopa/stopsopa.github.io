@@ -14,11 +14,51 @@
       <div class="inside">
         <h2>Help</h2>
         <script type="editor" data-lang="sh">
+
+          ASYNC:        
+            async: https://testing-library.com/docs/dom-testing-library/api-async/
+            appearance and disappearance: https://testing-library.com/docs/guide-disappearance/
+            findBy vs getBy vs queryBy vs getAllBy vs findAllBy vs queryAllBy: 
+          
+            const { getByText } = render(<ViewCuratedOffer />);
+            expect(getByText('Cancel')).toBeInTheDocument();
+            // or          
+            render(<FilterComponent { ...props } />);
+            const title = screen.getByText('Filters');
+            expect(title).toBeInTheDocument();
+          
+              https://testing-library.com/docs/dom-testing-library/cheatsheet/#queries
+              findBy methods are a combination of getBy queries and waitFor 
+                from: https://testing-library.com/docs/dom-testing-library/api-async/#findby-queries
+              IMPORTANT: Returning a falsy condition is not sufficient to trigger a retry, the callback must throw an error in order to retry the condition  
+          
+            await waitFor(() => {
+              const spinner = document.querySelector('.bg-spinner');
+              expect(spinner).toBeInTheDocument();
+            });
+            // or
+            await waitFor(document.querySelector('.bg-spinner'));
+            // or
+            await waitFor(screen.getByRole('button'));
+          
+            // other
+          
+            await waitForElementToBeRemoved(() => {
+              expect(queryByText('i, robot')).toBeInTheDocument()
+            })
+            // or
+            await waitFor(() => {
+              expect(queryByText('i, robot')).not.toBeInTheDocument()
+            })
           
           aria-anything="" or aria-role=""
           role="none"
             then query with getByRole, more: https://testing-library.com/docs/queries/about/#priority
             examples: https://testing-library.com/docs/queries/byrole/
+
+            see also logRoles: https://testing-library.com/docs/dom-testing-library/api-accessibility#logroles
+                     getNodeText: https://testing-library.com/docs/dom-testing-library/api-custom-queries#getnodetext
+                     within: https://testing-library.com/docs/dom-testing-library/api-within
             
             <div role="tablist">
               <button role="tab" aria-selected="true">Native</button>   screen.getByRole('tab', { selected: true })
@@ -50,11 +90,7 @@
             <h3>Heading Level Three</h3>                screen.getByRole('heading', { level: 3 })
             <div role="heading" aria-level="2">Second Heading Level Two</div>
 
-          findBy vs getBy vs queryBy vs getAllBy vs findAllBy vs queryAllBy: 
-            https://testing-library.com/docs/dom-testing-library/cheatsheet/#queries
-
-          async: https://testing-library.com/docs/dom-testing-library/api-async/
-          appearance and disappearance: https://testing-library.com/docs/guide-disappearance/
+          getByText https://testing-library.com/docs/queries/about/#textmatch
           
           data-testid="custom-element"
             query using: getByTestId https://testing-library.com/docs/queries/bytestid/
