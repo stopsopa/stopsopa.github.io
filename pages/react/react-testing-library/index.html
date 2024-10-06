@@ -14,6 +14,16 @@
       <div class="inside">
         <h2>Help</h2>
         <script type="editor" data-lang="python">
+          
+          ARIA roles
+              https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques#roles
+              https://www.w3.org/TR/html-aria/#docconformance
+              https://testing-library.com/docs/queries/byrole/
+          
+          data-testid="custom-element"
+            query using: getByTestId https://testing-library.com/docs/queries/bytestid/
+            import {screen} from '@testing-library/dom'
+            const element = screen.getByTestId('custom-element')
 
           ASYNC:        
             async: https://testing-library.com/docs/dom-testing-library/api-async/
@@ -91,11 +101,6 @@
             <div role="heading" aria-level="2">Second Heading Level Two</div>
 
           getByText https://testing-library.com/docs/queries/about/#textmatch
-          
-          data-testid="custom-element"
-            query using: getByTestId https://testing-library.com/docs/queries/bytestid/
-            import {screen} from '@testing-library/dom'
-            const element = screen.getByTestId('custom-element')
 
           # quide: https://kentcdodds.com/blog/common-mistakes-with-react-testing-library
 
@@ -104,12 +109,6 @@
 
           examples: https://react-testing-examples.netlify.app/
             # from: https://testing-library.com/docs/example-external
-          
-          ARIA roles
-              https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques#roles
-              https://www.w3.org/TR/html-aria/#docconformance
-              https://testing-library.com/docs/queries/byrole/
-
 
           select option:
             https://claritydev.net/blog/testing-select-components-react-testing-library
