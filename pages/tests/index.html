@@ -12,6 +12,30 @@
   <body class="layout bg">
     <div class="body">
       <div class="inside">
+        <h2>Mock | Stub</h2>
+
+        <script type="editor" data-lang="sh">
+
+          Stub:
+            - prevent logic from being executed
+            - replaces (predetermines) what given method should return
+         
+          Mock: (simulating object)
+            - prevent logic from being executed
+            - can be predetermined what arguments it takes and what result it retuns
+            List mockedList = mock(List.class);
+            
+            mockedList.add("one");
+            mockedList.clear();
+            
+            verify(mockedList).add("one");
+            verify(mockedList).clear();
+
+          Spy: (recording interactions with real object - wrapper)
+            - executed real method logic
+            - you can check how (with what arguments) and how many times given method was called
+
+        </script>
         <h2>Selenium</h2>
         <div class="card">
           <h3>Webdriver</h3>
