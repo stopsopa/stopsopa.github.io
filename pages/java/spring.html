@@ -186,6 +186,7 @@
 
                     // Assert
                     assertTrue(actualMessage.contains(expectedMessage));
+                    assertEquals("Cannot acquire data source", exception.getMessage());
                     // testing for error thrown ^^^
 
               // Act
@@ -193,6 +194,10 @@
 
               // Assert
               assertEquals(true, actualResults);
+
+              doReturn(null).when(productIntakeRepository).update(any(ProductIntake.class));
+              doReturn(productIntake).when(searchService).getProductIntakeById(anyString());              
+              doNothing().when(service).normalizeProductTypeIntake(any(), any(), anyBoolean(), anyBoolean());
             }
           }
         </script>
