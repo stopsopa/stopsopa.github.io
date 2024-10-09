@@ -242,6 +242,8 @@
 
             // WE ARE MOCKING THIS METHOD ON THE SERVICE repository
             doReturn(List.of(), List.of()).when(repository).findPlProductGroupResellerTypeListByPlProductGroupID(any());
+            // if method returns void then use doNothing().when(...).xx(any(), ...);
+            
 
             PlProductGroup result1 = PlProductGroup.builder()
                     .plProductGroupID(7)
