@@ -95,12 +95,25 @@ Warning: Just specify type="typescript" and script on site will load
         });
 
         document.addEventListener("DOMContentLoaded", () => {
+
+          // to replace domain.com to ... other stuff
           Array.prototype.slice.call(document.querySelectorAll('[class="domain' + '.com"]')).forEach(function (tag) {
             var text = tag.innerHTML;
 
             text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host);
 
             tag.innerHTML = text;
+          });
+
+          // to eval what we hve in tinymce
+          Array.prototype.slice.call(document.querySelectorAll("[data-eval]")).forEach(function (tag) {
+            var text = tag.innerHTML;
+
+            console.log("text", text, "tag", tag);
+
+            {
+              eval(text);
+            }
           });
 
           resolve();

@@ -13,6 +13,8 @@ const types = ["sine", "square", "sawtooth", "triangle"];
 const noteMatch = /^[A-Z]\d$/;
 const noteEnd = /^B\d$/;
 
+const localstorageKey = "sound-experiment";
+
 var BrowserDetect = {
   init: function () {
     this.identifyBrowser();
@@ -344,7 +346,11 @@ const Main = () => {
     type: "${type}",
     duration: "${typeof dur === "undefined" ? duration : dur}"
   });
+
+  localStorage.setItem('${localstorageKey}', ${typeof freq === "undefined" ? frequency : freq})
 }
+
+
      
      `;
   }
@@ -390,6 +396,8 @@ const Main = () => {
   window.beepStackStop || (window.beepStackStop = []); 
   window.beepStackStop.push(stop)
   // then run beepStackStop.pop()() to stop
+
+  localStorage.setItem('${localstorageKey}', ${typeof freq === "undefined" ? frequency : freq})
 }
 `;
   }
@@ -424,6 +432,25 @@ const Main = () => {
     tones.stop();
     setPlaying(false);
   }, [beepMode]);
+
+  // listen in localstorage
+  useEffect(() => {
+    window.addEventListener(
+      "storage",
+      () => {
+        const raw = localStorage.getItem(localstorageKey);
+
+        const number = parseFloat(raw).toFixed(2);
+
+        console.log("trigger", number);
+
+        const code = beepFunc(number, 200);
+
+        trigger(() => eval(code));
+      },
+      false
+    );
+  }, []);
 
   function run() {
     if (beepMode) {
