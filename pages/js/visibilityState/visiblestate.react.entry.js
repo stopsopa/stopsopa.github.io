@@ -8,45 +8,38 @@ const root = createRoot(container);
 
 root.render(<App />);
 
-const log = console.log;
-
 function useFocus() {
-  const [focus, setFocus] = useState(document.visibilityState === "visible");
+  const [visible, setVisible] = useState(document.visibilityState === "visible");
 
   useEffect(() => {
-    const handleVisibilityChange = () => {
+    const change = () => {
       // setTimeout(() => {
-        if (document.visibilityState === "visible") {
-          log("visible");
-          setFocus(true);
-        } else {
-          log("not visible");
-
-          setFocus(false);
-        }
+      if (document.visibilityState === "visible") {
+        setVisible(true);
+      } else {
+        setVisible(false);
+      }
       // }, 1000);
     };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    document.addEventListener("visibilitychange", change);
 
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
+    return () => document.removeEventListener("visibilitychange", change);
   }, []);
 
-  return focus;
+  return visible;
 }
 
 function App() {
-  const focus = useFocus();
+  const visible = useFocus();
 
-  if (focus) {
+  if (visible) {
     localStorage.setItem("sound-experiment", 830.61);
 
-    return <div>focused</div>;
+    return <div>visible</div>;
   }
 
   localStorage.setItem("sound-experiment", 415.3);
 
-  return <div>blured</div>;
+  return <div>invisible</div>;
 }
