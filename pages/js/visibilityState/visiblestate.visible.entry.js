@@ -8,7 +8,7 @@ const root = createRoot(container);
 
 root.render(<App />);
 
-function useFocus() {
+function useVisible() {
   const [visible, setVisible] = useState(document.visibilityState === "visible");
 
   useEffect(() => {
@@ -31,7 +31,7 @@ function useFocus() {
 }
 
 function App() {
-  const visible = useFocus();
+  const visible = useVisible();
 
   if (visible) {
     localStorage.setItem("sound-experiment", 830.61);
