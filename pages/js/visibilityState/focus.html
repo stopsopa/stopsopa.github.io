@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          // to eval what we hve in tinymce
+          Array.prototype.slice.call(document.querySelectorAll("[data-eval]")).forEach(function (tag) {
+            var text = tag.innerHTML;
+
+            console.log("text", text, "tag", tag);
+
+            {
+              eval(text);
+            }
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>vanila</h2>
+        <p>To test first launch <a href="/pages/js/sound.html">/pages/js/sound.html</a></p>
+        <script type="editor" data-lang="js" data-eval>
+          {
+
+            const log = console.log;
+
+            function focus() {
+              setTimeout(() => {
+                if (document.hidden) {
+                  log("focus hidden");
+                } else {
+                  log("focus visible");
+                  
+                  localStorage.setItem('sound-experiment', 830.61)
+                }
+              }, 100);
+            }
+            function blur() {
+              setTimeout(() => {
+                if (document.hidden) {
+                  log("blur hidden");
+                } else {
+                  log("blur visible");
+                }
+                
+                localStorage.setItem('sound-experiment', 415.3)
+              }, 100);
+            }
+
+            window.addEventListener("focus", focus);
+            window.addEventListener("blur", blur);
+            
+          }
+        </script>
+      </div>
+    </div>
+    <script src="/js/github.js"></script>
+  </body>
+</html>
