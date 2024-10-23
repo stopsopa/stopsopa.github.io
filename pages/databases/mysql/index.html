@@ -56,11 +56,17 @@
         <h2>backup & restore</h2>
         <script type="editor" data-lang="python">
 
+          -C - włącza kompresję, Test: zysk 19 sekund na bazie wielkości 116 mb kierunek zrzutu maszyna prod -> vagrant
+
           # backup
           mysqldump -C -u ${USER} -p${PASS} -P${PORT} ${PMADB1} ${TABLE1} ${TABLE2} | mysql -u ${USER} -p${PASS} -ppass48\ endw ${PMADB}
+          
+          # where ${TABLE1} ${TABLE2} i optional, if skipped then entire database will be dumped, then use --ignore-table 
+          # if you would like to skip some tables
 
           mysqldump --column-statistics=0 -C -h ${HOST} -u ${USER} -p${PASS} ${PMADB} | gzip -9 > "$(date '+%Y-%m-%d_%H-%M-%S')_sql.sql"
           mysqldump -u ${USER} -p${PASS} ${PMADB} --ignore-table=${PMADB}.table1 --ignore-table=${PMADB}.table2
+          docker exec image mysqldump -u ${USER} -p${PASS} database | gzip -9 > $(date +%Y-%m-%d_%H-%M-%S)_backup.sql.gz
 
           gunzip [backupfile.sql.gz]
 
