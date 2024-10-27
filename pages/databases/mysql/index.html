@@ -60,8 +60,8 @@
 
           # backup
           mysqldump -C -u ${USER} -p${PASS} -P${PORT} ${PMADB1} ${TABLE1} ${TABLE2} | mysql -u ${USER} -p${PASS} -ppass48\ endw ${PMADB}
-          
-          # where ${TABLE1} ${TABLE2} i optional, if skipped then entire database will be dumped, then use --ignore-table 
+
+          # where ${TABLE1} ${TABLE2} i optional, if skipped then entire database will be dumped, then use --ignore-table
           # if you would like to skip some tables
 
           mysqldump --column-statistics=0 -C -h ${HOST} -u ${USER} -p${PASS} ${PMADB} | gzip -9 > "$(date '+%Y-%m-%d_%H-%M-%S')_sql.sql"

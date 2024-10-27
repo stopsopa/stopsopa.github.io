@@ -196,7 +196,7 @@
               assertEquals(true, actualResults);
 
               doReturn(null).when(productIntakeRepository).update(any(ProductIntake.class));
-              doReturn(productIntake).when(searchService).getProductIntakeById(anyString());              
+              doReturn(productIntake).when(searchService).getProductIntakeById(anyString());
               doNothing().when(service).normalizeProductTypeIntake(any(), any(), anyBoolean(), anyBoolean());
             }
           }
@@ -248,7 +248,7 @@
             // WE ARE MOCKING THIS METHOD ON THE SERVICE repository
             doReturn(List.of(), List.of()).when(repository).findPlProductGroupResellerTypeListByPlProductGroupID(any());
             // if method returns void then use doNothing().when(...).xx(any(), ...);
-            
+
 
             PlProductGroup result1 = PlProductGroup.builder()
                     .plProductGroupID(7)

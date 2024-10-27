@@ -347,6 +347,7 @@ const Main = () => {
     duration: "${typeof dur === "undefined" ? duration : dur}"
   });
 
+  // execute this line from other tabs to trigger sound on this tab
   localStorage.setItem('${localstorageKey}', ${typeof freq === "undefined" ? frequency : freq})
 }
 
@@ -397,6 +398,7 @@ const Main = () => {
   window.beepStackStop.push(stop)
   // then run beepStackStop.pop()() to stop
 
+  // execute this line from other tabs to trigger sound on this tab
   localStorage.setItem('${localstorageKey}', ${typeof freq === "undefined" ? frequency : freq})
 }
 `;

@@ -43,10 +43,10 @@ function App() {
   if (focus) {
     localStorage.setItem("sound-experiment", 830.61);
 
-    return <div>visible</div>;
+    return <div>focused</div>;
   }
 
   localStorage.setItem("sound-experiment", 415.3);
 
-  return <div>not visible</div>;
+  return <div>not focused</div>;
 }

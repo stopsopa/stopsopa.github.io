@@ -244,7 +244,7 @@
 
           // also add LICENSE file - npx jsr publish will complain if not created https://github.com/stopsopa/nlab/blob/1bdd6d16d9193c7f3b72ca08d689f6c5748822fd/LICENSE
             // more about it: https://jsr.io/docs/troubleshooting#missinglicense
-          
+
           // just that, rest will be generated automatically
           {
             "name": "@stopsopa/line",
@@ -733,9 +733,7 @@
               }
               ...
             }
-          
         </script>
-        
 
         <h2>read entire stdin into string variable</h2>
         <script type="editor" data-lang="sh">
@@ -1518,7 +1516,10 @@
           https://eslint.org/docs/1.0.0/rules/padded-blocks
         </script>
         <h2>npm benchmark</h2>
-        <a href="https://p.datadoghq.eu/sb/d2wdprp9uki7gfks-c562c42f4dfd0ade4885690fa719c818?fromUser=false&refresh_mode=sliding&tpl_var_npm%5B0%5D=%2A&tpl_var_pnpm%5B0%5D=%2A&tpl_var_yarn-classic%5B0%5D=%2A&tpl_var_yarn-modern%5B0%5D=%2A&tpl_var_yarn-nm%5B0%5D=%2A&tpl_var_yarn-pnpm%5B0%5D=no&from_ts=1720267619233&to_ts=1728043619233&live=true">benchmark</a>
+        <a
+          href="https://p.datadoghq.eu/sb/d2wdprp9uki7gfks-c562c42f4dfd0ade4885690fa719c818?fromUser=false&refresh_mode=sliding&tpl_var_npm%5B0%5D=%2A&tpl_var_pnpm%5B0%5D=%2A&tpl_var_yarn-classic%5B0%5D=%2A&tpl_var_yarn-modern%5B0%5D=%2A&tpl_var_yarn-nm%5B0%5D=%2A&tpl_var_yarn-pnpm%5B0%5D=no&from_ts=1720267619233&to_ts=1728043619233&live=true"
+          >benchmark</a
+        >
         <h2>npm</h2>
         <script type="editor" data-lang="sh">
 
@@ -2826,14 +2827,13 @@
               const resp = await fetch("http://localhost:4299/api/timeout", {
                 signal: AbortSignal.timeout(2000),
               });
-          
+
               console.log("resp: ", resp);
             } catch (e) {
               console.log("catch: ", e);
             }
           })();
           // from: https://medium.com/deno-the-complete-reference/timeout-fetch-request-in-node-js-4231f33a9b95
-
         </script>
         <h2>request.js</h2>
         <script type="editor" data-lang="js">

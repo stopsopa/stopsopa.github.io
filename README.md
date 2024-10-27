@@ -95,7 +95,6 @@ Warning: Just specify type="typescript" and script on site will load
         });
 
         document.addEventListener("DOMContentLoaded", () => {
-
           // to replace domain.com to ... other stuff
           Array.prototype.slice.call(document.querySelectorAll('[class="domain' + '.com"]')).forEach(function (tag) {
             var text = tag.innerHTML;

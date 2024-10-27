@@ -48,17 +48,18 @@
 
             const handleVisibilityChange = () => {
               if (document.visibilityState === "visible") {
-                console.log("visible");
-                localStorage.setItem('sound-experiment', 830.61)
+                localStorage.setItem('sound-experiment', 830.61);
+                document.querySelector('.state').innerHTML = 'visible';
               } else {
-                console.log("not visible");
-                localStorage.setItem('sound-experiment', 415.3)
+                localStorage.setItem('sound-experiment', 415.3);
+                document.querySelector('.state').innerHTML = 'not visible';
               }
             };
             document.addEventListener("visibilitychange", handleVisibilityChange);
             handleVisibilityChange();
           }
         </script>
+        <div class="state"></div>
       </div>
     </div>
     <script src="/js/github.js"></script>

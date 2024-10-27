@@ -41,5 +41,5 @@ function App() {
 
   localStorage.setItem("sound-experiment", 415.3);
 
-  return <div>invisible</div>;
+  return <div>not visible</div>;
 }
