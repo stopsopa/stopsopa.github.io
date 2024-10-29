@@ -30,11 +30,13 @@ Object.keys(mimesMap).forEach((k) => {
 });
 
 function Viewer() {
-  const [file, setFile] = useState(new URL(window.location.href).searchParams.get("file") || "");
+  const zz = "urlw" + "izzard.schema://url" + "wizzard.hostnegotiated";
 
-  const [submit, setSubmit] = useState("");
+  function getFile() {
+    return new URL(window.location.href).searchParams.get("file") || "";
+  }
 
-  const [states, setStates] = useState({});
+  const [file, setFile] = useState(getFile());
 
   const [ace, setAceRaw] = useState({});
 
@@ -50,46 +52,20 @@ function Viewer() {
     });
   }
 
-  useEffect(() => {
-    document.addEventListener("click", (e) => {
-      const target = e.target;
+  function onSubmit(e, customFile, dontPush) {
+    if (e) {
+      e.preventDefault();
+    }
 
-      if (target.tagName.toLowerCase() === "input" && target.hasAttribute("readOnly")) {
-        target.select();
-      }
-    });
-  }, []);
+    if (!customFile) {
+      customFile = file;
+    }
 
-  function getRelative() {
-    return `${location.pathname}?file=${encodeURIComponent(file)}`;
-  }
-
-  useEffect(() => {
-    const relative = getRelative();
-
-    const final = `${location.protocol}//${location.host}${relative}`;
-
-    const noencode = `${location.pathname}?file=${file}`;
-
-    const urlwizz = "urlw" + "izzard.schema://url" + "wizzard.hostnegotiated" + noencode;
-
-    const urlwizzdirv = "urlw" + "izzard.schema://url" + "wizzard.hostnegotiated" + file;
-
-    setStates({
-      relative,
-      final,
-      noencode,
-      urlwizz,
-      urlwizzdir: urlwizzdirv,
-    });
-  }, [file]);
-
-  useEffect(() => {
     (async function () {
       try {
-        const relative = getRelative();
+        const changed = `${location.pathname}?file=${encodeURIComponent(customFile)}`;
 
-        let res = await fetch(file, {
+        let res = await fetch(customFile, {
           method: "HEAD",
         });
 
@@ -122,9 +98,11 @@ function Viewer() {
 
         setAce("Loading...");
 
-        window.history.pushState({}, "", relative);
+        if (!dontPush) {
+          window.history.pushState({}, "", changed);
+        }
 
-        res = await fetch(file);
+        res = await fetch(customFile);
 
         const text = await res.text();
 
@@ -144,13 +122,27 @@ function Viewer() {
         );
       }
     })();
-  }, [submit]);
-
-  function onSubmit(e) {
-    e.preventDefault();
-
-    setSubmit(file);
   }
+
+  useEffect(() => {
+    document.addEventListener("click", (e) => {
+      const target = e.target;
+
+      if (target.tagName.toLowerCase() === "input" && target.hasAttribute("readOnly")) {
+        target.select();
+      }
+    });
+
+    window.addEventListener("popstate", function (event) {
+      const file = getFile();
+
+      setFile(file);
+
+      onSubmit(null, file, true);
+    });
+
+    onSubmit(null, file, true);
+  }, []);
 
   return (
     <>
@@ -159,23 +151,35 @@ function Viewer() {
       </form>
 
       <br />
-      <input type="search" readOnly value={states.final || ""} />
 
-      <input type="search" readOnly value={states.relative || ""} />
+      <label>
+        <span>href:</span>
+        <input
+          type="search"
+          readOnly
+          value={`${location.protocol}//${location.host}${location.pathname}?file=${encodeURIComponent(file)}`}
+        />
+      </label>
 
-      <input type="search" readOnly value={states.noencode || ""} />
+      <label>
+        <span>pathname + search:</span>
+        <input type="search" readOnly value={`${location.pathname}?file=${encodeURIComponent(file)}`} />
+      </label>
 
-      <input type="search" readOnly value={states.urlwizz || ""} />
+      <label>
+        <span>zz + href:</span>
+        <input type="search" readOnly value={`${zz}${location.pathname}?file=${encodeURIComponent(file)}`} />
+      </label>
 
-      <input type="search" readOnly value={states.urlwizzdir || ""} />
-
-      <a href={states.final || ""}>{states.final || ""}</a>
-
-      <a href={file || ""}>{file || ""}</a>
+      <label>
+        <span>zz + file:</span>
+        <input type="search" readOnly value={`${zz}${file}`} />
+      </label>
 
       <Ace content={ace.value || ""} lang={ace.mime || "text"} />
 
       <h3>extracted meta</h3>
+
       <Ace
         content={(function ({ value, ...rest }) {
           return JSON.stringify(
