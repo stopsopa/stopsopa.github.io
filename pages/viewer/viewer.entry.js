@@ -179,6 +179,9 @@ function Viewer() {
       <a href={url || ""} id="direct">
         {url || ""}
       </a>
+      <hr />
+      <Ace content={ace.value || ""} lang={ace.mime || "text"} />
+      <br />
       <pre>
         {JSON.stringify(
           {
@@ -190,9 +193,6 @@ function Viewer() {
           4
         )}
       </pre>
-      <hr />
-      <Ace content={ace.value || ""} lang={ace.mime || "text"} />
-      <br />
       <p>allowed mime types:</p>
     </>
   );
