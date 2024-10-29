@@ -286,8 +286,9 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap, passRefTo
         const reservedHeightPixelsForHeaders = reserveLinesForHeaders * pixelsPerAceEditorLine;
 
         let minHeight = parseInt(window.innerHeight - reservedHeightPixelsForHeaders, 10);
-        // const finalHeight = minHeight > height ? minHeight : height;
-        const finalHeight = height;
+
+        const finalHeight = minHeight > height ? minHeight : height;
+        // const finalHeight = height;
 
         div.style.height = finalHeight + "px";
 
