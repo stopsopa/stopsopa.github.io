@@ -189,6 +189,8 @@ function Viewer() {
         })(ace)}
         lang="json"
       />
+      <br />
+      <br />
     </>
   );
 }
