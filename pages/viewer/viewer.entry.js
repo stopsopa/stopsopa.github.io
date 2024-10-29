@@ -14,6 +14,7 @@ const mimesMap = {
   "application/json": "json",
   "application/node": "javascript",
   "application/octet-stream": "python",
+  "image/svg+xml": "svg",
 };
 
 const mimeMapCi = structuredClone(mimesMap);
@@ -22,8 +23,6 @@ Object.keys(mimesMap).forEach((k) => {
   mimeMapCi[k.toLowerCase()] = mimesMap[k];
   mimeMapCi[k.toLowerCase().split(";")[0]] = mimesMap[k];
 });
-
-const mimes = Object.keys(mimeMapCi);
 
 function Viewer() {
   const [url, setUrl] = useState(new URL(window.location.href).searchParams.get("file"));
@@ -34,7 +33,7 @@ function Viewer() {
 
   const [ace, setAceRaw] = useState({});
 
-  function setAce(value, mime) {
+  function setAce(value, mime, more) {
     if (typeof mime !== "string") {
       mime = "text";
     }
@@ -42,6 +41,7 @@ function Viewer() {
     setAceRaw({
       value,
       mime,
+      ...more,
     });
   }
 
@@ -94,23 +94,13 @@ function Viewer() {
 
         log("headers", JSON.stringify(headers, null, 4));
 
-        log("condition: ", {
-          [`typeof headers["content-type"] !== "string"`]: typeof headers["content-type"] !== "string",
-          [`!headers["content-type"].trim()`]: !headers["content-type"].trim(),
-          [`!mimes.includes(headers["content-type"].toLowerCase())`]: !mimes.includes(
-            headers["content-type"].toLowerCase()
-          ),
-          [`res.status !== 200`]: res.status !== 200,
-          [`!headers["content-type"]`]: !headers["content-type"],
-        });
-
         const hmime = headers["content-type"];
 
         const _mime = mimeMapCi[hmime.toLowerCase().split(";")[0]];
 
         log(`headers["content-type"].toLowerCase() >${hmime}< _mime >${_mime}<`);
 
-        if (!_mime || res.status !== 200) {
+        if (res.status !== 200) {
           setAce(
             JSON.stringify(
               {
@@ -119,7 +109,11 @@ function Viewer() {
               },
               null,
               4
-            )
+            ),
+            undefined,
+            {
+              header: headers["content-type"],
+            }
           );
 
           return;
@@ -178,13 +172,10 @@ function Viewer() {
       <a href={url || ""} id="direct">
         {url || ""}
       </a>
-      <hr />
-      <Ace content={ace.value || ""} lang={ace.mime || "text"} />
-      <br />
-      <p>allowed mime types:</p>
       <pre>
         {JSON.stringify(
           {
+            header: ace.header || "",
             mime: ace.mime,
             mimeMapCi,
           },
@@ -192,6 +183,10 @@ function Viewer() {
           4
         )}
       </pre>
+      <hr />
+      <Ace content={ace.value || ""} lang={ace.mime || "text"} />
+      <br />
+      <p>allowed mime types:</p>
     </>
   );
 }
