@@ -112,7 +112,7 @@ function Viewer() {
             ),
             undefined,
             {
-              header: headers["content-type"],
+              header: hmime,
             }
           );
 
@@ -127,7 +127,9 @@ function Viewer() {
 
         const text = await res.text();
 
-        setAce(text, _mime);
+        setAce(text, _mime, {
+          header: hmime,
+        });
       } catch (e) {
         setAce(
           JSON.stringify(
