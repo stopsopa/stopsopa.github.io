@@ -13,8 +13,13 @@ const mimesMap = {
   "application/x-sh": "sh",
   "application/json": "json",
   "application/node": "javascript",
+  "text/javascript": "javascript",
   "application/octet-stream": "python",
   "image/svg+xml": "svg",
+  "text/jsx": "javascript",
+  "text/tsx": "typescript",
+  "text/x-scss": "scss",
+  "application/xml": "xml",
 };
 
 const mimeMapCi = structuredClone(mimesMap);
