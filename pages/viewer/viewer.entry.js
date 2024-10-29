@@ -22,17 +22,17 @@ const mimesMap = {
   "application/xml": "xml",
 };
 
-const mimeMapCi = structuredClone(mimesMap);
+const mimes = structuredClone(mimesMap);
 
 Object.keys(mimesMap).forEach((k) => {
-  mimeMapCi[k.toLowerCase()] = mimesMap[k];
-  mimeMapCi[k.toLowerCase().split(";")[0]] = mimesMap[k];
+  mimes[k.toLowerCase()] = mimesMap[k];
+  mimes[k.toLowerCase().split(";")[0]] = mimesMap[k];
 });
 
 function Viewer() {
-  const [url, setUrl] = useState(new URL(window.location.href).searchParams.get("file"));
+  const [file, setFile] = useState(new URL(window.location.href).searchParams.get("file") || "");
 
-  const [submit, setSubmitRaw] = useState(0);
+  const [submit, setSubmit] = useState("");
 
   const [states, setStates] = useState({});
 
@@ -50,24 +50,22 @@ function Viewer() {
     });
   }
 
-  function setSubmit() {
-    setSubmitRaw((v) => v + 1);
-  }
-
   useEffect(() => {
     document.addEventListener("click", (e) => {
       const target = e.target;
 
-      if (target.tagName.toLowerCase() === "input") {
+      if (target.tagName.toLowerCase() === "input" && target.hasAttribute("readOnly")) {
         target.select();
       }
     });
   }, []);
 
-  useEffect(() => {
-    const file = url;
+  function getRelative() {
+    return `${location.pathname}?file=${encodeURIComponent(file)}`;
+  }
 
-    const relative = `${location.pathname}?file=${encodeURIComponent(file)}`;
+  useEffect(() => {
+    const relative = getRelative();
 
     const final = `${location.protocol}//${location.host}${relative}`;
 
@@ -84,26 +82,24 @@ function Viewer() {
       urlwizz,
       urlwizzdir: urlwizzdirv,
     });
+  }, [file]);
 
+  useEffect(() => {
     (async function () {
       try {
-        log("view", `before first fetch`);
+        const relative = getRelative();
+
         let res = await fetch(file, {
           method: "HEAD",
         });
-        log("view", `after first fetch`, res);
 
         const headers = {};
 
         res.headers.forEach((value, key) => (headers[key] = value));
 
-        log("headers", JSON.stringify(headers, null, 4));
+        const rawContentTypeHeader = headers["content-type"];
 
-        const hmime = headers["content-type"];
-
-        const _mime = mimeMapCi[hmime.toLowerCase().split(";")[0]];
-
-        log(`headers["content-type"].toLowerCase() >${hmime}< _mime >${_mime}<`);
+        const contentTypeForAceFromMap = mimes[rawContentTypeHeader.toLowerCase().split(";")[0]];
 
         if (res.status !== 200) {
           setAce(
@@ -117,7 +113,7 @@ function Viewer() {
             ),
             undefined,
             {
-              header: hmime,
+              header: rawContentTypeHeader,
             }
           );
 
@@ -132,15 +128,15 @@ function Viewer() {
 
         const text = await res.text();
 
-        setAce(text, _mime, {
-          header: hmime,
+        setAce(text, contentTypeForAceFromMap, {
+          header: rawContentTypeHeader,
         });
       } catch (e) {
         setAce(
           JSON.stringify(
             {
               error: "main catch",
-              catch: e,
+              catch: String(e),
             },
             null,
             4
@@ -153,47 +149,46 @@ function Viewer() {
   function onSubmit(e) {
     e.preventDefault();
 
-    setSubmit();
+    setSubmit(file);
   }
 
   return (
     <>
       <form onSubmit={onSubmit}>
-        <input type="text" onChange={(e) => setUrl(e.target.value)} value={url} />
+        <input type="search" onChange={(e) => setFile(e.target.value)} value={file} />
       </form>
+
       <br />
-      <input type="text" id="long" readonly value={states.final || ""} />
-      <br />
-      <input type="text" id="short" readonly value={states.relative || ""} />
-      <br />
-      <input type="text" id="raw" readonly value={states.noencode || ""} />
-      <br />
-      <input type="text" id="urlwizz" readonly value={states.urlwizz || ""} />
-      <br />
-      <input type="text" id="urlwizzdir" readonly value={states.urlwizzdir || ""} />
-      <br />
-      <a href={states.final || ""} id="full">
-        {states.final || ""}
-      </a>
-      <hr />
-      <a href={url || ""} id="direct">
-        {url || ""}
-      </a>
-      <hr />
+      <input type="search" readOnly value={states.final || ""} />
+
+      <input type="search" readOnly value={states.relative || ""} />
+
+      <input type="search" readOnly value={states.noencode || ""} />
+
+      <input type="search" readOnly value={states.urlwizz || ""} />
+
+      <input type="search" readOnly value={states.urlwizzdir || ""} />
+
+      <a href={states.final || ""}>{states.final || ""}</a>
+
+      <a href={file || ""}>{file || ""}</a>
+
       <Ace content={ace.value || ""} lang={ace.mime || "text"} />
-      <br />
-      <pre>
-        {JSON.stringify(
-          {
-            header: ace.header || "",
-            mime: ace.mime,
-            mimeMapCi,
-          },
-          null,
-          4
-        )}
-      </pre>
-      <p>allowed mime types:</p>
+
+      <h3>extracted meta</h3>
+      <Ace
+        content={(function ({ value, ...rest }) {
+          return JSON.stringify(
+            {
+              ...rest,
+              mimes,
+            },
+            null,
+            4
+          );
+        })(ace)}
+        lang="json"
+      />
     </>
   );
 }

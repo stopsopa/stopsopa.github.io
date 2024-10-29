@@ -4,6 +4,8 @@ node_modules
 /dist/
 /var/
 /noprettier/
+/coverage/
+/pages/coverage/
 preprocessed.js
 /pages/portsregistry/lists/ports-generated.json
 *.min.js

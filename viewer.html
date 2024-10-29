@@ -8,12 +8,21 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     <style>
-      * {
-        font-family: monospace !important;
-      }
-      input {
+      body input {
         width: 100%;
+        margin-bottom: 1px;
+        border: 1px solid #f6f6f6;
+        &:hover {
+          border: 1px solid #ccc;
+        }
+      }
+      a,
+      input[type="text"] {
+        font-family: Inter, sans-serif;
+        font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
       }
       textarea {
         border: 1px solid gray;
