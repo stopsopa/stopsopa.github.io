@@ -251,6 +251,20 @@
           k.test2 = 'dupa3';
 
           console.log('k: ', k)
+
+          // ---------------------- second example
+
+          export default function <T>(instance: T): T;
+          export default function (): Container;
+          export default function <T>(instance?: T): T | Container {
+            if (typeof instance !== "undefined") {
+              return instance;
+            }
+            return container;
+          }
+
+          // from: https://github.com/stopsopa/argyle/pull/1/files
+          
         </script>
         <h2>JSONType</h2>
 
