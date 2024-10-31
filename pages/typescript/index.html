@@ -53,9 +53,10 @@
           # to just check
           tsc --noEmit
 
-          npx tsc --init --rootDir src --outDir build \
-          --esModuleInterop --resolveJsonModule --lib es6 \
-          --module commonjs --allowJs true --noImplicitAny true
+          # setup for libraries export to npm
+          npx tsc --init --rootDir src --outDir dist \
+          --esModuleInterop  \
+          --module nodenext  
             # from: https://khalilstemmler.com/blogs/typescript/node-starter-project/#Create-a-tsconfigjson
 
           nodenext vs ESNext
