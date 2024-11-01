@@ -55,6 +55,20 @@ EEE
       description: `help from ~/xx.cjs`,
       confirm: false,
     },
+    [`coverage`]: {
+      command: `
+set -e
+source .env
+cat <<EEE
+
+    open "file://$(realpath "coverage/index.html")"
+
+EEE
+read -p "\n      Press enter to continue\n"
+open "file://$(realpath "coverage/index.html")"
+`,
+      confirm: false,
+    },
     [`xx`]: {
       command: `
 shopt -s expand_aliases && source ~/.bashrc
