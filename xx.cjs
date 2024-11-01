@@ -116,6 +116,20 @@ python -m http.server \${JEST_COVERAGE_PORT} --directory pages/coverage
 `,
       confirm: false,
     },
+    [`coverage`]: {
+      command: `
+set -e
+source .env
+cat <<EEE
+
+    open "file://$(realpath "coverage/index.html")"
+
+EEE
+read -p "\n      Press enter to continue\n"
+open "file://$(realpath "coverage/index.html")"
+`,
+      confirm: false,
+    },
     [`template`]: {
       command: `
 set -e        
