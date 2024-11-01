@@ -796,6 +796,13 @@
             echo end
             EOF
           </script>
+          <h2>replace in place</h2>
+          <script type="editor" data-lang="sh">
+
+perl -pi -e 's#import ([^\s]+) from "(.*?).js";#import \1 from "\2.mjs";#g' "${file}"
+            
+          </script>
+          
           <h2>running process in background</h2>
           <script type="editor" data-lang="sh">
 
