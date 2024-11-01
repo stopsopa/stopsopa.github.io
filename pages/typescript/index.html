@@ -53,11 +53,13 @@
           # to just check
           tsc --noEmit
 
+          
           # setup for libraries export to npm
           npx tsc --init --rootDir src --outDir dist \
           --esModuleInterop  \
           --module nodenext  
             # from: https://khalilstemmler.com/blogs/typescript/node-starter-project/#Create-a-tsconfigjson
+            # from: https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html
 
           nodenext vs ESNext
             # more: https://www.typescriptlang.org/tsconfig/#module
