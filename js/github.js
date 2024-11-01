@@ -1712,7 +1712,7 @@ body .github-profile:hover {
         } catch (e) {}
         return false;
       }),
-      loadJs("ace", "/noprettier/ace/ace-builds-1.15.0/src-min-noconflict/ace.js", function () {
+      loadJs("ace", "/noprettier/ace/ace-builds-1.5.0/src-min-noconflict/ace.js", function () {
         // how to use: https://ace.c9.io/#nav=howto
         try {
           return typeof window.ace.edit === "function";
@@ -1723,7 +1723,7 @@ body .github-profile:hover {
 
     await loadJs(
       "ace extension ext-linking",
-      "/noprettier/ace/ace-builds-1.15.0/src-min-noconflict/ext-linking.js",
+      "/noprettier/ace/ace-builds-1.5.0/src-min-noconflict/ext-linking.js",
       function () {
         try {
           return true;

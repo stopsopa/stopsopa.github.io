@@ -21,10 +21,16 @@ data-w      - optional: any valid css value for width css directive
 datahw      - optional: any valid css value for height css directive
 
 Warning: Just specify type="typescript" and script on site will load
-          /js/ace/ace-builds-1.15.0/src-min-noconflict/mode-typescript.js
+          /js/ace/ace-builds-1.5.0/src-min-noconflict/mode-typescript.js
 ```
 
 [supported syntax](https://github.com/ajaxorg/ace/blob/v1.15.3/src/ext/modelist.js#L44)
+
+> [!TIP]
+> For typescript use 
+> <script type="editor" data-lang="typescript"> 
+> not
+> <script type="editor" data-lang="ts">   
 
 - (in older versions up to v1.8.1 the file was here: https://github.com/ajaxorg/ace/blob/v1.8.1/lib/ace/ext/modelist.js#L53)
 
