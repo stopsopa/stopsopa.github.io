@@ -17,3 +17,5 @@ preprocessed.js
 *.node.bundled.gitignored.cjs
 **/*.rendered.html
 /pages/bookmarklets/fragmentDirective/src/
+pages/utf8/index.html
+pages/utf8/Unicode_Chart.html

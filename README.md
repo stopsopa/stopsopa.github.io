@@ -27,10 +27,11 @@ Warning: Just specify type="typescript" and script on site will load
 [supported syntax](https://github.com/ajaxorg/ace/blob/v1.15.3/src/ext/modelist.js#L44)
 
 > [!TIP]
-> For typescript use 
+> For typescript use
+>
 > <script type="editor" data-lang="typescript"> 
 > not
-> <script type="editor" data-lang="ts">   
+> <script type="editor" data-lang="ts">
 
 - (in older versions up to v1.8.1 the file was here: https://github.com/ajaxorg/ace/blob/v1.8.1/lib/ace/ext/modelist.js#L53)
 
