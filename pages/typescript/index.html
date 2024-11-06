@@ -136,8 +136,24 @@
 
           nodenext vs ESNext
             # more: https://www.typescriptlang.org/tsconfig/#module
+            # https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html
           # Conclusion: It seems it is better to use nodenext when working with node
             but for that you can't have  "type": "module" in package.json
+        </script>
+        <h2>source maps</h2>
+        <script type="editor" data-lang="js">
+
+          # https://github.com/WICG/import-maps
+            # from: https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html
+          <script type="importmap">
+          {
+            "imports": {
+              "moment": "/node_modules/moment/src/moment.js",
+              "lodash": "/node_modules/lodash-es/lodash.js"
+            }
+          }
+          </script>
+          
         </script>
         <h2>TS watch mode for DEV</h2>
         <script type="editor" data-lang="python">
