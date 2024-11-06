@@ -45,7 +45,7 @@ export NODE_OPTIONS=""
 /bin/bash build.sh        
 `,
       description: `build is build`,
-      confirm: true,
+      confirm: false,
     },
     [`start`]: {
       command: `
