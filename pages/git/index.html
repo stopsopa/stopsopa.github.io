@@ -548,11 +548,6 @@
         <h2>useful</h2>
         <script type="editor" data-lang="sh">
 
-          # clear stach (10 latest)
-          git stash list
-          git stash drop stash@{0}
-          for i in {0..10}; do git stash drop stash@{0}; done
-
           # clone single file
           git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD:public index.html | tar -x
           git archive --remote=git@bitbucket.org:xxx/xxx.git HEAD: .env.kub | tar -x
@@ -589,6 +584,35 @@
               - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)"
 
           git log --graph --decorate --abbrev-commit --all --pretty=oneline  --pretty=format:"%h%x09%an%x09%ad%x09%s"
+        </script>
+        <h2>Stash</h2>
+        <script type="editor" data-lang="sh">
+
+
+          # clear stach (10 latest)
+          git stash list
+          git stash drop stash@{0}
+          for i in {0..10}; do git stash drop stash@{0}; done
+
+          git config --global rebase.autoStash true
+
+          # rename stash
+          # you first remove stash - command will return hash
+          # then you use that hash to create new stash in this point of history
+
+            git stash list 
+              # first list and pick the number
+
+            git stash drop stash@{11111}
+              # remove using id and get the git hash
+
+            git stash store -m "New name" 9dd04c8d17569b3f4cb6c4c511fe86b7b94f96a2
+          
+          
+
+
+
+
         </script>
         <h2>Mirror / Duplicate repository (instead of fork)</h2>
         <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/duplicating-a-repository"
