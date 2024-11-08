@@ -221,7 +221,9 @@
       <div class="inside">
         <h2>Learn</h2>
         <script type="editor" data-lang="sh">
-          https://github.com/ricardobeat/git-commands
+
+          ...
+          
         </script>
 
         <h2>Useful</h2>
@@ -342,62 +344,6 @@
         <a href="https://nvie.com/posts/a-successful-git-branching-model/"
           >https://nvie.com/posts/a-successful-git-branching-model/</a
         >
-        <h2>Github</h2>
-        <h3>first commit</h3>
-        <script type="editor" data-lang="js">
-
-          first commit: 
-            http://farhadg.github.io/init/landing/
-            github repo: https://github.com/farhadg/init
-
-          // Use the github public api to navigate to the
-          // last commit of a GitHub repository
-          
-          (function openFirstCommit(args) {
-            // args[1] is the `orgname/repo` url fragment
-            // args[2] is the optional branch or hash
-          
-            return fetch('https://api.github.com/repos/' + args[1] + '/commits?sha=' + (args[2] || ''))
-          
-              // the link header has additional urls for paging
-              // parse the original JSON for the case where no other pages exist
-              .then(res => Promise.all([res.headers.get('link'), res.json()]))
-              
-              // get last page of commits
-              .then(results => {
-                // results[0] is the link
-                // results[1] is the first page of commits
-          
-                if (results[0]) {
-                  // the link contains two urls in the form 
-                  // <https://github.com/...>; rel=blah, <https://github.com/...>; rel=thelastpage
-                  // split the url out of the string
-                  var pageurl = results[0].split(',')[1].split(';')[0].slice(2, -1);
-                  // fetch the last page
-                  return fetch(pageurl).then(res => res.json());
-                }
-              
-                // if no link, we know we're on the only page
-                return results[1];
-              })
-            
-              // get the last commit and extract the url
-              .then(commits => commits.pop().html_url)
-            
-              // navigate there
-              .then(url => window.location = url);
-          })(window.location.pathname.match(/\/([^\/]+\/[^\/]+)(?:\/tree\/([^\/]+))?/));
-          void(0)
-          
-        </script>
-        <br />
-        <a href="https://itnext.io/advanced-git-features-you-didnt-know-you-needed-ed8455c45495#9fef"
-          >Signing Commits</a
-        >
-        <br />
-        <a href="https://github.com/tj/git-extras/blob/master/Commands.md"
-          >https://github.com/tj/git-extras/blob/master/Commands.md</a
-        >
         <h2>git tricks</h2>
 
         <script type="editor" data-lang="sh">
@@ -480,13 +426,6 @@
 
           git commit -v
           git add -p
-        </script>
-        <h2>Github Actions</h2>
-        <script type="editor" data-lang="sh">
-
-          # push from Github Actions:
-            https://github.com/andstor/jsdoc-action/blob/master/.github/workflows/node_modules.yml
-            https://github.com/connorjburton/hmac-auth-express/blob/v9.0.0/.github/workflows/release.yml
         </script>
         <h2>7.2 Git Tools - Interactive Staging</h2>
         <a href="https://git-scm.com/book/en/v2/Git-Tools-Interactive-Staging"
