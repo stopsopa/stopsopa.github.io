@@ -18,6 +18,19 @@
             <li><a href="github-actions.html">Github Actions</a></li>
           </ul>
         </div>
+
+
+        <h2>Learn</h2>
+        <script type="editor" data-lang="sh">
+          
+          https://github.com/ricardobeat/git-commands
+
+          https://itnext.io/advanced-git-features-you-didnt-know-you-needed-ed8455c45495#9fef
+
+          https://github.com/tj/git-extras/blob/master/Commands.md
+          
+        </script>
+        
         <h2>Issues and PR's contributions</h2>
         <a href="https://github.com/SoftCreatR/imei/issues/117">Imagick</a>
         <br />
@@ -35,6 +48,8 @@
 
           ProTip! Add .patch or .diff to the end of URLs for Git’s plaintext views.
         </script>
+
+        
 
         <h2>PR filtering tags</h2>
         <a href="https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests"
@@ -72,6 +87,59 @@
         </script>
         <h2>Search in github and it's limitations</h2>
         <a href="https://stackoverflow.com/a/33237640">link</a>
+
+
+        <h2>Github - first commit</h2>
+        <script type="editor" data-lang="js">
+
+          first commit: 
+            http://farhadg.github.io/init/landing/
+            github repo: https://github.com/farhadg/init
+
+          // Use the github public api to navigate to the
+          // last commit of a GitHub repository
+          
+          (function openFirstCommit(args) {
+            // args[1] is the `orgname/repo` url fragment
+            // args[2] is the optional branch or hash
+          
+            return fetch('https://api.github.com/repos/' + args[1] + '/commits?sha=' + (args[2] || ''))
+          
+              // the link header has additional urls for paging
+              // parse the original JSON for the case where no other pages exist
+              .then(res => Promise.all([res.headers.get('link'), res.json()]))
+              
+              // get last page of commits
+              .then(results => {
+                // results[0] is the link
+                // results[1] is the first page of commits
+          
+                if (results[0]) {
+                  // the link contains two urls in the form 
+                  // <https://github.com/...>; rel=blah, <https://github.com/...>; rel=thelastpage
+                  // split the url out of the string
+                  var pageurl = results[0].split(',')[1].split(';')[0].slice(2, -1);
+                  // fetch the last page
+                  return fetch(pageurl).then(res => res.json());
+                }
+              
+                // if no link, we know we're on the only page
+                return results[1];
+              })
+            
+              // get the last commit and extract the url
+              .then(commits => commits.pop().html_url)
+            
+              // navigate there
+              .then(url => window.location = url);
+          })(window.location.pathname.match(/\/([^\/]+\/[^\/]+)(?:\/tree\/([^\/]+))?/));
+          void(0)
+          
+        </script>
+
+        
+
+        
         <h2>Github Actions</h2>
         <script type="editor" data-lang="sh">
 
@@ -80,6 +148,11 @@
 
           # buildx
           https://github.com/docker/setup-buildx-action
+          
+
+          # push from Github Actions:
+            https://github.com/andstor/jsdoc-action/blob/master/.github/workflows/node_modules.yml
+            https://github.com/connorjburton/hmac-auth-express/blob/v9.0.0/.github/workflows/release.yml
         </script>
         <h2>Size of the repository</h2>
         <script type="editor" data-lang="sh">
