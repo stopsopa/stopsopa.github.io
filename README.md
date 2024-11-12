@@ -29,7 +29,7 @@ Warning: Just specify type="typescript" and script on site will load
 > [!TIP]
 > For typescript use
 >
-> <script type="editor" data-lang="typescript"> 
+> <script type="editor" data-lang="ts"> 
 > not
 > <script type="editor" data-lang="ts">
 

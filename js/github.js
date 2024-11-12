@@ -1424,6 +1424,7 @@ body .github-profile:hover {
 
       d = el.dataset.lang;
       d == "js" && (d = "javascript");
+      d == "ts" && (d = "typescript");
       d && editor.getSession().setMode("ace/mode/" + d);
 
       el.classList.contains("syntax") && editor.setReadOnly(true); // false to make it editable
