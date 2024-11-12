@@ -62,6 +62,7 @@ source .env
 cat <<EEE
 
     open "file://$(realpath "coverage/index.html")"
+    open -a "Google Chrome" "file://$(realpath "coverage/index.html")"
 
 EEE
 read -p "\n      Press enter to continue\n"
