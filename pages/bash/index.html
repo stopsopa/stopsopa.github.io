@@ -804,6 +804,9 @@
           <script type="editor" data-lang="sh">
 
             perl -pi -e 's#import ([^\s]+) from "(.*?).js";#import \1 from "\2.mjs";#g' "${file}"
+
+            -i[extension]         edit <> files in place (makes backup if extension supplied)
+              # from perl --help
           </script>
 
           <h2>running process in background</h2>
