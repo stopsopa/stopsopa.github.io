@@ -755,11 +755,9 @@
           <script type="editor" data-lang="sh">
 
             # typescript - filter out all files where errors are detected, deduplicate and sort
-            npx tsc | grep -E -i '^[a-z\d\/\.]+\(\d+,\d+\).*' | perl -p -e 's#^([a-z\/\.]+).*#\1#ig' | uniq | sort > ../ts.log
-            # and then for each file add @ts-nocheck 
-            ignore_comment="// @ts-nocheck"; while read -r ../ts.log; do (echo "$ignore_comment"; cat "$file") > temp_file && mv temp_file "$file"; done
-
-            # for each line in the file
+            npx tsc | perl -ne "print if /^([a-z\d\/\._-]+).*/i" | perl -p -e 's#^([a-z\d\/\._-]+).*#$1#ig' | grep -v node_modules | uniq | sort > ../ts.log
+            # and then for each file add @ts-nocheck             # for each line in the file
+            
             ignore_comment="// @ts-nocheck";
             while IFS= read -r file; do
               echo "processing >${file}<"
