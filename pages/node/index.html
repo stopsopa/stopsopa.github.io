@@ -716,10 +716,13 @@
             # from: https://youtu.be/E2tbZoTjcQA?t=696
 
           # prettier.config.js - for commonjs
+          yarn add -D prettier-plugin-packagejson prettier-plugin-curly
+          cat <<EEE > prettier.config.js
           module.exports = {
             printWidth: 120,
             plugins: ["prettier-plugin-packagejson", "prettier-plugin-curly"],
           };
+          EEE
 
           # vscode: .vscode/settings.json
           # setup default formatter in vscode
