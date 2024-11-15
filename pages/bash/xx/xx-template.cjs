@@ -3,8 +3,6 @@
 // https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fbash%2Fxx%2Fxx-template.cjs
 // edit: https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/xx/xx-template.cjs
 
-// https://stopsopa.github.io/viewer.html?file=xx.cjs
-// edit: https://github.com/stopsopa/stopsopa.github.io/blob/master/xx.cjs
 // 🚀 -
 // ✅ -
 // ⚙️  -
@@ -40,6 +38,19 @@ EEE
       `,
       description: "Status of all things",
       source: true,
+      confirm: false,
+    },
+    [`yarn`]: {
+      command: `
+cat <<EEE
+
+/bin/bash bash/swap-files-v2.sh package.json package.dev.json -- yarn   
+
+EEE
+read -p "       Press enter to continue\n\n"
+/bin/bash bash/swap-files-v2.sh package.json package.dev.json -- yarn   
+`,
+      description: `swap and yarn`,
       confirm: false,
     },
     [`~/help`]: {
