@@ -18,6 +18,29 @@
             <li><a href="jsdoc.html">JSDoc</a></li>
           </ul>
         </div>
+        <h2>Setup</h2>
+        <script type="editor" data-lang="python">
+
+          # look for more types: https://github.com/icare-health/icare/blob/master/package.json
+          /bin/bash bash/swap-files-v2.sh package.json package.dev.json -- yarn add -D typescript @types/node
+          
+          # to just check
+          tsc --noEmit
+
+
+          # setup for libraries export to npm
+          npx tsc --init --rootDir src --outDir dist \
+          --esModuleInterop  \
+          --module nodenext
+            # from: https://khalilstemmler.com/blogs/typescript/node-starter-project/#Create-a-tsconfigjson
+            # from: https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html
+
+          nodenext vs ESNext
+            # more: https://www.typescriptlang.org/tsconfig/#module
+            # https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html
+          # Conclusion: It seems it is better to use nodenext when working with node
+            but for that you can't have  "type": "module" in package.json
+        </script>
         <h2>npm publish preparations</h2>
 
         <script type="editor" data-lang="sh">
@@ -134,26 +157,6 @@
           https://wojciechkrysiak.medium.com/typescript-jsdoc-better-docs-7c03b6ea04df
             https://typedoc.org/
             https://github.com/microsoft/tsdoc
-        </script>
-        <h2>Setup</h2>
-        <script type="editor" data-lang="python">
-
-          # to just check
-          tsc --noEmit
-
-
-          # setup for libraries export to npm
-          npx tsc --init --rootDir src --outDir dist \
-          --esModuleInterop  \
-          --module nodenext
-            # from: https://khalilstemmler.com/blogs/typescript/node-starter-project/#Create-a-tsconfigjson
-            # from: https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html
-
-          nodenext vs ESNext
-            # more: https://www.typescriptlang.org/tsconfig/#module
-            # https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html
-          # Conclusion: It seems it is better to use nodenext when working with node
-            but for that you can't have  "type": "module" in package.json
         </script>
         <h2>source maps</h2>
         <script type="editor" data-lang="js">
