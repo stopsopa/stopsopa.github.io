@@ -441,6 +441,30 @@
             https://stackoverflow.com/questions/11983749/what-are-the-differences-between-squash-and-no-ff-no-commit
           
         </script>
+        <h2>Fork by tar.gz</h2>
+        
+        <script type="editor" data-lang="sh">
+
+          SOURCE_ABS_DIR="/Users/user/Workspace/STOPSOPA__netlilearn/STOPSOPA__netlilearn"
+          TARGET_ABS_DIR="/Users/user/Workspace/STOPSOPA__learnglitch/STOPSOPA__learnglitch"
+          cd "${SOURCE_ABS_DIR}"
+          pwd
+          if [ -e "all.tar.gz" ]; then
+            unlink all.tar.gz
+          fi
+          if [ -e "${TARGET_ABS_DIR}/all.tar.gz" ]; then
+            unlink "${TARGET_ABS_DIR}/all.tar.gz"
+          fi
+          tar --exclude='node_modules' --exclude='.git' --exclude='all.tar.gz' -zcvf all.tar.gz .
+          mv all.tar.gz "${TARGET_ABS_DIR}/"
+          cd "${TARGET_ABS_DIR}"
+          tar -zxvf all.tar.gz
+          rm -rf all.tar.gz
+          
+          
+        </script>
+
+        
         <h2>Anyone can Access Deleted and Private Repository Data on GitHub</h2>
 
         <script type="editor" data-lang="sh">
