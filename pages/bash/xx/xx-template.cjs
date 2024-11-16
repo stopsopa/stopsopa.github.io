@@ -166,6 +166,24 @@ gjf --format
       description: `gjf --format`,
       confirm: false,
     },
+    [`style_list`]: {
+      command: `
+set -e
+# make style_list
+node node_modules/.bin/prettier --config prettier.config.cjs --list-different .
+`,
+      description: `style_list`,
+      confirm: false,
+    },
+    [`style_fix`]: {
+      command: `
+set -e
+# make style_fix
+node node_modules/.bin/prettier --config prettier.config.cjs --write .
+`,
+      description: `style_fix`,
+      confirm: false,
+    },
     dependencies: {
       command: `
 set -e
