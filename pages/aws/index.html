@@ -28,6 +28,35 @@
             # IAM - Identity and Access Management
 
         </script>
+        <h2>RDS connect from MySQL Workbench</h2>
+        <script type="editor" data-lang="python">          
+          
+          1) Enable public access: https://repost.aws/knowledge-center/rds-connectivity-instance-subnet-vpc
+          
+          2) And also make sure to add your ip address to allowed https://stackoverflow.com/a/60976842
+          
+          3) and then follow: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToInstance.EndpointAndPort.html
+
+          # Or use PHPMyAdmin
+          # do 1) and 2) and try:
+
+          cat <<EEE > config.inc.5.1.1.php
+          <?php
+          \$cfg['MaxNavigationItems'] = 200;
+          \$cfg['MaxTableList'] = 200;
+          EEE
+
+          docker run \
+            -it \
+            -p "8900:80" \
+            -v "$(pwd)/config.inc.5.1.1.php:/etc/phpmyadmin/config.user.inc.php" \
+            -e PMA_HOST="test-db1.xxxxxxx.eu-west-2.rds.amazonaws.com" \
+            -e PMA_USER="admin" \
+            -e PMA_PASSWORD="xxxxxxx" \
+          phpmyadmin/phpmyadmin:5.1.1
+          
+        </script>
+        
       </div>
     </div>
     <script src="/js/github.js"></script>
