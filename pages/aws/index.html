@@ -48,12 +48,17 @@
 
           docker run \
             -it \
+            --name aws_mysql \
             -p "8900:80" \
             -v "$(pwd)/config.inc.5.1.1.php:/etc/phpmyadmin/config.user.inc.php" \
             -e PMA_HOST="test-db1.xxxxxxx.eu-west-2.rds.amazonaws.com" \
             -e PMA_USER="admin" \
             -e PMA_PASSWORD="xxxxxxx" \
           phpmyadmin/phpmyadmin:5.1.1
+
+          # then open in the browser
+          http://0.0.0.0:8900/
+          
           
         </script>
         
