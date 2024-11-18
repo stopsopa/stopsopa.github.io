@@ -3507,6 +3507,9 @@
         <h2>pm2 - deamons</h2>
         <script type="editor" data-lang="sh">
 
+          sudo pm2 start index.js --interpreter $(which node)
+            # to force it to use right node version - usually provided by nvm
+          
           sudo pm2 start index.js
           sudo pm2 delete index.js
           sudo pm2 status
