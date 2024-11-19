@@ -100,11 +100,19 @@
 
           # test ipv6 connectivity
           https://test-ipv6.com/
+          nslookup example.com
+          dig AAAA example.com
           
           # switch to use ipv6
           https://developers.google.com/speed/public-dns/docs/using#macos
 
           # RFC: https://www.ietf.org/rfc/rfc2732.txt
+
+          # mastering curl
+          https://ipv6.net/blog/mastering-curl-with-ipv6-addresses-10-beginner-friendly-examples-for-linux-users/
+
+          # WORKING: 
+          curl  -g -6 'http://[2606:2800:220:1:248:1893:25c8:1946]:80/index.html' -H 'Host: www.example.com'
           
         </script>
         
