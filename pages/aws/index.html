@@ -120,6 +120,8 @@
         
           host -t AAAA reqres.in
           curl -g -6 -L 'http://[2606:4700:20::ac43:49ad]:80/api/users' -H "Host: reqres.in" | jq
+            # Will work also in the browser when https://chromewebstore.google.com/detail/modheader-modify-http-hea/idgpnmonknjnojddfkpgkljpfnnfcklj?hl=en
+            # used and >Host: reqres.in< is set
 
           host -t AAAA jsonplaceholder.typicode.com
           curl -g -6 -L 'http://[2606:4700:3031::ac43:a797]:80/posts/1' -H "Host: jsonplaceholder.typicode.com" | jq
