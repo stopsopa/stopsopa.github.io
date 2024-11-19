@@ -143,6 +143,7 @@ h6 {
   .inside {
     max-width: 900px;
     margin: auto;
+    padding-bottom: 20px;
   }
 
   .body {
