@@ -102,6 +102,10 @@
           https://test-ipv6.com/
           nslookup example.com
           dig AAAA example.com
+
+          # find ipv6 for given domain
+          dig +short AAAA reqres.in
+          host -t AAAA reqres.in
           
           # switch to use ipv6
           https://developers.google.com/speed/public-dns/docs/using#macos
@@ -113,6 +117,15 @@
 
           # WORKING: 
           curl  -g -6 'http://[2606:2800:220:1:248:1893:25c8:1946]:80/index.html' -H 'Host: www.example.com'
+        
+          host -t AAAA reqres.in
+          curl -g -6 -L 'http://[2606:4700:20::ac43:49ad]:80/api/users' -H "Host: reqres.in" | jq
+
+          host -t AAAA jsonplaceholder.typicode.com
+          curl -g -6 -L 'http://[2606:4700:3031::ac43:a797]:80/posts/1' -H "Host: jsonplaceholder.typicode.com" | jq
+
+          host -t AAAA fakestoreapi.com
+          curl -g -6 -L 'http://[2606:4700:3037::ac43:c281]:80/products' -H "Host: fakestoreapi.com" | jq
           
         </script>
         
