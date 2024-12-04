@@ -2012,6 +2012,9 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           set -o pipefail # more: https://buildkite.com/docs/pipelines/writing-build-scripts#configuring-bash
             # to turn back on set +o pipefail
 
+          set -euo pipefail
+            # from: https://youtu.be/kUtarOlOT3Y?si=6hwlbksI8AgZp1go&t=473
+
           shopt -s expand_aliases
             # from: https://unix.stackexchange.com/a/1498
 
