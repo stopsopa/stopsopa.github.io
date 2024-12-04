@@ -2141,6 +2141,9 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         <h2>regex</h2>
         <script type="editor" data-lang="sh">
 
+          # learn about google/re2: https://github.com/google/re2/wiki/syntax
+            # from: https://youtu.be/DDe-S3uef2w?si=yEyNW3CFqVCkKQQq&t=555
+
           if [[ ${NAME} =~ ^~{0,1}/.* ]]; then
 
               echo "match";
