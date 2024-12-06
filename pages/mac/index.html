@@ -302,6 +302,20 @@
             defaults write com.apple.finder AppleShowAllFiles YES
             killall Finder
           </script>
+          <h2>Resize png/jpg</h2>
+          <script type="editor" data-lang="sh">
+            
+            for file in *.png; do
+              echo ">$file<"
+              #sips -z 170 170 "$file" --out "${file%.png}.jpg"
+            done
+            
+            ls | grep '\.png$' | while read file; do
+              echo ">$file<"
+              #sips -z 170 170 "$file" --out "${file%.png}.jpg"
+            done
+            
+          </script>
           <h2>Release F11, F14, F15 function buttons</h2>
           <script type="editor" data-lang="sh">
 
