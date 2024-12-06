@@ -78,7 +78,7 @@ jobs:
           ls -la
           ls -la node_modules || true
 
-      - uses: actions/cache/restore@v3 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
+      - uses: actions/cache/restore@v4.2.0 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
         id: restore-cache
         with:
           path: node_modules
@@ -95,7 +95,7 @@ jobs:
       - name: Yarn install
         run: yarn install --production=false
 
-      - uses: actions/cache/save@v3 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action
+      - uses: actions/cache/save@v4.2.0 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action
         with:
           path: node_modules
           key: ${{ steps.restore-cache.outputs.cache-primary-key }}
