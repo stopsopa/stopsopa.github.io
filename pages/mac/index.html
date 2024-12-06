@@ -306,13 +306,13 @@
           <script type="editor" data-lang="sh">
             
             for file in *.png; do
-              echo ">$file<"
-              #sips -z 170 170 "$file" --out "${file%.png}.jpg"
+              echo ">$file<" ">${file%.png}<"
+              # sips -z 170 170 "$file" --out "${file%.png}.jpg"
             done
             
             ls | grep '\.png$' | while read file; do
-              echo ">$file<"
-              #sips -z 170 170 "$file" --out "${file%.png}.jpg"
+              echo ">$file<" ">${file%.png}<"
+              # sips -z 170 170 "$file" --out "${file%.png}.jpg"
             done
             
           </script>
