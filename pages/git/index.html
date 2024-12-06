@@ -223,7 +223,6 @@
         <script type="editor" data-lang="sh">
 
           ...
-          
         </script>
 
         <h2>Useful</h2>
@@ -432,17 +431,16 @@
           >https://git-scm.com/book/en/v2/Git-Tools-Interactive-Staging</a
         >
         <h2>Merge Strategies</h2>
-        
+
         <script type="editor" data-lang="sh">
           squash vs --no-ff vs fast forward
             https://stackoverflow.com/a/52157972
 
           diff between squash and --no-ff
             https://stackoverflow.com/questions/11983749/what-are-the-differences-between-squash-and-no-ff-no-commit
-          
         </script>
         <h2>Fork by tar.gz</h2>
-        
+
         <script type="editor" data-lang="sh">
 
           SOURCE_ABS_DIR="/Users/user/Workspace/STOPSOPA__netlilearn/STOPSOPA__netlilearn"
@@ -460,11 +458,8 @@
           cd "${TARGET_ABS_DIR}"
           tar -zxvf all.tar.gz
           rm -rf all.tar.gz
-          
-          
         </script>
 
-        
         <h2>Anyone can Access Deleted and Private Repository Data on GitHub</h2>
 
         <script type="editor" data-lang="sh">
@@ -617,19 +612,13 @@
           # you first remove stash - command will return hash
           # then you use that hash to create new stash in this point of history
 
-            git stash list 
+            git stash list
               # first list and pick the number
 
             git stash drop stash@{11111}
               # remove using id and get the git hash
 
             git stash store -m "New name" 9dd04c8d17569b3f4cb6c4c511fe86b7b94f96a2
-          
-          
-
-
-
-
         </script>
         <h2>Mirror / Duplicate repository (instead of fork)</h2>
         <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/duplicating-a-repository"

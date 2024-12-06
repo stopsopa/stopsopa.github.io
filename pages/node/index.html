@@ -725,13 +725,13 @@
           EEE
 
           # test prettier
-          # every time you update prettier config it will work only after restarting vscode 
+          # every time you update prettier config it will work only after restarting vscode
             # https://github.com/prettier/prettier-vscode/issues/3179
-          # but you can just restart vscode prettier plugin, plugin id: 
+          # but you can just restart vscode prettier plugin, plugin id:
           # esbenp.prettier-vscode
 
           # setup ruler for vscode:
-          # click CMD+, 
+          # click CMD+,
           # then search editor.rulers
           # then switch to workspace
           # then put 120 in
@@ -743,7 +743,7 @@
           # hold CMD then press K and S
           # then search prettier.forceFormatDocument
           # bind CMD + Shift + S
-          
+
 
           # Then create file with content
           cat <<EEE > prettiertest.js
@@ -751,7 +751,7 @@
           // if not wrapped then printWidth: 120 works
           // if wrapped then it doesn't
           EEE
-          
+
 
           # vscode: .vscode/settings.json
           # setup default formatter in vscode
@@ -3231,7 +3231,6 @@
 
           nvm install --lts
           nvm use --lts
-          
         </script>
         <h2>csv</h2>
         <a href="https://www.npmjs.com/package/@fast-csv/format">https://www.npmjs.com/package/@fast-csv/format</a>
@@ -3514,7 +3513,7 @@
 
           sudo pm2 start index.js --interpreter $(which node)
             # to force it to use right node version - usually provided by nvm
-          
+
           sudo pm2 start index.js
           sudo pm2 delete index.js
           sudo pm2 status
@@ -3525,7 +3524,6 @@
           # register to autostart with the system
           sudo pm2 save --force
           sudo pm2 startup systemd
-          
         </script>
         <h2>yield</h2>
         <script type="editor" data-lang="js">

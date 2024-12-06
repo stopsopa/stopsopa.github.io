@@ -757,13 +757,13 @@
             # typescript - filter out all files where errors are detected, deduplicate and sort
             npx tsc | perl -ne "print if /^([a-z\d\/\._-]+).*/i" | perl -p -e 's#^([a-z\d\/\._-]+).*#$1#ig' | grep -v node_modules | uniq | sort > ../ts.log
             # and then for each file add @ts-nocheck             # for each line in the file
-            
+
             ignore_comment="// @ts-nocheck";
             while IFS= read -r file; do
               echo "processing >${file}<"
               (echo "$ignore_comment"; cat "$file") > temp_file && mv temp_file "$file"
             done < ../ts.log
-            
+
 
             cat <<EEE | sed '/REMOVEFROMHRE/,/TOHERE/d'
             a
