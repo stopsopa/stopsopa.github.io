@@ -52,6 +52,42 @@ function trim(string, charlist, direction) {
   return string;
 }
 
+(function () {
+  var cache = {};
+
+  window.tmpl = function (str, data) {
+    // Figure out if we're getting a template, or if we need to
+    // load the template - and be sure to cache the result.
+    var fn = !/\W/.test(str)
+      ? (cache[str] = cache[str] || tmpl(document.getElementById(str).innerHTML))
+      : // Generate a reusable function that will serve as a template
+        // generator (and which will be cached).
+        new Function(
+          "obj",
+          "var p=[],print=function(){p.push.apply(p,arguments);};" +
+            // Introduce the data as local variables using with(){}
+            "with(obj){p.push('" +
+            // Convert the template into pure JavaScript
+            str
+              .replace(/[\r\t\n]/g, " ")
+              .split("<%")
+              .join("\t")
+              .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+              .replace(/\t=(.*?)%>/g, "',$1,'")
+              .split("\t")
+              .join("');")
+              .split("%>")
+              .join("p.push('")
+              .split("\r")
+              .join("\\'") +
+            "');}return p.join('');"
+        );
+
+    // Provide some basic currying to the user
+    return data ? fn(data) : fn;
+  };
+})();
+
 window.log = log;
 /**
  * Main mounting point in global scope
@@ -1189,7 +1225,9 @@ body .github-profile:hover {
     (function () {
       var selector = "body script";
 
-      const found = Array.prototype.slice.call(document.querySelectorAll(selector));
+      const found = Array.from(document.querySelectorAll(selector)).filter((e) =>
+        ["editor", "syntax"].includes(e.getAttribute("type"))
+      );
 
       const allowed = ["editor", "syntax"];
 
@@ -1206,12 +1244,6 @@ body .github-profile:hover {
 
             return;
           }
-
-          if (!allowed.includes(type)) {
-            list.push("[data-lang] defined but [type] is not valid: >>" + type + "<<");
-
-            return;
-          }
         } else {
           if (typeof type === "string") {
             if (type !== "text/javascript") {
@@ -1222,20 +1254,6 @@ body .github-profile:hover {
           }
         }
       });
-
-      if (list.length > 0) {
-        alert(
-          "there is " +
-            list.length +
-            " <script" +
-            "> tags in <body" +
-            "> with invalid [type] attribute, allowed values are (" +
-            allowed.join(", ") +
-            ") but found: (" +
-            list.join(" ======= ") +
-            ")"
-        );
-      }
     })();
 
     var selector = '[type="editor"]:not(.handled), [type="syntax"]:not(.handled)';
