@@ -75,6 +75,9 @@
 
               .tooltipstyle {
                 display: none;
+                &[data-tooltip-id] {
+                  display: block;
+                }
                 &.tooltip-hide-on-click-outside,
                 &.tooltip-toggle-click,
                 &.tooltip-on-hover {
@@ -134,10 +137,7 @@
                 return `tooltip-id-${i++}`;
               }
 
-              let delegateBound = false;
-              if (!delegateBound) {
-                delegateBound = true;
-
+              function bindDelegatesEvents(dataSelector) {  
                 function eventBuilder(event, selector, act) {
                   return function (e) {
 
@@ -174,58 +174,47 @@
                 }
 
                 // .tooltip-on-hover
-                document.body.addEventListener('mouseover', eventBuilder('mouseover', '.tooltip-on-hover', ({target, tooltip, instance}) => {
-                  tooltip.classList.add('show');
-                  target.classList.add('show');
+                document.body.addEventListener('mouseover', eventBuilder('mouseover', '.tooltip-on-hover', ({target, tooltip, instance, show, hide}) => {
+                  show();
                   instance.update();
                 }));
-                document.body.addEventListener('focusin', eventBuilder('focusin', '.tooltip-on-hover', ({target, tooltip, instance}) => {
-                  tooltip.classList.add('show');
-                  target.classList.add('show');
+                document.body.addEventListener('focusin', eventBuilder('focusin', '.tooltip-on-hover', ({target, tooltip, instance, show}) => {
+                  show();
                   instance.update();
                 }));
-                document.body.addEventListener('mouseout', eventBuilder('mouseout', '.tooltip-on-hover', ({target, tooltip, instance}) => {
-                  tooltip.classList.remove('show');
-                  target.classList.remove('show');
-                }));
-                document.body.addEventListener('focusout', eventBuilder('focusout', '.tooltip-on-hover', ({target, tooltip, instance}) => {
-                  tooltip.classList.remove('show');
-                  target.classList.remove('show');
-                }));
+                document.body.addEventListener('mouseout', eventBuilder('mouseout', '.tooltip-on-hover', ({target, tooltip, instance, hide}) => hide()));
+                document.body.addEventListener('focusout', eventBuilder('focusout', '.tooltip-on-hover', ({target, tooltip, instance, hide}) => hide()));
 
                 // .tooltip-toggle-click
-                document.body.addEventListener('click', eventBuilder('click', '[data-tooltipselector].tooltip-toggle-click', ({target, tooltip, instance}) => {
+                document.body.addEventListener('click', eventBuilder('click', `[${dataSelector}].tooltip-toggle-click`, ({target, tooltip, instance, show, hide}) => {
                   if (tooltip.classList.contains('show')) {
-                    tooltip.classList.remove('show');
-                    target.classList.remove('show');
+                    hide();
                   }
                   else {
-                    tooltip.classList.add('show');
-                    target.classList.add('show');
+                    show();
                     instance.update();
                   }
                 }));
 
                 // .tooltip-hide-on-click-outside
-                document.body.addEventListener('click', eventBuilder('click', '.tooltip-hide-on-click-outside[data-tooltipselector]', ({target, tooltip, instance}) => {
+                document.body.addEventListener('click', eventBuilder('click', `.tooltip-hide-on-click-outside[${dataSelector}]`, ({target, tooltip, instance, show}) => {
                   // when target element clicked then show element
                   if (!tooltip.classList.contains('show')) {
                     setTimeout(() => {
-                      tooltip.classList.add('show');
-                      target.classList.add('show');
+                      show();
                       instance.update();
                     }, 50);
                   }
                 }));
                 document.body.addEventListener('click', (e) => {
 
-                  if (e.target.matches(`.tooltip-hide-on-click-outside:not([data-tooltipselector])`) || e.target.matches(`.tooltip-hide-on-click-outside:not([data-tooltipselector]) *`)) {
+                  if (e.target.matches(`.tooltip-hide-on-click-outside:not([${dataSelector}])`) || e.target.matches(`.tooltip-hide-on-click-outside:not([${dataSelector}]) *`)) {
                     e.stopPropagation();
 
                     return;
                   }
 
-                  Array.from(document.querySelectorAll(`.tooltip-hide-on-click-outside:not([data-tooltipselector])`)).forEach((tooltip, i)=> {
+                  Array.from(document.querySelectorAll(`.tooltip-hide-on-click-outside:not([${dataSelector}])`)).forEach((tooltip, i)=> {
                     try {
                       id = tooltip.getAttribute('data-tooltip-id');
 
@@ -241,11 +230,9 @@
 
                       if (!basket.stop) {
 
-                        const {tooltip, target} = basket;
+                        const {tooltip, target, hide} = basket;
 
-                        target.classList.remove('show');
-                        tooltip.classList.remove('show');
-
+                        hide();
                       }
                     }
                     catch (e) {
@@ -256,8 +243,14 @@
                 });
               }
 
+              let delegateBound = false;
+
               return function (options = {}, dataSelector = 'data-tooltipselector') {
                 const ids = new Set();
+                if (!delegateBound) {
+                  delegateBound = true;
+                  bindDelegatesEvents(dataSelector)
+                }
                 return {
                   bindNew: function () {
                     Array.from(document.querySelectorAll(`[${dataSelector}]`)).forEach(target => {
@@ -303,6 +296,14 @@
                         instance,
                         target,
                         tooltip,
+                        show: () => {
+                          tooltip.classList.add('show');
+                          target.classList.add('show');
+                        },
+                        hide: () => {                          
+                          tooltip.classList.remove('show');
+                          target.classList.remove('show');
+                        }
                       }
 
                       target.setAttribute('data-tooltip-id', id);
@@ -326,7 +327,7 @@
 
               const attachButton = parent.querySelector('.attach');
 
-              const tmp = tmpl(document.querySelector('.example1_template').innerHTML);
+              const tmp = tmpl(document.querySelector('.example1_template').innerText);
 
               let i = 0;
               function add() {
@@ -362,7 +363,7 @@
           <button class="attach">attach to new set</button>
           <script type="template" class="example1_template">
 
-            <button data-tooltipselector=".tooltip<%= i %>">no class</button>
+            <button data-tooltipselector=".tooltip<%= i %>">no class - no event</button>
             <div class="tooltipstyle tooltip<%= i %>">
               Let's try: <%= i %>
               <button>test</button>
