@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <script>
+      (function () {
+        var resolve;
+        var p = new Promise(function (res) {
+          resolve = res;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          Array.prototype.slice.call(document.querySelectorAll("[data-eval]")).forEach(function (tag) {
+            var text = tag.innerHTML;
+
+            console.log("text", text, "tag", tag);
+
+            {
+              eval(text);
+            }
+          });
+
+          resolve();
+        });
+
+        window.beforeAceEventPromise = function () {
+          return p;
+        };
+      })();
+    </script>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+      <div class="inside">
+        <h2>Basics</h2>
+        <script type="editor" data-lang="sh">
+
+          # doc:
+            https://popper.js.org/docs/v2/
+        </script>
+
+        <h2>Simple example</h2>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+
+        <div class="example1">
+          <style>
+            .example1 .tooltipstyle {
+              &.tooltip-on-hover {
+                display: none;
+                &.show {
+                  display: block;
+                }
+              }
+              background-color: #333;
+              color: white;
+              padding: 5px 10px;
+              border-radius: 4px;
+              font-size: 13px;
+              .arrow,
+              .arrow::before {
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                background: inherit;
+              }
+
+              .arrow {
+                visibility: hidden;
+              }
+
+              .arrow::before {
+                visibility: visible;
+                content: "";
+                transform: rotate(45deg);
+              }
+              &[data-popper-placement^="top"] > .arrow {
+                bottom: -4px;
+              }
+
+              &[data-popper-placement^="bottom"] > .arrow {
+                top: -4px;
+              }
+
+              &[data-popper-placement^="left"] > .arrow {
+                right: -4px;
+              }
+
+              &[data-popper-placement^="right"] > .arrow {
+                left: -4px;
+              }
+            }
+          </style>
+
+          <script type="editor" data-lang="js" data-eval>
+
+            if (!window.allLoaded) {
+              window.allLoaded = [];
+            }
+            window.allLoaded.push(function () {
+
+              const setupTooltipGroup = (function () {
+                const instances = {};
+
+                let delegateBound = false;
+                let i = 0;
+                function getNewId() {
+                  return `tooltip-${i++}`;
+                }
+
+                if (!delegateBound) {
+                  delegateBound = true;
+
+                  function eventBuilder(event, act) {
+                    return function (e) {
+
+                      var el = e.target;
+  
+                      var match = el.matches('.tooltip-on-hover');
+
+                      let id;
+  
+                      if (match) {
+  
+                        try {
+  
+                          id = el.getAttribute('data-tooltip-id');
+  
+                          if (typeof id !== 'string' || !id.trim()) {
+                            return;
+                          }
+  
+                          const basket = instances[id];
+  
+                          if (!basket) {
+                            return;
+                          }
+  
+                          const { tooltip, instance } = basket;
+
+                          act(tooltip, instance);
+                        }
+                        catch (e) {
+  
+                          console.error(`tooltip ${event} error [id: ${id}]`, e)
+                        }
+                      }
+                    }
+                  }
+
+                  document.body.addEventListener('mouseover', eventBuilder('mouseover', (tooltip, instance) => {
+                    tooltip.classList.add('show');
+                    instance.update();
+                  }));
+                  document.body.addEventListener('focus', eventBuilder('focus', (tooltip, instance) => {
+                    tooltip.classList.add('show');
+                    instance.update();
+                  }));
+                  document.body.addEventListener('mouseout', eventBuilder('mouseout', (tooltip, instance) => {
+                    tooltip.classList.remove('show');
+                  }));
+                  document.body.addEventListener('blur', eventBuilder('blur', (tooltip, instance) => {
+                    tooltip.classList.remove('show');
+                  }));
+                }
+                return function (options = {}, dataSelector = 'data-tooltipselector') {
+                  const ids = new Set();
+                  return {
+                    bindNew: function () {
+                      Array.from(document.querySelectorAll(`[${dataSelector}]`)).forEach(target => {
+                        if (target.hasAttribute('data-tooltip-id')) {
+                          return; // ignore already binded
+                        }
+
+                        const selector = target.getAttribute(dataSelector);
+
+                        if (typeof selector !== 'string') {
+                          return;
+                        }
+
+                        const tooltip = document.querySelector(selector);
+
+                        if (!tooltip) {
+                          return; // can't find tooltip element
+                        }
+
+                        if (target.classList.contains('tooltip-on-hover')) {
+                          tooltip.classList.add('tooltip-on-hover');
+                        }
+
+                        const id = getNewId();
+
+                        ids.add(id);
+
+                        const instance = Popper.createPopper(target, tooltip, options);
+
+                        instances[id] = {
+                          instance,
+                          target,
+                          tooltip,
+                        }
+
+                        target.setAttribute('data-tooltip-id', id);
+                        tooltip.setAttribute('data-tooltip-id', id);
+                      });
+                    },
+                    getInstance: id => instances[id],
+                    getNewId,
+                  };
+                }
+              }());
+
+              const tooltipGroup = setupTooltipGroup({
+                // placement: "right",
+                modifiers: [
+                  {
+                    name: 'offset',
+                    options: {
+                      offset: [0, 8],
+                    },
+                  },
+                ],
+              })
+              tooltipGroup.bindNew();
+            });
+          </script>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+
+          <button data-tooltipselector=".tooltip1">I'm a button</button>
+          <div class="tooltipstyle tooltip1">
+            My tooltip
+            <button>test</button>
+            <br />
+            test
+            <div class="arrow" data-popper-arrow></div>
+          </div>
+
+          <button data-tooltipselector=".tooltip2" class="tooltip-on-hover">I'm a button</button>
+          <div class="tooltipstyle tooltip2">
+            My tooltip
+            <button>test</button>
+            <br />
+            test
+            <div class="arrow" data-popper-arrow></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <script src="/js/github.js"></script>
+  </body>
+</html>

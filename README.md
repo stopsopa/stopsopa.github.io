@@ -130,6 +130,15 @@ Warning: Just specify type="typescript" and script on site will load
         };
       })();
     </script>
+
+    <script>
+      if (!window.allLoaded) {
+        window.allLoaded = [];
+      }
+      window.allLoaded.push(function () {
+        console.log("do my stuff after all is loaded");
+      });
+    </script>
   </head>
   <body class="layout bg" toc>
     <div class="body">

@@ -1769,6 +1769,19 @@ body .github-profile:hover {
 
     window.githubJsReady = true;
 
+    if (Array.isArray(window.allLoaded)) {
+      const preexisting = window.allLoaded;
+      window.allLoaded = {
+        push: function (trigger) {
+          console.log("Internal: run my function");
+          trigger();
+        },
+      };
+      preexisting.forEach(function (trigger) {
+        window.allLoaded.push(trigger);
+      });
+    }
+
     log.blue(
       "DOMContentLoaded",
       "window.doace [triggered in github.js] -> window.githubJsReady = true defined (see snippet how to handle it next to this log)"
