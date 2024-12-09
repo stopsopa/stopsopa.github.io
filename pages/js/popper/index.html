@@ -66,49 +66,58 @@
 
         <div class="example1">
           <style>
-            .example1 .tooltipstyle {
-              &.tooltip-on-hover {
-                display: none;
+            .example1 {
+              [data-tooltipselector] {
                 &.show {
-                  display: block;
+                  background-color: rosybrown;
                 }
               }
-              background-color: #333;
-              color: white;
-              padding: 5px 10px;
-              border-radius: 4px;
-              font-size: 13px;
-              .arrow,
-              .arrow::before {
-                position: absolute;
-                width: 8px;
-                height: 8px;
-                background: inherit;
-              }
 
-              .arrow {
-                visibility: hidden;
-              }
-
-              .arrow::before {
-                visibility: visible;
-                content: "";
-                transform: rotate(45deg);
-              }
-              &[data-popper-placement^="top"] > .arrow {
-                bottom: -4px;
-              }
-
-              &[data-popper-placement^="bottom"] > .arrow {
-                top: -4px;
-              }
-
-              &[data-popper-placement^="left"] > .arrow {
-                right: -4px;
-              }
-
-              &[data-popper-placement^="right"] > .arrow {
-                left: -4px;
+              .tooltipstyle {
+                &.tooltip-toggle-click,
+                &.tooltip-on-hover {
+                  display: none;
+                  &.show {
+                    display: block;
+                  }
+                }
+                background-color: #333;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 4px;
+                font-size: 13px;
+                .arrow,
+                .arrow::before {
+                  position: absolute;
+                  width: 8px;
+                  height: 8px;
+                  background: inherit;
+                }
+  
+                .arrow {
+                  visibility: hidden;
+                }
+  
+                .arrow::before {
+                  visibility: visible;
+                  content: "";
+                  transform: rotate(45deg);
+                }
+                &[data-popper-placement^="top"] > .arrow {
+                  bottom: -4px;
+                }
+  
+                &[data-popper-placement^="bottom"] > .arrow {
+                  top: -4px;
+                }
+  
+                &[data-popper-placement^="left"] > .arrow {
+                  right: -4px;
+                }
+  
+                &[data-popper-placement^="right"] > .arrow {
+                  left: -4px;
+                }
               }
             }
           </style>
@@ -123,67 +132,86 @@
               const setupTooltipGroup = (function () {
                 const instances = {};
 
-                let delegateBound = false;
                 let i = 0;
                 function getNewId() {
                   return `tooltip-${i++}`;
                 }
 
+                let delegateBound = false;
                 if (!delegateBound) {
                   delegateBound = true;
 
-                  function eventBuilder(event, act) {
+                  function eventBuilder(event, selector, act) {
                     return function (e) {
 
                       var el = e.target;
-  
-                      var match = el.matches('.tooltip-on-hover');
+
+                      var match = el.matches(selector);
 
                       let id;
-  
+
                       if (match) {
-  
+
                         try {
-  
+
                           id = el.getAttribute('data-tooltip-id');
-  
+
                           if (typeof id !== 'string' || !id.trim()) {
                             return;
                           }
-  
+
                           const basket = instances[id];
-  
+
                           if (!basket) {
                             return;
                           }
-  
-                          const { tooltip, instance } = basket;
 
-                          act(tooltip, instance);
+                          const { target, tooltip, instance } = basket;
+
+                          act(target, tooltip, instance);
                         }
                         catch (e) {
-  
+
                           console.error(`tooltip ${event} error [id: ${id}]`, e)
                         }
                       }
                     }
                   }
 
-                  document.body.addEventListener('mouseover', eventBuilder('mouseover', (tooltip, instance) => {
+                  // on hover
+                  document.body.addEventListener('mouseover', eventBuilder('mouseover', '.tooltip-on-hover', (target, tooltip, instance) => {
                     tooltip.classList.add('show');
+                    target.classList.add('show');
                     instance.update();
                   }));
-                  document.body.addEventListener('focus', eventBuilder('focus', (tooltip, instance) => {
+                  document.body.addEventListener('focus', eventBuilder('focus', '.tooltip-on-hover', (target, tooltip, instance) => {
                     tooltip.classList.add('show');
+                    target.classList.add('show');
                     instance.update();
                   }));
-                  document.body.addEventListener('mouseout', eventBuilder('mouseout', (tooltip, instance) => {
+                  document.body.addEventListener('mouseout', eventBuilder('mouseout', '.tooltip-on-hover', (target, tooltip, instance) => {
                     tooltip.classList.remove('show');
+                    target.classList.remove('show');
                   }));
-                  document.body.addEventListener('blur', eventBuilder('blur', (tooltip, instance) => {
+                  document.body.addEventListener('blur', eventBuilder('blur', '.tooltip-on-hover', (target, tooltip, instance) => {
                     tooltip.classList.remove('show');
+                    target.classList.remove('show');
+                  }));
+
+                  // on click
+                  document.body.addEventListener('click', eventBuilder('click', '[data-tooltipselector].tooltip-toggle-click', (target, tooltip, instance) => {
+                    if (tooltip.classList.contains('show')) {
+                      tooltip.classList.remove('show');
+                      target.classList.remove('show');
+                    }
+                    else {
+                      tooltip.classList.add('show');
+                      target.classList.add('show');
+                      instance.update();
+                    }
                   }));
                 }
+
                 return function (options = {}, dataSelector = 'data-tooltipselector') {
                   const ids = new Set();
                   return {
@@ -207,6 +235,13 @@
 
                         if (target.classList.contains('tooltip-on-hover')) {
                           tooltip.classList.add('tooltip-on-hover');
+                        }
+
+                        if (target.classList.contains('tooltip-toggle-click')) {
+                          tooltip.classList.add('tooltip-toggle-click');
+                          if (tooltip.classList.contains('show')) {
+                            target.classList.add('show');
+                          }
                         }
 
                         const id = getNewId();
@@ -251,7 +286,7 @@
           <br />
           <br />
 
-          <button data-tooltipselector=".tooltip1">I'm a button</button>
+          <button data-tooltipselector=".tooltip1">no class</button>
           <div class="tooltipstyle tooltip1">
             My tooltip
             <button>test</button>
@@ -260,12 +295,27 @@
             <div class="arrow" data-popper-arrow></div>
           </div>
 
-          <button data-tooltipselector=".tooltip2" class="tooltip-on-hover">I'm a button</button>
+          <button data-tooltipselector=".tooltip2" class="tooltip-on-hover">.tooltip-on-hover</button>
           <div class="tooltipstyle tooltip2">
             My tooltip
             <button>test</button>
             <br />
             test
+            <div class="arrow" data-popper-arrow></div>
+          </div>
+
+          <button data-tooltipselector=".tooltip3" class="tooltip-toggle-click">.tooltip-toggle-click.show</button>
+          <div class="tooltipstyle tooltip3 show">
+            My tooltip
+            <button>test</button>
+            <br />
+            test
+            <div class="arrow" data-popper-arrow></div>
+          </div>
+
+          <button data-tooltipselector=".tooltip4" class="tooltip-toggle-click">.tooltip-toggle-click</button>
+          <div class="tooltipstyle tooltip4">
+            <img src="https://i.imgur.com/CBcGC9X.png" style="width: 100px;">
             <div class="arrow" data-popper-arrow></div>
           </div>
         </div>
