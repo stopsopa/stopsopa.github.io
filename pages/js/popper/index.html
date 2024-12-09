@@ -174,19 +174,19 @@
                 }
 
                 // .tooltip-on-hover
-                document.body.addEventListener('mouseover', eventBuilder('mouseover', '.tooltip-on-hover', ({target, tooltip, instance, show, hide}) => {
+                document.body.addEventListener('mouseover', eventBuilder('mouseover', '.tooltip-on-hover', ({instance, show}) => {
                   show();
                   instance.update();
                 }));
-                document.body.addEventListener('focusin', eventBuilder('focusin', '.tooltip-on-hover', ({target, tooltip, instance, show}) => {
+                document.body.addEventListener('focusin', eventBuilder('focusin', '.tooltip-on-hover', ({instance, show}) => {
                   show();
                   instance.update();
                 }));
-                document.body.addEventListener('mouseout', eventBuilder('mouseout', '.tooltip-on-hover', ({target, tooltip, instance, hide}) => hide()));
-                document.body.addEventListener('focusout', eventBuilder('focusout', '.tooltip-on-hover', ({target, tooltip, instance, hide}) => hide()));
+                document.body.addEventListener('mouseout', eventBuilder('mouseout', '.tooltip-on-hover', ({hide}) => hide()));
+                document.body.addEventListener('focusout', eventBuilder('focusout', '.tooltip-on-hover', ({hide}) => hide()));
 
                 // .tooltip-toggle-click
-                document.body.addEventListener('click', eventBuilder('click', `[${dataSelector}].tooltip-toggle-click`, ({target, tooltip, instance, show, hide}) => {
+                document.body.addEventListener('click', eventBuilder('click', `[${dataSelector}].tooltip-toggle-click`, ({tooltip, instance, show, hide}) => {
                   if (tooltip.classList.contains('show')) {
                     hide();
                   }
@@ -197,7 +197,7 @@
                 }));
 
                 // .tooltip-hide-on-click-outside
-                document.body.addEventListener('click', eventBuilder('click', `.tooltip-hide-on-click-outside[${dataSelector}]`, ({target, tooltip, instance, show}) => {
+                document.body.addEventListener('click', eventBuilder('click', `.tooltip-hide-on-click-outside[${dataSelector}]`, ({tooltip, instance, show}) => {
                   // when target element clicked then show element
                   if (!tooltip.classList.contains('show')) {
                     setTimeout(() => {
@@ -230,7 +230,7 @@
 
                       if (!basket.stop) {
 
-                        const {tooltip, target, hide} = basket;
+                        const {hide} = basket;
 
                         hide();
                       }
@@ -297,12 +297,18 @@
                         target,
                         tooltip,
                         show: () => {
-                          tooltip.classList.add('show');
-                          target.classList.add('show');
+                          try {
+                            tooltip.classList.add('show');
+                            target.classList.add('show');
+                          }
+                          catch (e) {}
                         },
-                        hide: () => {                          
-                          tooltip.classList.remove('show');
-                          target.classList.remove('show');
+                        hide: () => {  
+                          try {
+                            tooltip.classList.remove('show');
+                            target.classList.remove('show');
+                          }
+                          catch (e) {}    
                         }
                       }
 
