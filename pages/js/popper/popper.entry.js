@@ -11,6 +11,9 @@ import { usePopper } from "react-popper";
 
 import "./popper.css";
 
+/**
+ * Basic hook to just bind
+ */
 function useTooltip(generateOptions) {
   const [referenceElement, setReferenceElement] = useState(null);
   const [popperElement, setPopperElement] = useState(null);
@@ -18,7 +21,9 @@ function useTooltip(generateOptions) {
   const { styles, attributes } = usePopper(referenceElement, popperElement, generateOptions(arrowElement));
   return [setReferenceElement, setPopperElement, setArrowElement, attributes, styles];
 }
-
+/**
+ * Extended hook for hover
+ */
 function useTooltipOnHover(generateOptions, defautShow = false) {
   const props = useTooltip(generateOptions);
 
@@ -27,7 +32,6 @@ function useTooltipOnHover(generateOptions, defautShow = false) {
   return [
     ...props,
     show,
-    setShow,
     {
       onMouseEnter: () => setShow(true),
       onMouseLeave: () => setShow(false),
@@ -57,7 +61,7 @@ const AlwaysShow = () => {
       <div
         ref={setPopperElement}
         style={styles.popper}
-        className="tooltipstyle tooltip-toggle-click show"
+        className="tooltipstyle show"
         {...attributes.popper}
       >
         Fixed popper
@@ -68,8 +72,8 @@ const AlwaysShow = () => {
 };
 
 const OnHover = () => {
-  const [setReferenceElement, setPopperElement, setArrowElement, attributes, styles, show, setShow, events] =
-    useTooltipOnHover((arrowElement) => ({
+  const [setReferenceElement, setPopperElement, setArrowElement, attributes, styles, show, events] = useTooltipOnHover(
+    (arrowElement) => ({
       modifiers: [
         {
           name: "offset",
@@ -79,7 +83,8 @@ const OnHover = () => {
           },
         },
       ],
-    }));
+    })
+  );
 
   return (
     <>
@@ -91,7 +96,7 @@ const OnHover = () => {
         <div
           ref={setPopperElement}
           style={styles.popper}
-          className="tooltipstyle tooltip-toggle-click show"
+          className="tooltipstyle show"
           {...attributes.popper}
         >
           On hover
