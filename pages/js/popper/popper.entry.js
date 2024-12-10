@@ -105,6 +105,33 @@ function useTooltipHideOnClickOutside(generateOptions, defautShow = false) {
   };
 }
 
+function useTooltipOnHoverDelayed(generateOptions, delay = 200, defautShow = false) {
+    const props = useTooltip(generateOptions);
+
+    const [show, setShow] = useState(defautShow);
+    const timeoutRef = useRef(null);
+
+    const handleMouseEnter = () => {
+        timeoutRef.current = setTimeout(() => {
+            setShow(true);
+        }, delay);
+    };
+
+    const handleMouseLeave = () => {
+        clearTimeout(timeoutRef.current);
+        setShow(false);
+    };
+
+    return {
+        ...props,
+        show,
+        events: {
+            onMouseEnter: handleMouseEnter,
+            onMouseLeave: handleMouseLeave,
+        },
+    };
+}
+
 const AlwaysShow = () => {
   const tooltip = useTooltip((arrowElement) => ({
     modifiers: [
@@ -164,6 +191,40 @@ const OnHover = () => {
           {...tooltip.attributes.popper}
         >
           on hover
+          <div ref={tooltip.setArrowElement} style={tooltip.styles.arrow} className="arrow" data-popper-arrow />
+        </div>
+      )}
+    </>
+  );
+};
+
+const OnHoverDelayed = () => {
+  const tooltip = useTooltipOnHoverDelayed((arrowElement) => ({
+    modifiers: [
+      {
+        name: "offset",
+        options: {
+          offset: [0, 8],
+          element: arrowElement,
+        },
+      },
+    ],
+  }), 1200);
+
+  return (
+    <>
+      <button type="button" ref={tooltip.setReferenceElement} {...tooltip.events}>
+        On hover target (delay)
+      </button>
+
+      {tooltip.show && (
+        <div
+          ref={tooltip.setPopperElement}
+          style={tooltip.styles.popper}
+          className="tooltipstyle show"
+          {...tooltip.attributes.popper}
+        >
+          on hover delayed
           <div ref={tooltip.setArrowElement} style={tooltip.styles.arrow} className="arrow" data-popper-arrow />
         </div>
       )}
@@ -257,6 +318,7 @@ function Main() {
         <div key={i}>
           <AlwaysShow />
           <OnHover />
+          <OnHoverDelayed />
           <OnToggleClick />
           <HideOnClickOutside />
         </div>
