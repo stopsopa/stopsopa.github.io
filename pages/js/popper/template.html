@@ -1,0 +1,50 @@
+
+
+<button data-tooltipselector=".tooltip<%= i %>">no class - no event</button>
+<div class="tooltipstyle tooltip<%= i %>">
+  Let's try: <%= i %>
+  <button>test</button>
+  <br />
+  test
+  <div class="arrow" data-popper-arrow></div>
+</div>
+
+<button data-tooltipselector=".tooltip<%= i+1 %>" class="tooltip-on-hover">.tooltip-on-hover</button>
+<div class="tooltipstyle tooltip<%= i+1 %>">
+  Let's try: <%= i+1 %>
+  <button>test</button>
+  <br />
+  test
+  <div class="arrow" data-popper-arrow></div>
+</div>
+
+<button data-tooltipselector=".tooltip<%= i+2 %>" class="tooltip-toggle-click">.tooltip-toggle-click</button>
+<div class="tooltipstyle tooltip<%= i+2 %>">
+  Let's try: <%= i+2 %>
+  <img src="https://i.imgur.com/CBcGC9X.png" style="width: 100px" />
+  <div class="arrow" data-popper-arrow></div>
+</div>
+
+<button data-tooltipselector=".tooltip<%= i+3 %>" class="tooltip-toggle-click">.tooltip-toggle-click.show</button>
+<div class="tooltipstyle tooltip<%= i+3 %> show">
+  Let's try: <%= i+3 %>
+  My tooltip
+  <button>test</button>
+  <br />
+  test
+  <div class="arrow" data-popper-arrow></div>
+</div>
+
+<button data-tooltipselector=".tooltip<%= i+4 %>" class="tooltip-hide-on-click-outside">
+  .tooltip-hide-on-click-outside
+</button>
+<div class="tooltipstyle tooltip<%= i+4 %>">
+  Let's try: <%= i+4 %>
+  <br />
+  <button>test</button>
+  <br />
+  test
+  <div class="arrow" data-popper-arrow></div>
+</div>
+<br />
+<br />

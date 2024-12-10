@@ -132,7 +132,7 @@ Warning: Just specify type="typescript" and script on site will load
     </script>
 
     <script>
-      if (!window.allLoaded) {
+      if (!Array.isArray(window.allLoaded)) {
         window.allLoaded = [];
       }
       window.allLoaded.push(function () {

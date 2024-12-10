@@ -34,6 +34,7 @@
         };
       })();
     </script>
+    <link rel="stylesheet" href="popper.css" />
   </head>
   <body class="layout bg" toc>
     <div class="body">
@@ -65,68 +66,6 @@
         <br />
 
         <div class="example1">
-          <style>
-            .example1 {
-              [data-tooltipselector] {
-                &.show {
-                  background-color: rosybrown;
-                }
-              }
-
-              .tooltipstyle {
-                display: none;
-                &[data-tooltip-id] {
-                  display: block;
-                }
-                &.tooltip-hide-on-click-outside,
-                &.tooltip-toggle-click,
-                &.tooltip-on-hover {
-                  display: none;
-                  &.show {
-                    display: block;
-                  }
-                }
-                background-color: #333;
-                color: white;
-                padding: 5px 10px;
-                border-radius: 4px;
-                font-size: 13px;
-                .arrow,
-                .arrow::before {
-                  position: absolute;
-                  width: 8px;
-                  height: 8px;
-                  background: inherit;
-                }
-
-                .arrow {
-                  visibility: hidden;
-                }
-
-                .arrow::before {
-                  visibility: visible;
-                  content: "";
-                  transform: rotate(45deg);
-                }
-                &[data-popper-placement^="top"] > .arrow {
-                  bottom: -4px;
-                }
-
-                &[data-popper-placement^="bottom"] > .arrow {
-                  top: -4px;
-                }
-
-                &[data-popper-placement^="left"] > .arrow {
-                  right: -4px;
-                }
-
-                &[data-popper-placement^="right"] > .arrow {
-                  left: -4px;
-                }
-              }
-            }
-          </style>
-
           <script type="editor" data-lang="js" data-eval>
 
             const setupTooltipGroup = (function () {
@@ -137,7 +76,7 @@
                 return `tooltip-id-${i++}`;
               }
 
-              function bindDelegatesEvents(dataSelector) {  
+              function bindDelegatesEvents(dataSelector) {
                 function eventBuilder(event, selector, act) {
                   return function (e) {
 
@@ -303,12 +242,12 @@
                           }
                           catch (e) {}
                         },
-                        hide: () => {  
+                        hide: () => {
                           try {
                             tooltip.classList.remove('show');
                             target.classList.remove('show');
                           }
-                          catch (e) {}    
+                          catch (e) {}
                         }
                       }
 
@@ -322,10 +261,14 @@
               }
             }());
 
-            if (!window.allLoaded) {
+            if (!Array.isArray(window.allLoaded)) {
               window.allLoaded = [];
             }
-            window.allLoaded.push(function () {
+            window.allLoaded.push(async function () {
+
+              const res = await fetch('./template.html');
+
+              const html = await res.text();
 
               const parent = document.querySelector('.example1');
 
@@ -333,7 +276,7 @@
 
               const attachButton = parent.querySelector('.attach');
 
-              const tmp = tmpl(document.querySelector('.example1_template').innerText);
+              const tmp = tmpl(html);
 
               let i = 0;
               function add() {
@@ -367,57 +310,6 @@
           </script>
           <button class="add">add element set</button>
           <button class="attach">attach to new set</button>
-          <script type="template" class="example1_template">
-
-            <button data-tooltipselector=".tooltip<%= i %>">no class - no event</button>
-            <div class="tooltipstyle tooltip<%= i %>">
-              Let's try: <%= i %>
-              <button>test</button>
-              <br />
-              test
-              <div class="arrow" data-popper-arrow></div>
-            </div>
-
-            <button data-tooltipselector=".tooltip<%= i+1 %>" class="tooltip-on-hover">.tooltip-on-hover</button>
-            <div class="tooltipstyle tooltip<%= i+1 %>">
-              Let's try: <%= i+1 %>
-              <button>test</button>
-              <br />
-              test
-              <div class="arrow" data-popper-arrow></div>
-            </div>
-
-            <button data-tooltipselector=".tooltip<%= i+2 %>" class="tooltip-toggle-click">.tooltip-toggle-click</button>
-            <div class="tooltipstyle tooltip<%= i+2 %>">
-              Let's try: <%= i+2 %>
-              <img src="https://i.imgur.com/CBcGC9X.png" style="width: 100px" />
-              <div class="arrow" data-popper-arrow></div>
-            </div>
-
-            <button data-tooltipselector=".tooltip<%= i+3 %>" class="tooltip-toggle-click">.tooltip-toggle-click.show</button>
-            <div class="tooltipstyle tooltip<%= i+3 %> show">
-              Let's try: <%= i+3 %>
-              My tooltip
-              <button>test</button>
-              <br />
-              test
-              <div class="arrow" data-popper-arrow></div>
-            </div>
-
-            <button data-tooltipselector=".tooltip<%= i+4 %>" class="tooltip-hide-on-click-outside">
-              .tooltip-hide-on-click-outside
-            </button>
-            <div class="tooltipstyle tooltip<%= i+4 %>">
-              Let's try: <%= i+4 %>
-              <br />
-              <button>test</button>
-              <br />
-              test
-              <div class="arrow" data-popper-arrow></div>
-            </div>
-            <br />
-            <br />
-          </script>
         </div>
       </div>
     </div>

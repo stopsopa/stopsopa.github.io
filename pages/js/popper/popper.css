@@ -1,0 +1,60 @@
+
+.example1 {
+    [data-tooltipselector] {
+      &.show {
+        background-color: rosybrown;
+      }
+    }
+
+    .tooltipstyle {
+      display: none;
+      &[data-tooltip-id] {
+        display: block;
+      }
+      &.tooltip-hide-on-click-outside,
+      &.tooltip-toggle-click,
+      &.tooltip-on-hover {
+        display: none;
+        &.show {
+          display: block;
+        }
+      }
+      background-color: #333;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      .arrow,
+      .arrow::before {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: inherit;
+      }
+
+      .arrow {
+        visibility: hidden;
+      }
+
+      .arrow::before {
+        visibility: visible;
+        content: "";
+        transform: rotate(45deg);
+      }
+      &[data-popper-placement^="top"] > .arrow {
+        bottom: -4px;
+      }
+
+      &[data-popper-placement^="bottom"] > .arrow {
+        top: -4px;
+      }
+
+      &[data-popper-placement^="left"] > .arrow {
+        right: -4px;
+      }
+
+      &[data-popper-placement^="right"] > .arrow {
+        left: -4px;
+      }
+    }
+  }
