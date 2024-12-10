@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { render } from "react-dom";
 
 /**
@@ -19,7 +19,16 @@ function useTooltip(generateOptions) {
   const [popperElement, setPopperElement] = useState(null);
   const [arrowElement, setArrowElement] = useState(null);
   const { styles, attributes } = usePopper(referenceElement, popperElement, generateOptions(arrowElement));
-  return { setReferenceElement, setPopperElement, setArrowElement, attributes, styles };
+  return {
+    setReferenceElement,
+    referenceElement,
+    popperElement,
+    setPopperElement,
+    arrowElement,
+    setArrowElement,
+    attributes,
+    styles,
+  };
 }
 /**
  * Extended hook for hover
@@ -44,6 +53,8 @@ function useTooltipOnHover(generateOptions, defautShow = false) {
 function useTooltipOnToggleClick(generateOptions, defautShow = false) {
   const props = useTooltip(generateOptions);
 
+  //   props.popperElement
+
   const [show, setShow] = useState(defautShow);
 
   return {
@@ -51,6 +62,45 @@ function useTooltipOnToggleClick(generateOptions, defautShow = false) {
     show,
     events: {
       onClick: () => setShow((show) => !show),
+    },
+  };
+}
+/**
+ * Hide when click outside
+ */
+function useTooltipHideOnClickOutside(generateOptions, defautShow = false) {
+  const props = useTooltip(generateOptions);
+
+  const [show, setShow] = useState(defautShow);
+
+  useEffect(() => {
+    if (!props.popperElement) {
+      return;
+    }
+    const handleClick = (event) => {
+      if (!props.popperElement.contains(event.target)) {
+        setShow(false);
+      }
+    };
+
+    document.body.addEventListener("click", handleClick);
+
+    return () => {
+      document.body.removeEventListener("click", handleClick);
+    };
+  }, [props.popperElement]);
+
+  return {
+    ...props,
+    show,
+    events: {
+      onClick: () => {
+        if (!props.popperElement || !props.popperElement.classList.contains("show")) {
+          setTimeout(() => {
+            setShow(true);
+          }, 50);
+        }
+      },
     },
   };
 }
@@ -122,17 +172,20 @@ const OnHover = () => {
 };
 
 const OnToggleClick = () => {
-  const tooltip = useTooltipOnToggleClick((arrowElement) => ({
-    modifiers: [
-      {
-        name: "offset",
-        options: {
-          offset: [0, 8],
-          element: arrowElement,
+  const tooltip = useTooltipOnToggleClick(
+    (arrowElement) => ({
+      modifiers: [
+        {
+          name: "offset",
+          options: {
+            offset: [0, 8],
+            element: arrowElement,
+          },
         },
-      },
-    ],
-  }), true);
+      ],
+    }),
+    true
+  );
 
   return (
     <>
@@ -155,6 +208,43 @@ const OnToggleClick = () => {
   );
 };
 
+const HideOnClickOutside = () => {
+  const tooltip = useTooltipHideOnClickOutside(
+    (arrowElement) => ({
+      modifiers: [
+        {
+          name: "offset",
+          options: {
+            offset: [0, 8],
+            element: arrowElement,
+          },
+        },
+      ],
+    }),
+    true
+  );
+
+  return (
+    <>
+      <button type="button" ref={tooltip.setReferenceElement} {...tooltip.events}>
+        Hide on click outside
+      </button>
+
+      {tooltip.show && (
+        <div
+          ref={tooltip.setPopperElement}
+          style={tooltip.styles.popper}
+          className="tooltipstyle show"
+          {...tooltip.attributes.popper}
+        >
+          <button onClick={() => alert("action")}>action</button> click me
+          <div ref={tooltip.setArrowElement} style={tooltip.styles.arrow} className="arrow" data-popper-arrow />
+        </div>
+      )}
+    </>
+  );
+};
+
 function Main() {
   const [length, setLength] = useState(1);
 
@@ -168,6 +258,7 @@ function Main() {
           <AlwaysShow />
           <OnHover />
           <OnToggleClick />
+          <HideOnClickOutside />
         </div>
       ))}
     </div>
