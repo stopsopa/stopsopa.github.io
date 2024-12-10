@@ -38,9 +38,24 @@ function useTooltipOnHover(generateOptions, defautShow = false) {
     },
   };
 }
+/**
+ * Extended hook for toggle click
+ */
+function useTooltipOnToggleClick(generateOptions, defautShow = false) {
+  const props = useTooltip(generateOptions);
+
+  const [show, setShow] = useState(defautShow);
+
+  return {
+    ...props,
+    show,
+    events: {
+      onClick: () => setShow((show) => !show),
+    },
+  };
+}
 
 const AlwaysShow = () => {
-  //   const [setReferenceElement, setPopperElement, setArrowElement, attributes, styles] = useTooltip((arrowElement) => ({
   const tooltip = useTooltip((arrowElement) => ({
     modifiers: [
       {
@@ -73,8 +88,41 @@ const AlwaysShow = () => {
 };
 
 const OnHover = () => {
-  //   const [setReferenceElement, setPopperElement, setArrowElement, attributes, styles, show, events] = useTooltipOnHover(
   const tooltip = useTooltipOnHover((arrowElement) => ({
+    modifiers: [
+      {
+        name: "offset",
+        options: {
+          offset: [0, 8],
+          element: arrowElement,
+        },
+      },
+    ],
+  }));
+
+  return (
+    <>
+      <button type="button" ref={tooltip.setReferenceElement} {...tooltip.events}>
+        On hover target
+      </button>
+
+      {tooltip.show && (
+        <div
+          ref={tooltip.setPopperElement}
+          style={tooltip.styles.popper}
+          className="tooltipstyle show"
+          {...tooltip.attributes.popper}
+        >
+          On hover
+          <div ref={tooltip.setArrowElement} style={tooltip.styles.arrow} className="arrow" data-popper-arrow />
+        </div>
+      )}
+    </>
+  );
+};
+
+const OnToggleClick = () => {
+  const tooltip = useTooltipOnToggleClick((arrowElement) => ({
     modifiers: [
       {
         name: "offset",
@@ -119,6 +167,7 @@ function Main() {
         <div key={i}>
           <AlwaysShow />
           <OnHover />
+          <OnToggleClick />
         </div>
       ))}
     </div>
