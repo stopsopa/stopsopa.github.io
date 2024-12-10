@@ -80,7 +80,7 @@ const AlwaysShow = () => {
         className="tooltipstyle show"
         {...tooltip.attributes.popper}
       >
-        Fixed popper
+        fixed popper
         <div ref={tooltip.setArrowElement} style={tooltip.styles.arrow} className="arrow" data-popper-arrow />
       </div>
     </>
@@ -113,7 +113,7 @@ const OnHover = () => {
           className="tooltipstyle show"
           {...tooltip.attributes.popper}
         >
-          On hover
+          on hover
           <div ref={tooltip.setArrowElement} style={tooltip.styles.arrow} className="arrow" data-popper-arrow />
         </div>
       )}
@@ -132,12 +132,12 @@ const OnToggleClick = () => {
         },
       },
     ],
-  }));
+  }), true);
 
   return (
     <>
       <button type="button" ref={tooltip.setReferenceElement} {...tooltip.events}>
-        On hover target
+        Toggle click target
       </button>
 
       {tooltip.show && (
@@ -147,7 +147,7 @@ const OnToggleClick = () => {
           className="tooltipstyle show"
           {...tooltip.attributes.popper}
         >
-          On hover
+          on click
           <div ref={tooltip.setArrowElement} style={tooltip.styles.arrow} className="arrow" data-popper-arrow />
         </div>
       )}
