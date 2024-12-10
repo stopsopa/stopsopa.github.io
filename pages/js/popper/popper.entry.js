@@ -19,7 +19,7 @@ function useTooltip(generateOptions) {
   const [popperElement, setPopperElement] = useState(null);
   const [arrowElement, setArrowElement] = useState(null);
   const { styles, attributes } = usePopper(referenceElement, popperElement, generateOptions(arrowElement));
-  return [setReferenceElement, setPopperElement, setArrowElement, attributes, styles];
+  return { setReferenceElement, setPopperElement, setArrowElement, attributes, styles };
 }
 /**
  * Extended hook for hover
@@ -29,18 +29,19 @@ function useTooltipOnHover(generateOptions, defautShow = false) {
 
   const [show, setShow] = useState(defautShow);
 
-  return [
+  return {
     ...props,
     show,
-    {
+    events: {
       onMouseEnter: () => setShow(true),
       onMouseLeave: () => setShow(false),
     },
-  ];
+  };
 }
 
 const AlwaysShow = () => {
-  const [setReferenceElement, setPopperElement, setArrowElement, attributes, styles] = useTooltip((arrowElement) => ({
+  //   const [setReferenceElement, setPopperElement, setArrowElement, attributes, styles] = useTooltip((arrowElement) => ({
+  const tooltip = useTooltip((arrowElement) => ({
     modifiers: [
       {
         name: "offset",
@@ -54,53 +55,52 @@ const AlwaysShow = () => {
 
   return (
     <>
-      <button type="button" ref={setReferenceElement}>
+      <button type="button" ref={tooltip.setReferenceElement}>
         Fixed popper target
       </button>
 
       <div
-        ref={setPopperElement}
-        style={styles.popper}
+        ref={tooltip.setPopperElement}
+        style={tooltip.styles.popper}
         className="tooltipstyle show"
-        {...attributes.popper}
+        {...tooltip.attributes.popper}
       >
         Fixed popper
-        <div ref={setArrowElement} style={styles.arrow} className="arrow" data-popper-arrow />
+        <div ref={tooltip.setArrowElement} style={tooltip.styles.arrow} className="arrow" data-popper-arrow />
       </div>
     </>
   );
 };
 
 const OnHover = () => {
-  const [setReferenceElement, setPopperElement, setArrowElement, attributes, styles, show, events] = useTooltipOnHover(
-    (arrowElement) => ({
-      modifiers: [
-        {
-          name: "offset",
-          options: {
-            offset: [0, 8],
-            element: arrowElement,
-          },
+  //   const [setReferenceElement, setPopperElement, setArrowElement, attributes, styles, show, events] = useTooltipOnHover(
+  const tooltip = useTooltipOnHover((arrowElement) => ({
+    modifiers: [
+      {
+        name: "offset",
+        options: {
+          offset: [0, 8],
+          element: arrowElement,
         },
-      ],
-    })
-  );
+      },
+    ],
+  }));
 
   return (
     <>
-      <button type="button" ref={setReferenceElement} {...events}>
+      <button type="button" ref={tooltip.setReferenceElement} {...tooltip.events}>
         On hover target
       </button>
 
-      {show && (
+      {tooltip.show && (
         <div
-          ref={setPopperElement}
-          style={styles.popper}
+          ref={tooltip.setPopperElement}
+          style={tooltip.styles.popper}
           className="tooltipstyle show"
-          {...attributes.popper}
+          {...tooltip.attributes.popper}
         >
           On hover
-          <div ref={setArrowElement} style={styles.arrow} className="arrow" data-popper-arrow />
+          <div ref={tooltip.setArrowElement} style={tooltip.styles.arrow} className="arrow" data-popper-arrow />
         </div>
       )}
     </>
