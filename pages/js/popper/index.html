@@ -96,17 +96,37 @@
                   }
                 }
 
+
+
                 // .tooltip-on-hover
-                document.body.addEventListener('mouseover', eventBuilder('mouseover', '.tooltip-on-hover', ({instance, show}) => {
-                  show();
-                  instance.update();
+                document.body.addEventListener('mouseover', eventBuilder('mouseover', '.tooltip-on-hover', (basket) => {
+                  const {instance, show, tooltip} = basket;
+
+                  let delay = parseInt(tooltip.getAttribute('data-tooltip-delay'), 10);
+
+                  if (! (delay > 0)) {
+                    delay = 1000;
+                  }
+
+                  basket.tooltipTimeout = setTimeout(() => {
+                    show();
+                    instance.update();
+                  }, delay);
+                }));
+                document.body.addEventListener('mouseout', eventBuilder('mouseout', '.tooltip-on-hover', (basket) => {
+                  const {instance, hide} = basket;
+                  clearTimeout(basket.tooltipTimeout);
+                  hide();
                 }));
                 document.body.addEventListener('focusin', eventBuilder('focusin', '.tooltip-on-hover', ({instance, show}) => {
                   show();
                   instance.update();
                 }));
-                document.body.addEventListener('mouseout', eventBuilder('mouseout', '.tooltip-on-hover', ({hide}) => hide()));
                 document.body.addEventListener('focusout', eventBuilder('focusout', '.tooltip-on-hover', ({hide}) => hide()));
+
+
+
+
 
                 // .tooltip-toggle-click
                 document.body.addEventListener('click', eventBuilder('click', `[${dataSelector}].tooltip-toggle-click`, ({tooltip, instance, show, hide}) => {
@@ -260,14 +280,14 @@
 
               const attachButton = parent.querySelector('.attach');
 
-              const tmp = tmpl(html);
+              const tmp = template(html);
 
               let i = 0;
               function add() {
                 const newDiv = document.createElement('div');
                 newDiv.innerHTML = tmp({i});
                 parent.appendChild(newDiv);
-                i += 5;
+                i += 4;
               }
 
               add();
