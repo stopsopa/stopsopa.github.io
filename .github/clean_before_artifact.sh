@@ -27,5 +27,6 @@ rm -rf playwright-report
 rm -rf demos
 rm -rf docker
 rm -rf .vscode
+rm -rf .github
 rm -rf .env*
 rm -rf package.json
