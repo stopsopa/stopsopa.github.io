@@ -49,9 +49,9 @@
               expect(spinner).toBeInTheDocument();
             });
             // or
-            await waitFor(document.querySelector('.bg-spinner'));
+            await waitFor(() =>document.querySelector('.bg-spinner'));
             // or
-            await waitFor(screen.getByRole('button'));
+            await waitFor(() =>screen.getByRole('button'));
 
             // to click when document.querySelector(..) used use fireEvent
             import { render, screen, act, fireEvent } from '@testing-library/react';          
