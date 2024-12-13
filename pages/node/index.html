@@ -2467,109 +2467,228 @@
         </script>
 
         <h2>Express template</h2>
-        <script type="editor" data-lang="js">
 
-          // express extension: https://raw.githubusercontent.com/stopsopa/roderic/86495ef554314d388e7f6ef10ee4de6d12bcbcff/libs/express-extend-res.js?token=GHSAT0AAAAAACVQ4Q66S6J6DLZRVFB5DQLSZXEOC2Q
+        <div data-vanila-tabs>
+          <div data-buttons>
+            <span class="active">esm</span>
+            <span>commonjs</span>
+          </div>
+          <div data-tabs>
+            <div>
+              <script type="editor" data-lang="js">
 
-          const path      = require('path');
+                // express extension: https://raw.githubusercontent.com/stopsopa/roderic/86495ef554314d388e7f6ef10ee4de6d12bcbcff/libs/express-extend-res.js?token=GHSAT0AAAAAACVQ4Q66S6J6DLZRVFB5DQLSZXEOC2Q
 
-          const fs        = require('fs');
+                const path      = require('path');
 
-          const express   = require('express');
+                const fs        = require('fs');
 
-          const log       = (function(){try{return console.log}catch(e){return function (){}}}());
+                const express   = require('express');
 
-          const template  = require('lodash/template');
+                const log       = (function(){try{return console.log}catch(e){return function (){}}}());
 
-          // https://www.npmjs.com/package/cookie-parser
-          const cookieParser = require('cookie-parser');
+                const template  = require('lodash/template');
 
-          // https://stackoverflow.com/a/23613092
-          const serveIndex    = require('serve-index');
+                // https://www.npmjs.com/package/cookie-parser
+                const cookieParser = require('cookie-parser');
 
-          const host      = process.env.HOST;
+                // https://stackoverflow.com/a/23613092
+                const serveIndex    = require('serve-index');
 
-          const port      = process.env.PORT;
+                const host      = process.env.HOST;
 
-          const web = path.resolve(__dirname, 'public');
+                const port      = process.env.PORT;
 
-          const readFile = file => fs.readFileSync(file).toString();
+                const web = path.resolve(__dirname, 'public');
 
-          const app       = express();
+                const readFile = file => fs.readFileSync(file).toString();
 
-          app.use(cookieParser())
+                const app       = express();
 
-          app.use(express.urlencoded({extended: false}));
+                app.use(cookieParser())
 
-          app.use(express.json());
+                app.use(express.urlencoded({extended: false}));
 
-          app.all('/save', (req, res) => {
+                app.use(express.json());
 
-              const cookies = decodeURIComponent(req.headers.cookie || '').split(';').reduce((acc, coo) => {
-                  const tmp   = coo.split('=');
-                  const name  = tmp.shift().trim();
-                  const value = tmp.join('=').trim();
-                  name && (acc[name] = value);
-                  return acc;
-              }, {});
+                app.all('/save', (req, res) => {
 
-              log('save');
-              log(JSON.stringify(req.body));
+                    const cookies = decodeURIComponent(req.headers.cookie || '').split(';').reduce((acc, coo) => {
+                        const tmp   = coo.split('=');
+                        const name  = tmp.shift().trim();
+                        const value = tmp.join('=').trim();
+                        name && (acc[name] = value);
+                        return acc;
+                    }, {});
 
-              res.setHeader('Content-type', 'application/json; charset=utf-8');
-              res.end(JSON.stringify({
-                  ok: true
-              }));
-          })
+                    log('save');
+                    log(JSON.stringify(req.body));
 
-          app.all('/root', (req, res) => {
+                    res.setHeader('Content-type', 'application/json; charset=utf-8');
+                    res.end(JSON.stringify({
+                        ok: true
+                    }));
+                })
 
-              const html  = readFile(path.resolve(__dirname, 'public', '_index.html'));
+                app.all('/root', (req, res) => {
 
-              const svg   = readFile(path.resolve(__dirname, 'public', 'tree.svg'));
+                    const html  = readFile(path.resolve(__dirname, 'public', '_index.html'));
 
-              const tmp = template(html);
+                    const svg   = readFile(path.resolve(__dirname, 'public', 'tree.svg'));
 
-              res.end(tmp({
-                  svg
-              }));
-          });
+                    const tmp = template(html);
 
-          app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
-              // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
-              maxAge: '356 days', // in milliseconds max-age=30758400
-              setHeaders: (res, path) => {
+                    res.end(tmp({
+                        svg
+                    }));
+                });
 
-                  if (/\.bmp$/i.test(path)) { // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
+                app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
+                    // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
+                    maxAge: '356 days', // in milliseconds max-age=30758400
+                    setHeaders: (res, path) => {
 
-                      res.setHeader('Content-type', 'image/bmp')
+                        if (/\.bmp$/i.test(path)) { // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
+
+                            res.setHeader('Content-type', 'image/bmp')
+                        }
+
+                        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+                        // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
+                        // res.setHeader('Cache-Control', 'public, only-if-cached')
+                    }
+                }), serveIndex(web, {
+                  icons: true,
+                  view: "details",
+                  hidden: false, // Display hidden (dot) files. Defaults to false.
+                }));
+
+                app.listen(port, host, () => {
+
+                    console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`)
+                });
+              </script>
+
+              <script type="editor" data-lang="json">
+                {
+                  "dependencies": {
+                    "body-parser"    : "^1.18.3",
+                    "express"    : "^4.16.3",
+                    "lodash"    : "^4.17.10",
+                    "serve-index"    : "^1.9.1"
                   }
+                }
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="js">
 
-                  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-                  // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
-                  // res.setHeader('Cache-Control', 'public, only-if-cached')
-              }
-          }), serveIndex(web, {
-            icons: true,
-            view: "details",
-            hidden: false, // Display hidden (dot) files. Defaults to false.
-          }));
+                // express extension: https://raw.githubusercontent.com/stopsopa/roderic/86495ef554314d388e7f6ef10ee4de6d12bcbcff/libs/express-extend-res.js?token=GHSAT0AAAAAACVQ4Q66S6J6DLZRVFB5DQLSZXEOC2Q
 
-          app.listen(port, host, () => {
+                const path      = require('path');
 
-              console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`)
-          });
-        </script>
-        <script type="editor" data-lang="json">
-          {
-            "dependencies": {
-              "body-parser"    : "^1.18.3",
-              "express"    : "^4.16.3",
-              "lodash"    : "^4.17.10",
-              "serve-index"    : "^1.9.1"
-            }
-          }
-        </script>
+                const fs        = require('fs');
+
+                const express   = require('express');
+
+                const log       = (function(){try{return console.log}catch(e){return function (){}}}());
+
+                const template  = require('lodash/template');
+
+                // https://www.npmjs.com/package/cookie-parser
+                const cookieParser = require('cookie-parser');
+
+                // https://stackoverflow.com/a/23613092
+                const serveIndex    = require('serve-index');
+
+                const host      = process.env.HOST;
+
+                const port      = process.env.PORT;
+
+                const web = path.resolve(__dirname, 'public');
+
+                const readFile = file => fs.readFileSync(file).toString();
+
+                const app       = express();
+
+                app.use(cookieParser())
+
+                app.use(express.urlencoded({extended: false}));
+
+                app.use(express.json());
+
+                app.all('/save', (req, res) => {
+
+                    const cookies = decodeURIComponent(req.headers.cookie || '').split(';').reduce((acc, coo) => {
+                        const tmp   = coo.split('=');
+                        const name  = tmp.shift().trim();
+                        const value = tmp.join('=').trim();
+                        name && (acc[name] = value);
+                        return acc;
+                    }, {});
+
+                    log('save');
+                    log(JSON.stringify(req.body));
+
+                    res.setHeader('Content-type', 'application/json; charset=utf-8');
+                    res.end(JSON.stringify({
+                        ok: true
+                    }));
+                })
+
+                app.all('/root', (req, res) => {
+
+                    const html  = readFile(path.resolve(__dirname, 'public', '_index.html'));
+
+                    const svg   = readFile(path.resolve(__dirname, 'public', 'tree.svg'));
+
+                    const tmp = template(html);
+
+                    res.end(tmp({
+                        svg
+                    }));
+                });
+
+                app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
+                    // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
+                    maxAge: '356 days', // in milliseconds max-age=30758400
+                    setHeaders: (res, path) => {
+
+                        if (/\.bmp$/i.test(path)) { // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
+
+                            res.setHeader('Content-type', 'image/bmp')
+                        }
+
+                        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+                        // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
+                        // res.setHeader('Cache-Control', 'public, only-if-cached')
+                    }
+                }), serveIndex(web, {
+                  icons: true,
+                  view: "details",
+                  hidden: false, // Display hidden (dot) files. Defaults to false.
+                }));
+
+                app.listen(port, host, () => {
+
+                    console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`)
+                });
+              </script>
+
+              <script type="editor" data-lang="json">
+                {
+                  "dependencies": {
+                    "body-parser"    : "^1.18.3",
+                    "express"    : "^4.16.3",
+                    "lodash"    : "^4.17.10",
+                    "serve-index"    : "^1.9.1"
+                  }
+                }
+              </script>
+            </div>
+          </div>
+        </div>
+
         <h2>express-extend-res</h2>
         <script type="editor" data-lang="js">
 

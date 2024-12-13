@@ -275,6 +275,28 @@
               </ul>
             </li>
           </ul>
+          <h2>CLI</h2>
+          <script type="editor" data-lang="sh">
+
+Open System settings from cli:
+
+    open -b com.apple.systempreferences
+
+open keyboard tab but only when settings already open
+
+    osascript -e "tell application \"System Preferences\"" \
+              -e   "set the current pane to pane id \"com.apple.Keyboard-Settings.extension\"" -e "end tell"
+
+even faster: open System settings & com.apple.Keyboard-Settings.extension in one go
+
+    open "x-apple.systempreferences:com.apple.Keyboard-Settings.extension"     
+    open x-apple.systempreferences:com.apple.Keyboard-Settings.extension
+
+List all: (But I found this useless)
+    tree /Library/Preferences        
+            
+          </script>
+          
           <h2>Bartender 4 (Menu bar Menubar icons management tool)</h2>
           <a href="https://www.macbartender.com/">Bartender 4 homepage</a>
           <img style="width: 800px" src="https://i.imgur.com/Rkp0pQj.png" />
