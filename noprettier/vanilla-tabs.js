@@ -2,6 +2,8 @@
  * https://github.com/stopsopa/tabs
  */
 window.vanilaTabs = (function () {
+  const onChangeEvents = {};
+
   const dataidkey = "data-vanilla-tab-id";
 
   let i = 0;
@@ -47,8 +49,10 @@ window.vanilaTabs = (function () {
 
       return id;
     },
-    active: function () {
+    active: function (opt) {
       const ids = [];
+
+      const { onChange } = { ...opt };
 
       Array.from(document.querySelectorAll("[data-vanila-tabs]"))
 
@@ -68,7 +72,7 @@ window.vanilaTabs = (function () {
         })
         .filter(Boolean)
         .forEach((target) => {
-          this.activeByButtonElement(target.parentNode.parentNode, target);
+          this.activeByButtonElement(target.parentNode.parentNode, target, { onChange });
         });
 
       return ids;
@@ -82,7 +86,7 @@ window.vanilaTabs = (function () {
         return id;
       }
 
-      let { buttons } = { ...extra };
+      let { buttons, onChange } = { ...extra };
 
       if (!buttons) {
         buttons = Array.from(parent.querySelector("[data-buttons]").children);
@@ -90,14 +94,21 @@ window.vanilaTabs = (function () {
 
       const zeroIndex = buttons.indexOf(target) ?? 0;
 
-      this.activeByIndex(parent, zeroIndex, { buttons });
+      this.activeByIndex(parent, zeroIndex, { buttons, onChange });
 
       return id;
+    },
+    bindOnChange: function (id, onChange) {
+      if (typeof onChange === "function") {
+        onChangeEvents[id] = onChange;
+      }
     },
     activeByIndex: function (parent, zeroIndex = 0, extra) {
       const id = this.produceId(parent);
 
-      let { buttons, divs } = { ...extra };
+      let { buttons, tabs, onChange } = { ...extra };
+
+      this.bindOnChange(id, onChange);
 
       if (!buttons) {
         buttons = Array.from(parent.querySelector("[data-buttons]").children);
@@ -109,43 +120,51 @@ window.vanilaTabs = (function () {
         return id;
       }
 
-      if (!divs) {
-        divs = Array.from(parent.querySelector("[data-tabs]").children);
+      if (!tabs) {
+        tabs = Array.from(parent.querySelector("[data-tabs]").children);
       }
 
-      if (divs.length === 0) {
-        warn(`divs not found`, parent);
+      if (tabs.length === 0) {
+        warn(`tabs not found`, parent);
 
         return id;
       }
 
-      if (buttons.length !== divs.length) {
-        warn(`buttons and divs length mismatch`, parent);
+      if (buttons.length !== tabs.length) {
+        warn(`buttons and tabs length mismatch`, parent);
 
         return id;
       }
 
-      if (
-        !(
-          Number.isInteger(zeroIndex) &&
-          !Number.isNaN(zeroIndex) &&
-          zeroIndex > -1
-        )
-      ) {
+      if (!(Number.isInteger(zeroIndex) && !Number.isNaN(zeroIndex) && zeroIndex > -1)) {
         warn(`zeroIndex not found`, zeroIndex, parent, target);
 
         return id;
       }
 
-      buttons.forEach(function (button, i) {
-        if (i === zeroIndex) {
-          button.classList.add("active");
-          divs[i].classList.add("active");
-        } else {
-          button.classList.remove("active");
-          divs[i].classList.remove("active");
-        }
-      });
+      {
+        const onChange = onChangeEvents[id];
+
+        buttons.forEach(function (button, i) {
+          if (i === zeroIndex) {
+            button.classList.add("active");
+
+            tabs[i].classList.add("active");
+
+            if (onChange) {
+              onChange({
+                button,
+                tab: tabs[i],
+                index: i,
+              });
+            }
+          } else {
+            button.classList.remove("active");
+
+            tabs[i].classList.remove("active");
+          }
+        });
+      }
 
       return id;
     },
@@ -166,9 +185,7 @@ window.vanilaTabs = (function () {
         if (match) {
           const parent = target.parentNode.parentNode;
 
-          const buttons = Array.from(
-            parent.querySelector("[data-buttons]").children
-          );
+          const buttons = Array.from(parent.querySelector("[data-buttons]").children);
 
           const zeroIndex = buttons.indexOf(target) ?? 0;
 

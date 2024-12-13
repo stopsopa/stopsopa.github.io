@@ -6,6 +6,28 @@ var log = (function () {
   }
 })();
 
+const isVisibleElement = (function () {
+  const list = ["script", "style", "meta", "noscript", "template", "link"];
+
+  return function tool(element) {
+    const tagName = element.tagName.toLowerCase();
+
+    if (list.includes(tagName)) {
+      return tool(element.parentNode);
+    }
+
+    if (tagName === "input" && element.type === "hidden") {
+      return tool(element.parentNode);
+    }
+
+    return element.checkVisibility();
+  };
+})();
+
+function filterVisibleList(list) {
+  return list.filter(isVisibleElement);
+}
+
 function isObject(a) {
   return !!a && a.constructor === Object;
 }
@@ -1346,9 +1368,11 @@ body .github-profile:hover {
     (function () {
       var selector = "body script";
 
-      const found = Array.from(document.querySelectorAll(selector))
-        .filter((e) => ["editor", "syntax"].includes(e.getAttribute("type")))
-        .filter((e) => e.parentNode.checkVisibility());
+      const found = filterVisibleList(
+        Array.from(document.querySelectorAll(selector)).filter((e) =>
+          ["editor", "syntax"].includes(e.getAttribute("type"))
+        )
+      );
 
       const allowed = ["editor", "syntax"];
 
@@ -1379,7 +1403,7 @@ body .github-profile:hover {
 
     var selector = '[type="editor"]:not(.handled), [type="syntax"]:not(.handled)';
 
-    const found = Array.prototype.slice.call(document.querySelectorAll(selector));
+    const found = filterVisibleList(Array.from(document.querySelectorAll(selector)));
 
     log.blue("executed", "window.doace() inside - handling " + selector + " - adding " + found.length + " editors");
 
@@ -1910,7 +1934,12 @@ body .github-profile:hover {
     }
 
     const unbind = vanilaTabs.bind();
-    vanilaTabs.active();
+    vanilaTabs.active({
+      onChange: async (e) => {
+        console.log("vanilaTabs.active(onChange)", e);
+        await window.doace();
+      },
+    });
 
     await window.doace();
 

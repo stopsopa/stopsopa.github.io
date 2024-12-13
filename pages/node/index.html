@@ -2479,21 +2479,21 @@
 
                 // express extension: https://raw.githubusercontent.com/stopsopa/roderic/86495ef554314d388e7f6ef10ee4de6d12bcbcff/libs/express-extend-res.js?token=GHSAT0AAAAAACVQ4Q66S6J6DLZRVFB5DQLSZXEOC2Q
 
-                const path      = require('path');
+                import path from 'path';
 
-                const fs        = require('fs');
-
-                const express   = require('express');
-
-                const log       = (function(){try{return console.log}catch(e){return function (){}}}());
-
-                const template  = require('lodash/template');
-
+                import fs from 'fs';
+                
+                import express from 'express';
+                
+                const log = (function(){try{return console.log}catch(e){return function (){}}}());
+                
+                import template from 'lodash/template';
+                
                 // https://www.npmjs.com/package/cookie-parser
-                const cookieParser = require('cookie-parser');
-
+                import cookieParser from 'cookie-parser';
+                
                 // https://stackoverflow.com/a/23613092
-                const serveIndex    = require('serve-index');
+                import serveIndex from 'serve-index';
 
                 const host      = process.env.HOST;
 
