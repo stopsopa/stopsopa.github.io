@@ -290,6 +290,12 @@ In order to prevent dislocating yellow background under block pointed out by loc
 </body>
 ```
 
+# tabs
+
+It supports out of the box tabs like documented in:
+
+https://github.com/stopsopa/tabs
+
 # uglify
 
 If anywhere in the repository file _.uglify.js will be created it will be processed with babel and next by uglifyjs and exported as _.uglify.min.js

@@ -420,7 +420,7 @@ window.sasync = {
 (function () {
   // <link rel="stylesheet" href="../../css/normalize.css">
 
-  ["/css/normalize.css", "/css/main.css", "//fonts.googleapis.com/css?family=Open+Sans:300,400,500,700,900"].forEach(
+  ["/css/normalize.css", "/css/main.css", "/noprettier/vanilla-tabs.css", "//fonts.googleapis.com/css?family=Open+Sans:300,400,500,700,900"].forEach(
     function (u) {
       // https://stackoverflow.com/a/524721
       var head = document.head || document.getElementsByTagName("head")[0],
@@ -1829,6 +1829,13 @@ body .github-profile:hover {
           return false;
         }
       }),
+      loadJs("vanilla-tabs.js", "/noprettier/vanilla-tabs.js", function () {
+        try {
+          return typeof window.vanilaTabs === "object";
+        } catch (e) {
+          return false;
+        }
+      }),
       // loadJs("permalink", "/noprettier/permalink-my.js", function () {
       //   try {
       //     return typeof window.sasync.loaded.mountpermalink === "function";
@@ -1898,6 +1905,9 @@ body .github-profile:hover {
     } else {
       log.blue("executed", "window.doace() waiting for window.beforeAceEventPromise() NOT found");
     }
+
+    const unbind = vanilaTabs.bind();
+    vanilaTabs.active();
 
     await window.doace();
 
