@@ -338,6 +338,32 @@
             return newDate.toISOString().substring(0, 19).replace("T", " ");
           }
         </script>
+        <h2>visible isVisible</h2>
+        <script type="editor" data-lang="js">
+
+    const isVisibleElement = (function () {
+      const list = ["script", "style", "meta", "noscript", "template", "link"];
+
+      return function tool(element) {
+        const tagName = element.tagName.toLowerCase();
+
+        if (list.includes(tagName)) {
+          return tool(element.parentNode);
+        }
+
+        if (tagName === "input" && element.type === "hidden") {
+          return tool(element.parentNode);
+        }
+
+        return element.checkVisibility();
+      };
+    })();
+
+    function filterVisibleList(list) {
+      return list.filter(isVisibleElement);
+    }
+          
+        </script>
         <h2>focus blur</h2>
         <script type="editor" data-lang="js">
 
