@@ -2485,8 +2485,6 @@
                 
                 import express from 'express';
                 
-                const log = (function(){try{return console.log}catch(e){return function (){}}}());
-                
                 import template from 'lodash/template';
                 
                 // https://www.npmjs.com/package/cookie-parser
@@ -2494,6 +2492,8 @@
                 
                 // https://stackoverflow.com/a/23613092
                 import serveIndex from 'serve-index';
+                
+                const log = (function(){try{return console.log}catch(e){return function (){}}}());
 
                 const host      = process.env.HOST;
 
@@ -2591,8 +2591,6 @@
 
                 const express   = require('express');
 
-                const log       = (function(){try{return console.log}catch(e){return function (){}}}());
-
                 const template  = require('lodash/template');
 
                 // https://www.npmjs.com/package/cookie-parser
@@ -2600,6 +2598,8 @@
 
                 // https://stackoverflow.com/a/23613092
                 const serveIndex    = require('serve-index');
+
+                const log       = (function(){try{return console.log}catch(e){return function (){}}}());
 
                 const host      = process.env.HOST;
 
