@@ -1,7 +1,7 @@
 /**
  * https://github.com/stopsopa/tabs
  */
-window.vanilaTabs = (function () {
+window.vanillaTabs = (function () {
   const onChangeEvents = {};
 
   const dataidkey = "data-vanilla-tab-id";
@@ -15,6 +15,8 @@ window.vanilaTabs = (function () {
       return () => {};
     }
   })();
+
+  const th = (msg) => new Error(`vanilla-tabs error: ${msg}`);
 
   function isObjectLike(value) {
     return value != null && typeof value == "object";
@@ -36,9 +38,7 @@ window.vanilaTabs = (function () {
     },
     produceId: function (parent) {
       if (!isNode(parent)) {
-        warn(`parent argument is not valid DOM element`, parent);
-
-        return this;
+        throw th(`parent argument is not valid DOM element`, parent);
       }
 
       let id = parent.getAttribute(dataidkey);
@@ -54,8 +54,7 @@ window.vanilaTabs = (function () {
 
       const { onChange } = { ...opt };
 
-      Array.from(document.querySelectorAll("[data-vanila-tabs]"))
-
+      Array.from(document.querySelectorAll("[data-vanilla-tabs]"))
         .map((parent) => {
           ids.push(this.produceId(parent));
 
@@ -72,19 +71,15 @@ window.vanilaTabs = (function () {
         })
         .filter(Boolean)
         .forEach((target) => {
-          this.activeByButtonElement(target.parentNode.parentNode, target, { onChange });
+          this.activeByButtonElement(target.parentNode.parentNode, target, {
+            onChange,
+          });
         });
 
       return ids;
     },
     activeByButtonElement: function (parent, target, extra) {
       const id = this.produceId(parent);
-
-      if (!isNode(target)) {
-        warn(`target argument is not valid DOM element`, parent, target);
-
-        return id;
-      }
 
       let { buttons, onChange } = { ...extra };
 
@@ -131,15 +126,17 @@ window.vanilaTabs = (function () {
       }
 
       if (buttons.length !== tabs.length) {
-        warn(`buttons and tabs length mismatch`, parent);
-
-        return id;
+        throw th(`buttons and tabs length mismatch`, parent);
       }
 
-      if (!(Number.isInteger(zeroIndex) && !Number.isNaN(zeroIndex) && zeroIndex > -1)) {
-        warn(`zeroIndex not found`, zeroIndex, parent, target);
-
-        return id;
+      if (
+        !(
+          Number.isInteger(zeroIndex) &&
+          !Number.isNaN(zeroIndex) &&
+          zeroIndex > -1
+        )
+      ) {
+        throw th(`zeroIndex not found`, zeroIndex, parent, target);
       }
 
       {
@@ -180,12 +177,14 @@ window.vanilaTabs = (function () {
       const event = (e) => {
         var target = e.target;
 
-        var match = target.matches("[data-vanila-tabs] > [data-buttons] > *");
+        var match = target.matches("[data-vanilla-tabs] > [data-buttons] > *");
 
         if (match) {
           const parent = target.parentNode.parentNode;
 
-          const buttons = Array.from(parent.querySelector("[data-buttons]").children);
+          const buttons = Array.from(
+            parent.querySelector("[data-buttons]").children
+          );
 
           const zeroIndex = buttons.indexOf(target) ?? 0;
 

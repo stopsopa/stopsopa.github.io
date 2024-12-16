@@ -1858,7 +1858,7 @@ body .github-profile:hover {
       }),
       loadJs("vanilla-tabs.js", "/noprettier/vanilla-tabs.js", function () {
         try {
-          return typeof window.vanilaTabs === "object";
+          return typeof window.vanillaTabs === "object";
         } catch (e) {
           return false;
         }
@@ -1933,10 +1933,10 @@ body .github-profile:hover {
       log.blue("executed", "window.doace() waiting for window.beforeAceEventPromise() NOT found");
     }
 
-    const unbind = vanilaTabs.bind();
-    vanilaTabs.active({
+    const unbind = vanillaTabs.bind();
+    vanillaTabs.active({
       onChange: async (e) => {
-        console.log("vanilaTabs.active(onChange)", e);
+        console.log("vanillaTabs.active(onChange)", e);
         await window.doace();
       },
     });

@@ -1,10 +1,10 @@
 .example1 {
   /*
    * vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-   * All of styles in .vanila-tooltip are needed only for vanilla js tooltip
-   * so add .vanila-tooltip class to the parent element 
+   * All of styles in .vanilla-tooltip are needed only for vanilla js tooltip
+   * so add .vanilla-tooltip class to the parent element 
    */
-  &.vanila-tooltip {
+  &.vanilla-tooltip {
     .tooltipstyle {
       display: none;
       &[data-tooltip-id] {
@@ -24,8 +24,8 @@
     }
   }
   /*
-  * All of styles in .vanila-tooltip are needed only for vanilla js tooltip
-  * so add .vanila-tooltip class to the parent element 
+  * All of styles in .vanilla-tooltip are needed only for vanilla js tooltip
+  * so add .vanilla-tooltip class to the parent element 
   * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    */
   [data-tooltipselector] {
