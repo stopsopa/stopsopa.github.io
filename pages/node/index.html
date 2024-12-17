@@ -908,7 +908,12 @@
           yarn why library
               # to see why library is in deps
               # for npm it will be:
-                npm ls library
+                npm ls @fast-csv/parse
+              # generates something like
+                cataloguiapp@0.0.418
+                  └─┬ exceljs@4.4.0
+                    └─┬ fast-csv@4.3.6
+                      └── @fast-csv/parse@4.3.6
 
           yarn cache clean --force
               # Remove the shared cache files. https://yarnpkg.com/cli/cache/clean
