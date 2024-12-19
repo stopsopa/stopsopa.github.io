@@ -106,30 +106,30 @@ function useTooltipHideOnClickOutside(generateOptions, defautShow = false) {
 }
 
 function useTooltipOnHoverDelayed(generateOptions, delay = 200, defautShow = false) {
-    const props = useTooltip(generateOptions);
+  const props = useTooltip(generateOptions);
 
-    const [show, setShow] = useState(defautShow);
-    const timeoutRef = useRef(null);
+  const [show, setShow] = useState(defautShow);
+  const timeoutRef = useRef(null);
 
-    const handleMouseEnter = () => {
-        timeoutRef.current = setTimeout(() => {
-            setShow(true);
-        }, delay);
-    };
+  const handleMouseEnter = () => {
+    timeoutRef.current = setTimeout(() => {
+      setShow(true);
+    }, delay);
+  };
 
-    const handleMouseLeave = () => {
-        clearTimeout(timeoutRef.current);
-        setShow(false);
-    };
+  const handleMouseLeave = () => {
+    clearTimeout(timeoutRef.current);
+    setShow(false);
+  };
 
-    return {
-        ...props,
-        show,
-        events: {
-            onMouseEnter: handleMouseEnter,
-            onMouseLeave: handleMouseLeave,
-        },
-    };
+  return {
+    ...props,
+    show,
+    events: {
+      onMouseEnter: handleMouseEnter,
+      onMouseLeave: handleMouseLeave,
+    },
+  };
 }
 
 const AlwaysShow = () => {
@@ -199,17 +199,20 @@ const OnHover = () => {
 };
 
 const OnHoverDelayed = () => {
-  const tooltip = useTooltipOnHoverDelayed((arrowElement) => ({
-    modifiers: [
-      {
-        name: "offset",
-        options: {
-          offset: [0, 8],
-          element: arrowElement,
+  const tooltip = useTooltipOnHoverDelayed(
+    (arrowElement) => ({
+      modifiers: [
+        {
+          name: "offset",
+          options: {
+            offset: [0, 8],
+            element: arrowElement,
+          },
         },
-      },
-    ],
-  }), 1200);
+      ],
+    }),
+    1200
+  );
 
   return (
     <>
