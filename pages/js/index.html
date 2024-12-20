@@ -675,6 +675,26 @@
         <script type="editor" data-lang="js">
 
           https://youtube.com/shorts/7GD1-yb-UXs?feature=share
+
+
+          // version to remove circular references
+          var k = { abc: "def" };
+          k.test = k;
+          const json = JSON.stringify(k, (function () {
+            const seen = new WeakSet();
+            return (key, value) => {
+              if (typeof value === "object" && value !== null) {
+                if (seen.has(value)) {
+                  return;
+                }
+                seen.add(value);
+              }
+              return value;
+            };
+          })());
+          console.log(json);
+
+          // TODO: create version which will return something like 'ref: path.to.the.first.ref'
         </script>
         <h2>load js file</h2>
 
