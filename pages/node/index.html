@@ -2188,6 +2188,33 @@
         <a href="https://github.com/stopsopa/roderic-legacy/tree/master/test/jest"
           >https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a
         >
+        <script type="editor" data-lang="sh">
+
+jest.mock('../../components/Dropdown', () => {
+  let mockCustomStateDropdown = (function () {
+    let state = null;
+    return {
+      set: (s) => {
+        state = s;
+      },
+      get: () => state
+    };
+  })();
+  return {
+    __esModule: true,
+    Dropdown: ({ className, onChange, ...props }) => (
+      <div
+        {...props}
+        onClick={(e) => onChange(mockCustomStateDropdown.get())}
+        className={`${className} Dropdown`.trim()}
+      />
+    ),
+    customStateDropdown: mockCustomStateDropdown
+  };
+});
+
+          
+        </script>
 
         <h2>update.sh - shell script</h2>
         <script type="editor" data-lang="sh">
