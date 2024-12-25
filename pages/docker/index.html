@@ -65,6 +65,8 @@
           # remove -t
 
           docker run -u $(id -u):$(id -g) args...
+          docker run --init -u $(id -u):$(id -g) args...
+            # to handle properly SIGTERM on Ctrl+C
 
           # -i
           # -t
@@ -124,6 +126,8 @@
           EOF
 
           docker run --rm -it local_c7_systemd bash
+          docker run --init --rm -it local_c7_systemd bash
+            # to handle properly SIGTERM on Ctrl+C
 
           # pushing image
           # nvm ls-remote
