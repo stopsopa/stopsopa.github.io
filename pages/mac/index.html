@@ -391,6 +391,13 @@
 
             finder -> go -> go to folder... -> paste /System/Library/CoreServices/Finder.app/Contents/Applications/ -> drag AirDrop to the Dock
           </script>
+          <h2>Create ISO from folder</h2>
+          
+          <script type="editor" data-lang="sh">
+
+            hdiutil makehybrid -o Opera_Browser.iso my_folder/ -iso -joliet
+            
+          </script>
           <h2>7zip</h2>
           <a href="7zip.html">more</a>
           <script type="editor" data-lang="sh">
