@@ -309,6 +309,27 @@
         <a href="https://stedolan.github.io/jq/manual/">https://stedolan.github.io/jq/manual/</a>
         <br />
         <a href="https://ss64.com/bash/syntax.html">https://ss64.com/bash/syntax.html</a>
+        <h2>Examples</h2>
+        
+        <script type="editor" data-lang="sh">
+
+          # unwrap .taskDefinition
+          aws ecs describe-task-definition --task-definition ${TASK_DEFINITION} | jq ".taskDefinition" > tmp/current-task-definition.json
+
+          # modify .containerDefinitions[0].image to given IMAGE_URI value 
+          jq --arg IMAGE_URI "${IMAGE_NAME}:${VERSION}" '.containerDefinitions[0].image = $IMAGE_URI' tmp/current-task-definition.json > tmp/updated-task-definition_image.json
+
+          # format json in both files
+          jq '.' tmp/current-task-definition.json > tmp/temp.json && mv tmp/temp.json tmp/current-task-definition.json
+          jq '.' tmp/updated-task-definition_image.json > tmp/temp.json && mv tmp/temp.json tmp/updated-task-definition_image.json
+          
+          diff tmp/current-task-definition.json tmp/updated-task-definition_image.json
+
+          # cleanup by removing some keys
+          jq ". | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .registeredBy, .registeredAt, .compatibilities)" tmp/updated-task-definition_image.json > tmp/updated-task-definition.json
+          
+          
+        </script>
       </div>
     </div>
     <script src="/js/github.js"></script>
