@@ -999,6 +999,16 @@
         <a href="https://levelup.gitconnected.com/5-less-known-bash-concepts-to-level-up-your-linux-skills-7bcf363804d1"
           >https://levelup.gitconnected.com/5-less-known-bash-concepts-to-level-up-your-linux-skills-7bcf363804d1</a
         >
+        <h2>cloc</h2>
+        <script type="editor" data-lang="sh">
+
+          npx cloc . --vcs git
+          
+          npx cloc . \
+            --exclude-dir=_sample-content,_site,node_modules \
+            --exclude-ext=yaml,json,svg
+          
+        </script>
         <h2>xx</h2>
         <p>INFO: Always copy script from here because it contains sha384 hash guards</p>
         <script type="editor" data-lang="sh">
