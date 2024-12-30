@@ -120,6 +120,33 @@
             https://claritydev.net/blog/testing-select-components-react-testing-library
         </script>
 
+        <h2>interesting technique</h2>        
+        <script type="editor" data-lang="jsx">
+          
+          jest.mock('../../../myLib', () => {
+            let mockService = (function () {
+              let state = null;
+              return {
+                set: (s) => {
+                  state = s;
+                },
+                get: () => state
+              };
+            })();
+          
+            return {
+              __esModule: true,
+              useSomething: () => mockService.get(),
+              mockService: mockService
+            };
+          });
+  
+            // then in the test          
+          const { mockService } = require('../../../myLib');
+          mockService.set([8, { isSuccess: false }]);
+          
+        </script>
+
         <h2>React Testing Library</h2>
         <a href="https://www.codecademy.com/learn/learn-react-testing/modules/react-testing-library/cheatsheet"
           >g(Cheatsheets/ Learn React Testing React Testing Library site:codecademy.com)</a
