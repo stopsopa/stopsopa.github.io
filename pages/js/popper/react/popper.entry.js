@@ -9,7 +9,7 @@ import { render } from "react-dom";
 
 import { usePopper } from "react-popper";
 
-import "./popper.css";
+import "../popper.css";
 
 /**
  * Basic hook to just bind
