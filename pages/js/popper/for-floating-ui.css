@@ -45,37 +45,36 @@
     padding: 5px 10px;
     border-radius: 4px;
     font-size: 13px;
-    .arrow,
-    .arrow::before {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: inherit;
-    }
-
     .arrow {
-      visibility: hidden;
-    }
+      &,
+      &::before {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: inherit;
+      }
 
-    .arrow::before {
-      visibility: visible;
-      content: "";
-      transform: rotate(45deg);
-    }
-    &[data-popper-placement^="top"] > .arrow {
-      bottom: -4px;
-    }
+      & {
+        visibility: hidden;
+      }
 
-    &[data-popper-placement^="bottom"] > .arrow {
-      top: -4px;
-    }
-
-    &[data-popper-placement^="left"] > .arrow {
-      right: -4px;
-    }
-
-    &[data-popper-placement^="right"] > .arrow {
-      left: -4px;
+      &::before {
+        visibility: visible;
+        content: "";
+        transform: rotate(45deg);
+      }
+      &.top {
+        bottom: -4px;
+      }
+      &.bottom {
+        top: -4px;
+      }
+      &.left {
+        right: -4px;
+      }
+      &.right {
+        left: -4px;
+      }
     }
   }
 }

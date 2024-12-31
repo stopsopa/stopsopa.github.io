@@ -52,25 +52,28 @@
         <h2>Simple example</h2>
 
         <div class="example1 vanilla-tooltip">
-          <!-- <script data-lang="js" data-eval> -->
+          <!-- <script> -->
           <script type="editor" data-lang="js" data-eval>
             // import {computePosition} from 'https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.12/+esm';
-            const { computePosition, autoUpdate } = FloatingUIDOM;
+            const { computePosition, autoUpdate, flip, shift, limitShift, offset, autoPlacement, arrow } =
+              FloatingUIDOM;
 
             const setupTooltipGroup = (function () {
               const instances = {};
+
+              const classes = ["left", "right", "top", "bottom"];
 
               let i = 0;
               function getNewId() {
                 return `tooltip-id-${i++}`;
               }
 
-              function bindDelegatesEvents(dataSelector) {
-                function eventBuilder(event, selector, act) {
+              function bindDelegatesEvents(selector) {
+                function eventBuilder(event, matchSelector, act) {
                   return function (e) {
                     var el = e.target;
 
-                    var match = el.matches(selector);
+                    var match = el.matches(matchSelector);
 
                     let id;
 
@@ -139,7 +142,7 @@
                   "click",
                   eventBuilder(
                     "click",
-                    `[${dataSelector}].tooltip-toggle-click`,
+                    `[${selector}].tooltip-toggle-click`,
                     ({ tooltip, reposition, show, hide }) => {
                       if (tooltip.classList.contains("show")) {
                         hide();
@@ -156,7 +159,7 @@
                   "click",
                   eventBuilder(
                     "click",
-                    `.tooltip-hide-on-click-outside[${dataSelector}]`,
+                    `.tooltip-hide-on-click-outside[${selector}]`,
                     ({ tooltip, reposition, show }) => {
                       // when target element clicked then show element
                       if (!tooltip.classList.contains("show")) {
@@ -170,8 +173,8 @@
                 );
                 document.body.addEventListener("click", (e) => {
                   if (
-                    e.target.matches(`.tooltip-hide-on-click-outside:not([${dataSelector}])`) ||
-                    e.target.matches(`.tooltip-hide-on-click-outside:not([${dataSelector}]) *`)
+                    e.target.matches(`.tooltip-hide-on-click-outside:not([${selector}])`) ||
+                    e.target.matches(`.tooltip-hide-on-click-outside:not([${selector}]) *`)
                   ) {
                     e.stopPropagation();
 
@@ -179,7 +182,7 @@
                   }
 
                   Array.from(
-                    document.querySelectorAll(`.tooltip-hide-on-click-outside:not([${dataSelector}])`)
+                    document.querySelectorAll(`.tooltip-hide-on-click-outside:not([${selector}])`)
                   ).forEach((tooltip, i) => {
                     try {
                       id = tooltip.getAttribute("data-tooltip-id");
@@ -208,26 +211,29 @@
 
               let delegateBound = false;
 
-              return function (options = {}, dataSelector = "data-tooltipselector") {
+              return function ({
+                produceOptions = (defaultOptions) => defaultOptions,
+                selector = "data-tooltipselector",
+              }) {
                 const ids = new Set();
                 if (!delegateBound) {
                   delegateBound = true;
-                  bindDelegatesEvents(dataSelector);
+                  bindDelegatesEvents(selector);
                 }
                 return {
                   bindNew: function () {
-                    Array.from(document.querySelectorAll(`[${dataSelector}]`)).forEach((target) => {
+                    Array.from(document.querySelectorAll(`[${selector}]`)).forEach((target) => {
                       if (target.hasAttribute("data-tooltip-id")) {
                         return;
                       }
 
-                      const selector = target.getAttribute(dataSelector);
+                      const childSelector = target.getAttribute(selector);
 
-                      if (typeof selector !== "string") {
+                      if (typeof childSelector !== "string") {
                         return;
                       }
 
-                      const tooltip = document.querySelector(selector);
+                      const tooltip = document.querySelector(childSelector);
 
                       if (!tooltip) {
                         return;
@@ -249,19 +255,47 @@
                         target.classList.add("show");
                       }
 
+                      const arrowElement = tooltip.querySelector(":scope > .arrow");
+
                       const id = getNewId();
 
                       ids.add(id);
 
                       function reposition() {
-                        console.log("reposition", target, tooltip);
-
-                        computePosition(target, tooltip, {}).then(({ x, y }) => {
-                          console.log("x", x, "y", y);
+                        computePosition(
+                          target,
+                          tooltip,
+                          produceOptions({
+                            placement: "top",
+                            middleware: [
+                              flip({
+                                padding: 10, // Adjust for the extra offset or early flipping
+                              }),
+                              shift({
+                                limiter: limitShift(),
+                              }),
+                              offset(10),
+                              arrow({ element: arrowElement }),
+                            ],
+                          })
+                        ).then(({ x, y, middlewareData, placement }) => {
                           Object.assign(tooltip.style, {
                             left: `${x}px`,
                             top: `${y}px`,
                           });
+
+                          if (middlewareData.arrow) {
+                            const { x, y } = middlewareData.arrow;
+
+                            Object.assign(arrowElement.style, {
+                              left: x != null ? `${x}px` : "",
+                              top: y != null ? `${y}px` : "",
+                            });
+
+                            arrowElement.classList.remove(...classes);
+
+                            arrowElement.classList.add(placement);
+                          }
                         });
                       }
 
@@ -271,12 +305,11 @@
 
                       reposition();
 
-                      //   const instance = Popper.createPopper(target, tooltip, options);
-
                       instances[id] = {
                         id,
                         target,
                         tooltip,
+                        arrowElement,
                         reposition,
                         cleanup,
                         show: () => {
@@ -346,6 +379,33 @@
 
               attachButton.addEventListener("click", () => {
                 tooltipGroup.bindNew();
+              });
+
+              /**
+               * Just one more delegate event to demonstrate that we can get access to 
+               * all we need to control tooltip just by having reference to product of setupTooltipGroup
+               * and reference of DOM element
+               */
+              document.body.addEventListener("click", (e) => {
+                const target = e.target;
+
+                var match = target.matches(".close");
+
+                if (match) {
+                  const parent = target.closest("[data-tooltip-id]");
+
+                  const id = parent.getAttribute("data-tooltip-id");
+
+                  if (typeof id !== "string" || !id.trim()) {
+                    return;
+                  }
+
+                  const { hide } = tooltipGroup.getInstance(id) || {};
+
+                  if (typeof hide === "function") {
+                    hide();
+                  }
+                }
               });
             });
           </script>
