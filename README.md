@@ -1,5 +1,13 @@
 ![example workflow](https://github.com/stopsopa/stopsopa.github.io/actions/workflows/pipeline.yml/badge.svg)
 
+# What is it?
+
+Just my private webpage with my code snippets for this and that—things I use once in a while, so there’s no point in memorizing them. 
+
+I edit it directly via github.dev. I believe there’s nothing for you here, stranger. 
+
+And by the way, I’ve deliberately made it difficult to open to avoid being judged. Just difficult - not impossible.
+
 # ci skip
 
 use [q] in git comment to skip test (for fast release) [.github/workflows/pipeline.yml](.github/workflows/pipeline.yml)
