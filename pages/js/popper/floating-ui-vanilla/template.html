@@ -1,0 +1,28 @@
+<button data-tooltipselector=".tooltip<%= i %>">no class - no event</button>
+<div class="tooltipstyle tooltip<%= i %>">
+  .tooltip: <%= i %>
+  <div class="arrow" data-popper-arrow></div>
+</div>
+
+<button data-tooltipselector=".tooltip<%= i+1 %>" class="tooltip-on-hover">.tooltip-on-hover</button>
+<div class="tooltipstyle tooltip<%= i+1 %>" data-tooltip-delay="500">
+  .tooltip-on-hover: <%= i+1 %>
+  <div class="arrow" data-popper-arrow></div>
+</div>
+
+<button data-tooltipselector=".tooltip<%= i+2 %>" class="tooltip-toggle-click">.tooltip-toggle-click.show</button>
+<div class="tooltipstyle tooltip<%= i+2 %> show">
+  .tooltip-toggle-click.show: <%= i+2 %>
+  <div class="arrow" data-popper-arrow></div>
+</div>
+
+<button data-tooltipselector=".tooltip<%= i+3 %>" class="tooltip-hide-on-click-outside">
+  .tooltip-hide-on-click-outside
+</button>
+<div class="tooltipstyle tooltip<%= i+3 %>">
+  .tooltip-hide-on-click-outside: <%= i+3 %>
+  <button onclick="alert('action')">run</button>
+  <div class="arrow" data-popper-arrow></div>
+</div>
+<br />
+<br />
