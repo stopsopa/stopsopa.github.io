@@ -75,6 +75,18 @@
           >https://websiteforstudents.com/how-to-install-openssh-server-on-windows-11/</a
         >
 
+        <h2>Disable Recall shit</h2>
+        
+        <script type="editor" data-lang="python">
+
+          1 line checks status, second disables, third enables
+          
+          Dism /Online /Get-Featureinfo /Featurename:Recall 
+          Dism /Online /Disable-Feature /Featurename:Recall 
+          Dism /Online /Enable-Feature /Featurename:Recall
+
+          
+        </script>
         <h2>Programms</h2>
         <ul>
           <li>Turn on Clipboard History</li>
