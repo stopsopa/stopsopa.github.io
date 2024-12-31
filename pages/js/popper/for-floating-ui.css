@@ -34,8 +34,12 @@
     }
   }
   .tooltipstyle {
+    /* from: https://floating-ui.com/docs/migration#positioning-function-change */
+    width: max-content;
     position: absolute;
-    inset: 0px auto auto 0px;
+    top: 0;
+    left: 0;
+
     background-color: #333;
     color: white;
     padding: 5px 10px;

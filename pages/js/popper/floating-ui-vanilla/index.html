@@ -55,7 +55,7 @@
           <!-- <script data-lang="js" data-eval> -->
           <script type="editor" data-lang="js" data-eval>
             // import {computePosition} from 'https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.12/+esm';
-            const { computePosition } = FloatingUIDOM;
+            const { computePosition, autoUpdate } = FloatingUIDOM;
 
             const setupTooltipGroup = (function () {
               const instances = {};
@@ -255,8 +255,8 @@
 
                       function reposition() {
                         console.log("reposition", target, tooltip);
-                        computePosition(target, tooltip, {
-                        }).then(({ x, y }) => {
+
+                        computePosition(target, tooltip, {}).then(({ x, y }) => {
                           console.log("x", x, "y", y);
                           Object.assign(tooltip.style, {
                             left: `${x}px`,
@@ -264,6 +264,10 @@
                           });
                         });
                       }
+
+                      const cleanup = autoUpdate(target, tooltip, () => {
+                        reposition();
+                      });
 
                       reposition();
 
@@ -274,6 +278,7 @@
                         target,
                         tooltip,
                         reposition,
+                        cleanup,
                         show: () => {
                           try {
                             tooltip.classList.add("show");
@@ -346,6 +351,9 @@
           </script>
           <button class="add">add element set</button>
           <button class="attach">attach to new set</button>
+          <div style="color: red; background-color: bisque">
+            For this version don't forget to call cleanup when element removed
+          </div>
         </div>
       </div>
     </div>
