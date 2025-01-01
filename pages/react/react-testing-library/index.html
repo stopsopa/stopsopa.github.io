@@ -120,9 +120,9 @@
             https://claritydev.net/blog/testing-select-components-react-testing-library
         </script>
 
-        <h2>interesting technique</h2>        
+        <h2>interesting technique</h2>
         <script type="editor" data-lang="jsx">
-          
+
           jest.mock('../../../myLib', () => {
             let mockService = (function () {
               let state = null;
@@ -133,18 +133,17 @@
                 get: () => state
               };
             })();
-          
+
             return {
               __esModule: true,
               useSomething: () => mockService.get(),
               mockService: mockService
             };
           });
-  
-            // then in the test          
+
+            // then in the test
           const { mockService } = require('../../../myLib');
           mockService.set([8, { isSuccess: false }]);
-          
         </script>
 
         <h2>React Testing Library</h2>

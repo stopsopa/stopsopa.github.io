@@ -2,9 +2,9 @@
 
 # What is it?
 
-Just my private webpage with my code snippets for this and that—things I use once in a while, so there’s no point in memorizing them. 
+Just my private webpage with my code snippets for this and that—things I use once in a while, so there’s no point in memorizing them.
 
-I edit it directly via github.dev. I believe there’s nothing for you here, stranger. 
+I edit it directly via github.dev. I believe there’s nothing for you here, stranger.
 
 And by the way, I’ve deliberately made it difficult to open to avoid being judged. Just difficult - not impossible.
 

@@ -171,9 +171,8 @@
         <script type="editor" data-lang="sh">
 
           curl -s https://nodejs.org/dist/index.json | jq -r '.[] | select(.lts != false) | .version' | head -1
-          
         </script>
-        
+
         <h2>useful</h2>
         <script type="editor" data-lang="sh">
 
@@ -2197,30 +2196,28 @@
         >
         <script type="editor" data-lang="sh">
 
-jest.mock('../../components/Dropdown', () => {
-  let mockCustomStateDropdown = (function () {
-    let state = null;
-    return {
-      set: (s) => {
-        state = s;
-      },
-      get: () => state
-    };
-  })();
-  return {
-    __esModule: true,
-    Dropdown: ({ className, onChange, ...props }) => (
-      <div
-        {...props}
-        onClick={(e) => onChange(mockCustomStateDropdown.get())}
-        className={`${className} Dropdown`.trim()}
-      />
-    ),
-    customStateDropdown: mockCustomStateDropdown
-  };
-});
-
-          
+          jest.mock('../../components/Dropdown', () => {
+            let mockCustomStateDropdown = (function () {
+              let state = null;
+              return {
+                set: (s) => {
+                  state = s;
+                },
+                get: () => state
+              };
+            })();
+            return {
+              __esModule: true,
+              Dropdown: ({ className, onChange, ...props }) => (
+                <div
+                  {...props}
+                  onClick={(e) => onChange(mockCustomStateDropdown.get())}
+                  className={`${className} Dropdown`.trim()}
+                />
+              ),
+              customStateDropdown: mockCustomStateDropdown
+            };
+          });
         </script>
 
         <h2>update.sh - shell script</h2>
