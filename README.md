@@ -202,6 +202,11 @@ curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/curl.js" -o "curl
 // which will conver it to
 curl "https://domain.co.uk:1025/pages/node/curl.js" -o "curl.js"
 
+GITHUB_SOURCES_PREFIX/blob/master/pages/bash/rsync.sh
+// will become
+https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/rsync.sh
+
+
 ```
 
 test page githubpages: /research/urlwizzard/urlwizzard.html

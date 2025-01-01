@@ -161,7 +161,7 @@ done <<< "${LIST}"
 
 MATCHING=()
 
-MATCH="urlwizzard\.hostnegotiated|urlwizzard\.hostname|urlwizzard\.schema|urlwizzard\.portnegotiated|urlwizzard\.port"
+MATCH="urlwizzard\.hostnegotiated|urlwizzard\.hostname|urlwizzard\.schema|urlwizzard\.portnegotiated|urlwizzard\.port|GITHUB_SOURCES_PREFIX"
 
 while read -r FILE
 do
@@ -222,6 +222,7 @@ EEE
                 perl -pi -e "s/urlwizzard\.hostnegotiated/${PROD_HOST_ESCAPED}/g" "${MATCHINGFILE}"
                 perl -pi -e "s/urlwizzard\.portnegotiated/${PROD_PORT_NEGOTIATED}/g" "${MATCHINGFILE}"
                 perl -pi -e "s/urlwizzard\.port/${PROD_PORT}/g" "${MATCHINGFILE}"
+                perl -pi -e "s/GITHUB_SOURCES_PREFIX/g" "${GITHUB_SOURCES_PREFIX}"
             fi        
         done <<< "${MATCHING}"
 

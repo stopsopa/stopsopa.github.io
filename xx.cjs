@@ -192,6 +192,7 @@ urlwizzard.schema           https
 urlwizzard.hostnegotiated   stopsopa.github.io
 urlwizzard.portnegotiated   ''
 urlwizzard.port             443
+GITHUB_SOURCES_PREFIX       https://github.com/stopsopa/stopsopa.github.io
 
 more about: https://github.com/stopsopa/stopsopa.github.io#there-is-feature-i-call-urlwizzard
 `,

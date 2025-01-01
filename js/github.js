@@ -398,7 +398,8 @@ window.sasync = {
       .replace(/urlwizzard\.schema/g, schema)
       .replace(/urlwizzard\.hostnegotiated/g, host)
       .replace(/urlwizzard\.portnegotiated/g, portnegotiated)
-      .replace(/urlwizzard\.port/g, port);
+      .replace(/urlwizzard\.port/g, port)
+      .replace(/GITHUB_SOURCES_PREFIX/g, env("GITHUB_SOURCES_PREFIX"));
   }
 
   function traverseAndReplace(node) {
