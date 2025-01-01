@@ -176,6 +176,13 @@ function Viewer() {
         <input type="search" readOnly value={`${zz}${file}`} />
       </label>
 
+      <label>
+        <span>download</span>
+        <a href={file} download>
+          {file}
+        </a>
+      </label>
+
       <Ace content={ace.value || ""} lang={ace.mime || "text"} />
 
       <h3>extracted meta</h3>

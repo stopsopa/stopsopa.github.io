@@ -66,9 +66,22 @@
 
           mmsys.cpl
           shell:startup           - opens folder with shortuct to program to run on windows start
-          https://christitustech.github.io/winutil/
-          
         </script>
+        <h2>Winutil</h2>
+        <a href="/viewer.html?file=%2Fpages%2Fwindows%2Fwinutil.json"
+          >/viewer.html?file=%2Fpages%2Fwindows%2Fwinutil.json</a
+        >
+        <script type="editor" data-lang="python">
+
+          irm christitus.com/win | iex
+
+            from: https://christitustech.github.io/winutil/
+
+          update:
+
+              
+        </script>
+
         <h2>WSL - static ip</h2>
         <a href="https://github.com/microsoft/WSL/issues/4210#issuecomment-648570493">static ip</a>
 
@@ -78,16 +91,14 @@
         >
 
         <h2>Disable Recall shit</h2>
-        
+
         <script type="editor" data-lang="python">
 
           1 line checks status, second disables, third enables
-          
-          Dism /Online /Get-Featureinfo /Featurename:Recall 
-          Dism /Online /Disable-Feature /Featurename:Recall 
-          Dism /Online /Enable-Feature /Featurename:Recall
 
-          
+          Dism /Online /Get-Featureinfo /Featurename:Recall
+          Dism /Online /Disable-Feature /Featurename:Recall
+          Dism /Online /Enable-Feature /Featurename:Recall
         </script>
         <h2>Programms</h2>
         <ul>
@@ -109,7 +120,10 @@
           <li>powercfg -h off - turn off hibernation</li>
           <li>g(disable system recovery windows 11)</li>
           <li>g(windows 11 turn off autoplay)</li>
-          <li>g(WinCDEmu) for mounting ico as virtual CD drives - Doesn't work on Windows 11 - mount from win itself or use "virtual clone drive"</li>
+          <li>
+            g(WinCDEmu) for mounting ico as virtual CD drives - Doesn't work on Windows 11 - mount from win itself or
+            use "virtual clone drive"
+          </li>
         </ul>
         <h2>Services to disable</h2>
         <p>start -> search for "Services" -> open app</p>
@@ -175,9 +189,8 @@
           netsh winsock reset
           # if that didn't help then press start and search "network reset"
           # that might require reinstalling vpn
-          
         </script>
-        
+
         <h2>Remap keyboard</h2>
         <a href="https://www.randyrants.com/2019/01/sharpkeys-3-9/"
           >https://www.randyrants.com/2019/01/sharpkeys-3-9/</a
