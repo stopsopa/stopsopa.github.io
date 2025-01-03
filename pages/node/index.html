@@ -2196,10 +2196,10 @@
         >
         <script type="editor" data-lang="sh">
           
-          import { customStateDropdown } from '../../components/Dropdown';
+          import { setStateXXXX } from '../../components/Dropdown';
           
           jest.mock('../../components/Dropdown', () => {
-            let mockCustomStateDropdown = (function () {
+            let setStateXXXX = (function () {
               let state = null;
               return {
                 set: (s) => {
@@ -2213,18 +2213,18 @@
               Dropdown: ({ className, onChange, ...props }) => (
                 <div
                   {...props}
-                  onClick={(e) => onChange(mockCustomStateDropdown.get())}
+                  onClick={(e) => onChange(setStateXXXX())}
                   className={`${className} Dropdown`.trim()}
                 />
               ),
-              customStateDropdown: mockCustomStateDropdown
+              setStateXXXX: setStateXXXX
             };
           });
 
           test(done => {
             // ...
           
-            customStateDropdown.set(...);
+            setStateXXXX(...);
           }) 
         </script>
 
