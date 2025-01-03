@@ -2195,7 +2195,9 @@
           >https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a
         >
         <script type="editor" data-lang="sh">
-
+          
+          import { customStateDropdown } from '../../components/Dropdown';
+          
           jest.mock('../../components/Dropdown', () => {
             let mockCustomStateDropdown = (function () {
               let state = null;
@@ -2218,6 +2220,12 @@
               customStateDropdown: mockCustomStateDropdown
             };
           });
+
+          test(done => {
+            // ...
+          
+            customStateDropdown.set(...);
+          }) 
         </script>
 
         <h2>update.sh - shell script</h2>
