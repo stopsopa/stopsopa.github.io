@@ -149,8 +149,10 @@
           });
 
             // then in the test
-          const { mockService } = require('../../../myLib');
-          mockService.set([8, { isSuccess: false }]);
+          test('my test', () => {          
+            const { mockService } = require('../../../myLib');
+            mockService.set([8, { isSuccess: false }]);
+          })
         </script>
 
         <h2>React Testing Library</h2>
