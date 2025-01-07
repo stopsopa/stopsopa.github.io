@@ -2231,6 +2231,41 @@
           
             // ...         
           }) 
+
+          // 
+
+          jest.mock('@ux/text-input', () => {
+            let mockServiceInput = (function () {
+              let state = { onClick: ['default onClick'] };
+              return {
+                set: (key, s) => {
+                  state[key] = s;
+                },
+                get: (key) => {
+                  const value = state[key];
+          
+                  return value;
+                }
+              };
+            })();
+          
+            return {
+              __esModule: true,
+              default: ({ name, className, onChange, onBlur, ...props }) => (
+                <div {...props} className={`${className} TextInput`.trim()}>
+                  <button onClick={() => onChange(...mockServiceInput.get('onClick'))} data-test={`TextInput__${name}__onChange`}>
+                    onBlur
+                  </button>
+                  {onBlur && (
+                    <button onClick={onBlur} data-test={`TextInput__${name}__onBlur`}>
+                      TextInput__onBlur
+                    </button>
+                  )}
+                </div>
+              ),
+              mockServiceInput
+            };
+          });
         </script>
 
         <h2>update.sh - shell script</h2>
