@@ -2200,7 +2200,7 @@
           
           import { setStateXXXX } from '../../components/Dropdown';
           
-          jest.mock('../../components/Dropdown', () => {
+          jest.mock('react-redux', () => {
             let setStateXXXX = (function () {
               let state = null;
               return {
@@ -2212,6 +2212,7 @@
             })();
             return {
               __esModule: true,
+              ...jest.requireActual("react-redux"),
               Dropdown: ({ className, onChange, ...props }) => (
                 <div
                   {...props}
