@@ -2194,6 +2194,8 @@
         <a href="https://github.com/stopsopa/roderic-legacy/tree/master/test/jest"
           >https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a
         >
+        
+        <h2>interesting technique</h2>
         <script type="editor" data-lang="sh">
           
           import { setStateXXXX } from '../../components/Dropdown';
@@ -2217,14 +2219,16 @@
                   className={`${className} Dropdown`.trim()}
                 />
               ),
-              setStateXXXX: setStateXXXX
+              setStateXXXX,
             };
           });
 
-          test(done => {
-            // ...
+          test(done => {  
+            const { mockService } = require('../../../myLib');
           
-            setStateXXXX(...);
+            setStateXXXX([8, { isSuccess: false }]);
+          
+            // ...         
           }) 
         </script>
 
