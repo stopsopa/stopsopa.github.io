@@ -888,6 +888,9 @@
         <h2>yarn</h2>
         <script type="editor" data-lang="sh">
 
+          # list all versions available of given library:
+            npm show next versions --json | jq -r '.[]'
+
           yarn list --pattern playwright --json | jq
           # the same as
             npm list playwright \@playwright/test --depth=0 --json
@@ -2194,10 +2197,14 @@
         <a href="https://github.com/stopsopa/roderic-legacy/tree/master/test/jest"
           >https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a
         >
+        
+        <h2>interesting technique</h2>
         <script type="editor" data-lang="sh">
-
-          jest.mock('../../components/Dropdown', () => {
-            let mockCustomStateDropdown = (function () {
+          
+          import { setStateXXXX } from '../../components/Dropdown';
+          
+          jest.mock('react-redux', () => {
+            let setStateXXXX = (function () {
               let state = null;
               return {
                 set: (s) => {
@@ -2208,14 +2215,58 @@
             })();
             return {
               __esModule: true,
+              ...jest.requireActual("react-redux"),
               Dropdown: ({ className, onChange, ...props }) => (
                 <div
                   {...props}
-                  onClick={(e) => onChange(mockCustomStateDropdown.get())}
+                  onClick={(e) => onChange(setStateXXXX())}
                   className={`${className} Dropdown`.trim()}
                 />
               ),
-              customStateDropdown: mockCustomStateDropdown
+              setStateXXXX,
+            };
+          });
+
+          test(done => {  
+            const { mockService } = require('../../../myLib');
+          
+            setStateXXXX([8, { isSuccess: false }]);
+          
+            // ...         
+          }) 
+
+          // 
+
+          jest.mock('@ux/text-input', () => {
+            let mockServiceInput = (function () {
+              let state = { onClick: ['default onClick'] };
+              return {
+                set: (key, s) => {
+                  state[key] = s;
+                },
+                get: (key) => {
+                  const value = state[key];
+          
+                  return value;
+                }
+              };
+            })();
+          
+            return {
+              __esModule: true,
+              default: ({ name, className, onChange, onBlur, ...props }) => (
+                <div {...props} className={`${className} TextInput`.trim()}>
+                  <button onClick={() => onChange(...mockServiceInput.get('onClick'))} data-test={`TextInput__${name}__onChange`}>
+                    onBlur
+                  </button>
+                  {onBlur && (
+                    <button onClick={onBlur} data-test={`TextInput__${name}__onBlur`}>
+                      TextInput__onBlur
+                    </button>
+                  )}
+                </div>
+              ),
+              mockServiceInput
             };
           });
         </script>

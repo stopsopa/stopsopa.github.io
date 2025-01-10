@@ -1535,6 +1535,9 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
         <h2>xargs</h2>
         <script type="editor" data-lang="sh">
+        
+          # find all png files and no mater where these are copy them to my png/ directory
+            find . -name '*.png' -print0  | xargs -0 -I{} cp {} ./png  
 
           # --- warning ---- vvv
           find source/ -type f \( -name "*.mov" -o -name "*.mp4" \) -print0 | xargs -0 ls -lSh
@@ -1667,6 +1670,9 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         <h2>find</h2>
         <a href="https://ss64.com/osx/find.html">https://ss64.com/osx/find.html</a>
         <script type="editor" data-lang="sh">
+
+          # find all png files and no mater where these are copy them to my png/ directory
+            find . -name '*.png' -print0  | xargs -0 -I{} cp {} ./png            
 
           # on mac case sensitive
             find -E NUC_source/ -type f -regex ".*\.(jpg|jpeg|JPG|png|PNG|HEIC|heic)$"
@@ -2668,6 +2674,19 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           TRAPS=("cleanup" "${TRAPS[@]}")
           # add to the end of array
           TRAPS+=('cleanup')
+        </script>
+        <h2>binary files toolset</h2>
+        
+        <script type="editor" data-lang="sh">
+
+          binwalk
+            https://www.kali.org/tools/binwalk/
+              from: https://youtu.be/0dUnY1641WM?si=QKC2YBU9quVL3Diy&t=576
+
+          feh
+            https://feh.finalrewind.org/
+              from: https://youtu.be/0dUnY1641WM?si=2AEdXoEZsHGuQ-M-&t=588
+          
         </script>
         <h2>bash colors</h2>
 
