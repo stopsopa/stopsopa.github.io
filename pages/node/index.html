@@ -888,6 +888,9 @@
         <h2>yarn</h2>
         <script type="editor" data-lang="sh">
 
+          # list all versions available of given library:
+            npm show next versions --json | jq -r '.[]'
+
           yarn list --pattern playwright --json | jq
           # the same as
             npm list playwright \@playwright/test --depth=0 --json
