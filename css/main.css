@@ -8,7 +8,11 @@ body {
     background-image: url("/img/bg.png");
   }
 }
-
+hr {
+  margin: 0;
+  margin: 10px 0;
+  flex-grow: 1;
+}
 .layout {
   display: flex;
   min-height: 100vh;
@@ -72,6 +76,11 @@ h6 {
   flex-direction: column;
   /*padding: 5px 10px;*/
   /*flex-wrap: wrap;*/
+  & > ul {
+    & > li {
+      display: flex;
+    }
+  }
 }
 h1,
 h2,
