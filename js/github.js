@@ -1695,6 +1695,20 @@ body .github-profile:hover {
 })();
 
 (function () {
+  window.doEval = function () {
+    Array.from(document.querySelectorAll("[data-eval]")).forEach(function (tag) {
+      tag.removeAttribute("data-eval");
+
+      var text = tag.innerHTML;
+
+      console.log("doEval, tag:", tag, text);
+
+      eval(text);
+    });
+  };
+})();
+
+(function () {
   function slug(str) {
     return trim(
       str
@@ -1938,9 +1952,13 @@ body .github-profile:hover {
     vanillaTabs.active({
       onChange: async (e) => {
         console.log("vanillaTabs.active(onChange)", e);
+        window.doEval();
+
         await window.doace();
       },
     });
+
+    window.doEval();
 
     await window.doace();
 

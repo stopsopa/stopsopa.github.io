@@ -8,32 +8,6 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-    <script>
-      (function () {
-        var resolve;
-        var p = new Promise(function (res) {
-          resolve = res;
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-          Array.prototype.slice.call(document.querySelectorAll("[data-eval]")).forEach(function (tag) {
-            var text = tag.innerHTML;
-
-            console.log("text", text, "tag", tag);
-
-            {
-              eval(text);
-            }
-          });
-
-          resolve();
-        });
-
-        window.beforeAceEventPromise = function () {
-          return p;
-        };
-      })();
-    </script>
     <link rel="stylesheet" href="/dist/popper.bundle.css" />
   </head>
   <body class="layout bg" toc>
