@@ -64,6 +64,9 @@
             // or
             await waitFor(() =>screen.getByRole('button'));
 
+            // find element by any tekst
+            await screen.findByText(/some text in the document somewhere/);
+
             // to click when document.querySelector(..) used use fireEvent
             import { render, screen, act, fireEvent } from '@testing-library/react';
             fireEvent.click(document.querySelector('.bg-spinner'));
