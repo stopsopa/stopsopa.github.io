@@ -625,6 +625,7 @@ else
   set -e
   cd "${_TARGETGITDIR}"
   git clone "${GITSTORAGE_CORE_REPOSITORY}" .
+  tree
   cd "$_P"
   set +e
 
@@ -1297,6 +1298,7 @@ if [ "${MODE}" = "pull" ]; then
 
   set -e
   cd "${_TARGETGITDIR}"
+  tree
   git clone "${GITSTORAGESOURCE}" .
   cd "$_P"
   set +e
