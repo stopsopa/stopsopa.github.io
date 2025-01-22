@@ -19,6 +19,10 @@
           
           const { container } = render(<AutoComplete { ...props } />);
           
+          import fs from 'fs';
+          
+          import path from 'path';
+          
           fs.writeFileSync(
             path.resolve(__dirname, path.basename(__filename, path.extname(__filename)) + `.html`),
             container.innerHTML
@@ -59,6 +63,9 @@
             await waitFor(() =>document.querySelector('.bg-spinner'));
             // or
             await waitFor(() =>screen.getByRole('button'));
+
+            // find element by any tekst
+            await screen.findByText(/some text in the document somewhere/);
 
             // to click when document.querySelector(..) used use fireEvent
             import { render, screen, act, fireEvent } from '@testing-library/react';

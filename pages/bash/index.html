@@ -701,6 +701,15 @@
             # -------------- clear line before Carriage Return return caret --- ^^^
           </script>
 
+          <h2>monitoring tools</h2>
+          
+          <script type="editor" data-lang="sh">
+            
+            stui
+              stressing cpu and monitoring
+              https://youtu.be/4isEhE2rvmA?si=h4_STlO2MnJMHT_J&t=82
+            
+          </script>
           <h2>remove/replace lines from special value to special value</h2>
 
           <script type="editor" data-lang="sh">
@@ -1217,6 +1226,14 @@
 
           echo -n **/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
           echo -n tests/**/*.spec.js | tr " " "\n" | grep -v -i -E '^node_modules\/'
+        </script>
+        <h2>crontab</h2>
+        <script type="editor" data-lang="sh">
+
+          https://crontab.guru/#50_16_*_*_MON-FRI
+          # result
+            50 16 * * MON-FRI /usr/bin/osascript -e 'display notification "📅 Fill the worklog" sound name "Sosumi"'
+          
         </script>
         <h2>curl</h2>
         <script type="editor" data-lang="sh">

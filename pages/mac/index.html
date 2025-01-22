@@ -278,6 +278,8 @@
           <h2>CLI</h2>
           <script type="editor" data-lang="sh">
 
+            https://ss64.com/
+
             Open System settings from cli:
 
                 open -b com.apple.systempreferences
@@ -525,7 +527,8 @@
 
             /usr/bin/osascript -e 'display notification "Soon Eve will turn off WiFi Router" sound name "Sosumi"'
 
-            crontab -e
+            crontab -e 
+              # WARNING:run as a regular user            
 
             # just before midnight
             57 23 * * * /usr/bin/osascript -e 'display notification "Check Eve schedule" sound name "Sosumi"' >/dev/null 2>&1

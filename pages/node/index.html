@@ -1676,9 +1676,20 @@
           package.json:
           {
             "resolutions": {
-              "**/elastic-apm-node": "3.39.0"
+              "**/elastic-apm-node": "3.39.0" 
+              // about ^ and ~ https://docs.npmjs.com/cli/v7/configuring-npm/package-json#dependencies
+              // https://stackoverflow.com/a/25861938
             },
+            "packageComments": {
+              "": "some comment"
+            }
           }
+
+          # updating dependency hell
+          npm outdated -- to see what npm update will bring
+          npm update
+
+          
         </script>
 
         <h2>Dependencies - analysing</h2>

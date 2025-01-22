@@ -178,6 +178,49 @@
           docker inspect cypress_app | grep -A 5 -B 5 RestartPolicy
             # based on https://docs.docker.com/config/containers/start-containers-automatically/
         </script>
+        <h2>list all versions of given tag</h2>
+        <script type="editor" data-lang="sh">
+
+            # use
+            pull nginx
+            pull mongo
+
+            function pull {
+                if [ "${1}" = "" ]; then
+                    echo "${0} error: provide an image name"
+                else
+                    URL="https://registry.hub.docker.com/v2/repositories/library/${1}/tags?page_size=100"
+                    openssl help 1> /dev/null 2> /dev/null
+                    if [ "${?}" = "0" ]; then
+                        if [ "${FILE}" = "" ]; then    
+                            while true
+                            do
+                                FILE="$(openssl rand -hex 2).log"
+                                if [ ! -e "${FILE}" ]; then 
+                                    break;
+                                fi
+                            done
+                        fi
+                        
+                        echo "" > "${FILE}"
+            
+                        while [ "${URL}" != "null" ]; do
+                            echo "${URL}" >&2
+                            RESPONSE="$(curl -s "${URL}")" 
+                            echo "${RESPONSE}" | jq -r '.results[].name' >> "${FILE}"         
+                            URL="$(echo "${RESPONSE}" | jq -r '.next')"
+                        done
+            
+                        cat "${FILE}" | uniq | sort
+            
+                        rm -f "${FILE}"
+                    else
+                        echo "${0} error: openssl is not installed"
+                    fi
+                fi
+            }
+        
+        </script>
         <h2>network</h2>
 
         <script type="editor" data-lang="sh">
