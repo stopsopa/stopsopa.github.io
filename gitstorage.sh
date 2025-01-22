@@ -1277,6 +1277,12 @@ if [ "${MODE}" = "pull" ]; then
 
     /bin/bash "${0}" -c "${_CONFIG}" isinsync
 
+    cat <<EEE
+
+  run with --yes to actually do pull
+
+EEE
+
     if [ "${?}" = "0" ]; then
 
       echo "final url ${URL}";
