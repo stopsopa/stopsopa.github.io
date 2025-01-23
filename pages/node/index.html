@@ -985,21 +985,29 @@
           import path from "path";
           
           /**
-           * use: 
+           * use:
            *   const { __dirname } = extract(import.meta.url);
-           * 
+           *
            * @param {string} url
-           * @returns {{__filename: string, __dirname: string}}
+           * @returns {{extension: string, filename: string, __filename: string, __dirname: string}}
            */
           export default function extract(url) {
             const __filename = fileURLToPath(url);
+          
             const __dirname = path.dirname(__filename);
+          
+            const filename = path.basename(url, path.extname(url));
+          
+            const extension = path.extname(url).substring(1);
           
             return {
               __filename,
               __dirname,
+              filename,
+              extension,
             };
           }
+
           
         </script>
 
