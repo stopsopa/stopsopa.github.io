@@ -1629,6 +1629,8 @@
             # list all dependencies
 
           npm install --production       # no devDependencies
+            # it will emit message:
+              # npm warn config production Use `--omit=dev` instead.
           npm install --production=false # with devDependencies
               # from: https://docs.npmjs.com/cli/v7/commands/npm-install
 
