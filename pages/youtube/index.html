@@ -14,6 +14,21 @@
       <div class="inside">
         <h2>https://cobalt.tools/</h2>
         <a href="https://cobalt.tools/">https://cobalt.tools/</a>
+        <h2>yt-dlp [BEST - as of now]</h2>
+        <script type="editor" data-lang="sh">
+
+          # list available formats for given video specified with hash
+          yt-dlp -F xv5zQU_6dO8 | grep "audio only"
+
+          # download selected file
+          yt-dlp -f 234 xv5zQU_6dO8
+
+          # to get mp3 format install ffmpeg
+          brew install ffmpeg
+
+          # and then use this command
+          yt-dlp  -x --audio-format mp3  xv5zQU_6dO8
+        </script>
         <h2>you-get</h2>
         <a href="https://you-get.org/">https://you-get.org/</a>
         <script type="editor" data-lang="sh">
@@ -30,21 +45,6 @@
           you-get -i YOUTUBELINK
 
           you-get --itag=136 YOUTUBELINK
-        </script>
-        <h2>yt-dlp</h2>
-        <script type="editor" data-lang="sh">
-
-          # list available formats for given video specified with hash
-          yt-dlp -F xv5zQU_6dO8 | grep "audio only"
-
-          # download selected file
-          yt-dlp -f 234 xv5zQU_6dO8
-
-          # to get mp3 format install ffmpeg
-          brew install ffmpeg
-
-          # and then use this command
-          yt-dlp  -x --audio-format mp3  xv5zQU_6dO8
         </script>
         <h2>youtube-dl</h2>
         <a href="https://github.com/ytdl-org/youtube-dl">https://github.com/ytdl-org/youtube-dl</a>
