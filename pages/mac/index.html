@@ -455,6 +455,13 @@
           <script type="editor" data-lang="sh">
 
             sips -Z 2500 hhh.png
+              # -Z ----> 
+                --resampleHeightWidth pixelsH pixelsW
+                Resample image at specified size. Image apsect ratio may be altered.
+            
+            sips --resampleWidth 2500 hhh.png
+            sips --resampleHeight 2500 hhh.png
+            
             # -Z pixelsWH
             # --resampleHeightWidthMax pixelsWH
             #       Resample image so height and width aren't greater than specified size.
