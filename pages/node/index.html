@@ -895,6 +895,24 @@
           # the same as
             npm list playwright \@playwright/test --depth=0 --json
 
+          npm install library@^2400 --legacy-peer-deps
+            # will force installation of it's peer dependencies even when those 
+            # won't match the deps on the main level of package.json
+            in order to mark this dep permanently in package.json add:
+            {
+              // ...existing code...
+              "dependencies": {
+                // ...existing dependencies...
+                "library": "^2400"
+              },
+              "overrides": {
+                "library": {
+                  "react-intl": "~6.6.8"
+                }
+              }
+            }          
+            
+
           yarn set version berry
           yarn set version 1.22.10
               # https://github.com/yarnpkg/yarn/releases
