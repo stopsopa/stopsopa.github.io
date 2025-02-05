@@ -1631,6 +1631,8 @@
         <h2>npm</h2>
         <script type="editor" data-lang="sh">
 
+          (rm -rf __npm_test && mkdir __npm_test && cd __npm_test && echo "{}" > package.json && npm install "express" && cat package.json)
+
           npm list playwright \@playwright/test --depth=0 --json
           # the same as
             yarn list --pattern playwright --json | jq
