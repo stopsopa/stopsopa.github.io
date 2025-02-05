@@ -909,28 +909,7 @@
 
           yarn list --pattern playwright --json | jq
           # the same as
-            npm list playwright \@playwright/test --depth=0 --json
-
-          npm install library@^2400 --legacy-peer-deps
-            # will force installation of it's peer dependencies even when those 
-            # won't match the deps on the main level of package.json
-            in order to mark this dep permanently in package.json add:
-            {
-              // ...existing code...
-              "dependencies": {
-                // ...existing dependencies...
-                "library": "^2400"
-              },
-              "overrides": {
-                "library": {
-                  "react-intl": "~6.6.8"
-                }
-              }
-            }  
-
-          # to inspect
-            npm ls --depth=9999 | tee dep.log
-            
+            npm list playwright \@playwright/test --depth=0 --json            
 
           yarn set version berry
           yarn set version 1.22.10
@@ -1667,9 +1646,26 @@
 
           npm ci
             # the same as  yarn install --frozen-lockfile
+          
+          npm install library@^2400 --legacy-peer-deps
+            # will force installation of it's peer dependencies even when those 
+            # won't match the deps on the main level of package.json
+            in order to mark this dep permanently in package.json add:
+            {
+              // ...existing code...
+              "dependencies": {
+                // ...existing dependencies...
+                "library": "^2400"
+              },
+              "overrides": {
+                "library": {
+                  "react-intl": "~6.6.8"
+                }
+              }
+            }  
 
-          npm list --depth 9999
-            # list all dependencies
+          # list all dependencies - to inspect dependencies
+            npm ls --depth=9999 | tee dep.log
 
           npm install --production       # no devDependencies
             # it will emit message:
