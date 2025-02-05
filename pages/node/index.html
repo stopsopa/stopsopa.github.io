@@ -1648,6 +1648,7 @@
             # the same as  yarn install --frozen-lockfile
           
           npm install library@^2400 --legacy-peer-deps
+            # more: https://docs.npmjs.com/cli/v7/using-npm/config#strict-peer-deps
             # will force installation of it's peer dependencies even when those 
             # won't match the deps on the main level of package.json
             in order to mark this dep permanently in package.json add:
@@ -1663,6 +1664,8 @@
                 }
               }
             }  
+            # more: 
+              https://docs.npmjs.com/cli/v9/configuring-npm/package-json#overrides
 
           # list all dependencies - to inspect dependencies
             npm ls --depth=9999 | tee dep.log
