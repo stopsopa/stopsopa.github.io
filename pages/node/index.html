@@ -1632,6 +1632,10 @@
         <script type="editor" data-lang="sh">
 
           (rm -rf __npm_test && mkdir __npm_test && cd __npm_test && echo "{}" > package.json && npm install "express" && cat package.json)
+          # or simpler
+          npm dist-tag ls express
+          mv .npmrc .npmrc_ ; npm dist-tag ls express ; mv .npmrc_ .npmrc 
+            # that might help if custom .npmrc is present
 
           npm list playwright \@playwright/test --depth=0 --json
           # the same as
