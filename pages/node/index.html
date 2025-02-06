@@ -348,6 +348,15 @@
           # will work too
           # but intercepting with "$(cat)" is interesting too
         </script>
+        <h2>create require</h2>
+        <script type="editor" data-lang="js">
+          
+        import { createRequire } from 'module';
+        const require = createRequire(import.meta.url);
+        
+        const uuidPath = require.resolve('uuid');
+          
+        </script>
         <h2>serialize function</h2>
 
         <script type="editor" data-lang="js">
