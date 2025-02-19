@@ -465,13 +465,12 @@
           <h2>Hot Corner Shortucts</h2>
           <script type="editor" data-lang="sh">
 
-            Settings 
-            -> Desktop & Dock 
-            -> [very bottom button] 
-            -> "Hot Corners..." 
-            -> choose top right 
+            Settings
+            -> Desktop & Dock
+            -> [very bottom button]
+            -> "Hot Corners..."
+            -> choose top right
             -> set "Mission Control"
-            
           </script>
           <h2>Low Power Mode</h2>
           <script type="editor" data-lang="sh">
@@ -527,8 +526,8 @@
 
             /usr/bin/osascript -e 'display notification "Soon Eve will turn off WiFi Router" sound name "Sosumi"'
 
-            crontab -e 
-              # WARNING:run as a regular user            
+            crontab -e
+              # WARNING:run as a regular user
 
             # just before midnight
             57 23 * * * /usr/bin/osascript -e 'display notification "Check Eve schedule" sound name "Sosumi"' >/dev/null 2>&1

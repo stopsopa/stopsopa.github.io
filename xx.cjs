@@ -130,11 +130,12 @@ open "file://$(realpath "coverage/index.html")"
 `,
       confirm: false,
     },
-    [`template`]: {
+    [`template watch`]: {
       command: `
 set -e        
 export NODE_OPTIONS=""
 /bin/bash template.sh    
+node node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node_modules/**/*' -c '/bin/bash template.sh'
 `,
       description: `
 Usually it's good idea to execute it after /bin/bash uglify.sh

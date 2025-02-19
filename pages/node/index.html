@@ -1676,7 +1676,7 @@
           package.json:
           {
             "resolutions": {
-              "**/elastic-apm-node": "3.39.0" 
+              "**/elastic-apm-node": "3.39.0"
               // about ^ and ~ https://docs.npmjs.com/cli/v7/configuring-npm/package-json#dependencies
               // https://stackoverflow.com/a/25861938
             },
@@ -1688,8 +1688,6 @@
           # updating dependency hell
           npm outdated -- to see what npm update will bring
           npm update
-
-          
         </script>
 
         <h2>Dependencies - analysing</h2>
@@ -2208,12 +2206,12 @@
         <a href="https://github.com/stopsopa/roderic-legacy/tree/master/test/jest"
           >https://github.com/stopsopa/roderic-legacy/tree/master/test/jest</a
         >
-        
+
         <h2>interesting technique</h2>
         <script type="editor" data-lang="sh">
-          
+
           import { setStateXXXX } from '../../components/Dropdown';
-          
+
           jest.mock('react-redux', () => {
             let setStateXXXX = (function () {
               let state = null;
@@ -2238,15 +2236,15 @@
             };
           });
 
-          test(done => {  
+          test(done => {
             const { mockService } = require('../../../myLib');
-          
-            setStateXXXX([8, { isSuccess: false }]);
-          
-            // ...         
-          }) 
 
-          // 
+            setStateXXXX([8, { isSuccess: false }]);
+
+            // ...
+          })
+
+          //
 
           jest.mock('@ux/text-input', () => {
             let mockServiceInput = (function () {
@@ -2257,12 +2255,12 @@
                 },
                 get: (key) => {
                   const value = state[key];
-          
+
                   return value;
                 }
               };
             })();
-          
+
             return {
               __esModule: true,
               default: ({ name, className, onChange, onBlur, ...props }) => (

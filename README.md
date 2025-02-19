@@ -200,12 +200,12 @@ https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/rsync.sh
 
 test page githubpages: /research/urlwizzard/urlwizzard.html
 
-# doEval() 
+# doEval()
 
 ```html
-
-<script type="editor" data-lang="js" data-eval>...</script>
-
+<script type="editor" data-lang="js" data-eval>
+  ...
+</script>
 ```
 
 code will not only be wrapped with aceeditor but also executed just before wrapping.
@@ -213,11 +213,9 @@ code will not only be wrapped with aceeditor but also executed just before wrapp
 In order to trigger it again on <script> elements created dynamically use:
 
 ```js
-
 window.doEval();
 // and optionally also
 window.doace();
-
 ```
 
 # links to files through github pages

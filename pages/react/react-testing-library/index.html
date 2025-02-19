@@ -16,13 +16,13 @@
         <script type="editor" data-lang="python">
 
           import { render, screen, act, fireEvent, waitFor } from '@testing-library/react';
-          
+
           const { container } = render(<AutoComplete { ...props } />);
-          
+
           import fs from 'fs';
-          
+
           import path from 'path';
-          
+
           fs.writeFileSync(
             path.resolve(__dirname, path.basename(__filename, path.extname(__filename)) + `.html`),
             container.innerHTML
