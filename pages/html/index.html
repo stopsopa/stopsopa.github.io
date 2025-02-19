@@ -196,15 +196,21 @@
         <h2>input[type="checkbox"]</h2>
         <script type="editor" data-lang="html">
 
-          <input type="checkbox" id="measure" autocomplete="off" />
+          <input type="checkbox" id="allon" autocomplete="off" />
 
           &lt;script>
             {
-              const measure = document.querySelector("#measure");
-              measure.checked = state.measure;
-              measure.addEventListener("change", (e) => {
-                update({ measure: e.target.checked });
+              const allon = document.querySelector("#allon");
+              let state = false;
+              allon.checked = state;
+              function action() {
+                console.log('state', state);
+              }
+              allon.addEventListener("change", (e) => {
+                state = e.target.checked;
+                action();
               });
+              action();
             }
           &lt;/script>
         </script>

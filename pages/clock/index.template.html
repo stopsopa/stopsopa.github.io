@@ -74,7 +74,7 @@
                 is using MDT, CDT, EDT at all
                 The logic behind it is that shifting hour ahead or behind for summer or winter time is done the same day
                 for all timezones so using PST, MST, CST and EST is just to reflect the time offset in
-            general comunication betwen people from US.
+                general comunication betwen people from US.
 
             Note that during the winter months (from early November to early March), each time zone uses
             the standard time abbreviation (e.g. PST for Pacific Time Zone), and during the
@@ -85,7 +85,116 @@
               Greenwich Mean Time (GMT) or Central European Time (CET) - Since many European countries follow GMT (in the UK)
               CET (like France, Germany, and Poland), these are often used to represent European hours in company-wide schedules.
           </script>
-          <%inject pages/clock/usa.svg %>
+          <style>
+            .usamap {
+              position: relative;
+            }
+            .usamap svg {
+              border: 1px solid rgb(200, 198, 198);
+            }
+
+            .state-label {
+              position: absolute;
+              font-size: 12px;
+              font-weight: bold;
+              background: rgba(255, 255, 255, 0.8);
+              padding: 2px 5px;
+              border-radius: 3px;
+              pointer-events: none;
+              display: none;
+            }
+          </style>
+
+          <div class="usamap"><%inject pages/clock/usa.svg %></div>
+          <label id="allon">
+            <input type="checkbox" autocomplete="off" />
+            <span></span>
+          </label>
+          <script>
+            const xOffset = -100;
+            const width = 1150 + xOffset;
+            const height = 800;
+            const letterWidth = 10;
+
+            const svg = document.querySelector(".usamap svg");
+            const usamapDiv = document.querySelector(".usamap");
+            const statesGroup = svg.querySelector("g");
+
+            function mouseover(e) {
+              const target = e.target;
+              if (target.tagName === "path") {
+                const id = target.getAttribute("id");
+                const text = document.getElementById(`${id}-text`);
+                text.style.display = "block";
+              }
+            }
+
+            function mouseout(e) {
+              const target = e.target;
+              if (target.tagName === "path") {
+                const id = target.getAttribute("id");
+                const text = document.getElementById(`${id}-text`);
+                text.style.display = "none";
+              }
+            }
+
+            const textList = [];
+
+            svg.querySelectorAll("path").forEach((path) => {
+              const title = path.getAttribute("title");
+              if (title) {
+                const bbox = path.getBBox(); // Get bounding box of state
+                const id = path.getAttribute("id");
+
+                // Create SVG text element
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", bbox.x + bbox.width / 2);
+                text.setAttribute("y", bbox.y + bbox.height / 2);
+                text.setAttribute("class", "state-label");
+                text.setAttribute("fill", "#656262"); // Text color
+                text.setAttribute("font-size", "12px");
+                text.setAttribute("font-weight", "bold");
+                text.setAttribute("text-anchor", "middle"); // Center horizontally
+                text.setAttribute("dominant-baseline", "middle"); // Center vertically
+                text.textContent = title;
+                text.setAttribute("id", `${id}-text`);
+
+                // Append text inside the SVG
+                statesGroup.appendChild(text);
+
+                textList.push(text);
+              }
+            });
+
+            {
+              const allon = document.querySelector("#allon input");
+              const span = document.querySelector("#allon span");
+              let hover = true;
+              allon.checked = hover;
+              function action() {
+                if (hover) {
+                  svg.addEventListener("mouseover", mouseover);
+                  svg.addEventListener("mouseout", mouseout);
+                  textList.forEach((text) => {
+                    text.style.display = "none";
+                  });
+                  span.textContent = "hover on";
+                } else {
+                  svg.removeEventListener("mouseover", mouseover);
+                  svg.removeEventListener("mouseout", mouseout);
+                  textList.forEach((text) => {
+                    text.style.display = "block";
+                  });
+                  span.textContent = "hover off";
+                }
+              }
+              allon.addEventListener("change", (e) => {
+                hover = e.target.checked;
+                action();
+              });
+              action();
+            }
+          </script>
         </div>
       </div>
     </div>
