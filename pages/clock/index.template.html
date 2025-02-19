@@ -101,7 +101,10 @@
               padding: 2px 5px;
               border-radius: 3px;
               pointer-events: none;
-              display: none;
+            }
+
+            .zone {
+              position: absolute;
             }
           </style>
 
@@ -111,6 +114,272 @@
             <span></span>
           </label>
           <script>
+            const colors = {
+              PST: "#7DC9B5",
+              MST: "#59B7BE",
+              CST: "#3398BA",
+              EST: "#406FAA",
+              HST: "#F9A6A6",
+              AKST: "#D79294",
+            };
+            const list = [
+              {
+                id: "US-AK",
+                label: "Alaska",
+                tz: "AKST",
+              },
+              {
+                id: "US-AL",
+                label: "Alabama",
+                tz: "CST",
+              },
+              {
+                id: "US-AR",
+                label: "Arkansas",
+                tz: "CST",
+              },
+              {
+                id: "US-AZ",
+                label: "Arizona",
+                tz: "MST",
+              },
+              {
+                id: "US-CA",
+                label: "California",
+                tz: "PST",
+              },
+              {
+                id: "US-CO",
+                label: "Colorado",
+                tz: "MST",
+              },
+              {
+                id: "US-CT",
+                label: "Connecticut",
+                tz: "EST",
+              },
+              {
+                id: "US-DC",
+                label: "Washington, DC",
+                tz: "EST",
+              },
+              {
+                id: "US-DE",
+                label: "Delaware",
+                tz: "EST",
+              },
+              {
+                id: "US-FL",
+                label: "Florida",
+                tz: "EST",
+              },
+              {
+                id: "US-GA",
+                label: "Georgia",
+                tz: "EST",
+              },
+              {
+                id: "US-HI",
+                label: "Hawaii",
+                tz: "HST",
+              },
+              {
+                id: "US-IA",
+                label: "Iowa",
+                tz: "CST",
+              },
+              {
+                id: "US-ID",
+                label: "Idaho",
+                tz: "MST",
+              },
+              {
+                id: "US-IL",
+                label: "Illinois",
+                tz: "CST",
+              },
+              {
+                id: "US-IN",
+                label: "Indiana",
+                tz: "EST",
+              },
+              {
+                id: "US-KS",
+                label: "Kansas",
+                tz: "CST",
+              },
+              {
+                id: "US-KY",
+                label: "Kentucky",
+                tz: "EST",
+              },
+              {
+                id: "US-LA",
+                label: "Louisiana",
+                tz: "CST",
+              },
+              {
+                id: "US-MA",
+                label: "Massachusetts",
+                tz: "EST",
+              },
+              {
+                id: "US-MD",
+                label: "Maryland",
+                tz: "EST",
+              },
+              {
+                id: "US-ME",
+                label: "Maine",
+                tz: "EST",
+              },
+              {
+                id: "US-MI",
+                label: "Michigan",
+                tz: "EST",
+              },
+              {
+                id: "US-MN",
+                label: "Minnesota",
+                tz: "CST",
+              },
+              {
+                id: "US-MO",
+                label: "Missouri",
+                tz: "CST",
+              },
+              {
+                id: "US-MS",
+                label: "Mississippi",
+                tz: "CST",
+              },
+              {
+                id: "US-MT",
+                label: "Montana",
+                tz: "MST",
+              },
+              {
+                id: "US-NC",
+                label: "North Carolina",
+                tz: "EST",
+              },
+              {
+                id: "US-ND",
+                label: "North Dakota",
+                tz: "CST",
+              },
+              {
+                id: "US-NE",
+                label: "Nebraska",
+                tz: "CST",
+              },
+              {
+                id: "US-NH",
+                label: "New Hampshire",
+                tz: "EST",
+              },
+              {
+                id: "US-NJ",
+                label: "New Jersey",
+                tz: "EST",
+              },
+              {
+                id: "US-NM",
+                label: "New Mexico",
+                tz: "MST",
+              },
+              {
+                id: "US-NV",
+                label: "Nevada",
+                tz: "PST",
+              },
+              {
+                id: "US-NY",
+                label: "New York",
+                tz: "EST",
+              },
+              {
+                id: "US-OH",
+                label: "Ohio",
+                tz: "EST",
+              },
+              {
+                id: "US-OK",
+                label: "Oklahoma",
+                tz: "CST",
+              },
+              {
+                id: "US-OR",
+                label: "Oregon",
+                tz: "PST",
+              },
+              {
+                id: "US-PA",
+                label: "Pennsylvania",
+                tz: "EST",
+              },
+              {
+                id: "US-RI",
+                label: "Rhode Island",
+                tz: "EST",
+              },
+              {
+                id: "US-SC",
+                label: "South Carolina",
+                tz: "EST",
+              },
+              {
+                id: "US-SD",
+                label: "South Dakota",
+                tz: "CST",
+              },
+              {
+                id: "US-TN",
+                label: "Tennessee",
+                tz: "CST",
+              },
+              {
+                id: "US-TX",
+                label: "Texas",
+                tz: "CST",
+              },
+              {
+                id: "US-UT",
+                label: "Utah",
+                tz: "MST",
+              },
+              {
+                id: "US-VA",
+                label: "Virginia",
+                tz: "EST",
+              },
+              {
+                id: "US-VT",
+                label: "Vermont",
+                tz: "EST",
+              },
+              {
+                id: "US-WA",
+                label: "Washington",
+                tz: "PST",
+              },
+              {
+                id: "US-WI",
+                label: "Wisconsin",
+                tz: "CST",
+              },
+              {
+                id: "US-WV",
+                label: "West Virginia",
+                tz: "EST",
+              },
+              {
+                id: "US-WY",
+                label: "Wyoming",
+                tz: "MST",
+              },
+            ];
+
             const xOffset = -100;
             const width = 1150 + xOffset;
             const height = 800;
@@ -151,7 +420,7 @@
                 text.setAttribute("x", bbox.x + bbox.width / 2);
                 text.setAttribute("y", bbox.y + bbox.height / 2);
                 text.setAttribute("class", "state-label");
-                text.setAttribute("fill", "#656262"); // Text color
+                text.setAttribute("fill", "black"); // Text color
                 text.setAttribute("font-size", "12px");
                 text.setAttribute("font-weight", "bold");
                 text.setAttribute("text-anchor", "middle"); // Center horizontally
@@ -169,7 +438,7 @@
             {
               const allon = document.querySelector("#allon input");
               const span = document.querySelector("#allon span");
-              let hover = true;
+              let hover = false;
               allon.checked = hover;
               function action() {
                 if (hover) {
@@ -193,6 +462,16 @@
                 action();
               });
               action();
+            }
+
+            {
+              list.forEach((item) => {
+                const path = svg.querySelector(`#${item.id}`);
+                console.log("id: ", path, "color: ", colors[item.tz]);
+                if (path) {
+                  path.style.fill = colors[item.tz];
+                }
+              });
             }
           </script>
         </div>
