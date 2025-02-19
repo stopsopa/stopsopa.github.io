@@ -388,7 +388,7 @@
       text-anchor="middle"
       dominant-baseline="middle"
     >
-      AKST - Alaska
+      HST - Hawaii
     </text>
 
     <text
@@ -401,7 +401,7 @@
       text-anchor="middle"
       dominant-baseline="middle"
     >
-      HST - Hawaii
+      AKST - Alaska
     </text>
   </g>
 </svg>
