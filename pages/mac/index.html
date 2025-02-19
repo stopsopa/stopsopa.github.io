@@ -325,6 +325,12 @@
             defaults write com.apple.finder AppleShowAllFiles YES
             killall Finder
           </script>
+          <h2>Dock - not show recently open apps</h2>
+          <script type="editor" data-lang="sh">
+
+            // Settings -> search "dock" -> choose "Dock settings" -> untick "Show suggested and recent apps in Dock"
+            
+          </script>
           <h2>Resize png/jpg</h2>
           <script type="editor" data-lang="sh">
 
@@ -449,6 +455,13 @@
           <script type="editor" data-lang="sh">
 
             sips -Z 2500 hhh.png
+              # -Z ----> 
+                --resampleHeightWidth pixelsH pixelsW
+                Resample image at specified size. Image apsect ratio may be altered.
+            
+            sips --resampleWidth 2500 hhh.png
+            sips --resampleHeight 2500 hhh.png
+            
             # -Z pixelsWH
             # --resampleHeightWidthMax pixelsWH
             #       Resample image so height and width aren't greater than specified size.
@@ -516,6 +529,8 @@
           <h2>iMovie</h2>
 
           <a href="https://www.youtube.com/watch?v=ZyXsmR3O5d8">iMovie: Combine 2 videos</a>
+          <br />
+          <a href="https://i.imgur.com/WFobZr8.gif">add black background at the start</a>
           <h2>Stop or reduce onscreen motion on Mac - disabling animation</h2>
           <a
             href="https://support.apple.com/en-ph/guide/mac-help/mchlc03f57a1/mac#:~:text=On%20your%20Mac%2C%20choose%20Apple,may%20need%20to%20scroll%20down.)&text=Do%20any%20of%20the%20following,Turn%20on%20%E2%80%9CReduce%20motion.%E2%80%9D"
@@ -792,6 +807,8 @@
             href="https://news.ycombinator.com/item?id=13048479#:~:text=great%20for%20hackers-,You%20should%20try%20the%20option%20%22Enable%20Dragging%20with%20Drag%20Lock,until%20you%20short%2Dtap%20again."
             >https://news.ycombinator.com/item?id=13048479#:~:text=great%20for%20hackers-,You%20should%20try%20the%20option%20%22Enable%20Dragging%20with%20Drag%20Lock,until%20you%20short%2Dtap%20again.</a
           >
+          <h2>M1, M series spec nanometers</h2>
+          <a href="https://github.com/stopsopa/gphotos-research?tab=readme-ov-file#m1-chip-supported-codecs">https://github.com/stopsopa/gphotos-research?tab=readme-ov-file#m1-chip-supported-codecs</a>
           <h2>Add Preference Panes to the Dock</h2>
           <script type="editor" data-lang="sh">
 

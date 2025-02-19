@@ -66,6 +66,21 @@
           # user keybindings.json
             # Command Palette (⌘⇧p) -> Preferences: Open Keyboard Shortcuts (JSON)
         </script>
+        <h2>Disable peek feature - when navigating code</h2>
+        <script type="editor" data-lang="sh">
+
+          gotoLocation multiple references option with "goto" value does not seem to work #87106
+              https://github.com/microsoft/vscode/issues/87106#issuecomment-566448163
+              DOESN'T WORK ANYMORE
+          
+          cmd+click skip typescript definition and go to source? #68782
+              https://github.com/microsoft/vscode/issues/68782
+          
+          Somehow I found these:
+              "typescript.preferGoToSourceDefinition": true,
+              "javascript.preferGoToSourceDefinition": true 
+          
+        </script>
 
         <h2>Java setup</h2>
         <a href="https://github.com/stopsopa/java-research">g(visual studio code Java in Visual Studio Code)</a>
@@ -150,6 +165,8 @@
           EEE
               /bin/bash te.sh
         </script>
+        <h2>settings.json defaults</h2>
+        <a href="https://code.visualstudio.com/docs/getstarted/settings#_default-settings">https://code.visualstudio.com/docs/getstarted/settings#_default-settings</a>
         <h2>settings.json - Workspace</h2>
         <script type="editor" data-lang="sh">
 
@@ -180,14 +197,6 @@
             }
           }
         </script>
-        <h2>Create custom snippets</h2>
-        <a href="https://code.visualstudio.com/docs/editor/userdefinedsnippets#_create-your-own-snippets"
-          >https://code.visualstudio.com/docs/editor/userdefinedsnippets#_create-your-own-snippets</a
-        >
-
-        <script type="editor" data-lang="sh">
-          cmd+shift+p  -> "Snippets" -> choose "Snippets: Configure user snippets"
-        </script>
         <h2>settings.json - User</h2>
         <a href="https://github.com/stopsopa/gitstorage/tree/master/git%40github.com%3Astopsopa__gitstorage.git/vscode"
           >https://github.com/stopsopa/gitstorage/tree/master/git%40github.com%3Astopsopa__gitstorage.git/vscode</a
@@ -195,6 +204,7 @@
         <script type="editor" data-lang="sh">
           {
               "workbench.tree.renderIndentGuides": "always",
+              "workbench.editor.revealIfOpen": true, // https://github.com/microsoft/vscode/issues/238517
               "workbench.tree.indent": 20,
               "editor.accessibilitySupport": "off",
               "explorer.confirmDelete": false,
@@ -243,6 +253,14 @@
               };
               // prettier svg ---- ^^^
           }
+        </script>
+        <h2>Create custom snippets</h2>
+        <a href="https://code.visualstudio.com/docs/editor/userdefinedsnippets#_create-your-own-snippets"
+          >https://code.visualstudio.com/docs/editor/userdefinedsnippets#_create-your-own-snippets</a
+        >
+
+        <script type="editor" data-lang="sh">
+          cmd+shift+p  -> "Snippets" -> choose "Snippets: Configure user snippets"
         </script>
         <h2>Shortcuts</h2>
         <script type="editor" data-lang="sh">
@@ -301,6 +319,12 @@
 
           // NOTICE: after defining this, remember about also turning on "gear button"
           // right next to the "files to exclude" input in search block in VSCode
+        </script>
+        <h2>Bugs</h2>
+        <script type="editor" data-lang="js">
+
+          // https://github.com/microsoft/vscode/issues/238517
+          
         </script>
         <h2>Auto Formatting code</h2>
         <a href="https://code.visualstudio.com/docs/cpp/cpp-ide#_code-formatting">Formatting of c and c++</a>

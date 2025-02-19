@@ -214,7 +214,23 @@
             console.log("NOT DIRECTLY");
           }
         </script>
+        <h2>Understand CommonJS and ESM</h2>
+        
+        <script type="editor" data-lang="sh">
 
+          # algorithm for 
+            # CommonJS require(...) 
+              https://nodejs.org/api/modules.html#modules_all_together
+            # for ESM import '...'
+              https://nodejs.org/api/esm.html#esm_resolution_algorithm_specification
+
+          # npm: walks up the directories
+            https://docs.npmjs.com/cli/v9/configuring-npm/folders#cycles-conflicts-and-folder-parsimony
+
+          # Dual CommonJS/ES module packages:
+            https://nodejs.org/api/packages.html#packages_dual_commonjs_es_module_packages
+
+        </script>
         <h2>isNode - testing type</h2>
         <script type="editor" data-lang="sh">
 
@@ -331,6 +347,15 @@
           # cat <<EEE | node
           # will work too
           # but intercepting with "$(cat)" is interesting too
+        </script>
+        <h2>create require</h2>
+        <script type="editor" data-lang="js">
+          
+        import { createRequire } from 'module';
+        const require = createRequire(import.meta.url);
+        
+        const uuidPath = require.resolve('uuid');
+          
         </script>
         <h2>serialize function</h2>
 
@@ -893,7 +918,7 @@
 
           yarn list --pattern playwright --json | jq
           # the same as
-            npm list playwright \@playwright/test --depth=0 --json
+            npm list playwright \@playwright/test --depth=0 --json            
 
           yarn set version berry
           yarn set version 1.22.10
@@ -978,6 +1003,43 @@
           dotenv.config({
             path: env,
           });
+
+          // --------
+          import { fileURLToPath } from "url";
+          import path from "path";          
+          /**
+           * use:
+           *   const { __dirname } = extract(import.meta.url);
+           *
+           * @param {string} url
+           * @returns {{
+           *    __filename: string,
+           *    __dirname: string,
+           *    filename: string,
+           *    extension: string,
+           *    basename: string
+           * }}
+           */
+          export default function extract(url) {
+            const __filename = fileURLToPath(url);
+          
+            const __dirname = path.dirname(__filename);
+          
+            const filename = path.basename(url, path.extname(url));
+          
+            const extension = path.extname(url).substring(1);
+          
+            const basename = path.basename(url);
+          
+            return {
+              __filename,
+              __dirname,
+              filename,
+              extension,
+              basename,
+            };
+          }
+          
         </script>
 
         <h2>htmlencode htmldecode</h2>
@@ -1578,6 +1640,12 @@
         <h2>npm</h2>
         <script type="editor" data-lang="sh">
 
+          (rm -rf __npm_test && mkdir __npm_test && cd __npm_test && echo "{}" > package.json && npm install "express" && cat package.json)
+          # or simpler
+          npm dist-tag ls express
+          mv .npmrc .npmrc_ ; npm dist-tag ls express ; mv .npmrc_ .npmrc 
+            # that might help if custom .npmrc is present
+
           npm list playwright \@playwright/test --depth=0 --json
           # the same as
             yarn list --pattern playwright --json | jq
@@ -1593,11 +1661,33 @@
 
           npm ci
             # the same as  yarn install --frozen-lockfile
+          
+          npm install library@^2400 --legacy-peer-deps
+            # more: https://docs.npmjs.com/cli/v7/using-npm/config#strict-peer-deps
+            # will force installation of it's peer dependencies even when those 
+            # won't match the deps on the main level of package.json
+            in order to mark this dep permanently in package.json add:
+            {
+              // ...existing code...
+              "dependencies": {
+                // ...existing dependencies...
+                "library": "^2400"
+              },
+              "overrides": {
+                "library": {
+                  "react-intl": "~6.6.8"
+                }
+              }
+            }  
+            # more: 
+              https://docs.npmjs.com/cli/v9/configuring-npm/package-json#overrides
 
-          npm list --depth 9999
-            # list all dependencies
+          # list all dependencies - to inspect dependencies
+            npm ls --depth=9999 | tee dep.log
 
           npm install --production       # no devDependencies
+            # it will emit message:
+              # npm warn config production Use `--omit=dev` instead.
           npm install --production=false # with devDependencies
               # from: https://docs.npmjs.com/cli/v7/commands/npm-install
 
