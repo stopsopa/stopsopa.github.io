@@ -74,7 +74,7 @@
           # more about it: https://github.com/stopsopa/gphotos-research/blob/master/tools/convert-img.sh
         </script>
         <h2>HEIC to PNG</h2>
-        
+
         <h2>FFMPEG: webm to mp3 and so on]</h2>
         <script type="editor" data-lang="sh">
 
@@ -85,14 +85,14 @@
             done < <(find . -maxdepth 1 -name "*.webm" -print0)
 
             printf '%s\n' "${files[@]}"
-            
+
             # Get total count of files
             COUNT=${#files[@]}
             echo "${COUNT}"
-            
+
             for ((i = 1; i <= COUNT; i++)); do
                 FILE="${files[i-1]}"
-                [[ -z "$FILE" ]] && continue            
+                [[ -z "$FILE" ]] && continue
                 echo -e "\n    Processing $i of $COUNT: $FILE\n"
                 ffmpeg -nostdin -i "$FILE" -b:a 320k "${FILE%.webm}.mp3"
             done
@@ -103,7 +103,6 @@
                 echo "Processing: ${FILE}"
                 ffmpeg -nostdin -i "${FILE}" -b:a 320k "${FILE%.webm}.mp3"
             done
-          
         </script>
 
         <script type="editor" data-lang="sh">
