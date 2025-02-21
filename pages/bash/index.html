@@ -36,6 +36,9 @@
           <h2>basics</h2>
           <script type="editor" data-lang="sh">
 
+            # list all functions in zsh - list functions
+            alias lsfn="print -l ${(ok)functions}"
+
             function _date {
                 date "+%Y-%m-%d"
             }
