@@ -100,7 +100,7 @@ while (( "${#}" )); do
         else
           PARAMS="${PARAMS} \"${1}\""
             _EVAL="${_EVAL} \"${1}\""
-#          PARAMS="$(cat <<EOF
+#          PARAMS="$        (cat <<EOF
 #${PARAMS}
 #- "${1}"
 #EOF
@@ -115,6 +115,8 @@ while (( "${#}" )); do
 done
 
 if [ "${IS_LOADED}" != "" ]; then
+
+  echo "mode: --is-loaded"
 
   LOADED="$(ssh-add -l)"
 
@@ -161,6 +163,8 @@ function yellow {
 }
 
 if [ "${FIND}" = "1" ]; then
+
+  echo "mode: --find"
 
   function help {
 
