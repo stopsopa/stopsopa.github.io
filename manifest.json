@@ -1,6 +1,7 @@
 {
   "name": "App",
   "icons": [
+    
     {
       "src": "/android-icon-36x36.png",
       "sizes": "36x36",
@@ -20,7 +21,7 @@
       "density": "1.5"
     },
     {
-      "src": "/android-icon-96x96.png",
+      "src": "/android-icon-96x96.png",      
       "sizes": "96x96",
       "type": "image/png",
       "density": "2.0"

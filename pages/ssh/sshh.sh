@@ -946,6 +946,21 @@ rm ~/.ssh/${key}
 
 GITCONFIG="${SSHH_DIR_WITH_KEYS}/${key}.sh"
 
+cp "${SSHS}.pub" ~/.ssh/
+chmod 644 ~/.ssh/${key}.pub
+
+# cat <<EEE
+# ================================================
+# ${_LIST}
+# ==
+# $(ls -la ~/.ssh/)
+# git config --global user.signingkey ~/.ssh/${key}.pub
+# EEE
+
+git config --global user.signingkey ~/.ssh/${key}.pub
+git config --global commit.gpgsign true
+git config --global gpg.format ssh
+
 if [ -f "${GITCONFIG}" ]; then
 
   echo "Executing '${GITCONFIG}'"
@@ -953,7 +968,7 @@ if [ -f "${GITCONFIG}" ]; then
   /bin/bash "${GITCONFIG}"
 
   echo ""
-  git config --global -l | egrep "(user\.name|user\.email)"
+  git config --global -l | egrep "(user\.name|user\.email|gpg)"
   echo ""
 else
 
