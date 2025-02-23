@@ -32,7 +32,7 @@
             onclick && go.addEventListener("click", onclick);
           }
 
-          function loadFn2() {
+          async function loadFn2() {
             createImportMap({
               imports: {
                 example2: "./lib/example2.js",
@@ -43,6 +43,8 @@
               text: "go2",
               parent,
             });
+
+            await new Promise((resolve) => setTimeout(resolve, 3000));
 
             createScript(`
               import example from "example2";
@@ -87,7 +89,7 @@
 
             createButton({
               id: "loadFn2",
-              text: "loadFn2",
+              text: "loadFn2 - 3s",
               parent,
               onclick: loadFn2,
             });
