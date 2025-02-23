@@ -12,11 +12,14 @@
   <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
-        <h2>ODS to PDF</h2>
-        <script type="editor" data-lang="sh">
+        <button>go</button>
+        <!-- <script> -->
+        <script type="editor" data-lang="js" data-eval>
+          import example from "./lib/example.js";
 
-          setup: Format -> Page Style -> Tab >Sheet< -> https://i.imgur.com/EpzJYdn.png
-          from: https://stackoverflow.com/a/19947539
+          document.querySelector("button").addEventListener("click", () => {
+            alert(example());
+          });
         </script>
       </div>
     </div>

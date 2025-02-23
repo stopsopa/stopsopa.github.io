@@ -6,6 +6,26 @@ var log = (function () {
   }
 })();
 
+function createImportMap(objectToJson, parent) {
+  if (!parent) {
+    parent = document.body;
+  }
+  const script = document.createElement("script");
+  script.type = "importmap";
+  script.textContent = JSON.stringify(objectToJson, null, 4);
+  parent.appendChild(script);
+}
+
+function createScript(script, parent) {
+  if (!parent) {
+    parent = document.body;
+  }
+  const s = document.createElement("script");
+  s.type = "module";
+  s.textContent = script;
+  parent.appendChild(s);
+}
+
 const isVisibleElement = (function () {
   const list = ["script", "style", "meta", "noscript", "template", "link"];
 
@@ -1697,13 +1717,15 @@ body .github-profile:hover {
 (function () {
   window.doEval = function () {
     Array.from(document.querySelectorAll("[data-eval]")).forEach(function (tag) {
+      const parent = tag.parentNode;
+
       tag.removeAttribute("data-eval");
 
       var text = tag.innerHTML;
 
-      console.log("doEval, tag:", tag, text);
+      console.log("doEval, tag:", tag, "parent: ", parent, text);
 
-      eval(text);
+      createScript(text, parent);
     });
   };
 })();
