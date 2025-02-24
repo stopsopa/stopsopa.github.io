@@ -33,6 +33,14 @@
           {
             "imports": {
               "lodash": "https://cdn.skypack.dev/lodash"
+            },          
+            "integrity": {
+              "./modules/shapes/square.js": "sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC"
+            },                  
+            "scopes": {
+              "/js": {
+                "/app/": "./js-app/"
+              }
             }
           }
           &lt;/script>
@@ -42,6 +50,11 @@
           // and it has to be loaded before first module will be loaded.
           // https://chromestatus.com/feature/5121916248260608
           // more: https://github.com/WICG/import-maps/issues/235#issuecomment-2676516759
+
+          // generate sha:
+            cat FILENAME.js | openssl dgst -sha384 -binary | openssl base64 -A
+            // from: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity#using_subresource_integrity
+          
         </script>
         <h2>Examples</h2>
         <a href="no-importmap/index.html">no-importmap</a>
