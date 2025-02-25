@@ -191,8 +191,16 @@
         <h2>detect calling script directly</h2>
         <script type="editor" data-lang="js">
 
+          // commonjs
           if (require.main === module) {
           } else {
+          }
+
+          // esm
+          if (import.meta.main) {
+            console.log("This module is running as the main script.");
+          } else {
+            console.log("This module was imported.");
           }
 
           import path from "path";
