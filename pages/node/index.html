@@ -557,6 +557,35 @@
             npx --no -- commitlint --edit "\${1}"
           EEE
         </script>
+        <h2>Custom loader</h2>
+
+        <script type="editor" data-lang="js">
+//loader.mjs
+import { stat } from 'node:fs/promises';
+
+export async function resolve(specifier, context, nextResolve) {
+  if (!specifier.startsWith('.') && !specifier.startsWith('/')) {
+    return nextResolve(specifier, context);
+  }
+
+  try {
+    // Check if file exists as-is
+    await stat(new URL(specifier, context.parentURL));
+    return nextResolve(specifier, context);
+  } catch {
+    // If not found, try adding .js
+    try {
+      return nextResolve(`${specifier}.js`, context);
+    } catch {
+      throw new Error(`Module not found: ${specifier}`);
+    }
+  }
+}
+          
+// node --loader ./loader.mjs index.js
+          
+        </script>
+        
         <h2>serialize-error</h2>
 
         <script type="editor" data-lang="js">
