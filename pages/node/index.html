@@ -560,6 +560,7 @@
         <h2>Custom loader</h2>
 
         <script type="editor" data-lang="js">
+          
 //loader.mjs
 import { stat } from 'node:fs/promises';
 
@@ -583,6 +584,23 @@ export async function resolve(specifier, context, nextResolve) {
 }
           
 // node --loader ./loader.mjs index.js
+
+// but that in node ver v20.15.0 generates warning
+// (node:17) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+// --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./loader.mjs", pathToFileURL("./"));'
+// (Use `node --trace-warnings ...` to show where the warning was created)
+
+// so then fix can be done with extra file loader-register.js
+
+import { register } from 'node:module';
+import { pathToFileURL } from 'node:url';
+
+register('./loader.mjs', pathToFileURL('./'));
+
+// and using this we can register command in package.json
+
+"scripts": {
+  "start": "node --import ./loader-register.js dist/server.js",
           
         </script>
         
