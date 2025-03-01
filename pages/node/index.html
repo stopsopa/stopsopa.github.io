@@ -178,6 +178,14 @@
         <script type="editor" data-lang="sh">
 
           curl -s https://nodejs.org/dist/index.json | jq -r '.[] | select(.lts != false) | .version' | head -1
+          
+          # find all lts versions:
+          curl -s https://nodejs.org/dist/index.json | jq -r '
+          map(select(.lts != false)) 
+          | group_by(.version | capture("v(?<major>\\d+)").major | tonumber) 
+          | map(max_by(.version)) 
+          | .[].version'
+          
         </script>
 
         <h2>useful</h2>
