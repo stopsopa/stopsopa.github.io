@@ -3436,20 +3436,18 @@ register('./loader.mjs', pathToFileURL('./'));
           fi
 
           URL="https://domain:8443/" node --input-type module <<HEREDOC
-          (async function () {
-              try {
-                  const res = await fetch(process.env.URL, { signal: AbortSignal.timeout(1000) });
-                  const body = await res.text();
-                  
-                  console.log({status: res.status, headers: Object.fromEntries(res.headers)});
-                  console.log(\`Body: >\${body.substring(0, 1000)}<\`);
+          try {
+              const res = await fetch(process.env.URL, { signal: AbortSignal.timeout(5000) });
+              const body = await res.text();
+              
+              console.log({status: res.status, headers: Object.fromEntries(res.headers)});
+              console.log(\`Body: >\${body.substring(0, 1000)}<\`);
           
-                  process.exit(res.ok ? 0 : 1);
-              } catch (e) {
-                  console.error('Main catch:', e);
-                  process.exit(1);
-              }
-          }())
+              process.exit(res.ok ? 0 : 1);
+          } catch (e) {
+              console.error('Main catch:', e);
+              process.exit(1);
+          }
           HEREDOC
 
           // healtcheck for docker:
