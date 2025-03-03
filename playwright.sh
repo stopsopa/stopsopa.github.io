@@ -28,6 +28,7 @@ case ${_SHELL} in
     ;;
 esac
 
+
 cd "${_DIR}"
 
 node -v 1> /dev/null 2> /dev/null
