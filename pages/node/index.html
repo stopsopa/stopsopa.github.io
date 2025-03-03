@@ -3434,6 +3434,35 @@ register('./loader.mjs', pathToFileURL('./'));
             echo "checksum corrupted - deleting file"
             rm "curl.js"
           fi
+
+          URL="https://domain:8443/" node --input-type module <<HEREDOC
+          (async function () {
+              try {
+                  const res = await fetch(process.env.URL, { signal: AbortSignal.timeout(1000) });
+                  const body = await res.text();
+                  
+                  console.log({status: res.status, headers: Object.fromEntries(res.headers)});
+                  console.log(\`Body: >\${body.substring(0, 1000)}<\`);
+          
+                  process.exit(res.ok ? 0 : 1);
+              } catch (e) {
+                  console.error('Main catch:', e);
+                  process.exit(1);
+              }
+          }())
+          HEREDOC
+
+          // healtcheck for docker:
+            # healthcheck:
+            #   test:
+            #     - "CMD-SHELL"
+            #     # there is no CURL in the node alpine image, but we have node for sure
+            #     - 'node -e "fetch(''http://localhost:${NODE_PORT}/api/healthcheck'', { signal: AbortSignal.timeout(1000) }).then(res => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1));"'
+            #   interval: 10s
+            #   timeout: 10s
+            #   retries: 3
+            #   start_period: 10s
+          
         </script>
         <a href="https://httpstat.us/">https://httpstat.us/</a>
 
