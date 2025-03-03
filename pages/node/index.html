@@ -3437,7 +3437,7 @@ register('./loader.mjs', pathToFileURL('./'));
 
           URL="https://domain:8443/" node --input-type module <<HEREDOC
           try {
-              const res = await fetch(process.env.URL, { signal: AbortSignal.timeout(5000) });
+              const res = await fetch(process.env.URL, { signal: AbortSignal.timeout(50000) });
               const body = await res.text();
               
               console.log({status: res.status, headers: Object.fromEntries(res.headers)});
