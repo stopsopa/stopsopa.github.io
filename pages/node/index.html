@@ -2842,6 +2842,82 @@ register('./loader.mjs', pathToFileURL('./'));
                   }
                 }
               </script>
+              <h2>state server</h2>
+              <script type="editor" data-lang="sh">
+                
+HOST="0.0.0.0" PORT="8080" node --input-type module <<HEREDOC
+import express from 'express';
+
+const host = process.env.HOST;
+
+const port = process.env.PORT;
+
+if (!host) {
+  throw new Error('no host specified');
+}
+
+if (!/^\d+\$/.test(port)) {
+  throw new Error('no port specified');
+}
+
+const app = express();
+
+app.use(express.urlencoded({ extended: false }));
+
+app.use(express.json());
+
+app.set('json spaces', 4)
+
+let state = {};
+
+app.all('/get', (req, res) => {
+  const key = req.body?.key || req.query?.key;
+
+  if (typeof key === 'undefined') {
+    res.status(404).end();
+  } else {
+    res.setHeader('Content-type', 'text/plain; charset=utf-8');
+    res.end(state[key]);
+  }
+});
+
+app.all('/set', (req, res) => {
+  state = { ...state, ...req.body, ...req.query };
+  res.json(state);
+});
+
+app.all('/all', (req, res) => res.json(state));
+
+app.listen(port, host, () => {
+  console.log(\`\n 🌎  Server is running http://\${host}:\${port}\n\`);
+});
+
+HEREDOC
+
+# to run: HOST=0.0.0.0 PORT=8080 node state.js
+
+# now to use it:                
+(async function () {
+  try {
+    let value = await fetch('http://0.0.0.0:8081/get?key=test').then((res) => res.text());
+
+    console.log(`get: >${value}<`);
+
+    console.log('set');
+
+    await fetch('http://0.0.0.0:8081/set?test=1723');
+
+    value = await fetch('http://0.0.0.0:8081/get?key=test').then((res) => res.text());
+
+    console.log(`get: >${value}<`);
+  } catch (e) {
+    console.error(`general error: >${e}<`);
+
+    throw e;
+  }
+})();
+                
+              </script>
             </div>
             <div>
               <script type="editor" data-lang="js">
