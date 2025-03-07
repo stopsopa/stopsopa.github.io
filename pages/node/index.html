@@ -3514,6 +3514,7 @@ HEREDOC
             rm "curl.js"
           fi
 
+          
           URL="https://domain:8443/" node --input-type module <<HEREDOC
           try {
               const res = await fetch(process.env.URL, { signal: AbortSignal.timeout(50000) });
@@ -3539,6 +3540,25 @@ HEREDOC
             #   timeout: 10s
             #   retries: 3
             #   start_period: 10s
+
+          async function dumpOnce(key, callback) {
+            try {
+              let value = await fetch(`http://0.0.0.0:8081/get?key=${key}`).then((res) => res.text());
+          
+              if (value === '') {
+                await fetch(`http://0.0.0.0:8081/set?${key}=true`);
+          
+                callback();
+              }
+            } catch (e) {
+              console.error(`app.config.js error: >${e}<`);
+            }
+          }
+          
+          dumpOnce('app-config', () => {
+            console.log(`app.config.js: >${JSON.stringify(config, null, 4)}<`);
+            console.log('env', JSON.stringify(process.env, null, 4));
+          });
           
         </script>
         <a href="https://httpstat.us/">https://httpstat.us/</a>
