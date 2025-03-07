@@ -2845,78 +2845,100 @@ register('./loader.mjs', pathToFileURL('./'));
               <h2>state server</h2>
               <script type="editor" data-lang="sh">
                 
-HOST="0.0.0.0" PORT="8080" node --input-type module <<HEREDOC
-import express from 'express';
-
-const host = process.env.HOST;
-
-const port = process.env.PORT;
-
-if (!host) {
-  throw new Error('no host specified');
-}
-
-if (!/^\d+\$/.test(port)) {
-  throw new Error('no port specified');
-}
-
-const app = express();
-
-app.use(express.urlencoded({ extended: false }));
-
-app.use(express.json());
-
-app.set('json spaces', 4)
-
-let state = {};
-
-app.all('/get', (req, res) => {
-  const key = req.body?.key || req.query?.key;
-
-  if (typeof key === 'undefined') {
-    res.status(404).end();
-  } else {
-    res.setHeader('Content-type', 'text/plain; charset=utf-8');
-    res.end(state[key]);
-  }
-});
-
-app.all('/set', (req, res) => {
-  state = { ...state, ...req.body, ...req.query };
-  res.json(state);
-});
-
-app.all('/all', (req, res) => res.json(state));
-
-app.listen(port, host, () => {
-  console.log(\`\n 🌎  Server is running http://\${host}:\${port}\n\`);
-});
-
-HEREDOC
-
-# to run: HOST=0.0.0.0 PORT=8080 node state.js
-
-# now to use it:                
-(async function () {
-  try {
-    let value = await fetch('http://0.0.0.0:8081/get?key=test').then((res) => res.text());
-
-    console.log(`get: >${value}<`);
-
-    console.log('set');
-
-    await fetch('http://0.0.0.0:8081/set?test=1723');
-
-    value = await fetch('http://0.0.0.0:8081/get?key=test').then((res) => res.text());
-
-    console.log(`get: >${value}<`);
-  } catch (e) {
-    console.error(`general error: >${e}<`);
-
-    throw e;
-  }
-})();
+                HOST="0.0.0.0" PORT="8080" node --input-type module <<HEREDOC
+                import express from 'express';
                 
+                const host = process.env.HOST;
+                
+                const port = process.env.PORT;
+                
+                if (!host) {
+                  throw new Error('no host specified');
+                }
+                
+                if (!/^\d+\$/.test(port)) {
+                  throw new Error('no port specified');
+                }
+                
+                const app = express();
+                
+                app.use(express.urlencoded({ extended: false }));
+                
+                app.use(express.json());
+                
+                app.set('json spaces', 4)
+                
+                let state = {};
+                
+                app.all('/get', (req, res) => {
+                  const key = req.body?.key || req.query?.key;
+                
+                  if (typeof key === 'undefined') {
+                    res.status(404).end();
+                  } else {
+                    res.setHeader('Content-type', 'text/plain; charset=utf-8');
+                    res.end(state[key]);
+                  }
+                });
+                
+                app.all('/set', (req, res) => {
+                  state = { ...state, ...req.body, ...req.query };
+                  res.json(state);
+                });
+                
+                app.all('/all', (req, res) => res.json(state));
+                
+                app.listen(port, host, () => {
+                  console.log(\`\n 🌎  Server is running http://\${host}:\${port}\n\`);
+                });
+                
+                HEREDOC
+                
+                # to run: HOST=0.0.0.0 PORT=8080 node state.js
+                
+                # now to use it:                
+                (async function () {
+                  try {
+                    let value = await fetch('http://0.0.0.0:8081/get?key=test').then((res) => res.text());
+                
+                    console.log(`get: >${value}<`);
+                
+                    console.log('set');
+                
+                    await fetch('http://0.0.0.0:8081/set?test=1723');
+                
+                    value = await fetch('http://0.0.0.0:8081/get?key=test').then((res) => res.text());
+                
+                    console.log(`get: >${value}<`);
+                  } catch (e) {
+                    console.error(`general error: >${e}<`);
+                
+                    throw e;
+                  }
+                })();
+                      
+                async function dumpOnce(key, callback) {
+                  try {
+                    let value = await fetch(`http://0.0.0.0:8081/get?key=${key}`).then((res) => res.text());
+                
+                    if (value === '') {
+                      await fetch(`http://0.0.0.0:8081/set?${key}=true`);
+                
+                      callback();
+                    }
+                  } catch (e) {
+                    console.error(`app.config.js error: >${e}<`);
+                  }
+                }
+                
+                dumpOnce('app-config', () => {
+                  console.log(`app.config.js: >${JSON.stringify(config, null, 4)}<`);
+                  console.log('env', JSON.stringify(process.env, null, 4));
+                });                
+                      
+                // oneliner
+                node -e "require('http').get('http://0.0.0.0:8081/all', res => res.pipe(process.stdout))"
+                              
               </script>
             </div>
             <div>
@@ -3497,8 +3519,7 @@ HEREDOC
         <h2>curl polyfill</h2>
         <script type="editor" data-lang="sh">
 
-          // oneliner
-          node -e "require('http').get('http://0.0.0.0:8081/all', res => res.pipe(process.stdout))"
+
 
           wget --help 1> /dev/null 2> /dev/null
           if [ "$?" = "0" ]; then
@@ -3514,7 +3535,17 @@ HEREDOC
             rm "curl.js"
           fi
 
-          
+          // healtcheck for docker:
+            # healthcheck:
+            #   test:
+            #     - "CMD-SHELL"
+            #     # there is no CURL in the node alpine image, but we have node for sure
+            #     - 'node -e "fetch(''http://localhost:${NODE_PORT}/api/healthcheck'', { signal: AbortSignal.timeout(1000) }).then(res => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1));"'
+            #   interval: 10s
+            #   timeout: 10s
+            #   retries: 3
+            #   start_period: 10s
+                 
           URL="https://domain:8443/" node --input-type module <<HEREDOC
           try {
               const res = await fetch(process.env.URL, { signal: AbortSignal.timeout(50000) });
@@ -3529,36 +3560,6 @@ HEREDOC
               process.exit(1);
           }
           HEREDOC
-
-          // healtcheck for docker:
-            # healthcheck:
-            #   test:
-            #     - "CMD-SHELL"
-            #     # there is no CURL in the node alpine image, but we have node for sure
-            #     - 'node -e "fetch(''http://localhost:${NODE_PORT}/api/healthcheck'', { signal: AbortSignal.timeout(1000) }).then(res => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1));"'
-            #   interval: 10s
-            #   timeout: 10s
-            #   retries: 3
-            #   start_period: 10s
-
-          async function dumpOnce(key, callback) {
-            try {
-              let value = await fetch(`http://0.0.0.0:8081/get?key=${key}`).then((res) => res.text());
-          
-              if (value === '') {
-                await fetch(`http://0.0.0.0:8081/set?${key}=true`);
-          
-                callback();
-              }
-            } catch (e) {
-              console.error(`app.config.js error: >${e}<`);
-            }
-          }
-          
-          dumpOnce('app-config', () => {
-            console.log(`app.config.js: >${JSON.stringify(config, null, 4)}<`);
-            console.log('env', JSON.stringify(process.env, null, 4));
-          });
           
         </script>
         <a href="https://httpstat.us/">https://httpstat.us/</a>
