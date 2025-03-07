@@ -3497,6 +3497,9 @@ HEREDOC
         <h2>curl polyfill</h2>
         <script type="editor" data-lang="sh">
 
+          // oneliner
+          node -e "require('http').get('http://0.0.0.0:8081/all', res => res.pipe(process.stdout))"
+
           wget --help 1> /dev/null 2> /dev/null
           if [ "$?" = "0" ]; then
             wget --no-cache -O "curl.js" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/curl.js"
