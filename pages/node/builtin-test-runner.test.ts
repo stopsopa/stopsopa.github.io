@@ -1,4 +1,4 @@
-// node --experimental-strip-types --test --experimental-test-coverage --test-reporter=tap --import ./loader-register.js pages/node/builtin-test-runner.test.ts
+// node --experimental-strip-types --test --experimental-test-coverage --test-reporter tap --import ./loader-register.js pages/node/builtin-test-runner.test.ts
 
 import assert from "node:assert";
 import { describe, it } from "node:test";
