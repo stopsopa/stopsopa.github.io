@@ -141,8 +141,8 @@ node node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node
 Usually it's good idea to execute it after /bin/bash uglify.sh
 
 Finds all *.template.html and process them to *.rendered.html in the same location
-<%url pages/bookmarklets/jira-create.uglify.min.js %>
-<%inject pages/bookmarklets/periscope.uglify.js %>  
+<%url lib/jira-create.uglify.min.js %>
+<%inject /pages/bookmarklets/periscope.uglify.js %>  
 `,
       confirm: false,
     },

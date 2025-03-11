@@ -129,5 +129,3 @@ services:
 networks:
   scoped-network:
     name: network-${PROJECT_NAME}
-
-    

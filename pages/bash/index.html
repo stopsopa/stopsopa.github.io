@@ -925,21 +925,20 @@
             TEST2><
           </script>
           <h2>Validate https</h2>
-          
+
           <script type="editor" data-lang="sh">
 
             curl -k https://localhost:8443 | head
               that will return correct response
-              
+
             curl -I -v -k https://localhost:8443
                 we can extract CN value in my case it is:
                   subject: CN=*.mydomian.com
-            
+
             also it can look into:
             openssl s_client -connect localhost:8443 -servername localhost
                 you can check "Certificate chain"
                 and "Verify return code"
-            
           </script>
           <h2>http server</h2>
 

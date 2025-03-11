@@ -41,23 +41,20 @@
           # Conclusion: It seems it is better to use nodenext when working with node
             but for that you can't have  "type": "module" in package.json
         </script>
-        <h2> Force native function to use my types</h2>
+        <h2>Force native function to use my types</h2>
         <script type="editor" data-lang="sh">
 
-// https://www.typescriptlang.org/play/?ssl=11&ssc=4&pln=2&pc=1#code/FASwdgLgpgTgZgQwMZQAQGED2BbADgsAT1QG9hVUBJAEwC5UBnCGcAcwG5zUA5BbKekxZgOwAL7AkmME1RS8BQvSwKiAbQC6qALypNnYAAoA8gCMAVlCQQAdAGsohBofn4iASlQIGqQw8KYcBg4boTumu42cJgwAKLIABaGfo6e2gB8pFz+OqgARHmoAPRFqBAJID4A7gjEOUgEqNIANsQJCABuaB0IzQCuUD55NIUx+bz8eVwlqDY24u7sQA
-interface Company {
-  Id: string;
-  Name: string;
-}
-const company: Company[] = [];
+          // https://www.typescriptlang.org/play/?ssl=11&ssc=4&pln=2&pc=1#code/FASwdgLgpgTgZgQwMZQAQGED2BbADgsAT1QG9hVUBJAEwC5UBnCGcAcwG5zUA5BbKekxZgOwAL7AkmME1RS8BQvSwKiAbQC6qALypNnYAAoA8gCMAVlCQQAdAGsohBofn4iASlQIGqQw8KYcBg4boTumu42cJgwAKLIABaGfo6e2gB8pFz+OqgARHmoAPRFqBAJID4A7gjEOUgEqNIANsQJCABuaB0IzQCuUD55NIUx+bz8eVwlqDY24u7sQA
+          interface Company {
+            Id: string;
+            Name: string;
+          }
+          const company: Company[] = [];
 
-(Object.keys(company) as (keyof Company)[]).forEach((key) => {
-  key = "" // this way key can only have values "Id" or "Name"
-  // ..
-});
-          
-
-          
+          (Object.keys(company) as (keyof Company)[]).forEach((key) => {
+            key = "" // this way key can only have values "Id" or "Name"
+            // ..
+          });
         </script>
         <h2>npm publish preparations</h2>
 
@@ -207,6 +204,15 @@ const company: Company[] = [];
 
           just stick to nodemon:
           npx nodemon server/index.ts
+        </script>
+        <h2>--experimental-strip-types</h2>
+        <a href="https://nodejs.org/en/blog/release/v22.6.0#2024-08-06-version-2260-current-rafaelgss"
+          >g(site:nodejs.org Experimental TypeScript support via strip types)</a
+        >
+        <script type="editor" data-lang="js">
+          // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Ftypescript%2Fnode%2Ftstest.ts
+
+          <%url /pages/typescript/node/tstest.ts %>
         </script>
         <h2>ts-node & tsimp & tsx && SWC</h2>
         <script type="editor" data-lang="python">
