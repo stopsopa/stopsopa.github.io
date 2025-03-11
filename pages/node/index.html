@@ -2953,9 +2953,30 @@ register('./loader.mjs', pathToFileURL('./'));
           </div>
         </div>
 
+
+        <h2>Inline</h2>
+
+        <script type="editor" data-lang="sh">
+                        
+          HOST="0.0.0.0" PORT="8088" node --input-type module <<-HEREDOC
+          console.log('test', process.env.PORT)
+          HEREDOC
+          
+          HOST="0.0.0.0" PORT="8088" node node_modules/.bin/ts-node -e "$(cat <<-HEREDOC
+          console.log('test', process.env.PORT)
+          HEREDOC
+          )"
+          
+          HOST="0.0.0.0" PORT="8088" node node_modules/.bin/tsx <<-HEREDOC
+          console.log('test', process.env.PORT)
+          HEREDOC
+        
+        </script>
         
               <h2>state server</h2>
               <script type="editor" data-lang="sh">
+
+
                 
                 HOST="0.0.0.0" PORT="8080" node --input-type module <<HEREDOC
                 import express from 'express';

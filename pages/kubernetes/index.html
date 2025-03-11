@@ -130,6 +130,11 @@
             name: build-robot
           EOF
 
+          # copy
+          kubectl cp -n default . my-pod:/path/to/file.txt
+          # Copy file when there are problems to do it normally
+          kubectl exec -it mypod-dc0a239-5864d77b9-klnnv -- base64 ../xxx/..data/_.myfile.pkcs12 | base64 -d > _.myfile.pkcs12
+
           oc create configmap api-cm \
             --from-literal=ARANGO_ENDPOINTS="http://xxx.com:8529" \
             --dry-run=client -o yaml | kubectl apply -f -
