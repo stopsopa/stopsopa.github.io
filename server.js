@@ -99,6 +99,8 @@ app.listen(process.env.NODE_API_PORT, host, () => {
         http://${process.env.LOCAL_HOSTS}:${process.env.NODE_API_PORT}/index.html
 
  \x1b[41mNOTICE: \x1b[33mmake sure to add ${process.env.LOCAL_HOSTS} to /etc/hosts
+
+ 127.0.0.1       localhost stopsopa.github.io.local kubernetes.docker.internal
  
  and be aware of this issue on mac with /etc/hosts https://superuser.com/a/1297335\x1b[0m
 
