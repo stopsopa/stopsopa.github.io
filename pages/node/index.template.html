@@ -258,6 +258,7 @@
 
         <h2>built in test runner</h2>
         <script type="editor" data-lang="js">
+          // from: https://youtu.be/si9pVRaGz30?t=264
           <%inject builtin-test-runner.test.ts %>
         </script>
         
@@ -600,27 +601,8 @@
 
         <script type="editor" data-lang="js">
 
-          //loader.mjs
-          import { stat } from 'node:fs/promises';
-
-          export async function resolve(specifier, context, nextResolve) {
-            if (!specifier.startsWith('.') && !specifier.startsWith('/')) {
-              return nextResolve(specifier, context);
-            }
-
-            try {
-              // Check if file exists as-is
-              await stat(new URL(specifier, context.parentURL));
-              return nextResolve(specifier, context);
-            } catch {
-              // If not found, try adding .js
-              try {
-                return nextResolve(`${specifier}.js`, context);
-              } catch {
-                throw new Error(`Module not found: ${specifier}`);
-              }
-            }
-          }
+          //loader.mjs          
+          <%inject /loader.mjs %>
 
           // node --loader ./loader.mjs index.js
 
@@ -630,11 +612,8 @@
           // (Use `node --trace-warnings ...` to show where the warning was created)
 
           // so then fix can be done with extra file loader-register.js
-
-          import { register } from 'node:module';
-          import { pathToFileURL } from 'node:url';
-
-          register('./loader.mjs', pathToFileURL('./'));
+                
+          <%inject /loader-register.js %>
 
           // and using this we can register command in package.json
 
