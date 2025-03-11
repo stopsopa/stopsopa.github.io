@@ -398,7 +398,7 @@
         <script type="editor" data-lang="sh">
           
 echo '{"APP":"xxx-ui","AUTH_CONFIG_PATH":"/tmp/auth/auth-config.json","CRYPTO_CONFIG_PATH":"/tmp/config.json"}' \
-| node -e "process.stdin.on('data', data => { console.log(JSON.stringify(JSON.parse(data), null, 2)); });"
+| node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',a=>console.log(JSON.stringify(JSON.parse(d),null,2)));"
           
         </script>
         <h2>serialize function</h2>
