@@ -37,7 +37,11 @@ function Viewer() {
     return new URL(window.location.href).searchParams.get("file") || "";
   }
 
-  const [file, setFile] = useState(getFile());
+  const [file, setFileRaw] = useState(getFile());
+
+  function setFile(value) {
+    setFileRaw(decodeURIComponent(value));
+  }
 
   const [ace, setAceRaw] = useState({});
 
