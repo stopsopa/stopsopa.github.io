@@ -4,6 +4,7 @@
 {
   "javascript.preferences.importModuleSpecifierEnding": "js", // https://stackoverflow.com/a/61645194
   "path-autocomplete.extensionOnImport": true,
+  "lcov.path": "coverage/lcov.info", // from: https://marketplace.visualstudio.com/items?itemName=alexdima.vscode-lcov#setting-up
   "search.exclude": {
     ".git/": true,
     ".vscode/": true,
