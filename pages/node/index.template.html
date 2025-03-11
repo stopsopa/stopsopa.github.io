@@ -257,15 +257,13 @@
         </script>
 
         <h2>built in test runner</h2>
-        <a href="https://nodejs.org/api/test.html#test-runner"
-          >https://nodejs.org/api/test.html#test-runner</a
-        >
+        <a href="https://nodejs.org/api/test.html#test-runner">https://nodejs.org/api/test.html#test-runner</a>
         <script type="editor" data-lang="js">
           // from: https://youtu.be/si9pVRaGz30?t=264
 
           <%inject builtin-test-runner.test.ts %>
         </script>
-        
+
         <h2>debugger chrome</h2>
         <script type="editor" data-lang="js">
 
@@ -396,10 +394,9 @@
         </script>
         <h2>format json from stdin</h2>
         <script type="editor" data-lang="sh">
-          
-echo '{"APP":"xxx-ui","AUTH_CONFIG_PATH":"/tmp/auth/auth-config.json","CRYPTO_CONFIG_PATH":"/tmp/config.json"}' \
-| node -e "d='',p=process.stdin,j=JSON;p.on('data',c=>d+=c);p.on('end',a=>console.log(j.stringify(j.parse(d),null,2)));"
-          
+
+          echo '{"APP":"xxx-ui","AUTH_CONFIG_PATH":"/tmp/auth/auth-config.json","CRYPTO_CONFIG_PATH":"/tmp/config.json"}' \
+          | node -e "d='',p=process.stdin,j=JSON;p.on('data',c=>d+=c);p.on('end',a=>console.log(j.stringify(j.parse(d),null,2)));"
         </script>
         <h2>serialize function</h2>
 
@@ -590,7 +587,7 @@ echo '{"APP":"xxx-ui","AUTH_CONFIG_PATH":"/tmp/auth/auth-config.json","CRYPTO_CO
 
         <script type="editor" data-lang="js">
 
-          //loader.mjs          
+          //loader.mjs
           <%inject /loader.mjs %>
 
           // node --loader ./loader.mjs index.js
@@ -601,7 +598,7 @@ echo '{"APP":"xxx-ui","AUTH_CONFIG_PATH":"/tmp/auth/auth-config.json","CRYPTO_CO
           // (Use `node --trace-warnings ...` to show where the warning was created)
 
           // so then fix can be done with extra file loader-register.js
-                
+
           <%inject /loader-register.js %>
 
           // and using this we can register command in package.json

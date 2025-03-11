@@ -28,7 +28,7 @@ describe("first", async () => {
 describe("libs function", async () => {
   it("should return formatted libs string", async () => {
     const result = libs();
-    assert.strictEqual(result, 'libs: [lib: >l1<] [lib2: >l2<]');
+    assert.strictEqual(result, "libs: [lib: >l1<] [lib2: >l2<]");
   });
 
   it("should include lib1 and lib2 in the result", async () => {

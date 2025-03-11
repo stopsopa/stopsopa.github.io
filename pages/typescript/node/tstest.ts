@@ -4,7 +4,7 @@
 
 // import lib, { lib2 } from "./lib"; // this will fail
 import lib, { lib2 } from "./lib.ts"; // this one is fine
-  // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Ftypescript%2Fnode%2Flib.ts
+// urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Ftypescript%2Fnode%2Flib.ts
 
 function add(a: number, b: number): number {
   return a + b;
