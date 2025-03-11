@@ -326,6 +326,30 @@
           document.write("Wyrazenie z 4 nawiasu: "+ RegExp.$4 +"<br>");
           document.write("Wyrazenie z 5 nawiasu: "+ RegExp.$5 +"<br>");
         </script>
+
+        <h2>isNode isElement</h2>
+
+        <script type="editor" data-lang="ts">
+
+
+          /**
+           * https://stackoverflow.com/a/384380
+           */
+          function isNode(o: any): o is Node {
+            return typeof Node === "object"
+              ? o instanceof Node
+              : o &&
+                  typeof o === "object" &&
+                  typeof o.nodeType === "number" &&
+                  typeof o.nodeName === "string";
+          }
+
+          // this way you can use
+          // to ensure typescript that from now on o.create is really isNode
+          if (!isNode(o.create)) {
+            o.create = document.createElement("div");
+          }
+        </script>
         <h2>get local time DATE</h2>
 
         <script type="editor" data-lang="js">

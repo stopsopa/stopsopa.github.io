@@ -2,6 +2,7 @@
 .idea/
 *.tar.gz
 *.zip
+lcov.info
 node_modules
 /bin/
 /public/coverage/

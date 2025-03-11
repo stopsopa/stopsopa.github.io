@@ -205,6 +205,7 @@
           just stick to nodemon:
           npx nodemon server/index.ts
         </script>
+
         <h2>--experimental-strip-types</h2>
         <a href="https://nodejs.org/en/blog/release/v22.6.0#2024-08-06-version-2260-current-rafaelgss"
           >g(site:nodejs.org Experimental TypeScript support via strip types)</a
@@ -851,29 +852,6 @@
           type OnlyStrings = Pick<Employee, {
               [P in keyof Employee]: string extends Employee[P] ? P : never
           }[keyof Employee]>
-        </script>
-        <h2>testing type</h2>
-
-        <script type="editor" data-lang="ts">
-
-
-          /**
-           * https://stackoverflow.com/a/384380
-           */
-          function isNode(o: any): o is Node {
-            return typeof Node === "object"
-              ? o instanceof Node
-              : o &&
-                  typeof o === "object" &&
-                  typeof o.nodeType === "number" &&
-                  typeof o.nodeName === "string";
-          }
-
-          // this way you can use
-          // to ensure typescript that from now on o.create is really isNode
-          if (!isNode(o.create)) {
-            o.create = document.createElement("div");
-          }
         </script>
 
         <h2>Constant object</h2>
