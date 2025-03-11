@@ -330,7 +330,17 @@ In template file listed placeholders will be processed:
 
 <%url path/to/file/in/repository.js %> - will import file in-place and replace each " to %22
 
-<%inject path/to/file/in/respository.js %> - will be imported in-place as is
+<%inject /pages/to/file/in/respository.js %> - will be imported in-place as is
+
+> [!NOTE]
+> use two path styles:
+> relative like lib/test.js
+> this will resolve relative to the position of \*.template.html file
+>
+> or
+>
+> absolute like /lib/test.js
+> that will resolve from the root of the repository
 
 For details look to template.sh
 
