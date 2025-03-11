@@ -1191,6 +1191,7 @@ window.buildFooter = async function () {
     // log("path", path);
 
     var github = `//github.com/${user}/${user}.github.io/edit/master${path}`;
+    
 
     // log("github", github);
 
