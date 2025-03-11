@@ -1180,11 +1180,19 @@ window.buildFooter = async function () {
       path += "/index.html";
     }
 
-    // log('path', path)
+    const templateRegex = /^(.*)\.rendered\.html$/;
+
+    // log("path", path);
+
+    if (templateRegex.test(path)) {
+      path = path.replace(templateRegex, "$1.template.html");
+    }
+
+    // log("path", path);
 
     var github = `//github.com/${user}/${user}.github.io/edit/master${path}`;
 
-    // log('github', github)
+    // log("github", github);
 
     return github;
   })("stopsopa.github.io");
