@@ -18,7 +18,7 @@ const mimesMap = {
   "image/svg+xml": "svg",
   "text/jsx": "javascript",
   "text/tsx": "typescript",
-  "video/mp2t": "typescript",
+  "video/mp2t": "typescript", // check online using path to file pages/typescript/node/lib.ts
   "text/x-scss": "scss",
   "application/xml": "xml",
 };
