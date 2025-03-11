@@ -394,6 +394,13 @@
 
           const uuidPath = require.resolve('uuid');
         </script>
+        <h2>format json from stdin</h2>
+        <script type="editor" data-lang="sh">
+          
+echo '{"APP":"xxx-ui","AUTH_CONFIG_PATH":"/tmp/auth/auth-config.json","CRYPTO_CONFIG_PATH":"/tmp/config.json"}' \
+| node -e "process.stdin.on('data', data => { console.log(JSON.stringify(JSON.parse(data), null, 2)); });"
+          
+        </script>
         <h2>serialize function</h2>
 
         <script type="editor" data-lang="js">
