@@ -255,6 +255,31 @@
           # Dual CommonJS/ES module packages:
             https://nodejs.org/api/packages.html#packages_dual_commonjs_es_module_packages
         </script>
+        <h2>debugger chrome</h2>
+        <script type="editor" data-lang="js">
+
+          // https://nodejs.org/en/docs/guides/debugging-getting-started/
+          // https://nodejs.org/en/docs/guides/debugging-getting-started/#chrome-devtools
+            // from: https://youtu.be/si9pVRaGz30?si=f0CkHM25OGpK6Vg3&t=753
+
+          node --inspect-brk
+        </script>
+        <h2>glob</h2>
+        <script type="editor" data-lang="js">
+
+          // https://nodejs.org/api/fs.html#fspromisesglobpattern-options
+
+          import { glob } from "node:fs/promises";
+
+          (async () => {
+            //   const list = glob("**/*.js");
+            const list = glob("*.js");
+
+            for await (const entry of list) {
+              console.log(entry);
+            }
+          })();
+        </script>
         <h2>isNode - testing type</h2>
         <script type="editor" data-lang="sh">
 
@@ -1022,6 +1047,23 @@
               # Remove the shared cache files. https://yarnpkg.com/cli/cache/clean
 
           yarn audit
+        </script>
+        <h2>--env-file</h2>
+        <script type="editor" data-lang="js">
+
+          node --env-file=.env --env-file=.development.env app.js
+            # WARNING: throw if the file does not exist.
+            #    (/Users/userx/.asdf/installs/nodejs/22.14.0/bin/node: env.local: not found) with exit code 9
+            # .development.env wins if env var defined in both files - later wins
+            # https://nodejs.org/dist/latest-v22.x/docs/api/cli.html#--env-fileconfig
+            # Added in: v20.6.0
+            # v21.7.0, v20.12.0	Add support to multi-line values.
+
+          node --env-file-if-exists=.env app.js
+            # In case you want to optionally read from a .env file, it's possible to avoid throwing
+            # an error if the file is missing using the --env-file-if-exists flag.
+            # https://nodejs.org/dist/latest-v22.x/docs/api/cli.html#--env-file-if-existsconfig
+            # Added in: v22.9.0
         </script>
         <h2>dotenv</h2>
         <script type="editor" data-lang="js">
