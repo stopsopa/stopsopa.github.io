@@ -1,12 +1,12 @@
 import { stat } from "node:fs/promises";
 
-async function tryExt(specifier, context, nextResolve, ext) {
+async function resolutionAttempt(specifier, context, nextResolve, ext) {
   try {
     const path = `${specifier}${ext}`;
     await stat(new URL(path, context.parentURL));
     return nextResolve(path, context);
   } catch (e) {
-    throw new Error(`Module not found: ${specifier}`);
+    return false;
   }
 }
 
@@ -15,17 +15,25 @@ export async function resolve(specifier, context, nextResolve) {
     return nextResolve(specifier, context);
   }
 
-  try {
-    return await tryExt(specifier, context, nextResolve, "");
-  } catch (e) {
-    try {
-      return await tryExt(specifier, context, nextResolve, ".ts");
-    } catch (e) {
-      try {
-        return await tryExt(specifier, context, nextResolve, ".js");
-      } catch {
-        throw new Error(`Module not found: ${specifier}`);
-      }
-    }
+  let loaded;
+
+  loaded = await resolutionAttempt(specifier, context, nextResolve, "");
+
+  if (loaded) {
+    return loaded;
   }
+
+  loaded = await resolutionAttempt(specifier, context, nextResolve, ".ts");
+
+  if (loaded) {
+    return loaded;
+  }
+
+  loaded = await resolutionAttempt(specifier, context, nextResolve, ".js");
+
+  if (loaded) {
+    return loaded;
+  }
+
+  throw new Error(`Module not found: ${specifier}`);
 }
