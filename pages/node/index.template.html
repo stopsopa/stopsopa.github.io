@@ -291,28 +291,6 @@
             }
           })();
         </script>
-        <h2>isNode - testing type</h2>
-        <script type="editor" data-lang="sh">
-
-
-          /**
-           * https://stackoverflow.com/a/384380
-           */
-          function isNode(o: any): o is Node {
-            return typeof Node === "object"
-              ? o instanceof Node
-              : o &&
-                  typeof o === "object" &&
-                  typeof o.nodeType === "number" &&
-                  typeof o.nodeName === "string";
-          }
-
-          // this way you can use
-          // to ensure typescript that from now on o.create is really isNode
-          if (!isNode(o.create)) {
-            o.create = document.createElement("div");
-          }
-        </script>
 
         <h2>jsr</h2>
         <script type="editor" data-lang="python">
