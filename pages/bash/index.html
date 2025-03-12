@@ -824,7 +824,7 @@
             # https://www.cyberciti.biz/faq/how-to-add-install-man-pages-on-ubuntu-linux/
             # g(How to install man pages on Ubuntu Linux)
             # manpages
-            cat <<EOF | docker build -t ubuntu:18.04-man -
+            cat <<EOF | docker build -t ubuntu:18.04-man -f- .
             FROM ubuntu:18.04
             RUN apt-get update && yes | unminimize && apt install -y manpages manpages-dev manpages-posix manpages-posix-dev manpages-pl manpages-pl-dev
             EOF
