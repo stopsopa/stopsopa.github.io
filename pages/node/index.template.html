@@ -2839,42 +2839,7 @@
                 app.listen(port, host, () => {
 
                     console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`)
-                });                
-
-                // generate cert and key:
-                // openssl req -nodes -new -x509 -keyout server.key -out server.cert
-                // or without interactive
-                // openssl req -nodes -new -x509 -keyout server.key -out server.cert -subj "/C=UK/ST=Surrey/L=London/O=Company/OU=Company/CN=abc.com/emailAddress=myemail@gmail.com"
-                // where
-                // /C=UK → Country
-                // /ST=Surrey → State or Province
-                // /L=London → Locality (City)
-                // /O=Company → Organization
-                // /OU=Company → Organizational Unit
-                // /CN=abc.com → Common Name (Domain Name)
-                // /emailAddress=myemail@gmail.com → Email Address
-                
-                // then https run server:
-                // HOST=abc.com PORT=8087 node httpsserver.js
-                
-                https
-                  .createServer(
-                    {
-                      key: fs.readFileSync("server.key"),
-                      cert: fs.readFileSync("server.cert"),
-                    },
-                    app
-                  )
-                  .listen(port, () => {
-                    console.log(` 
-                
-                    make sure to add to /etc/hosts
-                    0.0.0.0         abc.com
-                
-                    🌎  Server is running ` + `https://${host}:${port}
-                
-                `);
-                  });
+                });
               </script>
 
               <script type="editor" data-lang="json">
@@ -2982,42 +2947,7 @@
                 app.listen(port, host, () => {
 
                     console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`)
-                });           
-
-                // generate cert and key:
-                // openssl req -nodes -new -x509 -keyout server.key -out server.cert
-                // or without interactive
-                // openssl req -nodes -new -x509 -keyout server.key -out server.cert -subj "/C=UK/ST=Surrey/L=London/O=Company/OU=Company/CN=abc.com/emailAddress=myemail@gmail.com"
-                // where
-                // /C=UK → Country
-                // /ST=Surrey → State or Province
-                // /L=London → Locality (City)
-                // /O=Company → Organization
-                // /OU=Company → Organizational Unit
-                // /CN=abc.com → Common Name (Domain Name)
-                // /emailAddress=myemail@gmail.com → Email Address
-                
-                // then https run server:
-                // HOST=abc.com PORT=8087 node httpsserver.js
-                
-                https
-                  .createServer(
-                    {
-                      key: fs.readFileSync("server.key"),
-                      cert: fs.readFileSync("server.cert"),
-                    },
-                    app
-                  )
-                  .listen(port, () => {
-                    console.log(` 
-                
-                    make sure to add to /etc/hosts
-                    0.0.0.0         abc.com
-                
-                    🌎  Server is running ` + `https://${host}:${port}
-                
-                `);
-                  });
+                });
               </script>
 
               <script type="editor" data-lang="json">
@@ -3029,6 +2959,93 @@
                     "serve-index"    : "^1.9.1"
                   }
                 }
+              </script>
+            </div>
+          </div>
+        </div>
+
+        <h2>https</h2>
+
+        <div data-vanilla-tabs>
+          <div data-buttons>
+            <span>httpsserver.js</span>
+            <span>in docker</span>
+          </div>
+          <div data-tabs>
+            <div>
+              <script type="editor" data-lang="js">
+                <%inject httpsserver.js %>
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="sh">
+
+                cat <<EOF | docker build --rm -t httpsserver -f- .
+                FROM node:22.14.0-alpine
+                RUN apk --no-cache add curl openssl && \
+                    apk update && apk upgrade
+                # RUN echo '' \>\> /etc/hosts && echo '0.0.0.0 abc.com' \>\> /etc/hosts "
+                WORKDIR /usr/src/app
+                #RUN echo -e "\ntest\n" >> test.log
+                RUN echo '{"type":"module"}' > package.json && npm install express
+                RUN openssl req -nodes -new -x509 -keyout server.key -out server.cert -subj "/C=UK/ST=Surrey/L=London/O=Company/OU=Company/CN=abc.com/emailAddress=user@gmail.com"
+                COPY ./pages/node/httpsserver.js ./
+                ENTRYPOINT ["sh", "-c", "echo -e '0.0.0.0 abc.com' >> /etc/hosts && node httpsserver.js"]
+                EOF
+
+                # then in separate terminal run
+                docker run --init -it --rm --name htser -e "HOST=abc.com" -e "PORT=8089" -p "8089:8089" httpsserver
+
+                # ### testing from host machine
+                # add to /etc/hosts on host machine
+                # 0.0.0.0         abc.com
+                #
+                # open in the browser:
+                # https://0.0.0.0:8089/test
+                # you will see https://i.imgur.com/vhvBgtq.png - which is fine
+                # but that is expected you just have to click "Advanced" and then "Proceed to abc.com (unsafe)"
+                #
+                # open in the browser:
+                # https://abc.com:8089/test
+                # the same as above
+                # you will see https://i.imgur.com/vhvBgtq.png - which is fine
+                # but that is expected you just have to click "Advanced" and then "Proceed to abc.com (unsafe)"
+                #
+                # curl https://0.0.0.0:8089/test
+                # curl: (60) SSL certificate problem: self signed certificate
+                #
+                # curl -k https://0.0.0.0:8089/test
+                # {"test":true}
+                #
+                # curl https://abc.com:8089/test
+                # curl: (60) SSL certificate problem: self signed certificate
+                #
+                # curl -k https://abc.com:8089/test
+                # {"test":true}
+
+                # ### testing from inside the container
+                # docker exec -it htser sh
+                #
+                # and then run from inside the container
+                # /usr/src/app # curl https://0.0.0.0:8089/test
+                # curl: (60) SSL certificate problem: self-signed certificate
+                # More details here: https://curl.se/docs/sslcerts.html
+                # curl failed to verify the legitimacy of the server and therefore could not
+                # establish a secure connection to it. To learn more about this situation and
+                # how to fix it, please visit the webpage mentioned above.
+                #
+                # /usr/src/app # curl -k https://0.0.0.0:8089/test
+                # {"test":true}
+                #
+                # /usr/src/app # curl https://abc.com:8089/test
+                # curl: (60) SSL certificate problem: self-signed certificate
+                # More details here: https://curl.se/docs/sslcerts.html
+                # curl failed to verify the legitimacy of the server and therefore could not
+                # establish a secure connection to it. To learn more about this situation and
+                # how to fix it, please visit the webpage mentioned above.
+                #
+                # /usr/src/app # curl -k https://abc.com:8089/test
+                # {"test":true}
               </script>
             </div>
           </div>
