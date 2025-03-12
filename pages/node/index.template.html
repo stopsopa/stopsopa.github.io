@@ -2996,6 +2996,7 @@
                 # then in separate terminal run
                 docker run --init -it --rm --name htser -e "HOST=abc.com" -e "PORT=8089" -p "8089:8089" httpsserver
 
+
                 # ### testing from host machine
                 # add to /etc/hosts on host machine
                 # 0.0.0.0         abc.com
@@ -3023,6 +3024,7 @@
                 # curl -k https://abc.com:8089/test
                 # {"test":true}
 
+                
                 # ### testing from inside the container
                 # docker exec -it htser sh
                 #
