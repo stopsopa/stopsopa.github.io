@@ -92,6 +92,8 @@ function _kill {
   kill "${PID4}" 1> /dev/null 2> /dev/null || :
 
   kill "${PID5}" 1> /dev/null 2> /dev/null || :
+
+  kill "${PID6}" 1> /dev/null 2> /dev/null || :
 }
 
 _kill;
@@ -109,14 +111,17 @@ rm -rf "${LOGFILE}"
 node node_modules/.bin/webpack --watch --name "webpack_${FLAG}" 1> >(/bin/bash bash/dlogger.sh " " webpack >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e webpack >> "${LOGFILE}") &
 PID1="${!}"  
 
-/bin/bash esbuild.sh watch >> "${LOGFILE}" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
+/bin/bash esbuild.sh watch 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID3="${!}"
 
-/bin/bash .github/injector.sh watch >> "${LOGFILE}" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
+/bin/bash .github/injector.sh watch 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID4="${!}"
 
-/bin/bash pages/bash/xx/xx.inverse.postprocessor.sh watch >> "${LOGFILE}" 1> >(/bin/bash bash/dlogger.sh " " invpost >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e invpost >> "${LOGFILE}") &
+/bin/bash pages/bash/xx/xx.inverse.postprocessor.sh watch 1> >(/bin/bash bash/dlogger.sh " " invpost >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e invpost >> "${LOGFILE}") &
 PID5="${!}"
+
+node node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node_modules/**/*' -c '/bin/bash template.sh' 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
+PID6="${!}"
 
 # WAITINGMESSAGE="hidden modules" # this text shows at the end of webpack build
 WAITINGMESSAGE="compiled successfully in" # this text shows at the end of webpack build
@@ -164,6 +169,8 @@ set -e
 /bin/bash bash/proc/pid-is-running.sh ${PID4} "injector process" 
 
 /bin/bash bash/proc/pid-is-running.sh ${PID5} "pages/bash/xx/xx.inverse.postprocessor.sh" 
+
+/bin/bash bash/proc/pid-is-running.sh ${PID5} "template process" 
 
 # tail -n 10000 -f "${LOGFILE}"
 
