@@ -1723,6 +1723,7 @@
 
           # npm interesting documentation pages:
             # lifecycle hooks g(npm Life Cycle Scripts)  https://docs.npmjs.com/cli/v11/using-npm/scripts#life-cycle-scripts
+              # to inspect use --foreground-scripts https://docs.npmjs.com/cli/v11/using-npm/scripts#life-cycle-scripts:~:text=background.%20To%20see-,the,-output%2C%20run%20with
 
           (rm -rf __npm_test && mkdir __npm_test && cd __npm_test && echo "{}" > package.json && npm install "express" && cat package.json)
           # or simpler
