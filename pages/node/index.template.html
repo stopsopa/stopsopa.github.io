@@ -3069,6 +3069,11 @@
           HOST="0.0.0.0" PORT="8088" node node_modules/.bin/tsx <<-HEREDOC
           console.log('test', process.env.PORT)
           HEREDOC
+
+          # extract value from json:
+          TEST1="$(node --input-type module   -e 'import { readFileSync } from "fs"; console.log(JSON.parse(readFileSync("../app/config.json", "utf-8")).HOSTNAME)')"
+          TEST1="$(node --input-type commonjs -e 'const { readFileSync } = require("fs"); console.log(JSON.parse(readFileSync("../app/config.json", "utf-8")).HOSTNAME)')"
+
         </script>
 
         <h2>state server</h2>
