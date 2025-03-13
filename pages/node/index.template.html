@@ -1721,6 +1721,9 @@
         <h2>npm</h2>
         <script type="editor" data-lang="sh">
 
+          # npm interesting documentation pages:
+            # lifecycle hooks g(npm Life Cycle Scripts)  https://docs.npmjs.com/cli/v11/using-npm/scripts#life-cycle-scripts
+
           (rm -rf __npm_test && mkdir __npm_test && cd __npm_test && echo "{}" > package.json && npm install "express" && cat package.json)
           # or simpler
           npm dist-tag ls express
