@@ -47,7 +47,7 @@ https
       ` 
 
     make sure to add to /etc/hosts
-    0.0.0.0         abc.com
+    0.0.0.0         ${host}
 
     🌎  Server is running ` +
         `https://${host}:${port}/test
