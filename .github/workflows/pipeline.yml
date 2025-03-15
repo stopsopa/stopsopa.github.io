@@ -100,7 +100,7 @@ jobs:
 
       - uses: actions/cache/save@v4.2.2 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action
         # error: Failed to save: Failed to CreateCacheEntry: Received non-retryable error: Failed request: (409) Conflict: cache entry with the same key, version, and scope already exists
-          # more: https://github.com/actions/cache/issues/1541
+        # more: https://github.com/actions/cache/issues/1541
         with:
           path: node_modules
           key: ${{ steps.restore-cache.outputs.cache-primary-key }}
@@ -125,7 +125,6 @@ jobs:
       #   run: |
       #     TYPE=int /bin/bash test.sh
 
-      
       - name: E2E TESTS
         # if: "!contains(github.event.head_commit.message, '[q]')"
         if: |
@@ -143,7 +142,6 @@ jobs:
       - name: Clean before artifact
         run: /bin/bash .github/clean_before_artifact.sh
 
-        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3.0.1
         with:
