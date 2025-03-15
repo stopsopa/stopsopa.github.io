@@ -120,7 +120,7 @@ https
 // < Keep-Alive: timeout=5
 // Keep-Alive: timeout=5
 
-// or 
+// or
 
 // openssl s_client -connect localhost:8087 -servername localhost
 // openssl s_client -connect 0.0.0.0:8087 -servername 0.0.0.0
@@ -191,7 +191,7 @@ https
 //     Protocol  : TLSv1.3
 //     Cipher    : TLS_AES_256_GCM_SHA384
 //     Session-ID: 76C3--------------------------------------------------------AB36
-//     Session-ID-ctx: 
+//     Session-ID-ctx:
 //     Resumption PSK: B38-----------------------------------------------------------------------------------------30C6
 //     PSK identity: None
 //     PSK identity hint: None
@@ -227,7 +227,7 @@ https
 //     Protocol  : TLSv1.3
 //     Cipher    : TLS_AES_256_GCM_SHA384
 //     Session-ID: F7C8--------------------------------------------------------967A
-//     Session-ID-ctx: 
+//     Session-ID-ctx:
 //     Resumption PSK: 132C-----------------------------------------------------------------------------------------038
 //     PSK identity hint: None
 //     SRP username: None
@@ -256,7 +256,6 @@ https
 //     Max Early Data: 0
 // ---
 // read R BLOCK
-
 
 // after that when you open in the browser:
 // https://0.0.0.0:8087/test
