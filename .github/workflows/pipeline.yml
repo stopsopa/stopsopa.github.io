@@ -78,7 +78,7 @@ jobs:
           ls -la
           ls -la node_modules || true
 
-      - uses: actions/cache/restore@v4.2.0 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
+      - uses: actions/cache/restore@v4.2.2 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
         id: restore-cache
         with:
           path: node_modules
