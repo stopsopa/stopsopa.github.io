@@ -996,7 +996,7 @@
           function wgetshim {
             eval _SOURCE="${1}"
             eval _TARGET="${2}"
-            echo -n "\n\nwget downloading "${_SOURCE}" to "${_TARGET}\n\n"
+            echo -n "\n\nwget downloading \"${_SOURCE}\" to \"${_TARGET}\"\n\n"
             if [ "${WGETSTATUS}" = "0" ]; then
               wget --no-cache -O "${_TARGET}" "${_SOURCE}"
             else
