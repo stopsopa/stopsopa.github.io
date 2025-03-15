@@ -95,6 +95,9 @@ jobs:
       - name: Yarn install
         run: yarn install --production=false
 
+      - name: cache key
+        run: echo ">${{ steps.restore-cache.outputs.cache-primary-key }}<"
+
       - uses: actions/cache/save@v4.2.2 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action
         # error: Failed to save: Failed to CreateCacheEntry: Received non-retryable error: Failed request: (409) Conflict: cache entry with the same key, version, and scope already exists
           # more: https://github.com/actions/cache/issues/1541
