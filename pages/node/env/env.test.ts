@@ -1,13 +1,6 @@
 import { expect, test } from "vitest";
 
-import {
-  mockEnv,
-  get,
-  getDefault,
-  getIntegerThrowInvalid,
-  getIntegerDefault,
-  getThrow,
-} from "./env.ts";
+import { mockEnv, get, getDefault, getIntegerThrowInvalid, getIntegerDefault, getIntegerThrow, getThrow } from "./env.ts";
 
 test("get", async () => {
   mockEnv({
@@ -70,4 +63,32 @@ test("getIntegerDefault", async () => {
   expect(getIntegerDefault("GHI", 789)).toEqual(789);
 
   expect(getIntegerDefault("ZZZ", 789)).toEqual(789);
+});
+
+test.only("getIntegerThrow", async () => {
+  mockEnv({
+    ABC: "123",
+    ZZZ: "not a number",
+  });
+
+  expect(getIntegerThrow("ABC")).toEqual(123);
+
+  const data: Record<string, string> = {};
+
+  try {
+    getIntegerThrow("GHI");
+  } catch (e) {
+    data.throw = e.message;
+  }
+
+  try {
+    getIntegerThrow("ZZZ");
+  } catch (e) {
+    data.throw2 = e.message;
+  }
+
+  expect(data).toEqual({
+    throw: "env.ts: env var GHI is not defined or is not a number",
+    throw2: "env.ts: env var ZZZ is not a number. value >not a number<, doesn't match regex >/^-?\\d+$/<",
+  });
 });

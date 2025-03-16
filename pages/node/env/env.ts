@@ -34,10 +34,7 @@ export function get(key: string): string | undefined {
   return env[key];
 }
 
-export function getDefault(
-  key: string,
-  defaultValue: string | number
-): string | number {
+export function getDefault(key: string, defaultValue: string | number): string | number {
   if (has(key)) {
     return env[key] as string;
   }
@@ -67,9 +64,7 @@ export function getIntegerThrowInvalid(key: string): number | undefined {
 
     if (typeof value === "string") {
       if (!intTest.test(value)) {
-        throw th(
-          `env var ${key} is not a number. value >${value}<, doesn't match regex >${intTest}<`
-        );
+        throw th(`env var ${key} is not a number. value >${value}<, doesn't match regex >${intTest}<`);
       }
 
       const int = parseInt(value, 10);
@@ -77,9 +72,7 @@ export function getIntegerThrowInvalid(key: string): number | undefined {
       const strint = String(int);
 
       if (!intTest.test(strint)) {
-        throw th(
-          `parseInt(${value}, 10) returned ${strint}, doesn't match regex >${intTest}<`
-        );
+        throw th(`parseInt(${value}, 10) returned ${strint}, doesn't match regex >${intTest}<`);
       }
 
       return int;
@@ -104,4 +97,18 @@ export function getIntegerDefault(key: string, defaultValue: number): number {
   } catch (e) {
     return defaultValue;
   }
+}
+
+/**
+ * get env var cast to integer and throw if anything during casting to int fail or env var is not defined
+ * @throws {Error} If the environment variable is not defined or is not a number.
+ */
+export function getIntegerThrow(key: string): number {
+  const val = getIntegerThrowInvalid(key);
+
+  if (typeof val === "number") {
+    return val;
+  }
+
+  throw th(`env var ${key} is not defined or is not a number`);
 }
