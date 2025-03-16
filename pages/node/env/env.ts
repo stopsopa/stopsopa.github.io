@@ -1,3 +1,4 @@
+// https://github.com/stopsopa/nlab/blob/master/src/isNode.js
 import isNode from "detect-node";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
