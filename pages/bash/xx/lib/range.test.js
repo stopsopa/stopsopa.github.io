@@ -3,7 +3,7 @@ import range from "./range";
 import log from "inspc";
 
 describe("range", () => {
-  it("not processed", (done) => {
+  it("not processed", () => {
     const input = `abc`;
 
     const output = range({
@@ -16,10 +16,9 @@ describe("range", () => {
     const expected = "abc";
 
     expect(output).toEqual(expected);
-
-    done();
   });
-  it("processed 2", (done) => {
+
+  it("processed 2", () => {
     const input = `abc`;
 
     const output = range({
@@ -32,10 +31,9 @@ describe("range", () => {
     const expected = "7 abc";
 
     expect(output).toEqual(expected);
-
-    done();
   });
-  it("processed 3", (done) => {
+
+  it("processed 3", () => {
     const input = `abc`;
 
     const output = range({
@@ -48,10 +46,9 @@ describe("range", () => {
     const expected = "0 abc";
 
     expect(output).toEqual(expected);
-
-    done();
   });
-  it("processed 4", (done) => {
+
+  it("processed 4", () => {
     const input = `abc`;
 
     const output = range({
@@ -66,7 +63,5 @@ describe("range", () => {
     // console.log(JSON.stringify(output, null, 4));
 
     expect(output).toEqual(expected);
-
-    done();
   });
 });

@@ -43,39 +43,31 @@ it("lodash.isObject - new function () {}                                    -> t
   expect(isObjectLo(new (function () {})())).toBeTruthy();
 });
 
-it("lodash.isObject - using with object that have implemented toString()    -> true  -> true", (done) => {
-  (async function () {
-    var k = function () {};
-    k.prototype.toString = function () {
-      return "test...";
-    };
+it("lodash.isObject - using with object that have implemented toString()    -> true  -> true", async () => {
+  var k = function () {};
+  k.prototype.toString = function () {
+    return "test...";
+  };
 
-    var t = new k();
+  var t = new k();
 
-    expect(t + "").toEqual("test...");
+  expect(t + "").toEqual("test...");
 
-    expect(isObjectCu(t)).toBeTruthy();
-    expect(isObjectLo(t)).toBeTruthy();
-
-    done();
-  })();
+  expect(isObjectCu(t)).toBeTruthy();
+  expect(isObjectLo(t)).toBeTruthy();
 });
 
-it("lodash.isObject - extended object                                       -> true  -> true", (done) => {
-  (async function () {
-    var a = function () {};
+it("lodash.isObject - extended object                                       -> true  -> true", async () => {
+  var a = function () {};
 
-    var b = function () {};
+  var b = function () {};
 
-    b.prototype = Object.create(a.prototype);
+  b.prototype = Object.create(a.prototype);
 
-    b.prototype.constructor = b;
+  b.prototype.constructor = b;
 
-    expect(isObjectCu(new b())).toBeTruthy();
-    expect(isObjectLo(new b())).toBeTruthy();
-
-    done();
-  })();
+  expect(isObjectCu(new b())).toBeTruthy();
+  expect(isObjectLo(new b())).toBeTruthy();
 });
 
 it("lodash.isObject - []                                                    -> false -> true", () => {
