@@ -149,6 +149,14 @@ jobs:
         with:
           path: .
 
+
+      - name: run local server (NODE_ENV=production)
+        run: |
+          set -e
+          set -o pipefail
+          ps aux
+
+
   # Deployment job
   github-pages:
     # NOTE: In case of error:
