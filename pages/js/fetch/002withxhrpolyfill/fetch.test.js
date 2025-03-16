@@ -55,9 +55,7 @@ describe("fetch.js", () => {
     it("path not a string", async () => {
       mockFetch((...args) => [...args]);
 
-      await expect(fetchData(67)).rejects.toThrow(
-        "fetch.ts fetchData error: path parameter should be a string"
-      );
+      await expect(fetchData(67)).rejects.toThrow("fetch.ts fetchData error: path parameter should be a string");
     });
   });
 

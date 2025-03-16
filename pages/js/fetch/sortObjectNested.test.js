@@ -17,7 +17,6 @@ describe("sortObjectNested", () => {
     };
 
     expect(result).toEqual(expected);
-
   });
 
   it("simple object - sorting needed", () => {

@@ -57,9 +57,7 @@ describe("fetch.js", () => {
     it("path not a string", async () => {
       mockFetch((...args) => [...args]);
 
-      await expect(fetchData(67)).rejects.toThrow(
-        "fetch.ts fetchData error: path parameter should be a string"
-      );
+      await expect(fetchData(67)).rejects.toThrow("fetch.ts fetchData error: path parameter should be a string");
     });
   });
 
@@ -286,10 +284,12 @@ describe("fetch.js", () => {
     });
 
     it("cacheSec - wrong value", async () => {
-      await expect(fetchData("/test", {
-        env: "dev",
-        cacheSec: -1,
-      })).rejects.toThrow(
+      await expect(
+        fetchData("/test", {
+          env: "dev",
+          cacheSec: -1,
+        })
+      ).rejects.toThrow(
         "fetch.ts fetchData error: cacheSec value >-1< seems not right, should be number of seconds for how long promise should be held in the cache, path parem: >/test<"
       );
     });
