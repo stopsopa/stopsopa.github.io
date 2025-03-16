@@ -65,7 +65,7 @@ test("getIntegerDefault", async () => {
   expect(getIntegerDefault("ZZZ", 789)).toEqual(789);
 });
 
-test.only("getIntegerThrow", async () => {
+test("getIntegerThrow", async () => {
   mockEnv({
     ABC: "123",
     ZZZ: "not a number",
