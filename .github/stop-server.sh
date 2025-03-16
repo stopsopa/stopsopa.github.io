@@ -121,4 +121,7 @@ tryToKill "ps aux | grep "${FLAG}" | grep -v grep"
 echo "attempt to kill dev mode (grep STOPSOPA_IO_FLAG):"
 tryToKill "ps aux | grep STOPSOPA_IO_FLAG | grep -v grep"
 
+echo "attempt to kill ci_server.sh (grep "${FLAG}"):"
+tryToKill "ps aux | grep "3_${FLAG}" | grep -v grep"
+
 

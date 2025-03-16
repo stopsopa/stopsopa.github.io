@@ -149,8 +149,7 @@ jobs:
         with:
           path: .
 
-
-      - name: run local server (NODE_ENV=production)
+      - name: ps aux
         run: |
           set -e
           set -o pipefail
