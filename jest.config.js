@@ -1,3 +1,14 @@
+/**
+ * Legacy config, shoulnd't be used anymore
+ * Legacy config, shoulnd't be used anymore
+ * Legacy config, shoulnd't be used anymore
+ * Legacy config, shoulnd't be used anymore
+ * Legacy config, shoulnd't be used anymore
+ * Legacy config, shoulnd't be used anymore
+ * Legacy config, shoulnd't be used anymore
+ * Legacy config, shoulnd't be used anymore
+ */
+
 // export default {
 //   verbose: true,
 //   bail: true,

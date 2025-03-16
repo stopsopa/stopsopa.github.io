@@ -31,17 +31,15 @@ set -x
 # --verbose false \
 # --detectOpenHandles \
 
-TEST="$(cat <<END
-node \
---experimental-vm-modules \
-node_modules/.bin/jest \
-$@ \
---runInBand \
---verbose
-END
-)";
-
-
+# TEST="$(cat <<END
+# node \
+# --experimental-vm-modules \
+# node_modules/.bin/jest \
+# $@ \
+# --runInBand \
+# --verbose
+# END
+# )";
 
 TEST="$(cat <<END
 node node_modules/.bin/vitest run --coverage $@
