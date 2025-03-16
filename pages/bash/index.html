@@ -996,7 +996,7 @@
           function wgetshim {
             eval _SOURCE="${1}"
             eval _TARGET="${2}"
-            echo -n "\n\nwget downloading "${_SOURCE}" to "${_TARGET}\n\n"
+            echo -n "\n\nwget downloading \"${_SOURCE}\" to \"${_TARGET}\"\n\n"
             if [ "${WGETSTATUS}" = "0" ]; then
               wget --no-cache -O "${_TARGET}" "${_SOURCE}"
             else
@@ -1006,6 +1006,7 @@
           mkdir ~/xx
           wgetshim "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.node.bundled.gitignored.cjs" ~/xx/xx.node.bundled.gitignored.cjs
           wgetshim "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.sh" ~/xx/xx.sh
+          wgetshim "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx-template.cjs" ~/xx/xx-template.cjs
           if \
             [ "$(printf "sha384-$(cat ~/xx/xx.node.bundled.gitignored.cjs | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.node.bundled.gitignored.cjs" ] \
           || \

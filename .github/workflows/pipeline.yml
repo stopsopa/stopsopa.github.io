@@ -78,7 +78,7 @@ jobs:
           ls -la
           ls -la node_modules || true
 
-      - uses: actions/cache/restore@v4.2.0 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
+      - uses: actions/cache/restore@v4.2.2 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
         id: restore-cache
         with:
           path: node_modules
@@ -95,7 +95,14 @@ jobs:
       - name: Yarn install
         run: yarn install --production=false
 
-      - uses: actions/cache/save@v4.2.0 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action
+      - name: cache key
+        run: echo ">${{ steps.restore-cache.outputs.cache-primary-key }}<"
+
+      - uses: actions/cache/save@v4.2.2 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action
+        # error: Failed to save: Failed to CreateCacheEntry: Received non-retryable error: Failed request: (409) Conflict: cache entry with the same key, version, and scope already exists
+        # more: https://github.com/actions/cache/issues/1541
+
+        # on the other hand error "Cache save failed." means cache already exist for this key
         with:
           path: node_modules
           key: ${{ steps.restore-cache.outputs.cache-primary-key }}
@@ -120,7 +127,6 @@ jobs:
       #   run: |
       #     TYPE=int /bin/bash test.sh
 
-      
       - name: E2E TESTS
         # if: "!contains(github.event.head_commit.message, '[q]')"
         if: |
