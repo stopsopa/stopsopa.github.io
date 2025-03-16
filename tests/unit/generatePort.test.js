@@ -2,8 +2,6 @@ import generatePort from "../../pages/portsregistry/generatePort.js";
 
 import json from "./generatePort.json";
 
-import log from "inspc";
-
 import ports from "../../pages/portsregistry/lists/ports-generated.json";
 
 describe("generatePort", () => {
