@@ -4227,102 +4227,33 @@
           // stop: 0
           // generalerror 2:  Error: What's happened?! 2
         </script>
+
         <h2>env.ts</h2>
-        <script type="editor" data-lang="js">
+        <div data-vanilla-tabs>
+          <div data-buttons>
+              <span>env.ts</span>
+              <span>env.test.ts</span>
+          </div>
+          <div data-tabs>
+              <div>
+                <script type="editor" data-lang="ts">
 
-          /**
-           * look into preprocessor.js to learn how to expose individual env vars to the browser context
-           *
-           * After following it's instructions use this script in the browser and also in the node.js context
-           *
-           * But in the browser you will only be able to access env vars that were exposed by preprocessor.js
-           * In the node.js context you will be able to access all env vars
-           *
-           * Works together with:
-           *  - plugins/preprocessorMiddleware.js
-           *  - lib/PreprocessedLoader.tsx
-           */
+                  // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=pages/node/env/env.ts
 
-          import isNode from 'detect-node';
+                  <%inject env/env.ts %>
+                </script>                  
+              </div>
+              <div>
+                <script type="editor" data-lang="ts">
 
-          /* eslint-disable @typescript-eslint/no-explicit-any */
-          declare const window: any;
+                  // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=pages/node/env/env.test.ts
 
-          const th = (msg: string) => new Error(`env.ts: ${msg}`);
-
-          let env: Record<string, string>;
-          if (isNode) {
-            env = process.env as Record<string, string>;
-          } else if (typeof window !== 'undefined') {
-            env = window.process.env as Record<string, string>;
-          } else {
-            throw th('neither node.js nor browser context detected');
-          }
-
-          const commonMsg = 'usually it means node preprocessor.js was not triggered';
-
-          /**
-           * For testing purposes, it is possible to substitute the object process.env with a custom object.
-           */
-          export function mockEnv(map: Record<string, string>) {
-            env = map;
-          }
-
-          export function has(key: string): boolean {
-            if (typeof env[key] === 'undefined') {
-              return false;
-            }
-
-            return true;
-          }
-
-          export function get(key: string): string | undefined {
-            return env[key];
-          }
-
-          /**
-           * @throws {Error} If the environment variable is not defined.
-           */
-          export function getThrow(key: string, msg?: string) {
-            if (has(key)) {
-              return env[key] as string;
-            }
-
-            throw th(msg || `env var ${key} is not defined`);
-          }
-
-          export function getDefault(key: string, defaultValue: string | number): string | number {
-            if (has(key)) {
-              return env[key] as string;
-            }
-
-            return defaultValue;
-          }
-
-          const regNum = /^\d+$/;
-          export function getInteger(key: string): number {
-            const value = getThrow(key);
-
-            if (!regNum.test(value)) {
-              throw th(`env var ${key} is not a number. value >${value}<, doesn't match regex >${regNum}<`);
-            }
-
-            return parseInt(value, 10);
-          }
-
-          /**
-           * Some default validation on load
-           */
-          if (typeof env === 'undefined') {
-            throw th(`process.env is undefined, ${commonMsg}`);
-          }
-
-          if (!has('CI')) {
-            // check some mandatory env vars
-            // but not do that in the GitHub Actions CI because this is the only environment it will not be defined
-            getThrow('ENV_NAME', `ENV_NAME is not defined, ${commonMsg} or ENV_NAME is not defined`);
-          }
-        </script>
+                  <%inject env/env.test.ts %>
+                </script>
+              </div>
+          </div>
+      </div>
+                
         <h2>Stress test - artillery</h2>
         <a href="https://www.npmjs.com/package/autocannon">alternatively there can be used "autocannon"</a>
         <script type="editor" data-lang="js">
