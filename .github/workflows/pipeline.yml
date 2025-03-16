@@ -120,9 +120,14 @@ jobs:
       # - name: test cli (using routes endpoint)
       #   run: |
       #     /bin/bash console.sh routes
-      # - name: UNIT TESTS
-      #   run: |
-      #     TYPE=unit /bin/bash test.sh
+      - name: UNIT TESTS
+        # if: "!contains(github.event.head_commit.message, '[q]')"
+        if: |
+          !(startsWith(github.event.head_commit.message, 'q ') || 
+          endsWith(github.event.head_commit.message, ' q') || 
+          contains(github.event.head_commit.message, ' q '))
+        run: |
+          /bin/bash test.sh
       # - name: INT TESTS
       #   run: |
       #     TYPE=int /bin/bash test.sh
