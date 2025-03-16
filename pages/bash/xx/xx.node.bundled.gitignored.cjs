@@ -96,7 +96,7 @@ var require_global_this = __commonJS({
     module2.exports = // eslint-disable-next-line es/no-global-this -- safe
     check(typeof globalThis == "object" && globalThis) || check(typeof window == "object" && window) || // eslint-disable-next-line no-restricted-globals -- safe
     check(typeof self == "object" && self) || check(typeof global == "object" && global) || check(typeof exports2 == "object" && exports2) || // eslint-disable-next-line no-new-func -- fallback
-    /* @__PURE__ */ function() {
+    function() {
       return this;
     }() || Function("return this")();
   }
@@ -936,7 +936,7 @@ var require_classof = __commonJS({
     var wellKnownSymbol = require_well_known_symbol();
     var TO_STRING_TAG = wellKnownSymbol("toStringTag");
     var $Object = Object;
-    var CORRECT_ARGUMENTS = classofRaw(/* @__PURE__ */ function() {
+    var CORRECT_ARGUMENTS = classofRaw(function() {
       return arguments;
     }()) === "Arguments";
     var tryGet = function(it, key) {
