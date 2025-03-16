@@ -2,209 +2,120 @@ import { fetchData, fetchJson, mockFetch } from "./fetch.js";
 
 describe("fetch.js", () => {
   describe("fetchData", () => {
-    it("passing env", (done) => {
+    it("passing env", async () => {
       mockFetch((...args) => [...args]);
 
-      (async function () {
-        try {
-          const data = await fetchData("/testurl", {
-            env: "dev",
-          });
+      const data = await fetchData("/testurl", {
+        env: "dev",
+      });
 
-          expect(data).toEqual(["/testurl", { headers: { "X-Target-Env": "dev" } }]);
-
-          return done();
-        } catch (e) {
-          return done({
-            general_test_error: e,
-          });
-        }
-      })();
+      expect(data).toEqual(["/testurl", { headers: { "X-Target-Env": "dev" } }]);
     });
 
-    it("wrong env", (done) => {
+    it("wrong env", async () => {
       mockFetch((...args) => [...args]);
 
-      (async function () {
-        try {
-          await fetchData("/testurl", {
-            env: "wrong",
-          });
-
-          return done(`That shouldn't happen - wrong env`);
-        } catch (e) {
-          expect(String(e)).toEqual(
-            "Error: fetch.ts fetchData error: env value >wrong< is not on the list of allowed values >dev,test,prod<, path parem: >/testurl<"
-          );
-
-          return done();
-        }
-      })();
+      await expect(fetchData("/testurl", { env: "wrong" })).rejects.toThrow(
+        "fetch.ts fetchData error: env value >wrong< is not on the list of allowed values >dev,test,prod<, path parem: >/testurl<"
+      );
     });
 
-    it("env not provided", (done) => {
+    it("env not provided", async () => {
       mockFetch((...args) => [...args]);
 
-      (async function () {
-        try {
-          await fetchData("/testurl");
-
-          return done(`That shouldn't happen - env not provided`);
-        } catch (e) {
-          expect(String(e)).toEqual(
-            "Error: fetch.ts fetchData error: env parameter not provided, should be one of >dev,test,prod<, path parem: >/testurl<"
-          );
-
-          return done();
-        }
-      })();
+      await expect(fetchData("/testurl")).rejects.toThrow(
+        "fetch.ts fetchData error: env parameter not provided, should be one of >dev,test,prod<, path parem: >/testurl<"
+      );
     });
 
-    it("go for polyfil", (done) => {
+    it("go for polyfil", async () => {
       mockFetch((...args) => [...args]);
 
       process.env.NEXT_PUBLIC_AJAX_FETCH = true;
 
-      (async function () {
-        try {
-          const data = await fetchData("/testurl", {
-            env: "dev",
-          });
+      const data = await fetchData("/testurl", {
+        env: "dev",
+      });
 
-          expect(data).toEqual(["/testurl", { headers: { "X-Target-Env": "dev" } }]);
-
-          return done();
-        } catch (e) {
-          return done({
-            general_test_error: e,
-          });
-        }
-      })();
+      expect(data).toEqual(["/testurl", { headers: { "X-Target-Env": "dev" } }]);
     });
 
-    it("go for native", (done) => {
+    it("go for native", async () => {
       mockFetch((...args) => [...args]);
 
       process.env.NEXT_PUBLIC_AJAX_FETCH = false;
 
-      (async function () {
-        try {
-          const data = await fetchData("/testurl", {
-            env: "dev",
-          });
+      const data = await fetchData("/testurl", {
+        env: "dev",
+      });
 
-          expect(data).toEqual(["/testurl", { headers: { "X-Target-Env": "dev" } }]);
-
-          return done();
-        } catch (e) {
-          return done({
-            general_test_error: e,
-          });
-        }
-      })();
+      expect(data).toEqual(["/testurl", { headers: { "X-Target-Env": "dev" } }]);
     });
 
-    it("path not a string", (done) => {
+    it("path not a string", async () => {
       mockFetch((...args) => [...args]);
 
-      (async function () {
-        try {
-          await fetchData(67);
-
-          return done(`That shouldn't happen - env not provided`);
-        } catch (e) {
-          expect(String(e)).toEqual("Error: fetch.ts fetchData error: path parameter should be a string");
-
-          return done();
-        }
-      })();
+      await expect(fetchData(67)).rejects.toThrow(
+        "fetch.ts fetchData error: path parameter should be a string"
+      );
     });
   });
+
   describe("fetchJson", () => {
-    it("with body", (done) => {
+    it("with body", async () => {
       mockFetch((...args) => ({ json: () => [...args] }));
 
-      (async function () {
-        try {
-          const data = await fetchJson("/testurl", {
-            env: "dev",
-            body: {
-              some: "data",
-            },
-          });
+      const data = await fetchJson("/testurl", {
+        env: "dev",
+        body: {
+          some: "data",
+        },
+      });
 
-          expect(data).toEqual([
-            "/testurl",
-            {
-              body: '{\n    "some": "data"\n}',
-              headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Accept: "application/json",
-                "X-Target-Env": "dev",
-              },
-              method: "POST",
-            },
-          ]);
-
-          return done();
-        } catch (e) {
-          return done({
-            general_test_error: e,
-          });
-        }
-      })();
+      expect(data).toEqual([
+        "/testurl",
+        {
+          body: '{\n    "some": "data"\n}',
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Accept: "application/json",
+            "X-Target-Env": "dev",
+          },
+          method: "POST",
+        },
+      ]);
     });
 
-    it("no body", (done) => {
+    it("no body", async () => {
       mockFetch((...args) => ({ json: () => [...args] }));
 
-      (async function () {
-        try {
-          const data = await fetchJson("/testurl", {
-            env: "dev",
-          });
+      const data = await fetchJson("/testurl", {
+        env: "dev",
+      });
 
-          expect(data).toEqual([
-            "/testurl",
-            {
-              headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Accept: "application/json",
-                "X-Target-Env": "dev",
-              },
-            },
-          ]);
-
-          return done();
-        } catch (e) {
-          return done({
-            general_test_error: e,
-          });
-        }
-      })();
+      expect(data).toEqual([
+        "/testurl",
+        {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Accept: "application/json",
+            "X-Target-Env": "dev",
+          },
+        },
+      ]);
     });
 
-    it("raw response", (done) => {
+    it("raw response", async () => {
       mockFetch(() => ({ json: "json function not executed" }));
 
-      (async function () {
-        try {
-          const data = await fetchJson("/testurl", {
-            env: "dev",
-            raw: true,
-          });
+      const data = await fetchJson("/testurl", {
+        env: "dev",
+        raw: true,
+      });
 
-          expect(data).toEqual({
-            json: "json function not executed",
-          });
-
-          return done();
-        } catch (e) {
-          return done({
-            general_test_error: e,
-          });
-        }
-      })();
+      expect(data).toEqual({
+        json: "json function not executed",
+      });
     });
   });
 });

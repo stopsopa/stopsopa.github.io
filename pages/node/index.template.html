@@ -2821,6 +2821,7 @@
                 });
 
                 app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
+                    index: false, // stop automatically serve index.html if present. instead list content of directory
                     // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
                     maxAge: '356 days', // in milliseconds max-age=30758400
                     setHeaders: (res, path) => {
@@ -3028,7 +3029,7 @@
                 # curl -k https://abc.com:8089/test
                 # {"test":true}
 
-                
+
                 # ### testing from inside the container
                 # docker exec -it htser sh
                 #
@@ -3077,7 +3078,6 @@
           # extract value from json:
           TEST1="$(node --input-type module   -e 'import { readFileSync } from "fs"; console.log(JSON.parse(readFileSync("../app/config.json", "utf-8")).HOSTNAME)')"
           TEST1="$(node --input-type commonjs -e 'const { readFileSync } = require("fs"); console.log(JSON.parse(readFileSync("../app/config.json", "utf-8")).HOSTNAME)')"
-
         </script>
 
         <h2>state server</h2>

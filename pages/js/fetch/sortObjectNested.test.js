@@ -1,7 +1,7 @@
 import sortObjectNested from "./sortObjectNested";
 
 describe("sortObjectNested", () => {
-  it("simple object - no need for sorting", (done) => {
+  it("simple object - no need for sorting", () => {
     const data = {
       abc: "def",
       efg: "hij",
@@ -18,10 +18,9 @@ describe("sortObjectNested", () => {
 
     expect(result).toEqual(expected);
 
-    done();
   });
 
-  it("simple object - sorting needed", (done) => {
+  it("simple object - sorting needed", () => {
     const data = {
       klm: "nop",
       abc: "def",
@@ -37,11 +36,9 @@ describe("sortObjectNested", () => {
     };
 
     expect(result).toEqual(expected);
-
-    done();
   });
 
-  it("simple object in array with other primitives around - sorting needed", (done) => {
+  it("simple object in array with other primitives around - sorting needed", () => {
     const data = [
       [{ a: "b", z: "zval", b: "c" }],
       "test",
@@ -73,11 +70,9 @@ describe("sortObjectNested", () => {
     ];
 
     expect(result).toEqual(expected);
-
-    done();
   });
 
-  it("nested", (done) => {
+  it("nested", () => {
     const data = [
       "start",
       {
@@ -111,7 +106,5 @@ describe("sortObjectNested", () => {
     ];
 
     expect(result).toEqual(expected);
-
-    done();
   });
 });

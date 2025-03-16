@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.31.2",
+    "@vitest/coverage-v8": "3.0.8",
     "crypto-js": "^4.1.1",
     "detect-node": "^2.1.0",
     "open-cli": "^7.1.0",
@@ -57,6 +58,7 @@
     "postcss-preset-env": "^8.0.1",
     "prettier": "^2.8.4",
     "sass": "^1.59.3",
+    "vitest": "^3.0.8",
     "webpack-cli": "^5.0.1"
   }
 }
