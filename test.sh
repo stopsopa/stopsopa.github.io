@@ -52,6 +52,18 @@ END
 )";
 
 
+
+TEST="$(cat <<END
+node node_modules/.bin/vitest run --coverage $@
+END
+)";
+
+TEST="$(cat <<END
+node node_modules/.bin/vitest run $@
+END
+)";
+
+
 { green "\n\n    executing tests:\n        $TEST\n\n"; } 2>&3
 
 $TEST
