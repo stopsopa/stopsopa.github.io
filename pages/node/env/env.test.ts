@@ -7,7 +7,7 @@ import {
   getIntegerThrowInvalid,
   getIntegerDefault,
   getThrow,
-} from "./env";
+} from "./env.ts";
 
 test("get", async () => {
   mockEnv({
