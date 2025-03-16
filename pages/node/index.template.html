@@ -2821,6 +2821,7 @@
                 });
 
                 app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
+                    index: false, // stop automatically serve index.html if present. instead list content of directory
                     // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
                     maxAge: '356 days', // in milliseconds max-age=30758400
                     setHeaders: (res, path) => {
