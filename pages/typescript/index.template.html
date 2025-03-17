@@ -213,6 +213,8 @@
         <script type="editor" data-lang="js">
           // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Ftypescript%2Fnode%2Ftstest.ts
 
+          PORT=8080 HOST=0.0.0.0 node node_modules/.bin/nodemon -e js,html -x "node --experimental-strip-types" server/index.ts
+
           <%inject /pages/typescript/node/tstest.ts %>
         </script>
         <h2>ts-node & tsimp & tsx && SWC</h2>
