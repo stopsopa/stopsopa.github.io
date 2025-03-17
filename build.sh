@@ -77,6 +77,7 @@ fi
 
 node pages/portsregistry/lists/ports-generator.js
 
+
 # call those together in this order vvv
 /bin/bash uglify.sh
 /bin/bash template.sh

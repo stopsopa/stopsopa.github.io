@@ -160,7 +160,6 @@ jobs:
           set -o pipefail
           ps aux
 
-
   # Deployment job
   github-pages:
     # NOTE: In case of error:

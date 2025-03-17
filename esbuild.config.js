@@ -16,7 +16,7 @@ utils.setup({
   },
 });
 
-const entryPoints = utils.entries();
+const entryPoints = await utils.entries();
 
 log("entryPoints", entryPoints);
 
@@ -32,12 +32,15 @@ let ctx = await esbuild[watch ? "context" : "build"]({
   plugins: [sassPlugin()],
   loader: {
     ".js": "jsx",
+    ".jsx": "jsx",
     ".scss": "css",
   },
   define: {
     "process.env.NODE_ENV": JSON.stringify("production"),
   },
   entryNames: "[name].bundle",
+  jsxFactory: "React.createElement",
+  jsxFragment: "React.Fragment",
 });
 
 log("exbuilddone2");
