@@ -145,6 +145,7 @@ jobs:
         run: |
           set -e
           set -o pipefail
+          set -x
           ps aux | tee ps_aux.log
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
@@ -160,6 +161,7 @@ jobs:
         run: |
           set -e
           set -o pipefail
+          set -x
           ps aux | tee ps_aux.log
           git diff ps_aux.log
 
