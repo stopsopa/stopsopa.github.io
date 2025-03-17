@@ -146,6 +146,8 @@ jobs:
           set -e
           set -o pipefail
           ps aux | tee ps_aux.log
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
           git add ps_aux.log
           git commit -m "Initial ps aux log"
 
