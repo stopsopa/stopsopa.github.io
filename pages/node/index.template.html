@@ -4234,6 +4234,7 @@
             <span>env.ts</span>
             <span>env.js + jsdoc</span>
             <span>env.test.ts</span>
+            <span>use</span>
           </div>
           <div data-tabs>
             <div>
@@ -4261,6 +4262,28 @@
                 // CommonJs test: https://github.com/stopsopa/nlab/blob/master/tests/nlab/env.jasmine.unit.js
 
                 <%inject env/env.test.ts %>
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="ts">                
+
+                import {
+                  get,
+                  has,
+                  getDefault,
+                  getThrow,
+                
+                  getIntegerThrowInvalid, // equivalent for get
+                  getIntegerDefault,
+                  getIntegerThrow,
+                } from "./env.ts";
+                
+                const host = getThrow("HOST");
+                
+                const port = getIntegerThrow("PORT");
+                
+                const delay = getIntegerDefault("DELAY", 0);
+                
               </script>
             </div>
           </div>
