@@ -141,10 +141,25 @@ jobs:
         run: |
           /bin/bash playwright.sh --target docker
 
+      - name: ps aux
+        run: |
+          set -e
+          set -o pipefail
+          ps aux | tee ps_aux.log
+          git add log.log
+          git commit -m "Initial ps aux log"
+
       - name: kill servers
         if: env.DEBUG_MODE == 'on'
         run: |
           /bin/bash .github/stop-server.sh
+
+      - name: ps aux diff
+        run: |
+          set -e
+          set -o pipefail
+          ps aux | tee ps_aux.log
+          git diff ps_aux.log
 
       - name: Clean before artifact
         run: /bin/bash .github/clean_before_artifact.sh
@@ -153,12 +168,6 @@ jobs:
         uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: .
-
-      - name: ps aux
-        run: |
-          set -e
-          set -o pipefail
-          ps aux
 
   # Deployment job
   github-pages:
