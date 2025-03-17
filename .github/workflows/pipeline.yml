@@ -146,7 +146,7 @@ jobs:
           set -e
           set -o pipefail
           ps aux | tee ps_aux.log
-          git add log.log
+          git add ps_aux.log
           git commit -m "Initial ps aux log"
 
       - name: kill servers
