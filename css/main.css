@@ -7,6 +7,10 @@ body {
   &.bg {
     background-image: url("/img/bg.png");
   }
+  &[wide].layout .inside {
+    max-width: 90%;
+    margin: auto;
+  }
 }
 hr {
   margin: 0;

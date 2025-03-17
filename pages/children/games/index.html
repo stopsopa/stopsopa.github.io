@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
   </head>
-  <body class="layout bg" toc>
+  <body class="layout bg" toc wide>
     <div class="body">
       <div class="inside">
         <h2>Heroes of Might and Magic III</h2>
@@ -130,6 +130,145 @@
         <a href="https://stranger.video/">https://stranger.video/</a>
         <br />
         <a href="https://eieio.games/">https://eieio.games/</a>
+        <h2>Chrome Dino</h2>
+        <a href="https://elgoog.im/dinosaur-game/3d/">https://elgoog.im/dinosaur-game/3d/</a>
+        <br />
+        <a href="https://nointernetgame.com/game/dino-jump">https://nointernetgame.com/game/dino-jump</a>
+        <br />
+        <label
+          >Copy this link
+          <input type="text" value="chrome://dino" onclick="this.select()" />
+          and paste it in new tab
+        </label>
+
+        <h2>Math</h2>
+        <div class="cards games">
+          <div
+            class="game"
+            data-b="https://i.imgur.com/e45etdv.png"
+            data-h="https://www.mathplayground.com/mathracer/mathracer.htm"
+          >
+            <!-- https://www.mathplayground.com/math_racer_multiplication.html -->
+            <!-- <a href="https://www.mathplayground.com/math_racer_multiplication.html">
+              <img src="https://i.imgur.com/e45etdv.png" alt="">
+            </a> -->
+          </div>
+          <h4>Math</h4>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/6nelfZc.png"
+            data-h="https://www.mathplayground.com/bridgebuilder/multiply.htm"
+          ></div>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/mBDW92P.png"
+            data-h="https://www.mathplayground.com/treasure_quest_multiplication_chart/index.html"
+          ></div>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/Emq9xgZ.png"
+            data-h="https://www.mathplayground.com/mobile/mathlinesMultiplication_fullscreen.htm"
+          ></div>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/mEF6Jsw.png"
+            data-h="https://www.mathplayground.com/math_monster/multiplication.html"
+          ></div>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/VfR3oAI.png"
+            data-h="https://www.mathplayground.com/internal/arcademics_penguin_jump.html"
+          ></div>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/lyCbaB0.png"
+            data-h="https://www.mathplayground.com/mathsnake/multiplication_snake.htm"
+          ></div>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/beaAnrW.png"
+            data-h="https://www.mathplayground.com/music_shop_multiplication/index.html"
+          ></div>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/qhaCxYy.png"
+            data-h="https://www.mathplayground.com/multiplication_blocks/index.html"
+          ></div>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/ZSmEMID.png"
+            data-h="https://www.mathplayground.com/puzzle_pics/tilesmath_0.htm"
+          ></div>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/yTqWWem.png"
+            data-h="https://www.mathplayground.com/internal/arcademics_demolition.html"
+          ></div>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/Q7jLqzG.png"
+            data-h="https://www.mathplayground.com/internal/arcademics_tractor_multiplication.html"
+          ></div>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/cxrtwyt.png"
+            data-h="https://www.mathplayground.com/internal/arcademics_canoe_penguins.html"
+          ></div>
+          <!-- <div class="game" data-b="" data-h=""></div> -->
+          <!-- <div class="game" data-b="" data-h=""></div> -->
+          <h4>Logic</h4>
+          <div
+            class="game"
+            data-b="https://i.imgur.com/yNHCGv4.png"
+            data-h="https://www.mathplayground.com/red_block_returns/red_block_1.htm"
+          ></div>
+          <!-- <div class="game" data-b="" data-h=""></div> -->
+          <!-- <div class="game" data-b="" data-h=""></div> -->
+          <!-- <div class="game" data-b="" data-h=""></div> -->
+
+          <style>
+            .layout .games {
+              display: flex;
+              flex-direction: row;
+              justify-content: flex-start;
+              flex-wrap: wrap;
+            }
+            .layout .games .game {
+              border: 1px solid gainsboro;
+              padding: 2px;
+              /* background-color: papayawhip; */
+              margin: 5px;
+            }
+            .layout .games .game img {
+              width: 100px;
+              height: 75px;
+            }
+          </style>
+          <script>
+            document.querySelectorAll("[data-b][data-h]").forEach((el) => {
+              const a = document.createElement("a");
+
+              a.setAttribute("href", el.getAttribute("data-h"));
+
+              const img = document.createElement("img");
+
+              img.setAttribute("src", el.getAttribute("data-b"));
+
+              a.appendChild(img);
+
+              el.appendChild(a);
+            });
+          </script>
+        </div>
+        <h2>Rubik's race</h2>
+        <a href="https://stopsopa.github.io/rubiksrace/src/game.html">Rubik's race</a> |
+        <a href="https://github.com/stopsopa/rubiksrace">github</a>
+        <h2>Solitaire</h2>
+        <a href="https://www.google.com/logos/fnbx/solitaire/standalone.html">g(Solitaire doodle)</a>
+        <br />
+        <a href="https://www.solitr.com/#instructions">solitaire second version</a>
+        <br />
+        <a href="https://online-solitaire.com/">third version</a>
       </div>
     </div>
     <script src="/js/github.js"></script>

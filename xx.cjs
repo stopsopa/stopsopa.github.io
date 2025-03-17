@@ -38,15 +38,6 @@ EEE
       source: true,
       confirm: false,
     },
-    [`build`]: {
-      command: `
-set -e        
-export NODE_OPTIONS=""
-/bin/bash build.sh        
-`,
-      description: `build is build`,
-      confirm: false,
-    },
     [`start`]: {
       command: `
 set -e        
@@ -63,6 +54,15 @@ export NODE_OPTIONS=""
 /bin/bash dev.sh browser        
 `,
       description: `launch esbuild and browser tab`,
+      confirm: false,
+    },
+    [`build`]: {
+      command: `
+set -e        
+export NODE_OPTIONS=""
+/bin/bash build.sh        
+`,
+      description: `build is build`,
       confirm: false,
     },
     [`test`]: {
