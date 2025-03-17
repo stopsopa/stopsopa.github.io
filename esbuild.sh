@@ -48,5 +48,5 @@ echo -n "${LIST}" > "${VARFILE}"
 if [ "${1}" = "" ]; then
     node esbuild.js "${VARFILE}"
 else
-    node esbuild.js "${VARFILE}" watch
+    node esbuild.js "${VARFILE}" --watch
 fi

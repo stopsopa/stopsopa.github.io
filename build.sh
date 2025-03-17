@@ -77,6 +77,7 @@ fi
 
 node pages/portsregistry/lists/ports-generator.js
 
+
 # call those together in this order vvv
 /bin/bash uglify.sh
 /bin/bash template.sh
@@ -84,11 +85,10 @@ node pages/portsregistry/lists/ports-generator.js
 
 node libs/preprocessor.js
 
-node node_modules/.bin/webpack
+node esbuild.config.js
 
 /bin/bash esbuild.sh
 
-# /bin/bash remove-not-changed-builds.sh # not needed since I'm building and releasing that build in github actions
 # /bin/bash pages/kubernetes/compress.sh
 
 /bin/bash bash/substitute-variables-bash.sh gitstorage-core.sh -- \

@@ -53,7 +53,7 @@ set -e
 export NODE_OPTIONS=""        
 /bin/bash dev.sh         
 `,
-      description: `launch webpack and esbuild - will NOT launch browser nor IDE`,
+      description: `launch esbuild - will NOT launch browser nor IDE`,
       confirm: false,
     },
     [`start + browser`]: {
@@ -62,7 +62,7 @@ set -e
 export NODE_OPTIONS=""       
 /bin/bash dev.sh browser        
 `,
-      description: `launch webpack and esbuild and browser tab`,
+      description: `launch esbuild and browser tab`,
       confirm: false,
     },
     [`test`]: {
@@ -155,15 +155,15 @@ node libs/preprocessor.js
       description: ``,
       confirm: false,
     },
-    [`webpack`]: {
+    [`esbuild`]: {
       command: `
 set -e    
 export NODE_OPTIONS=""     
-node node_modules/.bin/webpack   
+node esbuild.config.js
 `,
       description: `
 Finds all /**/*.entry.{js,jsx} and process them to /dist/[name].bundle.js
-see more webpack.config.js
+see more esbuild.config.js
 `,
       confirm: false,
     },
