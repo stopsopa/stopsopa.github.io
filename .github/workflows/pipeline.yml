@@ -162,7 +162,7 @@ jobs:
           set -e
           set -o pipefail
           set -x
-          ps aux | tee ps_aux.log
+          ps aux > ps_aux.log
           git diff ps_aux.log
 
       - name: Clean before artifact
