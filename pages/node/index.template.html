@@ -1188,6 +1188,8 @@
 
           nodemon -e js,html server.js
           nodemon -x "node --experimental-specifier-resolution=node" -e js,html server.js
+
+          PORT=8080 HOST=0.0.0.0 node node_modules/.bin/nodemon -e js,html -x "node --experimental-strip-types" server/index.ts
         </script>
         If it's not about running again server but command everytime file changes then use chokidar, like:
         <script type="editor" data-lang="sh">
@@ -4234,6 +4236,7 @@
             <span>env.ts</span>
             <span>env.js + jsdoc</span>
             <span>env.test.ts</span>
+            <span>use</span>
           </div>
           <div data-tabs>
             <div>
@@ -4261,6 +4264,27 @@
                 // CommonJs test: https://github.com/stopsopa/nlab/blob/master/tests/nlab/env.jasmine.unit.js
 
                 <%inject env/env.test.ts %>
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="ts">
+
+                import {
+                  get,
+                  has,
+                  getDefault,
+                  getThrow,
+
+                  getIntegerThrowInvalid, // equivalent for get
+                  getIntegerDefault,
+                  getIntegerThrow,
+                } from "./env.ts";
+
+                const host = getThrow("HOST");
+
+                const port = getIntegerThrow("PORT");
+
+                const delay = getIntegerDefault("DELAY", 0);
               </script>
             </div>
           </div>

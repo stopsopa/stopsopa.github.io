@@ -712,6 +712,15 @@
               stressing cpu and monitoring
               https://youtu.be/4isEhE2rvmA?si=h4_STlO2MnJMHT_J&t=82
           </script>
+          <h2>inline</h2>
+          <script type="editor" data-lang="sh">
+
+            cat <<-EOF | bash
+            echo "Hello, world!"
+            echo "Current directory: $(pwd)"
+            ls -l
+            EOF
+          </script>
           <h2>remove/replace lines from special value to special value</h2>
 
           <script type="editor" data-lang="sh">

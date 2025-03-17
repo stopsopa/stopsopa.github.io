@@ -130,6 +130,27 @@ open "file://$(realpath "coverage/index.html")"
 `,
       confirm: false,
     },
+    [`server`]: {
+      command: `
+COMMAND="PORT=8080 HOST=0.0.0.0 node node_modules/.bin/nodemon -e js,html -x \\"node --experimental-strip-types\\" server/index.ts"  
+   
+cat <<EEE
+
+\${COMMAND}
+
+EEE
+
+read -p "\n      Press enter to run\n"
+
+# heredoc inline
+cat <<EEE | bash
+\${COMMAND}
+EEE
+
+`,
+      description: `build is build`,
+      confirm: false,
+    },
     [`template watch`]: {
       command: `
 set -e        
