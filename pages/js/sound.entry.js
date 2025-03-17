@@ -448,7 +448,7 @@ const Main = () => {
 
         const code = beepFunc(number, 200);
 
-        trigger(() => eval(code));
+        trigger(() => (0, eval)(code));
       },
       false
     );
@@ -456,7 +456,7 @@ const Main = () => {
 
   function run() {
     if (beepMode) {
-      trigger(() => eval(value));
+      trigger(() => (0, eval)(value));
     } else {
       if (playing) {
         tones.stop();
@@ -577,7 +577,7 @@ const Main = () => {
 
                   const code = beepFunc(value, 200);
 
-                  trigger(() => eval(code));
+                  trigger(() => (0, eval)(code));
 
                   setFrequency(value);
                 }}

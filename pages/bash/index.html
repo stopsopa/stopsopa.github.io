@@ -712,6 +712,15 @@
               stressing cpu and monitoring
               https://youtu.be/4isEhE2rvmA?si=h4_STlO2MnJMHT_J&t=82
           </script>
+          <h2>inline</h2>
+          <script type="editor" data-lang="sh">
+
+            cat <<-EOF | bash
+            echo "Hello, world!"
+            echo "Current directory: $(pwd)"
+            ls -l
+            EOF
+          </script>
           <h2>remove/replace lines from special value to special value</h2>
 
           <script type="editor" data-lang="sh">
@@ -1006,6 +1015,7 @@
           mkdir ~/xx
           wgetshim "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.node.bundled.gitignored.cjs" ~/xx/xx.node.bundled.gitignored.cjs
           wgetshim "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.sh" ~/xx/xx.sh
+          wgetshim "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx-template.cjs" ~/xx/xx-template.cjs
           if \
             [ "$(printf "sha384-$(cat ~/xx/xx.node.bundled.gitignored.cjs | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.node.bundled.gitignored.cjs" ] \
           || \

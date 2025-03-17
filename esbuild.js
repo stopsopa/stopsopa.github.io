@@ -18,9 +18,9 @@ if (!fs.existsSync(file)) {
   throw th(`file >${file}< doesn't exist`);
 }
 
-const w = Boolean(process.argv[3]); // watch
-
 const content = fs.readFileSync(file, "utf8").toString();
+
+log(`>${content}<`);
 
 const entryPoints = content
   .split("\n")
@@ -39,6 +39,8 @@ let renameFiles = entryPoints.map((t) => {
 });
 
 log("renameFiles", renameFiles);
+
+const watch = process.argv.includes("--watch");
 
 function watchFiles(watch) {
   log("watchFiles");
@@ -62,7 +64,7 @@ function watchFiles(watch) {
   });
 }
 
-let ctx = await esbuild[w ? "context" : "build"]({
+let ctx = await esbuild[watch ? "context" : "build"]({
   entryPoints,
   bundle: true,
   outdir: ".",
@@ -79,12 +81,14 @@ let ctx = await esbuild[w ? "context" : "build"]({
   },
 });
 
-if (w) {
-  log(`watch mode: ${w}`, ctx);
+log("exbuilddone1");
+
+if (watch) {
+  log(`watch mode: ${watch}`, ctx);
   ctx.watch(); //https://esbuild.github.io/api/#serve-proxy
 
   setTimeout(() => watchFiles(true), 1000);
 } else {
-  log(`no watch mode: ${w}`, ctx);
+  log(`no watch mode: ${watch}`, ctx);
   watchFiles(false);
 }

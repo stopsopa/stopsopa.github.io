@@ -1188,6 +1188,8 @@
 
           nodemon -e js,html server.js
           nodemon -x "node --experimental-specifier-resolution=node" -e js,html server.js
+
+          PORT=8080 HOST=0.0.0.0 node node_modules/.bin/nodemon -e js,html -x "node --experimental-strip-types" server/index.ts
         </script>
         If it's not about running again server but command everytime file changes then use chokidar, like:
         <script type="editor" data-lang="sh">
@@ -2821,6 +2823,7 @@
                 });
 
                 app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
+                    index: false, // stop automatically serve index.html if present. instead list content of directory
                     // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
                     maxAge: '356 days', // in milliseconds max-age=30758400
                     setHeaders: (res, path) => {
@@ -4226,102 +4229,67 @@
           // stop: 0
           // generalerror 2:  Error: What's happened?! 2
         </script>
+
         <h2>env.ts</h2>
-        <script type="editor" data-lang="js">
+        <div data-vanilla-tabs>
+          <div data-buttons>
+            <span>env.ts</span>
+            <span>env.js + jsdoc</span>
+            <span>env.test.ts</span>
+            <span>use</span>
+          </div>
+          <div data-tabs>
+            <div>
+              <script type="editor" data-lang="ts">
 
-          /**
-           * look into preprocessor.js to learn how to expose individual env vars to the browser context
-           *
-           * After following it's instructions use this script in the browser and also in the node.js context
-           *
-           * But in the browser you will only be able to access env vars that were exposed by preprocessor.js
-           * In the node.js context you will be able to access all env vars
-           *
-           * Works together with:
-           *  - plugins/preprocessorMiddleware.js
-           *  - lib/PreprocessedLoader.tsx
-           */
+                // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=pages/node/env/env.ts  ts
+                // CommonJs with jsdoc: https://github.com/stopsopa/nlab/blob/master/src/env.js
 
-          import isNode from 'detect-node';
+                <%inject env/env.ts %>
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="js">
 
-          /* eslint-disable @typescript-eslint/no-explicit-any */
-          declare const window: any;
+                // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=pages/node/env/env.js  js + jsdoc
+                // CommonJs with jsdoc: https://github.com/stopsopa/nlab/blob/master/src/env.js
 
-          const th = (msg: string) => new Error(`env.ts: ${msg}`);
+                <%inject env/env.js %>
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="ts">
 
-          let env: Record<string, string>;
-          if (isNode) {
-            env = process.env as Record<string, string>;
-          } else if (typeof window !== 'undefined') {
-            env = window.process.env as Record<string, string>;
-          } else {
-            throw th('neither node.js nor browser context detected');
-          }
+                // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=pages/node/env/env.test.ts
+                // CommonJs test: https://github.com/stopsopa/nlab/blob/master/tests/nlab/env.jasmine.unit.js
 
-          const commonMsg = 'usually it means node preprocessor.js was not triggered';
+                <%inject env/env.test.ts %>
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="ts">
 
-          /**
-           * For testing purposes, it is possible to substitute the object process.env with a custom object.
-           */
-          export function mockEnv(map: Record<string, string>) {
-            env = map;
-          }
+                import {
+                  get,
+                  has,
+                  getDefault,
+                  getThrow,
 
-          export function has(key: string): boolean {
-            if (typeof env[key] === 'undefined') {
-              return false;
-            }
+                  getIntegerThrowInvalid, // equivalent for get
+                  getIntegerDefault,
+                  getIntegerThrow,
+                } from "./env.ts";
 
-            return true;
-          }
+                const host = getThrow("HOST");
 
-          export function get(key: string): string | undefined {
-            return env[key];
-          }
+                const port = getIntegerThrow("PORT");
 
-          /**
-           * @throws {Error} If the environment variable is not defined.
-           */
-          export function getThrow(key: string, msg?: string) {
-            if (has(key)) {
-              return env[key] as string;
-            }
+                const delay = getIntegerDefault("DELAY", 0);
+              </script>
+            </div>
+          </div>
+        </div>
 
-            throw th(msg || `env var ${key} is not defined`);
-          }
-
-          export function getDefault(key: string, defaultValue: string | number): string | number {
-            if (has(key)) {
-              return env[key] as string;
-            }
-
-            return defaultValue;
-          }
-
-          const regNum = /^\d+$/;
-          export function getInteger(key: string): number {
-            const value = getThrow(key);
-
-            if (!regNum.test(value)) {
-              throw th(`env var ${key} is not a number. value >${value}<, doesn't match regex >${regNum}<`);
-            }
-
-            return parseInt(value, 10);
-          }
-
-          /**
-           * Some default validation on load
-           */
-          if (typeof env === 'undefined') {
-            throw th(`process.env is undefined, ${commonMsg}`);
-          }
-
-          if (!has('CI')) {
-            // check some mandatory env vars
-            // but not do that in the GitHub Actions CI because this is the only environment it will not be defined
-            getThrow('ENV_NAME', `ENV_NAME is not defined, ${commonMsg} or ENV_NAME is not defined`);
-          }
-        </script>
         <h2>Stress test - artillery</h2>
         <a href="https://www.npmjs.com/package/autocannon">alternatively there can be used "autocannon"</a>
         <script type="editor" data-lang="js">

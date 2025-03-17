@@ -38,22 +38,13 @@ EEE
       source: true,
       confirm: false,
     },
-    [`build`]: {
-      command: `
-set -e        
-export NODE_OPTIONS=""
-/bin/bash build.sh        
-`,
-      description: `build is build`,
-      confirm: false,
-    },
     [`start`]: {
       command: `
 set -e        
 export NODE_OPTIONS=""        
 /bin/bash dev.sh         
 `,
-      description: `launch webpack and esbuild - will NOT launch browser nor IDE`,
+      description: `launch esbuild - will NOT launch browser nor IDE`,
       confirm: false,
     },
     [`start + browser`]: {
@@ -62,7 +53,16 @@ set -e
 export NODE_OPTIONS=""       
 /bin/bash dev.sh browser        
 `,
-      description: `launch webpack and esbuild and browser tab`,
+      description: `launch esbuild and browser tab`,
+      confirm: false,
+    },
+    [`build`]: {
+      command: `
+set -e        
+export NODE_OPTIONS=""
+/bin/bash build.sh        
+`,
+      description: `build is build`,
       confirm: false,
     },
     [`test`]: {
@@ -130,6 +130,27 @@ open "file://$(realpath "coverage/index.html")"
 `,
       confirm: false,
     },
+    [`server`]: {
+      command: `
+COMMAND="PORT=8080 HOST=0.0.0.0 node node_modules/.bin/nodemon -e js,html -x \\"node --experimental-strip-types\\" server/index.ts"  
+   
+cat <<EEE
+
+\${COMMAND}
+
+EEE
+
+read -p "\n      Press enter to run\n"
+
+# heredoc inline
+cat <<EEE | bash
+\${COMMAND}
+EEE
+
+`,
+      description: `build is build`,
+      confirm: false,
+    },
     [`template watch`]: {
       command: `
 set -e        
@@ -155,15 +176,15 @@ node libs/preprocessor.js
       description: ``,
       confirm: false,
     },
-    [`webpack`]: {
+    [`esbuild`]: {
       command: `
 set -e    
 export NODE_OPTIONS=""     
-node node_modules/.bin/webpack   
+node esbuild.config.js
 `,
       description: `
 Finds all /**/*.entry.{js,jsx} and process them to /dist/[name].bundle.js
-see more webpack.config.js
+see more esbuild.config.js
 `,
       confirm: false,
     },

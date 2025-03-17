@@ -2,12 +2,10 @@ import generatePort from "../../pages/portsregistry/generatePort.js";
 
 import json from "./generatePort.json";
 
-import log from "inspc";
-
 import ports from "../../pages/portsregistry/lists/ports-generated.json";
 
 describe("generatePort", () => {
-  it("list", (done) => {
+  it("list", async () => {
     const generate = generatePort();
 
     generate.addList([6, 7, 8]);
@@ -17,11 +15,9 @@ describe("generatePort", () => {
     // console.log(JSON.stringify(generate.getList(), null, 4))
 
     expect(generate.getList()).toEqual([0, 6, 7, 8, 9, 10, 11]);
-
-    done();
   });
 
-  it("json", (done) => {
+  it("json", async () => {
     const generate = generatePort();
 
     generate.addList([6, 7, 8]);
@@ -32,11 +28,9 @@ describe("generatePort", () => {
     // console.log(JSON.stringify(generate.getList(), null, 4));
 
     expect(generate.getList()).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
-
-    done();
   });
 
-  it("count", (done) => {
+  it("count", async () => {
     const generate = generatePort();
 
     generate.addList(structuredClone(ports));
@@ -44,11 +38,9 @@ describe("generatePort", () => {
     // console.log(JSON.stringify(generate.getList().length, null, 4));
 
     expect(generate.getList().length).toEqual(10216);
-
-    done();
   });
 
-  it("generate", (done) => {
+  it("generate", async () => {
     const generate = generatePort();
 
     generate.addList(structuredClone(ports));
@@ -72,7 +64,5 @@ describe("generatePort", () => {
     // console.log(JSON.stringify(list, null, 4));
 
     expect(list).toEqual([3324, 3325, 3368, 3369, 3370, 3371, 4202, 4203]);
-
-    done();
   });
 });

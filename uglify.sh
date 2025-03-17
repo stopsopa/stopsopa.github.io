@@ -56,13 +56,13 @@ do
 
   echo "processing \"${FILE}\""
 
-  node node_modules/.bin/babel "${FILE}" -o "${TMP}"
+  # node node_modules/.bin/babel "${FILE}" -o "${TMP}"
 
   # node "${_DIR}/node_modules/.bin/uglifyjs" "${TMP}" -o "${MIN}" -m -c toplevel,sequences=false --mangle-props
   # node "${_DIR}/node_modules/.bin/esbuild" "${TMP}" --bundle --minify --outfile="${MIN}" --target=es6
 
   # after incorporating esbuild-minify-templates https://github.com/maxmilton/esbuild-minify-templates
-  node uglify.mjs --input "${TMP}" --output "${MIN}"
+  node uglify.mjs --input "${FILE}" --output "${MIN}"
 
   rm -rf "${TMP}"
 

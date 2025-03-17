@@ -4,7 +4,7 @@
  * @homepage https://github.com/stopsopa/roderic
  */
 
-import glob from "glob";
+import { glob } from "node:fs/promises";
 
 import path from "path";
 
@@ -16,12 +16,17 @@ function json(data) {
   return JSON.stringify(data, null, "    ").replace(/\\\\/g, "\\");
 }
 
-function findentries(root, mask) {
+async function findentries(root, mask) {
   if (typeof mask === "undefined") {
     mask = "/**/*.entry.{js,jsx}";
   }
 
-  const list = glob.sync(root + mask);
+  const iterator = await glob(root + mask);
+
+  const list = [];
+  for await (const entry of iterator) {
+    list.push(entry);
+  }
 
   let tmp,
     entries = {};
@@ -52,7 +57,7 @@ var utils = {
     //
     // return process.env.NODE_ENV;
   },
-  entries: function (mask, suppressNotFoundError) {
+  entries: async function (mask, suppressNotFoundError) {
     var t,
       i,
       tmp = {},
@@ -66,8 +71,8 @@ var utils = {
       root = [root];
     }
 
-    root.forEach(function (r) {
-      t = findentries(r, mask);
+    for (const r of root) {
+      t = await findentries(r, mask);
 
       for (i in t) {
         if (tmp[i]) {
@@ -76,7 +81,7 @@ var utils = {
 
         tmp[i] = t[i];
       }
-    });
+    }
 
     if (!suppressNotFoundError && !Object.keys(tmp).length) {
       throw th("Not found *.entry.js files in directories : \n" + json(root, null, "    "));

@@ -17,8 +17,6 @@ restricttonode(__filename);
 
 const root = path.resolve(__dirname);
 
-const webpack = root;
-
 const vardir = path.resolve(root, "var");
 
 // relative path to public server directory
@@ -45,7 +43,6 @@ export default (mode) => ({
   name: env("PROJECT_NAME"),
   root,
   app,
-  webpack,
   node_modules,
   vardir,
   output,

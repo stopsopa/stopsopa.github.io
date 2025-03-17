@@ -78,7 +78,7 @@ jobs:
           ls -la
           ls -la node_modules || true
 
-      - uses: actions/cache/restore@v4.2.0 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
+      - uses: actions/cache/restore@v4.2.2 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
         id: restore-cache
         with:
           path: node_modules
@@ -95,7 +95,14 @@ jobs:
       - name: Yarn install
         run: yarn install --production=false
 
-      - uses: actions/cache/save@v4.2.0 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action
+      - name: cache key
+        run: echo ">${{ steps.restore-cache.outputs.cache-primary-key }}<"
+
+      - uses: actions/cache/save@v4.2.2 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action
+        # error: Failed to save: Failed to CreateCacheEntry: Received non-retryable error: Failed request: (409) Conflict: cache entry with the same key, version, and scope already exists
+        # more: https://github.com/actions/cache/issues/1541
+
+        # on the other hand error "Cache save failed." means cache already exist for this key
         with:
           path: node_modules
           key: ${{ steps.restore-cache.outputs.cache-primary-key }}
@@ -113,9 +120,14 @@ jobs:
       # - name: test cli (using routes endpoint)
       #   run: |
       #     /bin/bash console.sh routes
-      # - name: UNIT TESTS
-      #   run: |
-      #     TYPE=unit /bin/bash test.sh
+      - name: UNIT TESTS
+        # if: "!contains(github.event.head_commit.message, '[q]')"
+        if: |
+          !(startsWith(github.event.head_commit.message, 'q ') || 
+          endsWith(github.event.head_commit.message, ' q') || 
+          contains(github.event.head_commit.message, ' q '))
+        run: |
+          /bin/bash test.sh
       # - name: INT TESTS
       #   run: |
       #     TYPE=int /bin/bash test.sh
@@ -129,10 +141,29 @@ jobs:
         run: |
           /bin/bash playwright.sh --target docker
 
+      - name: ps aux
+        run: |
+          set -e
+          set -o pipefail
+          set -x
+          ps aux | tee ps_aux.log
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+          git add ps_aux.log
+          git commit -m "Initial ps aux log"
+
       - name: kill servers
         if: env.DEBUG_MODE == 'on'
         run: |
           /bin/bash .github/stop-server.sh
+
+      - name: ps aux diff
+        run: |
+          set -e
+          set -o pipefail
+          set -x
+          ps aux > ps_aux.log
+          git diff ps_aux.log
 
       - name: Clean before artifact
         run: /bin/bash .github/clean_before_artifact.sh
