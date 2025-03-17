@@ -106,9 +106,7 @@ LOGFILE="${_DIR}/var/log.log"
 
 rm -rf "${LOGFILE}"
 
-# /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "1_${FLAG}" \
-# node node_modules/.bin/webpack --watch 2>&1 >> "${LOGFILE}" &
-node node_modules/.bin/webpack --watch --name "webpack_${FLAG}" 1> >(/bin/bash bash/dlogger.sh " " webpack >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e webpack >> "${LOGFILE}") &
+node esbuild.config.js --watch --name "esbuild_${FLAG}" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID1="${!}"  
 
 /bin/bash esbuild.sh watch 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
@@ -123,13 +121,12 @@ PID5="${!}"
 node node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node_modules/**/*' -c '/bin/bash template.sh' 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
 PID6="${!}"
 
-# WAITINGMESSAGE="hidden modules" # this text shows at the end of webpack build
-WAITINGMESSAGE="compiled successfully in" # this text shows at the end of webpack build
+WAITINGMESSAGE="exbuilddone2" # this text shows at the end of esbuild build
 
 cat <<EEE
 
 
-  Now let's wait for webpack to spit '${WAITINGMESSAGE}' message
+  Now let's wait for esbuild to spit '${WAITINGMESSAGE}' message
   if it takes too long go and inspect 
     ${LOGFILE}
 
@@ -140,8 +137,7 @@ while [ "$(cat "${LOGFILE}" | grep "${WAITINGMESSAGE}")" = "" ]
 do
   sleep 1;
 
-  # echo "================================ waiting for webpack to finish build ================================" >> "${LOGFILE}"
-  echo "================================ waiting for webpack to finish build ================================" 1> >(/bin/bash bash/dlogger.sh " " "server " >> "${LOGFILE}") 
+  echo "================================ waiting for esbuild to finish build ================================" 1> >(/bin/bash bash/dlogger.sh " " "server " >> "${LOGFILE}") 
 done
 
 # /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "2_${FLAG}" \
@@ -160,11 +156,11 @@ fi
 
 set -e
 
-/bin/bash bash/proc/pid-is-running.sh ${PID1} "webpack process" 
+/bin/bash bash/proc/pid-is-running.sh ${PID1} "esbuild2 process" 
 
 /bin/bash bash/proc/pid-is-running.sh ${PID2} "server process" 
 
-/bin/bash bash/proc/pid-is-running.sh ${PID3} "esbuild process" 
+/bin/bash bash/proc/pid-is-running.sh ${PID3} "esbuild1 process" 
 
 /bin/bash bash/proc/pid-is-running.sh ${PID4} "injector process" 
 

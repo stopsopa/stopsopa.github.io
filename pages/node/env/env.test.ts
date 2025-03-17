@@ -1,6 +1,14 @@
 import { expect, test } from "vitest";
 
-import { mockEnv, get, getDefault, getIntegerThrowInvalid, getIntegerDefault, getIntegerThrow, getThrow } from "./env.ts";
+import {
+  mockEnv,
+  get,
+  getDefault,
+  getIntegerThrowInvalid,
+  getIntegerDefault,
+  getIntegerThrow,
+  getThrow,
+} from "./env.ts";
 
 test("get", async () => {
   mockEnv({
