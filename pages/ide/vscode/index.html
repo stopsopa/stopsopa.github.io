@@ -12,6 +12,111 @@
   <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
+        <h2>settings.json defaults</h2>
+        <a href="https://code.visualstudio.com/docs/getstarted/settings#_default-settings"
+          >https://code.visualstudio.com/docs/getstarted/settings#_default-settings</a
+        >
+        <h2>settings.json - Workspace</h2>
+        <script type="editor" data-lang="sh">
+
+          # to create:
+          # hit ⌘+,     then look for search.exclude in Workspace settings
+          # or
+
+          mkdir -p .vscode
+          cat <<EEE > .vscode/settings.json
+          {
+              "search.exclude": {
+                  "**/node_modules": false
+              }
+          }       
+          EEE
+
+          {
+            "debug.javascript.autoAttachFilter": "always", // https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_auto-attach
+            "workbench.editor.showTabs": "multiple",
+            "workbench.editor.wrapTabs": true // multiple rows of tab s
+            "search.exclude": {
+              "**/bower_components": false,
+              ".git/": true,
+              ".vscode/": true,
+              "build/": true,
+              "designer/": true,
+              "docker/": true,
+              "docs/": true,
+              "migrations/": true,
+              "var/": true
+            },
+            "files.watcherExclude": {
+              ".git/": true,
+              ".vscode/": true,
+              "build/": true,
+              "designer/": true,
+              "docker/": true,
+              "docs/": true,
+              "migrations/": true,
+              "var/": true
+            }
+          }
+        </script>
+        <h2>settings.json - User</h2>
+        <a href="https://github.com/stopsopa/gitstorage/tree/master/git%40github.com%3Astopsopa__gitstorage.git/vscode"
+          >https://github.com/stopsopa/gitstorage/tree/master/git%40github.com%3Astopsopa__gitstorage.git/vscode</a
+        >
+        <script type="editor" data-lang="sh">
+          {
+              "workbench.tree.renderIndentGuides": "always",
+              "workbench.editor.revealIfOpen": true, // https://github.com/microsoft/vscode/issues/238517
+              "workbench.tree.indent": 20,
+              "editor.accessibilitySupport": "off",
+              "explorer.confirmDelete": false,
+              "files.autoSave": "afterDelay",
+              "git.autofetch": true,
+              "prettier.printWidth": 120,
+              "[javascript]": {
+                  "editor.defaultFormatter": "esbenp.prettier-vscode"
+              },
+              "files.exclude": {
+                  "**/.git": false
+              },
+              "workbench.colorTheme": "Default Light+",
+              "explorer.confirmDragAndDrop": false,
+              "redhat.telemetry.enabled": false,
+              "debug.javascript.autoAttachFilter": "always",
+              "cmake.configureOnOpen": true,
+              "git.confirmSync": false,
+              "settingsSync.ignoredExtensions": [
+
+              ],
+              "workbench.colorCustomizations": {
+                "editor.selectionBackground": "#13484c", // https://code.visualstudio.com/api/references/theme-color#editor-colors
+                "editor.selectionHighlightBackground": "#13484c",
+                "editor.inactiveSelectionBackground": "#13484c",
+              }
+
+
+              // prettier svg ---- vvv
+              "prettier.documentSelectors": ["**/*.svg"],
+              "[svg]": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode"
+              },
+
+              // add also to .../current_project/prettier.config.cjs
+              module.exports = {
+                printWidth: 120,
+                overrides: [
+                  {
+                    files: '*.svg',
+                    options: {
+                      parser: 'html',
+                    },
+                  },
+                ],
+              };
+              // prettier svg ---- ^^^
+          }
+        </script>
+
         <h2>Interesting</h2>
         <script type="editor" data-lang="sh">
 
@@ -163,97 +268,6 @@
           NODE_OPTIONS="" node te.js
           EEE
               /bin/bash te.sh
-        </script>
-        <h2>settings.json defaults</h2>
-        <a href="https://code.visualstudio.com/docs/getstarted/settings#_default-settings"
-          >https://code.visualstudio.com/docs/getstarted/settings#_default-settings</a
-        >
-        <h2>settings.json - Workspace</h2>
-        <script type="editor" data-lang="sh">
-
-          {
-            "debug.javascript.autoAttachFilter": "always", // https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_auto-attach
-            "workbench.editor.showTabs": "multiple",
-            "workbench.editor.wrapTabs": true // multiple rows of tabs
-            "search.exclude": {
-              "**/bower_components": false,
-              ".git/": true,
-              ".vscode/": true,
-              "build/": true,
-              "designer/": true,
-              "docker/": true,
-              "docs/": true,
-              "migrations/": true,
-              "var/": true
-            },
-            "files.watcherExclude": {
-              ".git/": true,
-              ".vscode/": true,
-              "build/": true,
-              "designer/": true,
-              "docker/": true,
-              "docs/": true,
-              "migrations/": true,
-              "var/": true
-            }
-          }
-        </script>
-        <h2>settings.json - User</h2>
-        <a href="https://github.com/stopsopa/gitstorage/tree/master/git%40github.com%3Astopsopa__gitstorage.git/vscode"
-          >https://github.com/stopsopa/gitstorage/tree/master/git%40github.com%3Astopsopa__gitstorage.git/vscode</a
-        >
-        <script type="editor" data-lang="sh">
-          {
-              "workbench.tree.renderIndentGuides": "always",
-              "workbench.editor.revealIfOpen": true, // https://github.com/microsoft/vscode/issues/238517
-              "workbench.tree.indent": 20,
-              "editor.accessibilitySupport": "off",
-              "explorer.confirmDelete": false,
-              "files.autoSave": "afterDelay",
-              "git.autofetch": true,
-              "prettier.printWidth": 120,
-              "[javascript]": {
-                  "editor.defaultFormatter": "esbenp.prettier-vscode"
-              },
-              "files.exclude": {
-                  "**/.git": false
-              },
-              "workbench.colorTheme": "Default Light+",
-              "explorer.confirmDragAndDrop": false,
-              "redhat.telemetry.enabled": false,
-              "debug.javascript.autoAttachFilter": "always",
-              "cmake.configureOnOpen": true,
-              "git.confirmSync": false,
-              "settingsSync.ignoredExtensions": [
-
-              ],
-              "workbench.colorCustomizations": {
-                "editor.selectionBackground": "#13484c", // https://code.visualstudio.com/api/references/theme-color#editor-colors
-                "editor.selectionHighlightBackground": "#13484c",
-                "editor.inactiveSelectionBackground": "#13484c",
-              }
-
-
-              // prettier svg ---- vvv
-              "prettier.documentSelectors": ["**/*.svg"],
-              "[svg]": {
-                "editor.defaultFormatter": "esbenp.prettier-vscode"
-              },
-
-              // add also to .../current_project/prettier.config.cjs
-              module.exports = {
-                printWidth: 120,
-                overrides: [
-                  {
-                    files: '*.svg',
-                    options: {
-                      parser: 'html',
-                    },
-                  },
-                ],
-              };
-              // prettier svg ---- ^^^
-          }
         </script>
         <h2>Create custom snippets</h2>
         <a href="https://code.visualstudio.com/docs/editor/userdefinedsnippets#_create-your-own-snippets"
