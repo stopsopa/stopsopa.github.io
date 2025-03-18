@@ -1105,6 +1105,13 @@
         <h2>diff</h2>
         <script type="editor" data-lang="sh">
 
+          // diff for directory and it's content ---------------- vvv
+          diff -qr [dir] [dir]
+            // that will print which files are different without details
+          diff -r [dir] [dir]
+            // that will print also detailed differences
+          // diff for directory and it's content ---------------- ^^^
+
           diff <(curl https://foo.com) <(curl https://bar.com)
 
           # or
