@@ -225,6 +225,131 @@
           ...
         </script>
 
+        <h2>basics</h2>
+        <script type="editor" data-lang="python">
+
+          # sourcetree seems to add to all commands
+            --no-optional-locks
+
+          # status
+            git status
+
+          # add
+            git add -f -- features.txt
+              # -f here is --force - will add even if gitignored
+              # -- is useful when file is named '-myfile.txt', without -- it would be considered to be an option
+
+          # commit
+            git commit -m "commit message"
+            git commit -F- <<EOF
+            Your commit title
+
+            Your detailed commit message explaining what changes were made.
+            EOF
+
+          # push
+            git push -v --tags --set-upstream origin refs/heads/master:refs/heads/master
+            git push -v --tags --set-upstream origin refs/heads/xxx:refs/heads/xxx
+            git push -v --tags --set-upstream origin master
+              # but it might push a tag named 'master' instead of the branch
+
+            git push -v --tags origin refs/heads/master:refs/heads/master
+
+          # branch
+            # see local branches
+              git branch
+            # see remote branches
+              git branch -r
+              git ls-remote --heads origin
+            # see all branches
+              git branch -a
+
+            # switch branch
+              git branch newbranch
+            git checkout newbranch
+
+            # might be useful too always run that after every git checkout
+              git submodule update --init
+
+            # checkout locally the remote branch
+              git checkout -b masddd --track origin/masddd
+
+          # delete branch
+            # locally
+              git branch -d masddd
+                -d, --delete
+                  Delete a branch. The branch must be fully merged in its upstream branch,
+                  or in HEAD if no upstream was set with --track or --set-upstream-to.
+
+            # delete only remote branch
+              git push origin --delete feature-xyz
+              git push origin --delete refs/heads/feature-xyz
+
+            # delete branch remotely
+              # first remove locally
+                git branch -D masddd
+                  -D  Shortcut for --delete --force.
+
+              # delete a remote-tracking branch (not an actual remote branch)
+                git branch -D -r origin/masddd
+
+              git push origin :masddd
+
+          # git fetch
+            git fetch --prune origin
+              # --prune - removes any stale remote-tracking branches that no longer exist on the remote
+
+            git fetch --tags --prune origin
+              # fetch and store all tags locally
+
+          # git reset (BE CAREFUL)
+            git reset -q --soft 4797645f2931295d9671a66bf9c1def1b169122c
+            git reset -q --hard 4797645f2931295d9671a66bf9c1def1b169122c
+
+          # clear
+            git clean -df
+            git checkout .
+
+          # cherry pick
+            git cherry-pick -n 4ecb4ebb613c96da7d4bb0a1d78e94fed19f87e4
+
+          # merge
+            git merge --no-commit simplebranch
+
+          # tags
+            #list remote tags
+              git ls-remote --tags origin
+            # list local tags
+              git tag
+            # remove tag locally
+              git tag -d 1.0.0
+            # remove tag remotely
+              git push origin :refs/tags/1.0.0
+            # create tag
+              git tag -a 1.0.0 -m "version 1.0.0"
+            # push tag
+              git push origin 1.0.0
+
+          # git log
+
+            git log --graph --abbrev-commit --decorate --all \
+            --format=format:"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) \
+            - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)"
+
+            # more complite in comparison to sourcetree
+            git log --graph --abbrev-commit --date-order --decorate --all \
+            --format=format:"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) \
+            - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n \
+            %C(white)%s%C(reset)" \
+            --branches --remotes \
+            HEAD $(git diff --quiet HEAD || echo $(git write-tree | xargs git commit-tree -p HEAD -m "$(echo -e '\033[7m Unstaged changes \033[0m')"))
+        </script>
+
+        <h2>lazygit</h2>
+        <script type="editor" data-lang="python">
+
+          # https://github.com/jesseduffield/lazygit?tab=readme-ov-file#homebrew
+        </script>
         <h2>Useful</h2>
         <script type="editor" data-lang="sh">
 
