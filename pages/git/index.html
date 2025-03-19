@@ -223,8 +223,9 @@
         <script type="editor" data-lang="sh">
 
           to explore:
-            https://www.youtube.com/playlist?list=PLp3qkYQbU5kexG03Z79eU7SpoWtTv7Ww3
-            
+          https://www.youtube.com/playlist?list=PLp3qkYQbU5kexG03Z79eU7SpoWtTv7Ww3
+            I have stopped at "Go beyond git stash & pop" https://i.imgur.com/pdBGdoU.png
+
         </script>
 
         <h2>basics</h2>
@@ -235,6 +236,8 @@
 
           # status
             git status
+            
+          # git reset HEAD
 
           # add
             git add -f -- features.txt
@@ -248,6 +251,10 @@
 
             Your detailed commit message explaining what changes were made.
             EOF
+
+            git commit --amend -m "new message"
+              # to change last commit message
+              # if pushed then it will require force push
 
           # push
             git push -v --tags --set-upstream origin refs/heads/master:refs/heads/master
@@ -295,6 +302,16 @@
                   # hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
                                         ^-- this one is safe, it will just restore what was before git pull --rebase 
                   # hint: Disable this message with "git config advice.mergeConflict false"
+              # interactive rebase
+                git config --global core.editor "/Users/user/Workspace/vscode/javascript/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code --wait"
+                git rebase --interactive bba257f22ebc64b36247746b1f29996115c22aaa
+                git rebase            -i bba257f22ebc64b36247746b1f29996115c22aaa
+                    # that will open editor and by default each commit will have 'pick' word before it
+                    # you can change it from 'pick' to any of these 'pick' 'reword' 'edit' 'squash' 'fixup' 'drop'
+                    # where 'edit' is most often used
+                    # 'squash' is used to merge commit with previous one      
+                    
+                # more advanced - even adding commits: https://youtu.be/42392W7SgnE?t=313
 
           # branch
             # see local branches
@@ -384,12 +401,6 @@
             %C(white)%s%C(reset)" \
             --branches --remotes \
             HEAD $(git diff --quiet HEAD || echo $(git write-tree | xargs git commit-tree -p HEAD -m "$(echo -e '\033[7m Unstaged changes \033[0m')"))
-        </script>
-
-        <h2>lazygit</h2>
-        <script type="editor" data-lang="python">
-
-          # https://github.com/jesseduffield/lazygit?tab=readme-ov-file#homebrew
         </script>
         <h2>Useful</h2>
         <script type="editor" data-lang="sh">
