@@ -259,6 +259,8 @@
               # to change last commit message
               # if pushed then it will require force push
 
+            git commit -am 'my message'
+
           # push
             git push -v --tags --set-upstream origin refs/heads/master:refs/heads/master
             git push -v --tags --set-upstream origin refs/heads/xxx:refs/heads/xxx
@@ -309,12 +311,39 @@
                 git config --global core.editor "/Users/user/Workspace/vscode/javascript/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code --wait"
                 git rebase --interactive bba257f22ebc64b36247746b1f29996115c22aaa
                 git rebase            -i bba257f22ebc64b36247746b1f29996115c22aaa
-                    # that will open editor and by default each commit will have 'pick' word before it
-                    # you can change it from 'pick' to any of these 'pick' 'reword' 'edit' 'squash' 'fixup' 'drop'
-                    # where 'edit' is most often used
-                    # 'squash' is used to merge commit with previous one      
+                    
+                    Regular message git-rebase-todo will look like something like:
+
+                      pick e499d89 Delete CNAME
+                      pick 0c39034 Better README
+                      pick f7fde4a Change the commit message but push the same commit.
+
+                      # Rebase 9fdb3bd..f7fde4a onto 9fdb3bd
+                      #
+                      # Commands:
+                      # p, pick = use commit
+                      # r, reword = use commit, but edit the commit message
+                      # e, edit = use commit, but stop for amending
+                      # s, squash = use commit, but meld into previous commit
+                      # f, fixup = like "squash", but discard this commit's log message
+                      # x, exec = run command (the rest of the line) using shell
+                      #
+                      # These lines can be re-ordered; they are executed from top to bottom.
+                      #
+                      # If you remove a line here THAT COMMIT WILL BE LOST.
+                      #
+                      # However, if you remove everything, the rebase will be aborted.
+                      #
+                      # Note that empty commits are commented out
+                        # from: https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/changing-a-commit-message
                     
                 # more advanced - even adding commits: https://youtu.be/42392W7SgnE?t=313
+                # also there is
+                    git commit --fixup fb6388
+                    git commit --squash fb6388
+                    git rebase -i --autosquash
+                    # from: https://youtu.be/ecK3EnyGD8o?t=370
+
 
           # branch
             # see local branches
@@ -393,6 +422,9 @@
 
           # git log
 
+            git log --graph --oneline --decorate 
+            git log --graph --oneline --decorate --abbrev-commit 
+
             git log --graph --abbrev-commit --decorate --all \
             --format=format:"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) \
             - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)"
@@ -404,6 +436,16 @@
             %C(white)%s%C(reset)" \
             --branches --remotes \
             HEAD $(git diff --quiet HEAD || echo $(git write-tree | xargs git commit-tree -p HEAD -m "$(echo -e '\033[7m Unstaged changes \033[0m')"))
+
+          # git stash
+              git stash & git pop
+              # or 
+              git stash save [name]
+              git stash list
+              git stash apply [index]
+
+              git stash drop
+              git stash pop
         </script>
         <h2>Useful</h2>
         <script type="editor" data-lang="sh">
