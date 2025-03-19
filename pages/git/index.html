@@ -222,7 +222,9 @@
         <h2>Learn</h2>
         <script type="editor" data-lang="sh">
 
-          ...
+          to explore:
+            https://www.youtube.com/playlist?list=PLp3qkYQbU5kexG03Z79eU7SpoWtTv7Ww3
+            
         </script>
 
         <h2>basics</h2>
@@ -254,6 +256,45 @@
               # but it might push a tag named 'master' instead of the branch
 
             git push -v --tags origin refs/heads/master:refs/heads/master
+
+          # pull
+            # regular
+              git fetch origin 
+              git pull --no-commit
+                # or
+              git pull --no-commit origin master 
+                # gives you chance to review pulled chnages before committing - if there are conflicts or not
+                # if there are changes then edit and handle conflicting files with either
+                  git add [file]
+                  # or
+                  git rm [file]
+                # after that run (won't work without add/rm)             
+                  git rebase --continue
+
+            # rebase
+              # WARNING: 
+                # git pull will behave this way by default if:   
+                  git config --global pull.rebase true
+                # to check if it is on run:  
+                  git config -l | grep rebase
+                # to turn off:  
+                  git config --global --unset pull.rebase 
+                  # or
+                  git config --global pull.rebase false
+
+              git pull --rebase 
+                # wrongly explained: https://youtu.be/xN1-2p06Urc?&t=117
+                # in case of conflict that will print:
+                  # Auto-merging additional-xxx.txt
+                  # CONFLICT (content): Merge conflict in additional-xxx.txt
+                  # error: could not apply 48fe8d8... my changes
+                  # hint: Resolve all conflicts manually, mark them as resolved with
+                  # hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+                  # hint: You can instead skip this commit: run "git rebase --skip". 
+                                        ^-- THAT IS ACTUALLY DANGEROUS BECAUSE IT REMOVES YOUR COMMIT
+                  # hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+                                        ^-- this one is safe, it will just restore what was before git pull --rebase 
+                  # hint: Disable this message with "git config advice.mergeConflict false"
 
           # branch
             # see local branches
@@ -393,9 +434,6 @@
         <h2>git config</h2>
 
         <script type="editor" data-lang="sh">
-
-
-
 
           git config --global user.email x.y@gmail.com
           git config --global user.name "Name Surname"
