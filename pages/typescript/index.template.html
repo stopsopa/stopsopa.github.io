@@ -120,7 +120,9 @@
         <h2>transpile in place</h2>
         <script type="editor" data-lang="sh">
 
-          npx tsc --skipLibCheck --esModuleInterop lib/cachePromise.ts
+          npx tsc --module ESNext --target ESNext --moduleResolution Node --skipLibCheck  lib/cachePromise.ts
+            # that will just strip ts syntax and generate lib/cachePromise.js in esm
+
           
         </script>
         <h2>Default tsconfig.json</h2>
