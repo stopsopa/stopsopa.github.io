@@ -1723,6 +1723,10 @@
         <h2>npm</h2>
         <script type="editor" data-lang="sh">
 
+          # install dev dependencies devDependencies
+          npm install --include=dev
+          npm install --omit=dev
+
           # finding latest version of library - but version which would be installed when we use
           npm install [name of library] - without specifying the version
           # this might not necessarily be the latest overall 
