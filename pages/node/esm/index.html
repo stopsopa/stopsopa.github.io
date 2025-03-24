@@ -28,6 +28,8 @@
           // All modules are parsed as if they had "use strict"
           //    from: https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/#:~:text=All%20modules%20are%20parsed%20as%20if%20they%20had%20%22use%20strict%22
 
+          &lt;script type="module" src="./path/to/file.js">&lt;/script>
+
           // import-maps: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap
           &lt;script type="importmap">
           {
@@ -65,6 +67,6 @@
         <a href="importmap-deep/index.html">importmap-deep</a>
       </div>
     </div>
-    <script src="/js/github.js"></script>
+    <script type="module" src="/js/github.js"></script>
   </body>
 </html>

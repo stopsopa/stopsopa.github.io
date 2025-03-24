@@ -19,6 +19,8 @@
           // then those will be done work interchangeably with the importmaps and modules loaded one after another
           // so what it means we are not longer bound to load importmaps before first module will be loaded
 
+          import createImportMap from "/js/createImportMap.js";
+
           const parent = document.querySelector(".inside");
 
           const load = document.querySelector("button");
@@ -102,6 +104,6 @@
         <button>loadFn after 5s</button>
       </div>
     </div>
-    <script src="/js/github.js"></script>
+    <script type="module" src="/js/github.js"></script>
   </body>
 </html>

@@ -73,7 +73,7 @@ Warning: Just specify type="typescript" and script on site will load
         </script>
       </div>
     </div>
-    <script src="/js/github.js"></script>
+    <script type="module" src="/js/github.js"></script>
   </body>
 </html>
 ```
@@ -157,7 +157,7 @@ Warning: Just specify type="typescript" and script on site will load
         </div>
       </div>
     </div>
-    <script src="/js/github.js"></script>
+    <script type="module" src="/js/github.js"></script>
   </body>
 </html>
 ```
