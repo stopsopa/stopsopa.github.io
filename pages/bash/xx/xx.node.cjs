@@ -8,7 +8,7 @@ const path = require("path");
 
 const fs = require("fs");
 
-import "core-js/actual/structured-clone";
+// import "core-js/actual/structured-clone";
 
 import select, { Separator } from "@inquirer/select";
 

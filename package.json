@@ -13,7 +13,6 @@
     "chokidar-cli": "^3.0.0",
     "classnames": "^2.3.2",
     "colors": "^1.4.0",
-    "core-js": "^3.32.2",
     "cross-fetch": "^4.0.0",
     "dotenv": "^16.0.3",
     "dotenv-up": "^1.0.32",
