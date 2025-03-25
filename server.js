@@ -118,8 +118,8 @@ server.listen(process.env.NODE_API_PORT, () => {
   log(`
   
  🌎  Server is running 
-        https://${host}:${process.env.NODE_API_PORT}
-        https://${process.env.LOCAL_HOSTS}:${process.env.NODE_API_PORT}/index.html
+        ${process?.env?.NODE_API_PROTOCOL}://${host}:${process.env.NODE_API_PORT}
+        ${process?.env?.NODE_API_PROTOCOL}://${process.env.LOCAL_HOSTS}:${process.env.NODE_API_PORT}/index.html
 
  \x1b[41mNOTICE: \x1b[33mmake sure to add ${process.env.LOCAL_HOSTS} to /etc/hosts
 
