@@ -228,7 +228,6 @@
 
             (cd .. && tar -zcvf gittest_interac.tar.gz gittest)
             cd ../ && rm -rf gittest && tar -zxvf gittest_interac.tar.gz && cd gittest
-
         </script>
 
         <h2>basics</h2>
@@ -239,7 +238,7 @@
 
           # status
             git status
-            
+
           # git reset HEAD
 
           # add
@@ -271,30 +270,30 @@
 
           # pull
             # regular
-              git fetch origin 
+              git fetch origin
               git pull --no-commit
                 # or
-              git pull --no-commit origin master 
+              git pull --no-commit origin master
                 # gives you chance to review pulled chnages before committing - if there are conflicts or not
                 # if there are changes then edit and handle conflicting files with either
                   git add [file]
                   # or
                   git rm [file]
-                # after that run (won't work without add/rm)             
+                # after that run (won't work without add/rm)
                   git rebase --continue
 
             # rebase
-              # WARNING: 
-                # git pull will behave this way by default if:   
+              # WARNING:
+                # git pull will behave this way by default if:
                   git config --global pull.rebase true
-                # to check if it is on run:  
+                # to check if it is on run:
                   git config -l | grep rebase
-                # to turn off:  
-                  git config --global --unset pull.rebase 
+                # to turn off:
+                  git config --global --unset pull.rebase
                   # or
                   git config --global pull.rebase false
 
-              git pull --rebase 
+              git pull --rebase
                 # wrongly explained: https://youtu.be/xN1-2p06Urc?&t=117
                 # in case of conflict that will print:
                   # Auto-merging additional-xxx.txt
@@ -302,16 +301,16 @@
                   # error: could not apply 48fe8d8... my changes
                   # hint: Resolve all conflicts manually, mark them as resolved with
                   # hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
-                  # hint: You can instead skip this commit: run "git rebase --skip". 
+                  # hint: You can instead skip this commit: run "git rebase --skip".
                                         ^-- THAT IS ACTUALLY DANGEROUS BECAUSE IT REMOVES YOUR COMMIT
                   # hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
-                                        ^-- this one is safe, it will just restore what was before git pull --rebase 
+                                        ^-- this one is safe, it will just restore what was before git pull --rebase
                   # hint: Disable this message with "git config advice.mergeConflict false"
               # interactive rebase
                 git config --global core.editor "/Users/user/Workspace/vscode/javascript/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code --wait"
                 git rebase --interactive bba257f22ebc64b36247746b1f29996115c22aaa
                 git rebase            -i bba257f22ebc64b36247746b1f29996115c22aaa
-                    
+
                     Regular message git-rebase-todo will look like something like:
 
                       pick e499d89 Delete CNAME
@@ -336,7 +335,7 @@
                       #
                       # Note that empty commits are commented out
                         # from: https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/changing-a-commit-message
-                    
+
                 # more advanced - even adding commits: https://youtu.be/42392W7SgnE?t=313
                 # also there is
                     git commit --fixup fb6388
@@ -422,8 +421,8 @@
 
           # git log
 
-            git log --graph --oneline --decorate 
-            git log --graph --oneline --decorate --abbrev-commit 
+            git log --graph --oneline --decorate
+            git log --graph --oneline --decorate --abbrev-commit
 
             git log --graph --abbrev-commit --decorate --all \
             --format=format:"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) \
@@ -439,7 +438,7 @@
 
           # git stash
               git stash & git pop
-              # or 
+              # or
               git stash save [name]
               git stash list
               git stash apply [index]
@@ -563,17 +562,17 @@
 
           First version for m1: https://isapplesiliconready.com/en/app/SourceTree
             first version compiled for M1: 4.1.6
-            but 4.1.9 seems to not throw: 
+            but 4.1.9 seems to not throw:
                 'git log' failed with code 128:'error: unsupported value for gpg.format: ssh
                 fatal: bad config variable 'gpg.format' in file '/Users/szdz/.gitconfig' at line 26
 
-          Download from here: 
+          Download from here:
             https://www.sourcetreeapp.com/download-archives
 
           Setup after installation:
             Add "View remote" button to top menu: https://i.imgur.com/AvA0TLO.png
-            Go to -> 'Sourcetree' in main menu -> Settings... 
-              -> Tab "General" 
+            Go to -> 'Sourcetree' in main menu -> Settings...
+              -> Tab "General"
                 -> untick "Offer to create bookmarks for newly opened repositories"
                 -> Window restoration -> Don't restore windows on startup
               -> Tab "Git"
@@ -582,7 +581,6 @@
                 -> untick "Automatically check for updates"
               -> Tab "Advanced"
                 -> untick "Keep backups on destructive operations"
-          
         </script>
         <h2>gitflow</h2>
         <a href="https://nvie.com/posts/a-successful-git-branching-model/"

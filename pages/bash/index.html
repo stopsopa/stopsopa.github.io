@@ -1106,14 +1106,14 @@
         <script type="editor" data-lang="sh">
 
           // diff for directory and it's content ---------------- vvv
-          
+
           diff -qr --exclude=".git" --exclude="node_modules" [dir] [dir]
             // that will print which files are different without details
             // use this one to generally list different files
-          
+
           diff -r --exclude=".git" --exclude="node_modules" [dir] [dir]
             // and then remove -q to see the diffs
-          
+
           // diff for directory and it's content ---------------- ^^^
 
           diff <(curl https://foo.com) <(curl https://bar.com)

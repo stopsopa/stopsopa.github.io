@@ -93,14 +93,14 @@
             data: T;
             error: null;
           };
-          
+
           type Failure<E> = {
             data: null;
             error: E;
           };
-          
+
           type Result<T, E = Error> = Success<T> | Failure<E>;
-          
+
           // Main wrapper function
           export async function tryCatch<T, E = Error>(
             promise: Promise<T>,
@@ -115,15 +115,12 @@
           # from:
             https://youtu.be/Y6jT-IkV0VM?t=238
             https://gist.github.com/t3dotgg/a486c4ae66d32bf17c09c73609dacc5b
-          
         </script>
         <h2>transpile in place</h2>
         <script type="editor" data-lang="sh">
 
           npx tsc --module ESNext --target ESNext --moduleResolution Node --skipLibCheck  lib/cachePromise.ts
             # that will just strip ts syntax and generate lib/cachePromise.js in esm
-
-          
         </script>
         <h2>Default tsconfig.json</h2>
 
