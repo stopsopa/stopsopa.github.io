@@ -1,3 +1,5 @@
+// import env from "./preprocessed.js";
+
 import createScript from "./createScript.js";
 
 import { filterVisibleList } from "./isVisibleElement.js";
@@ -19,6 +21,8 @@ import log from "./log.js";
 import doSort from "./doSort.js";
 
 import toc from "./toc.js";
+
+window.log = log;
 
 window.manipulation = manipulation;
 
