@@ -2,7 +2,7 @@ import slug from "./slug.js";
 
 import manipulation from "./manipulation.js";
 
-import trim from './trim.js'
+import trim from "./trim.js";
 
 import isObject from "./isObject.js";
 

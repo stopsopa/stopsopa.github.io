@@ -1,11 +1,5 @@
 // import env from "./preprocessed.js";
 
-import createScript from "./createScript.js";
-
-import isObject from "./isObject.js";
-
-import trim from "./trim.js";
-
 import urlwizzard from "./urlwizzard.js";
 
 import manipulation from "./manipulation.js";
@@ -27,10 +21,6 @@ import buildHeader from "./buildHeader.js";
 import buildFooter from "./buildFooter.js";
 
 import doace from "./doace.js";
-
-import { filterVisibleList } from "./isVisibleElement.js";
-
-import { debounceOnce } from "./debounce.js";
 
 window.manipulation = manipulation;
 

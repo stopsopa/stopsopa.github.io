@@ -136,9 +136,9 @@ jobs:
       # - name: E2E TESTS
       #   # if: "!contains(github.event.head_commit.message, '[q]')"
       #   if: |
-      #     !(github.event.head_commit.message == 'q' || 
-      #       startsWith(github.event.head_commit.message, 'q ') || 
-      #       endsWith(github.event.head_commit.message, ' q') || 
+      #     !(github.event.head_commit.message == 'q' ||
+      #       startsWith(github.event.head_commit.message, 'q ') ||
+      #       endsWith(github.event.head_commit.message, ' q') ||
       #       contains(github.event.head_commit.message, ' q '))
       #   run: |
       #     /bin/bash playwright.sh --target docker
