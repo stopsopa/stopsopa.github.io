@@ -1024,7 +1024,7 @@
 
           node --env-file=.env --env-file=.development.env app.js
             # WARNING: throw if the file does not exist.
-            #    (/Users/userx/.asdf/installs/nodejs/22.14.0/bin/node: env.local: not found) with exit code 9
+            #    (/Users/userx/.asdf/installs/nodejs/23.10.0/bin/node: env.local: not found) with exit code 9
             # .development.env wins if env var defined in both files - later wins
             # https://nodejs.org/dist/latest-v22.x/docs/api/cli.html#--env-fileconfig
             # Added in: v20.6.0
@@ -2998,7 +2998,7 @@
               <script type="editor" data-lang="sh">
 
                 cat <<EOF | docker build --rm -t httpsserver -f- .
-                FROM node:22.14.0-alpine
+                FROM node:23.10.0-alpine
                 RUN apk --no-cache add curl openssl && \
                     apk update && apk upgrade
                 # RUN echo '' \>\> /etc/hosts && echo '0.0.0.0 abc.com' \>\> /etc/hosts "

@@ -42,6 +42,7 @@
     "open-cli": "^7.1.0",
     "playwright": "^1.31.2",
     "prettier": "^2.8.4",
+    "spdy": "^4.0.2",
     "vitest": "^3.0.8"
   }
 }
