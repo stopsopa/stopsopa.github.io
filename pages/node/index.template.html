@@ -176,6 +176,8 @@
         >
         <h2>Find LTS</h2>
         <a href="https://nodejs.org/en/about/previous-releases">https://nodejs.org/en/about/previous-releases</a>
+        <br />
+        <a href="https://nodejs.org/en/about/previous-releases#looking-for-the-latest-release-of-a-version-branch">https://nodejs.org/en/about/previous-releases#looking-for-the-latest-release-of-a-version-branch</a>
         <script type="editor" data-lang="sh">
 
           curl -s https://nodejs.org/dist/index.json | jq -r '.[] | select(.lts != false) | .version' | head -1
