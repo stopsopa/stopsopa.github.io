@@ -46,7 +46,7 @@ const web = path.resolve(__dirname);
 
 const app = express();
 
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
 
@@ -99,13 +99,20 @@ app.use(
   serveIndex(web, { icons: true })
 );
 
-const server = spdy.createServer(
-  {
-    key: fs.readFileSync(`./server.key`),
-    cert: fs.readFileSync(`./server.cert`),
-  },
-  app
-);
+function createServer() {
+  if (process?.env?.NODE_API_PROTOCOL === "https") {
+    return spdy.createServer(
+      {
+        key: fs.readFileSync(`./server.key`),
+        cert: fs.readFileSync(`./server.cert`),
+      },
+      app
+    );
+  }
+  return app;
+}
+
+const server = createServer();
 
 server.listen(process.env.NODE_API_PORT, () => {
   log(`
