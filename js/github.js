@@ -2,15 +2,9 @@
 
 import createScript from "./createScript.js";
 
-import { filterVisibleList } from "./isVisibleElement.js";
-
 import isObject from "./isObject.js";
 
-import { debounceOnce } from "./debounce.js";
-
 import trim from "./trim.js";
-
-// import template from "./template.js";
 
 import urlwizzard from "./urlwizzard.js";
 
@@ -22,9 +16,19 @@ import doSort from "./doSort.js";
 
 import toc from "./toc.js";
 
-window.log = log;
+import scrollToHashAndHighlight from "./scrollToHashAndHighlight.js";
+
+import buildHeader from "./buildHeader.js";
+
+import buildFooter from "./buildFooter.js";
+
+import { filterVisibleList } from "./isVisibleElement.js";
+
+import { debounceOnce } from "./debounce.js";
 
 window.manipulation = manipulation;
+
+window.log = log;
 
 (function () {
   let found;
@@ -110,280 +114,6 @@ window.sasync = {
 
   log.blue("DOMContentLoaded", "setting favicon", "[triggered in github.js]");
 })();
-
-(function () {
-  function getOffsetLeft(elem) {
-    var offsetLeft = 0;
-    do {
-      if (!isNaN(elem.offsetLeft)) {
-        offsetLeft += elem.offsetLeft;
-      }
-    } while ((elem = elem.offsetParent));
-    return offsetLeft;
-  }
-  function getOffsetTop(elem) {
-    var offsetTop = 0;
-    do {
-      if (!isNaN(elem.offsetTop)) {
-        offsetTop += elem.offsetTop;
-      }
-    } while ((elem = elem.offsetParent));
-    return offsetTop;
-  }
-  function maxWidth(list) {
-    let i = 0;
-
-    list.forEach(function (el) {
-      if (el.offsetWidth > i) {
-        i = el.offsetWidth;
-      }
-    });
-
-    return i;
-  }
-  function maxHeight(list) {
-    let i = 0;
-
-    list.forEach(function (el) {
-      if (el.offsetHeight > i) {
-        i = el.offsetHeight;
-      }
-    });
-
-    return i;
-  }
-
-  /**
-   * Highlighting in stackoverflow style
-   * 
-    .scrollToHashAndHighlight {
-      animation: highlighted-post-fade 3s;
-      animation-timing-function: ease-out;
-    }
-    @keyframes highlighted-post-fade {
-      0% {
-        background-color: hsl(43, 85%, 88%);
-      }
-      100% {
-        background-color: rgba(0, 0, 0, 0);
-      }
-    }
-   */
-  const excludedTags = ["script", "br", "hr"];
-  function excludeElement(el) {
-    const tag = el.tagName.toLowerCase();
-
-    if (excludedTags.includes(tag)) {
-      return true;
-    }
-
-    if (!el.offsetLeft || !el.offsetTop) {
-      return true;
-    }
-
-    return false;
-  }
-  function hashchange() {
-    var selector = trim(location.hash, "#");
-
-    console.log("hashchange");
-
-    try {
-      var found = document.querySelector(`[id="${selector}"]`) || document.querySelector(`#${selector}`);
-
-      log.blue(
-        "executed",
-        `window.scrollToHashAndHighlight found element [" + Boolean(found) + "] -> selector >#${selector}< >[id="${selector}"]<`,
-        found
-      );
-
-      if (found) {
-        const list = [];
-
-        let next = found;
-
-        let i = 50;
-
-        const reg = /^h\d+$/;
-
-        while (true) {
-          i -= 1;
-
-          if (
-            window.getComputedStyle(next, null).getPropertyValue("background-color") == "rgba(0, 0, 0, 0)" &&
-            !excludeElement(next)
-          ) {
-            list.push(next);
-          }
-
-          next = next.nextElementSibling;
-
-          if (!next) {
-            break;
-          }
-
-          if (i === 0) {
-            log.red("executed", "window.scrollToHashAndHighlight break by counter");
-
-            break;
-          }
-
-          const tag = next.tagName.toLowerCase();
-
-          if (next.classList.contains("cards")) {
-            break;
-          }
-
-          if (reg.test(tag) && next.hasAttribute("id")) {
-            break;
-          }
-        }
-
-        const first = list[0];
-        const last = list[list.length - 1];
-
-        log.gray("list", `window.scrollToHashAndHighlight list:`, last);
-
-        // console.log("list: ", list, "first: ", first, "last: ", last, "found: ", found);
-        /**
-         * Create div with yellow background in offsetParent (closest element with position:relative;)
-         */
-        [...document.querySelectorAll(".scrollToHashAndHighlight")].forEach((e) => {
-          e.remove();
-        });
-        const div = document.createElement("div");
-        first.offsetParent.appendChild(div);
-        const overFlowX = 15;
-        const overFlowY = 5;
-        const maxW = maxWidth(list);
-        const firstLeft = first.offsetLeft;
-        const firstTop = first.offsetTop;
-        const lastLeft = last.offsetLeft;
-        const lastTop = last.offsetTop;
-        div.style.position = "absolute";
-        div.style.zIndex = -1;
-        div.style.left = firstLeft - overFlowX + "px";
-        div.style.top = firstTop - overFlowY + "px";
-        div.style.width = lastLeft - firstLeft + maxW + 2 * overFlowX + "px";
-        div.style.height = lastTop - firstTop + last.offsetHeight + 2 * overFlowY + "px";
-        div.classList.add("scrollToHashAndHighlight");
-        window.scrollTo(0, getOffsetTop(found) - 100);
-        setTimeout(function () {
-          div.remove();
-        }, 3000);
-        // console.log({
-        //   "div.style.left": firstLeft - overFlowX,
-        //   "div.style.top": firstTop - overFlowY,
-        //   "div.style.width": lastLeft - firstLeft + maxW + 2 * overFlowX,
-        //   "div.style.height": lastTop - firstTop + last.offsetHeight + 2 * overFlowY,
-        //   list,
-        //   offsetParent: first.offsetParent,
-        // });
-
-        /**
-         * create div with yellow background always in document.body
-         */
-        // [...document.querySelectorAll(".scrollToHashAndHighlight")].forEach((e) => {
-        //   e.remove();
-        // });
-        // const div = document.createElement("div");
-        // document.body.appendChild(div);
-        // const overFlowX = 15;
-        // const overFlowY = 5;
-        // const maxW = maxWidth(list);
-        // const firstLeft = getOffsetLeft(first);
-        // const firstTop = getOffsetTop(first);
-        // const lastLeft = getOffsetLeft(last);
-        // const lastTop = getOffsetTop(last);
-        // div.style.position = "absolute";
-        // div.style.zIndex = -1;
-        // div.style.left = firstLeft - overFlowX + "px";
-        // div.style.top = firstTop - overFlowY + "px";
-        // div.style.width = lastLeft - firstLeft + maxW + 2 * overFlowX + "px";
-        // div.style.height = lastTop - firstTop + last.offsetHeight + 2 * overFlowY + "px";
-        // div.classList.add("scrollToHashAndHighlight");
-        // window.scrollTo(0, getOffsetTop(found) - 100);
-        // // setTimeout(function () {
-        // //   div.remove();
-        // // }, 3000);
-        // console.log({
-        //   "div.style.left": firstLeft - overFlowX,
-        //   "div.style.top": firstTop - overFlowY,
-        //   "div.style.width": lastLeft - firstLeft + maxW + 2 * overFlowX,
-        //   "div.style.height": lastTop - firstTop + last.offsetHeight + 2 * overFlowY,
-        //   list,
-        //   offsetParent: first.offsetParent,
-        // });
-      }
-    } catch (e) {
-      log.red("error: ", `window.scrollToHashAndHighlight catch(), selector >#${selector}< >[id="${selector}"]<`, e);
-    }
-  }
-
-  window.scrollToHashAndHighlight = function () {
-    hashchange();
-
-    window.addEventListener("hashchange", hashchange);
-  };
-})();
-
-window.buildHeader = async function () {
-  document.querySelector("body > header") ||
-    (function () {
-      var body = document.body;
-
-      log("attr in body - nohead:", body);
-
-      if (!body.hasAttribute("nohead")) {
-        var header = document.createElement("header");
-
-        var a = document.createElement("a");
-        a.setAttribute("href", "/index.html");
-
-        var img = document.createElement("img");
-        img.setAttribute("src", `${env("GITHUB_SOURCES_PREFIX")}/actions/workflows/pipeline.yml/badge.svg`);
-
-        manipulation.prepend(a, img);
-        // <a target="_blank"
-        //   rel="noopener noreferrer"
-        //   href="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/pipeline.yml/badge.svg"
-        // >
-        //   <img
-        //     src="https://github.com/stopsopa/stopsopa.github.io/actions/workflows/pipeline.yml/badge.svg"
-        //     alt="example workflow"
-        //     style="max-width: 100%;"
-        //   >
-        // </a>
-
-        manipulation.prepend(header, a);
-
-        manipulation.prepend(body, header);
-      }
-
-      log.blue("DOMContentLoaded NOHEAD", "handling nohead attr finished", "[triggered in github.js]");
-    })();
-
-  log.blue("executed NOHEAD", "handling nohead attr");
-};
-
-window.buildFooter = async function () {
-  document.querySelector("body > footer") ||
-    (function () {
-      var body = document.body;
-
-      log("attr in body - nofoot:", body);
-
-      if (!body.hasAttribute("nofoot")) {
-        var header = document.createElement("footer");
-
-        manipulation.append(body, header);
-      }
-
-      log.blue("DOMContentLoaded NOFOOT", "handling nofoot attr finished", "[triggered in github.js]");
-    })();
-
-  log.blue("executed NOFOOT", "handling nofoot attr");
-};
 
 // edit & profile ribbons
 (function () {
@@ -1183,9 +913,9 @@ body .github-profile:hover {
 
     log.blue("Promise.all loadJs loaded");
 
-    await window.buildHeader();
+    await buildHeader();
 
-    await window.buildFooter();
+    await buildFooter();
 
     // await window.sasync.loaded.mountpermalink();
 
@@ -1219,7 +949,7 @@ body .github-profile:hover {
 
     await window.doace();
 
-    await window.scrollToHashAndHighlight();
+    await scrollToHashAndHighlight();
 
     window.githubJsReady = true;
 
