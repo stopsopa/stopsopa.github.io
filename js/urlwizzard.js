@@ -6,7 +6,7 @@ import negotiatePort from "./negotiatePort.js";
 
 import log from "./log.js";
 
-import env from "./preprocessed.js";
+// import env from "./preprocessed.js";
 
 // look also to .github/urlwizzard.sh
 const schema = location.protocol.replace(/^([a-z]+).*$/, "$1");
