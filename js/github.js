@@ -107,8 +107,6 @@ window.sasync = {
   log.blue("DOMContentLoaded", "setting favicon", "[triggered in github.js]");
 })();
 
-
-
 (function () {
   function getOffsetLeft(elem) {
     var offsetLeft = 0;
