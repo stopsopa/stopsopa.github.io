@@ -4,11 +4,15 @@ import fs from "fs";
 
 import express from "express";
 
+// from: https://typeofnan.dev/how-to-use-http2-with-express/
+import spdy from "spdy";
+
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
 import serveIndex from "serve-index";
 
 import { fileURLToPath } from "url";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -41,6 +45,10 @@ const host = "0.0.0.0";
 const web = path.resolve(__dirname);
 
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+
+app.use(express.json());
 
 app.all("/ping", (req, res) => {
   res.end("ok");
@@ -91,12 +99,27 @@ app.use(
   serveIndex(web, { icons: true })
 );
 
-app.listen(process.env.NODE_API_PORT, host, () => {
+function createServer() {
+  if (process?.env?.NODE_API_PROTOCOL === "https") {
+    return spdy.createServer(
+      {
+        key: fs.readFileSync(`./server.key`),
+        cert: fs.readFileSync(`./server.cert`),
+      },
+      app
+    );
+  }
+  return app;
+}
+
+const server = createServer();
+
+server.listen(process.env.NODE_API_PORT, () => {
   log(`
   
  🌎  Server is running 
-        http://${host}:${process.env.NODE_API_PORT}
-        http://${process.env.LOCAL_HOSTS}:${process.env.NODE_API_PORT}/index.html
+        https://${host}:${process.env.NODE_API_PORT}
+        https://${process.env.LOCAL_HOSTS}:${process.env.NODE_API_PORT}/index.html
 
  \x1b[41mNOTICE: \x1b[33mmake sure to add ${process.env.LOCAL_HOSTS} to /etc/hosts
 
