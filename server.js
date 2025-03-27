@@ -36,7 +36,7 @@ const protocolsPorts = {
 
 {
   if (protocols.length === 0) {
-    throw new Error(`NODE_SERVER_PROTOCOLS is not defined`);
+    throw th(`NODE_SERVER_PROTOCOLS is not defined`);
   }
 
   protocols.forEach((protocol) => {
@@ -49,7 +49,7 @@ const protocolsPorts = {
 const env = path.resolve(".", ".env");
 
 if (!fs.existsSync(env)) {
-  throw new Error(`File ${env} doesn't exist`);
+  throw th(`File ${env} doesn't exist`);
 }
 
 dotenv.config({
