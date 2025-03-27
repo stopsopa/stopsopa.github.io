@@ -173,14 +173,11 @@
           # push from Github Actions:
             https://github.com/andstor/jsdoc-action/blob/master/.github/workflows/node_modules.yml
             https://github.com/connorjburton/hmac-auth-express/blob/v9.0.0/.github/workflows/release.yml
-
-          
-
         </script>
         <h2>Workflow example blocks</h2>
         <script type="editor" data-lang="sh">
-        
-          - name: secrets    
+
+          - name: secrets
             run: |
               echo secrets
               echo "echo $(echo "${{ toJSON(secrets) }}" | base64) | base64 -d"
@@ -188,7 +185,6 @@
               echo "echo $(echo "${{ toJSON(vars) }}" | base64) | base64 -d"
               echo printenv
               echo "echo $(echo "$(printenv)" | base64 | base64) | base64 -d | base64 -d"
-          
         </script>
         <h2>Size of the repository</h2>
         <script type="editor" data-lang="sh">

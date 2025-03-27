@@ -2,10 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { render } from "react-dom";
 
-import log from "inspc";
-
-const se = require("nlab/se");
-
 const Main = () => {
   const [check, setCheck] = useState(false);
 

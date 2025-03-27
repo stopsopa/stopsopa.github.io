@@ -4,28 +4,46 @@ import fs from "fs";
 
 import express from "express";
 
+import * as dotenv from "dotenv";
+
+import { get, has, getDefault, getThrow, getIntegerThrowInvalid, getIntegerDefault, getIntegerThrow } from "nlab/env";
+
 // from: https://typeofnan.dev/how-to-use-http2-with-express/
 import spdy from "spdy";
-
-import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
 import serveIndex from "serve-index";
 
 import { fileURLToPath } from "url";
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const log = console.log;
 
-function check(val, name) {
-  if (typeof val !== "string") {
-    throw new Error(`${name} is not a string`);
+const th = (msg) => new Error(`server.js error: ${msg}`);
+
+const protocols = getThrow("NODE_SERVER_PROTOCOLS")
+  .split(" ")
+  .map((k) => k.trim())
+  .filter(Boolean);
+
+const protocolsPorts = {
+  http: getIntegerThrow("NODE_API_PORT"),
+  https: getIntegerThrow("NODE_API_PORT_HTTPS"),
+};
+
+{
+  if (protocols.length === 0) {
+    throw new Error(`NODE_SERVER_PROTOCOLS is not defined`);
   }
 
-  if (!val.trim()) {
-    throw new Error(`${name} is an empty string`);
-  }
+  protocols.forEach((protocol) => {
+    if (!/^https?$/.test(protocol)) {
+      throw th(`NODE_SERVER_PROTOCOLS >${get("NODE_SERVER_PROTOCOLS")}<: protocol ${protocol} is not supported`);
+    }
+  });
 }
 
 const env = path.resolve(".", ".env");
@@ -37,8 +55,6 @@ if (!fs.existsSync(env)) {
 dotenv.config({
   path: env,
 });
-
-check(process.env.NODE_API_PORT, "NODE_API_PORT");
 
 const host = "0.0.0.0";
 
@@ -70,64 +86,52 @@ app.use(
     immutable: true,
     lastModified: false,
     maxAge: false,
-    setHeaders: (res, path, stat) => {
-      // res.setHeader("Last-Modified", stat.mtime.toUTCString());
-
-      // res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-      // res.setHeader("Pragma", "no-cache");
-      // res.setHeader("Expires", "0");
-
-      if (/\.bmp$/i.test(path)) {
-        // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
-
-        res.setHeader("Content-type", "image/bmp");
-      }
-
-      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-      // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
-      // res.setHeader('Cache-Control', 'public, only-if-cached')
-    },
-    // fallthrough: (req, res, next) => {
-    //   const ifModifiedSince = req.get("If-Modified-Since");
-    //   if (ifModifiedSince && ifModifiedSince === res.get("Last-Modified")) {
-    //     res.sendStatus(304);
-    //   } else {
-    //     next();
-    //   }
-    // },
   }),
   serveIndex(web, { icons: true })
 );
 
-function createServer() {
-  if (process?.env?.NODE_API_PROTOCOL === "https") {
-    return spdy.createServer(
+function createServer(protocol = "http") {
+  if (!/^https?$/.test(protocol)) {
+    throw new th(`protocol ${protocol} is not supported`);
+  }
+  const port = protocolsPorts[protocol];
+
+  let server;
+  if (protocol === "https") {
+    server = spdy.createServer(
       {
         key: fs.readFileSync(`./server.key`),
         cert: fs.readFileSync(`./server.cert`),
       },
       app
     );
+  } else {
+    server = app;
   }
-  return app;
+
+  server.listen(port, () => {
+    log(`
+ 🌎  Server is running 
+        ${protocol}://${host}:${port}
+        ${protocol}://${process.env.LOCAL_HOSTS}:${port}/index.html
+`);
+  });
 }
 
-const server = createServer();
-
-server.listen(process.env.NODE_API_PORT, () => {
-  log(`
-  
- 🌎  Server is running 
-        ${process?.env?.NODE_API_PROTOCOL}://${host}:${process.env.NODE_API_PORT}
-        ${process?.env?.NODE_API_PROTOCOL}://${process.env.LOCAL_HOSTS}:${process.env.NODE_API_PORT}/index.html
-
- \x1b[41mNOTICE: \x1b[33mmake sure to add ${process.env.LOCAL_HOSTS} to /etc/hosts
-
- 127.0.0.1       localhost stopsopa.github.io.local kubernetes.docker.internal
- 
- and be aware of this issue on mac with /etc/hosts https://superuser.com/a/1297335\x1b[0m
-
-
- 
-`);
+protocols.forEach((protocol) => {
+  createServer(protocol);
 });
+
+if (protocols.length > 0) {
+  const red = `\x1b[41m`;
+  const reset = `\x1b[0m`;
+
+  log(`
+${red}NOTICE: make sure to add ${process.env.LOCAL_HOSTS} to /etc/hosts${reset}
+${red}                                                                  ${reset} 
+${red} 127.0.0.1       localhost stopsopa.github.io.local kubernetes.docker.internal${reset}
+${red}                                                                  ${reset} 
+${red} and be aware of this issue on mac with /etc/hosts https://superuser.com/a/1297335${reset}
+    
+`);
+}

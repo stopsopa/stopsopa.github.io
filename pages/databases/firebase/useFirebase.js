@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import log from "inspc";
 
-import se from "nlab/se.js";
+import se from "nlab/serializeError";
 
 const th = (msg) => new Error(`useFirebase hook error: ${msg}`);
 
