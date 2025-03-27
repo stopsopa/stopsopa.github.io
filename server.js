@@ -15,7 +15,15 @@ import serveIndex from "serve-index";
 
 import { fileURLToPath } from "url";
 
-dotenv.config();
+const env = path.resolve(".", ".env");
+
+if (!fs.existsSync(env)) {
+  throw th(`File ${env} doesn't exist`);
+}
+
+dotenv.config({
+  path: env,
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,16 +53,6 @@ const protocolsPorts = {
     }
   });
 }
-
-const env = path.resolve(".", ".env");
-
-if (!fs.existsSync(env)) {
-  throw th(`File ${env} doesn't exist`);
-}
-
-dotenv.config({
-  path: env,
-});
 
 const host = "0.0.0.0";
 
