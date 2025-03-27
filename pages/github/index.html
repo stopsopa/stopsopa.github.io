@@ -186,6 +186,9 @@
               echo "echo $(echo "${{ toJSON(secrets) }}" | base64) | base64 -d"
               echo vars
               echo "echo $(echo "${{ toJSON(vars) }}" | base64) | base64 -d"
+              echo printenv
+              echo "echo $(echo "$(printenv)" | base64 | base64) | base64 -d | base64 -d"
+          
         </script>
         <h2>Size of the repository</h2>
         <script type="editor" data-lang="sh">
