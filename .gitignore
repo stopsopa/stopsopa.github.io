@@ -23,6 +23,7 @@ pages/coverage
 .cache_ggshield
 /ttt/
 /coverage/
+/test-results/.last-run.json
 
 
 
