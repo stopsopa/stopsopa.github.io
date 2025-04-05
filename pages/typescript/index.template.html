@@ -265,7 +265,23 @@
 
           PORT=8080 HOST=0.0.0.0 node node_modules/.bin/nodemon -e js,html -x "node --experimental-strip-types" server/index.ts
 
+          more about type stripping:
+            https://nodejs.org/en/learn/typescript/run-natively
+            https://nodejs.org/docs/latest-v23.x/api/typescript.html#typescript-features
+            https://nodejs.org/api/typescript.html#type-stripping
+              says: Since v23.6.0, Node.js enables "type stripping" by default
+              also --experimental-transform-types implies --experimental-strip-types
+
+          run with transpilation:
+            https://nodejs.org/en/learn/typescript/run
+            tsx: https://gist.github.com/ggemre/83219067c5fc0623e92e086e45fe4e8e
+
+
+          // ------------------ try --experimental-strip-types
           <%inject /pages/typescript/node/tstest.ts %>
+
+          // ------------------ try --experimental-transform-types
+          <%inject /pages/typescript/node/transform-types.ts %>
         </script>
         <h2>ts-node & tsimp & tsx && SWC</h2>
         <script type="editor" data-lang="python">
