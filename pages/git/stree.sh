@@ -37,7 +37,12 @@ do
 
     GIT="${_PWD}/.git/objects"
 
-    if [ -d "${GIT}" ]; then
+    # to check if .git is a file indicating 'worktree'
+    # git worktree
+    # see more: https://www.youtube.com/watch?v=ntM7utSjeVU
+    GITFILE="$(cat .git 2> /dev/null | grep '^gitdir: ' | wc -l | awk '{$1=$1};1')"
+
+    if [ -d "${GIT}" ] || [ "${GITFILE}" = "1" ]; then
 
         cat <<EEE
 
@@ -53,6 +58,7 @@ EEE
             cd "${_PWD}"
             open -a SourceTree .
         )
+        
         exit 0
     fi
 
