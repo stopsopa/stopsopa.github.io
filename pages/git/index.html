@@ -461,6 +461,22 @@
             https://www.youtube.com/watch?v=ntM7utSjeVU
             git worktree add ../worktree_branchname branchname
             git worktree remove ../worktree_branchname
+
+          # git reset || git revert
+          # check if pushed
+            git log --online --branches --not --remotes
+            if commit is listed - means it was not yet pushed -> use git reset
+            # from: https://youtu.be/GytsxgB4-HU?t=35
+            just to undo last command
+              git reset HEAD^
+              or
+              git reset HEAD~1
+              the same thing in this case
+              # from: https://youtu.be/GytsxgB4-HU?t=53
+              # git revert
+              git revert --no-edit [commitsha]
+              # from: https://youtu.be/GytsxgB4-HU?t=143
+
             
                     
         </script>
