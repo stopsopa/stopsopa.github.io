@@ -324,6 +324,20 @@
             # or try to turn it on permanently
             defaults write com.apple.finder AppleShowAllFiles YES
             killall Finder
+
+            # ==== add icon opening VScode in current directory from finder vvv            
+              open vscode:
+                finderPath=$(osascript -e 'tell application "Finder" to get the POSIX path of (target of front window as alias)')
+                open -n -a "/Users/szdz/Workspace/vscode/javascript/Visual Studio Code.app" --args -n "$finderPath"
+                # open -n /Applications/ontop.app --args --html "$finderPath"
+
+              open iTerm
+                finderPath=$(osascript -e 'tell application "Finder" to get the POSIX path of (target of front window as alias)')
+                open -n -a /Applications/iTerm.app --args "$finderPath"
+            
+              # more https://flaviocopes.com/how-to-add-an-open-in-vs-code-icon-in-macos-finder/#:~:text=Save%20this%20application%20in%20the,That's%20it!
+            # ==== add icon opening VScode in current directory from finder ^^^
+            
           </script>
           <h2>Dock - not show recently open apps</h2>
           <script type="editor" data-lang="sh">
