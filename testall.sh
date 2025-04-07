@@ -84,34 +84,34 @@ node server.js --flag "3_${FLAG}" & disown
 
 sleep 1
 
-cat <<EE
+cat <<EEE
 
     api server should be running now, testing healthcheck:    
 
-EE
+EEE
 
 TIMEOUT="2000" node .github/healtcheck.js
 
-cat <<EE
+cat <<EEE
 
     INTEGRATION TESTS:
 
-EE
+EEE
 
 /bin/bash test.sh
 
-cat <<EE
+cat <<EEE
 
     JASMINE TESTS:
 
-EE
+EEE
 
 NODE_API_PORT=4273 /bin/bash jasmine/test.sh --env .env -- --target docker
 
-cat <<EE
+cat <<EEE
 
     E2E TESTS:
 
-EE
+EEE
 
 /bin/bash playwright.sh
