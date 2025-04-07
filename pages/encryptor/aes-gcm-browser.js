@@ -45,9 +45,9 @@ export async function encryptMessage(base64Key, message) {
 
   const hash = await hashSHA256(message);
 
-  const formatted = ":[v1:" + hash.substring(0, 5) + "::" + toHuman(iv) + "::" + toHuman(ciphertext) + ":]:";
+  const encrypted = ":[v1:" + hash.substring(0, 5) + "::" + forHuman(iv) + "::" + forHuman(ciphertext) + ":]:";
 
-  return formatted;
+  return encrypted;
 }
 
 export async function decryptMessage(base64Key, humanReadable) {
@@ -139,7 +139,7 @@ async function importKeyFromBase64(base64Key) {
  * Convert ciphertext to a human-readable Base64 string.
  * https://base64.guru/learn/base64-characters
  */
-export function toHuman(ciphertext) {
+export function forHuman(ciphertext) {
   const string = String.fromCharCode(...new Uint8Array(ciphertext));
 
   const base64 = btoa(string);
