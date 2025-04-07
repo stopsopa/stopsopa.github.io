@@ -78,6 +78,21 @@ EEE
       description: `helper script running all unit jest tests`,
       confirm: false,
     },
+    [`jasmine`]: {
+      command: `
+set -e   
+export NODE_OPTIONS=""  
+cat <<EEE
+
+/bin/bash jasmine/test.sh --env .env
+
+NODE_API_PORT=4273 /bin/bash jasmine/test.sh --env .env -- --target docker
+
+EEE
+`,
+      description: `helper script running all unit jest tests`,
+      confirm: false,
+    },
     [`testall`]: {
       command: `
 set -e        

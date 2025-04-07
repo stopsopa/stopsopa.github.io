@@ -102,6 +102,14 @@ EE
 
 cat <<EE
 
+    JASMINE TESTS:
+
+EE
+
+NODE_API_PORT=4273 /bin/bash jasmine/test.sh --env .env -- --target docker
+
+cat <<EE
+
     E2E TESTS:
 
 EE
