@@ -874,6 +874,8 @@
         <h2>read entire stdin into string variable</h2>
         <script type="editor" data-lang="sh">
 
+          import readline from 'readline';
+
           // this works for sure
           // deals properly with newlines, not adding too many and not stripping any
           function promiseStdin() {
