@@ -205,11 +205,11 @@ if (tests_list_paths) {
 app.use(
   serve(web, {
     index: false,
-  }),
+  })
 );
 
 app.listen(port, async () => {
   log(
-    `\n 🌎 ${new Date().toISOString().substring(0, 19).replace("T", " ")} Koa server is running http://${host}:${port}`,
+    `\n 🌎 ${new Date().toISOString().substring(0, 19).replace("T", " ")} Koa server is running http://${host}:${port}`
   );
 });

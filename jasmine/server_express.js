@@ -74,7 +74,7 @@ app.use(
     icons: true,
     view: "details",
     hidden: false, // Display hidden (dot) files. Defaults to false.
-  }),
+  })
 );
 
 app.listen(port, host, () => {

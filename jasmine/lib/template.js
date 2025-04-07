@@ -85,7 +85,7 @@ var template = (function (t, delimiters) {
         (settings.interpolate || noMatch).source,
         (settings.evaluate || noMatch).source,
       ].join("|") + "|$",
-      "g",
+      "g"
     );
 
     // Compile the template source, escaping string literals appropriately.
