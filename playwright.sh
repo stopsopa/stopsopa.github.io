@@ -1,4 +1,5 @@
 
+set -o pipefail
 S="\\" # will be used later
 
 # current shell name reliably
@@ -29,6 +30,13 @@ esac
 
 cd "${_DIR}"
 
+PACKAGE="npm"
+
+yarn --version 1> /dev/null 2> /dev/null
+if [ "${?}" = "0" ]; then
+  PACKAGE="yarn"
+fi
+
 node -v 1> /dev/null 2> /dev/null
 
 if [ "${?}" != "0" ]; then
@@ -55,47 +63,70 @@ function quote {
   echo "$1" | sed -E 's/\"/\\"/g'
 }
 
+function nodeExtractVersion() {
+  NODE_OPTIONS="" node --input-type=module --eval '
+import readline from "readline";
+
+const reg = / (@playwright\/test|playwright|playwright-core)@/;
+
+const regVer = /^.*?@(\d+\.\d+\.\d+).*$/;
+
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false,
+});
+
+let versions = [];
+rl.on("line", (line) => {
+  const l = line.match(reg)?.[1];
+
+  if (l) {
+    const v = line.match(regVer)?.[1];
+
+    versions.push({
+      l,
+      v,
+    });
+  }
+});
+
+rl.on("close", () => {
+  let ver;
+
+  versions.forEach(({ v }) => {
+    if (ver === undefined) {
+      ver = v;
+    }
+
+    if (ver !== v) {
+      console.log(`
+playwright.sh error: all playwright libraries in package.json should have the same versions:
+found: ${JSON.stringify(versions, null, 4)}
+`);
+
+      process.exit(1);
+    }
+  });
+
+  if (ver === undefined) {
+    console.log(`
+playwright.sh error: no playwright libraries found in package.json
+add yarn add @playwright/test playwright
+`);
+    process.exit(1);
+  }
+
+  process.stdout.write(ver);
+});
+'
+}
+
 function extractVersion() {
-
-# extracting dependencies.playwright from package.json
-PLAYWRIGHT_VER="$(cat <<EOF | node
-const fs = require("fs");
-
-const file = "./package.json";
-
-if (!fs.existsSync(file)) {
-  throw new Error("playwright.sh error: file " + file + " doesn't exist");
-}
-
-if (!fs.lstatSync(file).isFile()) {
-  throw new Error("playwright.sh error: path " + file + " is not a file");
-}
-
-const package = require(file);
-
-const dependencies = {
-  ...package.dependencies,
-  ...package.devDependencies,
-};
-
-const ver = dependencies.playwright || dependencies['@playwright/test'];
-
-const parts = ver.match(/\d+\.\d+\.\d+/);
-
-if (!parts || parts.length !== 1) {
-  throw new Error("playwright.sh error: " + file + " playwright dependency is not defined");
-}
-
-process.stdout.write(parts[0]);
-
-EOF
-)";
-
-  if [ "${?}" != "0" ]; then
-
-      echo "${0} error: extracting dependencies.playwright from package.json failed";
-
-      exit 1
+  if [ "${PACKAGE}" = "npm" ]; then
+    PLAYWRIGHT_VER="$(NODE_OPTIONS="" npm ls --depth=9999 | nodeExtractVersion)";
+  else
+    PLAYWRIGHT_VER="$(NODE_OPTIONS="" yarn list | nodeExtractVersion)";
   fi
 }
 
@@ -526,7 +557,7 @@ extractVersion
 
 # testing how to run multiline bash script
 # cat <<EEE | docker run --rm -i --entrypoint="" \
-# mcr.microsoft.com/playwright:v1.27.1-focal \
+# mcr.microsoft.com/playwright:v1.27.1-noble \
 # bash
 # ls -la
 # pwd
@@ -538,13 +569,12 @@ cat <<EEE | docker run -i --rm --ipc host --cap-add SYS_ADMIN --entrypoint="" $S
 ${DOCKERDEFAULTS} $S
 ${DOCKER_PARAMS_NOT_QUOTED} $S
 ${_HOSTHANDLER} $S
-mcr.microsoft.com/playwright:v${PLAYWRIGHT_VER}-focal $S
+mcr.microsoft.com/playwright:v${PLAYWRIGHT_VER}-noble $S
 bash
   set -e
   echo ===========printenv== to see PLAYWRIGHT_TEST_MATCH =========  
   printenv
-  echo ===========printenv== to see PLAYWRIGHT_TEST_MATCH =========
-  /ms-playwright-agent/node_modules/.bin/playwright test ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
+  echo ===========printenv== to see PLAYWRIGHT_TEST_MATCH =========  
   # /ms-playwright-agent/node_modules/.bin/playwright test ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
   node node_modules/.bin/playwright test ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
 EEE
