@@ -182,6 +182,11 @@
         <h2>list all versions of given tag</h2>
         <script type="editor" data-lang="sh">
 
+          # to list versions from miscrosoft registry
+          curl 'https://mcr.microsoft.com/api/v1/catalog/playwright/tags?reg=mar' | jq '.[].name' | grep -v "sha-"
+          # in browser: 
+          https://mcr.microsoft.com/en-us/artifact/mar/playwright/tags
+
           # use
           pull nginx
           pull mongo
