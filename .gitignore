@@ -24,7 +24,7 @@ pages/coverage
 /ttt/
 /coverage/
 /test-results/.last-run.json
-
+*.jasmine-esbuild.js
 
 
 

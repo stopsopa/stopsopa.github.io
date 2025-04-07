@@ -1,7 +1,5 @@
 import range from "./range";
 
-import log from "inspc";
-
 describe("range", () => {
   it("not processed", () => {
     const input = `abc`;

@@ -108,7 +108,7 @@ if (/^\d+$/.test(process.env.TIMEOUT)) {
               throw new Error(`res.status !== 200`);
             }
 
-            if (res.body !== "ok") {
+            if (res.body !== "healtcheck-file") {
               throw new Error(`res.body !== 'ok'`);
             }
 

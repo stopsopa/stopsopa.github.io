@@ -29,7 +29,7 @@ export async function encryptMessage(base64Key, message) {
   }
   const encoded = encodeMessage(message);
 
-  // The iv must never be reused with a given key.
+  // IMPORTANT: The iv must never be reused with a given key.
   const iv = window.crypto.getRandomValues(new Uint8Array(12));
 
   const key = await importKeyFromBase64(base64Key);
