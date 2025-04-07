@@ -45,12 +45,17 @@ export async function encryptMessage(base64Key, message) {
 
   const hash = await hashSHA256(message);
 
-  return hash.substring(0, 5) + "::" + toHuman(iv) + "::" + toHuman(ciphertext);
+  const formatted = ":[v1:" + hash.substring(0, 5) + "::" + toHuman(iv) + "::" + toHuman(ciphertext) + ":]:";
+
+  return formatted;
 }
 
 export async function decryptMessage(base64Key, humanReadable) {
   if (typeof base64Key !== "string") {
     throw new Error(`decryptMessage error: base64Key is not a string`);
+  }
+  if (typeof humanReadable !== "string") {
+    throw new Error(`decryptMessage error: humanReadable is not a string`);
   }
 
   const key = await importKeyFromBase64(base64Key);
@@ -58,6 +63,17 @@ export async function decryptMessage(base64Key, humanReadable) {
   if (!(humanReadable.indexOf("::") > 0)) {
     throw new Error(`decryptMessage error: humanReadable is not in the correct format`);
   }
+
+  if (humanReadable.startsWith(":[v1:") === false) {
+    throw new Error(`decryptMessage error: humanReadable does not start with ":[v1:"`);
+  }
+
+  if (humanReadable.endsWith(":]:") === false) {
+    throw new Error(`decryptMessage error: humanReadable does not end with ":]:"`);
+  }
+
+  // cut off the ":[v1:" and ":]:"
+  humanReadable = humanReadable.substring(5, humanReadable.length - 3);
 
   const parts = humanReadable.split("::");
 
