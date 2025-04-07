@@ -109,7 +109,7 @@ function createServer(protocol = "http") {
 
   server.listen(port, () => {
     log(`
- 🌎  Server is running 
+ 🌎  Server is running ${protocol.toUpperCase()}
         ${protocol}://${host}:${port}
         ${protocol}://${process.env.LOCAL_HOSTS}:${port}/index.html
 `);
