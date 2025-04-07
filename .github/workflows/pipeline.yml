@@ -141,7 +141,7 @@ jobs:
             endsWith(github.event.head_commit.message, ' q') ||
             contains(github.event.head_commit.message, ' q '))
         run: |
-          /bin/bash -x jasmine/test.sh --env .env -- --target docker
+          NODE_API_PORT=4273 /bin/bash -x jasmine/test.sh --env .env -- --target docker
 
       # - name: E2E TESTS
       #   # if: "!contains(github.event.head_commit.message, '[q]')"
