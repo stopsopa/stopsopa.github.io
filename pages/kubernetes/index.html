@@ -131,9 +131,19 @@
           EOF
 
           # copy
-          kubectl cp -n default . my-pod:/path/to/file.txt
-          # Copy file when there are problems to do it normally
-          kubectl exec -it mypod-dc0a239-5864d77b9-klnnv -- base64 ../xxx/..data/_.myfile.pkcs12 | base64 -d > _.myfile.pkcs12
+          kubectl cp -n default mypod-dc0a239-klnnv:../work ./work
+            # Copy file when there are problems to do it normally
+            kubectl exec -it mypod-dc0a239-klnnv -- base64 ../xxx/..data/_.myfile.pkcs12 | base64 -d > _.myfile.pkcs12
+
+            # or even better
+            # copy entire directories with streaming with tar
+          
+            kubectl exec -i mypod-dc0a239-klnnv -- \
+              sh -c 'tar cf - -C .. --exclude=catalog-ui-service . | base64' | base64 -d | tar xf -
+          
+              # -C is changing current directory for all other paths passed to tar
+              # this version will also unpack where you are, so simply control target by first 
+              # entering on your host machine where you would like to copy thing
 
           oc create configmap api-cm \
             --from-literal=ARANGO_ENDPOINTS="http://xxx.com:8529" \
