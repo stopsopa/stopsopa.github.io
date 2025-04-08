@@ -1,4 +1,5 @@
 // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fnode%2Fhttpsserver.js
+// HOST="0.0.0.0" POST="8443" node server.js
 
 import fs from "fs";
 
