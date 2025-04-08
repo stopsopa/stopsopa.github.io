@@ -2,7 +2,7 @@
  * from:
  *      https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#aes-gcm_2
  *      https://mdn.github.io/dom-examples/web-crypto/encrypt-decrypt/index.html
- * 
+ *
  * WARNING:
  *    LATER UNCOMMENT 'pages/encryptor/aes.jasmine.unit.js' FROM vitest.config.ts
  */
@@ -60,8 +60,6 @@ export async function encryptMessage(base64Key, message, opt) {
   const encoded = encodeMessage(message);
 
   if (iv) {
-    console.log("iv", iv);
-
     iv = fromHuman(iv);
   } else {
     // IMPORTANT: The iv must never be reused with a given key.
