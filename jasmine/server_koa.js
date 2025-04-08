@@ -4,6 +4,10 @@ import fs from "fs";
 
 import Koa from "koa";
 
+import http from "http";
+
+import https from "https";
+
 import serve from "koa-static";
 
 import * as dotenv from "dotenv";
@@ -157,6 +161,11 @@ if (!/^\d+$/.test(process.env.NODE_API_PORT)) {
 
 const port = process.env.NODE_API_PORT;
 
+const protocolsPorts = {
+  http: 8889,
+  https: port,
+};
+
 if (typeof process.env.NODE_API_HOST !== "string") {
   throw th(`NODE_API_HOST is not defined`);
 }
@@ -208,8 +217,39 @@ app.use(
   })
 );
 
-app.listen(port, async () => {
-  log(
-    `\n 🌎 ${new Date().toISOString().substring(0, 19).replace("T", " ")} Koa server is running http://${host}:${port}`
-  );
+// https://koajs.com/#:~:text=This%20means%20you%20can%20spin%20up%20the%20same%20application
+function createServer(protocol = "http") {
+  if (!/^https?$/.test(protocol)) {
+    throw new th(`protocol ${protocol} is not supported`);
+  }
+  const port = protocolsPorts[protocol];
+
+  let server;
+  if (protocol === "https") {
+    server = https.createServer(
+      {
+        key: fs.readFileSync(`./server.key`),
+        cert: fs.readFileSync(`./server.cert`),
+      },
+      app.callback()
+    );
+  } else {
+    server = http.createServer(app.callback());
+    // server = app;
+  }
+
+  server.listen(port, () => {
+    log(`
+ 🌎  Server is running ${protocol.toUpperCase()}
+        ${protocol}://${host}:${port}
+        ${protocol}://${host}:${port}/index.html
+`);
+  });
+}
+
+
+// ["http", "https"].forEach((protocol) => {
+["https"].forEach((protocol) => {
+  createServer(protocol);
 });
+

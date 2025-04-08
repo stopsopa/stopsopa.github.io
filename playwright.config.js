@@ -85,7 +85,7 @@ if (!protocolRegex.test(process.env.BASE_URL)) {
  */
 const config = {
   testDir: __dirname,
-  testMatch: "**/*.e2e.js", // https://playwright.dev/docs/test-configuration#testing-options
+  testMatch: process.env.PLAYWRIGHT_TEST_MATCH || "**/*.e2e.js", // https://playwright.dev/docs/test-configuration#testing-options
   snapshotDir: "./var/snapshotDir",
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
@@ -140,6 +140,9 @@ const config = {
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
+        launchOptions: {
+          args: ["--ignore-certificate-errors"], // https://stackoverflow.com/a/76610601
+        },
       },
     },
     {

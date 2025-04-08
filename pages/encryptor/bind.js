@@ -10,20 +10,26 @@ const encryptButton = parent.querySelector(".encrypt");
 const decryptButton = parent.querySelector(".decrypt");
 
 generateButton.addEventListener("click", async () => {
-  const base64Key = await generateKey();
-  inputKey.value = base64Key;
+  try {
+    const base64Key = await generateKey();
+    inputKey.value = base64Key;
+  } catch (e) {
+    alert("Error generating key: " + e.message);
+  }
 });
 encryptButton.addEventListener("click", async () => {
-  const humanReadable = await encryptMessage(inputKey.value, inputMessage.value);
+  try {
+    const humanReadable = await encryptMessage(inputKey.value, inputMessage.value);
 
-  inputEncrypted.value = humanReadable;
+    inputEncrypted.value = humanReadable;
+  } catch (e) {
+    alert("Error generating key: " + e.message);
+  }
 });
 
 decryptButton.addEventListener("click", async () => {
   try {
-    const humanReadable = inputEncrypted.value;
-
-    const decrypted = await decryptMessage(inputKey.value, humanReadable);
+    const decrypted = await decryptMessage(inputKey.value, inputEncrypted.value);
 
     inputDecrypted.value = decrypted;
   } catch (e) {

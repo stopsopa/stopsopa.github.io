@@ -7,8 +7,24 @@
 const enc = new TextEncoder();
 const dec = new TextDecoder();
 
+const isSubtleCryptoAvailable = window.isSecureContext && !!window.crypto?.subtle;
+
+function isAvailable() {
+  if (!isSubtleCryptoAvailable) {
+    throw new Error(`Web Crypto API is not available in this context.`);
+  }
+}
+
 function encodeMessage(message) {
   return enc.encode(message);
+}
+
+export function splitByLength(str, length) {
+  const result = [];
+  for (let i = 0; i < str.length; i += length) {
+    result.push(str.slice(i, i + length));
+  }
+  return result;
 }
 
 export async function hashSHA256(message) {
@@ -20,7 +36,18 @@ export async function hashSHA256(message) {
   return hashHex;
 }
 
-export async function encryptMessage(base64Key, message) {
+export async function encryptMessage(base64Key, message, opt) {
+  isAvailable();
+
+  let { columns, iv } = {
+    columns: 110,
+    ...opt,
+  };
+
+  if (typeof columns !== "number" || columns < 10) {
+    throw new Error(`encryptMessage error: columns is not a number`);
+  }
+
   if (typeof base64Key === "undefined") {
     throw new Error(`encryptMessage error: base64Key is undefined`);
   }
@@ -29,8 +56,15 @@ export async function encryptMessage(base64Key, message) {
   }
   const encoded = encodeMessage(message);
 
-  // IMPORTANT: The iv must never be reused with a given key.
-  const iv = window.crypto.getRandomValues(new Uint8Array(12));
+  if (iv) {
+    console.log("iv", iv);
+    
+    iv = fromHuman(iv);
+  } else {
+    // IMPORTANT: The iv must never be reused with a given key.
+    iv = window.crypto.getRandomValues(new Uint8Array(12));
+  }
+
 
   const key = await importKeyFromBase64(base64Key);
 
@@ -45,12 +79,21 @@ export async function encryptMessage(base64Key, message) {
 
   const hash = await hashSHA256(message);
 
-  const encrypted = ":[v1:" + hash.substring(0, 5) + "::" + forHuman(iv) + "::" + forHuman(ciphertext) + ":]:";
+  const encrypted =
+    ":[v1:" +
+    hash.substring(0, 5) +
+    "::" +
+    forHuman(iv) +
+    "::\n" +
+    splitByLength(forHuman(ciphertext), columns).join("\n") +
+    ":]:";
 
   return encrypted;
 }
 
 export async function decryptMessage(base64Key, humanReadable) {
+  isAvailable();
+
   if (typeof base64Key !== "string") {
     throw new Error(`decryptMessage error: base64Key is not a string`);
   }
@@ -160,6 +203,8 @@ export function fromHuman(humanReadable) {
 }
 
 export const generateKey = async () => {
+  isAvailable();
+
   const key = await window.crypto.subtle.generateKey(
     {
       name: "AES-GCM",

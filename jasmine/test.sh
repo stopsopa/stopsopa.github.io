@@ -224,7 +224,7 @@ if [ "${NODE_API_HOST}" = "" ]; then
   exit 1;
 fi
 
-SERVER="http://${NODE_API_HOST}:${NODE_API_PORT}";
+SERVER="https://${NODE_API_HOST}:${NODE_API_PORT}";
 
 # set positional arguments in their proper place
 eval set -- "$PARAMS"
@@ -278,7 +278,7 @@ function cleanup {
 
     set +e
 
-    curl  -sS "${SERVER}/exit" 2>/dev/null
+    curl -k -sS "${SERVER}/exit" 2>/dev/null
 
     # unlink "${ASSETLIST}" 2>/dev/null || true
 }
@@ -367,12 +367,16 @@ else
   done <<< "${LIST}"
 fi
 
+# echo "ASSETLIST>${ASSETLIST}<"
+
+# exit 8
+
 cat <<EEE
 
 node "${_DIR}/server_koa.js" --web "${ROOT}" --asset_list "${ASSETLIST}" --env "${ENVFILE}" 
 
 check manually chealtcheck:
-  curl -sS "${SERVER}/healthcheck"
+  curl -k -sS "${SERVER}/healthcheck"
 
 EEE
 
@@ -380,10 +384,9 @@ NODE_OPTIONS="" node "${_DIR}/server_koa.js" --web "${ROOT}" --asset_list "${ASS
 
 set +x
 
-
 ec "Waiting for server healthcheck - ${SERVER}/healthcheck:";
 # https://stackoverflow.com/a/33520390/5560682
-until [ "$(curl -sS "${SERVER}/healthcheck" 2>/dev/null)" = "jasmine healthy" ]; do
+until [ "$(curl -k -sS "${SERVER}/healthcheck" 2>/dev/null)" = "jasmine healthy" ]; do
     printf "."
     sleep 0.5;
 done;
