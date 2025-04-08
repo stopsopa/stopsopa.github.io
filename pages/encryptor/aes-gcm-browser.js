@@ -2,6 +2,9 @@
  * from:
  *      https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#aes-gcm_2
  *      https://mdn.github.io/dom-examples/web-crypto/encrypt-decrypt/index.html
+ * 
+ * WARNING:
+ *    LATER UNCOMMENT 'pages/encryptor/aes.jasmine.unit.js' FROM vitest.config.ts
  */
 
 const enc = new TextEncoder();
