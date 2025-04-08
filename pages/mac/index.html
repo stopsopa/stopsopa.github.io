@@ -299,7 +299,11 @@
 
             # generate uuid
               uuidgen
-            
+              # to lowercase
+              uuidgen | tr '[:upper:]' '[:lower:]'
+              or register alias
+              alias uuid="(set -x && uuidgen | tr '[:upper:]' '[:lower:]')"
+              
           </script>
 
           <h2>Bartender 4 (Menu bar Menubar icons management tool)</h2>
