@@ -58,13 +58,12 @@ export async function encryptMessage(base64Key, message, opt) {
 
   if (iv) {
     console.log("iv", iv);
-    
+
     iv = fromHuman(iv);
   } else {
     // IMPORTANT: The iv must never be reused with a given key.
     iv = window.crypto.getRandomValues(new Uint8Array(12));
   }
-
 
   const key = await importKeyFromBase64(base64Key);
 

@@ -247,9 +247,7 @@ function createServer(protocol = "http") {
   });
 }
 
-
 // ["http", "https"].forEach((protocol) => {
 ["https"].forEach((protocol) => {
   createServer(protocol);
 });
-

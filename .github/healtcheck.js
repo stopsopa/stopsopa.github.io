@@ -78,8 +78,8 @@ if (/^\d+$/.test(process.env.TIMEOUT)) {
       throw th(`process.env.NODE_API_PROTOCOL >${process.env.NODE_API_PROTOCOL}< doesn't match pattern ${protMatch}`);
     }
 
-    if (typeof process.env.NODE_API_PORT !== "string") {
-      throw th(`NODE_API_PORT is undefined`);
+    if (typeof process.env.NODE_API_PORT_HTTPS !== "string") {
+      throw th(`NODE_API_PORT_HTTPS is undefined`);
     }
 
     setTimeout(() => {
@@ -92,7 +92,7 @@ if (/^\d+$/.test(process.env.TIMEOUT)) {
       process.exit(1);
     }, healthcheckTimeoutMilliseconds);
 
-    const server_front_endpoint = `${process.env.NODE_API_PROTOCOL}://0.0.0.0:${process.env.NODE_API_PORT}/healthcheck`;
+    const server_front_endpoint = `${process.env.NODE_API_PROTOCOL}://0.0.0.0:${process.env.NODE_API_PORT_HTTPS}/healthcheck`;
 
     const promise = Promise.all([
       new Promise((resolve) => {

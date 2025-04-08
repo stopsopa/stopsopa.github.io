@@ -184,7 +184,7 @@
 
           # to list versions from miscrosoft registry
           curl 'https://mcr.microsoft.com/api/v1/catalog/playwright/tags?reg=mar' | jq '.[].name' | grep -v "sha-"
-          # in browser: 
+          # in browser:
           https://mcr.microsoft.com/en-us/artifact/mar/playwright/tags
 
           # use
