@@ -12,7 +12,7 @@ export default defineConfig({
       // https://vitest.dev/config/#exclude
       "**/node_modules/**",
       "jasmine/**",
-      'pages/encryptor/aes.jasmine.unit.js'
+      // 'pages/encryptor/aes.jasmine.unit.js'
     ],
   },
 });
