@@ -102,6 +102,7 @@ if (/^\d+$/.test(process.env.TIMEOUT)) {
 
             const res = await lightFetch(server_front_endpoint, {
               timeout: 900,
+              rejectUnauthorized: false,
             });
 
             if (res.status !== 200) {
