@@ -145,6 +145,10 @@
               # this version will also unpack where you are, so simply control target by first 
               # entering on your host machine where you would like to copy thing
 
+          # extract env vars environment variables          
+            kubectl exec -i mypod-dc0a239-klnnv -- \
+              sh -c 'printenv | base64' | base64 -d > .devenv
+
           oc create configmap api-cm \
             --from-literal=ARANGO_ENDPOINTS="http://xxx.com:8529" \
             --dry-run=client -o yaml | kubectl apply -f -
