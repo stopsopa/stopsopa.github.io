@@ -336,7 +336,7 @@
             # ==== add icon opening VScode in current directory from finder vvv
               open vscode:
                 finderPath=$(osascript -e 'tell application "Finder" to get the POSIX path of (target of front window as alias)')
-                open -n -a "/Users/szdz/Workspace/vscode/javascript/Visual Studio Code.app" --args -n "$finderPath"
+                open -n -a "${HOME}/Workspace/vscode/javascript/Visual Studio Code.app" --args -n "$finderPath"
                 # open -n /Applications/ontop.app --args --html "$finderPath"
 
               open iTerm
