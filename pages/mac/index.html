@@ -340,6 +340,11 @@
                 # open -n /Applications/ontop.app --args --html "$finderPath"
 
               open iTerm
+
+                # to the the icon for iterm
+                open /Applications/iTerm.app/Contents/Resources/
+            
+                # the main script for Automator
                 finderPath=$(osascript -e 'tell application "Finder" to get the POSIX path of (target of front window as alias)')
                 open -n -a /Applications/iTerm.app --args "$finderPath"
 
