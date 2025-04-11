@@ -621,187 +621,187 @@
         </script>
         <h2>esbuild</h2>
 
-<div data-vanilla-tabs>
-    <div data-buttons>
-        <span class="active">multiple files</span>
-        <span>react & sass</span>
-      <span>bundle for browser</span>
-    </div>
-    <div data-tabs>
-        <div>
-        <script type="editor" data-lang="js">
+        <div data-vanilla-tabs>
+          <div data-buttons>
+            <span class="active">multiple files</span>
+            <span>react & sass</span>
+            <span>bundle for browser</span>
+          </div>
+          <div data-tabs>
+            <div>
+              <script type="editor" data-lang="js">
 
-// find . -type f \( -name '*.jasmine.unit.js' -o -name '*.jasmine.js' \) | node jasmine/esbuild.js
+                // find . -type f \( -name '*.jasmine.unit.js' -o -name '*.jasmine.js' \) | node jasmine/esbuild.js
 
-// find . -type f \( -name '*.jasmine.unit.js' -o -name '*.jasmine.js' \) | node jasmine/esbuild.js watch
+                // find . -type f \( -name '*.jasmine.unit.js' -o -name '*.jasmine.js' \) | node jasmine/esbuild.js watch
 
-// find . \( -type d -name node_modules -prune -o -type d -name .git -prune -o -type d -name coverage -prune \) -o -type f \( -name '*.jasmine.unit.js' -o -name '*.jasmine.js' \) -print | node jasmine/esbuild.js
+                // find . \( -type d -name node_modules -prune -o -type d -name .git -prune -o -type d -name coverage -prune \) -o -type f \( -name '*.jasmine.unit.js' -o -name '*.jasmine.js' \) -print | node jasmine/esbuild.js
 
-// echo ./tests/nlab/each.jasmine.unit.js | node jasmine/esbuild.js
+                // echo ./tests/nlab/each.jasmine.unit.js | node jasmine/esbuild.js
 
-// esbuild@0.19.12
-const readline = require("readline");
+                // esbuild@0.19.12
+                const readline = require("readline");
 
-const esbuild = require("esbuild");
+                const esbuild = require("esbuild");
 
-function promiseStdin() {
-  return new Promise((resolve, reject) => {
-    var rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      terminal: false,
-    });
+                function promiseStdin() {
+                  return new Promise((resolve, reject) => {
+                    var rl = readline.createInterface({
+                      input: process.stdin,
+                      output: process.stdout,
+                      terminal: false,
+                    });
 
-    let buff = "";
+                    let buff = "";
 
-    rl.on("line", (line) => {
-      if (buff !== "") {
-        buff += "\n";
-      }
-      buff += line; // Append a newline character to each line
-    });
+                    rl.on("line", (line) => {
+                      if (buff !== "") {
+                        buff += "\n";
+                      }
+                      buff += line; // Append a newline character to each line
+                    });
 
-    rl.on("close", () => {
-      resolve(buff);
-    });
-  });
-}
+                    rl.on("close", () => {
+                      resolve(buff);
+                    });
+                  });
+                }
 
-(async function () {
-  const data = await promiseStdin();
+                (async function () {
+                  const data = await promiseStdin();
 
+<<<<<<< HEAD
   // WARNING: in order to respect entryNames and make esbuild to put our output file 
   // WARNING: next to entry file at least two files have to be given on input
   const entryPoints = data.split("\n");
+=======
+                  // WARNING: in order to respect entryNames and make esbuild to put our output file
+                  // WARNING: next to entry file at least two files have to be given on input
+                  const entryPoints = data.split("\n");
+>>>>>>> af15e3d5 (j)
 
-  const config = {
-    entryPoints,
-    entryNames: "[dir]/[name].jasmine-esbuild", // Ensures unique output file names by appending a hash
-    outdir: ".",
-    bundle: true,
-    target: "chrome80", // Updated target to chrome80
-    jsxFactory: "React.createElement",
-    jsxFragment: "React.Fragment",
-    loader: { ".js": "jsx" },
-    metafile: true,
-    allowOverwrite: true, // Added allowOverwrite option
-  };
+                  const config = {
+                    entryPoints,
+                    entryNames: "[dir]/[name].jasmine-esbuild", // Ensures unique output file names by appending a hash
+                    outdir: ".",
+                    bundle: true,
+                    target: "chrome80", // Updated target to chrome80
+                    jsxFactory: "React.createElement",
+                    jsxFragment: "React.Fragment",
+                    loader: { ".js": "jsx" },
+                    metafile: true,
+                    allowOverwrite: true, // Added allowOverwrite option
+                  };
 
-  if (typeof process.argv[2] === "string") {
-    if (process.argv[2] !== "watch") {
-      console.log('invalid argument - should be "watch"');
+                  if (typeof process.argv[2] === "string") {
+                    if (process.argv[2] !== "watch") {
+                      console.log('invalid argument - should be "watch"');
 
-      process.exit(1);
-    }
+                      process.exit(1);
+                    }
 
-    (async function () {
-      let ctx = await esbuild.context(config);
+                    (async function () {
+                      let ctx = await esbuild.context(config);
 
-      await ctx.watch();
+                      await ctx.watch();
 
-      console.log("watching...");
-    })();
-  } else {
-    (async function () {
-      try {
-        const result = await esbuild.build(config);
+                      console.log("watching...");
+                    })();
+                  } else {
+                    (async function () {
+                      try {
+                        const result = await esbuild.build(config);
 
-        const stats = await esbuild.analyzeMetafile(result.metafile, {
-          verbose: true,
-        });
+                        const stats = await esbuild.analyzeMetafile(result.metafile, {
+                          verbose: true,
+                        });
 
-        console.log(stats);
+                        console.log(stats);
 
-        console.log("finished building");
-      } catch (e) {
-        console.error(`general esbuild error: ${e}`);
+                        console.log("finished building");
+                      } catch (e) {
+                        console.error(`general esbuild error: ${e}`);
 
-        process.exit(1);
-      }
-    })();
-  }
-})();
+                        process.exit(1);
+                      }
+                    })();
+                  }
+                })();
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="js">
+                // "esbuild@0.20.2"
+                // "esbuild-plugin-sass@1.0.1"
+                const esbuild = require("esbuild");
+                const sassPlugin = require("esbuild-plugin-sass");
+                const fs = require("fs");
 
-          
-        </script>
+                const entryPoints = ["app/front.entry.js"];
+                const outfile = "public/dist/front.bundle.js";
+
+                const config = {
+                  entryPoints,
+                  outfile,
+                  bundle: true,
+                  target: "es2017",
+                  jsxFactory: "React.createElement",
+                  jsxFragment: "React.Fragment",
+                  plugins: [sassPlugin()],
+                  loader: { ".js": "jsx" },
+                  metafile: true,
+                };
+
+                if (typeof process.argv[2] === "string") {
+                  if (process.argv[2] !== "watch") {
+                    console.log('invalid argument - should be "watch"');
+
+                    process.exit(1);
+                  }
+
+                  (async function () {
+                    let ctx = await esbuild.context(config);
+
+                    await ctx.watch();
+
+                    console.log("watching...");
+                  })();
+                } else {
+                  (async function () {
+                    try {
+                      const result = await esbuild.build(config);
+
+                      const stats = await esbuild.analyzeMetafile(result.metafile, {
+                        verbose: true,
+                      });
+
+                      console.log(stats);
+
+                      console.log("finished building");
+                    } catch (e) {
+                      console.error(`general esbuild error: ${e}`);
+
+                      process.exit(1);
+                    }
+                  })();
+                }
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="sh">
+
+                yarn add uint8-to-b64
+
+                node node_modules/.bin/esbuild libs/line.entry.js --bundle --outfile=dist/index.js --format=iife --loader:.js=js
+
+                cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js
+                import base from "uint8-to-b64";
+                window.base = base;
+                EEE
+              </script>
+            </div>
+          </div>
         </div>
-        <div>
-        <script type="editor" data-lang="js">
-          // "esbuild@0.20.2"
-          // "esbuild-plugin-sass@1.0.1"
-          const esbuild = require("esbuild");
-          const sassPlugin = require("esbuild-plugin-sass");
-          const fs = require("fs");
-
-          const entryPoints = ["app/front.entry.js"];
-          const outfile = "public/dist/front.bundle.js";
-
-          const config = {
-            entryPoints,
-            outfile,
-            bundle: true,
-            target: "es2017",
-            jsxFactory: "React.createElement",
-            jsxFragment: "React.Fragment",
-            plugins: [sassPlugin()],
-            loader: { ".js": "jsx" },
-            metafile: true,
-          };
-
-          if (typeof process.argv[2] === "string") {
-            if (process.argv[2] !== "watch") {
-              console.log('invalid argument - should be "watch"');
-
-              process.exit(1);
-            }
-
-            (async function () {
-              let ctx = await esbuild.context(config);
-
-              await ctx.watch();
-
-              console.log("watching...");
-            })();
-          } else {
-            (async function () {
-              try {
-                const result = await esbuild.build(config);
-
-                const stats = await esbuild.analyzeMetafile(result.metafile, {
-                  verbose: true,
-                });
-
-                console.log(stats);
-
-                console.log("finished building");
-              } catch (e) {
-                console.error(`general esbuild error: ${e}`);
-
-                process.exit(1);
-              }
-            })();
-          }
-        </script>
-        </div>
-      <div>
-        <script type="editor" data-lang="sh">
-
-          yarn add uint8-to-b64
-
-          node node_modules/.bin/esbuild libs/line.entry.js --bundle --outfile=dist/index.js --format=iife --loader:.js=js
-
-          cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js
-          import base from "uint8-to-b64";
-          window.base = base;
-          EEE
-        </script>
-      </div>
-    </div>
-</div>
-
-
-
-        
 
         <h2>Server-Sent Events - return json chunks from server and event handling then in the browser</h2>
         <a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events"

@@ -303,7 +303,6 @@
               uuidgen | tr '[:upper:]' '[:lower:]'
               or register alias
               alias uuid="(set -x && uuidgen | tr '[:upper:]' '[:lower:]')"
-              
           </script>
 
           <h2>Bartender 4 (Menu bar Menubar icons management tool)</h2>
@@ -343,7 +342,7 @@
 
                 # to the the icon for iterm
                 open /Applications/iTerm.app/Contents/Resources/
-            
+
                 # the main script for Automator
                 finderPath=$(osascript -e 'tell application "Finder" to get the POSIX path of (target of front window as alias)')
                 open -n -a /Applications/iTerm.app --args "$finderPath"

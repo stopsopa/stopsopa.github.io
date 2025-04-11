@@ -3253,10 +3253,10 @@ negotiator@0.6.3:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.3.tgz#58e323a72fedc0d6f9cd4d31fe49f51479590ccd"
   integrity sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==
 
-nlab@^0.16.2:
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/nlab/-/nlab-0.16.2.tgz#63e38df0c8051ae5fd6fbc6d334eaa70dab8be24"
-  integrity sha512-qrss/aRcyxBSOEdxEMaOQ8fkCasKfbQ/1kHMJHJdTNFvZ6lwp0iOZaVWHMN59LUvS3zAuqLgJBL8MRGT0MbWeQ==
+nlab@^0.17.0:
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/nlab/-/nlab-0.17.0.tgz#1da4c2b161b7c05af27ba818fb4c60130c0fe57d"
+  integrity sha512-v40XI+OKu1HDnN59ZTbXEPt93u9KDG53T8dKJMIdi+hw9qXoJnAI7CgOYmkqFkkl55vr8xoX6ISkVYJWwGRXuQ==
   dependencies:
     inspc "^0.0.19"
     md5 "^2.2.1"

@@ -192,6 +192,15 @@ app.use(async (ctx, next) => {
     log(`ctx.url >${url}<`);
   }
 
+  if (url === "/preprocessed.js") {
+    ctx.set("Content-Type", "application/javascript");
+
+    ctx.body = `
+window.testServer = true;    
+`;
+    return;
+  }
+
   if (url === "/healthcheck") {
     ctx.body = "jasmine healthy";
     return;

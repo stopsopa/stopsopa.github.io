@@ -13,7 +13,7 @@
 //   xx <command_name>
 // to override confirm: true
 //   XXCONFIRM=false xx <command_name>
-const S="\\\\"
+const S = "\\\\";
 
 module.exports = (setup) => {
   return {
