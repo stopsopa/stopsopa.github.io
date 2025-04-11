@@ -14,6 +14,8 @@
 // to override confirm: true
 //   XXCONFIRM=false xx <command_name>
 
+const S="\\\\"
+
 module.exports = (setup) => {
   return {
     help: {
@@ -299,6 +301,40 @@ export NODE_OPTIONS=""
 finds all *.inject.js, produces next them *.injected.js
 in search for  injector: path/to_file.(js|txt|any...)
 `,
+      confirm: false,
+    },
+    [`jasmine`]: {
+      command: `
+set -e   
+export NODE_OPTIONS=""  
+cat <<EEE
+
+/bin/bash jasmine/test.sh --env .env
+
+NODE_API_PORT=4273 /bin/bash jasmine/test.sh --env .env -- --target docker
+
+NODE_API_PORT=4273 /bin/bash jasmine/test.sh ${S}
+      --env .env ${S}
+      --filter "grep template.jasmine.unit.js" ${S}
+      -- --target docker 
+
+NODE_API_PORT=4273 /bin/bash jasmine/test.sh ${S}
+      --stay ${S}
+      --env .env ${S}
+      --test jasmine/lib/template.jasmine.unit.js ${S}
+      --  ${S}
+      -- --debug
+
+NODE_API_PORT=4273 /bin/bash jasmine/test.sh ${S}
+      --stay ${S}
+      --env .env ${S}
+      --filter "grep template.jasmine.unit.js" ${S}
+      --  ${S}
+      -- --debug
+
+EEE
+`,
+      description: `examples of running jasmine tests`,
       confirm: false,
     },
     ...setup,
