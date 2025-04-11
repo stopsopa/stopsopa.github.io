@@ -149,6 +149,9 @@ const config = {
       name: "firefox",
       use: {
         ...devices["Desktop Firefox"],
+        launchOptions: {
+          args: ["--ignore-certificate-errors"], // https://stackoverflow.com/a/76610601
+        },
       },
     },
     // { // too much problems with running tests - commenting out

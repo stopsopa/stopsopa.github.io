@@ -15,8 +15,6 @@
 //   XXCONFIRM=false xx <command_name>
 const S="\\\\"
 
-const S="\\\\"
-
 module.exports = (setup) => {
   return {
     help: {
