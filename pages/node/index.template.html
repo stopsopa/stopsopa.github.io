@@ -4411,6 +4411,16 @@ function promiseStdin() {
                   getIntegerThrow,
                 } from "./env.ts";
 
+                const {
+                  mockEnv,
+                  get,
+                  getDefault,
+                  getIntegerThrowInvalid,
+                  getIntegerDefault,
+                  getIntegerThrow,
+                  getThrow,
+                } = rquire("./env.ts");
+
                 const host = getThrow("HOST");
 
                 const port = getIntegerThrow("PORT");
