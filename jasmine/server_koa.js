@@ -192,7 +192,7 @@ app.use(async (ctx, next) => {
     log(`ctx.url >${url}<`);
   }
 
-  if (url === "/preprocessed.js") {
+  if (url.includes("/preprocessed.js")) {
     ctx.set("Content-Type", "application/javascript");
 
     ctx.body = `
