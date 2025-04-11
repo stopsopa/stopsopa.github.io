@@ -13,6 +13,7 @@
 //   xx <command_name>
 // to override confirm: true
 //   XXCONFIRM=false xx <command_name>
+const S="\\\\"
 
 module.exports = (setup) => {
   return {
@@ -88,28 +89,28 @@ cat <<EEE
 
 NODE_API_PORT=4273 /bin/bash jasmine/test.sh --env .env -- --target docker
 
-NODE_API_PORT=4273 /bin/bash jasmine/test.sh \
-      --env .env \
-      --filter "grep aes.jasmine.unit" \
+NODE_API_PORT=4273 /bin/bash jasmine/test.sh ${S}
+      --env .env ${S}
+      --filter "grep template.jasmine.unit.js" ${S}
       -- --target docker 
 
-NODE_API_PORT=4273 /bin/bash jasmine/test.sh \
-      --stay \
-      --env .env \
-      --test pages/encryptor/aes.jasmine.unit.js
-      --  \
+NODE_API_PORT=4273 /bin/bash jasmine/test.sh ${S}
+      --stay ${S}
+      --env .env ${S}
+      --test jasmine/lib/template.jasmine.unit.js ${S}
+      --  ${S}
       -- --debug
 
-NODE_API_PORT=4273 /bin/bash jasmine/test.sh \
-      --stay \
-      --env .env \
-      --filter "grep aes.jasmine.unit" 
-      --  \
+NODE_API_PORT=4273 /bin/bash jasmine/test.sh ${S}
+      --stay ${S}
+      --env .env ${S}
+      --filter "grep template.jasmine.unit.js" ${S}
+      --  ${S}
       -- --debug
 
 EEE
 `,
-      description: `helper script running all unit jest tests`,
+      description: `examples of running jasmine tests`,
       confirm: false,
     },
     [`testall`]: {
