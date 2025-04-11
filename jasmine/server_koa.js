@@ -189,15 +189,15 @@ app.use(async (ctx, next) => {
 
     fs.writeFileSync(staticFile, html);
   } else {
-    log(`ctx.url >${ctx.url}<`);
+    log(`ctx.url >${url}<`);
   }
 
-  if (ctx.url === "/healthcheck") {
+  if (url === "/healthcheck") {
     ctx.body = "jasmine healthy";
     return;
   }
 
-  if (ctx.url === "/exit") {
+  if (url === "/exit") {
     process.exit();
   }
 
