@@ -196,7 +196,7 @@ _EVAL="$(trim "$_EVAL")"
 
 if [ "${ENVFILE}" = "" ]; then
 
-  ec "error: --env ENVFILE is not defined"
+  ec "error: --env >${ENVFILE}< is not defined"
 
   exit 1;
 fi
@@ -280,7 +280,7 @@ function cleanup {
 
     curl -k -sS "${SERVER}/exit" 2>/dev/null
 
-    # unlink "${ASSETLIST}" 2>/dev/null || true
+    unlink "${ASSETLIST}" 2>/dev/null || true
 }
 
 cleanup
@@ -292,29 +292,11 @@ sleep 0.2
 # set -x
 set -e
 
-# (
-#     cd "${_DIR}" 
-#     unlink bundles/node_modules 2>/dev/null || true
-#     mkdir -p bundles
-#     ln -s ../../node_modules/ bundles/node_modules
-# )
-
-function es {
-  # "${_DIR}/../node_modules/.bin/esbuild" "${1}" --allow-overwrite --bundle --sourcemap --target=chrome80 --outfile="${2}"
-  NODE_OPTIONS="" node "${ROOT}/node_modules/.bin/esbuild" "${1}" --allow-overwrite --bundle --target=chrome80 --outfile="${2}"
-}
-
-# https://esbuild.github.io/getting-started/#install-esbuild
-# es "${_DIR}/jasmine.js" "${_DIR}/bundles/jasmine.js"
-# no need for above now, since we are not importing anything then we can use raw file - no need to bundle
-
 function build {
 
-  OUTPUT="$(NODE_OPTIONS="" node "${_DIR}/filename_transformer.cjs" "${1}")"  
+  OUTPUT="$(NODE_OPTIONS="" node "${_DIR}/filename_transformer.js" "${1}")"  
 
-  ROOT_RELATIVE="$(NODE_OPTIONS="" node "${_DIR}/filename_transformer.cjs" "${1}" "${ROOT}")"
-
-  es "${1}" "${OUTPUT}" 
+  ROOT_RELATIVE="$(NODE_OPTIONS="" node "${_DIR}/filename_transformer.js" "${1}" "${ROOT}")"
 
   echo "${ROOT_RELATIVE}" >> "${ASSETLIST}"
 }
@@ -350,33 +332,20 @@ if [ "${LIST}" = "" ]; then
 EEE
 
   exit 1
-
-else
-  COUNT="$(echo "${LIST}" | wc -l)"
-  COUNT="$(trim "${COUNT}")"
-  I="1"
-  while read -r TESTFILE
-  do
-
-    ec "esbuild ${I}/${COUNT} test '${TESTFILE}'"
-
-    build "${TESTFILE}"
-
-    I="$(($I + 1))"
-
-  done <<< "${LIST}"
 fi
 
-# echo "ASSETLIST>${ASSETLIST}<"
+echo "${LIST}" | node "${_DIR}/esbuild.js"  
 
-# exit 8
+echo "${LIST}" | NODE_OPTIONS="" node "${_DIR}/filename_transformer.js" "${ROOT}" > "${ASSETLIST}"
 
 cat <<EEE
 
-node "${_DIR}/server_koa.js" --web "${ROOT}" --asset_list "${ASSETLIST}" --env "${ENVFILE}" 
-
-check manually chealtcheck:
-  curl -k -sS "${SERVER}/healthcheck"
+  If launching server takes too long check file:
+  
+    ${LOGFILE}
+  
+  also you might as well check healthcheck manually:
+    curl -k -sS "${SERVER}/healthcheck"
 
 EEE
 
