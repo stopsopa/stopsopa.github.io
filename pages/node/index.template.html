@@ -670,6 +670,8 @@ function promiseStdin() {
 (async function () {
   const data = await promiseStdin();
 
+  // WARNING: in order to respect entryNames and make esbuild to put our output file 
+  // WARNING: next to entry file at least two files have to be given on input
   const entryPoints = data.split("\n");
 
   const config = {
