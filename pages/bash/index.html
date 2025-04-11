@@ -1826,6 +1826,18 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           # https://unix.stackexchange.com/a/350090
           find . -type d -name 'node_modules' -prune -o -type d -name .git -print
               # if this is directory and it's name is node_modules then don't enter it, otherwise, if this is directory and it's name is .git, print it's pathname
+              # another example with more than one directory skipped
+              find . \( \
+                -type d -name node_modules -prune -o \
+                -type d -name .git -prune -o \
+                -type d -name coverage -prune \
+              \) \
+              -o \
+              -type f \( \
+                -name '*.jasmine.unit.js' -o \
+                -name '*.jasmine.js' \
+              \) \
+              -print 
 
               # speed test against huge directory with many project with many big node_modules directories
               find . -type d -name .git ! -path "*/node_modules/*"                        0.89s user 19.89s system 43% cpu 47.779 total
