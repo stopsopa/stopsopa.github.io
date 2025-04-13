@@ -39,6 +39,24 @@ EEE
       source: true,
       confirm: false,
     },
+    [`test server`]: {
+      command: `
+COMMANDS="$(cat <<-EOF
+
+TEST_ONE="one" TEST_TWO="two" node src/cli.js --mask '^TEST_' examples/preprocessed.js --debug      
+HOST="0.0.0.0" PORT="8433" node server.js
+
+EOF
+)"   
+echo "\$COMMANDS"
+
+read -p "\n      Press enter to continue\n"
+set -e
+eval "\$COMMANDS"
+
+`,
+      confirm: false,
+    },
     [`start`]: {
       command: `
 set -e        
