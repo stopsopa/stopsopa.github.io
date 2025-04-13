@@ -670,15 +670,9 @@
                 (async function () {
                   const data = await promiseStdin();
 
-<<<<<<< HEAD
-  // WARNING: in order to respect entryNames and make esbuild to put our output file 
-  // WARNING: next to entry file at least two files have to be given on input
-  const entryPoints = data.split("\n");
-=======
                   // WARNING: in order to respect entryNames and make esbuild to put our output file
                   // WARNING: next to entry file at least two files have to be given on input
                   const entryPoints = data.split("\n");
->>>>>>> af15e3d5 (j)
 
                   const config = {
                     entryPoints,
