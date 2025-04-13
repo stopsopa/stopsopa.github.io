@@ -2384,11 +2384,13 @@
 
           import { parseArgs } from "node:util";
           // const { parseArgs } = require('node:util');
+
+          // NOTICE: pay attention to typescript hints when defining new argument
           const { values, positionals } = parseArgs({
-            // node args.js --bar abc.txt bcd.txt --file cde.txt --file def.txt --color
-            // node args.js --bar abc.txt bcd.txt --file cde.txt --file=def.txt --color   # yes --option=value is allowed too
-            // node args.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --color
-            // node args.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --no-color
+            // node cli.js --bar abc.txt bcd.txt --file cde.txt --file def.txt --color
+            // node cli.js --bar abc.txt bcd.txt --file cde.txt --file=def.txt --no-color   # yes --option=value is allowed too
+            // node cli.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --color
+            // node cli.js -b b abc.txt bcd.txt --file cde.txt --file def.txt --no-color --dryrun
             args: process.argv.slice(2),
             options: {
               bar: {
@@ -2397,9 +2399,10 @@
               },
               file: {
                 type: "string",
-                multiple: true,
+                multiple: true, // will turn into an array - even when one time given --file [file]
               },
-              color: { type: "boolean" },
+              color: { type: "boolean", default: true }, // --no-color switches to false
+              dryrun: { type: "boolean", default: false }, // --dryrun switches to true
             },
             /*, tokens: true, */
             strict: true,
@@ -2408,9 +2411,11 @@
             // allowNegative seems to be working only since node 20.17.0,
             // if not then the solution is here: https://nodejs.org/api/util.html#parseargs-tokens
           });
-          if (typeof values.color === "undefined") {
-            throw new Error("--color is not defined");
-          }
+          
+          console.log({
+              positionals,
+              values,
+          })
           // {
           //     "values": {
           //         "bar": "b",
