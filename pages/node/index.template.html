@@ -792,6 +792,13 @@
                 import base from "uint8-to-b64";
                 window.base = base;
                 EEE
+
+                # transpile single fine from commonjs to esm
+                  node_modules/.bin/esbuild src/env.js --bundle --platform=browser --format=esm --outfile=src/env.mjs
+
+                # transpile single file from esm to commonjs
+                  node_modules/.bin/esbuild src/env.mjs --bundle --platform=browser --format=cjs --outfile=src/env.js
+                
               </script>
             </div>
           </div>
