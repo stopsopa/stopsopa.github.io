@@ -27,6 +27,13 @@ export function mockEnv(map) {
 }
 
 /**
+ * @returns {Record<string, string>}
+ */
+export function all() {
+  return env;
+}
+
+/**
  * @param {string} key
  * @returns {boolean}
  */
