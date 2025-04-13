@@ -3154,6 +3154,12 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         <h2>HEREDOC:</h2>
         <script type="editor" data-lang="sh">
 
+          FIND="$(cat <<-EOF
+          test
+          dupa
+          EOF
+          )"
+
           cat <<EOF | grep def
 
           abc
