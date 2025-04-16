@@ -219,6 +219,13 @@
           kustomize build kube/overlays/cluster-prod-on-prem/ | yq e '. | select(.kind == "Service" and .metadata.name =="deploy-api-prod")'
         </script>
 
+        <h2>Ingress</h2>
+        <script type="editor" data-lang="sh">
+
+          https://www.youtube.com/watch?v=5D4Eh5XBLxU
+          
+        </script>
+        
         <h2>Secrets</h2>
         <script type="editor" data-lang="sh">
 
