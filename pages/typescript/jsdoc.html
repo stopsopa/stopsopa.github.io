@@ -44,6 +44,14 @@
           tsc --listFiles --p {pathToTsConfigJson}
             // to list all files included. from: https://docs.joshuatz.com/cheatsheets/js/jsdoc/#vscode-type-safety-jsdoc---issues
         </script>
+        <h2>Examples</h2>
+        <script type="editor" data-lang="js">
+
+          const keys = /** @type {(keyof typeof result)[]} */ (Object.keys(result));                  
+          for (const key of keys) {
+          }
+          
+        </script>
       </div>
     </div>
     <script type="module" src="/js/github.js"></script>
