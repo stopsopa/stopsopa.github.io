@@ -127,14 +127,13 @@ do
 
     running: 
                     cd "${_PWD}"
-                    eval "${_EVAL}"
-                    # open -a SourceTree .
+                    eval ${_EVAL}
 
 EEE
 
         (
             cd "${_PWD}"
-            eval "${_EVAL}"
+            eval ${_EVAL}
             # open -a SourceTree .
         )
         
