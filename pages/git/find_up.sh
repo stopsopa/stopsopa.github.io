@@ -30,8 +30,8 @@ function collect {
       #)"
     fi
   fi
-  echo "                PARAMS1>>$PARAMS<<"
-  echo "                _EVAL 2>>$_EVAL<<"
+  # echo "                PARAMS1>>$PARAMS<<"
+  # echo "                _EVAL 2>>$_EVAL<<"
 }
 while (( "$#" )); do
   case "$1" in
