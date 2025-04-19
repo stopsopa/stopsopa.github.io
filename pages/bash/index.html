@@ -236,6 +236,15 @@
             # you typed f g.
             # you typed h.
           </script>
+          <h2>copy</h2>
+          <script type="editor" data-lang="sh">
+
+            # cp is weird across different OS'es
+            # not sure what is wrong with me but using tar for this purpose seems more logical to me
+            tar cf - -C ../override --exclude=node_modules --exclude=.git . | tar xf -
+              # WARNING; first enter target directory, then point to the source using -C
+            
+          </script>
           <h2>useful</h2>
           <script type="editor" data-lang="sh">
             #!/usr/bin/env bash
