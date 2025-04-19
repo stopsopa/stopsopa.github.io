@@ -1242,6 +1242,42 @@
               basename,
             };
           }
+
+          // or more universal function like
+   
+          function extract(__filename) {
+            
+            const __dirname = path.dirname(__filename);
+          
+            const filename = path.basename(__filename, path.extname(__filename));
+          
+            const extension = path.extname(__filename).substring(1);
+          
+            const basename = path.basename(__filename);
+          
+            return {
+              __filename,
+              __dirname,
+              filename,
+              extension,
+              basename,
+            };
+          }
+          // some results
+          { // for abc/def/ghi
+            "__filename": "abc/def/ghi",
+            "__dirname": "abc/def",
+            "filename": "ghi",
+            "extension": "",
+            "basename": "ghi"
+          }
+          { // abc/def/ghi.test.txt
+            "__filename": "abc/def/ghi.test.txt",
+            "__dirname": "abc/def",
+            "filename": "ghi.test",
+            "extension": "txt",
+            "basename": "ghi.test.txt"
+          }
         </script>
 
         <h2>htmlencode htmldecode</h2>
