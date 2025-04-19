@@ -243,6 +243,9 @@
             # not sure what is wrong with me but using tar for this purpose seems more logical to me
             tar cf - -C ../override --exclude=node_modules --exclude=.git . | tar xf -
               # WARNING; first enter target directory, then point to the source using -C
+
+            add v on pack and unpack
+              tar vcf - -C ../override . | tar vxf -
             
           </script>
           <h2>useful</h2>
