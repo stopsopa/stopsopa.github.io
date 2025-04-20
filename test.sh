@@ -47,7 +47,9 @@ set -x
 # )";
 
 TEST="$(cat <<END
-node node_modules/.bin/vitest --config vitest.config.ts run $@
+
+node node_modules/.bin/vitest --config vitest.config.ts --coverage run $@
+
 END
 )";
 

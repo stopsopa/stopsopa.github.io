@@ -89,6 +89,8 @@ node esbuild.config.js
 
 /bin/bash esbuild.sh
 
+/bin/bash .github/ytlinksfix.sh
+
 # /bin/bash pages/kubernetes/compress.sh
 
 /bin/bash bash/substitute-variables-bash.sh gitstorage-core.sh -- \
