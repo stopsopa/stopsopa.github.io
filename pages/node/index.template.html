@@ -626,7 +626,6 @@
             <span class="active">multiple files</span>
             <span>react & sass</span>
             <span>bundle for browser</span>
-            <span>nlab</span>
           </div>
           <div data-tabs>
             <div>
@@ -799,13 +798,6 @@
 
                 # transpile single file from esm to commonjs
                   node_modules/.bin/esbuild src/env.mjs --bundle --platform=browser --format=cjs --outfile=src/env.js
-                
-              </script>
-            </div>
-            <div>
-              <script type="editor" data-lang="sh">
-
-                https://github.com/stopsopa/nlab/blob/master/src/iterateStreamLineByLine.js
                 
               </script>
             </div>
@@ -996,6 +988,8 @@
 
         <h2>read entire stdin into string variable</h2>
         <script type="editor" data-lang="sh">
+
+          # WARNING: see also nlab https://github.com/stopsopa/nlab/blob/master/src/iterateStreamLineByLine.js
 
           import readline from 'readline';
 
