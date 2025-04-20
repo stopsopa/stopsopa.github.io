@@ -3,8 +3,8 @@ import { defineConfig } from "vitest/config";
 // https://vitest.dev/guide/#configuring-vitest
 export default defineConfig({
   test: {
-    name: 'test',
-    environment: 'node', // that is actually default: 
+    name: "test",
+    environment: "node", // that is actually default:
     coverage: {
       // provider: "istanbul", // or 'v8'
       // provider: "v8",

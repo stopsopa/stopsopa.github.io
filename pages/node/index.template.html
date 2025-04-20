@@ -622,7 +622,7 @@
         <h2>esbuild</h2>
 
         <div data-vanilla-tabs>
-          <div data-buttons>            
+          <div data-buttons>
             <span class="active">multiple files</span>
             <span>react & sass</span>
             <span>bundle for browser</span>
@@ -798,7 +798,6 @@
 
                 # transpile single file from esm to commonjs
                   node_modules/.bin/esbuild src/env.mjs --bundle --platform=browser --format=cjs --outfile=src/env.js
-                
               </script>
             </div>
           </div>
@@ -1246,17 +1245,17 @@
           }
 
           // or more universal function like
-   
+
           function extract(__filename) {
-            
+
             const __dirname = path.dirname(__filename);
-          
+
             const filename = path.basename(__filename, path.extname(__filename));
-          
+
             const extension = path.extname(__filename).substring(1);
-          
+
             const basename = path.basename(__filename);
-          
+
             return {
               __filename,
               __dirname,
@@ -2459,7 +2458,7 @@
             // allowNegative seems to be working only since node 20.17.0,
             // if not then the solution is here: https://nodejs.org/api/util.html#parseargs-tokens
           });
-          
+
           console.log({
               positionals,
               values,
