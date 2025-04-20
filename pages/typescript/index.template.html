@@ -109,8 +109,8 @@
             "exports": {
               ".": {
                 "types": "./dist/types/env.d.ts", // have to be first, othervise vitest will generate warning: https://i.imgur.com/gFDyLC3.png
-                "import": "./dist/esm/env.js",
-                "require": "./dist/cjs/env.cjs"
+                "import": "./dist/esm/env.js", // this will be used if in consuming library "type": "module"
+                "require": "./dist/cjs/env.cjs" // this will be used if in consuming library "type" not defined
               },
               "./*": {
                 "types": "./dist/types/*.d.ts",
