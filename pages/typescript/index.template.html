@@ -96,6 +96,30 @@
 
           # other examples of configuration for publish
             https://github.com/kesla/hash-of-directory/tree/main
+
+          # for example look: https://github.com/stopsopa/envprocessor
+          {
+            ...
+            "license": "MIT",
+            "module": "./dist/cjs/env.cjs", // that is just for older nodes, but not required for new
+            "types": "./dist/types/env.d.ts",
+            "bin": {
+              "envprocessor": "./dist/esm/cli.js"
+            },
+            "exports": {
+              ".": {
+                "types": "./dist/types/env.d.ts", // have to be first, othervise vitest will generate warning: https://i.imgur.com/gFDyLC3.png
+                "import": "./dist/esm/env.js",
+                "require": "./dist/cjs/env.cjs"
+              },
+              "./*": {
+                "types": "./dist/types/*.d.ts",
+                "import": "./dist/esm/*.js",
+                "require": "./dist/cjs/*.cjs"
+              }
+            },
+            ...
+          }
         </script>
         <h2>type Promise</h2>
         <script type="editor" data-lang="sh">
