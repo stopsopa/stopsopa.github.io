@@ -8,8 +8,8 @@ import * as dotenv from "dotenv";
 
 import { get, has, getDefault, getThrow, getIntegerThrowInvalid, getIntegerDefault, getIntegerThrow } from "nlab/env";
 
-// from: https://typeofnan.dev/how-to-use-http2-with-express/
-import spdy from "spdy";
+// Replace SPDY with native HTTPS
+import https from "https";
 
 import serveIndex from "serve-index";
 
@@ -96,23 +96,40 @@ function createServer(protocol = "http") {
 
   let server;
   if (protocol === "https") {
-    server = spdy.createServer(
-      {
-        key: fs.readFileSync(`./server.key`),
-        cert: fs.readFileSync(`./server.cert`),
-      },
-      app
-    );
+    const options = {
+      key: fs.readFileSync(`./server.key`),
+      cert: fs.readFileSync(`./server.cert`),
+      // HTTP1.1 only to avoid protocol errors
+      maxVersion: "TLSv1.3",
+      minVersion: "TLSv1.2",
+    };
+
+    server = https.createServer(options, app);
+
+    // Error handling for HTTPS server errors
+    server.on("error", (err) => {
+      console.error("HTTPS Server error:", err);
+    });
+
+    // Handle socket errors
+    server.on("clientError", (err, socket) => {
+      console.error("Client error:", err);
+      if (socket.writable) {
+        socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
+      }
+    });
   } else {
     server = app;
   }
 
   server.listen(port, () => {
-    log(`
- 🌎  Server is running ${protocol.toUpperCase()}
-        ${protocol}://${host}:${port}
-        ${protocol}://${process.env.LOCAL_HOSTS}:${port}/index.html
-`);
+    setTimeout(() => {
+      log(`
+   🌎  Server is running ${protocol.toUpperCase()}
+          ${protocol}://${host}:${port}
+          ${protocol}://${process.env.LOCAL_HOSTS}:${port}/index.html
+  `);
+    }, 4000);
   });
 }
 
