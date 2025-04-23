@@ -101,6 +101,8 @@
 
           # for example look: https://github.com/stopsopa/envprocessor
           # INFO: so far this reporsitory seems to do the best job exporting CJS, ESM and types the best I can
+          # some examples of good config:
+          # mkdir __examples && cd __examples && echo "{}" > package.json && yarn add dotenv axios zod
           {
             ...
             "license": "MIT",
@@ -109,6 +111,9 @@
             "bin": {
               "envprocessor": "./dist/esm/cli.js"
             },
+            "types": "./dist/types/env.d.ts", 
+            // only when I've added this line ts icon have appeared in the npm: 
+            // https://i.imgur.com/0SACeIC.png
             "exports": {
               ".": {
                 "types": "./dist/types/env.d.ts", // have to be first, othervise vitest will generate warning: https://i.imgur.com/gFDyLC3.png
