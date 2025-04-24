@@ -330,6 +330,53 @@
         <h2>ts-node & tsimp & tsx && SWC</h2>
         <script type="editor" data-lang="python">
 
+          // https://youtu.be/-7dNs1ggKRs
+          cat <<EEE > tsconfig.check.json
+          {
+              "extends": "./tsconfig.json",
+              "compilerOptions": {
+                "target": "esnext",
+                "module": "esnext",
+                "noEmit": true
+              },
+              "exclude": ["vitest.config.ts", "server"]
+          }
+          EEE
+          cat <<EEE > tsx.sh
+          set -e;
+          node node_modules/.bin/tsc -p tsconfig.check.json 
+          # before node 20??
+          node node_modules/.bin/ts-node-esm ${@}
+          # since node 20?
+          node --no-warnings=ExperimentalWarning --loader ts-node/esm/transpile-only ${@}
+          EEE
+
+          // or instead of above
+          cat <<EEE > tsx.sh
+          set -e
+          node node_modules/.bin/tsc -p tsconfig.check.json 
+          node node_modules/.bin/tsx 
+
+          EEE
+
+          // ====== tsx.sh ====== vvv
+          wget --help 1> /dev/null 2> /dev/null
+          if [ "$?" = "0" ]; then
+            wget --no-cache -O "tsx.sh" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/tsx.sh"
+          else # curl
+            curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/tsx.sh" -o "tsx.sh"
+          fi
+          if [ "$(printf "sha384-$(cat "tsx.sh" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/typescript/tsx.sh" ]; then
+            echo "checksum verified"
+            /bin/bash tsx.sh
+          else
+            echo "checksum corrupted - deleting file"
+            rm "tsx.sh"
+          fi
+          // ====== tsx.sh ====== ^^^
+
+          // ------- older
+
           node -r ts-node/register --experimental-loader ./get_format.mjs main.ts
             # from: https://gist.github.com/Bnaya/0d544f4fba966af37da079ee7e8ec08d
 
