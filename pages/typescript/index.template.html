@@ -368,7 +368,13 @@
           fi
           if [ "$(printf "sha384-$(cat "tsx.sh" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/typescript/tsx.sh" ]; then
             echo "checksum verified"
-            /bin/bash tsx.sh
+            cat <<EEE
+
+            Now try:
+            
+            /bin/bash tsx.sh [**/*.ts]
+
+          EEE
           else
             echo "checksum corrupted - deleting file"
             rm "tsx.sh"
