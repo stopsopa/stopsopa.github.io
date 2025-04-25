@@ -1,3 +1,5 @@
+import "../public/preprocessed.js";
+
 import {
   all,
   get,
@@ -336,6 +338,10 @@ body .github-profile:hover {
 
     console.log("setting mockEnv(window.process.env) after loading preprocessed.js", window.process.env);
     mockEnv(window.process.env);
+
+    if (Object.keys(all() || {}).length === 0) {
+      throw new Error(`js/github.js error: all() can't return 0 - load preprocessed.js first`);
+    }
 
     await loadJs("polyfill", "/noprettier/polyfill.js", function () {
       try {
