@@ -36,7 +36,9 @@
       <br />
       <a href="https://console.firebase.google.com/">https://console.firebase.google.com/</a>
     </div>
-    <script src="/public/preprocessed.js"></script>
+    <script src="/public/preprocessed.js?003next/index.html"></script>
+    <!-- despite get parameter preprocessed.js will be browser cached anyway even when loading more than one. Even when mixing techniques -> CJS | ESM -->
+
     <script src="/dist/firebase.core.bundle.js"></script>
     <script src="/libs/IndexedDBPromised.js"></script>
     <script src="/dist/003next.bundle.js"></script>

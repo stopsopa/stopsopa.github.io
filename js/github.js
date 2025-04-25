@@ -1,4 +1,5 @@
-import "../public/preprocessed.js";
+import "../public/preprocessed.js?github-esm";
+// despite get parameter preprocessed.js will be browser cached anyway even when loading more than one. Even when mixing techniques -> CJS | ESM
 
 import {
   all,
@@ -328,7 +329,8 @@ body .github-profile:hover {
   }
 
   try {
-    await loadJs("preprocessed.js", "/public/preprocessed.js", function () {
+    await loadJs("preprocessed.js", "/public/preprocessed.js?cjs-github", function () {
+      // despite get parameter preprocessed.js will be browser cached anyway even when loading more than one. Even when mixing techniques -> CJS | ESM
       try {
         return typeof window?.process?.env === "object";
       } catch (e) {

@@ -1,4 +1,5 @@
-import "../public/preprocessed.js";
+import "../public/preprocessed.js?builderHeader";
+// despite get parameter preprocessed.js will be browser cached anyway even when loading more than one. Even when mixing techniques -> CJS | ESM
 
 import {
   all,

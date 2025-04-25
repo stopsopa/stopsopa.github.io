@@ -70,7 +70,8 @@
       </div>
     </div>
 
-    <script src="/public/preprocessed.js"></script>
+    <script src="/public/preprocessed.js?todo.html"></script>
+    <!-- despite get parameter preprocessed.js will be browser cached anyway even when loading more than one. Even when mixing techniques -> CJS | ESM -->
     <script src="/dist/firebase.core.bundle.js"></script>
     <script src="/dist/todo.bundle.js"></script>
     <script type="module" src="/js/github.js"></script>
