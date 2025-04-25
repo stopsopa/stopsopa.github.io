@@ -2,6 +2,18 @@ import path from "path";
 
 import { fileURLToPath } from "url";
 
+import {
+  all,
+  get,
+  has,
+  getDefault,
+  getThrow,
+  getIntegerThrowInvalid, // equivalent to get
+  getIntegerDefault,
+  getIntegerThrow,
+  mockEnv,
+} from "envprocessor";
+
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
 // require("dotenv").config();
@@ -32,6 +44,8 @@ if (typeof process.env.ENVFILE === "string" && process.env.ENVFILE.trim()) {
 } else {
   dotenv.config();
 }
+
+mockEnv(process.env);
 
 const protocolRegex = /^https?:\/\//;
 

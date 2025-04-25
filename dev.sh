@@ -42,6 +42,8 @@ if [ ! -d "${_DIR}/node_modules" ]; then
   yarn
 fi
 
+cp node_modules/envprocessor/dist/esm/env.js public/env.js
+
 source "${_DIR}/bash/colours.sh";
 
 # -L file       True if file exists and is a symbolic link.
@@ -66,7 +68,7 @@ if [ ! -f "${ENV}" ]; then
     exit 1
 fi
 
-source "${ENV}"
+eval "$(node bash/exportsource.js "${ENV}")"
 
 source ".env.sh"
 
@@ -100,7 +102,9 @@ _kill;
 
 trap _kill EXIT;
 
-node libs/preprocessor.js
+# node libs/preprocessor.js
+node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
+
 
 LOGFILE="${_DIR}/var/log.log"
 

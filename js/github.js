@@ -1,5 +1,18 @@
 // import env from "./preprocessed.js";
 
+import "../public/preprocessed.js";
+
+import {
+  all,
+  get,
+  has,
+  getDefault,
+  getThrow,
+  getIntegerThrowInvalid, // equivalent to get
+  getIntegerDefault,
+  getIntegerThrow,
+} from "/public/env.js";
+
 import urlwizzard from "./urlwizzard.js";
 
 import manipulation from "./manipulation.js";
@@ -21,6 +34,17 @@ import buildHeader from "./buildHeader.js";
 import buildFooter from "./buildFooter.js";
 
 import doace from "./doace.js";
+
+window.env = {
+  all,
+  get,
+  has,
+  getDefault,
+  getThrow,
+  getIntegerThrowInvalid, // equivalent to get
+  getIntegerDefault,
+  getIntegerThrow,
+};
 
 window.manipulation = manipulation;
 
@@ -316,7 +340,7 @@ body .github-profile:hover {
     await Promise.all([
       loadJs("preprocessed.js", "/public/preprocessed.js", function () {
         try {
-          return typeof window.env === "function";
+          return typeof window?.process?.env === "object";
         } catch (e) {
           return false;
         }
@@ -370,7 +394,7 @@ body .github-profile:hover {
       }
     );
 
-    if (!/^https?:\/\//.test(env("GITHUB_SOURCES_PREFIX"))) {
+    if (!/^https?:\/\//.test(getThrow("GITHUB_SOURCES_PREFIX"))) {
       throw new Error(`GITHUB_SOURCES_PREFIX env var is not defined or invalid`);
     }
 
