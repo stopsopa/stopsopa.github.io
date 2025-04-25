@@ -25,8 +25,6 @@ import fs from "fs";
 // const cmd = require("./tests/tools/cmd");
 import cmd from "./lib/cmd.js";
 
-
-
 if (Object.keys(all() || {}).length === 0) {
   throw new Error(`playwright.config.js error: all() can't return 0 - load preprocessed.js first`);
 }
