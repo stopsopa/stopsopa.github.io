@@ -2661,6 +2661,13 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                   # ===== multiple traps =============== ^^^
         </script>
 
+        <h2>relative - absolute</h2>
+        <script type="editor" data-lang="sh">
+
+          ABSOLUTE="$(node --input-type commonjs -e "var p=require('path');process.stdout.write(p.resolve(\"${_DIR}\",p.resolve(\"$(pwd)\",\"${1}\")))")"
+
+          RELATIVE="$(node --input-type module -e "import {resolve,relative} from 'path';process.stdout.write(relative(\"${_DIR}\",resolve(\"$(pwd)\",\"${1}\")))")"
+        </script>
         <h2>zsh colors</h2>
 
         <script type="editor" data-lang="sh">

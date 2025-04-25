@@ -65,6 +65,7 @@ export NODE_OPTIONS=""
 `,
       description: `launch esbuild - will NOT launch browser nor IDE`,
       confirm: false,
+      source: false,
     },
     [`start + browser`]: {
       command: `
@@ -74,6 +75,7 @@ export NODE_OPTIONS=""
 `,
       description: `launch esbuild and browser tab`,
       confirm: false,
+      source: false,
     },
     [`build`]: {
       command: `
@@ -83,6 +85,7 @@ export NODE_OPTIONS=""
 `,
       description: `build is build`,
       confirm: false,
+      source: false,
     },
     [`test`]: {
       command: `
@@ -223,11 +226,14 @@ Finds all *.template.html and process them to *.rendered.html in the same locati
     [`preprocessor`]: {
       command: `
 set -e    
-export NODE_OPTIONS=""     
-node libs/preprocessor.js   
+eval "$(node bash/exportsource.js .env)"
+export NODE_OPTIONS=""
+# node libs/preprocessor.js
+node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
 `,
       description: ``,
       confirm: false,
+      source: false,
     },
     [`esbuild`]: {
       command: `

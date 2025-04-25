@@ -16,6 +16,7 @@
     "cross-fetch": "^4.0.0",
     "dotenv": "^16.4.7",
     "dotenv-up": "^1.0.32",
+    "envprocessor": "^1.8.15",
     "express": "^4.18.2",
     "firebase": "^9.17.2",
     "inspc": "^0.0.19",
