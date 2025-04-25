@@ -42,6 +42,7 @@ if [ ! -d "${_DIR}/node_modules" ]; then
   yarn
 fi
 
+mkdir -p public
 cp node_modules/envprocessor/dist/esm/env.js public/env.js
 
 source "${_DIR}/bash/colours.sh";

@@ -75,6 +75,7 @@ if [ "${EXPOSE_EXTRA_ENV_VARIABLES}" = "" ]; then
     exit 1
 fi
 
+mkdir -p public
 cp node_modules/envprocessor/dist/esm/env.js public/env.js
 
 node pages/portsregistry/lists/ports-generator.js
