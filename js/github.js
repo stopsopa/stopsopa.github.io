@@ -11,7 +11,7 @@ import {
   getIntegerThrowInvalid, // equivalent to get
   getIntegerDefault,
   getIntegerThrow,
-} from "/public/env.js";
+} from "../public/env.js";
 
 import urlwizzard from "./urlwizzard.js";
 

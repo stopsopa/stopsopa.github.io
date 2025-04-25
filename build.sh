@@ -75,9 +75,9 @@ if [ "${EXPOSE_EXTRA_ENV_VARIABLES}" = "" ]; then
     exit 1
 fi
 
-node pages/portsregistry/lists/ports-generator.js
-
 cp node_modules/envprocessor/dist/esm/env.js public/env.js
+
+node pages/portsregistry/lists/ports-generator.js
 
 # call those together in this order vvv
 /bin/bash uglify.sh

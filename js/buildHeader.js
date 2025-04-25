@@ -13,7 +13,7 @@ import {
   getIntegerThrowInvalid, // equivalent to get
   getIntegerDefault,
   getIntegerThrow,
-} from "/public/env.js";
+} from "../public/env.js";
 
 export default async function buildHeader() {
   document.querySelector("body > header") ||

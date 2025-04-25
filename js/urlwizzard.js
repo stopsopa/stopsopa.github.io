@@ -15,7 +15,7 @@ import {
   getIntegerThrowInvalid, // equivalent to get
   getIntegerDefault,
   getIntegerThrow,
-} from "/public/env.js";
+} from "../public/env.js";
 
 // look also to .github/urlwizzard.sh
 const schema = location.protocol.replace(/^([a-z]+).*$/, "$1");
