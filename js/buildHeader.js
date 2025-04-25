@@ -4,6 +4,17 @@ import log from "./log.js";
 
 import manipulation from "./manipulation.js";
 
+import {
+  all,
+  get,
+  has,
+  getDefault,
+  getThrow,
+  getIntegerThrowInvalid, // equivalent to get
+  getIntegerDefault,
+  getIntegerThrow,
+} from "/public/env.js";
+
 export default async function buildHeader() {
   document.querySelector("body > header") ||
     (function () {
@@ -18,7 +29,7 @@ export default async function buildHeader() {
         a.setAttribute("href", "/index.html");
 
         var img = document.createElement("img");
-        img.setAttribute("src", `${env("GITHUB_SOURCES_PREFIX")}/actions/workflows/pipeline.yml/badge.svg`);
+        img.setAttribute("src", `${getThrow("GITHUB_SOURCES_PREFIX")}/actions/workflows/pipeline.yml/badge.svg`);
 
         manipulation.prepend(a, img);
         // <a target="_blank"

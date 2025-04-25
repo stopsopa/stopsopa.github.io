@@ -1,3 +1,19 @@
+/**
+ * Old script - don't use it anymore
+ * Old script - don't use it anymore
+ * Old script - don't use it anymore
+ * Old script - don't use it anymore
+ * Old script - don't use it anymore
+ */
+
+console.log(`
+  
+${0} is an old script, don't use it anymore  
+  
+`);
+
+process.exit(1);
+
 import fs from "fs";
 
 import path from "path";

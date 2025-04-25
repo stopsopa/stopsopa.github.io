@@ -1,3 +1,15 @@
+/**
+ * Don't use this one anymore. use envprocessor
+ * Don't use this one anymore. use envprocessor
+ * Don't use this one anymore. use envprocessor
+ * Don't use this one anymore. use envprocessor
+ * Don't use this one anymore. use envprocessor
+ * Don't use this one anymore. use envprocessor
+ * Don't use this one anymore. use envprocessor
+ */
+
+throw new Error(`dotenv.js error: don't use this anymore`);
+
 const th = (msg) => new Error(`dotenv.js error: ${msg}`);
 /**
  * Private method to get environment variables depending on detected environment

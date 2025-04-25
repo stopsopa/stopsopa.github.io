@@ -2,6 +2,17 @@
  * requires loaded preprocess.js
  */
 
+import {
+  all,
+  get,
+  has,
+  getDefault,
+  getThrow,
+  getIntegerThrowInvalid, // equivalent to get
+  getIntegerDefault,
+  getIntegerThrow,
+} from "/public/env.js";
+
 import negotiatePort from "./negotiatePort.js";
 
 import log from "./log.js";
@@ -31,7 +42,7 @@ function replace(str) {
     .replace(/urlwizzard\.hostnegotiated/g, host)
     .replace(/urlwizzard\.portnegotiated/g, portnegotiated)
     .replace(/urlwizzard\.port/g, port)
-    .replace(/GITHUB_SOURCES_PREFIX/g, env("GITHUB_SOURCES_PREFIX"));
+    .replace(/GITHUB_SOURCES_PREFIX/g, getThrow("GITHUB_SOURCES_PREFIX"));
 }
 
 function traverseAndReplace(node) {

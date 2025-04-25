@@ -11,6 +11,17 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 
+import {
+  all,
+  get,
+  has,
+  getDefault,
+  getThrow,
+  getIntegerThrowInvalid, // equivalent to get
+  getIntegerDefault,
+  getIntegerThrow,
+} from "envprocessor";
+
 import { getDatabase, ref, child, onValue, push, update, remove, set } from "firebase/database";
 
 // import "regenerator-runtime/runtime.js";
@@ -21,7 +32,7 @@ window.firebaseCoreEntry = () => {
   function rePromise() {
     return (promise = new Promise((resolve) => {
       let inter = setInterval(() => {
-        if (typeof window.env === "function") {
+        if (typeof window?.process?.env === "object") {
           clearInterval(inter);
 
           const env = window.env;
@@ -47,17 +58,17 @@ window.firebaseCoreEntry = () => {
             // appId: "1:496172961972:web:c9363e230fede3127a07e1",
             // measurementId: "G-F78BC9VYQ5"
 
-            apiKey: env("FIREBASE_API_KEY"),
-            authDomain: env("FIREBASE_AUTH_DOMAIN"),
-            databaseURL: env("FIREBASE_DATABASE_URL"),
-            projectId: env("FIREBASE_PROJECT_ID"),
-            storageBucket: env("FIREBASE_STORAGE_BUCKET"),
-            messagingSenderId: env("FIREBASE_MESSAGING_SENDER_ID"),
-            appId: env("FIREBASE_API_ID"),
+            apiKey: getThrow("FIREBASE_API_KEY"),
+            authDomain: getThrow("FIREBASE_AUTH_DOMAIN"),
+            databaseURL: getThrow("FIREBASE_DATABASE_URL"),
+            projectId: getThrow("FIREBASE_PROJECT_ID"),
+            storageBucket: getThrow("FIREBASE_STORAGE_BUCKET"),
+            messagingSenderId: getThrow("FIREBASE_MESSAGING_SENDER_ID"),
+            appId: getThrow("FIREBASE_API_ID"),
 
             // Your web app's Firebase configuration
             // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-            // measurementId     : env('FIREBASE_MEASUREMENT_ID')
+            // measurementId     : getThrow('FIREBASE_MEASUREMENT_ID')
           };
 
           const firebaseApp = initializeApp(firebaseConfig);
@@ -85,6 +96,8 @@ window.firebaseCoreEntry = () => {
               set,
             },
           });
+        } else {
+          console.log(`typeof window.process.env !== 'string'`);
         }
       }, 300);
     }));

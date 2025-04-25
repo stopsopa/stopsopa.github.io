@@ -80,7 +80,7 @@
         <script type="editor" data-lang="sh">
 
           # typescript doc about publishing
-            https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html        
+            https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html
 
           # some articles (generally a mess):
             https://github.com/nodejs/package-examples
@@ -111,8 +111,8 @@
             "bin": {
               "envprocessor": "./dist/esm/cli.js"
             },
-            "types": "./dist/types/env.d.ts", 
-            // only when I've added this line ts icon have appeared in the npm: 
+            "types": "./dist/types/env.d.ts",
+            // only when I've added this line ts icon have appeared in the npm:
             // https://i.imgur.com/0SACeIC.png
             "exports": {
               ".": {
@@ -344,7 +344,7 @@
           EEE
           cat <<EEE > tsx.sh
           set -e;
-          node node_modules/.bin/tsc -p tsconfig.check.json 
+          node node_modules/.bin/tsc -p tsconfig.check.json
           # before node 20??
           node node_modules/.bin/ts-node-esm ${@}
           # since node 20?
@@ -354,8 +354,8 @@
           // or instead of above
           cat <<EEE > tsx.sh
           set -e
-          node node_modules/.bin/tsc -p tsconfig.check.json 
-          node node_modules/.bin/tsx 
+          node node_modules/.bin/tsc -p tsconfig.check.json
+          node node_modules/.bin/tsx
 
           EEE
 
@@ -371,7 +371,7 @@
             cat <<EEE
 
             Now try:
-            
+
             /bin/bash tsx.sh [**/*.ts]
 
           EEE
