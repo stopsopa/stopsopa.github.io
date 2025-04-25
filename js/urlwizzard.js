@@ -2,17 +2,6 @@
  * requires loaded preprocess.js
  */
 
-import {
-  all,
-  get,
-  has,
-  getDefault,
-  getThrow,
-  getIntegerThrowInvalid, // equivalent to get
-  getIntegerDefault,
-  getIntegerThrow,
-} from "/public/env.js";
-
 import negotiatePort from "./negotiatePort.js";
 
 import log from "./log.js";
