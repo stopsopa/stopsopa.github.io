@@ -17,7 +17,16 @@ import negotiatePort from "./negotiatePort.js";
 
 import log from "./log.js";
 
-// import env from "./preprocessed.js";
+import {
+  all,
+  get,
+  has,
+  getDefault,
+  getThrow,
+  getIntegerThrowInvalid, // equivalent to get
+  getIntegerDefault,
+  getIntegerThrow,
+} from "../public/env.js";
 
 // look also to .github/urlwizzard.sh
 const schema = location.protocol.replace(/^([a-z]+).*$/, "$1");

@@ -4,7 +4,16 @@ import fs from "fs";
 
 import path from "path";
 
-import env from "./libs/dotenv.js";
+import {
+  all,
+  get,
+  has,
+  getDefault,
+  getThrow,
+  getIntegerThrowInvalid, // equivalent to get
+  getIntegerDefault,
+  getIntegerThrow,
+} from "envprocessor";
 
 import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
@@ -40,7 +49,7 @@ dotenv.config({
 
 export default (mode) => ({
   // just name for this project, it's gonna show up in some places
-  name: env("PROJECT_NAME"),
+  name: getThrow("PROJECT_NAME"),
   root,
   app,
   node_modules,

@@ -6,6 +6,7 @@ lcov.info
 node_modules
 /bin/
 preprocessed.js
+public/env.js
 /public/coverage/
 /_git
 yarn-error.log

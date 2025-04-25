@@ -1,4 +1,4 @@
-import "./preprocessed.js";
+import "../public/preprocessed.js";
 
 import {
   all,
@@ -9,7 +9,7 @@ import {
   getIntegerThrowInvalid, // equivalent to get
   getIntegerDefault,
   getIntegerThrow,
-} from "/public/env.js";
+} from "../public/env.js";
 
 import urlwizzard from "./urlwizzard.js";
 

@@ -1,4 +1,4 @@
-// import env from "./preprocessed.js";
+import "../public/preprocessed.js";
 
 import log from "./log.js";
 

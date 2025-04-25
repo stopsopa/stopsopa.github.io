@@ -24,6 +24,17 @@ import {
 
 import { getDatabase, ref, child, onValue, push, update, remove, set } from "firebase/database";
 
+import {
+  all,
+  get,
+  has,
+  getDefault,
+  getThrow,
+  getIntegerThrowInvalid, // equivalent to get
+  getIntegerDefault,
+  getIntegerThrow,
+} from "envprocessor";
+
 // import "regenerator-runtime/runtime.js";
 
 let promise;
