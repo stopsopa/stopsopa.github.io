@@ -228,7 +228,7 @@ Finds all *.template.html and process them to *.rendered.html in the same locati
 set -e    
 eval "$(node bash/exportsource.js .env)"
 export NODE_OPTIONS=""
-# node libs/preprocessor.js
+# node libs/preprocessor.js # old script
 node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
 `,
       description: ``,

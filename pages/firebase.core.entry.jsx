@@ -24,6 +24,9 @@ import {
 
 import { getDatabase, ref, child, onValue, push, update, remove, set } from "firebase/database";
 
+if (Object.keys(all() || {}).length === 0) {
+  throw new Error(`firebase.core.entry.jsx error: all() can't return 0 - load preprocessed.js first`);
+}
 // import "regenerator-runtime/runtime.js";
 
 let promise;
@@ -34,8 +37,6 @@ window.firebaseCoreEntry = () => {
       let inter = setInterval(() => {
         if (typeof window?.process?.env === "object") {
           clearInterval(inter);
-
-          const env = window.env;
 
           var firebaseConfig = {
             // apiKey: "AIzaSyBwjXbJQTXj258mLFMcHswgy6FgKHVHMLs",
@@ -97,7 +98,7 @@ window.firebaseCoreEntry = () => {
             },
           });
         } else {
-          console.log(`typeof window.process.env !== 'string'`);
+          console.log(`typeof window.process.env !== 'object'`);
         }
       }, 300);
     }));

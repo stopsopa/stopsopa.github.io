@@ -17,6 +17,10 @@ import {
   getIntegerThrow,
 } from "../public/env.js";
 
+if (Object.keys(all() || {}).length === 0) {
+  throw new Error(`js/urlwizzard.js error: all() can't return 0 - load preprocessed.js first`);
+}
+
 // look also to .github/urlwizzard.sh
 const schema = location.protocol.replace(/^([a-z]+).*$/, "$1");
 
@@ -32,15 +36,18 @@ const port = location.port;
 // see /research/urlwizzard/urlwizzard.html for testing
 // see /research/urlwizzard/urlwizzard.html for testing
 // see /research/urlwizzard/urlwizzard.html for testing
-
+let GITHUB_SOURCES_PREFIX;
 function replace(str) {
+  if (!GITHUB_SOURCES_PREFIX) {
+    GITHUB_SOURCES_PREFIX = getThrow("GITHUB_SOURCES_PREFIX");
+  }
   return str
     .replace(/urlwizzard\.hostname/g, hostname)
     .replace(/urlwizzard\.schema/g, schema)
     .replace(/urlwizzard\.hostnegotiated/g, host)
     .replace(/urlwizzard\.portnegotiated/g, portnegotiated)
     .replace(/urlwizzard\.port/g, port)
-    .replace(/GITHUB_SOURCES_PREFIX/g, getThrow("GITHUB_SOURCES_PREFIX"));
+    .replace(/GITHUB_SOURCES_PREFIX/g, GITHUB_SOURCES_PREFIX);
 }
 
 function traverseAndReplace(node) {

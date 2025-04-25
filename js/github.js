@@ -1,5 +1,3 @@
-import "../public/preprocessed.js";
-
 import {
   all,
   get,
@@ -9,6 +7,7 @@ import {
   getIntegerThrowInvalid, // equivalent to get
   getIntegerDefault,
   getIntegerThrow,
+  mockEnv,
 } from "../public/env.js";
 
 import urlwizzard from "./urlwizzard.js";
@@ -327,6 +326,17 @@ body .github-profile:hover {
   }
 
   try {
+    await loadJs("preprocessed.js", "/public/preprocessed.js", function () {
+      try {
+        return typeof window?.process?.env === "object";
+      } catch (e) {
+        return false;
+      }
+    });
+
+    console.log("setting mockEnv(window.process.env) after loading preprocessed.js", window.process.env);
+    mockEnv(window.process.env);
+
     await loadJs("polyfill", "/noprettier/polyfill.js", function () {
       try {
         return window.sasync.loaded.polyfill_js;
@@ -336,13 +346,6 @@ body .github-profile:hover {
     });
 
     await Promise.all([
-      loadJs("preprocessed.js", "/public/preprocessed.js", function () {
-        try {
-          return typeof window?.process?.env === "object";
-        } catch (e) {
-          return false;
-        }
-      }),
       loadJs("vanilla-tabs.js", "/noprettier/vanilla-tabs.js", function () {
         try {
           return typeof window.vanillaTabs === "object";

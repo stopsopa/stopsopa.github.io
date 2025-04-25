@@ -22,6 +22,10 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+if (Object.keys(all() || {}).length === 0) {
+  throw new Error(`config.js error: all() can't return 0 - load preprocessed.js first`);
+}
+
 restricttonode(__filename);
 
 const root = path.resolve(__dirname);

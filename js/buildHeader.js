@@ -1,9 +1,5 @@
 import "../public/preprocessed.js";
 
-import log from "./log.js";
-
-import manipulation from "./manipulation.js";
-
 import {
   all,
   get,
@@ -13,7 +9,15 @@ import {
   getIntegerThrowInvalid, // equivalent to get
   getIntegerDefault,
   getIntegerThrow,
-} from "/public/env.js";
+} from "../public/env.js";
+
+import log from "./log.js";
+
+import manipulation from "./manipulation.js";
+
+if (Object.keys(all() || {}).length === 0) {
+  throw new Error(`js/buildHeader.js error: all() can't return 0 - load preprocessed.js first`);
+}
 
 export default async function buildHeader() {
   document.querySelector("body > header") ||
