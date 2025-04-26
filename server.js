@@ -142,7 +142,7 @@ if (protocols.length > 0) {
   const reset = `\x1b[0m`;
 
   log(`
-${red}NOTICE: make sure to add ${process.env.LOCAL_HOSTS} to /etc/hosts                   ${reset}
+${red}NOTICE: make sure to add ${process.env.LOCAL_HOSTS} to /etc/hosts                 ${reset}
 ${red}                                                                                  ${reset} 
 ${red} 127.0.0.1       localhost stopsopa.github.io.local kubernetes.docker.internal    ${reset}
 ${red}                                                                                  ${reset} 
