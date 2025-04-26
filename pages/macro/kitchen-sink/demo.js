@@ -5968,6 +5968,7 @@ define("ace/autocomplete", [
     };
     this.gatherCompletions = function (editor, callback) {
       var session = editor.getSession();
+      session.setUseWorker(false)
       var pos = editor.getCursorPosition();
       var prefix = util.getCompletionPrefix(editor);
       this.base = session.doc.createAnchor(pos.row, pos.column - prefix.length);

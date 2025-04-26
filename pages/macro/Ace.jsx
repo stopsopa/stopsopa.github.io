@@ -150,6 +150,8 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap, passRefTo
 
       const session = editor.getSession();
 
+      session.setUseWorker(false); // disable loading worker-javascript.js https://stackoverflow.com/a/13016089
+
       session.setMode(`ace/mode/${refId.current.lang}`);
 
       delete refId.current.lang;
@@ -168,6 +170,8 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap, passRefTo
       }
 
       const session = editor.getSession();
+
+      session.setUseWorker(false); // disable loading worker-javascript.js https://stackoverflow.com/a/13016089
 
       session.setUseWrapMode(refId.current.wrap);
 

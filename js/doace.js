@@ -288,6 +288,7 @@ export default async function doace() {
 
     manipulation.prepend(el, copy);
 
+    editor.getSession().setUseWorker(false); // disable loading worker-javascript.js https://stackoverflow.com/a/13016089
     editor.getSession().setTabSize(4);
     editor.setTheme("ace/theme/idle_fingers");
     editor.getSession().setUseWrapMode(true);
