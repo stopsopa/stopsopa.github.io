@@ -237,8 +237,10 @@ function createServer(protocol = "http") {
   if (protocol === "https") {
     server = https.createServer(
       {
-        key: fs.readFileSync(`./server.key`),
-        cert: fs.readFileSync(`./server.crt`),
+        // key: fs.readFileSync(`./server.key`),
+        // cert: fs.readFileSync(`./server.crt`),
+        key: fs.readFileSync(path.resolve(__dirname, `server.key`)),
+        cert: fs.readFileSync(path.resolve(__dirname, `server.crt`)),
       },
       app.callback()
     );
