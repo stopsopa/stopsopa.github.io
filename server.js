@@ -97,11 +97,8 @@ function createServer(protocol = "http") {
   let server;
   if (protocol === "https") {
     const options = {
-      key: fs.readFileSync(`./server.key`),
-      cert: fs.readFileSync(`./server.cert`),
-      // HTTP1.1 only to avoid protocol errors
-      maxVersion: "TLSv1.3",
-      minVersion: "TLSv1.2",
+      key: fs.readFileSync(path.resolve(__dirname, "cert", `server.key`)),
+      cert: fs.readFileSync(path.resolve(__dirname, "cert", `server.crt`)),
     };
 
     server = https.createServer(options, app);

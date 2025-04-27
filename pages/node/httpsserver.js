@@ -39,7 +39,7 @@ https
   .createServer(
     {
       key: fs.readFileSync("server.key"),
-      cert: fs.readFileSync("server.cert"),
+      cert: fs.readFileSync("server.crt"),
     },
     app
   )
@@ -58,10 +58,10 @@ https
   });
 
 // generate cert and key:
-// openssl req -nodes -new -x509 -keyout server.key -out server.cert
+// openssl req -nodes -new -x509 -keyout server.key -out server.crt
 
 // or without interactive
-// openssl req -nodes -new -x509 -keyout server.key -out server.cert -subj "/C=UK/ST=Surrey/L=London/O=Company/OU=Company/CN=abc.com/emailAddress=user@gmail.com"
+// openssl req -nodes -new -x509 -keyout server.key -out server.crt -subj "/C=UK/ST=Surrey/L=London/O=Company/OU=Company/CN=abc.com/emailAddress=user@gmail.com"
 
 // where
 // /C=UK → Country

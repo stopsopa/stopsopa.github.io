@@ -3154,6 +3154,7 @@
           <div data-buttons>
             <span>httpsserver.js</span>
             <span>in docker</span>
+            <span>real self signed</span>
           </div>
           <div data-tabs>
             <div>
@@ -3172,7 +3173,7 @@
                 WORKDIR /usr/src/app
                 #RUN echo -e "\ntest\n" >> test.log
                 RUN echo '{"type":"module"}' > package.json && npm install express
-                RUN openssl req -nodes -new -x509 -keyout server.key -out server.cert -subj "/C=UK/ST=Surrey/L=London/O=Company/OU=Company/CN=abc.com/emailAddress=user@gmail.com"
+                RUN openssl req -nodes -new -x509 -keyout server.key -out server.crt -subj "/C=UK/ST=Surrey/L=London/O=Company/OU=Company/CN=abc.com/emailAddress=user@gmail.com"
                 COPY ./pages/node/httpsserver.js ./
                 ENTRYPOINT ["sh", "-c", "echo -e '0.0.0.0 abc.com' >> /etc/hosts && node httpsserver.js"]
                 EOF
@@ -3232,6 +3233,39 @@
                 #
                 # /usr/src/app # curl -k https://abc.com:8089/test
                 # {"test":true}
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="sh">
+
+                # from: https://medium.com/@noelpulido1229/how-to-add-self-signed-ssl-certificate-in-nodejs-server-ce9d53c17a9c
+                # https://www.youtube.com/watch?v=unXpQNi858Q
+
+                mkdir cert && cd cert
+                openssl genrsa -aes256 -out rootCA.key 4096
+                
+                openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1826 -out rootCA.crt -subj "/C=UK/ST=Surrey/L=London/O=Company/OU=Company/emailAddress=user@gmail.com"
+                
+                openssl req -new -nodes -out server.csr -newkey rsa:4096 -keyout server.key -subj "/C=UK/ST=Surrey/L=London/O=Company/OU=Company/emailAddress=user@gmail.com"
+                
+                cat <<EEE > server.v3.ext
+                authorityKeyIdentifier=keyid,issuer
+                basicConstraints=CA:FALSE
+                keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+                subjectAltName = @alt_names
+                
+                [alt_names]
+                DNS.1 = stopsopa.github.io.local
+                IP.1 = 0.0.0.0
+                EEE
+                
+                openssl x509 -req -in server.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out server.crt -days 730 -sha256 -extfile server.v3.ext
+                
+                open via spotlight "Keychain Access" -> go to "System" -> drag here "rootCA.crt" -> 
+                -> find added cert on the list (will have red "x" on it) -> double click -> expand "Trust" -> 
+                -> Swtich "When using this certificate" to "Always Trust" -> 
+                -> then loading stopsopa.github.io.local using any port should work in chrome
+                                
               </script>
             </div>
           </div>
