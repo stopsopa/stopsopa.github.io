@@ -319,12 +319,6 @@ else
   LIST="${TEST}"
 fi
 
-LIST="$(cat <<EOF
-jasmine/lib/template.jasmine.unit.js
-${LIST}
-EOF
-)"
-
 # echo ">${LIST}<"
 
 # exit 0
@@ -340,7 +334,7 @@ EEE
   exit 1
 fi
 
-echo "${LIST}" | node "${_DIR}/esbuild.js"  
+echo -e "${LIST}\njasmine/lib/template.jasmine.unit.js" | node "${_DIR}/esbuild.js" 
 
 echo "${LIST}" | NODE_OPTIONS="" node "${_DIR}/filename_transformer.js" "${ROOT}" > "${ASSETLIST}"
 
@@ -356,7 +350,12 @@ cat <<EEE
   also you might as well check healthcheck manually:
     curl -k -sS "${SERVER}/healthcheck"
 
+  ASSETLIST is: ${ASSETLIST}
+
 EEE
+
+# echo 'wait'
+# read -n 1
 
 NODE_OPTIONS="" node "${_DIR}/server_koa.js" --web "${ROOT}" --asset_list "${ASSETLIST}" --env "${ENVFILE}" 1>> "${LOGFILE}" 2>> "${LOGFILE}" & disown
 
@@ -381,6 +380,8 @@ cat <<EEE
   running playwright.sh script:
 
     /bin/bash playwright.sh --env "${ENVFILE}" $@
+
+    /bin/bash bash/swap-files-v2.sh package.json package.dev.json -- /bin/bash playwright.sh --env "${ENVFILE}" $@
 
 EEE
 
