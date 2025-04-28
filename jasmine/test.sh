@@ -224,7 +224,14 @@ if [ "${NODE_API_HOST}" = "" ]; then
   exit 1;
 fi
 
-SERVER="https://${NODE_API_HOST}:${NODE_API_PORT}";
+if [ "${NODE_API_PROTOCOL}" = "" ]; then
+
+  ec "error: NODE_API_PROTOCOL is not defined"
+
+  exit 1;
+fi
+
+SERVER="${NODE_API_PROTOCOL}://${NODE_API_HOST}:${NODE_API_PORT}";
 
 # set positional arguments in their proper place
 eval set -- "$PARAMS"
@@ -334,6 +341,9 @@ EEE
   exit 1
 fi
 
+# Injecting an extra script is actually needed to make esbuild emit output transpiled test files right next to the original test files.
+# If only one file is provided, esbuild will generate the transpiled file in the root directory of the project.
+# This is not a problem, since we have our main script coordinating the test builds as well.
 echo -e "${LIST}\njasmine/lib/template.jasmine.unit.js" | node "${_DIR}/esbuild.js" 
 
 echo "${LIST}" | NODE_OPTIONS="" node "${_DIR}/filename_transformer.js" "${ROOT}" > "${ASSETLIST}"
