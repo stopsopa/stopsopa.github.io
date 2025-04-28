@@ -319,6 +319,12 @@ else
   LIST="${TEST}"
 fi
 
+LIST="$(cat <<EOF
+jasmine/lib/template.jasmine.unit.js
+${LIST}
+EOF
+)"
+
 # echo ">${LIST}<"
 
 # exit 0

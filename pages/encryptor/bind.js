@@ -1,4 +1,4 @@
-import { generateKey, encryptMessage, decryptMessage } from "./aes-gcm-browser.js";
+import { generateKey, encryptMessage, decryptMessage } from "./aes-cbc-browser.js";
 
 const parent = document.querySelector("#encryptor");
 const generateButton = parent.querySelector(".generate");

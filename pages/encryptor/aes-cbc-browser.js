@@ -3,6 +3,10 @@
  *      https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#aes-gcm_2
  *      https://mdn.github.io/dom-examples/web-crypto/encrypt-decrypt/index.html
  *
+ * read more:
+ *  https://www.haikel-fazzani.eu.org/blog/post/aes-encryption-modes-gcm-cbc-ctr#:~:text=AES%2DGCM%20is%20the%20best,communication%20protocols%20and%20modern%20applications.
+ *  https://security.stackexchange.com/a/184350
+ *
  * WARNING:
  *    LATER UNCOMMENT 'pages/encryptor/aes.jasmine.unit.js' FROM vitest.config.ts
  */
@@ -63,14 +67,16 @@ export async function encryptMessage(base64Key, message, opt) {
     iv = fromHuman(iv);
   } else {
     // IMPORTANT: The iv must never be reused with a given key.
-    iv = window.crypto.getRandomValues(new Uint8Array(12));
+    // iv = window.crypto.getRandomValues(new Uint8Array(12)); // for: AES-GCM
+    iv = window.crypto.getRandomValues(new Uint8Array(16)); // for: AES-GCM
   }
 
   const key = await importKeyFromBase64(base64Key);
 
   const ciphertext = await window.crypto.subtle.encrypt(
     {
-      name: "AES-GCM",
+      // name: "AES-GCM", 
+      name: "AES-CBC", 
       iv: iv,
     },
     key,
@@ -144,7 +150,8 @@ export async function decryptMessage(base64Key, humanReadable) {
 
   let decrypted = await window.crypto.subtle.decrypt(
     {
-      name: "AES-GCM",
+      // name: "AES-GCM",
+      name: "AES-CBC",
       iv,
     },
     key,
@@ -175,7 +182,10 @@ async function exportKeyToBase64(key) {
 async function importKeyFromBase64(base64Key) {
   const rawKey = Uint8Array.from(atob(base64Key), (c) => c.charCodeAt(0));
 
-  return window.crypto.subtle.importKey("raw", rawKey, { name: "AES-GCM" }, true, ["encrypt", "decrypt"]);
+  return window.crypto.subtle.importKey("raw", rawKey, { 
+    // name: "AES-GCM",
+    name: "AES-CBC",
+  }, true, ["encrypt", "decrypt"]);
 }
 
 /**
@@ -207,7 +217,8 @@ export const generateKey = async () => {
 
   const key = await window.crypto.subtle.generateKey(
     {
-      name: "AES-GCM",
+      // name: "AES-GCM",
+      name: "AES-CBC",
       length: 256,
     },
     true,

@@ -7,7 +7,7 @@
       see more in xx.cjs
  */
 
-import * as browserAes from "./aes-gcm-browser.js";
+import * as browserAes from "./aes-cbc-browser.js";
 
 const { splitByLength, generateKey, encryptMessage, decryptMessage } = browserAes;
 
@@ -69,8 +69,8 @@ describe("aes256", () => {
     });
   });
 
-  describe("aes-gcm-browser", () => {
-    it("aes-gcm-browser encrypt & decrypt", async () => {
+  describe("aes-cbc-browser", () => {
+    it("aes-cbc-browser encrypt & decrypt", async () => {
       const key = await generateKey();
 
       const encrypted = await encryptMessage(key, message);
@@ -89,8 +89,8 @@ describe("aes256", () => {
     });
   });
 
-  describe("aes-gcm-browser", () => {
-    it("aes-gcm-browser encrypt & decrypt", async () => {
+  describe("aes-cbc-browser", () => {
+    it("aes-cbc-browser encrypt & decrypt", async () => {
       const key = await generateKey();
 
       const encrypted = await encryptMessage(key, message);
@@ -106,20 +106,20 @@ describe("aes256", () => {
       expect(decrypted).toEqual(message);
     });
 
-    it("aes-gcm-browser encrypt & decrypt fixed key", async () => {
-      const key = "oAPwnZ9eq4C5nh4YskdmeS/fCIJn6NgdxbgtvY6glfs=";
+    it("aes-cbc-browser encrypt & decrypt fixed key", async () => {
+      const key = "17sfLCu35124RKPPNDVczmQE49T2oCwm08cKhmL5DL4=";
 
       const encrypted = await encryptMessage(key, message, {
-        iv: "tfMxjk+55TktDfMD",
+        iv: "YP/vPE/DnAcHHMZTke6/Ag==",
       });
 
       console.log("encrypted", encrypted);
 
-      const expected = `:[v1:c0ad3::tfMxjk+55TktDfMD::
-6JDIz5M7YO8fazPcZhylQV1Bb3MhVgauT9ahdY9GM1hU6A4tw3aN9loGsz49MJnVwhXNqJ655Js4dBXnT7QwpH3L7yM2CB4SsxRQVAupqe0A7F
-YGzYDuVVDK+PoYK+x4J2m+zZdSgToC4Lvy1P3KexzJXp7lbeZ/bDHypFFE0GAH2rsisyz656ize6MkOJyw7RM64lmcF6zO/Ds3fhVAeCD1Y5KY
-YIDRaXLWoLRhW+2TNMfJgHYSXuFMessGTEtpl5v4zCvfooIpaxLQ+JuV6MMXRy03G84Jz11kVltqNqb+WywbORInQ8t9sRw45Zmgk/nsrHaIaH
-FdaJCz9y20x7Ib83bsVcOYLI6/9yAPF1lu9wIxqLkVYBBHrF0yWo0VTf24OUIgD9nZ28iQ+e1e1Vhjnp213tKdmU0QZzP/:]:`;
+      const expected = `:[v1:c0ad3::YP/vPE/DnAcHHMZTke6/Ag==::
+q0IxJzScLdYktc1C0pP7/PtMk6ykdgH4k21S4KDNc2S4C3Dg4l7LONIgLumIcBEpnmIVkmlebLtObWo6GfQwdUmjSoqRMBuRFnWm0rsWM2nBcb
+Fth3y1p9F2hWA3iKZD3fGeLUSfGHF0RD0MJ4YBZcBqnuSkVN8rgqOLdf77mka6i4r1Ie7TByDNpohs7sKgGSGaulKxwwYgu9GCjYvuRLy0UQjX
+Lw0dkx7P+8K8/JVDlyCB5H5MfXGl7e3r+GYCCH98PM3s0Y7HvaGDyAsxyjIRIdOmeZEo7xzE59W0M0EV3n5ytXDM/GqkZkK4Y0G7BBxw+Q7CEr
+3PNACmvDGnSLlm6PJO7HUQmil1obHPWwsIMUKMR20qSR0Cr7Bj5Eyzx04nrkB+8fTSfR1xve6tfg==:]:`;
 
       console.log("expected", expected);
 
