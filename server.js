@@ -90,7 +90,7 @@ app.use(
 
 function createServer(protocol = "http") {
   if (!/^https?$/.test(protocol)) {
-    throw new th(`protocol ${protocol} is not supported`);
+    throw th(`protocol ${protocol} is not supported`);
   }
   const port = protocolsPorts[protocol];
 
