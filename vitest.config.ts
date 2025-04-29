@@ -9,7 +9,7 @@ export default defineConfig({
       // provider: "istanbul", // or 'v8'
       // provider: "v8",
       reporter: ["text", "html"],
-      include: ["libs/**/*.{js,ts,jsx,tsx}"],
+      include: ["libs/**/*.{js,ts,jsx,tsx}", "pages/encryptor/aes-cbc-node.js"],
     },
     globals: true,
     include: ["**/*.{unit,spec}.?(c|m)[jt]s?(x)"],

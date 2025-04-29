@@ -127,5 +127,22 @@ Lw0dkx7P+8K8/JVDlyCB5H5MfXGl7e3r+GYCCH98PM3s0Y7HvaGDyAsxyjIRIdOmeZEo7xzE59W0M0EV
       const decrypted = await decryptMessage(key, encrypted);
       expect(decrypted).toEqual(message);
     });
+
+    it("decrypt fixed message", async () => {
+      const { decryptMessage } = await getLib();
+
+      const key = "Ujfyy2C373S7kocvp6DQkue+fyKMcPwlO3pfm2ZCM8s=";
+
+      const encrypted = `:[v1:c0ad3::+MhyaHrk2M1X3gWO0fZbuA==::
+NEdPQIh0VbAPHrnZr/6FSkWUPM7hBwk821/ufG0skHxK/bfAtu+yGMorgGxUuZT8QYw/TyuaDI8Xoz5HGh+cgCCHfRW2ebZc/1XwrX7pjioiCR
+iKYd3lpv/oPW54ZgdoUl0VxlPgJcMIaMet0Qk9whaWiR1nouqIkpKznbkU/i0182X4XghaUbHJySOSEAF5sc1grWmY4yW6OgDc/IYT0aS4s4HH
+Svx0ZMVSlGqxCHOhDTzxSLIesV6qAnbhY3vVEC8M4aBMnfPZhOi6P0pue2Pw04aMHV6M4KmDjw5xdIwj0atX/2p551ulA4G7Q299AzxPkIlLLo
+EEgeebWM5587QiR/eiZi/uCtEOhZGj4dIU/JkhJhzEF2Dkrj6Da6XXCZZ9Vb9ylJfTIt7lNcxv4A==:]:`;
+
+      const expected = message;
+      const decrypted = await decryptMessage(key, encrypted);
+
+      expect(decrypted).toEqual(expected);
+    });
   });
 });
