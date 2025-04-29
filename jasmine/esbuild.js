@@ -52,6 +52,7 @@ function promiseStdin() {
     loader: { ".js": "jsx" },
     metafile: true,
     allowOverwrite: true, // Added allowOverwrite option
+    external: ["./aes-cbc-node.js"],
   };
 
   if (typeof process.argv[2] === "string") {
