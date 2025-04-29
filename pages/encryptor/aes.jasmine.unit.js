@@ -1,10 +1,10 @@
 /**
- NODE_API_PORT=4273 /bin/bash jasmine/test.sh \
+ NODE_OPTIONS="" NODE_API_PORT=4273 /bin/bash jasmine/test.sh \
       --stay \
       --env .env \
       --filter "grep aes.jasmine.unit" 
 
-  /bin/bash test.sh pages/encryptor/aes.jasmine.unit.js
+  NODE_OPTIONS="" /bin/bash test.sh pages/encryptor/aes.jasmine.unit.js
 
       see more in xx.cjs
  */
@@ -89,7 +89,7 @@ describe("aes256", () => {
     });
   });
 
-  describe("aes-cbc-browser encryption", () => {
+  describe(`aes-cbc-${isNode ? "node" : "browser"}.js encryption`, () => {
     it("encrypt & decrypt", async () => {
       const { generateKey, encryptMessage, decryptMessage } = await getLib();
 
