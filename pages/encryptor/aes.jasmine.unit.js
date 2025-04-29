@@ -108,7 +108,7 @@ describe("aes256", () => {
       expect(decrypted).toEqual(message);
     });
 
-    it("encrypt & decrypt fixed key", async () => {
+    it("encrypt & decrypt fixed iv", async () => {
       const { encryptMessage, decryptMessage } = await getLib();
       const key = "17sfLCu35124RKPPNDVczmQE49T2oCwm08cKhmL5DL4=";
 
@@ -128,7 +128,7 @@ Lw0dkx7P+8K8/JVDlyCB5H5MfXGl7e3r+GYCCH98PM3s0Y7HvaGDyAsxyjIRIdOmeZEo7xzE59W0M0EV
       expect(decrypted).toEqual(message);
     });
 
-    it("decrypt fixed message", async () => {
+    it("decrypt fixed message - encrypted in browser", async () => {
       const { decryptMessage } = await getLib();
 
       const key = "Ujfyy2C373S7kocvp6DQkue+fyKMcPwlO3pfm2ZCM8s=";
@@ -138,6 +138,23 @@ NEdPQIh0VbAPHrnZr/6FSkWUPM7hBwk821/ufG0skHxK/bfAtu+yGMorgGxUuZT8QYw/TyuaDI8Xoz5H
 iKYd3lpv/oPW54ZgdoUl0VxlPgJcMIaMet0Qk9whaWiR1nouqIkpKznbkU/i0182X4XghaUbHJySOSEAF5sc1grWmY4yW6OgDc/IYT0aS4s4HH
 Svx0ZMVSlGqxCHOhDTzxSLIesV6qAnbhY3vVEC8M4aBMnfPZhOi6P0pue2Pw04aMHV6M4KmDjw5xdIwj0atX/2p551ulA4G7Q299AzxPkIlLLo
 EEgeebWM5587QiR/eiZi/uCtEOhZGj4dIU/JkhJhzEF2Dkrj6Da6XXCZZ9Vb9ylJfTIt7lNcxv4A==:]:`;
+
+      const expected = message;
+      const decrypted = await decryptMessage(key, encrypted);
+
+      expect(decrypted).toEqual(expected);
+    });
+
+    it("decrypt fixed message - encrypted in node", async () => {
+      const { decryptMessage } = await getLib();
+      
+      const key = "ZC1+LPMZ5Xcsm5yN46tSbv+q01Jgr1EBxpBA8h046zk=";
+
+      const encrypted = `:[v1:c0ad3::cnglp+hcV7rlNNDmDrbXag==::
+CIilFcpjqsgzItf6VnLOPrcwHwR3wJebiNChv0lvFsqG4XsLzzFicThZrkQCsOs9TB8YWpKIvJAYWJYrMbEGh0k+7EunpENI+PdyWtXjOo6fO3
+y5dbCxTYJgePuE+9BWDpyvVrXm59SnWGCcjXhVjXpih8XDwTfAN9IQVS2R1BK+YBnpL0ZpQdJlzgUVxEtXNm6zLo/+hDFiThZSeiwWuigYolLA
+m/zNm3C2ScKI/ZpIHf9D6mU9m8RfbmoYyn5JpaKoZ0DzouSGINwsrDo1TIZG4MBqntYA3yMATdpmliolW8R5MdeieZ0P/1FDmhNwb4nFVaoCFZ
+0UxsuDLM0pQb49AgZYSkFmEusDdu9yNMLap8NLexj6xAOQDsdC1UIenFWCKuuCtqSxtuQqXG134g==:]:`;
 
       const expected = message;
       const decrypted = await decryptMessage(key, encrypted);
