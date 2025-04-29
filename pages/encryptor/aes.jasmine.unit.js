@@ -19,13 +19,12 @@ const getLib = async () => {
   let lib;
 
   if (isNode) {
-    // This module should be excluded from the bundler - in our case 
+    // This module should be excluded from the bundler
+    // and it is excluded in jasmine/esbuild.js
     lib = await import("./aes-cbc-node.js");
   } else {
     lib = await import("./aes-cbc-browser.js");
   }
-
-  var e = lib;
 
   return lib;
 };
@@ -40,14 +39,6 @@ Vestibulum quis pharetra purus, non blandit ex.`;
 
 // Register the tests synchronously
 describe("aes256", () => {
-  // Store lib once we've loaded it
-  let lib;
-
-  // Use beforeAll to load the lib before any tests run
-  beforeAll(async () => {
-    lib = await getLib();
-  });
-
   describe("splitByLength", () => {
     it("split", async () => {
       const { splitByLength } = await getLib();

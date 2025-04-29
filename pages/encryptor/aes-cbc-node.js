@@ -166,7 +166,7 @@ export function fromHuman(humanReadable) {
 export const generateKey = async () => {
   // Generate a random 32-byte key (256 bits for AES-256)
   const key = crypto.randomBytes(32);
-  
+
   const base64Key = await exportKeyToBase64(key);
 
   return base64Key;
