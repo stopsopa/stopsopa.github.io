@@ -3,10 +3,10 @@
  * Using Node.js crypto module instead of browser's SubtleCrypto
  */
 
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 function encodeMessage(message) {
-  return Buffer.from(message, 'utf8');
+  return Buffer.from(message, "utf8");
 }
 
 export function splitByLength(str, length) {
@@ -18,9 +18,9 @@ export function splitByLength(str, length) {
 }
 
 export async function hashSHA256(message) {
-  const hash = crypto.createHash('sha256');
+  const hash = crypto.createHash("sha256");
   hash.update(message);
-  return hash.digest('hex');
+  return hash.digest("hex");
 }
 
 export async function encryptMessage(base64Key, message, opt) {
@@ -39,7 +39,7 @@ export async function encryptMessage(base64Key, message, opt) {
   if (typeof message !== "string") {
     throw new Error(`encryptMessage error: message is not a string`);
   }
-  
+
   const encoded = encodeMessage(message);
 
   if (iv) {
@@ -50,10 +50,10 @@ export async function encryptMessage(base64Key, message, opt) {
   }
 
   const key = await importKeyFromBase64(base64Key);
-  
+
   // Create cipher using key and iv
-  const cipher = crypto.createCipheriv('aes-256-cbc', key, Buffer.from(iv));
-  
+  const cipher = crypto.createCipheriv("aes-256-cbc", key, Buffer.from(iv));
+
   // Encrypt the message
   let ciphertext = Buffer.concat([cipher.update(encoded), cipher.final()]);
 
@@ -120,12 +120,12 @@ export async function decryptMessage(base64Key, humanReadable) {
   const ciphertext = Buffer.from(fromHuman(ciphertextHuman));
 
   // Create decipher
-  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
-  
+  const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
+
   // Decrypt the ciphertext
   let decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
-  
-  const message = decrypted.toString('utf8');
+
+  const message = decrypted.toString("utf8");
 
   const hash = await hashSHA256(message);
 
@@ -139,25 +139,25 @@ export async function decryptMessage(base64Key, humanReadable) {
 }
 
 async function exportKeyToBase64(key) {
-  return key.toString('base64');
+  return key.toString("base64");
 }
 
 async function importKeyFromBase64(base64Key) {
-  return Buffer.from(base64Key, 'base64');
+  return Buffer.from(base64Key, "base64");
 }
 
 /**
  * Convert buffer to a human-readable Base64 string.
  */
 export function forHuman(buffer) {
-  return Buffer.from(buffer).toString('base64');
+  return Buffer.from(buffer).toString("base64");
 }
 
 /**
  * Convert a human-readable Base64 string back to buffer.
  */
 export function fromHuman(humanReadable) {
-  return Buffer.from(humanReadable, 'base64');
+  return Buffer.from(humanReadable, "base64");
 }
 
 export const generateKey = async () => {

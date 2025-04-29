@@ -75,8 +75,8 @@ export async function encryptMessage(base64Key, message, opt) {
 
   const ciphertext = await window.crypto.subtle.encrypt(
     {
-      // name: "AES-GCM", 
-      name: "AES-CBC", 
+      // name: "AES-GCM",
+      name: "AES-CBC",
       iv: iv,
     },
     key,
@@ -182,10 +182,16 @@ async function exportKeyToBase64(key) {
 async function importKeyFromBase64(base64Key) {
   const rawKey = Uint8Array.from(atob(base64Key), (c) => c.charCodeAt(0));
 
-  return window.crypto.subtle.importKey("raw", rawKey, { 
-    // name: "AES-GCM",
-    name: "AES-CBC",
-  }, true, ["encrypt", "decrypt"]);
+  return window.crypto.subtle.importKey(
+    "raw",
+    rawKey,
+    {
+      // name: "AES-GCM",
+      name: "AES-CBC",
+    },
+    true,
+    ["encrypt", "decrypt"]
+  );
 }
 
 /**

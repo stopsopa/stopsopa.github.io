@@ -3243,29 +3243,28 @@
 
                 mkdir cert && cd cert
                 openssl genrsa -aes256 -out rootCA.key 4096
-                
+
                 openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1826 -out rootCA.crt -subj "/C=UK/ST=Surrey/L=London/O=Company/OU=Company/emailAddress=user@gmail.com"
-                
+
                 openssl req -new -nodes -out server.csr -newkey rsa:4096 -keyout server.key -subj "/C=UK/ST=Surrey/L=London/O=Company/OU=Company/emailAddress=user@gmail.com"
-                
+
                 cat <<EEE > server.v3.ext
                 authorityKeyIdentifier=keyid,issuer
                 basicConstraints=CA:FALSE
                 keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
                 subjectAltName = @alt_names
-                
+
                 [alt_names]
                 DNS.1 = stopsopa.github.io.local
                 IP.1 = 0.0.0.0
                 EEE
-                
+
                 openssl x509 -req -in server.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out server.crt -days 730 -sha256 -extfile server.v3.ext
-                
-                open via spotlight "Keychain Access" -> go to "System" -> drag here "rootCA.crt" -> 
-                -> find added cert on the list (will have red "x" on it) -> double click -> expand "Trust" -> 
-                -> Swtich "When using this certificate" to "Always Trust" -> 
+
+                open via spotlight "Keychain Access" -> go to "System" -> drag here "rootCA.crt" ->
+                -> find added cert on the list (will have red "x" on it) -> double click -> expand "Trust" ->
+                -> Swtich "When using this certificate" to "Always Trust" ->
                 -> then loading stopsopa.github.io.local using any port should work in chrome
-                                
               </script>
             </div>
           </div>

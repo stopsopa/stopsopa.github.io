@@ -147,7 +147,7 @@ EEgeebWM5587QiR/eiZi/uCtEOhZGj4dIU/JkhJhzEF2Dkrj6Da6XXCZZ9Vb9ylJfTIt7lNcxv4A==:]
 
     it("decrypt fixed message - encrypted in node", async () => {
       const { decryptMessage } = await getLib();
-      
+
       const key = "ZC1+LPMZ5Xcsm5yN46tSbv+q01Jgr1EBxpBA8h046zk=";
 
       const encrypted = `:[v1:c0ad3::cnglp+hcV7rlNNDmDrbXag==::
