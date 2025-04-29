@@ -1,3 +1,5 @@
+// used by esbuild.sh
+
 import * as esbuild from "esbuild";
 
 import fs from "fs";

@@ -1,11 +1,14 @@
 /**
+ * Node.js implementation of AES-CBC encryption/decryption
+ * Using Node.js crypto module instead of browser's SubtleCrypto
+ * 
  * from:
  *      https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#aes-gcm_2
  *      https://mdn.github.io/dom-examples/web-crypto/encrypt-decrypt/index.html
  *
  * read more:
- *  https://www.haikel-fazzani.eu.org/blog/post/aes-encryption-modes-gcm-cbc-ctr#:~:text=AES%2DGCM%20is%20the%20best,communication%20protocols%20and%20modern%20applications.
- *  https://security.stackexchange.com/a/184350
+ *      https://www.haikel-fazzani.eu.org/blog/post/aes-encryption-modes-gcm-cbc-ctr#:~:text=AES%2DGCM%20is%20the%20best,communication%20protocols%20and%20modern%20applications.
+ *      https://security.stackexchange.com/a/184350
  *
  * WARNING:
  *    LATER UNCOMMENT 'pages/encryptor/aes.jasmine.unit.js' FROM vitest.config.ts
@@ -58,6 +61,7 @@ export async function encryptMessage(base64Key, message, opt) {
   if (typeof base64Key === "undefined") {
     throw new Error(`encryptMessage error: base64Key is undefined`);
   }
+
   if (typeof message !== "string") {
     throw new Error(`encryptMessage error: message is not a string`);
   }
@@ -89,9 +93,9 @@ export async function encryptMessage(base64Key, message, opt) {
     ":[v1:" +
     hash.substring(0, 5) +
     "::" +
-    forHuman(iv) +
+    forHumans(iv) +
     "::\n" +
-    splitByLength(forHuman(ciphertext), columns).join("\n") +
+    splitByLength(forHumans(ciphertext), columns).join("\n") +
     ":]:";
 
   return encrypted;
@@ -103,6 +107,7 @@ export async function decryptMessage(base64Key, humanReadable) {
   if (typeof base64Key !== "string") {
     throw new Error(`decryptMessage error: base64Key is not a string`);
   }
+
   if (typeof humanReadable !== "string") {
     throw new Error(`decryptMessage error: humanReadable is not a string`);
   }
@@ -198,7 +203,7 @@ async function importKeyFromBase64(base64Key) {
  * Convert ciphertext to a human-readable Base64 string.
  * https://base64.guru/learn/base64-characters
  */
-export function forHuman(ciphertext) {
+export function forHumans(ciphertext) {
   const string = String.fromCharCode(...new Uint8Array(ciphertext));
 
   const base64 = btoa(string);

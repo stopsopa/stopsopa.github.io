@@ -1,3 +1,6 @@
+// For transpiling all "/**/*.entry.{js,jsx}" files
+// for react pages mainly
+
 import esbuild from "esbuild";
 import fs from "fs";
 import path from "path";

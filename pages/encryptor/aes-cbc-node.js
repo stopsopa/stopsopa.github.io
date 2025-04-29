@@ -1,6 +1,5 @@
 /**
- * Node.js implementation of AES-CBC encryption/decryption
- * Using Node.js crypto module instead of browser's SubtleCrypto
+ * see comments in pages/encryptor/aes-cbc-browser.js
  */
 
 const crypto = require("crypto");
@@ -36,6 +35,7 @@ export async function encryptMessage(base64Key, message, opt) {
   if (typeof base64Key === "undefined") {
     throw new Error(`encryptMessage error: base64Key is undefined`);
   }
+
   if (typeof message !== "string") {
     throw new Error(`encryptMessage error: message is not a string`);
   }
@@ -45,7 +45,8 @@ export async function encryptMessage(base64Key, message, opt) {
   if (iv) {
     iv = fromHuman(iv);
   } else {
-    // For AES-CBC we need 16 bytes IV
+    // IMPORTANT: The iv must never be reused with a given key.
+    // iv = window.crypto.getRandomValues(new Uint8Array(12)); // for: AES-GCM
     iv = crypto.randomBytes(16);
   }
 
@@ -63,9 +64,9 @@ export async function encryptMessage(base64Key, message, opt) {
     ":[v1:" +
     hash.substring(0, 5) +
     "::" +
-    forHuman(iv) +
+    forHumans(iv) +
     "::\n" +
-    splitByLength(forHuman(ciphertext), columns).join("\n") +
+    splitByLength(forHumans(ciphertext), columns).join("\n") +
     ":]:";
 
   return encrypted;
@@ -75,6 +76,7 @@ export async function decryptMessage(base64Key, humanReadable) {
   if (typeof base64Key !== "string") {
     throw new Error(`decryptMessage error: base64Key is not a string`);
   }
+
   if (typeof humanReadable !== "string") {
     throw new Error(`decryptMessage error: humanReadable is not a string`);
   }
@@ -117,6 +119,7 @@ export async function decryptMessage(base64Key, humanReadable) {
   }
 
   const iv = Buffer.from(fromHuman(ivHuman));
+
   const ciphertext = Buffer.from(fromHuman(ciphertextHuman));
 
   // Create decipher
@@ -149,7 +152,7 @@ async function importKeyFromBase64(base64Key) {
 /**
  * Convert buffer to a human-readable Base64 string.
  */
-export function forHuman(buffer) {
+export function forHumans(buffer) {
   return Buffer.from(buffer).toString("base64");
 }
 
@@ -163,6 +166,8 @@ export function fromHuman(humanReadable) {
 export const generateKey = async () => {
   // Generate a random 32-byte key (256 bits for AES-256)
   const key = crypto.randomBytes(32);
+  
   const base64Key = await exportKeyToBase64(key);
+
   return base64Key;
 };

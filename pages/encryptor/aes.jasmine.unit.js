@@ -4,6 +4,8 @@
       --env .env \
       --filter "grep aes.jasmine.unit" 
 
+  /bin/bash test.sh pages/encryptor/aes.jasmine.unit.js
+
       see more in xx.cjs
  */
 
@@ -17,7 +19,7 @@ const getLib = async () => {
   let lib;
 
   if (isNode) {
-    // Import the module that should be excluded from bundling
+    // This module should be excluded from the bundler - in our case 
     lib = await import("./aes-cbc-node.js");
   } else {
     lib = await import("./aes-cbc-browser.js");
@@ -61,6 +63,7 @@ describe("aes256", () => {
 
     it("empty string", async () => {
       const { splitByLength } = await getLib();
+
       const str = "";
 
       const parts = splitByLength(str, 10);
@@ -72,6 +75,7 @@ describe("aes256", () => {
 
     it("letter", async () => {
       const { splitByLength } = await getLib();
+
       const str = "a";
 
       const parts = splitByLength(str, 10);
@@ -83,6 +87,7 @@ describe("aes256", () => {
 
     it("4", async () => {
       const { splitByLength } = await getLib();
+
       const str = "12345678";
 
       const parts = splitByLength(str, 4);
@@ -96,6 +101,7 @@ describe("aes256", () => {
   describe("aes-cbc-browser encryption", () => {
     it("encrypt & decrypt", async () => {
       const { generateKey, encryptMessage, decryptMessage } = await getLib();
+
       const key = await generateKey();
 
       const encrypted = await encryptMessage(key, message);
@@ -105,11 +111,13 @@ describe("aes256", () => {
       expect(encrypted).toContain(":]:");
 
       const decrypted = await decryptMessage(key, encrypted);
+
       expect(decrypted).toEqual(message);
     });
 
-    it("encrypt & decrypt fixed iv", async () => {
+    it("encrypt & decrypt fixed iv - execute in browser and node", async () => {
       const { encryptMessage, decryptMessage } = await getLib();
+
       const key = "17sfLCu35124RKPPNDVczmQE49T2oCwm08cKhmL5DL4=";
 
       const encrypted = await encryptMessage(key, message, {
@@ -125,6 +133,7 @@ Lw0dkx7P+8K8/JVDlyCB5H5MfXGl7e3r+GYCCH98PM3s0Y7HvaGDyAsxyjIRIdOmeZEo7xzE59W0M0EV
       expect(encrypted).toEqual(expected);
 
       const decrypted = await decryptMessage(key, encrypted);
+
       expect(decrypted).toEqual(message);
     });
 
@@ -140,6 +149,7 @@ Svx0ZMVSlGqxCHOhDTzxSLIesV6qAnbhY3vVEC8M4aBMnfPZhOi6P0pue2Pw04aMHV6M4KmDjw5xdIwj
 EEgeebWM5587QiR/eiZi/uCtEOhZGj4dIU/JkhJhzEF2Dkrj6Da6XXCZZ9Vb9ylJfTIt7lNcxv4A==:]:`;
 
       const expected = message;
+
       const decrypted = await decryptMessage(key, encrypted);
 
       expect(decrypted).toEqual(expected);
@@ -157,6 +167,7 @@ m/zNm3C2ScKI/ZpIHf9D6mU9m8RfbmoYyn5JpaKoZ0DzouSGINwsrDo1TIZG4MBqntYA3yMATdpmliol
 0UxsuDLM0pQb49AgZYSkFmEusDdu9yNMLap8NLexj6xAOQDsdC1UIenFWCKuuCtqSxtuQqXG134g==:]:`;
 
       const expected = message;
+
       const decrypted = await decryptMessage(key, encrypted);
 
       expect(decrypted).toEqual(expected);
