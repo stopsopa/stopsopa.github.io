@@ -147,10 +147,10 @@ export NODE_OPTIONS=""
       command: `
 set -e    
 export NODE_OPTIONS=""    
-/bin/bash uglify.sh      
+/bin/bash scripts/uglify.sh      
 `,
       description: `
-Usually it's good idea to execute it before /bin/bash template.sh
+Usually it's good idea to execute it before /bin/bash scripts/template.sh
 
 Finds all *.uglify.js files in this directory
 and then pass this file through babel and then through uglifyjs
@@ -211,11 +211,11 @@ EEE
       command: `
 set -e        
 export NODE_OPTIONS=""
-/bin/bash template.sh    
+/bin/bash scripts/template.sh    
 node node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node_modules/**/*' -c '/bin/bash template.sh'
 `,
       description: `
-Usually it's good idea to execute it after /bin/bash uglify.sh
+Usually it's good idea to execute it after /bin/bash scripts/uglify.sh
 
 Finds all *.template.html and process them to *.rendered.html in the same location
 <%url lib/jira-create.uglify.min.js %>
@@ -235,23 +235,23 @@ node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbo
       confirm: false,
       source: false,
     },
-    [`esbuild`]: {
+    [`esbuild-entries`]: {
       command: `
 set -e    
 export NODE_OPTIONS=""     
-node esbuild.config.js
+node esbuild-entries.js
 `,
       description: `
 Finds all /**/*.entry.{js,jsx} and process them to /dist/[name].bundle.js
-see more esbuild.config.js
+see more esbuild-entries.js
 `,
       confirm: false,
     },
-    [`esbuild`]: {
+    [`esbuild_node`]: {
       command: `
 set -e      
 export NODE_OPTIONS=""  
-/bin/bash esbuild.sh 
+/bin/bash esbuild-node.sh 
 `,
       description: `
   bundles all files "*.node.js" or "*.node.cjs" or "*.node.mjs"

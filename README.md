@@ -343,7 +343,7 @@ In template file listed placeholders will be processed:
 > absolute like /lib/test.js
 > that will resolve from the root of the repository
 
-For details look to template.sh
+For details look to scripts/template.sh
 
 # ace editor click link
 

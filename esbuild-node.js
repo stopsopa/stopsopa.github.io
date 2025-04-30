@@ -1,4 +1,4 @@
-// used by esbuild.sh
+// used by esbuild-node.sh
 
 import * as esbuild from "esbuild";
 
@@ -6,11 +6,11 @@ import fs from "fs";
 
 import path from "path";
 
-const log = (...args) => console.log("esbuild.js:", ...args);
+const log = (...args) => console.log("esbuild-node.js:", ...args);
 
 const file = process.argv[2];
 
-const th = (msg) => new Error(`esbuild.js error: ${msg}`);
+const th = (msg) => new Error(`esbuild-node.js error: ${msg}`);
 
 if (typeof file !== "string" || !file.trim()) {
   throw th(`file is not provided`);

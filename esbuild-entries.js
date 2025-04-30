@@ -7,7 +7,7 @@ import path from "path";
 import { sassPlugin } from "esbuild-sass-plugin";
 import utils from "./libs/utils.js";
 
-const log = (...args) => console.log("esbuild.config.js:", ...args);
+const log = (...args) => console.log("esbuild-entries.js:", ...args);
 
 const root = path.dirname("");
 

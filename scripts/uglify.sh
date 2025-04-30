@@ -1,5 +1,5 @@
 
-# Usually it's good idea to execute it before /bin/bash template.sh
+# Usually it's good idea to execute it before /bin/bash scripts/template.sh
 
 # Finds all *.uglify.js files in this directory
 # and then pass this file through babel and then through uglifyjs
@@ -21,7 +21,9 @@ esac
 
 export NODE_OPTIONS="" 
 
-cd "${_DIR}"
+ROOT="${_DIR}/.."
+
+cd "${ROOT}"
 
 set -e
 #set -x
@@ -62,7 +64,7 @@ do
   # node "${_DIR}/node_modules/.bin/esbuild" "${TMP}" --bundle --minify --outfile="${MIN}" --target=es6
 
   # after incorporating esbuild-minify-templates https://github.com/maxmilton/esbuild-minify-templates
-  node uglify.mjs --input "${FILE}" --output "${MIN}"
+  node scripts/uglify.mjs --input "${FILE}" --output "${MIN}"
 
   rm -rf "${TMP}"
 

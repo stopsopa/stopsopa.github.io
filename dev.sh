@@ -111,10 +111,10 @@ LOGFILE="${_DIR}/var/log.log"
 
 rm -rf "${LOGFILE}"
 
-node esbuild.config.js --watch --name "esbuild_${FLAG}" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
+node esbuild-entries.js --watch --name "esbuild_${FLAG}" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID1="${!}"  
 
-/bin/bash esbuild.sh watch 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
+/bin/bash esbuild-node.sh watch 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID3="${!}"
 
 /bin/bash .github/injector.sh watch 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
@@ -123,7 +123,7 @@ PID4="${!}"
 /bin/bash pages/bash/xx/xx.inverse.postprocessor.sh watch 1> >(/bin/bash bash/dlogger.sh " " invpost >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e invpost >> "${LOGFILE}") &
 PID5="${!}"
 
-node node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node_modules/**/*' -c '/bin/bash template.sh' 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
+node node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node_modules/**/*' -c '/bin/bash scripts/template.sh' 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
 PID6="${!}"
 
 WAITINGMESSAGE="exbuilddone2" # this text shows at the end of esbuild build

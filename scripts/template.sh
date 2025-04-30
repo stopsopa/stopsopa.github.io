@@ -1,13 +1,13 @@
 
-# Usually it's good idea to execute it after /bin/bash uglify.sh
+# Usually it's good idea to execute it after /bin/bash scripts/uglify.sh
 
 # Finds all *.template.html and process them to *.rendered.html in the same location
 # <%url pages/bookmarklets/jira-create.uglify.min.js %>
 # <%inject pages/bookmarklets/periscope.uglify.js %>
 
-ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
-cd "${ROOT}"
+cd "${_DIR}/.."
 
 export NODE_OPTIONS="" 
 
@@ -46,7 +46,7 @@ do
 
   echo "bash: processing \"${FILE}\""
 
-  node "template.js" "${FILE}" "${MIN}"
+  node "scripts/template.js" "${FILE}" "${MIN}"
 
   echo "bash: generated  \"${MIN}\""
 

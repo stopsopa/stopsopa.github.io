@@ -3,8 +3,8 @@
 # and processes it to xx.node.bundled.gitignored.js
 # and then it copies each of xx.node.bundled.gitignored.js to xx.node.bundled.gitignored.cjs right next to it
 #
-# /bin/bash esbuild.sh                     - just build and finish
-# /bin/bash esbuild.sh whatever            - build and then watch files
+# /bin/bash esbuild-node.sh                     - just build and finish
+# /bin/bash esbuild-node.sh whatever            - build and then watch files
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
@@ -46,7 +46,7 @@ VARFILE="${_DIR}/var/esbuild.txt";
 echo -n "${LIST}" > "${VARFILE}"
 
 if [ "${1}" = "" ]; then
-    node esbuild.js "${VARFILE}"
+    node esbuild-node.js "${VARFILE}"
 else
-    node esbuild.js "${VARFILE}" --watch
+    node esbuild-node.js "${VARFILE}" --watch
 fi

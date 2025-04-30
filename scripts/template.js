@@ -1,5 +1,5 @@
 /**
- * It's node.js helper for template.sh
+ * It's node.js helper for scripts/template.sh
  */
 
 import path from "path";
@@ -9,6 +9,8 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const root = path.resolve(__dirname, "..");
 
 const cp = [...process.argv];
 
@@ -48,7 +50,7 @@ data = data.replace(/([ \t]*)<%([a-z]+)\s*(.*?)\s*%>/g, (_, space, type, file) =
   const prefix = " ".repeat(space.length);
 
   if (file.substr(0, 1) === "/") {
-    file = path.resolve(__dirname, file.substr(1));
+    file = path.resolve(root, file.substr(1));
   } else {
     file = path.resolve(inputfiledir, file);
   }
@@ -84,7 +86,7 @@ fs.writeFileSync(
   `<!--
 
 WARNING: 
-File was created by /bin/bash template.sh template engine.
+File was created by /bin/bash scripts/template.sh template engine.
 Edit template instead of this file
 WARNING: 
 
@@ -94,7 +96,7 @@ Edit template instead of this file
 WARNING: 
 
 WARNING: 
-File was created by /bin/bash template.sh template engine.
+File was created by /bin/bash scripts/template.sh template engine.
 Edit template instead of this file
 WARNING: 
 

@@ -81,16 +81,16 @@ cp node_modules/envprocessor/dist/esm/env.js public/env.js
 node pages/portsregistry/lists/ports-generator.js
 
 # call those together in this order vvv
-/bin/bash uglify.sh
-/bin/bash template.sh
+/bin/bash scripts/uglify.sh
+/bin/bash scripts/template.sh
 # call those together in this order ^^^
 
 # node libs/preprocessor.js
 node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
 
-node esbuild.config.js
+node esbuild-entries.js
 
-/bin/bash esbuild.sh
+/bin/bash esbuild-node.sh
 
 /bin/bash .github/ytlinksfix.sh
 
