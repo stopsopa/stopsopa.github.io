@@ -8,6 +8,7 @@ node_modules
 preprocessed.js
 public/env.js
 /public/coverage/
+module*.js
 /_git
 yarn-error.log
 /playwright-report/

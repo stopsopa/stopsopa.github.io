@@ -30,7 +30,8 @@
     "react-dom": "^18.2.0",
     "react-popper": "^2.3.0",
     "serialize-error": "^11.0.0",
-    "serve-index": "^1.9.1"
+    "serve-index": "^1.9.1",
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.51.1",

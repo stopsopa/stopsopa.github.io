@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "declaration": false,
+    "outDir": "./",
+    "rootDir": "./",
+    "allowJs": false
+  },
+  "include": ["**/module*.ts"],
+  "exclude": ["node_modules"]
+}

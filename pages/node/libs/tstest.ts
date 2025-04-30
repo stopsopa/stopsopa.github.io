@@ -3,7 +3,7 @@
  */
 
 // import lib, { lib2 } from "./lib"; // this will fail
-import lib, { lib2 } from "./lib.ts"; // this one is fine
+import lib, { lib2 } from "./lib.js"; // this one is fine
 // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Ftypescript%2Fnode%2Flib.ts
 
 export default function add(a: number, b: number): number {
