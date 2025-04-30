@@ -47,6 +47,10 @@ EOF
 
 # replace in FIND variable -roE TO -rLE
 # and add final fillterring out
+# "It seems that --exclude-dir is only compared against the basename of the path"
+#    from: https://unix.stackexchange.com/a/226514
+# that's why we will use additional grep at the end instead of --exclude-dir
+# for filtering nested directoriess
 FIND_LIST="${FIND//-Pzo/-Pzl} | grep -v \"^pages/encryptor/\""
 
 cat <<EEE
