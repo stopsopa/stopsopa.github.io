@@ -1,3 +1,4 @@
+// transpile all "module*.ts" right next in the same directoris but as *.js
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {

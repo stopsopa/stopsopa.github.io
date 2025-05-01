@@ -78,6 +78,8 @@ fi
 mkdir -p public
 cp node_modules/envprocessor/dist/esm/env.js public/env.js
 
+node node_modules/.bin/tsc
+
 node pages/portsregistry/lists/ports-generator.js
 
 # call those together in this order vvv
