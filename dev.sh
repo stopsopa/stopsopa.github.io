@@ -97,6 +97,8 @@ function _kill {
   kill "${PID5}" 1> /dev/null 2> /dev/null || :
 
   kill "${PID6}" 1> /dev/null 2> /dev/null || :
+
+  kill "${PID7}" 1> /dev/null 2> /dev/null || :
 }
 
 _kill;
@@ -125,6 +127,9 @@ PID5="${!}"
 
 node node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node_modules/**/*' -c '/bin/bash scripts/template.sh' 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
 PID6="${!}"
+
+node node_modules/.bin/tsc --preserveWatchOutput --watch 1> >(/bin/bash bash/dlogger.sh " " typescr >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e typescr >> "${LOGFILE}") &
+PID7="${!}"
 
 WAITINGMESSAGE="exbuilddone2" # this text shows at the end of esbuild build
 
@@ -171,7 +176,9 @@ set -e
 
 /bin/bash bash/proc/pid-is-running.sh ${PID5} "pages/bash/xx/xx.inverse.postprocessor.sh" 
 
-/bin/bash bash/proc/pid-is-running.sh ${PID5} "template process" 
+/bin/bash bash/proc/pid-is-running.sh ${PID6} "template process" 
+
+/bin/bash bash/proc/pid-is-running.sh ${PID7} "typescript process" 
 
 # tail -n 10000 -f "${LOGFILE}"
 
