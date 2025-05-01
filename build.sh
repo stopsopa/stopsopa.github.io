@@ -78,6 +78,7 @@ fi
 mkdir -p public
 cp node_modules/envprocessor/dist/esm/env.js public/env.js
 
+# transpile all "module*.ts" right next in the same directoris but as *.js
 node node_modules/.bin/tsc
 
 node pages/portsregistry/lists/ports-generator.js
