@@ -85,14 +85,17 @@ const watcher = tailFile();
 // now let's handle stdin
 
 const __filename = fileURLToPath(import.meta.url);
-const rel_filename = path.relative(process.cwd(), __filename);
+const rel_script = path.relative(process.cwd(), __filename);
 
+let i = 0;
 function keypressed(key) {
+  i += 1;
   const files = process.argv.slice(3);
+
+  process.stdout.write(`\n${rel_script}: ${i}`);
 
   files.forEach((file) => {
     const content = fss.readFileSync(file, "utf8");
-
     process.stdout.write(content);
   });
 }
@@ -116,5 +119,5 @@ process.stdin.on("keypress", (str, key) => {
   keypressed(str);
 });
 
-console.log(`${rel_filename}: Keyboard listener activated. Press any key to trigger the keypressed function.`);
+console.log(`${rel_script}: Keyboard listener activated. Press any key to trigger the keypressed function.`);
 console.log("Press Ctrl+C to exit.");
