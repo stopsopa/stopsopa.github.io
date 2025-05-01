@@ -1,5 +1,5 @@
 /**
- * node dev-tail.js var/tail.log var/server_js_https.logvar/server_js_http.log
+ * node dev-tail.js var/tail.log var/server_js_https.log var/server_js_http.log
  *
  * This script will attach and do 'tail -f var/tail.log' continuously
  * and also on every keystroke will dumpt to process.stdout.write() content of any file after the first argument
