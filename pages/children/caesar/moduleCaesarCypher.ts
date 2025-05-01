@@ -1,7 +1,7 @@
 export const alpha =
-  "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789!@#$%^&*(){}[]-+_=\\|;:,.ąĄęĘśŚźŹżŻćĆńŃłŁóÓ'\"?<>`~/ "; // 94
+  "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789!@#$%^&*(){}[]-+_=\\|;:,.ąĄęĘśŚźŹżŻćĆńŃłŁóÓ'\"?<>`~/ \n"; // 94
 
-const alphaLength = alpha.length;
+export const alphaLength = alpha.length;
 
 export function caesarCypher(offset: number, text: string): string {
   let encrypted = "";

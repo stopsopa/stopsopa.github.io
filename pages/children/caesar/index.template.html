@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div id="encryptor">
+          <style>
+            #encryptor {
+              & > span {
+                display: inline-block;
+                width: 100px;
+              }
+              input,
+              textarea {
+                font-family: monaco, Consolas, Lucida Console, monospace;
+                font-size: 12px;
+                width: 600px;
+              }
+              textarea {
+                height: 200px;
+              }
+              textarea:not(.encrypted) {
+                text-wrap: nowrap;
+              }
+              .key input {
+                width: 20px;
+              }
+              .bgred {
+                background-color: rgb(238, 188, 188);
+              }
+              .bggreen {
+                background-color: rgb(211, 242, 211);
+              }
+            }
+          </style>
+          <h2>encrypt</h2>
+          <label class="key">
+            <span> key: </span>
+            <input type="text" />
+            <span>Current key: <span class="curkey"></span>, maxIndex <span class="maxIndex"></span></span>
+            <button class="up">up</button>
+            <button class="down">down</button>
+          </label>
+          <br />
+          <label class="alphabet">
+            <span> alphabet: </span>
+            <input type="text" readonly />
+          </label>
+          <br />
+          <label>
+            <span> message: </span>
+            <textarea class="message">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+Etiam molestie pulvinar consequat. 
+Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</textarea
+            >
+          </label>
+          <br />
+          <label>
+            <span></span>
+            <button class="encrypt">encrypt</button>
+          </label>
+          <br />
+          <label>
+            <span> encrypted: </span>
+            <textarea class="encrypted" wrap="soft"></textarea>
+          </label>
+          <br />
+          <label>
+            <span></span>
+            <button class="decrypt">decrypt</button>
+          </label>
+          <br />
+          <label>
+            <span> decrypted: </span>
+            <textarea class="decrypted"></textarea>
+          </label>
+          <br />
+          <div class="comparison-legend" style="margin-top: 10px">
+            <div style="display: inline-block; margin-right: 20px">
+              <span
+                style="
+                  display: inline-block;
+                  width: 20px;
+                  height: 20px;
+                  background-color: rgb(211, 242, 211);
+                  vertical-align: middle;
+                  margin-right: 5px;
+                "
+              ></span>
+              <span style="vertical-align: middle">exactly equal</span>
+            </div>
+            <div style="display: inline-block">
+              <span
+                style="
+                  display: inline-block;
+                  width: 20px;
+                  height: 20px;
+                  background-color: rgb(238, 188, 188);
+                  vertical-align: middle;
+                  margin-right: 5px;
+                "
+              ></span>
+              <span style="vertical-align: middle">not exactly equal</span>
+            </div>
+          </div>
+        </div>
+        <script type="module" src="bind.js"></script>
+        <script type="editor" data-lang="ts">
+          <%inject moduleCaesarCypher.ts %>
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

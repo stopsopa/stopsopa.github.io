@@ -1,3 +1,5 @@
+"use strict";
+
 // pages/bash/xx/xx.lock.gits-update-config.node.cjs
 var fs = require("fs");
 var path = require("path");
