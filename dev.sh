@@ -182,5 +182,9 @@ set -e
 
 # tail -n 10000 -f "${LOGFILE}"
 
-/bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "tail_${FLAG}" tail -n 10000 -f "${LOGFILE}"
+# /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "tail_${FLAG}" tail -n 10000 -f "${LOGFILE}"
+
+node dev-tail.js "${LOGFILE}" var/server_js_https.log var/server_js_http.log
+
+
 

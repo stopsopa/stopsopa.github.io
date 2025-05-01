@@ -120,12 +120,20 @@ function createServer(protocol = "http") {
   }
 
   server.listen(port, () => {
-    setTimeout(() => {
-      log(`
+    const dumpFile = path.resolve(__dirname, "var", `server_js_${protocol}.log`);
+    const dumpFileRelative = path.relative(process.cwd(), dumpFile);
+
+    const msg = `
    🌎  Server is running ${protocol.toUpperCase()}
           ${protocol}://${host}:${port}
           ${protocol}://${process.env.LOCAL_HOSTS}:${port}/index.html
-  `);
+          dump file ${dumpFileRelative}
+  `;
+
+    fs.writeFileSync(dumpFile, msg);
+
+    setTimeout(() => {
+      log(msg);
     }, 4000);
   });
 }
