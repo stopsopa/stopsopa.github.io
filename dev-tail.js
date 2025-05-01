@@ -18,6 +18,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 // handle live 'tail'ing file
+// handle live 'tail'ing file
+// handle live 'tail'ing file
+
 // Get the file path from command line arguments
 const filePath = process.argv[2];
 
