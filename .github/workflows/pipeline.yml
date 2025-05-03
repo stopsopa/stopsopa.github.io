@@ -108,7 +108,9 @@ jobs:
           key: ${{ steps.restore-cache.outputs.cache-primary-key }}
 
       - name: Build
-        run: /bin/bash build.sh
+        run: |
+          cp .env.template .env          
+          /bin/bash build.sh
 
       - name: run local server (NODE_ENV=production)
         run: |
