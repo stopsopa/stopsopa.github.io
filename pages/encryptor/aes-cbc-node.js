@@ -2,7 +2,8 @@
  * see comments in pages/encryptor/aes-cbc-browser.js
  */
 
-const crypto = require("crypto");
+// const crypto = require("crypto");
+import crypto from "crypto";
 
 function encodeMessage(message) {
   return Buffer.from(message, "utf8");
@@ -80,6 +81,8 @@ export async function decryptMessage(base64Key, humanReadable) {
   if (typeof humanReadable !== "string") {
     throw new Error(`decryptMessage error: humanReadable is not a string`);
   }
+
+  humanReadable = humanReadable.trim();
 
   const key = await importKeyFromBase64(base64Key);
 

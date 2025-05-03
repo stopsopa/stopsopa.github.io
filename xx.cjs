@@ -326,6 +326,24 @@ in search for  injector: path/to_file.(js|txt|any...)
 `,
       confirm: false,
     },
+    [`reencode`]: {
+      command: `
+set -e   
+cat <<EEE
+
+# generate new key:
+https://stopsopa.github.io/pages/encryptor/index.rendered.html
+
+NODE_OPTIONS="" /bin/bash scripts/reencode.sh "PREVIOUS_KEY"
+
+EEE
+
+`,
+      description: `
+Envrypt with new kay
+`,
+      confirm: false,
+    },
     [`jasmine`]: {
       command: `
 set -e   

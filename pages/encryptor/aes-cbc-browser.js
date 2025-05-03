@@ -112,6 +112,8 @@ export async function decryptMessage(base64Key, humanReadable) {
     throw new Error(`decryptMessage error: humanReadable is not a string`);
   }
 
+  humanReadable = humanReadable.trim();
+
   const key = await importKeyFromBase64(base64Key);
 
   if (!(humanReadable.indexOf("::") > 0)) {

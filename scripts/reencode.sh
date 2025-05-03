@@ -1,4 +1,12 @@
-# Looks for all possible youtube links and removes 'si' get parameter
+#
+# encrypt again all found secrets with new key
+# it relays on AES256_KEY env var from .env as the target key
+# previous key have to be specified using first argument
+#
+# /bin/bash scripts/reencode.sh "PREVIOUS_KEY"
+# 
+# For testing purposes just use the same key as AES256_KEY and PREVIOUS_KEY
+# 
 
 set -e
 
@@ -22,6 +30,14 @@ cd "${ROOT}"
 
 ROOT="$(pwd)"
 
+eval "$(/bin/bash bash/exportsource.sh ".env")"
+
+if [ "${AES256_KEY}" = "" ]; then
+  echo "reencode.sh error: AES256_KEY is not set"
+
+  exit 1
+fi
+
 # WARNING: 
 # IF YOU WOULD LIKE TO ADD ANOTHER DIRECTORY TO NOT ENTER BE CAREFUL WITH -o
 # IT SHOULD AFTER ALL EXCEPT LAST ONE LINE IN FIRST \( ... \)
@@ -29,7 +45,7 @@ ROOT="$(pwd)"
 S="\\"
 
 FIND="$(cat <<EOF
-ggrep -Pzor ":\[v1:(?:[A-Za-z0-9]{5})::(?:[A-Za-z0-9+\/=]+)::((?:[\n\r\s\t]+)[A-Za-z0-9+\/=]+)+:\]:" * $S
+/bin/bash bash/grepP.sh -Pzor ":\[v1:[A-Za-z0-9]{5}::[A-Za-z0-9+\/=]+::(?:[\n\r\s\t]+[A-Za-z0-9+\/=]+)+:\]:" * $S
   --exclude-dir={.git,.github,dist,docker,coverage,var,noprettier,node_modules} $S
   --include='*.html' $S
   --include='*.js' $S
@@ -66,4 +82,14 @@ EEE
 
 FIND_LIST="${FIND_LIST//\\$'\n'/}"
 
-eval "${FIND_LIST} | node scripts/reencode.js"
+eval "${FIND_LIST} | node scripts/reencode.js" "${1}"
+
+cat <<EEE
+
+current key: 
+
+AES256_KEY_PREV="${1}"
+AES256_KEY="${AES256_KEY}"
+
+EEE
+  
