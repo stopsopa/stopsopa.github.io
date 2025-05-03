@@ -98,7 +98,7 @@ async function replaceInFile(inputFile) {
   if (fs.existsSync(outputFile)) {
     fs.unlinkSync(outputFile);
   }
-  
+
   const content = await fs.promises.readFile(inputFile, "utf8");
 
   let replacedContent = replaceInString(content);
