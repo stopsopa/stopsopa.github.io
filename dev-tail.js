@@ -81,7 +81,7 @@ const tailFile = async () => {
 };
 
 // Start monitoring
-const watcher = tailFile();
+const watcher = await tailFile();
 
 // now let's handle stdin
 // now let's handle stdin
@@ -117,9 +117,13 @@ process.stdin.on("keypress", (str, key) => {
     watcher.close();
     process.exit();
   }
-
-  // Call the keypressed function with the key information
-  keypressed(str);
+  // if enter key pressed
+  if (key.name === "return") {
+    process.stdout.write("\n");
+  } else {
+    // Call the keypressed function with the key information
+    keypressed(str);
+  }
 });
 
 console.log(`${rel_script}: Keyboard listener activated. Press any key to trigger the keypressed function.`);

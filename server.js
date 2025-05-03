@@ -79,11 +79,18 @@ app.use(
     // http://expressjs.com/en/resources/middleware/serve-static.html
     // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
     // maxAge: "356 days", // in milliseconds max-age=30758400
-    cacheControl: false,
-    etag: false,
-    immutable: true,
-    lastModified: false,
-    maxAge: false,
+    cacheControl: true, // Enable Cache-Control header
+    etag: true, // Enable ETag generation
+    immutable: false, // Set to false to allow revalidation
+    lastModified: true, // Enable Last-Modified header
+    maxAge: "1d", // Set a reasonable max-age (1 day)
+    setHeaders: function (res, path, stat) {
+      res.setHeader("Cache-Control", "public, max-age=86400, must-revalidate");
+      // this will try revalidate only aftera a day
+
+      res.setHeader("Cache-Control", "no-cache, must-revalidate");
+      // force revalidation on every request
+    },
   }),
   serveIndex(web, { icons: true })
 );
@@ -128,7 +135,7 @@ function createServer(protocol = "http") {
           ${protocol}://${host}:${port}
           ${protocol}://${process.env.LOCAL_HOSTS}:${port}/index.html
           dump file ${dumpFileRelative}
-  `;
+`;
 
     fs.writeFileSync(dumpFile, msg);
 
