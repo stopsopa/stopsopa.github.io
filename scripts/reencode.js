@@ -51,10 +51,18 @@ rl.on("line", (file) => {
 
       const { inputFile, outputFile } = await replaceInFile(file);
 
-      fs.unlinkSync(inputFile);
-      fs.renameSync(outputFile, inputFile);
+      if (outputFile) {
 
-      process.stdout.write(`${relative} completed: ${file}\n`);
+        fs.unlinkSync(inputFile);
+        fs.renameSync(outputFile, inputFile);
+
+        process.stdout.write(`${relative} completed: ${file}\n`);
+      }
+      else {
+        process.stdout.write(`${relative} no changes: ${file}\n`);
+      }
+
+
     })
     .catch((error) => {
       process.stderr.write(`Error processing ${file}: ${error.message}\n`);
@@ -93,18 +101,24 @@ async function replaceInString(content) {
 }
 
 async function replaceInFile(inputFile) {
-  const outputFile = `${inputFile}.tmp`;
+  let outputFile;
 
-  if (fs.existsSync(outputFile)) {
-    fs.unlinkSync(outputFile);
+  if (has("RUN")) {
+    outputFile = `${inputFile}.tmp`;
+
+    if (fs.existsSync(outputFile)) {
+      fs.unlinkSync(outputFile);
+    }
   }
 
   const content = await fs.promises.readFile(inputFile, "utf8");
 
   let replacedContent = replaceInString(content);
 
-  // Write the modified content to the output file
-  await fs.promises.writeFile(outputFile, replacedContent, "utf8");
+  if (outputFile) {
+    // Write the modified content to the output file
+    await fs.promises.writeFile(outputFile, replacedContent, "utf8");
+  }
 
   return { inputFile, outputFile };
 }

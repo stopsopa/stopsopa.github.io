@@ -334,13 +334,22 @@ cat <<EEE
 # generate new key:
 https://stopsopa.github.io/pages/encryptor/index.rendered.html
 
+# controlled via .env 
+
+AES256_KEY_PREV="xxx"
+AES256_KEY="xxx"
+
 NODE_OPTIONS="" /bin/bash scripts/reencode.sh "PREVIOUS_KEY"
+  # dry run/check mode
+  
+RUN=true NODE_OPTIONS="" /bin/bash scripts/reencode.sh "PREVIOUS_KEY"
+  # run for reach
 
 EEE
 
 `,
       description: `
-Envrypt with new kay
+AES256 encryption - encrypt again or check
 `,
       confirm: false,
     },

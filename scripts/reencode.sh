@@ -88,7 +88,6 @@ cat <<EEE
 
 current key: 
 
-AES256_KEY_PREV="${1}"
 AES256_KEY="${AES256_KEY}"
 
 EEE

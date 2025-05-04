@@ -85,7 +85,7 @@ app.use(
     lastModified: true, // Enable Last-Modified header
     maxAge: "1d", // Set a reasonable max-age (1 day)
     setHeaders: function (res, path, stat) {
-      res.setHeader("Cache-Control", "public, max-age=86400, must-revalidate");
+      // res.setHeader("Cache-Control", "public, max-age=86400, must-revalidate");
       // this will try revalidate only aftera a day
 
       res.setHeader("Cache-Control", "no-cache, must-revalidate");
