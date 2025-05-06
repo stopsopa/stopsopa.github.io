@@ -336,7 +336,6 @@ https://stopsopa.github.io/pages/encryptor/index.rendered.html
 
 # controlled via .env 
 
-AES256_KEY_PREV="xxx"
 AES256_KEY="xxx"
 
 NODE_OPTIONS="" /bin/bash scripts/reencode.sh "PREVIOUS_KEY"
@@ -344,6 +343,8 @@ NODE_OPTIONS="" /bin/bash scripts/reencode.sh "PREVIOUS_KEY"
   
 RUN=true NODE_OPTIONS="" /bin/bash scripts/reencode.sh "PREVIOUS_KEY"
   # run for reach
+
+NOTE: use the same key just for test, you don't have to use new key for PREVIOUS_KEY, especially in dry mode
 
 EEE
 

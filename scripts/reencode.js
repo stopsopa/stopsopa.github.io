@@ -52,19 +52,26 @@ rl.on("line", (file) => {
       const { inputFile, outputFile } = await replaceInFile(file);
 
       if (outputFile) {
-
         fs.unlinkSync(inputFile);
         fs.renameSync(outputFile, inputFile);
 
         process.stdout.write(`${relative} completed: ${file}\n`);
-      }
-      else {
+      } else {
         process.stdout.write(`${relative} no changes: ${file}\n`);
       }
-
-
     })
     .catch((error) => {
+      console.log(
+        JSON.stringify(
+          {
+            msg: String(error.message),
+            line: getLine(),
+            stack: String(error.stack).split("\n"),
+          },
+          null,
+          2
+        )
+      );
       process.stderr.write(`Error processing ${file}: ${error.message}\n`);
     });
 });
@@ -148,4 +155,28 @@ function formatSpaces(message, spaces) {
   });
 
   return lines.join("\n");
+}
+
+function getLine(opt) {
+  let { error, stackLine = 2 } = opt || {};
+
+  if (!Number.isInteger(stackLine)) {
+    throw new Error(`getLine: stackLine must be an integer`);
+  }
+
+  // Create an Error object to capture the stack trace
+  if (!error) {
+    error = new Error();
+  }
+
+  // Parse the stack trace to extract the line number
+  const stackLines = error.stack.split("\n");
+
+  // Get the caller's stack frame (index 2 skips this function and its immediate caller)
+  const callerFrame = stackLines[stackLine];
+
+  // Extract the line number using regex
+  const lineMatch = callerFrame.match(/:(\d+):\d+\)?$/);
+
+  return lineMatch ? parseInt(lineMatch[1], 10) : -1;
 }
