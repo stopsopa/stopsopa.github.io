@@ -23,6 +23,12 @@ export async function hashSHA256(message) {
   return hash.digest("hex");
 }
 
+export function generateIV() {
+  // IMPORTANT: The iv must never be reused with a given key.
+  // iv = window.crypto.getRandomValues(new Uint8Array(12)); // for: AES-GCM
+  return crypto.randomBytes(16);
+}
+
 export async function encryptMessage(base64Key, message, opt) {
   let { columns, iv } = {
     columns: 110,
@@ -46,9 +52,7 @@ export async function encryptMessage(base64Key, message, opt) {
   if (iv) {
     iv = fromHuman(iv);
   } else {
-    // IMPORTANT: The iv must never be reused with a given key.
-    // iv = window.crypto.getRandomValues(new Uint8Array(12)); // for: AES-GCM
-    iv = crypto.randomBytes(16);
+    iv = generateIV();
   }
 
   const key = await importKeyFromBase64(base64Key);
