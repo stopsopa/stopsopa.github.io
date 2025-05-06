@@ -192,6 +192,26 @@
           | .[].version'
         </script>
 
+        <h2>getLine</h2>
+        <script type="editor" data-lang="sh">
+
+          function getLine() {
+            // Create an Error object to capture the stack trace
+            const err = new Error();
+          
+            // Parse the stack trace to extract the line number
+            const stackLines = err.stack.split("\n");
+          
+            // Get the caller's stack frame (index 2 skips this function and its immediate caller)
+            const callerFrame = stackLines[2];
+          
+            // Extract the line number using regex
+            const lineMatch = callerFrame.match(/:(\d+):\d+\)?$/);
+          
+            return lineMatch ? parseInt(lineMatch[1], 10) : -1;
+          }
+          
+        </script>
         <h2>useful</h2>
         <script type="editor" data-lang="sh">
 
