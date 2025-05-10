@@ -197,28 +197,27 @@
 
           function getLine(opt) {
             let { error, stackLine = 2 } = opt || {};
-          
+
             if (!Number.isInteger(stackLine)) {
               throw new Error(`getLine: stackLine must be an integer`);
             }
-          
+
             // Create an Error object to capture the stack trace
             if (!error) {
               error = new Error();
             }
-          
+
             // Parse the stack trace to extract the line number
             const stackLines = error.stack.split("\n");
-          
+
             // Get the caller's stack frame (index 2 skips this function and its immediate caller)
             const callerFrame = stackLines[stackLine];
-          
+
             // Extract the line number using regex
             const lineMatch = callerFrame.match(/:(\d+):\d+\)?$/);
-          
+
             return lineMatch ? parseInt(lineMatch[1], 10) : -1;
           }
-          
         </script>
         <h2>useful</h2>
         <script type="editor" data-lang="sh">
@@ -1401,64 +1400,234 @@
         <br />
         <a href="https://stackoverflow.com/a/13807906">about fswatch</a>
         <h2>streams</h2>
-        <script type="editor" data-lang="js">
 
-          // https://github.com/substack/stream-handbook
-          // from: https://github.com/nkzawa/socket.io-stream
+        <div data-vanilla-tabs>
+          <div data-buttons>
+            <span class="active">stream</span>
+            <span>pipeline</span>
+            <span>Transform</span>
+            <span>response to file</span>
+            <span>Transform Streams</span>
+            <span>stream to response</span>
+          </div>
+          <div data-tabs>
+            <div>
+              <script type="editor" data-lang="js">
 
-          // https://nodesource.com/blog/understanding-streams-in-nodejs/
+                // https://github.com/substack/stream-handbook
+                // from: https://github.com/nkzawa/socket.io-stream
+
+                // https://nodesource.com/blog/understanding-streams-in-nodejs/
 
 
-          // https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
-          // Create big file using stream
-          const fs = require('fs');
-          const file = fs.createWriteStream('./big.file');
+                // https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
+                // Create big file using stream
+                const fs = require('fs');
+                const file = fs.createWriteStream('./big.file');
 
-          for(let i=0; i<= 1e6; i++) {
-            file.write('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n');
-          }
+                for(let i=0; i<= 1e6; i++) {
+                  file.write('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n');
+                }
 
-          file.end();
+                file.end();
 
 
 
-          # https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
-          # more: https://jscomplete.com/learn/node-beyond-basics/node-streams  g(node beyond basics)
+                # https://www.freecodecamp.org/news/node-js-streams-everything-you-need-to-know-c9141306be93/
+                # more: https://jscomplete.com/learn/node-beyond-basics/node-streams  g(node beyond basics)
 
-          # https://www.sitepoint.com/basics-node-js-streams/
-          # http://2ality.com/2018/04/async-iter-nodejs.html
-          # http://2ality.com/2018/05/child-process-streams.html
+                # https://www.sitepoint.com/basics-node-js-streams/
+                # http://2ality.com/2018/04/async-iter-nodejs.html
+                # http://2ality.com/2018/05/child-process-streams.html
 
-          # read file to http response:
-          const stream = fs.createReadStream(file);
-          stream.pipe(res);
+                # read file to http response:
+                const stream = fs.createReadStream(file);
+                stream.pipe(res);
 
-          # write http response to file:
-          const stream = fs.createWriteStream(file);
-          res.pipe(stream);
+                # write http response to file:
+                const stream = fs.createWriteStream(file);
+                res.pipe(stream);
 
-          readableStream.pipe(writableStream);
+                readableStream.pipe(writableStream);
 
-          # pipe stream error handling
-          await new Promise((resolve, reject ) => {
+                # pipe stream error handling
+                await new Promise((resolve, reject ) => {
 
-            var stream = res.pipe(fs.createWriteStream(file));
+                  var stream = res.pipe(fs.createWriteStream(file));
 
-            stream.on('finish', () => resolve());
+                  stream.on('finish', () => resolve());
 
-            stream.on('error', e => reject({
-              writable_stream_error: e
-            }));
-          });
+                  stream.on('error', e => reject({
+                    writable_stream_error: e
+                  }));
+                });
 
-          # unzip
-          var fs = require('fs');
-          var zlib = require('zlib');
+                # unzip
+                var fs = require('fs');
+                var zlib = require('zlib');
 
-          fs.createReadStream('input.txt.gz')
-            .pipe(zlib.createGunzip())
-            .pipe(fs.createWriteStream('output.txt'));
-        </script>
+                fs.createReadStream('input.txt.gz')
+                  .pipe(zlib.createGunzip())
+                  .pipe(fs.createWriteStream('output.txt'));
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="ts">
+
+                // from: https://www.sitepoint.com/node-js-streams-with-typescript/#h-example-4-compressing-files-with-a-duplex-stream
+
+                import { createReadStream, createWriteStream } from 'fs';
+                import { createGzip } from 'zlib';
+                import { pipeline } from 'stream';
+
+                const source = createReadStream('data.txt');
+                const destination = createWriteStream('data.txt.gz');
+                const gzip = createGzip();
+
+                pipeline(source, gzip, destination, (err: Error | null) => {
+                  if (err) {
+                    console.error('Compression failed:', err.message);
+                    return;
+                  }
+                  console.log('File compressed successfully! Check data.txt.gz');
+                });
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="ts">
+
+                // from: https://www.sitepoint.com/node-js-streams-with-typescript/#h-example-3-piping-with-a-transform-stream
+
+                import { createReadStream, createWriteStream } from 'fs';
+                import { Transform, TransformCallback } from 'stream';
+
+                // Custom Transform stream to uppercase text
+                class UppercaseTransform extends Transform {
+                  _transform(chunk: Buffer, encoding: string, callback: TransformCallback): void {
+                    const upperChunk = chunk.toString().toUpperCase();
+                    this.push(upperChunk);
+                    callback();
+                  }
+                }
+
+                const readStream = createReadStream('data.txt', { encoding: 'utf8' });
+                const writeStream = createWriteStream('output_upper.txt');
+                const transformStream = new UppercaseTransform();
+
+                readStream
+                  .pipe(transformStream)
+                  .pipe(writeStream)
+                  .on('finish', () => {
+                    console.log('Transform complete! Check output_upper.txt');
+                  })
+                  .on('error', (err: Error) => {
+                    console.error('Error:', err.message);
+                  });
+              </script>
+            </div>
+
+            <div>
+              <script type="editor" data-lang="ts">
+
+                // from: https://www.sitepoint.com/node-js-streams-with-typescript/#h-example-5-streaming-http-responses
+
+                import axios from 'axios';
+                import { createWriteStream } from 'fs';
+                import { Writable } from 'stream';
+
+                async function streamHttpResponse(url: string, outputFile: string): Promise<void> {
+                  const response = await axios({
+                    method: 'get',
+                    url,
+                    responseType: 'stream',
+                  });
+
+                  const writeStream: Writable = createWriteStream(outputFile);
+                  response.data.pipe(writeStream);
+
+                  return new Promise((resolve, reject) => {
+                    writeStream.on('finish', () => {
+                      console.log(`Downloaded to ${outputFile}`);
+                      resolve();
+                    });
+                    writeStream.on('error', (err: Error) => {
+                      console.error('Download failed:', err.message);
+                      reject(err);
+                    });
+                  });
+                }
+
+                streamHttpResponse('https://example.com', 'example.html').catch(console.error);
+              </script>
+            </div>
+
+            <div>
+              <script type="editor" data-lang="ts">
+
+                // from: https://www.sitepoint.com/node-js-streams-with-typescript/#h-example-6-real-time-data-processing-with-a-custom-readable-stream
+
+                import { createReadStream, createWriteStream } from 'fs';
+                import { Transform, TransformCallback } from 'stream';
+
+                class UppercaseTransform extends Transform {
+                  _transform(chunk: Buffer, encoding: string, callback: TransformCallback): void {
+                    this.push(chunk.toString().toUpperCase());
+                    callback();
+                  }
+                }
+
+                class TimestampTransform extends Transform {
+                  _transform(chunk: Buffer, encoding: string, callback: TransformCallback): void {
+                    const timestamp = new Date().toISOString();
+                    this.push(`[${timestamp}] ${chunk.toString()}`);
+                    callback();
+                  }
+                }
+
+                const readStream = createReadStream('data.txt', { encoding: 'utf8' });
+                const writeStream = createWriteStream('output_chain.txt');
+                const upper = new UppercaseTransform();
+                const timestamp = new TimestampTransform();
+
+                readStream
+                  .pipe(upper)
+                  .pipe(timestamp)
+                  .pipe(writeStream)
+                  .on('finish', () => {
+                    console.log('Chained transform complete! Check output_chain.txt');
+                  })
+                  .on('error', (err: Error) => {
+                    console.error('Error:', err.message);
+                  });
+              </script>
+            </div>
+
+            <div>
+              <script type="editor" data-lang="ts">
+
+                // from: https://www.sitepoint.com/node-js-streams-with-typescript/#h-real-world-use-case-streaming-api-responses
+
+                import express from 'express';
+                import { Readable } from 'stream';
+
+                const app = express();
+
+                app.get('/stream-data', (req, res) => {
+                  const data = ['Item 1\n', 'Item 2\n', 'Item 3\n'];
+                  const stream = Readable.from(data);
+
+                  res.setHeader('Content-Type', 'text/plain');
+                  stream.pipe(res);
+                });
+
+                app.listen(3000, () => {
+                  console.log('Server running on port 3000');
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+
         <h2>Signleton (kinda) module template</h2>
         <script type="editor" data-lang="js">
 
