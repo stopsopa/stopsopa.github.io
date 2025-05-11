@@ -19,7 +19,10 @@ module.exports = (setup) => {
       command: `
 set -e  
 # git config core.excludesFile .git/.gitignore_local
-# read -p "       Press enter to continue\\n\\n"
+
+# echo -e "\n      Press enter to continue\n"
+# read
+
 # source .env
 # source .env.sh
 export NODE_OPTIONS=""
@@ -47,7 +50,10 @@ cat <<EEE
 /bin/bash bash/swap-files-v2.sh package.json package.dev.json -- yarn   
 
 EEE
-read -p "       Press enter to continue\n\n"
+
+echo -e "\n      Press enter to continue\n"
+read
+
 /bin/bash bash/swap-files-v2.sh package.json package.dev.json -- yarn   
 `,
       description: `swap and yarn`,
@@ -76,7 +82,10 @@ cat <<EEE
     open -a "Google Chrome" "file://$(realpath "coverage/index.html")"
 
 EEE
-read -p "\n      Press enter to continue\n"
+
+echo -e "\n      Press enter to continue\n"
+read
+
 open "file://$(realpath "coverage/index.html")"
 `,
       confirm: false,
@@ -106,7 +115,10 @@ JEST_COVERAGE_PORT="4286"
 cat <<EEE
     http://localhost:\${JEST_COVERAGE_PORT}
 EEE
-read -p "\n      Press enter to continue\n"
+
+echo -e "\n      Press enter to continue\n"
+read
+
 python -m http.server \${JEST_COVERAGE_PORT} --directory ./coverage
 
 # for python version 2.7
@@ -127,7 +139,10 @@ echo "BRANCH>\${BRANCH}<"
 echo "PROJECT_NAME>\${PROJECT_NAME}<"
 echo "http://p3dw-sonar.cloud.phx3.gdg:9000/dashboard?id=\${PROJECT_NAME}"
 # look for link above in ~/.m2/settings.xml
-read -p "\n       Press enter to continue\n"
+
+echo -e "\n      Press enter to continue\n"
+read
+
 mvn clean test -DskipITs -B sonar:sonar -Dsonar.projectKey="\${PROJECT_NAME}" -Dsonar.projectName="\${PROJECT_NAME}"
 `,
       confirm: false,

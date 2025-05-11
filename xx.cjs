@@ -21,7 +21,10 @@ module.exports = (setup) => {
       command: `
 set -e  
 # git config core.excludesFile .git/.gitignore_local
-# read -p "       Press enter to continue\\n\\n"
+
+echo -e "\n      Press enter to continue\n"
+read
+
 source .env
 # source .env.sh
         
@@ -80,7 +83,9 @@ EOF
 )"   
 echo "\$COMMANDS"
 
-read -p "\n      Press enter to continue\n"
+echo -e "\n      Press enter to continue\n"
+read
+
 set -e
 eval "\$COMMANDS"
 
@@ -167,7 +172,10 @@ cat <<EEE
     http://localhost:\${JEST_COVERAGE_PORT}
 
 EEE
-read -p "\n      Press enter to continue\n"
+
+echo -e "\n      Press enter to continue\n"
+read
+
 python -m http.server \${JEST_COVERAGE_PORT} --directory pages/coverage
 `,
       confirm: false,
@@ -181,7 +189,10 @@ cat <<EEE
     open "file://$(realpath "coverage/index.html")"
 
 EEE
-read -p "\n      Press enter to continue\n"
+
+echo -e "\n      Press enter to continue\n"
+read
+
 open "file://$(realpath "coverage/index.html")"
 `,
       confirm: false,
