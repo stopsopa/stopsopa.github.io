@@ -84,22 +84,22 @@ node node_modules/.bin/tsc
 node pages/portsregistry/lists/ports-generator.js
 
 # call those together in this order vvv
-/bin/bash scripts/uglify.sh
-/bin/bash scripts/template.sh
+time /bin/bash scripts/uglify.sh
+time /bin/bash scripts/template.sh
 # call those together in this order ^^^
 
 # node libs/preprocessor.js
-node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
+time node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
 
-node esbuild-entries.js
+time node esbuild-entries.js
 
-/bin/bash esbuild-node.sh
+time /bin/bash esbuild-node.sh
 
-/bin/bash .github/ytlinksfix.sh
+time /bin/bash .github/ytlinksfix.sh
 
 # /bin/bash pages/kubernetes/compress.sh
 
-/bin/bash bash/substitute-variables-bash.sh gitstorage-core.sh -- \
+time /bin/bash bash/substitute-variables-bash.sh gitstorage-core.sh -- \
   GITSTORAGE_CORE_REPOSITORY "${GITSTORAGE_CORE_REPOSITORY}" \
   PROD_SCHEMA "${PROD_SCHEMA}" \
   PROD_PORT "${PROD_PORT}" \
@@ -107,20 +107,20 @@ node esbuild-entries.js
 
 # NOTICE: remember it will not process if --run not passed or CI env var is not present
 # I'm deliberately suppressing error to continue if above is not provided for local dev environment
-/bin/bash .github/urlwizzard.sh
+time /bin/bash .github/urlwizzard.sh
 
 # NOTICE: remember it will not process if --run not passed or CI env var is not present
 # I'm deliberately suppressing error to continue if above is not provided for local dev environment
-/bin/bash .github/sha384.sh
+time /bin/bash .github/sha384.sh
 
-node node_modules/.bin/prettier --config prettier.config.cjs --write . 1> >(/bin/bash bash/dlogger.sh o prettier) 2> >(/bin/bash bash/dlogger.sh e prettier)
+time node node_modules/.bin/prettier --config prettier.config.cjs --write . 1> >(/bin/bash bash/dlogger.sh o prettier) 2> >(/bin/bash bash/dlogger.sh e prettier)
 
 # this one after style_fix
 # inject special blocking code
 # NOTICE: remember it will not process if --run not passed or CI env var is not present
 # I'm deliberately suppressing error to continue if above is not provided for local dev environment
-/bin/bash .github/clicksecure.sh
+time /bin/bash .github/clicksecure.sh
 
-/bin/bash .github/injector.sh
+time /bin/bash .github/injector.sh
 
-/bin/bash pages/bash/xx/xx.inverse.postprocessor.sh
+time /bin/bash pages/bash/xx/xx.inverse.postprocessor.sh
