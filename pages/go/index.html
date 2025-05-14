@@ -13,11 +13,53 @@
     <div class="body">
       <div class="inside">
         <h2>xxxxxxxx</h2>
-        <a href=""></a>
         <script type="editor" data-lang="golang">
           package main
 
-          func main() {}
+          import "fmt"
+
+          func main() {
+              fmt.Println("Hello, World!")
+          }
+        </script>
+        <h2>CLI</h2>
+        <script type="editor" data-lang="sh">
+          
+          // more: https://github.com/stopsopa/go-lang-research
+
+          go mod init                                                  https://go.dev/doc/tutorial/getting-started
+          go mod init example/hello
+            go mod tidy                                                  https://go.dev/doc/tutorial/getting-started
+              # that will look through the code and find all
+                import (
+                  "fmt"
+
+                  "rsc.io/quote"
+                )
+              and will create block like
+                require rsc.io/quote v1.5.2
+              in go.mod file
+
+          go run .                                                     https://go.dev/doc/tutorial/getting-started
+          go build                                                     https://go.dev/doc/tutorial/compile-install
+
+          go list -f '{{.Target}}'                                     https://go.dev/doc/tutorial/compile-install
+                                                                 https://pkg.go.dev/cmd/go#hdr-List_packages_or_modules
+              # some experiments with that:
+              go env GOPATH | tr -d '\n'           to get path to go binaries installed globally
+          
+          export PATH="${PATH}:$(go env GOPATH | tr -d '\n')/bin"    
+             add this to your ~/.bashrc or ~/.zshrc to mount installation
+             you can override the path using:
+              go env -w GOBIN=/path/to/your/bin                        https://go.dev/doc/tutorial/compile-install
+          
+
+          
+
+
+          package manager                                              https://pkg.go.dev/search?q=quote
+
+
         </script>
       </div>
     </div>
