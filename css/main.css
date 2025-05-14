@@ -41,7 +41,7 @@ header {
 }
 .inside {
   flex: 1;
-  > img {
+  img {
     width: 100%;
     padding: 4px;
     border: 1px solid gray;
