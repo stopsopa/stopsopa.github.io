@@ -2009,6 +2009,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           # take latest and right architecture from: https://github.com/shenwei356/rush/releases
           set -e
           VERSION="v0.5.4"
+          VERSION="v0.6.1" # 2025-05-16
           FILE="rush_darwin_arm64.tar.gz"
           wget "https://github.com/shenwei356/rush/releases/download/${VERSION}/${FILE}"
           tar -xvf "${FILE}"
@@ -2026,7 +2027,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           echo "" > "${PROCESS_WITH_PARALLEL_LOG}"
           nohup /bin/bash -c "
           ITERATOR_CAN_BE_PASSED_ALSO_THIS_WAY={#} \
-          find testdir -type f | sort | parallel -j 3 /bin/bash run.sh {#} '{}'
+          find testdir -type f | sort | rush -j 3 /bin/bash run.sh {#} '{}'
           " >> "${PROCESS_WITH_PARALLEL_LOG}" 2>&1 &
         </script>
         <h2>stdout stderr</h2>
