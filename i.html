@@ -15,19 +15,26 @@
         overflow: hidden;
 
         background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
 
-        img {
-          width: 100vw;
-          height: 100vh;
-          object-fit: contain;
-          display: block;
-        }
+      body.img img {
+        max-width: 100%;
+        max-height: 100vh;
+        width: auto;
+        height: auto;
+        display: block;
       }
       #doc {
         display: none;
       }
       input {
         width: 90%;
+        padding: 5px;
+        font-size: 17px;
       }
     </style>
   </head>
@@ -42,18 +49,34 @@ Mainly it was created for imgur.com images which once loaded directly redirects 
 Probably because it detects request header accept: text/html
       </pre>
 
-      <label>
-        type img url:
-        <input type="text" id="url" value="" />
-      </label>
+      <div>
+        <label>
+          type img url:
+          <input type="text" id="url" value="" />
+        </label>
+      </div>
 
       <br />
 
-      <a href=""></a>
+      <div>
+        <a href=""></a>
+      </div>
+
       <br />
+
+      <div>
+        <label>
+          generated link
+          <input type="text" id="link" value="" />
+        </label>
+      </div>
+
+      <br />
+
       <div>
         <a href="i.html">reset</a>
       </div>
+
       <br />
 
       <div>
@@ -61,9 +84,26 @@ Probably because it detects request header accept: text/html
         <a href="https://i.imgur.com/q3CHEJs.png" target="_blank">https://i.imgur.com/q3CHEJs.png</a> - will redirect to
         https://imgur.com/q3CHEJs
       </div>
+
+      <br />
+
+      <div>
+        the same image (https://i.imgur.com/q3CHEJs.png) but handled with this document -
+        <a href="?i=https://i.imgur.com/q3CHEJs.png">link</a>
+      </div>
+
+      <br />
+
+      <div>
+        <a href="?i=https://i.imgur.com/CjDxZsm.png">big image example</a>
+      </div>
+
+      <br />
+
+      <div>
+        <a href="?i=https://i.imgur.com/6N0MVlA.png">small image example</a>
+      </div>
     </div>
-    <br />
-    <div>the same image (https://i.imgur.com/q3CHEJs.png) but handled with this document - <a href="?i=https://i.imgur.com/q3CHEJs.png">link</a></div>
   </body>
   <script>
     const i = new URLSearchParams(window.location.search).get("i");
@@ -76,11 +116,32 @@ Probably because it detects request header accept: text/html
 
       const input = document.querySelector("#url");
       const a = document.querySelector("a");
+      const link = document.querySelector("#link");
 
       input.addEventListener("input", (e) => {
         const url = `${location.origin}${location.pathname}?i=${encodeURIComponent(e.target.value)}`;
         a.href = url;
         a.innerText = url;
+        link.value = url;
+      });
+
+      link.addEventListener("focus", (e) => {
+        e.target.select();
+        // copy on focus
+        // and change input background to green for 1 sec
+        e.target.style.backgroundColor = "green";
+        setTimeout(() => {
+          e.target.style.backgroundColor = "";
+        }, 1000);
+        // copy to clipboard
+        navigator.clipboard.writeText(e.target.value).then(
+          () => {
+            console.log("Copying to clipboard was successful!");
+          },
+          (err) => {
+            console.error("Could not copy text: ", err);
+          }
+        );
       });
     }
   </script>
