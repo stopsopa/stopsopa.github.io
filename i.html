@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans",
+          "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
+      }
+      body.img {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);
+
+        img {
+          width: 100vw;
+          height: 100vh;
+          object-fit: contain;
+          display: block;
+        }
+      }
+      #doc {
+        display: none;
+      }
+      input {
+        width: 90%;
+      }
+    </style>
+  </head>
+  <body>
+    <img />
+    <div id="doc">
+      <pre>
+Just put url to any image to use this document to present it.
+
+Mainly it was created for imgur.com images which once loaded directly redirects to imgur.com ui
+
+Probably because it detects request header accept: text/html
+      </pre>
+
+      <label>
+        type img url:
+        <input type="text" id="url" value="" />
+      </label>
+
+      <br />
+
+      <a href=""></a>
+      <br />
+      <div>
+        <a href="i.html">reset</a>
+      </div>
+      <br />
+
+      <div>
+        direct link to original
+        <a href="https://i.imgur.com/q3CHEJs.png" target="_blank">https://i.imgur.com/q3CHEJs.png</a> - will redirect to
+        https://imgur.com/q3CHEJs
+      </div>
+    </div>
+    <br />
+    <div>the same image (https://i.imgur.com/q3CHEJs.png) but handled with this document - <a href="?i=https://i.imgur.com/q3CHEJs.png">link</a></div>
+  </body>
+  <script>
+    const i = new URLSearchParams(window.location.search).get("i");
+
+    if (i) {
+      document.querySelector("img").src = i;
+      document.body.classList.add("img");
+    } else {
+      document.querySelector("#doc").removeAttribute("id");
+
+      const input = document.querySelector("#url");
+      const a = document.querySelector("a");
+
+      input.addEventListener("input", (e) => {
+        const url = `${location.origin}${location.pathname}?i=${encodeURIComponent(e.target.value)}`;
+        a.href = url;
+        a.innerText = url;
+      });
+    }
+  </script>
+</html>
