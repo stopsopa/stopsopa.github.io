@@ -9,7 +9,7 @@
         font-family: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans",
           "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
       }
-      body.img {
+      body.media {
         margin: 0;
         padding: 0;
         overflow: hidden;
@@ -21,13 +21,54 @@
         height: 100vh;
       }
 
-      body.img img {
+      body.media img, body.media video {
         max-width: 100%;
         max-height: 100vh;
         width: auto;
         height: auto;
         display: block;
       }
+      
+      video:focus {
+        outline: none;
+      }
+      
+      .video-container {
+        position: relative;
+        display: none;
+      }
+      
+      .play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background-color: rgba(0, 0, 0, 0.6);
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+      }
+      
+      .play-button:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      
+      .play-button::after {
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-left: 30px solid white;
+        margin-left: 8px;
+      }
+      
       #doc {
         display: none;
       }
@@ -39,7 +80,11 @@
     </style>
   </head>
   <body>
-    <img />
+    <img style="display: none;" />
+    <div class="video-container">
+      <video controls loop style="display: block;"></video>
+      <div class="play-button"></div>
+    </div>
     <div id="doc">
       <pre>
 Just put url to any image to use this document to present it.
@@ -103,14 +148,65 @@ Probably because it detects request header accept: text/html
       <div>
         <a href="?i=https://i.imgur.com/6N0MVlA.png">small image example</a>
       </div>
+
+      <br />
+
+      <div>
+        <a href="?i=https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">video example (mp4)</a>
+      </div>
     </div>
   </body>
   <script>
     const i = new URLSearchParams(window.location.search).get("i");
 
     if (i) {
-      document.querySelector("img").src = i;
-      document.body.classList.add("img");
+      // Check if the URL is an MP4 file
+      const isVideo = i.toLowerCase().endsWith('.mp4');
+      
+      if (isVideo) {
+        const videoContainer = document.querySelector(".video-container");
+        const videoElement = document.querySelector("video");
+        const playButton = document.querySelector(".play-button");
+        
+        videoElement.src = i;
+        videoContainer.style.display = "block";
+        
+        // Add click event to the play button
+        playButton.addEventListener("click", function() {
+          videoElement.muted = false; // Ensure sound is on
+          videoElement.play()
+            .then(() => {
+              // Hide play button when video plays successfully
+              playButton.style.display = "none";
+            })
+            .catch(e => {
+              console.log("Play failed:", e);
+            });
+        });
+        
+        // Show play button again when video ends if not looping
+        videoElement.addEventListener("ended", function() {
+          if (!videoElement.loop) {
+            playButton.style.display = "flex";
+          }
+        });
+        
+        // Show play button if video is paused
+        videoElement.addEventListener("pause", function() {
+          playButton.style.display = "flex";
+        });
+        
+        // Hide play button if video is playing
+        videoElement.addEventListener("playing", function() {
+          playButton.style.display = "none";
+        });
+      } else {
+        const imgElement = document.querySelector("img");
+        imgElement.src = i;
+        imgElement.style.display = "block";
+      }
+      
+      document.body.classList.add("media");
     } else {
       document.querySelector("#doc").removeAttribute("id");
 
