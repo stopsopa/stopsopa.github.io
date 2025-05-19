@@ -891,6 +891,55 @@
           <a src="https://imgur.com/gallery/iina-pNSbEkn">https://imgur.com/gallery/iina-pNSbEkn</a>
           <br />
           <a href="https://i.imgur.com/PYPFdnh.png">https://i.imgur.com/SEaY38W.png</a> - <a href="https://github.com/iina/iina/wiki/FAQ#why-is-the-seeking-time-not-precise-when-pressing-arrow-keys">from</a>
+          <h2>VLC alternative -> MPV</h2>
+          <script type="editor" data-lang="sh">
+
+Install: https://laboratory.stolendata.net/~djinn/mpv_osx/
+  from: "macOS builds by stolendata" section from : https://mpv.io/installation/
+            
+mkdir -p ~/.config/mpv/
+
+cat <<EEE > ~/.config/mpv/mpv.conf
+# Use exact seeking instead of keyframe seeking
+hr-seek=yes
+
+# Set default seek step (arrow keys) to 5 seconds
+default-seek=3
+
+EEE
+
+
+mkdir -p ~/.config/mpv/script-opts
+cat <<EEE > ~/.config/mpv/script-opts/osc.conf
+visibility=always
+
+EEE
+
+mkdir -p ~/.config/mpv/scripts/
+cat <<EEE > ~/.config/mpv/scripts/osc-visibility-toggle.lua
+-- ~/.config/mpv/scripts/osc-visibility-toggle.lua
+
+local mp = require 'mp'
+
+local visible = true
+
+local function toggle_osc_visibility()
+if visible then
+    mp.commandv("script-message", "osc-visibility", "auto")
+    mp.osd_message("OSC: auto-hide", 2)
+else
+    mp.commandv("script-message", "osc-visibility", "always")
+    mp.osd_message("OSC: always visible", 2)
+end
+visible = not visible
+end
+
+-- Bind to Ctrl+O (or change to your preferred key)
+mp.add_key_binding("ctrl+o", "toggle-osc-visibility", toggle_osc_visibility)
+
+EEE
+
+          </script>
         </div>
       </div>
     </div>
