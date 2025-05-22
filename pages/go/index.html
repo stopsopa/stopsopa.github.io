@@ -24,7 +24,7 @@
         </script>
         <h2>CLI</h2>
         <script type="editor" data-lang="sh">
-          
+
           # more: https://github.com/stopsopa/go-lang-research
 
           go mod init                                                 # https://go.dev/doc/tutorial/getting-started
@@ -47,19 +47,17 @@
                                                               # https://pkg.go.dev/cmd/go#hdr-List_packages_or_modules
               # some experiments with that:
               go env GOPATH | tr -d '\n'           to get path to go binaries installed globally
-          
-          export PATH="${PATH}:$(go env GOPATH | tr -d '\n')/bin"    
+
+          export PATH="${PATH}:$(go env GOPATH | tr -d '\n')/bin"
              # add this to your ~/.bashrc or ~/.zshrc to mount installation
              # you can override the path using:
               go env -w GOBIN=/path/to/your/bin                        # https://go.dev/doc/tutorial/compile-install
-          
 
-          
+
+
 
 
           package manager                                              https://pkg.go.dev/search?q=quote
-
-
         </script>
       </div>
     </div>
