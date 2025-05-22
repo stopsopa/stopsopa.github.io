@@ -21,23 +21,24 @@
         height: 100vh;
       }
 
-      body.media img, body.media video {
+      body.media img,
+      body.media video {
         max-width: 100%;
         max-height: 100vh;
         width: auto;
         height: auto;
         display: block;
       }
-      
+
       video:focus {
         outline: none;
       }
-      
+
       .video-container {
         position: relative;
         display: none;
       }
-      
+
       .play-button {
         position: absolute;
         top: 50%;
@@ -53,13 +54,13 @@
         align-items: center;
         z-index: 10;
       }
-      
+
       .play-button:hover {
         background-color: rgba(0, 0, 0, 0.8);
       }
-      
+
       .play-button::after {
-        content: '';
+        content: "";
         display: block;
         width: 0;
         height: 0;
@@ -68,7 +69,7 @@
         border-left: 30px solid white;
         margin-left: 8px;
       }
-      
+
       #doc {
         display: none;
       }
@@ -80,9 +81,9 @@
     </style>
   </head>
   <body>
-    <img style="display: none;" />
+    <img style="display: none" />
     <div class="video-container">
-      <video controls loop style="display: block;"></video>
+      <video controls loop style="display: block"></video>
       <div class="play-button"></div>
     </div>
     <div id="doc">
@@ -161,43 +162,44 @@ Probably because it detects request header accept: text/html
 
     if (i) {
       // Check if the URL is an MP4 file
-      const isVideo = i.toLowerCase().endsWith('.mp4');
-      
+      const isVideo = i.toLowerCase().endsWith(".mp4");
+
       if (isVideo) {
         const videoContainer = document.querySelector(".video-container");
         const videoElement = document.querySelector("video");
         const playButton = document.querySelector(".play-button");
-        
+
         videoElement.src = i;
         videoContainer.style.display = "block";
-        
+
         // Add click event to the play button
-        playButton.addEventListener("click", function() {
+        playButton.addEventListener("click", function () {
           videoElement.muted = false; // Ensure sound is on
-          videoElement.play()
+          videoElement
+            .play()
             .then(() => {
               // Hide play button when video plays successfully
               playButton.style.display = "none";
             })
-            .catch(e => {
+            .catch((e) => {
               console.log("Play failed:", e);
             });
         });
-        
+
         // Show play button again when video ends if not looping
-        videoElement.addEventListener("ended", function() {
+        videoElement.addEventListener("ended", function () {
           if (!videoElement.loop) {
             playButton.style.display = "flex";
           }
         });
-        
+
         // Show play button if video is paused
-        videoElement.addEventListener("pause", function() {
+        videoElement.addEventListener("pause", function () {
           playButton.style.display = "flex";
         });
-        
+
         // Hide play button if video is playing
-        videoElement.addEventListener("playing", function() {
+        videoElement.addEventListener("playing", function () {
           playButton.style.display = "none";
         });
       } else {
@@ -205,7 +207,7 @@ Probably because it detects request header accept: text/html
         imgElement.src = i;
         imgElement.style.display = "block";
       }
-      
+
       document.body.classList.add("media");
     } else {
       document.querySelector("#doc").removeAttribute("id");
