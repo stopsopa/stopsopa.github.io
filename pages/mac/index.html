@@ -350,6 +350,20 @@
               # more https://flaviocopes.com/how-to-add-an-open-in-vs-code-icon-in-macos-finder/#:~:text=Save%20this%20application%20in%20the,That's%20it!
             # ==== add icon opening VScode in current directory from finder ^^^
           </script>
+          <h2>Change default app for file extension, file type</h2>
+          <script type="editor" data-lang="sh">
+
+            brew install duti
+            osascript -e 'id of app "mpv"'
+              # is asking AppleScript (via the osascript command-line tool) to return the bundle identifier of the application named "mpv".
+              # that will probably return "io.mpv" for mpv app
+            
+            duti -s io.mpv .mov all
+              # is telling your Mac to associate all .mov files with the app that has the bundle identifier io.mpv — in this case, the mpv player.
+
+            
+          </script>
+          
           <h2>Dock - not show recently open apps</h2>
           <script type="editor" data-lang="sh">
 
@@ -894,6 +908,8 @@
           >
           <h2>VLC alternative -> MPV</h2>
           <script type="editor" data-lang="sh">
+
+            See also: "Change default app for file extension, file type" section on this page.
 
             Install: https://laboratory.stolendata.net/~djinn/mpv_osx/
               from: "macOS builds by stolendata" section from : https://mpv.io/installation/
