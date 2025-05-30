@@ -943,20 +943,26 @@
             # Automatically save the current playback position when quitting MPV.
             # When you open the same file again, MPV will resume from that point.
             save-position-on-quit=yes
+            # for this one from time to time you might want to run: rm -rf ~/.config/mpv/watch_later/*
+            # but if you don't nothing will slow down or anything, just for cleaning
 
             EEE
 
             mkdir -p ~/.config/mpv
             cat <<EEE > ~/.config/mpv/input.conf
+            # Remap media keys to seek backward/forward 3 seconds in the video.
+            # These are typically bound to the "Previous Track" and "Next Track" buttons on a keyboard.
             PREV seek -3
             NEXT seek +3
-
+            
             EEE
 
             mkdir -p ~/.config/mpv/script-opts
             cat <<EEE > ~/.config/mpv/script-opts/osc.conf
+            # Controls the visibility of the on-screen controller (OSC).
+            # "always" means the OSC is always visible during playback.
             visibility=always
-
+            
             EEE
 
             mkdir -p ~/.config/mpv/scripts/
