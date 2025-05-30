@@ -932,6 +932,14 @@
             # Disable the seeking OSD bar specifically - when a seek action occurs
             osd-on-seek=no
 
+            # Keeps the MPV window open after playback ends.
+            # Useful if you don't want MPV to close automatically when a video finishes.
+            # keep-open=yes
+            # Alternative to the above: keeps the last frame of the video visible after it ends.
+            # 'keep-open=always' is useful when you want a static final image rather than a black screen.
+            # Only use one of these at a time.
+            keep-open=always
+
             EEE
 
             mkdir -p ~/.config/mpv
