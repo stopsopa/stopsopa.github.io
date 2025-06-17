@@ -76,7 +76,6 @@ export const mobileLinkElement = (el, text, origin) => {
       link.onclick = () => {
         removePopup();
         stopForAWhile = false;
-        window.open(url, "_blank");
       };
       popup.appendChild(link);
 
