@@ -11,14 +11,17 @@ function removePopup() {
   }
 }
 
+
 export const mobileLinkElement = (el, text, origin) => {
-  console.log({ origin, el, text, stopForAWhile });
+  console.log("mobileLinkElement", { origin, el, text, stopForAWhile });
 
   if (stopForAWhile) {
     return;
   }
 
-  removePopup();
+  if (!el.closest(".mobile-link-popup")) {
+    removePopup();
+  }
 
   if (typeof text === "string") {
     const matchAll = [...text.matchAll(test)];
@@ -47,7 +50,7 @@ export const mobileLinkElement = (el, text, origin) => {
       popup = document.createElement("div");
       popup.className = "mobile-link-popup";
       popup.style.left = `${el.getBoundingClientRect().left}px`;
-      popup.style.top = `${el.getBoundingClientRect().bottom + 5}px`;
+      popup.style.top = `${el.getBoundingClientRect().bottom + 25}px`;
       //   popup.textContent = "Open link";
       // //   popup.textContent = url;
 
@@ -56,18 +59,16 @@ export const mobileLinkElement = (el, text, origin) => {
       link.textContent = "Open link";
 
       const copy = document.createElement("span");
-      copy.textContent = "copy";
+      copy.textContent = "Copy";
 
       copy.style.marginRight = "10px";
       copy.onclick = () => {
-        stopForAWhile = false;
         navigator.clipboard.writeText(url).then(() => {
-          copy.textContent = "copied";
+          stopForAWhile = false;
+          copy.textContent = "Copied";
           setTimeout(() => {
-            copy.textContent = "copy";
-            setTimeout(() => {
-              removePopup();
-            }, 1000);
+            copy.textContent = "Copy";
+            removePopup();
           }, 1000);
         });
       };
