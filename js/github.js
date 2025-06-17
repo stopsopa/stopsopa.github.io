@@ -33,6 +33,8 @@ import buildHeader from "./buildHeader.js";
 
 import buildFooter from "./buildFooter.js";
 
+import mobileLinks from "./mobileLinks.js";
+
 import doace from "./doace.js";
 
 window.ppp = {
@@ -421,6 +423,8 @@ body .github-profile:hover {
 
     await doSort();
 
+    await mobileLinks();
+
     await urlwizzard();
 
     if (typeof window.beforeAceEventPromise === "function") {
@@ -462,6 +466,8 @@ body .github-profile:hover {
         window.allLoaded.push(trigger);
       });
     }
+
+
 
     log.blue(
       "DOMContentLoaded",

@@ -8,6 +8,8 @@ import manipulation from "./manipulation.js";
 
 import { filterVisibleList } from "./isVisibleElement.js";
 
+import { mobileLinkElement } from "./mobileLinks.js";
+
 import trim from "./trim.js";
 
 // ace editor
@@ -270,6 +272,17 @@ export default async function doace() {
           /* I don't care if something crush here */
         }
       })();
+
+      editor.on("click", function (e) {
+        const cursor = editor.getCursorPosition();
+        const session = editor.getSession();
+        const line = session.getLine(cursor.row); // text from line
+
+        // Get the div element representing the line
+        const lineElement = editor.renderer.$cursorLayer.element.parentNode.querySelectorAll(".ace_line")[cursor.row];
+
+        mobileLinkElement(lineElement, line, "ace");
+      });
 
       log.blue("ace editor loaded", un, ">>>>", text);
 
