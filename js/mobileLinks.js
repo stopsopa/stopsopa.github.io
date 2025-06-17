@@ -46,23 +46,39 @@ export const mobileLinkElement = (el, text, origin) => {
 
       popup = document.createElement("div");
       popup.className = "mobile-link-popup";
-      popup.style.position = "fixed";
       popup.style.left = `${el.getBoundingClientRect().left}px`;
       popup.style.top = `${el.getBoundingClientRect().bottom + 5}px`;
-      popup.style.zIndex = "1000";
-      popup.style.backgroundColor = "black";
-      popup.style.color = "white";
-      popup.style.padding = "10px";
-      popup.style.borderRadius = "5px";
-      popup.style.fontSize = "14px";
-      popup.style.cursor = "pointer";
-    //   popup.textContent = "Open link";
-      popup.textContent = url;
-      popup.onclick = () => {
+      //   popup.textContent = "Open link";
+      // //   popup.textContent = url;
+
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.textContent = "Open link";
+
+      const copy = document.createElement("span");
+      copy.textContent = "copy";
+
+      copy.style.marginRight = "10px";
+      copy.onclick = () => {
+        stopForAWhile = false;
+        navigator.clipboard.writeText(url).then(() => {
+          copy.textContent = "copied";
+          setTimeout(() => {
+            copy.textContent = "copy";
+            setTimeout(() => {
+              removePopup();
+            }, 1000);
+          }, 1000);
+        });
+      };
+      popup.appendChild(copy);
+
+      link.onclick = () => {
         removePopup();
         stopForAWhile = false;
         window.open(url, "_blank");
       };
+      popup.appendChild(link);
 
       document.body.appendChild(popup);
     }

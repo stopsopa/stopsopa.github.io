@@ -194,6 +194,41 @@ h6 {
     */
 }
 
+/* mobileLinks.js vvv */
+
+.mobile-link-popup {
+  position: fixed;
+  z-index: 1000;
+  background-color: black;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  a {
+    color: white;
+    text-decoration: none;
+
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTRweCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTQgMTQiIHZlcnNpb249IjEuMSIgaGVpZ2h0PSIxNHB4IiBmaWxsPSJmZmZmZmYiPgogPGcgZmlsbC1ydWxlPSJldmVub2RkIiBmaWxsPSJub25lIj4KICA8cG9seWdvbiBwb2ludHM9IjAgMCAxNCAwIDE0IDE0IDAgMTQiLz4KICA8cGF0aCBkPSJtMyAxMXYtOGg0di0xaC0wLjU3OTItMy4zMDk3Yy0wLjYxMzkgMC0xLjExMTEgMC40OTcyLTEuMTExMSAxLjExMTF2MC40MjY3IDcuMzUxMmMwIDAuNjE0IDAuNDk3MiAxLjExMSAxLjExMTEgMS4xMTFoNy43Nzc5YzAuNjE0IDAgMS4xMTEtMC40OTcgMS4xMTEtMS4xMTF2LTMuODg5aC0xdjRoLTh6bTUuMy04aDEuODk1bC01LjE5NSA1LjI1MjIgMC43NDc4IDAuNzQ3OCA1LjI1MjItNS4ydjEuOWwxLTAuMDAwNXYtMy42OTk1aC0zLjY5OTVsLTAuMDAwNSAxeiIgZmlsbD0iI2ZmZmZmZiIvPgogPC9nPgo8L3N2Zz4KCg==);
+
+    background-position: left center;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+  }
+  span {
+    width: 16px;
+    height: 16px;
+    background-size: 1024px;
+    background-image: url("data:image/svg+xml;base64,IDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyBmaWxsPSdub25lJyB2aWV3Qm94PScwIDAgMTUyNCAxNTI0JyBzdHJva2Utd2lkdGg9JzEuNScgc3Ryb2tlPSd3aGl0ZScgY2xhc3M9J3NpemUtNic+PHBhdGggc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJyBkPSdNMTUuNjY2IDMuODg4QTIuMjUgMi4yNSAwIDAgMCAxMy41IDIuMjVoLTNjLTEuMDMgMC0xLjkuNjkzLTIuMTY2IDEuNjM4bTcuMzMyIDBjLjA1NS4xOTQuMDg0LjQuMDg0LjYxMnYwYS43NS43NSAwIDAgMS0uNzUuNzVIOWEuNzUuNzUgMCAwIDEtLjc1LS43NXYwYzAtLjIxMi4wMy0uNDE4LjA4NC0uNjEybTcuMzMyIDBjLjY0Ni4wNDkgMS4yODguMTEgMS45MjcuMTg0IDEuMS4xMjggMS45MDcgMS4wNzcgMS45MDcgMi4xODVWMTkuNWEyLjI1IDIuMjUgMCAwIDEtMi4yNSAyLjI1SDYuNzVBMi4yNSAyLjI1IDAgMCAxIDQuNSAxOS41VjYuMjU3YzAtMS4xMDguODA2LTIuMDU3IDEuOTA3LTIuMTg1YTQ4LjIwOCA0OC4yMDggMCAwIDEgMS45MjctLjE4NCcgLz48L3N2Zz4=");
+
+    background-repeat: no-repeat;
+    display: inline-block;
+    padding-left: 20px;
+    padding-right: 14px;
+  }
+}
+/* mobileLinks.js ^^^ */
+
 /* copy vvv */
 [data-lang] {
   position: relative;
