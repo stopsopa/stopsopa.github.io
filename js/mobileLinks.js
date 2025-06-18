@@ -50,7 +50,7 @@ export const mobileLinkElement = (el, text, origin) => {
       popup = document.createElement("div");
       popup.className = "mobile-link-popup";
       popup.style.left = `${el.getBoundingClientRect().left}px`;
-      popup.style.top = `${el.getBoundingClientRect().bottom + 25}px`;
+      popup.style.top = `${el.getBoundingClientRect().bottom + 5}px`;
       //   popup.textContent = "Open link";
       // //   popup.textContent = url;
 
