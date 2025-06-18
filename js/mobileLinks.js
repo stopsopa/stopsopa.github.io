@@ -11,8 +11,8 @@ function removePopup() {
   }
 }
 
-
 export const mobileLinkElement = (el, text, origin) => {
+  // alert('origin: ' + origin)
   console.log("mobileLinkElement", { origin, el, text, stopForAWhile });
 
   if (stopForAWhile) {
@@ -27,13 +27,13 @@ export const mobileLinkElement = (el, text, origin) => {
     const matchAll = [...text.matchAll(test)];
 
     if (Array.isArray(matchAll) && matchAll.length === 1 && Array.isArray(matchAll[0]) && matchAll[0].length === 1) {
+      const url = matchAll[0][0];
+
       stopForAWhile = true;
 
       setTimeout(() => {
         stopForAWhile = false;
       }, 100);
-
-      const url = matchAll[0][0];
 
       console.log("getBoundingClientRect", JSON.stringify(el.getBoundingClientRect(), null, 2));
       //   getBoundingClientRect {
@@ -54,13 +54,8 @@ export const mobileLinkElement = (el, text, origin) => {
       //   popup.textContent = "Open link";
       // //   popup.textContent = url;
 
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.textContent = "Open link";
-
       const copy = document.createElement("span");
       copy.textContent = "Copy";
-
       copy.style.marginRight = "10px";
       copy.onclick = () => {
         navigator.clipboard.writeText(url).then(() => {
@@ -74,6 +69,9 @@ export const mobileLinkElement = (el, text, origin) => {
       };
       popup.appendChild(copy);
 
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.textContent = "Open link";
       link.onclick = () => {
         removePopup();
         stopForAWhile = false;
