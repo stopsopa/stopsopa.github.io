@@ -178,6 +178,74 @@
             https://stopsopa.github.io/i.html?i=https://i.imgur.com/rzFaOFV.png
           
         </script>
+        <h2>Tampermonkey template</h2>
+        <script type="editor" data-lang="js">          
+          
+          // more about @grant 
+            // https://www.tampermonkey.net/documentation.php?ext=dhdg#meta:grant
+          
+          // @run-at       document-idle  -- until after the page has fully loaded
+            // https://www.tampermonkey.net/documentation.php?ext=dhdg#meta:run_at
+
+          // --------------------
+
+          // ==UserScript==
+          // @name         ** #id link
+          // @namespace    http://tampermonkey.net/
+          // @version      0.1
+          // @description  try to take over the world!
+          // @author       You
+          
+          // @match        *://*/*
+          // @match        https://github.com/*
+          // @match        *://*/swagger-ui/*
+          // @match        https://*.swagger.io/*
+          
+          // @icon         https://upload.wikimedia.org/wikipedia/commons/8/83/Circle-icons-tools.svg
+          // @grant        none
+          // @run-at       document-idle
+          // ==/UserScript==
+          
+          const scriptname = "#id link";
+          function unique(pattern) {
+            // node.js require('crypto').randomBytes(16).toString('hex');
+            pattern || (pattern = "xyxyxy");
+            return pattern.replace(/[xy]/g, function (c) {
+              var r = (Math.random() * 16) | 0,
+                v = c == "x" ? r : (r & 0x3) | 0x8;
+              return v.toString(16);
+            });
+          }
+          const log = (function (log) {
+            const un = unique();
+            return (...args) =>
+              log(
+                `%ctampermonkey ${un} [${scriptname}] time: ${new Date().toISOString().substring(0, 19).replace(/T/, " ")}`,
+                "color: hsl(289deg 68% 53%)",
+                ...args
+              );
+          })(
+            (function () {
+              try {
+                return console.log;
+              } catch (e) {
+                return () => {};
+              }
+            })()
+          );
+          if (window.top === window.self) {
+            //-- Don't run on frames or iframes
+            log("loading");
+          } else {
+            return log(`loading in iframe - stopped`);
+          }
+          (function () {
+            "use strict";
+
+
+          })();
+        
+        </script>
         <h2>Create Chrome Extension</h2>
         <script type="editor" data-lang="sh">
 
