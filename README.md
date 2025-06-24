@@ -57,8 +57,13 @@ Warning: Just specify type="typescript" and script on site will load
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
   </head>
+
+  
   <body class="layout bg" toc>
+
   <body class="layout bg" toc wide>
+
+
     <div class="body">
       <div class="inside">
         <div class="cards toc">

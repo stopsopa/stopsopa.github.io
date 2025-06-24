@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>bitly generate short url</h2>
+        <script type="editor" data-lang="sh">
+
+            var start = 'git';
+            var next = 0;
+            var stop = false;
+            function wait() {
+                return new Promise((resolve, reject) => {
+                    function loop() {     
+                        console.log('.');
+                        const e = document.querySelector('#create-link-cta');
+                        if (e.hasAttribute('disabled')) {
+                            if (stop) {
+                                return reject();
+                            }
+                            setTimeout(loop, 50)
+                        }
+                        else {
+                            resolve();
+                        }
+                    }
+                    loop();
+                });
+            }
+            async function loop() {
+                if (stop) {
+                    return;
+                }
+                await wait();
+                const string = `${start}${n(next)}`;
+                debugger;
+                setCustomBackHalf(string);
+                document.querySelector('#create-link-cta').click();
+                next += 1;
+                loop()
+            }
+            loop();
+            function setCustomBackHalf(value) {
+            const input = document.querySelector('#custom-back-half');
+            if (!input) {
+                console.warn('Input element not found');
+                return;
+            }
+            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                window.HTMLInputElement.prototype,
+                'value'
+            ).set;
+            nativeInputValueSetter.call(input, value);
+            const event = new Event('input', { bubbles: true });
+            input.dispatchEvent(event);
+            }
+            function n(n) {
+            const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+            let result = '';
+            do {
+                result = alphabet[n % 26] + result;
+                n = Math.floor(n / 26) - 1;
+            } while (n >= 0);
+            return result;
+            }
+
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>
