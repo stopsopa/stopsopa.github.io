@@ -581,6 +581,8 @@
           // promises and the difference in the call stack returned in case of an error
           // more: https://mathiasbynens.be/notes/async-stack-traces
 
+          const { promise, resolve, reject } = Promise.withResolvers();
+
           // ---- example with raw promise -----------------
           const log = console.log;
           const call = (a) => log("call", a);
