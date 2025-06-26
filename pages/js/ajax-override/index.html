@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <h2>override</h2>
+        <button id="tryajax">try ajax</button>
+        <!-- <script> -->
+        <script type="editor" data-lang="js" data-eval>
+          function createAjaxOverrider() {
+            const th = (msg) => new Error(`createAjaxOverrider error: ${msg}`);
+            function isObject(o) {
+              return Object.prototype.toString.call(o) === "[object Object]";
+            }
+            let headers = {};
+            let originalOpen = null;
+            return {
+              override: function () {
+                if (typeof XMLHttpRequest !== "undefined") {
+                  if (XMLHttpRequest.prototype.originalOpen) {
+                    throw th("XMLHttpRequest is already overriden");
+                  }
+                  originalOpen = XMLHttpRequest.prototype.open;
+                  XMLHttpRequest.prototype.open = function (method, url) {
+                    originalOpen.apply(this, arguments);
+                    Object.keys(headers).forEach((key) => {
+                      this.setRequestHeader(key, headers[key]);
+                    });
+                  };
+                  XMLHttpRequest.prototype.originalOpen = originalOpen;
+                }
+              },
+              setHeaders: function (newHeaders) {
+                if (!isObject(newHeaders)) {
+                  throw th("Headers must be an object");
+                }
+                headers = newHeaders;
+              },
+              restore: function () {
+                if (XMLHttpRequest.prototype.originalOpen) {
+                  XMLHttpRequest.prototype.open = XMLHttpRequest.prototype.originalOpen;
+                  delete XMLHttpRequest.prototype.originalOpen;
+                  originalOpen = null;
+                }
+              },
+            };
+          }
+
+          // to be able to use it manually in the console
+          window.createAjaxOverrider = createAjaxOverrider;
+
+          window.overrideAjax = createAjaxOverrider();
+          overrideAjax.override();
+          overrideAjax.setHeaders({
+            "X-Requested-With": "XMLHttpRequest",
+            "X-mystuff": "myvalue",
+          });
+
+          document.querySelector("#tryajax").addEventListener("click", function () {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "index.html");
+            xhr.onload = function () {
+              if (xhr.status === 200) {
+                console.log("Response:", xhr.responseText);
+              } else {
+                console.error("Error:", xhr.statusText);
+              }
+            };
+            xhr.onerror = function () {
+              console.error("Request failed");
+            };
+            xhr.send();
+          });
+        </script>
+
+        <button id="tryfetch">try fetch</button>
+        <!-- <script> -->
+        <script type="editor" data-lang="js" data-eval>
+          function createFetchOverrider() {
+            const th = (msg) => new Error(`createFetchOverrider error: ${msg}`);
+            function isObject(o) {
+              return Object.prototype.toString.call(o) === "[object Object]";
+            }
+            let headers = {};
+            let originalFetch = null;
+
+            return {
+              override: function () {
+                if (typeof fetch !== "undefined") {
+                  if (window.fetch.originalFetch) {
+                    throw th("fetch is already overriden");
+                  }
+                  originalFetch = window.fetch;
+                  window.fetch = function (url, options = {}) {
+                    // Merge custom headers with existing headers
+                    const mergedOptions = { ...options };
+                    mergedOptions.headers = {
+                      ...headers,
+                      ...(options.headers || {}),
+                    };
+                    return originalFetch.call(this, url, mergedOptions);
+                  };
+                  window.fetch.originalFetch = originalFetch;
+                }
+              },
+              setHeaders: function (newHeaders) {
+                if (!isObject(newHeaders)) {
+                  throw th("Headers must be an object");
+                }
+                headers = newHeaders;
+              },
+              restore: function () {
+                if (window.fetch.originalFetch) {
+                  window.fetch = window.fetch.originalFetch;
+                  delete window.fetch.originalFetch;
+                  originalFetch = null;
+                }
+              },
+            };
+          }
+
+          // to be able to use it manually in the console
+          window.createFetchOverrider = createFetchOverrider;
+
+          window.overrideFetch = createFetchOverrider();
+          overrideFetch.override();
+          overrideFetch.setHeaders({
+            "X-Requested-With": "fetch",
+            "X-mystuff": "myvalue",
+          });
+
+          document.querySelector("#tryfetch").addEventListener("click", function () {
+            fetch("index.html")
+              .then((response) => {
+                if (response.ok) {
+                  return response.text();
+                } else {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+              })
+              .then((data) => {
+                console.log("Response:", data);
+              })
+              .catch((error) => {
+                console.error("Fetch error:", error);
+              });
+          });
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>
