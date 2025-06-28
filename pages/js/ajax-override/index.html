@@ -104,8 +104,8 @@
                     if (url instanceof Request) {
                       const cloned = new Request(url, {
                         headers: {
-                          ...headers,
                           ...Object.fromEntries(url.headers.entries()),
+                          ...headers,
                         },
                       });
                       return originalFetch.call(this, cloned);
