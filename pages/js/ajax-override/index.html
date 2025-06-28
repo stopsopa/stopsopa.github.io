@@ -100,14 +100,22 @@
                     throw th("fetch is already overriden");
                   }
                   originalFetch = window.fetch;
-                  window.fetch = function (url, options = {}) {
-                    // Merge custom headers with existing headers
-                    const mergedOptions = { ...options };
-                    mergedOptions.headers = {
-                      ...headers,
-                      ...(options.headers || {}),
-                    };
-                    return originalFetch.call(this, url, mergedOptions);
+                  window.fetch = function (url, options = {}) {          
+                    if (url instanceof Request) {
+                      const cloned = new Request(url, {
+                        headers: {
+                          ...headers,
+                          ...Object.fromEntries(url.headers.entries()),
+                        },
+                      });
+                      return originalFetch.call(this, cloned);
+                    } else {
+                      options.headers = {
+                        ...options.headers,
+                        ...headers,
+                      };
+                      return originalFetch.call(this, url, options);
+                    }
                   };
                   window.fetch.originalFetch = originalFetch;
                 }
