@@ -238,6 +238,9 @@
 
           # status
             git status
+            # check if it is safe to switch branches:
+            # if the is not modified files. or any new files to be added 
+              [ -z "$(git status -s)" ] && echo true || echo false
 
           # git reset HEAD
 
