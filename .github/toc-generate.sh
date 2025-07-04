@@ -53,7 +53,7 @@ node node_modules/.bin/markdown-toc -i "${CP}"
 
 node "${ROOT}/.github/toc-generate.mjs" "${CP}" "${1}"
 
-# rm -rf "${CP}"
+rm -rf "${CP}"
 
 cat <<EEE
 
