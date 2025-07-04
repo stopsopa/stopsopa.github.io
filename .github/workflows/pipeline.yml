@@ -107,6 +107,11 @@ jobs:
           path: node_modules
           key: ${{ steps.restore-cache.outputs.cache-primary-key }}
 
+      - name: TOC for README.md
+        run: |
+          /bin/bash .github/toc-check.sh README.md 
+          node node_modules/.bin/markdown-toc -i README.md
+
       - name: Build
         run: |
           cp .env.template .env          

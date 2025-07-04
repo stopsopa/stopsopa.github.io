@@ -8,6 +8,9 @@ I edit it directly via github.dev. I believe there’s nothing for you here, str
 
 And by the way, I’ve deliberately made it difficult to open to avoid being judged. Just difficult - not impossible.
 
+<!-- toc -->
+<!-- tocstop -->
+
 # ci skip
 
 use [q] in git comment to skip test (for fast release) [.github/workflows/pipeline.yml](.github/workflows/pipeline.yml)
