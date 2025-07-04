@@ -278,17 +278,17 @@ body .github-menu {
             `);
 
       div.innerHTML = `
-            <div class="burger">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-            <div class="list">
-            <a href="//github.com/stopsopa/stopsopa.github.io">Home</a>
-            <a href="//github.com/stopsopa/stopsopa.github.io/actions">Actions</a>
-            <a href="//github.com/stopsopa/stopsopa.github.io#you-can-add-manually-toc-to-the-document-in-order-to-add-some-extra-links-to-toc">Template</a>
-            <a href="#">edit</a>
-            </div>
+  <div class="burger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <div class="list">
+  <a href="//github.com/stopsopa/stopsopa.github.io">Home</a>
+  <a href="//github.com/stopsopa/stopsopa.github.io/actions">Actions</a>
+  <a href="//github.com/stopsopa/stopsopa.github.io#you-can-add-manually-toc-to-the-document-in-order-to-add-some-extra-links-to-toc">Template</a>
+  <a href="#">edit</a>
+  </div>
 `;
 
       log.blue("top menu", "adding edit ribbon link", "[triggered in github.js]");
