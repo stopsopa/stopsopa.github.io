@@ -97,7 +97,6 @@
             // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Aligning_items_in_a_flex_container
         </script>
 
-        
         <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/"
           >https://css-tricks.com/snippets/css/a-guide-to-flexbox/</a
         >
@@ -532,6 +531,53 @@
           transaction is now $5,361.50. 1.9944871497470729 Ether Value 1.9940497464044795 Ether (1,994,049,746 Gwei)
           $5,361.50 Fee 0.00043740334259341 Ether
         </p>
+
+        <h2>attr()</h2>
+        <div id="attr"></div>
+        <!-- <style>
+          .one {
+            background-color: attr(data-color type(<color>));
+          }
+        </style> -->
+        <script type="editor" data-lang="js" data-eval>
+
+          // https://youtu.be/WcNWf6edIcc
+
+          import addCss from '../../js/addCss.js';
+
+          const parent = document.querySelector('#attr');
+
+          parent.innerHTML = `
+            <p class="one" data-color="#008000">lorem ipsum</p>
+            <p class="two" data-font-size="34">lorem ipsum</p>
+            <p class="three" data-customvar="error">lorem ipsum</p>
+            <p class="three" data-customvar="loading">lorem ipsum</p>
+            <span  >different element</span>
+          `;
+
+          addCss(`
+            * {
+            }
+            #attr {
+              .one {
+                background-color: attr(data-color type(<color>), red);
+              }
+              .two {
+                font-size: attr(data-font-size px);
+                margin-top: attr(data-margin px, 0);
+                margin-bottom: attr(data-margin px, 0);
+              }
+              .three {              
+                --customvar: attr(data-customvar); /* https://youtu.be/WcNWf6edIcc?t=432 */
+                background-color: if(
+                  style(--customvar: "loading"): green;
+                  style(--customvar: "error"): red;
+                  else: blue;
+                );
+              }
+            }
+          `)
+        </script>
 
         <h2>filter: drop-shadow</h2>
         <div>
