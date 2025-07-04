@@ -54,6 +54,25 @@ window.manipulation = manipulation;
 
 window.log = log;
 
+var github = (function (def) {
+  let host = def;
+  var user = host.replace(/^(.*)\.github\.io$/, "$1");
+  // log('user', user)
+  let path = location.pathname;
+  if (/\/$/.test(path)) {
+    path += "/index.html";
+  }
+  const templateRegex = /^(.*)\.rendered\.html$/;
+  // log("path", path);
+  if (templateRegex.test(path)) {
+    path = path.replace(templateRegex, "$1.template.html");
+  }
+  // log("path", path);
+  var github = `//github.com/${user}/${user}.github.io/edit/master${path}`;
+  // log("github", github);
+  return github;
+})("stopsopa.github.io");
+
 (function () {
   let found;
   try {
@@ -147,36 +166,6 @@ window.sasync = {
   // path /pages/css-grid/index.html
 
   window.isDevEnvironment = location.port !== "";
-
-  var github = (function (def) {
-    let host = def;
-
-    var user = host.replace(/^(.*)\.github\.io$/, "$1");
-
-    // log('user', user)
-
-    let path = location.pathname;
-
-    if (/\/$/.test(path)) {
-      path += "/index.html";
-    }
-
-    const templateRegex = /^(.*)\.rendered\.html$/;
-
-    // log("path", path);
-
-    if (templateRegex.test(path)) {
-      path = path.replace(templateRegex, "$1.template.html");
-    }
-
-    // log("path", path);
-
-    var github = `//github.com/${user}/${user}.github.io/edit/master${path}`;
-
-    // log("github", github);
-
-    return github;
-  })("stopsopa.github.io");
 
   log.green("defined", "window.github - link of edit page on github: " + github);
 
@@ -292,6 +281,7 @@ body .github-menu {
   </div>
   <div class="list">
   <a href="//github.com/stopsopa/stopsopa.github.io">Home</a>
+  <a href="${github.replace(/\/edit\//, "/blob/")}">View</a>
   <a href="//github.com/stopsopa/stopsopa.github.io/actions">Actions</a>
   <a href="//github.com/stopsopa/stopsopa.github.io#you-can-add-manually-toc-to-the-document-in-order-to-add-some-extra-links-to-toc">Template</a>
   <a href="https://stopsopa.github.io.local:4339/index.html">Local</a>
