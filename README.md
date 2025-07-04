@@ -9,6 +9,26 @@ I edit it directly via github.dev. I believe there’s nothing for you here, str
 And by the way, I’ve deliberately made it difficult to open to avoid being judged. Just difficult - not impossible.
 
 <!-- toc -->
+
+- [ci skip](#ci-skip)
+- [Ace editor objects syntax:](#ace-editor-objects-syntax)
+  - [You can add manually TOC to the document in order to add some extra links to TOC](#you-can-add-manually-toc-to-the-document-in-order-to-add-some-extra-links-to-toc)
+- [attribute helpers](#attribute-helpers)
+- [new page template](#new-page-template)
+- [there is feature I call urlwizzard](#there-is-feature-i-call-urlwizzard)
+- [doEval()](#doeval)
+- [links to files through github pages](#links-to-files-through-github-pages)
+- [window.scrollToHashAndHighligh](#windowscrolltohashandhighligh)
+- [tabs](#tabs)
+- [uglify](#uglify)
+- [templating engine](#templating-engine)
+- [ace editor click link](#ace-editor-click-link)
+- [other](#other)
+- [firebase](#firebase)
+- [to maintain:](#to-maintain)
+- [cross origin requests:](#cross-origin-requests)
+- [Dev notes](#dev-notes)
+
 <!-- tocstop -->
 
 # ci skip

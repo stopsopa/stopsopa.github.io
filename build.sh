@@ -113,6 +113,9 @@ time /bin/bash .github/urlwizzard.sh
 # I'm deliberately suppressing error to continue if above is not provided for local dev environment
 time /bin/bash .github/sha384.sh
 
+# /bin/bash .github/toc-check.sh README.md 
+node node_modules/.bin/markdown-toc -i README.md
+
 time node node_modules/.bin/prettier --config prettier.config.cjs --write . 1> >(/bin/bash bash/dlogger.sh o prettier) 2> >(/bin/bash bash/dlogger.sh e prettier)
 
 # this one after style_fix
