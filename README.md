@@ -20,12 +20,11 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 - [body nohead nofoot toc](#body-nohead-nofoot-toc)
 - [div data-do-sort](#div-data-do-sort)
 - [TEMPLATE](#template)
-- [urlwizzard.schema://urlwizzard.hostnegotiated](#urlwizzardschemaurlwizzardhostnegotiated)
+- [GITHUB_SOURCES_PREFIX || urlwizzard.schema://urlwizzard.hostnegotiated](#github_sources_prefix--urlwizzardschemaurlwizzardhostnegotiated)
 - [tabs](#tabs)
 - [_.uglify.js](#_uglifyjs)
 - [*.template.html & url | inject](#templatehtml--url--inject)
 - [ace editor click link](#ace-editor-click-link)
-- [other](#other)
 - [firebase](#firebase)
 - [to maintain:](#to-maintain)
 - [cross origin requests:](#cross-origin-requests)
@@ -211,7 +210,7 @@ window.doace();
 </html>
 ```
 
-# urlwizzard.schema://urlwizzard.hostnegotiated
+# GITHUB_SOURCES_PREFIX || urlwizzard.schema://urlwizzard.hostnegotiated
 
 which is replacing all occurences in tags, attributes and script bodies as follow
 
@@ -274,7 +273,7 @@ In template file listed placeholders will be processed:
 
 > [!NOTE]
 > use two path styles:
-> relative like lib/test.js
+> relative like lib/test.js or ../lib/test.js
 > this will resolve relative to the position of \*.template.html file
 >
 > or
@@ -288,12 +287,6 @@ For details look to scripts/template.sh
 
 When you hold CMD button and click any link anywhere in the content of ace editor it will open it in separate tab
 
-# other
-
-http://httpd.pl/stopsopa.github.io/index.html
-http://httpd.pl/stopsopa.github.io/demos/jquery.elkanatooltip/demo.html
-http://httpd.pl/dropdown
-http://httpd.pl/stopsopa.github.io/demos/jquery.elkanatooltip/pos.html
 
 # firebase
 
