@@ -42,6 +42,10 @@ cp "${1}" "${CP}"
 # remove <> characters from headers lines
 perl -pi -e 's#^(\#+.*?)<([^>]+)>#\1 \2#g' "${CP}"
 
+# also remove from all lines starting with # all &gt; and &lt;
+perl -pi -e 's#^(\#+.*?)&gt;#\1 #g' "${CP}"
+perl -pi -e 's#^(\#+.*?)&lt;#\1 #g' "${CP}"
+
 # multiple white spaces to single space
 perl -pi -e 's#^(\#+.*?)\s{2,}#\1 #g' "${CP}"
 
@@ -49,7 +53,7 @@ node node_modules/.bin/markdown-toc -i "${CP}"
 
 node "${ROOT}/.github/toc-generate.mjs" "${CP}" "${1}"
 
-rm -rf "${CP}"
+# rm -rf "${CP}"
 
 cat <<EEE
 

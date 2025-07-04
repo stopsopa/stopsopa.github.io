@@ -11,13 +11,36 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 # TOC
 
 <!-- toc -->
+
+
+- [ci skip](#ci-skip)
+- [script type="editor|syntax">](#script-typeeditorsyntax)
+  * [window.doEval();](#windowdoeval)
+- [manual TOC](#manual-toc)
+- [body nohead nofoot toc](#body-nohead-nofoot-toc)
+- [div data-do-sort](#div-data-do-sort)
+- [new page template](#new-page-template)
+- [there is feature I call urlwizzard](#there-is-feature-i-call-urlwizzard)
+- [links to files through github pages](#links-to-files-through-github-pages)
+- [window.scrollToHashAndHighligh](#windowscrolltohashandhighligh)
+- [tabs](#tabs)
+- [uglify](#uglify)
+- [templating engine](#templating-engine)
+- [ace editor click link](#ace-editor-click-link)
+- [other](#other)
+- [firebase](#firebase)
+- [to maintain:](#to-maintain)
+- [cross origin requests:](#cross-origin-requests)
+- [Dev notes](#dev-notes)
+
+
 <!-- tocstop -->
 
 # ci skip
 
 use [q] in git comment to skip test (for fast release) [.github/workflows/pipeline.yml](.github/workflows/pipeline.yml)
 
-# <script type="editor|syntax">
+# &lt;script type="editor|syntax">
 
 ```js
 <script type="editor|syntax" data-lang="js" data-w="95%">
@@ -104,7 +127,7 @@ window.doace();
 </html>
 ```
 
-# <body nohead nofoot toc>
+# &lt;body nohead nofoot toc&gt;
 
     <body nohead nofoot toc>
 
@@ -112,7 +135,7 @@ window.doace();
         nohead - no header
         nofoot - no footer
 
-# <div data-do-sort>
+# &lt;div data-do-sort&gt;
 
     <div data-do-sort>... children nodes...</div> - sorts all children based on innerText
 
