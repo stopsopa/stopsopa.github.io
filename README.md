@@ -23,7 +23,7 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 - [urlwizzard.schema://urlwizzard.hostnegotiated](#urlwizzardschemaurlwizzardhostnegotiated)
 - [tabs](#tabs)
 - [_.uglify.js](#_uglifyjs)
-- [*.template.html](#templatehtml)
+- [*.template.html & %url|inject path/to/file/in/repository.js%](#templatehtml--%25urlinject-pathtofileinrepositoryjs%25)
 - [ace editor click link](#ace-editor-click-link)
 - [other](#other)
 - [firebase](#firebase)
@@ -262,7 +262,7 @@ If anywhere in the repository file _.uglify.js will be created it will be proces
 
 For details look to uglify.js
 
-# *.template.html
+# *.template.html & %url|inject path/to/file/in/repository.js%
 
 If you create file _.template.html anywhere in the project during build it will be found and file _.html will be generate right next to original \*.template.html.
 
