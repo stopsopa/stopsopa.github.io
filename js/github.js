@@ -308,12 +308,12 @@ body .github-menu {
       addCss(`
 body .github-profile {
     border: 1px solid #2d2d2d;
-    top: 6px;
-    left: -23px;
+    top: 11px;
+    left: -34px;
     position: absolute;
     transform: rotate(-38deg);
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 38px;
+    padding-right: 38px;
     color: white;
     text-decoration: none;
     background-color: #2d2d2d;

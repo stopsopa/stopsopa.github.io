@@ -21,7 +21,6 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 - [div data-do-sort](#div-data-do-sort)
 - [TEMPLATE](#template)
 - [urlwizzard.schema://urlwizzard.hostnegotiated](#urlwizzardschemaurlwizzardhostnegotiated)
-- [links to files through github pages](#links-to-files-through-github-pages)
 - [window.scrollToHashAndHighligh](#windowscrolltohashandhighligh)
 - [tabs](#tabs)
 - [uglify](#uglify)
@@ -250,70 +249,8 @@ https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/rsync.sh
 
 ```
 
-test page githubpages: /research/urlwizzard/urlwizzard.html
+test page githubpages: https://stopsopa.github.io/research/urlwizzard/urlwizzard.html
 
-# links to files through github pages
-
-```html
-<head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-  />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>stopsopa.github.io</title>
-
-  <script src="/public/preprocessed.js"></script>
-  <script>
-    (function () {
-      var resolve;
-      var p = new Promise(function (res) {
-        resolve = res;
-      });
-
-      // <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/bash/rsync.sh">rsync.sh</a>
-      document.addEventListener("DOMContentLoaded", () => {
-        const GITHUB_SOURCES_PREFIX = env("GITHUB_SOURCES_PREFIX");
-
-        if (typeof GITHUB_SOURCES_PREFIX !== "string" || !GITHUB_SOURCES_PREFIX.trim()) {
-          throw new Error(`GITHUB_SOURCES_PREFIX is not defined`);
-        }
-
-        const reg = /^GITHUB_SOURCES_PREFIX(.*)/;
-
-        const buff = {
-          reg,
-          a_match: [],
-          a_notmatch: [],
-        };
-
-        document.querySelectorAll("a").forEach((a) => {
-          const href = a.getAttribute("href");
-
-          if (reg.test(href)) {
-            buff.a_match.push(href);
-
-            const newhref = href.replace(/^GITHUB_SOURCES_PREFIX(.*)/, `${GITHUB_SOURCES_PREFIX}$1`);
-
-            a.setAttribute("href", newhref);
-          } else {
-            buff.a_notmatch.push(href);
-          }
-        });
-
-        console.log(JSON.stringify(buff, null, 4));
-
-        resolve();
-      });
-
-      window.beforeAceEventPromise = function () {
-        return p;
-      };
-    })();
-  </script>
-</head>
-```
 
 # window.scrollToHashAndHighligh
 
