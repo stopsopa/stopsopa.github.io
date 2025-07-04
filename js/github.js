@@ -280,8 +280,8 @@ body .github-menu {
     <span></span>
   </div>
   <div class="list">
-  <a href="//github.com/stopsopa">Repositories</a>
-  <a href="//github.com/stopsopa/stopsopa.github.io">Repository</a>
+  <a href="//github.com/stopsopa">github.com/stopsopa</a>
+  <a href="//github.com/stopsopa/stopsopa.github.io">github.com/stopsopa/stopsopa.github.io</a>
   <a href="//github.com/stopsopa/stopsopa.github.io/actions">Actions</a>
   <a href="//github.com/stopsopa/stopsopa.github.io/blob/master/README.md#toc">TOC</a>
   <a href="${github.replace(/\/edit\//, "/blob/")}">View</a>
