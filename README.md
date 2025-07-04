@@ -16,7 +16,8 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 - [&lt;script type="editor|syntax"&gt;](#ltscript-typeeditorsyntaxgt)
   * [doEval()](#doeval)
 - [manual TOC](#manual-toc)
-- [attribute helpers](#attribute-helpers)
+- [&lt;body nohead nofoot toc>](#ltbody-nohead-nofoot-toc)
+- [&lt;div data-do-sort&gt;](#ltdiv-data-do-sortgt)
 - [new page template](#new-page-template)
 - [there is feature I call urlwizzard](#there-is-feature-i-call-urlwizzard)
 - [links to files through github pages](#links-to-files-through-github-pages)
@@ -124,15 +125,17 @@ window.doace();
 </html>
 ```
 
-# attribute helpers
-
-    <div data-do-sort>... children nodes...</div> - sorts all children based on innerText
+# &lt;body nohead nofoot toc>
 
     <body nohead nofoot toc>
 
         toc - turn on Table of Content
         nohead - no header
         nofoot - no footer
+
+# &lt;div data-do-sort&gt;
+
+    <div data-do-sort>... children nodes...</div> - sorts all children based on innerText
 
 # new page template
 
