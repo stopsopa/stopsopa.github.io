@@ -80,6 +80,7 @@ cat <<EEE
 
     open "file://$(realpath "coverage/index.html")"
     open -a "Google Chrome" "file://$(realpath "coverage/index.html")"
+    open -a "Google Chrome" "coverage/index.html"
 
 EEE
 
