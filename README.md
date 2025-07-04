@@ -8,6 +8,7 @@ I edit it directly via github.dev. I believe there’s nothing for you here, str
 
 And by the way, I’ve deliberately made it difficult to open to avoid being judged. Just difficult - not impossible.
 
+# TOC
 <!-- toc -->
 
 - [ci skip](#ci-skip)
