@@ -255,6 +255,13 @@ body .github-menu {
     padding: 3px 3px; 
     a {
       display: block;
+      text-decoration: none;
+      padding: 3px 5px;
+      &:hover {
+        text-decoration: underline;
+        background-color:#2d2d2d;
+        color: white;
+      }
     }
   }
   .burger {
