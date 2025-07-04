@@ -200,6 +200,66 @@ node node_modules/.bin/prettier --config prettier.config.cjs --write .
       description: `style_fix`,
       confirm: false,
     },
+    [`git sync`]: {
+      command: `
+set -e
+shopt -s expand_aliases && source ~/.bashrc
+cat <<EEE
+sshh 2
+git push stopsopa stopsopa_main:main --force --set-upstream
+git push stopsopa common:common --force --set-upstream
+sshh 1
+git push origin main:main --force --set-upstream
+EEE
+echo -e "\n      Press enter to continue\n"
+read
+if [ ! -z "\$(git status -s)" ]; then
+  echo "\nERROR: first commit changes\n"
+  exit 1;
+fi
+sshh 1
+echo "============ vv 1"
+ssh-add -L
+echo "============ ^^"
+sshh 2
+echo "============ vv 2"
+ssh-add -L
+echo "============ ^^"
+# -c color.branch=false -c color.diff=false -c color.status=false -c diff.mnemonicprefix=false -c core.quotepath=false -c credential.helper=sourcetree
+set -x
+git checkout common
+git pull stopsopa common  
+git push stopsopa common:common
+set +x
+sshh 1
+echo "============ vv 3"
+ssh-add -L
+echo "============ ^^"
+set -x
+git pull origin common  
+git push origin common:common
+git checkout main
+git pull origin main
+git merge common --no-edit
+git push origin main:main
+set +x
+sshh 2
+echo "============ vv 4"
+ssh-add -L
+echo "============ ^^"
+set -x
+git checkout stopsopa_main
+git pull stopsopa main
+git merge common  --no-edit
+git push stopsopa stopsopa_main:main
+set +x
+cat <<EEE
+All good!
+EEE
+`,
+      description: `sync`,
+      confirm: false,
+    },
     dependencies: {
       command: `
 set -e
