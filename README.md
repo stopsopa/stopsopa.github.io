@@ -15,7 +15,7 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 - [ci skip](#ci-skip)
 - [&lt;script type="editor|syntax"&gt;](#ltscript-typeeditorsyntaxgt)
   * [doEval()](#doeval)
-  * [You can add manually TOC to the document in order to add some extra links to TOC](#you-can-add-manually-toc-to-the-document-in-order-to-add-some-extra-links-to-toc)
+- [manual TOC](#manual-toc)
 - [attribute helpers](#attribute-helpers)
 - [new page template](#new-page-template)
 - [there is feature I call urlwizzard](#there-is-feature-i-call-urlwizzard)
@@ -84,7 +84,7 @@ window.doEval();
 window.doace();
 ```
 
-## You can add manually TOC to the document in order to add some extra links to TOC
+# manual TOC
 
 ```html
 <!DOCTYPE html>
