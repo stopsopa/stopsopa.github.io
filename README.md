@@ -14,7 +14,7 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 
 
 - [ci skip](#ci-skip)
-- [script type="editor|syntax">](#script-typeeditorsyntax)
+- [script type="editor|syntax" data-eval>](#script-typeeditorsyntax-data-eval)
   * [window.doEval();](#windowdoeval)
 - [manual TOC](#manual-toc)
 - [body nohead nofoot toc](#body-nohead-nofoot-toc)
@@ -37,7 +37,7 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 
 use [q] in git comment to skip test (for fast release) [.github/workflows/pipeline.yml](.github/workflows/pipeline.yml)
 
-# &lt;script type="editor|syntax">
+# &lt;script type="editor|syntax" data-eval>
 
 ```js
 <script type="editor|syntax" data-lang="js" data-w="95%">
