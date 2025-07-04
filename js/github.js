@@ -13,6 +13,8 @@ import {
   mockEnv,
 } from "../public/env.js";
 
+import addCss from "./addCss.js";
+
 import urlwizzard from "./urlwizzard.js";
 
 import manipulation from "./manipulation.js";
@@ -194,7 +196,7 @@ window.sasync = {
 
       manipulation.append(div, a);
 
-      var css = `
+      addCss(`
 body .github-link {
     top: 0;
     right: 0;
@@ -220,21 +222,76 @@ body .github-link > a:hover {
     color: #2d2d2d;
     background-color: white;
 }
-            `;
-      // https://stackoverflow.com/a/524721
-      var head = document.head || document.getElementsByTagName("head")[0],
-        style = document.createElement("style");
-
-      style.type = "text/css";
-      if (style.styleSheet) {
-        style.styleSheet.cssText = css;
-      } else {
-        style.appendChild(document.createTextNode(css));
-      }
-
-      head.appendChild(style);
+            `);
 
       log.blue("ribbon link", "adding edit ribbon link", "[triggered in github.js]");
+    })();
+
+  document.body.hasAttribute("nogithublink") ||
+    (function () {
+      var div = document.createElement("div");
+      div.classList.add("github-menu");
+      manipulation.append(document.body, div);
+      addCss(`
+body .github-menu {
+  position: absolute;
+  left: 44px;
+  background-color: white;
+  top: 5px;
+  z-index: 1;
+  & > * {
+    border: 1px solid #2d2d2d;
+  }
+  &:hover {
+    .list {
+      display: block;
+    }
+    .burger {
+      display: none;
+    }
+  }
+  .list {
+    display: none;
+    padding: 3px 3px; 
+    a {
+      display: block;
+    }
+  }
+  .burger {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3px 3px; 
+    box-sizing: border-box;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .burger span {
+    height: 3px;
+    background-color: #333;
+    border-radius: 2px;
+    width: 100%;
+  }
+}
+            `);
+
+      div.innerHTML = `
+            <div class="burger">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="list">
+            <a href="//github.com/stopsopa/stopsopa.github.io">Home</a>
+            <a href="//github.com/stopsopa/stopsopa.github.io/actions">Actions</a>
+            <a href="//github.com/stopsopa/stopsopa.github.io#you-can-add-manually-toc-to-the-document-in-order-to-add-some-extra-links-to-toc">Template</a>
+            <a href="#">edit</a>
+            </div>
+`;
+
+      log.blue("top menu", "adding edit ribbon link", "[triggered in github.js]");
     })();
 
   document.body.hasAttribute("noprofileribbon") ||
@@ -249,7 +306,7 @@ body .github-link > a:hover {
 
       manipulation.append(document.body, a);
 
-      var css = `
+      addCss(`
 body .github-profile {
     border: 1px solid #2d2d2d;
     top: 6px;
@@ -270,19 +327,7 @@ body .github-profile:hover {
     color: #2d2d2d;
     background-color: white;
 }
-            `;
-      // https://stackoverflow.com/a/524721
-      var head = document.head || document.getElementsByTagName("head")[0],
-        style = document.createElement("style");
-
-      style.type = "text/css";
-      if (style.styleSheet) {
-        style.styleSheet.cssText = css;
-      } else {
-        style.appendChild(document.createTextNode(css));
-      }
-
-      head.appendChild(style);
+            `);
 
       log.blue("DOMContentLoaded", "adding profile ribbon link", "[triggered in github.js]");
     })();
