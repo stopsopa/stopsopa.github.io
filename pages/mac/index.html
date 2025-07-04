@@ -121,7 +121,9 @@
               Battery
               <ul>
                 <li>
-                  <a href="https://github.com/mhaeuser/Battery-Toolkit">https://github.com/mhaeuser/Battery-Toolkit limit battery charge - current version 1.7</a>
+                  <a href="https://github.com/mhaeuser/Battery-Toolkit"
+                    >https://github.com/mhaeuser/Battery-Toolkit limit battery charge - current version 1.7</a
+                  >
                 </li>
               </ul>
             </li>
@@ -326,7 +328,6 @@
             https://support.apple.com/en-gb/HT201300
             https://support.apple.com/en-gb/103257
             https://support.apple.com/en-gb/108052
-            
           </script>
           <h2>Low power mode</h2>
           <a href="https://www.reddit.com/r/shortcuts/comments/qi3nz1/turn_low_power_mode_onoff_on_mac/"
@@ -371,19 +372,16 @@
             osascript -e 'id of app "mpv"'
               # is asking AppleScript (via the osascript command-line tool) to return the bundle identifier of the application named "mpv".
               # that will probably return "io.mpv" for mpv app
-            
+
             duti -s io.mpv .mov all
             duti -s io.mpv .mp4 all
               # is telling your Mac to associate all .mov files with the app that has the bundle identifier io.mpv — in this case, the mpv player.
-
-            
           </script>
-          
+
           <h2>Dock - not show recently open apps</h2>
           <script type="editor" data-lang="sh">
 
-              // Settings -> search "dock" -> choose "Dock settings" -> untick "Show suggested and recent apps in Dock"
-            
+            // Settings -> search "dock" -> choose "Dock settings" -> untick "Show suggested and recent apps in Dock"
           </script>
           <h2>Chrome/Brave/Safari Local Network</h2>
           <script type="editor" data-lang="sh">
@@ -963,7 +961,7 @@
             # 'keep-open=always' is useful when you want a static final image rather than a black screen.
             # Only use one of these at a time.
             keep-open=always
-            
+
             # Automatically save the current playback position when quitting MPV.
             # When you open the same file again, MPV will resume from that point.
             save-position-on-quit=yes
@@ -978,7 +976,7 @@
             # These are typically bound to the "Previous Track" and "Next Track" buttons on a keyboard.
             PREV seek -3
             NEXT seek +3
-            
+
             EEE
 
             mkdir -p ~/.config/mpv/script-opts
@@ -986,7 +984,7 @@
             # Controls the visibility of the on-screen controller (OSC).
             # "always" means the OSC is always visible during playback.
             visibility=always
-            
+
             EEE
 
             mkdir -p ~/.config/mpv/scripts/
@@ -1012,12 +1010,12 @@
             mp.add_key_binding("ctrl+o", "toggle-osc-visibility", toggle_osc_visibility)
 
             EEE
-            
+
             cat <<EEE > ~/.config/mpv/scripts/raise_on_play.lua
             -- ~/.config/mpv/scripts/raise_on_play.lua
             local mp = require 'mp'
             local utils = require 'mp.utils'
-            
+
             local function raise_window()
                 local script = [[
                     tell application "System Events"
@@ -1028,7 +1026,7 @@
                     args = { "osascript", "-e", script },
                 })
             end
-            
+
             mp.observe_property("pause", "bool", function(name, paused)
                 if paused == false then
                     raise_window()

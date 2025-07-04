@@ -467,8 +467,6 @@ body .github-profile:hover {
       });
     }
 
-
-
     log.blue(
       "DOMContentLoaded",
       "window.doace [triggered in github.js] -> window.githubJsReady = true defined (see snippet how to handle it next to this log)"

@@ -172,18 +172,17 @@
 
           Cmd + Alt -> F    - Search: Find text across all loaded resources: https://developer.chrome.com/docs/devtools/search
 
-          dissapear on blur 
+          dissapear on blur
             https://youtu.be/pw14NzfYPa8?t=243
             CMD + shift + p (Run command from three dots menu top right of dev tools) -> Show rendering (not "show renderer")
             https://stopsopa.github.io/i.html?i=https://i.imgur.com/rzFaOFV.png
-          
         </script>
         <h2>Tampermonkey template</h2>
-        <script type="editor" data-lang="js">          
-          
-          // more about @grant 
+        <script type="editor" data-lang="js">
+
+          // more about @grant
             // https://www.tampermonkey.net/documentation.php?ext=dhdg#meta:grant
-          
+
           // @run-at       document-idle  -- until after the page has fully loaded
             // https://www.tampermonkey.net/documentation.php?ext=dhdg#meta:run_at
 
@@ -195,17 +194,17 @@
           // @version      0.1
           // @description  try to take over the world!
           // @author       You
-          
+
           // @match        *://*/*
           // @match        https://github.com/*
           // @match        *://*/swagger-ui/*
           // @match        https://*.swagger.io/*
-          
+
           // @icon         https://upload.wikimedia.org/wikipedia/commons/8/83/Circle-icons-tools.svg
           // @grant        none
           // @run-at       document-idle
           // ==/UserScript==
-          
+
           const scriptname = "#id link";
           function unique(pattern) {
             // node.js require('crypto').randomBytes(16).toString('hex');
@@ -244,13 +243,11 @@
 
 
           })();
-        
         </script>
         <h2>Create Chrome Extension</h2>
         <script type="editor" data-lang="sh">
 
           // https://youtu.be/68khBWxVP3g
-          
         </script>
         <h2>Disable password manager</h2>
         <script type="editor" data-lang="sh">

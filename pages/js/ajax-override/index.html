@@ -100,7 +100,7 @@
                     throw th("fetch is already overriden");
                   }
                   originalFetch = window.fetch;
-                  window.fetch = function (url, options = {}) {          
+                  window.fetch = function (url, options = {}) {
                     if (url instanceof Request) {
                       const cloned = new Request(url, {
                         headers: {
