@@ -37,6 +37,7 @@
     "@playwright/test": "^1.51.1",
     "@vitest/coverage-v8": "3.0.8",
     "detect-node": "^2.1.0",
+    "doctoc": "^2.2.1",
     "esbuild": "^0.25.2",
     "esbuild-minify-templates": "^0.11.0",
     "esbuild-sass-plugin": "^3.3.1",

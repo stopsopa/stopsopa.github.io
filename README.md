@@ -13,11 +13,11 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 <!-- toc -->
 
 - [ci skip](#ci-skip)
-- [&lt;script type="editor|syntax"&gt;](#ltscript-typeeditorsyntaxgt)
-  * [doEval()](#doeval)
+- [＜script type="editor|syntax"＞](#%EF%BC%9Cscript-typeeditorsyntax%EF%BC%9E)
+  * [window.doEval();](#windowdoeval)
 - [manual TOC](#manual-toc)
-- [&lt;body nohead nofoot toc>](#ltbody-nohead-nofoot-toc)
-- [&lt;div data-do-sort&gt;](#ltdiv-data-do-sortgt)
+- [＜body nohead nofoot toc>](#%EF%BC%9Cbody-nohead-nofoot-toc)
+- [＜div data-do-sort＞](#%EF%BC%9Cdiv-data-do-sort%EF%BC%9E)
 - [new page template](#new-page-template)
 - [there is feature I call urlwizzard](#there-is-feature-i-call-urlwizzard)
 - [links to files through github pages](#links-to-files-through-github-pages)
@@ -34,11 +34,36 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 
 <!-- tocstop -->
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [ci skip](#ci-skip)
+- [＜script type="editor|syntax"＞](#%EF%BC%9Cscript-typeeditorsyntax%EF%BC%9E)
+  - [window.doEval();](#windowdoeval)
+- [manual TOC](#manual-toc)
+- [＜body nohead nofoot toc>](#%EF%BC%9Cbody-nohead-nofoot-toc)
+- [＜div data-do-sort＞](#%EF%BC%9Cdiv-data-do-sort%EF%BC%9E)
+- [new page template](#new-page-template)
+- [there is feature I call urlwizzard](#there-is-feature-i-call-urlwizzard)
+- [links to files through github pages](#links-to-files-through-github-pages)
+- [window.scrollToHashAndHighligh](#windowscrolltohashandhighligh)
+- [tabs](#tabs)
+- [uglify](#uglify)
+- [templating engine](#templating-engine)
+- [ace editor click link](#ace-editor-click-link)
+- [other](#other)
+- [firebase](#firebase)
+- [to maintain:](#to-maintain)
+- [cross origin requests:](#cross-origin-requests)
+- [Dev notes](#dev-notes)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # ci skip
 
 use [q] in git comment to skip test (for fast release) [.github/workflows/pipeline.yml](.github/workflows/pipeline.yml)
 
-# &lt;script type="editor|syntax"&gt;
+# ＜script type="editor|syntax"＞
 
 ```js
 <script type="editor|syntax" data-lang="js" data-w="95%">
@@ -68,7 +93,7 @@ Warning: Just specify type="typescript" and script on site will load
 
 - (in older versions up to v1.8.1 the file was here: https://github.com/ajaxorg/ace/blob/v1.8.1/lib/ace/ext/modelist.js#L53)
 
-## doEval()
+## window.doEval();
 
 ```html
 <script type="editor" data-lang="js" data-eval>
@@ -125,7 +150,7 @@ window.doace();
 </html>
 ```
 
-# &lt;body nohead nofoot toc>
+# ＜body nohead nofoot toc>
 
     <body nohead nofoot toc>
 
@@ -133,7 +158,7 @@ window.doace();
         nohead - no header
         nofoot - no footer
 
-# &lt;div data-do-sort&gt;
+# ＜div data-do-sort＞
 
     <div data-do-sort>... children nodes...</div> - sorts all children based on innerText
 
