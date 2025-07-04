@@ -22,7 +22,7 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 - [TEMPLATE](#template)
 - [urlwizzard.schema://urlwizzard.hostnegotiated](#urlwizzardschemaurlwizzardhostnegotiated)
 - [tabs](#tabs)
-- [uglify](#uglify)
+- [_.uglify.js](#_uglifyjs)
 - [templating engine](#templating-engine)
 - [ace editor click link](#ace-editor-click-link)
 - [other](#other)
@@ -256,7 +256,7 @@ It supports out of the box tabs like documented in:
 
 https://github.com/stopsopa/tabs
 
-# uglify
+# _.uglify.js
 
 If anywhere in the repository file _.uglify.js will be created it will be processed with babel and next by uglifyjs and exported as _.uglify.min.js
 
