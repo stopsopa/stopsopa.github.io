@@ -1,3 +1,5 @@
+# Not used anymore since generating TOC is done during build not in the github workflow
+
 if [ ! -f "${1}" ]; then
 
   echo "${0} error: File '${1}' does not exist."
