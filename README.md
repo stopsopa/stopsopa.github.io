@@ -19,7 +19,7 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 - [manual TOC](#manual-toc)
 - [body nohead nofoot toc](#body-nohead-nofoot-toc)
 - [div data-do-sort](#div-data-do-sort)
-- [new page template](#new-page-template)
+- [TEMPLATE](#template)
 - [urlwizzard.schema://urlwizzard.hostnegotiated](#urlwizzardschemaurlwizzardhostnegotiated)
 - [links to files through github pages](#links-to-files-through-github-pages)
 - [window.scrollToHashAndHighligh](#windowscrolltohashandhighligh)
@@ -139,7 +139,7 @@ window.doace();
 
     <div data-do-sort>... children nodes...</div> - sorts all children based on innerText
 
-# new page template
+# TEMPLATE
 
 ```html
 <!DOCTYPE html>
