@@ -9,15 +9,16 @@ I edit it directly via github.dev. I believe there’s nothing for you here, str
 And by the way, I’ve deliberately made it difficult to open to avoid being judged. Just difficult - not impossible.
 
 # TOC
+
 <!-- toc -->
 
 - [ci skip](#ci-skip)
-- [Ace editor objects syntax:](#ace-editor-objects-syntax)
+- [](#)
+  - [doEval()](#doeval)
   - [You can add manually TOC to the document in order to add some extra links to TOC](#you-can-add-manually-toc-to-the-document-in-order-to-add-some-extra-links-to-toc)
 - [attribute helpers](#attribute-helpers)
 - [new page template](#new-page-template)
 - [there is feature I call urlwizzard](#there-is-feature-i-call-urlwizzard)
-- [doEval()](#doeval)
 - [links to files through github pages](#links-to-files-through-github-pages)
 - [window.scrollToHashAndHighligh](#windowscrolltohashandhighligh)
 - [tabs](#tabs)
@@ -36,7 +37,7 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 
 use [q] in git comment to skip test (for fast release) [.github/workflows/pipeline.yml](.github/workflows/pipeline.yml)
 
-# Ace editor objects syntax:
+# <script type="editor|syntax">
 
 ```js
 <script type="editor|syntax" data-lang="js" data-w="95%">
@@ -51,6 +52,7 @@ type        - required : editor | syntax
 data-lang   - required
 data-w      - optional: any valid css value for width css directive
 datahw      - optional: any valid css value for height css directive
+data-eval   -
 
 Warning: Just specify type="typescript" and script on site will load
           /js/ace/ace-builds-1.5.0/src-min-noconflict/mode-typescript.js
@@ -61,11 +63,26 @@ Warning: Just specify type="typescript" and script on site will load
 > [!TIP]
 > For typescript use
 >
-> <script type="editor" data-lang="ts"> 
-> not
 > <script type="editor" data-lang="ts">
 
 - (in older versions up to v1.8.1 the file was here: https://github.com/ajaxorg/ace/blob/v1.8.1/lib/ace/ext/modelist.js#L53)
+
+## doEval()
+
+```html
+<script type="editor" data-lang="js" data-eval>
+  ...
+</script>
+```
+
+code will not only be wrapped with aceeditor but also executed just before wrapping.
+In order to trigger it again on <script> elements created dynamically use:
+
+```js
+window.doEval();
+// and optionally also
+window.doace();
+```
 
 ## You can add manually TOC to the document in order to add some extra links to TOC
 
@@ -229,24 +246,6 @@ https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/rsync.sh
 ```
 
 test page githubpages: /research/urlwizzard/urlwizzard.html
-
-# doEval()
-
-```html
-<script type="editor" data-lang="js" data-eval>
-  ...
-</script>
-```
-
-code will not only be wrapped with aceeditor but also executed just before wrapping.
-
-In order to trigger it again on <script> elements created dynamically use:
-
-```js
-window.doEval();
-// and optionally also
-window.doace();
-```
 
 # links to files through github pages
 
