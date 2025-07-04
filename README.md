@@ -13,9 +13,9 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 <!-- toc -->
 
 - [ci skip](#ci-skip)
-- [](#)
-  - [doEval()](#doeval)
-  - [You can add manually TOC to the document in order to add some extra links to TOC](#you-can-add-manually-toc-to-the-document-in-order-to-add-some-extra-links-to-toc)
+- [&lt;script type="editor|syntax"&gt;](#ltscript-typeeditorsyntaxgt)
+  * [doEval()](#doeval)
+  * [You can add manually TOC to the document in order to add some extra links to TOC](#you-can-add-manually-toc-to-the-document-in-order-to-add-some-extra-links-to-toc)
 - [attribute helpers](#attribute-helpers)
 - [new page template](#new-page-template)
 - [there is feature I call urlwizzard](#there-is-feature-i-call-urlwizzard)
@@ -37,7 +37,7 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 
 use [q] in git comment to skip test (for fast release) [.github/workflows/pipeline.yml](.github/workflows/pipeline.yml)
 
-# <script type="editor|syntax">
+# &lt;script type="editor|syntax"&gt;
 
 ```js
 <script type="editor|syntax" data-lang="js" data-w="95%">
