@@ -224,9 +224,9 @@ body .github-link > a:hover {
       addCss(`
 body .github-menu {
   position: absolute;
-  left: 44px;
+  left: 2px;
   background-color: white;
-  top: 5px;
+  top: 2px;
   z-index: 1;
   & > * {
     border: 1px solid #2d2d2d;
@@ -280,13 +280,13 @@ body .github-menu {
     <span></span>
   </div>
   <div class="list">
-  <a href="//github.com/stopsopa">Github Homepage</a>
+  <a href="//github.com/stopsopa">Repositories</a>
   <a href="//github.com/stopsopa/stopsopa.github.io">Repository</a>
   <a href="//github.com/stopsopa/stopsopa.github.io/actions">Actions</a>
-  <a href="${github.replace(/\/edit\//, "/blob/")}">View</a>
   <a href="//github.com/stopsopa/stopsopa.github.io#toc">TOC</a>
-  <a href="https://stopsopa.github.io.local:4339/index.html">Local</a>
-  <a href="#"></a>
+  <a href="${github.replace(/\/edit\//, "/blob/")}">View</a>
+  <hr />  
+  <a href="https://stopsopa.github.io.local:4339/index.html">Local</a>  
   </div>
 `;
 

@@ -20,7 +20,7 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 - [body nohead nofoot toc](#body-nohead-nofoot-toc)
 - [div data-do-sort](#div-data-do-sort)
 - [new page template](#new-page-template)
-- [there is feature I call urlwizzard](#there-is-feature-i-call-urlwizzard)
+- [urlwizzard.schema://urlwizzard.hostnegotiated](#urlwizzardschemaurlwizzardhostnegotiated)
 - [links to files through github pages](#links-to-files-through-github-pages)
 - [window.scrollToHashAndHighligh](#windowscrolltohashandhighligh)
 - [tabs](#tabs)
@@ -213,7 +213,7 @@ window.doace();
 </html>
 ```
 
-# there is feature I call urlwizzard
+# urlwizzard.schema://urlwizzard.hostnegotiated
 
 which is replacing all occurences in tags, attributes and script bodies as follow
 
