@@ -24,13 +24,13 @@ import maxWidth from "./maxWidth.js";
      */
 const excludedTags = ["script", "br", "hr"];
 function excludeElement(el) {
-  const tag = el.tagName.toLowerCase();
+  const tag = el?.tagName?.toLowerCase();
 
   if (excludedTags.includes(tag)) {
     return true;
   }
 
-  if (!el.offsetLeft || !el.offsetTop) {
+  if (!el?.offsetLeft || !el?.offsetTop) {
     return true;
   }
 

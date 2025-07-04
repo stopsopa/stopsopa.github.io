@@ -21,7 +21,6 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 - [div data-do-sort](#div-data-do-sort)
 - [TEMPLATE](#template)
 - [urlwizzard.schema://urlwizzard.hostnegotiated](#urlwizzardschemaurlwizzardhostnegotiated)
-- [window.scrollToHashAndHighligh](#windowscrolltohashandhighligh)
 - [tabs](#tabs)
 - [uglify](#uglify)
 - [templating engine](#templating-engine)
@@ -250,36 +249,6 @@ https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/rsync.sh
 ```
 
 test page githubpages: https://stopsopa.github.io/research/urlwizzard/urlwizzard.html
-
-
-# window.scrollToHashAndHighligh
-
-In order to prevent dislocating yellow background under block pointed out by location.hash usage of .cards elements.
-.cards elements are position:relative and using them to surround the block which height might be changing dynamically might help.
-
-```html
-<body class="layout bg" toc>
-  <div class="body">
-    <div class="inside">
-      <div class="cards">
-        <h2>Index</h2>
-        <script type="editor" data-lang="sh"></script>
-      </div>
-
-      <div class="cards">
-        <h2>dynamic content</h2>
-        <button onclick="document.querySelector('.toggle').classList.toggle('show')"></button>
-        <div class="toggle" style="height: 50px;">toggled box</div>
-      </div>
-
-      <div class="cards">
-        <h2>Index</h2>
-        <script type="editor" data-lang="sh"></script>
-      </div>
-    </div>
-  </div>
-</body>
-```
 
 # tabs
 
