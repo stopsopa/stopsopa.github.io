@@ -784,6 +784,14 @@
             # will generate number between 0 and 2 -> 0.1 or 1.9 for example
           </script>
 
+          <h2>Check what uses port - port already taken</h2>
+          <script type="editor" data-lang="sh">
+
+            sudo lsof -i :8000
+            # then once you get the PID:
+            ps -p 34339 -o pid,command
+          
+          </script>
           <h2>multiline execute in bash</h2>
 
           <script type="editor" data-lang="sh">
