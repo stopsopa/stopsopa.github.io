@@ -453,6 +453,13 @@
             --branches --remotes \
             HEAD $(git diff --quiet HEAD || echo $(git write-tree | xargs git commit-tree -p HEAD -m "$(echo -e '\033[7m Unstaged changes \033[0m')"))
 
+          # git reflog
+
+            git log --graph --oneline --all --simplify-by-decoration
+             # get a concise view of the branch structure and tags in a repository.
+
+          
+            
           # git stash
               git stash & git pop
               # or
@@ -619,6 +626,78 @@
                 -> untick "Automatically check for updates"
               -> Tab "Advanced"
                 -> untick "Keep backups on destructive operations"
+        </script>
+
+        <h2>Automation - common branch - multiple repos</h2>
+        <script type="editor" data-lang="sh">
+
+          # let's assume 'common' branch should be the same across two remotes 'origin' and 'stopsopa'
+          git remote add origin git@github.com:xxx/project.git
+          git remote add stopsopa git@github.com:stopsopa/project.git
+
+          # Ensure common is NOT tracking one specific remote. You want to treat it as a purely local integration branch.
+          git branch -vv
+
+          # If it’s tracking something (e.g., [origin/common]), remove the tracking:
+          git branch --unset-upstream
+
+          # Pull changes into local branches separately
+          git fetch origin common
+          git fetch stopsopa common
+
+          # You can merge both into your local common in a controlled way:
+          git checkout common
+
+          # Merge both remotes
+          git merge origin/common --no-edit          
+          git merge stopsopa/common --no-edit
+          git commit -m 'merge' --amend
+
+          # Now common is up to date with both remotes. If there are conflicts, you resolve them once here.
+
+          # Push the merged result to both remotes
+          sshh 1
+          git push origin common
+          sshh 2
+          git push stopsopa common   
+
+          ----
+          # Recommended Script Flow
+          # Ensure SSH identities
+          sshh 1  # xxx key
+          git fetch origin common
+          
+          sshh 2  # Stopsopa key
+          git fetch stopsopa common
+          
+          # Merge both remote versions into local common
+          git checkout common
+          git merge origin/common --no-edit
+          git merge stopsopa/common --no-edit
+          git commit -m 'merge' --amend
+          
+          # Push to both remotes (must switch SSH keys accordingly)
+          sshh 1
+          git push origin common
+          
+          sshh 2
+          git push stopsopa common
+          
+          # Merge common into master/main
+          sshh 1
+          git checkout master
+          git pull origin master
+          git merge common --no-edit
+          git push origin master
+          
+          sshh 2
+          git checkout stopsopa_main
+          git pull stopsopa main
+          git merge common --no-edit
+          git push stopsopa main
+
+
+          
         </script>
         <h2>gitflow</h2>
         <a href="https://nvie.com/posts/a-successful-git-branching-model/"
