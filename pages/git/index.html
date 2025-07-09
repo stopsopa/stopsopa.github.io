@@ -376,8 +376,24 @@
             # might be useful too always run that after every git checkout
               git submodule update --init
 
-            # checkout locally the remote branch
-              git checkout -b masddd --track origin/masddd
+          # git checkout
+            # Changes your working directory to match the commit history of another branch. All files in the working directory are updated to reflect the selected branch's state.
+
+            Version 1 with TRACKING)
+              git checkout -b stopsopa_main --track stopsopa/main
+                # This creates a new local branch stopsopa_main that tracks the remote branch stopsopa/main. 
+                # Tracking means Git remembers the relationship, so you can run git pull or git push without 
+                # needing to specify the remote or branch each time — useful for ongoing work that follows a remote branch.
+          
+            Version 2 without TRACKING)
+              git checkout -b stopsopa_main --track stopsopa/main
+              git branch --unset-upstream
+          
+            Version 3 without TRACKING - and includes MERGE of newly created branch stopsopa_main with stopsopa/main)
+              # not ideal for all situation
+                git fetch stopsopa
+                git checkout -b stopsopa_main
+                git merge stopsopa/main            
 
           # delete branch
             # locally
