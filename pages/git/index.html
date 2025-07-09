@@ -380,13 +380,13 @@
             # Changes your working directory to match the commit history of another branch. All files in the working directory are updated to reflect the selected branch's state.
 
             Version 1 with TRACKING)
-              # This creates a new local branch stopsopa_main that tracks the remote branch stopsopa/main. 
-              # Tracking means Git remembers the relationship, so you can run git pull or git push without 
-              # needing to specify the remote or branch each time — useful for ongoing work that follows a remote branch.              
+              # This creates a new local branch stopsopa_main that tracks the remote branch stopsopa/main.
+              # Tracking means Git remembers the relationship, so you can run git pull or git push without
+              # needing to specify the remote or branch each time — useful for ongoing work that follows a remote branch.
                 git checkout -b stopsopa_main --track stopsopa/main
-          
+
             Version 2 without TRACKING)
-              # Creates branch with tracking like Version 1, but then disables tracking. 
+              # Creates branch with tracking like Version 1, but then disables tracking.
               # Result: local branch based on stopsopa/main but no tracking relationship.
                 git checkout -b stopsopa_main --track stopsopa/main
                 git branch --unset-upstream
@@ -399,13 +399,13 @@
             Version 4 without TRACKING)
               # Creates local branch based on stopsopa/main without tracking and switches to it.
                 git checkout -b stopsopa_main stopsopa/main
-          
+
             Version 4 without TRACKING - and includes MERGE of newly created branch stopsopa_main with stopsopa/main)
               # Creates stopsopa_main based on your current branch, then merges stopsopa/main into it.
               # This is NOT A CLEAN copy of stopsopa/main — it combines histories and may cause conflicts.
                 git fetch stopsopa
                 git checkout -b stopsopa_main
-                git merge stopsopa/main            
+                git merge stopsopa/main
 
           # delete branch
             # locally
@@ -486,8 +486,8 @@
             git log --graph --oneline --all --simplify-by-decoration
              # get a concise view of the branch structure and tags in a repository.
 
-          
-            
+
+
           # git stash
               git stash & git pop
               # or
@@ -677,7 +677,7 @@
           git checkout common
 
           # Merge both remotes
-          git merge origin/common --no-edit          
+          git merge origin/common --no-edit
           git merge stopsopa/common --no-edit
           git commit -m 'merge' --amend
 
@@ -687,45 +687,42 @@
           sshh 1
           git push origin common:common
           sshh 2
-          git push stopsopa common:common   
+          git push stopsopa common:common
 
           ----
           # Recommended Script Flow
           # Ensure SSH identities
           sshh 1  # xxx key
           git fetch origin common
-          
+
           sshh 2  # Stopsopa key
           git fetch stopsopa common
-          
+
           # Merge both remote versions into local common
           git checkout common
           git merge origin/common --no-edit
           git merge stopsopa/common --no-edit
           git commit -m 'merge' --amend
-          
+
           # Push to both remotes (must switch SSH keys accordingly)
           sshh 1
           git push origin common:common
-          
+
           sshh 2
           git push stopsopa common:common
-          
+
           # Merge common into master/main
           sshh 1
           git checkout master
           git pull origin master
           git merge common --no-edit
           git push origin master:master
-          
+
           sshh 2
           git checkout stopsopa_main
           git pull stopsopa main
           git merge common --no-edit
           git push stopsopa stopsopa_main:main
-
-
-          
         </script>
         <h2>gitflow</h2>
         <a href="https://nvie.com/posts/a-successful-git-branching-model/"

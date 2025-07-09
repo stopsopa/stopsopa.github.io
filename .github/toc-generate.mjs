@@ -1,14 +1,14 @@
 /**
  * Script to be used from toc-generate.sh
- * 
+ *
  * Explaination of it's function:
- * 
+ *
  * This script accepts two arguments:
  * 1. The source file (e.g., README.md.md) from which to extract the Table of Contents (TOC).
  * 2. The target file (e.g., README.md) where the TOC will be inserted.
- *  
+ *
  *  It reads the source file, extracts the content between the markers <!-- toc --> and <!-- tocstop -->,
- *   and replaces the content between the same markers in the target file with the extracted TOC content.   
+ *   and replaces the content between the same markers in the target file with the extracted TOC content.
  */
 
 import fs from "fs";
