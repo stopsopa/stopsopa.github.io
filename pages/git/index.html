@@ -380,17 +380,29 @@
             # Changes your working directory to match the commit history of another branch. All files in the working directory are updated to reflect the selected branch's state.
 
             Version 1 with TRACKING)
-              git checkout -b stopsopa_main --track stopsopa/main
-                # This creates a new local branch stopsopa_main that tracks the remote branch stopsopa/main. 
-                # Tracking means Git remembers the relationship, so you can run git pull or git push without 
-                # needing to specify the remote or branch each time — useful for ongoing work that follows a remote branch.
+              # This creates a new local branch stopsopa_main that tracks the remote branch stopsopa/main. 
+              # Tracking means Git remembers the relationship, so you can run git pull or git push without 
+              # needing to specify the remote or branch each time — useful for ongoing work that follows a remote branch.              
+                git checkout -b stopsopa_main --track stopsopa/main
           
             Version 2 without TRACKING)
-              git checkout -b stopsopa_main --track stopsopa/main
-              git branch --unset-upstream
+              # Creates branch with tracking like Version 1, but then disables tracking. 
+              # Result: local branch based on stopsopa/main but no tracking relationship.
+                git checkout -b stopsopa_main --track stopsopa/main
+                git branch --unset-upstream
+
+            Version 3 without TRACKING)
+              # Creates local branch pointing to stopsopa/main without tracking, then switches to it.
+                git branch stopsopa_main stopsopa/main
+                git checkout stopsopa_main
+
+            Version 4 without TRACKING)
+              # Creates local branch based on stopsopa/main without tracking and switches to it.
+                git checkout -b stopsopa_main stopsopa/main
           
-            Version 3 without TRACKING - and includes MERGE of newly created branch stopsopa_main with stopsopa/main)
-              # not ideal for all situation
+            Version 4 without TRACKING - and includes MERGE of newly created branch stopsopa_main with stopsopa/main)
+              # Creates stopsopa_main based on your current branch, then merges stopsopa/main into it.
+              # This is NOT A CLEAN copy of stopsopa/main — it combines histories and may cause conflicts.
                 git fetch stopsopa
                 git checkout -b stopsopa_main
                 git merge stopsopa/main            
