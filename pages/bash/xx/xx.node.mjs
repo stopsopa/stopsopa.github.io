@@ -4,17 +4,45 @@
  * for script xx.sh which can be found right next to this file in this directory
  */
 
-const path = require("path");
+import path from "path";
+import fs from "fs";
 
-const fs = require("fs");
+// Handle dynamic imports gracefully
+const importModule = async (modulePath) => {
+  try {
+    return await import(modulePath);
+  } catch (error) {
+    console.error(`Error importing ${modulePath}:`, error);
+    return { default: null };
+  }
+};
 
-// import "core-js/actual/structured-clone";
+// Import the dependencies
+const selectModule = await importModule("@inquirer/select");
+const confirmModule = await importModule("@inquirer/confirm");
+const rangeModule = await importModule("./lib/range.js");
 
-import select, { Separator } from "@inquirer/select";
+// Get the functions with fallbacks if imports fail
+const select =
+  selectModule.default ||
+  ((options) => {
+    console.log("Select option:", options.message);
+    return options.choices[0].value;
+  });
+const { Separator } = selectModule;
+const confirm =
+  confirmModule.default ||
+  ((options) => {
+    console.log("Confirm:", options.message);
+    return true;
+  });
+const range = rangeModule.default || ((options) => options.str);
 
-import confirm from "@inquirer/confirm";
-
-import range from "./lib/range.js";
+// Handle SIGINT (Ctrl+C) gracefully
+process.on("SIGINT", () => {
+  console.log("\nProcess terminated by user (Ctrl+C)");
+  process.exit(130); // Standard exit code for SIGINT
+});
 
 function isObject(o) {
   return Object.prototype.toString.call(o) === "[object Object]";
@@ -30,10 +58,16 @@ const localSetup = path.resolve(process.argv[2]);
 
 const XX_GENERATED = path.resolve(process.argv[3]);
 
-if (fs.existsSync(XX_GENERATED)) {
-  fs.unlinkSync(XX_GENERATED);
+try {
+  if (fs.existsSync(XX_GENERATED)) {
+    fs.unlinkSync(XX_GENERATED);
+  }
+} catch (err) {
+  console.error(`Error removing existing file ${XX_GENERATED}: ${err.message}`);
+  // Continue execution, as this is not critical
 }
 
+// Simple ANSI color implementation that doesn't rely on external packages
 const c = {
   Bright: "\x1b[1m",
   Dim: "\x1b[2m",
@@ -68,36 +102,32 @@ const c = {
 let setup;
 
 if (fs.existsSync(localSetup)) {
-  const localSetupModule = require(localSetup);
+  try {
+    const localSetupModule = await import(localSetup);
 
-  if (typeof localSetupModule !== "function") {
-    throw th(`default export is not a function in module >${localSetup}<`);
-  }
+    if (typeof localSetupModule.default !== "function") {
+      throw th(`default export is not a function in module >${localSetup}<`);
+    }
 
-  setup = localSetupModule({});
+    setup = localSetupModule.default({});
 
-  if (!isObject(setup)) {
-    throw th(`object is not returned from default function module exported from >${localSetup}<`);
+    if (!isObject(setup)) {
+      throw th(`object is not returned from default function module exported from >${localSetup}<`);
+    }
+  } catch (err) {
+    console.error(`Error importing or processing module ${localSetup}: ${err.message}`);
+    setup = {};
   }
 } else {
   setup = {};
 
   log(msg(`file >${localSetup}< not found`));
 }
-// log({
-//   a:  process.argv
-// }) // { a: [ 'ab', 'cd ef' ] }
 
 process.argv.shift();
 process.argv.shift();
 process.argv.shift();
 process.argv.shift();
-
-// // xx ab "cd ef" --wtf
-
-// log({
-//   b:  process.argv
-// }) // { a: [ 'ab', 'cd ef' ] }
 
 /**
  * processing <% name %>
@@ -136,31 +166,15 @@ setup = Object.entries(setup).reduce((acc, [key, value]) => {
 (async function () {
   const func = process.argv.shift();
 
-  // log({
-  //   func,
-  //   c:  process.argv
-  // }) // { a: [ 'cd ef' ] }
-
-  // process.exit(0);
-
   let command;
 
   if (typeof func === "undefined") {
-    // log({
-    //   setup,
-    // });
-
-    // process.exit(6);
-
     /**
      * preparing and ordering
      */
     let orderedEntries = Object.entries(setup);
-    // log({
-    //   orderedEntries: JSON.stringify(orderedEntries, null, 4)
-    // })
+
     orderedEntries.sort(([_1, { order: o1 }], [_2, { order: o2 }]) => {
-      // console.log(`o1 >${o1}<, o2 >${o2}<`)
       if (o1 === o2) {
         return 0;
       }
@@ -171,9 +185,7 @@ setup = Object.entries(setup).reduce((acc, [key, value]) => {
 
       return o1 < o2 ? -1 : 1;
     });
-    // log({
-    //   orderedEntries: JSON.stringify(orderedEntries, null, 4)
-    // })
+
     let choices = orderedEntries.reduce((acc, [k, v], i) => {
       acc.push({
         name: range({
@@ -187,41 +199,19 @@ setup = Object.entries(setup).reduce((acc, [key, value]) => {
       });
       return acc;
     }, []);
-    // log({
-    //   choices: JSON.stringify(choices, null, 4)
-    // })
-    // process.exit();
 
-    // /**
-    //  * https://github.com/SBoudrias/Inquirer.js#select
-    //  */
-    command = await select({
-      message: "Select command to run",
-      choices,
-      // choices: [
-      //   {
-      //     name: 'npm',
-      //     value: 'npm',
-      //     description: 'npm is the most popular package manager',
-      //   },
-      //   {
-      //     name: 'yarn',
-      //     value: 'yarn',
-      //     description: 'yarn is an awesome package manager',
-      //   },
-      //   new Separator(),
-      //   {
-      //     name: 'jspm',
-      //     value: 'jspm',
-      //     disabled: true,
-      //   },
-      //   {
-      //     name: 'pnpm',
-      //     value: 'pnpm',
-      //     disabled: '(pnpm is not available)',
-      //   },
-      // ],
-    });
+    try {
+      command = await select({
+        message: "Select command to run",
+        choices,
+      });
+    } catch (err) {
+      if (err.message && err.message.includes("SIGINT")) {
+        console.log("\nExiting without selecting a command");
+        process.exit(130);
+      }
+      throw err;
+    }
   } else {
     if (/^\d+$/.test(func)) {
       const cmd = Object.values(setup)[func - 1];
@@ -259,11 +249,24 @@ setup = Object.entries(setup).reduce((acc, [key, value]) => {
      * then we ask for permission to run
      */
     if (typeof command.confirm === "undefined" || command.confirm === true) {
-      run = await confirm({ message: `Run command?     ${c.r}${command.name}${c.reset}   ` });
+      try {
+        run = await confirm({ message: `Run command?     ${c.r}${command.name}${c.reset}   ` });
+      } catch (err) {
+        if (err.message && err.message.includes("SIGINT")) {
+          console.log("\nExiting without running the command");
+          process.exit(130);
+        }
+        throw err;
+      }
     }
   }
 
-  fs.writeFileSync(XX_GENERATED, command.command);
+  try {
+    fs.writeFileSync(XX_GENERATED, command.command);
+  } catch (err) {
+    console.error(`Error writing to ${XX_GENERATED}: ${err.message}`);
+    process.exit(1);
+  }
 
   if (!run) {
     process.exit(10);

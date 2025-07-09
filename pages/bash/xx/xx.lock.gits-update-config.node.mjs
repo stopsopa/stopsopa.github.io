@@ -1,6 +1,6 @@
 /**
  *  xx --lock
- *  node "${_DIR}/xx.lock.gits-update-config.node.bundled.gitignored.cjs" "${GITIGNORE}" "${_PWD}/.git/.gitignore_local"
+ *  node "${_DIR}/xx.lock.gits-update-config.node.bundled.gitignored.mjs" "${GITIGNORE}" "${_PWD}/.git/.gitignore_local"
  */
 const fs = require("fs");
 

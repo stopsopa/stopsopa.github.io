@@ -1,9 +1,7 @@
 // used by esbuild-node.sh
 
 import * as esbuild from "esbuild";
-
 import fs from "fs";
-
 import path from "path";
 
 const log = (...args) => console.log("esbuild-node.js:", ...args);
@@ -66,6 +64,38 @@ function watchFiles(watch) {
   });
 }
 
+// Define a list of packages that need special handling
+const problematicPackages = [
+  // Node.js built-ins
+  "node:*",
+  "tty",
+  "fs",
+  "path",
+  "util",
+  "events",
+  "stream",
+  "os",
+  "crypto",
+  "buffer",
+  "assert",
+  "url",
+  "http",
+  "https",
+  "zlib",
+  "querystring",
+  "net",
+  "dns",
+  "tls",
+  "readline",
+  "module",
+
+  // Problematic packages
+  "yoctocolors-cjs",
+  "cli-width",
+  "@inquirer/*",
+];
+
+log("Using esbuild for bundling");
 let ctx = await esbuild[watch ? "context" : "build"]({
   entryPoints,
   bundle: true,
@@ -74,9 +104,23 @@ let ctx = await esbuild[watch ? "context" : "build"]({
   entryNames: "[dir]/[name].bundled.gitignored", // https://esbuild.github.io/api/#entry-names
 
   platform: "node",
-  target: "node12.16.3",
+  target: "node24.3.0",
+  format: "esm", // Ensure output is in native ESM format
 
-  logLevel: "info",
+  // Mark problematic modules as external
+  external: problematicPackages,
+
+  // Ensure proper handling of dynamic imports
+  mainFields: ["module", "main"],
+
+  // Avoid injecting Node.js polyfills
+  inject: [],
+
+  // Allow default exports from CJS modules
+  allowOverwrite: true,
+
+  // More detailed error logging for debugging
+  logLevel: "warning",
   logOverride: {
     // more about logOverride: https://github.com/evanw/esbuild/releases/tag/v0.14.42
     "direct-eval": "silent", // require('core-js/actual/structured-clone'); to stop error: [WARNING] Using direct eval with a bundler is not recommended and may cause problems [direct-eval]

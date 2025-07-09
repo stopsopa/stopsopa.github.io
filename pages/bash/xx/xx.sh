@@ -27,6 +27,33 @@ case ${_SHELL} in
     ;;
 esac
 
+set -o pipefail
+
+# set -e
+
+_ROOT="$(realpath "${_DIR}/../../..")"
+STATUS="${?}"
+if [ ${STATUS} -ne 0 ]; then
+
+    echo "${0} error: REALPATH ERROR: ${_ROOT} - ${STATUS}"
+
+    sleep 5
+
+    exit 1
+fi
+
+QUIET=true NODE_OPTIONS="" node "${_ROOT}/bash/node/versioncheck.js" --nvmrc .nvmrc --exact
+STATUS="${?}"
+if [ ${STATUS} -ne 0 ]; then
+    echo "${0} error: bash/node/versioncheck.js ERROR"
+    sleep 5
+    exit 1
+fi
+
+
+
+
+
 trimLeft() {
   local str="$1"
   local trim_char="$2"
@@ -372,7 +399,7 @@ return 1
 
         COREEXCLUDESFILE="$(git config --get core.excludesFile)"
 
-        RESULT="$(NODE_OPTIONS="" node "${_DIR}/xx.lock.gits-update-config.node.bundled.gitignored.cjs" "${_PWD}" ".git/gitstorage-config.sh" ".git/.gitignore_local" "${GITIGNORE}" "${COREEXCLUDESFILE}")"
+        RESULT="$(NODE_OPTIONS="" node "${_DIR}/xx.lock.gits-update-config.node.bundled.gitignored.mjs" "${_PWD}" ".git/gitstorage-config.sh" ".git/.gitignore_local" "${GITIGNORE}" "${COREEXCLUDESFILE}")"
 
         cat <<EEE
 ${RESULT}
@@ -443,7 +470,36 @@ ${LOAD_CONFIG2}
     LOAD_CONFIG="${USER_CONFIG}"
 fi
 
-NODE_OPTIONS="" node "${_DIR}/xx.node.bundled.gitignored.cjs" "${LOAD_CONFIG}" "${XX_GENERATED}" "${@}"
+# 
+# to override this script to skip loading bundled node script
+# export TESTXXCJS="xx.node.cjs"
+if [ -z "${TESTXXCJS}" ]; then  
+
+    # First try the bundled version
+    NODE_OPTIONS="" node "${_DIR}/xx.node.bundled.gitignored.mjs" "${LOAD_CONFIG}" "${XX_GENERATED}" "${@}"
+
+
+    # BUNDLED_EXIT_CODE="${?}"
+    
+    # # If bundled version fails, try the direct version as fallback
+    # if [ "${BUNDLED_EXIT_CODE}" != "0" ] && [ "${BUNDLED_EXIT_CODE}" != "10" ] && [ "${BUNDLED_EXIT_CODE}" != "55" ]; then
+    #     echo "Bundled version failed with code ${BUNDLED_EXIT_CODE}, trying direct version as fallback..."
+        
+    #     if [ -f "${_DIR}/xx.direct.mjs" ]; then
+    #         NODE_OPTIONS="" node --experimental-modules "${_DIR}/xx.direct.mjs" "${LOAD_CONFIG}" "${XX_GENERATED}" "${@}"
+    #     else
+    #         echo "${0} error: fallback file ${_DIR}/xx.direct.mjs doesn't exist"
+    #         exit "${BUNDLED_EXIT_CODE}"
+    #     fi
+    # fi
+else    
+    TESTXXCJSFILE="${_DIR}/${TESTXXCJS}"
+    if [ ! -f "${TESTXXCJSFILE}" ]; then
+        echo "${0} error: file >${TESTXXCJSFILE}< doesn't exist, please check your TESTXXCJS variable"
+        return 1
+    fi
+    NODE_OPTIONS="" node "${TESTXXCJSFILE}" "${LOAD_CONFIG}" "${XX_GENERATED}" "${@}"
+fi
 
 CODE="${?}"
 EXECUTEUSING_SOURCE="0"

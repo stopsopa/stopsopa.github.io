@@ -4,6 +4,8 @@
  *
  * node ${0} v14.4.0 --exact
  * node ${0} --nvmrc .nvmrc --exact
+ *
+ * QUIET=true NODE_OPTIONS="" node bash/node/versioncheck.js --nvmrc .nvmrc --exact
  */
 
 const fs = require("fs");
@@ -96,4 +98,6 @@ if (ver !== toCheck) {
   throw new Error(`${__dirname} error: Version of node should be '${toCheck}' but it is '${ver}'`);
 }
 
-console.log(`Version of node is ${ver} and it should be ${toCheck} - so it's valid`);
+if (process.env.QUIET !== "true") {
+  console.log(`Version of node is ${ver} and it should be ${toCheck} - so it's valid`);
+}
