@@ -260,6 +260,10 @@
         >
         <script type="editor" data-lang="sh">
 
+          # override location of .tool-versions for single execution
+            ASDF_TOOL_VERSIONS_FILENAME="${_ROOT}" node [my script.js]
+            # read more: https://asdf-vm.com/manage/configuration.html#asdf-tool-versions-filename
+
           export HOMEBREW_NO_AUTO_UPDATE=1 && brew install gpg gawk
           # follow:
           #     https://asdf-vm.com/guide/getting-started.html#official-download
