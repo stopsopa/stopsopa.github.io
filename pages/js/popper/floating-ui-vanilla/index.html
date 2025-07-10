@@ -28,6 +28,9 @@
         <div class="example1 vanilla-tooltip">
           <!-- <script> -->
           <script type="editor" data-lang="js" data-eval>
+
+            import template from '/js/template.js'
+
             // import {computePosition} from 'https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.12/+esm';
             const { computePosition, autoUpdate, flip, shift, limitShift, offset, autoPlacement, arrow } =
               FloatingUIDOM;
@@ -310,7 +313,7 @@
               };
             })();
 
-            if (!Array.isArray(window.allLoaded)) {
+            if (typeof window.allLoaded === 'undefined') {
               window.allLoaded = [];
             }
             window.allLoaded.push(async function () {

@@ -178,7 +178,7 @@ window.doace();
     </script>
 
     <script>
-      if (!Array.isArray(window.allLoaded)) {
+      if (typeof window.allLoaded === 'undefined') {
         window.allLoaded = [];
       }
       window.allLoaded.push(function () {

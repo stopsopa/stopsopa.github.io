@@ -26,6 +26,8 @@
         <div class="example1 vanilla-tooltip">
           <!-- <script> -->
           <script type="editor" data-lang="js" data-eval>
+
+            import template from '/js/template.js'
             const setupTooltipGroup = (function () {
               const instances = {};
 
@@ -284,7 +286,7 @@
               };
             })();
 
-            if (!Array.isArray(window.allLoaded)) {
+            if (typeof window.allLoaded === 'undefined') {
               window.allLoaded = [];
             }
             window.allLoaded.push(async function () {

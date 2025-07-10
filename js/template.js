@@ -3,7 +3,7 @@ import getGlobal from "./getGlobal.js";
  * from: https://github.com/stopsopa/nlab/blob/master/src/template.js
  */
 
-var template = (function (t, delimiters) {
+export default (function (t, delimiters) {
   // implementation from Underscore.js 1.8.3
   var escapeMap = {
     "&": "&amp;",
@@ -131,3 +131,5 @@ var template = (function (t, delimiters) {
   // interpolate: /<#=([\s\S]+?)#>/g,
   // escape: /<#-([\s\S]+?)#>/g,
 });
+
+

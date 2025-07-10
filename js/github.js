@@ -498,14 +498,14 @@ body .github-profile:hover {
 
     window.githubJsReady = true;
 
-    if (Array.isArray(window.allLoaded)) {
-      const preexisting = window.allLoaded;
-      window.allLoaded = {
-        push: function (trigger) {
-          console.log("Internal: run my function");
-          trigger();
-        },
-      };
+    const preexisting = window.allLoaded;
+    window.allLoaded = {
+      push: function (trigger) {
+        console.log("Internal: run my function");
+        trigger();
+      },
+    };
+    if (Array.isArray(preexisting)) {
       preexisting.forEach(function (trigger) {
         window.allLoaded.push(trigger);
       });
