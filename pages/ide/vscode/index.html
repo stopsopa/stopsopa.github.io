@@ -99,7 +99,25 @@
               "prettier.documentSelectors": ["**/*.svg"],
               "[svg]": {
                 "editor.defaultFormatter": "esbenp.prettier-vscode"
-              },
+              },  
+          
+          
+              "actionButtons": {    // VsCode Action Buttons by Seun LanLege
+                  "commands": [ // https://marketplace.visualstudio.com/items?itemName=seunlanlege.action-buttons
+                    {
+              				 "name": "$(twitter) Sublime Merge",
+              				 "color": "rgba(0, 120, 212, 1)",
+                       "saveAll": true,
+                       "tooltip": "Open Sublime Merge in the current directory",
+              				 "singleInstance": true,
+              				 "command": "/bin/bash \"/Users/sdzialowski/Workspace/SPECIAL_web/SPECIAL_web/pages/git/find_up.sh\" open -a \"/Applications/Sublime Merge.app\" \"$(pwd)\"", // This is executed in the terminal.
+              			 }
+                  ],
+                  "defaultColor": "black",
+                  "reloadButton": "$(extensions-refresh)",
+                  "loadNpmCommands": false
+                }
+              }
 
               // add also to .../current_project/prettier.config.cjs
               module.exports = {
