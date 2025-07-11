@@ -243,8 +243,9 @@
 
               document.body.removeEventListener("click", bodyclick);
             }
-
-            document.body.addEventListener("click", bodyclick);
+            setTimeout(() => {
+                document.body.addEventListener("click", bodyclick);
+            }, 50);
 
             if (opt.autoclose) {
               setTimeout(close, Number.isInteger(opt.autoclose) ? opt.autoclose : 1000);
