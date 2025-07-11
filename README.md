@@ -12,24 +12,22 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 
 <!-- toc -->
 
-
 - [ci skip](#ci-skip)
-- [script type="editor|syntax" data-eval>](#script-typeeditorsyntax-data-eval)
-  * [window.doEval();](#windowdoeval)
+- [&lt;script type="editor|syntax" data-eval>](#ltscript-typeeditorsyntax-data-eval)
+  - [window.doEval();](#windowdoeval)
 - [manual TOC](#manual-toc)
-- [body nohead nofoot toc](#body-nohead-nofoot-toc)
-- [div data-do-sort](#div-data-do-sort)
+- [&lt;body nohead nofoot toc&gt;](#ltbody-nohead-nofoot-tocgt)
+- [&lt;div data-do-sort&gt;](#ltdiv-data-do-sortgt)
 - [TEMPLATE](#template)
 - [GITHUB_SOURCES_PREFIX || urlwizzard.schema://urlwizzard.hostnegotiated](#github_sources_prefix--urlwizzardschemaurlwizzardhostnegotiated)
 - [tabs](#tabs)
-- [_.uglify.js](#_uglifyjs)
-- [*.template.html & url | inject](#templatehtml--url--inject)
+- [\_.uglify.js](#_uglifyjs)
+- [\*.template.html & url | inject](#templatehtml--url--inject)
 - [ace editor click link](#ace-editor-click-link)
 - [firebase](#firebase)
 - [to maintain:](#to-maintain)
 - [cross origin requests:](#cross-origin-requests)
 - [Dev notes](#dev-notes)
-
 
 <!-- tocstop -->
 
@@ -178,7 +176,7 @@ window.doace();
     </script>
 
     <script>
-      if (typeof window.allLoaded === 'undefined') {
+      if (typeof window.allLoaded === "undefined") {
         window.allLoaded = [];
       }
       window.allLoaded.push(function () {
@@ -255,13 +253,13 @@ It supports out of the box tabs like documented in:
 
 https://github.com/stopsopa/tabs
 
-# _.uglify.js
+# \_.uglify.js
 
 If anywhere in the repository file _.uglify.js will be created it will be processed with babel and next by uglifyjs and exported as _.uglify.min.js
 
 For details look to uglify.js
 
-# *.template.html & url | inject
+# \*.template.html & url | inject
 
 If you create file _.template.html anywhere in the project during build it will be found and file _.html will be generate right next to original \*.template.html.
 
@@ -286,7 +284,6 @@ For details look to scripts/template.sh
 # ace editor click link
 
 When you hold CMD button and click any link anywhere in the content of ace editor it will open it in separate tab
-
 
 # firebase
 

@@ -198,6 +198,11 @@ setup = Object.entries(setup).reduce((acc, [key, value]) => {
     command = await select({
       message: "Select command to run",
       choices,
+      theme: {
+        style: {
+          highlight: (text) => `${c.Reverse}${text}${c.reset}`, // inverse colors using your defined constants
+        },
+      },
       // choices: [
       //   {
       //     name: 'npm',

@@ -131,5 +131,3 @@ export default (function (t, delimiters) {
   // interpolate: /<#=([\s\S]+?)#>/g,
   // escape: /<#-([\s\S]+?)#>/g,
 });
-
-

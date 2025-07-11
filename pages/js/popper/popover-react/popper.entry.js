@@ -330,7 +330,7 @@ function Main() {
   );
 }
 
-if (typeof window.allLoaded === 'undefined') {
+if (typeof window.allLoaded === "undefined") {
   window.allLoaded = [];
 }
 window.allLoaded.push(async function () {

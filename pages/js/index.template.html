@@ -241,7 +241,7 @@
             function close() {
               document.body.removeChild(div);
 
-              document.body.removeEventListener("click", bodyclick);              
+              document.body.removeEventListener("click", bodyclick);
               (typeof opt?.onClose === 'function') && opt.onClose();
             }
             setTimeout(() => {
@@ -380,9 +380,9 @@
               }, '');
             };
           }
-          
+
           var template = myTag`Hello, ${'name'}! You are ${'age'} years old.`;
-          
+
           console.log(template({ name: 'Alice', age: 30 }));
 
 
@@ -420,7 +420,7 @@
               .replace(/"/g, "&quot;")
               .replace(/'/g, "&#039;");
           }
-          
+
           var listTemplate = myTag`
             <ul>
               ${each('items', tag => tag`
@@ -435,9 +435,8 @@
             ]
           }, { escape: true });
           console.log(result);
-          
         </script>
-        
+
         <h2>get local time DATE</h2>
 
         <script type="editor" data-lang="js">

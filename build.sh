@@ -125,5 +125,3 @@ time node node_modules/.bin/prettier --config prettier.config.cjs --write . 1> >
 time /bin/bash .github/clicksecure.sh
 
 time /bin/bash .github/injector.sh
-
-time /bin/bash pages/bash/xx/xx.inverse.postprocessor.sh

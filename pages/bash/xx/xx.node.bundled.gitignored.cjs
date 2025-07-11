@@ -3375,7 +3375,13 @@ setup = Object.entries(setup).reduce((acc, [key, value]) => {
     }, []);
     command = await esm_default2({
       message: "Select command to run",
-      choices
+      choices,
+      theme: {
+        style: {
+          highlight: (text) => `${c.Reverse}${text}${c.reset}`
+          // inverse colors using your defined constants
+        }
+      }
       // choices: [
       //   {
       //     name: 'npm',

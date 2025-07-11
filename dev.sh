@@ -94,8 +94,6 @@ function _kill {
 
   kill "${PID4}" 1> /dev/null 2> /dev/null || :
 
-  kill "${PID5}" 1> /dev/null 2> /dev/null || :
-
   kill "${PID6}" 1> /dev/null 2> /dev/null || :
 
   kill "${PID7}" 1> /dev/null 2> /dev/null || :
@@ -121,9 +119,6 @@ PID3="${!}"
 
 /bin/bash .github/injector.sh watch 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID4="${!}"
-
-/bin/bash pages/bash/xx/xx.inverse.postprocessor.sh watch 1> >(/bin/bash bash/dlogger.sh " " invpost >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e invpost >> "${LOGFILE}") &
-PID5="${!}"
 
 node node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node_modules/**/*' -c '/bin/bash scripts/template.sh' 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
 PID6="${!}"
@@ -173,8 +168,6 @@ set -e
 /bin/bash bash/proc/pid-is-running.sh ${PID3} "esbuild1 process" 
 
 /bin/bash bash/proc/pid-is-running.sh ${PID4} "injector process" 
-
-/bin/bash bash/proc/pid-is-running.sh ${PID5} "pages/bash/xx/xx.inverse.postprocessor.sh" 
 
 /bin/bash bash/proc/pid-is-running.sh ${PID6} "template process" 
 
