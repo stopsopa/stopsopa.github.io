@@ -178,7 +178,7 @@
           /**
            * usage
            *
-            const div = box(`<input type="text" style="width: 100%" value="test">`, {
+            const [div, close] = box(`<input type="text" style="width: 100%" value="test">`, {
                 style: {
                     backgroundColor: "blue",
                     width: "50%",
@@ -221,7 +221,6 @@
             if (typeof content === "string") {
               div.innerHTML = String(content);
             } else {
-              node.innerHTML = "";
               div.appendChild(content);
             }
 
@@ -253,7 +252,7 @@
 
             typeof opt.fn === "function" && opt.fn(div);
 
-            return {div, close};
+            return [div, close];
           }
         </script>
         <h2>Visibility page visibilitychange visibilityState hidden page document</h2>
