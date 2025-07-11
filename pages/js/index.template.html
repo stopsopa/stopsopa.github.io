@@ -241,7 +241,8 @@
             function close() {
               document.body.removeChild(div);
 
-              document.body.removeEventListener("click", bodyclick);
+              document.body.removeEventListener("click", bodyclick);              
+              (typeof opt?.onClose === 'function') && opt.onClose();
             }
             setTimeout(() => {
                 document.body.addEventListener("click", bodyclick);
