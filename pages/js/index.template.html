@@ -366,6 +366,77 @@
             o.create = document.createElement("div");
           }
         </script>
+        <h2>template</h2>
+        <script type="editor" data-lang="js">
+
+          // using Tagged Template Literals
+          function myTag(strings, ...keys) {
+            return function(context = {}) {
+              return strings.reduce((result, str, i) => {
+                const key = keys[i];
+                const value = typeof key === 'string' ? context[key] : '';
+                return result + str + (value ?? '');
+              }, '');
+            };
+          }
+          
+          var template = myTag`Hello, ${'name'}! You are ${'age'} years old.`;
+          
+          console.log(template({ name: 'Alice', age: 30 }));
+
+
+          --- even better with nesting
+          function myTag(strings, ...keys) {
+            return function(context = {}, { escape = false } = {}) {
+              return strings.reduce((result, str, i) => {
+                const key = keys[i];
+                let value = '';
+                if (typeof key === 'function') {
+                  value = key(context, { escape });
+                } else if (typeof key === 'string') {
+                  value = context[key];
+                  if (escape) value = escapeHTML(value);
+                }
+                return result + str + (value ?? '');
+              }, '');
+            };
+          }
+          function each(arrayKey, templateFn) {
+            return (context, options = {}) => {
+              const arr = context[arrayKey];
+              if (!Array.isArray(arr)) return '';
+              return arr
+                .map(item => templateFn(myTag)(item, options)) // render inner template
+                .join('');
+            };
+          }
+          function escapeHTML(str) {
+            if (typeof str !== 'string') return str;
+            return str
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
+          }
+          
+          var listTemplate = myTag`
+            <ul>
+              ${each('items', tag => tag`
+                <li>${'name'} (${ 'count' })</li>
+              `)}
+            </ul>
+          `;
+          var result = listTemplate({
+            items: [
+              { name: '<one>', count: 1 },
+              { name: 'two', count: 2 }
+            ]
+          }, { escape: true });
+          console.log(result);
+          
+        </script>
+        
         <h2>get local time DATE</h2>
 
         <script type="editor" data-lang="js">
