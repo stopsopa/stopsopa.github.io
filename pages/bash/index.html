@@ -1447,6 +1447,8 @@
         <h2>grep</h2>
         <script type="editor" data-lang="sh">
 
+          grep 'swap-files' * -rl --exclude-dir={bower_components,node_modules,vendor} --include \*.sh
+
           # match multiple at once
           MATCHING=();
           if grep -Eq "abc\.def|str\.ghi|hjl\.mno" "$FILE"; then
