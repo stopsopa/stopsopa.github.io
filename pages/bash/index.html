@@ -2039,6 +2039,19 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           ITERATOR_CAN_BE_PASSED_ALSO_THIS_WAY={#} \
           find testdir -type f | sort | rush -j 3 /bin/bash run.sh {#} '{}'
           " >> "${PROCESS_WITH_PARALLEL_LOG}" 2>&1 &
+
+          # WARNING: OR EVEN SIMPLER JUST GO LIKE THIS
+          export TOTAL="$(echo "${LIST}" | wc -l | awk '{$1=$1};1')"
+          export PROCESS_WITH_PARALLEL_LOG="parallel-$(date "+%Y_%m_%d_%H_%M_%S").log"
+          export PROCESS_WITH_PARALLEL_LOG="parallel.log"
+          echo "" > "${PROCESS_WITH_PARALLEL_LOG}"
+          ITERATOR_CAN_BE_PASSED_ALSO_THIS_WAY={#} \
+          echo "${LIST}" | rush -j 3 /bin/bash run.sh {#} '{}'
+
+          # OR
+          ITERATOR_CAN_BE_PASSED_ALSO_THIS_WAY={#} \
+          find testdir -type f | sort | rush -j 3 /bin/bash run.sh {#} '{}'
+          
         </script>
         <h2>stdout stderr</h2>
         <script type="editor" data-lang="sh">
