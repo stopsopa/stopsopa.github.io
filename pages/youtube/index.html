@@ -20,6 +20,12 @@
           # install
           https://github.com/yt-dlp/yt-dlp/wiki/Installation
 
+          sudo mkdir -p /opt/local/bin
+          sudo chmod USER:staff /opt/local/bin/
+          curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /opt/local/bin/yt-dlp
+          chmod a+rx /opt/local/bin/yt-dlp
+          yt-dlp --version
+
           # list available formats for given video specified with hash
           yt-dlp -F xv5zQU_6dO8 | grep "audio only"
 
