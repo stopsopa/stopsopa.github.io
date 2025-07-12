@@ -27,16 +27,64 @@
           yt-dlp --version
 
           # list available formats for given video specified with hash
-          yt-dlp -F xv5zQU_6dO8 | grep "audio only"
+          yt-dlp -F -- xv5zQU_6dO8 | grep "audio only"
 
           # download selected file
-          yt-dlp -f 251 xv5zQU_6dO8
+          yt-dlp -f 251 -- xv5zQU_6dO8
 
           # to get mp3 format install ffmpeg
           brew install ffmpeg
 
           # and then use this command
-          yt-dlp  -x --audio-format mp3  xv5zQU_6dO8
+          yt-dlp  -x --audio-format mp3 -- xv5zQU_6dO8
+
+          # -- bulk download and conversion
+
+          LIST="$(cat <<-EOF
+          https://youtu.be/Myy5Wu5KUpE
+          https://youtu.be/a1dbkmpQOiE
+          https://youtu.be/Q8Z-e-Kyuew
+          https://youtu.be/TFFPSiwCGv8
+          https://youtu.be/8YcNHqg0rn0
+          https://youtu.be/BbRcn-tNQMk
+          https://youtu.be/k3q6E_NRG6I
+          https://youtu.be/t73w2UZDKvU
+          https://youtu.be/DYi9dAMoRkY
+          https://youtu.be/THG9cz0W3Yk
+          https://youtu.be/1xxpGZLwLzw
+          https://youtu.be/3No2O7f5Oeo
+          https://youtu.be/FHa04WkYqX4
+          https://youtu.be/MUKuEdwX5n0
+          https://youtu.be/hMBHUNJmx6o
+          https://youtu.be/VphzV-POWf0
+          https://youtu.be/FKDrx0j2Hsw
+          https://youtu.be/Y-etLzF6jAA
+          https://youtu.be/_SR8OIHiiYc
+          https://youtu.be/5CSXGVhdy3w
+          https://youtu.be/8amjBlFwCZY
+          https://youtu.be/--tVfmoTUjs
+          EOF
+          )"
+          while read -r LINE
+          do
+            echo ">>${LINE}<<"
+            yt-dlp -x --audio-format mp3 -- "${LINE}"
+          done <<< "${LIST}"
+          
+          
+          -- or other prototype - just left it here since I found better solution above -- vvv
+          while read -r LINE
+          do
+            echo ">>${LINE}<<"
+            ID="$(yt-dlp -F -- "${LINE}" | grep "audio only" | tail -n 1 | awk '{print $1}')"
+            if [[ $ID =~ ^[0-9]+$ ]]; then
+              yt-dlp -f "${ID}" -- xv5zQU_6dO8
+            else
+              echo "ERROR: ${LINE}"
+            fi
+          done <<< "${LIST}"
+          -- or other prototype - just left it here -- ^^^
+          
         </script>
         <h2>you-get</h2>
         <a href="https://you-get.org/">https://you-get.org/</a>
