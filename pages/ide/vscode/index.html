@@ -65,6 +65,26 @@
         >
         <script type="editor" data-lang="sh">
           {
+              // ---- customize colors - to make vscode look different ------- vvvv
+              "workbench.colorTheme": "Solarized Light",
+              "workbench.colorCustomizations": {
+                  "window.activeBorder": "#ff0000",
+          
+                  "titleBar.activeBackground": "#330033",
+                  "titleBar.activeForeground": "#FFFFFF",
+                  "titleBar.inactiveBackground": "#220022",
+                  "titleBar.inactiveForeground": "#CCCCCC",
+                  
+                  "focusBorder": "#FF8800",
+          
+                  // Status bar (bottom bar)
+                  "statusBar.background": "#330000",
+                  "statusBar.foreground": "#FFFFFF",
+                  "statusBar.noFolderBackground": "#550000"
+              } 
+              // ---- customize colors - to make vscode look different ------- ^^^^
+
+          
               "workbench.tree.renderIndentGuides": "always",
               "workbench.editor.revealIfOpen": true, // https://github.com/microsoft/vscode/issues/238517
               "workbench.tree.indent": 20,
@@ -79,7 +99,6 @@
               "files.exclude": {
                   "**/.git": false
               },
-              "workbench.colorTheme": "Default Light+",
               "explorer.confirmDragAndDrop": false,
               "redhat.telemetry.enabled": false,
               "debug.javascript.autoAttachFilter": "always",
