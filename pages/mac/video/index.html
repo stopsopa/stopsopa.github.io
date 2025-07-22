@@ -35,6 +35,22 @@
           <script type="editor" data-lang="sh">
 
             Always fit screen: https://youtu.be/IXr9gY8xHsI
+
+            Problem with Display Capture not listing physical screens:
+               - I've turned off the mac
+               - Then unplugged the screens physically
+               - Started Mac again
+               - plugged the screens back
+               - disabled OBS
+               - went to mac settings -> "Privacy & Security" -> disabled for OBS "Screen & System Audio Recording"
+               - launched OBS - didn't list the screens
+               - disabled OBS
+               - went to mac settings -> "Privacy & Security" -> enabled back for OBS "Screen & System Audio Recording"
+               - launched OBS - didn't list the screens
+               - then I've removed "Display Capture" from "source" in OBS and added it back again and it worked
+
+            I'm not sure which step exactly helped. I would start next time from last point first.
+            
           </script>
         </div>
       </div>
