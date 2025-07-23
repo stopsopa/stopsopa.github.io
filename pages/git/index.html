@@ -1216,6 +1216,26 @@
 
           # then just paste the result in to the first command in this "remove from history (filter-branch)" section
         </script>
+        <h2>Remove list of local branches</h2>
+        <script type="editor" data-lang="sh">
+
+          LIST=$(cat <<EOF
+          brancha
+          branchb
+          EOF
+          );
+          
+          while read -r LINE
+          do
+            echo ">>${LINE}<<"
+            git branch -d "${LINE}" 
+          done <<< "${LIST}"   
+          
+          # to force removing branch use:          
+          git branch -D "${LINE}" 
+          # to handle error when -d is used:   error: The branch 'brancha' is not fully merged.          
+        
+        </script>
         <h2>Change the author</h2>
         <script type="editor" data-lang="sh">
           # https://git-scm.com/docs/git-filter-branch/2.2.3
