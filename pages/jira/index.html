@@ -28,6 +28,8 @@
           assignee = issues that are assigned to a particular user
           assignee WAS jsmith - issues that are currently assigned, or were previously assigned, to John Smith
 
+          sprint in closedSprints()
+          
           // examples
           summary ~ ignored and reporter = currentUser()
           reporter = currentUser() and component = "eC*** C**** Tools" ORDER BY created DESC
@@ -41,7 +43,6 @@
           (reporter = currentUser() OR assignee = currentUser() OR watcher = currentUser() OR creator = currentUser()) AND component = "eC*** C**** Tools" AND summary ~ "my phrese" ORDER BY updated DESC
           
           (reporter = currentUser() OR assignee = currentUser() OR watcher = currentUser() OR creator = currentUser()) AND component = "eC*** C**** Tools" AND summary ~ "my phrese" AND status = Done ORDER BY updated DESC
-          sprint in closedSprints()
         </script>
         <h2>Note, Warning, Tip, Info</h2>
 
