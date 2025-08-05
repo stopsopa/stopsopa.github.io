@@ -396,15 +396,14 @@
           </script>
           <h2>mp4 | mp3 to text | transcript</h2>
           <script type="editor" data-lang="sh">
-            
+
             ffmpeg -i input.mov -vn -acodec libmp3lame -q:a 2 output.mp3
 
             # actually use M4A format:
             ffmpeg -i input.mov.mov -c:a aac -b:a 192k output.mp3.m4a
 
-            # then use builtin app "Voice Memos" import there and... 
-            # use transcript icon in the top right corner to extract it            
-            
+            # then use builtin app "Voice Memos" import there and...
+            # use transcript icon in the top right corner to extract it
           </script>
           <h2>Resize png/jpg</h2>
           <script type="editor" data-lang="sh">

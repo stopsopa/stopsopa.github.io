@@ -1221,23 +1221,22 @@
 
           # to list local branches
           git branch
-          
+
           LIST=$(cat <<EOF
           brancha
           branchb
           EOF
           );
-          
+
           while read -r LINE
           do
             echo ">>${LINE}<<"
-            git branch -d "${LINE}" 
-          done <<< "${LIST}"   
-          
-          # to force removing branch use:          
-          git branch -D "${LINE}" 
-          # to handle error when -d is used:   error: The branch 'brancha' is not fully merged.          
-        
+            git branch -d "${LINE}"
+          done <<< "${LIST}"
+
+          # to force removing branch use:
+          git branch -D "${LINE}"
+          # to handle error when -d is used:   error: The branch 'brancha' is not fully merged.
         </script>
         <h2>Change the author</h2>
         <script type="editor" data-lang="sh">

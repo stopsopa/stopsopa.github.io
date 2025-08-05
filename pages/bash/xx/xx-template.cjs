@@ -73,7 +73,7 @@ EEE
       confirm: false,
     },
     [`coverage`]: {
-        command: `   
+      command: `   
 FILE="coverage/index.html"
 FILE="target/site/jacoco/index.html"
 if [ ! -f "\${FILE}" ]; then
