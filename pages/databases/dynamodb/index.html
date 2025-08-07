@@ -27,6 +27,25 @@
         <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html"
           >AWS - Best practices for designing and architecting with DynamoDB</a
         >
+        <h2>Create & Update</h2>
+        
+        <script type="editor" data-lang="sh">
+
+          // general principle seems to be to copy version and revision for updating
+          // and setting version to 1 and revision to null for creation of new document
+          try {
+            Product fromDb = productRepository.getById(normalizedPi.getId());
+            normalizedPi.setVersion(fromDb.getVersion());
+            normalizedPi.setRevision(fromDb.getRevision());
+            productRepository.update(normalizedPi);
+          }
+          catch (RecordNotFoundException e) {
+            normalizedPi.setVersion(1);
+            normalizedPi.setRevision(null);
+            productRepository.create(normalizedPi);
+          }
+          
+        </script>
       </div>
     </div>
     <script type="module" src="/js/github.js"></script>
