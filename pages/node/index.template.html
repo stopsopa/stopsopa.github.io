@@ -2105,6 +2105,9 @@
           npm install --include=dev
           npm install --omit=dev
 
+          # to simulate process.env.npm_package_version
+            npm_package_version="$(node -v | cut -c2-)"
+
           # finding latest version of library - but version which would be installed when we use
           npm install [name of library] - without specifying the version
           # this might not necessarily be the latest overall
