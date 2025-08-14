@@ -201,6 +201,12 @@
           // @match        https://github.com/*
           // @match        *://*/swagger-ui/*
           // @match        https://*.swagger.io/*
+          // @include      /example\.com\/.+\/test/
+          // @include      *example.com*
+          // @match and @include can be defined more than once, in that case it will work as OR condition
+          // @match and @include can be mixed -> multiple or single or none @match and/or multiple or single or none @include
+          // more about differences: https://i.imgur.com/EZ4qieQ.png
+          
 
           // @icon         https://upload.wikimedia.org/wikipedia/commons/8/83/Circle-icons-tools.svg
           // @grant        none
