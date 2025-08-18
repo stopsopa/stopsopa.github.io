@@ -115,12 +115,24 @@
           <meta http-equiv="refresh" content="0; url=demo/vanilla.html">
         </script>
         <h2>input[type="range"]</h2>
-        <script type="editor" data-lang="html">
+        <div id="range">
+          <style>
+            #range pre {
+              border: 1px solid #ccc;
+            }
+          </style>
+          <script type="editor" data-lang="js" data-eval>
+            // <input type="range" id="height" min="1" max="100" step="1" value="80"/>
 
-          <input type="range" id="height" min="1" max="100" step="1" value="80" />
-          &lt;script>
-            const log = console.log;
-            const h = document.querySelector("#height");
+            const parent = document.querySelector("#range");
+            const rangeEl = parent.querySelector("input[type='range']");
+            const pre = parent.querySelector("pre");
+
+            function log(...args) {
+              pre.textContent = args.join(" ") + "\n" + pre.textContent;
+              const lines = pre.textContent.split("\n");
+              pre.textContent = lines.slice(0, 10).join("\n");
+            }
 
             function range(element, event) {
               function hc() {
@@ -130,13 +142,14 @@
               element.addEventListener("input", hc);
               hc();
             }
-
-            range(h, (v) => {
+            range(rangeEl, (v) => {
               // this will trigger once only when attached to dom element
-              console.log("h", v);
+              log("h", v);
             });
-          &lt;/script>
-        </script>
+          </script>
+          <input type="range" id="height" min="1" max="100" step="1" value="80" />
+          <pre></pre>
+        </div>
         <h2>input[type="color"]</h2>
         <script type="editor" data-lang="html">
           <input type="color" id="color" value="#000" autocomplete="off" />
