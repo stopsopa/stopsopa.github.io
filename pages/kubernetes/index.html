@@ -142,6 +142,7 @@
               sh -c 'tar cf - -C .. --exclude=catalog-ui-service . | base64' | base64 -d | tar xf -
 
               # -C is changing current directory for all other paths passed to tar
+              # you can use also absolute path with -C /var/tmp
               # this version will also unpack where you are, so simply control target by first
               # entering on your host machine where you would like to copy thing
 
