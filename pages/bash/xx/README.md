@@ -10,4 +10,3 @@ To control color of the output for xx look for code block
 ...
 
 ```
-
