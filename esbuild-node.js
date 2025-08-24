@@ -94,3 +94,4 @@ if (watch) {
   log(`no watch mode: ${watch}`, ctx);
   watchFiles(false);
 }
+
