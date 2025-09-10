@@ -383,3 +383,18 @@ make build
 - Like backreferences, subroutines can't be used _within_ character classes.
 - As with all extended syntax in `regex`, subroutines are applied after interpolation, giving them maximal flexibility.
 </details>
+
+### Callout box classes
+
+The project supports callout/admonition styles inspired by GitHub markdown:
+
+Class | Purpose
+------ | -------
+`.note` | Informational note
+`.tip` | Helpful tip
+`.important` | Crucial information that users must read
+`.warning` | Warn about potential risks
+`.caution` | Highlight negative consequences of an action
+`.error` | Error or failure state
+
+See rendered examples on the math index page and details in [`pages/markdown/index.html`](pages/markdown/index.html).

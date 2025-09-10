@@ -281,3 +281,45 @@ h6 {
     transform: scale(1, 1);
   }
 }
+
+/* ------------------------------------------------------------- */
+/* Callout / Admonition styles (NOTE, TIP, IMPORTANT, WARNING, CAUTION, ERROR) */
+/* Inspired by GitHub markdown callouts */
+
+.note,
+.tip,
+.important,
+.warning,
+.caution,
+.error {
+  margin: 16px 0;
+  padding: 0.6em 1em;
+  border-left: 0.25em solid currentColor;
+  border-radius: 3px;
+}
+
+.note {
+  color: #0969da;
+  background-color: rgba(9, 105, 218, 0.1);
+}
+
+.tip {
+  color: #1a7f37;
+  background-color: rgba(46, 160, 67, 0.1);
+}
+
+.important,
+.error {
+  color: #d1242f;
+  background-color: rgba(255, 129, 130, 0.1);
+}
+
+.warning {
+  color: #cf7900;
+  background-color: rgba(255, 171, 0, 0.1);
+}
+
+.caution {
+  color: #b36b00;
+  background-color: rgba(255, 196, 77, 0.15);
+}

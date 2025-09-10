@@ -8,6 +8,13 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Mathematical sets</title>
+    <style>
+      .controls button.active {
+        background-color: rgba(9, 105, 218, 0.1);
+        box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.4);
+        border-color: #0969da;
+      }
+    </style>
   </head>
   <body class="layout bg">
     <div class="body">
@@ -47,6 +54,17 @@
           <text x="200" y="100" text-anchor="middle" dominant-baseline="middle" font-size="24" fill="#000">B</text>
         </svg>
 
+        <p
+          style="
+            margin: 16px 0;
+            padding: 0.6em 1em;
+            border-left: 0.25em solid #0969da;
+            background-color: rgba(9, 105, 218, 0.1);
+          "
+        >
+          Press and hold <strong>SPACE</strong> to temporarily show Polish labels.
+        </p>
+
         <script>
           document.addEventListener("DOMContentLoaded", () => {
             const COLOR = "#4da3ff";
@@ -64,8 +82,55 @@
               });
             }
 
+            /* ---------------- label translation logic ---------------- */
+            const EN = {
+              union: "Union (A ∪ B)",
+              intersection: "Intersection (A ∩ B)",
+              "diff-ab": "Difference (A − B)",
+              "diff-ba": "Difference (B − A)",
+              "sym-diff": "Symmetric Difference (A △ B)",
+            };
+            const PL = {
+              union: "Suma (zbiorów) (A ∪ B)",
+              intersection: "Część wspólna (A ∩ B)",
+              "diff-ab": "Różnica (A - B)",
+              "diff-ba": "Różnica (B - A)",
+              "sym-diff": "Różnica symetryczna (A △ B)",
+            };
+
+            const buttons = Array.from(document.querySelectorAll(".controls button"));
+            function setLabels(map) {
+              buttons.forEach((btn) => {
+                btn.textContent = map[btn.dataset.op];
+              });
+            }
+
+            // initialise with English
+            setLabels(EN);
+
+            let spacePressed = false;
+            window.addEventListener("keydown", (e) => {
+              if (e.code === "Space" && !spacePressed) {
+                spacePressed = true;
+                setLabels(PL);
+                e.preventDefault();
+              }
+            });
+            window.addEventListener("keyup", (e) => {
+              if (e.code === "Space") {
+                spacePressed = false;
+                setLabels(EN);
+                e.preventDefault();
+              }
+            });
+
+            /* ---------------- highlight logic (unchanged) ---------------- */
             function show(op) {
               clear();
+              // update active classes
+              buttons.forEach((b) => b.classList.remove("active"));
+              const activeBtn = buttons.find((b) => b.dataset.op === op);
+              if (activeBtn) activeBtn.classList.add("active");
               switch (op) {
                 case "union":
                   highlightA.setAttribute("fill", COLOR);
@@ -96,7 +161,7 @@
               }
             }
 
-            document.querySelectorAll(".controls button").forEach((btn) => {
+            buttons.forEach((btn) => {
               btn.addEventListener("click", () => show(btn.dataset.op));
             });
           });
