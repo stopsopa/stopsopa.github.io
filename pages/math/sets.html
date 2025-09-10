@@ -13,7 +13,7 @@
     <div class="body">
       <div class="inside">
         <h2>Mathematical sets</h2>
-        <div class="controls" style="margin-bottom:1rem;">
+        <div class="controls" style="margin-bottom: 1rem">
           <button data-op="union">Union (A ∪ B)</button>
           <button data-op="intersection">Intersection (A ∩ B)</button>
           <button data-op="diff-ab">Difference (A − B)</button>
@@ -48,56 +48,56 @@
         </svg>
 
         <script>
-          document.addEventListener('DOMContentLoaded', () => {
-            const COLOR = '#4da3ff';
-            const TRANSPARENT = 'transparent';
+          document.addEventListener("DOMContentLoaded", () => {
+            const COLOR = "#4da3ff";
+            const TRANSPARENT = "transparent";
 
-            const highlightA = document.getElementById('highlightA');
-            const highlightB = document.getElementById('highlightB');
+            const highlightA = document.getElementById("highlightA");
+            const highlightB = document.getElementById("highlightB");
             // First child of group is the actual <circle>
-            const highlightIntersect = document.querySelector('#highlightIntersect > circle');
+            const highlightIntersect = document.querySelector("#highlightIntersect > circle");
 
             function clear() {
-              [highlightA, highlightB, highlightIntersect].forEach(el => {
-                el.setAttribute('fill', TRANSPARENT);
-                el.setAttribute('opacity', 0.6);
+              [highlightA, highlightB, highlightIntersect].forEach((el) => {
+                el.setAttribute("fill", TRANSPARENT);
+                el.setAttribute("opacity", 0.6);
               });
             }
 
             function show(op) {
               clear();
               switch (op) {
-                case 'union':
-                  highlightA.setAttribute('fill', COLOR);
-                  highlightB.setAttribute('fill', COLOR);
+                case "union":
+                  highlightA.setAttribute("fill", COLOR);
+                  highlightB.setAttribute("fill", COLOR);
                   break;
-                case 'intersection':
-                  highlightIntersect.setAttribute('fill', COLOR);
+                case "intersection":
+                  highlightIntersect.setAttribute("fill", COLOR);
                   break;
-                case 'diff-ab':
-                  highlightA.setAttribute('fill', COLOR);
+                case "diff-ab":
+                  highlightA.setAttribute("fill", COLOR);
                   // hide intersection
-                  highlightIntersect.setAttribute('fill', '#fff');
-                  highlightIntersect.setAttribute('opacity', 1);
+                  highlightIntersect.setAttribute("fill", "#fff");
+                  highlightIntersect.setAttribute("opacity", 1);
                   break;
-                case 'diff-ba':
-                  highlightB.setAttribute('fill', COLOR);
+                case "diff-ba":
+                  highlightB.setAttribute("fill", COLOR);
                   // hide intersection
-                  highlightIntersect.setAttribute('fill', '#fff');
-                  highlightIntersect.setAttribute('opacity', 1);
+                  highlightIntersect.setAttribute("fill", "#fff");
+                  highlightIntersect.setAttribute("opacity", 1);
                   break;
-                case 'sym-diff':
-                  highlightA.setAttribute('fill', COLOR);
-                  highlightB.setAttribute('fill', COLOR);
+                case "sym-diff":
+                  highlightA.setAttribute("fill", COLOR);
+                  highlightB.setAttribute("fill", COLOR);
                   // cover the intersection with background color to simulate exclusion
-                  highlightIntersect.setAttribute('fill', '#fff');
-                  highlightIntersect.setAttribute('opacity', 1);
+                  highlightIntersect.setAttribute("fill", "#fff");
+                  highlightIntersect.setAttribute("opacity", 1);
                   break;
               }
             }
 
-            document.querySelectorAll('.controls button').forEach(btn => {
-              btn.addEventListener('click', () => show(btn.dataset.op));
+            document.querySelectorAll(".controls button").forEach((btn) => {
+              btn.addEventListener("click", () => show(btn.dataset.op));
             });
           });
         </script>
