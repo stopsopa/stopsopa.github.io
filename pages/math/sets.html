@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Mathematical sets</title>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <h2>Mathematical sets</h2>
+        <div class="controls" style="margin-bottom:1rem;">
+          <button data-op="union">Union (A ∪ B)</button>
+          <button data-op="intersection">Intersection (A ∩ B)</button>
+          <button data-op="diff-ab">Difference (A − B)</button>
+          <button data-op="diff-ba">Difference (B − A)</button>
+          <button data-op="sym-diff">Symmetric Difference (A △ B)</button>
+        </div>
+
+        <svg id="venn" width="320" height="200" viewBox="0 0 320 200">
+          <defs>
+            <clipPath id="clipA">
+              <circle id="circleARef" cx="110" cy="100" r="60" />
+            </clipPath>
+            <clipPath id="clipB">
+              <circle id="circleBRef" cx="200" cy="100" r="60" />
+            </clipPath>
+          </defs>
+
+          <!-- outlines -->
+          <circle id="circleA" cx="110" cy="100" r="60" fill="none" stroke="#333" stroke-width="2" />
+          <circle id="circleB" cx="200" cy="100" r="60" fill="none" stroke="#333" stroke-width="2" />
+
+          <!-- highlights -->
+          <circle id="highlightA" cx="110" cy="100" r="60" fill="transparent" opacity="0.6" />
+          <circle id="highlightB" cx="200" cy="100" r="60" fill="transparent" opacity="0.6" />
+          <g id="highlightIntersect" clip-path="url(#clipA)">
+            <circle cx="200" cy="100" r="60" fill="transparent" opacity="0.6" />
+          </g>
+
+          <!-- labels -->
+          <text x="110" y="100" text-anchor="middle" dominant-baseline="middle" font-size="24" fill="#000">A</text>
+          <text x="200" y="100" text-anchor="middle" dominant-baseline="middle" font-size="24" fill="#000">B</text>
+        </svg>
+
+        <script>
+          document.addEventListener('DOMContentLoaded', () => {
+            const COLOR = '#4da3ff';
+            const TRANSPARENT = 'transparent';
+
+            const highlightA = document.getElementById('highlightA');
+            const highlightB = document.getElementById('highlightB');
+            // First child of group is the actual <circle>
+            const highlightIntersect = document.querySelector('#highlightIntersect > circle');
+
+            function clear() {
+              [highlightA, highlightB, highlightIntersect].forEach(el => {
+                el.setAttribute('fill', TRANSPARENT);
+                el.setAttribute('opacity', 0.6);
+              });
+            }
+
+            function show(op) {
+              clear();
+              switch (op) {
+                case 'union':
+                  highlightA.setAttribute('fill', COLOR);
+                  highlightB.setAttribute('fill', COLOR);
+                  break;
+                case 'intersection':
+                  highlightIntersect.setAttribute('fill', COLOR);
+                  break;
+                case 'diff-ab':
+                  highlightA.setAttribute('fill', COLOR);
+                  // hide intersection
+                  highlightIntersect.setAttribute('fill', '#fff');
+                  highlightIntersect.setAttribute('opacity', 1);
+                  break;
+                case 'diff-ba':
+                  highlightB.setAttribute('fill', COLOR);
+                  // hide intersection
+                  highlightIntersect.setAttribute('fill', '#fff');
+                  highlightIntersect.setAttribute('opacity', 1);
+                  break;
+                case 'sym-diff':
+                  highlightA.setAttribute('fill', COLOR);
+                  highlightB.setAttribute('fill', COLOR);
+                  // cover the intersection with background color to simulate exclusion
+                  highlightIntersect.setAttribute('fill', '#fff');
+                  highlightIntersect.setAttribute('opacity', 1);
+                  break;
+              }
+            }
+
+            document.querySelectorAll('.controls button').forEach(btn => {
+              btn.addEventListener('click', () => show(btn.dataset.op));
+            });
+          });
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>
