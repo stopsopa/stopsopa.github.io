@@ -51,6 +51,44 @@
           for (const key of keys) {
           }
         </script>
+        <h2>Snippets</h2>
+        <script type="editor" data-lang="ts">
+
+          /** @type {import('./types.types.ts').ThType} ThType */
+          // eslint-disable-next-line no-unused-vars
+          const th = (msg) => new Error(`dev_front.js error: ${msg}`);
+          
+          /**
+           * @see https://playwright.dev/docs/test-configuration
+           * @type {import('@playwright/test').PlaywrightTestConfig}
+           *
+           * Read more: https://playwright.dev/docs/api/class-testconfig
+           */
+          const config = {/* ... */}
+                    
+          /**
+           * @type {number} - type for variable
+           */
+          let id = parseInt(ctx?.params?.id, 10);
+                   
+          /**
+           * @param {import('knex').Knex} knex
+           * @type {import('./prototype.types.ts').PaginateAllType<import('./prototype.types.ts').OptType>}
+           * @this {import('./prototype.types.ts').PrototypeModelType<{}, import('./prototype.types.ts').OptType>}
+           */
+          prototype.prototype.paginateAll = async function (knex, opt) {/* ... */} 
+          
+          /**
+           * @param {string} str - some comments
+           * @param {number} [cut] - optional parameter
+           * @returns {string} - return string
+           *
+           * @returns {*} - return any type
+           */
+          function md5(str, cut) {/* ... */}
+          
+        </script>
+        
       </div>
     </div>
     <script type="module" src="/js/github.js"></script>
