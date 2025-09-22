@@ -28,6 +28,7 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 - [to maintain:](#to-maintain)
 - [cross origin requests:](#cross-origin-requests)
 - [Dev notes](#dev-notes)
+  - [Callout box classes](#callout-box-classes)
 
 <!-- tocstop -->
 
@@ -388,13 +389,13 @@ make build
 
 The project supports callout/admonition styles inspired by GitHub markdown:
 
-Class | Purpose
------- | -------
-`.note` | Informational note
-`.tip` | Helpful tip
-`.important` | Crucial information that users must read
-`.warning` | Warn about potential risks
-`.caution` | Highlight negative consequences of an action
-`.error` | Error or failure state
+| Class        | Purpose                                      |
+| ------------ | -------------------------------------------- |
+| `.note`      | Informational note                           |
+| `.tip`       | Helpful tip                                  |
+| `.important` | Crucial information that users must read     |
+| `.warning`   | Warn about potential risks                   |
+| `.caution`   | Highlight negative consequences of an action |
+| `.error`     | Error or failure state                       |
 
 See rendered examples on the math index page and details in [`pages/markdown/index.html`](pages/markdown/index.html).

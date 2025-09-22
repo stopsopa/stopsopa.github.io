@@ -1,78 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/normalize.css" />
     <style>
-        .holy-grail {
-            display: grid;
-            grid-template-areas:
-                "header header header"
-                "left-side main right-side"
-                "footer footer footer";
-            grid-template-columns: 1fr 3fr 1fr;
-            grid-template-rows: auto 1fr auto;
-            height: 100vh;
-            /* gap: 10px; */
-        }
+      .holy-grail {
+        display: grid;
+        grid-template-areas:
+          "header header header"
+          "left-side main right-side"
+          "footer footer footer";
+        grid-template-columns: 1fr 3fr 1fr;
+        grid-template-rows: auto 1fr auto;
+        height: 100vh;
+        /* gap: 10px; */
+      }
 
-        header {
-            grid-area: header;
-            background-color: lightblue;
-            /* padding-bottom: 10px; */
-            text-align: center;
-        }
+      header {
+        grid-area: header;
+        background-color: lightblue;
+        /* padding-bottom: 10px; */
+        text-align: center;
+      }
 
-        .left-side {
-            grid-area: left-side;
-            background-color: lightgreen;
-            /* padding: 10px; */
-        }
+      .left-side {
+        grid-area: left-side;
+        background-color: lightgreen;
+        /* padding: 10px; */
+      }
 
-        main {
-            grid-area: main;
-            background-color: lightgray;
-            /* padding: 10px; */
-        }
+      main {
+        grid-area: main;
+        background-color: lightgray;
+        /* padding: 10px; */
+      }
 
-        .right-side {
-            grid-area: right-side;
-            background-color: lightcoral;
-            /* padding: 10px; */
-        }
+      .right-side {
+        grid-area: right-side;
+        background-color: lightcoral;
+        /* padding: 10px; */
+      }
 
-        footer {
-            grid-area: footer;
-            background-color: lightgoldenrodyellow;
-            /* padding-top: 10px; */
-            text-align: center;
-        }
+      footer {
+        grid-area: footer;
+        background-color: lightgoldenrodyellow;
+        /* padding-top: 10px; */
+        text-align: center;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="holy-grail">
-        <header>Header <button class="add">add</button></header>
-        <div class="left-side">Left Sidebar <button class="add">add</button></div>
-        <main>Main Content <button class="add">add</button></main>
-        <div class="right-side">Right Sidebar <button class="add">add</button></div>
-        <footer>Footer <button class="add">add</button></footer>
+      <header>Header <button class="add">add</button></header>
+      <div class="left-side">Left Sidebar <button class="add">add</button></div>
+      <main>Main Content <button class="add">add</button></main>
+      <div class="right-side">Right Sidebar <button class="add">add</button></div>
+      <footer>Footer <button class="add">add</button></footer>
     </div>
     <script>
-        document.addEventListener('click', (e) => {
-            const el = e.target;
+      document.addEventListener("click", (e) => {
+        const el = e.target;
 
-            if (el.matches('.add')) {
-
-                const p = document.createElement('p');
-                p.innerText = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.';
-                el.parentElement.appendChild(p);
-            }
-        });
+        if (el.matches(".add")) {
+          const p = document.createElement("p");
+          p.innerText = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.";
+          el.parentElement.appendChild(p);
+        }
+      });
     </script>
-
-</div>
-</body>
+  </body>
 </html>
