@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+    <style>
+      :root {
+        /* 
+        To enable support for the light-dark() color function, the color-scheme must 
+        have a value of light dark, usually set on the :root pseudo-class. 
+        from: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark#:~:text=To%20enable%20support%20for%20the
+        */
+        color-scheme: light dark;
+        :has(input#scheme:checked) {
+          color-scheme: dark;
+        }
+      }
+      .my-element {
+        background-color: light-dark(#eac0c0, #ba2727);
+        color: light-dark(darkslategrey, lightgrey);
+      }
+    </style>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <h2>color: light-dark()</h2>
+          <a href="https://youtu.be/55uUK-iJeNM?t=140">from https://youtu.be/55uUK-iJeNM?t=140</a>
+          <div data-vanilla-tabs>
+            <div data-buttons>
+              <span class="active">old-way</span>
+              <span>light-dark</span>
+            </div>
+            <div data-tabs>
+              <div>
+                <script type="editor" data-lang="css">
+
+                  .my-element {
+                    color: darkslategrey;
+                    background-color: #eac0c0;
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    .my-element {
+                      background-color: #ba2727;
+                        color: lightgrey;
+                    }
+                  }
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="css">
+
+                  :root {
+                    /*
+                    To enable support for the light-dark() color function, the color-scheme must
+                    have a value of light dark, usually set on the :root pseudo-class.
+                    from: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark#:~:text=To%20enable%20support%20for%20the
+                    */
+                    color-scheme: light dark;
+                  }
+                  .my-element {
+                    background-color: light-dark(#eac0c0, #ba2727);
+                    color: light-dark(darkslategrey, lightgrey);
+                  }
+                </script>
+              </div>
+            </div>
+          </div>
+
+          <div class="my-element">Dark or light</div>
+          <label><input type="checkbox" id="scheme" /> Toggle dark mode</label>
+          <p>
+            Now go to <a href="chrome://settings/appearance">chrome://settings/appearance</a> to switch between light
+            and dark mode.
+          </p>
+          <p class="note">It doesn't seem to be available in Brave browser to switch between light and dark mode.</p>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>
