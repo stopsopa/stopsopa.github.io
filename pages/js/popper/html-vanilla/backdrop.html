@@ -1,0 +1,10 @@
+<button popovertarget="mypopover4">Toggle the popover</button>
+<div id="mypopover4" popover>
+  Background is still interactive. Use HTMLDialogElement: showModal() method
+  https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/showModal
+</div>
+<style>
+  #mypopover4::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+</style>
