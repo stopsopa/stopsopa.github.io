@@ -331,15 +331,134 @@
         <hr />
         <hr />
         <hr />
-        <h2>center element</h2>
+        <h2>
+          <script type="editor" data-lang="css">
+
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+                -ms-transform: translate(-50%, -50%);
+                    transform: translate(-50%, -50%);
+          </script>
+          center element
+        </h2>
+        <h2>Blur elements</h2>
+
         <script type="editor" data-lang="css">
 
-          top: 50%;
-          left: 50%;
-          -webkit-transform: translate(-50%, -50%);
-              -ms-transform: translate(-50%, -50%);
-                  transform: translate(-50%, -50%);
+          // https://youtu.be/PL3Odw-k8W4?t=193
         </script>
+        <h2>Gradient text</h2>
+        <script type="editor" data-lang="css">
+
+          // https://youtu.be/PL3Odw-k8W4?t=334
+        </script>
+
+        <div class="gradienttext">
+          <style>
+            .gradienttext {
+              display: inline-block;
+              width: 350px;
+              background: linear-gradient(to right, red, blue);
+              background-clip: text;
+              color: transparent;
+              font-size: 50px;
+              font-weight: bold;
+            }</style
+          >Hello World
+        </div>
+
+        <h2>Class-swapper</h2>
+
+        <script type="editor" data-lang="css">
+
+          /* https://youtu.be/PL3Odw-k8W4?t=466 */
+
+          .wrapper {
+            scroll-snap-type: x mandatory;
+            scroll-snap-type: x proximity;
+            .card {
+
+              scroll-snap-align: center;
+            }
+          }
+        </script>
+        <div class="cssswapper">
+          <style>
+            .cssswapper {
+              padding: 30px;
+              .wrapper {
+                box-shadow: 0 0 4px black;
+                display: flex;
+                gap: 20px;
+                width: 300px;
+                overflow-x: scroll;
+                scroll-snap-type: x mandatory;
+                scroll-snap-type: x proximity;
+                .card {
+                  scroll-snap-align: center;
+                  box-sizing: border-box;
+                  padding: 20px 30px;
+                  flex-shrink: 0;
+                  width: 300px;
+                  background-color: white;
+                  border-radius: 14px;
+                  text-align: center;
+                }
+              }
+            }
+          </style>
+          <div class="wrapper">
+            <div class="card">
+              <h2>Card 1</h2>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            </div>
+            <div class="card">
+              <h2>Card 2</h2>
+              <p>Consectetur adipisicing elit. Quisquam, quidem.</p>
+            </div>
+            <div class="card">
+              <h2>Card 3</h2>
+              <p>Adipisicing elit. Quisquam, quidem. Lorem ipsum dolor sit amet.</p>
+            </div>
+            <div class="card">
+              <h2>Card 4</h2>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quidem.</p>
+            </div>
+            <div class="card">
+              <h2>Card 5</h2>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            </div>
+            <div class="card">
+              <h2>Card 6</h2>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quidem.</p>
+            </div>
+          </div>
+        </div>
+        <h2>New Morphism</h2>
+        <a href="https://youtu.be/PL3Odw-k8W4?t=28">https://youtu.be/PL3Odw-k8W4?t=28</a>
+        <style>
+          .morphism {
+            position: relative;
+            background-color: #f9f9f9;
+            height: 200px;
+            .element {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              padding: 40px;
+              transition: box-shadow 0.3s ease;
+            }
+            .element:hover {
+              box-shadow: 12px 12px 12px rgba(0, 0, 0, 0.1), -12px -12px 12px white;
+            }
+          }
+        </style>
+
+        <div class="morphism">
+          <div class="element">Hover me</div>
+        </div>
         <h2>image reset</h2>
 
         <script type="editor" data-lang="css">
