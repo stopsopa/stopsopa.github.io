@@ -266,9 +266,12 @@ If you create file _.template.html anywhere in the project during build it will 
 
 In template file listed placeholders will be processed:
 
+```
 <%url path/to/file/in/repository.js %> - will import file in-place and replace each " to %22
 
 <%inject /pages/to/file/in/respository.js %> - will be imported in-place as is
+
+```
 
 > [!NOTE]
 > use two path styles:
