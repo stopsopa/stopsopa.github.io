@@ -63,9 +63,10 @@
           mvn --version
           # Apache Maven 3.8.1
 
-          mvn clean test -Dtest="TheSecondUnitTest#whenTestCase2_thenPrintTest2_1"
-            # run just one test
-
+          # run test
+          mvn test -Dtest="ProductCreationControllerTest#rollbackProductType*"
+          mvn clean test -Dtest="TheSecondUnitTest#whenTestCase2_thenPrintTest2_1"            
+          
           # publish of the library
           mvn deploy
 
