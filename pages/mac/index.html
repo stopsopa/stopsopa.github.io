@@ -487,6 +487,18 @@
             also go to Advanced and choose make sure "When Pointer Reaches Edge" is ticked
           </script>
 
+          <h2>mac won't sleep</h2>
+          
+          <script type="editor" data-lang="sh">
+
+            pmset -g assertions
+              # to see what programs keep sleep mode hostage
+
+            # You can disable aggressive sleep-prevention with:
+            sudo systemsetup -setwakeonnetworkaccess off
+            sudo pmset -a disablesleep 0
+
+          </script>
           <h2>AirDrop on Dock</h2>
 
           <script type="editor" data-lang="sh">
