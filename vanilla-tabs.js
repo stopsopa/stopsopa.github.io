@@ -129,13 +129,7 @@ window.vanillaTabs = (function () {
         throw th(`buttons and tabs length mismatch`, parent);
       }
 
-      if (
-        !(
-          Number.isInteger(zeroIndex) &&
-          !Number.isNaN(zeroIndex) &&
-          zeroIndex > -1
-        )
-      ) {
+      if (!(Number.isInteger(zeroIndex) && !Number.isNaN(zeroIndex) && zeroIndex > -1)) {
         throw th(`zeroIndex not found`, zeroIndex, parent, target);
       }
 
@@ -182,9 +176,7 @@ window.vanillaTabs = (function () {
         if (match) {
           const parent = target.parentNode.parentNode;
 
-          const buttons = Array.from(
-            parent.querySelector("[data-buttons]").children
-          );
+          const buttons = Array.from(parent.querySelector("[data-buttons]").children);
 
           const zeroIndex = buttons.indexOf(target) ?? 0;
 
@@ -213,8 +205,7 @@ window.vanillaTabs = (function () {
             return (
               node.nodeType === Node.ELEMENT_NODE &&
               node.matches &&
-              (node.matches("[data-buttons]") ||
-                node.querySelector("[data-buttons]"))
+              (node.matches("[data-buttons]") || node.querySelector("[data-buttons]"))
             );
           });
         }
