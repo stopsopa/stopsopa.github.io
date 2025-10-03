@@ -93,7 +93,6 @@
 
         <a href="/pages/css/examples/index.html">/pages/css/examples/index.html</a>
 
-        
         <h2>Css grid</h2>
         <a href="https://youtu.be/JRwIFETSxoc">https://youtu.be/JRwIFETSxoc</a>
         <br />
@@ -768,7 +767,91 @@
             </div>
           </div>
         </div>
+        <h2>url: gradient, img()</h2>
+        <div class="url_gradient_img">
+          <div class="bground"><div>Lorem ipsum dolor sit amet</div></div>
+          <input type="range" min="0" max="100" value="50" step="1" />
+          <style>
+            .url_gradient_img {
+              .bground {
+                background-image: url("data:image/jpeg;base64,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");
+                background-size: calc(82px * 5) calc(46px * 5);
+                background-repeat: no-repeat;
+                width: calc(82px * 5);
+                height: calc(46px * 5);
 
+                display: flex; /* activate flex-box */
+                justify-content: center; /* horizontal centering */
+                align-items: center; /* vertical   centering */
+                & > div {
+                  color: white;
+                  font-weight: bold;
+                  text-align: center; /* center the text inside the inner div */
+                }
+              }
+            }
+          </style>
+
+          <!-- <script type="editor" data-lang="css" data-eval> -->
+          <script>
+            const parent = document.querySelector(".url_gradient_img ");
+
+            const bground = parent.querySelector(".bground");
+
+            const url = window.getComputedStyle(bground, null).getPropertyValue("background-image");
+
+            function range(element, event) {
+              function hc() {
+                event(parseInt(element.value, 10));
+              }
+              element.addEventListener("change", hc);
+              element.addEventListener("input", hc);
+              hc();
+            }
+
+            const rangeEl = parent.querySelector("input[type='range']");
+
+            range(rangeEl, (v) => {
+              const c = ((1 / 100) * v).toFixed(2);
+
+              bground.style.backgroundImage = `linear-gradient(hsl(0 0% 0% / ${c}) 0 0), ${url}`;
+            });
+          </script>
+        </div>
+
+        <h2>Button rotate</h2>
+        <div class="button_rotate">
+          <button>Hover me</button>
+        </div>
+        <style>
+          @property --angle {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+          }
+          @keyframes rotate {
+            to {
+              --angle: 1turn;
+            }
+          }
+          .button_rotate {
+            button {
+              font: inherit;
+              color: black;
+              padding: 0.5em 1.25em;
+              border-radius: 100vw;
+              border: 5px solid transparent;
+              background: linear-gradient(white) padding-box,
+                conic-gradient(from var(--angle), blue, red, blue) border-box;
+                animation: rotate 1s linear infinite;
+                animation-play-state: paused;
+            }
+            button:hover,
+            button:focus-visible {
+              animation-play-state: running;
+            }
+          }
+        </style>
         <h2>transform</h2>
         <div class="different_transform">
           <div>
