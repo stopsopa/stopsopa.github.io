@@ -167,7 +167,6 @@ jobs:
           git commit -m "Initial ps aux log"
 
       - name: kill servers
-        if: env.DEBUG_MODE == 'on'
         run: |
           /bin/bash .github/stop-server.sh
 
