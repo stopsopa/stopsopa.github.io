@@ -25,6 +25,8 @@ import fs from "fs";
 // const cmd = require("./tests/tools/cmd");
 import cmd from "./lib/cmd.js";
 
+const log = (...args) => console.log("playwright.config.js log:", ...args);
+
 if (Object.keys(all() || {}).length === 0) {
   throw new Error(`playwright.config.js error: all() can't return 0 - load preprocessed.js first`);
 }
@@ -49,6 +51,15 @@ if (typeof process.env.ENVFILE === "string" && process.env.ENVFILE.trim()) {
   dotenv.config();
 }
 
+
+// WARNING: this is tweak introduced with introduction of https for local development vvv
+// WARNING: this is tweak introduced with introduction of https for local development vvv
+// WARNING: this is tweak introduced with introduction of https for local development vvv
+process.env.NODE_API_PORT = process.env.NODE_API_PORT_HTTPS;
+// WARNING: this is tweak introduced with introduction of https for local development ^^^
+// WARNING: this is tweak introduced with introduction of https for local development ^^^
+// WARNING: this is tweak introduced with introduction of https for local development ^^^
+
 mockEnv(process.env);
 
 const protocolRegex = /^https?:\/\//;
@@ -70,7 +81,7 @@ function envcheck(name, ret) {
 }
 
 if (envcheck("BASE_URL", true)) {
-  console.log(`existing BASE_URL: >${process.env.BASE_URL}<`);
+  log(`existing BASE_URL: >${process.env.BASE_URL}<`);
 } else {
   envcheck("NODE_API_PROTOCOL");
 
@@ -86,7 +97,7 @@ if (envcheck("BASE_URL", true)) {
     process.env.BASE_URL += `:${process.env.NODE_API_PORT}`;
   }
 
-  console.log(`generated BASE_URL: >${process.env.BASE_URL}<`);
+  log(`generated BASE_URL: >${process.env.BASE_URL}<`);
 }
 
 envcheck("BASE_URL");
