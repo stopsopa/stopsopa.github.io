@@ -3,11 +3,23 @@ import { generateKey, encryptMessage, decryptMessage } from "./aes-cbc-browser.j
 const parent = document.querySelector("#encryptor");
 const generateButton = parent.querySelector(".generate");
 const inputKey = parent.querySelector(".key");
+const show = parent.querySelector(".show");
 const inputMessage = parent.querySelector(".message");
 const inputEncrypted = parent.querySelector(".encrypted");
 const inputDecrypted = parent.querySelector(".decrypted");
 const encryptButton = parent.querySelector(".encrypt");
 const decryptButton = parent.querySelector(".decrypt");
+const form = parent.querySelector("form");
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  return false;
+});
+
+show.addEventListener("click", () => {
+  const secure = inputKey.type === "password";
+  inputKey.type = secure ? "text" : "password";
+  show.textContent = secure ? "hide" : "show";
+});
 
 generateButton.addEventListener("click", async () => {
   try {
