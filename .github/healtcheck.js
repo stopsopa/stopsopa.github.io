@@ -29,6 +29,9 @@
  *
  *    TIMEOUT="500" node .github/healtcheck.js front
  *
+ * to change port:
+ *    NODE_API_PORT=8888 node .github/healtcheck.js
+ *
  */
 // const path = require("path");
 import path from "path";
@@ -72,16 +75,6 @@ if (/^\d+$/.test(process.env.TIMEOUT)) {
       path: env,
     });
 
-    const protMatch = /^https?$/;
-
-    if (!protMatch.test(process.env.NODE_API_PROTOCOL)) {
-      throw th(`process.env.NODE_API_PROTOCOL >${process.env.NODE_API_PROTOCOL}< doesn't match pattern ${protMatch}`);
-    }
-
-    if (typeof process.env.NODE_API_PORT_HTTPS !== "string") {
-      throw th(`NODE_API_PORT_HTTPS is undefined`);
-    }
-
     setTimeout(() => {
       logger(
         `healthcheck timeout error after ${healthcheckTimeoutMilliseconds} miliseconds (${parseFloat(
@@ -92,7 +85,7 @@ if (/^\d+$/.test(process.env.TIMEOUT)) {
       process.exit(1);
     }, healthcheckTimeoutMilliseconds);
 
-    const server_front_endpoint = `${process.env.NODE_API_PROTOCOL}://0.0.0.0:${process.env.NODE_API_PORT_HTTPS}/healthcheck`;
+    const server_front_endpoint = `${process.env.NODE_API_PROTOCOL}://0.0.0.0:${process.env.NODE_API_PORT}/healthcheck`;
 
     const promise = Promise.all([
       new Promise((resolve) => {

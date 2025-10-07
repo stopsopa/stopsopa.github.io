@@ -109,7 +109,7 @@ jobs:
 
       - name: Build
         run: |
-          cp .env.template .env          
+          cp .env.pipeline .env          
           /bin/bash build.sh
 
       - name: run local server (NODE_ENV=production)
@@ -118,12 +118,13 @@ jobs:
 
       - name: servers healthchecks
         run: |
-          TIMEOUT="2000" node .github/healtcheck.js
+          source .env
+          source .env.sh
+          NODE_API_PORT="${NODE_API_PORT_HTTPS}" TIMEOUT="2000" node .github/healtcheck.js
       # - name: test cli (using routes endpoint)
       #   run: |
       #     /bin/bash console.sh routes
       - name: UNIT TESTS
-        # if: "!contains(github.event.head_commit.message, '[q]')"
         if: |
           !(github.event.head_commit.message == 'q' || 
             startsWith(github.event.head_commit.message, 'q ') || 
@@ -136,24 +137,25 @@ jobs:
       #     TYPE=int /bin/bash test.sh
 
       - name: JASMINE TESTS
-        # if: "!contains(github.event.head_commit.message, '[q]')"
         if: |
           !(github.event.head_commit.message == 'q' ||
             startsWith(github.event.head_commit.message, 'q ') ||
             endsWith(github.event.head_commit.message, ' q') ||
             contains(github.event.head_commit.message, ' q '))
         run: |
+          # this script is launching koa server, using it and killing it, so it can be ran on any arbitrary port
           NODE_API_PORT=4273 /bin/bash jasmine/test.sh --env .env -- --target docker
 
       - name: E2E TESTS
-        # if: "!contains(github.event.head_commit.message, '[q]')"
         if: |
           !(github.event.head_commit.message == 'q' ||
             startsWith(github.event.head_commit.message, 'q ') ||
             endsWith(github.event.head_commit.message, ' q') ||
             contains(github.event.head_commit.message, ' q '))
         run: |
-          /bin/bash playwright.sh --target docker
+          source .env
+          source .env.sh
+          NODE_API_PORT="${NODE_API_PORT_HTTPS}" /bin/bash playwright.sh --target docker
 
       - name: ps aux
         run: |

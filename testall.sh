@@ -90,7 +90,7 @@ cat <<EEE
 
 EEE
 
-TIMEOUT="2000" node .github/healtcheck.js
+NODE_API_PORT="${NODE_API_PORT_HTTPS}" TIMEOUT="2000" node .github/healtcheck.js
 
 cat <<EEE
 
@@ -114,4 +114,5 @@ cat <<EEE
 
 EEE
 
-/bin/bash playwright.sh
+# because we have launched koa server via https let's switch playwright to use https as well
+NODE_API_PORT="${NODE_API_PORT_HTTPS}" /bin/bash playwright.sh

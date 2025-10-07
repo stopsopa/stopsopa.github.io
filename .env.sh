@@ -6,6 +6,13 @@ if [ "${NODE_API_PORT}" = "" ]; then
   exit 1;
 fi
 
+if [ "${NODE_API_PORT_HTTPS}" = "" ]; then
+
+  echo "${0} error: NODE_API_PORT_HTTPS is not defined"
+
+  exit 1;
+fi
+
 if [ "${LOCAL_HOSTS}" = "" ]; then
 
   echo "${0} error: LOCAL_HOSTS is not defined"

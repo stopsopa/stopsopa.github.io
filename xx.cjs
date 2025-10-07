@@ -114,6 +114,7 @@ cat <<EEE
 /bin/bash jasmine/test.sh --env .env
 
 NODE_API_PORT=4273 /bin/bash jasmine/test.sh --env .env -- --target docker
+NODE_API_PORT=4273 /bin/bash jasmine/test.sh --env .env -- -- --debug
 
 NODE_API_PORT=4273 /bin/bash jasmine/test.sh ${S}
       --env .env ${S}

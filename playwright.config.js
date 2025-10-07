@@ -51,15 +51,6 @@ if (typeof process.env.ENVFILE === "string" && process.env.ENVFILE.trim()) {
   dotenv.config();
 }
 
-
-// WARNING: this is tweak introduced with introduction of https for local development vvv
-// WARNING: this is tweak introduced with introduction of https for local development vvv
-// WARNING: this is tweak introduced with introduction of https for local development vvv
-process.env.NODE_API_PORT = process.env.NODE_API_PORT_HTTPS;
-// WARNING: this is tweak introduced with introduction of https for local development ^^^
-// WARNING: this is tweak introduced with introduction of https for local development ^^^
-// WARNING: this is tweak introduced with introduction of https for local development ^^^
-
 mockEnv(process.env);
 
 const protocolRegex = /^https?:\/\//;
@@ -169,18 +160,12 @@ const config = {
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
-        launchOptions: {
-          args: ["--ignore-certificate-errors"], // https://stackoverflow.com/a/76610601
-        },
       },
     },
     {
       name: "firefox",
       use: {
         ...devices["Desktop Firefox"],
-        launchOptions: {
-          args: ["--ignore-certificate-errors"], // https://stackoverflow.com/a/76610601
-        },
       },
     },
     // { // too much problems with running tests - commenting out
@@ -229,6 +214,37 @@ const config = {
   // },
 };
 
+if (protocolRegex.test(process.env.BASE_URL)) {
+  log(`BASE_URL https protocol detected: ${process.env.BASE_URL} - tweaking configuration`);
+
+  // Add ignoreHTTPSErrors to global use configuration
+  config.use.ignoreHTTPSErrors = true;
+
+  // Configure enhanced SSL error handling for Chromium
+  const chromiumProject = config.projects.find((p) => p.name === "chromium");
+  if (chromiumProject) {
+    chromiumProject.use.launchOptions = {
+      args: [
+        "--ignore-certificate-errors",
+        "--ignore-ssl-errors",
+        "--ignore-certificate-errors-spki-list",
+        "--disable-web-security",
+        "--allow-running-insecure-content",
+        "--disable-features=VizDisplayCompositor",
+      ], // Enhanced SSL error handling for self-signed certificates
+    };
+    log(`Chromium SSL configuration tweaks applied`);
+  }
+
+  // Configure SSL error handling for Firefox
+  const firefoxProject = config.projects.find((p) => p.name === "firefox");
+  if (firefoxProject) {
+    firefoxProject.use.launchOptions = {
+      args: ["--ignore-certificate-errors"], // Firefox uses different flags
+    };
+    log(`Firefox SSL configuration tweaks applied`);
+  }
+}
 /**
  * Above just standard default config, and below we will modify it the way we need
  */

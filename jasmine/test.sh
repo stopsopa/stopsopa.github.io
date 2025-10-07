@@ -6,6 +6,7 @@
 # Lifecycle phases of this script:
 #     Generally what this script is doing is perparing (bundling) all desired test files to be delivered to the browser context.
 #     Then it launches temporary http server for playwright testing.
+#          (NOTE: for that you can use any arbitrary port, recommended is to override NODE_API_PORT env var to some free port)
 #     All tests are executed (using jasmine-core lib) in the browser after load and result of all tests are fetched.
 #     Testing in playwright is done with just one test with one expect().toEqual() 
 #     comparing desired state of fetched states with desired state.
@@ -367,6 +368,9 @@ EEE
 # echo 'wait'
 # read -n 1
 
+
+# this will launch on http and https ports
+# so it will use NODE_API_PORT and NODE_API_PORT_HTTPS env vars
 NODE_OPTIONS="" node "${_DIR}/server_koa.js" --web "${ROOT}" --asset_list "${ASSETLIST}" --env "${ENVFILE}" 1>> "${LOGFILE}" 2>> "${LOGFILE}" & disown
 
 set +x
