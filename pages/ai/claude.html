@@ -8,125 +8,128 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-
   </head>
   <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
-
         <h2>bash/zsh option to choose model</h2>
         <script type="editor" data-lang="sh">
 
-# load this file in ~/.zshrc
-#    source ~/claude-bash-aliases
-#    so this is really also the name for the script
+          # load this file in ~/.zshrc
+          #    source ~/claude-bash-aliases
+          #    so this is really also the name for the script
 
-# Claude Code Aliases - Easy Setup for Local Development
-#
-# SETUP INSTRUCTIONS:
-# 1. Copy this file to your home directory:
-#    cp claude-bash-aliases ~/claude-bash-aliases
-#    
-# 2. Add this line to your ~/.bashrc or ~/.zshrc:
-#    source ~/claude-bash-aliases
-#
-# 3. Reload your shell:
-#    source ~/.bashrc   # for bash
-#    source ~/.zshrc    # for zsh
-#
-# USAGE:
-# - Use 'cl' for interactive selection of Claude version
-# - Use 'claude' for the default (currently claude4-sonnet)
-#
-# All aliases use AWS Bedrock in us-west-2 region with MCP configuration
+          # Claude Code Aliases - Easy Setup for Local Development
+          #
+          # SETUP INSTRUCTIONS:
+          # 1. Copy this file to your home directory:
+          #    cp claude-bash-aliases ~/claude-bash-aliases
+          #
+          # 2. Add this line to your ~/.bashrc or ~/.zshrc:
+          #    source ~/claude-bash-aliases
+          #
+          # 3. Reload your shell:
+          #    source ~/.bashrc   # for bash
+          #    source ~/.zshrc    # for zsh
+          #
+          # USAGE:
+          # - Use 'cl' for interactive selection of Claude version
+          # - Use 'claude' for the default (currently claude4-sonnet)
+          #
+          # All aliases use AWS Bedrock in us-west-2 region with MCP configuration
 
-# Map of Claude commands (key => full command string)
-typeset -A CLAUDE_CMDS
-CLAUDE_CMDS=(
-  claude3 "AWS_REGION=..."
-  claude4-sonnet "AWS_REGION=..."
-  claude4-opus "AWS_REGION=..."
-)
-:[v1:8d2c5::DCr3tM1MTPUiw36DeVAmgA==::
-zG3RPEC/CoxnrrXQfIgiq5MeN15W+5okKqnBgZ2EQbxyOLdAYG1avANMhfi3fix4jOp7YUJml1xf+wGOgq1OJZu9tiUTAsS1WnGsBppOnWXzes
-vn0cYlDjoo/J0/bS5qEj2VglhZAvsqClCrOJ9DIxZqbkpGSJELyhc1AunnmzhBrBI9XYW0XDH9G5nIahrs2IrDZWSACujEsB7xFYiA+nn+Pnvb
-/eAbPDLvYxuZnEmE5xhoyGehvrJeD9SJ/bWzFFCSzi/j1PPApk9fM2AeCG2KqMkMUXqj+i9pOR+jCkA4RxNCoVPgTPXPgtzauPs5DFhHAMtRdz
-DHxPQipG9+uBbwyLNjDz/A0EMQe0xYHU8lLPli6FJp01f/8g8cBfbSzjxRjEwKhfcspuhd6qBNk1slnQca0LGoNGfxy9gXMWzcYIIrezfw9Rbg
-Dq8eofkRDI+8gnWPGVhdSsR58TD2EQaHDwVSbfOdU2oLAYY6up7L7HPt4ByjypYgijQhPdmfyhDfyZBxELKZSw/eOsGrrm9Qb8QJ/OUyoC3LSQ
-dGkIb/EOEOuCT9npIKbXniCJPpy+Pi0kzDnPzX5Yq+73jO5rB0VdIKttO+r08p6y16Q1jqNce9QuX2m34kbUrZH+Cdb6ySR6uF2BYrVechp/87
-x9LdDNdzBgXL8lsl/UPbZhjXD7TcRbXJOlKYA93KAhqeVRcCJbOC6ZYBYVHYQtU7fH5Yl5cSlfrEpTUZJIZqaouy6ZnSEXx5Jpsg+lv58xCcyW
-pPZneUWflOIackybfNXAqcnU6FGY9dHjAu+GhcVEpsJRCRxnqv+uA/agjmVf33a0qyoyF8vaji/ZYpIyJ0KUV8NO1ALlars5yWWbxBcfJtednu
-hEMCEkRDwHq4dlg4qkDy6x6iRraP0UrVVW00FAef6d8N4G/J0PXBXeMqISsE74hFLaspEeianbyfKzXA1aNCK8YO9OEsYGyeQBE9yWC7f3KgUs
-7JDNEhMvNu9UpvGsOfyEoNNgjoexf7TZJZBJ5Ra/mL4n3n3XCOhmaqJRQrR4OW7S+UeEU0nPBuTxFLsho111kiCXhP2aS41vedMWkzSG6r2uTS
-LhK1gD2wtQ==:]:
-
-
-
-# Default alias (runs claude4-sonnet by default)
-alias claude='eval "${CLAUDE_CMDS[claude4-sonnet]}"'
-
-# Interactive alias 'cl' to choose Claude version
-cl() {
-  local -a keys
-  keys=("${(@ko)CLAUDE_CMDS}")
-  local selected=1
-  local total=${#keys[@]}
-  
-  # Function to draw menu
-  draw_menu() {
-    clear
-    echo "Select Claude version (use ↑/↓ arrows, Enter to confirm, q to quit):"
-    echo ""
-    for i in {1..$total}; do
-      if [[ $i -eq $selected ]]; then
-        echo "  → ${keys[$i]}"
-      else
-        echo "    ${keys[$i]}"
-      fi
-    done
-  }
-  
-  # Main loop
-  while true; do
-    draw_menu
-    
-    # Read a single character
-    read -k 1 key
-    
-    case $key in
-      $'\e')  # Escape sequence for arrow keys
-        read -k 2 -t 0.01 rest
-        case $rest in
-          '[A')  # Up arrow
-            ((selected > 1)) && ((selected--))
-            ;;
-          '[B')  # Down arrow
-            ((selected < total)) && ((selected++))
-            ;;
-        esac
-        ;;
-      $'\n')  # Enter key
-        clear
-        echo "Launching: ${keys[$selected]}"
-        echo ""
-        eval "${CLAUDE_CMDS[${keys[$selected]}]} $@"
-        return 0
-        ;;
-      q|Q)  # Quit
-        clear
-        echo "Cancelled."
-        return 1
-        ;;
-    esac
-  done
-}
+          # Map of Claude commands (key => full command string)
+          typeset -A CLAUDE_CMDS
+          CLAUDE_CMDS=(
+            claude3 "AWS_REGION=..."
+            claude4-sonnet "AWS_REGION=..."
+            claude4-opus "AWS_REGION=..."
+          )
+          :[v1:8d2c5::DCr3tM1MTPUiw36DeVAmgA==::
+          zG3RPEC/CoxnrrXQfIgiq5MeN15W+5okKqnBgZ2EQbxyOLdAYG1avANMhfi3fix4jOp7YUJml1xf+wGOgq1OJZu9tiUTAsS1WnGsBppOnWXzes
+          vn0cYlDjoo/J0/bS5qEj2VglhZAvsqClCrOJ9DIxZqbkpGSJELyhc1AunnmzhBrBI9XYW0XDH9G5nIahrs2IrDZWSACujEsB7xFYiA+nn+Pnvb
+          /eAbPDLvYxuZnEmE5xhoyGehvrJeD9SJ/bWzFFCSzi/j1PPApk9fM2AeCG2KqMkMUXqj+i9pOR+jCkA4RxNCoVPgTPXPgtzauPs5DFhHAMtRdz
+          DHxPQipG9+uBbwyLNjDz/A0EMQe0xYHU8lLPli6FJp01f/8g8cBfbSzjxRjEwKhfcspuhd6qBNk1slnQca0LGoNGfxy9gXMWzcYIIrezfw9Rbg
+          Dq8eofkRDI+8gnWPGVhdSsR58TD2EQaHDwVSbfOdU2oLAYY6up7L7HPt4ByjypYgijQhPdmfyhDfyZBxELKZSw/eOsGrrm9Qb8QJ/OUyoC3LSQ
+          dGkIb/EOEOuCT9npIKbXniCJPpy+Pi0kzDnPzX5Yq+73jO5rB0VdIKttO+r08p6y16Q1jqNce9QuX2m34kbUrZH+Cdb6ySR6uF2BYrVechp/87
+          x9LdDNdzBgXL8lsl/UPbZhjXD7TcRbXJOlKYA93KAhqeVRcCJbOC6ZYBYVHYQtU7fH5Yl5cSlfrEpTUZJIZqaouy6ZnSEXx5Jpsg+lv58xCcyW
+          pPZneUWflOIackybfNXAqcnU6FGY9dHjAu+GhcVEpsJRCRxnqv+uA/agjmVf33a0qyoyF8vaji/ZYpIyJ0KUV8NO1ALlars5yWWbxBcfJtednu
+          hEMCEkRDwHq4dlg4qkDy6x6iRraP0UrVVW00FAef6d8N4G/J0PXBXeMqISsE74hFLaspEeianbyfKzXA1aNCK8YO9OEsYGyeQBE9yWC7f3KgUs
+          7JDNEhMvNu9UpvGsOfyEoNNgjoexf7TZJZBJ5Ra/mL4n3n3XCOhmaqJRQrR4OW7S+UeEU0nPBuTxFLsho111kiCXhP2aS41vedMWkzSG6r2uTS
+          LhK1gD2wtQ==:]:
 
 
+
+          # Default alias (runs claude4-sonnet by default)
+          alias claude='eval "${CLAUDE_CMDS[claude4-sonnet]}"'
+
+          # Interactive alias 'cl' to choose Claude version
+          cl() {
+            local -a keys
+            keys=("${(@ko)CLAUDE_CMDS}")
+            local selected=1
+            local total=${#keys[@]}
+
+            # Function to draw menu
+            draw_menu() {
+              clear
+              echo "Select Claude version (use ↑/↓ arrows, Enter to confirm, q to quit):"
+              echo ""
+              for i in {1..$total}; do
+                if [[ $i -eq $selected ]]; then
+                  echo "  → ${keys[$i]}"
+                else
+                  echo "    ${keys[$i]}"
+                fi
+              done
+            }
+
+            # Main loop
+            while true; do
+              draw_menu
+
+              # Read a single character
+              read -k 1 key
+
+              case $key in
+                $'\e')  # Escape sequence for arrow keys
+                  read -k 2 -t 0.01 rest
+                  case $rest in
+                    '[A')  # Up arrow
+                      ((selected > 1)) && ((selected--))
+                      ;;
+                    '[B')  # Down arrow
+                      ((selected < total)) && ((selected++))
+                      ;;
+                  esac
+                  ;;
+                $'\n')  # Enter key
+                  clear
+                  echo "Launching: ${keys[$selected]}"
+                  echo ""
+                  eval "${CLAUDE_CMDS[${keys[$selected]}]} $@"
+                  return 0
+                  ;;
+                q|Q)  # Quit
+                  clear
+                  echo "Cancelled."
+                  return 1
+                  ;;
+              esac
+            done
+          }
         </script>
 
         <div class="cards">
-          <h2>zzz</h2>
-          <script type="editor" data-lang="sh"></script>
+          <h2>fixing claude</h2>
+          <script type="editor" data-lang="sh">
+
+            cat <<EEE > ~/.claude/.mcp.json
+            {
+              "mcpServers": {}
+            }
+            EEE
+          </script>
         </div>
       </div>
     </div>
