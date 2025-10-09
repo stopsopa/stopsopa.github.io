@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside">
+        <h2>test</h2>
+        <a href="https://stackoverflow.com/questions/64456886/emulate-a-focused-page-option-not-available-in-chrome-developer-tools">there is issue when using "Emulate a focused page"</a>
+        <!-- <script> -->
+        <script type="editor" data-lang="js" data-eval>
+
+          const updateTabTitle = (state) => {
+            document.title = state === "ON" ? "🟢" : "🔴"; // Green circle for ON, Red circle for OFF;
+            console.log(`Title updated to: ${document.title} (state: ${state})`);
+          };
+
+          // Function to handle visibility change
+          const handleVisibilityChange = () => {
+            console.log('go', document.hidden);
+            if (document.hidden) {
+              // Tab is now hidden (user switched to another tab)
+              updateTabTitle("OFF");
+            } else {
+              // Tab is now visible (user switched back to this tab)
+              updateTabTitle("ON");
+            }
+          };
+
+          // Listen for visibility change events
+          document.addEventListener('visibilitychange', handleVisibilityChange);
+
+          // Set initial state based on current visibility
+          handleVisibilityChange();
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>
