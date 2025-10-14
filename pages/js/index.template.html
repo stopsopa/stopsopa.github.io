@@ -796,8 +796,14 @@
         <h2>Emulate click event</h2>
         <script type="editor" data-lang="js">
           function click_v1(element) {
-            element.click();
+              // Check if the element exists and has a click method
+              if (element && typeof element.click === 'function') {
+                  element.click();
+                  return true; // Indicate success
+              }
+              return false; // Indicate failure (e.g., element is null)
           }
+
           function click_v2(element) {
             const event = new MouseEvent('click', {
               bubbles: true,
