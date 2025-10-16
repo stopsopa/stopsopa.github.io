@@ -39,7 +39,12 @@ function excludeElement(el) {
 function hashchange() {
   var selector = trim(location.hash, "#");
 
-  console.log("hashchange");
+  log(`hashchange -> selector >#${selector}<`);
+
+  // Exit early if selector is empty
+  if (!selector) {
+    return;
+  }
 
   try {
     var found = document.querySelector(`[id="${selector}"]`) || document.querySelector(`#${selector}`);

@@ -24,6 +24,7 @@
             <li><a href="popper/index.html">popover tooltip (Popper.js)</a></li>
             <li><a href="drag/index.html">drag element on the page</a></li>
             <li><a href="ajax-override/index.html">ajax & fetch override</a></li>
+            <li><a href="tab-visible.html">tab visible - on top</a></li>
           </ul>
         </div>
 
@@ -792,7 +793,57 @@
             }
           }
         </script>
+        <h2>Emulate click event</h2>
+        <script type="editor" data-lang="js">
+          function click_v1(element) {
+              // Check if the element exists and has a click method
+              if (element && typeof element.click === 'function') {
+                  element.click();
+                  return true; // Indicate success
+              }
+              return false; // Indicate failure (e.g., element is null)
+          }
+
+          function click_v2(element) {
+            const event = new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+              view: window,
+            });
+            element.dispatchEvent(event);
+          }
+          function click_v3(element) {
+            const options = { bubbles: true, cancelable: true, view: window };
+            element.dispatchEvent(new MouseEvent('mousedown', options));
+            element.dispatchEvent(new MouseEvent('mouseup', options));
+            element.dispatchEvent(new MouseEvent('click', options));
+          }
+          
+          // that one works pretty often
+          function click_v4(element) {
+            const options = {
+              bubbles: true,
+              cancelable: true,
+              pointerId: 1,
+              pointerType: 'mouse',
+              isPrimary: true,
+            };
+            element.dispatchEvent(new PointerEvent('pointerdown', options));
+            element.dispatchEvent(new PointerEvent('pointerup', options));
+            element.dispatchEvent(new MouseEvent('click', options));
+          }
+          
+          function click_v5(element) {
+            const options = { bubbles: true, cancelable: true, key: 'Enter', code: 'Enter' };
+            element.dispatchEvent(new KeyboardEvent('keydown', options));
+            element.dispatchEvent(new KeyboardEvent('keyup', options));
+            element.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+          }
+          
+        </script>
         <h2>JSON</h2>
+
+        
 
         <script type="editor" data-lang="js">
 
