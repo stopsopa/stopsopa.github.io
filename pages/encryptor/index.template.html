@@ -14,78 +14,271 @@
       <div class="inside">
         <div id="encryptor">
           <style>
-            .body .inside {
-              max-width: 1012px;
+            body,
+            body::before,
+            body::after {
+              background: #f2f3f3 !important;
+              background-image: none !important;
+              color: #0f1111;
             }
+
+            .body,
+            .body::before,
+            .body::after {
+              background: #f2f3f3 !important;
+              background-image: none !important;
+            }
+
+            .body .inside {
+              max-width: 1200px;
+              padding: 0;
+              background: #f2f3f3 !important;
+              background-image: none !important;
+            }
+
             #encryptor {
+              background-color: #f2f3f3;
+              font-family: "Amazon Ember", Arial, sans-serif;
+              color: #0f1111;
+              padding: 20px 20px 0 20px;
+
+              h2 {
+                background-color: #ffffff;
+                color: #0f1111;
+                padding: 12px 24px 12px 32px;
+                margin: 0 0 20px 0;
+                font-size: 24px;
+                font-weight: 600;
+                border: 1px solid #d5dbdb;
+                border-radius: 8px;
+                box-shadow: 0 1px 1px 0 rgba(0, 28, 36, 0.1);
+              }
+
+              form {
+                background-color: #ffffff;
+                border: 1px solid #d5dbdb;
+                border-radius: 8px;
+                padding: 24px;
+                margin-bottom: 20px;
+                box-shadow: 0 1px 1px 0 rgba(0, 28, 36, 0.3);
+              }
+
+              label {
+                display: flex;
+                align-items: flex-start;
+                margin-bottom: 20px;
+                color: #0f1111;
+
+                &:last-child {
+                  margin-bottom: 0;
+                }
+              }
+
               span {
                 display: inline-block;
-                width: 100px;
+                min-width: 120px;
+                font-weight: 600;
+                font-size: 14px;
+                color: #0f1111;
+                padding-top: 10px;
+                flex-shrink: 0;
               }
+
               input,
               textarea {
-                font-family: monaco, Consolas, Lucida Console, monospace;
-                font-size: 12px;
-                width: 806px;
-                padding: 10px;
+                font-family: monaco, Consolas, "Courier New", monospace;
+                font-size: 13px;
+                flex: 1;
+                padding: 8px 12px;
+                border: 1px solid #d5dbdb;
+                border-radius: 4px;
+                background-color: #ffffff;
+                color: #0f1111;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+                &:focus {
+                  outline: none;
+                  border-color: #007eb9;
+                  box-shadow: 0 0 0 3px rgba(0, 126, 185, 0.25);
+                }
+
+                &::placeholder {
+                  color: #aab7b8;
+                }
               }
+
               textarea {
-                height: 200px;
+                min-height: 180px;
+                resize: vertical;
                 text-wrap: nowrap;
+                line-height: 1.5;
               }
+
               .key {
-                width: 400px;
+                max-width: 400px;
+                margin-right: 8px;
               }
+
               button {
-                padding: 5px;
+                padding: 8px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                line-height: 1.5;
+                border: 1px solid;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.15s ease-in-out;
+                white-space: nowrap;
+                margin-right: 8px;
+
+                &:hover {
+                  opacity: 0.9;
+                }
+
+                &:active {
+                  transform: translateY(1px);
+                }
+              }
+
+              button.generate,
+              button.show {
+                background-color: #ffffff;
+                border-color: #d5dbdb;
+                color: #0f1111;
+                box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+
+                &:hover {
+                  background-color: #f7fafa;
+                  border-color: #adb1b8;
+                }
+              }
+
+              button.encrypt,
+              button.decrypt {
+                background-color: #ff9900;
+                border-color: #e47911;
+                color: #0f1111;
+                font-weight: 700;
+                box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset;
+                width: 100%;
+                padding: 10px 16px;
+                font-size: 14px;
+
+                &:hover {
+                  background-color: #fa8900;
+                  border-color: #e47911;
+                }
+              }
+
+              a {
+                color: #007eb9;
+                text-decoration: none;
+                margin: 0 4px;
+                font-size: 13px;
+
+                &:hover {
+                  color: #005c8f;
+                  text-decoration: underline;
+                }
+              }
+
+              .panel {
+                background-color: #ffffff;
+                border: 1px solid #d5dbdb;
+                border-radius: 8px;
+                padding: 24px;
+                margin-bottom: 20px;
+                box-shadow: 0 1px 1px 0 rgba(0, 28, 36, 0.3);
+
+                .panel-header {
+                  font-size: 16px;
+                  font-weight: 600;
+                  color: #0f1111;
+                  margin-bottom: 16px;
+                  padding-bottom: 12px;
+                  border-bottom: 1px solid #e7e7e7;
+                }
+              }
+
+              .action-row {
+                background-color: #ffffff;
+                border: 1px solid #d5dbdb;
+                border-radius: 8px;
+                padding: 16px 24px;
+                margin-bottom: 20px;
+                box-shadow: 0 1px 1px 0 rgba(0, 28, 36, 0.3);
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+              }
+
+              .info-badge {
+                display: inline-block;
+                background-color: #e7f6ec;
+                color: #067d62;
+                padding: 2px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: 600;
+                margin-left: 8px;
               }
             }
           </style>
-          <h2>encrypt</h2>
+          <h2>🔐 Message Encryption Tool</h2>
+
           <form>
             <label>
-              <span> key: </span>
-              <input type="password" class="key" name="password" placeholder="can't be empty..." />
-              <button class="generate">generate</button>
-              <button class="show">show</button>
-              <a
-                href="https://github.com/stopsopa/gitstorage/blob/master/git%40github.com%3Astopsopa__stopsopa.github.io.git/.env#L63"
-                >*</a
-              >
-              |
-              <a href="/pages/pastetool/pastetool.html">paste tool</a>
+              <span>Encryption Key:</span>
+              <div style="flex: 1; display: flex; align-items: center; gap: 8px">
+                <input type="password" class="key" name="password" placeholder="Enter encryption key..." />
+                <button type="button" class="generate">Generate Key</button>
+                <button type="button" class="show">Show</button>
+                <a
+                  href="https://github.com/stopsopa/gitstorage/blob/master/git%40github.com%3Astopsopa__stopsopa.github.io.git/.env#L63"
+                  target="_blank"
+                  >Documentation</a
+                >
+                <span style="color: #aab7b8; font-size: 12px">|</span>
+                <a href="/pages/pastetool/pastetool.html" target="_blank">Paste Tool</a>
+              </div>
             </label>
           </form>
-          <br />
-          <label>
-            <span> message: </span>
-            <textarea class="message" placeholder="paste here to encode...">
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-Etiam molestie pulvinar consequat. 
-Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem. 
-              </textarea
-            >
-          </label>
-          <br />
-          <label>
-            <span></span>
-            <button class="encrypt">encrypt</button>
-          </label>
-          <br />
-          <label>
-            <span> encrypted: </span>
-            <textarea class="encrypted" placeholder="paste here to decode..."></textarea>
-          </label>
-          <br />
-          <label>
-            <span></span>
-            <button class="decrypt">decrypt</button>
-          </label>
-          <br />
-          <label>
-            <span> decrypted: </span>
-            <textarea class="decrypted"></textarea>
-          </label>
+
+          <div class="panel">
+            <div class="panel-header">Input Message</div>
+            <label>
+              <span>Message:</span>
+              <textarea class="message" placeholder="Enter or paste your message to encrypt...">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Etiam molestie pulvinar consequat.
+Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</textarea
+              >
+            </label>
+          </div>
+
+          <div class="action-row">
+            <button class="encrypt">🔒 Encrypt Message</button>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">Encrypted Output</div>
+            <label>
+              <span>Encrypted:</span>
+              <textarea class="encrypted" placeholder="Encrypted message will appear here..."></textarea>
+            </label>
+          </div>
+
+          <div class="action-row">
+            <button class="decrypt">🔓 Decrypt Message</button>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">Decrypted Output</div>
+            <label>
+              <span>Decrypted:</span>
+              <textarea class="decrypted" placeholder="Decrypted message will appear here..."></textarea>
+            </label>
+          </div>
         </div>
         <script type="module" src="bind.js"></script>
         <script type="editor" data-lang="sh">

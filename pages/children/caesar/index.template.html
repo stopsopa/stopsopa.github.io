@@ -15,102 +15,242 @@
         <div id="encryptor">
           <style>
             #encryptor {
+              max-width: 800px;
+              margin: 0 auto;
+              padding: 20px;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              border-radius: 15px;
+              box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+              h2 {
+                color: white;
+                font-size: 32px;
+                text-align: center;
+                margin-bottom: 30px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+              }
+
+              label {
+                display: block;
+                margin-bottom: 20px;
+                background: white;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: transform 0.2s, box-shadow 0.2s;
+
+                &:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+                }
+              }
+
               & > span {
                 display: inline-block;
                 width: 100px;
+                font-weight: 600;
+                color: #4a5568;
               }
+
               input,
               textarea {
                 font-family: monaco, Consolas, Lucida Console, monospace;
-                font-size: 12px;
-                width: 600px;
+                font-size: 14px;
+                width: calc(100% - 120px);
+                padding: 10px;
+                border: 2px solid #e2e8f0;
+                border-radius: 8px;
+                transition: border-color 0.3s;
+
+                &:focus {
+                  outline: none;
+                  border-color: #667eea;
+                  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                }
               }
+
               textarea {
-                height: 200px;
+                height: 150px;
+                resize: vertical;
               }
+
               textarea:not(.encrypted) {
                 text-wrap: nowrap;
               }
-              .key input {
-                width: 20px;
+
+              .key {
+                input {
+                  width: 60px;
+                  text-align: center;
+                  font-size: 18px;
+                  font-weight: bold;
+                  margin-right: 15px;
+                }
+
+                span:not(.curkey):not(.maxIndex) {
+                  color: #718096;
+                  font-size: 14px;
+                  margin-right: 10px;
+                }
+
+                .curkey,
+                .maxIndex {
+                  font-weight: bold;
+                  color: #667eea;
+                }
+
+                button {
+                  margin: 0 5px;
+                  padding: 8px 16px;
+                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                  color: white;
+                  border: none;
+                  border-radius: 6px;
+                  cursor: pointer;
+                  font-weight: 600;
+                  transition: transform 0.2s, box-shadow 0.2s;
+
+                  &:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+                  }
+
+                  &:active {
+                    transform: translateY(0);
+                  }
+                }
               }
+
+              .alphabet input {
+                background-color: #f7fafc;
+                cursor: not-allowed;
+              }
+
+              button.encrypt,
+              button.decrypt {
+                width: 100%;
+                padding: 12px 24px;
+                background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+
+                &:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 6px 12px rgba(72, 187, 120, 0.3);
+                }
+
+                &:active {
+                  transform: translateY(0);
+                }
+              }
+
+              button.decrypt {
+                background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+
+                &:hover {
+                  box-shadow: 0 6px 12px rgba(237, 137, 54, 0.3);
+                }
+              }
+
               .bgred {
-                background-color: rgb(238, 188, 188);
+                background-color: #fed7d7;
+                border-color: #fc8181;
               }
+
               .bggreen {
-                background-color: rgb(211, 242, 211);
+                background-color: #c6f6d5;
+                border-color: #68d391;
+              }
+
+              .comparison-legend {
+                margin-top: 20px;
+                padding: 15px;
+                background: white;
+                border-radius: 10px;
+                text-align: center;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+                & > div {
+                  display: inline-block;
+                  margin: 0 15px;
+                  font-size: 14px;
+                  font-weight: 500;
+                  color: #4a5568;
+
+                  span:first-child {
+                    display: inline-block;
+                    width: 20px;
+                    height: 20px;
+                    vertical-align: middle;
+                    margin-right: 8px;
+                    border-radius: 4px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                  }
+
+                  span:last-child {
+                    vertical-align: middle;
+                  }
+                }
+
+                & > div:first-child span:first-child {
+                  background-color: #c6f6d5;
+                }
+
+                & > div:last-child span:first-child {
+                  background-color: #fed7d7;
+                }
               }
             }
           </style>
-          <h2>encrypt</h2>
+          <h2>🔐 Caesar Cipher Encryptor</h2>
           <label class="key">
-            <span> key: </span>
+            <span>Key:</span>
             <input type="text" />
             <span>Current key: <span class="curkey"></span>, maxIndex <span class="maxIndex"></span></span>
-            <button class="up">up</button>
-            <button class="down">down</button>
+            <button class="up">⬆ Up</button>
+            <button class="down">⬇ Down</button>
           </label>
-          <br />
           <label class="alphabet">
-            <span> alphabet: </span>
+            <span>Alphabet:</span>
             <input type="text" readonly />
           </label>
-          <br />
           <label>
-            <span> message: </span>
+            <span>Message:</span>
             <textarea class="message">
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-Etiam molestie pulvinar consequat. 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Etiam molestie pulvinar consequat.
 Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</textarea
             >
           </label>
-          <br />
           <label>
-            <span></span>
-            <button class="encrypt">encrypt</button>
+            <button class="encrypt">🔒 Encrypt</button>
           </label>
-          <br />
           <label>
-            <span> encrypted: </span>
+            <span>Encrypted:</span>
             <textarea class="encrypted" wrap="soft"></textarea>
           </label>
-          <br />
           <label>
-            <span></span>
-            <button class="decrypt">decrypt</button>
+            <button class="decrypt">🔓 Decrypt</button>
           </label>
-          <br />
           <label>
-            <span> decrypted: </span>
+            <span>Decrypted:</span>
             <textarea class="decrypted"></textarea>
           </label>
-          <br />
-          <div class="comparison-legend" style="margin-top: 10px">
-            <div style="display: inline-block; margin-right: 20px">
-              <span
-                style="
-                  display: inline-block;
-                  width: 20px;
-                  height: 20px;
-                  background-color: rgb(211, 242, 211);
-                  vertical-align: middle;
-                  margin-right: 5px;
-                "
-              ></span>
-              <span style="vertical-align: middle">exactly equal</span>
+          <div class="comparison-legend">
+            <div>
+              <span></span>
+              <span>Exactly equal</span>
             </div>
-            <div style="display: inline-block">
-              <span
-                style="
-                  display: inline-block;
-                  width: 20px;
-                  height: 20px;
-                  background-color: rgb(238, 188, 188);
-                  vertical-align: middle;
-                  margin-right: 5px;
-                "
-              ></span>
-              <span style="vertical-align: middle">not exactly equal</span>
+            <div>
+              <span></span>
+              <span>Not exactly equal</span>
             </div>
           </div>
         </div>
