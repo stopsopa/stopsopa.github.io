@@ -184,6 +184,78 @@ The site uses Firebase for authentication and database. Configuration is loaded 
 - `.github/ytlinksfix.sh` - Fixes YouTube embed links
 - `bash/exportsource.sh` - Exports .env variables to bash
 
+## Directory Structure
+
+### Core Directories
+
+- **`pages/`** - Main content directory containing topic-specific subdirectories (bash, javascript, react, docker, kubernetes, etc.). Each subdirectory typically has an `index.html` with code snippets and examples. This is the primary content that gets served to users.
+
+- **`js/`** - Core JavaScript utilities and the main entry point (`github.js`). Contains reusable modules like `doace.js`, `toc.js`, `urlwizzard.js`, `manipulation.js`, etc. These are loaded by most pages.
+
+- **`css/`** - Stylesheets including `normalize.css` and `main.css`. Loaded globally by `github.js`.
+
+- **`bash/`** - Bash utility scripts organized by category:
+  - File system operations (`fs/`)
+  - Git helpers (`git/`)
+  - Process management (`proc/`)
+  - Environment variable handling (`exportsource.sh`, `envrender.sh`)
+  - Utilities like `colours.sh`, `dlogger.sh`, `args.sh`
+
+- **`scripts/`** - Build-time processing scripts:
+  - `template.sh` / `template.js` - Processes `*.template.html` → `*.rendered.html`
+  - `uglify.sh` / `uglify.mjs` - Minifies `*.uglify.js` → `*.uglify.min.js`
+  - `reencode.sh` - File encoding utilities
+
+- **`.github/`** - CI/CD scripts and GitHub Actions workflows:
+  - `workflows/pipeline.yml` - Main CI/CD pipeline
+  - Build-time processors: `injector.sh`, `clicksecure.sh`, `sha384.sh`, `urlwizzard.sh`, `ytlinksfix.sh`
+  - `healtcheck.js` - Server health check for CI
+  - `clean_before_artifact.sh` - Cleans up before deployment
+
+### Supporting Directories
+
+- **`libs/`** - Shared JavaScript libraries for Node.js (utilities like `preprocessor.js`, `IndexedDBPromised.js`, `easing.js`, `secure.mjs`)
+
+- **`noprettier/`** - Third-party libraries excluded from Prettier formatting:
+  - ACE editor (`ace/`)
+  - Bootstrap (`bootstrap/`, `bootstrap-3.3.4/`)
+  - jQuery, lodash, vanilla-tabs, polyfills
+  - `anchor.min.js` for anchor links
+
+- **`components/`** - Reusable React/UI components (e.g., `Textarea.js`)
+
+- **`demos/`** - Standalone demo projects (e.g., `amazon-menu`, `xor`)
+
+- **`research/`** - Experimental/research code (flexbox, indexeddb, urlwizzard, math.js experiments)
+
+- **`cert/`** - SSL certificates for local HTTPS development
+
+- **`docker/`** - Docker-related configuration files
+
+- **`img/`** - Static images and icons
+
+### Build Output Directories (Gitignored)
+
+- **`dist/`** - esbuild output for `*.entry.{js,jsx}` files (React bundles)
+- **`build/`** - Intermediate build artifacts
+- **`public/`** - Generated public assets (`env.js`, `preprocessed.js`, coverage reports)
+- **`bin/`** - Generated executable scripts
+- **`var/`** - Runtime logs and temporary files (e.g., `var/log.log`)
+- **`playwright-report/`** - Playwright test reports
+- **`coverage/`** - Test coverage reports
+
+### Testing Directories
+
+- **`tests/`** - Vitest unit tests
+- **`jasmine/`** - Jasmine integration tests with test runner scripts
+- **`test-results/`** - Test execution results
+
+### Other Directories
+
+- **`override/`** - Override configurations or files
+- **`proto/` / `prottest/`** - Prototype/experimental code
+- **`.vscode/` / `.idea/`** - IDE configuration files
+
 ## Testing Structure
 
 - **Vitest** (unit tests): Tests in `tests/` directory
