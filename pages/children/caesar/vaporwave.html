@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Caesar Cipher - Vaporwave</title>
+    <style>
+      body.layout {
+        background: linear-gradient(135deg, #2d1b69 0%, #5b42ab 25%, #ff6ec7 50%, #7bffb5 75%, #ff6ec7 100%);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        position: relative;
+        overflow: hidden;
+      }
+      body.layout::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+          repeating-linear-gradient(0deg, rgba(255, 110, 199, 0.1) 0px, transparent 2px, transparent 4px),
+          repeating-linear-gradient(90deg, rgba(123, 255, 181, 0.1) 0px, transparent 2px, transparent 4px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+    </style>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div id="encryptor">
+          <style>
+            #encryptor {
+              max-width: 800px;
+              margin: 0 auto;
+              padding: 28px;
+              background: rgba(20, 15, 40, 0.85);
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border-radius: 0;
+              border: 3px solid #ff6ec7;
+              box-shadow: 0 0 20px rgba(255, 110, 199, 0.6), 0 0 40px rgba(123, 255, 181, 0.3), inset 0 0 20px rgba(255, 110, 199, 0.1);
+              font-family: 'Courier New', 'Consolas', Monaco, monospace;
+              position: relative;
+
+              h2 {
+                color: #ff6ec7;
+                font-size: 32px;
+                font-weight: 900;
+                text-align: center;
+                margin-bottom: 28px;
+                letter-spacing: 4px;
+                text-transform: uppercase;
+                text-shadow: 0 0 10px #ff6ec7, 0 0 20px #ff6ec7, 0 0 30px #7bffb5, 2px 2px 0 #7bffb5;
+                animation: glow 2s ease-in-out infinite alternate;
+              }
+
+              @keyframes glow {
+                from {
+                  text-shadow: 0 0 10px #ff6ec7, 0 0 20px #ff6ec7, 0 0 30px #7bffb5, 2px 2px 0 #7bffb5;
+                }
+                to {
+                  text-shadow: 0 0 20px #ff6ec7, 0 0 30px #7bffb5, 0 0 40px #7bffb5, 2px 2px 0 #ff6ec7;
+                }
+              }
+
+              label {
+                display: block;
+                margin-bottom: 14px;
+                background: rgba(40, 30, 70, 0.6);
+                padding: 16px;
+                border-radius: 0;
+                border: 2px solid #7bffb5;
+                box-shadow: 0 0 15px rgba(123, 255, 181, 0.4), inset 0 0 15px rgba(255, 110, 199, 0.1);
+                transition: all 0.3s ease;
+
+                &:hover {
+                  border-color: #ff6ec7;
+                  box-shadow: 0 0 20px rgba(255, 110, 199, 0.6), inset 0 0 20px rgba(123, 255, 181, 0.15);
+                  transform: translateY(-2px);
+                }
+              }
+
+              & > span {
+                display: inline-block;
+                width: 100px;
+                font-weight: 700;
+                color: #7bffb5;
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                text-shadow: 0 0 5px #7bffb5;
+              }
+
+              input,
+              textarea {
+                font-family: 'Courier New', Consolas, Monaco, monospace;
+                font-size: 14px;
+                width: calc(100% - 120px);
+                padding: 10px 12px;
+                border: 2px solid #ff6ec7;
+                border-radius: 0;
+                background: rgba(20, 15, 40, 0.8);
+                color: #ffffff;
+                transition: all 0.3s ease;
+                text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+
+                &::placeholder {
+                  color: #9d6fd9;
+                }
+
+                &:focus {
+                  outline: none;
+                  border-color: #7bffb5;
+                  box-shadow: 0 0 15px rgba(123, 255, 181, 0.6), inset 0 0 10px rgba(255, 110, 199, 0.2);
+                  background: rgba(20, 15, 40, 0.9);
+                }
+              }
+
+              textarea {
+                height: 100px;
+                resize: vertical;
+                line-height: 1.5;
+              }
+
+              textarea:not(.encrypted) {
+                text-wrap: nowrap;
+              }
+
+              .key {
+                input {
+                  width: 60px;
+                  text-align: center;
+                  font-size: 22px;
+                  font-weight: 900;
+                  margin-right: 16px;
+                  color: #ff6ec7;
+                  text-shadow: 0 0 10px #ff6ec7;
+                }
+
+                span:not(.curkey):not(.maxIndex) {
+                  color: #9d6fd9;
+                  font-size: 12px;
+                  margin-right: 12px;
+                }
+
+                .curkey,
+                .maxIndex {
+                  font-weight: 900;
+                  color: #ff6ec7;
+                  text-shadow: 0 0 10px #ff6ec7;
+                }
+
+                button {
+                  margin: 0 4px;
+                  padding: 8px 16px;
+                  background: transparent;
+                  color: #7bffb5;
+                  border: 2px solid #7bffb5;
+                  border-radius: 0;
+                  cursor: pointer;
+                  font-weight: 700;
+                  font-size: 12px;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  transition: all 0.3s ease;
+                  box-shadow: 0 0 10px rgba(123, 255, 181, 0.4);
+                  text-shadow: 0 0 5px #7bffb5;
+
+                  &:hover {
+                    background: rgba(123, 255, 181, 0.2);
+                    box-shadow: 0 0 20px rgba(123, 255, 181, 0.8);
+                    transform: translateY(-2px);
+                  }
+
+                  &:active {
+                    transform: translateY(0);
+                  }
+                }
+              }
+
+              .alphabet input {
+                background-color: rgba(15, 10, 30, 0.8);
+                cursor: not-allowed;
+                color: #6d5a8f;
+              }
+
+              button.encrypt,
+              button.decrypt {
+                width: 100%;
+                margin-top: 12px;
+                padding: 14px 24px;
+                background: transparent;
+                color: #ff6ec7;
+                border: 3px solid #ff6ec7;
+                border-radius: 0;
+                font-size: 16px;
+                font-weight: 900;
+                cursor: pointer;
+                text-transform: uppercase;
+                letter-spacing: 3px;
+                transition: all 0.3s ease;
+                box-shadow: 0 0 15px rgba(255, 110, 199, 0.5);
+                text-shadow: 0 0 10px #ff6ec7;
+
+                &:hover {
+                  background: rgba(255, 110, 199, 0.2);
+                  box-shadow: 0 0 30px rgba(255, 110, 199, 0.8), inset 0 0 20px rgba(255, 110, 199, 0.2);
+                  transform: translateY(-3px);
+                }
+
+                &:active {
+                  transform: translateY(0);
+                }
+              }
+
+              button.decrypt {
+                color: #7bffb5;
+                border-color: #7bffb5;
+                box-shadow: 0 0 15px rgba(123, 255, 181, 0.5);
+                text-shadow: 0 0 10px #7bffb5;
+
+                &:hover {
+                  background: rgba(123, 255, 181, 0.2);
+                  box-shadow: 0 0 30px rgba(123, 255, 181, 0.8), inset 0 0 20px rgba(123, 255, 181, 0.2);
+                }
+              }
+
+              .bgred {
+                background-color: rgba(255, 50, 100, 0.3);
+                border-color: #ff3264;
+                box-shadow: 0 0 10px rgba(255, 50, 100, 0.4);
+              }
+
+              .bggreen {
+                background-color: rgba(123, 255, 181, 0.3);
+                border-color: #7bffb5;
+                box-shadow: 0 0 10px rgba(123, 255, 181, 0.4);
+              }
+
+              .comparison-legend {
+                margin-top: 14px;
+                padding: 14px;
+                background: rgba(40, 30, 70, 0.6);
+                border-radius: 0;
+                border: 2px solid #9d6fd9;
+                text-align: center;
+                box-shadow: 0 0 15px rgba(157, 111, 217, 0.4);
+
+                & > div {
+                  display: inline-block;
+                  margin: 0 12px;
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: #ffffff;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+
+                  span:first-child {
+                    display: inline-block;
+                    width: 16px;
+                    height: 16px;
+                    vertical-align: middle;
+                    margin-right: 6px;
+                    border-radius: 0;
+                    border: 2px solid;
+                  }
+
+                  span:last-child {
+                    vertical-align: middle;
+                  }
+                }
+
+                & > div:first-child span:first-child {
+                  background-color: rgba(123, 255, 181, 0.4);
+                  border-color: #7bffb5;
+                  box-shadow: 0 0 8px rgba(123, 255, 181, 0.6);
+                }
+
+                & > div:last-child span:first-child {
+                  background-color: rgba(255, 50, 100, 0.4);
+                  border-color: #ff3264;
+                  box-shadow: 0 0 8px rgba(255, 50, 100, 0.6);
+                }
+              }
+            }
+          </style>
+          <h2>🔐 Caesar Cipher Encryptor</h2>
+          <label class="key">
+            <span>Key:</span>
+            <input type="text" />
+            <span>Current key: <span class="curkey"></span>, maxIndex <span class="maxIndex"></span></span>
+            <button class="up">⬆ Up</button>
+            <button class="down">⬇ Down</button>
+          </label>
+          <label class="alphabet">
+            <span>Alphabet:</span>
+            <input type="text" readonly />
+          </label>
+          <label>
+            <span>Message:</span>
+            <textarea class="message">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Etiam molestie pulvinar consequat.
+Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</textarea
+            >
+            <button class="encrypt">🔒 Encrypt</button>
+          </label>
+          <label>
+            <span>Encrypted:</span>
+            <textarea class="encrypted" wrap="soft"></textarea>
+            <button class="decrypt">🔓 Decrypt</button>
+          </label>
+          <label>
+            <span>Decrypted:</span>
+            <textarea class="decrypted"></textarea>
+          </label>
+          <div class="comparison-legend">
+            <div>
+              <span></span>
+              <span>Equal</span>
+            </div>
+            <div>
+              <span></span>
+              <span>Not Equal</span>
+            </div>
+          </div>
+        </div>
+        <script type="module" src="bind.js"></script>
+        <script type="editor" data-lang="ts">
+          <%inject moduleCaesarCypher.ts %>
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Caesar Cipher - Brutalism</title>
+    <style>
+      body.layout.bg {
+        background: #ffffff !important;
+      }
+      body.layout.bg::before,
+      body.layout.bg::after {
+        display: none !important;
+      }
+      .body,
+      .inside {
+        background: transparent !important;
+      }
+    </style>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div id="encryptor">
+          <style>
+            #encryptor {
+              max-width: 800px;
+              margin: 0 auto;
+              padding: 20px;
+              background: #ffff00;
+              border: 8px solid #000000;
+              box-shadow: 12px 12px 0 #000000;
+              font-family: 'Courier New', Courier, monospace;
+
+              h2 {
+                color: #000000;
+                font-size: 32px;
+                font-weight: 900;
+                text-align: center;
+                margin-bottom: 24px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                border: 4px solid #000000;
+                padding: 12px;
+                background: #ff00ff;
+              }
+
+              label {
+                display: block;
+                margin-bottom: 16px;
+                background: #00ffff;
+                padding: 16px;
+                border: 4px solid #000000;
+                box-shadow: 6px 6px 0 #000000;
+                transition: all 0.1s ease;
+
+                &:hover {
+                  transform: translate(-3px, -3px);
+                  box-shadow: 9px 9px 0 #000000;
+                }
+
+                &:active {
+                  transform: translate(2px, 2px);
+                  box-shadow: 4px 4px 0 #000000;
+                }
+              }
+
+              & > span {
+                display: inline-block;
+                width: 100px;
+                font-weight: 900;
+                color: #000000;
+                font-size: 14px;
+                text-transform: uppercase;
+              }
+
+              input,
+              textarea {
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 16px;
+                font-weight: 700;
+                width: calc(100% - 120px);
+                padding: 12px;
+                border: 4px solid #000000;
+                border-radius: 0;
+                background: #ffffff;
+                color: #000000;
+                transition: all 0.1s ease;
+
+                &:focus {
+                  outline: none;
+                  border-color: #ff0000;
+                  box-shadow: 0 0 0 4px #ff0000;
+                  background: #ffffff;
+                }
+              }
+
+              textarea {
+                height: 100px;
+                resize: vertical;
+                line-height: 1.4;
+              }
+
+              textarea:not(.encrypted) {
+                text-wrap: nowrap;
+              }
+
+              .key {
+                input {
+                  width: 60px;
+                  text-align: center;
+                  font-size: 24px;
+                  font-weight: 900;
+                  margin-right: 16px;
+                  background: #ffff00;
+                }
+
+                span:not(.curkey):not(.maxIndex) {
+                  color: #000000;
+                  font-size: 14px;
+                  margin-right: 12px;
+                }
+
+                .curkey,
+                .maxIndex {
+                  font-weight: 900;
+                  color: #ff0000;
+                }
+
+                button {
+                  margin: 0 4px;
+                  padding: 10px 16px;
+                  background: #ff00ff;
+                  color: #000000;
+                  border: 4px solid #000000;
+                  border-radius: 0;
+                  cursor: pointer;
+                  font-weight: 900;
+                  font-size: 14px;
+                  text-transform: uppercase;
+                  transition: all 0.1s ease;
+                  box-shadow: 4px 4px 0 #000000;
+
+                  &:hover {
+                    transform: translate(-2px, -2px);
+                    box-shadow: 6px 6px 0 #000000;
+                  }
+
+                  &:active {
+                    transform: translate(2px, 2px);
+                    box-shadow: 2px 2px 0 #000000;
+                  }
+                }
+              }
+
+              .alphabet input {
+                background-color: #eeeeee;
+                cursor: not-allowed;
+                color: #666666;
+              }
+
+              button.encrypt,
+              button.decrypt {
+                width: 100%;
+                margin-top: 12px;
+                padding: 16px 24px;
+                background: #ff0000;
+                color: #ffffff;
+                border: 4px solid #000000;
+                border-radius: 0;
+                font-size: 18px;
+                font-weight: 900;
+                cursor: pointer;
+                text-transform: uppercase;
+                letter-spacing: 3px;
+                transition: all 0.1s ease;
+                box-shadow: 6px 6px 0 #000000;
+
+                &:hover {
+                  transform: translate(-3px, -3px);
+                  box-shadow: 9px 9px 0 #000000;
+                }
+
+                &:active {
+                  transform: translate(2px, 2px);
+                  box-shadow: 4px 4px 0 #000000;
+                }
+              }
+
+              button.decrypt {
+                background: #00ff00;
+                color: #000000;
+              }
+
+              .bgred {
+                background-color: #ff6b6b;
+                border-color: #000000;
+              }
+
+              .bggreen {
+                background-color: #51cf66;
+                border-color: #000000;
+              }
+
+              .comparison-legend {
+                margin-top: 16px;
+                padding: 16px;
+                background: #ffffff;
+                border: 4px solid #000000;
+                text-align: center;
+                box-shadow: 6px 6px 0 #000000;
+
+                & > div {
+                  display: inline-block;
+                  margin: 0 16px;
+                  font-size: 14px;
+                  font-weight: 900;
+                  color: #000000;
+                  text-transform: uppercase;
+
+                  span:first-child {
+                    display: inline-block;
+                    width: 20px;
+                    height: 20px;
+                    vertical-align: middle;
+                    margin-right: 8px;
+                    border-radius: 0;
+                    border: 3px solid #000000;
+                  }
+
+                  span:last-child {
+                    vertical-align: middle;
+                  }
+                }
+
+                & > div:first-child span:first-child {
+                  background-color: #51cf66;
+                }
+
+                & > div:last-child span:first-child {
+                  background-color: #ff6b6b;
+                }
+              }
+            }
+          </style>
+          <h2>🔐 Caesar Cipher Encryptor</h2>
+          <label class="key">
+            <span>Key:</span>
+            <input type="text" />
+            <span>Current key: <span class="curkey"></span>, maxIndex <span class="maxIndex"></span></span>
+            <button class="up">⬆ Up</button>
+            <button class="down">⬇ Down</button>
+          </label>
+          <label class="alphabet">
+            <span>Alphabet:</span>
+            <input type="text" readonly />
+          </label>
+          <label>
+            <span>Message:</span>
+            <textarea class="message">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Etiam molestie pulvinar consequat.
+Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</textarea
+            >
+            <button class="encrypt">🔒 Encrypt</button>
+          </label>
+          <label>
+            <span>Encrypted:</span>
+            <textarea class="encrypted" wrap="soft"></textarea>
+            <button class="decrypt">🔓 Decrypt</button>
+          </label>
+          <label>
+            <span>Decrypted:</span>
+            <textarea class="decrypted"></textarea>
+          </label>
+          <div class="comparison-legend">
+            <div>
+              <span></span>
+              <span>Equal</span>
+            </div>
+            <div>
+              <span></span>
+              <span>Not Equal</span>
+            </div>
+          </div>
+        </div>
+        <script type="module" src="bind.js"></script>
+        <script type="editor" data-lang="ts">
+          <%inject moduleCaesarCypher.ts %>
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

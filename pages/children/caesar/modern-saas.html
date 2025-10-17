@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Caesar Cipher - Modern SaaS</title>
+    <style>
+      body.layout.bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+      }
+      body.layout.bg::before,
+      body.layout.bg::after {
+        display: none !important;
+      }
+      .body,
+      .inside {
+        background: transparent !important;
+      }
+    </style>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div id="encryptor">
+          <style>
+            #encryptor {
+              max-width: 800px;
+              margin: 0 auto;
+              padding: 40px;
+              background: #ffffff;
+              border-radius: 24px;
+              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+
+              h2 {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-size: 36px;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 32px;
+                letter-spacing: -1px;
+              }
+
+              label {
+                display: block;
+                margin-bottom: 16px;
+                background: #fafbfc;
+                padding: 24px;
+                border-radius: 16px;
+                border: 1px solid #e6e8eb;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+                &:hover {
+                  border-color: #d4d7dc;
+                  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+                  transform: translateY(-2px);
+                }
+              }
+
+              & > span {
+                display: inline-block;
+                width: 100px;
+                font-weight: 600;
+                color: #1a1d23;
+                font-size: 14px;
+              }
+
+              input,
+              textarea {
+                font-family: 'JetBrains Mono', 'Fira Code', Monaco, Consolas, monospace;
+                font-size: 14px;
+                width: calc(100% - 120px);
+                padding: 12px 16px;
+                border: 2px solid #e6e8eb;
+                border-radius: 12px;
+                background: #ffffff;
+                color: #1a1d23;
+                transition: all 0.2s ease;
+
+                &::placeholder {
+                  color: #9ba1a8;
+                }
+
+                &:focus {
+                  outline: none;
+                  border-color: #667eea;
+                  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+                  background: #ffffff;
+                }
+              }
+
+              textarea {
+                height: 100px;
+                resize: vertical;
+                line-height: 1.6;
+              }
+
+              textarea:not(.encrypted) {
+                text-wrap: nowrap;
+              }
+
+              .key {
+                input {
+                  width: 60px;
+                  text-align: center;
+                  font-size: 20px;
+                  font-weight: 700;
+                  margin-right: 16px;
+                }
+
+                span:not(.curkey):not(.maxIndex) {
+                  color: #6e757d;
+                  font-size: 13px;
+                  margin-right: 12px;
+                }
+
+                .curkey,
+                .maxIndex {
+                  font-weight: 700;
+                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  background-clip: text;
+                }
+
+                button {
+                  margin: 0 4px;
+                  padding: 10px 20px;
+                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                  color: #ffffff;
+                  border: none;
+                  border-radius: 10px;
+                  cursor: pointer;
+                  font-weight: 600;
+                  font-size: 14px;
+                  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+
+                  &:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+                  }
+
+                  &:active {
+                    transform: translateY(0);
+                  }
+                }
+              }
+
+              .alphabet input {
+                background-color: #f5f6f7;
+                cursor: not-allowed;
+                color: #9ba1a8;
+              }
+
+              button.encrypt,
+              button.decrypt {
+                width: 100%;
+                margin-top: 16px;
+                padding: 16px 32px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: #ffffff;
+                border: none;
+                border-radius: 14px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                letter-spacing: 0.3px;
+                box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+
+                &:hover {
+                  transform: translateY(-3px);
+                  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+                }
+
+                &:active {
+                  transform: translateY(-1px);
+                }
+              }
+
+              button.decrypt {
+                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+                box-shadow: 0 8px 24px rgba(17, 153, 142, 0.3);
+
+                &:hover {
+                  box-shadow: 0 12px 32px rgba(17, 153, 142, 0.4);
+                }
+              }
+
+              .bgred {
+                background-color: #fff5f5;
+                border-color: #feb2b2;
+              }
+
+              .bggreen {
+                background-color: #f0fff4;
+                border-color: #9ae6b4;
+              }
+
+              .comparison-legend {
+                margin-top: 16px;
+                padding: 20px;
+                background: #fafbfc;
+                border-radius: 16px;
+                border: 1px solid #e6e8eb;
+                text-align: center;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+                & > div {
+                  display: inline-block;
+                  margin: 0 16px;
+                  font-size: 14px;
+                  font-weight: 600;
+                  color: #1a1d23;
+
+                  span:first-child {
+                    display: inline-block;
+                    width: 18px;
+                    height: 18px;
+                    vertical-align: middle;
+                    margin-right: 8px;
+                    border-radius: 6px;
+                    border: 2px solid;
+                  }
+
+                  span:last-child {
+                    vertical-align: middle;
+                  }
+                }
+
+                & > div:first-child span:first-child {
+                  background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+                  border-color: #9ae6b4;
+                }
+
+                & > div:last-child span:first-child {
+                  background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+                  border-color: #feb2b2;
+                }
+              }
+            }
+          </style>
+          <h2>🔐 Caesar Cipher Encryptor</h2>
+          <label class="key">
+            <span>Key:</span>
+            <input type="text" />
+            <span>Current key: <span class="curkey"></span>, maxIndex <span class="maxIndex"></span></span>
+            <button class="up">⬆ Up</button>
+            <button class="down">⬇ Down</button>
+          </label>
+          <label class="alphabet">
+            <span>Alphabet:</span>
+            <input type="text" readonly />
+          </label>
+          <label>
+            <span>Message:</span>
+            <textarea class="message">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Etiam molestie pulvinar consequat.
+Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</textarea
+            >
+            <button class="encrypt">🔒 Encrypt</button>
+          </label>
+          <label>
+            <span>Encrypted:</span>
+            <textarea class="encrypted" wrap="soft"></textarea>
+            <button class="decrypt">🔓 Decrypt</button>
+          </label>
+          <label>
+            <span>Decrypted:</span>
+            <textarea class="decrypted"></textarea>
+          </label>
+          <div class="comparison-legend">
+            <div>
+              <span></span>
+              <span>Exactly equal</span>
+            </div>
+            <div>
+              <span></span>
+              <span>Not exactly equal</span>
+            </div>
+          </div>
+        </div>
+        <script type="module" src="bind.js"></script>
+        <script type="editor" data-lang="ts">
+          <%inject moduleCaesarCypher.ts %>
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Caesar Cipher - Style Gallery</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        color: #ffffff;
+        font-size: 48px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 16px;
+        letter-spacing: -1px;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 18px;
+        text-align: center;
+        margin-bottom: 48px;
+        font-weight: 400;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+        margin-bottom: 40px;
+      }
+
+      .card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: block;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .card-title {
+        color: #1a1a1a;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+      }
+
+      .card-description {
+        color: #6b6b6b;
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+
+      .card-tag {
+        display: inline-block;
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .original-link {
+        text-align: center;
+        margin-top: 48px;
+      }
+
+      .original-link a {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: #ffffff;
+        padding: 16px 32px;
+        border-radius: 12px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .original-link a:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 36px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🔐 Caesar Cipher Style Gallery</h1>
+      <p class="subtitle">Explore the same Caesar Cipher encryptor in 9 different design styles</p>
+
+      <div class="grid">
+        <a href="material-design.html" class="card">
+          <h2 class="card-title">Material Design</h2>
+          <p class="card-description">
+            Google's design system featuring elevated cards, bold colors, and meaningful motion with ripple effects.
+          </p>
+          <span class="card-tag">Classic</span>
+        </a>
+
+        <a href="fluent-design.html" class="card">
+          <h2 class="card-title">Fluent Design</h2>
+          <p class="card-description">
+            Microsoft's modern aesthetic with acrylic blur effects, depth, and smooth transitions.
+          </p>
+          <span class="card-tag">Modern</span>
+        </a>
+
+        <a href="apple-hig.html" class="card">
+          <h2 class="card-title">Apple Human Interface</h2>
+          <p class="card-description">
+            Clean, minimalist design with generous whitespace, subtle shadows, and premium feel inspired by Apple's guidelines.
+          </p>
+          <span class="card-tag">Premium</span>
+        </a>
+
+        <a href="glassmorphism.html" class="card">
+          <h2 class="card-title">Glassmorphism</h2>
+          <p class="card-description">
+            Frosted glass effect with translucent backgrounds, beautiful blur, and vibrant gradient background.
+          </p>
+          <span class="card-tag">Trendy</span>
+        </a>
+
+        <a href="neumorphism.html" class="card">
+          <h2 class="card-title">Neumorphism (Soft UI)</h2>
+          <p class="card-description">
+            Soft, extruded look with same-color shadows creating a tactile, almost 3D appearance.
+          </p>
+          <span class="card-tag">Unique</span>
+        </a>
+
+        <a href="dark-mode.html" class="card">
+          <h2 class="card-title">Dark Mode</h2>
+          <p class="card-description">
+            Developer-friendly dark theme with VS Code inspired colors, high contrast, and reduced eye strain.
+          </p>
+          <span class="card-tag">Developer</span>
+        </a>
+
+        <a href="brutalism.html" class="card">
+          <h2 class="card-title">Brutalism</h2>
+          <p class="card-description">
+            Bold, raw aesthetic with high contrast neon colors, heavy borders, and unconventional layout. Maximum impact!
+          </p>
+          <span class="card-tag">Bold</span>
+        </a>
+
+        <a href="vaporwave.html" class="card">
+          <h2 class="card-title">Vaporwave / Retro</h2>
+          <p class="card-description">
+            80s/90s nostalgia with neon colors, glowing effects, animated gradients, and synthwave vibes.
+          </p>
+          <span class="card-tag">Retro</span>
+        </a>
+
+        <a href="modern-saas.html" class="card">
+          <h2 class="card-title">Modern SaaS</h2>
+          <p class="card-description">
+            Startup-inspired design with gradient accents, smooth animations, and conversion-focused modern aesthetic.
+          </p>
+          <span class="card-tag">SaaS</span>
+        </a>
+      </div>
+
+      <div class="original-link">
+        <a href="index.template.html">View Original (Claude Anthropic Style)</a>
+      </div>
+    </div>
+  </body>
+</html>
