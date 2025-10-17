@@ -12,6 +12,166 @@
   <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
+        <h2>setup</h2>
+        <script type="editor" data-lang="sh">
+
+          # install
+          # then add to vscode extension "Claude Code for VS Code" from anthropic
+          # see: https://youtu.be/SUysp3sJHbA
+
+          # setup with custom api:
+            export GOCODE_API_TOKEN=sk-ZI-lxxxxxxxxxxxxxxxxxA
+            export ANTHROPIC_BASE_URL=https://xxx.net
+            export ANTHROPIC_AUTH_TOKEN=$GOCODE_API_TOKEN
+            export ANTHROPIC_MODEL=claude-sonnet-4-5-20250929
+
+            # extra one env var was needed to make /context work
+              export ANTHROPIC_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
+              # or
+              export ANTHROPIC_SMALL_FAST_MODEL=claude-3-5-haiku-20241022
+
+          # configure multiline, add to ~/Workspace/vscode/javascript/code-portable-data/user-data/User/keybindings.json
+          {
+            "key": "shift+enter",
+            "command": "-claudeCode.sendMessage",
+            "when": "claudeCodeChatFocused || inChat"
+          },
+          {
+            "key": "shift+enter",
+            "command": "workbench.action.terminal.sendSequence",
+            "args": { "text": "\\\n" }, // btw this one is good in general for terminals - nice finding
+            "when": "terminalFocus"
+          }
+
+          # apparently it should be possible to achieve this with /terminal-setup
+          # but that didn't work for me ¯\_(ツ)_/¯
+
+          /init - Initialize a new CLAUDE.md file with codebase documentation
+
+          # and add your instruction to memorise - it will ask where to save it 
+             ./CLAUDE.md | ./CLAUDE.local.md | ~/.claude/CLAUDE.md
+          ./CLAUDE.local.md - this one should normally be gitignored and with stuff you prefer
+            # CLAUDE.local.md seems to be deprecated: https://docs.claude.com/en/docs/claude-code/memory#determine-memory-type
+
+          @ symbol is for adding files/directories to context
+
+          # tokens usage
+          # improving UI for page pages/encryptor/index.rendered.html took around 700 tokens
+          # 
+
+
+          # working with UI (to make claude to "see"):
+          # https://github.com/microsoft/playwright-mcp
+          # https://github.com/ChromeDevTools/chrome-devtools-mcp/
+
+          # slash commands
+
+          /status - shows current status of claude like:
+            > /status 
+          ────────────────────────────────────────────────────────
+             Settings:  [Status]   Config   Usage   (tab to cycle)
+            
+             Version: 2.0.20
+             Session ID: 06b6ea45-0cfa-4ee0-bd52-d565d7bba5a2
+             cwd: /Users/xxx/Workspace/xxx_web/xxx_web
+             Auth token: ANTHROPIC_AUTH_TOKEN
+             Anthropic base URL: https://xxx.net
+            
+             Model: claude-sonnet-4-5-20250929
+             IDE: Connected to VS Code extension version 2.0.20
+             Memory: project (CLAUDE.md)
+             Setting sources: User settings, Shared project settings, Local, Command line arguments, Enterprise managed policies
+             Esc to exit
+          ────────────────────────────────────────────────────────
+           Settings:  Status   Config   Usage   (tab to cycle)
+           Configure Claude Code preferences
+          
+           ❯ Auto-compact                              true
+             Show tips                                 true     <- you can disable tips here for example
+             Rewind code (checkpoints)                 true
+             Verbose output                            false
+             Theme                                     Dark mode (colorblind-friendly)
+             Notifications                             Auto
+             Output style                              default
+             Editor mode                               normal
+             Model                                     claude-sonnet-4-5-20250929  <- you can see model used here too
+             Diff tool                                 auto
+             Auto-install IDE extension                true
+          
+           Enter/Space to change · Esc to exit
+
+          /history  - to bring interactive history switcher
+          claude history - to list sessions
+          claude resume <session-id> - resume given session by id
+
+          double ESC - allows to choose previous point in the history to continue from there
+
+          /resume - allows you bring back previous session interactively
+
+          /context
+              WARNING: TO MAKE THIS ONE WORK I HAD T ADD ANOTHER ENV VAR: 
+                export ANTHROPIC_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
+              Context Usage
+             ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛁ ⛀ ⛁ ⛀   claude-sonnet-4-5-20250929 · 64k/200k tokens (32%)
+             ⛀ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ 
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ System prompt: 2.3k tokens (1.2%)
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ System tools: 12.3k tokens (6.2%)
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ MCP tools: 1.3k tokens (0.6%)
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Memory files: 3.2k tokens (1.6%)
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶   ⛁ Messages: 8 tokens (0.0%)
+             ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛝ ⛝ ⛝   ⛶ Free space: 136k (67.9%)
+             ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝   ⛝ Autocompact buffer: 45.0k tokens (22.5%)
+             ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ ⛝ 
+        
+             MCP tools · /mcp
+             └ mcp__ide__getDiagnostics (ide): 611 tokens
+             └ mcp__ide__executeCode (ide): 682 tokens
+        
+             Memory files · /memory
+             └ Project                                                            3.2k 
+             (/Users/sdzialowski/Workspace/SPECIAL_web/SPECIAL_web/CLAUDE.md):    tokens
+        
+             SlashCommand Tool · 0 commands
+             └ Total: 864 tokens
+
+          /compact - compacts chat & context into a small summary
+
+          /model - to switch model
+
+          /clear - clear all from context except CLAUDE.md
+
+          # files:
+          cat ~/.claude.json -- seems to hold all my previous prompts
+          there is this main key 
+            "projects": {
+              and inside it there are records
+              "/Users/xxx/Workspace/xx/xxxx-service/xxxx-service": {
+                "allowedTools": [],
+                "history": [
+                  {
+                    "display": "/terminal-setup ",
+                    "pastedContents": {}
+                  },
+                  {
+                    "display": "/exit",
+                    "pastedContents": {}
+                  },
+                  {
+                    "display": "how can I switch mode?",
+                    "pastedContents": {}
+                  },
+                  ...
+          
+          ~/.claude/history.jsonl
+            also contains all history - in different format though
+          
+          ~/.claude/plugins/config.json
+            inspect that later ...
+          
+          ~/.claude/.mcp.json
+            inspect that later ...
+          
+        </script>
         <h2>bash/zsh option to choose model</h2>
         <script type="editor" data-lang="sh">
 
