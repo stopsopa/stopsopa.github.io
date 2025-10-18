@@ -1,31 +1,65 @@
+---
+description: Create a new HTML page in the pages/ directory with a given name and template.
+argument-hint: [page name] | [toc attr: y/n] | [toc div: y/n] | [beforeAceEventPromise: y/n] | [allLoaded: y/n]
+allowed-tools: Bash(test:*), Bash(*), Bash(ls:*), Read(*), Write(*), Glob(*), AskUserQuestion(*)
+---
 
+Take the page name from the user for my new page.
 
-Take from user name for my new page.
+The page name can contain only regular alphanumeric characters, dashes, underscores, and numbers. Validate this and ask again if invalid.
 
-That page name can be regular alphanumeric characters, dashes, and underscores only and numbers. Validate that and ask again if invalid.
+Create a new index.html page in the directory `pages/[page name]/index.html`.
 
+Make sure that `pages/[page name]/index.html` with the given page name doesn't already exist.
 
-Create new index.html page in the directory `pages/[page name]/index.html`.
+If it does, then inform me about it and ask for a different name again.
 
-make sure that `pages/[page name]/index.html` with given page name doesn't exist already.
+As a template, use the HTML from the README.md section # TEMPLATE
 
-If it does, then inform me about it and ask for different name again.
+Allow me to also parameterize whether this document should have:
+- body attribute `toc`
+- section defining beforeAceEventPromise
+- script section with allLoaded
+- predefined section:
 
-As a template use html from README.md section # TEMPLATE
-
-Allow me also to parametrize if this document should have body attribute `toc`
-
-If it should have section defining beforeAceEventPromise
-
-if it should have script section with allLoaded
-
-if it should have predefined section 
-
-```
+```html
 <div class="cards toc">
     <h1>Table of Contents</h1>
     <ul data-do-sort>
-    <li><a href="http://">ekstra link</a></li>
+        <li><a href="http://">extra link</a></li>
     </ul>
 </div>
 ```
+
+> [!WARNING]
+> When asking, make it clear to be distinguishable whether you ask about the attribute 'toc' or the toc div section.
+
+> [!WARNING]
+> Also ask for the [page name] first.
+
+> [!WARNING]
+> due to the nature of LLMS when this slash command is executed every time questions are phrased differently.
+> Please make sure to always use shortest possible phrasing for questions.
+
+## Standardized Questions
+
+Use these exact phrasings in order:
+
+1. **Page name:** `What is the page name?`
+2. **Body toc attribute:** `Add body toc attribute? (y/n)`
+3. **beforeAceEventPromise section:** `Add beforeAceEventPromise section? (y/n)`
+4. **allLoaded script section:** `Add allLoaded script section? (y/n)`
+5. **TOC div section:** `Add TOC div section? (y/n)`
+
+### Question Details:
+- **Page name**: Must contain only alphanumeric characters, dashes, underscores, and numbers
+- **Body toc attribute**: Adds `toc` attribute to `<body>` tag
+- **beforeAceEventPromise section**: Includes beforeAceEventPromise definition
+- **allLoaded script section**: Includes allLoaded script functionality
+- **TOC div section**: Includes the predefined Table of Contents div structure
+
+# dev notes
+
+Ignore this section please Claude. These are just instructions for me:
+
+We have to start new section with /exit and launch claude again
