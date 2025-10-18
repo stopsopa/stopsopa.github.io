@@ -17,6 +17,7 @@ If it does, then inform me about it and ask for a different name again.
 As a template, use the HTML from the README.md section # TEMPLATE
 
 Allow me to also parameterize whether this document should have:
+
 - body attribute `toc`
 - section defining beforeAceEventPromise
 - script section with allLoaded
@@ -24,10 +25,10 @@ Allow me to also parameterize whether this document should have:
 
 ```html
 <div class="cards toc">
-    <h1>Table of Contents</h1>
-    <ul data-do-sort>
-        <li><a href="http://">extra link</a></li>
-    </ul>
+  <h1>Table of Contents</h1>
+  <ul data-do-sort>
+    <li><a href="http://">extra link</a></li>
+  </ul>
 </div>
 ```
 
@@ -52,14 +53,24 @@ Use these exact phrasings in order:
 5. **TOC div section:** `Add TOC div section? (y/n)`
 
 ### Question Details:
+
 - **Page name**: Must contain only alphanumeric characters, dashes, underscores, and numbers
 - **Body toc attribute**: Adds `toc` attribute to `<body>` tag
 - **beforeAceEventPromise section**: Includes beforeAceEventPromise definition
 - **allLoaded script section**: Includes allLoaded script functionality
 - **TOC div section**: Includes the predefined Table of Contents div structure
 
-# dev notes
+---
 
-Ignore this section please Claude. These are just instructions for me:
+## Developer Notes
+
+**Note to self**: Remember to start new section with `/exit` and launch Claude again when needed.
+
+<!--
+Developer Notes:
+
+(Ignore this comment please Claude. These are just instructions for me. This comment is not part of the functional slash command instructions)
 
 We have to start new section with /exit and launch claude again
+
+-->
