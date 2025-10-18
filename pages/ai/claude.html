@@ -145,6 +145,11 @@
           /compact - compacts chat & context into a small summary
 
           /model - to switch model
+            # to list all models
+            curl -H "Authorization: Bearer sk-xxxxxxx" \
+               https://xxx.net/v1/models | jq '{results: [.data[] | {id, owned_by}]}'
+            curl -H "Authorization: Bearer sk-xxxxxxx" \
+               https://xxx.net/v1/models | jq -r '.data[].id'
 
           /clear - clear all from context except CLAUDE.md
 
@@ -189,11 +194,27 @@
           # create custom "Slash Command" https://youtu.be/52KBhQqqHuc?t=126
             https://docs.claude.com/en/docs/claude-code/slash-commands#project-commands
 
-          # MCP: https://youtu.be/X7lgIa6guKg?t=256
+          # MCP: https://youtu.be/X7lgIa6guKg?t=332
             https://docs.claude.com/en/docs/claude-code/mcp#installing-mcp-servers
             claude mcp list
             explore some local MCP's: 
               https://github.com/upstash/context7
+                [login with github]
+                claude mcp add --transport http --scope project context7 https://mcp.context7.com/mcp --header "CONTEXT7_API_KEY: xxxxxx-xxxxxxx"
+                  that will add config to .mcp.json in project directory
+              https://github.com/microsoft/playwright-mcp
+                use: claude mcp add playwright --scope project npx @playwright/mcp@latest
+                  that will add config to .mcp.json in project directory
+            /mcp
+
+          # subagents https://youtu.be/Phr7vBx9yFQ?t=203
+            - separate context window
+            - reduces context overload in the main session
+            - claude can delegate tasks to it when it needs too - that keeps main context clean
+            /agents
+        
+
+          # plugin (create plugin https://youtu.be/-KusSduAP1A?t=453)
             
           
         </script>
