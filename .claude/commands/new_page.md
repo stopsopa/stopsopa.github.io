@@ -1,7 +1,7 @@
 ---
 description: Create a new HTML page in the pages/ directory with a given name and template.
 argument-hint: [page name] | [toc attr: y/n] | [toc div: y/n] | [beforeAceEventPromise: y/n] | [allLoaded: y/n]
-allowed-tools: Bash(test:*), Bash(*), Bash(ls:*), Read(*), Write(*), Glob(*), AskUserQuestion(*)
+allowed-tools: Bash(test:*), ash(mkdir:*), Bash(*), Bash(ls:*), Read(*), Write(*), Glob(*), AskUserQuestion(*)
 ---
 
 Take the page name from the user for my new page.
