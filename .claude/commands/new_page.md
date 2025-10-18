@@ -71,6 +71,15 @@ Developer Notes:
 
 (Ignore this comment please Claude. These are just instructions for me. This comment is not part of the functional slash command instructions)
 
-We have to start new section with /exit and launch claude again
+Usage note: We have to start new section with /exit and launch Claude again
+
+Example usage:
+  /new_page my-new-topic | y | n | y | n
+
+This would create a page named "my-new-topic" with:
+  - Body toc attribute: yes
+  - beforeAceEventPromise section: no
+  - allLoaded script section: yes
+  - TOC div section: no
 
 -->
