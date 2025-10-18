@@ -268,3 +268,4 @@ The site uses Firebase for authentication and database. Configuration is loaded 
 - Most pages are self-contained with embedded code snippets
 - Direct editing via GitHub web editor (github.dev) is common workflow
 - The site intentionally exposes some (not secure) environment variables to client for dynamic URL handling
+- Use Context7 to check up-to-date docs when needed for implementing new libraries or frameworks, or adding features using them.
