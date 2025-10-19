@@ -13,20 +13,37 @@ Your task is to analyze web pages from the user's local development environment 
 **Workflow:**
 
 1. **Construct the URL**: When the user mentions a file they're working on (e.g., "pages/aws/index.html"), construct the full URL by:
-   - Starting with the base: `https://stopsopa.github.io.local:4339//` (note the double slashes after the port)
-   - Appending the file path exactly as provided
-   - Example: `https://stopsopa.github.io.local:4339//pages/aws/index.html`
+   - The dev server runs on TWO ports:
+     - HTTPS: `https://stopsopa.github.io.local:4339//` (preferred)
+     - HTTP: `http://stopsopa.github.io.local:7898//` (fallback)
+   - **FIRST TRY**: Use HTTPS on port 4339: `https://stopsopa.github.io.local:4339//pages/aws/index.html`
+   - **IF HTTPS FAILS** with `ERR_CERT_AUTHORITY_INVALID`, use HTTP on port 7898
+   - **CRITICAL**: The double slashes after the port (`//`) are REQUIRED
+     - WITHOUT the double slash, the site has an obfuscation mechanism that presents a password input form
+     - The page will NOT load until you enter the correct password in that input
+     - WITH the double slash, the page loads directly without password protection
+     - **ALWAYS include `//` after the port number** (e.g., `:4339//` or `:7898//`)
+   - Append the file path exactly as provided
    - If the user provides a partial path or just mentions a page name, ask for clarification to ensure you construct the correct URL
 
-2. **Use playwright-mcp to capture the page**:
-   - **IMPORTANT**: Always run Playwright in **headed mode** (with visible browser window) for this agent
-   - Navigate to the constructed URL using Playwright
-   - **Note**: The local development server uses a self-signed certificate. Playwright is configured to ignore HTTPS errors via:
-     - `PLAYWRIGHT_IGNORE_HTTPS_ERRORS=1` in `.mcp.json`
-     - Enhanced browser launch arguments matching the project's testing configuration: `--ignore-certificate-errors`, `--ignore-ssl-errors`, `--ignore-certificate-errors-spki-list`, `--disable-web-security`, `--allow-running-insecure-content`, `--disable-features=VizDisplayCompositor`
-     - Certificate warnings should be automatically bypassed
+2. **HTTPS Certificate Bypass Configuration**:
+   - The project has `.mcp.json` configured with Playwright HTTPS bypass settings:
+     ```json
+     "env": {
+       "PLAYWRIGHT_IGNORE_HTTPS_ERRORS": "1",
+       "PLAYWRIGHT_LAUNCH_OPTIONS": "{\"headless\":false,\"args\":[\"--ignore-certificate-errors\",\"--ignore-ssl-errors\",\"--ignore-certificate-errors-spki-list\",\"--disable-web-security\",\"--allow-running-insecure-content\",\"--disable-features=VizDisplayCompositor\"]}"
+     }
+     ```
+   - **IMPORTANT**: If HTTPS still fails with certificate errors, it means:
+     - Claude Code may need to be restarted to pick up `.mcp.json` changes, OR
+     - The MCP Playwright server version doesn't support these env vars
+   - **SOLUTION**: Use HTTP fallback (port 7898) which works reliably
+
+3. **Use playwright-mcp to capture the page**:
+   - Try HTTPS first using `mcp__playwright__browser_navigate` with port 4339
+   - If you get `ERR_CERT_AUTHORITY_INVALID`, immediately retry with HTTP on port 7898
    - Wait for the page to fully load (wait for `window.githubJsReady === true` if possible, or use appropriate wait conditions)
-   - Take a full-page screenshot
+   - Take a full-page screenshot using `mcp__playwright__browser_take_screenshot`
    - Capture both desktop and mobile viewports if responsive design feedback is relevant
 
 3. **Analyze the screenshot systematically** across these dimensions:
