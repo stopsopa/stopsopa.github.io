@@ -8,14 +8,27 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Caesar Cipher - Vaporwave</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-      body.layout {
-        background: linear-gradient(135deg, #2d1b69 0%, #5b42ab 25%, #ff6ec7 50%, #7bffb5 75%, #ff6ec7 100%);
-        background-size: 400% 400%;
+      * {
+        box-sizing: border-box;
+      }
+
+      body.layout.bg {
+        background: linear-gradient(135deg, #2d1b69 0%, #5b42ab 25%, #ff6ec7 50%, #7bffb5 75%, #ff6ec7 100%) !important;
+        background-size: 400% 400% !important;
+        background-image: linear-gradient(135deg, #2d1b69 0%, #5b42ab 25%, #ff6ec7 50%, #7bffb5 75%, #ff6ec7 100%) !important;
         animation: gradient 15s ease infinite;
         position: relative;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
+        min-height: 100vh;
+        font-family: 'Orbitron', 'Courier New', monospace;
       }
+
+      /* CRT Scanline Effect */
       body.layout::before {
         content: '';
         position: fixed;
@@ -24,19 +37,130 @@
         right: 0;
         bottom: 0;
         background-image:
-          repeating-linear-gradient(0deg, rgba(255, 110, 199, 0.1) 0px, transparent 2px, transparent 4px),
-          repeating-linear-gradient(90deg, rgba(123, 255, 181, 0.1) 0px, transparent 2px, transparent 4px);
-        background-size: 40px 40px;
+          repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15) 0px, transparent 1px, transparent 2px),
+          repeating-linear-gradient(90deg, rgba(123, 255, 181, 0.08) 0px, transparent 2px, transparent 4px);
+        background-size: 100% 3px, 40px 40px;
         pointer-events: none;
+        z-index: 9999;
+        animation: scanline 8s linear infinite;
       }
+
+      /* VHS Glitch Effect */
+      body.layout::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(255, 0, 80, 0.03),
+          rgba(255, 0, 80, 0.03) 1px,
+          rgba(0, 255, 255, 0.03) 1px,
+          rgba(0, 255, 255, 0.03) 2px
+        );
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0;
+        animation: vhsGlitch 3s infinite;
+      }
+
+      /* Floating Japanese Text */
+      .japanese-text {
+        position: fixed;
+        font-size: 80px;
+        color: rgba(255, 110, 199, 0.15);
+        font-weight: bold;
+        pointer-events: none;
+        z-index: 0;
+        text-shadow: 0 0 20px rgba(255, 110, 199, 0.4);
+        animation: float 20s ease-in-out infinite;
+        user-select: none;
+      }
+
+      .japanese-text:nth-of-type(1) { top: 10%; left: 5%; animation-delay: 0s; }
+      .japanese-text:nth-of-type(2) { top: 60%; right: 10%; animation-delay: -5s; }
+      .japanese-text:nth-of-type(3) { bottom: 15%; left: 15%; animation-delay: -10s; }
+
+      /* Geometric Shapes */
+      .geometric-shape {
+        position: fixed;
+        border: 3px solid;
+        pointer-events: none;
+        z-index: 0;
+        animation: rotate3d 30s linear infinite;
+      }
+
+      .geometric-shape:nth-of-type(1) {
+        width: 150px;
+        height: 150px;
+        top: 20%;
+        right: 5%;
+        border-color: rgba(123, 255, 181, 0.2);
+        transform: rotate(45deg);
+      }
+
+      .geometric-shape:nth-of-type(2) {
+        width: 100px;
+        height: 100px;
+        bottom: 20%;
+        right: 20%;
+        border-color: rgba(255, 110, 199, 0.2);
+        border-radius: 50%;
+        animation-delay: -10s;
+      }
+
       @keyframes gradient {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
       }
+
+      @keyframes scanline {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(100vh); }
+      }
+
+      @keyframes vhsGlitch {
+        0%, 90%, 100% { opacity: 0; }
+        92%, 96% { opacity: 1; transform: translateX(2px); }
+        94%, 98% { opacity: 1; transform: translateX(-2px); }
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0px) translateX(0px); }
+        25% { transform: translateY(-20px) translateX(10px); }
+        50% { transform: translateY(0px) translateX(20px); }
+        75% { transform: translateY(20px) translateX(10px); }
+      }
+
+      @keyframes rotate3d {
+        0% { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(180deg) scale(1.1); }
+        100% { transform: rotate(360deg) scale(1); }
+      }
+
+      @keyframes ripple {
+        0% { transform: scale(0.95); opacity: 1; }
+        100% { transform: scale(1.5); opacity: 0; }
+      }
+
+      @keyframes chromatic {
+        0% { text-shadow: 2px 0 0 rgba(255, 0, 0, 0.5), -2px 0 0 rgba(0, 255, 255, 0.5); }
+        50% { text-shadow: -2px 0 0 rgba(255, 0, 0, 0.5), 2px 0 0 rgba(0, 255, 255, 0.5); }
+        100% { text-shadow: 2px 0 0 rgba(255, 0, 0, 0.5), -2px 0 0 rgba(0, 255, 255, 0.5); }
+      }
     </style>
   </head>
   <body class="layout bg" toc>
+    <!-- Vaporwave Background Elements -->
+    <div class="japanese-text">ネオン</div>
+    <div class="japanese-text">サイバー</div>
+    <div class="japanese-text">未来</div>
+    <div class="geometric-shape"></div>
+    <div class="geometric-shape"></div>
+
     <div class="body">
       <div class="inside">
         <div id="encryptor">
@@ -51,8 +175,9 @@
               border-radius: 0;
               border: 3px solid #ff6ec7;
               box-shadow: 0 0 20px rgba(255, 110, 199, 0.6), 0 0 40px rgba(123, 255, 181, 0.3), inset 0 0 20px rgba(255, 110, 199, 0.1);
-              font-family: 'Courier New', 'Consolas', Monaco, monospace;
+              font-family: 'Orbitron', 'Courier New', 'Consolas', Monaco, monospace;
               position: relative;
+              z-index: 10;
 
               h2 {
                 color: #ff6ec7;
@@ -63,7 +188,7 @@
                 letter-spacing: 4px;
                 text-transform: uppercase;
                 text-shadow: 0 0 10px #ff6ec7, 0 0 20px #ff6ec7, 0 0 30px #7bffb5, 2px 2px 0 #7bffb5;
-                animation: glow 2s ease-in-out infinite alternate;
+                animation: glow 2s ease-in-out infinite alternate, chromatic 4s ease-in-out infinite;
               }
 
               @keyframes glow {
@@ -76,7 +201,10 @@
               }
 
               label {
-                display: block;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: flex-start;
+                gap: 12px;
                 margin-bottom: 14px;
                 background: rgba(40, 30, 70, 0.6);
                 padding: 16px;
@@ -84,6 +212,7 @@
                 border: 2px solid #7bffb5;
                 box-shadow: 0 0 15px rgba(123, 255, 181, 0.4), inset 0 0 15px rgba(255, 110, 199, 0.1);
                 transition: all 0.3s ease;
+                position: relative;
 
                 &:hover {
                   border-color: #ff6ec7;
@@ -92,22 +221,25 @@
                 }
               }
 
-              & > span {
+              label > span:first-child {
                 display: inline-block;
-                width: 100px;
+                min-width: 100px;
+                flex-shrink: 0;
                 font-weight: 700;
                 color: #7bffb5;
                 font-size: 13px;
                 text-transform: uppercase;
                 letter-spacing: 2px;
                 text-shadow: 0 0 5px #7bffb5;
+                padding-top: 10px;
               }
 
               input,
               textarea {
                 font-family: 'Courier New', Consolas, Monaco, monospace;
                 font-size: 14px;
-                width: calc(100% - 120px);
+                flex: 1;
+                min-width: 0;
                 padding: 10px 12px;
                 border: 2px solid #ff6ec7;
                 border-radius: 0;
@@ -129,9 +261,10 @@
               }
 
               textarea {
-                height: 100px;
+                min-height: 120px;
                 resize: vertical;
                 line-height: 1.5;
+                width: 100%;
               }
 
               textarea:not(.encrypted) {
@@ -139,12 +272,15 @@
               }
 
               .key {
+                flex-wrap: wrap;
+                align-items: center;
+
                 input {
                   width: 60px;
+                  flex: 0 0 60px;
                   text-align: center;
                   font-size: 22px;
                   font-weight: 900;
-                  margin-right: 16px;
                   color: #ff6ec7;
                   text-shadow: 0 0 10px #ff6ec7;
                 }
@@ -163,7 +299,7 @@
                 }
 
                 button {
-                  margin: 0 4px;
+                  margin: 4px;
                   padding: 8px 16px;
                   background: transparent;
                   color: #7bffb5;
@@ -177,6 +313,21 @@
                   transition: all 0.3s ease;
                   box-shadow: 0 0 10px rgba(123, 255, 181, 0.4);
                   text-shadow: 0 0 5px #7bffb5;
+                  position: relative;
+                  overflow: hidden;
+
+                  &::after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 0;
+                    height: 0;
+                    border-radius: 50%;
+                    background: rgba(123, 255, 181, 0.5);
+                    transform: translate(-50%, -50%);
+                    transition: width 0.6s, height 0.6s;
+                  }
 
                   &:hover {
                     background: rgba(123, 255, 181, 0.2);
@@ -186,6 +337,11 @@
 
                   &:active {
                     transform: translateY(0);
+                  }
+
+                  &:active::after {
+                    width: 200px;
+                    height: 200px;
                   }
                 }
               }
@@ -213,6 +369,22 @@
                 transition: all 0.3s ease;
                 box-shadow: 0 0 15px rgba(255, 110, 199, 0.5);
                 text-shadow: 0 0 10px #ff6ec7;
+                position: relative;
+                overflow: hidden;
+                font-family: 'Orbitron', 'Courier New', monospace;
+
+                &::before {
+                  content: '';
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  width: 0;
+                  height: 0;
+                  border-radius: 50%;
+                  background: rgba(255, 110, 199, 0.4);
+                  transform: translate(-50%, -50%);
+                  transition: width 0.6s, height 0.6s;
+                }
 
                 &:hover {
                   background: rgba(255, 110, 199, 0.2);
@@ -223,6 +395,11 @@
                 &:active {
                   transform: translateY(0);
                 }
+
+                &:active::before {
+                  width: 400px;
+                  height: 400px;
+                }
               }
 
               button.decrypt {
@@ -230,6 +407,10 @@
                 border-color: #7bffb5;
                 box-shadow: 0 0 15px rgba(123, 255, 181, 0.5);
                 text-shadow: 0 0 10px #7bffb5;
+
+                &::before {
+                  background: rgba(123, 255, 181, 0.4);
+                }
 
                 &:hover {
                   background: rgba(123, 255, 181, 0.2);
@@ -295,6 +476,140 @@
                   box-shadow: 0 0 8px rgba(255, 50, 100, 0.6);
                 }
               }
+
+              /* Copy Button Styles */
+              .copy-btn {
+                margin-left: 8px;
+                padding: 6px 12px;
+                background: transparent;
+                color: #9d6fd9;
+                border: 2px solid #9d6fd9;
+                border-radius: 0;
+                cursor: pointer;
+                font-weight: 700;
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: all 0.3s ease;
+                box-shadow: 0 0 10px rgba(157, 111, 217, 0.3);
+                text-shadow: 0 0 5px #9d6fd9;
+                position: relative;
+                overflow: hidden;
+
+                &::after {
+                  content: '';
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  width: 0;
+                  height: 0;
+                  border-radius: 50%;
+                  background: rgba(157, 111, 217, 0.4);
+                  transform: translate(-50%, -50%);
+                  transition: width 0.4s, height 0.4s;
+                }
+
+                &:hover {
+                  background: rgba(157, 111, 217, 0.2);
+                  box-shadow: 0 0 20px rgba(157, 111, 217, 0.6);
+                  transform: scale(1.05);
+                }
+
+                &:active::after {
+                  width: 100px;
+                  height: 100px;
+                }
+
+                &.copied {
+                  color: #7bffb5;
+                  border-color: #7bffb5;
+                  box-shadow: 0 0 20px rgba(123, 255, 181, 0.8);
+                  animation: pulse 0.5s ease;
+                }
+              }
+
+              @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+              }
+
+              /* Responsive Design */
+              @media (max-width: 768px) {
+                #encryptor {
+                  padding: 20px;
+                }
+
+                h2 {
+                  font-size: 24px !important;
+                  letter-spacing: 2px !important;
+                }
+
+                label {
+                  flex-direction: column;
+                  align-items: stretch;
+                }
+
+                label > span:first-child {
+                  min-width: auto;
+                  padding-top: 0;
+                  margin-bottom: 8px;
+                }
+
+                input,
+                textarea {
+                  width: 100% !important;
+                }
+
+                .key {
+                  flex-direction: column;
+                  align-items: stretch;
+
+                  input {
+                    width: 100% !important;
+                    flex: 1;
+                  }
+
+                  span {
+                    display: block;
+                    margin: 8px 0;
+                  }
+
+                  button {
+                    width: 100%;
+                  }
+                }
+
+                button.encrypt,
+                button.decrypt {
+                  font-size: 14px;
+                  letter-spacing: 2px;
+                  padding: 12px 20px;
+                }
+
+                .copy-btn {
+                  margin-left: 0;
+                  margin-top: 8px;
+                  width: 100%;
+                }
+              }
+
+              @media (max-width: 480px) {
+                #encryptor {
+                  padding: 16px;
+                }
+
+                h2 {
+                  font-size: 20px !important;
+                }
+
+                .japanese-text {
+                  font-size: 40px !important;
+                }
+
+                .geometric-shape {
+                  display: none;
+                }
+              }
             }
           </style>
           <h2>🔐 Caesar Cipher Encryptor</h2>
@@ -321,11 +636,13 @@ Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</tex
           <label>
             <span>Encrypted:</span>
             <textarea class="encrypted" wrap="soft"></textarea>
+            <button class="copy-btn" data-copy="encrypted">📋 Copy</button>
             <button class="decrypt">🔓 Decrypt</button>
           </label>
           <label>
             <span>Decrypted:</span>
             <textarea class="decrypted"></textarea>
+            <button class="copy-btn" data-copy="decrypted">📋 Copy</button>
           </label>
           <div class="comparison-legend">
             <div>
@@ -345,5 +662,48 @@ Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</tex
       </div>
     </div>
     <script type="module" src="/js/github.js"></script>
+    <script>
+      // Copy to clipboard functionality
+      document.addEventListener('DOMContentLoaded', () => {
+        const copyButtons = document.querySelectorAll('.copy-btn');
+
+        copyButtons.forEach(button => {
+          button.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const target = button.getAttribute('data-copy');
+            const textarea = document.querySelector(`.${target}`);
+
+            if (textarea && textarea.value) {
+              try {
+                await navigator.clipboard.writeText(textarea.value);
+
+                // Visual feedback
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.classList.add('copied');
+
+                setTimeout(() => {
+                  button.textContent = originalText;
+                  button.classList.remove('copied');
+                }, 2000);
+              } catch (err) {
+                // Fallback for older browsers
+                textarea.select();
+                document.execCommand('copy');
+
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.classList.add('copied');
+
+                setTimeout(() => {
+                  button.textContent = originalText;
+                  button.classList.remove('copied');
+                }, 2000);
+              }
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>
