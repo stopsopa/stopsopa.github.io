@@ -28,6 +28,7 @@ pages/coverage
 /coverage/
 /test-results/.last-run.json
 *.jasmine-esbuild.js
+/.playwright-mcp/
 
 
 

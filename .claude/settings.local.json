@@ -2,5 +2,10 @@
   "enabledMcpjsonServers": [
     "playwright",
     "context7"
-  ]
+  ],
+  "permissions": {
+    "allow": [
+      "mcp__playwright__browser_evaluate"
+    ]
+  }
 }
