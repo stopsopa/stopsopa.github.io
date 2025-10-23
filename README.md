@@ -59,6 +59,8 @@ Warning: Just specify type="typescript" and script on site will load
 
 [supported syntax](https://github.com/ajaxorg/ace/blob/v1.43.4/src/ext/modelist.js#L72)
 
+[themes](https://github.com/ajaxorg/ace/blob/v1.43.3/src/ext/themelist.js#L32) - play in [kitchen-sink](https://ace.c9.io/build/kitchen-sink.html)
+
 > [!TIP]
 > For typescript use
 >
