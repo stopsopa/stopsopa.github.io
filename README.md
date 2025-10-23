@@ -57,7 +57,7 @@ Warning: Just specify type="typescript" and script on site will load
           /js/ace/ace-builds-1.5.0/src-min-noconflict/mode-typescript.js
 ```
 
-[supported syntax](https://github.com/ajaxorg/ace/blob/v1.15.3/src/ext/modelist.js#L44)
+[supported syntax](https://github.com/ajaxorg/ace/blob/v1.43.4/src/ext/modelist.js#L72)
 
 > [!TIP]
 > For typescript use
