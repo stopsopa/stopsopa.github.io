@@ -89,6 +89,20 @@
               # • and (optionally) keep a legacy main for very old tooling.              
               # Below is a battle-tested template you can copy.
 
+            # more about package.json: https://youtu.be/I0jvOJW7NaI?t=1072
+            {
+              "type": "module"
+                "exports": {
+                ".": {
+                  // Supply CommonS version to require() - need to make sure that
+                  // states can be duplicated or shared states live in the same graph
+                  "require": "./dist/index.cjs",
+                  // Supply ESM version to import and others
+                  "import": "./index.js",
+                  "default": " /index.js"          
+                }
+            }
+
           # latest the best setup
             https://github.com/stopsopa/tsdi-lite
 
