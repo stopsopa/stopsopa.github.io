@@ -16,9 +16,13 @@
 
         <h2>Launch MCP server</h2>
         <script type="editor" data-lang="sh">
-
+          
+          Generally larn about MCP from here: 
+            https://github.com/modelcontextprotocol/servers
             npx @modelcontextprotocol/server-filesystem .
-               # from: https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
+              # This is good example of very simple MCP server
+              # I wrote a http wrapper on it: https://github.com/stopsopa/mcp
+              # from: https://github.com/modelcontextprotocol/servers/tree/2025.9.25/src/filesystem
 
             MCP uses JSON-RPC 2.0 over stdio, with one JSON object per line, delimited by newline (\n).
         </script>
