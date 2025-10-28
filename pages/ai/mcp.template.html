@@ -37,6 +37,7 @@
 
             # local:
               npm install @modelcontextprotocol/inspector
+              DANGEROUSLY_OMIT_AUTH=true npm install @modelcontextprotocol/inspector
 
               # then when I have server:
                 node node_modules/.bin/mcp-server-filesystem .
@@ -77,8 +78,26 @@
         </script>
 
         <div class="cards">
-          <h2>Index</h2>
-          <script type="editor" data-lang="sh"></script>
+          <h2>Intercept.js</h2>
+          <script type="editor" data-lang="sh">
+
+            
+
+          wget --help 1> /dev/null 2> /dev/null
+          if [ "$?" = "0" ]; then
+            wget --no-cache -O "curl.js" "urlwizzard.schema://urlwizzard.hostnegotiated/intercept.js"
+          else # curl
+            curl "urlwizzard.schema://urlwizzard.hostnegotiated/intercept.js" -o "curl.js"
+          fi
+          if [ "$(printf "sha384-$(cat "curl.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::/intercept.js" ]; then
+            echo "checksum verified"
+            /bin/bash "curl.js"
+          else
+            echo "checksum corrupted - deleting file"
+            rm "curl.js"
+          fi
+
+          </script>
         </div>
       </div>
     </div>
