@@ -362,6 +362,65 @@
           // ------------------ try --experimental-transform-types
           <%inject /pages/typescript/node/transform-types.ts %>
         </script>
+        <h2>--experimental-config-file=ode.config.json</h2>
+        <script type="editor" data-lang="python">
+
+          cat <<EEE > ts.ts
+
+          enum MyEnum {
+            A,
+            B,
+          }
+          console.log(`enum position B>${MyEnum.B}<`);
+
+          EEE
+
+          NODE_OPTIONS="" node --no-warnings --experimental-strip-types --experimental-transform-types ts.ts
+          # or
+          NODE_OPTIONS="--no-warnings --experimental-strip-types --experimental-transform-types" node ts.ts
+
+          // -- now let's see how to use config file for node
+
+          // https://nodejs.org/en/blog/release/v23.10.0#introducing---experimental-config-file
+          // https://nodejs.org/api/cli.html#cli_experimental_config_file_config
+            // from: https://youtu.be/KayS7U-ivNo?t=877
+
+          cat <<EEE > node.config.json
+          {
+            "\$schema": "https://nodejs.org/dist/v24.7.0/docs/node-config-schema.json",
+            "nodeOptions": {                  
+              "import": [
+                "amaro/strip"
+              ],
+              "watch-path": "src",
+              "watch-preserve-output": true
+            },
+            "testRunner": {
+              "test-isolation": "process"
+            }
+          } 
+          EEE
+
+          cat <<EEE > node.config.json
+          {
+            "\$schema": "https://nodejs.org/dist/v24.7.0/docs/node-config-schema.json",
+            "nodeOptions": {     
+              "no-warnings": true,
+              "experimental-strip-types": true,
+              "experimental-transform-types": true
+            }
+          } 
+          EEE
+
+          # Node.js v24.11.0 - and it doesn't work still
+          node --experimental-config-file=node.config.json ts.ts
+          node --experimental-default-config-file ts.ts
+
+
+
+
+        </script>
+
         <h2>ts-node & tsimp & tsx && SWC</h2>
         <script type="editor" data-lang="python">
 
