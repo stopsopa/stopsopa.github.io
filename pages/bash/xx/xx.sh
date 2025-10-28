@@ -443,6 +443,8 @@ ${LOAD_CONFIG2}
     LOAD_CONFIG="${USER_CONFIG}"
 fi
 
+# look for [jkjlv8589448939ijhfdjzxfklds8934u89439u843u834u089345]
+# node "${_DIR}/xx.node.cjs" "${LOAD_CONFIG}" "${XX_GENERATED}" "${@}"
 NODE_OPTIONS="" node "${_DIR}/xx.node.bundled.gitignored.cjs" "${LOAD_CONFIG}" "${XX_GENERATED}" "${@}"
 
 CODE="${?}"

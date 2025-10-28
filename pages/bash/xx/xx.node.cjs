@@ -10,11 +10,15 @@ const fs = require("fs");
 
 // import "core-js/actual/structured-clone";
 
-import select, { Separator } from "@inquirer/select";
-
+/// look for [jkjlv8589448939ijhfdjzxfklds8934u89439u843u834u089345]
+import { select, Separator } from "@inquirer/prompts";
 import confirm from "@inquirer/confirm";
-
 import range from "./lib/range.js";
+
+/// look for [jkjlv8589448939ijhfdjzxfklds8934u89439u843u834u089345]
+// const { default: select, Separator } = require("@inquirer/prompts");
+// const { default: confirm } = require("@inquirer/confirm");
+// const { default: range } = require("./lib/range.js");
 
 function isObject(o) {
   return Object.prototype.toString.call(o) === "[object Object]";
