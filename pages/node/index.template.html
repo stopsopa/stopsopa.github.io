@@ -448,7 +448,7 @@
           const { log } = require('log');
           const Logger = require('log'); // Returns 'module.exports' string export if it exists
 
-          // ------ from: 
+          // ------ from: https://youtu.be/I0jvOJW7NaI?t=1692
           if (typeof module === 'object' && module.exports) {
             // If it's Node.js CommonJS, do some extra tuning
             const os = require('node:os');
@@ -462,6 +462,21 @@
           if (globalThis.process? getBuiltinModule)(
             const os = globalThis.process.getBuiltinModule('os');
             // Do some tuning with OS info
+          }
+
+          // ------- from: https://youtu.be/I0jvOJW7NaI?t=1727
+          // For non-built-ins, createRequire() gives you working alternative to
+          // https://github.com/tc39/proposal-import-sync
+          import { createRequire } from 'node:module';
+          const require = createRequire(import.meta.url);
+          
+          const foo = condition ?
+            require('./conditionA.js') : require('./conditionB.js');
+          
+          // To feature-detect require(esm) and fall back accordingly
+          import process from 'node:process';
+          if (!process features?.require_module) {
+            // require(esm) is not available, do something less fancy
           }
           
         </script>
