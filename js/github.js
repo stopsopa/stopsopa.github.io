@@ -15,6 +15,8 @@ import {
 
 import addCss from "./addCss.js";
 
+import fetchCors from "./fetchCors.js";
+
 import urlwizzard from "./urlwizzard.js";
 
 import manipulation from "./manipulation.js";
@@ -49,6 +51,8 @@ window.ppp = {
   getIntegerDefault,
   getIntegerThrow,
 };
+
+window.fetchCors = fetchCors;
 
 window.manipulation = manipulation;
 
