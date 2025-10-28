@@ -25,9 +25,7 @@ const error = (...args) => console.error("[intercept.js]", ...args);
 const separatorIndex = process.argv.indexOf("--");
 
 // Extract args before separator (if it exists)
-const argsBeforeSeparator = separatorIndex === -1
-  ? process.argv.slice(2)
-  : process.argv.slice(2, separatorIndex);
+const argsBeforeSeparator = separatorIndex === -1 ? process.argv.slice(2) : process.argv.slice(2, separatorIndex);
 
 // Check for --help flag or invalid usage
 if (

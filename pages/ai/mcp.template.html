@@ -82,7 +82,7 @@
             else # curl
               curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/ai/intercept.js" -o "intercept.js"
             fi
-            if [ "$(printf "sha384-$(cat "pages/ai/intercept.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/ai/intercept.js" ]; then
+            if [ "$(printf "sha384-$(cat "intercept.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/ai/intercept.js" ]; then
               echo "checksum verified"
               # /bin/bash "intercept.js"
             else
@@ -91,7 +91,6 @@
             fi
 
             node intercept.js var/mcp-server-filesystem -- node node_modules/.bin/mcp-server-filesystem .
-
           </script>
         </div>
       </div>
