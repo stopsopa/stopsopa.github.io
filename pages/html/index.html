@@ -429,6 +429,20 @@ style.borderLeftWidth = ${style.borderLeftWidth}
 style.marginLeft = ${style.marginLeft}
 `;
         </script>
+        <h2>Web Components (various)</h2>
+
+        <script type="editor" data-lang="html">
+
+          // https://github.com/MarketingPipeline/GitHub-Ribbon-Web-Component
+          <script
+            src="https://cdn.jsdelivr.net/gh/MarketingPipeline/GitHub-Ribbon-Web-Component/dist/github-ribbon-wc.min.js"
+            defer
+          >&lt;/script>
+          // then use
+          <github-ribbon link="https://github.com/stopsopa/ace-editor-webcomponent" type="right" color="#679d2c"
+            >Fork me on GitHub</github-ribbon
+          >
+        </script>
       </div>
     </div>
     <script type="module" src="/js/github.js"></script>

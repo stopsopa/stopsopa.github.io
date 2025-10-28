@@ -13,7 +13,7 @@
     <div class="body">
       <div class="inside">
         <h2>Claude Code</h2>
-        <script type="editor" data-lang="sh">
+        <script type="editor" data-lang="python">
 
           I've been using:
             claude-sonnet-4-5-20250929
@@ -207,6 +207,45 @@
             https://docs.claude.com/en/docs/claude-code/mcp#installing-mcp-servers
             claude mcp list
             explore some local MCP's: 
+              https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
+              g(claude docs add a local stdio server)              
+              npm install @modelcontextprotocol/server-filesystem
+              claude mcp add --transport stdio --scope project filesystem -- node node_modules/.bin/mcp-server-filesystem ./files
+              claude mcp add --transport stdio --scope project filesystem -- node intercept.js -- node node_modules/.bin/mcp-server-filesystem ./pages
+              
+                  that will create locally .mcp.json
+                  {
+                    "mcpServers": {
+                      "filesystem": {
+                        "type": "stdio",
+                        "command": "node",
+                        "args": [
+                          "intercept.js",
+                          "--",
+                          "node",
+                          "node_modules/.bin/mcp-server-filesystem",
+                          "./pages"
+                        ],
+                        "env": {}
+                      }
+                    }
+                  }
+                  once that is done try
+                  claude mcp list
+                  # it will not list that particular mcp yet
+                  # only after you create .claude/settings.local.json and add, among others ...
+                  {
+                    "enabledMcpjsonServers": ["playwright", "context7", "filesystem"]
+                  }
+                  claude mcp list
+                  # ... will list it
+                  # use also
+                  claude mcp get filesystem
+                    # WARNING: when given mcp is already added, executing command to add it again with 
+                    # different parameters will not give any results
+                    # in this case it is needed to manually remove given mcp from .mcp.json
+                    # and then trying again                  
+
               https://github.com/upstash/context7
                 [login with github]
                 claude mcp add --transport http --scope project context7 https://mcp.context7.com/mcp --header "CONTEXT7_API_KEY: xxxxxx-xxxxxxx"

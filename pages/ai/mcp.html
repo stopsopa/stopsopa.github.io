@@ -27,6 +27,55 @@
             MCP uses JSON-RPC 2.0 over stdio, with one JSON object per line, delimited by newline (\n).
         </script>
 
+        <h2>Inspect MCP</h2>
+        <script type="editor" data-lang="sh">
+
+          # from: https://github.com/modelcontextprotocol/inspector/tree/0.17.2?tab=readme-ov-file#docker-container
+
+            # docker:
+              docker run --rm --network host -p 6274:6274 -p 6277:6277 ghcr.io/modelcontextprotocol/inspector:latest
+
+            # local:
+              npm install @modelcontextprotocol/inspector
+
+              # then when I have server:
+                node node_modules/.bin/mcp-server-filesystem .
+                  # from: https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
+
+              # Then to debug it run:
+              node node_modules/.bin/mcp-inspector node node_modules/.bin/mcp-server-filesystem
+                # this should launch something like:
+                  http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#tools            
+
+            
+        </script>
+
+        <h2>mcp-server-fetch</h2>
+        <script type="editor" data-lang="sh">
+
+          # from: https://github.com/modelcontextprotocol/servers/tree/main/src/fetch#debugging
+          asdf list all uv
+          asdf install uv 0.9.5
+          uv --help
+          uvx --help
+          asdf global uv 0.9.5
+            # without this it might scream: 
+            No version is set for command uvx
+            Consider adding one of the following versions in your config file at /Users/sdzialowski/.tool-versions
+            uv 0.9.5
+          # first try:
+            NODE_OPTIONS="" uvx mcp-server-fetch
+
+          npm install @modelcontextprotocol/inspector
+          node node_modules/.bin/mcp-inspector uvx mcp-server-fetch
+          DANGEROUSLY_OMIT_AUTH=true node node_modules/.bin/mcp-inspector uvx mcp-server-fetch
+          # after launching setup:
+            Transport Type: STDIO
+            Command: uvx
+            Arguments: mcp-server-fetch .
+
+        </script>
+
         <div class="cards">
           <h2>Index</h2>
           <script type="editor" data-lang="sh"></script>
