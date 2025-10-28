@@ -1,38 +1,48 @@
 #!/usr/bin/env node
 
 /**
- * node intercept.js -- node node_modules/.bin/mcp-server-filesystem . 
- * node intercept.js -- node node_modules/.bin/mcp-server-filesystem ./files
- * 
+ * node intercept.js -- node node_modules/.bin/mcp-server-filesystem .
+ *   # default location to store log files: ./var/intercept.js/
+ *
+ * node intercept.js var/a/b/c -- node node_modules/.bin/mcp-server-filesystem ./files
+ *   # specify directory to store logs in first argument
+ *
  * Later I have found https://github.com/modelcontextprotocol/inspector
  *   but after I wrote this interceptor...
  *   found it here: https://github.com/modelcontextprotocol/servers/tree/2025.9.25/src/fetch#debugging
  *     and that I found here: https://youtu.be/oM2dXJnD80c?t=219
- * 
- * 
+ *
+ *
  */
 
 import { spawn } from "child_process";
 import { appendFileSync, mkdirSync, existsSync } from "fs";
 import path from "path";
 
-const error = (...args) => console.error('[intercept.js]', ...args);
+const error = (...args) => console.error("[intercept.js]", ...args);
 
 // Parse command line arguments
 const separatorIndex = process.argv.indexOf("--");
 if (separatorIndex === -1 || separatorIndex === process.argv.length - 1) {
-  error("Usage: intercept.js -- <command> [args...]");
+  error("Usage: intercept.js [logDir] -- <command> [args...]");
   error("Example: intercept.js -- node server.js");
+  error("Example: intercept.js var -- node server.js");
   process.exit(1);
 }
+
+// Extract log directory (optional first arg before --)
+const argsBeforeSeparator = process.argv.slice(2, separatorIndex);
+const logDir = argsBeforeSeparator.length > 0 ? argsBeforeSeparator[0] : null;
 
 const commandArgs = process.argv.slice(separatorIndex + 1);
 const [command, ...args] = commandArgs;
 
-// Ensure ./var directory exists
-// create deep directory but avoid using mkdirp library
+// Determine log directory: custom or default
+const varDir = logDir
+  ? path.join(process.cwd(), logDir)
+  : path.join(process.cwd(), "var", "intercept.js");
 
-const varDir = path.join(process.cwd(), "var", "intercept.js");
+// Ensure log directory exists
 if (!existsSync(varDir)) {
   error(`Creating directory: ${varDir}`);
   mkdirSync(varDir, { recursive: true });
@@ -134,10 +144,7 @@ process.stdin.on("data", (chunk) => {
         }
       } catch (err) {
         // Not valid JSON - just forward it
-        error(
-          "Failed to parse stdin JSON:",
-          err.message
-        );
+        error("Failed to parse stdin JSON:", err.message);
       }
     }
   }
@@ -177,10 +184,7 @@ child.stdout.on("data", (chunk) => {
         }
       } catch (err) {
         // Not valid JSON - just forward it
-        error(
-          "Failed to parse stdout JSON:",
-          err.message
-        );
+        error("Failed to parse stdout JSON:", err.message);
       }
     }
   }
@@ -207,9 +211,7 @@ child.on("exit", (code, signal) => {
 ${new Date().toISOString()}
 UNMATCHED REQUESTS AT EXIT (${pendingRequests.size}):
 ${Array.from(pendingRequests.values())
-  .map(
-    ({ request }) => `  - ID ${request.id}: ${request.method || "unknown"}`
-  )
+  .map(({ request }) => `  - ID ${request.id}: ${request.method || "unknown"}`)
   .join("\n")}
 
 ${"=".repeat(80)}
@@ -217,9 +219,7 @@ ${"=".repeat(80)}
     logEntry(entry);
   }
 
-  error(
-    `Child exited with code ${code} signal ${signal}`
-  );
+  error(`Child exited with code ${code} signal ${signal}`);
   process.exit(code || 0);
 });
 
