@@ -470,13 +470,19 @@ EEE
     exit ${CODE}
 fi
 
+
 if [ "${CODE}" != "0" ]; then
 
-    cat <<EEE    
+    if [ "${CODE}" = "130" ]; then
+      echo "";
+    else
+
+        cat <<EEE    
 
     ${0} error: generating ${XX_GENERATED} failed
 
 EEE
+    fi
 else    
     if [ "${1}" = "--gen" ]; then
     cat <<EEE

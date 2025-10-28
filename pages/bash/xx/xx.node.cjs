@@ -138,147 +138,157 @@ setup = Object.entries(setup).reduce((acc, [key, value]) => {
  */
 
 (async function () {
-  const func = process.argv.shift();
+  try {
+    const func = process.argv.shift();
 
-  // log({
-  //   func,
-  //   c:  process.argv
-  // }) // { a: [ 'cd ef' ] }
-
-  // process.exit(0);
-
-  let command;
-
-  if (typeof func === "undefined") {
     // log({
-    //   setup,
-    // });
+    //   func,
+    //   c:  process.argv
+    // }) // { a: [ 'cd ef' ] }
 
-    // process.exit(6);
+    // process.exit(0);
 
-    /**
-     * preparing and ordering
-     */
-    let orderedEntries = Object.entries(setup);
-    // log({
-    //   orderedEntries: JSON.stringify(orderedEntries, null, 4)
-    // })
-    orderedEntries.sort(([_1, { order: o1 }], [_2, { order: o2 }]) => {
-      // console.log(`o1 >${o1}<, o2 >${o2}<`)
-      if (o1 === o2) {
-        return 0;
-      }
+    let command;
 
-      if (!Number.isInteger(o1) || !Number.isInteger(o2)) {
-        return 1;
-      }
+    if (typeof func === "undefined") {
+      // log({
+      //   setup,
+      // });
 
-      return o1 < o2 ? -1 : 1;
-    });
-    // log({
-    //   orderedEntries: JSON.stringify(orderedEntries, null, 4)
-    // })
-    let choices = orderedEntries.reduce((acc, [k, v], i) => {
-      acc.push({
-        name: range({
-          str: String(i + 1).padStart(3, " ") + " - " + k,
-          zeroIndexed: i,
-          length: orderedEntries.length,
-          firstLengthWhenEnabled: 0,
-        }),
-        value: v,
-        description: v.description,
+      // process.exit(6);
+
+      /**
+       * preparing and ordering
+       */
+      let orderedEntries = Object.entries(setup);
+      // log({
+      //   orderedEntries: JSON.stringify(orderedEntries, null, 4)
+      // })
+      orderedEntries.sort(([_1, { order: o1 }], [_2, { order: o2 }]) => {
+        // console.log(`o1 >${o1}<, o2 >${o2}<`)
+        if (o1 === o2) {
+          return 0;
+        }
+
+        if (!Number.isInteger(o1) || !Number.isInteger(o2)) {
+          return 1;
+        }
+
+        return o1 < o2 ? -1 : 1;
       });
-      return acc;
-    }, []);
-    // log({
-    //   choices: JSON.stringify(choices, null, 4)
-    // })
-    // process.exit();
+      // log({
+      //   orderedEntries: JSON.stringify(orderedEntries, null, 4)
+      // })
+      let choices = orderedEntries.reduce((acc, [k, v], i) => {
+        acc.push({
+          name: range({
+            str: String(i + 1).padStart(3, " ") + " - " + k,
+            zeroIndexed: i,
+            length: orderedEntries.length,
+            firstLengthWhenEnabled: 0,
+          }),
+          value: v,
+          description: v.description,
+        });
+        return acc;
+      }, []);
+      // log({
+      //   choices: JSON.stringify(choices, null, 4)
+      // })
+      // process.exit();
 
-    // /**
-    //  * https://github.com/SBoudrias/Inquirer.js#select
-    //  */
-    command = await select({
-      message: "Select command to run",
-      choices,
-      theme: {
-        style: {
-          highlight: (text) => `${c.Reverse}${text}${c.reset}`, // inverse colors using your defined constants
+      // /**
+      //  * https://github.com/SBoudrias/Inquirer.js#select
+      //  */
+      command = await select({
+        message: "Select command to run",
+        choices,
+        theme: {
+          style: {
+            highlight: (text) => `${c.Reverse}${text}${c.reset}`, // inverse colors using your defined constants
+          },
         },
-      },
-      // choices: [
-      //   {
-      //     name: 'npm',
-      //     value: 'npm',
-      //     description: 'npm is the most popular package manager',
-      //   },
-      //   {
-      //     name: 'yarn',
-      //     value: 'yarn',
-      //     description: 'yarn is an awesome package manager',
-      //   },
-      //   new Separator(),
-      //   {
-      //     name: 'jspm',
-      //     value: 'jspm',
-      //     disabled: true,
-      //   },
-      //   {
-      //     name: 'pnpm',
-      //     value: 'pnpm',
-      //     disabled: '(pnpm is not available)',
-      //   },
-      // ],
-    });
-  } else {
-    if (/^\d+$/.test(func)) {
-      const cmd = Object.values(setup)[func - 1];
+        // choices: [
+        //   {
+        //     name: 'npm',
+        //     value: 'npm',
+        //     description: 'npm is the most popular package manager',
+        //   },
+        //   {
+        //     name: 'yarn',
+        //     value: 'yarn',
+        //     description: 'yarn is an awesome package manager',
+        //   },
+        //   new Separator(),
+        //   {
+        //     name: 'jspm',
+        //     value: 'jspm',
+        //     disabled: true,
+        //   },
+        //   {
+        //     name: 'pnpm',
+        //     value: 'pnpm',
+        //     disabled: '(pnpm is not available)',
+        //   },
+        // ],
+      });
+    } else {
+      if (/^\d+$/.test(func)) {
+        const cmd = Object.values(setup)[func - 1];
 
-      if (cmd) {
-        command = cmd;
+        if (cmd) {
+          command = cmd;
+        }
       }
-    }
 
-    if (!command && setup[func]) {
-      command = setup[func];
-    }
+      if (!command && setup[func]) {
+        command = setup[func];
+      }
 
-    if (!command) {
-      log(`    
+      if (!command) {
+        log(`    
       function >${func}< not defined in >${localSetup}< nor in global config      
   `);
 
-      process.exit(1);
+        process.exit(1);
+      }
     }
-  }
 
-  let run = false; // by default confirmation needed
+    let run = false; // by default confirmation needed
 
-  if (command.confirm === false) {
-    // if no need for confirmation
-    run = true;
-  }
-
-  if (process.env.XXCONFIRM === "false") {
-    run = true;
-  } else {
-    /**
-     * if flag confirm not specified or specified with value "true"
-     * then we ask for permission to run
-     */
-    if (typeof command.confirm === "undefined" || command.confirm === true) {
-      run = await confirm({ message: `Run command?     ${c.r}${command.name}${c.reset}   ` });
+    if (command.confirm === false) {
+      // if no need for confirmation
+      run = true;
     }
-  }
 
-  fs.writeFileSync(XX_GENERATED, command.command);
+    if (process.env.XXCONFIRM === "false") {
+      run = true;
+    } else {
+      /**
+       * if flag confirm not specified or specified with value "true"
+       * then we ask for permission to run
+       */
+      if (typeof command.confirm === "undefined" || command.confirm === true) {
+        run = await confirm({ message: `Run command?     ${c.r}${command.name}${c.reset}   ` });
+      }
+    }
 
-  if (!run) {
-    process.exit(10);
-  }
+    fs.writeFileSync(XX_GENERATED, command.command);
 
-  if (command.source) {
-    process.exit(55);
+    if (!run) {
+      process.exit(10);
+    }
+
+    if (command.source) {
+      process.exit(55);
+    }
+  } catch (error) {
+    // Handle SIGINT (Ctrl+C) gracefully
+    if (error.name === "ExitPromptError" || error.message?.includes("SIGINT")) {
+      console.log("\nOperation cancelled by user.");
+      process.exit(130); // Standard exit code for SIGINT
+    }
+    // Re-throw other errors
+    throw error;
   }
 })();

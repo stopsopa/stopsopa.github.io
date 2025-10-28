@@ -13704,98 +13704,107 @@ setup = Object.entries(setup).reduce((acc, [key, value]) => {
   return acc;
 }, {});
 (async function() {
-  const func = process.argv.shift();
-  let command;
-  if (typeof func === "undefined") {
-    let orderedEntries = Object.entries(setup);
-    orderedEntries.sort(([_1, { order: o1 }], [_2, { order: o2 }]) => {
-      if (o1 === o2) {
-        return 0;
-      }
-      if (!Number.isInteger(o1) || !Number.isInteger(o2)) {
-        return 1;
-      }
-      return o1 < o2 ? -1 : 1;
-    });
-    let choices = orderedEntries.reduce((acc, [k, v], i) => {
-      acc.push({
-        name: range_default({
-          str: String(i + 1).padStart(3, " ") + " - " + k,
-          zeroIndexed: i,
-          length: orderedEntries.length,
-          firstLengthWhenEnabled: 0
-        }),
-        value: v,
-        description: v.description
+  var _a;
+  try {
+    const func = process.argv.shift();
+    let command;
+    if (typeof func === "undefined") {
+      let orderedEntries = Object.entries(setup);
+      orderedEntries.sort(([_1, { order: o1 }], [_2, { order: o2 }]) => {
+        if (o1 === o2) {
+          return 0;
+        }
+        if (!Number.isInteger(o1) || !Number.isInteger(o2)) {
+          return 1;
+        }
+        return o1 < o2 ? -1 : 1;
       });
-      return acc;
-    }, []);
-    command = await esm_default11({
-      message: "Select command to run",
-      choices,
-      theme: {
-        style: {
-          highlight: (text) => `${c.Reverse}${text}${c.reset}`
-          // inverse colors using your defined constants
+      let choices = orderedEntries.reduce((acc, [k, v], i) => {
+        acc.push({
+          name: range_default({
+            str: String(i + 1).padStart(3, " ") + " - " + k,
+            zeroIndexed: i,
+            length: orderedEntries.length,
+            firstLengthWhenEnabled: 0
+          }),
+          value: v,
+          description: v.description
+        });
+        return acc;
+      }, []);
+      command = await esm_default11({
+        message: "Select command to run",
+        choices,
+        theme: {
+          style: {
+            highlight: (text) => `${c.Reverse}${text}${c.reset}`
+            // inverse colors using your defined constants
+          }
+        }
+        // choices: [
+        //   {
+        //     name: 'npm',
+        //     value: 'npm',
+        //     description: 'npm is the most popular package manager',
+        //   },
+        //   {
+        //     name: 'yarn',
+        //     value: 'yarn',
+        //     description: 'yarn is an awesome package manager',
+        //   },
+        //   new Separator(),
+        //   {
+        //     name: 'jspm',
+        //     value: 'jspm',
+        //     disabled: true,
+        //   },
+        //   {
+        //     name: 'pnpm',
+        //     value: 'pnpm',
+        //     disabled: '(pnpm is not available)',
+        //   },
+        // ],
+      });
+    } else {
+      if (/^\d+$/.test(func)) {
+        const cmd = Object.values(setup)[func - 1];
+        if (cmd) {
+          command = cmd;
         }
       }
-      // choices: [
-      //   {
-      //     name: 'npm',
-      //     value: 'npm',
-      //     description: 'npm is the most popular package manager',
-      //   },
-      //   {
-      //     name: 'yarn',
-      //     value: 'yarn',
-      //     description: 'yarn is an awesome package manager',
-      //   },
-      //   new Separator(),
-      //   {
-      //     name: 'jspm',
-      //     value: 'jspm',
-      //     disabled: true,
-      //   },
-      //   {
-      //     name: 'pnpm',
-      //     value: 'pnpm',
-      //     disabled: '(pnpm is not available)',
-      //   },
-      // ],
-    });
-  } else {
-    if (/^\d+$/.test(func)) {
-      const cmd = Object.values(setup)[func - 1];
-      if (cmd) {
-        command = cmd;
+      if (!command && setup[func]) {
+        command = setup[func];
       }
-    }
-    if (!command && setup[func]) {
-      command = setup[func];
-    }
-    if (!command) {
-      log(`    
+      if (!command) {
+        log(`    
       function >${func}< not defined in >${localSetup}< nor in global config      
   `);
-      process.exit(1);
+        process.exit(1);
+      }
     }
-  }
-  let run = false;
-  if (command.confirm === false) {
-    run = true;
-  }
-  if (process.env.XXCONFIRM === "false") {
-    run = true;
-  } else {
-    if (typeof command.confirm === "undefined" || command.confirm === true) {
-      run = await esm_default4({ message: `Run command?     ${c.r}${command.name}${c.reset}   ` });
+    let run = false;
+    if (command.confirm === false) {
+      run = true;
     }
-  }
-  fs.writeFileSync(XX_GENERATED, command.command);
-  if (!run) {
-    process.exit(10);
-  }
-  if (command.source) {
-    process.exit(55);
+    if (process.env.XXCONFIRM === "false") {
+      run = true;
+    } else {
+      if (typeof command.confirm === "undefined" || command.confirm === true) {
+        run = await esm_default4({ message: `Run command?     ${c.r}${command.name}${c.reset}   ` });
+      }
+    }
+    fs.writeFileSync(XX_GENERATED, command.command);
+    if (!run) {
+      process.exit(10);
+    }
+    if (command.source) {
+      process.exit(55);
+    }
+  } catch (error) {
+    if (error.name === "ExitPromptError" || ((_a = error.message) == null ? void 0 : _a.includes("SIGINT"))) {
+      console.log("\nOperation cancelled by user.");
+      process.exit(130);
+    }
+    throw error;
   }
 })();
