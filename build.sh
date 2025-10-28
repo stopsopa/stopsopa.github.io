@@ -109,10 +109,6 @@ time /bin/bash bash/substitute-variables-bash.sh gitstorage-core.sh -- \
 # I'm deliberately suppressing error to continue if above is not provided for local dev environment
 time /bin/bash .github/urlwizzard.sh
 
-# NOTICE: remember it will not process if --run not passed or CI env var is not present
-# I'm deliberately suppressing error to continue if above is not provided for local dev environment
-time /bin/bash .github/sha384.sh
-
 # /bin/bash .github/toc-check.sh README.md 
 node node_modules/.bin/markdown-toc -i README.md
 
@@ -125,3 +121,7 @@ time node node_modules/.bin/prettier --config prettier.config.cjs --write . 1> >
 time /bin/bash .github/clicksecure.sh
 
 time /bin/bash .github/injector.sh
+
+# NOTICE: remember it will not process if --run not passed or CI env var is not present
+# I'm deliberately suppressing error to continue if above is not provided for local dev environment
+time /bin/bash .github/sha384.sh
