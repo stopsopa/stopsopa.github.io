@@ -77,16 +77,16 @@
         </script>
         <h2>npm publish preparations PUBLISH TYPESCRIPT</h2>
 
-        <script type="editor" data-lang="sh">  
+        <script type="editor" data-lang="sh">
 
           # recommendation as of 2025-10-24 how to ship packages (taking into consideration only ESM + CJS):
             # https://youtu.be/I0jvOJW7NaI?t=860
             # Great goal — you can publish a single package that works for both require() and import. The modern,
-              # reliable way is:              
-              # • build two artifacts (ESM + CJS),              
-              # • expose them via conditional exports in package. json,              
-              # • ship one set of types,              
-              # • and (optionally) keep a legacy main for very old tooling.              
+              # reliable way is:
+              # • build two artifacts (ESM + CJS),
+              # • expose them via conditional exports in package. json,
+              # • ship one set of types,
+              # • and (optionally) keep a legacy main for very old tooling.
               # Below is a battle-tested template you can copy.
 
             # more about package.json: https://youtu.be/I0jvOJW7NaI?t=1072
@@ -100,7 +100,7 @@
                   "require": "./dist/index.cjs",
                   // Supply ESM version to import and others
                   "import": "./index.js",
-                  "default": " /index.js"          
+                  "default": " /index.js"
                 }
             }
 

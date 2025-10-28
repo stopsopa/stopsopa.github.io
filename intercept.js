@@ -38,9 +38,7 @@ const commandArgs = process.argv.slice(separatorIndex + 1);
 const [command, ...args] = commandArgs;
 
 // Determine log directory: custom or default
-const varDir = logDir
-  ? path.join(process.cwd(), logDir)
-  : path.join(process.cwd(), "var", "intercept.js");
+const varDir = logDir ? path.join(process.cwd(), logDir) : path.join(process.cwd(), "var", "intercept.js");
 
 // Ensure log directory exists
 if (!existsSync(varDir)) {

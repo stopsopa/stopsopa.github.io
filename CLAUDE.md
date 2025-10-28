@@ -13,6 +13,7 @@ Node version is specified in `.nvmrc`: **23.10.0**
 ## Environment Setup
 
 The project requires a `.env` file for local development. Key environment variables include:
+
 - `PROJECT_NAME` - project identifier
 - `NODE_API_PORT` - port for local dev server
 - `LOCAL_HOSTS` - local domain for development
@@ -26,6 +27,7 @@ A `.env.sh` file is also required and sourced by build scripts.
 ## Common Development Commands
 
 ### Development
+
 ```bash
 make start                  # Start dev server (no browser)
 /bin/bash dev.sh            # Same as make start
@@ -34,18 +36,21 @@ make start                  # Start dev server (no browser)
 ```
 
 The dev server:
+
 - Runs on port specified in `NODE_API_PORT` (or `LOCAL_HOSTS` if defined)
 - Watches for file changes (TypeScript, templates, esbuild entries)
 - Logs to `var/log.log`
 - Automatically transpiles TypeScript, processes templates, and bundles React components
 
 ### Build
+
 ```bash
 make build        # Full production build
 /bin/bash build.sh
 ```
 
 The build process:
+
 1. Transpiles TypeScript files (`tsc`)
 2. Processes `*.uglify.js` files → `*.uglify.min.js` (via esbuild with minification)
 3. Processes `*.template.html` files → `*.rendered.html` (injects/url placeholders)
@@ -55,6 +60,7 @@ The build process:
 7. Formats with Prettier
 
 ### Testing
+
 ```bash
 make test              # Run unit tests (vitest)
 /bin/bash test.sh      # Same as above
@@ -73,6 +79,7 @@ make testall           # Run all test types
 ```
 
 ### Code Style
+
 ```bash
 make style_check   # Check code formatting
 make style_fix     # Auto-fix code formatting
@@ -84,18 +91,21 @@ make style_list    # List files with formatting issues
 ### File Processing Patterns
 
 1. **`*.uglify.js` → `*.uglify.min.js`**
+
    - Processed by `scripts/uglify.sh`
    - Uses esbuild with minification and template literal minification
    - Recursively finds all `*.uglify.js` files (excluding node_modules)
 
 2. **`*.template.html` → `*.rendered.html`**
+
    - Processed by `scripts/template.sh`
    - Supports placeholders:
      - `<%url path/to/file.js %>` - imports file content and encodes quotes as %22
      - `<%inject path/to/file.js %>` - imports file content as-is
    - Paths can be relative or absolute (starting with `/` resolves from repo root)
 
-3. **`**/*.entry.{js,jsx}` → `dist/*.bundle.js`**
+3. **`**/_.entry.{js,jsx}`→`dist/_.bundle.js`\*\*
+
    - Processed by `esbuild-entries.js`
    - Bundles React components and JSX files
    - Uses esbuild with sassPlugin for SCSS support
@@ -107,6 +117,7 @@ make style_list    # List files with formatting issues
 ### Special Build Features
 
 - **URL Wizzard**: Replaces special placeholders throughout the codebase:
+
   - `urlwizzard.schema` → `http` or `https`
   - `urlwizzard.hostname` → domain name
   - `urlwizzard.hostnegotiated` → domain with port if non-standard
@@ -120,6 +131,7 @@ make style_list    # List files with formatting issues
 ### Client-Side Entry Point
 
 The main entry point is `/js/github.js` which:
+
 1. Loads environment variables (both ESM and CJS versions of `preprocessed.js`)
 2. Loads core dependencies asynchronously (ACE editor, lodash, vanilla-tabs, AnchorJS)
 3. Initializes page features in sequence:
@@ -150,19 +162,22 @@ The main entry point is `/js/github.js` which:
 Code blocks are wrapped with ACE editor automatically. Syntax highlighting is loaded dynamically based on `data-lang` attribute. Supported languages match ACE's modelist.
 
 To manually trigger:
+
 ```javascript
-window.doEval();  // Execute code blocks with data-eval
-window.doace();   // Initialize ACE editors
+window.doEval(); // Execute code blocks with data-eval
+window.doace(); // Initialize ACE editors
 ```
 
 ## CI/CD Pipeline
 
 GitHub Actions workflow (`.github/workflows/pipeline.yml`) runs on:
+
 - Push to `master` branch
 - Pull requests
 - Manual workflow dispatch
 
 Pipeline stages:
+
 1. **Test Job**: Runs unit tests, Jasmine tests, and Playwright E2E tests
 2. **GitHub Pages Job**: Deploys to GitHub Pages (only on master)
 
@@ -195,6 +210,7 @@ The site uses Firebase for authentication and database. Configuration is loaded 
 - **`css/`** - Stylesheets including `normalize.css` and `main.css`. Loaded globally by `github.js`.
 
 - **`bash/`** - Bash utility scripts organized by category:
+
   - File system operations (`fs/`)
   - Git helpers (`git/`)
   - Process management (`proc/`)
@@ -202,6 +218,7 @@ The site uses Firebase for authentication and database. Configuration is loaded 
   - Utilities like `colours.sh`, `dlogger.sh`, `args.sh`
 
 - **`scripts/`** - Build-time processing scripts:
+
   - `template.sh` / `template.js` - Processes `*.template.html` → `*.rendered.html`
   - `uglify.sh` / `uglify.mjs` - Minifies `*.uglify.js` → `*.uglify.min.js`
   - `reencode.sh` - File encoding utilities
@@ -217,6 +234,7 @@ The site uses Firebase for authentication and database. Configuration is loaded 
 - **`libs/`** - Shared JavaScript libraries for Node.js (utilities like `preprocessor.js`, `IndexedDBPromised.js`, `easing.js`, `secure.mjs`)
 
 - **`noprettier/`** - Third-party libraries excluded from Prettier formatting:
+
   - ACE editor (`ace/`)
   - Bootstrap (`bootstrap/`, `bootstrap-3.3.4/`)
   - jQuery, lodash, vanilla-tabs, polyfills

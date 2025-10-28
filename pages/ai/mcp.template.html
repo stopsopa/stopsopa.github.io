@@ -8,16 +8,14 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>stopsopa.github.io</title>
-
   </head>
   <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
-
         <h2>Launch MCP server</h2>
         <script type="editor" data-lang="sh">
-          
-          Generally larn about MCP from here: 
+
+          Generally larn about MCP from here:
             https://github.com/modelcontextprotocol/servers
             npx @modelcontextprotocol/server-filesystem .
               # This is good example of very simple MCP server
@@ -46,9 +44,7 @@
               # Then to debug it run:
               node node_modules/.bin/mcp-inspector node node_modules/.bin/mcp-server-filesystem
                 # this should launch something like:
-                  http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#tools            
-
-            
+                  http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#tools
         </script>
 
         <h2>mcp-server-fetch</h2>
@@ -60,7 +56,7 @@
           uv --help
           uvx --help
           asdf global uv 0.9.5
-            # without this it might scream: 
+            # without this it might scream:
             No version is set for command uvx
             Consider adding one of the following versions in your config file at /Users/sdzialowski/.tool-versions
             uv 0.9.5
@@ -74,29 +70,27 @@
             Transport Type: STDIO
             Command: uvx
             Arguments: mcp-server-fetch .
-
         </script>
 
         <div class="cards">
           <h2>Intercept.js</h2>
           <script type="editor" data-lang="sh">
 
-            
 
-          wget --help 1> /dev/null 2> /dev/null
-          if [ "$?" = "0" ]; then
-            wget --no-cache -O "curl.js" "urlwizzard.schema://urlwizzard.hostnegotiated/intercept.js"
-          else # curl
-            curl "urlwizzard.schema://urlwizzard.hostnegotiated/intercept.js" -o "curl.js"
-          fi
-          if [ "$(printf "sha384-$(cat "curl.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::/intercept.js" ]; then
-            echo "checksum verified"
-            /bin/bash "curl.js"
-          else
-            echo "checksum corrupted - deleting file"
-            rm "curl.js"
-          fi
 
+            wget --help 1> /dev/null 2> /dev/null
+            if [ "$?" = "0" ]; then
+              wget --no-cache -O "intercept.js" "urlwizzard.schema://urlwizzard.hostnegotiated/intercept.js"
+            else # curl
+              curl "urlwizzard.schema://urlwizzard.hostnegotiated/intercept.js" -o "intercept.js"
+            fi
+            if [ "$(printf "sha384-$(cat "intercept.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::intercept.js" ]; then
+              echo "checksum verified"
+              /bin/bash "intercept.js"
+            else
+              echo "checksum corrupted - deleting file"
+              rm "intercept.js"
+            fi
           </script>
         </div>
       </div>

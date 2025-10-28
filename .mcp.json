@@ -3,9 +3,7 @@
     "playwright": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "@playwright/mcp@latest"
-      ],
+      "args": ["@playwright/mcp@latest"],
       "env": {
         "PLAYWRIGHT_IGNORE_HTTPS_ERRORS": "1",
         "PLAYWRIGHT_LAUNCH_OPTIONS": "{\"headless\":false,\"args\":[\"--ignore-certificate-errors\",\"--ignore-ssl-errors\",\"--ignore-certificate-errors-spki-list\",\"--disable-web-security\",\"--allow-running-insecure-content\",\"--disable-features=VizDisplayCompositor\"]}"

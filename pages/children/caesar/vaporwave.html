@@ -8,9 +8,9 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Caesar Cipher - Vaporwave</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
     <style>
       * {
         box-sizing: border-box;
@@ -19,25 +19,31 @@
       body.layout.bg {
         background: linear-gradient(135deg, #2d1b69 0%, #5b42ab 25%, #ff6ec7 50%, #7bffb5 75%, #ff6ec7 100%) !important;
         background-size: 400% 400% !important;
-        background-image: linear-gradient(135deg, #2d1b69 0%, #5b42ab 25%, #ff6ec7 50%, #7bffb5 75%, #ff6ec7 100%) !important;
+        background-image: linear-gradient(
+          135deg,
+          #2d1b69 0%,
+          #5b42ab 25%,
+          #ff6ec7 50%,
+          #7bffb5 75%,
+          #ff6ec7 100%
+        ) !important;
         animation: gradient 15s ease infinite;
         position: relative;
         overflow-x: hidden;
         overflow-y: auto;
         min-height: 100vh;
-        font-family: 'Orbitron', 'Courier New', monospace;
+        font-family: "Orbitron", "Courier New", monospace;
       }
 
       /* CRT Scanline Effect */
       body.layout::before {
-        content: '';
+        content: "";
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background-image:
-          repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15) 0px, transparent 1px, transparent 2px),
+        background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15) 0px, transparent 1px, transparent 2px),
           repeating-linear-gradient(90deg, rgba(123, 255, 181, 0.08) 0px, transparent 2px, transparent 4px);
         background-size: 100% 3px, 40px 40px;
         pointer-events: none;
@@ -47,7 +53,7 @@
 
       /* VHS Glitch Effect */
       body.layout::after {
-        content: '';
+        content: "";
         position: fixed;
         top: 0;
         left: 0;
@@ -79,9 +85,21 @@
         user-select: none;
       }
 
-      .japanese-text:nth-of-type(1) { top: 10%; left: 5%; animation-delay: 0s; }
-      .japanese-text:nth-of-type(2) { top: 60%; right: 10%; animation-delay: -5s; }
-      .japanese-text:nth-of-type(3) { bottom: 15%; left: 15%; animation-delay: -10s; }
+      .japanese-text:nth-of-type(1) {
+        top: 10%;
+        left: 5%;
+        animation-delay: 0s;
+      }
+      .japanese-text:nth-of-type(2) {
+        top: 60%;
+        right: 10%;
+        animation-delay: -5s;
+      }
+      .japanese-text:nth-of-type(3) {
+        bottom: 15%;
+        left: 15%;
+        animation-delay: -10s;
+      }
 
       /* Geometric Shapes */
       .geometric-shape {
@@ -112,44 +130,93 @@
       }
 
       @keyframes gradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
       }
 
       @keyframes scanline {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(100vh); }
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(100vh);
+        }
       }
 
       @keyframes vhsGlitch {
-        0%, 90%, 100% { opacity: 0; }
-        92%, 96% { opacity: 1; transform: translateX(2px); }
-        94%, 98% { opacity: 1; transform: translateX(-2px); }
+        0%,
+        90%,
+        100% {
+          opacity: 0;
+        }
+        92%,
+        96% {
+          opacity: 1;
+          transform: translateX(2px);
+        }
+        94%,
+        98% {
+          opacity: 1;
+          transform: translateX(-2px);
+        }
       }
 
       @keyframes float {
-        0%, 100% { transform: translateY(0px) translateX(0px); }
-        25% { transform: translateY(-20px) translateX(10px); }
-        50% { transform: translateY(0px) translateX(20px); }
-        75% { transform: translateY(20px) translateX(10px); }
+        0%,
+        100% {
+          transform: translateY(0px) translateX(0px);
+        }
+        25% {
+          transform: translateY(-20px) translateX(10px);
+        }
+        50% {
+          transform: translateY(0px) translateX(20px);
+        }
+        75% {
+          transform: translateY(20px) translateX(10px);
+        }
       }
 
       @keyframes rotate3d {
-        0% { transform: rotate(0deg) scale(1); }
-        50% { transform: rotate(180deg) scale(1.1); }
-        100% { transform: rotate(360deg) scale(1); }
+        0% {
+          transform: rotate(0deg) scale(1);
+        }
+        50% {
+          transform: rotate(180deg) scale(1.1);
+        }
+        100% {
+          transform: rotate(360deg) scale(1);
+        }
       }
 
       @keyframes ripple {
-        0% { transform: scale(0.95); opacity: 1; }
-        100% { transform: scale(1.5); opacity: 0; }
+        0% {
+          transform: scale(0.95);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.5);
+          opacity: 0;
+        }
       }
 
       @keyframes chromatic {
-        0% { text-shadow: 2px 0 0 rgba(255, 0, 0, 0.5), -2px 0 0 rgba(0, 255, 255, 0.5); }
-        50% { text-shadow: -2px 0 0 rgba(255, 0, 0, 0.5), 2px 0 0 rgba(0, 255, 255, 0.5); }
-        100% { text-shadow: 2px 0 0 rgba(255, 0, 0, 0.5), -2px 0 0 rgba(0, 255, 255, 0.5); }
+        0% {
+          text-shadow: 2px 0 0 rgba(255, 0, 0, 0.5), -2px 0 0 rgba(0, 255, 255, 0.5);
+        }
+        50% {
+          text-shadow: -2px 0 0 rgba(255, 0, 0, 0.5), 2px 0 0 rgba(0, 255, 255, 0.5);
+        }
+        100% {
+          text-shadow: 2px 0 0 rgba(255, 0, 0, 0.5), -2px 0 0 rgba(0, 255, 255, 0.5);
+        }
       }
     </style>
   </head>
@@ -174,8 +241,9 @@
               -webkit-backdrop-filter: blur(10px);
               border-radius: 0;
               border: 3px solid #ff6ec7;
-              box-shadow: 0 0 20px rgba(255, 110, 199, 0.6), 0 0 40px rgba(123, 255, 181, 0.3), inset 0 0 20px rgba(255, 110, 199, 0.1);
-              font-family: 'Orbitron', 'Courier New', 'Consolas', Monaco, monospace;
+              box-shadow: 0 0 20px rgba(255, 110, 199, 0.6), 0 0 40px rgba(123, 255, 181, 0.3),
+                inset 0 0 20px rgba(255, 110, 199, 0.1);
+              font-family: "Orbitron", "Courier New", "Consolas", Monaco, monospace;
               position: relative;
               z-index: 10;
 
@@ -236,7 +304,7 @@
 
               input,
               textarea {
-                font-family: 'Courier New', Consolas, Monaco, monospace;
+                font-family: "Courier New", Consolas, Monaco, monospace;
                 font-size: 14px;
                 flex: 1;
                 min-width: 0;
@@ -317,7 +385,7 @@
                   overflow: hidden;
 
                   &::after {
-                    content: '';
+                    content: "";
                     position: absolute;
                     top: 50%;
                     left: 50%;
@@ -371,10 +439,10 @@
                 text-shadow: 0 0 10px #ff6ec7;
                 position: relative;
                 overflow: hidden;
-                font-family: 'Orbitron', 'Courier New', monospace;
+                font-family: "Orbitron", "Courier New", monospace;
 
                 &::before {
-                  content: '';
+                  content: "";
                   position: absolute;
                   top: 50%;
                   left: 50%;
@@ -497,7 +565,7 @@
                 overflow: hidden;
 
                 &::after {
-                  content: '';
+                  content: "";
                   position: absolute;
                   top: 50%;
                   left: 50%;
@@ -529,8 +597,13 @@
               }
 
               @keyframes pulse {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.1); }
+                0%,
+                100% {
+                  transform: scale(1);
+                }
+                50% {
+                  transform: scale(1.1);
+                }
               }
 
               /* Responsive Design */
@@ -664,13 +737,13 @@ Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</tex
     <script type="module" src="/js/github.js"></script>
     <script>
       // Copy to clipboard functionality
-      document.addEventListener('DOMContentLoaded', () => {
-        const copyButtons = document.querySelectorAll('.copy-btn');
+      document.addEventListener("DOMContentLoaded", () => {
+        const copyButtons = document.querySelectorAll(".copy-btn");
 
-        copyButtons.forEach(button => {
-          button.addEventListener('click', async (e) => {
+        copyButtons.forEach((button) => {
+          button.addEventListener("click", async (e) => {
             e.preventDefault();
-            const target = button.getAttribute('data-copy');
+            const target = button.getAttribute("data-copy");
             const textarea = document.querySelector(`.${target}`);
 
             if (textarea && textarea.value) {
@@ -679,25 +752,25 @@ Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</tex
 
                 // Visual feedback
                 const originalText = button.textContent;
-                button.textContent = '✓ Copied!';
-                button.classList.add('copied');
+                button.textContent = "✓ Copied!";
+                button.classList.add("copied");
 
                 setTimeout(() => {
                   button.textContent = originalText;
-                  button.classList.remove('copied');
+                  button.classList.remove("copied");
                 }, 2000);
               } catch (err) {
                 // Fallback for older browsers
                 textarea.select();
-                document.execCommand('copy');
+                document.execCommand("copy");
 
                 const originalText = button.textContent;
-                button.textContent = '✓ Copied!';
-                button.classList.add('copied');
+                button.textContent = "✓ Copied!";
+                button.classList.add("copied");
 
                 setTimeout(() => {
                   button.textContent = originalText;
-                  button.classList.remove('copied');
+                  button.classList.remove("copied");
                 }, 2000);
               }
             }

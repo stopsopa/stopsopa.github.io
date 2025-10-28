@@ -10,8 +10,5 @@
       "mcp__playwright__browser_resize"
     ]
   },
-  "enabledMcpjsonServers": [
-    "playwright",
-    "context7"
-  ]
+  "enabledMcpjsonServers": ["playwright", "context7"]
 }

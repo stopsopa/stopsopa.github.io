@@ -818,7 +818,7 @@
             element.dispatchEvent(new MouseEvent('mouseup', options));
             element.dispatchEvent(new MouseEvent('click', options));
           }
-          
+
           // that one works pretty often
           function click_v4(element) {
             const options = {
@@ -832,18 +832,15 @@
             element.dispatchEvent(new PointerEvent('pointerup', options));
             element.dispatchEvent(new MouseEvent('click', options));
           }
-          
+
           function click_v5(element) {
             const options = { bubbles: true, cancelable: true, key: 'Enter', code: 'Enter' };
             element.dispatchEvent(new KeyboardEvent('keydown', options));
             element.dispatchEvent(new KeyboardEvent('keyup', options));
             element.dispatchEvent(new MouseEvent('click', { bubbles: true }));
           }
-          
         </script>
         <h2>JSON</h2>
-
-        
 
         <script type="editor" data-lang="js">
 
