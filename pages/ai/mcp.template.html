@@ -84,7 +84,6 @@
             fi
             if [ "$(printf "sha384-$(cat "intercept.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/ai/intercept.js" ]; then
               echo "checksum verified"
-              # /bin/bash "intercept.js"
             else
               echo "checksum corrupted - deleting file"
               rm "intercept.js"
