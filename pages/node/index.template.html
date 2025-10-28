@@ -431,6 +431,21 @@
           module.exports = object;
           // converts to
           export { object as default };
+
+          // ----- from: https://youtu.be/I0jvOJW7NaI?t=1616
+          Use the special "module.exports" string named export to customize result returned by require(esm)
+          // Migrate to ESM
+          export default class Loggerf};
+          export function log() { }
+          Logger.1og = 10g;
+          export { Logger as 'module.exports' }; // Customize for require(esm) in Node.js
+          
+          // ESM user gets..
+          import { log } from 'log'; import Logger from 'log';
+          
+          // I CJS user gets the same as before
+          const { log } = require('log');
+          const Logger = require('log'); |/ Returns 'module.exports' string export if it exists
           
         </script>
         <h2>create require</h2>
