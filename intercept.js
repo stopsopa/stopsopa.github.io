@@ -23,15 +23,39 @@ const error = (...args) => console.error("[intercept.js]", ...args);
 
 // Parse command line arguments
 const separatorIndex = process.argv.indexOf("--");
-if (separatorIndex === -1 || separatorIndex === process.argv.length - 1) {
-  error("Usage: intercept.js [logDir] -- <command> [args...]");
-  error("Example: intercept.js -- node server.js");
-  error("Example: intercept.js var -- node server.js");
-  process.exit(1);
-}
 
-// Extract log directory (optional first arg before --)
-const argsBeforeSeparator = process.argv.slice(2, separatorIndex);
+// Extract args before separator (if it exists)
+const argsBeforeSeparator = separatorIndex === -1
+  ? process.argv.slice(2)
+  : process.argv.slice(2, separatorIndex);
+
+// Check for --help flag or invalid usage
+if (
+  argsBeforeSeparator.includes("--help") ||
+  argsBeforeSeparator.includes("-h") ||
+  separatorIndex === -1 ||
+  separatorIndex === process.argv.length - 1
+) {
+  console.log(`
+intercept.js - MCP Server Request/Response Interceptor
+
+USAGE:
+  intercept.js [logDir] -- <command> [args...]
+  intercept.js --help
+
+ARGUMENTS:
+  logDir        Optional log directory (default: ./var/intercept.js/)
+  --            Separator between options and command
+  --help, -h    Show this help
+
+EXAMPLES:
+  intercept.js -- node node_modules/.bin/mcp-server-filesystem .
+  intercept.js var/logs -- uvx mcp-server-fetch
+
+Logs JSON-RPC requests/responses with timing to timestamped files.
+`);
+  process.exit(0);
+}
 const logDir = argsBeforeSeparator.length > 0 ? argsBeforeSeparator[0] : null;
 
 const commandArgs = process.argv.slice(separatorIndex + 1);
