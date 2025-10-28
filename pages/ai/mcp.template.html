@@ -78,11 +78,11 @@
 
             wget --help 1> /dev/null 2> /dev/null
             if [ "$?" = "0" ]; then
-              wget --no-cache -O "intercept.js" "urlwizzard.schema://urlwizzard.hostnegotiated/intercept.js"
+              wget --no-cache -O "intercept.js" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/ai/intercept.js"
             else # curl
-              curl "urlwizzard.schema://urlwizzard.hostnegotiated/intercept.js" -o "intercept.js"
+              curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/ai/intercept.js" -o "intercept.js"
             fi
-            if [ "$(printf "sha384-$(cat "intercept.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::intercept.js" ]; then
+            if [ "$(printf "sha384-$(cat "pages/ai/intercept.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/ai/intercept.js" ]; then
               echo "checksum verified"
               # /bin/bash "intercept.js"
             else
@@ -90,7 +90,8 @@
               rm "intercept.js"
             fi
 
-            
+            node intercept.js var/mcp-server-filesystem -- node node_modules/.bin/mcp-server-filesystem .
+
           </script>
         </div>
       </div>
