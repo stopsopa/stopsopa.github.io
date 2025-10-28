@@ -2087,6 +2087,23 @@
 
             # you can generate multiple type in one go
             c8 --reporter=lcov --reporter=html --reporter=text node --test
+
+          // There is other way to get coverage using flag "experimental-test-coverage" 
+          // but that cannot be set via NODE_OPTIONS
+          // https://youtu.be/KayS7U-ivNo?t=1132
+          cat <<EEE
+          {
+            "\$schema:"https://nodejs.org/dist/v24.7.0/docs/node-config-schema.json",
+            "nodeOptions": {
+              "experimental-transform-types": true,
+              "disable-warning": "ExperimentalWarning",
+              "test-coverage-lines": 100
+            }
+            "testRunner": {
+              "experimental-test-coverage": true
+            }
+          }
+          EEE
         </script>
         <h2>fs/promises</h2>
         <script type="editor" data-lang="js">
