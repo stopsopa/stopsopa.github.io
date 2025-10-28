@@ -418,6 +418,21 @@
           # will work too
           # but intercepting with "$(cat)" is interesting too
         </script>
+        <h2>export ESM CJS</h2>
+        <script type="editor" data-lang="js">
+          // from: https://youtu.be/I0jvOJW7NaI?t=1493
+          
+          I If there are only default exports...
+          module.exports = class Logger {};
+          // converts to
+          export default class Loggerf};
+          
+          / Or
+          module.exports = object;
+          // converts to
+          export { object as default };
+          
+        </script>
         <h2>create require</h2>
         <script type="editor" data-lang="js">
 
