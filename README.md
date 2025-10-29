@@ -215,7 +215,7 @@ window.doace();
 
 ## template minimal
 
-```html
+```
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -232,7 +232,8 @@ window.doace();
       <div class="inside">
         <div class="cards">
           <h2>Index</h2>
-          <script type="editor" data-lang="sh"></script>
+          <script type="editor" data-lang="sh">
+          </script>
         </div>
       </div>
     </div>
