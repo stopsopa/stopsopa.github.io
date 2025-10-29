@@ -8,6 +8,7 @@
     "@floating-ui/dom": "^1.6.12",
     "@giphy/js-fetch-api": "^5.2.0",
     "@inquirer/prompts": "^7.9.0",
+    "@modelcontextprotocol/inspector": "^0.17.2",
     "@popperjs/core": "^2.11.8",
     "canvas-confetti": "^1.9.2",
     "chokidar-cli": "^3.0.0",

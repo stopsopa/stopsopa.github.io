@@ -211,6 +211,36 @@ window.doace();
 </html>
 ```
 
+## template minimal
+
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <h2>Index</h2>
+          <script type="editor" data-lang="sh"></script>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>
+```
+
 # GITHUB_SOURCES_PREFIX || urlwizzard.schema://urlwizzard.hostnegotiated
 
 which is replacing all occurences in tags, attributes and script bodies as follow
