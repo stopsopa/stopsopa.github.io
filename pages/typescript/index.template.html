@@ -362,7 +362,7 @@
           // ------------------ try --experimental-transform-types
           <%inject /pages/typescript/node/transform-types.ts %>
         </script>
-        <h2>--experimental-config-file=ode.config.json</h2>
+        <h2>--experimental-config-file=node.config.json</h2>
         <script type="editor" data-lang="python">
 
           cat <<EEE > ts.ts
@@ -387,7 +387,7 @@
 
           cat <<EEE > node.config.json
           {
-            "\$schema": "https://nodejs.org/dist/v24.7.0/docs/node-config-schema.json",
+            "\$schema": "https://nodejs.org/dist/$(node -v)/docs/node-config-schema.json",
             "nodeOptions": {                  
               "import": [
                 "amaro/strip"
@@ -403,7 +403,7 @@
 
           cat <<EEE > node.config.json
           {
-            "\$schema": "https://nodejs.org/dist/v24.7.0/docs/node-config-schema.json",
+            "\$schema": "https://nodejs.org/dist/$(node -v)/docs/node-config-schema.json",
             "nodeOptions": {     
               "no-warnings": true,
               "experimental-strip-types": true,
