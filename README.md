@@ -139,6 +139,8 @@ window.doace();
 
 # TEMPLATE
 
+[template minimal](#template-minimal)
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -212,8 +214,6 @@ window.doace();
 ```
 
 ## template minimal
-
-
 
 ```html
 <!DOCTYPE html>
