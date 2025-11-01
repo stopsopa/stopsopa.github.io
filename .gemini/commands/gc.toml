@@ -39,7 +39,7 @@ Analyze ONLY staged Git changes and generate semantic release commit messages au
 ```
 🤖 Generated with [Gemini Code](https://gemini.google.com/code)
 
-Co-Authored-By: Gemini <noreply@google.com>
+Co-Authored-By: Gemini <gemini@google.com>
 ```
 
 **Execution Privileges:**
