@@ -12,8 +12,7 @@
     "mikestead.dotenv",
     "dbaeumer.vscode-eslint",
     "mhutchie.git-graph",
-    "fabiospampinato.vscode-git-history",
-    "xyz.local-history"
+    "fabiospampinato.vscode-git-history"
   ],
   // List of extensions recommended by VS Code that should not be recommended for users of this workspace.
   "unwantedRecommendations": []
