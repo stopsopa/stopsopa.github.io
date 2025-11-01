@@ -22,9 +22,6 @@ module.exports = (setup) => {
 set -e  
 # git config core.excludesFile .git/.gitignore_local
 
-echo -e "\n      Press enter to continue\n"
-read
-
 source .env
 # source .env.sh
         
@@ -39,7 +36,6 @@ EEE
 
       `,
       description: "Status of all things and help page",
-      source: true,
       confirm: false,
     },
     [`start`]: {
