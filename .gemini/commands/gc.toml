@@ -29,6 +29,7 @@ Analyze ONLY staged Git changes and generate semantic release commit messages au
 - If changes span multiple concerns, use a multi-line commit message with bullet points
 - Ensure the message provides value to anyone reading the git history
 - Immediately proceed with doing what is described above, don't introduce waiting stage like: "I understand. I am ready to proceed. Please stage your changes.". Just proceed, assuming I've already staged changes.
+- Immediately after doing git commit ... stop - hard stop. Don't suggest anything and don't continue dialogue.
 
 **Execution Privileges:**
 
