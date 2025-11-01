@@ -31,6 +31,7 @@ Analyze ONLY staged Git changes and generate semantic release commit messages au
 - Ensure the message provides value to anyone reading the git history
 - Immediately proceed with doing what is described above, don't introduce waiting stage like: "I understand. I am ready to proceed. Please stage your changes.". Just proceed, assuming I've already staged changes.
 - Immediately after doing git commit ... stop - hard stop. Don't suggest anything and don't continue dialogue.
+- check git just once, generate message just once, commit just once. After that stop. Don't try to continuously check git in case new stages changes apprear. I want this behaviour explicitly. Because I can see the moment you've created the commit. I would like to have freedom to stage new files in preparation for next /gc call immediately after your git commit ....
 
 **Execution Privileges:**
 
