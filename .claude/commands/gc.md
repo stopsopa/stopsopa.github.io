@@ -33,7 +33,11 @@ Analyze ONLY staged Git changes and generate semantic release commit messages au
 - Immediately after doing git commit ... stop - hard stop. Don't suggest anything and don't continue dialogue.
 - check git just once, generate message just once, commit just once. After that stop. Don't try to continuously check git in case new stages changes apprear. I want this behaviour explicitly. Because I can see the moment you've created the commit. I would like to have freedom to stage new files in preparation for next /gc call immediately after your git commit ....
 - Don't analyse if branch is ahead or behind. Leave it to me. After creating commit about staged changes, just stop.
-- add Co-authored-by: Gemini <gemini@google.com> to the message to indicate that changes were made with AI assistance.
+- add Co-authored-by: .. as it is specified in **Co author message suffix** section of this document
+
+**Co author message suffix**
+
+Add up to date Claude Co-authored-by: attribute commits to Claude.
 
 **Execution Privileges:**
 
