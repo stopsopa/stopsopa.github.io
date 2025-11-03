@@ -20,6 +20,9 @@
     "noprettier/": true,
     "pages/bash/xx/*.bundled.gitignored.*": true
   },
+  "explorer.autoRevealExclude": {
+    "**/node_modules": false
+  },
   "files.watcherExclude": {
     ".git/": true,
     ".vscode/": true,
