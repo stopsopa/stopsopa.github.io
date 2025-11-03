@@ -1,5 +1,6 @@
 ---
 description: Analyze staged Git changes and generate semantic release commit messages automatically.
+model: claude-3-5-haiku-20241022
 ---
 
 Analyze ONLY staged Git changes and generate semantic release commit messages automatically.
