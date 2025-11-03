@@ -4,7 +4,7 @@
 # npm install -g chokidar-cli
 # chokidar bash/node/*.* --initial -c '/bin/bash bash/node/array_test.sh'
 # 
-# /bin/bash bash/node/array_test.sh
+# NODE_OPTIONS="" /bin/bash bash/node/array_test.sh
 # 
 
 # 
