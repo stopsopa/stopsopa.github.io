@@ -28,8 +28,11 @@
 FINAL_EXIT_CODE=0
 __SCRIPT="${1}"
 
-function test() {   
+function test() {
     LABEL="${1}"
+
+    # Print test label header
+    echo "====== ${LABEL} ====== v"
 
 eval "$( eval "${COMMAND}" \
         2> >(RESULT_STDERR=$(cat); typeset -p RESULT_STDERR) \
