@@ -1654,6 +1654,30 @@ message AwesomeMessage {
             };
             return;
           }
+
+          // there is also method to add style as a text to individual element:
+          // from: https://github.com/andrisgauracs/AI-Code-Assistant/blob/c1dbdf54eff0b3033f55451ac2aa5b0f32b0a227/src/suggestionUI.js#L4
+          export function createSuggestionElement() {
+            const element = document.createElement("div");
+            element.style.cssText = `
+              position: fixed;
+              background: rgba(45, 45, 45, 0.95);
+              color: #64b5f6;
+              padding: 8px 12px;
+              border-radius: 4px;
+              font-family: 'Courier New', monospace;
+              font-size: 13px;
+              pointer-events: none;
+              z-index: 10000;
+              display: none;
+              max-width: 400px;
+              word-wrap: break-word;
+              border: 1px solid #404040;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            `;
+            document.body.appendChild(element);
+            return element;
+          }
         </script>
         <h2>Observe Track DOM elements</h2>
         <a href="https://samthor.au/2021/observing-dom/">https://samthor.au/2021/observing-dom/</a>
