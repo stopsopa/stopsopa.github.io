@@ -181,6 +181,41 @@
         <a href="https://www.virustotal.com/gui/file/c0593b4b65bb264a982d61a7b84f38b10a41972b49a217ef3a80a906a0c4ee08"
           >https://www.virustotal.com/gui/file/c0593b4b65bb264a982d61a7b84f38b10a41972b49a217ef3a80a906a0c4ee08</a
         >
+        <h2>LAN - DirectPlay for old games</h2>
+        <script type="editor" data-lang="python">
+
+          Found what was wrong mainly in this thread: https://www.codeweavers.com/compatibility/crossover/forum/settlers-3?msg=55527#c2
+            "
+                Check the IP your hostname resolves to. If your hostname is "mycomputer", then DPlay looks up the ip of "mycomputer" 
+              and binds itself to the network card that this IP is associated with. If, as by Unix defaults, this ip is 127.0.0.1, 
+              it will try to search for hosts on the loopback interface, and there won't be any to find.
+              
+                On Windows, the hostname's IP is always the IP of the last network interface that was brought up. That means that 
+              even on Windows you run into troubles if you have a WLAN, then start a wired interface. In that situation, you won't 
+              be able to play dplay games via WLAN on Windows.
+              
+              So if your external ip is 192.168.123.66(just an example), edit your /etc/hosts/ so that "mycomputer" resolves to 192.168.123.66.
+            "
+
+          So then solution really is to switch windows to first use ipv4 not ipv6 to resolve:
+            ping [hostname]
+
+          Example:
+            C:\Windows\system32>ping vaio 
+            Pinging Vaio [::1] with 32 bytes of data: 
+            Reply from ::1: time<1ms
+              That is not what we want
+
+          So prioritize ipv4: 
+            reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters" /v DisabledComponents /t REG_DWORD /d 32 /f
+
+          Another thing is that I had to connect laptops using Crossover RJ45 cable.
+          I couldn't connect Settlers III via WI-FI even with changes presented above:
+
+          Then reconfiguration of .../etc/hosts is needed (on both machines) to fix ping [hostname] to point it to main ip representing current machine
+
+          Then we have to make sure that wifi is off - that all other interfaces are off except ethernet with crossover RJ45.
+        </script>
         <h2>SourceTree open from VSCode cli</h2>
         <script type="editor" data-lang="python">
 
