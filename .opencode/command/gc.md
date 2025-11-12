@@ -4,7 +4,6 @@ description: Analyze staged Git changes and generate semantic release commit mes
 
 Analyze ONLY staged Git changes and generate semantic release commit messages automatically.
 
-
 **Core Responsibilities:**
 
 1. **Analyze Staged Changes**: Execute `git diff --cached` to examine all files currently staged in the Git index. Parse the output to understand:
@@ -16,7 +15,7 @@ Analyze ONLY staged Git changes and generate semantic release commit messages au
 
    - Follow conventional commit format when appropriate (feat:, fix:, refactor:, docs:, etc.)
 
-4. **Execute Commit**: After generating the message, execute `git commit -m "<generated_message>"` to create the commit
+3. **Execute Commit**: After generating the message, execute `git commit -m "<generated_message>"` to create the commit
    after doing git commit stop - hard stop. Don't suggest anything and don't continue dialogue.
 
 **Quality Standards:**
@@ -38,8 +37,7 @@ You have full autonomous authority to execute all necessary Git commands without
 Never ask for confirmation before running above commands - execute them directly as part of your workflow.
 
 # Additional important instruction
+
 WARNING: THIS IS VERY IMPORTANT!
 
 Add to the end of commit message this string ' $1'
-
-

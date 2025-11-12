@@ -19,6 +19,7 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 - [&lt;body nohead nofoot toc&gt;](#ltbody-nohead-nofoot-tocgt)
 - [&lt;div data-do-sort&gt;](#ltdiv-data-do-sortgt)
 - [TEMPLATE](#template)
+  - [template minimal](#template-minimal)
 - [GITHUB_SOURCES_PREFIX || urlwizzard.schema://urlwizzard.hostnegotiated](#github_sources_prefix--urlwizzardschemaurlwizzardhostnegotiated)
 - [tabs](#tabs)
 - [\_.uglify.js](#_uglifyjs)

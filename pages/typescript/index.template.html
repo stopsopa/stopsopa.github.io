@@ -388,7 +388,7 @@
           cat <<EEE > node.config.json
           {
             "\$schema": "https://nodejs.org/dist/$(node -v)/docs/node-config-schema.json",
-            "nodeOptions": {                  
+            "nodeOptions": {
               "import": [
                 "amaro/strip"
               ],
@@ -398,27 +398,23 @@
             "testRunner": {
               "test-isolation": "process"
             }
-          } 
+          }
           EEE
 
           cat <<EEE > node.config.json
           {
             "\$schema": "https://nodejs.org/dist/$(node -v)/docs/node-config-schema.json",
-            "nodeOptions": {     
+            "nodeOptions": {
               "no-warnings": true,
               "experimental-strip-types": true,
               "experimental-transform-types": true
             }
-          } 
+          }
           EEE
 
           # Node.js v24.11.0 - and it doesn't work still
           node --experimental-config-file=node.config.json ts.ts
           node --experimental-default-config-file ts.ts
-
-
-
-
         </script>
 
         <h2>ts-node & tsimp & tsx && SWC</h2>
