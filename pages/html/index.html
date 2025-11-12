@@ -350,6 +350,8 @@
               transition-property: block-size, content-visibility;
               transition-duration: 0.1s;
               transition-behavior: allow-discrete;
+              padding-right: 10px;
+              padding-left: 10px;
             }
 
             &[open] {
@@ -381,9 +383,29 @@
           Something small enough to escape casual notice.
         </details>
         <hr />
-        <details class="styled">
+        <details class="styled" name="accordion">
           <summary>Details 1</summary>
-          Something small enough to escape casual notice.
+          <p>
+            Something small enough to escape casual notice.
+
+          </p>
+          <p>Lorem ipsum ..</p>
+        </details>
+        <details class="styled" name="accordion">
+          <summary>Details 2</summary>
+          <p>
+            Something small enough to escape casual notice.
+
+          </p>
+          <p>Lorem ipsum ..</p>
+        </details>
+        <details class="styled" name="accordion">
+          <summary>Details 3</summary>
+          <p>
+            Something small enough to escape casual notice.
+
+          </p>
+          <p>Lorem ipsum ..</p>
         </details>
         <script type="editor" data-lang="html">
 
@@ -393,30 +415,6 @@
             &lt;summary>Details&lt;/summary>
             Something small enough to escape casual notice.
           &lt;/details>
-
-
-          &lt;style>
-            details.styled {
-              border: 1px solid #aaa;
-              border-radius: 4px;
-              padding: 0.5em 0.5em 0;
-
-              summary {
-                font-weight: bold;
-                margin: -0.5em -0.5em 0;
-                padding: 0.5em;
-              }
-
-              &[open] {
-                padding: 0.5em;
-              }
-
-              &[open] summary {
-                border-bottom: 1px solid #aaa;
-                margin-bottom: 0.5em;
-              }
-            }
-          &lt;/style>
         </script>
         <h2>element size width height</h2>
 
