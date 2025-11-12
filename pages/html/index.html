@@ -313,62 +313,59 @@
         <style>
           details.styled {
             border: 1px solid gray;
-            /* width: 80%; */
-            margin: 0 auto;
-            /* background: #282828; */
-            margin-bottom: 0.5rem;
-            /* box-shadow: 0 0.1rem 1rem -0.5rem rgba(0, 0, 0, 0.4); */
-            /* border-radius: 5px; */
+            margin: 0 auto 0.5rem;
             overflow: hidden;
 
             summary {
               padding: 1rem;
               display: block;
-              /* background: #333; */
               padding-left: 2.2rem;
               position: relative;
               cursor: pointer;
               user-select: none;
               background-color: #ccc;
-              /* border: 1px solid gray; */
-            }
-            summary::before {
-              content: "";
-              color: gray;
-              border-width: 0.4rem;
-              border-style: solid;
-              border-color: transparent transparent transparent gray;
-              position: absolute;
-              top: 1.3rem;
-              left: 1rem;
-              transform: rotate(0);
-              transform-origin: 0.2rem 50%;
-              transition: 0.25s transform ease;
-            }
-          }
-          details.styled::details-content {
-            block-size: 0;
-            overflow: hidden;
-            transition-property: block-size, content-visibility;
-            transition-duration: 0.1s;
-            transition-behavior: allow-discrete;
-          }
 
-          details.styled[open]::details-content {
-            /* Fallback for browsers that don't support calc-size() function */
-            block-size: auto;
+              &::before {
+                content: "";
+                color: gray;
+                border-width: 0.4rem;
+                border-style: solid;
+                border-color: transparent transparent transparent gray;
+                position: absolute;
+                top: 1.3rem;
+                left: 1rem;
+                transform: rotate(0);
+                transform-origin: 0.2rem 50%;
+                transition: 0.25s transform ease;
+              }
 
-            /* calc-size() function allows transition to height: auto; */
-            block-size: calc-size(auto, size);
-          }
-          details.styled[open] > summary {
-            border-bottom: 1px solid gray;
-          }
-          details.styled[open] > summary:before {
-            transform: rotate(90deg);
-          }
-          details.styled summary::-webkit-details-marker {
-            display: none;
+              &::-webkit-details-marker {
+                display: none;
+              }
+            }
+
+            &::details-content {
+              block-size: 0;
+              overflow: hidden;
+              transition-property: block-size, content-visibility;
+              transition-duration: 0.1s;
+              transition-behavior: allow-discrete;
+            }
+
+            &[open] {
+              &::details-content {
+                block-size: auto;
+                block-size: calc-size(auto, size);
+              }
+
+              > summary {
+                border-bottom: 1px solid gray;
+
+                &::before {
+                  transform: rotate(90deg);
+                }
+              }
+            }
           }
         </style>
         <hr />
