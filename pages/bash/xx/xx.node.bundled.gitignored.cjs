@@ -7202,15 +7202,25 @@ var require_lib2 = __commonJS({
         }
         if (err) {
           reject(err);
-        } else {
+        } else if (buffer) {
           resolve((0, exports2.detect)(buffer));
+        } else {
+          reject(new Error("No error and no buffer received"));
         }
       };
-      if (opts && opts.sampleSize) {
+      const sampleSize = (opts === null || opts === void 0 ? void 0 : opts.sampleSize) || 0;
+      if (sampleSize > 0) {
         fd = fs2.openSync(filepath, "r");
-        const sample = Buffer.allocUnsafe(opts.sampleSize);
-        fs2.read(fd, sample, 0, opts.sampleSize, opts.offset, (err) => {
-          handler(err, sample);
+        let sample = Buffer.allocUnsafe(sampleSize);
+        fs2.read(fd, sample, 0, sampleSize, opts.offset, (err, bytesRead) => {
+          if (err) {
+            handler(err, null);
+          } else {
+            if (bytesRead < sampleSize) {
+              sample = sample.subarray(0, bytesRead);
+            }
+            handler(null, sample);
+          }
         });
         return;
       }
@@ -7221,8 +7231,11 @@ var require_lib2 = __commonJS({
       const fs2 = (0, node_1.default)();
       if (opts && opts.sampleSize) {
         const fd = fs2.openSync(filepath, "r");
-        const sample = Buffer.allocUnsafe(opts.sampleSize);
-        fs2.readSync(fd, sample, 0, opts.sampleSize, opts.offset);
+        let sample = Buffer.allocUnsafe(opts.sampleSize);
+        const bytesRead = fs2.readSync(fd, sample, 0, opts.sampleSize, opts.offset);
+        if (bytesRead < opts.sampleSize) {
+          sample = sample.subarray(0, bytesRead);
+        }
         fs2.closeSync(fd);
         return (0, exports2.detect)(sample);
       }
@@ -11485,7 +11498,10 @@ var specialFallbackSymbols = {
   oneNinth: "1/9",
   oneTenth: "1/10"
 };
-var mainSymbols = { ...common, ...specialMainSymbols };
+var mainSymbols = {
+  ...common,
+  ...specialMainSymbols
+};
 var fallbackSymbols = {
   ...common,
   ...specialFallbackSymbols
@@ -11499,7 +11515,6 @@ var replacements = Object.entries(specialMainSymbols);
 var defaultTheme = {
   prefix: {
     idle: import_yoctocolors_cjs.default.blue("?"),
-    // TODO: use figure
     done: import_yoctocolors_cjs.default.green(esm_default.tick)
   },
   spinner: {
@@ -12581,7 +12596,7 @@ var editorTheme = {
 };
 var esm_default3 = createPrompt((config, done) => {
   var _a;
-  const { waitForUseInput = true, file: { postfix = (_a = config.postfix) != null ? _a : ".txt", ...fileProps } = {}, validate = () => true } = config;
+  const { waitForUserInput = true, file: { postfix = (_a = config.postfix) != null ? _a : ".txt", ...fileProps } = {}, validate = () => true } = config;
   const theme = makeTheme(editorTheme, config.theme);
   const [status, setStatus] = useState("idle");
   const [value = "", setValue] = useState(config.default);
@@ -12618,7 +12633,7 @@ var esm_default3 = createPrompt((config, done) => {
     });
   }
   useEffect((rl) => {
-    if (!waitForUseInput) {
+    if (!waitForUserInput) {
       startEditor(rl);
     }
   }, []);
@@ -12696,13 +12711,26 @@ var inputTheme = {
   validationFailureMode: "keep"
 };
 var esm_default5 = createPrompt((config, done) => {
-  const { required, validate = () => true, prefill = "tab" } = config;
+  const { prefill = "tab" } = config;
   const theme = makeTheme(inputTheme, config.theme);
   const [status, setStatus] = useState("idle");
   const [defaultValue = "", setDefaultValue] = useState(config.default);
   const [errorMsg, setError] = useState();
   const [value, setValue] = useState("");
   const prefix = usePrefix({ status, theme });
+  async function validate(value2) {
+    const { required, pattern, patternError = "Invalid input" } = config;
+    if (required && !value2) {
+      return "You must provide a value";
+    }
+    if (pattern && !pattern.test(value2)) {
+      return patternError;
+    }
+    if (typeof config.validate === "function") {
+      return await config.validate(value2) || "You must provide a valid value";
+    }
+    return true;
+  }
   useKeypress(async (key, rl) => {
     if (status !== "idle") {
       return;
@@ -12710,7 +12738,7 @@ var esm_default5 = createPrompt((config, done) => {
     if (isEnterKey(key)) {
       const answer = value || defaultValue;
       setStatus("loading");
-      const isValid = required && !answer ? "You must provide a value" : await validate(answer);
+      const isValid = await validate(answer);
       if (isValid === true) {
         setValue(answer);
         setStatus("done");
@@ -12721,7 +12749,7 @@ var esm_default5 = createPrompt((config, done) => {
         } else {
           rl.write(value);
         }
-        setError(isValid || "You must provide a valid value");
+        setError(isValid);
         setStatus("idle");
       }
     } else if (isBackspaceKey(key) && !value) {
