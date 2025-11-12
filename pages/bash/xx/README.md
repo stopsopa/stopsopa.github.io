@@ -1,5 +1,8 @@
 To control color of the output for xx look for code block
 
+WARNING: THIS PROBLEM KEEPS COMMING BACK, SO HERE IS THE LINK TO DOCUMENTATION:
+https://github.com/SBoudrias/Inquirer.js/tree/main/packages/select#theming
+
 ```js
 ...
       theme: {
