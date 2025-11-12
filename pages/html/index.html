@@ -346,13 +346,27 @@
               transition: 0.25s transform ease;
             }
           }
+          details.styled::details-content {
+            block-size: 0;
+            overflow: hidden;
+            transition-property: block-size, content-visibility;
+            transition-duration: 0.1s;
+            transition-behavior: allow-discrete;
+          }
+
+          details.styled[open]::details-content {
+            /* Fallback for browsers that don't support calc-size() function */
+            block-size: auto;
+
+            /* calc-size() function allows transition to height: auto; */
+            block-size: calc-size(auto, size);
+          }
           details.styled[open] > summary {
             border-bottom: 1px solid gray;
           }
           details.styled[open] > summary:before {
             transform: rotate(90deg);
           }
-
           details.styled summary::-webkit-details-marker {
             display: none;
           }
