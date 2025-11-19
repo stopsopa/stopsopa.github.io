@@ -180,6 +180,7 @@ if [ "${FIND}" = "1" ]; then
       # execute command in each found .git directory (not entering directories "node_modules")
 
     sshh -f exec -- 15 | tee log.log
+      # WARNING: it is always safe to run - it will only create .git/sshh when it doesn't exist in given dir
       # special case where we not running "15" command (that wouldn't make much sense)
       # but running
         /bin/bash "${0}" -i 15
