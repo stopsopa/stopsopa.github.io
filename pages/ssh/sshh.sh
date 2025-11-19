@@ -373,7 +373,19 @@ if [ "${1}" = "install" ]; then
   _exit 2> /dev/null || true
 fi
 
-_CMD="find \"${SSHH_DIR_WITH_KEYS}\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
+if [ -f "${SSHH_DIR_WITH_KEYS}/sort.txt" ]; then
+
+  if [ ! -f "${REPO_DIR}/pages/ssh/customsort.awk" ]; then
+
+      echo -e "\n    sshh\n\nFile ${REPO_DIR}/pages/ssh/customsort.awk doesn't exist"
+
+      _exit 2> /dev/null || true
+  fi
+
+  _CMD="find \"${SSHH_DIR_WITH_KEYS}\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | grep -v sort.txt| awk -v prior=\"${SSHH_DIR_WITH_KEYS}/sort.txt\" -f \"${REPO_DIR}/pages/ssh/customsort.awk\" | sort -n | cut -d' ' -f2-"  
+else
+  _CMD="find \"${SSHH_DIR_WITH_KEYS}\" -type f -maxdepth 1 | egrep -v '^.*?\.(7z|sh|pub)$' | sort"
+fi
 
 _LIST="$(eval "${_CMD}")"
 
@@ -390,7 +402,7 @@ command:
 
   ${_CMD}
 
-has crushed with status code: >>${_CODE}<<
+has crashed with status code: >>${_CODE}<<
 
 END
 )"; } 2>&3
@@ -997,7 +1009,7 @@ command:
 
   ${_CMD}
 
-has crushed with status code: >>${_CODE}<<
+has crashed with status code: >>${_CODE}<<
 
 END
 )"; } 2>&3

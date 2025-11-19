@@ -1,0 +1,9 @@
+description="find all images"
+
+prompt="""
+
+!{
+  find . -type f -name "*.png" -not -path "*/node_modules/*"
+}
+Show me the list of found files in the Gemini cli as a response
+"""
