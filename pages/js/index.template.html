@@ -614,25 +614,6 @@
           }
         </script>
 
-        <h2>scroll to element</h2>
-        <script type="editor" data-lang="js">
-
-          element.scrollIntoView({ behavior: "instant", block: "center", inline: "nearest" });
-              # https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
-
-          window.scrollTo(0, element.offsetTop - 40);
-              # https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollTo
-
-          // other
-          // chrome Version 86.0.4240.198 (Official Build) (x86_64)
-          // firefox 83.0 (64-bit)
-          // Safari Version 14.0 (15610.4.28.1.9, 15610) macOS Catalina Version 10.15.7
-          // Edge Version 87.0.664.52 (Official build) (64-bit)
-          // IE11 Version: 11.1198.18362.0
-          window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
-          # https://stackoverflow.com/a/29971996
-        </script>
-
         <h3>nth backreference</h3>
         <a href="https://javascript.info/regexp-backreferences">https://javascript.info/regexp-backreferences</a>
         <script type="editor" data-lang="js">
@@ -1906,9 +1887,33 @@ message AwesomeMessage {
           "/abc/def/ghi\\/klm/nop\\\\/end".match(/(\\.|[^/])+/g)
         </script>
         <a href="https://stackoverflow.com/a/14334054">stackoverflow source</a>
-        <h2>is window scrollable</h2>
+        
+
+        
+        <h2>is window scrollable - scroll to element</h2>
         <script type="editor" data-lang="js">
 
+          // latest way NATIVE to scroll, just CSS
+            https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-behavior
+
+          // js native way
+
+            element.scrollIntoView({ behavior: "instant", block: "center", inline: "nearest" });
+                # https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+  
+            window.scrollTo(0, element.offsetTop - 40);
+                # https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollTo
+  
+            // other
+            // chrome Version 86.0.4240.198 (Official Build) (x86_64)
+            // firefox 83.0 (64-bit)
+            // Safari Version 14.0 (15610.4.28.1.9, 15610) macOS Catalina Version 10.15.7
+            // Edge Version 87.0.664.52 (Official build) (64-bit)
+            // IE11 Version: 11.1198.18362.0
+            window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+            # https://stackoverflow.com/a/29971996
+          
+          // and some other tricks
 
           var log = (function () {try {return console.log}catch (e) {return function () {}}}());
 
