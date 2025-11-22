@@ -29,10 +29,10 @@
           <h2>interesting</h2>
           <script type="editor" data-lang="sh">
 
+            https://style.ysap.sh/
             https://github.com/cgsdev0
             https://devhints.io/bash
           </script>
-
           <h2>basics</h2>
           <script type="editor" data-lang="sh">
 
@@ -3371,6 +3371,39 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
           sudo chown batman: file
           # will change user and group to 'batman' (colon)
+        </script>
+
+        <h2>exit code</h2>
+        
+        <script type="editor" data-lang="sh">
+          
+          # from: https://youtu.be/vAK55aiRLeY?t=488
+
+          # NOTE: for zsh use
+            echo "${pipestatus[@]}"
+          
+          # INTERESTING: to make it work in bash and zsh use
+            echo "${PIPESTATUS[@]:-${pipestatus[@]}}"
+          
+          true | false
+          echo "${PIPESTATUS[*]}"
+            # prints >0 1<
+            # WARNING: that works in bash not in zsh
+          
+          cat non_existing.file | grep dave
+          echo "${PIPESTATUS[*]}"
+            # prints >1 1<
+
+          cat non_exist.txt | cat | cat | grep foo
+          echo "${PIPESTATUS[*]}"
+            # prints >1 0 0 1<
+
+          # INTERESTING CASE:
+            < file.txt grep dave
+            echo dave | cat foo.txt - bar.txt    from: https://youtu.be/vAK55aiRLeY?t=782
+          
+
+        
         </script>
         <h2>fork bomb</h2>
         <script type="editor" data-lang="sh">
