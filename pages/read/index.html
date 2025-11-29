@@ -87,6 +87,54 @@
 
           Good video elaborating on this phenomenon: https://youtu.be/nAK6o0GZrVs?t=221
         </script>
+        <h2>Coding at Google</h2>
+        <script type="editor" data-lang="sh">
+
+          DESIGN DOCS:
+          https://youtu.be/E8ZlSNcVV_U?t=315
+            • WHAT EXACTLY IS THE PROBLEM?
+            • WHAT ARE ALL THE ALTERNATIVE SOLUTIONS?
+            • WHAT TRADEOFFS ARE YOU MAKING?
+            • WHAT IS THE STATUS QUO?
+            • HOW WILL THIS BEHAVE AT SCALE?
+            • WHAT HAPPENS IN PARTIAL FAILURES?
+            • HOW DO YOU ROLL OUT CHANGES INCREMENTALLY?
+            • HOW DO YOU ROLL THEM BACK?
+
+          TESTING:
+          https://youtu.be/E8ZlSNcVV_U?t=347
+
+            GOOGLE'S TESTING CULTURE FOCUSES ON
+            BEHAVIOR DRIVEN TESTING:
+              • SPEED
+                  UNIT TESTS RUN FASTEST, SO YOU CATCH ISSUES SOONER
+              • MAINTAINABILITY
+                  LARGER, MORE INTEGRATED TESTS ARE HARDER TO DEBUG AND MAINTAIN AS DEPENDENCIES CHANGE
+              • UTILIZATION
+                  LEAN TESTS USE FEWER RESOURCES; UNIT TESTS TYPICALLY SCALE BEST
+              • RELIABILITY
+                  GOOD TESTS FAIL ONLY ON REAL ISSUES; BIGGER SYSTEMS INTRODUCE FLAKINESS AND NONDETERMINISM
+              • FIDELITY
+                  HIGHER-FIDELITY TESTS (INTEGRATION, END-TO-END) BETTER MIRROR REAL PRODUCTION BEHAVIOR, WHILE UNIT TESTS RELY ON SIMULATION THAT CAN DRIFT FROM REALITY
+            Also:
+              TESTS PROTECTS GUARANTEES NOT STRUCTURE
+
+          WHAT IS FOR SRE IT'S ALSO FOR DEVS:
+            SITE RELIABILITY ENGINEERS
+              FAILURE IS NOT AN EDGE CASE IT'S THE DEFAULT STATE
+            DESIGN FOR FAILURES: https://youtu.be/E8ZlSNcVV_U?t=403
+              THIS MEANS
+                • DESIGNING RETRIES WITH EXPONENTIAL BACKOFF AND JITTER
+                • NEVER HAMMERING A STRUGGLING SERVICE WITH BLIND RETRY STORMS
+                • ENSURING IDEMPOTENT WRITES
+          GOOD FAILURE HANDLING REQUIRES: https://youtu.be/E8ZlSNcVV_U?t=430
+            • CIRCUIT BREAKERS
+            • LOADSHEDDING
+            • ADAPTIVE THROTTLING
+          TO PROTECT DOWNSTREAM SYSTEMS AND PREVENT CASCADING FAILURES
+          
+          
+        </script>
         <h2>Naming and definition of tests</h2>
         <script type="editor" data-lang="sh">
 
