@@ -1,4 +1,7 @@
 
+# run this command:
+# /bin/bash bash/cli/yt-to-mp3/bulk.sh | tee log.log
+
 rush --version 1> /dev/null 2> /dev/null
 
 if [[ "${?}" != "0" ]]; then
