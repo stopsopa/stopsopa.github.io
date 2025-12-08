@@ -1,23 +1,16 @@
 
-node -v 1> /dev/null 2> /dev/null
-
-if [[ "${?}" != "0" ]]; then
-
-  echo "${0} error: node is not installed";
-
-  exit 1
-fi
-
-yt-dlp --version 1> /dev/null 2> /dev/null
-
-if [[ "${?}" != "0" ]]; then
-
-  echo "${0} error: yt-dlp is not installed";
-
-  exit 1
-fi
+# first argument is ID or youtube url, script will extract ID from it
+# [OPTIONAL] second argument is current number of processed file
+# [OPTIONAL] third argument is total number of files to process
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+
+if [ -z "${2}" ] && [ -z "${3}" ]; then
+    /bin/bash "${_DIR}/test.sh"
+    if [[ "${?}" != "0" ]]; then
+        exit 1
+    fi
+fi
 
 if [ ! -f "${_DIR}/.env" ]; then
 
@@ -58,6 +51,16 @@ EEE
 
 ID="$(node extract-id.js "${1}")"
 
+if [ -n "${2}" ] && [ -n "${3}" ]; then
+    echo "=================== ${2} / ${3} https://youtu.be/${ID}"
+fi
+
+if [ -f "${TARGETDIR}/${ID}.mp3" ]; then
+    echo "File ${TARGETDIR}/${ID}.mp3 already exists. Skipping."
+    
+    exit 0
+fi
+
 cat <<EEE
 
 ID >${ID}<
@@ -80,7 +83,7 @@ EEE
 
 # yt-dlp -f "${NUMBER}" -o "${TARGETDIR}/%(title)s.%(ext)s" -- "${ID}"
 
-INFO="$(yt-dlp -f "${NUMBER}" -o "${TARGETDIR}/%(title)s.%(ext)s" --print after_move:"%(filename)s||%(title)s||%(uploader)s" -- "${ID}")"
+INFO="$(yt-dlp -f "${NUMBER}" -o "${TARGETDIR}/${ID}_tmp.%(ext)s" --print after_move:"%(filename)s||%(title)s||%(uploader)s" -- "${ID}")"
 
 FILENAME="${INFO%%||*}"
 REST="${INFO#*||}"

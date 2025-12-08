@@ -13,6 +13,8 @@ fi
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
+/bin/bash "${_DIR}/test.sh"
+
 if [ ! -f "${_DIR}/.env" ]; then
 
     echo "${0} error: .env file not found"
@@ -147,7 +149,9 @@ X-WQqy2gNJQ
 EOF
 )"
 
-echo "${LIST}" | rush -j 3 /bin/bash "${_DIR}/index.sh" '{}'
+TOTAL="$(echo "${LIST}" | wc -l | tr -d ' ')"
+
+echo "${LIST}" | rush -j 3 /bin/bash "${_DIR}/index.sh" '{}' {#} "${TOTAL}"
 
 
 
