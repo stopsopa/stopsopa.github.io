@@ -14,6 +14,9 @@ fi
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
 /bin/bash "${_DIR}/test.sh"
+if [[ "${?}" != "0" ]]; then
+    exit 1
+fi
 
 if [ ! -f "${_DIR}/.env" ]; then
 
