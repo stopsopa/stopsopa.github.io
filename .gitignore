@@ -11,6 +11,7 @@ public/env.js
 /public/coverage/
 module*.js
 /_git
+/yt-to-mp3
 yarn-error.log
 /playwright-report/
 /dist/
