@@ -46,7 +46,6 @@ echo "Target directory: ${TARGETDIR}"
 cat <<EEE
 
 TARGETDIR >${TARGETDIR}<
-
 EEE
 
 ID="$(node extract-id.js "${1}")"
@@ -64,7 +63,6 @@ fi
 cat <<EEE
 
 ID >${ID}<
-
 EEE
 
 NUMBER="$(yt-dlp -F -- "${ID}" | grep -v remium | grep "audio only" | tail -n 1 | awk '{print $1}' |  tr -d '\n')"
@@ -78,7 +76,6 @@ fi
 cat <<EEE
 
 NUMBER >${NUMBER}<
-
 EEE
 
 # yt-dlp -f "${NUMBER}" -o "${TARGETDIR}/%(title)s.%(ext)s" -- "${ID}"
