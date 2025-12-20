@@ -735,23 +735,20 @@
           <script type="editor" data-lang="sh">
 
             # from: https://youtu.be/0Z71je-X6YM
-            
-            # ---- field & total ---- vvv
             field () {
               awk -F "${2:- }" "{ print \$${1:-1} }"
             }
             # usage:
-            ls -la | field 5
-            echo abc,def,ghi | field 2 ,
+            # ls -la | field 5
+            # echo abc,def,ghi | field 2 ,
               # will print def
 
             total () {
               awk -F "${2:- }" "{ s += \$${1:-1} } END { print s }"
             }
-            echo -e "a-b-c-10\na-b-c-5" | field 4 - | total
-            echo -e "a-b-c-10\na-b-c-5" | total 4 -
+            # echo -e "a-b-c-10\na-b-c-5" | field 4 - | total
+            # echo -e "a-b-c-10\na-b-c-5" | total 4 -
             
-            # ---- field & total ---- ^^^
           </script>
 
           <h2>monitoring tools</h2>
