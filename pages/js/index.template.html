@@ -915,6 +915,202 @@
 
               return true;
           }
+
+          // more advanced
+          function visible(el) {
+            if (!(el instanceof Element)) return false;
+          
+            // 1. Must have layout boxes
+            if (!el.getClientRects().length) return false;
+          
+            const style = getComputedStyle(el);
+          
+            // 2. Common CSS visibility checks
+            if (
+              style.display === "none" ||
+              style.visibility === "hidden" ||
+              style.visibility === "collapse" ||
+              style.opacity === "0"
+            ) {
+              return false;
+            }
+          
+            // 3. Must be within viewport
+            const rect = el.getBoundingClientRect();
+          
+            const inViewport =
+              rect.bottom > 0 &&
+              rect.right > 0 &&
+              rect.top < (window.innerHeight || document.documentElement.clientHeight) &&
+              rect.left < (window.innerWidth || document.documentElement.clientWidth);
+          
+            if (!inViewport) return false;
+          
+            // 4. Walk up the DOM tree to ensure no hidden parents
+            let parent = el.parentElement;
+            while (parent) {
+              const parentStyle = getComputedStyle(parent);
+              if (
+                parentStyle.display === "none" ||
+                parentStyle.visibility === "hidden" ||
+                parentStyle.opacity === "0"
+              ) {
+                return false;
+              }
+              parent = parent.parentElement;
+            }
+          
+            return true;
+          }
+        </script>
+
+        <h2>querySelectorAllDeep<h2>
+          
+        <script type="editor" data-lang="js">
+          /* ---------------------------------------------------------
+           * Shadow-aware element discovery
+           * WARNING: Requires visible() to be defined
+           * ------------------------------------------------------- */
+          function querySelectorAllDeep(selector, startRoot = document) {
+            const results = [];
+            const seen = new Set();
+          
+            function traverse(root) {
+              root.querySelectorAll(selector).forEach((el) => {
+                if (!seen.has(el)) {
+                  seen.add(el);
+                  if (visible(el)) {
+                    results.push({ root, element: el });
+                  }
+                }
+              });
+          
+              root.querySelectorAll("*").forEach((el) => {
+                if (el.shadowRoot) {
+                  traverse(el.shadowRoot);
+                }
+              });
+            }
+          
+            traverse(startRoot);
+            return results;
+          }
+        </script>
+        <h2>findUniqueSelector</h2>
+          
+        <script type="editor" data-lang="js">
+          /**
+           * Requires visible() to be defined
+           * Requires querySelectorAllDeep() to be defined
+           */
+          const findUniqueSelector = (function () {
+            /* ---------------------------------------------------------
+             * Root-scoped uniqueness check (CRITICAL)
+             * ------------------------------------------------------- */
+            function isUniqueInRoot(selector, root) {
+              const list = root.querySelectorAll(selector);
+              return list.length === 1 ? list[0] : null;
+            }
+          
+            /* ---------------------------------------------------------
+             * Class combinations helper
+             * ------------------------------------------------------- */
+            function combinations(arr, maxLen = 3) {
+              const result = [];
+              const n = arr.length;
+          
+              for (let len = 2; len <= Math.min(maxLen, n); len++) {
+                const helper = (start, combo) => {
+                  if (combo.length === len) {
+                    result.push([...combo]);
+                    return;
+                  }
+                  for (let i = start; i < n; i++) {
+                    combo.push(arr[i]);
+                    helper(i + 1, combo);
+                    combo.pop();
+                  }
+                };
+                helper(0, []);
+              }
+          
+              return result;
+            }
+          
+            const ATTRS = ["src", "poster"];
+          
+            /* ---------------------------------------------------------
+             * MAIN API
+             * ------------------------------------------------------- */
+            return function (element) {
+              if (!(element instanceof Element)) {
+                throw new Error("Expected a DOM Element");
+              }
+          
+              const root = element.getRootNode(); // Document | ShadowRoot
+              const tag = element.tagName.toLowerCase();
+          
+              let selector;
+          
+              /* ---------- 1. ID ---------- */
+              if (element.id) {
+                selector = `${tag}#${CSS.escape(element.id)}`;
+                if (isUniqueInRoot(selector, root) === element) {
+                  return { root, selector };
+                }
+              }
+          
+              const classes = [...element.classList];
+          
+              /* ---------- 2. Single class ---------- */
+              for (const cls of classes) {
+                selector = `${tag}.${CSS.escape(cls)}`;
+                if (isUniqueInRoot(selector, root) === element) {
+                  return { root, selector };
+                }
+              }
+          
+              /* ---------- 3. Class combinations ---------- */
+              for (const combo of combinations(classes, 3)) {
+                selector = `${tag}.${combo.map(CSS.escape).join(".")}`;
+                if (isUniqueInRoot(selector, root) === element) {
+                  return { root, selector };
+                }
+              }
+          
+              /* ---------- 4. Attribute selectors ---------- */
+              for (const attr of ATTRS) {
+                const val = element.getAttribute(attr);
+                if (!val) continue;
+          
+                selector = `${tag}[${attr}="${CSS.escape(val)}"]`;
+                if (isUniqueInRoot(selector, root) === element) {
+                  return { root, selector };
+                }
+              }
+          
+              /* ---------- 5. Last resort: nth-of-type ---------- */
+              const parent = element.parentElement;
+              if (parent) {
+                const siblings = [...parent.children].filter(
+                  (el) => el.tagName === element.tagName
+                );
+                const index = siblings.indexOf(element);
+          
+                if (index !== -1) {
+                  const parentSelector = parent.id
+                    ? `#${CSS.escape(parent.id)}`
+                    : parent.tagName.toLowerCase();
+          
+                  selector = `${parentSelector} > ${tag}:nth-of-type(${index + 1})`;
+                  if (isUniqueInRoot(selector, root) === element) {
+                    return { root, selector };
+                  }
+                }
+              }
+          
+              throw new Error("Could not find unique selector in this root");
+            };
         </script>
 
         <h2>mousedrag drag element</h2>
