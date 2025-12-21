@@ -919,12 +919,12 @@
           // more advanced
           function visible(el) {
             if (!(el instanceof Element)) return false;
-          
+
             // 1. Must have layout boxes
             if (!el.getClientRects().length) return false;
-          
+
             const style = getComputedStyle(el);
-          
+
             // 2. Common CSS visibility checks
             if (
               style.display === "none" ||
@@ -934,18 +934,18 @@
             ) {
               return false;
             }
-          
+
             // 3. Must be within viewport
             const rect = el.getBoundingClientRect();
-          
+
             const inViewport =
               rect.bottom > 0 &&
               rect.right > 0 &&
               rect.top < (window.innerHeight || document.documentElement.clientHeight) &&
               rect.left < (window.innerWidth || document.documentElement.clientWidth);
-          
+
             if (!inViewport) return false;
-          
+
             // 4. Walk up the DOM tree to ensure no hidden parents
             let parent = el.parentElement;
             while (parent) {
@@ -959,13 +959,13 @@
               }
               parent = parent.parentElement;
             }
-          
+
             return true;
           }
         </script>
 
-        <h2>querySelectorAllDeep<h2>
-          
+        <h2>querySelectorAllDeep</h2>
+
         <script type="editor" data-lang="js">
           /* ---------------------------------------------------------
            * Shadow-aware element discovery
@@ -974,7 +974,7 @@
           function querySelectorAllDeep(selector, startRoot = document) {
             const results = [];
             const seen = new Set();
-          
+
             function traverse(root) {
               root.querySelectorAll(selector).forEach((el) => {
                 if (!seen.has(el)) {
@@ -984,20 +984,20 @@
                   }
                 }
               });
-          
+
               root.querySelectorAll("*").forEach((el) => {
                 if (el.shadowRoot) {
                   traverse(el.shadowRoot);
                 }
               });
             }
-          
+
             traverse(startRoot);
             return results;
           }
         </script>
         <h2>findUniqueSelector</h2>
-          
+
         <script type="editor" data-lang="js">
           /**
            * Requires visible() to be defined
@@ -1011,14 +1011,14 @@
               const list = root.querySelectorAll(selector);
               return list.length === 1 ? list[0] : null;
             }
-          
+
             /* ---------------------------------------------------------
              * Class combinations helper
              * ------------------------------------------------------- */
             function combinations(arr, maxLen = 3) {
               const result = [];
               const n = arr.length;
-          
+
               for (let len = 2; len <= Math.min(maxLen, n); len++) {
                 const helper = (start, combo) => {
                   if (combo.length === len) {
@@ -1033,12 +1033,12 @@
                 };
                 helper(0, []);
               }
-          
+
               return result;
             }
-          
+
             const ATTRS = ["src", "poster"];
-          
+
             /* ---------------------------------------------------------
              * MAIN API
              * ------------------------------------------------------- */
@@ -1046,12 +1046,12 @@
               if (!(element instanceof Element)) {
                 throw new Error("Expected a DOM Element");
               }
-          
+
               const root = element.getRootNode(); // Document | ShadowRoot
               const tag = element.tagName.toLowerCase();
-          
+
               let selector;
-          
+
               /* ---------- 1. ID ---------- */
               if (element.id) {
                 selector = `${tag}#${CSS.escape(element.id)}`;
@@ -1059,9 +1059,9 @@
                   return { root, selector };
                 }
               }
-          
+
               const classes = [...element.classList];
-          
+
               /* ---------- 2. Single class ---------- */
               for (const cls of classes) {
                 selector = `${tag}.${CSS.escape(cls)}`;
@@ -1069,7 +1069,7 @@
                   return { root, selector };
                 }
               }
-          
+
               /* ---------- 3. Class combinations ---------- */
               for (const combo of combinations(classes, 3)) {
                 selector = `${tag}.${combo.map(CSS.escape).join(".")}`;
@@ -1077,18 +1077,18 @@
                   return { root, selector };
                 }
               }
-          
+
               /* ---------- 4. Attribute selectors ---------- */
               for (const attr of ATTRS) {
                 const val = element.getAttribute(attr);
                 if (!val) continue;
-          
+
                 selector = `${tag}[${attr}="${CSS.escape(val)}"]`;
                 if (isUniqueInRoot(selector, root) === element) {
                   return { root, selector };
                 }
               }
-          
+
               /* ---------- 5. Last resort: nth-of-type ---------- */
               const parent = element.parentElement;
               if (parent) {
@@ -1096,19 +1096,19 @@
                   (el) => el.tagName === element.tagName
                 );
                 const index = siblings.indexOf(element);
-          
+
                 if (index !== -1) {
                   const parentSelector = parent.id
                     ? `#${CSS.escape(parent.id)}`
                     : parent.tagName.toLowerCase();
-          
+
                   selector = `${parentSelector} > ${tag}:nth-of-type(${index + 1})`;
                   if (isUniqueInRoot(selector, root) === element) {
                     return { root, selector };
                   }
                 }
               }
-          
+
               throw new Error("Could not find unique selector in this root");
             };
         </script>
@@ -1417,7 +1417,7 @@
           <fieldset>
             <legend>source</legend>
             <textarea class="source" data-autoresize>
-{
+              {
                 "data": [
                   {"id": 1, "value": "example", "type": "alpha"},
                   {"id": 2, "value": "example", "type": "alpha"},
@@ -1434,8 +1434,8 @@
                   "source": "generated",
                   "compression": "targeted"
                 }
-              }</textarea
-            >
+              }
+            </textarea>
           </fieldset>
           <fieldset>
             <legend>encoded:</legend>
@@ -1580,38 +1580,38 @@
             <legend>.proto</legend>
             <textarea class="proto" data-autoresize>
               
-syntax = "proto3";
-package awesomepackage;
+              syntax = "proto3";
+              package awesomepackage;
 
-enum Style {
-  solid = 0; // first value will be used as default if not specified,
-  // and setting any value which is not registered in enum will default to 0
-  // more about default values: https://protobuf.dev/programming-guides/proto3/#default
-  dotted = 1;
-  dashed = 2;
-  double = 3;
-  groove = 4;
-  ridge = 5;
-  inset = 6;
-  outset = 7;
-}
+              enum Style {
+                solid = 0; // first value will be used as default if not specified,
+                // and setting any value which is not registered in enum will default to 0
+                // more about default values: https://protobuf.dev/programming-guides/proto3/#default
+                dotted = 1;
+                dashed = 2;
+                double = 3;
+                groove = 4;
+                ridge = 5;
+                inset = 6;
+                outset = 7;
+              }
 
-enum Correctpos {
-  normal = 0;
-  top = 1;
-  bottom = 2;
-  left = 3;
-  right = 4;
-}
+              enum Correctpos {
+                normal = 0;
+                top = 1;
+                bottom = 2;
+                left = 3;
+                right = 4;
+              }
 
-message AwesomeMessage {
-  string color = 1; // this is not enum so start from 1
-  Style style = 2;
-  int32 width = 3;
-  bool correct = 4;
-  Correctpos correctpos = 5;
-}</textarea
-            >
+              message AwesomeMessage {
+                string color = 1; // this is not enum so start from 1
+                Style style = 2;
+                int32 width = 3;
+                bool correct = 4;
+                Correctpos correctpos = 5;
+              }
+            </textarea>
             <a href="https://github.com/protobufjs/protobuf.js">https://github.com/protobufjs/protobuf.js</a>
             <br />
             <a href="https://protobuf.dev/programming-guides/proto3/"
