@@ -260,30 +260,28 @@
         >
         <script type="editor" data-lang="sh">
 
-          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install gpg gawk
-          # follow:
-          #     https://asdf-vm.com/guide/getting-started.html#official-download
-          # then
-          #     https://asdf-vm.com/guide/getting-started.html#_3-install-asdf:~:text=ZSH%20%26%20Git,-ZSH%20%26%20Homebrew
-            # so go to https://github.com/asdf-vm/asdf/releases and download latest release & and unpack it
-            # sudo mv ~/Downloads/asdf /usr/local/bin/
-            # asdf --help
-            # now make sure to have shim installed:
+          # There was newer version released 0.16.0:
+            https://asdf-vm.com/guide/upgrading-to-v0-16.html
 
-              export AFTERASDFPATH="${PATH}"
-              export ASDF_DATA_DIR="$HOME/.asdf"
-              export PATH="$ASDF_DATA_DIR/shims:$PATH"
+          # to install follow section "Download Pre-Compiled Binary - Easy" from:
+            https://asdf-vm.com/guide/getting-started.html
 
-              # I have mine installed in ~/.any_shell_common.sh
+              # so go to https://github.com/asdf-vm/asdf/releases and download latest release & and unpack it
+              # sudo mv ~/Downloads/asdf /usr/local/bin/
+              # asdf --help
+              # now make sure to have shim installed in the shell of your choice ...:
 
-              # once all of that is done, inspect
-              asdf --version    # should be higher than 0.16.0
-              asdf current nodejs
-              asdf plugin add nodejs
+                export ASDF_DATA_DIR="$HOME/.asdf"
+                export PATH="$ASDF_DATA_DIR/shims:$PATH"
 
-          # DON'T DO THAT - just option
-          export HOMEBREW_NO_AUTO_UPDATE=1 && brew install coreutils curl git asdf
-          #export HOMEBREW_NO_AUTO_UPDATE=1 && arch -arm64 brew install coreutils curl git asdf
+                # ... I have mine installed in ~/.any_shell_common.sh
+
+                # once all of that is done, inspect in one of the project which relayed previously on asdf
+                asdf --version    # should be higher than 0.16.0
+                asdf current nodejs
+                asdf plugin add nodejs
+                node -v
+
 
           asdf install
             # when you have .tool-versions but not necessarly installed all from it
