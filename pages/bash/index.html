@@ -904,6 +904,38 @@
                lsb_release -a
 
 
+               # polish manpages            
+
+                cat <<EOF | docker build -t ubuntu:18.04-man-pl -f- .
+                FROM ubuntu:18.04
+                
+                RUN apt-get update \
+                 && yes | unminimize \
+                 && apt-get install -y locales \
+                                       manpages \
+                                       manpages-dev \
+                                       manpages-posix \
+                                       manpages-posix-dev \
+                                       manpages-pl \
+                                       manpages-pl-dev \
+                 && locale-gen pl_PL.UTF-8 \
+                 && update-locale LANG=pl_PL.UTF-8
+                
+                ENV LANG=pl_PL.UTF-8
+                ENV LANGUAGE=pl_PL:en
+                ENV MANLANG=pl
+                EOF
+                
+                
+                docker images | grep ubuntu | grep 18.04-man
+                
+                docker run -it ubuntu:18.04-man-pl bash
+                
+                man awk
+                
+                to see what is available ls /usr/share/man/pl/
+
+
 
             # usage
             man -d # Print extra debugging information
