@@ -265,6 +265,21 @@
           #     https://asdf-vm.com/guide/getting-started.html#official-download
           # then
           #     https://asdf-vm.com/guide/getting-started.html#_3-install-asdf:~:text=ZSH%20%26%20Git,-ZSH%20%26%20Homebrew
+            # so go to https://github.com/asdf-vm/asdf/releases and download latest release & and unpack it
+            # sudo mv ~/Downloads/asdf /usr/local/bin/
+            # asdf --help
+            # now make sure to have shim installed:
+
+              export AFTERASDFPATH="${PATH}"
+              export ASDF_DATA_DIR="$HOME/.asdf"
+              export PATH="$ASDF_DATA_DIR/shims:$PATH"
+
+              # I have mine installed in ~/.any_shell_common.sh
+
+              # once all of that is done, inspect
+              asdf --version    # should be higher than 0.16.0
+              asdf current nodejs
+              asdf plugin add nodejs
 
           # DON'T DO THAT - just option
           export HOMEBREW_NO_AUTO_UPDATE=1 && brew install coreutils curl git asdf
@@ -300,6 +315,8 @@
 
           asdf local java corretto-17.0.8.8.1
             # to generate .tool-versions
+            # since 0.16.0 asdf local no longer works, use
+              asdf set java corretto-17.0.8.8.1
 
           asdf current
           asdf current nodejs
@@ -314,6 +331,10 @@
 
           asdf global nodejs latest
             # to generate global ~/.asdf/.tool-versions
+            # since 0.16.0 asdf local no longer works, use
+             asdf set -u nodejs 16.5.0
+             # -u is setting in user home directory
+
         </script>
         <h2>Something resulting in an error</h2>
 
