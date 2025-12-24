@@ -22,10 +22,107 @@
         <h2>Course</h2>
         <script type="editor" data-lang="sh">
 
-          # REPL - Read Evaluate Print Loop https://youtu.be/Sx9zG7wa4FA?t=414
+        # REPL - Read Evaluate Print Loop https://youtu.be/Sx9zG7wa4FA?t=414
 
-          cat /usr/share/dict/words
-              # interesting https://youtu.be/Sx9zG7wa4FA
+        cat /usr/share/dict/words
+            # interesting https://youtu.be/Sx9zG7wa4FA
+
+        # loop https://youtu.be/Sx9zG7wa4FA?t=4414
+          for thing in foo bar baz bat; do
+            echo "thing is $thing"
+          done
+
+          for thing in "$@"; do
+            echo "thing is $thing"
+          done
+            # from: https://youtu.be/Sx9zG7wa4FA?t=4956
+
+        # syntax checker - that will check if file syntax is correct
+            bash -n ttt.sh
+
+        for thing in {1..5}; do
+          echo "thing is $thing"
+        done
+            # from: https://youtu.be/Sx9zG7wa4FA?t=6026
+
+        for ((i=1; i<=5; i++)); do
+          echo "thing is $i"
+        done
+            # from: https://youtu.be/Sx9zG7wa4FA?t=6084
+
+        while read -r line; do
+          echo "line is $line"
+        done
+            # cat /usr/share/dict/words | /bin/bash ttt.sh
+            # from: https://youtu.be/Sx9zG7wa4FA?t=6412
+
+        # hexdump
+            echo hello | hexdump
+            echo hello | hexdump -C
+            echo -n hello | hexdump -C   # '0a' is new line
+            echo hello | od
+            echo hello | xxd
+                # from: https://youtu.be/Sx9zG7wa4FA?t=6478
+        while read -r line || [[ -n $line ]]; do
+          echo "line is $line"
+        done
+            # [[ -n $line ]] - makes it more bullet proof because it will accept line from 
+              # echo -n test | /bin/bash ttt.sh
+            # cat /usr/share/dict/words | /bin/bash ttt.sh\
+            # from: https://youtu.be/Sx9zG7wa4FA?t=6573
+
+        /bin/bash ttt.sh < /usr/share/dict/words
+        < /usr/share/dict/words /bin/bash ttt.sh 
+            # Useless CAT - avoided 
+
+        # case
+            s=$1
+            case "$s" in 
+            dave)
+                echo "hi dave"
+                ;;
+            buddy* | test*)
+                # anything starting with 'buddy' or 'test'
+                echo "ohhh there he is"
+                ;;
+            guy)
+                echo "hi guy"
+                ;;
+            *)
+                echo who are you $s "?"
+                ;;
+            esac
+
+            # or
+
+            s=$1
+            case "$s" in 
+                dave)echo "hi dave";;
+                buddy)echo "ohhh there he is";;
+                guy)echo "hi guy";;
+                *)echo who are you $s "?";;
+            esac
+            
+            # /bin/bash ttt.sh fdafs
+            $ from: https://youtu.be/Sx9zG7wa4FA?t=7251
+
+
+            # always fallthrough
+            # WARNING: case with ;;& won't work with bash 3.2 from mac (check /bin/bash --version)
+            # let's use ubuntu via docker
+            # docker run -it -v "$(pwd):/opt" -w /opt ubuntu:18.04 bash
+
+                s=$1
+                case "$s" in 
+                    d*)echo "dave star";;&
+                    dave)echo "hi dave";;&
+                    buddy)echo "ohhh there he is";;&
+                    guy)echo "hi guy";;&
+                    *)echo who are you $s "?";;&
+                esac
+
+                # from: https://youtu.be/Sx9zG7wa4FA?t=7492
+
         </script>
       </div>
     </div>
