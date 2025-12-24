@@ -42,6 +42,9 @@
 
             function _date {
                 date "+%Y-%m-%d"
+                return 0 
+                # return only works in functions and can be captured with $? just after execution of such function
+                # https://youtu.be/Sx9zG7wa4FA?t=5350
             }
 
             function _time {
