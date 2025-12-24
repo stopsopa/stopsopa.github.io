@@ -123,6 +123,54 @@
 
                 # from: https://youtu.be/Sx9zG7wa4FA?t=7492
 
+        # array: https://youtu.be/Sx9zG7wa4FA?t=7842
+
+            # array=( # this syntax will do too
+            declare -a array=(
+                "dave" 
+                "buddy" 
+                "guy"
+                "hey there friend"
+            )
+
+            echo ${array[@]}
+
+            echo ----
+            echo ${array[0]}
+            echo ${array[1]}
+            echo ${array[2]}    
+
+            echo ---idx
+            idx=1
+            echo ${array[idx]}
+
+            echo ---loop
+            # for i in ${array[@]}; do # this one is incorrect - will process each word separately
+            # for i in "${array[*]}"; do # this one means cast array to string, so one iteration for the whole array
+            for i in "${array[@]}"; do # only that will process correctly
+                echo $i
+            done
+
+            echo ---copied
+
+            array2=(on start "${array[@]}" some [45]=more)
+            array2+=(and more) # push to array
+            for i in "${array2[@]}"; do
+                echo $i
+            done
+
+            echo ---inspect array
+            declare -p array2
+            # will print https://youtu.be/Sx9zG7wa4FA?t=8278
+            # declare -a array2='([0]="on" [1]="start" [2]="dave" [3]="buddy" [4]="guy" [5]="hey there friend" [6]="some" [45]="more" [46]="and" [47]="more")'
+
+            echo ---length of array
+            echo "${#array2[@]}"
+            echo ">$(echo ${#array2[@]})<" 
+            echo ">$((${#array2[47]}))<"  # get length of specific element
+
+        # associative-arrays https://youtu.be/Sx9zG7wa4FA?t=8370
+
         </script>
       </div>
     </div>
