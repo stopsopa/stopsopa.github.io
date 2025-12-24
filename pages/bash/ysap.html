@@ -110,7 +110,9 @@
             # always fallthrough
             # WARNING: case with ;;& won't work with bash 3.2 from mac (check /bin/bash --version)
             # let's use ubuntu via docker
-            # docker run -it -v "$(pwd):/opt" -w /opt ubuntu:18.04 bash
+            urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/index.html#bash-versions
+
+
 
                 s=$1
                 case "$s" in 
@@ -170,6 +172,17 @@
             echo ">$((${#array2[47]}))<"  # get length of specific element
 
         # associative-arrays https://youtu.be/Sx9zG7wa4FA?t=8370
+
+            # you can detec it associative arrays are available
+
+
+
+        # arithmetic expression https://youtu.be/Sx9zG7wa4FA?t=9866
+        a=2
+        b=3
+        (( c = a + b ))
+        echo "c is $c" 
+            # will print c is 5
 
         </script>
       </div>

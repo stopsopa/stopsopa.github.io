@@ -42,7 +42,7 @@
 
             function _date {
                 date "+%Y-%m-%d"
-                return 0 
+                return 0
                 # return only works in functions and can be captured with $? just after execution of such function
                 # https://youtu.be/Sx9zG7wa4FA?t=5350
             }
@@ -240,6 +240,88 @@
             # you typed f g.
             # you typed h.
           </script>
+          <h2>bash versions</h2>
+
+          To link this page use 
+          <a href="/viewer.html?file=%2Fpages%2Fbash%2Findex.html%23bash-versions">/viewer.html?file=%2Fpages%2Fbash%2Findex.html%23bash-versions</a>
+          <input type="text" id="bash-link" value="">
+          <script>
+            document.getElementById('bash-link').value = "urlwiz"+"zard.schema://urlwi"+"zzard.hostnegotiated/pages/bash/index.html#bash-versions";
+          </script>
+          <div data-vanilla-tabs>
+            <div data-buttons>
+              <span>5.1.16</span>
+              <span>4.4.20</span>
+              <span>4.1.2</span>
+              <span>3.2.0</span>
+              <span>ver</span>
+            </div>
+            <div data-tabs>
+              <div>
+                <script type="editor" data-lang="sh">
+
+                  docker run -it -v "$(pwd):/opt" -w /opt ubuntu:22.04 bash
+
+                  # check with bash --version
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="sh">
+
+                  docker run -it -v "$(pwd):/opt" -w /opt ubuntu:18.04 bash
+
+                  # check with bash --version
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="sh">
+
+                  docker run --platform linux/amd64 -it -v "$(pwd):/opt" -w /opt centos:6 bash
+
+                  # check with bash --version
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="sh">
+
+                  cat <<'EOF' | docker build -t ubuntu:22.04-bash3 -f- .
+                  FROM ubuntu:22.04
+
+                  ENV DEBIAN_FRONTEND=noninteractive
+
+                  RUN apt-get update && \
+                      apt-get install -y \
+                          build-essential \
+                          wget \
+                          ca-certificates && \
+                      rm -rf /var/lib/apt/lists/*
+
+                  WORKDIR /usr/src
+
+                  RUN wget https://ftp.gnu.org/gnu/bash/bash-3.2.tar.gz && \
+                      tar xf bash-3.2.tar.gz && \
+                      cd bash-3.2 && \
+                      ./configure \
+                          --build=aarch64-unknown-linux-gnu \
+                          --prefix=/opt/bash-3.2 && \
+                      make && \
+                      make install
+
+                  # Replace system bash with Bash 3
+                  RUN mv /bin/bash /bin/bash5_backup && \
+                      ln -s /opt/bash-3.2/bin/bash /bin/bash
+
+                  EOF
+
+                  docker run -it ubuntu:22.04-bash3 bash
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="sh"></script>
+              </div>
+            </div>
+          </div>
+
           <h2>test program, builtin || exec, command</h2>
           <script type="editor" data-lang="sh">
 
@@ -889,7 +971,7 @@
                   # and search for "alias"
 
                 # IMPORTANT: FOR BUILTINS TO GET HELP YOU NEED FOR EXAMPLE help history https://youtu.be/Sx9zG7wa4FA?t=2513
-                compgen -b 
+                compgen -b
                   # this will list all builtins
 
             # use also infopages
@@ -911,11 +993,11 @@
                lsb_release -a
 
 
-               # polish manpages            
+               # polish manpages
 
                 cat <<EOF | docker build -t ubuntu:18.04-man-pl -f- .
                 FROM ubuntu:18.04
-                
+
                 RUN apt-get update \
                  && yes | unminimize \
                  && apt-get install -y locales \
@@ -927,19 +1009,19 @@
                                        manpages-pl-dev \
                  && locale-gen pl_PL.UTF-8 \
                  && update-locale LANG=pl_PL.UTF-8
-                
+
                 ENV LANG=pl_PL.UTF-8
                 ENV LANGUAGE=pl_PL:en
                 ENV MANLANG=pl
                 EOF
-                
-                
+
+
                 docker images | grep ubuntu | grep 18.04-man
-                
+
                 docker run -it ubuntu:18.04-man-pl bash
-                
+
                 man awk
-                
+
                 to see what is available ls /usr/share/man/pl/
 
                 man man
