@@ -173,33 +173,8 @@
 
         # associative-arrays https://youtu.be/Sx9zG7wa4FA?t=8370
         
-            # you can detec it associative arrays are available
-            if ! declare -A arr 2>/dev/null; then
-                echo "${0} error: associative arrays are not supported"
-                exit 1
-            fi
-
-            echo all good
-
-            declare -A arr
-            arr=(
-                [key1]=value1
-                [key2]=value2
-            )
-            arr[key3]=value3
-            declare -p arr  
-            # will print: declare -A arr=([key2]="value2" [key3]="value3" [key1]="value1" )
-            echo ${arr[key2]}
-            echo ${arr["key3"]}
-            echo ${arr["fake"]}
-            echo ---loop
-            for key in "${!arr[@]}"; do
-                echo "element $key=${arr[$key]}"
-            done
-            # unset key2
-            unset arr[key2]
-            declare -p arr
-            # will print: declare -A arr=([key3]="value3" [key1]="value1")
+        # /bin/bash pages/bash/ysap/associative_array.sh
+           <%inject associative_array.sh %> 
 
         # arithmetic expression https://youtu.be/Sx9zG7wa4FA?t=9866
         a=2
@@ -207,6 +182,11 @@
         (( c = a + b ))
         echo "c is $c" 
             # will print c is 5
+
+        set and positional parameters
+        IFS=,
+        set -- a,b,c
+        echo "$1" "$2" "$3"
 
         </script>
       </div>
