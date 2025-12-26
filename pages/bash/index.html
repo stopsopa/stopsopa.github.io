@@ -254,7 +254,10 @@
               <span>4.4.20</span>
               <span>4.1.2</span>
               <span>3.2.0</span>
-              <span>ver</span>
+              <span>sh 0.5.11</span>
+              <span>zsh 5.8.1</span>
+              <span>sss</span>
+              <span>sss</span>
             </div>
             <div data-tabs>
               <div>
@@ -316,6 +319,46 @@
                   docker run -it -v "$(pwd):/workspace" -w /workspace ubuntu:22.04-bash3 bash
                   
                 </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="sh">
+
+                  docker run -it -v "$(pwd):/opt" -w /opt ubuntu:22.04 sh
+
+                  # ls -l /bin/sh
+                  # dpkg -s dash | grep Version
+                  # will return: Version: 0.5.11+git20210903+057cd650a4ed-3build1
+
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="sh">
+
+# closest to mac you can get - with reasonable effort
+
+cat <<'EOF' | docker build -t ubuntu:22.04-zsh -f- .
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get install -y \
+        zsh \
+        ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN zsh --version
+EOF
+
+docker run -it -v "$(pwd):/opt" -w /opt ubuntu:22.04-zsh zsh
+
+# zsh --version
+# zsh 5.8.1
+
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="sh"></script>
               </div>
               <div>
                 <script type="editor" data-lang="sh"></script>
@@ -465,6 +508,15 @@
 
             # POSIX-compatible / works in most shells
             _DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+
+            # alternative way to detect _SHELL
+            if [ -n "${ZSH_VERSION:-}" ]; then
+              _SHELL=zsh
+            elif [ -n "${BASH_VERSION:-}" ]; then
+              _SHELL=bash
+            else
+              _SHELL=sh
+            fi     
 
             # detect current shell
             _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
