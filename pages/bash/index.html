@@ -463,6 +463,9 @@
               # or clear all
               hash -r
 
+            # POSIX-compatible / works in most shells
+            _DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+
             # detect current shell
             _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
             _SHELL="$(basename ${_SHELL//-/})"
