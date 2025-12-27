@@ -149,6 +149,9 @@
             echo ---loop
             # for i in ${array[@]}; do # this one is incorrect - will process each word separately
             # for i in "${array[*]}"; do # this one means cast array to string, so one iteration for the whole array
+            # WARNING: 
+            # ${arr[*]} → joins elements using first character of IFS
+            # ${arr[@]} → preserves elements as separate words
             for i in "${array[@]}"; do # only that will process correctly
                 echo $i
             done
@@ -184,12 +187,48 @@
         set and positional parameters
         IFS=,
         set -- a,b,c
-        echo "$1" "$2" "$3"
+        echo ">$1<" ">$2<" ">$3<"
+
+        IFS=,
+        read a b c <<< "one,two,three"
+        echo ">$a<" ">$b<" ">$c<"
+
+          Once consequence of using IFS - some gotchas
+          touch "first file.txt" "second file.txt"
+          for file in $(ls *.txt); do
+            echo ">$file<"
+          done
+            # this is incorrect
+
+          for file in *.txt; do
+            echo ">$file<"
+          done
+            # this is fine
+
+          ls *.txt | while IFS= read -r file; do
+            echo ">${file}<"
+          done
+            # this is fine
+
+          readarray -t files < <(ls *.txt)
+          for file in "${files[@]}"; do
+            echo ">${file}<"
+          done
+            # this is fine
+            # WARNING: THIS ONLY WORKS IN BASH 4.0+ not in ZSH
 
         # csv processing https://youtu.be/Sx9zG7wa4FA?t=11684
         
         # /bin/bash pages/bash/ysap/csv_parser.sh
            <%inject csv_parser.sh %> 
+
+        # man 5 passwd
+        cat /etc/passwd | cut -d : -f 1
+        cut -d : -f 1 /etc/passwd
+
+        # https://youtu.be/Sx9zG7wa4FA?t=13543
+        PS4="[debug]: " /bin/bash pages/bash/ysap/csv_parser.sh
+
 
         </script>
       </div>
