@@ -178,7 +178,7 @@ function Viewer() {
 
       <label>
         <span>zz + file:</span>
-        <input type="search" readOnly value={`${zz}${file}`} />
+        <input type="search" readOnly value={`${zz}${file}`} style={{ color: "red" }} />
       </label>
 
       <label>

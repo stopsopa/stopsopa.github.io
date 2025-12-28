@@ -73,23 +73,3 @@ for item in "${@}"; do
 done
 declare -p unique
 echo "found ${#unique[@]} unique words"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
