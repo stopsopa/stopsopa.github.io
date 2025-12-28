@@ -246,6 +246,68 @@
           # /bin/bash pages/bash/ysap/array_expansion.sh
             <%inject array_expansion.sh %>
 
+          # GLOBS https://youtu.be/Sx9zG7wa4FA?t=17159
+          # /bin/bash pages/bash/ysap/globs.sh
+            <%inject globs.sh %>
+
+            # shopt  https://youtu.be/Sx9zG7wa4FA?t=17369
+              # options
+            shopt
+              # to list all options and if enabled or not
+            shaopt extglob
+              # test just one option
+            shopt -s extglob
+              # enable option (SET)
+            shopt -u extglob
+              # disable option (UNSET)
+
+            # apparently it is good idea to turn on set -H https://youtu.be/Sx9zG7wa4FA?t=17377
+
+          # BRACE EXPANSION
+            echo file{1,5}.txt
+              # file1.txt file5.txt
+            echo file{1..5}.txt
+              # file1.txt file2.txt file3.txt file4.txt file5.txt
+            echo file{0..6..2}.{json,txt}
+              # file0.json file0.txt file2.json file2.txt file4.json file4.txt file6.json file6.txt
+
+            echo file{a,b{1,2},c}.{json,txt}
+              # filea.json filea.txt fileb1.json fileb1.txt fileb2.json fileb2.txt filec.json filec.txt
+
+            mv report{,_old}.txt
+              # mv report.txt report_old.txt
+
+            for i in {1..3}; do echo "Run $i"; done
+              # Run 1
+              # Run 2
+              # Run 3
+
+            # spaces breaks expansion
+            echo {a, b, c}
+              # {a, b, c}
+
+            x=5
+            echo {1..$x}
+              # THAT WON'T WORK, IT WILL PRINT {1..5}
+
+            eval echo {1..$x}
+              # 1 2 3 4 5
+
+            # quoting also disables expansion
+            echo "{a,b,c}"
+              # {a,b,c}
+
+            YEAR=$(date +%Y)
+
+            for i in {1995..$YEAR}; do
+              echo ">${i}<"
+            done
+
+            for (( i=1995; i<=YEAR; i++ )); do
+              echo ">${i}<"
+            done
+
+          # PRINTF https://youtu.be/Sx9zG7wa4FA?t=18884
         </script>
 
         <h2>PIPESTATUS</h2>
