@@ -2522,6 +2522,74 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
         <script type="editor" data-lang="sh">
 
+          WARNING: 
+            adding
+               || [[ -n $line ]]
+            helps to produce one more iteration for last line when it doesn't end with \n
+            but not in all below examples that have to be added
+
+          # run process and process it's lines one by one (STREAM FASHION) with other script
+            urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fbash%2Fysap%2Floop_stdin.sh
+
+              # STOP=10 bash bash/out.sh 0.2 | /bin/bash pages/bash/ysap/loop_stdin.sh
+              while IFS= read -r line; do
+                  echo "loop_stdin: >$line<"
+              done
+
+          # script which runs internally 
+            STOP=10 bash bash/out.sh 0.2
+            # and iterates over it's output line by line (STREAM FASHION)
+            /bin/bash pages/bash/ysap/loop_script_stdout.sh
+            urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fbash%2Fysap%2Floop_script_stdout.sh
+
+              # pipeline AVOID
+                count=0
+                STOP=10 bash bash/out.sh 0.2 | while IFS= read -r line; do
+                  ((count++))
+                  echo "loop_stdin: >$line<"
+                done     
+                echo "count: $count"  
+                # that will produce count: 0    # at least for bash any version
+                # WARNING: generally avoid it         
+
+              # process substitution OK
+                count=0
+                while IFS= read -r line; do
+                  echo "loop_script_stdout: >$line<"
+                  ((count++))
+                done < <(STOP=10 bash bash/out.sh 0.1)      
+                echo "count: $count"  
+                # this produces 11
+                # NOTE: this one works everywhere
+                
+          # iterate over lines from env var:
+            urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fbash%2Fysap%2Floop_from_env_var.sh
+            LINES="$(printf 'one\ntwo\nthree')"
+            while IFS= read -r line || [[ -n $line ]]; do
+                echo "LINE: >$line<"
+            done <<< "$LINES"
+
+            # oneliner
+            LIST=$(cat <<EOF
+            one
+            two three
+            four
+            six
+
+            seven
+
+            eight
+            EOF
+            );
+            while read -r line ; do echo ">>$line<<" ; done <<< "${LIST}"
+
+          # over lines from file
+            /bin/bash pages/bash/ysap/loop_lines_from_file.sh
+            urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fbash%2Fysap%2Floop_lines_from_file.sh
+            while IFS= read -r line || [[ -n $line ]]; do
+                echo "FILE: >$line<"
+            done < pages/bash/ysap/lines.txt
+
           # converting list to array seems to be safer when calling other scripts in our loop
           ENVS_LIST="$(find . -name ".env.mac.*")"
           IFS=$'\n' read -r -d '' -a ENVS_ARRAY <<< "$ENVS_LIST"
@@ -2529,39 +2597,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             echo "Processing $ENV_FILE"
           done
 
-          # call function for each line (foreach): (multiline)
-          LIST=$(cat <<EOF
-          one
-          two three
-          four
-          six
 
-          seven
-
-          eight
-          EOF
-          );
-          while read -r line ; do echo ">>$line<<" ; done <<< "${LIST}"
-          # >>one<<
-          # >>two three<<
-          # >>four<<
-          # >>six<<
-          # >><<
-          # >>seven<<
-          # >><<
-          # >>eight<<
-
-          # or
-
-          while read -r LINE
-          do
-            echo ">>${LINE}<<"
-          done <<< "${LIST}"
-
-          while read -r LINE
-          do
-            echo ">>${LINE}<<"
-          done < "path/to/your/file"
 
           # --- iterate over find
 
