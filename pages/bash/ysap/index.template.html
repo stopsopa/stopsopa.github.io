@@ -308,6 +308,50 @@
             done
 
           # PRINTF https://youtu.be/Sx9zG7wa4FA?t=18884
+
+            printf '%s\n' {1..3}
+            s="Hello world"
+            printf 'message >%s<\n' "$s"
+
+            # padding on the left
+            printf "[%10s][%10s]\n" hi there
+              # prints >[     hi][     there] <
+
+            # padding on the right
+            printf "[%-10s][%-10s]\n" hi there
+              # prints >[hi        ][there     ]<
+
+            # control how much to pad (ON THE LEFT)
+            printf "[%*s]\n" 10 hi
+            printf "[%*s]\n" 30 hi
+
+            # control how much to pad (ON THE RIGHT)
+            printf "[%-*s]\n" 10 hi
+            printf "[%-*s]\n" 30 hi
+
+            # number
+            printf '[%d]\n' 123
+              # print >[123]<
+            printf '[%5d]\n' 123
+              # print >[  123]<
+            printf '[%-5d]\n' 123
+              # print >[123  ]<
+            printf '[%05d]\n' 123
+              # print >[00123]<
+            printf '[%08d]\n' 123456
+              # print >[00123456]<
+            printf '[%-08d]\n' 123456 # <-that won't work and there is not verison nor %0-8d - that is not valid too
+
+          # DATE FORMATTING https://youtu.be/Sx9zG7wa4FA?t=19506
+            datefmt="%Y-%M-%d %H:%M:%S"
+            date +"$datefmt"  # the thing is that this might not always work - depending on the shell
+              # I haven't been able to make it fail with versions from 
+              # urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/index.html?admin:password#bash-versions
+              # prints >2025-35-29 15:35:28<
+            # apparently better way is to use printf
+            printf '%(%Y/%m/%d %H:%M:%S)T\n' 
+              # aaaand actually this is bullshit, because printf with dates actually fails in some shells 
+              # where date +fmt didn't faile anywhere
         </script>
 
         <h2>PIPESTATUS</h2>
