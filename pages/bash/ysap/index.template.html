@@ -419,6 +419,54 @@
           # /bin/bash pages/bash/ysap/parameter_expansion.sh
           <%inject parameter_expansion.sh %>
         </script>
+
+        <h2>Named pipe</h2>
+        <script type="editor" data-lang="sh">
+          # https://youtu.be/Sx9zG7wa4FA?t=21546
+
+          mkfifo ./pipe
+          # now we can write to it
+          echo test > ./pipe
+          # and read from it (in other terminal)
+          cat ./pipe
+          # when you read from pipe. echo will finish and exit and cat will get what was written to pipe
+
+          # EXAMPLE 2 -----------
+          # let's create read_pipe.sh
+            <%inject read_pipe.sh %>
+            
+          # EXAMPLE 3 -----------
+          # https://youtu.be/Sx9zG7wa4FA?t=21778
+
+            # [read_pipe.sh]
+              <%inject read_pipe.sh %>
+
+            # [write_pipe.sh]
+              <%inject write_pipe.sh %>
+
+            # now run in one terminal 
+              /bin/bash pages/bash/ysap/read_pipe.sh
+            # and in another three commands:
+              /bin/bash pages/bash/ysap/write_pipe.sh foo &
+              /bin/bash pages/bash/ysap/write_pipe.sh bar &
+              /bin/bash pages/bash/ysap/write_pipe.sh baz &
+
+            # you will see all three processes are writing to the pipe
+            # and read_pipe.sh will read what have collected there constantly
+          
+          # EXAMPLE 4  -----------
+          # https://youtu.be/Sx9zG7wa4FA?t=21874
+
+            # we can open descriptor 3
+             exec 3>/dev/null
+            # and then we can write to it so data will go to /dev/null
+            echo "test" >&3
+            # we can close it
+            exec 3>&-
+
+            # let's try something new [pipe_parllel_and_read.sh]
+            # https://youtu.be/Sx9zG7wa4FA?t=21964
+        </script>
       </div>
     </div>
     <script type="module" src="/js/github.js"></script>

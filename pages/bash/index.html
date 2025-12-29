@@ -263,7 +263,7 @@
               <div>
                 <script type="editor" data-lang="sh">
 
-                  docker run -it -v "$(pwd):/opt" -w /opt ubuntu:22.04 bash
+                  docker run -it -v "$(pwd):/opt/project" -w /opt/project ubuntu:22.04 bash
 
                   # check with bash --version
                 </script>
@@ -271,7 +271,7 @@
               <div>
                 <script type="editor" data-lang="sh">
 
-                  docker run -it -v "$(pwd):/opt" -w /opt ubuntu:18.04 bash
+                  docker run -it -v "$(pwd):/opt/project" -w /opt/project ubuntu:18.04 bash
 
                   # check with bash --version
                 </script>
@@ -279,7 +279,7 @@
               <div>
                 <script type="editor" data-lang="sh">
 
-                  docker run --platform linux/amd64 -it -v "$(pwd):/opt" -w /opt centos:6 bash
+                  docker run --platform linux/amd64 -it -v "$(pwd):/opt/project" -w /opt/project centos:6 bash
 
                   # check with bash --version
                 </script>
@@ -323,7 +323,7 @@
               <div>
                 <script type="editor" data-lang="sh">
 
-                  docker run -it -v "$(pwd):/opt" -w /opt ubuntu:22.04 sh
+                  docker run -it -v "$(pwd):/opt/project" -w /opt/project ubuntu:22.04 sh
 
                   # ls -l /bin/sh
                   # dpkg -s dash | grep Version
@@ -350,7 +350,7 @@ RUN apt-get update && \
 RUN zsh --version
 EOF
 
-docker run -it -v "$(pwd):/opt" -w /opt ubuntu:22.04-zsh zsh
+docker run -it -v "$(pwd):/opt/project" -w /opt/project ubuntu:22.04-zsh zsh
 
 # zsh --version
 # zsh 5.8.1
