@@ -3457,6 +3457,22 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         <h2>HEREDOC:</h2>
         <script type="editor" data-lang="sh">
 
+          # INVESTIGATE
+          curl xmas.ysap.sh | less
+            # In it there is :
+            IFS= read -r -d '' SIGN <<- EOF
+            $c  ┌──────────────────┐
+            $c  │$COLOR5 Merry Christmas!$c │
+            $c  │$COLOR5  From Dave Eddy $c │
+            $c  │$COLOR3  $ curl$COLOR5 ysap.sh $c │
+            $c  └───────┬─┬────────┘
+            $c          │ │
+            $c          │ │
+            $c         /└─┘\\
+            
+            EOF
+            # this is mentioned in : https://youtu.be/Sx9zG7wa4FA?t=23377
+
           FIND="$(cat <<-EOF
           test
           dupa
