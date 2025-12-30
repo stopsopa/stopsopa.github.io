@@ -21,6 +21,8 @@
 
         <h2>Course</h2>
         <script type="editor" data-lang="sh">
+          # more materials to read (mentioned in the video):
+            https://mywiki.wooledge.org/BashPitfalls from: https://youtu.be/Sx9zG7wa4FA?t=25224
 
           # REPL - Read Evaluate Print Loop https://youtu.be/Sx9zG7wa4FA?t=414
 
@@ -352,6 +354,80 @@
             printf '%(%Y/%m/%d %H:%M:%S)T\n' 
               # aaaand actually this is bullshit, because printf with dates actually fails in some shells 
               # where date +fmt didn't faile anywhere
+
+        </script>
+        <h2>Colors and controlling cursor</h2>
+        <script type="editor" data-lang="sh">
+          # COLORS: https://youtu.be/Sx9zG7wa4FA?t=22253
+            # introduction:
+              # we can take 61 HEX 'a' character and LF character 0a HEX' from ASCII table and use it with printf
+
+              printf "%b" '\x61' '\x0a'
+                # that will print 'a' and then new line
+
+              printf "%b" '\x61' '\x0a' | xxd
+              # that will print 
+              # >00000000: 610a                                     a.<
+
+            # we will need ESC ascii character: https://www.ascii-code.com/#:~:text=1B-,00011011,-ESC
+              # so let's use that one with printf
+              printf "%b" '\x1b'
+              printf '%b' '\033'  # the same thing but octal
+              printf "%b" '\x1b' | xxd
+               # >00000000: 1b                                       .<
+              # printf though have special symbol for that character \e
+              printf '%b' '\e' | xxd
+               # >00000000: 1b                                       .<
+              # so let's use it and make text bold
+              # I know that 'w' in ascii is 77 HEX
+              printf '%b' '\e[1m' 'w' '\e[0m'
+              printf '%b' '\e[1m' 'w' '\e[0m' | xxd
+                # we can read each HEX pair what is what from ascii table above
+              # the same can be achieved with:
+                tput setaf 3; echo hi; tput sgr0
+
+              # we can use range of 255 colors:
+                for i in {0..255}; do printf "\e[38;5;%dmColor %d\e[0m\n" "$i" "$i"; done
+              # true color pallete here we just see all red colors with green 0 value and blue 0 value: 
+                for i in {0..255}; do printf "\e[38;2;%d;0;0mColor %d\e[0m\n" "$i" "$i"; done
+
+                # play with different RGB manually:
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 100 100 100 
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 200 0 0 
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 0 200 0 
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 0 0 200 
+
+          # apparently more to explore is here: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+            # g(fnky ansi.md ansi escape sequences)
+            # mentioned in: https://youtu.be/Sx9zG7wa4FA?t=22989
+
+          # how 'clear' command works
+            clear | xxd
+            # >00000000: 1b5b 334a 1b5b 481b 5b32 4a              .[3J.[H.[2J<
+            # we can replicate this manually
+            # printf '\e[3J\e[H\e[2J'
+
+          # control the cursor: https://youtu.be/Sx9zG7wa4FA?t=23237
+            /bin/bash pages/bash/ysap/control_cursor.sh
+              <%inject control_cursor.sh %>
+
+        </script>
+
+        <h2>IS TTY?</h2>
+        <script type="editor" data-lang="sh">
+          # https://youtu.be/Sx9zG7wa4FA?t=23397
+
+          # man isatty
+
+          # /bin/bash pages/bash/ysap/is_a_terminal.sh
+            <%inject is_a_terminal.sh %>
+
+          # General advice is to allow user to modify manually behaviour of coloring or not
+          # good example is 'ls' command
+          # ls --color=always
+          # ls --color=never
+          # ls --color=auto
+
         </script>
 
         <h2>PIPESTATUS</h2>
@@ -465,7 +541,7 @@
             exec 3>&-
 
             # let's try something new [pipe_parllel_and_read.sh]
-            # https://youtu.be/Sx9zG7wa4FA?t=21964
+            # https://youtu.be/Sx9zG7wa4FA?t=21964          
         </script>
       </div>
     </div>
