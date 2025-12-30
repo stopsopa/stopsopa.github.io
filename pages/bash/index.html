@@ -1025,6 +1025,13 @@ docker run -it -v "$(pwd):/opt/project" -w /opt/project ubuntu:22.04-zsh zsh
                 # then use
                   man bash
                   # and search for "alias"
+                # to execute plain command not via alias (like ignore alias):
+                # when you have alias:    alias ls='ls -p --color=auto'
+                 # run:
+                 command ls
+                 # or
+                 \ls
+                 # from: https://youtu.be/Sx9zG7wa4FA?t=24774
 
                 # IMPORTANT: FOR BUILTINS TO GET HELP YOU NEED FOR EXAMPLE help history https://youtu.be/Sx9zG7wa4FA?t=2513
                 compgen -b
