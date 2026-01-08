@@ -29,6 +29,59 @@
           Electron:
             https://palette.dev/blog/improving-performance-of-electron-apps
         </script>
+        <h2>DDD - Domain Driven Design</h2>
+
+        <script type="editor" data-lang="sh">
+
+          https://youtu.be/4rhzdZIDX_k
+          https://martinfowler.com/bliki/DomainDrivenDesign.html
+          Book: https://github.com/gmoral/Books/blob/master/Domain%20Driven%20Design%20Tackling%20Complexity%20in%20the%20Heart%20of%20Software%20-%20Eric%20Evans.pdf
+            Domain Driven Design - Eric Evans
+          
+          Core Concepts
+            Domain Model: 
+              A rich, abstract representation of the business logic, processes, and rules, central to the software design.
+            Ubiquitous Language: [ju by quy tys]
+              A common, shared vocabulary used by developers and domain experts to ensure everyone speaks the same language, reducing misunderstandings.
+                Domain experts <-> Developers
+                some members of the team manage to become bilingual, but they become bottlenecks of information flow
+            Bounded Context: 
+              A clear boundary within which a specific domain model is consistent, preventing confusion across different parts of a large system (e.g., an "Order" context vs. a "Product Catalog" context).
+              Large systems are broken into Bounded Contexts, each with its own specialized model, managed by patterns like the Anti-Corruption Layer for integration. 
+              są obszary w których dokonała się pewna stabilizacja (powszechne uzgodnienie) słownictwa i terminologii i dla wszystkich zapoznanych z tym obszarem istnieje ustalony/stabilny język porozumiewania się
+              It might be encapsulated in microservice, module, package or team responsibility - what matters is clarity not technology.
+              If a word needs explaining - 👉 you probably crossed a context boundary.
+              A Bounded Context defines where a specific domain model and its language are valid—and protects it from other meanings.
+              Good example: https://imgur.com/p441qP4
+            Strategic Design: 
+              High-level organization of the domain, identifying core, supporting, and generic subdomains, and mapping relationships between them.
+            Tactical Design: 
+              Lower-level patterns for building the model within a Bounded Context, including:
+                Entities: 
+                  Objects with a distinct identity (e.g., a specific Customer).
+                Value Objects: 
+                  Objects defined by their attributes, not identity (e.g., an Address). immutable
+                Aggregates: 
+                  Clusters of related entities and value objects treated as a single unit (e.g., an Order with its OrderItems).
+                Repositories: 
+                  For managing collection-like access to Aggregates.
+                Domain Services: 
+                  For significant domain logic that doesn't fit naturally within an Entity or Value Object.
+                Domain Events: 
+                  Notifications about something important that happened in the domain (e.g., "OrderPlaced"). 
+              Business Invariance - remains always true, no matter what 
+                (eg: product order total have to be sum of all product ordered)
+
+          Benefits
+            Better Alignment: Software stays tightly coupled with changing business needs.
+            Improved Communication: A shared language reduces ambiguity.
+            Maintainability: Complex logic is organized logically and predictably.
+            Scalability: Helps manage complexity in large, evolving systems. 
+          
+          Hexagonal Architecture:  https://youtu.be/bDWApqAUjEI
+          
+          
+        </script>
       </div>
     </div>
     <script type="module" src="/js/github.js"></script>
