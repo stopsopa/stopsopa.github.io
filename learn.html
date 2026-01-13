@@ -90,7 +90,11 @@
                   - Decides when email is sent
                   - Decides when refund happens
                   - Coordinates multiple steps
-                  - NOT: Decides whether cancellation is allowed - that would be Entity's responsibility
+                  - NOT: Decides whether cancellation is allowed - that would be Entity's responsibility RULE
+                Domain Event:
+                  - represents something that happened in the domain that other parts of the system may care about
+                  - not commands, not instructions, not workflows , but facts
+                  - example: https://i.imgur.com/S1JU5Vx.png || https://github.com/user-attachments/assets/898dd06a-2bd6-4275-907b-20cc2f072fa6
           
                 Entities: Mutable
                   Objects with a distinct identity (e.g., a specific Customer).
@@ -99,7 +103,7 @@
                       Created -> changed -> possibly retured - history matter? - probably entity
                   Entities usually: Guard transition, Enforce rules, Encapsulate state changes
                   Entities usually encapsulate rules that govern their own state and consistency
-                  Invariants (Always-True Rules) - An invariant is a specific kind of rule - strict, narrower
+                  ===INVARIANTS=== (Always-True Rules) - An invariant is a specific kind of rule - strict, narrower
                   Entities encapsulate rules that protect their own state and invariants; other rules live elsewhere
                 
                   
