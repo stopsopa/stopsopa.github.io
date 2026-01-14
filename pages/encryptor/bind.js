@@ -9,8 +9,16 @@ const inputEncrypted = parent.querySelector(".encrypted");
 const inputDecrypted = parent.querySelector(".decrypted");
 const encryptButton = parent.querySelector(".encrypt");
 const decryptButton = parent.querySelector(".decrypt");
+const copyBtn = parent.querySelector(".copy-btn");
 const loremBtn = parent.querySelector(".lorem-btn");
 const form = parent.querySelector("form");
+
+const updateCopyBtnVisibility = () => {
+  copyBtn.style.display = inputEncrypted.value.trim() ? "inline-block" : "none";
+};
+inputEncrypted.addEventListener("input", updateCopyBtnVisibility);
+inputEncrypted.addEventListener("focus", () => inputEncrypted.select());
+inputEncrypted.addEventListener("click", () => inputEncrypted.select());
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   return false;
@@ -35,6 +43,7 @@ encryptButton.addEventListener("click", async () => {
     const humanReadable = await encryptMessage(inputKey.value, inputMessage.value);
 
     inputEncrypted.value = humanReadable;
+    updateCopyBtnVisibility();
   } catch (e) {
     alert("Error generating key: " + e.message);
   }
@@ -58,4 +67,14 @@ loremBtn.addEventListener("click", () => {
   inputMessage.value = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Etiam molestie pulvinar consequat.
 Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.`;
+});
+
+copyBtn.addEventListener("click", () => {
+  inputEncrypted.select();
+  document.execCommand("copy");
+  const originalText = copyBtn.textContent;
+  copyBtn.textContent = "✅ Copied!";
+  setTimeout(() => {
+    copyBtn.textContent = originalText;
+  }, 2000);
 });

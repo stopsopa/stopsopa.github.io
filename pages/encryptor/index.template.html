@@ -9,9 +9,9 @@
 
     <title>Encryptor - Data Encryption Tool</title>
   </head>
-  <body class="layout bg" toc>
+  <body class="layout bg">
     <div class="body">
-      <div class="inside">
+
         <div id="encryptor">
           <style>
             body,
@@ -20,6 +20,9 @@
               background: #f2f3f3 !important;
               background-image: none !important;
               color: #000;
+            }
+            .body {
+              display: block;
             }
 
             .body,
@@ -91,7 +94,7 @@
 
               .main-grid {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 2fr 1fr;
                 gap: 8px;
                 margin-bottom: 8px;
               }
@@ -186,6 +189,13 @@
                 }
               }
 
+              .panel-actions {
+                display: flex;
+                gap: 8px;
+                justify-content: flex-end;
+                margin-top: 4px;
+              }
+
               button.action-btn {
                 background: #ffd814;
                 border: 1px solid #fcd200;
@@ -195,19 +205,23 @@
                 font-weight: 500;
                 cursor: pointer;
                 transition: background 0.2s;
-                margin-top: 4px;
-                align-self: flex-end;
 
                 &:hover {
                   background: #f7ca00;
                 }
 
-                &.decrypt {
+                &.decrypt,
+                &.copy-btn {
                   background: #f0f2f2;
                   border-color: #d5dbdb;
                   &:hover {
                     background: #e3e6e6;
                   }
+                }
+
+                &.copy-btn {
+                  font-size: 11px;
+                  padding: 4px 12px;
                 }
               }
 
@@ -274,7 +288,10 @@
               <div class="panel special">
                 <div class="panel-header">Encrypted Output</div>
                 <textarea class="encrypted" placeholder="Result..."></textarea>
-                <button class="action-btn decrypt">🔓 Decrypt</button>
+                <div class="panel-actions">
+                  <button type="button" class="action-btn copy-btn" style="display: none">📋 Copy</button>
+                  <button type="button" class="action-btn decrypt">🔓 Decrypt</button>
+                </div>
               </div>
 
               <div class="panel full-width-panel">
@@ -288,7 +305,7 @@
         <script type="editor" data-lang="sh">
           <%inject aes-cbc-browser.js %>
         </script>
-      </div>
+
     </div>
     <script type="module" src="/js/github.js"></script>
   </body>
