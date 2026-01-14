@@ -47,6 +47,8 @@
             People worship abstractions
             Ignore performance, tooling, or ops
             Over-model trivial domains
+          DDD uses strong/atomic consistency wherever possible, and eventual consistency only where unavoidable.
+          Over-large aggregates kill scalability: https://github.com/user-attachments/assets/43ad62c5-222e-4039-9c68-de5d7338ebbc
 
           Later experminet with :
             g(Translate my Symfony/Spring architecture to DDD terms)
@@ -74,9 +76,24 @@
               If a word needs explaining - 👉 you probably crossed a context boundary.
               A Bounded Context defines where a specific domain model and its language are valid—and protects it from other meanings.
               Good example: https://imgur.com/p441qP4 or https://github.com/user-attachments/assets/bab73640-c38d-4099-bb52-535d88b4efc1
+            
+          Context Map: https://github.com/user-attachments/assets/5ecc2aca-991b-49f0-9e92-19dbc504d1e4              
+
+            Strategic Design vs Tactical Design:
+              Tactical DDD without Strategic DDD fails at scale.
+              Strategic DDD without Tactical DDD becomes PowerPoint architecture.
             Strategic Design: 
+              Strategic Design (BIG PICTURE): Where are the boundaries, and who owns what?
+              You usually do this: Early, With domain experts, With architects / leads
+              Purpose: Defines boundaries, Protects teams, Prevents language collapse
+              Concerns: Bounded Contexts, Context Maps, Team ownership, Language consistency
+              Strategic design artifacts: Context Map, Bounded Context definitions, Integration contracts
               High-level organization of the domain, identifying core, supporting, and generic subdomains, and mapping relationships between them.
             Tactical Design: 
+              How do we model this context correctly?
+              Purpose: Protects correctness, Encodes invariants, Survives change
+              Concerns: Entities, Value Objects, Aggregates, Repositories, Domain Services, Domain Events
+              You do this: Daily, In code, While implementing features
               Lower-level patterns for building the model within a Bounded Context, including:          
 
                 Rule: 
@@ -84,13 +101,55 @@
                     - Orders must be paid before shipping
                     - Notifications should be sent on cancellation
                     - Retry payment up to 3 times
+                  As an extension: Rule categories:
+                    Invariant -> Must always hold
+                    Policy -> Desired behavior
+                    Workflow rule -> Ordering / timing
+                    Business process -> Coordination over time
+                      So: Invariant = strongest rule -> If an invariant is violated, the system is broken.
+                    
+                  Invariant: (special type of rule)  must be true now
+                    If a rule spans multiple aggregates, it is not an invariant.
+                    An invariant is: A rule that must be true immediately after every valid state change of an aggregate.
+                      Example: 
+                        - An order cannot be shipped and cancelled - that cannot happen
+                        - An order total must equal the sum of its line items
+                        - An order cannot transition from SHIPPED → CANCELLED
+                        - Account balance may never be negative
+                        - Ledger entries must balance (debits = credits)
+                        - A seat cannot be assigned to two passengers
+                        - A booking cannot exceed capacity
+                        - Email address must be unique
+                        - User cannot have two active identities
+                        - Only one active subscription per plan
+                        - Cannot bill twice for the same period
+                        - Stock count cannot go below zero
+                        - Reserved quantity ≤ available quantity
+                      False invarinats:
+                        - ❌ “Customer must be refunded after cancellation”
+                        - ❌ “Email must be sent”
+                        - ❌ “Payment must succeed”
+                          These involve: Time (something happens "eventually"), External systems, Failure, require retries, requires human intervention
+                          Those are policies, workflows, or process rules — not invariants.
+                    When it becomes "workflow guarantee" : https://github.com/user-attachments/assets/81498e57-c1d4-458e-85d3-f72b03977985
                 Workflow:
+                  - gets you from one valid state to another
+                  - Long-running workflows are normal in real systems: minutes, hours days
+                  - partial faiulre - normal
+                  - retries - also normal, might be accounted in workflow design
+                  - human involvment - also normal if cannot be avoided
+                  - "All or nothing" - usually it's illusion
+                  - avoid blocking calls in workflows
+                  - eventual consistency - might be part of design, totally ok
+                  - big transactions across system - avoid
                   - Rules about when things happen, not what is allowed
                   - A sequence of steps that coordinate actions over time, possibly across aggregates or systems.
                   - Decides when email is sent
                   - Decides when refund happens
                   - Coordinates multiple steps
                   - NOT: Decides whether cancellation is allowed - that would be Entity's responsibility RULE
+                Saga:
+                  workflow across aggregates
                 Domain Event:
                   - represents something that happened in the domain that other parts of the system may care about
                   - not commands, not instructions, not workflows , but facts
@@ -115,23 +174,27 @@
                       $10 today is indistinguishable from $10 tomorrow - No identity - Equality by amount + currency therefore Immutable
           
                   IMPORTANT: Prefer Value objects - promote to Entity when domain demands identity
-                Aggregates: 
-                  Aggregate borders start and end where from the business perspective the most desirable effect would be to have these operations executed atomically
-                  The distinction: 
-                    Aggregate is the smallest cluster that must be consistent at all times
-                    Transactions should follow aggregates - not define them
+                Aggregates: enforcer of invariants
+                  BEST DEFINITION: The smallest cluster of objects that must be consistent at all times. It's consistency boundary
+                  why that name? Aggregates entities + value objects Under one transactional boundary To protect invariants
+                  Aggregate borders start and end where from the business perspective the most desirable effect would be to have these operations executed atomically                 
+                  Transactions should follow aggregates - not define them
                   When transaction spans across multiple calls to surrounding services — atomicity becomes impossible and business logic can get stuck in broken states.
                     But that is ok. Just make each aggregate consistent on its own. 
                     In that case coordinate between aggregates asynchronously or via eventual consistency
+                  enforces invariants atomically
             
                   Clusters of related entities and value objects treated as a single unit (e.g., an Order with its OrderItems).
-                  Eventual consistency:
+                  Eventual consistency: (atomic consistency - ipposite)
+                    - Eventual consistency is a consequence of protecting invariants
                     - Changes happen in separate transactions
                     - EC lays Between aggregates
                     - System may be temporarily inconsistent
                     - But guarantees convergence to a valid state
                     - Eventual consistency is not “sloppy consistency”. It is designed, constrained inconsistency.
                     - Opposite is strong consistency (transaction)
+                    - Eventual consistency appears only when: Invariants span multiple aggregates Or multiple bounded contexts Or external systems
+                    - honesty about time & failure
                 Repositories: 
                   For managing collection-like access to Aggregates.
                   Domain facing abstraction
@@ -139,7 +202,16 @@
                   For significant domain logic that doesn't fit naturally within an Entity or Value Object.
                 Domain Events: 
                   Notifications about something important that happened in the domain (e.g., "OrderPlaced"). 
-                Anticorruption layer:
+              Anti-Corruption Layer: 
+                Prevent model "infection" -> Translates foreign models → your model
+                where one context protects its model from another.
+                Shields your domain from foreign concepts
+                Acts as a firewall - language firewall
+                ACL answers: "How do I keep their language from infecting my domain?”
+                On the Strategic Design level: organizational and architectural questions
+                It means: "We will integrate with that system, but on our terms." -> Billing →(ACL)→ Legacy Sales
+                You can have strategic ACL without tactical discipline → model rot
+                You can’t have tactical ACL without strategic intent → pointless wrappers
                   
               Business Invariance - remains always true, no matter what 
                 (eg: product order total have to be sum of all product ordered)
