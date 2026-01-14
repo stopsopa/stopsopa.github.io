@@ -10,12 +10,55 @@ const inputDecrypted = parent.querySelector(".decrypted");
 const encryptButton = parent.querySelector(".encrypt");
 const decryptButton = parent.querySelector(".decrypt");
 const copyBtn = parent.querySelector(".copy-btn");
+const copyLinkBtn = parent.querySelector(".copy-link-btn");
+const sharingLink = parent.querySelector(".sharing-link");
+const linkRow = parent.querySelector(".link-row");
 const loremBtn = parent.querySelector(".lorem-btn");
 const form = parent.querySelector("form");
 
 const updateCopyBtnVisibility = () => {
   copyBtn.style.display = inputEncrypted.value.trim() ? "inline-block" : "none";
 };
+
+const updateURL = (encryptedValue) => {
+  const url = new URL(window.location.href);
+  if (encryptedValue) {
+    url.searchParams.set("enc", encryptedValue);
+    sharingLink.href = url.toString();
+    sharingLink.textContent = "Direct link to this message";
+    linkRow.style.display = "flex";
+  } else {
+    url.searchParams.delete("enc");
+    sharingLink.href = "#";
+    sharingLink.textContent = "";
+    linkRow.style.display = "none";
+  }
+  window.history.replaceState({}, "", url.toString());
+};
+
+const doEncrypt = async () => {
+  try {
+    const key = inputKey.value.trim();
+    const msg = inputMessage.value.trim();
+
+    if (!key || !msg) {
+      inputEncrypted.value = "";
+      updateCopyBtnVisibility();
+      updateURL("");
+      return;
+    }
+
+    const humanReadable = await encryptMessage(key, msg);
+    inputEncrypted.value = humanReadable;
+    updateCopyBtnVisibility();
+    updateURL(humanReadable);
+  } catch (e) {
+    console.error("Encryption error:", e);
+  }
+};
+
+inputMessage.addEventListener("input", doEncrypt);
+inputKey.addEventListener("input", doEncrypt);
 inputEncrypted.addEventListener("input", updateCopyBtnVisibility);
 inputEncrypted.addEventListener("focus", () => inputEncrypted.select());
 inputEncrypted.addEventListener("click", () => inputEncrypted.select());
@@ -38,16 +81,7 @@ generateButton.addEventListener("click", async () => {
     alert("Error generating key: " + e.message);
   }
 });
-encryptButton.addEventListener("click", async () => {
-  try {
-    const humanReadable = await encryptMessage(inputKey.value, inputMessage.value);
-
-    inputEncrypted.value = humanReadable;
-    updateCopyBtnVisibility();
-  } catch (e) {
-    alert("Error generating key: " + e.message);
-  }
-});
+encryptButton.addEventListener("click", doEncrypt);
 
 decryptButton.addEventListener("click", async () => {
   try {
@@ -78,3 +112,28 @@ copyBtn.addEventListener("click", () => {
     copyBtn.textContent = originalText;
   }, 2000);
 });
+
+copyLinkBtn.addEventListener("click", () => {
+  const text = sharingLink.textContent;
+  const dummy = document.createElement("textarea");
+  document.body.appendChild(dummy);
+  dummy.value = text;
+  dummy.select();
+  document.execCommand("copy");
+  document.body.removeChild(dummy);
+
+  const originalText = copyLinkBtn.textContent;
+  copyLinkBtn.textContent = "✅ Copied!";
+  setTimeout(() => {
+    copyLinkBtn.textContent = originalText;
+  }, 2000);
+});
+
+// On Load: Check if 'enc' param exists
+const params = new URLSearchParams(window.location.search);
+const encParam = params.get("enc");
+if (encParam) {
+  inputEncrypted.value = encParam;
+  updateCopyBtnVisibility();
+  updateURL(encParam);
+}

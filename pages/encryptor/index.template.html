@@ -210,8 +210,8 @@
                   background: #f7ca00;
                 }
 
-                &.decrypt,
-                &.copy-btn {
+                &.copy-btn,
+                &.copy-link-btn {
                   background: #f0f2f2;
                   border-color: #d5dbdb;
                   &:hover {
@@ -219,9 +219,29 @@
                   }
                 }
 
-                &.copy-btn {
+                &.copy-btn,
+                &.copy-link-btn {
                   font-size: 11px;
                   padding: 4px 12px;
+                }
+              }
+
+              .link-row {
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px dashed #ddd;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 11px;
+                overflow: hidden;
+
+                .sharing-link {
+                  color: #007185;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  flex: 1;
                 }
               }
 
@@ -282,7 +302,13 @@
                   <button type="button" class="lorem-btn">Lorem Ipsum</button>
                 </div>
                 <textarea class="message" placeholder="Message to encrypt..."></textarea>
-                <button class="action-btn encrypt">🔒 Encrypt</button>
+                <div class="panel-actions">
+                  <button class="action-btn encrypt">🔒 Encrypt</button>
+                </div>
+                <div class="link-row" style="display: none">
+                  <button type="button" class="action-btn copy-link-btn">📋 URL</button>
+                  <a href="#" class="sharing-link" target="_blank"></a>
+                </div>
               </div>
 
               <div class="panel special">
