@@ -197,6 +197,25 @@
                   margin-bottom: 16px;
                   padding-bottom: 12px;
                   border-bottom: 1px solid #e7e7e7;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+
+                  .lorem-btn {
+                    background: none;
+                    border: none;
+                    color: #007eb9;
+                    font-size: 11px;
+                    font-weight: 400;
+                    cursor: pointer;
+                    padding: 0;
+                    margin: 0;
+                    text-decoration: underline;
+
+                    &:hover {
+                      color: #005c8f;
+                    }
+                  }
                 }
               }
 
@@ -245,14 +264,13 @@
           </form>
 
           <div class="panel">
-            <div class="panel-header">Input Message</div>
+            <div class="panel-header">
+              Input Message
+              <button type="button" class="lorem-btn">Lorem Ipsum</button>
+            </div>
             <label>
               <span>Message:</span>
-              <textarea class="message" placeholder="Enter or paste your message to encrypt...">
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Etiam molestie pulvinar consequat.
-Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.</textarea
-              >
+              <textarea class="message" placeholder="Enter or paste your message to encrypt..."></textarea>
             </label>
           </div>
 

@@ -9,6 +9,7 @@ const inputEncrypted = parent.querySelector(".encrypted");
 const inputDecrypted = parent.querySelector(".decrypted");
 const encryptButton = parent.querySelector(".encrypt");
 const decryptButton = parent.querySelector(".decrypt");
+const loremBtn = parent.querySelector(".lorem-btn");
 const form = parent.querySelector("form");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -52,4 +53,9 @@ decryptButton.addEventListener("click", async () => {
     });
     inputDecrypted.value = `Error: ${e.message}\n\nstack:\n${e.stack}`;
   }
+});
+loremBtn.addEventListener("click", () => {
+  inputMessage.value = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Etiam molestie pulvinar consequat.
+Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.`;
 });
