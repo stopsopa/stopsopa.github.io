@@ -285,6 +285,7 @@ body .github-menu {
   <a href="//github.com/stopsopa/stopsopa.github.io/actions">Actions</a>
   <a href="//github.com/stopsopa/stopsopa.github.io/blob/master/README.md#toc">TOC</a>
   <a href="//github.com/stopsopa/stopsopa.github.io/blob/master/README.md#template">Template</a>
+  <a href="/pages/encryptor/index.rendered.html">Encryptor</a>
   <a href="${github.replace(/\/edit\//, "/blob/")}">View</a>
   <hr />  
   <a href="https://stopsopa.github.io.local:4339/index.html">Local</a>  
