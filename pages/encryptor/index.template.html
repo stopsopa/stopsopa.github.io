@@ -9,227 +9,192 @@
 
     <title>Encryptor - Data Encryption Tool</title>
   </head>
-  <body class="layout bg">
+  <body nofoot nohead>
     <div class="body">
+      <div id="encryptor">
+        <style>
+          body,
+          body::before,
+          body::after {
+            background: #f2f3f3 !important;
+            background-image: none !important;
+            color: #000;
+          }
+          .body {
+            display: block;
+          }
 
-        <div id="encryptor">
-          <style>
-            body,
-            body::before,
-            body::after {
-              background: #f2f3f3 !important;
-              background-image: none !important;
-              color: #000;
+          .body,
+          .body::before,
+          .body::after {
+            background: #f2f3f3 !important;
+            background-image: none !important;
+          }
+
+          .body .inside {
+            max-width: 1400px;
+            padding: 0;
+            background: #f2f3f3 !important;
+          }
+
+          #encryptor {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            padding: 8px;
+            color: #111;
+
+            h2 {
+              font-size: 18px;
+              padding: 10px 16px;
+              margin: 0 0 8px 0;
+              background: #fff;
+              border: 1px solid #ddd;
+              border-radius: 6px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
             }
-            .body {
-              display: block;
-            }
 
-            .body,
-            .body::before,
-            .body::after {
-              background: #f2f3f3 !important;
-              background-image: none !important;
-            }
+            .compact-form {
+              background: #fff;
+              border: 1px solid #ddd;
+              border-radius: 6px;
+              padding: 10px 16px;
+              margin-bottom: 8px;
 
-            .body .inside {
-              max-width: 1400px;
-              padding: 0;
-              background: #f2f3f3 !important;
-            }
-
-            #encryptor {
-              font-family: "Segoe UI", Roboto, Arial, sans-serif;
-              padding: 8px;
-              color: #111;
-
-              h2 {
-                font-size: 18px;
-                padding: 10px 16px;
-                margin: 0 0 8px 0;
-                background: #fff;
-                border: 1px solid #ddd;
-                border-radius: 6px;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-              }
-
-              .compact-form {
-                background: #fff;
-                border: 1px solid #ddd;
-                border-radius: 6px;
-                padding: 10px 16px;
-                margin-bottom: 8px;
-
-                label {
-                  display: flex;
-                  flex-direction: column;
-                  gap: 4px;
-
-                  span {
-                    font-size: 12px;
-                    font-weight: 700;
-                    color: #555;
-                  }
-                }
-
-                .key-row {
-                  display: flex;
-                  gap: 8px;
-                  align-items: center;
-                  flex-wrap: wrap;
-
-                  input {
-                    flex: 1;
-                    min-width: 150px;
-                  }
-
-                  .btn-group {
-                    display: flex;
-                    gap: 4px;
-                  }
-                }
-              }
-
-              .main-grid {
-                display: grid;
-                grid-template-columns: 2fr 1fr;
-                gap: 8px;
-                margin-bottom: 8px;
-              }
-
-              @media (max-width: 800px) {
-                .main-grid {
-                  grid-template-columns: 1fr;
-                }
-              }
-
-              .panel {
-                background: #fff;
-                border: 1px solid #ddd;
-                border-radius: 6px;
-                padding: 12px;
+              label {
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+                gap: 4px;
 
-                .panel-header {
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  font-size: 13px;
+                span {
+                  font-size: 12px;
                   font-weight: 700;
-                  border-bottom: 1px solid #eee;
-                  padding-bottom: 6px;
-                  margin-bottom: 4px;
+                  color: #555;
+                }
+              }
 
-                  .lorem-btn {
-                    background: none;
-                    border: none;
-                    color: #007185;
-                    font-size: 11px;
-                    text-decoration: underline;
-                    cursor: pointer;
-                    &:hover {
-                      color: #c45500;
-                    }
-                  }
+              .key-row {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+                flex-wrap: wrap;
+
+                input {
+                  flex: 1;
+                  min-width: 150px;
                 }
 
-                label {
+                .btn-group {
                   display: flex;
-                  flex-direction: column;
                   gap: 4px;
-                  width: 100%;
+                }
+              }
+            }
 
-                  span {
-                    display: none; /* Hide internal labels since headers are clear */
+            .main-grid {
+              display: grid;
+              grid-template-columns: 2fr 1fr;
+              gap: 8px;
+              margin-bottom: 8px;
+            }
+
+            @media (max-width: 800px) {
+              .main-grid {
+                grid-template-columns: 1fr;
+              }
+            }
+
+            .panel {
+              background: #fff;
+              border: 1px solid #ddd;
+              border-radius: 6px;
+              padding: 12px;
+              display: flex;
+              flex-direction: column;
+              gap: 8px;
+              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+              .panel-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 13px;
+                font-weight: 700;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 6px;
+                margin-bottom: 4px;
+
+                .lorem-btn {
+                  background: none;
+                  border: none;
+                  color: #007185;
+                  font-size: 11px;
+                  text-decoration: underline;
+                  cursor: pointer;
+                  &:hover {
+                    color: #c45500;
                   }
+                }
+              }
+
+              label {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                width: 100%;
+
+                span {
+                  display: none; /* Hide internal labels since headers are clear */
+                }
+              }
+
+              textarea {
+                width: 100%;
+                min-height: 120px;
+                height: 120px;
+                font-family: "Cascadia Code", Monaco, Consolas, monospace;
+                font-size: 12px;
+                padding: 8px;
+                border: 1px solid #bbb;
+                border-radius: 4px;
+                resize: vertical;
+                box-sizing: border-box;
+                &:focus {
+                  border-color: #e47911;
+                  outline: none;
+                  box-shadow: 0 0 0 2px rgba(228, 121, 17, 0.2);
+                }
+              }
+
+              &.special {
+                background-color: #f4f6f8;
+                background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                  linear-gradient(rgba(0, 0, 0, 0.015) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(0, 0, 0, 0.015) 1px, transparent 1px);
+                background-size: 40px 40px, 40px 40px, 10px 10px, 10px 10px;
+                border-color: #ccc;
+                box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.02);
+
+                .panel-header {
+                  border-bottom-color: #d1d1d1;
                 }
 
                 textarea {
-                  width: 100%;
-                  min-height: 120px;
-                  height: 120px;
-                  font-family: "Cascadia Code", Monaco, Consolas, monospace;
-                  font-size: 12px;
-                  padding: 8px;
-                  border: 1px solid #bbb;
-                  border-radius: 4px;
-                  resize: vertical;
-                  box-sizing: border-box;
-                  &:focus {
-                    border-color: #e47911;
-                    outline: none;
-                    box-shadow: 0 0 0 2px rgba(228, 121, 17, 0.2);
-                  }
-                }
-
-                &.special {
-                  background-color: #f4f6f8;
-                  background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-                    linear-gradient(rgba(0, 0, 0, 0.015) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(0, 0, 0, 0.015) 1px, transparent 1px);
-                  background-size: 40px 40px, 40px 40px, 10px 10px, 10px 10px;
-                  border-color: #ccc;
-                  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.02);
-
-                  .panel-header {
-                    border-bottom-color: #d1d1d1;
-                  }
-
-                  textarea {
-                    background-color: rgba(255, 255, 255, 0.95);
-                    border-color: #999;
-                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-                  }
+                  background-color: rgba(255, 255, 255, 0.95);
+                  border-color: #999;
+                  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
                 }
               }
+            }
 
-              .panel-actions {
-                display: flex;
-                gap: 8px;
-                justify-content: flex-end;
-                margin-top: 4px;
-              }
+            .panel-actions {
+              display: flex;
+              gap: 8px;
+              align-items: center;
+              margin-top: 4px;
 
-              button.action-btn {
-                background: #ffd814;
-                border: 1px solid #fcd200;
-                border-radius: 20px;
-                padding: 6px 16px;
-                font-size: 13px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: background 0.2s;
-
-                &:hover {
-                  background: #f7ca00;
-                }
-
-                &.copy-btn,
-                &.copy-link-btn {
-                  background: #f0f2f2;
-                  border-color: #d5dbdb;
-                  &:hover {
-                    background: #e3e6e6;
-                  }
-                }
-
-                &.copy-btn,
-                &.copy-link-btn {
-                  font-size: 11px;
-                  padding: 4px 12px;
-                }
-              }
-
-              .link-row {
-                margin-top: 12px;
-                padding-top: 12px;
-                border-top: 1px dashed #ddd;
+              .link-group {
                 display: flex;
                 align-items: center;
                 gap: 8px;
@@ -241,97 +206,158 @@
                   white-space: nowrap;
                   overflow: hidden;
                   text-overflow: ellipsis;
-                  flex: 1;
+                  max-width: 250px;
                 }
               }
 
-              .full-width-panel {
-                grid-column: span 2;
-                @media (max-width: 800px) {
-                  grid-column: span 1;
-                }
-              }
-
-              #encryptor input,
-              #encryptor button.generate,
-              #encryptor button.show {
-                padding: 6px 10px;
-                font-size: 12px;
-                border: 1px solid #bbb;
-                border-radius: 4px;
-              }
-
-              #encryptor a {
-                font-size: 11px;
-                color: #007185;
-                text-decoration: none;
-                &:hover {
-                  text-decoration: underline;
-                }
+              .encrypt {
+                margin-left: auto;
               }
             }
-          </style>
 
-          <div id="encryptor">
-            <h2>🔐 Encryption Tool</h2>
+            button.action-btn {
+              background: #ffd814;
+              border: 1px solid #fcd200;
+              border-radius: 20px;
+              padding: 6px 16px;
+              font-size: 13px;
+              font-weight: 500;
+              cursor: pointer;
+              transition: background 0.2s;
 
-            <form class="compact-form">
-              <label>
-                <span>Encryption Key</span>
-                <div class="key-row">
-                  <input type="password" class="key" name="password" placeholder="Key..." />
-                  <div class="btn-group">
-                    <button type="button" class="generate">Gen</button>
-                    <button type="button" class="show">Show</button>
-                  </div>
-                  <a
-                    href="https://github.com/stopsopa/gitstorage/blob/master/git%40github.com%3Astopsopa__stopsopa.github.io.git/.env#L63"
-                    target="_blank"
-                    >Docs</a
-                  >
-                  <span style="display: inline; color: #ccc">|</span>
-                  <a href="/pages/pastetool/pastetool.html" target="_blank">Paste</a>
-                </div>
-              </label>
-            </form>
+              &:hover {
+                background: #f7ca00;
+              }
 
-            <div class="main-grid">
-              <div class="panel">
-                <div class="panel-header">
-                  Input Message
-                  <button type="button" class="lorem-btn">Lorem Ipsum</button>
+              &.copy-btn {
+                background: #f0f2f2;
+                border-color: #d5dbdb;
+                &:hover {
+                  background: #e3e6e6;
+                }
+              }
+
+              &.copy-link-btn {
+                background: #002f5d;
+                border-color: #001a35;
+                color: #fff;
+                &:hover {
+                  background: #003d7a;
+                  border-color: #001a35;
+                }
+              }
+
+              &.copy-btn,
+              &.copy-link-btn {
+                font-size: 11px;
+                padding: 4px 12px;
+              }
+            }
+
+            .full-width-panel {
+              grid-column: span 2;
+              @media (max-width: 800px) {
+                grid-column: span 1;
+              }
+            }
+
+            #encryptor input,
+            #encryptor button.generate,
+            #encryptor button.show {
+              padding: 6px 10px;
+              font-size: 12px;
+              border: 1px solid #bbb;
+              border-radius: 4px;
+            }
+
+            #encryptor a {
+              font-size: 11px;
+              color: #007185;
+              text-decoration: none;
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+
+            @keyframes highlightFade {
+              0% {
+                box-shadow: 0 0 20px 8px rgba(255, 0, 0, 0.8), 0 0 0 4px rgba(255, 0, 0, 0.6) !important;
+                border-color: #ff0000 !important;
+              }
+              20% {
+                box-shadow: 0 0 20px 8px rgba(255, 0, 0, 0.8), 0 0 0 4px rgba(255, 0, 0, 0.6) !important;
+                border-color: #ff0000 !important;
+              }
+              100% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0), 0 0 0 0 rgba(255, 0, 0, 0) !important;
+                border-color: #bbb !important;
+              }
+            }
+
+            textarea.highlight-success {
+              animation: highlightFade 3s ease-out forwards !important;
+            }
+          }
+        </style>
+
+        <div id="encryptor">
+          <form class="compact-form">
+            <label>
+              <span>Encryption Key</span>
+              <div class="key-row">
+                <input type="password" class="key" name="password" placeholder="Key..." />
+                <div class="btn-group">
+                  <button type="button" class="generate">Gen</button>
+                  <button type="button" class="show">Show</button>
+                  <button type="button" class="clear">Clear</button>
                 </div>
-                <textarea class="message" placeholder="Message to encrypt..."></textarea>
-                <div class="panel-actions">
-                  <button class="action-btn encrypt">🔒 Encrypt</button>
-                </div>
-                <div class="link-row" style="display: none">
-                  <button type="button" class="action-btn copy-link-btn">📋 URL</button>
-                  <a href="#" class="sharing-link" target="_blank"></a>
-                </div>
+                <a
+                  href="https://github.com/stopsopa/gitstorage/blob/master/git%40github.com%3Astopsopa__stopsopa.github.io.git/.env#L63"
+                  target="_blank"
+                  >Docs</a
+                >
+                <span style="display: inline; color: #ccc">|</span>
+                <a href="/pages/pastetool/pastetool.html" target="_blank">Paste</a>
               </div>
+            </label>
+          </form>
 
-              <div class="panel special">
-                <div class="panel-header">Encrypted Output</div>
-                <textarea class="encrypted" placeholder="Result..."></textarea>
-                <div class="panel-actions">
-                  <button type="button" class="action-btn copy-btn" style="display: none">📋 Copy</button>
-                  <button type="button" class="action-btn decrypt">🔓 Decrypt</button>
+          <div class="main-grid">
+            <div class="panel">
+              <div class="panel-header">
+                Input Message
+                <button type="button" class="lorem-btn">Lorem Ipsum</button>
+              </div>
+              <textarea class="message" placeholder="Message to encrypt..."></textarea>
+              <div class="panel-actions">
+                <div class="link-group" style="display: none">
+                  <button type="button" class="action-btn copy-link-btn">Copy</button>
+                  <a href="#" class="sharing-link"></a>
                 </div>
+                <button class="action-btn encrypt">🔒 Encrypt</button>
               </div>
+            </div>
 
-              <div class="panel full-width-panel">
-                <div class="panel-header">Decrypted Output</div>
-                <textarea class="decrypted" placeholder="Decrypted result..."></textarea>
+            <div class="panel special">
+              <div class="panel-header">Encrypted Output</div>
+              <textarea class="encrypted" placeholder="Result..."></textarea>
+              <div class="panel-actions">
+                <button type="button" class="action-btn copy-btn" style="display: none">📋 Copy</button>
+                <button type="button" class="action-btn decrypt">🔓 Decrypt</button>
               </div>
+            </div>
+
+            <div class="panel full-width-panel" id="d">
+              <div class="panel-header">Decrypted Output</div>
+              <textarea class="decrypted" placeholder="Decrypted result..."></textarea>
             </div>
           </div>
         </div>
-        <script type="module" src="bind.js"></script>
-        <script type="editor" data-lang="sh">
-          <%inject aes-cbc-browser.js %>
-        </script>
-
+      </div>
+      <script type="module" src="bind.js"></script>
+      <script type="editor" data-lang="sh">
+        <%inject aes-cbc-browser.js %>
+      </script>
     </div>
     <script type="module" src="/js/github.js"></script>
   </body>

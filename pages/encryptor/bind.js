@@ -4,6 +4,7 @@ const parent = document.querySelector("#encryptor");
 const generateButton = parent.querySelector(".generate");
 const inputKey = parent.querySelector(".key");
 const show = parent.querySelector(".show");
+const clearKeyBtn = parent.querySelector(".clear");
 const inputMessage = parent.querySelector(".message");
 const inputEncrypted = parent.querySelector(".encrypted");
 const inputDecrypted = parent.querySelector(".decrypted");
@@ -12,9 +13,11 @@ const decryptButton = parent.querySelector(".decrypt");
 const copyBtn = parent.querySelector(".copy-btn");
 const copyLinkBtn = parent.querySelector(".copy-link-btn");
 const sharingLink = parent.querySelector(".sharing-link");
-const linkRow = parent.querySelector(".link-row");
+const linkGroup = parent.querySelector(".link-group");
 const loremBtn = parent.querySelector(".lorem-btn");
 const form = parent.querySelector("form");
+
+const STORAGE_KEY = "encryptor_key";
 
 const updateCopyBtnVisibility = () => {
   copyBtn.style.display = inputEncrypted.value.trim() ? "inline-block" : "none";
@@ -26,42 +29,76 @@ const updateURL = (encryptedValue) => {
     url.searchParams.set("enc", encryptedValue);
     sharingLink.href = url.toString();
     sharingLink.textContent = "Direct link to this message";
-    linkRow.style.display = "flex";
+    linkGroup.style.display = "flex";
   } else {
     url.searchParams.delete("enc");
     sharingLink.href = "#";
     sharingLink.textContent = "";
-    linkRow.style.display = "none";
+    linkGroup.style.display = "none";
   }
   window.history.replaceState({}, "", url.toString());
 };
 
-const doEncrypt = async () => {
-  try {
-    const key = inputKey.value.trim();
-    const msg = inputMessage.value.trim();
+const doDecrypt = async () => {
+  const key = inputKey.value.trim();
+  const enc = inputEncrypted.value.trim();
 
-    if (!key || !msg) {
+  if (!key || !enc) {
+    inputDecrypted.value = "";
+    return;
+  }
+
+  try {
+    const decrypted = await decryptMessage(key, enc);
+    inputDecrypted.value = decrypted;
+  } catch (e) {
+    // Silently fail during typing to avoid noise
+    inputDecrypted.value = "";
+  }
+};
+
+const doEncrypt = async () => {
+  const key = inputKey.value.trim();
+  const msg = inputMessage.value.trim();
+
+  if (!key || !msg) {
+    // If msg is empty but key is present, we might still want to decrypt if enc is present
+    // but the rule says do B then A. If B can't run, let's at least ensure URL is clean if msg is empty
+    if (!msg) {
       inputEncrypted.value = "";
       updateCopyBtnVisibility();
       updateURL("");
-      return;
     }
+    await doDecrypt();
+    return;
+  }
 
+  try {
     const humanReadable = await encryptMessage(key, msg);
-    inputEncrypted.value = humanReadable;
-    updateCopyBtnVisibility();
-    updateURL(humanReadable);
+    if (inputEncrypted.value !== humanReadable) {
+      inputEncrypted.value = humanReadable;
+      updateCopyBtnVisibility();
+      updateURL(humanReadable);
+    }
+    // Rule: immediately when encryption suceed do A
+    await doDecrypt();
   } catch (e) {
     console.error("Encryption error:", e);
   }
 };
 
 inputMessage.addEventListener("input", doEncrypt);
-inputKey.addEventListener("input", doEncrypt);
-inputEncrypted.addEventListener("input", updateCopyBtnVisibility);
+inputKey.addEventListener("input", () => {
+  localStorage.setItem(STORAGE_KEY, inputKey.value);
+  doEncrypt();
+});
+inputEncrypted.addEventListener("input", () => {
+  updateCopyBtnVisibility();
+  doDecrypt();
+});
 inputEncrypted.addEventListener("focus", () => inputEncrypted.select());
 inputEncrypted.addEventListener("click", () => inputEncrypted.select());
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   return false;
@@ -73,34 +110,42 @@ show.addEventListener("click", () => {
   show.textContent = secure ? "hide" : "show";
 });
 
+clearKeyBtn.addEventListener("click", () => {
+  localStorage.removeItem(STORAGE_KEY);
+  inputKey.value = "";
+  doEncrypt();
+});
+
 generateButton.addEventListener("click", async () => {
   try {
     const base64Key = await generateKey();
     inputKey.value = base64Key;
+    localStorage.setItem(STORAGE_KEY, base64Key);
+    doEncrypt();
   } catch (e) {
     alert("Error generating key: " + e.message);
   }
 });
+
 encryptButton.addEventListener("click", doEncrypt);
 
 decryptButton.addEventListener("click", async () => {
+  const key = inputKey.value.trim();
+  const enc = inputEncrypted.value.trim();
+  if (!key || !enc) return;
   try {
-    const decrypted = await decryptMessage(inputKey.value, inputEncrypted.value);
-
+    const decrypted = await decryptMessage(key, enc);
     inputDecrypted.value = decrypted;
   } catch (e) {
-    console.log(e);
-    console.log({
-      message: e.message,
-      stack: e.stack.split("\n").slice(0, 5).join("\n"),
-    });
     inputDecrypted.value = `Error: ${e.message}\n\nstack:\n${e.stack}`;
   }
 });
+
 loremBtn.addEventListener("click", () => {
   inputMessage.value = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Etiam molestie pulvinar consequat.
 Phasellus vitae dolor fringilla, elementum risus sit amet, vulputate lorem.`;
+  doEncrypt();
 });
 
 copyBtn.addEventListener("click", () => {
@@ -114,7 +159,7 @@ copyBtn.addEventListener("click", () => {
 });
 
 copyLinkBtn.addEventListener("click", () => {
-  const text = sharingLink.textContent;
+  const text = sharingLink.href;
   const dummy = document.createElement("textarea");
   document.body.appendChild(dummy);
   dummy.value = text;
@@ -129,11 +174,68 @@ copyLinkBtn.addEventListener("click", () => {
   }, 2000);
 });
 
-// On Load: Check if 'enc' param exists
-const params = new URLSearchParams(window.location.search);
-const encParam = params.get("enc");
-if (encParam) {
-  inputEncrypted.value = encParam;
-  updateCopyBtnVisibility();
-  updateURL(encParam);
-}
+// Initialization
+(async () => {
+  // 1. Load key from localStorage
+  const savedKey = localStorage.getItem(STORAGE_KEY);
+  if (savedKey) {
+    inputKey.value = savedKey;
+  }
+
+  // 2. Load from URL param if present
+  const params = new URLSearchParams(window.location.search);
+  const encParam = params.get("enc");
+  if (encParam) {
+    inputEncrypted.value = encParam;
+    updateCopyBtnVisibility();
+    updateURL(encParam);
+    // Task A: Decrypt what's in Encrypted Output
+    await doDecrypt();
+
+    // If decryption was successful (textarea not empty), scroll and highlight
+    if (inputDecrypted.value.trim()) {
+      const target = document.querySelector("#d");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        // Wait for smooth scroll to finish before starting animation
+        setTimeout(() => {
+          // Manual fade effect using direct style manipulation
+          let opacity = 0.8;
+          const startTime = Date.now();
+          const duration = 3000; // 3 seconds
+          
+          // Set initial red glow
+          inputDecrypted.style.boxShadow = `0 0 20px 8px rgba(255, 0, 0, ${opacity}), 0 0 0 4px rgba(255, 0, 0, 0.6)`;
+          inputDecrypted.style.borderColor = '#ff0000';
+          
+          const fadeInterval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            const progress = elapsed / duration;
+            
+            if (progress >= 1) {
+              // Animation complete - reset to default
+              clearInterval(fadeInterval);
+              inputDecrypted.style.boxShadow = '';
+              inputDecrypted.style.borderColor = '';
+            } else {
+              // Calculate fading opacity
+              const currentOpacity = 0.8 * (1 - progress);
+              const ringOpacity = 0.6 * (1 - progress);
+              inputDecrypted.style.boxShadow = `0 0 20px 8px rgba(255, 0, 0, ${currentOpacity}), 0 0 0 4px rgba(255, 0, 0, ${ringOpacity})`;
+              
+              // Fade border color
+              const redValue = Math.round(255 * (1 - progress) + 187 * progress); // 187 is #bbb in decimal
+              inputDecrypted.style.borderColor = `rgb(${redValue}, ${Math.round(187 * progress)}, ${Math.round(187 * progress)})`;
+            }
+          }, 16); // ~60fps
+        }, 600);
+      }
+    }
+  } else {
+    // If no URL param, check if there's an input message to encrypt (Task B then A)
+    if (inputMessage.value.trim()) {
+      await doEncrypt();
+    }
+  }
+})();
