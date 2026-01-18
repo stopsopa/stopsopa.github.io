@@ -31,9 +31,11 @@ The sidebar displays the collection of colors.
   - **Copy to Clipboard**: Clicking the text/box copies the `oklch(...)` string to the clipboard.
   - **Feedback**: A tooltip or "toast" message appears saying "Copied!" for 1-2 seconds.
 - **Item Actions**:
-  - Each item has a button group:
-    - **Duplicate**: Clones the color and adds it below.
-    - **Remove**: Deletes the color from the list.
+  - **Integrated Buttons**: Action buttons are positioned inside the color box in the top-right corner
+  - **Hover Reveal**: Buttons are hidden by default and appear on hover with smooth fade-in animation
+  - **Duplicate**: Small "Dup" button clones the color and adds it below
+  - **Remove**: Small "×" button deletes the color from the list
+  - **Compact Design**: Buttons use minimal padding and abbreviated labels to save space
 
 ### List Actions
 
@@ -92,10 +94,18 @@ The tool maintains its state both in the browser and the URL to allow sharing an
 
 ### URL Serialization
 
-- **Format**: The list of colors is serialized into a URL query parameter `?colors=...`.
-- **Separator**: Individual color strings are separated by the `|` (pipe) character.
-- **Example URL**: `oklch.html?colors=oklch(60% 0.15 250)|oklch(40% 0.1 20 / 0.5)`
+- **Format**: The list of colors is serialized into a URL query parameter `?colors=...` using a compact format.
+- **Compact Format**: Each color is represented as comma-separated values: `L,C,H[,A]`
+  - Example: `60%,0.15,250deg` or `60%,0.15,250deg,0.5`
+  - The `oklch()` wrapper is omitted to reduce URL length
+  - Units are preserved in the serialized format (e.g., `%`, `deg`, `rad`, `turn`)
+- **Color Separator**: Individual colors are separated by the `|` (pipe) character.
+- **Example URL**: `oklch.html?colors=60%,0.15,250|40%,0.1,20deg,0.5`
+  - This represents two colors:
+    - `oklch(60% 0.15 250)`
+    - `oklch(40% 0.1 20deg / 0.5)`
 - **Live Updates**: Every change to any color or the list should immediately update the browser's URL using `history.replaceState`.
+- **Benefits**: This compact format significantly reduces URL length compared to storing full `oklch()` strings, making URLs more shareable and readable.
 
 ### Deserialization (Loading)
 
