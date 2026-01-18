@@ -2,57 +2,81 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-    />
-
-    <title>stopsopa.github.io</title>
-
-    <script>
-      <!-- optional to do something before binding ACE editor -->
-      (function () {
-        var resolve;
-        var p = new Promise(function (res) {
-          resolve = res;
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-          // to replace domain.com to ... other stuff
-          Array.prototype.slice.call(document.querySelectorAll('[class="domain' + '.com"]')).forEach(function (tag) {
-            var text = tag.innerHTML;
-
-            text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host);
-
-            tag.innerHTML = text;
-          });
-
-          resolve();
-        });
-
-        window.beforeAceEventPromise = function () {
-          return p;
-        };
-      })();
-    </script>
-
-    <script>
-      if (typeof window.allLoaded === "undefined") {
-        window.allLoaded = [];
-      }
-      window.allLoaded.push(function () {
-        console.log("do my stuff after all is loaded");
-      });
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OKLCH Color Tool</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="/css/oklch.css" />
+    <!-- Core script -->
+    <script type="module" src="/js/oklch.js" defer></script>
+    <style>
+      /* Inline critical CSS for layout flash avoidance */
+      body { margin:0; font-family: 'Inter', sans-serif; background: #111; color:#eee; }
+    </style>
   </head>
-  <body class="layout bg" toc>
-    <div class="body">
-      <div class="inside">
-
-        <h2>Index</h2>
-        <script type="editor" data-lang="sh"></script>
-      </div>
-    </div>
-    <script type="module" src="/js/github.js"></script>
+  <body>
+    <header class="header">
+      <h1>OKLCH Color Tool</h1>
+    </header>
+    <main class="container">
+      <section class="sidebar" id="color-list">
+        <button class="add-color" id="add-color-btn">+ Add Color</button>
+        <ul class="color-items" id="color-items"></ul>
+      </section>
+      <section class="editor" id="editor-panel">
+        <h2>Editor</h2>
+        <form id="color-form">
+          <div class="control-group">
+            <label>Lightness (L)</label>
+            <div class="unit-toggle">
+              <label><input type="radio" name="l-unit" value="%" checked /> %</label>
+              <label><input type="radio" name="l-unit" value="num" /> 0‑1</label>
+            </div>
+            <input type="range" id="l-slider" min="0" max="100" step="0.1" />
+            <input type="number" id="l-number" min="0" max="100" step="0.01" />
+          </div>
+          <div class="control-group">
+            <label>Chroma (C)</label>
+            <div class="unit-toggle">
+              <label><input type="radio" name="c-unit" value="%" /> %</label>
+              <label><input type="radio" name="c-unit" value="num" checked /> 0‑0.5</label>
+            </div>
+            <input type="range" id="c-slider" min="0" max="0.5" step="0.01" />
+            <input type="number" id="c-number" min="0" max="0.5" step="0.01" />
+          </div>
+          <div class="control-group">
+            <label>Hue (H)</label>
+            <div class="unit-toggle">
+              <label><input type="radio" name="h-unit" value="deg" checked /> deg</label>
+              <label><input type="radio" name="h-unit" value="rad" /> rad</label>
+              <label><input type="radio" name="h-unit" value="grad" /> grad</label>
+              <label><input type="radio" name="h-unit" value="turn" /> turn</label>
+            </div>
+            <input type="range" id="h-slider" min="0" max="360" step="1" />
+            <input type="number" id="h-number" min="0" max="360" step="1" />
+          </div>
+          <div class="control-group">
+            <label>Alpha (A)</label>
+            <input type="checkbox" id="a-enabled" /> Enable
+            <div id="alpha-controls" style="display:none;">
+              <div class="unit-toggle">
+                <label><input type="radio" name="a-unit" value="%" checked /> %</label>
+                <label><input type="radio" name="a-unit" value="num" /> 0‑1</label>
+              </div>
+              <input type="range" id="a-slider" min="0" max="100" step="1" />
+              <input type="number" id="a-number" min="0" max="1" step="0.01" />
+            </div>
+          </div>
+          <button type="button" id="duplicate-btn">Duplicate</button>
+        </form>
+        <div class="preview">
+          <h3>Live Preview</h3>
+          <div class="color-preview" id="color-preview"></div>
+          <p class="css-output" id="css-output"></p>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">© 2026 stopsopa</footer>
   </body>
 </html>
