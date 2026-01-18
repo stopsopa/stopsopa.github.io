@@ -144,11 +144,11 @@
         inset: 0;
         display: flex;
         align-items: center;
-        justify-content: center;
+        /* justify-content: center; */
         font-size: 11px;
         font-weight: 500;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-        padding: 0 40px;
+        padding-left: 10px;
       }
 
       .color-actions {
@@ -699,21 +699,9 @@
         const urlColors = loadFromURL();
         if (urlColors && urlColors.length > 0) {
           state.colors = urlColors;
-        } else {
-          // Try localStorage
-          const savedState = localStorage.getItem("oklch-colors");
-          if (savedState) {
-            try {
-              const parsed = JSON.parse(savedState);
-              state.colors = parsed.colors || [];
-              state.selectedIndex = parsed.selectedIndex || 0;
-            } catch (e) {
-              console.error("Failed to parse saved state", e);
-            }
-          }
         }
 
-        // Fallback to default color
+        // Fallback to default color if no URL data
         if (state.colors.length === 0) {
           state.colors = [
             {
@@ -731,12 +719,26 @@
       }
 
       // URL Serialization - Compact Format
+      
+      // URL encoding helpers: Replace % with ~ to avoid %25 in URLs
+      function encodeForURL(str) {
+        // Replace % with ~ for cleaner URLs (~ is URL-safe and won't be encoded)
+        return str.replace(/%/g, '~');
+      }
+      
+      function decodeFromURL(str) {
+        // Replace ~ back to % when reading from URL
+        return str.replace(/~/g, '%');
+      }
+      
       function loadFromURL() {
         const params = new URLSearchParams(window.location.search);
         const colorsParam = params.get("colors");
         if (!colorsParam) return null;
 
-        const colorStrings = colorsParam.split("|");
+        // Decode ~ back to % before parsing
+        const decodedParam = decodeFromURL(colorsParam);
+        const colorStrings = decodedParam.split("|");
         return colorStrings.map(parseCompactColorString).filter(Boolean);
       }
 
@@ -777,9 +779,15 @@
 
       function updateURL() {
         const colorStrings = state.colors.map(colorToCompactString);
-        const url = new URL(window.location);
-        url.searchParams.set("colors", colorStrings.join("|"));
-        history.replaceState(null, "", url);
+        const joinedColors = colorStrings.join("|");
+        
+        // Encode % as ~ for cleaner URLs
+        const encodedColors = encodeForURL(joinedColors);
+        
+        // Manually construct URL to avoid encoding commas, pipes, etc.
+        const baseUrl = window.location.pathname;
+        const newUrl = `${baseUrl}?colors=${encodedColors}`;
+        history.replaceState(null, "", newUrl);
       }
 
       function colorToCompactString(color) {
@@ -797,15 +805,7 @@
         return parts.join(",");
       }
 
-      function saveToLocalStorage() {
-        localStorage.setItem(
-          "oklch-colors",
-          JSON.stringify({
-            colors: state.colors,
-            selectedIndex: state.selectedIndex,
-          })
-        );
-      }
+
 
       // Color conversion
       function colorToString(color) {
@@ -914,7 +914,6 @@
         state.selectedIndex = index;
         renderColorList();
         updateEditorPanel();
-        saveToLocalStorage();
       }
 
       function updateEditorPanel() {
@@ -1198,7 +1197,6 @@
           document.getElementById("alphaControls").style.display = e.target.checked ? "block" : "none";
           updatePreview();
           updateURL();
-          saveToLocalStorage();
         });
 
         setupParameterControls("alpha", "a");
@@ -1218,7 +1216,6 @@
           }
           updatePreview();
           updateURL();
-          saveToLocalStorage();
         });
 
         input.addEventListener("input", (e) => {
@@ -1237,7 +1234,6 @@
           
           updatePreview();
           updateURL();
-          saveToLocalStorage();
         });
 
         unitRadios.forEach((radio) => {
@@ -1263,7 +1259,6 @@
 
             updatePreview();
             updateURL();
-            saveToLocalStorage();
           });
         });
       }
@@ -1353,7 +1348,6 @@
         updateHueMarker(angle);
         updatePreview();
         updateURL();
-        saveToLocalStorage();
       }
 
       function copyToClipboard(text) {
