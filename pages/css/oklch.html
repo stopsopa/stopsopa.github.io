@@ -2,57 +2,1377 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OKLCH Color Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
     />
-
-    <title>stopsopa.github.io</title>
-
-    <script>
-      <!-- optional to do something before binding ACE editor -->
-      (function () {
-        var resolve;
-        var p = new Promise(function (res) {
-          resolve = res;
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-          // to replace domain.com to ... other stuff
-          Array.prototype.slice.call(document.querySelectorAll('[class="domain' + '.com"]')).forEach(function (tag) {
-            var text = tag.innerHTML;
-
-            text = text.replace(/domain\.com/g, location.origin).replace(/host\.com/g, location.host);
-
-            tag.innerHTML = text;
-          });
-
-          resolve();
-        });
-
-        window.beforeAceEventPromise = function () {
-          return p;
-        };
-      })();
-    </script>
-
-    <script>
-      if (typeof window.allLoaded === "undefined") {
-        window.allLoaded = [];
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-      window.allLoaded.push(function () {
-        console.log("do my stuff after all is loaded");
-      });
-    </script>
-  </head>
-  <body class="layout bg" toc>
-    <div class="body">
-      <div class="inside">
 
-        <h2>Index</h2>
-        <script type="editor" data-lang="sh"></script>
+      :root {
+        --bg-dark: #0a0e27;
+        --bg-card: rgba(255, 255, 255, 0.05);
+        --border-color: rgba(255, 255, 255, 0.1);
+        --text-primary: #ffffff;
+        --text-secondary: rgba(255, 255, 255, 0.7);
+        --accent: #6366f1;
+        --accent-hover: #818cf8;
+        --success: #10b981;
+        --danger: #ef4444;
+        --sidebar-width: 280px;
+        --spacing: 16px;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        color: var(--text-primary);
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      .app-container {
+        display: flex;
+        height: 100vh;
+        gap: var(--spacing);
+        padding: var(--spacing);
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: var(--sidebar-width);
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .sidebar-header {
+        padding: var(--spacing);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .sidebar-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .global-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+
+      .global-controls input[type="checkbox"] {
+        cursor: pointer;
+      }
+
+      .color-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: var(--spacing);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .color-list::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .color-list::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+      }
+
+      .color-list::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+      }
+
+      .color-item {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .color-item.selected {
+        box-shadow: 0 0 0 3px var(--accent);
+      }
+
+      .color-box {
+        width: 100%;
+        height: 50px;
+        position: relative;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .color-box-bg {
+        position: absolute;
+        inset: 0;
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      body.show-transparency-grid .color-box-bg {
+        opacity: 1;
+      }
+
+      .color-box-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 500;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        padding: 0 40px;
+      }
+
+      .color-actions {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        display: flex;
+        gap: 4px;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+      }
+
+      .color-item:hover .color-actions {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .color-actions .btn {
+        padding: 4px 8px;
+        font-size: 11px;
+        min-width: auto;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+        flex: 1;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+        flex: 1;
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .btn-danger {
+        background: var(--danger);
+        color: white;
+        flex: 1;
+      }
+
+      .btn-danger:hover {
+        background: #dc2626;
+      }
+
+      .sidebar-footer {
+        padding: var(--spacing);
+        border-top: 1px solid var(--border-color);
+      }
+
+      /* Editor Panel */
+      .editor-panel {
+        flex: 1;
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        overflow-y: auto;
+        padding: 16px;
+      }
+
+      .editor-panel::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .editor-panel::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+      }
+
+      .editor-panel::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+      }
+
+      .editor-section {
+        margin-bottom: 20px;
+      }
+
+      .editor-section h3 {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--text-primary);
+      }
+
+      .preview-large {
+        width: 100%;
+        height: 120px;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 10px;
+      }
+
+      .preview-bg {
+        position: absolute;
+        inset: 0;
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      body.show-transparency-grid .preview-bg {
+        opacity: 1;
+      }
+
+      .preview-overlay {
+        position: absolute;
+        inset: 0;
+      }
+
+      .output-string {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        word-break: break-all;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .output-string:hover {
+        background: rgba(0, 0, 0, 0.4);
+      }
+
+      .comparison-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .comparison-item {
+        height: 50px;
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+      }
+
+      .comparison-item-bg {
+        position: absolute;
+        inset: 0;
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+
+      body.show-transparency-grid .comparison-item-bg {
+        opacity: 1;
+      }
+
+      .comparison-item-overlay {
+        position: absolute;
+        inset: 0;
+      }
+
+      .comparison-item.light {
+        background: #ffffff;
+      }
+
+      .comparison-item.dark {
+        background: #1a1a1a;
+      }
+
+      .control-group {
+        margin-bottom: 12px;
+      }
+
+      .control-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 6px;
+        color: var(--text-secondary);
+      }
+
+      .unit-toggle {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+
+      .unit-toggle label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        color: var(--text-secondary);
+      }
+
+      .unit-toggle input[type="radio"] {
+        cursor: pointer;
+      }
+
+      .slider-group {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      input[type="range"] {
+        flex: 1;
+        height: 6px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--accent);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      input[type="range"]::-webkit-slider-thumb:hover {
+        background: var(--accent-hover);
+        transform: scale(1.1);
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--accent);
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s ease;
+      }
+
+      input[type="range"]::-moz-range-thumb:hover {
+        background: var(--accent-hover);
+        transform: scale(1.1);
+      }
+
+      input[type="number"] {
+        width: 80px;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: var(--text-primary);
+        font-size: 13px;
+        font-family: inherit;
+      }
+
+      input[type="number"]:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .hue-wheel-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+
+      .hue-wheel {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        position: relative;
+        cursor: crosshair;
+        background: conic-gradient(
+          from 0deg,
+          oklch(70% 0.3 0),
+          oklch(70% 0.3 30),
+          oklch(70% 0.3 60),
+          oklch(70% 0.3 90),
+          oklch(70% 0.3 120),
+          oklch(70% 0.3 150),
+          oklch(70% 0.3 180),
+          oklch(70% 0.3 210),
+          oklch(70% 0.3 240),
+          oklch(70% 0.3 270),
+          oklch(70% 0.3 300),
+          oklch(70% 0.3 330),
+          oklch(70% 0.3 360)
+        );
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .hue-marker {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid black;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+
+      .checkbox-group input[type="checkbox"] {
+        cursor: pointer;
+      }
+
+      .checkbox-group label {
+        font-size: 13px;
+        cursor: pointer;
+        color: var(--text-secondary);
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--success);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+        z-index: 1000;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-secondary);
+      }
+
+      .gamut-warning {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid var(--danger);
+        border-radius: 8px;
+        padding: 8px 10px;
+        margin-top: 8px;
+        font-size: 12px;
+        color: var(--danger);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-title">Color Palette</div>
+          <div class="global-controls">
+            <input type="checkbox" id="transparencyToggle" />
+            <label for="transparencyToggle">Show transparency grid</label>
+          </div>
+        </div>
+        <div class="color-list" id="colorList"></div>
+        <div class="sidebar-footer">
+          <button class="btn btn-primary" id="addColorBtn">+ Add Color</button>
+        </div>
+      </div>
+
+      <!-- Editor Panel -->
+      <div class="editor-panel" id="editorPanel">
+        <div class="editor-section">
+          <h3>Preview</h3>
+          <div class="preview-large">
+            <div class="preview-bg"></div>
+            <div class="preview-overlay" id="previewOverlay"></div>
+          </div>
+          <div class="output-string" id="outputString" title="Click to copy">
+            oklch(50% 0 0)
+          </div>
+          <div class="comparison-grid">
+            <div class="comparison-item light">
+              <div class="comparison-item-bg"></div>
+              <div class="comparison-item-overlay" id="comparisonLight"></div>
+            </div>
+            <div class="comparison-item dark">
+              <div class="comparison-item-bg"></div>
+              <div class="comparison-item-overlay" id="comparisonDark"></div>
+            </div>
+          </div>
+          <div id="gamutWarning" style="display: none;" class="gamut-warning">
+            ⚠️ This color is outside the sRGB gamut and may not display correctly on all devices.
+          </div>
+        </div>
+
+        <div class="editor-section">
+          <h3>Lightness (L)</h3>
+          <div class="control-group">
+            <div class="unit-toggle">
+              <label>
+                <input type="radio" name="lightnessUnit" value="percentage" checked />
+                Percentage (0-100%)
+              </label>
+              <label>
+                <input type="radio" name="lightnessUnit" value="number" />
+                Number (0-1)
+              </label>
+            </div>
+            <div class="slider-group">
+              <input type="range" id="lightnessSlider" min="0" max="100" step="0.1" value="50" />
+              <input type="number" id="lightnessInput" min="0" max="100" step="0.1" value="50" />
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-section">
+          <h3>Chroma (C)</h3>
+          <div class="control-group">
+            <div class="unit-toggle">
+              <label>
+                <input type="radio" name="chromaUnit" value="number" checked />
+                Number (0-0.5)
+              </label>
+              <label>
+                <input type="radio" name="chromaUnit" value="percentage" />
+                Percentage (0-100%)
+              </label>
+            </div>
+            <div class="slider-group">
+              <input type="range" id="chromaSlider" min="0" max="0.5" step="0.001" value="0" />
+              <input type="number" id="chromaInput" min="0" max="0.5" step="0.001" value="0" />
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-section">
+          <h3>Hue (H)</h3>
+          <div class="control-group">
+            <div class="hue-wheel-container">
+              <div class="hue-wheel" id="hueWheel">
+                <div class="hue-marker" id="hueMarker"></div>
+              </div>
+            </div>
+            <div class="unit-toggle">
+              <label>
+                <input type="radio" name="hueUnit" value="deg" checked />
+                Degrees (deg)
+              </label>
+              <label>
+                <input type="radio" name="hueUnit" value="rad" />
+                Radians (rad)
+              </label>
+              <label>
+                <input type="radio" name="hueUnit" value="grad" />
+                Gradians (grad)
+              </label>
+              <label>
+                <input type="radio" name="hueUnit" value="turn" />
+                Turns (turn)
+              </label>
+              <label>
+                <input type="radio" name="hueUnit" value="number" />
+                Number
+              </label>
+            </div>
+            <div class="slider-group">
+              <input type="range" id="hueSlider" min="0" max="360" step="0.01" value="0" />
+              <input type="number" id="hueInput" min="0" max="360" step="0.01" value="0" />
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-section">
+          <h3>Alpha (A)</h3>
+          <div class="control-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="alphaEnabled" />
+              <label for="alphaEnabled">Enable Alpha</label>
+            </div>
+            <div id="alphaControls" style="display: none;">
+              <div class="unit-toggle">
+                <label>
+                  <input type="radio" name="alphaUnit" value="number" checked />
+                  Number (0-1)
+                </label>
+                <label>
+                  <input type="radio" name="alphaUnit" value="percentage" />
+                  Percentage (0-100%)
+                </label>
+              </div>
+              <div class="slider-group">
+                <input type="range" id="alphaSlider" min="0" max="1" step="0.01" value="1" />
+                <input type="number" id="alphaInput" min="0" max="1" step="0.01" value="1" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-section">
+          <button class="btn btn-primary" id="duplicateBtn">Duplicate Color</button>
+        </div>
       </div>
     </div>
-    <script type="module" src="/js/github.js"></script>
+
+    <div class="toast" id="toast">Copied!</div>
+
+    <script>
+      // State management
+      const state = {
+        colors: [],
+        selectedIndex: 0,
+      };
+
+      // Initialize with default color
+      function initializeApp() {
+        // Try to load from URL first
+        const urlColors = loadFromURL();
+        if (urlColors && urlColors.length > 0) {
+          state.colors = urlColors;
+        } else {
+          // Try localStorage
+          const savedState = localStorage.getItem("oklch-colors");
+          if (savedState) {
+            try {
+              const parsed = JSON.parse(savedState);
+              state.colors = parsed.colors || [];
+              state.selectedIndex = parsed.selectedIndex || 0;
+            } catch (e) {
+              console.error("Failed to parse saved state", e);
+            }
+          }
+        }
+
+        // Fallback to default color
+        if (state.colors.length === 0) {
+          state.colors = [
+            {
+              l: { value: 50, unit: "percentage" },
+              c: { value: 0, unit: "number" },
+              h: { value: 0, unit: "deg" },
+              a: { enabled: false, value: 1, unit: "number" },
+            },
+          ];
+        }
+
+        renderColorList();
+        selectColor(state.selectedIndex);
+        setupEventListeners();
+      }
+
+      // URL Serialization - Compact Format
+      function loadFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const colorsParam = params.get("colors");
+        if (!colorsParam) return null;
+
+        const colorStrings = colorsParam.split("|");
+        return colorStrings.map(parseCompactColorString).filter(Boolean);
+      }
+
+      function parseCompactColorString(str) {
+        // Compact format: L,C,H[,A]
+        // Example: "60%,0.15,250deg" or "60%,0.15,250deg,0.5"
+        const parts = str.split(",");
+        if (parts.length < 3) return null;
+
+        const [lStr, cStr, hStr, aStr] = parts;
+
+        return {
+          l: parseValue(lStr, ["percentage", "number"]),
+          c: parseValue(cStr, ["number", "percentage"]),
+          h: parseHue(hStr),
+          a: aStr
+            ? { enabled: true, ...parseValue(aStr, ["number", "percentage"]) }
+            : { enabled: false, value: 1, unit: "number" },
+        };
+      }
+
+      function parseValue(str, units) {
+        if (str.endsWith("%")) {
+          return { value: parseFloat(str), unit: "percentage" };
+        }
+        return { value: parseFloat(str), unit: "number" };
+      }
+
+      function parseHue(str) {
+        const units = ["deg", "rad", "grad", "turn"];
+        for (const unit of units) {
+          if (str.endsWith(unit)) {
+            return { value: parseFloat(str), unit };
+          }
+        }
+        return { value: parseFloat(str), unit: "deg" };
+      }
+
+      function updateURL() {
+        const colorStrings = state.colors.map(colorToCompactString);
+        const url = new URL(window.location);
+        url.searchParams.set("colors", colorStrings.join("|"));
+        history.replaceState(null, "", url);
+      }
+
+      function colorToCompactString(color) {
+        // Compact format: L,C,H[,A]
+        let parts = [
+          formatValue(color.l),
+          formatValue(color.c),
+          formatValue(color.h)
+        ];
+        
+        if (color.a.enabled) {
+          parts.push(formatValue(color.a));
+        }
+        
+        return parts.join(",");
+      }
+
+      function saveToLocalStorage() {
+        localStorage.setItem(
+          "oklch-colors",
+          JSON.stringify({
+            colors: state.colors,
+            selectedIndex: state.selectedIndex,
+          })
+        );
+      }
+
+      // Color conversion
+      function colorToString(color) {
+        let l = formatValue(color.l);
+        let c = formatValue(color.c);
+        let h = formatValue(color.h);
+        let result = `oklch(${l} ${c} ${h}`;
+        if (color.a.enabled) {
+          result += ` / ${formatValue(color.a)}`;
+        }
+        result += ")";
+        return result;
+      }
+
+      function formatValue(param) {
+        if (param.unit === "percentage") {
+          return `${param.value.toFixed(2)}%`;
+        } else if (param.unit === "number") {
+          return param.value.toFixed(3);
+        } else {
+          return `${param.value.toFixed(2)}${param.unit}`;
+        }
+      }
+
+      function colorToCSSString(color) {
+        // Convert to degrees for CSS
+        let hDeg = convertHueToDegrees(color.h);
+        let l = color.l.unit === "percentage" ? `${color.l.value}%` : color.l.value;
+        let c = color.c.unit === "percentage" ? `${color.c.value}%` : color.c.value;
+
+        let result = `oklch(${l} ${c} ${hDeg}`;
+        if (color.a.enabled) {
+          let a = color.a.unit === "percentage" ? color.a.value / 100 : color.a.value;
+          result += ` / ${a}`;
+        }
+        result += ")";
+        return result;
+      }
+
+      function convertHueToDegrees(h) {
+        switch (h.unit) {
+          case "rad":
+            return (h.value * 180) / Math.PI;
+          case "grad":
+            return (h.value * 360) / 400;
+          case "turn":
+            return h.value * 360;
+          default:
+            return h.value;
+        }
+      }
+
+      function getContrastColor(color) {
+        // Simple contrast: if lightness > 60%, use black, else white
+        const l = color.l.unit === "percentage" ? color.l.value : color.l.value * 100;
+        return l > 60 ? "#000000" : "#ffffff";
+      }
+
+      function isOutOfGamut(color) {
+        // Rough check: if chroma is very high, it might be out of gamut
+        const c = color.c.unit === "percentage" ? color.c.value / 100 : color.c.value;
+        return c > 0.37; // Approximate sRGB gamut boundary
+      }
+
+      // Rendering
+      function renderColorList() {
+        const list = document.getElementById("colorList");
+        list.innerHTML = "";
+
+        if (state.colors.length === 0) {
+          list.innerHTML = '<div class="empty-state">No colors yet. Add one to get started!</div>';
+          return;
+        }
+
+        state.colors.forEach((color, index) => {
+          const item = document.createElement("div");
+          item.className = "color-item";
+          if (index === state.selectedIndex) {
+            item.classList.add("selected");
+          }
+
+          const colorString = colorToString(color);
+          const cssColor = colorToCSSString(color);
+          const textColor = getContrastColor(color);
+
+          item.innerHTML = `
+            <div class="color-box" data-index="${index}">
+              <div class="color-box-bg"></div>
+              <div class="color-box-overlay" style="background: ${cssColor}; color: ${textColor};">
+                ${colorString}
+              </div>
+              <div class="color-actions">
+                <button class="btn btn-secondary" data-action="duplicate" data-index="${index}">Dup</button>
+                <button class="btn btn-danger" data-action="remove" data-index="${index}">×</button>
+              </div>
+            </div>
+          `;
+
+          list.appendChild(item);
+        });
+      }
+
+      function selectColor(index) {
+        if (index < 0 || index >= state.colors.length) return;
+
+        state.selectedIndex = index;
+        renderColorList();
+        updateEditorPanel();
+        saveToLocalStorage();
+      }
+
+      function updateEditorPanel() {
+        const color = state.colors[state.selectedIndex];
+        if (!color) return;
+
+        // Update Lightness
+        document.querySelector(`input[name="lightnessUnit"][value="${color.l.unit}"]`).checked = true;
+        updateLightnessControls(color.l);
+
+        // Update Chroma
+        document.querySelector(`input[name="chromaUnit"][value="${color.c.unit}"]`).checked = true;
+        updateChromaControls(color.c);
+
+        // Update Hue
+        document.querySelector(`input[name="hueUnit"][value="${color.h.unit}"]`).checked = true;
+        updateHueControls(color.h);
+
+        // Update Alpha
+        document.getElementById("alphaEnabled").checked = color.a.enabled;
+        document.getElementById("alphaControls").style.display = color.a.enabled ? "block" : "none";
+        if (color.a.enabled) {
+          document.querySelector(`input[name="alphaUnit"][value="${color.a.unit}"]`).checked = true;
+          updateAlphaControls(color.a);
+        }
+
+        // Update preview
+        updatePreview();
+      }
+
+      function updateLightnessControls(l) {
+        const slider = document.getElementById("lightnessSlider");
+        const input = document.getElementById("lightnessInput");
+
+        if (l.unit === "percentage") {
+          slider.min = 0;
+          slider.max = 100;
+          input.min = 0;
+          input.max = 100;
+          slider.value = l.value;
+          input.value = l.value;
+        } else {
+          slider.min = 0;
+          slider.max = 1;
+          slider.step = 0.001;
+          input.min = 0;
+          input.max = 1;
+          input.step = 0.001;
+          slider.value = l.value;
+          input.value = l.value;
+        }
+      }
+
+      function updateChromaControls(c) {
+        const slider = document.getElementById("chromaSlider");
+        const input = document.getElementById("chromaInput");
+
+        if (c.unit === "percentage") {
+          slider.min = 0;
+          slider.max = 100;
+          slider.step = 0.1;
+          input.min = 0;
+          input.max = 100;
+          input.step = 0.1;
+          slider.value = c.value;
+          input.value = c.value;
+        } else {
+          slider.min = 0;
+          slider.max = 0.5;
+          slider.step = 0.001;
+          input.min = 0;
+          input.max = 0.5;
+          input.step = 0.001;
+          slider.value = c.value;
+          input.value = c.value;
+        }
+      }
+
+      function updateHueControls(h) {
+        const slider = document.getElementById("hueSlider");
+        const input = document.getElementById("hueInput");
+        const hDeg = convertHueToDegrees(h);
+
+        // Slider always works in degrees
+        slider.value = hDeg;
+
+        // Input shows value in current unit
+        input.value = h.value;
+
+        // Update input constraints based on unit
+        switch (h.unit) {
+          case "deg":
+            input.min = 0;
+            input.max = 360;
+            break;
+          case "rad":
+            input.min = 0;
+            input.max = 2 * Math.PI;
+            break;
+          case "grad":
+            input.min = 0;
+            input.max = 400;
+            break;
+          case "turn":
+            input.min = 0;
+            input.max = 1;
+            break;
+          default:
+            input.min = 0;
+            input.max = 360;
+        }
+
+        updateHueMarker(hDeg);
+      }
+
+      function updateHueMarker(degrees) {
+        const marker = document.getElementById("hueMarker");
+        const wheel = document.getElementById("hueWheel");
+        const radius = wheel.offsetWidth / 2;
+        const angle = (degrees - 90) * (Math.PI / 180); // -90 to start at top
+        const x = radius + radius * 0.85 * Math.cos(angle);
+        const y = radius + radius * 0.85 * Math.sin(angle);
+        marker.style.left = `${x}px`;
+        marker.style.top = `${y}px`;
+      }
+
+      function updateAlphaControls(a) {
+        const slider = document.getElementById("alphaSlider");
+        const input = document.getElementById("alphaInput");
+
+        if (a.unit === "percentage") {
+          slider.min = 0;
+          slider.max = 100;
+          slider.step = 0.1;
+          input.min = 0;
+          input.max = 100;
+          input.step = 0.1;
+          slider.value = a.value;
+          input.value = a.value;
+        } else {
+          slider.min = 0;
+          slider.max = 1;
+          slider.step = 0.01;
+          input.min = 0;
+          input.max = 1;
+          input.step = 0.01;
+          slider.value = a.value;
+          input.value = a.value;
+        }
+      }
+
+      function updatePreview() {
+        const color = state.colors[state.selectedIndex];
+        if (!color) return;
+
+        const cssColor = colorToCSSString(color);
+        const colorString = colorToString(color);
+
+        // Update large preview
+        document.getElementById("previewOverlay").style.background = cssColor;
+        document.getElementById("outputString").textContent = colorString;
+
+        // Update comparison
+        document.getElementById("comparisonLight").style.background = cssColor;
+        document.getElementById("comparisonDark").style.background = cssColor;
+
+        // Update gamut warning
+        const warning = document.getElementById("gamutWarning");
+        warning.style.display = isOutOfGamut(color) ? "block" : "none";
+
+        // Re-render color list to update the selected color
+        renderColorList();
+      }
+
+      // Event Listeners
+      function setupEventListeners() {
+        // Transparency toggle
+        document.getElementById("transparencyToggle").addEventListener("change", (e) => {
+          document.body.classList.toggle("show-transparency-grid", e.target.checked);
+        });
+
+        // Add color button
+        document.getElementById("addColorBtn").addEventListener("click", () => {
+          state.colors.push({
+            l: { value: 50, unit: "percentage" },
+            c: { value: 0, unit: "number" },
+            h: { value: 0, unit: "deg" },
+            a: { enabled: false, value: 1, unit: "number" },
+          });
+          selectColor(state.colors.length - 1);
+          updateURL();
+        });
+
+        // Color list interactions
+        document.getElementById("colorList").addEventListener("click", (e) => {
+          // Handle button actions first (before color box selection)
+          const btn = e.target.closest("button[data-action]");
+          if (btn) {
+            e.stopPropagation(); // Prevent color box click
+            const action = btn.dataset.action;
+            const index = parseInt(btn.dataset.index);
+
+            if (action === "duplicate") {
+              const newColor = JSON.parse(JSON.stringify(state.colors[index]));
+              state.colors.splice(index + 1, 0, newColor);
+              selectColor(index + 1);
+              updateURL();
+            } else if (action === "remove") {
+              if (state.colors.length === 1) {
+                showToast("Cannot remove the last color!");
+                return;
+              }
+              state.colors.splice(index, 1);
+              if (state.selectedIndex >= state.colors.length) {
+                state.selectedIndex = state.colors.length - 1;
+              }
+              selectColor(state.selectedIndex);
+              updateURL();
+            }
+            return; // Don't process color box click
+          }
+
+          // Handle color box click (select and copy)
+          const colorBox = e.target.closest(".color-box");
+          if (colorBox) {
+            const index = parseInt(colorBox.dataset.index);
+            selectColor(index);
+            // Copy to clipboard
+            const colorString = colorToString(state.colors[index]);
+            copyToClipboard(colorString);
+            return;
+          }
+        });
+
+        // Duplicate button in editor
+        document.getElementById("duplicateBtn").addEventListener("click", () => {
+          const newColor = JSON.parse(JSON.stringify(state.colors[state.selectedIndex]));
+          state.colors.splice(state.selectedIndex + 1, 0, newColor);
+          selectColor(state.selectedIndex + 1);
+          updateURL();
+        });
+
+        // Output string click to copy
+        document.getElementById("outputString").addEventListener("click", () => {
+          const colorString = colorToString(state.colors[state.selectedIndex]);
+          copyToClipboard(colorString);
+        });
+
+        // Lightness controls
+        setupParameterControls("lightness", "l");
+
+        // Chroma controls
+        setupParameterControls("chroma", "c");
+
+        // Hue controls
+        setupParameterControls("hue", "h");
+
+        // Hue wheel
+        const hueWheel = document.getElementById("hueWheel");
+        let isDragging = false;
+
+        hueWheel.addEventListener("mousedown", (e) => {
+          isDragging = true;
+          updateHueFromWheel(e);
+        });
+
+        document.addEventListener("mousemove", (e) => {
+          if (isDragging) {
+            updateHueFromWheel(e);
+          }
+        });
+
+        document.addEventListener("mouseup", () => {
+          isDragging = false;
+        });
+
+        // Alpha controls
+        document.getElementById("alphaEnabled").addEventListener("change", (e) => {
+          const color = state.colors[state.selectedIndex];
+          color.a.enabled = e.target.checked;
+          document.getElementById("alphaControls").style.display = e.target.checked ? "block" : "none";
+          updatePreview();
+          updateURL();
+          saveToLocalStorage();
+        });
+
+        setupParameterControls("alpha", "a");
+      }
+
+      function setupParameterControls(name, key) {
+        const slider = document.getElementById(`${name}Slider`);
+        const input = document.getElementById(`${name}Input`);
+        const unitRadios = document.querySelectorAll(`input[name="${name}Unit"]`);
+
+        slider.addEventListener("input", (e) => {
+          const color = state.colors[state.selectedIndex];
+          color[key].value = parseFloat(e.target.value);
+          input.value = e.target.value;
+          if (key === "h") {
+            updateHueMarker(parseFloat(e.target.value));
+          }
+          updatePreview();
+          updateURL();
+          saveToLocalStorage();
+        });
+
+        input.addEventListener("input", (e) => {
+          const color = state.colors[state.selectedIndex];
+          const value = parseFloat(e.target.value) || 0;
+          color[key].value = value;
+          
+          if (key === "h") {
+            // Convert to degrees for slider
+            const deg = convertHueToDegrees(color[key]);
+            slider.value = deg;
+            updateHueMarker(deg);
+          } else {
+            slider.value = value;
+          }
+          
+          updatePreview();
+          updateURL();
+          saveToLocalStorage();
+        });
+
+        unitRadios.forEach((radio) => {
+          radio.addEventListener("change", (e) => {
+            const color = state.colors[state.selectedIndex];
+            const oldUnit = color[key].unit;
+            const newUnit = e.target.value;
+
+            // Convert value
+            color[key].value = convertUnit(color[key].value, oldUnit, newUnit, key);
+            color[key].unit = newUnit;
+
+            // Update controls
+            if (key === "l") {
+              updateLightnessControls(color[key]);
+            } else if (key === "c") {
+              updateChromaControls(color[key]);
+            } else if (key === "h") {
+              updateHueControls(color[key]);
+            } else if (key === "a") {
+              updateAlphaControls(color[key]);
+            }
+
+            updatePreview();
+            updateURL();
+            saveToLocalStorage();
+          });
+        });
+      }
+
+      function convertUnit(value, fromUnit, toUnit, param) {
+        if (fromUnit === toUnit) return value;
+
+        // Lightness
+        if (param === "l") {
+          if (fromUnit === "percentage" && toUnit === "number") {
+            return value / 100;
+          } else if (fromUnit === "number" && toUnit === "percentage") {
+            return value * 100;
+          }
+        }
+
+        // Chroma
+        if (param === "c") {
+          if (fromUnit === "number" && toUnit === "percentage") {
+            return (value / 0.5) * 100;
+          } else if (fromUnit === "percentage" && toUnit === "number") {
+            return (value / 100) * 0.5;
+          }
+        }
+
+        // Hue
+        if (param === "h") {
+          const deg = convertHueToDegrees({ value, unit: fromUnit });
+          switch (toUnit) {
+            case "deg":
+              return deg;
+            case "rad":
+              return (deg * Math.PI) / 180;
+            case "grad":
+              return (deg * 400) / 360;
+            case "turn":
+              return deg / 360;
+            default:
+              return deg;
+          }
+        }
+
+        // Alpha
+        if (param === "a") {
+          if (fromUnit === "number" && toUnit === "percentage") {
+            return value * 100;
+          } else if (fromUnit === "percentage" && toUnit === "number") {
+            return value / 100;
+          }
+        }
+
+        return value;
+      }
+
+      function updateHueFromWheel(e) {
+        const wheel = document.getElementById("hueWheel");
+        const rect = wheel.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const x = e.clientX - centerX;
+        const y = e.clientY - centerY;
+        let angle = Math.atan2(y, x) * (180 / Math.PI);
+        angle = (angle + 90 + 360) % 360; // Adjust to start at top
+
+        const color = state.colors[state.selectedIndex];
+        
+        // Convert angle to current unit
+        const currentUnit = color.h.unit;
+        let value;
+        switch (currentUnit) {
+          case "rad":
+            value = (angle * Math.PI) / 180;
+            break;
+          case "grad":
+            value = (angle * 400) / 360;
+            break;
+          case "turn":
+            value = angle / 360;
+            break;
+          default:
+            value = angle;
+        }
+
+        color.h.value = value;
+        document.getElementById("hueSlider").value = angle;
+        document.getElementById("hueInput").value = value;
+        updateHueMarker(angle);
+        updatePreview();
+        updateURL();
+        saveToLocalStorage();
+      }
+
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast("Copied!");
+        });
+      }
+
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 2000);
+      }
+
+      // Initialize app
+      initializeApp();
+    </script>
   </body>
 </html>
