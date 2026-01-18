@@ -20,6 +20,12 @@ The sidebar displays the collection of colors.
   - **Border**: 1px solid black.
   - **Label**: The current OKLCH value string (e.g., `oklch(60% 0.15 250)`) centered inside the box.
   - **Text Color**: Automatically contrast with background (white text for dark colors, black for light).
+  - **Transparency Support**: When Alpha (A) is used, the box must have a checkered background to visualize transparency:
+    `background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuX1o2Nmk1ZyIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48bGluZSB4MT0iMCIgeT0iMCIgeDI9IjAiIHkyPSIxMiIgc3Ryb2tlPSIjRjNGM0YzIiBzdHJva2Utd2lkdGg9IjEyIiAvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuX1o2Nmk1ZykiICAvPjwvc3ZnPg==);`
+    To achieve this, use two nested divs:
+    - Inner div 1: Contains the checkered background.
+    - Inner div 2: Overlays the OKLCH color.
+  - **Global Toggle**: There must be a global checkbox in the UI to enable/disable this transparency background pattern. Toggling this should add or remove a specific class (e.g., `show-transparency-grid`) on the `body` element.
 - **Interactions**:
   - **Select**: Clicking the box selects it for editing. The selected box should have a distinct highlight (e.g., thicker border).
   - **Copy to Clipboard**: Clicking the text/box copies the `oklch(...)` string to the clipboard.
@@ -68,11 +74,17 @@ The editor manipulates the state of the **currently selected** color item. Color
   - `Percentage` (0% to 100%, e.g., `50%`)
 - **Inputs**: Slider and numeric input field.
 
+#### Actions
+
+- **Duplicate Button**: A button to clone the currently selected color and add it to the list.
+
 ### Output/Preview
 
 - **Live String**: Displays the generated CSS string, e.g., `oklch(59.69% 0.156 49.77 / .5)`.
 - **Large Preview**: A primary preview area showing the color.
+  - **Transparency Support**: When Alpha (A) is used, must show the checkered background pattern (same as sidebar boxes) using a two-div overlay approach.
 - **Background Comparison**: Preview against light and dark backgrounds.
+  - **Transparency Support**: The color blocks in comparison areas must also show the checkered background under the color when Alpha is enabled.
 
 ## 4. State Persistence & URL Serialization
 
