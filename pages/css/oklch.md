@@ -90,34 +90,39 @@ The editor manipulates the state of the **currently selected** color item. Color
 
 ## 4. State Persistence & URL Serialization
 
-The tool maintains its state both in the browser and the URL to allow sharing and session recovery.
+The tool maintains its state exclusively in the URL to allow sharing and session recovery.
 
 ### URL Serialization
 
 - **Format**: The list of colors is serialized into a URL query parameter `?colors=...` using a compact format.
 - **Compact Format**: Each color is represented as comma-separated values: `L,C,H[,A]`
-  - Example: `60%,0.15,250deg` or `60%,0.15,250deg,0.5`
+  - Example: `60~,0.15,250deg` or `60~,0.15,250deg,0.5`
   - The `oklch()` wrapper is omitted to reduce URL length
-  - Units are preserved in the serialized format (e.g., `%`, `deg`, `rad`, `turn`)
+  - Units are preserved in the serialized format (e.g., `~`, `deg`, `rad`, `turn`)
+- **Percent Character Encoding**: To avoid URL encoding issues where `%` becomes `%25`:
+  - When serializing to URL: Replace `%` with `~` (e.g., `60%` → `60~`)
+  - When deserializing from URL: Replace `~` back to `%` (e.g., `60~` → `60%`)
+  - The `~` character is URL-safe and won't be encoded (unlike `:` which becomes `%3A`)
+  - This optimization significantly reduces URL length and improves readability
+  - The replacement is only applied during URL storage/retrieval, not in the internal state or display
 - **Color Separator**: Individual colors are separated by the `|` (pipe) character.
-- **Example URL**: `oklch.html?colors=60%,0.15,250|40%,0.1,20deg,0.5`
+- **Example URL**: `oklch.html?colors=60~,0.15,250|40~,0.1,20deg,0.5`
   - This represents two colors:
     - `oklch(60% 0.15 250)`
     - `oklch(40% 0.1 20deg / 0.5)`
+  - Before encoding: The URL would have been `...?colors=60%,0.15,250|40%,0.1,20deg,0.5`
+  - After URL encoding: Would become `...?colors=60%25,0.15,250|40%25,0.1,20deg,0.5` (ugly!)
+  - With `~` replacement: `...?colors=60~,0.15,250|40~,0.1,20deg,0.5` (clean!)
 - **Live Updates**: Every change to any color or the list should immediately update the browser's URL using `history.replaceState`.
-- **Benefits**: This compact format significantly reduces URL length compared to storing full `oklch()` strings, making URLs more shareable and readable.
+- **Benefits**: This compact format with percent-to-tilde encoding significantly reduces URL length compared to storing full `oklch()` strings, making URLs more shareable and readable.
 
 ### Deserialization (Loading)
 
 - On page load, the app parses the `colors` parameter from the URL.
 - **Unit Reconstruction**: The UI control states (radio buttons) are inferred from the string format:
-  - If a value ends with `%` (e.g., `60%`), the corresponding unit radio button is set to `Percentage`.
+  - If a value ends with `~` (representing `%`), the corresponding unit radio button is set to `Percentage`.
   - Otherwise, it is set to `Number`.
-- **Fallback**: If the URL parameter is missing or invalid, fall back to `localStorage` or the default initial color.
-
-### LocalStorage
-
-- The list of colors and the currently selected index are persisted in `localStorage`.
+- **Fallback**: If the URL parameter is missing or invalid, fall back to the default initial color: `oklch(50% 0 0)`.
 
 ## 5. Design & Aesthetics
 
