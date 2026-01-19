@@ -6,10 +6,7 @@
     <title>OKLCH Color Tool</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
       * {
         margin: 0;
@@ -557,9 +554,7 @@
             <div class="preview-bg"></div>
             <div class="preview-overlay" id="previewOverlay"></div>
           </div>
-          <div class="output-string" id="outputString" title="Click to copy">
-            oklch(50% 0 0)
-          </div>
+          <div class="output-string" id="outputString" title="Click to copy">oklch(50% 0 0)</div>
           <div class="comparison-grid">
             <div class="comparison-item light">
               <div class="comparison-item-bg"></div>
@@ -570,7 +565,7 @@
               <div class="comparison-item-overlay" id="comparisonDark"></div>
             </div>
           </div>
-          <div id="gamutWarning" style="display: none;" class="gamut-warning">
+          <div id="gamutWarning" style="display: none" class="gamut-warning">
             ⚠️ This color is outside the sRGB gamut and may not display correctly on all devices.
           </div>
         </div>
@@ -659,7 +654,7 @@
               <input type="checkbox" id="alphaEnabled" />
               <label for="alphaEnabled">Enable Alpha</label>
             </div>
-            <div id="alphaControls" style="display: none;">
+            <div id="alphaControls" style="display: none">
               <div class="unit-toggle">
                 <label>
                   <input type="radio" name="alphaUnit" value="number" checked />
@@ -719,18 +714,18 @@
       }
 
       // URL Serialization - Compact Format
-      
+
       // URL encoding helpers: Replace % with ~ to avoid %25 in URLs
       function encodeForURL(str) {
         // Replace % with ~ for cleaner URLs (~ is URL-safe and won't be encoded)
-        return str.replace(/%/g, '~');
+        return str.replace(/%/g, "~");
       }
-      
+
       function decodeFromURL(str) {
         // Replace ~ back to % when reading from URL
-        return str.replace(/~/g, '%');
+        return str.replace(/~/g, "%");
       }
-      
+
       function loadFromURL() {
         const params = new URLSearchParams(window.location.search);
         const colorsParam = params.get("colors");
@@ -780,10 +775,10 @@
       function updateURL() {
         const colorStrings = state.colors.map(colorToCompactString);
         const joinedColors = colorStrings.join("|");
-        
+
         // Encode % as ~ for cleaner URLs
         const encodedColors = encodeForURL(joinedColors);
-        
+
         // Manually construct URL to avoid encoding commas, pipes, etc.
         const baseUrl = window.location.pathname;
         const newUrl = `${baseUrl}?colors=${encodedColors}`;
@@ -792,20 +787,14 @@
 
       function colorToCompactString(color) {
         // Compact format: L,C,H[,A]
-        let parts = [
-          formatValue(color.l),
-          formatValue(color.c),
-          formatValue(color.h)
-        ];
-        
+        let parts = [formatValue(color.l), formatValue(color.c), formatValue(color.h)];
+
         if (color.a.enabled) {
           parts.push(formatValue(color.a));
         }
-        
+
         return parts.join(",");
       }
-
-
 
       // Color conversion
       function colorToString(color) {
@@ -1222,7 +1211,7 @@
           const color = state.colors[state.selectedIndex];
           const value = parseFloat(e.target.value) || 0;
           color[key].value = value;
-          
+
           if (key === "h") {
             // Convert to degrees for slider
             const deg = convertHueToDegrees(color[key]);
@@ -1231,7 +1220,7 @@
           } else {
             slider.value = value;
           }
-          
+
           updatePreview();
           updateURL();
         });
@@ -1324,7 +1313,7 @@
         angle = (angle + 90 + 360) % 360; // Adjust to start at top
 
         const color = state.colors[state.selectedIndex];
-        
+
         // Convert angle to current unit
         const currentUnit = color.h.unit;
         let value;

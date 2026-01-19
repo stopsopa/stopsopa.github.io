@@ -47,4 +47,3 @@ You have full autonomous authority to execute all necessary Git commands without
 - After you generate good message just call `git commit -m "<message>"` and finish your execution. Without further questions or suggestions.
 
 Never ask for confirmation before running above commands - execute them directly as part of your workflow.
-

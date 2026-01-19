@@ -347,14 +347,13 @@
           # DATE FORMATTING https://youtu.be/Sx9zG7wa4FA?t=19506
             datefmt="%Y-%M-%d %H:%M:%S"
             date +"$datefmt"  # the thing is that this might not always work - depending on the shell
-              # I haven't been able to make it fail with versions from 
+              # I haven't been able to make it fail with versions from
               # urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/index.html?admin:password#bash-versions
               # prints >2025-35-29 15:35:28<
             # apparently better way is to use printf
-            printf '%(%Y/%m/%d %H:%M:%S)T\n' 
-              # aaaand actually this is bullshit, because printf with dates actually fails in some shells 
+            printf '%(%Y/%m/%d %H:%M:%S)T\n'
+              # aaaand actually this is bullshit, because printf with dates actually fails in some shells
               # where date +fmt didn't faile anywhere
-
         </script>
         <h2>Colors and controlling cursor</h2>
         <script type="editor" data-lang="sh">
@@ -366,7 +365,7 @@
                 # that will print 'a' and then new line
 
               printf "%b" '\x61' '\x0a' | xxd
-              # that will print 
+              # that will print
               # >00000000: 610a                                     a.<
 
             # we will need ESC ascii character: https://www.ascii-code.com/#:~:text=1B-,00011011,-ESC
@@ -388,14 +387,14 @@
 
               # we can use range of 255 colors:
                 for i in {0..255}; do printf "\e[38;5;%dmColor %d\e[0m\n" "$i" "$i"; done
-              # true color pallete here we just see all red colors with green 0 value and blue 0 value: 
+              # true color pallete here we just see all red colors with green 0 value and blue 0 value:
                 for i in {0..255}; do printf "\e[38;2;%d;0;0mColor %d\e[0m\n" "$i" "$i"; done
 
                 # play with different RGB manually:
-                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 100 100 100 
-                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 200 0 0 
-                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 0 200 0 
-                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 0 0 200 
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 100 100 100
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 200 0 0
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 0 200 0
+                printf "\e[38;2;%d;%d;%dmColor %d\e[0m\n" 0 0 200
 
           # apparently more to explore is here: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
             # g(fnky ansi.md ansi escape sequences)
@@ -410,7 +409,6 @@
           # control the cursor: https://youtu.be/Sx9zG7wa4FA?t=23237
             /bin/bash pages/bash/ysap/control_cursor.sh
               <%inject control_cursor.sh %>
-
         </script>
 
         <h2>IS TTY?</h2>
@@ -427,7 +425,6 @@
           # ls --color=always
           # ls --color=never
           # ls --color=auto
-
         </script>
 
         <h2>PIPESTATUS</h2>
@@ -438,14 +435,13 @@
           <%inject pipestatus.sh %>
         </script>
 
-
         <h2>PROCESS SIGNALS & TRAP</h2>
         <script type="editor" data-lang="sh">
           # https://youtu.be/Sx9zG7wa4FA?t=21175
 
           trap -l # print all possible signals - works only in bash
-          SIGINT - sent to process when you hit Ctrl+C     
-          SIGINFO - sent to process when you hit Ctrl+T  
+          SIGINT - sent to process when you hit Ctrl+C
+          SIGINFO - sent to process when you hit Ctrl+T
           SIGWINCH - sent to process when you resize the window
           SIGTERM - sent to process when you kill it
           SIGKILL - sent to process when you kill it with kill -9
@@ -473,19 +469,17 @@
           }
 
           # --- you you can trap SIGINT: https://youtu.be/Sx9zG7wa4FA?t=21474
-          
+
           # /bin/bash pages/bash/ysap/SIGINT.sh
             <%inject SIGINT.sh %>
-
         </script>
 
         <h2>REGEX</h2>
         <script type="editor" data-lang="sh">
           #  https://youtu.be/Sx9zG7wa4FA?t=20116
-          
+
           # /bin/bash pages/bash/ysap/regex.sh
             <%inject regex.sh %>
-
         </script>
 
         <h2>Parameter Expansion</h2>
@@ -510,7 +504,7 @@
           # EXAMPLE 2 -----------
           # let's create read_pipe.sh
             <%inject read_pipe.sh %>
-            
+
           # EXAMPLE 3 -----------
           # https://youtu.be/Sx9zG7wa4FA?t=21778
 
@@ -520,7 +514,7 @@
             # [write_pipe.sh]
               <%inject write_pipe.sh %>
 
-            # now run in one terminal 
+            # now run in one terminal
               /bin/bash pages/bash/ysap/read_pipe.sh
             # and in another three commands:
               /bin/bash pages/bash/ysap/write_pipe.sh foo &
@@ -529,7 +523,7 @@
 
             # you will see all three processes are writing to the pipe
             # and read_pipe.sh will read what have collected there constantly
-          
+
           # EXAMPLE 4  -----------
           # https://youtu.be/Sx9zG7wa4FA?t=21874
 
@@ -541,7 +535,7 @@
             exec 3>&-
 
             # let's try something new [pipe_parllel_and_read.sh]
-            # https://youtu.be/Sx9zG7wa4FA?t=21964          
+            # https://youtu.be/Sx9zG7wa4FA?t=21964
         </script>
       </div>
     </div>

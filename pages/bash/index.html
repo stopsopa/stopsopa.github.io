@@ -242,11 +242,14 @@
           </script>
           <h2>bash versions</h2>
 
-          To link this page use 
-          <a href="/viewer.html?file=%2Fpages%2Fbash%2Findex.html%23bash-versions">/viewer.html?file=%2Fpages%2Fbash%2Findex.html%23bash-versions</a>
-          <input type="text" id="bash-link" value="">
+          To link this page use
+          <a href="/viewer.html?file=%2Fpages%2Fbash%2Findex.html%23bash-versions"
+            >/viewer.html?file=%2Fpages%2Fbash%2Findex.html%23bash-versions</a
+          >
+          <input type="text" id="bash-link" value="" />
           <script>
-            document.getElementById('bash-link').value = "urlwiz"+"zard.schema://urlwi"+"zzard.hostnegotiated/pages/bash/index.html#bash-versions";
+            document.getElementById("bash-link").value =
+              "urlwiz" + "zard.schema://urlwi" + "zzard.hostnegotiated/pages/bash/index.html#bash-versions";
           </script>
           <div data-vanilla-tabs>
             <div data-buttons>
@@ -317,7 +320,6 @@
                   EOF
 
                   docker run -it -v "$(pwd):/workspace" -w /workspace ubuntu:22.04-bash3 bash
-                  
                 </script>
               </div>
               <div>
@@ -328,33 +330,31 @@
                   # ls -l /bin/sh
                   # dpkg -s dash | grep Version
                   # will return: Version: 0.5.11+git20210903+057cd650a4ed-3build1
-
                 </script>
               </div>
               <div>
                 <script type="editor" data-lang="sh">
 
-# closest to mac you can get - with reasonable effort
+                  # closest to mac you can get - with reasonable effort
 
-cat <<'EOF' | docker build -t ubuntu:22.04-zsh -f- .
-FROM ubuntu:22.04
+                  cat <<'EOF' | docker build -t ubuntu:22.04-zsh -f- .
+                  FROM ubuntu:22.04
 
-ENV DEBIAN_FRONTEND=noninteractive
+                  ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && \
-    apt-get install -y \
-        zsh \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+                  RUN apt-get update && \
+                      apt-get install -y \
+                          zsh \
+                          ca-certificates && \
+                      rm -rf /var/lib/apt/lists/*
 
-RUN zsh --version
-EOF
+                  RUN zsh --version
+                  EOF
 
-docker run -it -v "$(pwd):/opt/project" -w /opt/project ubuntu:22.04-zsh zsh
+                  docker run -it -v "$(pwd):/opt/project" -w /opt/project ubuntu:22.04-zsh zsh
 
-# zsh --version
-# zsh 5.8.1
-
+                  # zsh --version
+                  # zsh 5.8.1
                 </script>
               </div>
               <div>
@@ -516,7 +516,7 @@ docker run -it -v "$(pwd):/opt/project" -w /opt/project ubuntu:22.04-zsh zsh
               _SHELL=bash
             else
               _SHELL=sh
-            fi     
+            fi
 
             # detect current shell
             _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
@@ -2529,7 +2529,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
         <script type="editor" data-lang="sh">
 
-          WARNING: 
+          WARNING:
             adding
                || [[ -n $line ]]
             helps to produce one more iteration for last line when it doesn't end with \n
@@ -2543,7 +2543,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                   echo "loop_stdin: >$line<"
               done
 
-          # script which runs internally 
+          # script which runs internally
             STOP=10 bash bash/out.sh 0.2
             # and iterates over it's output line by line (STREAM FASHION)
             /bin/bash pages/bash/ysap/loop_script_stdout.sh
@@ -2554,21 +2554,21 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                 STOP=10 bash bash/out.sh 0.2 | while IFS= read -r line; do
                   ((count++))
                   echo "loop_stdin: >$line<"
-                done     
-                echo "count: $count"  
+                done
+                echo "count: $count"
                 # that will produce count: 0    # at least for bash any version
-                # WARNING: generally avoid it         
+                # WARNING: generally avoid it
 
               # process substitution OK
                 count=0
                 while IFS= read -r line; do
                   echo "loop_script_stdout: >$line<"
                   ((count++))
-                done < <(STOP=10 bash bash/out.sh 0.1)      
-                echo "count: $count"  
+                done < <(STOP=10 bash bash/out.sh 0.1)
+                echo "count: $count"
                 # this produces 11
                 # NOTE: this one works everywhere
-                
+
           # iterate over lines from env var:
             urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fbash%2Fysap%2Floop_from_env_var.sh
             LINES="$(printf 'one\ntwo\nthree')"
@@ -3072,10 +3072,9 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         <script type="editor" data-lang="sh">
 
           # from: https://youtu.be/Sx9zG7wa4FA?t=24375
-          # read more about how to work with PS1, 
-          # also there is a document: 
+          # read more about how to work with PS1,
+          # also there is a document:
           # https://www.gnu.org/software/bash/manual/html_node/Controlling-the-Prompt.html
-          
         </script>
         <h2>bash colors</h2>
 
@@ -3485,7 +3484,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             $c          │ │
             $c          │ │
             $c         /└─┘\\
-            
+
             EOF
             # this is mentioned in : https://youtu.be/Sx9zG7wa4FA?t=23377
 

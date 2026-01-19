@@ -204,29 +204,31 @@ copyLinkBtn.addEventListener("click", () => {
           let opacity = 0.8;
           const startTime = Date.now();
           const duration = 3000; // 3 seconds
-          
+
           // Set initial red glow
           inputDecrypted.style.boxShadow = `0 0 20px 8px rgba(255, 0, 0, ${opacity}), 0 0 0 4px rgba(255, 0, 0, 0.6)`;
-          inputDecrypted.style.borderColor = '#ff0000';
-          
+          inputDecrypted.style.borderColor = "#ff0000";
+
           const fadeInterval = setInterval(() => {
             const elapsed = Date.now() - startTime;
             const progress = elapsed / duration;
-            
+
             if (progress >= 1) {
               // Animation complete - reset to default
               clearInterval(fadeInterval);
-              inputDecrypted.style.boxShadow = '';
-              inputDecrypted.style.borderColor = '';
+              inputDecrypted.style.boxShadow = "";
+              inputDecrypted.style.borderColor = "";
             } else {
               // Calculate fading opacity
               const currentOpacity = 0.8 * (1 - progress);
               const ringOpacity = 0.6 * (1 - progress);
               inputDecrypted.style.boxShadow = `0 0 20px 8px rgba(255, 0, 0, ${currentOpacity}), 0 0 0 4px rgba(255, 0, 0, ${ringOpacity})`;
-              
+
               // Fade border color
               const redValue = Math.round(255 * (1 - progress) + 187 * progress); // 187 is #bbb in decimal
-              inputDecrypted.style.borderColor = `rgb(${redValue}, ${Math.round(187 * progress)}, ${Math.round(187 * progress)})`;
+              inputDecrypted.style.borderColor = `rgb(${redValue}, ${Math.round(187 * progress)}, ${Math.round(
+                187 * progress
+              )})`;
             }
           }, 16); // ~60fps
         }, 600);

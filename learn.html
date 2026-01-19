@@ -41,7 +41,7 @@
           DDD is contextual, not dogmatic.
           DDD is not a religion. It is a set of tools.
           DDD is not for every system
-          DDD is not about purity          
+          DDD is not about purity
           DDD must respect technical constraints
           DDD becomes harmful when:
             People worship abstractions
@@ -53,50 +53,50 @@
           Later experminet with :
             g(Translate my Symfony/Spring architecture to DDD terms)
             g(Show me a real use case where Evans-style is clearly better)
-          
+
           Core Concepts
-            Domain Model: 
+            Domain Model:
               A rich, abstract representation of the business logic, processes, and rules, central to the software design.
             Ubiquitous Language: [ju by quy tys]
               A common, shared vocabulary used by developers and domain experts to ensure everyone speaks the same language, reducing misunderstandings.
                 Domain experts <-> Developers
                 some members of the team manage to become bilingual, but they become bottlenecks of information flow
-            Bounded Context: 
+            Bounded Context:
               Bounded Contexts are intentional design boundaries, and they very often align with team boundaries, but not always
                 That is usually though true because: Language is social, Models are maintained by people, Ownership matters
               A Bounded Context defines: A model, A language, A set of rules
                 Inside it: consistency is mandatory
                 Outside it: translation is mandatory
-              More general: 
+              More general:
                 Teams should keep their own model and vocabulary consistent internally, and not force it on others.
               A clear boundary within which a specific domain model is consistent, preventing confusion across different parts of a large system (e.g., an "Order" context vs. a "Product Catalog" context).
-              Large systems are broken into Bounded Contexts, each with its own specialized model, managed by patterns like the Anti-Corruption Layer for integration. 
+              Large systems are broken into Bounded Contexts, each with its own specialized model, managed by patterns like the Anti-Corruption Layer for integration.
               są obszary w których dokonała się pewna stabilizacja (powszechne uzgodnienie) słownictwa i terminologii i dla wszystkich zapoznanych z tym obszarem istnieje ustalony/stabilny język porozumiewania się
               It might be encapsulated in microservice, module, package or team responsibility - what matters is clarity not technology.
               If a word needs explaining - 👉 you probably crossed a context boundary.
               A Bounded Context defines where a specific domain model and its language are valid—and protects it from other meanings.
               Good example: https://imgur.com/p441qP4 or https://github.com/user-attachments/assets/bab73640-c38d-4099-bb52-535d88b4efc1
-            
-          Context Map: https://github.com/user-attachments/assets/5ecc2aca-991b-49f0-9e92-19dbc504d1e4              
+
+          Context Map: https://github.com/user-attachments/assets/5ecc2aca-991b-49f0-9e92-19dbc504d1e4
 
             Strategic Design vs Tactical Design:
               Tactical DDD without Strategic DDD fails at scale.
               Strategic DDD without Tactical DDD becomes PowerPoint architecture.
-            Strategic Design: 
+            Strategic Design:
               Strategic Design (BIG PICTURE): Where are the boundaries, and who owns what?
               You usually do this: Early, With domain experts, With architects / leads
               Purpose: Defines boundaries, Protects teams, Prevents language collapse
               Concerns: Bounded Contexts, Context Maps, Team ownership, Language consistency
               Strategic design artifacts: Context Map, Bounded Context definitions, Integration contracts
               High-level organization of the domain, identifying core, supporting, and generic subdomains, and mapping relationships between them.
-            Tactical Design: 
+            Tactical Design:
               How do we model this context correctly?
               Purpose: Protects correctness, Encodes invariants, Survives change
               Concerns: Entities, Value Objects, Aggregates, Repositories, Domain Services, Domain Events
               You do this: Daily, In code, While implementing features
-              Lower-level patterns for building the model within a Bounded Context, including:          
+              Lower-level patterns for building the model within a Bounded Context, including:
 
-                Rule: 
+                Rule:
                   Any business constraint or policy.
                     - Orders must be paid before shipping
                     - Notifications should be sent on cancellation
@@ -107,11 +107,11 @@
                     Workflow rule -> Ordering / timing
                     Business process -> Coordination over time
                       So: Invariant = strongest rule -> If an invariant is violated, the system is broken.
-                    
+
                   Invariant: (special type of rule)  must be true now
                     If a rule spans multiple aggregates, it is not an invariant.
                     An invariant is: A rule that must be true immediately after every valid state change of an aggregate.
-                      Example: 
+                      Example:
                         - An order cannot be shipped and cancelled - that cannot happen
                         - An order total must equal the sum of its line items
                         - An order cannot transition from SHIPPED → CANCELLED
@@ -154,36 +154,36 @@
                   - represents something that happened in the domain that other parts of the system may care about
                   - not commands, not instructions, not workflows , but facts
                   - example: https://i.imgur.com/S1JU5Vx.png || https://github.com/user-attachments/assets/898dd06a-2bd6-4275-907b-20cc2f072fa6
-          
+
                 Entities: Mutable
                   Objects with a distinct identity (e.g., a specific Customer).
-                    TEST: 
+                    TEST:
                       “This is the same thing as before, even though it changed” - then this is entity
                       Created -> changed -> possibly retured - history matter? - probably entity
                   Entities usually: Guard transition, Enforce rules, Encapsulate state changes
                   Entities usually encapsulate rules that govern their own state and consistency
                   ===INVARIANTS=== (Always-True Rules) - An invariant is a specific kind of rule - strict, narrower
                   Entities encapsulate rules that protect their own state and invariants; other rules live elsewhere
-                
-                  
+
+
                 Value Objects: Immutable
                   Objects defined by their attributes, not identity (e.g., an Address).
-                    TEST: 
+                    TEST:
                       “This is just a different value now” - then this is value object
                       No history - just current values
                       $10 today is indistinguishable from $10 tomorrow - No identity - Equality by amount + currency therefore Immutable
-          
+
                   IMPORTANT: Prefer Value objects - promote to Entity when domain demands identity
                 Aggregates: enforcer of invariants
                   BEST DEFINITION: The smallest cluster of objects that must be consistent at all times. It's consistency boundary
                   why that name? Aggregates entities + value objects Under one transactional boundary To protect invariants
-                  Aggregate borders start and end where from the business perspective the most desirable effect would be to have these operations executed atomically                 
+                  Aggregate borders start and end where from the business perspective the most desirable effect would be to have these operations executed atomically
                   Transactions should follow aggregates - not define them
                   When transaction spans across multiple calls to surrounding services — atomicity becomes impossible and business logic can get stuck in broken states.
-                    But that is ok. Just make each aggregate consistent on its own. 
+                    But that is ok. Just make each aggregate consistent on its own.
                     In that case coordinate between aggregates asynchronously or via eventual consistency
                   enforces invariants atomically
-            
+
                   Clusters of related entities and value objects treated as a single unit (e.g., an Order with its OrderItems).
                   Eventual consistency: (atomic consistency - ipposite)
                     - Eventual consistency is a consequence of protecting invariants
@@ -195,14 +195,14 @@
                     - Opposite is strong consistency (transaction)
                     - Eventual consistency appears only when: Invariants span multiple aggregates Or multiple bounded contexts Or external systems
                     - honesty about time & failure
-                Repositories: 
+                Repositories:
                   For managing collection-like access to Aggregates.
                   Domain facing abstraction
-                Domain Services: 
+                Domain Services:
                   For significant domain logic that doesn't fit naturally within an Entity or Value Object.
-                Domain Events: 
-                  Notifications about something important that happened in the domain (e.g., "OrderPlaced"). 
-              Anti-Corruption Layer: 
+                Domain Events:
+                  Notifications about something important that happened in the domain (e.g., "OrderPlaced").
+              Anti-Corruption Layer:
                 Prevent model "infection" -> Translates foreign models → your model
                 where one context protects its model from another.
                 Shields your domain from foreign concepts
@@ -212,19 +212,17 @@
                 It means: "We will integrate with that system, but on our terms." -> Billing →(ACL)→ Legacy Sales
                 You can have strategic ACL without tactical discipline → model rot
                 You can’t have tactical ACL without strategic intent → pointless wrappers
-                  
-              Business Invariance - remains always true, no matter what 
+
+              Business Invariance - remains always true, no matter what
                 (eg: product order total have to be sum of all product ordered)
 
           Benefits
             Better Alignment: Software stays tightly coupled with changing business needs.
             Improved Communication: A shared language reduces ambiguity.
             Maintainability: Complex logic is organized logically and predictably.
-            Scalability: Helps manage complexity in large, evolving systems. 
-          
+            Scalability: Helps manage complexity in large, evolving systems.
+
           Hexagonal Architecture:  https://youtu.be/bDWApqAUjEI
-          
-          
         </script>
       </div>
     </div>
