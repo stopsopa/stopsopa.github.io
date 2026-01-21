@@ -355,17 +355,17 @@
             //     https://github.com/nodejs/node/releases/tag/v25.2.0\    
             //       The "Stability" (Warning Removed)
             // 
-            // For Full TypeScript support still use tsx: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#full-typescript-support
+            // For Full TypeScript support still use tsx: https://nodejs.org/api/typescript.html#full-typescript-support
             // 
-            // For Type Stripping: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#type-stripping
-            //   More details about stripping: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#typescript-features
+            // For Type Stripping: https://nodejs.org/api/typescript.html#type-stripping
+            //   More details about stripping: https://nodejs.org/api/typescript.html#typescript-features
             //   Node.js does not read tsconfig.json files and does not support features that depend on settings within tsconfig.json, such as paths or converting newer JavaScript syntax into older standards.
-            //   adding `import type` is needed: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#importing-types-without-type-keyword
+            //   adding `import type` is needed: https://nodejs.org/api/typescript.html#importing-types-without-type-keyword
             //     use verbatimModuleSyntax to match this behaviour: https://www.typescriptlang.org/tsconfig/#verbatimModuleSyntax
             //   Node.js does not generate them. When --experimental-transform-types is enabled, source-maps are enabled by default.
-            //     from: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#source-maps
+            //     from: https://nodejs.org/api/typescript.html#source-maps
             //   To discourage package authors from publishing packages written in TypeScript, Node.js refuses to handle TypeScript files inside folders under a node_modules path.
-            //   Paths aliases - not supported: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#paths-aliases
+            //   Paths aliases - not supported: https://nodejs.org/api/typescript.html#paths-aliases
 
           // --experimental-strip-types has little different timeline
             // flag introduced in https://github.com/nodejs/node/releases/tag/v22.7.0
