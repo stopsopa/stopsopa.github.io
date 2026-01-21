@@ -106,13 +106,18 @@
         
 
         <script type="editor" data-lang="sh">
+          
+          wget https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt -O LICENSE
 
-          # downloaded from: https://github.com/spdx/license-list-data/blob/v3.27.0/text/GPL-2.0-only.txt
-          
-          set -e
-          { printf "SPDX-License-Identifier: GPL-2.0-only\n\n"; \
-            curl -fsSL https://raw.githubusercontent.com/spdx/license-list-data/master/text/GPL-2.0-only.txt; } > LICENSE
-          
+          # another way would be to use:
+            # downloaded from: https://github.com/spdx/license-list-data/blob/v3.27.0/text/GPL-2.0-only.txt            
+            
+            set -e
+            { printf "SPDX-License-Identifier: GPL-2.0-only\n\n"; \
+              curl -fsSL https://raw.githubusercontent.com/spdx/license-list-data/master/text/GPL-2.0-only.txt; } > LICENSE
+
+          # package.json
+            "license": "GPL-2.0-only"
         </script>
       </div>
     </div>
