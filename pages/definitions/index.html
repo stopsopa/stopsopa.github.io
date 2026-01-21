@@ -102,6 +102,18 @@
 
           // https://youtu.be/sIkRdfSxCiI
         </script>
+        <h2>License GPL-2.0</h2>
+        
+
+        <script type="editor" data-lang="sh">
+
+          # downloaded from: https://github.com/spdx/license-list-data/blob/v3.27.0/text/GPL-2.0-only.txt
+          
+          set -e
+          { printf "SPDX-License-Identifier: GPL-2.0-only\n\n"; \
+            curl -fsSL https://raw.githubusercontent.com/spdx/license-list-data/master/text/GPL-2.0-only.txt; } > LICENSE
+          
+        </script>
       </div>
     </div>
     <script type="module" src="/js/github.js"></script>
