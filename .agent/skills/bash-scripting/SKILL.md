@@ -7,6 +7,16 @@ When determining where script is if needed, always use
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+if refering something from ROOT directory is needed then define ROOT based on DIR in relative manner from current script like:
+
+ROOT="${DIR}/.."
+
+or
+
+ROOT="${DIR}/../.."
+
+... depends how many directories up we have to go
+
 Don't use shebang at the top of the file.
 
 Call script like this:
