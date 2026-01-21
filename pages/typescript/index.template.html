@@ -338,10 +338,22 @@
           >g(site:nodejs.org Experimental TypeScript support via strip types)</a
         >
         <script type="editor" data-lang="js">
-          // Typescript support in node is stable since 25.2.0
-            // more about it: 
-            //   https://nodejs.org/en/blog/release/v25.2.0
-            //   https://github.com/nodejs/node/releases/tag/v25.2.0
+
+          // --experimental-strip-types timeline
+            // Initially was introduced in v22.6.0
+            //   https://github.com/nodejs/node/releases/tag/v22.6.0
+            //
+            // First time enabled by default (Current version) - Jan 7, 2025
+            //   https://github.com/nodejs/node/releases/tag/v23.6.0
+            // 
+            // Node.js v22.18.0 (LTS), type stripping was enabled by default was backported to LTS - Jul 31, 2025
+            //   (UNFLAGGED - made the default behavior) (so the flag is no longer required to strip types).
+            //   https://github.com/nodejs/node/releases/tag/v22.18.0
+            // 
+            // Typescript support in node is stable since 25.2.0            
+            //     https://nodejs.org/en/blog/release/v25.2.0
+            //     https://github.com/nodejs/node/releases/tag/v25.2.0\    
+            //       The "Stability" (Warning Removed)
             // 
             // For Full TypeScript support still use tsx: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#full-typescript-support
             // 
@@ -354,6 +366,16 @@
             //     from: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#source-maps
             //   To discourage package authors from publishing packages written in TypeScript, Node.js refuses to handle TypeScript files inside folders under a node_modules path.
             //   Paths aliases - not supported: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#paths-aliases
+
+          // --experimental-strip-types has little different timeline
+            // flag introduced in https://github.com/nodejs/node/releases/tag/v22.7.0
+            //   without this flag ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX will be thrown when enums, namespaces, parameter properties used
+            // as of January 2026 still stays opt-in, so still experminental. Researching Stability
+            // 
+            // TIP: if you want to avoid using this flag, use erasableSyntaxOnly: true in tsconfig 
+            //      https://www.typescriptlang.org/tsconfig/#erasableSyntaxOnly
+            // LONG STORY SHORT (as of 21 Jan 2026) still use --experimental‑transform‑types and it is (semi) safe to use since LTS v22.18.0
+          
 
           
           // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Ftypescript%2Fnode%2Ftstest.ts
