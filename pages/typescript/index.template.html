@@ -338,6 +338,24 @@
           >g(site:nodejs.org Experimental TypeScript support via strip types)</a
         >
         <script type="editor" data-lang="js">
+          // Typescript support in node is stable since 25.2.0
+            // more about it: 
+            //   https://nodejs.org/en/blog/release/v25.2.0
+            //   https://github.com/nodejs/node/releases/tag/v25.2.0
+            // 
+            // For Full TypeScript support still use tsx: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#full-typescript-support
+            // 
+            // For Type Stripping: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#type-stripping
+            //   More details about stripping: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#typescript-features
+            //   Node.js does not read tsconfig.json files and does not support features that depend on settings within tsconfig.json, such as paths or converting newer JavaScript syntax into older standards.
+            //   adding `import type` is needed: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#importing-types-without-type-keyword
+            //     use verbatimModuleSyntax to match this behaviour: https://www.typescriptlang.org/tsconfig/#verbatimModuleSyntax
+            //   Node.js does not generate them. When --experimental-transform-types is enabled, source-maps are enabled by default.
+            //     from: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#source-maps
+            //   To discourage package authors from publishing packages written in TypeScript, Node.js refuses to handle TypeScript files inside folders under a node_modules path.
+            //   Paths aliases - not supported: https://nodejs.org/api/typescript.html?utm_source=chatgpt.com#paths-aliases
+
+          
           // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Ftypescript%2Fnode%2Ftstest.ts
 
           // INTERESTING TALK, HOW require(ESM): https://youtu.be/YRueCer2kig
