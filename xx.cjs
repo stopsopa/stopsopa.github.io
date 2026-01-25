@@ -36,6 +36,7 @@ EEE
 
       `,
       description: "Status of all things and help page",
+      source: false,
       confirm: false,
     },
     [`start`]: {

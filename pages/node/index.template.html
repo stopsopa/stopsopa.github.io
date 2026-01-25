@@ -47,8 +47,6 @@
         <a href="https://kashw1n.com/blog/nodejs-2025/">Modern Node.js Patterns for 2025</a> - also -
         <a href="https://youtu.be/7CHgOWPx2WA">https://youtu.be/7CHgOWPx2WA</a>
         <br />
-        <a href="https://nodejs.org/api/test.html">node native test library</a>
-        <br />
         <a href="https://npmtrends.com/">https://npmtrends.com/</a>
         <br />
         <a href="https://youtu.be/zPOHY-cZ1wE?t=247">CREATOR OF SVELTE From TS TO JSDoc??</a>
@@ -288,14 +286,6 @@
 
           # Dual CommonJS/ES module packages:
             https://nodejs.org/api/packages.html#packages_dual_commonjs_es_module_packages
-        </script>
-
-        <h2>built in test runner</h2>
-        <a href="https://nodejs.org/api/test.html#test-runner">https://nodejs.org/api/test.html#test-runner</a>
-        <script type="editor" data-lang="js">
-          // from: https://youtu.be/si9pVRaGz30?t=264
-
-          <%inject builtin-test-runner.test.ts %>
         </script>
 
         <h2>debugger chrome</h2>
@@ -2068,7 +2058,16 @@
 
           eval "node --experimental-specifier-resolution=node $_EVAL"
         </script>
-        <h2>node.js testing (native)</h2>
+
+        <h2>built in test runner - node.js testing (native)</h2>
+        <a href="https://nodejs.org/api/test.html#test-runner">https://nodejs.org/api/test.html#test-runner</a>
+        <script type="editor" data-lang="js">
+          // from: https://youtu.be/si9pVRaGz30?t=264
+
+          <%inject builtin-test-runner.test.ts %>
+        </script>
+        <a href="https://nodejs.org/api/test.html">node native test library</a>
+        <br />
         <a
           href="https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V19.md#2022-11-14-version-1910-current-rafaelgss"
           >https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V19.md#2022-11-14-version-1910-current-rafaelgss</a
@@ -2079,7 +2078,9 @@
         <a href="https://nodejs.org/en/learn/test-runner/collecting-code-coverage">--test-reporter</a>
         <script type="editor" data-lang="js">
 
+          Good setup for TS together with coverage is in repository: https://github.com/stopsopa/WebMCompressor
           yarn add -D c8
+          npm install -g c8
           node node_modules/.bin/c8 --reporter=html node --test test/parser.test.js
 
             # you can generate multiple type in one go
@@ -2088,12 +2089,14 @@
           // There is other way to get coverage using flag "experimental-test-coverage"
           // but that cannot be set via NODE_OPTIONS
           // https://youtu.be/KayS7U-ivNo?t=1132
-          cat <<EEE
+          cat <<EEE > node.config.json
           {
-            "\$schema:"https://nodejs.org/dist/v24.7.0/docs/node-config-schema.json",
+            "\$schema": "https://nodejs.org/dist/$(node -v)/docs/node-config-schema.json",
             "nodeOptions": {
+              "strip-types": true, // not always needed, check node version
               "experimental-transform-types": true,
               "disable-warning": "ExperimentalWarning",
+              "import": "file://node-suppress-warning.js", // see https://github.com/stopsopa/WebMCompressor/blob/729cb6c7d23aa1a75c85b191c45ff42412fcee27/node-suppress-warning.js
               "test-coverage-lines": 100
             }
             "testRunner": {

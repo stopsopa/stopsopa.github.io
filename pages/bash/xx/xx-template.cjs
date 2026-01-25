@@ -40,7 +40,7 @@ EEE
 
       `,
       description: "Status of all things",
-      source: true,
+      source: false,
       confirm: false,
     },
     [`yarn`]: {
@@ -284,6 +284,7 @@ mvn dependency:tree | perl -pe "system 'sleep .03'" | sed -r "s/[[:cntrl:]]\\[[0
 echo all good
       `,
       description: "Status of all things",
+      source: false,
       confirm: false,
     },
 
