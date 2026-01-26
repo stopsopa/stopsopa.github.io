@@ -340,25 +340,25 @@
         <script type="editor" data-lang="js">
 
           // WARNING: GOOD EXAMPLE HOW TO WORK WITH --experimental-transform-types: https://github.com/stopsopa/kafka/tree/experimental-transform-types
-          
+
           // --experimental-strip-types timeline
             // Initially was introduced in v22.6.0
             //   https://github.com/nodejs/node/releases/tag/v22.6.0
             //
             // First time enabled by default (Current version) - Jan 7, 2025
             //   https://github.com/nodejs/node/releases/tag/v23.6.0
-            // 
+            //
             // Node.js v22.18.0 (LTS), type stripping was enabled by default was backported to LTS - Jul 31, 2025
             //   (UNFLAGGED - made the default behavior) (so the flag is no longer required to strip types).
             //   https://github.com/nodejs/node/releases/tag/v22.18.0
-            // 
-            // Typescript support in node is stable since 25.2.0            
+            //
+            // Typescript support in node is stable since 25.2.0
             //     https://nodejs.org/en/blog/release/v25.2.0
-            //     https://github.com/nodejs/node/releases/tag/v25.2.0\    
+            //     https://github.com/nodejs/node/releases/tag/v25.2.0\
             //       The "Stability" (Warning Removed)
-            // 
+            //
             // For Full TypeScript support still use tsx: https://nodejs.org/api/typescript.html#full-typescript-support
-            // 
+            //
             // For Type Stripping: https://nodejs.org/api/typescript.html#type-stripping
             //   More details about stripping: https://nodejs.org/api/typescript.html#typescript-features
             //   Node.js does not read tsconfig.json files and does not support features that depend on settings within tsconfig.json, such as paths or converting newer JavaScript syntax into older standards.
@@ -373,15 +373,15 @@
             // flag introduced in https://github.com/nodejs/node/releases/tag/v22.7.0
             //   without this flag ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX will be thrown when enums, namespaces, parameter properties used
             // as of January 2026 still stays opt-in, so still experminental. Researching Stability
-            // 
-            // TIP: if you want to avoid using this flag, use erasableSyntaxOnly: true in tsconfig 
+            //
+            // TIP: if you want to avoid using this flag, use erasableSyntaxOnly: true in tsconfig
             //      https://www.typescriptlang.org/tsconfig/#erasableSyntaxOnly
             // LONG STORY SHORT (as of 21 Jan 2026) still use --experimental‑transform‑types and it is (semi) safe to use since LTS v22.18.0
 
           // WARNING: GOOD EXAMPLE HOW TO WORK WITH --experimental-transform-types: https://github.com/stopsopa/kafka/tree/experimental-transform-types
-          
 
-          
+
+
           // urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Ftypescript%2Fnode%2Ftstest.ts
 
           // INTERESTING TALK, HOW require(ESM): https://youtu.be/YRueCer2kig
