@@ -390,6 +390,54 @@
             add v on pack and unpack
               tar vcf - -C ../override . | tar vxf -
           </script>
+          <h2>detect interactive detect TTY</h2>
+          <script type="editor" data-lang="sh">
+
+            https://i.imgur.com/tt9pl7k.png
+
+            # testing input interactivity:
+
+            cat <<AAA > input.sh
+            if [ -t 0 ]; then
+              # this is for
+              # /bin/bash inter.sh
+              echo "This shell is interactive"
+              read -p "Enter value: " x
+            else
+              # this is for
+              # echo test | /bin/bash inter.sh
+              echo "This shell is NOT interactive"
+              read x
+            fi
+
+            cat <<EEE
+            x >\${x}<
+            EEE
+
+            AAA
+
+            # testing output interactivity
+
+            cat <<AAA > output.sh
+            if [ -t 1 ]; then
+                # stdout is a terminal → enable colors
+                # /bin/bash output.sh
+                RED="\033[31m"
+                GREEN="\033[32m"
+                RESET="\033[0m"
+            else
+                # stdout is not a terminal → no colors
+                # /bin/bash output.sh | tail
+                RED=""
+                GREEN=""
+                RESET=""
+            fi
+
+            echo -e "\${GREEN}Success\${RESET}"
+            echo -e "\${RED}Error\${RESET}"
+
+            AAA
+          </script>
           <h2>useful</h2>
           <script type="editor" data-lang="sh">
             #!/usr/bin/env bash
@@ -413,19 +461,6 @@
             echo -n "${!2}"
             echo "$(eval echo "\$${2}")"
               # expanding variable value to variable name substitution
-
-            # detecting if shell is interactive but oddly enought it is also detecting data on stdin
-            # kinda weird - revealing I don't understand something
-            if [ -t 0 ] ; then
-                echo "This shell is interactive"
-            else
-                echo "This shell is NOT interactive"
-            fi
-
-            if [ ! -t 0 ] ; then
-                echo "${0} error: MACHINESWITCH is not set and shell is NOT interactive"
-                exit 1
-            fi
 
             #  -------------- collect user input --------------- vvv
             while true; do
