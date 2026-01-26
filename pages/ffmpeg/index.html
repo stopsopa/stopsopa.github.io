@@ -137,6 +137,13 @@
 
           so use either of `-ss 00:00:17` or `-to 00:00:22` or both, depending what you need
         </script>
+        <h2>Extract info</h2>
+        
+        <script type="editor" data-lang="sh">
+          
+          ffprobe -v verbose myfile.mov > log.log 2>&1
+          
+        </script>
         <h2>merge two files</h2>        
         <script type="editor" data-lang="sh">
           
