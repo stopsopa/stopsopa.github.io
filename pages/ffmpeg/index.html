@@ -119,9 +119,9 @@
 
           # explanation: https://i.imgur.com/Aj3oJuG.png
 
-          ffmpeg -loglevel error -c:v libvpx-vp9 -c:a libopus -i "input.mp4" -b:v 1800k -minrate 900k -maxrate 2610k -tile-columns 2 -threads 4 -g 240 -quality good -crf 31 -speed 4 -pass 1 -an -f null /dev/null
-
-          ffmpeg -loglevel error -c:v libvpx-vp9 -c:a libopus -i "input.mp4" -b:v 1800k -minrate 900k -maxrate 2610k -tile-columns 2 -threads 4 -g 240 -quality good -crf 31 -speed 2 -pass 2 -metadata creation_time="2026-01-26T01:29:18.151Z" -metadata comment="sayonara" -y "./input.webm"
+          ffmpeg -loglevel error -i "input.mp4" -c:v libvpx-vp9 -b:v 3000k -minrate 1500k -maxrate 4350k -tile-columns 2 -threads 4 -g 240 -quality good -crf 31 -speed 4 -an -pass 1 -f null /dev/null
+          
+          ffmpeg -loglevel error -progress - -i "input.mp4" -c:v libvpx-vp9 -b:v 3000k -minrate 1500k -maxrate 4350k -tile-columns 2 -threads 4 -g 240 -quality good -crf 31 -speed 2 -c:a libopus -pass 2 -metadata creation_time="2026-01-27T01:18:49.116Z" -metadata comment="sayonara" -y "./input.webm"
 
           see more:
             https://github.com/stopsopa/WebMCompressor/blob/main/electron/tools/cli.sh
