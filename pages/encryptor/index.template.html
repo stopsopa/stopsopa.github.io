@@ -8,6 +8,8 @@
     />
 
     <title>Encryptor - Data Encryption Tool</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@3?register"></script>
+
   </head>
   <body nofoot nohead>
     <div class="body">
@@ -299,6 +301,15 @@
             textarea.highlight-success {
               animation: highlightFade 3s ease-out forwards !important;
             }
+
+            .zero-md-container {
+              border: 2px solid #888;
+              border-radius: 4px;
+              margin-top: 8px;
+              padding: 8px;
+              background: #fff;
+              min-height: 50px;
+            }
           }
         </style>
 
@@ -352,6 +363,9 @@
             <div class="panel full-width-panel" id="d">
               <div class="panel-header">Decrypted Output</div>
               <textarea class="decrypted" placeholder="Decrypted result..."></textarea>
+              <div class="zero-md-container">
+                <zero-md class="decrypted-md"></zero-md>
+              </div>
             </div>
           </div>
         </div>

@@ -8,6 +8,8 @@ const clearKeyBtn = parent.querySelector(".clear");
 const inputMessage = parent.querySelector(".message");
 const inputEncrypted = parent.querySelector(".encrypted");
 const inputDecrypted = parent.querySelector(".decrypted");
+const zeroMd = parent.querySelector(".decrypted-md");
+
 const encryptButton = parent.querySelector(".encrypt");
 const decryptButton = parent.querySelector(".decrypt");
 const copyBtn = parent.querySelector(".copy-btn");
@@ -16,6 +18,19 @@ const sharingLink = parent.querySelector(".sharing-link");
 const linkGroup = parent.querySelector(".link-group");
 const loremBtn = parent.querySelector(".lorem-btn");
 const form = parent.querySelector("form");
+
+const updateDecryptedOutput = (val) => {
+  inputDecrypted.value = val;
+  if (val) {
+    const script = document.createElement("script");
+    script.type = "text/markdown";
+    script.textContent = val;
+    zeroMd.innerHTML = "";
+    zeroMd.appendChild(script);
+  } else {
+    zeroMd.innerHTML = "";
+  }
+};
 
 const STORAGE_KEY = "encryptor_key";
 
@@ -44,16 +59,16 @@ const doDecrypt = async () => {
   const enc = inputEncrypted.value.trim();
 
   if (!key || !enc) {
-    inputDecrypted.value = "";
+    updateDecryptedOutput("");
     return;
   }
 
   try {
     const decrypted = await decryptMessage(key, enc);
-    inputDecrypted.value = decrypted;
+    updateDecryptedOutput(decrypted);
   } catch (e) {
     // Silently fail during typing to avoid noise
-    inputDecrypted.value = "";
+    updateDecryptedOutput("");
   }
 };
 
@@ -135,9 +150,9 @@ decryptButton.addEventListener("click", async () => {
   if (!key || !enc) return;
   try {
     const decrypted = await decryptMessage(key, enc);
-    inputDecrypted.value = decrypted;
+    updateDecryptedOutput(decrypted);
   } catch (e) {
-    inputDecrypted.value = `Error: ${e.message}\n\nstack:\n${e.stack}`;
+    updateDecryptedOutput(`Error: ${e.message}\n\nstack:\n${e.stack}`);
   }
 });
 
