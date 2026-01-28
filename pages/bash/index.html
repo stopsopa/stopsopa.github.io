@@ -438,6 +438,13 @@
 
             AAA
           </script>
+          <h2>proxy https to my mac</h2>
+          <script type="editor" data-lang="sh">
+
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install ngrok
+            ngrok http https://stopsopa.github.io.local:4339 --host-header=stopsopa.github.io.local
+
+          </script>
           <h2>useful</h2>
           <script type="editor" data-lang="sh">
             #!/usr/bin/env bash
