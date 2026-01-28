@@ -79,11 +79,8 @@ const doEncrypt = async () => {
   if (!key || !msg) {
     // If msg is empty but key is present, we might still want to decrypt if enc is present
     // but the rule says do B then A. If B can't run, let's at least ensure URL is clean if msg is empty
-    if (!msg) {
-      inputEncrypted.value = "";
-      updateCopyBtnVisibility();
-      updateURL("");
-    }
+    // HOWEVER: don't clear inputEncrypted here because user might have just pasted something there
+    // and is now pasting the key.
     await doDecrypt();
     return;
   }
@@ -102,13 +99,22 @@ const doEncrypt = async () => {
   }
 };
 
-inputMessage.addEventListener("input", doEncrypt);
+inputMessage.addEventListener("input", () => {
+  if (!inputMessage.value.trim()) {
+    inputEncrypted.value = "";
+    updateCopyBtnVisibility();
+    updateURL("");
+  }
+  doEncrypt();
+});
 inputKey.addEventListener("input", () => {
   localStorage.setItem(STORAGE_KEY, inputKey.value);
   doEncrypt();
 });
 inputEncrypted.addEventListener("input", () => {
+  const val = inputEncrypted.value.trim();
   updateCopyBtnVisibility();
+  updateURL(val);
   doDecrypt();
 });
 inputEncrypted.addEventListener("focus", () => inputEncrypted.select());

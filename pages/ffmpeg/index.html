@@ -120,11 +120,11 @@
           # explanation: https://i.imgur.com/Aj3oJuG.png
 
           ffmpeg -loglevel error -i "input.mp4" -c:v libvpx-vp9 -b:v 3000k -minrate 1500k -maxrate 4350k -tile-columns 2 -threads 4 -g 240 -quality good -crf 31 -speed 4 -an -pass 1 -f null /dev/null
-          
+
           ffmpeg -loglevel error -progress - -i "input.mp4" -c:v libvpx-vp9 -b:v 3000k -minrate 1500k -maxrate 4350k -tile-columns 2 -threads 4 -g 240 -quality good -crf 31 -speed 2 -c:a libopus -pass 2 -metadata creation_time="2026-01-27T01:18:49.116Z" -metadata comment="sayonara" -y "./input.webm"
 
           WARNING:
-            I've added `-progress -` later, this is useful for tracking progress. 
+            I've added `-progress -` later, this is useful for tracking progress.
             Unfortunately adding it to first pass doesn't seem to do much (apparently because VP9 encoder libvpx-vp9 ¯\_(ツ)_/¯)
 
           see more:
@@ -142,29 +142,27 @@
           so use either of `-ss 00:00:17` or `-to 00:00:22` or both, depending what you need
         </script>
         <h2>Extract info</h2>
-        
+
         <script type="editor" data-lang="sh">
-          
+
           ffprobe -v verbose myfile.mov > log.log 2>&1
-          
         </script>
-        <h2>merge two files</h2>        
+        <h2>merge two files</h2>
         <script type="editor" data-lang="sh">
-          
+
           cat <<EEE > files.txt
           file '/path/to/file/example/a.mov'
           file '/path/to/file/example/b.mov'
           EEE
-          
+
           ffmpeg -loglevel error \
             -f concat \
             -safe 0 \
             -i files.txt \
             -c copy \
             -y /path/to/file/example/join.mov
-          
+
           # don't try to pipe list on stdin - you will run into all sorts of issues
-          
         </script>
         <script type="editor" data-lang="sh">
 
