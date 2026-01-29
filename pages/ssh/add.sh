@@ -130,7 +130,7 @@ if [[ ! ${LOADED} = *"The agent has no identities"* ]]; then
 
   echo "${LOADED}"
 
-  echo -e "\nto unregister keys run ssh-add -D"
+  echo -e "\nto unregister keys run ssh-add -D #2"
 
   exit 0
 fi
@@ -179,7 +179,7 @@ while : ; do
 
     ssh-add -l
 
-    echo -e "\nto unregister keys run ssh-add -D"
+    echo -e "\nto unregister keys run ssh-add -D #1"
 
     { green "\n   all good"; } 2>&3
 
