@@ -72,6 +72,10 @@
 
             # my mac: https://browser.geekbench.com/v6/cpu/3381254
 
+            # UPGRADE JUST ONE PACKAGE
+            HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade gh
+
+
             brew install smartmontools
             smartctl --all /dev/disk3s1
             # will print Power cycles, POwer on hours, unsafe shutdown, data units read/written and so on
