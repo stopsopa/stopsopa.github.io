@@ -313,7 +313,13 @@
         </style>
 
         <div id="encryptor">
-          <form class="compact-form" action="#" onsubmit="return false;">
+          <form
+            class="compact-form"
+            action="#"
+            onsubmit="return false;"
+            autocomplete="off"
+            spellcheck="false"
+          >
             <label>
               <span>Encryption Key</span>
               <div class="key-row">
@@ -322,7 +328,10 @@
                   type="text"
                   name="username"
                   id="username"
-                  autocomplete="username"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
                   value="default"
                   style="position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none"
                 />
@@ -331,7 +340,10 @@
                   class="key"
                   name="password"
                   id="password"
-                  autocomplete="current-password"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
                   placeholder="Key..."
                 />
                 <div class="btn-group">
