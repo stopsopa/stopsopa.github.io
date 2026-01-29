@@ -191,9 +191,15 @@
         <h2>prompting</h2>
         <script type="editor" data-lang="sh">
 
-          WARNING: WE ARE WORKING ONLY ON PLAN.md RIGHT NOW. DON'T START IMPLEMENTATION.
-          
-          Warning: Make sure we are wokring on Phase 5 only. You might keep in mind consecutive phases bue we are strictly working only on phase 5
+
+          // --- multi phase plans --- vvv
+            When doing PLAN.md work on it with this prompt
+              WARNING: WE ARE WORKING ONLY ON PLAN.md RIGHT NOW. DON'T START IMPLEMENTATION.
+            Then when PLAN.md will be created add immediately under each title for each phase:
+              ## Phase 5: Progress Visualization (STEP 5)  
+              WARNING: FOCUS ONLY ON THE SCOPE OF THIS PHASE. - don't implement anything that is not in the scope of this phase. it is allowed now to edit logic of calling @driveCompression.ts at this phase
+            ... something like that. That seems to help to keep LLM on the subject. To avoid it from this ... "semantic drift", "cumulative drift" or "prompt or topic drift"
+          // --- multi phase plans --- ^^^
 
           Persona:
             .. refers to what  expertise you want generative AI tool to draw from
