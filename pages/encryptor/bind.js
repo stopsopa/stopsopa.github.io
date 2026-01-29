@@ -81,8 +81,6 @@ const updateDecryptedOutput = (val) => {
   }
 };
 
-const STORAGE_KEY = "encryptor_key";
-
 const updateCopyBtnVisibility = () => {
   copyBtn.style.display = inputEncrypted.value.trim() ? "inline-block" : "none";
 };
@@ -158,7 +156,6 @@ inputMessage.addEventListener("input", () => {
 });
 inputKey.addEventListener("input", async () => {
   const wasEmpty = !inputDecrypted.value.trim();
-  localStorage.setItem(STORAGE_KEY, inputKey.value);
   await doEncrypt();
   // If we just decrypted something that was previously empty (e.g. key finally matched URL param), scroll to it
   if (wasEmpty && inputDecrypted.value.trim() && new URLSearchParams(window.location.search).has("enc")) {
@@ -186,7 +183,6 @@ show.addEventListener("click", () => {
 });
 
 clearKeyBtn.addEventListener("click", () => {
-  localStorage.removeItem(STORAGE_KEY);
   inputKey.value = "";
   doEncrypt();
 });
@@ -195,7 +191,6 @@ generateButton.addEventListener("click", async () => {
   try {
     const base64Key = await generateKey();
     inputKey.value = base64Key;
-    localStorage.setItem(STORAGE_KEY, base64Key);
     doEncrypt();
   } catch (e) {
     alert("Error generating key: " + e.message);
@@ -251,13 +246,7 @@ copyLinkBtn.addEventListener("click", () => {
 
 // Initialization
 (async () => {
-  // 1. Load key from localStorage
-  const savedKey = localStorage.getItem(STORAGE_KEY);
-  if (savedKey) {
-    inputKey.value = savedKey;
-  }
-
-  // 2. Load from URL param if present
+  // 1. Load from URL param if present
   const params = new URLSearchParams(window.location.search);
   const encParam = params.get("enc");
   if (encParam) {
