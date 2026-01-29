@@ -57,13 +57,22 @@ else
     repositories=$(gh repo list --limit 1000 --source --json nameWithOwner -q '.[].nameWithOwner')
 fi
 
-for REPO in $repositories; do
+# Convert to array to count them
+repo_list=($repositories)
+total_repos=${#repo_list[@]}
+current_repo=0
+
+echo "Found $total_repos repositories to check."
+
+for REPO in "${repo_list[@]}"; do
+    current_repo=$((current_repo + 1))
+    
     # List artifacts for the repository (getting only ID and Name for deletion)
     # Result is newline-separated ID:Name pairs
     artifacts=$(gh api "repos/$REPO/actions/artifacts" --jq '.artifacts[] | "\(.id):\(.name)"')
     
     if [ -n "$artifacts" ]; then
-        echo "--- Cleaning Repository: $REPO ---"
+        echo "[Repo $current_repo/$total_repos] --- Cleaning Repository: $REPO ---"
         # Using while read to handle names with spaces correctly
         echo "$artifacts" | while IFS=':' read -r ID NAME; do
             if [ -n "$ID" ]; then
@@ -79,5 +88,8 @@ for REPO in $repositories; do
                 fi
             fi
         done
+    else
+        # Optional: Print progress even if no artifacts found to show the script is moving
+        echo "[Repo $current_repo/$total_repos] $REPO: No artifacts found."
     fi
 done
