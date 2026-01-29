@@ -31,3 +31,18 @@ jobs:
         env:
           # Use CLEANUP_PAT if available (for cross-repo access), otherwise fallback to default GITHUB_TOKEN
           GITHUB_TOKEN: ${{ secrets.CLEANUP_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Final Status Message
+        if: always()
+        run: |
+          echo "################################################################################"
+          echo "#                                                                              #"
+          echo "#   ____  _____ __  __  _____     _______   _____ _  _  ___ ____  _   _  ____  #"
+          echo "#  |  _ \| ____|  \/  |/ _ \ \   / / ____| |_   _| || |/ _ \___ \| \ | |/ _ \  #"
+          echo "#  | |_) |  _| | |\/| | | | \ \ / /|  _|     | | | || |_| |__) |  \| | | | | | #"
+          echo "#  |  _ <| |___| |  | | |_| |\ V / | |___    | | |__   _|  / __/| |\  | |_| |  #"
+          echo "#  |_| \_\_____|_|  |_|\___/  \_/  |_____|   |_|    |_| \___|_____|_| \_|\___/  #"
+          echo "#                                                                              #"
+          echo "#                               REMOVE THIS LOG                                #"
+          echo "#                                                                              #"
+          echo "################################################################################"
