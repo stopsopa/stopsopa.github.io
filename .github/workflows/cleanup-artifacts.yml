@@ -1,0 +1,33 @@
+################################################################################
+# WARNING: MANUAL ACTION REQUIRED FOR CROSS-REPO CLEANUP
+# By default, this workflow only has permission to clean THIS repository.
+#
+# TO ENABLE CLEANUP ACROSS YOUR ENTIRE ACCOUNT:
+# 1. Create a Classic PAT with 'repo' scope in your GitHub Profile Settings.
+# 2. Add it as a secret named 'CLEANUP_PAT' in THIS repository's Settings.
+#
+# SEE DETAILED INSTRUCTIONS IN: .github/artifact-clean.sh
+################################################################################
+
+name: Cleanup Artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      search_query:
+        description: "Filter repositories by name (leave empty to process all source repositories)"
+        required: false
+        default: ""
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run cleanup script
+        run: bash .github/artifact-clean.sh "${{ github.event.inputs.search_query }}"
+        env:
+          # Use CLEANUP_PAT if available (for cross-repo access), otherwise fallback to default GITHUB_TOKEN
+          GITHUB_TOKEN: ${{ secrets.CLEANUP_PAT || secrets.GITHUB_TOKEN }}
