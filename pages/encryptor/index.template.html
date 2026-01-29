@@ -313,11 +313,27 @@
         </style>
 
         <div id="encryptor">
-          <form class="compact-form">
+          <form class="compact-form" action="#" onsubmit="return false;">
             <label>
               <span>Encryption Key</span>
               <div class="key-row">
-                <input type="password" class="key" name="password" placeholder="Key..." />
+                <!-- Visually hidden username field to satisfy password managers -->
+                <input
+                  type="text"
+                  name="username"
+                  id="username"
+                  autocomplete="username"
+                  value="default"
+                  style="position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none"
+                />
+                <input
+                  type="password"
+                  class="key"
+                  name="password"
+                  id="password"
+                  autocomplete="current-password"
+                  placeholder="Key..."
+                />
                 <div class="btn-group">
                   <button type="button" class="generate">Gen</button>
                   <button type="button" class="show">Show</button>
@@ -332,6 +348,8 @@
                 <a href="/pages/pastetool/pastetool.html" target="_blank">Paste</a>
               </div>
             </label>
+            <!-- Dummy submit button to help Bitwarden trigger 'Save' dialog -->
+            <button type="submit" style="display: none"></button>
           </form>
 
           <div class="main-grid">

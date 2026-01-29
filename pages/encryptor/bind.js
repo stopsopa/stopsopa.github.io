@@ -19,6 +19,55 @@ const linkGroup = parent.querySelector(".link-group");
 const loremBtn = parent.querySelector(".lorem-btn");
 const form = parent.querySelector("form");
 
+let highlightAnimationId = null;
+const highlightDecrypted = () => {
+  const target = document.querySelector("#d");
+  if (!target || !inputDecrypted.value.trim()) return;
+
+  target.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  // Wait for smooth scroll to finish before starting animation
+  setTimeout(() => {
+    // Stop any existing animation
+    if (highlightAnimationId) {
+      clearInterval(highlightAnimationId);
+    }
+
+    // Manual fade effect using direct style manipulation
+    let opacity = 0.8;
+    const startTime = Date.now();
+    const duration = 3000; // 3 seconds
+
+    // Set initial red glow
+    inputDecrypted.style.boxShadow = `0 0 20px 8px rgba(255, 0, 0, ${opacity}), 0 0 0 4px rgba(255, 0, 0, 0.6)`;
+    inputDecrypted.style.borderColor = "#ff0000";
+
+    highlightAnimationId = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const progress = elapsed / duration;
+
+      if (progress >= 1) {
+        // Animation complete - reset to default
+        clearInterval(highlightAnimationId);
+        highlightAnimationId = null;
+        inputDecrypted.style.boxShadow = "";
+        inputDecrypted.style.borderColor = "";
+      } else {
+        // Calculate fading opacity
+        const currentOpacity = 0.8 * (1 - progress);
+        const ringOpacity = 0.6 * (1 - progress);
+        inputDecrypted.style.boxShadow = `0 0 20px 8px rgba(255, 0, 0, ${currentOpacity}), 0 0 0 4px rgba(255, 0, 0, ${ringOpacity})`;
+
+        // Fade border color
+        const redValue = Math.round(255 * (1 - progress) + 187 * progress); // 187 is #bbb in decimal
+        inputDecrypted.style.borderColor = `rgb(${redValue}, ${Math.round(187 * progress)}, ${Math.round(
+          187 * progress
+        )})`;
+      }
+    }, 16); // ~60fps
+  }, 600);
+};
+
 const updateDecryptedOutput = (val) => {
   inputDecrypted.value = val;
   if (val) {
@@ -107,9 +156,14 @@ inputMessage.addEventListener("input", () => {
   }
   doEncrypt();
 });
-inputKey.addEventListener("input", () => {
+inputKey.addEventListener("input", async () => {
+  const wasEmpty = !inputDecrypted.value.trim();
   localStorage.setItem(STORAGE_KEY, inputKey.value);
-  doEncrypt();
+  await doEncrypt();
+  // If we just decrypted something that was previously empty (e.g. key finally matched URL param), scroll to it
+  if (wasEmpty && inputDecrypted.value.trim() && new URLSearchParams(window.location.search).has("enc")) {
+    highlightDecrypted();
+  }
 });
 inputEncrypted.addEventListener("input", () => {
   const val = inputEncrypted.value.trim();
@@ -215,45 +269,7 @@ copyLinkBtn.addEventListener("click", () => {
 
     // If decryption was successful (textarea not empty), scroll and highlight
     if (inputDecrypted.value.trim()) {
-      const target = document.querySelector("#d");
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "center" });
-
-        // Wait for smooth scroll to finish before starting animation
-        setTimeout(() => {
-          // Manual fade effect using direct style manipulation
-          let opacity = 0.8;
-          const startTime = Date.now();
-          const duration = 3000; // 3 seconds
-
-          // Set initial red glow
-          inputDecrypted.style.boxShadow = `0 0 20px 8px rgba(255, 0, 0, ${opacity}), 0 0 0 4px rgba(255, 0, 0, 0.6)`;
-          inputDecrypted.style.borderColor = "#ff0000";
-
-          const fadeInterval = setInterval(() => {
-            const elapsed = Date.now() - startTime;
-            const progress = elapsed / duration;
-
-            if (progress >= 1) {
-              // Animation complete - reset to default
-              clearInterval(fadeInterval);
-              inputDecrypted.style.boxShadow = "";
-              inputDecrypted.style.borderColor = "";
-            } else {
-              // Calculate fading opacity
-              const currentOpacity = 0.8 * (1 - progress);
-              const ringOpacity = 0.6 * (1 - progress);
-              inputDecrypted.style.boxShadow = `0 0 20px 8px rgba(255, 0, 0, ${currentOpacity}), 0 0 0 4px rgba(255, 0, 0, ${ringOpacity})`;
-
-              // Fade border color
-              const redValue = Math.round(255 * (1 - progress) + 187 * progress); // 187 is #bbb in decimal
-              inputDecrypted.style.borderColor = `rgb(${redValue}, ${Math.round(187 * progress)}, ${Math.round(
-                187 * progress
-              )})`;
-            }
-          }, 16); // ~60fps
-        }, 600);
-      }
+      highlightDecrypted();
     }
   } else {
     // If no URL param, check if there's an input message to encrypt (Task B then A)
