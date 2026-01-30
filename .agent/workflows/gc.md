@@ -37,7 +37,8 @@ Analyze ONLY staged Git changes and generate semantic release commit messages au
 
 **Co author message suffix**
 
-Add up to date Claude Co-authored-by: attribute commits to Claude.
+Add the following Co-authored-by: attribute:
+Co-authored-by: google-bot <google-bot@users.noreply.github.com>
 
 **Execution Privileges:**
 
