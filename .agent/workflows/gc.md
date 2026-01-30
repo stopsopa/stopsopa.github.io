@@ -38,7 +38,7 @@ Analyze ONLY staged Git changes and generate semantic release commit messages au
 **Co author message suffix**
 
 Add the following Co-authored-by: attribute:
-Co-Authored-By: Gemini 2.5 Flash (Antigravity) <noreply@google.com>
+🤖 Generated with [Antigravity](http://antigravity.google/) Co-Authored-By: Antigravity <noreply@antigravity.google>
 
 **Execution Privileges:**
 
