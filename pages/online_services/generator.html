@@ -143,13 +143,27 @@
         }
 
         .aws-footer {
-            height: 20px;
+            margin-top: 40px;
+            padding: 20px 0;
             background-color: #f1f3f3;
             background-image: radial-gradient(#d1d3d4 0.5px, transparent 0.5px);
             background-size: 8px 8px;
             border-top: 1px solid #879596;
             width: 100%;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--aws-text-light);
+            gap: 5px;
+        }
+        .aws-footer a {
+            color: var(--aws-blue);
+            text-decoration: none;
+        }
+        .aws-footer a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -176,7 +190,9 @@
             </ace-editor>
         </div>
     </div>
-    <footer class="aws-footer"></footer>
+    <footer class="aws-footer">
+        Inspiration: <a href="https://github.com/moby/moby/blob/master/pkg/namesgenerator/names-generator.go" target="_blank">Docker names generator (GitHub)</a>
+    </footer>
 
     <div id="toast">Copied!</div>
 
