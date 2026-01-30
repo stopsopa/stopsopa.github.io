@@ -351,9 +351,9 @@ const right = [
 /**
  * getParts returns two random words from the adjectives and surnames lists.
  */
-export function getParts() {
-  const l = left[Math.floor(Math.random() * left.length)];
-  const r = right[Math.floor(Math.random() * right.length)];
+export function getParts(rng = Math.random) {
+  const l = left[Math.floor(rng() * left.length)];
+  const r = right[Math.floor(rng() * right.length)];
   return { l, r };
 }
 
@@ -363,11 +363,11 @@ export function getParts() {
  * If retry is non-zero, a random integer between 0 and 10 will be added
  * to the end of the name, e.g `focused_turing3`
  */
-export function getRandomName(retry = 0, sep = "_") {
+export function getRandomName(retry = 0, sep = "_", rng = Math.random) {
   let name;
 
   while (true) {
-    const { l, r } = getParts();
+    const { l, r } = getParts(rng);
     name = `${l}${sep}${r}`;
 
     // Steve Wozniak is not boring
@@ -377,7 +377,7 @@ export function getRandomName(retry = 0, sep = "_") {
   }
 
   if (retry > 0) {
-    name += Math.floor(Math.random() * 10);
+    name += Math.floor(rng() * 10);
   }
 
   return name;
