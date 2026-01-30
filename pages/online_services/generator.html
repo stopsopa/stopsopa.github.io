@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Name Generator - AWS Style</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <script
+        type="module"
+        src="https://stopsopa.github.io/ace-editor-webcomponent/ace-web-component.js"
+        data-main-ace="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/ace.min.js"
+    ></script>
+    <style>
+        :root {
+            --aws-orange-dark: #ec7211;
+            --aws-gray-bg: #f2f3f3;
+            --aws-border: #eaeded;
+            --aws-text: #16191f;
+            --aws-text-light: #545b64;
+            --aws-white: #ffffff;
+            --aws-blue: #0073bb;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Public Sans', sans-serif;
+            background-color: var(--aws-gray-bg);
+            color: var(--aws-text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .card {
+            background-color: var(--aws-white);
+            border: 1px solid var(--aws-border);
+            border-radius: 2px;
+            box-shadow: 0 1px 1px 0 rgba(0,28,36,.3), 1px 1px 1px 0 rgba(0,28,36,.15);
+            padding: 24px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 20px 0;
+        }
+
+        .field-group {
+            margin-bottom: 20px;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--aws-text);
+        }
+
+        .field-input {
+            width: 100%;
+            max-width: 200px;
+            padding: 8px;
+            border: 1px solid var(--aws-border);
+            border-radius: 2px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            background-color: var(--aws-white);
+        }
+
+        .field-input:focus {
+            border-color: var(--aws-blue);
+            outline: none;
+            box-shadow: 0 0 0 1px var(--aws-blue);
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: var(--aws-orange-dark);
+            border: 1px solid var(--aws-orange-dark);
+            color: white;
+            padding: 4px 15px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 2px;
+            cursor: pointer;
+            line-height: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #eb5f07;
+        }
+
+        .btn-secondary {
+            background-color: var(--aws-white);
+            border: 1px solid var(--aws-text-light);
+            color: var(--aws-text);
+            padding: 4px 15px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 2px;
+            cursor: pointer;
+            line-height: 20px;
+        }
+
+        ace-editor {
+            display: block;
+            width: 100%;
+            min-height: 320px;
+            height: auto;
+            border: 1px solid var(--aws-border);
+            border-radius: 2px;
+            background-color: #fafbfc;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #232f3e;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .aws-footer {
+            height: 20px;
+            background-color: #f1f3f3;
+            background-image: radial-gradient(#d1d3d4 0.5px, transparent 0.5px);
+            background-size: 8px 8px;
+            border-top: 1px solid #879596;
+            width: 100%;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Resource Name Generator</h1>
+            <div class="controls">
+                <button id="generateBtn" class="btn-primary">Generate 10 names</button>
+                <button id="copyBtn" class="btn-secondary">Copy all</button>
+                <button id="clearBtn" class="btn-secondary">Clear</button>
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 12px; color: var(--aws-text-light); font-weight: 700;">Separator:</span>
+                    <input type="text" id="sepInput" class="field-input" title="Separator" value="_" style="height: 28px; width: 40px; text-align: center; padding: 0 4px;">
+                </div>
+            </div>
+            <ace-editor lang="text" id="nameOutput">
+                <script type="ace"></script>
+            </ace-editor>
+        </div>
+    </div>
+    <footer class="aws-footer"></footer>
+
+    <div id="toast">Copied!</div>
+
+    <script type="module">
+        import { getParts } from './generator.js';
+
+        const output = document.getElementById('nameOutput');
+        const sepInput = document.getElementById('sepInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const toast = document.getElementById('toast');
+
+        // Store history of generated base parts to allow live re-formatting
+        let history = [];
+
+        function syncUrl(sep) {
+            const url = new URL(window.location);
+            if (sep === '_') {
+                url.searchParams.delete('sep');
+            } else {
+                url.searchParams.set('sep', sep);
+            }
+            window.history.replaceState({}, '', url);
+        }
+
+        function updateDisplay() {
+            const sep = sepInput.value;
+            const newVal = history.map(item => `${item.l}${sep}${item.r}`).join('\n');
+            output.setAttribute('value', newVal);
+            syncUrl(sep);
+        }
+
+        function generateBatch() {
+            const currentCount = history.length;
+            const newBatch = [];
+            
+            while (newBatch.length < 10) {
+                const { l, r } = getParts();
+                const name = `${l}${sepInput.value}${r}`;
+                
+                // Ensure uniqueness against history and new batch
+                const isDuplicate = history.some(h => h.l === l && h.r === r) || 
+                                   newBatch.some(n => n.l === l && n.r === r);
+                
+                if (!isDuplicate && name !== `boring${sepInput.value}wozniak`) {
+                    newBatch.push({ l, r });
+                }
+            }
+
+            history = [...history, ...newBatch];
+            updateDisplay();
+        }
+
+        generateBtn.onclick = generateBatch;
+        
+        clearBtn.onclick = () => {
+            history = [];
+            updateDisplay();
+        };
+
+        sepInput.addEventListener('input', updateDisplay);
+
+        copyBtn.onclick = () => {
+            const val = output.getAttribute('value');
+            if (!val) return;
+            navigator.clipboard.writeText(val).then(() => {
+                toast.style.display = 'block';
+                setTimeout(() => toast.style.display = 'none', 2000);
+            });
+        };
+
+        window.addEventListener('load', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('sep')) {
+                sepInput.value = params.get('sep');
+            }
+            setTimeout(generateBatch, 100);
+        });
+    </script>
+</body>
+</html>
