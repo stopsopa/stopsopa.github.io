@@ -161,9 +161,14 @@
                 <button id="generateBtn" class="btn-primary">Generate 10 names</button>
                 <button id="copyBtn" class="btn-secondary">Copy all</button>
                 <button id="clearBtn" class="btn-secondary">Clear</button>
-                <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 12px; color: var(--aws-text-light); font-weight: 700;">Separator:</span>
-                    <input type="text" id="sepInput" class="field-input" title="Separator" value="_" style="height: 28px; width: 40px; text-align: center; padding: 0 4px;">
+                <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--aws-text-light); font-weight: 700; cursor: pointer;">
+                        <input type="checkbox" id="groupCheck" checked style="cursor: pointer;"> Group by 10
+                    </label>
+                    <div style="display: flex; align-items: center; gap: 8px; border-left: 1px solid var(--aws-border); padding-left: 12px;">
+                        <span style="font-size: 12px; color: var(--aws-text-light); font-weight: 700;">Separator:</span>
+                        <input type="text" id="sepInput" class="field-input" title="Separator" value="_" onclick="this.select()" style="height: 28px; width: 40px; text-align: center; padding: 0 4px;">
+                    </div>
                 </div>
             </div>
             <ace-editor lang="text" id="nameOutput">
@@ -180,6 +185,7 @@
 
         const output = document.getElementById('nameOutput');
         const sepInput = document.getElementById('sepInput');
+        const groupCheck = document.getElementById('groupCheck');
         const generateBtn = document.getElementById('generateBtn');
         const clearBtn = document.getElementById('clearBtn');
         const copyBtn = document.getElementById('copyBtn');
@@ -188,21 +194,40 @@
         // Store history of generated base parts to allow live re-formatting
         let history = [];
 
-        function syncUrl(sep) {
+        function syncUrl(sep, group) {
             const url = new URL(window.location);
+            
+            // Handle separator
             if (sep === '_') {
                 url.searchParams.delete('sep');
             } else {
                 url.searchParams.set('sep', sep);
             }
+
+            // Handle grouping (default is on, so we only store if it's off)
+            if (group) {
+                url.searchParams.delete('group');
+            } else {
+                url.searchParams.set('group', '0');
+            }
+
             window.history.replaceState({}, '', url);
         }
 
         function updateDisplay() {
             const sep = sepInput.value;
-            const newVal = history.map(item => `${item.l}${sep}${item.r}`).join('\n');
-            output.setAttribute('value', newVal);
-            syncUrl(sep);
+            const isGrouped = groupCheck.checked;
+            
+            let result = [];
+            history.forEach((item, index) => {
+                result.push(`${item.l}${sep}${item.r}`);
+                if (isGrouped && (index + 1) % 10 === 0 && (index + 1) !== history.length) {
+                    result.push(""); // Add empty line
+                }
+            });
+            
+            output.setAttribute('value', result.join('\n'));
+            syncUrl(sep, isGrouped);
         }
 
         function generateBatch() {
@@ -234,6 +259,7 @@
         };
 
         sepInput.addEventListener('input', updateDisplay);
+        groupCheck.addEventListener('change', updateDisplay);
 
         copyBtn.onclick = () => {
             const val = output.getAttribute('value');
@@ -248,6 +274,9 @@
             const params = new URLSearchParams(window.location.search);
             if (params.has('sep')) {
                 sepInput.value = params.get('sep');
+            }
+            if (params.get('group') === '0') {
+                groupCheck.checked = false;
             }
             setTimeout(generateBatch, 100);
         });
