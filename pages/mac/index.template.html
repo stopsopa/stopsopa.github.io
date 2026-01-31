@@ -401,7 +401,7 @@
           <h2>Change default app for file extension, file type</h2>
           <script type="editor" data-lang="sh">
 
-            brew install duti
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install duti
             osascript -e 'id of app "mpv"'
               # is asking AppleScript (via the osascript command-line tool) to return the bundle identifier of the application named "mpv".
               # that will probably return "io.mpv" for mpv app
