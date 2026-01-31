@@ -443,7 +443,6 @@
 
             HOMEBREW_NO_AUTO_UPDATE=1 brew install ngrok
             ngrok http https://stopsopa.github.io.local:4339 --host-header=stopsopa.github.io.local
-
           </script>
           <h2>useful</h2>
           <script type="editor" data-lang="sh">
@@ -3732,19 +3731,18 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         <h2>weird issues</h2>
         <script type="editor" data-lang="sh">
 
-            to unregister keys run ssh-add -D #2
-            pyenv: cannot rehash: couldn't acquire lock /Users/xxxx/.pyenv/shims/.pyenv-shim for 60 seconds. Last error message:
-            /opt/homebrew/Cellar/pyenv/2.6.19/libexec/pyenv-rehash: line 22: /Users/xxxx/.pyenv/shims/.pyenv-shim: cannot overwrite existing file
+          to unregister keys run ssh-add -D #2
+          pyenv: cannot rehash: couldn't acquire lock /Users/xxxx/.pyenv/shims/.pyenv-shim for 60 seconds. Last error message:
+          /opt/homebrew/Cellar/pyenv/2.6.19/libexec/pyenv-rehash: line 22: /Users/xxxx/.pyenv/shims/.pyenv-shim: cannot overwrite existing file
 
-              RESULT: it was blocking new terminals
+            RESULT: it was blocking new terminals
 
-            resolution:
-              remove file /Users/szdz/.pyenv/shims/.pyenv-shim
-              and modify ~/.zshrc from 
-                eval "$(pyenv init -)"
-                to
-                eval "$(pyenv init - --no-rehash)"
-          
+          resolution:
+            remove file /Users/szdz/.pyenv/shims/.pyenv-shim
+            and modify ~/.zshrc from
+              eval "$(pyenv init -)"
+              to
+              eval "$(pyenv init - --no-rehash)"
         </script>
         <h2>fork bomb</h2>
         <script type="editor" data-lang="sh">
