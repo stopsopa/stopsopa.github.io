@@ -9,13 +9,23 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 if refering something from ROOT directory is needed then define ROOT based on DIR in relative manner from current script like:
 
-ROOT="${DIR}/.."
+ROOT="$(cd "${DIR}/.." && pwd)"
 
 or
 
-ROOT="${DIR}/../.."
+ROOT="$(cd "${DIR}/../.." && pwd)"
 
 ... depends how many directories up we have to go
+
+But to be specific:
+
+- DIR is to determine current script location
+- ROOT is to determine project root location
+  Depending from where you refer to the files use this or that
+
+When you have to go up from current script location use ../ or ../../ but the general target is to reach root directory of the project and then from there somewhere else then define ROOT by rerriving it from DIR and from that point use ROOT to reach wherever you need to reach.
+
+# shebang
 
 Don't use shebang at the top of the file.
 
@@ -40,3 +50,5 @@ Add to the message any relevent parameters values like so
 "name of env var MY_ENV_VAR=>${MY_ENV_VAR}<"
 
 (surround with ><, this way I will see any whitespaces at the beginning or end of the value)
+
+Use `npm run lint:bash` (requires `shellcheck`) to verify script quality.
