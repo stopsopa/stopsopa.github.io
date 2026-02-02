@@ -311,6 +311,82 @@
             }
           }
         </script>
+        <h2>express path params</h2>
+        <script type="editor" data-lang="ts">
+
+          // https://www.typescriptlang.org/play/?#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          
+
+          /**
+           * This file demonstrates how to extract parameters from a URL string using
+           * TypeScript's Template Literal Types and recursive type inference.
+           */
+          
+          // 1. Split the string into a Union of segments (e.g. "user" | "::userId" | "post")
+          type GetSegments<T extends string> = T extends `${infer Part}/${infer Rest}` ? Part | GetSegments<Rest> : T;
+          
+          // 2. Filter union to only include segments starting with '::' and strip the prefix
+          type ToParamName<T extends string> = T extends `::${infer Name}` ? Name : never;
+          
+          // 3. Assemble the object using Key Remapping ('as')
+          type ExtractRouteParams<T extends string> = {
+            [K in GetSegments<T> as ToParamName<K>]: string;
+          };
+          
+              // --- EXAMPLES OF HELPER TYPES (Hover over these in your IDE!) --- vvv
+                  // 1. GetSegments breakdown:
+                  // It splits the string by '/' and creates a Union of all parts.
+                  type SegmentsExample = GetSegments<"/user/::userId/post/::postId">;
+                  // Result: "" | "user" | "::userId" | "post" | "::postId"
+          
+                  // 2. ToParamName breakdown:
+                  // It's like a filter. It ignores normal segments and only maps '::' segments to their names.
+                  type Name1 = ToParamName<"::userId">; // Result: "userId"
+                  type Name2 = ToParamName<"user">; // Result: never (This tells TypeScript to "skip" this key when mapping)
+          
+                  // 3. Combining them:
+                  // GetSegments gives us a list of "candidates".
+                  // ToParamName filters that list down.
+                  type ValidNamesExample = ToParamName<GetSegments<"/user/::userId/post/::postId">>;
+                  // Result: "userId" | "postId"
+              // --- EXAMPLES OF HELPER TYPES (Hover over these in your IDE!) --- ^^^
+          
+          // 2. Demonstration
+          function defineRoute<Path extends string>(path: Path, handler: (params: ExtractRouteParams<Path>) => void) {
+            console.log(`Route defined: ${path}`);
+          }
+          
+          // usage:
+          defineRoute("/user/::userId/post/::postId/more/::moreId", (params) => {
+            // Hover over 'params' to see its type!
+            // It is now a clean object: { userId: string; postId: string; moreId: string; }
+            console.log(params.userId);
+            console.log(params.postId);
+            console.log(params.moreId);
+          
+            // params.invalid; // This would be a TypeScript error!
+            // console.log(params.invalid);
+          });
+          
+          /**
+           * EXPLANATION:
+           *
+           * 1. Template Literal Types: TypeScript can "look inside" strings if they match a pattern.
+           *    `${string}:${infer Param}` allows TS to extract the part after the colon.
+           *
+           * 2. Recursive Inference: The `ExtractRouteParams` type keeps calling itself
+           *    until there are no more segments left in the string.
+           *
+           * 3. Intersection Types: Using `&` merges the individual parameter objects
+           *    (e.g., `{ userId: string } & { postId: string }`) into one final type.
+           *
+           * HOW TO GOOGLE IT:
+           * - "TypeScript Template Literal Types"
+           * - "TypeScript Type-level String Manipulation"
+           * - "Recursive Template Literal Types"
+           * - "Parse string to type TypeScript"
+           */
+        
+        </script>
         <h2>TS watch mode for DEV</h2>
         <script type="editor" data-lang="python">
 
