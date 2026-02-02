@@ -75,7 +75,6 @@
             # UPGRADE JUST ONE PACKAGE
             HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade gh
 
-
             brew install smartmontools
             smartctl --all /dev/disk3s1
             # will print Power cycles, POwer on hours, unsafe shutdown, data units read/written and so on
@@ -90,17 +89,17 @@
               https://formulae.brew.sh/cask/
                 # to browse all cask packages
 
-            export HOMEBREW_NO_AUTO_UPDATE=1 && brew install zsh
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install zsh
 
-            export HOMEBREW_NO_AUTO_UPDATE=1 && arch -arm64 brew install coreutils
+            HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install coreutils
 
-            export HOMEBREW_NO_AUTO_UPDATE=1 && brew install --cask dozer
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install --cask dozer
 
-            export HOMEBREW_NO_AUTO_UPDATE=1 && brew install jq
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install jq
 
-            export HOMEBREW_NO_AUTO_UPDATE=1 && arch -arm64 brew install lib
+            HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install lib
 
-            export HOMEBREW_NO_AUTO_UPDATE=1 && arch -arm64 brew install
+            export HOMEBREW_NO_AUTO_UPDATE=1 arch -arm64 brew install
             # from: https://github.com/Homebrew/brew/issues/1670#issuecomment-267096602
 
             Accessability -> Pointer Control -> (tab)Mouse & Trackpad -> (button)Trackpad Options... -> (on state for checkbox)Enable dragging -> (option from select)Withou drag lock
