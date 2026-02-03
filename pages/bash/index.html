@@ -390,6 +390,36 @@
             add v on pack and unpack
               tar vcf - -C ../override . | tar vxf -
           </script>
+          <h2>replace in file ONCE</h2>
+          <script type="editor" data-lang="sh">
+
+            SEARCH='name=local-file-source
+            connector.class=FileStreamSource' \
+            REPLACE='name=locald-replace
+            connector.class=replace' \
+            FILE='docker/override-config/connect-file-source.properties' \
+            bash -c '
+              if [ ! -f "${FILE}" ]; then
+                echo -e "\nERROR: file does not exist: ${FILE}\n" >&2
+                exit 1
+              fi
+            
+              # Escape Perl special characters
+              ESC_SEARCH=$(printf "%s" "${SEARCH}" | perl -pe "s/([\\\\\/\@\$\`\"])/\\\\\$1/g")
+              ESC_REPLACE=$(printf "%s" "${REPLACE}" | perl -pe "s/([\\\\\/\@\$\`\"])/\\\\\$1/g")
+            
+              # Check if block exists
+              if perl -0777 -ne "exit 1 unless /${ESC_SEARCH}/s" "${FILE}"; then
+                # SEARCH found, perform replacement in-place
+                perl -0777 -i -pe "s/${ESC_SEARCH}/${ESC_REPLACE}/sg" "${FILE}"
+                echo -e "\n  Replaced occurrences of multi-line block in file:\n  >${FILE}<"
+              else
+                echo -e "\n  SEARCH block not found in file:\n  >${FILE}<\nNothing changed." >&2
+                exit 1
+              fi
+            '
+          
+          </script>
           <h2>append to file if not exist</h2>
           <script type="editor" data-lang="sh">
 
