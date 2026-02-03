@@ -215,19 +215,21 @@
           mkdir -p ~/ts_remove_me_later
           cd ~/ts_remove_me_later
           echo "{}" > package.json
-          asdf local nodejs 20.17.0
-          npm install -g typescript
+          echo "" > .tool-versions
+          asdf set nodejs v24.12.0
+          npm install typescript
           rm -rf tsconfig.json
-          tsc --init
+          node node_modules/.bin/tsc --init
           cat <<EEE
-
+          
           run
           CMD + P in VSCode and paste
-
-          \$(realpath tsconfig.json)
-
+          
+          $(realpath tsconfig.json)
+          
           EEE
           "
+          
         </script>
 
         <h2>Glossary</h2>
