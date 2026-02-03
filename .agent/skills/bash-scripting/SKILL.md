@@ -52,3 +52,16 @@ Add to the message any relevent parameters values like so
 (surround with ><, this way I will see any whitespaces at the beginning or end of the value)
 
 Use `npm run lint:bash` (requires `shellcheck`) to verify script quality.
+
+# print to stdout
+
+if using echo to print multiple lines to the stdout then prefer heredoc notation like
+
+```
+cat <<EEE
+
+  my multiline message
+
+EEE
+
+```
