@@ -214,6 +214,7 @@
           bash -c -e "
           mkdir -p ~/ts_remove_me_later
           cd ~/ts_remove_me_later
+          echo "{}" > package.json
           asdf local nodejs 20.17.0
           npm install -g typescript
           rm -rf tsconfig.json
