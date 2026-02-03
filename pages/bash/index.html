@@ -390,6 +390,34 @@
             add v on pack and unpack
               tar vcf - -C ../override . | tar vxf -
           </script>
+          <h2>append to file if not exist</h2>
+          <script type="editor" data-lang="sh">
+
+            BLOCK='
+            plugin.path=libs/connect-file-4.1.1.jar
+            plugin.enabled=true
+            plugin.timeout=30' \
+            FILE='docker/override-config/connect-standalone.properties/connect-standalone.properties' \
+            bash -c '
+              if [ ! -f "$FILE" ]; then
+                echo -e "\n  ERROR: file does not exist: $FILE\n" >&2
+                exit 1
+              fi
+            
+              # Check if block exists
+              if awk "
+                  BEGIN { while ((getline line < \"-\") > 0) block = block line \"\n\" }
+                  { buffer = buffer \$0 \"\n\" }
+                  END { exit index(buffer, block) ? 0 : 1 }
+                " "$FILE" <<< "${BLOCK}"; then
+                echo -e "\n  Block already exists in file\n\n  file: >${FILE}<\n\n  block: >${BLOCK}<"
+              else
+                printf "%s\n" "${BLOCK}" >> "${FILE}"
+                echo -e "\n  Block added to file\n\n  file: >${FILE}<\n\n  block: >${BLOCK}<"
+              fi
+            '
+            
+          </script>
           <h2>detect interactive detect TTY</h2>
           <script type="editor" data-lang="sh">
 
