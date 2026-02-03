@@ -393,6 +393,8 @@
           <h2>replace in file ONCE</h2>
           <script type="editor" data-lang="sh">
 
+            urlwizzard.schema://urlwizzard.hostnegotiated/bash/file/replace.sh
+
             SEARCH='name=local-file-source
             connector.class=FileStreamSource' \
             REPLACE='name=locald-replace
@@ -422,6 +424,8 @@
           </script>
           <h2>append to file if not exist ONCE</h2>
           <script type="editor" data-lang="sh">
+
+            urlwizzard.schema://urlwizzard.hostnegotiated/bash/file/append.sh
 
             BLOCK='
             plugin.path=libs/connect-file-4.1.1.jar
