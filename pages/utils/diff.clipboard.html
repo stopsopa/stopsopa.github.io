@@ -40,6 +40,7 @@
     <div id="diff-view"></div>
 
     <!-- Scripts -->
+    <script src="https://www.typescriptlang.org/js/f31fbb4/sandbox/vendor/lzstring.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/diff@5.2.0/dist/diff.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html-ui.min.js"></script>
 
@@ -48,6 +49,33 @@
       const areaA = document.getElementById("text-a");
       const areaB = document.getElementById("text-b");
       const diffView = document.getElementById("diff-view");
+
+      function updateURL() {
+        const url = new URL(window.location);
+        
+        if (areaA.value) {
+          url.searchParams.set("a", LZString.compressToEncodedURIComponent(areaA.value));
+        } else {
+          url.searchParams.delete("a");
+        }
+
+        if (areaB.value) {
+          url.searchParams.set("b", LZString.compressToEncodedURIComponent(areaB.value));
+        } else {
+          url.searchParams.delete("b");
+        }
+
+        window.history.replaceState({}, "", url);
+      }
+
+      function loadFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const a = params.get("a");
+        const b = params.get("b");
+
+        areaA.value = a ? (LZString.decompressFromEncodedURIComponent(a) || "") : "";
+        areaB.value = b ? (LZString.decompressFromEncodedURIComponent(b) || "") : "";
+      }
 
       function updateDiff() {
         const c1 = areaA.value;
@@ -78,14 +106,22 @@
         updateDiff();
       };
 
+      const handleInput = () => {
+        updateDiff();
+        updateURL();
+      };
+
       // Trigger diff on input (includes paste, typing, etc.)
-      areaA.oninput = updateDiff;
-      areaB.oninput = updateDiff;
+      areaA.oninput = handleInput;
+      areaB.oninput = handleInput;
 
-      // Also explicitly handle paste if needed, though oninput covers it in modern browsers
-      areaA.onpaste = () => setTimeout(updateDiff, 0);
-      areaB.onpaste = () => setTimeout(updateDiff, 0);
+      window.onpopstate = () => {
+        loadFromURL();
+        updateDiff();
+      };
 
+      // Handle initial load
+      loadFromURL();
       updateDiff();
     </script>
   </body>
