@@ -870,7 +870,13 @@
         </script>
         <h2>Determine @types/* library for current typescript</h2>
         <script type="editor" data-lang="ts">
-
+          
+          NODE_OPTIONS="" npm info kafkajs types
+          NODE_OPTIONS="" npm info express types
+            # returns nothing -> means no types bundled with the library, 
+            # then try npm install -D @types/express  - relays on DefinitelyTyped
+          # why is it good? because it checks {  "types": "...",  "typings": "..." }
+          
           npm dist-tags @types/chai
           # from: https://stackoverflow.com/a/65026470
         </script>
