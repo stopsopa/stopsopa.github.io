@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>TypeScript Config Diff</title>
     <!-- Minimal Essential Styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css" />
     <style>
-        .selectors {
-            display: flex;
-            gap: 20px;
-            padding: 10px;
-        }
-        .selectors select {
-            flex: 1;
-        }
+      .selectors {
+        display: flex;
+        gap: 20px;
+        padding: 10px;
+      }
+      .selectors select {
+        flex: 1;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="selectors">
-        <select id="left-select"></select>
-        <select id="right-select"></select>
+      <select id="left-select"></select>
+      <select id="right-select"></select>
     </div>
 
     <div id="diff-view"></div>
@@ -28,69 +27,66 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/diff@5.2.0/dist/diff.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html-ui.min.js"></script>
-    
+
     <script>
-        const leftSelect = document.getElementById('left-select');
-        const rightSelect = document.getElementById('right-select');
-        const diffView = document.getElementById('diff-view');
+      const leftSelect = document.getElementById("left-select");
+      const rightSelect = document.getElementById("right-select");
+      const diffView = document.getElementById("diff-view");
 
-        async function updateDiff() {
-            const f1 = leftSelect.value;
-            const f2 = rightSelect.value;
-            if (!f1 || !f2) return;
+      async function updateDiff() {
+        const f1 = leftSelect.value;
+        const f2 = rightSelect.value;
+        if (!f1 || !f2) return;
 
-            try {
-                const [c1, c2] = await Promise.all([
-                    fetch(f1).then(r => r.text()),
-                    fetch(f2).then(r => r.text())
-                ]);
+        try {
+          const [c1, c2] = await Promise.all([fetch(f1).then((r) => r.text()), fetch(f2).then((r) => r.text())]);
 
-                const diffString = Diff.createTwoFilesPatch(f1, f2, c1, c2);
-                
-                const diff2htmlUi = new Diff2HtmlUI(diffView, diffString, {
-                    drawFileList: false,
-                    matching: 'lines',
-                    outputFormat: 'side-by-side',
-                });
-                diff2htmlUi.draw();
-            } catch (e) {
-                console.error(e);
-            }
+          const diffString = Diff.createTwoFilesPatch(f1, f2, c1, c2);
+
+          const diff2htmlUi = new Diff2HtmlUI(diffView, diffString, {
+            drawFileList: false,
+            matching: "lines",
+            outputFormat: "side-by-side",
+          });
+          diff2htmlUi.draw();
+        } catch (e) {
+          console.error(e);
         }
+      }
 
-        async function init() {
-            try {
-                const response = await fetch('list.txt');
-                const text = await response.text();
-                const files = text.split('\n').filter(line => line.trim() !== '');
+      async function init() {
+        try {
+          const response = await fetch("list.txt");
+          const text = await response.text();
+          const files = text.split("\n").filter((line) => line.trim() !== "");
 
-                files.forEach(file => {
-                    const displayName = file.replace(/^defaults\//, '');
-                    const optL = document.createElement('option');
-                    optL.value = file;
-                    optL.textContent = displayName;
-                    leftSelect.appendChild(optL);
+          files.forEach((file) => {
+            const displayName = file.replace(/^defaults\//, "");
+            const optL = document.createElement("option");
+            optL.value = file;
+            optL.textContent = displayName;
+            leftSelect.appendChild(optL);
 
-                    const optR = document.createElement('option');
-                    optR.value = file;
-                    optR.textContent = displayName;
-                    rightSelect.appendChild(optR);
-                });
+            const optR = document.createElement("option");
+            optR.value = file;
+            optR.textContent = displayName;
+            rightSelect.appendChild(optR);
+          });
 
-                if (files.length >= 2) {
-                    leftSelect.value = files[0];
-                    rightSelect.value = files[2] || files[1];
-                    updateDiff();
-                }
-            } catch (e) {
-                console.error(e);
-            }
+          if (files.length >= 2) {
+            leftSelect.value = files[0];
+            rightSelect.value = files[2] || files[1];
+            updateDiff();
+          }
+        } catch (e) {
+          console.error(e);
         }
+      }
 
-        leftSelect.onchange = updateDiff;
-        rightSelect.onchange = updateDiff;
+      leftSelect.onchange = updateDiff;
+      rightSelect.onchange = updateDiff;
 
-        init();
+      init();
     </script>
-</body>
+  </body>
 </html>

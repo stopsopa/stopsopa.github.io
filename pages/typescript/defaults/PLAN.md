@@ -23,5 +23,5 @@ view | view
 
 where we should see in view & view what has changed between these two files
 
-for testing assume server is running and you can load 
+for testing assume server is running and you can load
 https://stopsopa.github.io.local:4339/pages/typescript/defaults/index.html
