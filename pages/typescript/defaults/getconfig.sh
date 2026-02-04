@@ -41,6 +41,8 @@ cp ~/ts_remove_me_later/showConfig.json "${TSVERSION}/showConfig.json"
 
 npm view typescript versions --json | grep -vE '(-dev|-beta|-rc|-insiders|-alpha)' > versions.json
 
+find defaults -type f | tee list.txt
+
 cat <<EEE
 
   All good

@@ -1,0 +1,6 @@
+defaults/5_9_3/showConfig.json
+defaults/5_9_3/tsconfig.json
+defaults/4_9_5/showConfig.json
+defaults/4_9_5/tsconfig.json
+defaults/3_9_10/showConfig.json
+defaults/3_9_10/tsconfig.json
