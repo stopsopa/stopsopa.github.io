@@ -441,6 +441,15 @@
             //      https://www.typescriptlang.org/tsconfig/#erasableSyntaxOnly
             // LONG STORY SHORT (as of 21 Jan 2026) still use --experimental‑transform‑types and it is (semi) safe to use since LTS v22.18.0
 
+          // add to tsconfig.json          
+            // for --experimental-strip-types // https://nodejs.org/api/typescript.html#type-stripping
+            "noEmit": true, // Optional - see note below
+            "target": "ESNext",
+            "module": "NodeNext",
+            "rewriteRelativeImportExtensions": true,
+            "erasableSyntaxOnly": true,
+            "verbatimModuleSyntax": true
+
           // WARNING: GOOD EXAMPLE HOW TO WORK WITH --experimental-transform-types: https://github.com/stopsopa/kafka/tree/experimental-transform-types
 
 
