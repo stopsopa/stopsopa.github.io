@@ -1,4 +1,9 @@
 
+# 
+# run: 
+#   /bin/bash pages/typescript/defaults/getconfig.sh
+#   /bin/bash pages/typescript/defaults/getconfig.sh 5.9.3
+# 
 
 set -e
 set -x

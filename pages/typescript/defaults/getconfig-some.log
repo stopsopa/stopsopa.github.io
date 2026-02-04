@@ -1,0 +1,131 @@
++ export NODE_OPTIONS=
++ NODE_OPTIONS=
++++ dirname /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/getconfig.sh
+++ cd /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults
+++ pwd
++ DIR=/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults
++ TS_VERSION_TO_INSTALL=5.9.3
++ echo 'Installing typescript version: 5.9.3'
+Installing typescript version: 5.9.3
++ mkdir -p /Users/szdz/ts_remove_me_later
++ cp /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/getAllFlags.js /Users/szdz/ts_remove_me_later/getAllFlags.js
++ cd /Users/szdz/ts_remove_me_later
++ echo '{"type": "module"}'
++ rm -rf node_modules tsconfig.json
++ npm install typescript@5.9.3
+
+added 1 package, and audited 2 packages in 1s
+
+found 0 vulnerabilities
++ node node_modules/.bin/tsc --init
+
+Created a new tsconfig.json
+
+You can learn more at https://aka.ms/tsconfig
+++ node node_modules/.bin/tsc --version
+++ sed 's/Version //; s/\./_/g'
++ TSVERSION=/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/5_9_3
++ echo 'export {}'
++ node node_modules/.bin/tsc --showConfig
++ node getAllFlags.js getAllFlags.json
+Dumped all TS flags to ts-all-options.json
++ cd /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults
++ rm -rf /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/5_9_3
++ mkdir -p /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/5_9_3
++ cp /Users/szdz/ts_remove_me_later/tsconfig.json /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/5_9_3/tsconfig.json
++ cp /Users/szdz/ts_remove_me_later/showConfig.json /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/5_9_3/showConfig.json
++ npm view typescript versions --json
++ grep -vE '(-dev|-beta|-rc|-insiders|-alpha)'
++ cat
+
+  All good
+
++ export NODE_OPTIONS=
++ NODE_OPTIONS=
++++ dirname /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/getconfig.sh
+++ cd /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults
+++ pwd
++ DIR=/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults
++ TS_VERSION_TO_INSTALL=4.9.5
++ echo 'Installing typescript version: 4.9.5'
+Installing typescript version: 4.9.5
++ mkdir -p /Users/szdz/ts_remove_me_later
++ cp /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/getAllFlags.js /Users/szdz/ts_remove_me_later/getAllFlags.js
++ cd /Users/szdz/ts_remove_me_later
++ echo '{"type": "module"}'
++ rm -rf node_modules tsconfig.json
++ npm install typescript@4.9.5
+
+added 1 package, and audited 2 packages in 1s
+
+found 0 vulnerabilities
++ node node_modules/.bin/tsc --init
+
+Created a new tsconfig.json with:
+
+  target: es2016
+  module: commonjs
+  strict: true
+  esModuleInterop: true
+  skipLibCheck: true
+  forceConsistentCasingInFileNames: true
+
+
+You can learn more at https://aka.ms/tsconfig
+++ node node_modules/.bin/tsc --version
+++ sed 's/Version //; s/\./_/g'
++ TSVERSION=/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/4_9_5
++ echo 'export {}'
++ node node_modules/.bin/tsc --showConfig
++ node getAllFlags.js getAllFlags.json
+Dumped all TS flags to ts-all-options.json
++ cd /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults
++ rm -rf /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/4_9_5
++ mkdir -p /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/4_9_5
++ cp /Users/szdz/ts_remove_me_later/tsconfig.json /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/4_9_5/tsconfig.json
++ cp /Users/szdz/ts_remove_me_later/showConfig.json /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/4_9_5/showConfig.json
++ npm view typescript versions --json
++ grep -vE '(-dev|-beta|-rc|-insiders|-alpha)'
++ cat
+
+  All good
+
++ export NODE_OPTIONS=
++ NODE_OPTIONS=
++++ dirname /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/getconfig.sh
+++ cd /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults
+++ pwd
++ DIR=/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults
++ TS_VERSION_TO_INSTALL=3.9.10
++ echo 'Installing typescript version: 3.9.10'
+Installing typescript version: 3.9.10
++ mkdir -p /Users/szdz/ts_remove_me_later
++ cp /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/getAllFlags.js /Users/szdz/ts_remove_me_later/getAllFlags.js
++ cd /Users/szdz/ts_remove_me_later
++ echo '{"type": "module"}'
++ rm -rf node_modules tsconfig.json
++ npm install typescript@3.9.10
+
+added 1 package, and audited 2 packages in 1s
+
+found 0 vulnerabilities
++ node node_modules/.bin/tsc --init
+message TS6071: Successfully created a tsconfig.json file.
+++ node node_modules/.bin/tsc --version
+++ sed 's/Version //; s/\./_/g'
++ TSVERSION=/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/3_9_10
++ echo 'export {}'
++ node node_modules/.bin/tsc --showConfig
++ node getAllFlags.js getAllFlags.json
+Dumped all TS flags to ts-all-options.json
++ cd /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults
++ rm -rf /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/3_9_10
++ mkdir -p /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/3_9_10
++ cp /Users/szdz/ts_remove_me_later/tsconfig.json /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/3_9_10/tsconfig.json
++ cp /Users/szdz/ts_remove_me_later/showConfig.json /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/3_9_10/showConfig.json
++ npm view typescript versions --json
++ grep -vE '(-dev|-beta|-rc|-insiders|-alpha)'
++ cat
+
+  All good
+
