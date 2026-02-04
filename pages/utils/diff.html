@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generic Diff Utility</title>
+    <!-- Minimal Essential Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+        .controls input {
+            flex: 1;
+            padding: 5px;
+        }
+        #diff-view {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <form class="controls" id="diff-form">
+        <input type="text" id="url-a" placeholder="URL A">
+        <input type="text" id="url-b" placeholder="URL B">
+        <button type="submit" id="diff-btn">Diff</button>
+    </form>
+
+    <div id="diff-view"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/diff@5.2.0/dist/diff.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html-ui.min.js"></script>
+    
+    <script>
+        const form = document.getElementById('diff-form');
+        const inputA = document.getElementById('url-a');
+        const inputB = document.getElementById('url-b');
+        const diffView = document.getElementById('diff-view');
+
+        async function updateDiff(a, b) {
+            // Update inputs to match current comparison if they differ
+            if (inputA.value !== a) inputA.value = a || '';
+            if (inputB.value !== b) inputB.value = b || '';
+
+            if (!a || !b) {
+                diffView.innerHTML = '<div style="padding: 20px;">Enter both URLs to see the difference.</div>';
+                return;
+            }
+
+            try {
+                const [c1, c2] = await Promise.all([
+                    fetch(a).then(r => {
+                        if (!r.ok) throw new Error(`Failed to fetch A: ${r.statusText}`);
+                        return r.text();
+                    }),
+                    fetch(b).then(r => {
+                        if (!r.ok) throw new Error(`Failed to fetch B: ${r.statusText}`);
+                        return r.text();
+                    })
+                ]);
+
+                const diffString = Diff.createTwoFilesPatch(a, b, c1, c2);
+                
+                const diff2htmlUi = new Diff2HtmlUI(diffView, diffString, {
+                    drawFileList: false,
+                    matching: 'lines',
+                    outputFormat: 'side-by-side',
+                });
+                diff2htmlUi.draw();
+            } catch (e) {
+                diffView.innerHTML = `<div style="color:red; padding: 20px;">Error: ${e.message}</div>`;
+                console.error(e);
+            }
+        }
+
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            const a = inputA.value.trim();
+            const b = inputB.value.trim();
+            
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('a') === a && params.get('b') === b) {
+                return; // Nothing changed
+            }
+
+            const url = new URL(window.location);
+            if (a) url.searchParams.set('a', a); else url.searchParams.delete('a');
+            if (b) url.searchParams.set('b', b); else url.searchParams.delete('b');
+            
+            window.history.pushState({}, '', url);
+            updateDiff(a, b);
+        };
+
+        window.onpopstate = () => {
+            const params = new URLSearchParams(window.location.search);
+            updateDiff(params.get('a'), params.get('b'));
+        };
+
+        function init() {
+            const params = new URLSearchParams(window.location.search);
+            const a = params.get('a');
+            const b = params.get('b');
+            
+            updateDiff(a, b);
+        }
+
+        init();
+    </script>
+</body>
+</html>
