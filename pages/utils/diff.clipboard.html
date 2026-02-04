@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Generic Diff Utility</title>
+    <!-- Minimal Essential Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #ddd;
+      }
+      .controls textarea {
+        flex: 1;
+        padding: 5px;
+        height: 1.5em; /* Height of a standard input */
+        resize: vertical;
+        font-family: monospace;
+      }
+      #diff-view {
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <form class="controls" id="diff-form">
+      <textarea id="text-a" placeholder="Paste content A here..."></textarea>
+      <textarea id="text-b" placeholder="Paste content B here..."></textarea>
+      <button type="submit" id="diff-btn">Diff</button>
+    </form>
+
+    <div id="diff-view"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/diff@5.2.0/dist/diff.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html-ui.min.js"></script>
+
+    <script>
+      const form = document.getElementById("diff-form");
+      const areaA = document.getElementById("text-a");
+      const areaB = document.getElementById("text-b");
+      const diffView = document.getElementById("diff-view");
+
+      function updateDiff() {
+        const c1 = areaA.value;
+        const c2 = areaB.value;
+
+        if (!c1 && !c2) {
+          diffView.innerHTML = '<div style="padding: 20px;">Paste content into textareas to see the difference.</div>';
+          return;
+        }
+
+        try {
+          const diffString = Diff.createTwoFilesPatch("Left", "Right", c1, c2);
+
+          const diff2htmlUi = new Diff2HtmlUI(diffView, diffString, {
+            drawFileList: false,
+            matching: "lines",
+            outputFormat: "side-by-side",
+          });
+          diff2htmlUi.draw();
+        } catch (e) {
+          diffView.innerHTML = `<div style="color:red; padding: 20px;">Error: ${e.message}</div>`;
+          console.error(e);
+        }
+      }
+
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        updateDiff();
+      };
+
+      // Trigger diff on input (includes paste, typing, etc.)
+      areaA.oninput = updateDiff;
+      areaB.oninput = updateDiff;
+
+      // Also explicitly handle paste if needed, though oninput covers it in modern browsers
+      areaA.onpaste = () => setTimeout(updateDiff, 0);
+      areaB.onpaste = () => setTimeout(updateDiff, 0);
+
+      updateDiff();
+    </script>
+  </body>
+</html>
