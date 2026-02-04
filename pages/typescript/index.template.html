@@ -432,7 +432,7 @@
             //   To discourage package authors from publishing packages written in TypeScript, Node.js refuses to handle TypeScript files inside folders under a node_modules path.
             //   Paths aliases - not supported: https://nodejs.org/api/typescript.html#paths-aliases
 
-          // --experimental-strip-types has little different timeline
+          // --experimental-transform-types has little different timeline
             // flag introduced in https://github.com/nodejs/node/releases/tag/v22.7.0
             //   without this flag ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX will be thrown when enums, namespaces, parameter properties used
             // as of January 2026 still stays opt-in, so still experminental. Researching Stability
@@ -447,7 +447,7 @@
             "target": "ESNext",
             "module": "NodeNext",
             "rewriteRelativeImportExtensions": true,
-            "erasableSyntaxOnly": true,
+            "erasableSyntaxOnly": true, // add this one if you will not use --experimental-transform-types
             "verbatimModuleSyntax": true
 
           // WARNING: GOOD EXAMPLE HOW TO WORK WITH --experimental-transform-types: https://github.com/stopsopa/kafka/tree/experimental-transform-types
