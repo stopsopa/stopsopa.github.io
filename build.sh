@@ -13,6 +13,8 @@ case ${_SHELL} in
     ;;
 esac
 
+export NODE_OPTIONS=""
+
 ROOT="${_DIR}"
 
 # let's not enable it here
@@ -125,3 +127,5 @@ time /bin/bash .github/injector.sh
 # NOTICE: remember it will not process if --run not passed or CI env var is not present
 # I'm deliberately suppressing error to continue if above is not provided for local dev environment
 time /bin/bash .github/sha384.sh
+
+/bin/bash pages/typescript/defaults/getconfig.sh

@@ -1,5 +1,3 @@
-
-
 // dump-ts-all-options.mjs
 import ts from "typescript";
 import fs from "fs";
@@ -18,20 +16,20 @@ const optionInfo = ts.optionDeclarations;
 const allOptions = {};
 
 for (const opt of optionInfo) {
-    // option name (e.g. "allowJs")
-    const name = opt.name;
+  // option name (e.g. "allowJs")
+  const name = opt.name;
 
-    // default value — some are functions or shared logic, so show literal default if present
-    let defaultValue = opt.defaultValue;
-    if (defaultValue === undefined && opt.type === "boolean") {
-        // boolean flags default to false
-        defaultValue = false;
-    }
+  // default value — some are functions or shared logic, so show literal default if present
+  let defaultValue = opt.defaultValue;
+  if (defaultValue === undefined && opt.type === "boolean") {
+    // boolean flags default to false
+    defaultValue = false;
+  }
 
-    allOptions[name] = {
-        type: opt.type,
-        default: defaultValue === undefined ? null : defaultValue
-    };
+  allOptions[name] = {
+    type: opt.type,
+    default: defaultValue === undefined ? null : defaultValue,
+  };
 }
 
 // Write to file

@@ -54,7 +54,7 @@ const log = (function (log) {
         .substring(0, 19)
         .replace(/T/, " ")}`,
       "color: hsl(289deg 68% 53%)",
-      ...args,
+      ...args
     );
 })(
   (function () {
@@ -63,7 +63,7 @@ const log = (function (log) {
     } catch (e) {
       return () => {};
     }
-  })(),
+  })()
 );
 
 if (window.top === window.self) {
@@ -141,8 +141,7 @@ if (window.top === window.self) {
     const inViewport =
       rect.bottom > 0 &&
       rect.right > 0 &&
-      rect.top <
-        (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.top < (window.innerHeight || document.documentElement.clientHeight) &&
       rect.left < (window.innerWidth || document.documentElement.clientWidth);
 
     if (!inViewport) return false;
@@ -151,11 +150,7 @@ if (window.top === window.self) {
     let parent = el.parentElement;
     while (parent) {
       const parentStyle = getComputedStyle(parent);
-      if (
-        parentStyle.display === "none" ||
-        parentStyle.visibility === "hidden" ||
-        parentStyle.opacity === "0"
-      ) {
+      if (parentStyle.display === "none" || parentStyle.visibility === "hidden" || parentStyle.opacity === "0") {
         return false;
       }
       parent = parent.parentElement;
@@ -285,15 +280,11 @@ if (window.top === window.self) {
       /* ---------- 5. Last resort: nth-of-type ---------- */
       const parent = element.parentElement;
       if (parent) {
-        const siblings = [...parent.children].filter(
-          (el) => el.tagName === element.tagName,
-        );
+        const siblings = [...parent.children].filter((el) => el.tagName === element.tagName);
         const index = siblings.indexOf(element);
 
         if (index !== -1) {
-          const parentSelector = parent.id
-            ? `#${CSS.escape(parent.id)}`
-            : parent.tagName.toLowerCase();
+          const parentSelector = parent.id ? `#${CSS.escape(parent.id)}` : parent.tagName.toLowerCase();
 
           selector = `${parentSelector} > ${tag}:nth-of-type(${index + 1})`;
           if (isUniqueInRoot(selector, root) === element) {
@@ -465,16 +456,12 @@ if (window.top === window.self) {
       function handleShift(event) {
         shiftPressed = event.detail.action === "pressed";
 
-        if (
-          lockedSpeed &&
-          shiftPressed &&
-          video.playbackRate !== initialSpeed
-        ) {
+        if (lockedSpeed && shiftPressed && video.playbackRate !== initialSpeed) {
           console.log(
             "keyboardShift if: video.playbackRate !== initialSpeed: ",
             video.playbackRate !== initialSpeed,
             video.playbackRate,
-            initialSpeed,
+            initialSpeed
           );
           lockedSpeed = false;
 
@@ -486,7 +473,7 @@ if (window.top === window.self) {
             "keyboardShift else: video.playbackRate !== initialSpeed: ",
             video.playbackRate !== initialSpeed,
             video.playbackRate,
-            initialSpeed,
+            initialSpeed
           );
         }
       }
@@ -516,12 +503,7 @@ if (window.top === window.self) {
       }
 
       document.addEventListener("mediaNext", (event) => {
-        log(
-          "mediaNext :",
-          event.detail.action,
-          "document.hidden",
-          document.hidden,
-        );
+        log("mediaNext :", event.detail.action, "document.hidden", document.hidden);
 
         if (document.hidden) {
           return;
@@ -569,12 +551,7 @@ if (window.top === window.self) {
       });
 
       document.addEventListener("mediaPrevious", (event) => {
-        log(
-          "mediaPrevious:",
-          event.detail.action,
-          "document.hidden",
-          document.hidden,
-        );
+        log("mediaPrevious:", event.detail.action, "document.hidden", document.hidden);
 
         if (document.hidden) {
           return;
@@ -586,9 +563,7 @@ if (window.top === window.self) {
       });
       document.addEventListener("mediaPlay", (event) => {
         // https://github.com/stopsopa/os-browser-bridge/blob/main/SPECIAL.md#detect-media-keys
-        document
-          .querySelector('tp-yt-paper-dialog [id="close-button"]')
-          ?.click();
+        document.querySelector('tp-yt-paper-dialog [id="close-button"]')?.click();
       });
     } catch (e) {
       log("general try catch error:", e);

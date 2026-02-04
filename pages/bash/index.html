@@ -405,11 +405,11 @@
                 echo -e "\nERROR: file does not exist: ${FILE}\n" >&2
                 exit 1
               fi
-            
+
               # Escape Perl special characters
               ESC_SEARCH=$(printf "%s" "${SEARCH}" | perl -pe "s/([\\\\\/\@\$\`\"])/\\\\\$1/g")
               ESC_REPLACE=$(printf "%s" "${REPLACE}" | perl -pe "s/([\\\\\/\@\$\`\"])/\\\\\$1/g")
-            
+
               # Check if block exists
               if perl -0777 -ne "exit 1 unless /${ESC_SEARCH}/s" "${FILE}"; then
                 # SEARCH found, perform replacement in-place
@@ -420,7 +420,6 @@
                 exit 1
               fi
             '
-          
           </script>
           <h2>append to file if not exist ONCE</h2>
           <script type="editor" data-lang="sh">
@@ -437,7 +436,7 @@
                 echo -e "\n  ERROR: file does not exist: $FILE\n" >&2
                 exit 1
               fi
-            
+
               # Check if block exists
               if awk "
                   BEGIN { while ((getline line < \"-\") > 0) block = block line \"\n\" }
@@ -450,7 +449,6 @@
                 echo -e "\n  Block added to file\n\n  file: >${FILE}<\n\n  block: >${BLOCK}<"
               fi
             '
-            
           </script>
           <h2>detect interactive detect TTY</h2>
           <script type="editor" data-lang="sh">
