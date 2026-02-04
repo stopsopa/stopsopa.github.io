@@ -211,24 +211,10 @@
             // https://www.typescriptlang.org/tsconfig/
             // just go to https://www.typescriptlang.org/ and search (top right corner) "search" -> TSConfig Reference
 
-          bash -c -e "
-          mkdir -p ~/ts_remove_me_later
-          cd ~/ts_remove_me_later
-          echo "{}" > package.json
-          echo "" > .tool-versions
-          asdf set nodejs v24.12.0
-          npm install typescript
-          rm -rf tsconfig.json
-          node node_modules/.bin/tsc --init
-          cat <<EEE
-
-          run
-          CMD + P in VSCode and paste
-
-          $(realpath tsconfig.json)
-
-          EEE
-          "
+          urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/defaults/index.html
+          /bin/bash pages/typescript/defaults/getconfig.sh
+          /bin/bash pages/typescript/defaults/getconfig-some.sh
+          
         </script>
 
         <h2>Glossary</h2>
