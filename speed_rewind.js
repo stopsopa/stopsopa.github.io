@@ -453,28 +453,24 @@ if (window.top === window.self) {
         }
       }
       let shiftPressed = false;
+      let lastShiftPressTime = 0;
+      const DOUBLE_PRESS_THRESHOLD = 500;
       function handleShift(event) {
-        shiftPressed = event.detail.action === "pressed";
+        const isPressed = event.detail.action === "pressed";
+        shiftPressed = isPressed;
 
-        if (lockedSpeed && shiftPressed && video.playbackRate !== initialSpeed) {
-          console.log(
-            "keyboardShift if: video.playbackRate !== initialSpeed: ",
-            video.playbackRate !== initialSpeed,
-            video.playbackRate,
-            initialSpeed
-          );
-          lockedSpeed = false;
+        if (isPressed) {
+          const now = Date.now();
+          const isDoublePress = now - lastShiftPressTime < DOUBLE_PRESS_THRESHOLD;
+          lastShiftPressTime = now;
 
-          currentSpeed = initialSpeed;
-          video.playbackRate = initialSpeed;
-          showSpeedDisplay();
-        } else {
-          console.log(
-            "keyboardShift else: video.playbackRate !== initialSpeed: ",
-            video.playbackRate !== initialSpeed,
-            video.playbackRate,
-            initialSpeed
-          );
+          if (lockedSpeed && isDoublePress && video.playbackRate !== initialSpeed) {
+            console.log("Double Shift detected - resetting speed");
+            lockedSpeed = false;
+            currentSpeed = initialSpeed;
+            video.playbackRate = initialSpeed;
+            showSpeedDisplay();
+          }
         }
       }
 
@@ -561,10 +557,66 @@ if (window.top === window.self) {
           video.currentTime = Math.max(0, video.currentTime - 3);
         }
       });
-      document.addEventListener("mediaPlay", (event) => {
-        // https://github.com/stopsopa/os-browser-bridge/blob/main/SPECIAL.md#detect-media-keys
-        document.querySelector('tp-yt-paper-dialog [id="close-button"]')?.click();
-      });
+
+
+      (function () {
+          // everything in this block goes together wiht https://github.com/stopsopa/os-browser-bridge/commit/0b99fd4cae061846325749571ca52acc2ad4164b
+          document.addEventListener("mediaPlay", (event) => {
+              log("mediaPlay:", event.detail.action, "document.hidden", document.hidden);
+
+              if (document.hidden) {
+                  return;
+              }
+
+              if (event.detail.action === "pressed") {
+                  document.querySelector('tp-yt-paper-dialog [id="close-button"]')?.click();
+                  return;
+                  // let's not do that here, allow native media keyboard buttons to control it
+                  // this way when I take off my headphones we give a chance for native event to stop music
+                  if (video.paused) {
+                      video.play();
+                  } else {
+                      video.pause();
+                  }
+              }
+          });
+
+          (function () {
+              let isCommandPressed = false;
+              document.addEventListener("keyboardCommand", (e) => {
+                  isCommandPressed = e.detail.action === "pressed";
+              });
+              document.addEventListener(
+                  "mediaNext",
+                  (e) => {
+                      if (document.hidden) {
+                          return;
+                      }
+                      if (isCommandPressed && e.detail.action === "pressed") {
+                          log("→ Playlist Next (Local override)");
+                          document.querySelector(".ytp-next-button")?.click();
+                          e.stopImmediatePropagation();
+                      }
+                  },
+                  true
+              );
+              document.addEventListener(
+                  "mediaPrevious",
+                  (e) => {
+                      if (document.hidden) {
+                          return;
+                      }
+                      if (isCommandPressed && e.detail.action === "pressed") {
+                          log("→ Playlist Previous (Local override)");
+                          document.querySelector(".ytp-prev-button")?.click();
+                          e.stopImmediatePropagation();
+                      }
+                  },
+                  true
+              );
+
+        })();
+      }());
     } catch (e) {
       log("general try catch error:", e);
     }
