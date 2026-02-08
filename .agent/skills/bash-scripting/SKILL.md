@@ -39,6 +39,16 @@ When using variables always surround them with ${}.
 
 never $DIR, always ${DIR}
 
+# types of conditions
+
+always prefer these more modern double square bracket syntax for conditions:
+
+if [[...]]; then
+
+over
+
+if [ ... ]; then
+
 # error handling
 
 Before exit with non zero exit code from script in case of error always print the message what's happened like so:
