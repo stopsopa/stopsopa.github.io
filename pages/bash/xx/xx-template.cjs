@@ -141,13 +141,16 @@ TARGET="./coverage"
 # detect python version and run one or another version
 cd "\${TARGET}"
 if python3 -c "import http.server" > /dev/null 2>&1; then
+    echo -e "\nrunning: python3 -m http.server \${PORT}\n"
     python3 -m http.server \${PORT}
 elif python -c "import http.server" > /dev/null 2>&1; then
+    echo -e "\nrunning: python -m http.server \${PORT}\n"
     python -m http.server \${PORT}
 elif python -c "import SimpleHTTPServer" > /dev/null 2>&1; then
+    echo -e "\nrunning: python -m SimpleHTTPServer \${PORT}\n"
     python -m SimpleHTTPServer \${PORT}
 else
-    echo "Python http server module not found"
+    echo -e "\nPython http server module not found\n"
     exit 1
 fi
 `,
