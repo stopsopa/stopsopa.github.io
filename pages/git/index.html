@@ -206,13 +206,21 @@
       })();
     </script>
     <style>
-      #timestamp {
+      #timestamp,
+      #commit-msg-output {
         height: 168px;
         font-size: 11px;
         width: 98%;
       }
-      #hash {
+      #hash,
+      #commit-msg-hash {
         width: 100%;
+      }
+      #commit-msg-text {
+        width: 100%;
+        min-height: 80px;
+        overflow-y: hidden;
+        resize: none;
       }
     </style>
   </head>
@@ -1088,6 +1096,93 @@
                 </div>
                 <div>
                   <input type="text" id="hash" value="d06798b8722b52c9643bbd72f3f07bd7598777d4" />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h2>change commit message</h2>
+        <script type="editor" data-lang="sh">
+
+          COMMIT="d06798b8722b52c9643bbd72f3f07bd7598777d4"
+          NEW_CMT_MSG="Your new commit message goes here"
+          BASE=$(git rev-parse "${COMMIT}^")
+          GIT_SEQUENCE_EDITOR="sed -i '' -e 's/^pick ${COMMIT:0:7}/edit ${COMMIT:0:7}/'" \
+          git rebase -i "$BASE"
+          git commit --amend -m "$NEW_CMT_MSG"
+          git rebase --continue
+          
+        </script>
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            (function () {
+              const hashInput = document.querySelector("#commit-msg-hash");
+              const textInput = document.querySelector("#commit-msg-text");
+              const outputElement = document.querySelector("#commit-msg-output");
+
+              outputElement.addEventListener("click", function (e) {
+                outputElement.select();
+              });
+
+              const template = outputElement.value;
+
+              const sh = (str) => {
+                return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\$/g, "\\$").replace(/`/g, "\\`");
+              };
+
+              const updateMsg = function () {
+                outputElement.value = template
+                  .replace(/yyy/g, sh(hashInput.value))
+                  .replace(/mmm/g, sh(textInput.value));
+              };
+
+              const autoGrow = function () {
+                textInput.style.height = "5px";
+                textInput.style.height = textInput.scrollHeight + "px";
+              };
+
+              hashInput.addEventListener("input", updateMsg);
+              textInput.addEventListener("input", function () {
+                updateMsg();
+                autoGrow();
+              });
+              hashInput.addEventListener("click", function () {
+                hashInput.select();
+              });
+
+              updateMsg();
+              autoGrow();
+            })();
+          });
+        </script>
+        <table width="100%">
+          <tbody>
+            <tr>
+              <td width="50%">
+                <textarea id="commit-msg-output">
+COMMIT="yyy"
+NEW_CMT_MSG="mmm"
+BASE=$(git rev-parse "${COMMIT}^")
+GIT_SEQUENCE_EDITOR="sed -i '' -e 's/^pick ${COMMIT:0:7}/edit ${COMMIT:0:7}/'" \
+git rebase -i "$BASE"
+git commit --amend -m "$NEW_CMT_MSG"
+git rebase --continue
+</textarea
+                >
+              </td>
+              <td>
+                <div>
+                  <input
+                    type="text"
+                    id="commit-msg-hash"
+                    value="d06798b8722b52c9643bbd72f3f07bd7598777d4"
+                    placeholder="commit hash"
+                  />
+                </div>
+                <div>
+                  <textarea id="commit-msg-text" placeholder="new commit message">
+Your new commit message goes here</textarea
+                  >
                 </div>
               </td>
             </tr>
