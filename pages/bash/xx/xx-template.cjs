@@ -136,12 +136,20 @@ EEE
 echo -e "\n      Press enter to continue\n"
 read
 
-python -m http.server \${JEST_COVERAGE_PORT} --directory ./coverage
+TARGET="./coverage"
 
-# for python version 2.7
-
-# cd ./coverage
-# python -m SimpleHTTPServer \${PORT}
+# detect python version and run one or another version
+cd "\${TARGET}"
+if python3 -c "import http.server" > /dev/null 2>&1; then
+    python3 -m http.server \${PORT}
+elif python -c "import http.server" > /dev/null 2>&1; then
+    python -m http.server \${PORT}
+elif python -c "import SimpleHTTPServer" > /dev/null 2>&1; then
+    python -m SimpleHTTPServer \${PORT}
+else
+    echo "Python http server module not found"
+    exit 1
+fi
 `,
       confirm: false,
     },
