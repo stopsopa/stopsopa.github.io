@@ -1298,6 +1298,7 @@ git rebase --continue
         filter-branch version
         <script type="editor" data-lang="sh">
 
+          export FILTER_BRANCH_SQUELCH_WARNING=1
           git filter-branch --force --index-filter \
           'git rm -rf --cached --ignore-unmatch plik1 katalog1' \
           --prune-empty --tag-name-filter cat -- --all && \
