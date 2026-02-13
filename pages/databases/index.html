@@ -38,6 +38,8 @@
               <span>One to Many #3</span>
               <span>One to One</span>
               <span>Composite foreign keys</span>
+              <span>Enum</span>
+              <span>Partial</span>
               <span>Various</span>
           </div>
           <div data-tabs>
@@ -132,6 +134,57 @@ Table Bio as B {
               </div>
               <div>
                 <script type="editor" data-lang="python">
+Table users as U {
+  id integer [primary key]
+  username varchar
+  email varchar [unique, not null]
+  grade grade [default: null]
+}
+
+enum grade {
+  "A+"
+  "A"
+  "A-"
+  "Not Yet Set"
+}                         
+
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="python">
+                        
+                  TablePartial base_template [headerColor: #ff0000] {
+                    id int [pk, not null]
+                    created_at timestamp [default: `now()`]
+                    updated_at timestamp [default: `now()`]
+                  }
+                  TablePartial soft_delete_template {
+                    delete_status boolean [not null]
+                    deleted_at timestamp [default: `now()`]
+                  }
+                  TablePartial email_index {
+                    email varchar [unique]
+
+                    indexes {
+                      email [unique]
+                    }
+                  }
+
+                  Table users as U [note: 'test'] {
+                    id integer [primary key]
+                    username varchar
+                    email varchar [unique, not null]
+                    ~soft_delete_template
+                    ~base_template
+                    ~email_index
+                  }
+                  # https://dbml.dbdiagram.io/docs/#tablepartial
+                  # more about conflict resolution: https://dbml.dbdiagram.io/docs/#tablepartial:~:text=unique%5D%0A%20%20%7D%0A%7D-,Conflict%20Resolution,-When%20multiple%20partials
+
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="python">
 
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
@@ -144,7 +197,7 @@ Table follows as F {
 Ref: U.id < F.following_user_id
 Ref: U.id < F.followed_user_id
 
-Table users as U {
+Table users as U [] {
   id integer [primary key]
   username varchar
   email varchar [unique, not null]
@@ -162,6 +215,20 @@ Table users as U {
     created_at [name: 'created_at_index', note: 'Date']
     (username, email) [unique]
   }
+  Note: '''
+  💸 1 = processing,
+  ✔️ 2 = shipped,
+  ❌ 3 = cancelled,
+  😔 4 = refunded
+  # DBML - Database Markup Language
+  DBML (database markup language) is a simple, readable DSL language designed to define database structures.
+
+  ## Benefits
+
+  * It is simple, flexible and highly human-readable
+  * It is database agnostic, focusing on the essential database structure definition without worrying about the detailed syntaxes of each database
+  * Comes with a free, simple database visualiser at [dbdiagram.io](http://dbdiagram.io)
+  '''
 }
 
 Table posts as P {
