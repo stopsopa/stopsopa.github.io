@@ -24,6 +24,163 @@
             <li><a href="graphql.html">Graph QL</a></li>
           </ul>
         </div>
+        <h2></h2>
+        
+        <script type="editor" data-lang="python">
+
+          https://dbdiagram.io/d/698f4c8bbd82f5fce2aa871b (g*****@gmail.com)
+
+        </script>
+        <div data-vanilla-tabs>
+          <div data-buttons>
+              <span>One to Many #1</span>
+              <span>One to Many #2</span>
+              <span>One to Many #3</span>
+              <span>One to One</span>
+              <span>Composite foreign keys</span>
+              <span>Various</span>
+          </div>
+          <div data-tabs>
+              <div>
+                <script type="editor" data-lang="python">
+                  
+                  Table users {
+                    id integer [primary key, ref: < follows.following_user_id, ref: < F.followed_user_id]
+                    username varchar
+                    email varchar [unique, not null]
+                  }    
+                  
+                  Table follows as F {  
+                    following_user_id integer
+                    followed_user_id integer
+                    created_at timestamp
+                  }    
+        
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="python">
+                  
+                  Table users as U {
+                    id integer [primary key]
+                    username varchar
+                    email varchar [unique, not null]
+                  }  
+
+                  Table follows as F {
+                    following_user_id integer
+                    followed_user_id integer
+                    created_at timestamp
+                  }    
+                  
+                  Ref: U.id < F.following_user_id
+                  Ref: U.id < F.followed_user_id
+                            
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="python">
+                          
+                  Table users as U {
+                    id integer [primary key]
+                    username varchar
+                    email varchar [unique, not null]
+                  }
+
+                  Table follows as F {  
+                    following_user_id integer [ref: > users.id]
+                    followed_user_id integer [ref: > users.id] 
+                    created_at timestamp
+                  }
+        
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="python">
+
+Table users as U {
+  id integer [primary key]
+  username varchar
+  email varchar [unique, not null]
+}
+
+Table Bio as B {
+  id integer [pk]
+  user_id integer [ref: - users.id]
+}        
+        
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="python">
+                          
+                  Table users as U {
+                    id integer [primary key]
+                    username varchar
+                    email varchar [unique, not null]
+                  }
+
+                  Table Account as A {
+                    id integer [pk]
+                    email varchar
+                    user_id integer
+                  }
+                  Ref: A.(user_id, email) > U.(id, email) [delete: cascade, update: no action]
+                    # where entire [] block is optional https://dbml.dbdiagram.io/docs/#relationship-settings
+
+                </script>
+              </div>
+              <div>
+                <script type="editor" data-lang="python">
+
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table follows as F {  
+  following_user_id integer
+  followed_user_id integer
+  created_at timestamp
+}
+Ref: U.id < F.following_user_id
+Ref: U.id < F.followed_user_id
+
+Table users as U {
+  id integer [primary key]
+  username varchar
+  email varchar [unique, not null]
+  role varchar(255) [default: 1]
+  role2 varchar
+  created_at timestamp [default: `now() - interval '5 days'`]
+  index number [increment]
+  wealth integer
+  debt integer
+  checks { // https://dbml.dbdiagram.io/docs/#check-definition
+    `debt + wealth >= 0` [name: 'chk_positive_money']
+  }
+  indexes {
+    (id, email) [pk] // composite primary key
+    created_at [name: 'created_at_index', note: 'Date']
+    (username, email) [unique]
+  }
+}
+
+Table posts as P {
+  id integer [pk, note: 'pk == primary key']
+  title varchar
+  body text [note: 'Content of the post']
+  // user_id integer [not null, note: 'null & note'] // #1
+  user_id integer [ref: > users.id] // many-to-one #2
+  status varchar
+  created_at timestamp
+  Note: 'Posts of the user'
+}
+
+
+        
+                </script>
+              </div>
+          </div>
+      </div>
         <h2>Database normalization</h2>
         <a href="https://youtu.be/GFQaEYEc8_8">link</a>
         <script type="editor" data-lang="python">
