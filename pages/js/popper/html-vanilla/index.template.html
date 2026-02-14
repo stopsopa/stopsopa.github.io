@@ -75,9 +75,19 @@
 
           ------
 
+
           <%script instance-methods.html %>
         </script>
         <%inject instance-methods.html %>
+
+        <h2>Anchor Scoping</h2>
+        <script type="editor" data-lang="html">
+          <%inject anchor-scoping.htm %>
+          ------
+          Each .scoped element creates its own scope for the --my-anchor name.
+          Without anchor-scope, all .positioned elements would anchor to the last .anchor defined with that name.
+        </script>
+        <%inject anchor-scoping.htm %>
       </div>
     </div>
 
