@@ -25,10 +25,21 @@
         <div hidden>Hidden content</div>
 
         <script type="editor" data-lang="html">
-
-          <%inject simplest.html %>
+          <%inject simplest.htm %>
         </script>
-        <%inject simplest.html %>
+        <%inject simplest.htm %>
+
+        <h2>only one auto popover can be displayed at a time</h2>
+        <script type="editor" data-lang="html">
+          <%inject only-one-at-a-time.htm %>
+        </script>
+        <%inject only-one-at-a-time.htm %>
+
+        <h2>multiple manual popovers can be displayed at once, bt they cant be light-dismissed</h2>
+        <script type="editor" data-lang="html">
+          <%inject multiple-can-be-displayed.htm %>
+        </script>
+        <%inject multiple-can-be-displayed.htm %>
 
         <h2>With close button</h2>
         <script type="editor" data-lang="html">
@@ -45,6 +56,9 @@
         <script type="editor" data-lang="html">
           <%inject manual.html %>
           ------
+
+
+
           think about it this way:
           the same as basic example but the [popover] element has [popover="manual"] attribute
           which will open popover when button outside is clicked but nothing will close it
@@ -59,6 +73,9 @@
           think about it this way:
           the same as simplest example but we have some extra css
           https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#css_features
+
+          https://mdn.github.io/dom-examples/popover-api/#:~:text=Shows%20how%20you%20can%20add%20styling%20to%20the%20content%20behind%20the%20popover%20using%20the
+            from: https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#examples
         </script>
         <%inject backdrop.html %>
 
@@ -72,9 +89,22 @@
 
           HTMLElement.togglePopover()
           Toggles a popover element between the showing and hidden states.
+            # https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#instance_methods
+
+          beforetoggle event
+          Fired just before a popover element's state changes between showing and hidden, or vice versa. Can be used to prevent a popover from opening, or to update other elements that need to be triggered by popover state.
+
+          toggle event
+          Fired just after a popover element's state changes between showing and hidden, or vice versa.
+
+          interest Experimental
+          Fired on an interest invoker's target element when interest is shown, allowing code to be run in response.
+
+          loseinterest Experimental
+          Fired on an interest invoker's target element when interest is lost, allowing code to be run in response.
+            # https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#events
 
           ------
-
 
           <%script instance-methods.html %>
         </script>

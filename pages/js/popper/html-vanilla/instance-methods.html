@@ -2,7 +2,21 @@
   <button id="show-btn" class="btn">showPopover()</button>
   <button id="hide-btn" class="btn">hidePopover()</button>
   <button id="toggle-btn" class="btn">togglePopover()</button>
+  <button id="clear-btn" class="btn">Clear log</button>
 </div>
+
+<pre
+  id="event-log"
+  style="
+    background: #eee;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    max-height: 150px;
+    overflow: auto;
+    margin-top: 10px;
+  "
+></pre>
 
 <div id="mypopover-instance" popover="manual" class="popover-content">
   <p>
@@ -17,9 +31,39 @@
 <script>
   {
     const popover = document.getElementById("mypopover-instance");
+    const log = document.getElementById("event-log");
+
+    let count = 0;
+    const logEvent = (name, details) => {
+      count++;
+      const entry = document.createElement("div");
+      const paddedCount = count.toString().padStart(4, " ");
+      entry.textContent = `${paddedCount}: ${new Date().toLocaleTimeString()} - ${name}${
+        details ? ` (${details})` : ""
+      }`;
+      log.prepend(entry);
+    };
+
     document.getElementById("show-btn").onclick = () => popover.showPopover();
     document.getElementById("hide-btn").onclick = () => popover.hidePopover();
     document.getElementById("toggle-btn").onclick = () => popover.togglePopover();
+    document.getElementById("clear-btn").onclick = () => {
+      log.textContent = "";
+      count = 0;
+    };
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#events
+    popover.addEventListener("beforetoggle", (e) => {
+      logEvent("beforetoggle", `newState: ${e.newState}, oldState: ${e.oldState}`);
+    });
+
+    popover.addEventListener("toggle", (e) => {
+      logEvent("toggle", `newState: ${e.newState}, oldState: ${e.oldState}`);
+    });
+
+    // Interest Invokers (Experimental)
+    popover.addEventListener("interest", () => logEvent("interest"));
+    popover.addEventListener("loseinterest", () => logEvent("loseinterest"));
   }
 </script>
 
@@ -27,5 +71,10 @@
   #mypopover-instance::backdrop {
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(1px);
+  }
+  #event-log:empty::before {
+    content: "Events will be logged here...";
+    color: #888;
+    font-style: italic;
   }
 </style>
