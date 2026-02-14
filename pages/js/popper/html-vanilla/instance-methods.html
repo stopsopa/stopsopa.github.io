@@ -1,0 +1,31 @@
+<div class="buttons-container">
+  <button id="show-btn" class="btn">showPopover()</button>
+  <button id="hide-btn" class="btn">hidePopover()</button>
+  <button id="toggle-btn" class="btn">togglePopover()</button>
+</div>
+
+<div id="mypopover-instance" popover="manual" class="popover-content">
+  <p>
+    This popover is controlled using: <br />
+    <code>HTMLElement.showPopover()</code><br />
+    <code>HTMLElement.hidePopover()</code><br />
+    <code>HTMLElement.togglePopover()</code>
+  </p>
+  <button popovertarget="mypopover-instance" popovertargetaction="hide" class="btn btn-close">Close</button>
+</div>
+
+<script>
+  {
+    const popover = document.getElementById("mypopover-instance");
+    document.getElementById("show-btn").onclick = () => popover.showPopover();
+    document.getElementById("hide-btn").onclick = () => popover.hidePopover();
+    document.getElementById("toggle-btn").onclick = () => popover.togglePopover();
+  }
+</script>
+
+<style>
+  #mypopover-instance::backdrop {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(1px);
+  }
+</style>

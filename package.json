@@ -11,6 +11,7 @@
     "@modelcontextprotocol/inspector": "^0.17.2",
     "@popperjs/core": "^2.11.8",
     "canvas-confetti": "^1.9.2",
+    "chokidar": "^5.0.0",
     "chokidar-cli": "^3.0.0",
     "classnames": "^2.3.2",
     "colors": "^1.4.0",

@@ -9,7 +9,7 @@ _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
 cd "${_DIR}/.."
 
-export NODE_OPTIONS="" 
+# export NODE_OPTIONS="" 
 
 set -e
 #set -x
@@ -21,12 +21,15 @@ if [ ! -e "node_modules/.bin/esbuild" ]; then
     exit 1
 fi
 
-LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name '*.template.html' -print)"
+function process_file {
+  local FILE="${1}"
 
-while read -r FILE
-do
+  if [ ! -f "${FILE}" ]; then
+    echo "Error: File \"${FILE}\" not found"
+    return 1
+  fi
 
-  FILE="$(realpath "${FILE}")"
+  FILE="$(/bin/bash "bash/realpath.sh" "${FILE}")"
 
   PD="$(dirname "${FILE}")"
   PB="$(basename "${FILE}")"
@@ -51,5 +54,16 @@ do
   echo "bash: generated  \"${MIN}\""
 
   echo ""
+}
 
-done <<< "${LIST}"
+
+if [ "$1" = "" ]; then
+  LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name '*.template.html' -print)"
+
+  while read -r FILE
+  do
+    process_file "${FILE}"
+  done <<< "${LIST}"
+else
+  process_file "$1"
+fi

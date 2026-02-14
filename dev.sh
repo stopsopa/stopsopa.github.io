@@ -33,7 +33,7 @@ if [ "${1}" = "launch_ide" ]; then
   OPENIDE="1"
 fi
 
-export NODE_OPTIONS=""
+# export NODE_OPTIONS=""
 
 set -e
 
@@ -120,7 +120,8 @@ PID3="${!}"
 /bin/bash .github/injector.sh watch 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID4="${!}"
 
-node node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node_modules/**/*' -c '/bin/bash scripts/template.sh' 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
+/bin/bash scripts/template.sh # just call it once to process all - and btw I've removed --initial from below chokidar call
+node node_modules/.bin/chokidar '**/*.template.html' --ignore '**/node_modules/**/*' -c "/bin/bash scripts/template.sh {path}" 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
 PID6="${!}"
 
 node node_modules/.bin/tsc --preserveWatchOutput --watch 1> >(/bin/bash bash/dlogger.sh " " typescr >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e typescr >> "${LOGFILE}") &

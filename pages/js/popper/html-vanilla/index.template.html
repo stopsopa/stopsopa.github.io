@@ -22,6 +22,8 @@
 
         <h2>Simplest</h2>
 
+        <div hidden>Hidden content</div>
+
         <script type="editor" data-lang="html">
 
           <%inject simplest.html %>
@@ -32,20 +34,50 @@
         <script type="editor" data-lang="html">
 
           <%inject with-close-button.html %>
+          ------
+          think about it this way:
+          both buttons points to element with [popover] by it's id.
+          but button inside elmenet [popover] is different because have attr [popovertargetaction="hide"]
         </script>
         <%inject with-close-button.html %>
 
         <h2>Manual</h2>
         <script type="editor" data-lang="html">
           <%inject manual.html %>
+          ------
+          think about it this way:
+          the same as basic example but the [popover] element has [popover="manual"] attribute
+          which will open popover when button outside is clicked but nothing will close it
+          unless you click button inside popover with [popovertargetaction="hide"]
         </script>
         <%inject manual.html %>
 
         <h2>Backdrop</h2>
         <script type="editor" data-lang="html">
           <%inject backdrop.html %>
+          ------
+          think about it this way:
+          the same as simplest example but we have some extra css
+          https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#css_features
         </script>
         <%inject backdrop.html %>
+
+        <h2>Instance methods</h2>
+        <script type="editor" data-lang="html">
+          HTMLElement.hidePopover()
+          Hides a popover element by removing it from the top layer and styling it with display: none.
+
+          HTMLElement.showPopover()
+          Shows a popover element by adding it to the top layer.
+
+          HTMLElement.togglePopover()
+          Toggles a popover element between the showing and hidden states.
+
+          ------
+
+          <%script instance-methods.html %>
+        </script>
+        <%inject instance-methods.html %>
       </div>
     </div>
 

@@ -76,8 +76,13 @@ data = data.replace(/([ \t]*)<%([a-z]+)\s*(.*?)\s*%>/g, (_, space, type, file) =
     return data;
   }
 
+  if (type === "script") {
+    const tmp = data.replace(/<\/script>/gi, "&lt;/script>");
+    return tmp;
+  }
+
   throw new Error(
-    `Template file '${inpufile}' contains unsupported <%${type} ... %> placelholder, supported are <%url ... %> and <%inject ... %>`
+    `Template file '${inpufile}' contains unsupported <%${type} ... %> placelholder, supported are <%url ... %>, <%inject ... %> and <%script ... %>`
   );
 });
 
