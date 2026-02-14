@@ -307,6 +307,11 @@ In template file listed placeholders will be processed:
 <%inject /pages/to/file/in/respository.js %>
   - will be imported in-place as is
 
+<%script /pages/to/file/in/respository.js %>
+  - will be imported in-place as is
+  - it will just replace </script> with &lt;/script>
+  - mainly designed for injecting html into ace editor
+
 ```
 
 > [!NOTE]

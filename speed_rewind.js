@@ -558,65 +558,63 @@ if (window.top === window.self) {
         }
       });
 
-
       (function () {
-          // everything in this block goes together wiht https://github.com/stopsopa/os-browser-bridge/commit/0b99fd4cae061846325749571ca52acc2ad4164b
-          document.addEventListener("mediaPlay", (event) => {
-              log("mediaPlay:", event.detail.action, "document.hidden", document.hidden);
+        // everything in this block goes together wiht https://github.com/stopsopa/os-browser-bridge/commit/0b99fd4cae061846325749571ca52acc2ad4164b
+        document.addEventListener("mediaPlay", (event) => {
+          log("mediaPlay:", event.detail.action, "document.hidden", document.hidden);
 
-              if (document.hidden) {
-                  return;
-              }
+          if (document.hidden) {
+            return;
+          }
 
-              if (event.detail.action === "pressed") {
-                  document.querySelector('tp-yt-paper-dialog [id="close-button"]')?.click();
-                  return;
-                  // let's not do that here, allow native media keyboard buttons to control it
-                  // this way when I take off my headphones we give a chance for native event to stop music
-                  if (video.paused) {
-                      video.play();
-                  } else {
-                      video.pause();
-                  }
-              }
+          if (event.detail.action === "pressed") {
+            document.querySelector('tp-yt-paper-dialog [id="close-button"]')?.click();
+            return;
+            // let's not do that here, allow native media keyboard buttons to control it
+            // this way when I take off my headphones we give a chance for native event to stop music
+            if (video.paused) {
+              video.play();
+            } else {
+              video.pause();
+            }
+          }
+        });
+
+        (function () {
+          let isCommandPressed = false;
+          document.addEventListener("keyboardCommand", (e) => {
+            isCommandPressed = e.detail.action === "pressed";
           });
-
-          (function () {
-              let isCommandPressed = false;
-              document.addEventListener("keyboardCommand", (e) => {
-                  isCommandPressed = e.detail.action === "pressed";
-              });
-              document.addEventListener(
-                  "mediaNext",
-                  (e) => {
-                      if (document.hidden) {
-                          return;
-                      }
-                      if (isCommandPressed && e.detail.action === "pressed") {
-                          log("→ Playlist Next (Local override)");
-                          document.querySelector(".ytp-next-button")?.click();
-                          e.stopImmediatePropagation();
-                      }
-                  },
-                  true
-              );
-              document.addEventListener(
-                  "mediaPrevious",
-                  (e) => {
-                      if (document.hidden) {
-                          return;
-                      }
-                      if (isCommandPressed && e.detail.action === "pressed") {
-                          log("→ Playlist Previous (Local override)");
-                          document.querySelector(".ytp-prev-button")?.click();
-                          e.stopImmediatePropagation();
-                      }
-                  },
-                  true
-              );
-
+          document.addEventListener(
+            "mediaNext",
+            (e) => {
+              if (document.hidden) {
+                return;
+              }
+              if (isCommandPressed && e.detail.action === "pressed") {
+                log("→ Playlist Next (Local override)");
+                document.querySelector(".ytp-next-button")?.click();
+                e.stopImmediatePropagation();
+              }
+            },
+            true
+          );
+          document.addEventListener(
+            "mediaPrevious",
+            (e) => {
+              if (document.hidden) {
+                return;
+              }
+              if (isCommandPressed && e.detail.action === "pressed") {
+                log("→ Playlist Previous (Local override)");
+                document.querySelector(".ytp-prev-button")?.click();
+                e.stopImmediatePropagation();
+              }
+            },
+            true
+          );
         })();
-      }());
+      })();
     } catch (e) {
       log("general try catch error:", e);
     }

@@ -25,229 +25,218 @@
           </ul>
         </div>
         <h2></h2>
-        
+
         <script type="editor" data-lang="python">
 
           https://dbdiagram.io/d/698f4c8bbd82f5fce2aa871b (g*****@gmail.com)
-
         </script>
         <div data-vanilla-tabs>
           <div data-buttons>
-              <span>One to Many #1</span>
-              <span>One to Many #2</span>
-              <span>One to Many #3</span>
-              <span>One to One</span>
-              <span>Composite foreign keys</span>
-              <span>Enum</span>
-              <span>Partial</span>
-              <span>Various</span>
+            <span>One to Many #1</span>
+            <span>One to Many #2</span>
+            <span>One to Many #3</span>
+            <span>One to One</span>
+            <span>Composite foreign keys</span>
+            <span>Enum</span>
+            <span>Partial</span>
+            <span>Various</span>
           </div>
           <div data-tabs>
-              <div>
-                <script type="editor" data-lang="python">
-                  
-                  Table users {
-                    id integer [primary key, ref: < follows.following_user_id, ref: < F.followed_user_id]
-                    username varchar
-                    email varchar [unique, not null]
-                  }    
-                  
-                  Table follows as F {  
-                    following_user_id integer
-                    followed_user_id integer
-                    created_at timestamp
-                  }    
-        
-                </script>
-              </div>
-              <div>
-                <script type="editor" data-lang="python">
-                  
-                  Table users as U {
-                    id integer [primary key]
-                    username varchar
-                    email varchar [unique, not null]
-                  }  
+            <div>
+              <script type="editor" data-lang="python">
 
-                  Table follows as F {
-                    following_user_id integer
-                    followed_user_id integer
-                    created_at timestamp
-                  }    
-                  
-                  Ref: U.id < F.following_user_id
-                  Ref: U.id < F.followed_user_id
-                            
-                </script>
-              </div>
-              <div>
-                <script type="editor" data-lang="python">
-                          
-                  Table users as U {
-                    id integer [primary key]
-                    username varchar
-                    email varchar [unique, not null]
+                Table users {
+                  id integer [primary key, ref: < follows.following_user_id, ref: < F.followed_user_id]
+                  username varchar
+                  email varchar [unique, not null]
+                }
+
+                Table follows as F {
+                  following_user_id integer
+                  followed_user_id integer
+                  created_at timestamp
+                }
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                Table users as U {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                }
+
+                Table follows as F {
+                  following_user_id integer
+                  followed_user_id integer
+                  created_at timestamp
+                }
+
+                Ref: U.id < F.following_user_id
+                Ref: U.id < F.followed_user_id
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                Table users as U {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                }
+
+                Table follows as F {
+                  following_user_id integer [ref: > users.id]
+                  followed_user_id integer [ref: > users.id]
+                  created_at timestamp
+                }
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                Table users as U {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                }
+
+                Table Bio as B {
+                  id integer [pk]
+                  user_id integer [ref: - users.id]
+                }
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                Table users as U {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                }
+
+                Table Account as A {
+                  id integer [pk]
+                  email varchar
+                  user_id integer
+                }
+                Ref: A.(user_id, email) > U.(id, email) [delete: cascade, update: no action]
+                  # where entire [] block is optional https://dbml.dbdiagram.io/docs/#relationship-settings
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+                Table users as U {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                  grade grade [default: null]
+                }
+
+                enum grade {
+                  "A+"
+                  "A"
+                  "A-"
+                  "Not Yet Set"
+                }
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                TablePartial base_template [headerColor: #ff0000] {
+                  id int [pk, not null]
+                  created_at timestamp [default: `now()`]
+                  updated_at timestamp [default: `now()`]
+                }
+                TablePartial soft_delete_template {
+                  delete_status boolean [not null]
+                  deleted_at timestamp [default: `now()`]
+                }
+                TablePartial email_index {
+                  email varchar [unique]
+
+                  indexes {
+                    email [unique]
                   }
+                }
 
-                  Table follows as F {  
-                    following_user_id integer [ref: > users.id]
-                    followed_user_id integer [ref: > users.id] 
-                    created_at timestamp
+                Table users as U [note: 'test'] {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                  ~soft_delete_template
+                  ~base_template
+                  ~email_index
+                }
+                # https://dbml.dbdiagram.io/docs/#tablepartial
+                # more about conflict resolution: https://dbml.dbdiagram.io/docs/#tablepartial:~:text=unique%5D%0A%20%20%7D%0A%7D-,Conflict%20Resolution,-When%20multiple%20partials
+              </script>
+            </div>
+            <div>
+              <script type="editor" data-lang="python">
+
+                // Use DBML to define your database structure
+                // Docs: https://dbml.dbdiagram.io/docs
+
+                Table follows as F {
+                  following_user_id integer
+                  followed_user_id integer
+                  created_at timestamp
+                }
+                Ref: U.id < F.following_user_id
+                Ref: U.id < F.followed_user_id
+
+                Table users as U [] {
+                  id integer [primary key]
+                  username varchar
+                  email varchar [unique, not null]
+                  role varchar(255) [default: 1]
+                  role2 varchar
+                  created_at timestamp [default: `now() - interval '5 days'`]
+                  index number [increment]
+                  wealth integer
+                  debt integer
+                  checks { // https://dbml.dbdiagram.io/docs/#check-definition
+                    `debt + wealth >= 0` [name: 'chk_positive_money']
                   }
-        
-                </script>
-              </div>
-              <div>
-                <script type="editor" data-lang="python">
-
-Table users as U {
-  id integer [primary key]
-  username varchar
-  email varchar [unique, not null]
-}
-
-Table Bio as B {
-  id integer [pk]
-  user_id integer [ref: - users.id]
-}        
-        
-                </script>
-              </div>
-              <div>
-                <script type="editor" data-lang="python">
-                          
-                  Table users as U {
-                    id integer [primary key]
-                    username varchar
-                    email varchar [unique, not null]
+                  indexes {
+                    (id, email) [pk] // composite primary key
+                    created_at [name: 'created_at_index', note: 'Date']
+                    (username, email) [unique]
                   }
+                  Note: '''
+                  💸 1 = processing,
+                  ✔️ 2 = shipped,
+                  ❌ 3 = cancelled,
+                  😔 4 = refunded
+                  # DBML - Database Markup Language
+                  DBML (database markup language) is a simple, readable DSL language designed to define database structures.
 
-                  Table Account as A {
-                    id integer [pk]
-                    email varchar
-                    user_id integer
-                  }
-                  Ref: A.(user_id, email) > U.(id, email) [delete: cascade, update: no action]
-                    # where entire [] block is optional https://dbml.dbdiagram.io/docs/#relationship-settings
+                  ## Benefits
 
-                </script>
-              </div>
-              <div>
-                <script type="editor" data-lang="python">
-Table users as U {
-  id integer [primary key]
-  username varchar
-  email varchar [unique, not null]
-  grade grade [default: null]
-}
+                  * It is simple, flexible and highly human-readable
+                  * It is database agnostic, focusing on the essential database structure definition without worrying about the detailed syntaxes of each database
+                  * Comes with a free, simple database visualiser at [dbdiagram.io](http://dbdiagram.io)
+                  '''
+                }
 
-enum grade {
-  "A+"
-  "A"
-  "A-"
-  "Not Yet Set"
-}                         
-
-                </script>
-              </div>
-              <div>
-                <script type="editor" data-lang="python">
-                        
-                  TablePartial base_template [headerColor: #ff0000] {
-                    id int [pk, not null]
-                    created_at timestamp [default: `now()`]
-                    updated_at timestamp [default: `now()`]
-                  }
-                  TablePartial soft_delete_template {
-                    delete_status boolean [not null]
-                    deleted_at timestamp [default: `now()`]
-                  }
-                  TablePartial email_index {
-                    email varchar [unique]
-
-                    indexes {
-                      email [unique]
-                    }
-                  }
-
-                  Table users as U [note: 'test'] {
-                    id integer [primary key]
-                    username varchar
-                    email varchar [unique, not null]
-                    ~soft_delete_template
-                    ~base_template
-                    ~email_index
-                  }
-                  # https://dbml.dbdiagram.io/docs/#tablepartial
-                  # more about conflict resolution: https://dbml.dbdiagram.io/docs/#tablepartial:~:text=unique%5D%0A%20%20%7D%0A%7D-,Conflict%20Resolution,-When%20multiple%20partials
-
-                </script>
-              </div>
-              <div>
-                <script type="editor" data-lang="python">
-
-// Use DBML to define your database structure
-// Docs: https://dbml.dbdiagram.io/docs
-
-Table follows as F {  
-  following_user_id integer
-  followed_user_id integer
-  created_at timestamp
-}
-Ref: U.id < F.following_user_id
-Ref: U.id < F.followed_user_id
-
-Table users as U [] {
-  id integer [primary key]
-  username varchar
-  email varchar [unique, not null]
-  role varchar(255) [default: 1]
-  role2 varchar
-  created_at timestamp [default: `now() - interval '5 days'`]
-  index number [increment]
-  wealth integer
-  debt integer
-  checks { // https://dbml.dbdiagram.io/docs/#check-definition
-    `debt + wealth >= 0` [name: 'chk_positive_money']
-  }
-  indexes {
-    (id, email) [pk] // composite primary key
-    created_at [name: 'created_at_index', note: 'Date']
-    (username, email) [unique]
-  }
-  Note: '''
-  💸 1 = processing,
-  ✔️ 2 = shipped,
-  ❌ 3 = cancelled,
-  😔 4 = refunded
-  # DBML - Database Markup Language
-  DBML (database markup language) is a simple, readable DSL language designed to define database structures.
-
-  ## Benefits
-
-  * It is simple, flexible and highly human-readable
-  * It is database agnostic, focusing on the essential database structure definition without worrying about the detailed syntaxes of each database
-  * Comes with a free, simple database visualiser at [dbdiagram.io](http://dbdiagram.io)
-  '''
-}
-
-Table posts as P {
-  id integer [pk, note: 'pk == primary key']
-  title varchar
-  body text [note: 'Content of the post']
-  // user_id integer [not null, note: 'null & note'] // #1
-  user_id integer [ref: > users.id] // many-to-one #2
-  status varchar
-  created_at timestamp
-  Note: 'Posts of the user'
-}
-
-
-        
-                </script>
-              </div>
+                Table posts as P {
+                  id integer [pk, note: 'pk == primary key']
+                  title varchar
+                  body text [note: 'Content of the post']
+                  // user_id integer [not null, note: 'null & note'] // #1
+                  user_id integer [ref: > users.id] // many-to-one #2
+                  status varchar
+                  created_at timestamp
+                  Note: 'Posts of the user'
+                }
+              </script>
+            </div>
           </div>
-      </div>
+        </div>
         <h2>Database normalization</h2>
         <a href="https://youtu.be/GFQaEYEc8_8">link</a>
         <script type="editor" data-lang="python">

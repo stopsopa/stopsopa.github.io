@@ -52,7 +52,7 @@
 
       function updateURL() {
         const url = new URL(window.location);
-        
+
         if (areaA.value) {
           url.searchParams.set("a", LZString.compressToEncodedURIComponent(areaA.value));
         } else {
@@ -73,8 +73,8 @@
         const a = params.get("a");
         const b = params.get("b");
 
-        areaA.value = a ? (LZString.decompressFromEncodedURIComponent(a) || "") : "";
-        areaB.value = b ? (LZString.decompressFromEncodedURIComponent(b) || "") : "";
+        areaA.value = a ? LZString.decompressFromEncodedURIComponent(a) || "" : "";
+        areaB.value = b ? LZString.decompressFromEncodedURIComponent(b) || "" : "";
       }
 
       function updateDiff() {

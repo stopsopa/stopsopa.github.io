@@ -5,6 +5,9 @@
 # <%url pages/bookmarklets/jira-create.uglify.min.js %>
 # <%inject pages/bookmarklets/periscope.uglify.js %>
 
+# /bin/bash scripts/template.sh
+# /bin/bash scripts/template.sh pages/js/popper/html-vanilla/index.template.html
+
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
 cd "${_DIR}/.."
