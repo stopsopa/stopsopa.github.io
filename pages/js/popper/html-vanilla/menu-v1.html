@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nested popovers example</title>
+    <style>
+      body #menu-parent [popover] {
+        border: 1px solid black;
+        width: 120px;
+        inset: unset;
+      }
+
+      #menu-parent {
+        #mainpopover {
+          left: 7px;
+          top: 38px;
+        }
+
+        #subpopover {
+          left: 120px;
+          top: 86px;
+        }
+
+        .listcontainer,
+        .subcontainer {
+          display: flex;
+          flex-direction: column;
+        }
+
+        a {
+          flex: 1;
+          text-decoration: none;
+          outline: none;
+          text-align: center;
+          line-height: 3;
+          color: black;
+        }
+
+        a:link,
+        a:visited {
+          background: palegoldenrod;
+          color: black;
+        }
+
+        a:hover,
+        a:focus {
+          background: orange;
+        }
+
+        a:active {
+          background: darkred;
+          color: white;
+        }
+      }
+    </style>
+    <script src="index.js" defer></script>
+  </head>
+  <body>
+    <div id="menu-parent">
+      <button popovertarget="mainpopover" popovertargetaction="toggle">Menu</button>
+      <div id="mainpopover" popover>
+        <nav class="listcontainer">
+          <a href="#">Home</a>
+          <div class="subcontainer" tabindex="0">
+            <a href="#">Pizza <strong>></strong></a>
+            <div id="subpopover" popover>
+              <div class="listcontainer">
+                <a href="#">Margherita</a>
+                <a href="#">Pepperoni</a>
+                <a href="#">Ham & Shroom</a>
+                <a href="#">Vegan</a>
+              </div>
+            </div>
+          </div>
+          <a href="#">Music</a>
+          <a href="#">Wombats</a>
+          <a href="#">Finland</a>
+        </nav>
+      </div>
+    </div>
+    <script>
+      const subcontainer = document.querySelector(".subcontainer");
+      const mainpopover = document.getElementById("mainpopover");
+      const subpopover = document.getElementById("subpopover");
+
+      // Events to show/hide the subpopover when the mouse moves over and out
+      subcontainer.addEventListener("mouseover", () => {
+        subpopover.showPopover();
+      });
+
+      subcontainer.addEventListener("mouseout", () => {
+        if (subpopover.matches(":popover-open")) {
+          subpopover.hidePopover();
+        }
+      });
+
+      // Event to make the subpopover keyboard-accessible
+      subcontainer.addEventListener("focusin", () => {
+        subpopover.showPopover();
+      });
+
+
+      // Events to hide the popover menus when an option is selected in either of them
+      mainpopover.addEventListener("click", () => {
+        if (subpopover.matches(":popover-open")) {
+          subpopover.hidePopover();
+        }
+
+        if (mainpopover.matches(":popover-open")) {
+          mainpopover.hidePopover();
+        }
+      });
+
+      subpopover.addEventListener("click", () => {
+        subpopover.hidePopover();
+        mainpopover.hidePopover();
+      });
+    </script>
+    <a href="https://mdn.github.io/dom-examples/popover-api/#:~:text=Demonstrates%20the%20behavior%20of%20nested%20auto%20state%20popovers">Nested popovers example</a>
+    from
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#examples">https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#examples</a>
+  </body>
+</html>

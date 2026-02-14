@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Popover hint example</title>
+    <style>
+      /* General styling */
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        font-family: system-ui;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        height: inherit;
+        background: #ccc;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #wrapper {
+        width: 60%;
+        max-width: 500px;
+      }
+
+      /* Button bar styling */
+
+      #button-bar {
+        height: 48px;
+        min-width: 300px;
+        padding: 8px;
+        border-radius: 6px;
+        background: #eee;
+        box-shadow: 1px 1px 3px #999;
+        display: flex;
+        justify-content: space-around;
+        gap: 10px;
+        z-index: 2;
+        position: relative;
+      }
+
+      /* Button styling */
+
+      #button-bar button {
+        border: 1px solid #999;
+        border-radius: 4px;
+        background: #eee;
+        flex: 1;
+      }
+
+      #button-bar button:hover,
+      #button-bar button:focus {
+        background: #ccc;
+      }
+
+      #button-bar button:active {
+        box-shadow: inset 1px 1px 2px #333, inset -1px -1px 2px #eee;
+      }
+
+      /* Styling auto popovers */
+
+      [popover="auto"] {
+        inset: unset;
+        position: absolute;
+        bottom: calc(anchor(top) + 20px);
+        justify-self: anchor-center;
+        margin: 0;
+
+        width: 200px;
+        text-align: center;
+        padding: 8px;
+        border-radius: 6px;
+        background: #eee;
+        box-shadow: 1px 1px 3px #999;
+        border: none;
+      }
+
+      [popover="auto"] button {
+        border: 1px solid #999;
+        border-radius: 4px;
+        background: #eee;
+        width: 100%;
+        line-height: 1.5;
+      }
+
+      [popover="auto"] button:first-of-type {
+        margin-bottom: 8px;
+      }
+
+      [popover="auto"] button:hover,
+      [popover="auto"] button:focus {
+        background: #ccc;
+      }
+
+      [popover="auto"] button:active {
+        box-shadow: inset 1px 1px 2px #333, inset -1px -1px 2px #eee;
+      }
+
+      /* Styling hint popovers */
+
+      [popover="hint"] {
+        inset: unset;
+        position: absolute;
+        top: calc(anchor(bottom) + 5px);
+        justify-self: anchor-center;
+        margin: 0;
+
+        padding: 8px;
+        border-radius: 6px;
+        background: #271717;
+        color: whitesmoke;
+        box-shadow: 1px 1px 3px #999;
+        border: none;
+      }
+
+      /* Styling help para */
+
+      .help-para {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        background: #eee;
+        font-size: 0.8rem;
+        line-height: 1.3;
+        width: 50%;
+        max-width: 600px;
+        margin: 0;
+        padding: 16px;
+        box-shadow: 1px 1px 3px #999;
+        z-index: 1;
+      }
+
+      .help-para p {
+        margin: 0;
+      }
+
+      .help-para p:first-child {
+        margin-bottom: 1rem;
+      }
+
+      @media (max-width: 640px) {
+        .help-para {
+          width: auto;
+          right: 16px;
+        }
+
+        #wrapper {
+          width: 90%;
+        }
+      }
+    </style>
+    <script src="index.js" defer></script>
+  </head>
+  <body>
+    <div id="wrapper">
+      <section id="button-bar">
+        <button popovertarget="submenu-1" popovertargetaction="toggle" id="menu-1">
+          Menu A
+          <div id="tooltip-1" class="tooltip" popover="hint">Tooltip A</div>
+        </button>
+
+        <button popovertarget="submenu-2" popovertargetaction="toggle" id="menu-2">
+          Menu B
+          <div id="tooltip-2" class="tooltip" popover="hint">Tooltip B</div>
+        </button>
+
+        <button popovertarget="submenu-3" popovertargetaction="toggle" id="menu-3">
+          Menu C
+          <div id="tooltip-3" class="tooltip" popover="hint">Tooltip C</div>
+        </button>
+
+        <div id="submenu-1" popover="auto"><button>Option A</button><br /><button>Option B</button></div>
+        <div id="submenu-2" popover="auto"><button>Option A</button><br /><button>Option B</button></div>
+        <div id="submenu-3" popover="auto"><button>Option A</button><br /><button>Option B</button></div>
+      </section>
+    </div>
+
+    <div class="help-para">
+      <p>
+        Press the buttons to show the auto popovers. Hover or focus the buttons to show the hint popovers. When an auto
+        popover is shown, you can show the hint popovers without hiding it. See
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Popover_API/Using#using_hint_popover_state"
+          >Using "hint" popover state</a
+        >
+        for more information.
+      </p>
+      <p>
+        Note that this demo uses both hint popovers and CSS anchor positioning. Browsers that don't support the former
+        will experience different tooltip behavior. Browsers that don't support the latter will not see the menus and
+        tooltips appear in the correct position relative to each button on the button bar. Check browser support for
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/popover#browser_compatibility"
+          >hint popovers</a
+        >
+        and
+        <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/position-anchor#browser_compatibility"
+          >anchor-positioning</a
+        >.
+      </p>
+    </div>
+    <a
+      href="https://mdn.github.io/dom-examples/popover-api/#:~:text=This%20example%20shows%20how%20to%20use%20the%20popover%3D%22hint%22%20value%20to%20create%20tooltip"
+      >source</a
+    >
+    <br />
+    <p>from <a href="https://developer.mozilla.org/en-US/docs/Web/API/Popover_API#examples"></a></p>
+    <script>
+      const tooltips = document.querySelectorAll(".tooltip");
+      const btns = document.querySelectorAll("#button-bar button");
+
+      function addEventListeners(i) {
+        btns[i].addEventListener("mouseover", () => {
+          tooltips[i].showPopover({ source: btns[i] });
+        });
+
+        btns[i].addEventListener("mouseout", () => {
+          tooltips[i].hidePopover();
+        });
+
+        btns[i].addEventListener("focus", () => {
+          tooltips[i].showPopover({ source: btns[i] });
+        });
+
+        btns[i].addEventListener("blur", () => {
+          tooltips[i].hidePopover();
+        });
+      }
+
+      for (let i = 0; i < btns.length; i++) {
+        addEventListeners(i);
+      }
+    </script>
+  </body>
+</html>
