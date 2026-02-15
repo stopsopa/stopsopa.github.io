@@ -6,11 +6,14 @@ function locallog(...args) {
   pre.innerText = args.join(" ") + "\n" + pre.innerText;
 }
 
-const { unbind, all } = handleRadio({
+const { unbind, list } = handleRadio({
   name,
   initState: "two",
   delegateParent,
   initTrigger: true,
+  selectorAll: (name) => {
+    return `.radios input[type="radio"][name="${name}"]`;
+  },
   onChange: (v) => {
     locallog("radioChanged: ", v);
   },
@@ -20,7 +23,7 @@ function handleRadio(opt) {
   const {
     name,
     selectorAll = (name) => {
-      return `.radios input[type="radio"][name="${name}"]`;
+      return `input[type="radio"][name="${name}"]`;
     },
     selectorOne = (name, state) => {
       const s = selectorAll(name);
@@ -80,7 +83,7 @@ function handleRadio(opt) {
     unbind: () => {
       delegateParent.removeEventListener("click", delegateFn);
     },
-    all: [...delegateParent.querySelectorAll(s)].reduce((acc, el) => {
+    list: [...delegateParent.querySelectorAll(s)].reduce((acc, el) => {
       acc.push({
         el,
         checked: el.checked,
