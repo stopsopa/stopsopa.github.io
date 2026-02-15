@@ -38,7 +38,7 @@
       [popovertarget="mypopover"] {
         anchor-name: --anchor-el;
       }
-      #mypopover {
+      [data-popover-hint-anchor] {
         inset: auto;
         margin: 0;
         position-anchor: --anchor-el;
@@ -49,39 +49,39 @@
         --offset: 10px;
       }
       /* 9 cardinal positions */
-      #mypopover.topleft {
+      [data-popover-hint-anchor].topleft {
         bottom: calc(anchor(top) + var(--offset));
         right: anchor(left);
       }
-      #mypopover.top {
+      [data-popover-hint-anchor].top {
         bottom: calc(anchor(top) + var(--offset));
         justify-self: anchor-center;
       }
-      #mypopover.topright {
+      [data-popover-hint-anchor].topright {
         bottom: calc(anchor(top) + var(--offset));
         left: anchor(right);
       }
-      #mypopover.left {
+      [data-popover-hint-anchor].left {
         right: calc(anchor(left) + var(--offset));
         align-self: anchor-center;
       }
-      #mypopover.center {
+      [data-popover-hint-anchor].center {
         justify-self: anchor-center;
         align-self: anchor-center;
       }
-      #mypopover.right {
+      [data-popover-hint-anchor].right {
         left: calc(anchor(right) + var(--offset));
         align-self: anchor-center;
       }
-      #mypopover.bottomleft {
+      [data-popover-hint-anchor].bottomleft {
         top: calc(anchor(bottom) + var(--offset));
         right: anchor(left);
       }
-      #mypopover.bottom {
+      [data-popover-hint-anchor].bottom {
         top: calc(anchor(bottom) + var(--offset));
         justify-self: anchor-center;
       }
-      #mypopover.bottomright {
+      [data-popover-hint-anchor].bottomright {
         top: calc(anchor(bottom) + var(--offset));
         left: anchor(right);
       }
@@ -114,7 +114,7 @@
       <button popovertarget="mypopover">This is anchor: Toggle the popover</button>
       <span>Dragging Handler</span>
     </div>
-    <div id="mypopover" popover="manual" contenteditable>
+    <div id="mypopover" popover="manual" data-popover-hint-anchor contenteditable>
       This is popover [contenteditable]
       <button popovertarget="mypopover" popovertargetaction="hide">Close</button>
     </div>
