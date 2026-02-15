@@ -1,5 +1,5 @@
 import handleRadio from "./handleRadio.js";
-// urlwizzard.schema://urlwizzard.hostnegotiated/pages/html/handleRadio.js
+// urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fhtml%2FhandleRadio.js
 
 const name = "mode";
 const initState = "single";
