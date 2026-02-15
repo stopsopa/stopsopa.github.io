@@ -53,7 +53,10 @@
         bottom: calc(anchor(top) + var(--offset));
         right: anchor(left);
       }
-      [data-popover-hint-anchor].top {
+      [data-popover-hint-anchor].top,
+      [data-popover-hint-anchor]:not(.topleft):not(.top):not(.topright):not(.left):not(.center):not(.right):not(
+          .bottomleft
+        ):not(.bottom):not(.bottomright) {
         bottom: calc(anchor(top) + var(--offset));
         justify-self: anchor-center;
       }
@@ -193,7 +196,7 @@
         name: "position",
         delegateParent: document.querySelector(".radios"),
         initState: "top",
-        initTrigger: true,
+        // initTrigger: true,
         onChange: radioChange,
       });
 
