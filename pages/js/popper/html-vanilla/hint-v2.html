@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #handler {
+        position: absolute;
+        span {
+          border: 1px solid #ccc;
+          cursor: pointer;
+          padding: 3px;
+          user-select: none;
+        }
+      }
+      [popovertarget="mypopover"] {
+        anchor-name: --anchor-el;
+      }
+      #mypopover {
+        margin: 0;
+        position-anchor: --anchor-el;
+        top: auto;
+        bottom: anchor(top);
+        left: anchor(left);
+        position-try: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="radios">
+      <label> <input type="radio" name="position" value="top" checked="checked" /> top </label>
+      <label> <input type="radio" name="position" value="bottom" /> bottom </label>
+      <label> <input type="radio" name="position" value="left" /> left </label>
+      <label> <input type="radio" name="position" value="right" /> right </label>
+    </div>
+    <br />
+    <div id="handler">
+      <span>Dragging Handler</span>
+      <button popovertarget="mypopover">This is anchor: Toggle the popover</button>
+    </div>
+    <div id="mypopover" popover="manual">
+      This is popover
+      <button popovertarget="mypopover" popovertargetaction="hide">Close</button>
+    </div>
+
+    <script>
+      {
+        function getStyle(el) {
+          return window.getComputedStyle(el);
+        }
+        function drag(element, listener, fetch) {
+          let pageX = 0;
+          let pageY = 0;
+          let down = false;
+          let fetchX;
+          let fetchY;
+          function mousedown(e) {
+            down = true;
+            pageX = e.pageX;
+            pageY = e.pageY;
+            if (typeof fetch === "function") {
+              ({ x: fetchX, y: fetchY } = fetch());
+            } else {
+              fetchX = fetchY = 0;
+            }
+            listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousedown");
+            function mousemove(e) {
+              if (down) {
+                listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousemove");
+              }
+            }
+            document.addEventListener("mouseup", (e) => {
+              document.removeEventListener("mousemove", mousemove);
+              if (down) {
+                down = false;
+                listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mouseup");
+              }
+            });
+            document.addEventListener("mousemove", mousemove);
+          }
+          element.addEventListener("mousedown", mousedown);
+        }
+
+        const element = document.querySelector('[popovertarget="mypopover"]').parentNode;
+
+        drag(
+          element,
+          (x, y) => {
+            element.style.left = `${x}px`;
+            element.style.top = `${y}px`;
+          },
+          () => {
+            const s = getStyle(element);
+            return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+          }
+        );
+      }
+
+      {
+        const name = "position";
+        const state = "top";
+        const parent = document.querySelector(".radios");
+        parent.querySelector(`input[type="radio"][value="${state}"]`).checked = true;
+
+        function radioChange(value) {
+          console.log("radioChanged: ", value);
+        }
+        parent.addEventListener("click", (e) => {
+          const target = e.target;
+
+          var match = target.matches(`input[type="radio"][name="${name}"]`);
+
+          if (match) {
+            radioChange(target.value);
+          }
+        });
+
+        // to get checked value on demand
+        const value = parent.querySelector(`input[type="radio"][name="${name}"]:checked`).value;
+        radioChange(value);
+      }
+    </script>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <hr />
+  </body>
+</html>
