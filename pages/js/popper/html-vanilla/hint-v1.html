@@ -218,10 +218,13 @@
 
       function addEventListeners(i) {
         btns[i].addEventListener("mouseover", () => {
+          // this 'source' is important because there might be more than one anchor triggering the popover
+          // without it popover will be rendered in the very top left corner
           tooltips[i].showPopover({ source: btns[i] });
         });
 
         btns[i].addEventListener("mouseout", () => {
+          // we don't need to specify 'source' when we are hiding the popover
           tooltips[i].hidePopover();
         });
 
