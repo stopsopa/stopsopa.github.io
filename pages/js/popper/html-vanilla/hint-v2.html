@@ -35,16 +35,11 @@
           background: #f9f9f9;
         }
       }
-      [popovertarget="mypopover"] {
-        anchor-name: --anchor-el;
-      }
+
       [data-popover-hint-anchor] {
         inset: auto;
         margin: 0;
-        position-anchor: --anchor-el;
         width: max-content;
-        /* Universal solution: try to flip block (top/bottom) or inline (left/right) 
-           if the preferred side overflows the viewport. */
         position-try: flip-block, flip-inline;
         --offset: 10px;
       }
@@ -201,8 +196,11 @@
       });
 
       const popover = document.getElementById("mypopover");
+      const invoker = document.querySelector(`[popovertarget="${popover.id}"]`);
 
-      popover.showPopover(); // enable by default
+      popover.showPopover({
+        source: invoker,
+      }); // enable by default
 
       const offsetRange = document.getElementById("offsetRange");
       const offsetVal = document.getElementById("offsetVal");
