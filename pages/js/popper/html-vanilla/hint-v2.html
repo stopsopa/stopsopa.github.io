@@ -7,23 +7,43 @@
     <style>
       #handler {
         position: absolute;
+        width: max-content;
         span {
           border: 1px solid #ccc;
           cursor: pointer;
           padding: 3px;
           user-select: none;
         }
+        border: 1px solid blueviolet;
+        padding: 5px;
       }
       [popovertarget="mypopover"] {
         anchor-name: --anchor-el;
       }
       #mypopover {
+        inset: auto;
         margin: 0;
         position-anchor: --anchor-el;
-        top: auto;
+        width: max-content;
+        /* Universal solution: try to flip block (top/bottom) or inline (left/right) 
+           if the preferred side overflows the viewport. */
+        position-try: flip-block, flip-inline;
+      }
+      #mypopover.top {
         bottom: anchor(top);
-        left: anchor(left);
-        position-try: none;
+        justify-self: anchor-center;
+      }
+      #mypopover.bottom {
+        top: anchor(bottom);
+        justify-self: anchor-center;
+      }
+      #mypopover.left {
+        right: anchor(left);
+        align-self: anchor-center;
+      }
+      #mypopover.right {
+        left: anchor(right);
+        align-self: anchor-center;
       }
     </style>
   </head>
@@ -34,10 +54,11 @@
       <label> <input type="radio" name="position" value="left" /> left </label>
       <label> <input type="radio" name="position" value="right" /> right </label>
     </div>
-    <br />
+    <hr />
     <div id="handler">
       <span>Dragging Handler</span>
       <button popovertarget="mypopover">This is anchor: Toggle the popover</button>
+      <span>Dragging Handler</span>
     </div>
     <div id="mypopover" popover="manual">
       This is popover
@@ -104,6 +125,9 @@
         parent.querySelector(`input[type="radio"][value="${state}"]`).checked = true;
 
         function radioChange(value) {
+          const popover = document.getElementById("mypopover");
+          popover.classList.remove("top", "bottom", "left", "right");
+          popover.classList.add(value);
           console.log("radioChanged: ", value);
         }
         parent.addEventListener("click", (e) => {
