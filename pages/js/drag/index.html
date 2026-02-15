@@ -77,17 +77,16 @@
             element.addEventListener("mousedown", mousedown);
           }
 
-          const parent = document.querySelector("#mine");
-
+          const element = document.querySelector("#mine");
 
           drag(
-            parent,
+            element,
             (x, y) => {
-              parent.style.left = `${x}px`;
-              parent.style.top = `${y}px`;
+              element.style.left = `${x}px`;
+              element.style.top = `${y}px`;
             },
             () => {
-              const s = getStyle(parent);
+              const s = getStyle(element);
               return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
             }
           );
