@@ -166,51 +166,33 @@
 
         <div class="cards">
           <h2>input[type="radio"]</h2>
+
+          <div class="radios">
+            <label> <input type="radio" name="mode" value="one" /> one </label>
+            <br />
+            <label> <input type="radio" name="mode" value="two" /> two </label>
+            <br />
+            <label> <input type="radio" name="mode" value="three" checked="checked" /> three </label>
+            <pre style="border: 1px solid #ccc"></pre>
+          </div>
+
           <script type="editor" data-lang="html">
 
             <div class="radios">
-              <label> <input type="radio" name="mode" value="single" checked="checked" /> single player </label>
+              <label> <input type="radio" name="mode" value="one" /> one </label>
               <br />
-              <label> <input type="radio" name="mode" value="double" /> two players </label>
+              <label> <input type="radio" name="mode" value="two" checked="checked" /> two </label>
+              <br />
+              <label> <input type="radio" name="mode" value="three" /> three </label>
+              <pre style="border: 1px solid #ccc;"></pre>
             </div>
 
-            &lt;script>
-
-              const name = "mode";
-              const state = "single";
-              const parent = document.querySelector(".radios");
-              parent.querySelector(`input[type="radio"][value="${state}"]`).checked = true;
-      
-              function radioChange(value) {
-                console.log("radioChanged: ", value);
-              }
-              parent.addEventListener("click", (e) => {
-                const target = e.target;
-      
-                var match = target.matches(`input[type="radio"][name="${name}"]`);
-      
-                if (match) {
-                  radioChange(target.value);
-                }
-              });
-      
-              // to get checked value on demand
-              const value = parent.querySelector(`input[type="radio"][name="${name}"]:checked`).value;
-              radioChange(value);
-
-              // to switch programatically using event delegation
-              document.addEventListener("keydown", (e) => {
-                switch (e.key) {
-                  case "s":
-                    document.querySelector(`input[type="radio"][name="mode"][value="single"]`).checked = true
-                    break;
-                  case "d":
-                    document.querySelector(`input[type="radio"][name="mode"][value="double"]`).checked = true
-                    break;
-                }
-              });
-
+            <script>
+              <%script radio.js %>
             &lt;/script>
+          </script>
+          <script>
+            <%inject radio.js %>
           </script>
         </div>
 
