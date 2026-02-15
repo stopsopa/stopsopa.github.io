@@ -17,6 +17,24 @@
         border: 1px solid blueviolet;
         padding: 5px;
       }
+      .radios {
+        display: inline-grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        label {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          padding: 3px 8px;
+          border: 1px solid #eee;
+          cursor: pointer;
+        }
+        label:hover {
+          background: #f9f9f9;
+        }
+      }
       [popovertarget="mypopover"] {
         anchor-name: --anchor-el;
       }
@@ -28,31 +46,64 @@
         /* Universal solution: try to flip block (top/bottom) or inline (left/right) 
            if the preferred side overflows the viewport. */
         position-try: flip-block, flip-inline;
+        --offset: 10px;
+      }
+      /* 9 cardinal positions */
+      #mypopover.topleft {
+        bottom: calc(anchor(top) + var(--offset));
+        right: anchor(left);
       }
       #mypopover.top {
-        bottom: anchor(top);
+        bottom: calc(anchor(top) + var(--offset));
         justify-self: anchor-center;
       }
-      #mypopover.bottom {
-        top: anchor(bottom);
-        justify-self: anchor-center;
+      #mypopover.topright {
+        bottom: calc(anchor(top) + var(--offset));
+        left: anchor(right);
       }
       #mypopover.left {
-        right: anchor(left);
+        right: calc(anchor(left) + var(--offset));
+        align-self: anchor-center;
+      }
+      #mypopover.center {
+        justify-self: anchor-center;
         align-self: anchor-center;
       }
       #mypopover.right {
-        left: anchor(right);
+        left: calc(anchor(right) + var(--offset));
         align-self: anchor-center;
+      }
+      #mypopover.bottomleft {
+        top: calc(anchor(bottom) + var(--offset));
+        right: anchor(left);
+      }
+      #mypopover.bottom {
+        top: calc(anchor(bottom) + var(--offset));
+        justify-self: anchor-center;
+      }
+      #mypopover.bottomright {
+        top: calc(anchor(bottom) + var(--offset));
+        left: anchor(right);
       }
     </style>
   </head>
   <body>
     <div class="radios">
-      <label> <input type="radio" name="position" value="top" checked="checked" /> top </label>
-      <label> <input type="radio" name="position" value="bottom" /> bottom </label>
-      <label> <input type="radio" name="position" value="left" /> left </label>
-      <label> <input type="radio" name="position" value="right" /> right </label>
+      <label title="topleft"> <input type="radio" name="position" value="topleft" /> </label>
+      <label title="top"> <input type="radio" name="position" value="top" /> </label>
+      <label title="topright"> <input type="radio" name="position" value="topright" /> </label>
+
+      <label title="left"> <input type="radio" name="position" value="left" /> </label>
+      <label title="center"> <input type="radio" name="position" value="center" /> </label>
+      <label title="right"> <input type="radio" name="position" value="right" /> </label>
+
+      <label title="bottomleft"> <input type="radio" name="position" value="bottomleft" /> </label>
+      <label title="bottom"> <input type="radio" name="position" value="bottom" /> </label>
+      <label title="bottomright"> <input type="radio" name="position" value="bottomright" /> </label>
+    </div>
+    <div style="margin-top: 10px">
+      Offset: <input type="range" id="offsetRange" min="0" max="100" />
+      <span id="offsetVal"></span>
     </div>
     <hr />
     <div id="handler">
@@ -60,8 +111,8 @@
       <button popovertarget="mypopover">This is anchor: Toggle the popover</button>
       <span>Dragging Handler</span>
     </div>
-    <div id="mypopover" popover="manual">
-      This is popover
+    <div id="mypopover" popover="manual" contenteditable>
+      This is popover [contenteditable]
       <button popovertarget="mypopover" popovertargetaction="hide">Close</button>
     </div>
 
@@ -126,7 +177,17 @@
 
         function radioChange(value) {
           const popover = document.getElementById("mypopover");
-          popover.classList.remove("top", "bottom", "left", "right");
+          popover.classList.remove(
+            "topleft",
+            "top",
+            "topright",
+            "left",
+            "center",
+            "right",
+            "bottomleft",
+            "bottom",
+            "bottomright"
+          );
           popover.classList.add(value);
           console.log("radioChanged: ", value);
         }
@@ -143,6 +204,25 @@
         // to get checked value on demand
         const value = parent.querySelector(`input[type="radio"][name="${name}"]:checked`).value;
         radioChange(value);
+
+        const popover = document.getElementById("mypopover");
+
+        popover.showPopover(); // enable by default
+
+        const offsetRange = document.getElementById("offsetRange");
+        const offsetVal = document.getElementById("offsetVal");
+
+        // Initialize from CSS
+        const initialOffset = getComputedStyle(popover).getPropertyValue("--offset").trim();
+        const initialValue = parseInt(initialOffset, 10) || 0;
+        offsetRange.value = initialValue;
+        offsetVal.textContent = `${initialValue}px`;
+
+        offsetRange.addEventListener("input", (e) => {
+          const val = e.target.value;
+          popover.style.setProperty("--offset", `${val}px`);
+          offsetVal.textContent = `${val}px`;
+        });
       }
     </script>
     <br />
