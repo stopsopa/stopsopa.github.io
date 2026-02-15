@@ -1,0 +1,47 @@
+[data-popover-hint-anchor] {
+  inset: auto;
+  margin: 0;
+  width: max-content;
+  position-try: flip-block, flip-inline;
+  /* --offset: 10px; NOTE: you can remove it from here and define in :root {--offset: 10px;} to controll it globally */
+}
+/* 9 cardinal positions */
+[data-popover-hint-anchor].topleft {
+  bottom: calc(anchor(top) + var(--offset));
+  right: anchor(left);
+}
+[data-popover-hint-anchor].top,
+[data-popover-hint-anchor]:not(.topleft):not(.top):not(.topright):not(.left):not(.center):not(.right):not(
+    .bottomleft
+  ):not(.bottom):not(.bottomright) {
+  bottom: calc(anchor(top) + var(--offset));
+  justify-self: anchor-center;
+}
+[data-popover-hint-anchor].topright {
+  bottom: calc(anchor(top) + var(--offset));
+  left: anchor(right);
+}
+[data-popover-hint-anchor].left {
+  right: calc(anchor(left) + var(--offset));
+  align-self: anchor-center;
+}
+[data-popover-hint-anchor].center {
+  justify-self: anchor-center;
+  align-self: anchor-center;
+}
+[data-popover-hint-anchor].right {
+  left: calc(anchor(right) + var(--offset));
+  align-self: anchor-center;
+}
+[data-popover-hint-anchor].bottomleft {
+  top: calc(anchor(bottom) + var(--offset));
+  right: anchor(left);
+}
+[data-popover-hint-anchor].bottom {
+  top: calc(anchor(bottom) + var(--offset));
+  justify-self: anchor-center;
+}
+[data-popover-hint-anchor].bottomright {
+  top: calc(anchor(bottom) + var(--offset));
+  left: anchor(right);
+}
