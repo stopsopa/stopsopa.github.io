@@ -104,6 +104,9 @@
     <div style="margin-top: 10px">
       Offset: <input type="range" id="offsetRange" min="0" max="100" />
       <span id="offsetVal"></span>
+      <label style="margin-left: 20px">
+        <input type="checkbox" id="blockHorizontal" /> block horizontal checkbox
+      </label>
     </div>
     <hr />
     <div id="handler">
@@ -222,6 +225,11 @@
           const val = e.target.value;
           popover.style.setProperty("--offset", `${val}px`);
           offsetVal.textContent = `${val}px`;
+        });
+
+        const blockHorizontal = document.getElementById("blockHorizontal");
+        blockHorizontal.addEventListener("change", (e) => {
+          document.body.style.overflowX = e.target.checked ? "hidden" : "auto";
         });
       }
     </script>
