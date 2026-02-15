@@ -176,20 +176,27 @@
 
             &lt;script>
 
-              const state = 'single';
-              const parent = docment.querySelector('.radios');
+              const name = "mode";
+              const state = "single";
+              const parent = document.querySelector(".radios");
               parent.querySelector(`input[type="radio"][value="${state}"]`).checked = true;
-
-              // to get value on change
+      
+              function radioChange(value) {
+                console.log("radioChanged: ", value);
+              }
               parent.addEventListener("click", (e) => {
                 const target = e.target;
-
-                var match = target.matches(`input[type="radio"][name="mode"]`);
-
+      
+                var match = target.matches(`input[type="radio"][name="${name}"]`);
+      
                 if (match) {
-                  console.log("radio", target.value);
+                  radioChange(target.value);
                 }
               });
+      
+              // to get checked value on demand
+              const value = parent.querySelector(`input[type="radio"][name="${name}"]:checked`).value;
+              radioChange(value);
 
               // to switch programatically using event delegation
               document.addEventListener("keydown", (e) => {
@@ -202,9 +209,6 @@
                     break;
                 }
               });
-
-              // to get checked value on demand
-              const value = parent.querySelector(`input[type="radio"][name="mode"]:checked`).value;
 
             &lt;/script>
           </script>
