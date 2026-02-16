@@ -81,10 +81,11 @@
 
     <div id="handler2">
       <span>Hover Handler</span>
+      <!-- <button popovertarget="popoverhover" data-popover-hover="3000:5000">This is anchor (hover): Show popover</button> -->
       <button popovertarget="popoverhover" data-popover-hover>This is anchor (hover): Show popover</button>
       <span>Hover Handler</span>
     </div>
-    <div id="popoverhover" popover="manual" data-popover data-popover-hover contenteditable>
+    <div id="popoverhover" popover="manual" data-popover contenteditable>
       This is popover [contenteditable] 2 (hover)
       <br />
       It has a delay on hide.
@@ -193,12 +194,36 @@
       }); // enable by default
 
       {
-        function bindHover() {
+        function bindHover(opt = {}) {
+          const {
+            anchorSelector = "[data-popover-hover]",
+            delayAttribute = "data-popover-hover",
+            showDelay = 300,
+            hideDelay = 500,
+            extractDelay = (anchorElement) => {
+              const attr = anchorElement.getAttribute(delayAttribute) || "";
+              if (!attr.includes(":")) {
+                return { show: showDelay, hide: hideDelay };
+              }
+              const [sStr, hStr] = attr.split(":");
+              const s = parseInt(sStr, 10);
+              const h = parseInt(hStr, 10);
+              return {
+                show: !isNaN(s) && s >= 0 ? s : showDelay,
+                hide: !isNaN(h) && h >= 0 ? h : hideDelay,
+              };
+            },
+          } = opt;
+
+          const th = (msg) => new Error(`bindHover.js error: ${msg}`);
+
           const map = new WeakMap();
           function findStore(el) {
-            const invoker = el.matches("[popovertarget]") ? el : document.querySelector(`[popovertarget="${el.id}"]`);
+            const invoker = el.matches("[popovertarget]")
+              ? el
+              : document.querySelector(`[popovertarget="${el.getAttribute("id")}"]`);
 
-            if (!invoker) throw new Error("Invoker not found for " + (el.id || "unnamed element"));
+            if (!invoker) throw th(`Invoker not found for ${el.id || "unnamed element"}`);
 
             let store = map.get(invoker);
             if (!store) {
