@@ -8,7 +8,8 @@
       :root {
         --offset: 10px;
       }
-      #handler {
+      #handler,
+      #handler2 {
         position: absolute;
         width: max-content;
         span {
@@ -19,6 +20,10 @@
         }
         border: 1px solid blueviolet;
         padding: 5px;
+      }
+      #handler2 {
+        left: 550px;
+        border-color: forestgreen;
       }
       .radios {
         display: inline-grid;
@@ -69,9 +74,22 @@
       <button popovertarget="mypopover">This is anchor: Toggle the popover</button>
       <span>Dragging Handler</span>
     </div>
-    <div id="mypopover" popover="manual" data-popover-hint-anchor contenteditable>
-      This is popover [contenteditable]
+    <div id="mypopover" popover="manual" data-popover contenteditable>
+      This is popover [contenteditable] 1
       <button popovertarget="mypopover" popovertargetaction="hide">Close</button>
+    </div>
+
+    <div id="handler2">
+      <span>Hover Handler</span>
+      <button popovertarget="popoverhover">This is anchor (hover): Show popover</button>
+      <span>Hover Handler</span>
+    </div>
+    <div id="popoverhover" popover="manual" data-popover contenteditable>
+      This is popover [contenteditable] 2 (hover)
+      <br />
+      It has a delay on hide.
+      <hr />
+      <button popovertarget="popoverhover" popovertargetaction="hide">Close</button>
     </div>
 
     <script type="module">
@@ -128,19 +146,21 @@
       );
 
       function radioChange(value) {
-        const popover = document.getElementById("mypopover");
-        popover.classList.remove(
-          "topleft",
-          "top",
-          "topright",
-          "left",
-          "center",
-          "right",
-          "bottomleft",
-          "bottom",
-          "bottomright"
-        );
-        popover.classList.add(value);
+        const popovers = document.querySelectorAll("[data-popover]");
+        popovers.forEach((popover) => {
+          popover.classList.remove(
+            "topleft",
+            "top",
+            "topright",
+            "left",
+            "center",
+            "right",
+            "bottomleft",
+            "bottom",
+            "bottomright"
+          );
+          popover.classList.add(value);
+        });
         console.log("radioChanged: ", value);
       }
 
@@ -159,6 +179,44 @@
         source: invoker,
       }); // enable by default
 
+      // Hover logic for the second popover
+      const hoverPopover = document.getElementById("popoverhover");
+      const hoverInvoker = document.querySelector(`[popovertarget="${hoverPopover.id}"]`);
+      let hoverTimeout;
+
+      function showWithDelay() {
+        clearTimeout(hoverTimeout);
+        if (!hoverPopover.matches(":popover-open")) {
+          hoverPopover.showPopover({ source: hoverInvoker });
+        }
+      }
+
+      function hideWithDelay() {
+        clearTimeout(hoverTimeout);
+        hoverTimeout = setTimeout(() => {
+          hoverPopover.hidePopover();
+        }, 500);
+      }
+
+      hoverInvoker.addEventListener("mouseenter", showWithDelay);
+      hoverInvoker.addEventListener("mouseleave", hideWithDelay);
+      hoverPopover.addEventListener("mouseenter", () => clearTimeout(hoverTimeout));
+      hoverPopover.addEventListener("mouseleave", hideWithDelay);
+
+      // Make the second handler draggable too
+      drag(
+        document.getElementById("handler2"),
+        (x, y) => {
+          const el = document.getElementById("handler2");
+          el.style.left = `${x}px`;
+          el.style.top = `${y}px`;
+        },
+        () => {
+          const s = getStyle(document.getElementById("handler2"));
+          return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+        }
+      );
+
       const offsetRange = document.getElementById("offsetRange");
       const offsetVal = document.getElementById("offsetVal");
 
@@ -170,7 +228,10 @@
 
       offsetRange.addEventListener("input", (e) => {
         const val = e.target.value;
-        popover.style.setProperty("--offset", `${val}px`);
+        const popovers = document.querySelectorAll("[data-popover]");
+        popovers.forEach((p) => {
+          p.style.setProperty("--offset", `${val}px`);
+        });
         offsetVal.textContent = `${val}px`;
       });
 

@@ -1,4 +1,4 @@
-[data-popover-hint-anchor] {
+[data-popover] {
   inset: auto;
   margin: 0;
   width: max-content;
@@ -6,42 +6,42 @@
   /* --offset: 10px; NOTE: you can remove it from here and define in :root {--offset: 10px;} to controll it globally */
 }
 /* 9 cardinal positions */
-[data-popover-hint-anchor].topleft {
+[data-popover].topleft {
   bottom: calc(anchor(top) + var(--offset));
   right: anchor(left);
 }
-[data-popover-hint-anchor].top,
-[data-popover-hint-anchor]:not(.topleft):not(.top):not(.topright):not(.left):not(.center):not(.right):not(
-    .bottomleft
-  ):not(.bottom):not(.bottomright) {
+[data-popover].top,
+[data-popover]:not(.topleft):not(.top):not(.topright):not(.left):not(.center):not(.right):not(.bottomleft):not(
+    .bottom
+  ):not(.bottomright) {
   bottom: calc(anchor(top) + var(--offset));
   justify-self: anchor-center;
 }
-[data-popover-hint-anchor].topright {
+[data-popover].topright {
   bottom: calc(anchor(top) + var(--offset));
   left: anchor(right);
 }
-[data-popover-hint-anchor].left {
+[data-popover].left {
   right: calc(anchor(left) + var(--offset));
   align-self: anchor-center;
 }
-[data-popover-hint-anchor].center {
+[data-popover].center {
   justify-self: anchor-center;
   align-self: anchor-center;
 }
-[data-popover-hint-anchor].right {
+[data-popover].right {
   left: calc(anchor(right) + var(--offset));
   align-self: anchor-center;
 }
-[data-popover-hint-anchor].bottomleft {
+[data-popover].bottomleft {
   top: calc(anchor(bottom) + var(--offset));
   right: anchor(left);
 }
-[data-popover-hint-anchor].bottom {
+[data-popover].bottom {
   top: calc(anchor(bottom) + var(--offset));
   justify-self: anchor-center;
 }
-[data-popover-hint-anchor].bottomright {
+[data-popover].bottomright {
   top: calc(anchor(bottom) + var(--offset));
   left: anchor(right);
 }
