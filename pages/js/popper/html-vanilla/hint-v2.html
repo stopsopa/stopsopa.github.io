@@ -86,15 +86,19 @@
       <span>Hover Handler</span>
     </div>
     <div id="popoverhover" popover="manual" data-popover contenteditable>
-      This is popover [contenteditable] 2 (hover)
-      <br />
-      It has a delay on hide.
-      <hr />
+      <pre>
+import bindHover from "./bindHover.js";
+
+bindHover();
+</pre
+      >
       <button popovertarget="popoverhover" popovertargetaction="hide">Close</button>
     </div>
 
     <script type="module">
       import handleRadio from "../../../html/handleRadio.js";
+      import bindHover from "./bindHover.js";
+      bindHover();
 
       function getStyle(el) {
         return window.getComputedStyle(el);
@@ -192,87 +196,6 @@
       popover.showPopover({
         source: invoker,
       }); // enable by default
-
-      {
-        function bindHover(opt = {}) {
-          const {
-            anchorSelector = "[data-popover-hover]",
-            delayAttribute = "data-popover-hover",
-            showDelay = 300,
-            hideDelay = 500,
-            extractDelay = (anchorElement) => {
-              const attr = anchorElement.getAttribute(delayAttribute) || "";
-              if (!attr.includes(":")) {
-                return { show: showDelay, hide: hideDelay };
-              }
-              const [sStr, hStr] = attr.split(":");
-              const s = parseInt(sStr, 10);
-              const h = parseInt(hStr, 10);
-              return {
-                show: !isNaN(s) && s >= 0 ? s : showDelay,
-                hide: !isNaN(h) && h >= 0 ? h : hideDelay,
-              };
-            },
-          } = opt;
-
-          const th = (msg) => new Error(`bindHover.js error: ${msg}`);
-
-          const map = new WeakMap();
-          function findStore(el) {
-            const invoker = el.matches("[popovertarget]")
-              ? el
-              : document.querySelector(`[popovertarget="${el.getAttribute("id")}"]`);
-
-            if (!invoker) throw th(`Invoker not found for ${el.id || "unnamed element"}`);
-
-            let store = map.get(invoker);
-            if (!store) {
-              const popover = document.getElementById(invoker.getAttribute("popovertarget"));
-              if (!popover) throw new Error("Popover not found");
-              store = { invoker, popover, timeout: null };
-              map.set(invoker, store);
-            }
-            return store;
-          }
-
-          function showWithDelay(store) {
-            clearTimeout(store.timeout);
-            if (store.popover.matches(":popover-open")) return;
-
-            store.timeout = setTimeout(() => {
-              store.popover.showPopover({ source: store.invoker });
-            }, 300);
-          }
-
-          function hideWithDelay(store) {
-            clearTimeout(store.timeout);
-            store.timeout = setTimeout(() => {
-              store.popover.hidePopover();
-            }, 500);
-          }
-
-          document.body.addEventListener("mouseover", (e) => {
-            var el = e.target;
-            var match = el.matches("[data-popover-hover]");
-            if (match) {
-              showWithDelay(findStore(el));
-            }
-          });
-
-          document.body.addEventListener("mouseout", (e) => {
-            var el = e.target;
-            var match = el.matches("[data-popover-hover]");
-            // Ensure we only hide if we're actually leaving the element,
-            // not just moving from the element to one of its children.
-            // e.relatedTarget is the element the mouse is moving TO.
-            if (match && !el.contains(e.relatedTarget)) {
-              hideWithDelay(findStore(el));
-            }
-          });
-        }
-
-        bindHover();
-      }
 
       const offsetRange = document.getElementById("offsetRange");
       const offsetVal = document.getElementById("offsetVal");
