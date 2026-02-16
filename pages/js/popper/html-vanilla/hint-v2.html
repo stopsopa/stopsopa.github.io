@@ -193,56 +193,60 @@
       }); // enable by default
 
       {
-        const map = new WeakMap();
-        function findStore(el) {
-          const invoker = el.matches("[popovertarget]") ? el : document.querySelector(`[popovertarget="${el.id}"]`);
+        function bindHover() {
+          const map = new WeakMap();
+          function findStore(el) {
+            const invoker = el.matches("[popovertarget]") ? el : document.querySelector(`[popovertarget="${el.id}"]`);
 
-          if (!invoker) throw new Error("Invoker not found for " + (el.id || "unnamed element"));
+            if (!invoker) throw new Error("Invoker not found for " + (el.id || "unnamed element"));
 
-          let store = map.get(invoker);
-          if (!store) {
-            const popover = document.getElementById(invoker.getAttribute("popovertarget"));
-            if (!popover) throw new Error("Popover not found");
-            store = { invoker, popover, timeout: null };
-            map.set(invoker, store);
+            let store = map.get(invoker);
+            if (!store) {
+              const popover = document.getElementById(invoker.getAttribute("popovertarget"));
+              if (!popover) throw new Error("Popover not found");
+              store = { invoker, popover, timeout: null };
+              map.set(invoker, store);
+            }
+            return store;
           }
-          return store;
+
+          function showWithDelay(store) {
+            clearTimeout(store.timeout);
+            if (store.popover.matches(":popover-open")) return;
+
+            store.timeout = setTimeout(() => {
+              store.popover.showPopover({ source: store.invoker });
+            }, 300);
+          }
+
+          function hideWithDelay(store) {
+            clearTimeout(store.timeout);
+            store.timeout = setTimeout(() => {
+              store.popover.hidePopover();
+            }, 500);
+          }
+
+          document.body.addEventListener("mouseover", (e) => {
+            var el = e.target;
+            var match = el.matches("[data-popover-hover]");
+            if (match) {
+              showWithDelay(findStore(el));
+            }
+          });
+
+          document.body.addEventListener("mouseout", (e) => {
+            var el = e.target;
+            var match = el.matches("[data-popover-hover]");
+            // Ensure we only hide if we're actually leaving the element,
+            // not just moving from the element to one of its children.
+            // e.relatedTarget is the element the mouse is moving TO.
+            if (match && !el.contains(e.relatedTarget)) {
+              hideWithDelay(findStore(el));
+            }
+          });
         }
 
-        function showWithDelay(store) {
-          clearTimeout(store.timeout);
-          if (store.popover.matches(":popover-open")) return;
-
-          store.timeout = setTimeout(() => {
-            store.popover.showPopover({ source: store.invoker });
-          }, 300);
-        }
-
-        function hideWithDelay(store) {
-          clearTimeout(store.timeout);
-          store.timeout = setTimeout(() => {
-            store.popover.hidePopover();
-          }, 500);
-        }
-
-        document.body.addEventListener("mouseover", (e) => {
-          var el = e.target;
-          var match = el.matches("[data-popover-hover]");
-          if (match) {
-            showWithDelay(findStore(el));
-          }
-        });
-
-        document.body.addEventListener("mouseout", (e) => {
-          var el = e.target;
-          var match = el.matches("[data-popover-hover]");
-          // Ensure we only hide if we're actually leaving the element,
-          // not just moving from the element to one of its children.
-          // e.relatedTarget is the element the mouse is moving TO.
-          if (match && !el.contains(e.relatedTarget)) {
-            hideWithDelay(findStore(el));
-          }
-        });
+        bindHover();
       }
 
       const offsetRange = document.getElementById("offsetRange");
