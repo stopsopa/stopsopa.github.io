@@ -81,7 +81,7 @@
 
     <div id="handler2">
       <span>Hover Handler</span>
-      <button popovertarget="popoverhover">This is anchor (hover): Show popover</button>
+      <button popovertarget="popoverhover" data-popover-hover>This is anchor (hover): Show popover</button>
       <span>Hover Handler</span>
     </div>
     <div id="popoverhover" popover="manual" data-popover contenteditable>
@@ -145,6 +145,19 @@
         }
       );
 
+      drag(
+        document.getElementById("handler2"),
+        (x, y) => {
+          const el = document.getElementById("handler2");
+          el.style.left = `${x}px`;
+          el.style.top = `${y}px`;
+        },
+        () => {
+          const s = getStyle(document.getElementById("handler2"));
+          return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+        }
+      );
+
       function radioChange(value) {
         const popovers = document.querySelectorAll("[data-popover]");
         popovers.forEach((popover) => {
@@ -179,43 +192,39 @@
         source: invoker,
       }); // enable by default
 
-      // Hover logic for the second popover
-      const hoverPopover = document.getElementById("popoverhover");
-      const hoverInvoker = document.querySelector(`[popovertarget="${hoverPopover.id}"]`);
-      let hoverTimeout;
+      {
+        const list = [...document.querySelectorAll("[data-popover-hover]")];
+        console.log(list);
+        list.forEach((el) => {
+          const hoverInvoker = el;
+          const hoverPopover = document.getElementById(el.getAttribute("popovertarget"));
 
-      function showWithDelay() {
-        clearTimeout(hoverTimeout);
-        if (!hoverPopover.matches(":popover-open")) {
-          hoverPopover.showPopover({ source: hoverInvoker });
-        }
+          console.log({
+            hoverInvoker,
+            hoverPopover
+          });
+          let hoverTimeout;
+
+          function showWithDelay() {
+            clearTimeout(hoverTimeout);
+            if (!hoverPopover.matches(":popover-open")) {
+              hoverPopover.showPopover({ source: hoverInvoker });
+            }
+          }
+
+          function hideWithDelay() {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = setTimeout(() => {
+              hoverPopover.hidePopover();
+            }, 500);
+          }
+
+          hoverInvoker.addEventListener("mouseenter", showWithDelay);
+          hoverInvoker.addEventListener("mouseleave", hideWithDelay);
+          hoverPopover.addEventListener("mouseenter", () => clearTimeout(hoverTimeout));
+          hoverPopover.addEventListener("mouseleave", hideWithDelay);
+        });
       }
-
-      function hideWithDelay() {
-        clearTimeout(hoverTimeout);
-        hoverTimeout = setTimeout(() => {
-          hoverPopover.hidePopover();
-        }, 500);
-      }
-
-      hoverInvoker.addEventListener("mouseenter", showWithDelay);
-      hoverInvoker.addEventListener("mouseleave", hideWithDelay);
-      hoverPopover.addEventListener("mouseenter", () => clearTimeout(hoverTimeout));
-      hoverPopover.addEventListener("mouseleave", hideWithDelay);
-
-      // Make the second handler draggable too
-      drag(
-        document.getElementById("handler2"),
-        (x, y) => {
-          const el = document.getElementById("handler2");
-          el.style.left = `${x}px`;
-          el.style.top = `${y}px`;
-        },
-        () => {
-          const s = getStyle(document.getElementById("handler2"));
-          return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
-        }
-      );
 
       const offsetRange = document.getElementById("offsetRange");
       const offsetVal = document.getElementById("offsetVal");
