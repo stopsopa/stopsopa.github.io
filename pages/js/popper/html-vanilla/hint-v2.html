@@ -211,9 +211,11 @@
 
         function showWithDelay(store) {
           clearTimeout(store.timeout);
-          if (!store.popover.matches(":popover-open")) {
+          if (store.popover.matches(":popover-open")) return;
+
+          store.timeout = setTimeout(() => {
             store.popover.showPopover({ source: store.invoker });
-          }
+          }, 300);
         }
 
         function hideWithDelay(store) {
