@@ -41,41 +41,11 @@
         </div>
 
         <script type="editor" data-lang="sh" data-eval>
-          function getStyle(el) {
-            return window.getComputedStyle(el);
-          }
-          function drag(element, listener, fetch) {
-            let pageX = 0;
-            let pageY = 0;
-            let down = false;
-            let fetchX;
-            let fetchY;
-            function mousedown(e) {
-              down = true;
-              pageX = e.pageX;
-              pageY = e.pageY;
-              if (typeof fetch === "function") {
-                ({ x: fetchX, y: fetchY } = fetch());
-              } else {
-                fetchX = fetchY = 0;
-              }
-              listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousedown");
-              function mousemove(e) {
-                if (down) {
-                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mousemove");
-                }
-              }
-              document.addEventListener("mouseup", (e) => {
-                document.removeEventListener("mousemove", mousemove);
-                if (down) {
-                  down = false;
-                  listener(fetchX + e.pageX - pageX, fetchY + e.pageY - pageY, "mouseup");
-                }
-              });
-              document.addEventListener("mousemove", mousemove);
-            }
-            element.addEventListener("mousedown", mousedown);
-          }
+
+          import drag, { getStyle } from "../../../libs/drag.js"
+            // urlwizzard.schema://urlwizzard.hostnegotiated/libs/drag.js
+
+          // --------------
 
           const element = document.querySelector("#mine");
 

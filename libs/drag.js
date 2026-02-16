@@ -5,15 +5,15 @@
     const element = document.querySelector(...)
 
     drag(
-    element,
-    (x, y) => {
-        element.style.left = `${x}px`;
-        element.style.top = `${y}px`;
-    },
-    () => {
-        const s = getStyle(element);
-        return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
-    }
+        element,
+        (x, y) => {
+            element.style.left = `${x}px`;
+            element.style.top = `${y}px`;
+        },
+        () => {
+            const s = getStyle(element);
+            return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+        }
     );
  */
 
