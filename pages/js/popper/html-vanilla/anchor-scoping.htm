@@ -1,14 +1,49 @@
 <div class="anchor-scoping-example">
-  <section class="scoped"><div class="anchor">⚓︎</div><div class="positioned">Positioned 1</div></section>
-  <section class="scoped"><div class="anchor">⚓︎</div><div class="positioned">Positioned 2</div></section>
-  <section class="scoped"><div class="anchor">⚓︎</div><div class="positioned">Positioned 3</div></section>
+  <section class="scoped">
+    <div class="anchor">⚓︎</div>
+    <div class="positioned">Positioned 1</div>
+  </section>
+  <section class="scoped">
+    <div class="anchor">⚓︎</div>
+    <div class="positioned">Positioned 2</div>
+  </section>
+  <section class="scoped">
+    <div class="anchor">⚓︎</div>
+    <div class="positioned">Positioned 3</div>
+  </section>
 </div>
 
 <style>
-  .anchor-scoping-example { display: flex; justify-content: space-evenly; align-items: center; padding: 50px 0; border: 1px solid #ccc; margin: 10px 0; background: #fff; font-family: system-ui, sans-serif; }
-  .anchor-scoping-example .scoped { padding: 20px; background: #eeeeee; border: 1px solid #ddd; }
-  .anchor-scoping-example .anchor { font-size: 1.8rem; color: white; text-shadow: 1px 1px 1px black; background-color: blue; width: fit-content; padding: 3px; line-height: 1; }
-  .anchor-scoping-example .positioned { background: orange; width: fit-content; padding: 3px; border: 1px solid #d45500; }
+  .anchor-scoping-example {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 50px 0;
+    border: 1px solid #ccc;
+    margin: 10px 0;
+    background: #fff;
+    font-family: system-ui, sans-serif;
+  }
+  .anchor-scoping-example .scoped {
+    padding: 20px;
+    background: #eeeeee;
+    border: 1px solid #ddd;
+  }
+  .anchor-scoping-example .anchor {
+    font-size: 1.8rem;
+    color: white;
+    text-shadow: 1px 1px 1px black;
+    background-color: blue;
+    width: fit-content;
+    padding: 3px;
+    line-height: 1;
+  }
+  .anchor-scoping-example .positioned {
+    background: orange;
+    width: fit-content;
+    padding: 3px;
+    border: 1px solid #d45500;
+  }
 
   /* Essential Anchor Positioning Styles */
   .anchor-scoping-example .anchor {
