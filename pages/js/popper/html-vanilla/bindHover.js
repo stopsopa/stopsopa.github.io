@@ -1,3 +1,12 @@
+/**
+ * usage:
+ * 
+    <link rel="stylesheet" href="popover.css" />
+    and
+    import bindHover from "./bindHover.js";
+    bindHover();
+    built: 2026-02-16
+ */
 export default function bindHover(opt = {}) {
   const {
     anchorSelector = "[data-popover-hover]",
