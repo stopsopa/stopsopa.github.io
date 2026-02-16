@@ -84,7 +84,7 @@
       <button popovertarget="popoverhover" data-popover-hover>This is anchor (hover): Show popover</button>
       <span>Hover Handler</span>
     </div>
-    <div id="popoverhover" popover="manual" data-popover contenteditable>
+    <div id="popoverhover" popover="manual" data-popover data-popover-hover contenteditable>
       This is popover [contenteditable] 2 (hover)
       <br />
       It has a delay on hide.
@@ -193,36 +193,53 @@
       }); // enable by default
 
       {
-        const list = [...document.querySelectorAll("[data-popover-hover]")];
-        console.log(list);
-        list.forEach((el) => {
-          const hoverInvoker = el;
-          const hoverPopover = document.getElementById(el.getAttribute("popovertarget"));
+        const map = new WeakMap();
+        function findStore(el) {
+          const invoker = el.matches("[popovertarget]") ? el : document.querySelector(`[popovertarget="${el.id}"]`);
 
-          console.log({
-            hoverInvoker,
-            hoverPopover
-          });
-          let hoverTimeout;
+          if (!invoker) throw new Error("Invoker not found for " + (el.id || "unnamed element"));
 
-          function showWithDelay() {
-            clearTimeout(hoverTimeout);
-            if (!hoverPopover.matches(":popover-open")) {
-              hoverPopover.showPopover({ source: hoverInvoker });
-            }
+          let store = map.get(invoker);
+          if (!store) {
+            const popover = document.getElementById(invoker.getAttribute("popovertarget"));
+            if (!popover) throw new Error("Popover not found");
+            store = { invoker, popover, timeout: null };
+            map.set(invoker, store);
           }
+          return store;
+        }
 
-          function hideWithDelay() {
-            clearTimeout(hoverTimeout);
-            hoverTimeout = setTimeout(() => {
-              hoverPopover.hidePopover();
-            }, 500);
+        function showWithDelay(store) {
+          clearTimeout(store.timeout);
+          if (!store.popover.matches(":popover-open")) {
+            store.popover.showPopover({ source: store.invoker });
           }
+        }
 
-          hoverInvoker.addEventListener("mouseenter", showWithDelay);
-          hoverInvoker.addEventListener("mouseleave", hideWithDelay);
-          hoverPopover.addEventListener("mouseenter", () => clearTimeout(hoverTimeout));
-          hoverPopover.addEventListener("mouseleave", hideWithDelay);
+        function hideWithDelay(store) {
+          clearTimeout(store.timeout);
+          store.timeout = setTimeout(() => {
+            store.popover.hidePopover();
+          }, 500);
+        }
+
+        document.body.addEventListener("mouseover", (e) => {
+          var el = e.target;
+          var match = el.matches("[data-popover-hover]");
+          if (match) {
+            showWithDelay(findStore(el));
+          }
+        });
+
+        document.body.addEventListener("mouseout", (e) => {
+          var el = e.target;
+          var match = el.matches("[data-popover-hover]");
+          // Ensure we only hide if we're actually leaving the element,
+          // not just moving from the element to one of its children.
+          // e.relatedTarget is the element the mouse is moving TO.
+          if (match && !el.contains(e.relatedTarget)) {
+            hideWithDelay(findStore(el));
+          }
         });
       }
 
