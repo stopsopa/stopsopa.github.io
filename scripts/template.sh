@@ -4,6 +4,7 @@
 # Finds all *.template.html and process them to *.rendered.html in the same location
 # <%url pages/bookmarklets/jira-create.uglify.min.js %>
 # <%inject pages/bookmarklets/periscope.uglify.js %>
+# <%script pages/bookmarklets/periscope.uglify.js %>
 
 # /bin/bash scripts/template.sh
 # /bin/bash scripts/template.sh pages/js/popper/html-vanilla/index.template.html
