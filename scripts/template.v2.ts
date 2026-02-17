@@ -1,15 +1,23 @@
+import path from "path";
+
+import { fileURLToPath } from "url";
 import * as readline from "node:readline";
 
-import { setTimeout } from "node:timers/promises";
+import { templateToDeterminedFile } from "./template.ts";
 
-const min = 30;
-const max = 100;
-function rand() {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const root = path.resolve(__dirname, "..");
+
+const script = path.relative(root, __filename);
+
+const CONCURRENCY = 3;
 /**
- *
- * ls -la | NODE_OPTIONS="" SILENT=true /bin/bash ts.sh scripts/template.v2.ts
+ 
+ find . -type d -name 'node_modules' -prune -o -type f -name '*.template.html' -print \
+    | time SILENT=true /bin/bash ts.sh scripts/template.v2.ts
+
  *
  * This function handles the transformation of each line.
  * You can modify this function to implement any logic you need.
@@ -17,35 +25,44 @@ function rand() {
  * @param line - The input line from stdin
  * @returns The transformed line to be sent to stdout
  */
-async function transformer(line: string): Promise<string> {
-  const timestamp = new Date().toISOString();
+async function process_file(line: string): Promise<string> {
+  const output = await templateToDeterminedFile(line);
 
-  await setTimeout(rand());
-
-  return `[${timestamp}] ${line}`;
+  return `
+  ${script} input  : ${line}
+  ${script} output : ${output}
+`;
 }
 
-/**
- * Main function to read from stdin line by line and
- * output the transformed content to stdout.
- */
-async function processStream() {
+// Start the process
+try {
   const rl = readline.createInterface({
     input: process.stdin,
     terminal: false,
   });
 
+  const running = new Set<Promise<void>>();
+
   for await (const line of rl) {
-    const result = await transformer(line);
+    const p = (async () => {
+      const result = await process_file(line);
+      process.stdout.write(result);
+    })();
 
-    // Output the result followed by a newline
-    process.stdout.write(result + "\n");
+    running.add(p);
+    p.finally(() => running.delete(p));
+
+    if (running.size >= CONCURRENCY) {
+      await Promise.race(running);
+    }
   }
-}
 
-// Start the process
-try {
-  await processStream();
+  // Wait for any remaining tasks to complete
+  await Promise.all(running);
+
+  console.log(`
+  Done 🎉
+`);
 } catch (error) {
   console.error("src/stream.ts error:", error);
   process.exit(1);
