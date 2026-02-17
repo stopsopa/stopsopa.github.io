@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style></style>
+  </head>
+  <body>
+    <div style="display: inline-block; position: fixed" id="draggable">
+      ||||
+      <button popovertarget="info" id="btn" type="button" class="information">info</button>
+      ||||
+    </div>
+    <div id="info" popover anchor="btn">Extra</div>
+
+    <script type="module">
+      import drag, { getStyle } from "/libs/drag.js";
+      const element = document.querySelector("#draggable");
+      console.log("element: ", element);
+
+      drag(
+        element,
+        (x, y) => {
+          element.style.left = `${x}px`;
+          element.style.top = `${y}px`;
+        },
+        () => {
+          const s = getStyle(element);
+          return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+        }
+      );
+    </script>
+  </body>
+</html>
