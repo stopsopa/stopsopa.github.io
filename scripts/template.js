@@ -20,18 +20,21 @@ const inpufile = cp.pop();
 
 const inputfiledir = path.dirname(inpufile);
 
+// const th = msg => new Error(`${__filename} error: ${msg}`);
+const th = (msg) => new Error(`${path.relative(root, __filename)} error: ${msg}`);
+
 if (typeof inpufile !== "string") {
-  throw new Error(`input file not specified`);
+  throw th(`input file not specified`);
 }
 
 if (typeof output !== "string") {
-  throw new Error(`output file not specified`);
+  throw th(`output file not specified`);
 }
 
 if (!fs.existsSync(inpufile)) {
   // warning: if under dirfile there will be broken link (pointing to something nonexisting) then this function will return false even if link DO EXIST but it's broken
 
-  throw new Error(`file '${inpufile}' doesn't exist`);
+  throw th(`file '${inpufile}' doesn't exist`);
 }
 
 if (fs.existsSync(output)) {
@@ -58,7 +61,7 @@ data = data.replace(/([ \t]*)<%([a-z]+)\s*(.*?)\s*%>/g, (_, space, type, file) =
   if (!fs.existsSync(file)) {
     // warning: if under dirfile there will be broken link (pointing to something nonexisting) then this function will return false even if link DO EXIST but it's broken
 
-    throw new Error(`file '${file}' doesn't exist`);
+    throw th(`file '${file}' doesn't exist`);
   }
 
   const data = fs
@@ -81,7 +84,7 @@ data = data.replace(/([ \t]*)<%([a-z]+)\s*(.*?)\s*%>/g, (_, space, type, file) =
     return tmp;
   }
 
-  throw new Error(
+  throw th(
     `Template file '${inpufile}' contains unsupported <%${type} ... %> placelholder, supported are <%url ... %>, <%inject ... %> and <%script ... %>`
   );
 });
@@ -96,7 +99,7 @@ Edit template instead of this file
 WARNING: 
 
 WARNING: 
-File was created by /bin/bash template.sh template engine.
+File was created by /bin/bash scripts/template.sh template engine.
 Edit template instead of this file
 WARNING: 
 
@@ -106,7 +109,7 @@ Edit template instead of this file
 WARNING: 
 
 WARNING: 
-File was created by /bin/bash template.sh template engine.
+File was created by /bin/bash scripts/template.sh template engine.
 Edit template instead of this file
 WARNING: 
 

@@ -43,8 +43,6 @@ if [ ! -f ".env.sh" ]; then
   exit 1
 fi
 
-/bin/bash bash/exportsource.sh ".env"
-
 eval "$(/bin/bash bash/exportsource.sh ".env")"
 
 source ".env.sh"

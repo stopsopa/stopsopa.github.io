@@ -52,7 +52,7 @@ function process_file {
 
   echo "bash: processing \"${FILE}\""
 
-  node "scripts/template.js" "${FILE}" "${MIN}"
+  echo node "scripts/template.js" "${FILE}" "${MIN}"
 
   echo "bash: generated  \"${MIN}\""
 
@@ -63,10 +63,11 @@ function process_file {
 if [ "$1" = "" ]; then
   LIST="$(find . -type d -name 'node_modules' -prune -o -type f -name '*.template.html' -print)"
 
-  while read -r FILE
-  do
-    process_file "${FILE}"
-  done <<< "${LIST}"
+
+  # while read -r FILE
+  # do
+  #   process_file "${FILE}"
+  # done <<< "${LIST}"
 else
   process_file "$1"
 fi
