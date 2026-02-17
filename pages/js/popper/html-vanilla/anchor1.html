@@ -4,15 +4,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <style></style>
+    <style>
+      [popover] {
+        inset: unset;
+        bottom: anchor(top);
+        left: anchor(center);
+        transform: translateX(-50%);
+        margin-bottom: 10px;
+        position-try: flip-block, flip-inline;
+        justify-self: anchor-center;
+      }
+      #draggable {
+        left: 83px;
+        top: 175px;
+        span {
+          cursor: grab;
+        }
+      }
+    </style>
   </head>
   <body>
     <div style="display: inline-block; position: fixed" id="draggable">
-      ||||
+      <span> |||| </span>
       <button popovertarget="info" id="btn" type="button" class="information">info</button>
-      ||||
+      <span> |||| </span>
     </div>
-    <div id="info" popover anchor="btn">Extra</div>
+    <div id="info" popover anchor="btn" contenteditable>contenteditable</div>
 
     <script type="module">
       import drag, { getStyle } from "/libs/drag.js";
@@ -31,5 +48,23 @@
         }
       );
     </script>
+
+    <a href="https://youtu.be/B4Y9Ed4lLAI">Web Dev Simplified - CSS Anchor Is The Best New CSS Feature Since Flexbox</a>
+    <br />
+    <a href="https://developer.chrome.com/blog/anchor-positioning-api"
+      >https://developer.chrome.com/blog/anchor-positioning-api</a
+    >
+    <br />
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/anchor()"
+      >https://developer.mozilla.org/en-US/docs/Web/CSS/anchor()</a
+    >
+    <br />
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLPopoverElement/anchor"
+      >https://developer.mozilla.org/en-US/docs/Web/API/HTMLPopoverElement/anchor</a
+    >
+    <br />
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLPopoverElement"
+      >https://developer.mozilla.org/en-US/docs/Web/API/HTMLPopoverElement</a
+    >
   </body>
 </html>

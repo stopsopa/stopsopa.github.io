@@ -63,7 +63,13 @@ export NODE_OPTIONS=""
       command: `
 set -e        
 export NODE_OPTIONS=""
-/bin/bash build.sh        
+/bin/bash build.sh 2>&1 | tee var/build.log
+
+cat <<EEE
+
+   check: var/build.log
+
+EEE
 `,
       description: `build is build`,
       confirm: false,

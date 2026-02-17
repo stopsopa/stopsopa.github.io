@@ -4,8 +4,7 @@ process.emit = function (name, data) {
   if (
     name === "warning" &&
     data &&
-    ((data.name === "ExperimentalWarning" &&
-      data.message.includes("Transform Types")) ||
+    ((data.name === "ExperimentalWarning" && data.message.includes("Transform Types")) ||
       (typeof data === "string" && data.includes("Transform Types")))
   ) {
     return false;
