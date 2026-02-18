@@ -70,7 +70,22 @@
   --col-1: lightgray;
   --col-2: #f3f3f3;
   background: var(--col-1); /* fallback */
-  background-image:  repeating-linear-gradient(45deg, var(--col-1) 25%, transparent 25%, transparent 75%, var(--col-1) 75%, var(--col-1)), repeating-linear-gradient(45deg, var(--col-1) 25%, var(--col-2) 25%, var(--col-2) 75%, var(--col-1) 75%, var(--col-1));
+  background-image: repeating-linear-gradient(
+      45deg,
+      var(--col-1) 25%,
+      transparent 25%,
+      transparent 75%,
+      var(--col-1) 75%,
+      var(--col-1)
+    ),
+    repeating-linear-gradient(
+      45deg,
+      var(--col-1) 25%,
+      var(--col-2) 25%,
+      var(--col-2) 75%,
+      var(--col-1) 75%,
+      var(--col-1)
+    );
   background-position: 0 0, 10px 10px;
   background-size: 20px 20px;
 }
@@ -92,8 +107,8 @@
   bottom: 0;
   top: 2rem;
   border-radius: 2rem;
-  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
-  
+  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
+    rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
 
   @media (width <= 768px) {
     grid-template-columns: 1fr;
@@ -177,7 +192,6 @@
   padding: 0.5rem;
   transition: background-color 0.25s;
   view-transition-name: code;
-  
 }
 
 .copy-button:hover,
@@ -187,7 +201,7 @@
 }
 
 .copy-button::before {
-  content: '';
+  content: "";
   position: absolute;
   display: block;
   width: 0.8rem;
@@ -199,7 +213,7 @@
 }
 
 .copy-button::after {
-  content: '';
+  content: "";
   position: absolute;
   display: block;
   width: 0.8rem;
@@ -217,7 +231,7 @@
 }
 
 .vis::after {
-  content: 'copied!';
+  content: "copied!";
   color: steelblue;
   position: absolute;
   right: -3rem;
@@ -256,7 +270,8 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    "Helvetica Neue", sans-serif;
   display: grid;
   place-content: center;
   top: 0;
@@ -281,7 +296,7 @@ body {
   overflow: hidden;
   padding: 0;
   position: absolute;
-} 
+}
 
 figure {
   margin: 0;
@@ -349,7 +364,7 @@ img {
   position: absolute;
   inset: auto;
   position-area: top span-left;
-  background: #31547a
+  background: #31547a;
   border: none;
   color: white;
   border-radius: 0.5rem;

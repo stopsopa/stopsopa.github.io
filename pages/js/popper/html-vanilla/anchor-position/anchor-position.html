@@ -4,9 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Anchor Position Tool</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
       :root {
         --primary-color: #73aaf5;
@@ -21,7 +24,7 @@
       }
 
       body {
-        font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+        font-family: "Outfit", system-ui, -apple-system, sans-serif;
         margin: 0;
         display: flex;
         flex-direction: column;
@@ -47,7 +50,9 @@
       }
 
       @supports (position-area: top) {
-        .note { display: none; }
+        .note {
+          display: none;
+        }
       }
 
       .key-and-demo {
@@ -99,16 +104,31 @@
         border-radius: 0.5rem;
       }
 
-      .anchor-positions button:active { transform: scale(0.95); }
-      .anchor-positions button.active { outline: 4px solid #bce0f7; }
+      .anchor-positions button:active {
+        transform: scale(0.95);
+      }
+      .anchor-positions button.active {
+        outline: 4px solid #bce0f7;
+      }
 
-      .anchor-positions img { width: 100%; display: block; }
+      .anchor-positions img {
+        width: 100%;
+        display: block;
+      }
 
       /* Hue rotation matching original tool */
-      .red { filter: hue-rotate(115deg); }
-      .orange { filter: hue-rotate(170deg); }
-      .green { filter: hue-rotate(235deg); }
-      .violet { filter: hue-rotate(45deg); }
+      .red {
+        filter: hue-rotate(115deg);
+      }
+      .orange {
+        filter: hue-rotate(170deg);
+      }
+      .green {
+        filter: hue-rotate(235deg);
+      }
+      .violet {
+        filter: hue-rotate(45deg);
+      }
 
       .demo-and-code {
         display: flex;
@@ -149,7 +169,10 @@
         color: #444;
       }
 
-      #anchor-btn p { margin: 0; font-weight: bold; }
+      #anchor-btn p {
+        margin: 0;
+        font-weight: bold;
+      }
 
       .tooltip {
         position: absolute;
@@ -176,15 +199,30 @@
         z-index: 5;
       }
 
-      #imcb-visualizer.on { display: block; }
+      #imcb-visualizer.on {
+        display: block;
+      }
 
       .checkered-bg {
         --col-1: lightgray;
         --col-2: #f3f3f3;
         background: var(--col-1);
-        background-image:
-          repeating-linear-gradient(45deg, var(--col-1) 25%, transparent 25%, transparent 75%, var(--col-1) 75%, var(--col-1)),
-          repeating-linear-gradient(45deg, var(--col-1) 25%, var(--col-2) 25%, var(--col-2) 75%, var(--col-1) 75%, var(--col-1));
+        background-image: repeating-linear-gradient(
+            45deg,
+            var(--col-1) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--col-1) 75%,
+            var(--col-1)
+          ),
+          repeating-linear-gradient(
+            45deg,
+            var(--col-1) 25%,
+            var(--col-2) 25%,
+            var(--col-2) 75%,
+            var(--col-1) 75%,
+            var(--col-1)
+          );
         background-position: 0 0, 10px 10px;
         background-size: 20px 20px;
       }
@@ -192,7 +230,7 @@
       .code-area {
         background: var(--panel-bg);
         padding: 1.25rem 1.5rem;
-        font-family: 'Fira Code', monospace;
+        font-family: "Fira Code", monospace;
         font-size: 1.2rem;
         position: relative;
         height: 3.5rem;
@@ -200,7 +238,9 @@
         align-items: center;
       }
 
-      .code-block { color: var(--text-color); }
+      .code-block {
+        color: var(--text-color);
+      }
 
       .copy-button {
         position: absolute;
@@ -218,11 +258,15 @@
         justify-content: center;
       }
 
-      .copy-button:hover { background-color: #2e7d32; }
-      .copy-button.success { background-color: #4caf50; }
+      .copy-button:hover {
+        background-color: #2e7d32;
+      }
+      .copy-button.success {
+        background-color: #4caf50;
+      }
 
       .copy-button::before {
-        content: '';
+        content: "";
         position: absolute;
         width: 0.8rem;
         height: 0.8rem;
@@ -233,7 +277,7 @@
       }
 
       .copy-button::after {
-        content: '';
+        content: "";
         position: absolute;
         width: 0.8rem;
         height: 0.8rem;
@@ -289,30 +333,88 @@
 
     <div class="key-and-demo">
       <ul class="anchor-positions">
-        <li class="red"><button id="top" title="Top"><img src="img/anchor-position-01.svg" alt="Top"></button></li>
-        <li class="red"><button id="top-center" title="Top Center"><img src="img/anchor-position-02.svg" alt="Top Center"></button></li>
-        <li class="red"><button id="center-top" title="Center Top"><img src="img/anchor-position-03.svg" alt="Center Top"></button></li>
-        <li class="red"><button id="top-full" title="Top Full"><img src="img/anchor-position-04.svg" alt="Top Full"></button></li>
-        
-        <li class="orange"><button id="left" title="Left"><img src="img/anchor-position-05.svg" alt="Left"></button></li>
-        <li class="orange"><button id="left-center" title="Left Center"><img src="img/anchor-position-06.svg" alt="Left Center"></button></li>
-        <li class="orange"><button id="center-left" title="Center Left"><img src="img/anchor-position-07.svg" alt="Center Left"></button></li>
-        <li class="orange"><button id="left-full" title="Left Full"><img src="img/anchor-position-08.svg" alt="Left Full"></button></li>
-        
-        <li class="green"><button id="bottom" title="Bottom"><img src="img/anchor-position-09.svg" alt="Bottom"></button></li>
-        <li class="green"><button id="bottom-center" title="Bottom Center"><img src="img/anchor-position-10.svg" alt="Bottom Center"></button></li>
-        <li class="green"><button id="center-bottom" title="Center Bottom"><img src="img/anchor-position-11.svg" alt="Center Bottom"></button></li>
-        <li class="green"><button id="bottom-full" title="Bottom Full"><img src="img/anchor-position-12.svg" alt="Bottom Full"></button></li>
-        
-        <li class="blue"><button id="right" title="Right"><img src="img/anchor-position-13.svg" alt="Right"></button></li>
-        <li class="blue"><button id="right-center" title="Right Center"><img src="img/anchor-position-14.svg" alt="Right Center"></button></li>
-        <li class="blue"><button id="center-right" title="Center Right"><img src="img/anchor-position-15.svg" alt="Center Right"></button></li>
-        <li class="blue"><button id="right-full" title="Right Full"><img src="img/anchor-position-16.svg" alt="Right Full"></button></li>
-        
-        <li class="violet"><button id="top-left" title="Top Left"><img src="img/anchor-position-17.svg" alt="Top Left"></button></li>
-        <li class="violet"><button id="top-right" title="Top Right"><img src="img/anchor-position-20.svg" alt="Top Right"></button></li>
-        <li class="violet"><button id="bottom-left" title="Bottom Left"><img src="img/anchor-position-18.svg" alt="Bottom Left"></button></li>
-        <li class="violet"><button id="bottom-right" title="Bottom Right"><img src="img/anchor-position-19.svg" alt="Bottom Right"></button></li>
+        <li class="red">
+          <button id="top" title="Top"><img src="img/anchor-position-01.svg" alt="Top" /></button>
+        </li>
+        <li class="red">
+          <button id="top-center" title="Top Center"><img src="img/anchor-position-02.svg" alt="Top Center" /></button>
+        </li>
+        <li class="red">
+          <button id="center-top" title="Center Top"><img src="img/anchor-position-03.svg" alt="Center Top" /></button>
+        </li>
+        <li class="red">
+          <button id="top-full" title="Top Full"><img src="img/anchor-position-04.svg" alt="Top Full" /></button>
+        </li>
+
+        <li class="orange">
+          <button id="left" title="Left"><img src="img/anchor-position-05.svg" alt="Left" /></button>
+        </li>
+        <li class="orange">
+          <button id="left-center" title="Left Center">
+            <img src="img/anchor-position-06.svg" alt="Left Center" />
+          </button>
+        </li>
+        <li class="orange">
+          <button id="center-left" title="Center Left">
+            <img src="img/anchor-position-07.svg" alt="Center Left" />
+          </button>
+        </li>
+        <li class="orange">
+          <button id="left-full" title="Left Full"><img src="img/anchor-position-08.svg" alt="Left Full" /></button>
+        </li>
+
+        <li class="green">
+          <button id="bottom" title="Bottom"><img src="img/anchor-position-09.svg" alt="Bottom" /></button>
+        </li>
+        <li class="green">
+          <button id="bottom-center" title="Bottom Center">
+            <img src="img/anchor-position-10.svg" alt="Bottom Center" />
+          </button>
+        </li>
+        <li class="green">
+          <button id="center-bottom" title="Center Bottom">
+            <img src="img/anchor-position-11.svg" alt="Center Bottom" />
+          </button>
+        </li>
+        <li class="green">
+          <button id="bottom-full" title="Bottom Full">
+            <img src="img/anchor-position-12.svg" alt="Bottom Full" />
+          </button>
+        </li>
+
+        <li class="blue">
+          <button id="right" title="Right"><img src="img/anchor-position-13.svg" alt="Right" /></button>
+        </li>
+        <li class="blue">
+          <button id="right-center" title="Right Center">
+            <img src="img/anchor-position-14.svg" alt="Right Center" />
+          </button>
+        </li>
+        <li class="blue">
+          <button id="center-right" title="Center Right">
+            <img src="img/anchor-position-15.svg" alt="Center Right" />
+          </button>
+        </li>
+        <li class="blue">
+          <button id="right-full" title="Right Full"><img src="img/anchor-position-16.svg" alt="Right Full" /></button>
+        </li>
+
+        <li class="violet">
+          <button id="top-left" title="Top Left"><img src="img/anchor-position-17.svg" alt="Top Left" /></button>
+        </li>
+        <li class="violet">
+          <button id="top-right" title="Top Right"><img src="img/anchor-position-20.svg" alt="Top Right" /></button>
+        </li>
+        <li class="violet">
+          <button id="bottom-left" title="Bottom Left">
+            <img src="img/anchor-position-18.svg" alt="Bottom Left" />
+          </button>
+        </li>
+        <li class="violet">
+          <button id="bottom-right" title="Bottom Right">
+            <img src="img/anchor-position-19.svg" alt="Bottom Right" />
+          </button>
+        </li>
       </ul>
 
       <div class="demo-and-code">
@@ -330,9 +432,9 @@
       </div>
 
       <div class="options">
-        <input id="logical" type="checkbox">
+        <input id="logical" type="checkbox" />
         <label for="logical">Logical properties</label>
-        <input id="imcb-vis" type="checkbox">
+        <input id="imcb-vis" type="checkbox" />
         <label for="imcb-vis">
           <span class="checkered-bg preview-block"></span>
           Show IMCB
@@ -343,62 +445,62 @@
     <script type="module">
       import drag, { getStyle } from "../../../../../libs/drag.js";
 
-      const tooltip = document.getElementById('my-tooltip');
-      const anchor = document.getElementById('anchor-btn');
-      const anchorPositions = document.querySelectorAll('.anchor-positions button');
-      const codeblock = document.querySelector('.code-block');
-      const logicalCheckbox = document.getElementById('logical');
-      const imcbCheckbox = document.getElementById('imcb-vis');
-      const imcbVis = document.getElementById('imcb-visualizer');
-      const copyButton = document.querySelector('.copy-button');
+      const tooltip = document.getElementById("my-tooltip");
+      const anchor = document.getElementById("anchor-btn");
+      const anchorPositions = document.querySelectorAll(".anchor-positions button");
+      const codeblock = document.querySelector(".code-block");
+      const logicalCheckbox = document.getElementById("logical");
+      const imcbCheckbox = document.getElementById("imcb-vis");
+      const imcbVis = document.getElementById("imcb-visualizer");
+      const copyButton = document.querySelector(".copy-button");
 
       let activeButton = anchorPositions[3]; // top-full by default
-      activeButton.classList.add('active');
+      activeButton.classList.add("active");
 
       const cssStyles = {
-        'top': { positionArea: 'top center' },
-        'top-center': { positionArea: 'top span-left' },
-        'center-top': { positionArea: 'top span-right' },
-        'top-full': { positionArea: 'top' },
-        'left': { positionArea: 'left center' },
-        'left-center': { positionArea: 'left span-top' },
-        'center-left': { positionArea: 'left span-bottom' },
-        'left-full': { positionArea: 'left' },
-        'right': { positionArea: 'right center' },
-        'right-center': { positionArea: 'right span-top' },
-        'center-right': { positionArea: 'right span-bottom' },
-        'right-full': { positionArea: 'right' },
-        'bottom': { positionArea: 'bottom center' },
-        'bottom-center': { positionArea: 'bottom span-left' },
-        'center-bottom': { positionArea: 'bottom span-right' },
-        'bottom-full': { positionArea: 'bottom' },
-        'top-left': { positionArea: 'top left' },
-        'top-right': { positionArea: 'top right' },
-        'bottom-left': { positionArea: 'bottom left' },
-        'bottom-right': { positionArea: 'bottom right' }
+        top: { positionArea: "top center" },
+        "top-center": { positionArea: "top span-left" },
+        "center-top": { positionArea: "top span-right" },
+        "top-full": { positionArea: "top" },
+        left: { positionArea: "left center" },
+        "left-center": { positionArea: "left span-top" },
+        "center-left": { positionArea: "left span-bottom" },
+        "left-full": { positionArea: "left" },
+        right: { positionArea: "right center" },
+        "right-center": { positionArea: "right span-top" },
+        "center-right": { positionArea: "right span-bottom" },
+        "right-full": { positionArea: "right" },
+        bottom: { positionArea: "bottom center" },
+        "bottom-center": { positionArea: "bottom span-left" },
+        "center-bottom": { positionArea: "bottom span-right" },
+        "bottom-full": { positionArea: "bottom" },
+        "top-left": { positionArea: "top left" },
+        "top-right": { positionArea: "top right" },
+        "bottom-left": { positionArea: "bottom left" },
+        "bottom-right": { positionArea: "bottom right" },
       };
 
       const logicalStyles = {
-        'top': { positionArea: 'block-start center' },
-        'top-center': { positionArea: 'block-start span-inline-start' },
-        'center-top': { positionArea: 'block-start span-inline-end' },
-        'top-full': { positionArea: 'block-start' },
-        'left': { positionArea: 'inline-start center' },
-        'left-center': { positionArea: 'inline-start span-block-start' },
-        'center-left': { positionArea: 'inline-start span-block-end' },
-        'left-full': { positionArea: 'inline-start' },
-        'right': { positionArea: 'inline-end center' },
-        'right-center': { positionArea: 'inline-end span-block-start' },
-        'center-right': { positionArea: 'inline-end span-block-end' },
-        'right-full': { positionArea: 'inline-end' },
-        'bottom': { positionArea: 'block-end center' },
-        'bottom-center': { positionArea: 'block-end span-inline-start' },
-        'center-bottom': { positionArea: 'block-end span-inline-end' },
-        'bottom-full': { positionArea: 'block-end' },
-        'top-left': { positionArea: 'start' },
-        'top-right': { positionArea: 'block-start inline-end' },
-        'bottom-left': { positionArea: 'block-end inline-start' },
-        'bottom-right': { positionArea: 'end' }
+        top: { positionArea: "block-start center" },
+        "top-center": { positionArea: "block-start span-inline-start" },
+        "center-top": { positionArea: "block-start span-inline-end" },
+        "top-full": { positionArea: "block-start" },
+        left: { positionArea: "inline-start center" },
+        "left-center": { positionArea: "inline-start span-block-start" },
+        "center-left": { positionArea: "inline-start span-block-end" },
+        "left-full": { positionArea: "inline-start" },
+        right: { positionArea: "inline-end center" },
+        "right-center": { positionArea: "inline-end span-block-start" },
+        "center-right": { positionArea: "inline-end span-block-end" },
+        "right-full": { positionArea: "inline-end" },
+        bottom: { positionArea: "block-end center" },
+        "bottom-center": { positionArea: "block-end span-inline-start" },
+        "center-bottom": { positionArea: "block-end span-inline-end" },
+        "bottom-full": { positionArea: "block-end" },
+        "top-left": { positionArea: "start" },
+        "top-right": { positionArea: "block-start inline-end" },
+        "bottom-left": { positionArea: "block-end inline-start" },
+        "bottom-right": { positionArea: "end" },
       };
 
       let styleRef = cssStyles;
@@ -420,28 +522,28 @@
         }
       }
 
-      anchorPositions.forEach(button => {
-        button.addEventListener('click', () => {
-          activeButton.classList.remove('active');
-          button.classList.add('active');
+      anchorPositions.forEach((button) => {
+        button.addEventListener("click", () => {
+          activeButton.classList.remove("active");
+          button.classList.add("active");
           activeButton = button;
           updateUI();
         });
       });
 
-      logicalCheckbox.addEventListener('change', () => {
+      logicalCheckbox.addEventListener("change", () => {
         styleRef = logicalCheckbox.checked ? logicalStyles : cssStyles;
         updateUI();
       });
 
-      imcbCheckbox.addEventListener('change', () => {
-        imcbVis.classList.toggle('on', imcbCheckbox.checked);
+      imcbCheckbox.addEventListener("change", () => {
+        imcbVis.classList.toggle("on", imcbCheckbox.checked);
       });
 
-      copyButton.addEventListener('click', () => {
+      copyButton.addEventListener("click", () => {
         navigator.clipboard.writeText(codeblock.textContent).then(() => {
-          copyButton.classList.add('success');
-          setTimeout(() => copyButton.classList.remove('success'), 2000);
+          copyButton.classList.add("success");
+          setTimeout(() => copyButton.classList.remove("success"), 2000);
         });
       });
 
@@ -453,7 +555,7 @@
         },
         () => {
           const s = getStyle(anchor);
-          if (!s.left || s.left === 'auto') {
+          if (!s.left || s.left === "auto") {
             const parent = anchor.parentElement;
             const px = (parent.offsetWidth - anchor.offsetWidth) / 2;
             const py = (parent.offsetHeight - anchor.offsetHeight) / 2;

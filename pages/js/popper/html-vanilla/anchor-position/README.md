@@ -1,5 +1,4 @@
-
-original page copied with 
+original page copied with
 
 ```
 

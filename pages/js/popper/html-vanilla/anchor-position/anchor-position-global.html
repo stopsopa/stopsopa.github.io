@@ -607,7 +607,7 @@
       const tooltip = document.getElementById("my-tooltip");
       const anchor = document.getElementById("anchor-btn");
       const anchorPositions = document.querySelectorAll(".anchor-positions button");
-      
+
       const htmlEditor = document.getElementById("html-editor");
       const cssEditor = document.getElementById("css-editor");
 
@@ -722,13 +722,13 @@
         }
       }
 
-      const liveStyles = document.getElementById('live-styles');
-      
+      const liveStyles = document.getElementById("live-styles");
+
       const cssManager = new CSSEditorManager(cssEditor, (css) => {
         // Cascading logic:
         // 1. Update the local preview behavior
         liveStyles.textContent = css;
-        
+
         // Note: Buttons are naturally synced because getGeneratedUrl reads from cssManager.getValue()
       });
 
