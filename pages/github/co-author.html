@@ -43,6 +43,19 @@
         <ace-editor id="result-editor" lang="python" min-height-px="200">
           <script type="ace"></script>
         </ace-editor>
+
+        <div id="profile-preview" style="display: none; margin-top: 2rem; align-items: center; gap: 1rem">
+          <img
+            id="profile-icon"
+            src=""
+            alt="Profile Icon"
+            style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid #ccc"
+          />
+          <div>
+            <div style="font-weight: 600; font-size: 0.9rem">Commit Attribution Preview</div>
+            <div id="profile-name" style="color: #586069; font-size: 0.85rem"></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -60,6 +73,9 @@
       const resultEditor = document.getElementById("result-editor");
       const urlInput = document.getElementById("github-url");
       const generateBtn = document.getElementById("generate-btn");
+      const profilePreview = document.getElementById("profile-preview");
+      const profileIcon = document.getElementById("profile-icon");
+      const profileName = document.getElementById("profile-name");
 
       async function generate() {
         const rawUrl = urlInput.value.trim();
@@ -67,6 +83,7 @@
 
         resultEditor.value = "\nFetching user data...\n";
         generateBtn.disabled = true;
+        profilePreview.style.display = "none";
 
         try {
           // Extract username
@@ -85,6 +102,13 @@
 
           if (!data.id) {
             throw new Error("User ID not found in GitHub response");
+          }
+
+          // Show profile preview
+          if (data.avatar_url) {
+            profileIcon.src = data.avatar_url;
+            profileName.textContent = data.login;
+            profilePreview.style.display = "flex";
           }
 
           const coAuthorLine = `Co-authored-by: ${data.login} <${data.id}+${data.login}@users.noreply.github.com>`;
