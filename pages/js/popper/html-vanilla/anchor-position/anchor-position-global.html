@@ -102,7 +102,7 @@
       .tooltip.adaptive {
         /* Encapsulated flipping logic - Using explicit keywords for fallbacks */
         position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
-        position-try-order: most-width;
+        /* position-try-order: most-width; */
       }
 
       .tooltip.no-shrink {
@@ -681,8 +681,7 @@
 
         if (adaptiveCheckbox.checked) {
           css += `
-  position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
-  position-try-order: most-width;`;
+  position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;`;
         }
 
         if (noShrinkCheckbox.checked) {
