@@ -38,5 +38,15 @@ if [[ -z "${USER_ID}" || "${USER_ID}" == "null" ]]; then
     exit 1
 fi
 
+# Extract Type using jq
+USER_TYPE=$(echo "${USER_DATA}" | jq -r '.type // empty')
+
+echo "${0} info: Detected account type: ${USER_TYPE}"
+
+if [[ "${USER_TYPE}" != "User" ]]; then
+    echo "${0} error: Refusing to generate co-author footer for account type \"${USER_TYPE}\". Only \"User\" accounts are supported." >&2
+    exit 1
+fi
+
 # Generate the Co-authored-by line
 echo "Co-authored-by: ${USERNAME} <${USER_ID}+${USERNAME}@users.noreply.github.com>"

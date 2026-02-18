@@ -44,6 +44,16 @@
           <script type="ace"></script>
         </ace-editor>
 
+        <div style="margin-top: 1rem; font-size: 0.85rem; color: #586069">
+          Quick test:
+          <a href="/pages/github/co-author.html?url=https%3A%2F%2Fgithub.com%2Fclaude" style="margin-left: 0.5rem">claude (User)</a>
+          <a
+            href="/pages/github/co-author.html?url=https%3A%2F%2Fgithub.com%2Fgemini-cli"
+            style="margin-left: 1rem"
+            >gemini-cli (Org)</a
+          >
+        </div>
+
         <div id="profile-preview" style="display: none; margin-top: 2rem; align-items: center; gap: 1rem">
           <img
             id="profile-icon"
@@ -53,7 +63,10 @@
           />
           <div>
             <div style="font-weight: 600; font-size: 0.9rem">Commit Attribution Preview</div>
-            <div id="profile-name" style="color: #586069; font-size: 0.85rem"></div>
+            <div style="font-size: 0.85rem">
+              <span id="profile-name" style="color: #16191f; font-weight: 500"></span>
+              <span id="profile-type" style="color: #586069; margin-left: 0.5rem; font-size: 0.75rem; background: #f1f8ff; padding: 2px 6px; border-radius: 10px; border: 1px solid #c8e1ff"></span>
+            </div>
           </div>
         </div>
       </div>
@@ -76,6 +89,7 @@
       const profilePreview = document.getElementById("profile-preview");
       const profileIcon = document.getElementById("profile-icon");
       const profileName = document.getElementById("profile-name");
+      const profileType = document.getElementById("profile-type");
 
       async function generate() {
         const rawUrl = urlInput.value.trim();
@@ -108,7 +122,14 @@
           if (data.avatar_url) {
             profileIcon.src = data.avatar_url;
             profileName.textContent = data.login;
+            profileType.textContent = data.type;
             profilePreview.style.display = "flex";
+          }
+
+          if (data.type !== "User") {
+            throw new Error(
+              `Refusing to generate co-author footer for account type "${data.type}". Only "User" accounts are supported as commit authors.`
+            );
           }
 
           const coAuthorLine = `Co-authored-by: ${data.login} <${data.id}+${data.login}@users.noreply.github.com>`;
