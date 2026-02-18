@@ -33,7 +33,7 @@ Normally before we will be able to use this web component we will have to run
 <script
   type="module"
   src="https://stopsopa.github.io/ace-editor-webcomponent/ace-web-component.js"
-  data-main-ace="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/ace.min.js"
+  data-main-ace="https://stopsopa.github.io/ace-editor-webcomponent/noprettier/ace/ace-builds-1.43.4/src-min-noconflict/ace.js"
 ></script>
 ```
 
@@ -71,3 +71,63 @@ def bubble_sort(arr):
 ```
 
 example above also demonstrate how we can change language of the editor programatically
+
+# waiting to be able to interact with editor
+
+if there is need to interact programatically with ace editor then below will not work.
+
+<code>
+<ace-editor id="problematic-editor1">
+  <script type="ace">
+    // Initial function
+    function greet(name) {
+      console.log("Hello, " + name);
+    }
+  </script>
+</ace-editor>
+
+<!-- and then in javascript -->
+
+<script>
+  {
+    const editor = document.getElementById('problematic-editor1');
+
+    editor.value = editor.value + `
+    console.log("Let's try to append this console.log");
+    `;
+  }
+</script>
+</code>
+
+The reason is that this is web component and it have to by hydrated -> some scripts have to be loaded and logic aplied to "dress" the components to build them in the browser dom and make them ready to interact.
+
+Therefore we have to have way to wait for it to happen, so this is how it can be done using onLoad event:
+
+
+<code>
+
+<ace-editor id="problematic-editor2">
+  <script type="ace">
+    // Initial function
+    function greet(name) {
+      console.log("Hello, " + name);
+    }
+  </script>
+</ace-editor>
+
+<!-- and then in javascript -->
+
+<script>
+  {
+    const editor = document.getElementById("problematic-editor2");
+
+    editor.addEventListener("onLoad", () => {
+      editor.value =        `
+console.log("Let's try to append this console.log");
+  `;
+    });
+  }
+</script>
+
+
+</code>

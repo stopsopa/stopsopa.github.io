@@ -25,7 +25,7 @@ But to be specific:
 
 When you have to go up from current script location use ../ or ../../ but the general target is to reach root directory of the project and then from there somewhere else then define ROOT by rerriving it from DIR and from that point use ROOT to reach wherever you need to reach.
 
-WARNING: if you have no intetnion to use ROOT in your script then don't define it at all.
+WARNING: if you have no intetnion to use DIR or ROOT in your script then don't define it at all.
 
 # shebang
 
