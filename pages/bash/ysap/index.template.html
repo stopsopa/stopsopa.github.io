@@ -355,6 +355,13 @@
               # aaaand actually this is bullshit, because printf with dates actually fails in some shells
               # where date +fmt didn't faile anywhere
         </script>
+        <h2>Program detection</h2>
+        <script type="editor" data-lang="sh">
+          if ! command -v jq >/dev/null 2>&1; then
+              echo "Error: jq is not installed. Please install it to use this script." >&2
+              exit 1
+          fi
+        </script>
         <h2>Colors and controlling cursor</h2>
         <script type="editor" data-lang="sh">
           # COLORS: https://youtu.be/Sx9zG7wa4FA?t=22253
