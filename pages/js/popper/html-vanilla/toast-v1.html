@@ -13,11 +13,28 @@
         background: rgb(50, 255, 50);
       }
 
-      :popover-open {
+      /* :popover-open { */
+      article {
+        /* https://una.github.io/thebestjsisnojs/ */
         position: absolute;
         inset: unset;
         right: 5px;
         bottom: 5px;
+        &[popover] {
+          transform: translateY(-10px);
+          opacity: 0;
+          transition: opacity 0.2s, transform 0.2s, display 0.2s allow-discrete, overlay 0.2s allow-discrete;
+        }
+        &[popover]:popover-open {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        @starting-style {
+          &[popover]:popover-open {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+        }
       }
     </style>
     <script src="index.js" defer></script>
@@ -71,7 +88,10 @@
         // Remove the toast again after 4 seconds
         setTimeout(() => {
           popover.hidePopover();
-          popover.remove();
+          // Wait for the transition to finish before removing the element from the DOM
+          popover.ontransitionend = () => {
+            popover.remove();
+          };
         }, 4000);
 
         // When a new toast appears, run the movetoastsUp() function
