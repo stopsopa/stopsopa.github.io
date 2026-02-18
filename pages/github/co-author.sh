@@ -1,4 +1,10 @@
 
+#
+# Run:
+#   /bin/bash pages/github/co-author.sh  https://github.com/gemini-cli
+#   /bin/bash pages/github/co-author.sh  https://github.com/claude
+#
+
 # Check if jq is installed
 if ! command -v jq >/dev/null 2>&1; then
     echo "${0} error: jq is not installed. Please install it to use this script." >&2
@@ -49,4 +55,9 @@ if [[ "${USER_TYPE}" != "User" ]]; then
 fi
 
 # Generate the Co-authored-by line
+echo ""
+echo '```'
+echo "comment"
+echo ""
 echo "Co-authored-by: ${USERNAME} <${USER_ID}+${USERNAME}@users.noreply.github.com>"
+echo '```'

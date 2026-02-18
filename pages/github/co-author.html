@@ -46,11 +46,11 @@
 
         <div style="margin-top: 1rem; font-size: 0.85rem; color: #586069">
           Quick test:
-          <a href="/pages/github/co-author.html?url=https%3A%2F%2Fgithub.com%2Fclaude" style="margin-left: 0.5rem">claude (User)</a>
+          <a href="/pages/github/co-author.html?url=https%3A%2F%2Fgithub.com%2Fclaude" style="margin-left: 0.5rem">claude</a>
           <a
             href="/pages/github/co-author.html?url=https%3A%2F%2Fgithub.com%2Fgemini-cli"
             style="margin-left: 1rem"
-            >gemini-cli (Org)</a
+            >gemini-cli</a
           >
         </div>
 
@@ -133,7 +133,7 @@
           }
 
           const coAuthorLine = `Co-authored-by: ${data.login} <${data.id}+${data.login}@users.noreply.github.com>`;
-          resultEditor.value = `\n${coAuthorLine}\n`;
+          resultEditor.value = `\n\`\`\`\ncomment\n\n${coAuthorLine}\n\`\`\`\n`;
 
           // Update URL parameter
           const newUrl = new URL(window.location.href);
