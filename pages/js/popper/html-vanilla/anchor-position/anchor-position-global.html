@@ -10,6 +10,11 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Fira+Code:wght@400;500&display=swap"
       rel="stylesheet"
     />
+    <script
+      type="module"
+      src="https://stopsopa.github.io/ace-editor-webcomponent/ace-web-component.js"
+      data-main-ace="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/ace.min.js"
+    ></script>
     <style>
       :root {
         --primary-color: #73aaf5;
@@ -113,9 +118,11 @@
         border-radius: 2rem;
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
         position: relative;
-        max-width: 95vw;
+        width: 100vw;
+        max-width: 100vw;
         overflow: hidden;
-        margin: 2rem;
+        margin: 0;
+        border-radius: 0;
 
         @media (max-width: 768px) {
           grid-template-columns: 1fr;
@@ -183,11 +190,8 @@
       .demo-and-code {
         display: flex;
         flex-direction: column;
-        min-width: 50rem;
-
-        @media (max-width: 1200px) {
-          min-width: 35rem;
-        }
+        flex: 1;
+        min-width: 0; /* Allow shrinking */
 
         @media (max-width: 768px) {
           min-width: 100%;
@@ -197,11 +201,34 @@
       .containing-block {
         flex: 1;
         position: relative;
-        min-height: 20rem;
+        min-height: 25rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        background: var(--border-color);
+      }
+
+      .editor-container {
         display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-direction: column;
         background: var(--bg-color);
+        height: 100%;
+      }
+
+      .editor-header {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: var(--panel-bg);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      ace-editor {
+        flex: 1;
+        width: 100%;
       }
 
       .checkered-bg {
@@ -229,14 +256,7 @@
       }
 
       .code-area {
-        background: var(--panel-bg);
-        padding: 1.25rem 1.5rem;
-        font-family: "Fira Code", monospace;
-        font-size: 1.2rem;
-        position: relative;
-        height: 3.5rem;
-        display: flex;
-        align-items: center;
+        display: none; /* Replaced by Ace Editors */
       }
 
       .code-block {
@@ -324,6 +344,66 @@
         font-size: 0.9rem;
       }
 
+      .open-window-btn,
+      .copy-url-btn {
+        padding: 0.5rem 1rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+
+      .open-window-btn {
+        margin-left: auto;
+      }
+
+      .open-window-btn:hover,
+      .copy-url-btn:hover {
+        opacity: 0.8;
+      }
+
+      .url-copy-msg {
+        color: #4caf50;
+        font-size: 0.8rem;
+        font-weight: 600;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+      }
+
+      .url-copy-msg.show {
+        opacity: 1;
+      }
+
+      #anchor-btn {
+        --btn-size: 2.5rem;
+        position: fixed;
+        z-index: 1500;
+        cursor: move;
+        width: var(--btn-size);
+        height: var(--btn-size);
+        background: #f2f2f2;
+        border: 1px solid lightgray;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 7px rgba(0, 0, 0, 0.1);
+        anchor-name: --tooltip;
+        user-select: none;
+        color: #444;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      #anchor-btn p {
+        margin: 0;
+        font-weight: bold;
+      }
+
       .preview-block {
         width: 1em;
         height: 1em;
@@ -390,7 +470,8 @@
     <div id="anchor-btn">
       <p>?</p>
     </div>
-    <div class="tooltip" id="my-tooltip" contenteditable>Hello, I am the positioned element!</div>
+
+    <p class="tooltip" id="my-tooltip">Hello, I am the positioned element!</p>
 
     <div class="key-and-demo">
       <ul class="anchor-positions">
@@ -480,13 +561,23 @@
 
       <div class="demo-and-code">
         <div class="containing-block">
-          <!-- The visual anchor and tooltip are now outside for global dragging -->
-          <p style="color: #888; font-style: italic">Drag the '?' button anywhere!</p>
-        </div>
-        <div class="code-area">
-          <code class="code-block">position-area: top;</code>
-          <span class="copy-msg">Copied!</span>
-          <button class="copy-button" aria-label="Copy code"></button>
+          <div class="editor-container">
+            <div class="editor-header">HTML</div>
+            <ace-editor id="html-editor" lang="html" theme="monokai">
+              <script type="ace">
+                <div id="anchor-btn">
+                  <p>?</p>
+                </div>
+                <p class="tooltip">Hello, I am the positioned element!</p>
+              </script>
+            </ace-editor>
+          </div>
+          <div class="editor-container">
+            <div class="editor-header">CSS</div>
+            <ace-editor id="css-editor" lang="css" theme="monokai">
+              <script type="ace"></script>
+            </ace-editor>
+          </div>
         </div>
         <div class="options">
           <input id="logical" type="checkbox" />
@@ -495,6 +586,9 @@
           <label for="adaptive">Adaptive flipping</label>
           <input id="no-shrink" type="checkbox" checked />
           <label for="no-shrink">No shrink/wrap</label>
+          <button id="open-window" class="open-window-btn">Open in window</button>
+          <button id="copy-url" class="copy-url-btn">Copy URL</button>
+          <span id="url-copy-msg" class="url-copy-msg">URL Copied!</span>
         </div>
       </div>
     </div>
@@ -512,11 +606,16 @@
       const tooltip = document.getElementById("my-tooltip");
       const anchor = document.getElementById("anchor-btn");
       const anchorPositions = document.querySelectorAll(".anchor-positions button");
-      const codeblock = document.querySelector(".code-block");
+      
+      const htmlEditor = document.getElementById("html-editor");
+      const cssEditor = document.getElementById("css-editor");
+
       const logicalCheckbox = document.getElementById("logical");
       const adaptiveCheckbox = document.getElementById("adaptive");
       const noShrinkCheckbox = document.getElementById("no-shrink");
-      const copyButton = document.querySelector(".copy-button");
+      const openWindowBtn = document.getElementById("open-window");
+      const copyUrlBtn = document.getElementById("copy-url");
+      const urlCopyMsg = document.getElementById("url-copy-msg");
 
       let activeButton = anchorPositions[3]; // top-full by default
       activeButton.classList.add("active");
@@ -569,12 +668,61 @@
 
       let styleRef = cssStyles;
 
+      function generateCSS(positionArea) {
+        let css = `#anchor-btn {
+  anchor-name: --tooltip;
+}
+.tooltip {
+  position: fixed;
+  position-anchor: --tooltip;
+  inset: auto;
+  margin: 0.5rem;
+  position-area: ${positionArea};`;
+
+        if (adaptiveCheckbox.checked) {
+          css += `
+  position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
+  position-try-order: most-width;`;
+        }
+
+        if (noShrinkCheckbox.checked) {
+          css += `
+  white-space: nowrap;
+  width: max-content;`;
+        }
+
+        css += `
+}`;
+        return css;
+      }
+
       function updateUI() {
         const update = () => {
           const styles = styleRef[activeButton.id];
           if (styles) {
+            const generatedCSS = generateCSS(styles.positionArea);
+            
+            // Update Ace Editor
+            cssEditor.setAttribute('value', generatedCSS);
+
+            // Apply all positioning logic to the local tooltip
             tooltip.style.positionArea = styles.positionArea;
-            codeblock.textContent = `position-area: ${styles.positionArea};`;
+            
+            if (adaptiveCheckbox.checked) {
+              tooltip.style.positionTryFallbacks = 'flip-inline, flip-block, flip-inline flip-block';
+              tooltip.style.positionTryOrder = 'most-width';
+            } else {
+              tooltip.style.positionTryFallbacks = 'none';
+              tooltip.style.positionTryOrder = 'normal';
+            }
+
+            if (noShrinkCheckbox.checked) {
+              tooltip.style.whiteSpace = 'nowrap';
+              tooltip.style.width = 'max-content';
+            } else {
+              tooltip.style.whiteSpace = 'normal';
+              tooltip.style.width = 'auto';
+            }
           }
         };
 
@@ -599,16 +747,33 @@
         updateUI();
       });
 
-      copyButton.addEventListener("click", () => {
-        const msg = document.querySelector(".copy-msg");
-        navigator.clipboard.writeText(codeblock.textContent).then(() => {
-          copyButton.classList.add("success");
-          msg.classList.add("show");
-          setTimeout(() => {
-            copyButton.classList.remove("success");
-            msg.classList.remove("show");
-          }, 2000);
-        });
+      function getGeneratedUrl() {
+        const styles = styleRef[activeButton.id];
+        if (!styles) return null;
+
+        const css = generateCSS(styles.positionArea);
+        const url = new URL("new-window.html", window.location.href);
+        url.searchParams.set("css", css);
+        return url.toString();
+      }
+
+      openWindowBtn.addEventListener("click", () => {
+        const url = getGeneratedUrl();
+        if (url) {
+          window.open(url, "_blank");
+        }
+      });
+
+      copyUrlBtn.addEventListener("click", () => {
+        const url = getGeneratedUrl();
+        if (url) {
+          navigator.clipboard.writeText(url).then(() => {
+            urlCopyMsg.classList.add("show");
+            setTimeout(() => {
+              urlCopyMsg.classList.remove("show");
+            }, 2000);
+          });
+        }
       });
 
       drag(
@@ -632,10 +797,12 @@
 
       adaptiveCheckbox.addEventListener("change", () => {
         tooltip.classList.toggle("adaptive", adaptiveCheckbox.checked);
+        updateUI();
       });
 
       noShrinkCheckbox.addEventListener("change", () => {
         tooltip.classList.toggle("no-shrink", noShrinkCheckbox.checked);
+        updateUI();
       });
 
       // Initialize adaptive state

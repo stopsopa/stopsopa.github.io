@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anchor Position Preview - New Window</title>
+    <style id="injected-css"></style>
+    <style>
+      body {
+        user-select: none;
+        -webkit-user-select: none;
+        font-family: system-ui, -apple-system, sans-serif;
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+      }
+      #handler {
+        position: absolute;
+        top: 200px;
+        left: 700px;
+        span {
+          border: 1px solid gray;
+          cursor: pointer;
+          &:hover {
+            background-color: aliceblue;
+          }
+        }
+      }
+      .tooltip {
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="handler">
+      <span>Dragging Handler</span>
+      <button id="anchor-btn">This is anchor</button>
+      <span>Dragging Handler</span>
+    </div>
+
+    <p class="tooltip" style="border: 1px solid gray" contenteditable="">Hello, I am the positioned element!</p>
+
+    <script type="module">
+      import drag, { getStyle } from "../../../../../libs/drag.js";
+
+      const params = new URLSearchParams(window.location.search);
+      const css = params.get("css");
+
+      if (css) {
+        document.getElementById("injected-css").textContent = css;
+      }
+
+      const handler = document.getElementById("handler");
+      if (handler) {
+        drag(
+          handler,
+          (x, y) => {
+            handler.style.left = `${x}px`;
+            handler.style.top = `${y}px`;
+            if (handler.style.transform !== "none") {
+              handler.style.transform = "none";
+            }
+          },
+          () => {
+            const s = getStyle(handler);
+            if (!s.left || s.left === "auto" || handler.style.transform.includes("translate")) {
+              const rect = handler.getBoundingClientRect();
+              return { x: rect.left, y: rect.top };
+            }
+            return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+          }
+        );
+      }
+    </script>
+  </body>
+</html>
