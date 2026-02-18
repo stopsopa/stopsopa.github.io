@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anchor Position Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --primary-color: #73aaf5;
+        --primary-dark: #31547a;
+        --bg-color: light-dark(#ffffff, #181e1f);
+        --body-bg: light-dark(#f8f9fa, #0a0c0d);
+        --border-color: light-dark(lightgray, #2d2f2f);
+        --panel-bg: light-dark(#fafafa, #293032);
+        --text-color: light-dark(#333, #eee);
+        --btn-hover: light-dark(#f2f2f2, #3a3c3d);
+        color-scheme: light dark;
+      }
+
+      body {
+        font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: var(--body-bg);
+        color: var(--text-color);
+        overflow-x: hidden;
+      }
+
+      .note {
+        background: lightgoldenrodyellow;
+        border-bottom: 1px solid gold;
+        color: black;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        padding: 0.5rem;
+        z-index: 1000;
+        font-size: 0.9rem;
+      }
+
+      @supports (position-area: top) {
+        .note { display: none; }
+      }
+
+      .key-and-demo {
+        display: grid;
+        grid-template-columns: auto auto;
+        background: var(--bg-color);
+        border: 1px solid var(--border-color);
+        border-radius: 2rem;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        position: relative;
+        max-width: 95vw;
+        overflow: hidden;
+        margin: 2rem;
+
+        @media (max-width: 768px) {
+          grid-template-columns: 1fr;
+          margin-top: 4rem;
+        }
+      }
+
+      .anchor-positions {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        padding: 3rem;
+        background: var(--bg-color);
+        border-right: 1px solid var(--border-color);
+        margin: 0;
+        list-style: none;
+        width: max-content;
+        justify-self: end;
+
+        @media (max-width: 768px) {
+          justify-self: center;
+          border-right: none;
+          border-bottom: 1px solid var(--border-color);
+          padding: 2rem;
+        }
+      }
+
+      .anchor-positions button {
+        background: none;
+        border: none;
+        width: 4rem;
+        padding: 0;
+        cursor: pointer;
+        outline: 0px solid #bce0f7;
+        transition: outline 0.2s ease, transform 0.1s ease;
+        border-radius: 0.5rem;
+      }
+
+      .anchor-positions button:active { transform: scale(0.95); }
+      .anchor-positions button.active { outline: 4px solid #bce0f7; }
+
+      .anchor-positions img { width: 100%; display: block; }
+
+      /* Hue rotation matching original tool */
+      .red { filter: hue-rotate(115deg); }
+      .orange { filter: hue-rotate(170deg); }
+      .green { filter: hue-rotate(235deg); }
+      .violet { filter: hue-rotate(45deg); }
+
+      .demo-and-code {
+        display: flex;
+        flex-direction: column;
+        min-width: 25rem;
+
+        @media (max-width: 768px) {
+          min-width: 100%;
+        }
+      }
+
+      .containing-block {
+        flex: 1;
+        position: relative;
+        min-height: 20rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-color);
+        overflow: hidden;
+      }
+
+      #anchor-btn {
+        --btn-size: 2.5rem;
+        position: absolute;
+        z-index: 10;
+        cursor: move;
+        width: var(--btn-size);
+        height: var(--btn-size);
+        background: #f2f2f2;
+        border: 1px solid lightgray;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 7px rgba(0, 0, 0, 0.1);
+        anchor-name: --tooltip;
+        user-select: none;
+        color: #444;
+      }
+
+      #anchor-btn p { margin: 0; font-weight: bold; }
+
+      .tooltip {
+        position: absolute;
+        position-anchor: --tooltip;
+        background: var(--primary-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 1rem;
+        font-size: 1.5rem;
+        font-weight: 300;
+        box-shadow: 0 4px 32px rgba(0, 0, 0, 0.1);
+        margin: 0.5rem;
+        z-index: 20;
+        view-transition-name: --tooltip;
+      }
+
+      #imcb-visualizer {
+        position: absolute;
+        position-anchor: --tooltip;
+        inset: 0;
+        height: 100%;
+        width: 100%;
+        display: none;
+        z-index: 5;
+      }
+
+      #imcb-visualizer.on { display: block; }
+
+      .checkered-bg {
+        --col-1: lightgray;
+        --col-2: #f3f3f3;
+        background: var(--col-1);
+        background-image:
+          repeating-linear-gradient(45deg, var(--col-1) 25%, transparent 25%, transparent 75%, var(--col-1) 75%, var(--col-1)),
+          repeating-linear-gradient(45deg, var(--col-1) 25%, var(--col-2) 25%, var(--col-2) 75%, var(--col-1) 75%, var(--col-1));
+        background-position: 0 0, 10px 10px;
+        background-size: 20px 20px;
+      }
+
+      .code-area {
+        background: var(--panel-bg);
+        padding: 1.25rem 1.5rem;
+        font-family: 'Fira Code', monospace;
+        font-size: 1.2rem;
+        position: relative;
+        height: 3.5rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .code-block { color: var(--text-color); }
+
+      .copy-button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 2.5rem;
+        height: 100%;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.25s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .copy-button:hover { background-color: #2e7d32; }
+      .copy-button.success { background-color: #4caf50; }
+
+      .copy-button::before {
+        content: '';
+        position: absolute;
+        width: 0.8rem;
+        height: 0.8rem;
+        top: 0.8rem;
+        left: 0.6rem;
+        border-radius: 2px;
+        border: 2px solid white;
+      }
+
+      .copy-button::after {
+        content: '';
+        position: absolute;
+        width: 0.8rem;
+        height: 0.8rem;
+        top: 1.2rem;
+        left: 1rem;
+        background-color: inherit;
+        border-radius: 2px;
+        border: 2px solid white;
+      }
+
+      .options {
+        position: absolute;
+        top: 100%;
+        right: 2.5rem;
+        margin-top: 1rem;
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      .options label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+
+      .preview-block {
+        width: 1em;
+        height: 1em;
+        display: inline-block;
+        border-radius: 2px;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="note">
+      Your browser does not support the CSS anchor positioning API. This tool is for demonstration purposes only.
+    </div>
+
+    <div class="key-and-demo">
+      <ul class="anchor-positions">
+        <li class="red"><button id="top" title="Top"><img src="img/anchor-position-01.svg" alt="Top"></button></li>
+        <li class="red"><button id="top-center" title="Top Center"><img src="img/anchor-position-02.svg" alt="Top Center"></button></li>
+        <li class="red"><button id="center-top" title="Center Top"><img src="img/anchor-position-03.svg" alt="Center Top"></button></li>
+        <li class="red"><button id="top-full" title="Top Full"><img src="img/anchor-position-04.svg" alt="Top Full"></button></li>
+        
+        <li class="orange"><button id="left" title="Left"><img src="img/anchor-position-05.svg" alt="Left"></button></li>
+        <li class="orange"><button id="left-center" title="Left Center"><img src="img/anchor-position-06.svg" alt="Left Center"></button></li>
+        <li class="orange"><button id="center-left" title="Center Left"><img src="img/anchor-position-07.svg" alt="Center Left"></button></li>
+        <li class="orange"><button id="left-full" title="Left Full"><img src="img/anchor-position-08.svg" alt="Left Full"></button></li>
+        
+        <li class="green"><button id="bottom" title="Bottom"><img src="img/anchor-position-09.svg" alt="Bottom"></button></li>
+        <li class="green"><button id="bottom-center" title="Bottom Center"><img src="img/anchor-position-10.svg" alt="Bottom Center"></button></li>
+        <li class="green"><button id="center-bottom" title="Center Bottom"><img src="img/anchor-position-11.svg" alt="Center Bottom"></button></li>
+        <li class="green"><button id="bottom-full" title="Bottom Full"><img src="img/anchor-position-12.svg" alt="Bottom Full"></button></li>
+        
+        <li class="blue"><button id="right" title="Right"><img src="img/anchor-position-13.svg" alt="Right"></button></li>
+        <li class="blue"><button id="right-center" title="Right Center"><img src="img/anchor-position-14.svg" alt="Right Center"></button></li>
+        <li class="blue"><button id="center-right" title="Center Right"><img src="img/anchor-position-15.svg" alt="Center Right"></button></li>
+        <li class="blue"><button id="right-full" title="Right Full"><img src="img/anchor-position-16.svg" alt="Right Full"></button></li>
+        
+        <li class="violet"><button id="top-left" title="Top Left"><img src="img/anchor-position-17.svg" alt="Top Left"></button></li>
+        <li class="violet"><button id="top-right" title="Top Right"><img src="img/anchor-position-20.svg" alt="Top Right"></button></li>
+        <li class="violet"><button id="bottom-left" title="Bottom Left"><img src="img/anchor-position-18.svg" alt="Bottom Left"></button></li>
+        <li class="violet"><button id="bottom-right" title="Bottom Right"><img src="img/anchor-position-19.svg" alt="Bottom Right"></button></li>
+      </ul>
+
+      <div class="demo-and-code">
+        <div class="containing-block">
+          <div id="anchor-btn">
+            <p>?</p>
+          </div>
+          <div class="tooltip" id="my-tooltip" contenteditable>Hello, I am the positioned element!</div>
+          <div id="imcb-visualizer" class="checkered-bg"></div>
+        </div>
+        <div class="code-area">
+          <code class="code-block">position-area: top;</code>
+          <button class="copy-button" aria-label="Copy code"></button>
+        </div>
+      </div>
+
+      <div class="options">
+        <input id="logical" type="checkbox">
+        <label for="logical">Logical properties</label>
+        <input id="imcb-vis" type="checkbox">
+        <label for="imcb-vis">
+          <span class="checkered-bg preview-block"></span>
+          Show IMCB
+        </label>
+      </div>
+    </div>
+
+    <script type="module">
+      import drag, { getStyle } from "../../../../../libs/drag.js";
+
+      const tooltip = document.getElementById('my-tooltip');
+      const anchor = document.getElementById('anchor-btn');
+      const anchorPositions = document.querySelectorAll('.anchor-positions button');
+      const codeblock = document.querySelector('.code-block');
+      const logicalCheckbox = document.getElementById('logical');
+      const imcbCheckbox = document.getElementById('imcb-vis');
+      const imcbVis = document.getElementById('imcb-visualizer');
+      const copyButton = document.querySelector('.copy-button');
+
+      let activeButton = anchorPositions[3]; // top-full by default
+      activeButton.classList.add('active');
+
+      const cssStyles = {
+        'top': { positionArea: 'top center' },
+        'top-center': { positionArea: 'top span-left' },
+        'center-top': { positionArea: 'top span-right' },
+        'top-full': { positionArea: 'top' },
+        'left': { positionArea: 'left center' },
+        'left-center': { positionArea: 'left span-top' },
+        'center-left': { positionArea: 'left span-bottom' },
+        'left-full': { positionArea: 'left' },
+        'right': { positionArea: 'right center' },
+        'right-center': { positionArea: 'right span-top' },
+        'center-right': { positionArea: 'right span-bottom' },
+        'right-full': { positionArea: 'right' },
+        'bottom': { positionArea: 'bottom center' },
+        'bottom-center': { positionArea: 'bottom span-left' },
+        'center-bottom': { positionArea: 'bottom span-right' },
+        'bottom-full': { positionArea: 'bottom' },
+        'top-left': { positionArea: 'top left' },
+        'top-right': { positionArea: 'top right' },
+        'bottom-left': { positionArea: 'bottom left' },
+        'bottom-right': { positionArea: 'bottom right' }
+      };
+
+      const logicalStyles = {
+        'top': { positionArea: 'block-start center' },
+        'top-center': { positionArea: 'block-start span-inline-start' },
+        'center-top': { positionArea: 'block-start span-inline-end' },
+        'top-full': { positionArea: 'block-start' },
+        'left': { positionArea: 'inline-start center' },
+        'left-center': { positionArea: 'inline-start span-block-start' },
+        'center-left': { positionArea: 'inline-start span-block-end' },
+        'left-full': { positionArea: 'inline-start' },
+        'right': { positionArea: 'inline-end center' },
+        'right-center': { positionArea: 'inline-end span-block-start' },
+        'center-right': { positionArea: 'inline-end span-block-end' },
+        'right-full': { positionArea: 'inline-end' },
+        'bottom': { positionArea: 'block-end center' },
+        'bottom-center': { positionArea: 'block-end span-inline-start' },
+        'center-bottom': { positionArea: 'block-end span-inline-end' },
+        'bottom-full': { positionArea: 'block-end' },
+        'top-left': { positionArea: 'start' },
+        'top-right': { positionArea: 'block-start inline-end' },
+        'bottom-left': { positionArea: 'block-end inline-start' },
+        'bottom-right': { positionArea: 'end' }
+      };
+
+      let styleRef = cssStyles;
+
+      function updateUI() {
+        const update = () => {
+          const styles = styleRef[activeButton.id];
+          if (styles) {
+            tooltip.style.positionArea = styles.positionArea;
+            imcbVis.style.positionArea = styles.positionArea;
+            codeblock.textContent = `position-area: ${styles.positionArea};`;
+          }
+        };
+
+        if (document.startViewTransition) {
+          document.startViewTransition(update);
+        } else {
+          update();
+        }
+      }
+
+      anchorPositions.forEach(button => {
+        button.addEventListener('click', () => {
+          activeButton.classList.remove('active');
+          button.classList.add('active');
+          activeButton = button;
+          updateUI();
+        });
+      });
+
+      logicalCheckbox.addEventListener('change', () => {
+        styleRef = logicalCheckbox.checked ? logicalStyles : cssStyles;
+        updateUI();
+      });
+
+      imcbCheckbox.addEventListener('change', () => {
+        imcbVis.classList.toggle('on', imcbCheckbox.checked);
+      });
+
+      copyButton.addEventListener('click', () => {
+        navigator.clipboard.writeText(codeblock.textContent).then(() => {
+          copyButton.classList.add('success');
+          setTimeout(() => copyButton.classList.remove('success'), 2000);
+        });
+      });
+
+      drag(
+        anchor,
+        (x, y) => {
+          anchor.style.left = `${x}px`;
+          anchor.style.top = `${y}px`;
+        },
+        () => {
+          const s = getStyle(anchor);
+          if (!s.left || s.left === 'auto') {
+            const parent = anchor.parentElement;
+            const px = (parent.offsetWidth - anchor.offsetWidth) / 2;
+            const py = (parent.offsetHeight - anchor.offsetHeight) / 2;
+            anchor.style.left = `${px}px`;
+            anchor.style.top = `${py}px`;
+            return { x: px, y: py };
+          }
+          return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+        }
+      );
+
+      updateUI();
+    </script>
+  </body>
+</html>

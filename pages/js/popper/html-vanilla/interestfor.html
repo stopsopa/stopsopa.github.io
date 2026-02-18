@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      [interestfor] {
+        interest-delay-start: 0.3s;
+      }
+
+      .parent:has(:interest-source) [interestfor] {
+        interest-delay-start: 0s;
+      }
+      /* from: https://una.github.io/back-to-the-future-of-web-dev/ */
+    </style>
+  </head>
+  <body>
+    <p class="note">This demo requires Chrome Canary 142+</p>
+
+    <div class="container">
+      <div class="text-toolbar">
+        <button class="toolbar-button" interestfor="popover-b"><b>B</b></button>
+        <button class="toolbar-button" interestfor="popover-i"><i>I</i></button>
+        <button class="toolbar-button" interestfor="popover-u"><u>U</u></button>
+      </div>
+      <div class="icon-circle incorrect">×</div>
+      <p>Delay on each item (default)</p>
+    </div>
+
+    <div class="container">
+      <div class="text-toolbar delay-adjustment-demo">
+        <button class="toolbar-button" interestfor="popover-b"><b>B</b></button>
+        <button class="toolbar-button" interestfor="popover-i"><i>I</i></button>
+        <button class="toolbar-button" interestfor="popover-u"><u>U</u></button>
+      </div>
+      <div class="icon-circle correct">✓</div>
+      <p>Initial delay only</p>
+    </div>
+
+    <!-- tooltip popovers -->
+    <span popover="" id="popover-b">Bold</span>
+    <span popover="" id="popover-i">Italic</span>
+    <span popover="" id="popover-u">Underline</span>
+
+    <script id="rendered-js">
+      // Protip from Emil Kowalski
+    </script>
+  </body>
+</html>
