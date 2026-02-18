@@ -15,6 +15,7 @@
       src="https://stopsopa.github.io/ace-editor-webcomponent/ace-web-component.js"
       data-main-ace="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/ace.min.js"
     ></script>
+    <style id="live-styles"></style>
     <style>
       :root {
         --primary-color: #73aaf5;
@@ -695,33 +696,48 @@
         return css;
       }
 
+      class CSSEditorManager {
+        constructor(editorEl, onSync) {
+          this.editor = editorEl;
+          this.onSync = onSync;
+
+          // Listen for manual edits using the 'input' event as requested
+          this.editor.addEventListener("input", (e) => {
+            const val = e.target.value;
+            this.onSync(val);
+          });
+        }
+
+        /**
+         * Use this method for programmatic updates
+         */
+        setValue(val) {
+          this.editor.setAttribute("value", val);
+          // Manually trigger sync since setAttribute doesn't fire 'input'
+          this.onSync(val);
+        }
+
+        getValue() {
+          return this.editor.value || this.editor.getAttribute("value");
+        }
+      }
+
+      const liveStyles = document.getElementById('live-styles');
+      
+      const cssManager = new CSSEditorManager(cssEditor, (css) => {
+        // Cascading logic:
+        // 1. Update the local preview behavior
+        liveStyles.textContent = css;
+        
+        // Note: Buttons are naturally synced because getGeneratedUrl reads from cssManager.getValue()
+      });
+
       function updateUI() {
         const update = () => {
           const styles = styleRef[activeButton.id];
           if (styles) {
             const generatedCSS = generateCSS(styles.positionArea);
-            
-            // Update Ace Editor
-            cssEditor.setAttribute('value', generatedCSS);
-
-            // Apply all positioning logic to the local tooltip
-            tooltip.style.positionArea = styles.positionArea;
-            
-            if (adaptiveCheckbox.checked) {
-              tooltip.style.positionTryFallbacks = 'flip-inline, flip-block, flip-inline flip-block';
-              tooltip.style.positionTryOrder = 'most-width';
-            } else {
-              tooltip.style.positionTryFallbacks = 'none';
-              tooltip.style.positionTryOrder = 'normal';
-            }
-
-            if (noShrinkCheckbox.checked) {
-              tooltip.style.whiteSpace = 'nowrap';
-              tooltip.style.width = 'max-content';
-            } else {
-              tooltip.style.whiteSpace = 'normal';
-              tooltip.style.width = 'auto';
-            }
+            cssManager.setValue(generatedCSS);
           }
         };
 
@@ -747,10 +763,10 @@
       });
 
       function getGeneratedUrl() {
-        const styles = styleRef[activeButton.id];
-        if (!styles) return null;
+        // Read directly from the manager's current value
+        const css = cssManager.getValue();
+        if (!css) return null;
 
-        const css = generateCSS(styles.positionArea);
         const url = new URL("new-window.html", window.location.href);
         url.searchParams.set("css", css);
         return url.toString();
