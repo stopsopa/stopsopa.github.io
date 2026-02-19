@@ -282,6 +282,23 @@ https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/rsync.sh
 
 test page githubpages: https://stopsopa.github.io/research/urlwizzard/urlwizzard.html
 
+to use in my single page
+
+```html
+
+<script type="module">
+  import drag, { getStyle } from "/libs/drag.js";
+
+  import "/js/preprocessed.js";
+  import urlwizzard from "/js/urlwizzard.js";
+
+  await urlwizzard();
+
+  ...
+</script>
+
+```
+
 # tabs
 
 It supports out of the box tabs like documented in:
