@@ -9,6 +9,12 @@
     backdrop-filter: blur(3px);
   }
 
+  /**
+   * using :popover-open is in most cases not needed only for detedcting programatically if the popover is open
+   * like here: urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fjs%2Fpopper%2Fhtml-vanilla%2FbindHover.js
+   * or it can be used to do animation on entry or on exit like here:
+   * urlwizzard.schema://urlwizzard.hostnegotiated/pages/js/popper/html-vanilla/toast-v1.html
+   */
   #mypopover4:popover-open {
     width: 1300px;
     height: 200px;

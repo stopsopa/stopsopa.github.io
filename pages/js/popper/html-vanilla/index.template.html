@@ -19,11 +19,10 @@
         <h2>Hint</h2>
         <ul>
           <li><a href="hint-v1.html">Hint v1</a></li>
-          <li><a href="hint-v2.html">Hint v2 &lt;------------------------------------ THIS ONE IS BEST</a></li>
+          <li><a href="hint-v2.html">popover.css + bindHover.js</a></li>
           <li><a href="anchor1.html">anchor1</a></li>
           <li>
             <ul>
-              
               <li>
                 <a href="anchor-position/index.html">copy of original</a>
               </li>
@@ -62,19 +61,32 @@
         <%inject simplest.htm %>
 
         <h2>only one auto popover can be displayed at a time</h2>
+        <div class="note">
+          adding popover="auto" (or just default "popover" without value) tell browser that you expect automatic
+          behaviour of light-dismissed popovers Therefore you can't open two popovers at the same time, because clicking
+          one button to open will mean closing any other popovers that are open
+        </div>
         <script type="editor" data-lang="html">
           <%inject only-one-at-a-time.htm %>
         </script>
         <%inject only-one-at-a-time.htm %>
 
-        <h2>multiple manual popovers can be displayed at once, bt they cant be light-dismissed</h2>
+        <h2>popover="manual" popovers can be displayed at once, bt they cant be light-dismissed</h2>
+        <div class="note">
+          adding popover="manual" tell browser that you will take control over opening and closing - (for example
+          clicking on the background will not close popup - light-dismissed)
+        </div>
         <script type="editor" data-lang="html">
           <%inject multiple-can-be-displayed.htm %>
         </script>
         <%inject multiple-can-be-displayed.htm %>
 
-
         <h2>With close button</h2>
+        <div class="note">
+          defining regular just `popover` without value (which will be `auto` by default) means you expect
+          light-dismissed popovers. But clicking in the popover won't auto-close it. so you can introduce special
+          element with attr [popovertargetaction="hide"] that will close the popover even from within the popover
+        </div>
         <script type="editor" data-lang="html">
 
           <%inject with-close-button.html %>
@@ -86,6 +98,10 @@
         <%inject with-close-button.html %>
 
         <h2>Manual</h2>
+        <div class="note">
+          kinda redundant example but shows that button can toggle and at the same time we might have button to close
+          from within the popover
+        </div>
         <script type="editor" data-lang="html">
           <%inject manual.html %>
           ------
@@ -99,7 +115,7 @@
         </script>
         <%inject manual.html %>
 
-        <h2>Backdrop</h2>
+        <h2>::backdrop & :popover-open</h2>
         <script type="editor" data-lang="html">
           <%inject backdrop.html %>
           ------

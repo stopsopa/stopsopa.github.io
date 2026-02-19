@@ -77,7 +77,7 @@
 
     <div id="handler">
       <span>Dragging Handler</span>
-      <button popovertarget="bindhover">This is anchor: Toggle the popover</button>
+      <button popovertarget="bindhover">html-vanilla/popover.css</button>
       <span>Dragging Handler</span>
     </div>
     <div id="bindhover" popover="manual" data-popover contenteditable>
@@ -88,7 +88,7 @@
     <div id="handler2">
       <span>Hover Handler</span>
       <!-- <button popovertarget="popoverhover" data-popover-hover="3000:5000">This is anchor (hover): Show popover</button> -->
-      <button popovertarget="popoverhover" data-popover-hover>bindHover.js</button>
+      <button popovertarget="popoverhover" data-popover-hover>popover.css + bindHover.js</button>
       <span>Hover Handler</span>
     </div>
     <div id="popoverhover" popover="manual" data-popover contenteditable>
@@ -105,6 +105,11 @@ bindHover();
     <script type="module">
       import handleRadio from "../../../html/handleRadio.js";
       import drag, { getStyle } from "../../../../libs/drag.js";
+
+      import "/js/preprocessed.js";
+      import urlwizzard from "/js/urlwizzard.js";
+
+      await urlwizzard();
 
       // urlwizzard.schema://urlwizzard.hostnegotiated/pages/js/popper/html-vanilla/popover.css
       import bindHover from "./bindHover.js";
@@ -254,7 +259,7 @@ bindHover();
       <span style="cursor: move">|||</span>
       <button popovertarget="elementid" popovertargetaction="show">anchor</button>
     </div>
-    <div id="elementid" popover data-popover contenteditable>
+    <div id="elementid" popover="manual" popover data-popover contenteditable>
       stuff in popover
       <button popovertarget="elementid" popovertargetaction="hide">Close</button>
     </div>
