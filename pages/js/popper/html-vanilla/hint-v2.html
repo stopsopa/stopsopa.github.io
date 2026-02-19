@@ -10,6 +10,8 @@
       }
       #handler,
       #handler2 {
+        z-index: 1;
+        background-color: white;
         position: absolute;
         width: max-content;
         span {
@@ -75,18 +77,18 @@
 
     <div id="handler">
       <span>Dragging Handler</span>
-      <button popovertarget="mypopover">This is anchor: Toggle the popover</button>
+      <button popovertarget="bindhover">This is anchor: Toggle the popover</button>
       <span>Dragging Handler</span>
     </div>
-    <div id="mypopover" popover="manual" data-popover contenteditable>
+    <div id="bindhover" popover="manual" data-popover contenteditable>
       This is popover [contenteditable] 1
-      <button popovertarget="mypopover" popovertargetaction="hide">Close</button>
+      <button popovertarget="bindhover" popovertargetaction="hide">Close</button>
     </div>
 
     <div id="handler2">
       <span>Hover Handler</span>
       <!-- <button popovertarget="popoverhover" data-popover-hover="3000:5000">This is anchor (hover): Show popover</button> -->
-      <button popovertarget="popoverhover" data-popover-hover>This is anchor (hover): Show popover</button>
+      <button popovertarget="popoverhover" data-popover-hover>bindHover.js</button>
       <span>Hover Handler</span>
     </div>
     <div id="popoverhover" popover="manual" data-popover contenteditable>
@@ -108,7 +110,7 @@ bindHover();
       import bindHover from "./bindHover.js";
       bindHover();
 
-      const element = document.querySelector('[popovertarget="mypopover"]').parentNode;
+      const element = document.querySelector('[popovertarget="bindhover"]').parentNode;
 
       drag(
         element,
@@ -162,7 +164,7 @@ bindHover();
         onChange: radioChange,
       });
 
-      const popover = document.getElementById("mypopover");
+      const popover = document.getElementById("bindhover");
       const invoker = document.querySelector(`[popovertarget="${popover.id}"]`);
 
       popover.showPopover({
@@ -195,7 +197,67 @@ bindHover();
     <br />
     <br />
     <br />
+    <ace-editor lang="html">
+      <script type="ace">
+
+        &lt;script type="module">
+          import drag, { getStyle } from "urlwizzard.schema://urlwizzard.hostnegotiated/libs/drag.js";
+
+          const parent = document.querySelector('[popovertarget="elementid"]').parentNode;
+          const handle = parent.querySelector('span');
+          drag(
+            handle,
+            (x, y) => {
+              parent.style.left = `${x}px`;
+              parent.style.top = `${y}px`;
+            },
+            () => {
+              const s = getStyle(parent);
+              return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+            }
+          );
+        &lt;/script>
+
+        <link rel="stylesheet" href="urlwizzard.schema://urlwizzard.hostnegotiated/pages/js/popper/html-vanilla/popover.css" />
+
+        <div style="position: absolute">
+          <span style="cursor: move">|||</span>
+          <button popovertarget="elementid" popovertargetaction="show">anchor</button>
+        </div>
+
+        <div id="elementid" popover="manual" data-popover contenteditable>
+          stuff in popover
+          <button popovertarget="elementid" popovertargetaction="hide">Close</button>
+        </div>
+      </script>
+    </ace-editor>
     <br />
+
+    <script type="module">
+      import drag, { getStyle } from "/libs/drag.js";
+
+      const parent = document.querySelector('[popovertarget="elementid"]').parentNode;
+      const handle = parent.querySelector("span");
+      drag(
+        handle,
+        (x, y) => {
+          parent.style.left = `${x}px`;
+          parent.style.top = `${y}px`;
+        },
+        () => {
+          const s = getStyle(parent);
+          return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+        }
+      );
+    </script>
+    <div style="position: absolute">
+      <span style="cursor: move">|||</span>
+      <button popovertarget="elementid" popovertargetaction="show">anchor</button>
+    </div>
+    <div id="elementid" popover data-popover contenteditable>
+      stuff in popover
+      <button popovertarget="elementid" popovertargetaction="hide">Close</button>
+    </div>
     <br />
     <br />
     <br />
@@ -295,6 +357,12 @@ bindHover();
     <br />
     <br />
     <br />
+    <p>stuff</p>
     <hr />
+    <script
+      type="module"
+      src="https://stopsopa.github.io/ace-editor-webcomponent/ace-web-component.js"
+      data-main-ace="https://stopsopa.github.io/ace-editor-webcomponent/noprettier/ace/ace-builds-1.43.4/src-min-noconflict/ace.js"
+    ></script>
   </body>
 </html>
