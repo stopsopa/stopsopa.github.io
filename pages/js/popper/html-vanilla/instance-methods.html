@@ -2,6 +2,9 @@
   <button id="show-btn" class="btn">showPopover()</button>
   <button id="hide-btn" class="btn">hidePopover()</button>
   <button id="toggle-btn" class="btn">togglePopover()</button>
+  <button interesttarget="mypopover-instance" interestfor="mypopover-instance" class="btn btn-interest">
+    interest invoker (Experimental)
+  </button>
   <button id="clear-btn" class="btn">Clear log</button>
 </div>
 
@@ -24,6 +27,11 @@
     <code>HTMLElement.showPopover()</code><br />
     <code>HTMLElement.hidePopover()</code><br />
     <code>HTMLElement.togglePopover()</code>
+  </p>
+  <p>
+    Experimental events: <br />
+    <code>interest</code> / <code>loseinterest</code> <br />
+    <code>beforetoggle</code> / <code>toggle</code>
   </p>
   <button popovertarget="mypopover-instance" popovertargetaction="hide" class="btn btn-close">Close</button>
 </div>
@@ -76,5 +84,13 @@
     content: "Events will be logged here...";
     color: #888;
     font-style: italic;
+  }
+  .btn-interest {
+    background: #e1f5fe;
+    border-color: #03a9f4;
+    color: #01579b;
+  }
+  .btn-interest:hover {
+    background: #b3e5fc;
   }
 </style>

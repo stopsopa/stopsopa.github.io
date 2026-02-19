@@ -4,47 +4,129 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="stylesheet" href="popover.css" />
     <style>
-      [interestfor] {
-        interest-delay-start: 0.3s;
+      .container {
+        z-index: 5;
+        background-color: white;
+        padding: 5px;
+        user-select: none;
+        -webkit-user-select: none;
+        span {
+          cursor: grab;
+        }
       }
-
-      .parent:has(:interest-source) [interestfor] {
-        interest-delay-start: 0s;
+      .one {
+        top: 90px;
+        left: 699px;
       }
-      /* from: https://una.github.io/back-to-the-future-of-web-dev/ */
+      .two {
+        top: 90px;
+        left: 833px;
+      }
     </style>
   </head>
   <body>
-    <p class="note">This demo requires Chrome Canary 142+</p>
-
-    <div class="container">
-      <div class="text-toolbar">
-        <button class="toolbar-button" interestfor="popover-b"><b>B</b></button>
-        <button class="toolbar-button" interestfor="popover-i"><i>I</i></button>
-        <button class="toolbar-button" interestfor="popover-u"><u>U</u></button>
-      </div>
-      <div class="icon-circle incorrect">×</div>
-      <p>Delay on each item (default)</p>
+    <div class="container one" style="position: absolute">
+      <span>||||</span>
+      <button class="toolbar-button" interestfor="popover-b"><b>B</b></button>
+      <button class="toolbar-button" interestfor="popover-i"><i>I</i></button>
+      <button class="toolbar-button" interestfor="popover-u"><u>U</u></button>
     </div>
 
-    <div class="container">
-      <div class="text-toolbar delay-adjustment-demo">
-        <button class="toolbar-button" interestfor="popover-b"><b>B</b></button>
-        <button class="toolbar-button" interestfor="popover-i"><i>I</i></button>
-        <button class="toolbar-button" interestfor="popover-u"><u>U</u></button>
-      </div>
-      <div class="icon-circle correct">✓</div>
-      <p>Initial delay only</p>
+    <div class="container two"style="position: absolute">
+      <span>||||</span>
+      <button class="toolbar-button" interestfor="popover-b"><b>B</b></button>
+      <button class="toolbar-button" interestfor="popover-i"><i>I</i></button>
+      <button class="toolbar-button" interestfor="popover-u"><u>U</u></button>
     </div>
 
-    <!-- tooltip popovers -->
-    <span popover="" id="popover-b">Bold</span>
-    <span popover="" id="popover-i">Italic</span>
-    <span popover="" id="popover-u">Underline</span>
+    <span popover="" id="popover-b" data-popover class="bottom">Bold</span>
+    <span popover="" id="popover-i" data-popover>Italic</span>
+    <span popover="" id="popover-u" data-popover>Underline</span>
 
-    <script id="rendered-js">
-      // Protip from Emil Kowalski
+    <script type="module">
+      import drag, { getStyle } from "/libs/drag.js";
+
+      import "/js/preprocessed.js";
+      import urlwizzard from "/js/urlwizzard.js";
+
+      await urlwizzard();
+
+      function bind(parent) {
+        const handle = parent.querySelector("span");
+        drag(
+          handle,
+          (x, y) => {
+            parent.style.left = `${x}px`;
+            parent.style.top = `${y}px`;
+          },
+          () => {
+            const s = getStyle(parent);
+            return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+          }
+        );
+      }
+      bind(document.querySelector(".one"));
+      bind(document.querySelector(".two"));
     </script>
+
+    <ace-editor lang="html">
+      <script type="ace">
+        <link rel="stylesheet" href="urlwizzard.schema://urlwizzard.hostnegotiated/pages/js/popper/html-vanilla/popover.css" />
+
+        <div class="container one" style="position: absolute">
+          <span>||||</span>
+          <button class="toolbar-button" interestfor="popover-b"><b>B</b></button>
+          <button class="toolbar-button" interestfor="popover-i"><i>I</i></button>
+          <button class="toolbar-button" interestfor="popover-u"><u>U</u></button>
+        </div>
+
+        <div class="container two"style="position: absolute">
+          <span>||||</span>
+          <button class="toolbar-button" interestfor="popover-b"><b>B</b></button>
+          <button class="toolbar-button" interestfor="popover-i"><i>I</i></button>
+          <button class="toolbar-button" interestfor="popover-u"><u>U</u></button>
+        </div>
+
+        <span popover="" id="popover-b" data-popover class="bottom">Bold</span>
+        <span popover="" id="popover-i" data-popover>Italic</span>
+        <span popover="" id="popover-u" data-popover>Underline</span>
+
+        &lt;script type="module">
+          import interestfor from "https://esm.sh/interestfor"; 
+            // from: https://una.github.io/back-to-the-future-of-web-dev/
+          
+          import drag, { getStyle } from "/libs/drag.js";
+
+          import "/js/preprocessed.js";
+          import urlwizzard from "/js/urlwizzard.js";
+
+          await urlwizzard();
+
+          function bind(parent) {
+            const handle = parent.querySelector("span");
+            drag(
+              handle,
+              (x, y) => {
+                parent.style.left = `${x}px`;
+                parent.style.top = `${y}px`;
+              },
+              () => {
+                const s = getStyle(parent);
+                return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+              }
+            );
+          }
+          bind(document.querySelector(".one"));
+          bind(document.querySelector(".two"));
+        &lt;/script>
+      </script>
+    </ace-editor>
+    <script
+      type="module"
+      src="https://stopsopa.github.io/ace-editor-webcomponent/ace-web-component.js"
+      data-main-ace="https://stopsopa.github.io/ace-editor-webcomponent/noprettier/ace/ace-builds-1.43.4/src-min-noconflict/ace.js"
+    ></script>
   </body>
 </html>
