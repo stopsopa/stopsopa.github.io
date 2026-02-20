@@ -55,15 +55,18 @@ source ".env.sh"
 
 source "${ROOT}/bash/proc/reaper.sh"
 
-echo "attempt to kill server (grep "${FLAG}"):"
-tryToKill "ps aux | grep "${FLAG}" | grep -v grep"
+echo -e "\n${0}: ============ attempt to kill server (grep "${FLAG}"): ============"
+tryToKill "ps aux | grep -v grep | grep "${FLAG}""
 
-echo "attempt to kill dev mode (grep STOPSOPA_IO_FLAG):"
-tryToKill "ps aux | grep STOPSOPA_IO_FLAG | grep -v grep"
+echo -e "\n${0}: ============ attempt to kill dev mode (grep STOPSOPA_IO_FLAG): ============"
+tryToKill "ps aux | grep -v grep | grep STOPSOPA_IO_FLAG"
 
-echo "attempt to kill ci_server.sh (grep "${FLAG}"):"
-tryToKill "ps aux | grep "3_${FLAG}" | grep -v grep"
+echo -e "\n${0}: ============ attempt to kill ci_server.sh (grep "${FLAG}"): ============"
+tryToKill "ps aux | grep -v grep | grep "3_${FLAG}""
 
-(tryToKill 'ps aux | grep node | grep -v code | grep chokidar')
-(tryToKill 'ps aux | grep node | grep -v code | grep esbuild-node.js')
+echo -e "\n${0}: ============ attempt to kill chokidar: ============"
+tryToKill 'ps aux | grep -v grep | grep node | grep -v code | grep chokidar'
+
+echo -e "\n${0}: ============ attempt to kill esbuild-node.js: ============"
+tryToKill 'ps aux | grep -v grep | grep node | grep -v code | grep esbuild-node.js'
 

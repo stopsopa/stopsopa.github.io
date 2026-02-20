@@ -113,7 +113,12 @@ EEE
 
 # set +e
 
-# echo "attempt to kill --flag-to-help-filter-ps-aux-to-kill-group-of-processes ${PROJECT_NAME}:"
+# WARNING: 
+# WARNING: ALWAYS REMEMBER TO START FROM:     ps aux | grep -v grep
+# WARNING:                                             ^^^^^^^^^^^^ - THIS IS IMPORTANT BECAUSE IT WILL CAUSE ISSUE IF NOT ADDED
+# WARNING: 
+
+# echo -e "\n${0}: ============ attempt to kill --flag-to-help-filter-ps-aux-to-kill-group-of-processes ${PROJECT_NAME}: ============"
 # tryToKill "ps aux | grep -v grep | grep \"\--flag-to-help-filter-ps-aux-to-kill-group-of-processes ${PROJECT_NAME}\""
 
 
