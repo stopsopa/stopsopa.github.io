@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Burger Menu Example</title>
+    <style>
+      :root {
+        --primary-bg: #fdfdfd;
+        --burger-size: 48px;
+        --burger-color: #1d1d1f;
+        --accent-color: #0071e3;
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.12);
+        --transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: #f5f5f7;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        height: 100vh;
+        /* overflow: hidden; */
+      }
+
+      #burger {
+        position: fixed;
+        top: 24px;
+        left: 24px;
+        width: var(--burger-size);
+        height: var(--burger-size);
+        background: var(--primary-bg);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: var(--shadow-sm);
+        transition: all var(--transition);
+        z-index: 9999;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      #burger:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-md);
+        background: #fff;
+      }
+
+      #burger:active {
+        transform: scale(0.95);
+      }
+
+      .burger-lines {
+        width: 22px;
+        height: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+      }
+
+      .burger-lines span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: var(--burger-color);
+        border-radius: 4px;
+        transition: transform var(--transition), opacity var(--transition), width var(--transition);
+        transform-origin: center right;
+      }
+
+      /* Subtle offset for the middle line on hover */
+      #burger:hover span:nth-child(2) {
+        width: 70%;
+      }
+
+      /* Active/Open state logic (can be toggled with JS) */
+      #burger.open span:nth-child(1) {
+        transform: translateY(7px) rotate(-45deg);
+        width: 100%;
+      }
+      #burger.open span:nth-child(2) {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      #burger.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(45deg);
+        width: 100%;
+      }
+    </style>
+    <link rel="stylesheet" href="/pages/js/popper/html-vanilla/popover.css" />
+  </head>
+  <body>
+    <div id="burger" popovertarget="menu">
+      <div class="burger-lines">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    <div id="menu" popover data-popover>
+      <div>
+        <ul>
+          <li><a href="#">one</a></li>
+          <li><a href="#">two</a></li>
+          <li>
+            submenu 1
+            <div popover data-popover>
+              <ul>
+                <li><a href="#">one</a></li>
+                <li><a href="#">two</a></li>
+                <li><a href="#">three</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a href="#">three</a></li>
+          <li>
+            <span>
+              submenu 2
+              <div popover data-popover>
+                <ul>
+                  <li><a href="#">one</a></li>
+                  <li><a href="#">two</a></li>
+                  <li><a href="#">three</a></li>
+                </ul>
+              </div>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
