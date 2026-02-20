@@ -15,33 +15,67 @@
 [data-popover].top,
 [data-popover]:not(.topleft):not(.top):not(.topright):not(.left):not(.center):not(.right):not(.bottomleft):not(
     .bottom
-  ):not(.bottomright) {
+  ):not(.bottomright):not(.left-top):not(.left-bottom):not(.right-top):not(.right-bottom):not(.top-left):not(
+    .top-right
+  ):not(.bottom-left):not(.bottom-right) {
   bottom: calc(anchor(top) + var(--popover-offset));
   justify-self: anchor-center;
+}
+[data-popover].top-left {
+  bottom: calc(anchor(top) + var(--popover-offset));
+  left: anchor(left);
+}
+[data-popover].top-right {
+  bottom: calc(anchor(top) + var(--popover-offset));
+  right: anchor(right);
 }
 [data-popover].topright {
   bottom: calc(anchor(top) + var(--popover-offset));
   left: anchor(right);
 }
+[data-popover].left-top {
+  right: calc(anchor(left) + var(--popover-offset));
+  top: anchor(top);
+}
 [data-popover].left {
   right: calc(anchor(left) + var(--popover-offset));
   align-self: anchor-center;
+}
+[data-popover].left-bottom {
+  right: calc(anchor(left) + var(--popover-offset));
+  bottom: anchor(bottom);
 }
 [data-popover].center {
   justify-self: anchor-center;
   align-self: anchor-center;
 }
+[data-popover].right-top {
+  left: calc(anchor(right) + var(--popover-offset));
+  top: anchor(top);
+}
 [data-popover].right {
   left: calc(anchor(right) + var(--popover-offset));
   align-self: anchor-center;
+}
+[data-popover].right-bottom {
+  left: calc(anchor(right) + var(--popover-offset));
+  bottom: anchor(bottom);
 }
 [data-popover].bottomleft {
   top: calc(anchor(bottom) + var(--popover-offset));
   right: anchor(left);
 }
+[data-popover].bottom-left {
+  top: calc(anchor(bottom) + var(--popover-offset));
+  left: anchor(left);
+}
 [data-popover].bottom {
   top: calc(anchor(bottom) + var(--popover-offset));
   justify-self: anchor-center;
+}
+[data-popover].bottom-right {
+  top: calc(anchor(bottom) + var(--popover-offset));
+  right: anchor(right);
 }
 [data-popover].bottomright {
   top: calc(anchor(bottom) + var(--popover-offset));

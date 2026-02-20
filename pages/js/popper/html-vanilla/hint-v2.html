@@ -6,11 +6,11 @@
     <title>Document</title>
     <style>
       :root {
-        --offset: 10px;
+        --popover-offset: 10px;
       }
       #handler,
       #handler2 {
-        z-index: 1;
+        z-index: 5;
         background-color: white;
         position: absolute;
         width: max-content;
@@ -28,12 +28,11 @@
         border-color: forestgreen;
       }
       body [popover] {
-        margin: 10px;
         box-shadow: 0 0 8px #616060;
       }
       .radios {
         display: inline-grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 5px;
         padding: 10px;
         border: 1px solid #ccc;
@@ -54,17 +53,35 @@
   </head>
   <body class="layout bg" toc>
     <div class="radios">
-      <label title="topleft"> <input type="radio" name="position" value="topleft" /> </label>
-      <label title="top"> <input type="radio" name="position" value="top" /> </label>
-      <label title="topright"> <input type="radio" name="position" value="topright" /> </label>
+      <label title="topleft"> <input type="radio" name="position" value="topleft" />topleft</label>
+      <label title="top-left"> <input type="radio" name="position" value="top-left" />top-left</label>
+      <label title="top"> <input type="radio" name="position" value="top" />top</label>
+      <label title="top-right"> <input type="radio" name="position" value="top-right" />top-right</label>
+      <label title="topright"> <input type="radio" name="position" value="topright" />topright</label>
 
-      <label title="left"> <input type="radio" name="position" value="left" /> </label>
-      <label title="center"> <input type="radio" name="position" value="center" /> </label>
-      <label title="right"> <input type="radio" name="position" value="right" /> </label>
+      <label title="left-top"> <input type="radio" name="position" value="left-top" />left-top</label>
+      <label></label>
+      <label></label>
+      <label></label>
+      <label title="right-top"> <input type="radio" name="position" value="right-top" />right-top</label>
 
-      <label title="bottomleft"> <input type="radio" name="position" value="bottomleft" /> </label>
-      <label title="bottom"> <input type="radio" name="position" value="bottom" /> </label>
-      <label title="bottomright"> <input type="radio" name="position" value="bottomright" /> </label>
+      <label title="left"> <input type="radio" name="position" value="left" />left</label>
+      <label></label>
+      <label title="center"> <input type="radio" name="position" value="center" />center</label>
+      <label></label>
+      <label title="right"> <input type="radio" name="position" value="right" />right</label>
+
+      <label title="left-bottom"> <input type="radio" name="position" value="left-bottom" />left-bottom</label>
+      <label></label>
+      <label></label>
+      <label></label>
+      <label title="right-bottom"> <input type="radio" name="position" value="right-bottom" />right-bottom</label>
+
+      <label title="bottomleft"> <input type="radio" name="position" value="bottomleft" />bottomleft</label>
+      <label title="bottom-left"> <input type="radio" name="position" value="bottom-left" />bottom-left</label>
+      <label title="bottom"> <input type="radio" name="position" value="bottom" />bottom</label>
+      <label title="bottom-right"> <input type="radio" name="position" value="bottom-right" />bottom-right</label>
+      <label title="bottomright"> <input type="radio" name="position" value="bottomright" />bottomright</label>
     </div>
     <div style="margin-top: 10px">
       Offset: <input type="range" id="offsetRange" min="0" max="100" />
@@ -146,15 +163,11 @@ bindHover();
         const popovers = document.querySelectorAll("[data-popover]");
         popovers.forEach((popover) => {
           popover.classList.remove(
-            "topleft",
-            "top",
-            "topright",
-            "left",
+            "topleft", "top-left", "top", "top-right", "topright",
+            "left-top", "left", "left-bottom",
             "center",
-            "right",
-            "bottomleft",
-            "bottom",
-            "bottomright"
+            "right-top", "right", "right-bottom",
+            "bottomleft", "bottom-left", "bottom", "bottom-right", "bottomright"
           );
           popover.classList.add(value);
         });
@@ -180,7 +193,7 @@ bindHover();
       const offsetVal = document.getElementById("offsetVal");
 
       // Initialize from CSS
-      const initialOffset = getComputedStyle(popover).getPropertyValue("--offset").trim();
+      const initialOffset = getComputedStyle(popover).getPropertyValue("--popover-offset").trim();
       const initialValue = parseInt(initialOffset, 10) || 0;
       offsetRange.value = initialValue;
       offsetVal.textContent = `${initialValue}px`;
@@ -189,7 +202,7 @@ bindHover();
         const val = e.target.value;
         const popovers = document.querySelectorAll("[data-popover]");
         popovers.forEach((p) => {
-          p.style.setProperty("--offset", `${val}px`);
+          p.style.setProperty("--popover-offset", `${val}px`);
         });
         offsetVal.textContent = `${val}px`;
       });
