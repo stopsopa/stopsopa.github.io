@@ -197,6 +197,14 @@
       </div>
     </div>
     <script>
+      // Close menu when any link is clicked
+      document.addEventListener("click", (e) => {
+        const link = e.target.closest("#menu a");
+        if (link) {
+          menu.hidePopover();
+        }
+      });
+
       const burger = document.getElementById("burger");
       const menu = document.getElementById("menu");
       menu.addEventListener("toggle", (e) => {
