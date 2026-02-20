@@ -66,5 +66,4 @@ tryToKill "ps aux | grep "3_${FLAG}" | grep -v grep"
 
 (tryToKill 'ps aux | grep node | grep -v code | grep chokidar')
 (tryToKill 'ps aux | grep node | grep -v code | grep esbuild-node.js')
-(tryToKill 'ps aux | grep node | grep -v code | grep osbridgeserver')
 
