@@ -53,67 +53,7 @@ fi
 
 source ".env.sh"
 
-set -e
-
-source "bash/trim.sh"
-
-set +e
-
-function findDevFrontServerPid {
-    CMD="${1}"
-
-    ROW="$(eval "${CMD}")"
-
-    echo -e "  executing: >${CMD}< found rows:\n  ${ROW:->not found<}"
-
-    PID_CMD="echo '${ROW}' | awk '{ print \$2 }'"
-
-    PIDS="$(eval "${PID_CMD}")"
-
-    PIDS="$(trim "${PIDS}")"
-
-    if [ "${PIDS}" != "" ]; then
-        echo "  executing: >${CMD}< pids: >$(echo -n "${PIDS}" | tr '\n' ',')<"
-    fi
-}
-
-function tryToKill {
-    findDevFrontServerPid "${1}"
-
-    while read -r PID
-    do
-
-        if [ "${PID}" != "" ]; then
-            if [[ ${PID} =~ ^[0-9]+$ ]]; then
-
-                echo "  executing: >${CMD}< attempt to kill >${PID}<"
-
-                kill "${PID}"
-
-                sleep 1
-            else
-                echo "  executing: >${CMD}< error: if it's not empty then it should be integer"
-            fi
-        else
-
-            echo "  executing: >${CMD}< status: not found in the first place"
-        fi
-        
-    done <<< "${PIDS}"
-
-    echo "  executing: >${CMD}< find again after..."
-
-    findDevFrontServerPid "${1}"
-    if [ "${PIDS}" = "" ]; then
-
-        echo "  executing: >${CMD}< status: successfully killed"
-    else
-
-        echo "  executing: >${CMD}< status: couldn't kill, pids >${PIDS}<"
-
-        exit 1
-    fi
-}
+source "${ROOT}/bash/proc/killv2.sh"
 
 echo "attempt to kill server (grep "${FLAG}"):"
 tryToKill "ps aux | grep "${FLAG}" | grep -v grep"
