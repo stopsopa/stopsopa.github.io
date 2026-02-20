@@ -101,8 +101,6 @@ function _kill {
   /bin/bash .github/stop-server.sh
 }
 
-_kill;
-
 trap _kill EXIT;
 
 # node libs/preprocessor.js
