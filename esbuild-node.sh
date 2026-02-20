@@ -46,7 +46,7 @@ VARFILE="${_DIR}/var/esbuild.txt";
 echo -n "${LIST}" > "${VARFILE}"
 
 if [ "${1}" = "" ]; then
-    node esbuild-node.js "${VARFILE}"
+    node esbuild-node.js "${VARFILE}" "${FLAG}__esbuild-node.js"
 else
-    node esbuild-node.js "${VARFILE}" --watch
+    node esbuild-node.js "${VARFILE}" --watch "${FLAG}__esbuild-node.js"
 fi

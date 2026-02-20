@@ -97,6 +97,8 @@ function _kill {
   kill "${PID6}" 1> /dev/null 2> /dev/null || :
 
   kill "${PID7}" 1> /dev/null 2> /dev/null || :
+
+  /bin/bash .github/stop-server.sh
 }
 
 _kill;
@@ -111,17 +113,17 @@ LOGFILE="${_DIR}/var/log.log"
 
 rm -rf "${LOGFILE}"
 
-node esbuild-entries.js --watch --name "esbuild_${FLAG}" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
+node esbuild-entries.js --watch --name "${FLAG}__esbuild-entries.js" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID1="${!}"  
 
-/bin/bash esbuild-node.sh watch 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
+/bin/bash esbuild-node.sh watch "${FLAG}__esbuild-node.js" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID3="${!}"
 
-/bin/bash .github/injector.sh watch 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
+/bin/bash .github/injector.sh watch "${FLAG}__injector.js" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID4="${!}"
 
 /bin/bash scripts/template.sh # just call it once to process all - and btw I've removed --initial from below chokidar call
-node node_modules/.bin/chokidar '**/*.template.html' --ignore '**/node_modules/**/*' -c "/bin/bash scripts/template.sh {path}" 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
+node node_modules/.bin/chokidar '**/*.template.html' --ignore '**/node_modules/**/*' -c "/bin/bash scripts/template.sh {path} \"${FLAG}__chokidar__template.sh\"" 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
 PID6="${!}"
 
 node node_modules/.bin/tsc --preserveWatchOutput --watch 1> >(/bin/bash bash/dlogger.sh " " typescr >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e typescr >> "${LOGFILE}") &
@@ -148,7 +150,7 @@ done
 
 # /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "2_${FLAG}" \
 # node server.js --flag "3_${FLAG}" 2>&1 >> "${LOGFILE}" &
-node server.js --flag "3_${FLAG}" 1> >(/bin/bash bash/dlogger.sh " " "server " >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "server " >> "${LOGFILE}") &
+node server.js --flag "${FLAG}__server.js" 1> >(/bin/bash bash/dlogger.sh " " "server " >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "server " >> "${LOGFILE}") &
 PID2="${!}"  
 
 if [ "${OPENBROWSER}" = "1" ]; then
