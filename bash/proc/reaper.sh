@@ -65,7 +65,7 @@ EEE
 
                 kill "${PID}"
 
-                if [ "${SILENT}" = "" ]; then
+                if [ "${WAIT}" != "" ]; then
                     sleep 1
                 fi
             else

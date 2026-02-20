@@ -53,7 +53,7 @@ fi
 
 source ".env.sh"
 
-source "${ROOT}/bash/proc/killv2.sh"
+source "${ROOT}/bash/proc/reaper.sh"
 
 echo "attempt to kill server (grep "${FLAG}"):"
 tryToKill "ps aux | grep "${FLAG}" | grep -v grep"
@@ -64,4 +64,7 @@ tryToKill "ps aux | grep STOPSOPA_IO_FLAG | grep -v grep"
 echo "attempt to kill ci_server.sh (grep "${FLAG}"):"
 tryToKill "ps aux | grep "3_${FLAG}" | grep -v grep"
 
+(tryToKill 'ps aux | grep node | grep -v code | grep chokidar')
+(tryToKill 'ps aux | grep node | grep -v code | grep esbuild-node.js')
+(tryToKill 'ps aux | grep node | grep -v code | grep osbridgeserver')
 
