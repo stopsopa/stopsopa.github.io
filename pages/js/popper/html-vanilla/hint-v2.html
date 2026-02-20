@@ -163,11 +163,23 @@ bindHover();
         const popovers = document.querySelectorAll("[data-popover]");
         popovers.forEach((popover) => {
           popover.classList.remove(
-            "topleft", "top-left", "top", "top-right", "topright",
-            "left-top", "left", "left-bottom",
+            "topleft",
+            "top-left",
+            "top",
+            "top-right",
+            "topright",
+            "left-top",
+            "left",
+            "left-bottom",
             "center",
-            "right-top", "right", "right-bottom",
-            "bottomleft", "bottom-left", "bottom", "bottom-right", "bottomright"
+            "right-top",
+            "right",
+            "right-bottom",
+            "bottomleft",
+            "bottom-left",
+            "bottom",
+            "bottom-right",
+            "bottomright"
           );
           popover.classList.add(value);
         });

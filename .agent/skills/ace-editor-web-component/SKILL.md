@@ -103,7 +103,6 @@ The reason is that this is web component and it have to by hydrated -> some scri
 
 Therefore we have to have way to wait for it to happen, so this is how it can be done using onLoad event:
 
-
 <code>
 
 <ace-editor id="problematic-editor2">
@@ -128,6 +127,5 @@ console.log("Let's try to append this console.log");
     });
   }
 </script>
-
 
 </code>

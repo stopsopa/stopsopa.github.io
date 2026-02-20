@@ -285,7 +285,6 @@ test page githubpages: https://stopsopa.github.io/research/urlwizzard/urlwizzard
 to use in my single page
 
 ```html
-
 <script type="module">
   import drag, { getStyle } from "/libs/drag.js";
 
@@ -296,7 +295,6 @@ to use in my single page
 
   ...
 </script>
-
 ```
 
 # tabs
