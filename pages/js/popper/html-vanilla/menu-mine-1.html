@@ -47,16 +47,6 @@
         -webkit-tap-highlight-color: transparent;
       }
 
-      #burger:hover {
-        transform: scale(1.05);
-        box-shadow: var(--shadow-md);
-        background: #fff;
-      }
-
-      #burger:active {
-        transform: scale(0.95);
-      }
-
       .burger-lines {
         width: 22px;
         height: 16px;
@@ -76,12 +66,10 @@
         transform-origin: center right;
       }
 
-      /* Subtle offset for the middle line on hover */
       #burger:hover span:nth-child(2) {
         width: 70%;
       }
 
-      /* Active/Open state logic (can be toggled with JS) */
       #burger.open span:nth-child(1) {
         transform: translateY(7px) rotate(-45deg);
         width: 100%;
@@ -94,25 +82,39 @@
         transform: translateY(-7px) rotate(45deg);
         width: 100%;
       }
+      #menu [data-popover],
+      #menu {
+        --popover-offset: -1px;
+      }
+      #menu {
+        &,
+        [data-popover] {
+          padding: 5px;
+          a,
+          span {
+            padding: 5px;
+          }
+        }
+      }
     </style>
     <link rel="stylesheet" href="/pages/js/popper/html-vanilla/popover.css" />
   </head>
   <body>
-    <div id="burger" popovertarget="menu">
+    <button id="burger" popovertarget="menu">
       <div class="burger-lines">
         <span></span>
         <span></span>
         <span></span>
       </div>
-    </div>
-    <div id="menu" popover data-popover>
+    </button>
+    <div id="menu" popover data-popover class="right-top">
       <div>
         <ul>
           <li><a href="#">one</a></li>
           <li><a href="#">two</a></li>
-          <li>
-            submenu 1
-            <div popover data-popover>
+          <li popovertarget="submenu1">
+            <span>submenu1</span>
+            <div id="submenu1" popover data-popover class="right-top">
               <ul>
                 <li><a href="#">one</a></li>
                 <li><a href="#">two</a></li>
@@ -121,20 +123,112 @@
             </div>
           </li>
           <li><a href="#">three</a></li>
-          <li>
-            <span>
-              submenu 2
-              <div popover data-popover>
-                <ul>
-                  <li><a href="#">one</a></li>
-                  <li><a href="#">two</a></li>
-                  <li><a href="#">three</a></li>
-                </ul>
-              </div>
-            </span>
+          <li popovertarget="submenu2">
+            <span>submenu2</span>
+            <div id="submenu2" popover data-popover class="right-top">
+              <ul>
+                <li><a href="#">one</a></li>
+                <li popovertarget="submenu3">
+                  <span>submenu3</span>
+                  <div id="submenu3" popover data-popover class="right-top">
+                    <ul>
+                      <li><a href="#">one</a></li>
+                      <li popovertarget="submenu4">
+                        <span>submenu4</span>
+                        <div id="submenu4" popover data-popover class="right-top">
+                          <ul>
+                            <li><a href="#">one</a></li>
+                            <li><a href="#">two</a></li>
+                            <li popovertarget="submenu6">
+                              <span>submenu6</span>
+                              <div id="submenu6" popover data-popover class="right-top">
+                                <ul>
+                                  <li><a href="#">one</a></li>
+                                  <li popovertarget="submenu8">
+                                    <span>submenu8</span>
+                                    <div id="submenu8" popover data-popover class="right-top">
+                                      <ul>
+                                        <li><a href="#">one</a></li>
+                                        <li><a href="#">two</a></li>
+                                        <li><a href="#">three</a></li>
+                                      </ul>
+                                    </div>
+                                  </li>
+                                  <li><a href="#">two</a></li>
+                                  <li popovertarget="submenu9">
+                                    <span>submenu9</span>
+                                    <div id="submenu9" popover data-popover class="right-top">
+                                      <ul>
+                                        <li><a href="#">one</a></li>
+                                        <li><a href="#">two</a></li>
+                                        <li><a href="#">three</a></li>
+                                      </ul>
+                                    </div>
+                                  </li>
+                                  <li><a href="#">three</a></li>
+                                </ul>
+                              </div>
+                            </li>
+                            <li><a href="#">three</a></li>
+                          </ul>
+                        </div>
+                      </li>
+                      <li><a href="#">two</a></li>
+                      <li><a href="#">three</a></li>
+                    </ul>
+                  </div>
+                </li>
+                <li popovertarget="submenu7">
+                  <span>submenu7</span>
+                  <div id="submenu7" popover data-popover class="right-top">
+                    <ul>
+                      <li><a href="#">one</a></li>
+                      <li><a href="#">two</a></li>
+                      <li><a href="#">three</a></li>
+                    </ul>
+                  </div>
+                </li>
+                <li><a href="#">three</a></li>
+              </ul>
+            </div>
           </li>
         </ul>
       </div>
     </div>
+    <script>
+      const burger = document.getElementById("burger");
+      const menu = document.getElementById("menu");
+      menu.addEventListener("toggle", (e) => {
+        if (menu.matches(":popover-open")) {
+          burger.classList.add("open");
+        } else {
+          burger.classList.remove("open");
+        }
+      });
+
+      // Handle popovertarget on non-button elements
+      document.addEventListener("click", (e) => {
+        const trigger = e.target.closest("[popovertarget]");
+        if (trigger && trigger.tagName !== "BUTTON" && trigger.tagName !== "INPUT") {
+          const popoverId = trigger.getAttribute("popovertarget");
+          const popover = document.getElementById(popoverId);
+          if (popover) {
+            // Set dynamic anchor relationship
+            const anchorName = `--anchor-${popoverId}`;
+            trigger.style.anchorName = anchorName;
+            popover.style.positionAnchor = anchorName;
+
+            const action = trigger.getAttribute("popovertargetaction") || "toggle";
+            if (action === "show") {
+              popover.showPopover();
+            } else if (action === "hide") {
+              popover.hidePopover();
+            } else {
+              popover.togglePopover();
+            }
+          }
+        }
+      });
+    </script>
   </body>
 </html>
