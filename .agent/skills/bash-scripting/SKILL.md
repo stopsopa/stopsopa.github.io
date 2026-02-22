@@ -29,11 +29,18 @@ WARNING: if you have no intetnion to use DIR or ROOT in your script then don't d
 
 # shebang
 
-Don't use shebang at the top of the file.
+<shebang-and-permissions>
 
-Call script like this:
+Don't use shebang at the top of the file.
+also (VERY IMPORTANT) never bother EVER to add executable permissions to shell scripts because I will always call them like this:
 
 /bin/bash ${DIR}/script.sh
+
+and I would ask you to also call it this way when you will be designing formation of scripts calling each other.
+
+so never bother caring about script permissions - just ignore this case.
+
+</shebang-and-permissions>
 
 When using variables always surround them with ${}.
 
