@@ -26,6 +26,7 @@
                 https://npm-compare.com/better-sqlite3,sqlite3
             
             Make SQLite relly fast with WAL mode:
+              journal_mode = WAL
               https://youtu.be/qf0GqRz-c74
 
 
@@ -38,6 +39,11 @@
             browser based - just open link and you ready to go
             You can only explore fixed file - can't see live changes
             NOTE: this one have designer to visually represent relations between tables
+            To change to journal_mode = WAL go to:
+              - right click on the database in "Database Navigator"
+              - select "Edit Connection"
+              - in "Connection settings / TEMPORARY" select "Driver properties" tab
+              - scroll down to "journal_mode" and change there to "WAL"
 
           https://www.beekeeperstudio.io/download
             mac desktop app
