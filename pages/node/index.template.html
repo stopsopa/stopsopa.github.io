@@ -3607,8 +3607,10 @@
 
         <script type="editor" data-lang="sh">
 
-          HOST="0.0.0.0" PORT="8088" node --input-type module <<-HEREDOC
+          HOST="0.0.0.0" PORT="8088" \
+          node --input-type=module - -- --xxxxtest1 <<'HEREDOC'
           console.log('test', process.env.PORT)
+          console.log(process.argv)
           HEREDOC
 
           HOST="0.0.0.0" PORT="8088" node node_modules/.bin/ts-node -e "$(cat <<-HEREDOC
@@ -3618,6 +3620,14 @@
 
           HOST="0.0.0.0" PORT="8088" node node_modules/.bin/tsx <<-HEREDOC
           console.log('test', process.env.PORT)
+          HEREDOC
+
+          HOST="0.0.0.0" PORT="8088" \
+          node --experimental-strip-types - -- --xxxxtest1 <<'HEREDOC'
+          const port: number = Number(process.env.PORT)
+          console.log('port:', port)
+          console.log('argv:', process.argv)
+          console.log('extra arg:', process.argv[2])
           HEREDOC
 
           # extract value from json:
