@@ -7,6 +7,8 @@
  *    var/server_js_https.log
  *    var/server_js_http.log
  *
+ * node dev-tail.js var/tail.log var/server_js_https.log var/server_js_http.log --flag <flag_value>
+ *    this flag will be ignored but it useful to find process by custom flag with ps aux
  */
 
 import readline from "readline";
