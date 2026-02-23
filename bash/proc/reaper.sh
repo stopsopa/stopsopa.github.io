@@ -4,6 +4,24 @@
 # look at the very bottom of this script where exact grep sequences are specified with explanation what is supposed to be killed
 #
 
+# 
+# It can be called directly too
+
+# cat <<EEE > garbage2.sh
+# export NODE_OPTIONS=""
+# node -e 'setTimeout(() => console.log(process.argv[1]), 1000000000)' -- --xxxxtest1 &
+# node -e 'setTimeout(() => console.log(process.argv[1]), 1000000000)' -- --xxxxtest2 &
+# node -e 'setTimeout(() => console.log(process.argv[1]), 1000000000)' -- --xxxxtest3 &
+# EEE
+# 
+# then run: 
+#   /bin/bash garbage2.sh
+# 
+# then you can run:
+#   ps aux | grep -v grep | grep xxxxtest | /bin/bash bash/proc/reaper.sh
+# 
+# 
+
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
 case ${_SHELL} in
@@ -18,11 +36,22 @@ case ${_SHELL} in
     ;;
 esac
 
-set -e
+trim() {
+    local var="${*}"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "${var}"
+}
 
-source "${__DIR}/../trim.sh"
+function extractPidsFromText {
+    local TEXT="${1}"
 
-set +e
+    PIDS="$(echo "${TEXT}" | awk '{ print $2 }')"
+
+    PIDS="$(trim "${PIDS}")"
+}
 
 function findDevFrontServerPid {
     CMD="${1}"
@@ -31,11 +60,21 @@ function findDevFrontServerPid {
 
     echo -e "  executing: >${CMD}< found rows:\n  ${ROW:->not found<}"
 
-    PID_CMD="echo '${ROW}' | awk '{ print \$2 }'"
+    extractPidsFromText "${ROW}"
 
-    PIDS="$(eval "${PID_CMD}")"
+    if [ "${PIDS}" != "" ]; then
+        echo "  executing: >${CMD}< pids: >$(echo -n "${PIDS}" | tr '\n' ',')<"
+    fi
+}
 
-    PIDS="$(trim "${PIDS}")"
+function collectPidsFromStdin {
+    CMD="piped input"
+    local STDIN_CONTENT
+    STDIN_CONTENT="$(cat)"
+
+    echo -e "  executing: >${CMD}< found rows:\n  ${STDIN_CONTENT:->not found<}"
+
+    extractPidsFromText "${STDIN_CONTENT}"
 
     if [ "${PIDS}" != "" ]; then
         echo "  executing: >${CMD}< pids: >$(echo -n "${PIDS}" | tr '\n' ',')<"
@@ -45,6 +84,10 @@ function findDevFrontServerPid {
 function tryToKill {
     findDevFrontServerPid "${1}"
 
+    tryToKillPIDS
+}
+
+function tryToKillPIDS {
     while read -r PID
     do
         if [ "${KILL_V2_EXCLUDE_PARENT_PID}" != "" ] && [ "${PID}" = "${KILL_V2_EXCLUDE_PARENT_PID}" ]; then
@@ -89,8 +132,9 @@ EEE
         echo "  executing: >${CMD}< status: couldn't kill, pids >${PIDS}<"
 
         exit 1
-    fi
+    fi    
 }
+
 
 # # How to use this library:
 # # Just create separate shell script with content like
@@ -123,3 +167,10 @@ EEE
 
 
 
+
+if [ ! -t 0 ]; then
+    collectPidsFromStdin
+    if [ "${PIDS}" != "" ]; then
+        tryToKillPIDS
+    fi
+fi
