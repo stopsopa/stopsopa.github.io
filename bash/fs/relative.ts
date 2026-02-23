@@ -1,4 +1,4 @@
-import path from 'path';
+import path from "path";
 
 const [root, target] = process.argv.slice(2);
 

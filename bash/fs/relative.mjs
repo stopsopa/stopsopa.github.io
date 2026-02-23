@@ -1,7 +1,7 @@
 /**
  * NODE_OPTIONS="" node bash/fs/relative.mjs /Users/user /Users/user/directory/file.txt
  */
-import path from 'path';
+import path from "path";
 
 const [root, target] = process.argv.slice(2);
 
