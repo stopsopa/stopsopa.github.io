@@ -21,8 +21,19 @@ import { fileURLToPath } from "url";
 // handle live 'tail'ing file
 // handle live 'tail'ing file
 
+const args = process.argv.slice(2);
+const filteredArgs = [];
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === "--flag") {
+    i++; // Skip the flag and its argument
+  } else {
+    filteredArgs.push(args[i]);
+  }
+}
+
 // Get the file path from command line arguments
-const filePath = process.argv[2];
+const filePath = filteredArgs[0];
+const files = filteredArgs.slice(1);
 
 if (!filePath || !fss.existsSync(filePath)) {
   console.error("Please provide a file path as an argument");
@@ -93,7 +104,6 @@ const rel_script = path.relative(process.cwd(), __filename);
 let i = 0;
 function keypressed(key) {
   i += 1;
-  const files = process.argv.slice(3);
 
   process.stdout.write(`\n${rel_script}: ${i}`);
 
