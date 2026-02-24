@@ -722,33 +722,41 @@
 
         <script type="editor" data-lang="css">
 
-          // font: Inter  - open source
-            <link rel="preconnect" href="https://rsms.me/" />
-            <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-            homepage: https://rsms.me/inter/download/ by Rasmus Andersson (RSMS)
-              first saw: https://www.blockchain.com/explorer/transactions/eth/0x47cc7d1d0d06a304b67f9e31f710e44aa4ba499e5ca8624ee8f23c1ae8ca4461
+          homepage: https://rsms.me/inter/download/ by Rasmus Andersson (RSMS)
+            first saw: https://www.blockchain.com/explorer/transactions/eth/0x47cc7d1d0d06a304b67f9e31f710e44aa4ba499e5ca8624ee8f23c1ae8ca4461
+          
+          // all we need
+          
+          <link rel="preconnect" href="https://rsms.me/" />
+          <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+          <style>
             .g-inter {
               font-family: Inter, sans-serif;
-              font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
+              font-feature-settings:
+                "liga" 1,
+                "calt" 1,
+                /* fix for Chrome */ "zero",
+                "ss01";
             }
-
-          // just use
-          :root {
-            font-family: "Inter", sans-serif;
-          }
-          @supports (font-variation-settings: normal) {
+      
             :root {
-              font-family: "Inter var", sans-serif;
-              font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01"
+              font-family: "Inter", sans-serif;
             }
-          }
+            @supports (font-variation-settings: normal) {
+              :root {
+                font-family: "Inter var", sans-serif;
+                font-feature-settings:
+                  "liga" 1,
+                  "calt" 1,
+                  /* fix for Chrome */ "zero",
+                  "ss01";
+              }
+            }
+          </style>
+          
         </script>
-        <style>
-          .g-inter {
-            font-family: Inter, sans-serif;
-            font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
-          }
-        </style>
+
+          // test
         <p class="g-inter">
           font: Inter - This transaction was first broadcasted on the Ethereum network on August 09, 2022 at 03:08 AM
           GMT+1. The transaction currently has 5,310,353 confirmations on the network. The current value of this
