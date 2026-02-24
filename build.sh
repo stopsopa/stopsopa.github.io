@@ -76,7 +76,6 @@ if [ "${EXPOSE_EXTRA_ENV_VARIABLES}" = "" ]; then
 fi
 
 mkdir -p public
-cp node_modules/envprocessor/dist/esm/env.js public/env.js
 
 # transpile all "module*.ts" right next in the same directoris but as *.js
 node node_modules/.bin/tsc
@@ -90,6 +89,7 @@ time /bin/bash scripts/template.sh
 
 # node libs/preprocessor.js
 time node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
+cp node_modules/envprocessor/dist/esm/env.js public/env.js
 
 time node esbuild-entries.js
 

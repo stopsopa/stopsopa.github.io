@@ -288,7 +288,7 @@ to use in my single page
 <script type="module">
   import drag, { getStyle } from "/libs/drag.js";
 
-  import "/js/preprocessed.js";
+  import "/build/preprocessed.js";
   import urlwizzard from "/js/urlwizzard.js";
 
   await urlwizzard();
