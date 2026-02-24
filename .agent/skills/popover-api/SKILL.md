@@ -120,22 +120,26 @@ What our core-css file requires is to add [data-popover] attribute to the popove
 from that point controlling position of popover in relation to anchor element is done via adding css class.
 
 Here are classes which are available: 
-- top
-- bottom
-- left
-- right
-- top-left
-- top-right
-- bottom-left
-- bottom-right
-- center
-- topleft
-- topright
-- bottomleft
-- bottomright
-- left-top
-- left-bottom
-- right-top
-- right-bottom
+- **top**: Positioned **above** the anchor, horizontally **centered**.
+- **bottom**: Positioned **below** the anchor, horizontally **centered**.
+- **left**: Positioned to the **left** of the anchor, vertically **centered**.
+- **right**: Positioned to the **right** of the anchor, vertically **centered**.
+
+- **top-left**: Positioned **above** the anchor, its **left edge** aligned with the anchor's **left edge**.
+- **top-right**: Positioned **above** the anchor, its **right edge** aligned with the anchor's **right edge**.
+- **bottom-left**: Positioned **below** the anchor, its **left edge** aligned with the anchor's **left edge**.
+- **bottom-right**: Positioned **below** the anchor, its **right edge** aligned with the anchor's **right edge**.
+
+- **center**: Positioned **directly over** the anchor, centered both horizontally and vertically.
+
+- **topleft**: bottom right corner of the poppover touches top left corner of the anchor
+- **topright**: bottom left corner of the poppover touches top right corner of the anchor
+- **bottomleft**: top right corner of the popover touches bottom left corner of the anchor
+- **bottomright**: top left corner of the popover touches bottom right corner of the anchor
+
+- **left-top**: Positioned to the **left** of the anchor, its **top edge** aligned with the anchor's **top edge**.
+- **left-bottom**: Positioned to the **left** of the anchor, its **bottom edge** aligned with the anchor's **bottom edge**.
+- **right-top**: Positioned to the **right** of the anchor, its **top edge** aligned with the anchor's **top edge**.
+- **right-bottom**: Positioned to the **right** of the anchor, its **bottom edge** aligned with the anchor's **bottom edge**.
 
 </position>
