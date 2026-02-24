@@ -138,5 +138,7 @@ process.stdin.on("keypress", (str, key) => {
   }
 });
 
-console.log(`${rel_script}: Keyboard listener activated. Press any key to trigger the keypressed function.`);
+console.log(
+  `${rel_script}: Keyboard listener activated. Press any key to trigger the keypressed function.`,
+);
 console.log("Press Ctrl+C to exit.");
