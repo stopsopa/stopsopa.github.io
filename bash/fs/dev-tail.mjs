@@ -1,5 +1,5 @@
 /**
- * node bash/fs/dev-tail.js var/tail.log var/server_js_https.log var/server_js_http.log
+ * node bash/fs/dev-tail.mjs var/tail.log var/server_js_https.log var/server_js_http.log
  *
  * This script will attach and do 'tail -f var/tail.log' continuously
  * and also on every keystroke will dumpt to process.stdout.write() content of any file after the first argument
@@ -7,7 +7,7 @@
  *    var/server_js_https.log
  *    var/server_js_http.log
  *
- * node bash/fs/dev-tail.js var/tail.log var/server_js_https.log var/server_js_http.log --flag <flag_value>
+ * node bash/fs/dev-tail.mjs var/tail.log var/server_js_https.log var/server_js_http.log --flag <flag_value>
  *    this flag will be ignored but it useful to find process by custom flag with ps aux
  */
 

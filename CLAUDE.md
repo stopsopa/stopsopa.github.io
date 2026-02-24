@@ -192,7 +192,7 @@ The site uses Firebase for authentication and database. Configuration is loaded 
 - `server.js` - Local development server (Express + HTTPS/HTTP)
 - `esbuild-entries.js` - Bundles React entry points
 - `esbuild-node.sh` - Bundles Node.js scripts
-- `dev-tail.js` - Multiplexes log output during development
+- `dev-tail.mjs` - Multiplexes log output during development
 - `.github/injector.sh` - Injects dynamic content during build
 - `.github/clicksecure.sh` - Adds security blocking code (only in CI)
 - `.github/sha384.sh` - Generates SRI hashes (only in CI)
