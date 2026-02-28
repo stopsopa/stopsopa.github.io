@@ -128,9 +128,9 @@ echo do something after lock
 
     [`coverage server`]: {
       command: `
-JEST_COVERAGE_PORT="4286"
+PORT="4286"
 cat <<EEE
-    http://localhost:\${JEST_COVERAGE_PORT}
+    http://localhost:\${PORT}
 EEE
 
 echo -e "\n      Press enter to continue\n"
