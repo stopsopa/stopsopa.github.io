@@ -71,6 +71,47 @@
             gcloud help
                 gcloud help compute instances create
             gcloud projects describe learning-xxxxx
+
+
+        Lear more:
+            Budget and alerts:
+                https://docs.cloud.google.com/billing/docs/how-to/budgets
+                    from: https://console.cloud.google.com/welcome/new?project=learn001-489022
+                gcloud billing projects describe learn001-489022
+                    from: https://docs.cloud.google.com/billing/docs/how-to/verify-billing-enabled#billing_project_linkage
+                Delete project (or not): 
+                    https://docs.cloud.google.com/run/docs/quickstarts/jobs/create-execute#delete_your_test_project
+                    Manage resources console:
+                        https://console.cloud.google.com/cloud-resource-manager
+
+            Learn about gcloud CLI:
+                https://docs.cloud.google.com/sdk/auth_success
+            
+            Manage access to projects, folder and organizations:
+                https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access
+                Cloud Run roles and permissions: 
+                    https://docs.cloud.google.com/iam/docs/roles-permissions/run#run.admin
+                    See also Principal types:
+                        https://docs.cloud.google.com/iam/docs/principals-overview#principal-types
+                Identity and Access Management (IAM)
+                    from: https://docs.cloud.google.com/iam/docs/manage-access-other-resources
+                        to open it normally go to "IAM and admin" -> "Manage resources"
+        
+        Create job in Cloud Run:
+            https://docs.cloud.google.com/run/docs/quickstarts/jobs/create-execute
+            Pricing: https://cloud.google.com/run/pricing
+            Enable API: 
+                gcloud services enable run.googleapis.com
+                check status:
+                    gcloud services list --enabled | grep -A 3 -B 3 run.googleapis.com
+                gcloud run jobs list
+                gcloud run jobs delete job   - it will be asking for --region interactively by default
+                   
+
+
+
+
+
         </script>
       </div>
     </div>
