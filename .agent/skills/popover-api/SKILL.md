@@ -11,6 +11,8 @@ this is main source of truth for css style this entire document will be based ar
 
 if it will be upated in comparison to our local copy then our local copy have to be updated.
 
+When asked for the first time to use popover api, start first from wget'tting that css file into the project.
+
 </core-css>
 
 <basic-structure>
