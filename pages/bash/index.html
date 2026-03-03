@@ -372,6 +372,11 @@
             command -v [program_name]
               urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fbash%2Frequire_cmd.sh
 
+            if ! command -v jq >/dev/null 2>&1; then
+                echo "${0} error: jq is not installed. Please install it to use this script." >&2
+                exit 1
+            fi
+
             $ type -a test
             # returns:
             # test is a shell builtin
