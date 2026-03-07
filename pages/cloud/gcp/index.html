@@ -100,11 +100,19 @@
                           to open it normally go to "IAM and admin" -> "Manage resources"
                 decision tree to choose auth method: 
                     https://docs.cloud.google.com/docs/authentication#auth-decision-tree
-                Federated authentication:
-                    https://docs.cloud.google.com/iam/docs/workload-identity-federation
-                    For our purposes it will be based on openid-connect: https://docs.github.com/en/actions/concepts/security/openid-connect
-                    Generally we will follow steps here to configure Github Actions: https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines#gcloud
-                       First let's "Create the workload identity pool and provider"  https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines?cloudshell=true#github-actions_1
+
+                Federated authentication: https://docs.cloud.google.com/iam/docs/workload-identity-federation
+                    Steps are listed here   https://gist.github.com/karaposu/b5c83c259236cd0516777d7b13565e32
+                        but below we will try to really understand what each of steps in gist above mean really.
+                    
+                        Implementation detail: For our purposes it will be based on openid-connect: https://docs.github.com/en/actions/concepts/security/openid-connect
+
+                    Generally we will follow steps here to configure Github Actions:
+                       First let's "Create the workload identity pool and provider"
+                         for that step: https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines
+                            see images in directory https://github.com/stopsopa/gcp/tree/b0f3dacca3e04d64e74c3e776b9c9d6ad0401077/images/identity_pool
+                        
+
 
           Create job in Cloud Run:
               https://docs.cloud.google.com/run/docs/quickstarts/jobs/create-execute
@@ -144,6 +152,10 @@
             In order to push from Github Actions read section: "Federated authentication" in this document
 
         
+            I've stuck:
+                https://youtu.be/ZgVhU5qvK1M?t=469
+                and: https://console.cloud.google.com/iam-admin/workload-identity-pools/pool/sopagcp1/provider/test?project=learn001-489022
+
 
         </script>
       </div>

@@ -11,6 +11,30 @@
 # override mode - true
 # eval "$(/bin/bash bash/exportsource.sh .env.test true)"
 
+# NOTE
+# NOTE
+# NOTE
+# There is a way to do this natively
+#
+# old_opts=$(set +o)
+# set -a
+# source .env
+# eval "$old_opts"
+#
+# that will override though existing flags
+# in order to not override:
+#
+# old_opts=$(set +o)
+# while IFS='=' read -r key value; do
+#   [[ $key =~ ^#.*$ || -z $key ]] && continue
+#   [[ -z ${!key+x} ]] && export "$key=$value"
+# done < .env
+# eval "$old_opts"
+#
+# NOTE
+# NOTE
+# NOTE
+
 if [ ! -f "${1}" ]; then
 
   echo "${0} error: file '${1}' doesn't exist"
