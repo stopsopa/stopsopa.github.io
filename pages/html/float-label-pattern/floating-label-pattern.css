@@ -8,18 +8,22 @@
   --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* things you might want to change */
-/* The component container - now also the input box */
+/* things you might want to change vvvvv */
+.floating-label input {
+  background-color: white;
+}
+.floating-label {
+  min-height: 58px;
+}
+/* things you might want to change ^^^^^ */
+
 .floating-label {
   position: relative;
   display: grid;
   grid-template-rows: var(--floating-label-height, 34px) auto;
   gap: 0;
   margin-bottom: 12px;
-
-  min-height: 58px; /* 34px input + 4px margin top + 16px error + 4px margin bottom */
 }
-
 /* The visual border box */
 .floating-label::after {
   content: "";

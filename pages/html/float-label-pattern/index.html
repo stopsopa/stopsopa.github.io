@@ -42,30 +42,30 @@
       <div class="inside">
         <h2>GCP Style Floating Labels</h2>
 
-        <form>
+        <form autocomplete="on">
           <!-- Field 1 -->
           <div class="floating-label" id="name-wrapper">
-            <input type="text" id="name" name="name" placeholder="&nbsp;" />
+            <input type="text" id="name" name="name" placeholder="&nbsp;" autocomplete="name"/>
             <label for="name">Project Name *</label>
             <div class="floating-label-error-msg">This field is required</div>
           </div>
 
           <!-- Field 2 -->
           <div class="floating-label" id="email-wrapper">
-            <input type="email" id="email" placeholder="&nbsp;" autocomplete="off" />
+            <input type="email" id="email" placeholder="&nbsp;" autocomplete="email" />
             <label for="email">Admin Email</label>
             <div class="floating-label-error-msg">Enter a valid GCP admin email</div>
           </div>
 
           <!-- Field 3 -->
           <div class="floating-label" id="addremove-wrapper">
-            <input type="email" id="addremove" placeholder="&nbsp;" autocomplete="off" />
+            <input type="email" id="addremove" placeholder="&nbsp;" autocomplete="email" />
             <label for="addremove">Admin Email</label>
           </div>
 
           <!-- Field 4 -->
           <div class="floating-label">
-            <input type="password" id="dummy" placeholder="why is this here?" autocomplete="off" />
+            <input type="password" id="dummy" placeholder="why is this here?" autocomplete="current-password" />
             <label for="dummy">Dummy last field</label>
           </div>
 
