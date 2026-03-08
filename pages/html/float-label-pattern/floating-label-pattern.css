@@ -1,7 +1,7 @@
 :root {
   --floating-label-primary: #1a73e8;
   --floating-label-error: #d93025;
-  --floating-label-border: #dadce0;
+  --floating-label-border: #99999b;
   --floating-label-text: #3c4043;
   --floating-label-label: #5f6368;
   --floating-label-bg: #ffffff;
@@ -48,14 +48,14 @@
 
 .floating-label input {
   grid-row: 1;
-  /* width: 100%; */
+  width: 100%;
   height: var(--floating-label-height, 34px);
   border: none;
   background: transparent;
   padding: 0 12px;
   font-size: var(--floating-label-font-size);
   /* color: var(--floating-label-text); */
-  /* outline: none; */
+  outline: none;
   box-sizing: border-box;
   z-index: 2;
   position: relative;
