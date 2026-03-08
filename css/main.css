@@ -286,7 +286,7 @@ h6 {
 /* Callout / Admonition styles (NOTE, TIP, IMPORTANT, WARNING, CAUTION, ERROR) */
 /* Inspired by GitHub markdown callouts */
 
-.note,
+.stnostte,
 .tip,
 .important,
 .warning,
@@ -298,7 +298,7 @@ h6 {
   border-radius: 3px;
 }
 
-.note {
+.stnostte {
   color: #0969da;
   background-color: rgba(9, 105, 218, 0.1);
 }

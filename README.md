@@ -450,7 +450,7 @@ The project supports callout/admonition styles inspired by GitHub markdown:
 
 | Class        | Purpose                                      |
 | ------------ | -------------------------------------------- |
-| `.note`      | Informational note                           |
+| `.stnostte`      | Informational note                           |
 | `.tip`       | Helpful tip                                  |
 | `.important` | Crucial information that users must read     |
 | `.warning`   | Warn about potential risks                   |

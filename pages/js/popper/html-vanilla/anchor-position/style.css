@@ -3,7 +3,7 @@
 }
 
 @supports (position-area: top) {
-  .note {
+  .stnostte {
     display: none;
   }
 }
@@ -323,7 +323,7 @@ img {
   }
 }
 
-.note {
+.stnostte {
   background: lightgoldenrodyellow;
   border-bottom: 1px solid gold;
   color: black;
@@ -335,7 +335,7 @@ img {
   z-index: 2;
 }
 
-.note code {
+.stnostte code {
   font-size: 1rem;
   background: #ffe88c;
   padding: 0 0.2rem;
