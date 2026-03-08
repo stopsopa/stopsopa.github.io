@@ -38,62 +38,103 @@
         <h2>GCP Style Floating Labels</h2>
 
         <!-- Field 1 -->
-        <div class="field">
-          <div class="floating-label" id="name-wrapper">
-            <input type="text" id="name" placeholder="&nbsp;" autocomplete="off" />
-            <label for="name">Project Name 0</label>
-          </div>
-          <div class="field-error-msg">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                fill-rule="evenodd"
-                d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            <span>This field is required</span>
-          </div>
-          <div class="controls">
-            <label class="error-toggle">
-              <input type="checkbox" onchange="toggleError(this, 'name-wrapper')" />
-              Toggle Error State
-            </label>
-          </div>
+        <!-- <div class="field"> -->
+        <div class="floating-label" id="name-wrapper">
+          <input type="text" id="name" placeholder="&nbsp;" autocomplete="off" />
+          <label for="name">Project Name 0</label>
         </div>
+        <div class="floating-label-error-msg">This field is required</div>
+        <!-- </div> -->
 
         <!-- Field 2 -->
-        <div class="field">
-          <div class="floating-label" id="email-wrapper">
-            <input type="email" id="email" placeholder="&nbsp;" autocomplete="off" />
-            <label for="email">Admin Email</label>
-          </div>
-          <div class="field-error-msg">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                fill-rule="evenodd"
-                d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            <span>Enter a valid GCP admin email</span>
-          </div>
-          <div class="controls">
-            <label class="error-toggle">
-              <input type="checkbox" onchange="toggleError(this, 'email-wrapper')" />
-              Toggle Error State
-            </label>
-          </div>
+        <!-- <div class="field"> -->
+        <div class="floating-label" id="email-wrapper">
+          <input type="email" id="email" placeholder="&nbsp;" autocomplete="off" />
+          <label for="email">Admin Email</label>
+        </div>
+        <div class="floating-label-error-msg">Enter a valid GCP admin email</div>
+        <!-- </div> -->
+
+        <!-- Field 3 -->
+        <!-- <div class="field"> -->
+        <div class="floating-label" id="addremove-wrapper">
+          <input type="email" id="email" placeholder="&nbsp;" autocomplete="off" />
+          <label for="email">Admin Email</label>
+        </div>
+        <!-- </div> -->
+        <!-- Field 3 -->
+        <!-- <div class="field"> -->
+        <div class="floating-label">
+          <input type="email" id="email" placeholder="why is this here?" autocomplete="off" />
+          <label for="email">Dummy last field</label>
+        </div>
+        <!-- </div> -->
+
+        <hr />
+
+        <div class="controls">
+          <label class="error-toggle">
+            <input type="checkbox" data-toggle-class="#name-wrapper" />
+            Toggle Error State
+          </label>
+        </div>
+        <div class="controls">
+          <label class="error-toggle">
+            <input type="checkbox" data-toggle-class="#email-wrapper" />
+            Toggle Error State
+          </label>
+        </div>
+        <div class="controls">
+          <label class="error-toggle">
+            <input type="checkbox" data-add-remove-element="#addremove-wrapper" />
+            add/remove .floating-label-error-msg
+          </label>
         </div>
       </div>
     </div>
 
     <script>
-      function toggleError(checkbox, wrapperId) {
-        const wrapper = document.getElementById(wrapperId);
-        if (checkbox.checked) {
-          wrapper.setAttribute("data-error", "true");
+      document.body.addEventListener("change", function (e) {
+        var el = e.target;
+
+        if (el.matches("[data-toggle-class]")) {
+          const selector = el.getAttribute("data-toggle-class");
+          const target = document.querySelector(selector);
+          if (el.checked) {
+            target.setAttribute("data-error", "true");
+          } else {
+            target.removeAttribute("data-error");
+          }
+        }
+
+        if (el.matches("[data-add-remove-element]")) {
+          const selector = el.getAttribute("data-add-remove-element");
+          const target = document.querySelector(selector);
+          if (el.checked) {
+            // <div class="floating-label-error-msg">Enter a valid GCP admin email</div>
+            const div = document.createElement("div");
+            div.className = "floating-label-error-msg";
+            div.textContent = "Enter a valid GCP admin email";
+            after(target, div);
+            target.setAttribute("data-error", "true");
+          } else {
+            target.nextElementSibling.remove();
+            target.removeAttribute("data-error");
+          }
+        }
+      });
+
+      function before(referenceNode, newNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode);
+      }
+      function append(parentNode, newNode) {
+        parentNode.appendChild(newNode);
+      }
+      function after(referenceNode, newNode) {
+        if (referenceNode.nextSibling) {
+          before(referenceNode.nextSibling, newNode);
         } else {
-          wrapper.removeAttribute("data-error");
+          append(referenceNode.parentNode, newNode);
         }
       }
     </script>

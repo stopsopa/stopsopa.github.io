@@ -86,11 +86,12 @@
   color: var(--gcp-error);
 }
 
-.field-error-msg {
+.floating-label-error-msg {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 4px;
+  margin-bottom: 4px;
   color: var(--gcp-error);
   font-size: 12px;
   visibility: hidden;
@@ -98,14 +99,23 @@
   transition: opacity var(--transition);
 }
 
-.floating-label[data-error] + .field-error-msg {
+.floating-label[data-error] + .floating-label-error-msg {
   visibility: visible;
   opacity: 1;
 }
 
-.field-error-msg svg {
-  width: 16px;
-  height: 16px;
+.floating-label-error-msg::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-color: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M9 2a7 7 0 100 14A7 7 0 009 2m-1 8V5h2v5zm0 3v-2h2v2z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M9 2a7 7 0 100 14A7 7 0 009 2m-1 8V5h2v5zm0 3v-2h2v2z'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
   flex-shrink: 0;
 }
 
