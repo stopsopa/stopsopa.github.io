@@ -6,7 +6,7 @@
   --floating-label-label: #5f6368;
   --floating-label-bg: #ffffff;
   --floating-label-font-size: 16px;
-  --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --floating-label-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* things you might want to change vvvvv */
@@ -39,7 +39,7 @@
   height: var(--floating-label-height, 34px);
   border-radius: 4px;
   box-shadow: 0 0 0 1px var(--floating-label-border);
-  transition: box-shadow var(--transition);
+  transition: box-shadow var(--floating-label-transition);
   pointer-events: none;
   box-sizing: border-box;
   z-index: 0;
@@ -66,7 +66,7 @@
 
 .floating-label input::placeholder {
   color: transparent;
-  transition: color var(--transition);
+  transition: color var(--floating-label-transition);
 }
 
 .floating-label input:focus::placeholder {
@@ -83,7 +83,7 @@
   font-size: var(--floating-label-font-size);
   color: var(--floating-label-label);
   pointer-events: none;
-  transition: all var(--transition);
+  transition: all var(--floating-label-transition);
   background: var(--floating-label-bg);
   padding: 0 4px;
   z-index: 3;
@@ -122,7 +122,7 @@
   font-size: 12px;
   visibility: hidden;
   opacity: 0;
-  transition: opacity var(--transition);
+  transition: opacity var(--floating-label-transition);
   line-height: var(--floating-label-font-size);
   height: var(--floating-label-font-size); /* Fixed height for reservation */
   z-index: 1;
