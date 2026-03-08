@@ -287,7 +287,7 @@ h6 {
 /* Inspired by GitHub markdown callouts */
 
 .stnostte,
-.tip,
+.tistp,
 .important,
 .warning,
 .caution,
@@ -303,7 +303,7 @@ h6 {
   background-color: rgba(9, 105, 218, 0.1);
 }
 
-.tip {
+.tistp {
   color: #1a7f37;
   background-color: rgba(46, 160, 67, 0.1);
 }
