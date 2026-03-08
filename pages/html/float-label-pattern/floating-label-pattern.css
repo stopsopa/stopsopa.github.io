@@ -111,7 +111,7 @@
   color: var(--floating-label-error);
 }
 
-.floating-label-error-msg {
+.error {
   grid-row: 2;
   display: flex;
   align-items: center;
@@ -129,21 +129,21 @@
 }
 
 /* Support both sibling (grid-friendly) and child (nested) structures */
-.floating-label[data-error] .floating-label-error-msg {
+.floating-label[data-error] .error {
   visibility: visible;
   opacity: 1;
 }
 
 /* If nested inside .floating-label, we need to ensure it's positioned correctly 
    and doesn't interfere with the flex alignment of the input */
-.floating-label > .floating-label-error-msg {
+.floating-label > .error {
   /* position: absolute; */
   /* top: 100%; */
   /* left: 0; */
   /* width: 100%; */
 }
 
-.floating-label-error-msg::before {
+.error::before {
   content: "";
   display: inline-block;
   width: 18px;

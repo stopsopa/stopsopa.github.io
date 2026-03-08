@@ -45,16 +45,16 @@
         <form autocomplete="on">
           <!-- Field 1 -->
           <div class="floating-label" id="name-wrapper">
-            <input type="text" id="name" name="name" placeholder="&nbsp;" autocomplete="name"/>
+            <input type="text" id="name" name="name" placeholder="&nbsp;" autocomplete="name" />
             <label for="name">Project Name *</label>
-            <div class="floating-label-error-msg">This field is required</div>
+            <div class="error">This field is required</div>
           </div>
 
           <!-- Field 2 -->
           <div class="floating-label" id="email-wrapper">
             <input type="email" id="email" placeholder="&nbsp;" autocomplete="email" />
             <label for="email">Admin Email</label>
-            <div class="floating-label-error-msg">Enter a valid GCP admin email</div>
+            <div class="error">Enter a valid GCP admin email</div>
           </div>
 
           <!-- Field 3 -->
@@ -93,9 +93,25 @@
         <div class="controls">
           <label class="error-toggle">
             <input type="checkbox" data-add-remove-element="#addremove-wrapper" />
-            add/remove .floating-label-error-msg
+            add/remove .error
           </label>
         </div>
+        <script type="editor" data-lang="js" data-eval>
+
+          urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fhtml%2Ffloat-label-pattern%2Ffloating-label-pattern.css
+
+          <link rel="stylesheet" href="urlwizzard.schema://urlwizzard.hostnegotiated/pages/html/float-label-pattern/floating-label-pattern.css" />
+
+          <div class="floating-label">
+          <input type="text" id="name" name="name" placeholder="&nbsp;" autocomplete="name"/>
+          <label for="name">Name *</label>
+          <!--
+              You can create it but it will be only visible when .floating-label element
+              has attr [data-error]
+              <div class="error">This field is required</div>
+          -->
+          </div>
+        </script>
       </div>
     </div>
 
@@ -127,14 +143,14 @@
             return;
           }
           if (el.checked) {
-            // <div class="floating-label-error-msg">Enter a valid GCP admin email</div>
+            // <div class="error">Enter a valid GCP admin email</div>
             const div = document.createElement("div");
-            div.className = "floating-label-error-msg";
+            div.className = "error";
             div.textContent = "Enter a valid GCP admin email";
             target.appendChild(div);
             target.setAttribute("data-error", "true");
           } else {
-            target.querySelector(".floating-label-error-msg").remove();
+            target.querySelector(".error").remove();
             target.removeAttribute("data-error");
           }
         }
