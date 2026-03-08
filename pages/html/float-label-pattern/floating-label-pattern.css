@@ -1,0 +1,122 @@
+:root {
+  --gcp-primary: #1a73e8;
+  --gcp-error: #d93025;
+  --gcp-border: #dadce0;
+  --gcp-text: #3c4043;
+  --gcp-label: #5f6368;
+  --gcp-bg: #ffffff;
+  --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Floating Label Pattern - GCP Console Style */
+.field-container {
+  margin-bottom: 24px;
+  font-family: 'Roboto', 'Segoe UI', Tahoma, sans-serif;
+  max-width: 400px; /* Optional constraint for better appearance */
+}
+
+.field-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--gcp-border);
+  border-radius: 4px;
+  background: var(--gcp-bg);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  padding: 0 12px;
+  height: 56px; /* Standard GCP input height */
+}
+
+.field-wrapper:focus-within {
+  border-color: var(--gcp-primary);
+  border-width: 2px;
+  padding: 0 11px; /* Offset for 2px border */
+}
+
+.field-wrapper input {
+  border: none;
+  background: transparent;
+  padding: 24px 0 8px 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--gcp-text);
+  outline: none;
+  width: 100%;
+}
+
+.field-wrapper label {
+  position: absolute;
+  left: 12px;
+  top: 18px;
+  font-size: 16px;
+  color: var(--gcp-label);
+  pointer-events: none;
+  transition: transform var(--transition), font-size var(--transition), color var(--transition), top var(--transition);
+  transform-origin: left top;
+  z-index: 1;
+}
+
+/* Floating logic: When focused or placeholder is NOT shown */
+.field-wrapper input:focus + label,
+.field-wrapper input:not(:placeholder-shown) + label {
+  transform: translateY(-12px) scale(0.75);
+  color: var(--gcp-primary);
+}
+
+/* Error State */
+.field-wrapper[data-error] {
+  border-color: var(--gcp-error);
+}
+
+.field-wrapper[data-error]:focus-within {
+  border-color: var(--gcp-error);
+}
+
+.field-wrapper[data-error] input:focus + label,
+.field-wrapper[data-error] input:not(:placeholder-shown) + label {
+  color: var(--gcp-error);
+}
+
+/* Error Message */
+.field-error-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  color: var(--gcp-error);
+  font-size: 12px;
+  font-weight: 400;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.field-wrapper[data-error] + .field-error-msg {
+  visibility: visible;
+  opacity: 1;
+}
+
+.field-error-msg svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Toggle Controls */
+.controls {
+  margin-top: 8px;
+}
+
+.error-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #5f6368;
+  cursor: pointer;
+  user-select: none;
+}
+
+.error-toggle input {
+  margin: 0;
+}
