@@ -30,6 +30,11 @@
           font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
         }
       }
+      form {
+        width: 800px;
+        border-right: 1px solid darkgray;
+        padding-right: 12px;
+      }
     </style>
   </head>
   <body class="layout bg">
@@ -38,46 +43,40 @@
         <h2>GCP Style Floating Labels</h2>
 
         <form>
-            
+          <!-- Field 1 -->
+          <div class="floating-label" id="name-wrapper">
+            <input type="text" id="name" name="name" placeholder="&nbsp;" />
+            <label for="name">Project Name *</label>
+            <div class="floating-label-error-msg">This field is required</div>
+          </div>
 
-        <!-- Field 1 -->
-        <!-- <div class="field"> -->
-        <div class="floating-label" id="name-wrapper">
-          <input type="text" id="name" name="name" placeholder="&nbsp;"  />
-          <label for="name">Project Name 0</label>
-        </div>
-        <div class="floating-label-error-msg">This field is required</div>
-        <!-- </div> -->
+          <!-- Field 2 -->
+          <div class="floating-label" id="email-wrapper">
+            <input type="email" id="email" placeholder="&nbsp;" autocomplete="off" />
+            <label for="email">Admin Email</label>
+            <div class="floating-label-error-msg">Enter a valid GCP admin email</div>
+          </div>
 
-        <!-- Field 2 -->
-        <!-- <div class="field"> -->
-        <div class="floating-label" id="email-wrapper">
-          <input type="email" id="email" placeholder="&nbsp;" autocomplete="off" />
-          <label for="email">Admin Email</label>
-        </div>
-        <div class="floating-label-error-msg">Enter a valid GCP admin email</div>
-        <!-- </div> -->
+          <!-- Field 3 -->
+          <div class="floating-label" id="addremove-wrapper">
+            <input type="email" id="addremove" placeholder="&nbsp;" autocomplete="off" />
+            <label for="addremove">Admin Email</label>
+          </div>
 
-        <!-- Field 3 -->
-        <!-- <div class="field"> -->
-        <div class="floating-label" id="addremove-wrapper">
-          <input type="email" id="addremove" placeholder="&nbsp;" autocomplete="off" />
-          <label for="addremove">Admin Email</label>
-        </div>
-        <!-- </div> -->
-        <!-- Field 3 -->
-        <!-- <div class="field"> -->
-        <div class="floating-label">
-          <input type="email" id="dummy" placeholder="why is this here?" autocomplete="off" />
-          <label for="dummy">Dummy last field</label>
-        </div>
+          <!-- Field 4 -->
+          <div class="floating-label">
+            <input type="password" id="dummy" placeholder="why is this here?" autocomplete="off" />
+            <label for="dummy">Dummy last field</label>
+          </div>
 
-        <br />
-        <input type="submit" value="Submit" />
+          <br />
+          <input type="submit" value="Submit" />
         </form>
         <!-- </div> -->
 
         <hr />
+        <input type="range" id="range" min="1" max="100" step="1" value="80" />
+        <br />
 
         <div class="controls">
           <label class="error-toggle">
@@ -101,12 +100,19 @@
     </div>
 
     <script>
+      function log(...args) {
+        console.log(...args);
+      }
       document.body.addEventListener("change", function (e) {
         var el = e.target;
 
         if (el.matches("[data-toggle-class]")) {
           const selector = el.getAttribute("data-toggle-class");
           const target = document.querySelector(selector);
+          if (!target) {
+            return;
+          }
+
           if (el.checked) {
             target.setAttribute("data-error", "true");
           } else {
@@ -117,33 +123,45 @@
         if (el.matches("[data-add-remove-element]")) {
           const selector = el.getAttribute("data-add-remove-element");
           const target = document.querySelector(selector);
+          if (!target) {
+            return;
+          }
           if (el.checked) {
             // <div class="floating-label-error-msg">Enter a valid GCP admin email</div>
             const div = document.createElement("div");
             div.className = "floating-label-error-msg";
             div.textContent = "Enter a valid GCP admin email";
-            after(target, div);
+            target.appendChild(div);
             target.setAttribute("data-error", "true");
           } else {
-            target.nextElementSibling.remove();
+            target.querySelector(".floating-label-error-msg").remove();
             target.removeAttribute("data-error");
           }
         }
       });
 
-      function before(referenceNode, newNode) {
-        referenceNode.parentNode.insertBefore(newNode, referenceNode);
-      }
-      function append(parentNode, newNode) {
-        parentNode.appendChild(newNode);
-      }
-      function after(referenceNode, newNode) {
-        if (referenceNode.nextSibling) {
-          before(referenceNode.nextSibling, newNode);
-        } else {
-          append(referenceNode.parentNode, newNode);
+      function range(element, event) {
+        function hc() {
+          event(parseInt(element.value, 10));
         }
+        element.addEventListener("change", hc);
+        element.addEventListener("input", hc);
+        hc();
       }
+      const form = document.querySelector("form");
+      let realWidth = form ? form.getBoundingClientRect().width : 0;
+      const rangeEl = document.querySelector("#range");
+      range(rangeEl, (v) => {
+        // this will trigger once only when attached to dom element
+        const percent = v / 100;
+        const width = parseInt(realWidth * percent, 10);
+        log("h", {
+          realWidth,
+          percent,
+          width,
+        });
+        form.style.width = width + "px";
+      });
     </script>
     <script type="module" src="/js/github.js"></script>
   </body>

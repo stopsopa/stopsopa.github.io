@@ -1,56 +1,58 @@
 :root {
-  --gcp-primary: #1a73e8;
-  --gcp-error: #d93025;
-  --gcp-border: #dadce0;
-  --gcp-text: #3c4043;
-  --gcp-label: #5f6368;
-  --gcp-bg: #ffffff;
+  --floating-label-primary: #1a73e8;
+  --floating-label-error: #d93025;
+  --floating-label-border: #dadce0;
+  --floating-label-text: #3c4043;
+  --floating-label-label: #5f6368;
+  --floating-label-bg: #ffffff;
   --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* things you might want to change */
-.floating-label {
-  height: 34px;
-}
-.field {
-  /* font-family: "Inter", sans-serif; */
-  /* from: https://stopsopa.github.io/pages/css/index.html#font-iter */
-
-  /* font-family: "Roboto", "Segoe UI", Tahoma, sans-serif; */
-}
-/* things you might want to change */
-
-.field {
-  position: relative;
-  margin-bottom: 24px;
-  max-width: 400px;
-}
-
+/* The component container - now also the input box */
 .floating-label {
   position: relative;
-  background: var(--gcp-bg);
+  display: grid;
+  grid-template-rows: var(--floating-label-height, 34px) auto;
+  gap: 0;
+  margin-bottom: 12px;
+
+  min-height: 58px; /* 34px input + 4px margin top + 16px error + 4px margin bottom */
+}
+
+/* The visual border box */
+.floating-label::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--floating-label-height, 34px);
   border-radius: 4px;
+  box-shadow: 0 0 0 1px var(--floating-label-border);
   transition: box-shadow var(--transition);
-  display: flex;
-  align-items: center;
+  pointer-events: none;
   box-sizing: border-box;
-  box-shadow: 0 0 0 1px var(--gcp-border);
+  z-index: 0;
 }
 
-.floating-label:focus-within {
-  box-shadow: 0 0 0 2px var(--gcp-primary);
+.floating-label:focus-within::after {
+  box-shadow: 0 0 0 2px var(--floating-label-primary);
 }
 
 .floating-label input {
+  grid-row: 1;
   width: 100%;
-  height: 100%;
+  height: var(--floating-label-height, 34px);
   border: none;
   background: transparent;
   padding: 0 12px;
   font-size: 16px;
-  color: var(--gcp-text);
+  color: var(--floating-label-text);
   outline: none;
   box-sizing: border-box;
+  z-index: 2;
+  position: relative;
 }
 
 .floating-label input::placeholder {
@@ -59,22 +61,23 @@
 }
 
 .floating-label input:focus::placeholder {
-  color: var(--gcp-label);
+  color: var(--floating-label-label);
 }
 
 /* 2️⃣ Turn the label into a “fake placeholder” */
 .floating-label label {
+  grid-row: 1;
   position: absolute;
   left: 7px;
-  top: 50%;
+  top: 17px; /* 50% of 34px */
   transform: translateY(-50%);
   font-size: 16px;
-  color: var(--gcp-label);
+  color: var(--floating-label-label);
   pointer-events: none;
   transition: all var(--transition);
-  background: var(--gcp-bg); /* Match background to slice border */
+  background: var(--floating-label-bg);
   padding: 0 4px;
-  z-index: 1;
+  z-index: 3;
 }
 
 /* 4️⃣ The real trick: :placeholder-shown combined with :focus */
@@ -82,39 +85,53 @@
 .floating-label input:is(:not(:placeholder-shown), :focus) + label {
   top: 0;
   font-size: 12px;
-  color: var(--gcp-primary);
+  color: var(--floating-label-primary);
   /* The translateY(-50%) remains from the base label style to center it on the top border */
 }
 
 /* Error State */
-.floating-label[data-error] {
-  box-shadow: 0 0 0 1px var(--gcp-error);
+.floating-label[data-error]::after {
+  box-shadow: 0 0 0 1px var(--floating-label-error);
 }
 
-.floating-label[data-error]:focus-within {
-  box-shadow: 0 0 0 2px var(--gcp-error);
+.floating-label[data-error]:focus-within::after {
+  box-shadow: 0 0 0 2px var(--floating-label-error);
 }
 
 .floating-label[data-error] input:is(:not(:placeholder-shown), :focus) + label {
-  color: var(--gcp-error);
+  color: var(--floating-label-error);
 }
 
 .floating-label-error-msg {
+  grid-row: 2;
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 4px;
   margin-bottom: 4px;
-  color: var(--gcp-error);
+  color: var(--floating-label-error);
   font-size: 12px;
   visibility: hidden;
   opacity: 0;
   transition: opacity var(--transition);
+  line-height: 16px;
+  height: 16px; /* Fixed height for reservation */
+  z-index: 1;
 }
 
-.floating-label[data-error] + .floating-label-error-msg {
+/* Support both sibling (grid-friendly) and child (nested) structures */
+.floating-label[data-error] .floating-label-error-msg {
   visibility: visible;
   opacity: 1;
+}
+
+/* If nested inside .floating-label, we need to ensure it's positioned correctly 
+   and doesn't interfere with the flex alignment of the input */
+.floating-label > .floating-label-error-msg {
+  position: absolute;
+  /* top: 100%; */
+  left: 0;
+  width: 100%;
 }
 
 .floating-label-error-msg::before {
