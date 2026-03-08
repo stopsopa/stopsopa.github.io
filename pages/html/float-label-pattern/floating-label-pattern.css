@@ -29,16 +29,16 @@
 .floating-label {
   position: relative;
   background: var(--gcp-bg);
-  border: 1px solid var(--gcp-border);
   border-radius: 4px;
-  transition: border-color var(--transition), box-shadow var(--transition);
+  transition: box-shadow var(--transition);
   display: flex;
   align-items: center;
+  box-sizing: border-box;
+  box-shadow: 0 0 0 1px var(--gcp-border);
 }
 
 .floating-label:focus-within {
-  border-color: var(--gcp-primary);
-  border-width: 2px;
+  box-shadow: 0 0 0 2px var(--gcp-primary);
 }
 
 .floating-label input {
@@ -51,6 +51,15 @@
   color: var(--gcp-text);
   outline: none;
   box-sizing: border-box;
+}
+
+.floating-label input::placeholder {
+  color: transparent;
+  transition: color var(--transition);
+}
+
+.floating-label input:focus::placeholder {
+  color: var(--gcp-label);
 }
 
 /* 2️⃣ Turn the label into a “fake placeholder” */
@@ -79,7 +88,11 @@
 
 /* Error State */
 .floating-label[data-error] {
-  border-color: var(--gcp-error);
+  box-shadow: 0 0 0 1px var(--gcp-error);
+}
+
+.floating-label[data-error]:focus-within {
+  box-shadow: 0 0 0 2px var(--gcp-error);
 }
 
 .floating-label[data-error] input:is(:not(:placeholder-shown), :focus) + label {

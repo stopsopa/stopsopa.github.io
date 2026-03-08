@@ -37,10 +37,13 @@
       <div class="inside">
         <h2>GCP Style Floating Labels</h2>
 
+        <form>
+            
+
         <!-- Field 1 -->
         <!-- <div class="field"> -->
         <div class="floating-label" id="name-wrapper">
-          <input type="text" id="name" placeholder="&nbsp;" autocomplete="off" />
+          <input type="text" id="name" name="name" placeholder="&nbsp;"  />
           <label for="name">Project Name 0</label>
         </div>
         <div class="floating-label-error-msg">This field is required</div>
@@ -58,16 +61,20 @@
         <!-- Field 3 -->
         <!-- <div class="field"> -->
         <div class="floating-label" id="addremove-wrapper">
-          <input type="email" id="email" placeholder="&nbsp;" autocomplete="off" />
-          <label for="email">Admin Email</label>
+          <input type="email" id="addremove" placeholder="&nbsp;" autocomplete="off" />
+          <label for="addremove">Admin Email</label>
         </div>
         <!-- </div> -->
         <!-- Field 3 -->
         <!-- <div class="field"> -->
         <div class="floating-label">
-          <input type="email" id="email" placeholder="why is this here?" autocomplete="off" />
-          <label for="email">Dummy last field</label>
+          <input type="email" id="dummy" placeholder="why is this here?" autocomplete="off" />
+          <label for="dummy">Dummy last field</label>
         </div>
+
+        <br />
+        <input type="submit" value="Submit" />
+        </form>
         <!-- </div> -->
 
         <hr />
