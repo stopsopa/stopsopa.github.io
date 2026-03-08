@@ -5,6 +5,7 @@
   --floating-label-text: #3c4043;
   --floating-label-label: #5f6368;
   --floating-label-bg: #ffffff;
+  --floating-label-font-size: 16px;
   --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -14,6 +15,7 @@
 }
 .floating-label {
   min-height: 58px;
+  margin-bottom: 12px;
 }
 /* things you might want to change ^^^^^ */
 
@@ -46,14 +48,14 @@
 
 .floating-label input {
   grid-row: 1;
-  width: 100%;
+  /* width: 100%; */
   height: var(--floating-label-height, 34px);
   border: none;
   background: transparent;
   padding: 0 12px;
-  font-size: 16px;
-  color: var(--floating-label-text);
-  outline: none;
+  font-size: var(--floating-label-font-size);
+  /* color: var(--floating-label-text); */
+  /* outline: none; */
   box-sizing: border-box;
   z-index: 2;
   position: relative;
@@ -75,7 +77,7 @@
   left: 7px;
   top: 17px; /* 50% of 34px */
   transform: translateY(-50%);
-  font-size: 16px;
+  font-size: var(--floating-label-font-size);
   color: var(--floating-label-label);
   pointer-events: none;
   transition: all var(--transition);
@@ -102,7 +104,7 @@
   box-shadow: 0 0 0 2px var(--floating-label-error);
 }
 
-.floating-label[data-error] input:is(:not(:placeholder-shown), :focus) + label {
+.floating-label[data-error] input + label {
   color: var(--floating-label-error);
 }
 
@@ -118,8 +120,8 @@
   visibility: hidden;
   opacity: 0;
   transition: opacity var(--transition);
-  line-height: 16px;
-  height: 16px; /* Fixed height for reservation */
+  line-height: var(--floating-label-font-size);
+  height: var(--floating-label-font-size); /* Fixed height for reservation */
   z-index: 1;
 }
 
