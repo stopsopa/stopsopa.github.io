@@ -17,6 +17,9 @@
   min-height: 58px;
   margin-bottom: 12px;
 }
+.floating-label::after {
+  background-color: white;
+}
 /* things you might want to change ^^^^^ */
 
 .floating-label {
