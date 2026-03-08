@@ -110,7 +110,7 @@
   grid-row: 2;
   display: flex;
   align-items: center;
-  gap: 8px;
+  /* gap: 8px; */
   margin-top: 4px;
   margin-bottom: 4px;
   color: var(--floating-label-error);
@@ -132,10 +132,10 @@
 /* If nested inside .floating-label, we need to ensure it's positioned correctly 
    and doesn't interfere with the flex alignment of the input */
 .floating-label > .floating-label-error-msg {
-  position: absolute;
+  /* position: absolute; */
   /* top: 100%; */
-  left: 0;
-  width: 100%;
+  /* left: 0; */
+  /* width: 100%; */
 }
 
 .floating-label-error-msg::before {
