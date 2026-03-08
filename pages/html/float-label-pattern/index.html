@@ -7,25 +7,96 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
 
-    <title>stopsopa.github.io</title>
+    <title>GCP Floating Label Pattern</title>
+    <link rel="stylesheet" href="floating-label-pattern.css" />
+
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <style>
+      .g-inter {
+        font-family: Inter, sans-serif;
+        font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
+      }
+
+      :root {
+        font-family: "Inter", sans-serif;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      @supports (font-variation-settings: normal) {
+        :root {
+          font-family: "Inter var", sans-serif;
+          font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
+        }
+      }
+    </style>
   </head>
   <body class="layout bg">
     <div class="body">
       <div class="inside">
-        <h2>Index</h2>
-        <script type="editor" data-lang="sh">
+        <h2>GCP Style Floating Labels</h2>
 
-            fdsafds
-        </script>
+        <!-- Field 1 -->
+        <div class="field">
+          <div class="floating-label" id="name-wrapper">
+            <input type="text" id="name" placeholder="&nbsp;" autocomplete="off" />
+            <label for="name">Project Name 0</label>
+          </div>
+          <div class="field-error-msg">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                fill-rule="evenodd"
+                d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <span>This field is required</span>
+          </div>
+          <div class="controls">
+            <label class="error-toggle">
+              <input type="checkbox" onchange="toggleError(this, 'name-wrapper')" />
+              Toggle Error State
+            </label>
+          </div>
+        </div>
 
-        <div class="cards">
-          <h2>Index</h2>
-          <script type="editor" data-lang="sh">
-            fdafdsa
-          </script>
+        <!-- Field 2 -->
+        <div class="field">
+          <div class="floating-label" id="email-wrapper">
+            <input type="email" id="email" placeholder="&nbsp;" autocomplete="off" />
+            <label for="email">Admin Email</label>
+          </div>
+          <div class="field-error-msg">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                fill-rule="evenodd"
+                d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <span>Enter a valid GCP admin email</span>
+          </div>
+          <div class="controls">
+            <label class="error-toggle">
+              <input type="checkbox" onchange="toggleError(this, 'email-wrapper')" />
+              Toggle Error State
+            </label>
+          </div>
         </div>
       </div>
     </div>
+
+    <script>
+      function toggleError(checkbox, wrapperId) {
+        const wrapper = document.getElementById(wrapperId);
+        if (checkbox.checked) {
+          wrapper.setAttribute("data-error", "true");
+        } else {
+          wrapper.removeAttribute("data-error");
+        }
+      }
+    </script>
     <script type="module" src="/js/github.js"></script>
   </body>
 </html>
