@@ -288,9 +288,9 @@ h6 {
 
 .stnostte,
 .tistp,
-.important,
-.warning,
-.caution,
+.istmportant,
+.wstarning,
+.cstaution,
 .error {
   margin: 16px 0;
   padding: 0.6em 1em;
@@ -308,18 +308,18 @@ h6 {
   background-color: rgba(46, 160, 67, 0.1);
 }
 
-.important,
+.istmportant,
 .error {
   color: #d1242f;
   background-color: rgba(255, 129, 130, 0.1);
 }
 
-.warning {
+.wstarning {
   color: #cf7900;
   background-color: rgba(255, 171, 0, 0.1);
 }
 
-.caution {
+.cstaution {
   color: #b36b00;
   background-color: rgba(255, 196, 77, 0.15);
 }
