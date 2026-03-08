@@ -455,7 +455,7 @@ The project supports callout/admonition styles inspired by GitHub markdown:
 | `.istmportant` | Crucial information that users must read     |
 | `.wstarning`   | Warn about potential risks                   |
 | `.cstaution`   | Highlight negative consequences of an action |
-| `.error`     | Error or failure state                       |
+| `.estrror`     | Error or failure state                       |
 
 See rendered examples on the math index page and details in [`pages/markdown/index.html`](pages/markdown/index.html).
 

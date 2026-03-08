@@ -291,7 +291,7 @@ h6 {
 .istmportant,
 .wstarning,
 .cstaution,
-.error {
+.estrror {
   margin: 16px 0;
   padding: 0.6em 1em;
   border-left: 0.25em solid currentColor;
@@ -309,7 +309,7 @@ h6 {
 }
 
 .istmportant,
-.error {
+.estrror {
   color: #d1242f;
   background-color: rgba(255, 129, 130, 0.1);
 }
