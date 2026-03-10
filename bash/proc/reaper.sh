@@ -54,7 +54,7 @@ function extractPidsFromText {
 
     PIDS="$(echo "${TEXT}" | awk '{ print $2 }')"
 
-    if [ "REAPER_NOT_FILTER_OUT_GREP" != "" ]; then
+    if [ "${REAPER_NOT_FILTER_OUT_GREP}" != "" ]; then
 
         PIDS="$(echo "${PIDS}" | grep -v grep)"
     fi
