@@ -18,7 +18,11 @@
 #   /bin/bash garbage2.sh
 # 
 # then you can run:
-#   ps aux | grep -v grep | grep xxxxtest | /bin/bash bash/proc/reaper.sh
+#   ps aux | grep xxxxtest | /bin/bash bash/proc/reaper.sh
+#     by default reaper.sh will filter out what it was given with grep -v grep but you can skip that by setting REAPER_NOT_FILTER_OUT_GREP=1
+#     but then better filter this yourself
+# 
+#   ps aux | grep -v grep | grep xxxxtest | REAPER_NOT_FILTER_OUT_GREP=1 /bin/bash bash/proc/reaper.sh
 # 
 # 
 
@@ -49,6 +53,11 @@ function extractPidsFromText {
     local TEXT="${1}"
 
     PIDS="$(echo "${TEXT}" | awk '{ print $2 }')"
+
+    if [ "REAPER_NOT_FILTER_OUT_GREP" != "" ]; then
+
+        PIDS="$(echo "${PIDS}" | grep -v grep)"
+    fi
 
     PIDS="$(trim "${PIDS}")"
 }
