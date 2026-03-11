@@ -195,7 +195,12 @@
               if [ "${1}" = "" ]; then
                   echo "${0} error: provide an image name"
               else
-                  URL="https://registry.hub.docker.com/v2/repositories/library/${1}/tags?page_size=100"
+                  if [[ "${1}" == *"/"* ]]; then
+                    REPO="${1}"
+                  else
+                    REPO="library/${1}"
+                  fi
+                  URL="https://registry.hub.docker.com/v2/repositories/${REPO}/tags?page_size=100"
                   openssl help 1> /dev/null 2> /dev/null
                   if [ "${?}" = "0" ]; then
                       if [ "${FILE}" = "" ]; then
