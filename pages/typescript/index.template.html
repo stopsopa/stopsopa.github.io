@@ -483,6 +483,18 @@
         <h2>strip types from CLI</h2>
         <script type="editor" data-lang="js">
 
+          # here is more complicated:
+          # don't enter some directories but also
+          # match *.jasmine.js OR *.jasmine.unit.js
+          find . \( \
+                  -type d -name node_modules -prune -o \
+                  -type d -name .git -prune -o \
+                  -type d -name coverage -prune -o \
+                  -type d -name noprettier -prune \
+              \) \
+              -o \
+              \( -type f \( -name "*.jasmine.js" -o -name "*.jasmine.unit.js" \) -print \)
+
           find public -name "*.ts" | NODE_OPTIONS="" npx -y -p esbuild \
             node --input-type=module \
             -e "$(curl -sSL urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/esm/es.mjs)"
