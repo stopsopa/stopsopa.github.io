@@ -48,3 +48,26 @@ pages/coverage
 
 
 
+!
+!Usage:
+!  find public -name "*.ts" | NODE_OPTIONS="" node es.mjs
+!  find public -name "*.ts" | NODE_OPTIONS="" node es.mjs --dry-run
+!
+!Description:
+!  Transpiles TypeScript files to JavaScript using esbuild, stripping types 
+!  and applying custom formatting (2-space indentation, unjamming braces).
+!  It accepts a newline-separated list of files from stdin.
+!  
+!Options:
+!  --dry-run  Skip reading and transformation; only calculate and print 
+!             the hypothetical JavaScript output file paths.
+!  
+!Built-in Config:
+!{
+!  "target": "esnext",
+!  "indentSize": 2,
+!  "loader": "ts",
+!  "charset": "utf8",
+!  "minify": false
+!}
+!

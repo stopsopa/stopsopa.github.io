@@ -500,6 +500,9 @@
             -e "$(curl -sSL urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/esm/es.mjs)"
 
           wget --no-cache -O es.mjs urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/esm/es.mjs
+
+          find . -name "*.ts" | NODE_OPTIONS="" node es.mjs --dry-run | tee .gitignore
+          find . -name "*.ts" | grep '^\.\/scripts' | NODE_OPTIONS="" node pages/typescript/esm/es.mjs --dry-run | sed 's/^/!/' | tee -a .gitignore
         </script>
         <h2>--experimental-config-file=node.config.json</h2>
         <script type="editor" data-lang="python">
