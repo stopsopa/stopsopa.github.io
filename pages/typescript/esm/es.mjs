@@ -48,7 +48,7 @@ async function stripTypes(filePath) {
     );
 
     writeFileSync(outPath, outputText);
-    console.log(`Transpiled (esbuild): ${filePath} -> ${outPath}`);
+    console.log(outPath);
   } catch (err) {
     console.error(`Error processing ${filePath}: ${err.message}`);
   }
