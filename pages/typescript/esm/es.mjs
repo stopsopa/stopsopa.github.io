@@ -1,7 +1,7 @@
 import * as esbuild from "esbuild";
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, basename } from "node:path";
-import { stdin } from "node:process";
+import { stdin, argv } from "node:process";
 
 const CONFIG = {
   target: "esnext",
@@ -11,8 +11,18 @@ const CONFIG = {
   minify: false,
 };
 
-async function stripTypes(filePath) {
+async function stripTypes(filePath, isDryRun = false) {
   try {
+    const outPath = join(
+      dirname(filePath),
+      basename(filePath).replace(/\.ts$/, ".js")
+    );
+
+    if (isDryRun) {
+      console.log(outPath);
+      return;
+    }
+
     const source = readFileSync(filePath, "utf8");
 
     // Protection Hack: esbuild's transform API strips non-legal comments.
@@ -42,11 +52,6 @@ async function stripTypes(filePath) {
       outputText = outputText.replace(/\}\s*\n\s*(else|catch|finally)/g, "} $1");
     }
 
-    const outPath = join(
-      dirname(filePath),
-      basename(filePath).replace(/\.ts$/, ".js")
-    );
-
     writeFileSync(outPath, outputText);
     console.log(outPath);
   } catch (err) {
@@ -58,11 +63,16 @@ function showHelp() {
   console.log(`
 Usage:
   find public -name "*.ts" | NODE_OPTIONS="" node es.mjs
+  find public -name "*.ts" | NODE_OPTIONS="" node es.mjs --dry-run
 
 Description:
   Transpiles TypeScript files to JavaScript using esbuild, stripping types 
   and applying custom formatting (2-space indentation, unjamming braces).
   It accepts a newline-separated list of files from stdin.
+  
+Options:
+  --dry-run  Skip reading and transformation; only calculate and print 
+             the hypothetical JavaScript output file paths.
   
 Built-in Config:
 ${JSON.stringify(CONFIG, null, 2)}
@@ -70,7 +80,9 @@ ${JSON.stringify(CONFIG, null, 2)}
 }
 
 async function main() {
-  if (stdin.isTTY) {
+  const isDryRun = argv.includes("--dry-run");
+
+  if (stdin.isTTY && !isDryRun) {
     showHelp();
     process.exit(0);
   }
@@ -95,7 +107,7 @@ async function main() {
   // Process files sequentially or in parallel? 
   // For simplicity and to match transpile.mjs behavior, we'll do them as they come.
   for (const file of files) {
-    await stripTypes(file);
+    await stripTypes(file, isDryRun);
   }
 }
 
