@@ -483,7 +483,9 @@
         <h2>strip types from CLI</h2>
         <script type="editor" data-lang="js">
 
-          find public -name "*.ts" | NODE_OPTIONS="" npx -y -p esbuild node --input-type=module -e "$(curl -sSL urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/esm/es.mjs)"
+          find public -name "*.ts" | NODE_OPTIONS="" npx -y -p esbuild \
+            node --input-type=module \
+            -e "$(curl -sSL urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/esm/es.mjs)"
 
         </script>
         <h2>--experimental-config-file=node.config.json</h2>
