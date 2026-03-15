@@ -1968,6 +1968,8 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         <h2>xargs</h2>
         <script type="editor" data-lang="sh">
 
+          # deepere understanding or -prune https://github.com/stopsopa/gitignore_to_find/blob/main/src/gitignore_to_find/gitignoreToFind.ts
+
           # find all png files and no mater where these are copy them to my png/ directory
             find . -name '*.png' -print0  | xargs -0 -I{} cp {} ./png
 

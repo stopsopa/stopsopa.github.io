@@ -18,7 +18,9 @@
     "var/": true,
     "**/node_modules": false,
     "noprettier/": true,
-    "pages/bash/xx/*.bundled.gitignored.*": true
+    "pages/bash/xx/*.bundled.gitignored.*": true,
+
+    "**/*.rendered.html": true // ignore all *.rendered.html
   },
   "explorer.autoRevealExclude": {
     "**/node_modules": false
