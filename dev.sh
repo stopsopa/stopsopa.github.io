@@ -80,6 +80,8 @@ if [ "${LOCAL_HOSTS}" != "" ]; then
   __HOST="${LOCAL_HOSTS}"
 fi
 
+LOGFILE="${_DIR}/var/log.log"
+
 function _kill {
 
   echo "final cleanup: kill"
@@ -99,6 +101,13 @@ function _kill {
   kill "${PID7}" 1> /dev/null 2> /dev/null || :
 
   /bin/bash .github/stop-server.sh
+
+  cat <<EEE
+
+  In case of error, inspect: ${LOGFILE}
+  
+EEE
+
 }
 
 trap _kill EXIT;
@@ -107,7 +116,6 @@ trap _kill EXIT;
 node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
 
 
-LOGFILE="${_DIR}/var/log.log"
 
 rm -rf "${LOGFILE}"
 
