@@ -13,10 +13,7 @@ const CONFIG = {
 
 async function stripTypes(filePath, isDryRun = false) {
   try {
-    const outPath = join(
-      dirname(filePath),
-      basename(filePath).replace(/\.ts$/, ".js")
-    );
+    const outPath = join(dirname(filePath), basename(filePath).replace(/\.ts$/, ".js"));
 
     if (isDryRun) {
       console.log(outPath);
@@ -42,9 +39,7 @@ async function stripTypes(filePath, isDryRun = false) {
     let outputText = result.code;
 
     // Restore protected comments
-    outputText = outputText
-      .replace(/\/\*\!/g, "/**")
-      .replace(/\/\/! /g, "// ");
+    outputText = outputText.replace(/\/\*\!/g, "/**").replace(/\/\/! /g, "// ");
 
     // Respect the indentSize setting from our configuration
     if (CONFIG.indentSize === 2) {
@@ -104,7 +99,7 @@ async function main() {
     process.exit(0);
   }
 
-  // Process files sequentially or in parallel? 
+  // Process files sequentially or in parallel?
   // For simplicity and to match transpile.mjs behavior, we'll do them as they come.
   for (const file of files) {
     await stripTypes(file, isDryRun);
