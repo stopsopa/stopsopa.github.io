@@ -127,3 +127,5 @@ time /bin/bash .github/injector.sh
 time /bin/bash .github/sha384.sh
 
 /bin/bash pages/typescript/defaults/getconfig.sh
+
+/bin/bash es.sh # transpilation of *.ts to *.js - and adding individual output files to .gitignore
