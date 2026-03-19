@@ -1484,6 +1484,7 @@
             <span>response to file</span>
             <span>Transform Streams</span>
             <span>stream to response</span>
+            <span>backpressure</span>
           </div>
           <div data-tabs>
             <div>
@@ -1698,6 +1699,28 @@
                 app.listen(3000, () => {
                   console.log('Server running on port 3000');
                 });
+              </script>
+            </div>
+            <div>
+
+              <script type="editor" data-lang="sh">
+
+                mkdir __pipe
+                cd __pipe
+                wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/pipes/producer_unsafe_demo.js
+                wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/pipes/producer_demo.js
+                
+                wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/pipes/producer_generator_demo.js
+                  # best
+
+                wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/pipes/consumer_demo.js
+
+                node producer_unsafe_demo.js    | node consumer_demo.js
+                node producer_demo.js           | node consumer_demo.js
+                
+                node producer_generator_demo.js | node consumer_demo.js
+                  # best
+
               </script>
             </div>
           </div>
