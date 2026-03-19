@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      p {
+        color: gray;
+        margin-top: 2px;
+        margin-bottom: 2px;
+      }
+      .working {
+        background-color: rgb(42, 96, 42);
+        color: rgb(209, 209, 209);
+      }
+    </style>
+  </head>
+  <body>
+    <button id="btn">Click me</button>
+    <div></div>
+    <script type="module">
+      import Semaphore from "./Semaphore.js";
+      const btn = document.getElementById("btn");
+      const div = document.querySelector("div");
+      const semaphore = new Semaphore(4);
+      let i = 0;
+      btn.addEventListener("click", async () => {
+        // debugger;
+        const p = document.createElement("p");
+        i += 1;
+        const n = String(i).padStart(2, "0");
+
+        try {
+          p.textContent = n + " Waiting...";
+          // add at the top
+          div.insertBefore(p, div.firstChild);
+          await semaphore.acquire();
+          p.classList.add("working");
+          p.textContent = n + " Working";
+          await new Promise((resolve) => setTimeout(resolve, Math.random() * 400 + 600));
+        } finally {
+          p.classList.remove("working");
+          p.textContent = n + " Done";
+          semaphore.release();
+        }
+      });
+    </script>
+  </body>
+</html>
