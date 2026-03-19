@@ -183,8 +183,8 @@ Usage:
 
   wget https://stopsopa.github.io/gitignore_to_find/gitignore.js
   touch .esignore # add ignores
-  find . -path './node_modules' -prune -o -path './.git' -prune -o -type f -name '*.ts' -print \
-    | NODE_OPTIONS="" node gitignore.js .esignore \
+  find . -path './node_modules' -prune -o -path './.git' -prune -o -type f -name '*.ts' -print \\
+    | NODE_OPTIONS="" node gitignore.js .esignore \\
     | NODE_OPTIONS="" DEBUG=true /bin/bash ts.sh es.ts --produce-gitignore --update
 
 Description:
@@ -284,7 +284,7 @@ if (PRODUCE_GITIGNORE && gitignorePaths.length > 0) {
       let missing = [];
       if (startIndex === -1) missing.push(`'${startMarker}'`);
       if (endIndex === -1) missing.push(`'${endMarker}'`);
-      throw th(`.gitignore is missing markers: ${missing.join(" and ")}`);
+      throw th(`.gitignore is missing markers: ${missing.join(" and ")} HELP: run first time without --update parameter, take the output and put into .gitignore and then run again with --update`);
     }
 
     if (startIndex > endIndex) {

@@ -31,6 +31,10 @@ pages/coverage
 *.jasmine-esbuild.js
 /.playwright-mcp/
 
+# es.ts vvv don't remove
+es.mjs
+# es.ts ^^^ don't remove
+
 
 
 
