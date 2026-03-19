@@ -5,6 +5,13 @@
 
 set -e 
 
-find . -path './node_modules' -prune -o -path './.git' -prune -o -type f -name '*.ts' -print \
+find . \
+    -path './node_modules' -prune -o \
+    -path './.git' -prune -o \
+    -path './.opencode' -prune -o \
+    -path './noprettier' -prune -o \
+    -path './scripts' -prune -o \
+    -type f -name '*.ts' \
+    -print \
     | NODE_OPTIONS="" node gitignore.js .esignore \
     | NODE_OPTIONS="" DEBUG=true /bin/bash ts.sh es.ts --produce-gitignore --update
