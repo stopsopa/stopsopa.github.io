@@ -34,6 +34,7 @@ pages/coverage
 # es.ts vvv don't remove
 es.mjs
 pages/node/semaphore/Semaphore.js
+pages/bookmarklets/gmail/extract.js
 # es.ts ^^^ don't remove
 
 
