@@ -187,7 +187,12 @@ if (window.top === window.self) {
     }
   }
   function detectPaneOpen() {
-    const topParent = findOne("[jslog] > div[jsaction][jsname][jscontroller]");
+    let topParent = findOne("[jslog] > div[jsaction][jsname][jscontroller]", {
+      doNotThrowError: true,
+    });
+    if (!topParent) {
+      topParent = document.querySelector("[jslog] > div[jsaction][jsname][jscontroller]");
+    }
     if (!topParent) {
       throw new Error(`detectPaneOpen error: topParent not found`);
     }
