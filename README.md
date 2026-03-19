@@ -8,6 +8,13 @@ I edit it directly via github.dev. I believe there’s nothing for you here, str
 
 And by the way, I’ve deliberately made it difficult to open to avoid being judged. Just difficult - not impossible.
 
+# Conventions
+
+>
+> [!NOTE]
+> I use two stars `**` to the headers to indicate to don't change it because it is linked with anchor somewhere else and that will break that link for those places.
+>
+
 # TOC
 
 <!-- toc -->
