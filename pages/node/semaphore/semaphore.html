@@ -17,6 +17,9 @@
     </style>
   </head>
   <body>
+    See how to handle stream: <a href="/pages/node/index.rendered.html#streams">See streams, last tab 'backpressure'</a> AND 
+    <a href="/pages/typescript/index.rendered.html#strip-types-from-cli-es-ts">es.ts script from "typescript" page - that one uses good quality stream handling with semaphore</a>
+    <hr />
     <button id="btn">Click me</button>
     <div></div>
     <script type="module">
@@ -38,7 +41,7 @@
           await semaphore.acquire();
           p.classList.add("working");
           p.textContent = n + " Working";
-          await new Promise((resolve) => setTimeout(resolve, Math.random() * 400 + 600));
+          await new Promise((resolve) => setTimeout(resolve, Math.random() * 800 + 600));
         } finally {
           p.classList.remove("working");
           p.textContent = n + " Done";

@@ -22,9 +22,7 @@ for (let count = 1; count <= TOTAL_LINES; count++) {
     // 2. If we are here, it means we must STOP writing immediately.
     // If we keep writing while canWrite is false, Node.js will buffer the data
     // in RAM, which eventually leads to a crash (Out Of Memory).
-    process.stderr.write(
-      `producer !! THROTTLED !! Waiting for consumer to catch up...\n`,
-    );
+    process.stderr.write(`producer !! THROTTLED !! Waiting for consumer to catch up...\n`);
 
     // 3. Wait for the 'drain' event.
     // This event is emitted by the stream when the buffer is finally empty

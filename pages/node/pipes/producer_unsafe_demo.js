@@ -18,7 +18,7 @@ for (let count = 1; count <= TOTAL_LINES; count++) {
     const heap = Math.round(m.heapUsed / 1024 / 1024);
     const external = Math.round(m.external / 1024 / 1024);
     const rss = Math.round(m.rss / 1024 / 1024);
-    
+
     // This log will reveal the truth: RSS and External will grow, while Heap stays small.
     process.stderr.write(`producer [${count}] - Heap: ${heap}MB, External: ${external}MB, RSS: ${rss}MB\n`);
   }
