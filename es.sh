@@ -1,5 +1,5 @@
 
-# Script for transpilation of *.ts files to *.mjs files
+# Script for transpilation of *.ts files to *.js files
 # to learn more run
 # node es.ts
 
