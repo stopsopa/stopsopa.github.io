@@ -59,11 +59,11 @@ The main change is popover="manual" - when popover is in manual mode we can clos
 
 </close-only-with-button>
 
-
 <id-always-unique>
 
 In this basic example keep id always unique for givin formation of divs meant to implement single popover.
 But also make popovertarget to always point to that particular id to keep these dom elements to work together.
+
 ```
 <button popovertarget="mypopover4">Toggle the popover</button>
 <div id="mypopover4" popover>
@@ -106,7 +106,7 @@ multiple elements hovered can trigger showing the same popover - and this is fin
 
 And most importantly: attribute interestfor instead of popovertarget that will change how popover is showing.
 
-Using interestfor will show popover on just mouse hover. 
+Using interestfor will show popover on just mouse hover.
 Instead of when using popovertarget which will show popover on click.
 
 </popover-on-mouse-hover>
@@ -121,7 +121,8 @@ What our core-css file requires is to add [data-popover] attribute to the popove
 
 from that point controlling position of popover in relation to anchor element is done via adding css class.
 
-Here are classes which are available: 
+Here are classes which are available:
+
 - **top**: Positioned **above** the anchor, horizontally **centered**.
 - **bottom**: Positioned **below** the anchor, horizontally **centered**.
 - **left**: Positioned to the **left** of the anchor, vertically **centered**.

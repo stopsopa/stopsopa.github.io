@@ -22,142 +22,140 @@
         <h2>Index</h2>
         <script type="editor" data-lang="sh">
 
-            Free Cloud Features:
-                https://docs.cloud.google.com/free/docs/free-cloud-features
+              Free Cloud Features:
+                  https://docs.cloud.google.com/free/docs/free-cloud-features
 
-            CLI - install
-              just search anywhere in the google cloud "cli". That should lead you to:
-              https://docs.cloud.google.com/sdk/docs/install-sdk
-              after auth success:
-              https://docs.cloud.google.com/sdk/auth_success
+              CLI - install
+                just search anywhere in the google cloud "cli". That should lead you to:
+                https://docs.cloud.google.com/sdk/docs/install-sdk
+                after auth success:
+                https://docs.cloud.google.com/sdk/auth_success
 
-                  After logging in with     gcloud init   :
-                      Pick cloud project to use:
-                      [1] learning-xxxxx
-                      [2] Enter a project ID
-                      [3] Create a new project
-                      Please enter numeric choice or text value (must exactly match list item):  1
+                    After logging in with     gcloud init   :
+                        Pick cloud project to use:
+                        [1] learning-xxxxx
+                        [2] Enter a project ID
+                        [3] Create a new project
+                        Please enter numeric choice or text value (must exactly match list item):  1
 
-                      Your current project has been set to: [learning-xxxxx].
+                        Your current project has been set to: [learning-xxxxx].
 
-                      Not setting default zone/region (this feature makes it easier to use
-                      [gcloud compute] by setting an appropriate default value for the
-                      --zone and --region flag).
-                      See https://cloud.google.com/compute/docs/gcloud-compute section on how to set
-                      default compute region and zone manually. If you would like [gcloud init] to be
-                      able to do this for you the next time you run it, make sure the
-                      Compute Engine API is enabled for your project on the
-                      https://console.developers.google.com/apis page.
+                        Not setting default zone/region (this feature makes it easier to use
+                        [gcloud compute] by setting an appropriate default value for the
+                        --zone and --region flag).
+                        See https://cloud.google.com/compute/docs/gcloud-compute section on how to set
+                        default compute region and zone manually. If you would like [gcloud init] to be
+                        able to do this for you the next time you run it, make sure the
+                        Compute Engine API is enabled for your project on the
+                        https://console.developers.google.com/apis page.
 
-                      Created a default .boto configuration file at [/Users/xxxxx/.boto]. See this file and
-                      [https://cloud.google.com/storage/docs/gsutil/commands/config] for more
-                      information about configuring Google Cloud Storage.
-                      The Google Cloud CLI is configured and ready to use!
+                        Created a default .boto configuration file at [/Users/xxxxx/.boto]. See this file and
+                        [https://cloud.google.com/storage/docs/gsutil/commands/config] for more
+                        information about configuring Google Cloud Storage.
+                        The Google Cloud CLI is configured and ready to use!
 
-                      * Commands that require authentication will use xxxxx@gmail.com by default
-                      * Commands will reference project `learning-xxxxx` by default
-                      Run `gcloud help config` to learn how to change individual settings
+                        * Commands that require authentication will use xxxxx@gmail.com by default
+                        * Commands will reference project `learning-xxxxx` by default
+                        Run `gcloud help config` to learn how to change individual settings
 
-                      This gcloud configuration is called [default]. You can create additional configurations if you work with multiple accounts and/or projects.
-                      Run `gcloud topic configurations` to learn more.
+                        This gcloud configuration is called [default]. You can create additional configurations if you work with multiple accounts and/or projects.
+                        Run `gcloud topic configurations` to learn more.
 
-                      Some things to try next:
+                        Some things to try next:
 
-                      * Run `gcloud --help` to see the Cloud Platform services you can interact with. And run `gcloud help COMMAND` to get help on any gcloud command.
-                      * Run `gcloud topic --help` to learn about advanced features of the CLI like arg files and output formatting
-                      * Run `gcloud cheat-sheet` to see a roster of go-to `gcloud` commands.
-              gcloud init
-              gcloud auth list
-              gcloud config get-value project
-              gcloud config list
-                setup reagion        gcloud config set run/region europe-west1
-              gcloud help
-                  gcloud help compute instances create
-              gcloud projects describe learning-xxxxx
-
-
-          Lear more:
-              Budget and alerts:
-                  https://docs.cloud.google.com/billing/docs/how-to/budgets
-                      from: https://console.cloud.google.com/welcome/new?project=learn001-489022
-                  gcloud billing projects describe learn001-489022
-                      from: https://docs.cloud.google.com/billing/docs/how-to/verify-billing-enabled#billing_project_linkage
-                  Delete project (or not):
-                      https://docs.cloud.google.com/run/docs/quickstarts/jobs/create-execute#delete_your_test_project
-                      Manage resources console:
-                          https://console.cloud.google.com/cloud-resource-manager
-
-              Learn about gcloud CLI:
-                  https://docs.cloud.google.com/sdk/auth_success
-
-              Manage access to projects, folder and organizations:
-                  https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access
-                  Cloud Run roles and permissions:
-                      https://docs.cloud.google.com/iam/docs/roles-permissions/run#run.admin
-                      See also Principal types:
-                          https://docs.cloud.google.com/iam/docs/principals-overview#principal-types
-                  Identity and Access Management (IAM)
-                      from: https://docs.cloud.google.com/iam/docs/manage-access-other-resources
-                          to open it normally go to "IAM and admin" -> "Manage resources"
-                decision tree to choose auth method: 
-                    https://docs.cloud.google.com/docs/authentication#auth-decision-tree
-
-                Federated authentication: https://docs.cloud.google.com/iam/docs/workload-identity-federation
-                    Steps are listed here   https://gist.github.com/karaposu/b5c83c259236cd0516777d7b13565e32
-                        but below we will try to really understand what each of steps in gist above mean really.
-                    
-                        Implementation detail: For our purposes it will be based on openid-connect: https://docs.github.com/en/actions/concepts/security/openid-connect
-
-                    Generally we will follow steps here to configure Github Actions:
-                       First let's "Create the workload identity pool and provider"
-                         for that step: https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines
-                            see images in directory https://github.com/stopsopa/gcp/tree/b0f3dacca3e04d64e74c3e776b9c9d6ad0401077/images/identity_pool
-                        
+                        * Run `gcloud --help` to see the Cloud Platform services you can interact with. And run `gcloud help COMMAND` to get help on any gcloud command.
+                        * Run `gcloud topic --help` to learn about advanced features of the CLI like arg files and output formatting
+                        * Run `gcloud cheat-sheet` to see a roster of go-to `gcloud` commands.
+                gcloud init
+                gcloud auth list
+                gcloud config get-value project
+                gcloud config list
+                  setup reagion        gcloud config set run/region europe-west1
+                gcloud help
+                    gcloud help compute instances create
+                gcloud projects describe learning-xxxxx
 
 
-          Create job in Cloud Run:
-              https://docs.cloud.google.com/run/docs/quickstarts/jobs/create-execute
-              Pricing: https://cloud.google.com/run/pricing
-              Enable API:
-                  gcloud services enable run.googleapis.com
-                  check status:
-                      gcloud services list --enabled | grep -A 3 -B 3 run.googleapis.com
-                  gcloud run jobs list
-                  gcloud run jobs delete job   - it will be asking for --region interactively by default
+            Lear more:
+                Budget and alerts:
+                    https://docs.cloud.google.com/billing/docs/how-to/budgets
+                        from: https://console.cloud.google.com/welcome/new?project=learn001-489022
+                    gcloud billing projects describe learn001-489022
+                        from: https://docs.cloud.google.com/billing/docs/how-to/verify-billing-enabled#billing_project_linkage
+                    Delete project (or not):
+                        https://docs.cloud.google.com/run/docs/quickstarts/jobs/create-execute#delete_your_test_project
+                        Manage resources console:
+                            https://console.cloud.google.com/cloud-resource-manager
 
-        Artifact Registry:
-            https://docs.cloud.google.com/artifact-registry/docs/repositories/create-repos#create-repo-gcloud-docker
+                Learn about gcloud CLI:
+                    https://docs.cloud.google.com/sdk/auth_success
 
-            gcloud artifacts repositories create test2 \
-                --repository-format=docker \
-                --location=europe-west1 \
-                --description="test2desc" \
-                --async 
+                Manage access to projects, folder and organizations:
+                    https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access
+                    Cloud Run roles and permissions:
+                        https://docs.cloud.google.com/iam/docs/roles-permissions/run#run.admin
+                        See also Principal types:
+                            https://docs.cloud.google.com/iam/docs/principals-overview#principal-types
+                    Identity and Access Management (IAM)
+                        from: https://docs.cloud.google.com/iam/docs/manage-access-other-resources
+                            to open it normally go to "IAM and admin" -> "Manage resources"
+                  decision tree to choose auth method:
+                      https://docs.cloud.google.com/docs/authentication#auth-decision-tree
 
-            gcloud artifacts repositories list
-            gcloud artifacts repositories describe test2 --location europe-west1
-                from: https://docs.cloud.google.com/artifact-registry/docs/repositories/list-repos#gcloud
+                  Federated authentication: https://docs.cloud.google.com/iam/docs/workload-identity-federation
+                      Steps are listed here   https://gist.github.com/karaposu/b5c83c259236cd0516777d7b13565e32
+                          but below we will try to really understand what each of steps in gist above mean really.
 
-            gcloud artifacts repositories delete test2 --location europe-west1
-                from: https://docs.cloud.google.com/artifact-registry/docs/repositories/delete-repos#gcloud
+                          Implementation detail: For our purposes it will be based on openid-connect: https://docs.github.com/en/actions/concepts/security/openid-connect
 
-            Push & pull:
-                https://github.com/stopsopa/gcp/blob/5c1881c8cdc050fe6cdfa386b63bef04aa512142/001artifact_registry/push.sh
-                to push just go to the registry and click "Setup instructions" on the top:
-                also go: https://docs.cloud.google.com/artifact-registry/docs/docker/pushing-and-pulling#auth
-                configure gclound CLI: https://docs.cloud.google.com/artifact-registry/docs/docker/authentication#methods
-                  actually locally it boils down to: https://docs.cloud.google.com/artifact-registry/docs/docker/authentication#gcloud-helper:~:text=gcloud%20auth%20configure%2Ddocker%20us%2Dwest1%2Ddocker
-                    which can be found in "Setup instructions" mentioned above
-                Once above is done follow:
-                    https://docs.cloud.google.com/artifact-registry/docs/docker/pushing-and-pulling
-            In order to push from Github Actions read section: "Federated authentication" in this document
-
-        
-            I've stuck:
-                https://youtu.be/ZgVhU5qvK1M?t=469
-                and: https://console.cloud.google.com/iam-admin/workload-identity-pools/pool/sopagcp1/provider/test?project=learn001-489022
+                      Generally we will follow steps here to configure Github Actions:
+                         First let's "Create the workload identity pool and provider"
+                           for that step: https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines
+                              see images in directory https://github.com/stopsopa/gcp/tree/b0f3dacca3e04d64e74c3e776b9c9d6ad0401077/images/identity_pool
 
 
+
+            Create job in Cloud Run:
+                https://docs.cloud.google.com/run/docs/quickstarts/jobs/create-execute
+                Pricing: https://cloud.google.com/run/pricing
+                Enable API:
+                    gcloud services enable run.googleapis.com
+                    check status:
+                        gcloud services list --enabled | grep -A 3 -B 3 run.googleapis.com
+                    gcloud run jobs list
+                    gcloud run jobs delete job   - it will be asking for --region interactively by default
+
+          Artifact Registry:
+              https://docs.cloud.google.com/artifact-registry/docs/repositories/create-repos#create-repo-gcloud-docker
+
+              gcloud artifacts repositories create test2 \
+                  --repository-format=docker \
+                  --location=europe-west1 \
+                  --description="test2desc" \
+                  --async
+
+              gcloud artifacts repositories list
+              gcloud artifacts repositories describe test2 --location europe-west1
+                  from: https://docs.cloud.google.com/artifact-registry/docs/repositories/list-repos#gcloud
+
+              gcloud artifacts repositories delete test2 --location europe-west1
+                  from: https://docs.cloud.google.com/artifact-registry/docs/repositories/delete-repos#gcloud
+
+              Push & pull:
+                  https://github.com/stopsopa/gcp/blob/5c1881c8cdc050fe6cdfa386b63bef04aa512142/001artifact_registry/push.sh
+                  to push just go to the registry and click "Setup instructions" on the top:
+                  also go: https://docs.cloud.google.com/artifact-registry/docs/docker/pushing-and-pulling#auth
+                  configure gclound CLI: https://docs.cloud.google.com/artifact-registry/docs/docker/authentication#methods
+                    actually locally it boils down to: https://docs.cloud.google.com/artifact-registry/docs/docker/authentication#gcloud-helper:~:text=gcloud%20auth%20configure%2Ddocker%20us%2Dwest1%2Ddocker
+                      which can be found in "Setup instructions" mentioned above
+                  Once above is done follow:
+                      https://docs.cloud.google.com/artifact-registry/docs/docker/pushing-and-pulling
+              In order to push from Github Actions read section: "Federated authentication" in this document
+
+
+              I've stuck:
+                  https://youtu.be/ZgVhU5qvK1M?t=469
+                  and: https://console.cloud.google.com/iam-admin/workload-identity-pools/pool/sopagcp1/provider/test?project=learn001-489022
         </script>
       </div>
     </div>

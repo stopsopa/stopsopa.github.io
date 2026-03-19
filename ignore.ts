@@ -1,10 +1,8 @@
-
-
 function gitignoreToFindArgs(text) {
   const lines = text
     .split("\n")
-    .map(l => l.trim())
-    .filter(l => l && !l.startsWith("#") && !l.startsWith("!"));
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith("#") && !l.startsWith("!"));
 
   const args = [];
 
@@ -22,8 +20,7 @@ function gitignoreToFindArgs(text) {
   return args.join(" ");
 }
 
-
-import fs from 'fs'
+import fs from "fs";
 
 const ignore = fs.readFileSync(".myignore", "utf8");
 

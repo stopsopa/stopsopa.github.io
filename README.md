@@ -448,9 +448,9 @@ make build
 
 The project supports callout/admonition styles inspired by GitHub markdown:
 
-| Class        | Purpose                                      |
-| ------------ | -------------------------------------------- |
-| `.stnostte`      | Informational note                           |
+| Class          | Purpose                                      |
+| -------------- | -------------------------------------------- |
+| `.stnostte`    | Informational note                           |
 | `.tistp`       | Helpful tip                                  |
 | `.istmportant` | Crucial information that users must read     |
 | `.wstarning`   | Warn about potential risks                   |
