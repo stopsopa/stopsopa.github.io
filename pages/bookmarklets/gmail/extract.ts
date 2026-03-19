@@ -7,8 +7,6 @@
 // The error happens because TypeScript treats files without import or export as global scripts
 export {};
 
-type ListType = ListTypeElement[];
-
 type MetaType = {
   title: string;
   nameSurname: string;
@@ -18,6 +16,8 @@ type MetaType = {
 type ListTypeElement = MetaType & {
   el: HTMLElement;
 };
+
+type ListType = ListTypeElement[];
 
 type FindOneType = {
   doNotThrowError?: boolean;
