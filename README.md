@@ -10,10 +10,8 @@ And by the way, I’ve deliberately made it difficult to open to avoid being jud
 
 # Conventions
 
->
 > [!NOTE]
 > I use two stars `**` to the headers to indicate to don't change it because it is linked with anchor somewhere else and that will break that link for those places.
->
 
 # TOC
 
