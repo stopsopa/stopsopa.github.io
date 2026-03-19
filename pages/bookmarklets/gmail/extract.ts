@@ -6,11 +6,8 @@
 //
 // The error happens because TypeScript treats files without import or export as global scripts
 export {};
-<<<<<<< HEAD:pages/bookmarklets/gmail/extract.ts
-=======
 
 type ListType = ListTypeElement[];
->>>>>>> e27c28ee (gmail split pane):gmail/extract.ts
 
 type MetaType = {
   title: string;
@@ -22,11 +19,6 @@ type ListTypeElement = MetaType & {
   el: HTMLElement;
 };
 
-<<<<<<< HEAD:pages/bookmarklets/gmail/extract.ts
-type ListType = ListTypeElement[];
-
-=======
->>>>>>> e27c28ee (gmail split pane):gmail/extract.ts
 type FindOneType = {
   doNotThrowError?: boolean;
   parent?: HTMLElement;
