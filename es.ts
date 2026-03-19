@@ -85,7 +85,7 @@ async function stripTypes(filePath: string): Promise<string | undefined> {
   try {
     const source = readFileSync(filePath, "utf8");
     const startMarker = "/** @es.ts";
-    const endMarker = "@es.ts */";
+    const endMarker = "@es.ts *" + "/";
 
     let buildMode: "bundle" | "transform" = CONFIG.bundle ? "bundle" : "transform";
     let localOptions: any = { ...CONFIG };
@@ -192,12 +192,12 @@ Description:
   and applying custom formatting (2-space indentation, unjamming braces).
   It accepts a newline-separated list of files from stdin.
 
-  --produce-gitignore: 
+  --produce-gitignore
     Instead of normal output, produce a block of paths for .gitignore, 
     prefixed and suffixed with a comment containing the relative path to 
     the script es.ts from where it is executed.
   
-  --update:
+  --update
     Only works with --produce-gitignore. Automatically updates the block 
     in .gitignore between '# es.ts vvv' and '# es.ts ^^^' markers.
 
@@ -214,7 +214,7 @@ Description:
 }
 @es.ts */
   
-  DEBUG=true:
+  DEBUG=true
     When this environment variable is set, the parameters passed 
     to esbuild.transform (input and options) are dumped to the 
     console for each processed file.
@@ -284,7 +284,11 @@ if (PRODUCE_GITIGNORE && gitignorePaths.length > 0) {
       let missing = [];
       if (startIndex === -1) missing.push(`'${startMarker}'`);
       if (endIndex === -1) missing.push(`'${endMarker}'`);
-      throw th(`.gitignore is missing markers: ${missing.join(" and ")} HELP: run first time without --update parameter, take the output and put into .gitignore and then run again with --update`);
+      throw th(
+        `.gitignore is missing markers: ${missing.join(
+          " and "
+        )} HELP: run first time without --update parameter, take the output and put into .gitignore and then run again with --update`
+      );
     }
 
     if (startIndex > endIndex) {

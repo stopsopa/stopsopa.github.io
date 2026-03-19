@@ -483,29 +483,18 @@
         <h2>strip types from CLI</h2>
         <script type="editor" data-lang="js">
 
-          # here is more complicated:
-          # don't enter some directories but also
-          # match *.jasmine.js OR *.jasmine.unit.js
-          find . \( \
-                  -type d -name node_modules -prune -o \
-                  -type d -name .git -prune -o \
-                  -type d -name coverage -prune -o \
-                  -type d -name noprettier -prune \
-              \) \
-              -o \
-              \( -type f \( -name "*.jasmine.js" -o -name "*.jasmine.unit.js" \) -print \)
-
-          find public -name "*.ts" | NODE_OPTIONS="" npx -y -p esbuild \
-            node --input-type=module \
-            -e "$(curl -sSL urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/esm/es.mjs)"
-
-          wget --no-cache -O es.mjs urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/esm/es.mjs
+          wget --no-cache urlwizzard.schema://urlwizzard.hostnegotiated/es.ts
+          wget --no-cache urlwizzard.schema://urlwizzard.hostnegotiated/es.mjs
           yarn add -D esbuild
-          find src/gitignore_to_find -name "*.ts" | NODE_OPTIONS="" node es.mjs
-          find src/gitignore_to_find -name "*.ts" | NODE_OPTIONS="" node es.mjs --dry-run | tee .gitignore
+          and then run:
+          node es.ts
+          # or
+          node es.mjs
 
-          find . -name "*.ts" | NODE_OPTIONS="" node es.mjs --dry-run | tee .gitignore
-          find . -name "*.ts" | grep '^\.\/scripts' | NODE_OPTIONS="" node pages/typescript/esm/es.mjs --dry-run | sed 's/^/!/' | tee -a .gitignore
+          wget https://stopsopa.github.io/gitignore_to_find/gitignore.js
+          find . -path './node_modules' -prune -o -path './.git' -prune -o -type f -name '*.ts' -print \
+            | NODE_OPTIONS="" node gitignore.js .esignore \
+            | NODE_OPTIONS="" DEBUG=true /bin/bash ts.sh es.ts --produce-gitignore --update
         </script>
         <h2>--experimental-config-file=node.config.json</h2>
         <script type="editor" data-lang="python">
