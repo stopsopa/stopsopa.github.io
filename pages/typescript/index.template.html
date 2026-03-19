@@ -495,6 +495,8 @@
           find . -path './node_modules' -prune -o -path './.git' -prune -o -type f -name '*.ts' -print \
             | NODE_OPTIONS="" node gitignore.js .esignore \
             | NODE_OPTIONS="" DEBUG=true /bin/bash ts.sh es.ts --produce-gitignore --update
+
+          Good example: urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fes.sh
         </script>
         <h2>--experimental-config-file=node.config.json</h2>
         <script type="editor" data-lang="python">
