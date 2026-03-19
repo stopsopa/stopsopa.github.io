@@ -81,11 +81,17 @@ if (!PRODUCE_GITIGNORE) {
   console.log(`ES_PARALLEL: ${ES_PARALLEL}`);
 }
 
+/**
+ * function to trick es.ts to don't introduce extra \n
+ */
+
+var SLASH = "/";
+
 async function stripTypes(filePath: string): Promise<string | undefined> {
   try {
     const source = readFileSync(filePath, "utf8");
     const startMarker = "/** @es.ts";
-    const endMarker = "@es.ts *" + "/";
+    const endMarker = `@es.ts *${SLASH}`;
 
     let buildMode: "bundle" | "transform" = CONFIG.bundle ? "bundle" : "transform";
     let localOptions: any = { ...CONFIG };
@@ -159,7 +165,7 @@ async function stripTypes(filePath: string): Promise<string | undefined> {
       outputText = outputText
         .replace(/\/\*\!/g, "/**")
         .replace(/\/\/! /g, "// ")
-        .replace(/(@es\.ts \*\/\s*)/g, "@es.ts */\n");
+        .replace(/(@es\.ts \*\/\s*)/g, `@es.ts *${SLASH}`);
 
       writeFileSync(outPath, outputText);
     }
@@ -212,7 +218,7 @@ Description:
       charset: "utf8", minify: false
     }
 }
-@es.ts */
+@es.ts *${SLASH}
   
   DEBUG=true
     When this environment variable is set, the parameters passed 
