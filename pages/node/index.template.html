@@ -200,12 +200,17 @@
 
           await setTimeout(1000); // 1 sec
         </script>
-        <h2>Semaphore</h2>
+        <h2>Semaphore **</h2>
         <a href="semaphore/semaphore.html">Semaphore</a>
         <script type="editor" data-lang="sh">
 
           // https://jsr.io/@henrygd/semaphore
           // https://github.com/stopsopa/ts-setup/blob/native/public/semaphore/Semaphore.ts
+
+          # keep in mind that there are ways to hanlde pipe in node wrong way 
+          # which could cause memory crash app
+            # see tab 'backpressure' in : urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/index.rendered.html#streams
+
         </script>
         <h2>getLine</h2>
         <script type="editor" data-lang="sh">
@@ -1474,7 +1479,7 @@
         >
         <br />
         <a href="https://stackoverflow.com/a/13807906">about fswatch</a>
-        <h2>streams</h2>
+        <h2>streams **</h2>
 
         <div data-vanilla-tabs>
           <div data-buttons>
@@ -1484,7 +1489,7 @@
             <span>response to file</span>
             <span>Transform Streams</span>
             <span>stream to response</span>
-            <span>backpressure</span>
+            <span>backpressure **</span>
           </div>
           <div data-tabs>
             <div>
@@ -1703,6 +1708,9 @@
             </div>
             <div>
               <script type="editor" data-lang="sh">
+
+                # this is short demo showing how to handle and how not to handle stream in Node
+                # especially with semaphore: urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/index.rendered.html#semaphore
 
                 mkdir __pipe
                 cd __pipe
