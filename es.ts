@@ -182,6 +182,63 @@ async function stripTypes(filePath: string): Promise<string | undefined> {
   }
 }
 
+/**
+ * Updates the .gitignore file by merging newly found paths with existing ones in the marker block.
+ * We merge instead of replacing because es.ts might only process a subset of files in a given run,
+ * and we don't want to lose existing transpilation outputs from previous different runs.
+ */
+function updateGitignoreFile(
+  gitRoot: string,
+  startMarker: string,
+  endMarker: string,
+  gitignorePaths: string[]
+): string[] {
+  const gitignorePath = join(gitRoot, ".gitignore");
+  if (!existsSync(gitignorePath)) {
+    throw th(`.gitignore not found in ${gitRoot}`);
+  }
+  const gitignoreContent = readFileSync(gitignorePath, "utf8");
+
+  const startIndex = gitignoreContent.indexOf(startMarker);
+  const endIndex = gitignoreContent.indexOf(endMarker);
+
+  if (startIndex === -1 || endIndex === -1) {
+    let missing = [];
+    if (startIndex === -1) missing.push(`'${startMarker}'`);
+    if (endIndex === -1) missing.push(`'${endMarker}'`);
+    throw th(
+      `.gitignore is missing markers: ${missing.join(
+        " and "
+      )} HELP: run first time without --update parameter, take the output and put into .gitignore and then run again with --update`
+    );
+  }
+
+  if (startIndex > endIndex) {
+    throw th(`.gitignore markers are in wrong order: '${startMarker}' appears after '${endMarker}'`);
+  }
+
+  const before = gitignoreContent.substring(0, startIndex);
+  const after = gitignoreContent.substring(endIndex + endMarker.length);
+
+  // Extract existing paths between markers
+  const existingBlock = gitignoreContent.substring(startIndex + startMarker.length, endIndex);
+  const existingPaths = existingBlock
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith("#"));
+
+  // Merge with newly found paths and deduplicate
+  const allPaths = Array.from(new Set([...existingPaths, ...gitignorePaths])).sort();
+
+  const content = [startMarker, ...allPaths, endMarker].join("\n");
+  const updated = before + content + after;
+
+  writeFileSync(gitignorePath, updated);
+  console.log(`.gitignore updated in ${gitRoot}`);
+
+  return allPaths;
+}
+
 function showHelp(): void {
   console.log(`
 Usage:
@@ -274,41 +331,13 @@ for await (const line of rl) {
 await Promise.all(activeTasks);
 
 if (PRODUCE_GITIGNORE && gitignorePaths.length > 0) {
-  const content = [startMarker, ...gitignorePaths.sort(), endMarker].join("\n");
+  let pathsToLog = gitignorePaths;
 
   if (UPDATE_GITIGNORE) {
-    const gitignorePath = join(gitRoot, ".gitignore");
-    if (!existsSync(gitignorePath)) {
-      throw th(`.gitignore not found in ${gitRoot}`);
-    }
-    const gitignoreContent = readFileSync(gitignorePath, "utf8");
-
-    const startIndex = gitignoreContent.indexOf(startMarker);
-    const endIndex = gitignoreContent.indexOf(endMarker);
-
-    if (startIndex === -1 || endIndex === -1) {
-      let missing = [];
-      if (startIndex === -1) missing.push(`'${startMarker}'`);
-      if (endIndex === -1) missing.push(`'${endMarker}'`);
-      throw th(
-        `.gitignore is missing markers: ${missing.join(
-          " and "
-        )} HELP: run first time without --update parameter, take the output and put into .gitignore and then run again with --update`
-      );
-    }
-
-    if (startIndex > endIndex) {
-      throw th(`.gitignore markers are in wrong order: '${startMarker}' appears after '${endMarker}'`);
-    }
-
-    const before = gitignoreContent.substring(0, startIndex);
-    const after = gitignoreContent.substring(endIndex + endMarker.length);
-    const updated = before + content + after;
-
-    writeFileSync(gitignorePath, updated);
-    console.log(`.gitignore updated in ${gitRoot}`);
+    pathsToLog = updateGitignoreFile(gitRoot, startMarker, endMarker, gitignorePaths);
   }
 
+  const content = [startMarker, ...pathsToLog.sort(), endMarker].join("\n");
   console.log(content);
 }
 
