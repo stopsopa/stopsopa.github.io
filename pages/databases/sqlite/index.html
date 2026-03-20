@@ -37,6 +37,34 @@
             # to see 'create table if not exist' in the terminal
 
           sqlite3 db/ireland.db "SELECT * FROM __drizzle_migrations"
+
+
+          typical update to the table
+            -- BEGIN TRANSACTION;
+  
+            -- 1. Rename old table
+            ALTER TABLE link RENAME TO link_old;
+            
+            -- 2. Create new table with updated constraint
+            CREATE TABLE link (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                company_id INTEGER NOT NULL,
+                link TEXT NOT NULL,
+                type TEXT NOT NULL,
+                created_at TEXT DEFAULT (CURRENT_TIMESTAMP) NOT NULL,
+                FOREIGN KEY (company_id) REFERENCES company(id) ON UPDATE no action ON DELETE cascade,
+                CONSTRAINT type_enum CHECK(type IN ('linkedin', 'homepage', 'indeed', 'other'))
+            );
+            
+            -- 3. Copy data
+            INSERT INTO link (id, company_id, link, type, created_at)
+            SELECT id, company_id, link, type, created_at
+            FROM link_old;
+            
+            -- 4. Drop old table
+            DROP TABLE link_old;
+
+            -- COMMIT;
           
         </script>
         
