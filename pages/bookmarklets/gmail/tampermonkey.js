@@ -9,7 +9,7 @@
 // @grant        none
 // ==/UserScript==
 
-const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms = 50) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const scriptname = GM_info.script.name;
 
@@ -303,10 +303,6 @@ if (window.top === window.self) {
     window.addEventListener("keydown", async (e) => {
       if (e.shiftKey) {
         const currentMeta = openedEmail();
-        if (!currentMeta?.open) {
-          log(`openedEmail() - no open email right now`);
-          return;
-        }
         lastOpenedEmail = currentMeta;
         if (e.key === "ArrowRight") {
           const paneOpen = detectPaneOpen()?.open;
