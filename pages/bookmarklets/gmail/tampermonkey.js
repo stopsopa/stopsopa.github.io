@@ -9,6 +9,8 @@
 // @grant        none
 // ==/UserScript==
 
+const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const scriptname = GM_info.script.name;
 
 function unique(pattern) {
@@ -298,7 +300,7 @@ if (window.top === window.self) {
     const buttons = buttonsElements();
     buttonsElements()?.backToTheListButtonClick();
     let lastOpenedEmail = null;
-    window.addEventListener("keydown", (e) => {
+    window.addEventListener("keydown", async (e) => {
       if (e.shiftKey) {
         const currentMeta = openedEmail();
         if (!currentMeta?.open) {
@@ -308,27 +310,37 @@ if (window.top === window.self) {
         lastOpenedEmail = currentMeta;
         if (e.key === "ArrowRight") {
           const paneOpen = detectPaneOpen()?.open;
+          await delay();
           log("Shift + ArrowRight pressed", paneOpen, lastOpenedEmail);
           if (!paneOpen) {
             buttonsElements()?.backToTheListButtonClick();
+            await delay();
             buttonsElements()?.toggleSplitPaneModeButtonClick();
-            // const found = findElementOnTheListByLevenstein(data.listChildren, lastOpenedEmail as MetaType);
-            // if (found) {
-            //   listChildrenClick(found.el);
-            // } else {
-            //   log("shift + left arrow error: findElementOnTheListByLevenstein() not found");
-            // }
+            await delay();
+            const data = detectPaneOpen();
+            await delay();
+            const found = findElementOnTheListByLevenstein(data.listChildren, lastOpenedEmail);
+            if (found) {
+              await delay();
+              listChildrenClick(found.el);
+            } else {
+              log("shift + right arrow error: findElementOnTheListByLevenstein() not found");
+            }
           }
         }
         if (e.key === "ArrowLeft") {
           const paneOpen = detectPaneOpen()?.open;
+          await delay();
           log("Shift + ArrowLeft pressed", paneOpen, lastOpenedEmail);
           if (paneOpen) {
             buttons.toggleSplitPaneModeButtonClick();
+            await delay();
             const data = detectPaneOpen();
+            await delay();
             if (data?.listChildren && data.listChildren.length > 0) {
               const found = findElementOnTheListByLevenstein(data.listChildren, lastOpenedEmail);
               if (found) {
+                await delay();
                 listChildrenClick(found.el);
               } else {
                 log("shift + left arrow error: findElementOnTheListByLevenstein() not found");
