@@ -15,6 +15,8 @@
 # NOTE
 # NOTE
 # There is a way to do this natively
+# WARNING: the problem with set -a is that it will override existing env vars
+# if that is a problem then still use this script instead
 #
 # old_opts=$(set +o)
 # set -a
