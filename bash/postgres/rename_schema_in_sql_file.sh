@@ -2,6 +2,13 @@
 # /bin/bash bash/postgres/rename_schema_in_sql_file.sh new_schema dump.sql | do some other stuff
 # /bin/bash bash/postgres/rename_schema_in_sql_file.sh new_schema dump.sql > renamed.sql
 # 
+# part of solution for :
+# “pg_dump restore to different schema”
+# “PostgreSQL schema rename during restore”
+# “cross-schema cloning PostgreSQL”
+# “schema migration vs schema cloning”
+# “logical dump schema rewrite Postgres”
+# 
 
 set -e 
 
