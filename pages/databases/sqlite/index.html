@@ -32,7 +32,7 @@
 
         <h2>Work from CLI</h2>
         <script type="editor" data-lang="sh">
-          
+
           sqlite3 db/ireland.db ".schema linktable"
             # to see 'create table if not exist' in the terminal
 
@@ -41,10 +41,10 @@
 
           typical update to the table
             -- BEGIN TRANSACTION;
-  
+
             -- 1. Rename old table
             ALTER TABLE link RENAME TO link_old;
-            
+
             -- 2. Create new table with updated constraint
             CREATE TABLE link (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -55,19 +55,18 @@
                 FOREIGN KEY (company_id) REFERENCES company(id) ON UPDATE no action ON DELETE cascade,
                 CONSTRAINT type_enum CHECK(type IN ('linkedin', 'homepage', 'indeed', 'other'))
             );
-            
+
             -- 3. Copy data
             INSERT INTO link (id, company_id, link, type, created_at)
             SELECT id, company_id, link, type, created_at
             FROM link_old;
-            
+
             -- 4. Drop old table
             DROP TABLE link_old;
 
             -- COMMIT;
-          
         </script>
-        
+
         <h2>UI for SQLite</h2>
         <script type="editor" data-lang="sh">
 
