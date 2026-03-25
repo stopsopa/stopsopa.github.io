@@ -2115,6 +2115,8 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
             https://github.com/stopsopa/gitignore_to_find
             see also: urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/index.rendered.html#strip-types-from-cli-es-ts
 
+           find . \( -type d \( -name 'node_modules' -o -name '.git' \) -prune \) -o \( -type f -iname '*.lzstring*' -print \)
+
           # find all png files and no mater where these are copy them to my png/ directory
             find . -name '*.png' -print0  | xargs -0 -I{} cp {} ./png
 
