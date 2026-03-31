@@ -1339,6 +1339,11 @@
             
               # or with basicauth
                 npx http-server -S -C cert.pem -K key.pem --gzip --username user --password please
+            
+            # generate statics - process *.md files to *.html            
+              npx @11ty/eleventy --serve
+                # from: https://www.11ty.dev/
+            
           </script>
 
           <h2>newline count</h2>
