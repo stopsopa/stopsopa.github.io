@@ -1327,6 +1327,18 @@
             export PPORT="5090" && echo -e "\n    http://localhost:${PPORT} \n" && python3 -m http.server ${PPORT}
 
             python -m http.server \${JEST_COVERAGE_PORT} --directory ./coverage
+
+
+            # --- other solution
+              # simplest
+                npx http-server --gzip --port 5678
+
+              # https:
+                echo "\n\n\n\n\n\n\n\n" | openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out cert.pem
+                npx http-server -S -C cert.pem -K key.pem
+            
+              # or with basicauth
+                npx http-server -S -C cert.pem -K key.pem --gzip --username user --password please
           </script>
 
           <h2>newline count</h2>
