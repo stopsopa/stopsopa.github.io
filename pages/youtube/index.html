@@ -124,19 +124,19 @@
             YOUTUBE="qKqrmS6dKDg"
             INPUT="m.mp4"
             OUTPUT="out.mp4"          
-            START="00:18:42"
-            END="00:19:12"
+            START="00:00:09"
+            END="00:00:13"
   
             yt-dlp -o "${INPUT}" "${YOUTUBE}"
             
             ffmpeg -threads 0 \
               -ss "${START}" \
               -to "${END}" \
-              -i "download-${INPUT}" \
+              -i "${INPUT}" \
               -c:v h264 -preset ultrafast -crf 18 \
               -pix_fmt yuv420p \
               -c:a aac \
-              "${OUTPUT}"
+              "${OUTPUT}"       
           
         </script>
         <h2>Keyboard shortcuts</h2>
