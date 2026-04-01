@@ -136,14 +136,15 @@
               const lines = pre.textContent.split("\n");
               pre.textContent = lines.slice(0, 10).join("\n");
             }
-
-            function range(element, event) {
+            function range(element, event, onLoad = true) {
               function hc() {
                 event(parseInt(element.value, 10));
               }
               element.addEventListener("change", hc);
               element.addEventListener("input", hc);
-              hc();
+              if (onLoad) {
+                hc();
+              }
             }
             range(rangeEl, (v) => {
               // this will trigger once only when attached to dom element
