@@ -1,4 +1,5 @@
 export default function handleRadio(opt) {
+  let tool;
   const {
     name,
     selectorAll = (name) => {
@@ -28,16 +29,21 @@ export default function handleRadio(opt) {
 
   const s = selectorAll(name);
 
-  if (typeof s !== "string") {
-    throw new Error("handleRadio: selector must return a string");
-  }
-
   if (initState) {
     const sOne = selectorOne(name, initState);
     const el = delegateParent.querySelector(sOne);
 
     if (el) {
       el.checked = true;
+    }
+  }
+
+  let active = delegateParent.querySelector(`${s}:checked`);
+
+  if (!active) {
+    active = delegateParent.querySelector(s);
+    if (active) {
+      active.checked = true;
     }
   }
 
@@ -48,17 +54,12 @@ export default function handleRadio(opt) {
 
     if (match) {
       const v = target.value;
-      onChange(v);
+      onChange(v, tool);
     }
   };
   delegateParent.addEventListener("click", delegateFn);
 
-  if (initTrigger) {
-    const v = delegateParent.querySelector(`${s}:checked`).value;
-    onChange(v);
-  }
-
-  return {
+  tool = {
     unbind: () => {
       delegateParent.removeEventListener("click", delegateFn);
     },
@@ -79,4 +80,13 @@ export default function handleRadio(opt) {
       }
     },
   };
+
+  if (initTrigger) {
+    const activeEl = delegateParent.querySelector(`${s}:checked`);
+    if (activeEl) {
+      onChange(activeEl.value, tool);
+    }
+  }
+
+  return tool;
 }

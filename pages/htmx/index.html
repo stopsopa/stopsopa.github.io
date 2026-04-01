@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <h2>Index</h2>
+          <script type="editor" data-lang="html">
+
+            <meta name="htmx-config" content='{"historyCacheSize": 0}' />
+            <meta name="htmx-config" content='{"disableInheritance":true}' />
+              <!-- from: https://htmx.org/quirks/ -->
+
+            <button hx-post="/clicked"
+                hx-trigger="click"
+                hx-target="#parent-div"
+                hx-swap="outerHTML">
+                Click Me!
+            </button>
+            <!-- https://htmx.org/docs/#introduction -->
+
+            # vebs
+              hx-get	Issues a GET request to the given URL
+              hx-post	Issues a POST request to the given URL
+              hx-put	Issues a PUT request to the given URL
+              hx-patch	Issues a PATCH request to the given URL
+              hx-delete	Issues a DELETE request to the given URL
+
+            # triggers
+              hx-trigger="mouseenter"
+              hx-trigger="click"
+              hx-trigger="submit"
+              hx-trigger="load"
+              hx-trigger="every 5s"
+              hx-trigger="intersect delay:500ms"
+              hx-trigger="revealed once throttle:500ms" -- works with input, scroll, mousemove
+          </script>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>
