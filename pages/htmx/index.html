@@ -16,7 +16,9 @@
           <h2>Index</h2>
           <script type="editor" data-lang="html">
 
-            <meta name="htmx-config" content='{"historyCacheSize": 0}' />
+            # config: https://htmx.org/api/#config
+
+            <meta name="htmx-config" content='{"historyCacheSize": 0, "globalViewTransitions": true}' />
             <meta name="htmx-config" content='{"disableInheritance":true}' />
               <!-- from: https://htmx.org/quirks/ -->
 
@@ -43,6 +45,65 @@
               hx-trigger="every 5s"
               hx-trigger="intersect delay:500ms"
               hx-trigger="revealed once throttle:500ms" -- works with input, scroll, mousemove
+
+            # forms: 
+              <button form="associated-form"> mentioned
+                https://htmx.org/docs/#preserving-content-during-a-swap:~:text=Additionally%2C%20if%20the%20element%20causes%20a
+              hx-include  https://htmx.org/docs/#preserving-content-during-a-swap:~:text=If%20you%20wish%20to%20include%20the%20values%20of%20other%20elements
+              hx-params  https://htmx.org/docs/#preserving-content-during-a-swap:~:text=If%20you%20wish%20to%20filter%20out%20some%20parameters%20you%20can%20use
+              htmx:configRequest   https://htmx.org/docs/#preserving-content-during-a-swap:~:text=Finally%2C%20if%20you%20want%20to%20programmatically%20modify%20the%20parameters
+              hx-encoding="multipart/form-data"  https://htmx.org/docs/#preserving-content-during-a-swap:~:text=If%20you%20wish%20to%20upload%20files%20via%20an%20htmx%20request
+              hx-vals  https://htmx.org/docs/#files:~:text=You%20can%20include%20extra%20values%20in%20a%20request
+              
+              
+              # File upload
+                https://htmx.org/docs/#files
+              
+
+            # other
+              hx-swap="outerHTML"    default innerHTML        
+                https://htmx.org/docs/#swapping  https://htmx.org/attributes/hx-swap/
+                to understand swapping: https://htmx.org/docs/#oob_swaps:~:text=To%20understand%20how%20CSS%20transitions%20actually%20work%20in%20htmx
+
+                other values: innerHTML, afterbegin, beforebegin, beforeend, afterend, delete, none
+                  # swap also can control transitions https://htmx.org/docs/#view-transitions
+                  hx-swap="transition:true"     
+                  # Set the htmx.config.globalViewTransitions config variable to true to use transitions for all swaps
+                    <meta name="htmx-config" content='{"historyCacheSize": 0, "globalViewTransitions": true}' />
+                hx-swap="innerHTML swap:1s"     The default swap delay is 0ms
+                  https://htmx.org/attributes/hx-swap/#:~:text=You%20can%20modify%20the%20amount%20of%20time%20that%20htmx
+                hx-swap="innerHTML show:top" https://htmx.org/attributes/hx-swap/#:~:text=this%20will%20get%20some%20content%20and%20add%20it%20to
+                hx-swap="innerHTML show:#another-div:top"
+                hx-swap="innerHTML show:window:top"
+                hx-swap="innerHTML settle:1s"        The default settle delay is 20ms
+
+              hx-target="#parent-div"
+
+              hx-disabled-elt="this"         https://htmx.org/attributes/hx-disabled-elt/
+                hx-disabled-elt="closest <CSS selector>"
+                hx-disabled-elt="find <CSS selector>"
+                hx-disabled-elt="find input[type='text'], find button"
+
+              hx-confirm   https://htmx.org/docs/#confirming
+                  and read more below: https://htmx.org/docs/#confirming-requests-using-events
+
+            # inheritance
+                  https://htmx.org/docs/#inheritance
+                  <meta name="htmx-config" content='{"disableInheritance":true}' />
+                    https://htmx.org/docs/#inheritance:~:text=If%20you%20wish%20to%20disable%20attribute%20inheritance%20entirely
+
+                  hx-confirm="unset"   https://htmx.org/docs/#inheritance:~:text=Sometimes%20you%20wish%20to%20undo%20this%20inheritance
+            
+            # animations
+                  https://htmx.org/examples/animations/
+                  found: https://htmx.org/docs/#synchronization:~:text=Given%20this%20situation%2C%20we%20can%20write%20a%20CSS%20transition
+                  hx-swap-oob="true"
+                    from: https://htmx.org/docs/#oob_swaps
+                    and read more: https://htmx.org/attributes/hx-swap-oob/
+
+              
+            # Read more:
+                  Preserving Content During A Swap: https://htmx.org/docs/#preserving-content-during-a-swap
           </script>
         </div>
       </div>

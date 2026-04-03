@@ -26,6 +26,7 @@
             <li><a href="yq/index.html">yq</a></li>
             <li><a href="jq/index.html">jq</a></li>
             <li><a href="ysap/index.rendered.html">YSAP course</a></li>
+            <li><a href="diff/index.html">diff</a></li>
           </ul>
           <h2>interesting</h2>
           <script type="editor" data-lang="sh">
@@ -1336,14 +1337,13 @@
               # https:
                 echo "\n\n\n\n\n\n\n\n" | openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out cert.pem
                 npx http-server -S -C cert.pem -K key.pem
-            
+
               # or with basicauth
                 npx http-server -S -C cert.pem -K key.pem --gzip --username user --password please
-            
-            # generate statics - process *.md files to *.html            
+
+            # generate statics - process *.md files to *.html
               npx @11ty/eleventy --serve
                 # from: https://www.11ty.dev/
-            
           </script>
 
           <h2>newline count</h2>
@@ -1489,137 +1489,6 @@
           EEE
           }
           trap cleanup EXIT;
-        </script>
-        <h2>diff</h2>
-        <script type="editor" data-lang="sh">
-
-          // diff for directory and it's content ---------------- vvv
-
-          diff -qr --exclude=".git" --exclude="node_modules" [dir] [dir]
-            // that will print which files are different without details
-            // use this one to generally list different files
-
-          diff -r --exclude=".git" --exclude="node_modules" [dir] [dir]
-            // and then remove -q to see the diffs
-
-          // diff for directory and it's content ---------------- ^^^
-
-          diff <(curl https://foo.com) <(curl https://bar.com)
-
-          # or
-          vim -d /tmp/1 /tmp/2
-              # from: https://youtu.be/cnmtKv2kUXs?t=268
-
-          ===== generating diff files =================== vvv
-          mkdir ttt
-          cd ttt
-          cat <<EEE > a.js
-          abc
-          def
-          ghi
-          jkl
-          mno
-          pqr
-          stu
-          wxy
-          z
-          EEE
-
-
-          cat <<EEE > b.js
-          vgr
-          abc
-          ghi
-          jkl
-          new
-          pqr
-          stt
-          wxy
-          z
-          EEE
-
-          diff -u a.js b.js > diff.diff
-
-          # will generate
-          --- a.js	2024-06-19 00:33:14
-          +++ b.js	2024-06-19 00:33:43
-          @@ -1,9 +1,9 @@
-          +vgr
-          abc
-          -def
-          ghi
-          jkl
-          -mno
-          +new
-          pqr
-          -stu
-          +stt
-          wxy
-          z
-          \ No newline at end of file
-          # will generate
-
-          # now once we have that
-          cp a.js restored.js
-          patch restored.js diff.diff
-          # now restored.js will be the same as b.js
-          # we can confirm that running
-          diff -u b.js restored.js
-          # will print nothing and return 0 exit code
-          ===== generating diff files =================== ^^^
-
-          ===== generating diff files == binary ================= vvv
-          cd tttt
-          cd tttt
-          cat <<EEE > main.go
-          package main
-          import "fmt"
-          func main() {fmt.Println("Hello, World!")}
-          EEE
-          cat <<EEE > go.mod
-          module example/hello
-          go 1.22.0
-          EEE
-          go build
-          ./hello
-          # program works
-
-          cp hello broken
-          chmod a+x broken
-          ./broken
-          # working copy of program
-
-
-          cat <<EEE > break.sh
-          FILE="broken"
-          SIZE=\$(stat -f%z "\$FILE")
-          NUM_BITS=3
-            for ((i=0; i<\$NUM_BITS; i++)); do
-            POS=\$(jot -r 1 0 "\$((SIZE - 1))")
-            BYTE=\$(dd if="\$FILE" bs=1 skip="\$POS" count=1 2>/dev/null | od -An -t u1)
-            BIT_POS=\$(jot -r 1 0 7)
-            NEW_BYTE=\$((BYTE ^ (1 << BIT_POS)))
-            echo "i: \$i POS: \$POS BYTE: \$BYTE NEW_BYTE: \$NEW_BYTE"
-            printf "\\\$(printf '%03o' "\$NEW_BYTE")" | dd of="\$FILE" bs=1 seek="\$POS" count=1 conv=notrunc &> /dev/null
-          done
-          EEE
-          /bin/bash break.sh
-          ./broken
-          # now it doesn't work
-
-          # let's generate diff:
-          bsdiff broken hello diff.diff
-          ls -la
-          # let's see how small diff file is
-
-          # let's generate fixed file using broken file and diff
-          bspatch broken fixed diff.diff
-          chmod a+x fixed
-
-          # and now it works back again
-          ./fixed
-
-          ===== generating diff files == binary ================= ^^^
         </script>
         <h2>tee</h2>
         <script type="editor" data-lang="sh">
