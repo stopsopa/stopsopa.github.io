@@ -136,6 +136,15 @@
             # it have to binstalled on mac via brew or on linux in some way but it is good
             # one binary to generate diffs and patch files
 
+
+            # from that point we can work with xdelta3
+
+            # examples of use
+                # xdelta3 -e -s old.sqlite new.sqlite diff1.xdelta
+                # sqldiff old.db new.db > changes.sql
+
+            # let's do a test
+
             mkdir gocode
             cat <<EEE > gocode/main.go
             package main
@@ -143,7 +152,7 @@
             func main() {	fmt.Println("Hello from the compiled Go binary! changed")  }
             EEE
 
-            cat <<EEE
+            cat <<EEE > compile.sh
             # /bin/bash compile.sh <target_name>
             # /bin/bash compile.sh compile
             # /bin/bash compile.sh compile2
@@ -171,39 +180,22 @@
 
             EEE
 
+            /bin/bash compile.sh
+            ./main
+            cp main broken
+            ./broken
+            /bin/bash ../bash/fs/break-file.sh 3 broken
+            ./broken
+              # and now it doesn't work
 
-            # from that point we can work with xdelta3
+            # generate diff with xdelta3
+            xdelta3 -e -s broken main diff.xdelta
 
-            xdelta3 -e -s old.sqlite new.sqlite diff1.xdelta
-
-            sqldiff old.db new.db > changes.sql
-
-
-            files:
-              a.jpeg
-              b.jpeg
-
-            Install:
-                brew install xdelta
-
-            Create delta:
-                xdelta3 -e -s a.jpeg b.jpeg patch.xdelta
-
-            Reconstruct:
-                xdelta3 -d -s a.jpeg patch.xdelta reconstructed.jpeg
-
-
-
-            # now let's generate diff for compile and compile2
-
-            xdelta3 -e -s compile compile2 compile.xdelta
-            xdelta3 -d -s compile compile.xdelta reconstructed
-            chmod a+x reconstructed
-
-            # then test
-            ./compile
-            ./compile2
-            ./reconstructed
+            # now let's generate fixed file using broken file and diff
+            xdelta3 -d -s broken diff.xdelta fixed
+            chmod a+x fixed
+            ./fixed
+            
           </script>
         </div>
       </div>
