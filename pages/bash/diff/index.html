@@ -113,21 +113,8 @@
             ./broken
             # working copy of program
 
+            /bin/bash bash/fs/break-file.sh 3 broken
 
-            cat <<EEE > break.sh
-            FILE="broken"
-            SIZE=\$(stat -f%z "\$FILE")
-            NUM_BITS=3
-              for ((i=0; i<\$NUM_BITS; i++)); do
-              POS=\$(jot -r 1 0 "\$((SIZE - 1))")
-              BYTE=\$(dd if="\$FILE" bs=1 skip="\$POS" count=1 2>/dev/null | od -An -t u1)
-              BIT_POS=\$(jot -r 1 0 7)
-              NEW_BYTE=\$((BYTE ^ (1 << BIT_POS)))
-              echo "i: \$i POS: \$POS BYTE: \$BYTE NEW_BYTE: \$NEW_BYTE"
-              printf "\\\$(printf '%03o' "\$NEW_BYTE")" | dd of="\$FILE" bs=1 seek="\$POS" count=1 conv=notrunc &> /dev/null
-            done
-            EEE
-            /bin/bash break.sh
             ./broken
             # now it doesn't work
 
