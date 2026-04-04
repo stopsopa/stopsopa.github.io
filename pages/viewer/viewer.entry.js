@@ -173,7 +173,7 @@ function Viewer() {
 
       <label>
         <span>zz + href:</span>
-        <input type="search" readOnly value={`${zz}${location.pathname}?file=${encodeURIComponent(file)}`} />
+        <input type="search" readOnly value={`${zz}${location.pathname}?file=${encodeURIComponent(file)}`} style={{ color: "green" }} />
       </label>
 
       <label>
