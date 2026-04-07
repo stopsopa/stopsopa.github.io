@@ -16,10 +16,22 @@
           <h2>Index</h2>
           <script type="editor" data-lang="html">
 
-            # https://github.com/stopsopa/htmx
-            # config: https://htmx.org/api/#config
+            # config: https://htmx.org/api/#config  https://htmx.org/reference/#config
+            # api: https://htmx.org/api
+            # security: hx-disable https://htmx.org/docs/#hx-disable
             # explore morph: https://github.com/stopsopa/htmx
-            
+
+
+            &lt;script type="module">
+              import htmx from "/node_modules/htmx.org/dist/htmx.esm.js";
+              import radio from "radio";
+            &lt>/script>
+            # or
+
+            &lt;script
+              type="module"
+              src="/node_modules/htmx.org/dist/htmx.esm.js"
+            &gt;&lt;/script>
 
             <meta name="htmx-config" content='{"historyCacheSize": 0, "globalViewTransitions": true}' />
             <meta name="htmx-config" content='{"disableInheritance":true}' />
@@ -32,6 +44,13 @@
                 Click Me!
             </button>
             <!-- https://htmx.org/docs/#introduction -->
+
+            # bundling esbuild rollup webpack
+              https://htmx.org/docs/#webpack
+              https://htmx.org/extensions/response-targets/#:~:text=If%20you%20are%20using%20a%20bundler%20to%20manage%20your%20javascript
+
+            # alert, confirm
+              https://htmx.org/docs/#confirming-requests-using-events
 
             # vebs
               hx-get	Issues a GET request to the given URL
@@ -49,7 +68,7 @@
               hx-trigger="intersect delay:500ms"
               hx-trigger="revealed once throttle:500ms" -- works with input, scroll, mousemove
 
-            # forms: 
+            # forms:
               <button form="associated-form"> mentioned
                 https://htmx.org/docs/#preserving-content-during-a-swap:~:text=Additionally%2C%20if%20the%20element%20causes%20a
               hx-include  https://htmx.org/docs/#preserving-content-during-a-swap:~:text=If%20you%20wish%20to%20include%20the%20values%20of%20other%20elements
@@ -57,20 +76,20 @@
               htmx:configRequest   https://htmx.org/docs/#preserving-content-during-a-swap:~:text=Finally%2C%20if%20you%20want%20to%20programmatically%20modify%20the%20parameters
               hx-encoding="multipart/form-data"  https://htmx.org/docs/#preserving-content-during-a-swap:~:text=If%20you%20wish%20to%20upload%20files%20via%20an%20htmx%20request
               hx-vals  https://htmx.org/docs/#files:~:text=You%20can%20include%20extra%20values%20in%20a%20request
-              
-              
+
+
               # File upload
                 https://htmx.org/docs/#files
-              
+
 
             # other
-              hx-swap="outerHTML"    default innerHTML        
+              hx-swap="outerHTML"    default innerHTML
                 https://htmx.org/docs/#swapping  https://htmx.org/attributes/hx-swap/
                 to understand swapping: https://htmx.org/docs/#oob_swaps:~:text=To%20understand%20how%20CSS%20transitions%20actually%20work%20in%20htmx
 
                 other values: innerHTML, afterbegin, beforebegin, beforeend, afterend, delete, none
                   # swap also can control transitions https://htmx.org/docs/#view-transitions
-                  hx-swap="transition:true"     
+                  hx-swap="transition:true"
                   # Set the htmx.config.globalViewTransitions config variable to true to use transitions for all swaps
                     <meta name="htmx-config" content='{"historyCacheSize": 0, "globalViewTransitions": true}' />
                 hx-swap="innerHTML swap:1s"     The default swap delay is 0ms
@@ -80,7 +99,7 @@
                 hx-swap="innerHTML show:window:top"
                 hx-swap="innerHTML settle:1s"        The default settle delay is 20ms
 
-              hx-target="#parent-div"
+              hx-target="#parent-div"   https://htmx.org/attributes/hx-target/
 
               hx-disabled-elt="this"         https://htmx.org/attributes/hx-disabled-elt/
                 hx-disabled-elt="closest <CSS selector>"
@@ -96,7 +115,7 @@
                     https://htmx.org/docs/#inheritance:~:text=If%20you%20wish%20to%20disable%20attribute%20inheritance%20entirely
 
                   hx-confirm="unset"   https://htmx.org/docs/#inheritance:~:text=Sometimes%20you%20wish%20to%20undo%20this%20inheritance
-            
+
             # animations
                   https://htmx.org/examples/animations/
                   found: https://htmx.org/docs/#synchronization:~:text=Given%20this%20situation%2C%20we%20can%20write%20a%20CSS%20transition
@@ -104,9 +123,19 @@
                     from: https://htmx.org/docs/#oob_swaps
                     and read more: https://htmx.org/attributes/hx-swap-oob/
 
-              
+            # global events
+              https://htmx.org/events/#htmx:responseError
+              fired when 404 or 500
+
+            # debugging logging
+                  https://htmx.org/api/#logger
+                  https://htmx.org/docs/#debugging
+                  htmx.logAll();
+
+
             # Read more:
                   Preserving Content During A Swap: https://htmx.org/docs/#preserving-content-during-a-swap
+                  cors: https://htmx.org/docs/#cors
           </script>
         </div>
       </div>
