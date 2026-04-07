@@ -1538,9 +1538,9 @@ git rebase --continue
 
           git add .
           git commit --amend --no-edit
-            # commit all changes into that commit           
+            # commit all changes into that commit
 
-          # nuke the history - 
+          # nuke the history -
           git reflog expire --expire=now --all
             # Git keeps references to old commits in the reflog.
           git gc --prune=now --aggressive
@@ -1550,10 +1550,9 @@ git rebase --continue
 
           git push --force origin main
             # push new history - --force required
-          
+
           du -sh .git
             # inspect the size of the repo again
-        
         </script>
         <h2>rebase vs squash vs merge</h2>
         <script type="editor" data-lang="sh">

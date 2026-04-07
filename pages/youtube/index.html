@@ -87,29 +87,28 @@
         </script>
         <h2>Reformat for iMovie</h2>
         <script type="editor" data-lang="python">
-          
+
           INPUT="m.mp4"
           OUTPUT="out.mp4"
-          
+
           ffmpeg -threads 0 -i "${INPUT}" \
             -c:v h264 -preset ultrafast -crf 18 \
             -pix_fmt yuv420p \
             -c:a aac \
-            "${OUTPUT}"  
-          # 16x  
-          
+            "${OUTPUT}"
+          # 16x
         </script>
         <h2>Cut video to length - for youtube</h2>
         <script type="editor" data-lang="python">
 
-          # just skip if you want to cut to the end of from the beginning          
-          
+          # just skip if you want to cut to the end of from the beginning
+
             INPUT="m.mp4"
             OUTPUT="out.mp4"
-            
+
             START="00:18:42"
             END="00:19:12"
-            
+
             ffmpeg -threads 0 \
               -ss "${START}" \
               -to "${END}" \
@@ -120,15 +119,15 @@
               "${OUTPUT}"
 
           # with download from youtube
-          
+
             YOUTUBE="qKqrmS6dKDg"
             INPUT="m.mp4"
-            OUTPUT="out.mp4"          
+            OUTPUT="out.mp4"
             START="00:00:09"
             END="00:00:13"
-  
+
             yt-dlp -o "${INPUT}" "${YOUTUBE}"
-            
+
             ffmpeg -threads 0 \
               -ss "${START}" \
               -to "${END}" \
@@ -136,8 +135,7 @@
               -c:v h264 -preset ultrafast -crf 18 \
               -pix_fmt yuv420p \
               -c:a aac \
-              "${OUTPUT}"       
-          
+              "${OUTPUT}"
         </script>
         <h2>Keyboard shortcuts</h2>
         <script type="editor" data-lang="python">
