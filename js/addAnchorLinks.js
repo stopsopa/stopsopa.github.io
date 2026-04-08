@@ -34,6 +34,10 @@ function unique(list, str) {
 }
 
 export default function addAnchorLinks() {
+  if (document.body.hasAttribute("no-anchor-links")) {
+    return;
+  }
+
   var links = {};
 
   const selectors = "h1, h2, h3, h4, h5, h6";

@@ -100,22 +100,24 @@ window.sasync = {
 
   [
     "/css/normalize.css",
-    "/css/main.css",
+    document.body.hasAttribute("no-main-css") ? "" : "/css/main.css",
     "/noprettier/vanilla-tabs.css",
     "//fonts.googleapis.com/css?family=Open+Sans:300,400,500,700,900",
-  ].forEach(function (u) {
-    // https://stackoverflow.com/a/524721
-    var head = document.head || document.getElementsByTagName("head")[0],
-      style = document.createElement("link");
+  ]
+    .filter(Boolean)
+    .forEach(function (u) {
+      // https://stackoverflow.com/a/524721
+      var head = document.head || document.getElementsByTagName("head")[0],
+        style = document.createElement("link");
 
-    // style.type = 'text/css';
+      // style.type = 'text/css';
 
-    style.setAttribute("rel", "stylesheet");
+      style.setAttribute("rel", "stylesheet");
 
-    style.setAttribute("href", u);
+      style.setAttribute("href", u);
 
-    head.appendChild(style);
-  });
+      head.appendChild(style);
+    });
 
   log.blue("executed", "adding extra styles");
 })();

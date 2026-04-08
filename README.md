@@ -138,6 +138,8 @@ window.doace();
         toc - turn on Table of Content
         nohead - no header
         nofoot - no footer
+        no-anchor-links - disable js/addAnchorLinks.js
+        no-main-css - disable /css/main.css
 
 # &lt;div data-do-sort&gt;
 
