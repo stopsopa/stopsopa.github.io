@@ -27,6 +27,9 @@ g(Google Sans font)
 */
 
 .gcp-css {
+  a {
+    color: rgb(12, 103, 223);
+  }
   &:is(h2) {
     font-size: 14px;
     margin-bottom: 5px;
@@ -37,10 +40,9 @@ g(Google Sans font)
     margin-bottom: 10px;
     font-weight: 400;
     margin-top: 0;
+    line-height: 18px;
+    color: rgb(32 33 36 / 77%);
   }
-  position: relative;
-  display: grid;
-  margin-bottom: 19px;
 
   /* -------------------------------------------------------------
      GENERIC LAYOUT & HELPERS
@@ -94,6 +96,9 @@ g(Google Sans font)
      STANDARD FLOATING LABELS (Inputs, Textareas)
      ------------------------------------------------------------- */
   &.input-wrapper {
+    position: relative;
+    display: grid;
+    margin-bottom: 19px;
     &::after {
       content: "";
       grid-area: 1 / 1;
@@ -189,6 +194,9 @@ g(Google Sans font)
      CHECKBOX & RADIO PATTERNS
      ------------------------------------------------------------- */
   &:is(.checkbox-wrapper, .radio-wrapper) {
+    position: relative;
+    display: grid;
+    margin-bottom: 19px;
     .helper-text {
       padding-top: 0;
     }
@@ -254,6 +262,9 @@ g(Google Sans font)
     }
 
     &.checkbox-wrapper {
+      position: relative;
+      display: grid;
+      margin-bottom: 19px;
       input[type="checkbox"] {
         &::before {
           content: "";
@@ -278,6 +289,9 @@ g(Google Sans font)
     }
 
     &.radio-wrapper {
+      position: relative;
+      display: grid;
+      margin-bottom: 19px;
       input[type="radio"] {
         border-radius: 50%; /* Force circle for radio */
 
