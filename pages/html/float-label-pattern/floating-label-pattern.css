@@ -347,7 +347,7 @@ g(Google Sans font)
       }
 
       input:is([type="checkbox"], [type="radio"]) {
-        border-color: var(--gcp-css-error);
+        border-color: var(--gcp-css-error) !important;
       }
     }
 
@@ -434,8 +434,12 @@ g(Google Sans font)
       & [data-error],
       &[data-error] {
         input[type="radio"] {
+          border-color: var(--gcp-css-error);
           &::before {
             background-color: var(--gcp-css-error);
+          }
+          &:checked {
+            border-color: var(--gcp-css-error);
           }
         }
       }

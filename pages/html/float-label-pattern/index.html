@@ -30,6 +30,7 @@
       }
       body {
         /* font-family: "Inter", sans-serif; */
+        padding: 10px;
       }
       @supports (font-variation-settings: normal) {
         :root {
@@ -100,6 +101,12 @@
             <input type="range" id="range" min="1" max="100" step="1" value="80" class="range-input" />
 
             <div class="section-heading" style="margin-bottom: 12px">Validation Controls</div>
+            <div class="controls" style="margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #ddd">
+              <label class="error-toggle">
+                <input type="checkbox" id="toggle-all" />
+                <b>Toggle All</b>
+              </label>
+            </div>
             <div class="controls" style="margin-top: 0">
               <label class="error-toggle">
                 <input type="checkbox" data-toggle-class="#name-wrapper" />
@@ -120,6 +127,18 @@
             </div>
             <div class="controls">
               <label class="error-toggle">
+                <input type="checkbox" data-toggle-class="#type-wrapper" />
+                Toggle Error State (Select Type)
+              </label>
+            </div>
+            <div class="controls">
+              <label class="error-toggle">
+                <input type="checkbox" data-toggle-class="#password-wrapper" />
+                Toggle Error State (Password)
+              </label>
+            </div>
+            <div class="controls">
+              <label class="error-toggle">
                 <input type="checkbox" data-toggle-class="#desc-wrapper" />
                 Toggle Error State (Textarea)
               </label>
@@ -134,12 +153,6 @@
               <label class="error-toggle">
                 <input type="checkbox" data-toggle-class="#radio-wrapper" />
                 Toggle Error State (Radio Plan)
-              </label>
-            </div>
-            <div class="controls">
-              <label class="error-toggle">
-                <input type="checkbox" data-toggle-class="#type-wrapper" />
-                Toggle Error State (Select Type)
               </label>
             </div>
           </div>
@@ -170,8 +183,8 @@
                 <div class="helper-text">Enter a valid GCP admin email</div>
               </div>
               <alert-box type="note">
-  Highlights information that users should take into account, even when skimming.
-</alert-box>
+                Highlights information that users should take into account, even when skimming.
+              </alert-box>
 
               <!-- Field 4 -->
               <div class="input-wrapper" id="type-wrapper">
@@ -187,9 +200,17 @@
               </div>
 
               <!-- Field 5 -->
-              <div class="gcp-css input-wrapper">
-                <input type="password" id="dummy" placeholder="why is this here?" autocomplete="current-password" />
-                <label for="dummy">Dummy last field</label>
+              <div class="gcp-css input-wrapper" id="password-wrapper">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="&nbsp;"
+                  autocomplete="current-password"
+                />
+                <label for="password">Password *</label>
+                <div class="error">Password is required</div>
+                <div class="helper-text">Enter your account password</div>
               </div>
 
               <h2 class="gcp-css">Description section</h2>
@@ -273,6 +294,18 @@
     <script>
       document.body.addEventListener("change", function (e) {
         var el = e.target;
+
+        if (el.id === "toggle-all") {
+          const isChecked = el.checked;
+          const checkboxes = document.querySelectorAll(".layout-left .controls input[type='checkbox']:not(#toggle-all)");
+          checkboxes.forEach((cb) => {
+            if (cb.checked !== isChecked) {
+              cb.checked = isChecked;
+              cb.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+          });
+          return;
+        }
 
         if (el.matches("[data-toggle-class]")) {
           const selector = el.getAttribute("data-toggle-class");
