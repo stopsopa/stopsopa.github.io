@@ -80,6 +80,18 @@
             <div class="helper-text">Enter a detailed description of your project</div>
           </div>
 
+          <!-- Field 6 (Checkbox) -->
+          <div class="floating-label checkbox-wrapper" id="agree-wrapper">
+            <div class="checkbox-row">
+              <input type="checkbox" id="agree" name="agree" />
+              <div class="content-cell">
+                <label for="agree">I agree to the terms and conditions</label>
+                <div class="helper-text">Please ensure you have read the policies.</div>
+                <div class="error">You must check this box to continue.</div>
+              </div>
+            </div>
+          </div>
+
           <br />
           <input type="submit" value="Submit" />
         </form>
@@ -111,6 +123,12 @@
           <label class="error-toggle">
             <input type="checkbox" data-toggle-class="#desc-wrapper" />
             Toggle Error State (Textarea)
+          </label>
+        </div>
+        <div class="controls">
+          <label class="error-toggle">
+            <input type="checkbox" data-toggle-class="#agree-wrapper" />
+            Toggle Error State (Checkbox Policy)
           </label>
         </div>
         <br />
