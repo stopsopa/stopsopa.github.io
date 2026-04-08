@@ -135,6 +135,12 @@
                 Toggle Error State (Radio Plan)
               </label>
             </div>
+            <div class="controls">
+              <label class="error-toggle">
+                <input type="checkbox" data-toggle-class="#type-wrapper" />
+                Toggle Error State (Select Type)
+              </label>
+            </div>
           </div>
 
           <!-- RIGHT COLUMN (Form Components) -->
@@ -164,6 +170,19 @@
               </div>
 
               <!-- Field 4 -->
+              <div class="input-wrapper" id="type-wrapper">
+                <select id="type" name="type" required>
+                  <option value selected></option>
+                  <option value="compute">Compute Engine</option>
+                  <option value="storage">Cloud Storage</option>
+                  <option value="network">VPC Network</option>
+                </select>
+                <label for="type">Resource Type</label>
+                <div class="error">Please select a resource type</div>
+                <div class="helper-text">Select the primary resource type for your project</div>
+              </div>
+
+              <!-- Field 5 -->
               <div class="gcp-css input-wrapper">
                 <input type="password" id="dummy" placeholder="why is this here?" autocomplete="current-password" />
                 <label for="dummy">Dummy last field</label>

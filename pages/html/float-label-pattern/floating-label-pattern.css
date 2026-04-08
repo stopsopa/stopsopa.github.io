@@ -202,30 +202,36 @@ g(Google Sans font)
 
     label {
       grid-area: 1 / 1;
-      align-self: center;
+      align-self: start;
       justify-self: start;
       margin-left: 7px;
+      margin-top: 8px; /* Perfectly centers in 32px field */
       font-size: var(--gcp-css-font-size);
+      line-height: 1;
       color: var(--gcp-css-gray-text);
       pointer-events: none;
-      transition: all var(--gcp-css-transition);
+      transition: transform var(--gcp-css-transition), font-size var(--gcp-css-transition), color var(--gcp-css-transition), margin-top var(--gcp-css-transition);
       background: var(--gcp-css-bg);
       padding: 0 4px;
       z-index: 3;
+      transform: translateY(0);
     }
 
     input,
-    textarea {
+    textarea,
+    select {
       grid-area: 1 / 1;
       width: 100%;
       border: none;
       background: transparent;
       padding: 8px 12px;
       font-size: var(--gcp-css-font-size);
+      font-family: inherit;
       outline: none;
       box-sizing: border-box;
       z-index: 2;
       position: relative;
+      appearance: none; /* For select arrow */
 
       &::placeholder {
         color: transparent;
@@ -236,8 +242,10 @@ g(Google Sans font)
         color: var(--gcp-css-gray-text);
       }
 
-      &:is(:not(:placeholder-shown), :focus) + label {
-        align-self: start;
+      /* Float if input has text or is focused */
+      &:is(input, textarea):is(:not(:placeholder-shown), :focus) + label,
+      /* Float if select has a real value chosen (not the placeholder) */
+      &:is(select):has(option:not([value=""]):checked) + label {
         margin-top: 0;
         transform: translateY(-50%);
         font-size: var(--gcp-css-small-font-size);
@@ -246,6 +254,25 @@ g(Google Sans font)
 
       &:focus + label {
         color: var(--gcp-css-primary);
+      }
+    }
+
+    select {
+      padding-right: 30px;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235f6368'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 20px;
+
+      &:focus {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      }
+
+      :where([data-error]) &,
+      :where(.input-wrapper[data-error]) & {
+        color: var(--gcp-css-error);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d93025'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
       }
     }
 
@@ -261,8 +288,15 @@ g(Google Sans font)
 
     & [data-error],
     &[data-error] {
+      input,
+      textarea,
+      select {
+        color: var(--gcp-css-error);
+      }
+
       input + label,
-      textarea + label {
+      textarea + label,
+      select + label {
         color: var(--gcp-css-error);
       }
     }
