@@ -228,14 +228,13 @@
 
 .checkbox-wrapper input[type="checkbox"]::before {
   content: "";
-  width: 10px;
+  width: 5px;
   height: 10px;
-  transform: scale(0);
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: translateY(-1px) rotate(45deg) scale(0);
   transition: 120ms transform ease-in-out;
-  box-shadow: inset 1em 1em white;
-  background-color: white;
   transform-origin: center;
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
 }
 
 .checkbox-wrapper input[type="checkbox"]:checked {
@@ -244,7 +243,7 @@
 }
 
 .checkbox-wrapper input[type="checkbox"]:checked::before {
-  transform: scale(1);
+  transform: translateY(-1px) rotate(45deg) scale(1);
 }
 
 .checkbox-wrapper input[type="checkbox"]:focus-visible {
