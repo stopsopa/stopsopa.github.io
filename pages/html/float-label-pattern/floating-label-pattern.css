@@ -11,7 +11,8 @@
 }
 
 /* things you might want to change vvvvv */
-.floating-label input {
+.floating-label input,
+.floating-label textarea {
   background-color: white;
 }
 .floating-label::after {
@@ -52,7 +53,8 @@
   box-shadow: 0 0 0 2px var(--floating-label-primary);
 }
 
-.floating-label input {
+.floating-label input,
+.floating-label textarea {
   grid-area: 1 / 1;
   width: 100%;
   border: none;
@@ -66,13 +68,25 @@
   position: relative;
 }
 
-.floating-label input::placeholder {
+.floating-label textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.floating-label input::placeholder,
+.floating-label textarea::placeholder {
   color: transparent;
   transition: color var(--floating-label-transition);
 }
 
-.floating-label input:focus::placeholder {
+.floating-label input:focus::placeholder,
+.floating-label textarea:focus::placeholder {
   color: var(--floating-label-gray-text);
+}
+
+.floating-label textarea + label {
+  align-self: start;
+  margin-top: 8px;
 }
 
 /* 2️⃣ Turn the label into a “fake placeholder” */
@@ -92,15 +106,18 @@
 
 /* 4️⃣ The real trick: :placeholder-shown combined with :focus */
 /* When focused or when placeholder is NOT shown (meaning has text) */
-.floating-label input:is(:not(:placeholder-shown), :focus) + label {
+.floating-label input:is(:not(:placeholder-shown), :focus) + label,
+.floating-label textarea:is(:not(:placeholder-shown), :focus) + label {
   align-self: start;
+  margin-top: 0;
   transform: translateY(-50%);
   font-size: var(--floating-label-small-font-size);
   color: var(--floating-label-gray-text);
   /* The translateY(-50%) shifts it perfectly to sit on the top border axis */
 }
 
-.floating-label input:focus + label {
+.floating-label input:focus + label,
+.floating-label textarea:focus + label {
   color: var(--floating-label-primary);
 }
 
@@ -113,7 +130,8 @@
   box-shadow: 0 0 0 2px var(--floating-label-error);
 }
 
-.floating-label[data-error] input + label {
+.floating-label[data-error] input + label,
+.floating-label[data-error] textarea + label {
   color: var(--floating-label-error);
 }
 

@@ -72,6 +72,14 @@
             <label for="dummy">Dummy last field</label>
           </div>
 
+          <!-- Field 5 (Textarea) -->
+          <div class="floating-label" id="desc-wrapper">
+            <textarea id="desc" name="desc" placeholder="&nbsp;" rows="4"></textarea>
+            <label for="desc">Description</label>
+            <div class="error">This field is required</div>
+            <div class="helper-text">Enter a detailed description of your project</div>
+          </div>
+
           <br />
           <input type="submit" value="Submit" />
         </form>
@@ -97,6 +105,12 @@
           <label class="error-toggle">
             <input type="checkbox" data-add-remove-element="#addremove-wrapper" />
             add/remove .error
+          </label>
+        </div>
+        <div class="controls">
+          <label class="error-toggle">
+            <input type="checkbox" data-toggle-class="#desc-wrapper" />
+            Toggle Error State (Textarea)
           </label>
         </div>
         <br />
