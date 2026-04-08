@@ -6,6 +6,7 @@
   --floating-label-gray-text: #5f6368;
   --floating-label-bg: #ffffff;
   --floating-label-font-size: 16px;
+  --floating-label-small-font-size: 12px;
   --floating-label-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -23,10 +24,17 @@
   display: grid;
   margin-bottom: 12px;
 }
+
+.floating-label[data-error] .helper-text {
+  display: none;
+}
 .floating-label .helper-text {
   /* https://console.cloud.google.com/iam-admin/roles/create?orgonly=true&project=learn001-489022&supportedpurview=organizationId */
 
+  color: var(--floating-label-gray-text);
+  font-size: var(--floating-label-small-font-size);
 
+  padding-top: 6px;
 }
 /* The visual border box */
 .floating-label::after {
@@ -87,7 +95,7 @@
 .floating-label input:is(:not(:placeholder-shown), :focus) + label {
   align-self: start;
   transform: translateY(-50%);
-  font-size: 12px;
+  font-size: var(--floating-label-small-font-size);
   color: var(--floating-label-gray-text);
   /* The translateY(-50%) shifts it perfectly to sit on the top border axis */
 }
@@ -117,7 +125,7 @@
   margin-top: 4px;
   margin-bottom: 4px;
   color: var(--floating-label-error);
-  font-size: 12px;
+  font-size: var(--floating-label-small-font-size);
   opacity: 0;
   transition: opacity var(--floating-label-transition);
   line-height: var(--floating-label-font-size);
@@ -163,7 +171,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: var(--floating-label-small-font-size);
   color: #5f6368;
   cursor: pointer;
 }
