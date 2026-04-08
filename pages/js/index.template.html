@@ -267,6 +267,18 @@
         <a href="visibilityState/visible.vanilla.html">visible.vanilla</a>
         <br />
         <a href="visibilityState/visible.react.html">visible.react</a>
+        <h2>textarea auto-grow on input script auto-resizing textarea handler</h2>
+        <script type="editor" data-lang="js">
+          
+          document.body.addEventListener("input", function (e) {
+            const t = e.target;
+            if (t.tagName === "TEXTAREA") {
+              t.style.height = "auto";
+              t.style.height = t.scrollHeight + "px";
+            }
+          });
+          
+        </script>
         <h2>Keyboard event</h2>
 
         <script type="editor" data-lang="js">
