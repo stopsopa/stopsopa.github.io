@@ -197,6 +197,14 @@
         });
         form.style.width = width + "px";
       });
+
+      document.body.addEventListener("input", function (e) {
+        const t = e.target;
+        if (t.tagName === "TEXTAREA") {
+          t.style.height = "auto";
+          t.style.height = t.scrollHeight + "px";
+        }
+      });
     </script>
     <script type="module" src="/js/github.js"></script>
   </body>
