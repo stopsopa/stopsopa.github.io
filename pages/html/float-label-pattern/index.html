@@ -47,7 +47,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: var(--floating-label-small-font-size);
+  font-size: var(--gcp-css-small-font-size);
   color: #5f6368;
   cursor: pointer;
 }
@@ -60,7 +60,7 @@
 
         <form autocomplete="on">
           <!-- Field 1 -->
-          <div class="floating-label" id="name-wrapper">
+          <div class="gcp-css" id="name-wrapper">
             <input type="text" id="name" name="name" placeholder="&nbsp;" autocomplete="name" />
             <label for="name">Project Name *</label>
             <div class="error">This field is required</div>
@@ -68,7 +68,7 @@
           </div>
 
           <!-- Field 2 -->
-          <div class="floating-label" id="email-wrapper">
+          <div class="gcp-css" id="email-wrapper">
             <input type="email" id="email" placeholder="&nbsp;" autocomplete="email" />
             <label for="email">User Email</label>
             <div class="error">Enter a valid user email</div>
@@ -76,20 +76,20 @@
           </div>
 
           <!-- Field 3 -->
-          <div class="floating-label" id="addremove-wrapper">
+          <div class="gcp-css" id="addremove-wrapper">
             <input type="email" id="addremove" placeholder="&nbsp;" autocomplete="email" />
             <label for="addremove">Admin Email</label>
             <div class="helper-text">Enter a valid GCP admin email</div>
           </div>
 
           <!-- Field 4 -->
-          <div class="floating-label">
+          <div class="gcp-css">
             <input type="password" id="dummy" placeholder="why is this here?" autocomplete="current-password" />
             <label for="dummy">Dummy last field</label>
           </div>
 
           <!-- Field 5 (Textarea) -->
-          <div class="floating-label" id="desc-wrapper">
+          <div class="gcp-css" id="desc-wrapper">
             <textarea id="desc" name="desc" placeholder="&nbsp;" rows="4"></textarea>
             <label for="desc">Description</label>
             <div class="error">This field is required</div>
@@ -97,7 +97,7 @@
           </div>
 
           <!-- Field 6 (Checkbox) -->
-          <div class="floating-label checkbox-wrapper" id="agree-wrapper">
+          <div class="gcp-css checkbox-wrapper" id="agree-wrapper">
             <div class="checkbox-row">
               <input type="checkbox" id="agree" name="agree" />
               <div class="content-cell">
@@ -109,7 +109,7 @@
           </div>
 
           <!-- Field 7 (Radio Buttons) -->
-          <div class="floating-label radio-wrapper" id="radio-wrapper">
+          <div class="gcp-css radio-wrapper" id="radio-wrapper">
             <div style="grid-row: 1; display: flex; flex-direction: column; gap: 16px;">
               <div class="radio-row" style="grid-row: auto;">
                 <input type="radio" id="opt1" name="plan" checked />
@@ -182,11 +182,11 @@
 
           <link rel="stylesheet" href="urlwizzard.schema://urlwizzard.hostnegotiated/pages/html/float-label-pattern/floating-label-pattern.css" />
 
-          <div class="floating-label">
+          <div class="gcp-css">
             <input type="text" id="name" name="name" placeholder="&nbsp;" autocomplete="name"/>
             <label for="name">Name *</label>
             <!--
-                You can create it but it will be only visible when .floating-label element
+                You can create it but it will be only visible when .gcp-css element
                 has attr [data-error]
                 <div class="error">This field is required</div>
             -->

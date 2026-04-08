@@ -1,16 +1,16 @@
 :root {
-  --floating-label-primary: #1a73e8;
-  --floating-label-error: #d93025;
-  --floating-label-border: #99999b;
-  --floating-label-text: #3c4043;
-  --floating-label-gray-text: #5f6368;
-  --floating-label-bg: #ffffff;
-  --floating-label-font-size: 16px;
-  --floating-label-small-font-size: 12px;
-  --floating-label-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --gcp-css-primary: #1a73e8;
+  --gcp-css-error: #d93025;
+  --gcp-css-border: #99999b;
+  --gcp-css-text: #3c4043;
+  --gcp-css-gray-text: #5f6368;
+  --gcp-css-bg: #ffffff;
+  --gcp-css-font-size: 16px;
+  --gcp-css-small-font-size: 12px;
+  --gcp-css-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.floating-label {
+.gcp-css {
   position: relative;
   display: grid;
   margin-bottom: 19px;
@@ -19,8 +19,8 @@
      GENERIC LAYOUT & HELPERS
      ------------------------------------------------------------- */
   .helper-text {
-    color: var(--floating-label-gray-text);
-    font-size: var(--floating-label-small-font-size);
+    color: var(--gcp-css-gray-text);
+    font-size: var(--gcp-css-small-font-size);
     padding-top: 6px;
   }
 
@@ -29,11 +29,11 @@
     display: none;
     align-items: center;
     padding-top: 6px;
-    color: var(--floating-label-error);
-    font-size: var(--floating-label-small-font-size);
+    color: var(--gcp-css-error);
+    font-size: var(--gcp-css-small-font-size);
     opacity: 0;
-    transition: opacity var(--floating-label-transition);
-    line-height: var(--floating-label-font-size);
+    transition: opacity var(--gcp-css-transition);
+    line-height: var(--gcp-css-font-size);
     z-index: 1;
 
     &::before {
@@ -71,8 +71,8 @@
       content: "";
       grid-area: 1 / 1;
       border-radius: 4px;
-      box-shadow: 0 0 0 1px var(--floating-label-border);
-      transition: box-shadow var(--floating-label-transition);
+      box-shadow: 0 0 0 1px var(--gcp-css-border);
+      transition: box-shadow var(--gcp-css-transition);
       pointer-events: none;
       box-sizing: border-box;
       z-index: 0;
@@ -80,15 +80,15 @@
     }
 
     &:focus-within::after {
-      box-shadow: 0 0 0 2px var(--floating-label-primary);
+      box-shadow: 0 0 0 2px var(--gcp-css-primary);
     }
 
     &[data-error]::after {
-      box-shadow: 0 0 0 1px var(--floating-label-error);
+      box-shadow: 0 0 0 1px var(--gcp-css-error);
     }
 
     &[data-error]:focus-within::after {
-      box-shadow: 0 0 0 2px var(--floating-label-error);
+      box-shadow: 0 0 0 2px var(--gcp-css-error);
     }
 
     label {
@@ -96,11 +96,11 @@
       align-self: center;
       justify-self: start;
       margin-left: 7px;
-      font-size: var(--floating-label-font-size);
-      color: var(--floating-label-gray-text);
+      font-size: var(--gcp-css-font-size);
+      color: var(--gcp-css-gray-text);
       pointer-events: none;
-      transition: all var(--floating-label-transition);
-      background: var(--floating-label-bg);
+      transition: all var(--gcp-css-transition);
+      background: var(--gcp-css-bg);
       padding: 0 4px;
       z-index: 3;
     }
@@ -112,7 +112,7 @@
       border: none;
       background: transparent;
       padding: 8px 12px;
-      font-size: var(--floating-label-font-size);
+      font-size: var(--gcp-css-font-size);
       outline: none;
       box-sizing: border-box;
       z-index: 2;
@@ -120,23 +120,23 @@
 
       &::placeholder {
         color: transparent;
-        transition: color var(--floating-label-transition);
+        transition: color var(--gcp-css-transition);
       }
 
       &:focus::placeholder {
-        color: var(--floating-label-gray-text);
+        color: var(--gcp-css-gray-text);
       }
 
       &:is(:not(:placeholder-shown), :focus) + label {
         align-self: start;
         margin-top: 0;
         transform: translateY(-50%);
-        font-size: var(--floating-label-small-font-size);
-        color: var(--floating-label-gray-text);
+        font-size: var(--gcp-css-small-font-size);
+        color: var(--gcp-css-gray-text);
       }
 
       &:focus + label {
-        color: var(--floating-label-primary);
+        color: var(--gcp-css-primary);
       }
     }
 
@@ -153,7 +153,7 @@
     &[data-error] {
       input + label,
       textarea + label {
-        color: var(--floating-label-error);
+        color: var(--gcp-css-error);
       }
     }
   }
@@ -188,17 +188,17 @@
       pointer-events: auto;
       background: transparent;
       padding: 0;
-      font-size: var(--floating-label-font-size);
-      color: var(--floating-label-text);
+      font-size: var(--gcp-css-font-size);
+      color: var(--gcp-css-text);
     }
 
     &[data-error] {
       label {
-        color: var(--floating-label-error);
+        color: var(--gcp-css-error);
       }
       
       input:is([type="checkbox"], [type="radio"]) {
-        border-color: var(--floating-label-error);
+        border-color: var(--gcp-css-error);
       }
     }
 
@@ -210,7 +210,7 @@
       padding: 0;
       width: 18px;
       height: 18px;
-      border: 2px solid var(--floating-label-gray-text);
+      border: 2px solid var(--gcp-css-gray-text);
       border-radius: 2px;
       display: grid;
       place-content: center;
@@ -221,7 +221,7 @@
       transition: all 0.2s;
 
       &:focus-visible {
-        outline: 2px solid var(--floating-label-primary);
+        outline: 2px solid var(--gcp-css-primary);
         outline-offset: 2px;
       }
     }
@@ -240,8 +240,8 @@
         }
 
         &:checked {
-          background-color: var(--floating-label-primary);
-          border-color: var(--floating-label-primary);
+          background-color: var(--gcp-css-primary);
+          border-color: var(--gcp-css-primary);
 
           &::before {
             transform: translateY(-1px) rotate(45deg) scale(1);
@@ -261,11 +261,11 @@
           border-radius: 50%;
           transform: scale(0);
           transition: 120ms transform ease-in-out;
-          background-color: var(--floating-label-primary);
+          background-color: var(--gcp-css-primary);
         }
 
         &:checked {
-          border-color: var(--floating-label-primary);
+          border-color: var(--gcp-css-primary);
 
           &::before {
             transform: scale(1);
@@ -276,7 +276,7 @@
       &[data-error] {
         input[type="radio"] {
           &::before {
-            background-color: var(--floating-label-error);
+            background-color: var(--gcp-css-error);
           }
         }
       }
