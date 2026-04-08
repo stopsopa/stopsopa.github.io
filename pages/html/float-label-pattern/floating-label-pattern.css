@@ -11,6 +11,10 @@
 }
 
 .gcp-css {
+  h2 {
+    font-weight: bold;
+    font-size: 12px;
+  }
   position: relative;
   display: grid;
   margin-bottom: 19px;

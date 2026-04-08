@@ -37,20 +37,46 @@
       }
 
       /* -------------------------------------------------------------
+         LAYOUT COMPONENTS
+         ------------------------------------------------------------- */
+      .layout-columns {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+        margin-bottom: 40px;
+      }
+      .layout-left {
+        position: sticky;
+        top: 40px;
+        min-width: 250px;
+      }
+      .layout-right {
+        flex: 1;
+      }
+      .section-heading {
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      .range-input {
+        width: 100%;
+        margin-bottom: 24px;
+      }
+
+      /* -------------------------------------------------------------
    CONTROLS OUTSIDE OF INPUT COMPONENTS
    ------------------------------------------------------------- */
-.controls {
-  margin-top: 8px;
-}
+      .controls {
+        margin-top: 8px;
+      }
 
-.error-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: var(--gcp-css-small-font-size);
-  color: #5f6368;
-  cursor: pointer;
-}
+      .error-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: var(--gcp-css-small-font-size);
+        color: #5f6368;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body class="layout bg">
@@ -58,124 +84,129 @@
       <div class="inside">
         <h2>GCP Style Floating Labels</h2>
 
-        <form autocomplete="on">
-          <!-- Field 1 -->
-          <div class="gcp-css" id="name-wrapper">
-            <input type="text" id="name" name="name" placeholder="&nbsp;" autocomplete="name" />
-            <label for="name">Project Name *</label>
-            <div class="error">This field is required</div>
-            <div class="helper-text">Enter a valid GCP admin email</div>
-          </div>
+        <div class="layout-columns">
+          <!-- LEFT COLUMN (Controls & Settings) -->
+          <div class="layout-left">
+            <div class="section-heading">Form Width</div>
+            <input type="range" id="range" min="1" max="100" step="1" value="80" class="range-input" />
 
-          <!-- Field 2 -->
-          <div class="gcp-css" id="email-wrapper">
-            <input type="email" id="email" placeholder="&nbsp;" autocomplete="email" />
-            <label for="email">User Email</label>
-            <div class="error">Enter a valid user email</div>
-            <div class="helper-text">Enter a valid GCP admin email</div>
-          </div>
-
-          <!-- Field 3 -->
-          <div class="gcp-css" id="addremove-wrapper">
-            <input type="email" id="addremove" placeholder="&nbsp;" autocomplete="email" />
-            <label for="addremove">Admin Email</label>
-            <div class="helper-text">Enter a valid GCP admin email</div>
-          </div>
-
-          <!-- Field 4 -->
-          <div class="gcp-css">
-            <input type="password" id="dummy" placeholder="why is this here?" autocomplete="current-password" />
-            <label for="dummy">Dummy last field</label>
-          </div>
-
-          <!-- Field 5 (Textarea) -->
-          <div class="gcp-css" id="desc-wrapper">
-            <textarea id="desc" name="desc" placeholder="&nbsp;" rows="4"></textarea>
-            <label for="desc">Description</label>
-            <div class="error">This field is required</div>
-            <div class="helper-text">Enter a detailed description of your project</div>
-          </div>
-
-          <!-- Field 6 (Checkbox) -->
-          <div class="gcp-css checkbox-wrapper" id="agree-wrapper">
-            <div class="checkbox-row">
-              <input type="checkbox" id="agree" name="agree" />
-              <div class="content-cell">
-                <label for="agree">I agree to the terms and conditions</label>
-                <div class="helper-text">Please ensure you have read the policies.</div>
-                <div class="error">You must check this box to continue.</div>
-              </div>
+            <div class="section-heading" style="margin-bottom: 12px">Validation Controls</div>
+            <div class="controls" style="margin-top: 0">
+              <label class="error-toggle">
+                <input type="checkbox" data-toggle-class="#name-wrapper" />
+                Toggle Error State
+              </label>
+            </div>
+            <div class="controls">
+              <label class="error-toggle">
+                <input type="checkbox" data-toggle-class="#email-wrapper" />
+                Toggle Error State
+              </label>
+            </div>
+            <div class="controls">
+              <label class="error-toggle">
+                <input type="checkbox" data-add-remove-element="#addremove-wrapper" />
+                add/remove .error
+              </label>
+            </div>
+            <div class="controls">
+              <label class="error-toggle">
+                <input type="checkbox" data-toggle-class="#desc-wrapper" />
+                Toggle Error State (Textarea)
+              </label>
+            </div>
+            <div class="controls">
+              <label class="error-toggle">
+                <input type="checkbox" data-toggle-class="#agree-wrapper" />
+                Toggle Error State (Checkbox Policy)
+              </label>
+            </div>
+            <div class="controls">
+              <label class="error-toggle">
+                <input type="checkbox" data-toggle-class="#radio-wrapper" />
+                Toggle Error State (Radio Plan)
+              </label>
             </div>
           </div>
 
-          <!-- Field 7 (Radio Buttons) -->
-          <div class="gcp-css radio-wrapper" id="radio-wrapper">
-            <div style="grid-row: 1; display: flex; flex-direction: column; gap: 16px;">
-              <div class="radio-row" style="grid-row: auto;">
-                <input type="radio" id="opt1" name="plan" checked />
-                <div class="content-cell">
-                  <label for="opt1">Standard Plan</label>
-                  <div class="helper-text">Basic compute resources and standard storage.</div>
+          <!-- RIGHT COLUMN (Form Components) -->
+          <div class="layout-right">
+            <form autocomplete="on">
+              <!-- Field 1 -->
+              <div class="gcp-css" id="name-wrapper">
+                <input type="text" id="name" name="name" placeholder="&nbsp;" autocomplete="name" />
+                <label for="name">Project Name *</label>
+                <div class="error">This field is required</div>
+                <div class="helper-text">Enter a valid GCP admin email</div>
+              </div>
+
+              <!-- Field 2 -->
+              <div class="gcp-css" id="email-wrapper">
+                <input type="email" id="email" placeholder="&nbsp;" autocomplete="email" />
+                <label for="email">User Email</label>
+                <div class="error">Enter a valid user email</div>
+                <div class="helper-text">Enter a valid GCP admin email</div>
+              </div>
+
+              <!-- Field 3 -->
+              <div class="gcp-css" id="addremove-wrapper">
+                <input type="email" id="addremove" placeholder="&nbsp;" autocomplete="email" />
+                <label for="addremove">Admin Email</label>
+                <div class="helper-text">Enter a valid GCP admin email</div>
+              </div>
+
+              <!-- Field 4 -->
+              <div class="gcp-css">
+                <input type="password" id="dummy" placeholder="why is this here?" autocomplete="current-password" />
+                <label for="dummy">Dummy last field</label>
+              </div>
+
+              <!-- Field 5 (Textarea) -->
+              <div class="gcp-css" id="desc-wrapper">
+                <textarea id="desc" name="desc" placeholder="&nbsp;" rows="4"></textarea>
+                <label for="desc">Description</label>
+                <div class="error">This field is required</div>
+                <div class="helper-text">Enter a detailed description of your project</div>
+              </div>
+
+              <!-- Field 6 (Checkbox) -->
+              <div class="gcp-css checkbox-wrapper" id="agree-wrapper">
+                <div class="checkbox-row">
+                  <input type="checkbox" id="agree" name="agree" />
+                  <div class="content-cell">
+                    <label for="agree">I agree to the terms and conditions</label>
+                    <div class="helper-text">Please ensure you have read the policies.</div>
+                    <div class="error">You must check this box to continue.</div>
+                  </div>
                 </div>
               </div>
-              <div class="radio-row" style="grid-row: auto;">
-                <input type="radio" id="opt2" name="plan" />
-                <div class="content-cell">
-                  <label for="opt2">Advanced Plan</label>
-                  <div class="helper-text">High-performance resources for data-intensive workloads.</div>
-                  <div class="error">This plan is currently unavailable in your region.</div>
+
+              <!-- Field 7 (Radio Buttons) -->
+              <div class="gcp-css radio-wrapper" id="radio-wrapper">
+                <div style="grid-row: 1; display: flex; flex-direction: column; gap: 16px">
+                  <div class="radio-row" style="grid-row: auto">
+                    <input type="radio" id="opt1" name="plan" checked />
+                    <div class="content-cell">
+                      <label for="opt1">Standard Plan</label>
+                      <div class="helper-text">Basic compute resources and standard storage.</div>
+                    </div>
+                  </div>
+                  <div class="radio-row" style="grid-row: auto">
+                    <input type="radio" id="opt2" name="plan" />
+                    <div class="content-cell">
+                      <label for="opt2">Advanced Plan</label>
+                      <div class="helper-text">High-performance resources for data-intensive workloads.</div>
+                      <div class="error">This plan is currently unavailable in your region.</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+
+              <br />
+              <input type="submit" value="Submit" />
+            </form>
           </div>
-
-          <br />
-          <input type="submit" value="Submit" />
-        </form>
-        <!-- </div> -->
-
-        <hr />
-        <input type="range" id="range" min="1" max="100" step="1" value="80" />
-        <br />
-
-        <div class="controls">
-          <label class="error-toggle">
-            <input type="checkbox" data-toggle-class="#name-wrapper" />
-            Toggle Error State
-          </label>
         </div>
-        <div class="controls">
-          <label class="error-toggle">
-            <input type="checkbox" data-toggle-class="#email-wrapper" />
-            Toggle Error State
-          </label>
-        </div>
-        <div class="controls">
-          <label class="error-toggle">
-            <input type="checkbox" data-add-remove-element="#addremove-wrapper" />
-            add/remove .error
-          </label>
-        </div>
-        <div class="controls">
-          <label class="error-toggle">
-            <input type="checkbox" data-toggle-class="#desc-wrapper" />
-            Toggle Error State (Textarea)
-          </label>
-        </div>
-        <div class="controls">
-          <label class="error-toggle">
-            <input type="checkbox" data-toggle-class="#agree-wrapper" />
-            Toggle Error State (Checkbox Policy)
-          </label>
-        </div>
-        <div class="controls">
-          <label class="error-toggle">
-            <input type="checkbox" data-toggle-class="#radio-wrapper" />
-            Toggle Error State (Radio Plan)
-          </label>
-        </div>
-        <br />
-        <br />
         <script type="editor" data-lang="js" data-eval>
 
           urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fhtml%2Ffloat-label-pattern%2Ffloating-label-pattern.css
