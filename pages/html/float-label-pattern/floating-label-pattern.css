@@ -29,6 +29,11 @@ g(Google Sans font)
 .gcp-css {
   a {
     color: rgb(12, 103, 223);
+    border-bottom: 1px solid currentColor;
+    text-decoration: none;
+    &[target="_blank"] {
+      
+    }
   }
   &:is(h2) {
     font-size: 14px;
