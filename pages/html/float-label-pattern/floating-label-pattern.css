@@ -70,7 +70,7 @@
   /* -------------------------------------------------------------
      STANDARD FLOATING LABELS (Inputs, Textareas)
      ------------------------------------------------------------- */
-  &:not(.checkbox-wrapper):not(.radio-wrapper) {
+  &.input-wrapper {
     &::after {
       content: "";
       grid-area: 1 / 1;
