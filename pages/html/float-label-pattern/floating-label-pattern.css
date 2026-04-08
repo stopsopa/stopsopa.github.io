@@ -10,10 +10,27 @@
   --gcp-css-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* 
+g(Google Sans font)
+<weight>: Use a value from 400 to 700
+<uniquifier>: Use a unique and descriptive class name
+ */
+
+/*
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap");
+:root {
+  font-family: "Google Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "GRAD" 0;
+}
+*/
+
 .gcp-css {
-  h2 {
-    font-weight: bold;
-    font-size: 12px;
+  &:is(h2) {
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-weight: 500;
   }
   position: relative;
   display: grid;
@@ -60,7 +77,7 @@
     .helper-text {
       display: none;
     }
-    
+
     .error {
       display: flex;
       opacity: 1;
@@ -200,7 +217,7 @@
       label {
         color: var(--gcp-css-error);
       }
-      
+
       input:is([type="checkbox"], [type="radio"]) {
         border-color: var(--gcp-css-error);
       }
@@ -287,5 +304,3 @@
     }
   }
 }
-
-

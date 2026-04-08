@@ -10,24 +10,32 @@
     <title>GCP Floating Label Pattern</title>
     <link rel="stylesheet" href="floating-label-pattern.css" />
 
-    <link rel="preconnect" href="https://rsms.me/" />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <!-- <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" /> -->
     <style>
-      .g-inter {
+      @import url("https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap");
+      /* .g-inter {
         font-family: Inter, sans-serif;
-        font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
-      }
+        font-feature-settings: "liga" 1, "calt" 1, fix for Chrome "zero", "ss01";
+      } */
 
       :root {
-        font-family: "Inter", sans-serif;
+        font-family: "Google Sans", sans-serif;
+        font-optical-sizing: auto;
+        /* font-weight: 400; */
+        font-style: normal;
+        font-variation-settings: "GRAD" 0;
+        /* font-family: "Inter", sans-serif; */
       }
       body {
-        font-family: "Inter", sans-serif;
+        /* font-family: "Inter", sans-serif; */
       }
       @supports (font-variation-settings: normal) {
         :root {
+          /*
           font-family: "Inter var", sans-serif;
-          font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
+          font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome *        / "zero", "ss01";
+          */
         }
       }
       form {
@@ -161,7 +169,7 @@
                 <label for="dummy">Dummy last field</label>
               </div>
 
-              <h2 class="gcp-css">Description field</h2>
+              <h2 class="gcp-css">Description section</h2>
 
               <!-- Field 5 (Textarea) -->
               <div class="gcp-css input-wrapper" id="desc-wrapper">
@@ -172,6 +180,7 @@
               </div>
 
               <!-- Field 6 (Checkbox) -->
+              <h2 class="gcp-css">Checkbox section</h2>
               <div class="gcp-css checkbox-wrapper" id="agree-wrapper">
                 <div class="checkbox-row">
                   <input type="checkbox" id="agree" name="agree" />
@@ -183,6 +192,7 @@
                 </div>
               </div>
 
+              <h2 class="gcp-css">Radio section</h2>
               <!-- Field 7 (Radio Buttons) -->
               <div class="gcp-css radio-wrapper" id="radio-wrapper">
                 <div style="grid-row: 1; display: flex; flex-direction: column; gap: 16px">
