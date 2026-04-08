@@ -158,13 +158,20 @@ g(Google Sans font)
 
   & [data-error],
   &[data-error] {
-    .helper-text {
+    /* .helper-text {
       display: none;
-    }
+    } */
 
     .error {
       display: flex;
       opacity: 1;
+    }
+  }
+
+  & .hide-helper,
+  &.hide-helper {
+    .helper-text {
+      display: none;
     }
   }
 

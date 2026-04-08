@@ -155,6 +155,13 @@
                 Toggle Error State (Radio Plan)
               </label>
             </div>
+            <div class="section-heading" style="margin-top: 24px; margin-bottom: 12px">Helper Text Controls</div>
+            <div class="controls">
+              <label class="error-toggle">
+                <input type="checkbox" id="toggle-helper-all" />
+                <b>Hide All Helper Text</b>
+              </label>
+            </div>
           </div>
 
           <!-- RIGHT COLUMN (Form Components) -->
@@ -302,6 +309,19 @@
             if (cb.checked !== isChecked) {
               cb.checked = isChecked;
               cb.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+          });
+          return;
+        }
+
+        if (el.id === "toggle-helper-all") {
+          const isChecked = el.checked;
+          const wrappers = document.querySelectorAll(".layout-right :is(.input-wrapper, .checkbox-wrapper, .radio-wrapper)");
+          wrappers.forEach((w) => {
+            if (isChecked) {
+              w.classList.add("hide-helper");
+            } else {
+              w.classList.remove("hide-helper");
             }
           });
           return;
