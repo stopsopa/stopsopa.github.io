@@ -23,6 +23,11 @@
   display: grid;
   margin-bottom: 12px;
 }
+.floating-label .helper-text {
+  /* https://console.cloud.google.com/iam-admin/roles/create?orgonly=true&project=learn001-489022&supportedpurview=organizationId */
+
+
+}
 /* The visual border box */
 .floating-label::after {
   content: "";
@@ -83,8 +88,12 @@
   align-self: start;
   transform: translateY(-50%);
   font-size: 12px;
-  color: var(--floating-label-primary);
+  color: var(--floating-label-label);
   /* The translateY(-50%) shifts it perfectly to sit on the top border axis */
+}
+
+.floating-label input:focus + label {
+  color: var(--floating-label-primary);
 }
 
 /* Error State */
