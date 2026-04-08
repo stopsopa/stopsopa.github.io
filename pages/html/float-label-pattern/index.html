@@ -282,11 +282,6 @@
         // this will trigger once only when attached to dom element
         const percent = v / 100;
         const width = parseInt(realWidth * percent, 10);
-        log("h", {
-          realWidth,
-          percent,
-          width,
-        });
         form.style.width = width + "px";
       });
 
