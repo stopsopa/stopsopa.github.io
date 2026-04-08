@@ -284,18 +284,4 @@
   }
 }
 
-/* -------------------------------------------------------------
-   CONTROLS OUTSIDE OF INPUT COMPONENTS
-   ------------------------------------------------------------- */
-.controls {
-  margin-top: 8px;
-}
 
-.error-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: var(--floating-label-small-font-size);
-  color: #5f6368;
-  cursor: pointer;
-}
