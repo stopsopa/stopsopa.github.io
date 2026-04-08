@@ -3,7 +3,7 @@
   --floating-label-error: #d93025;
   --floating-label-border: #99999b;
   --floating-label-text: #3c4043;
-  --floating-label-label: #5f6368;
+  --floating-label-gray-text: #5f6368;
   --floating-label-bg: #ffffff;
   --floating-label-font-size: 16px;
   --floating-label-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -64,7 +64,7 @@
 }
 
 .floating-label input:focus::placeholder {
-  color: var(--floating-label-label);
+  color: var(--floating-label-gray-text);
 }
 
 /* 2️⃣ Turn the label into a “fake placeholder” */
@@ -74,7 +74,7 @@
   justify-self: start;
   margin-left: 7px;
   font-size: var(--floating-label-font-size);
-  color: var(--floating-label-label);
+  color: var(--floating-label-gray-text);
   pointer-events: none;
   transition: all var(--floating-label-transition);
   background: var(--floating-label-bg);
@@ -88,7 +88,7 @@
   align-self: start;
   transform: translateY(-50%);
   font-size: 12px;
-  color: var(--floating-label-label);
+  color: var(--floating-label-gray-text);
   /* The translateY(-50%) shifts it perfectly to sit on the top border axis */
 }
 
