@@ -195,19 +195,22 @@
   cursor: pointer;
 }
 
-/* --- Checkbox Pattern Extension --- */
-.floating-label.checkbox-wrapper::after {
+/* --- Checkbox & Radio Pattern Extension --- */
+.floating-label.checkbox-wrapper::after,
+.floating-label.radio-wrapper::after {
   display: none;
 }
 
-.checkbox-wrapper .checkbox-row {
+.checkbox-wrapper .checkbox-row,
+.radio-wrapper .radio-row {
   grid-row: 1; /* Match normal input cell */
   display: flex;
   align-items: flex-start;
   gap: 12px;
 }
 
-.checkbox-wrapper input[type="checkbox"] {
+.checkbox-wrapper input[type="checkbox"],
+.radio-wrapper input[type="radio"] {
   grid-area: auto; /* Reset intersecting grid logic */
   appearance: none;
   background-color: transparent;
@@ -222,8 +225,12 @@
   cursor: pointer;
   flex-shrink: 0;
   position: relative;
-  top: 2px; /* align tick square slightly down with font baseline */
+  top: 2px; /* align element slightly down with font baseline */
   transition: all 0.2s;
+}
+
+.radio-wrapper input[type="radio"] {
+  border-radius: 50%; /* Force circle for radio */
 }
 
 .checkbox-wrapper input[type="checkbox"]::before {
@@ -237,6 +244,16 @@
   transform-origin: center;
 }
 
+.radio-wrapper input[type="radio"]::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  background-color: var(--floating-label-primary);
+}
+
 .checkbox-wrapper input[type="checkbox"]:checked {
   background-color: var(--floating-label-primary);
   border-color: var(--floating-label-primary);
@@ -246,19 +263,30 @@
   transform: translateY(-1px) rotate(45deg) scale(1);
 }
 
-.checkbox-wrapper input[type="checkbox"]:focus-visible {
+.radio-wrapper input[type="radio"]:checked {
+  border-color: var(--floating-label-primary);
+}
+
+.radio-wrapper input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+.checkbox-wrapper input[type="checkbox"]:focus-visible,
+.radio-wrapper input[type="radio"]:focus-visible {
   outline: 2px solid var(--floating-label-primary);
   outline-offset: 2px;
 }
 
-.checkbox-wrapper .content-cell {
+.checkbox-wrapper .content-cell,
+.radio-wrapper .content-cell {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 /* Reset conflicting label rules for the checkbox layout */
-.floating-label.checkbox-wrapper label {
+.floating-label.checkbox-wrapper label,
+.floating-label.radio-wrapper label {
   grid-area: auto;
   align-self: auto;
   justify-self: auto;
@@ -271,7 +299,17 @@
 }
 
 
-/* Checkbox Error state */
-.floating-label[data-error] input[type="checkbox"] {
+/* Checkbox / Radio Error state */
+.floating-label[data-error] input[type="checkbox"],
+.floating-label[data-error] input[type="radio"] {
   border-color: var(--floating-label-error);
+}
+
+.floating-label[data-error] input[type="radio"]::before {
+  background-color: var(--floating-label-error);
+}
+
+.floating-label[data-error].checkbox-wrapper label,
+.floating-label[data-error].radio-wrapper label {
+  color: var(--floating-label-error);
 }

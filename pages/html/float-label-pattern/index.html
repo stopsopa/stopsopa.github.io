@@ -92,6 +92,27 @@
             </div>
           </div>
 
+          <!-- Field 7 (Radio Buttons) -->
+          <div class="floating-label radio-wrapper" id="radio-wrapper">
+            <div style="grid-row: 1; display: flex; flex-direction: column; gap: 16px;">
+              <div class="radio-row" style="grid-row: auto;">
+                <input type="radio" id="opt1" name="plan" checked />
+                <div class="content-cell">
+                  <label for="opt1">Standard Plan</label>
+                  <div class="helper-text">Basic compute resources and standard storage.</div>
+                </div>
+              </div>
+              <div class="radio-row" style="grid-row: auto;">
+                <input type="radio" id="opt2" name="plan" />
+                <div class="content-cell">
+                  <label for="opt2">Advanced Plan</label>
+                  <div class="helper-text">High-performance resources for data-intensive workloads.</div>
+                  <div class="error">This plan is currently unavailable in your region.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <br />
           <input type="submit" value="Submit" />
         </form>
@@ -129,6 +150,12 @@
           <label class="error-toggle">
             <input type="checkbox" data-toggle-class="#agree-wrapper" />
             Toggle Error State (Checkbox Policy)
+          </label>
+        </div>
+        <div class="controls">
+          <label class="error-toggle">
+            <input type="checkbox" data-toggle-class="#radio-wrapper" />
+            Toggle Error State (Radio Plan)
           </label>
         </div>
         <br />
