@@ -3296,7 +3296,7 @@
 
                 import express from 'express';
 
-                import template from 'lodash/template';
+                import template from "lodash/template.js";
 
                 // use multer for multipart/form-data https://github.com/expressjs/multer
 
@@ -3307,6 +3307,8 @@
                 import serveIndex from 'serve-index';
 
                 const log = (function(){try{return console.log}catch(e){return function (){}}}());
+
+                const web = path.resolve(__dirname, ".");
 
                 const host      = process.env.HOST;
 
@@ -3323,6 +3325,35 @@
                 app.use(express.urlencoded({extended: false}));
 
                 app.use(express.json());
+
+                app.get(async (req, res, next) => {
+                  let reqPath = req.path;
+                  if (reqPath.endsWith("/")) {
+                    reqPath += "index.html";
+                  }
+                
+                  if (reqPath.endsWith(".html")) {
+                    const filePath = path.join(web, reqPath);
+                    try {
+                      const stat = await fs.promises.stat(filePath);
+                      if (!stat.isFile()) {
+                        return next();
+                      }
+                      const fileContent = await fs.promises.readFile(filePath, "utf8");
+                
+                      const rendered = template(fileContent, { variable: "it" })({ req, res });
+                      return res.send(rendered);
+                    } catch (e) {
+                      if (e.code === "ENOENT") {
+                        return next();
+                      }
+                      console.error(`Error rendering ${filePath}:`, e);
+                      return res.status(500).send(`Template Error: ${e.message}`);
+                    }
+                  }
+                
+                  next();
+                });                
 
                 app.all('/save', (req, res) => {
 
