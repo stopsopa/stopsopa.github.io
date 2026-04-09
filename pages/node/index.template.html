@@ -3325,8 +3325,11 @@
                 app.use(express.urlencoded({extended: false}));
 
                 app.use(express.json());
-
-                app.get(async (req, res, next) => {
+                
+                /**
+                 * WARNING: This method is not safe because it forwards get and post without validation to template
+                 */
+                app.get(/^(.*)$/, async (req, res, next) => {
                   let reqPath = req.path;
                   if (reqPath.endsWith("/")) {
                     reqPath += "index.html";
@@ -3334,14 +3337,36 @@
                 
                   if (reqPath.endsWith(".html")) {
                     const filePath = path.join(web, reqPath);
+                
                     try {
                       const stat = await fs.promises.stat(filePath);
                       if (!stat.isFile()) {
                         return next();
                       }
-                      const fileContent = await fs.promises.readFile(filePath, "utf8");
                 
-                      const rendered = template(fileContent, { variable: "it" })({ req, res });
+                      function produceRender(parentFile, permaData = {}) {
+                        return function (file, data) {
+                          const filePath = path.resolve(path.dirname(parentFile), file);
+                
+                          const content = fs.readFileSync(filePath, "utf8");
+                
+                          return template(content, { variable: "d" })({
+                            req,
+                            res,
+                            ...permaData,
+                            ...data,
+                            render: produceRender(filePath, permaData),
+                          });
+                        };
+                      }
+                
+                      const render = produceRender(filePath, {
+                        ...req.query,
+                        ...req.body,
+                      });
+                
+                      const rendered = render(filePath);
+                
                       return res.send(rendered);
                     } catch (e) {
                       if (e.code === "ENOENT") {
@@ -3353,7 +3378,7 @@
                   }
                 
                   next();
-                });                
+                });
 
                 app.all('/save', (req, res) => {
 
