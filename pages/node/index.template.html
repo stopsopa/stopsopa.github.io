@@ -3340,7 +3340,10 @@
                 
                     const content = fs.readFileSync(filePath, "utf8");
                 
-                    return template(content, { variable: "d" })({
+                    return template(content, {
+                      variable: "d",
+                      interpolate: /<%=([\s\S]+?)%>/g, // this somehow stops template from processing `${i}` which is what I want
+                    })({
                       ...permaData,
                       ...data,
                       render: produceRender(filePath, permaData),
