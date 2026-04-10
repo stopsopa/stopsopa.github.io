@@ -3334,9 +3334,19 @@
 
                 app.use(express.json());
                 
-                /**
-                 * WARNING: This method is not safe because it forwards get and post without validation to template
-                 */
+                function produceRender(parentFile, permaData = {}) {
+                  return function (file, data) {
+                    const filePath = path.resolve(path.dirname(parentFile), file);
+                
+                    const content = fs.readFileSync(filePath, "utf8");
+                
+                    return template(content, { variable: "d" })({
+                      ...permaData,
+                      ...data,
+                      render: produceRender(filePath, permaData),
+                    });
+                  };
+                }
                 app.get(/^(.*)$/, async (req, res, next) => {
                   let reqPath = req.path;
                   if (reqPath.endsWith("/")) {
@@ -3352,23 +3362,12 @@
                         return next();
                       }
                 
-                      function produceRender(parentFile, permaData = {}) {
-                        return function (file, data) {
-                          const filePath = path.resolve(path.dirname(parentFile), file);
-                
-                          const content = fs.readFileSync(filePath, "utf8");
-                
-                          return template(content, { variable: "d" })({
-                            req,
-                            res,
-                            ...permaData,
-                            ...data,
-                            render: produceRender(filePath, permaData),
-                          });
-                        };
-                      }
-                
+                      /**
+                       * WARNING: This method is not safe because it forwards get and post without validation to template
+                       */
                       const render = produceRender(filePath, {
+                        req,
+                        res,
                         ...req.query,
                         ...req.body,
                       });
