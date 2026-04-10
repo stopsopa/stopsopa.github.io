@@ -27,7 +27,8 @@ g(Google Sans font)
 */
 
 .gcp-css {
-  a {
+  & :is(a),
+  &:is(a) {
     color: rgb(12, 103, 223);
     border-bottom: 1px solid currentColor;
     text-decoration: none;
@@ -217,7 +218,8 @@ g(Google Sans font)
       line-height: 1;
       color: var(--gcp-css-gray-text);
       pointer-events: none;
-      transition: transform var(--gcp-css-transition), font-size var(--gcp-css-transition), color var(--gcp-css-transition), margin-top var(--gcp-css-transition);
+      transition: transform var(--gcp-css-transition), font-size var(--gcp-css-transition),
+        color var(--gcp-css-transition), margin-top var(--gcp-css-transition);
       background: var(--gcp-css-bg);
       padding: 0 4px;
       z-index: 3;
