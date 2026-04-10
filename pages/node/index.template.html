@@ -946,6 +946,9 @@
           cat <<EEE > prettier.config.mjs
           export default {
             printWidth: 120,
+            plugins: ["prettier-plugin-ejs"], 
+            // yarn add -D prettier-plugin-ejs
+            // vscode: CMD+Shift+P -> Developer: Restart Extension Host
             // semi: false,
           };
           EEE
@@ -963,7 +966,10 @@
 
           cat <<EEE > prettier.config.cjs
           module.exports = {
-            printWidth: 120,
+            printWidth: 120
+            plugins: ["prettier-plugin-ejs"], 
+            // yarn add -D prettier-plugin-ejs
+            // vscode: CMD+Shift+P -> Developer: Restart Extension Host
             // semi: false,
           };
           EEE
@@ -1040,8 +1046,10 @@
           yarn add -D prettier-plugin-packagejson prettier-plugin-curly prettier
           cat <<EEE > prettier.config.js
           module.exports = {
-            printWidth: 120,
-            plugins: ["prettier-plugin-packagejson", "prettier-plugin-curly"],
+            printWidth: 120
+            plugins: ["prettier-plugin-ejs", "prettier-plugin-packagejson", "prettier-plugin-curly"], 
+            // yarn add -D prettier-plugin-ejs
+            // vscode: CMD+Shift+P -> Developer: Restart Extension Host
           };
           EEE
 
