@@ -3358,6 +3358,7 @@
                 
                     try {
                       const stat = await fs.promises.stat(filePath);
+                
                       if (!stat.isFile()) {
                         return next();
                       }
@@ -3372,9 +3373,9 @@
                         ...req.body,
                       });
                 
-                      const rendered = render(filePath);
+                      const content = render(filePath);
                 
-                      return res.send(rendered);
+                      return res.send(content);
                     } catch (e) {
                       if (e.code === "ENOENT") {
                         return next();
