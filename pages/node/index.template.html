@@ -3355,9 +3355,9 @@
                       })({
                         ...permaData,
                         ...data,
-                        paths: {
-                          template: filePath,
-                          templatedir: path.dirname(filePath),
+                        template: {
+                          file: filePath,
+                          dir: path.dirname(filePath),
                         },
                         render: produceRender(filePath, permaData),
                       });
