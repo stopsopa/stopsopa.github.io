@@ -3355,6 +3355,10 @@
                       })({
                         ...permaData,
                         ...data,
+                        paths: {
+                          template: filePath,
+                          templatedir: path.dirname(filePath),
+                        },
                         render: produceRender(filePath, permaData),
                       });
                     }
