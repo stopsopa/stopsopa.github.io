@@ -456,6 +456,21 @@
               fi
             '
           </script>
+          <h2>SSD drives cols storage</h2>
+          <script type="editor" data-lang="sh">
+
+            # reading entire drive (with empty space too)
+            # WARNING: THIS IS OVERKILL FOR PRESERVING DATA ON SSD - for bit rot prevention
+            sudo dd if=/dev/sdX of=/dev/null bs=1M status=progress
+            # to find drive
+            diskutil list
+              sudo dd if=/dev/disk6 of=/dev/null bs=1M status=progress
+
+            # better solution is to read just data using "pipeviewer"
+              brew install pv
+              tar cf - /Volumes/750GB | pv -s $(du -sk /Volumes/750GB | awk '{print $1 * 1024}') > /dev/null
+            
+          </script>
           <h2>detect interactive detect TTY</h2>
           <script type="editor" data-lang="sh">
 
