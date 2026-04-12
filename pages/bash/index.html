@@ -468,7 +468,7 @@
 
             # better solution is to read just data using "pipeviewer"
               brew install pv
-              tar cf - /Volumes/750GB | pv -s $(du -sk /Volumes/750GB | awk '{print $1 * 1024}') > /dev/null
+              cd /Volumes && tar cf - 750GB | pv -s $(du -sk /Volumes/750GB | awk '{print $1 * 1024}') > /dev/null
             
           </script>
           <h2>detect interactive detect TTY</h2>
