@@ -346,6 +346,65 @@
             container image pull nginx
             container run -d nginx
           </script>
+          <h2>Optimise - fresh system fresh OS</h2>
+          <script type="editor" data-lang="sh">
+
+            GarageBand / Logic Spotlight importers being repeatedly re-registered or re-validated
+            it was causing process:
+            /System/Library/PrivateFrameworks/BackgroundTaskManagement.framework/Resources/backgroundtaskmanagementd
+            to take 80GB of ram (obviously system was not able to provide from it's 32, so it heavly swapped)
+
+            # disable spotlight indexing
+              sudo mdutil -a -i off
+              # to reenable later:
+                sudo mdutil -a -i on
+              # also clean spotlight case
+                sudo mdutil -E /  
+            # remove GarageBand
+            # and Reset Background Task DB (important)
+              sudo rm /var/db/com.apple.backgroundtaskmanagement/BackgroundItems-v16.btm
+
+            # Disable window animations
+              defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+              
+            # Faster dock animations
+              defaults write com.apple.dock autohide-time-modifier -float 0
+              killall Dock
+
+            # Disable some analytics/logging
+              sudo launchctl disable system/com.apple.analyticsd
+
+            # from time to time
+              sudo purge
+
+            # change kernel limits for file descriptors—basically how many files (or sockets, pipes, etc.) can be open at once.
+              ~/Workspace szdz √ sysctl kern.maxfiles kern.maxfilesperproc
+                kern.maxfiles: 245760
+                kern.maxfilesperproc: 122880
+              ~/Workspace szdz √ ulimit -n
+                256
+               # run:
+                  sudo sysctl -w kern.maxfiles=65536
+                    # maximum number of open files system-wide
+                  sudo sysctl -w kern.maxfilesperproc=65536
+                    # maximum number of open files per process.
+              
+              and now
+              ~/Workspace szdz √ sysctl kern.maxfiles kern.maxfilesperproc
+                kern.maxfiles: 65536
+                kern.maxfilesperproc: 65536
+
+            # kill some background stuff   (all loaded launch agents and daemons) (excluding all from apple)
+            launchctl list | grep -v com.apple
+            # then remove one by one
+              launchctl remove com.microsoft.update.agent
+              # to never run again:
+              sudo ls -la /Library/LaunchAgents/com.microsoft.update.agent.plist
+              sudo launchctl bootout system /Library/LaunchAgents/com.microsoft.update.agent.plist
+              sudo mv /Library/LaunchAgents/com.microsoft.update.agent.plist ~/disabled/
+              sudo launchctl bootout system /Library/LaunchDaemons/com.microsoft.autoupdate.helper.plist
+            
+          </script>
           <h2>Screen sharing</h2>
           <a href="https://youtu.be/ESac2ejmk_0">https://youtu.be/ESac2ejmk_0</a>
           <h2>Identify Mac</h2>
