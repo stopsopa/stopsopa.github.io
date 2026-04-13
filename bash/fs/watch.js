@@ -28,10 +28,34 @@
 
 const fs = require("fs");
 
-if (!fs.existsSync(process.argv[2])) {
-  throw new Error(`file ${process.argv[2]} doesn't exist`);
+const file = process.argv[2];
+
+if (!fs.existsSync(file)) {
+  throw new Error(`file ${file} doesn't exist`);
 }
 
-fs.watchFile(process.argv[2], function () {
+console.log(`waiting for changes in file ${file} ... (press any key to force restart)`);
+
+fs.watch(file, function () {
   process.exit(0);
 });
+
+// Setup stdin to react to any keypress
+if (process.stdin.isTTY) {
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+  process.stdin.setEncoding('utf8');
+  process.stdin.on('data', function (key) {
+    // Ctrl+C or Ctrl+D pressed
+    if (key === '\u0003' || key === '\u0004') {
+      process.exit(130); 
+    }
+    // For any other key, exit with 2 to indicate manual interruption
+    process.exit(2);
+  });
+} else {
+  process.stdin.resume();
+  process.stdin.on('data', function () {
+    process.exit(2);
+  });
+}
