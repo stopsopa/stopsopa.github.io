@@ -17,7 +17,9 @@
     .bottom
   ):not(.bottomright):not(.left-top):not(.left-bottom):not(.right-top):not(.right-bottom):not(.top-left):not(
     .top-right
-  ):not(.bottom-left):not(.bottom-right) {
+  ):not(.bottom-left):not(.bottom-right):not(.cover-top):not(.cover-bottom):not(.cover-left):not(
+    .cover-right
+  ):not(.cover-top-left):not(.cover-top-right):not(.cover-bottom-left):not(.cover-bottom-right) {
   bottom: calc(anchor(top) + var(--popover-offset));
   justify-self: anchor-center;
 }
@@ -80,6 +82,39 @@
 [data-popover].bottomright {
   top: calc(anchor(bottom) + var(--popover-offset));
   left: anchor(right);
+}
+
+[data-popover].cover-top {
+  bottom: calc(anchor(bottom) + var(--popover-offset));
+  justify-self: anchor-center;
+}
+[data-popover].cover-bottom {
+  top: calc(anchor(top) + var(--popover-offset));
+  justify-self: anchor-center;
+}
+[data-popover].cover-left {
+  right: calc(anchor(right) + var(--popover-offset));
+  align-self: anchor-center;
+}
+[data-popover].cover-right {
+  left: calc(anchor(left) + var(--popover-offset));
+  align-self: anchor-center;
+}
+[data-popover].cover-top-left {
+  bottom: calc(anchor(bottom) + var(--popover-offset));
+  right: calc(anchor(right) + var(--popover-offset));
+}
+[data-popover].cover-top-right {
+  bottom: calc(anchor(bottom) + var(--popover-offset));
+  left: calc(anchor(left) + var(--popover-offset));
+}
+[data-popover].cover-bottom-left {
+  top: calc(anchor(top) + var(--popover-offset));
+  right: calc(anchor(right) + var(--popover-offset));
+}
+[data-popover].cover-bottom-right {
+  top: calc(anchor(top) + var(--popover-offset));
+  left: calc(anchor(left) + var(--popover-offset));
 }
 
 [interestfor] {
