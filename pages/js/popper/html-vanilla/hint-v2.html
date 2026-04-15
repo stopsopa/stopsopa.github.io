@@ -60,21 +60,21 @@
       <label title="topright"> <input type="radio" name="position" value="topright" />topright</label>
 
       <label title="left-top"> <input type="radio" name="position" value="left-top" />left-top</label>
-      <label></label>
-      <label></label>
-      <label></label>
+      <label title="cover-top-left"> <input type="radio" name="position" value="cover-top-left" />cover-top-left</label>
+      <label title="cover-top"> <input type="radio" name="position" value="cover-top" />cover-top</label>
+      <label title="cover-top-right"> <input type="radio" name="position" value="cover-top-right" />cover-top-right</label>
       <label title="right-top"> <input type="radio" name="position" value="right-top" />right-top</label>
 
       <label title="left"> <input type="radio" name="position" value="left" />left</label>
-      <label></label>
+      <label title="cover-left"> <input type="radio" name="position" value="cover-left" />cover-left</label>
       <label title="center"> <input type="radio" name="position" value="center" />center</label>
-      <label></label>
+      <label title="cover-right"> <input type="radio" name="position" value="cover-right" />cover-right</label>
       <label title="right"> <input type="radio" name="position" value="right" />right</label>
 
       <label title="left-bottom"> <input type="radio" name="position" value="left-bottom" />left-bottom</label>
-      <label></label>
-      <label></label>
-      <label></label>
+      <label title="cover-bottom-left"> <input type="radio" name="position" value="cover-bottom-left" />cover-bottom-left</label>
+      <label title="cover-bottom"> <input type="radio" name="position" value="cover-bottom" />cover-bottom</label>
+      <label title="cover-bottom-right"> <input type="radio" name="position" value="cover-bottom-right" />cover-bottom-right</label>
       <label title="right-bottom"> <input type="radio" name="position" value="right-bottom" />right-bottom</label>
 
       <label title="bottomleft"> <input type="radio" name="position" value="bottomleft" />bottomleft</label>
@@ -179,7 +179,15 @@ bindHover();
             "bottom-left",
             "bottom",
             "bottom-right",
-            "bottomright"
+            "bottomright",
+            "cover-top-left",
+            "cover-top",
+            "cover-top-right",
+            "cover-left",
+            "cover-right",
+            "cover-bottom-left",
+            "cover-bottom",
+            "cover-bottom-right"
           );
           popover.classList.add(value);
         });
