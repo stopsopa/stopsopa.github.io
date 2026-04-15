@@ -38,6 +38,9 @@
           <h2>basics</h2>
           <script type="editor" data-lang="sh">
 
+            du -sh | sort -hr
+              # sort by size - still maintain human readable format
+
             # list all functions in zsh - list functions
             alias lsfn="print -l ${(ok)functions}"
 
