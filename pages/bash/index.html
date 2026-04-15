@@ -1596,6 +1596,17 @@
         <a href="GITHUB_SOURCES_PREFIX/blob/master/pages/bash/rsync.sh">rsync.sh</a>
         <script type="editor" data-lang="sh">
 
+          TLDR:
+            for copying from local drive to external ssd over the usb
+              rsync -a --info=progress2 source/ /Volumes/YourSSD/destination/
+              - don't use -P - too much info about progress (for example it will show progress for each file - you want overall progress) stick to suggeststed progress2
+              - don't use -z for usb transfer, slows things down - compression and decompression - there is no point for that in here - only via network
+            VERY IMPORTANT: remember about / at the end of each path - rsync funky issue
+            VERY IMPORTANT: remember about / at the end of each path - rsync funky issue
+            VERY IMPORTANT: remember about / at the end of each path - rsync funky issue
+            VERY IMPORTANT: remember about / at the end of each path - rsync funky issue
+              rsync -a --info=progress2 ~/Desktop/ /Volumes/M2_NVMe_2TB/2026-04-15-mac14rebuild/Desktop/
+
           # WARNING: MORE MODERN ALTERNATIVE: rclone https://github.com/rclone/rclone
 
           # WARNING: remember if you are copying directories always specify / at the end of paths:
