@@ -47,6 +47,12 @@
         label:hover {
           background: #f9f9f9;
         }
+        label:has(input[value^="cover-"]) {
+          background: #f1f1f1;
+        }
+        label:has(input[value^="cover-"]):hover {
+          background: #e5e5e5;
+        }
       }
     </style>
     <link rel="stylesheet" href="popover.css" />
