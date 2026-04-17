@@ -1176,6 +1176,41 @@
                       // from: https://stackoverflow.com/a/23395136
         </script>
 
+        <h2>React like createElement</h2>
+        <script type="editor" data-lang="js">
+
+          function h(tag, props = {}, ...children) {
+            const el = document.createElement(tag);
+      
+            for (const [key, value] of Object.entries(props)) {
+              if (key === "style" && typeof value === "object") {
+                Object.assign(el.style, value);
+              } else if (key.startsWith("on") && typeof value === "function") {
+                el.addEventListener(key.slice(2).toLowerCase(), value);
+              } else if (key === "className") {
+                el.className = value;
+              } else {
+                el.setAttribute(key, value);
+              }
+            }
+      
+            const append = (child) => {
+              if (child == null || child === false) return;
+              if (Array.isArray(child)) return child.forEach(append);
+              el.appendChild(
+                child instanceof Node ? child : document.createTextNode(child),
+              );
+            };
+      
+            children.forEach(append);
+      
+            return el;
+          }
+
+          const createElement = h;
+          
+        </script>
+        
         <h2>manipulation</h2>
         <script type="editor" data-lang="js">
 
