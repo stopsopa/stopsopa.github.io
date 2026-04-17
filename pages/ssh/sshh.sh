@@ -116,8 +116,6 @@ done
 
 if [ "${IS_LOADED}" != "" ]; then
 
-  echo "mode: --is-loaded"
-
   LOADED="$(ssh-add -l)"
 
   if [[ ${LOADED} = *"The agent has no identities"* ]]; then
