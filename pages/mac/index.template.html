@@ -471,6 +471,10 @@
               ⌘Command + ⇧Shift + . - show hidden files (files starting with ".")
               Command (⌘) + Shift + N → creates a new folder
 
+            Show hidden folder in Finder permanently
+              defaults write com.apple.finder AppleShowAllFiles YES
+              then hold Options button and right click on finder in the dock, and choose "Relaunch"
+
             # or try to turn it on permanently
             defaults write com.apple.finder AppleShowAllFiles YES
             killall Finder
