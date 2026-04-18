@@ -44,18 +44,18 @@ fs.watch(file, function () {
 if (process.stdin.isTTY) {
   process.stdin.setRawMode(true);
   process.stdin.resume();
-  process.stdin.setEncoding('utf8');
-  process.stdin.on('data', function (key) {
+  process.stdin.setEncoding("utf8");
+  process.stdin.on("data", function (key) {
     // Ctrl+C or Ctrl+D pressed
-    if (key === '\u0003' || key === '\u0004') {
-      process.exit(130); 
+    if (key === "\u0003" || key === "\u0004") {
+      process.exit(130);
     }
     // For any other key, exit with 2 to indicate manual interruption
     process.exit(2);
   });
 } else {
   process.stdin.resume();
-  process.stdin.on('data', function () {
+  process.stdin.on("data", function () {
     process.exit(2);
   });
 }

@@ -131,10 +131,11 @@
               <ul>
                 <li>
                   <a href="https://github.com/mhaeuser/Battery-Toolkit"
-                    >WARNING: I THINK TAHOE ADDED CHARGING LIMIT OUT OF THE BOX, CHECK FIRST (UPDATE: it turns out that macOS have its own way to decide when to charge to 100% or not, settings are usually ignored and battery is charged to 100% anyway, so this program is needed): https://github.com/mhaeuser/Battery-Toolkit limit battery charge - current version 1.7
-                  - 
-                  </a
-                  >
+                    >WARNING: I THINK TAHOE ADDED CHARGING LIMIT OUT OF THE BOX, CHECK FIRST (UPDATE: it turns out that
+                    macOS have its own way to decide when to charge to 100% or not, settings are usually ignored and
+                    battery is charged to 100% anyway, so this program is needed):
+                    https://github.com/mhaeuser/Battery-Toolkit limit battery charge - current version 1.7 -
+                  </a>
                 </li>
               </ul>
             </li>
@@ -154,9 +155,7 @@
               Notepad
               <ul>
                 <li>
-                  <a href="https://github.com/notepad-plus-plus-mac/notepad-plus-plus-macos"
-                    >Notepad++ mac port</a
-                  >
+                  <a href="https://github.com/notepad-plus-plus-mac/notepad-plus-plus-macos">Notepad++ mac port</a>
                 </li>
               </ul>
             </li>
@@ -365,9 +364,8 @@
             Current version:
               Notepad++ macOS v1.0.2     (ARM 64-bit)
               Build time: Apr 14 2026 - 16:34:20
-            
           </script>
-          
+
           <h2>Optimise - fresh system fresh OS</h2>
           <script type="editor" data-lang="sh">
 
@@ -388,7 +386,7 @@
 
             # Disable window animations
               defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
-              
+
             # Faster dock animations
               defaults write com.apple.dock autohide-time-modifier -float 0
               killall Dock
@@ -410,7 +408,7 @@
                     # maximum number of open files system-wide
                   sudo sysctl -w kern.maxfilesperproc=65536
                     # maximum number of open files per process.
-              
+
               and now
               ~/Workspace szdz √ sysctl kern.maxfiles kern.maxfilesperproc
                 kern.maxfiles: 65536
@@ -425,7 +423,6 @@
               sudo launchctl bootout system /Library/LaunchAgents/com.microsoft.update.agent.plist
               sudo mv /Library/LaunchAgents/com.microsoft.update.agent.plist ~/disabled/
               sudo launchctl bootout system /Library/LaunchDaemons/com.microsoft.autoupdate.helper.plist
-            
           </script>
           <h2>Screen sharing</h2>
           <a href="https://youtu.be/ESac2ejmk_0">https://youtu.be/ESac2ejmk_0</a>
@@ -436,7 +433,7 @@
             because you will endup otherwise with /Users/Dropbox/Dropbox
 
             When comparing copy pulled by Dropbox with copy done on old system before wiping system up
-            use 
+            use
             diff -rq one_dir second_dir
               -q - means quiet and will just show which files differ, without full diff
               -r - recursive
@@ -445,10 +442,9 @@
             So your computer doesn't really have copy of the files locally (I understood it like this)
             This thing is called "Dropbox on File Provider"
             And in order to have old way of having copy of files locally you have to "opt-out" from it
-            and that can be done only during login: 
+            and that can be done only during login:
               g(Support for Dropbox on File Provider)
               https://help.dropbox.com/installs/dropbox-for-macos-support
-          
           </script>
           <h2>Identify Mac</h2>
           <script type="editor" data-lang="sh">
@@ -861,7 +857,6 @@
 
             to enable floating screenshot thumbnail (Quick Look preview):
               Shift + Cmd + 5 - then "options" -> (from menu) show floating thumbnail
-            
           </script>
           <h2>Stop Mac Spaces from Rearranging Themselves</h2>
           <img src="https://i.imgur.com/w2F33f8.png" style="width: 800px" />
@@ -986,7 +981,6 @@
             define: New windows 160 columns by 50 rows
           </script>
 
-          
           <img src="https://i.imgur.com/nLp9vNq.png" width="800" />
           <br />
           <img src="https://i.imgur.com/1U5OF0T.png" width="800" />
@@ -1029,7 +1023,7 @@
 
             INFO: Now use Veracrypt on new mac;
 
-            It is necessary to change something here:              
+            It is necessary to change something here:
             	https://apple.stackexchange.com/a/173880
 
             It is necessary to install first:

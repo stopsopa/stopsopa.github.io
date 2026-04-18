@@ -1,5 +1,5 @@
 showConfig.json - options that are “non-default, or explicitly resolved
-generated with node node_modules/.bin/tsc --showConfig
+generated with /bin/bash node_modules/.bin/tsc --showConfig
 
 getAllResolvedForGivenTsconfig.json - get resolved compiler options for a given tsconfig
 

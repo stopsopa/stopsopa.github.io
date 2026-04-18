@@ -70,7 +70,7 @@ LOGFILE="${LOGDIR}/000-forever.log"
 { yellow "LOGDIR        : ${LOGDIR}"; } 2>&3
 { yellow "LOGFILE       : ${LOGFILE}"; } 2>&3
 
-# node node_modules/.bin/forever --no-colors -d -t --minUptime 5000 --spinSleepTime 10000 -v -a -c /bin/bash run.sh ${FLAG} 1>> ${LOGFILE} 2>> ${LOGFILE} & disown
+# /bin/bash node_modules/.bin/forever --no-colors -d -t --minUptime 5000 --spinSleepTime 10000 -v -a -c /bin/bash run.sh ${FLAG} 1>> ${LOGFILE} 2>> ${LOGFILE} & disown
 
 # I've removed forever from dependencies because of security alert from github
 # https://i.imgur.com/jIGv0m5.png
@@ -79,4 +79,4 @@ LOGFILE="${LOGDIR}/000-forever.log"
 # https://github.com/foreverjs/forever/commit/6ff93441c8dda9a90ece69e910c729788bc130ae
 if [ ! -f node_modules/.bin/forever ]; then yarn add forever; fi
 
-node node_modules/.bin/forever --no-colors -d -t --minUptime 2000 -v -a -c ${@} ${FLAG} 1>> ${LOGFILE} 2>> ${LOGFILE} & disown
+/bin/bash node_modules/.bin/forever --no-colors -d -t --minUptime 2000 -v -a -c ${@} ${FLAG} 1>> ${LOGFILE} 2>> ${LOGFILE} & disown

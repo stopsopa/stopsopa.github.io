@@ -49,7 +49,7 @@ perl -pi -e 's#^(\#+.*?)&lt;#\1 #g' "${CP}"
 # multiple white spaces to single space
 perl -pi -e 's#^(\#+.*?)\s{2,}#\1 #g' "${CP}"
 
-node node_modules/.bin/markdown-toc -i "${CP}"
+/bin/bash node_modules/.bin/markdown-toc -i "${CP}"
 
 node "${ROOT}/.github/toc-generate.mjs" "${CP}" "${1}"
 

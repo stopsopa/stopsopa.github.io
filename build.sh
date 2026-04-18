@@ -78,7 +78,7 @@ fi
 mkdir -p public
 
 # transpile all "module*.ts" right next in the same directoris but as *.js
-node node_modules/.bin/tsc
+/bin/bash node_modules/.bin/tsc
 
 node pages/portsregistry/lists/ports-generator.js
 
@@ -88,7 +88,7 @@ time /bin/bash scripts/template.sh
 # call those together in this order ^^^
 
 # node libs/preprocessor.js
-time node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
+time node node_modules/envprocessor/dist/esm/cli.js --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
 cp node_modules/envprocessor/dist/esm/env.js public/env.js
 
 time node esbuild-entries.js
@@ -110,9 +110,9 @@ time /bin/bash bash/substitute-variables-bash.sh gitstorage-core.sh -- \
 time /bin/bash .github/urlwizzard.sh
 
 # /bin/bash .github/toc-check.sh README.md 
-node node_modules/.bin/markdown-toc -i README.md
+/bin/bash node_modules/.bin/markdown-toc -i README.md
 
-time node node_modules/.bin/prettier --config prettier.config.cjs --write . 1> >(/bin/bash bash/dlogger.sh o prettier) 2> >(/bin/bash bash/dlogger.sh e prettier)
+time /bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write . 1> >(/bin/bash bash/dlogger.sh o prettier) 2> >(/bin/bash bash/dlogger.sh e prettier)
 
 # this one after style_fix
 # inject special blocking code

@@ -42,13 +42,13 @@ set -x
 # )";
 
 # TEST="$(cat <<END
-# node node_modules/.bin/vitest --config vitest.config.ts run --coverage $@
+# /bin/bash node_modules/.bin/vitest --config vitest.config.ts run --coverage $@
 # END
 # )";
 
 TEST="$(cat <<END
 
-node node_modules/.bin/vitest --config vitest.config.ts --coverage run $@
+/bin/bash node_modules/.bin/vitest --config vitest.config.ts --coverage run $@
 
 END
 )";

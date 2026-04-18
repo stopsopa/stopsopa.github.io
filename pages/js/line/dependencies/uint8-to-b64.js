@@ -3,7 +3,7 @@
  * 
  * yarn add uint8-to-b64
 
-cat <<EEE | node node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js
+cat <<EEE | /bin/bash node_modules/.bin/esbuild --bundle --outfile=uint8-to-b64.js --format=iife --loader=js
 import base from "uint8-to-b64";
 window.base = base;
 EEE

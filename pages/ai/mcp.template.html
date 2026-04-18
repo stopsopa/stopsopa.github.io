@@ -38,11 +38,11 @@
               DANGEROUSLY_OMIT_AUTH=true npm install @modelcontextprotocol/inspector
 
               # then when I have server:
-                node node_modules/.bin/mcp-server-filesystem .
+                /bin/bash node_modules/.bin/mcp-server-filesystem .
                   # from: https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
 
               # Then to debug it run:
-              node node_modules/.bin/mcp-inspector node node_modules/.bin/mcp-server-filesystem
+              /bin/bash node_modules/.bin/mcp-inspector /bin/bash node_modules/.bin/mcp-server-filesystem
                 # this should launch something like:
                   http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#tools
         </script>
@@ -74,8 +74,8 @@
             NODE_OPTIONS="" uvx mcp-server-fetch
 
           npm install @modelcontextprotocol/inspector
-          node node_modules/.bin/mcp-inspector uvx mcp-server-fetch
-          DANGEROUSLY_OMIT_AUTH=true node node_modules/.bin/mcp-inspector uvx mcp-server-fetch
+          /bin/bash node_modules/.bin/mcp-inspector uvx mcp-server-fetch
+          DANGEROUSLY_OMIT_AUTH=true /bin/bash node_modules/.bin/mcp-inspector uvx mcp-server-fetch
           # after launching setup:
             Transport Type: STDIO
             Command: uvx
@@ -99,7 +99,7 @@
               rm "intercept.js"
             fi
 
-            node intercept.js var/mcp-server-filesystem -- node node_modules/.bin/mcp-server-filesystem .
+            node intercept.js var/mcp-server-filesystem -- /bin/bash node_modules/.bin/mcp-server-filesystem .
           </script>
         </div>
       </div>

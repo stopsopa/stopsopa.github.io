@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * node intercept.js -- node node_modules/.bin/mcp-server-filesystem .
+ * node intercept.js -- /bin/bash node_modules/.bin/mcp-server-filesystem .
  *   # default location to store log files: ./var/intercept.js/
  *
- * node intercept.js var/a/b/c -- node node_modules/.bin/mcp-server-filesystem ./files
+ * node intercept.js var/a/b/c -- /bin/bash node_modules/.bin/mcp-server-filesystem ./files
  *   # specify directory to store logs in first argument
  *
  * Later I have found https://github.com/modelcontextprotocol/inspector
@@ -47,7 +47,7 @@ ARGUMENTS:
   --help, -h    Show this help
 
 EXAMPLES:
-  intercept.js -- node node_modules/.bin/mcp-server-filesystem .
+  intercept.js -- /bin/bash node_modules/.bin/mcp-server-filesystem .
   intercept.js var/logs -- uvx mcp-server-fetch
 
 Logs JSON-RPC requests/responses with timing to timestamped files.

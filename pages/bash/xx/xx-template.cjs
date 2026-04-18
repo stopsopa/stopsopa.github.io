@@ -213,7 +213,7 @@ gjf --format
       command: `
 set -e
 # make style_list
-node node_modules/.bin/prettier --config prettier.config.cjs --list-different .
+/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --list-different .
 `,
       description: `style_list`,
       confirm: false,
@@ -222,7 +222,7 @@ node node_modules/.bin/prettier --config prettier.config.cjs --list-different .
       command: `
 set -e
 # make style_fix
-node node_modules/.bin/prettier --config prettier.config.cjs --write .
+/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write .
 `,
       description: `style_fix`,
       confirm: false,

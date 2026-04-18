@@ -269,7 +269,7 @@
         <a href="visibilityState/visible.react.html">visible.react</a>
         <h2>textarea auto-grow on input script auto-resizing textarea handler</h2>
         <script type="editor" data-lang="js">
-          
+
           document.body.addEventListener("input", function (e) {
             const t = e.target;
             if (t.tagName === "TEXTAREA") {
@@ -277,7 +277,6 @@
               t.style.height = t.scrollHeight + "px";
             }
           });
-          
         </script>
         <h2>Keyboard event</h2>
 
@@ -1181,7 +1180,7 @@
 
           function h(tag, props = {}, ...children) {
             const el = document.createElement(tag);
-      
+
             for (const [key, value] of Object.entries(props)) {
               if (key === "style" && typeof value === "object") {
                 Object.assign(el.style, value);
@@ -1193,7 +1192,7 @@
                 el.setAttribute(key, value);
               }
             }
-      
+
             const append = (child) => {
               if (child == null || child === false) return;
               if (Array.isArray(child)) return child.forEach(append);
@@ -1201,16 +1200,15 @@
                 child instanceof Node ? child : document.createTextNode(child),
               );
             };
-      
+
             children.forEach(append);
-      
+
             return el;
           }
 
           const createElement = h;
-          
         </script>
-        
+
         <h2>manipulation</h2>
         <script type="editor" data-lang="js">
 

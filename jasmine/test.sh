@@ -246,7 +246,7 @@ if [ "${?}" != "0" ]; then
   exit 1
 fi
 
-NODE_OPTIONS="" node node_modules/.bin/esbuild --help 1> /dev/null 2> /dev/null
+NODE_OPTIONS="" /bin/bash node_modules/.bin/esbuild --help 1> /dev/null 2> /dev/null
 
 if [ "${?}" != "0" ]; then
 

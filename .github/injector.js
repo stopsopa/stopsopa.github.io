@@ -3,7 +3,7 @@
 // this script processes one file
 // to understad how read top of the file injector.sh
 //
-// node node_modules/.bin/chokidar '**/*.inject.js' --ignore '**/node_modules/**/*' --initial -c 'node injector.js {path}'
+// /bin/bash node_modules/.bin/chokidar '**/*.inject.js' --ignore '**/node_modules/**/*' --initial -c 'node injector.js {path}'
 //
 
 // const path = require("path");

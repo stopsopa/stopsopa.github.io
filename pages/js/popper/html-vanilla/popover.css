@@ -17,9 +17,9 @@
     .bottom
   ):not(.bottomright):not(.left-top):not(.left-bottom):not(.right-top):not(.right-bottom):not(.top-left):not(
     .top-right
-  ):not(.bottom-left):not(.bottom-right):not(.cover-top):not(.cover-bottom):not(.cover-left):not(
-    .cover-right
-  ):not(.cover-top-left):not(.cover-top-right):not(.cover-bottom-left):not(.cover-bottom-right) {
+  ):not(.bottom-left):not(.bottom-right):not(.cover-top):not(.cover-bottom):not(.cover-left):not(.cover-right):not(
+    .cover-top-left
+  ):not(.cover-top-right):not(.cover-bottom-left):not(.cover-bottom-right) {
   bottom: calc(anchor(top) + var(--popover-offset));
   justify-self: anchor-center;
 }

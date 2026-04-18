@@ -13,5 +13,5 @@ RELATIVE="$(NODE_OPTIONS="" node --input-type module -e "import {resolve,relativ
 
 cd "${_DIR}"
 
-NODE_OPTIONS="" node node_modules/.bin/tsc -p tsconfig.check.json 
+NODE_OPTIONS="" /bin/bash node_modules/.bin/tsc -p tsconfig.check.json 
 node --no-warnings=ExperimentalWarning --loader ts-node/esm "${RELATIVE}"

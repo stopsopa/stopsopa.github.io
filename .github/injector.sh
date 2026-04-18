@@ -116,6 +116,6 @@ EEE
     exit ${STATUS}
 fi
 
-node node_modules/.bin/chokidar '**/*.inject.js' \
+/bin/bash node_modules/.bin/chokidar '**/*.inject.js' \
   --ignore '**/node_modules/**/*' \
   -c 'node .github/injector.js {path} "${FLAG}__chokidar__injector.js"'

@@ -460,7 +460,7 @@
 
           // INTERESTING TALK, HOW require(ESM): https://youtu.be/YRueCer2kig
 
-          PORT=8080 HOST=0.0.0.0 node node_modules/.bin/nodemon -e js,html -x "node --experimental-strip-types" server/index.ts
+          PORT=8080 HOST=0.0.0.0 /bin/bash node_modules/.bin/nodemon -e js,html -x "node --experimental-strip-types" server/index.ts
 
           more about type stripping:
             https://nodejs.org/en/learn/typescript/run-natively
@@ -571,9 +571,9 @@
           EEE
           cat <<EEE > tsx.sh
           set -e;
-          node node_modules/.bin/tsc -p tsconfig.check.json
+          /bin/bash node_modules/.bin/tsc -p tsconfig.check.json
           # before node 20??
-          node node_modules/.bin/ts-node-esm ${@}
+          /bin/bash node_modules/.bin/ts-node-esm ${@}
           # since node 20?
           node --no-warnings=ExperimentalWarning --loader ts-node/esm/transpile-only ${@}
           EEE
@@ -581,8 +581,8 @@
           // or instead of above
           cat <<EEE > tsx.sh
           set -e
-          node node_modules/.bin/tsc -p tsconfig.check.json
-          node node_modules/.bin/tsx
+          /bin/bash node_modules/.bin/tsc -p tsconfig.check.json
+          /bin/bash node_modules/.bin/tsx
 
           EEE
 

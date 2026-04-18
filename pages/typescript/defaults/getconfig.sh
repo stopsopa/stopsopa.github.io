@@ -24,11 +24,11 @@ echo '{"type": "module"}' > package.json
 rm -rf node_modules tsconfig.json
 npm install "typescript@${TS_VERSION_TO_INSTALL}"
 
-node node_modules/.bin/tsc --init  
+/bin/bash node_modules/.bin/tsc --init  
 
-TSVERSION="${DIR}/defaults/$(node node_modules/.bin/tsc --version | sed 's/Version //; s/\./_/g')"     
+TSVERSION="${DIR}/defaults/$(/bin/bash node_modules/.bin/tsc --version | sed 's/Version //; s/\./_/g')"     
 echo 'export {}' > index.ts
-node node_modules/.bin/tsc --showConfig > showConfig.json
+/bin/bash node_modules/.bin/tsc --showConfig > showConfig.json
 node getAllFlags.js getAllFlags.json
 
 cd "${DIR}"

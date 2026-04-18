@@ -17,16 +17,16 @@ Installing typescript version: 5.9.3
 added 1 package, and audited 2 packages in 1s
 
 found 0 vulnerabilities
-+ node node_modules/.bin/tsc --init
++ /bin/bash node_modules/.bin/tsc --init
 
 Created a new tsconfig.json
 
 You can learn more at https://aka.ms/tsconfig
-++ node node_modules/.bin/tsc --version
+++ /bin/bash node_modules/.bin/tsc --version
 ++ sed 's/Version //; s/\./_/g'
 + TSVERSION=/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/5_9_3
 + echo 'export {}'
-+ node node_modules/.bin/tsc --showConfig
++ /bin/bash node_modules/.bin/tsc --showConfig
 + node getAllFlags.js getAllFlags.json
 Dumped all TS flags to ts-all-options.json
 + cd /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults
@@ -59,7 +59,7 @@ Installing typescript version: 4.9.5
 added 1 package, and audited 2 packages in 1s
 
 found 0 vulnerabilities
-+ node node_modules/.bin/tsc --init
++ /bin/bash node_modules/.bin/tsc --init
 
 Created a new tsconfig.json with:
 
@@ -72,11 +72,11 @@ Created a new tsconfig.json with:
 
 
 You can learn more at https://aka.ms/tsconfig
-++ node node_modules/.bin/tsc --version
+++ /bin/bash node_modules/.bin/tsc --version
 ++ sed 's/Version //; s/\./_/g'
 + TSVERSION=/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/4_9_5
 + echo 'export {}'
-+ node node_modules/.bin/tsc --showConfig
++ /bin/bash node_modules/.bin/tsc --showConfig
 + node getAllFlags.js getAllFlags.json
 Dumped all TS flags to ts-all-options.json
 + cd /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults
@@ -109,13 +109,13 @@ Installing typescript version: 3.9.10
 added 1 package, and audited 2 packages in 1s
 
 found 0 vulnerabilities
-+ node node_modules/.bin/tsc --init
++ /bin/bash node_modules/.bin/tsc --init
 message TS6071: Successfully created a tsconfig.json file.
-++ node node_modules/.bin/tsc --version
+++ /bin/bash node_modules/.bin/tsc --version
 ++ sed 's/Version //; s/\./_/g'
 + TSVERSION=/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults/defaults/3_9_10
 + echo 'export {}'
-+ node node_modules/.bin/tsc --showConfig
++ /bin/bash node_modules/.bin/tsc --showConfig
 + node getAllFlags.js getAllFlags.json
 Dumped all TS flags to ts-all-options.json
 + cd /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/typescript/defaults

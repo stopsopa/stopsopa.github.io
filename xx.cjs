@@ -203,7 +203,7 @@ open "file://$(realpath "coverage/index.html")"
     },
     [`server`]: {
       command: `
-COMMAND="PORT=8080 HOST=0.0.0.0 node node_modules/.bin/nodemon -e js,html -x \\"node --experimental-strip-types\\" server/index.ts"  
+COMMAND="PORT=8080 HOST=0.0.0.0 /bin/bash node_modules/.bin/nodemon -e js,html -x \\"node --experimental-strip-types\\" server/index.ts"  
    
 cat <<EEE
 
@@ -227,7 +227,7 @@ EEE
 set -e        
 export NODE_OPTIONS=""
 /bin/bash scripts/template.sh    
-node node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node_modules/**/*' -c '/bin/bash template.sh'
+/bin/bash node_modules/.bin/chokidar '**/*.template.html' --initial --ignore '**/node_modules/**/*' -c '/bin/bash template.sh'
 `,
       description: `
 Usually it's good idea to execute it after /bin/bash scripts/uglify.sh
@@ -244,7 +244,7 @@ set -e
 eval "$(node bash/exportsource.js .env)"
 export NODE_OPTIONS=""
 # node libs/preprocessor.js # old script
-node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
+node node_modules/envprocessor/dist/esm/cli.js --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
 `,
       description: ``,
       confirm: false,
@@ -312,7 +312,7 @@ sha384-OdBGfw1BV7BWBiuVl5BDC5KREOG6aHeoK9kCLSvM7rczqmRDoc/u2ViiBp6LmeDy
       command: `
 set -e        
 export NODE_OPTIONS=""
-node node_modules/.bin/prettier --config prettier.config.cjs --write .        
+/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write .        
 `,
       description: ``,
       confirm: false,

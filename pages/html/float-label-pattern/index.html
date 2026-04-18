@@ -304,7 +304,9 @@
 
         if (el.id === "toggle-all") {
           const isChecked = el.checked;
-          const checkboxes = document.querySelectorAll(".layout-left .controls input[type='checkbox']:not(#toggle-all)");
+          const checkboxes = document.querySelectorAll(
+            ".layout-left .controls input[type='checkbox']:not(#toggle-all)"
+          );
           checkboxes.forEach((cb) => {
             if (cb.checked !== isChecked) {
               cb.checked = isChecked;
@@ -316,7 +318,9 @@
 
         if (el.id === "toggle-helper-all") {
           const isChecked = el.checked;
-          const wrappers = document.querySelectorAll(".layout-right :is(.input-wrapper, .checkbox-wrapper, .radio-wrapper)");
+          const wrappers = document.querySelectorAll(
+            ".layout-right :is(.input-wrapper, .checkbox-wrapper, .radio-wrapper)"
+          );
           wrappers.forEach((w) => {
             if (isChecked) {
               w.classList.add("hide-helper");

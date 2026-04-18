@@ -113,12 +113,11 @@ EEE
 trap _kill EXIT;
 
 # node libs/preprocessor.js
-node node_modules/.bin/envprocessor --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
+node node_modules/envprocessor/dist/esm/cli.js --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
 
 
 
 rm -rf "${LOGFILE}"
-
 node esbuild-entries.js --watch --name "${FLAG}__esbuild-entries.js" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID1="${!}"  
 
@@ -129,10 +128,10 @@ PID3="${!}"
 PID4="${!}"
 
 /bin/bash scripts/template.sh # just call it once to process all - and btw I've removed --initial from below chokidar call
-node node_modules/.bin/chokidar '**/*.template.html' --ignore '**/node_modules/**/*' -c "/bin/bash scripts/template.sh {path} \"${FLAG}__chokidar__template.sh\"" 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
+/bin/bash node_modules/.bin/chokidar '**/*.template.html' --ignore '**/node_modules/**/*' -c "/bin/bash scripts/template.sh {path} \"${FLAG}__chokidar__template.sh\"" 1> >(/bin/bash bash/dlogger.sh " " templat >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e templat >> "${LOGFILE}") &
 PID6="${!}"
 
-node node_modules/.bin/tsc --preserveWatchOutput --watch 1> >(/bin/bash bash/dlogger.sh " " typescr >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e typescr >> "${LOGFILE}") &
+/bin/bash node_modules/.bin/tsc --preserveWatchOutput --watch 1> >(/bin/bash bash/dlogger.sh " " typescr >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e typescr >> "${LOGFILE}") &
 PID7="${!}"
 
 WAITINGMESSAGE="exbuilddone2" # this text shows at the end of esbuild build
@@ -160,7 +159,7 @@ node server.js --flag "${FLAG}__server.js" 1> >(/bin/bash bash/dlogger.sh " " "s
 PID2="${!}"  
 
 if [ "${OPENBROWSER}" = "1" ]; then
-  sleep 3 && node "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_API_PORT}/index.html 1> >(/bin/bash bash/dlogger.sh " " "opencli" >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "opencli" >> "${LOGFILE}") &
+  sleep 3 && /bin/bash "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_API_PORT}/index.html 1> >(/bin/bash bash/dlogger.sh " " "opencli" >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "opencli" >> "${LOGFILE}") &
 fi
 
 if [ "${OPENIDE}" = "1" ]; then

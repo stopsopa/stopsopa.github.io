@@ -446,13 +446,13 @@ if [ "${_TARGET}" = "local" ]; then
 
   cat <<EEE
 
-  node node_modules/.bin/playwright test ${_HEADLESS} ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
+  /bin/bash node_modules/.bin/playwright test ${_HEADLESS} ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
 
 EEE
 
 node -v
 
-  node node_modules/.bin/playwright test ${_HEADLESS} ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
+  /bin/bash node_modules/.bin/playwright test ${_HEADLESS} ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
 
   exit 0
 fi
@@ -576,7 +576,7 @@ bash
   printenv
   echo ===========printenv== to see PLAYWRIGHT_TEST_MATCH =========  
   # /ms-playwright-agent/node_modules/.bin/playwright test ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
-  node node_modules/.bin/playwright test ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
+  /bin/bash node_modules/.bin/playwright test ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
 EEE
 EOF
 )"

@@ -213,8 +213,8 @@
               https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
               g(claude docs add a local stdio server)
               npm install @modelcontextprotocol/server-filesystem
-              claude mcp add --transport stdio --scope project filesystem -- node node_modules/.bin/mcp-server-filesystem ./files
-              claude mcp add --transport stdio --scope project filesystem -- node intercept.js -- node node_modules/.bin/mcp-server-filesystem ./pages
+              claude mcp add --transport stdio --scope project filesystem -- /bin/bash node_modules/.bin/mcp-server-filesystem ./files
+              claude mcp add --transport stdio --scope project filesystem -- node intercept.js -- /bin/bash node_modules/.bin/mcp-server-filesystem ./pages
 
                   that will create locally .mcp.json
                   {

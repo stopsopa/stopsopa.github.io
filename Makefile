@@ -21,13 +21,13 @@ testall:
 
 # prettier
 style_check:
-	node node_modules/.bin/prettier --config prettier.config.cjs --check .
+	/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --check .
 
 style_fix:
-	node node_modules/.bin/prettier --config prettier.config.cjs --write .
+	/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write .
 
 style_list:
-	node node_modules/.bin/prettier --config prettier.config.cjs --list-different .
+	/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --list-different .
 
 
 
