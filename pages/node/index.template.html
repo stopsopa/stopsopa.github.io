@@ -3295,9 +3295,9 @@
               <script type="editor" data-lang="js">
 
 
-
 // node --env-file .env server-template.ts
 // express extension: https://raw.githubusercontent.com/stopsopa/roderic/86495ef554314d388e7f6ef10ee4de6d12bcbcff/libs/express-extend-res.js?token=GHSAT0AAAAAACVQ4Q66S6J6DLZRVFB5DQLSZXEOC2Q
+// pnpm install "@types/express" "@types/lodash" "@types/node"
 
 import path from "path";
 
@@ -3333,9 +3333,13 @@ const log = (function () {
 
 const web = path.resolve(__dirname, ".");
 
-const host = process.env.HOST || "0.0.0.0";
+const { HOST: host, PORT: portRaw } = process.env;
 
-const port = parseInt(process.env.PORT || "3000", 10);
+if (!host || !portRaw) {
+  throw new Error("HOST and PORT environment variables are required");
+}
+
+const port = parseInt(portRaw, 10);
 
 const readFile = (file: string) => fs.readFileSync(file).toString();
 
@@ -3492,6 +3496,7 @@ app.use(
 app.listen(port, host, () => {
   console.log(`\n 🌎  Server is running ` + `http://${host}:${port}\n`);
 });
+                
 
                 
               </script>
