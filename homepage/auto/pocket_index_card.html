@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket Index Card - My Links</title>
+    <meta name="description" content="A compact, index-card inspired layout for frequently used links, featuring a left-aligned sidebar with a metallic rail aesthetic.">
+    <style>
+        :root {
+            --bg-cream: #fdf5e6;
+            --card-bg: #ffffff;
+            --rail-color: #d1d1d1;
+            --rail-gradient: linear-gradient(90deg, #b0b0b0 0%, #e0e0e0 50%, #b0b0b0 100%);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --text-main: #333333;
+            --accent: #0066cc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* The "Metal Rail" container */
+        .rail-container {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 320px;
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            z-index: 10;
+        }
+
+        /* The vertical metallic strip */
+        .rail-container::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 12px;
+            background: var(--rail-gradient);
+            border-left: 1px solid #999;
+            border-right: 1px solid #999;
+            box-shadow: inset 2px 0 5px rgba(0,0,0,0.2);
+        }
+
+        .main-content {
+            margin-left: 340px; /* Offset for the 320px sidebar + gap */
+            padding: 40px;
+            flex-grow: 1;
+        }
+
+        header {
+            margin-bottom: 20px;
+            padding-left: 5px;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        /* Each "Index Card" Group */
+        .card {
+            background-color: var(--card-bg);
+            width: 280px;
+            border-radius: 2px;
+            box-shadow: var(--shadow);
+            padding: 12px;
+            position: relative;
+            border-left: 3px solid #eee; /* Subtle card edge */
+        }
+
+        /* "Clip" effect on each card */
+        .card::after {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 4px;
+            background: #666;
+            border-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .group-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #888;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .link-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            padding: 4px 6px;
+            border-radius: 2px;
+            transition: background 0.2s;
+        }
+
+        .link-item:hover {
+            background-color: #f5f5f5;
+            color: var(--accent);
+        }
+
+        .icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+
+        .label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Red margin line for "index card" look */
+        .card::before {
+            content: '';
+            position: absolute;
+            left: 36px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+
+        @media (max-width: 600px) {
+            .rail-container {
+                width: 100%;
+                position: relative;
+                padding-left: 30px;
+            }
+            .main-content {
+                display: none;
+            }
+            .card {
+                width: calc(100% - 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="rail-container">
+        <header>
+            <h1>Bookmarks</h1>
+        </header>
+
+        <div class="stack">
+            <!-- Search Group -->
+            <section class="card" id="group-search">
+                <div class="group-title">
+                    <span>🔍</span> SEARCH
+                </div>
+                <nav>
+                    <ul class="link-list">
+                        <li>
+                            <a href="https://google.com" class="link-item" id="link-google">
+                                <span class="icon">G</span>
+                                <span class="label">Google</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://duckduckgo.com" class="link-item" id="link-ddg">
+                                <span class="icon">🦆</span>
+                                <span class="label">DuckDuckGo</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://bing.com" class="link-item" id="link-bing">
+                                <span class="icon">B</span>
+                                <span class="label">Bing</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- AI Group -->
+            <section class="card" id="group-ai">
+                <div class="group-title">
+                    <span>🤖</span> AI TOOLS
+                </div>
+                <nav>
+                    <ul class="link-list">
+                        <li>
+                            <a href="https://chat.openai.com" class="link-item" id="link-chatgpt">
+                                <span class="icon">✨</span>
+                                <span class="label">ChatGPT</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://claude.ai" class="link-item" id="link-claude">
+                                <span class="icon">C</span>
+                                <span class="label">Claude AI</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://gemini.google.com" class="link-item" id="link-gemini">
+                                <span class="icon">💎</span>
+                                <span class="label">Google Gemini</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- Social Group -->
+            <section class="card" id="group-social">
+                <div class="group-title">
+                    <span>🌐</span> SOCIAL
+                </div>
+                <nav>
+                    <ul class="link-list">
+                        <li>
+                            <a href="https://github.com" class="link-item" id="link-github">
+                                <span class="icon">🐙</span>
+                                <span class="label">GitHub</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://twitter.com" class="link-item" id="link-twitter">
+                                <span class="icon">🐦</span>
+                                <span class="label">Twitter / X</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://reddit.com" class="link-item" id="link-reddit">
+                                <span class="icon">R</span>
+                                <span class="label">Reddit</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- Dev Group -->
+            <section class="card" id="group-dev">
+                <div class="group-title">
+                    <span>💻</span> DEVELOPMENT
+                </div>
+                <nav>
+                    <ul class="link-list">
+                        <li>
+                            <a href="https://stackoverflow.com" class="link-item" id="link-stackoverflow">
+                                <span class="icon">S</span>
+                                <span class="label">Stack Overflow</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://mdn.io" class="link-item" id="link-mdn">
+                                <span class="icon">M</span>
+                                <span class="label">MDN Web Docs</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </section>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <!-- Content area for future use or just to keep the left alignment obvious -->
+    </main>
+
+</body>
+</html>

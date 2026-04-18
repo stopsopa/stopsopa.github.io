@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Win3.1 Program Manager</title>
+    <style>
+        /* Windows 3.1 Design System */
+        :root {
+            --win-gray: #C0C0C0;
+            --win-white: #FFFFFF;
+            --win-dark-gray: #808080;
+            --win-black: #000000;
+            --win-blue: #000080;
+            --win-blue-light: #0000FF;
+        }
+
+        @font-face {
+            font-family: 'MS Sans Serif';
+            src: local('MS Sans Serif'), local('Microsoft Sans Serif'), local('Arial');
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #008080; /* Classic Teal Desktop */
+            font-family: 'MS Sans Serif', Arial, sans-serif;
+            font-size: 11px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .manager-pane {
+            width: 360px;
+            height: 100vh;
+            background-color: var(--win-gray);
+            position: fixed;
+            left: 0;
+            top: 0;
+            border-right: 2px solid var(--win-black);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            padding: 4px;
+            box-shadow: inset -1px -1px 0px var(--win-dark-gray), inset 1px 1px 0px var(--win-white);
+        }
+
+        .program-group {
+            border: 1px solid var(--win-black);
+            margin-bottom: 8px;
+            background: var(--win-white);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .group-header {
+            background-color: var(--win-blue);
+            color: var(--win-white);
+            padding: 2px 6px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border: 1px solid;
+            border-color: var(--win-white) var(--win-dark-gray) var(--win-dark-gray) var(--win-white);
+            user-select: none;
+        }
+
+        .group-header:active {
+            border-color: var(--win-dark-gray) var(--win-white) var(--win-white) var(--win-dark-gray);
+        }
+
+        .group-content {
+            padding: 10px 4px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            background-color: var(--win-white);
+        }
+
+        .group-content.collapsed {
+            display: none;
+        }
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            color: var(--win-black);
+            width: 100%;
+        }
+
+        .icon-wrapper {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--win-gray);
+            border: 1px solid var(--win-black);
+            box-shadow: inset 1px 1px 0 var(--win-white), 1px 1px 0 var(--win-dark-gray);
+        }
+
+        .icon-item:hover .icon-wrapper {
+            background: #eee;
+        }
+
+        .icon-label {
+            word-wrap: break-word;
+            width: 100%;
+            line-height: 1.1;
+            max-height: 2.2em;
+            overflow: hidden;
+        }
+
+        .group-toggle {
+            font-size: 8px;
+            width: 12px;
+            height: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--win-gray);
+            color: var(--win-black);
+            border: 1px solid var(--win-black);
+            box-shadow: inset 1px 1px 0 var(--win-white);
+        }
+
+        /* Embossed title look */
+        .main-title {
+            padding: 4px 8px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--win-dark-gray);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="manager-pane">
+    <div class="main-title">Program Manager</div>
+
+    <!-- Search Group -->
+    <div class="program-group">
+        <div class="group-header" onclick="toggleGroup('search-group')">
+            <span>Search</span>
+            <div class="group-toggle">_</div>
+        </div>
+        <div id="search-group" class="group-content">
+            <a href="https://google.com" class="icon-item">
+                <div class="icon-wrapper">🔍</div>
+                <div class="icon-label">Google</div>
+            </a>
+            <a href="https://bing.com" class="icon-item">
+                <div class="icon-wrapper">🔎</div>
+                <div class="icon-label">Bing</div>
+            </a>
+            <a href="https://duckduckgo.com" class="icon-item">
+                <div class="icon-wrapper">🦆</div>
+                <div class="icon-label">DDG</div>
+            </a>
+            <a href="https://search.yahoo.com" class="icon-item">
+                <div class="icon-wrapper">Y!</div>
+                <div class="icon-label">Yahoo</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- AI Group -->
+    <div class="program-group">
+        <div class="group-header" onclick="toggleGroup('ai-group')">
+            <span>AI Tools</span>
+            <div class="group-toggle">_</div>
+        </div>
+        <div id="ai-group" class="group-content">
+            <a href="https://chatgpt.com" class="icon-item">
+                <div class="icon-wrapper">🤖</div>
+                <div class="icon-label">ChatGPT</div>
+            </a>
+            <a href="https://claude.ai" class="icon-item">
+                <div class="icon-wrapper">🧠</div>
+                <div class="icon-label">Claude</div>
+            </a>
+            <a href="https://gemini.google.com" class="icon-item">
+                <div class="icon-wrapper">✨</div>
+                <div class="icon-label">Gemini</div>
+            </a>
+            <a href="https://perplexity.ai" class="icon-item">
+                <div class="icon-wrapper">🌐</div>
+                <div class="icon-label">Perplex</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Dev Group -->
+    <div class="program-group">
+        <div class="group-header" onclick="toggleGroup('dev-group')">
+            <span>Development</span>
+            <div class="group-toggle">_</div>
+        </div>
+        <div id="dev-group" class="group-content">
+            <a href="https://github.com" class="icon-item">
+                <div class="icon-wrapper">🐙</div>
+                <div class="icon-label">GitHub</div>
+            </a>
+            <a href="https://stackoverflow.com" class="icon-item">
+                <div class="icon-wrapper">🥞</div>
+                <div class="icon-label">StackOverflow</div>
+            </a>
+            <a href="https://codepen.io" class="icon-item">
+                <div class="icon-wrapper">✒️</div>
+                <div class="icon-label">CodePen</div>
+            </a>
+            <a href="https://vercel.com" class="icon-item">
+                <div class="icon-wrapper">▲</div>
+                <div class="icon-label">Vercel</div>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleGroup(id) {
+        const content = document.getElementById(id);
+        content.classList.toggle('collapsed');
+        
+        // Change toggle icon
+        const header = content.previousElementSibling;
+        const toggle = header.querySelector('.group-toggle');
+        if (content.classList.contains('collapsed')) {
+            toggle.textContent = '□';
+        } else {
+            toggle.textContent = '_';
+        }
+    }
+</script>
+
+</body>
+</html>

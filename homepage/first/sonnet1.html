@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home — Pill Strip</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        background: #0a0a0f;
+        font-family: "Inter", system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3rem;
+      }
+
+      .clock {
+        font-size: clamp(3rem, 10vw, 6rem);
+        font-weight: 200;
+        letter-spacing: -0.02em;
+        color: #fff;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .date {
+        font-size: 0.85rem;
+        color: #555;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-top: -2.5rem;
+      }
+
+      .strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        max-width: 700px;
+        padding: 0 1rem;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 999px;
+        text-decoration: none;
+        color: #aaa;
+        font-size: 0.82rem;
+        font-weight: 500;
+        transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+        white-space: nowrap;
+      }
+
+      .pill img {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        flex-shrink: 0;
+      }
+
+      .pill:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        box-shadow: 0 0 16px rgba(100, 100, 255, 0.25);
+      }
+
+      .divider {
+        width: 1px;
+        height: 16px;
+        background: rgba(255, 255, 255, 0.1);
+        align-self: center;
+      }
+
+      @media (max-width: 400px) {
+        .divider {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="clock" id="clock">00:00</div>
+    <div class="date" id="date">Loading…</div>
+
+    <nav class="strip" aria-label="Quick links">
+      <a href="https://www.google.com" class="pill" id="link-google">
+        <img src="https://www.google.com/favicon.ico" alt="" /> Google
+      </a>
+      <a href="https://calendar.google.com" class="pill" id="link-calendar">
+        <img src="https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico" alt="" /> Calendar
+      </a>
+      <a href="https://www.youtube.com" class="pill" id="link-youtube">
+        <img src="https://www.youtube.com/favicon.ico" alt="" /> YouTube
+      </a>
+      <span class="divider"></span>
+      <a href="https://chatgpt.com" class="pill" id="link-chatgpt">
+        <img src="https://chatgpt.com/favicon.ico" alt="" /> ChatGPT
+      </a>
+      <a href="https://github.com" class="pill" id="link-github">
+        <img src="https://github.com/favicon.ico" alt="" /> GitHub
+      </a>
+      <span class="divider"></span>
+      <a href="https://example.net" class="pill" id="link-example">
+        <img src="https://example.net/favicon.ico" alt="" /> example.net
+      </a>
+      <!-- add more pills here -->
+    </nav>
+
+    <script>
+      function tick() {
+        const now = new Date();
+        document.getElementById("clock").textContent = now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        document.getElementById("date").textContent = now.toLocaleDateString([], {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        });
+      }
+      tick();
+      setInterval(tick, 1000);
+    </script>
+  </body>
+</html>

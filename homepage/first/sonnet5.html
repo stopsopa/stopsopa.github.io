@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home — Typewriter</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      background: #0d0d0d;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      display: flex; align-items: center; justify-content: center;
+      color: #c8d0e0;
+    }
+    .terminal {
+      width: min(680px, 94vw);
+      background: #111316;
+      border: 1px solid #1e2330;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+    }
+    .titlebar {
+      display: flex; align-items: center; gap: 6px;
+      padding: 10px 14px;
+      background: #161a22;
+      border-bottom: 1px solid #1e2330;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; }
+    .dot.y { background: #febc2e; }
+    .dot.g { background: #28c840; }
+    .titlebar-label {
+      flex: 1; text-align: center; font-size: 0.72rem;
+      color: #3a4460; letter-spacing: 0.05em;
+    }
+    .body { padding: 1.2rem 1.4rem 1.6rem; font-size: 0.82rem; line-height: 1.9; }
+    .prompt { color: #3a4460; }
+    .cmd { color: #7dd3fc; }
+    .section-title {
+      color: #3a4460; font-size: 0.7rem;
+      margin: 1.1rem 0 0.35rem;
+      border-top: 1px solid #1a1f2e;
+      padding-top: 0.6rem;
+    }
+    .section-title:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+    .link-row {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.15rem 0;
+      text-decoration: none;
+      color: #8899bb;
+      transition: color 0.15s;
+    }
+    .link-row:hover { color: #e0eaff; }
+    .link-row:hover .arrow { color: #38bdf8; }
+    .arrow { color: #2a3550; transition: color 0.15s; }
+    .link-row img { width: 13px; height: 13px; border-radius: 2px; opacity: 0.6; }
+    .link-row:hover img { opacity: 1; }
+    .link-name { color: #a5b4d0; }
+    .link-row:hover .link-name { color: #fff; }
+    .link-url { color: #2e3f5c; font-size: 0.72rem; }
+    .cursor {
+      display: inline-block; width: 8px; height: 14px;
+      background: #38bdf8; vertical-align: middle;
+      animation: blink 1s step-end infinite;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  </style>
+</head>
+<body>
+  <div class="terminal" role="navigation" aria-label="Quick links">
+    <div class="titlebar">
+      <span class="dot r"></span>
+      <span class="dot y"></span>
+      <span class="dot g"></span>
+      <span class="titlebar-label">~/homepage — zsh</span>
+    </div>
+    <div class="body">
+      <div><span class="prompt">~ $</span> <span class="cmd">open --links</span><span class="cursor"></span></div>
+
+      <div class="section-title"># google</div>
+
+      <a href="https://www.google.com" class="link-row" id="link-google">
+        <span class="arrow">→</span>
+        <img src="https://www.google.com/favicon.ico" alt="">
+        <span class="link-name">google</span>
+        <span class="link-url">google.com</span>
+      </a>
+      <a href="https://calendar.google.com" class="link-row" id="link-calendar">
+        <span class="arrow">→</span>
+        <img src="https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico" alt="">
+        <span class="link-name">calendar</span>
+        <span class="link-url">calendar.google.com</span>
+      </a>
+      <a href="https://www.youtube.com" class="link-row" id="link-youtube">
+        <span class="arrow">→</span>
+        <img src="https://www.youtube.com/favicon.ico" alt="">
+        <span class="link-name">youtube</span>
+        <span class="link-url">youtube.com</span>
+      </a>
+
+      <div class="section-title"># dev &amp; ai</div>
+
+      <a href="https://chatgpt.com" class="link-row" id="link-chatgpt">
+        <span class="arrow">→</span>
+        <img src="https://chatgpt.com/favicon.ico" alt="">
+        <span class="link-name">chatgpt</span>
+        <span class="link-url">chatgpt.com</span>
+      </a>
+      <a href="https://github.com" class="link-row" id="link-github">
+        <span class="arrow">→</span>
+        <img src="https://github.com/favicon.ico" alt="">
+        <span class="link-name">github</span>
+        <span class="link-url">github.com</span>
+      </a>
+
+      <div class="section-title"># other</div>
+
+      <a href="https://example.net" class="link-row" id="link-example">
+        <span class="arrow">→</span>
+        <img src="https://example.net/favicon.ico" alt="">
+        <span class="link-name">example</span>
+        <span class="link-url">example.net</span>
+      </a>
+      <!-- add more link-row items here -->
+    </div>
+  </div>
+</body>
+</html>

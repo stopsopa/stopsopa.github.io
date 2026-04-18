@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Left Sidebar Bookmark Board</title>
+    <meta name="description" content="A compact, left-aligned bookmark dashboard for frequently used links, organized by categories.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #0a0a0c;
+            --bg-sidebar: #111114;
+            --text-main: #e1e1e6;
+            --text-dim: #8b8b93;
+            --accent: #4f46e5;
+            --accent-hover: #6366f1;
+            --border: #1f1f23;
+            --hover-item: #1c1c21;
+            
+            --sidebar-width: 300px;
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+            --radius: 6px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            line-height: 1.5;
+        }
+
+        /* Sidebar Navigation */
+        #bookmark-sidebar {
+            width: var(--sidebar-width);
+            height: 100%;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            padding: 20px 12px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        #bookmark-sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #bookmark-sidebar::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+
+        .header {
+            padding: 0 8px 24px 8px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header h1::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        /* Grouping */
+        .group {
+            margin-bottom: 24px;
+        }
+
+        .group-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            padding: 0 8px;
+            font-weight: 500;
+        }
+
+        .links-list {
+            list-style: none;
+        }
+
+        .link-item {
+            margin-bottom: 2px;
+        }
+
+        .link-anchor {
+            display: flex;
+            align-items: center;
+            padding: 7px 8px;
+            text-decoration: none;
+            color: var(--text-main);
+            border-radius: var(--radius);
+            transition: background 0.15s ease, transform 0.1s ease;
+            font-size: 0.875rem;
+            border: 1px solid transparent;
+        }
+
+        .link-anchor:hover {
+            background-color: var(--hover-item);
+            border-color: var(--border);
+            transform: translateX(2px);
+        }
+
+        .link-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--text-dim);
+            transition: color 0.15s ease;
+        }
+
+        .link-anchor:hover .link-icon {
+            color: var(--accent-hover);
+        }
+
+        .link-label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 400;
+        }
+
+        /* Simple content area */
+        .viewport {
+            flex-grow: 1;
+            background-color: var(--bg-body);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .placeholder {
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .placeholder h2 {
+            font-size: 1.5rem;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+
+        .placeholder p {
+            color: var(--text-dim);
+            opacity: 0.5;
+            font-size: 0.9rem;
+        }
+
+        /* Micro-animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .group {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .group:nth-child(2) { animation-delay: 0.05s; }
+        .group:nth-child(3) { animation-delay: 0.1s; }
+        .group:nth-child(4) { animation-delay: 0.15s; }
+        .group:nth-child(5) { animation-delay: 0.2s; }
+
+    </style>
+</head>
+<body>
+
+    <nav id="bookmark-sidebar">
+        <div class="header">
+            <h1>Bookmark Board</h1>
+        </div>
+
+        <div class="group">
+            <h2 class="group-title">Search</h2>
+            <ul class="links-list">
+                <li class="link-item">
+                    <a href="https://www.google.com" class="link-anchor" target="_blank" id="link-google">
+                        <div class="link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </div>
+                        <span class="link-label">Google</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://duckduckgo.com" class="link-anchor" target="_blank" id="link-duckduckgo">
+                        <div class="link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        </div>
+                        <span class="link-label">DuckDuckGo</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="group">
+            <h2 class="group-title">AI Assistants</h2>
+            <ul class="links-list">
+                <li class="link-item">
+                    <a href="https://chatgpt.com" class="link-anchor" target="_blank" id="link-chatgpt">
+                        <div class="link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
+                        </div>
+                        <span class="link-label">ChatGPT</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://claude.ai" class="link-anchor" target="_blank" id="link-claude">
+                        <div class="link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 7 7H2l5 5-5 5h5l5 5 5-5h5l-5-5 5-5h-5z"></path></svg>
+                        </div>
+                        <span class="link-label">Claude</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://gemini.google.com" class="link-anchor" target="_blank" id="link-gemini">
+                        <div class="link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"></path><path d="M3 12h18"></path><path d="m16.5 7.5-9 9"></path><path d="m7.5 7.5 9 9"></path></svg>
+                        </div>
+                        <span class="link-label">Gemini</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="group">
+            <h2 class="group-title">Development</h2>
+            <ul class="links-list">
+                <li class="link-item">
+                    <a href="https://github.com" class="link-anchor" target="_blank" id="link-github">
+                        <div class="link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+                        </div>
+                        <span class="link-label">GitHub</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://stackoverflow.com" class="link-anchor" target="_blank" id="link-stackoverflow">
+                        <div class="link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"></path><path d="M5 7c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v12H5V7Z"></path><path d="M22 19H2"></path></svg>
+                        </div>
+                        <span class="link-label">Stack Overflow</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="group">
+            <h2 class="group-title">Social</h2>
+            <ul class="links-list">
+                <li class="link-item">
+                    <a href="https://twitter.com" class="link-anchor" target="_blank" id="link-twitter">
+                        <div class="link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                        </div>
+                        <span class="link-label">Twitter / X</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://reddit.com" class="link-anchor" target="_blank" id="link-reddit">
+                        <div class="link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M17 12h.01"></path><path d="M7 12h.01"></path><path d="M15 15.5c-1 1-3 1.5-4 0"></path></svg>
+                        </div>
+                        <span class="link-label">Reddit</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="viewport">
+        <div class="placeholder">
+            <h2>Left Sidebar Board</h2>
+            <p>Compact. Grouped. Functional.</p>
+        </div>
+    </main>
+
+</body>
+</html>

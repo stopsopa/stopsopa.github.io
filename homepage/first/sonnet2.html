@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home — Spotlight</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        background: radial-gradient(ellipse at 50% 40%, #1a1030 0%, #080810 70%);
+        font-family: "Inter", system-ui, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .panel {
+        width: min(560px, 94vw);
+        background: rgba(18, 14, 32, 0.9);
+        border: 1px solid rgba(150, 80, 255, 0.25);
+        border-radius: 16px;
+        backdrop-filter: blur(24px);
+        overflow: hidden;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+      }
+
+      .search-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0 1.2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        height: 52px;
+      }
+
+      .search-bar svg {
+        width: 16px;
+        height: 16px;
+        color: #555;
+        flex-shrink: 0;
+      }
+
+      .search-bar input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #ddd;
+        font-size: 0.9rem;
+        font-family: inherit;
+      }
+
+      .search-bar input::placeholder {
+        color: #444;
+      }
+
+      .group-label {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #4a4060;
+        padding: 0.85rem 1.2rem 0.4rem;
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.55rem 1.2rem;
+        text-decoration: none;
+        color: #bbb;
+        font-size: 0.875rem;
+        transition: background 0.12s, color 0.12s;
+        cursor: pointer;
+      }
+
+      .row:hover,
+      .row.active {
+        background: rgba(140, 80, 255, 0.12);
+        color: #fff;
+      }
+
+      .row img {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        flex-shrink: 0;
+        opacity: 0.75;
+      }
+
+      .row:hover img {
+        opacity: 1;
+      }
+
+      .row .label {
+        flex: 1;
+      }
+
+      .row .hint {
+        font-size: 0.7rem;
+        color: #403560;
+        font-family: "SF Mono", "Fira Code", monospace;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 4px;
+        padding: 1px 6px;
+      }
+
+      .row:hover .hint {
+        color: #7055a0;
+      }
+
+      .sep {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.05);
+        margin: 0.4rem 0;
+      }
+
+      footer {
+        padding: 0.6rem 1.2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 0.7rem;
+        color: #33285a;
+        display: flex;
+        gap: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="panel" role="dialog" aria-label="Quick links">
+      <div class="search-bar">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input type="text" placeholder="Search or jump to…" id="search-input" autocomplete="off" />
+      </div>
+
+      <div class="group-label">Google</div>
+      <a href="https://www.google.com" class="row" id="link-google">
+        <img src="https://www.google.com/favicon.ico" alt="" /> <span class="label">Google Search</span>
+        <span class="hint">g</span>
+      </a>
+      <a href="https://calendar.google.com" class="row" id="link-calendar">
+        <img src="https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico" alt="" />
+        <span class="label">Google Calendar</span> <span class="hint">c</span>
+      </a>
+      <a href="https://www.youtube.com" class="row" id="link-youtube">
+        <img src="https://www.youtube.com/favicon.ico" alt="" /> <span class="label">YouTube</span>
+        <span class="hint">y</span>
+      </a>
+
+      <div class="sep"></div>
+      <div class="group-label">Dev &amp; AI</div>
+
+      <a href="https://chatgpt.com" class="row" id="link-chatgpt">
+        <img src="https://chatgpt.com/favicon.ico" alt="" /> <span class="label">ChatGPT</span>
+        <span class="hint">a</span>
+      </a>
+      <a href="https://github.com" class="row" id="link-github">
+        <img src="https://github.com/favicon.ico" alt="" /> <span class="label">GitHub</span>
+        <span class="hint">h</span>
+      </a>
+
+      <div class="sep"></div>
+      <div class="group-label">Other</div>
+
+      <a href="https://example.net" class="row" id="link-example">
+        <img src="https://example.net/favicon.ico" alt="" /> <span class="label">example.net</span>
+        <span class="hint">e</span>
+      </a>
+      <!-- add more rows here -->
+
+      <footer>
+        <span>↑↓ navigate</span>
+        <span>↵ open</span>
+        <span>esc dismiss</span>
+      </footer>
+    </div>
+
+    <script>
+      // basic keyboard shortcut navigation
+      const rows = Array.from(document.querySelectorAll(".row"));
+      let idx = -1;
+      function activate(i) {
+        rows.forEach((r) => r.classList.remove("active"));
+        if (i >= 0 && i < rows.length) {
+          rows[i].classList.add("active");
+          idx = i;
+          rows[i].focus();
+        }
+      }
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          activate(Math.min(idx + 1, rows.length - 1));
+        }
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          activate(Math.max(idx - 1, 0));
+        }
+        if (e.key === "Enter" && idx >= 0) rows[idx].click();
+      });
+      document.getElementById("search-input").focus();
+    </script>
+  </body>
+</html>

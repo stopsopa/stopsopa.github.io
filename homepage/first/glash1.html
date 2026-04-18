@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Bento Grid</title>
+    <style>
+      :root {
+        --bg: #09090b;
+        --card-bg: #18181b;
+        --border: #27272a;
+        --text: #fafafa;
+        --text-muted: #a1a1aa;
+        --accent: #3b82f6;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+
+      .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        grid-auto-rows: 100px;
+        gap: 1rem;
+        width: 100%;
+        max-width: 800px;
+      }
+
+      .link-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .link-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+        background: #1e1e21;
+      }
+
+      .link-card span {
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-top: 0.5rem;
+      }
+
+      .icon {
+        font-size: 1.5rem;
+      }
+
+      /* Span multiple columns for some items if desired */
+      .large {
+        grid-column: span 2;
+      }
+      .tall {
+        grid-row: span 2;
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .large {
+          grid-column: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="https://google.com" class="link-card" id="link-google">
+        <div class="icon">🔍</div>
+        <span>Google</span>
+      </a>
+      <a href="https://calendar.google.com" class="link-card tall" id="link-calendar">
+        <div class="icon">📅</div>
+        <span>Calendar</span>
+      </a>
+      <a href="https://youtube.com" class="link-card" id="link-youtube">
+        <div class="icon">📺</div>
+        <span>YouTube</span>
+      </a>
+      <a href="https://chatgpt.com" class="link-card large" id="link-chatgpt">
+        <div class="icon">🤖</div>
+        <span>ChatGPT</span>
+      </a>
+      <a href="https://github.com" class="link-card" id="link-github">
+        <div class="icon">🐙</div>
+        <span>GitHub</span>
+      </a>
+      <a href="https://example.net" class="link-card" id="link-example">
+        <div class="icon">🔗</div>
+        <span>Example</span>
+      </a>
+      <!-- Add more links here -->
+    </div>
+  </body>
+</html>

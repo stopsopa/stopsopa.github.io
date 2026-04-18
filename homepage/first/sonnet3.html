@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home — Neon Grid</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        background: #080c14;
+        font-family: "Inter", system-ui, sans-serif;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+        width: 100%;
+        max-width: 900px;
+      }
+
+      .card {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.7rem 0.9rem;
+        background: #0e1420;
+        border: 1px solid #1a2236;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #8899bb;
+        font-size: 0.82rem;
+        font-weight: 500;
+        overflow: hidden;
+        transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.15s;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--accent, #3b82f6);
+        border-radius: 3px 0 0 3px;
+        opacity: 0.5;
+        transition: opacity 0.2s, height 0.2s;
+      }
+
+      .card:hover {
+        color: #e8f0ff;
+        border-color: var(--accent, #3b82f6);
+        background: #111827;
+        transform: translateX(2px);
+      }
+
+      .card:hover::before {
+        opacity: 1;
+      }
+
+      .card img {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        flex-shrink: 0;
+        opacity: 0.65;
+        transition: opacity 0.2s;
+      }
+
+      .card:hover img {
+        opacity: 1;
+      }
+
+      .group-header {
+        grid-column: 1 / -1;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: #2a3550;
+        padding: 0.5rem 0 0.2rem;
+        border-top: 1px solid #141e30;
+        margin-top: 0.25rem;
+      }
+
+      .group-header:first-child {
+        border-top: none;
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="grid" aria-label="Quick links">
+      <div class="group-header">Google</div>
+      <a href="https://www.google.com" class="card" id="link-google" style="--accent: #4285f4">
+        <img src="https://www.google.com/favicon.ico" alt="" /> Google
+      </a>
+      <a href="https://calendar.google.com" class="card" id="link-calendar" style="--accent: #34a853">
+        <img src="https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico" alt="" /> Calendar
+      </a>
+      <a href="https://www.youtube.com" class="card" id="link-youtube" style="--accent: #ff0000">
+        <img src="https://www.youtube.com/favicon.ico" alt="" /> YouTube
+      </a>
+      <!-- add more Google links -->
+
+      <div class="group-header">Dev &amp; AI</div>
+      <a href="https://chatgpt.com" class="card" id="link-chatgpt" style="--accent: #10a37f">
+        <img src="https://chatgpt.com/favicon.ico" alt="" /> ChatGPT
+      </a>
+      <a href="https://github.com" class="card" id="link-github" style="--accent: #e4e4e4">
+        <img src="https://github.com/favicon.ico" alt="" /> GitHub
+      </a>
+      <!-- add more Dev links -->
+
+      <div class="group-header">Other</div>
+      <a href="https://example.net" class="card" id="link-example" style="--accent: #f59e0b">
+        <img src="https://example.net/favicon.ico" alt="" /> example.net
+      </a>
+      <!-- add more -->
+    </nav>
+  </body>
+</html>

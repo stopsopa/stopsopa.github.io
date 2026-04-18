@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid Grid-List Homepage</title>
+    <meta name="description" content="A compact, grouped link layout with a hybrid grid-list design for maximum efficiency.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8;
+            --hover-bg: #334155;
+            --border-color: #334155;
+            --max-width: 480px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: flex-start; /* Left aligned */
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin-left: 0; /* Ensure it stays on the left */
+        }
+
+        header {
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+        }
+
+        .link-card {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .link-card:hover {
+            background-color: var(--hover-bg);
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .icon-wrapper {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+
+        .link-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Group-specific colors (optional polish) */
+        .section:nth-child(2) .section-title::before { background-color: #fb7185; }
+        .section:nth-child(3) .section-title::before { background-color: #4ade80; }
+        .section:nth-child(4) .section-title::before { background-color: #fbbf24; }
+
+        @media (max-width: 480px) {
+            .link-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Personal Dashboard</h1>
+            <p class="subtitle">Quick access to frequently used tools</p>
+        </header>
+
+        <main>
+            <!-- AI Section -->
+            <section class="section">
+                <h2 class="section-title">Artificial Intelligence</h2>
+                <div class="link-grid">
+                    <a href="https://chatgpt.com" class="link-card" id="link-chatgpt">
+                        <span class="icon-wrapper">🤖</span>
+                        <span class="link-label">ChatGPT</span>
+                    </a>
+                    <a href="https://claude.ai" class="link-card" id="link-claude">
+                        <span class="icon-wrapper">🧠</span>
+                        <span class="link-label">Claude</span>
+                    </a>
+                    <a href="https://perplexity.ai" class="link-card" id="link-perplexity">
+                        <span class="icon-wrapper">🔍</span>
+                        <span class="link-label">Perplexity</span>
+                    </a>
+                    <a href="https://gemini.google.com" class="link-card" id="link-gemini">
+                        <span class="icon-wrapper">✨</span>
+                        <span class="link-label">Gemini</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Development Section -->
+            <section class="section">
+                <h2 class="section-title">Development</h2>
+                <div class="link-grid">
+                    <a href="https://github.com" class="link-card" id="link-github">
+                        <span class="icon-wrapper">🐙</span>
+                        <span class="link-label">GitHub</span>
+                    </a>
+                    <a href="https://npmjs.com" class="link-card" id="link-npm">
+                        <span class="icon-wrapper">📦</span>
+                        <span class="link-label">npm</span>
+                    </a>
+                    <a href="https://stackoverflow.com" class="link-card" id="link-stackoverflow">
+                        <span class="icon-wrapper">💬</span>
+                        <span class="link-label">Stack Overflow</span>
+                    </a>
+                    <a href="https://vercel.com" class="link-card" id="link-vercel">
+                        <span class="icon-wrapper">▲</span>
+                        <span class="link-label">Vercel</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Productivity Section -->
+            <section class="section">
+                <h2 class="section-title">Productivity</h2>
+                <div class="link-grid">
+                    <a href="https://calendar.google.com" class="link-card" id="link-calendar">
+                        <span class="icon-wrapper">📅</span>
+                        <span class="link-label">Calendar</span>
+                    </a>
+                    <a href="https://notion.so" class="link-card" id="link-notion">
+                        <span class="icon-wrapper">📝</span>
+                        <span class="link-label">Notion</span>
+                    </a>
+                    <a href="https://mail.google.com" class="link-card" id="link-gmail">
+                        <span class="icon-wrapper">📧</span>
+                        <span class="link-label">Gmail</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Social/Other Section -->
+            <section class="section">
+                <h2 class="section-title">Media & News</h2>
+                <div class="link-grid">
+                    <a href="https://youtube.com" class="link-card" id="link-youtube">
+                        <span class="icon-wrapper">📺</span>
+                        <span class="link-label">YouTube</span>
+                    </a>
+                    <a href="https://twitter.com" class="link-card" id="link-twitter">
+                        <span class="icon-wrapper">🐦</span>
+                        <span class="link-label">Twitter</span>
+                    </a>
+                    <a href="https://reddit.com" class="link-card" id="link-reddit">
+                        <span class="icon-wrapper">🧡</span>
+                        <span class="link-label">Reddit</span>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

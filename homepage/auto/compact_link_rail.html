@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compact Link Rail</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent-color: #38bdf8;
+            --hover-bg: #334155;
+            --border-color: #334155;
+            --sidebar-width: 260px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0.5rem;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        .header {
+            padding: 0 0.75rem 1.5rem 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            letter-spacing: -0.01em;
+        }
+
+        .group {
+            margin-bottom: 1.5rem;
+        }
+
+        .group-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            padding: 0 0.75rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .link-list {
+            list-style: none;
+        }
+
+        .link-item {
+            margin-bottom: 2px;
+        }
+
+        .link {
+            display: flex;
+            align-items: center;
+            padding: 0.4rem 0.75rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .link:hover {
+            background-color: var(--hover-bg);
+            transform: translateX(4px);
+        }
+
+        .link-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .link-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Custom scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Utilities */
+        .badge {
+            font-size: 0.65rem;
+            padding: 1px 4px;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border-radius: 4px;
+            margin-left: auto;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <header class="header">
+            <h1>Quick Rail</h1>
+        </header>
+
+        <section class="group">
+            <h2 class="group-title">Search & Knowledge</h2>
+            <ul class="link-list">
+                <li class="link-item">
+                    <a href="https://google.com" class="link" id="link-google">
+                        <span class="link-icon"><img src="https://www.google.com/favicon.ico" alt=""></span>
+                        <span>Google</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://duckduckgo.com" class="link" id="link-ddg">
+                        <span class="link-icon"><img src="https://duckduckgo.com/favicon.ico" alt=""></span>
+                        <span>DuckDuckGo</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://wikipedia.org" class="link" id="link-wikipedia">
+                        <span class="link-icon"><img src="https://wikipedia.org/favicon.ico" alt=""></span>
+                        <span>Wikipedia</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section class="group">
+            <h2 class="group-title">Artificial Intelligence</h2>
+            <ul class="link-list">
+                <li class="link-item">
+                    <a href="https://chat.openai.com" class="link" id="link-chatgpt">
+                        <span class="link-icon"><img src="https://chat.openai.com/favicon.ico" alt=""></span>
+                        <span>ChatGPT</span>
+                        <span class="badge">PRO</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://claude.ai" class="link" id="link-claude">
+                        <span class="link-icon"><img src="https://claude.ai/favicon.ico" alt=""></span>
+                        <span>Claude</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://perplexity.ai" class="link" id="link-perplexity">
+                        <span class="link-icon"><img src="https://perplexity.ai/favicon.ico" alt=""></span>
+                        <span>Perplexity</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://gemini.google.com" class="link" id="link-gemini">
+                        <span class="link-icon"><img src="https://gemini.google.com/favicon.ico" alt=""></span>
+                        <span>Gemini</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section class="group">
+            <h2 class="group-title">Development</h2>
+            <ul class="link-list">
+                <li class="link-item">
+                    <a href="https://github.com" class="link" id="link-github">
+                        <span class="link-icon"><img src="https://github.com/favicon.ico" alt=""></span>
+                        <span>GitHub</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://stackoverflow.com" class="link" id="link-stackoverflow">
+                        <span class="link-icon"><img src="https://stackoverflow.com/favicon.ico" alt=""></span>
+                        <span>Stack Overflow</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://npm.js.com" class="link" id="link-npm">
+                        <span class="link-icon"><img src="https://www.npmjs.com/favicon.ico" alt=""></span>
+                        <span>NPM Registry</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section class="group">
+            <h2 class="group-title">Social & Media</h2>
+            <ul class="link-list">
+                <li class="link-item">
+                    <a href="https://twitter.com" class="link" id="link-twitter">
+                        <span class="link-icon"><img src="https://twitter.com/favicon.ico" alt=""></span>
+                        <span>Twitter / X</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://youtube.com" class="link" id="link-youtube">
+                        <span class="link-icon"><img src="https://www.youtube.com/favicon.ico" alt=""></span>
+                        <span>YouTube</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://reddit.com" class="link" id="link-reddit">
+                        <span class="link-icon"><img src="https://www.reddit.com/favicon.ico" alt=""></span>
+                        <span>Reddit</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <section class="group">
+            <h2 class="group-title">Productivity</h2>
+            <ul class="link-list">
+                <li class="link-item">
+                    <a href="https://calendar.google.com" class="link" id="link-calendar">
+                        <span class="link-icon"><img src="https://calendar.google.com/favicon.ico" alt=""></span>
+                        <span>Calendar</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://mail.google.com" class="link" id="link-gmail">
+                        <span class="link-icon"><img src="https://mail.google.com/favicon.ico" alt=""></span>
+                        <span>Gmail</span>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="https://notion.so" class="link" id="link-notion">
+                        <span class="link-icon"><img src="https://www.notion.so/favicon.ico" alt=""></span>
+                        <span>Notion</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </aside>
+
+    <main style="margin-left: var(--sidebar-width); padding: 2rem; flex: 1;">
+        <!-- Content area (empty as requested for utility rail focus) -->
+    </main>
+</body>
+</html>

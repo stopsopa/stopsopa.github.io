@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree-View Directory Homepage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1e1e1e; /* VS Code dark grey */
+            --sidebar-bg: #252526;
+            --text-color: #cccccc;
+            --text-bright: #ffffff;
+            --accent-color: #3794ff; /* IDE blue */
+            --hover-bg: #2a2d2e;
+            --line-color: #444444;
+            --sidebar-width: 320px;
+            --font-main: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            font-size: 13px;
+            line-height: 1.4;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid #333;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        .header {
+            padding: 0 20px 20px 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 11px;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .tree-container {
+            padding: 0 10px;
+        }
+
+        details {
+            margin-bottom: 2px;
+        }
+
+        summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 4px 10px;
+            display: flex;
+            align-items: center;
+            border-radius: 4px;
+            user-select: none;
+            position: relative;
+        }
+
+        summary:hover {
+            background-color: var(--hover-bg);
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        /* Folder Icon */
+        summary::before {
+            content: "";
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23cccccc'%3E%3Cpath d='M1.75 2.25A.75.75 0 012.5 1.5h3.5l.5.5h6.75a.75.75 0 01.75.75v9a.75.75 0 01-.75.75H2.5a.75.75 0 01-.75-.75v-10.5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        details[open] > summary::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23cccccc'%3E%3Cpath d='M1.5 4.75A.75.75 0 012.25 4h11.5a.75.75 0 01.75.75v7.5a.75.75 0 01-.75.75H2.25a.75.75 0 01-.75-.75v-7.5z'/%3E%3Cpath d='M2.25 1.5a.75.75 0 00-.75.75V3h13v-.75a.75.75 0 00-.75-.75H2.25z'/%3E%3C/svg%3E");
+        }
+
+        /* Chevron */
+        summary::after {
+            content: "›";
+            position: absolute;
+            right: 12px;
+            transform: rotate(0deg);
+            transition: transform 0.2s;
+            color: #666;
+            font-size: 16px;
+        }
+
+        details[open] > summary::after {
+            transform: rotate(90deg);
+        }
+
+        .tree-content {
+            margin-left: 18px;
+            border-left: 1px solid var(--line-color);
+            padding-left: 5px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tree-item {
+            display: flex;
+            align-items: center;
+            padding: 4px 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            border-radius: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+        }
+
+        .tree-item:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-bright);
+        }
+
+        .tree-item::before {
+            content: "";
+            position: absolute;
+            left: -6px;
+            top: 50%;
+            width: 5px;
+            border-top: 1px solid var(--line-color);
+        }
+
+        .tree-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .tree-icon img {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+        }
+
+        .tree-label {
+            flex-grow: 1;
+        }
+
+        .tree-ext {
+            color: #666;
+            margin-left: 4px;
+            font-size: 11px;
+        }
+
+        /* Custom Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+
+        .status-bar {
+            margin-top: auto;
+            padding: 10px 20px;
+            border-top: 1px solid #333;
+            font-size: 11px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            color: #444;
+            user-select: none;
+        }
+
+        .placeholder-logo {
+            font-size: 48px;
+            opacity: 0.1;
+            margin-bottom: 20px;
+        }
+
+        .placeholder-text {
+            font-size: 14px;
+            opacity: 0.2;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="header">Explorer</div>
+        
+        <div class="tree-container">
+            <!-- AI Group -->
+            <details open>
+                <summary>AI_MODELS</summary>
+                <div class="tree-content">
+                    <a href="https://chat.openai.com" class="link-item tree-item">
+                        <span class="tree-icon">🤖</span>
+                        <span class="tree-label">chatgpt</span>
+                        <span class="tree-ext">.ia</span>
+                    </a>
+                    <a href="https://claude.ai" class="link-item tree-item">
+                        <span class="tree-icon">🧠</span>
+                        <span class="tree-label">claude</span>
+                        <span class="tree-ext">.ia</span>
+                    </a>
+                    <a href="https://gemini.google.com" class="link-item tree-item">
+                        <span class="tree-icon">✨</span>
+                        <span class="tree-label">gemini</span>
+                        <span class="tree-ext">.ia</span>
+                    </a>
+                    <a href="https://perplexity.ai" class="link-item tree-item">
+                        <span class="tree-icon">🔍</span>
+                        <span class="tree-label">perplexity</span>
+                        <span class="tree-ext">.ia</span>
+                    </a>
+                </div>
+            </details>
+
+            <!-- Dev Group -->
+            <details open>
+                <summary>DEVELOPMENT</summary>
+                <div class="tree-content">
+                    <a href="https://github.com" class="link-item tree-item">
+                        <span class="tree-icon">🐙</span>
+                        <span class="tree-label">github</span>
+                        <span class="tree-ext">.git</span>
+                    </a>
+                    <a href="https://stackoverflow.com" class="link-item tree-item">
+                        <span class="tree-icon">🥞</span>
+                        <span class="tree-label">stackoverflow</span>
+                        <span class="tree-ext">.log</span>
+                    </a>
+                    <a href="https://npm.com" class="link-item tree-item">
+                        <span class="tree-icon">📦</span>
+                        <span class="tree-label">npm_registry</span>
+                        <span class="tree-ext">.pkg</span>
+                    </a>
+                    <a href="https://vercel.com" class="link-item tree-item">
+                        <span class="tree-icon">▲</span>
+                        <span class="tree-label">vercel_dash</span>
+                        <span class="tree-ext">.sh</span>
+                    </a>
+                </div>
+            </details>
+
+            <!-- Search Group -->
+            <details>
+                <summary>SEARCH_ENGINES</summary>
+                <div class="tree-content">
+                    <a href="https://google.com" class="link-item tree-item">
+                        <span class="tree-icon">G</span>
+                        <span class="tree-label">google</span>
+                        <span class="tree-ext">.query</span>
+                    </a>
+                    <a href="https://duckduckgo.com" class="link-item tree-item">
+                        <span class="tree-icon">🦆</span>
+                        <span class="tree-label">duck_duck_go</span>
+                        <span class="tree-ext">.query</span>
+                    </a>
+                </div>
+            </details>
+
+            <!-- Social Group -->
+            <details>
+                <summary>SOCIAL_NETWORKS</summary>
+                <div class="tree-content">
+                    <a href="https://twitter.com" class="link-item tree-item">
+                        <span class="tree-icon">𝕏</span>
+                        <span class="tree-label">twitter</span>
+                        <span class="tree-ext">.feed</span>
+                    </a>
+                    <a href="https://reddit.com" class="link-item tree-item">
+                        <span class="tree-icon">👽</span>
+                        <span class="tree-label">reddit</span>
+                        <span class="tree-ext">.sub</span>
+                    </a>
+                    <a href="https://youtube.com" class="link-item tree-item">
+                        <span class="tree-icon">📺</span>
+                        <span class="tree-label">youtube</span>
+                        <span class="tree-ext">.vlog</span>
+                    </a>
+                </div>
+            </details>
+        </div>
+
+        <div class="status-bar">
+            <span>root/homepage</span>
+            <span>UTF-8</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="placeholder-logo">{}</div>
+        <div class="placeholder-text">Select a node from the directory tree to navigate to your favorite web destination. Terminal-style high-density information architecture active.</div>
+    </div>
+
+    <script>
+        // Simple script to handle link clicks if needed, but currently standard links work fine.
+        // We could add a 'selected' state to links if we wanted to mirror IDE behavior perfectly.
+        document.querySelectorAll('.tree-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.tree-item').forEach(i => i.style.backgroundColor = '');
+                this.style.backgroundColor = 'var(--accent-color)';
+                this.style.color = 'var(--text-bright)';
+            });
+        });
+    </script>
+</body>
+</html>

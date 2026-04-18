@@ -59,6 +59,16 @@ export NODE_OPTIONS=""
       confirm: false,
       source: false,
     },
+    [`server_with_lodash_template`]: {
+      command: `
+set -e         
+export NODE_OPTIONS=""       
+node --env-file .env  server-template.ts
+`,
+      description: `launch esbuild and browser tab`,
+      confirm: false,
+      source: false,
+    },
     [`build`]: {
       command: `
 set -e        

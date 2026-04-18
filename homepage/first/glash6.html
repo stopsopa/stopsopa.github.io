@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Glass Sidebar</title>
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text: #ffffff;
+            --accent: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e1b4b, #312e81, #1e1b4b);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            font-family: 'Inter', system-ui, sans-serif;
+            color: var(--text);
+            display: flex;
+            overflow: hidden;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text);
+            background: transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--glass-border);
+            transform: translateX(5px);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 3rem;
+            overflow-y: auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon {
+            font-size: 2rem;
+        }
+
+        .title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .desc {
+            font-size: 0.85rem;
+            opacity: 0.6;
+        }
+
+        /* Ambient background circles */
+        .ambient {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+        .a1 { top: -100px; right: -100px; background: #3b82f6; }
+        .a2 { bottom: -100px; left: 200px; background: #ec4899; }
+    </style>
+</head>
+<body>
+    <div class="ambient a1"></div>
+    <div class="ambient a2"></div>
+
+    <aside class="sidebar">
+        <div class="logo">Workspace</div>
+        
+        <div class="nav-group">
+            <div class="nav-label">General</div>
+            <a href="https://google.com" class="nav-link"><span>🔍</span> Google</a>
+            <a href="https://youtube.com" class="nav-link"><span>📺</span> YouTube</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">Productivity</div>
+            <a href="https://calendar.google.com" class="nav-link"><span>📅</span> Calendar</a>
+            <a href="https://chatgpt.com" class="nav-link"><span>🤖</span> ChatGPT</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">Developer</div>
+            <a href="https://github.com" class="nav-link"><span>🐙</span> GitHub</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="grid">
+            <a href="https://google.com" class="card" id="link-google">
+                <div class="icon">🔍</div>
+                <div>
+                    <div class="title">Google Search</div>
+                    <div class="desc">Quick access to search</div>
+                </div>
+            </a>
+            <a href="https://calendar.google.com" class="card" id="link-calendar">
+                <div class="icon">📅</div>
+                <div>
+                    <div class="title">Calendar</div>
+                    <div class="desc">Manage your schedule</div>
+                </div>
+            </a>
+            <a href="https://youtube.com" class="card" id="link-youtube">
+                <div class="icon">📺</div>
+                <div>
+                    <div class="title">YouTube</div>
+                    <div class="desc">Watch and learn</div>
+                </div>
+            </a>
+            <a href="https://chatgpt.com" class="card" id="link-chatgpt">
+                <div class="icon">🤖</div>
+                <div>
+                    <div class="title">ChatGPT</div>
+                    <div class="desc">AI Assistance</div>
+                </div>
+            </a>
+            <a href="https://github.com" class="card" id="link-github">
+                <div class="icon">🐙</div>
+                <div>
+                    <div class="title">GitHub</div>
+                    <div class="desc">Manage repositories</div>
+                </div>
+            </a>
+            <a href="https://example.net" class="card" id="link-example">
+                <div class="icon">🌐</div>
+                <div>
+                    <div class="title">Example.net</div>
+                    <div class="desc">Generic link</div>
+                </div>
+            </a>
+        </div>
+    </main>
+</body>
+</html>

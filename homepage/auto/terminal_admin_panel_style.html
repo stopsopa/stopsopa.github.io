@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Admin Panel</title>
+    <meta name="description" content="A compact, terminal-inspired admin panel for frequently used links.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0b10;
+            --panel-bg: #111418;
+            --border-color: #2d333b;
+            --text-main: #adbac7;
+            --text-dim: #768390;
+            --accent-green: #4cd964;
+            --accent-blue: #58a6ff;
+            --accent-orange: #f69e5d;
+            --hover-bg: #1c2128;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.4;
+            padding: 20px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .container {
+            width: 420px;
+            border: 1px solid var(--border-color);
+            background: var(--panel-bg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .header-title {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-blue);
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 5px var(--accent-green);
+        }
+
+        .scroll-area {
+            overflow-y: auto;
+            max-height: calc(100vh - 100px);
+            padding-bottom: 20px;
+        }
+
+        .section {
+            margin-top: 15px;
+        }
+
+        .section-header {
+            padding: 8px 15px;
+            color: var(--accent-orange);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .link-grid {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .link-item {
+            padding: 8px 15px;
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.1s ease;
+            border-left: 2px solid transparent;
+        }
+
+        .link-item:hover {
+            background-color: var(--hover-bg);
+            border-left-color: var(--accent-blue);
+            color: #fff;
+        }
+
+        .icon-box {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .icon-box svg {
+            width: 12px;
+            height: 12px;
+            fill: var(--text-dim);
+        }
+
+        .link-item:hover .icon-box svg {
+            fill: var(--accent-blue);
+        }
+
+        .link-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .link-meta {
+            font-size: 10px;
+            color: var(--text-dim);
+            opacity: 0.5;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-dim);
+        }
+
+        .footer {
+            padding: 10px 15px;
+            border-top: 1px solid var(--border-color);
+            font-size: 10px;
+            color: var(--text-dim);
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-title">Root@Admin: ~</div>
+            <div class="system-status">
+                <span class="status-dot"></span>
+                SYSTEM ONLINE
+            </div>
+        </header>
+
+        <div class="scroll-area">
+            <!-- Search Section -->
+            <div class="section">
+                <div class="section-header">01. SEARCH</div>
+                <div class="link-grid">
+                    <a href="https://google.com" class="link-item" id="link-google">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <span class="link-name">Google</span>
+                        <span class="link-meta">SRCH</span>
+                    </a>
+                    <a href="https://duckduckgo.com" class="link-item" id="link-duckduckgo">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <span class="link-name">DuckDuckGo</span>
+                        <span class="link-meta">PRIV</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- AI Section -->
+            <div class="section">
+                <div class="section-header">02. ARTIFICIAL_INTEL</div>
+                <div class="link-grid">
+                    <a href="https://chat.openai.com" class="link-item" id="link-chatgpt">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <span class="link-name">ChatGPT</span>
+                        <span class="link-meta">LLM</span>
+                    </a>
+                    <a href="https://claude.ai" class="link-item" id="link-claude">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <span class="link-name">Claude</span>
+                        <span class="link-meta">ANTH</span>
+                    </a>
+                    <a href="https://gemini.google.com" class="link-item" id="link-gemini">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <span class="link-name">Gemini</span>
+                        <span class="link-meta">GOOG</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Development Section -->
+            <div class="section">
+                <div class="section-header">03. DEV_TOOLS</div>
+                <div class="link-grid">
+                    <a href="https://github.com" class="link-item" id="link-github">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <span class="link-name">GitHub</span>
+                        <span class="link-meta">REPO</span>
+                    </a>
+                    <a href="https://stackoverflow.com" class="link-item" id="link-stackoverflow">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <span class="link-name">StackOverflow</span>
+                        <span class="link-meta">QA</span>
+                    </a>
+                    <a href="https://vercel.com" class="link-item" id="link-vercel">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <span class="link-name">Vercel</span>
+                        <span class="link-meta">DEPL</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Social Section -->
+            <div class="section">
+                <div class="section-header">04. SOCIAL_COMM</div>
+                <div class="link-grid">
+                    <a href="https://twitter.com" class="link-item" id="link-twitter">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <span class="link-name">Twitter / X</span>
+                        <span class="link-meta">FEED</span>
+                    </a>
+                    <a href="https://reddit.com" class="link-item" id="link-reddit">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <span class="link-name">Reddit</span>
+                        <span class="link-meta">COMM</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <span>Uptime: 102d 14h 22m</span>
+            <span>V 1.0.4-STABLE</span>
+        </footer>
+    </div>
+</body>
+</html>

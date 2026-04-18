@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Bookmark List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d0d0d;
+            --text-color: #e0e0e0;
+            --accent-color: #00ff41; /* Classic terminal green */
+            --dim-color: #666666;
+            --hover-bg: #1a1a1a;
+            --sidebar-width: 320px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.5;
+            font-size: 14px;
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Scanline effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .container {
+            width: var(--sidebar-width);
+            padding: 40px 20px;
+            border-right: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+            background: rgba(13, 13, 13, 0.95);
+        }
+
+        .section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .section-header {
+            color: var(--accent-color);
+            font-weight: 500;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+            text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+        }
+
+        .section-header::before {
+            content: ">";
+        }
+
+        .links-list {
+            list-style: none;
+            padding-left: 12px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .link-item:hover {
+            background-color: var(--hover-bg);
+            color: var(--accent-color);
+            transform: translateX(4px);
+        }
+
+        .link-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            opacity: 0.8;
+        }
+
+        .link-item:hover .link-icon {
+            opacity: 1;
+        }
+
+        .link-text {
+            font-weight: 400;
+        }
+
+        /* Scrollbar styling for the terminal feel */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background-color: var(--accent-color);
+            margin-left: 4px;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .footer {
+            margin-top: auto;
+            color: var(--dim-color);
+            font-size: 11px;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="section">
+            <h2 class="section-header">AI<span class="cursor"></span></h2>
+            <ul class="links-list">
+                <li>
+                    <a href="https://chat.openai.com" class="link-item">
+                        <span class="link-icon">🤖</span>
+                        <span class="link-text">chatgpt</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://claude.ai" class="link-item">
+                        <span class="link-icon">🧠</span>
+                        <span class="link-text">claude</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://gemini.google.com" class="link-item">
+                        <span class="link-icon">✨</span>
+                        <span class="link-text">gemini</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://perplexity.ai" class="link-item">
+                        <span class="link-icon">🔍</span>
+                        <span class="link-text">perplexity</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-header">dev</h2>
+            <ul class="links-list">
+                <li>
+                    <a href="https://github.com" class="link-item">
+                        <span class="link-icon">🐙</span>
+                        <span class="link-text">github</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://stackoverflow.com" class="link-item">
+                        <span class="link-icon">🥞</span>
+                        <span class="link-text">stackoverflow</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://news.ycombinator.com" class="link-item">
+                        <span class="link-icon">🗞️</span>
+                        <span class="link-text">hacker news</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="section-header">search</h2>
+            <ul class="links-list">
+                <li>
+                    <a href="https://google.com" class="link-item">
+                        <span class="link-icon">G</span>
+                        <span class="link-text">google</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://duckduckgo.com" class="link-item">
+                        <span class="link-icon">🦆</span>
+                        <span class="link-text">duckduckgo</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            [session_active: true]<br>
+            [uptime: 1024ms]
+        </div>
+    </div>
+
+</body>
+</html>

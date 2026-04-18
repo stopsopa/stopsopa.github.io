@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A compact, left-aligned dashboard layout for organizing frequently used links into structured sections.">
+    <title>Dashboard Sections Grid</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #080a0f;
+            --section-bg: rgba(22, 27, 34, 0.7);
+            --border-color: rgba(48, 54, 61, 0.8);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #4f46e5;
+            --hover-bg: rgba(79, 70, 229, 0.1);
+            --sidebar-width: 380px;
+            --glass-blur: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(79, 70, 229, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(142, 68, 173, 0.05) 0%, transparent 50%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #dashboard {
+            width: var(--sidebar-width);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            border-right: 1px solid var(--border-color);
+            background: rgba(8, 10, 15, 0.8);
+            backdrop-filter: blur(var(--glass-blur));
+            position: relative;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #4f46e5, #8e44ad);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .brand-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .brand h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(to right, #fff, #8b949e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-header {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 4px;
+        }
+
+        .section-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--border-color), transparent);
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .link-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            text-decoration: none;
+            color: var(--text-primary);
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: transparent;
+            transition: background 0.3s ease;
+        }
+
+        .link-card:hover {
+            background: var(--hover-bg);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .link-card:hover::before {
+            background: var(--accent-color);
+        }
+
+        .icon-wrapper {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
+        }
+
+        .icon-wrapper img {
+            width: 16px;
+            height: 16px;
+            filter: grayscale(0.2) brightness(1.1);
+        }
+
+        .link-name {
+            flex: 1;
+        }
+
+        .external-icon {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .link-card:hover .external-icon {
+            opacity: 1;
+        }
+
+        /* Group Specific Colors */
+        .group-ai .link-card:hover { border-color: #8e44ad; --accent-color: #8e44ad; }
+        .group-search .link-card:hover { border-color: #f1c40f; --accent-color: #f1c40f; }
+        .group-dev .link-card:hover { border-color: #2ecc71; --accent-color: #2ecc71; }
+        .group-social .link-card:hover { border-color: #3498db; --accent-color: #3498db; }
+
+        @media (max-width: 480px) {
+            #dashboard {
+                width: 100%;
+                border-right: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="dashboard">
+        <div class="brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+            </div>
+            <h1>Hub</h1>
+        </div>
+
+        <!-- AI Assistants -->
+        <div class="section-group group-ai">
+            <div class="section-header">Intelligence</div>
+            <div class="section-grid">
+                <a href="https://chat.openai.com" class="link-card">
+                    <div class="icon-wrapper"><img src="https://www.google.com/s2/favicons?domain=openai.com&sz=64" alt="ChatGPT"></div>
+                    <span class="link-name">ChatGPT</span>
+                    <span class="external-icon">↗</span>
+                </a>
+                <a href="https://claude.ai" class="link-card">
+                    <div class="icon-wrapper"><img src="https://www.google.com/s2/favicons?domain=anthropic.com&sz=64" alt="Claude"></div>
+                    <span class="link-name">Claude AI</span>
+                    <span class="external-icon">↗</span>
+                </a>
+                <a href="https://gemini.google.com" class="link-card">
+                    <div class="icon-wrapper"><img src="https://www.google.com/s2/favicons?domain=google.com&sz=64" alt="Gemini"></div>
+                    <span class="link-name">Google Gemini</span>
+                    <span class="external-icon">↗</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Engines -->
+        <div class="section-group group-search">
+            <div class="section-header">Search</div>
+            <div class="section-grid">
+                <a href="https://google.com" class="link-card">
+                    <div class="icon-wrapper"><img src="https://www.google.com/s2/favicons?domain=google.com&sz=64" alt="Google"></div>
+                    <span class="link-name">Google</span>
+                    <span class="external-icon">↗</span>
+                </a>
+                <a href="https://perplexity.ai" class="link-card">
+                    <div class="icon-wrapper"><img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64" alt="Perplexity"></div>
+                    <span class="link-name">Perplexity</span>
+                    <span class="external-icon">↗</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Development Tools -->
+        <div class="section-group group-dev">
+            <div class="section-header">Development</div>
+            <div class="section-grid">
+                <a href="https://github.com" class="link-card">
+                    <div class="icon-wrapper"><img src="https://www.google.com/s2/favicons?domain=github.com&sz=64" alt="GitHub"></div>
+                    <span class="link-name">GitHub</span>
+                    <span class="external-icon">↗</span>
+                </a>
+                <a href="https://stackoverflow.com" class="link-card">
+                    <div class="icon-wrapper"><img src="https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=64" alt="StackOverflow"></div>
+                    <span class="link-name">StackOverflow</span>
+                    <span class="external-icon">↗</span>
+                </a>
+                <a href="https://localhost:3000" class="link-card">
+                    <div class="icon-wrapper"><span>L</span></div>
+                    <span class="link-name">Localhost</span>
+                    <span class="external-icon">↗</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Social & Comms -->
+        <div class="section-group group-social">
+            <div class="section-header">Social</div>
+            <div class="section-grid">
+                <a href="https://twitter.com" class="link-card">
+                    <div class="icon-wrapper"><img src="https://www.google.com/s2/favicons?domain=twitter.com&sz=64" alt="X"></div>
+                    <span class="link-name">X / Twitter</span>
+                    <span class="external-icon">↗</span>
+                </a>
+                <a href="https://youtube.com" class="link-card">
+                    <div class="icon-wrapper"><img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=64" alt="YouTube"></div>
+                    <span class="link-name">YouTube</span>
+                    <span class="external-icon">↗</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

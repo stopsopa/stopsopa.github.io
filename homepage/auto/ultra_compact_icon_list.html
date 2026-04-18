@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultra-Compact Icon List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-main: #fcfcfd;
+            --sidebar-bg: #ffffff;
+            --text-primary: #18181b;
+            --text-secondary: #71717a;
+            --accent: #3b82f6;
+            --accent-soft: rgba(59, 130, 246, 0.08);
+            --border: #e4e4e7;
+            --sidebar-width: 260px;
+            --font-size: 13.5px;
+            --icon-size: 15px;
+            --radius: 8px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-main: #09090b;
+                --sidebar-bg: #09090b;
+                --text-primary: #f4f4f5;
+                --text-secondary: #a1a1aa;
+                --accent: #60a5fa;
+                --accent-soft: rgba(96, 165, 250, 0.1);
+                --border: #27272a;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            padding: 20px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            overflow-y: auto;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        .group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .group-header {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0 10px 6px 10px;
+            user-select: none;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: var(--font-size);
+            font-weight: 500;
+            border-radius: var(--radius);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .link-item:hover {
+            background-color: var(--accent-soft);
+            color: var(--accent);
+            transform: translateX(2px);
+        }
+
+        .link-item svg {
+            width: var(--icon-size);
+            height: var(--icon-size);
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+        }
+
+        .link-item:hover svg {
+            color: var(--accent);
+        }
+
+        /* Subtle indicator for active/hover */
+        .link-item::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 0%;
+            background-color: var(--accent);
+            border-radius: 0 4px 4px 0;
+            transition: height 0.2s ease;
+        }
+
+        .link-item:hover::before {
+            height: 60%;
+        }
+
+        /* Custom Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Main content area (empty for now) */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <!-- AI Tools -->
+        <div class="group">
+            <h3 class="group-header">AI & Intelligence</h3>
+            <a href="https://chat.openai.com" class="link-item" target="_blank">
+                <i data-lucide="message-square"></i>
+                <span>ChatGPT</span>
+            </a>
+            <a href="https://claude.ai" class="link-item" target="_blank">
+                <i data-lucide="brain"></i>
+                <span>Claude AI</span>
+            </a>
+            <a href="https://www.perplexity.ai" class="link-item" target="_blank">
+                <i data-lucide="search-code"></i>
+                <span>Perplexity</span>
+            </a>
+            <a href="https://gemini.google.com" class="link-item" target="_blank">
+                <i data-lucide="sparkles"></i>
+                <span>Google Gemini</span>
+            </a>
+        </div>
+
+        <!-- Development -->
+        <div class="group">
+            <h3 class="group-header">Development</h3>
+            <a href="https://github.com" class="link-item" target="_blank">
+                <i data-lucide="github"></i>
+                <span>GitHub</span>
+            </a>
+            <a href="https://npmjs.com" class="link-item" target="_blank">
+                <i data-lucide="box"></i>
+                <span>NPM Registry</span>
+            </a>
+            <a href="https://stackoverflow.com" class="link-item" target="_blank">
+                <i data-lucide="layers"></i>
+                <span>Stack Overflow</span>
+            </a>
+            <a href="https://vercel.com" class="link-item" target="_blank">
+                <i data-lucide="triangle"></i>
+                <span>Vercel Dashboard</span>
+            </a>
+        </div>
+
+        <!-- Search & Info -->
+        <div class="group">
+            <h3 class="group-header">Search & Resources</h3>
+            <a href="https://google.com" class="link-item" target="_blank">
+                <i data-lucide="search"></i>
+                <span>Google Search</span>
+            </a>
+            <a href="https://news.ycombinator.com" class="link-item" target="_blank">
+                <i data-lucide="terminal"></i>
+                <span>Hacker News</span>
+            </a>
+            <a href="https://wikipedia.org" class="link-item" target="_blank">
+                <i data-lucide="book-open"></i>
+                <span>Wikipedia</span>
+            </a>
+        </div>
+
+        <!-- Social & Media -->
+        <div class="group">
+            <h3 class="group-header">Connect</h3>
+            <a href="https://twitter.com" class="link-item" target="_blank">
+                <i data-lucide="twitter"></i>
+                <span>X / Twitter</span>
+            </a>
+            <a href="https://youtube.com" class="link-item" target="_blank">
+                <i data-lucide="youtube"></i>
+                <span>YouTube</span>
+            </a>
+            <a href="https://linkedin.com" class="link-item" target="_blank">
+                <i data-lucide="linkedin"></i>
+                <span>LinkedIn</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        Select a link from the sidebar to begin.
+    </main>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
