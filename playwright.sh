@@ -30,11 +30,19 @@ esac
 
 cd "${_DIR}"
 
-PACKAGE="npm"
+if [ -f .env.sh ]; then
+  source .env.sh
+fi
 
-yarn --version 1> /dev/null 2> /dev/null
-if [ "${?}" = "0" ]; then
+if command -v pnpm > /dev/null 2>&1 && [ -f "pnpm-lock.yaml" ]; then
+  echo "DETECTION: pnpm command and pnpm-lock.yaml found, using pnpm"
+  PACKAGE="pnpm"
+elif command -v yarn > /dev/null 2>&1 && [ -f "yarn.lock" ]; then
+  echo "DETECTION: yarn command and yarn.lock found, using yarn"
   PACKAGE="yarn"
+else
+  echo "DETECTION: pnpm/yarn or their lock files not found, using npm"
+  PACKAGE="npm"
 fi
 
 node -v 1> /dev/null 2> /dev/null
@@ -46,18 +54,18 @@ if [ "${?}" != "0" ]; then
   exit 1
 fi
 
-GRAY=$(tput setaf 244)
-BLACK=$(tput setaf 0)
-RED=$(tput setaf 1)
-GREEN=$(tput setaf 2)
-YELLOW=$(tput setaf 3)
-BLUE=$(tput setaf 4)
-MAGENTA=$(tput setaf 5)
-CYAN=$(tput setaf 6)
-WHITE=$(tput setaf 7)
-BOLD=$(tput bold)
-REVERSE=$(tput rev)
-RESET=$(tput sgr0)
+GRAY=$(tput setaf 244 2>/dev/null || echo "")
+BLACK=$(tput setaf 0 2>/dev/null || echo "")
+RED=$(tput setaf 1 2>/dev/null || echo "")
+GREEN=$(tput setaf 2 2>/dev/null || echo "")
+YELLOW=$(tput setaf 3 2>/dev/null || echo "")
+BLUE=$(tput setaf 4 2>/dev/null || echo "")
+MAGENTA=$(tput setaf 5 2>/dev/null || echo "")
+CYAN=$(tput setaf 6 2>/dev/null || echo "")
+WHITE=$(tput setaf 7 2>/dev/null || echo "")
+BOLD=$(tput bold 2>/dev/null || echo "")
+REVERSE=$(tput rev 2>/dev/null || echo "")
+RESET=$(tput sgr0 2>/dev/null || echo "")
 
 function quote {
   echo "$1" | sed -E 's/\"/\\"/g'
@@ -125,8 +133,15 @@ add yarn add @playwright/test playwright
 function extractVersion() {
   if [ "${PACKAGE}" = "npm" ]; then
     PLAYWRIGHT_VER="$(NODE_OPTIONS="" npm ls --depth=9999 | nodeExtractVersion)";
-  else
+  elif [ "${PACKAGE}" = "yarn" ]; then
     PLAYWRIGHT_VER="$(NODE_OPTIONS="" yarn list | nodeExtractVersion)";
+  elif [ "${PACKAGE}" = "pnpm" ]; then
+    PLAYWRIGHT_VER="$(NODE_OPTIONS="" pnpm ls | nodeExtractVersion)";
+  fi
+
+  if ! [[ "${PLAYWRIGHT_VER}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "${0} error: playwright version ${PLAYWRIGHT_VER} is not valid"
+    exit 1
   fi
 }
 
@@ -446,13 +461,13 @@ if [ "${_TARGET}" = "local" ]; then
 
   cat <<EEE
 
-  /bin/bash node_modules/.bin/playwright test ${_HEADLESS} ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
+  ./node_modules/.bin/playwright test ${_HEADLESS} ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
 
 EEE
 
 node -v
 
-  /bin/bash node_modules/.bin/playwright test ${_HEADLESS} ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
+  ./node_modules/.bin/playwright test ${_HEADLESS} ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
 
   exit 0
 fi
@@ -555,28 +570,51 @@ if [ "${_TARGET}" = "docker" ]; then
 
 extractVersion
 
+# HOMEPAGE FOR THE IMAGE: https://github.com/stopsopa/playwright-research/blob/master/docker/README.md
+# IMAGE="mcr.microsoft.com/playwright:v${PLAYWRIGHT_VER}-focal"
+# IMAGE="monstersmart/playwright:v${PLAYWRIGHT_VER}-focal-just-chromium"
+# IMAGE="monstersmart/playwright:v${PLAYWRIGHT_VER}-focal-just-chromium"
+IMAGE="monstersmart/playwright:v${PLAYWRIGHT_VER}-noble-just-chromium"
+
+
 # testing how to run multiline bash script
 # cat <<EEE | docker run --rm -i --entrypoint="" \
-# mcr.microsoft.com/playwright:v1.27.1-noble \
+# ${IMAGE} \
 # bash
 # ls -la
 # pwd
 # date
 # EEE  
 
+# PLAYWRIGHT_BROWSERS_PATH="$(docker run -i ${IMAGE} bash -c "echo \$PLAYWRIGHT_BROWSERS_PATH")"
+
 CMD="$(cat <<EOF
 cat <<EEE | docker run -i --rm --ipc host --cap-add SYS_ADMIN --entrypoint="" $S
 ${DOCKERDEFAULTS} $S
 ${DOCKER_PARAMS_NOT_QUOTED} $S
 ${_HOSTHANDLER} $S
-mcr.microsoft.com/playwright:v${PLAYWRIGHT_VER}-noble $S
+${IMAGE} $S
 bash
   set -e
   echo ===========printenv== to see PLAYWRIGHT_TEST_MATCH =========  
   printenv
-  echo ===========printenv== to see PLAYWRIGHT_TEST_MATCH =========  
-  # /ms-playwright-agent/node_modules/.bin/playwright test ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
-  /bin/bash node_modules/.bin/playwright test ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
+  echo "pwd: >\\\$(pwd)<"
+  ls -la
+  set -x
+  echo yarn.lock and package.json are required to run yarn list playwright but lets try  
+  npm ls | grep playwright
+  ./node_modules/.bin/playwright --version
+  node playwright.config.js
+  cat <<OOO
+
+value for PLAYWRIGHT_TEST_MATCH >\${PLAYWRIGHT_TEST_MATCH}<  
+fallback to \$(NODE_OPTIONS="" node playwright.config.js | grep testMatch)
+
+  ./node_modules/.bin/playwright test ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
+
+OOO
+  echo =========== inspect =========== ^^
+  ./node_modules/.bin/playwright test ${_ALLOWONLY} ${_PROJECT} --workers=1 $@
 EEE
 EOF
 )"
