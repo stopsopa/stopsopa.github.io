@@ -1,190 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Terminal Drawer - Dashboard</title>
     <style>
-        :root {
-            --bg-color: #000000;
-            --sidebar-width: 280px;
-            --text-color: #cccccc;
-            --comment-color: #5f875f; /* Dull green */
-            --active-bg: #00ff00;
-            --active-text: #000000;
-            --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-        }
+      :root {
+        --bg-color: #000000;
+        --sidebar-width: 280px;
+        --text-color: #cccccc;
+        --comment-color: #5f875f; /* Dull green */
+        --active-bg: #00ff00;
+        --active-text: #000000;
+        --font-mono: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+      }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        body {
-            background-color: #1a1a1a;
-            font-family: var(--font-mono);
-            color: var(--text-color);
-            line-height: 1.5;
-        }
+      body {
+        background-color: #1a1a1a;
+        font-family: var(--font-mono);
+        color: var(--text-color);
+        line-height: 1.5;
+      }
 
-        .terminal-sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            background-color: var(--bg-color);
-            position: fixed;
-            left: 0;
-            top: 0;
-            border-right: 1px solid #333;
-            overflow-y: auto;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-        }
+      .terminal-sidebar {
+        width: var(--sidebar-width);
+        height: 100vh;
+        background-color: var(--bg-color);
+        position: fixed;
+        left: 0;
+        top: 0;
+        border-right: 1px solid #333;
+        overflow-y: auto;
+        padding: 20px 0;
+        display: flex;
+        flex-direction: column;
+      }
 
-        .group {
-            margin-bottom: 24px;
-        }
+      .group {
+        margin-bottom: 24px;
+      }
 
-        .group-header {
-            color: var(--comment-color);
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            user-select: none;
-        }
+      .group-header {
+        color: var(--comment-color);
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        user-select: none;
+      }
 
-        .link-item {
-            display: flex;
-            align-items: center;
-            padding: 6px 16px;
-            text-decoration: none;
-            color: var(--text-color);
-            transition: all 0.1s ease;
-            cursor: pointer;
-            white-space: nowrap;
-        }
+      .link-item {
+        display: flex;
+        align-items: center;
+        padding: 6px 16px;
+        text-decoration: none;
+        color: var(--text-color);
+        transition: all 0.1s ease;
+        cursor: pointer;
+        white-space: nowrap;
+      }
 
-        .link-item:hover, .link-item.active {
-            background-color: var(--active-bg);
-            color: var(--active-text);
-        }
+      .link-item:hover,
+      .link-item.active {
+        background-color: var(--active-bg);
+        color: var(--active-text);
+      }
 
-        .link-item:hover .icon, .link-item.active .icon {
-            fill: var(--active-text);
-        }
+      .link-item:hover .icon,
+      .link-item.active .icon {
+        fill: var(--active-text);
+      }
 
-        .icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
-            fill: var(--text-color);
-            flex-shrink: 0;
-        }
+      .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+        fill: var(--text-color);
+        flex-shrink: 0;
+      }
 
-        .alias-prefix {
-            margin-right: 8px;
-            opacity: 0.7;
-        }
+      .alias-prefix {
+        margin-right: 8px;
+        opacity: 0.7;
+      }
 
-        .label {
-            font-size: 14px;
-        }
+      .label {
+        font-size: 14px;
+      }
 
-        /* Scrollbar styling */
-        .terminal-sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .terminal-sidebar::-webkit-scrollbar-track {
-            background: #000;
-        }
-        .terminal-sidebar::-webkit-scrollbar-thumb {
-            background: #333;
-        }
+      /* Scrollbar styling */
+      .terminal-sidebar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .terminal-sidebar::-webkit-scrollbar-track {
+        background: #000;
+      }
+      .terminal-sidebar::-webkit-scrollbar-thumb {
+        background: #333;
+      }
 
-        /* Main content area (placeholder) */
-        .main-view {
-            margin-left: var(--sidebar-width);
-            padding: 40px;
-            color: #444;
-        }
+      /* Main content area (placeholder) */
+      .main-view {
+        margin-left: var(--sidebar-width);
+        padding: 40px;
+        color: #444;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <aside class="terminal-sidebar">
-        <!-- SEARCH GROUP -->
-        <div class="group">
-            <div class="group-header"># SEARCH</div>
-            
-            <a href="https://google.com" class="link-item">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                <span class="alias-prefix">> alias</span>
-                <span class="label">google</span>
-            </a>
+      <!-- SEARCH GROUP -->
+      <div class="group">
+        <div class="group-header"># SEARCH</div>
 
-            <a href="https://duckduckgo.com" class="link-item">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                <span class="alias-prefix">> alias</span>
-                <span class="label">duckduck</span>
-            </a>
-        </div>
+        <a href="https://google.com" class="link-item">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+            />
+          </svg>
+          <span class="alias-prefix">> alias</span>
+          <span class="label">google</span>
+        </a>
 
-        <!-- AI GROUP -->
-        <div class="group">
-            <div class="group-header"># AI</div>
-            
-            <a href="https://chat.openai.com" class="link-item active">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
-                <span class="alias-prefix">> alias</span>
-                <span class="label">chatgpt</span>
-            </a>
+        <a href="https://duckduckgo.com" class="link-item">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+            />
+          </svg>
+          <span class="alias-prefix">> alias</span>
+          <span class="label">duckduck</span>
+        </a>
+      </div>
 
-            <a href="https://claude.ai" class="link-item">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z"/></svg>
-                <span class="alias-prefix">> alias</span>
-                <span class="label">claude</span>
-            </a>
+      <!-- AI GROUP -->
+      <div class="group">
+        <div class="group-header"># AI</div>
 
-            <a href="https://gemini.google.com" class="link-item">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z"/></svg>
-                <span class="alias-prefix">> alias</span>
-                <span class="label">gemini</span>
-            </a>
-        </div>
+        <a href="https://chat.openai.com" class="link-item active">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"
+            />
+          </svg>
+          <span class="alias-prefix">> alias</span>
+          <span class="label">chatgpt</span>
+        </a>
 
-        <!-- DEV GROUP -->
-        <div class="group">
-            <div class="group-header"># DEVELOPMENT</div>
-            
-            <a href="https://github.com" class="link-item">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.08.39-1.96 1.03-2.65-.1-.25-.45-1.26.1-2.62 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.36.2 2.37.1 2.62.64.69 1.03 1.57 1.03 2.65 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12c0-5.52-4.48-10-10-10z"/></svg>
-                <span class="alias-prefix">> alias</span>
-                <span class="label">github</span>
-            </a>
+        <a href="https://claude.ai" class="link-item">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z" /></svg>
+          <span class="alias-prefix">> alias</span>
+          <span class="label">claude</span>
+        </a>
 
-            <a href="https://stackoverflow.com" class="link-item">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-1h2v1h-2zm0-2.5V7h2v5h-2z"/></svg>
-                <span class="alias-prefix">> alias</span>
-                <span class="label">stack_overflow</span>
-            </a>
-        </div>
+        <a href="https://gemini.google.com" class="link-item">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z" />
+          </svg>
+          <span class="alias-prefix">> alias</span>
+          <span class="label">gemini</span>
+        </a>
+      </div>
 
-        <!-- SOCIAL GROUP -->
-        <div class="group">
-            <div class="group-header"># SOCIAL</div>
-            
-            <a href="https://twitter.com" class="link-item">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.39 4.6 17.28 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.48.75 2.78 1.89 3.53-.7 0-1.36-.22-1.94-.53v.05c0 2.07 1.47 3.8 3.44 4.19-.36.1-.73.15-1.11.15-.27 0-.54-.03-.8-.08.54 1.69 2.11 2.93 3.97 2.96-1.46 1.14-3.3 1.82-5.3 1.82-.35 0-.69-.02-1.02-.06 1.88 1.21 4.12 1.91 6.51 1.91 7.82 0 12.09-6.48 12.09-12.09 0-.18 0-.37-.01-.55.83-.6 1.56-1.35 2.13-2.2z"/></svg>
-                <span class="alias-prefix">> alias</span>
-                <span class="label">x_twitter</span>
-            </a>
-        </div>
+      <!-- DEV GROUP -->
+      <div class="group">
+        <div class="group-header"># DEVELOPMENT</div>
+
+        <a href="https://github.com" class="link-item">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.08.39-1.96 1.03-2.65-.1-.25-.45-1.26.1-2.62 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.36.2 2.37.1 2.62.64.69 1.03 1.57 1.03 2.65 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12c0-5.52-4.48-10-10-10z"
+            />
+          </svg>
+          <span class="alias-prefix">> alias</span>
+          <span class="label">github</span>
+        </a>
+
+        <a href="https://stackoverflow.com" class="link-item">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-1h2v1h-2zm0-2.5V7h2v5h-2z"
+            />
+          </svg>
+          <span class="alias-prefix">> alias</span>
+          <span class="label">stack_overflow</span>
+        </a>
+      </div>
+
+      <!-- SOCIAL GROUP -->
+      <div class="group">
+        <div class="group-header"># SOCIAL</div>
+
+        <a href="https://twitter.com" class="link-item">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.39 4.6 17.28 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.48.75 2.78 1.89 3.53-.7 0-1.36-.22-1.94-.53v.05c0 2.07 1.47 3.8 3.44 4.19-.36.1-.73.15-1.11.15-.27 0-.54-.03-.8-.08.54 1.69 2.11 2.93 3.97 2.96-1.46 1.14-3.3 1.82-5.3 1.82-.35 0-.69-.02-1.02-.06 1.88 1.21 4.12 1.91 6.51 1.91 7.82 0 12.09-6.48 12.09-12.09 0-.18 0-.37-.01-.55.83-.6 1.56-1.35 2.13-2.2z"
+            />
+          </svg>
+          <span class="alias-prefix">> alias</span>
+          <span class="label">x_twitter</span>
+        </a>
+      </div>
     </aside>
 
     <main class="main-view">
-        <!-- Dashboard content can go here -->
+      <!-- Dashboard content can go here -->
     </main>
-
-</body>
+  </body>
 </html>

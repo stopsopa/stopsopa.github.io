@@ -38,7 +38,7 @@ if [[ "${CHECK}" != "false" ]]; then
   Type-checking ...
 
 EEE
-    NODE_OPTIONS="" "${DIR}/node_modules/.bin/tsc" -p "${DIR}"
+    NODE_OPTIONS="" /bin/bash "${DIR}/node_modules/.bin/tsc" -p "${DIR}"
   else
     # if SILENT is present, only show output if tsc fails
     TSC_OUT=$(NODE_OPTIONS="" "${DIR}/node_modules/.bin/tsc" -p "${DIR}" 2>&1) || {

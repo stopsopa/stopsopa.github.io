@@ -1,259 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>iOS4 Springboard Strip</title>
     <style>
-        /* Modern Reset and Variables */
-        :root {
-            --sidebar-width: 340px;
-            --icon-size: 60px;
-            --icon-radius: 12px;
-            --bg-blur: 30px;
-            --text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-            --glass-reflection: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 50%);
-        }
+      /* Modern Reset and Variables */
+      :root {
+        --sidebar-width: 340px;
+        --icon-size: 60px;
+        --icon-radius: 12px;
+        --bg-blur: 30px;
+        --text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        --glass-reflection: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.4) 0%,
+          rgba(255, 255, 255, 0.1) 50%,
+          rgba(255, 255, 255, 0) 50%
+        );
+      }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        body, html {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: url('file:///Users/szdz/.gemini/antigravity/brain/4ab2cfec-bf33-43e7-bc86-f61bf8839a04/ios_abstract_wallpaper_1776548400130.png') center/cover no-repeat fixed;
-        }
+      body,
+      html {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: url("file:///Users/szdz/.gemini/antigravity/brain/4ab2cfec-bf33-43e7-bc86-f61bf8839a04/ios_abstract_wallpaper_1776548400130.png")
+          center/cover no-repeat fixed;
+      }
 
-        /* Darkened Background Layer */
-        .wallpaper-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.15);
-            z-index: 1;
-        }
+      /* Darkened Background Layer */
+      .wallpaper-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.15);
+        z-index: 1;
+      }
 
-        /* The Springboard Strip */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: var(--sidebar-width);
-            height: 100vh;
-            z-index: 2;
-            backdrop-filter: blur(var(--bg-blur)) brightness(0.5);
-            -webkit-backdrop-filter: blur(var(--bg-blur)) brightness(0.5);
-            border-right: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 30px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
-        }
+      /* The Springboard Strip */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        z-index: 2;
+        backdrop-filter: blur(var(--bg-blur)) brightness(0.5);
+        -webkit-backdrop-filter: blur(var(--bg-blur)) brightness(0.5);
+        border-right: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 30px 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
+      }
 
-        .group {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+      .group {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
 
-        .group-title {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            padding-left: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 6px;
-        }
+      .group-title {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding-left: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 6px;
+      }
 
-        .icon-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px 8px;
-            justify-items: center;
-        }
+      .icon-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px 8px;
+        justify-items: center;
+      }
 
-        .app-link {
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 75px; 
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+      .app-link {
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 75px;
+        transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-        .app-link:active {
-            transform: scale(0.9);
-            filter: brightness(0.8);
-        }
+      .app-link:active {
+        transform: scale(0.9);
+        filter: brightness(0.8);
+      }
 
-        /* Icon Styling */
-        .icon-wrapper {
-            width: var(--icon-size);
-            height: var(--icon-size);
-            border-radius: var(--icon-radius);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 0 1px rgba(255, 255, 255, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            background: #222; 
-        }
+      /* Icon Styling */
+      .icon-wrapper {
+        width: var(--icon-size);
+        height: var(--icon-size);
+        border-radius: var(--icon-radius);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 0 1px rgba(255, 255, 255, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        background: #222;
+      }
 
-        /* iOS Glass Reflection */
-        .icon-wrapper::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--glass-reflection);
-            pointer-events: none;
-            border-radius: var(--icon-radius);
-        }
+      /* iOS Glass Reflection */
+      .icon-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--glass-reflection);
+        pointer-events: none;
+        border-radius: var(--icon-radius);
+      }
 
-        /* Glossy Bottom Bevel */
-        .icon-wrapper::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            z-index: 1;
-        }
+      /* Glossy Bottom Bevel */
+      .icon-wrapper::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: 1;
+      }
 
-        .label {
-            margin-top: 8px;
-            color: white;
-            font-size: 10.5px;
-            text-align: center;
-            width: 100%;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-shadow: var(--text-shadow);
-            font-weight: 500;
-            line-height: 1.2;
-        }
+      .label {
+        margin-top: 8px;
+        color: white;
+        font-size: 10.5px;
+        text-align: center;
+        width: 100%;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-shadow: var(--text-shadow);
+        font-weight: 500;
+        line-height: 1.2;
+      }
 
-        /* Categorized Icon Gradients (iOS 4 Style) */
-        .bg-search { background: linear-gradient(180deg, #5AC8FA 0%, #007AFF 100%); }
-        .bg-ai     { background: linear-gradient(180deg, #FF9500 0%, #FF5E00 100%); }
-        .bg-dev    { background: linear-gradient(180deg, #4CD964 0%, #28A745 100%); }
-        .bg-social { background: linear-gradient(180deg, #FF2D55 0%, #D0021B 100%); }
-
+      /* Categorized Icon Gradients (iOS 4 Style) */
+      .bg-search {
+        background: linear-gradient(180deg, #5ac8fa 0%, #007aff 100%);
+      }
+      .bg-ai {
+        background: linear-gradient(180deg, #ff9500 0%, #ff5e00 100%);
+      }
+      .bg-dev {
+        background: linear-gradient(180deg, #4cd964 0%, #28a745 100%);
+      }
+      .bg-social {
+        background: linear-gradient(180deg, #ff2d55 0%, #d0021b 100%);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="wallpaper-overlay"></div>
-    
+
     <div class="sidebar">
-        <!-- Search Group -->
-        <div class="group">
-            <div class="group-title">Search</div>
-            <div class="icon-grid">
-                <a href="https://google.com" class="app-link" title="Google Search">
-                    <div class="icon-wrapper bg-search">🔍</div>
-                    <div class="label">Google Search</div>
-                </a>
-                <a href="https://duckduckgo.com" class="app-link" title="DuckDuckGo">
-                    <div class="icon-wrapper bg-search">🦆</div>
-                    <div class="label">DuckDuck Go</div>
-                </a>
-                <a href="https://bing.com" class="app-link" title="Bing Search">
-                    <div class="icon-wrapper bg-search">🅱️</div>
-                    <div class="label">Bing Search</div>
-                </a>
-                <a href="https://search.yahoo.com" class="app-link" title="Yahoo Search">
-                    <div class="icon-wrapper bg-search">🟣</div>
-                    <div class="label">Yahoo Search</div>
-                </a>
-            </div>
+      <!-- Search Group -->
+      <div class="group">
+        <div class="group-title">Search</div>
+        <div class="icon-grid">
+          <a href="https://google.com" class="app-link" title="Google Search">
+            <div class="icon-wrapper bg-search">🔍</div>
+            <div class="label">Google Search</div>
+          </a>
+          <a href="https://duckduckgo.com" class="app-link" title="DuckDuckGo">
+            <div class="icon-wrapper bg-search">🦆</div>
+            <div class="label">DuckDuck Go</div>
+          </a>
+          <a href="https://bing.com" class="app-link" title="Bing Search">
+            <div class="icon-wrapper bg-search">🅱️</div>
+            <div class="label">Bing Search</div>
+          </a>
+          <a href="https://search.yahoo.com" class="app-link" title="Yahoo Search">
+            <div class="icon-wrapper bg-search">🟣</div>
+            <div class="label">Yahoo Search</div>
+          </a>
         </div>
+      </div>
 
-        <!-- AI Group -->
-        <div class="group">
-            <div class="group-title">Artificial Intel</div>
-            <div class="icon-grid">
-                <a href="https://chat.openai.com" class="app-link" title="ChatGPT">
-                    <div class="icon-wrapper bg-ai">🤖</div>
-                    <div class="label">ChatGPT Pro</div>
-                </a>
-                <a href="https://claude.ai" class="app-link" title="Claude AI">
-                    <div class="icon-wrapper bg-ai">🧠</div>
-                    <div class="label">Claude Assistant</div>
-                </a>
-                <a href="https://gemini.google.com" class="app-link" title="Google Gemini">
-                    <div class="icon-wrapper bg-ai">✨</div>
-                    <div class="label">Google Gemini</div>
-                </a>
-                <a href="https://perplexity.ai" class="app-link" title="Perplexity">
-                    <div class="icon-wrapper bg-ai">🌐</div>
-                    <div class="label">Perplexity AI</div>
-                </a>
-            </div>
+      <!-- AI Group -->
+      <div class="group">
+        <div class="group-title">Artificial Intel</div>
+        <div class="icon-grid">
+          <a href="https://chat.openai.com" class="app-link" title="ChatGPT">
+            <div class="icon-wrapper bg-ai">🤖</div>
+            <div class="label">ChatGPT Pro</div>
+          </a>
+          <a href="https://claude.ai" class="app-link" title="Claude AI">
+            <div class="icon-wrapper bg-ai">🧠</div>
+            <div class="label">Claude Assistant</div>
+          </a>
+          <a href="https://gemini.google.com" class="app-link" title="Google Gemini">
+            <div class="icon-wrapper bg-ai">✨</div>
+            <div class="label">Google Gemini</div>
+          </a>
+          <a href="https://perplexity.ai" class="app-link" title="Perplexity">
+            <div class="icon-wrapper bg-ai">🌐</div>
+            <div class="label">Perplexity AI</div>
+          </a>
         </div>
+      </div>
 
-        <!-- Development Group -->
-        <div class="group">
-            <div class="group-title">Development</div>
-            <div class="icon-grid">
-                <a href="https://github.com" class="app-link" title="GitHub">
-                    <div class="icon-wrapper bg-dev">🐙</div>
-                    <div class="label">GitHub Home</div>
-                </a>
-                <a href="https://stackoverflow.com" class="app-link" title="StackOverflow">
-                    <div class="icon-wrapper bg-dev">🥞</div>
-                    <div class="label">Stack Overflow</div>
-                </a>
-                <a href="https://vercel.com" class="app-link" title="Vercel">
-                    <div class="icon-wrapper bg-dev">▲</div>
-                    <div class="label">Vercel Deploy</div>
-                </a>
-                <a href="https://codesandbox.io" class="app-link" title="CodeSandbox">
-                    <div class="icon-wrapper bg-dev">📦</div>
-                    <div class="label">Code Sandbox</div>
-                </a>
-            </div>
+      <!-- Development Group -->
+      <div class="group">
+        <div class="group-title">Development</div>
+        <div class="icon-grid">
+          <a href="https://github.com" class="app-link" title="GitHub">
+            <div class="icon-wrapper bg-dev">🐙</div>
+            <div class="label">GitHub Home</div>
+          </a>
+          <a href="https://stackoverflow.com" class="app-link" title="StackOverflow">
+            <div class="icon-wrapper bg-dev">🥞</div>
+            <div class="label">Stack Overflow</div>
+          </a>
+          <a href="https://vercel.com" class="app-link" title="Vercel">
+            <div class="icon-wrapper bg-dev">▲</div>
+            <div class="label">Vercel Deploy</div>
+          </a>
+          <a href="https://codesandbox.io" class="app-link" title="CodeSandbox">
+            <div class="icon-wrapper bg-dev">📦</div>
+            <div class="label">Code Sandbox</div>
+          </a>
         </div>
+      </div>
 
-        <!-- Social & Media Group -->
-        <div class="group">
-            <div class="group-title">Social & Media</div>
-            <div class="icon-grid">
-                <a href="https://twitter.com" class="app-link" title="Twitter / X">
-                    <div class="icon-wrapper bg-social">🐦</div>
-                    <div class="label">Twitter X</div>
-                </a>
-                <a href="https://reddit.com" class="app-link" title="Reddit">
-                    <div class="icon-wrapper bg-social">👽</div>
-                    <div class="label">Reddit Front</div>
-                </a>
-                <a href="https://youtube.com" class="app-link" title="YouTube">
-                    <div class="icon-wrapper bg-social">📺</div>
-                    <div class="label">YouTube Video</div>
-                </a>
-                <a href="https://instagram.com" class="app-link" title="Instagram">
-                    <div class="icon-wrapper bg-social">📸</div>
-                    <div class="label">Insta Gram</div>
-                </a>
-            </div>
+      <!-- Social & Media Group -->
+      <div class="group">
+        <div class="group-title">Social & Media</div>
+        <div class="icon-grid">
+          <a href="https://twitter.com" class="app-link" title="Twitter / X">
+            <div class="icon-wrapper bg-social">🐦</div>
+            <div class="label">Twitter X</div>
+          </a>
+          <a href="https://reddit.com" class="app-link" title="Reddit">
+            <div class="icon-wrapper bg-social">👽</div>
+            <div class="label">Reddit Front</div>
+          </a>
+          <a href="https://youtube.com" class="app-link" title="YouTube">
+            <div class="icon-wrapper bg-social">📺</div>
+            <div class="label">YouTube Video</div>
+          </a>
+          <a href="https://instagram.com" class="app-link" title="Instagram">
+            <div class="icon-wrapper bg-social">📸</div>
+            <div class="label">Insta Gram</div>
+          </a>
         </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>

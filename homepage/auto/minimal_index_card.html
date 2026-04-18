@@ -1,218 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minimal Index Card - Links</title>
     <style>
-        :root {
-            --bg-color: #fcfcfc;
-            --text-color: #333;
-            --muted-color: #888;
-            --border-color: #e0e0e0;
-            --accent-color: #000;
-            --hover-bg: #f5f5f5;
-            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --card-width: 320px;
-        }
+      :root {
+        --bg-color: #fcfcfc;
+        --text-color: #333;
+        --muted-color: #888;
+        --border-color: #e0e0e0;
+        --accent-color: #000;
+        --hover-bg: #f5f5f5;
+        --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --card-width: 320px;
+      }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        body {
-            font-family: var(--font-main);
-            background-color: #fff;
-            color: var(--text-color);
-            display: flex;
-            justify-content: flex-start;
-            padding: 40px;
-            min-height: 100vh;
-            line-height: 1.4;
-        }
+      body {
+        font-family: var(--font-main);
+        background-color: #fff;
+        color: var(--text-color);
+        display: flex;
+        justify-content: flex-start;
+        padding: 40px;
+        min-height: 100vh;
+        line-height: 1.4;
+      }
 
-        .container {
-            width: var(--card-width);
-            background-color: var(--bg-color);
-            border: 0.5px solid var(--border-color);
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
+      .container {
+        width: var(--card-width);
+        background-color: var(--bg-color);
+        border: 0.5px solid var(--border-color);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
 
-        .group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+      .group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
 
-        .group-header {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--muted-color);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+      .group-header {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted-color);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
 
-        .group-header::after {
-            content: "";
-            height: 0.5px;
-            background-color: var(--border-color);
-            width: 100%;
-        }
+      .group-header::after {
+        content: "";
+        height: 0.5px;
+        background-color: var(--border-color);
+        width: 100%;
+      }
 
-        .links-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
+      .links-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
 
-        .link-item {
-            text-decoration: none;
-            color: var(--text-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 6px 4px;
-            border-radius: 2px;
-            transition: background 0.15s ease;
-            font-size: 13.5px;
-        }
+      .link-item {
+        text-decoration: none;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 4px;
+        border-radius: 2px;
+        transition: background 0.15s ease;
+        font-size: 13.5px;
+      }
 
-        .link-item:hover {
-            background-color: var(--hover-bg);
-        }
+      .link-item:hover {
+        background-color: var(--hover-bg);
+      }
 
-        .icon-box {
-            width: 16px;
-            height: 16px;
-            background-color: #eee;
-            border: 0.5px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
+      .icon-box {
+        width: 16px;
+        height: 16px;
+        background-color: #eee;
+        border: 0.5px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
 
-        .icon-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
+      .icon-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
 
-        .label {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+      .label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-        /* Subtle scrollbar */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ddd;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ccc;
-        }
+      /* Subtle scrollbar */
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #ccc;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="container">
-        <!-- Search Group -->
-        <section class="group">
-            <h2 class="group-header">Search</h2>
-            <div class="links-list">
-                <a href="https://www.google.com" class="link-item">
-                    <div class="icon-box"><img src="https://www.google.com/favicon.ico" alt=""></div>
-                    <span class="label">Google</span>
-                </a>
-                <a href="https://www.bing.com" class="link-item">
-                    <div class="icon-box"><img src="https://www.bing.com/favicon.ico" alt=""></div>
-                    <span class="label">Bing</span>
-                </a>
-                <a href="https://duckduckgo.com" class="link-item">
-                    <div class="icon-box"><img src="https://duckduckgo.com/favicon.ico" alt=""></div>
-                    <span class="label">DuckDuckGo</span>
-                </a>
-            </div>
-        </section>
+      <!-- Search Group -->
+      <section class="group">
+        <h2 class="group-header">Search</h2>
+        <div class="links-list">
+          <a href="https://www.google.com" class="link-item">
+            <div class="icon-box"><img src="https://www.google.com/favicon.ico" alt="" /></div>
+            <span class="label">Google</span>
+          </a>
+          <a href="https://www.bing.com" class="link-item">
+            <div class="icon-box"><img src="https://www.bing.com/favicon.ico" alt="" /></div>
+            <span class="label">Bing</span>
+          </a>
+          <a href="https://duckduckgo.com" class="link-item">
+            <div class="icon-box"><img src="https://duckduckgo.com/favicon.ico" alt="" /></div>
+            <span class="label">DuckDuckGo</span>
+          </a>
+        </div>
+      </section>
 
-        <!-- AI Tools Group -->
-        <section class="group">
-            <h2 class="group-header">AI Tools</h2>
-            <div class="links-list">
-                <a href="https://chat.openai.com" class="link-item">
-                    <div class="icon-box"><img src="https://chat.openai.com/favicon.ico" alt=""></div>
-                    <span class="label">ChatGPT</span>
-                </a>
-                <a href="https://claude.ai" class="link-item">
-                    <div class="icon-box"><img src="https://claude.ai/favicon.ico" alt=""></div>
-                    <span class="label">Claude AI</span>
-                </a>
-                <a href="https://gemini.google.com" class="link-item">
-                    <div class="icon-box"><img src="https://gemini.google.com/favicon.ico" alt=""></div>
-                    <span class="label">Gemini</span>
-                </a>
-                <a href="https://www.perplexity.ai" class="link-item">
-                    <div class="icon-box"><img src="https://www.perplexity.ai/favicon.ico" alt=""></div>
-                    <span class="label">Perplexity</span>
-                </a>
-            </div>
-        </section>
+      <!-- AI Tools Group -->
+      <section class="group">
+        <h2 class="group-header">AI Tools</h2>
+        <div class="links-list">
+          <a href="https://chat.openai.com" class="link-item">
+            <div class="icon-box"><img src="https://chat.openai.com/favicon.ico" alt="" /></div>
+            <span class="label">ChatGPT</span>
+          </a>
+          <a href="https://claude.ai" class="link-item">
+            <div class="icon-box"><img src="https://claude.ai/favicon.ico" alt="" /></div>
+            <span class="label">Claude AI</span>
+          </a>
+          <a href="https://gemini.google.com" class="link-item">
+            <div class="icon-box"><img src="https://gemini.google.com/favicon.ico" alt="" /></div>
+            <span class="label">Gemini</span>
+          </a>
+          <a href="https://www.perplexity.ai" class="link-item">
+            <div class="icon-box"><img src="https://www.perplexity.ai/favicon.ico" alt="" /></div>
+            <span class="label">Perplexity</span>
+          </a>
+        </div>
+      </section>
 
-        <!-- Development Group -->
-        <section class="group">
-            <h2 class="group-header">Development</h2>
-            <div class="links-list">
-                <a href="https://github.com" class="link-item">
-                    <div class="icon-box"><img src="https://github.com/favicon.ico" alt=""></div>
-                    <span class="label">GitHub</span>
-                </a>
-                <a href="https://stackoverflow.com" class="link-item">
-                    <div class="icon-box"><img src="https://stackoverflow.com/favicon.ico" alt=""></div>
-                    <span class="label">Stack Overflow</span>
-                </a>
-                <a href="https://developer.mozilla.org" class="link-item">
-                    <div class="icon-box"><img src="https://developer.mozilla.org/favicon.ico" alt=""></div>
-                    <span class="label">MDN Docs</span>
-                </a>
-            </div>
-        </section>
+      <!-- Development Group -->
+      <section class="group">
+        <h2 class="group-header">Development</h2>
+        <div class="links-list">
+          <a href="https://github.com" class="link-item">
+            <div class="icon-box"><img src="https://github.com/favicon.ico" alt="" /></div>
+            <span class="label">GitHub</span>
+          </a>
+          <a href="https://stackoverflow.com" class="link-item">
+            <div class="icon-box"><img src="https://stackoverflow.com/favicon.ico" alt="" /></div>
+            <span class="label">Stack Overflow</span>
+          </a>
+          <a href="https://developer.mozilla.org" class="link-item">
+            <div class="icon-box"><img src="https://developer.mozilla.org/favicon.ico" alt="" /></div>
+            <span class="label">MDN Docs</span>
+          </a>
+        </div>
+      </section>
 
-        <!-- Social Group -->
-        <section class="group">
-            <h2 class="group-header">Social</h2>
-            <div class="links-list">
-                <a href="https://twitter.com" class="link-item">
-                    <div class="icon-box"><img src="https://twitter.com/favicon.ico" alt=""></div>
-                    <span class="label">Twitter / X</span>
-                </a>
-                <a href="https://reddit.com" class="link-item">
-                    <div class="icon-box"><img src="https://reddit.com/favicon.ico" alt=""></div>
-                    <span class="label">Reddit</span>
-                </a>
-                <a href="https://news.ycombinator.com" class="link-item">
-                    <div class="icon-box"><img src="https://news.ycombinator.com/favicon.ico" alt=""></div>
-                    <span class="label">Hacker News</span>
-                </a>
-            </div>
-        </section>
+      <!-- Social Group -->
+      <section class="group">
+        <h2 class="group-header">Social</h2>
+        <div class="links-list">
+          <a href="https://twitter.com" class="link-item">
+            <div class="icon-box"><img src="https://twitter.com/favicon.ico" alt="" /></div>
+            <span class="label">Twitter / X</span>
+          </a>
+          <a href="https://reddit.com" class="link-item">
+            <div class="icon-box"><img src="https://reddit.com/favicon.ico" alt="" /></div>
+            <span class="label">Reddit</span>
+          </a>
+          <a href="https://news.ycombinator.com" class="link-item">
+            <div class="icon-box"><img src="https://news.ycombinator.com/favicon.ico" alt="" /></div>
+            <span class="label">Hacker News</span>
+          </a>
+        </div>
+      </section>
     </div>
-
-</body>
+  </body>
 </html>

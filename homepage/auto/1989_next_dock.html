@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>1989 NeXT Dock</title>
     <style>
-        /* 
+      /* 
            1989-NeXT-Dock Aesthetics:
            - Fixed width vertical strip on the left.
            - Matte-black icons (48px square).
@@ -13,222 +13,317 @@
            - Chicago-monospace white capitals on hover.
            - NeXT workspace shelf feel.
         */
-        
-        :root {
-            --dock-width: 68px;
-            --icon-size: 48px;
-            --shelf-bg: #2b2b2b; /* Classic NeXT grey */
-            --icon-bg: #121212;  /* Matte black */
-            --etched-shadow: 1px 1px 0px rgba(255, 255, 255, 0.08), -1px -1px 0px rgba(0, 0, 0, 0.6);
-            --label-bg: #000000;
-            --font-main: 'Chicago', 'Courier New', Courier, monospace;
-        }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+      :root {
+        --dock-width: 68px;
+        --icon-size: 48px;
+        --shelf-bg: #2b2b2b; /* Classic NeXT grey */
+        --icon-bg: #121212; /* Matte black */
+        --etched-shadow: 1px 1px 0px rgba(255, 255, 255, 0.08), -1px -1px 0px rgba(0, 0, 0, 0.6);
+        --label-bg: #000000;
+        --font-main: "Chicago", "Courier New", Courier, monospace;
+      }
 
-        body {
-            background-color: #1a1a1a;
-            color: #d1d1d1;
-            font-family: var(--font-main);
-            overflow-x: hidden;
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        /* The Shelf / Dock */
-        .shelf {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: var(--dock-width);
-            height: 100vh;
-            background-color: var(--shelf-bg);
-            border-right: 1px solid #111;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 12px 0;
-            box-shadow: inset -1px 0 3px rgba(0,0,0,0.4);
-            z-index: 1000;
-            overflow-y: auto;
-            scrollbar-width: none; /* Hide scrollbar Firefox */
-        }
+      body {
+        background-color: #1a1a1a;
+        color: #d1d1d1;
+        font-family: var(--font-main);
+        overflow-x: hidden;
+      }
 
-        .shelf::-webkit-scrollbar {
-            display: none; /* Hide scrollbar Chrome/Safari */
-        }
+      /* The Shelf / Dock */
+      .shelf {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: var(--dock-width);
+        height: 100vh;
+        background-color: var(--shelf-bg);
+        border-right: 1px solid #111;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 12px 0;
+        box-shadow: inset -1px 0 3px rgba(0, 0, 0, 0.4);
+        z-index: 1000;
+        overflow-y: auto;
+        scrollbar-width: none; /* Hide scrollbar Firefox */
+      }
 
-        /* Group Container */
-        .group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
+      .shelf::-webkit-scrollbar {
+        display: none; /* Hide scrollbar Chrome/Safari */
+      }
 
-        /* Separator: 25% height hair-line rule */
-        .separator {
-            width: 1px;
-            height: 12px; /* 25% of 48px */
-            background-color: rgba(255,255,255,0.15);
-            margin: 10px 0;
-            box-shadow: 1px 0px 0px rgba(0,0,0,0.5);
-        }
+      /* Group Container */
+      .group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+      }
 
-        /* The Icon Tile */
-        .tile {
-            position: relative;
-            width: var(--icon-size);
-            height: var(--icon-size);
-            background-color: var(--icon-bg);
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            cursor: pointer;
-            box-shadow: var(--etched-shadow);
-            border: 1px solid #000;
-            transition: all 0.1s ease;
-        }
+      /* Separator: 25% height hair-line rule */
+      .separator {
+        width: 1px;
+        height: 12px; /* 25% of 48px */
+        background-color: rgba(255, 255, 255, 0.15);
+        margin: 10px 0;
+        box-shadow: 1px 0px 0px rgba(0, 0, 0, 0.5);
+      }
 
-        .tile:hover {
-            background-color: #1f1f1f;
-            transform: translateY(-1px);
-            box-shadow: 1px 2px 4px rgba(0,0,0,0.8), 1px 1px 0px rgba(255, 255, 255, 0.1);
-        }
+      /* The Icon Tile */
+      .tile {
+        position: relative;
+        width: var(--icon-size);
+        height: var(--icon-size);
+        background-color: var(--icon-bg);
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow: var(--etched-shadow);
+        border: 1px solid #000;
+        transition: all 0.1s ease;
+      }
 
-        .tile:active {
-            transform: translateY(1px);
-            box-shadow: inset 2px 2px 4px rgba(0,0,0,0.8);
-        }
+      .tile:hover {
+        background-color: #1f1f1f;
+        transform: translateY(-1px);
+        box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.8), 1px 1px 0px rgba(255, 255, 255, 0.1);
+      }
 
-        /* SVG Icons within tiles */
-        .tile svg {
-            width: 28px;
-            height: 28px;
-            color: #888;
-            stroke-width: 1.5;
-            transition: color 0.2s;
-        }
+      .tile:active {
+        transform: translateY(1px);
+        box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.8);
+      }
 
-        .tile:hover svg {
-            color: #fff;
-        }
+      /* SVG Icons within tiles */
+      .tile svg {
+        width: 28px;
+        height: 28px;
+        color: #888;
+        stroke-width: 1.5;
+        transition: color 0.2s;
+      }
 
-        /* Label on Hover */
-        .label {
-            position: absolute;
-            left: calc(var(--dock-width) + 4px);
-            background-color: var(--label-bg);
-            color: #fff;
-            padding: 2px 8px;
-            font-size: 10px;
-            font-weight: normal;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            white-space: nowrap;
-            display: none;
-            pointer-events: none;
-            border: 1px solid #333;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
-            z-index: 1001;
-        }
+      .tile:hover svg {
+        color: #fff;
+      }
 
-        .tile:hover .label {
-            display: block;
-        }
+      /* Label on Hover */
+      .label {
+        position: absolute;
+        left: calc(var(--dock-width) + 4px);
+        background-color: var(--label-bg);
+        color: #fff;
+        padding: 2px 8px;
+        font-size: 10px;
+        font-weight: normal;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        display: none;
+        pointer-events: none;
+        border: 1px solid #333;
+        box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3);
+        z-index: 1001;
+      }
 
-        /* Main Content Area */
-        main {
-            margin-left: var(--dock-width);
-            padding: 60px;
-            max-width: 800px;
-        }
+      .tile:hover .label {
+        display: block;
+      }
 
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
+      /* Main Content Area */
+      main {
+        margin-left: var(--dock-width);
+        padding: 60px;
+        max-width: 800px;
+      }
 
-        p {
-            line-height: 1.6;
-            margin-bottom: 15px;
-            color: #999;
-        }
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 10px;
+      }
 
-        code {
-            background: #222;
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
+      p {
+        line-height: 1.6;
+        margin-bottom: 15px;
+        color: #999;
+      }
+
+      code {
+        background: #222;
+        padding: 2px 4px;
+        border-radius: 3px;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <nav class="shelf">
-        <!-- SEARCH GROUP -->
-        <div class="group">
-            <a href="https://google.com" class="tile" aria-label="Google Search">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <span class="label">GOOGLE SEARCH</span>
-            </a>
-            <a href="https://duckduckgo.com" class="tile" aria-label="DuckDuckGo">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
-                <span class="label">DUCKDUCKGO</span>
-            </a>
-        </div>
+      <!-- SEARCH GROUP -->
+      <div class="group">
+        <a href="https://google.com" class="tile" aria-label="Google Search">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span class="label">GOOGLE SEARCH</span>
+        </a>
+        <a href="https://duckduckgo.com" class="tile" aria-label="DuckDuckGo">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+          </svg>
+          <span class="label">DUCKDUCKGO</span>
+        </a>
+      </div>
 
-        <div class="separator"></div>
+      <div class="separator"></div>
 
-        <!-- AI GROUP -->
-        <div class="group">
-            <a href="https://openai.com" class="tile" aria-label="ChatGPT">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                <span class="label">CHATGPT / OPENAI</span>
-            </a>
-            <a href="https://anthropic.com" class="tile" aria-label="Claude">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                <span class="label">CLAUDE / ANTHROPIC</span>
-            </a>
-            <a href="https://perplexity.ai" class="tile" aria-label="Perplexity">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                <span class="label">PERPLEXITY AI</span>
-            </a>
-        </div>
+      <!-- AI GROUP -->
+      <div class="group">
+        <a href="https://openai.com" class="tile" aria-label="ChatGPT">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <span class="label">CHATGPT / OPENAI</span>
+        </a>
+        <a href="https://anthropic.com" class="tile" aria-label="Claude">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+            ></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+          <span class="label">CLAUDE / ANTHROPIC</span>
+        </a>
+        <a href="https://perplexity.ai" class="tile" aria-label="Perplexity">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span class="label">PERPLEXITY AI</span>
+        </a>
+      </div>
 
-        <div class="separator"></div>
+      <div class="separator"></div>
 
-        <!-- DEV GROUP -->
-        <div class="group">
-            <a href="https://github.com" class="tile" aria-label="GitHub">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                <span class="label">GITHUB REPOS</span>
-            </a>
-            <a href="https://stackoverflow.com" class="tile" aria-label="Stack Overflow">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v7"></path><path d="M2 23h20"></path><path d="M22 13v10"></path><path d="M2 13v10"></path></svg>
-                <span class="label">STACK OVERFLOW</span>
-            </a>
-            <a href="https://news.ycombinator.com" class="tile" aria-label="Hacker News">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17l2 0"></path><path d="M18 3l-5 11l-1 0l-5 -11"></path><path d="M12 14l0 7"></path></svg>
-                <span class="label">HACKER NEWS</span>
-            </a>
-        </div>
+      <!-- DEV GROUP -->
+      <div class="group">
+        <a href="https://github.com" class="tile" aria-label="GitHub">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+            ></path>
+          </svg>
+          <span class="label">GITHUB REPOS</span>
+        </a>
+        <a href="https://stackoverflow.com" class="tile" aria-label="Stack Overflow">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M18 13V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v7"></path>
+            <path d="M2 23h20"></path>
+            <path d="M22 13v10"></path>
+            <path d="M2 13v10"></path>
+          </svg>
+          <span class="label">STACK OVERFLOW</span>
+        </a>
+        <a href="https://news.ycombinator.com" class="tile" aria-label="Hacker News">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M11 17l2 0"></path>
+            <path d="M18 3l-5 11l-1 0l-5 -11"></path>
+            <path d="M12 14l0 7"></path>
+          </svg>
+          <span class="label">HACKER NEWS</span>
+        </a>
+      </div>
     </nav>
 
     <main>
-        <h1>1989 NeXT Dock</h1>
-        <p>A faithful recreation of the 1989 NeXT workspace shelf aesthetic, optimized for modern web links.</p>
-        <p>This layout uses a fixed-width left sidebar (68px) with matte-black 48px square tiles. Each tile features a subtle 1px etched shadow effect characteristic of the NeXTSTEP UI.</p>
-        <p><strong>Groups:</strong> Links are organized into logical groups separated by vertical hair-line rules (25% of the icon height).</p>
-        <p><strong>Labels:</strong> Hover over any tile to reveal its identity in tiny, white, all-caps Chicago-style typography.</p>
+      <h1>1989 NeXT Dock</h1>
+      <p>A faithful recreation of the 1989 NeXT workspace shelf aesthetic, optimized for modern web links.</p>
+      <p>
+        This layout uses a fixed-width left sidebar (68px) with matte-black 48px square tiles. Each tile features a
+        subtle 1px etched shadow effect characteristic of the NeXTSTEP UI.
+      </p>
+      <p>
+        <strong>Groups:</strong> Links are organized into logical groups separated by vertical hair-line rules (25% of
+        the icon height).
+      </p>
+      <p>
+        <strong>Labels:</strong> Hover over any tile to reveal its identity in tiny, white, all-caps Chicago-style
+        typography.
+      </p>
     </main>
-
-</body>
+  </body>
 </html>

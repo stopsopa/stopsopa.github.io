@@ -1,277 +1,277 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bookmark Shelf - Minimal Dashboard</title>
-    <meta name="description" content="A compact, high-density bookmark shelf layout for frequently used links.">
+    <meta name="description" content="A compact, high-density bookmark shelf layout for frequently used links." />
     <style>
+      :root {
+        --bg-color: #f8f9fa;
+        --text-color: #212529;
+        --muted-color: #6c757d;
+        --border-color: #dee2e6;
+        --tile-bg: #ffffff;
+        --tile-hover-bg: #f1f3f5;
+        --accent-color: #4dabf7;
+        --sidebar-width: 120px;
+        --container-width: 800px;
+        --font-main: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      @media (prefers-color-scheme: dark) {
         :root {
-            --bg-color: #f8f9fa;
-            --text-color: #212529;
-            --muted-color: #6c757d;
-            --border-color: #dee2e6;
-            --tile-bg: #ffffff;
-            --tile-hover-bg: #f1f3f5;
-            --accent-color: #4dabf7;
-            --sidebar-width: 120px;
-            --container-width: 800px;
-            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          --bg-color: #121212;
+          --text-color: #e9ecef;
+          --muted-color: #adb5bd;
+          --border-color: #343a40;
+          --tile-bg: #1e1e1e;
+          --tile-hover-bg: #2b2b2b;
+          --accent-color: #339af0;
         }
+      }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #121212;
-                --text-color: #e9ecef;
-                --muted-color: #adb5bd;
-                --border-color: #343a40;
-                --tile-bg: #1e1e1e;
-                --tile-hover-bg: #2b2b2b;
-                --accent-color: #339af0;
-            }
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+      body {
+        font-family: var(--font-main);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.5;
+        padding: 40px;
+        display: flex;
+        justify-content: flex-start;
+      }
 
+      .container {
+        width: var(--container-width);
+        max-width: 100%;
+      }
+
+      header {
+        margin-bottom: 40px;
+        padding-left: calc(var(--sidebar-width) + 20px);
+      }
+
+      h1 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: var(--text-color);
+        opacity: 0.9;
+      }
+
+      .shelf-section {
+        display: flex;
+        margin-bottom: 32px;
+        align-items: flex-start;
+      }
+
+      .shelf-label {
+        width: var(--sidebar-width);
+        min-width: var(--sidebar-width);
+        padding-top: 10px;
+        text-align: right;
+        padding-right: 24px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted-color);
+        user-select: none;
+        position: sticky;
+        top: 40px;
+      }
+
+      .shelf-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 12px;
+        flex-grow: 1;
+      }
+
+      .bookmark-tile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 1 / 1;
+        background-color: var(--tile-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 8px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .bookmark-tile:hover {
+        background-color: var(--tile-hover-bg);
+        border-color: var(--accent-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .icon {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        filter: grayscale(0.8);
+        transition: filter 0.2s ease;
+      }
+
+      .bookmark-tile:hover .icon {
+        filter: grayscale(0);
+      }
+
+      .label {
+        font-size: 0.7rem;
+        font-weight: 500;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+        color: var(--muted-color);
+        transition: color 0.2s ease;
+      }
+
+      .bookmark-tile:hover .label {
+        color: var(--text-color);
+      }
+
+      /* Group Dividers (Subtle) */
+      .shelf-section:not(:last-child) {
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 32px;
+      }
+
+      @media (max-width: 600px) {
         body {
-            font-family: var(--font-main);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.5;
-            padding: 40px;
-            display: flex;
-            justify-content: flex-start;
+          padding: 20px;
         }
-
-        .container {
-            width: var(--container-width);
-            max-width: 100%;
-        }
-
-        header {
-            margin-bottom: 40px;
-            padding-left: calc(var(--sidebar-width) + 20px);
-        }
-
-        h1 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: var(--text-color);
-            opacity: 0.9;
-        }
-
         .shelf-section {
-            display: flex;
-            margin-bottom: 32px;
-            align-items: flex-start;
+          flex-direction: column;
         }
-
         .shelf-label {
-            width: var(--sidebar-width);
-            min-width: var(--sidebar-width);
-            padding-top: 10px;
-            text-align: right;
-            padding-right: 24px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--muted-color);
-            user-select: none;
-            position: sticky;
-            top: 40px;
+          width: 100%;
+          text-align: left;
+          padding-right: 0;
+          padding-bottom: 12px;
+          position: static;
         }
-
-        .shelf-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 12px;
-            flex-grow: 1;
+        header {
+          padding-left: 0;
         }
-
-        .bookmark-tile {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            aspect-ratio: 1 / 1;
-            background-color: var(--tile-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .bookmark-tile:hover {
-            background-color: var(--tile-hover-bg);
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .icon {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            filter: grayscale(0.8);
-            transition: filter 0.2s ease;
-        }
-
-        .bookmark-tile:hover .icon {
-            filter: grayscale(0);
-        }
-
-        .label {
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-            color: var(--muted-color);
-            transition: color 0.2s ease;
-        }
-
-        .bookmark-tile:hover .label {
-            color: var(--text-color);
-        }
-
-        /* Group Dividers (Subtle) */
-        .shelf-section:not(:last-child) {
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 32px;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 20px;
-            }
-            .shelf-section {
-                flex-direction: column;
-            }
-            .shelf-label {
-                width: 100%;
-                text-align: left;
-                padding-right: 0;
-                padding-bottom: 12px;
-                position: static;
-            }
-            header {
-                padding-left: 0;
-            }
-        }
+      }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <h1>Bookmark Shelf</h1>
-        </header>
+      <header>
+        <h1>Bookmark Shelf</h1>
+      </header>
 
-        <main>
-            <!-- Search Group -->
-            <section class="shelf-section">
-                <div class="shelf-label">Search</div>
-                <div class="shelf-grid">
-                    <a href="https://google.com" class="bookmark-tile" id="link-google">
-                        <div class="icon">🔍</div>
-                        <div class="label">Google</div>
-                    </a>
-                    <a href="https://duckduckgo.com" class="bookmark-tile" id="link-ddg">
-                        <div class="icon">🦆</div>
-                        <div class="label">DuckDuckGo</div>
-                    </a>
-                    <a href="https://bing.com" class="bookmark-tile" id="link-bing">
-                        <div class="icon">🅱️</div>
-                        <div class="label">Bing</div>
-                    </a>
-                </div>
-            </section>
+      <main>
+        <!-- Search Group -->
+        <section class="shelf-section">
+          <div class="shelf-label">Search</div>
+          <div class="shelf-grid">
+            <a href="https://google.com" class="bookmark-tile" id="link-google">
+              <div class="icon">🔍</div>
+              <div class="label">Google</div>
+            </a>
+            <a href="https://duckduckgo.com" class="bookmark-tile" id="link-ddg">
+              <div class="icon">🦆</div>
+              <div class="label">DuckDuckGo</div>
+            </a>
+            <a href="https://bing.com" class="bookmark-tile" id="link-bing">
+              <div class="icon">🅱️</div>
+              <div class="label">Bing</div>
+            </a>
+          </div>
+        </section>
 
-            <!-- AI Group -->
-            <section class="shelf-section">
-                <div class="shelf-label">AI Tools</div>
-                <div class="shelf-grid">
-                    <a href="https://chat.openai.com" class="bookmark-tile" id="link-chatgpt">
-                        <div class="icon">🤖</div>
-                        <div class="label">ChatGPT</div>
-                    </a>
-                    <a href="https://claude.ai" class="bookmark-tile" id="link-claude">
-                        <div class="icon">🧠</div>
-                        <div class="label">Claude</div>
-                    </a>
-                    <a href="https://gemini.google.com" class="bookmark-tile" id="link-gemini">
-                        <div class="icon">✨</div>
-                        <div class="label">Gemini</div>
-                    </a>
-                    <a href="https://perplexity.ai" class="bookmark-tile" id="link-perplexity">
-                        <div class="icon">🔮</div>
-                        <div class="label">Perplexity</div>
-                    </a>
-                </div>
-            </section>
+        <!-- AI Group -->
+        <section class="shelf-section">
+          <div class="shelf-label">AI Tools</div>
+          <div class="shelf-grid">
+            <a href="https://chat.openai.com" class="bookmark-tile" id="link-chatgpt">
+              <div class="icon">🤖</div>
+              <div class="label">ChatGPT</div>
+            </a>
+            <a href="https://claude.ai" class="bookmark-tile" id="link-claude">
+              <div class="icon">🧠</div>
+              <div class="label">Claude</div>
+            </a>
+            <a href="https://gemini.google.com" class="bookmark-tile" id="link-gemini">
+              <div class="icon">✨</div>
+              <div class="label">Gemini</div>
+            </a>
+            <a href="https://perplexity.ai" class="bookmark-tile" id="link-perplexity">
+              <div class="icon">🔮</div>
+              <div class="label">Perplexity</div>
+            </a>
+          </div>
+        </section>
 
-            <!-- Dev Group -->
-            <section class="shelf-section">
-                <div class="shelf-label">Development</div>
-                <div class="shelf-grid">
-                    <a href="https://github.com" class="bookmark-tile" id="link-github">
-                        <div class="icon">🐙</div>
-                        <div class="label">GitHub</div>
-                    </a>
-                    <a href="https://stackoverflow.com" class="bookmark-tile" id="link-stackoverflow">
-                        <div class="icon">🥞</div>
-                        <div class="label">StackOverflow</div>
-                    </a>
-                    <a href="https://vercel.com" class="bookmark-tile" id="link-vercel">
-                        <div class="icon">▲</div>
-                        <div class="label">Vercel</div>
-                    </a>
-                    <a href="https://npm.com" class="bookmark-tile" id="link-npm">
-                        <div class="icon">📦</div>
-                        <div class="label">NPM</div>
-                    </a>
-                    <a href="https://codepen.io" class="bookmark-tile" id="link-codepen">
-                        <div class="icon">🖋️</div>
-                        <div class="label">CodePen</div>
-                    </a>
-                </div>
-            </section>
+        <!-- Dev Group -->
+        <section class="shelf-section">
+          <div class="shelf-label">Development</div>
+          <div class="shelf-grid">
+            <a href="https://github.com" class="bookmark-tile" id="link-github">
+              <div class="icon">🐙</div>
+              <div class="label">GitHub</div>
+            </a>
+            <a href="https://stackoverflow.com" class="bookmark-tile" id="link-stackoverflow">
+              <div class="icon">🥞</div>
+              <div class="label">StackOverflow</div>
+            </a>
+            <a href="https://vercel.com" class="bookmark-tile" id="link-vercel">
+              <div class="icon">▲</div>
+              <div class="label">Vercel</div>
+            </a>
+            <a href="https://npm.com" class="bookmark-tile" id="link-npm">
+              <div class="icon">📦</div>
+              <div class="label">NPM</div>
+            </a>
+            <a href="https://codepen.io" class="bookmark-tile" id="link-codepen">
+              <div class="icon">🖋️</div>
+              <div class="label">CodePen</div>
+            </a>
+          </div>
+        </section>
 
-            <!-- Media Group -->
-            <section class="shelf-section">
-                <div class="shelf-label">Media</div>
-                <div class="shelf-grid">
-                    <a href="https://youtube.com" class="bookmark-tile" id="link-youtube">
-                        <div class="icon">📺</div>
-                        <div class="label">YouTube</div>
-                    </a>
-                    <a href="https://spotify.com" class="bookmark-tile" id="link-spotify">
-                        <div class="icon">🎵</div>
-                        <div class="label">Spotify</div>
-                    </a>
-                    <a href="https://netflix.com" class="bookmark-tile" id="link-netflix">
-                        <div class="icon">🎬</div>
-                        <div class="label">Netflix</div>
-                    </a>
-                </div>
-            </section>
-        </main>
+        <!-- Media Group -->
+        <section class="shelf-section">
+          <div class="shelf-label">Media</div>
+          <div class="shelf-grid">
+            <a href="https://youtube.com" class="bookmark-tile" id="link-youtube">
+              <div class="icon">📺</div>
+              <div class="label">YouTube</div>
+            </a>
+            <a href="https://spotify.com" class="bookmark-tile" id="link-spotify">
+              <div class="icon">🎵</div>
+              <div class="label">Spotify</div>
+            </a>
+            <a href="https://netflix.com" class="bookmark-tile" id="link-netflix">
+              <div class="icon">🎬</div>
+              <div class="label">Netflix</div>
+            </a>
+          </div>
+        </section>
+      </main>
     </div>
-</body>
+  </body>
 </html>

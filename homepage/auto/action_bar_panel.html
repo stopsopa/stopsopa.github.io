@@ -1,310 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Action Bar Panel</title>
-    <meta name="description" content="A compact, professional admin-style utility panel for frequently used links.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="description" content="A compact, professional admin-style utility panel for frequently used links." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
     <style>
-        :root {
-            --bg-primary: #0f0f0f;
-            --bg-sidebar: #161616;
-            --bg-hover: #2a2a2a;
-            --text-primary: #e0e0e0;
-            --text-secondary: #888888;
-            --accent: #3b82f6;
-            --border: #262626;
-            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+      :root {
+        --bg-primary: #0f0f0f;
+        --bg-sidebar: #161616;
+        --bg-hover: #2a2a2a;
+        --text-primary: #e0e0e0;
+        --text-secondary: #888888;
+        --accent: #3b82f6;
+        --border: #262626;
+        --font-main: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: var(--font-main);
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            overflow: hidden;
-        }
+      body {
+        font-family: var(--font-main);
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        overflow: hidden;
+      }
 
-        /* Fixed-width Sidebar */
-        .sidebar {
-            width: 400px;
-            height: 100vh;
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
-            position: fixed;
-            left: 0;
-            top: 0;
-        }
+      /* Fixed-width Sidebar */
+      .sidebar {
+        width: 400px;
+        height: 100vh;
+        background-color: var(--bg-sidebar);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+        position: fixed;
+        left: 0;
+        top: 0;
+      }
 
-        .sidebar-header {
-            padding: 24px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+      .sidebar-header {
+        padding: 24px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
 
-        .sidebar-header h1 {
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            color: #fff;
-        }
+      .sidebar-header h1 {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: #fff;
+      }
 
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            background-color: #10b981;
-            border-radius: 50%;
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
-        }
+      .status-indicator {
+        width: 8px;
+        height: 8px;
+        background-color: #10b981;
+        border-radius: 50%;
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+      }
 
-        .scroll-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px 0;
-        }
+      .scroll-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px 0;
+      }
 
-        /* Custom Scrollbar */
-        .scroll-area::-webkit-scrollbar {
-            width: 4px;
-        }
-        .scroll-area::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .scroll-area::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 10px;
-        }
+      /* Custom Scrollbar */
+      .scroll-area::-webkit-scrollbar {
+        width: 4px;
+      }
+      .scroll-area::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .scroll-area::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 10px;
+      }
 
-        /* Group Headers */
-        .group {
-            margin-bottom: 24px;
-        }
+      /* Group Headers */
+      .group {
+        margin-bottom: 24px;
+      }
 
-        .group-header {
-            padding: 0 20px 8px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+      .group-header {
+        padding: 0 20px 8px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
 
-        .group-header::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background-color: var(--border);
-        }
+      .group-header::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background-color: var(--border);
+      }
 
-        /* Links */
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            text-decoration: none;
-            color: var(--text-primary);
-            font-size: 13px;
-            font-weight: 400;
-            transition: all 0.15s ease;
-            gap: 12px;
-            border-left: 3px solid transparent;
-        }
+      /* Links */
+      .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        text-decoration: none;
+        color: var(--text-primary);
+        font-size: 13px;
+        font-weight: 400;
+        transition: all 0.15s ease;
+        gap: 12px;
+        border-left: 3px solid transparent;
+      }
 
-        .nav-link:hover {
-            background-color: var(--bg-hover);
-            color: #fff;
-            border-left-color: var(--accent);
-        }
+      .nav-link:hover {
+        background-color: var(--bg-hover);
+        color: #fff;
+        border-left-color: var(--accent);
+      }
 
-        .nav-link img {
-            width: 16px;
-            height: 16px;
-            border-radius: 2px;
-            filter: grayscale(0.2);
-            transition: filter 0.2s ease;
-        }
+      .nav-link img {
+        width: 16px;
+        height: 16px;
+        border-radius: 2px;
+        filter: grayscale(0.2);
+        transition: filter 0.2s ease;
+      }
 
-        .nav-link:hover img {
-            filter: grayscale(0);
-        }
+      .nav-link:hover img {
+        filter: grayscale(0);
+      }
 
-        .nav-link span {
-            flex: 1;
-        }
+      .nav-link span {
+        flex: 1;
+      }
 
-        .shortcut {
-            font-size: 10px;
-            color: var(--text-secondary);
-            font-family: monospace;
-            opacity: 0.5;
-        }
+      .shortcut {
+        font-size: 10px;
+        color: var(--text-secondary);
+        font-family: monospace;
+        opacity: 0.5;
+      }
 
-        /* Content Placeholder */
-        .main-content {
-            margin-left: 400px;
-            padding: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
+      /* Content Placeholder */
+      .main-content {
+        margin-left: 400px;
+        padding: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <aside class="sidebar" id="sidebar">
-        <header class="sidebar-header">
-            <h1>UTILITY_PANEL_v1.0</h1>
-            <div class="status-indicator"></div>
-        </header>
+      <header class="sidebar-header">
+        <h1>UTILITY_PANEL_v1.0</h1>
+        <div class="status-indicator"></div>
+      </header>
 
-        <div class="scroll-area">
-            <!-- SEARCH GROUP -->
-            <section class="group">
-                <div class="group-header">Search</div>
-                <a href="https://www.google.com" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=google.com&sz=32" alt="">
-                    <span>Google</span>
-                    <span class="shortcut">G</span>
-                </a>
-                <a href="https://www.duckduckgo.com" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=duckduckgo.com&sz=32" alt="">
-                    <span>DuckDuckGo</span>
-                    <span class="shortcut">D</span>
-                </a>
-                <a href="https://www.bing.com" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=bing.com&sz=32" alt="">
-                    <span>Bing</span>
-                    <span class="shortcut">B</span>
-                </a>
-            </section>
+      <div class="scroll-area">
+        <!-- SEARCH GROUP -->
+        <section class="group">
+          <div class="group-header">Search</div>
+          <a href="https://www.google.com" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=google.com&sz=32" alt="" />
+            <span>Google</span>
+            <span class="shortcut">G</span>
+          </a>
+          <a href="https://www.duckduckgo.com" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=duckduckgo.com&sz=32" alt="" />
+            <span>DuckDuckGo</span>
+            <span class="shortcut">D</span>
+          </a>
+          <a href="https://www.bing.com" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=bing.com&sz=32" alt="" />
+            <span>Bing</span>
+            <span class="shortcut">B</span>
+          </a>
+        </section>
 
-            <!-- AI GROUP -->
-            <section class="group">
-                <div class="group-header">Artificial Intelligence</div>
-                <a href="https://chat.openai.com" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=openai.com&sz=32" alt="">
-                    <span>ChatGPT</span>
-                    <span class="shortcut">C</span>
-                </a>
-                <a href="https://claude.ai" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=anthropic.com&sz=32" alt="">
-                    <span>Claude AI</span>
-                    <span class="shortcut">A</span>
-                </a>
-                <a href="https://gemini.google.com" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=google.com&sz=32" alt="">
-                    <span>Gemini</span>
-                    <span class="shortcut">J</span>
-                </a>
-                <a href="https://perplexity.ai" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=32" alt="">
-                    <span>Perplexity</span>
-                    <span class="shortcut">P</span>
-                </a>
-            </section>
+        <!-- AI GROUP -->
+        <section class="group">
+          <div class="group-header">Artificial Intelligence</div>
+          <a href="https://chat.openai.com" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=openai.com&sz=32" alt="" />
+            <span>ChatGPT</span>
+            <span class="shortcut">C</span>
+          </a>
+          <a href="https://claude.ai" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=anthropic.com&sz=32" alt="" />
+            <span>Claude AI</span>
+            <span class="shortcut">A</span>
+          </a>
+          <a href="https://gemini.google.com" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=google.com&sz=32" alt="" />
+            <span>Gemini</span>
+            <span class="shortcut">J</span>
+          </a>
+          <a href="https://perplexity.ai" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=32" alt="" />
+            <span>Perplexity</span>
+            <span class="shortcut">P</span>
+          </a>
+        </section>
 
-            <!-- DEVELOPMENT GROUP -->
-            <section class="group">
-                <div class="group-header">Development</div>
-                <a href="https://github.com" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=github.com&sz=32" alt="">
-                    <span>GitHub</span>
-                    <span class="shortcut">H</span>
-                </a>
-                <a href="https://stackoverflow.com" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=32" alt="">
-                    <span>Stack Overflow</span>
-                    <span class="shortcut">S</span>
-                </a>
-                <a href="https://developer.mozilla.org" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=mozilla.org&sz=32" alt="">
-                    <span>MDN Web Docs</span>
-                    <span class="shortcut">M</span>
-                </a>
-                <a href="https://v2.tailwindcss.com" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=tailwindcss.com&sz=32" alt="">
-                    <span>Tailwind CSS</span>
-                    <span class="shortcut">T</span>
-                </a>
-            </section>
+        <!-- DEVELOPMENT GROUP -->
+        <section class="group">
+          <div class="group-header">Development</div>
+          <a href="https://github.com" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=github.com&sz=32" alt="" />
+            <span>GitHub</span>
+            <span class="shortcut">H</span>
+          </a>
+          <a href="https://stackoverflow.com" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=32" alt="" />
+            <span>Stack Overflow</span>
+            <span class="shortcut">S</span>
+          </a>
+          <a href="https://developer.mozilla.org" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=mozilla.org&sz=32" alt="" />
+            <span>MDN Web Docs</span>
+            <span class="shortcut">M</span>
+          </a>
+          <a href="https://v2.tailwindcss.com" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=tailwindcss.com&sz=32" alt="" />
+            <span>Tailwind CSS</span>
+            <span class="shortcut">T</span>
+          </a>
+        </section>
 
-            <!-- SOCIAL GROUP -->
-            <section class="group">
-                <div class="group-header">Social & Media</div>
-                <a href="https://twitter.com" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=twitter.com&sz=32" alt="">
-                    <span>X / Twitter</span>
-                    <span class="shortcut">X</span>
-                </a>
-                <a href="https://reddit.com" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=reddit.com&sz=32" alt="">
-                    <span>Reddit</span>
-                    <span class="shortcut">R</span>
-                </a>
-                <a href="https://youtube.com" class="nav-link">
-                    <img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=32" alt="">
-                    <span>YouTube</span>
-                    <span class="shortcut">Y</span>
-                </a>
-            </section>
-        </div>
+        <!-- SOCIAL GROUP -->
+        <section class="group">
+          <div class="group-header">Social & Media</div>
+          <a href="https://twitter.com" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=twitter.com&sz=32" alt="" />
+            <span>X / Twitter</span>
+            <span class="shortcut">X</span>
+          </a>
+          <a href="https://reddit.com" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=reddit.com&sz=32" alt="" />
+            <span>Reddit</span>
+            <span class="shortcut">R</span>
+          </a>
+          <a href="https://youtube.com" class="nav-link">
+            <img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=32" alt="" />
+            <span>YouTube</span>
+            <span class="shortcut">Y</span>
+          </a>
+        </section>
+      </div>
 
-        <footer style="padding: 16px 20px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-secondary);">
-            SYSTEM_TIME: <span id="clock">--:--:--</span>
-        </footer>
+      <footer
+        style="padding: 16px 20px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-secondary)"
+      >
+        SYSTEM_TIME: <span id="clock">--:--:--</span>
+      </footer>
     </aside>
 
     <main class="main-content">
-        <p>Select a utility from the panel to begin.</p>
+      <p>Select a utility from the panel to begin.</p>
     </main>
 
     <script>
-        // Update system clock
-        function updateClock() {
-            const now = new Date();
-            const timeStr = now.toTimeString().split(' ')[0];
-            document.getElementById('clock').textContent = timeStr;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+      // Update system clock
+      function updateClock() {
+        const now = new Date();
+        const timeStr = now.toTimeString().split(" ")[0];
+        document.getElementById("clock").textContent = timeStr;
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
 
-        // Optional: Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            const key = e.key.toLowerCase();
-            const shortcuts = {
-                'g': 'https://www.google.com',
-                'd': 'https://www.duckduckgo.com',
-                'c': 'https://chat.openai.com',
-                'a': 'https://claude.ai',
-                'h': 'https://github.com',
-                's': 'https://stackoverflow.com',
-                'y': 'https://youtube.com'
-            };
-            
-            if (shortcuts[key] && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
-                window.location.href = shortcuts[key];
-            }
-        });
+      // Optional: Keyboard shortcuts
+      document.addEventListener("keydown", (e) => {
+        const key = e.key.toLowerCase();
+        const shortcuts = {
+          g: "https://www.google.com",
+          d: "https://www.duckduckgo.com",
+          c: "https://chat.openai.com",
+          a: "https://claude.ai",
+          h: "https://github.com",
+          s: "https://stackoverflow.com",
+          y: "https://youtube.com",
+        };
+
+        if (shortcuts[key] && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+          window.location.href = shortcuts[key];
+        }
+      });
     </script>
-</body>
+  </body>
 </html>

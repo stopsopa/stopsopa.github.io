@@ -1,270 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paper Sidebar - Bookmark Dashboard</title>
-    <meta name="description" content="A minimalist, paper-inspired left sidebar layout for frequently used links, featuring a Moleskine aesthetic.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Inter:wght@400&display=swap" rel="stylesheet">
+    <meta
+      name="description"
+      content="A minimalist, paper-inspired left sidebar layout for frequently used links, featuring a Moleskine aesthetic."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Inter:wght@400&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --paper-bg: #fdfaf5;
-            --text-color: #333;
-            --accent-color: #777;
-            --hover-wash: rgba(255, 250, 200, 0.6); /* pale yellow watercolor wash */
-            --rule-color: #e0dcd5;
-            --sidebar-width: 300px;
-            --item-height: 1cm;
-        }
+      :root {
+        --paper-bg: #fdfaf5;
+        --text-color: #333;
+        --accent-color: #777;
+        --hover-wash: rgba(255, 250, 200, 0.6); /* pale yellow watercolor wash */
+        --rule-color: #e0dcd5;
+        --sidebar-width: 300px;
+        --item-height: 1cm;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            background-color: #f5f2ed; /* Slightly darker than sidebar for contrast */
-            color: var(--text-color);
-            font-family: 'Crimson Pro', serif;
-            line-height: 1.5;
-        }
+      body {
+        background-color: #f5f2ed; /* Slightly darker than sidebar for contrast */
+        color: var(--text-color);
+        font-family: "Crimson Pro", serif;
+        line-height: 1.5;
+      }
 
-        /* Sidebar Container */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: var(--sidebar-width);
-            background-color: var(--paper-bg);
-            border-right: 1px solid var(--rule-color);
-            box-shadow: 2px 0 10px rgba(0,0,0,0.02);
-            padding-top: 2rem;
-            overflow-y: auto;
-            z-index: 100;
-        }
+      /* Sidebar Container */
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: var(--sidebar-width);
+        background-color: var(--paper-bg);
+        border-right: 1px solid var(--rule-color);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
+        padding-top: 2rem;
+        overflow-y: auto;
+        z-index: 100;
+      }
 
-        /* Section Header */
-        .group {
-            margin-bottom: 1.5rem;
-        }
+      /* Section Header */
+      .group {
+        margin-bottom: 1.5rem;
+      }
 
-        .group-header {
-            padding: 0 1.5rem;
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
+      .group-header {
+        padding: 0 1.5rem;
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+      }
 
-        .group-title {
-            font-size: 0.7rem;
-            text-transform: lowercase;
-            font-variant: small-caps;
-            letter-spacing: 0.1em;
-            color: var(--accent-color);
-            white-space: nowrap;
-            margin-right: 1rem;
-        }
+      .group-title {
+        font-size: 0.7rem;
+        text-transform: lowercase;
+        font-variant: small-caps;
+        letter-spacing: 0.1em;
+        color: var(--accent-color);
+        white-space: nowrap;
+        margin-right: 1rem;
+      }
 
-        .group-rule {
-            flex-grow: 1;
-            height: 1px;
-            background-color: var(--rule-color);
-        }
+      .group-rule {
+        flex-grow: 1;
+        height: 1px;
+        background-color: var(--rule-color);
+      }
 
-        /* Links */
-        .links-list {
-            list-style: none;
-        }
+      /* Links */
+      .links-list {
+        list-style: none;
+      }
 
-        .link-item {
-            display: block;
-            height: var(--item-height);
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-            padding: 0 1.5rem;
-            transition: background 0.3s ease;
-            position: relative;
-        }
+      .link-item {
+        display: block;
+        height: var(--item-height);
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        align-items: center;
+        padding: 0 1.5rem;
+        transition: background 0.3s ease;
+        position: relative;
+      }
 
-        .link-item:hover {
-            background-color: var(--hover-wash);
-        }
+      .link-item:hover {
+        background-color: var(--hover-wash);
+      }
 
-        .icon-container {
-            width: 24px;
-            height: 24px;
-            margin-right: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0.7;
-        }
+      .icon-container {
+        width: 24px;
+        height: 24px;
+        margin-right: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.7;
+      }
 
-        .icon-container svg {
-            width: 20px;
-            height: 20px;
-            stroke-width: 1.5px;
-            stroke: currentColor;
-            fill: none;
-        }
+      .icon-container svg {
+        width: 20px;
+        height: 20px;
+        stroke-width: 1.5px;
+        stroke: currentColor;
+        fill: none;
+      }
 
-        .label {
-            font-size: 1.05rem;
-            font-weight: 400;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+      .label {
+        font-size: 1.05rem;
+        font-weight: 400;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-        /* Content Area (Placeholder) */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            padding: 4rem;
-            max-width: 1200px;
-        }
+      /* Content Area (Placeholder) */
+      .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 4rem;
+        max-width: 1200px;
+      }
 
-        .main-content h1 {
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: #444;
-        }
+      .main-content h1 {
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #444;
+      }
 
-        .main-content p {
-            max-width: 600px;
-            color: #666;
-            margin-bottom: 1rem;
-        }
+      .main-content p {
+        max-width: 600px;
+        color: #666;
+        margin-bottom: 1rem;
+      }
 
-        /* Custom Scrollbar for the sidebar */
-        .sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .sidebar::-webkit-scrollbar-thumb {
-            background: var(--rule-color);
-            border-radius: 2px;
-        }
+      /* Custom Scrollbar for the sidebar */
+      .sidebar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sidebar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .sidebar::-webkit-scrollbar-thumb {
+        background: var(--rule-color);
+        border-radius: 2px;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <aside class="sidebar" id="sidebar">
-        <!-- Search Section -->
-        <div class="group">
-            <div class="group-header">
-                <span class="group-title">Search</span>
-                <div class="group-rule"></div>
-            </div>
-            <nav class="links-list">
-                <a href="https://google.com" class="link-item" id="link-google">
-                    <div class="icon-container">
-                        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    </div>
-                    <span class="label">Google Search</span>
-                </a>
-                <a href="https://duckduckgo.com" class="link-item" id="link-ddg">
-                    <div class="icon-container">
-                        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-                    </div>
-                    <span class="label">DuckDuckGo</span>
-                </a>
-            </nav>
+      <!-- Search Section -->
+      <div class="group">
+        <div class="group-header">
+          <span class="group-title">Search</span>
+          <div class="group-rule"></div>
         </div>
+        <nav class="links-list">
+          <a href="https://google.com" class="link-item" id="link-google">
+            <div class="icon-container">
+              <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
+            <span class="label">Google Search</span>
+          </a>
+          <a href="https://duckduckgo.com" class="link-item" id="link-ddg">
+            <div class="icon-container">
+              <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+            </div>
+            <span class="label">DuckDuckGo</span>
+          </a>
+        </nav>
+      </div>
 
-        <!-- AI Section -->
-        <div class="group">
-            <div class="group-header">
-                <span class="group-title">Artificial Intel</span>
-                <div class="group-rule"></div>
-            </div>
-            <nav class="links-list">
-                <a href="https://chat.openai.com" class="link-item" id="link-chatgpt">
-                    <div class="icon-container">
-                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                    </div>
-                    <span class="label">OpenAI ChatGPT</span>
-                </a>
-                <a href="https://claude.ai" class="link-item" id="link-claude">
-                    <div class="icon-container">
-                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                    </div>
-                    <span class="label">Claude AI</span>
-                </a>
-                <a href="https://gemini.google.com" class="link-item" id="link-gemini">
-                    <div class="icon-container">
-                        <svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"></path><circle cx="12" cy="12" r="10"></circle></svg>
-                    </div>
-                    <span class="label">Google Gemini</span>
-                </a>
-            </nav>
+      <!-- AI Section -->
+      <div class="group">
+        <div class="group-header">
+          <span class="group-title">Artificial Intel</span>
+          <div class="group-rule"></div>
         </div>
+        <nav class="links-list">
+          <a href="https://chat.openai.com" class="link-item" id="link-chatgpt">
+            <div class="icon-container">
+              <svg viewBox="0 0 24 24">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </div>
+            <span class="label">OpenAI ChatGPT</span>
+          </a>
+          <a href="https://claude.ai" class="link-item" id="link-claude">
+            <div class="icon-container">
+              <svg viewBox="0 0 24 24">
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                ></polygon>
+              </svg>
+            </div>
+            <span class="label">Claude AI</span>
+          </a>
+          <a href="https://gemini.google.com" class="link-item" id="link-gemini">
+            <div class="icon-container">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2v20M2 12h20"></path>
+                <circle cx="12" cy="12" r="10"></circle>
+              </svg>
+            </div>
+            <span class="label">Google Gemini</span>
+          </a>
+        </nav>
+      </div>
 
-        <!-- Development Section -->
-        <div class="group">
-            <div class="group-header">
-                <span class="group-title">Development</span>
-                <div class="group-rule"></div>
-            </div>
-            <nav class="links-list">
-                <a href="https://github.com" class="link-item" id="link-github">
-                    <div class="icon-container">
-                        <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                    </div>
-                    <span class="label">GitHub Repos</span>
-                </a>
-                <a href="https://stackoverflow.com" class="link-item" id="link-stackoverflow">
-                    <div class="icon-container">
-                        <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                    </div>
-                    <span class="label">Stack Overflow</span>
-                </a>
-            </nav>
+      <!-- Development Section -->
+      <div class="group">
+        <div class="group-header">
+          <span class="group-title">Development</span>
+          <div class="group-rule"></div>
         </div>
+        <nav class="links-list">
+          <a href="https://github.com" class="link-item" id="link-github">
+            <div class="icon-container">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+                ></path>
+              </svg>
+            </div>
+            <span class="label">GitHub Repos</span>
+          </a>
+          <a href="https://stackoverflow.com" class="link-item" id="link-stackoverflow">
+            <div class="icon-container">
+              <svg viewBox="0 0 24 24">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </div>
+            <span class="label">Stack Overflow</span>
+          </a>
+        </nav>
+      </div>
 
-        <!-- Reference Section -->
-        <div class="group">
-            <div class="group-header">
-                <span class="group-title">Reference</span>
-                <div class="group-rule"></div>
-            </div>
-            <nav class="links-list">
-                <a href="https://wikipedia.org" class="link-item" id="link-wikipedia">
-                    <div class="icon-container">
-                        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                    </div>
-                    <span class="label">Wikipedia</span>
-                </a>
-                <a href="https://developer.mozilla.org" class="link-item" id="link-mdn">
-                    <div class="icon-container">
-                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    </div>
-                    <span class="label">MDN Web Docs</span>
-                </a>
-            </nav>
+      <!-- Reference Section -->
+      <div class="group">
+        <div class="group-header">
+          <span class="group-title">Reference</span>
+          <div class="group-rule"></div>
         </div>
+        <nav class="links-list">
+          <a href="https://wikipedia.org" class="link-item" id="link-wikipedia">
+            <div class="icon-container">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </div>
+            <span class="label">Wikipedia</span>
+          </a>
+          <a href="https://developer.mozilla.org" class="link-item" id="link-mdn">
+            <div class="icon-container">
+              <svg viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </div>
+            <span class="label">MDN Web Docs</span>
+          </a>
+        </nav>
+      </div>
     </aside>
 
     <main class="main-content">
-        <header>
-            <h1>Paper Sidebar Layout</h1>
-            <p>This layout is inspired by the margins of a Moleskine notebook. It features a fixed 300px off-white sidebar on the left, designed for high-density bookmarking with a premium, tactile feel.</p>
-        </header>
+      <header>
+        <h1>Paper Sidebar Layout</h1>
+        <p>
+          This layout is inspired by the margins of a Moleskine notebook. It features a fixed 300px off-white sidebar on
+          the left, designed for high-density bookmarking with a premium, tactile feel.
+        </p>
+      </header>
 
-        <article style="margin-top: 3rem; border-top: 1px solid var(--rule-color); padding-top: 2rem;">
-            <p><em>Note: This page is designed to be simple and functional. The sidebar remains fixed as you scroll through your content.</em></p>
-            <div style="height: 1000px; margin-top: 2rem; border: 1px dashed var(--rule-color); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999;">
-                [ Content Area Scrollable ]
-            </div>
-        </article>
+      <article style="margin-top: 3rem; border-top: 1px solid var(--rule-color); padding-top: 2rem">
+        <p>
+          <em
+            >Note: This page is designed to be simple and functional. The sidebar remains fixed as you scroll through
+            your content.</em
+          >
+        </p>
+        <div
+          style="
+            height: 1000px;
+            margin-top: 2rem;
+            border: 1px dashed var(--rule-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+          "
+        >
+          [ Content Area Scrollable ]
+        </div>
+      </article>
     </main>
-
-</body>
+  </body>
 </html>

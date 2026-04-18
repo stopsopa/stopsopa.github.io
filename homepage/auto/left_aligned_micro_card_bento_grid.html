@@ -1,365 +1,428 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Micro-Card Bento Grid Homepage</title>
-    <meta name="description" content="A compact, left-aligned bookmark dashboard featuring a micro-card bento grid layout for maximum efficiency.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta
+      name="description"
+      content="A compact, left-aligned bookmark dashboard featuring a micro-card bento grid layout for maximum efficiency."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
     <style>
-        :root {
-            --bg-color: #050507;
-            --card-bg: rgba(22, 22, 26, 0.6);
-            --card-hover: rgba(31, 31, 37, 0.8);
-            --text-primary: #f4f4f5;
-            --text-secondary: #a1a1aa;
-            --accent-color: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.15);
-            --border-color: rgba(39, 39, 42, 0.5);
-            --container-width: 600px;
-            --card-gap: 10px;
-            --section-gap: 32px;
-        }
+      :root {
+        --bg-color: #050507;
+        --card-bg: rgba(22, 22, 26, 0.6);
+        --card-hover: rgba(31, 31, 37, 0.8);
+        --text-primary: #f4f4f5;
+        --text-secondary: #a1a1aa;
+        --accent-color: #6366f1;
+        --accent-glow: rgba(99, 102, 241, 0.15);
+        --border-color: rgba(39, 39, 42, 0.5);
+        --container-width: 600px;
+        --card-gap: 10px;
+        --section-gap: 32px;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
+      body {
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        background-color: var(--bg-color);
+        background-image: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+          radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
+        background-attachment: fixed;
+        color: var(--text-primary);
+        line-height: 1.6;
+        padding: 60px 40px;
+        display: flex;
+        justify-content: flex-start;
+        min-height: 100vh;
+      }
+
+      .dashboard {
+        width: var(--container-width);
+        display: flex;
+        flex-direction: column;
+        gap: var(--section-gap);
+        animation: fadeIn 0.8s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      header {
+        margin-bottom: 12px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        background: linear-gradient(to bottom right, #fff, #a1a1aa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .section-title {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-secondary);
+        opacity: 0.8;
+      }
+
+      .section-line {
+        flex-grow: 1;
+        height: 1px;
+        background: linear-gradient(to right, var(--border-color), transparent);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--card-gap);
+      }
+
+      .link-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .link-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+          rgba(255, 255, 255, 0.05),
+          transparent 80%
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .link-card:hover {
+        background-color: var(--card-hover);
+        border-color: rgba(99, 102, 241, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(99, 102, 241, 0.1);
+      }
+
+      .link-card:hover::before {
+        opacity: 1;
+      }
+
+      .icon-wrapper {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: transform 0.3s;
+      }
+
+      .link-card:hover .icon-wrapper {
+        transform: scale(1.1);
+        border-color: rgba(99, 102, 241, 0.3);
+      }
+
+      .icon-wrapper img {
+        width: 16px;
+        height: 16px;
+        object-fit: contain;
+      }
+
+      .icon-placeholder {
+        width: 14px;
+        height: 14px;
+        background: var(--accent-color);
+        border-radius: 3px;
+      }
+
+      .link-name {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color 0.3s;
+      }
+
+      .link-card:hover .link-name {
+        color: #fff;
+      }
+
+      .grid--compact {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      @media (max-width: 640px) {
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
-            background-attachment: fixed;
-            color: var(--text-primary);
-            line-height: 1.6;
-            padding: 60px 40px;
-            display: flex;
-            justify-content: flex-start;
-            min-height: 100vh;
+          padding: 30px 20px;
+          justify-content: center;
         }
-
         .dashboard {
-            width: var(--container-width);
-            display: flex;
-            flex-direction: column;
-            gap: var(--section-gap);
-            animation: fadeIn 0.8s ease-out;
+          width: 100%;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        header {
-            margin-bottom: 12px;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            background: linear-gradient(to bottom right, #fff, #a1a1aa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .section {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .section-title {
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-secondary);
-            opacity: 0.8;
-        }
-
-        .section-line {
-            flex-grow: 1;
-            height: 1px;
-            background: linear-gradient(to right, var(--border-color), transparent);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--card-gap);
-        }
-
-        .link-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .link-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.05), transparent 80%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .link-card:hover {
-            background-color: var(--card-hover);
-            border-color: rgba(99, 102, 241, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(99, 102, 241, 0.1);
-        }
-
-        .link-card:hover::before {
-            opacity: 1;
-        }
-
-        .icon-wrapper {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.3s;
-        }
-
-        .link-card:hover .icon-wrapper {
-            transform: scale(1.1);
-            border-color: rgba(99, 102, 241, 0.3);
-        }
-
-        .icon-wrapper img {
-            width: 16px;
-            height: 16px;
-            object-fit: contain;
-        }
-
-        .icon-placeholder {
-            width: 14px;
-            height: 14px;
-            background: var(--accent-color);
-            border-radius: 3px;
-        }
-
-        .link-name {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            transition: color 0.3s;
-        }
-
-        .link-card:hover .link-name {
-            color: #fff;
-        }
-
         .grid--compact {
-            grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(2, 1fr);
         }
-
-        @media (max-width: 640px) {
-            body {
-                padding: 30px 20px;
-                justify-content: center;
-            }
-            .dashboard {
-                width: 100%;
-            }
-            .grid--compact {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <main class="dashboard">
-        <header>
-            <h1>Personal Dashboard</h1>
-        </header>
+      <header>
+        <h1>Personal Dashboard</h1>
+      </header>
 
-        <!-- Search & Core -->
-        <section class="section">
-            <div class="section-header">
-                <span class="section-title">Search & Core</span>
-                <div class="section-line"></div>
+      <!-- Search & Core -->
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">Search & Core</span>
+          <div class="section-line"></div>
+        </div>
+        <div class="grid">
+          <a href="https://google.com" class="link-card" id="link-google">
+            <div class="icon-wrapper">
+              <img
+                src="https://www.google.com/favicon.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none"></div>
             </div>
-            <div class="grid">
-                <a href="https://google.com" class="link-card" id="link-google">
-                    <div class="icon-wrapper">
-                        <img src="https://www.google.com/favicon.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none"></div>
-                    </div>
-                    <span class="link-name">Google Search</span>
-                </a>
-                <a href="https://chatgpt.com" class="link-card" id="link-chatgpt">
-                    <div class="icon-wrapper">
-                        <img src="https://chatgpt.com/favicon.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #10a37f;"></div>
-                    </div>
-                    <span class="link-name">ChatGPT</span>
-                </a>
-                <a href="https://claude.ai" class="link-card" id="link-claude">
-                    <div class="icon-wrapper">
-                        <img src="https://claude.ai/favicon.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #d97757;"></div>
-                    </div>
-                    <span class="link-name">Claude AI</span>
-                </a>
-                <a href="https://github.com" class="link-card" id="link-github">
-                    <div class="icon-wrapper">
-                        <img src="https://github.com/favicon.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #fafafa;"></div>
-                    </div>
-                    <span class="link-name">GitHub</span>
-                </a>
+            <span class="link-name">Google Search</span>
+          </a>
+          <a href="https://chatgpt.com" class="link-card" id="link-chatgpt">
+            <div class="icon-wrapper">
+              <img
+                src="https://chatgpt.com/favicon.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #10a37f"></div>
             </div>
-        </section>
+            <span class="link-name">ChatGPT</span>
+          </a>
+          <a href="https://claude.ai" class="link-card" id="link-claude">
+            <div class="icon-wrapper">
+              <img
+                src="https://claude.ai/favicon.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #d97757"></div>
+            </div>
+            <span class="link-name">Claude AI</span>
+          </a>
+          <a href="https://github.com" class="link-card" id="link-github">
+            <div class="icon-wrapper">
+              <img
+                src="https://github.com/favicon.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #fafafa"></div>
+            </div>
+            <span class="link-name">GitHub</span>
+          </a>
+        </div>
+      </section>
 
-        <!-- Development -->
-        <section class="section">
-            <div class="section-header">
-                <span class="section-title">Development</span>
-                <div class="section-line"></div>
+      <!-- Development -->
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">Development</span>
+          <div class="section-line"></div>
+        </div>
+        <div class="grid">
+          <a href="https://stackoverflow.com" class="link-card" id="link-stackoverflow">
+            <div class="icon-wrapper">
+              <img
+                src="https://stackoverflow.com/favicon.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #f48024"></div>
             </div>
-            <div class="grid">
-                <a href="https://stackoverflow.com" class="link-card" id="link-stackoverflow">
-                    <div class="icon-wrapper">
-                        <img src="https://stackoverflow.com/favicon.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #f48024;"></div>
-                    </div>
-                    <span class="link-name">Stack Overflow</span>
-                </a>
-                <a href="https://developer.mozilla.org" class="link-card" id="link-mdn">
-                    <div class="icon-wrapper">
-                        <img src="https://developer.mozilla.org/favicon.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #000;"></div>
-                    </div>
-                    <span class="link-name">MDN Web Docs</span>
-                </a>
-                <a href="https://v2.tailwindcss.com" class="link-card" id="link-tailwind">
-                    <div class="icon-wrapper">
-                        <img src="https://v2.tailwindcss.com/favicon.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #38bdf8;"></div>
-                    </div>
-                    <span class="link-name">Tailwind CSS</span>
-                </a>
-                <a href="https://npm.com" class="link-card" id="link-npm">
-                    <div class="icon-wrapper">
-                        <img src="https://www.npmjs.com/favicon.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #cb3837;"></div>
-                    </div>
-                    <span class="link-name">NPM Registry</span>
-                </a>
+            <span class="link-name">Stack Overflow</span>
+          </a>
+          <a href="https://developer.mozilla.org" class="link-card" id="link-mdn">
+            <div class="icon-wrapper">
+              <img
+                src="https://developer.mozilla.org/favicon.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #000"></div>
             </div>
-        </section>
+            <span class="link-name">MDN Web Docs</span>
+          </a>
+          <a href="https://v2.tailwindcss.com" class="link-card" id="link-tailwind">
+            <div class="icon-wrapper">
+              <img
+                src="https://v2.tailwindcss.com/favicon.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #38bdf8"></div>
+            </div>
+            <span class="link-name">Tailwind CSS</span>
+          </a>
+          <a href="https://npm.com" class="link-card" id="link-npm">
+            <div class="icon-wrapper">
+              <img
+                src="https://www.npmjs.com/favicon.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #cb3837"></div>
+            </div>
+            <span class="link-name">NPM Registry</span>
+          </a>
+        </div>
+      </section>
 
-        <!-- Social & Media -->
-        <section class="section">
-            <div class="section-header">
-                <span class="section-title">Social & Media</span>
-                <div class="section-line"></div>
+      <!-- Social & Media -->
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">Social & Media</span>
+          <div class="section-line"></div>
+        </div>
+        <div class="grid grid--compact">
+          <a href="https://youtube.com" class="link-card" id="link-youtube">
+            <div class="icon-wrapper">
+              <img
+                src="https://www.youtube.com/favicon.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #ff0000"></div>
             </div>
-            <div class="grid grid--compact">
-                <a href="https://youtube.com" class="link-card" id="link-youtube">
-                    <div class="icon-wrapper">
-                        <img src="https://www.youtube.com/favicon.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #ff0000;"></div>
-                    </div>
-                    <span class="link-name">YouTube</span>
-                </a>
-                <a href="https://twitter.com" class="link-card" id="link-x">
-                    <div class="icon-wrapper">
-                        <img src="https://abs.twimg.com/favicons/twitter.2.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #1da1f2;"></div>
-                    </div>
-                    <span class="link-name">X / Twitter</span>
-                </a>
-                <a href="https://reddit.com" class="link-card" id="link-reddit">
-                    <div class="icon-wrapper">
-                        <img src="https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #ff4500;"></div>
-                    </div>
-                    <span class="link-name">Reddit</span>
-                </a>
+            <span class="link-name">YouTube</span>
+          </a>
+          <a href="https://twitter.com" class="link-card" id="link-x">
+            <div class="icon-wrapper">
+              <img
+                src="https://abs.twimg.com/favicons/twitter.2.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #1da1f2"></div>
             </div>
-        </section>
+            <span class="link-name">X / Twitter</span>
+          </a>
+          <a href="https://reddit.com" class="link-card" id="link-reddit">
+            <div class="icon-wrapper">
+              <img
+                src="https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #ff4500"></div>
+            </div>
+            <span class="link-name">Reddit</span>
+          </a>
+        </div>
+      </section>
 
-        <!-- Tools -->
-        <section class="section">
-            <div class="section-header">
-                <span class="section-title">Tools</span>
-                <div class="section-line"></div>
+      <!-- Tools -->
+      <section class="section">
+        <div class="section-header">
+          <span class="section-title">Tools</span>
+          <div class="section-line"></div>
+        </div>
+        <div class="grid">
+          <a href="https://figma.com" class="link-card" id="link-figma">
+            <div class="icon-wrapper">
+              <img
+                src="https://www.figma.com/favicon.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #f24e1e"></div>
             </div>
-            <div class="grid">
-                <a href="https://figma.com" class="link-card" id="link-figma">
-                    <div class="icon-wrapper">
-                        <img src="https://www.figma.com/favicon.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #f24e1e;"></div>
-                    </div>
-                    <span class="link-name">Figma</span>
-                </a>
-                <a href="https://notion.so" class="link-card" id="link-notion">
-                    <div class="icon-wrapper">
-                        <img src="https://www.notion.so/images/favicon.ico" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="icon-placeholder" style="display:none; background: #000;"></div>
-                    </div>
-                    <span class="link-name">Notion</span>
-                </a>
+            <span class="link-name">Figma</span>
+          </a>
+          <a href="https://notion.so" class="link-card" id="link-notion">
+            <div class="icon-wrapper">
+              <img
+                src="https://www.notion.so/images/favicon.ico"
+                alt=""
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+              />
+              <div class="icon-placeholder" style="display: none; background: #000"></div>
             </div>
-        </section>
+            <span class="link-name">Notion</span>
+          </a>
+        </div>
+      </section>
     </main>
 
     <script>
-        // Spotlight effect
-        document.querySelectorAll('.link-card').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
-            });
+      // Spotlight effect
+      document.querySelectorAll(".link-card").forEach((card) => {
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty("--mouse-x", `${x}px`);
+          card.style.setProperty("--mouse-y", `${y}px`);
         });
+      });
 
-        // Quick search listener
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '/') {
-                e.preventDefault();
-                console.log('Search triggered');
-            }
-        });
+      // Quick search listener
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "/") {
+          e.preventDefault();
+          console.log("Search triggered");
+        }
+      });
     </script>
-</body>
+  </body>
 </html>

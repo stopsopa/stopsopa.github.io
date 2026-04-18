@@ -1,233 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Terminal Dashboard</title>
-    <meta name="description" content="A compact, terminal-inspired hacker dashboard for frequently used links.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="description" content="A compact, terminal-inspired hacker dashboard for frequently used links." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <style>
-        :root {
-            --bg-color: #0a0a0a;
-            --text-color: #00ff41; /* Classic Matrix/Terminal Green */
-            --dim-color: #008f11;
-            --accent-color: #003b00;
-            --font-main: 'JetBrains Mono', monospace;
-            --sidebar-width: 320px;
-        }
+      :root {
+        --bg-color: #0a0a0a;
+        --text-color: #00ff41; /* Classic Matrix/Terminal Green */
+        --dim-color: #008f11;
+        --accent-color: #003b00;
+        --font-main: "JetBrains Mono", monospace;
+        --sidebar-width: 320px;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-main);
-            font-size: 13px;
-            line-height: 1.4;
-            display: flex;
-            min-height: 100vh;
-        }
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: var(--font-main);
+        font-size: 13px;
+        line-height: 1.4;
+        display: flex;
+        min-height: 100vh;
+      }
 
+      #terminal-container {
+        width: var(--sidebar-width);
+        padding: 20px;
+        border-right: 1px solid var(--accent-color);
+        height: 100vh;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--dim-color) transparent;
+      }
+
+      #terminal-container::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      #terminal-container::-webkit-scrollbar-thumb {
+        background-color: var(--dim-color);
+      }
+
+      h1 {
+        font-size: 14px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-bottom: 1px solid var(--text-color);
+        padding-bottom: 5px;
+        display: inline-block;
+      }
+
+      .group {
+        margin-bottom: 24px;
+      }
+
+      .group-header {
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-color);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+      }
+
+      .group-header::before {
+        content: "[ ";
+      }
+
+      .group-header::after {
+        content: " ]";
+      }
+
+      .links-list {
+        list-style: none;
+      }
+
+      .link-item {
+        display: flex;
+        align-items: center;
+        padding: 2px 0;
+        text-decoration: none;
+        color: var(--dim-color);
+        transition: color 0.1s ease, background-color 0.1s ease;
+        position: relative;
+      }
+
+      .link-item:hover {
+        color: var(--text-color);
+        background-color: var(--accent-color);
+      }
+
+      .link-item::before {
+        content: "> ";
+        margin-right: 4px;
+        color: var(--text-color);
+        opacity: 0.6;
+      }
+
+      .link-item:hover::before {
+        opacity: 1;
+      }
+
+      .icon-container {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        filter: grayscale(100%) brightness(150%);
+      }
+
+      .link-item:hover .icon-container {
+        filter: none;
+      }
+
+      .link-label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 8px;
+        height: 15px;
+        background-color: var(--text-color);
+        vertical-align: middle;
+        animation: blink 1s infinite;
+        margin-left: 5px;
+      }
+
+      @keyframes blink {
+        0%,
+        49% {
+          opacity: 1;
+        }
+        50%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      /* Responsive - Keep it fixed on left as requested */
+      @media (max-width: 400px) {
         #terminal-container {
-            width: var(--sidebar-width);
-            padding: 20px;
-            border-right: 1px solid var(--accent-color);
-            height: 100vh;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--dim-color) transparent;
+          width: 100%;
+          border-right: none;
         }
-
-        #terminal-container::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        #terminal-container::-webkit-scrollbar-thumb {
-            background-color: var(--dim-color);
-        }
-
-        h1 {
-            font-size: 14px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 1px solid var(--text-color);
-            padding-bottom: 5px;
-            display: inline-block;
-        }
-
-        .group {
-            margin-bottom: 24px;
-        }
-
-        .group-header {
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-color);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-        }
-
-        .group-header::before {
-            content: "[ ";
-        }
-
-        .group-header::after {
-            content: " ]";
-        }
-
-        .links-list {
-            list-style: none;
-        }
-
-        .link-item {
-            display: flex;
-            align-items: center;
-            padding: 2px 0;
-            text-decoration: none;
-            color: var(--dim-color);
-            transition: color 0.1s ease, background-color 0.1s ease;
-            position: relative;
-        }
-
-        .link-item:hover {
-            color: var(--text-color);
-            background-color: var(--accent-color);
-        }
-
-        .link-item::before {
-            content: "> ";
-            margin-right: 4px;
-            color: var(--text-color);
-            opacity: 0.6;
-        }
-
-        .link-item:hover::before {
-            opacity: 1;
-        }
-
-        .icon-container {
-            width: 16px;
-            height: 16px;
-            margin-right: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            filter: grayscale(100%) brightness(150%);
-        }
-
-        .link-item:hover .icon-container {
-            filter: none;
-        }
-
-        .link-label {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 15px;
-            background-color: var(--text-color);
-            vertical-align: middle;
-            animation: blink 1s infinite;
-            margin-left: 5px;
-        }
-
-        @keyframes blink {
-            0%, 49% { opacity: 1; }
-            50%, 100% { opacity: 0; }
-        }
-
-        /* Responsive - Keep it fixed on left as requested */
-        @media (max-width: 400px) {
-            #terminal-container {
-                width: 100%;
-                border-right: none;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="terminal-container">
-        <h1>Root_Dashboard</h1>
-        
-        <div class="group">
-            <div class="group-header">Search</div>
-            <div class="links-list">
-                <a href="https://google.com" class="link-item" id="link-google">
-                    <div class="icon-container">G</div>
-                    <span class="link-label">google.exe</span>
-                </a>
-                <a href="https://duckduckgo.com" class="link-item" id="link-ddg">
-                    <div class="icon-container">D</div>
-                    <span class="link-label">duckduckgo.sh</span>
-                </a>
-            </div>
-        </div>
+      <h1>Root_Dashboard</h1>
 
-        <div class="group">
-            <div class="group-header">Intelligence</div>
-            <div class="links-list">
-                <a href="https://chat.openai.com" class="link-item" id="link-chatgpt">
-                    <div class="icon-container">AI</div>
-                    <span class="link-label">chatgpt.bin</span>
-                </a>
-                <a href="https://claude.ai" class="link-item" id="link-claude">
-                    <div class="icon-container">C</div>
-                    <span class="link-label">claude_v3.run</span>
-                </a>
-                <a href="https://gemini.google.com" class="link-item" id="link-gemini">
-                    <div class="icon-container">G</div>
-                    <span class="link-label">gemini_pro.env</span>
-                </a>
-            </div>
+      <div class="group">
+        <div class="group-header">Search</div>
+        <div class="links-list">
+          <a href="https://google.com" class="link-item" id="link-google">
+            <div class="icon-container">G</div>
+            <span class="link-label">google.exe</span>
+          </a>
+          <a href="https://duckduckgo.com" class="link-item" id="link-ddg">
+            <div class="icon-container">D</div>
+            <span class="link-label">duckduckgo.sh</span>
+          </a>
         </div>
+      </div>
 
-        <div class="group">
-            <div class="group-header">Development</div>
-            <div class="links-list">
-                <a href="https://github.com" class="link-item" id="link-github">
-                    <div class="icon-container">Git</div>
-                    <span class="link-label">github_repo.git</span>
-                </a>
-                <a href="https://stackoverflow.com" class="link-item" id="link-so">
-                    <div class="icon-container">SO</div>
-                    <span class="link-label">stack_overflow.log</span>
-                </a>
-                <a href="https://vercel.com" class="link-item" id="link-vercel">
-                    <div class="icon-container">V</div>
-                    <span class="link-label">vercel_deploy.cfg</span>
-                </a>
-            </div>
+      <div class="group">
+        <div class="group-header">Intelligence</div>
+        <div class="links-list">
+          <a href="https://chat.openai.com" class="link-item" id="link-chatgpt">
+            <div class="icon-container">AI</div>
+            <span class="link-label">chatgpt.bin</span>
+          </a>
+          <a href="https://claude.ai" class="link-item" id="link-claude">
+            <div class="icon-container">C</div>
+            <span class="link-label">claude_v3.run</span>
+          </a>
+          <a href="https://gemini.google.com" class="link-item" id="link-gemini">
+            <div class="icon-container">G</div>
+            <span class="link-label">gemini_pro.env</span>
+          </a>
         </div>
+      </div>
 
-        <div class="group">
-            <div class="group-header">Social</div>
-            <div class="links-list">
-                <a href="https://twitter.com" class="link-item" id="link-twitter">
-                    <div class="icon-container">X</div>
-                    <span class="link-label">x_com.stream</span>
-                </a>
-                <a href="https://reddit.com" class="link-item" id="link-reddit">
-                    <div class="icon-container">R</div>
-                    <span class="link-label">reddit_sub.feed</span>
-                </a>
-            </div>
+      <div class="group">
+        <div class="group-header">Development</div>
+        <div class="links-list">
+          <a href="https://github.com" class="link-item" id="link-github">
+            <div class="icon-container">Git</div>
+            <span class="link-label">github_repo.git</span>
+          </a>
+          <a href="https://stackoverflow.com" class="link-item" id="link-so">
+            <div class="icon-container">SO</div>
+            <span class="link-label">stack_overflow.log</span>
+          </a>
+          <a href="https://vercel.com" class="link-item" id="link-vercel">
+            <div class="icon-container">V</div>
+            <span class="link-label">vercel_deploy.cfg</span>
+          </a>
         </div>
+      </div>
 
-        <div style="margin-top: 40px; color: var(--accent-color); font-size: 10px;">
-            SYSTEM READY<span class="cursor"></span>
+      <div class="group">
+        <div class="group-header">Social</div>
+        <div class="links-list">
+          <a href="https://twitter.com" class="link-item" id="link-twitter">
+            <div class="icon-container">X</div>
+            <span class="link-label">x_com.stream</span>
+          </a>
+          <a href="https://reddit.com" class="link-item" id="link-reddit">
+            <div class="icon-container">R</div>
+            <span class="link-label">reddit_sub.feed</span>
+          </a>
         </div>
+      </div>
+
+      <div style="margin-top: 40px; color: var(--accent-color); font-size: 10px">
+        SYSTEM READY<span class="cursor"></span>
+      </div>
     </div>
-</body>
+  </body>
 </html>

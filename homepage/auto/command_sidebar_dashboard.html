@@ -1,429 +1,495 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Command Sidebar Dashboard</title>
-    <meta name="description" content="A premium, high-density bookmark dashboard with a dual-level vertical sidebar for maximum efficiency.">
+    <meta
+      name="description"
+      content="A premium, high-density bookmark dashboard with a dual-level vertical sidebar for maximum efficiency."
+    />
     <!-- Google Fonts: Inter and JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            /* Color Palette - Sleek Dark Mode */
-            --bg-primary: #0a0c10;
-            --bg-secondary: #12151c;
-            --bg-tertiary: #1c212b;
-            --border: #2d333b;
-            --text-main: #adbac7;
-            --text-muted: #768390;
-            --accent: #539bf5;
-            --accent-glow: rgba(83, 155, 245, 0.15);
-            --hover-bg: #22272e;
-            
-            /* Sizing */
-            --rail-width: 64px;
-            --sidebar-width: 260px;
-            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+      :root {
+        /* Color Palette - Sleek Dark Mode */
+        --bg-primary: #0a0c10;
+        --bg-secondary: #12151c;
+        --bg-tertiary: #1c212b;
+        --border: #2d333b;
+        --text-main: #adbac7;
+        --text-muted: #768390;
+        --accent: #539bf5;
+        --accent-glow: rgba(83, 155, 245, 0.15);
+        --hover-bg: #22272e;
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* Sizing */
+        --rail-width: 64px;
+        --sidebar-width: 260px;
+        --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            line-height: 1.5;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        /* Category Rail (Narrow) */
-        .category-rail {
-            width: var(--rail-width);
-            background-color: var(--bg-primary);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            z-index: 100;
-        }
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-main);
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        line-height: 1.5;
+      }
 
-        .rail-item {
-            width: 44px;
-            height: 44px;
-            margin-bottom: 12px;
-            border-radius: 12px;
-            background-color: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--text-muted);
-            position: relative;
-        }
+      /* Category Rail (Narrow) */
+      .category-rail {
+        width: var(--rail-width);
+        background-color: var(--bg-primary);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+        z-index: 100;
+      }
 
-        .rail-item:hover {
-            color: var(--accent);
-            background-color: var(--bg-tertiary);
-            border-radius: 14px;
-        }
+      .rail-item {
+        width: 44px;
+        height: 44px;
+        margin-bottom: 12px;
+        border-radius: 12px;
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+        color: var(--text-muted);
+        position: relative;
+      }
 
-        .rail-item.active {
-            background-color: var(--accent-glow);
-            color: var(--accent);
-            border-radius: 14px;
-        }
+      .rail-item:hover {
+        color: var(--accent);
+        background-color: var(--bg-tertiary);
+        border-radius: 14px;
+      }
 
-        .rail-item.active::before {
-            content: '';
-            position: absolute;
-            left: -10px;
-            top: 12px;
-            bottom: 12px;
-            width: 4px;
-            background-color: var(--accent);
-            border-radius: 0 4px 4px 0;
-        }
+      .rail-item.active {
+        background-color: var(--accent-glow);
+        color: var(--accent);
+        border-radius: 14px;
+      }
 
-        .rail-item svg {
-            width: 22px;
-            height: 22px;
-        }
+      .rail-item.active::before {
+        content: "";
+        position: absolute;
+        left: -10px;
+        top: 12px;
+        bottom: 12px;
+        width: 4px;
+        background-color: var(--accent);
+        border-radius: 0 4px 4px 0;
+      }
 
-        /* Tooltip */
-        .rail-item .tooltip {
-            position: absolute;
-            left: 70px;
-            background-color: #000;
-            color: #fff;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-            opacity: 0;
-            transform: translateX(-10px);
-            pointer-events: none;
-            transition: var(--transition);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border);
-        }
+      .rail-item svg {
+        width: 22px;
+        height: 22px;
+      }
 
-        .rail-item:hover .tooltip {
-            opacity: 1;
-            transform: translateX(0);
-        }
+      /* Tooltip */
+      .rail-item .tooltip {
+        position: absolute;
+        left: 70px;
+        background-color: #000;
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        opacity: 0;
+        transform: translateX(-10px);
+        pointer-events: none;
+        transition: var(--transition);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--border);
+      }
 
-        /* Link Sidebar (Wide) */
-        .link-sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--bg-secondary);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 24px 16px;
-            overflow-y: auto;
-        }
+      .rail-item:hover .tooltip {
+        opacity: 1;
+        transform: translateX(0);
+      }
 
-        .sidebar-header {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+      /* Link Sidebar (Wide) */
+      .link-sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--bg-secondary);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: 24px 16px;
+        overflow-y: auto;
+      }
 
-        .sidebar-header::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
+      .sidebar-header {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-        .link-group {
-            display: none;
-        }
+      .sidebar-header::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
 
-        .link-group.active {
-            display: block;
-            animation: fadeIn 0.3s ease-out;
-        }
+      .link-group {
+        display: none;
+      }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+      .link-group.active {
+        display: block;
+        animation: fadeIn 0.3s ease-out;
+      }
 
-        .link-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 12px;
-            text-decoration: none;
-            color: var(--text-main);
-            border-radius: 8px;
-            margin-bottom: 4px;
-            transition: var(--transition);
-            font-size: 14px;
-            font-weight: 500;
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
         }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-        .link-item:hover {
-            background-color: var(--hover-bg);
-            color: #fff;
-            transform: translateX(4px);
-        }
+      .link-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 12px;
+        text-decoration: none;
+        color: var(--text-main);
+        border-radius: 8px;
+        margin-bottom: 4px;
+        transition: var(--transition);
+        font-size: 14px;
+        font-weight: 500;
+      }
 
-        .link-item .icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--bg-tertiary);
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            color: var(--text-muted);
-            transition: var(--transition);
-        }
+      .link-item:hover {
+        background-color: var(--hover-bg);
+        color: #fff;
+        transform: translateX(4px);
+      }
 
-        .link-item:hover .icon {
-            background-color: var(--accent);
-            color: #fff;
-        }
+      .link-item .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--bg-tertiary);
+        border-radius: 6px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--text-muted);
+        transition: var(--transition);
+      }
 
-        .link-item .label {
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+      .link-item:hover .icon {
+        background-color: var(--accent);
+        color: #fff;
+      }
 
-        .link-item .shortcut {
-            font-size: 10px;
-            color: var(--text-muted);
-            opacity: 0;
-            transition: var(--transition);
-        }
+      .link-item .label {
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-        .link-item:hover .shortcut {
-            opacity: 0.5;
-        }
+      .link-item .shortcut {
+        font-size: 10px;
+        color: var(--text-muted);
+        opacity: 0;
+        transition: var(--transition);
+      }
 
-        /* Main Viewport (Decorative Background) */
-        main {
-            flex: 1;
-            background-color: var(--bg-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
+      .link-item:hover .shortcut {
+        opacity: 0.5;
+      }
 
-        /* Abstract Glow */
-        main::before {
-            content: '';
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-            border-radius: 50%;
-            top: -100px;
-            right: -100px;
-            pointer-events: none;
-        }
+      /* Main Viewport (Decorative Background) */
+      main {
+        flex: 1;
+        background-color: var(--bg-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
 
-        .empty-state {
-            text-align: center;
-            max-width: 400px;
-            padding: 40px;
-        }
+      /* Abstract Glow */
+      main::before {
+        content: "";
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+        border-radius: 50%;
+        top: -100px;
+        right: -100px;
+        pointer-events: none;
+      }
 
-        .empty-state h1 {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--text-muted);
-            letter-spacing: -0.02em;
-            margin-bottom: 12px;
-            opacity: 0.2;
-        }
+      .empty-state {
+        text-align: center;
+        max-width: 400px;
+        padding: 40px;
+      }
 
-        /* Custom Scrollbar */
-        .link-sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .link-sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .link-sidebar::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 10px;
-        }
-        .link-sidebar::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
+      .empty-state h1 {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--text-muted);
+        letter-spacing: -0.02em;
+        margin-bottom: 12px;
+        opacity: 0.2;
+      }
+
+      /* Custom Scrollbar */
+      .link-sidebar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .link-sidebar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .link-sidebar::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 10px;
+      }
+      .link-sidebar::-webkit-scrollbar-thumb:hover {
+        background: var(--text-muted);
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <!-- Category Rail -->
     <nav class="category-rail">
-        <div class="rail-item active" data-target="search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <span class="tooltip">Search</span>
-        </div>
-        <div class="rail-item" data-target="ai">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12L2.1 12.3"></path><path d="M12 12l9.9-.3"></path><path d="M12 12L12 22"></path></svg>
-            <span class="tooltip">Intelligence</span>
-        </div>
-        <div class="rail-item" data-target="dev">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-            <span class="tooltip">Development</span>
-        </div>
-        <div class="rail-item" data-target="media">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-            <span class="tooltip">Media</span>
-        </div>
-        <div style="flex: 1;"></div>
-        <div class="rail-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-        </div>
+      <div class="rail-item active" data-target="search">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <span class="tooltip">Search</span>
+      </div>
+      <div class="rail-item" data-target="ai">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 2a10 10 0 1 0 10 10H12V2z"></path>
+          <path d="M12 12L2.1 12.3"></path>
+          <path d="M12 12l9.9-.3"></path>
+          <path d="M12 12L12 22"></path>
+        </svg>
+        <span class="tooltip">Intelligence</span>
+      </div>
+      <div class="rail-item" data-target="dev">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="16 18 22 12 16 6"></polyline>
+          <polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+        <span class="tooltip">Development</span>
+      </div>
+      <div class="rail-item" data-target="media">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+        </svg>
+        <span class="tooltip">Media</span>
+      </div>
+      <div style="flex: 1"></div>
+      <div class="rail-item">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="3"></circle>
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+          ></path>
+        </svg>
+      </div>
     </nav>
 
     <!-- Link Sidebar -->
     <aside class="link-sidebar">
-        <!-- Search Section -->
-        <div id="search" class="link-group active">
-            <header class="sidebar-header">Search Engines</header>
-            <div class="links">
-                <a href="https://google.com" class="link-item">
-                    <span class="icon">G</span>
-                    <span class="label">Google</span>
-                    <span class="shortcut">⌥G</span>
-                </a>
-                <a href="https://duckduckgo.com" class="link-item">
-                    <span class="icon">D</span>
-                    <span class="label">DuckDuckGo</span>
-                    <span class="shortcut">⌥D</span>
-                </a>
-                <a href="https://bing.com" class="link-item">
-                    <span class="icon">B</span>
-                    <span class="label">Bing</span>
-                    <span class="shortcut">⌥B</span>
-                </a>
-                <a href="https://kagi.com" class="link-item">
-                    <span class="icon">K</span>
-                    <span class="label">Kagi</span>
-                </a>
-            </div>
+      <!-- Search Section -->
+      <div id="search" class="link-group active">
+        <header class="sidebar-header">Search Engines</header>
+        <div class="links">
+          <a href="https://google.com" class="link-item">
+            <span class="icon">G</span>
+            <span class="label">Google</span>
+            <span class="shortcut">⌥G</span>
+          </a>
+          <a href="https://duckduckgo.com" class="link-item">
+            <span class="icon">D</span>
+            <span class="label">DuckDuckGo</span>
+            <span class="shortcut">⌥D</span>
+          </a>
+          <a href="https://bing.com" class="link-item">
+            <span class="icon">B</span>
+            <span class="label">Bing</span>
+            <span class="shortcut">⌥B</span>
+          </a>
+          <a href="https://kagi.com" class="link-item">
+            <span class="icon">K</span>
+            <span class="label">Kagi</span>
+          </a>
         </div>
+      </div>
 
-        <!-- AI Section -->
-        <div id="ai" class="link-group">
-            <header class="sidebar-header">Artificial Intelligence</header>
-            <div class="links">
-                <a href="https://chatgpt.com" class="link-item">
-                    <span class="icon">CP</span>
-                    <span class="label">ChatGPT</span>
-                </a>
-                <a href="https://claude.ai" class="link-item">
-                    <span class="icon">CL</span>
-                    <span class="label">Claude</span>
-                </a>
-                <a href="https://gemini.google.com" class="link-item">
-                    <span class="icon">GM</span>
-                    <span class="label">Gemini</span>
-                </a>
-                <a href="https://perplexity.ai" class="link-item">
-                    <span class="icon">PX</span>
-                    <span class="label">Perplexity</span>
-                </a>
-            </div>
+      <!-- AI Section -->
+      <div id="ai" class="link-group">
+        <header class="sidebar-header">Artificial Intelligence</header>
+        <div class="links">
+          <a href="https://chatgpt.com" class="link-item">
+            <span class="icon">CP</span>
+            <span class="label">ChatGPT</span>
+          </a>
+          <a href="https://claude.ai" class="link-item">
+            <span class="icon">CL</span>
+            <span class="label">Claude</span>
+          </a>
+          <a href="https://gemini.google.com" class="link-item">
+            <span class="icon">GM</span>
+            <span class="label">Gemini</span>
+          </a>
+          <a href="https://perplexity.ai" class="link-item">
+            <span class="icon">PX</span>
+            <span class="label">Perplexity</span>
+          </a>
         </div>
+      </div>
 
-        <!-- Dev Section -->
-        <div id="dev" class="link-group">
-            <header class="sidebar-header">Development</header>
-            <div class="links">
-                <a href="https://github.com" class="link-item">
-                    <span class="icon">GH</span>
-                    <span class="label">GitHub</span>
-                </a>
-                <a href="https://stackoverflow.com" class="link-item">
-                    <span class="icon">SO</span>
-                    <span class="label">StackOverflow</span>
-                </a>
-                <a href="https://developer.mozilla.org" class="link-item">
-                    <span class="icon">M</span>
-                    <span class="label">MDN Web Docs</span>
-                </a>
-                <a href="https://localhost:8080" class="link-item">
-                    <span class="icon">L</span>
-                    <span class="label">Localhost</span>
-                </a>
-            </div>
+      <!-- Dev Section -->
+      <div id="dev" class="link-group">
+        <header class="sidebar-header">Development</header>
+        <div class="links">
+          <a href="https://github.com" class="link-item">
+            <span class="icon">GH</span>
+            <span class="label">GitHub</span>
+          </a>
+          <a href="https://stackoverflow.com" class="link-item">
+            <span class="icon">SO</span>
+            <span class="label">StackOverflow</span>
+          </a>
+          <a href="https://developer.mozilla.org" class="link-item">
+            <span class="icon">M</span>
+            <span class="label">MDN Web Docs</span>
+          </a>
+          <a href="https://localhost:8080" class="link-item">
+            <span class="icon">L</span>
+            <span class="label">Localhost</span>
+          </a>
         </div>
+      </div>
 
-        <!-- Media Section -->
-        <div id="media" class="link-group">
-            <header class="sidebar-header">Media & Social</header>
-            <div class="links">
-                <a href="https://youtube.com" class="link-item">
-                    <span class="icon">YT</span>
-                    <span class="label">YouTube</span>
-                </a>
-                <a href="https://twitter.com" class="link-item">
-                    <span class="icon">TW</span>
-                    <span class="label">Twitter</span>
-                </a>
-                <a href="https://reddit.com" class="link-item">
-                    <span class="icon">RD</span>
-                    <span class="label">Reddit</span>
-                </a>
-            </div>
+      <!-- Media Section -->
+      <div id="media" class="link-group">
+        <header class="sidebar-header">Media & Social</header>
+        <div class="links">
+          <a href="https://youtube.com" class="link-item">
+            <span class="icon">YT</span>
+            <span class="label">YouTube</span>
+          </a>
+          <a href="https://twitter.com" class="link-item">
+            <span class="icon">TW</span>
+            <span class="label">Twitter</span>
+          </a>
+          <a href="https://reddit.com" class="link-item">
+            <span class="icon">RD</span>
+            <span class="label">Reddit</span>
+          </a>
         </div>
+      </div>
     </aside>
 
     <!-- Main Content -->
     <main>
-        <div class="empty-state">
-            <h1>COMMAND</h1>
-        </div>
+      <div class="empty-state">
+        <h1>COMMAND</h1>
+      </div>
     </main>
 
     <script>
-        const railItems = document.querySelectorAll('.rail-item');
-        const linkGroups = document.querySelectorAll('.link-group');
+      const railItems = document.querySelectorAll(".rail-item");
+      const linkGroups = document.querySelectorAll(".link-group");
 
-        railItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const targetId = item.getAttribute('data-target');
-                if (!targetId) return;
+      railItems.forEach((item) => {
+        item.addEventListener("click", () => {
+          const targetId = item.getAttribute("data-target");
+          if (!targetId) return;
 
-                // Update Rail
-                railItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
+          // Update Rail
+          railItems.forEach((i) => i.classList.remove("active"));
+          item.classList.add("active");
 
-                // Update Sidebar
-                linkGroups.forEach(g => g.classList.remove('active'));
-                document.getElementById(targetId).classList.add('active');
-            });
+          // Update Sidebar
+          linkGroups.forEach((g) => g.classList.remove("active"));
+          document.getElementById(targetId).classList.add("active");
         });
+      });
     </script>
-</body>
+  </body>
 </html>

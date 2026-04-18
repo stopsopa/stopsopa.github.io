@@ -26,9 +26,13 @@ jobs:
     timeout-minutes: 4
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
         with:
           node-version: 24.11.0
+          cache: 'pnpm'
 
       - name: printenv
         if: env.DEBUG_MODE == 'on'
@@ -69,42 +73,8 @@ jobs:
         if: env.DEBUG_MODE == 'on'
         run: echo '${{ toJson(github) }}'
 
-      - name: test before bringing cache
-        if: env.DEBUG_MODE == 'on'
-        run: |
-          set -x
-          pwd
-          ls -la
-          ls -la node_modules || true
-
-      - uses: actions/cache/restore@v4.2.2 # https://github.com/actions/cache/blob/main/examples.md#node---yarn
-        id: restore-cache
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
-      - name: test if cache revived?
-        if: env.DEBUG_MODE == 'on'
-        run: |
-          set -x
-          pwd
-          ls -la
-          ls -la node_modules || true
-
-      - name: Yarn install
-        run: yarn install --production=false
-
-      - name: cache key
-        run: echo ">${{ steps.restore-cache.outputs.cache-primary-key }}<"
-
-      - uses: actions/cache/save@v4.2.2 # https://github.com/actions/cache/blob/main/caching-strategies.md#reusing-primary-key-from-restore-cache-as-input-to-save-action
-        # error: Failed to save: Failed to CreateCacheEntry: Received non-retryable error: Failed request: (409) Conflict: cache entry with the same key, version, and scope already exists
-        # more: https://github.com/actions/cache/issues/1541
-
-        # on the other hand error "Cache save failed." means cache already exist for this key
-        with:
-          path: node_modules
-          key: ${{ steps.restore-cache.outputs.cache-primary-key }}
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         run: |

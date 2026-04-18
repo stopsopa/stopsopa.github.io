@@ -1,230 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Retro OS Sidebar</title>
     <style>
-        :root {
-            --bg-color: #c0c0c0;
-            --border-light: #ffffff;
-            --border-dark: #808080;
-            --border-darker: #000000;
-            --text-color: #000000;
-            --header-bg: #000080;
-            --header-text: #ffffff;
-            --hover-bg: #e0e0e0;
-            --font-stack: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        }
+      :root {
+        --bg-color: #c0c0c0;
+        --border-light: #ffffff;
+        --border-dark: #808080;
+        --border-darker: #000000;
+        --text-color: #000000;
+        --header-bg: #000080;
+        --header-text: #ffffff;
+        --hover-bg: #e0e0e0;
+        --font-stack: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #3a6ea5; /* Classic Desktop Blue */
-            font-family: var(--font-stack);
-            color: var(--text-color);
-            display: flex;
-            justify-content: flex-start;
-            min-height: 100vh;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #3a6ea5; /* Classic Desktop Blue */
+        font-family: var(--font-stack);
+        color: var(--text-color);
+        display: flex;
+        justify-content: flex-start;
+        min-height: 100vh;
+      }
 
-        #sidebar {
-            width: 250px;
-            background-color: var(--bg-color);
-            border-right: 2px solid var(--border-darker);
-            box-shadow: inset 1px 1px var(--border-light), 1px 0px var(--border-dark);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
+      #sidebar {
+        width: 250px;
+        background-color: var(--bg-color);
+        border-right: 2px solid var(--border-darker);
+        box-shadow: inset 1px 1px var(--border-light), 1px 0px var(--border-dark);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
 
-        .section {
-            margin: 10px;
-            border: 1px solid var(--border-dark);
-            box-shadow: 1px 1px var(--border-light);
-            background: var(--bg-color);
-        }
+      .section {
+        margin: 10px;
+        border: 1px solid var(--border-dark);
+        box-shadow: 1px 1px var(--border-light);
+        background: var(--bg-color);
+      }
 
-        .section-header {
-            background-color: var(--header-bg);
-            color: var(--header-text);
-            padding: 2px 6px;
-            font-size: 12px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            letter-spacing: 0.5px;
-        }
+      .section-header {
+        background-color: var(--header-bg);
+        color: var(--header-text);
+        padding: 2px 6px;
+        font-size: 12px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        letter-spacing: 0.5px;
+      }
 
-        .section-header::after {
-            content: "??"; /* Minimize/Maximize icons vibe */
-            font-size: 10px;
-            opacity: 0.8;
-        }
+      .section-header::after {
+        content: "??"; /* Minimize/Maximize icons vibe */
+        font-size: 10px;
+        opacity: 0.8;
+      }
 
-        .link-list {
-            padding: 4px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
+      .link-list {
+        padding: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
 
-        .link-item {
-            display: flex;
-            align-items: center;
-            padding: 4px 6px;
-            text-decoration: none;
-            color: var(--text-color);
-            font-size: 13px;
-            border: 1px solid transparent;
-        }
+      .link-item {
+        display: flex;
+        align-items: center;
+        padding: 4px 6px;
+        text-decoration: none;
+        color: var(--text-color);
+        font-size: 13px;
+        border: 1px solid transparent;
+      }
 
-        .link-item:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-            border: 1px dotted var(--border-dark);
-        }
+      .link-item:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        border: 1px dotted var(--border-dark);
+      }
 
-        .icon-box {
-            width: 16px;
-            height: 16px;
-            margin-right: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #fff;
-            border: 1px solid var(--border-dark);
-            box-shadow: inset 1px 1px #eee;
-            flex-shrink: 0;
-        }
+      .icon-box {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        border: 1px solid var(--border-dark);
+        box-shadow: inset 1px 1px #eee;
+        flex-shrink: 0;
+      }
 
-        .icon-box img {
-            width: 12px;
-            height: 12px;
-        }
+      .icon-box img {
+        width: 12px;
+        height: 12px;
+      }
 
-        .icon-placeholder {
-            width: 10px;
-            height: 10px;
-            background-color: #ff00ff; /* Classic "missing texture" or generic block */
-            border: 1px solid #000;
-        }
+      .icon-placeholder {
+        width: 10px;
+        height: 10px;
+        background-color: #ff00ff; /* Classic "missing texture" or generic block */
+        border: 1px solid #000;
+      }
 
-        /* Group specific colors for icons to simulate different file types/apps */
-        .icon-ai { background-color: #00ff00; }
-        .icon-search { background-color: #ffff00; }
-        .icon-dev { background-color: #00ffff; }
-        .icon-social { background-color: #ff00ff; }
+      /* Group specific colors for icons to simulate different file types/apps */
+      .icon-ai {
+        background-color: #00ff00;
+      }
+      .icon-search {
+        background-color: #ffff00;
+      }
+      .icon-dev {
+        background-color: #00ffff;
+      }
+      .icon-social {
+        background-color: #ff00ff;
+      }
 
-        .footer {
-            margin-top: auto;
-            padding: 10px;
-            font-size: 10px;
-            color: var(--border-dark);
-            border-top: 1px solid var(--border-dark);
-            text-align: center;
-        }
+      .footer {
+        margin-top: auto;
+        padding: 10px;
+        font-size: 10px;
+        color: var(--border-dark);
+        border-top: 1px solid var(--border-dark);
+        text-align: center;
+      }
 
-        /* Scrollbar styling for retro feel */
-        #sidebar::-webkit-scrollbar {
-            width: 16px;
-        }
-        #sidebar::-webkit-scrollbar-track {
-            background: var(--bg-color);
-            box-shadow: inset 1px 1px var(--border-dark);
-        }
-        #sidebar::-webkit-scrollbar-thumb {
-            background: var(--bg-color);
-            border: 1px solid var(--border-darker);
-            box-shadow: inset 1px 1px var(--border-light);
-        }
+      /* Scrollbar styling for retro feel */
+      #sidebar::-webkit-scrollbar {
+        width: 16px;
+      }
+      #sidebar::-webkit-scrollbar-track {
+        background: var(--bg-color);
+        box-shadow: inset 1px 1px var(--border-dark);
+      }
+      #sidebar::-webkit-scrollbar-thumb {
+        background: var(--bg-color);
+        border: 1px solid var(--border-darker);
+        box-shadow: inset 1px 1px var(--border-light);
+      }
     </style>
-</head>
-<body>
-
-<div id="sidebar">
-    <div class="section">
+  </head>
+  <body>
+    <div id="sidebar">
+      <div class="section">
         <div class="section-header">SEARCH ENGINES</div>
         <div class="link-list">
-            <a href="https://google.com" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-search"></div></div>
-                <span>Google</span>
-            </a>
-            <a href="https://bing.com" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-search"></div></div>
-                <span>Bing</span>
-            </a>
-            <a href="https://duckduckgo.com" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-search"></div></div>
-                <span>DuckDuckGo</span>
-            </a>
+          <a href="https://google.com" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-search"></div></div>
+            <span>Google</span>
+          </a>
+          <a href="https://bing.com" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-search"></div></div>
+            <span>Bing</span>
+          </a>
+          <a href="https://duckduckgo.com" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-search"></div></div>
+            <span>DuckDuckGo</span>
+          </a>
         </div>
-    </div>
+      </div>
 
-    <div class="section">
+      <div class="section">
         <div class="section-header">AI ASSISTANTS</div>
         <div class="link-list">
-            <a href="https://chatgpt.com" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-ai"></div></div>
-                <span>ChatGPT</span>
-            </a>
-            <a href="https://claude.ai" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-ai"></div></div>
-                <span>Claude</span>
-            </a>
-            <a href="https://gemini.google.com" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-ai"></div></div>
-                <span>Gemini</span>
-            </a>
-            <a href="https://perplexity.ai" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-ai"></div></div>
-                <span>Perplexity</span>
-            </a>
+          <a href="https://chatgpt.com" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-ai"></div></div>
+            <span>ChatGPT</span>
+          </a>
+          <a href="https://claude.ai" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-ai"></div></div>
+            <span>Claude</span>
+          </a>
+          <a href="https://gemini.google.com" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-ai"></div></div>
+            <span>Gemini</span>
+          </a>
+          <a href="https://perplexity.ai" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-ai"></div></div>
+            <span>Perplexity</span>
+          </a>
         </div>
-    </div>
+      </div>
 
-    <div class="section">
+      <div class="section">
         <div class="section-header">DEVELOPMENT</div>
         <div class="link-list">
-            <a href="https://github.com" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-dev"></div></div>
-                <span>GitHub</span>
-            </a>
-            <a href="https://stackoverflow.com" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-dev"></div></div>
-                <span>StackOverflow</span>
-            </a>
-            <a href="https://codepen.io" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-dev"></div></div>
-                <span>CodePen</span>
-            </a>
+          <a href="https://github.com" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-dev"></div></div>
+            <span>GitHub</span>
+          </a>
+          <a href="https://stackoverflow.com" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-dev"></div></div>
+            <span>StackOverflow</span>
+          </a>
+          <a href="https://codepen.io" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-dev"></div></div>
+            <span>CodePen</span>
+          </a>
         </div>
-    </div>
+      </div>
 
-    <div class="section">
+      <div class="section">
         <div class="section-header">SOCIAL</div>
         <div class="link-list">
-            <a href="https://reddit.com" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-social"></div></div>
-                <span>Reddit</span>
-            </a>
-            <a href="https://twitter.com" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-social"></div></div>
-                <span>Twitter / X</span>
-            </a>
-            <a href="https://news.ycombinator.com" class="link-item">
-                <div class="icon-box"><div class="icon-placeholder icon-social"></div></div>
-                <span>Hacker News</span>
-            </a>
+          <a href="https://reddit.com" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-social"></div></div>
+            <span>Reddit</span>
+          </a>
+          <a href="https://twitter.com" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-social"></div></div>
+            <span>Twitter / X</span>
+          </a>
+          <a href="https://news.ycombinator.com" class="link-item">
+            <div class="icon-box"><div class="icon-placeholder icon-social"></div></div>
+            <span>Hacker News</span>
+          </a>
         </div>
-    </div>
+      </div>
 
-    <div class="footer">
-        v1.0.4 build 2026<br>
+      <div class="footer">
+        v1.0.4 build 2026<br />
         System: Antigravity OS
+      </div>
     </div>
-</div>
-
-</body>
+  </body>
 </html>
