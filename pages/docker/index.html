@@ -111,7 +111,7 @@
           $ CYPRESS_VIDEO=false
           $ docker run --name name --rm -d -it -v $PWD:/e2e -w /e2e -e CYPRESS_VIDEO -e "PORT=8089" -p "8089:8089" --entrypoint="" cypress/included:3.2.0 node -v
 
-          host.docker.internal
+          host.docker.internal (or host.containers.internal for podman)
               # from: https://docs.docker.com/docker-for-mac/networking/#use-cases-and-workarounds
               g(Networking features in Docker Desktop for Mac Use cases and workarounds I WANT TO CONNECT FROM A CONTAINER TO A SERVICE ON THE HOST)
               # on linux you can use:
@@ -294,21 +294,29 @@
 
           How to communicate with service/server that lives on the host machine from within container
           # MAC
-          # use from inside the host.docker.internal
+          # use from inside the host.docker.internal (or host.containers.internal for podman)
           # more
           #     https://docs.docker.com/desktop/mac/networking/
 
           # LINUX
           # use --net=host in cli
-          # also --add-host=host.docker.internal:host-gateway
+          # also --add-host=host.docker.internal:host-gateway (or host.containers.internal:host-gateway for podman)
           #        or
-          #      --add-host host.docker.internal:host-gateway
+          #      --add-host host.docker.internal:host-gateway (or host.containers.internal:host-gateway for podman)
           # more
           #     https://docs.docker.com/network/host/
           #     https://stackoverflow.com/a/24326540
 
+          if command -v docker > /dev/null 2>&1; then
+            DOCKER_BIN="docker"
+            DOCKER_HOST_INTERNAL="host.docker.internal"
+          elif command -v podman > /dev/null 2>&1; then
+            DOCKER_BIN="podman"
+            DOCKER_HOST_INTERNAL="host.containers.internal"
+          fi
+
           if [[ "$OSTYPE" == "darwin"* ]]; then
-              _HOSTHANDLER="--env NODE_API_HOST=host.docker.internal -e MYSQL_HOST=host.docker.internal"
+              _HOSTHANDLER="--env NODE_API_HOST=${DOCKER_HOST_INTERNAL} -e MYSQL_HOST=${DOCKER_HOST_INTERNAL}"
           else
               _HOSTHANDLER="--net host"
           fi

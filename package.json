@@ -37,7 +37,7 @@
     "typescript": "^5.8.3"
   },
   "devDependencies": {
-    "@playwright/test": "1.45.0",
+    "@playwright/test": "1.59.1",
     "@types/express": "^5.0.6",
     "@types/lodash": "^4.17.24",
     "@types/node": "^25.6.0",
@@ -52,7 +52,7 @@
     "koa-static": "^5.0.0",
     "markdown-toc": "^1.2.0",
     "open-cli": "^7.1.0",
-    "playwright": "1.45.0",
+    "playwright": "1.59.1",
     "prettier": "^2.8.4",
     "spdy": "^4.0.2",
     "vitest": "^3.0.8"

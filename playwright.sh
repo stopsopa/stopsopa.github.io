@@ -45,6 +45,14 @@ else
   PACKAGE="npm"
 fi
 
+if command -v docker > /dev/null 2>&1; then
+  DOCKER_BIN="docker"
+  DOCKER_HOST_INTERNAL="host.docker.internal"
+elif command -v podman > /dev/null 2>&1; then
+  DOCKER_BIN="podman"
+  DOCKER_HOST_INTERNAL="host.containers.internal"
+fi
+
 node -v 1> /dev/null 2> /dev/null
 
 if [ "${?}" != "0" ]; then
@@ -330,7 +338,7 @@ if [ "${_HELP}" = "1" ]; then
 
 cat <<EOF
 
-Purpose of this script is to provide the same way to launch test natively on your host machine but also after adding one parameter to launch it in docker exactly the same way.
+Purpose of this script is to provide the same way to launch test natively on your host machine but also after adding one parameter to launch it in docker/podman exactly the same way.
 
 First you might need to generate file with default parameters for "docker run" internal command (optional: only if you will use "-t docker" mode):
 ${YELLOW}/bin/bash playwright.sh ${BOLD}--generate-playwright-docker-defaults${RESET}
@@ -344,7 +352,7 @@ ${YELLOW}/bin/bash playwright.sh --generate-playwright-docker-defaults ${BOLD}--
         --docker-defaults ./playwright-docker-defaults.sh
 
     # ${GREEN}NOTICE${RESET}: you might also reset injecting any default params by passing /dev/null and then defining everything manually using double -- delimiters
-        ${YELLOW}/bin/bash playwright.sh -t docker --docker-defaults /dev/null -- [params for "docker run"] -- [params for internal execution of playwright]
+        ${YELLOW}/bin/bash playwright.sh -t docker --docker-defaults /dev/null -- [params for "${DOCKER_BIN} run"] -- [params for internal execution of playwright]
 
 ${YELLOW}/bin/bash playwright.sh ${BOLD}--env .env_test_against_vite${RESET}${YELLOW} -- --debug tests/e2e/sandbox/img.spec.js${RESET}
     # by default playwright.sh script reads file .env in search for env vars but you might change it providing -e|--env param
@@ -392,26 +400,26 @@ ${GREEN}ALL PARAMS BELOW ARE USED ONLY IF playwright.sh IS SWITCHED TO ${BOLD}--
 
 ${YELLOW}/bin/bash playwright.sh -t docker ${BOLD}--nohost${RESET} ${YELLOW} -- ... optionally other native params for playwright${RESET}
     # WARNING: be aware that this params is handled/consumed by this script only  
-    # it is here to explicitly NOT add to "docker run" parameters:
+    # it is here to explicitly NOT add to "${DOCKER_BIN} run" parameters:
     # --net host
     #   or
-    # --env NODE_API_HOST=host.docker.internal
+    # --env NODE_API_HOST=${DOCKER_HOST_INTERNAL}
     # depends what OS will be detected
 
 Up to this point you've probably noticed that we are using delimiter ${RED}--${RESET} to separate parameters for playwright.sh script and parameters for playwright itself.
-But in "-t docker" mode we can use TWO pairs of ${RED}--${RESET} delimiter, this way we will have more control over not only playwright but also we will be able to inject some extra parameters to "docker run" itself.
+But in "-t docker" mode we can use TWO pairs of ${RED}--${RESET} delimiter, this way we will have more control over not only playwright but also we will be able to inject some extra parameters to "${DOCKER_BIN} run" itself.
 Example:
     ${YELLOW}/bin/bash playwright.sh -t docker --nohost ${RED}--${YELLOW} -v "\$(pwd)/.env_docker:/code/.env" ${RED}--${RESET}
-        # this way by using --nohost we will not inject --env NODE_API_HOST=host.docker.internal (in MAC case) and we can provide different .env_docker with NODE_API_HOST env var and mount it inside container as /code/.env
+        # this way by using --nohost we will not inject --env NODE_API_HOST=${DOCKER_HOST_INTERNAL} (in MAC case) and we can provide different .env_docker with NODE_API_HOST env var and mount it inside container as /code/.env
         #    (this might be useful for launching docker tests against external domain - not against server on host/dev machine)
 
         # ${RED}WARNING${RESET}: important part here is that at the end we have second ${RED}--${RESET}, this way we are clearly indicating that parameter
         #    -v "\$(pwd)/.env_docker:/code/.env"
-        # is for "docker run"
+        # is for "${DOCKER_BIN} run"
         # not for playwright tool executed inside container
     # Obviously this way we can inject some params to playwright too: 
     ${YELLOW}/bin/bash playwright.sh -t docker --nohost ${RED}--${YELLOW} -v "\$(pwd)/.env_docker:/code/.env" ${RED}--${YELLOW} --list${RESET}
-        # this way "docker run" will get extra param:
+        # this way "${DOCKER_BIN} run" will get extra param:
             -v "\$(pwd)/.env_docker:/code/.env"
         # and playwright will get
             --list
@@ -476,9 +484,14 @@ if [ "${_TARGET}" = "docker" ]; then
 
   set -e
 
+  if [ "${DOCKER_BIN}" = "" ]; then
+    echo "${0} error: docker or podman is not available"
+    exit 1
+  fi
+
   if [ "${_TESTAGAINSTHOST}" = "1" ]; then
       if [[ "$OSTYPE" == "darwin"* ]]; then
-          _HOSTHANDLER="--env NODE_API_HOST=host.docker.internal"
+          _HOSTHANDLER="--env NODE_API_HOST=${DOCKER_HOST_INTERNAL}"
       else
           _HOSTHANDLER="--net host"
       fi
@@ -578,7 +591,7 @@ IMAGE="monstersmart/playwright:v${PLAYWRIGHT_VER}-noble-just-chromium"
 
 
 # testing how to run multiline bash script
-# cat <<EEE | docker run --rm -i --entrypoint="" \
+# cat <<EEE | ${DOCKER_BIN} run --rm -i --entrypoint="" \
 # ${IMAGE} \
 # bash
 # ls -la
@@ -586,10 +599,10 @@ IMAGE="monstersmart/playwright:v${PLAYWRIGHT_VER}-noble-just-chromium"
 # date
 # EEE  
 
-# PLAYWRIGHT_BROWSERS_PATH="$(docker run -i ${IMAGE} bash -c "echo \$PLAYWRIGHT_BROWSERS_PATH")"
+# PLAYWRIGHT_BROWSERS_PATH="$(${DOCKER_BIN} run -i ${IMAGE} bash -c "echo \$PLAYWRIGHT_BROWSERS_PATH")"
 
 CMD="$(cat <<EOF
-cat <<EEE | docker run -i --rm --ipc host --cap-add SYS_ADMIN --entrypoint="" $S
+cat <<EEE | ${DOCKER_BIN} run -i --rm --ipc host --cap-add SYS_ADMIN --entrypoint="" $S
 ${DOCKERDEFAULTS} $S
 ${DOCKER_PARAMS_NOT_QUOTED} $S
 ${_HOSTHANDLER} $S
@@ -601,7 +614,6 @@ bash
   echo "pwd: >\\\$(pwd)<"
   ls -la
   set -x
-  echo yarn.lock and package.json are required to run yarn list playwright but lets try  
   npm ls | grep playwright
   ./node_modules/.bin/playwright --version
   node playwright.config.js

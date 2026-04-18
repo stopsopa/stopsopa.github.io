@@ -31,8 +31,8 @@ jobs:
           version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
 
       - name: printenv
         if: env.DEBUG_MODE == 'on'

@@ -31,7 +31,7 @@
         oc port-forward $(oc get po | grep REDISDEPLOYMENTNAME | grep Running | awk '{print $1}' | head -n 1) 6379:6379
         docker run -d -v redisinsight:/db -p 4221:8001 redislabs/redisinsight:latest
         http://localhost:4221
-        # then use host.docker.internal as a host if you are on mac
+        # then use host.docker.internal (or host.containers.internal for podman) as a host if you are on mac
       </script>
       <h2>node</h2>
       <script type="editor" data-lang="sh">
