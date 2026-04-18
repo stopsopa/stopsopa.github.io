@@ -341,14 +341,53 @@
     </div>
 
     <script>
-        // Simple script to handle link clicks if needed, but currently standard links work fine.
-        // We could add a 'selected' state to links if we wanted to mirror IDE behavior perfectly.
+        // Handle link selection
         document.querySelectorAll('.tree-item').forEach(item => {
             item.addEventListener('click', function() {
-                document.querySelectorAll('.tree-item').forEach(i => i.style.backgroundColor = '');
+                document.querySelectorAll('.tree-item').forEach(i => {
+                    i.style.backgroundColor = '';
+                    i.style.color = '';
+                });
                 this.style.backgroundColor = 'var(--accent-color)';
                 this.style.color = 'var(--text-bright)';
             });
+        });
+
+        // Persist details state
+        const STORAGE_KEY = 'homepage_details_state';
+        
+        function saveDetailsState() {
+            const states = {};
+            document.querySelectorAll('.tree-container details').forEach(details => {
+                const summary = details.querySelector('summary').textContent.trim();
+                states[summary] = details.open;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(states));
+        }
+
+        function loadDetailsState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) return;
+            
+            try {
+                const states = JSON.parse(saved);
+                document.querySelectorAll('.tree-container details').forEach(details => {
+                    const summary = details.querySelector('summary').textContent.trim();
+                    if (states[summary] !== undefined) {
+                        details.open = states[summary];
+                    }
+                });
+            } catch (e) {
+                console.error('Failed to load details state', e);
+            }
+        }
+
+        // Initialize state
+        loadDetailsState();
+
+        // Listen for toggles
+        document.querySelectorAll('.tree-container details').forEach(details => {
+            details.addEventListener('toggle', saveDetailsState);
         });
     </script>
 </body>
