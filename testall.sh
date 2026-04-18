@@ -116,3 +116,4 @@ EEE
 
 # because we have launched koa server via https let's switch playwright to use https as well
 NODE_API_PORT="${NODE_API_PORT_HTTPS}" /bin/bash playwright.sh
+NODE_API_PORT="${NODE_API_PORT_HTTPS}" /bin/bash playwright.sh --target docker
