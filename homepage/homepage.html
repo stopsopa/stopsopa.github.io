@@ -103,7 +103,7 @@
         transform: rotate(90deg);
       }
 
-      .tree-content {
+      details div {
         margin-left: 18px;
         border-left: 1px solid var(--line-color);
         padding-left: 5px;
@@ -111,7 +111,7 @@
         flex-direction: column;
       }
 
-      .tree-content a {
+      details div a {
         display: flex;
         align-items: center;
         padding: 4px 10px;
@@ -124,12 +124,12 @@
         position: relative;
       }
 
-      .tree-content a:hover {
+      details div a:hover {
         background-color: var(--hover-bg);
         color: var(--text-bright);
       }
 
-      .tree-content a::before {
+      details div a::before {
         content: "";
         position: absolute;
         left: -6px;
@@ -139,7 +139,7 @@
       }
 
       summary img,
-      .tree-content a img {
+      details div a img {
         width: 14px;
         height: 14px;
         margin-right: 8px;
@@ -147,7 +147,7 @@
         object-fit: contain;
       }
 
-      .tree-content a span {
+      details div a span {
         flex-grow: 1;
       }
 
@@ -193,12 +193,6 @@
         opacity: 0.1;
         margin-bottom: 20px;
       }
-
-      .placeholder-text {
-        font-size: 14px;
-        opacity: 0.2;
-        max-width: 400px;
-      }
     </style>
   </head>
   <body>
@@ -206,10 +200,9 @@
       <div class="header">Explorer</div>
 
       <div class="tree-container">
-        <!-- Search Group -->
         <details>
           <summary><img src="img/tools.png" />Tools</summary>
-          <div class="tree-content">
+          <div>
             <a href="https://mail.google.com/">
               <img src="img/gmail.png" />
               <span>Gmail</span>
@@ -218,70 +211,39 @@
               <img src="img/google_drive.png" />
               <span>Google Drive</span>
             </a>
+            <a href="https://keep.google.com/">
+              <img src="img/google_keep.png" />
+              <span>Google Keep</span>
+            </a>
+            <a href="https://www.timeanddate.com/">
+              <img src="img/timeanddate.png" />
+              <span>TimeAndDate</span>
+            </a>
           </div>
         </details>
 
-        <!-- AI Group -->
         <details open>
-          <summary><img src="/homepage/img/ai_models.png" />AI_MODELS</summary>
-          <div class="tree-content">
-            <a href="https://chat.openai.com">
-              <img src="/homepage/img/chatgpt.png" />
-              <span>chatgpt</span>
+          <summary><img src="img/ai.png" />AI slop</summary>
+          <div>
+            <a href="https://chatgpt.com/">
+              <img src="img/chatgpt.png" />
+              <span>ChatGPT</span>
             </a>
-            <a href="https://claude.ai">
-              <img src="/homepage/img/claude.png" />
-              <span>claude</span>
+            <a href="https://gemini.google.com/">
+              <img src="img/gemini.png" />
+              <span>Gemini</span>
             </a>
-            <a href="https://gemini.google.com">
-              <img src="/homepage/img/gemini.png" />
-              <span>gemini</span>
+            <a href="https://claude.ai/">
+              <img src="img/claude.png" />
+              <span>Claude</span>
             </a>
-            <a href="https://perplexity.ai">
-              <img src="/homepage/img/perplexity.png" />
-              <span>perplexity</span>
+            <a href="https://www.perplexity.ai/">
+              <img src="img/perplexity.png" />
+              <span>Perplexity</span>
             </a>
-          </div>
-        </details>
-
-        <!-- Dev Group -->
-        <details open>
-          <summary><img src="/homepage/img/development.png" />DEVELOPMENT</summary>
-          <div class="tree-content">
-            <a href="https://github.com">
-              <img src="/homepage/img/github.png" />
-              <span>github</span>
-            </a>
-            <a href="https://stackoverflow.com">
-              <img src="/homepage/img/stackoverflow.png" />
-              <span>stackoverflow</span>
-            </a>
-            <a href="https://npm.com">
-              <img src="/homepage/img/npm_registry.png" />
-              <span>npm_registry</span>
-            </a>
-            <a href="https://vercel.com">
-              <img src="/homepage/img/vercel_dash.png" />
-              <span>vercel_dash</span>
-            </a>
-          </div>
-        </details>
-
-        <!-- Social Group -->
-        <details>
-          <summary><img src="/homepage/img/social_networks.png" />SOCIAL_NETWORKS</summary>
-          <div class="tree-content">
-            <a href="https://twitter.com">
-              <img src="/homepage/img/twitter.png" />
-              <span>twitter</span>
-            </a>
-            <a href="https://reddit.com">
-              <img src="/homepage/img/reddit.png" />
-              <span>reddit</span>
-            </a>
-            <a href="https://youtube.com">
-              <img src="/homepage/img/youtube.png" />
-              <span>youtube</span>
+            <a href="https://t3.chat/">
+              <img src="img/t3chat.png" />
+              <span>T3Chat</span>
             </a>
           </div>
         </details>
@@ -299,17 +261,13 @@
 
     <div class="main-content">
       <div class="placeholder-logo">{}</div>
-      <div class="placeholder-text">
-        Select a node from the directory tree to navigate to your favorite web destination. Terminal-style high-density
-        information architecture active.
-      </div>
     </div>
 
     <script>
       // Handle link selection
-      document.querySelectorAll(".tree-content a").forEach((item) => {
+      document.querySelectorAll("details div a").forEach((item) => {
         item.addEventListener("click", function () {
-          document.querySelectorAll(".tree-content a").forEach((i) => {
+          document.querySelectorAll("details div a").forEach((i) => {
             i.style.backgroundColor = "";
             i.style.color = "";
           });
