@@ -139,27 +139,16 @@
       }
 
       .tree-icon {
-        width: 16px;
-        height: 16px;
-        margin-right: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        flex-shrink: 0;
-      }
-
-      .tree-icon img {
         width: 14px;
         height: 14px;
+        margin-right: 8px;
+        flex-shrink: 0;
         object-fit: contain;
       }
 
       .tree-label {
         flex-grow: 1;
       }
-
-
 
       /* Custom Scrollbar */
       .sidebar::-webkit-scrollbar {
@@ -216,26 +205,39 @@
       <div class="header">Explorer</div>
 
       <div class="tree-container">
+        <!-- Search Group -->
+        <details>
+          <summary><img class="tree-icon" src="/homepage/img/tools.png" />Tools</summary>
+          <div class="tree-content">
+            <a href="https://mail.google.com/" class="link-item tree-item">
+              <img class="tree-icon" src="img/gmail.png" />
+              <span class="tree-label">Gmail</span>
+            </a>
+            <a href="https://duckduckgo.com" class="link-item tree-item">
+              <img class="tree-icon" src="/homepage/img/duck_duck_go.png" />
+              <span class="tree-label">duck_duck_go</span>
+            </a>
+          </div>
+        </details>
+
         <!-- AI Group -->
         <details open>
-          <summary>
-            <span class="tree-icon"><img src="/homepage/img/ai_models.png" /></span>AI_MODELS
-          </summary>
+          <summary><img class="tree-icon" src="/homepage/img/ai_models.png" />AI_MODELS</summary>
           <div class="tree-content">
             <a href="https://chat.openai.com" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/chatgpt.png" /></span>
+              <img class="tree-icon" src="/homepage/img/chatgpt.png" />
               <span class="tree-label">chatgpt</span>
             </a>
             <a href="https://claude.ai" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/claude.png" /></span>
+              <img class="tree-icon" src="/homepage/img/claude.png" />
               <span class="tree-label">claude</span>
             </a>
             <a href="https://gemini.google.com" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/gemini.png" /></span>
+              <img class="tree-icon" src="/homepage/img/gemini.png" />
               <span class="tree-label">gemini</span>
             </a>
             <a href="https://perplexity.ai" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/perplexity.png" /></span>
+              <img class="tree-icon" src="/homepage/img/perplexity.png" />
               <span class="tree-label">perplexity</span>
             </a>
           </div>
@@ -243,62 +245,41 @@
 
         <!-- Dev Group -->
         <details open>
-          <summary>
-            <span class="tree-icon"><img src="/homepage/img/development.png" /></span>DEVELOPMENT
-          </summary>
+          <summary><img class="tree-icon" src="/homepage/img/development.png" />DEVELOPMENT</summary>
           <div class="tree-content">
             <a href="https://github.com" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/github.png" /></span>
+              <img class="tree-icon" src="/homepage/img/github.png" />
               <span class="tree-label">github</span>
             </a>
             <a href="https://stackoverflow.com" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/stackoverflow.png" /></span>
+              <img class="tree-icon" src="/homepage/img/stackoverflow.png" />
               <span class="tree-label">stackoverflow</span>
             </a>
             <a href="https://npm.com" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/npm_registry.png" /></span>
+              <img class="tree-icon" src="/homepage/img/npm_registry.png" />
               <span class="tree-label">npm_registry</span>
             </a>
             <a href="https://vercel.com" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/vercel_dash.png" /></span>
+              <img class="tree-icon" src="/homepage/img/vercel_dash.png" />
               <span class="tree-label">vercel_dash</span>
-            </a>
-          </div>
-        </details>
-
-        <!-- Search Group -->
-        <details>
-          <summary>
-            <span class="tree-icon"><img src="/homepage/img/tools.png" /></span>Tools
-          </summary>
-          <div class="tree-content">
-            <a href="https://google.com" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/google.png" /></span>
-              <span class="tree-label">google</span>
-            </a>
-            <a href="https://duckduckgo.com" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/duck_duck_go.png" /></span>
-              <span class="tree-label">duck_duck_go</span>
             </a>
           </div>
         </details>
 
         <!-- Social Group -->
         <details>
-          <summary>
-            <span class="tree-icon"><img src="/homepage/img/social_networks.png" /></span>SOCIAL_NETWORKS
-          </summary>
+          <summary><img class="tree-icon" src="/homepage/img/social_networks.png" />SOCIAL_NETWORKS</summary>
           <div class="tree-content">
             <a href="https://twitter.com" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/twitter.png" /></span>
+              <img class="tree-icon" src="/homepage/img/twitter.png" />
               <span class="tree-label">twitter</span>
             </a>
             <a href="https://reddit.com" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/reddit.png" /></span>
+              <img class="tree-icon" src="/homepage/img/reddit.png" />
               <span class="tree-label">reddit</span>
             </a>
             <a href="https://youtube.com" class="link-item tree-item">
-              <span class="tree-icon"><img src="/homepage/img/youtube.png" /></span>
+              <img class="tree-icon" src="/homepage/img/youtube.png" />
               <span class="tree-label">youtube</span>
             </a>
           </div>
