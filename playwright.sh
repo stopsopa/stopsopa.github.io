@@ -1,4 +1,3 @@
-set -x
 set -o pipefail
 S="\\" # will be used later
 
@@ -44,7 +43,6 @@ else
   echo "DETECTION: pnpm/yarn or their lock files not found, using npm"
   PACKAGE="npm"
 fi
-echo 'continue detection of docker | podman'
 
 if command -v docker > /dev/null 2>&1; then
   DOCKER_BIN="docker"
@@ -291,16 +289,12 @@ done
 if [ "${_GETPLAYWRIGHTVERSION}" = "1" ]; then
   set -e
 
-  echo node version before extractVersion 1 ">$(node --version)<"  
-
   extractVersion
 
   printf "${PLAYWRIGHT_VER}"
 
   exit 0;
 fi
-
-echo go on
 
 export ENVFILE
 # export it for playwright.config.js to read for -t local mode
@@ -599,8 +593,6 @@ if [ "${_TARGET}" = "docker" ]; then
 
       exit 1
   fi
-
-echo node version before extractVersion 2 ">$(node --version)<"  
 
 extractVersion
 

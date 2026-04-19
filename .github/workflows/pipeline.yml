@@ -90,20 +90,20 @@ jobs:
           source .env
           source .env.sh
           NODE_API_PORT="${NODE_API_PORT_HTTPS}" TIMEOUT="2000" node .github/healtcheck.js
-      # # - name: test cli (using routes endpoint)
-      # #   run: |
-      # #     /bin/bash console.sh routes
-      # - name: UNIT TESTS
-      #   if: |
-      #     !(github.event.head_commit.message == 'q' || 
-      #       startsWith(github.event.head_commit.message, 'q ') || 
-      #       endsWith(github.event.head_commit.message, ' q') || 
-      #       contains(github.event.head_commit.message, ' q '))
+      # - name: test cli (using routes endpoint)
       #   run: |
-      #     /bin/bash test.sh
-      # # - name: INT TESTS
-      # #   run: |
-      # #     TYPE=int /bin/bash test.sh
+      #     /bin/bash console.sh routes
+      - name: UNIT TESTS
+        if: |
+          !(github.event.head_commit.message == 'q' || 
+            startsWith(github.event.head_commit.message, 'q ') || 
+            endsWith(github.event.head_commit.message, ' q') || 
+            contains(github.event.head_commit.message, ' q '))
+        run: |
+          /bin/bash test.sh
+      # - name: INT TESTS
+      #   run: |
+      #     TYPE=int /bin/bash test.sh
 
       - name: JASMINE TESTS
         if: |
