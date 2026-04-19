@@ -24,10 +24,12 @@ CMD=("$@")
 
 # Function to handle cleanup on script exit
 cleanup() {
+    local EXIT_STATUS=$?
     if [ ! -z "${PID}" ]; then
-        kill $PID 2>/dev/null
+        kill ${PID} 2>/dev/null
+        wait ${PID} 2>/dev/null
     fi
-    exit
+    exit ${EXIT_STATUS}
 }
 
 trap cleanup SIGINT SIGTERM
@@ -46,6 +48,10 @@ while true; do
     
     if [ $WATCH_EXIT_CODE -eq 0 ]; then
         echo "♻️  Changes detected in file, restarting..."
+    elif [ $WATCH_EXIT_CODE -eq 130 ]; then
+        echo "${0}: 🛑 Stopped by user (Ctrl+C)"
+        (exit 130)
+        cleanup
     else
         echo "⌨️  Manual interruption (keypress), restarting on demand..."
     fi
@@ -53,4 +59,6 @@ while true; do
     # Kill the background process and wait for it to exit
     kill ${PID} 2>/dev/null
     wait ${PID} 2>/dev/null
+
+    sleep 0.5
 done
