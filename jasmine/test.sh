@@ -402,7 +402,7 @@ EEE
 set +e
 set -x
 
-/bin/bash playwright.sh --env "${ENVFILE}" "$@"
+/bin/bash playwright.sh --env "${ENVFILE}" "$@" 2>&1
 # /bin/bash bash/swap-files-v2.sh package.json package.dev.json -- /bin/bash playwright.sh --env "${ENVFILE}" "$@"
 
 STATUS=${?}
