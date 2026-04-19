@@ -117,7 +117,7 @@ rl.on("close", () => {
     }
 
     if (ver !== v) {
-      console.log(`
+      console.error(`
 playwright.sh error: all playwright libraries in package.json should have the same versions:
 found: ${JSON.stringify(versions, null, 4)}
 `);
@@ -127,7 +127,7 @@ found: ${JSON.stringify(versions, null, 4)}
   });
 
   if (ver === undefined) {
-    console.log(`
+    console.error(`
 playwright.sh error: no playwright libraries found in package.json
 add yarn add @playwright/test playwright
 `);
@@ -140,19 +140,32 @@ add yarn add @playwright/test playwright
 }
 
 function extractVersion() {
+  local LS_OUTPUT=""
   if [ "${PACKAGE}" = "npm" ]; then
-    echo npm ls passed to nodeExtractVersion  
-    PLAYWRIGHT_VER="$(NODE_OPTIONS="" npm ls --depth=9999 | nodeExtractVersion)";
+    echo "npm ls passed to nodeExtractVersion" >&2
+    LS_OUTPUT="$(NODE_OPTIONS="" npm ls --depth=9999 2>&1)" || true
   elif [ "${PACKAGE}" = "yarn" ]; then
-    echo yarn ls passed to nodeExtractVersion
-    PLAYWRIGHT_VER="$(NODE_OPTIONS="" yarn list | nodeExtractVersion)";
+    echo "yarn ls passed to nodeExtractVersion" >&2
+    LS_OUTPUT="$(NODE_OPTIONS="" yarn list 2>&1)" || true
   elif [ "${PACKAGE}" = "pnpm" ]; then
-    echo pnpm ls passed to nodeExtractVersion
-    PLAYWRIGHT_VER="$(NODE_OPTIONS="" pnpm ls | nodeExtractVersion)";
+    echo "pnpm ls passed to nodeExtractVersion" >&2
+    LS_OUTPUT="$(NODE_OPTIONS="" pnpm ls 2>&1)" || true
+  fi
+
+  echo "=== PACKAGE LISTING OUTPUT BEGIN ===" >&2
+  printf "%s\n" "${LS_OUTPUT}" >&2
+  echo "=== PACKAGE LISTING OUTPUT END ===" >&2
+
+  PLAYWRIGHT_VER="$(printf "%s\n" "${LS_OUTPUT}" | nodeExtractVersion)"
+  local EXTRACT_EXIT_CODE=$?
+
+  if [ "${EXTRACT_EXIT_CODE}" != "0" ]; then
+    echo "${0} error: nodeExtractVersion failed to extract playwright version (exit code ${EXTRACT_EXIT_CODE})." >&2
+    exit 1
   fi
 
   if ! [[ "${PLAYWRIGHT_VER}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    echo "${0} error: playwright version ${PLAYWRIGHT_VER} is not valid"
+    echo "${0} error: playwright version '${PLAYWRIGHT_VER}' is not valid" >&2
     exit 1
   fi
 }
