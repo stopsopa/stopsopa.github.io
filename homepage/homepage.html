@@ -86,21 +86,7 @@
         display: none;
       }
 
-      /* Folder Icon */
-      summary::before {
-        content: "";
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        margin-right: 8px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23cccccc'%3E%3Cpath d='M1.75 2.25A.75.75 0 012.5 1.5h3.5l.5.5h6.75a.75.75 0 01.75.75v9a.75.75 0 01-.75.75H2.5a.75.75 0 01-.75-.75v-10.5z'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: center;
-      }
-
-      details[open] > summary::before {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23cccccc'%3E%3Cpath d='M1.5 4.75A.75.75 0 012.25 4h11.5a.75.75 0 01.75.75v7.5a.75.75 0 01-.75.75H2.25a.75.75 0 01-.75-.75v-7.5z'/%3E%3Cpath d='M2.25 1.5a.75.75 0 00-.75.75V3h13v-.75a.75.75 0 00-.75-.75H2.25z'/%3E%3C/svg%3E");
-      }
+      /* Custom icons in summary instead of default folders */
 
       /* Chevron */
       summary::after {
@@ -173,11 +159,7 @@
         flex-grow: 1;
       }
 
-      .tree-ext {
-        color: #666;
-        margin-left: 4px;
-        font-size: 11px;
-      }
+
 
       /* Custom Scrollbar */
       .sidebar::-webkit-scrollbar {
@@ -236,101 +218,100 @@
       <div class="tree-container">
         <!-- AI Group -->
         <details open>
-          <summary>AI_MODELS</summary>
+          <summary>
+            <span class="tree-icon"><img src="/homepage/img/ai_models.png" /></span>AI_MODELS
+          </summary>
           <div class="tree-content">
             <a href="https://chat.openai.com" class="link-item tree-item">
-              <span class="tree-icon">🤖</span>
+              <span class="tree-icon"><img src="/homepage/img/chatgpt.png" /></span>
               <span class="tree-label">chatgpt</span>
-              <span class="tree-ext">.ia</span>
             </a>
             <a href="https://claude.ai" class="link-item tree-item">
-              <span class="tree-icon">🧠</span>
+              <span class="tree-icon"><img src="/homepage/img/claude.png" /></span>
               <span class="tree-label">claude</span>
-              <span class="tree-ext">.ia</span>
             </a>
             <a href="https://gemini.google.com" class="link-item tree-item">
-              <span class="tree-icon">✨</span>
+              <span class="tree-icon"><img src="/homepage/img/gemini.png" /></span>
               <span class="tree-label">gemini</span>
-              <span class="tree-ext">.ia</span>
             </a>
             <a href="https://perplexity.ai" class="link-item tree-item">
-              <span class="tree-icon">🔍</span>
+              <span class="tree-icon"><img src="/homepage/img/perplexity.png" /></span>
               <span class="tree-label">perplexity</span>
-              <span class="tree-ext">.ia</span>
             </a>
           </div>
         </details>
 
         <!-- Dev Group -->
         <details open>
-          <summary>DEVELOPMENT</summary>
+          <summary>
+            <span class="tree-icon"><img src="/homepage/img/development.png" /></span>DEVELOPMENT
+          </summary>
           <div class="tree-content">
             <a href="https://github.com" class="link-item tree-item">
-              <span class="tree-icon">🐙</span>
+              <span class="tree-icon"><img src="/homepage/img/github.png" /></span>
               <span class="tree-label">github</span>
-              <span class="tree-ext">.git</span>
             </a>
             <a href="https://stackoverflow.com" class="link-item tree-item">
-              <span class="tree-icon">🥞</span>
+              <span class="tree-icon"><img src="/homepage/img/stackoverflow.png" /></span>
               <span class="tree-label">stackoverflow</span>
-              <span class="tree-ext">.log</span>
             </a>
             <a href="https://npm.com" class="link-item tree-item">
-              <span class="tree-icon">📦</span>
+              <span class="tree-icon"><img src="/homepage/img/npm_registry.png" /></span>
               <span class="tree-label">npm_registry</span>
-              <span class="tree-ext">.pkg</span>
             </a>
             <a href="https://vercel.com" class="link-item tree-item">
-              <span class="tree-icon">▲</span>
+              <span class="tree-icon"><img src="/homepage/img/vercel_dash.png" /></span>
               <span class="tree-label">vercel_dash</span>
-              <span class="tree-ext">.sh</span>
             </a>
           </div>
         </details>
 
         <!-- Search Group -->
         <details>
-          <summary>Tools</summary>
+          <summary>
+            <span class="tree-icon"><img src="/homepage/img/tools.png" /></span>Tools
+          </summary>
           <div class="tree-content">
             <a href="https://google.com" class="link-item tree-item">
-              <span class="tree-icon">G</span>
+              <span class="tree-icon"><img src="/homepage/img/google.png" /></span>
               <span class="tree-label">google</span>
-              <span class="tree-ext">.query</span>
             </a>
             <a href="https://duckduckgo.com" class="link-item tree-item">
-              <span class="tree-icon">🦆</span>
+              <span class="tree-icon"><img src="/homepage/img/duck_duck_go.png" /></span>
               <span class="tree-label">duck_duck_go</span>
-              <span class="tree-ext">.query</span>
             </a>
           </div>
         </details>
 
         <!-- Social Group -->
         <details>
-          <summary>SOCIAL_NETWORKS</summary>
+          <summary>
+            <span class="tree-icon"><img src="/homepage/img/social_networks.png" /></span>SOCIAL_NETWORKS
+          </summary>
           <div class="tree-content">
             <a href="https://twitter.com" class="link-item tree-item">
-              <span class="tree-icon">𝕏</span>
+              <span class="tree-icon"><img src="/homepage/img/twitter.png" /></span>
               <span class="tree-label">twitter</span>
-              <span class="tree-ext">.feed</span>
             </a>
             <a href="https://reddit.com" class="link-item tree-item">
-              <span class="tree-icon">👽</span>
+              <span class="tree-icon"><img src="/homepage/img/reddit.png" /></span>
               <span class="tree-label">reddit</span>
-              <span class="tree-ext">.sub</span>
             </a>
             <a href="https://youtube.com" class="link-item tree-item">
-              <span class="tree-icon">📺</span>
+              <span class="tree-icon"><img src="/homepage/img/youtube.png" /></span>
               <span class="tree-label">youtube</span>
-              <span class="tree-ext">.vlog</span>
             </a>
           </div>
         </details>
       </div>
 
       <div class="status-bar">
-        <a href="https://github.com/stopsopa/stopsopa.github.io/edit/master/homepage/homepage.html" style="color: inherit; text-decoration: none;">edit page</a>
-        <a href="/homepage/image.html" style="color: inherit; text-decoration: none;">image.html</a>
+        <a
+          href="https://github.com/stopsopa/stopsopa.github.io/edit/master/homepage/homepage.html"
+          style="color: inherit; text-decoration: none"
+          >edit page</a
+        >
+        <a href="/homepage/image.html" style="color: inherit; text-decoration: none">image.html</a>
       </div>
     </div>
 
