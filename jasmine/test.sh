@@ -400,7 +400,7 @@ cat <<EEE
 EEE
 
 set +e
-set +x
+set -x
 
 /bin/bash playwright.sh --env "${ENVFILE}" "$@"
 # /bin/bash bash/swap-files-v2.sh package.json package.dev.json -- /bin/bash playwright.sh --env "${ENVFILE}" "$@"
