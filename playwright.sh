@@ -44,6 +44,7 @@ else
   echo "DETECTION: pnpm/yarn or their lock files not found, using npm"
   PACKAGE="npm"
 fi
+echo 'continue detection of docker | podman'
 
 if command -v docker > /dev/null 2>&1; then
   DOCKER_BIN="docker"
