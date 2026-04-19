@@ -13,9 +13,9 @@
         .box:focus { outline: 2px solid blue; }
         img.preview { max-width: 100%; max-height: 100%; display: none; }
         #resultImg { margin-top: 1rem; border: 1px solid #ccc; max-width: 100%; }
-        .paths { margin-top: 1rem; width: 100%; max-width: 600px; }
-        .path-box { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
-        .path-box input { flex-grow: 1; padding: 0.5rem; font-family: monospace; }
+        .paths { margin-top: 1rem; }
+        .path-box { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; justify-content: center; }
+        .path-box input { padding: 0.5rem; font-family: monospace; }
         button { padding: 0.5rem 1rem; cursor: pointer; }
     </style>
 </head>
@@ -54,11 +54,6 @@
                 <label style="width: 80px;">Relative:</label>
                 <input type="text" id="relPath" readonly>
                 <button class="copyBtn" data-target="relPath">Copy</button>
-            </div>
-            <div class="path-box">
-                <label style="width: 80px;">Absolute:</label>
-                <input type="text" id="absPath" readonly>
-                <button class="copyBtn" data-target="absPath">Copy</button>
             </div>
         </div>
         <div style="text-align: center; margin-top: 1rem;">
@@ -170,8 +165,11 @@
                     step3.style.display = 'block';
                     
                     document.getElementById('resultImg').src = data.relativePath + '?t=' + Date.now();
-                    document.getElementById('relPath').value = data.relativePath;
-                    document.getElementById('absPath').value = data.absolutePath;
+                    
+                    const rel = data.relativePath.replace(/^\/?homepage\//, '');
+                    const relInput = document.getElementById('relPath');
+                    relInput.value = rel;
+                    relInput.size = Math.max(rel.length, 30);
                 }
             } catch (err) {
                 alert('Upload failed.');
