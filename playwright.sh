@@ -84,9 +84,7 @@ function nodeExtractVersion() {
   NODE_OPTIONS="" node --input-type=module --eval '
 import readline from "readline";
 
-const reg = / (@playwright\/test|playwright|playwright-core)@/;
-
-const regVer = /^.*?@(\d+\.\d+\.\d+).*$/;
+const reg = /(?:^|[^a-zA-Z0-9-])(@playwright\/test|playwright|playwright-core)[@\s]+(\d+\.\d+\.\d+)/;
 
 var rl = readline.createInterface({
   input: process.stdin,
@@ -96,14 +94,12 @@ var rl = readline.createInterface({
 
 let versions = [];
 rl.on("line", (line) => {
-  const l = line.match(reg)?.[1];
+  const m = line.match(reg);
 
-  if (l) {
-    const v = line.match(regVer)?.[1];
-
+  if (m) {
     versions.push({
-      l,
-      v,
+      l: m[1],
+      v: m[2],
     });
   }
 });
@@ -152,19 +148,21 @@ function extractVersion() {
     LS_OUTPUT="$(NODE_OPTIONS="" pnpm ls 2>&1)" || true
   fi
 
-  echo "=== PACKAGE LISTING OUTPUT BEGIN ===" >&2
-  printf "%s\n" "${LS_OUTPUT}" >&2
-  echo "=== PACKAGE LISTING OUTPUT END ===" >&2
-
   PLAYWRIGHT_VER="$(printf "%s\n" "${LS_OUTPUT}" | nodeExtractVersion)"
   local EXTRACT_EXIT_CODE=$?
 
   if [ "${EXTRACT_EXIT_CODE}" != "0" ]; then
+    echo "=== PACKAGE LISTING OUTPUT BEGIN ===" >&2
+    printf "%s\n" "${LS_OUTPUT}" >&2
+    echo "=== PACKAGE LISTING OUTPUT END ===" >&2
     echo "${0} error: nodeExtractVersion failed to extract playwright version (exit code ${EXTRACT_EXIT_CODE})." >&2
     exit 1
   fi
 
   if ! [[ "${PLAYWRIGHT_VER}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "=== PACKAGE LISTING OUTPUT BEGIN ===" >&2
+    printf "%s\n" "${LS_OUTPUT}" >&2
+    echo "=== PACKAGE LISTING OUTPUT END ===" >&2
     echo "${0} error: playwright version '${PLAYWRIGHT_VER}' is not valid" >&2
     exit 1
   fi
