@@ -141,10 +141,13 @@ add yarn add @playwright/test playwright
 
 function extractVersion() {
   if [ "${PACKAGE}" = "npm" ]; then
+    echo npm ls passed to nodeExtractVersion  
     PLAYWRIGHT_VER="$(NODE_OPTIONS="" npm ls --depth=9999 | nodeExtractVersion)";
   elif [ "${PACKAGE}" = "yarn" ]; then
+    echo yarn ls passed to nodeExtractVersion
     PLAYWRIGHT_VER="$(NODE_OPTIONS="" yarn list | nodeExtractVersion)";
   elif [ "${PACKAGE}" = "pnpm" ]; then
+    echo pnpm ls passed to nodeExtractVersion
     PLAYWRIGHT_VER="$(NODE_OPTIONS="" pnpm ls | nodeExtractVersion)";
   fi
 
@@ -276,6 +279,8 @@ done
 
 if [ "${_GETPLAYWRIGHTVERSION}" = "1" ]; then
   set -e
+
+  echo node version before extractVersion ">$(node --version)<"  
 
   extractVersion
 
