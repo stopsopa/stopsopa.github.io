@@ -15,6 +15,9 @@ import serveIndex from "serve-index";
 
 import { fileURLToPath } from "url";
 
+import multer from "multer";
+import sharp from "sharp";
+
 const env = path.resolve(".", ".env");
 
 if (!fs.existsSync(env)) {
@@ -66,6 +69,55 @@ app.use(express.json());
 
 app.all("/ping", (req, res) => {
   res.end("ok");
+});
+
+const upload = multer({ storage: multer.memoryStorage() });
+
+app.post("/api/upload-image", upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No image provided" });
+    }
+    let name = req.body.name || "image";
+    name = name.replace(/[^a-zA-Z0-9_]/g, "");
+    if (!name) name = "image";
+
+    const sizeConfigPath = path.join(__dirname, "homepage", "size.json");
+    let targetWidth = 100, targetHeight = 100;
+    if (fs.existsSync(sizeConfigPath)) {
+      const config = JSON.parse(fs.readFileSync(sizeConfigPath, "utf-8"));
+      if (config.width) targetWidth = config.width;
+      if (config.height) targetHeight = config.height;
+    }
+
+    const outputDir = path.join(__dirname, "homepage", "img");
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+
+    const fileName = `${name}.png`;
+    const absolutePath = path.join(outputDir, fileName);
+
+    await sharp(req.file.buffer)
+      .resize(targetWidth, targetHeight, {
+        fit: 'cover',
+        position: 'center'
+      })
+      .png()
+      .toFile(absolutePath);
+
+    const relativePath = `/homepage/img/${fileName}`;
+
+    res.json({
+      success: true,
+      relativePath: relativePath,
+      absolutePath: absolutePath
+    });
+
+  } catch (err) {
+    console.error("Image processing error:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.use((req, res, next) => {

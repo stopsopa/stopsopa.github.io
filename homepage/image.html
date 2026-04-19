@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+        #step2, #step3 { display: none; }
+        .boxes { display: flex; gap: 2rem; margin-top: 1rem; margin-bottom: 1rem; }
+        .box { width: 300px; height: 200px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; text-align: center; color: #666; cursor: pointer; }
+        .box.dragover { border-color: #000; background: #eee; }
+        .box:focus { outline: 2px solid blue; }
+        img.preview { max-width: 100%; max-height: 100%; display: none; }
+        #resultImg { margin-top: 1rem; border: 1px solid #ccc; max-width: 100%; }
+        .paths { margin-top: 1rem; width: 100%; max-width: 600px; }
+        .path-box { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
+        .path-box input { flex-grow: 1; padding: 0.5rem; font-family: monospace; }
+        button { padding: 0.5rem 1rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>Upload Image</h1>
+
+    <div id="step1">
+        <label>Name: <input type="text" id="imageName" placeholder="e.g. my_image"></label>
+        <button id="nextBtn">Next</button>
+    </div>
+
+    <div id="step2">
+        <div class="boxes">
+            <div class="box" id="pasteBox" tabindex="0">
+                <span class="instruction">Click here and Paste (Ctrl+V / Cmd+V)</span>
+                <img class="preview" id="pastePreview">
+            </div>
+            <div class="box" id="dropBox">
+                <span class="instruction">Drag & Drop Image Here</span>
+                <img class="preview" id="dropPreview">
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button id="sendBtn" disabled>Send</button>
+        </div>
+    </div>
+
+    <div id="step3">
+        <h2>Result</h2>
+        <div style="text-align: center;">
+            <img id="resultImg">
+        </div>
+        <div class="paths">
+            <div class="path-box">
+                <label style="width: 80px;">Relative:</label>
+                <input type="text" id="relPath" readonly>
+                <button class="copyBtn" data-target="relPath">Copy</button>
+            </div>
+            <div class="path-box">
+                <label style="width: 80px;">Absolute:</label>
+                <input type="text" id="absPath" readonly>
+                <button class="copyBtn" data-target="absPath">Copy</button>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 1rem;">
+            <button id="resetBtn">Upload Another</button>
+        </div>
+    </div>
+
+    <script>
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const nextBtn = document.getElementById('nextBtn');
+        const imageName = document.getElementById('imageName');
+        
+        const pasteBox = document.getElementById('pasteBox');
+        const dropBox = document.getElementById('dropBox');
+        const pastePreview = document.getElementById('pastePreview');
+        const dropPreview = document.getElementById('dropPreview');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        let selectedFile = null;
+
+        nextBtn.addEventListener('click', () => {
+            if (imageName.value.trim() !== '') {
+                step1.style.display = 'none';
+                step2.style.display = 'block';
+                pasteBox.focus();
+            } else {
+                alert("Please enter a name");
+            }
+        });
+
+        function setFile(file, previewEl) {
+            if (!file.type.startsWith('image/')) {
+                alert("Please select an image file.");
+                return;
+            }
+            selectedFile = file;
+            const url = URL.createObjectURL(file);
+            
+            // clear both previews
+            pastePreview.style.display = 'none';
+            dropPreview.style.display = 'none';
+            pasteBox.querySelector('.instruction').style.display = 'block';
+            dropBox.querySelector('.instruction').style.display = 'block';
+
+            previewEl.src = url;
+            previewEl.style.display = 'block';
+            previewEl.previousElementSibling.style.display = 'none';
+            sendBtn.disabled = false;
+        }
+
+        // Paste handling
+        pasteBox.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let index in items) {
+                const item = items[index];
+                if (item.kind === 'file') {
+                    const blob = item.getAsFile();
+                    setFile(blob, pastePreview);
+                    return;
+                }
+            }
+        });
+
+        pasteBox.addEventListener('click', () => {
+            pasteBox.focus();
+        });
+
+        // Drag & Drop handling
+        dropBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropBox.classList.add('dragover');
+        });
+        dropBox.addEventListener('dragleave', () => {
+            dropBox.classList.remove('dragover');
+        });
+        dropBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropBox.classList.remove('dragover');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                setFile(e.dataTransfer.files[0], dropPreview);
+            }
+        });
+
+        // Send
+        sendBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Sending...';
+
+            const formData = new FormData();
+            formData.append('name', imageName.value);
+            formData.append('image', selectedFile);
+
+            try {
+                const response = await fetch('/api/upload-image', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    step2.style.display = 'none';
+                    step3.style.display = 'block';
+                    
+                    document.getElementById('resultImg').src = data.relativePath + '?t=' + Date.now();
+                    document.getElementById('relPath').value = data.relativePath;
+                    document.getElementById('absPath').value = data.absolutePath;
+                }
+            } catch (err) {
+                alert('Upload failed.');
+                console.error(err);
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Send';
+            }
+        });
+
+        // Copy buttons
+        document.querySelectorAll('.copyBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                input.select();
+                document.execCommand('copy');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        });
+
+        // Reset
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            selectedFile = null;
+            imageName.value = '';
+            pastePreview.style.display = 'none';
+            dropPreview.style.display = 'none';
+            pasteBox.querySelector('.instruction').style.display = 'block';
+            dropBox.querySelector('.instruction').style.display = 'block';
+            sendBtn.disabled = true;
+            step3.style.display = 'none';
+            step1.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
