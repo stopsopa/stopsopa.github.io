@@ -1,4 +1,4 @@
-
+set -e
 set -o pipefail
 S="\\" # will be used later
 
