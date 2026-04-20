@@ -200,12 +200,24 @@ g(Google Sans font)
       box-shadow: 0 0 0 2px var(--gcp-css-primary);
     }
 
+    &:focus-within label {
+      color: var(--gcp-css-primary);
+    }
+
     &[data-error]::after {
       box-shadow: 0 0 0 1px var(--gcp-css-error);
     }
 
+    &[data-error] label {
+      color: var(--gcp-css-error);
+    }
+
     &[data-error]:focus-within::after {
       box-shadow: 0 0 0 2px var(--gcp-css-error);
+    }
+
+    &[data-error]:focus-within label {
+      color: var(--gcp-css-error);
     }
 
     label {
@@ -258,11 +270,6 @@ g(Google Sans font)
         margin-top: 0;
         transform: translateY(-50%);
         font-size: var(--gcp-css-small-font-size);
-        color: var(--gcp-css-gray-text);
-      }
-
-      &:focus + label {
-        color: var(--gcp-css-primary);
       }
     }
 
@@ -300,12 +307,6 @@ g(Google Sans font)
       input,
       textarea,
       select {
-        color: var(--gcp-css-error);
-      }
-
-      input + label,
-      textarea + label,
-      select + label {
         color: var(--gcp-css-error);
       }
     }
@@ -349,9 +350,17 @@ g(Google Sans font)
       color: var(--gcp-css-text);
     }
 
+    &:focus-within label {
+      color: var(--gcp-css-primary);
+    }
+
     & [data-error],
     &[data-error] {
       label {
+        color: var(--gcp-css-error);
+      }
+
+      &:focus-within label {
         color: var(--gcp-css-error);
       }
 
