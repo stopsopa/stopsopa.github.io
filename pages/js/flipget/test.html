@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipget Benchmark</title>
+    <style>
+        body { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 20px; }
+        pre { white-space: pre-wrap; word-wrap: break-word; }
+    </style>
+</head>
+<body>
+    <h1>Flipget Benchmark</h1>
+    <pre id="output">Loading...</pre>
+
+    <script type="module">
+        import { runBenchmark } from './benchmark-runner.js';
+
+        const outputEl = document.getElementById('output');
+        
+        function log(msg) {
+            outputEl.textContent += msg + '\n';
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        async function run() {
+            outputEl.textContent = '';
+            log('Fetching versions.json...');
+            
+            let files = [];
+            try {
+                const res = await fetch('versions.json?' + Date.now());
+                if (!res.ok) throw new Error('Network response was not ok');
+                files = await res.json();
+            } catch(e) {
+                log('❌ Failed to load versions.json. Make sure to run `node run.js` first.');
+                return;
+            }
+
+            log(`Starting benchmark... Versions found: ${files.length}\n`);
+
+            const results = [];
+            for (const file of files) {
+                const { default: flipget } = await import(`./versions/${file}`);
+                
+                const result = await runBenchmark(
+                    file, 
+                    flipget, 
+                    log,
+                    () => performance.memory ? performance.memory.usedJSHeapSize : 0
+                );
+                results.push(result);
+                
+                // Allow UI to update after each module
+                await new Promise(r => setTimeout(r, 10));
+            }
+            log('Done.');
+            
+            results.sort((a, b) => a.time - b.time);
+            
+            const table = document.createElement('table');
+            table.border = '1';
+            table.cellPadding = '8';
+            table.style.marginTop = '20px';
+            table.style.borderCollapse = 'collapse';
+            table.style.textAlign = 'left';
+            
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Script Name</th>
+                        <th>Time (ms)</th>
+                        <th>Memory Diff (MB)</th>
+                        <th>Pass</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${results.map(r => `
+                        <tr>
+                            <td><a href="versions/${r.name}" target="_blank" style="color: #61afef;">${r.name}</a></td>
+                            <td>${r.time.toFixed(2)}</td>
+                            <td>${r.memory !== null ? (r.memory / 1024 / 1024).toFixed(2) : 'N/A'}</td>
+                            <td>${r.pass ? '✅' : '❌'}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+            
+            document.body.appendChild(table);
+        }
+
+        try {
+            await run();
+        } catch (e) {
+            log(e.toString());
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+[
+  "v1.js",
+  "v2_regex.js",
+  "v3_concat.js",
+  "v4_charcode.js",
+  "v5_map.js",
+  "v6_regex_dynamic.js",
+  "v7_regex_hardcoded.js"
+]
