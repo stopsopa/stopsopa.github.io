@@ -175,6 +175,26 @@ mvn clean test -DskipITs -B sonar:sonar -Dsonar.projectKey="\${PROJECT_NAME}" -D
 `,
       confirm: false,
     },
+    [`transpile`]: {
+      command: `
+S="\\\\"      
+cat <<EEE
+
+/bin/bash transpile.sh choice.js/select.ts
+
+/bin/bash transpile.sh choice.js/composition/SelectedListManager.ts
+
+/bin/bash transpile.sh \${S}
+  choice.js/select.ts \${S}
+  choice.js/composition/SelectedListManager.ts \${S}
+  js/CenterResizer.ts
+
+EEE
+      `,
+      description: "Transpile choice.js/select.ts to choice.js/select.js",
+      source: false,
+      confirm: false,
+    },
     [`google-java-format list`]: {
       command: `
 set -e
