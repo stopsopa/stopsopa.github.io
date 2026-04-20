@@ -9,7 +9,16 @@ const __dirname = path.dirname(__filename);
 const versionsDir = path.join(__dirname, 'versions');
 const files = fs.readdirSync(versionsDir).filter(f => f.endsWith('.js'));
 
+process.env.NO_COLOR = '1';
+
 fs.writeFileSync(path.join(__dirname, 'versions.json'), JSON.stringify(files, null, 2));
+
+let logBuffer = '';
+const originalWrite = process.stdout.write.bind(process.stdout);
+process.stdout.write = (chunk, encoding, callback) => {
+    logBuffer += chunk.toString();
+    return originalWrite(chunk, encoding, callback);
+};
 
 async function run() {
     console.log(`Starting benchmark... Versions found: ${files.length}\n`);
@@ -39,6 +48,14 @@ async function run() {
     }));
     
     console.table(tableData);
+    
+    // Capture only the table part for the report
+    const tableBuffer = logBuffer.substring(logBuffer.lastIndexOf('┌'));
+
+    fs.writeFileSync(path.join(__dirname, 'server.log'), logBuffer);
+    fs.writeFileSync(path.join(__dirname, 'server-report.txt'), tableBuffer);
+    console.log(`\nFull log saved to server.log`);
+    console.log(`Report saved to server-report.txt`);
 }
 
 try {
@@ -46,3 +63,4 @@ try {
 } catch (e) {
     console.error(e);
 }
+
