@@ -1,9 +1,13 @@
 [
   "v1.js",
+  "v10_array_from.js",
+  "v11_uint16_decode.js",
   "v2_regex.js",
   "v3_concat.js",
   "v4_charcode.js",
   "v5_map.js",
   "v6_regex_dynamic.js",
-  "v7_regex_hardcoded.js"
+  "v7_regex_hardcoded.js",
+  "v8_for_of.js",
+  "v9_reduce.js"
 ]
