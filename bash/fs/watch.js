@@ -1,20 +1,23 @@
-// ROOT="$(pwd)"
-// FILE="${ROOT}/ttt.txt"
-// WATCHC="0"
-// STATUS="0"
-// while [ "${STATUS}" = "0" ]; do
-//     WATCHC="$((WATCHC + 1))"
-//     until [ -f "${FILE}" ]
-//     do
-//         echo "${0} ${WATCHC} log: waiting for ${FILE} to be created"
-//         sleep 1
-//     done
-//     echo "MY ACTION ON MY FILE HERE ${WATCHC}"
-// #   /bin/bash "${ROOT}/start.sh"
-//     node "${ROOT}/bash/fs/watch.js" "${FILE}"
-//     STATUS="${?}"
-// #   /bin/bash "${ROOT}/stop.sh"
+// transpile
+// if [ $# -eq 0 ]; then
+//     echo "Usage: $0 <file1> [file2 ...]"
+//     exit 1
+// fi
+
+// FILES=("$@")
+
+// while true; do
+//     echo "Running transpilation for ${FILES[*]}..."
+//     printf "%s\n" "${FILES[@]}" | NODE_OPTIONS="" DEBUG=true node es.ts
+
+//     echo "Waiting for changes..."
+//     node bash/fs/watch.cjs "${FILES[@]}"
+//     STATUS=$?
+//     if [ $STATUS -eq 130 ]; then
+//         exit 0
+//     fi
 // done
+// then use /bin/bash transpile.sh file1 file2 ...
 
 /**
  * Above code works actually pretty well
@@ -28,34 +31,57 @@
 
 const fs = require("fs");
 
-const file = process.argv[2];
+const files = process.argv.slice(2);
 
-if (!fs.existsSync(file)) {
-  throw new Error(`file ${file} doesn't exist`);
+if (files.length === 0) {
+  console.error("No files specified to watch");
+  process.exit(1);
 }
 
-console.log(`waiting for changes in file ${file} ... (press any key to force restart)`);
+const existingFiles = files.filter(f => {
+  if (fs.existsSync(f)) {
+    return true;
+  }
+  console.error(`Warning: file ${f} doesn't exist`);
+  return false;
+});
 
-fs.watch(file, function () {
-  process.exit(0);
+if (existingFiles.length === 0) {
+  console.error("None of the specified files exist");
+  process.exit(1);
+}
+
+console.log(`waiting for changes in:
+${existingFiles.map(f => `  - ${f}`).join('\n')}
+... (any key to force restart)`);
+
+existingFiles.forEach(file => {
+  try {
+    fs.watch(file, function () {
+      process.exit(0);
+    });
+  } catch (e) {
+    console.error(`Error watching ${file}: ${e.message}`);
+  }
 });
 
 // Setup stdin to react to any keypress
 if (process.stdin.isTTY) {
   process.stdin.setRawMode(true);
   process.stdin.resume();
-  process.stdin.setEncoding("utf8");
-  process.stdin.on("data", function (key) {
+  process.stdin.setEncoding('utf8');
+  process.stdin.on('data', function (key) {
     // Ctrl+C or Ctrl+D pressed
-    if (key === "\u0003" || key === "\u0004") {
-      process.exit(130);
+    if (key === '\u0003' || key === '\u0004') {
+      process.exit(130); 
     }
     // For any other key, exit with 2 to indicate manual interruption
     process.exit(2);
   });
 } else {
   process.stdin.resume();
-  process.stdin.on("data", function () {
+  process.stdin.on('data', function () {
     process.exit(2);
   });
 }
+
