@@ -100,70 +100,26 @@
             <div class="section-heading">Form Width</div>
             <input type="range" id="range" min="1" max="100" step="1" value="80" class="range-input" />
 
-            <div class="section-heading" style="margin-bottom: 12px">Validation Controls</div>
-            <div class="controls" style="margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #ddd">
+            <div class="section-heading" style="margin-bottom: 12px">Global Controls</div>
+            <div class="controls">
               <label class="error-toggle">
-                <input type="checkbox" id="toggle-all" />
-                <b>Toggle All</b>
-              </label>
-            </div>
-            <div class="controls" style="margin-top: 0">
-              <label class="error-toggle">
-                <input type="checkbox" data-toggle-class="#name-wrapper" />
-                Toggle Error State
+                <input type="checkbox" id="toggle-all-errors" />
+                <b>Toggle All Errors</b>
               </label>
             </div>
             <div class="controls">
               <label class="error-toggle">
-                <input type="checkbox" data-toggle-class="#email-wrapper" />
-                Toggle Error State
+                <input type="checkbox" id="toggle-all-disabled" />
+                <b>Toggle All Disabled</b>
               </label>
             </div>
-            <div class="controls">
-              <label class="error-toggle">
-                <input type="checkbox" data-add-remove-element="#addremove-wrapper" />
-                add/remove .error
-              </label>
-            </div>
-            <div class="controls">
-              <label class="error-toggle">
-                <input type="checkbox" data-toggle-class="#type-wrapper" />
-                Toggle Error State (Select Type)
-              </label>
-            </div>
-            <div class="controls">
-              <label class="error-toggle">
-                <input type="checkbox" data-toggle-class="#password-wrapper" />
-                Toggle Error State (Password)
-              </label>
-            </div>
-            <div class="controls">
-              <label class="error-toggle">
-                <input type="checkbox" data-toggle-class="#desc-wrapper" />
-                Toggle Error State (Textarea)
-              </label>
-            </div>
-            <div class="controls">
-              <label class="error-toggle">
-                <input type="checkbox" data-toggle-class="#agree-wrapper" />
-                Toggle Error State (Checkbox Policy)
-              </label>
-            </div>
-            <div class="controls">
-              <label class="error-toggle">
-                <input type="checkbox" data-toggle-class="#radio-wrapper" />
-                Toggle Error State (Radio Plan)
-              </label>
-            </div>
-            <div class="section-heading" style="margin-top: 24px; margin-bottom: 12px">Helper Text Controls</div>
             <div class="controls">
               <label class="error-toggle">
                 <input type="checkbox" id="toggle-helper-all" />
-                <b>Hide All Helper Text</b>&nbsp;(.hide-helper)
+                <b>Hide All Helper Text</b>
               </label>
             </div>
           </div>
-
           <!-- RIGHT COLUMN (Form Components) -->
           <div class="layout-right">
             <form autocomplete="on" class="gcp-css">
@@ -302,15 +258,30 @@
       document.body.addEventListener("change", function (e) {
         var el = e.target;
 
-        if (el.id === "toggle-all") {
+        if (el.id === "toggle-all-errors") {
           const isChecked = el.checked;
-          const checkboxes = document.querySelectorAll(
-            ".layout-left .controls input[type='checkbox']:not(#toggle-all)"
+          const wrappers = document.querySelectorAll(
+            ".layout-right :is(.input-wrapper, .checkbox-wrapper, .radio-wrapper)"
           );
-          checkboxes.forEach((cb) => {
-            if (cb.checked !== isChecked) {
-              cb.checked = isChecked;
-              cb.dispatchEvent(new Event("change", { bubbles: true }));
+          wrappers.forEach((w) => {
+            if (isChecked) {
+              w.setAttribute("data-error", "true");
+            } else {
+              w.removeAttribute("data-error");
+            }
+          });
+          return;
+        }
+
+        if (el.id === "toggle-all-disabled") {
+          const isChecked = el.checked;
+          const wrappers = document.querySelectorAll(
+            ".layout-right :is(.input-wrapper, .checkbox-wrapper, .radio-wrapper)"
+          );
+          wrappers.forEach((w) => {
+            const input = w.querySelector("input, select, textarea");
+            if (input) {
+              input.disabled = isChecked;
             }
           });
           return;
@@ -329,39 +300,6 @@
             }
           });
           return;
-        }
-
-        if (el.matches("[data-toggle-class]")) {
-          const selector = el.getAttribute("data-toggle-class");
-          const target = document.querySelector(selector);
-          if (!target) {
-            return;
-          }
-
-          if (el.checked) {
-            target.setAttribute("data-error", "true");
-          } else {
-            target.removeAttribute("data-error");
-          }
-        }
-
-        if (el.matches("[data-add-remove-element]")) {
-          const selector = el.getAttribute("data-add-remove-element");
-          const target = document.querySelector(selector);
-          if (!target) {
-            return;
-          }
-          if (el.checked) {
-            // <div class="error">Enter a valid GCP admin email</div>
-            const div = document.createElement("div");
-            div.className = "error";
-            div.textContent = "Enter a valid GCP admin email";
-            target.appendChild(div);
-            target.setAttribute("data-error", "true");
-          } else {
-            target.querySelector(".error").remove();
-            target.removeAttribute("data-error");
-          }
         }
       });
 
