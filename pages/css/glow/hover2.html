@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hover Effect - Version 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            text-align: center;
+            padding: 50px;
+            background: url(https://s25.postimg.cc/44v3ztpv3/image.jpg) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 0;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .btn {	
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #888;
+            font-size: 20px;
+            font-family: "Oswald", sans-serif;
+            font-weight: lighter;
+            border: 0;
+            cursor: pointer;
+            padding: 10px 40px;
+            border: 1px solid rgba(143,144,145,0.2);
+            background-color: rgba(143,144,145,0.1);
+            transition: all 0.3s ease-in-out;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:focus {
+            color: #fff;
+            outline: none;
+        }
+        .btn:before {
+            position: absolute;
+            top: 0;
+            left: -75%;
+            z-index: 2;
+            display: block;
+            content: '';
+            width: 50%;
+            height: 100%;
+            background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 100%);
+            -webkit-transform: skewX(-25deg);
+            transform: skewX(-25deg);
+        }
+        .btn:hover {
+            color: #fff;
+            border-color: rgba(255,255,255,0.5);
+        }
+        .btn:hover::before {
+            -webkit-animation: shine .75s;
+            animation: shine .75s;
+        }
+        @-webkit-keyframes shine {
+            100% {
+                left: 125%;
+            }
+        }
+        @keyframes shine {
+            100% {
+                left: 125%;
+            }
+        }
+
+        /* Color Variations to match the previous demo request */
+        .btn-blue { border-color: rgba(59, 130, 246, 0.5); background-color: rgba(59, 130, 246, 0.1); }
+        .btn-green { border-color: rgba(34, 197, 94, 0.5); background-color: rgba(34, 197, 94, 0.1); }
+        .btn-bright { border-color: rgba(255, 255, 255, 0.5); background-color: rgba(255, 255, 255, 0.2); color: #ccc; }
+
+    </style>
+</head>
+<body>
+
+    <a href="https://codepen.io/nhembram/pen/PKJxbO">https://codepen.io/nhembram/pen/PKJxbO</a>
+    <div id="overlay"></div>
+
+    <div class="container">
+        <a href="#" class="btn">Default Button</a>
+        <a href="#" class="btn btn-blue">Blue Button</a>
+        <a href="#" class="btn btn-green">Green Button</a>
+        <a href="#" class="btn btn-bright">Bright Button</a>
+    </div>
+
+</body>
+</html>
