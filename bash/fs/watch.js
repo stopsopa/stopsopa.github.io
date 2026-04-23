@@ -14,7 +14,7 @@
 //     node bash/fs/watch.cjs "${FILES[@]}"
 //     STATUS=$?
 //     if [ $STATUS -eq 130 ]; then
-//         exit 0
+//         exit $STATUS
 //     fi
 // done
 // then use /bin/bash transpile.sh file1 file2 ...
@@ -38,12 +38,16 @@ if (files.length === 0) {
   process.exit(1);
 }
 
-const existingFiles = files.filter(f => {
-  if (fs.existsSync(f)) {
-    return true;
+const existingFiles = files.filter((f) => {
+  if (!fs.existsSync(f)) {
+    console.log(`
+      
+      watch.cjs: file ${f} exists
+      
+`);
+    process.exit(130);
   }
-  console.error(`Warning: file ${f} doesn't exist`);
-  return false;
+  return true;
 });
 
 if (existingFiles.length === 0) {
@@ -52,10 +56,10 @@ if (existingFiles.length === 0) {
 }
 
 console.log(`waiting for changes in:
-${existingFiles.map(f => `  - ${f}`).join('\n')}
+${existingFiles.map((f) => `  - ${f}`).join("\n")}
 ... (any key to force restart)`);
 
-existingFiles.forEach(file => {
+existingFiles.forEach((file) => {
   try {
     fs.watch(file, function () {
       process.exit(0);
@@ -69,19 +73,18 @@ existingFiles.forEach(file => {
 if (process.stdin.isTTY) {
   process.stdin.setRawMode(true);
   process.stdin.resume();
-  process.stdin.setEncoding('utf8');
-  process.stdin.on('data', function (key) {
+  process.stdin.setEncoding("utf8");
+  process.stdin.on("data", function (key) {
     // Ctrl+C or Ctrl+D pressed
-    if (key === '\u0003' || key === '\u0004') {
-      process.exit(130); 
+    if (key === "\u0003" || key === "\u0004") {
+      process.exit(130);
     }
     // For any other key, exit with 2 to indicate manual interruption
     process.exit(2);
   });
 } else {
   process.stdin.resume();
-  process.stdin.on('data', function () {
+  process.stdin.on("data", function () {
     process.exit(2);
   });
 }
-
