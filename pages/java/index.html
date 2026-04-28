@@ -332,6 +332,10 @@
             # since 0.16.0 asdf local no longer works, use
              asdf set -u nodejs 16.5.0
              # -u is setting in user home directory
+              # make sure to have somewhere at the top of the file ~/.zshrc
+                . "$HOME/.asdf/asdf.sh"
+                export PATH="$HOME/.asdf/shims:$HOME/.asdf/bin:$PATH"
+          
         </script>
         <h2>Something resulting in an error</h2>
 
