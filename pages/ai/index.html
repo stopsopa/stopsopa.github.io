@@ -214,11 +214,6 @@
         <h2>prompting</h2>
         <script type="editor" data-lang="sh">
 
-          // --- mac mini m4 16gb ---- vvv
-            https://craftrigs.com/guides/best-llm-mac-mini-m4-2026/
-            https://modelfit.io/blog/best-llm-mac-mini-m4-16gb/
-          // --- mac mini m4 16gb ---- ^^^
-
           // --- multi phase plans --- vvv
             When doing PLAN.md work on it with this prompt
               WARNING: WE ARE WORKING ONLY ON PLAN.md RIGHT NOW. DON'T START IMPLEMENTATION.
@@ -264,9 +259,43 @@
         <h2>Local LLMs</h2>
 
         <script type="editor" data-lang="sh">
+          
+          # --- mac mini m4 16gb ---- vvv
+            https://craftrigs.com/guides/best-llm-mac-mini-m4-2026/
+            https://modelfit.io/blog/best-llm-mac-mini-m4-16gb/
+
+            # ollama --- vvv
+              ollama pull qwen2.5:7b - explaining code
+              ollama pull qwen2.5:14b - just bigger https://ollama.com/library/qwen2.5
+              ollama pull qwen2.5-coder:7b - for coding/refactoring  https://ollama.com/library/qwen2.5-coder
+              ollama pull deepseek-r1:7b   - reasoning/debugging/architecture model
+                 # see what is qwen2.5:7b https://modelfit.io/blog/best-llm-mac-mini-m4-16gb/?utm_source=chatgpt.com#:~:text=close%20other%20apps.-,Benchmark%20Results,-These%20figures%20come
+              ollama run qwen2.5:7b
+              ollama ps
+              # to run server manually
+                OLLAMA_HOST=0.0.0.0 ollama serve
+                  # will run on port: 11434
+                curl http://localhost:11434/api/generate -d '{
+                  "model": "qwen2.5:7b",
+                  "prompt": "Explain recursion in simple terms"
+                }'
+                curl http://localhost:11434/api/chat -d '{
+                  "model": "qwen2.5:7b",
+                  "messages": [{"role": "user", "content": "Hello!"}]
+                }'
+              # it is worth trying also Practically, a 13B model at Q4_K_M (~9GB)
+                # from: https://modelfit.io/blog/best-llm-mac-mini-m4-16gb/?utm_source=chatgpt.com#:~:text=What%20is%20the%20largest%20model%20I%20can%20run%20on%20Mac%20Mini%20M4
+
+              # MLX vs GGUF https://modelfit.io/blog/best-llm-mac-mini-m4-16gb/?utm_source=chatgpt.com#:~:text=Does%20the%20Mac%20Mini%20M4%20support%20MLX
+              # Q4_K_M is a quantization format
+
+              # search models https://ollama.com/library
+            # ollama --- ^^^
+          
+          # --- mac mini m4 16gb ---- ^^^
 
           https://youtu.be/MgjJvOUyD_0?t=125
-          see also:
+          # see also:
             https://www.reddit.com/r/LocalLLaMA/comments/1jhdml5/anyone_running_local_llms_on_an_m4_macbook_pro_or/
 
           setup on MAC m4 mini:
