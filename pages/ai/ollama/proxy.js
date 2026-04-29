@@ -46,6 +46,24 @@ const UI_HTML = `<!DOCTYPE html>
   <script>
     const out = document.getElementById('out');
     const evtSource = new EventSource('/_stream');
+
+    function addSystemMessage(msg, color) {
+      const span = document.createElement('span');
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+      span.textContent = '\\n--- [' + ts + '] ' + msg + ' ---\\n';
+      span.style.color = color;
+      out.appendChild(span);
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    // Listen for custom 'system' event sent by server on connection
+    evtSource.addEventListener('system', function(event) {
+      if (event.data === 'connected') {
+        addSystemMessage('Connected', '#4CAF50');
+      }
+    });
     evtSource.onmessage = function(event) {
       const text = JSON.parse(event.data);
       const lines = text.split('\\n');
@@ -64,10 +82,7 @@ const UI_HTML = `<!DOCTYPE html>
       window.scrollTo(0, document.body.scrollHeight);
     };
     evtSource.onerror = function() {
-      const span = document.createElement('span');
-      span.textContent = '\\n--- Disconnected, trying to reconnect... ---\\n';
-      span.style.color = '#f44336';
-      out.appendChild(span);
+      addSystemMessage('Disconnected, trying to reconnect...', '#f44336');
     };
   </script>
 </body>
@@ -286,7 +301,13 @@ const server = http.createServer((req, res) => {
       'Connection': 'keep-alive',
       'Access-Control-Allow-Origin': '*'
     });
+    res.flushHeaders();
     sseClients.add(res);
+    
+    // Send immediate explicit event to force client-side notification
+    res.write(':\n\n'); 
+    res.write('event: system\ndata: connected\n\n');
+
     req.on('close', () => {
       sseClients.delete(res);
     });
