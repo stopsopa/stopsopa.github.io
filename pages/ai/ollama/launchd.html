@@ -25,8 +25,8 @@
         <h2>Index</h2>
         <script type="editor" data-lang="sh">
 
-# take proxy from urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fai%2Follama%2Fproxy.js
-# create proxy.js in user directory on target mac mini mac.
+# take proxy from urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fai%2Follama%2Fproxy.ts
+# create proxy.ts in user directory on target mac mini mac.
 
 Before you start it is worth checking if with installation of ollama service was created:
 ~ szdz@m4mini √ launchctl list | grep -i ollama
@@ -66,7 +66,7 @@ cat <<EOF > ~/Library/LaunchAgents/com.yourname.ollama-proxy.plist
 <key>ProgramArguments</key>
 <array>
     <string>$(asdf which node | tr -d '\n')</string>
-    <string>${HOME}/proxy.js</string>
+    <string>${HOME}/proxy.ts</string>
     <string>$(which ollama | tr -d '\n')</string>
 </array>
 
@@ -106,9 +106,9 @@ plutil ~/Library/LaunchAgents/com.yourname.ollama-proxy.plist
 # to check Just syntax validation
 
 # if need to stop
-ps aux | grep proxy.js
+ps aux | grep proxy.ts
 launchctl bootout gui/$(id -u)/com.yourname.ollama-proxy
-ps aux | grep proxy.js
+ps aux | grep proxy.ts
 # will not start with next restart of mac
 
 
