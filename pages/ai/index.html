@@ -263,6 +263,7 @@
           # --- mac mini m4 16gb ---- vvv
             https://craftrigs.com/guides/best-llm-mac-mini-m4-2026/
             https://modelfit.io/blog/best-llm-mac-mini-m4-16gb/
+            https://modelfit.io/macbook-air/
 
             # ollama --- vvv             
               
@@ -280,6 +281,10 @@
                   "model": "qwen2.5:7b",
                   "prompt": "Explain recursion in simple terms"
                 }'
+                curl http://192.168.8.49:11444/api/chat -d '{
+                  "model": "qwen2.5-coder:7b",
+                  "messages": [{"role": "user", "content": "Hello!"}]
+                }'
                 curl http://localhost:11434/api/chat -d '{
                   "model": "qwen2.5:7b",
                   "messages": [{"role": "user", "content": "Hello!"}]
@@ -292,6 +297,17 @@
 
               # search models https://ollama.com/library
             # ollama --- ^^^
+
+            # try next --- vvv
+              ollama run gemma2:9b-instruct-q4_K_M
+                from: https://modelfit.io/models/gemma/
+          
+              curl http://localhost:11434/api/generate -d '{
+                "model": "gemma2:9b-instruct-q4_K_M",
+                "prompt": "Explain recursion in simple terms"
+              }'
+              
+            # try next --- ^^^
           
           # --- mac mini m4 16gb ---- ^^^
 
