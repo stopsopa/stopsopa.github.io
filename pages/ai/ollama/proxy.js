@@ -1,6 +1,11 @@
 /**
  *  $(asdf which node | tr -d '\n') proxy.js $(which ollama | tr -d '\n')
  * DEBUG=1 $(asdf which node | tr -d '\n') proxy.js $(which ollama | tr -d '\n')
+ * 
+ * launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.yourname.ollama-proxy.plist
+ * 
+ * ps aux | grep proxy.js
+ * launchctl bootout gui/$(id -u)/com.yourname.ollama-proxy
  */
 
 const http = require("http");
@@ -14,6 +19,59 @@ let currentModel = null;
 let activeRequests = 0;
 let pendingSwapModel = null;
 const queue = [];
+
+const sseClients = new Set();
+
+const UI_HTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Ollama Proxy Stream</title>
+  <style>
+    body { margin: 0; padding-top: 60px; font-family: monospace; background: #1e1e1e; color: #d4d4d4; }
+    #header { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: #252526; display: flex; align-items: center; padding: 0 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 10; border-bottom: 1px solid #333; }
+    button { padding: 8px 16px; cursor: pointer; background: #0e639c; color: white; border: none; border-radius: 4px; font-weight: bold; }
+    button:hover { background: #1177bb; }
+    pre { padding: 20px; white-space: pre-wrap; word-wrap: break-word; margin: 0; font-size: 14px; line-height: 1.5; }
+    .req { color: #569cd6; }
+    .res { color: #ce9178; }
+    .meta { color: #4ec9b0; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <button onclick="document.getElementById('out').innerHTML = ''">Reset</button>
+  </div>
+  <pre id="out"></pre>
+  <script>
+    const out = document.getElementById('out');
+    const evtSource = new EventSource('/_stream');
+    evtSource.onmessage = function(event) {
+      const text = JSON.parse(event.data);
+      const lines = text.split('\\n');
+      for (const line of lines) {
+        const span = document.createElement('span');
+        span.textContent = line + '\\n';
+        if (line.startsWith('>>>')) {
+          span.className = 'req';
+        } else if (line.startsWith('<<<')) {
+          span.className = 'res';
+        } else if (line.trim().length > 0) {
+          span.className = 'meta';
+        }
+        out.appendChild(span);
+      }
+      window.scrollTo(0, document.body.scrollHeight);
+    };
+    evtSource.onerror = function() {
+      const span = document.createElement('span');
+      span.textContent = '\\n--- Disconnected, trying to reconnect... ---\\n';
+      span.style.color = '#f44336';
+      out.appendChild(span);
+    };
+  </script>
+</body>
+</html>`;
 
 const ollamaBin = process.argv[2] || "ollama";
 
@@ -39,6 +97,31 @@ const log = (...args) => console.log(getTimestamp(), ...args);
 const logError = (...args) => console.error(getTimestamp(), ...args);
 const debug = (...args) => { if (DEBUG) log(...args); };
 const debugError = (...args) => { if (DEBUG) logError(...args); };
+
+function broadcastStream(prefix, text) {
+  if (sseClients.size === 0 || !text) return;
+  const lines = text.split('\n').map(l => `${prefix} ${l}`).join('\n');
+  const payload = `data: ${JSON.stringify(lines)}\n\n`;
+  for (const client of sseClients) {
+    try {
+      client.write(payload);
+    } catch (e) {
+      sseClients.delete(client);
+    }
+  }
+}
+
+function broadcastRaw(text) {
+  if (sseClients.size === 0 || !text) return;
+  const payload = `data: ${JSON.stringify(text)}\n\n`;
+  for (const client of sseClients) {
+    try {
+      client.write(payload);
+    } catch (e) {
+      sseClients.delete(client);
+    }
+  }
+}
 
 async function stopModel(model) {
   if (!model) return;
@@ -68,18 +151,46 @@ function forward({ req, res, bodyBuffer }) {
   const id = Math.random().toString(36).substring(7);
   debug(`[${id}] Forwarding ${req.method} ${req.url} (active: ${activeRequests})`);
 
+  broadcastRaw(`\n${req.method} ${req.url}`);
+
+  if (bodyBuffer && bodyBuffer.length > 0) {
+    broadcastStream('>>>', bodyBuffer.toString());
+  } else {
+    broadcastStream('>>>', `(Empty request body)`);
+  }
+
+  // Force uncompressed response so we can read and stream it to the UI
+  const headers = { ...req.headers };
+  delete headers['accept-encoding'];
+
   const proxyReq = http.request(
     {
       hostname: "localhost",
       port: 11434,
       path: req.url,
       method: req.method,
-      headers: req.headers,
+      headers: headers,
     },
     (proxyRes) => {
       debug(`[${id}] Response: ${proxyRes.statusCode}`);
       res.writeHead(proxyRes.statusCode, proxyRes.headers);
       proxyRes.pipe(res);
+
+      let responseBuffer = '';
+      proxyRes.on('data', (chunk) => {
+        responseBuffer += chunk.toString();
+        let lines = responseBuffer.split('\n');
+        responseBuffer = lines.pop(); // Keep the incomplete line
+        if (lines.length > 0) {
+          broadcastStream('<<<', lines.join('\n'));
+        }
+      });
+      
+      proxyRes.on('end', () => {
+        if (responseBuffer.length > 0) {
+          broadcastStream('<<<', responseBuffer);
+        }
+      });
     }
   );
 
@@ -168,6 +279,26 @@ async function processQueue() {
 }
 
 const server = http.createServer((req, res) => {
+  if (req.url === '/_stream') {
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Access-Control-Allow-Origin': '*'
+    });
+    sseClients.add(res);
+    req.on('close', () => {
+      sseClients.delete(res);
+    });
+    return;
+  }
+
+  if (req.url === '/index.html' || req.url === '/') {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(UI_HTML);
+    return;
+  }
+
   let chunks = [];
 
   req.on("data", (chunk) => chunks.push(chunk));
@@ -203,7 +334,12 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(11444, () => {
-  
-  console.log("🧠 Concurrent Ollama proxy with smart swapping running on :3000");
+const PORT = process.env.PORT || 11444;
+
+if (!/^\d+$/.test(String(PORT))) {
+  throw new Error(`Invalid PORT value: ${PORT}. Must be a valid port number.`);
+}
+
+server.listen(PORT, () => {
+  console.log(`🧠 Concurrent Ollama proxy with smart swapping running on :${PORT}`);
 });
