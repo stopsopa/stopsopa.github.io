@@ -118,7 +118,7 @@ tail -f ~/dev-services/logs/proxy.log
 tail -f ~/dev-services/logs/launchd.out.log
 
 # to test from other machine
-curl http://192.168.8.49:3000/api/chat -d '{
+curl http://192.168.8.49:11444/api/chat -d '{
     "model": "qwen2.5:7b",
     "messages": [{"role": "user", "content": "Hello!"}]
 }'
