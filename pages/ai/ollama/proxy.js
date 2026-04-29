@@ -1,19 +1,21 @@
+/**
+ *  $(asdf which node | tr -d '\n') proxy.js $(which ollama | tr -d '\n')
+ * DEBUG=1 $(asdf which node | tr -d '\n') proxy.js $(which ollama | tr -d '\n')
+ */
+
 const http = require("http");
 const { execSync, exec } = require("child_process");
 const util = require("util");
 const execAsync = util.promisify(exec);
+
+const DEBUG = process.env.DEBUG === "1";
 
 let currentModel = null;
 let activeRequests = 0;
 let pendingSwapModel = null;
 const queue = [];
 
-async function stopModel(model) {
-  if (!model) return;
-  try {
-    await execAsync(`ollama stop ${model}`);
-  } catch (_) {}
-}
+const ollamaBin = process.argv[2] || "ollama";
 
 function getTimestamp() {
   const now = new Date();
@@ -33,17 +35,38 @@ function getTimestamp() {
   );
 }
 
+const log = (...args) => console.log(getTimestamp(), ...args);
+const logError = (...args) => console.error(getTimestamp(), ...args);
+const debug = (...args) => { if (DEBUG) log(...args); };
+const debugError = (...args) => { if (DEBUG) logError(...args); };
+
+async function stopModel(model) {
+  if (!model) return;
+  const cmd = `${ollamaBin} stop ${model}`;
+  debug(`Executing: ${cmd}`);
+  try {
+    const { stdout, stderr } = await execAsync(cmd);
+    if (stdout && stdout.trim()) debug(`stopModel stdout:\n${stdout.trim()}`);
+    if (stderr && stderr.trim()) debugError(`stopModel stderr:\n${stderr.trim()}`);
+  } catch (error) {
+    debugError(`stopModel error (code ${error.code || 'unknown'}): ${error.message}`);
+    if (error.stdout && error.stdout.trim()) debug(`stopModel error stdout:\n${error.stdout.trim()}`);
+    if (error.stderr && error.stderr.trim()) debugError(`stopModel error stderr:\n${error.stderr.trim()}`);
+  }
+}
+
 async function performSwap() {
-  console.log(`${getTimestamp()} Performing swap: ${currentModel} → ${pendingSwapModel}`);
+  log(`Performing swap: ${currentModel} → ${pendingSwapModel}`);
   await stopModel(currentModel);
   currentModel = pendingSwapModel;
   pendingSwapModel = null;
-  console.log(`${getTimestamp()} Swap complete. Resuming queue.`);
-  await processQueue();
+  debug(`Swap complete.`);
 }
 
 function forward({ req, res, bodyBuffer }) {
   activeRequests++;
+  const id = Math.random().toString(36).substring(7);
+  debug(`[${id}] Forwarding ${req.method} ${req.url} (active: ${activeRequests})`);
 
   const proxyReq = http.request(
     {
@@ -54,35 +77,42 @@ function forward({ req, res, bodyBuffer }) {
       headers: req.headers,
     },
     (proxyRes) => {
+      debug(`[${id}] Response: ${proxyRes.statusCode}`);
       res.writeHead(proxyRes.statusCode, proxyRes.headers);
       proxyRes.pipe(res);
     }
   );
 
-  const onFinish = async () => {
+  let finished = false;
+  const handleFinish = () => onFinish("finish");
+  const handleClose = () => onFinish("close");
+
+  const onFinish = async (reason) => {
+    if (finished) return;
+    finished = true;
     activeRequests--;
-    res.removeListener("finish", onFinish);
-    res.removeListener("close", onFinish);
+    debug(`[${id}] Finished (${reason}). Remaining active: ${activeRequests}`);
+    res.removeListener("finish", handleFinish);
+    res.removeListener("close", handleClose);
     proxyReq.removeListener("error", onError);
 
     if (pendingSwapModel && activeRequests === 0) {
       await performSwap();
-    } else {
-      await processQueue();
     }
+    await processQueue();
   };
 
   const onError = (err) => {
-    console.error(`${getTimestamp()} Proxy error: ${err.message}`);
+    debugError(`[${id}] Proxy error: ${err.message}`);
     if (!res.headersSent) {
       res.writeHead(500);
       res.end(`Proxy error: ${err.message}`);
     }
-    onFinish();
+    onFinish("error");
   };
 
-  res.on("finish", onFinish);
-  res.on("close", onFinish); // Handle aborted requests
+  res.on("finish", handleFinish);
+  res.on("close", handleClose); // Handle aborted requests
   proxyReq.on("error", onError);
 
   proxyReq.write(bodyBuffer);
@@ -92,8 +122,16 @@ function forward({ req, res, bodyBuffer }) {
 let isProcessingQueue = false;
 
 async function processQueue() {
-  if (isProcessingQueue || pendingSwapModel) return;
+  if (isProcessingQueue) {
+    debug(`processQueue: Already processing, skipping.`);
+    return;
+  }
+  if (pendingSwapModel) {
+    debug(`processQueue: Swap pending (${pendingSwapModel}), skipping.`);
+    return;
+  }
   isProcessingQueue = true;
+  debug(`processQueue: Starting (queue size: ${queue.length})`);
 
   try {
     while (queue.length > 0) {
@@ -103,16 +141,18 @@ async function processQueue() {
       // Initialization: first request sets the current model
       if (currentModel === null && requestedModel) {
         currentModel = requestedModel;
+        debug(`Initialized currentModel to: ${currentModel}`);
       }
 
       // Check if swap is needed
       if (requestedModel && currentModel && requestedModel !== currentModel) {
         pendingSwapModel = requestedModel;
-        console.log(
-          `${getTimestamp()} Swap detected: ${currentModel} → ${requestedModel}. Waiting for ${activeRequests} active requests to drain.`
+        debug(
+          `Swap detected: ${currentModel} → ${requestedModel}. Waiting for ${activeRequests} active requests to drain.`
         );
         if (activeRequests === 0) {
           await performSwap();
+          continue;
         }
         return; // Stop processing and keep items in queue
       }
@@ -122,6 +162,7 @@ async function processQueue() {
       forward(next);
     }
   } finally {
+    debug(`processQueue: Finished.`);
     isProcessingQueue = false;
   }
 }
@@ -155,6 +196,7 @@ const server = http.createServer((req, res) => {
       forward({ req, res, bodyBuffer });
     } else {
       // 🐢 Slow Path: Swap needed, or already swapping, or queue has items.
+      debug(`Enqueuing request for ${requestedModel} (queue size: ${queue.length + 1})`);
       queue.push({ req, res, bodyBuffer, requestedModel });
       await processQueue();
     }

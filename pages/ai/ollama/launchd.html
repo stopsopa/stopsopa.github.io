@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>stopsopa.github.io</title>
+
+    <script>
+      if (typeof window.allLoaded === "undefined") {
+        window.allLoaded = [];
+      }
+      window.allLoaded.push(function () {
+        console.log("do my stuff after all is loaded");
+      });
+    </script>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <div class="inside">
+
+        <h2>Index</h2>
+        <script type="editor" data-lang="sh">
+
+# take proxy from urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fai%2Follama%2Fproxy.js
+# create proxy.js in user directory on target mac mini mac.
+
+Before you start it is worth checking if with installation of ollama service was created:
+~ szdz@m4mini √ launchctl list | grep -i ollama
+1552	0	com.ollama.ollama
+~ szdz@m4mini √ launchctl print gui/$(id -u) | grep -i ollama
+		    1552      - 	com.ollama.ollama
+		com.apple.xpc.launchd.unmanaged.Ollama.1553 = {
+		"com.ollama.ollama" => enabled
+~ szdz@m4mini √     launchctl print gui/$(id -u)/com.ollama.ollama
+
+vi /Applications/Ollama.app/Contents/Library/LaunchAgents/com.ollama.ollama.plist
+
+# if yes then check request on my mac where ollama works
+curl http://localhost:11434/api/chat -d '{
+    "model": "qwen2.5:7b",
+    "messages": [{"role": "user", "content": "Hello!"}]
+}'
+
+# if that is the case then our script will be simpler
+
+
+mkdir -p ~/dev-services
+mkdir -p ~/dev-services/logs
+
+mkdir -p ~/Library/LaunchAgents
+
+cat <<EOF > ~/Library/LaunchAgents/com.yourname.ollama-proxy.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+"http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+<key>Label</key>
+<string>com.yourname.ollama-proxy</string>
+
+<key>ProgramArguments</key>
+<array>
+    <string>$(asdf which node | tr -d '\n')</string>
+    <string>${HOME}/proxy.js</string>
+    <string>$(which ollama | tr -d '\n')</string>
+</array>
+
+<key>RunAtLoad</key>
+<true/>
+
+<key>KeepAlive</key>
+<true/>
+
+<key>WorkingDirectory</key>
+<string>${HOME}</string>
+
+<key>StandardOutPath</key>
+<string>${HOME}/dev-services/logs/launchd.out.log</string>
+
+<key>StandardErrorPath</key>
+<string>${HOME}/dev-services/logs/launchd.err.log</string>
+
+</dict>
+</plist>
+EOF
+
+# check
+launchctl list | grep ollama
+
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.yourname.ollama-proxy.plist
+# register it with launchd and run at the same time
+# use this to run again after stopping it
+
+# confirm registration
+launchctl print gui/$(id -u)/com.yourname.ollama-proxy
+
+# check again
+launchctl list | grep ollama
+
+plutil ~/Library/LaunchAgents/com.yourname.ollama-proxy.plist
+# to check Just syntax validation
+
+# if need to stop
+ps aux | grep proxy.js
+launchctl bootout gui/$(id -u)/com.yourname.ollama-proxy
+ps aux | grep proxy.js
+# will not start with next restart of mac
+
+
+# logs
+ls -la ~/dev-services/logs/
+tail -f ~/dev-services/logs/proxy.log
+tail -f ~/dev-services/logs/launchd.out.log
+
+# to test from other machine
+curl http://192.168.8.49:3000/api/chat -d '{
+    "model": "qwen2.5:7b",
+    "messages": [{"role": "user", "content": "Hello!"}]
+}'
+
+
+        </script>
+
+        <div class="cards">
+          <h2>Index</h2>
+          <script type="editor" data-lang="sh"></script>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>
