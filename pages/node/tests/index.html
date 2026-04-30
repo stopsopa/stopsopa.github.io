@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px">
+        <h2>Index</h2>
+        <script type="editor" data-lang="ts">
+
+          +------------+---------------------------------+--------------------------+-----------------------------+--------------------------------------------------------------+
+          | Framework  | Exact equality (identity / ===) | Deep equality (by value) | Boolean / truth             | Notes on deep equality semantics                             |
+          +------------+---------------------------------+--------------------------+-----------------------------+--------------------------------------------------------------+
+          | Node.js    | strictEqual(a, b)               | deepStrictEqual(a, b)    | ok(value)                   | STRICT deep equality: values + structure + prototypes +      |
+          | (assert)   |                                 |                          | or strictEqual(value, true) | constructor identity                                         |
+          |            |                                 |                          |                             |                                                              |
+          | Jest       | expect(a).toBe(b)               | expect(a).toEqual(b)     | expect(value).toBeTruthy()  | STRUCTURAL deep equality: ignores prototypes, focuses        |
+          |            |                                 |                          | or toBe(true)               | on data shape                                                |
+          |            |                                 |                          |                             |                                                              |
+          | Vitest     | expect(a).toBe(b)               | expect(a).toEqual(b)     | expect(value).toBeTruthy()  | Same semantics as Jest (largely compatible)                  |
+          |            |                                 |                          | or toBe(true)               |                                                              |
+          |            |                                 |                          |                             |                                                              |
+          | Jasmine    | expect(a).toBe(b)               | expect(a).toEqual(b)     | expect(value).toBeTrue()    | STRUCTURAL deep equality: similar to Jest/Vitest             |
+          |            |                                 |                          | or toBeTruthy()             |                                                              |
+          |            |                                 |                          |                             |                                                              |
+          | Chai(Mocha)| expect(a).to.equal(b)           | expect(a).to.eql(b)      | expect(value).to.be.ok      | mix of strict + deep + BDD DSL                               |
+          +------------+---------------------------------+--------------------------+-----------------------------+--------------------------------------------------------------+
+
+          Option A (Node-style strict)
+              catches class/prototype mistakes
+              stricter correctness
+              more false negatives in “data tests”
+
+          Option B (Jest-style structural)
+              easier for API testing
+              ignores type system
+              can hide design bugs
+
+          Shim for nodejs when we want to really compare structure only:
+
+          import assert from "assert";
+
+          function stripPrototype(obj) {
+            if (obj === null || typeof obj !== "object") return obj;
+
+            if (Array.isArray(obj)) {
+              return obj.map(stripPrototype);
+            }
+
+            return Object.fromEntries(
+              Object.entries(obj).map(([k, v]) => [k, stripPrototype(v)])
+            );
+          }
+
+          assert.deepStrictEqual(
+            stripPrototype(a),
+            stripPrototype(b)
+          ); // ✅ passes
+
+          ---
+
+          read more about the subject in the future:
+          https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Equality_comparisons_and_sameness
+          https://stackoverflow.com/questions/16745855/difference-between-equal-deep-equal-and-strict-equal#:~:text=deepEquals%20does%20a%20%3D%3D%20comparison,child%20objects%20of%20complex%20objects.&text=So%20equal%20and%20strictEqual%20test,the%20same%20properties%20and%20values.
+          https://www.syncfusion.com/blogs/post/deep-compare-javascript-objects
+
+          idea with {pass, fail} https://medium.com/javascript-scene/rethinking-unit-test-assertions-55f59358253f
+
+          https://medium.com/@rpsdpano/from-jest-to-node-test-simplify-your-transition-with-node-test-decorators-1364601cb5cc
+          https://stackoverflow.com/questions/21396524/what-is-the-difference-between-assert-expect-and-should-in-chai
+
+          performance of different methods: https://www.alexefimenko.com/posts/compare-objects
+
+          https://www.speakeasy.com/blog/vitest-vs-jest
+          https://vitest.dev/guide/comparisons
+        </script>
+
+        <div class="cards">
+          <h2>Index</h2>
+          <script type="editor" data-lang="sh"></script>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>

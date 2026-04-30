@@ -113,6 +113,7 @@ window.doace();
 
 
     <div class="body">
+      <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
       <div class="inside">
         <div class="cards toc">
           <h1>Table of Contents</h1>
@@ -199,6 +200,7 @@ window.doace();
   </head>
   <body class="layout bg" toc>
     <div class="body">
+      <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
       <div class="inside">
         <div class="cards toc">
           <h1>Table of Contents</h1>
@@ -237,6 +239,7 @@ window.doace();
   </head>
   <body class="layout bg" toc>
     <div class="body">
+      <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
       <div class="inside">
         <div class="cards">
           <h2>Index</h2>
