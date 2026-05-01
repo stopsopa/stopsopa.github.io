@@ -25,7 +25,7 @@ when using our core-css to position popover then basic structure is:
 
 ```
 <button popovertarget="mypopover2">Toggle the popover</button>
-<div id="mypopover2" popover>
+<div id="mypopover2" popover data-popover>
   Popover content
   <button popovertarget="mypopover2" popovertargetaction="hide">Close</button>
 </div>
@@ -47,7 +47,7 @@ Usually this is default layout
 
 ```
 <button popovertarget="mypopover3">Toggle the popover</button>
-<div id="mypopover3" popover="manual">
+<div id="mypopover3" popover="manual" data-popover>
   our popover content
   <button popovertarget="mypopover3" popovertargetaction="hide">Close</button>
 </div>
@@ -66,7 +66,7 @@ But also make popovertarget to always point to that particular id to keep these 
 
 ```
 <button popovertarget="mypopover4">Toggle the popover</button>
-<div id="mypopover4" popover>
+<div id="mypopover4" popover data-popover>
   Popover content
   <button popovertarget="mypopover4" popovertargetaction="hide">Close</button>
 </div>
