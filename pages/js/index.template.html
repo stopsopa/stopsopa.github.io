@@ -838,6 +838,107 @@
             element.dispatchEvent(new MouseEvent('click', { bubbles: true }));
           }
         </script>
+        <h2>Emulate input typing</h2>
+        <script type="editor" data-lang="js">
+
+
+          function type_v2(element, value) {
+            if (!element) return false;
+
+            element.value = value;
+
+            element.dispatchEvent(new Event('input', {
+              bubbles: true,
+            }));
+
+            return true;
+          }
+
+          function type_v3(element, value) {
+            if (!element) return false;
+
+            element.focus();
+
+            for (const char of value) {
+              const keyOptions = {
+                key: char,
+                bubbles: true,
+                cancelable: true,
+              };
+
+              element.dispatchEvent(new KeyboardEvent('keydown', keyOptions));
+
+              element.value += char;
+
+              element.dispatchEvent(new InputEvent('input', {
+                bubbles: true,
+                data: char,
+                inputType: 'insertText',
+              }));
+
+              element.dispatchEvent(new KeyboardEvent('keyup', keyOptions));
+            }
+
+            return true;
+          }
+
+
+          function type_v4(element, value) {
+            if (!element) return false;
+
+            element.focus();
+
+            element.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+            element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+
+            element.value = value;
+
+            element.dispatchEvent(new Event('input', { bubbles: true }));
+
+            element.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+            element.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+
+            element.dispatchEvent(new Event('change', { bubbles: true }));
+
+            return true;
+          }
+
+          function type_v5(element, value) {
+            if (!element) return false;
+
+            const setter = Object.getOwnPropertyDescriptor(
+              HTMLInputElement.prototype,
+              'value'
+            ).set;
+
+            setter.call(element, value);
+
+            element.dispatchEvent(new Event('input', { bubbles: true }));
+            element.dispatchEvent(new Event('change', { bubbles: true }));
+
+            return true;
+          }
+
+          function type_v6(element, value) {
+            if (!element) return false;
+
+            element.focus();
+
+            const clipboardData = new DataTransfer();
+            clipboardData.setData('text', value);
+
+            element.dispatchEvent(new ClipboardEvent('paste', {
+              clipboardData,
+              bubbles: true,
+            }));
+
+            element.value = value;
+
+            element.dispatchEvent(new Event('input', { bubbles: true }));
+
+            return true;
+          }
+        </script>
         <h2>JSON</h2>
 
         <script type="editor" data-lang="js">
