@@ -217,6 +217,26 @@
           urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/defaults/index.html
           /bin/bash pages/typescript/defaults/getconfig.sh
           /bin/bash pages/typescript/defaults/getconfig-some.sh
+
+          ----
+
+          some params function from tsconfig.base.json:
+          
+          rootDir: Decide WHERE files go in outDir.          
+            It "crop" common path from source files.
+            If rootDir is './':
+              select.ts -> dist/select.js
+              composition/Manager.ts -> dist/composition/Manager.js
+            If rootDir was 'composition':
+              composition/Manager.ts -> dist/Manager.js (path before Manager.ts gone).     
+
+          'include' & 'exclude'
+            TS look at 'include' -> "I want these files".
+            TS look at 'exclude' -> "But I must skip these".
+            so 'exclude' always wins
+              if 'exclude' not defined Default exclude (like node_modules) still apply.
+            NOTE: If you use 'files' property (explicit list), exclude cannot stop them. files is Super Win. You not use it here, so exclude keep power.
+          
         </script>
 
         <h2>Glossary</h2>
