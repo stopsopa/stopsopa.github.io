@@ -20,6 +20,14 @@
           </ul>
         </div>
         <div class="card">
+          <h2>Do on fresh Mac</h2>
+          <script type="editor" data-lang="sh">
+
+            urlwizzard.schema://urlwizzard.hostnegotiated/pages/ide/vscode/index.html#fix-intellisense-ctrl-space-on-mac
+            setup iTerm: urlwizzard.schema://urlwizzard.hostnegotiated/pages/mac/index.rendered.html#iterm
+
+          </script>
+
           <h2>Universal</h2>
           <script type="editor" data-lang="sh">
 
@@ -981,11 +989,16 @@
               General -> Homepage -> set >
                 https://www.google.com/search
           </script>
-          <h2>iterm</h2>
+          <h2>iterm !</h2>
           <script type="editor" data-lang="python">
 
             Menu -> Iterm2 -> Settings... -> Profile -> Default -> Window:
             define: New windows 160 columns by 50 rows
+
+            Change keybinding profile:
+              open iTerm -> Settings... -> Profile -> Keys (tab) -> Key Bindings (deeper tab) ->
+                         -> at the bottom "Presets..." -> choose "Terminal.app Compatibility"
+                         From now on Cmd + arrow left/right should switch between multiple tabs in iTerm
           </script>
 
           <img src="https://i.imgur.com/nLp9vNq.png" width="800" />
