@@ -22,5 +22,5 @@ cat <<EEE
 ver: ${VERSION}
 
 EEE
-  /bin/bash "${DIR}/getconfig.sh" "$VERSION" 2>&1 | tee -a "${LOG}"
+  /bin/bash "${DIR}/getconfig.sh" "${VERSION}" 2>&1 | tee -a "${LOG}"
 done

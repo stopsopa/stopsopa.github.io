@@ -1,3 +1,12 @@
+/**
+ * Called like:
+ * node getAllFlags.js getAllFlags.json
+ * 
+ * in:
+ * pages/typescript/defaults/getconfig.sh
+ * 
+ */
+
 // dump-ts-all-options.mjs
 import ts from "typescript";
 import fs from "fs";
