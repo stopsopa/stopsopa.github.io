@@ -21,6 +21,8 @@
 
           import createImportMap from "/js/createImportMap.js";
 
+          import createScript from "/js/createScript.js";
+
           const parent = document.querySelector(".inside");
 
           const load = document.querySelector("button");
@@ -32,6 +34,7 @@
             id && go.setAttribute("id", id);
             parent.appendChild(go);
             onclick && go.addEventListener("click", onclick);
+            return go;
           }
 
           async function loadFn2() {
@@ -40,18 +43,24 @@
                 example2: "./lib/example2.js",
               },
             });
-            createButton({
+            const button = createButton({
               id: "go2",
               text: "go2",
               parent,
             });
+
+            button.setAttribute("disabled", "disabled");
 
             await new Promise((resolve) => setTimeout(resolve, 3000));
 
             createScript(`
               import example from "example2";
 
-              document.querySelector("#go2").addEventListener("click", () => {
+              const button = document.querySelector("#go2")
+
+              button.removeAttribute("disabled");
+
+              button.addEventListener("click", () => {
                 alert(example());
               });
             `);
@@ -59,11 +68,12 @@
 
           async function loadFn1() {
             // create button
-            createButton({
+            const button = createButton({
               id: "go",
               text: "go",
               parent,
             });
+            button.setAttribute("disabled", "disabled");
 
             // create importmap
             createImportMap({
@@ -78,7 +88,11 @@
             createScript(`
               import example from "example";
 
-              document.querySelector("#go").addEventListener("click", () => {
+              const button = document.querySelector("#go")
+
+              button.removeAttribute("disabled");
+
+              button.addEventListener("click", () => {
                 alert(example());
               });
             `);
@@ -88,13 +102,19 @@
             load.setAttribute("disabled", "disabled");
 
             // second level
+            {
 
-            createButton({
-              id: "loadFn2",
-              text: "loadFn2 - 3s",
-              parent,
-              onclick: loadFn2,
-            });
+              const button = createButton({
+                id: "loadFn2",
+                text: "loadFn2 - 3s",
+                parent,
+                onclick: () => {
+                  button.setAttribute("disabled", "disabled");
+                  loadFn2()
+                },
+              });
+            }
+
           }
 
           // NOTE: We can see that loading libraries happens when first module is executed
