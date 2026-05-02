@@ -335,6 +335,37 @@
           EEE
               /bin/bash te.sh
         </script>
+        <h2>Fix IntelliSense ctrl + space on mac</h2>
+        <script type="editor" data-lang="sh">
+          
+          in vscode when we have code:
+
+          import {readFile} from 'fs';
+          readFile('file', {
+            I < over here            
+          })
+
+          and we are with cursor between object brackets we should be able to click ctrl + space to see available options
+          ready to choose like 'encoding' for example.
+
+          Problem is that it might not always work on mac tahoe.
+
+          when you open shortcuts ctrl + k, ctrl + s and search for editor.action.triggerSuggest this is the option with ctrl + space normally bound to it.
+
+          ...so if that is correct.
+
+          Then what is happening is that ctrl + space is consumed on the OS level before it reaches vscode.
+
+          In order to fix that we have to go to:
+
+          System Settings → Keyboard → Keyboard Shortcuts → Input Sources
+          and unselect "Select the previous input source"
+          and just in case "Select next source in Input Menu"
+
+          from now on it should work in vscode          
+
+        </script>
+
         <h2>Create custom snippets</h2>
         <a href="https://code.visualstudio.com/docs/editor/userdefinedsnippets#_create-your-own-snippets"
           >https://code.visualstudio.com/docs/editor/userdefinedsnippets#_create-your-own-snippets</a
