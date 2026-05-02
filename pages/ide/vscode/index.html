@@ -233,6 +233,23 @@
               "javascript.preferGoToSourceDefinition": true
         </script>
 
+        <h2>NAVIGATOR.md - jump quickly to the file - anywhere</h2>
+        <script type="editor" data-lang="sh">
+
+          # just create file like this, clicking with CMD will navigate wherever given file is
+          
+          cat <<EEE
+          
+          # relative          
+          [Open Module](./node_modules/select-component/composition/Module.js)
+          
+          # absolute
+          [Open Module](file:///Users/xxx/Workspace/STOPSOPA__project/STOPSOPA__project/node_modules/somewhere-deep/composition/Module.js)          
+          
+          EEE
+
+          
+        </script>
         <h2>Java setup</h2>
         <a href="https://github.com/stopsopa/java-research">g(visual studio code Java in Visual Studio Code)</a>
         <h2>Release Notes</h2>
