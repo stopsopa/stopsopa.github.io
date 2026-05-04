@@ -374,10 +374,6 @@ g(Google Sans font)
       color: var(--gcp-css-text);
     }
 
-    &:focus-within label {
-      color: var(--gcp-css-primary);
-    }
-
     & [data-error],
     &[data-error] {
       label {
