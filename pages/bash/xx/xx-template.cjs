@@ -229,22 +229,31 @@ gjf --format
       description: `gjf --format`,
       confirm: false,
     },
-    [`style_list`]: {
+    [`style:check`]: {
       command: `
 set -e
-# make style_list
-/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --list-different .
+/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --check .
+./node_modules/.bin/prettier --config prettier.config.cjs --check .
+`,
+      description: `style_check`,
+      confirm: false,
+    },
+    [`style:fix`]: {
+      command: `
+set -e
+/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write .
+./node_modules/.bin/prettier --config prettier.config.cjs --write .
 `,
       description: `style_list`,
       confirm: false,
     },
-    [`style_fix`]: {
+    [`tyle:list`]: {
       command: `
 set -e
-# make style_fix
-/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write .
+/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --list-different .
+./node_modules/.bin/prettier --config prettier.config.cjs --list-different .
 `,
-      description: `style_fix`,
+      description: `style_list`,
       confirm: false,
     },
     [`git sync`]: {
