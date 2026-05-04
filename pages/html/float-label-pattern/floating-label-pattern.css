@@ -372,6 +372,7 @@ g(Google Sans font)
       padding: 0;
       font-size: var(--gcp-css-font-size);
       color: var(--gcp-css-text);
+      cursor: pointer;
     }
 
     & [data-error],
