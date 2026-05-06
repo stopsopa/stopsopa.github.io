@@ -247,7 +247,7 @@ set -e
       description: `style_list`,
       confirm: false,
     },
-    [`tyle:list`]: {
+    [`style:list`]: {
       command: `
 set -e
 /bin/bash node_modules/.bin/prettier --config prettier.config.cjs --list-different .
