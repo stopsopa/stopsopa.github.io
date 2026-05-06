@@ -390,6 +390,8 @@ _LIST="$(eval "${_CMD}")"
 
 _LIST="$(trim "${_LIST}")"
 
+_LIST="$(echo "${_LIST}" | grep -v '/\._')"
+
 _CODE="${?}"
 
 if [ "${_CODE}" != "0" ]; then
