@@ -40,13 +40,15 @@
           font-size: 11px;
           width: 98%;
         }
+        [name="hash"] {
+          width: 100%;
+        }
       }
       #commit-msg-output {
         height: 168px;
         font-size: 11px;
         width: 98%;
       }
-      #hash,
       #commit-msg-hash {
         width: 100%;
       }
@@ -912,7 +914,7 @@
               const offsetRange = parent.querySelector(`[name="offset"]`);
               const offsetOutput = parent.querySelector(`[name="offset-output"]`);
               const offsetButton = parent.querySelector(`[name="offset-button"]`);
-              
+
               const nowButton = parent.querySelector(`[name="now"]`);
 
               var year = (function (target) {
@@ -1053,13 +1055,14 @@
                   d.select();
                 });
                 d.addEventListener("input", function (e) {
-                  update();
+                  var d = getInputsTime();
+                  update(d);
                 });
                 return d;
-              })(parent.querySelector("#hash"));
+              })(parent.querySelector('[name="hash"]'));
 
               range(offsetRange, (v) => {
-                var d = getDateWithOffset();
+                var d = getInputsTime();
 
                 offsetOutput.textContent = d.toISOString() + " - " + humanReadable(v);
               });
@@ -1077,7 +1080,7 @@
                 return res.join(" ");
               }
 
-              function getCurrentTime() {
+              function getInputsTime() {
                 var d = new Date();
 
                 d.setFullYear(year.value);
@@ -1101,7 +1104,7 @@
               }
 
               function getDateWithOffset() {
-                var d = getCurrentTime();
+                var d = getInputsTime();
 
                 var offset = parseInt(offsetRange.value, 10);
 
@@ -1129,7 +1132,7 @@
 
                 offsetOutput.textContent = d.toISOString() + " - " + humanReadable(offset);
 
-                setInputsWithDate(d)
+                setInputsWithDate(d);
 
                 update(d);
               });
@@ -1144,7 +1147,7 @@
                 var pre = element.value;
 
                 return function (d) {
-                  d = d ?? getCurrentTime();
+                  d = d ?? getInputsTime();
 
                   element.value = pre.replace(/xxx/g, d.toISOString()).replace(/yyy/g, hash.value);
                 };
@@ -1203,13 +1206,13 @@
                   <button name="now">now</button>
                 </div>
                 <div>
-                  <input type="text" id="hash" value="d06798b8722b52c9643bbd72f3f07bd7598777d4" />
+                  <input type="text" name="hash" value="d06798b8722b52c9643bbd72f3f07bd7598777d4" />
                 </div>
                 <div>
                   <br />
                   <br />
                   <br />
-                  <input type="range" name="offset" min="1" max="21600" step="1" value="80" style="width: 100%" />
+                  <input type="range" name="offset" min="0" max="21600" step="1" value="0" style="width: 100%" />
                 </div>
                 <div>
                   <pre name="offset-output"></pre>
