@@ -26,470 +26,468 @@ g(Google Sans font)
 }
 */
 
-.gcp-css {
-  & :is(a),
-  &:is(a) {
-    color: rgb(12, 103, 223);
-    border-bottom: 1px solid currentColor;
-    text-decoration: none;
-    &[target="_blank"] {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      &::after {
-        content: "";
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        background-color: currentColor;
-        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z'/%3E%3C/svg%3E")
-          no-repeat center;
-        mask-size: contain;
-        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z'/%3E%3C/svg%3E")
-          no-repeat center;
-        -webkit-mask-size: contain;
-      }
-    }
-  }
-  & :is(h2),
-  &:is(h2) {
-    font-size: 14px;
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: #202124d4;
-  }
-  & :is(p),
-  &:is(p) {
-    font-size: 14px;
-    margin-bottom: 10px;
-    font-weight: 400;
-    margin-top: 0;
-    line-height: 18px;
-    color: rgb(32 33 36 / 77%);
-  }
-
-  /* -------------------------------------------------------------
-     BUTTONS
-     ------------------------------------------------------------- */
-  & :is(input[type="submit"], input[type="button"], button),
-  &:is(input[type="submit"], input[type="button"], button) {
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: normal;
-    /* height: 36px; */
-    padding: 0 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color var(--gcp-css-transition), box-shadow var(--gcp-css-transition);
+& :is(a),
+&:is(a) {
+  color: rgb(12, 103, 223);
+  border-bottom: 1px solid currentColor;
+  text-decoration: none;
+  &[target="_blank"] {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    border: 1px solid transparent;
-    outline: none;
-    box-sizing: border-box;
-    background-color: var(--gcp-css-primary);
-    color: #fff;
-    line-height: 30px;
+    gap: 4px;
+    &::after {
+      content: "";
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      background-color: currentColor;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z'/%3E%3C/svg%3E")
+        no-repeat center;
+      mask-size: contain;
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z'/%3E%3C/svg%3E")
+        no-repeat center;
+      -webkit-mask-size: contain;
+    }
+  }
+}
+& :is(h2),
+&:is(h2) {
+  font-size: 14px;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #202124d4;
+}
+& :is(p),
+&:is(p) {
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: 400;
+  margin-top: 0;
+  line-height: 18px;
+  color: rgb(32 33 36 / 77%);
+}
+
+/* -------------------------------------------------------------
+     BUTTONS
+     ------------------------------------------------------------- */
+& :is(input[type="submit"], input[type="button"], button),
+&:is(input[type="submit"], input[type="button"], button) {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: normal;
+  /* height: 36px; */
+  padding: 0 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color var(--gcp-css-transition), box-shadow var(--gcp-css-transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  outline: none;
+  box-sizing: border-box;
+  background-color: var(--gcp-css-primary);
+  color: #fff;
+  line-height: 30px;
+
+  &:hover {
+    background-color: #1765cc;
+    box-shadow: 0 1px 2px 0 rgba(66, 133, 244, 0.3), 0 1px 3px 1px rgba(66, 133, 244, 0.15);
+  }
+
+  &:active {
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 2px 6px 2px rgba(60, 64, 67, 0.15);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gcp-css-primary);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none;
+  }
+
+  &.white {
+    background-color: transparent;
+    color: var(--gcp-css-primary);
+    border-color: transparent;
+
+    box-shadow: none;
 
     &:hover {
-      background-color: #1765cc;
-      box-shadow: 0 1px 2px 0 rgba(66, 133, 244, 0.3), 0 1px 3px 1px rgba(66, 133, 244, 0.15);
+      background-color: rgba(26, 115, 232, 0.04);
+      border-color: transparent;
+      box-shadow: none;
     }
 
     &:active {
-      box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 2px 6px 2px rgba(60, 64, 67, 0.15);
+      background-color: rgba(26, 115, 232, 0.12);
+      box-shadow: none;
     }
 
     &:focus-visible {
-      outline: 2px solid var(--gcp-css-primary);
-      outline-offset: 2px;
-    }
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      pointer-events: none;
-      box-shadow: none;
-    }
-
-    &.white {
-      background-color: transparent;
-      color: var(--gcp-css-primary);
-      border-color: transparent;
-
-      box-shadow: none;
-
-      &:hover {
-        background-color: rgba(26, 115, 232, 0.04);
-        border-color: transparent;
-        box-shadow: none;
-      }
-
-      &:active {
-        background-color: rgba(26, 115, 232, 0.12);
-        box-shadow: none;
-      }
-
-      &:focus-visible {
-        outline-offset: 0;
-      }
+      outline-offset: 0;
     }
   }
+}
 
-  /* -------------------------------------------------------------
+/* -------------------------------------------------------------
      GENERIC LAYOUT & HELPERS
      ------------------------------------------------------------- */
-  .helper-text {
-    color: var(--gcp-css-gray-text);
-    font-size: var(--gcp-css-small-font-size);
-    padding-top: 6px;
+.helper-text {
+  color: var(--gcp-css-gray-text);
+  font-size: var(--gcp-css-small-font-size);
+  padding-top: 6px;
+}
+
+.error {
+  grid-row: 2;
+  display: none;
+  align-items: center;
+  padding-top: 6px;
+  color: var(--gcp-css-error);
+  font-size: var(--gcp-css-small-font-size);
+  opacity: 0;
+  transition: opacity var(--gcp-css-transition);
+  line-height: var(--gcp-css-font-size);
+  z-index: 1;
+
+  &::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-color: currentColor;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M9 2a7 7 0 100 14A7 7 0 009 2m-1 8V5h2v5zm0 3v-2h2v2z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M9 2a7 7 0 100 14A7 7 0 009 2m-1 8V5h2v5zm0 3v-2h2v2z'/%3E%3C/svg%3E");
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    flex-shrink: 0;
   }
+}
+
+& [data-error],
+&[data-error] {
+  /* .helper-text {
+      display: none;
+    } */
 
   .error {
-    grid-row: 2;
-    display: none;
-    align-items: center;
-    padding-top: 6px;
-    color: var(--gcp-css-error);
-    font-size: var(--gcp-css-small-font-size);
-    opacity: 0;
-    transition: opacity var(--gcp-css-transition);
-    line-height: var(--gcp-css-font-size);
-    z-index: 1;
+    display: flex;
+    opacity: 1;
+  }
+}
 
-    &::before {
-      content: "";
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      background-color: currentColor;
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M9 2a7 7 0 100 14A7 7 0 009 2m-1 8V5h2v5zm0 3v-2h2v2z'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M9 2a7 7 0 100 14A7 7 0 009 2m-1 8V5h2v5zm0 3v-2h2v2z'/%3E%3C/svg%3E");
-      -webkit-mask-repeat: no-repeat;
-      mask-repeat: no-repeat;
-      -webkit-mask-size: contain;
-      mask-size: contain;
-      flex-shrink: 0;
+& .hide-helper,
+&.hide-helper {
+  .helper-text {
+    display: none;
+  }
+}
+
+/* -------------------------------------------------------------
+     STANDARD FLOATING LABELS (Inputs, Textareas)
+     ------------------------------------------------------------- */
+& .input-wrapper,
+&.input-wrapper {
+  position: relative;
+  display: grid;
+  margin-bottom: 19px;
+  &::after {
+    content: "";
+    grid-area: 1 / 1;
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px var(--gcp-css-border);
+    transition: box-shadow var(--gcp-css-transition);
+    pointer-events: none;
+    box-sizing: border-box;
+    z-index: 0;
+    background-color: white;
+  }
+
+  &:focus-within::after {
+    box-shadow: 0 0 0 2px var(--gcp-css-primary);
+  }
+
+  &:focus-within label {
+    color: var(--gcp-css-primary);
+  }
+
+  &[data-error]::after {
+    box-shadow: 0 0 0 1px var(--gcp-css-error);
+  }
+
+  &[data-error] label {
+    color: var(--gcp-css-error);
+  }
+
+  &[data-error]:focus-within::after {
+    box-shadow: 0 0 0 2px var(--gcp-css-error);
+  }
+
+  &[data-error]:focus-within label {
+    color: var(--gcp-css-error);
+  }
+
+  &:has(:disabled) {
+    opacity: 0.6;
+    cursor: not-allowed;
+    & * {
+      cursor: not-allowed;
+    }
+  }
+
+  label {
+    grid-area: 1 / 1;
+    align-self: start;
+    justify-self: start;
+    margin-left: 7px;
+    margin-top: 9px; /* Perfectly centers in 32px field */
+    font-size: var(--gcp-css-font-size);
+    line-height: 1;
+    color: var(--gcp-css-gray-text);
+    pointer-events: none;
+    transition: transform var(--gcp-css-transition), font-size var(--gcp-css-transition),
+      color var(--gcp-css-transition), margin-top var(--gcp-css-transition);
+    background: var(--gcp-css-bg);
+    padding: 0 4px;
+    z-index: 3;
+    transform: translateY(0);
+  }
+
+  input,
+  textarea,
+  select {
+    grid-area: 1 / 1;
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 8px 12px;
+    font-size: var(--gcp-css-font-size);
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+    z-index: 2;
+    position: relative;
+    appearance: none; /* For select arrow */
+
+    &::placeholder {
+      color: transparent;
+      transition: color var(--gcp-css-transition);
+    }
+
+    &:focus::placeholder {
+      color: var(--gcp-css-gray-text);
+    }
+
+    /* Float if input has text or is focused */
+    &:is(input, textarea):is(:not(:placeholder-shown), :focus) + label,
+      /* Float if select has a real value chosen (not the placeholder) */
+      &:is(select):has(option:not([value=""]):checked) + label {
+      margin-top: 0;
+      transform: translateY(-50%);
+      font-size: var(--gcp-css-small-font-size);
+    }
+  }
+
+  select {
+    padding-right: 30px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235f6368'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 20px;
+
+    &:focus {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    }
+
+    :where([data-error]) &,
+    :where(.input-wrapper[data-error]) & {
+      color: var(--gcp-css-error);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d93025'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    font-family: inherit;
+
+    & + label {
+      align-self: start;
+      margin-top: 8px;
     }
   }
 
   & [data-error],
   &[data-error] {
-    /* .helper-text {
-      display: none;
-    } */
-
-    .error {
-      display: flex;
-      opacity: 1;
-    }
-  }
-
-  & .hide-helper,
-  &.hide-helper {
-    .helper-text {
-      display: none;
-    }
-  }
-
-  /* -------------------------------------------------------------
-     STANDARD FLOATING LABELS (Inputs, Textareas)
-     ------------------------------------------------------------- */
-  & .input-wrapper,
-  &.input-wrapper {
-    position: relative;
-    display: grid;
-    margin-bottom: 19px;
-    &::after {
-      content: "";
-      grid-area: 1 / 1;
-      border-radius: 4px;
-      box-shadow: 0 0 0 1px var(--gcp-css-border);
-      transition: box-shadow var(--gcp-css-transition);
-      pointer-events: none;
-      box-sizing: border-box;
-      z-index: 0;
-      background-color: white;
-    }
-
-    &:focus-within::after {
-      box-shadow: 0 0 0 2px var(--gcp-css-primary);
-    }
-
-    &:focus-within label {
-      color: var(--gcp-css-primary);
-    }
-
-    &[data-error]::after {
-      box-shadow: 0 0 0 1px var(--gcp-css-error);
-    }
-
-    &[data-error] label {
-      color: var(--gcp-css-error);
-    }
-
-    &[data-error]:focus-within::after {
-      box-shadow: 0 0 0 2px var(--gcp-css-error);
-    }
-
-    &[data-error]:focus-within label {
-      color: var(--gcp-css-error);
-    }
-
-    &:has(:disabled) {
-      opacity: 0.6;
-      cursor: not-allowed;
-      & * {
-        cursor: not-allowed;
-      }
-    }
-
-    label {
-      grid-area: 1 / 1;
-      align-self: start;
-      justify-self: start;
-      margin-left: 7px;
-      margin-top: 9px; /* Perfectly centers in 32px field */
-      font-size: var(--gcp-css-font-size);
-      line-height: 1;
-      color: var(--gcp-css-gray-text);
-      pointer-events: none;
-      transition: transform var(--gcp-css-transition), font-size var(--gcp-css-transition),
-        color var(--gcp-css-transition), margin-top var(--gcp-css-transition);
-      background: var(--gcp-css-bg);
-      padding: 0 4px;
-      z-index: 3;
-      transform: translateY(0);
-    }
-
     input,
     textarea,
     select {
-      grid-area: 1 / 1;
-      width: 100%;
-      border: none;
-      background: transparent;
-      padding: 8px 12px;
-      font-size: var(--gcp-css-font-size);
-      font-family: inherit;
-      outline: none;
-      box-sizing: border-box;
-      z-index: 2;
-      position: relative;
-      appearance: none; /* For select arrow */
+      color: var(--gcp-css-error);
+    }
+  }
+}
 
-      &::placeholder {
-        color: transparent;
-        transition: color var(--gcp-css-transition);
-      }
+/* -------------------------------------------------------------
+     CHECKBOX & RADIO PATTERNS
+     ------------------------------------------------------------- */
+& :is(.checkbox-wrapper, .radio-wrapper),
+&:is(.checkbox-wrapper, .radio-wrapper) {
+  position: relative;
+  display: grid;
+  margin-bottom: 19px;
+  .helper-text {
+    padding-top: 0;
+  }
 
-      &:focus::placeholder {
-        color: var(--gcp-css-gray-text);
-      }
+  .checkbox-row,
+  .radio-row {
+    grid-row: 1; /* Match normal input cell */
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
 
-      /* Float if input has text or is focused */
-      &:is(input, textarea):is(:not(:placeholder-shown), :focus) + label,
-      /* Float if select has a real value chosen (not the placeholder) */
-      &:is(select):has(option:not([value=""]):checked) + label {
-        margin-top: 0;
-        transform: translateY(-50%);
-        font-size: var(--gcp-css-small-font-size);
-      }
+  .content-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  label {
+    grid-area: auto;
+    align-self: auto;
+    justify-self: auto;
+    margin-left: 0;
+    pointer-events: auto;
+    background: transparent;
+    padding: 0;
+    font-size: var(--gcp-css-font-size);
+    color: var(--gcp-css-text);
+    cursor: pointer;
+  }
+
+  & [data-error],
+  &[data-error] {
+    label {
+      color: var(--gcp-css-error);
     }
 
-    select {
-      padding-right: 30px;
-      cursor: pointer;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235f6368'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 8px center;
-      background-size: 20px;
-
-      &:focus {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-      }
-
-      :where([data-error]) &,
-      :where(.input-wrapper[data-error]) & {
-        color: var(--gcp-css-error);
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d93025'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-      }
+    &:focus-within label {
+      color: var(--gcp-css-error);
     }
 
-    textarea {
-      resize: vertical;
-      font-family: inherit;
-
-      & + label {
-        align-self: start;
-        margin-top: 8px;
-      }
+    input:is([type="checkbox"], [type="radio"]) {
+      border-color: var(--gcp-css-error) !important;
     }
+  }
 
-    & [data-error],
-    &[data-error] {
-      input,
-      textarea,
-      select {
-        color: var(--gcp-css-error);
+  input:is([type="checkbox"], [type="radio"]) {
+    grid-area: auto;
+    appearance: none;
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--gcp-css-gray-text);
+    border-radius: 2px;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    top: 2px; /* align element slightly down with font baseline */
+    transition: all 0.2s;
+
+    &:focus-visible {
+      outline: 2px solid var(--gcp-css-primary);
+      outline-offset: 2px;
+    }
+  }
+
+  & .checkbox-wrapper,
+  &.checkbox-wrapper {
+    position: relative;
+    display: grid;
+    margin-bottom: 19px;
+    input[type="checkbox"] {
+      &::before {
+        content: "";
+        width: 5px;
+        height: 10px;
+        border-right: 2px solid white;
+        border-bottom: 2px solid white;
+        transform: translateY(-1px) rotate(45deg) scale(0);
+        transition: 120ms transform ease-in-out;
+        transform-origin: center;
+      }
+
+      & :checked,
+      &:checked {
+        background-color: var(--gcp-css-primary);
+        border-color: var(--gcp-css-primary);
+
+        &::before {
+          transform: translateY(-1px) rotate(45deg) scale(1);
+        }
       }
     }
   }
 
-  /* -------------------------------------------------------------
-     CHECKBOX & RADIO PATTERNS
-     ------------------------------------------------------------- */
-  & :is(.checkbox-wrapper, .radio-wrapper),
-  &:is(.checkbox-wrapper, .radio-wrapper) {
+  & .radio-wrapper,
+  &.radio-wrapper {
     position: relative;
     display: grid;
     margin-bottom: 19px;
-    .helper-text {
-      padding-top: 0;
-    }
+    input[type="radio"] {
+      border-radius: 50%; /* Force circle for radio */
 
-    .checkbox-row,
-    .radio-row {
-      grid-row: 1; /* Match normal input cell */
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
+      &::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        transform: scale(0);
+        transition: 120ms transform ease-in-out;
+        background-color: var(--gcp-css-primary);
+      }
 
-    .content-cell {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+      &:checked {
+        border-color: var(--gcp-css-primary);
 
-    label {
-      grid-area: auto;
-      align-self: auto;
-      justify-self: auto;
-      margin-left: 0;
-      pointer-events: auto;
-      background: transparent;
-      padding: 0;
-      font-size: var(--gcp-css-font-size);
-      color: var(--gcp-css-text);
-      cursor: pointer;
+        &::before {
+          transform: scale(1);
+        }
+      }
     }
 
     & [data-error],
     &[data-error] {
-      label {
-        color: var(--gcp-css-error);
-      }
-
-      &:focus-within label {
-        color: var(--gcp-css-error);
-      }
-
-      input:is([type="checkbox"], [type="radio"]) {
-        border-color: var(--gcp-css-error) !important;
-      }
-    }
-
-    input:is([type="checkbox"], [type="radio"]) {
-      grid-area: auto;
-      appearance: none;
-      background-color: transparent;
-      margin: 0;
-      padding: 0;
-      width: 18px;
-      height: 18px;
-      border: 2px solid var(--gcp-css-gray-text);
-      border-radius: 2px;
-      display: grid;
-      place-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-      position: relative;
-      top: 2px; /* align element slightly down with font baseline */
-      transition: all 0.2s;
-
-      &:focus-visible {
-        outline: 2px solid var(--gcp-css-primary);
-        outline-offset: 2px;
-      }
-    }
-
-    & .checkbox-wrapper,
-    &.checkbox-wrapper {
-      position: relative;
-      display: grid;
-      margin-bottom: 19px;
-      input[type="checkbox"] {
-        &::before {
-          content: "";
-          width: 5px;
-          height: 10px;
-          border-right: 2px solid white;
-          border-bottom: 2px solid white;
-          transform: translateY(-1px) rotate(45deg) scale(0);
-          transition: 120ms transform ease-in-out;
-          transform-origin: center;
-        }
-
-        & :checked,
-        &:checked {
-          background-color: var(--gcp-css-primary);
-          border-color: var(--gcp-css-primary);
-
-          &::before {
-            transform: translateY(-1px) rotate(45deg) scale(1);
-          }
-        }
-      }
-    }
-
-    & .radio-wrapper,
-    &.radio-wrapper {
-      position: relative;
-      display: grid;
-      margin-bottom: 19px;
       input[type="radio"] {
-        border-radius: 50%; /* Force circle for radio */
-
+        border-color: var(--gcp-css-error);
         &::before {
-          content: "";
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          transform: scale(0);
-          transition: 120ms transform ease-in-out;
-          background-color: var(--gcp-css-primary);
+          background-color: var(--gcp-css-error);
         }
-
         &:checked {
-          border-color: var(--gcp-css-primary);
-
-          &::before {
-            transform: scale(1);
-          }
-        }
-      }
-
-      & [data-error],
-      &[data-error] {
-        input[type="radio"] {
           border-color: var(--gcp-css-error);
-          &::before {
-            background-color: var(--gcp-css-error);
-          }
-          &:checked {
-            border-color: var(--gcp-css-error);
-          }
         }
       }
     }
+  }
 
-    &:has(:disabled) {
-      opacity: 0.6;
+  &:has(:disabled) {
+    opacity: 0.6;
+    cursor: not-allowed;
+    & * {
       cursor: not-allowed;
-      & * {
-        cursor: not-allowed;
-      }
     }
   }
 }
