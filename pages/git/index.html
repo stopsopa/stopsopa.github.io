@@ -909,8 +909,9 @@
             document.addEventListener("DOMContentLoaded", () => {
               const parent = document.querySelector("#timestaxxxxmp-table");
 
-              const offsetRange = parent.querySelector("[name=offset]");
-              const offsetOutput = parent.querySelector("[name=offset-output]");
+              const offsetRange = parent.querySelector(`[name="offset"]`);
+              const offsetOutput = parent.querySelector(`[name="offset-output"]`);
+              const offsetButton = parent.querySelector(`[name="offset-button"]`);
 
               var year = (function (target) {
                 var current = new Date().getFullYear();
@@ -1055,6 +1056,74 @@
                 return d;
               })(parent.querySelector("#hash"));
 
+              range(offsetRange, (v) => {
+                var d = getDateWithOffset();
+
+                offsetOutput.textContent = d.toISOString() + " - " + humanReadable(v);
+              });
+
+              function humanReadable(seconds) {
+                var h = Math.floor(seconds / 3600);
+                var m = Math.floor((seconds % 3600) / 60);
+                var s = seconds % 60;
+
+                var res = [];
+                if (h > 0) res.push(h + "h");
+                if (m > 0) res.push(m + "m");
+                if (s > 0 || res.length === 0) res.push(s + "s");
+
+                return res.join(" ");
+              }
+
+              function getCurrentTime() {
+                var d = new Date();
+
+                d.setFullYear(year.value);
+                d.setMonth(month.value);
+                d.setDate(day.value);
+                d.setHours(hour.value);
+                d.setMinutes(minute.value);
+                d.setSeconds(seconds.value);
+                d.setMilliseconds(0);
+
+                return d;
+              }
+
+              function setInputsWithDate(d) {
+                year.value = d.getFullYear();
+                month.value = d.getMonth();
+                day.value = d.getDate();
+                hour.value = d.getHours();
+                minute.value = d.getMinutes();
+                seconds.value = d.getSeconds();
+              }
+
+              function getDateWithOffset() {
+                var d = getCurrentTime();
+
+                var offset = parseInt(offsetRange.value, 10);
+
+                var randomMs = Math.floor(Math.random() * 1000);
+
+                d.setSeconds(d.getSeconds() + offset);
+
+                d.setMilliseconds(randomMs);
+
+                return d;
+              }
+
+              offsetButton.addEventListener("click", function () {
+                var d = getDateWithOffset();
+
+                var offset = parseInt(offsetRange.value, 10);
+
+                offsetOutput.textContent = d.toISOString() + " - " + humanReadable(offset);
+
+                setInputsWithDate(d)
+
+                update(d);
+              });
+
               var update = (function () {
                 var element = parent.querySelector(".timestamp");
 
@@ -1064,15 +1133,8 @@
 
                 var pre = element.value;
 
-                return function () {
-                  var d = new Date();
-
-                  d.setFullYear(year.value);
-                  d.setMonth(month.value);
-                  d.setDate(day.value);
-                  d.setHours(hour.value);
-                  d.setMinutes(minute.value);
-                  d.setSeconds(seconds.value);
+                return function (d) {
+                  d = d ?? getCurrentTime();
 
                   element.value = pre.replace(/xxx/g, d.toISOString()).replace(/yyy/g, hash.value);
                 };
@@ -1083,6 +1145,17 @@
               });
 
               update();
+
+              function range(element, event, onLoad = true) {
+                function hc() {
+                  event(parseInt(element.value, 10));
+                }
+                element.addEventListener("change", hc);
+                element.addEventListener("input", hc);
+                if (onLoad) {
+                  hc();
+                }
+              }
             });
           }
         </script>
@@ -1126,6 +1199,9 @@
                 </div>
                 <div>
                   <pre name="offset-output"></pre>
+                </div>
+                <div>
+                  <button name="offset-button">apply</button>
                 </div>
               </td>
             </tr>
