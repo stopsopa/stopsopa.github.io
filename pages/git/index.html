@@ -912,6 +912,8 @@
               const offsetRange = parent.querySelector(`[name="offset"]`);
               const offsetOutput = parent.querySelector(`[name="offset-output"]`);
               const offsetButton = parent.querySelector(`[name="offset-button"]`);
+              
+              const nowButton = parent.querySelector(`[name="now"]`);
 
               var year = (function (target) {
                 var current = new Date().getFullYear();
@@ -1112,6 +1114,14 @@
                 return d;
               }
 
+              nowButton.addEventListener("click", function () {
+                var d = new Date();
+
+                setInputsWithDate(d);
+
+                update(d);
+              });
+
               offsetButton.addEventListener("click", function () {
                 var d = getDateWithOffset();
 
@@ -1162,7 +1172,7 @@
         <table width="100%" id="timestaxxxxmp-table">
           <tbody>
             <tr>
-              <td width="50%">
+              <td width="40%">
                 <textarea class="timestamp">
 
  export FILTER_BRANCH_SQUELCH_WARNING=1
@@ -1190,6 +1200,7 @@
                   <select name="minute"></select>
                   :
                   <select name="seconds"></select>
+                  <button name="now">now</button>
                 </div>
                 <div>
                   <input type="text" id="hash" value="d06798b8722b52c9643bbd72f3f07bd7598777d4" />
