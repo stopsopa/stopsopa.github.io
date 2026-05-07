@@ -34,7 +34,13 @@
       })();
     </script>
     <style>
-      #timestamp,
+      #timestaxxxxmp-table {
+        .timestamp {
+          height: 168px;
+          font-size: 11px;
+          width: 98%;
+        }
+      }
       #commit-msg-output {
         height: 168px;
         font-size: 11px;
@@ -899,185 +905,192 @@
                fi'
         </script>
         <script>
-          document.addEventListener("DOMContentLoaded", () => {
-            var year = (function (target) {
-              var current = new Date().getFullYear();
+          {
+            document.addEventListener("DOMContentLoaded", () => {
+              const parent = document.querySelector("#timestaxxxxmp-table");
 
-              var first = new Date();
+              const offsetRange = parent.querySelector("[name=offset]");
+              const offsetOutput = parent.querySelector("[name=offset-output]");
 
-              first.setTime(first.getTime() - 60 * 60 * 24 * 365 * 1000 * 5);
+              var year = (function (target) {
+                var current = new Date().getFullYear();
 
-              for (var i = 0; i < 11; i += 1) {
-                var k = document.createElement("option");
+                var first = new Date();
 
-                k.value = k.innerText = first.getFullYear();
+                first.setTime(first.getTime() - 60 * 60 * 24 * 365 * 1000 * 5);
 
-                if (k.value == current) {
-                  k.setAttribute("selected", "selected");
+                for (var i = 0; i < 11; i += 1) {
+                  var k = document.createElement("option");
+
+                  k.value = k.innerText = first.getFullYear();
+
+                  if (k.value == current) {
+                    k.setAttribute("selected", "selected");
+                  }
+
+                  manipulation.append(target, k);
+
+                  first.setTime(first.getTime() + 60 * 60 * 24 * 365 * 1000);
                 }
 
-                manipulation.append(target, k);
+                return target;
+              })(parent.querySelector('[name="year"]'));
 
-                first.setTime(first.getTime() + 60 * 60 * 24 * 365 * 1000);
-              }
+              var month = (function (target) {
+                const monthNames = [
+                  "January",
+                  "February",
+                  "March",
+                  "April",
+                  "May",
+                  "June",
+                  "July",
+                  "August",
+                  "September",
+                  "October",
+                  "November",
+                  "December",
+                ];
 
-              return target;
-            })(document.querySelector('[name="year"]'));
+                var current = new Date().getMonth();
 
-            var month = (function (target) {
-              const monthNames = [
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "July",
-                "August",
-                "September",
-                "October",
-                "November",
-                "December",
-              ];
+                monthNames.forEach(function (name, i) {
+                  var k = document.createElement("option");
 
-              var current = new Date().getMonth();
+                  k.value = i;
 
-              monthNames.forEach(function (name, i) {
-                var k = document.createElement("option");
+                  k.innerText = monthNames[i];
 
-                k.value = i;
+                  if (i == current) {
+                    k.setAttribute("selected", "selected");
+                  }
 
-                k.innerText = monthNames[i];
+                  manipulation.append(target, k);
+                });
 
-                if (i == current) {
-                  k.setAttribute("selected", "selected");
+                return target;
+              })(parent.querySelector('[name="month"]'));
+
+              var day = (function (target) {
+                var current = new Date().getDate();
+
+                for (var i = 1; i < 32; i += 1) {
+                  var k = document.createElement("option");
+
+                  k.value = k.innerText = i;
+
+                  if (i == current) {
+                    k.setAttribute("selected", "selected");
+                  }
+
+                  manipulation.append(target, k);
                 }
 
-                manipulation.append(target, k);
+                return target;
+              })(parent.querySelector('[name="day"]'));
+
+              var hour = (function (target) {
+                var current = new Date().getHours();
+
+                for (var i = 1; i < 25; i += 1) {
+                  var k = document.createElement("option");
+
+                  k.value = i % 24;
+
+                  k.innerText = i;
+
+                  if (i == current) {
+                    k.setAttribute("selected", "selected");
+                  }
+
+                  manipulation.append(target, k);
+                }
+
+                return target;
+              })(parent.querySelector('[name="hour"]'));
+
+              var minute = (function (target) {
+                var current = new Date().getMinutes();
+
+                for (var i = 0; i < 60; i += 1) {
+                  var k = document.createElement("option");
+
+                  k.value = k.innerText = i;
+
+                  if (i == current) {
+                    k.setAttribute("selected", "selected");
+                  }
+
+                  manipulation.append(target, k);
+                }
+
+                return target;
+              })(parent.querySelector('[name="minute"]'));
+
+              var seconds = (function (target) {
+                var current = new Date().getSeconds();
+
+                for (var i = 0; i < 60; i += 1) {
+                  var k = document.createElement("option");
+
+                  k.value = k.innerText = i;
+
+                  if (i == current) {
+                    k.setAttribute("selected", "selected");
+                  }
+
+                  manipulation.append(target, k);
+                }
+
+                return target;
+              })(parent.querySelector('[name="seconds"]'));
+
+              var hash = (function (d) {
+                d.addEventListener("click", function () {
+                  d.select();
+                });
+                d.addEventListener("input", function (e) {
+                  update();
+                });
+                return d;
+              })(parent.querySelector("#hash"));
+
+              var update = (function () {
+                var element = parent.querySelector(".timestamp");
+
+                element.addEventListener("click", function (e) {
+                  element.select();
+                });
+
+                var pre = element.value;
+
+                return function () {
+                  var d = new Date();
+
+                  d.setFullYear(year.value);
+                  d.setMonth(month.value);
+                  d.setDate(day.value);
+                  d.setHours(hour.value);
+                  d.setMinutes(minute.value);
+                  d.setSeconds(seconds.value);
+
+                  element.value = pre.replace(/xxx/g, d.toISOString()).replace(/yyy/g, hash.value);
+                };
+              })();
+
+              [year, month, day, hour, minute, seconds].forEach(function (e) {
+                e.addEventListener("change", update);
               });
 
-              return target;
-            })(document.querySelector('[name="month"]'));
-
-            var day = (function (target) {
-              var current = new Date().getDate();
-
-              for (var i = 1; i < 32; i += 1) {
-                var k = document.createElement("option");
-
-                k.value = k.innerText = i;
-
-                if (i == current) {
-                  k.setAttribute("selected", "selected");
-                }
-
-                manipulation.append(target, k);
-              }
-
-              return target;
-            })(document.querySelector('[name="day"]'));
-
-            var hour = (function (target) {
-              var current = new Date().getHours();
-
-              for (var i = 1; i < 25; i += 1) {
-                var k = document.createElement("option");
-
-                k.value = i % 24;
-
-                k.innerText = i;
-
-                if (i == current) {
-                  k.setAttribute("selected", "selected");
-                }
-
-                manipulation.append(target, k);
-              }
-
-              return target;
-            })(document.querySelector('[name="hour"]'));
-
-            var minute = (function (target) {
-              var current = new Date().getMinutes();
-
-              for (var i = 0; i < 60; i += 1) {
-                var k = document.createElement("option");
-
-                k.value = k.innerText = i;
-
-                if (i == current) {
-                  k.setAttribute("selected", "selected");
-                }
-
-                manipulation.append(target, k);
-              }
-
-              return target;
-            })(document.querySelector('[name="minute"]'));
-
-            var seconds = (function (target) {
-              var current = new Date().getSeconds();
-
-              for (var i = 0; i < 60; i += 1) {
-                var k = document.createElement("option");
-
-                k.value = k.innerText = i;
-
-                if (i == current) {
-                  k.setAttribute("selected", "selected");
-                }
-
-                manipulation.append(target, k);
-              }
-
-              return target;
-            })(document.querySelector('[name="seconds"]'));
-
-            var hash = (function (d) {
-              d.addEventListener("click", function () {
-                d.select();
-              });
-              d.addEventListener("input", function (e) {
-                update();
-              });
-              return d;
-            })(document.querySelector("#hash"));
-
-            var update = (function () {
-              var element = document.querySelector("#timestamp");
-
-              element.addEventListener("click", function (e) {
-                element.select();
-              });
-
-              var pre = element.value;
-
-              return function () {
-                var d = new Date();
-
-                d.setFullYear(year.value);
-                d.setMonth(month.value);
-                d.setDate(day.value);
-                d.setHours(hour.value);
-                d.setMinutes(minute.value);
-                d.setSeconds(seconds.value);
-
-                element.value = pre.replace(/xxx/g, d.toISOString()).replace(/yyy/g, hash.value);
-              };
-            })();
-
-            [year, month, day, hour, minute, seconds].forEach(function (e) {
-              e.addEventListener("change", update);
+              update();
             });
-
-            update();
-          });
+          }
         </script>
-        <table width="100%">
+        <table width="100%" id="timestaxxxxmp-table">
           <tbody>
             <tr>
               <td width="50%">
-                <textarea id="timestamp">
+                <textarea class="timestamp">
 
  export FILTER_BRANCH_SQUELCH_WARNING=1
  git filter-branch -f --env-filter  \
@@ -1107,6 +1120,12 @@
                 </div>
                 <div>
                   <input type="text" id="hash" value="d06798b8722b52c9643bbd72f3f07bd7598777d4" />
+                </div>
+                <div>
+                  <input type="range" name="offset" min="1" max="21600" step="1" value="80" style="width: 100%" />
+                </div>
+                <div>
+                  <pre name="offset-output"></pre>
                 </div>
               </td>
             </tr>
