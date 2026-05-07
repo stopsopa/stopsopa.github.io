@@ -243,6 +243,10 @@
           podman compose version
             # to install 
             https://podman-desktop.io/docs/compose/setting-up-compose
+            # normally podman is using docker compose, in order to switch
+            brew install podman-compose
+            # and add to ~/.zshrc
+            export PODMAN_COMPOSE_PROVIDER=podman-compose
           
         </script>
         <h2>network</h2>
