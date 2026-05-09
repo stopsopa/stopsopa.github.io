@@ -505,6 +505,8 @@
 
           wget --no-cache urlwizzard.schema://urlwizzard.hostnegotiated/es.ts
           wget --no-cache urlwizzard.schema://urlwizzard.hostnegotiated/es.mjs
+            # NOTE: use this one because you won't run into issues with missing Semaphore.js
+            
           yarn add -D esbuild
           and then run:
           node es.ts

@@ -5,6 +5,8 @@
 # 
 # That script is responsible just for bundling
 # 
+# see TRANSPILATION.md
+# 
 export NODE_OPTIONS=""
 
 IGNORE_FILE="${1}"

@@ -1,3 +1,5 @@
+// see TRANSPILATION.md
+
 import * as esbuild from "esbuild";
 import readline from "readline";
 import { sassPlugin } from "esbuild-sass-plugin";
@@ -41,6 +43,7 @@ const options: esbuild.BuildOptions = {
   minify: false,
   sourcemap: true,
   target: "esnext",
+  format: "esm",
   plugins: [sassPlugin()],
   loader: {
     ".js": "jsx",

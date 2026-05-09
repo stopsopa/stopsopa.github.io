@@ -1,5 +1,7 @@
 
 # 
+# see TRANSPILATION.md
+# 
 # /bin/bash transpile.sh transpile.ignore
 # /bin/bash transpile.sh transpile.ignore --watch
 # 

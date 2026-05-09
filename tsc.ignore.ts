@@ -1,3 +1,5 @@
+// see TRANSPILATION.md
+
 /**
  * NODE_OPTIONS= node tsc.ignore.ts "tsc.ignore" tsconfig.json tsc.ignore.tsconfig.json
  */

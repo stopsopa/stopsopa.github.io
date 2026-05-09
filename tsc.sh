@@ -1,4 +1,6 @@
 # 
+# see TRANSPILATION.md
+# 
 # I had hope to use this script for typechecking and in another step add some excluding rules to 
 # tsconfig.json and this way generating new typescript config tsc.ignore.tsconfig.json
 # and with it use tsc for transpilation but eventually I've discovered that it as usual

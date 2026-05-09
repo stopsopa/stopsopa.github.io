@@ -4,6 +4,8 @@
 # node es.ts
 # mainly used in build.sh
 
+# see TRANSPILATION.md
+
 set -e 
 
 export NODE_OPTIONS=""
@@ -16,5 +18,5 @@ find . \
     -path './scripts' -prune -o \
     -type f -name '*.ts' \
     -print \
-    | node gitignore.js .esignore \
+    | node gitignore.js es.ignore \
     | DEBUG=true /bin/bash ts.sh es.ts --produce-gitignore --update

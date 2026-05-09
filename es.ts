@@ -7,6 +7,8 @@
 }
 @es.ts */
 
+// see TRANSPILATION.md
+
 import * as esbuild from "esbuild";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join, basename, resolve, relative } from "node:path";
@@ -17,18 +19,15 @@ import Semaphore from "./pages/node/semaphore/Semaphore.ts";
 
 const th = (msg: string) => new Error(`es.ts error: ${msg}`);
 
-interface Config {
-  target: string;
+interface Config extends Pick<esbuild.BuildOptions, "target" | "charset" | "minify" | "bundle" | "format"> {
   loader: esbuild.Loader;
-  charset: "utf8" | "ascii" | undefined;
-  minify: boolean;
-  bundle: boolean;
   extension: string;
 }
 
 const CONFIG: Config = {
   target: "esnext",
   loader: "ts",
+  format: "esm",
   charset: "utf8",
   minify: false,
   bundle: false,
@@ -135,7 +134,7 @@ async function stripTypes(filePath: string): Promise<string | undefined> {
       minify: localOptions.minify,
       legalComments: "inline",
       platform: "node",
-      format: "esm",
+      format: localOptions.format,
       plugins: [
         {
           name: "protect-comments",
@@ -145,7 +144,7 @@ async function stripTypes(filePath: string): Promise<string | undefined> {
               const contents = content
                 .replace(/\/\*\*/g, "/*!") // JSDoc -> Legal block
                 .replace(/\/\/ /g, "//! "); // Single line -> Legal line
-              return { contents, loader: "ts" };
+              return { contents, loader: localOptions.loader };
             });
           },
         },

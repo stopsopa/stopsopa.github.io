@@ -1,3 +1,6 @@
+/**
+ * see TRANSPILATION.md
+ */
 import * as esbuild from "esbuild";
 import readline from "readline";
 

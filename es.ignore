@@ -1,0 +1,4 @@
+# gitignore for es.sh
+*
+!es.ts
+!pages/node/semaphore/Semaphore.ts
