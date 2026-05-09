@@ -14,6 +14,7 @@ case ${_SHELL} in
 esac
 
 export NODE_OPTIONS=""
+export DLOGGERN=12
 
 ROOT="${_DIR}"
 

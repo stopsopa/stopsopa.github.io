@@ -1674,55 +1674,6 @@
           >g(TR-CS-96-05 The rsync algorithm Andrew Tridgell and Paul Mackerras June 1996)</a
         >
 
-        <h2>prepend date to each stream line</h2>
-
-        <a href="/viewer.html?file=/bash/dlogger.sh">/viewer.html?file=/bash/dlogger.sh</a>
-        <script type="editor" data-lang="sh">
-
-          # latest solution
-
-          cat <<EEE > dlogger.sh
-          #!/bin/bash
-          while IFS= read -r line; do
-            printf '[%s %s %s]%s\n' "\$(date '+%Y-%m-%d %H:%M:%S')" "\$1" "\$2" "\$line"
-          done
-          EEE
-
-
-          # then call
-          rm -rf log.log | true
-
-          node -e "
-          const {EOL} = require('os');
-          let k = 5;
-          (function loop() {
-            if (k !== 0) {
-              setTimeout(loop, 1000);
-            }
-            process.stdout.write('stdout: ' + k + EOL);
-            process.stderr.write('stderr: ' + k + EOL);
-            k -= 1;
-          }());
-          " 1> >(/bin/bash dlogger.sh o devserver >> log.log) 2> >(/bin/bash dlogger.sh e devserver >> log.log)
-
-
-          # older solution
-          node -e "
-          const {EOL} = require('os');
-          let k = 5;
-          (function loop() {
-            if (k !== 0) {
-              setTimeout(loop, 1000);
-            }
-            process.stdout.write('stdout: ' + k + EOL);
-            process.stderr.write('stderr: ' + k + EOL);
-            k -= 1;
-          }());
-          " |& while IFS= read -r line; do printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S') process" "$line"; done
-
-                # from: https://unix.stackexchange.com/a/26729
-        </script>
-
         <h2>left pad leftPad</h2>
         <script type="editor" data-lang="sh">
           turns '30' into '00000030'
