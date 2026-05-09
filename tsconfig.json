@@ -11,6 +11,6 @@
     "rootDir": "./",
     "allowJs": false
   },
-  "include": ["**/module*.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules"]
 }

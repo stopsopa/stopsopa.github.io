@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@playwright/test": "1.59.1",
+    "@types/detect-node": "^2.0.2",
     "@types/express": "^5.0.6",
     "@types/gitignore-parser": "^0.0.3",
     "@types/lodash": "^4.17.24",

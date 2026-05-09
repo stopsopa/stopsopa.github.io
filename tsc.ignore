@@ -1,25 +1,22 @@
 # for tsc.sh
 
 tsc.ignore.ts
-
-
-
 node_modules
+
 es.ts
-tsc.ignore.ts
 bash/tee.ts
 vitest.config.ts
 esbuild.ts
+pages/typescript/node/transform-types.ts
+pages/typescript/node/lib.ts
+pages/typescript/node/tstest.ts
+scripts/template.ts
+scripts/template.v2.ts
+server-template.ts
+bash/fs/relative.ts
 
-# server-template.ts
-# bash/fs/relative.ts
-# scripts/template.ts
-# scripts/template.v2.ts
 # pages/online_services/generator/index.ts
 # pages/js/flipget/dataFactory.ts
-# pages/typescript/node/transform-types.ts
-# pages/typescript/node/lib.ts
-# pages/typescript/node/tstest.ts
 # pages/bookmarklets/gmail/extract.ts
 # pages/node/libs/lib.ts
 # pages/node/libs/tstest.ts
