@@ -92,9 +92,7 @@ time /bin/bash scripts/template.sh
 time node node_modules/envprocessor/dist/esm/cli.js --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
 cp node_modules/envprocessor/dist/esm/env.js public/env.js
 
-time node esbuild-entries.js
-
-time /bin/bash esbuild-node.sh
+time /bin/bash bundle.sh bundle.ignore
 
 time /bin/bash .github/ytlinksfix.sh
 

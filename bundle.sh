@@ -22,6 +22,9 @@ EEE
   exit 1
 fi
 
+rm -rf dist/
+mkdir -p dist/
+
 find . -type d \( \
        -name node_modules \
     -o -name .git \

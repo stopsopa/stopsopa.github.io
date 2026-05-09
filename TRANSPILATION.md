@@ -1,13 +1,12 @@
-
 There are few ways typescript is treated here
 
 # transpile.sh
 
-This is just for finding *.ts files and transpiling each file right next to *.js
+This is just for finding _.ts files and transpiling each file right next to _.js
 
 # bundle.sh
 
-To find all *.entry.js & *.entry.jsx and transpiling to:
+To find all _.entry.js & _.entry.jsx and transpiling to:
 
 /dist/[name].bundle.js
 /dist/[name].bundle.css
@@ -24,25 +23,3 @@ Is more flexible which can switch between transpiling and bundling for special c
 See
 pages/bash/xx/xx.node.cjs
 that is good example how to override esbuild setup for individual files
-
-
-# TODO
-modify bundle.sh  to take *.entry.ts too
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
