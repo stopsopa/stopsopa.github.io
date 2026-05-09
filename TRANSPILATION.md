@@ -25,14 +25,11 @@ See
 pages/bash/xx/xx.node.cjs
 that is good example how to override esbuild setup for individual files
 
-# esbuild-node.sh
-
-There is one more transpiler just for one use case to work with node.
 
 # TODO
 modify bundle.sh  to take *.entry.ts too
 
-remove esbuild-entries.js
+
 
 
 

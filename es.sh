@@ -19,7 +19,7 @@ find . -type d \( \
     -o -name .opencode \
 \) -prune \
 -o -type f \
-\( -name '*.ts' -o -name "*.node.cjs" \) \
+\( -name '*.ts' -o -name "*.node.js" -o -name "*.node.cjs" -o -name "*.node.mjs" \) \
 -print \
 | NODE_OPTIONS="" node gitignore.js es.ignore \
 | DEBUG=true /bin/bash ts.sh es.ts --produce-gitignore --update
