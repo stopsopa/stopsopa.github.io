@@ -1,4 +1,7 @@
 
+# 
+# see TRANSPILATION.md
+# 
 # bundles all files "*.node.js" or "*.node.cjs" or "*.node.mjs"
 # and processes it to xx.node.bundled.gitignored.js
 # and then it copies each of xx.node.bundled.gitignored.js to xx.node.bundled.gitignored.cjs right next to it

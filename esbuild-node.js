@@ -1,3 +1,6 @@
+// 
+// see TRANSPILATION.md
+// 
 // This script bundles files matching *.node.[js|cjs|mjs] using esbuild.
 // The list of files to process is passed as a text file path in the first argument.
 //
