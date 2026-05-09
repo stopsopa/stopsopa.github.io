@@ -221,14 +221,14 @@
           ----
 
           some params function from tsconfig.base.json:
-          
-          rootDir: Decide WHERE files go in outDir.          
+
+          rootDir: Decide WHERE files go in outDir.
             It "crop" common path from source files.
             If rootDir is './':
               select.ts -> dist/select.js
               composition/Manager.ts -> dist/composition/Manager.js
             If rootDir was 'composition':
-              composition/Manager.ts -> dist/Manager.js (path before Manager.ts gone).     
+              composition/Manager.ts -> dist/Manager.js (path before Manager.ts gone).
 
           'include' & 'exclude'
             TS look at 'include' -> "I want these files".
@@ -236,7 +236,6 @@
             so 'exclude' always wins
               if 'exclude' not defined Default exclude (like node_modules) still apply.
             NOTE: If you use 'files' property (explicit list), exclude cannot stop them. files is Super Win. You not use it here, so exclude keep power.
-          
         </script>
 
         <h2>Glossary</h2>
@@ -506,7 +505,7 @@
           wget --no-cache urlwizzard.schema://urlwizzard.hostnegotiated/es.ts
           wget --no-cache urlwizzard.schema://urlwizzard.hostnegotiated/es.mjs
             # NOTE: use this one because you won't run into issues with missing Semaphore.js
-            
+
           yarn add -D esbuild
           and then run:
           node es.ts

@@ -5,7 +5,6 @@
 3. **Run Backend**: `node run.js` (Benchmarks in Node & generates `versions.json`).
 4. **Run Frontend**: Open `test.html` in browser via local server (Reads `versions.json` & benchmarks in browser).
 
-
 ```
 
 cd pages/js/flipget

@@ -1,6 +1,6 @@
 /**
  * Modified by Claude to return unbind function
- * 
+ *
  * During works on the project https://github.com/stopsopa/images
  */
 /**

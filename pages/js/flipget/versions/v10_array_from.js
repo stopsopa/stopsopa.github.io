@@ -1,18 +1,17 @@
 const flipget = (function (c) {
-    for (var i in c)
-        c[c[i]] = i;
-    return function (s) {
-        return Array.from(s, char => c[char] || char).join('');
-    };
+  for (var i in c) c[c[i]] = i;
+  return function (s) {
+    return Array.from(s, (char) => c[char] || char).join("");
+  };
 })({
-    ' ' : '.',
-    '"' : '!',
-    ':' : '-',
-    '{' : '(',
-    '}' : ")",
-    '?' : "_",
-    '&' : "~",
-    ',' : "*"
+  " ": ".",
+  '"': "!",
+  ":": "-",
+  "{": "(",
+  "}": ")",
+  "?": "_",
+  "&": "~",
+  ",": "*",
 });
 
 export default flipget;

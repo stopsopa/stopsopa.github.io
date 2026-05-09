@@ -1,151 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flipget Benchmark</title>
     <style>
-        body { 
-            font-family: monospace; 
-            background: #1e1e1e; 
-            color: #d4d4d4; 
-            margin: 0;
-            padding: 20px; 
-        }
-        h1 { border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-        
-        #browser-logs {
-            background: #252526;
-            padding: 15px;
-            border-radius: 4px;
-            border: 1px solid #333;
-            margin-bottom: 20px;
-            font-size: 12px;
-            white-space: pre;
-        }
+      body {
+        font-family: monospace;
+        background: #1e1e1e;
+        color: #d4d4d4;
+        margin: 0;
+        padding: 20px;
+      }
+      h1 {
+        border-bottom: 1px solid #333;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
 
-        .reports-container {
-            display: flex;
-            gap: 20px;
-        }
-        .report-column {
-            flex: 1;
-            min-width: 0;
-            background: #252526;
-            padding: 15px;
-            border-radius: 4px;
-            border: 1px solid #333;
-        }
-        .report-column h2 {
-            margin-top: 0;
-            font-size: 1.1em;
-            color: #61afef;
-            border-bottom: 1px solid #333;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-        }
+      #browser-logs {
+        background: #252526;
+        padding: 15px;
+        border-radius: 4px;
+        border: 1px solid #333;
+        margin-bottom: 20px;
+        font-size: 12px;
+        white-space: pre;
+      }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-        th, td {
-            border: 1px solid #444;
-            padding: 8px;
-            text-align: left;
-        }
-        th { background: #333; }
-        a { color: #61afef; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+      .reports-container {
+        display: flex;
+        gap: 20px;
+      }
+      .report-column {
+        flex: 1;
+        min-width: 0;
+        background: #252526;
+        padding: 15px;
+        border-radius: 4px;
+        border: 1px solid #333;
+      }
+      .report-column h2 {
+        margin-top: 0;
+        font-size: 1.1em;
+        color: #61afef;
+        border-bottom: 1px solid #333;
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+      }
 
-        pre.raw-report {
-            margin: 0;
-            font-size: 12px;
-            overflow-x: auto;
-            color: #98c379;
-            white-space: pre;
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      th,
+      td {
+        border: 1px solid #444;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background: #333;
+      }
+      a {
+        color: #61afef;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      pre.raw-report {
+        margin: 0;
+        font-size: 12px;
+        overflow-x: auto;
+        color: #98c379;
+        white-space: pre;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Flipget Benchmark</h1>
-    
+
     <pre id="browser-logs">Loading progress...</pre>
 
     <div class="reports-container">
-        <div class="report-column">
-            <h2>Browser Summary</h2>
-            <div id="browser-table-container">Waiting for benchmark...</div>
-        </div>
-        <div class="report-column">
-            <h2>Server Summary (Last Run)</h2>
-            <pre id="server-report" class="raw-report">Loading server-report.txt...</pre>
-        </div>
+      <div class="report-column">
+        <h2>Browser Summary</h2>
+        <div id="browser-table-container">Waiting for benchmark...</div>
+      </div>
+      <div class="report-column">
+        <h2>Server Summary (Last Run)</h2>
+        <pre id="server-report" class="raw-report">Loading server-report.txt...</pre>
+      </div>
     </div>
 
     <script type="module">
-        import { runBenchmark } from './benchmark-runner.js';
+      import { runBenchmark } from "./benchmark-runner.js";
 
-        const logsEl = document.getElementById('browser-logs');
-        const serverReportEl = document.getElementById('server-report');
-        const browserTableContainer = document.getElementById('browser-table-container');
-        
-        function log(msg) {
-            if (logsEl.textContent === 'Loading progress...') logsEl.textContent = '';
-            logsEl.textContent += msg + '\n';
-            logsEl.scrollTop = logsEl.scrollHeight;
+      const logsEl = document.getElementById("browser-logs");
+      const serverReportEl = document.getElementById("server-report");
+      const browserTableContainer = document.getElementById("browser-table-container");
+
+      function log(msg) {
+        if (logsEl.textContent === "Loading progress...") logsEl.textContent = "";
+        logsEl.textContent += msg + "\n";
+        logsEl.scrollTop = logsEl.scrollHeight;
+      }
+
+      async function fetchServerReport() {
+        try {
+          const res = await fetch("server-report.txt?" + Date.now());
+          if (!res.ok) throw new Error("server-report.txt not found");
+          const text = await res.text();
+          serverReportEl.textContent = text;
+        } catch (e) {
+          serverReportEl.textContent = "❌ Could not load server-report.txt.\nRun `node run.js` to generate it.";
+        }
+      }
+
+      async function run() {
+        // Parallel fetch of server report
+        const serverReportPromise = fetchServerReport();
+
+        log("Fetching versions.json...");
+
+        let files = [];
+        try {
+          const res = await fetch("versions.json?" + Date.now());
+          if (!res.ok) throw new Error("versions.json not found");
+          files = await res.json();
+        } catch (e) {
+          log("❌ Failed to load versions.json. Run `node run.js` first.");
+          return;
         }
 
-        async function fetchServerReport() {
-            try {
-                const res = await fetch('server-report.txt?' + Date.now());
-                if (!res.ok) throw new Error('server-report.txt not found');
-                const text = await res.text();
-                serverReportEl.textContent = text;
-            } catch (e) {
-                serverReportEl.textContent = '❌ Could not load server-report.txt.\nRun `node run.js` to generate it.';
-            }
+        log(`Starting benchmark... Versions found: ${files.length}\n`);
+
+        const results = [];
+        for (const file of files) {
+          const { default: flipget } = await import(`./versions/${file}`);
+
+          const result = await runBenchmark(file, flipget, log, () =>
+            performance.memory ? performance.memory.usedJSHeapSize : 0
+          );
+          results.push(result);
+
+          await new Promise((r) => setTimeout(r, 10));
         }
+        log("Done.");
 
-        async function run() {
-            // Parallel fetch of server report
-            const serverReportPromise = fetchServerReport();
+        results.sort((a, b) => a.time - b.time);
 
-            log('Fetching versions.json...');
-            
-            let files = [];
-            try {
-                const res = await fetch('versions.json?' + Date.now());
-                if (!res.ok) throw new Error('versions.json not found');
-                files = await res.json();
-            } catch(e) {
-                log('❌ Failed to load versions.json. Run `node run.js` first.');
-                return;
-            }
-
-            log(`Starting benchmark... Versions found: ${files.length}\n`);
-
-            const results = [];
-            for (const file of files) {
-                const { default: flipget } = await import(`./versions/${file}`);
-                
-                const result = await runBenchmark(
-                    file, 
-                    flipget, 
-                    log,
-                    () => performance.memory ? performance.memory.usedJSHeapSize : 0
-                );
-                results.push(result);
-                
-                await new Promise(r => setTimeout(r, 10));
-            }
-            log('Done.');
-            
-            results.sort((a, b) => a.time - b.time);
-            
-            const table = document.createElement('table');
-            table.innerHTML = `
+        const table = document.createElement("table");
+        table.innerHTML = `
                 <thead>
                     <tr>
                         <th>Script Name</th>
@@ -155,27 +164,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    ${results.map(r => `
+                    ${results
+                      .map(
+                        (r) => `
                         <tr>
                             <td><a href="versions/${r.name}" target="_blank">${r.name}</a></td>
                             <td>${r.time.toFixed(2)}</td>
-                            <td>${r.memory !== null ? (r.memory / 1024 / 1024).toFixed(2) : 'N/A'}</td>
-                            <td>${r.pass ? '✅' : '❌'}</td>
+                            <td>${r.memory !== null ? (r.memory / 1024 / 1024).toFixed(2) : "N/A"}</td>
+                            <td>${r.pass ? "✅" : "❌"}</td>
                         </tr>
-                    `).join('')}
+                    `
+                      )
+                      .join("")}
                 </tbody>
             `;
-            
-            browserTableContainer.innerHTML = '';
-            browserTableContainer.appendChild(table);
-            await serverReportPromise;
-        }
 
-        try {
-            await run();
-        } catch (e) {
-            log(e.toString());
-        }
+        browserTableContainer.innerHTML = "";
+        browserTableContainer.appendChild(table);
+        await serverReportPromise;
+      }
+
+      try {
+        await run();
+      } catch (e) {
+        log(e.toString());
+      }
     </script>
-</body>
+  </body>
 </html>

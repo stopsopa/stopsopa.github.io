@@ -1,11 +1,11 @@
-// 
+//
 // see TRANSPILATION.md
-// 
+//
 // This script bundles files matching *.node.[js|cjs|mjs] using esbuild.
 // The list of files to process is passed as a text file path in the first argument.
 //
 // WHY THIS SCRIPT EXISTS:
-// Raw esbuild typically outputs .js files. However, for Node.js scripts, 
+// Raw esbuild typically outputs .js files. However, for Node.js scripts,
 // the extension (.cjs or .mjs) is critical for correct module resolution.
 //
 // Example Transformation:
@@ -14,7 +14,7 @@
 //   Script:  copies .js to ./pages/bash/xx/xx.node.bundled.gitignored.cjs
 //            (Note: This results in TWO files: the .js bundle and the .cjs copy)
 //
-// Without this script, Node.js might fail to run the bundle if it misinterprets 
+// Without this script, Node.js might fail to run the bundle if it misinterprets
 // the module type (ESM vs CJS). This script keeps the target extension in sync.
 //
 // Usage:
@@ -22,7 +22,6 @@
 //   node esbuild-node.js var/esbuild.txt --watch
 //
 // Typically called by: /bin/bash esbuild-node.sh [watch]
-
 
 import * as esbuild from "esbuild";
 

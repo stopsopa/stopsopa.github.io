@@ -1,23 +1,22 @@
-
-import { readFileSync, writeFileSync } from 'node:fs';
-import { createInterface } from 'node:readline';
+import { readFileSync, writeFileSync } from "node:fs";
+import { createInterface } from "node:readline";
 
 const rl = createInterface({
   input: process.stdin,
   terminal: false,
 });
 
-rl.on('line', (line) => {
+rl.on("line", (line) => {
   const filePath = line.trim();
   if (!filePath) return;
 
   try {
-    let content = readFileSync(filePath, 'utf8');
+    let content = readFileSync(filePath, "utf8");
     let changed = false;
 
     // Replace JS
     content = content.replace(/\/dist\/([^"]+)\.bundle\.js/g, (match, name) => {
-      if (name.endsWith('.entry')) {
+      if (name.endsWith(".entry")) {
         return match;
       }
       changed = true;
@@ -26,7 +25,7 @@ rl.on('line', (line) => {
 
     // Replace CSS
     content = content.replace(/\/dist\/([^"]+)\.bundle\.css/g, (match, name) => {
-      if (name.endsWith('.entry')) {
+      if (name.endsWith(".entry")) {
         return match;
       }
       changed = true;

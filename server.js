@@ -83,7 +83,8 @@ app.post("/api/upload-image", upload.single("image"), async (req, res) => {
     if (!name) name = "image";
 
     const sizeConfigPath = path.join(__dirname, "homepage", "size.json");
-    let targetWidth = 100, targetHeight = 100;
+    let targetWidth = 100,
+      targetHeight = 100;
     if (fs.existsSync(sizeConfigPath)) {
       const config = JSON.parse(fs.readFileSync(sizeConfigPath, "utf-8"));
       if (config.width) targetWidth = config.width;
@@ -100,8 +101,8 @@ app.post("/api/upload-image", upload.single("image"), async (req, res) => {
 
     await sharp(req.file.buffer)
       .resize(targetWidth, targetHeight, {
-        fit: 'cover',
-        position: 'center'
+        fit: "cover",
+        position: "center",
       })
       .png()
       .toFile(absolutePath);
@@ -111,9 +112,8 @@ app.post("/api/upload-image", upload.single("image"), async (req, res) => {
     res.json({
       success: true,
       relativePath: relativePath,
-      absolutePath: absolutePath
+      absolutePath: absolutePath,
     });
-
   } catch (err) {
     console.error("Image processing error:", err);
     res.status(500).json({ error: err.message });

@@ -193,7 +193,7 @@ async function stripTypes(filePath: string): Promise<{ outPath: string | undefin
           .replace(/(@es\.ts \*\/\s*)/g, `@es.ts *${SLASH}`);
 
         writeFileSync(file.path, outputText);
-        
+
         if (!firstOutPath) {
           firstOutPath = file.path;
         }
@@ -340,7 +340,7 @@ const rl = createInterface({
 let processedCount: number = 0;
 let hasError: boolean = false;
 const gitignorePaths: string[] = []; // paths to produce in stdout
-const updatePaths: string[] = [];    // paths to actually update in .gitignore
+const updatePaths: string[] = []; // paths to actually update in .gitignore
 const semaphore = new Semaphore(ES_PARALLEL);
 const activeTasks = new Set<Promise<void>>();
 
@@ -361,13 +361,11 @@ for await (const line of rl) {
             console.log(`${buildMode === "bundle" ? "Bundled" : "Transpiled"} (esbuild): ${file} -> ${outPath}`);
           }
 
-          const localArgs = Array.isArray(config.cliarguments) 
-            ? config.cliarguments 
-            : args;
-          
+          const localArgs = Array.isArray(config.cliarguments) ? config.cliarguments : args;
+
           const localProduceGitignore = localArgs.includes("--produce-gitignore");
           const localUpdateGitignore = localArgs.includes("--update");
-          
+
           if (localProduceGitignore) {
             const relPath = relative(gitRoot, outPath);
             gitignorePaths.push(relPath);
