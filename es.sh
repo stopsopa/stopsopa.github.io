@@ -8,15 +8,18 @@
 
 set -e 
 
-export NODE_OPTIONS=""
 
-find . \
-    -path './node_modules' -prune -o \
-    -path './.git' -prune -o \
-    -path './.opencode' -prune -o \
-    -path './noprettier' -prune -o \
-    -path './scripts' -prune -o \
-    -type f -name '*.ts' \
-    -print \
-    | node gitignore.js es.ignore \
-    | DEBUG=true /bin/bash ts.sh es.ts --produce-gitignore --update
+
+find . -type d \( \
+       -name node_modules \
+    -o -name .git \
+    -o -name coverage \
+    -o -name noprettier \
+    -o -name scripts \
+    -o -name .opencode \
+\) -prune \
+-o -type f \
+\( -name '*.ts' -o -name "*.node.cjs" \) \
+-print \
+| NODE_OPTIONS="" node gitignore.js es.ignore \
+| DEBUG=true /bin/bash ts.sh es.ts --produce-gitignore --update

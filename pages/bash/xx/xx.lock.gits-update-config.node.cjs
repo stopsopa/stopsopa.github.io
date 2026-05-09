@@ -1,3 +1,24 @@
+/** @es.ts 
+{
+  mode: "bundle",
+  bundle: true,
+  outdir: ".",
+  outbase: ".",
+  entryNames: "[dir]/[name].bundled.gitignored",
+  platform: "node",
+  "format": "cjs",
+  target: "node12.16.3",
+  logLevel: "info",
+  logOverride: {
+    "direct-eval": "silent",
+  },
+  outExtension: {
+    ".js": ".cjs",
+  },
+  options: {
+  }
+}
+@es.ts */
 /**
  *  xx --lock
  *  node "${_DIR}/xx.lock.gits-update-config.node.bundled.gitignored.cjs" "${GITIGNORE}" "${_PWD}/.git/.gitignore_local"

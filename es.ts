@@ -19,12 +19,17 @@ import Semaphore from "./pages/node/semaphore/Semaphore.ts";
 
 const th = (msg: string) => new Error(`es.ts error: ${msg}`);
 
-interface Config extends Pick<esbuild.BuildOptions, "target" | "charset" | "minify" | "bundle" | "format"> {
+interface InternalConfig {
+  target: string;
   loader: esbuild.Loader;
+  format: "esm" | "cjs" | "iife";
+  charset: "utf8" | "ascii";
+  minify: boolean;
+  bundle: boolean;
   extension: string;
 }
 
-const CONFIG: Config = {
+const CONFIG: InternalConfig = {
   target: "esnext",
   loader: "ts",
   format: "esm",
@@ -92,8 +97,7 @@ async function stripTypes(filePath: string): Promise<string | undefined> {
     const startMarker = "/** @es.ts";
     const endMarker = `@es.ts *${SLASH}`;
 
-    let buildMode: "bundle" | "transform" = CONFIG.bundle ? "bundle" : "transform";
-    let localOptions: any = { ...CONFIG };
+    let config: any = {};
 
     const startIndex = source.indexOf(startMarker);
     const endIndex = source.indexOf(endMarker);
@@ -102,40 +106,53 @@ async function stripTypes(filePath: string): Promise<string | undefined> {
       const configStr = source.substring(startIndex + startMarker.length, endIndex).trim();
       try {
         // Using Function to safely parse the object literal (allows unquoted keys)
-        const config = new Function(`return (${configStr})`)();
-        if (config.mode) {
-          if (config.mode !== "bundle" && config.mode !== "transform") {
-            throw th(`Invalid mode "${config.mode}" in ${filePath}. Only "bundle" or "transform" are allowed.`);
-          }
-          buildMode = config.mode;
-        }
-        if (config.extension) {
-          localOptions.extension = config.extension;
-        }
-        if (config.options) {
-          localOptions = { ...localOptions, ...config.options };
-        }
+        config = new Function(`return (${configStr})`)();
       } catch (e: any) {
-        if (e.message.includes('Invalid mode "')) {
-          throw e;
-        }
         console.error(`Error parsing @es.ts config in ${filePath}: ${e.message}`);
       }
     }
 
-    const outPath: string = join(dirname(filePath), basename(filePath).replace(/\.ts$/, localOptions.extension));
+    const buildMode = config.mode || (CONFIG.bundle ? "bundle" : "transform");
+    const extension = config.extension || CONFIG.extension;
+    const loader = config.loader || CONFIG.loader;
 
-    const options: esbuild.BuildOptions = {
-      entryPoints: [filePath],
+    // 1. Prepare base options from defaults
+    let baseOptions: esbuild.BuildOptions = {
+      target: CONFIG.target as any,
+      charset: CONFIG.charset,
+      minify: CONFIG.minify,
       bundle: buildMode === "bundle",
-      write: false,
-      target: localOptions.target as any,
-      charset: localOptions.charset,
-      minify: localOptions.minify,
-      legalComments: "inline",
+      format: CONFIG.format,
       platform: "node",
-      format: localOptions.format,
+      legalComments: "inline",
+    };
+
+    // 2. If 'setup' is provided, it replaces the base options
+    if (config.setup) {
+      baseOptions = { ...config.setup };
+    }
+
+    // 3. Merge top-level config fields (excluding tool-specific ones)
+    const { mode, extension: _ext, setup, options, ...rest } = config;
+    const mergedOptions: any = {
+      ...baseOptions,
+      ...rest,
+    };
+
+    // Allow unsetting defaults by passing undefined
+    Object.keys(mergedOptions).forEach((key) => {
+      if (mergedOptions[key] === undefined) {
+        delete mergedOptions[key];
+      }
+    });
+
+    // 4. Force essential options and inject plugin
+    const finalOptions: esbuild.BuildOptions = {
+      ...mergedOptions,
+      entryPoints: [filePath],
+      write: false,
       plugins: [
+        ...(mergedOptions.plugins || []),
         {
           name: "protect-comments",
           setup(build) {
@@ -144,35 +161,49 @@ async function stripTypes(filePath: string): Promise<string | undefined> {
               const contents = content
                 .replace(/\/\*\*/g, "/*!") // JSDoc -> Legal block
                 .replace(/\/\/ /g, "//! "); // Single line -> Legal line
-              return { contents, loader: localOptions.loader };
+              return { contents, loader };
             });
           },
         },
       ],
     };
 
+    // 5. Handle output path defaulting if not specified
+    if (!finalOptions.outfile && !finalOptions.outdir) {
+      finalOptions.outfile = join(dirname(filePath), basename(filePath).replace(/\.ts$/, extension));
+    }
+
     if (env.DEBUG) {
-      console.log(JSON.stringify(options, null, 2));
+      console.log(`Final esbuild options for ${filePath}:`);
+      console.log(JSON.stringify(finalOptions, null, 2));
     }
 
-    const result = await esbuild.build(options);
+    const result = await esbuild.build(finalOptions);
 
-    if (result.outputFiles && result.outputFiles[0]) {
-      let outputText: string = result.outputFiles[0].text;
+    let firstOutPath: string | undefined;
 
-      // Restore protected comments
-      outputText = outputText
-        .replace(/\/\*\!/g, "/**")
-        .replace(/\/\/! /g, "// ")
-        .replace(/(@es\.ts \*\/\s*)/g, `@es.ts *${SLASH}`);
+    if (result.outputFiles) {
+      for (const file of result.outputFiles) {
+        let outputText: string = file.text;
 
-      writeFileSync(outPath, outputText);
+        // Restore protected comments
+        outputText = outputText
+          .replace(/\/\*\!/g, "/**")
+          .replace(/\/\/! /g, "// ")
+          .replace(/(@es\.ts \*\/\s*)/g, `@es.ts *${SLASH}`);
+
+        writeFileSync(file.path, outputText);
+        
+        if (!firstOutPath) {
+          firstOutPath = file.path;
+        }
+      }
     }
 
-    if (!PRODUCE_GITIGNORE) {
-      console.log(`${buildMode === "bundle" ? "Bundled" : "Transpiled"} (esbuild): ${filePath} -> ${outPath}`);
+    if (!PRODUCE_GITIGNORE && firstOutPath) {
+      console.log(`${buildMode === "bundle" ? "Bundled" : "Transpiled"} (esbuild): ${filePath} -> ${firstOutPath}`);
     }
-    return outPath;
+    return firstOutPath;
   } catch (err: unknown) {
     hasError = true;
     const message = err instanceof Error ? err.message : String(err);
@@ -267,12 +298,19 @@ Description:
     Add this block to a .ts file to override default behavior:
 /** @es.ts 
 {
-    mode: "bundle|transform",
-    extension: ".js|.mjs",
-    options: {
-      target: "esnext", loader: "ts", 
-      charset: "utf8", minify: false
-    }
+    // Tool-specific keys:
+    mode: "bundle|transform", // optional, shorthand for bundle: true/false
+    extension: ".js|.mjs",    // optional, default output extension
+    setup: { ... },           // optional, if present replaces all default esbuild options
+
+    // Any other keys are treated as esbuild BuildOptions and merged with defaults:
+    target: "esnext", 
+    minify: false,
+    platform: "node",
+    // ...
+    
+    // Use 'undefined' to unset a default and let esbuild decide:
+    minify: undefined,
 }
 @es.ts *${SLASH}
   
@@ -281,7 +319,7 @@ Description:
     to esbuild.transform (input and options) are dumped to the 
     console for each processed file.
   
-Built-in Config:
+Built-in Config (generated internally - so it is true setup which will be really used):
 ${JSON.stringify(CONFIG, null, 2)}
 `);
 }
@@ -311,8 +349,9 @@ for await (const line of rl) {
     // Start the task and keep track of it in the activeTasks Set
     const task: Promise<void> = (async () => {
       try {
-        const outPath = await stripTypes(file);
+        let outPath = await stripTypes(file);
         if (PRODUCE_GITIGNORE && outPath) {
+          outPath = relative(gitRoot, outPath);
           gitignorePaths.push(outPath);
         }
       } finally {

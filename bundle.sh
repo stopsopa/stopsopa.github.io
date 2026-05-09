@@ -29,8 +29,8 @@ find . -type d \( \
     -o -name noprettier \
     -o -name .opencode \
 \) -prune \
--o -type \
-f \( -name "*.entry.js" -o -name "*.entry.jsx" \) \
+-o -type f \
+\( -name "*.entry.js" -o -name "*.entry.jsx" \) \
 -print \
 | node gitignore.js "${IGNORE_FILE}" \
 | npx tsx bundle.ts "$@"

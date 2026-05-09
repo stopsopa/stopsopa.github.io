@@ -1,3 +1,22 @@
+/** @es.ts
+{
+  mode: "bundle",
+  bundle: true,
+  outdir: ".",
+  outbase: ".",
+  entryNames: "[dir]/[name].bundled.gitignored",
+  platform: "node",
+  "format": "cjs",
+  target: "node12.16.3",
+  logLevel: "info",
+  logOverride: {
+    "direct-eval": "silent",
+  },
+  outExtension: {
+    ".js": ".cjs",
+  },
+}
+@es.ts */
 /**
  * this script is only responsible for generating
  * XX_GENERATED=".git/xx_generated.sh"

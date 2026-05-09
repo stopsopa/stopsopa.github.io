@@ -28,6 +28,9 @@ There is one more transpiler just for one use case to work with node.
 # TODO
 modify bundle.sh  to take *.entry.ts too
 
+remove esbuild-entries.js
+
+
 
 
 
