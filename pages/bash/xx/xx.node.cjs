@@ -15,6 +15,7 @@
   outExtension: {
     ".js": ".cjs",
   },
+  "cliarguments": ["--produce-gitignore"], // override global arguments for this file
 }
 @es.ts */
 /**

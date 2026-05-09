@@ -91,7 +91,7 @@ if (!PRODUCE_GITIGNORE) {
 
 var SLASH = "/";
 
-async function stripTypes(filePath: string): Promise<string | undefined> {
+async function stripTypes(filePath: string): Promise<{ outPath: string | undefined; config: any } | undefined> {
   try {
     const source = readFileSync(filePath, "utf8");
     const startMarker = "/** @es.ts";
@@ -133,7 +133,7 @@ async function stripTypes(filePath: string): Promise<string | undefined> {
     }
 
     // 3. Merge top-level config fields (excluding tool-specific ones)
-    const { mode, extension: _ext, setup, options, ...rest } = config;
+    const { mode, extension: _ext, setup, options, cliarguments, ...rest } = config;
     const mergedOptions: any = {
       ...baseOptions,
       ...rest,
@@ -200,10 +200,10 @@ async function stripTypes(filePath: string): Promise<string | undefined> {
       }
     }
 
-    if (!PRODUCE_GITIGNORE && firstOutPath) {
-      console.log(`${buildMode === "bundle" ? "Bundled" : "Transpiled"} (esbuild): ${filePath} -> ${firstOutPath}`);
-    }
-    return firstOutPath;
+    return {
+      outPath: firstOutPath,
+      config,
+    };
   } catch (err: unknown) {
     hasError = true;
     const message = err instanceof Error ? err.message : String(err);
@@ -311,6 +311,9 @@ Description:
     
     // Use 'undefined' to unset a default and let esbuild decide:
     minify: undefined,
+
+    // Overriding command line arguments:
+    "cliarguments": ["--produce-gitignore"], // override global arguments for this file
 }
 @es.ts *${SLASH}
   
@@ -336,7 +339,8 @@ const rl = createInterface({
 
 let processedCount: number = 0;
 let hasError: boolean = false;
-const gitignorePaths: string[] = [];
+const gitignorePaths: string[] = []; // paths to produce in stdout
+const updatePaths: string[] = [];    // paths to actually update in .gitignore
 const semaphore = new Semaphore(ES_PARALLEL);
 const activeTasks = new Set<Promise<void>>();
 
@@ -349,10 +353,28 @@ for await (const line of rl) {
     // Start the task and keep track of it in the activeTasks Set
     const task: Promise<void> = (async () => {
       try {
-        let outPath = await stripTypes(file);
-        if (PRODUCE_GITIGNORE && outPath) {
-          outPath = relative(gitRoot, outPath);
-          gitignorePaths.push(outPath);
+        const result = await stripTypes(file);
+        if (result && result.outPath) {
+          const { outPath, config } = result;
+          const buildMode = config.mode || (CONFIG.bundle ? "bundle" : "transform");
+          if (!PRODUCE_GITIGNORE) {
+            console.log(`${buildMode === "bundle" ? "Bundled" : "Transpiled"} (esbuild): ${file} -> ${outPath}`);
+          }
+
+          const localArgs = Array.isArray(config.cliarguments) 
+            ? config.cliarguments 
+            : args;
+          
+          const localProduceGitignore = localArgs.includes("--produce-gitignore");
+          const localUpdateGitignore = localArgs.includes("--update");
+          
+          if (localProduceGitignore) {
+            const relPath = relative(gitRoot, outPath);
+            gitignorePaths.push(relPath);
+            if (localUpdateGitignore) {
+              updatePaths.push(relPath);
+            }
+          }
         }
       } finally {
         semaphore.release();
@@ -372,7 +394,7 @@ if (PRODUCE_GITIGNORE && gitignorePaths.length > 0) {
   let pathsToLog = gitignorePaths;
 
   if (UPDATE_GITIGNORE) {
-    pathsToLog = updateGitignoreFile(gitRoot, startMarker, endMarker, gitignorePaths);
+    pathsToLog = updateGitignoreFile(gitRoot, startMarker, endMarker, updatePaths);
   }
 
   const content = [startMarker, ...pathsToLog.sort(), endMarker].join("\n");

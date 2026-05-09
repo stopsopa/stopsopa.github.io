@@ -21,6 +21,10 @@ It is generally looking into all files it can see except obvious exclusions like
 
 Is more flexible which can switch between transpiling and bundling for special cases
 
+See
+pages/bash/xx/xx.node.cjs
+that is good example how to override esbuild setup for individual files
+
 # esbuild-node.sh
 
 There is one more transpiler just for one use case to work with node.
