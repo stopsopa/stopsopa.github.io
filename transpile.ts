@@ -9,11 +9,16 @@ const th = (msg: string) => new Error(`transpile.ts error: ${msg}`);
 
 const watch = process.argv.includes("--watch");
 
-const ignoreFile = "transpile.ignore";
-if (!fs.existsSync(ignoreFile)) {
-  throw th(`${ignoreFile} doesn't exist`);
+const ignoreFileArg = process.argv[2];
+
+let ignore: any = { accepts: () => true };
+
+if (ignoreFileArg) {
+  if (!fs.existsSync(ignoreFileArg)) {
+    throw th(`${ignoreFileArg} doesn't exist`);
+  }
+  ignore = gitignore.compile(fs.readFileSync(ignoreFileArg, "utf8"));
 }
-const ignore = gitignore.compile(fs.readFileSync(ignoreFile, "utf8"));
 
 async function getEntryPointsFromStdin(): Promise<string[]> {
   const rl = readline.createInterface({
