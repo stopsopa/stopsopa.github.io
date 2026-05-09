@@ -1,3 +1,13 @@
+/**
+ * Lightweight utility to manage a group of radio buttons using event delegation.
+ *
+ * Features:
+ * - Event Delegation: Attaches one listener to a parent (defaults to document.body).
+ * - State Management: Can set initial value (initState) and ensures a radio is checked.
+ * - Callback: Fires `onChange(value, tool)` whenever a radio is clicked.
+ * - Programmatic Control: Returns a `tool` object to check values, list states, or unbind.
+ *
+ */
 export default function handleRadio(opt) {
   let tool;
   const {
