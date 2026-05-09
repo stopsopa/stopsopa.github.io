@@ -1,9 +1,9 @@
 
 # 
-# /bin/bash transpile.sh transpile.ignore
-# /bin/bash transpile.sh transpile.ignore --watch
+# /bin/bash bundle.sh bundle.ignore
+# /bin/bash bundle.sh bundle.ignore --watch
 # 
-# That script is responsible just for transpiling
+# That script is responsible just for bundling
 # 
 export NODE_OPTIONS=""
 
@@ -28,7 +28,7 @@ find . -type d \( \
     -o -name .opencode \
 \) -prune \
 -o -type \
-f -name "*.ts" \
+f \( -name "*.entry.js" -o -name "*.entry.jsx" \) \
 -print \
 | node gitignore.js "${IGNORE_FILE}" \
-| npx tsx transpile.ts "$@"
+| npx tsx bundle.ts "$@"

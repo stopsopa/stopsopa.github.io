@@ -1,0 +1,7 @@
+node_modules
+dist
+.git
+bundle.ts
+bundle.sh
+transpile.ts
+transpile.sh
