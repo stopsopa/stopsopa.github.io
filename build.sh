@@ -112,7 +112,7 @@ time /bin/bash .github/urlwizzard.sh
 # /bin/bash .github/toc-check.sh README.md 
 /bin/bash node_modules/.bin/markdown-toc -i README.md
 
-time /bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write . 1> >(/bin/bash bash/dlogger.sh o prettier) 2> >(/bin/bash bash/dlogger.sh e prettier)
+time /bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write . 1> >(/bin/bash bash/dlogger.sh o "prettier    ") 2> >(/bin/bash bash/dlogger.sh e "prettier    ")
 
 # this one after style_fix
 # inject special blocking code
