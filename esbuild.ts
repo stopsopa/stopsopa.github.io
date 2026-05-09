@@ -39,7 +39,9 @@ if (entryPoints.length === 0) {
   process.exit(0);
 }
 
-log(`entryPoints: 
+log(`
+
+    entryPoints: 
     ${entryPoints.join("\n    ")}
 `);
 
