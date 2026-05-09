@@ -2,6 +2,7 @@
 # Script for transpilation of *.ts files to *.js files
 # to learn more run
 # node es.ts
+# mainly used in build.sh
 
 set -e 
 
