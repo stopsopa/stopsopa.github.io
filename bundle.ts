@@ -58,8 +58,11 @@ const options: esbuild.BuildOptions = {
 if (watch) {
   const ctx = await esbuild.context(options);
   log(`watch mode: ON`);
+
+  log("exbuilddone2");
   await ctx.watch();
 } else {
-  const result = await esbuild.build(options);
+  await esbuild.build(options);
+
   log(`no watch mode: DONE`);
 }

@@ -2,7 +2,7 @@
 
 tsc.ignore.ts
 node_modules
-
+bundle.ts
 transpile.ts
 es.ts
 bash/tee.ts
