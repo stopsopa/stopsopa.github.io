@@ -10,6 +10,7 @@
  */
 export default function handleRadio(opt) {
   let tool;
+
   const {
     name,
     selectorAll = (name) => {
@@ -21,6 +22,7 @@ export default function handleRadio(opt) {
     },
     initState,
     initTrigger = false,
+    autoBind = true,
   } = opt;
 
   let { delegateParent, onChange } = opt;
@@ -41,6 +43,7 @@ export default function handleRadio(opt) {
 
   if (initState) {
     const sOne = selectorOne(name, initState);
+
     const el = delegateParent.querySelector(sOne);
 
     if (el) {
@@ -52,6 +55,7 @@ export default function handleRadio(opt) {
 
   if (!active) {
     active = delegateParent.querySelector(s);
+
     if (active) {
       active.checked = true;
     }
@@ -64,14 +68,23 @@ export default function handleRadio(opt) {
 
     if (match) {
       const v = target.value;
+
       onChange(v, tool);
     }
   };
-  delegateParent.addEventListener("click", delegateFn);
+
+  if (autoBind) {
+    delegateParent.addEventListener("click", delegateFn);
+  }
 
   tool = {
     unbind: () => {
       delegateParent.removeEventListener("click", delegateFn);
+    },
+    bind: () => {
+      delegateParent.removeEventListener("click", delegateFn); // Prevent duplicates
+
+      delegateParent.addEventListener("click", delegateFn);
     },
     list: [...delegateParent.querySelectorAll(s)].reduce((acc, el) => {
       acc.push({
@@ -79,11 +92,13 @@ export default function handleRadio(opt) {
         checked: el.checked,
         value: el.value,
       });
+
       return acc;
     }, []),
     checkByValue: (value) => {
-      const sOne = selectorOne(name, value);
-      const el = delegateParent.querySelector(sOne);
+      const selector = selectorOne(name, value);
+
+      const el = delegateParent.querySelector(selector);
 
       if (el) {
         el.checked = true;
@@ -93,6 +108,7 @@ export default function handleRadio(opt) {
 
   if (initTrigger) {
     const activeEl = delegateParent.querySelector(`${s}:checked`);
+
     if (activeEl) {
       onChange(activeEl.value, tool);
     }

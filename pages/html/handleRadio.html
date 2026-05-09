@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>handleRadio Demo</title>
+  </head>
+  <body>
+    <h1>handleRadio Demo</h1>
+
+    <div id="radio-container">
+      <label> <input type="radio" name="theme" value="light" /> Light </label>
+      <label> <input type="radio" name="theme" value="dark" /> Dark </label>
+      <label> <input type="radio" name="theme" value="system" /> System </label>
+    </div>
+
+    <hr />
+
+    <div><strong>Selected Value:</strong> <span id="current-value">None</span></div>
+
+    <hr />
+
+    <button id="btn-dark">Select Dark via Code</button>
+    <button id="btn-unbind">Unbind (Stop Listening)</button>
+    <button id="btn-bind">Bind (Start Listening)</button>
+    <span>status: <span id="status">idle</span></span>
+
+    <hr />
+
+    <h3>Tool.list output:</h3>
+    <pre id="list-output"></pre>
+
+    <script type="module">
+      import handleRadio from "./handleRadio.js";
+
+      const display = document.getElementById("current-value");
+      const listOutput = document.getElementById("list-output");
+      const container = document.getElementById("radio-container");
+
+      const tool = handleRadio({
+        name: "theme",
+        delegateParent: container,
+        initState: "system",
+        initTrigger: true,
+        autoBind: false, // this will tell not to bind automatically
+        onChange: (value, tool) => {
+          display.innerText = value;
+          console.log("Changed to:", value);
+
+          // Update the list output to show the live state
+          listOutput.innerText = JSON.stringify(
+            tool.list.map((i) => ({ value: i.value, checked: i.el.checked })),
+            null,
+            2
+          );
+        },
+      });
+
+      document.getElementById("btn-dark").addEventListener("click", () => {
+        tool.checkByValue("dark");
+        // Note: tool.checkByValue just sets checked = true,
+        // it doesn't trigger a click event, so we might need to manually update display if needed,
+        // OR the browser might trigger it depending on implementation.
+        // In handleRadio.js, the listener is on 'click'. checkByValue doesn't trigger 'click'.
+        // However, usually programmatic changes don't trigger click.
+        // Let's see if we should trigger onChange manually or if the user expects it.
+        // handleRadio.js doesn't seem to have a way to trigger onChange programmatically besides initTrigger.
+
+        // Re-render list to show change
+        listOutput.innerText = JSON.stringify(
+          tool.list.map((i) => ({ value: i.value, checked: i.el.checked })),
+          null,
+          2
+        );
+        // Since checkByValue doesn't trigger click, we manually update display here for the demo
+        display.innerText = "dark (set via code)";
+      });
+
+      document.getElementById("btn-unbind").addEventListener("click", () => {
+        tool.unbind();
+        alert("Unbound! Clicking radios won't update the display anymore.");
+      });
+
+      document.getElementById("btn-bind").addEventListener("click", () => {
+        tool.bind();
+        alert("Bound! Clicking radios will now update the display.");
+      });
+    </script>
+
+    <hr />
+
+    <section id="explanation">
+      <h2>What we are trying to achieve</h2>
+      <p>
+        This page demonstrates the usage of the <code>handleRadio.js</code> utility, which is a lightweight tool for
+        managing groups of radio buttons using <strong>event delegation</strong>.
+      </p>
+      <ul>
+        <li>
+          <strong>Efficiency:</strong> Instead of attaching listeners to every radio button, it attaches a single
+          listener to a parent element (or the <code>body</code>).
+        </li>
+        <li>
+          <strong>State Management:</strong> It can initialize the radio group with a specific value and ensures that at
+          least one radio is always selected if possible.
+        </li>
+        <li>
+          <strong>Programmatic Control:</strong> It returns a tool object that allows you to check radios by value, list
+          all radios in the group with their current states, or unbind the event listener when no longer needed.
+        </li>
+        <li>
+          <strong>Decoupling:</strong> The <code>onChange</code> callback allows you to react to user interactions in a
+          centralized way.
+        </li>
+      </ul>
+    </section>
+  </body>
+</html>
