@@ -2,7 +2,6 @@
 // for react pages mainly
 
 import esbuild from "esbuild";
-import fs from "fs";
 import path from "path";
 import { sassPlugin } from "esbuild-sass-plugin";
 import utils from "./libs/utils.js";
