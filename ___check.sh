@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# pages/bash/xx/xx.node.cjs
+
 # /bin/bash ___check.sh | tee ___check.log
 
 # see TRANSPILATION.md
