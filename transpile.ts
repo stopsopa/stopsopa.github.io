@@ -71,6 +71,6 @@ if (watch) {
   log(`watch mode: ON`);
   await ctx.watch();
 } else {
-  const result = await esbuild.build(options);
   log(`no watch mode: DONE`);
+  await esbuild.build(options);
 }
