@@ -1,4 +1,15 @@
 #!/bin/bash
+if [ "${DLOGGERN}" = "" ]; then
+  echo "dlogger.sh error: DLOGGERN is not defined";
+  exit 1
+fi
+
+# check if DLOGGERN match /^\d+$/
+if ! [[ "${DLOGGERN}" =~ ^[0-9]+$ ]]; then
+  echo "dlogger.sh error: DLOGGERN is not a number";
+  exit 1
+fi
+
 while IFS= read -r line; do
   printf '[%s %s %s]%s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$1" "$2" "$line" 
 done
