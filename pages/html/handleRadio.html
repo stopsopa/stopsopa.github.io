@@ -29,9 +29,11 @@
     <hr />
 
     <button id="btn-dark">Select Dark via Code</button>
-    <button id="btn-unbind">Unbind (Stop Listening)</button>
+    | | |
     <button id="btn-bind">Bind (Start Listening)</button>
-    <span>status: <span id="status">idle</span></span>
+    <button id="btn-unbind">Unbind (Stop Listening)</button>
+    | | |
+    <span id="status">idle</span>
 
     <hr />
 
@@ -51,18 +53,20 @@
         initState: "system",
         initTrigger: true,
         autoBind: false, // this will tell not to bind automatically
-        onChange: (value, tool) => {
+        onChange: (value, t) => {
           display.innerText = value;
           console.log("Changed to:", value);
-
-          // Update the list output to show the live state
-          listOutput.innerText = JSON.stringify(
-            tool.list.map((i) => ({ value: i.value, checked: i.el.checked })),
-            null,
-            2
-          );
+          updateListOutput(t);
         },
       });
+
+      function updateListOutput(t = tool) {
+        listOutput.innerText = JSON.stringify(
+          t.list.map((i) => ({ value: i.value, checked: i.checked })),
+          null,
+          2
+        );
+      }
 
       document.getElementById("btn-dark").addEventListener("click", () => {
         tool.checkByValue("dark");
@@ -74,12 +78,7 @@
         // Let's see if we should trigger onChange manually or if the user expects it.
         // handleRadio.js doesn't seem to have a way to trigger onChange programmatically besides initTrigger.
 
-        // Re-render list to show change
-        listOutput.innerText = JSON.stringify(
-          tool.list.map((i) => ({ value: i.value, checked: i.el.checked })),
-          null,
-          2
-        );
+        updateListOutput();
         // Since checkByValue doesn't trigger click, we manually update display here for the demo
         display.innerText = "dark (set via code)";
       });
@@ -90,6 +89,7 @@
       };
 
       updateStatus();
+      updateListOutput();
 
       document.getElementById("btn-unbind").addEventListener("click", () => {
         tool.unbind();

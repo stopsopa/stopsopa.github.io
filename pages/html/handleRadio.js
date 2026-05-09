@@ -93,15 +93,13 @@ export default function handleRadio(opt) {
     getStatus: () => {
       return isBound;
     },
-    list: [...delegateParent.querySelectorAll(s)].reduce((acc, el) => {
-      acc.push({
+    get list() {
+      return [...delegateParent.querySelectorAll(s)].map((el) => ({
         el,
         checked: el.checked,
         value: el.value,
-      });
-
-      return acc;
-    }, []),
+      }));
+    },
     checkByValue: (value) => {
       const selector = selectorOne(name, value);
 
