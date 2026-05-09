@@ -1,4 +1,28 @@
-# gitignore for es.sh
-*
-!es.ts
-!pages/node/semaphore/Semaphore.ts
+# for tsc.sh
+
+tsc.ignore.ts
+node_modules
+
+es.ts
+bash/tee.ts
+vitest.config.ts
+esbuild.ts
+pages/typescript/node/transform-types.ts
+pages/typescript/node/lib.ts
+pages/typescript/node/tstest.ts
+scripts/template.ts
+scripts/template.v2.ts
+server-template.ts
+bash/fs/relative.ts
+pages/online_services/generator/index.ts
+pages/node/env/env.ts
+pages/node/env/env.unit.ts
+pages/js/flipget/dataFactory.ts
+pages/node/semaphore/Semaphore.test.ts
+pages/node/semaphore/Semaphore.ts
+pages/node/builtin-test-runner.test.ts
+pages/node/libs/lib.ts
+pages/node/libs/tstest.ts
+
+# pages/bookmarklets/gmail/extract.ts
+# pages/children/caesar/moduleCaesarCypher.ts
