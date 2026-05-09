@@ -11,6 +11,7 @@ export function caesarCypher(offset: number, text: string): string {
     index = index + offset;
     if (index > alphaLength - 1) {
       index = index % alphaLength;
+      
     }
     if (index < 0) {
       index = index % alphaLength;

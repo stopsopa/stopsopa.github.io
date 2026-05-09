@@ -1,4 +1,9 @@
 
+# 
+# /bin/bash transpile.sh
+# /bin/bash transpile.sh --watch
+# 
+
 find . \( \
         -type d -name node_modules -prune -o \
         -type d -name .git -prune -o \
@@ -7,4 +12,4 @@ find . \( \
     \) \
     -o \
     \( -type f \( -name "*.ts" \) -print \) \
-    | NODE_OPTIONS="" npx tsx esbuild.ts "$@"
+    | NODE_OPTIONS="" npx tsx transpile.ts "$@"

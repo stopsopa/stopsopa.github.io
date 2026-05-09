@@ -3,13 +3,13 @@ import fs from "fs";
 import gitignore from "gitignore-parser";
 import readline from "readline";
 
-const log = (...args: any) => console.log("esbuild.ts:", ...args);
+const log = (...args: any) => console.log("transpile.ts:", ...args);
 
-const th = (msg: string) => new Error(`esbuild.ts error: ${msg}`);
+const th = (msg: string) => new Error(`transpile.ts error: ${msg}`);
 
 const watch = process.argv.includes("--watch");
 
-const ignoreFile = ".esignore";
+const ignoreFile = "transpile.ignore";
 if (!fs.existsSync(ignoreFile)) {
   throw th(`${ignoreFile} doesn't exist`);
 }
