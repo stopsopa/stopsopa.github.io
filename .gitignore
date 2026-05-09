@@ -4,6 +4,7 @@
 *.tar.gz
 *.zip
 lcov.info
+tsc.ignore.tsconfig.json
 node_modules
 /bin/
 preprocessed.js
