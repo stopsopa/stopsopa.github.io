@@ -3,10 +3,10 @@
 tsc.ignore.ts
 node_modules
 
+transpile.ts
 es.ts
 bash/tee.ts
 vitest.config.ts
-esbuild.ts
 pages/typescript/node/transform-types.ts
 pages/typescript/node/lib.ts
 pages/typescript/node/tstest.ts

@@ -1,20 +1,37 @@
 
 # 
-# echo "file.ts" | /bin/bash transpile.sh transpile.ignore
-# echo "file.ts" | /bin/bash transpile.sh transpile.ignore --watch
-# echo "file.ts" | /bin/bash transpile.sh
-# echo "file.ts" | /bin/bash transpile.sh --watch
+# /bin/bash transpile.sh transpile.ignore
+# /bin/bash transpile.sh transpile.ignore --watch
 # 
 # That script is responsible just for transpiling
 # 
+export NODE_OPTIONS=""
+
+IGNORE_FILE="${1}"
+
+if [ ! -f "${IGNORE_FILE}" ]; then
+
+  cat <<EEE
+
+  >${IGNORE_FILE}< doesn't exist
+
+EEE
+
+  exit 1
+fi
+
+
+
 
 find . -type d \( \
-        -name node_modules \
-        -o -name .git \
-        -o -name coverage \
-        -o -name noprettier \
-    \) -prune \
-    -o -type \
-    f -name "*.ts" \
-    -print \
-    | NODE_OPTIONS="" npx tsx transpile.ts "$@"
+       -name node_modules \
+    -o -name .git \
+    -o -name coverage \
+    -o -name noprettier \
+    -o -name .opencode \
+\) -prune \
+-o -type \
+f -name "*.ts" \
+-print \
+| node gitignore.js "${IGNORE_FILE}" \
+| npx tsx transpile.ts "$@"
