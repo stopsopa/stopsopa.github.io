@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>handleRadio Demo</title>
+    <style>
+      #status {
+        background-color: red;
+        color: white;
+        padding: 2px 5px;
+        border-radius: 3px;
+      }
+    </style>
   </head>
   <body>
     <h1>handleRadio Demo</h1>
@@ -76,14 +84,21 @@
         display.innerText = "dark (set via code)";
       });
 
+      const statusEl = document.getElementById("status");
+      const updateStatus = () => {
+        statusEl.innerText = tool.getStatus() ? "bound" : "unbound";
+      };
+
+      updateStatus();
+
       document.getElementById("btn-unbind").addEventListener("click", () => {
         tool.unbind();
-        alert("Unbound! Clicking radios won't update the display anymore.");
+        updateStatus();
       });
 
       document.getElementById("btn-bind").addEventListener("click", () => {
         tool.bind();
-        alert("Bound! Clicking radios will now update the display.");
+        updateStatus();
       });
     </script>
 

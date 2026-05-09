@@ -31,6 +31,8 @@ export default function handleRadio(opt) {
     onChange = () => {};
   }
 
+  let isBound = false;
+
   if (!delegateParent) {
     delegateParent = document.body;
   }
@@ -75,16 +77,21 @@ export default function handleRadio(opt) {
 
   if (autoBind) {
     delegateParent.addEventListener("click", delegateFn);
+    isBound = true;
   }
 
   tool = {
     unbind: () => {
       delegateParent.removeEventListener("click", delegateFn);
+      isBound = false;
     },
     bind: () => {
-      delegateParent.removeEventListener("click", delegateFn); // Prevent duplicates
-
+      delegateParent.removeEventListener("click", delegateFn);
       delegateParent.addEventListener("click", delegateFn);
+      isBound = true;
+    },
+    getStatus: () => {
+      return isBound;
     },
     list: [...delegateParent.querySelectorAll(s)].reduce((acc, el) => {
       acc.push({
