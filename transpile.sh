@@ -1,9 +1,9 @@
 
 # 
-# /bin/bash transpile.sh transpile.ignore
-# /bin/bash transpile.sh transpile.ignore --watch
-# /bin/bash transpile.sh
-# /bin/bash transpile.sh --watch
+# echo "file.ts" | /bin/bash transpile.sh transpile.ignore
+# echo "file.ts" | /bin/bash transpile.sh transpile.ignore --watch
+# echo "file.ts" | /bin/bash transpile.sh
+# echo "file.ts" | /bin/bash transpile.sh --watch
 # 
 # That script is responsible just for transpiling
 # 
