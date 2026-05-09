@@ -30,7 +30,6 @@ if (entryPoints.length === 0) {
 }
 
 log(`
-    entryPoints: 
     ${entryPoints.join("\n    ")}
 `);
 
