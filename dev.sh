@@ -47,6 +47,8 @@ cp node_modules/envprocessor/dist/esm/env.js public/env.js
 
 source "${_DIR}/bash/colours.sh";
 
+export DLOGGERN=12
+
 # -L file       True if file exists and is a symbolic link.
 if [ ! -L _______index.html ]; then
 
@@ -118,20 +120,20 @@ node node_modules/envprocessor/dist/esm/cli.js --maskEnv EXPOSE_EXTRA_ENV_VARIAB
 
 
 rm -rf "${LOGFILE}"
-/bin/bash bundle.sh bundle.ignore --watch --name "${FLAG}__bundle.js" 1> >(/bin/bash bash/dlogger.sh " " "bundle.sh   " >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "bundle.sh   " >> "${LOGFILE}") &
+/bin/bash bundle.sh bundle.ignore --watch --name "${FLAG}__bundle.js" 1> >(/bin/bash bash/dlogger.sh " " bundle.sh >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e bundle.sh >> "${LOGFILE}") &
 PID1="${!}"  
 
-/bin/bash transpile.sh transpile.ignore --watch --name "${FLAG}__transpile.js" 1> >(/bin/bash bash/dlogger.sh " " "transpile.sh" >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "transpile.sh" >> "${LOGFILE}") &
+/bin/bash transpile.sh transpile.ignore --watch --name "${FLAG}__transpile.js" 1> >(/bin/bash bash/dlogger.sh " " transpile.sh >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e transpile.sh >> "${LOGFILE}") &
 PID3="${!}"
 
-/bin/bash .github/injector.sh watch "${FLAG}__injector.js" 1> >(/bin/bash bash/dlogger.sh " " "esbuild     " >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "esbuild     " >> "${LOGFILE}") &
+/bin/bash .github/injector.sh watch "${FLAG}__injector.js" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
 PID4="${!}"
 
 /bin/bash scripts/template.sh # just call it once to process all - and btw I've removed --initial from below chokidar call
-/bin/bash node_modules/.bin/chokidar '**/*.template.html' --ignore '**/node_modules/**/*' -c "/bin/bash scripts/template.sh {path} \"${FLAG}__chokidar__template.sh\"" 1> >(/bin/bash bash/dlogger.sh " " "template    " >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "template    " >> "${LOGFILE}") &
+/bin/bash node_modules/.bin/chokidar '**/*.template.html' --ignore '**/node_modules/**/*' -c "/bin/bash scripts/template.sh {path} \"${FLAG}__chokidar__template.sh\"" 1> >(/bin/bash bash/dlogger.sh " " template >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e template >> "${LOGFILE}") &
 PID6="${!}"
 
-/bin/bash node_modules/.bin/tsc --preserveWatchOutput --watch 1> >(/bin/bash bash/dlogger.sh " " "typescript  " >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "typescript  " >> "${LOGFILE}") &
+/bin/bash node_modules/.bin/tsc --preserveWatchOutput --watch 1> >(/bin/bash bash/dlogger.sh " " typescript >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e typescript >> "${LOGFILE}") &
 PID7="${!}"
 
 WAITINGMESSAGE="exbuilddone2" # this text shows at the end of esbuild build
@@ -150,16 +152,16 @@ while [ "$(cat "${LOGFILE}" | grep "${WAITINGMESSAGE}")" = "" ]
 do
   sleep 1;
 
-  echo "================================ waiting for esbuild to finish build ================================" 1> >(/bin/bash bash/dlogger.sh " " "server      " >> "${LOGFILE}") 
+  echo "================================ waiting for esbuild to finish build ================================" 1> >(/bin/bash bash/dlogger.sh " " server >> "${LOGFILE}") 
 done
 
 # /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "2_${FLAG}" \
 # node server.js --flag "3_${FLAG}" 2>&1 >> "${LOGFILE}" &
-node server.js --flag "${FLAG}__server.js" 1> >(/bin/bash bash/dlogger.sh " " "server      " >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "server      " >> "${LOGFILE}") &
+node server.js --flag "${FLAG}__server.js" 1> >(/bin/bash bash/dlogger.sh " " server >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e server >> "${LOGFILE}") &
 PID2="${!}"  
 
 if [ "${OPENBROWSER}" = "1" ]; then
-  sleep 3 && /bin/bash "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_API_PORT}/index.html 1> >(/bin/bash bash/dlogger.sh " " "opencli     " >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e "opencli     " >> "${LOGFILE}") &
+  sleep 3 && /bin/bash "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_API_PORT}/index.html 1> >(/bin/bash bash/dlogger.sh " " opencli >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e opencli >> "${LOGFILE}") &
 fi
 
 if [ "${OPENIDE}" = "1" ]; then
