@@ -2,6 +2,7 @@
 
 tsc.ignore.ts
 node_modules
+bundle.ts
 
 es.ts
 bash/tee.ts

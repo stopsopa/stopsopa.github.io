@@ -118,10 +118,10 @@ node node_modules/envprocessor/dist/esm/cli.js --maskEnv EXPOSE_EXTRA_ENV_VARIAB
 
 
 rm -rf "${LOGFILE}"
-node esbuild-entries.js --watch --name "${FLAG}__esbuild-entries.js" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
+/bin/bash bundle.sh bundle.ignore --watch --name "${FLAG}__bundle.js" 1> >(/bin/bash bash/dlogger.sh " " bundle.sh >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e bundle.sh >> "${LOGFILE}") &
 PID1="${!}"  
 
-/bin/bash esbuild-node.sh watch "${FLAG}__esbuild-node.js" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
+/bin/bash transpile.sh transpile.ignore --watch --name "${FLAG}__transpile.js" 1> >(/bin/bash bash/dlogger.sh " " transpile.sh >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e transpile.sh >> "${LOGFILE}") &
 PID3="${!}"
 
 /bin/bash .github/injector.sh watch "${FLAG}__injector.js" 1> >(/bin/bash bash/dlogger.sh " " esbuild >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e esbuild >> "${LOGFILE}") &
