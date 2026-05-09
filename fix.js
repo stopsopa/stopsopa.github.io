@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline";
 var rl = createInterface({
   input: process.stdin,
-  terminal: false
+  terminal: false,
 });
 rl.on("line", (line) => {
   const filePath = line.trim();
