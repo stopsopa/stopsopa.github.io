@@ -32,6 +32,9 @@ cat <<EEE
   server:
     http://\${LOCAL_HOSTS}:\${NODE_API_PORT}
 
+  Warning: 
+      Generally this project uses pnpm
+
 EEE
 
       `,
