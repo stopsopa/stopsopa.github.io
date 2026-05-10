@@ -65,17 +65,17 @@ export default function handleRadio(opt: HandleRadioOptions): HandleRadioTool {
   if (initState) {
     const sOne = selectorOne(name, initState);
 
-    const el = delegateParent.querySelector(sOne);
+    const el = delegateParent.querySelector(sOne) as HTMLInputElement | null;
 
     if (el) {
       el.checked = true;
     }
   }
 
-  let active = delegateParent.querySelector(`${s}:checked`);
+  let active = delegateParent.querySelector(`${s}:checked`) as HTMLInputElement | null;
 
   if (!active) {
-    active = delegateParent.querySelector(s);
+    active = delegateParent.querySelector(s) as HTMLInputElement | null;
 
     if (active) {
       active.checked = true;
@@ -113,7 +113,7 @@ export default function handleRadio(opt: HandleRadioOptions): HandleRadioTool {
       return isBound;
     },
     get list() {
-      return [...delegateParent.querySelectorAll(s)].map((el: any) => ({
+      return Array.from(delegateParent.querySelectorAll(s)).map((el: any) => ({
         el,
         checked: el.checked,
         value: el.value,
@@ -122,7 +122,7 @@ export default function handleRadio(opt: HandleRadioOptions): HandleRadioTool {
     checkByValue: (value) => {
       const selector = selectorOne(name, value);
 
-      const el = delegateParent.querySelector(selector);
+      const el = delegateParent.querySelector(selector) as HTMLInputElement | null;
 
       if (el) {
         el.checked = true;
@@ -131,7 +131,7 @@ export default function handleRadio(opt: HandleRadioOptions): HandleRadioTool {
   };
 
   if (initTrigger) {
-    const activeEl = delegateParent.querySelector(`${s}:checked`);
+    const activeEl = delegateParent.querySelector(`${s}:checked`) as HTMLInputElement | null;
 
     if (activeEl) {
       onChange(activeEl.value, tool);

@@ -67,7 +67,7 @@ function handleRadio(opt) {
       return isBound;
     },
     get list() {
-      return [...delegateParent.querySelectorAll(s)].map((el) => ({
+      return Array.from(delegateParent.querySelectorAll(s)).map((el) => ({
         el,
         checked: el.checked,
         value: el.value
