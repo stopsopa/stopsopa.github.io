@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg" toc>
+    <div class="body">
+      <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
+      <div class="inside">
+        <div class="cards">
+          <h2>Working scenarios</h2>
+          <script type="editor" data-lang="sh">
+
+            expermineted with project:
+               https://github.com/madooei/react-example-package/blob/v0.2.0/packages/react-example-package/package.json
+
+            in my project:
+            ls -la node_modules/@madooei/react-example-package/
+            total 32
+            drwxr-xr-x@  6 szdz  staff   192 May 10 17:21 .
+            drwxr-xr-x@  3 szdz  staff    96 May 10 17:21 ..
+            -rw-r--r--@  1 szdz  staff   948 May 10 17:21 CHANGELOG.md
+            -rw-r--r--@  1 szdz  staff  6362 May 10 17:21 README.md
+            drwxr-xr-x@ 22 szdz  staff   704 May 10 21:27 dist
+            -rw-r--r--@  1 szdz  staff   282 May 10 21:38 package.json
+
+            cd vite-project/node_modules/@madooei/react-example-package/ && find . -type f
+            ./CHANGELOG.md
+            ./dist/card.d.cts
+            ./dist/card.cjs.map
+            ./dist/types-CsgsNw21.d.cts
+            ./dist/card.js.map
+            ./dist/index.d.cts
+            ./dist/types-CsgsNw21.d.ts    [A]
+            ./dist/index.js
+            ./dist/button.cjs
+            ./dist/card.cjs
+            ./dist/button.d.cts
+            ./dist/index.cjs.map
+            ./dist/button.d.ts
+            ./dist/card.d.ts              [B]
+            ./dist/index.cjs
+            ./dist/index.js.map
+            ./dist/button.js
+            ./dist/button.js.map
+            ./dist/index.d.ts
+            ./dist/card.js
+            ./dist/button.cjs.map
+            ./README.md
+            ./package.json
+
+            when I reduce file to the form
+            cat node_modules/@madooei/react-example-package/package.json 
+            ```
+            {
+                "name": "@madooei/react-example-package",
+                "version": "0.2.0",
+                "type": "module",
+                "exports": {
+                    "./button": {
+                        "require": {
+                            "default": "./dist/button.js"
+                        }
+                    },
+                    "./card": {
+                        "require": {
+                            "default": "./dist/card.js"
+                        }
+                    }
+                }
+            }
+            ```
+
+            I can still use:
+
+            import { Card } from "@madooei/react-example-package/card";
+            import { Button } from "@madooei/react-example-package/button";
+
+            and use it in react 
+            <Card title=""></Card>
+            clicking with CMD+click will jump me to file A
+            but actually it gets there because in vite-project/node_modules/@madooei/react-example-package/dist/card.d.ts
+            I have  import { C as CardProps } from './types-CsgsNw21.js';
+            so really it gets there through [B]
+            So even though we have not defined exports.[./card].imports.types = "./dist/card.d.ts"
+            IDE is able to find card.d.ts [B] just because it knows where ./card is and card.d.ts is right next to card.js
+
+            when we swapt package.json content to 
+            cat node_modules/@madooei/react-example-package/package.json 
+            ```
+            {
+                "name": "@madooei/react-example-package",
+                "version": "0.2.0",
+                "type": "module",
+                "exports": {
+                    ".": {
+                        "import": {
+                            "default": "./dist/index.js"
+                        }
+                    }
+                }
+            }
+            ```
+
+            then we can used
+
+            import { Card, Button } from "@madooei/react-example-package";
+            with 
+            <Card title="fsdfds">test</Card>
+            and when we click CMD+click on 'title' in above render
+            the it jumps to [C]
+            in
+            cat vite-project/node_modules/@madooei/react-example-package/dist/index.d.ts
+            ```
+            import React, { ReactNode } from 'react';
+
+            interface ButtonProps {
+                children: ReactNode;
+                variant?: "primary" | "secondary" | "danger";
+                size?: "small" | "medium" | "large";
+                disabled?: boolean;
+                onClick?: () => void;
+            }
+            interface CardProps {
+                children: ReactNode;
+                title?: string;               [C]
+                className?: string;
+            }
+
+            declare const Button: React.FC<ButtonProps>;
+
+            declare const Card: React.FC<CardProps>;
+
+            export { Button, type ButtonProps, Card, type CardProps };
+            ```
+
+            SUMMARY:
+            so this actually demonstrates what is sufficient in modern environment to 
+            tell IDE where individual libraries and their corresponding types are.
+            It also shows what to have in package.json to tell where the main module is.
+
+            Take look at the 
+                https://github.com/madooei/react-example-package/blob/v0.2.0/packages/react-example-package/package.json
+            To see that there are also sections like:
+            ```
+            "main": "./dist/index.cjs",
+            "module": "./dist/index.js",
+            "types": "./dist/index.d.ts",
+            ```
+            which I believe these are older, so it is good to have them just in case, 
+            but as you can see we can only point them to one file so just to main import. 
+            it wil not lead to subpackages files.
+
+            There are also require declarations for CJS style modules.
+
+            It would be good to read more about these really.
+
+
+
+            
+
+
+          </script>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>
