@@ -45,20 +45,34 @@ EEE
     [`start`]: {
       command: `
 set -e        
-export NODE_OPTIONS=""        
+export NODE_OPTIONS=""       
+cat <<EEE
+
+/bin/bash dev.sh   
+/bin/bash dev.sh browser      
+
+EEE
+
+echo -e "\n      Press enter to continue\n"
+read
+
 /bin/bash dev.sh         
 `,
       description: `launch esbuild - will NOT launch browser nor IDE`,
       confirm: false,
       source: false,
     },
-    [`start + browser`]: {
+    [`typescript`]: {
       command: `
-set -e         
-export NODE_OPTIONS=""       
-/bin/bash dev.sh browser        
+set -e  
+cat <<EEE
+
+$ /bin/bash tsc.sh
+
+EEE
+NODE_OPTIONS= /bin/bash tsc.sh
 `,
-      description: `launch esbuild and browser tab`,
+      description: `launch esbuild - will NOT launch browser nor IDE`,
       confirm: false,
       source: false,
     },
