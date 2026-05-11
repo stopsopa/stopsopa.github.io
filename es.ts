@@ -15,7 +15,35 @@ import { dirname, join, basename, resolve, relative } from "node:path";
 import { stdin, env } from "node:process";
 import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
-import Semaphore from "./pages/node/semaphore/Semaphore.ts";
+
+class Semaphore {
+  private permits: number;
+  private maxPermits: number;
+  private waiters: (() => void)[] = [];
+  constructor(permits: number) {
+    this.maxPermits = this.permits = permits;
+  }
+  acquire() {
+    return new Promise<void>((resolve) => {
+      if (this.permits > 0) {
+        this.permits -= 1;
+        resolve();
+      } else {
+        this.waiters.push(resolve);
+      }
+    });
+  }
+  release() {
+    const next = this.waiters.shift();
+    if (next) {
+      next();
+    } else {
+      if (this.permits !== this.maxPermits) {
+        this.permits += 1;
+      }
+    }
+  }
+}
 
 const th = (msg: string) => new Error(`es.ts error: ${msg}`);
 
