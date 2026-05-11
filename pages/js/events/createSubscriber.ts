@@ -1,27 +1,33 @@
-export default function createSubscriber(target: EventTarget) {
-  const bindings = new Map<string, Set<EventListenerOrEventListenerObject>>();
+export default function createSubscriber() {
+  const bindings = new Map<string, Set<any>>();
 
-  function bind(event: string, handler: EventListenerOrEventListenerObject) {
+  function bind(event: string, handler: any) {
     if (!bindings.has(event)) {
       bindings.set(event, new Set());
     }
     bindings.get(event)!.add(handler);
-    target.addEventListener(event, handler);
+    return () => unbind(event, handler);
   }
 
-  function unbind(event: string, handler: EventListenerOrEventListenerObject) {
+  function unbind(event: string, handler: any) {
     bindings.get(event)?.delete(handler);
-    target.removeEventListener(event, handler);
+  }
+
+  function trigger(event: string, ...args: any[]) {
+    bindings.get(event)?.forEach((handler) => {
+      handler(...args);
+    });
   }
 
   function destroy() {
-    bindings.forEach((handlers, event) => {
-      handlers.forEach((handler: EventListenerOrEventListenerObject) => {
-        target.removeEventListener(event, handler);
-      });
-    });
     bindings.clear();
   }
 
-  return { bind, unbind, destroy };
+  function getCount() {
+    let count = 0;
+    bindings.forEach((handlers) => (count += handlers.size));
+    return count;
+  }
+
+  return { bind, unbind, trigger, destroy, getCount };
 }

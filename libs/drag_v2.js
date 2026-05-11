@@ -43,4 +43,7 @@ function drag(element, listener, fetch) {
     document.removeEventListener("mouseup", mouseup);
   };
 }
-export { drag as default, getStyle };
+export {
+  drag as default,
+  getStyle
+};

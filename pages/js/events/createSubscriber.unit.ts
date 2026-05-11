@@ -1,43 +1,57 @@
 import { expect, test, vi } from "vitest";
 import createSubscriber from "./createSubscriber.ts";
 
-test("bind adds event listener", () => {
-  const target = new EventTarget();
-  const subscriber = createSubscriber(target);
+test("bind adds handler and returns unbind function", () => {
+  const subscriber = createSubscriber();
   const handler = vi.fn();
 
-  subscriber.bind("click", handler);
-  target.dispatchEvent(new Event("click"));
+  const unbind = subscriber.bind("test", handler);
+  expect(subscriber.getCount()).toBe(1);
 
-  expect(handler).toHaveBeenCalledTimes(1);
+  subscriber.trigger("test", "data");
+  expect(handler).toHaveBeenCalledWith("data");
+
+  unbind();
+  expect(subscriber.getCount()).toBe(0);
 });
 
-test("unbind removes event listener", () => {
-  const target = new EventTarget();
-  const subscriber = createSubscriber(target);
+test("unbind removes handler", () => {
+  const subscriber = createSubscriber();
   const handler = vi.fn();
 
-  subscriber.bind("click", handler);
-  subscriber.unbind("click", handler);
-  target.dispatchEvent(new Event("click"));
+  subscriber.bind("test", handler);
+  subscriber.unbind("test", handler);
 
+  subscriber.trigger("test");
   expect(handler).not.toHaveBeenCalled();
 });
 
-test("destroy removes all event listeners", () => {
-  const target = new EventTarget();
-  const subscriber = createSubscriber(target);
-  const handler1 = vi.fn();
-  const handler2 = vi.fn();
+test("trigger forwards all arguments", () => {
+  const subscriber = createSubscriber();
+  const handler = vi.fn();
 
-  subscriber.bind("click", handler1);
-  subscriber.bind("mouseover", handler2);
+  subscriber.bind("test", handler);
+  subscriber.trigger("test", 1, 2, 3);
 
+  expect(handler).toHaveBeenCalledWith(1, 2, 3);
+});
+
+
+test("destroy clears all bindings", () => {
+  const subscriber = createSubscriber();
+  subscriber.bind("a", () => {});
+  subscriber.bind("b", () => {});
+
+  expect(subscriber.getCount()).toBe(2);
   subscriber.destroy();
+  expect(subscriber.getCount()).toBe(0);
+});
 
-  target.dispatchEvent(new Event("click"));
-  target.dispatchEvent(new Event("mouseover"));
+test("getCount returns total number of handlers", () => {
+  const subscriber = createSubscriber();
+  subscriber.bind("a", () => {});
+  subscriber.bind("a", () => {}); // Different handler (anonymous)
+  subscriber.bind("b", () => {});
 
-  expect(handler1).not.toHaveBeenCalled();
-  expect(handler2).not.toHaveBeenCalled();
+  expect(subscriber.getCount()).toBe(3);
 });

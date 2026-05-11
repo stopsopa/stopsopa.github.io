@@ -12,11 +12,12 @@ function handleRadio(opt) {
     },
     initState,
     initTrigger = false,
-    autoBind = true,
+    autoBind = true
   } = opt;
   let { delegateParent, onChange } = opt;
   if (typeof onChange !== "function") {
-    onChange = () => {};
+    onChange = () => {
+    };
   }
   let isBound = false;
   if (!delegateParent) {
@@ -69,7 +70,7 @@ function handleRadio(opt) {
       return Array.from(delegateParent.querySelectorAll(s)).map((el) => ({
         el,
         checked: el.checked,
-        value: el.value,
+        value: el.value
       }));
     },
     checkByValue: (value) => {
@@ -78,7 +79,7 @@ function handleRadio(opt) {
       if (el) {
         el.checked = true;
       }
-    },
+    }
   };
   if (initTrigger) {
     const activeEl = delegateParent.querySelector(`${s}:checked`);
@@ -88,4 +89,6 @@ function handleRadio(opt) {
   }
   return tool;
 }
-export { handleRadio as default };
+export {
+  handleRadio as default
+};

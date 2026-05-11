@@ -9,14 +9,116 @@
 
     <title>stopsopa.github.io</title>
   </head>
-  <body class="layout bg" toc>
+  <body class="layout bg">
     <div class="body">
       <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
       <div class="inside">
         <div class="cards">
-          <h2>Index</h2>
-          <script type="editor" data-lang="sh"></script>
+          <h2>createSubscriber Demo</h2>
+          <div id="demo-area">
+          <div id="demo-area">
+            <p>
+              This is now a <strong>General Purpose Event Emitter</strong>. Use the control buttons to manage handlers
+              and <strong>Trigger</strong> events manually with custom data.
+            </p>
+            <button id="test-btn" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer">
+              Trigger "test" Event
+            </button>
+            <div
+              style="
+                margin-top: 15px;
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <span>Event Log:</span>
+              <span>Bound Handlers: <span id="counter">0</span></span>
+            </div>
+            <div
+              id="log"
+              style="
+                margin-top: 5px;
+                border: 1px solid #ccc;
+                padding: 10px;
+                height: 150px;
+                overflow-y: auto;
+                background: #f9f9f9;
+                font-family: monospace;
+              "
+            ></div>
+            <div style="margin-top: 15px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+              <strong>Controls:</strong>
+              <button id="bind-btn">Bind Click</button>
+              <button id="unbind-btn">Unbind Click</button>
+              <button id="destroy-btn">Destroy All</button>
+              <button id="clear-btn">Clear Log</button>
+            </div>
+          </div>
         </div>
+
+        <script type="module">
+          import createSubscriber from "./createSubscriber.js";
+
+          const testBtn = document.getElementById("test-btn");
+          const logDir = document.getElementById("log");
+          const bindBtn = document.getElementById("bind-btn");
+          const unbindBtn = document.getElementById("unbind-btn");
+          const destroyBtn = document.getElementById("destroy-btn");
+          const clearBtn = document.getElementById("clear-btn");
+          const counter = document.getElementById("counter");
+
+          const subscriber = createSubscriber();
+
+          const log = (msg) => {
+            const div = document.createElement("div");
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logDir.prepend(div);
+          };
+
+          const updateCounter = () => {
+            counter.textContent = subscriber.getCount();
+          };
+
+          const handlers = [];
+
+          testBtn.addEventListener("click", () => {
+            subscriber.trigger("test", "data from button", Date.now());
+            log("Event 'test' triggered with custom data");
+          });
+
+          bindBtn.addEventListener("click", () => {
+            const id = handlers.length + 1;
+            const handler = (...args) => log(`'test' Handler #${id} called with: ${JSON.stringify(args)}`);
+            handlers.push(handler);
+            subscriber.bind("test", handler);
+            log(`Bound handler #${id} for 'test'`);
+            updateCounter();
+          });
+
+          unbindBtn.addEventListener("click", () => {
+            const handler = handlers.pop();
+            if (handler) {
+              subscriber.unbind("test", handler);
+              log(`Unbound last handler`);
+            } else {
+              log("No handlers to unbind");
+            }
+            updateCounter();
+          });
+
+          destroyBtn.addEventListener("click", () => {
+            subscriber.destroy();
+            handlers.length = 0;
+            log("Subscriber destroyed (all handlers removed)");
+            updateCounter();
+          });
+
+          clearBtn.addEventListener("click", () => {
+            logDir.innerHTML = "";
+          });
+        </script>
       </div>
     </div>
     <script type="module" src="/js/github.js"></script>

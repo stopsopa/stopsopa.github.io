@@ -31,7 +31,7 @@ console.log(`
 ${coverageInclude.join("\n")}
 ============================== ^^^
   
-`)
+`);
 
 // https://vitest.dev/guide/#configuring-vitest
 export default defineConfig({
