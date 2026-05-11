@@ -59,7 +59,7 @@
             ./package.json
 
             when I reduce file to the form
-            cat node_modules/@madooei/react-example-package/package.json 
+            cat node_modules/@madooei/react-example-package/package.json
             ```
             {
                 "name": "@madooei/react-example-package",
@@ -85,7 +85,7 @@
             import { Card } from "@madooei/react-example-package/card";
             import { Button } from "@madooei/react-example-package/button";
 
-            and use it in react 
+            and use it in react
             <Card title=""></Card>
             clicking with CMD+click will jump me to file A
             but actually it gets there because in vite-project/node_modules/@madooei/react-example-package/dist/card.d.ts
@@ -94,8 +94,8 @@
             So even though we have not defined exports.[./card].imports.types = "./dist/card.d.ts"
             IDE is able to find card.d.ts [B] just because it knows where ./card is and card.d.ts is right next to card.js
 
-            when we swapt package.json content to 
-            cat node_modules/@madooei/react-example-package/package.json 
+            when we swapt package.json content to
+            cat node_modules/@madooei/react-example-package/package.json
             ```
             {
                 "name": "@madooei/react-example-package",
@@ -114,7 +114,7 @@
             then we can used
 
             import { Card, Button } from "@madooei/react-example-package";
-            with 
+            with
             <Card title="fsdfds">test</Card>
             and when we click CMD+click on 'title' in above render
             the it jumps to [C]
@@ -144,11 +144,11 @@
             ```
 
             SUMMARY:
-            so this actually demonstrates what is sufficient in modern environment to 
+            so this actually demonstrates what is sufficient in modern environment to
             tell IDE where individual libraries and their corresponding types are.
             It also shows what to have in package.json to tell where the main module is.
 
-            Take look at the 
+            Take look at the
                 https://github.com/madooei/react-example-package/blob/v0.2.0/packages/react-example-package/package.json
             To see that there are also sections like:
             ```
@@ -156,19 +156,13 @@
             "module": "./dist/index.js",
             "types": "./dist/index.d.ts",
             ```
-            which I believe these are older, so it is good to have them just in case, 
-            but as you can see we can only point them to one file so just to main import. 
+            which I believe these are older, so it is good to have them just in case,
+            but as you can see we can only point them to one file so just to main import.
             it wil not lead to subpackages files.
 
             There are also require declarations for CJS style modules.
 
             It would be good to read more about these really.
-
-
-
-            
-
-
           </script>
         </div>
       </div>

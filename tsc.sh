@@ -28,6 +28,23 @@ TSCONFIG=tsc.ignore.tsconfig.json
 
 # typechecking more file
 npx tsc -p tsconfig.json --noEmit
+CODE="${?}"
+
+if [ "${CODE}" = "0" ]; then
+    cat <<EEE
+  🎉 All valid...
+
+EEE
+
+else
+    cat <<EEE
+  ❌ Something is wrong
+
+EEE
+
+fi
+
+exit ${CODE}
 
 # # but transpiling only subset of files
 # npx tsc -p ${TSCONFIG} "$@"

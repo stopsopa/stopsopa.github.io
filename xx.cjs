@@ -62,9 +62,10 @@ read
       confirm: false,
       source: false,
     },
-    [`typescript`]: {
+    [`typecheck`]: {
       command: `
 set -e  
+export NODE_OPTIONS=
 cat <<EEE
 
 $ /bin/bash tsc.sh
