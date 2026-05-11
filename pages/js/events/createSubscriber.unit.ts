@@ -55,3 +55,24 @@ test("getCount returns total number of handlers", () => {
 
   expect(subscriber.getCount()).toBe(3);
 });
+
+test("type safety and inference", () => {
+  type Events = {
+    login: [user: { id: string; name: string }];
+    logout: [];
+  };
+
+  const subscriber = createSubscriber<Events>();
+  const loginHandler = vi.fn();
+  const logoutHandler = vi.fn();
+
+  subscriber.bind("login", loginHandler);
+  subscriber.bind("logout", logoutHandler);
+
+  subscriber.trigger("login", { id: "1", name: "John" });
+  expect(loginHandler).toHaveBeenCalledWith({ id: "1", name: "John" });
+
+  subscriber.trigger("logout");
+  expect(logoutHandler).toHaveBeenCalled();
+});
+

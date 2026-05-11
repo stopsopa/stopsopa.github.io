@@ -1,7 +1,26 @@
-export default function createSubscriber() {
-  const bindings = new Map<string, Set<any>>();
+/**
+  type Events = {
+    login: [user: { id: string; name: string }];
+    logout: [];
+  };
 
-  function bind(event: string, handler: any) {
+  const subscriber = createSubscriber<Events>();
+
+  const loginHandler = () => {}
+  const logoutHandler = () => {}
+
+  subscriber.bind("login", loginHandler);
+  subscriber.bind("logout", logoutHandler);
+
+  subscriber.trigger("login", { id: "1", name: "John" });
+
+  subscriber.trigger("logout");
+ */
+
+export default function createSubscriber<EventsSpecs extends Record<string, any[]> = Record<string, any[]>>() {
+  const bindings = new Map<keyof EventsSpecs, Set<any>>();
+
+  function bind<K extends keyof EventsSpecs>(event: K, handler: (...args: EventsSpecs[K]) => void) {
     if (!bindings.has(event)) {
       bindings.set(event, new Set());
     }
@@ -9,11 +28,11 @@ export default function createSubscriber() {
     return () => unbind(event, handler);
   }
 
-  function unbind(event: string, handler: any) {
+  function unbind<K extends keyof EventsSpecs>(event: K, handler: (...args: EventsSpecs[K]) => void) {
     bindings.get(event)?.delete(handler);
   }
 
-  function trigger(event: string, ...args: any[]) {
+  function trigger<K extends keyof EventsSpecs>(event: K, ...args: EventsSpecs[K]) {
     bindings.get(event)?.forEach((handler) => {
       handler(...args);
     });
