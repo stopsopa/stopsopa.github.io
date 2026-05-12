@@ -18603,6 +18603,9 @@ function createSubscriber() {
   function unbind(event, handler) {
     bindings.get(event)?.delete(handler);
   }
+  function unbindGroup(event) {
+    bindings.delete(event);
+  }
   function trigger(event, ...args) {
     bindings.get(event)?.forEach((handler) => {
       handler(...args);
@@ -18616,7 +18619,7 @@ function createSubscriber() {
     bindings.forEach((handlers) => count += handlers.size);
     return count;
   }
-  return { bind, unbind, trigger, destroy, getCount };
+  return { bind, unbind, unbindGroup, trigger, destroy, getCount };
 }
 
 // pages/js/events/createSubscriber.unit.ts
@@ -18664,6 +18667,17 @@ test3("getCount returns total number of handlers", () => {
   subscriber.bind("b", () => {
   });
   globalExpect(subscriber.getCount()).toBe(3);
+});
+test3("type safety and inference", () => {
+  const subscriber = createSubscriber();
+  const loginHandler = vi.fn();
+  const logoutHandler = vi.fn();
+  subscriber.bind("login", loginHandler);
+  subscriber.bind("logout", logoutHandler);
+  subscriber.trigger("login", { id: "1", name: "John" });
+  globalExpect(loginHandler).toHaveBeenCalledWith({ id: "1", name: "John" });
+  subscriber.trigger("logout");
+  globalExpect(logoutHandler).toHaveBeenCalled();
 });
 /*! Bundled license information:
 

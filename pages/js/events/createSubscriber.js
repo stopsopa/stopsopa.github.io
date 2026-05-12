@@ -11,6 +11,9 @@ function createSubscriber() {
   function unbind(event, handler) {
     bindings.get(event)?.delete(handler);
   }
+  function unbindGroup(event) {
+    bindings.delete(event);
+  }
   function trigger(event, ...args) {
     bindings.get(event)?.forEach((handler) => {
       handler(...args);
@@ -24,7 +27,7 @@ function createSubscriber() {
     bindings.forEach((handlers) => count += handlers.size);
     return count;
   }
-  return { bind, unbind, trigger, destroy, getCount };
+  return { bind, unbind, unbindGroup, trigger, destroy, getCount };
 }
 export {
   createSubscriber as default

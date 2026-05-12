@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>stopsopa.github.io</title>
+  </head>
+  <body class="layout bg">
+    <div class="body">
+      <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
+      <div class="inside">
+        <div class="cards">
+          <h2>Index</h2>
+          <script type="editor" data-lang="sh">
+
+            urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fhtml%2Finput%2Finput.ts
+            urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fhtml%2Finput%2Finput.js
+                wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/html/input/input.ts
+                wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/html/input/input.js
+          </script>
+        </div>
+
+        <form>
+          <h2>form</h2>
+          <label>input: <input type="text" /></label>
+          <input type="submit" value="submit" />
+          <button type="reset" value="reset">reset</button>
+        </form>
+
+        <pre></pre>
+        <script type="module">
+          import handleInput from "./input.js";
+
+          document.querySelector("form").addEventListener("submit", (e) => {
+            e.preventDefault();
+          });
+
+          const pre = document.querySelector("pre");
+
+          document.querySelector("button[type=reset]").addEventListener("click", (e) => {
+            pre.innerHTML = "";
+          });
+
+          const input = document.querySelector("input");
+
+          handleInput(input, (e) => {
+            pre.innerText = `${JSON.stringify({ type: e?.type, target: e?.target?.tagName, key: e?.key })}\n${pre.innerText}`;
+            console.log("event:", e);
+          });
+        </script>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>
