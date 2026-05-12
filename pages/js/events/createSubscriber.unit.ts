@@ -1,3 +1,6 @@
+/**
+ * /bin/bash test.sh pages/js/events/createSubscriber.unit.ts
+ */
 import { expect, test, vi } from "vitest";
 import createSubscriber from "./createSubscriber.ts";
 

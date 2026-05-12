@@ -32,6 +32,10 @@ export default function createSubscriber<EventsSpecs extends Record<string, any[
     bindings.get(event)?.delete(handler);
   }
 
+  function unbindGroup<K extends keyof EventsSpecs>(event: K) {
+    bindings.delete(event);
+  }
+
   function trigger<K extends keyof EventsSpecs>(event: K, ...args: EventsSpecs[K]) {
     bindings.get(event)?.forEach((handler) => {
       handler(...args);
@@ -48,5 +52,5 @@ export default function createSubscriber<EventsSpecs extends Record<string, any[
     return count;
   }
 
-  return { bind, unbind, trigger, destroy, getCount };
+  return { bind, unbind, unbindGroup, trigger, destroy, getCount };
 }
