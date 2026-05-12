@@ -1,5 +1,5 @@
 // pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.ts
-function handleCheckboxFixed(parentToBind, elements, event, options = {}) {
+function handleCheckboxDynamic(parentToBind, elements, event, options = {}) {
   if (!parentToBind) {
     parentToBind = document.body;
   }
@@ -60,7 +60,7 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
 });
 var pre = document.querySelector("pre");
-handleCheckboxFixed(
+handleCheckboxDynamic(
   form,
   {
     a: { selector: 'input[name="a"]', checked: false },

@@ -1,5 +1,5 @@
 // pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.ts
-function handleCheckboxFixed(parentToBind, elements, event, options = {}) {
+function handleCheckboxDynamic(parentToBind, elements, event, options = {}) {
   if (!parentToBind) {
     parentToBind = document.body;
   }
@@ -54,5 +54,5 @@ function safeKeys(value) {
   return value && typeof value === "object" ? Object.keys(value) : [];
 }
 export {
-  handleCheckboxFixed as default
+  handleCheckboxDynamic as default
 };

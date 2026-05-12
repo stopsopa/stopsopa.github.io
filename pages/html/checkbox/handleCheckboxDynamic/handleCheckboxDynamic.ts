@@ -18,7 +18,7 @@ type SingleValuesType = {
   checked?: boolean;
 };
 
-export default function handleCheckboxFixed(
+export default function handleCheckboxDynamic(
   parentToBind: HTMLElement,
   elements: Record<string, SingleValuesType>, // unique name and selector for checkbox
   event: (e: Event, values: Record<string, boolean>) => void,
