@@ -62,7 +62,7 @@ read
       confirm: false,
       source: false,
     },
-    [`typecheck`]: {
+    [`type`]: {
       command: `
 set -e  
 export NODE_OPTIONS=

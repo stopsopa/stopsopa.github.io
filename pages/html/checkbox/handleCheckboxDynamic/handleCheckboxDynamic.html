@@ -40,6 +40,12 @@
           min-width: 0;
         }
       }
+      #addbox > div {
+        margin-bottom: 15px;
+        button {
+          float: right;
+        }
+      }
     </style>
   </head>
   <body class="layout bg">
@@ -55,36 +61,43 @@
             urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fhtml%2Fcheckbox%2FhandleCheckboxDynamic%2FhandleCheckboxDynamic.js
 
                 wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/html/checkbox/handleCheckboxDynamic%2FhandleCheckboxDynamic.ts
-                
+
                 wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/html/checkbox/handleCheckboxDynamic%2FhandleCheckboxDynamic.js
 
             urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fhtml%2Fcheckbox%2FhandleCheckboxDynamic%2Findex.ts
-
           </script>
         </div>
 
         <form>
           <h2>form</h2>
 
-          <label>
-            <input type="checkbox" name="a" value="value_a"/>
-            checkbox a
-          </label>
-          <br />
-          <label>
-            <input type="checkbox" name="b" value="value b" checked/>
-            checkbox b
-          </label>
-          <br />
-          <label>
-            <input type="checkbox" name="c" value="value c"/>
-            checkbox c
-          </label>
-          <br />
-          <br />
+          <div id="addbox">
+            <div>
+              <label>
+                <input type="checkbox" name="a" value="value_a" />
+                checkbox a
+              </label>
+              <button name="a">remove</button>
+            </div>
+            <div>
+              <label>
+                <input type="checkbox" name="b" value="value b" checked />
+                checkbox b
+              </label>
+              <button name="b">remove</button>
+            </div>
+            <div>
+              <label>
+                <input type="checkbox" name="c" value="value c" />
+                checkbox c
+              </label>
+              <button name="c">remove</button>
+            </div>
+          </div>
           <input type="submit" value="submit" />
           <button type="reset" value="reset">reset</button>
         </form>
+        <button id="addbutton">add checkbox</button>
       </div>
     </div>
 

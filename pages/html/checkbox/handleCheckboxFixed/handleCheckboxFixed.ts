@@ -1,6 +1,6 @@
 /**
  * This implementation don't care about checkboxes values
- * 
+ *
  * It can set default values from js
  */
 export type HandleInputEvent = "change";
@@ -21,14 +21,28 @@ type SingleValuesType = {
 export default function handleCheckboxFixed(
   parentToBind: HTMLElement,
   elements: Record<string, SingleValuesType>, // unique name and selector for checkbox
-  event: (e: Event, values: Record<string, boolean>) => void,
+  event: (e: Event, values: ValuesType) => void,
   options: HandleCheckboxOptions = {}
 ) {
+  function safeKeys(value: any): string[] {
+    return value && typeof value === "object" ? Object.keys(value) : [];
+  }
+
   if (!parentToBind) {
     parentToBind = document.body;
   }
 
   const { onLoad = false, events = ["change"], dontSetDefaultValues = false } = options;
+
+  {
+    const keys = safeKeys(events);
+
+    const seen = new Set<string>(keys);
+
+    if (keys.length === 0 || keys.length !== seen.size) {
+      throw new Error(`handleCheckboxFixed: invalid 'events': has to many keys: ${keys.length}`);
+    }
+  }
 
   const keys = safeKeys(elements);
 
@@ -89,8 +103,4 @@ export default function handleCheckboxFixed(
   return () => {
     unbind.forEach((un) => un());
   };
-}
-
-function safeKeys(value: any): string[] {
-  return value && typeof value === "object" ? Object.keys(value) : [];
 }

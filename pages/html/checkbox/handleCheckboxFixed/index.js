@@ -1,9 +1,19 @@
 // pages/html/checkbox/handleCheckboxFixed/handleCheckboxFixed.ts
 function handleCheckboxFixed(parentToBind, elements, event, options = {}) {
+  function safeKeys(value) {
+    return value && typeof value === "object" ? Object.keys(value) : [];
+  }
   if (!parentToBind) {
     parentToBind = document.body;
   }
   const { onLoad = false, events = ["change"], dontSetDefaultValues = false } = options;
+  {
+    const keys2 = safeKeys(events);
+    const seen2 = new Set(keys2);
+    if (keys2.length === 0 || keys2.length !== seen2.size) {
+      throw new Error(`handleCheckboxFixed: invalid 'events': has to many keys: ${keys2.length}`);
+    }
+  }
   const keys = safeKeys(elements);
   const seen = new Set(keys);
   if (keys.length === 0 || keys.length !== seen.size) {
@@ -49,9 +59,6 @@ function handleCheckboxFixed(parentToBind, elements, event, options = {}) {
   return () => {
     unbind.forEach((un) => un());
   };
-}
-function safeKeys(value) {
-  return value && typeof value === "object" ? Object.keys(value) : [];
 }
 
 // pages/html/checkbox/handleCheckboxFixed/index.ts
