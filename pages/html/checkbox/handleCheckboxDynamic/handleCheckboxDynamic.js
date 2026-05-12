@@ -1,22 +1,22 @@
-// pages/html/checkbox/handleCheckbox.ts
-function handleCheckbox(parentToBind, elements, event, options = {}) {
+// pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.ts
+function handleCheckboxFixed(parentToBind, elements, event, options = {}) {
   if (!parentToBind) {
     parentToBind = document.body;
   }
-  const { onLoad = false, events = ["change"] } = options;
+  const { onLoad = false, events = ["change"], dontSetDefaultValues = false } = options;
   const keys = safeKeys(elements);
   const seen = new Set(keys);
   if (keys.length === 0 || keys.length !== seen.size) {
-    throw new Error(`handleCheckbox: invalid 'elements': has to many keys: ${keys.length}`);
+    throw new Error(`handleCheckboxFixed: invalid 'elements': has to many keys: ${keys.length}`);
   }
   function extract(el) {
     const values = {};
     let found = false;
     for (const key of keys) {
-      if (!found && el && el.matches(elements[key])) {
+      if (!found && el && el.matches(elements[key].selector)) {
         found = true;
       }
-      values[key] = parentToBind.querySelector(elements[key])?.checked ?? false;
+      values[key] = parentToBind.querySelector(elements[key].selector)?.checked ?? false;
     }
     return { found, values };
   }
@@ -34,6 +34,14 @@ function handleCheckbox(parentToBind, elements, event, options = {}) {
       parentToBind.removeEventListener(event2, handler);
     });
   }
+  if (!dontSetDefaultValues) {
+    for (const key of keys) {
+      const el = parentToBind.querySelector(elements[key].selector);
+      if (el && typeof elements[key].checked === "boolean") {
+        el.checked = elements[key].checked;
+      }
+    }
+  }
   if (onLoad) {
     const { values } = extract();
     event(new Event("load"), values);
@@ -46,5 +54,5 @@ function safeKeys(value) {
   return value && typeof value === "object" ? Object.keys(value) : [];
 }
 export {
-  handleCheckbox as default
+  handleCheckboxFixed as default
 };

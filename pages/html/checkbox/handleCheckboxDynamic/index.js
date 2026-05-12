@@ -1,22 +1,22 @@
-// pages/html/checkbox/handleCheckbox.js
-function handleCheckbox(parentToBind, elements, event, options = {}) {
+// pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.ts
+function handleCheckboxFixed(parentToBind, elements, event, options = {}) {
   if (!parentToBind) {
     parentToBind = document.body;
   }
-  const { onLoad = false, events = ["change"] } = options;
+  const { onLoad = false, events = ["change"], dontSetDefaultValues = false } = options;
   const keys = safeKeys(elements);
   const seen = new Set(keys);
   if (keys.length === 0 || keys.length !== seen.size) {
-    throw new Error(`handleCheckbox: invalid 'elements': has to many keys: ${keys.length}`);
+    throw new Error(`handleCheckboxFixed: invalid 'elements': has to many keys: ${keys.length}`);
   }
   function extract(el) {
     const values = {};
     let found = false;
     for (const key of keys) {
-      if (!found && el && el.matches(elements[key])) {
+      if (!found && el && el.matches(elements[key].selector)) {
         found = true;
       }
-      values[key] = parentToBind.querySelector(elements[key])?.checked ?? false;
+      values[key] = parentToBind.querySelector(elements[key].selector)?.checked ?? false;
     }
     return { found, values };
   }
@@ -34,6 +34,14 @@ function handleCheckbox(parentToBind, elements, event, options = {}) {
       parentToBind.removeEventListener(event2, handler);
     });
   }
+  if (!dontSetDefaultValues) {
+    for (const key of keys) {
+      const el = parentToBind.querySelector(elements[key].selector);
+      if (el && typeof elements[key].checked === "boolean") {
+        el.checked = elements[key].checked;
+      }
+    }
+  }
   if (onLoad) {
     const { values } = extract();
     event(new Event("load"), values);
@@ -46,21 +54,21 @@ function safeKeys(value) {
   return value && typeof value === "object" ? Object.keys(value) : [];
 }
 
-// pages/html/checkbox/index.ts
+// pages/html/checkbox/handleCheckboxDynamic/index.ts
 var form = document.querySelector("form");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 });
 var pre = document.querySelector("pre");
-handleCheckbox(
+handleCheckboxFixed(
   form,
   {
-    a: 'input[name="a"]',
-    b: 'input[name="b"]',
-    c: 'input[name="c"]'
+    a: { selector: 'input[name="a"]', checked: false },
+    b: { selector: 'input[name="b"]', checked: true },
+    c: { selector: 'input[name="c"]', checked: true }
   },
   (e, values) => {
-    console.log("handleCheckbox:", e, values);
+    console.log("handleCheckboxFixed:", e, values);
     pre.innerHTML = JSON.stringify(values, null, 2) + "\n" + pre.innerHTML;
   },
   {

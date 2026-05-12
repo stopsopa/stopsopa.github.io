@@ -8,105 +8,19 @@
     />
 
     <title>stopsopa.github.io</title>
-    <style>
-      .pre {
-        margin-top: 10px;
-        display: grid;
-        grid-auto-flow: column;
-        grid-auto-columns: 1fr;
-        gap: 12px;
-        align-items: stretch;
-
-        section {
-          display: grid;
-          grid-template-rows: auto 1fr;
-          min-width: 0;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          overflow: hidden;
-        }
-
-        header {
-          padding: 10px 12px;
-          font-weight: 600;
-          border-bottom: 1px solid #ccc;
-          background: #f5f5f5;
-        }
-
-        pre {
-          margin: 0;
-          padding: 12px;
-          overflow: auto;
-          min-width: 0;
-        }
-      }
-    </style>
   </head>
-  <body class="layout bg">
+  <body class="layout bg" toc>
     <div class="body">
       <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
       <div class="inside">
-        <div class="cards">
-          <h2>Index</h2>
-          <script type="editor" data-lang="sh">
-
-            urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fhtml%2Fcheckbox%2FhandleCheckbox.ts
-            urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fhtml%2Fcheckbox%2FhandleCheckbox.js
-                wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/html/checkbox/handleCheckbox.ts
-                wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/html/checkbox/handleCheckbox.js
-
-            urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fhtml%2Fcheckbox%2Findex.ts
-
-          </script>
+        <div class="cards toc">
+          <h1>Table of Contents</h1>
+          <ul data-do-sort>
+            <li><a href="handleCheckboxFixed/handleCheckboxFixed.html">handleCheckboxFixed</a></li>
+          </ul>
         </div>
-
-        <form>
-          <h2>form</h2>
-
-          <label>
-            <input type="checkbox" name="a" />
-            checkbox a
-          </label>
-          <br />
-          <label>
-            <input type="checkbox" name="b" />
-            checkbox b
-          </label>
-          <br />
-          <label>
-            <input type="checkbox" name="c" />
-            checkbox c
-          </label>
-          <br />
-          <br />
-          <input type="submit" value="submit" />
-          <button type="reset" value="reset">reset</button>
-        </form>
       </div>
     </div>
-
-    <div class="pre">
-      <section id="target">
-        <header>values</header>
-        <pre></pre>
-      </section>
-
-      <!-- <section id="type">
-          <header>e.type</header>
-          <pre></pre>
-        </section>
-
-        <section id="data">
-          <header>e.data</header>
-          <pre></pre>
-        </section>
-
-        <section id="value">
-          <header>e.target.value</header>
-          <pre></pre>
-        </section> -->
-    </div>
     <script type="module" src="/js/github.js"></script>
-    <script type="module" src="index.js"></script>
   </body>
 </html>
