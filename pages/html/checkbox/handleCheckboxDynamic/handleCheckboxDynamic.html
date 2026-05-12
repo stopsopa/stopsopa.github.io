@@ -46,6 +46,9 @@
           float: right;
         }
       }
+      pre {
+        font-size: 18px;
+      }
     </style>
   </head>
   <body class="layout bg">
@@ -53,6 +56,28 @@
       <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
       <div class="inside">
         <div class="cards">
+          <a href="?onLoad&observeMutations">onLoad & observeMutations</a>
+          <br />
+          <a href="?onLoad">onLoad</a>
+          <br />
+          <a href="?observeMutations">observeMutations</a>
+          <br />
+          <a href=".">off</a>
+          <pre>
+This one is not able to set default values in chekboxes 
+because it is designed to adapt to changing number of checkboxes.
+
+But it is able to trigger when new checkbox (selected or unselected) is added to the parent.
+
+It also allows elements with repeating key for urls like:
+
+    product=apple&product=banana&service=shipping
+
+    where 'product' is returned twice 
+    where two checkboxes have the same name   
+    
+Important: it returns checked checkboxes dom elements and extract value as you like from them    
+          </pre>
           <h2>Index</h2>
           <script type="editor" data-lang="sh">
 

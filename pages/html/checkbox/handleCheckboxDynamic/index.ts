@@ -1,5 +1,23 @@
 import handleCheckboxDynamic from "./handleCheckboxDynamic.ts";
 
+/**
+ * for url http://google.com/test?abc&def#hash
+ * returns {abc: true, def: true}
+ */
+const hasKeys = (function () {
+  const url = new URL(location.href);
+
+  const obj: Record<string, boolean> = {};
+
+  [...url.searchParams.keys()].forEach((key) => {
+    obj[key] = true;
+  });
+
+  return obj;
+})();
+
+console.log("get from url".repeat(100), hasKeys);
+
 const form = document.querySelector("form") as HTMLFormElement;
 const addbox = document.querySelector("#addbox") as HTMLDivElement;
 const addbutton = document.querySelector("#addbutton") as HTMLButtonElement;
@@ -8,7 +26,7 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
 });
 
-const pre = document.querySelector("pre") as HTMLPreElement;
+const pre = document.querySelector(".pre pre") as HTMLPreElement;
 
 addbutton.addEventListener("click", () => {
   const set = getNextSet();
@@ -20,7 +38,7 @@ addbutton.addEventListener("click", () => {
   const div = document.createElement("div");
   div.innerHTML = `
 <label>
-  <input type="checkbox" name="${set.name}" value="${set.value}" />
+  <input type="checkbox" name="${set.name}" value="${set.value}" ${set.checked ? "checked" : ""}/>
   checkbox ${set.name}
 
 </label>
@@ -40,12 +58,18 @@ form.addEventListener("click", (e) => {
 
 handleCheckboxDynamic(
   form,
-  (e, values) => {
-    console.log("handleCheckboxDynamic:", e, values);
-    pre.innerHTML = JSON.stringify(values) + "\n" + pre.innerHTML;
+  (e, checkboxes) => {
+    const data = checkboxes.map((c) => ({
+      name: c.name,
+      value: c.value,
+      checked: c.checked,
+    }));
+    console.log("handleCheckboxDynamic:", e, data);
+    pre.innerHTML = JSON.stringify(data) + "\n" + pre.innerHTML;
   },
   {
-    onLoad: true,
+    onLoad: hasKeys.onLoad,
+    observeMutations: hasKeys.observeMutations,
   }
 );
 
@@ -53,18 +77,22 @@ const sets = [
   {
     name: "d",
     value: "value d",
+    checked: true,
   },
   {
     name: "e",
     value: "value ee",
+    checked: false,
   },
   {
     name: "ff",
     value: "value f",
+    checked: true,
   },
   {
     name: "h",
     value: "value h",
+    checked: false,
   },
 ];
 function getNextSet() {

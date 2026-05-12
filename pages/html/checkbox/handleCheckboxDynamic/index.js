@@ -12,7 +12,8 @@ function handleCheckboxDynamic(parentToBind, event, options) {
     findCheckboxes = (parent) => parent.querySelectorAll("input[type=checkbox]"),
     detectElement = (el) => el.matches("input[type=checkbox]"),
     extractKey = (el) => el.id || el?.name,
-    extractValue = (el) => el?.value
+    alwaysReturnAllCheckboxes = false,
+    observeMutations = false
   } = options || {};
   {
     const keys = safeKeys(events);
@@ -34,22 +35,18 @@ function handleCheckboxDynamic(parentToBind, event, options) {
         if (typeof key !== "string" || !key.trim()) {
           throw new Error(`handleCheckboxDynamic: invalid 'elements': invalid key`);
         }
-        const value = extractValue(checkbox);
-        if (typeof value !== "string" || !value.trim()) {
-          throw new Error(`handleCheckboxDynamic: invalid 'elements': invalid value for key >${key}< value >${value}<`);
-        }
-        if (checkbox.checked) {
-          values.push([key, value]);
+        if (alwaysReturnAllCheckboxes || checkbox.checked) {
+          values.push(checkbox);
         }
       }
     }
-    return { found, values };
+    return { found, checkboxes: values };
   }
   function handler(e) {
     const el = e.target;
-    const { found, values } = extract(el);
+    const { found, checkboxes } = extract(el);
     if (found) {
-      event(e, values);
+      event(e, checkboxes);
     }
   }
   const unbind = [];
@@ -59,23 +56,58 @@ function handleCheckboxDynamic(parentToBind, event, options) {
       parentToBind.removeEventListener(event2, handler);
     });
   }
+  let observer = null;
+  if (observeMutations) {
+    observer = new MutationObserver((mutations) => {
+      const affected = mutations.some((mutation) => {
+        for (const node of mutation.addedNodes) {
+          if (node instanceof HTMLElement) {
+            if (detectElement(node)) return true;
+            if (node?.querySelector("input[type=checkbox]")) return true;
+          }
+        }
+        for (const node of mutation.removedNodes) {
+          if (node instanceof HTMLElement) {
+            if (detectElement(node)) return true;
+            if (node?.querySelector("input[type=checkbox]")) return true;
+          }
+        }
+        return false;
+      });
+      if (affected) {
+        const { checkboxes } = extract();
+        event(new Event("mutation"), checkboxes);
+      }
+    });
+    observer.observe(parentToBind, { childList: true, subtree: true });
+  }
   if (onLoad) {
-    const { values } = extract();
-    event(new Event("load"), values);
+    const { checkboxes } = extract();
+    event(new Event("load"), checkboxes);
   }
   return () => {
     unbind.forEach((un) => un());
+    observer?.disconnect();
   };
 }
 
 // pages/html/checkbox/handleCheckboxDynamic/index.ts
+var hasKeys = (function() {
+  const url = new URL(location.href);
+  const obj = {};
+  [...url.searchParams.keys()].forEach((key) => {
+    obj[key] = true;
+  });
+  return obj;
+})();
+console.log("get from url".repeat(100), hasKeys);
 var form = document.querySelector("form");
 var addbox = document.querySelector("#addbox");
 var addbutton = document.querySelector("#addbutton");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 });
-var pre = document.querySelector("pre");
+var pre = document.querySelector(".pre pre");
 addbutton.addEventListener("click", () => {
   const set = getNextSet();
   if (!set) {
@@ -85,7 +117,7 @@ addbutton.addEventListener("click", () => {
   const div = document.createElement("div");
   div.innerHTML = `
 <label>
-  <input type="checkbox" name="${set.name}" value="${set.value}" />
+  <input type="checkbox" name="${set.name}" value="${set.value}" ${set.checked ? "checked" : ""}/>
   checkbox ${set.name}
 
 </label>
@@ -102,30 +134,40 @@ form.addEventListener("click", (e) => {
 });
 handleCheckboxDynamic(
   form,
-  (e, values) => {
-    console.log("handleCheckboxDynamic:", e, values);
-    pre.innerHTML = JSON.stringify(values) + "\n" + pre.innerHTML;
+  (e, checkboxes) => {
+    const data = checkboxes.map((c) => ({
+      name: c.name,
+      value: c.value,
+      checked: c.checked
+    }));
+    console.log("handleCheckboxDynamic:", e, data);
+    pre.innerHTML = JSON.stringify(data) + "\n" + pre.innerHTML;
   },
   {
-    onLoad: true
+    onLoad: hasKeys.onLoad,
+    observeMutations: hasKeys.observeMutations
   }
 );
 var sets = [
   {
     name: "d",
-    value: "value d"
+    value: "value d",
+    checked: true
   },
   {
     name: "e",
-    value: "value ee"
+    value: "value ee",
+    checked: false
   },
   {
     name: "ff",
-    value: "value f"
+    value: "value f",
+    checked: true
   },
   {
     name: "h",
-    value: "value h"
+    value: "value h",
+    checked: false
   }
 ];
 function getNextSet() {

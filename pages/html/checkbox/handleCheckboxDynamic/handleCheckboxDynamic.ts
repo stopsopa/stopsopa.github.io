@@ -13,16 +13,15 @@ export type HandleCheckboxDynamicOptions = {
   findCheckboxes?: (parentToBind: HTMLElement) => HTMLElement[];
   detectElement?: (el: HTMLElement) => boolean;
   extractKey?: (el: HTMLElement) => string;
-  extractValue?: (el: HTMLElement) => string;
+  observeMutations?: boolean; // new
+  alwaysReturnAllCheckboxes?: boolean;
 };
 
-export type HandleCheckboxDynamicValuesType = Array<[string, string]>;
+export type HandleCheckboxDynamicSelectedCheckboxes = HTMLInputElement[];
 
 export default function handleCheckboxDynamic(
   parentToBind: HTMLElement,
-
-  event: (e: Event, values: HandleCheckboxDynamicValuesType) => void,
-
+  event: (e: Event, checkboxes: HandleCheckboxDynamicSelectedCheckboxes) => void,
   options?: HandleCheckboxDynamicOptions
 ) {
   function safeKeys(value: any): string[] {
@@ -39,22 +38,20 @@ export default function handleCheckboxDynamic(
     findCheckboxes = (parent: HTMLElement) => parent.querySelectorAll("input[type=checkbox]"),
     detectElement = (el: HTMLElement) => el.matches("input[type=checkbox]"),
     extractKey = (el: HTMLElement) => el.id || (el as HTMLInputElement)?.name,
-    extractValue = (el: HTMLElement) => (el as HTMLInputElement)?.value,
+    alwaysReturnAllCheckboxes = false,
+    observeMutations = false,
   } = options || {};
 
   {
     const keys = safeKeys(events);
-
     const seen = new Set<string>(keys);
-
     if (keys.length === 0 || keys.length !== seen.size) {
       throw new Error(`handleCheckboxDynamic: invalid 'events': has to many keys: ${keys.length}`);
     }
   }
 
-  function extract(el?: HTMLInputElement): { found: boolean; values: HandleCheckboxDynamicValuesType } {
-    const values: HandleCheckboxDynamicValuesType = [];
-
+  function extract(el?: HTMLInputElement): { found: boolean; checkboxes: HandleCheckboxDynamicSelectedCheckboxes } {
+    const values: HandleCheckboxDynamicSelectedCheckboxes = [];
     const checkboxes = [...findCheckboxes(parentToBind)] as HTMLInputElement[];
 
     let found = false;
@@ -70,28 +67,21 @@ export default function handleCheckboxDynamic(
           throw new Error(`handleCheckboxDynamic: invalid 'elements': invalid key`);
         }
 
-        const value = extractValue(checkbox);
-
-        if (typeof value !== "string" || !value.trim()) {
-          throw new Error(`handleCheckboxDynamic: invalid 'elements': invalid value for key >${key}< value >${value}<`);
-        }
-
-        if (checkbox.checked) {
-          values.push([key, value]);
+        if (alwaysReturnAllCheckboxes || checkbox.checked) {
+          values.push(checkbox);
         }
       }
     }
 
-    return { found, values };
+    return { found, checkboxes: values };
   }
 
   function handler(e: Event) {
     const el = e.target as HTMLInputElement;
-
-    const { found, values } = extract(el);
+    const { found, checkboxes } = extract(el);
 
     if (found) {
-      event(e, values);
+      event(e, checkboxes);
     }
   }
 
@@ -103,13 +93,44 @@ export default function handleCheckboxDynamic(
     });
   }
 
-  if (onLoad) {
-    const { values } = extract();
+  let observer: MutationObserver | null = null;
 
-    event(new Event("load"), values);
+  if (observeMutations) {
+    observer = new MutationObserver((mutations) => {
+      const affected = mutations.some((mutation) => {
+        // Check added nodes
+        for (const node of mutation.addedNodes) {
+          if (node instanceof HTMLElement) {
+            if (detectElement(node)) return true;
+            if (node?.querySelector("input[type=checkbox]")) return true;
+          }
+        }
+        // Check removed nodes
+        for (const node of mutation.removedNodes) {
+          if (node instanceof HTMLElement) {
+            if (detectElement(node)) return true;
+            if (node?.querySelector("input[type=checkbox]")) return true;
+          }
+        }
+        return false;
+      });
+
+      if (affected) {
+        const { checkboxes } = extract();
+        event(new Event("mutation"), checkboxes);
+      }
+    });
+
+    observer.observe(parentToBind, { childList: true, subtree: true });
+  }
+
+  if (onLoad) {
+    const { checkboxes } = extract();
+    event(new Event("load"), checkboxes);
   }
 
   return () => {
     unbind.forEach((un) => un());
+    observer?.disconnect();
   };
 }
