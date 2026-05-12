@@ -3,7 +3,7 @@ function handleCheckboxDynamic(parentToBind, elements, event, options = {}) {
   if (!parentToBind) {
     parentToBind = document.body;
   }
-  const { onLoad = false, events = ["change"], dontSetDefaultValues = false } = options;
+  const { onLoad = false, events = ["change"] } = options;
   const keys = safeKeys(elements);
   const seen = new Set(keys);
   if (keys.length === 0 || keys.length !== seen.size) {
@@ -33,14 +33,6 @@ function handleCheckboxDynamic(parentToBind, elements, event, options = {}) {
     unbind.push(() => {
       parentToBind.removeEventListener(event2, handler);
     });
-  }
-  if (!dontSetDefaultValues) {
-    for (const key of keys) {
-      const el = parentToBind.querySelector(elements[key].selector);
-      if (el && typeof elements[key].checked === "boolean") {
-        el.checked = elements[key].checked;
-      }
-    }
   }
   if (onLoad) {
     const { values } = extract();

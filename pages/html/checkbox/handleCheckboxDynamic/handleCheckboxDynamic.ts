@@ -1,14 +1,13 @@
 /**
- * This implementation don't care about checkboxes values
- * 
- * It can set default values from js
+ * This implementation return values too
+ *
+ * This one will not be able to set defaults
  */
 export type HandleInputEvent = "change";
 
 export type HandleCheckboxOptions = {
   onLoad?: boolean;
   events?: HandleInputEvent[];
-  dontSetDefaultValues?: boolean;
 };
 
 type ValuesType = Record<string, boolean>;
@@ -28,7 +27,7 @@ export default function handleCheckboxDynamic(
     parentToBind = document.body;
   }
 
-  const { onLoad = false, events = ["change"], dontSetDefaultValues = false } = options;
+  const { onLoad = false, events = ["change"] } = options;
 
   const keys = safeKeys(elements);
 
@@ -69,15 +68,6 @@ export default function handleCheckboxDynamic(
     unbind.push(() => {
       parentToBind.removeEventListener(event, handler);
     });
-  }
-
-  if (!dontSetDefaultValues) {
-    for (const key of keys) {
-      const el = parentToBind.querySelector(elements[key].selector) as HTMLInputElement;
-      if (el && typeof elements[key].checked === "boolean") {
-        el.checked = elements[key].checked;
-      }
-    }
   }
 
   if (onLoad) {
