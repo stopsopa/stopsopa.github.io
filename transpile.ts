@@ -34,6 +34,9 @@ if (entryPoints.length === 0) {
   process.exit(0);
 }
 
+/**
+ * This is specially formatted for transpile_pipe.ts
+ */
 const buff = [...entryPoints];
 buff.unshift('');
 const files = buff.join("\ntranspiled ");
