@@ -76,6 +76,7 @@ const preValue = document.querySelector("#value pre") as HTMLPreElement;
 const preType = document.querySelector("#type pre") as HTMLPreElement;
 const preData = document.querySelector("#data pre") as HTMLPreElement;
 const preKey = document.querySelector("#key pre") as HTMLPreElement;
+const preName = document.querySelector("#name pre") as HTMLPreElement;
 
 resetButton.addEventListener("click", () => {
   preTarget.innerHTML = "";
@@ -83,6 +84,7 @@ resetButton.addEventListener("click", () => {
   preType.innerHTML = "";
   preKey.innerHTML = "";
   preData.innerHTML = "";
+  if (preName) preName.innerHTML = "";
 });
 
 if (!preTarget || !preValue || !preType) {
@@ -121,6 +123,7 @@ handleCheckboxDynamic(
         preData.innerText = `>${e?.data}<` + "\n" + preData.innerText;
         // @ts-ignore
         preKey.innerText = `>${e?.key}<` + "\n" + preKey.innerText;
+        if (preName) preName.innerText = `>${target?.name}<` + "\n" + preName.innerText;
         preValue.innerText = `>${target?.value}<` + "\n" + preValue.innerText;
 
         console.log("handleInput.event:", e);
