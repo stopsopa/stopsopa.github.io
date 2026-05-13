@@ -78,7 +78,9 @@ export default function handleInput(
       }
 
       for (const input of inputs) {
-        event(new Event("mutation"), input);
+        const e = new Event("mutation");
+        Object.defineProperty(e, "target", { writable: false, value: input });
+        event(e, input);
       }
     });
 
@@ -90,7 +92,9 @@ export default function handleInput(
 
     for (const input of inputs) {
       if (detectElement(input)) {
-        event(new Event("load"), input);
+        const e = new Event("load");
+        Object.defineProperty(e, "target", { writable: false, value: input });
+        event(e, input);
       }
     }
   }

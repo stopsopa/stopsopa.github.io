@@ -51,7 +51,9 @@ function handleInput(parentToBind, event, options = {}) {
         }
       }
       for (const input of inputs) {
-        event(new Event("mutation"), input);
+        const e = new Event("mutation");
+        Object.defineProperty(e, "target", { writable: false, value: input });
+        event(e, input);
       }
     });
     observer.observe(parentToBind, { childList: true, subtree: true });
@@ -60,7 +62,9 @@ function handleInput(parentToBind, event, options = {}) {
     const inputs = [...findInputs(parentToBind)];
     for (const input of inputs) {
       if (detectElement(input)) {
-        event(new Event("load"), input);
+        const e = new Event("load");
+        Object.defineProperty(e, "target", { writable: false, value: input });
+        event(e, input);
       }
     }
   }
