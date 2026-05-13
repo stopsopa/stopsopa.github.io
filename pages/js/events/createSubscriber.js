@@ -1,4 +1,3 @@
-// pages/js/events/createSubscriber.ts
 function createSubscriber() {
   const bindings = /* @__PURE__ */ new Map();
   function bind(event, handler) {

@@ -1,4 +1,3 @@
-// pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.ts
 function handleCheckboxDynamic(parentToBind, event, options) {
   function safeKeys(value) {
     return value && typeof value === "object" ? Object.keys(value) : [];
@@ -9,8 +8,8 @@ function handleCheckboxDynamic(parentToBind, event, options) {
   const {
     onLoad = false,
     events = ["change"],
-    findCheckboxes = (parent) => parent.querySelectorAll("input[type=checkbox]"),
-    detectElement = (el) => el.matches("input[type=checkbox]"),
+    findCheckboxes = (parent) => parent.querySelectorAll(`input[type="checkbox"]`),
+    detectElement = (el) => el.matches(`input[type="checkbox"]`),
     extractKey = (el) => el.id || el?.name,
     alwaysReturnAllCheckboxes = false,
     observeMutations = false
@@ -43,7 +42,7 @@ function handleCheckboxDynamic(parentToBind, event, options) {
     return { found, checkboxes: values };
   }
   function handler(e) {
-    const el = e.target;
+    const el = e?.target;
     const { found, checkboxes } = extract(el);
     if (found) {
       event(e, checkboxes);
@@ -63,13 +62,13 @@ function handleCheckboxDynamic(parentToBind, event, options) {
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLElement) {
             if (detectElement(node)) return true;
-            if (node?.querySelector("input[type=checkbox]")) return true;
+            if (node?.querySelector(`input[type="checkbox"]`)) return true;
           }
         }
         for (const node of mutation.removedNodes) {
           if (node instanceof HTMLElement) {
             if (detectElement(node)) return true;
-            if (node?.querySelector("input[type=checkbox]")) return true;
+            if (node?.querySelector(`input[type="checkbox"]`)) return true;
           }
         }
         return false;

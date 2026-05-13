@@ -40,6 +40,13 @@
           min-width: 0;
         }
       }
+      #checkboxes {
+        padding: 15px;
+        label {
+          display: inline;
+          margin-right: 20px;
+        }
+      }
     </style>
   </head>
   <body class="layout bg">
@@ -55,6 +62,13 @@
                 wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/html/input/input.ts
                 wget urlwizzard.schema://urlwizzard.hostnegotiated/pages/html/input/input.js
           </script>
+          <!-- "input" | "change" | "keydown" | "keyup"; -->
+          <div id="checkboxes">
+            <label> <input type="checkbox" id="input" checked /> : input </label>
+            <label> <input type="checkbox" id="change" checked /> : change </label>
+            <label> <input type="checkbox" id="keydown" /> : keydown </label>
+            <label> <input type="checkbox" id="keyup" /> : keyup </label>
+          </div>
         </div>
 
         <form>
@@ -66,27 +80,27 @@
       </div>
     </div>
 
-      <div class="pre">
-        <section id="target">
-          <header>e.target.constructor.name</header>
-          <pre></pre>
-        </section>
+    <div class="pre">
+      <section id="target">
+        <header>e.target.constructor.name</header>
+        <pre></pre>
+      </section>
 
-        <section id="type">
-          <header>e.type</header>
-          <pre></pre>
-        </section>
+      <section id="type">
+        <header>e.type</header>
+        <pre></pre>
+      </section>
 
-        <section id="data">
-          <header>e.data</header>
-          <pre></pre>
-        </section>
+      <section id="data">
+        <header>e.data</header>
+        <pre></pre>
+      </section>
 
-        <section id="value">
-          <header>e.target.value</header>
-          <pre></pre>
-        </section>
-      </div>
+      <section id="value">
+        <header>e.target.value</header>
+        <pre></pre>
+      </section>
+    </div>
     <script type="module" src="/js/github.js"></script>
     <script type="module" src="index.js"></script>
   </body>

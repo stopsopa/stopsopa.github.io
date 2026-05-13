@@ -1,4 +1,3 @@
-// pages/html/handleRadio.ts
 function handleRadio(opt) {
   let tool;
   const {

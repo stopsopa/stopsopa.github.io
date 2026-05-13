@@ -38,7 +38,7 @@ log(`
 
 const options: esbuild.BuildOptions = {
   entryPoints,
-  bundle: true,
+  bundle: false,
   outdir: ".",
   outbase: ".",
   entryNames: "[dir]/[name]",

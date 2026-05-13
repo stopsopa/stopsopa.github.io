@@ -1,4 +1,3 @@
-// pages/html/checkbox/handleCheckboxFixed/handleCheckboxFixed.ts
 function handleCheckboxFixed(parentToBind, elements, event, options = {}) {
   function safeKeys(value) {
     return value && typeof value === "object" ? Object.keys(value) : [];

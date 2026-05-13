@@ -1,4 +1,3 @@
-// libs/drag.ts
 function getStyle(el) {
   return window.getComputedStyle(el);
 }

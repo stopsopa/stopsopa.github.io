@@ -33,4 +33,4 @@ find . -type d \( \
 f -name "*.ts" \
 -print \
 | node gitignore.js "${IGNORE_FILE}" \
-| npx tsx transpile.ts "$@"
+| /bin/bash ts.sh transpile.ts "$@"

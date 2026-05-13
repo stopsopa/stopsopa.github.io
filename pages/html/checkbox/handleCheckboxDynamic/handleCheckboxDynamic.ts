@@ -13,7 +13,7 @@ export type HandleCheckboxDynamicOptions = {
   findCheckboxes?: (parentToBind: HTMLElement) => HTMLElement[];
   detectElement?: (el: HTMLElement) => boolean;
   extractKey?: (el: HTMLElement) => string;
-  observeMutations?: boolean; // new
+  observeMutations?: boolean;
   alwaysReturnAllCheckboxes?: boolean;
 };
 
@@ -23,7 +23,7 @@ export default function handleCheckboxDynamic(
   parentToBind: HTMLElement,
   event: (e: Event, checkboxes: HandleCheckboxDynamicSelectedCheckboxes) => void,
   options?: HandleCheckboxDynamicOptions
-) {
+): () => void {
   function safeKeys(value: any): string[] {
     return value && typeof value === "object" ? Object.keys(value) : [];
   }
@@ -35,8 +35,8 @@ export default function handleCheckboxDynamic(
   const {
     onLoad = false,
     events = ["change"],
-    findCheckboxes = (parent: HTMLElement) => parent.querySelectorAll("input[type=checkbox]"),
-    detectElement = (el: HTMLElement) => el.matches("input[type=checkbox]"),
+    findCheckboxes = (parent: HTMLElement) => parent.querySelectorAll(`input[type="checkbox"]`),
+    detectElement = (el: HTMLElement) => el.matches(`input[type="checkbox"]`),
     extractKey = (el: HTMLElement) => el.id || (el as HTMLInputElement)?.name,
     alwaysReturnAllCheckboxes = false,
     observeMutations = false,
@@ -77,7 +77,7 @@ export default function handleCheckboxDynamic(
   }
 
   function handler(e: Event) {
-    const el = e.target as HTMLInputElement;
+    const el = e?.target as HTMLInputElement;
     const { found, checkboxes } = extract(el);
 
     if (found) {
@@ -102,14 +102,14 @@ export default function handleCheckboxDynamic(
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLElement) {
             if (detectElement(node)) return true;
-            if (node?.querySelector("input[type=checkbox]")) return true;
+            if (node?.querySelector(`input[type="checkbox"]`)) return true;
           }
         }
         // Check removed nodes
         for (const node of mutation.removedNodes) {
           if (node instanceof HTMLElement) {
             if (detectElement(node)) return true;
-            if (node?.querySelector("input[type=checkbox]")) return true;
+            if (node?.querySelector(`input[type="checkbox"]`)) return true;
           }
         }
         return false;
