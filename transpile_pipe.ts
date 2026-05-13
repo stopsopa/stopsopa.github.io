@@ -87,7 +87,7 @@ const rl = readline.createInterface({
 });
 
 rl.on("line", (line) => {
-  console.log(`stdin: ${line}`);
+//   console.log(`stdin: ${line}`);
 
   const match = line.match(/^transpiled (.*\.ts)$/);
   if (match) {

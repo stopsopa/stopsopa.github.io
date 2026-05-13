@@ -4,7 +4,6 @@
 import * as esbuild from "esbuild";
 import readline from "readline";
 import path from "path";
-import fs from "fs";
 
 const log = (...args: any) => console.log("transpile.ts:", ...args);
 
@@ -58,7 +57,6 @@ const options: esbuild.BuildOptions = {
   format: "esm",
   target: "node20",
   logLevel: "warning",
-  metafile: true,
   logOverride: {
     "direct-eval": "silent",
   },
@@ -66,15 +64,15 @@ const options: esbuild.BuildOptions = {
     {
       name: "watch-reporter",
       setup(build) {
+        let processedFiles = new Set<string>();
+        build.onLoad({ filter: /\.ts$/ }, (args) => {
+          processedFiles.add(path.relative(process.cwd(), args.path));
+          return undefined;
+        });
         build.onEnd((result) => {
-          if (result.errors.length > 0 || !result.metafile) return;
-          const entryPoints = new Set<string>();
-          for (const info of Object.values(result.metafile.outputs)) {
-            if (info.entryPoint) {
-              entryPoints.add(info.entryPoint);
-            }
-          }
-          entryPoints.forEach((file) => console.log(`transpiled ${file}`));
+          if (result.errors.length > 0) return;
+          processedFiles.forEach((file) => console.log(`transpiled ${file}`));
+          processedFiles.clear();
         });
       },
     },
