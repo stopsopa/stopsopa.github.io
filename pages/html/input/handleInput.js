@@ -16,10 +16,10 @@ function handleInput(parentToBind, event, options = {}) {
     }
   }
   const unbind = [];
-  for (const event2 of events) {
-    parentToBind.addEventListener(event2, handler);
+  for (const eventName of events) {
+    parentToBind.addEventListener(eventName, handler);
     unbind.push(() => {
-      parentToBind.removeEventListener(event2, handler);
+      parentToBind.removeEventListener(eventName, handler);
     });
   }
   let observer = null;
@@ -27,23 +27,12 @@ function handleInput(parentToBind, event, options = {}) {
     observer = new MutationObserver((mutations) => {
       const inputs = /* @__PURE__ */ new Set();
       for (const mutation of mutations) {
-        for (const node of mutation.addedNodes) {
+        for (const node of [...mutation.addedNodes, ...mutation.removedNodes]) {
           if (!(node instanceof HTMLElement)) continue;
           if (detectElement(node)) {
             inputs.add(node);
           }
-          [...findInputs(node)].forEach((el) => {
-            if (detectElement(el)) {
-              inputs.add(el);
-            }
-          });
-        }
-        for (const node of mutation.removedNodes) {
-          if (!(node instanceof HTMLElement)) continue;
-          if (detectElement(node)) {
-            inputs.add(node);
-          }
-          [...findInputs(node)].forEach((el) => {
+          findInputs(node).forEach((el) => {
             if (detectElement(el)) {
               inputs.add(el);
             }

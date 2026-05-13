@@ -34,10 +34,10 @@ export default function handleInput(
   }
 
   const unbind: (() => void)[] = [];
-  for (const event of events) {
-    parentToBind.addEventListener(event, handler);
+  for (const eventName of events) {
+    parentToBind.addEventListener(eventName, handler);
     unbind.push(() => {
-      parentToBind.removeEventListener(event, handler);
+      parentToBind.removeEventListener(eventName, handler);
     });
   }
 
@@ -48,28 +48,14 @@ export default function handleInput(
       const inputs = new Set<HTMLInputElement>();
 
       for (const mutation of mutations) {
-        for (const node of mutation.addedNodes) {
+        for (const node of [...mutation.addedNodes, ...mutation.removedNodes]) {
           if (!(node instanceof HTMLElement)) continue;
 
           if (detectElement(node)) {
             inputs.add(node as HTMLInputElement);
           }
 
-          [...findInputs(node)].forEach((el) => {
-            if (detectElement(el as HTMLElement)) {
-              inputs.add(el as HTMLInputElement);
-            }
-          });
-        }
-
-        for (const node of mutation.removedNodes) {
-          if (!(node instanceof HTMLElement)) continue;
-
-          if (detectElement(node)) {
-            inputs.add(node as HTMLInputElement);
-          }
-
-          [...findInputs(node)].forEach((el) => {
+          findInputs(node).forEach((el) => {
             if (detectElement(el as HTMLElement)) {
               inputs.add(el as HTMLInputElement);
             }
