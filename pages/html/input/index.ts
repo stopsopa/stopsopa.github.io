@@ -1,10 +1,11 @@
 import handleInput from "./handleInput.js";
+import type { HandleInputEvent } from "./handleInput.js";
 
 import handleCheckboxDynamic from "../checkbox/handleCheckboxDynamic/handleCheckboxDynamic.js";
 
 const form = document.querySelector("form") as HTMLFormElement;
 const pre = document.querySelector("pre") as HTMLPreElement;
-const resetButton = document.querySelector("button[type=reset]") as HTMLButtonElement;
+const resetButton = document.querySelector("#reset") as HTMLButtonElement;
 
 if (!form || !pre || !resetButton) {
   throw new Error("Required DOM elements not found");
@@ -18,11 +19,13 @@ const preTarget = document.querySelector("#target pre") as HTMLPreElement;
 const preValue = document.querySelector("#value pre") as HTMLPreElement;
 const preType = document.querySelector("#type pre") as HTMLPreElement;
 const preData = document.querySelector("#data pre") as HTMLPreElement;
+const preKey = document.querySelector("#key pre") as HTMLPreElement;
 
 resetButton.addEventListener("click", () => {
   preTarget.innerHTML = "";
   preValue.innerHTML = "";
   preType.innerHTML = "";
+  preKey.innerHTML = "";
   preData.innerHTML = "";
 });
 
@@ -41,12 +44,11 @@ let unbind: () => void;
 handleCheckboxDynamic(
   checkboxes,
   (e, checkboxes) => {
-    const data = checkboxes.map((c) => ({
-      id: c.id,
-      checked: c.checked,
-    }));
+    const events = checkboxes.reduce((acc, el) => {
+      acc.push(el.id as HandleInputEvent);
 
-    console.log("handleCheckboxDynamic:", data);
+      return acc;
+    }, [] as HandleInputEvent[]);
 
     if (unbind) {
       unbind();
@@ -59,12 +61,15 @@ handleCheckboxDynamic(
 
         preTarget.innerText = target?.constructor?.name + "\n" + preTarget.innerText;
         preType.innerText = `>${e?.type}<` + "\n" + preType.innerText;
-        // preData.innerText = `>${e?.data}<` + "\n" + preData.innerText;
+        // @ts-ignore
+        preData.innerText = `>${e?.data}<` + "\n" + preData.innerText;
+        // @ts-ignore
+        preKey.innerText = `>${e?.key}<` + "\n" + preKey.innerText;
         preValue.innerText = `>${target?.value}<` + "\n" + preValue.innerText;
 
-        console.log("event:", e);
+        console.log("handleInput.event:", e);
       },
-      { onLoad: true }
+      { onLoad: true, events }
     );
   },
   { onLoad: true }
