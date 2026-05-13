@@ -109,8 +109,26 @@
             })
           </scr ipt>
         </script>
+        
         <div id="input_datalist"></div>
 
+        <h2>a</h2>
+        <script type="editor" data-lang="html">
+
+          when you are on page
+            http://google.com/dir/index.html?get1=value
+          to navigate to 
+            http://google.com/dir/index.html
+          you can create link
+            <a href="javascript:location.href=location.href.split('?')[0]">off</a>
+
+          another version
+            <a href="javascript:location.search=''">off</a>
+            but that will result in link
+              http://google.com/dir/index.html?
+            
+          
+        </script>
         <h2>redirect in html</h2>
 
         <script type="editor" data-lang="html">
