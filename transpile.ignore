@@ -4,6 +4,7 @@ tsc.ignore.ts
 node_modules
 bundle.ts
 transpile.ts
+transpile_pipe.ts
 es.ts
 bash/tee.ts
 vitest.config.ts

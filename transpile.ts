@@ -3,6 +3,8 @@
  */
 import * as esbuild from "esbuild";
 import readline from "readline";
+import path from "path";
+import fs from "fs";
 
 const log = (...args: any) => console.log("transpile.ts:", ...args);
 
@@ -46,10 +48,35 @@ const options: esbuild.BuildOptions = {
   platform: "node",
   format: "esm",
   target: "node20",
-  logLevel: "info",
+  logLevel: "warning",
   logOverride: {
     "direct-eval": "silent",
   },
+  plugins: [
+    {
+      name: "watch-reporter",
+      setup(build) {
+        const mtimes = new Map<string, number>();
+        let isInitialBuild = true;
+        build.onEnd((result) => {
+          if (result.errors.length > 0) return;
+          const changed: string[] = [];
+          for (const ep of entryPoints) {
+            try {
+              const stats = fs.statSync(ep);
+              const lastMtime = mtimes.get(ep);
+              if (lastMtime !== undefined && stats.mtimeMs > lastMtime) {
+                changed.push(ep);
+              }
+              mtimes.set(ep, stats.mtimeMs);
+            } catch (e) {}
+          }
+          changed.forEach((file) => console.log(`transpiled ${file}`));
+          isInitialBuild = false;
+        });
+      },
+    },
+  ],
 };
 
 if (watch) {
