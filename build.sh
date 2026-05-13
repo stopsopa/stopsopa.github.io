@@ -94,6 +94,8 @@ cp node_modules/envprocessor/dist/esm/env.js public/env.js
 
 time /bin/bash bundle.sh bundle.ignore
 
+time /bin/bash transpile.sh transpile.ignore
+
 time /bin/bash .github/ytlinksfix.sh
 
 # /bin/bash pages/kubernetes/compress.sh
@@ -108,6 +110,16 @@ time /bin/bash bash/substitute-variables-bash.sh gitstorage-core.sh -- \
 # I'm deliberately suppressing error to continue if above is not provided for local dev environment
 time /bin/bash .github/urlwizzard.sh
 
+time /bin/bash .github/injector.sh
+
+time /bin/bash es.sh
+
+# NOTICE: remember it will not process if --run not passed or CI env var is not present
+# I'm deliberately suppressing error to continue if above is not provided for local dev environment
+time /bin/bash .github/sha384.sh
+
+time /bin/bash pages/typescript/defaults/getconfig.sh
+
 # /bin/bash .github/toc-check.sh README.md 
 /bin/bash node_modules/.bin/markdown-toc -i README.md
 
@@ -118,13 +130,3 @@ time /bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write .
 # NOTICE: remember it will not process if --run not passed or CI env var is not present
 # I'm deliberately suppressing error to continue if above is not provided for local dev environment
 time /bin/bash .github/clicksecure.sh
-
-time /bin/bash .github/injector.sh
-
-# NOTICE: remember it will not process if --run not passed or CI env var is not present
-# I'm deliberately suppressing error to continue if above is not provided for local dev environment
-time /bin/bash .github/sha384.sh
-
-/bin/bash pages/typescript/defaults/getconfig.sh
-
-/bin/bash es.sh
