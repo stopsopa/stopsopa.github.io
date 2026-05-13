@@ -40,7 +40,9 @@ Description:
 
 const BATCH_SIZE = 3;
 const DEBOUNCE_MS = 100;
+const PADDING = 4;
 
+let counter = 0;
 let buffer: string[] = [];
 let timeout: NodeJS.Timeout | null = null;
 
@@ -71,7 +73,11 @@ function flush() {
       console.error(`stderr: ${stderr}`);
       return;
     }
-    files.forEach((f) => console.log(`frmtd: ${f}`));
+    counter++;
+    const c = String(counter).padStart(PADDING, "0");
+    files.forEach((f) => {
+      console.log(`frmtd: ${c} ${f}`);
+    });
   });
 }
 

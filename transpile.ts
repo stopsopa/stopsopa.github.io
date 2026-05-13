@@ -58,6 +58,7 @@ const options: esbuild.BuildOptions = {
   format: "esm",
   target: "node20",
   logLevel: "warning",
+  metafile: true,
   logOverride: {
     "direct-eval": "silent",
   },
@@ -65,23 +66,15 @@ const options: esbuild.BuildOptions = {
     {
       name: "watch-reporter",
       setup(build) {
-        const mtimes = new Map<string, number>();
-        let isInitialBuild = true;
         build.onEnd((result) => {
-          if (result.errors.length > 0) return;
-          const changed: string[] = [];
-          for (const ep of entryPoints) {
-            try {
-              const stats = fs.statSync(ep);
-              const lastMtime = mtimes.get(ep);
-              if (lastMtime !== undefined && stats.mtimeMs > lastMtime) {
-                changed.push(ep);
-              }
-              mtimes.set(ep, stats.mtimeMs);
-            } catch (e) {}
+          if (result.errors.length > 0 || !result.metafile) return;
+          const entryPoints = new Set<string>();
+          for (const info of Object.values(result.metafile.outputs)) {
+            if (info.entryPoint) {
+              entryPoints.add(info.entryPoint);
+            }
           }
-          changed.forEach((file) => console.log(`transpiled ${file}`));
-          isInitialBuild = false;
+          entryPoints.forEach((file) => console.log(`transpiled ${file}`));
         });
       },
     },
