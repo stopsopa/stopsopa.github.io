@@ -79,7 +79,7 @@ fi
 mkdir -p public
 
 # transpile all "module*.ts" right next in the same directoris but as *.js
-/bin/bash node_modules/.bin/tsc
+npx tsc
 
 node pages/portsregistry/lists/ports-generator.js
 
