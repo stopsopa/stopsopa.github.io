@@ -128,10 +128,10 @@ handleCheckboxDynamic(
 
         console.log("handleInput.event:", e);
       },
-      { 
-        onLoad: hasKeys.onLoad, 
+      {
+        onLoad: hasKeys.onLoad,
         observeMutations: hasKeys.observeMutations,
-        events 
+        events,
       }
     );
   },

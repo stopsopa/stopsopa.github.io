@@ -59,6 +59,4 @@ function handleCheckboxFixed(parentToBind, elements, event, options = {}) {
     unbind.forEach((un) => un());
   };
 }
-export {
-  handleCheckboxFixed as default
-};
+export { handleCheckboxFixed as default };

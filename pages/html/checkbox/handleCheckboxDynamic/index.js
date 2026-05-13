@@ -1,5 +1,5 @@
 import handleCheckboxDynamic from "./handleCheckboxDynamic.ts";
-const hasKeys = (function() {
+const hasKeys = (function () {
   const url = new URL(location.href);
   const obj = {};
   [...url.searchParams.keys()].forEach((key) => {
@@ -45,37 +45,37 @@ handleCheckboxDynamic(
     const data = checkboxes.map((c) => ({
       name: c.name,
       value: c.value,
-      checked: c.checked
+      checked: c.checked,
     }));
     console.log("handleCheckboxDynamic:", e, data);
     pre.innerHTML = JSON.stringify(data) + "\n" + pre.innerHTML;
   },
   {
     onLoad: hasKeys.onLoad,
-    observeMutations: hasKeys.observeMutations
+    observeMutations: hasKeys.observeMutations,
   }
 );
 const sets = [
   {
     name: "d",
     value: "value d",
-    checked: true
+    checked: true,
   },
   {
     name: "e",
     value: "value ee",
-    checked: false
+    checked: false,
   },
   {
     name: "ff",
     value: "value f",
-    checked: true
+    checked: true,
   },
   {
     name: "h",
     value: "value h",
-    checked: false
-  }
+    checked: false,
+  },
 ];
 function getNextSet() {
   return sets.shift();

@@ -39,7 +39,6 @@ test("trigger forwards all arguments", () => {
   expect(handler).toHaveBeenCalledWith(1, 2, 3);
 });
 
-
 test("destroy clears all bindings", () => {
   const subscriber = createSubscriber();
   subscriber.bind("a", () => {});
@@ -78,4 +77,3 @@ test("type safety and inference", () => {
   subscriber.trigger("logout");
   expect(logoutHandler).toHaveBeenCalled();
 });
-

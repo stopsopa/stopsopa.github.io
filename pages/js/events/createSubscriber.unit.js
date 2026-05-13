@@ -27,22 +27,17 @@ test("trigger forwards all arguments", () => {
 });
 test("destroy clears all bindings", () => {
   const subscriber = createSubscriber();
-  subscriber.bind("a", () => {
-  });
-  subscriber.bind("b", () => {
-  });
+  subscriber.bind("a", () => {});
+  subscriber.bind("b", () => {});
   expect(subscriber.getCount()).toBe(2);
   subscriber.destroy();
   expect(subscriber.getCount()).toBe(0);
 });
 test("getCount returns total number of handlers", () => {
   const subscriber = createSubscriber();
-  subscriber.bind("a", () => {
-  });
-  subscriber.bind("a", () => {
-  });
-  subscriber.bind("b", () => {
-  });
+  subscriber.bind("a", () => {});
+  subscriber.bind("a", () => {});
+  subscriber.bind("b", () => {});
   expect(subscriber.getCount()).toBe(3);
 });
 test("type safety and inference", () => {

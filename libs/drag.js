@@ -38,7 +38,4 @@ function drag(element, listener, fetch) {
   }
   element.addEventListener("mousedown", mousedown);
 }
-export {
-  drag as default,
-  getStyle
-};
+export { drag as default, getStyle };

@@ -23,11 +23,9 @@ function createSubscriber() {
   }
   function getCount() {
     let count = 0;
-    bindings.forEach((handlers) => count += handlers.size);
+    bindings.forEach((handlers) => (count += handlers.size));
     return count;
   }
   return { bind, unbind, unbindGroup, trigger, destroy, getCount };
 }
-export {
-  createSubscriber as default
-};
+export { createSubscriber as default };

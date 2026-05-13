@@ -7,7 +7,7 @@ function handleInput(parentToBind, event, options = {}) {
     events = ["input", "change"],
     findInputs = (parent) => parent.querySelectorAll(`input[type="text"]`),
     detectElement = (el) => el.matches(`input[type="text"]`),
-    observeMutations = false
+    observeMutations = false,
   } = options;
   function handler(e) {
     const el = e?.target;
@@ -62,6 +62,4 @@ function handleInput(parentToBind, event, options = {}) {
     observer?.disconnect();
   };
 }
-export {
-  handleInput as default
-};
+export { handleInput as default };

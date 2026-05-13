@@ -12,7 +12,7 @@ function handleCheckboxDynamic(parentToBind, event, options) {
     detectElement = (el) => el.matches(`input[type="checkbox"]`),
     extractKey = (el) => el.id || el?.name,
     alwaysReturnAllCheckboxes = false,
-    observeMutations = false
+    observeMutations = false,
   } = options || {};
   {
     const keys = safeKeys(events);
@@ -89,6 +89,4 @@ function handleCheckboxDynamic(parentToBind, event, options) {
     observer?.disconnect();
   };
 }
-export {
-  handleCheckboxDynamic as default
-};
+export { handleCheckboxDynamic as default };

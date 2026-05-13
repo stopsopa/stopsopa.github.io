@@ -1,6 +1,6 @@
 import handleInput from "./handleInput.js";
 import handleCheckboxDynamic from "../checkbox/handleCheckboxDynamic/handleCheckboxDynamic.js";
-const hasKeys = (function() {
+const hasKeys = (function () {
   const url = new URL(location.href);
   const obj = {};
   [...url.searchParams.keys()].forEach((key) => {
@@ -20,7 +20,7 @@ form.addEventListener("submit", (e) => {
 const addbox = document.querySelector("#addbox");
 const addbutton = document.querySelector("#addbutton");
 if (addbox && addbutton) {
-  let getNextSet = function() {
+  let getNextSet = function () {
     return sets.shift();
   };
   var getNextSet2 = getNextSet;
@@ -28,7 +28,7 @@ if (addbox && addbutton) {
     { name: "d", value: "value d" },
     { name: "e", value: "value ee" },
     { name: "ff", value: "value f" },
-    { name: "h", value: "value h" }
+    { name: "h", value: "value h" },
   ];
   addbutton.addEventListener("click", () => {
     const set = getNextSet();
@@ -71,7 +71,7 @@ if (!preTarget || !preValue || !preType) {
   console.log({
     preTarget,
     preValue,
-    preType
+    preType,
   });
   throw new Error("preTarget or preValue or preType not found");
 }
@@ -92,22 +92,28 @@ handleCheckboxDynamic(
       (e2) => {
         const target = e2?.target;
         preTarget.innerText = target?.constructor?.name + "\n" + preTarget.innerText;
-        preType.innerText = `>${e2?.type}<
+        preType.innerText =
+          `>${e2?.type}<
 ` + preType.innerText;
-        preData.innerText = `>${e2?.data}<
+        preData.innerText =
+          `>${e2?.data}<
 ` + preData.innerText;
-        preKey.innerText = `>${e2?.key}<
+        preKey.innerText =
+          `>${e2?.key}<
 ` + preKey.innerText;
-        if (preName) preName.innerText = `>${target?.name}<
+        if (preName)
+          preName.innerText =
+            `>${target?.name}<
 ` + preName.innerText;
-        preValue.innerText = `>${target?.value}<
+        preValue.innerText =
+          `>${target?.value}<
 ` + preValue.innerText;
         console.log("handleInput.event:", e2);
       },
       {
         onLoad: hasKeys.onLoad,
         observeMutations: hasKeys.observeMutations,
-        events
+        events,
       }
     );
   },
