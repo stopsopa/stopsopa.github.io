@@ -1,5 +1,13 @@
 import handleInput from "./handleInput.js";
 import handleCheckboxDynamic from "../checkbox/handleCheckboxDynamic/handleCheckboxDynamic.js";
+const hasKeys = (function() {
+  const url = new URL(location.href);
+  const obj = {};
+  [...url.searchParams.keys()].forEach((key) => {
+    obj[key] = true;
+  });
+  return obj;
+})();
 const form = document.querySelector("form");
 const pre = document.querySelector("pre");
 const resetButton = document.querySelector("#reset");
@@ -9,6 +17,42 @@ if (!form || !pre || !resetButton) {
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 });
+const addbox = document.querySelector("#addbox");
+const addbutton = document.querySelector("#addbutton");
+if (addbox && addbutton) {
+  let getNextSet = function() {
+    return sets.shift();
+  };
+  var getNextSet2 = getNextSet;
+  const sets = [
+    { name: "d", value: "value d" },
+    { name: "e", value: "value ee" },
+    { name: "ff", value: "value f" },
+    { name: "h", value: "value h" }
+  ];
+  addbutton.addEventListener("click", () => {
+    const set = getNextSet();
+    if (!set) {
+      console.log("all sets are used");
+      return;
+    }
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <label>
+        input ${set.name} <input type="text" name="${set.name}" value="${set.value}" />
+      </label>
+      <button type="button" name="${set.name}">remove</button>
+    `;
+    addbox.appendChild(div);
+  });
+  form.addEventListener("click", (e) => {
+    const el = e.target;
+    if (el.tagName === "BUTTON" && el.innerText === "remove") {
+      const row = el.parentElement;
+      row?.remove();
+    }
+  });
+}
 const preTarget = document.querySelector("#target pre");
 const preValue = document.querySelector("#value pre");
 const preType = document.querySelector("#type pre");
@@ -54,10 +98,13 @@ handleCheckboxDynamic(
 ` + preKey.innerText;
         preValue.innerText = `>${target?.value}<
 ` + preValue.innerText;
-
         console.log("handleInput.event:", e2);
       },
-      { onLoad: true, events }
+      {
+        onLoad: hasKeys.onLoad,
+        observeMutations: hasKeys.observeMutations,
+        events
+      }
     );
   },
   { onLoad: true }

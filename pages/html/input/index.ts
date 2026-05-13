@@ -3,6 +3,22 @@ import type { HandleInputEvent } from "./handleInput.js";
 
 import handleCheckboxDynamic from "../checkbox/handleCheckboxDynamic/handleCheckboxDynamic.js";
 
+/**
+ * for url http://google.com/test?abc&def#hash
+ * returns {abc: true, def: true}
+ */
+const hasKeys = (function () {
+  const url = new URL(location.href);
+
+  const obj: Record<string, boolean> = {};
+
+  [...url.searchParams.keys()].forEach((key) => {
+    obj[key] = true;
+  });
+
+  return obj;
+})();
+
 const form = document.querySelector("form") as HTMLFormElement;
 const pre = document.querySelector("pre") as HTMLPreElement;
 const resetButton = document.querySelector("#reset") as HTMLButtonElement;
@@ -14,6 +30,46 @@ if (!form || !pre || !resetButton) {
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 });
+
+const addbox = document.querySelector("#addbox") as HTMLDivElement;
+const addbutton = document.querySelector("#addbutton") as HTMLButtonElement;
+
+if (addbox && addbutton) {
+  const sets = [
+    { name: "d", value: "value d" },
+    { name: "e", value: "value ee" },
+    { name: "ff", value: "value f" },
+    { name: "h", value: "value h" },
+  ];
+  function getNextSet() {
+    return sets.shift();
+  }
+
+  addbutton.addEventListener("click", () => {
+    const set = getNextSet();
+    if (!set) {
+      console.log("all sets are used");
+      return;
+    }
+
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <label>
+        input ${set.name} <input type="text" name="${set.name}" value="${set.value}" />
+      </label>
+      <button type="button" name="${set.name}">remove</button>
+    `;
+    addbox.appendChild(div);
+  });
+
+  form.addEventListener("click", (e) => {
+    const el = e.target as HTMLElement;
+    if (el.tagName === "BUTTON" && el.innerText === "remove") {
+      const row = el.parentElement;
+      row?.remove();
+    }
+  });
+}
 
 const preTarget = document.querySelector("#target pre") as HTMLPreElement;
 const preValue = document.querySelector("#value pre") as HTMLPreElement;
@@ -69,7 +125,11 @@ handleCheckboxDynamic(
 
         console.log("handleInput.event:", e);
       },
-      { onLoad: true, events }
+      { 
+        onLoad: hasKeys.onLoad, 
+        observeMutations: hasKeys.observeMutations,
+        events 
+      }
     );
   },
   { onLoad: true }

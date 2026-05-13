@@ -47,6 +47,12 @@
           margin-right: 20px;
         }
       }
+      #addbox > div {
+        margin-bottom: 15px;
+        button {
+          float: right;
+        }
+      }
     </style>
   </head>
   <body class="layout bg">
@@ -54,6 +60,15 @@
       <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
       <div class="inside">
         <div class="cards">
+          <a href="?onLoad&observeMutations">onLoad & observeMutations</a>
+          <br />
+          <a href="?onLoad">onLoad</a>
+          <br />
+          <a href="?observeMutations">observeMutations</a>
+          <br />
+          <a href="javascript:location.href=location.href.split('?')[0]">off</a>
+          <br />
+          <a href="javascript:location.search=''">off v2</a>
           <h2>Index</h2>
           <script type="editor" data-lang="sh">
 
@@ -73,9 +88,30 @@
 
         <form>
           <h2>form</h2>
-          <label>input: <input type="text" /></label>
+
+          <div id="addbox">
+            <div>
+              <label>
+                input a <input type="text" name="a" value="value_a" />
+              </label>
+              <button type="button" name="a">remove</button>
+            </div>
+            <div>
+              <label>
+                input b <input type="text" name="b" value="value b" />
+              </label>
+              <button type="button" name="b">remove</button>
+            </div>
+            <div>
+              <label>
+                input c <input type="text" name="c" value="value c" />
+              </label>
+              <button type="button" name="c">remove</button>
+            </div>
+          </div>
           <input type="submit" value="submit" />
         </form>
+        <button id="addbutton">add input</button>
         <button id="reset" type="button">reset</button>
       </div>
     </div>
