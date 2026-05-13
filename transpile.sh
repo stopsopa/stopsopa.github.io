@@ -34,3 +34,6 @@ f -name "*.ts" \
 -print \
 | node gitignore.js "${IGNORE_FILE}" \
 | /bin/bash ts.sh transpile.ts "$@" | node transpile_pipe.ts
+
+
+# | /bin/bash ts.sh transpile.ts "$@" 

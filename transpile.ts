@@ -34,9 +34,15 @@ if (entryPoints.length === 0) {
   process.exit(0);
 }
 
-log(`
-    ${entryPoints.join("\n    ")}
-`);
+const buff = [...entryPoints];
+buff.unshift('');
+const files = buff.join("\ntranspiled ");
+
+console.log(`
+
+${files}
+
+`)
 
 const options: esbuild.BuildOptions = {
   entryPoints,
