@@ -5,17 +5,23 @@
  * Workflow:
  * 1.  Listens to `stdin` for lines matching the pattern "transpiled [file].ts".
  * 2.  When a match is found, it identifies the corresponding generated ".js" file.
- * 3.  Checks if the ".js" file exists on the filesystem.
- * 4.  If it exists, it triggers `prettier` to format the generated JavaScript file 
- *     using the project's configuration (prettier.config.cjs).
- * 5.  Logs the original stdin line (prefixed with "stdin: ") and reports successful 
- *     formatting (prefixed with "frmtd: ") or any errors encountered.
+ * 3.  Checks if the ".js" file exists on the filesystem and adds it to a buffer.
+ * 4.  Buffering & Batching:
+ *     - Groups up to BATCH_SIZE (3) files to format them in a single Prettier command.
+ *     - Uses a DEBOUNCE_MS (100ms) timer to flush the buffer if it doesn't fill up.
+ * 5.  Formatting:
+ *     - Uses `spawn` to run Prettier safely, passing files as an array of arguments 
+ *       (avoids issues with spaces in paths).
+ * 6.  Logs:
+ *     - Original stdin lines (prefixed with "stdin: ").
+ *     - Successful formatting (prefixed with "frmtd: ").
+ *     - Any errors or stderr output from Prettier.
  * 
  * Usage example:
  * node transpile.ts --watch | node transpile_pipe.ts
  */
 import readline from "readline";
-import { exec } from "child_process";
+import { spawn } from "child_process";
 import fs from "fs";
 
 if (process.stdin.isTTY) {
@@ -32,6 +38,43 @@ Description:
   process.exit(0);
 }
 
+const BATCH_SIZE = 3;
+const DEBOUNCE_MS = 100;
+
+let buffer: string[] = [];
+let timeout: NodeJS.Timeout | null = null;
+
+function flush() {
+  if (timeout) {
+    clearTimeout(timeout);
+    timeout = null;
+  }
+  if (buffer.length === 0) return;
+
+  const files = [...buffer];
+  buffer = [];
+
+  const args = ["--config", "prettier.config.cjs", "--write", ...files];
+  const proc = spawn("node_modules/.bin/prettier", args);
+
+  let stderr = "";
+  proc.stderr.on("data", (data) => {
+    stderr += data.toString();
+  });
+
+  proc.on("error", (error) => {
+    console.error(`error: ${error.message}`);
+  });
+
+  proc.on("close", (code) => {
+    if (code !== 0) {
+      console.error(`stderr: ${stderr}`);
+      return;
+    }
+    files.forEach((f) => console.log(`frmtd: ${f}`));
+  });
+}
+
 const rl = readline.createInterface({
   input: process.stdin,
   terminal: false,
@@ -46,18 +89,16 @@ rl.on("line", (line) => {
     const jsFile = tsFile.replace(/\.ts$/, ".js");
 
     if (fs.existsSync(jsFile)) {
-      const cmd = `/bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write ${jsFile}`;
-      exec(cmd, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`error: ${error.message}`);
-          return;
+      buffer.push(jsFile);
+
+      if (buffer.length >= BATCH_SIZE) {
+        flush();
+      } else {
+        if (timeout) {
+          clearTimeout(timeout);
         }
-        if (stderr) {
-          console.error(`stderr: ${stderr}`);
-          return;
-        }
-        console.log(`frmtd: ${jsFile}`);
-      });
+        timeout = setTimeout(flush, DEBOUNCE_MS);
+      }
     }
   }
 });
