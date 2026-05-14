@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CPS Tester — Both Buttons</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -18,14 +17,10 @@
     --text: #f0f0f5;
     --muted: #6b6b80;
     --left: #4f8ef7;
-    --left-glow: rgba(79,142,247,0.25);
-    --left-dim: rgba(79,142,247,0.08);
     --right: #3ecf8e;
-    --right-glow: rgba(62,207,142,0.25);
-    --right-dim: rgba(62,207,142,0.08);
     --warn: #f5a623;
     --danger: #f56b6b;
-    --radius: 14px;
+    --radius: 16px;
     --radius-sm: 8px;
   }
 
@@ -39,7 +34,6 @@
     align-items: center;
     justify-content: center;
     padding: 2rem 1rem;
-    overflow-x: hidden;
   }
 
   body::before {
@@ -47,42 +41,23 @@
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse 60% 40% at 20% 30%, rgba(79,142,247,0.06) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 35% at 80% 70%, rgba(62,207,142,0.05) 0%, transparent 60%);
+      radial-gradient(ellipse 50% 40% at 15% 30%, rgba(79,142,247,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 85% 70%, rgba(62,207,142,0.05) 0%, transparent 60%);
     pointer-events: none;
-    z-index: 0;
   }
 
   .container {
     position: relative;
-    z-index: 1;
     width: 100%;
-    max-width: 680px;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
   }
 
-  header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-
-  .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 0.75rem;
-  }
-
-  .logo-icon {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--left), var(--right));
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  .logo-icon svg { width: 18px; height: 18px; fill: #fff; }
-
+  header { text-align: center; }
   h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 800;
     letter-spacing: -0.03em;
     background: linear-gradient(90deg, var(--left), var(--right));
@@ -90,230 +65,235 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   .subtitle {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: var(--muted);
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: 600;
+    margin-top: 4px;
   }
 
   .timer-track {
     height: 3px;
     background: var(--surface2);
     border-radius: 2px;
-    margin-bottom: 2rem;
     overflow: hidden;
   }
-
   .timer-fill {
     height: 100%;
     width: 100%;
     border-radius: 2px;
     background: linear-gradient(90deg, var(--left), var(--right));
     transition: width 0.08s linear, background 0.3s;
-    transform-origin: left;
   }
 
-  .btn-grid {
+  /* MAIN ROW: stat col | zone | stat col */
+  .main-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 1.5rem;
+    grid-template-columns: 160px 1fr 160px;
+    gap: 14px;
+    align-items: stretch;
   }
 
+  .stat-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .col-header {
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    text-align: center;
+    padding: 2px 0 4px;
+  }
+  .left-col .col-header { color: var(--left); }
+  .right-col .col-header { color: var(--right); }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.8rem 0.9rem;
+    text-align: center;
+    flex: 1;
+  }
+
+  .stat-label {
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .stat-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.35rem;
+    font-weight: 700;
+  }
+  .left-col .stat-val { color: var(--left); }
+  .right-col .stat-val { color: var(--right); }
+
+  /* CLICK ZONE */
   .click-zone {
     position: relative;
     border-radius: var(--radius);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border2);
     background: var(--surface);
-    height: 200px;
+    min-height: 260px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 8px;
     overflow: hidden;
-    transition: border-color 0.15s, background 0.15s, transform 0.08s;
     user-select: none;
     -webkit-user-select: none;
+    transition: border-color 0.15s;
   }
+  .click-zone:hover { border-color: rgba(255,255,255,0.2); }
 
-  .click-zone::before {
-    content: '';
+  .flash-left, .flash-right {
     position: absolute;
     inset: 0;
-    opacity: 0;
-    transition: opacity 0.15s;
     border-radius: var(--radius);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.09s;
+  }
+  .flash-left  { background: radial-gradient(ellipse at 30% 50%, rgba(79,142,247,0.2), transparent 70%); }
+  .flash-right { background: radial-gradient(ellipse at 70% 50%, rgba(62,207,142,0.2), transparent 70%); }
+  .click-zone.fl .flash-left  { opacity: 1; }
+  .click-zone.fr .flash-right { opacity: 1; }
+
+  .split-line {
+    position: absolute;
+    top: 14px; bottom: 14px;
+    left: 50%;
+    width: 1px;
+    background: var(--border);
+    transform: translateX(-50%);
   }
 
-  .click-zone.left::before { background: var(--left-dim); }
-  .click-zone.right::before { background: var(--right-dim); }
-
-  .click-zone.left { border-color: rgba(79,142,247,0.25); }
-  .click-zone.right { border-color: rgba(62,207,142,0.25); }
-
-  .click-zone.left:hover {
-    border-color: rgba(79,142,247,0.5);
-    box-shadow: 0 0 30px var(--left-glow);
+  .side-tag {
+    position: absolute;
+    top: 12px;
+    font-size: 0.58rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 3px 8px;
+    border-radius: 5px;
   }
-  .click-zone.right:hover {
-    border-color: rgba(62,207,142,0.5);
-    box-shadow: 0 0 30px var(--right-glow);
+  .side-tag.l {
+    left: 12px;
+    color: var(--left);
+    background: rgba(79,142,247,0.1);
+    border: 1px solid rgba(79,142,247,0.25);
   }
-
-  .click-zone.left:hover::before,
-  .click-zone.right:hover::before { opacity: 1; }
-
-  .click-zone.active {
-    transform: scale(0.967);
-  }
-  .click-zone.left.active {
-    border-color: var(--left);
-    box-shadow: 0 0 40px var(--left-glow), inset 0 0 20px rgba(79,142,247,0.1);
-  }
-  .click-zone.right.active {
-    border-color: var(--right);
-    box-shadow: 0 0 40px var(--right-glow), inset 0 0 20px rgba(62,207,142,0.1);
+  .side-tag.r {
+    right: 12px;
+    color: var(--right);
+    background: rgba(62,207,142,0.1);
+    border: 1px solid rgba(62,207,142,0.25);
   }
 
-  .zone-count {
+  .zone-total {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 3rem;
+    font-size: 4rem;
     font-weight: 700;
+    color: var(--text);
     line-height: 1;
-    transition: transform 0.07s;
     position: relative;
     z-index: 1;
   }
 
-  .click-zone.left .zone-count { color: var(--left); }
-  .click-zone.right .zone-count { color: var(--right); }
-
-  .zone-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
+  .zone-sublabel {
+    font-size: 0.68rem;
     color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     font-weight: 600;
     position: relative;
     z-index: 1;
   }
 
-  .zone-badge {
+  .zone-hint {
     position: absolute;
-    top: 12px;
-    left: 12px;
+    bottom: 14px;
+    left: 0; right: 0;
+    text-align: center;
     font-size: 0.65rem;
-    font-weight: 700;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 3px 8px;
-    border-radius: 5px;
-  }
-
-  .click-zone.left .zone-badge {
-    background: rgba(79,142,247,0.15);
-    color: var(--left);
-    border: 1px solid rgba(79,142,247,0.3);
-  }
-  .click-zone.right .zone-badge {
-    background: rgba(62,207,142,0.15);
-    color: var(--right);
-    border: 1px solid rgba(62,207,142,0.3);
-  }
-
-  .zone-cps {
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    font-weight: 500;
-    opacity: 0.6;
   }
 
   .ripple {
     position: absolute;
     border-radius: 50%;
     transform: scale(0);
-    animation: rippleAnim 0.45s ease-out forwards;
+    animation: rpl 0.5s ease-out forwards;
     pointer-events: none;
   }
+  .ripple.l { background: rgba(79,142,247,0.22); }
+  .ripple.r { background: rgba(62,207,142,0.22); }
+  @keyframes rpl { to { transform: scale(5); opacity: 0; } }
 
-  .click-zone.left .ripple { background: rgba(79,142,247,0.3); }
-  .click-zone.right .ripple { background: rgba(62,207,142,0.3); }
-
-  @keyframes rippleAnim {
-    to { transform: scale(4); opacity: 0; }
+  /* COMBINED */
+  .combined-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .combined-header {
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-align: center;
   }
-
-  .stats-row {
+  .combined-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 1.5rem;
+    gap: 10px;
   }
-
-  .stat {
+  .combined-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 1rem;
+    padding: 0.8rem 1rem;
     text-align: center;
   }
+  .combined-card .stat-val { color: var(--text); font-size: 1.35rem; }
 
-  .stat-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-
-  .stat-val {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
+  /* CONTROLS */
+  .controls { display: flex; gap: 10px; }
 
   select {
     flex: 1;
-    min-width: 130px;
     background: var(--surface);
     border: 1px solid var(--border2);
     color: var(--text);
     font-family: 'Syne', sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
-    padding: 10px 14px;
+    padding: 10px 32px 10px 14px;
     border-radius: var(--radius-sm);
     cursor: pointer;
     appearance: none;
-    -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b80' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
-    padding-right: 32px;
   }
-
   select:focus { outline: none; border-color: var(--left); }
 
   .reset-btn {
     flex: 1;
-    min-width: 100px;
     padding: 10px 20px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border2);
@@ -321,103 +301,38 @@
     color: var(--text);
     font-family: 'Syne', sans-serif;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
+    transition: background 0.15s;
     letter-spacing: 0.03em;
   }
-
-  .reset-btn:hover { background: var(--surface2); border-color: var(--border2); }
+  .reset-btn:hover { background: var(--surface2); }
   .reset-btn:active { transform: scale(0.97); }
 
   .status {
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--muted);
-    margin-top: 1.25rem;
     font-weight: 500;
-    letter-spacing: 0.04em;
-    height: 1.2em;
-    transition: color 0.2s;
+    letter-spacing: 0.05em;
   }
 
-  .results-panel {
-    margin-top: 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-    display: none;
-    animation: fadeUp 0.35s ease;
-  }
-
-  .results-panel.show { display: block; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .results-title {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--muted);
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-
-  .results-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-  }
-
-  .res-item { text-align: center; }
-
-  .res-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    margin-bottom: 4px;
-  }
-
-  .res-val {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .res-val.blue { color: var(--left); }
-  .res-val.green { color: var(--right); }
-
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 1rem 0;
-  }
-
-  @media (max-width: 480px) {
-    h1 { font-size: 1.5rem; }
-    .click-zone { height: 160px; }
-    .zone-count { font-size: 2.2rem; }
-    .stat-val { font-size: 1.3rem; }
-    .results-grid { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 560px) {
+    .main-row { grid-template-columns: 1fr; }
+    .stat-col { flex-direction: row; }
+    .stat-col .col-header { display: none; }
+    .stat-card { flex: 1; }
+    .click-zone { min-height: 160px; order: -1; }
+    .zone-total { font-size: 2.8rem; }
   }
 </style>
 </head>
 <body oncontextmenu="return false;">
 
 <div class="container">
+
   <header>
-    <div class="logo">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg>
-      </div>
-      <h1>CPS Tester</h1>
-    </div>
+    <h1>CPS Tester</h1>
     <p class="subtitle">Both buttons · Click speed test</p>
   </header>
 
@@ -425,33 +340,72 @@
     <div class="timer-fill" id="timerFill"></div>
   </div>
 
-  <div class="btn-grid">
-    <div class="click-zone left" id="leftZone" tabindex="0" role="button" aria-label="Left click area">
-      <span class="zone-badge">Left click</span>
-      <div class="zone-count" id="leftCount">0</div>
-      <div class="zone-label">Left button</div>
-      <div class="zone-cps" id="leftCps">0.0 cps</div>
+  <div class="main-row">
+
+    <!-- LEFT STATS -->
+    <div class="stat-col left-col">
+      <div class="col-header">Left button</div>
+      <div class="stat-card">
+        <div class="stat-label">Clicks</div>
+        <div class="stat-val" id="leftClicks">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">CPS</div>
+        <div class="stat-val" id="leftCps">0.0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Max CPS</div>
+        <div class="stat-val" id="leftMax">0.0</div>
+      </div>
     </div>
-    <div class="click-zone right" id="rightZone" tabindex="0" role="button" aria-label="Right click area">
-      <span class="zone-badge">Right click</span>
-      <div class="zone-count" id="rightCount">0</div>
-      <div class="zone-label">Right button</div>
-      <div class="zone-cps" id="rightCps">0.0 cps</div>
+
+    <!-- SINGLE CLICK ZONE -->
+    <div class="click-zone" id="clickZone">
+      <div class="flash-left"></div>
+      <div class="flash-right"></div>
+      <div class="split-line"></div>
+      <span class="side-tag l">Left click</span>
+      <span class="side-tag r">Right click</span>
+      <div class="zone-total" id="zoneTotal">0</div>
+      <div class="zone-sublabel">total clicks</div>
+      <div class="zone-hint">Left click · Right click</div>
     </div>
+
+    <!-- RIGHT STATS -->
+    <div class="stat-col right-col">
+      <div class="col-header">Right button</div>
+      <div class="stat-card">
+        <div class="stat-label">Clicks</div>
+        <div class="stat-val" id="rightClicks">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">CPS</div>
+        <div class="stat-val" id="rightCps">0.0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Max CPS</div>
+        <div class="stat-val" id="rightMax">0.0</div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="stats-row">
-    <div class="stat">
-      <div class="stat-label">Total Clicks</div>
-      <div class="stat-val" id="totalClicks">0</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Combined CPS</div>
-      <div class="stat-val" id="combinedCps">0.0</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Time Left</div>
-      <div class="stat-val" id="timeLeft">—</div>
+  <!-- COMBINED STATS -->
+  <div class="combined-wrap">
+    <div class="combined-header">Combined</div>
+    <div class="combined-row">
+      <div class="combined-card">
+        <div class="stat-label">Total clicks</div>
+        <div class="stat-val" id="totalClicks">0</div>
+      </div>
+      <div class="combined-card">
+        <div class="stat-label">Combined CPS</div>
+        <div class="stat-val" id="combinedCps">0.0</div>
+      </div>
+      <div class="combined-card">
+        <div class="stat-label">Time left</div>
+        <div class="stat-val" id="timeLeft">—</div>
+      </div>
     </div>
   </div>
 
@@ -466,136 +420,93 @@
     <button class="reset-btn" onclick="resetTest()">↺ Reset</button>
   </div>
 
-  <p class="status" id="statusMsg">Click either area to start the test</p>
+  <p class="status" id="statusMsg">Click the area above to start — left or right button</p>
 
-  <div class="results-panel" id="resultsPanel">
-    <div class="results-title">Final results</div>
-    <div class="results-grid">
-      <div class="res-item">
-        <div class="res-label">Left clicks</div>
-        <div class="res-val blue" id="rLeft">0</div>
-      </div>
-      <div class="res-item">
-        <div class="res-label">Right clicks</div>
-        <div class="res-val green" id="rRight">0</div>
-      </div>
-      <div class="res-item">
-        <div class="res-label">Total clicks</div>
-        <div class="res-val" id="rTotal">0</div>
-      </div>
-    </div>
-    <div class="divider"></div>
-    <div class="results-grid">
-      <div class="res-item">
-        <div class="res-label">Left CPS</div>
-        <div class="res-val blue" id="rLeftCps">0.00</div>
-      </div>
-      <div class="res-item">
-        <div class="res-label">Right CPS</div>
-        <div class="res-val green" id="rRightCps">0.00</div>
-      </div>
-      <div class="res-item">
-        <div class="res-label">Combined CPS</div>
-        <div class="res-val" id="rCombined">0.00</div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
-  let leftClicks = 0, rightClicks = 0;
+  let lc = 0, rc = 0;
   let started = false, finished = false;
-  let startTime = null, duration = 10;
+  let startTime = null, dur = 10;
   let ticker = null;
+  let lMax = 0, rMax = 0;
+  let lastLc = 0, lastRc = 0, lastSec = 0;
 
+  const zone = document.getElementById('clickZone');
   const $ = id => document.getElementById(id);
-  const leftZone = $('leftZone');
-  const rightZone = $('rightZone');
 
-  function spawnRipple(zone, x, y) {
+  function ripple(x, y, side) {
     const rect = zone.getBoundingClientRect();
-    const cx = (x || rect.left + rect.width / 2) - rect.left;
-    const cy = (y || rect.top + rect.height / 2) - rect.top;
-    const size = Math.max(rect.width, rect.height) * 0.8;
-    const r = document.createElement('div');
-    r.className = 'ripple';
-    r.style.cssText = `width:${size}px;height:${size}px;left:${cx - size/2}px;top:${cy - size/2}px`;
-    zone.appendChild(r);
-    r.addEventListener('animationend', () => r.remove());
+    const size = Math.max(rect.width, rect.height) * 0.7;
+    const el = document.createElement('div');
+    el.className = 'ripple ' + side;
+    el.style.cssText = `width:${size}px;height:${size}px;left:${x - rect.left - size/2}px;top:${y - rect.top - size/2}px`;
+    zone.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
   }
 
-  function flashZone(zone) {
-    zone.classList.add('active');
-    setTimeout(() => zone.classList.remove('active'), 90);
+  function flash(side) {
+    const cls = side === 'l' ? 'fl' : 'fr';
+    zone.classList.add(cls);
+    setTimeout(() => zone.classList.remove(cls), 100);
   }
 
   function handleClick(side, x, y) {
     if (finished) return;
     if (!started) startTest();
-    if (side === 'left') {
-      leftClicks++;
-      $('leftCount').textContent = leftClicks;
-      spawnRipple(leftZone, x, y);
-      flashZone(leftZone);
-    } else {
-      rightClicks++;
-      $('rightCount').textContent = rightClicks;
-      spawnRipple(rightZone, x, y);
-      flashZone(rightZone);
-    }
+    if (side === 'l') lc++; else rc++;
+    ripple(x, y, side);
+    flash(side);
+    $('leftClicks').textContent = lc;
+    $('rightClicks').textContent = rc;
+    const total = lc + rc;
+    $('totalClicks').textContent = total;
+    $('zoneTotal').textContent = total;
   }
 
-  leftZone.addEventListener('mousedown', e => {
-    if (e.button === 0) handleClick('left', e.clientX, e.clientY);
+  zone.addEventListener('mousedown', e => {
+    e.preventDefault();
+    if (e.button === 0) handleClick('l', e.clientX, e.clientY);
+    if (e.button === 2) handleClick('r', e.clientX, e.clientY);
   });
-
-  rightZone.addEventListener('mousedown', e => {
-    if (e.button === 2) handleClick('right', e.clientX, e.clientY);
-  });
-
-  rightZone.addEventListener('contextmenu', e => e.preventDefault());
+  zone.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('contextmenu', e => e.preventDefault());
-
-  leftZone.addEventListener('keydown', e => {
-    if (e.code === 'Space' || e.code === 'Enter') handleClick('left');
-  });
 
   function startTest() {
     started = true;
-    duration = parseInt($('durationSel').value);
+    dur = parseInt($('durationSel').value);
     startTime = performance.now();
-    $('statusMsg').textContent = 'Test running — keep clicking!';
-    $('statusMsg').style.color = 'var(--text)';
-    ticker = setInterval(tick, 50);
+    $('statusMsg').textContent = 'Keep clicking!';
+    ticker = setInterval(tick, 80);
   }
 
   function tick() {
     const elapsed = (performance.now() - startTime) / 1000;
-    const remaining = Math.max(0, duration - elapsed);
-    const pct = (remaining / duration) * 100;
+    const remaining = Math.max(0, dur - elapsed);
+    const pct = (remaining / dur) * 100;
 
     $('timerFill').style.width = pct + '%';
-
-    if (pct <= 15) {
-      $('timerFill').style.background = 'var(--danger)';
-    } else if (pct <= 30) {
-      $('timerFill').style.background = 'var(--warn)';
-    } else {
-      $('timerFill').style.background = 'linear-gradient(90deg, var(--left), var(--right))';
-    }
+    $('timerFill').style.background =
+      pct <= 15 ? 'var(--danger)' :
+      pct <= 30 ? 'var(--warn)' :
+      'linear-gradient(90deg, var(--left), var(--right))';
 
     $('timeLeft').textContent = remaining.toFixed(1) + 's';
 
-    const total = leftClicks + rightClicks;
-    const safeDur = Math.min(elapsed, duration);
-
     if (elapsed > 0) {
-      $('combinedCps').textContent = (total / elapsed).toFixed(1);
-      $('leftCps').textContent = (leftClicks / elapsed).toFixed(1) + ' cps';
-      $('rightCps').textContent = (rightClicks / elapsed).toFixed(1) + ' cps';
+      $('leftCps').textContent = (lc / elapsed).toFixed(1);
+      $('rightCps').textContent = (rc / elapsed).toFixed(1);
+      $('combinedCps').textContent = ((lc + rc) / elapsed).toFixed(1);
     }
 
-    $('totalClicks').textContent = total;
+    // per-second max tracking
+    const sec = Math.floor(elapsed);
+    if (sec > lastSec) {
+      const sl = lc - lastLc, sr = rc - lastRc;
+      if (sl > lMax) { lMax = sl; $('leftMax').textContent = lMax; }
+      if (sr > rMax) { rMax = sr; $('rightMax').textContent = rMax; }
+      lastLc = lc; lastRc = rc; lastSec = sec;
+    }
 
     if (remaining <= 0) endTest();
   }
@@ -603,46 +514,26 @@
   function endTest() {
     clearInterval(ticker);
     finished = true;
-    const total = leftClicks + rightClicks;
-    const cps = (total / duration).toFixed(2);
-    const lCps = (leftClicks / duration).toFixed(2);
-    const rCps = (rightClicks / duration).toFixed(2);
-
     $('timerFill').style.width = '0%';
     $('timeLeft').textContent = '0.0s';
-    $('combinedCps').textContent = cps;
-
-    $('statusMsg').textContent = 'Done! Hit Reset to go again.';
-    $('statusMsg').style.color = 'var(--right)';
-
-    $('rLeft').textContent = leftClicks;
-    $('rRight').textContent = rightClicks;
-    $('rTotal').textContent = total;
-    $('rLeftCps').textContent = lCps;
-    $('rRightCps').textContent = rCps;
-    $('rCombined').textContent = cps;
-    $('resultsPanel').classList.add('show');
+    $('leftCps').textContent  = (lc / dur).toFixed(1);
+    $('rightCps').textContent = (rc / dur).toFixed(1);
+    $('combinedCps').textContent = ((lc + rc) / dur).toFixed(1);
+    $('statusMsg').textContent = 'Done! Click Reset to try again.';
   }
 
   function resetTest() {
     clearInterval(ticker);
-    leftClicks = 0; rightClicks = 0;
+    lc = 0; rc = 0; lMax = 0; rMax = 0;
     started = false; finished = false; startTime = null;
+    lastLc = 0; lastRc = 0; lastSec = 0;
 
-    $('leftCount').textContent = '0';
-    $('rightCount').textContent = '0';
-    $('leftCps').textContent = '0.0 cps';
-    $('rightCps').textContent = '0.0 cps';
-    $('totalClicks').textContent = '0';
-    $('combinedCps').textContent = '0.0';
+    ['leftClicks','rightClicks','totalClicks','zoneTotal'].forEach(id => $(id).textContent = '0');
+    ['leftCps','rightCps','leftMax','rightMax','combinedCps'].forEach(id => $(id).textContent = '0.0');
     $('timeLeft').textContent = '—';
-
     $('timerFill').style.width = '100%';
     $('timerFill').style.background = 'linear-gradient(90deg, var(--left), var(--right))';
-
-    $('statusMsg').textContent = 'Click either area to start the test';
-    $('statusMsg').style.color = 'var(--muted)';
-    $('resultsPanel').classList.remove('show');
+    $('statusMsg').textContent = 'Click the area above to start — left or right button';
   }
 </script>
 </body>
