@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPS Tester — Both Buttons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #f0f0f5;
+    --muted: #6b6b80;
+    --left: #4f8ef7;
+    --left-glow: rgba(79,142,247,0.25);
+    --left-dim: rgba(79,142,247,0.08);
+    --right: #3ecf8e;
+    --right-glow: rgba(62,207,142,0.25);
+    --right-dim: rgba(62,207,142,0.08);
+    --warn: #f5a623;
+    --danger: #f56b6b;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 30%, rgba(79,142,247,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 35% at 80% 70%, rgba(62,207,142,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 680px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.75rem;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--left), var(--right));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-icon svg { width: 18px; height: 18px; fill: #fff; }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(90deg, var(--left), var(--right));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .timer-track {
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .timer-fill {
+    height: 100%;
+    width: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--left), var(--right));
+    transition: width 0.08s linear, background 0.3s;
+    transform-origin: left;
+  }
+
+  .btn-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 1.5rem;
+  }
+
+  .click-zone {
+    position: relative;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    height: 200px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    overflow: hidden;
+    transition: border-color 0.15s, background 0.15s, transform 0.08s;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .click-zone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.15s;
+    border-radius: var(--radius);
+  }
+
+  .click-zone.left::before { background: var(--left-dim); }
+  .click-zone.right::before { background: var(--right-dim); }
+
+  .click-zone.left { border-color: rgba(79,142,247,0.25); }
+  .click-zone.right { border-color: rgba(62,207,142,0.25); }
+
+  .click-zone.left:hover {
+    border-color: rgba(79,142,247,0.5);
+    box-shadow: 0 0 30px var(--left-glow);
+  }
+  .click-zone.right:hover {
+    border-color: rgba(62,207,142,0.5);
+    box-shadow: 0 0 30px var(--right-glow);
+  }
+
+  .click-zone.left:hover::before,
+  .click-zone.right:hover::before { opacity: 1; }
+
+  .click-zone.active {
+    transform: scale(0.967);
+  }
+  .click-zone.left.active {
+    border-color: var(--left);
+    box-shadow: 0 0 40px var(--left-glow), inset 0 0 20px rgba(79,142,247,0.1);
+  }
+  .click-zone.right.active {
+    border-color: var(--right);
+    box-shadow: 0 0 40px var(--right-glow), inset 0 0 20px rgba(62,207,142,0.1);
+  }
+
+  .zone-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    transition: transform 0.07s;
+    position: relative;
+    z-index: 1;
+  }
+
+  .click-zone.left .zone-count { color: var(--left); }
+  .click-zone.right .zone-count { color: var(--right); }
+
+  .zone-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+  }
+
+  .zone-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    border-radius: 5px;
+  }
+
+  .click-zone.left .zone-badge {
+    background: rgba(79,142,247,0.15);
+    color: var(--left);
+    border: 1px solid rgba(79,142,247,0.3);
+  }
+  .click-zone.right .zone-badge {
+    background: rgba(62,207,142,0.15);
+    color: var(--right);
+    border: 1px solid rgba(62,207,142,0.3);
+  }
+
+  .zone-cps {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    opacity: 0.6;
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: rippleAnim 0.45s ease-out forwards;
+    pointer-events: none;
+  }
+
+  .click-zone.left .ripple { background: rgba(79,142,247,0.3); }
+  .click-zone.right .ripple { background: rgba(62,207,142,0.3); }
+
+  @keyframes rippleAnim {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .stat-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  select {
+    flex: 1;
+    min-width: 130px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b80' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+
+  select:focus { outline: none; border-color: var(--left); }
+
+  .reset-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    letter-spacing: 0.03em;
+  }
+
+  .reset-btn:hover { background: var(--surface2); border-color: var(--border2); }
+  .reset-btn:active { transform: scale(0.97); }
+
+  .status {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    height: 1.2em;
+    transition: color 0.2s;
+  }
+
+  .results-panel {
+    margin-top: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    display: none;
+    animation: fadeUp 0.35s ease;
+  }
+
+  .results-panel.show { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .results-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .res-item { text-align: center; }
+
+  .res-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .res-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .res-val.blue { color: var(--left); }
+  .res-val.green { color: var(--right); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1rem 0;
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 1.5rem; }
+    .click-zone { height: 160px; }
+    .zone-count { font-size: 2.2rem; }
+    .stat-val { font-size: 1.3rem; }
+    .results-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+<div class="container">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg>
+      </div>
+      <h1>CPS Tester</h1>
+    </div>
+    <p class="subtitle">Both buttons · Click speed test</p>
+  </header>
+
+  <div class="timer-track">
+    <div class="timer-fill" id="timerFill"></div>
+  </div>
+
+  <div class="btn-grid">
+    <div class="click-zone left" id="leftZone" tabindex="0" role="button" aria-label="Left click area">
+      <span class="zone-badge">Left click</span>
+      <div class="zone-count" id="leftCount">0</div>
+      <div class="zone-label">Left button</div>
+      <div class="zone-cps" id="leftCps">0.0 cps</div>
+    </div>
+    <div class="click-zone right" id="rightZone" tabindex="0" role="button" aria-label="Right click area">
+      <span class="zone-badge">Right click</span>
+      <div class="zone-count" id="rightCount">0</div>
+      <div class="zone-label">Right button</div>
+      <div class="zone-cps" id="rightCps">0.0 cps</div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-label">Total Clicks</div>
+      <div class="stat-val" id="totalClicks">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Combined CPS</div>
+      <div class="stat-val" id="combinedCps">0.0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Time Left</div>
+      <div class="stat-val" id="timeLeft">—</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <select id="durationSel" onchange="resetTest()">
+      <option value="5">5 seconds</option>
+      <option value="10" selected>10 seconds</option>
+      <option value="15">15 seconds</option>
+      <option value="30">30 seconds</option>
+      <option value="60">60 seconds</option>
+    </select>
+    <button class="reset-btn" onclick="resetTest()">↺ Reset</button>
+  </div>
+
+  <p class="status" id="statusMsg">Click either area to start the test</p>
+
+  <div class="results-panel" id="resultsPanel">
+    <div class="results-title">Final results</div>
+    <div class="results-grid">
+      <div class="res-item">
+        <div class="res-label">Left clicks</div>
+        <div class="res-val blue" id="rLeft">0</div>
+      </div>
+      <div class="res-item">
+        <div class="res-label">Right clicks</div>
+        <div class="res-val green" id="rRight">0</div>
+      </div>
+      <div class="res-item">
+        <div class="res-label">Total clicks</div>
+        <div class="res-val" id="rTotal">0</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="results-grid">
+      <div class="res-item">
+        <div class="res-label">Left CPS</div>
+        <div class="res-val blue" id="rLeftCps">0.00</div>
+      </div>
+      <div class="res-item">
+        <div class="res-label">Right CPS</div>
+        <div class="res-val green" id="rRightCps">0.00</div>
+      </div>
+      <div class="res-item">
+        <div class="res-label">Combined CPS</div>
+        <div class="res-val" id="rCombined">0.00</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let leftClicks = 0, rightClicks = 0;
+  let started = false, finished = false;
+  let startTime = null, duration = 10;
+  let ticker = null;
+
+  const $ = id => document.getElementById(id);
+  const leftZone = $('leftZone');
+  const rightZone = $('rightZone');
+
+  function spawnRipple(zone, x, y) {
+    const rect = zone.getBoundingClientRect();
+    const cx = (x || rect.left + rect.width / 2) - rect.left;
+    const cy = (y || rect.top + rect.height / 2) - rect.top;
+    const size = Math.max(rect.width, rect.height) * 0.8;
+    const r = document.createElement('div');
+    r.className = 'ripple';
+    r.style.cssText = `width:${size}px;height:${size}px;left:${cx - size/2}px;top:${cy - size/2}px`;
+    zone.appendChild(r);
+    r.addEventListener('animationend', () => r.remove());
+  }
+
+  function flashZone(zone) {
+    zone.classList.add('active');
+    setTimeout(() => zone.classList.remove('active'), 90);
+  }
+
+  function handleClick(side, x, y) {
+    if (finished) return;
+    if (!started) startTest();
+    if (side === 'left') {
+      leftClicks++;
+      $('leftCount').textContent = leftClicks;
+      spawnRipple(leftZone, x, y);
+      flashZone(leftZone);
+    } else {
+      rightClicks++;
+      $('rightCount').textContent = rightClicks;
+      spawnRipple(rightZone, x, y);
+      flashZone(rightZone);
+    }
+  }
+
+  leftZone.addEventListener('mousedown', e => {
+    if (e.button === 0) handleClick('left', e.clientX, e.clientY);
+  });
+
+  rightZone.addEventListener('mousedown', e => {
+    if (e.button === 2) handleClick('right', e.clientX, e.clientY);
+  });
+
+  rightZone.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  leftZone.addEventListener('keydown', e => {
+    if (e.code === 'Space' || e.code === 'Enter') handleClick('left');
+  });
+
+  function startTest() {
+    started = true;
+    duration = parseInt($('durationSel').value);
+    startTime = performance.now();
+    $('statusMsg').textContent = 'Test running — keep clicking!';
+    $('statusMsg').style.color = 'var(--text)';
+    ticker = setInterval(tick, 50);
+  }
+
+  function tick() {
+    const elapsed = (performance.now() - startTime) / 1000;
+    const remaining = Math.max(0, duration - elapsed);
+    const pct = (remaining / duration) * 100;
+
+    $('timerFill').style.width = pct + '%';
+
+    if (pct <= 15) {
+      $('timerFill').style.background = 'var(--danger)';
+    } else if (pct <= 30) {
+      $('timerFill').style.background = 'var(--warn)';
+    } else {
+      $('timerFill').style.background = 'linear-gradient(90deg, var(--left), var(--right))';
+    }
+
+    $('timeLeft').textContent = remaining.toFixed(1) + 's';
+
+    const total = leftClicks + rightClicks;
+    const safeDur = Math.min(elapsed, duration);
+
+    if (elapsed > 0) {
+      $('combinedCps').textContent = (total / elapsed).toFixed(1);
+      $('leftCps').textContent = (leftClicks / elapsed).toFixed(1) + ' cps';
+      $('rightCps').textContent = (rightClicks / elapsed).toFixed(1) + ' cps';
+    }
+
+    $('totalClicks').textContent = total;
+
+    if (remaining <= 0) endTest();
+  }
+
+  function endTest() {
+    clearInterval(ticker);
+    finished = true;
+    const total = leftClicks + rightClicks;
+    const cps = (total / duration).toFixed(2);
+    const lCps = (leftClicks / duration).toFixed(2);
+    const rCps = (rightClicks / duration).toFixed(2);
+
+    $('timerFill').style.width = '0%';
+    $('timeLeft').textContent = '0.0s';
+    $('combinedCps').textContent = cps;
+
+    $('statusMsg').textContent = 'Done! Hit Reset to go again.';
+    $('statusMsg').style.color = 'var(--right)';
+
+    $('rLeft').textContent = leftClicks;
+    $('rRight').textContent = rightClicks;
+    $('rTotal').textContent = total;
+    $('rLeftCps').textContent = lCps;
+    $('rRightCps').textContent = rCps;
+    $('rCombined').textContent = cps;
+    $('resultsPanel').classList.add('show');
+  }
+
+  function resetTest() {
+    clearInterval(ticker);
+    leftClicks = 0; rightClicks = 0;
+    started = false; finished = false; startTime = null;
+
+    $('leftCount').textContent = '0';
+    $('rightCount').textContent = '0';
+    $('leftCps').textContent = '0.0 cps';
+    $('rightCps').textContent = '0.0 cps';
+    $('totalClicks').textContent = '0';
+    $('combinedCps').textContent = '0.0';
+    $('timeLeft').textContent = '—';
+
+    $('timerFill').style.width = '100%';
+    $('timerFill').style.background = 'linear-gradient(90deg, var(--left), var(--right))';
+
+    $('statusMsg').textContent = 'Click either area to start the test';
+    $('statusMsg').style.color = 'var(--muted)';
+    $('resultsPanel').classList.remove('show');
+  }
+</script>
+</body>
+</html>
