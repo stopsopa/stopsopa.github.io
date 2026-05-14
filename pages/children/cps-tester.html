@@ -1,540 +1,628 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CPS Tester — Both Buttons</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CPS Tester — Both Buttons</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-  :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #18181f;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.13);
-    --text: #f0f0f5;
-    --muted: #6b6b80;
-    --left: #4f8ef7;
-    --right: #3ecf8e;
-    --warn: #f5a623;
-    --danger: #f56b6b;
-    --radius: 16px;
-    --radius-sm: 8px;
-  }
+      :root {
+        --bg: #0a0a0f;
+        --surface: #111118;
+        --surface2: #18181f;
+        --border: rgba(255, 255, 255, 0.07);
+        --border2: rgba(255, 255, 255, 0.13);
+        --text: #f0f0f5;
+        --muted: #6b6b80;
+        --left: #4f8ef7;
+        --right: #3ecf8e;
+        --warn: #f5a623;
+        --danger: #f56b6b;
+        --radius: 16px;
+        --radius-sm: 8px;
+      }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
-  }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Syne", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 50% 40% at 15% 30%, rgba(79,142,247,0.05) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 85% 70%, rgba(62,207,142,0.05) 0%, transparent 60%);
-    pointer-events: none;
-  }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(ellipse 50% 40% at 15% 30%, rgba(79, 142, 247, 0.05) 0%, transparent 60%),
+          radial-gradient(ellipse 50% 40% at 85% 70%, rgba(62, 207, 142, 0.05) 0%, transparent 60%);
+        pointer-events: none;
+      }
 
-  .container {
-    position: relative;
-    width: 100%;
-    max-width: 700px;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
+      .container {
+        position: relative;
+        width: 100%;
+        max-width: 700px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
 
-  header { text-align: center; }
-  h1 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    background: linear-gradient(90deg, var(--left), var(--right));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .subtitle {
-    font-size: 0.75rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-top: 4px;
-  }
+      header {
+        text-align: center;
+      }
+      h1 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        background: linear-gradient(90deg, var(--left), var(--right));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .subtitle {
+        font-size: 0.75rem;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-top: 4px;
+      }
 
-  .timer-track {
-    height: 3px;
-    background: var(--surface2);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .timer-fill {
-    height: 100%;
-    width: 100%;
-    border-radius: 2px;
-    background: linear-gradient(90deg, var(--left), var(--right));
-    transition: width 0.08s linear, background 0.3s;
-  }
+      .timer-track {
+        height: 3px;
+        background: var(--surface2);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .timer-fill {
+        height: 100%;
+        width: 100%;
+        border-radius: 2px;
+        background: linear-gradient(90deg, var(--left), var(--right));
+        transition: width 0.08s linear, background 0.3s;
+      }
 
-  /* MAIN ROW: stat col | zone | stat col */
-  .main-row {
-    display: grid;
-    grid-template-columns: 160px 1fr 160px;
-    gap: 14px;
-    align-items: stretch;
-  }
+      /* MAIN ROW: stat col | zone | stat col */
+      .main-row {
+        display: grid;
+        grid-template-columns: 160px 1fr 160px;
+        gap: 14px;
+        align-items: stretch;
+      }
 
-  .stat-col {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+      .stat-col {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
 
-  .col-header {
-    font-size: 0.6rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    text-align: center;
-    padding: 2px 0 4px;
-  }
-  .left-col .col-header { color: var(--left); }
-  .right-col .col-header { color: var(--right); }
+      .col-header {
+        font-size: 0.6rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        text-align: center;
+        padding: 2px 0 4px;
+      }
+      .left-col .col-header {
+        color: var(--left);
+      }
+      .right-col .col-header {
+        color: var(--right);
+      }
 
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 0.8rem 0.9rem;
-    text-align: center;
-    flex: 1;
-  }
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.8rem 0.9rem;
+        text-align: center;
+        flex: 1;
+      }
 
-  .stat-label {
-    font-size: 0.58rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    font-weight: 700;
-    margin-bottom: 5px;
-  }
+      .stat-label {
+        font-size: 0.58rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
 
-  .stat-val {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.35rem;
-    font-weight: 700;
-  }
-  .left-col .stat-val { color: var(--left); }
-  .right-col .stat-val { color: var(--right); }
+      .stat-val {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+      .left-col .stat-val {
+        color: var(--left);
+      }
+      .right-col .stat-val {
+        color: var(--right);
+      }
 
-  /* CLICK ZONE */
-  .click-zone {
-    position: relative;
-    border-radius: var(--radius);
-    border: 1px solid var(--border2);
-    background: var(--surface);
-    min-height: 260px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    overflow: hidden;
-    user-select: none;
-    -webkit-user-select: none;
-    transition: border-color 0.15s;
-  }
-  .click-zone:hover { border-color: rgba(255,255,255,0.2); }
+      /* CLICK ZONE */
+      .click-zone {
+        position: relative;
+        border-radius: var(--radius);
+        border: 1px solid var(--border2);
+        background: var(--surface);
+        min-height: 260px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        overflow: hidden;
+        user-select: none;
+        -webkit-user-select: none;
+        transition: border-color 0.15s;
+      }
+      .click-zone:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+      }
 
-  .flash-left, .flash-right {
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.09s;
-  }
-  .flash-left  { background: radial-gradient(ellipse at 30% 50%, rgba(79,142,247,0.2), transparent 70%); }
-  .flash-right { background: radial-gradient(ellipse at 70% 50%, rgba(62,207,142,0.2), transparent 70%); }
-  .click-zone.fl .flash-left  { opacity: 1; }
-  .click-zone.fr .flash-right { opacity: 1; }
+      .flash-left,
+      .flash-right {
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.09s;
+      }
+      .flash-left {
+        background: radial-gradient(ellipse at 30% 50%, rgba(79, 142, 247, 0.2), transparent 70%);
+      }
+      .flash-right {
+        background: radial-gradient(ellipse at 70% 50%, rgba(62, 207, 142, 0.2), transparent 70%);
+      }
+      .click-zone.fl .flash-left {
+        opacity: 1;
+      }
+      .click-zone.fr .flash-right {
+        opacity: 1;
+      }
 
-  .split-line {
-    position: absolute;
-    top: 14px; bottom: 14px;
-    left: 50%;
-    width: 1px;
-    background: var(--border);
-    transform: translateX(-50%);
-  }
+      .split-line {
+        position: absolute;
+        top: 14px;
+        bottom: 14px;
+        left: 50%;
+        width: 1px;
+        background: var(--border);
+        transform: translateX(-50%);
+      }
 
-  .side-tag {
-    position: absolute;
-    top: 12px;
-    font-size: 0.58rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    padding: 3px 8px;
-    border-radius: 5px;
-  }
-  .side-tag.l {
-    left: 12px;
-    color: var(--left);
-    background: rgba(79,142,247,0.1);
-    border: 1px solid rgba(79,142,247,0.25);
-  }
-  .side-tag.r {
-    right: 12px;
-    color: var(--right);
-    background: rgba(62,207,142,0.1);
-    border: 1px solid rgba(62,207,142,0.25);
-  }
+      .side-tag {
+        position: absolute;
+        top: 12px;
+        font-size: 0.58rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        padding: 3px 8px;
+        border-radius: 5px;
+      }
+      .side-tag.l {
+        left: 12px;
+        color: var(--left);
+        background: rgba(79, 142, 247, 0.1);
+        border: 1px solid rgba(79, 142, 247, 0.25);
+      }
+      .side-tag.r {
+        right: 12px;
+        color: var(--right);
+        background: rgba(62, 207, 142, 0.1);
+        border: 1px solid rgba(62, 207, 142, 0.25);
+      }
 
-  .zone-total {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 4rem;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1;
-    position: relative;
-    z-index: 1;
-  }
+      .zone-total {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 4rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1;
+        position: relative;
+        z-index: 1;
+      }
 
-  .zone-sublabel {
-    font-size: 0.68rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 600;
-    position: relative;
-    z-index: 1;
-  }
+      .zone-sublabel {
+        font-size: 0.68rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+        position: relative;
+        z-index: 1;
+      }
 
-  .zone-hint {
-    position: absolute;
-    bottom: 14px;
-    left: 0; right: 0;
-    text-align: center;
-    font-size: 0.65rem;
-    color: var(--muted);
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
+      .zone-hint {
+        position: absolute;
+        bottom: 14px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 0.65rem;
+        color: var(--muted);
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
 
-  .ripple {
-    position: absolute;
-    border-radius: 50%;
-    transform: scale(0);
-    animation: rpl 0.5s ease-out forwards;
-    pointer-events: none;
-  }
-  .ripple.l { background: rgba(79,142,247,0.22); }
-  .ripple.r { background: rgba(62,207,142,0.22); }
-  @keyframes rpl { to { transform: scale(5); opacity: 0; } }
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        transform: scale(0);
+        animation: rpl 0.5s ease-out forwards;
+        pointer-events: none;
+      }
+      .ripple.l {
+        background: rgba(79, 142, 247, 0.22);
+      }
+      .ripple.r {
+        background: rgba(62, 207, 142, 0.22);
+      }
+      @keyframes rpl {
+        to {
+          transform: scale(5);
+          opacity: 0;
+        }
+      }
 
-  /* COMBINED */
-  .combined-wrap { display: flex; flex-direction: column; gap: 6px; }
-  .combined-header {
-    font-size: 0.6rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--muted);
-    text-align: center;
-  }
-  .combined-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
-  .combined-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 0.8rem 1rem;
-    text-align: center;
-  }
-  .combined-card .stat-val { color: var(--text); font-size: 1.35rem; }
+      /* COMBINED */
+      .combined-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .combined-header {
+        font-size: 0.6rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--muted);
+        text-align: center;
+      }
+      .combined-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .combined-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.8rem 1rem;
+        text-align: center;
+      }
+      .combined-card .stat-val {
+        color: var(--text);
+        font-size: 1.35rem;
+      }
 
-  /* CONTROLS */
-  .controls { display: flex; gap: 10px; }
+      /* CONTROLS */
+      .controls {
+        display: flex;
+        gap: 10px;
+      }
 
-  select {
-    flex: 1;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 500;
-    padding: 10px 32px 10px 14px;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b80' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-  }
-  select:focus { outline: none; border-color: var(--left); }
+      select {
+        flex: 1;
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        color: var(--text);
+        font-family: "Syne", sans-serif;
+        font-size: 0.875rem;
+        font-weight: 500;
+        padding: 10px 32px 10px 14px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b80' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+      }
+      select:focus {
+        outline: none;
+        border-color: var(--left);
+      }
 
-  .reset-btn {
-    flex: 1;
-    padding: 10px 20px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border2);
-    background: transparent;
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.15s;
-    letter-spacing: 0.03em;
-  }
-  .reset-btn:hover { background: var(--surface2); }
-  .reset-btn:active { transform: scale(0.97); }
+      .reset-btn {
+        flex: 1;
+        padding: 10px 20px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border2);
+        background: transparent;
+        color: var(--text);
+        font-family: "Syne", sans-serif;
+        font-size: 0.875rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s;
+        letter-spacing: 0.03em;
+      }
+      .reset-btn:hover {
+        background: var(--surface2);
+      }
+      .reset-btn:active {
+        transform: scale(0.97);
+      }
 
-  .status {
-    text-align: center;
-    font-size: 0.78rem;
-    color: var(--muted);
-    font-weight: 500;
-    letter-spacing: 0.05em;
-  }
+      .status {
+        text-align: center;
+        font-size: 0.78rem;
+        color: var(--muted);
+        font-weight: 500;
+        letter-spacing: 0.05em;
+      }
 
-  @media (max-width: 560px) {
-    .main-row { grid-template-columns: 1fr; }
-    .stat-col { flex-direction: row; }
-    .stat-col .col-header { display: none; }
-    .stat-card { flex: 1; }
-    .click-zone { min-height: 160px; order: -1; }
-    .zone-total { font-size: 2.8rem; }
-  }
-</style>
-</head>
-<body oncontextmenu="return false;">
+      @media (max-width: 560px) {
+        .main-row {
+          grid-template-columns: 1fr;
+        }
+        .stat-col {
+          flex-direction: row;
+        }
+        .stat-col .col-header {
+          display: none;
+        }
+        .stat-card {
+          flex: 1;
+        }
+        .click-zone {
+          min-height: 160px;
+          order: -1;
+        }
+        .zone-total {
+          font-size: 2.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body oncontextmenu="return false;">
+    <div class="container">
+      <header>
+        <h1>CPS Tester</h1>
+        <p class="subtitle">Both buttons · Click speed test</p>
+      </header>
 
-<div class="container">
-
-  <header>
-    <h1>CPS Tester</h1>
-    <p class="subtitle">Both buttons · Click speed test</p>
-  </header>
-
-  <div class="timer-track">
-    <div class="timer-fill" id="timerFill"></div>
-  </div>
-
-  <div class="main-row">
-
-    <!-- LEFT STATS -->
-    <div class="stat-col left-col">
-      <div class="col-header">Left button</div>
-      <div class="stat-card">
-        <div class="stat-label">Clicks</div>
-        <div class="stat-val" id="leftClicks">0</div>
+      <div class="timer-track">
+        <div class="timer-fill" id="timerFill"></div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">CPS</div>
-        <div class="stat-val" id="leftCps">0.0</div>
+
+      <div class="main-row">
+        <!-- LEFT STATS -->
+        <div class="stat-col left-col">
+          <div class="col-header">Left button</div>
+          <div class="stat-card">
+            <div class="stat-label">Clicks</div>
+            <div class="stat-val" id="leftClicks">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">CPS</div>
+            <div class="stat-val" id="leftCps">0.0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Max CPS</div>
+            <div class="stat-val" id="leftMax">0.0</div>
+          </div>
+        </div>
+
+        <!-- SINGLE CLICK ZONE -->
+        <div class="click-zone" id="clickZone">
+          <div class="flash-left"></div>
+          <div class="flash-right"></div>
+          <div class="split-line"></div>
+          <span class="side-tag l">Left click</span>
+          <span class="side-tag r">Right click</span>
+          <div class="zone-total" id="zoneTotal">0</div>
+          <div class="zone-sublabel">total clicks</div>
+          <div class="zone-hint">Left click · Right click</div>
+        </div>
+
+        <!-- RIGHT STATS -->
+        <div class="stat-col right-col">
+          <div class="col-header">Right button</div>
+          <div class="stat-card">
+            <div class="stat-label">Clicks</div>
+            <div class="stat-val" id="rightClicks">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">CPS</div>
+            <div class="stat-val" id="rightCps">0.0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Max CPS</div>
+            <div class="stat-val" id="rightMax">0.0</div>
+          </div>
+        </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Max CPS</div>
-        <div class="stat-val" id="leftMax">0.0</div>
+
+      <!-- COMBINED STATS -->
+      <div class="combined-wrap">
+        <div class="combined-header">Combined</div>
+        <div class="combined-row">
+          <div class="combined-card">
+            <div class="stat-label">Total clicks</div>
+            <div class="stat-val" id="totalClicks">0</div>
+          </div>
+          <div class="combined-card">
+            <div class="stat-label">Combined CPS</div>
+            <div class="stat-val" id="combinedCps">0.0</div>
+          </div>
+          <div class="combined-card">
+            <div class="stat-label">Time left</div>
+            <div class="stat-val" id="timeLeft">—</div>
+          </div>
+        </div>
       </div>
+
+      <div class="controls">
+        <select id="durationSel" onchange="resetTest()">
+          <option value="5">5 seconds</option>
+          <option value="10" selected>10 seconds</option>
+          <option value="15">15 seconds</option>
+          <option value="30">30 seconds</option>
+          <option value="60">60 seconds</option>
+        </select>
+        <button class="reset-btn" onclick="resetTest()">↺ Reset</button>
+      </div>
+
+      <p class="status" id="statusMsg">Click the area above to start — left or right button</p>
     </div>
 
-    <!-- SINGLE CLICK ZONE -->
-    <div class="click-zone" id="clickZone">
-      <div class="flash-left"></div>
-      <div class="flash-right"></div>
-      <div class="split-line"></div>
-      <span class="side-tag l">Left click</span>
-      <span class="side-tag r">Right click</span>
-      <div class="zone-total" id="zoneTotal">0</div>
-      <div class="zone-sublabel">total clicks</div>
-      <div class="zone-hint">Left click · Right click</div>
-    </div>
+    <script>
+      let lc = 0,
+        rc = 0;
+      let started = false,
+        finished = false;
+      let startTime = null,
+        dur = 10;
+      let ticker = null;
+      let lMax = 0,
+        rMax = 0;
+      let lastLc = 0,
+        lastRc = 0,
+        lastSec = 0;
 
-    <!-- RIGHT STATS -->
-    <div class="stat-col right-col">
-      <div class="col-header">Right button</div>
-      <div class="stat-card">
-        <div class="stat-label">Clicks</div>
-        <div class="stat-val" id="rightClicks">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">CPS</div>
-        <div class="stat-val" id="rightCps">0.0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Max CPS</div>
-        <div class="stat-val" id="rightMax">0.0</div>
-      </div>
-    </div>
+      const zone = document.getElementById("clickZone");
+      const $ = (id) => document.getElementById(id);
 
-  </div>
+      function ripple(x, y, side) {
+        const rect = zone.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height) * 0.7;
+        const el = document.createElement("div");
+        el.className = "ripple " + side;
+        el.style.cssText = `width:${size}px;height:${size}px;left:${x - rect.left - size / 2}px;top:${
+          y - rect.top - size / 2
+        }px`;
+        zone.appendChild(el);
+        el.addEventListener("animationend", () => el.remove());
+      }
 
-  <!-- COMBINED STATS -->
-  <div class="combined-wrap">
-    <div class="combined-header">Combined</div>
-    <div class="combined-row">
-      <div class="combined-card">
-        <div class="stat-label">Total clicks</div>
-        <div class="stat-val" id="totalClicks">0</div>
-      </div>
-      <div class="combined-card">
-        <div class="stat-label">Combined CPS</div>
-        <div class="stat-val" id="combinedCps">0.0</div>
-      </div>
-      <div class="combined-card">
-        <div class="stat-label">Time left</div>
-        <div class="stat-val" id="timeLeft">—</div>
-      </div>
-    </div>
-  </div>
+      function flash(side) {
+        const cls = side === "l" ? "fl" : "fr";
+        zone.classList.add(cls);
+        setTimeout(() => zone.classList.remove(cls), 100);
+      }
 
-  <div class="controls">
-    <select id="durationSel" onchange="resetTest()">
-      <option value="5">5 seconds</option>
-      <option value="10" selected>10 seconds</option>
-      <option value="15">15 seconds</option>
-      <option value="30">30 seconds</option>
-      <option value="60">60 seconds</option>
-    </select>
-    <button class="reset-btn" onclick="resetTest()">↺ Reset</button>
-  </div>
+      function handleClick(side, x, y) {
+        if (finished) return;
+        if (!started) startTest();
+        if (side === "l") lc++;
+        else rc++;
+        ripple(x, y, side);
+        flash(side);
+        $("leftClicks").textContent = lc;
+        $("rightClicks").textContent = rc;
+        const total = lc + rc;
+        $("totalClicks").textContent = total;
+        $("zoneTotal").textContent = total;
+      }
 
-  <p class="status" id="statusMsg">Click the area above to start — left or right button</p>
+      zone.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        if (e.button === 0) handleClick("l", e.clientX, e.clientY);
+        if (e.button === 2) handleClick("r", e.clientX, e.clientY);
+      });
+      zone.addEventListener("contextmenu", (e) => e.preventDefault());
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
 
-</div>
+      function startTest() {
+        started = true;
+        dur = parseInt($("durationSel").value);
+        startTime = performance.now();
+        $("statusMsg").textContent = "Keep clicking!";
+        ticker = setInterval(tick, 80);
+      }
 
-<script>
-  let lc = 0, rc = 0;
-  let started = false, finished = false;
-  let startTime = null, dur = 10;
-  let ticker = null;
-  let lMax = 0, rMax = 0;
-  let lastLc = 0, lastRc = 0, lastSec = 0;
+      function tick() {
+        const elapsed = (performance.now() - startTime) / 1000;
+        const remaining = Math.max(0, dur - elapsed);
+        const pct = (remaining / dur) * 100;
 
-  const zone = document.getElementById('clickZone');
-  const $ = id => document.getElementById(id);
+        $("timerFill").style.width = pct + "%";
+        $("timerFill").style.background =
+          pct <= 15 ? "var(--danger)" : pct <= 30 ? "var(--warn)" : "linear-gradient(90deg, var(--left), var(--right))";
 
-  function ripple(x, y, side) {
-    const rect = zone.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height) * 0.7;
-    const el = document.createElement('div');
-    el.className = 'ripple ' + side;
-    el.style.cssText = `width:${size}px;height:${size}px;left:${x - rect.left - size/2}px;top:${y - rect.top - size/2}px`;
-    zone.appendChild(el);
-    el.addEventListener('animationend', () => el.remove());
-  }
+        $("timeLeft").textContent = remaining.toFixed(1) + "s";
 
-  function flash(side) {
-    const cls = side === 'l' ? 'fl' : 'fr';
-    zone.classList.add(cls);
-    setTimeout(() => zone.classList.remove(cls), 100);
-  }
+        if (elapsed > 0) {
+          $("leftCps").textContent = (lc / elapsed).toFixed(1);
+          $("rightCps").textContent = (rc / elapsed).toFixed(1);
+          $("combinedCps").textContent = ((lc + rc) / elapsed).toFixed(1);
+        }
 
-  function handleClick(side, x, y) {
-    if (finished) return;
-    if (!started) startTest();
-    if (side === 'l') lc++; else rc++;
-    ripple(x, y, side);
-    flash(side);
-    $('leftClicks').textContent = lc;
-    $('rightClicks').textContent = rc;
-    const total = lc + rc;
-    $('totalClicks').textContent = total;
-    $('zoneTotal').textContent = total;
-  }
+        // per-second max tracking
+        const sec = Math.floor(elapsed);
+        if (sec > lastSec) {
+          const sl = lc - lastLc,
+            sr = rc - lastRc;
+          if (sl > lMax) {
+            lMax = sl;
+            $("leftMax").textContent = lMax;
+          }
+          if (sr > rMax) {
+            rMax = sr;
+            $("rightMax").textContent = rMax;
+          }
+          lastLc = lc;
+          lastRc = rc;
+          lastSec = sec;
+        }
 
-  zone.addEventListener('mousedown', e => {
-    e.preventDefault();
-    if (e.button === 0) handleClick('l', e.clientX, e.clientY);
-    if (e.button === 2) handleClick('r', e.clientX, e.clientY);
-  });
-  zone.addEventListener('contextmenu', e => e.preventDefault());
-  document.addEventListener('contextmenu', e => e.preventDefault());
+        if (remaining <= 0) endTest();
+      }
 
-  function startTest() {
-    started = true;
-    dur = parseInt($('durationSel').value);
-    startTime = performance.now();
-    $('statusMsg').textContent = 'Keep clicking!';
-    ticker = setInterval(tick, 80);
-  }
+      function endTest() {
+        clearInterval(ticker);
+        finished = true;
+        $("timerFill").style.width = "0%";
+        $("timeLeft").textContent = "0.0s";
+        $("leftCps").textContent = (lc / dur).toFixed(1);
+        $("rightCps").textContent = (rc / dur).toFixed(1);
+        $("combinedCps").textContent = ((lc + rc) / dur).toFixed(1);
+        $("statusMsg").textContent = "Done! Click Reset to try again.";
+      }
 
-  function tick() {
-    const elapsed = (performance.now() - startTime) / 1000;
-    const remaining = Math.max(0, dur - elapsed);
-    const pct = (remaining / dur) * 100;
+      function resetTest() {
+        clearInterval(ticker);
+        lc = 0;
+        rc = 0;
+        lMax = 0;
+        rMax = 0;
+        started = false;
+        finished = false;
+        startTime = null;
+        lastLc = 0;
+        lastRc = 0;
+        lastSec = 0;
 
-    $('timerFill').style.width = pct + '%';
-    $('timerFill').style.background =
-      pct <= 15 ? 'var(--danger)' :
-      pct <= 30 ? 'var(--warn)' :
-      'linear-gradient(90deg, var(--left), var(--right))';
-
-    $('timeLeft').textContent = remaining.toFixed(1) + 's';
-
-    if (elapsed > 0) {
-      $('leftCps').textContent = (lc / elapsed).toFixed(1);
-      $('rightCps').textContent = (rc / elapsed).toFixed(1);
-      $('combinedCps').textContent = ((lc + rc) / elapsed).toFixed(1);
-    }
-
-    // per-second max tracking
-    const sec = Math.floor(elapsed);
-    if (sec > lastSec) {
-      const sl = lc - lastLc, sr = rc - lastRc;
-      if (sl > lMax) { lMax = sl; $('leftMax').textContent = lMax; }
-      if (sr > rMax) { rMax = sr; $('rightMax').textContent = rMax; }
-      lastLc = lc; lastRc = rc; lastSec = sec;
-    }
-
-    if (remaining <= 0) endTest();
-  }
-
-  function endTest() {
-    clearInterval(ticker);
-    finished = true;
-    $('timerFill').style.width = '0%';
-    $('timeLeft').textContent = '0.0s';
-    $('leftCps').textContent  = (lc / dur).toFixed(1);
-    $('rightCps').textContent = (rc / dur).toFixed(1);
-    $('combinedCps').textContent = ((lc + rc) / dur).toFixed(1);
-    $('statusMsg').textContent = 'Done! Click Reset to try again.';
-  }
-
-  function resetTest() {
-    clearInterval(ticker);
-    lc = 0; rc = 0; lMax = 0; rMax = 0;
-    started = false; finished = false; startTime = null;
-    lastLc = 0; lastRc = 0; lastSec = 0;
-
-    ['leftClicks','rightClicks','totalClicks','zoneTotal'].forEach(id => $(id).textContent = '0');
-    ['leftCps','rightCps','leftMax','rightMax','combinedCps'].forEach(id => $(id).textContent = '0.0');
-    $('timeLeft').textContent = '—';
-    $('timerFill').style.width = '100%';
-    $('timerFill').style.background = 'linear-gradient(90deg, var(--left), var(--right))';
-    $('statusMsg').textContent = 'Click the area above to start — left or right button';
-  }
-</script>
-</body>
+        ["leftClicks", "rightClicks", "totalClicks", "zoneTotal"].forEach((id) => ($(id).textContent = "0"));
+        ["leftCps", "rightCps", "leftMax", "rightMax", "combinedCps"].forEach((id) => ($(id).textContent = "0.0"));
+        $("timeLeft").textContent = "—";
+        $("timerFill").style.width = "100%";
+        $("timerFill").style.background = "linear-gradient(90deg, var(--left), var(--right))";
+        $("statusMsg").textContent = "Click the area above to start — left or right button";
+      }
+    </script>
+  </body>
 </html>
