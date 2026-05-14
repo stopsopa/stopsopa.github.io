@@ -503,8 +503,14 @@
         lastRc = 0,
         lastSec = 0;
 
-      const zone = document.getElementById("clickZone");
-      const $ = (id) => document.getElementById(id);
+      const zone = document.querySelector("#clickZone");
+
+      const $ = (selector) => {
+        const all = document.querySelectorAll(selector);
+        if (all.length > 1)
+          throw new Error(`$ expects a unique match, but "${selector}" matched ${all.length} elements`);
+        return all[0]; // undefined when nothing matched
+      };
 
       function ripple(x, y, side) {
         const rect = zone.getBoundingClientRect();
@@ -531,11 +537,11 @@
         else rc++;
         ripple(x, y, side);
         flash(side);
-        $("leftClicks").textContent = lc;
-        $("rightClicks").textContent = rc;
+        $("#leftClicks").textContent = lc;
+        $("#rightClicks").textContent = rc;
         const total = lc + rc;
-        $("totalClicks").textContent = total;
-        $("zoneTotal").textContent = total;
+        $("#totalClicks").textContent = total;
+        $("#zoneTotal").textContent = total;
       }
 
       zone.addEventListener("mousedown", (e) => {
@@ -548,9 +554,9 @@
 
       function startTest() {
         started = true;
-        dur = parseInt($("durationSel").value);
+        dur = parseInt($("#durationSel").value);
         startTime = performance.now();
-        $("statusMsg").textContent = "Keep clicking!";
+        $("#statusMsg").textContent = "Keep clicking!";
         ticker = setInterval(tick, 80);
       }
 
@@ -559,16 +565,16 @@
         const remaining = Math.max(0, dur - elapsed);
         const pct = (remaining / dur) * 100;
 
-        $("timerFill").style.width = pct + "%";
-        $("timerFill").style.background =
+        $("#timerFill").style.width = pct + "%";
+        $("#timerFill").style.background =
           pct <= 15 ? "var(--danger)" : pct <= 30 ? "var(--warn)" : "linear-gradient(90deg, var(--left), var(--right))";
 
-        $("timeLeft").textContent = remaining.toFixed(1) + "s";
+        $("#timeLeft").textContent = remaining.toFixed(1) + "s";
 
         if (elapsed > 0) {
-          $("leftCps").textContent = (lc / elapsed).toFixed(1);
-          $("rightCps").textContent = (rc / elapsed).toFixed(1);
-          $("combinedCps").textContent = ((lc + rc) / elapsed).toFixed(1);
+          $("#leftCps").textContent = (lc / elapsed).toFixed(1);
+          $("#rightCps").textContent = (rc / elapsed).toFixed(1);
+          $("#combinedCps").textContent = ((lc + rc) / elapsed).toFixed(1);
         }
 
         // per-second max tracking
@@ -578,11 +584,11 @@
             sr = rc - lastRc;
           if (sl > lMax) {
             lMax = sl;
-            $("leftMax").textContent = lMax;
+            $("#leftMax").textContent = lMax;
           }
           if (sr > rMax) {
             rMax = sr;
-            $("rightMax").textContent = rMax;
+            $("#rightMax").textContent = rMax;
           }
           lastLc = lc;
           lastRc = rc;
@@ -595,12 +601,12 @@
       function endTest() {
         clearInterval(ticker);
         finished = true;
-        $("timerFill").style.width = "0%";
-        $("timeLeft").textContent = "0.0s";
-        $("leftCps").textContent = (lc / dur).toFixed(1);
-        $("rightCps").textContent = (rc / dur).toFixed(1);
-        $("combinedCps").textContent = ((lc + rc) / dur).toFixed(1);
-        $("statusMsg").textContent = "Done! Click Reset to try again.";
+        $("#timerFill").style.width = "0%";
+        $("#timeLeft").textContent = "0.0s";
+        $("#leftCps").textContent = (lc / dur).toFixed(1);
+        $("#rightCps").textContent = (rc / dur).toFixed(1);
+        $("#combinedCps").textContent = ((lc + rc) / dur).toFixed(1);
+        $("#statusMsg").textContent = "Done! Click Reset to try again.";
       }
 
       function resetTest() {
@@ -616,12 +622,14 @@
         lastRc = 0;
         lastSec = 0;
 
-        ["leftClicks", "rightClicks", "totalClicks", "zoneTotal"].forEach((id) => ($(id).textContent = "0"));
-        ["leftCps", "rightCps", "leftMax", "rightMax", "combinedCps"].forEach((id) => ($(id).textContent = "0.0"));
-        $("timeLeft").textContent = "—";
-        $("timerFill").style.width = "100%";
-        $("timerFill").style.background = "linear-gradient(90deg, var(--left), var(--right))";
-        $("statusMsg").textContent = "Click the area above to start — left or right button";
+        ["#leftClicks", "#rightClicks", "#totalClicks", "#zoneTotal"].forEach((sel) => ($(sel).textContent = "0"));
+        ["#leftCps", "#rightCps", "#leftMax", "#rightMax", "#combinedCps"].forEach(
+          (sel) => ($(sel).textContent = "0.0")
+        );
+        $("#timeLeft").textContent = "—";
+        $("#timerFill").style.width = "100%";
+        $("#timerFill").style.background = "linear-gradient(90deg, var(--left), var(--right))";
+        $("#statusMsg").textContent = "Click the area above to start — left or right button";
       }
     </script>
   </body>
