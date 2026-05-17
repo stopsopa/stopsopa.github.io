@@ -5,6 +5,66 @@ const basicUrl = "https://google.com/search/index.html?q=test&p=123#hash";
  * /bin/bash test.sh tests/url/001_url.unit.ts
  */
 
+// throws
+//  FAIL   test  tests/url/001_url.unit.ts > simples
+// TypeError: Invalid URL
+//  ❯ tests/url/001_url.unit.ts:9:13
+//       7|
+//       8| test('simples', () => {
+//       9|   const u = new URL('google.com');
+//        |             ^
+//      10| })
+//      11|
+describe("errors", () => {
+  test("empty string", () => {
+    try {
+      const u = new URL("");
+
+      throw new Error(`Shouldn't happen`);
+    } catch (e) {
+      expect(String(e)).toBe("TypeError: Invalid URL");
+      expect(e.input).toBe("");
+      expect(e.code).toBe("ERR_INVALID_URL");
+    }
+  });
+
+  test("just hostname", () => {
+    try {
+      const u = new URL("google.com");
+
+      throw new Error(`Shouldn't happen`);
+    } catch (e) {
+      expect(String(e)).toBe("TypeError: Invalid URL");
+      expect(e.input).toBe("google.com");
+      expect(e.code).toBe("ERR_INVALID_URL");
+    }
+  });
+
+  test("just hostname", () => {
+    try {
+      const u = new URL("//google.com");
+
+      throw new Error(`Shouldn't happen`);
+    } catch (e) {
+      expect(String(e)).toBe("TypeError: Invalid URL");
+      expect(e.input).toBe("//google.com");
+      expect(e.code).toBe("ERR_INVALID_URL");
+    }
+  });
+
+  test("just get params", () => {
+    try {
+      const u = new URL("a=b&c=d");
+
+      throw new Error(`Shouldn't happen`);
+    } catch (e) {
+      expect(String(e)).toBe("TypeError: Invalid URL");
+      expect(e.input).toBe("a=b&c=d");
+      expect(e.code).toBe("ERR_INVALID_URL");
+    }
+  });
+});
+
 describe("hash", () => {
   test("get hash", () => {
     const u = new URL(basicUrl);
@@ -74,9 +134,15 @@ describe("search params", () => {
 
     u.searchParams.delete("a");
 
-    expect(u.toString()).toBe("https://google.com/search/index.html?q=test&p=123#hash");
-
-    expect(u.toJSON()).toBe("https://google.com/search/index.html?q=test&p=123#hash");
+    expect({
+      a: u.toString(),
+      b: u.toJSON(),
+      c: u.href,
+    }).toEqual({
+      a: "https://google.com/search/index.html?q=test&p=123#hash",
+      b: "https://google.com/search/index.html?q=test&p=123#hash",
+      c: "https://google.com/search/index.html?q=test&p=123#hash",
+    });
   });
 
   test("change just params", () => {
