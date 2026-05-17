@@ -1,175 +1,265 @@
-import { expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 const basicUrl = "https://google.com/search/index.html?q=test&p=123#hash";
 /**
  * /bin/bash test.sh tests/url/001_url.unit.ts
  */
 
-test("remove search", () => {
-  const u = new URL(basicUrl);
+describe("hash", () => {
+  test("get hash", () => {
+    const u = new URL(basicUrl);
 
-  u.search = "";
+    expect(u.toString()).toBe("https://google.com/search/index.html?q=test&p=123#hash");
 
-  expect(u.toString()).toBe("https://google.com/search/index.html#hash");
+    expect(u.hash).toBe("#hash");
+  });
+
+  test("get hash - when not set", () => {
+    const u = new URL(basicUrl.split("#")[0]);
+
+    expect(u.toString()).toBe("https://google.com/search/index.html?q=test&p=123");
+
+    expect(u.hash).toBe("");
+  });
+
+  test("get hash - when just #", () => {
+    const u = new URL(basicUrl.split("#")[0] + "#");
+
+    expect(u.toString()).toBe("https://google.com/search/index.html?q=test&p=123#");
+
+    expect(u.hash).toBe("");
+  });
 });
 
-test("query duplicates behavior", () => {
-  const u = new URL(basicUrl);
+describe("getters", () => {
+  test("get origin", () => {
+    const u = new URL(basicUrl);
 
-  u.searchParams.append("a", "test2");
-  u.searchParams.append("a", "test1");
+    expect(u.origin).toBe("https://google.com");
+  });
 
-  expect(u.searchParams.get("a")).toBe("test2"); // returns first value
-  expect(u.searchParams.getAll("a")).toEqual(["test2", "test1"]); // returns all values
+  test("get hostname", () => {
+    const u = new URL(basicUrl);
 
-  expect(u.searchParams.getAll("a").length).toBe(2);
-  expect(u.searchParams.getAll("none").length).toBe(0); // no key 'none'
+    expect(u.hostname).toBe("google.com");
+  });
 
-  u.searchParams.delete("a");
+  test("get pathname", () => {
+    const u = new URL(basicUrl);
 
-  expect(u.toString()).toBe("https://google.com/search/index.html?q=test&p=123#hash");
-
-  expect(u.toJSON()).toBe("https://google.com/search/index.html?q=test&p=123#hash");
+    expect(u.pathname).toBe("/search/index.html");
+  });
 });
 
-test("change just params", () => {
-  const u = new URL(basicUrl);
+describe("search params", () => {
+  test("remove search", () => {
+    const u = new URL(basicUrl);
 
-  const p = new URLSearchParams(u.search);
-  p.delete("p");
-  p.set("a", "test1");
-  p.set("a", "test2");
+    u.search = "";
 
-  u.search = p.toString();
+    expect(u.toString()).toBe("https://google.com/search/index.html#hash");
+  });
 
-  expect(u.toString()).toBe("https://google.com/search/index.html?q=test&a=test2#hash");
-});
-test("append", () => {
-  const u = new URL(basicUrl);
+  test("query duplicates behavior", () => {
+    const u = new URL(basicUrl);
 
-  const p = new URLSearchParams(u.search);
-  p.delete("p");
-  p.append("a", "test1");
-  p.append("a", "test2");
+    u.searchParams.append("a", "test2");
+    u.searchParams.append("a", "test1");
 
-  u.search = p.toString();
+    expect(u.searchParams.get("a")).toBe("test2"); // returns first value
+    expect(u.searchParams.getAll("a")).toEqual(["test2", "test1"]); // returns all values
 
-  expect(u.toString()).toBe("https://google.com/search/index.html?q=test&a=test1&a=test2#hash");
-});
-test("set after append", () => {
-  const u = new URL(basicUrl);
+    expect(u.searchParams.getAll("a").length).toBe(2);
+    expect(u.searchParams.getAll("none").length).toBe(0); // no key 'none'
 
-  const p = new URLSearchParams(u.search);
-  p.delete("p");
-  p.append("a", "test1");
-  p.append("a", "test2");
-  p.set("a", "final");
+    u.searchParams.delete("a");
 
-  u.search = p.toString();
+    expect(u.toString()).toBe("https://google.com/search/index.html?q=test&p=123#hash");
 
-  expect(u.toString()).toBe("https://google.com/search/index.html?q=test&a=final#hash");
-});
+    expect(u.toJSON()).toBe("https://google.com/search/index.html?q=test&p=123#hash");
+  });
 
-/**
- * const params = new URLSearchParams();
+  test("change just params", () => {
+    const u = new URL(basicUrl);
 
-params.append("b", "2");
-params.append("a", "1");
-params.append("c", "3");
+    const p = new URLSearchParams(u.search);
+    p.delete("p");
+    p.set("a", "test1");
+    p.set("a", "test2");
 
-params.sort();
+    u.search = p.toString();
 
-console.log(params.toString());
- */
-test("sort", () => {
-  const params = new URLSearchParams();
+    expect(p.toString()).toBe("q=test&a=test2");
+
+    expect(u.toString()).toBe("https://google.com/search/index.html?q=test&a=test2#hash");
+  });
+
+  test("append", () => {
+    const u = new URL(basicUrl);
+
+    const p = new URLSearchParams(u.search);
+    p.delete("p");
+    p.append("a", "test1");
+    p.append("a", "test2");
+
+    u.search = p.toString();
+
+    expect(p.toString()).toBe("q=test&a=test1&a=test2");
+
+    expect(u.toString()).toBe("https://google.com/search/index.html?q=test&a=test1&a=test2#hash");
+  });
+
+  test("set after append", () => {
+    const u = new URL(basicUrl);
+
+    const p = new URLSearchParams(u.search);
+    p.delete("p");
+    p.append("a", "test1");
+    p.append("a", "test2");
+    p.set("a", "final");
+
+    u.search = p.toString();
+
+    expect(p.toString()).toBe("q=test&a=final");
+
+    expect(u.toString()).toBe("https://google.com/search/index.html?q=test&a=final#hash");
+  });
+
+  /**
+   * const params = new URLSearchParams();
 
   params.append("b", "2");
-  params.append("a", "z");
-  params.append("a", "a");
+  params.append("a", "1");
   params.append("c", "3");
 
   params.sort();
 
-  expect(params.toString()).toBe("a=z&a=a&b=2&c=3");
+  console.log(params.toString());
+   */
+  test("sort", () => {
+    const params = new URLSearchParams();
+
+    params.append("b", "2");
+    params.append("a", "z");
+    params.append("a", "a");
+    params.append("c", "3");
+
+    params.sort();
+
+    expect(params.toString()).toBe("a=z&a=a&b=2&c=3");
+  });
+
+  test("sort by key then value", () => {
+    const params = new URLSearchParams();
+
+    params.append("b", "2");
+    params.append("a", "z");
+    params.append("a", "a");
+    params.append("c", "3");
+    params.append("b", "1");
+
+    const sorted = new URLSearchParams(
+      [...params.entries()].sort(([k1, v1], [k2, v2]) => {
+        if (k1 === k2) {
+          return v1.localeCompare(v2);
+        }
+        return k1.localeCompare(k2);
+      })
+    );
+
+    expect(sorted.toString()).toBe("a=a&a=z&b=1&b=2&c=3");
+  });
 });
-test("sort by key then value", () => {
-  const params = new URLSearchParams();
 
-  params.append("b", "2");
-  params.append("a", "z");
-  params.append("a", "a");
-  params.append("c", "3");
-  params.append("b", "1");
+describe("url parts", () => {
+  test("change just domain", () => {
+    const u = new URL(basicUrl);
 
-  const sorted = new URLSearchParams(
-    [...params.entries()].sort(([k1, v1], [k2, v2]) => {
-      if (k1 === k2) {
-        return v1.localeCompare(v2);
-      }
-      return k1.localeCompare(k2);
-    })
-  );
+    u.hostname = "google.co.uk";
 
-  expect(sorted.toString()).toBe("a=a&a=z&b=1&b=2&c=3");
+    expect(u.toString()).toBe("https://google.co.uk/search/index.html?q=test&p=123#hash");
+  });
+
+  test("change just path", () => {
+    const u = new URL(basicUrl);
+
+    u.pathname = "/abc/def.html";
+
+    expect(u.toString()).toBe("https://google.com/abc/def.html?q=test&p=123#hash");
+  });
+
+  test("change just index.html to page.jsp", () => {
+    const u = new URL(basicUrl);
+
+    const parts = u.pathname.split("/");
+    parts.pop();
+    parts.push("page.jsp");
+
+    u.pathname = parts.join("/");
+
+    expect(u.toString()).toBe("https://google.com/search/page.jsp?q=test&p=123#hash");
+  });
+
+  test("change protocol", () => {
+    const u = new URL(basicUrl);
+
+    u.protocol = "http:";
+
+    expect(u.toString()).toBe("http://google.com/search/index.html?q=test&p=123#hash");
+  });
 });
 
-test("change just domain", () => {
+describe("hash modifiers", () => {
+  test("change hash", () => {
+    const u = new URL(basicUrl);
+
+    u.hash = "newhash";
+
+    expect(u.toString()).toBe("https://google.com/search/index.html?q=test&p=123#newhash");
+  });
+
+  test("remove hash", () => {
+    const u = new URL(basicUrl);
+
+    u.hash = "";
+
+    expect(u.toString()).toBe("https://google.com/search/index.html?q=test&p=123");
+  });
+});
+
+// set port
+
+test("set port", () => {
   const u = new URL(basicUrl);
 
-  u.hostname = "google.co.uk";
+  u.port = "8080";
 
-  expect(u.toString()).toBe("https://google.co.uk/search/index.html?q=test&p=123#hash");
+  expect(u.toString()).toBe("https://google.com:8080/search/index.html?q=test&p=123#hash");
 });
 
-test("change just path", () => {
-  const u = new URL(basicUrl);
+describe("auth", () => {
+  test("set username", () => {
+    const u = new URL(basicUrl);
 
-  u.pathname = "/abc/def.html";
+    u.username = "test";
 
-  expect(u.toString()).toBe("https://google.com/abc/def.html?q=test&p=123#hash");
-});
+    expect(u.toString()).toBe("https://test@google.com/search/index.html?q=test&p=123#hash");
+  });
 
-test("change just index.html to page.jsp", () => {
-  const u = new URL(basicUrl);
+  test("set password", () => {
+    const u = new URL(basicUrl);
 
-  const parts = u.pathname.split("/");
-  parts.pop();
-  parts.push("page.jsp");
+    u.password = "test";
 
-  u.pathname = parts.join("/");
+    expect(u.toString()).toBe("https://:test@google.com/search/index.html?q=test&p=123#hash");
+  });
 
-  expect(u.toString()).toBe("https://google.com/search/page.jsp?q=test&p=123#hash");
-});
+  test("set username and password", () => {
+    const u = new URL(basicUrl);
 
-test("change protocol", () => {
-  const u = new URL(basicUrl);
+    u.username = "test";
+    u.password = "test";
 
-  u.protocol = "http:";
-
-  expect(u.toString()).toBe("http://google.com/search/index.html?q=test&p=123#hash");
-});
-
-test("change hash", () => {
-  const u = new URL(basicUrl);
-
-  u.hash = "newhash";
-
-  expect(u.toString()).toBe("https://google.com/search/index.html?q=test&p=123#newhash");
-});
-
-test("remove hash", () => {
-  const u = new URL(basicUrl);
-
-  u.hash = "";
-
-  expect(u.toString()).toBe("https://google.com/search/index.html?q=test&p=123");
-});
-
-test("set username", () => {
-  const u = new URL(basicUrl);
-
-  u.username = "test";
-
-  expect(u.toString()).toBe("https://test@google.com/search/index.html?q=test&p=123#hash");
+    expect(u.toString()).toBe("https://test:test@google.com/search/index.html?q=test&p=123#hash");
+  });
 });

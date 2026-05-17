@@ -37,6 +37,7 @@ ${coverageInclude.join("\n")}
 export default defineConfig({
   test: {
     name: "test",
+    reporters: ["verbose"], // this is to make describe work properly:  https://i.imgur.com/Ng7TqEj.png
     environment: "node", // that is actually default:
     coverage: {
       all: true,
