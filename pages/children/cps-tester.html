@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CPS Tester — Both Buttons</title>
 
-  <link rel="icon" type="image/svg+xml" id="favicon-link">
+    <link rel="icon" type="image/svg+xml" id="favicon-link" />
     <link
       href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
       rel="stylesheet"
@@ -839,29 +839,29 @@
       }
     </script>
 
+    <script>
+      // FAVICON ANIMATION
+      const SVG_W = 32;
+      const SVG_H = 32;
 
-  <script>
-    // FAVICON ANIMATION
-    const SVG_W = 32;
-    const SVG_H = 32;
+      /* Mouse geometry (all coords in 32×32 space) */
+      const BODY_PATH = "M7,14 Q7,4 16,4 Q25,4 25,14 L25,24 Q25,28 16,28 Q7,28 7,24 Z";
+      const DIV_LINE = "M16,4 L16,14"; /* centre divider between buttons */
+      const SCROLL_RX = 1.5,
+        SCROLL_RY = 3; /* scroll-wheel ellipse */
 
-    /* Mouse geometry (all coords in 32×32 space) */
-    const BODY_PATH = "M7,14 Q7,4 16,4 Q25,4 25,14 L25,24 Q25,28 16,28 Q7,28 7,24 Z";
-    const DIV_LINE  = "M16,4 L16,14";           /* centre divider between buttons */
-    const SCROLL_RX = 1.5, SCROLL_RY = 3;       /* scroll-wheel ellipse */
+      /* Colours */
+      const BG = "transparent";
+      const BODY_F = "#ffffff";
+      const BODY_S = "#888";
+      const BTN_IDLE = "#ffffff";
+      const BTN_FLASH = "#4af"; /* bright blue-white flash */
+      const LINE_C = "#666";
+      const WHEEL_F = "#555";
 
-    /* Colours */
-    const BG       = "transparent";
-    const BODY_F   = "#ffffff";
-    const BODY_S   = "#888";
-    const BTN_IDLE = "#ffffff";
-    const BTN_FLASH= "#4af";               /* bright blue-white flash */
-    const LINE_C   = "#666";
-    const WHEEL_F  = "#555";
-
-    function makeSVG(leftOn, rightOn) {
-      /* clip-paths for left / right button regions */
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+      function makeSVG(leftOn, rightOn) {
+        /* clip-paths for left / right button regions */
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
   <defs>
     <clipPath id="cl"><rect x="0" y="0" width="16" height="14"/></clipPath>
     <clipPath id="cr"><rect x="16" y="0" width="16" height="14"/></clipPath>
@@ -871,7 +871,7 @@
   <path d="${BODY_PATH}" fill="${BODY_F}" stroke="${BODY_S}" stroke-width="1.2"/>
 
   <!-- left button flash -->
-  <path d="${BODY_PATH}" fill="${leftOn  ? BTN_FLASH : BTN_IDLE}" clip-path="url(#cl)"/>
+  <path d="${BODY_PATH}" fill="${leftOn ? BTN_FLASH : BTN_IDLE}" clip-path="url(#cl)"/>
 
   <!-- right button flash -->
   <path d="${BODY_PATH}" fill="${rightOn ? BTN_FLASH : BTN_IDLE}" clip-path="url(#cr)"/>
@@ -885,19 +885,19 @@
   <!-- scroll wheel -->
   <ellipse cx="16" cy="13" rx="${SCROLL_RX}" ry="${SCROLL_RY}" fill="${WHEEL_F}" stroke="${LINE_C}" stroke-width="0.6"/>
 </svg>`;
-    }
+      }
 
-    function setFavicon(leftOn, rightOn) {
-      const svg  = makeSVG(leftOn, rightOn);
-      const blob = new Blob([svg], {type: "image/svg+xml"});
-      const url  = URL.createObjectURL(blob);
-      const link = document.getElementById("favicon-link");
-      const old  = link.href;
-      link.href  = url;
-      if (old) URL.revokeObjectURL(old);
-    }
+      function setFavicon(leftOn, rightOn) {
+        const svg = makeSVG(leftOn, rightOn);
+        const blob = new Blob([svg], { type: "image/svg+xml" });
+        const url = URL.createObjectURL(blob);
+        const link = document.getElementById("favicon-link");
+        const old = link.href;
+        link.href = url;
+        if (old) URL.revokeObjectURL(old);
+      }
 
-    /*
+      /*
       Animation schedule over 2 s (2000 ms), looping:
       0     ms  — LEFT  on
       200   ms  — LEFT  off
@@ -907,28 +907,28 @@
       1200  ms  — RIGHT off
       2000  ms  — loop
     */
-    const schedule = [
-      { t:    0, L: true,  R: false },
-      { t:  200, L: false, R: false },
-      { t:  450, L: true,  R: false },
-      { t:  650, L: false, R: false },
-      { t: 1000, L: false, R: true  },
-      { t: 1200, L: false, R: false },
-    ];
-    const CYCLE = 2000;
+      const schedule = [
+        { t: 0, L: true, R: false },
+        { t: 200, L: false, R: false },
+        { t: 450, L: true, R: false },
+        { t: 650, L: false, R: false },
+        { t: 1000, L: false, R: true },
+        { t: 1200, L: false, R: false },
+      ];
+      const CYCLE = 2000;
 
-    function tick() {
-      const now   = Date.now() % CYCLE;
-      let   frame = schedule[0];
-      for (const s of schedule) {
-        if (now >= s.t) frame = s;
+      function tick() {
+        const now = Date.now() % CYCLE;
+        let frame = schedule[0];
+        for (const s of schedule) {
+          if (now >= s.t) frame = s;
+        }
+        setFavicon(frame.L, frame.R);
       }
-      setFavicon(frame.L, frame.R);
-    }
 
-    /* initial frame immediately, then drive at ~30 fps */
-    setFavicon(false, false);
-    setInterval(tick, 33);
-  </script>
+      /* initial frame immediately, then drive at ~30 fps */
+      setFavicon(false, false);
+      setInterval(tick, 33);
+    </script>
   </body>
 </html>

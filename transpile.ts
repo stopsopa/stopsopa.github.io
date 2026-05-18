@@ -37,14 +37,14 @@ if (entryPoints.length === 0) {
  * This is specially formatted for transpile_pipe.ts
  */
 const buff = [...entryPoints];
-buff.unshift('');
+buff.unshift("");
 const files = buff.join("\ntranspiled ");
 
 console.log(`
 
 ${files}
 
-`)
+`);
 
 const options: esbuild.BuildOptions = {
   entryPoints,

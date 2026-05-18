@@ -1,7 +1,7 @@
 /**
  * This script acts as a post-processor for the transpilation process.
  * It is intended to be used in a pipe, typically following `transpile.ts`.
- * 
+ *
  * Workflow:
  * 1.  Listens to `stdin` for lines matching the pattern "transpiled [file].ts".
  * 2.  When a match is found, it identifies the corresponding generated ".js" file.
@@ -10,13 +10,13 @@
  *     - Groups up to BATCH_SIZE (3) files to format them in a single Prettier command.
  *     - Uses a DEBOUNCE_MS (100ms) timer to flush the buffer if it doesn't fill up.
  * 5.  Formatting:
- *     - Uses `spawn` to run Prettier safely, passing files as an array of arguments 
+ *     - Uses `spawn` to run Prettier safely, passing files as an array of arguments
  *       (avoids issues with spaces in paths).
  * 6.  Logs:
  *     - Original stdin lines (prefixed with "stdin: ").
  *     - Successful formatting (prefixed with "frmtd: ").
  *     - Any errors or stderr output from Prettier.
- * 
+ *
  * Usage example:
  * node transpile.ts --watch | node transpile_pipe.ts
  */
@@ -87,7 +87,7 @@ const rl = readline.createInterface({
 });
 
 rl.on("line", (line) => {
-//   console.log(`stdin: ${line}`);
+  //   console.log(`stdin: ${line}`);
 
   const match = line.match(/^transpiled (.*\.ts)$/);
   if (match) {

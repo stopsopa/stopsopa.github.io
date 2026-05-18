@@ -1071,154 +1071,154 @@
           >
           <h2>Hammerspoon mouse autoclick</h2>
           <script type="editor" data-lang="lua">
-local cps = 30
-local delay = 1 / cps
+            local cps = 30
+            local delay = 1 / cps
 
--- How long (in seconds) a button can be held before autoclicking stops.
--- Release and press again to restart.
-local maxHoldSeconds = 3
+            -- How long (in seconds) a button can be held before autoclicking stops.
+            -- Release and press again to restart.
+            local maxHoldSeconds = 3
 
-local leftTimer = nil
-local rightTimer = nil
-local leftWatchdog = nil
-local rightWatchdog = nil
+            local leftTimer = nil
+            local rightTimer = nil
+            local leftWatchdog = nil
+            local rightWatchdog = nil
 
--------------------------------------------------
--- Fast left click
--------------------------------------------------
+            -------------------------------------------------
+            -- Fast left click
+            -------------------------------------------------
 
-local function leftClick()
-    local pos = hs.mouse.absolutePosition()
+            local function leftClick()
+                local pos = hs.mouse.absolutePosition()
 
-    hs.eventtap.event.newMouseEvent(
-        hs.eventtap.event.types.leftMouseDown,
-        pos
-    ):post()
+                hs.eventtap.event.newMouseEvent(
+                    hs.eventtap.event.types.leftMouseDown,
+                    pos
+                ):post()
 
-    hs.eventtap.event.newMouseEvent(
-        hs.eventtap.event.types.leftMouseUp,
-        pos
-    ):post()
-end
-
--------------------------------------------------
--- Fast right click
--------------------------------------------------
-
-local function rightClick()
-    local pos = hs.mouse.absolutePosition()
-
-    hs.eventtap.event.newMouseEvent(
-        hs.eventtap.event.types.rightMouseDown,
-        pos
-    ):post()
-
-    hs.eventtap.event.newMouseEvent(
-        hs.eventtap.event.types.rightMouseUp,
-        pos
-    ):post()
-end
-
--------------------------------------------------
--- Helpers: stop individual timers
--------------------------------------------------
-
-local function stopLeft()
-    if leftTimer then
-        leftTimer:stop()
-        leftTimer = nil
-    end
-    -- Also cancel the watchdog if the key was released before it fired
-    if leftWatchdog then
-        leftWatchdog:stop()
-        leftWatchdog = nil
-    end
-end
-
-local function stopRight()
-    if rightTimer then
-        rightTimer:stop()
-        rightTimer = nil
-    end
-    -- Also cancel the watchdog if the key was released before it fired
-    if rightWatchdog then
-        rightWatchdog:stop()
-        rightWatchdog = nil
-    end
-end
-
--------------------------------------------------
--- F18 = left autoclick
--- Raw eventtap instead of hs.hotkey.bind to avoid
--- the internal queue that hotkey uses for repeats,
--- which causes clicks to keep firing after release.
--- isRepeat filters out OS key-repeat events so only
--- the first physical keyDown starts the timer.
--- "Last pressed wins": starting left stops right first.
--- Watchdog: stops clicking after maxHoldSeconds if still held.
--------------------------------------------------
-
-local keyTap = hs.eventtap.new(
-    { hs.eventtap.event.types.keyDown, hs.eventtap.event.types.keyUp },
-    function(event)
-        local keyCode = event:getKeyCode()
-        local isRepeat = event:getProperty(hs.eventtap.event.properties.keyboardEventAutorepeat) ~= 0
-
-        -- F18 keycode = 79
-        if keyCode == 79 then
-
-            -- First physical keyDown only, repeats ignored
-            if event:getType() == hs.eventtap.event.types.keyDown and not leftTimer and not isRepeat then
-                -- Last pressed wins: cancel right if it was running
-                stopRight()
-                leftTimer = hs.timer.doEvery(delay, leftClick)
-                -- Watchdog fires once after maxHoldSeconds and kills the click timer
-                leftWatchdog = hs.timer.doAfter(maxHoldSeconds, stopLeft)
-
-            -- Stop immediately on key release
-            elseif event:getType() == hs.eventtap.event.types.keyUp then
-                stopLeft()
+                hs.eventtap.event.newMouseEvent(
+                    hs.eventtap.event.types.leftMouseUp,
+                    pos
+                ):post()
             end
-        end
 
-        return false
-    end
-)
+            -------------------------------------------------
+            -- Fast right click
+            -------------------------------------------------
 
--------------------------------------------------
--- Left Control = right autoclick
--- Ctrl is a modifier key so it fires flagsChanged
--- instead of keyDown/keyUp.
--- "Last pressed wins": starting right stops left first.
--- Watchdog: stops clicking after maxHoldSeconds if still held.
--------------------------------------------------
+            local function rightClick()
+                local pos = hs.mouse.absolutePosition()
 
-local ctrlTap = hs.eventtap.new(
-    { hs.eventtap.event.types.flagsChanged },
+                hs.eventtap.event.newMouseEvent(
+                    hs.eventtap.event.types.rightMouseDown,
+                    pos
+                ):post()
 
-    function(event)
-        local flags = event:getFlags()
+                hs.eventtap.event.newMouseEvent(
+                    hs.eventtap.event.types.rightMouseUp,
+                    pos
+                ):post()
+            end
 
-        -- Ctrl pressed
-        if flags.ctrl and not rightTimer then
-            -- Last pressed wins: cancel left if it was running
-            stopLeft()
-            rightTimer = hs.timer.doEvery(delay, rightClick)
-            -- Watchdog fires once after maxHoldSeconds and kills the click timer
-            rightWatchdog = hs.timer.doAfter(maxHoldSeconds, stopRight)
-        end
+            -------------------------------------------------
+            -- Helpers: stop individual timers
+            -------------------------------------------------
 
-        -- Ctrl released
-        if not flags.ctrl and rightTimer then
-            stopRight()
-        end
+            local function stopLeft()
+                if leftTimer then
+                    leftTimer:stop()
+                    leftTimer = nil
+                end
+                -- Also cancel the watchdog if the key was released before it fired
+                if leftWatchdog then
+                    leftWatchdog:stop()
+                    leftWatchdog = nil
+                end
+            end
 
-        return false
-    end
-)
+            local function stopRight()
+                if rightTimer then
+                    rightTimer:stop()
+                    rightTimer = nil
+                end
+                -- Also cancel the watchdog if the key was released before it fired
+                if rightWatchdog then
+                    rightWatchdog:stop()
+                    rightWatchdog = nil
+                end
+            end
 
-keyTap:start()
-ctrlTap:start()            
+            -------------------------------------------------
+            -- F18 = left autoclick
+            -- Raw eventtap instead of hs.hotkey.bind to avoid
+            -- the internal queue that hotkey uses for repeats,
+            -- which causes clicks to keep firing after release.
+            -- isRepeat filters out OS key-repeat events so only
+            -- the first physical keyDown starts the timer.
+            -- "Last pressed wins": starting left stops right first.
+            -- Watchdog: stops clicking after maxHoldSeconds if still held.
+            -------------------------------------------------
+
+            local keyTap = hs.eventtap.new(
+                { hs.eventtap.event.types.keyDown, hs.eventtap.event.types.keyUp },
+                function(event)
+                    local keyCode = event:getKeyCode()
+                    local isRepeat = event:getProperty(hs.eventtap.event.properties.keyboardEventAutorepeat) ~= 0
+
+                    -- F18 keycode = 79
+                    if keyCode == 79 then
+
+                        -- First physical keyDown only, repeats ignored
+                        if event:getType() == hs.eventtap.event.types.keyDown and not leftTimer and not isRepeat then
+                            -- Last pressed wins: cancel right if it was running
+                            stopRight()
+                            leftTimer = hs.timer.doEvery(delay, leftClick)
+                            -- Watchdog fires once after maxHoldSeconds and kills the click timer
+                            leftWatchdog = hs.timer.doAfter(maxHoldSeconds, stopLeft)
+
+                        -- Stop immediately on key release
+                        elseif event:getType() == hs.eventtap.event.types.keyUp then
+                            stopLeft()
+                        end
+                    end
+
+                    return false
+                end
+            )
+
+            -------------------------------------------------
+            -- Left Control = right autoclick
+            -- Ctrl is a modifier key so it fires flagsChanged
+            -- instead of keyDown/keyUp.
+            -- "Last pressed wins": starting right stops left first.
+            -- Watchdog: stops clicking after maxHoldSeconds if still held.
+            -------------------------------------------------
+
+            local ctrlTap = hs.eventtap.new(
+                { hs.eventtap.event.types.flagsChanged },
+
+                function(event)
+                    local flags = event:getFlags()
+
+                    -- Ctrl pressed
+                    if flags.ctrl and not rightTimer then
+                        -- Last pressed wins: cancel left if it was running
+                        stopLeft()
+                        rightTimer = hs.timer.doEvery(delay, rightClick)
+                        -- Watchdog fires once after maxHoldSeconds and kills the click timer
+                        rightWatchdog = hs.timer.doAfter(maxHoldSeconds, stopRight)
+                    end
+
+                    -- Ctrl released
+                    if not flags.ctrl and rightTimer then
+                        stopRight()
+                    end
+
+                    return false
+                end
+            )
+
+            keyTap:start()
+            ctrlTap:start()
           </script>
           <h2>Install MacPorts</h2>
           <script type="editor" data-lang="sh">

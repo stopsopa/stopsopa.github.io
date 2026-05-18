@@ -4,9 +4,7 @@
  * it acts as an allowlist, meaning only those keys will be merged from subsequent instances.
  * The final result is sorted alphabetically.
  */
-export function mergeURLSearchParams(
-  ...args: (URLSearchParams | string[])[]
-): URLSearchParams {
+export function mergeURLSearchParams(...args: (URLSearchParams | string[])[]): URLSearchParams {
   const result = new URLSearchParams();
   if (args.length === 0) return result;
 
@@ -20,14 +18,12 @@ export function mergeURLSearchParams(
     if (params instanceof URLSearchParams) {
       // The first URLSearchParams contributes all its keys.
       // Subsequent ones only contribute keys in the filterSet (if defined).
-      const isFirstParams = i === args.findIndex(arg => arg instanceof URLSearchParams);
-      
+      const isFirstParams = i === args.findIndex((arg) => arg instanceof URLSearchParams);
+
       const uniqueKeys = new Set<string>();
       params.forEach((_, key) => uniqueKeys.add(key));
       const keys = Array.from(uniqueKeys);
-      const keysToProcess = (!isFirstParams && filterSet) 
-        ? keys.filter(k => filterSet.has(k)) 
-        : keys;
+      const keysToProcess = !isFirstParams && filterSet ? keys.filter((k) => filterSet.has(k)) : keys;
 
       for (const key of keysToProcess) {
         result.delete(key);
@@ -47,9 +43,7 @@ export function mergeURLSearchParams(
  * Creates a deep, distinct copy of a URLSearchParams instance, preserving its data
  * but decoupling its object reference so mutations don't affect the original.
  */
-export function cloneSearchParams(
-  params: URLSearchParams
-): URLSearchParams {
+export function cloneSearchParams(params: URLSearchParams): URLSearchParams {
   return new URLSearchParams(params);
 }
 
@@ -57,9 +51,7 @@ export function cloneSearchParams(
  * Returns a new URLSearchParams instance with all keys sorted alphabetically.
  * Useful for ensuring consistent parameter ordering before serialization.
  */
-export function normalizeSearchParams(
-  params: URLSearchParams
-): URLSearchParams {
+export function normalizeSearchParams(params: URLSearchParams): URLSearchParams {
   const result = new URLSearchParams(params);
   result.sort();
   return result;
@@ -69,10 +61,7 @@ export function normalizeSearchParams(
  * Compares two URLSearchParams instances for equality by normalizing and sorting them.
  * Returns true if they contain the exact same keys and values regardless of original order.
  */
-export function compareNormalizedSearchParams(
-  a: URLSearchParams,
-  b: URLSearchParams
-): boolean {
+export function compareNormalizedSearchParams(a: URLSearchParams, b: URLSearchParams): boolean {
   const na = normalizeSearchParams(a);
   const nb = normalizeSearchParams(b);
 
@@ -83,9 +72,7 @@ export function compareNormalizedSearchParams(
  * Returns a new URLSearchParams instance sorted primarily by keys,
  * and secondarily by values if the keys are identical.
  */
-export function sortSearchParamsByKeyThenValue(
-  params: URLSearchParams
-): URLSearchParams {
+export function sortSearchParamsByKeyThenValue(params: URLSearchParams): URLSearchParams {
   const entries: [string, string][] = [];
   params.forEach((value, key) => {
     entries.push([key, value]);
