@@ -45,6 +45,8 @@
         <h2>Usefull snippets</h2>
         <script type="editor" data-lang="ts">
 
+          test.use({ actionTimeout: 2000 });
+          
           // extra step for codegen          
             await expect(page.locator("body")).toHaveCount(1);
             ./node_modules/.bin/playwright codegen http://0.0.0.0:5678/vite-project/dist/
