@@ -54,6 +54,19 @@
             const backgroundColor = await button.evaluate((el) => {
               return window.getComputedStyle(el).getPropertyValue("background-color");
             });
+
+          // select in Web Component
+            const section = await page.locator("center-and-height-resizer").locator(".buttons-container");
+
+          // exist or not exist
+            {
+              await expect(section.locator(".clear-btn")).toBeVisible();
+              await expect(section.locator(".loader")).not.toBeVisible();
+            }
+
+          // checkbox          
+            await page.locator("#loading-sel-1").check();
+            await page.locator("#loading-sel-1").uncheck();
           
         </script>
         
