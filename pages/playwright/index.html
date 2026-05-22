@@ -55,6 +55,7 @@
               return window.getComputedStyle(el).getPropertyValue("background-color");
             });
             const outerHTML = await firstElement.evaluate((el) => el.outerHTML);
+            const innerHTML = await firstElement.evaluate((el) => el.innerHTML);
 
           // select in Web Component
             const section = await page.locator("center-and-height-resizer").locator(".buttons-container");
