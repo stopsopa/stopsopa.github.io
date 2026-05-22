@@ -48,6 +48,12 @@
           // extra step for codegen          
             await expect(page.locator("body")).toHaveCount(1);
             ./node_modules/.bin/playwright codegen http://0.0.0.0:5678/vite-project/dist/
+
+          // extract css of the element
+            const button = await page.getByRole("button", { name: "OK" });
+            const backgroundColor = await button.evaluate((el) => {
+              return window.getComputedStyle(el).getPropertyValue("background-color");
+            });
           
         </script>
         
