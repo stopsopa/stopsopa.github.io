@@ -248,6 +248,10 @@
             brew install podman-compose
             # and add to ~/.zshrc
             export PODMAN_COMPOSE_PROVIDER=podman-compose
+
+          podman machine stop
+          podman machine set --cpus 4 --memory 4096
+          podman machine start
         </script>
         <h2>network</h2>
 
