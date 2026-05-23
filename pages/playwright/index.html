@@ -58,6 +58,30 @@
 
           test.use({ actionTimeout: 2000 });
           await page.waitForTimeout(50);
+          await expect.poll(async () => {
+            const selectedItems = await querySelector(page, selector);
+            return await selectedItems.innerHTML();
+          }).toEqual(data);
+          await expect.poll(async () => {
+            return await page.locator('.status-message').textContent();
+          }, {
+            // Custom message if it times out
+            message: 'The status message did not update in time',
+            // Total time to keep trying (in milliseconds)
+            timeout: 10000, 
+            // How long to wait between attempts
+            intervals: [500, 1000, 2000], 
+          }).toEqual('Success');
+          await expect(async () => {
+            const selectedItems = await querySelector(page, selector);
+            const content = await selectedItems.innerHTML();
+            
+            // A standard assertion inside the block
+            expect(content).toEqual(data);
+          }).toPass({
+            timeout: 10000,
+            intervals: [500]
+          });
           
           // extra step for codegen          
             await expect(page.locator("body")).toHaveCount(1);
