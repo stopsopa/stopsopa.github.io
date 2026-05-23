@@ -36,11 +36,20 @@
           download "playwright-async.config.js"
           download "tests/tools/cmd.js"
 
-
-
-
           test -f package.json || echo "{}" > package.json
           yarn add -D playwright @playwright/test dotenv
+
+          --- Then use
+          ./node_modules/.bin/playwright codegen http://0.0.0.0:5678/vite-project/dist/          
+          /bin/bash playwright.sh composition/react/composite-select-demo-attr.e2e.ts
+          /bin/bash playwright.sh -- --debug -- composition/react/composite-select-demo-attr.e2e.ts
+          /bin/bash playwright.sh -- vite-project/src/App.e2e.ts -g "build list"
+          /bin/bash playwright.sh -- --debug -g "select two" -- composition/composite-select/composite-select.e2e.ts
+          
+          npx playwright show-report
+          ./node_modules/.bin/playwright test --headed --forbid-only --project=chromium --workers=1 
+          
+          
         </script>
         <h2>Usefull snippets</h2>
         <script type="editor" data-lang="ts">
@@ -59,7 +68,8 @@
             const outerHTML = await firstElement.evaluate((el) => el.outerHTML);
             const innerHTML = await firstElement.evaluate((el) => el.innerHTML);
 
-          // select in Web Component
+          // selectors
+            // in web component
             const section = await page.locator("center-and-height-resizer").locator(".buttons-container");
 
           // exist or not exist
@@ -70,6 +80,8 @@
 
           // checkbox          
             await page.locator("#loading-sel-1").check();
+              // in docker this might throw Error: locator.check: Clicking the checkbox did not change its state
+              // use .click() better in that case
             await page.locator("#loading-sel-1").uncheck();
 
           
