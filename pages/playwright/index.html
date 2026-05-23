@@ -57,6 +57,7 @@
         <script type="editor" data-lang="ts">
 
           test.use({ actionTimeout: 2000 });
+          await page.waitForTimeout(50);
           
           // extra step for codegen          
             await expect(page.locator("body")).toHaveCount(1);
