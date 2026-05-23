@@ -47,6 +47,7 @@
           /bin/bash playwright.sh -- --debug -g "select two" -- composition/composite-select/composite-select.e2e.ts
           /bin/bash playwright.sh           -- composition/react/composite-select-demo-attr.e2e.ts -g "show footer"
           /bin/bash playwright.sh -t docker -- composition/react/composite-select-demo-attr.e2e.ts -g "show footer"
+          PLAYWRIGHT_BIN=podman /bin/bash pw.sh -t docker
           
           npx playwright show-report
           ./node_modules/.bin/playwright test --headed --forbid-only --project=chromium --workers=1 
