@@ -383,6 +383,10 @@
         <h2>template</h2>
         <script type="editor" data-lang="js">
 
+          // best solution can be found here
+            // https://github.com/stopsopa/htmx/blob/196c83f37e03069cdd3978493df791e6df3ee298/server.js#L10
+            // ./js/cacheTemplate.ts
+
           // using Tagged Template Literals
           function myTag(strings, ...keys) {
             return function(context = {}) {
