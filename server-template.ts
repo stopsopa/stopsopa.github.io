@@ -3,7 +3,7 @@
 //
 // node --env-file .env server-template.ts
 // express extension: https://raw.githubusercontent.com/stopsopa/roderic/86495ef554314d388e7f6ef10ee4de6d12bcbcff/libs/express-extend-res.js?token=GHSAT0AAAAAACVQ4Q66S6J6DLZRVFB5DQLSZXEOC2Q
-// pnpm install "@types/express" "@types/lodash" "@types/node"
+// pnpm install "@types/express" "@types/lodash" "@types/node" "@types/serve-index"
 
 import path from "path";
 
