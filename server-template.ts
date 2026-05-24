@@ -9,8 +9,6 @@ import path from "path";
 
 import fs from "fs";
 
-import https from "https";
-
 import express from "express";
 import type { Application, Request, Response, NextFunction } from "express";
 
@@ -29,13 +27,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const log = (function () {
-  try {
-    return console.log;
-  } catch (e) {
-    return function () {};
-  }
-})();
+const log = console.log;
 
 const web = path.resolve(__dirname, ".");
 
