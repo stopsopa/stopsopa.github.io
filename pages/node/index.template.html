@@ -2409,6 +2409,25 @@
             },
         </script>
 
+        <h2>pnpm</h2>
+        <script type="editor" data-lang="sh">
+
+          
+          # find versions of library
+            npm view composite-select versions
+            npm view composite-select versions --json
+
+          # inspecting library
+            pnpm list composite-select --depth 10
+            pnpm why composite-select
+
+          # update library to @latest
+            pnpm up composite-select
+            pnpm up composite-select@latest
+            # or just simply
+              pnpm add composite-select@1.0.14
+          
+        </script>
         <h2>Dependencies - analysing</h2>
         <a href="https://npmgraph.js.org/?q=nlab">https://npmgraph.js.org/?q=nlab</a>
         <h2>Type annotations syntax</h2>
