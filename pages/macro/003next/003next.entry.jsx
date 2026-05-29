@@ -272,6 +272,10 @@ const Main = ({ portal }) => {
   function deleteTab(index) {
     const newList = allTabsDataExceptValues.filter((t) => t.index != index);
 
+    debugger;
+    if (!confirm("Are you sure you want to remove that tab?")) {
+      return;
+    }
     newList.forEach((r, i) => (r.zeroIndexOrderTab = i));
 
     setAllTabsDataExceptValuesDontUseDirectly(() => newList);
