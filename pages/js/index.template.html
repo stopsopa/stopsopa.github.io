@@ -75,109 +75,173 @@
 
         <script type="editor" data-lang="js">          
 
-
-          function createAutoFiller(rules, { root = document.documentElement, delay = 10 } = {}) {
-            const filled = new WeakSet();
-          
-            const normalizedRules = rules.map((rule) => ({
-              selectors: Array.isArray(rule.selector) ? rule.selector : [rule.selector],
-              value: rule.value,
-            }));
-          
-            async function typeIntoInput(input, text) {
-              input.focus();
-              input.value = "";
-          
-              for (const char of text) {
-                input.value += char;
-          
-                input.dispatchEvent(
-                  new InputEvent("input", {
-                    bubbles: true,
-                    inputType: "insertText",
-                    data: char,
-                  }),
-                );
-          
-                await new Promise((r) => setTimeout(r, delay));
+      /**
+       * Always use with finally block
+       *
+       * const semaphore = new Semaphore(3);
+       * try {
+       *   await semaphore.acquire();
+       *   // critical section
+       * } finally {
+       *   semaphore.release();
+       * }
+       */
+          class Semaphore {
+              permits;
+              maxPermits;
+              waiters = [];
+              constructor(permits) {
+                  this.maxPermits = this.permits = permits;
               }
-          
-              input.dispatchEvent(new Event("change", { bubbles: true }));
-            }
-          
-            async function resolveValue(rule, input) {
-              return typeof rule.value === "function" ? rule.value(input) : rule.value;
-            }
-          
-            async function processInput(input) {
-              if (!(input instanceof HTMLInputElement)) return;
-              if (filled.has(input)) return;
-          
-              for (const rule of normalizedRules) {
-                for (const selector of rule.selectors) {
-                  if (!input.matches(selector)) continue;
-          
-                  filled.add(input);
-          
-                  const val = await resolveValue(rule, input);
-                  if (val == null) return;
-          
-                  await new Promise((r) => setTimeout(r, 50));
-                  await typeIntoInput(input, val);
-          
-                  return;
-                }
+              acquire() {
+                  return new Promise((resolve) => {
+                      if (this.permits > 0) {
+                          this.permits -= 1;
+                          resolve();
+                      } else {
+                          this.waiters.push(resolve);
+                      }
+                  });
               }
-            }
-          
-            function scan(rootNode) {
-              if (!(rootNode instanceof HTMLElement)) return;
-          
-              for (const rule of normalizedRules) {
-                for (const selector of rule.selectors) {
-                  rootNode.querySelectorAll?.(selector).forEach(processInput);
-          
-                  if (rootNode.matches?.(selector)) {
-                    processInput(rootNode);
+              release() {
+                  const next = this.waiters.shift();
+                  if (next) {
+                      next();
+                  } else {
+                      if (this.permits !== this.maxPermits) {
+                          this.permits += 1;
+                      }
                   }
-                }
               }
-            }
-          
-            // initial scan
-            scan(document.documentElement);
-          
-            // observer
-            const observer = new MutationObserver((mutations) => {
-              for (const m of mutations) {
-                for (const node of m.addedNodes) {
-                  scan(node);
-                }
-              }
-            });
-          
-            observer.observe(root, {
-              childList: true,
-              subtree: true,
-            });
-          
-            return {
-              stop() {
-                observer.disconnect();
-              },
-            };
           }
-
-           const autofill = createAutoFiller([
-            {
-              selector: ['#firstName', '[name="first_name"]'],
-              value: 'xxx',
-            },
-            {
-              selector: ['#lastName', '[name="last_name"]'],
-              value: 'vv',
-            },
-          ]);
+      
+      
+          async function createAutoFiller(rules, { root = document.documentElement, delay = 10 } = {}) {
+              const filled = new WeakSet();
+      
+              const normalizedRules = rules.map((rule) => ({
+                  selectors: Array.isArray(rule.selector) ? rule.selector : [rule.selector],
+                  value: rule.value,
+              }));
+      
+              async function typeIntoInput(input, text) {
+                  return new Promise(async (resolve) => {
+                      input.focus();
+                      input.value = "";
+      
+                      for (const char of text) {
+                          input.value += char;
+      
+                          input.dispatchEvent(
+                              new InputEvent("input", {
+                                  bubbles: true,
+                                  inputType: "insertText",
+                                  data: char,
+                              }),
+                          );
+      
+                          await new Promise((r) => setTimeout(r, delay));
+                      }
+      
+                      input.dispatchEvent(new Event("change", { bubbles: true }));
+      
+                      await new Promise((r) => setTimeout(r, delay));
+      
+                      resolve();
+                  })
+              }
+      
+              async function resolveValue(rule, input) {
+                  return typeof rule.value === "function" ? rule.value(input) : rule.value;
+              }
+      
+      
+              const semaphore0 = new Semaphore(1);
+              async function processInput(input) {
+                  try {
+                      await semaphore0.acquire();
+                      // critical section
+      
+                      if (!(input instanceof HTMLInputElement)) return;
+                      if (filled.has(input)) return;
+      
+                      for (const rule of normalizedRules) {
+                          for (const selector of rule.selectors) {
+                              if (!input.matches(selector)) continue;
+      
+                              filled.add(input);
+      
+                              const val = await resolveValue(rule, input);
+                              if (val == null) return;
+      
+                              await new Promise((r) => setTimeout(r, 50));
+                              await typeIntoInput(input, val);
+      
+                              return;
+                          }
+                      }
+                  } finally {
+                      semaphore0.release();
+                  }
+              }
+      
+      
+              async function scan(rootNode) {
+      
+                  if (!(rootNode instanceof HTMLElement)) return;
+      
+                  for (const rule of normalizedRules) {
+                      for (const selector of rule.selectors) {
+                          rootNode.querySelectorAll?.(selector).forEach(processInput);
+      
+                          if (rootNode.matches?.(selector)) {
+                              await processInput(rootNode);
+                          }
+                      }
+                  }
+              }
+      
+              // initial scan
+              await scan(document.documentElement);
+      
+              // observer
+              const observer = new MutationObserver(async (mutations) => {
+                  log('====== trigger');
+                  for (const m of mutations) {
+                      for (const node of m.addedNodes) {
+                          await scan(node);
+                      }
+                  }
+              });
+      
+              observer.observe(root, {
+                  childList: true,
+                  subtree: true,
+              });
+      
+              return {
+                  stop() {
+                      observer.disconnect();
+                  },
+              };
+          }
+      
+          const autofill = await createAutoFiller([
+              {
+                  selector: ['#firstName', '[name="first_name"]'],
+                  value: 'xx',
+              },
+              {
+                  selector: ['#lastName', '[name="last_name"]'],
+                  value: 'xx',
+              },
+              {
+                  selector: ['[type="email"]'],
+                  value: 'xx@gmail.com',
+              },
+          ], {
+              delay: 10
+          });
           
           
         </script>
