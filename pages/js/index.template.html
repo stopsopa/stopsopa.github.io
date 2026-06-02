@@ -75,99 +75,110 @@
 
         <script type="editor" data-lang="js">          
 
-          function createAutoFiller({
-              selector,
-              value,
-              root = document.documentElement,
-              delay = 10
-          }) {
-              const filled = new WeakSet();
-              // debugger;
-      
-              async function typeIntoInput(input, text) {
-                  input.focus();
-                  input.value = '';
-      
-                  for (const char of text) {
-                      input.value += char;
-      
-                      input.dispatchEvent(
-                          new InputEvent('input', {
-                              bubbles: true,
-                              inputType: 'insertText',
-                              data: char
-                          })
-                      );
-      
-                      await new Promise(r => setTimeout(r, delay));
-                  }
-      
-                  input.dispatchEvent(new Event('change', { bubbles: true }));
+
+          function createAutoFiller(rules, { root = document.documentElement, delay = 10 } = {}) {
+            const filled = new WeakSet();
+          
+            const normalizedRules = rules.map((rule) => ({
+              selectors: Array.isArray(rule.selector) ? rule.selector : [rule.selector],
+              value: rule.value,
+            }));
+          
+            async function typeIntoInput(input, text) {
+              input.focus();
+              input.value = "";
+          
+              for (const char of text) {
+                input.value += char;
+          
+                input.dispatchEvent(
+                  new InputEvent("input", {
+                    bubbles: true,
+                    inputType: "insertText",
+                    data: char,
+                  }),
+                );
+          
+                await new Promise((r) => setTimeout(r, delay));
               }
-      
-              async function resolveValue(input) {
-                  return typeof value === 'function' ? value(input) : value;
+          
+              input.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+          
+            async function resolveValue(rule, input) {
+              return typeof rule.value === "function" ? rule.value(input) : rule.value;
+            }
+          
+            async function processInput(input) {
+              if (!(input instanceof HTMLInputElement)) return;
+              if (filled.has(input)) return;
+          
+              for (const rule of normalizedRules) {
+                for (const selector of rule.selectors) {
+                  if (!input.matches(selector)) continue;
+          
+                  filled.add(input);
+          
+                  const val = await resolveValue(rule, input);
+                  if (val == null) return;
+          
+                  await new Promise((r) => setTimeout(r, 50));
+                  await typeIntoInput(input, val);
+          
+                  return;
+                }
               }
-      
-              async function handle(node) {
-                  if (!(node instanceof HTMLElement)) return;
-      
-                  const inputs = [];
-      
-                  if (node.matches?.(selector)) {
-                      inputs.push(node);
+            }
+          
+            function scan(rootNode) {
+              if (!(rootNode instanceof HTMLElement)) return;
+          
+              for (const rule of normalizedRules) {
+                for (const selector of rule.selectors) {
+                  rootNode.querySelectorAll?.(selector).forEach(processInput);
+          
+                  if (rootNode.matches?.(selector)) {
+                    processInput(rootNode);
                   }
-      
-                  node.querySelectorAll?.(selector).forEach(el => inputs.push(el));
-      
-                  for (const input of inputs) {
-                      if (!(input instanceof HTMLInputElement)) continue;
-                      if (filled.has(input)) continue;
-      
-                      filled.add(input);
-      
-                      const val = await resolveValue(input);
-                      if (val == null) continue;
-      
-                      await new Promise(r => setTimeout(r, 50));
-                      await typeIntoInput(input, val);
-                  }
+                }
               }
-      
-              // initial scan
-              document.querySelectorAll(selector).forEach(handle);
-      
-              // observer for dynamic DOM
-              const observer = new MutationObserver(mutations => {
-                  for (const m of mutations) {
-                      for (const node of m.addedNodes) {
-                          handle(node);
-                      }
-                  }
-              });
-      
-              observer.observe(root, {
-                  childList: true,
-                  subtree: true
-              });
-      
-              return {
-                  stop: () => observer.disconnect()
-              };
+            }
+          
+            // initial scan
+            scan(document.documentElement);
+          
+            // observer
+            const observer = new MutationObserver((mutations) => {
+              for (const m of mutations) {
+                for (const node of m.addedNodes) {
+                  scan(node);
+                }
+              }
+            });
+          
+            observer.observe(root, {
+              childList: true,
+              subtree: true,
+            });
+          
+            return {
+              stop() {
+                observer.disconnect();
+              },
+            };
           }
-      
-          createAutoFiller({
-              selector: '[type="email"]',
-              value: 'xxx@gmail.com'
-          });
-          createAutoFiller({
-              selector: '[id="firstName"]',
-              value: 'xxx'
-          });
-          createAutoFiller({
-              selector: '[id="lastName"]',
-              value: 'xxx'
-          });
+
+           const autofill = createAutoFiller([
+            {
+              selector: ['#firstName', '[name="first_name"]'],
+              value: 'xxx',
+            },
+            {
+              selector: ['#lastName', '[name="last_name"]'],
+              value: 'vv',
+            },
+          ]);
+          
           
         </script>
 
