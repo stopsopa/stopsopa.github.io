@@ -109,6 +109,30 @@
               // in docker this might throw Error: locator.check: Clicking the checkbox did not change its state
               // use .click() better in that case
             await page.locator("#loading-sel-1").uncheck();
+
+            const style = await page.evaluate(async () => {
+              const timeout = 5000;
+              const start = Date.now();
+          
+              while (Date.now() - start < timeout) {
+                const el = document.querySelector("monaco-diff") as any;
+          
+                if (el?.shadowRoot) {
+                  await el.whenReady();
+          
+                  const target = el.shadowRoot.querySelector(".original-in-monaco-diff-editor");
+          
+                  if (target) {
+                    return window.getComputedStyle(target).backgroundColor;
+                  }
+                }
+          
+                await new Promise((r) => setTimeout(r, 200));
+              }
+          
+              throw new Error("Timeout waiting for monaco-diff style");
+            });
+          
         </script>
 
         <h2>Custom image ultimate test</h2>
