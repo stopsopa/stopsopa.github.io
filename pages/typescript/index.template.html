@@ -507,6 +507,10 @@
 
           wget --no-cache urlwizzard.schema://urlwizzard.hostnegotiated/es.ts
           wget --no-cache urlwizzard.schema://urlwizzard.hostnegotiated/es.mjs
+            # VERY USEFUL
+            # VERY USEFUL
+            # VERY USEFUL
+            # VERY USEFUL
             # see more interesting stuff urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2FTRANSPILATION.md
 
           yarn add -D esbuild
@@ -516,6 +520,7 @@
           node es.mjs
 
           wget https://stopsopa.github.io/gitignore_to_find/gitignore.js
+            // see more: https://stopsopa.github.io/gitignore_to_find
           find . -path './node_modules' -prune -o -path './.git' -prune -o -type f -name '*.ts' -print \
             | NODE_OPTIONS="" node gitignore.js .esignore \
             | NODE_OPTIONS="" DEBUG=true /bin/bash ts.sh es.ts --produce-gitignore --update
