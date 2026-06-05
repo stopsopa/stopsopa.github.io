@@ -6,6 +6,7 @@
       name="viewport"
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
+    
 
     <title>Bash - Shell Scripting Commands & Examples</title>
 
@@ -1613,17 +1614,29 @@
                   # rsync  version 3.4.1  protocol version 32
                   # ... and more
             # for copying from local drive to external ssd over the usb
-              rsync -a --info=progress2 source/ /Volumes/YourSSD/destination/
+              rsync -a --info=progress2 /source/ /destination/         <----------------------
               # don't use -P - too much info about progress (for example it will show progress for each file - you want overall progress) stick to suggeststed progress2
               # don't use -z for usb transfer, slows things down - compression and decompression - there is no point for that in here - only via network
             # VERY IMPORTANT: remember about / at the end of each path - rsync funky issue
             # VERY IMPORTANT: remember about / at the end of each path - rsync funky issue
             # VERY IMPORTANT: remember about / at the end of each path - rsync funky issue
             # VERY IMPORTANT: remember about / at the end of each path - rsync funky issue
-              rsync -a --info=progress2 ~/Desktop/ /Volumes/M2_NVMe_2TB/2026-04-15-mac14rebuild/Desktop/
-              rsync -a --info=progress2 /Users/szdz/Workspace/ /Volumes/M2_NVMe_2TB/2026-04-15-mac14rebuild/Workspace/
-              rsync -a --info=progress2 /Users/szdz/Dropbox/ /Volumes/M2_NVMe_2TB/2026-04-15-mac14rebuild/Dropbox/
-              rsync -a --info=progress2 /Users/szdz/Torrent/___already_on_sd/ /Volumes/M2_NVMe_2TB/2026-04-15-mac14rebuild/___already_on_sd/
+            # additionally we can use also:
+              --partial -- will leave interrupted partial files like .filename.8u3k2.tmp
+                           then we can continue with --append-verify
+                           also there is --inplace which will not copy to partial files .filename.8u3k2.tmp
+                           but regarding partial it is just best to add together either 
+                           --partial --append-verify
+                           or
+                           --partial --append-verify --inplace
+                 but all that is just more sophisticated mode when interruptions are anticipated
+                 for any other normal case stick to :
+                   rsync -a --info=progress2 /source/ /destination/   
+                     or
+                   rsync -a --info=progress2 --delete /source/ /destination/   
+                 that is all you will ever need for 99% cases
+                          
+                              
 
           # WARNING: MORE MODERN ALTERNATIVE: rclone https://github.com/rclone/rclone
 
