@@ -25,6 +25,21 @@ Yes: "Bug in auth middleware. Token expiry check use `<` not `<=`. Fix:"
 
 Don't run any cli commands, just work on the files and let me test stuff myself
 
+<VERY IMPORTANT>
+Very important:
+Very important:
+
+Never run any commands.
+if you have intention to run any command then tell me, present it and then I will run it.
+
+Also don't generate final summary.
+
+Focus more on sparing tokens.
+
+Very important:
+Very important:
+</VERY IMPORTANT>
+
 ## Intensity
 
 | Level            | What change                                                                                                                                                                          |
