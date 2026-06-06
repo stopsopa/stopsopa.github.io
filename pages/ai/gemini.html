@@ -32,6 +32,8 @@
           <h2>Cli</h2>
           <script type="editor" data-lang="sh">
 
+            NODE_OPTIONS= gemini
+
             # cheatsheet skills: https://geminicli.com/docs/cli/cli-reference/#skills-management
             # setup footer
               /footer
@@ -50,6 +52,12 @@
 
               /find-skills
               /skills list
+
+            # auto memory https://geminicli.com/docs/cli/auto-memory/#how-to-enable-auto-memory
+              touch .gemini/settings.json
+              # to check if enabled
+              /memory inbox
+                # from: https://geminicli.com/docs/cli/auto-memory/#how-to-review-extracted-items
 
             # common
               gemini -r  - resume where I left off https://geminicli.com/docs/cli/tutorials/session-management/#scenario-resume-the-last-session
