@@ -30,12 +30,12 @@
             # cheatsheet skills: https://geminicli.com/docs/cli/cli-reference/#skills-management
             # setup footer
               /footer
-               Shift+Tab to accept edits                                                                                                                                                                        1 skill
-              ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-               >   Type your message or @path/to/file                                                                                                                                                                   
-              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-               sandbox                  /model                                quota                 context                memory                 /auth                               tokens                    session
-               no sandbox               gemini-3-flash-preview                0% used               0% used                243.4 MB               gggg      @gmail.com                760 tokens               133xxxx5            
+                Shift+Tab to accept edits                                                                              1 skill
+                ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+                 >   Type your message or @path/to/file                                                                        
+                ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                 sandbox     /model                   quota      context   memory    /auth               tokens        session
+                 no sandbox  gemini-3-flash-preview   0% used    0% used   243.4 MB  gggg   @gmail.com   760 tokens   133xxxx5       
 
             # skills  https://geminicli.com/docs/cli/tutorials/skills-getting-started/
 
@@ -50,6 +50,9 @@
               gemini -r  - resume where I left off https://geminicli.com/docs/cli/tutorials/session-management/#scenario-resume-the-last-session
                  /resume  - or do it from within gemini
                  /exit --delete  - remove session when exit   https://geminicli.com/docs/cli/tutorials/session-management/#scenario-delete-session-on-exit
+                 # fork session: https://geminicli.com/docs/cli/tutorials/session-management/#how-to-fork-conversations
+                   /resume save decision-point
+                   /resume resume decision-point
             
               /clear   - start new session
               GEMINI.md locations: https://geminicli.com/docs/cli/tutorials/memory-management/#scenario-using-the-hierarchy
