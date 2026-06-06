@@ -85,3 +85,35 @@ export function sortSearchParamsByKeyThenValue(params: URLSearchParams): URLSear
     })
   );
 }
+
+/**
+ * Merges consecutive source URLSearchParams into a base URLSearchParams, but strictly
+ * limits updates and deletions to a specific list of governed keys.
+ * Sources are applied in sequence. For each key in governedKeys and each source:
+ *  - If the key is present in the source, it overwrites the value in result.
+ *  - If the key is absent from the source, it is deleted from the result.
+ */
+export function syncURLSearchParams(
+  base: URLSearchParams,
+  governedKeys: string[] | Set<string>,
+  ...sources: URLSearchParams[]
+): URLSearchParams {
+  const result = new URLSearchParams(base);
+  const keys = Array.isArray(governedKeys) ? governedKeys : Array.from(governedKeys);
+
+  for (const source of sources) {
+    for (const key of keys) {
+      if (source.has(key)) {
+        result.delete(key);
+        source.getAll(key).forEach((value) => {
+          result.append(key, value);
+        });
+      } else {
+        result.delete(key);
+      }
+    }
+  }
+
+  result.sort();
+  return result;
+}
