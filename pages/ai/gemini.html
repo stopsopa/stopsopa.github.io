@@ -36,6 +36,30 @@
               ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
                sandbox                  /model                                quota                 context                memory                 /auth                               tokens                    session
                no sandbox               gemini-3-flash-preview                0% used               0% used                243.4 MB               gggg      @gmail.com                760 tokens               133xxxx5            
+
+            # skills  https://geminicli.com/docs/cli/tutorials/skills-getting-started/
+
+              SKILL=grug
+              mkdir -p ".gemini/skills/${SKILL}/scripts"
+              touch ".gemini/skills/${SKILL}/SKILL.md"
+
+              /find-skills
+              /skills list
+
+            # common
+              gemini -r  - resume where I left off https://geminicli.com/docs/cli/tutorials/session-management/#scenario-resume-the-last-session
+                 /resume  - or do it from within gemini
+                 /exit --delete  - remove session when exit   https://geminicli.com/docs/cli/tutorials/session-management/#scenario-delete-session-on-exit
+            
+              /clear   - start new session
+              GEMINI.md locations: https://geminicli.com/docs/cli/tutorials/memory-management/#scenario-using-the-hierarchy
+                /memory show - to see what is loaded
+                /memory reload - to reload GEMINI.md  https://geminicli.com/docs/cli/tutorials/memory-management/#scenario-refresh-context
+
+            
+
+
+
             
           </script>
         </div>
