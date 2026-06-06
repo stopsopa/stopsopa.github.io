@@ -32,6 +32,12 @@
           <h2>Cli</h2>
           <script type="editor" data-lang="sh">
 
+            WARNING; 
+              There is this thing called "token caching" https://geminicli.com/docs/cli/token-caching/
+              Apparently it seems to be good idea to login to gemini cli using Gemini API Key to have that
+
+            .geminiignore   https://geminicli.com/docs/cli/gemini-ignore/#how-to-use-geminiignore
+
             NODE_OPTIONS= gemini
 
             # cheatsheet skills: https://geminicli.com/docs/cli/cli-reference/#skills-management
@@ -53,13 +59,36 @@
               /find-skills
               /skills list
 
+            # commands: https://geminicli.com/docs/cli/custom-commands/
+              {{args}}   - ingest arguments 
+              !{grep -r {{args}} .}  - run command
+              @{...}  - reference file
+              
+
             # auto memory https://geminicli.com/docs/cli/auto-memory/#how-to-enable-auto-memory
               touch .gemini/settings.json
               # to check if enabled
               /memory inbox
                 # from: https://geminicli.com/docs/cli/auto-memory/#how-to-review-extracted-items
 
+            # elemetry  https://geminicli.com/docs/cli/telemetry/    
+            # .gemini/.env  https://geminicli.com/docs/cli/system-prompt/#how-to-enable
+            
+            # System Prompt Override (GEMINI_SYSTEM_MD) https://geminicli.com/docs/cli/system-prompt/#how-to-enable
+              GEMINI_WRITE_SYSTEM_MD=1 gemini 
+              # will create .gemini/system.md
+
             # common
+              /stats
+              /model  - switch to different model https://geminicli.com/docs/cli/model/
+              /rewind - rewind to previous point of conversation and revert file changes https://geminicli.com/docs/cli/rewind/
+                # also you can press ESC twice
+              /settings    https://geminicli.com/docs/cli/settings/
+                and look for "Terminal Notification Method" and set it to "bell"
+                disable "Enable Plan Mode"
+                disable "Plan Model Routing"
+                disable "Auto Theme Switching"
+                enable "Show Thoughts in Title"
               gemini -r  - resume where I left off https://geminicli.com/docs/cli/tutorials/session-management/#scenario-resume-the-last-session
                  /resume  - or do it from within gemini
                  /exit --delete  - remove session when exit   https://geminicli.com/docs/cli/tutorials/session-management/#scenario-delete-session-on-exit
@@ -68,7 +97,10 @@
                    /resume resume decision-point
 
               /clear   - start new session
-              GEMINI.md locations: https://geminicli.com/docs/cli/tutorials/memory-management/#scenario-using-the-hierarchy
+              GEMINI.md locations: 
+                https://geminicli.com/docs/cli/tutorials/memory-management/#scenario-using-the-hierarchy
+                https://geminicli.com/docs/cli/gemini-md/
+                  # INTERESTING: JIT: Just-in-time (JIT) context files: https://geminicli.com/docs/cli/gemini-md/#:~:text=Just%2Din%2Dtime%20(JIT)%20context%20files%3A
                 /memory show - to see what is loaded
                 /memory reload - to reload GEMINI.md  https://geminicli.com/docs/cli/tutorials/memory-management/#scenario-refresh-context
 
