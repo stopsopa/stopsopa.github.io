@@ -8,8 +8,13 @@
     />
 
     <title>Gemini CLI</title>
+    <style>
+      #body .inside {
+        max-width: 1122px;
+      }
+    </style>
   </head>
-  <body class="layout bg" toc>
+  <body class="layout bg" toc id="body">
     <div class="body">
       <div class="inside">
         <div class="cards">
@@ -32,10 +37,10 @@
               /footer
                 Shift+Tab to accept edits                                                                              1 skill
                 ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-                 >   Type your message or @path/to/file                                                                        
+                 >   Type your message or @path/to/file
                 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
                  sandbox     /model                   quota      context   memory    /auth               tokens        session
-                 no sandbox  gemini-3-flash-preview   0% used    0% used   243.4 MB  gggg   @gmail.com   760 tokens   133xxxx5       
+                 no sandbox  gemini-3-flash-preview   0% used    0% used   243.4 MB  gggg   @gmail.com   760 tokens   133xxxx5
 
             # skills  https://geminicli.com/docs/cli/tutorials/skills-getting-started/
 
@@ -53,7 +58,7 @@
                  # fork session: https://geminicli.com/docs/cli/tutorials/session-management/#how-to-fork-conversations
                    /resume save decision-point
                    /resume resume decision-point
-            
+
               /clear   - start new session
               GEMINI.md locations: https://geminicli.com/docs/cli/tutorials/memory-management/#scenario-using-the-hierarchy
                 /memory show - to see what is loaded
@@ -76,7 +81,7 @@
                 │ Wenyan-Ultra │ /caveman wenyan-ultra │ Ancient scholar on budget.                    │
                 └──────────────┴───────────────────────┴───────────────────────────────────────────────┘
                 Skills
-              
+
                 ┌──────────────────┬──────────────────────────┬────────────────────────┐
                 │ Skill            │ Trigger                  │ Action                 │
                 ├──────────────────┼──────────────────────────┼────────────────────────┤
@@ -85,12 +90,8 @@
                 │ caveman-compress │ /caveman-compress <file> │ Compress .md files.    │
                 │ caveman-help     │ /caveman-help            │ This card.             │
                 └──────────────────┴──────────────────────────┴────────────────────────┘
-              
+
                 Deactivate: Say "stop caveman" or "normal mode".
-
-
-
-            
           </script>
         </div>
       </div>

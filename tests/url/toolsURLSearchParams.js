@@ -48,10 +48,29 @@ function sortSearchParamsByKeyThenValue(params) {
     })
   );
 }
+function syncURLSearchParams(base, governedKeys, ...sources) {
+  const result = new URLSearchParams(base);
+  const keys = Array.isArray(governedKeys) ? governedKeys : Array.from(governedKeys);
+  for (const source of sources) {
+    for (const key of keys) {
+      if (source.has(key)) {
+        result.delete(key);
+        source.getAll(key).forEach((value) => {
+          result.append(key, value);
+        });
+      } else {
+        result.delete(key);
+      }
+    }
+  }
+  result.sort();
+  return result;
+}
 export {
   cloneSearchParams,
   compareNormalizedSearchParams,
   mergeURLSearchParams,
   normalizeSearchParams,
   sortSearchParamsByKeyThenValue,
+  syncURLSearchParams,
 };
