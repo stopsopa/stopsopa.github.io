@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Antigravity CLI</title>
+    <style>
+      #body .inside {
+        max-width: 1122px;
+      }
+    </style>
+  </head>
+  <body class="layout bg" toc id="body">
+    <div class="body">
+      <div class="inside">
+        <div class="cards">
+          <h2>General stuff</h2>
+          <a href="gemini.html">Gemini Cli</a>
+          <script type="editor" data-lang="sh">
+
+            # Install
+              https://antigravity.google/download#antigravity-cli
+
+            # on start
+              /config
+                "Enable Telemetry" off
+                "Notifications" on
+                "Show Feedback Survey" off
+                "Verbosity"   - change to "low"
+
+            # useful
+              agy
+              /btw [ask]
+              /clear
+                /context - current context usage
+                /usage   - check quota
+              /fast    - I have to see if that could save some usage
+              /model
+              /resume  - browse and reuse past conversations
+              /rewind  - undo   || /undo  https://antigravity.google/docs/cli-using#:~:text=Go%20Back%20in%20Conversation
+              /skills
+              /statusline
+
+            # AGENTS.md & GEMINI.md
+              https://antigravity.google/docs/gcli-migration#context-files-and-workspace-rules
+
+            /skills
+              # now lives in .agents/skills/  https://antigravity.google/docs/gcli-migration#updated-skills-paths
+          </script>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/js/github.js"></script>
+  </body>
+</html>
