@@ -2412,8 +2412,18 @@
         <h2>pnpm</h2>
         <script type="editor" data-lang="sh">
 
+          # to include devDependencies
+          pnpm install --frozen-lockfile
+          
+          # to exclude devDependencies
+          pnpm install --frozen-lockfile --production
+
+          # to resolve minimumReleaseAgeExclude pnpm-workspace.yaml
+          # read comment on top of the file
+            urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fbash%2Fpnpm%2FminimumReleaseAge.ts
 
           # find versions of library
+            NODE_OPTIONS= pnpm view "$@koa/router" name time --json
             npm view composite-select versions
             npm view composite-select versions --json
 
