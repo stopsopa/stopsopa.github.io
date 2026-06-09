@@ -71,179 +71,176 @@
           b = [a, a = b][0];
         </script>
         <h2>Autofill input</h2>
-        
 
-        <script type="editor" data-lang="js">          
+        <script type="editor" data-lang="js">
 
-      /**
-       * Always use with finally block
-       *
-       * const semaphore = new Semaphore(3);
-       * try {
-       *   await semaphore.acquire();
-       *   // critical section
-       * } finally {
-       *   semaphore.release();
-       * }
-       */
-          class Semaphore {
-              permits;
-              maxPermits;
-              waiters = [];
-              constructor(permits) {
-                  this.maxPermits = this.permits = permits;
-              }
-              acquire() {
-                  return new Promise((resolve) => {
-                      if (this.permits > 0) {
-                          this.permits -= 1;
-                          resolve();
+          /**
+           * Always use with finally block
+           *
+           * const semaphore = new Semaphore(3);
+           * try {
+           *   await semaphore.acquire();
+           *   // critical section
+           * } finally {
+           *   semaphore.release();
+           * }
+           */
+              class Semaphore {
+                  permits;
+                  maxPermits;
+                  waiters = [];
+                  constructor(permits) {
+                      this.maxPermits = this.permits = permits;
+                  }
+                  acquire() {
+                      return new Promise((resolve) => {
+                          if (this.permits > 0) {
+                              this.permits -= 1;
+                              resolve();
+                          } else {
+                              this.waiters.push(resolve);
+                          }
+                      });
+                  }
+                  release() {
+                      const next = this.waiters.shift();
+                      if (next) {
+                          next();
                       } else {
-                          this.waiters.push(resolve);
-                      }
-                  });
-              }
-              release() {
-                  const next = this.waiters.shift();
-                  if (next) {
-                      next();
-                  } else {
-                      if (this.permits !== this.maxPermits) {
-                          this.permits += 1;
+                          if (this.permits !== this.maxPermits) {
+                              this.permits += 1;
+                          }
                       }
                   }
               }
-          }
-      
-      
-          async function createAutoFiller(rules, { root = document.documentElement, delay = 10 } = {}) {
-              const filled = new WeakSet();
-      
-              const normalizedRules = rules.map((rule) => ({
-                  selectors: Array.isArray(rule.selector) ? rule.selector : [rule.selector],
-                  value: rule.value,
-              }));
-      
-              async function typeIntoInput(input, text) {
-                  return new Promise(async (resolve) => {
-                      input.focus();
-                      input.value = "";
-      
-                      for (const char of text) {
-                          input.value += char;
-      
-                          input.dispatchEvent(
-                              new InputEvent("input", {
-                                  bubbles: true,
-                                  inputType: "insertText",
-                                  data: char,
-                              }),
-                          );
-      
+
+
+              async function createAutoFiller(rules, { root = document.documentElement, delay = 10 } = {}) {
+                  const filled = new WeakSet();
+
+                  const normalizedRules = rules.map((rule) => ({
+                      selectors: Array.isArray(rule.selector) ? rule.selector : [rule.selector],
+                      value: rule.value,
+                  }));
+
+                  async function typeIntoInput(input, text) {
+                      return new Promise(async (resolve) => {
+                          input.focus();
+                          input.value = "";
+
+                          for (const char of text) {
+                              input.value += char;
+
+                              input.dispatchEvent(
+                                  new InputEvent("input", {
+                                      bubbles: true,
+                                      inputType: "insertText",
+                                      data: char,
+                                  }),
+                              );
+
+                              await new Promise((r) => setTimeout(r, delay));
+                          }
+
+                          input.dispatchEvent(new Event("change", { bubbles: true }));
+
                           await new Promise((r) => setTimeout(r, delay));
+
+                          resolve();
+                      })
+                  }
+
+                  async function resolveValue(rule, input) {
+                      return typeof rule.value === "function" ? rule.value(input) : rule.value;
+                  }
+
+
+                  const semaphore0 = new Semaphore(1);
+                  async function processInput(input) {
+                      try {
+                          await semaphore0.acquire();
+                          // critical section
+
+                          if (!(input instanceof HTMLInputElement)) return;
+                          if (filled.has(input)) return;
+
+                          for (const rule of normalizedRules) {
+                              for (const selector of rule.selectors) {
+                                  if (!input.matches(selector)) continue;
+
+                                  filled.add(input);
+
+                                  const val = await resolveValue(rule, input);
+                                  if (val == null) return;
+
+                                  await new Promise((r) => setTimeout(r, 50));
+                                  await typeIntoInput(input, val);
+
+                                  return;
+                              }
+                          }
+                      } finally {
+                          semaphore0.release();
                       }
-      
-                      input.dispatchEvent(new Event("change", { bubbles: true }));
-      
-                      await new Promise((r) => setTimeout(r, delay));
-      
-                      resolve();
-                  })
-              }
-      
-              async function resolveValue(rule, input) {
-                  return typeof rule.value === "function" ? rule.value(input) : rule.value;
-              }
-      
-      
-              const semaphore0 = new Semaphore(1);
-              async function processInput(input) {
-                  try {
-                      await semaphore0.acquire();
-                      // critical section
-      
-                      if (!(input instanceof HTMLInputElement)) return;
-                      if (filled.has(input)) return;
-      
+                  }
+
+
+                  async function scan(rootNode) {
+
+                      if (!(rootNode instanceof HTMLElement)) return;
+
                       for (const rule of normalizedRules) {
                           for (const selector of rule.selectors) {
-                              if (!input.matches(selector)) continue;
-      
-                              filled.add(input);
-      
-                              const val = await resolveValue(rule, input);
-                              if (val == null) return;
-      
-                              await new Promise((r) => setTimeout(r, 50));
-                              await typeIntoInput(input, val);
-      
-                              return;
-                          }
-                      }
-                  } finally {
-                      semaphore0.release();
-                  }
-              }
-      
-      
-              async function scan(rootNode) {
-      
-                  if (!(rootNode instanceof HTMLElement)) return;
-      
-                  for (const rule of normalizedRules) {
-                      for (const selector of rule.selectors) {
-                          rootNode.querySelectorAll?.(selector).forEach(processInput);
-      
-                          if (rootNode.matches?.(selector)) {
-                              await processInput(rootNode);
+                              rootNode.querySelectorAll?.(selector).forEach(processInput);
+
+                              if (rootNode.matches?.(selector)) {
+                                  await processInput(rootNode);
+                              }
                           }
                       }
                   }
-              }
-      
-              // initial scan
-              await scan(document.documentElement);
-      
-              // observer
-              const observer = new MutationObserver(async (mutations) => {
-                  log('====== trigger');
-                  for (const m of mutations) {
-                      for (const node of m.addedNodes) {
-                          await scan(node);
+
+                  // initial scan
+                  await scan(document.documentElement);
+
+                  // observer
+                  const observer = new MutationObserver(async (mutations) => {
+                      log('====== trigger');
+                      for (const m of mutations) {
+                          for (const node of m.addedNodes) {
+                              await scan(node);
+                          }
                       }
-                  }
-              });
-      
-              observer.observe(root, {
-                  childList: true,
-                  subtree: true,
-              });
-      
-              return {
-                  stop() {
-                      observer.disconnect();
+                  });
+
+                  observer.observe(root, {
+                      childList: true,
+                      subtree: true,
+                  });
+
+                  return {
+                      stop() {
+                          observer.disconnect();
+                      },
+                  };
+              }
+
+              const autofill = await createAutoFiller([
+                  {
+                      selector: ['#firstName', '[name="first_name"]'],
+                      value: 'xx',
                   },
-              };
-          }
-      
-          const autofill = await createAutoFiller([
-              {
-                  selector: ['#firstName', '[name="first_name"]'],
-                  value: 'xx',
-              },
-              {
-                  selector: ['#lastName', '[name="last_name"]'],
-                  value: 'xx',
-              },
-              {
-                  selector: ['[type="email"]'],
-                  value: 'xx@gmail.com',
-              },
-          ], {
-              delay: 10
-          });
-          
-          
+                  {
+                      selector: ['#lastName', '[name="last_name"]'],
+                      value: 'xx',
+                  },
+                  {
+                      selector: ['[type="email"]'],
+                      value: 'xx@gmail.com',
+                  },
+              ], {
+                  delay: 10
+              });
         </script>
 
         <h2>Regex</h2>
@@ -493,7 +490,7 @@
             // https://app.unpkg.com/monaco-editor@0.55.1
             // https://cdn.jsdelivr.net/npm/monaco-editor/
             // https://cdnjs.com/libraries/monaco-editor
-          
+
 
           // original:
             https://github.com/stopsopa/tabs/blob/v1.0.0/vanilla-tabs.js
@@ -961,7 +958,6 @@
           // Vanilla killer helper
             // https://stopsopa.github.io/monaco-editor-webcomponent/web-component/urlchange/index.html?t-1=aaa&t-3=cccc
               // source: https://github.com/stopsopa/monaco-editor-webcomponent/tree/main/web-component/urlchange
-          
         </script>
         <h2>findLast</h2>
         <script type="editor" data-lang="js">

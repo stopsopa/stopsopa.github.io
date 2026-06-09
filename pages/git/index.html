@@ -1506,25 +1506,24 @@ git rebase --continue
         </script>
         <h2>search files by path - return commits where changes</h2>
         <script type="editor" data-lang="sh">
-          
+
           # more info
             git log --name-status --date=iso \
               --format="COMMIT %H | %ad | %an | %s" \
               -- \
                 test/zod/simplifyErrors.parallel.test.ts \
-                docker/docker-compose.sh         
+                docker/docker-compose.sh
 
           # find commits where this file was modifie - more compact
             git log --pretty=format:"%H %ad %s" --date=iso \
               -- \
                 test/zod/simplifyErrors.parallel.test.ts \
-                docker/docker-compose.sh  
+                docker/docker-compose.sh
 
           # just count
             git rev-list --count HEAD -- \
               test/zod/simplifyErrors.parallel.test.ts \
-              docker/docker-compose.sh                 
-        
+              docker/docker-compose.sh
         </script>
         <h2>
           find big files, from <a href="https://stackoverflow.com/a/42544963">https://stackoverflow.com/a/42544963</a>

@@ -34,8 +34,8 @@
           <script type="editor" data-lang="sh">
 
             $ gemini
-            
-            WARNING; 
+
+            WARNING;
               There is this thing called "token caching" https://geminicli.com/docs/cli/token-caching/
               Apparently it seems to be good idea to login to gemini cli using Gemini API Key to have that
 
@@ -63,10 +63,10 @@
               /skills list
 
             # commands: https://geminicli.com/docs/cli/custom-commands/
-              {{args}}   - ingest arguments 
+              {{args}}   - ingest arguments
               !{grep -r {{args}} .}  - run command
               @{...}  - reference file
-              
+
 
             # auto memory https://geminicli.com/docs/cli/auto-memory/#how-to-enable-auto-memory
               touch .gemini/settings.json
@@ -76,12 +76,12 @@
 
             # Telemetry  https://geminicli.com/docs/cli/telemetry/ & https://geminicli.com/docs/local-development/#use-google-cloud
             # .gemini/.env  https://geminicli.com/docs/cli/system-prompt/#how-to-enable
-            
+
             # System Prompt Override (GEMINI_SYSTEM_MD) https://geminicli.com/docs/cli/system-prompt/#how-to-enable
-              GEMINI_WRITE_SYSTEM_MD=1 gemini 
-              # will create .gemini/system.md              
+              GEMINI_WRITE_SYSTEM_MD=1 gemini
+              # will create .gemini/system.md
                 # My changes: https://github.com/stopsopa/monaco-editor-webcomponent-sandbox/commit/8d5b27d9b0cb7bfecd850bfb1e83b5be6802e782
-            
+
             # common
               /stats
               /stats session - to see how much juice left
@@ -102,7 +102,7 @@
                    /resume resume decision-point
 
               /clear   - start new session
-              GEMINI.md locations: 
+              GEMINI.md locations:
                 https://geminicli.com/docs/cli/tutorials/memory-management/#scenario-using-the-hierarchy
                 https://geminicli.com/docs/cli/gemini-md/
                   # INTERESTING: JIT: Just-in-time (JIT) context files: https://geminicli.com/docs/cli/gemini-md/#:~:text=Just%2Din%2Dtime%20(JIT)%20context%20files%3A
