@@ -1,6 +1,7 @@
 There are few ways typescript is treated here
 
 # transpile.sh
+[transpile.ignore](transpile.ignore)
 
 This is just for finding _.ts files and transpiling each file right next to _.js
 
@@ -12,11 +13,13 @@ To find all _.entry.js & _.entry.jsx and transpiling to:
 /dist/[name].bundle.css
 
 # tsc.sh
+[tsconfig.json](tsconfig.json)
 
 This uses npx tsc just for transpilation.
-It is generally looking into all files it can see except obvious exclusions like node_modules. But that can be changed in tsconfig.json
+It is generally looking into all files it can see except obvious exclusions like node_modules. But that can be changed in [tsconfig.json](tsconfig.json)
 
 # es.sh
+[es.ignore](es.ignore)
 
 Is more flexible which can switch between transpiling and bundling for special cases
 but is not so great to achieve watch mode alone
