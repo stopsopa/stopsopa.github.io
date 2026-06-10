@@ -18,14 +18,19 @@
           <script type="editor" data-lang="sh">
 
             // see article: https://patloeber.com/gemma-4-pi-agent/
-              // g(How to run a local coding agent with Gemma 4 and Pi site:https://patloeber.com/)
+                // g(How to run a local coding agent with Gemma 4 and Pi site:https://patloeber.com/)
 
-            on mac mini run lmstudio and run model but also at the top press "Run server" button
-            and then "Server Settings" and check "Server on Local Networ"
+            # configure lmstudio
+                on mac mini run lmstudio and run model but also at the top press "Run server" button
+                and then "Server Settings" and check "Server on Local Networ"
 
-            then on macbook you should be able to run
+                then on macbook you should be able to run
 
-            curl http://192.168.8.49:1234/v1/models
+                curl http://[IP_ADDRESS]/v1/models
+
+            # install pi
+                https://pi.dev/
+            
           </script>
         </div>
       </div>
