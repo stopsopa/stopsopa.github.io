@@ -26,10 +26,35 @@
 
                 then on macbook you should be able to run
 
-                curl http://[IP_ADDRESS]/v1/models
+                curl http://192.168.8.49:1234/v1/models
 
             # install pi
                 https://pi.dev/
+                # configure pi https://patloeber.com/gemma-4-pi-agent/#6-configure-the-local-model-in-pi
+
+            # either edit in vscode ~/.pi/agent/models.json
+            # or create fresh
+            cat <<EEE > ~/.pi/agent/models.json
+            {
+                "providers": {
+                    "lmstudio": {
+                        "baseUrl": "http://192.168.8.49:1234/v1",
+                        "api": "openai-completions",
+                        "apiKey": "lm-studio",
+                        "models": [
+                            {
+                                "id": "google/gemma-4-12b-qat",
+                                "input": [
+                                    "text",
+                                    "image"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+            EEE
+            
             
           </script>
         </div>
