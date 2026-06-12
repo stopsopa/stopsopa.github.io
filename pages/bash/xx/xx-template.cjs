@@ -156,6 +156,26 @@ fi
 `,
       confirm: false,
     },
+    [`type`]: {
+      command: `
+set -e
+
+RED=$'\\033[0;31m'
+RESET=$'\\033[0m'
+YELLOW=$'\\033[1;33m'
+CYAN=$'\\033[1;36m'
+GREEN=$'\\033[0;32m'
+
+NODE_OPTIONS="" node ./node_modules/typescript/bin/tsc
+
+cat <<EEE
+
+  \${GREEN}🎉 All valid!\${RESET}
+
+EEE
+`,
+      confirm: false,
+    },
     [`sonar`]: {
       command: `
 set -e
