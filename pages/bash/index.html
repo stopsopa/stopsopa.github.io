@@ -430,6 +430,30 @@
               fi
             '
           </script>
+          <h2>assemble command, present and eval</h2>
+          <script type="editor" data-lang="sh">
+
+S="\\" 
+
+INJECT="Hello from Docker"
+
+CMD="$(cat <<EOF
+cat <<EEE | docker run --rm -i alpine sh
+echo "${INJECT} - append"
+uname -a
+pwd
+ls -la
+EEE
+EOF
+)"
+
+printf '\n%s\n\n' "${CMD}"
+
+eval "${CMD}"
+  
+// from https://github.com/stopsopa/playwright-research/blob/c701848de042493c329f937bbcfeb7c1c84381e8/playwright.sh#L636
+
+          </script>
           <h2>append to file if not exist ONCE</h2>
           <script type="editor" data-lang="sh">
 
