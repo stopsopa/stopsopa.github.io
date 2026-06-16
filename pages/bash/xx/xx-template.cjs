@@ -12,6 +12,7 @@
 //    shopt -s expand_aliases && source ~/.bashrc
 // after that just do:
 //   xx <command_name>
+S="\\"
 
 module.exports = (setup) => {
   return {
@@ -105,6 +106,28 @@ read
 
 open "\${FILE}"
       `,
+      confirm: false,
+    },
+    [`docker up`]: {
+      command: `
+set -e
+
+CMD="$(cat <<EOF
+PFX="PROJECT1" /bin/bash prefix.sh /bin/bash "docker/docker-compose.sh" up
+EOF
+)"
+
+cat <<EEE
+
+\${CMD}
+
+EEE
+
+echo -e "\n      Press enter to continue\n"
+read
+
+eval "\${CMD}"
+`,
       confirm: false,
     },
     [`xx`]: {
