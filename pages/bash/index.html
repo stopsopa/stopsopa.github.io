@@ -1582,6 +1582,10 @@ eval "${CMD}"
         <script type="editor" data-lang="sh">
 
           curl wttr.in/lon
+
+          curl --fail-with-body http://...
+            # that will give non 0 exit code when 400 or 500 anything failty
+          
         </script>
         <h2>uppercase lowercase</h2>
         <script type="editor" data-lang="sh">
