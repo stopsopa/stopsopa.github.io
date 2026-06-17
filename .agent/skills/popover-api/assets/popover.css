@@ -1,0 +1,133 @@
+/*  
+  https://stopsopa.github.io/pages/js/popper/html-vanilla/hint-v2.html
+*/
+[data-popover] {
+  inset: auto;
+  margin: 0;
+  width: max-content;
+  position-try: flip-block, flip-inline;
+  --interest-delay-start: 0.3s;
+  --interest-delay-end: 0.3s;
+  --popover-offset: 10px; /* NOTE: you can remove it from here and define in :root {--popover-offset: 10px;} to controll it globally */
+}
+/* 9 cardinal positions */
+[data-popover].topleft {
+  bottom: calc(anchor(top) + var(--popover-offset));
+  right: anchor(left);
+}
+[data-popover].top,
+[data-popover]:not(.topleft):not(.top):not(.topright):not(.left):not(.center):not(.right):not(.bottomleft):not(
+    .bottom
+  ):not(.bottomright):not(.left-top):not(.left-bottom):not(.right-top):not(.right-bottom):not(.top-left):not(
+    .top-right
+  ):not(.bottom-left):not(.bottom-right):not(.cover-top):not(.cover-bottom):not(.cover-left):not(.cover-right):not(
+    .cover-top-left
+  ):not(.cover-top-right):not(.cover-bottom-left):not(.cover-bottom-right) {
+  bottom: calc(anchor(top) + var(--popover-offset));
+  justify-self: anchor-center;
+}
+[data-popover].top-left {
+  bottom: calc(anchor(top) + var(--popover-offset));
+  left: anchor(left);
+}
+[data-popover].top-right {
+  bottom: calc(anchor(top) + var(--popover-offset));
+  right: anchor(right);
+}
+[data-popover].topright {
+  bottom: calc(anchor(top) + var(--popover-offset));
+  left: anchor(right);
+}
+[data-popover].left-top {
+  right: calc(anchor(left) + var(--popover-offset));
+  top: anchor(top);
+}
+[data-popover].left {
+  right: calc(anchor(left) + var(--popover-offset));
+  align-self: anchor-center;
+}
+[data-popover].left-bottom {
+  right: calc(anchor(left) + var(--popover-offset));
+  bottom: anchor(bottom);
+}
+[data-popover].center {
+  justify-self: anchor-center;
+  align-self: anchor-center;
+}
+[data-popover].right-top {
+  left: calc(anchor(right) + var(--popover-offset));
+  top: anchor(top);
+}
+[data-popover].right {
+  left: calc(anchor(right) + var(--popover-offset));
+  align-self: anchor-center;
+}
+[data-popover].right-bottom {
+  left: calc(anchor(right) + var(--popover-offset));
+  bottom: anchor(bottom);
+}
+[data-popover].bottomleft {
+  top: calc(anchor(bottom) + var(--popover-offset));
+  right: anchor(left);
+}
+[data-popover].bottom-left {
+  top: calc(anchor(bottom) + var(--popover-offset));
+  left: anchor(left);
+}
+[data-popover].bottom {
+  top: calc(anchor(bottom) + var(--popover-offset));
+  justify-self: anchor-center;
+}
+[data-popover].bottom-right {
+  top: calc(anchor(bottom) + var(--popover-offset));
+  right: anchor(right);
+}
+[data-popover].bottomright {
+  top: calc(anchor(bottom) + var(--popover-offset));
+  left: anchor(right);
+}
+
+[data-popover].cover-top {
+  bottom: calc(anchor(bottom) + var(--popover-offset));
+  justify-self: anchor-center;
+}
+[data-popover].cover-bottom {
+  top: calc(anchor(top) + var(--popover-offset));
+  justify-self: anchor-center;
+}
+[data-popover].cover-left {
+  right: calc(anchor(right) + var(--popover-offset));
+  align-self: anchor-center;
+}
+[data-popover].cover-right {
+  left: calc(anchor(left) + var(--popover-offset));
+  align-self: anchor-center;
+}
+[data-popover].cover-top-left {
+  bottom: calc(anchor(bottom) + var(--popover-offset));
+  right: calc(anchor(right) + var(--popover-offset));
+}
+[data-popover].cover-top-right {
+  bottom: calc(anchor(bottom) + var(--popover-offset));
+  left: calc(anchor(left) + var(--popover-offset));
+}
+[data-popover].cover-bottom-left {
+  top: calc(anchor(top) + var(--popover-offset));
+  right: calc(anchor(right) + var(--popover-offset));
+}
+[data-popover].cover-bottom-right {
+  top: calc(anchor(top) + var(--popover-offset));
+  left: calc(anchor(left) + var(--popover-offset));
+}
+
+[interestfor] {
+  /*  for polyfill this must be a custom property */
+  interest-delay-start: var(--interest-delay-start, 0.3s);
+  interest-delay-end: var(--interest-delay-end, 0.3s); /* Bridges the gap when moving between buttons */
+}
+
+/* If the container (or the element itself) has interest, remove delay for siblings */
+/* from: https://una.github.io/back-to-the-future-of-web-dev/ */
+:has(> :interest-source) > [interestfor] {
+  interest-delay-start: 0s;
+}
