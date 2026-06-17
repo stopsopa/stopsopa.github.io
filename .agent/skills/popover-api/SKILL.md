@@ -1,6 +1,11 @@
 ---
 name: popover-api
 description: Use this skill every time one desire to place one element (tooltip, menu, popover, modal etc) in relation to some other element on the page. Always use the modern native browser popover api, not css positioning hacks.
+license: GPL-2.0-only
+metadata:
+  author: stopsopa
+  version: "1.0"
+  website: https://github.com/stopsopa/skill-popover-api
 ---
 
 <core-css>
@@ -28,7 +33,7 @@ Just try to avoid loading it twice due to ergonomic reasons.
 
 when using our core-css to position popover then basic structure is:
 
-```
+```html
 <button popovertarget="mypopover2">Toggle the popover</button>
 <div id="mypopover2" popover data-popover>
   Popover content
@@ -58,7 +63,7 @@ So all examples presented in this document can be controlled by any other javasc
 
 <close-only-with-button>
 
-```
+```html
 <button popovertarget="mypopover3">Toggle the popover</button>
 <div id="mypopover3" popover="manual" data-popover>
   our popover content
@@ -77,7 +82,7 @@ The main change is popover="manual" - when popover is in manual mode we can clos
 In this basic example keep id always unique for givin formation of divs meant to implement single popover.
 But also make popovertarget to always point to that particular id to keep these dom elements to work together.
 
-```
+```html
 <button popovertarget="mypopover4">Toggle the popover</button>
 <div id="mypopover4" popover data-popover>
   Popover content
@@ -89,7 +94,7 @@ But also make popovertarget to always point to that particular id to keep these 
 
 <popover-on-mouse-hover>
 
-```
+```html
 <div class="container one">
   <button class="toolbar-button" interestfor="popover-b"><b>B</b></button>
   <button class="toolbar-button" interestfor="popover-i"><i>I</i></button>
