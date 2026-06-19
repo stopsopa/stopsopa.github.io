@@ -1417,6 +1417,10 @@
             while :; do clear; docker ps; sleep 0.5; done
 
             watch -n 0.5 docker ps
+
+            # keep colors
+              watch -n 1 -c 'git -c color.status=always status'
+            
           </script>
         </div>
 
