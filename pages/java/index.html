@@ -354,6 +354,30 @@
 
           assertThat(violations).containsExactlyInAnyOrderEntriesOf(expected);
         </script>
+        <h2>.nvmrc</h2>
+        <script type="editor" data-lang="java">
+
+          $ asdf plugin add nodejs                 
+          Plugin named nodejs already added
+          $ cat ~/.asdfrc 
+          legacy_version_file = yes
+          
+          $ cat .nvmrc 
+          v20.17.0
+          $ node -v
+          v24.12.0
+          $ asdf current nodejs
+          Name            Version         Source                                                       Installed
+          nodejs          20.17.0         /Users/szdz/Workspace/STOPSOPA__icare/STOPSOPA__icare/.nvmrc true
+          $ asdf which node
+          /Users/szdz/.asdf/installs/nodejs/20.17.0/bin/node
+          $ which node
+          /Users/szdz/.asdf/installs/nodejs/24.12.0/bin/node
+          $ cat ~/.asdfrc| grep asdf
+
+          Feed all of that to chatgpt 
+          
+        </script>
         <h2>Data types</h2>
         <a href="https://www.simplilearn.com/tutorials/java-tutorial/java-collection">Collection</a>
         <h2>Learning</h2>
