@@ -11,8 +11,6 @@ SOCKET_PATH="${HOME}/.ssh/roles_sock"
 SSH_PASS="xxxx"
 # ---------------------
 
-S="\\"
-
 PROJECT_DIR="$(pwd)"
 
 if ! command -v fswatch >/dev/null 2>&1; then
@@ -35,14 +33,8 @@ if [[ -z "${SSH_PASS}" ]]; then
   echo "👉 export SSH_PASS='your_password'"
   exit 1
 fi
-# ---------------------------
-
-# start SSH multiplexing
-ssh -M -S "${SOCKET_PATH}" -fnNT \
-  -p "${SSH_PORT}" "${SSH_USER}@${SSH_HOST}"
 
 fswatch -0 ./ | while read -d "" file; do
-#   echo fswatch: "${file}"
 
   # Skip common ignored directories
   [[ "${file}" == */vendor/* ]] && continue
@@ -54,29 +46,25 @@ fswatch -0 ./ | while read -d "" file; do
   REMOTE_PATH="${REMOTE_DIR}/${rel_path}"
 
   if [[ -e "${file}" ]]; then
-    # prevent race-condition rsync on disappearing files
     [[ -f "${file}" || -d "${file}" ]] || continue
 
     echo "✅ File exists: ${file}"
-    # --- FILE EXISTS: Sync it ---
 
     CMD="sshpass -p \"${SSH_PASS}\" rsync -az \
-      -e \"ssh -p ${SSH_PORT} -S ${SOCKET_PATH}\" \
+      -e \"ssh -p ${SSH_PORT}\" \
       \"${file}\" \
       \"${SSH_USER}@${SSH_HOST}:${REMOTE_PATH}\""
 
   else
     echo "❌ File deleted: ${file}"
-    # --- FILE DELETED LOCALLY: Remove remotely if it's a file ---
-    # [ -f ... ] checks if it exists and is a regular file, then rm removes it.
 
     CMD="sshpass -p \"${SSH_PASS}\" ssh \
-      -p ${SSH_PORT} -S ${SOCKET_PATH} \
+      -p ${SSH_PORT} \
       ${SSH_USER}@${SSH_HOST} \
       '[ -f \"${REMOTE_PATH}\" ] && rm \"${REMOTE_PATH}\"'"
   fi
 
   printf '%s\n\n' "  ${CMD}"
-  eval "${CMD}"  
+  eval "${CMD}"
 
 done
