@@ -50,16 +50,16 @@ export async function getCacheName(): Promise<string> {
  *
  * @returns The updated HTML string, or null if no injection was done.
  */
-export function injectHtml(html: string): string | null {
+export function injectHtml(html: string, version: string): string | null {
   // Avoid injecting twice if the script is rerun.
-  if (html.includes('navigator.serviceWorker.register("/sw.js")')) {
+  if (html.includes('navigator.serviceWorker.register("/sw.js')) {
     return null;
   }
 
   const snippet = `
     <script type="module">
         if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js");
+            navigator.serviceWorker.register("/sw.js?t=${version}");
         }
     </script>`;
 
@@ -74,9 +74,9 @@ export function injectHtml(html: string): string | null {
 }
 
 /**
- * Updates sw.js cache name in-place on disk with current execution timestamp.
+ * Updates sw.js cache name in-place on disk with the provided execution timestamp.
  */
-export async function injectServiceWorkerInSwFile(): Promise<boolean> {
+export async function injectServiceWorkerInSwFile(version?: string): Promise<boolean> {
   try {
     const swContent = await readFile(swPath, "utf8");
     const match = swContent.match(/const\s+CACHE_NAME\s*=\s*["']([^"']+)["']/);
@@ -85,8 +85,8 @@ export async function injectServiceWorkerInSwFile(): Promise<boolean> {
     }
     const currentVal = match[1];
     const baseName = currentVal.replace(/-\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}$/, "");
-    const version = formatTime(new Date());
-    const newVal = `${baseName}-${version}`;
+    const activeVersion = version || formatTime(new Date());
+    const newVal = `${baseName}-${activeVersion}`;
 
     if (currentVal === newVal) {
       return false;
@@ -110,9 +110,10 @@ export async function injectServiceWorkerInSwFile(): Promise<boolean> {
  *
  * @returns true if the file was modified, false otherwise.
  */
-export async function injectServiceWorker(file: string): Promise<boolean> {
+export async function injectServiceWorker(file: string, version?: string): Promise<boolean> {
   const html = await readFile(file, "utf8");
-  const updated = injectHtml(html);
+  const activeVersion = version || formatTime(new Date());
+  const updated = injectHtml(html, activeVersion);
 
   if (updated === null) {
     return false;
@@ -126,7 +127,8 @@ export async function injectServiceWorker(file: string): Promise<boolean> {
 // Execute as a CLI only when this file is run directly.
 if (import.meta.url === `file://${process.argv[1]}`) {
   try {
-    if (await injectServiceWorkerInSwFile()) {
+    const version = formatTime(new Date());
+    if (await injectServiceWorkerInSwFile(version)) {
       console.log("Updated sw.js");
     }
 
@@ -147,7 +149,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       .filter(Boolean);
 
     for (const file of files) {
-      if (await injectServiceWorker(file)) {
+      if (await injectServiceWorker(file, version)) {
         console.log(`Updated ${file}`);
       }
     }

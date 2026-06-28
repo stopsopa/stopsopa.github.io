@@ -53,7 +53,7 @@ export function injectServiceWorkerMiddleware(webRoot: string) {
 
       const filePath = path.join(webRoot, req.path);
       const html = await readFile(filePath, "utf8");
-      const updated = injectHtml(html);
+      const updated = injectHtml(html, serverStartTime);
 
       if (updated !== null) {
         res.setHeader("Content-Type", "text/html; charset=utf-8");
