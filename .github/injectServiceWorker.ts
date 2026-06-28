@@ -5,8 +5,7 @@ const snippet = `
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/sw.js");
         }
-    </script>
-`;
+    </script>`;
 
 try {
   const chunks: Buffer[] = [];
