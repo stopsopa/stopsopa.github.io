@@ -33,7 +33,7 @@ try {
     }
 
     // Insert before the first <head...> only.
-    const updated = html.replace(/<head\b[^>]*>/i, `${snippet}$&`);
+    const updated = html.replace(/\s*<head\b[^>]*>/i, `${snippet}$&`);
 
     if (updated !== html) {
       await writeFile(file, updated);
