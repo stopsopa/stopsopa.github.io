@@ -10,6 +10,6 @@ while IFS= read -r -d '' file; do
   }
 </script>
 <head>
-}s if $. == 1
+}s
   ' "$file"
 done
