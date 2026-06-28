@@ -18,6 +18,9 @@ import { fileURLToPath } from "url";
 import multer from "multer";
 import sharp from "sharp";
 
+// 👇 ADD THIS
+import { injectServiceWorker } from "./.github/injectServiceWorker.ts";
+
 const env = path.resolve(".", ".env");
 
 if (!fs.existsSync(env)) {
@@ -120,8 +123,25 @@ app.post("/api/upload-image", upload.single("image"), async (req, res) => {
   }
 });
 
+// 👇 LOGGING
 app.use((req, res, next) => {
   log(`${req.method} ${req.url}`);
+  next();
+});
+
+// 👇 SERVICE WORKER INJECTION MIDDLEWARE (IMPORTANT)
+app.use(async (req, res, next) => {
+  try {
+    if (!req.path.endsWith(".html")) {
+      return next();
+    }
+
+    const filePath = path.join(web, req.path);
+
+    await injectServiceWorker(filePath);
+  } catch (err) {
+    console.error("injectServiceWorker error:", err);
+  }
 
   next();
 });
