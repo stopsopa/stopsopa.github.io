@@ -7,40 +7,57 @@ const snippet = `
         }
     </script>`;
 
-try {
-  const chunks: Buffer[] = [];
+/**
+ * Injects the service worker registration script before the first <head>.
+ *
+ * @returns true if the file was modified, false otherwise.
+ */
+export async function injectServiceWorker(file: string): Promise<boolean> {
+  const html = await readFile(file, "utf8");
 
-  for await (const chunk of process.stdin) {
-    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  // Avoid injecting twice if the script is rerun.
+  if (html.includes('navigator.serviceWorker.register("/sw.js")')) {
+    return false;
   }
 
-  const input = Buffer.concat(chunks).toString("utf8");
+  // Insert before the first <head...> only.
+  const updated = html.replace(/\s*<head\b[^>]*>/i, `${snippet}$&`);
 
-  // Support both:
-  //   grep -rl  -> newline-separated
-  //   grep -Zrl -> NUL-separated
-  const files = input
-    .split(/\0|\r?\n/)
-    .map((file) => file.trim())
-    .filter(Boolean);
-
-  for (const file of files) {
-    const html = await readFile(file, "utf8");
-
-    // Avoid injecting twice if the script is rerun.
-    if (html.includes('navigator.serviceWorker.register("/sw.js")')) {
-      continue;
-    }
-
-    // Insert before the first <head...> only.
-    const updated = html.replace(/\s*<head\b[^>]*>/i, `${snippet}$&`);
-
-    if (updated !== html) {
-      await writeFile(file, updated);
-      console.log(`Updated ${file}`);
-    }
+  if (updated === html) {
+    return false;
   }
-} catch (error) {
-  console.error(error);
-  process.exit(1);
+
+  await writeFile(file, updated);
+
+  return true;
+}
+
+// Execute as a CLI only when this file is run directly.
+if (import.meta.url === `file://${process.argv[1]}`) {
+  try {
+    const chunks: Buffer[] = [];
+
+    for await (const chunk of process.stdin) {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    }
+
+    const input = Buffer.concat(chunks).toString("utf8");
+
+    // Support both:
+    //   grep -rl  -> newline-separated
+    //   grep -Zrl -> NUL-separated
+    const files = input
+      .split(/\0|\r?\n/)
+      .map((file) => file.trim())
+      .filter(Boolean);
+
+    for (const file of files) {
+      if (await injectServiceWorker(file)) {
+        console.log(`Updated ${file}`);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
 }
