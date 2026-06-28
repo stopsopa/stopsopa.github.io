@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = "js-cache-v1";
+const CACHE_NAME = "service_worker";
 
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
