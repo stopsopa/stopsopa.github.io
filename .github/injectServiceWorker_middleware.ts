@@ -1,7 +1,7 @@
 import path from "node:path";
 import { readFile } from "node:fs/promises";
 import type { Request, Response, NextFunction } from "express";
-import { injectHtml } from "./injectServiceWorker.js";
+import { injectHtml } from "./injectServiceWorker.ts";
 
 /**
  * Injects service worker script into HTML files as they are served.
