@@ -1,10 +1,10 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 const snippet = `
-    <script>
-    if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/sw.js");
-    }
+    <script type="module">
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js");
+        }
     </script>
 `;
 
