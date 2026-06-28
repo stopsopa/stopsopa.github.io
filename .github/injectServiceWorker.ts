@@ -11,22 +11,28 @@ try {
   const chunks: Buffer[] = [];
 
   for await (const chunk of process.stdin) {
-    chunks.push(chunk);
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
   }
 
   const input = Buffer.concat(chunks).toString("utf8");
 
-  // grep -Z emits NUL-separated filenames
-  const files = input.split("\0").filter(Boolean);
+  // Support both:
+  //   grep -rl  -> newline-separated
+  //   grep -Zrl -> NUL-separated
+  const files = input
+    .split(/\0|\r?\n/)
+    .map((file) => file.trim())
+    .filter(Boolean);
 
   for (const file of files) {
     const html = await readFile(file, "utf8");
 
-    // Skip if already injected
+    // Avoid injecting twice if the script is rerun.
     if (html.includes('navigator.serviceWorker.register("/sw.js")')) {
       continue;
     }
 
+    // Insert before the first <head...> only.
     const updated = html.replace(/<head\b[^>]*>/i, `${snippet}$&`);
 
     if (updated !== html) {
@@ -34,7 +40,7 @@ try {
       console.log(`Updated ${file}`);
     }
   }
-} catch (err) {
-  console.error(err);
+} catch (error) {
+  console.error(error);
   process.exit(1);
 }
