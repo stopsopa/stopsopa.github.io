@@ -19,7 +19,7 @@ import multer from "multer";
 import sharp from "sharp";
 
 // 👇 ADD THIS
-import { injectServiceWorker } from "./.github/injectServiceWorker.ts";
+import { injectServiceWorkerMiddleware } from "./.github/injectServiceWorker_middleware.ts";
 
 const env = path.resolve(".", ".env");
 
@@ -130,21 +130,7 @@ app.use((req, res, next) => {
 });
 
 // 👇 SERVICE WORKER INJECTION MIDDLEWARE (IMPORTANT)
-app.use(async (req, res, next) => {
-  try {
-    if (!req.path.endsWith(".html")) {
-      return next();
-    }
-
-    const filePath = path.join(web, req.path);
-
-    await injectServiceWorker(filePath);
-  } catch (err) {
-    console.error("injectServiceWorker error:", err);
-  }
-
-  next();
-});
+app.use(injectServiceWorkerMiddleware(web));
 
 app.use(
   express.static(web, {

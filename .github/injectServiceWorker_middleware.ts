@@ -1,6 +1,7 @@
 import path from "node:path";
+import { readFile } from "node:fs/promises";
 import type { Request, Response, NextFunction } from "express";
-import { injectServiceWorker } from "./injectServiceWorker.js";
+import { injectHtml } from "./injectServiceWorker.js";
 
 /**
  * Injects service worker script into HTML files as they are served.
@@ -14,8 +15,13 @@ export function injectServiceWorkerMiddleware(webRoot: string) {
       }
 
       const filePath = path.join(webRoot, req.path);
+      const html = await readFile(filePath, "utf8");
+      const updated = injectHtml(html);
 
-      await injectServiceWorker(filePath);
+      if (updated !== null) {
+        res.setHeader("Content-Type", "text/html; charset=utf-8");
+        return res.send(updated);
+      }
 
       return next();
     } catch (err) {

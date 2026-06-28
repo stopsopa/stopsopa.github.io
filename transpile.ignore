@@ -29,4 +29,4 @@ bash/pnpm/minimumReleaseAge.ts
 # pages/bookmarklets/gmail/extract.ts
 # pages/children/caesar/moduleCaesarCypher.ts
 .github/injectServiceWorker_middleware.ts
-.github/injectServiceWorker.js
+.github/injectServiceWorker.ts

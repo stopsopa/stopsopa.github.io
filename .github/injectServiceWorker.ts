@@ -8,22 +8,36 @@ const snippet = `
     </script>`;
 
 /**
- * Injects the service worker registration script before the first <head>.
+ * Injects the service worker registration script into the HTML string before the first <head>.
  *
- * @returns true if the file was modified, false otherwise.
+ * @returns The updated HTML string, or null if no injection was done.
  */
-export async function injectServiceWorker(file: string): Promise<boolean> {
-  const html = await readFile(file, "utf8");
-
+export function injectHtml(html: string): string | null {
   // Avoid injecting twice if the script is rerun.
   if (html.includes('navigator.serviceWorker.register("/sw.js")')) {
-    return false;
+    return null;
   }
 
   // Insert before the first <head...> only.
   const updated = html.replace(/\s*<head\b[^>]*>/i, `${snippet}$&`);
 
   if (updated === html) {
+    return null;
+  }
+
+  return updated;
+}
+
+/**
+ * Injects the service worker registration script before the first <head>.
+ *
+ * @returns true if the file was modified, false otherwise.
+ */
+export async function injectServiceWorker(file: string): Promise<boolean> {
+  const html = await readFile(file, "utf8");
+  const updated = injectHtml(html);
+
+  if (updated === null) {
     return false;
   }
 
