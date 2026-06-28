@@ -130,3 +130,5 @@ time /bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write .
 # NOTICE: remember it will not process if --run not passed or CI env var is not present
 # I'm deliberately suppressing error to continue if above is not provided for local dev environment
 time /bin/bash .github/clicksecure.sh
+
+time /bin/bash .github/injectServiceWorker.sh
