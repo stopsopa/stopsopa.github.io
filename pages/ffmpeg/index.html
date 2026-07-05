@@ -133,13 +133,26 @@
               https://github.com/stopsopa/WebMCompressor/blob/main/electron/tools/generateFFMPEGParams.ts
               https://github.com/stopsopa/WebMCompressor/blob/main/electron/tools/generateFFMPEGParams.test.ts
         </script>
-        <h2>Generate GIF/webP from video</h2>
+        <h2>Generate GIF/webP from video & Cut video</h2>
 
         <script type="editor" data-lang="sh">
 
-          ffmpeg -loglevel error -ss 00:00:17 -to 00:00:22 -i "/path/to/file/example/S1_E5_Sekret_Maczugi__The_Secret_Of_The_Club.mov" -c copy -y "/path/to/file/example/S1_E5_Sekret_Maczugi__The_Secret_Of_The_Club[cut].mov"
+          # mov -> gif - rescale by width - keep ratio
+            ffmpeg -i /Users/szdz/Desktop/d.mov \
+              -vf "fps=15,scale=400:-1:flags=lanczos" \
+              /Users/szdz/Desktop/d.gif
+          
+          # mov -> gif - rescale by height - keep ratio
+            ffmpeg -i /Users/szdz/Desktop/d.mov \
+              -vf "fps=15,scale=-1:300:flags=lanczos" \
+              /Users/szdz/Desktop/d.gif
 
-          so use either of `-ss 00:00:17` or `-to 00:00:22` or both, depending what you need
+          # add
+             -ss 00:00:17.250 -to 00:00:22.750
+          to control from where to cut to where
+
+          NOTE: BUT REALLY BETTER USE QUICKTIME TO TRIM AND THEN CONVERT
+          
         </script>
         <h2>Extract info</h2>
 
