@@ -1,8 +1,21 @@
 
 # 
+#  WARNING: for now disabled because you can't run this code for ts ver 7
+#  pages/typescript/defaults/kkk.ts
+# 
+# 
+# 
 # run: 
 #   /bin/bash pages/typescript/defaults/getconfig.sh
 #   /bin/bash pages/typescript/defaults/getconfig.sh 5.9.3
+#   /bin/bash pages/typescript/defaults/getconfig.sh 6.0.3   
+#     ^- last version dumped, after that I've stopped using this script
+#     because this annoncment:
+#         https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
+#         g(Daniel Rosenwasser Announcing TypeScript 7.0)
+#     from that point in time
+#          npm show typescript version
+#     returns: 7.0.2
 # 
 
 set -e

@@ -118,7 +118,7 @@ time /bin/bash es.sh
 # I'm deliberately suppressing error to continue if above is not provided for local dev environment
 time /bin/bash .github/sha384.sh
 
-time /bin/bash pages/typescript/defaults/getconfig.sh
+# time /bin/bash pages/typescript/defaults/getconfig.sh 6.0.3
 
 # /bin/bash .github/toc-check.sh README.md 
 /bin/bash node_modules/.bin/markdown-toc -i README.md
