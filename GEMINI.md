@@ -21,7 +21,7 @@ Can be only extended. Like new examples added to the comment. That is desirable 
 Also above avery new function and even moderately important functionality block or separate unit of logic it is desirable to also have new comments describing the intention and purpose of that function or functionality.
 
 if just one line of comment is needed then use singe line comments (like with two slashes in js).
-But if more than one then use comment type (/**  ... */).
+But if more than one then use comment type (/\*_ ... _/).
 IMPORTANT:
 IMPORTANT:
 IMPORTANT:

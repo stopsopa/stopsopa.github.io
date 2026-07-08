@@ -92,10 +92,7 @@ export async function injectServiceWorkerInSwFile(version?: string): Promise<boo
       return false;
     }
 
-    const updated = swContent.replace(
-      /const\s+CACHE_NAME\s*=\s*["']([^"']+)["']/,
-      `const CACHE_NAME = "${newVal}"`
-    );
+    const updated = swContent.replace(/const\s+CACHE_NAME\s*=\s*["']([^"']+)["']/, `const CACHE_NAME = "${newVal}"`);
 
     await writeFile(swPath, updated);
     return true;

@@ -41,7 +41,7 @@ function sortObjectNested<T>(data: T): T {
     return Object.fromEntries(
       Object.keys(data)
         .sort()
-        .map((key) => [key, sortObjectNested(data[key])]),
+        .map((key) => [key, sortObjectNested(data[key])])
     ) as T;
   }
 

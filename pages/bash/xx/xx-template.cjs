@@ -12,7 +12,7 @@
 //    shopt -s expand_aliases && source ~/.bashrc
 // after that just do:
 //   xx <command_name>
-S="\\"
+S = "\\";
 
 module.exports = (setup) => {
   return {

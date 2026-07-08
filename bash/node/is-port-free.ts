@@ -53,8 +53,7 @@ if (match === null) {
 const host: string = match[1];
 const port: number = Number.parseInt(match[2], 10);
 
-const verbose =
-  process.argv.includes("--verbose") || process.argv.includes("-v");
+const verbose = process.argv.includes("--verbose") || process.argv.includes("-v");
 
 const app = http.createServer(() => {});
 
@@ -71,11 +70,7 @@ app
   .on("error", (e: NodeJS.ErrnoException) => {
     if (e.code === "EADDRINUSE" || e.code === "EACCES") {
       if (verbose) {
-        console.log(
-          `node ${filename} error: port ${host}:${port} is not free: ${String(
-            e,
-          )}`,
-        );
+        console.log(`node ${filename} error: port ${host}:${port} is not free: ${String(e)}`);
 
         process.exit(1);
       } else {
@@ -84,9 +79,7 @@ app
         process.exit(0);
       }
     } else {
-      console.log(
-        `node ${filename} error: port ${host}:${port} is not free due to unknown reason:`,
-      );
+      console.log(`node ${filename} error: port ${host}:${port} is not free due to unknown reason:`);
 
       throw e;
     }

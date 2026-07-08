@@ -48,5 +48,5 @@ fs.watchFile(
         doTouch = true;
       }, 80);
     }
-  },
+  }
 );

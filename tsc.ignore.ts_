@@ -1,4 +1,5 @@
 // see TRANSPILATION.md
+// Don't really used right now, but also ts.parseConfigFileTextToJson doesn't work
 
 /**
  * NODE_OPTIONS= node tsc.ignore.ts "tsc.ignore" tsconfig.json tsc.ignore.tsconfig.json
