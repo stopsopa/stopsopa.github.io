@@ -140,12 +140,12 @@
           # mov -> gif - rescale by width - keep ratio
             ffmpeg -i /Users/szdz/Desktop/d.mov \
               -vf "fps=15,scale=400:-1:flags=lanczos" \
-              /Users/szdz/Desktop/d.gif
+              /Users/szdz/Desktop/d.webm
           
           # mov -> gif - rescale by height - keep ratio
             ffmpeg -i /Users/szdz/Desktop/d.mov \
               -vf "fps=15,scale=-1:300:flags=lanczos" \
-              /Users/szdz/Desktop/d.gif
+              /Users/szdz/Desktop/d.webm
 
           # add
              -ss 00:00:17.250 -to 00:00:22.750
