@@ -705,7 +705,7 @@
                 _PWD="$(pwd)"
                 ;;
             esac
-            ROOT="${_DIR}/../.."
+            ROOT="$(cd "${DIR}/../.." && pwd)"
             cd "${ROOT}"
             ROOT="$(pwd)"
 
