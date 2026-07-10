@@ -1910,6 +1910,12 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
         <h2>xargs</h2>
         <script type="editor" data-lang="sh">
+          
+          find . -type f -name '*.txt' -print0 |
+            xargs -0 -I{} sh -c '
+              echo "processing: $1"
+              env NODE_OPTIONS= node trim.ts "$1"
+            ' _ "{}"
 
           # deepere understanding or -prune https://github.com/stopsopa/gitignore_to_find/blob/main/src/gitignore_to_find/gitignoreToFind.ts
 
