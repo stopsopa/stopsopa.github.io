@@ -1316,10 +1316,16 @@
 
             debug:
             open -a /Applications/mpv.app --args --input-test --force-window --idle ~/Desktop/Office\[create-orders\].mp4
-            or
-            /Applications/mpv.app/Contents/MacOS/mpv \
-              --msg-level=script=trace,osc=trace \
-              --idle
+              or
+              /Applications/mpv.app/Contents/MacOS/mpv \
+                --msg-level=script=trace,osc=trace \
+                --idle
+
+              # also
+                /Applications/mpv.app/Contents/MacOS/mpv --msg-level=input=trace --idle
+
+              # to debug buttons pressed:
+                /Applications/mpv.app/Contents/MacOS/mpv --msg-level=input=trace ~/Desktop/k.mp3
 
             # to configure run everything below this line to the end:
             mkdir -p ~/.config/mpv/script-opts/
