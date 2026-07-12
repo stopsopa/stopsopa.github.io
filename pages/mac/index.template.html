@@ -1305,6 +1305,9 @@
           <h2>VLC alternative -> MPV (video player)</h2>
           <script type="editor" data-lang="sh">
 
+            Shortcuts:
+              Ctrl + 0 - resize to natural video size
+
             See also: "Change default app for file extension, file type" section on this page.
 
             Install:
@@ -1354,6 +1357,11 @@
             wget -O ~/.config/mpv/scripts/raise_on_play.lua urlwizzard.schema://urlwizzard.hostnegotiated/pages/mac/mpv/scripts/raise_on_play.lua
             """
             <%inject /pages/mac/mpv/scripts/raise_on_play.lua %>
+            """
+
+            wget -O ~/.config/mpv/scripts/reset-window-size.lua urlwizzard.schema://urlwizzard.hostnegotiated/pages/mac/mpv/scripts/reset-window-size.lua
+            """
+            <%inject /pages/mac/mpv/scripts/reset-window-size.lua %>
             """
 
             # To bring back to this project configuration from this mac run from main project dir:
