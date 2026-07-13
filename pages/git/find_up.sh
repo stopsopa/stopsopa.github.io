@@ -4,6 +4,7 @@
 # alias stree="/bin/bash \"${REPO_DIR}/pages/git/find_up.sh\" open -a SourceTree ."
 #
 # alias sm="/bin/bash \"${REPO_DIR}/pages/git/find_up.sh\" open -a \"/Applications/Sublime Merge.app\" \"\$(pwd)\""
+# alias sm="/bin/bash \"/Users/xxxxx/find_up.sh\" open -a \"/Applications/Sublime Merge.app\" \"\$(pwd)\""
 # 
 
 function quote {
