@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Levenshtein Demo</title>
+
+    <style>
+      body {
+        margin: 40px;
+        font-family: sans-serif;
+      }
+
+      #distance {
+        text-align: center;
+        font-size: 48px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+
+      .wrapper {
+        display: flex;
+        gap: 20px;
+      }
+
+      textarea {
+        flex: 1;
+        height: 300px;
+        resize: vertical;
+        padding: 10px;
+        box-sizing: border-box;
+        font: inherit;
+      }
+    </style>
+  </head>
+
+  <body nohead nofoot>
+    <script type="module" src="/js/github.js"></script>
+
+    <div id="distance"></div>
+
+    <div class="wrapper">
+      <textarea id="left">abc</textarea>
+      <textarea id="right">abc</textarea>
+    </div>
+
+    <script type="module">
+      import levenshtein from "./levenshtein.js";
+
+      const left = document.getElementById("left");
+      const right = document.getElementById("right");
+      const distance = document.getElementById("distance");
+
+      function update() {
+        distance.textContent = levenshtein(left.value, right.value);
+      }
+
+      left.addEventListener("input", update);
+      right.addEventListener("input", update);
+
+      update();
+    </script>
+    <div class="body">
+      <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
+      <div class="inside">
+        <div class="cards">
+          <h2>Index</h2>
+          <a href="urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/levenshtein/levenshtein.ts">levenshtein.ts</a>
+          <br />
+          <a href="urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/levenshtein/levenshtein.js">levenshtein.js</a>
+          
+          <script type="editor" data-lang="sh">
+            export default function levenshtein(a: string, b: string): number {
+              const dp: number[][] = [];
+
+              for (let i = 0; i <= a.length; i++) {
+                dp[i] = [i];
+              }
+
+              for (let j = 1; j <= b.length; j++) {
+                dp[0][j] = j;
+              }
+
+              for (let i = 1; i <= a.length; i++) {
+                for (let j = 1; j <= b.length; j++) {
+                  const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+
+                  dp[i][j] = Math.min(
+                    dp[i - 1][j] + 1, // deletion
+                    dp[i][j - 1] + 1, // insertion
+                    dp[i - 1][j - 1] + cost // substitution
+                  );
+                }
+              }
+
+              return dp[a.length][b.length];
+            }
+          </script>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
