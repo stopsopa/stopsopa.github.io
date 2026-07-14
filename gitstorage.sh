@@ -48,7 +48,7 @@ fi
 function checkIfGITSTORAGESOURCEdefined {
 
   if [ "${GITSTORAGESOURCE}" = "" ]; then
-    echo "${0} error: can't operate when GITSTORAGESOURCE env var is not defined, either globally or in local .git/gitstorage-config.sh"
+    echo "${0} error: can't operate when GITSTORAGESOURCE env var is not defined, either globally or in local .git/gitstorage-config.sh should be something like GITSTORAGESOURCE=git@github.com:xxxxx/gitstorage.git"
 
     exit 1
   fi
