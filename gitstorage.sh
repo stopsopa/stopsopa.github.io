@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ "${REPO_DIR}" = "" ]; then
+
+  echo "${0} error: REPO_DIR is not defined in .zshrc, it should be like /Users/xxxxx/Workspace/SPECIAL_web/SPECIAL_web"
+  exit 1
+fi
+
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="${_SHELL##*/}"
 case ${_SHELL} in
