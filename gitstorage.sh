@@ -241,7 +241,7 @@ EEE
 
     if [ ! -L "${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}" ]; then
 
-      { red "${0} error: can't download file ${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}"; } 2>&3
+      { red "${0} error: can't download file 1 ${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}"; } 2>&3
 
       exit 1
     fi
@@ -252,7 +252,7 @@ EEE
 
     if [ ! -f "${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}" ]; then
 
-      { red "${0} error: can't download file ${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}"; } 2>&3
+      { red "${0} error: can't download file 2 ${GITSTORAGESCRIPT_WITH_RELATIVE_DIR}"; } 2>&3
 
       exit 1
     fi
