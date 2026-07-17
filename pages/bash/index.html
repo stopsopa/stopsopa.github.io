@@ -451,17 +451,25 @@
 
             CMD="$(cat <<EOF
             cat <<EEE | docker run --rm -i alpine sh
-            echo "${INJECT} - append"
-            uname -a
-            pwd
-            ls -la
+            find . ${S}
+              -path './coverage' -prune -o ${S}
+              -path '*/node_modules' -prune -o ${S}
+              -path '*/.git' -prune -o ${S}
+              -path './docker' -prune -o ${S}
+              ! \( ${S}
+                  -name '*.int.ts' -o ${S}
+                  -name '*.md' ${S}
+                \) ${S}
+              -type f -exec grep -HnC2 'xxx' {} +
             EEE
             EOF
             )"
+            
+            CMD_XRAY="${CMD//xxx/xray:}"
 
-            printf '\n%s\n\n' "${CMD}"
+            printf '\n%s\n\n' "${CMD_XRAY}"
 
-            eval "${CMD}"
+            eval "${CMD_XRAY}"
 
             // from https://github.com/stopsopa/playwright-research/blob/c701848de042493c329f937bbcfeb7c1c84381e8/playwright.sh#L636
           </script>
