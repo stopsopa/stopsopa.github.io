@@ -2257,8 +2257,15 @@
           # finding latest version of library - but version which would be installed when we use
           npm install [name of library] - without specifying the version
           # this might not necessarily be the latest overall
-            npm show express version
-            npm show express versions
+            npm view express version
+              # alias: npm show express versions
+            npm view typescript version
+              alias: npm show typescript version
+
+            # make sure to install that latest version
+              npm install express@$(npm show express)
+              pnpm add "express@$(npm view express version)"
+              yarn add "express@$(npm view express version)"
 
           # npm interesting documentation pages:
             # lifecycle hooks g(npm Life Cycle Scripts)  https://docs.npmjs.com/cli/v11/using-npm/scripts#life-cycle-scripts
