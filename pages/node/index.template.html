@@ -2429,6 +2429,9 @@
           # to resolve minimumReleaseAgeExclude pnpm-workspace.yaml
           # read comment on top of the file
             urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fbash%2Fpnpm%2FminimumReleaseAge.ts
+            # allow given version
+              pnpm --config.minimumReleaseAge=0 add -D typescript@7.0.2
+              pnpm --config.minimumReleaseAge=0 add -D typescript@$(npm show typescript version)
 
           # find versions of library
             NODE_OPTIONS= pnpm view "$@koa/router" name time --json
