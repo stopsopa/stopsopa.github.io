@@ -26,6 +26,8 @@
 # 
 # 
 
+echo -e "  script reaper.sh: "
+
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
 case ${_SHELL} in
@@ -52,12 +54,12 @@ trim() {
 function extractPidsFromText {
     local TEXT="${1}"
 
-    PIDS="$(echo "${TEXT}" | awk '{ print $2 }')"
+    if [ "${REAPER_NOT_FILTER_OUT_GREP}" = "" ]; then
 
-    if [ "${REAPER_NOT_FILTER_OUT_GREP}" != "" ]; then
-
-        PIDS="$(echo "${PIDS}" | grep -v grep)"
+        TEXT="$(echo "${TEXT}" | grep -v grep)"
     fi
+
+    PIDS="$(echo "${TEXT}" | awk '{ print $2 }')"
 
     PIDS="$(trim "${PIDS}")"
 }
@@ -81,11 +83,13 @@ function collectPidsFromStdin {
     local STDIN_CONTENT
     STDIN_CONTENT="$(cat)"
 
-    echo -e "  executing: >${CMD}< found rows:\n  ${STDIN_CONTENT:->not found<}"
+    echo -e "  executing: >${CMD}< found rows (raw, grep not filtered out yet):\n  ${STDIN_CONTENT:->not found<}"
 
     extractPidsFromText "${STDIN_CONTENT}"
 
-    if [ "${PIDS}" != "" ]; then
+    if [ "${PIDS}" = "" ]; then
+        echo "  executing: >${CMD}< no pids to kill"
+    else
         echo "  executing: >${CMD}< pids: >$(echo -n "${PIDS}" | tr '\n' ',')<"
     fi
 }
