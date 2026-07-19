@@ -1,3 +1,12 @@
+/**
+ * I think better solution now is watch.ts right next to this script
+ * I think better solution now is watch.ts right next to this script
+ * I think better solution now is watch.ts right next to this script
+ * I think better solution now is watch.ts right next to this script
+ * I think better solution now is watch.ts right next to this script
+ * I think better solution now is watch.ts right next to this script
+ */
+
 // transpile
 // if [ $# -eq 0 ]; then
 //     echo "Usage: $0 <file1> [file2 ...]"
