@@ -235,6 +235,7 @@
         <script type="editor" data-lang="sh">
 
           podman info
+          podman machine list
           podman machine init
           podman machine start
           podman machine stop
@@ -252,6 +253,20 @@
           podman machine stop
           podman machine set --cpus 4 --memory 4096
           podman machine start
+
+          # when podman goes nuts:
+            podman compose config
+            podman machine list
+            podman info
+            podman machine inspect podman-machine-default
+            ls -la ~/.local/share/containers/podman/machine/applehv
+            ls -la ~/.config/containers/podman/machine
+            find ~/.local/share/containers/podman -type f | grep -Ei 'lock|pid|state'
+            podman system connection list
+            pkill vfkit
+            pkill qemu
+            pkill gvproxy
+            podman machine start --log-level=debug
         </script>
         <h2>network</h2>
 
