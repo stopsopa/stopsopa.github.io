@@ -2522,6 +2522,9 @@
         <a href="/pages/js/clicksecure.html">/pages/js/clicksecure.html</a>
         <script type="editor" data-lang="js">
 
+
+      
+
           function setCookie(key, value) {
             var d = new Date();
             d.setFullYear(d.getFullYear() + 1);
@@ -2529,21 +2532,29 @@
               'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ')[d.getMonth()]
             } ${d.getFullYear()} 00:00:00 UTC; path=/`;
           }
-          function getCookie(key: string): string | null {
-            if (cookieQueue.length > 0) {
-              return cookieQueue.shift();
-            }
 
-            const cookies = document.cookie.split(';');
+          // this one is superior
+          function getCookie(key: string): string | null {
+            key = key.trim();
+          
+            const cookies = document.cookie.split(";");
+          
             for (const cookie of cookies) {
-              const [cookieKey, cookieValue] = cookie.split('=').map(part => part.trim());
+              const index = cookie.indexOf("=");
+          
+              if (index === -1) {
+                continue;
+              }
+          
+              const cookieKey = cookie.slice(0, index).trim();
+          
               if (cookieKey === key) {
-                return cookieValue;
+                return cookie.slice(index + 1).trim();
               }
             }
-
+          
             return null;
-          }
+          }  
           function getCookie(key) {
               key = key.replace(/[\^\$\.\*\+\-\?\=\!\:\|\\\/\(\)\[\]\{\}\,]/g, "\\$&");
               const reg = new RegExp(`(?:(?:^|.*;\\s*)${key}\\s*\\=\\s*([^;]*).*$)|^.*$`, ``);
