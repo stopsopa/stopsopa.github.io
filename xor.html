@@ -141,6 +141,8 @@
       </zero-md>
     </div>
 
+    <pre id="url-display" style="margin-top: 20px; padding: 10px; background-color: #f1f1f1; border: 1px solid #ccc; border-radius: 4px; white-space: pre-wrap; word-break: break-all; font-family: monospace !important; font-size: 13px;"></pre>
+
     <script type="module">
       import { encode, decode } from "/pages/services/xor.js";
 
@@ -149,6 +151,7 @@
       const zeroMd = document.getElementById("preview");
       const modeToggle = document.getElementById("mode-toggle");
       const modeLabel = document.getElementById("mode-label");
+      const urlDisplay = document.getElementById("url-display");
 
       // Inject custom font styles directly into the shadow DOM when zero-md renders
       zeroMd.addEventListener("zero-md-rendered", () => {
@@ -207,12 +210,14 @@
         if (mode === "markdown") {
           textarea.style.display = "none";
           previewContainer.style.display = "block";
+          urlDisplay.style.display = "none";
           modeToggle.checked = true;
           modeLabel.textContent = "Markdown Mode";
           renderMarkdown();
         } else {
           previewContainer.style.display = "none";
           textarea.style.display = "block";
+          urlDisplay.style.display = "block";
           modeToggle.checked = false;
           modeLabel.textContent = "Edit Mode";
           adjustHeight();
@@ -236,6 +241,7 @@
           url.searchParams.delete("d");
         }
         window.history.replaceState(null, "", url.toString());
+        urlDisplay.textContent = url.toString();
       }
 
       // Debounce timer variable
@@ -275,6 +281,7 @@
         } else {
           setMode("edit");
         }
+        urlDisplay.textContent = window.location.href;
       });
     </script>
   </body>
