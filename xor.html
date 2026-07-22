@@ -6,13 +6,14 @@
     <title>XOR Textarea</title>
     <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@3?register"></script>
     <style>
-      * {
+      *,
+      p,
+      p *,
+      textarea,
+      zero-md::part(markdown),
+      zero-md::part(markdown) * {
         font-family: Inter, sans-serif !important;
         font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01" !important;
-      }
-      textarea {
-        font-family: Inter, sans-serif;
-        font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01";
       }
       body {
         font-family: Inter, sans-serif;
@@ -127,7 +128,17 @@
 
     <textarea id="editor" placeholder="Type here..."></textarea>
     <div id="preview-container" class="preview-container" style="display: none">
-      <zero-md id="preview"></zero-md>
+      <zero-md id="preview">
+        <template data-append>
+          <style>
+            @import url("https://rsms.me/inter/inter.css");
+            .markdown-body, .markdown-body * {
+              font-family: Inter, sans-serif !important;
+              font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01" !important;
+            }
+          </style>
+        </template>
+      </zero-md>
     </div>
 
     <script type="module">
@@ -138,6 +149,21 @@
       const zeroMd = document.getElementById("preview");
       const modeToggle = document.getElementById("mode-toggle");
       const modeLabel = document.getElementById("mode-label");
+
+      // Inject custom font styles directly into the shadow DOM when zero-md renders
+      zeroMd.addEventListener("zero-md-rendered", () => {
+        if (zeroMd.shadowRoot) {
+          const style = document.createElement("style");
+          style.textContent = `
+            @import url("https://rsms.me/inter/inter.css");
+            .markdown-body, .markdown-body * {
+              font-family: Inter, sans-serif !important;
+              font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01" !important;
+            }
+          `;
+          zeroMd.shadowRoot.appendChild(style);
+        }
+      });
 
       /**
        * Adjusts the height of the textarea to fit its content.
@@ -151,11 +177,27 @@
        * Render markdown content in zero-md element
        */
       function renderMarkdown() {
-        const script = document.createElement("script");
-        script.type = "text/markdown";
-        script.textContent = textarea.value.replace(/\r?\n/g, "<br />");
-        zeroMd.innerHTML = "";
-        zeroMd.appendChild(script);
+        let val = textarea.value;
+        // Replace tabs with 4 non-breaking spaces
+        val = val.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;");
+        // Replace multiple spaces (2 or more) alternating with &nbsp; to allow wrapping
+        val = val.replace(/  +/g, (match) => {
+          return match
+            .split("")
+            .map((c, idx) => (idx % 2 === 1 ? "&nbsp;" : " "))
+            .join("");
+        });
+        // Replace newlines with <br />
+        val = val.replace(/\r?\n/g, "<br />");
+
+        // Find or create the script tag inside zero-md
+        let script = zeroMd.querySelector('script[type="text/markdown"]');
+        if (!script) {
+          script = document.createElement("script");
+          script.type = "text/markdown";
+          zeroMd.appendChild(script);
+        }
+        script.textContent = val;
       }
 
       /**
