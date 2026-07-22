@@ -29,10 +29,10 @@ done
  */
 
 /**
- * 
- * More sophisticated example would be : 
+ *
+ * More sophisticated example would be :
  * https://github.com/stopsopa/telazekah/blob/04209a0c68aef9c9187db2f8c742843dbc34d535/dev.server.watch.sh
- * used in : 
+ * used in :
  *   https://github.com/stopsopa/telazekah/blob/04209a0c68aef9c9187db2f8c742843dbc34d535/dev.sh#L79
  */
 
@@ -65,7 +65,7 @@ const watcher = fs.watch(
 
     watcher.close();
     process.exit(0);
-  },
+  }
 );
 
 // allow Ctrl+C

@@ -61,9 +61,7 @@ export const humanJson = (function () {
       ? '"' +
           string.replace(rx_escapable, function (a) {
             var c = meta[a];
-            return typeof c === "string"
-              ? c
-              : "\\u" + ("0000" + a.charCodeAt(0).toString(16)).slice(-4);
+            return typeof c === "string" ? c : "\\u" + ("0000" + a.charCodeAt(0).toString(16)).slice(-4);
           }) +
           '"'
       : '"' + string + '"';
@@ -115,11 +113,7 @@ export const humanJson = (function () {
 
     // If the value has a toJSON method, call it to obtain a replacement value.
 
-    if (
-      value &&
-      typeof value === "object" &&
-      typeof value.toJSON === "function"
-    ) {
+    if (value && typeof value === "object" && typeof value.toJSON === "function") {
       value = value.toJSON(key);
     }
 
@@ -183,8 +177,8 @@ export const humanJson = (function () {
             partial.length === 0
               ? "[]"
               : gap && !flat
-                ? "[\n" + gap + partial.join(",\n" + gap) + "\n" + mind + "]"
-                : "[" + partial.join(",") + "]";
+              ? "[\n" + gap + partial.join(",\n" + gap) + "\n" + mind + "]"
+              : "[" + partial.join(",") + "]";
           gap = mind;
           return v;
         }
@@ -222,8 +216,8 @@ export const humanJson = (function () {
           partial.length === 0
             ? "{}"
             : gap && !flat
-              ? "{\n" + gap + partial.join(",\n" + gap) + "\n" + mind + "}"
-              : "{" + partial.join(",") + "}";
+            ? "{\n" + gap + partial.join(",\n" + gap) + "\n" + mind + "}"
+            : "{" + partial.join(",") + "}";
         gap = mind;
         return v;
     }
@@ -290,7 +284,6 @@ if (isMain) {
   }
 
   if (space === undefined) {
-
     space = 2;
   }
 

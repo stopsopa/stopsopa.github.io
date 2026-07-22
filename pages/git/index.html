@@ -667,11 +667,10 @@
         <h2>tar.gz all except .git</h2>
         <script type="editor" data-lang="sh">
 
-tar \
-  --exclude='node_modules' \
-  --exclude='.git' \
-  -czvf archive.tar.gz .
-          
+          tar \
+            --exclude='node_modules' \
+            --exclude='.git' \
+            -czvf archive.tar.gz .
         </script>
         <h2>git instaweb</h2>
         <script type="editor" data-lang="sh">

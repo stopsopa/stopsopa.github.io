@@ -470,7 +470,7 @@
             EEE
             EOF
             )"
-            
+
             CMD_XRAY="${CMD//xxx/xray:}"
 
             printf '\n%s\n\n' "${CMD_XRAY}"
@@ -1924,7 +1924,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
         <h2>xargs</h2>
         <script type="editor" data-lang="sh">
-          
+
           find . -type f -name '*.txt' -print0 |
             xargs -0 -I{} sh -c '
               echo "processing: $1"
@@ -2621,10 +2621,10 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         <script type="editor" data-lang="sh">
 
           TOTAL=$(NODE_OPTIONS= node iterate.js books | wc -l | tr -d ' ')
-          COUNT=0          
-          while read -r LANG BOOK NAME; do          
-              COUNT=$((COUNT + 1))          
-              FILE_MP3="${NAME}.mp3"          
+          COUNT=0
+          while read -r LANG BOOK NAME; do
+              COUNT=$((COUNT + 1))
+              FILE_MP3="${NAME}.mp3"
               if [ -f "${FILE_MP3}" ]; then
                   EXIST=true
               else
@@ -2632,24 +2632,24 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                   echo "${0} error: missing file FILE_MP3 >${FILE_MP3}<"
                   exit 8
               fi
-          
+
               cat <<EEE
-          
+
           ${COUNT}/${TOTAL}
           FILE_MP3 >${FILE_MP3}<
           LANG >${LANG}<
           BOOK >${BOOK}<
           NAME >${NAME}<
           EXIST >${EXIST}<
-          
+
           EEE
-          
+
           done < <(NODE_OPTIONS= node iterate.js lang)
-          
+
           cat <<EEE
-          
+
              all good
-          
+
           EEE
 
           INFO: above will iterate over multiline avoiding subshell,
@@ -2657,7 +2657,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                 also this is true iterating over stream without buffering whole in memory
 
 
-          
+
 
           WARNING:
             adding

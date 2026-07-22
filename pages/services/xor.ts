@@ -2,7 +2,6 @@
 {
    mode: "bundle",
   "target": "esnext",
-  "loader": "ts",
   "format": "esm",
   "charset": "utf8",
   "minify": false,

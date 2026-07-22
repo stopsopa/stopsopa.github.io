@@ -17,13 +17,10 @@ See
 pages/bash/xx/xx.node.cjs
 that is good example how to override esbuild setup for individual files
 
-WARNING: YOU HAVE TO UNCOMMENT IN 
-    - [es.ignore](es.ignore) IF YOU PREFER [es.sh](es.sh) (esbuild) 
-    - [transpile.ignore](transpile.ignore) IF YOU PREFER [transpile.sh](transpile.sh) (typescript)
+WARNING: YOU HAVE TO UNCOMMENT IN - [es.ignore](es.ignore) IF YOU PREFER [es.sh](es.sh) (esbuild) - [transpile.ignore](transpile.ignore) IF YOU PREFER [transpile.sh](transpile.sh) (typescript)
 TEST:
-    /bin/bash es.sh  <---- this one is not part of xx start, only build.sh
-    /bin/bash transpile.sh transpile.ignore
-
+/bin/bash es.sh <---- this one is not part of xx start, only build.sh
+/bin/bash transpile.sh transpile.ignore
 
 # bundle.sh
 
