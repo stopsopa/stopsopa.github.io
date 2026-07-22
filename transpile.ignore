@@ -30,3 +30,4 @@ bash/pnpm/minimumReleaseAge.ts
 # pages/children/caesar/moduleCaesarCypher.ts
 .github/injectServiceWorker_middleware.ts
 .github/injectServiceWorker.ts
+pages/services/xor.ts

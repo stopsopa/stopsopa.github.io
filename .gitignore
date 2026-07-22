@@ -38,6 +38,7 @@ pages/coverage
 es.mjs
 pages/bookmarklets/gmail/extract.js
 pages/node/semaphore/Semaphore.js
+pages/services/xor.js
 # es.ts ^^^ don't remove
 
 

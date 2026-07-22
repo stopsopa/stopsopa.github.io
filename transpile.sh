@@ -2,25 +2,12 @@
 # 
 # see TRANSPILATION.md
 # 
-# /bin/bash transpile.sh transpile.ignore
-# /bin/bash transpile.sh transpile.ignore --watch
+# /bin/bash transpile.sh
+# /bin/bash transpile.sh --watch
 # 
 # That script is responsible just for transpiling
 # 
 export NODE_OPTIONS=""
-
-IGNORE_FILE="${1}"
-
-if [ ! -f "${IGNORE_FILE}" ]; then
-
-  cat <<EEE
-
-  >${IGNORE_FILE}< doesn't exist
-
-EEE
-
-  exit 1
-fi
 
 find . -type d \( \
        -name node_modules \
@@ -32,7 +19,7 @@ find . -type d \( \
 -o -type \
 f -name "*.ts" \
 -print \
-| node gitignore.js "${IGNORE_FILE}" \
+| node gitignore.js transpile.ignore \
 | /bin/bash ts.sh transpile.ts "$@" | node transpile_pipe.ts
 
 

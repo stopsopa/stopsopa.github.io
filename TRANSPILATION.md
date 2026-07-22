@@ -6,6 +6,25 @@ There are few ways typescript is treated here
 
 This is just for finding _.ts files and transpiling each file right next to _.js
 
+# es.sh
+
+[es.ignore](es.ignore)
+
+Is more flexible which can switch between transpiling and bundling for special cases
+but is not so great to achieve watch mode alone
+
+See
+pages/bash/xx/xx.node.cjs
+that is good example how to override esbuild setup for individual files
+
+WARNING: YOU HAVE TO UNCOMMENT IN 
+    - [es.ignore](es.ignore) IF YOU PREFER [es.sh](es.sh) (esbuild) 
+    - [transpile.ignore](transpile.ignore) IF YOU PREFER [transpile.sh](transpile.sh) (typescript)
+TEST:
+    /bin/bash es.sh  <---- this one is not part of xx start, only build.sh
+    /bin/bash transpile.sh transpile.ignore
+
+
 # bundle.sh
 
 To find all _.entry.js & _.entry.jsx and transpiling to:
@@ -19,17 +38,6 @@ To find all _.entry.js & _.entry.jsx and transpiling to:
 
 This uses npx tsc just for transpilation.
 It is generally looking into all files it can see except obvious exclusions like node_modules. But that can be changed in [tsconfig.json](tsconfig.json)
-
-# es.sh
-
-[es.ignore](es.ignore)
-
-Is more flexible which can switch between transpiling and bundling for special cases
-but is not so great to achieve watch mode alone
-
-See
-pages/bash/xx/xx.node.cjs
-that is good example how to override esbuild setup for individual files
 
 ---
 
