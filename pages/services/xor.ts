@@ -12,7 +12,8 @@
 
 import * as LZString from "lz-string";
 
-const PASSWORD = "my-super-long-random-password-change-this-to-something-very-long-8d5a9b74d3c1e2f";
+const PASSWORD =
+  "JQ2$!R&#8r01Z#55icY!*q0dAEDZkUBu61k&uBHAeRf*rr#Q9R%7yliBYV6BJ7^^soTz88&8gWH$O*Ex*v2nRQHCrOON4jzoHhKNAkOIOp38T%O%mMs%6fHW$vZy2&ov";
 
 function xor(data: string, key: string): string {
   let result = "";
