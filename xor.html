@@ -3,12 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>XOR Textarea</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@3?register"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        .toolbar {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+        }
+        .toolbar-label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+        /* iOS switch styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e9e9ea;
+            transition: .3s;
+            border-radius: 24px;
+            border: 1px solid #e1e1e2;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider {
+            background-color: #34c759;
+            border-color: #34c759;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        /* Reasonable initial height, expands and wraps nicely */
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 16px;
+            resize: none;
+            overflow-y: hidden;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .preview-container {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            background: #fff;
+            min-height: 200px;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
-    <textarea></textarea>
+    <div class="toolbar">
+        <label class="switch">
+            <input type="checkbox" id="mode-toggle">
+            <span class="slider"></span>
+        </label>
+        <span class="toolbar-label" id="mode-label">Edit Mode</span>
+    </div>
+
+    <textarea id="editor" placeholder="Type here..."></textarea>
+    <div id="preview-container" class="preview-container" style="display: none;">
+        <zero-md id="preview"></zero-md>
+    </div>
     
-    
-    <script type="module" src="/pages/services/xor.js"></script>
+    <script type="module">
+        import { encode, decode } from "/pages/services/xor.js";
+
+        const textarea = document.getElementById("editor");
+        const previewContainer = document.getElementById("preview-container");
+        const zeroMd = document.getElementById("preview");
+        const modeToggle = document.getElementById("mode-toggle");
+        const modeLabel = document.getElementById("mode-label");
+
+        /**
+         * Adjusts the height of the textarea to fit its content.
+         */
+        function adjustHeight() {
+            textarea.style.height = "auto";
+            textarea.style.height = textarea.scrollHeight + "px";
+        }
+
+        /**
+         * Render markdown content in zero-md element
+         */
+        function renderMarkdown() {
+            const script = document.createElement("script");
+            script.type = "text/markdown";
+            script.textContent = textarea.value;
+            zeroMd.innerHTML = "";
+            zeroMd.appendChild(script);
+        }
+
+        /**
+         * Set current display mode to edit or markdown
+         */
+        function setMode(mode) {
+            if (mode === "markdown") {
+                textarea.style.display = "none";
+                previewContainer.style.display = "block";
+                modeToggle.checked = true;
+                modeLabel.textContent = "Markdown Mode";
+                renderMarkdown();
+            } else {
+                previewContainer.style.display = "none";
+                textarea.style.display = "block";
+                modeToggle.checked = false;
+                modeLabel.textContent = "Edit Mode";
+                adjustHeight();
+            }
+        }
+
+        modeToggle.addEventListener("change", (e) => {
+            setMode(e.target.checked ? "markdown" : "edit");
+        });
+
+        /**
+         * Updates the URL search parameter 'd' with the encoded textarea content.
+         */
+        function updateUrl() {
+            const text = textarea.value;
+            const encoded = encode(text);
+            const url = new URL(window.location.href);
+            if (text) {
+                url.searchParams.set("d", encoded);
+            } else {
+                url.searchParams.delete("d");
+            }
+            window.history.replaceState(null, "", url.toString());
+        }
+
+        // Debounce timer variable
+        let debounceTimer;
+
+        /**
+         * Debounces a function call by a specified delay in milliseconds.
+         */
+        function debounce(func, delay) {
+            return function(...args) {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        // Debounced URL updater
+        const debouncedUpdateUrl = debounce(updateUrl, 300);
+
+        // Listen for user typing or pasting input
+        textarea.addEventListener("input", () => {
+            adjustHeight();
+            debouncedUpdateUrl();
+        });
+
+        // Initialize textarea content and display mode on load
+        window.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            const encodedData = params.get("d");
+            if (encodedData) {
+                try {
+                    textarea.value = decode(encodedData);
+                    setMode("markdown");
+                } catch (e) {
+                    console.error("Failed to decode URL data:", e);
+                    setMode("edit");
+                }
+            } else {
+                setMode("edit");
+            }
+        });
+    </script>
 </body>
 </html>
