@@ -31,3 +31,4 @@ bash/pnpm/minimumReleaseAge.ts
 .github/injectServiceWorker_middleware.ts
 .github/injectServiceWorker.ts
 pages/services/xor.ts
+bash/fs/watch.js
