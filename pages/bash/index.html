@@ -1065,8 +1065,10 @@
           <h2>tar</h2>
           <script type="editor" data-lang="sh">
 
-            tar -zcvf archive.tar.gz --exclude=node_modules --exclude=.git .
+            ARCHIVE=archive.tar.gz
+            tar -zcvf "${ARCHIVE}" --exclude=node_modules --exclude=.git --exclude="${ARCHIVE}" .
               # will include also . (dot) files
+
 
             tar -tzf tsx.tar.gz
               # list what is in tar.gz
