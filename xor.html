@@ -132,7 +132,8 @@
         <template data-append>
           <style>
             @import url("https://rsms.me/inter/inter.css");
-            .markdown-body, .markdown-body * {
+            .markdown-body,
+            .markdown-body * {
               font-family: Inter, sans-serif !important;
               font-feature-settings: "liga" 1, "calt" 1, /* fix for Chrome */ "zero", "ss01" !important;
             }
@@ -141,7 +142,20 @@
       </zero-md>
     </div>
 
-    <pre id="url-display" style="margin-top: 20px; padding: 10px; background-color: #f1f1f1; border: 1px solid #ccc; border-radius: 4px; white-space: pre-wrap; word-break: break-all; font-family: monospace !important; font-size: 13px;"></pre>
+    <pre
+      id="url-display"
+      style="
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f1f1f1;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        white-space: pre-wrap;
+        word-break: break-all;
+        font-family: monospace !important;
+        font-size: 13px;
+      "
+    ></pre>
 
     <script type="module">
       import { encode, decode } from "/pages/services/xor.js";

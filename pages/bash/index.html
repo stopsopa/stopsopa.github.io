@@ -383,19 +383,18 @@
               In zsh pressing anything will require extra enter press
 
             # Enter to continue - other exit
-            
+
             printf '\nPress Enter to continue (any other key exits)...\n';old=$(stty -g);stty -icanon -echo
             IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
             [ -n "$k" ]&&exit 0;echo continuation
-            
+
             # ESC to exit - other continue
-            
+
             printf '\nPress any key to continue (Esc to exit)...\n';old=$(stty -g);stty -icanon -echo
             IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
             [ "$k" = "$(printf '\033')" ]&&exit 0;echo continuation
 
             # see also: https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/xx/xx-template.cjs
-            
           </script>
 
           <h2>test program, builtin || exec, command</h2>
