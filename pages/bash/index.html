@@ -379,6 +379,9 @@
           <h2>ENTER & ESC to pause and continue or exit</h2>
           <script type="editor" data-lang="sh">
 
+            WARNING:
+              In zsh pressing anything will require extra enter press
+
             # Enter to continue - other exit
             
             printf '\nPress Enter to continue (any other key exits)...\n';old=$(stty -g);stty -icanon -echo
