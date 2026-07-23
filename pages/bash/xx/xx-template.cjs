@@ -16,6 +16,25 @@ S = "\\";
 
 module.exports = (setup) => {
   return {
+    [`esc`]: {
+      command: `
+
+printf '\nPress any key to continue (Esc to exit)...\n';old=$(stty -g);stty -icanon -echo
+IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
+[ "$k" = "$(printf '\\033')" ]&&exit 0;echo continuation
+ 
+`,
+      confirm: false,
+    },
+    [`enter`]: {
+      command: `
+
+printf '\nPress Enter to continue (any other key exits)...\n';old=$(stty -g);stty -icanon -echo
+IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
+[ -n "$k" ]&&exit 0;echo continuation
+`,
+      confirm: false,
+    },
     help: {
       command: `
 set -e  
