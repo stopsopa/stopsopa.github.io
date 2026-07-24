@@ -1833,7 +1833,7 @@
               print FILENAME
               exit
               }
-          ' {} \; | /bin/bash bash/cutter.sh cut __start__ __end__
+          ' {} \; | tee var/cutter_sh | /bin/bash bash/cutter.sh cut __start__ __end__
           
         </script>
         <h2>cli keystrokes</h2>
