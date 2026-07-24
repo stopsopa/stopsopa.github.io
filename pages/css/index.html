@@ -763,27 +763,24 @@
 
           <link rel="preconnect" href="https://rsms.me/" />
           <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-          <style>
-            .g-inter {
-              font-family: Inter, sans-serif;
+           <style>
+            .iter {
+              font-family: "Inter", sans-serif;
               font-feature-settings:
                 "liga" 1,
                 "calt" 1,
-                /* fix for Chrome */ "zero",
+                "zero",
                 "ss01";
             }
-
-            :root {
-              font-family: "Inter", sans-serif;
+      
+            .noiter {
+              font-family: revert;
+              font-feature-settings: revert;
             }
+      
             @supports (font-variation-settings: normal) {
-              :root {
+              .iter {
                 font-family: "Inter var", sans-serif;
-                font-feature-settings:
-                  "liga" 1,
-                  "calt" 1,
-                  /* fix for Chrome */ "zero",
-                  "ss01";
               }
             }
           </style>
