@@ -1818,6 +1818,24 @@
           settings_endz.xml
           EEE
         </script>
+
+        <p id="cutter_sh">special case for <a href=""></a></p>
+        <script type="editor" data-lang="sh">
+
+          find . \
+          -type f \
+          \( -name '*.ts' -o -name '*.js' -o -name '*.tsx' \) \
+          -not -path './.git/*' \
+          -not -path './node_modules/*' \
+          -exec awk '
+              /__start__/ { found_start=1 }
+              found_start && /__end__/ {
+              print FILENAME
+              exit
+              }
+          ' {} \; | /bin/bash bash/cutter.sh cut __start__ __end__
+          
+        </script>
         <h2>cli keystrokes</h2>
         <script type="editor" data-lang="sh">
 
