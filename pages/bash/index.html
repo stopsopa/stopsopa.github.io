@@ -1822,6 +1822,8 @@
         <p id="cutter_sh">special case for <a href=""></a></p>
         <script type="editor" data-lang="sh">
 
+          # urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fbash%2Fcutter.sh
+
           find . \
           -type f \
           \( -name '*.ts' -o -name '*.js' -o -name '*.tsx' \) \
@@ -1834,6 +1836,8 @@
               exit
               }
           ' {} \; | tee var/cutter_sh | /bin/bash bash/cutter.sh cut __start__ __end__
+
+          cat var/cutter_sh | /bin/bash bash/cutter.sh restore __start__ __end__
           
         </script>
         <h2>cli keystrokes</h2>
