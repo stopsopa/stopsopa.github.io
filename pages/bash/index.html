@@ -1823,19 +1823,41 @@
         <script type="editor" data-lang="sh">
 
           # urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fbash%2Fcutter.sh
-
+      
+          # thanks to this heredoc fed to bash we can run all of this more than one time in a row 
+          # and it will not override var/cutter_sh
+          cat <<'EOF' | /bin/bash
+          
+          set -e
+          set -o pipefail
+          
+          START="__start__"
+          END="__end__"
+          
+          tmp="$(mktemp)"
+          
           find . \
-          -type f \
-          \( -name '*.ts' -o -name '*.js' -o -name '*.tsx' \) \
-          -not -path './.git/*' \
-          -not -path './node_modules/*' \
-          -exec awk '
-              /__start__/ { found_start=1 }
-              found_start && /__end__/ {
-              print FILENAME
-              exit
+            -type f \
+            \( -name '*.ts' -o -name '*.js' -o -name '*.tsx' \) \
+            -not -path './.git/*' \
+            -not -path './node_modules/*' \
+            -exec awk '
+              /'"${START}"'/ { found_start=1 }
+              found_start && /'"${END}"'/ {
+                print FILENAME
+                exit
               }
-          ' {} \; | tee var/cutter_sh | /bin/bash bash/cutter.sh cut __start__ __end__
+            ' {} \; > "${tmp}"
+          
+          if [[ -s "${tmp}" ]]; then
+            mv "${tmp}" var/cutter_sh
+            /bin/bash bash/cutter.sh cut "${START}" "${END}" < var/cutter_sh
+          else
+            rm "${tmp}"
+            echo "bash/cutter.sh: Nothing to cut."
+          fi
+          
+          EOF
 
           cat var/cutter_sh | /bin/bash bash/cutter.sh restore __start__ __end__
           
