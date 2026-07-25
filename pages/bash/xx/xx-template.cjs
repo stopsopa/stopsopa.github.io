@@ -1,7 +1,7 @@
 // to install go to: https://stopsopa.github.io//pages/bash/index.html#xx
 
-// https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fbash%2Fxx%2Fxx-template.cjs
-// edit: https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/xx/xx-template.cjs
+// viewer       : https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fbash%2Fxx%2Fxx-template.cjs
+// github edit  : https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/xx/xx-template.cjs
 
 // 🚀 -
 // ✅ -
