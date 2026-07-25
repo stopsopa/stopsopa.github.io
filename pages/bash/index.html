@@ -1902,8 +1902,10 @@
           fi
           
           if [ "${1}" = "restore" ]; then
-          
-          cat var/cutter_sh | /bin/bash bash/cutter.sh restore __start__ __end__
+
+              if [ -f "var/cutter_sh" ]; then
+                cat var/cutter_sh | /bin/bash bash/cutter.sh restore no_sandbox_sh_start no_sandbox_sh_end
+              fi
           
               exit 0
           fi
