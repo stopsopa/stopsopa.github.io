@@ -64,7 +64,7 @@ export function injectHtml(html: string, version: string): string | null {
     </script>`;
 
   // Insert before the first <head...> only.
-  const updated = html.replace(/\s*<head\b[^>]*>/i, `${snippet}$&`);
+  const updated = html.replace(/\s*<head\b[^>]*>/i, `$&${snippet}`);
 
   if (updated === html) {
     return null;
