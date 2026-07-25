@@ -1,7 +1,7 @@
 // to install go to: https://stopsopa.github.io//pages/bash/index.html#xx
 
-// https://stopsopa.github.io/viewer.html?file=xx.cjs
-// edit: https://github.com/stopsopa/stopsopa.github.io/blob/master/xx.cjs
+// viewer       : https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fbash%2Fxx%2Fxx-template.cjs
+// github edit  : https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/xx/xx-template.cjs
 // 🚀 -
 // ✅ -
 // ⚙️  -
@@ -13,7 +13,15 @@
 //   xx <command_name>
 // to override confirm: true
 //   XXCONFIRM=false xx <command_name>
-const S = "\\\\";
+const S = "\\";
+
+const enter = `printf '\nPress Enter to continue (any other key exits)...\n';old=$(stty -g);stty -icanon -echo
+IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
+[ -n "$k" ]&&exit 0;`;
+
+const esc = `printf '\nPress any key to continue (Esc to exit)...\n';old=$(stty -g);stty -icanon -echo
+IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
+[ "$k" = "$(printf '\\033')" ]&&exit 0;`;
 
 module.exports = (setup) => {
   return {
@@ -42,7 +50,7 @@ EEE
       source: false,
       confirm: false,
     },
-    [`start`]: {
+    [`dev`]: {
       command: `
 set -e        
 export NODE_OPTIONS=""       
@@ -53,8 +61,7 @@ cat <<EEE
 
 EEE
 
-echo -e "\n      Press enter to continue\n"
-read
+${enter}
 
 /bin/bash dev.sh         
 `,
@@ -114,8 +121,7 @@ EOF
 )"   
 echo "\$COMMANDS"
 
-echo -e "\n      Press enter to continue\n"
-read
+${enter}
 
 set -e
 eval "\$COMMANDS"
@@ -205,8 +211,7 @@ cat <<EEE
 
 EEE
 
-echo -e "\n      Press enter to continue\n"
-read
+${enter}
 
 python -m http.server \${JEST_COVERAGE_PORT} --directory pages/coverage
 `,
@@ -222,8 +227,7 @@ cat <<EEE
 
 EEE
 
-echo -e "\n      Press enter to continue\n"
-read
+${enter}
 
 open "file://$(realpath "coverage/index.html")"
 `,
@@ -239,7 +243,7 @@ cat <<EEE
 
 EEE
 
-read -p "\n      Press enter to run\n"
+${enter}
 
 # heredoc inline
 cat <<EEE | bash
