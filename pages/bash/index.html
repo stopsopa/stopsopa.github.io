@@ -1860,6 +1860,65 @@
           EOF
 
           cat var/cutter_sh | /bin/bash bash/cutter.sh restore __start__ __end__
+
+
+          # and here is example script which we can hold in main directory of the project no_sandbox.sh
+          if [ "${1}" = "cut" ]; then
+          
+          cat <<'EOF' | /bin/bash
+          
+          set -e
+          set -o pipefail
+          
+          START="__start__"
+          END="__end__"
+          
+          tmp="$(mktemp)"
+          
+          find . \
+            -type f \
+            \( -name '*.ts' -o -name '*.js' -o -name '*.tsx' \) \
+            -not -path './.git/*' \
+            -not -path './node_modules/*' \
+            -exec awk '
+              /'"${START}"'/ { found_start=1 }
+              found_start && /'"${END}"'/ {
+                print FILENAME
+                exit
+              }
+            ' {} \; > "${tmp}"
+          
+          if [[ -s "${tmp}" ]]; then
+            mv "${tmp}" var/cutter_sh
+            /bin/bash bash/cutter.sh cut "${START}" "${END}" < var/cutter_sh
+          else
+            rm "${tmp}"
+            echo "bash/cutter.sh: Nothing to cut."
+          fi
+          
+          EOF
+          
+              exit 0
+          fi
+          
+          if [ "${1}" = "restore" ]; then
+          
+          cat var/cutter_sh | /bin/bash bash/cutter.sh restore __start__ __end__
+          
+              exit 0
+          fi
+          
+          cat <<EEE
+          no_sandbox.sh: Usage
+              /bin/bash no_sandbox.sh cut
+              /bin/bash no_sandbox.sh restore
+          
+          no_sandbox.sh: Unknown action: ${1}
+          should be either 'cut' or 'restore'
+          
+          EEE
+          
+          exit 1          
           
         </script>
         <h2>cli keystrokes</h2>
