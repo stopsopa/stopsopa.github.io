@@ -1903,7 +1903,7 @@
           
           if [ "${1}" = "restore" ]; then
 
-              if [ -f "var/cutter_sh" ]; then
+              if [ -s "var/cutter_sh" ]; then
                 cat var/cutter_sh | /bin/bash bash/cutter.sh restore no_sandbox_sh_start no_sandbox_sh_end
               fi
           
