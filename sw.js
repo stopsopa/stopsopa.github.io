@@ -13,6 +13,8 @@ self.addEventListener("fetch", (event) => {
       try {
         const cache = await caches.open(CACHE_NAME);
 
+        console.log(`sw.js trace: event.request.method >${event.request.method}< event.request.url >${event.request.url}<`);
+
         const cached = await cache.match(event.request);
         if (cached) {
           return cached;
