@@ -13,12 +13,14 @@
 // after that just do:
 //   xx <command_name>
 const S = "\\";
+const GRAY="\x1b[38;5;244m", BLACK="\x1b[30m", RED="\x1b[31m", GREEN="\x1b[32m", YELLOW="\x1b[33m", BLUE="\x1b[34m",
+      MAGENTA="\x1b[35m", CYAN="\x1b[36m", WHITE="\x1b[37m", BOLD="\x1b[1m", REVERSE="\x1b[7m", RESET="\x1b[0m";
 
-const enter = `printf '\nPress Enter to continue (any other key exits)...\n';old=$(stty -g);stty -icanon -echo
+const enter = `printf '\n${GREEN}Press Enter to continue (any other key exits)...${RESET}\n';old=$(stty -g);stty -icanon -echo
 IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
 [ -n "$k" ]&&exit 0;`
 
-const esc = `printf '\nPress any key to continue (Esc to exit)...\n';old=$(stty -g);stty -icanon -echo
+const esc = `printf '\n${GREEN}Press any key to continue (Esc to exit)...${RESET}\n';old=$(stty -g);stty -icanon -echo
 IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
 [ "$k" = "$(printf '\\033')" ]&&exit 0;`
 
