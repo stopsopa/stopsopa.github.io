@@ -3365,6 +3365,20 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                   REVERSE="\e[7m"
                   RESET="\e[0m"
 
+                  # sometimes this is needed
+                  GRAY="$(printf '\033[38;5;244m')"
+                  BLACK="$(printf '\033[30m')"
+                  RED="$(printf '\033[31m')"
+                  GREEN="$(printf '\033[32m')"
+                  YELLOW="$(printf '\033[33m')"
+                  BLUE="$(printf '\033[34m')"
+                  MAGENTA="$(printf '\033[35m')"
+                  CYAN="$(printf '\033[36m')"
+                  WHITE="$(printf '\033[37m')"
+                  BOLD="$(printf '\033[1m')"
+                  REVERSE="$(printf '\033[7m')"
+                  RESET="$(printf '\033[0m')"
+
                   echo "${GRAY}GRAY${RESET}"
                   echo "${BLACK}BLACK${RESET}"
                   echo "${RED}RED${RESET}"
