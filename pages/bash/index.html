@@ -2526,6 +2526,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           # set -e for outer shell
           set -e
           set -o pipefail
+          export PS4=$'\n\033[1;36m>>> ${BASH_SOURCE##*/}:${LINENO}:\033[0m '
           (
             # set -e again for internal shell
             set -e
