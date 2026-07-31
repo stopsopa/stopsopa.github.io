@@ -2420,6 +2420,13 @@
         <h2>pnpm</h2>
         <script type="editor" data-lang="sh">
 
+          # asdf:
+          asdf plugin add pnpm
+          # find version
+          npm view pnpm versions
+          npm view pnpm versions --json
+          
+
           # to include devDependencies
           pnpm install --frozen-lockfile
 
