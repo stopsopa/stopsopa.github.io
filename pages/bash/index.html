@@ -1775,19 +1775,19 @@
         <script type="editor" data-lang="sh">
 
           # urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fbash%2Fcutter.sh
-      
-          # thanks to this heredoc fed to bash we can run all of this more than one time in a row 
+
+          # thanks to this heredoc fed to bash we can run all of this more than one time in a row
           # and it will not override var/cutter_sh
           cat <<'EOF' | /bin/bash
-          
+
           set -e
           set -o pipefail
-          
+
           START="__start__"
           END="__end__"
-          
+
           tmp="$(mktemp)"
-          
+
           find . \
             -type f \
             \( -name '*.ts' -o -name '*.js' -o -name '*.tsx' \) \
@@ -1800,7 +1800,7 @@
                 exit
               }
             ' {} \; > "${tmp}"
-          
+
           if [[ -s "${tmp}" ]]; then
             mv "${tmp}" var/cutter_sh
             /bin/bash bash/cutter.sh cut "${START}" "${END}" < var/cutter_sh
@@ -1808,7 +1808,7 @@
             rm "${tmp}"
             echo "bash/cutter.sh: Nothing to cut."
           fi
-          
+
           EOF
 
           cat var/cutter_sh | /bin/bash bash/cutter.sh restore __start__ __end__
@@ -1816,17 +1816,17 @@
 
           # and here is example script which we can hold in main directory of the project no_sandbox.sh
           if [ "${1}" = "cut" ]; then
-          
+
           cat <<'EOF' | /bin/bash
-          
+
           set -e
           set -o pipefail
-          
+
           START="__start__"
           END="__end__"
-          
+
           tmp="$(mktemp)"
-          
+
           find . \
             -type f \
             \( -name '*.ts' -o -name '*.js' -o -name '*.tsx' \) \
@@ -1839,7 +1839,7 @@
                 exit
               }
             ' {} \; > "${tmp}"
-          
+
           if [[ -s "${tmp}" ]]; then
             mv "${tmp}" var/cutter_sh
             /bin/bash bash/cutter.sh cut "${START}" "${END}" < var/cutter_sh
@@ -1847,33 +1847,32 @@
             rm "${tmp}"
             echo "bash/cutter.sh: Nothing to cut."
           fi
-          
+
           EOF
-          
+
               exit 0
           fi
-          
+
           if [ "${1}" = "restore" ]; then
 
               if [ -s "var/cutter_sh" ]; then
                 cat var/cutter_sh | /bin/bash bash/cutter.sh restore no_sandbox_sh_start no_sandbox_sh_end
               fi
-          
+
               exit 0
           fi
-          
+
           cat <<EEE
           no_sandbox.sh: Usage
               /bin/bash no_sandbox.sh cut
               /bin/bash no_sandbox.sh restore
-          
+
           no_sandbox.sh: Unknown action: ${1}
           should be either 'cut' or 'restore'
-          
+
           EEE
-          
-          exit 1          
-          
+
+          exit 1
         </script>
         <h2>cli keystrokes</h2>
         <script type="editor" data-lang="sh">
@@ -2615,42 +2614,42 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           # # Always color
           # # Terminal output -> colors
           # /bin/bash stdout.sh out-color-always
-          
+
           # # Always color
           # # Pipe output -> still colors
           # /bin/bash stdout.sh out-color-always | tee log.log
-          
-          
+
+
           # # Detect color
           # # Terminal output -> colors (stdout is a TTY)
           # /bin/bash stdout.sh out-color-detect
-          
+
           # # Detect color
           # # Pipe output -> no colors (stdout is not a TTY)
           # /bin/bash stdout.sh out-color-detect | tee log.log
-          
+
           # Force a TTY using `script`:
           # Program thinks stdout is a terminal -> colors enabled
           # `-q` = quiet mode (hide "Script started/done" messages)
           # `/dev/null` = discard the internal session recording
           # -r means raw output (do not process terminal output).
           # script -q /dev/null /bin/bash stdout.sh out-color-detect | tee log.log
-          
+
           # to kill all
           # ps aux | grep out-color-detect | /bin/bash bash/proc/reaper.sh
-          
-          # WARNING: another thing we can use is : brew install expect 
+
+          # WARNING: another thing we can use is : brew install expect
           #          and use:
           # unbuffer /bin/bash stdout.sh out-color-detect | tee log.log
-          #          
-          
+          #
+
           MODE="${1:-out-color-detect}"
-          
+
           case "$MODE" in
               out-color-always)
                   COLOR=1
                   ;;
-          
+
               out-color-detect)
                   if [[ -t 1 ]]; then
                       COLOR=1
@@ -2658,13 +2657,13 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                       COLOR=0
                   fi
                   ;;
-          
+
               *)
                   echo "Usage: $0 [out-color-always|out-color-detect]" >&2
                   exit 1
                   ;;
           esac
-          
+
           if (( COLOR )); then
               GREEN='\033[0;32m'
               ORANGE='\033[38;5;208m'
@@ -2674,11 +2673,11 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
               ORANGE=''
               RESET=''
           fi
-          
+
           DELAY=0.15
-          
+
           echo "➤ Browsers"
-          
+
           lines=(
           "Safari cache|4KB"
           "Chrome GPU cache|6 items, 1.7MB"
@@ -2711,13 +2710,13 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           "Brave Service Worker|28.3MB"
           "Chrome old versions|1 dirs, 732.2MB"
           )
-          
+
           for line in "${lines[@]}"; do
               IFS='|' read -r text size <<< "$line"
-          
+
               printf "  ${GREEN}✓${RESET} ${ORANGE}%s${RESET} · ${GREEN}%s${RESET}\n" \
                   "$text" "$size"
-          
+
               sleep "$DELAY"
           done
 
@@ -2769,33 +2768,32 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
           # overview:
             Behavioral comparison
-            
+
             -t 0 (stdin)
-            
+
             Scenario                     Result
             ---------------------------  ------
             ./prog                       true
             echo hi | ./prog             false
             ./prog < file.txt            false
             ssh host ./prog              true
-            
+
             Meaning:
             "Is someone typing input?"
-            
+
             ------------------------------------------------------------
-            
+
             -t 1 (stdout)
-            
+
             Scenario                     Result
             ---------------------------  ------
             ./prog                       true
             ./prog | cat                 false
             ./prog > file.txt            false
             ./prog 2>err.log             true
-            
+
             Meaning:
-            "Is a human reading this output?"            
-          
+            "Is a human reading this output?"
         </script>
         <h2>stream - delay stream</h2>
         <script type="editor" data-lang="sh">
