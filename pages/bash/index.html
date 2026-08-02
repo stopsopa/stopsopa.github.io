@@ -2692,20 +2692,35 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
           # # Always color
           # # Terminal output -> colors
-          # /bin/bash script.sh out-color-always
+          # /bin/bash stdout.sh out-color-always
           
           # # Always color
           # # Pipe output -> still colors
-          # /bin/bash script.sh out-color-always | tee log.log
+          # /bin/bash stdout.sh out-color-always | tee log.log
           
           
           # # Detect color
           # # Terminal output -> colors (stdout is a TTY)
-          # /bin/bash script.sh out-color-detect
+          # /bin/bash stdout.sh out-color-detect
           
           # # Detect color
           # # Pipe output -> no colors (stdout is not a TTY)
-          # /bin/bash script.sh out-color-detect | tee log.log
+          # /bin/bash stdout.sh out-color-detect | tee log.log
+          
+          # Force a TTY using `script`:
+          # Program thinks stdout is a terminal -> colors enabled
+          # `-q` = quiet mode (hide "Script started/done" messages)
+          # `/dev/null` = discard the internal session recording
+          # -r means raw output (do not process terminal output).
+          # script -q /dev/null /bin/bash stdout.sh out-color-detect | tee log.log
+          
+          # to kill all
+          # ps aux | grep out-color-detect | /bin/bash bash/proc/reaper.sh
+          
+          # WARNING: another thing we can use is : brew install expect 
+          #          and use:
+          # unbuffer /bin/bash stdout.sh out-color-detect | tee log.log
+          #          
           
           MODE="${1:-out-color-detect}"
           
