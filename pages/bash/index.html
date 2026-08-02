@@ -543,84 +543,6 @@
               brew install pv
               cd /Volumes && tar cf - 750GB | pv -s $(du -sk /Volumes/750GB | awk '{print $1 * 1024}') > /dev/null
           </script>
-          <h2>detect interactive detect TTY</h2>
-          <script type="editor" data-lang="sh">
-
-            https://i.imgur.com/tt9pl7k.png
-
-            # testing input interactivity:
-
-            cat <<AAA > input.sh
-            if [ -t 0 ]; then
-              # this is for
-              # /bin/bash inter.sh
-              echo "This shell is interactive"
-              read -p "Enter value: " x
-            else
-              # this is for
-              # echo test | /bin/bash inter.sh
-              echo "This shell is NOT interactive"
-              read x
-            fi
-
-            cat <<EEE
-            x >\${x}<
-            EEE
-
-            AAA
-
-            # testing output interactivity
-
-            cat <<AAA > output.sh
-            if [ -t 1 ]; then
-                # stdout is a terminal → enable colors
-                # /bin/bash output.sh
-                RED="\033[31m"
-                GREEN="\033[32m"
-                RESET="\033[0m"
-            else
-                # stdout is not a terminal → no colors
-                # /bin/bash output.sh | tail
-                RED=""
-                GREEN=""
-                RESET=""
-            fi
-
-            echo -e "\${GREEN}Success\${RESET}"
-            echo -e "\${RED}Error\${RESET}"
-
-            AAA
-
-            # overview:
-              Behavioral comparison
-              
-              -t 0 (stdin)
-              
-              Scenario                     Result
-              ---------------------------  ------
-              ./prog                       true
-              echo hi | ./prog             false
-              ./prog < file.txt            false
-              ssh host ./prog              true
-              
-              Meaning:
-              "Is someone typing input?"
-              
-              ------------------------------------------------------------
-              
-              -t 1 (stdout)
-              
-              Scenario                     Result
-              ---------------------------  ------
-              ./prog                       true
-              ./prog | cat                 false
-              ./prog > file.txt            false
-              ./prog 2>err.log             true
-              
-              Meaning:
-              "Is a human reading this output?"       
-            
-          </script>
           <h2>proxy https to my mac</h2>
           <script type="editor" data-lang="sh">
 
@@ -2687,7 +2609,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
           # look for more: https://stackoverflow.com/q/17998978
         </script>
-        <h2>Generate stdout with color no matter what</h2>
+        <h2>Generate stdout with color no matter what - detect interactive detect TTY</h2>
         <script type="editor" data-lang="sh">
 
           # # Always color
@@ -2798,6 +2720,81 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           
               sleep "$DELAY"
           done
+
+          # --------------------------- general theory:
+          https://i.imgur.com/tt9pl7k.png
+
+          # testing input interactivity:
+
+          cat <<AAA > input.sh
+          if [ -t 0 ]; then
+            # this is for
+            # /bin/bash inter.sh
+            echo "This shell is interactive"
+            read -p "Enter value: " x
+          else
+            # this is for
+            # echo test | /bin/bash inter.sh
+            echo "This shell is NOT interactive"
+            read x
+          fi
+
+          cat <<EEE
+          x >\${x}<
+          EEE
+
+          AAA
+
+          # testing output interactivity
+
+          cat <<AAA > output.sh
+          if [ -t 1 ]; then
+              # stdout is a terminal → enable colors
+              # /bin/bash output.sh
+              RED="\033[31m"
+              GREEN="\033[32m"
+              RESET="\033[0m"
+          else
+              # stdout is not a terminal → no colors
+              # /bin/bash output.sh | tail
+              RED=""
+              GREEN=""
+              RESET=""
+          fi
+
+          echo -e "\${GREEN}Success\${RESET}"
+          echo -e "\${RED}Error\${RESET}"
+
+          AAA
+
+          # overview:
+            Behavioral comparison
+            
+            -t 0 (stdin)
+            
+            Scenario                     Result
+            ---------------------------  ------
+            ./prog                       true
+            echo hi | ./prog             false
+            ./prog < file.txt            false
+            ssh host ./prog              true
+            
+            Meaning:
+            "Is someone typing input?"
+            
+            ------------------------------------------------------------
+            
+            -t 1 (stdout)
+            
+            Scenario                     Result
+            ---------------------------  ------
+            ./prog                       true
+            ./prog | cat                 false
+            ./prog > file.txt            false
+            ./prog 2>err.log             true
+            
+            Meaning:
+            "Is a human reading this output?"            
           
         </script>
         <h2>stream - delay stream</h2>
