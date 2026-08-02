@@ -2690,13 +2690,53 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
         <h2>Generate stdout with color no matter what</h2>
         <script type="editor" data-lang="sh">
 
-          #!/usr/bin/env bash
+          # # Always color
+          # # Terminal output -> colors
+          # /bin/bash script.sh out-color-always
           
-          # demo.sh
+          # # Always color
+          # # Pipe output -> still colors
+          # /bin/bash script.sh out-color-always | tee log.log
           
-          GREEN='\033[0;32m'
-          ORANGE='\033[38;5;208m'
-          RESET='\033[0m'
+          
+          # # Detect color
+          # # Terminal output -> colors (stdout is a TTY)
+          # /bin/bash script.sh out-color-detect
+          
+          # # Detect color
+          # # Pipe output -> no colors (stdout is not a TTY)
+          # /bin/bash script.sh out-color-detect | tee log.log
+          
+          MODE="${1:-out-color-detect}"
+          
+          case "$MODE" in
+              out-color-always)
+                  COLOR=1
+                  ;;
+          
+              out-color-detect)
+                  if [[ -t 1 ]]; then
+                      COLOR=1
+                  else
+                      COLOR=0
+                  fi
+                  ;;
+          
+              *)
+                  echo "Usage: $0 [out-color-always|out-color-detect]" >&2
+                  exit 1
+                  ;;
+          esac
+          
+          if (( COLOR )); then
+              GREEN='\033[0;32m'
+              ORANGE='\033[38;5;208m'
+              RESET='\033[0m'
+          else
+              GREEN=''
+              ORANGE=''
+              RESET=''
+          fi
           
           DELAY=0.15
           
