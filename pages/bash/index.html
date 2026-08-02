@@ -590,6 +590,36 @@
             echo -e "\${RED}Error\${RESET}"
 
             AAA
+
+            # overview:
+              Behavioral comparison
+              
+              -t 0 (stdin)
+              
+              Scenario                     Result
+              ---------------------------  ------
+              ./prog                       true
+              echo hi | ./prog             false
+              ./prog < file.txt            false
+              ssh host ./prog              true
+              
+              Meaning:
+              "Is someone typing input?"
+              
+              ------------------------------------------------------------
+              
+              -t 1 (stdout)
+              
+              Scenario                     Result
+              ---------------------------  ------
+              ./prog                       true
+              ./prog | cat                 false
+              ./prog > file.txt            false
+              ./prog 2>err.log             true
+              
+              Meaning:
+              "Is a human reading this output?"       
+            
           </script>
           <h2>proxy https to my mac</h2>
           <script type="editor" data-lang="sh">
