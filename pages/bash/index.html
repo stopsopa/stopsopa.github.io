@@ -2657,6 +2657,64 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
           # look for more: https://stackoverflow.com/q/17998978
         </script>
+        <h2>Generate stdout with color no matter what</h2>
+        <script type="editor" data-lang="sh">
+
+          #!/usr/bin/env bash
+          
+          # demo.sh
+          
+          GREEN='\033[0;32m'
+          ORANGE='\033[38;5;208m'
+          RESET='\033[0m'
+          
+          DELAY=0.15
+          
+          echo "➤ Browsers"
+          
+          lines=(
+          "Safari cache|4KB"
+          "Chrome GPU cache|6 items, 1.7MB"
+          "Chrome component CRX cache|17 items, 38.0MB"
+          "Chrome shader cache|5 items, 558KB"
+          "Chrome GR shader cache|5 items, 558KB"
+          "Chrome Dawn cache|40 items, 6.7MB"
+          "Chrome on-device model cache|4.27GB"
+          "Chrome on-device classifier cache|126.0MB"
+          "Chrome optimization guide models|14 items, 79.1MB"
+          "Chrome Service Worker|43.5MB"
+          "GoogleUpdater CRX cache|3 items, 765.3MB"
+          "GoogleUpdater old files|2 items, 2.1MB"
+          "Puppeteer browser cache|2 items, 550.0MB"
+          "Brave cache|61KB"
+          "Brave Service Worker|1.23GB"
+          "Brave Service Worker|38.0MB"
+          "Brave Service Worker|63.8MB"
+          "Brave Service Worker|51.1MB"
+          "Brave Service Worker|27.1MB"
+          "Brave Service Worker|156KB"
+          "Brave Service Worker|76.9MB"
+          "Brave Service Worker|12KB"
+          "Brave Service Worker|37.8MB"
+          "Brave Service Worker|60.0MB"
+          "Brave Service Worker|133.5MB"
+          "Brave Service Worker|1.8MB"
+          "Brave Service Worker|26.1MB"
+          "Brave Service Worker|43.0MB"
+          "Brave Service Worker|28.3MB"
+          "Chrome old versions|1 dirs, 732.2MB"
+          )
+          
+          for line in "${lines[@]}"; do
+              IFS='|' read -r text size <<< "$line"
+          
+              printf "  ${GREEN}✓${RESET} ${ORANGE}%s${RESET} · ${GREEN}%s${RESET}\n" \
+                  "$text" "$size"
+          
+              sleep "$DELAY"
+          done
+          
+        </script>
         <h2>stream - delay stream</h2>
         <script type="editor" data-lang="sh">
 
