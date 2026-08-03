@@ -384,17 +384,39 @@
 
             # Enter to continue - other exit
 
-            printf '\nPress Enter to continue (any other key exits)...\n';old=$(stty -g);stty -icanon -echo
+            printf '\n Press Enter to continue (any other key exits)...\n';old=$(stty -g);stty -icanon -echo
             IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
             [ -n "$k" ] && exit 0;echo continuation
 
             # ESC to exit - other continue
 
-            printf '\nPress any key to continue (Esc to exit)...\n';old=$(stty -g);stty -icanon -echo
+            printf '\n Press any key to continue (Esc to exit)...\n';old=$(stty -g);stty -icanon -echo
             IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
             [ "$k" = "$(printf '\033')" ] && exit 0;echo continuation
 
-            # see also: https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/xx/xx-template.cjs
+            # see also: https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/xx/xx-template.cjs           
+
+            BG_GREEN="$(printf '\033[42m')"
+            function enter {
+                echo "${BG_GREEN}"
+                printf '\n Press any key to continue (Esc to exit)...\n';old=$(stty -g);stty -icanon -echo
+                IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
+                echo "${RESET}"
+                if [ "$k" = "$(printf '\033')" ]; then
+                    exit 0;
+                fi
+            }
+            
+            BG_RED="$(printf '\033[41m')"
+            function esc {
+                echo "${BG_RED}"
+                printf '\n  Press Enter to continue (any other key exits)...\n';old=$(stty -g);stty -icanon -echo
+                IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
+                echo "${RESET}"
+                if [ -n "$k" ]; then
+                    exit 0;
+                fi
+            }
           </script>
 
           <h2>test program, builtin || exec, command</h2>
@@ -3503,6 +3525,15 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                   BOLD="\e[1m"
                   REVERSE="\e[7m"
                   RESET="\e[0m"
+
+                  BG_BLACK="$(printf '\033[40m')"
+                  BG_RED="$(printf '\033[41m')"
+                  BG_GREEN="$(printf '\033[42m')"
+                  BG_YELLOW="$(printf '\033[43m')"
+                  BG_BLUE="$(printf '\033[44m')"
+                  BG_MAGENTA="$(printf '\033[45m')"
+                  BG_CYAN="$(printf '\033[46m')"
+                  BG_WHITE="$(printf '\033[47m')"
 
                   # sometimes this is needed
                   GRAY="$(printf '\033[38;5;244m')"
