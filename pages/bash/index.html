@@ -2034,6 +2034,19 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           // study more: https://jeongwhanchoi.medium.com/install-tmux-on-osx-and-basics-commands-for-beginners-be22520fd95e
         </script>
 
+        <h2>remove/delete except given directory/file</h2>
+        
+        <script type="editor" data-lang="sh">
+
+          // remove except 
+          // detete except
+          
+          find . -mindepth 1 -maxdepth 1 \
+              ! -name '.git' \
+              ! -name '.gitignore' \
+              -exec rm -rf -- {} +
+          
+        </script>
         <h2>xargs</h2>
         <script type="editor" data-lang="sh">
 
