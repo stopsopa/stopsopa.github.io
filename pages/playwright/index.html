@@ -12,6 +12,43 @@
   <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
+        <h2>codegen</h2>
+        <script type="editor" data-lang="sh">
+
+          ./node_modules/.bin/playwright codegen http://0.0.0.0:4259/admin/sandbox/database
+          
+          # or
+          
+          ./node_modules/.bin/playwright codegen \
+            --load-storage=<(cat <<'JSON'
+          {
+            "cookies": [
+              {
+                "name": "SECURE_COOKIE",
+                "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "domain": "0.0.0.0",
+                "path": "/",
+                "httpOnly": false,
+                "secure": false,
+                "sameSite": "Lax"
+              },
+              {
+                "name": "site_switch",
+                "value": "PROJECTTEST",
+                "domain": "0.0.0.0",
+                "path": "/",
+                "httpOnly": false,
+                "secure": false,
+                "sameSite": "Lax"
+              }
+            ],
+            "origins": []
+          }
+          JSON
+          ) \
+            http://0.0.0.0:4259/admin/sandbox/database
+          
+        </script>
         <h2>playwright setup</h2>
         <a href="https://github.com/stopsopa/playwright-research">https://github.com/stopsopa/playwright-research</a>
         <script type="editor" data-lang="sh">
