@@ -148,6 +148,90 @@
 # - Killing the wrapper should trigger cleanup and stop the child.
 #
 
+# EXTENDED THEST TO SEE IF CHILD STDOUT IS FORWARDED TO WRAPPER STDOUT
+#
+# 7. Test stdin/stdout forwarding and visible parent-child relationship:
+#
+# The goal:
+# - TEST_FLAG_io_parent is the wrapper process
+# - TEST_FLAG_io_child is the child process started by the wrapper
+# - stdin is forwarded from the wrapper to the child
+# - stdout from the child is forwarded back through the wrapper
+#
+#
+# Terminal 1:
+#
+# while true; do
+#   echo "message from stdin $(date "+%H:%M:%S")"
+#   sleep 1
+# done | \
+# /bin/bash ./run-with-flag-and-kill.sh TEST_FLAG_io_parent \
+#   /bin/bash -c '
+#     exec -a TEST_FLAG_io_child bash -c "
+#       while IFS= read -r line; do
+#         echo \"child stdout: \$line\"
+#       done
+#     "
+#   '
+#
+#
+# Expected output in Terminal 1:
+#
+#    child stdout: message from stdin 15:30:01
+#    child stdout: message from stdin 15:30:02
+#    child stdout: message from stdin 15:30:03
+#
+#
+# 8. Terminal 2 - verify parent and child processes:
+#
+#    ps -axo pid,ppid,command | grep TEST_FLAG | grep -v grep
+#
+#
+# Expected:
+#
+#    PID    PPID   COMMAND
+#    80001  70001  /bin/bash ./run-with-flag-and-kill.sh TEST_FLAG_io_parent ...
+#    80002  80001  TEST_FLAG_io_child ...
+#
+#
+# This proves:
+#
+#    stdin producer
+#          |
+#          v
+#    TEST_FLAG_io_parent
+#          |
+#          v
+#    TEST_FLAG_io_child
+#          |
+#          v
+#    terminal stdout
+#
+#
+# 9. Kill only the wrapper:
+#
+#    ps aux | grep TEST_FLAG_io_parent | grep -v grep | awk '{print $2}' | xargs kill
+#
+#
+# 10. Verify cleanup:
+#
+#    ps -axo pid,ppid,command | grep TEST_FLAG | grep -v grep
+#
+#
+# Expected:
+#
+#    no output
+#
+#
+# Notes:
+#
+# - The wrapper does not manually forward stdin/stdout.
+# - "$@" keeps the original file descriptors unchanged.
+# - Child stdin comes from wrapper stdin.
+# - Child stdout goes to wrapper stdout.
+# - Killing the wrapper triggers cleanup of the child.
+#
+
 set -e
 
 FLAG="${1}"
