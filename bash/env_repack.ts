@@ -1,5 +1,7 @@
 /**
  
+this will change or set TAG and PORT and remove DOCKER_BIN and JWT_EXPIRE_SECONDS
+
 cat <<EEE | NODE_OPTIONS= node bash/env_repack.ts --in-place .env
 TAG="v8.6.1"
 PORT=4778
