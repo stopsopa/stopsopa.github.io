@@ -3,6 +3,9 @@
 // viewer       : https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fbash%2Fxx%2Fxx-template.cjs
 // github edit  : https://github.com/stopsopa/stopsopa.github.io/blob/master/pages/bash/xx/xx-template.cjs
 
+// in order to run any xx command with custom export env var:
+// (shopt -s expand_aliases; export ENVFILE=.env.ci; xx "docker up")
+
 // 🚀 -
 // ✅ -
 // ⚙️  -
