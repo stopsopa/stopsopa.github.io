@@ -13,33 +13,26 @@
 
 set -e
 
-FLAG="${1}";
+FLAG="${1}"
 
-shift;
+shift
 
 if [ "${FLAG}" = "" ]; then
-
-  echo "${0} error: FLAG is not defined";
-
-  exit 1;
+    echo "${0} error: FLAG is not defined"
+    exit 1
 fi
 
-PARAMS=""
-while (( "${#}" )); do
-    if [ "${PARAMS}" = "" ]; then
-        PARAMS="\"${1}\""
-    else
-        PARAMS="${PARAMS} \"${1}\""
-    fi
-    shift;
-done
+# Prevent silently doing nothing if no command was supplied.
+if [ "$#" -eq 0 ]; then
+    echo "${0} error: command is not defined"
+    exit 1
+fi
 
 function cleanup {
-
     kill -9 $(pgrep -P $$) > /dev/null 2> /dev/null || :
 }
 
-trap cleanup EXIT;
+trap cleanup EXIT
 
-eval ${PARAMS}
-
+# Execute the command exactly as received, preserving all arguments.
+"$@"
