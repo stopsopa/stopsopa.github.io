@@ -10,6 +10,7 @@
 
 import net from "node:net";
 import fs from "node:fs";
+import readline from "node:readline";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -113,12 +114,40 @@ const server = net.createServer((socket) => {
 // this point requires nothing to be under the path ${SOCKET} but directory have to exist
 server.listen(SOCKET, () => {
   console.log(`socket created: ${SOCKET} (pid: ${process.pid})`);
+
+  if (process.stdin.isTTY) {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    console.log("interactive mode enabled");
+
+    rl.on("line", (line) => {
+      publish(line);
+    });
+  }
 });
 
 // when SIGINT - Ctrl+C | SIGTERM - kill [pid]
-// if kill -9 [pid] then socket will stay and wil cause problems on next start
+// if kill -9 [pid] then socket will stay and will cause problems on next start
 //   try killing process, socket will stay and then try to run, you will endup with exception
-process.on("SIGINT", () => {
-  server.close(); // removes the socket (thie filesystem entry - file is gone)
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+
+function shutdown(signal: string) {
+  console.log(`shutting down (${signal})`);
+
+  for (const client of clients) {
+    client.destroy();
+  }
+
+  // removes the socket (thie filesystem entry - file is gone)
   // and it will exit here, no need for process.exit()
-});
+
+  server.close(() => {
+    // interestingly enough SIGTERM requires process.exit(1) otherwise process won't exit
+    // it's not the case for SIGINT - Ctrl+C
+    process.exit(1);
+  });
+}
