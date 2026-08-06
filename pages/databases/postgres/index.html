@@ -40,7 +40,6 @@
               VALUES ('alice@example.com', 'Alice')
               ON CONFLICT (email) DO SELECT FOR UPDATE
               RETURNING id, name;
-              
           </script>
         </div>
       </div>

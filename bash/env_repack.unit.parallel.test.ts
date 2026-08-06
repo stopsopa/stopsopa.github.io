@@ -60,7 +60,7 @@ OTHER="value"
       `
 KEY="new"
 OTHER="value"
-`,
+`
     );
   });
 
@@ -77,7 +77,7 @@ CBA=2323
       result.trim(),
       `ABC=d
 PASSWORD="new" # keep this comment
-CBA=2323`,
+CBA=2323`
     );
   });
 
@@ -94,7 +94,7 @@ CBA=2323
       result.trim(),
       `ABC=
 PASSWORD="new" # keep this comment
-CBA=2323`,
+CBA=2323`
     );
   });
 
@@ -117,7 +117,7 @@ KEY="value"
       result,
       `
 KEY="value"
-NEW_KEY="new value"`,
+NEW_KEY="new value"`
     );
   });
 
@@ -141,7 +141,7 @@ KEY="value"`;
       `
 # NEW_KEY="old"
 KEY="value"
-NEW_KEY="new value"`,
+NEW_KEY="new value"`
     );
   });
 });
@@ -161,7 +161,7 @@ LAST="three"
       `
 FIRST="one"
 LAST="three"
-`,
+`
     );
   });
 
@@ -187,7 +187,7 @@ APP_KEY_SECOND="two"
       result,
       `
 APP_KEY_SECOND="two"
-`,
+`
     );
   });
 });

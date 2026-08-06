@@ -13,6 +13,7 @@ This document provides a directory of bash utility scripts available in this dir
 ## Script Index by Directory
 
 ### Core Root Utility Scripts (`/`)
+
 - `ansi.sh`: Utility for formatting text output with ANSI color codes.
 - `args.sh`: Argument parsing utility/helper for bash scripts.
 - `basicauth.sh`: Generates Basic Authentication header strings.
@@ -55,6 +56,7 @@ This document provides a directory of bash utility scripts available in this dir
 ---
 
 ### Process Management (`/proc`)
+
 - `proc/run-with-flag-and-kill.sh`: Executes a command wrapped with a custom identification flag and traps exit to kill child processes.
 - `proc/kill.sh`: Kills running processes matched by an environment flag string loaded from `.env`.
 - `proc/killv2.sh`: Alias entry point importing `proc/reaper.sh` to terminate processes.
@@ -69,6 +71,7 @@ This document provides a directory of bash utility scripts available in this dir
 ---
 
 ### File System Utilities (`/fs`)
+
 - `fs/break-file.sh`: Helper to break down or truncate files.
 - `fs/can-write-to-file.sh`: Checks write permissions on target file paths.
 - `fs/dev-tail.mjs`: Log file tailing script with enhanced output formatting.
@@ -84,18 +87,21 @@ This document provides a directory of bash utility scripts available in this dir
 ---
 
 ### File Editing (`/file`)
+
 - `file/append.sh`: Appends content to target files safely.
 - `file/replace.sh`: Replaces text inside target files using string or regex substitution.
 
 ---
 
 ### Deployment Scripts (`/deploy`)
+
 - `deploy/relink.sh`: Re-creates symlinks for deployment releases.
 - `deploy/version.sh` / `deploy/version-regular.sh`: Increments or updates release version numbers.
 
 ---
 
 ### Git Helpers (`/git` & `/gitwormhole`)
+
 - `git/change-branch-to.sh`: Switches git branch safely.
 - `git/get-tag-on-current-commit.sh`: Returns git tag associated with `HEAD`.
 - `git/get-tags-of-current-branch.sh`: Lists git tags present on current active branch.
@@ -112,6 +118,7 @@ This document provides a directory of bash utility scripts available in this dir
 ---
 
 ### Docker & Kubernetes (`/docker-registry` & `/kuber`)
+
 - `docker-registry/common.sh`: Common variables and authentication functions for Docker registry interaction.
 - `docker-registry/list-image-tags.sh`: Queries Docker registry API to list tags for an image.
 - `docker-registry/list-images.sh`: Queries Docker registry API to list available images.
@@ -125,6 +132,7 @@ This document provides a directory of bash utility scripts available in this dir
 ---
 
 ### Node.js & Package Management (`/node` & `/pnpm`)
+
 - `node/array.js` / `node/array_test.sh`: Array manipulation helpers in Node.js and shell.
 - `node/coverage-badge-clean.sh` / `node/coverage-badge.js`: Generates test coverage badges.
 - `node/env-var-inspect-node.sh`: Debugs environment variables inside Node.js processes.
@@ -139,6 +147,7 @@ This document provides a directory of bash utility scripts available in this dir
 ---
 
 ### Database Helpers (`/mysql` & `/postgres`)
+
 - `mysql/cleardb.sh`: Drops and recreates MySQL database schemas.
 - `mysql/copytablesbetweendatabases.sh`: Copies tables across MySQL databases.
 - `mysql/export.sh`: Dumps MySQL database to SQL file.
@@ -149,6 +158,7 @@ This document provides a directory of bash utility scripts available in this dir
 ---
 
 ### CI & Tooling (`/jenkins` & `/java`)
+
 - `jenkins/checksum-built-already.sh`: Checks if build artifact matching commit checksum exists.
 - `jenkins/clear_cache_step.sh`: Cleans Jenkins workspace and dependency caches.
 - `jenkins/get-last-build-for-this-commit.sh`: Retrieves last Jenkins build status for git commit.

@@ -92,7 +92,7 @@ function unsetEnvVar(envFileBody: string, key: string): string {
 
 function editEnvVar(
   envVarBody: string,
-  instructions: string,
+  instructions: string
 ): {
   unset: string[];
   set: Record<string, string>;
