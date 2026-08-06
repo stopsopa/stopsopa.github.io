@@ -29,4 +29,5 @@ f -name "*.ts" \
 | node gitignore.js "${1}" \
 | /bin/bash ts.sh transpile.ts --clean-stdout \
 | node transpile_prettier_pipe.ts --clean-stdout \
-| node bash/node/preamble.ts transpile.preamble --clean-stdout
+| node bash/node/preamble.ts transpile.preamble --clean-stdout \
+| node bash/git/addToGitignore.ts .gitignore transpile_sh

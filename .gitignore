@@ -41,6 +41,39 @@ pages/node/semaphore/Semaphore.js
 pages/services/xor.js
 # es.ts ^^^ don't remove
 
+# transpile_sh vvv
+bash/env_repack.js
+bash/env_repack.unit.parallel.test.js
+bash/fs/touchWatch.js
+bash/fs/watch.js
+bash/git/addToGitignore.js
+bash/node/is-port-free.js
+bash/node/json/sortObjectNested.js
+bash/node/json/unwrap.js
+bash/node/preamble.js
+bash/node/versioncheck.js
+libs/drag_v2.js
+libs/drag.js
+pages/bookmarklets/gmail/extract.js
+pages/children/caesar/moduleCaesarCypher.js
+pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.js
+pages/html/checkbox/handleCheckboxDynamic/index.js
+pages/html/checkbox/handleCheckboxFixed/handleCheckboxFixed.js
+pages/html/checkbox/handleCheckboxFixed/index.js
+pages/html/handleRadio.js
+pages/html/input/handleInput.js
+pages/html/input/index.js
+pages/js/events/createSubscriber.js
+pages/js/events/createSubscriber.unit.js
+pages/node/levenshtein/levenshtein.js
+root.js
+tests/url/001_url.unit.js
+tests/url/toolsURLSearchParams.js
+tests/url/toolsURLSearchParams.test.js
+transpile_prettier_pipe_old.js
+# transpile_sh ^^^
+
+
 
 
 
