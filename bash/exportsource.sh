@@ -65,6 +65,13 @@ ENV_VAR_LIST_EXISTING=();
 
 while read -r ___ENV
 do
+  # printenv splits multi-line values (e.g. PS4 with embedded newlines) into
+  # extra lines that are not valid variable names - skip those to avoid
+  # ${!___ENV} indirect expansion errors
+  if [[ ! "${___ENV}" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+    continue
+  fi
+
   if [ "${___ENV}" != "" ] && [ "${!___ENV}" != "" ]; then
 
     ENV_VAR_LIST_EXISTING+=("${___ENV}")
