@@ -10,7 +10,7 @@
  * - killing it with -9 is possible, but socket will stay and it must be removed manually
  *   this serves as an exclusion mechanism to prevent two processes attempting to bind to the same socket file at once
  *
- * if --no-interactive not given it will try to detect if terminal is interactive and 
+ * if --no-interactive not given it will try to detect if terminal is interactive and
  * it will try to allow you to type messages from terminal
  *
  * diagnostics:
@@ -34,6 +34,25 @@ const __filename_relative = path.relative(process.cwd(), __filename);
 const th = (msg: string) => new Error(`${__filename_relative} error: ${msg}`);
 
 const log = (msg: string) => console.log(`${__filename_relative}: ${msg}`);
+
+function createIdGenerator() {
+  let lastValue = 0;
+  let counter = 0;
+
+  return function nextId() {
+    const value = new Date().getTime();
+    if (value === lastValue) {
+      counter += 1;
+    } else {
+      lastValue = value;
+      counter = 1;
+    }
+
+    return `${value}_${String(counter).padStart(5, "0")}`;
+  };
+}
+
+const nextId = createIdGenerator();
 
 if (typeof process.env.SOCKET !== "string" || !process.env.SOCKET.trim()) {
   throw th("process.env.SOCKET is not defined");
@@ -80,14 +99,16 @@ function publish(line: string) {
     return;
   }
 
-  history.push(line);
+  const lineWithId = `${nextId()} ${line}`;
+
+  history.push(lineWithId);
 
   if (history.length > RETENTION) {
     history.shift();
   }
 
   for (const client of clients) {
-    client.write(line + "\n");
+    client.write(lineWithId + "\n");
   }
 }
 
@@ -145,6 +166,8 @@ server.listen(SOCKET, () => {
     rl.on("line", (line) => {
       publish(line);
     });
+  } else {
+    log(`\x1b[31minteractive mode disabled\x1b[0m`);
   }
 });
 
