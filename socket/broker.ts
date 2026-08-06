@@ -3,6 +3,14 @@
  * SOCKET=var/socket.sock node socket/broker.ts
  * NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts
  *
+ * Lifecycle of the script:
+ * - socket (as a filesystem location) shouldn't exist, it will be created on start
+ * - when process stopped it will remove socket (as a filesystem location)
+ * - killing it with -9 is possible, but socket will stay and it must be removed manually
+ *   this serves as an exclusion mechanism to prevent two processes attempting to bind to the same socket file at once
+ *
+ *
+ * diagnostics:
  * check if socket is alive
  * lsof var/socket.sock
  * nc -U var/socket.sock
@@ -22,6 +30,8 @@ const __filename_relative = path.relative(process.cwd(), __filename);
 
 const th = (msg: string) => new Error(`${__filename_relative} error: ${msg}`);
 
+const log = (msg: string) => console.log(`${__filename_relative}: ${msg}`);
+
 if (typeof process.env.SOCKET !== "string" || !process.env.SOCKET.trim()) {
   throw th("process.env.SOCKET is not defined");
 }
@@ -35,7 +45,7 @@ if (!fs.existsSync(socket_dir)) {
 }
 
 if (!fs.statSync(socket_dir).isDirectory()) {
-  throw th(`Socket directory is not a directory: ${socket_dir}`);
+  throw th(`socket directory is not a directory: ${socket_dir}`);
 }
 
 // let's not do that, this way if anyone will try to run second server
@@ -48,10 +58,12 @@ if (fs.existsSync(SOCKET)) {
   const stat = fs.statSync(SOCKET);
 
   if (stat.isSocket()) {
-    throw th(`other server is probably running now, if not then remove >${SOCKET}< and try again`);
+    throw th(
+      `socket exist, normally it means that other broker is probably running now, if not then remove >${SOCKET}< and try again`
+    );
   }
 
-  throw th(`Socket path exists but is not a socket: ${SOCKET}`);
+  throw th(`socket path exists but is not a socket: ${SOCKET}`);
 }
 
 const history: string[] = [];
@@ -78,14 +90,16 @@ function publish(line: string) {
 
 function presentSocket(socket: net.Socket, label: string) {
   console.log(
-    `${label} dst:${socket.destroyed} con:${socket.connecting} rd:${socket.bytesRead} wr:${socket.bytesWritten} r:${socket.readable} w:${socket.writable}`
+    `${label} ${String(clients.size).padStart(4, " ")} dst:${socket.destroyed} con:${socket.connecting} rd:${
+      socket.bytesRead
+    } wr:${socket.bytesWritten} r:${socket.readable} w:${socket.writable}`
   );
 }
 
 const server = net.createServer((socket) => {
-  presentSocket(socket, "in ");
-
   clients.add(socket);
+
+  presentSocket(socket, "in ");
 
   // replay history
   for (const event of history) {
@@ -101,8 +115,8 @@ const server = net.createServer((socket) => {
   });
 
   socket.on("close", () => {
-    presentSocket(socket, "out");
     clients.delete(socket);
+    presentSocket(socket, "out");
   });
 
   socket.on("error", () => {
@@ -113,7 +127,7 @@ const server = net.createServer((socket) => {
 // this is where we create a socket
 // this point requires nothing to be under the path ${SOCKET} but directory have to exist
 server.listen(SOCKET, () => {
-  console.log(`socket created: ${SOCKET} (pid: ${process.pid})`);
+  log(`socket created: ${SOCKET} (pid: ${process.pid})`);
 
   if (process.stdin.isTTY) {
     const rl = readline.createInterface({
@@ -121,7 +135,7 @@ server.listen(SOCKET, () => {
       output: process.stdout,
     });
 
-    console.log("interactive mode enabled");
+    log(`interactive mode enabled`);
 
     rl.on("line", (line) => {
       publish(line);
@@ -136,7 +150,7 @@ process.on("SIGINT", () => shutdown("SIGINT"));
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 
 function shutdown(signal: string) {
-  console.log(`shutting down (${signal})`);
+  log(`shutting down (${signal})`);
 
   for (const client of clients) {
     client.destroy();
