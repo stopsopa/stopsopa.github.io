@@ -9,7 +9,13 @@ import path from "path";
 
 // const relativeFilename = filenameRelative(import.meta.url);
 
-const log = (...args: any) => console.log("transpile.ts:", ...args);
+const cleanStdout = process.argv.includes("--clean-stdout");
+
+const log = (...args: any) => {
+  if (!cleanStdout) {
+    console.log("transpile.ts:", ...args);
+  }
+};
 
 const watch = process.argv.includes("--watch");
 
@@ -40,15 +46,17 @@ if (entryPoints.length === 0) {
 /**
  * This is specially formatted for transpile_prettier_pipe.ts
  */
-const buff = [...entryPoints];
-buff.unshift("");
-const files = buff.join("\ntranspiled ");
+if (!cleanStdout) {
+  const buff = [...entryPoints];
+  buff.unshift("");
+  const files = buff.join("\ntranspiled ");
 
-console.log(`
+  console.log(`
 
 ${files}
 
 `);
+}
 
 const options: esbuild.BuildOptions = {
   entryPoints,
@@ -69,52 +77,67 @@ const options: esbuild.BuildOptions = {
       name: "watch-reporter",
       setup(build) {
         let processedFiles = new Set<string>();
+
         build.onLoad({ filter: /\.ts$/ }, (args) => {
           processedFiles.add(path.relative(process.cwd(), args.path));
           return undefined;
         });
+
         build.onEnd((result) => {
-          if (result.errors.length > 0) return;
-          processedFiles.forEach((file) => console.log(`transpiled ${file}`));
+          if (result.errors.length > 0) {
+            if (!cleanStdout) {
+              console.error("transpile.ts: errors:", result.errors);
+            }
+
+            return;
+          }
+
+          processedFiles.forEach((file) => {
+            if (cleanStdout) {
+              console.log(file);
+            } else {
+              console.log(`transpiled ${file}`);
+            }
+          });
+
           processedFiles.clear();
         });
       },
     },
-//     {
-//    INFO: now this is done with bash/node/preamble.ts
-//    INFO: now this is done with bash/node/preamble.ts
-//    INFO: now this is done with bash/node/preamble.ts
-//    INFO: now this is done with bash/node/preamble.ts
-//    INFO: now this is done with bash/node/preamble.ts
-//    INFO: now this is done with bash/node/preamble.ts
-//       name: "transpilation-banner",
-//       setup(build) {
-//         build.onEnd(async (result) => {
-//           if (result.errors.length > 0) {
-//             return;
-//           }
+    //     {
+    //    INFO: now this is done with bash/node/preamble.ts
+    //    INFO: now this is done with bash/node/preamble.ts
+    //    INFO: now this is done with bash/node/preamble.ts
+    //    INFO: now this is done with bash/node/preamble.ts
+    //    INFO: now this is done with bash/node/preamble.ts
+    //       name: "transpilation-banner",
+    //       setup(build) {
+    //         build.onEnd(async (result) => {
+    //           if (result.errors.length > 0) {
+    //             return;
+    //           }
 
-//           await Promise.all(
-//             entryPoints.map(async (tsFile) => {
-//               const jsFile = tsFile.replace(/\.ts$/, ".js");
+    //           await Promise.all(
+    //             entryPoints.map(async (tsFile) => {
+    //               const jsFile = tsFile.replace(/\.ts$/, ".js");
 
-//               const source = await fs.readFile(jsFile, "utf8");
+    //               const source = await fs.readFile(jsFile, "utf8");
 
-//               const banner = `/** 
-//  * =================
-//  * Transpiled with ${relativeFilename}
-//  * ================= 
-//  */
-// `;
+    //               const banner = `/**
+    //  * =================
+    //  * Transpiled with ${relativeFilename}
+    //  * =================
+    //  */
+    // `;
 
-//               const updated = source.startsWith("#!") ? source.replace(/^([^\n]*\n)/, `$1${banner}`) : banner + source;
+    //               const updated = source.startsWith("#!") ? source.replace(/^([^\n]*\n)/, `$1${banner}`) : banner + source;
 
-//               await fs.writeFile(jsFile, updated);
-//             })
-//           );
-//         });
-//       },
-//     },
+    //               await fs.writeFile(jsFile, updated);
+    //             })
+    //           );
+    //         });
+    //       },
+    //     },
   ],
 };
 
@@ -124,5 +147,14 @@ if (watch) {
   await ctx.watch();
 } else {
   const result = await esbuild.build(options);
-  log(`no watch mode: DONE`);
+
+  if (result.errors.length > 0) {
+    if (!cleanStdout) {
+      console.error("transpile.ts: build failed", result.errors);
+    }
+
+    process.exitCode = 1;
+  } else {
+    log(`no watch mode: DONE`);
+  }
 }

@@ -1,39 +1,72 @@
+#!/usr/bin/env node
+
 /**
- * This script acts as a post-processor for the transpilation process.
- * It is intended to be used in a pipe, typically following `transpile.ts`.
+ * This script acts as a Prettier post-processor in a file-processing pipeline.
+ *
+ * It reads file paths from stdin and formats them using Prettier in batches.
  *
  * Workflow:
- * 1.  Listens to `stdin` for lines matching the pattern "transpiled [file].ts".
- * 2.  When a match is found, it identifies the corresponding generated ".js" file.
- * 3.  Checks if the ".js" file exists on the filesystem and adds it to a buffer.
- * 4.  Buffering & Batching:
- *     - Groups up to BATCH_SIZE (3) files to format them in a single Prettier command.
- *     - Uses a DEBOUNCE_MS (100ms) timer to flush the buffer if it doesn't fill up.
- * 5.  Formatting:
- *     - Uses `spawn` to run Prettier safely, passing files as an array of arguments
- *       (avoids issues with spaces in paths).
- * 6.  Logs:
- *     - Original stdin lines (prefixed with "stdin: ").
- *     - Successful formatting (prefixed with "frmtd: ").
- *     - Any errors or stderr output from Prettier.
  *
- * Usage example:
- * node transpile.ts --watch | node transpile_prettier_pipe.ts
+ * 1. Reads file paths line-by-line from stdin.
+ *
+ *    Example input:
+ *
+ *      bash/node/versioncheck.js
+ *      pages/index.js
+ *      styles/main.css
+ *
+ * 2. For each path:
+ *    - Checks if the file exists.
+ *    - If the file does not exist:
+ *        - normal mode: prints an error to stderr.
+ *        - --clean-stdout mode: silently ignores it.
+ *    - Existing files are passed to Prettier unchanged.
+ *
+ * 3. Buffers files and runs Prettier in batches:
+ *    - Groups up to BATCH_SIZE files into one Prettier command.
+ *    - Uses DEBOUNCE_MS to flush incomplete batches.
+ *
+ * 4. Output:
+ *
+ *    Default:
+ *      frmtd: 0001 file.js
+ *
+ *    With --clean-stdout:
+ *      file.js
+ *
+ * Usage:
+ *
+ *   node transpile_prettier_pipe.ts
+ *
+ *   node transpile_prettier_pipe.ts --clean-stdout
+ *
+ * Example pipeline:
+ *
+ *   node transpile.ts --watch \
+ *     | node transpile_prettier_pipe.ts --clean-stdout \
+ *     | node bash/node/preamble.ts transpile.preamble --stream
  */
+
 import readline from "readline";
 import { spawn } from "child_process";
 import fs from "fs";
 
+const cleanStdout = process.argv.includes("--clean-stdout");
+
 if (process.stdin.isTTY) {
   console.log(`
 Usage:
-  node transpile.ts --watch | node transpile_prettier_pipe.ts
+  node transpile_prettier_pipe.ts [--clean-stdout]
 
-Description:
-  Listen for "transpiled [file].ts" on stdin.
-  Run prettier on "[file].js".
-  Prefix stdin with "stdin: ".
-  Print "frmtd: [file].js" on success.
+Input:
+  File paths, one per line.
+
+Output:
+  Default:
+    frmtd: 0001 file.js
+
+  With --clean-stdout:
+    file.js
 `);
   process.exit(0);
 }
@@ -46,39 +79,69 @@ let counter = 0;
 let buffer: string[] = [];
 let timeout: NodeJS.Timeout | null = null;
 
+function outputFormatted(files: string[]) {
+  if (cleanStdout) {
+    files.forEach((file) => console.log(file));
+    return;
+  }
+
+  counter++;
+
+  const c = String(counter).padStart(PADDING, "0");
+
+  files.forEach((file) => {
+    console.log(`frmtd: ${c} ${file}`);
+  });
+}
+
 function flush() {
   if (timeout) {
     clearTimeout(timeout);
     timeout = null;
   }
-  if (buffer.length === 0) return;
+
+  if (buffer.length === 0) {
+    return;
+  }
 
   const files = [...buffer];
   buffer = [];
 
   const args = ["--config", "prettier.config.cjs", "--write", ...files];
+
   const proc = spawn("node_modules/.bin/prettier", args);
 
   let stderr = "";
+
   proc.stderr.on("data", (data) => {
     stderr += data.toString();
   });
 
   proc.on("error", (error) => {
-    console.error(`error: ${error.message}`);
+    console.error(`prettier: ${error.message}`);
   });
 
   proc.on("close", (code) => {
     if (code !== 0) {
-      console.error(`stderr: ${stderr}`);
+      console.error(`prettier: failed\n${stderr}`);
       return;
     }
-    counter++;
-    const c = String(counter).padStart(PADDING, "0");
-    files.forEach((f) => {
-      console.log(`frmtd: ${c} ${f}`);
-    });
+
+    outputFormatted(files);
   });
+}
+
+function scheduleFlush() {
+  if (buffer.length >= BATCH_SIZE) {
+    flush();
+    return;
+  }
+
+  if (timeout) {
+    clearTimeout(timeout);
+  }
+
+  timeout = setTimeout(flush, DEBOUNCE_MS);
 }
 
 const rl = readline.createInterface({
@@ -87,24 +150,21 @@ const rl = readline.createInterface({
 });
 
 rl.on("line", (line) => {
-  //   console.log(`stdin: ${line}`);
+  const file = line.trim();
 
-  const match = line.match(/^transpiled (.*\.ts)$/);
-  if (match) {
-    const tsFile = match[1];
-    const jsFile = tsFile.replace(/\.ts$/, ".js");
-
-    if (fs.existsSync(jsFile)) {
-      buffer.push(jsFile);
-
-      if (buffer.length >= BATCH_SIZE) {
-        flush();
-      } else {
-        if (timeout) {
-          clearTimeout(timeout);
-        }
-        timeout = setTimeout(flush, DEBOUNCE_MS);
-      }
-    }
+  if (!file) {
+    return;
   }
+
+  if (!fs.existsSync(file)) {
+    if (!cleanStdout) {
+      console.error(`prettier: file not found: ${file}`);
+    }
+
+    return;
+  }
+
+  buffer.push(file);
+
+  scheduleFlush();
 });

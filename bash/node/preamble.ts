@@ -11,7 +11,13 @@
  *
  *   /bin/bash transpile.sh transpile.ignore \
  *     | awk '{ print $2 }' \
- *     | node bash/node/preamble.ts TRANSPILATION.md
+ *     | node bash/node/preamble.ts transpile.preamble
+ *
+ * Stream mode:
+ *
+ *   /bin/bash transpile.sh transpile.ignore \
+ *     | awk '{ print $2 }' \
+ *     | node bash/node/preamble.ts transpile.preamble --clean-stdout
  *
  * Behaviour:
  *
@@ -20,15 +26,19 @@
  * - Inserts the preamble at the top of each file.
  * - Preserves shebang lines (#!...) by inserting after them.
  * - Skips files which already contain the preamble.
+ * - With --clean-stdout, stdout contains only processed file paths.
  */
 
 import fs from "node:fs/promises";
 import readline from "node:readline";
 
-const preambleFile = process.argv[2];
+const args = process.argv.slice(2);
+
+const stream = args.includes("--clean-stdout");
+const preambleFile = args.find((arg) => arg !== "--clean-stdout");
 
 if (!preambleFile) {
-  console.error("Usage: preamble.ts <preamble-file>");
+  console.error("Usage: preamble.ts <preamble-file> [--clean-stdout]");
   process.exit(1);
 }
 
@@ -61,6 +71,14 @@ function addPreamble(source: string): string {
   return `${text}${source}`;
 }
 
+function output(file: string) {
+  if (stream) {
+    console.log(file);
+  } else {
+    console.log(`preamble: ${file}`);
+  }
+}
+
 const rl = readline.createInterface({
   input: process.stdin,
   terminal: false,
@@ -79,12 +97,14 @@ for await (const line of rl) {
 
     if (updated !== source) {
       await fs.writeFile(file, updated);
-      console.log(`preamble: ${file}`);
-    } else {
-      console.log(`preamble: skipped ${file}`);
     }
+
+    output(file);
   } catch (err) {
-    console.error(`preamble: failed ${file}`, err);
+    if (!stream) {
+      console.error(`preamble: failed ${file}`, err);
+    }
+
     process.exitCode = 1;
   }
 }
