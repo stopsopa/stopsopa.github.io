@@ -59,6 +59,8 @@
         <h2>Useful commands</h2>
         <script type="editor" data-lang="sh">
 
+          docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}\t{{.Image}}"
+
           docker run --init -it -p "3000:80" nginxdemos/hello
 
           # in case of error:
