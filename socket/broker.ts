@@ -3,6 +3,14 @@
  * SOCKET=var/socket.sock node socket/broker.ts
  * NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts
  * NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts --no-interactive
+ * NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts --retention 44
+ * 
+ * NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts --extra flags  
+ *      --extra flags is not doing anything but can be used to find in ps aux
+ *
+ * Options:
+ *  --retention N : Sets maximum number of messages stored in history buffer (default: 100, min: 0).
+ *                  Passing 0 disables history retention (no replay for new subscribers).
  *
  * Lifecycle of the script:
  * - socket (as a filesystem location) shouldn't exist, it will be created on start
@@ -25,7 +33,23 @@ import readline from "node:readline";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-const RETENTION = 100;
+/**
+ * Parses --retention argument from process.argv.
+ * Minimum value allowed is 0 (disables history buffering).
+ * If invalid (negative, NaN, missing value), defaults to 100.
+ */
+function getRetentionArg(): number {
+  const index = process.argv.indexOf("--retention");
+  if (index !== -1 && index + 1 < process.argv.length) {
+    const val = Number(process.argv[index + 1]);
+    if (!Number.isNaN(val) && Number.isInteger(val) && val >= 0) {
+      return val;
+    }
+  }
+  return 100;
+}
+
+const RETENTION = getRetentionArg();
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -92,6 +116,35 @@ const history: string[] = [];
 
 const clients = new Set<net.Socket>();
 
+const idRegex = /^\d{13}_\d{5}$/;
+
+/**
+ * Parses an ID string formatted as "<segment1>_<segment2>" into numerical components.
+ * Returns null if parsing fails.
+ *
+ * @param id ID string such as "1786055195162_00001"
+ */
+function parseId(id: string | null): { seg1: number; seg2: number } | null {
+  if (!id) {
+    return null;
+  }
+  const parts = id.split("_");
+  if (parts.length !== 2) {
+    return null;
+  }
+  const seg1 = Number(parts[0]);
+  const seg2 = Number(parts[1]);
+  if (Number.isNaN(seg1) || Number.isNaN(seg2)) {
+    return null;
+  }
+  return { seg1, seg2 };
+}
+
+/**
+ * Publishes a line to connected clients and saves it to history.
+ * If the first token (up to first space) matches the nextId() format (13 digits + _ + 5 digits),
+ * it is forwarded as is without generating a new ID prefix.
+ */
 function publish(line: string) {
   line = line.trim();
 
@@ -99,7 +152,10 @@ function publish(line: string) {
     return;
   }
 
-  const lineWithId = `${nextId()} ${line}`;
+  const firstSpaceIndex = line.indexOf(" ");
+  const firstPart = firstSpaceIndex === -1 ? line : line.slice(0, firstSpaceIndex);
+
+  const lineWithId = idRegex.test(firstPart) ? line : `${nextId()} ${line}`;
 
   history.push(lineWithId);
 
@@ -130,10 +186,20 @@ const server = net.createServer((socket) => {
     socket.write(event + "\n");
   }
 
-  socket.on("data", (data) => {
-    const lines = data.toString().split("\n");
+  let buffer = "";
 
-    for (const line of lines) {
+  socket.on("data", (data) => {
+    buffer += data.toString();
+
+    while (true) {
+      const index = buffer.indexOf("\n");
+      if (index === -1) {
+        break;
+      }
+
+      const line = buffer.slice(0, index);
+      buffer = buffer.slice(index + 1);
+
       publish(line);
     }
   });

@@ -107,10 +107,7 @@ function connectSocket() {
  * Schedule reconnect using exponential backoff.
  */
 function scheduleReconnect() {
-  const delay = Math.min(
-    INITIAL_BACKOFF_MS * Math.pow(BACKOFF_FACTOR, attempt),
-    MAX_BACKOFF_MS
-  );
+  const delay = Math.min(INITIAL_BACKOFF_MS * Math.pow(BACKOFF_FACTOR, attempt), MAX_BACKOFF_MS);
   attempt++;
   console.log(`reconnecting in ${delay} ms (attempt ${attempt})...`);
   addEvent(`[status] reconnecting in ${delay} ms (attempt ${attempt})...`);
