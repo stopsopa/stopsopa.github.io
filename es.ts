@@ -79,6 +79,8 @@ const args = process.argv.slice(2);
 const PRODUCE_GITIGNORE = args.includes("--produce-gitignore");
 const UPDATE_GITIGNORE = args.includes("--update");
 
+const FORWARD_STDIN_TO_STDOUT = args.includes("--forward-stdin-to-stdout");
+
 if (UPDATE_GITIGNORE && !PRODUCE_GITIGNORE) {
   throw th("--update flag requires --produce-gitignore flag");
 }
@@ -109,7 +111,7 @@ if (PRODUCE_GITIGNORE) {
   endMarker = `# ${relativeScriptPath} ^^^ don't remove`;
 }
 
-if (!PRODUCE_GITIGNORE) {
+if (!PRODUCE_GITIGNORE && !FORWARD_STDIN_TO_STDOUT) {
   console.log(`ES_PARALLEL: ${ES_PARALLEL}`);
 }
 
@@ -153,6 +155,7 @@ async function stripTypes(filePath: string): Promise<{ outPath: string | undefin
       format: CONFIG.format,
       platform: "node",
       legalComments: "inline",
+      ...(FORWARD_STDIN_TO_STDOUT ? { logLevel: "silent" } : {}),
     };
 
     // 2. If 'setup' is provided, it replaces the base options
@@ -179,6 +182,7 @@ async function stripTypes(filePath: string): Promise<{ outPath: string | undefin
       ...mergedOptions,
       entryPoints: [filePath],
       write: false,
+      ...(FORWARD_STDIN_TO_STDOUT || cliarguments?.includes("--forward-stdin-to-stdout") ? { logLevel: "silent" } : {}),
       plugins: [
         ...(mergedOptions.plugins || []),
         {
@@ -322,6 +326,10 @@ Description:
     Only works with --produce-gitignore. Automatically updates the block 
     in .gitignore between '# es.ts vvv' and '# es.ts ^^^' markers.
 
+  --forward-stdin-to-stdout
+    Only outputs the paths of generated/transpiled output files directly to stdout
+    (one per line) for chaining in Unix pipelines.
+
   Per-file configuration:
     Add this block to a .ts file to override default behavior:
 /** @es.ts 
@@ -385,16 +393,19 @@ for await (const line of rl) {
         if (result && result.outPath) {
           const { outPath, config } = result;
           const buildMode = config.mode || (CONFIG.bundle ? "bundle" : "transform");
-          if (!PRODUCE_GITIGNORE) {
-            console.log(`${buildMode === "bundle" ? "Bundled" : "Transpiled"} (esbuild): ${file} -> ${outPath}`);
-          }
-
           const localArgs = Array.isArray(config.cliarguments) ? config.cliarguments : args;
 
           const localProduceGitignore = localArgs.includes("--produce-gitignore");
           const localUpdateGitignore = localArgs.includes("--update");
+          const localForwardStdinToStdout = localArgs.includes("--forward-stdin-to-stdout");
 
-          if (localProduceGitignore) {
+          if (localForwardStdinToStdout) {
+            console.log(relative(process.cwd(), outPath));
+          } else if (!localProduceGitignore) {
+            console.log(`${buildMode === "bundle" ? "Bundled" : "Transpiled"} (esbuild): ${file} -> ${outPath}`);
+          }
+
+          if (localProduceGitignore && gitRoot) {
             const relPath = relative(gitRoot, outPath);
             gitignorePaths.push(relPath);
             if (localUpdateGitignore) {
@@ -427,7 +438,7 @@ if (PRODUCE_GITIGNORE && gitignorePaths.length > 0) {
   console.log(content);
 }
 
-if (processedCount === 0 && !PRODUCE_GITIGNORE) {
+if (processedCount === 0 && !PRODUCE_GITIGNORE && !FORWARD_STDIN_TO_STDOUT) {
   showHelp();
 }
 

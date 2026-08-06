@@ -12,21 +12,21 @@ It has not bundling capabilities, just transpiles flat.
 
 Good for watch mode. NOTE: if you need good watch mode and simple transpilation stick to this one.
 
-It finds new *.ts files automatically.
+It finds new \*.ts files automatically.
 
 # es.sh
 
 [es.ignore](es.ignore)
 
 NOTE: use this one when you need more granular control over esbuild for given file (including bundling).
-      It is not so great in watch mode - but that was done pretty well too with some clever tricks.
+It is not so great in watch mode - but that was done pretty well too with some clever tricks.
 
 More flexible which can switch between transpiling and bundling for special cases
 but is not so great to achieve watch mode alone
 
 WARNING: YOU HAVE TO UNCOMMENT IN - [es.ignore](es.ignore) IF YOU PREFER [es.sh](es.sh) (esbuild) - [transpile.ignore](transpile.ignore) IF YOU PREFER [transpile.sh](transpile.sh) (typescript)
 TEST:
-/bin/bash es.sh <---- this one is not part of xx start, only build.sh  ref:89uh980uvi
+/bin/bash es.sh <---- this one is not part of xx start, only build.sh ref:89uh980uvi
 /bin/bash transpile.sh transpile.ignore
 
 See

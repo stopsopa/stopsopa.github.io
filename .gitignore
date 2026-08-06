@@ -34,12 +34,12 @@ pages/coverage
 *.jasmine-esbuild.js
 /.playwright-mcp/
 
-# es.ts vvv don't remove
+# es_ts vvv
 es.mjs
 pages/bookmarklets/gmail/extract.js
 pages/node/semaphore/Semaphore.js
 pages/services/xor.js
-# es.ts ^^^ don't remove
+# es_ts ^^^
 
 # transpile_sh vvv
 bash/env_repack.js
@@ -52,6 +52,7 @@ bash/node/json/sortObjectNested.js
 bash/node/json/unwrap.js
 bash/node/preamble.js
 bash/node/versioncheck.js
+es.mjs
 libs/drag_v2.js
 libs/drag.js
 pages/bookmarklets/gmail/extract.js
@@ -66,6 +67,8 @@ pages/html/input/index.js
 pages/js/events/createSubscriber.js
 pages/js/events/createSubscriber.unit.js
 pages/node/levenshtein/levenshtein.js
+pages/node/semaphore/Semaphore.js
+pages/services/xor.js
 root.js
 tests/url/001_url.unit.js
 tests/url/toolsURLSearchParams.js

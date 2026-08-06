@@ -16,6 +16,18 @@ if [ ! -f "${1}" ]; then
     exit 1
 fi
 
+# There is one confusion here
+# because transpile.ts transforms *.ts files into *.js files
+# but I've designed it to return *.js but I think it is a mistake
+# 
+# I did that becasue I wanted to process output *.js files with 
+# preamble.ts but I forgot that first I will 
+# have to prettify *.ts file
+# 
+# I think good solution will be to create another 
+# script which will generate *.js from *.ts and other way around
+# but actually that could be done in oneliner
+
 find . -type d \( \
        -name node_modules \
     -o -name .git \
@@ -28,6 +40,8 @@ f -name "*.ts" \
 -print \
 | node gitignore.js "${1}" \
 | /bin/bash ts.sh transpile.ts --forward-stdin-to-stdout \
+| IN=js OUT=ts /bin/bash bash/file/extswap.sh \
 | node transpile_prettier_pipe.ts --forward-stdin-to-stdout \
+| IN=ts OUT=js /bin/bash bash/file/extswap.sh \
 | node bash/node/preamble.ts transpile.preamble --forward-stdin-to-stdout \
 | node bash/git/addToGitignore.ts .gitignore transpile_sh

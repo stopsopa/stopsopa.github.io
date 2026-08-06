@@ -8,7 +8,7 @@
 
 set -e 
 
-
+export NODE_OPTIONS=
 
 find . -type d \( \
        -name node_modules \
@@ -21,5 +21,7 @@ find . -type d \( \
 -o -type f \
 \( -name '*.ts' -o -name "*.node.js" -o -name "*.node.cjs" -o -name "*.node.mjs" \) \
 -print \
-| NODE_OPTIONS="" node gitignore.js es.ignore \
-| DEBUG=true /bin/bash ts.sh es.ts --produce-gitignore --update
+| node gitignore.js es.ignore \
+| node es.ts --forward-stdin-to-stdout \
+| node bash/node/preamble.ts es.preamble --forward-stdin-to-stdout \
+| node bash/git/addToGitignore.ts .gitignore transpile_sh
