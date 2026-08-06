@@ -17,7 +17,7 @@
  *
  *   /bin/bash transpile.sh transpile.ignore \
  *     | awk '{ print $2 }' \
- *     | node bash/node/preamble.ts transpile.preamble --clean-stdout
+ *     | node bash/node/preamble.ts transpile.preamble --forward-stdin-to-stdout
  *
  * Behaviour:
  *
@@ -26,7 +26,7 @@
  * - Inserts the preamble at the top of each file.
  * - Preserves shebang lines (#!...) by inserting after them.
  * - Skips files which already contain the preamble.
- * - With --clean-stdout, stdout contains only processed file paths.
+ * - With --forward-stdin-to-stdout, stdout contains only processed file paths.
  */
 
 import fs from "node:fs/promises";
@@ -34,11 +34,11 @@ import readline from "node:readline";
 
 const args = process.argv.slice(2);
 
-const stream = args.includes("--clean-stdout");
-const preambleFile = args.find((arg) => arg !== "--clean-stdout");
+const stream = args.includes("--forward-stdin-to-stdout");
+const preambleFile = args.find((arg) => arg !== "--forward-stdin-to-stdout");
 
 if (!preambleFile) {
-  console.error("Usage: preamble.ts <preamble-file> [--clean-stdout]");
+  console.error("Usage: preamble.ts <preamble-file> [--forward-stdin-to-stdout]");
   process.exit(1);
 }
 

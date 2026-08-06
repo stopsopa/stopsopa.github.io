@@ -19,7 +19,7 @@
  *    - Checks if the file exists.
  *    - If the file does not exist:
  *        - normal mode: prints an error to stderr.
- *        - --clean-stdout mode: silently ignores it.
+ *        - --forward-stdin-to-stdout mode: silently ignores it.
  *    - Existing files are passed to Prettier unchanged.
  *
  * 3. Buffers files and runs Prettier in batches:
@@ -31,19 +31,19 @@
  *    Default:
  *      frmtd: 0001 file.js
  *
- *    With --clean-stdout:
+ *    With --forward-stdin-to-stdout:
  *      file.js
  *
  * Usage:
  *
  *   node transpile_prettier_pipe.ts
  *
- *   node transpile_prettier_pipe.ts --clean-stdout
+ *   node transpile_prettier_pipe.ts --forward-stdin-to-stdout
  *
  * Example pipeline:
  *
  *   node transpile.ts --watch \
- *     | node transpile_prettier_pipe.ts --clean-stdout \
+ *     | node transpile_prettier_pipe.ts --forward-stdin-to-stdout \
  *     | node bash/node/preamble.ts transpile.preamble --stream
  */
 
@@ -51,12 +51,12 @@ import readline from "readline";
 import { spawn } from "child_process";
 import fs from "fs";
 
-const cleanStdout = process.argv.includes("--clean-stdout");
+const cleanStdout = process.argv.includes("--forward-stdin-to-stdout");
 
 if (process.stdin.isTTY) {
   console.log(`
 Usage:
-  node transpile_prettier_pipe.ts [--clean-stdout]
+  node transpile_prettier_pipe.ts [--forward-stdin-to-stdout]
 
 Input:
   File paths, one per line.
@@ -65,7 +65,7 @@ Output:
   Default:
     frmtd: 0001 file.js
 
-  With --clean-stdout:
+  With --forward-stdin-to-stdout:
     file.js
 `);
   process.exit(0);

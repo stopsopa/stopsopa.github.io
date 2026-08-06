@@ -27,7 +27,7 @@ find . -type d \( \
 f -name "*.ts" \
 -print \
 | node gitignore.js "${1}" \
-| /bin/bash ts.sh transpile.ts --clean-stdout \
-| node transpile_prettier_pipe.ts --clean-stdout \
-| node bash/node/preamble.ts transpile.preamble --clean-stdout \
+| /bin/bash ts.sh transpile.ts --forward-stdin-to-stdout \
+| node transpile_prettier_pipe.ts --forward-stdin-to-stdout \
+| node bash/node/preamble.ts transpile.preamble --forward-stdin-to-stdout \
 | node bash/git/addToGitignore.ts .gitignore transpile_sh

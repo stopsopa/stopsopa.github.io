@@ -9,7 +9,7 @@ import path from "path";
 
 // const relativeFilename = filenameRelative(import.meta.url);
 
-const cleanStdout = process.argv.includes("--clean-stdout");
+const cleanStdout = process.argv.includes("--forward-stdin-to-stdout");
 
 const log = (...args: any) => {
   if (!cleanStdout) {
