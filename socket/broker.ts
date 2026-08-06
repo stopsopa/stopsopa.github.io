@@ -2,6 +2,7 @@
  *
  * SOCKET=var/socket.sock node socket/broker.ts
  * NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts
+ * NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts --no-interactive
  *
  * Lifecycle of the script:
  * - socket (as a filesystem location) shouldn't exist, it will be created on start
@@ -9,6 +10,8 @@
  * - killing it with -9 is possible, but socket will stay and it must be removed manually
  *   this serves as an exclusion mechanism to prevent two processes attempting to bind to the same socket file at once
  *
+ * if --no-interactive not given it will try to detect if terminal is interactive and 
+ * it will try to allow you to type messages from terminal
  *
  * diagnostics:
  * check if socket is alive
@@ -129,13 +132,15 @@ const server = net.createServer((socket) => {
 server.listen(SOCKET, () => {
   log(`socket created: ${SOCKET} (pid: ${process.pid})`);
 
-  if (process.stdin.isTTY) {
+  const noInteractive = process.argv.includes("--no-interactive");
+
+  if (!noInteractive && process.stdin.isTTY) {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
     });
 
-    log(`interactive mode enabled`);
+    log(`\x1b[32minteractive mode enabled\x1b[0m`);
 
     rl.on("line", (line) => {
       publish(line);
