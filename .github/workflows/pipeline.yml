@@ -159,6 +159,7 @@ jobs:
 
   # Deployment job
   github-pages:
+    timeout-minutes: 1
     # NOTE: In case of error:
     # github-pages
     # Branch "main" is not allowed to deploy to github-pages due to environment protection rules.
