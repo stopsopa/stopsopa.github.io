@@ -93,10 +93,12 @@ const options: esbuild.BuildOptions = {
           }
 
           processedFiles.forEach((file) => {
+            const outputFile = file.replace(/\.ts$/, ".js");
+
             if (cleanStdout) {
-              console.log(file);
+              console.log(outputFile);
             } else {
-              console.log(`transpiled ${file}`);
+              console.log(`transpiled ${outputFile}`);
             }
           });
 
