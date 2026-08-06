@@ -75,8 +75,14 @@ function publish(line: string) {
   }
 }
 
+function presentSocket(socket: net.Socket, label: string) {
+  console.log(
+    `${label} dst:${socket.destroyed} con:${socket.connecting} rd:${socket.bytesRead} wr:${socket.bytesWritten} r:${socket.readable} w:${socket.writable}`
+  );
+}
+
 const server = net.createServer((socket) => {
-  console.log("client connected");
+  presentSocket(socket, "in ");
 
   clients.add(socket);
 
@@ -94,6 +100,7 @@ const server = net.createServer((socket) => {
   });
 
   socket.on("close", () => {
+    presentSocket(socket, "out");
     clients.delete(socket);
   });
 
