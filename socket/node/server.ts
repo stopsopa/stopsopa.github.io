@@ -16,8 +16,7 @@ if (!SOCKET) {
 }
 
 if (!fs.existsSync(SOCKET)) {
-  console.error(`Socket does not exist: ${SOCKET}`);
-  process.exit(1);
+  console.warn(`Socket does not exist initially: ${SOCKET}. Will attempt to connect continuously.`);
 }
 
 const clients = new Set<http.ServerResponse>();
@@ -45,39 +44,91 @@ function addEvent(line: string) {
   }
 }
 
-const socket = net.createConnection(SOCKET);
+let socket: net.Socket | null = null;
+let reconnectTimer: NodeJS.Timeout | null = null;
+let attempt = 0;
+const INITIAL_BACKOFF_MS = 1000;
+const MAX_BACKOFF_MS = 30000;
+const BACKOFF_FACTOR = 2;
 
-socket.on("connect", () => {
-  console.log(`connected to ${SOCKET}`);
-});
-
-socket.on("error", (error) => {
-  console.error("socket error:", error.message);
-  process.exit(1);
-});
-
-let buffer = "";
-
-socket.on("data", (chunk) => {
-  buffer += chunk.toString();
-
-  while (true) {
-    const index = buffer.indexOf("\n");
-
-    if (index === -1) {
-      break;
-    }
-
-    const line = buffer.slice(0, index);
-
-    buffer = buffer.slice(index + 1);
-
-    addEvent(line);
+/**
+ * Connect to Unix socket with exponential backoff and status reporting to SSE clients.
+ */
+function connectSocket() {
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
   }
-});
+
+  addEvent(`[status] connecting to ${SOCKET} (attempt ${attempt + 1})...`);
+
+  const s = net.createConnection(SOCKET!);
+  socket = s;
+
+  s.on("connect", () => {
+    attempt = 0;
+    console.log(`connected to ${SOCKET}`);
+    addEvent(`[status] connected to ${SOCKET}`);
+  });
+
+  let buffer = "";
+
+  s.on("data", (chunk) => {
+    buffer += chunk.toString();
+
+    while (true) {
+      const index = buffer.indexOf("\n");
+
+      if (index === -1) {
+        break;
+      }
+
+      const line = buffer.slice(0, index);
+      buffer = buffer.slice(index + 1);
+
+      addEvent(line);
+    }
+  });
+
+  s.on("error", (error) => {
+    console.error("socket error:", error.message);
+    addEvent(`[status] socket error: ${error.message}`);
+  });
+
+  s.on("close", () => {
+    console.log(`socket connection closed to ${SOCKET}`);
+    addEvent(`[status] socket connection closed to ${SOCKET}`);
+    socket = null;
+    scheduleReconnect();
+  });
+}
+
+/**
+ * Schedule reconnect using exponential backoff.
+ */
+function scheduleReconnect() {
+  const delay = Math.min(
+    INITIAL_BACKOFF_MS * Math.pow(BACKOFF_FACTOR, attempt),
+    MAX_BACKOFF_MS
+  );
+  attempt++;
+  console.log(`reconnecting in ${delay} ms (attempt ${attempt})...`);
+  addEvent(`[status] reconnecting in ${delay} ms (attempt ${attempt})...`);
+
+  reconnectTimer = setTimeout(() => {
+    connectSocket();
+  }, delay);
+}
+
+connectSocket();
 
 function sendEvent(line: string) {
-  socket.write(line.trim() + "\n");
+  if (socket && !socket.destroyed) {
+    socket.write(line.trim() + "\n");
+  } else {
+    console.error("Cannot send event: socket is not connected");
+    addEvent(`[status] error: cannot send event, socket is not connected`);
+  }
 }
 
 const html = `
@@ -126,6 +177,29 @@ button {
     padding: 4px;
     border-bottom: 1px solid #eee;
 }
+
+.status-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.disconnected {
+    background-color: #ff4d4f;
+    box-shadow: 0 0 6px #ff4d4f;
+}
+
+.status-dot.connected {
+    background-color: #52c41a;
+    box-shadow: 0 0 6px #52c41a;
+}
 </style>
 
 </head>
@@ -154,7 +228,10 @@ Send
 
 <div class="panel">
 
-<h3>Events</h3>
+<div class="status-container">
+    <h3>Events</h3>
+    <span id="status-dot" class="status-dot disconnected" title="Socket status"></span>
+</div>
 
 <div id="log"></div>
 
@@ -165,7 +242,20 @@ Send
 
 const input = document.getElementById("input");
 const log = document.getElementById("log");
+const statusDot = document.getElementById("status-dot");
 
+function updateStatus(value) {
+    if (value.startsWith("[status] connected to")) {
+        statusDot.className = "status-dot connected";
+    } else if (
+        value.startsWith("[status] connecting to") ||
+        value.startsWith("[status] socket error:") ||
+        value.startsWith("[status] socket connection closed") ||
+        value.startsWith("[status] reconnecting in")
+    ) {
+        statusDot.className = "status-dot disconnected";
+    }
+}
 
 function addEvent(value) {
     const div = document.createElement("div");
@@ -181,7 +271,9 @@ const source = new EventSource("/events");
 
 
 source.onmessage = event => {
-    addEvent(JSON.parse(event.data));
+    const data = JSON.parse(event.data);
+    updateStatus(data);
+    addEvent(data);
 };
 
 
