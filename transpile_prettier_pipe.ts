@@ -18,7 +18,7 @@
  *     - Any errors or stderr output from Prettier.
  *
  * Usage example:
- * node transpile.ts --watch | node transpile_pipe.ts
+ * node transpile.ts --watch | node transpile_prettier_pipe.ts
  */
 import readline from "readline";
 import { spawn } from "child_process";
@@ -27,7 +27,7 @@ import fs from "fs";
 if (process.stdin.isTTY) {
   console.log(`
 Usage:
-  node transpile.ts --watch | node transpile_pipe.ts
+  node transpile.ts --watch | node transpile_prettier_pipe.ts
 
 Description:
   Listen for "transpiled [file].ts" on stdin.

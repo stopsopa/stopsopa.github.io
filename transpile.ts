@@ -34,7 +34,7 @@ if (entryPoints.length === 0) {
 }
 
 /**
- * This is specially formatted for transpile_pipe.ts
+ * This is specially formatted for transpile_prettier_pipe.ts
  */
 const buff = [...entryPoints];
 buff.unshift("");

@@ -20,7 +20,7 @@ find . -type d \( \
 f -name "*.ts" \
 -print \
 | node gitignore.js transpile.ignore \
-| /bin/bash ts.sh transpile.ts "$@" | node transpile_pipe.ts
+| /bin/bash ts.sh transpile.ts "$@" | node transpile_prettier_pipe.ts
 
 
 # | /bin/bash ts.sh transpile.ts "$@" 

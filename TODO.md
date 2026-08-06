@@ -1,5 +1,12 @@
 https://firebase.google.com/docs/auth/web/auth-state-persistence#web-version-8
 
+- [ ] in TRANSPILATION.md it is mentioned that es.sh doesn't have --watch mode and is not part of xx dev
+      it would be nice at some point to implement that  ref:89uh980uvi
+- [ ]
+- [ ] starting entire xx dev became slow it would be cool to find bottleneck and speed things up
+- [ ]
+- [ ]
+
 - [ ] esbuild-node.js
       esbuild-node.js: >./pages/bash/xx/xx.lock.gits-update-config.node.cjs
       ./pages/bash/xx/xx.node.cjs<
