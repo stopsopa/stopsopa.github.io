@@ -131,4 +131,6 @@ time /bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write .
 # I'm deliberately suppressing error to continue if above is not provided for local dev environment
 time /bin/bash .github/clicksecure.sh
 
-time /bin/bash .github/injectServiceWorker.sh
+if [ -n "${CI}"} ]; then
+  time /bin/bash .github/injectServiceWorker.sh
+fi
