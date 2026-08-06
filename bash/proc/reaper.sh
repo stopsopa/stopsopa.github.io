@@ -24,7 +24,6 @@
 # 
 #   ps aux | grep -v grep | grep xxxxtest | REAPER_NOT_FILTER_OUT_GREP=1 /bin/bash bash/proc/reaper.sh
 # 
-# 
 
 echo -e "  script reaper.sh: "
 

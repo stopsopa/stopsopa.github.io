@@ -4,6 +4,10 @@
 import * as esbuild from "esbuild";
 import readline from "readline";
 import path from "path";
+// import fs from "node:fs/promises";
+// import { filenameRelative } from "./root.ts";
+
+// const relativeFilename = filenameRelative(import.meta.url);
 
 const log = (...args: any) => console.log("transpile.ts:", ...args);
 
@@ -76,6 +80,41 @@ const options: esbuild.BuildOptions = {
         });
       },
     },
+//     {
+//    INFO: now this is done with bash/node/preamble.ts
+//    INFO: now this is done with bash/node/preamble.ts
+//    INFO: now this is done with bash/node/preamble.ts
+//    INFO: now this is done with bash/node/preamble.ts
+//    INFO: now this is done with bash/node/preamble.ts
+//    INFO: now this is done with bash/node/preamble.ts
+//       name: "transpilation-banner",
+//       setup(build) {
+//         build.onEnd(async (result) => {
+//           if (result.errors.length > 0) {
+//             return;
+//           }
+
+//           await Promise.all(
+//             entryPoints.map(async (tsFile) => {
+//               const jsFile = tsFile.replace(/\.ts$/, ".js");
+
+//               const source = await fs.readFile(jsFile, "utf8");
+
+//               const banner = `/** 
+//  * =================
+//  * Transpiled with ${relativeFilename}
+//  * ================= 
+//  */
+// `;
+
+//               const updated = source.startsWith("#!") ? source.replace(/^([^\n]*\n)/, `$1${banner}`) : banner + source;
+
+//               await fs.writeFile(jsFile, updated);
+//             })
+//           );
+//         });
+//       },
+//     },
   ],
 };
 

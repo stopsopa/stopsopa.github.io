@@ -9,6 +9,13 @@
 # 
 export NODE_OPTIONS=""
 
+if [ ! -f "${1}" ]; then
+
+    # normally ${1} is transpile.ignore
+    echo "${0} error: file ${1} doesn't exist"
+    exit 1
+fi
+
 find . -type d \( \
        -name node_modules \
     -o -name .git \
@@ -19,8 +26,8 @@ find . -type d \( \
 -o -type \
 f -name "*.ts" \
 -print \
-| node gitignore.js transpile.ignore \
-| /bin/bash ts.sh transpile.ts "$@" | node transpile_prettier_pipe.ts
-
-
-# | /bin/bash ts.sh transpile.ts "$@" 
+| node gitignore.js "${1}" \
+| /bin/bash ts.sh transpile.ts \
+| node transpile_prettier_pipe.ts \
+| awk '{ print $3 }' \
+| node bash/node/preamble.ts transpile.preamble

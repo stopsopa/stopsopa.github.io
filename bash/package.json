@@ -1,5 +1,5 @@
 {
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "dotenv-up": "^1.0.30",
     "mkdirp": "^1.0.4"
