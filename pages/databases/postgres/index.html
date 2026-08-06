@@ -32,6 +32,15 @@
 
             select * from generate_series(1,1000) as x
               # generate artificial fake rows
+
+            #insert and return in one go
+              https://youtu.be/_0A2BnRYVCo?t=68
+              -- and if you want to modify it in the same transaction
+              INSERT INTO users (email, name)
+              VALUES ('alice@example.com', 'Alice')
+              ON CONFLICT (email) DO SELECT FOR UPDATE
+              RETURNING id, name;
+              
           </script>
         </div>
       </div>
