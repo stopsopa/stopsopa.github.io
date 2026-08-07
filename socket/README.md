@@ -1,50 +1,36 @@
 
-ls -la var/socket.sock
+# how to use tools in this directory
 
-```
-Won't really tell you if socket is active, it is just filesystem name pointing to kernel socket endpoint
+```bash
 
-It tells you:
+# start socket broker - you can add more options here:
 
-    the filesystem entry exists
-    it is a Unix socket inode
+NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts
+  # this is btw interactive - you can pass some messages in the terminal
 
-It does not tell you:
+# that is most important part - first you have to have broker working, 
+# after that you can interact with that data bus you've just created  
 
-    whether a process is listening
-    whether clients can connect
-    whether the owning process is alive
+# you can run server listening to that socket in another terminal
+NODE_OPTIONS= HOST=0.0.0.0 PORT=8080 SOCKET=var/socket.sock node socket/node/server.ts
 
-```
+# we can also subscribe in another terminal
+NODE_OPTIONS= SOCKET=var/socket.sock node socket/node/subscribe.ts
+    # or demo as a library in another terminal
+    NODE_OPTIONS= SOCKET=var/socket.sock  /bin/bash socket/bash/subscribeDemo.sh
 
-how to check if it is active:
+# then we can send some events from the server and using:
 
-```
-# try to connect to it
+printf "
+first line
+\e[32msecond\e[0m line
+\e[33mthird\e[0m line
+\e[35mfourth\e[0m line
+\e[31mfifth\e[0m line
+last line
+" | perl -pe "system 'sleep .03'" | SOCKET=var/socket.sock /bin/bash socket/bash/pipe.sh
 
-nc -U var/socket.sock
 
-# if immediately exit 1 then it is inactive
-
-```
-
-# fuser
-
-```
-$ fuser var/socket.sock      (macOS usually does not have this.)
-var/socket.sock: 20670
-
-# means PID 20670 has it open. 
-
-$ ps aux | grep 20670
-szdz             20670   0.0  0.2 444533392  70176 s022  S+    8:59p.m.   0:00.13 /Users/.../node socket/broker.ts
 
 ```
 
-# netstat
-
-```
-$ netstat -an | grep socket.sock
-92df33a00bc41243 stream      0      0                0 3cbc532b6148f27d                0                0 var/socket.sock
-da6a0f0b984d6282 stream      0      0 cb1c1da6e821b5cd                0                0                0 var/socket.sock
-```
