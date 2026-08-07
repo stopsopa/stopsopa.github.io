@@ -8,7 +8,7 @@
 # 
 
 function quote {
-  echo "$1" | sed -E 's/\"/\\"/g'
+  printf '%s\n' "$1" | sed 's/"/\\"/g'
 }
 
 PARAMS=""

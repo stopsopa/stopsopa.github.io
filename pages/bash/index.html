@@ -3754,7 +3754,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           echo "args: '$@'"
 
           function quote {
-            echo "$1" | sed -E 's/\"/\\"/g'
+            printf '%s\n' "$1" | sed 's/"/\\"/g'
           }
 
           _CLEANOLD="0";

@@ -41,7 +41,7 @@ source "${ENV}"
 export $(cut -d= -f1 "${ENV}" | grep -v -E "^#" | tr "\n" " ")
 
 function quote {
-  echo "$1" | sed -E 's/\"/\\"/g'
+  printf '%s\n' "$1" | sed 's/"/\\"/g'
 }
 
 # preparing arguments passed to this script for evaluation

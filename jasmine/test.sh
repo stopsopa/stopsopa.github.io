@@ -101,7 +101,7 @@ FIND='-name "*.jasmine.js" -o -name "*.jasmine.unit.js"'
 TEST=""
 _EVAL=""
 function quote {
-  echo "$1" | sed -E 's/\"/\\"/g'
+  printf '%s\n' "$1" | sed 's/"/\\"/g'
 }
 function collect {
   if [ "$1" = "&&" ]; then

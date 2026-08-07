@@ -141,7 +141,7 @@ fi
 trap cleanup EXIT;
 
 function quote {
-  echo "$1" | sed -E 's/\"/\\"/g'
+  printf '%s\n' "$1" | sed 's/"/\\"/g'
 }
 
 if [ "${SWAPQUIET}" != "1" ]; then

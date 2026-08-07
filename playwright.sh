@@ -75,7 +75,7 @@ REVERSE=$(tput rev 2>/dev/null || echo "")
 RESET=$(tput sgr0 2>/dev/null || echo "")
 
 function quote {
-  echo "$1" | sed -E 's/\"/\\"/g'
+  printf '%s\n' "$1" | sed 's/"/\\"/g'
 }
 
 function nodeExtractVersion() {
