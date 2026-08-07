@@ -46,28 +46,17 @@
 //                           --regex '/^(open|close)$/i'
 //                           --regex "/^(transpile|esbuild_sh)\$/i"
 // 
+// This module can also be imported as a library - see createSubscriber export.
+// When run directly it replicates the same behaviour as before.
+//
 
 import net from "node:net";
-
-// Read socket path from environment variable
-const SOCKET = process.env.SOCKET;
-
-if (!SOCKET) {
-  console.error("SOCKET env variable is required");
-  process.exit(1);
-}
-
-// Exponential backoff configuration
-let reconnectTimer: NodeJS.Timeout | null = null;
-let attempt = 0;
-const INITIAL_BACKOFF_MS = 1000;
-const MAX_BACKOFF_MS = 30000;
-const BACKOFF_FACTOR = 2;
+import { fileURLToPath } from "node:url";
 
 /**
  * Creates an ID generator matching the broker format (13 digits + _ + 5 digits).
  */
-function createIdGenerator() {
+export function createIdGenerator() {
   let lastValue = 0;
   let counter = 0;
 
@@ -84,11 +73,7 @@ function createIdGenerator() {
   };
 }
 
-const nextId = createIdGenerator();
-
-const isFresh = process.argv.includes("--fresh") || process.argv.includes("--from-now");
-
-const stringToRegex = (function () {
+export const stringToRegex = (function () {
   /**
    * @param {string} msg
    * @returns {Error}
@@ -118,7 +103,7 @@ const stringToRegex = (function () {
 /**
  * Parses --regex CLI argument into a RegExp instance using stringToRegex.
  */
-function getRegexArg(): RegExp | null {
+export function getRegexArg(): RegExp | null {
   const index = process.argv.indexOf("--regex");
   if (index !== -1 && index + 1 < process.argv.length) {
     const rawPattern = process.argv[index + 1].trim();
@@ -136,22 +121,13 @@ function getRegexArg(): RegExp | null {
   return null;
 }
 
-const filterRegex = getRegexArg();
-
-/**
- * Stores the last processed message ID segment (e.g., "1786055195162_00001").
- * Keeps track across socket reconnects to prevent duplicate or out-of-order logs from being output to stdout.
- * If --fresh flag is passed, initialize memoryId with current timestamp ID to ignore past history.
- */
-let memoryId: string | null = isFresh ? nextId() : null;
-
 /**
  * Parses an ID string formatted as "<segment1>_<segment2>" into numerical components.
  * Returns null if parsing fails.
  * 
  * @param id ID string such as "1786055195162_00001"
  */
-function parseId(id: string | null): { seg1: number; seg2: number } | null {
+export function parseId(id: string | null): { seg1: number; seg2: number } | null {
   if (!id) {
     return null;
   }
@@ -179,7 +155,7 @@ function parseId(id: string | null): { seg1: number; seg2: number } | null {
  * @param incomingId ID extracted from incoming message
  * @param referenceId Reference ID to compare against (e.g. memoryId or last seen ID)
  */
-function isNewer(incomingId: string | null, referenceId: string | null): boolean {
+export function isNewer(incomingId: string | null, referenceId: string | null): boolean {
   if (!incomingId) {
     return false;
   }
@@ -206,94 +182,183 @@ function isNewer(incomingId: string | null, referenceId: string | null): boolean
   return false;
 }
 
-/**
- * Processes incoming socket line:
- * 1. Extracts first segment (unique ID) and verifies if it is newer than local memoryId.
- * 2. Updates local memoryId to keep track of state across socket reconnects.
- * 3. Extracts remaining payload (event + data) and evaluates against filterRegex if present.
- * 4. Prints original line to stdout only if it is newer AND matches the regex filter.
- * 
- * @param line Single log line received from socket
- */
-function processLine(line: string) {
-  const trimmed = line.trim();
-  if (!trimmed) {
-    return;
-  }
-
-  // Extract first segment up until first space (e.g. "1786055195162_00001")
-  const spaceIndex = trimmed.indexOf(" ");
-  const incomingId = spaceIndex === -1 ? trimmed : trimmed.slice(0, spaceIndex);
-  const payload = spaceIndex === -1 ? "" : trimmed.slice(spaceIndex + 1);
-
-  // Check if incoming message is newer than what we have in memory
-  if (isNewer(incomingId, memoryId)) {
-    // Always update memoryId so we advance our sequence tracking
-    memoryId = incomingId;
-
-    // Evaluate regex filter on the payload (event + data after unique ID)
-    if (!filterRegex || filterRegex.test(payload)) {
-      console.log(trimmed);
-    }
-  }
+export interface SubscriberOptions {
+  socket: string;
+  filterRegex?: RegExp | null;
+  fresh?: boolean;
+  // called for each accepted line, defaults to console.log
+  onLine?: (line: string) => void;
 }
 
 /**
- * Connect to Unix socket with exponential backoff strategy.
+ * Creates a subscriber that connects to the Unix domain socket with exponential backoff,
+ * deduplicates messages across reconnects using memoryId, and filters with optional regex.
+ *
+ * Returns an object with stop() to cancel any pending reconnect timers.
+ *
+ * Usage example:
+ *   const { stop } = createSubscriber({
+ *     socket: "var/socket.sock",
+ *     fresh: true,
+ *     filterRegex: /^open/,
+ *     onLine: (line) => console.log("got:", line),
+ *   });
+ *   // later: stop();
+ *
+ * @param options SubscriberOptions
  */
-function connectSocket() {
-  if (reconnectTimer) {
-    clearTimeout(reconnectTimer);
-    reconnectTimer = null;
-  }
+export function createSubscriber(options: SubscriberOptions): { stop: () => void } {
+  const {
+    socket,
+    filterRegex = null,
+    fresh = false,
+    onLine = (line: string) => console.log(line),
+  } = options;
 
-  const socket = net.createConnection(SOCKET!);
+  const nextId = createIdGenerator();
 
-  socket.on("connect", () => {
-    attempt = 0;
-  });
+  // Exponential backoff configuration
+  let reconnectTimer: NodeJS.Timeout | null = null;
+  let attempt = 0;
+  const INITIAL_BACKOFF_MS = 1000;
+  const MAX_BACKOFF_MS = 30000;
+  const BACKOFF_FACTOR = 2;
 
-  let buffer = "";
+  let stopped = false;
 
-  socket.on("data", (chunk) => {
-    buffer += chunk.toString();
+  /**
+   * Stores the last processed message ID segment (e.g., "1786055195162_00001").
+   * Keeps track across socket reconnects to prevent duplicate or out-of-order logs from being output.
+   * If fresh option is true, initialize memoryId with current timestamp ID to ignore past history.
+   */
+  let memoryId: string | null = fresh ? nextId() : null;
 
-    while (true) {
-      const index = buffer.indexOf("\n");
-      if (index === -1) {
-        break;
+  /**
+   * Processes incoming socket line:
+   * 1. Extracts first segment (unique ID) and verifies if it is newer than local memoryId.
+   * 2. Updates local memoryId to keep track of state across socket reconnects.
+   * 3. Extracts remaining payload (event + data) and evaluates against filterRegex if present.
+   * 4. Calls onLine with original line only if it is newer AND matches the regex filter.
+   * 
+   * @param line Single log line received from socket
+   */
+  function processLine(line: string) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      return;
+    }
+
+    // Extract first segment up until first space (e.g. "1786055195162_00001")
+    const spaceIndex = trimmed.indexOf(" ");
+    const incomingId = spaceIndex === -1 ? trimmed : trimmed.slice(0, spaceIndex);
+    const payload = spaceIndex === -1 ? "" : trimmed.slice(spaceIndex + 1);
+
+    // Check if incoming message is newer than what we have in memory
+    if (isNewer(incomingId, memoryId)) {
+      // Always update memoryId so we advance our sequence tracking
+      memoryId = incomingId;
+
+      // Evaluate regex filter on the payload (event + data after unique ID)
+      if (!filterRegex || filterRegex.test(payload)) {
+        onLine(trimmed);
       }
-
-      const line = buffer.slice(0, index);
-      buffer = buffer.slice(index + 1);
-
-      processLine(line);
     }
-  });
+  }
 
-  socket.on("error", () => {
-    // Error handler prevents unhandled error exception; close listener handles reconnect
-  });
+  /**
+   * Connect to Unix socket with exponential backoff strategy.
+   */
+  function connectSocket() {
+    if (stopped) {
+      return;
+    }
 
-  socket.on("close", () => {
-    scheduleReconnect();
-  });
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer);
+      reconnectTimer = null;
+    }
+
+    const s = net.createConnection(socket);
+
+    s.on("connect", () => {
+      attempt = 0;
+    });
+
+    let buffer = "";
+
+    s.on("data", (chunk) => {
+      buffer += chunk.toString();
+
+      while (true) {
+        const index = buffer.indexOf("\n");
+        if (index === -1) {
+          break;
+        }
+
+        const line = buffer.slice(0, index);
+        buffer = buffer.slice(index + 1);
+
+        processLine(line);
+      }
+    });
+
+    s.on("error", () => {
+      // Error handler prevents unhandled error exception; close listener handles reconnect
+    });
+
+    s.on("close", () => {
+      scheduleReconnect();
+    });
+  }
+
+  /**
+   * Schedule reconnection using exponential backoff delay.
+   */
+  function scheduleReconnect() {
+    if (stopped) {
+      return;
+    }
+
+    const delay = Math.min(INITIAL_BACKOFF_MS * Math.pow(BACKOFF_FACTOR, attempt), MAX_BACKOFF_MS);
+    attempt++;
+
+    reconnectTimer = setTimeout(() => {
+      connectSocket();
+    }, delay);
+  }
+
+  // Start initial connection attempt
+  connectSocket();
+
+  return {
+    stop() {
+      stopped = true;
+      if (reconnectTimer) {
+        clearTimeout(reconnectTimer);
+        reconnectTimer = null;
+      }
+    },
+  };
 }
 
-/**
- * Schedule reconnection using exponential backoff delay.
- */
-function scheduleReconnect() {
-  const delay = Math.min(INITIAL_BACKOFF_MS * Math.pow(BACKOFF_FACTOR, attempt), MAX_BACKOFF_MS);
-  attempt++;
+// Detect if this module was run directly (not imported as a library).
+// When run directly, parse CLI args and start the subscriber.
+const isMain = process.argv[1] === fileURLToPath(import.meta.url);
 
-  reconnectTimer = setTimeout(() => {
-    connectSocket();
-  }, delay);
+if (isMain) {
+  // Read socket path from environment variable
+  const SOCKET = process.env.SOCKET;
+
+  if (!SOCKET) {
+    console.error("SOCKET env variable is required");
+    process.exit(1);
+  }
+
+  const isFresh = process.argv.includes("--fresh") || process.argv.includes("--from-now");
+
+  const filterRegex = getRegexArg();
+
+  createSubscriber({ socket: SOCKET, filterRegex, fresh: isFresh });
 }
-
-// Start initial connection attempt
-connectSocket();
-
 
 

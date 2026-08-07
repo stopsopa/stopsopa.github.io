@@ -3,16 +3,9 @@
 # 
 # 
 
-if [ -z "${SOCKET}" ]; then
-    echo "${0} error: env var SOCKET is empty"
-    exit 1
-fi
-
-# don't use -s - that is for checking if file specified by env var exist and is not empty, use -S for sockets
-if [ ! -S "${SOCKET}" ]; then
-    echo "${0} error: socket ${SOCKET} doesn't exist"
-    exit 1
-fi
+# Source status.sh script relative to this file's directory to verify socket status
+THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${THIS_DIR}/status.sh"
 
 # nc -U "${SOCKET}" only works when socket alrady exist
         # -U -> use a Unix domain socket (instead of TCP/UDP)        
@@ -22,17 +15,19 @@ fi
 # done
 
 
-# while IFS= read -r LINE; do
-#     echo "line >${LINE}<"
-# done < <(nc -U "${SOCKET}")
-
-
 
 COUNT=0
 
-nc -U "${SOCKET}" | while IFS= read -r LINE; do
+# no new shell - use that
+while IFS= read -r LINE; do
     COUNT=$((COUNT + 1))
     echo "inside: COUNT=$COUNT LINE=$LINE"
-done
+done < <(nc -U "${SOCKET}")
+
+# new shell
+# nc -U "${SOCKET}" | while IFS= read -r LINE; do
+#     COUNT=$((COUNT + 1))
+#     echo "inside: COUNT=$COUNT LINE=$LINE"
+# done
 
 echo "outside: COUNT=$COUNT"
