@@ -61,18 +61,27 @@ if [ "${?}" != "0" ]; then
   exit 1
 fi
 
-GRAY=$(tput setaf 244 2>/dev/null || echo "")
-BLACK=$(tput setaf 0 2>/dev/null || echo "")
-RED=$(tput setaf 1 2>/dev/null || echo "")
-GREEN=$(tput setaf 2 2>/dev/null || echo "")
-YELLOW=$(tput setaf 3 2>/dev/null || echo "")
-BLUE=$(tput setaf 4 2>/dev/null || echo "")
-MAGENTA=$(tput setaf 5 2>/dev/null || echo "")
-CYAN=$(tput setaf 6 2>/dev/null || echo "")
-WHITE=$(tput setaf 7 2>/dev/null || echo "")
-BOLD=$(tput bold 2>/dev/null || echo "")
-REVERSE=$(tput rev 2>/dev/null || echo "")
-RESET=$(tput sgr0 2>/dev/null || echo "")
+GRAY=$'\033[38;5;244m'
+BLACK=$'\033[30m'
+RED=$'\033[31m'
+GREEN=$'\033[32m'
+YELLOW=$'\033[33m'
+BLUE=$'\033[34m'
+MAGENTA=$'\033[35m'
+CYAN=$'\033[36m'
+WHITE=$'\033[37m'
+BOLD=$'\033[1m'
+REVERSE=$'\033[7m'
+RESET=$'\033[0m'
+
+BG_BLACK=$'\033[40m'
+BG_RED=$'\033[41m'
+BG_GREEN=$'\033[42m'
+BG_YELLOW=$'\033[43m'
+BG_BLUE=$'\033[44m'
+BG_MAGENTA=$'\033[45m'
+BG_CYAN=$'\033[46m'
+BG_WHITE=$'\033[47m'
 
 function quote {
   printf '%s\n' "$1" | sed 's/"/\\"/g'
