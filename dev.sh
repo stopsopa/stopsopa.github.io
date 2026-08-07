@@ -71,7 +71,7 @@ if [ ! -f "${ENV}" ]; then
     exit 1
 fi
 
-eval "$(node bash/exportsource.js "${ENV}")"
+eval "$(node bash/exportsource.ts "${ENV}")"
 
 source ".env.sh"
 
