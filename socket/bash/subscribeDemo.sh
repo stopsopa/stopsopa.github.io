@@ -24,4 +24,12 @@ done < <(nc -U "${SOCKET}")
 #     echo "inside: COUNT=$COUNT LINE=$LINE"
 # done
 
+
+# this will be printed when broker exits, then while will exit and we will see the final counter
+# counter will not work with the commented version because pipe crates new shell
 echo "outside: COUNT=$COUNT"
+
+
+# RECAP:
+# so that's how you can tap to the event bus in shell
+# just setup export SOCKET and use status.sh for validation before going on with nc
