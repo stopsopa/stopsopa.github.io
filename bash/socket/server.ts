@@ -5,19 +5,13 @@
 import http from "node:http";
 import fs from "node:fs";
 import { createConnection } from "./libs/createConnection.ts";
+import { checkIfSocket } from "./libs/checkIfSocket.ts";
 
 const HOST = process.env.HOST ?? "127.0.0.1";
 const PORT = Number(process.env.PORT ?? 8080);
-const SOCKET = process.env.SOCKET;
+const SOCKET = process.env.SOCKET as string;
 
-if (!SOCKET) {
-  console.error("SOCKET env variable is required");
-  process.exit(1);
-}
-
-if (!fs.existsSync(SOCKET)) {
-  console.warn(`Socket does not exist initially: ${SOCKET}. Will attempt to connect continuously.`);
-}
+checkIfSocket(SOCKET, true);
 
 const clients = new Set<http.ServerResponse>();
 
