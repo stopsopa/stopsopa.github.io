@@ -3540,27 +3540,27 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
 
                   # nice flat example: https://github.com/stopsopa/telazekah/blob/main/scripts/help.sh
 
-                  GRAY="\e[38;5;244m"
-                  BLACK="\e[30m"
-                  RED="\e[31m"
-                  GREEN="\e[32m"
-                  YELLOW="\e[33m"
-                  BLUE="\e[34m"
-                  MAGENTA="\e[35m"
-                  CYAN="\e[36m"
-                  WHITE="\e[37m"
-                  BOLD="\e[1m"
-                  REVERSE="\e[7m"
-                  RESET="\e[0m"
-
-                  BG_BLACK="$(printf '\033[40m')"
-                  BG_RED="$(printf '\033[41m')"
-                  BG_GREEN="$(printf '\033[42m')"
-                  BG_YELLOW="$(printf '\033[43m')"
-                  BG_BLUE="$(printf '\033[44m')"
-                  BG_MAGENTA="$(printf '\033[45m')"
-                  BG_CYAN="$(printf '\033[46m')"
-                  BG_WHITE="$(printf '\033[47m')"
+                  GRAY=$'\033[38;5;244m'
+                  BLACK=$'\033[30m'
+                  RED=$'\033[31m'
+                  GREEN=$'\033[32m'
+                  YELLOW=$'\033[33m'
+                  BLUE=$'\033[34m'
+                  MAGENTA=$'\033[35m'
+                  CYAN=$'\033[36m'
+                  WHITE=$'\033[37m'
+                  BOLD=$'\033[1m'
+                  REVERSE=$'\033[7m'
+                  RESET=$'\033[0m'
+                  
+                  BG_BLACK=$'\033[40m'
+                  BG_RED=$'\033[41m'
+                  BG_GREEN=$'\033[42m'
+                  BG_YELLOW=$'\033[43m'
+                  BG_BLUE=$'\033[44m'
+                  BG_MAGENTA=$'\033[45m'
+                  BG_CYAN=$'\033[46m'
+                  BG_WHITE=$'\033[47m'
 
                   # sometimes this is needed
                   GRAY="$(printf '\033[38;5;244m')"
