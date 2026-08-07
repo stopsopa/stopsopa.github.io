@@ -4,10 +4,9 @@ The idea is that you run a broker and keep it running, this keeps alive Unix dom
 
 Then you can attach to it with subscribe.ts which even when broker goes down will keep handling stream never repeating any message twice.
 
-you can also emmit messages via shell with nc -U var/socket.sock 
+you can also emmit messages via shell with nc -U var/socket.sock
 
-you can easily attach to it in node to listen like in subscribeDemo.ts and to emit 
-
+you can easily attach to it in node to listen like in subscribeDemo.ts and to emit
 
 # how to use tools in this directory
 

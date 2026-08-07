@@ -33,12 +33,7 @@ bash/pnpm/minimumReleaseAge.ts
 pages/services/xor.ts
 bash/fs/watch.js
 
-socket/broker.ts
-socket/node/publish.ts
-socket/node/publishDemo.ts
-socket/node/server.ts
-socket/node/subscribe.ts
-socket/node/subscribeDemo.ts
+bash/socket/*
 
 # and run
 # time /bin/bash transpile.sh transpile.ignore
