@@ -12,12 +12,16 @@ import { createIdGenerator, isNewer, stringToRegex } from "./idUtils.ts";
  *               (everything after the leading ID segment).
  * onLine      - Called for each accepted incoming line. Defaults to console.log.
  *               Receives the full trimmed line including the leading ID segment.
+ * onConnected - Called when socket connection is established.
+ * onClosed    - Called when socket connection is closed.
  */
 export interface CreateConnectionOptions {
   socket: string;
   fresh?: boolean;
   filterRegex?: RegExp | string | null;
   onLine?: (line: string) => void;
+  onConnected?: () => void;
+  onClosed?: () => void;
 }
 
 /**
@@ -76,6 +80,8 @@ export function createConnection(options: CreateConnectionOptions): ManagedConne
     fresh = false,
     filterRegex: rawFilterRegex = null,
     onLine = (line: string) => console.log(line),
+    onConnected,
+    onClosed,
   } = options;
 
   let filterRegex: RegExp | null = null;
@@ -178,6 +184,7 @@ export function createConnection(options: CreateConnectionOptions): ManagedConne
 
     client.on("connect", () => {
       attempt = 0;
+      onConnected?.();
     });
 
     let buffer = "";
@@ -206,6 +213,7 @@ export function createConnection(options: CreateConnectionOptions): ManagedConne
       if (currentClient === client) {
         currentClient = null;
       }
+      onClosed?.();
       scheduleReconnect();
     });
   }

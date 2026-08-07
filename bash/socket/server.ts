@@ -3,8 +3,8 @@
  */
 
 import http from "node:http";
-import net from "node:net";
 import fs from "node:fs";
+import { createConnection } from "./libs/createConnection.ts";
 
 const HOST = process.env.HOST ?? "127.0.0.1";
 const PORT = Number(process.env.PORT ?? 8080);
@@ -44,85 +44,27 @@ function addEvent(line: string) {
   }
 }
 
-let socket: net.Socket | null = null;
-let reconnectTimer: NodeJS.Timeout | null = null;
-let attempt = 0;
-const INITIAL_BACKOFF_MS = 1000;
-const MAX_BACKOFF_MS = 30000;
-const BACKOFF_FACTOR = 2;
-
 /**
- * Connect to Unix socket with exponential backoff and status reporting to SSE clients.
+ * Managed socket connection using createConnection.
  */
-function connectSocket() {
-  if (reconnectTimer) {
-    clearTimeout(reconnectTimer);
-    reconnectTimer = null;
-  }
-
-  addEvent(`[status] connecting to ${SOCKET} (attempt ${attempt + 1})...`);
-
-  const s = net.createConnection(SOCKET!);
-  socket = s;
-
-  s.on("connect", () => {
-    attempt = 0;
+const conn = createConnection({
+  socket: SOCKET,
+  onLine: (line) => {
+    addEvent(line);
+  },
+  onConnected: () => {
     console.log(`connected to ${SOCKET}`);
     addEvent(`[status] connected to ${SOCKET}`);
-  });
-
-  let buffer = "";
-
-  s.on("data", (chunk) => {
-    buffer += chunk.toString();
-
-    while (true) {
-      const index = buffer.indexOf("\n");
-
-      if (index === -1) {
-        break;
-      }
-
-      const line = buffer.slice(0, index);
-      buffer = buffer.slice(index + 1);
-
-      addEvent(line);
-    }
-  });
-
-  s.on("error", (error) => {
-    console.error("socket error:", error.message);
-    addEvent(`[status] socket error: ${error.message}`);
-  });
-
-  s.on("close", () => {
+  },
+  onClosed: () => {
     console.log(`socket connection closed to ${SOCKET}`);
     addEvent(`[status] socket connection closed to ${SOCKET}`);
-    socket = null;
-    scheduleReconnect();
-  });
-}
-
-/**
- * Schedule reconnect using exponential backoff.
- */
-function scheduleReconnect() {
-  const delay = Math.min(INITIAL_BACKOFF_MS * Math.pow(BACKOFF_FACTOR, attempt), MAX_BACKOFF_MS);
-  attempt++;
-  console.log(`reconnecting in ${delay} ms (attempt ${attempt})...`);
-  addEvent(`[status] reconnecting in ${delay} ms (attempt ${attempt})...`);
-
-  reconnectTimer = setTimeout(() => {
-    connectSocket();
-  }, delay);
-}
-
-connectSocket();
+  },
+});
 
 function sendEvent(line: string) {
-  if (socket && !socket.destroyed) {
-    socket.write(line.trim() + "\n");
-  } else {
+  const success = conn.send(line);
+  if (!success) {
     console.error("Cannot send event: socket is not connected");
     addEvent(`[status] error: cannot send event, socket is not connected`);
   }
