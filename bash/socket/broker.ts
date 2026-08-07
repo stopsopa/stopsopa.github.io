@@ -1,11 +1,11 @@
 /**
  *
- * SOCKET=var/socket.sock node socket/broker.ts
- * NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts
- * NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts --no-interactive
- * NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts --retention 44
+ * SOCKET=var/socket.sock node bash/socket/broker.ts
+ * NODE_OPTIONS= SOCKET=var/socket.sock node bash/socket/broker.ts
+ * NODE_OPTIONS= SOCKET=var/socket.sock node bash/socket/broker.ts --no-interactive
+ * NODE_OPTIONS= SOCKET=var/socket.sock node bash/socket/broker.ts --retention 44
  *
- * NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts --extra flags
+ * NODE_OPTIONS= SOCKET=var/socket.sock node bash/socket/broker.ts --extra flags
  *      --extra flags is not doing anything but can be used to find in ps aux
  *
  * Options:

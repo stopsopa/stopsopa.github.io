@@ -4,7 +4,7 @@
 
 # start socket broker - you can add more options here:
 
-NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts
+NODE_OPTIONS= SOCKET=var/socket.sock node bash/socket/broker.ts
   # this is btw interactive - you can pass some messages in the terminal
   # NOTE: read about it's lifecycle, if process fails it will remove socket file
   #       and when we start it again it will create socket file again. Just work with that

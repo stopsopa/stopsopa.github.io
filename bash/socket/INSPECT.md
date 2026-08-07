@@ -36,7 +36,7 @@ var/socket.sock: 20670
 # means PID 20670 has it open.
 
 $ ps aux | grep 20670
-szdz             20670   0.0  0.2 444533392  70176 s022  S+    8:59p.m.   0:00.13 /Users/.../node socket/broker.ts
+szdz             20670   0.0  0.2 444533392  70176 s022  S+    8:59p.m.   0:00.13 /Users/.../node bash/socket/broker.ts
 
 ```
 
