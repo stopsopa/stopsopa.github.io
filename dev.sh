@@ -48,6 +48,7 @@ cp node_modules/envprocessor/dist/esm/env.js public/env.js
 source "${_DIR}/bash/colours.sh";
 
 export DLOGGERN=12
+export DLOGGERN_COLOR=true
 
 # -L file       True if file exists and is a symbolic link.
 if [ ! -L _______index.html ]; then
