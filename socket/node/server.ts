@@ -242,14 +242,9 @@ const log = document.getElementById("log");
 const statusDot = document.getElementById("status-dot");
 
 function updateStatus(value) {
-    if (value.startsWith("[status] connected to")) {
+    if (value.includes("[status] connected to")) {
         statusDot.className = "status-dot connected";
-    } else if (
-        value.startsWith("[status] connecting to") ||
-        value.startsWith("[status] socket error:") ||
-        value.startsWith("[status] socket connection closed") ||
-        value.startsWith("[status] reconnecting in")
-    ) {
+    } else if (value.includes("[status]")) {
         statusDot.className = "status-dot disconnected";
     }
 }
@@ -321,9 +316,9 @@ const server = http.createServer(async (req, res) => {
       connection: "keep-alive",
     });
 
-    // send existing history
-    for (const event of events) {
-      res.write(`data: ${JSON.stringify(event)}\n\n`);
+    // send existing history in chronological order (oldest first so newest updates client status last)
+    for (let i = events.length - 1; i >= 0; i--) {
+      res.write(`data: ${JSON.stringify(events[i])}\n\n`);
     }
 
     clients.add(res);
