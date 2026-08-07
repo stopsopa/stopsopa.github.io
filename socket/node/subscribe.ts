@@ -4,6 +4,12 @@
 // SOCKET=var/socket.sock node socket/node/subscribe.ts --fresh
 // SOCKET=var/socket.sock node socket/node/subscribe.ts --regex '^(open|close)'
 // SOCKET=var/socket.sock node socket/node/subscribe.ts --regex '/^(open|close)$/i'
+//
+// USE this format, works the best:
+//   SOCKET=var/socket.sock node socket/node/subscribe.ts --regex "/^(abc|def)( .*)*\$/i"
+//    test runs against entire message, except the part with timestamp
+//    1786059828261_00001 def fdjksaflds
+//                        |------------|--> this part is tested against regex
 // 
 // Script should just try to connect to socket - exponentional backoff
 // 
@@ -38,7 +44,7 @@
 //                         IMPORTANT SHELL NOTE: In bash/zsh, double quotes ("...") expand dollar signs ($) as variables.
 //                         Use single quotes ('...') or escape the dollar sign (\$) when using end-of-line anchors:
 //                           --regex '/^(open|close)$/i'
-//                           --regex "/^(transpile|esbuild_sh) \$/i"
+//                           --regex "/^(transpile|esbuild_sh)\$/i"
 // 
 
 import net from "node:net";
@@ -82,9 +88,35 @@ const nextId = createIdGenerator();
 
 const isFresh = process.argv.includes("--fresh") || process.argv.includes("--from-now");
 
+const stringToRegex = (function () {
+  /**
+   * @param {string} msg
+   * @returns {Error}
+   */
+  function th(msg: string) {
+    return new Error("stringToRegex error: " + msg);
+  }
+
+  /**
+   * @param {string} v
+   */
+  return (v: string): RegExp => {
+    try {
+      const vv = v.match(/(\\.|[^/])+/g);
+
+      if (!vv || vv.length > 2) {
+        throw new Error(`param '${v}' should split to one or two segments`);
+      }
+
+      return new RegExp(vv[0], vv[1]);
+    } catch (e: any) {
+      throw th(`general error: string '${v}' error: ${e?.message ?? e}`);
+    }
+  };
+})();
+
 /**
- * Parses --regex CLI argument into a RegExp instance.
- * Supports string patterns as well as /pattern/flags format (e.g. "/^(open|close)/i").
+ * Parses --regex CLI argument into a RegExp instance using stringToRegex.
  */
 function getRegexArg(): RegExp | null {
   const index = process.argv.indexOf("--regex");
@@ -94,15 +126,10 @@ function getRegexArg(): RegExp | null {
       return null;
     }
 
-    // Check if user passed regex in slash format e.g. "/pattern/flags"
-    const slashMatch = rawPattern.match(/^\/(.+)\/([gimsuy]*)$/);
     try {
-      if (slashMatch) {
-        return new RegExp(slashMatch[1], slashMatch[2]);
-      }
-      return new RegExp(rawPattern);
-    } catch (err) {
-      console.error(`Invalid regex pattern provided to --regex: "${rawPattern}"`);
+      return stringToRegex(rawPattern);
+    } catch (err: any) {
+      console.error(`Invalid regex pattern provided to --regex: ${err?.message ?? err}`);
       process.exit(1);
     }
   }
