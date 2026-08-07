@@ -45,72 +45,39 @@
 //                           --regex '/^(open|close)$/i'
 //                           --regex "/^(transpile|esbuild_sh)\$/i"
 //
-// This module can also be imported as a library - see createSubscriber export.
+// This module can also be imported as a library - see createConnection export from libs/createConnection.ts.
 // When run directly it replicates the same behaviour as before.
 //
 
 import { fileURLToPath } from "node:url";
-import { createConnection, type ManagedConnection } from "./libs/createConnection.ts";
+import { createConnection } from "./libs/createConnection.ts";
+import { checkIfSocket } from "./libs/checkIfSocket.ts";
 
+export { createIdGenerator, parseId, isNewer, stringToRegex } from "./libs/idUtils.ts";
+export { createConnection } from "./libs/createConnection.ts";
 export { checkIfSocket } from "./libs/checkIfSocket.ts";
-export { createIdGenerator, parseId, isNewer } from "./libs/idUtils.ts";
-export { stringToRegex, getRegexArg } from "./libs/regex.ts";
-
-export interface SubscriberOptions {
-  socket: string;
-  filterRegex?: RegExp | null;
-  fresh?: boolean;
-  // called for each accepted line, defaults to console.log
-  onLine?: (line: string) => void;
-}
-
-/**
- * Creates a subscriber that connects to the Unix domain socket with exponential backoff,
- * deduplicates messages across reconnects using memoryId, and filters with optional regex.
- *
- * Returns an object with stop() to cancel any pending reconnect timers.
- *
- * Usage example:
- *   const { stop } = createSubscriber({
- *     socket: "var/socket.sock",
- *     fresh: true,
- *     filterRegex: /^open/,
- *     onLine: (line) => console.log("got:", line),
- *   });
- *   // later: stop()
- *
- * @param options SubscriberOptions
- */
-export function createSubscriber(options: SubscriberOptions): { stop: () => void } {
-  const { socket, filterRegex = null, fresh = false, onLine = (line: string) => console.log(line) } = options;
-
-  const conn: ManagedConnection = createConnection({ socket, fresh, filterRegex, onLine });
-
-  return {
-    stop() {
-      conn.stop();
-    },
-  };
-}
 
 // Detect if this module was run directly (not imported as a library).
 // When run directly, parse CLI args and start the subscriber.
 const isMain = process.argv[1] === fileURLToPath(import.meta.url);
 
 if (isMain) {
-  // Read socket path from environment variable
-  const SOCKET = process.env.SOCKET;
+  const SOCKET = process.env.SOCKET as string;
 
-  if (!SOCKET) {
-    console.error("subscribe.ts error: SOCKET env variable is required");
-    process.exit(1);
-  }
+  checkIfSocket(SOCKET, true);
 
   const isFresh = process.argv.includes("--fresh") || process.argv.includes("--from-now");
 
-  // Import getRegexArg lazily after checking isMain to avoid any side-effects at import time
-  const { getRegexArg } = await import("./libs/regex.ts");
-  const filterRegex = getRegexArg();
+  const regexIdx = process.argv.indexOf("--regex");
+  const filterRegex = regexIdx !== -1 && regexIdx + 1 < process.argv.length ? process.argv[regexIdx + 1] : null;
 
-  createSubscriber({ socket: SOCKET, filterRegex, fresh: isFresh });
+  createConnection({
+    socket: SOCKET,
+    filterRegex,
+    fresh: isFresh,
+    // replace this function with any custom logic to handle each incoming line
+    onLine: (line: string) => {
+      console.log(line);
+    },
+  });
 }

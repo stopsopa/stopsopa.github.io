@@ -1,14 +1,15 @@
 /**
  * SOCKET=var/socket.sock node bash/socket/publishDemo.ts
  *
- * Interactive terminal publisher demo using createPublisher from publish.ts.
+ * Interactive terminal connection demo using createConnection from libs/createConnection.ts.
  * Listens on stdin and forwards typed lines to the Unix socket broker.
  */
 
 import readline from "node:readline";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { createPublisher, checkIfSocket } from "./publish.ts";
+import { createConnection } from "./libs/createConnection.ts";
+import { checkIfSocket } from "./libs/checkIfSocket.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __filename_relative = path.relative(process.cwd(), __filename);
@@ -27,7 +28,7 @@ if (!process.stdin.isTTY) {
   throw th("terminal is not interactive");
 }
 
-const publisher = createPublisher(SOCKET as string);
+const connection = createConnection({ socket: SOCKET as string });
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -37,7 +38,7 @@ const rl = readline.createInterface({
 log(`\x1b[32minteractive mode enabled\x1b[0m`);
 
 rl.on("line", (line) => {
-  publisher.send(line);
+  connection.send(line);
 });
 
 process.on("SIGINT", () => shutdown("SIGINT"));
@@ -45,7 +46,7 @@ process.on("SIGTERM", () => shutdown("SIGTERM"));
 
 function shutdown(signal: string) {
   log(`shutting down (${signal})`);
-  publisher.destroy();
+  connection.destroy();
   rl.close();
   process.exit(0);
 }

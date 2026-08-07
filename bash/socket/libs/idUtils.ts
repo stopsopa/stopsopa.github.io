@@ -78,3 +78,31 @@ export function isNewer(incomingId: string | null, referenceId: string | null): 
 
   return false;
 }
+
+// Centralized error factory for stringToRegex.
+function th(msg: string) {
+  return new Error("regex error: " + msg);
+}
+
+/**
+ * Converts a string pattern into a RegExp instance.
+ * Supports plain patterns (e.g. "^open") and JS-style notation (e.g. "/^open$/i").
+ *
+ * @param {string} v Raw pattern string
+ */
+export const stringToRegex = (function () {
+  return (v: string): RegExp => {
+    try {
+      const vv = v.match(/(\\.|[^/])+/g);
+
+      if (!vv || vv.length > 2) {
+        throw th(`stringToRegex: param '${v}' should split to one or two segments`);
+      }
+
+      return new RegExp(vv[0], vv[1]);
+    } catch (e: any) {
+      throw th(`stringToRegex: string '${v}' error: ${e?.message ?? e}`);
+    }
+  };
+})();
+

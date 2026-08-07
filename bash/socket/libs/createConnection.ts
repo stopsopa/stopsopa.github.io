@@ -1,6 +1,6 @@
 import net from "node:net";
 import { checkIfSocket } from "./checkIfSocket.ts";
-import { createIdGenerator, isNewer } from "./idUtils.ts";
+import { createIdGenerator, isNewer, stringToRegex } from "./idUtils.ts";
 
 /**
  * Options for createConnection.
@@ -8,7 +8,7 @@ import { createIdGenerator, isNewer } from "./idUtils.ts";
  * socket      - Path to the Unix domain socket file.
  * fresh       - If true, initializes memoryId with a fresh timestamp ID at startup to
  *               ignore historical messages from broker and only display new incoming ones.
- * filterRegex - Optional RegExp to filter incoming messages against the payload portion
+ * filterRegex - Optional RegExp or string pattern to filter incoming messages against the payload portion
  *               (everything after the leading ID segment).
  * onLine      - Called for each accepted incoming line. Defaults to console.log.
  *               Receives the full trimmed line including the leading ID segment.
@@ -16,7 +16,7 @@ import { createIdGenerator, isNewer } from "./idUtils.ts";
 export interface CreateConnectionOptions {
   socket: string;
   fresh?: boolean;
-  filterRegex?: RegExp | null;
+  filterRegex?: RegExp | string | null;
   onLine?: (line: string) => void;
 }
 
@@ -29,7 +29,7 @@ export interface CreateConnectionOptions {
  *                  The connection uses exponential backoff reconnect, so the underlying
  *                  client instance is replaced on every reconnect. Always call getFreshClient()
  *                  at the moment you need the socket rather than caching its return value.
- * stop          - Cancels any pending reconnect timers and prevents further reconnects.
+ * destroy        - Cancels any pending reconnect timers and prevents further reconnects.
  */
 export interface ManagedConnection {
   send: (message: string) => boolean;
@@ -45,7 +45,7 @@ export interface ManagedConnection {
    * even across multiple reconnect cycles.
    */
   getFreshClient: () => net.Socket | null;
-  stop: () => void;
+  destroy: () => void;
 }
 
 /**
@@ -55,7 +55,7 @@ export interface ManagedConnection {
  * - Optional regex filtering of incoming message payloads.
  * - send() method to write outgoing messages at any point (silently no-ops when not writable).
  *
- * This is the single low-level building block used by both createPublisher and createSubscriber.
+ * This is the single low-level building block used by both createSubscriber and direct publishers.
  *
  * Usage example:
  *   const conn = createConnection({
@@ -66,7 +66,7 @@ export interface ManagedConnection {
  *   });
  *   conn.send("transpile file.ts");
  *   // later:
- *   conn.stop();
+ *   conn.destroy();
  *
  * @param options CreateConnectionOptions
  */
@@ -74,9 +74,19 @@ export function createConnection(options: CreateConnectionOptions): ManagedConne
   const {
     socket,
     fresh = false,
-    filterRegex = null,
+    filterRegex: rawFilterRegex = null,
     onLine = (line: string) => console.log(line),
   } = options;
+
+  let filterRegex: RegExp | null = null;
+  if (typeof rawFilterRegex === "string") {
+    const trimmed = rawFilterRegex.trim();
+    if (trimmed) {
+      filterRegex = stringToRegex(trimmed);
+    }
+  } else if (rawFilterRegex instanceof RegExp) {
+    filterRegex = rawFilterRegex;
+  }
 
   checkIfSocket(socket, true);
 
@@ -230,7 +240,7 @@ export function createConnection(options: CreateConnectionOptions): ManagedConne
       return currentClient;
     },
 
-    stop() {
+    destroy() {
       stopped = true;
       if (reconnectTimer) {
         clearTimeout(reconnectTimer);
