@@ -50,7 +50,43 @@
 //
 
 import net from "node:net";
+import fs from "node:fs";
 import { fileURLToPath } from "node:url";
+
+// Centralized error factory — prepends the module preamble to every thrown error.
+function th(msg: string) {
+  return new Error("subscribe.ts error: " + msg);
+}
+
+/**
+ * Checks whether the specified path exists and is a valid Unix domain socket file.
+ * When shouldThrow is true, throws via th() with a specific message instead of returning false.
+ *
+ * @param SOCKET Absolute or relative path to the Unix socket file
+ * @param shouldThrow If true, throws on invalid socket instead of returning false
+ * @returns true if path exists and is a socket file, false otherwise
+ */
+export function checkIfSocket(SOCKET: string, shouldThrow: boolean = false): boolean {
+  if (typeof SOCKET !== "string" || !SOCKET.trim()) {
+    if (shouldThrow) throw th("checkIfSocket: SOCKET path is required");
+    return false;
+  }
+
+  if (!fs.existsSync(SOCKET)) {
+    if (shouldThrow) throw th(`checkIfSocket: path does not exist >${SOCKET}<`);
+    return false;
+  }
+
+  try {
+    const stat = fs.statSync(SOCKET);
+    const isSocket = stat.isSocket();
+    if (!isSocket && shouldThrow) throw th(`checkIfSocket: path exists but is not a socket >${SOCKET}<`);
+    return isSocket;
+  } catch (err: any) {
+    if (shouldThrow) throw th(`checkIfSocket: failed to stat >${SOCKET}<: ${err?.message ?? err}`);
+    return false;
+  }
+}
 
 /**
  * Creates an ID generator matching the broker format (13 digits + _ + 5 digits).
@@ -74,14 +110,6 @@ export function createIdGenerator() {
 
 export const stringToRegex = (function () {
   /**
-   * @param {string} msg
-   * @returns {Error}
-   */
-  function th(msg: string) {
-    return new Error("stringToRegex error: " + msg);
-  }
-
-  /**
    * @param {string} v
    */
   return (v: string): RegExp => {
@@ -89,12 +117,12 @@ export const stringToRegex = (function () {
       const vv = v.match(/(\\.|[^/])+/g);
 
       if (!vv || vv.length > 2) {
-        throw new Error(`param '${v}' should split to one or two segments`);
+        throw th(`stringToRegex: param '${v}' should split to one or two segments`);
       }
 
       return new RegExp(vv[0], vv[1]);
     } catch (e: any) {
-      throw th(`general error: string '${v}' error: ${e?.message ?? e}`);
+      throw th(`stringToRegex: string '${v}' error: ${e?.message ?? e}`);
     }
   };
 })();
@@ -113,7 +141,7 @@ export function getRegexArg(): RegExp | null {
     try {
       return stringToRegex(rawPattern);
     } catch (err: any) {
-      console.error(`Invalid regex pattern provided to --regex: ${err?.message ?? err}`);
+      console.error(`subscribe.ts error: Invalid regex pattern provided to --regex: ${err?.message ?? err}`);
       process.exit(1);
     }
   }
@@ -209,6 +237,8 @@ export interface SubscriberOptions {
 export function createSubscriber(options: SubscriberOptions): { stop: () => void } {
   const { socket, filterRegex = null, fresh = false, onLine = (line: string) => console.log(line) } = options;
 
+  checkIfSocket(socket, true);
+
   const nextId = createIdGenerator();
 
   // Exponential backoff configuration
@@ -272,15 +302,15 @@ export function createSubscriber(options: SubscriberOptions): { stop: () => void
       reconnectTimer = null;
     }
 
-    const s = net.createConnection(socket);
+    const client = net.createConnection(socket);
 
-    s.on("connect", () => {
+    client.on("connect", () => {
       attempt = 0;
     });
 
     let buffer = "";
 
-    s.on("data", (chunk) => {
+    client.on("data", (chunk) => {
       buffer += chunk.toString();
 
       while (true) {
@@ -296,11 +326,11 @@ export function createSubscriber(options: SubscriberOptions): { stop: () => void
       }
     });
 
-    s.on("error", () => {
+    client.on("error", () => {
       // Error handler prevents unhandled error exception; close listener handles reconnect
     });
 
-    s.on("close", () => {
+    client.on("close", () => {
       scheduleReconnect();
     });
   }
@@ -344,7 +374,7 @@ if (isMain) {
   const SOCKET = process.env.SOCKET;
 
   if (!SOCKET) {
-    console.error("SOCKET env variable is required");
+    console.error("subscribe.ts error: SOCKET env variable is required");
     process.exit(1);
   }
 
