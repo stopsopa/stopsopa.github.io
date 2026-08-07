@@ -1,6 +1,5 @@
 # 
-# SOCKET=var/socket.sock  /bin/bash socket/bash/subscribe.sh
-# 
+# SOCKET=var/socket.sock  /bin/bash socket/bash/subscribeDemo.sh
 # 
 
 # Source status.sh script relative to this file's directory to verify socket status
@@ -9,11 +8,6 @@ source "${THIS_DIR}/status.sh"
 
 # nc -U "${SOCKET}" only works when socket alrady exist
         # -U -> use a Unix domain socket (instead of TCP/UDP)        
-
-# nc -U "${SOCKET}" | while IFS= read -r LINE; do
-#     echo "line >${LINE}<"
-# done
-
 
 
 COUNT=0
