@@ -62,8 +62,8 @@ cat <<EEE | perl -pe "system 'sleep .03'" | sed 's/^/event /' | nc -U var/socket
 EEE
 
 
-# ... and we can have something else at the samet ime passing something different
-# so final reasult will be like
+# ... and we can have something else at the same time passing something different
+# so final reasult will be stream like
 cat <<EEE | perl -pe "system 'sleep .03'" | nc -U var/socket.sock
 transpile ./bash/node/is-port-free.ts
 no_sandbox ./bash/node/json/unwrap.ts
@@ -85,9 +85,12 @@ EEE
 SOCKET=var/socket.sock node socket/node/subscribe.ts --regex "/^transpile( .*)*\$/i" \
 | IN=ts OUT=js /bin/bash bash/file/extswap.sh
 
-# and after extswap we could pass it somewhere else andthat thing could emmit new events
+# and after extswap we could pass it somewhere else and that thing could emmit new events
 # and we could pick that up with something else .. and so on ..
 
 # and that's how we have built event bus
+
+# HINT:
+# I would encourage to use some kind of prefix like 'soc_ev_*' to each event to be able to search globally in the project
 
 ```
