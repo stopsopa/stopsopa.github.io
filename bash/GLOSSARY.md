@@ -26,7 +26,7 @@ This document provides a directory of bash utility scripts available in this dir
 - `env.sh`: Environment variables loader and exporter helper.
 - `envrender.sh`: Renders environment variable templates into configuration files.
 - `exist-in-file.sh`: Checks if a specific string or pattern exists in a file.
-- `exportsource.js`: Helper script (Node.js) for exporting environment sources.
+- `exportsource.ts`: Helper script (Node.js) for exporting environment sources.
 - `exportsource.sh`: Exports shell variables from `.env` files into current shell environment.
 - `grepP.sh`: Wrapper for grep with Perl-compatible regular expressions (`grep -P`).
 - `hardlink.sh`: Helper tool to manage or create hardlinks.

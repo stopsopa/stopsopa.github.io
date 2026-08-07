@@ -273,7 +273,7 @@ Finds all *.template.html and process them to *.rendered.html in the same locati
     [`preprocessor`]: {
       command: `
 set -e    
-eval "$(node bash/exportsource.js .env)"
+eval "$(node bash/exportsource.ts .env)"
 export NODE_OPTIONS=""
 # node libs/preprocessor.js # old script
 node node_modules/envprocessor/dist/esm/cli.js --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js

@@ -44,6 +44,7 @@ pages/services/xor.js
 # transpile_sh vvv
 bash/env_repack.js
 bash/env_repack.unit.parallel.test.js
+bash/exportsource.js
 bash/fs/touchWatch.js
 bash/fs/watch.js
 bash/git/addToGitignore.js

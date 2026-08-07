@@ -25,6 +25,7 @@ pages/node/builtin-test-runner.test.ts
 pages/node/libs/lib.ts
 pages/node/libs/tstest.ts
 bash/pnpm/minimumReleaseAge.ts
+bash/exportsource.js
 
 # pages/bookmarklets/gmail/extract.ts
 # pages/children/caesar/moduleCaesarCypher.ts
