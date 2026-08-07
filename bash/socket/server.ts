@@ -3,7 +3,6 @@
  */
 
 import http from "node:http";
-import fs from "node:fs";
 import { createConnection } from "./libs/createConnection.ts";
 import { checkIfSocket } from "./libs/checkIfSocket.ts";
 
@@ -11,7 +10,7 @@ const HOST = process.env.HOST ?? "127.0.0.1";
 const PORT = Number(process.env.PORT ?? 8080);
 const SOCKET = process.env.SOCKET as string;
 
-checkIfSocket(SOCKET, true);
+checkIfSocket(SOCKET);
 
 const clients = new Set<http.ServerResponse>();
 

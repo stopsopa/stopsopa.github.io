@@ -1,4 +1,6 @@
 #
+# This is just demo to wrap nc with some checks and then forward to nc -U
+#
 # SOCKET=var/socket.sock /bin/bash bash/socket/pipe.sh
 #
 # Pipes stdin to the socket (each newline-terminated line is forwarded as a message).

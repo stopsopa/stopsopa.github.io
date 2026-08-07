@@ -64,7 +64,7 @@ const isMain = process.argv[1] === fileURLToPath(import.meta.url);
 if (isMain) {
   const SOCKET = process.env.SOCKET as string;
 
-  checkIfSocket(SOCKET, true);
+  checkIfSocket(SOCKET);
 
   const isFresh = process.argv.includes("--fresh") || process.argv.includes("--from-now");
 

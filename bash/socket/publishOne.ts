@@ -20,7 +20,7 @@ import { checkIfSocket } from "./libs/checkIfSocket.ts";
  * @param message Message payload to publish to the broker
  */
 export default function socketPublish(SOCKET: string, message: string): void {
-  checkIfSocket(SOCKET, true);
+  checkIfSocket(SOCKET);
 
   const trimmed = message.trim();
   if (!trimmed) {
@@ -34,6 +34,6 @@ export default function socketPublish(SOCKET: string, message: string): void {
   });
 
   client.on("error", (err) => {
-    console.error(`publish.ts error: Failed to send message to >${SOCKET}<: ${err.message}`);
+    console.error(`publishOne.ts error: Failed to send message to >${SOCKET}<: ${err.message}`);
   });
 }

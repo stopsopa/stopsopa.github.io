@@ -13,24 +13,23 @@ function th(msg: string) {
  * @param shouldThrow If true, throws on invalid socket instead of returning false
  * @returns true if path exists and is a socket file, false otherwise
  */
-export function checkIfSocket(SOCKET: string, shouldThrow: boolean = false): boolean {
+export function checkIfSocket(SOCKET: string): boolean {
   if (typeof SOCKET !== "string" || !SOCKET.trim()) {
-    if (shouldThrow) throw th("SOCKET path is required");
-    return false;
+    throw th("SOCKET path is required");
   }
 
   if (!fs.existsSync(SOCKET)) {
-    if (shouldThrow) throw th(`path does not exist >${SOCKET}<`);
-    return false;
+    throw th(`path does not exist >${SOCKET}<`);
   }
 
   try {
     const stat = fs.statSync(SOCKET);
     const isSocket = stat.isSocket();
-    if (!isSocket && shouldThrow) throw th(`path exists but is not a socket >${SOCKET}<`);
+    if (!isSocket) {
+      throw th(`path exists but is not a socket >${SOCKET}<`);
+    }
     return isSocket;
   } catch (err: any) {
-    if (shouldThrow) throw th(`failed to stat >${SOCKET}<: ${err?.message ?? err}`);
-    return false;
+    throw th(`failed to stat >${SOCKET}<: ${err?.message ?? err}`);
   }
 }

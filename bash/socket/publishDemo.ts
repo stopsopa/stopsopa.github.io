@@ -17,11 +17,9 @@ const __filename_relative = path.relative(process.cwd(), __filename);
 const th = (msg: string) => new Error(`${__filename_relative} error: ${msg}`);
 const log = (msg: string) => console.log(`${__filename_relative}: ${msg}`);
 
-const SOCKET = process.env.SOCKET;
+const SOCKET = process.env.SOCKET as string;
 
-if (!checkIfSocket(SOCKET as string)) {
-  throw th(`process.env.SOCKET >${SOCKET}< does not exist or is not a socket file`);
-}
+checkIfSocket(SOCKET);
 
 if (!process.stdin.isTTY) {
   log(`\x1b[31minteractive mode disabled\x1b[0m`);

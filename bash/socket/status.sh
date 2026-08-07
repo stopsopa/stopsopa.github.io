@@ -26,6 +26,9 @@ fi
 # If nothing is listening, nc exits non-zero.
 if nc -U "${SOCKET}" < /dev/null > /dev/null 2>&1; then
     # Socket is alive and accepting connections
+    # allow script to continue
+    # it is designed to be used like
+    # source bash/socket/status.sh
     :
 else
     echo "dead: socket file exists but nothing is listening: ${SOCKET}"

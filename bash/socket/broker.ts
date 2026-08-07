@@ -33,6 +33,42 @@ import readline from "node:readline";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
+const RETENTION = getRetentionArg();
+
+const __filename = fileURLToPath(import.meta.url);
+
+const __filename_relative = path.relative(process.cwd(), __filename);
+
+const th = (msg: string) => new Error(`${__filename_relative} error: ${msg}`);
+
+const log = (msg: string) => console.log(`${__filename_relative}: ${msg}`);
+
+const nextId = createIdGenerator();
+
+const SOCKET = process.env.SOCKET as string;
+
+const socket_dir = path.dirname(SOCKET);
+
+if (!fs.existsSync(socket_dir)) {
+  fs.mkdirSync(socket_dir, { recursive: true });
+}
+
+if (!fs.statSync(socket_dir).isDirectory()) {
+  throw th(`socket directory is not a directory: ${socket_dir}`);
+}
+
+const history: string[] = [];
+
+const clients = new Set<net.Socket>();
+
+const idRegex = /^\d{13}_\d{5}$/;
+
+// let's not do that, this way if anyone will try to run second server
+// on that path it will fail
+// if (fs.existsSync(SOCKET)) {
+//   fs.unlinkSync(SOCKET);
+// }
+
 /**
  * Parses --retention argument from process.argv.
  * Minimum value allowed is 0 (disables history buffering).
@@ -49,16 +85,6 @@ function getRetentionArg(): number {
   return 100;
 }
 
-const RETENTION = getRetentionArg();
-
-const __filename = fileURLToPath(import.meta.url);
-
-const __filename_relative = path.relative(process.cwd(), __filename);
-
-const th = (msg: string) => new Error(`${__filename_relative} error: ${msg}`);
-
-const log = (msg: string) => console.log(`${__filename_relative}: ${msg}`);
-
 function createIdGenerator() {
   let lastValue = 0;
   let counter = 0;
@@ -74,70 +100,6 @@ function createIdGenerator() {
 
     return `${value}_${String(counter).padStart(5, "0")}`;
   };
-}
-
-const nextId = createIdGenerator();
-
-if (typeof process.env.SOCKET !== "string" || !process.env.SOCKET.trim()) {
-  throw th("process.env.SOCKET is not defined");
-}
-
-const SOCKET = process.env.SOCKET as string;
-
-const socket_dir = path.dirname(SOCKET);
-
-if (!fs.existsSync(socket_dir)) {
-  fs.mkdirSync(socket_dir, { recursive: true });
-}
-
-if (!fs.statSync(socket_dir).isDirectory()) {
-  throw th(`socket directory is not a directory: ${socket_dir}`);
-}
-
-// let's not do that, this way if anyone will try to run second server
-// on that path it will fail
-// if (fs.existsSync(SOCKET)) {
-//   fs.unlinkSync(SOCKET);
-// }
-
-if (fs.existsSync(SOCKET)) {
-  const stat = fs.statSync(SOCKET);
-
-  if (stat.isSocket()) {
-    throw th(
-      `socket exist, normally it means that other broker is probably running now, if not then remove >${SOCKET}< and try again`
-    );
-  }
-
-  throw th(`socket path exists but is not a socket: ${SOCKET}`);
-}
-
-const history: string[] = [];
-
-const clients = new Set<net.Socket>();
-
-const idRegex = /^\d{13}_\d{5}$/;
-
-/**
- * Parses an ID string formatted as "<segment1>_<segment2>" into numerical components.
- * Returns null if parsing fails.
- *
- * @param id ID string such as "1786055195162_00001"
- */
-function parseId(id: string | null): { seg1: number; seg2: number } | null {
-  if (!id) {
-    return null;
-  }
-  const parts = id.split("_");
-  if (parts.length !== 2) {
-    return null;
-  }
-  const seg1 = Number(parts[0]);
-  const seg2 = Number(parts[1]);
-  if (Number.isNaN(seg1) || Number.isNaN(seg2)) {
-    return null;
-  }
-  return { seg1, seg2 };
 }
 
 /**

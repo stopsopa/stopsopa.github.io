@@ -94,7 +94,7 @@ export function createConnection(options: CreateConnectionOptions): ManagedConne
     filterRegex = rawFilterRegex;
   }
 
-  checkIfSocket(socket, true);
+  checkIfSocket(socket);
 
   const nextId = createIdGenerator();
 
