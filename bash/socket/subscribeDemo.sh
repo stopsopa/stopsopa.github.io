@@ -1,5 +1,5 @@
 # 
-# SOCKET=var/socket.sock  /bin/bash socket/bash/subscribeDemo.sh
+# SOCKET=var/socket.sock  /bin/bash bash/socket/subscribeDemo.sh
 # 
 
 # Source status.sh script relative to this file's directory to verify socket status

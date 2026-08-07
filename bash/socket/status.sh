@@ -1,5 +1,5 @@
 #
-# SOCKET=var/socket.sock /bin/bash socket/bash/status.sh
+# SOCKET=var/socket.sock /bin/bash bash/socket/status.sh
 #
 # Checks whether the broker socket is alive and accepting connections.
 # Exits 0 if alive, exits 1 if not.

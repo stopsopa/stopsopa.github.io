@@ -1,5 +1,5 @@
 /**
- * SOCKET=var/socket.sock node socket/node/publishDemo.ts
+ * SOCKET=var/socket.sock node bash/socket/publishDemo.ts
  *
  * Interactive terminal publisher demo using createPublisher from publish.ts.
  * Listens on stdin and forwards typed lines to the Unix socket broker.

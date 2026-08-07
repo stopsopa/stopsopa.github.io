@@ -1,11 +1,11 @@
 //
-// SOCKET=var/socket.sock node socket/node/subscribe.ts
-// SOCKET=var/socket.sock node socket/node/subscribe.ts --fresh
-// SOCKET=var/socket.sock node socket/node/subscribe.ts --regex '^(open|close)'
-// SOCKET=var/socket.sock node socket/node/subscribe.ts --regex '/^(open|close)$/i'
+// SOCKET=var/socket.sock node bash/socket/subscribe.ts
+// SOCKET=var/socket.sock node bash/socket/subscribe.ts --fresh
+// SOCKET=var/socket.sock node bash/socket/subscribe.ts --regex '^(open|close)'
+// SOCKET=var/socket.sock node bash/socket/subscribe.ts --regex '/^(open|close)$/i'
 //
 // USE this format, works the best:
-//   SOCKET=var/socket.sock node socket/node/subscribe.ts --regex "/^(abc|def)( .*)*\$/i"
+//   SOCKET=var/socket.sock node bash/socket/subscribe.ts --regex "/^(abc|def)( .*)*\$/i"
 //    test runs against entire message, except the part with timestamp
 //    1786059828261_00001 def fdjksaflds
 //                        |------------|--> this part is tested against regex

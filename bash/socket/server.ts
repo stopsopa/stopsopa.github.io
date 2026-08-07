@@ -1,5 +1,5 @@
 /**
- * NODE_OPTIONS= HOST=0.0.0.0 PORT=8080 SOCKET=var/socket.sock node socket/node/server.ts
+ * NODE_OPTIONS= HOST=0.0.0.0 PORT=8080 SOCKET=var/socket.sock node bash/socket/server.ts
  */
 
 import http from "node:http";

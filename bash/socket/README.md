@@ -19,19 +19,19 @@ NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts
 ```bash
 
 # you can run server listening to that socket in another terminal
-NODE_OPTIONS= HOST=0.0.0.0 PORT=8080 SOCKET=var/socket.sock node socket/node/server.ts
+NODE_OPTIONS= HOST=0.0.0.0 PORT=8080 SOCKET=var/socket.sock node bash/socket/server.ts
 
 # we can also subscribe in another terminal
-NODE_OPTIONS= SOCKET=var/socket.sock node socket/node/subscribe.ts
+NODE_OPTIONS= SOCKET=var/socket.sock node bash/socket/subscribe.ts
   # FEATURE: this one can just sit there and survive restarts of the broker and not repeat the same message
   #          probably most useful of all tools in this directory
   # you can just launch it and restart broker ... you wouldn't do that but I'm trying to say it's resilient
 
     # or demo as a library in another terminal
-    NODE_OPTIONS= SOCKET=var/socket.sock  /bin/bash socket/bash/subscribeDemo.sh
+    NODE_OPTIONS= SOCKET=var/socket.sock  /bin/bash bash/socket/subscribeDemo.sh
 
     # also we can prefilter events we will get
-    SOCKET=var/socket.sock node socket/node/subscribe.ts --regex "/^(abc|def)( .*)*\$/i"
+    SOCKET=var/socket.sock node bash/socket/subscribe.ts --regex "/^(abc|def)( .*)*\$/i"
 
 # then we can send some events from the server and using:
 
@@ -42,7 +42,7 @@ first line
 \e[35mfourth\e[0m line
 \e[31mfifth\e[0m line
 last line
-" | perl -pe "system 'sleep .03'" | SOCKET=var/socket.sock /bin/bash socket/bash/pipe.sh
+" | perl -pe "system 'sleep .03'" | SOCKET=var/socket.sock /bin/bash bash/socket/pipe.sh
 
 
 # so now when we have script which emits some lines we can use sed to prefix and pass down to the socket
@@ -82,7 +82,7 @@ EEE
 # and then we can subscribe with some other script to particular event
 
 # do something
-SOCKET=var/socket.sock node socket/node/subscribe.ts --regex "/^transpile( .*)*\$/i" \
+SOCKET=var/socket.sock node bash/socket/subscribe.ts --regex "/^transpile( .*)*\$/i" \
 | IN=ts OUT=js /bin/bash bash/file/extswap.sh
 
 # and after extswap we could pass it somewhere else and that thing could emmit new events

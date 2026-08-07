@@ -1,11 +1,11 @@
 //
-// SOCKET=var/socket.sock node socket/node/subscribeDemo.ts
-// SOCKET=var/socket.sock node socket/node/subscribeDemo.ts --fresh
-// SOCKET=var/socket.sock node socket/node/subscribeDemo.ts --regex '^(open|close)'
-// SOCKET=var/socket.sock node socket/node/subscribeDemo.ts --regex '/^(open|close)$/i'
+// SOCKET=var/socket.sock node bash/socket/subscribeDemo.ts
+// SOCKET=var/socket.sock node bash/socket/subscribeDemo.ts --fresh
+// SOCKET=var/socket.sock node bash/socket/subscribeDemo.ts --regex '^(open|close)'
+// SOCKET=var/socket.sock node bash/socket/subscribeDemo.ts --regex '/^(open|close)$/i'
 //
 // USE this format, works the best:
-//   SOCKET=var/socket.sock node socket/node/subscribeDemo.ts --regex "/^(abc|def)( .*)*\$/i"
+//   SOCKET=var/socket.sock node bash/socket/subscribeDemo.ts --regex "/^(abc|def)( .*)*\$/i"
 //
 // Demo: replicates subscribe.ts direct-run behavior using exported library functions.
 // No custom logic - just wiring createSubscriber with parsed CLI args.

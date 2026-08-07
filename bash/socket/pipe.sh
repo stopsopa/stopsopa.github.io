@@ -1,5 +1,5 @@
 #
-# SOCKET=var/socket.sock /bin/bash socket/bash/pipe.sh
+# SOCKET=var/socket.sock /bin/bash bash/socket/pipe.sh
 #
 # Pipes stdin to the socket (each newline-terminated line is forwarded as a message).
 #
@@ -12,7 +12,7 @@
 #   \e[35mfourth\e[0m line
 #   \e[31mfifth\e[0m line
 #   last line
-#   " | perl -pe "system 'sleep .03'" | SOCKET=var/socket.sock /bin/bash socket/bash/pipe.sh
+#   " | perl -pe "system 'sleep .03'" | SOCKET=var/socket.sock /bin/bash bash/socket/pipe.sh
 #
 # Or skip the wrapper and pipe directly with nc:
 #
