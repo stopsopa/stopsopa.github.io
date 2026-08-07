@@ -1,4 +1,3 @@
-
 ls -la var/socket.sock
 
 ```
@@ -34,7 +33,7 @@ nc -U var/socket.sock
 $ fuser var/socket.sock      (macOS usually does not have this.)
 var/socket.sock: 20670
 
-# means PID 20670 has it open. 
+# means PID 20670 has it open.
 
 $ ps aux | grep 20670
 szdz             20670   0.0  0.2 444533392  70176 s022  S+    8:59p.m.   0:00.13 /Users/.../node socket/broker.ts
@@ -48,5 +47,3 @@ $ netstat -an | grep socket.sock
 92df33a00bc41243 stream      0      0                0 3cbc532b6148f27d                0                0 var/socket.sock
 da6a0f0b984d6282 stream      0      0 cb1c1da6e821b5cd                0                0                0 var/socket.sock
 ```
-
-

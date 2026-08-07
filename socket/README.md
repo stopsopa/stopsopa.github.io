@@ -1,4 +1,3 @@
-
 # how to use tools in this directory
 
 ```bash
@@ -8,10 +7,16 @@
 NODE_OPTIONS= SOCKET=var/socket.sock node socket/broker.ts
   # this is btw interactive - you can pass some messages in the terminal
   # NOTE: read about it's lifecycle, if process fails it will remove socket file
-  #       and when we start it again it will create socket file again. Just work with that   
+  #       and when we start it again it will create socket file again. Just work with that
 
-# that is most important part - first you have to have broker working, 
-# after that you can interact with that data bus you've just created  
+# that is most important part - first you have to have broker working,
+# after that you can interact with that data bus you've just created
+
+```
+
+# then you can interact with the socket
+
+```bash
 
 # you can run server listening to that socket in another terminal
 NODE_OPTIONS= HOST=0.0.0.0 PORT=8080 SOCKET=var/socket.sock node socket/node/server.ts
@@ -58,7 +63,7 @@ EEE
 
 
 # ... and we can have something else at the samet ime passing something different
-# so final reasult will be like 
+# so final reasult will be like
 cat <<EEE | perl -pe "system 'sleep .03'" | nc -U var/socket.sock
 transpile ./bash/node/is-port-free.ts
 no_sandbox ./bash/node/json/unwrap.ts
@@ -80,10 +85,9 @@ EEE
 SOCKET=var/socket.sock node socket/node/subscribe.ts --regex "/^transpile( .*)*\$/i" \
 | IN=ts OUT=js /bin/bash bash/file/extswap.sh
 
-# and after extswap we could pass it somewhere else andthat thing could emmit new events 
+# and after extswap we could pass it somewhere else andthat thing could emmit new events
 # and we could pick that up with something else .. and so on ..
 
 # and that's how we have built event bus
 
 ```
-

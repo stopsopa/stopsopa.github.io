@@ -1,4 +1,3 @@
-
 //
 // SOCKET=var/socket.sock node socket/node/subscribe.ts
 // SOCKET=var/socket.sock node socket/node/subscribe.ts --fresh
@@ -10,33 +9,33 @@
 //    test runs against entire message, except the part with timestamp
 //    1786059828261_00001 def fdjksaflds
 //                        |------------|--> this part is tested against regex
-// 
+//
 // Script should just try to connect to socket - exponentional backoff
-// 
+//
 // once it will connect it should start taking messages and print to the console.
-// 
-// 
+//
+//
 // if connection lost it should just try to acquire connection - exponentional backoff
 // and once connected it should try to continue
-// 
+//
 // all messages have format like
-// 
+//
 // "1786055195162_00001 fsfds"
-// 
+//
 // where first segment is unique id
-// 
+//
 // before forwarding message as is with that id to stdout we should extract it (simple split and take of rist segment up until first space)
-// 
+//
 // then store it in local MEMORY
 // but before that we have to take old value from memory and check with first segment if MEMORY first segment is smaller than incomming log first segment then just forward to stdout
 // if these are the same but second segment from new message is biggr than second segment from memory then also forward
 // but if any of them is smaller than wait for new message
-// 
+//
 // only when we find newer incomming message we should update our local Memory with that timesegment like 1786055195162_00001 in our local memory
 // and keep updating with each new incomming message
-// 
+//
 // What I'm trying to do here is to implement memory in this script to persist between loosing connection with server and be able to never repeat the same message to stdout
-// 
+//
 // Options:
 //  --fresh / --from-now : Initializes memoryId with a fresh timestamp ID at startup to ignore historical messages from broker and only display new incoming messages.
 //  --regex              : Regular expression pattern to filter the event payload (the portion after the initial ID segment).
@@ -45,7 +44,7 @@
 //                         Use single quotes ('...') or escape the dollar sign (\$) when using end-of-line anchors:
 //                           --regex '/^(open|close)$/i'
 //                           --regex "/^(transpile|esbuild_sh)\$/i"
-// 
+//
 // This module can also be imported as a library - see createSubscriber export.
 // When run directly it replicates the same behaviour as before.
 //
@@ -124,7 +123,7 @@ export function getRegexArg(): RegExp | null {
 /**
  * Parses an ID string formatted as "<segment1>_<segment2>" into numerical components.
  * Returns null if parsing fails.
- * 
+ *
  * @param id ID string such as "1786055195162_00001"
  */
 export function parseId(id: string | null): { seg1: number; seg2: number } | null {
@@ -146,12 +145,12 @@ export function parseId(id: string | null): { seg1: number; seg2: number } | nul
 /**
  * Compares incoming ID against a reference ID.
  * Returns true if incoming ID is strictly newer than reference ID.
- * 
+ *
  * Rule:
  * 1. If reference ID is null/empty, incoming ID is considered newer.
  * 2. Compare first segment (numeric timestamp / sequence).
  * 3. If first segments are equal, compare second segment (numeric index).
- * 
+ *
  * @param incomingId ID extracted from incoming message
  * @param referenceId Reference ID to compare against (e.g. memoryId or last seen ID)
  */
@@ -208,12 +207,7 @@ export interface SubscriberOptions {
  * @param options SubscriberOptions
  */
 export function createSubscriber(options: SubscriberOptions): { stop: () => void } {
-  const {
-    socket,
-    filterRegex = null,
-    fresh = false,
-    onLine = (line: string) => console.log(line),
-  } = options;
+  const { socket, filterRegex = null, fresh = false, onLine = (line: string) => console.log(line) } = options;
 
   const nextId = createIdGenerator();
 
@@ -239,7 +233,7 @@ export function createSubscriber(options: SubscriberOptions): { stop: () => void
    * 2. Updates local memoryId to keep track of state across socket reconnects.
    * 3. Extracts remaining payload (event + data) and evaluates against filterRegex if present.
    * 4. Calls onLine with original line only if it is newer AND matches the regex filter.
-   * 
+   *
    * @param line Single log line received from socket
    */
   function processLine(line: string) {
@@ -360,5 +354,3 @@ if (isMain) {
 
   createSubscriber({ socket: SOCKET, filterRegex, fresh: isFresh });
 }
-
-

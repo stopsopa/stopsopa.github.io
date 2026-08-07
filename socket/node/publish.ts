@@ -40,13 +40,13 @@ export interface Publisher {
 /**
  * Creates a persistent connection to the Unix domain socket for publishing multiple messages efficiently.
  * Returns an object containing a `send(message)` method and the underlying `client` instance.
- * 
+ *
  * Usage example:
  *   const pub = createPublisher("var/socket.sock");
  *   pub.send("open file.ts");
  *   pub.send("transpile file.ts");
  *   pub.destroy();
- * 
+ *
  * @param SOCKET Path to the Unix socket file
  */
 export function createPublisher(SOCKET: string): Publisher {
@@ -83,7 +83,7 @@ export function createPublisher(SOCKET: string): Publisher {
 
 /**
  * Convenience one-shot function to connect, publish a single message, and close connection.
- * 
+ *
  * @param SOCKET Path to the Unix socket file
  * @param message Message payload to publish to the broker
  */
