@@ -6,56 +6,36 @@
 // broker will broadcast:
 //   "1786060343769_00001 transpile test/test.unit.ts"
 //
-// Here is though implementation of function to do the same from js
+// Here is though implementation of function to do the same from ts
 //
 
 import net from "node:net";
-import fs from "node:fs";
+import { checkIfSocket } from "./libs/checkIfSocket.ts";
+import { createConnection, ManagedConnection } from "./libs/createConnection.ts";
 
-// Centralized error factory — prepends the module preamble to every thrown error.
-function th(msg: string) {
-  return new Error("publish.ts error: " + msg);
-}
-
-/**
- * Checks whether the specified path exists and is a valid Unix domain socket file.
- * When shouldThrow is true, throws via th() with a specific message instead of returning false.
- *
- * @param SOCKET Absolute or relative path to the Unix socket file
- * @param shouldThrow If true, throws on invalid socket instead of returning false
- * @returns true if path exists and is a socket file, false otherwise
- */
-export function checkIfSocket(SOCKET: string, shouldThrow: boolean = false): boolean {
-  if (typeof SOCKET !== "string" || !SOCKET.trim()) {
-    if (shouldThrow) throw th("checkIfSocket: SOCKET path is required");
-    return false;
-  }
-
-  if (!fs.existsSync(SOCKET)) {
-    if (shouldThrow) throw th(`checkIfSocket: path does not exist >${SOCKET}<`);
-    return false;
-  }
-
-  try {
-    const stat = fs.statSync(SOCKET);
-    const isSocket = stat.isSocket();
-    if (!isSocket && shouldThrow) throw th(`checkIfSocket: path exists but is not a socket >${SOCKET}<`);
-    return isSocket;
-  } catch (err: any) {
-    if (shouldThrow) throw th(`checkIfSocket: failed to stat >${SOCKET}<: ${err?.message ?? err}`);
-    return false;
-  }
-}
+export { checkIfSocket } from "./libs/checkIfSocket.ts";
 
 export interface Publisher {
   send: (message: string) => boolean;
-  client: net.Socket;
+  /**
+   * Returns the current underlying net.Socket instance.
+   *
+   * Why getFreshClient() and not a plain `client` property:
+   * The connection automatically reconnects with exponential backoff whenever the socket
+   * closes or errors. Each reconnect creates a brand-new net.Socket object and replaces
+   * the previous one. Exposing a plain `client` property would freeze the reference at
+   * the moment of creation and the caller would hold a stale, destroyed socket.
+   * getFreshClient() always resolves to the latest live socket, keeping the caller safe
+   * even across multiple reconnect cycles. May return null if currently between reconnects.
+   */
+  getFreshClient: () => net.Socket | null;
   destroy: () => void;
 }
 
 /**
  * Creates a persistent connection to the Unix domain socket for publishing multiple messages efficiently.
- * Returns an object containing a `send(message)` method and the underlying `client` instance.
+ * Uses exponential backoff reconnect — connection is maintained automatically if the socket closes.
+ * Returns an object with send(), getFreshClient(), and destroy() methods.
  *
  * Usage example:
  *   const pub = createPublisher("var/socket.sock");
@@ -66,31 +46,13 @@ export interface Publisher {
  * @param SOCKET Path to the Unix socket file
  */
 export function createPublisher(SOCKET: string): Publisher {
-  checkIfSocket(SOCKET, true);
-
-  const client = net.createConnection(SOCKET);
-
-  client.on("error", (err) => {
-    console.error(`createPublisher error: Socket error on >${SOCKET}<: ${err.message}`);
-  });
+  const conn: ManagedConnection = createConnection({ socket: SOCKET });
 
   return {
-    send(message: string): boolean {
-      const trimmed = message.trim();
-      if (!trimmed) {
-        return false;
-      }
-      if (client.destroyed || !client.writable) {
-        console.error(`createPublisher error: Cannot send message, socket >${SOCKET}< is not writable`);
-        return false;
-      }
-      return client.write(`${trimmed}\n`);
-    },
-    client,
+    send: conn.send.bind(conn),
+    getFreshClient: conn.getFreshClient.bind(conn),
     destroy() {
-      if (!client.destroyed) {
-        client.destroy();
-      }
+      conn.stop();
     },
   };
 }
