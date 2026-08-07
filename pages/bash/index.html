@@ -44,6 +44,8 @@
           <h2>basics</h2>
           <script type="editor" data-lang="sh">
 
+            export ENVFILE="${ENVFILE:-.env}"
+
             du -sh | sort -hr
               # sort by size - still maintain human readable format
 
