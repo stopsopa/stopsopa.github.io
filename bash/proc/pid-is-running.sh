@@ -25,7 +25,11 @@ if ps -p ${1} > /dev/null
 then
    echo "${0}: ${LOG} is running"
 else   
-   echo "${0}: ${LOG} is NOT running"
+    RED="\033[31m"
+    RESET="\033[0m"
+
+    echo -e "${RED}${0}: ${LOG} is NOT running${RESET}"
+    exit 1
 
    exit 1
 fi

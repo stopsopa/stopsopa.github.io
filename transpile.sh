@@ -38,8 +38,8 @@ find . -type d \( \
 -o -type \
 f -name "*.ts" \
 -print \
-| node gitignore.js "${1}" \
-| /bin/bash ts.sh transpile.ts --forward-stdin-to-stdout \
+| node gitignore.js transpile.ignore \
+| /bin/bash ts.sh transpile.ts "$@" --forward-stdin-to-stdout \
 | IN=js OUT=ts /bin/bash bash/file/extswap.sh \
 | node transpile_prettier_pipe.ts --forward-stdin-to-stdout \
 | IN=ts OUT=js /bin/bash bash/file/extswap.sh \
