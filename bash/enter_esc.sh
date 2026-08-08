@@ -8,6 +8,12 @@
 # but generally this script is designed to be used:
 #   source bash/enter_esc.sh
 # 
+# 
+# source bash/enter_esc.sh;
+# if [ -t 0 ] && [ -z "${NOHELP}" ]; then
+# fi
+# 
+# 
 
 GRAY=$'\033[38;5;244m'
 BLACK=$'\033[30m'
