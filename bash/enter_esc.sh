@@ -5,14 +5,11 @@
 #   /bin/bash bash/enter_esc.sh
 # to test
 # 
+# echo "" | /bin/bash bash/enter_esc.sh
+#   to see immediately both
+# 
 # but generally this script is designed to be used:
 #   source bash/enter_esc.sh
-# 
-# 
-# source bash/enter_esc.sh;
-# if [ -t 0 ] && [ -z "${NOHELP}" ]; then
-# fi
-# 
 # 
 
 GRAY=$'\033[38;5;244m'
@@ -39,20 +36,22 @@ BG_WHITE=$'\033[47m'
 
 function enter {
     echo "${BG_GREEN}"
-    printf '\n Press any key to continue (Esc to exit)...\n';old=$(stty -g);stty -icanon -echo
-    IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
+    printf '\n  📜  Press any key to continue (Esc to exit)...\n';old=$(stty -g 2>/dev/null || true);stty -icanon -echo 2>/dev/null || true
+    IFS= read -r -n1 k 2>/dev/null||IFS= read -r k || true; [ -n "$old" ] && stty "$old" 2>/dev/null || true
     echo "${RESET}"
     if [ "$k" = "$(printf '\033')" ]; then
+        echo "bash/enter_esc.sh: enter function caught ESC key (exit code 0)"
         exit 0;
     fi
 }
 
 function esc {
     echo "${BG_RED}"
-    printf '\n  Press Enter to continue (any other key exits)...\n';old=$(stty -g);stty -icanon -echo
-    IFS= read -r -n1 k 2>/dev/null||IFS= read -r k;stty "$old"
+    printf '\n  🏷️  Press Enter to continue (any other key exits)...\n';old=$(stty -g 2>/dev/null || true);stty -icanon -echo 2>/dev/null || true
+    IFS= read -r -n1 k 2>/dev/null||IFS= read -r k || true; [ -n "$old" ] && stty "$old" 2>/dev/null || true
     echo "${RESET}"
     if [ -n "$k" ]; then
+        echo "bash/enter_esc.sh: esc function caught key >$k< (exit code 0)"
         exit 0;
     fi
 }
