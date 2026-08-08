@@ -152,12 +152,9 @@
             );
           }
 
-          if (data.email) {
-            const coAuthor = `${data.name ? data.name : data.login} <${data.email}>`;
-          } else {
-            const coAuthor = `${data.name ? data.name : data.login} <${data.id}+${data.login}@users.noreply.github.com>`;
-          }
-          resultEditor.value = `\n\`\`\`\ncomment\n\nCo-authored-by: ${coAuthor}\n\`\`\`\n`;
+          const coAuthorName = data.name ? data.name : data.login;
+          const coAuthorEmail = data.email ? data.email : `${data.id}+${data.login}@users.noreply.github.com>`;
+          resultEditor.value = `comment\n\nCo-authored-by: ${coAuthorName} <${coAuthorEmail}>\n`;
 
           // Update URL parameter
           const newUrl = new URL(window.location.href);
