@@ -657,7 +657,7 @@ EOF
 
   CMD="${CMD//\\$'\n'/}"
 
-  eval "$CMD"
+  eval "${CMD}"
     
   exit 0
 fi # end of    if [ "${_TARGET}" = "docker" ]; then    condition
