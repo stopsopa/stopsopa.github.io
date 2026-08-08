@@ -45,6 +45,27 @@
           <script type="editor" data-lang="sh">
 
             export ENVFILE="${ENVFILE:-.env}"
+            export ENVFILE="${ENVFILE-.env}"
+
+              # ${VAR-true} → default only if VAR is unset              
+                unset SKIP_FIXTURES
+                export SKIP_FIXTURES="${SKIP_FIXTURES-true}"
+                echo "$SKIP_FIXTURES"   # true     
+            
+              # ${VAR-true} → keep empty if VAR exists but is empty              
+                SKIP_FIXTURES=""
+                export SKIP_FIXTURES="${SKIP_FIXTURES-true}"
+                echo "$SKIP_FIXTURES"   # empty
+
+              # ${VAR:-true} → default if VAR is unset
+                unset SKIP_FIXTURES
+                export SKIP_FIXTURES="${SKIP_FIXTURES:-true}"
+                echo "$SKIP_FIXTURES"   # true  
+            
+              # ${VAR:-true} → default if VAR exists but is empty              
+                SKIP_FIXTURES=""
+                export SKIP_FIXTURES="${SKIP_FIXTURES:-true}"
+                echo "$SKIP_FIXTURES"   # true            
 
             du -sh | sort -hr
               # sort by size - still maintain human readable format
