@@ -159,6 +159,71 @@
 
           ffprobe -v verbose myfile.mov > log.log 2>&1
         </script>
+        <h2>append-repeat.sh</h2>
+
+        <script type="editor" data-lang="sh">
+
+          #
+          # Appends REPEAT copies of REPEAT_SEGMENT to FIRST and produces OUTPUT.
+          #
+          # Usage:
+          #   /bin/bash append-repeat.sh REPEAT FIRST REPEAT_SEGMENT OUTPUT
+          #
+          # Example:
+          #   /bin/bash append-repeat.sh 5 first.mp4 second.mp4 output.mp4
+          #
+          # This produces:
+          #   first.mp4 + second.mp4 + second.mp4 + second.mp4 + second.mp4 + second.mp4
+          #
+          
+          REPEAT="${1}"
+          
+          if [[ ! ${REPEAT} =~ ^[0-9]+$ ]]; then
+              echo "${0} error: REPEAT is not a number >${REPEAT}<"
+              exit 1
+          fi
+          
+          FIRST="${2}"
+          
+          if [ ! -f "${FIRST}" ]; then
+              echo "${0} error: FIRST is not a file >${FIRST}<"
+              exit 1
+          fi
+          
+          REPEAT_SEGMENT="${3}"
+          
+          if [ ! -f "${REPEAT_SEGMENT}" ]; then
+              echo "${0} error: REPEAT_SEGMENT is not a file >${REPEAT_SEGMENT}<"
+              exit 1
+          fi
+          
+          OUTPUT="${4}"
+          
+          if [ -f "${OUTPUT}" ]; then
+              echo "${0} error: OUTPUT already exists >${OUTPUT}<"
+              exit 1
+          fi
+          
+          CONCAT_FILE="./.append-repeat-$$.txt"
+          
+          trap 'rm -f "${CONCAT_FILE}"' EXIT
+          
+          {
+              printf "file '%s'\n" "${FIRST}"
+          
+              for ((i = 0; i < REPEAT; i++)); do
+                  printf "file '%s'\n" "${REPEAT_SEGMENT}"
+              done
+          } > "${CONCAT_FILE}"
+          
+          ffmpeg \
+              -f concat \
+              -safe 0 \
+              -i "${CONCAT_FILE}" \
+              -c copy \
+              "${OUTPUT}"
+          
+        </script>
         <h2>merge two files</h2>
         <script type="editor" data-lang="sh">
 
