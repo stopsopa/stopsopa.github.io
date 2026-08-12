@@ -1,10 +1,23 @@
 /*  
   https://stopsopa.github.io/pages/js/popper/html-vanilla/hint-v2.html
+
+  NOTES:
+  There was regression detected with update in chrome 151: https://chromestatus.com/feature/5351959625334784
 */
 [data-popover] {
   inset: auto;
   margin: 0;
   width: max-content;
+  /*
+   * position-anchor: auto — required since Chrome 151.
+   * Chrome 151 changed the initial value of position-anchor from auto to normal.
+   * "normal" only resolves the implicit popovertarget anchor when position-area is also set;
+   * since we use anchor() functions directly (not position-area), without this
+   * explicit "auto" the browser finds no anchor and the popover falls back to
+   * top-left of the viewport.
+   */
+  position-anchor: auto;
+
   position-try: flip-block, flip-inline;
   --interest-delay-start: 0.3s;
   --interest-delay-end: 0.3s;
