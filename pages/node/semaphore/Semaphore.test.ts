@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import Semaphore from "./Semaphore.ts";
 
 /**
- *
+ * node --test pages/node/semaphore/Semaphore.test.ts
  */
 test("Semaphore", () => {
   const semaphore = new Semaphore(3);
