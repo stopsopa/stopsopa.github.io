@@ -1,3 +1,12 @@
+/**
+ * Encodes arbitrary text so it can be transmitted through a line-based
+ * message transport that does not support newline characters.
+ *
+ * Newlines are encoded as `\n`, while backslashes are escaped so that
+ * existing `\n` sequences in the original text are preserved literally.
+ *
+ * The encoding is fully reversible: decode(encode(str)) === str.
+ */
 export function encode(str: string): string {
   return str.replaceAll("\\", "\\\\").replaceAll("\n", "\\n");
 }
