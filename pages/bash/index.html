@@ -47,12 +47,12 @@
             export ENVFILE="${ENVFILE:-.env}"
             export ENVFILE="${ENVFILE-.env}"
 
-              # ${VAR-true} → default only if VAR is unset              
+              # ${VAR-true} → default only if VAR is unset
                 unset SKIP_FIXTURES
                 export SKIP_FIXTURES="${SKIP_FIXTURES-true}"
-                echo "$SKIP_FIXTURES"   # true     
-            
-              # ${VAR-true} → keep empty if VAR exists but is empty              
+                echo "$SKIP_FIXTURES"   # true
+
+              # ${VAR-true} → keep empty if VAR exists but is empty
                 SKIP_FIXTURES=""
                 export SKIP_FIXTURES="${SKIP_FIXTURES-true}"
                 echo "$SKIP_FIXTURES"   # empty
@@ -60,12 +60,12 @@
               # ${VAR:-true} → default if VAR is unset
                 unset SKIP_FIXTURES
                 export SKIP_FIXTURES="${SKIP_FIXTURES:-true}"
-                echo "$SKIP_FIXTURES"   # true  
-            
-              # ${VAR:-true} → default if VAR exists but is empty              
+                echo "$SKIP_FIXTURES"   # true
+
+              # ${VAR:-true} → default if VAR exists but is empty
                 SKIP_FIXTURES=""
                 export SKIP_FIXTURES="${SKIP_FIXTURES:-true}"
-                echo "$SKIP_FIXTURES"   # true            
+                echo "$SKIP_FIXTURES"   # true
 
             du -sh | sort -hr
               # sort by size - still maintain human readable format
@@ -1382,7 +1382,6 @@
               https://youtu.be/MnS0TvxLzaU
 
             croc https://getcroc.com/
-            
           </script>
           <h2>stop system shutdown</h2>
 
@@ -3582,7 +3581,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
                   BOLD=$'\033[1m'
                   REVERSE=$'\033[7m'
                   RESET=$'\033[0m'
-                  
+
                   BG_BLACK=$'\033[40m'
                   BG_RED=$'\033[41m'
                   BG_GREEN=$'\033[42m'
