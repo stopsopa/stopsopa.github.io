@@ -56,6 +56,7 @@ import { checkIfSocket } from "./libs/checkIfSocket.ts";
 export { createIdGenerator, parseId, isNewer, stringToRegex } from "./libs/idUtils.ts";
 export { createConnection } from "./libs/createConnection.ts";
 export { checkIfSocket } from "./libs/checkIfSocket.ts";
+export { encode, decode } from "./libs/lineEncoding.ts";
 
 // Detect if this module was run directly (not imported as a library).
 // When run directly, parse CLI args and start the subscriber.

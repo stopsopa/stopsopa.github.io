@@ -12,6 +12,7 @@
 import net from "node:net";
 
 import { checkIfSocket } from "./libs/checkIfSocket.ts";
+import { encode } from "./libs/lineEncoding.ts";
 
 /**
  * Convenience one-shot function to connect, publish a single message, and close connection.
@@ -27,8 +28,10 @@ export default function socketPublish(SOCKET: string, message: string): void {
     return;
   }
 
+  const encoded = encode(trimmed);
+
   const client = net.createConnection(SOCKET, () => {
-    client.write(`${trimmed}\n`, () => {
+    client.write(`${encoded}\n`, () => {
       client.end();
     });
   });

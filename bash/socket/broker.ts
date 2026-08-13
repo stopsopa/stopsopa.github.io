@@ -32,6 +32,7 @@ import fs from "node:fs";
 import readline from "node:readline";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { encode } from "./libs/lineEncoding.ts";
 
 const RETENTION = getRetentionArg();
 
@@ -192,7 +193,7 @@ server.listen(SOCKET, () => {
     log(`\x1b[32minteractive mode enabled\x1b[0m`);
 
     rl.on("line", (line) => {
-      publish(line);
+      publish(encode(line));
     });
   } else {
     log(`\x1b[31minteractive mode disabled\x1b[0m`);

@@ -1,6 +1,7 @@
 import net from "node:net";
 import { checkIfSocket } from "./checkIfSocket.ts";
 import { createIdGenerator, isNewer, stringToRegex } from "./idUtils.ts";
+import { encode, decode } from "./lineEncoding.ts";
 
 /**
  * Options for createConnection.
@@ -11,7 +12,7 @@ import { createIdGenerator, isNewer, stringToRegex } from "./idUtils.ts";
  * filterRegex - Optional RegExp or string pattern to filter incoming messages against the payload portion
  *               (everything after the leading ID segment).
  * onLine      - Called for each accepted incoming line. Defaults to console.log.
- *               Receives the full trimmed line including the leading ID segment.
+ *               Receives the full trimmed line including the leading ID segment (decoded).
  * onConnected - Called when socket connection is established.
  * onClosed    - Called when socket connection is closed.
  */
@@ -27,8 +28,8 @@ export interface CreateConnectionOptions {
 /**
  * The object returned by createConnection.
  *
- * send          - Writes a message to the socket. Returns true on success, false if socket
- *                 is not yet writable (e.g. still connecting / reconnecting).
+ * send          - Writes a message to the socket. Automatically line-encodes any newlines.
+ *                 Returns true on success, false if socket is not yet writable (e.g. still connecting / reconnecting).
  * getFreshClient - Returns the current underlying net.Socket instance.
  *                  The connection uses exponential backoff reconnect, so the underlying
  *                  client instance is replaced on every reconnect. Always call getFreshClient()
@@ -57,6 +58,7 @@ export interface ManagedConnection {
  * - Exponential backoff reconnect on disconnect/error.
  * - Incoming message deduplication via memoryId (survives reconnects).
  * - Optional regex filtering of incoming message payloads.
+ * - Automatic newline encoding on send() and decoding on incoming messages.
  * - send() method to write outgoing messages at any point (silently no-ops when not writable).
  *
  * This is the single low-level building block used by both createSubscriber and direct publishers.
@@ -121,8 +123,8 @@ export function createConnection(options: CreateConnectionOptions): ManagedConne
    * Processes incoming socket line:
    * 1. Extracts first segment (unique ID) and verifies if it is newer than local memoryId.
    * 2. Updates local memoryId to keep track of state across socket reconnects.
-   * 3. Extracts remaining payload (event + data) and evaluates against filterRegex if present.
-   * 4. Calls onLine with original line only if it is newer AND matches the regex filter.
+   * 3. Decodes encoded wire payload and evaluates against filterRegex if present.
+   * 4. Calls onLine with decoded line only if it is newer AND matches the regex filter.
    *
    * @param line Single log line received from socket
    */
@@ -135,16 +137,20 @@ export function createConnection(options: CreateConnectionOptions): ManagedConne
     // Extract first segment up until first space (e.g. "1786055195162_00001")
     const spaceIndex = trimmed.indexOf(" ");
     const incomingId = spaceIndex === -1 ? trimmed : trimmed.slice(0, spaceIndex);
-    const payload = spaceIndex === -1 ? "" : trimmed.slice(spaceIndex + 1);
+    const rawPayload = spaceIndex === -1 ? "" : trimmed.slice(spaceIndex + 1);
 
     // Check if incoming message is newer than what we have in memory
     if (isNewer(incomingId, memoryId)) {
       // Always update memoryId so we advance our sequence tracking
       memoryId = incomingId;
 
-      // Evaluate regex filter on the payload (event + data after unique ID)
-      if (!filterRegex || filterRegex.test(payload)) {
-        onLine(trimmed);
+      // Decode wire escape sequences (e.g. \\n -> \n, \\\\ -> \\)
+      const decodedPayload = decode(rawPayload);
+
+      // Evaluate regex filter on the decoded payload (event + data after unique ID)
+      if (!filterRegex || filterRegex.test(decodedPayload)) {
+        const fullDecodedLine = spaceIndex === -1 ? decode(trimmed) : `${incomingId} ${decodedPayload}`;
+        onLine(fullDecodedLine);
       }
     }
   }
@@ -230,7 +236,8 @@ export function createConnection(options: CreateConnectionOptions): ManagedConne
       if (!currentClient || currentClient.destroyed || !currentClient.writable) {
         return false;
       }
-      return currentClient.write(`${trimmed}\n`);
+      const encoded = encode(trimmed);
+      return currentClient.write(`${encoded}\n`);
     },
 
     /**

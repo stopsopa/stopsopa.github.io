@@ -108,6 +108,8 @@ button {
 .event {
     padding: 4px;
     border-bottom: 1px solid #eee;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .status-container {
