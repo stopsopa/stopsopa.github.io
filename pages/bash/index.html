@@ -1791,6 +1791,10 @@
         <h2>grep</h2>
         <script type="editor" data-lang="sh">
 
+          # ~/.zshrc
+          export GREP_COLOR='7'
+          alias grep='grep --color=auto'
+
           grep 'lzstring' * -rl --exclude-dir={.git,node_modules,.venv} --include='*.ts' --include='*.js'
           grep -r --exclude-dir=node_modules --exclude-dir=product/ddss/ffssfs 'experiment_EP_xxx4' .
           grep -r "test_users" . --exclude-dir={node_modules,docker}
