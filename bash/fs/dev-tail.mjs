@@ -104,13 +104,42 @@ const __filename = fileURLToPath(import.meta.url);
 const rel_script = path.relative(process.cwd(), __filename);
 
 let i = 0;
+
+/**
+ * Some "files" passed as arguments may actually be pipes or special fds
+ * created by bash process substitution: <(cat <<'EOF' ... EOF)
+ * e.g. /dev/fd/63
+ *
+ * A pipe can only be read once - after the first readFileSync the fd is
+ * exhausted and subsequent reads return empty string.
+ *
+ * Solution: detect non-regular files at startup, read them immediately
+ * and store the content in a cache. Regular files are re-read on every
+ * keystroke so live edits are reflected.
+ */
+const fileCache = new Map();
+for (const file of files) {
+  try {
+    const st = fss.statSync(file);
+    // isFIFO covers named pipes; !isFile covers /dev/fd/* character-like fds
+    if (st.isFIFO() || !st.isFile()) {
+      fileCache.set(file, fss.readFileSync(file, "utf8"));
+    }
+  } catch (err) {
+    console.error(`Error pre-reading file ${file}: ${err.message}`);
+  }
+}
+
 function keypressed(key) {
   i += 1;
 
   process.stdout.write(`\n${rel_script}: ${i}`);
 
   files.forEach((file) => {
-    const content = fss.readFileSync(file, "utf8");
+    // Use cached content for pipes/fds, re-read from disk for regular files
+    const content = fileCache.has(file)
+      ? fileCache.get(file)
+      : fss.readFileSync(file, "utf8");
     process.stdout.write(content);
   });
 }
