@@ -24,8 +24,35 @@
 # 
 #   ps aux | grep -v grep | grep xxxxtest | REAPER_NOT_FILTER_OUT_GREP=1 /bin/bash bash/proc/reaper.sh
 # 
+# Also use NO_COLOR=1 to disable colors
+# 
+# 
 
-echo -e "  script reaper.sh: "
+# Color support - disabled when NO_COLOR env var is set and non-empty
+# (intentionally not checking isatty because this script reads from stdin by design)
+if [ -n "${NO_COLOR}" ]; then
+    C_RESET=""
+    C_DIM=""
+    C_LABEL=""
+    C_CMD=""
+    C_PID=""
+    C_ROWS=""
+    C_OK=""
+    C_WARN=""
+    C_ERR=""
+else
+    C_RESET="\033[0m"
+    C_DIM="\033[2m"
+    C_LABEL="\033[1;36m"   # bold cyan  - script name / section headers
+    C_CMD="\033[33m"        # yellow     - command / source label
+    C_PID="\033[1;35m"      # bold magenta - pid values
+    C_ROWS="\033[2;37m"     # dim white  - raw process rows
+    C_OK="\033[1;32m"       # bold green - success
+    C_WARN="\033[1;33m"     # bold yellow - warnings / skips
+    C_ERR="\033[1;31m"      # bold red   - errors / failures
+fi
+
+echo -e "  ${C_LABEL}script reaper.sh:${C_RESET} "
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
@@ -68,12 +95,12 @@ function findDevFrontServerPid {
 
     ROW="$(eval "${CMD}")"
 
-    echo -e "  executing: >${CMD}< found rows:\n  ${ROW:->not found<}"
+    echo -e "  executing: ${C_CMD}>${CMD}<${C_RESET} found rows:\n${C_ROWS}  ${ROW:-${C_WARN}>not found<${C_RESET}}${C_RESET}"
 
     extractPidsFromText "${ROW}"
 
     if [ "${PIDS}" != "" ]; then
-        echo "  executing: >${CMD}< pids: >$(echo -n "${PIDS}" | tr '\n' ',')<"
+        echo -e "  executing: ${C_CMD}>${CMD}<${C_RESET} pids: ${C_PID}>$(echo -n "${PIDS}" | tr '\n' ',')< ${C_RESET}"
     fi
 }
 
@@ -82,14 +109,14 @@ function collectPidsFromStdin {
     local STDIN_CONTENT
     STDIN_CONTENT="$(cat)"
 
-    echo -e "  executing: >${CMD}< found rows (raw, grep not filtered out yet):\n  ${STDIN_CONTENT:->not found<}"
+    echo -e "  executing: ${C_CMD}>${CMD}<${C_RESET} found rows (raw, grep not filtered out yet):\n${C_ROWS}  ${STDIN_CONTENT:-${C_WARN}>not found<${C_RESET}}${C_RESET}"
 
     extractPidsFromText "${STDIN_CONTENT}"
 
     if [ "${PIDS}" = "" ]; then
-        echo "  executing: >${CMD}< no pids to kill"
+        echo -e "  executing: ${C_CMD}>${CMD}<${C_RESET} ${C_WARN}no pids to kill${C_RESET}"
     else
-        echo "  executing: >${CMD}< pids: >$(echo -n "${PIDS}" | tr '\n' ',')<"
+        echo -e "  executing: ${C_CMD}>${CMD}<${C_RESET} pids: ${C_PID}>$(echo -n "${PIDS}" | tr '\n' ',')<${C_RESET}"
     fi
 }
 
@@ -104,11 +131,7 @@ function tryToKillPIDS {
     do
         if [ "${KILL_V2_EXCLUDE_PARENT_PID}" != "" ] && [ "${PID}" = "${KILL_V2_EXCLUDE_PARENT_PID}" ]; then
 
-            cat <<EEE
-
-    skipping KILL_V2_EXCLUDE_PARENT_PID >${KILL_V2_EXCLUDE_PARENT_PID}<
-
-EEE
+            echo -e "\n  ${C_WARN}skipping KILL_V2_EXCLUDE_PARENT_PID >${KILL_V2_EXCLUDE_PARENT_PID}<${C_RESET}\n"
 
             continue;
         fi
@@ -116,7 +139,7 @@ EEE
         if [ "${PID}" != "" ]; then
             if [[ ${PID} =~ ^[0-9]+$ ]]; then
 
-                echo "  executing: >${CMD}< attempt to kill >${PID}<"
+                echo -e "  executing: ${C_CMD}>${CMD}<${C_RESET} attempt to kill ${C_PID}>${PID}<${C_RESET}"
 
                 kill "${PID}"
 
@@ -124,24 +147,24 @@ EEE
                     sleep 1
                 fi
             else
-                echo "  executing: >${CMD}< error: if it's not empty then it should be integer"
+                echo -e "  executing: ${C_CMD}>${CMD}<${C_RESET} ${C_ERR}error: if it's not empty then it should be integer${C_RESET}"
             fi
         else
 
-            echo "  executing: >${CMD}< status: not found in the first place"
+            echo -e "  executing: ${C_CMD}>${CMD}<${C_RESET} ${C_WARN}status: not found in the first place${C_RESET}"
         fi
 
     done <<< "${PIDS}"
 
-    echo "  executing: >${CMD}< find again after..."
+    echo -e "  executing: ${C_CMD}>${CMD}<${C_RESET} find again after..."
 
     findDevFrontServerPid "${1}"
     if [ "${PIDS}" = "" ]; then
 
-        echo "  executing: >${CMD}< status: successfully killed"
+        echo -e "  executing: ${C_CMD}>${CMD}<${C_RESET} ${C_OK}status: successfully killed${C_RESET}"
     else
 
-        echo "  executing: >${CMD}< status: couldn't kill, pids >${PIDS}<"
+        echo -e "  executing: ${C_CMD}>${CMD}<${C_RESET} ${C_ERR}status: couldn't kill, pids >${PIDS}<${C_RESET}"
 
         exit 1
     fi    
