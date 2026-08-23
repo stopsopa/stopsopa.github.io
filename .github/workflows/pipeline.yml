@@ -153,13 +153,15 @@ jobs:
         run: /bin/bash .github/clean_before_artifact.sh
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3.0.1
+        uses: actions/upload-pages-artifact@v5.0.0
         with:
           path: .
 
   # Deployment job
   github-pages:
     timeout-minutes: 1
+    # Only deploy on pushes to master - PRs don't have the OIDC token required by deploy-pages
+    if: github.ref == 'refs/heads/master'
     # NOTE: In case of error:
     # github-pages
     # Branch "main" is not allowed to deploy to github-pages due to environment protection rules.
@@ -172,7 +174,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.5
+        uses: actions/deploy-pages@v5.0.0
         with:
           error_count: 3
           # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-of-onworkflow_callsecrets
