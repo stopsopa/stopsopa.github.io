@@ -16,17 +16,34 @@ esac
 
 source "${_DIR}/realpath_v2.sh"
 
-DUMPFILE="$(relative_path "$(pwd)" "${_DIR}/sync.dump" )"
+DUMPFILE="$(relative_path "$(pwd)" "${_DIR}/sync.tar.gz" )"
 
 HELP=1
 if [ "${1}" = "dump" ]; then
 HELP=0
 
+FOUND="$(find bash -type f ! -path "$DUMPFILE" | sort)"
+
+rm -f "${DUMPFILE}"
+
+printf '%s\n' "${FOUND}" | tar -czf "${DUMPFILE}" -T -
+
+cat <<EEE
+
+${0} output:
+CREATED ${DUMPFILE} WITH >>
+${FOUND}
+<<
+
+EEE
+
+ls -la ${DUMPFILE}
 
 fi
 
 if [ "${1}" = "pull" ]; then
 HELP=0
+
 
 
 
