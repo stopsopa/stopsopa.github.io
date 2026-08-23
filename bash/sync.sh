@@ -1,5 +1,7 @@
 set -e
 
+WEB="https://stopsopa.github.io"
+
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
 case ${_SHELL} in
@@ -16,7 +18,7 @@ esac
 
 source "${_DIR}/realpath_v2.sh"
 
-DUMPFILE="$(relative_path "$(pwd)" "${_DIR}/sync.tar.gz" )"
+DUMPFILE="$(relative_path "$(pwd)" "${_DIR}/bash.tar.gz" )"
 
 HELP=1
 if [ "${1}" = "dump" ]; then
@@ -41,11 +43,45 @@ ls -la ${DUMPFILE}
 
 fi
 
+TARGETDIR=""
+function prepareDir {
+  while true
+  do
+    TARGETDIR="$(openssl rand -hex 2)"
+
+    echo "checking TARGETDIR >${TARGETDIR}<"
+
+    if ! [ -d "${TARGETDIR}" ]; then
+
+      echo "TARGETDIR >${TARGETDIR}< can be created"
+
+      break;
+    fi
+  done
+
+  mkdir "${TARGETDIR}"
+
+  trap "rm -rf \"${TARGETDIR}\"" EXIT
+}
+
 if [ "${1}" = "pull" ]; then
 HELP=0
 
+prepareDir
 
 
+
+cat <<EEE
+
+TARGETDIR >${TARGETDIR}<
+
+EEE
+
+
+
+
+  printf "\n      Press Enter to continue\n"
+  read
 
 fi
 
