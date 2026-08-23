@@ -1,4 +1,24 @@
-#!/usr/bin/env bash
+
+# ~/Workspace/SPECIAL_web/SPECIAL_web szdz 1 /bin/bash bash/relative_v2.test.sh
+# Testing relative_path...
+
+# PASS: '/a/b' -> '/a/b/c' = 'c'
+# PASS: '/a/b' -> '/a/b/c/d' = 'c/d'
+# PASS: '/a/b/c' -> '/a/b/d' = '../d'
+# PASS: '/a/b/c' -> '/a/d/e' = '../../d/e'
+# PASS: '/a/b/c' -> '/x/y' = '../../../x/y'
+# PASS: '/a/b' -> '/a/b' = '.'
+# PASS: '/' -> '/a/b/c' = 'a/b/c'
+# PASS: '/a/b/c' -> '/' = '../../..'
+# PASS: '/var/folders/dg/pdlr69ds5tl93r5s8h29mb540000gq/T/tmp.eZpXAo3HAC/project' -> '/var/folders/dg/pdlr69ds5tl93r5s8h29mb540000gq/T/tmp.eZpXAo3HAC/project/src' = 'src'
+# PASS: '/var/folders/dg/pdlr69ds5tl93r5s8h29mb540000gq/T/tmp.eZpXAo3HAC/project/src' -> '/var/folders/dg/pdlr69ds5tl93r5s8h29mb540000gq/T/tmp.eZpXAo3HAC/project/test' = '../test'
+# PASS: '/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web' -> '/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/foo' = 'foo'
+# PASS: '/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/foo' -> '/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web' = '..'
+
+# ----------------------------------------
+# Passed: 12
+# Failed: 0
+# ----------------------------------------
 
 set -euo pipefail
 

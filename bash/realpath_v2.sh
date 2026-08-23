@@ -93,6 +93,9 @@ relative_path() {
         fi
 
         case "$current" in
+            /)
+                break
+                ;;
             */*)
                 current=${current%/*}
                 ;;
@@ -104,12 +107,18 @@ relative_path() {
 
     # Add the path from COMMON to TO.
     if [ "$to" != "$common" ]; then
-        remainder=${to#"$common"/}
-
-        if [ -n "$result" ]; then
-            result="$result/$remainder"
+        if [ "$common" = "/" ]; then
+            remainder=${to#/}
         else
-            result=$remainder
+            remainder=${to#"$common"/}
+        fi
+
+        if [ -n "$remainder" ]; then
+            if [ -n "$result" ]; then
+                result="$result/$remainder"
+            else
+                result=$remainder
+            fi
         fi
     fi
 

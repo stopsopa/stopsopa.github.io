@@ -1,4 +1,9 @@
 
+# WARNING: USE bash/realpath_v2.sh IT HAS 0 DEPENDENCIES
+# WARNING: USE bash/realpath_v2.sh IT HAS 0 DEPENDENCIES
+# WARNING: USE bash/realpath_v2.sh IT HAS 0 DEPENDENCIES
+# WARNING: USE bash/realpath_v2.sh IT HAS 0 DEPENDENCIES
+#
 # cli native realpath seems to not always resolve paths where path is pointing to non existing dir or file
 # node version of this utility seems to be working in this scenario
 #

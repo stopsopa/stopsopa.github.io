@@ -1,4 +1,4 @@
-
+set -e
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
@@ -14,7 +14,9 @@ case ${_SHELL} in
     ;;
 esac
 
-DUMPFILE="${_DIR}/sync.dump"
+source "${_DIR}/realpath_v2.sh"
+
+DUMPFILE="$(relative_path "$(pwd)" "${_DIR}/sync.dump" )"
 
 HELP=1
 if [ "${1}" = "dump" ]; then
