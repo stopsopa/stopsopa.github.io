@@ -249,6 +249,8 @@ if [ "${1}" = "pull-existing" ]; then
 
     tar -zxvf "${TARGETDIR}/bash.tar.gz" 
 
+    echo $'\033[0;32m\nbash.tar.gz extracted ok\033[0m'
+
     if [ -t 0 ]; then
         printf "\n      Press Enter to continue\n"
         read
