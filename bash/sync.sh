@@ -1,3 +1,8 @@
+#
+# Script to sync our local set of bash scripts to what is published in github pages
+# Works in two modes... just run the script without arguments to see help page
+#
+
 set -e
 
 WEB="https://stopsopa.github.io" # https://stopsopa.github.io/bash/bash.tar.gz
