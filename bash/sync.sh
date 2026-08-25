@@ -154,7 +154,7 @@ esac
 DUMPFILE="$(relative_path "$(pwd)" "${_DIR}/bash.tar.gz" )"
 
 HELP=1
-if [ "${1}" = "pack" ]; then
+if [ "${1}" = "dump" ]; then
     HELP=0
 
     FOUND="$(find bash -type f ! -path "$DUMPFILE" | sort)"
@@ -176,7 +176,7 @@ EEE
 
 fi
 
-if [ "${1}" = "pull" ]; then
+if [ "${1}" = "pull-existing" ]; then
     HELP=0
 
     if [ ! -d "bash" ]; then
@@ -227,7 +227,7 @@ if [ "${1}" = "pull" ]; then
     fi
 fi
 
-if [ "${1}" = "pull-existing" ]; then
+if [ "${1}" = "pull" ]; then
     HELP=0
 
     if [ ! -d "bash" ]; then
@@ -262,8 +262,8 @@ if [ "${HELP}" = "1" ]; then
 
   cat <<EEE
 
-    /bin/bash ${0} pack
-        # to create local pack file: ${DUMPFILE}
+    /bin/bash ${0} dump
+        # to create local dump file: ${DUMPFILE}
 
     /bin/bash ${0} pull
         # to sync all local with remote
