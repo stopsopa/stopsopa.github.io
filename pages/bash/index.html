@@ -405,8 +405,10 @@
             # simplest
               echo start
 
-              printf "\n      Press Enter to continue\n"
-              read
+              if [ -t 0 ]; then
+                printf "\n      Press Enter to continue\n"
+                read
+              fi
 
               echo continue
 
