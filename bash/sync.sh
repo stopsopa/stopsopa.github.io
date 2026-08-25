@@ -159,7 +159,7 @@ esac
 DUMPFILE="$(relative_path "$(pwd)" "${_DIR}/bash.tar.gz" )"
 
 HELP=1
-if [ "${1}" = "dump" ]; then
+if [ "${1}" = "pack" ]; then
     HELP=0
 
     FOUND="$(find bash -type f ! -path "${DUMPFILE}" | sort)"
