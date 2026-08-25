@@ -242,7 +242,7 @@ if [ "${1}" = "pull-existing" ]; then
         echo wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
         wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
 
-        tar -zxvf bash.tar.gz    
+        
     )
 
 
