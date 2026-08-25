@@ -188,12 +188,6 @@ if [ "${1}" = "pull" ]; then
 
     prepareDir
 
-    cat <<EEE
-
-TARGETDIR >${TARGETDIR}<
-
-EEE
-
   (
     cd "${TARGETDIR}"
     pwd
@@ -201,8 +195,7 @@ EEE
     echo wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
     wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
 
-    tar -zxvf bash.tar.gz
-    
+    tar -zxvf bash.tar.gz    
   )
 
   FAILED=()
