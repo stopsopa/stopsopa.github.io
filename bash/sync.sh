@@ -23,39 +23,39 @@ fi
 
 # see bash/require_cmd.sh
 relative_path() {
-    from=$1
-    to=$2
+    from="${1}"
+    to="${2}"
 
     # Make FROM absolute.
-    case "$from" in
+    case "${from}" in
         /*)
             ;;
         *)
-            from=$(cd "$from" 2>/dev/null && pwd) || return 1
+            from=$(cd "${from}" 2>/dev/null && pwd) || return 1
             ;;
     esac
 
     # Make TO absolute.
-    case "$to" in
+    case "${to}" in
         /*)
             ;;
         *)
-            to=$(cd "$(dirname "$to")" 2>/dev/null &&
-                printf '%s/%s' "$(pwd)" "$(basename "$to")") || return 1
+            to=$(cd "$(dirname "${to}")" 2>/dev/null &&
+                printf '%s/%s' "$(pwd)" "$(basename "${to}")") || return 1
             ;;
     esac
 
     # Find common ancestor.
-    common=$from
+    common="${from}"
 
-    while [ "$to" != "$common" ]; do
-        case "$to" in
-            "$common"/*)
+    while [ "${to}" != "${common}" ]; do
+        case "${to}" in
+            "${common}"/*)
                 break
                 ;;
         esac
 
-        case "$common" in
+        case "${common}" in
             /)
                 break
                 ;;
@@ -70,21 +70,21 @@ relative_path() {
 
     # Count how many directories we need to go up from FROM.
     result=
-    current=$from
+    current="${from}"
 
-    while [ "$current" != "$common" ]; do
-        if [ -n "$result" ]; then
-            result="../$result"
+    while [ "${current}" != "${common}" ]; do
+        if [ -n "${result}" ]; then
+            result="../${result}"
         else
             result=..
         fi
 
-        case "$current" in
+        case "${current}" in
             /)
                 break
                 ;;
             */*)
-                current=${current%/*}
+                current="${current%/*}"
                 ;;
             *)
                 current=/
@@ -93,24 +93,24 @@ relative_path() {
     done
 
     # Add the path from COMMON to TO.
-    if [ "$to" != "$common" ]; then
-        if [ "$common" = "/" ]; then
-            remainder=${to#/}
+    if [ "${to}" != "${common}" ]; then
+        if [ "${common}" = "/" ]; then
+            remainder="${to#/}"
         else
-            remainder=${to#"$common"/}
+            remainder="${to#"${common}"/}"
         fi
 
-        if [ -n "$remainder" ]; then
-            if [ -n "$result" ]; then
-                result="$result/$remainder"
+        if [ -n "${remainder}" ]; then
+            if [ -n "${result}" ]; then
+                result="${result}/${remainder}"
             else
-                result=$remainder
+                result="${remainder}"
             fi
         fi
     fi
 
-    if [ -n "$result" ]; then
-        printf '%s\n' "$result"
+    if [ -n "${result}" ]; then
+        printf '%s\n' "${result}"
     else
         printf '.\n'
     fi
@@ -157,7 +157,7 @@ HELP=1
 if [ "${1}" = "dump" ]; then
     HELP=0
 
-    FOUND="$(find bash -type f ! -path "$DUMPFILE" | sort)"
+    FOUND="$(find bash -type f ! -path "${DUMPFILE}" | sort)"
 
     rm -f "${DUMPFILE}"
 
@@ -208,7 +208,7 @@ if [ "${1}" = "pull-existing" ]; then
         echo $'\033[0;31m'"mv ${TARGETDIR}/${LINE} ${LINE}"$'\033[0m'
         FAILED+=("${LINE}")
     fi
-    done <<< "$LIST"
+    done <<< "${LIST}"
 
     # Print final summary: all good or list failed files
     if [ "${#FAILED[@]}" -eq 0 ]; then
@@ -241,10 +241,8 @@ if [ "${1}" = "pull" ]; then
         cd "${TARGETDIR}"
         pwd
 
-        echo wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
-        wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
-
-        
+        echo wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz"        
+        wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz"        
     )
 
     tar -zxvf "${TARGETDIR}/bash.tar.gz" 
@@ -255,7 +253,6 @@ if [ "${1}" = "pull" ]; then
         printf "\n      Press Enter to continue\n"
         read
     fi
-
 fi
 
 if [ "${HELP}" = "1" ]; then
