@@ -188,46 +188,69 @@ if [ "${1}" = "pull" ]; then
 
     prepareDir
 
-  (
-    cd "${TARGETDIR}"
-    pwd
+    (
+        cd "${TARGETDIR}"
+        pwd
 
-    echo wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
-    wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
+        echo wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
+        wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
 
-    tar -zxvf bash.tar.gz    
-  )
+        tar -zxvf bash.tar.gz    
+    )
 
-  FAILED=()
-  while IFS=$'\n' read -r LINE; do
+    FAILED=()
+    while IFS=$'\n' read -r LINE; do
     if mv "${TARGETDIR}/${LINE}" "${LINE}" 2>/dev/null; then
-      echo "mv ${TARGETDIR}/${LINE} ${LINE}"
+        echo "mv ${TARGETDIR}/${LINE} ${LINE}"
     else
-      echo $'\033[0;31m'"mv ${TARGETDIR}/${LINE} ${LINE}"$'\033[0m'
-      FAILED+=("${LINE}")
+        echo $'\033[0;31m'"mv ${TARGETDIR}/${LINE} ${LINE}"$'\033[0m'
+        FAILED+=("${LINE}")
     fi
-  done <<< "$LIST"
+    done <<< "$LIST"
 
-  # Print final summary: all good or list failed files
-  if [ "${#FAILED[@]}" -eq 0 ]; then
-    echo $'\033[0;32m\nall updated\033[0m'
-  else
-    echo $'\033[0;31m\nsome failed ('"${#FAILED[@]}"$'):\033[0m'
-    for F in "${FAILED[@]}"; do
-      echo $'\033[0;31m  '"${F}"$'\033[0m'
-    done
-    echo ""
-  fi
+    # Print final summary: all good or list failed files
+    if [ "${#FAILED[@]}" -eq 0 ]; then
+        echo $'\033[0;32m\nall updated\033[0m'
+    else
+        echo $'\033[0;31m\nsome failed ('"${#FAILED[@]}"$'):\033[0m'
+        for F in "${FAILED[@]}"; do
+            echo $'\033[0;31m  '"${F}"$'\033[0m'
+        done    
+        echo ""
+    fi
 
-  if [ -t 0 ]; then
-    printf "\n      Press Enter to continue\n"
-    read
-  fi
+    if [ -t 0 ]; then
+        printf "\n      Press Enter to continue\n"
+        read
+    fi
 fi
 
 if [ "${1}" = "pull-existing" ]; then
     HELP=0
 
+    if [ ! -d "bash" ]; then
+      echo "${0} error: no ./bash directory found"
+      exit 1
+    fi
+
+    prepareDir
+
+    (
+        cd "${TARGETDIR}"
+        pwd
+
+        echo wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
+        wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
+
+        tar -zxvf bash.tar.gz    
+    )
+
+
+
+    if [ -t 0 ]; then
+        printf "\n      Press Enter to continue\n"
+        read
+    fi
 
 fi
 
