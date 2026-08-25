@@ -137,9 +137,7 @@ function keypressed(key) {
 
   files.forEach((file) => {
     // Use cached content for pipes/fds, re-read from disk for regular files
-    const content = fileCache.has(file)
-      ? fileCache.get(file)
-      : fss.readFileSync(file, "utf8");
+    const content = fileCache.has(file) ? fileCache.get(file) : fss.readFileSync(file, "utf8");
     process.stdout.write(content);
   });
 }
