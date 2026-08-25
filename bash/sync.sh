@@ -245,7 +245,7 @@ if [ "${1}" = "pull-existing" ]; then
         
     )
 
-
+    tar -zxvf "${TARGETDIR}/bash.tar.gz" 
 
     if [ -t 0 ]; then
         printf "\n      Press Enter to continue\n"
