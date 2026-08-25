@@ -2997,7 +2997,18 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           EEE
 
           done < <(NODE_OPTIONS= node iterate.js lang)
-          # done < "$LIST" # iterate over each line from LIST
+
+          # iterate over each line from LIST
+          LINE=$(cat <<END
+          abc
+          def
+          ghi
+          END
+          );
+          
+          while IFS="\n" read -r LINE; do          
+            echo ">${LINE}<"
+          done <<< "${LINE}"
 
           cat <<EEE
 
