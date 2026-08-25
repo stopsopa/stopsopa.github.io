@@ -194,8 +194,6 @@ TARGETDIR >${TARGETDIR}<
 
 EEE
 
-
-
   (
     cd "${TARGETDIR}"
     pwd
@@ -226,6 +224,11 @@ EEE
       echo $'\033[0;31m  '"${F}"$'\033[0m'
     done
     echo ""
+  fi
+
+  if [ -t 0 ]; then
+    printf "\n      Press Enter to continue\n"
+    read
   fi
 fi
 
