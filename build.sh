@@ -133,6 +133,6 @@ time /bin/bash .github/clicksecure.sh
 
 if [ -n "${CI}" ]; then
   time /bin/bash .github/injectServiceWorker.sh
-  
-  time /bin/bash bash/sync.sh dump
+
+  time /bin/bash bash/sync.sh pack
 fi
