@@ -195,8 +195,10 @@ if [ "${1}" = "pull" ]; then
         echo wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
         wget_sh "${WEB}/bash/bash.tar.gz" "bash.tar.gz" 
 
-        tar -zxvf bash.tar.gz    
+        tar -zxf bash.tar.gz
     )
+
+    echo $'\033[0;32m\nbash.tar.gz extracted ok\033[0m'
 
     FAILED=()
     while IFS=$'\n' read -r LINE; do
