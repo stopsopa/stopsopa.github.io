@@ -184,7 +184,7 @@ if [ "${1}" = "pull" ]; then
       exit 1
     fi
 
-    LIST="$(find bash -type f | sort)"
+    LIST="$(find bash -type f ! -path "${DUMPFILE}" | sort)"
 
     prepareDir
 
@@ -206,7 +206,7 @@ EEE
   )
 
   FAILED=()
-  while IFS="\n" read -r LINE; do
+  while IFS=$'\n' read -r LINE; do
     if mv "${TARGETDIR}/${LINE}" "${LINE}" 2>/dev/null; then
       echo "mv ${TARGETDIR}/${LINE} ${LINE}"
     else
