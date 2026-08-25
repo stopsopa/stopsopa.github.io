@@ -273,4 +273,6 @@ if [ "${HELP}" = "1" ]; then
 
 EEE
 
+exit 1
+
 fi
