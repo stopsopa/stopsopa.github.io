@@ -23,8 +23,20 @@
 //   ]
 // }
 // EOF
-// also it can be used on file in place
-// NODE_OPTIONS= node bash/node/json/sortObjectNested.ts [path to file in place]
+//
+// Sort arrays too:
+//
+// cat <<'EOF' | NODE_OPTIONS= node bash/node/json/sortObjectNested.ts --array
+// [
+//   { "z": 1, "a": 2 },
+//   { "c": 3 },
+//   { "a": 1 }
+// ]
+// EOF
+//
+// It can also be used on a file in place:
+//
+// NODE_OPTIONS= node bash/node/json/sortObjectNested.ts [--array] [path to file in place]
 
 import { readFile, writeFile } from "node:fs/promises";
 
@@ -32,16 +44,22 @@ function isObject(o: unknown): o is Record<string, unknown> {
   return Object.prototype.toString.call(o) === "[object Object]";
 }
 
-function sortObjectNested<T>(data: T): T {
+function sortObjectNested<T>(data: T, sortArrays: boolean): T {
   if (Array.isArray(data)) {
-    return data.map(sortObjectNested) as T;
+    const sorted = data.map((item) => sortObjectNested(item, sortArrays));
+
+    if (sortArrays) {
+      sorted.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+    }
+
+    return sorted as T;
   }
 
   if (isObject(data)) {
     return Object.fromEntries(
       Object.keys(data)
         .sort()
-        .map((key) => [key, sortObjectNested(data[key])])
+        .map((key) => [key, sortObjectNested(data[key], sortArrays)])
     ) as T;
   }
 
@@ -59,16 +77,18 @@ async function readStdin(): Promise<string> {
 }
 
 try {
-  const file = process.argv[2];
+  const args = process.argv.slice(2);
+  const sortArrays = args.includes("--array");
+  const file = args.find((arg) => arg !== "--array");
 
   if (file) {
     const input = await readFile(file, "utf8");
-    const sorted = sortObjectNested(JSON.parse(input));
+    const sorted = sortObjectNested(JSON.parse(input), sortArrays);
 
     await writeFile(file, JSON.stringify(sorted, null, 2) + "\n", "utf8");
   } else {
     const input = await readStdin();
-    const sorted = sortObjectNested(JSON.parse(input));
+    const sorted = sortObjectNested(JSON.parse(input), sortArrays);
 
     process.stdout.write(JSON.stringify(sorted, null, 2) + "\n");
   }
