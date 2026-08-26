@@ -14,6 +14,28 @@
       <!-- <div class="inside" style="max-width: none; padding-left: 80px; padding-right: 30px;"> -->
       <div class="inside">
         <div class="cards">
+          <h2>CLI</h2>
+          <script type="editor" data-lang="sh">
+
+            # install pi
+                https://pi.dev/
+
+            # on start
+              /settings
+                Auto compact - false
+                Install telemetry - false
+                Default project trust - Always trust
+              /hotkeys
+
+            # daily use
+            /new      - starts new session https://pi.dev/docs/latest/quickstart#continue-later
+            /resume   - pi -c # Continue most recent session
+            /model    - change model (Ctrl+S to set as default)
+
+            # interesting 
+            https://pi.dev/docs/latest/quickstart#non-interactive-mode
+            
+          </script>
           <h2>Mac mini Gemma 4 12B QAT</h2>
           <script type="editor" data-lang="sh">
 
@@ -67,19 +89,6 @@
             {
               "tui.input.newLine": ["shift+enter", "ctrl+j"]
             }
-          </script>
-          <h2>CLI</h2>
-          <script type="editor" data-lang="sh">
-
-            # install pi
-                https://pi.dev/
-
-            # on start
-              /settings
-                Auto compact - false
-                Install telemetry - false
-                Default project trust - Always trust
-              /hotkeys
           </script>
         </div>
       </div>
