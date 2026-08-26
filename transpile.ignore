@@ -33,6 +33,7 @@ bash/exportsource.js
 .github/injectServiceWorker.ts
 pages/services/xor.ts
 bash/fs/watch.js
+bash/GLOSSARY.ts
 
 bash/socket/*
 
