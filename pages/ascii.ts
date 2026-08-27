@@ -4,7 +4,7 @@
  * Core engine for infinite canvas ASCII editing with text typing,
  * box-drawing line tools (point-to-point, zigzag with bend compensation),
  * selection & clipboard operations, and smart line dragging with perpendicular junction stretching.
- * Full support for both Unicode Box Drawing (Single/Double) and Classic ASCII tables (+, -, |).
+ * Full support for all Unicode Box Drawing frames (Single, Heavy, Double, Rounded, Mixed, Dashed) and Classic ASCII tables (+, -, |).
  */
 
 // Tool enumeration
@@ -19,8 +19,19 @@ export const TOOLS: Record<string, ToolType> = {
   ERASER: "eraser",
 };
 
-// Line style variants
-export type LineStyle = "box-single" | "box-double" | "ascii";
+// Line style variants matching frames.txt
+export type LineStyle =
+  | "box-single"
+  | "box-heavy"
+  | "box-double"
+  | "box-rounded"
+  | "box-double-h-single-v"
+  | "box-single-h-double-v"
+  | "box-heavy-h-light-v"
+  | "box-light-h-heavy-v"
+  | "box-dashed-light"
+  | "box-dashed-heavy"
+  | "ascii";
 
 // Direction bitmask flags for junction calculations
 export const DIR_UP = 1;
@@ -69,12 +80,12 @@ export interface BoxSet {
 
 /**
  * Box-drawing Character Sets and Junction Lookup Maps
+ * Bitmask index: [UP(1) | RIGHT(2) | DOWN(4) | LEFT(8)]
  */
 export const BOX_SETS: Record<LineStyle, BoxSet> = {
   "box-single": {
     h: "─",
     v: "│",
-    // Bitmask index: [UP(1) | RIGHT(2) | DOWN(4) | LEFT(8)]
     junctions: {
       0: " ",
       1: "│",
@@ -94,6 +105,29 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "┼",
     },
     allChars: new Set(["─", "│", "┌", "┐", "└", "┘", "├", "┤", "┬", "┴", "┼"]),
+  },
+  "box-heavy": {
+    h: "━",
+    v: "┃",
+    junctions: {
+      0: " ",
+      1: "┃",
+      2: "━",
+      3: "┗",
+      4: "┃",
+      5: "┃",
+      6: "┏",
+      7: "┣",
+      8: "━",
+      9: "┛",
+      10: "━",
+      11: "┻",
+      12: "┓",
+      13: "┫",
+      14: "┳",
+      15: "╋",
+    },
+    allChars: new Set(["━", "┃", "┏", "┓", "┗", "┛", "┣", "┫", "┳", "┻", "╋"]),
   },
   "box-double": {
     h: "═",
@@ -117,6 +151,167 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "╬",
     },
     allChars: new Set(["═", "║", "╔", "╗", "╚", "╝", "╠", "╣", "╦", "╩", "╬"]),
+  },
+  "box-rounded": {
+    h: "─",
+    v: "│",
+    junctions: {
+      0: " ",
+      1: "│",
+      2: "─",
+      3: "╰",
+      4: "│",
+      5: "│",
+      6: "╭",
+      7: "├",
+      8: "─",
+      9: "╯",
+      10: "─",
+      11: "┴",
+      12: "╮",
+      13: "┤",
+      14: "┬",
+      15: "┼",
+    },
+    allChars: new Set(["─", "│", "╭", "╮", "╰", "╯", "├", "┤", "┬", "┴", "┼"]),
+  },
+  "box-double-h-single-v": {
+    h: "═",
+    v: "│",
+    junctions: {
+      0: " ",
+      1: "│",
+      2: "═",
+      3: "╘",
+      4: "│",
+      5: "│",
+      6: "╒",
+      7: "╞",
+      8: "═",
+      9: "╛",
+      10: "═",
+      11: "╧",
+      12: "╕",
+      13: "╡",
+      14: "╤",
+      15: "╪",
+    },
+    allChars: new Set(["═", "│", "╒", "╕", "╘", "╛", "╞", "╡", "╤", "╧", "╪"]),
+  },
+  "box-single-h-double-v": {
+    h: "─",
+    v: "║",
+    junctions: {
+      0: " ",
+      1: "║",
+      2: "─",
+      3: "╙",
+      4: "║",
+      5: "║",
+      6: "╓",
+      7: "╟",
+      8: "─",
+      9: "╜",
+      10: "─",
+      11: "╨",
+      12: "╖",
+      13: "╢",
+      14: "╥",
+      15: "╫",
+    },
+    allChars: new Set(["─", "║", "╓", "╖", "╙", "╜", "╟", "╢", "╥", "╨", "╫"]),
+  },
+  "box-heavy-h-light-v": {
+    h: "━",
+    v: "│",
+    junctions: {
+      0: " ",
+      1: "│",
+      2: "━",
+      3: "┕",
+      4: "│",
+      5: "│",
+      6: "┍",
+      7: "┝",
+      8: "━",
+      9: "┙",
+      10: "━",
+      11: "┷",
+      12: "┑",
+      13: "┥",
+      14: "┯",
+      15: "┿",
+    },
+    allChars: new Set(["━", "│", "┍", "┑", "┕", "┙", "┝", "┥", "┯", "┷", "┿"]),
+  },
+  "box-light-h-heavy-v": {
+    h: "─",
+    v: "┃",
+    junctions: {
+      0: " ",
+      1: "┃",
+      2: "─",
+      3: "┖",
+      4: "┃",
+      5: "┃",
+      6: "┎",
+      7: "┠",
+      8: "─",
+      9: "┚",
+      10: "─",
+      11: "┸",
+      12: "┒",
+      13: "┨",
+      14: "┰",
+      15: "╂",
+    },
+    allChars: new Set(["─", "┃", "┎", "┒", "┖", "┚", "┠", "┨", "┰", "┸", "╂"]),
+  },
+  "box-dashed-light": {
+    h: "┄",
+    v: "┆",
+    junctions: {
+      0: " ",
+      1: "┆",
+      2: "┄",
+      3: "└",
+      4: "┆",
+      5: "┆",
+      6: "┌",
+      7: "├",
+      8: "┄",
+      9: "┘",
+      10: "┄",
+      11: "┴",
+      12: "┐",
+      13: "┤",
+      14: "┬",
+      15: "┼",
+    },
+    allChars: new Set(["┄", "┆", "┈", "┊", "─", "│", "┌", "┐", "└", "┘", "├", "┤", "┬", "┴", "┼"]),
+  },
+  "box-dashed-heavy": {
+    h: "┅",
+    v: "┇",
+    junctions: {
+      0: " ",
+      1: "┇",
+      2: "┅",
+      3: "┗",
+      4: "┇",
+      5: "┇",
+      6: "┏",
+      7: "┣",
+      8: "┅",
+      9: "┛",
+      10: "┅",
+      11: "┻",
+      12: "┓",
+      13: "┫",
+      14: "┳",
+      15: "╋",
+    },
+    allChars: new Set(["┅", "┇", "┉", "┋", "━", "┃", "┏", "┓", "┗", "┛", "┣", "┫", "┳", "┻", "╋"]),
   },
   ascii: {
     h: "-",
@@ -144,40 +339,108 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
 };
 
 /**
- * Port bitmask mapping for individual characters
+ * Global Port Map constructed across all box styles
  */
-export const CHAR_PORTS: Record<LineStyle, Record<string, number>> = {
-  "box-single": {
-    "─": DIR_LEFT | DIR_RIGHT,
-    "│": DIR_UP | DIR_DOWN,
-    "┌": DIR_RIGHT | DIR_DOWN,
-    "┐": DIR_LEFT | DIR_DOWN,
-    "└": DIR_UP | DIR_RIGHT,
-    "┘": DIR_UP | DIR_LEFT,
-    "├": DIR_UP | DIR_RIGHT | DIR_DOWN,
-    "┤": DIR_UP | DIR_LEFT | DIR_DOWN,
-    "┬": DIR_LEFT | DIR_RIGHT | DIR_DOWN,
-    "┴": DIR_UP | DIR_LEFT | DIR_RIGHT,
-    "┼": DIR_UP | DIR_RIGHT | DIR_DOWN | DIR_LEFT,
-  },
-  "box-double": {
-    "═": DIR_LEFT | DIR_RIGHT,
-    "║": DIR_UP | DIR_DOWN,
-    "╔": DIR_RIGHT | DIR_DOWN,
-    "╗": DIR_LEFT | DIR_DOWN,
-    "╚": DIR_UP | DIR_RIGHT,
-    "╝": DIR_UP | DIR_LEFT,
-    "╠": DIR_UP | DIR_RIGHT | DIR_DOWN,
-    "╣": DIR_UP | DIR_LEFT | DIR_DOWN,
-    "╦": DIR_LEFT | DIR_RIGHT | DIR_DOWN,
-    "╩": DIR_UP | DIR_LEFT | DIR_RIGHT,
-    "╬": DIR_UP | DIR_RIGHT | DIR_DOWN | DIR_LEFT,
-  },
-  ascii: {
-    "-": DIR_LEFT | DIR_RIGHT,
-    "|": DIR_UP | DIR_DOWN,
-    "+": DIR_UP | DIR_RIGHT | DIR_DOWN | DIR_LEFT,
-  },
+export const GLOBAL_CHAR_PORTS: Record<string, number> = {
+  // Single & Rounded
+  "─": DIR_LEFT | DIR_RIGHT,
+  "│": DIR_UP | DIR_DOWN,
+  "┌": DIR_RIGHT | DIR_DOWN,
+  "┐": DIR_LEFT | DIR_DOWN,
+  "└": DIR_UP | DIR_RIGHT,
+  "┘": DIR_UP | DIR_LEFT,
+  "├": DIR_UP | DIR_RIGHT | DIR_DOWN,
+  "┤": DIR_UP | DIR_LEFT | DIR_DOWN,
+  "┬": DIR_LEFT | DIR_RIGHT | DIR_DOWN,
+  "┴": DIR_UP | DIR_LEFT | DIR_RIGHT,
+  "┼": DIR_UP | DIR_RIGHT | DIR_DOWN | DIR_LEFT,
+  "╭": DIR_RIGHT | DIR_DOWN,
+  "╮": DIR_LEFT | DIR_DOWN,
+  "╯": DIR_UP | DIR_LEFT,
+  "╰": DIR_UP | DIR_RIGHT,
+
+  // Heavy / Bold
+  "━": DIR_LEFT | DIR_RIGHT,
+  "┃": DIR_UP | DIR_DOWN,
+  "┏": DIR_RIGHT | DIR_DOWN,
+  "┓": DIR_LEFT | DIR_DOWN,
+  "┗": DIR_UP | DIR_RIGHT,
+  "┛": DIR_UP | DIR_LEFT,
+  "┣": DIR_UP | DIR_RIGHT | DIR_DOWN,
+  "┫": DIR_UP | DIR_LEFT | DIR_DOWN,
+  "┳": DIR_LEFT | DIR_RIGHT | DIR_DOWN,
+  "┻": DIR_UP | DIR_LEFT | DIR_RIGHT,
+  "╋": DIR_UP | DIR_RIGHT | DIR_DOWN | DIR_LEFT,
+
+  // Double
+  "═": DIR_LEFT | DIR_RIGHT,
+  "║": DIR_UP | DIR_DOWN,
+  "╔": DIR_RIGHT | DIR_DOWN,
+  "╗": DIR_LEFT | DIR_DOWN,
+  "╚": DIR_UP | DIR_RIGHT,
+  "╝": DIR_UP | DIR_LEFT,
+  "╠": DIR_UP | DIR_RIGHT | DIR_DOWN,
+  "╣": DIR_UP | DIR_LEFT | DIR_DOWN,
+  "╦": DIR_LEFT | DIR_RIGHT | DIR_DOWN,
+  "╩": DIR_UP | DIR_LEFT | DIR_RIGHT,
+  "╬": DIR_UP | DIR_RIGHT | DIR_DOWN | DIR_LEFT,
+
+  // Mixed Single / Double
+  "╒": DIR_RIGHT | DIR_DOWN,
+  "╕": DIR_LEFT | DIR_DOWN,
+  "╘": DIR_UP | DIR_RIGHT,
+  "╛": DIR_UP | DIR_LEFT,
+  "╞": DIR_UP | DIR_RIGHT | DIR_DOWN,
+  "╡": DIR_UP | DIR_LEFT | DIR_DOWN,
+  "╤": DIR_LEFT | DIR_RIGHT | DIR_DOWN,
+  "╧": DIR_UP | DIR_LEFT | DIR_RIGHT,
+  "╪": DIR_UP | DIR_RIGHT | DIR_DOWN | DIR_LEFT,
+
+  "╓": DIR_RIGHT | DIR_DOWN,
+  "╖": DIR_LEFT | DIR_DOWN,
+  "╙": DIR_UP | DIR_RIGHT,
+  "╜": DIR_UP | DIR_LEFT,
+  "╟": DIR_UP | DIR_RIGHT | DIR_DOWN,
+  "╢": DIR_UP | DIR_LEFT | DIR_DOWN,
+  "╥": DIR_LEFT | DIR_RIGHT | DIR_DOWN,
+  "╨": DIR_UP | DIR_LEFT | DIR_RIGHT,
+  "╫": DIR_UP | DIR_RIGHT | DIR_DOWN | DIR_LEFT,
+
+  // Mixed Heavy / Light
+  "┍": DIR_RIGHT | DIR_DOWN,
+  "┑": DIR_LEFT | DIR_DOWN,
+  "┕": DIR_UP | DIR_RIGHT,
+  "┙": DIR_UP | DIR_LEFT,
+  "┝": DIR_UP | DIR_RIGHT | DIR_DOWN,
+  "┥": DIR_UP | DIR_LEFT | DIR_DOWN,
+  "┯": DIR_LEFT | DIR_RIGHT | DIR_DOWN,
+  "┷": DIR_UP | DIR_LEFT | DIR_RIGHT,
+  "┿": DIR_UP | DIR_RIGHT | DIR_DOWN | DIR_LEFT,
+
+  "┎": DIR_RIGHT | DIR_DOWN,
+  "┒": DIR_LEFT | DIR_DOWN,
+  "┖": DIR_UP | DIR_RIGHT,
+  "┚": DIR_UP | DIR_LEFT,
+  "┠": DIR_UP | DIR_RIGHT | DIR_DOWN,
+  "┨": DIR_UP | DIR_LEFT | DIR_DOWN,
+  "┰": DIR_LEFT | DIR_RIGHT | DIR_DOWN,
+  "┸": DIR_UP | DIR_LEFT | DIR_RIGHT,
+  "╂": DIR_UP | DIR_RIGHT | DIR_DOWN | DIR_LEFT,
+
+  // Dashed variants
+  "┄": DIR_LEFT | DIR_RIGHT,
+  "┈": DIR_LEFT | DIR_RIGHT,
+  "┆": DIR_UP | DIR_DOWN,
+  "┊": DIR_UP | DIR_DOWN,
+  "┅": DIR_LEFT | DIR_RIGHT,
+  "┉": DIR_LEFT | DIR_RIGHT,
+  "┇": DIR_UP | DIR_DOWN,
+  "┋": DIR_UP | DIR_DOWN,
+
+  // ASCII
+  "-": DIR_LEFT | DIR_RIGHT,
+  "|": DIR_UP | DIR_DOWN,
+  "+": DIR_UP | DIR_RIGHT | DIR_DOWN | DIR_LEFT,
 };
 
 export interface SelectionRect {
@@ -543,19 +806,17 @@ export function resetView(): void {
  * Box-Drawing & ASCII Character Identification
  */
 export function getCharStyle(char: string): LineStyle {
-  if (BOX_SETS["box-single"].allChars.has(char)) return "box-single";
-  if (BOX_SETS["box-double"].allChars.has(char)) return "box-double";
-  if (BOX_SETS["ascii"].allChars.has(char)) return "ascii";
+  for (const [key, set] of Object.entries(BOX_SETS) as Array<[LineStyle, BoxSet]>) {
+    if (set.allChars.has(char)) {
+      return key;
+    }
+  }
   return state.style;
 }
 
 export function isAnyLineChar(char: string): boolean {
   if (!char || char === " ") return false;
-  return (
-    BOX_SETS["box-single"].allChars.has(char) ||
-    BOX_SETS["box-double"].allChars.has(char) ||
-    BOX_SETS["ascii"].allChars.has(char)
-  );
+  return GLOBAL_CHAR_PORTS[char] !== undefined;
 }
 
 export function isBoxChar(char: string, styleKey?: LineStyle): boolean {
@@ -568,21 +829,11 @@ export function isBoxChar(char: string, styleKey?: LineStyle): boolean {
 }
 
 /**
- * Gets port connection bitmask for a character across all styles
+ * Gets port connection bitmask for a character
  */
-export function getCharPorts(char: string, styleKey?: LineStyle): number {
+export function getCharPorts(char: string): number {
   if (!char || char === " ") return 0;
-  const resolvedStyle = styleKey || getCharStyle(char);
-  const stylePorts = CHAR_PORTS[resolvedStyle];
-  if (stylePorts && stylePorts[char] !== undefined) {
-    return stylePorts[char];
-  }
-  for (const key of ["box-single", "box-double", "ascii"] as LineStyle[]) {
-    if (CHAR_PORTS[key][char] !== undefined) {
-      return CHAR_PORTS[key][char];
-    }
-  }
-  return 0;
+  return GLOBAL_CHAR_PORTS[char] || 0;
 }
 
 /**

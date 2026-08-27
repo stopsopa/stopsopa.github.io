@@ -53,7 +53,7 @@
             position: absolute;
             top: 24px;
             left: 24px;
-            width: 220px;
+            width: 240px;
             background: rgba(26, 27, 38, 0.95);
             border: 1px solid #33364a;
             border-radius: 8px;
@@ -200,7 +200,7 @@
             border: 1px solid #3b4261;
             border-radius: 5px;
             color: #c0caf5;
-            font-size: 12px;
+            font-size: 11px;
             outline: none;
             cursor: pointer;
         }
@@ -340,8 +340,16 @@
             <div class="tool-section">
                 <div class="section-title">Line Style</div>
                 <select class="select-input" id="styleSelect">
-                    <option value="box-single">Unicode Single (─ │ ┌ ┐)</option>
-                    <option value="box-double">Unicode Double (═ ║ ╔ ╗)</option>
+                    <option value="box-single">Single (─ │ ┌ ┐ └ ┘)</option>
+                    <option value="box-heavy">Heavy (━ ┃ ┏ ┓ ┗ ┛)</option>
+                    <option value="box-double">Double (═ ║ ╔ ╗ ╚ ╝)</option>
+                    <option value="box-rounded">Rounded (─ │ ╭ ╮ ╰ ╯)</option>
+                    <option value="box-double-h-single-v">Double-H / Single-V (═ │ ╒ ╕)</option>
+                    <option value="box-single-h-double-v">Single-H / Double-V (─ ║ ╓ ╖)</option>
+                    <option value="box-heavy-h-light-v">Heavy-H / Light-V (━ │ ┍ ┑)</option>
+                    <option value="box-light-h-heavy-v">Light-H / Heavy-V (─ ┃ ┎ ┒)</option>
+                    <option value="box-dashed-light">Dashed Light (┄ ┆ ┌ ┐)</option>
+                    <option value="box-dashed-heavy">Dashed Heavy (┅ ┇ ┏ ┓)</option>
                     <option value="ascii">ASCII Basic (- | +)</option>
                 </select>
             </div>
