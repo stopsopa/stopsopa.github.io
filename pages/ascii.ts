@@ -520,6 +520,7 @@ export type DragState =
       initialX2: number;
       initialY2: number;
       cells: Array<{ relX: number; relY: number; char: string }>;
+      duplicate?: boolean;
     }
   | {
       type: "drag_line";
@@ -1975,7 +1976,7 @@ export function render(): void {
   // Draw stored characters (skipping cells actively moving with selection drag or shortened line drag)
   for (let gy = startGridY; gy <= endGridY; gy++) {
     for (let gx = startGridX; gx <= endGridX; gx++) {
-      if (moveDrag) {
+      if (moveDrag && !moveDrag.duplicate) {
         if (
           gx >= moveDrag.initialX1 &&
           gx <= moveDrag.initialX2 &&
@@ -2226,6 +2227,7 @@ export function setupEventListeners(): void {
       } else if (state.drag.type === "move_selection") {
         const dx = gridPos.x - state.drag.startX;
         const dy = gridPos.y - state.drag.startY;
+        state.drag.duplicate = e.altKey;
         state.selection = {
           x1: state.drag.initialX1 + dx,
           y1: state.drag.initialY1 + dy,
@@ -2238,11 +2240,11 @@ export function setupEventListeners(): void {
         const dy = gridPos.y - state.drag.startY;
         const hSeg = state.drag.hSeg;
         const vSeg = state.drag.vSeg;
-        const isShift = e.shiftKey;
+        const isAlt = e.altKey;
 
         if (hSeg && vSeg) {
           // Corner or junction clicked
-          if (isShift) {
+          if (isAlt) {
             if (Math.abs(dy) >= Math.abs(dx)) {
               state.lineDrag = { segment: hSeg, mode: "shift", dx: 0, dy, duplicate: true };
             } else {
@@ -2269,7 +2271,7 @@ export function setupEventListeners(): void {
           }
         } else if (hSeg) {
           // Horizontal line
-          if (isShift) {
+          if (isAlt) {
             state.lineDrag = { segment: hSeg, mode: "shift", dx: 0, dy, duplicate: true };
           } else if (Math.abs(dx) >= Math.abs(dy)) {
             const isLeft = state.drag.startX <= (hSeg.startX + hSeg.endX) / 2;
@@ -2285,7 +2287,7 @@ export function setupEventListeners(): void {
           }
         } else if (vSeg) {
           // Vertical line
-          if (isShift) {
+          if (isAlt) {
             state.lineDrag = { segment: vSeg, mode: "shift", dx, dy: 0, duplicate: true };
           } else if (Math.abs(dy) >= Math.abs(dx)) {
             const isTop = state.drag.startY <= (vSeg.startY + vSeg.endY) / 2;
@@ -2320,18 +2322,24 @@ export function setupEventListeners(): void {
       if (state.isSpacePressed) {
         container.style.cursor = "grab";
       } else if (state.tool === TOOLS.SELECT) {
-        const hSeg = findHorizontalSegment(gridPos.x, gridPos.y);
-        const vSeg = findVerticalSegment(gridPos.x, gridPos.y);
-        if (hSeg && vSeg) {
-          container.style.cursor = "move";
-        } else if (hSeg) {
-          container.style.cursor = "ns-resize";
-        } else if (vSeg) {
-          container.style.cursor = "ew-resize";
-        } else if (isInsideSelection(gridPos.x, gridPos.y)) {
-          container.style.cursor = "move";
+        if (state.selection) {
+          if (isInsideSelection(gridPos.x, gridPos.y)) {
+            container.style.cursor = "move";
+          } else {
+            container.style.cursor = "default";
+          }
         } else {
-          container.style.cursor = "default";
+          const hSeg = findHorizontalSegment(gridPos.x, gridPos.y);
+          const vSeg = findVerticalSegment(gridPos.x, gridPos.y);
+          if (hSeg && vSeg) {
+            container.style.cursor = "move";
+          } else if (hSeg) {
+            container.style.cursor = "ns-resize";
+          } else if (vSeg) {
+            container.style.cursor = "ew-resize";
+          } else {
+            container.style.cursor = "default";
+          }
         }
       } else if (state.tool === TOOLS.TEXT) {
         container.style.cursor = "text";
@@ -2362,52 +2370,67 @@ export function setupEventListeners(): void {
     const gridPos = screenToGrid(e.clientX, e.clientY);
 
     if (state.tool === TOOLS.SELECT) {
-      const hSeg = findHorizontalSegment(gridPos.x, gridPos.y);
-      const vSeg = findVerticalSegment(gridPos.x, gridPos.y);
-      const line = detectLineAt(gridPos.x, gridPos.y);
+      if (state.selection) {
+        if (isInsideSelection(gridPos.x, gridPos.y)) {
+          // Start moving (or copying with Alt) existing selection block
+          const blockCells: Array<{ relX: number; relY: number; char: string }> = [];
+          const minX = Math.min(state.selection.x1, state.selection.x2);
+          const maxX = Math.max(state.selection.x1, state.selection.x2);
+          const minY = Math.min(state.selection.y1, state.selection.y2);
+          const maxY = Math.max(state.selection.y1, state.selection.y2);
 
-      if (line) {
-        // Start dragging line segment
-        state.drag = {
-          type: "drag_line",
-          segment: line,
-          hSeg,
-          vSeg,
-          startX: gridPos.x,
-          startY: gridPos.y,
-        };
-      } else if (isInsideSelection(gridPos.x, gridPos.y) && state.selection) {
-        // Start moving existing selection block
-        const blockCells: Array<{ relX: number; relY: number; char: string }> = [];
-        const minX = Math.min(state.selection.x1, state.selection.x2);
-        const maxX = Math.max(state.selection.x1, state.selection.x2);
-        const minY = Math.min(state.selection.y1, state.selection.y2);
-        const maxY = Math.max(state.selection.y1, state.selection.y2);
-
-        for (let y = minY; y <= maxY; y++) {
-          for (let x = minX; x <= maxX; x++) {
-            blockCells.push({ relX: x - minX, relY: y - minY, char: grid.get(x, y) });
+          for (let y = minY; y <= maxY; y++) {
+            for (let x = minX; x <= maxX; x++) {
+              blockCells.push({ relX: x - minX, relY: y - minY, char: grid.get(x, y) });
+            }
           }
-        }
 
-        state.drag = {
-          type: "move_selection",
-          startX: gridPos.x,
-          startY: gridPos.y,
-          initialX1: minX,
-          initialY1: minY,
-          initialX2: maxX,
-          initialY2: maxY,
-          cells: blockCells,
-        };
+          state.drag = {
+            type: "move_selection",
+            startX: gridPos.x,
+            startY: gridPos.y,
+            initialX1: minX,
+            initialY1: minY,
+            initialX2: maxX,
+            initialY2: maxY,
+            cells: blockCells,
+            duplicate: e.altKey,
+          };
+        } else {
+          // Clicked outside existing selection -> clear selection and start creating a new selection
+          state.selection = null;
+          state.drag = {
+            type: "create_selection",
+            startX: gridPos.x,
+            startY: gridPos.y,
+          };
+          updateStatus();
+          requestRender();
+        }
       } else {
-        // Start creating new rectangular selection
-        state.selection = null;
-        state.drag = {
-          type: "create_selection",
-          startX: gridPos.x,
-          startY: gridPos.y,
-        };
+        // No active selection: detect lines for table/line editing, or create selection
+        const hSeg = findHorizontalSegment(gridPos.x, gridPos.y);
+        const vSeg = findVerticalSegment(gridPos.x, gridPos.y);
+        const line = detectLineAt(gridPos.x, gridPos.y);
+
+        if (line) {
+          // Start dragging line segment
+          state.drag = {
+            type: "drag_line",
+            segment: line,
+            hSeg,
+            vSeg,
+            startX: gridPos.x,
+            startY: gridPos.y,
+          };
+        } else {
+          // Start creating new rectangular selection
+          state.drag = {
+            type: "create_selection",
+            startX: gridPos.x,
+            startY: gridPos.y,
+          };
+        }
       }
     } else if (state.tool === TOOLS.TEXT) {
       state.cursor.x = gridPos.x;
@@ -2480,10 +2503,12 @@ export function setupEventListeners(): void {
         const dy = gridPos.y - state.drag.startY;
         if (dx !== 0 || dy !== 0) {
           history.saveState();
-          // Clear old bounds
-          for (let y = state.drag.initialY1; y <= state.drag.initialY2; y++) {
-            for (let x = state.drag.initialX1; x <= state.drag.initialX2; x++) {
-              grid.delete(x, y);
+          if (!state.drag.duplicate) {
+            // Clear old bounds only when not duplicating
+            for (let y = state.drag.initialY1; y <= state.drag.initialY2; y++) {
+              for (let x = state.drag.initialX1; x <= state.drag.initialX2; x++) {
+                grid.delete(x, y);
+              }
             }
           }
           // Write to new position
