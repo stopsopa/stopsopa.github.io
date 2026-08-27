@@ -495,10 +495,17 @@ export interface DrawingPreview {
   shiftKey: boolean;
 }
 
+export type LineDragMode = "shift" | "extend_start" | "extend_end";
+
 export interface LineDragState {
   segment: LineSegment;
+  mode: LineDragMode;
   dx: number;
   dy: number;
+  newStartX?: number;
+  newEndX?: number;
+  newStartY?: number;
+  newEndY?: number;
 }
 
 export type DragState =
@@ -1424,6 +1431,140 @@ export function applyVerticalLineDrag(segment: VerticalSegment, dx: number): voi
 }
 
 /**
+ * Executes prolonging or shortening of a horizontal line from either endpoint
+ */
+export function applyHorizontalLineExtend(segment: HorizontalSegment, newStartX: number, newEndX: number): void {
+  if (newStartX === segment.startX && newEndX === segment.endX) return;
+  history.saveState();
+
+  const y = segment.y;
+  const segmentChar = grid.get(segment.startX, y);
+  const styleKey = getCharStyle(segmentChar) || state.style;
+  const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
+  const affectedPoints: Point[] = [];
+
+  // Handle startX modification (left side)
+  if (newStartX < segment.startX) {
+    // Extend left
+    for (let x = newStartX; x < segment.startX; x++) {
+      grid.set(x, y, set.h);
+      affectedPoints.push({ x, y });
+    }
+  } else if (newStartX > segment.startX) {
+    // Shrink from left
+    for (let x = segment.startX; x < newStartX; x++) {
+      const cur = grid.get(x, y);
+      const ports = getCharPorts(cur);
+      if ((ports & (DIR_UP | DIR_DOWN)) !== 0) {
+        affectedPoints.push({ x, y });
+      } else {
+        grid.delete(x, y);
+        affectedPoints.push({ x, y });
+      }
+    }
+  }
+
+  // Handle endX modification (right side)
+  if (newEndX > segment.endX) {
+    // Extend right
+    for (let x = segment.endX + 1; x <= newEndX; x++) {
+      grid.set(x, y, set.h);
+      affectedPoints.push({ x, y });
+    }
+  } else if (newEndX < segment.endX) {
+    // Shrink from right
+    for (let x = newEndX + 1; x <= segment.endX; x++) {
+      const cur = grid.get(x, y);
+      const ports = getCharPorts(cur);
+      if ((ports & (DIR_UP | DIR_DOWN)) !== 0) {
+        affectedPoints.push({ x, y });
+      } else {
+        grid.delete(x, y);
+        affectedPoints.push({ x, y });
+      }
+    }
+  }
+
+  // Collect boundary neighborhood for junction adjustments
+  const minX = Math.min(newStartX, segment.startX) - 1;
+  const maxX = Math.max(newEndX, segment.endX) + 1;
+  for (let x = minX; x <= maxX; x++) {
+    affectedPoints.push({ x, y });
+    affectedPoints.push({ x, y: y - 1 });
+    affectedPoints.push({ x, y: y + 1 });
+  }
+
+  resolveJunctionsAround(affectedPoints, grid, styleKey);
+}
+
+/**
+ * Executes prolonging or shortening of a vertical line from either endpoint
+ */
+export function applyVerticalLineExtend(segment: VerticalSegment, newStartY: number, newEndY: number): void {
+  if (newStartY === segment.startY && newEndY === segment.endY) return;
+  history.saveState();
+
+  const x = segment.x;
+  const segmentChar = grid.get(x, segment.startY);
+  const styleKey = getCharStyle(segmentChar) || state.style;
+  const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
+  const affectedPoints: Point[] = [];
+
+  // Handle startY modification (top side)
+  if (newStartY < segment.startY) {
+    // Extend up
+    for (let y = newStartY; y < segment.startY; y++) {
+      grid.set(x, y, set.v);
+      affectedPoints.push({ x, y });
+    }
+  } else if (newStartY > segment.startY) {
+    // Shrink from top
+    for (let y = segment.startY; y < newStartY; y++) {
+      const cur = grid.get(x, y);
+      const ports = getCharPorts(cur);
+      if ((ports & (DIR_LEFT | DIR_RIGHT)) !== 0) {
+        affectedPoints.push({ x, y });
+      } else {
+        grid.delete(x, y);
+        affectedPoints.push({ x, y });
+      }
+    }
+  }
+
+  // Handle endY modification (bottom side)
+  if (newEndY > segment.endY) {
+    // Extend down
+    for (let y = segment.endY + 1; y <= newEndY; y++) {
+      grid.set(x, y, set.v);
+      affectedPoints.push({ x, y });
+    }
+  } else if (newEndY < segment.endY) {
+    // Shrink from bottom
+    for (let y = newEndY + 1; y <= segment.endY; y++) {
+      const cur = grid.get(x, y);
+      const ports = getCharPorts(cur);
+      if ((ports & (DIR_LEFT | DIR_RIGHT)) !== 0) {
+        affectedPoints.push({ x, y });
+      } else {
+        grid.delete(x, y);
+        affectedPoints.push({ x, y });
+      }
+    }
+  }
+
+  // Collect boundary neighborhood for junction adjustments
+  const minY = Math.min(newStartY, segment.startY) - 1;
+  const maxY = Math.max(newEndY, segment.endY) + 1;
+  for (let y = minY; y <= maxY; y++) {
+    affectedPoints.push({ x, y });
+    affectedPoints.push({ x: x - 1, y });
+    affectedPoints.push({ x: x + 1, y });
+  }
+
+  resolveJunctionsAround(affectedPoints, grid, styleKey);
+}
+
+/**
  * Selection & Clipboard Operations
  */
 
@@ -1760,7 +1901,7 @@ export function render(): void {
   const isMovingSelection = state.drag && state.drag.type === "move_selection";
   const moveDrag = isMovingSelection ? (state.drag as any) : null;
 
-  // Draw stored characters (skipping cells actively moving with selection drag)
+  // Draw stored characters (skipping cells actively moving with selection drag or shortened line drag)
   for (let gy = startGridY; gy <= endGridY; gy++) {
     for (let gx = startGridX; gx <= endGridX; gx++) {
       if (moveDrag) {
@@ -1775,6 +1916,28 @@ export function render(): void {
       }
       const char = grid.get(gx, gy);
       if (char !== " ") {
+        if (state.lineDrag && state.lineDrag.mode !== "shift") {
+          const ld = state.lineDrag;
+          if (ld.segment.type === "horizontal" && gy === ld.segment.y) {
+            const startX = ld.newStartX !== undefined ? ld.newStartX : ld.segment.startX;
+            const endX = ld.newEndX !== undefined ? ld.newEndX : ld.segment.endX;
+            if (gx >= ld.segment.startX && gx <= ld.segment.endX && (gx < startX || gx > endX)) {
+              const ports = getCharPorts(char);
+              if ((ports & (DIR_UP | DIR_DOWN)) === 0) {
+                continue;
+              }
+            }
+          } else if (ld.segment.type === "vertical" && gx === ld.segment.x) {
+            const startY = ld.newStartY !== undefined ? ld.newStartY : ld.segment.startY;
+            const endY = ld.newEndY !== undefined ? ld.newEndY : ld.segment.endY;
+            if (gy >= ld.segment.startY && gy <= ld.segment.endY && (gy < startY || gy > endY)) {
+              const ports = getCharPorts(char);
+              if ((ports & (DIR_LEFT | DIR_RIGHT)) === 0) {
+                continue;
+              }
+            }
+          }
+        }
         const spos = gridToScreen(gx, gy);
         ctx.fillText(char, spos.x, spos.y + 2 * state.zoom);
       }
@@ -1827,17 +1990,37 @@ export function render(): void {
     const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
     ctx.fillStyle = "#6e6659";
 
-    if (ld.segment.type === "horizontal") {
-      const targetY = ld.segment.y + ld.dy;
-      for (let x = ld.segment.startX; x <= ld.segment.endX; x++) {
-        const spos = gridToScreen(x, targetY);
-        ctx.fillText(set.h, spos.x, spos.y + 2 * state.zoom);
+    if (ld.mode === "shift") {
+      if (ld.segment.type === "horizontal") {
+        const targetY = ld.segment.y + ld.dy;
+        for (let x = ld.segment.startX; x <= ld.segment.endX; x++) {
+          const spos = gridToScreen(x, targetY);
+          ctx.fillText(set.h, spos.x, spos.y + 2 * state.zoom);
+        }
+      } else {
+        const targetX = ld.segment.x + ld.dx;
+        for (let y = ld.segment.startY; y <= ld.segment.endY; y++) {
+          const spos = gridToScreen(targetX, y);
+          ctx.fillText(set.v, spos.x, spos.y + 2 * state.zoom);
+        }
       }
     } else {
-      const targetX = ld.segment.x + ld.dx;
-      for (let y = ld.segment.startY; y <= ld.segment.endY; y++) {
-        const spos = gridToScreen(targetX, y);
-        ctx.fillText(set.v, spos.x, spos.y + 2 * state.zoom);
+      if (ld.segment.type === "horizontal") {
+        const y = ld.segment.y;
+        const startX = ld.newStartX !== undefined ? ld.newStartX : ld.segment.startX;
+        const endX = ld.newEndX !== undefined ? ld.newEndX : ld.segment.endX;
+        for (let x = startX; x <= endX; x++) {
+          const spos = gridToScreen(x, y);
+          ctx.fillText(set.h, spos.x, spos.y + 2 * state.zoom);
+        }
+      } else {
+        const x = ld.segment.x;
+        const startY = ld.newStartY !== undefined ? ld.newStartY : ld.segment.startY;
+        const endY = ld.newEndY !== undefined ? ld.newEndY : ld.segment.endY;
+        for (let y = startY; y <= endY; y++) {
+          const spos = gridToScreen(x, y);
+          ctx.fillText(set.v, spos.x, spos.y + 2 * state.zoom);
+        }
       }
     }
   }
@@ -1934,21 +2117,58 @@ export function setupEventListeners(): void {
       } else if (state.drag.type === "drag_line") {
         const dx = gridPos.x - state.drag.startX;
         const dy = gridPos.y - state.drag.startY;
-        let activeSeg = state.drag.segment;
+        const hSeg = state.drag.hSeg;
+        const vSeg = state.drag.vSeg;
 
-        // Intelligently select horizontal vs vertical segment based on dominant drag direction
-        if (state.drag.hSeg && state.drag.vSeg) {
-          if (Math.abs(dx) > Math.abs(dy)) {
-            activeSeg = state.drag.vSeg;
+        if (hSeg && vSeg) {
+          // Corner or junction clicked
+          if (Math.abs(dx) >= Math.abs(dy)) {
+            const isLeft = state.drag.startX <= (hSeg.startX + hSeg.endX) / 2;
+            if (isLeft) {
+              const newStartX = Math.min(hSeg.endX, hSeg.startX + dx);
+              state.lineDrag = { segment: hSeg, mode: "extend_start", dx, dy: 0, newStartX };
+            } else {
+              const newEndX = Math.max(hSeg.startX, hSeg.endX + dx);
+              state.lineDrag = { segment: hSeg, mode: "extend_end", dx, dy: 0, newEndX };
+            }
           } else {
-            activeSeg = state.drag.hSeg;
+            const isTop = state.drag.startY <= (vSeg.startY + vSeg.endY) / 2;
+            if (isTop) {
+              const newStartY = Math.min(vSeg.endY, vSeg.startY + dy);
+              state.lineDrag = { segment: vSeg, mode: "extend_start", dx: 0, dy, newStartY };
+            } else {
+              const newEndY = Math.max(vSeg.startY, vSeg.endY + dy);
+              state.lineDrag = { segment: vSeg, mode: "extend_end", dx: 0, dy, newEndY };
+            }
           }
-        }
-
-        if (activeSeg.type === "horizontal") {
-          state.lineDrag = { segment: activeSeg, dy, dx: 0 };
-        } else {
-          state.lineDrag = { segment: activeSeg, dx, dy: 0 };
+        } else if (hSeg) {
+          // Horizontal line
+          if (Math.abs(dx) >= Math.abs(dy)) {
+            const isLeft = state.drag.startX <= (hSeg.startX + hSeg.endX) / 2;
+            if (isLeft) {
+              const newStartX = Math.min(hSeg.endX, hSeg.startX + dx);
+              state.lineDrag = { segment: hSeg, mode: "extend_start", dx, dy: 0, newStartX };
+            } else {
+              const newEndX = Math.max(hSeg.startX, hSeg.endX + dx);
+              state.lineDrag = { segment: hSeg, mode: "extend_end", dx, dy: 0, newEndX };
+            }
+          } else {
+            state.lineDrag = { segment: hSeg, mode: "shift", dx: 0, dy };
+          }
+        } else if (vSeg) {
+          // Vertical line
+          if (Math.abs(dy) >= Math.abs(dx)) {
+            const isTop = state.drag.startY <= (vSeg.startY + vSeg.endY) / 2;
+            if (isTop) {
+              const newStartY = Math.min(vSeg.endY, vSeg.startY + dy);
+              state.lineDrag = { segment: vSeg, mode: "extend_start", dx: 0, dy, newStartY };
+            } else {
+              const newEndY = Math.max(vSeg.startY, vSeg.endY + dy);
+              state.lineDrag = { segment: vSeg, mode: "extend_end", dx: 0, dy, newEndY };
+            }
+          } else {
+            state.lineDrag = { segment: vSeg, mode: "shift", dx, dy: 0 };
+          }
         }
         requestRender();
       } else if (state.drag.type === "draw") {
@@ -1970,9 +2190,14 @@ export function setupEventListeners(): void {
       if (state.isSpacePressed) {
         container.style.cursor = "grab";
       } else if (state.tool === TOOLS.SELECT) {
-        const line = detectLineAt(gridPos.x, gridPos.y);
-        if (line) {
-          container.style.cursor = line.type === "horizontal" ? "ns-resize" : "ew-resize";
+        const hSeg = findHorizontalSegment(gridPos.x, gridPos.y);
+        const vSeg = findVerticalSegment(gridPos.x, gridPos.y);
+        if (hSeg && vSeg) {
+          container.style.cursor = "move";
+        } else if (hSeg) {
+          container.style.cursor = "ew-resize";
+        } else if (vSeg) {
+          container.style.cursor = "ns-resize";
         } else if (isInsideSelection(gridPos.x, gridPos.y)) {
           container.style.cursor = "move";
         } else {
@@ -2097,10 +2322,26 @@ export function setupEventListeners(): void {
 
       if (state.drag.type === "drag_line") {
         if (state.lineDrag) {
-          if (state.lineDrag.segment.type === "horizontal") {
-            applyHorizontalLineDrag(state.lineDrag.segment, state.lineDrag.dy);
+          if (state.lineDrag.mode === "shift") {
+            if (state.lineDrag.segment.type === "horizontal") {
+              applyHorizontalLineDrag(state.lineDrag.segment, state.lineDrag.dy);
+            } else {
+              applyVerticalLineDrag(state.lineDrag.segment, state.lineDrag.dx);
+            }
           } else {
-            applyVerticalLineDrag(state.lineDrag.segment, state.lineDrag.dx);
+            if (state.lineDrag.segment.type === "horizontal") {
+              const newStartX =
+                state.lineDrag.newStartX !== undefined ? state.lineDrag.newStartX : state.lineDrag.segment.startX;
+              const newEndX =
+                state.lineDrag.newEndX !== undefined ? state.lineDrag.newEndX : state.lineDrag.segment.endX;
+              applyHorizontalLineExtend(state.lineDrag.segment, newStartX, newEndX);
+            } else {
+              const newStartY =
+                state.lineDrag.newStartY !== undefined ? state.lineDrag.newStartY : state.lineDrag.segment.startY;
+              const newEndY =
+                state.lineDrag.newEndY !== undefined ? state.lineDrag.newEndY : state.lineDrag.segment.endY;
+              applyVerticalLineExtend(state.lineDrag.segment, newStartY, newEndY);
+            }
           }
         }
         state.lineDrag = null;
