@@ -53,7 +53,7 @@
             position: absolute;
             top: 24px;
             left: 24px;
-            width: 240px;
+            width: 220px;
             background: rgba(26, 27, 38, 0.95);
             border: 1px solid #33364a;
             border-radius: 8px;
@@ -62,7 +62,7 @@
             z-index: 100;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: visible;
         }
 
         /* Panel header used as a drag handle */
@@ -78,6 +78,7 @@
             font-weight: 600;
             letter-spacing: 0.5px;
             color: #9aa5ce;
+            border-radius: 7px 7px 0 0;
         }
 
         .panel-header:active {
@@ -192,21 +193,181 @@
             transform: scale(0.97);
         }
 
-        /* Select dropdowns for style */
-        .select-input {
-            width: 100%;
-            padding: 6px 8px;
-            background: #24283b;
-            border: 1px solid #3b4261;
-            border-radius: 5px;
-            color: #c0caf5;
-            font-size: 11px;
-            outline: none;
-            cursor: pointer;
+        /* Popover API Core CSS */
+        [data-popover] {
+            inset: auto;
+            margin: 0;
+            width: max-content;
+            position-try: flip-block, flip-inline;
+            --popover-offset: 12px;
+            border: none;
+            background: none;
+            color: inherit;
         }
 
-        .select-input:focus {
+        [data-popover].right-top {
+            left: calc(anchor(right) + var(--popover-offset));
+            top: anchor(top);
+        }
+
+        [data-popover].bottom-left {
+            top: calc(anchor(bottom) + var(--popover-offset));
+            left: anchor(left);
+        }
+
+        /* Style Trigger Button in Panel */
+        .style-trigger-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 10px;
+            background: #24283b;
+            border: 1px solid #3b4261;
+            border-radius: 6px;
+            color: #c0caf5;
+            cursor: pointer;
+            anchor-name: --style-btn-anchor;
+            transition: background 0.15s, border-color 0.15s;
+            width: 100%;
+            text-align: left;
+        }
+
+        .style-trigger-btn:hover {
+            background: #2f354f;
             border-color: #7aa2f7;
+        }
+
+        .style-trigger-preview {
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.1;
+            letter-spacing: 0;
+            color: #7aa2f7;
+            white-space: pre;
+            background: #1a1b26;
+            padding: 3px 5px;
+            border-radius: 4px;
+            border: 1px solid #33364a;
+        }
+
+        .style-trigger-info {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .style-trigger-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #c0caf5;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .style-trigger-hint {
+            font-size: 10px;
+            color: #565f89;
+        }
+
+        .style-trigger-arrow {
+            font-size: 11px;
+            color: #7aa2f7;
+            opacity: 0.8;
+        }
+
+        /* Popover Style Selector Menu */
+        .style-popover-menu {
+            position-anchor: --style-btn-anchor;
+            background: rgba(26, 27, 38, 0.98);
+            border: 1px solid #3b4261;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 12px;
+            z-index: 1000;
+            width: 440px;
+            max-width: 95vw;
+        }
+
+        .style-popover-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #33364a;
+        }
+
+        .style-popover-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #7aa2f7;
+        }
+
+        .style-grid-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .style-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 6px;
+            background: #1f2335;
+            border: 1px solid #2f354f;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+
+        .style-card:hover {
+            background: #292e42;
+            border-color: #7aa2f7;
+            transform: translateY(-1px);
+        }
+
+        .style-card.active {
+            background: rgba(122, 162, 247, 0.15);
+            border-color: #7aa2f7;
+            box-shadow: 0 0 0 1px #7aa2f7;
+        }
+
+        .style-sample-grid {
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 1.15;
+            letter-spacing: 0;
+            white-space: pre;
+            color: #bb9af7;
+            background: #16161e;
+            padding: 4px 6px;
+            border-radius: 4px;
+            border: 1px solid #292e42;
+        }
+
+        .style-card.active .style-sample-grid {
+            color: #7aa2f7;
+            border-color: #7aa2f7;
+        }
+
+        .style-card-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: #a9b1d6;
+            white-space: nowrap;
+        }
+
+        .style-card.active .style-card-name {
+            color: #7aa2f7;
+            font-weight: 700;
         }
 
         /* Bottom status bar */
@@ -336,22 +497,17 @@
                 </div>
             </div>
 
-            <!-- Line Character Style -->
+            <!-- Line Character Style Popover Trigger -->
             <div class="tool-section">
                 <div class="section-title">Line Style</div>
-                <select class="select-input" id="styleSelect">
-                    <option value="box-single">Single (─ │ ┌ ┐ └ ┘)</option>
-                    <option value="box-heavy">Heavy (━ ┃ ┏ ┓ ┗ ┛)</option>
-                    <option value="box-double">Double (═ ║ ╔ ╗ ╚ ╝)</option>
-                    <option value="box-rounded">Rounded (─ │ ╭ ╮ ╰ ╯)</option>
-                    <option value="box-double-h-single-v">Double-H / Single-V (═ │ ╒ ╕)</option>
-                    <option value="box-single-h-double-v">Single-H / Double-V (─ ║ ╓ ╖)</option>
-                    <option value="box-heavy-h-light-v">Heavy-H / Light-V (━ │ ┍ ┑)</option>
-                    <option value="box-light-h-heavy-v">Light-H / Heavy-V (─ ┃ ┎ ┒)</option>
-                    <option value="box-dashed-light">Dashed Light (┄ ┆ ┌ ┐)</option>
-                    <option value="box-dashed-heavy">Dashed Heavy (┅ ┇ ┏ ┓)</option>
-                    <option value="ascii">ASCII Basic (- | +)</option>
-                </select>
+                <button class="style-trigger-btn" id="styleTriggerBtn" popovertarget="stylePopover" title="Choose Box Frame Style">
+                    <div class="style-trigger-preview" id="styleCurrentPreview">┌─┬─┐&#10;│ │ │&#10;└─┴─┘</div>
+                    <div class="style-trigger-info">
+                        <span class="style-trigger-name" id="styleCurrentLabel">Single</span>
+                        <span class="style-trigger-hint">Click to change</span>
+                    </div>
+                    <span class="style-trigger-arrow">&#x25BE;</span>
+                </button>
             </div>
 
             <!-- History & View Actions -->
@@ -366,6 +522,16 @@
                     <button class="action-btn" id="btnClear" title="Clear Canvas">Clear All</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Popover Frame Style Selector -->
+    <div id="stylePopover" popover data-popover class="right-top style-popover-menu">
+        <div class="style-popover-header">
+            <span class="style-popover-title">Choose Frame Style</span>
+        </div>
+        <div class="style-grid-list" id="styleGridList">
+            <!-- Style cards will be injected by JavaScript/TypeScript -->
         </div>
     </div>
 

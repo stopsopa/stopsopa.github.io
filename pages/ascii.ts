@@ -72,10 +72,13 @@ export interface VerticalSegment {
 export type LineSegment = HorizontalSegment | VerticalSegment;
 
 export interface BoxSet {
+  name: string;
   h: string;
   v: string;
   junctions: Record<number, string>;
   allChars: Set<string>;
+  sampleGrid: string;
+  miniPreview: string;
 }
 
 /**
@@ -84,6 +87,7 @@ export interface BoxSet {
  */
 export const BOX_SETS: Record<LineStyle, BoxSet> = {
   "box-single": {
+    name: "Single",
     h: "─",
     v: "│",
     junctions: {
@@ -105,8 +109,11 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "┼",
     },
     allChars: new Set(["─", "│", "┌", "┐", "└", "┘", "├", "┤", "┬", "┴", "┼"]),
+    sampleGrid: "┌─┬─┐\n│ │ │\n├─┼─┤\n│ │ │\n└─┴─┘",
+    miniPreview: "┌─┬─┐\n│ │ │\n└─┴─┘",
   },
   "box-heavy": {
+    name: "Heavy",
     h: "━",
     v: "┃",
     junctions: {
@@ -128,8 +135,11 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "╋",
     },
     allChars: new Set(["━", "┃", "┏", "┓", "┗", "┛", "┣", "┫", "┳", "┻", "╋"]),
+    sampleGrid: "┏━┳━┓\n┃ ┃ ┃\n┣━╋━┫\n┃ ┃ ┃\n┗━┻━┛",
+    miniPreview: "┏━┳━┓\n┃ ┃ ┃\n┗━┻━┛",
   },
   "box-double": {
+    name: "Double",
     h: "═",
     v: "║",
     junctions: {
@@ -151,8 +161,11 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "╬",
     },
     allChars: new Set(["═", "║", "╔", "╗", "╚", "╝", "╠", "╣", "╦", "╩", "╬"]),
+    sampleGrid: "╔═╦═╗\n║ ║ ║\n╠═╬═╣\n║ ║ ║\n╚═╩═╝",
+    miniPreview: "╔═╦═╗\n║ ║ ║\n╚═╩═╝",
   },
   "box-rounded": {
+    name: "Rounded",
     h: "─",
     v: "│",
     junctions: {
@@ -174,8 +187,11 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "┼",
     },
     allChars: new Set(["─", "│", "╭", "╮", "╰", "╯", "├", "┤", "┬", "┴", "┼"]),
+    sampleGrid: "╭─┬─╮\n│ │ │\n├─┼─┤\n│ │ │\n╰─┴─╯",
+    miniPreview: "╭─┬─╮\n│ │ │\n╰─┴─╯",
   },
   "box-double-h-single-v": {
+    name: "Double-H / Single-V",
     h: "═",
     v: "│",
     junctions: {
@@ -197,8 +213,11 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "╪",
     },
     allChars: new Set(["═", "│", "╒", "╕", "╘", "╛", "╞", "╡", "╤", "╧", "╪"]),
+    sampleGrid: "╒═╤═╕\n│ │ │\n╞═╪═╡\n│ │ │\n╘═╧═╛",
+    miniPreview: "╒═╤═╕\n│ │ │\n╘═╧═╛",
   },
   "box-single-h-double-v": {
+    name: "Single-H / Double-V",
     h: "─",
     v: "║",
     junctions: {
@@ -220,8 +239,11 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "╫",
     },
     allChars: new Set(["─", "║", "╓", "╖", "╙", "╜", "╟", "╢", "╥", "╨", "╫"]),
+    sampleGrid: "╓─╥─╖\n║ ║ ║\n╟─╫─╢\n║ ║ ║\n╙─╨─╜",
+    miniPreview: "╓─╥─╖\n║ ║ ║\n╙─╨─╜",
   },
   "box-heavy-h-light-v": {
+    name: "Heavy-H / Light-V",
     h: "━",
     v: "│",
     junctions: {
@@ -243,8 +265,11 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "┿",
     },
     allChars: new Set(["━", "│", "┍", "┑", "┕", "┙", "┝", "┥", "┯", "┷", "┿"]),
+    sampleGrid: "┍━┯━┑\n│ │ │\n┝━┿━┥\n│ │ │\n┕━┷━┙",
+    miniPreview: "┍━┯━┑\n│ │ │\n┕━┷━┙",
   },
   "box-light-h-heavy-v": {
+    name: "Light-H / Heavy-V",
     h: "─",
     v: "┃",
     junctions: {
@@ -266,8 +291,11 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "╂",
     },
     allChars: new Set(["─", "┃", "┎", "┒", "┖", "┚", "┠", "┨", "┰", "┸", "╂"]),
+    sampleGrid: "┎─┰─┒\n┃ ┃ ┃\n┠─╂─┨\n┃ ┃ ┃\n┖─┸─┚",
+    miniPreview: "┎─┰─┒\n┃ ┃ ┃\n┖─┸─┚",
   },
   "box-dashed-light": {
+    name: "Dashed Light",
     h: "┄",
     v: "┆",
     junctions: {
@@ -289,8 +317,11 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "┼",
     },
     allChars: new Set(["┄", "┆", "┈", "┊", "─", "│", "┌", "┐", "└", "┘", "├", "┤", "┬", "┴", "┼"]),
+    sampleGrid: "┌┄┬┄┐\n┆ ┆ ┆\n├┄┼┄┤\n┆ ┆ ┆\n└┄┴┄┘",
+    miniPreview: "┌┄┬┄┐\n┆ ┆ ┆\n└┄┴┄┘",
   },
   "box-dashed-heavy": {
+    name: "Dashed Heavy",
     h: "┅",
     v: "┇",
     junctions: {
@@ -312,8 +343,11 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "╋",
     },
     allChars: new Set(["┅", "┇", "┉", "┋", "━", "┃", "┏", "┓", "┗", "┛", "┣", "┫", "┳", "┻", "╋"]),
+    sampleGrid: "┏┅┳┅┓\n┇ ┇ ┇\n┣┅╋┅┫\n┇ ┇ ┇\n┗┅┻┅┛",
+    miniPreview: "┏┅┳┅┓\n┇ ┇ ┇\n┗┅┻┅┛",
   },
   ascii: {
+    name: "Classic ASCII",
     h: "-",
     v: "|",
     junctions: {
@@ -335,6 +369,8 @@ export const BOX_SETS: Record<LineStyle, BoxSet> = {
       15: "+",
     },
     allChars: new Set(["-", "|", "+"]),
+    sampleGrid: "+-+-+\n| | |\n+-+-+\n| | |\n+-+-+",
+    miniPreview: "+-+-+\n| | |\n+-+-+",
   },
 };
 
@@ -711,7 +747,11 @@ let ctx: CanvasRenderingContext2D;
 let hiddenInput: HTMLTextAreaElement;
 let toolPanel: HTMLElement;
 let panelHandle: HTMLElement;
-let styleSelect: HTMLSelectElement;
+let stylePopover: HTMLElement;
+let styleTriggerBtn: HTMLElement;
+let styleCurrentPreview: HTMLElement;
+let styleCurrentLabel: HTMLElement;
+let styleGridList: HTMLElement;
 let statusTool: HTMLElement;
 let statusCoords: HTMLElement;
 let statusSelection: HTMLElement;
@@ -1566,6 +1606,68 @@ export function setTool(toolName: ToolType): void {
 }
 
 /**
+ * Select Line Style & Update Popover / Panel UI
+ */
+export function selectStyle(styleKey: LineStyle): void {
+  state.style = styleKey;
+  const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
+
+  if (styleCurrentPreview) {
+    styleCurrentPreview.textContent = set.miniPreview;
+  }
+  if (styleCurrentLabel) {
+    styleCurrentLabel.textContent = set.name;
+  }
+
+  // Update active highlight on popover cards
+  document.querySelectorAll<HTMLElement>(".style-card").forEach((card) => {
+    card.classList.toggle("active", card.dataset.styleKey === styleKey);
+  });
+
+  // Close popover if open
+  if (stylePopover && (stylePopover as any).hidePopover) {
+    try {
+      (stylePopover as any).hidePopover();
+    } catch (err) {}
+  }
+
+  requestRender();
+  showToast(`Style: ${set.name}`);
+}
+
+/**
+ * Renders style selector cards into Popover
+ */
+export function renderStyleSelector(): void {
+  if (!styleGridList) return;
+  styleGridList.innerHTML = "";
+
+  for (const [key, set] of Object.entries(BOX_SETS) as Array<[LineStyle, BoxSet]>) {
+    const card = document.createElement("div");
+    card.className = `style-card ${key === state.style ? "active" : ""}`;
+    card.dataset.styleKey = key;
+    card.title = set.name;
+
+    const sampleDiv = document.createElement("div");
+    sampleDiv.className = "style-sample-grid";
+    sampleDiv.textContent = set.sampleGrid;
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "style-card-name";
+    nameSpan.textContent = set.name;
+
+    card.appendChild(sampleDiv);
+    card.appendChild(nameSpan);
+
+    card.addEventListener("click", () => {
+      selectStyle(key);
+    });
+
+    styleGridList.appendChild(card);
+  }
+}
+
+/**
  * Update UI Status Bar Display
  */
 export function updateStatus(): void {
@@ -2219,13 +2321,6 @@ export function setupEventListeners(): void {
     });
   });
 
-  if (styleSelect) {
-    styleSelect.addEventListener("change", (e: Event) => {
-      state.style = (e.target as HTMLSelectElement).value as LineStyle;
-      requestRender();
-    });
-  }
-
   document.getElementById("btnClear")?.addEventListener("click", () => {
     if (confirm("Clear entire ASCII canvas?")) {
       history.saveState();
@@ -2255,7 +2350,11 @@ export function init(): void {
   hiddenInput = document.getElementById("hidden-input") as HTMLTextAreaElement;
   toolPanel = document.getElementById("toolPanel") as HTMLElement;
   panelHandle = document.getElementById("panelHandle") as HTMLElement;
-  styleSelect = document.getElementById("styleSelect") as HTMLSelectElement;
+  stylePopover = document.getElementById("stylePopover") as HTMLElement;
+  styleTriggerBtn = document.getElementById("styleTriggerBtn") as HTMLElement;
+  styleCurrentPreview = document.getElementById("styleCurrentPreview") as HTMLElement;
+  styleCurrentLabel = document.getElementById("styleCurrentLabel") as HTMLElement;
+  styleGridList = document.getElementById("styleGridList") as HTMLElement;
   statusTool = document.getElementById("statusTool") as HTMLElement;
   statusCoords = document.getElementById("statusCoords") as HTMLElement;
   statusSelection = document.getElementById("statusSelection") as HTMLElement;
@@ -2266,6 +2365,7 @@ export function init(): void {
   resizeCanvas();
   resetView();
   startCaretBlinker();
+  renderStyleSelector();
   setupEventListeners();
   updateStatus();
 }
