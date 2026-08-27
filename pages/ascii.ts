@@ -502,6 +502,7 @@ export interface LineDragState {
   mode: LineDragMode;
   dx: number;
   dy: number;
+  duplicate?: boolean;
   newStartX?: number;
   newEndX?: number;
   newStartY?: number;
@@ -1267,9 +1268,10 @@ export function detectLineAt(x: number, y: number): LineSegment | null {
 }
 
 /**
- * Executes dragging of a horizontal line up/down, stretching/shrinking perpendicular connections
+ * Executes dragging of a horizontal line up/down, stretching/shrinking perpendicular connections.
+ * If duplicate is true, preserves the original line and stretches connections to pull a new row.
  */
-export function applyHorizontalLineDrag(segment: HorizontalSegment, dy: number): void {
+export function applyHorizontalLineDrag(segment: HorizontalSegment, dy: number, duplicate: boolean = false): void {
   if (dy === 0) return;
   history.saveState();
 
@@ -1282,18 +1284,30 @@ export function applyHorizontalLineDrag(segment: HorizontalSegment, dy: number):
   // Find perpendicular vertical connections along the horizontal segment
   const connections: Array<{ x: number; hasUp: boolean; hasDown: boolean }> = [];
   for (let x = segment.startX; x <= segment.endX; x++) {
+    const curChar = grid.get(x, oldY);
     const upChar = grid.get(x, oldY - 1);
     const downChar = grid.get(x, oldY + 1);
     const hasUp = upChar !== " " && (getCharPorts(upChar) & DIR_DOWN) !== 0;
     const hasDown = downChar !== " " && (getCharPorts(downChar) & DIR_UP) !== 0;
-    if (hasUp || hasDown) {
-      connections.push({ x, hasUp, hasDown });
+    const curPorts = curChar !== " " ? getCharPorts(curChar) : 0;
+    if (
+      hasUp ||
+      hasDown ||
+      (duplicate && (x === segment.startX || x === segment.endX || (curPorts & (DIR_UP | DIR_DOWN)) !== 0))
+    ) {
+      connections.push({
+        x,
+        hasUp: hasUp || (curPorts & DIR_UP) !== 0,
+        hasDown: hasDown || (curPorts & DIR_DOWN) !== 0,
+      });
     }
   }
 
-  // 1. Erase old horizontal line cells
-  for (let x = segment.startX; x <= segment.endX; x++) {
-    grid.delete(x, oldY);
+  // 1. Erase old horizontal line cells (only when not duplicating)
+  if (!duplicate) {
+    for (let x = segment.startX; x <= segment.endX; x++) {
+      grid.delete(x, oldY);
+    }
   }
 
   // 2. Adjust vertical perpendicular lines
@@ -1301,26 +1315,38 @@ export function applyHorizontalLineDrag(segment: HorizontalSegment, dy: number):
     const x = conn.x;
     if (dy > 0) {
       // Dragged DOWN
-      if (conn.hasUp) {
-        for (let y = oldY; y < newY; y++) {
+      if (duplicate) {
+        for (let y = oldY + 1; y < newY; y++) {
           grid.set(x, y, set.v);
         }
-      }
-      if (conn.hasDown) {
-        for (let y = oldY + 1; y < newY; y++) {
-          grid.delete(x, y);
+      } else {
+        if (conn.hasUp) {
+          for (let y = oldY; y < newY; y++) {
+            grid.set(x, y, set.v);
+          }
+        }
+        if (conn.hasDown) {
+          for (let y = oldY + 1; y < newY; y++) {
+            grid.delete(x, y);
+          }
         }
       }
     } else {
       // Dragged UP
-      if (conn.hasUp) {
-        for (let y = newY + 1; y <= oldY; y++) {
-          grid.delete(x, y);
-        }
-      }
-      if (conn.hasDown) {
-        for (let y = newY + 1; y <= oldY; y++) {
+      if (duplicate) {
+        for (let y = newY + 1; y < oldY; y++) {
           grid.set(x, y, set.v);
+        }
+      } else {
+        if (conn.hasUp) {
+          for (let y = newY + 1; y <= oldY; y++) {
+            grid.delete(x, y);
+          }
+        }
+        if (conn.hasDown) {
+          for (let y = newY + 1; y <= oldY; y++) {
+            grid.set(x, y, set.v);
+          }
         }
       }
     }
@@ -1347,9 +1373,10 @@ export function applyHorizontalLineDrag(segment: HorizontalSegment, dy: number):
 }
 
 /**
- * Executes dragging of a vertical line left/right, stretching/shrinking perpendicular connections
+ * Executes dragging of a vertical line left/right, stretching/shrinking perpendicular connections.
+ * If duplicate is true, preserves the original line and stretches connections to pull a new column.
  */
-export function applyVerticalLineDrag(segment: VerticalSegment, dx: number): void {
+export function applyVerticalLineDrag(segment: VerticalSegment, dx: number, duplicate: boolean = false): void {
   if (dx === 0) return;
   history.saveState();
 
@@ -1362,18 +1389,30 @@ export function applyVerticalLineDrag(segment: VerticalSegment, dx: number): voi
   // Find perpendicular horizontal connections along the vertical segment
   const connections: Array<{ y: number; hasLeft: boolean; hasRight: boolean }> = [];
   for (let y = segment.startY; y <= segment.endY; y++) {
+    const curChar = grid.get(oldX, y);
     const leftChar = grid.get(oldX - 1, y);
     const rightChar = grid.get(oldX + 1, y);
     const hasLeft = leftChar !== " " && (getCharPorts(leftChar) & DIR_RIGHT) !== 0;
     const hasRight = rightChar !== " " && (getCharPorts(rightChar) & DIR_LEFT) !== 0;
-    if (hasLeft || hasRight) {
-      connections.push({ y, hasLeft, hasRight });
+    const curPorts = curChar !== " " ? getCharPorts(curChar) : 0;
+    if (
+      hasLeft ||
+      hasRight ||
+      (duplicate && (y === segment.startY || y === segment.endY || (curPorts & (DIR_LEFT | DIR_RIGHT)) !== 0))
+    ) {
+      connections.push({
+        y,
+        hasLeft: hasLeft || (curPorts & DIR_LEFT) !== 0,
+        hasRight: hasRight || (curPorts & DIR_RIGHT) !== 0,
+      });
     }
   }
 
-  // 1. Erase old vertical line cells
-  for (let y = segment.startY; y <= segment.endY; y++) {
-    grid.delete(oldX, y);
+  // 1. Erase old vertical line cells (only when not duplicating)
+  if (!duplicate) {
+    for (let y = segment.startY; y <= segment.endY; y++) {
+      grid.delete(oldX, y);
+    }
   }
 
   // 2. Adjust horizontal perpendicular lines
@@ -1381,30 +1420,38 @@ export function applyVerticalLineDrag(segment: VerticalSegment, dx: number): voi
     const y = conn.y;
     if (dx > 0) {
       // Dragged RIGHT
-      if (conn.hasLeft) {
-        // Stretch right from oldX to newX - 1
-        for (let x = oldX; x < newX; x++) {
+      if (duplicate) {
+        for (let x = oldX + 1; x < newX; x++) {
           grid.set(x, y, set.h);
         }
-      }
-      if (conn.hasRight) {
-        // Shrink right from oldX + 1 to newX - 1
-        for (let x = oldX + 1; x < newX; x++) {
-          grid.delete(x, y);
+      } else {
+        if (conn.hasLeft) {
+          for (let x = oldX; x < newX; x++) {
+            grid.set(x, y, set.h);
+          }
+        }
+        if (conn.hasRight) {
+          for (let x = oldX + 1; x < newX; x++) {
+            grid.delete(x, y);
+          }
         }
       }
     } else {
       // Dragged LEFT
-      if (conn.hasLeft) {
-        // Shrink left from newX + 1 to oldX
-        for (let x = newX + 1; x <= oldX; x++) {
-          grid.delete(x, y);
-        }
-      }
-      if (conn.hasRight) {
-        // Stretch left from newX + 1 to oldX
-        for (let x = newX + 1; x <= oldX; x++) {
+      if (duplicate) {
+        for (let x = newX + 1; x < oldX; x++) {
           grid.set(x, y, set.h);
+        }
+      } else {
+        if (conn.hasLeft) {
+          for (let x = newX + 1; x <= oldX; x++) {
+            grid.delete(x, y);
+          }
+        }
+        if (conn.hasRight) {
+          for (let x = newX + 1; x <= oldX; x++) {
+            grid.set(x, y, set.h);
+          }
         }
       }
     }
@@ -1997,11 +2044,59 @@ export function render(): void {
           const spos = gridToScreen(x, targetY);
           ctx.fillText(set.h, spos.x, spos.y + 2 * state.zoom);
         }
+        if (ld.duplicate) {
+          const minY = Math.min(ld.segment.y, targetY);
+          const maxY = Math.max(ld.segment.y, targetY);
+          for (let x = ld.segment.startX; x <= ld.segment.endX; x++) {
+            const curChar = grid.get(x, ld.segment.y);
+            const upChar = grid.get(x, ld.segment.y - 1);
+            const downChar = grid.get(x, ld.segment.y + 1);
+            const hasUp = upChar !== " " && (getCharPorts(upChar) & DIR_DOWN) !== 0;
+            const hasDown = downChar !== " " && (getCharPorts(downChar) & DIR_UP) !== 0;
+            const curPorts = curChar !== " " ? getCharPorts(curChar) : 0;
+            if (
+              hasUp ||
+              hasDown ||
+              x === ld.segment.startX ||
+              x === ld.segment.endX ||
+              (curPorts & (DIR_UP | DIR_DOWN)) !== 0
+            ) {
+              for (let y = minY + 1; y < maxY; y++) {
+                const spos = gridToScreen(x, y);
+                ctx.fillText(set.v, spos.x, spos.y + 2 * state.zoom);
+              }
+            }
+          }
+        }
       } else {
         const targetX = ld.segment.x + ld.dx;
         for (let y = ld.segment.startY; y <= ld.segment.endY; y++) {
           const spos = gridToScreen(targetX, y);
           ctx.fillText(set.v, spos.x, spos.y + 2 * state.zoom);
+        }
+        if (ld.duplicate) {
+          const minX = Math.min(ld.segment.x, targetX);
+          const maxX = Math.max(ld.segment.x, targetX);
+          for (let y = ld.segment.startY; y <= ld.segment.endY; y++) {
+            const curChar = grid.get(ld.segment.x, y);
+            const leftChar = grid.get(ld.segment.x - 1, y);
+            const rightChar = grid.get(ld.segment.x + 1, y);
+            const hasLeft = leftChar !== " " && (getCharPorts(leftChar) & DIR_RIGHT) !== 0;
+            const hasRight = rightChar !== " " && (getCharPorts(rightChar) & DIR_LEFT) !== 0;
+            const curPorts = curChar !== " " ? getCharPorts(curChar) : 0;
+            if (
+              hasLeft ||
+              hasRight ||
+              y === ld.segment.startY ||
+              y === ld.segment.endY ||
+              (curPorts & (DIR_LEFT | DIR_RIGHT)) !== 0
+            ) {
+              for (let x = minX + 1; x < maxX; x++) {
+                const spos = gridToScreen(x, y);
+                ctx.fillText(set.h, spos.x, spos.y + 2 * state.zoom);
+              }
+            }
+          }
         }
       }
     } else {
@@ -2119,10 +2214,17 @@ export function setupEventListeners(): void {
         const dy = gridPos.y - state.drag.startY;
         const hSeg = state.drag.hSeg;
         const vSeg = state.drag.vSeg;
+        const isShift = e.shiftKey;
 
         if (hSeg && vSeg) {
           // Corner or junction clicked
-          if (Math.abs(dx) >= Math.abs(dy)) {
+          if (isShift) {
+            if (Math.abs(dy) >= Math.abs(dx)) {
+              state.lineDrag = { segment: hSeg, mode: "shift", dx: 0, dy, duplicate: true };
+            } else {
+              state.lineDrag = { segment: vSeg, mode: "shift", dx, dy: 0, duplicate: true };
+            }
+          } else if (Math.abs(dx) >= Math.abs(dy)) {
             const isLeft = state.drag.startX <= (hSeg.startX + hSeg.endX) / 2;
             if (isLeft) {
               const newStartX = Math.min(hSeg.endX, hSeg.startX + dx);
@@ -2143,7 +2245,9 @@ export function setupEventListeners(): void {
           }
         } else if (hSeg) {
           // Horizontal line
-          if (Math.abs(dx) >= Math.abs(dy)) {
+          if (isShift) {
+            state.lineDrag = { segment: hSeg, mode: "shift", dx: 0, dy, duplicate: true };
+          } else if (Math.abs(dx) >= Math.abs(dy)) {
             const isLeft = state.drag.startX <= (hSeg.startX + hSeg.endX) / 2;
             if (isLeft) {
               const newStartX = Math.min(hSeg.endX, hSeg.startX + dx);
@@ -2153,11 +2257,13 @@ export function setupEventListeners(): void {
               state.lineDrag = { segment: hSeg, mode: "extend_end", dx, dy: 0, newEndX };
             }
           } else {
-            state.lineDrag = { segment: hSeg, mode: "shift", dx: 0, dy };
+            state.lineDrag = { segment: hSeg, mode: "shift", dx: 0, dy, duplicate: false };
           }
         } else if (vSeg) {
           // Vertical line
-          if (Math.abs(dy) >= Math.abs(dx)) {
+          if (isShift) {
+            state.lineDrag = { segment: vSeg, mode: "shift", dx, dy: 0, duplicate: true };
+          } else if (Math.abs(dy) >= Math.abs(dx)) {
             const isTop = state.drag.startY <= (vSeg.startY + vSeg.endY) / 2;
             if (isTop) {
               const newStartY = Math.min(vSeg.endY, vSeg.startY + dy);
@@ -2167,7 +2273,7 @@ export function setupEventListeners(): void {
               state.lineDrag = { segment: vSeg, mode: "extend_end", dx: 0, dy, newEndY };
             }
           } else {
-            state.lineDrag = { segment: vSeg, mode: "shift", dx, dy: 0 };
+            state.lineDrag = { segment: vSeg, mode: "shift", dx, dy: 0, duplicate: false };
           }
         }
         requestRender();
@@ -2195,9 +2301,9 @@ export function setupEventListeners(): void {
         if (hSeg && vSeg) {
           container.style.cursor = "move";
         } else if (hSeg) {
-          container.style.cursor = "ew-resize";
-        } else if (vSeg) {
           container.style.cursor = "ns-resize";
+        } else if (vSeg) {
+          container.style.cursor = "ew-resize";
         } else if (isInsideSelection(gridPos.x, gridPos.y)) {
           container.style.cursor = "move";
         } else {
@@ -2324,9 +2430,9 @@ export function setupEventListeners(): void {
         if (state.lineDrag) {
           if (state.lineDrag.mode === "shift") {
             if (state.lineDrag.segment.type === "horizontal") {
-              applyHorizontalLineDrag(state.lineDrag.segment, state.lineDrag.dy);
+              applyHorizontalLineDrag(state.lineDrag.segment, state.lineDrag.dy, !!state.lineDrag.duplicate);
             } else {
-              applyVerticalLineDrag(state.lineDrag.segment, state.lineDrag.dx);
+              applyVerticalLineDrag(state.lineDrag.segment, state.lineDrag.dx, !!state.lineDrag.duplicate);
             }
           } else {
             if (state.lineDrag.segment.type === "horizontal") {
