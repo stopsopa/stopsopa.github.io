@@ -192,16 +192,6 @@
             transform: scale(0.97);
         }
 
-        .action-btn.primary {
-            background: #3d59a1;
-            border-color: #7aa2f7;
-            color: #ffffff;
-        }
-
-        .action-btn.primary:hover {
-            background: #496fc2;
-        }
-
         /* Select dropdowns for style */
         .select-input {
             width: 100%;
@@ -356,28 +346,16 @@
                 </select>
             </div>
 
-            <!-- Clipboard & Selection Actions -->
+            <!-- History & View Actions -->
             <div class="tool-section">
-                <div class="section-title">Selection / Clipboard</div>
-                <div class="action-row">
-                    <button class="action-btn primary" id="btnCopy" title="Copy ASCII (Ctrl+C)">Copy Box</button>
-                    <button class="action-btn" id="btnPaste" title="Paste ASCII (Ctrl+V)">Paste</button>
-                </div>
-                <div class="action-row">
-                    <button class="action-btn" id="btnDelete" title="Delete Selected (Del)">Delete</button>
-                    <button class="action-btn" id="btnClear" title="Clear Canvas">Clear All</button>
-                </div>
-            </div>
-
-            <!-- History Actions -->
-            <div class="tool-section">
-                <div class="section-title">History & View</div>
+                <div class="section-title">History & Canvas</div>
                 <div class="action-row">
                     <button class="action-btn" id="btnUndo" title="Undo (Ctrl+Z)">Undo</button>
                     <button class="action-btn" id="btnRedo" title="Redo (Ctrl+Y)">Redo</button>
                 </div>
                 <div class="action-row">
-                    <button class="action-btn" id="btnResetView" title="Reset Pan & Zoom">Reset View</button>
+                    <button class="action-btn" id="btnResetView" title="Center View">Center View</button>
+                    <button class="action-btn" id="btnClear" title="Clear Canvas">Clear All</button>
                 </div>
             </div>
         </div>
@@ -394,6 +372,8 @@
             <span class="status-item"><span class="hint-badge">Space + Drag</span> Pan</span>
             <span class="status-item"><span class="hint-badge">Shift</span> Invert Zigzag</span>
             <span class="status-item"><span class="hint-badge">Ctrl+C</span> Copy</span>
+            <span class="status-item"><span class="hint-badge">Ctrl+X</span> Cut</span>
+            <span class="status-item"><span class="hint-badge">Ctrl+V</span> Paste</span>
             <span class="status-item"><span class="hint-badge">Ctrl+Z</span> Undo</span>
             <span class="status-item">Zoom: <span class="status-highlight" id="statusZoom">100%</span></span>
         </div>

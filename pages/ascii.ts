@@ -536,6 +536,7 @@ export function resetView(): void {
   }
   updateStatus();
   requestRender();
+  showToast("Centered view");
 }
 
 /**
@@ -1175,16 +1176,29 @@ export async function copySelectionToClipboard(): Promise<void> {
   }
   try {
     await navigator.clipboard.writeText(text);
-    showToast("Copied to clipboard!");
+    showToast("Copied to clipboard");
   } catch (err) {
     // Fallback using textarea
     if (hiddenInput) {
       hiddenInput.value = text;
       hiddenInput.select();
       document.execCommand("copy");
-      showToast("Copied to clipboard!");
+      showToast("Copied to clipboard");
     }
   }
+}
+
+/**
+ * Cuts selected ASCII region to clipboard and deletes it from canvas
+ */
+export async function cutSelectionToClipboard(): Promise<void> {
+  if (!state.selection) {
+    showToast("No selection to cut");
+    return;
+  }
+  await copySelectionToClipboard();
+  deleteSelection();
+  showToast("Cut to clipboard");
 }
 
 /**
@@ -1216,7 +1230,7 @@ export function pasteAsciiText(text: string, targetX: number, targetY: number): 
 
   updateStatus();
   requestRender();
-  showToast("Pasted ASCII block");
+  showToast("Pasted");
 }
 
 /**
@@ -1240,7 +1254,7 @@ export function deleteSelection(): void {
   state.selection = null;
   updateStatus();
   requestRender();
-  showToast("Deleted selection");
+  showToast("Deleted");
 }
 
 /**
@@ -1804,8 +1818,7 @@ export function setupEventListeners(): void {
       }
       if (e.key.toLowerCase() === "x") {
         e.preventDefault();
-        copySelectionToClipboard();
-        deleteSelection();
+        cutSelectionToClipboard();
         return;
       }
       if (e.key.toLowerCase() === "v") {
@@ -1962,16 +1975,6 @@ export function setupEventListeners(): void {
     });
   }
 
-  document.getElementById("btnCopy")?.addEventListener("click", copySelectionToClipboard);
-  document.getElementById("btnPaste")?.addEventListener("click", async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      pasteAsciiText(text, state.cursor.x, state.cursor.y);
-    } catch (err) {
-      showToast("Press Ctrl+V to paste");
-    }
-  });
-  document.getElementById("btnDelete")?.addEventListener("click", deleteSelection);
   document.getElementById("btnClear")?.addEventListener("click", () => {
     if (confirm("Clear entire ASCII canvas?")) {
       history.saveState();
