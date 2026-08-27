@@ -44,7 +44,7 @@ function isObject(o: unknown): o is Record<string, unknown> {
   return Object.prototype.toString.call(o) === "[object Object]";
 }
 
-function sortObjectNested<T>(data: T, sortArrays: boolean): T {
+export function sortObjectNested<T>(data: T, sortArrays?: boolean): T {
   if (Array.isArray(data)) {
     const sorted = data.map((item) => sortObjectNested(item, sortArrays));
 
@@ -76,7 +76,7 @@ async function readStdin(): Promise<string> {
   return Buffer.concat(chunks).toString("utf8");
 }
 
-try {
+async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const sortArrays = args.includes("--array");
   const file = args.find((arg) => arg !== "--array");
@@ -92,9 +92,15 @@ try {
 
     process.stdout.write(JSON.stringify(sorted, null, 2) + "\n");
   }
-} catch (err) {
-  const message = err instanceof Error ? err.message : String(err);
+}
 
-  process.stderr.write(`Error: ${message}\n`);
-  process.exit(1);
+if (import.meta.main) {
+  try {
+    await main();
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+
+    process.stderr.write(`Error: ${message}\n`);
+    process.exit(1);
+  }
 }
