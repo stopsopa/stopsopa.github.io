@@ -1391,7 +1391,7 @@ export function applyVerticalLineDrag(segment: VerticalSegment, dx: number): voi
   const affectedPoints: Point[] = [];
   for (let y = segment.startY; y <= segment.endY; y++) {
     grid.set(newX, y, set.v);
-    affectedPoints.push({ x: newX, y });
+    affectedPoints.push({ x, y: newX });
   }
 
   for (let y = segment.startY; y <= segment.endY; y++) {
@@ -1742,13 +1742,41 @@ export function render(): void {
   ctx.textAlign = "left";
   ctx.fillStyle = "#c0caf5";
 
-  // Draw stored characters
+  const isMovingSelection = state.drag && state.drag.type === "move_selection";
+  const moveDrag = isMovingSelection ? (state.drag as any) : null;
+
+  // Draw stored characters (skipping cells actively moving with selection drag)
   for (let gy = startGridY; gy <= endGridY; gy++) {
     for (let gx = startGridX; gx <= endGridX; gx++) {
+      if (moveDrag) {
+        if (
+          gx >= moveDrag.initialX1 &&
+          gx <= moveDrag.initialX2 &&
+          gy >= moveDrag.initialY1 &&
+          gy <= moveDrag.initialY2
+        ) {
+          continue;
+        }
+      }
       const char = grid.get(gx, gy);
       if (char !== " ") {
         const spos = gridToScreen(gx, gy);
         ctx.fillText(char, spos.x, spos.y + 2 * state.zoom);
+      }
+    }
+  }
+
+  // Live render of moving selection block characters
+  if (moveDrag) {
+    const dx = state.hoverGrid.x - moveDrag.startX;
+    const dy = state.hoverGrid.y - moveDrag.startY;
+    ctx.fillStyle = "#7aa2f7";
+    for (const item of moveDrag.cells) {
+      if (item.char !== " ") {
+        const targetX = moveDrag.initialX1 + dx + item.relX;
+        const targetY = moveDrag.initialY1 + dy + item.relY;
+        const spos = gridToScreen(targetX, targetY);
+        ctx.fillText(item.char, spos.x, spos.y + 2 * state.zoom);
       }
     }
   }
@@ -2078,6 +2106,12 @@ export function setupEventListeners(): void {
               grid.set(state.drag.initialX1 + dx + item.relX, state.drag.initialY1 + dy + item.relY, item.char);
             }
           }
+          state.selection = {
+            x1: state.drag.initialX1 + dx,
+            y1: state.drag.initialY1 + dy,
+            x2: state.drag.initialX2 + dx,
+            y2: state.drag.initialY2 + dy,
+          };
         }
       } else if (state.drag.type === "draw") {
         history.saveState();
