@@ -56,6 +56,7 @@ bash/node/versioncheck.js
 es.mjs
 libs/drag_v2.js
 libs/drag.js
+pages/ascii.js
 pages/bookmarklets/gmail/extract.js
 pages/children/caesar/moduleCaesarCypher.js
 pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.js

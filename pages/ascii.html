@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII Art & Diagram Editor</title>
+    <style>
+        /* Base page reset and full-window layout */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #12131c;
+            color: #d4d4d8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Canvas viewport container */
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: default;
+        }
+
+        #ascii-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Hidden textarea for clipboard and mobile/IME text input support */
+        #hidden-input {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Floating draggable tool panel */
+        .tool-panel {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            width: 220px;
+            background: rgba(26, 27, 38, 0.95);
+            border: 1px solid #33364a;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Panel header used as a drag handle */
+        .panel-header {
+            padding: 10px 14px;
+            background: #202230;
+            border-bottom: 1px solid #33364a;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #9aa5ce;
+        }
+
+        .panel-header:active {
+            cursor: grabbing;
+        }
+
+        .panel-header .handle-icon {
+            display: inline-flex;
+            gap: 2px;
+            align-items: center;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Panel body containing tools and controls */
+        .panel-body {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tool-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #565f89;
+            font-weight: 700;
+        }
+
+        /* Button grids and buttons */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .tool-btn {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            padding: 7px 10px;
+            background: #24283b;
+            border: 1px solid #3b4261;
+            border-radius: 5px;
+            color: #c0caf5;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s, color 0.15s;
+            text-align: left;
+        }
+
+        .tool-btn:hover {
+            background: #2f354f;
+            border-color: #7aa2f7;
+            color: #ffffff;
+        }
+
+        .tool-btn.active {
+            background: #7aa2f7;
+            border-color: #7aa2f7;
+            color: #1a1b26;
+            font-weight: 600;
+        }
+
+        .tool-btn .btn-icon {
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: bold;
+            width: 16px;
+            text-align: center;
+        }
+
+        .tool-btn .btn-key {
+            margin-left: auto;
+            font-size: 10px;
+            opacity: 0.6;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 6px 8px;
+            background: #24283b;
+            border: 1px solid #3b4261;
+            border-radius: 5px;
+            color: #a9b1d6;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            background: #2f354f;
+            border-color: #565f89;
+            color: #fff;
+        }
+
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+
+        .action-btn.primary {
+            background: #3d59a1;
+            border-color: #7aa2f7;
+            color: #ffffff;
+        }
+
+        .action-btn.primary:hover {
+            background: #496fc2;
+        }
+
+        /* Select dropdowns for style */
+        .select-input {
+            width: 100%;
+            padding: 6px 8px;
+            background: #24283b;
+            border: 1px solid #3b4261;
+            border-radius: 5px;
+            color: #c0caf5;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .select-input:focus {
+            border-color: #7aa2f7;
+        }
+
+        /* Bottom status bar */
+        .status-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 28px;
+            background: #16161e;
+            border-top: 1px solid #232433;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            font-size: 11px;
+            color: #787c99;
+            z-index: 90;
+            pointer-events: none;
+        }
+
+        .status-left, .status-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            pointer-events: auto;
+        }
+
+        .status-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-highlight {
+            color: #7aa2f7;
+            font-family: monospace;
+        }
+
+        /* Help toast / hints */
+        .hint-badge {
+            background: #24283b;
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid #3b4261;
+            color: #c0caf5;
+            font-family: monospace;
+            font-size: 10px;
+        }
+
+        /* Notification toast */
+        #toast {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(36, 40, 59, 0.95);
+            border: 1px solid #7aa2f7;
+            color: #c0caf5;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 200;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Canvas Viewport -->
+    <div id="canvas-container">
+        <canvas id="ascii-canvas"></canvas>
+    </div>
+
+    <!-- Hidden input for clipboard & keyboard input handling -->
+    <textarea id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+
+    <!-- Floating Draggable Tool Panel -->
+    <div class="tool-panel" id="toolPanel">
+        <div class="panel-header" id="panelHandle">
+            <span>ASCII Tools</span>
+            <span class="handle-icon">&#x2630;</span>
+        </div>
+        <div class="panel-body">
+            <!-- Tools Group -->
+            <div class="tool-section">
+                <div class="section-title">Tools</div>
+                <div class="tool-grid">
+                    <button class="tool-btn active" data-tool="select" title="Select & Move (V)">
+                        <span class="btn-icon">&#x21F1;</span>
+                        <span>Select</span>
+                        <span class="btn-key">V</span>
+                    </button>
+                    <button class="tool-btn" data-tool="text" title="Text Mode (T)">
+                        <span class="btn-icon">T</span>
+                        <span>Text</span>
+                        <span class="btn-key">T</span>
+                    </button>
+                    <button class="tool-btn" data-tool="zigzag" title="Zigzag Line (Z) - Shift flips direction">
+                        <span class="btn-icon">&#x2517;</span>
+                        <span>Zigzag</span>
+                        <span class="btn-key">Z</span>
+                    </button>
+                    <button class="tool-btn" data-tool="line" title="Straight Line (L)">
+                        <span class="btn-icon">&#x2500;</span>
+                        <span>Line</span>
+                        <span class="btn-key">L</span>
+                    </button>
+                    <button class="tool-btn" data-tool="rect" title="Rectangle (R)">
+                        <span class="btn-icon">&#x25AD;</span>
+                        <span>Rect</span>
+                        <span class="btn-key">R</span>
+                    </button>
+                    <button class="tool-btn" data-tool="eraser" title="Eraser (E)">
+                        <span class="btn-icon">&#x232B;</span>
+                        <span>Eraser</span>
+                        <span class="btn-key">E</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Line Character Style -->
+            <div class="tool-section">
+                <div class="section-title">Line Style</div>
+                <select class="select-input" id="styleSelect">
+                    <option value="box-single">Unicode Single (─ │ ┌ ┐)</option>
+                    <option value="box-double">Unicode Double (═ ║ ╔ ╗)</option>
+                    <option value="ascii">ASCII Basic (- | +)</option>
+                </select>
+            </div>
+
+            <!-- Clipboard & Selection Actions -->
+            <div class="tool-section">
+                <div class="section-title">Selection / Clipboard</div>
+                <div class="action-row">
+                    <button class="action-btn primary" id="btnCopy" title="Copy ASCII (Ctrl+C)">Copy Box</button>
+                    <button class="action-btn" id="btnPaste" title="Paste ASCII (Ctrl+V)">Paste</button>
+                </div>
+                <div class="action-row">
+                    <button class="action-btn" id="btnDelete" title="Delete Selected (Del)">Delete</button>
+                    <button class="action-btn" id="btnClear" title="Clear Canvas">Clear All</button>
+                </div>
+            </div>
+
+            <!-- History Actions -->
+            <div class="tool-section">
+                <div class="section-title">History & View</div>
+                <div class="action-row">
+                    <button class="action-btn" id="btnUndo" title="Undo (Ctrl+Z)">Undo</button>
+                    <button class="action-btn" id="btnRedo" title="Redo (Ctrl+Y)">Redo</button>
+                </div>
+                <div class="action-row">
+                    <button class="action-btn" id="btnResetView" title="Reset Pan & Zoom">Reset View</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="status-item">Tool: <span class="status-highlight" id="statusTool">Select</span></span>
+            <span class="status-item">Pos: <span class="status-highlight" id="statusCoords">0, 0</span></span>
+            <span class="status-item">Selection: <span class="status-highlight" id="statusSelection">None</span></span>
+        </div>
+        <div class="status-right">
+            <span class="status-item"><span class="hint-badge">Space + Drag</span> Pan</span>
+            <span class="status-item"><span class="hint-badge">Shift</span> Invert Zigzag</span>
+            <span class="status-item"><span class="hint-badge">Ctrl+C</span> Copy</span>
+            <span class="status-item"><span class="hint-badge">Ctrl+Z</span> Undo</span>
+            <span class="status-item">Zoom: <span class="status-highlight" id="statusZoom">100%</span></span>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast">Message</div>
+
+    <script type="module" src="ascii.js"></script>
+</body>
+</html>
