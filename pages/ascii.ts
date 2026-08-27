@@ -1728,7 +1728,7 @@ export function render(): void {
   ctx.save();
 
   // Draw subtle cell grid dots/lines
-  ctx.fillStyle = "#1e202f";
+  ctx.fillStyle = "#d5cebf";
   for (let gx = startGridX; gx <= endGridX; gx++) {
     const sx = state.panX + gx * state.cellWidth * state.zoom;
     for (let gy = startGridY; gy <= endGridY; gy++) {
@@ -1740,7 +1740,7 @@ export function render(): void {
   // Origin marker (0, 0)
   const origin = gridToScreen(0, 0);
   if (origin.x >= -50 && origin.x <= width + 50 && origin.y >= -50 && origin.y <= height + 50) {
-    ctx.strokeStyle = "#3b4261";
+    ctx.strokeStyle = "#b8b0a2";
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(origin.x - 6, origin.y);
@@ -1755,7 +1755,7 @@ export function render(): void {
   ctx.font = `${fontSize}px monospace`;
   ctx.textBaseline = "top";
   ctx.textAlign = "left";
-  ctx.fillStyle = "#c0caf5";
+  ctx.fillStyle = "#2e2c29";
 
   const isMovingSelection = state.drag && state.drag.type === "move_selection";
   const moveDrag = isMovingSelection ? (state.drag as any) : null;
@@ -1785,7 +1785,7 @@ export function render(): void {
   if (moveDrag) {
     const dx = state.hoverGrid.x - moveDrag.startX;
     const dy = state.hoverGrid.y - moveDrag.startY;
-    ctx.fillStyle = "#7aa2f7";
+    ctx.fillStyle = "#544e45";
     for (const item of moveDrag.cells) {
       if (item.char !== " ") {
         const targetX = moveDrag.initialX1 + dx + item.relX;
@@ -1809,7 +1809,7 @@ export function render(): void {
       previewPoints = getRectanglePath(prev.startX, prev.startY, prev.currentX, prev.currentY);
     }
 
-    ctx.fillStyle = "#7aa2f7";
+    ctx.fillStyle = "#544e45";
     for (const pt of previewPoints) {
       const spos = gridToScreen(pt.x, pt.y);
       ctx.fillText(pt.char || "─", spos.x, spos.y + 2 * state.zoom);
@@ -1825,7 +1825,7 @@ export function render(): void {
     );
     const styleKey = getCharStyle(segmentChar) || state.style;
     const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
-    ctx.fillStyle = "#bb9af7";
+    ctx.fillStyle = "#6e6659";
 
     if (ld.segment.type === "horizontal") {
       const targetY = ld.segment.y + ld.dy;
@@ -1854,10 +1854,10 @@ export function render(): void {
     const selW = br.x - tl.x;
     const selH = br.y - tl.y;
 
-    ctx.fillStyle = "rgba(122, 162, 247, 0.15)";
+    ctx.fillStyle = "rgba(84, 78, 69, 0.12)";
     ctx.fillRect(tl.x, tl.y, selW, selH);
 
-    ctx.strokeStyle = "#7aa2f7";
+    ctx.strokeStyle = "#544e45";
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 4]);
     ctx.strokeRect(tl.x, tl.y, selW, selH);
@@ -1869,7 +1869,7 @@ export function render(): void {
     const curScreen = gridToScreen(state.cursor.x, state.cursor.y);
     const curH = state.cellHeight * state.zoom;
 
-    ctx.fillStyle = "#7aa2f7";
+    ctx.fillStyle = "#2e2c29";
     ctx.fillRect(curScreen.x, curScreen.y, 2, curH);
   }
 
@@ -1879,7 +1879,7 @@ export function render(): void {
     const cellW = state.cellWidth * state.zoom;
     const cellH = state.cellHeight * state.zoom;
 
-    ctx.strokeStyle = "rgba(122, 162, 247, 0.4)";
+    ctx.strokeStyle = "rgba(84, 78, 69, 0.35)";
     ctx.lineWidth = 1;
     ctx.strokeRect(hpos.x, hpos.y, cellW, cellH);
   }
