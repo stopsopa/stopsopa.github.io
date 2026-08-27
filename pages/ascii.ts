@@ -4,6 +4,7 @@
  * Core engine for infinite canvas ASCII editing with text typing,
  * box-drawing line tools (point-to-point, zigzag with bend compensation),
  * selection & clipboard operations, and smart line dragging with perpendicular junction stretching.
+ * Full support for both Unicode Box Drawing (Single/Double) and Classic ASCII tables (+, -, |).
  */
 
 // Tool enumeration
@@ -538,57 +539,83 @@ export function resetView(): void {
 }
 
 /**
- * Box-Drawing Junction & Connectivity Analysis
+ * Box-Drawing & ASCII Character Identification
  */
-export function isBoxChar(char: string, styleKey: LineStyle = state.style): boolean {
-  const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
-  return set.allChars.has(char);
+export function getCharStyle(char: string): LineStyle {
+  if (BOX_SETS["box-single"].allChars.has(char)) return "box-single";
+  if (BOX_SETS["box-double"].allChars.has(char)) return "box-double";
+  if (BOX_SETS["ascii"].allChars.has(char)) return "ascii";
+  return state.style;
+}
+
+export function isAnyLineChar(char: string): boolean {
+  if (!char || char === " ") return false;
+  return (
+    BOX_SETS["box-single"].allChars.has(char) ||
+    BOX_SETS["box-double"].allChars.has(char) ||
+    BOX_SETS["ascii"].allChars.has(char)
+  );
+}
+
+export function isBoxChar(char: string, styleKey?: LineStyle): boolean {
+  if (!char || char === " ") return false;
+  if (styleKey) {
+    const set = BOX_SETS[styleKey];
+    return set ? set.allChars.has(char) : false;
+  }
+  return isAnyLineChar(char);
 }
 
 /**
- * Gets port connection bitmask for a character
+ * Gets port connection bitmask for a character across all styles
  */
-export function getCharPorts(char: string, styleKey: LineStyle = state.style): number {
-  const stylePorts = CHAR_PORTS[styleKey] || CHAR_PORTS["box-single"];
-  return stylePorts[char] || 0;
+export function getCharPorts(char: string, styleKey?: LineStyle): number {
+  if (!char || char === " ") return 0;
+  const resolvedStyle = styleKey || getCharStyle(char);
+  const stylePorts = CHAR_PORTS[resolvedStyle];
+  if (stylePorts && stylePorts[char] !== undefined) {
+    return stylePorts[char];
+  }
+  for (const key of ["box-single", "box-double", "ascii"] as LineStyle[]) {
+    if (CHAR_PORTS[key][char] !== undefined) {
+      return CHAR_PORTS[key][char];
+    }
+  }
+  return 0;
 }
 
 /**
  * Computes and updates proper junction character at (x, y) based on existing neighbor connectivity.
- * IMPORTANT: NEVER writes into empty cells ' '. Only resolves non-empty box characters!
+ * IMPORTANT: NEVER writes into empty cells ' '. Only resolves non-empty line characters!
  */
-export function resolveJunction(
-  x: number,
-  y: number,
-  gridInstance: AsciiGrid = grid,
-  styleKey: LineStyle = state.style
-): void {
+export function resolveJunction(x: number, y: number, gridInstance: AsciiGrid = grid, forcedStyle?: LineStyle): void {
   const char = gridInstance.get(x, y);
-  if (!char || char === " " || !isBoxChar(char, styleKey)) return;
+  if (!char || char === " " || !isAnyLineChar(char)) return;
 
+  const styleKey = forcedStyle || getCharStyle(char) || state.style;
   let mask = 0;
 
   // Check UP neighbor
   const upChar = gridInstance.get(x, y - 1);
-  if (upChar !== " " && getCharPorts(upChar, styleKey) & DIR_DOWN) {
+  if (upChar !== " " && getCharPorts(upChar) & DIR_DOWN) {
     mask |= DIR_UP;
   }
 
   // Check RIGHT neighbor
   const rightChar = gridInstance.get(x + 1, y);
-  if (rightChar !== " " && getCharPorts(rightChar, styleKey) & DIR_LEFT) {
+  if (rightChar !== " " && getCharPorts(rightChar) & DIR_LEFT) {
     mask |= DIR_RIGHT;
   }
 
   // Check DOWN neighbor
   const downChar = gridInstance.get(x, y + 1);
-  if (downChar !== " " && getCharPorts(downChar, styleKey) & DIR_UP) {
+  if (downChar !== " " && getCharPorts(downChar) & DIR_UP) {
     mask |= DIR_DOWN;
   }
 
   // Check LEFT neighbor
   const leftChar = gridInstance.get(x - 1, y);
-  if (leftChar !== " " && getCharPorts(leftChar, styleKey) & DIR_RIGHT) {
+  if (leftChar !== " " && getCharPorts(leftChar) & DIR_RIGHT) {
     mask |= DIR_LEFT;
   }
 
@@ -606,11 +633,7 @@ export function resolveJunction(
 /**
  * Resolves junctions for modified points and their immediately connected neighbors
  */
-export function resolveJunctionsAround(
-  points: Point[],
-  gridInstance: AsciiGrid = grid,
-  styleKey: LineStyle = state.style
-): void {
+export function resolveJunctionsAround(points: Point[], gridInstance: AsciiGrid = grid, forcedStyle?: LineStyle): void {
   const checked = new Set<string>();
   for (const pt of points) {
     const neighbors = [
@@ -625,8 +648,8 @@ export function resolveJunctionsAround(
       if (!checked.has(key)) {
         checked.add(key);
         const cellChar = gridInstance.get(n.x, n.y);
-        if (cellChar && cellChar !== " " && isBoxChar(cellChar, styleKey)) {
-          resolveJunction(n.x, n.y, gridInstance, styleKey);
+        if (cellChar && cellChar !== " " && isAnyLineChar(cellChar)) {
+          resolveJunction(n.x, n.y, gridInstance, forcedStyle);
         }
       }
     }
@@ -735,10 +758,10 @@ export function getZigzagPath(x1: number, y1: number, x2: number, y2: number, sh
 
     // 2. Corner 1 at (midX, y1)
     let corner1 = set.h;
-    if (x1 <= x2 && y1 <= y2) corner1 = set.junctions[DIR_LEFT | DIR_DOWN]; // ┐
-    else if (x1 <= x2 && y1 > y2) corner1 = set.junctions[DIR_LEFT | DIR_UP]; // ┘
-    else if (x1 > x2 && y1 <= y2) corner1 = set.junctions[DIR_RIGHT | DIR_DOWN]; // ┌
-    else corner1 = set.junctions[DIR_RIGHT | DIR_UP]; // └
+    if (x1 <= x2 && y1 <= y2) corner1 = set.junctions[DIR_LEFT | DIR_DOWN];
+    else if (x1 <= x2 && y1 > y2) corner1 = set.junctions[DIR_LEFT | DIR_UP];
+    else if (x1 > x2 && y1 <= y2) corner1 = set.junctions[DIR_RIGHT | DIR_DOWN];
+    else corner1 = set.junctions[DIR_RIGHT | DIR_UP];
     points.push({ x: midX, y: y1, char: corner1 });
 
     // 3. Vertical segment at midX between y1 and y2 (exclusive of y1 and y2)
@@ -748,10 +771,10 @@ export function getZigzagPath(x1: number, y1: number, x2: number, y2: number, sh
 
     // 4. Corner 2 at (midX, y2)
     let corner2 = set.h;
-    if (x1 <= x2 && y1 <= y2) corner2 = set.junctions[DIR_UP | DIR_RIGHT]; // └
-    else if (x1 <= x2 && y1 > y2) corner2 = set.junctions[DIR_DOWN | DIR_RIGHT]; // ┌
-    else if (x1 > x2 && y1 <= y2) corner2 = set.junctions[DIR_UP | DIR_LEFT]; // ┘
-    else corner2 = set.junctions[DIR_DOWN | DIR_LEFT]; // ┐
+    if (x1 <= x2 && y1 <= y2) corner2 = set.junctions[DIR_UP | DIR_RIGHT];
+    else if (x1 <= x2 && y1 > y2) corner2 = set.junctions[DIR_DOWN | DIR_RIGHT];
+    else if (x1 > x2 && y1 <= y2) corner2 = set.junctions[DIR_UP | DIR_LEFT];
+    else corner2 = set.junctions[DIR_DOWN | DIR_LEFT];
     points.push({ x: midX, y: y2, char: corner2 });
 
     // 5. Horizontal segment from midX+stepX2 to x2
@@ -772,10 +795,10 @@ export function getZigzagPath(x1: number, y1: number, x2: number, y2: number, sh
 
     // 2. Corner 1 at (x1, midY)
     let corner1 = set.v;
-    if (y1 <= y2 && x1 <= x2) corner1 = set.junctions[DIR_UP | DIR_RIGHT]; // └
-    else if (y1 <= y2 && x1 > x2) corner1 = set.junctions[DIR_UP | DIR_LEFT]; // ┘
-    else if (y1 > y2 && x1 <= x2) corner1 = set.junctions[DIR_DOWN | DIR_RIGHT]; // ┌
-    else corner1 = set.junctions[DIR_DOWN | DIR_LEFT]; // ┐
+    if (y1 <= y2 && x1 <= x2) corner1 = set.junctions[DIR_UP | DIR_RIGHT];
+    else if (y1 <= y2 && x1 > x2) corner1 = set.junctions[DIR_UP | DIR_LEFT];
+    else if (y1 > y2 && x1 <= x2) corner1 = set.junctions[DIR_DOWN | DIR_RIGHT];
+    else corner1 = set.junctions[DIR_DOWN | DIR_LEFT];
     points.push({ x: x1, y: midY, char: corner1 });
 
     // 3. Horizontal segment at midY between x1 and x2 (exclusive of x1 and x2)
@@ -785,10 +808,10 @@ export function getZigzagPath(x1: number, y1: number, x2: number, y2: number, sh
 
     // 4. Corner 2 at (x2, midY)
     let corner2 = set.v;
-    if (y1 <= y2 && x1 <= x2) corner2 = set.junctions[DIR_LEFT | DIR_DOWN]; // ┐
-    else if (y1 <= y2 && x1 > x2) corner2 = set.junctions[DIR_RIGHT | DIR_DOWN]; // ┌
-    else if (y1 > y2 && x1 <= x2) corner2 = set.junctions[DIR_LEFT | DIR_UP]; // ┘
-    else corner2 = set.junctions[DIR_RIGHT | DIR_UP]; // └
+    if (y1 <= y2 && x1 <= x2) corner2 = set.junctions[DIR_LEFT | DIR_DOWN];
+    else if (y1 <= y2 && x1 > x2) corner2 = set.junctions[DIR_RIGHT | DIR_DOWN];
+    else if (y1 > y2 && x1 <= x2) corner2 = set.junctions[DIR_LEFT | DIR_UP];
+    else corner2 = set.junctions[DIR_RIGHT | DIR_UP];
     points.push({ x: x2, y: midY, char: corner2 });
 
     // 5. Vertical segment from midY+stepY2 to y2
@@ -830,10 +853,10 @@ export function getRectanglePath(x1: number, y1: number, x2: number, y2: number)
   }
 
   // Corners
-  points.push({ x: minX, y: minY, char: set.junctions[DIR_RIGHT | DIR_DOWN] }); // ┌
-  points.push({ x: maxX, y: minY, char: set.junctions[DIR_LEFT | DIR_DOWN] }); // ┐
-  points.push({ x: minX, y: maxY, char: set.junctions[DIR_RIGHT | DIR_UP] }); // └
-  points.push({ x: maxX, y: maxY, char: set.junctions[DIR_LEFT | DIR_UP] }); // ┘
+  points.push({ x: minX, y: minY, char: set.junctions[DIR_RIGHT | DIR_DOWN] });
+  points.push({ x: maxX, y: minY, char: set.junctions[DIR_LEFT | DIR_DOWN] });
+  points.push({ x: minX, y: maxY, char: set.junctions[DIR_RIGHT | DIR_UP] });
+  points.push({ x: maxX, y: maxY, char: set.junctions[DIR_LEFT | DIR_UP] });
 
   // Top & bottom horizontal edges
   for (let x = minX + 1; x < maxX; x++) {
@@ -859,21 +882,21 @@ export function getRectanglePath(x1: number, y1: number, x2: number, y2: number)
  */
 export function findHorizontalSegment(x: number, y: number): HorizontalSegment | null {
   const char = grid.get(x, y);
-  if (!isBoxChar(char)) return null;
+  if (!isAnyLineChar(char)) return null;
 
   // Expand left
   let startX = x;
-  while (isBoxChar(grid.get(startX - 1, y))) {
+  while (isAnyLineChar(grid.get(startX - 1, y))) {
     startX--;
   }
 
   // Expand right
   let endX = x;
-  while (isBoxChar(grid.get(endX + 1, y))) {
+  while (isAnyLineChar(grid.get(endX + 1, y))) {
     endX++;
   }
 
-  if (startX === endX && !isBoxChar(grid.get(startX, y))) {
+  if (startX === endX && !isAnyLineChar(grid.get(startX, y))) {
     return null;
   }
 
@@ -885,21 +908,21 @@ export function findHorizontalSegment(x: number, y: number): HorizontalSegment |
  */
 export function findVerticalSegment(x: number, y: number): VerticalSegment | null {
   const char = grid.get(x, y);
-  if (!isBoxChar(char)) return null;
+  if (!isAnyLineChar(char)) return null;
 
   // Expand up
   let startY = y;
-  while (isBoxChar(grid.get(x, startY - 1))) {
+  while (isAnyLineChar(grid.get(x, startY - 1))) {
     startY--;
   }
 
   // Expand down
   let endY = y;
-  while (isBoxChar(grid.get(x, endY + 1))) {
+  while (isAnyLineChar(grid.get(x, endY + 1))) {
     endY++;
   }
 
-  if (startY === endY && !isBoxChar(grid.get(x, startY))) {
+  if (startY === endY && !isAnyLineChar(grid.get(x, startY))) {
     return null;
   }
 
@@ -935,7 +958,9 @@ export function applyHorizontalLineDrag(segment: HorizontalSegment, dy: number):
 
   const oldY = segment.y;
   const newY = oldY + dy;
-  const set = BOX_SETS[state.style] || BOX_SETS["box-single"];
+  const segmentChar = grid.get(segment.startX, oldY);
+  const styleKey = getCharStyle(segmentChar) || state.style;
+  const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
 
   // Find perpendicular vertical connections along the horizontal segment
   const connections: Array<{ x: number; hasUp: boolean; hasDown: boolean }> = [];
@@ -1003,7 +1028,7 @@ export function applyHorizontalLineDrag(segment: HorizontalSegment, dy: number):
   }
 
   // 4. Resolve junctions for all affected non-empty cells
-  resolveJunctionsAround(affectedPoints);
+  resolveJunctionsAround(affectedPoints, grid, styleKey);
 }
 
 /**
@@ -1015,7 +1040,9 @@ export function applyVerticalLineDrag(segment: VerticalSegment, dx: number): voi
 
   const oldX = segment.x;
   const newX = oldX + dx;
-  const set = BOX_SETS[state.style] || BOX_SETS["box-single"];
+  const segmentChar = grid.get(oldX, segment.startY);
+  const styleKey = getCharStyle(segmentChar) || state.style;
+  const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
 
   // Find perpendicular horizontal connections along the vertical segment
   const connections: Array<{ y: number; hasLeft: boolean; hasRight: boolean }> = [];
@@ -1087,7 +1114,7 @@ export function applyVerticalLineDrag(segment: VerticalSegment, dx: number): voi
   }
 
   // 4. Resolve junctions for all affected non-empty cells
-  resolveJunctionsAround(affectedPoints);
+  resolveJunctionsAround(affectedPoints, grid, styleKey);
 }
 
 /**
@@ -1382,7 +1409,12 @@ export function render(): void {
   // 4. Draw Line Drag Preview in Select Mode
   if (state.lineDrag) {
     const ld = state.lineDrag;
-    const set = BOX_SETS[state.style] || BOX_SETS["box-single"];
+    const segmentChar = grid.get(
+      ld.segment.type === "horizontal" ? ld.segment.startX : ld.segment.x,
+      ld.segment.type === "horizontal" ? ld.segment.y : ld.segment.startY
+    );
+    const styleKey = getCharStyle(segmentChar) || state.style;
+    const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
     ctx.fillStyle = "#bb9af7";
 
     if (ld.segment.type === "horizontal") {
@@ -1700,7 +1732,7 @@ export function setupEventListeners(): void {
         }
 
         // Resolve junctions for all newly drawn points and connected neighbors
-        resolveJunctionsAround(points);
+        resolveJunctionsAround(points, grid, state.style);
         state.drawingPreview = null;
       }
 
