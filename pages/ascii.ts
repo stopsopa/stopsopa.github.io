@@ -1174,21 +1174,31 @@ export function getRectanglePath(x1: number, y1: number, x2: number, y2: number)
  */
 export function findHorizontalSegment(x: number, y: number): HorizontalSegment | null {
   const char = grid.get(x, y);
-  if (!isAnyLineChar(char)) return null;
+  if (!char || char === " ") return null;
+  const ports = getCharPorts(char);
+  if ((ports & (DIR_LEFT | DIR_RIGHT)) === 0) return null;
 
   // Expand left
   let startX = x;
-  while (isAnyLineChar(grid.get(startX - 1, y))) {
+  while (true) {
+    const curChar = grid.get(startX, y);
+    if ((getCharPorts(curChar) & DIR_LEFT) === 0) break;
+    const leftChar = grid.get(startX - 1, y);
+    if ((getCharPorts(leftChar) & DIR_RIGHT) === 0) break;
     startX--;
   }
 
   // Expand right
   let endX = x;
-  while (isAnyLineChar(grid.get(endX + 1, y))) {
+  while (true) {
+    const curChar = grid.get(endX, y);
+    if ((getCharPorts(curChar) & DIR_RIGHT) === 0) break;
+    const rightChar = grid.get(endX + 1, y);
+    if ((getCharPorts(rightChar) & DIR_LEFT) === 0) break;
     endX++;
   }
 
-  if (startX === endX && !isAnyLineChar(grid.get(startX, y))) {
+  if (startX === endX) {
     return null;
   }
 
@@ -1200,21 +1210,31 @@ export function findHorizontalSegment(x: number, y: number): HorizontalSegment |
  */
 export function findVerticalSegment(x: number, y: number): VerticalSegment | null {
   const char = grid.get(x, y);
-  if (!isAnyLineChar(char)) return null;
+  if (!char || char === " ") return null;
+  const ports = getCharPorts(char);
+  if ((ports & (DIR_UP | DIR_DOWN)) === 0) return null;
 
   // Expand up
   let startY = y;
-  while (isAnyLineChar(grid.get(x, startY - 1))) {
+  while (true) {
+    const curChar = grid.get(x, startY);
+    if ((getCharPorts(curChar) & DIR_UP) === 0) break;
+    const upChar = grid.get(x, startY - 1);
+    if ((getCharPorts(upChar) & DIR_DOWN) === 0) break;
     startY--;
   }
 
   // Expand down
   let endY = y;
-  while (isAnyLineChar(grid.get(x, endY + 1))) {
+  while (true) {
+    const curChar = grid.get(x, endY);
+    if ((getCharPorts(curChar) & DIR_DOWN) === 0) break;
+    const downChar = grid.get(x, endY + 1);
+    if ((getCharPorts(downChar) & DIR_UP) === 0) break;
     endY++;
   }
 
-  if (startY === endY && !isAnyLineChar(grid.get(x, startY))) {
+  if (startY === endY) {
     return null;
   }
 
@@ -1236,8 +1256,6 @@ export function detectLineAt(x: number, y: number): LineSegment | null {
   }
   if (hSeg && hLen > 0) return hSeg;
   if (vSeg && vLen > 0) return vSeg;
-  if (hSeg) return hSeg;
-  if (vSeg) return vSeg;
   return null;
 }
 
@@ -1306,11 +1324,9 @@ export function applyHorizontalLineDrag(segment: HorizontalSegment, dy: number):
   for (let x = segment.startX; x <= segment.endX; x++) {
     grid.set(x, newY, set.h);
     affectedPoints.push({ x, y: newY });
-  }
-
-  for (let x = segment.startX; x <= segment.endX; x++) {
     affectedPoints.push({ x, y: oldY });
   }
+
   for (const conn of connections) {
     const minY = Math.min(oldY, newY) - 1;
     const maxY = Math.max(oldY, newY) + 1;
@@ -1391,12 +1407,10 @@ export function applyVerticalLineDrag(segment: VerticalSegment, dx: number): voi
   const affectedPoints: Point[] = [];
   for (let y = segment.startY; y <= segment.endY; y++) {
     grid.set(newX, y, set.v);
-    affectedPoints.push({ x, y: newX });
-  }
-
-  for (let y = segment.startY; y <= segment.endY; y++) {
+    affectedPoints.push({ x: newX, y });
     affectedPoints.push({ x: oldX, y });
   }
+
   for (const conn of connections) {
     const minX = Math.min(oldX, newX) - 1;
     const maxX = Math.max(oldX, newX) + 1;
@@ -1595,6 +1609,7 @@ export function startCaretBlinker(): void {
  */
 export function setTool(toolName: ToolType): void {
   state.tool = toolName;
+  state.selection = null; // Clear selection when changing tool
   document.querySelectorAll<HTMLElement>(".tool-btn").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.tool === toolName);
   });

@@ -1,4 +1,3 @@
-
 <first stage>
 
 create ascii.ts next to ascii.html
@@ -38,40 +37,37 @@ on the left we should have tool panel with clear visible handler to drag it arou
 we should have tools to draw lines from point to point
 one tool would serve for drawing lines where we bend line in the midle like zigzag. where tool prefers to draw horizontal lines with vertical line in the middle compensating for the difference in height
 
-
 ```
-                                             
-   ────────────────┐                         
-                   │                         
-                   │                         
-                   │                         
-                   │                         
-                   │                         
-                   │                         
-                   │                         
-                   │                         
-                   └────────────────────      
+
+   ────────────────┐
+                   │
+                   │
+                   │
+                   │
+                   │
+                   │
+                   │
+                   │
+                   └────────────────────
 
 
 ```
 
 or
 
+```
 
-
-```                      
-                            
-       │                    
-       │                    
-       │                    
-       │                    
-       └───────────┐        
-                   │        
-                   │        
-                   │        
-                   │        
-                   │        
-                   │     
+       │
+       │
+       │
+       │
+       └───────────┐
+                   │
+                   │
+                   │
+                   │
+                   │
+                   │
 
 ```
 
