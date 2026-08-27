@@ -1320,12 +1320,18 @@ export function applyHorizontalLineDrag(segment: HorizontalSegment, dy: number, 
           grid.set(x, y, set.v);
         }
       } else {
-        if (conn.hasUp) {
+        if (conn.hasUp && conn.hasDown) {
+          // Vertical line continues through the moved horizontal line
           for (let y = oldY; y < newY; y++) {
             grid.set(x, y, set.v);
           }
-        }
-        if (conn.hasDown) {
+        } else if (conn.hasUp) {
+          // Vertical line from above extends down to newY
+          for (let y = oldY; y < newY; y++) {
+            grid.set(x, y, set.v);
+          }
+        } else if (conn.hasDown) {
+          // Vertical line below shrinks from oldY to newY
           for (let y = oldY + 1; y < newY; y++) {
             grid.delete(x, y);
           }
@@ -1338,12 +1344,18 @@ export function applyHorizontalLineDrag(segment: HorizontalSegment, dy: number, 
           grid.set(x, y, set.v);
         }
       } else {
-        if (conn.hasUp) {
+        if (conn.hasUp && conn.hasDown) {
+          // Vertical line continues through the moved horizontal line
+          for (let y = newY + 1; y <= oldY; y++) {
+            grid.set(x, y, set.v);
+          }
+        } else if (conn.hasUp) {
+          // Vertical line above shrinks from oldY back up to newY
           for (let y = newY + 1; y <= oldY; y++) {
             grid.delete(x, y);
           }
-        }
-        if (conn.hasDown) {
+        } else if (conn.hasDown) {
+          // Vertical line below extends up to newY
           for (let y = newY + 1; y <= oldY; y++) {
             grid.set(x, y, set.v);
           }
@@ -1425,12 +1437,18 @@ export function applyVerticalLineDrag(segment: VerticalSegment, dx: number, dupl
           grid.set(x, y, set.h);
         }
       } else {
-        if (conn.hasLeft) {
+        if (conn.hasLeft && conn.hasRight) {
+          // Horizontal line continues through the moved vertical line
           for (let x = oldX; x < newX; x++) {
             grid.set(x, y, set.h);
           }
-        }
-        if (conn.hasRight) {
+        } else if (conn.hasLeft) {
+          // Horizontal line from left extends right to newX
+          for (let x = oldX; x < newX; x++) {
+            grid.set(x, y, set.h);
+          }
+        } else if (conn.hasRight) {
+          // Horizontal line on right shrinks from oldX to newX
           for (let x = oldX + 1; x < newX; x++) {
             grid.delete(x, y);
           }
@@ -1443,12 +1461,18 @@ export function applyVerticalLineDrag(segment: VerticalSegment, dx: number, dupl
           grid.set(x, y, set.h);
         }
       } else {
-        if (conn.hasLeft) {
+        if (conn.hasLeft && conn.hasRight) {
+          // Horizontal line continues through the moved vertical line
+          for (let x = newX + 1; x <= oldX; x++) {
+            grid.set(x, y, set.h);
+          }
+        } else if (conn.hasLeft) {
+          // Horizontal line on left shrinks from oldX back to newX
           for (let x = newX + 1; x <= oldX; x++) {
             grid.delete(x, y);
           }
-        }
-        if (conn.hasRight) {
+        } else if (conn.hasRight) {
+          // Horizontal line on right extends left to newX
           for (let x = newX + 1; x <= oldX; x++) {
             grid.set(x, y, set.h);
           }
