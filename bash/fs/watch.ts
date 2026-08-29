@@ -10,11 +10,16 @@ while true; do
     echo do something even on start before even trying to detect change
 
     while true; do
-        LIST="$(NODE_OPTIONS= node bash/fs/watch.ts . --debug | NODE_OPTIONS="" node gitignore.js dev.sh.ignore)"
+        RAW_EVENT="$(NODE_OPTIONS= node bash/fs/watch.ts . --debug)"
+        WATCH_IGNORED="$(echo "${RAW_EVENT}" | NODE_OPTIONS="" node gitignore.js dev.sh.ignore)"
 
-        if [ "${LIST}" != "" ]; then
+        if [ "${WATCH_IGNORED}" = "" ]; then
         cat <<EEE
-bash/fs/watch.ts detected change: >${LIST}<
+bash/fs/watch.ts detected change (ignored): raw: >${RAW_EVENT}<
+EEE
+        else
+        cat <<EEE
+bash/fs/watch.ts detected change: raw: >${RAW_EVENT}< passed_ignore: >${WATCH_IGNORED}<
 EEE
           break;
         fi
