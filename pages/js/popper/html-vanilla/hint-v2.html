@@ -54,6 +54,12 @@
           background: #e5e5e5;
         }
       }
+      .target {
+        background-color: gray;
+        padding: 5px 10px;
+        display: inline-block;
+        border-radius: 2px;
+      }
     </style>
     <link rel="stylesheet" href="popover.css" />
   </head>
@@ -106,7 +112,14 @@
 
     <div id="handler">
       <span>Dragging Handler</span>
-      <button popovertarget="bindhover">html-vanilla/popover.css</button>
+      <!-- <button popovertarget="bindhover">html-vanilla/popover.css</button> -->
+      <table style="display: inline">
+        <tbody>
+          <tr>
+            <td popovertarget="bindhover" class="target">element</td>
+          </tr>
+        </tbody>
+      </table>
       <span>Dragging Handler</span>
     </div>
     <div id="bindhover" popover="manual" data-popover contenteditable>
@@ -117,7 +130,7 @@
     <div id="handler2">
       <span>Hover Handler</span>
       <!-- <button popovertarget="popoverhover" data-popover-hover="3000:5000">This is anchor (hover): Show popover</button> -->
-      <button popovertarget="popoverhover" data-popover-hover>popover.css + bindHover.js</button>
+      <div popovertarget="popoverhover" data-popover-hover class="target">popover.css + bindHover.js</div>
       <span>Hover Handler</span>
     </div>
     <div id="popoverhover" popover="manual" data-popover contenteditable>
@@ -144,7 +157,7 @@ bindHover();
       import bindHover from "./bindHover.js";
       bindHover();
 
-      const element = document.querySelector('[popovertarget="bindhover"]').parentNode;
+      const element = document.querySelector('[popovertarget="bindhover"]').parentNode.parentNode.parentNode.parentNode;
 
       drag(
         element,
@@ -221,6 +234,24 @@ bindHover();
         source: invoker,
       }); // enable by default
 
+      // Toggle popover on invoker click NOT NEEDED WHEN popovertarget IS ON A <BUTTON>
+      if (!window.__popoverDelegationBound) {
+        window.__popoverDelegationBound = true;
+
+        document.addEventListener("click", (event) => {
+          const invoker = event.target.closest("[popovertarget]:not(button, input[type='button'])");
+          if (!invoker) return;
+
+          const id = invoker.getAttribute("popovertarget");
+          const popover = document.getElementById(id);
+          if (!popover) return;
+
+          popover.togglePopover({
+            source: invoker,
+          });
+        });
+      }
+
       const offsetRange = document.getElementById("offsetRange");
       const offsetVal = document.getElementById("offsetVal");
 
@@ -253,19 +284,43 @@ bindHover();
         &lt;script type="module">
           import drag, { getStyle } from "urlwizzard.schema://urlwizzard.hostnegotiated/libs/drag.js";
 
-          const parent = document.querySelector('[popovertarget="elementid"]').parentNode;
-          const handle = parent.querySelector('span');
-          drag(
-            handle,
-            (x, y) => {
-              parent.style.left = `${x}px`;
-              parent.style.top = `${y}px`;
-            },
-            () => {
-              const s = getStyle(parent);
-              return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+          {
+            const parent = document.querySelector('[popovertarget="elementid"]').parentNode;
+            const handle = parent.querySelector('span');
+            drag(
+              handle,
+              (x, y) => {
+                parent.style.left = `${x}px`;
+                parent.style.top = `${y}px`;
+              },
+              () => {
+                const s = getStyle(parent);
+                return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+              }
+            );
+
+            const id = "elementid"
+            const popover = document.getElementById(id);
+            const invoker = document.querySelector(`[popovertarget="${id}"]`);
+
+            // Toggle popover on invoker click NOT NEEDED WHEN popovertarget IS ON A <BUTTON>
+            if (!window.__popoverDelegationBound) {
+              window.__popoverDelegationBound = true;
+
+              document.addEventListener("click", (event) => {
+                const invoker = event.target.closest("[popovertarget]:not(button, input[type='button'])");
+                if (!invoker) return;
+
+                const id = invoker.getAttribute("popovertarget");
+                const popover = document.getElementById(id);
+                if (!popover) return;
+
+                popover.togglePopover({
+                  source: invoker,
+                });
+              });
             }
-          );
+          }
         &lt;/script>
 
         <link rel="stylesheet" href="urlwizzard.schema://urlwizzard.hostnegotiated/pages/js/popper/html-vanilla/popover.css" />
@@ -286,19 +341,43 @@ bindHover();
     <script type="module">
       import drag, { getStyle } from "/libs/drag.js";
 
-      const parent = document.querySelector('[popovertarget="elementid"]').parentNode;
-      const handle = parent.querySelector("span");
-      drag(
-        handle,
-        (x, y) => {
-          parent.style.left = `${x}px`;
-          parent.style.top = `${y}px`;
-        },
-        () => {
-          const s = getStyle(parent);
-          return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+      {
+        const parent = document.querySelector('[popovertarget="elementid"]').parentNode;
+        const handle = parent.querySelector("span");
+        drag(
+          handle,
+          (x, y) => {
+            parent.style.left = `${x}px`;
+            parent.style.top = `${y}px`;
+          },
+          () => {
+            const s = getStyle(parent);
+            return { x: parseInt(s.left, 10) || 0, y: parseInt(s.top, 10) || 0 };
+          }
+        );
+
+        const id = "elementid";
+        const popover = document.getElementById(id);
+        const invoker = document.querySelector(`[popovertarget="${id}"]`);
+
+        // Toggle popover on invoker click NOT NEEDED WHEN popovertarget IS ON A <BUTTON>
+        if (!window.__popoverDelegationBound) {
+          window.__popoverDelegationBound = true;
+
+          document.addEventListener("click", (event) => {
+            const invoker = event.target.closest("[popovertarget]:not(button, input[type='button'])");
+            if (!invoker) return;
+
+            const id = invoker.getAttribute("popovertarget");
+            const popover = document.getElementById(id);
+            if (!popover) return;
+
+            popover.togglePopover({
+              source: invoker,
+            });
+          });
         }
-      );
+      }
     </script>
     <div style="position: absolute">
       <span style="cursor: move">|||</span>
