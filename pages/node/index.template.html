@@ -2436,9 +2436,13 @@
 
           # to include devDependencies
           pnpm install --frozen-lockfile
+          pnpm install --frozen-lockfile --no-prod
+            # it seems that this is newer? from: pnpm 12
 
           # to exclude devDependencies
           pnpm install --frozen-lockfile --production
+          pnpm install --frozen-lockfile --prod
+            # it seems that this is newer? from: pnpm 12
 
           # to resolve minimumReleaseAgeExclude pnpm-workspace.yaml
           # read comment on top of the file
