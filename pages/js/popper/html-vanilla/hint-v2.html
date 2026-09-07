@@ -243,6 +243,7 @@ bindHover();
           if (!invoker) return;
 
           const id = invoker.getAttribute("popovertarget");
+          if (!id) return;
           const popover = document.getElementById(id);
           if (!popover) return;
 
@@ -312,6 +313,7 @@ bindHover();
                 if (!invoker) return;
 
                 const id = invoker.getAttribute("popovertarget");
+                if (!id) return;
                 const popover = document.getElementById(id);
                 if (!popover) return;
 
@@ -369,6 +371,7 @@ bindHover();
             if (!invoker) return;
 
             const id = invoker.getAttribute("popovertarget");
+            if (!id) return;
             const popover = document.getElementById(id);
             if (!popover) return;
 
