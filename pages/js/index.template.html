@@ -26,6 +26,7 @@
             <li><a href="ajax-override/index.html">ajax & fetch override</a></li>
             <li><a href="tab-visible.html">tab visible - on top</a></li>
             <li><a href="events/createSubscriber.html">createSubscriber events</a></li>
+            <li><a href="/pages/html/index.rendered.html#textarea-autoresize">textarea auto-grow on input script auto-resizing textarea handler</a></li>
           </ul>
         </div>
 
@@ -440,17 +441,6 @@
         <a href="visibilityState/visible.vanilla.html">visible.vanilla</a>
         <br />
         <a href="visibilityState/visible.react.html">visible.react</a>
-        <h2>textarea auto-grow on input script auto-resizing textarea handler</h2>
-        <script type="editor" data-lang="js">
-
-          document.body.addEventListener("input", function (e) {
-            const t = e.target;
-            if (t.tagName === "TEXTAREA") {
-              t.style.height = "auto";
-              t.style.height = t.scrollHeight + "px";
-            }
-          });
-        </script>
         <h2>Keyboard event</h2>
 
         <script type="editor" data-lang="js">
