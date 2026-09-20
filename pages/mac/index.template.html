@@ -208,7 +208,7 @@
               Remote desktop:
               <ul>
                 <li>
-                  <a href="https://github.com/rustdesk/rustdesk/releases">RustDesk 1.4.9</a> - <a href="https://www.ghacks.net/2024/10/17/how-to-fix-rustdesk-not-working-on-macos/#:~:text=Keyboard%20and%20mouse%20not%20working%20on%20RustDesk%20for%20Mac">Mouse doesn't work</a>
+                  <a href="#rustdesk">RustDesk</a>
                 </li>
               </ul>
             </li>
@@ -472,6 +472,54 @@
               sudo mv /Library/LaunchAgents/com.microsoft.update.agent.plist ~/disabled/
               sudo launchctl bootout system /Library/LaunchDaemons/com.microsoft.autoupdate.helper.plist
           </script>
+          <h2>RustDesk</h2>
+          <script type="editor" data-lang="sh">
+
+            # install: https://github.com/rustdesk/rustdesk/releases
+            # versions:
+              # as of 2026-09-20: 1.4.9
+
+            # IMPORTANT permissions: (Mouse doesn't work)
+              # App is not guiding very well through those:
+              # https://www.ghacks.net/2024/10/17/how-to-fix-rustdesk-not-working-on-macos/#:~:text=Keyboard%20and%20mouse%20not%20working%20on%20RustDesk%20for%20Mac
+              # System Settings → Privacy & Security → Accessibility
+              # System Settings → Privacy & Security → Screen Recording
+              # System Settings → Privacy & Security → Input Monitoring
+
+            # g(RustDesk unattended access)
+              # Go to settings:
+                # in the RustDesk right above ID of current client there are three dots on the right side
+                # Press that - it will open Settings
+
+              # .. So go to Settings
+              # In "Service" section make sure button says "Stop" - that indicates server is working
+
+              # then go to "Security" tab
+              # .. unlock settings .. type passowrd
+              # Go to section "Password", tick "Use permanent password" ... follow instructions...
+              # then go back to home screen (tab at the very top of the RustDesk window)
+              # on the left, under ID there "should be" big button "Install", that will do what is described in
+                # https://github.com/rustdesk/rustdesk/wiki/macOS-Auto%E2%80%90Start-Service-Setup-(for-Remote---MDM-Deployment)
+                  # g(RustDesk macOS Auto-Start Service Setup (for Remote / MDM Deployment)
+              # generally all should work fine at this point, but we will always have to
+              # first loging using ssh (usually twice).
+              # only then try to login using RustDesk.
+              # why? Because first we have to get through FileVault disk encryption.
+              # I wouldn't even try to bypass that - that is fine and safe, Good balance of safety and convenience.
+          </script>
+          <h2>Autologin user on startup</h2>
+          <script type="editor" data-lang="sh">
+
+            # When turning on mac - login to given user automatically:
+              # - Open System Settings
+              # - Go to Users & Groups
+              # - Find Automatically log in as
+              #   - if that is inactive:
+              #       - System Settings → Privacy & Security → FileVault → Turn Off FileVault
+              # - Select your user account
+              # - Enter your Mac login password when prompted.
+          </script>
+
           <h2>Screen sharing</h2>
           <a href="https://youtu.be/ESac2ejmk_0">https://youtu.be/ESac2ejmk_0</a>
           <h2>ping internet working - and signal</h2>
