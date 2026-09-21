@@ -410,29 +410,44 @@ echo all good
 
 
     // python
-    activate: {
-      command: `
-source venv/bin/activate
-      `,
-      description: "Activate virtual environment",
-      confirm: false,
-      source: true,
-    },
-    deactivate: {
-      command: `
-deactivate
-      `,
-      description: "Deactivate virtual environment",
-      confirm: false,
-      source: true,
-    },
-    freeze: {
-      command: `
-pip freeze > requirements.txt
-      `,
-      description: "Freeze requirements.txt",
-      confirm: false,
-    },
+                    activate: {
+                      command: `
+                source venv/bin/activate
+                      `,
+                      description: "Activate virtual environment",
+                      confirm: false,
+                      source: true,
+                    },
+                    deactivate: {
+                      command: `
+                deactivate
+                      `,
+                      description: "Deactivate virtual environment",
+                      confirm: false,
+                      source: true,
+                    },
+                    freeze: {
+                      command: `
+                pip freeze > requirements.txt
+                      `,
+                      description: "Freeze requirements.txt",
+                      confirm: false,
+                    },
+                    server: {
+                      command: `
+                if [ -n "\${VIRTUAL_ENV}" ]; then
+                    echo "venv is active: \${VIRTUAL_ENV}"
+                else
+                    echo "no venv active, activating"
+                    source venv/bin/activate
+                fi
+                
+                /bin/bash start.sh
+                      `,
+                      description: "Activate virtual environment",
+                      confirm: false,
+                      source: false,
+                    },
 
     ...setup,
   };
