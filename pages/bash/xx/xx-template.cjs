@@ -408,6 +408,32 @@ echo all good
       confirm: false,
     },
 
+
+    // python
+    activate: {
+      command: `
+source venv/bin/activate
+      `,
+      description: "Activate virtual environment",
+      confirm: false,
+      source: true,
+    },
+    deactivate: {
+      command: `
+deactivate
+      `,
+      description: "Deactivate virtual environment",
+      confirm: false,
+      source: true,
+    },
+    freeze: {
+      command: `
+pip freeze > requirements.txt
+      `,
+      description: "Freeze requirements.txt",
+      confirm: false,
+    },
+
     ...setup,
   };
 };
