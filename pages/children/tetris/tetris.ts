@@ -10,11 +10,11 @@
  *
  * Controls:
  * - Z: Rotate left (counter-clockwise)
- * - X / W / ArrowUp: Rotate right (clockwise)
+ * - X / W: Rotate right (clockwise)
  * - A / ArrowLeft: Move left
  * - D / ArrowRight: Move right
  * - S / ArrowDown: Soft drop
- * - Space: Hard drop
+ * - ArrowUp / Space: Hard drop (+2 pts per cell)
  * - M: Toggle music / sound
  * - P: Pause
  * - R: Restart after game over
@@ -1001,7 +1001,7 @@ window.addEventListener("keydown", (e: KeyboardEvent) => {
       game.currentRotation = nextRot;
       render();
     }
-  } else if (key === "x" || key === "w" || e.key === "ArrowUp") {
+  } else if (key === "x" || key === "w") {
     const nextRot = (game.currentRotation + 1) % 4;
     if (pieceFits(game.currentType, nextRot, game.currentX, game.currentY)) {
       game.currentRotation = nextRot;
@@ -1027,7 +1027,7 @@ window.addEventListener("keydown", (e: KeyboardEvent) => {
       game.lastDropTime = performance.now();
       render();
     }
-  } else if (e.key === " ") {
+  } else if (e.key === " " || e.key === "ArrowUp") {
     e.preventDefault();
     let dropped = 0;
     while (pieceFits(game.currentType, game.currentRotation, game.currentX, game.currentY + 1)) {
