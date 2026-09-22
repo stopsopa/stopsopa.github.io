@@ -4,7 +4,7 @@
  * Board size: 10 columns x 20 rows (identical to NES Tetris).
  * Audio:
  * - Native Web Audio API (Square-wave chiptune synthesizer matching NES 2A03 APU)
- * - Synthesizes Korobeiniki (Theme A) with lead square melody & bassline
+ * - Authentic Korobeiniki (Theme A) transcription: Complete Section A & B with exact note durations & 90% gate separation
  * - Sound is ON by default (auto-starts on first user interaction per browser policy)
  * - Sound toggle keyboard binding: 'M' (Mute / Unmute)
  *
@@ -297,8 +297,8 @@ const overlaySub = document.getElementById("overlay-sub") as HTMLElement;
 
 /*
  * ============================================================================
- * Native Web Audio Chiptune Synthesizer (NES 2A03 Square Wave APU)
- * Generates Korobeiniki (Theme A) programmatically without any external files.
+ * Native Web Audio Chiptune Synthesizer (NES 2A03 APU)
+ * Complete Authentic Korobeiniki (Theme A) score with Section A and Section B.
  * ============================================================================
  */
 class ChiptuneSynth {
@@ -307,12 +307,13 @@ class ChiptuneSynth {
   private isPlaying: boolean = true;
   private schedulerTimer: number | null = null;
   private nextNoteTime: number = 0;
-  private currentStep: number = 0;
+  private noteIndex: number = 0;
 
-  // Frequencies of musical notes (Hz)
-  private static readonly NOTES: { [key: string]: number } = {
+  // Standard A4=440Hz tempered tuning
+  private static readonly NOTE_FREQS: { [key: string]: number } = {
     REST: 0,
     E3: 164.81,
+    GS3: 207.65,
     A3: 220.0,
     B3: 246.94,
     C4: 261.63,
@@ -320,33 +321,35 @@ class ChiptuneSynth {
     E4: 329.63,
     F4: 349.23,
     G4: 392.0,
-    "G#4": 415.3,
+    GS4: 415.3,
     A4: 440.0,
     B4: 493.88,
     C5: 523.25,
     D5: 587.33,
     E5: 659.25,
     F5: 698.46,
-    "G#5": 830.61,
+    G5: 783.99,
+    GS5: 830.61,
     A5: 880.0,
   };
 
-  // Melody: [Note, sixteenth notes duration]
-  private static readonly MELODY: [string, number][] = [
+  // Authentic Tetris Theme A melody: [Note, duration divider (negative = dotted note)]
+  private static readonly MELODY_SCORE: [string, number][] = [
+    // Section A - First Part
     ["E5", 4],
-    ["B4", 2],
-    ["C5", 2],
+    ["B4", 8],
+    ["C5", 8],
     ["D5", 4],
-    ["C5", 2],
-    ["B4", 2],
+    ["C5", 8],
+    ["B4", 8],
     ["A4", 4],
-    ["A4", 2],
-    ["C5", 2],
+    ["A4", 8],
+    ["C5", 8],
     ["E5", 4],
-    ["D5", 2],
-    ["C5", 2],
-    ["B4", 6],
-    ["C5", 2],
+    ["D5", 8],
+    ["C5", 8],
+    ["B4", -4],
+    ["C5", 8],
     ["D5", 4],
     ["E5", 4],
     ["C5", 4],
@@ -354,71 +357,98 @@ class ChiptuneSynth {
     ["A4", 4],
     ["REST", 4],
 
+    ["REST", 8],
     ["D5", 4],
-    ["F5", 2],
+    ["F5", 8],
     ["A5", 4],
-    ["G5", 2],
-    ["F5", 2],
-    ["E5", 6],
-    ["C5", 2],
+    ["G5", 8],
+    ["F5", 8],
+    ["E5", -4],
+    ["C5", 8],
     ["E5", 4],
-    ["D5", 2],
-    ["C5", 2],
+    ["D5", 8],
+    ["C5", 8],
     ["B4", 4],
-    ["B4", 2],
-    ["C5", 2],
+    ["B4", 8],
+    ["C5", 8],
     ["D5", 4],
     ["E5", 4],
     ["C5", 4],
     ["A4", 4],
     ["A4", 4],
     ["REST", 4],
-  ];
 
-  // Bassline: [Note, sixteenth notes duration]
-  private static readonly BASS: [string, number][] = [
-    ["E3", 4],
-    ["B3", 4],
-    ["E3", 4],
-    ["B3", 4],
-    ["A3", 4],
-    ["E3", 4],
-    ["A3", 4],
-    ["E3", 4],
-    ["G#4", 4],
-    ["E3", 4],
-    ["G#4", 4],
-    ["E3", 4],
-    ["A3", 4],
-    ["E3", 4],
-    ["A3", 4],
+    // Section B (Lyrical variation)
+    ["E5", 2],
+    ["C5", 2],
+    ["D5", 2],
+    ["B4", 2],
+    ["C5", 2],
+    ["A4", 2],
+    ["GS4", 1],
+
+    ["E5", 2],
+    ["C5", 2],
+    ["D5", 2],
+    ["B4", 2],
+    ["C5", 4],
+    ["E5", 4],
+    ["A5", 2],
+    ["GS5", 1],
+
+    // Section A - Repeat
+    ["E5", 4],
+    ["B4", 8],
+    ["C5", 8],
+    ["D5", 4],
+    ["C5", 8],
+    ["B4", 8],
+    ["A4", 4],
+    ["A4", 8],
+    ["C5", 8],
+    ["E5", 4],
+    ["D5", 8],
+    ["C5", 8],
+    ["B4", -4],
+    ["C5", 8],
+    ["D5", 4],
+    ["E5", 4],
+    ["C5", 4],
+    ["A4", 4],
+    ["A4", 4],
     ["REST", 4],
 
-    ["D4", 4],
-    ["A3", 4],
-    ["D4", 4],
-    ["A3", 4],
-    ["C4", 4],
-    ["G4", 4],
-    ["C4", 4],
-    ["G4", 4],
-    ["B3", 4],
-    ["E3", 4],
-    ["B3", 4],
-    ["E3", 4],
-    ["A3", 4],
-    ["E3", 4],
-    ["A3", 4],
+    ["REST", 8],
+    ["D5", 4],
+    ["F5", 8],
+    ["A5", 4],
+    ["G5", 8],
+    ["F5", 8],
+    ["REST", 8],
+    ["E5", 4],
+    ["C5", 8],
+    ["E5", 4],
+    ["D5", 8],
+    ["C5", 8],
+    ["REST", 8],
+    ["B4", 4],
+    ["C5", 8],
+    ["D5", 4],
+    ["E5", 4],
+    ["REST", 8],
+    ["C5", 4],
+    ["A4", 8],
+    ["A4", 4],
     ["REST", 4],
   ];
 
-  public init(): void {
+  private init(): void {
     if (!this.ctx) {
       const AudioCtx =
         window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       this.ctx = new AudioCtx();
       this.masterGain = this.ctx.createGain();
-      this.masterGain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+      this.masterGain.gain.setValueAtTime(0.14, this.ctx.currentTime);
       this.masterGain.connect(this.ctx.destination);
     }
     if (this.ctx.state === "suspended") {
@@ -452,7 +482,7 @@ class ChiptuneSynth {
   private startMusic(): void {
     if (!this.ctx) return;
     this.nextNoteTime = this.ctx.currentTime + 0.05;
-    this.currentStep = 0;
+    this.noteIndex = 0;
     this.scheduleNotes();
   }
 
@@ -463,34 +493,45 @@ class ChiptuneSynth {
     }
   }
 
+  /*
+   * Look-ahead scheduler for authentic 144 BPM NES rhythm.
+   */
   private scheduleNotes = (): void => {
     if (!this.isPlaying || !this.ctx || !this.masterGain) return;
 
-    const sixteenthDuration = 0.095; // ~158 BPM (NES tempo)
+    const tempo = 144;
+    const wholeNoteSec = (60.0 / tempo) * 4.0;
 
-    while (this.nextNoteTime < this.ctx.currentTime + 0.25) {
-      const melodyItem = ChiptuneSynth.MELODY[this.currentStep % ChiptuneSynth.MELODY.length];
-      const bassItem = ChiptuneSynth.BASS[this.currentStep % ChiptuneSynth.BASS.length];
+    while (this.nextNoteTime < this.ctx.currentTime + 0.3) {
+      const [noteName, divider] = ChiptuneSynth.MELODY_SCORE[this.noteIndex];
 
-      const noteDuration = melodyItem[1] * sixteenthDuration;
-
-      const mFreq = ChiptuneSynth.NOTES[melodyItem[0]];
-      if (mFreq > 0) {
-        this.playTone(mFreq, this.nextNoteTime, noteDuration * 0.85, "square", 0.16);
+      // Calculate note duration: negative numbers represent dotted notes
+      let noteDurationSec = 0;
+      if (divider > 0) {
+        noteDurationSec = wholeNoteSec / divider;
+      } else {
+        noteDurationSec = (wholeNoteSec / Math.abs(divider)) * 1.5;
       }
 
-      const bFreq = ChiptuneSynth.NOTES[bassItem[0]];
-      if (bFreq > 0) {
-        this.playTone(bFreq, this.nextNoteTime, noteDuration * 0.8, "triangle", 0.24);
+      const freq = ChiptuneSynth.NOTE_FREQS[noteName];
+      if (freq > 0) {
+        // 90% note duration gate for crisp NES 8-bit staccato articulation
+        this.playTone(freq, this.nextNoteTime, noteDurationSec * 0.9, "square", 0.16);
+
+        // Add subtle bass counter-octave for richer sound
+        this.playTone(freq / 2, this.nextNoteTime, noteDurationSec * 0.85, "triangle", 0.12);
       }
 
-      this.nextNoteTime += noteDuration;
-      this.currentStep = (this.currentStep + 1) % ChiptuneSynth.MELODY.length;
+      this.nextNoteTime += noteDurationSec;
+      this.noteIndex = (this.noteIndex + 1) % ChiptuneSynth.MELODY_SCORE.length;
     }
 
     this.schedulerTimer = window.setTimeout(this.scheduleNotes, 40);
   };
 
+  /*
+   * Generate raw hardware-like wave tone with quick attack and decay envelope.
+   */
   private playTone(freq: number, startTime: number, duration: number, type: OscillatorType, gainLevel: number): void {
     if (!this.ctx || !this.masterGain) return;
 
@@ -500,6 +541,7 @@ class ChiptuneSynth {
     osc.type = type;
     osc.frequency.setValueAtTime(freq, startTime);
 
+    // Retro envelope (instant attack, subtle decay)
     gain.gain.setValueAtTime(gainLevel, startTime);
     gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
 
