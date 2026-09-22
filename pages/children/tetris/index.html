@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <title>NES Tetris - Web Edition</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: #0d0e15;
+        color: #f0f0f0;
+        font-family: "Courier New", Courier, monospace, monospace;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .tetris-cabinet {
+        background: #151824;
+        border: 4px solid #3b82f6;
+        border-radius: 12px;
+        padding: 16px 20px;
+        box-shadow: 0 0 30px rgba(59, 130, 246, 0.25), inset 0 0 15px rgba(0, 0, 0, 0.5);
+        max-width: 680px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .title-banner {
+        width: 100%;
+        text-align: center;
+        border-bottom: 2px solid #3b82f6;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+      }
+
+      .title-banner h1 {
+        font-size: 26px;
+        letter-spacing: 6px;
+        color: #facc15;
+        text-shadow: 2px 2px 0px #000, 0 0 10px rgba(250, 204, 21, 0.4);
+      }
+
+      .main-game-layout {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 16px;
+        width: 100%;
+      }
+
+      .panel {
+        background: #0f111a;
+        border: 2px solid #1e293b;
+        border-radius: 6px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .panel-title {
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        color: #94a3b8;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+
+      /* Left Side: Statistics */
+      .stats-panel {
+        width: 140px;
+      }
+
+      .stat-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 13px;
+        font-weight: bold;
+      }
+
+      .stat-badge {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 2px;
+        margin-right: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+      }
+
+      .badge-t { background: #d500f9; }
+      .badge-j { background: #2979ff; }
+      .badge-z { background: #ff1744; }
+      .badge-o { background: #ffd600; }
+      .badge-s { background: #00e676; }
+      .badge-l { background: #ff9100; }
+      .badge-i { background: #00e5ff; }
+
+      /* Center: Playfield */
+      .board-container {
+        position: relative;
+        background: #000000;
+        border: 4px solid #3b82f6;
+        border-radius: 4px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+      }
+
+      #board-canvas {
+        display: block;
+        background: #0a0a12;
+      }
+
+      /* Modal Overlay for Pause and Game Over */
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 10, 18, 0.85);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 16px;
+        z-index: 10;
+      }
+
+      .overlay.hidden {
+        display: none;
+      }
+
+      .overlay h2 {
+        font-size: 24px;
+        color: #ef4444;
+        margin-bottom: 12px;
+        letter-spacing: 3px;
+        text-shadow: 2px 2px #000;
+      }
+
+      .overlay p {
+        font-size: 14px;
+        color: #f1f5f9;
+        margin-bottom: 16px;
+      }
+
+      /* Right Side: Score, Lines, Level, Next */
+      .info-panel {
+        width: 140px;
+        gap: 12px;
+      }
+
+      .info-box {
+        text-align: center;
+        background: #090a0f;
+        border: 1px solid #1e293b;
+        border-radius: 4px;
+        padding: 6px;
+      }
+
+      .info-label {
+        font-size: 11px;
+        color: #64748b;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+      }
+
+      .info-val {
+        font-size: 18px;
+        font-weight: bold;
+        color: #f8fafc;
+        letter-spacing: 2px;
+      }
+
+      #next-canvas {
+        display: block;
+        margin: 4px auto 0;
+        background: #0a0a12;
+        border: 1px solid #1e293b;
+      }
+
+      /* On-Screen Controller / Controls Guide */
+      .controls-guide {
+        margin-top: 14px;
+        width: 100%;
+        font-size: 12px;
+        color: #94a3b8;
+        border-top: 1px dashed #334155;
+        padding-top: 10px;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .controls-guide span {
+        background: #0f172a;
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid #1e293b;
+      }
+
+      .on-screen-keypad {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        background: #1e293b;
+        color: #f8fafc;
+        border: 1px solid #475569;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-family: inherit;
+        font-weight: bold;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+
+      .btn:active {
+        background: #3b82f6;
+        color: #ffffff;
+      }
+
+      .btn-rot {
+        background: #334155;
+        color: #facc15;
+      }
+
+      @media (max-width: 600px) {
+        .main-game-layout {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .stats-panel, .info-panel {
+          width: 100%;
+          max-width: 240px;
+        }
+
+        .stats-panel {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 6px;
+        }
+
+        .stat-row {
+          margin-bottom: 0;
+          font-size: 11px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tetris-cabinet">
+      <div class="title-banner">
+        <h1>T E T R I S</h1>
+      </div>
+
+      <div class="main-game-layout">
+        <!-- Left Panel: Statistics -->
+        <div class="panel stats-panel">
+          <div class="panel-title">STATS</div>
+          <div class="stat-row">
+            <span><span class="stat-badge badge-t"></span>T</span>
+            <span id="stat-t">000</span>
+          </div>
+          <div class="stat-row">
+            <span><span class="stat-badge badge-j"></span>J</span>
+            <span id="stat-j">000</span>
+          </div>
+          <div class="stat-row">
+            <span><span class="stat-badge badge-z"></span>Z</span>
+            <span id="stat-z">000</span>
+          </div>
+          <div class="stat-row">
+            <span><span class="stat-badge badge-o"></span>O</span>
+            <span id="stat-o">000</span>
+          </div>
+          <div class="stat-row">
+            <span><span class="stat-badge badge-s"></span>S</span>
+            <span id="stat-s">000</span>
+          </div>
+          <div class="stat-row">
+            <span><span class="stat-badge badge-l"></span>L</span>
+            <span id="stat-l">000</span>
+          </div>
+          <div class="stat-row">
+            <span><span class="stat-badge badge-i"></span>I</span>
+            <span id="stat-i">000</span>
+          </div>
+        </div>
+
+        <!-- Center: Board -->
+        <div class="board-container">
+          <canvas id="board-canvas" width="240" height="480"></canvas>
+          <div id="game-overlay" class="overlay hidden">
+            <h2 id="overlay-title">PAUSED</h2>
+            <p id="overlay-sub">Press P to Resume</p>
+            <button class="btn" data-action="restart">RESTART</button>
+          </div>
+        </div>
+
+        <!-- Right Panel: Score, Lines, Level, Next -->
+        <div class="panel info-panel">
+          <div class="info-box">
+            <div class="info-label">SCORE</div>
+            <div id="score-val" class="info-val">000000</div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-label">LINES</div>
+            <div id="lines-val" class="info-val">000</div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-label">LEVEL</div>
+            <div id="level-val" class="info-val">00</div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-label">NEXT</div>
+            <canvas id="next-canvas" width="80" height="80"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Guide -->
+      <div class="controls-guide">
+        <span>A / &larr; : Left</span>
+        <span>D / &rarr; : Right</span>
+        <span>Z : Rotate Left</span>
+        <span>X : Rotate Right</span>
+        <span>S / &darr; : Drop</span>
+        <span>Space : Hard Drop</span>
+        <span>P : Pause</span>
+      </div>
+
+      <!-- Touch Buttons -->
+      <div class="on-screen-keypad">
+        <button class="btn" data-action="left">&larr; Left</button>
+        <button class="btn btn-rot" data-action="rot-l">Z: Rot L</button>
+        <button class="btn btn-rot" data-action="rot-r">X: Rot R</button>
+        <button class="btn" data-action="right">Right &rarr;</button>
+        <button class="btn" data-action="down">&darr; Down</button>
+        <button class="btn" data-action="drop">&#8650; Hard Drop</button>
+        <button class="btn" data-action="pause">Pause</button>
+      </div>
+    </div>
+
+    <script src="tetris.js"></script>
+  </body>
+</html>

@@ -4,6 +4,10 @@
  * Terminal Tetris 2 - Color NES Style
  *
  * Board size: 10 columns x 20 rows (identical to NES Tetris).
+ * Color & Texture:
+ * - Real terminal 256-colors
+ * - Shaded box characters: ░░, ▒▒, ▓▓, ██
+ *
  * Controls:
  * - Z: Rotate left (counter-clockwise)
  * - X: Rotate right (clockwise)
@@ -15,10 +19,10 @@
  * - Q: Quit
  * - R: Restart after game over
  *
- * Terminal adaptation:
- * - Detects terminal size via ioctl
+ * Layout:
+ * - Guaranteed fixed visible width on every row (58 columns)
+ * - Auto-detects terminal dimensions and centers view
  * - Reconciles layout on SIGWINCH resize
- * - Colors rendered via ANSI color escape codes
  */
 
 #include <stdio.h>
@@ -34,18 +38,18 @@
 #define BOARD_WIDTH 10
 #define BOARD_HEIGHT 20
 
-#define MIN_LAYOUT_WIDTH 58
-#define MIN_LAYOUT_HEIGHT 24
+#define LAYOUT_WIDTH 58
+#define LAYOUT_HEIGHT 25
 
 /*
  * Tetromino shapes in 4 rotations (4x4 grids).
- * 0: I piece (Cyan)
- * 1: J piece (Blue)
- * 2: L piece (Orange)
- * 3: O piece (Yellow)
- * 4: S piece (Green)
- * 5: T piece (Magenta / Purple)
- * 6: Z piece (Red)
+ * 0: I piece
+ * 1: J piece
+ * 2: L piece
+ * 3: O piece
+ * 4: S piece
+ * 5: T piece
+ * 6: Z piece
  */
 static const int TETROMINOES[7][4][4][4] = {
     // 0: I
@@ -100,31 +104,35 @@ static const int TETROMINOES[7][4][4][4] = {
 };
 
 /*
- * ANSI color block definitions for each tetromino:
- * 0: Empty
- * 1: I (Bright Cyan)
- * 2: J (Bright Blue)
- * 3: L (Bright Orange / 208)
- * 4: O (Bright Yellow)
- * 5: S (Bright Green)
- * 6: T (Bright Magenta)
- * 7: Z (Bright Red)
+ * Distinct box textures and colors for each tetromino:
+ * Each occupies EXACTLY 2 visible terminal columns.
+ * 0: Empty (2 spaces)
+ * 1: I (Cyan full block: ██)
+ * 2: J (Blue dark shade: ▓▓)
+ * 3: L (Orange medium shade: ▒▒)
+ * 4: O (Yellow full block: ██)
+ * 5: S (Green light shade: ░░)
+ * 6: T (Purple / Magenta dark shade: ▓▓)
+ * 7: Z (Red medium shade: ▒▒)
  */
-static const char *PIECE_COLORS[8] = {
-    "",
-    "\033[1;96m",        // Cyan
-    "\033[1;94m",        // Blue
-    "\033[38;5;208;1m",   // Orange
-    "\033[1;93m",        // Yellow
-    "\033[1;92m",        // Green
-    "\033[1;95m",        // Magenta
-    "\033[1;91m"         // Red
+static const char *PIECE_PATTERNS[8] = {
+    "  ",
+    "\033[38;5;51m\xe2\x96\x88\xe2\x96\x88\033[0m",     // 1: I (Cyan ██)
+    "\033[38;5;33m\xe2\x96\x93\xe2\x96\x93\033[0m",     // 2: J (Blue ▓▓)
+    "\033[38;5;208m\xe2\x96\x92\xe2\x96\x92\033[0m",    // 3: L (Orange ▒▒)
+    "\033[38;5;226m\xe2\x96\x88\xe2\x96\x88\033[0m",    // 4: O (Yellow ██)
+    "\033[38;5;46m\xe2\x96\x91\xe2\x96\x91\033[0m",     // 5: S (Green ░░)
+    "\033[38;5;165m\xe2\x96\x93\xe2\x96\x93\033[0m",    // 6: T (Magenta ▓▓)
+    "\033[38;5;196m\xe2\x96\x92\xe2\x96\x92\033[0m"     // 7: Z (Red ▒▒)
 };
 
-#define ANSI_RESET "\033[0m"
-#define ANSI_WHITE "\033[1;37m"
-#define ANSI_GRAY  "\033[90m"
-#define ANSI_CYAN  "\033[1;96m"
+// Ghost piece pattern (subtle gray light shade)
+static const char *GHOST_PATTERN = "\033[38;5;240m\xe2\x96\x91\xe2\x96\x91\033[0m";
+
+#define ANSI_RESET  "\033[0m"
+#define ANSI_BORDER "\033[38;5;39m"
+#define ANSI_TITLE  "\033[1;38;5;229m"
+#define ANSI_HEADER "\033[1;37m"
 
 // Global state for terminal control and signals
 static struct termios original_termios;
@@ -194,7 +202,7 @@ static void handle_sigwinch(int sig)
 }
 
 /*
- * Handle termination signal (SIGINT, SIGTERM).
+ * Handle termination signals (SIGINT, SIGTERM).
  */
 static void handle_sigint(int sig)
 {
@@ -386,6 +394,7 @@ static int calculate_ghost_y(const GameState *game)
 
 /*
  * Render full screen frame with colors, adapting to terminal size.
+ * Every row is precisely 58 visible characters wide for flawless alignment.
  */
 static void render_screen(const GameState *game)
 {
@@ -393,30 +402,30 @@ static void render_screen(const GameState *game)
     int term_rows = 24;
     get_terminal_size(&term_cols, &term_rows);
 
-    if (term_cols < MIN_LAYOUT_WIDTH || term_rows < MIN_LAYOUT_HEIGHT) {
+    if (term_cols < LAYOUT_WIDTH || term_rows < LAYOUT_HEIGHT) {
         printf("\033[H\033[2J");
         int row = term_rows / 2;
         int col = (term_cols > 34) ? (term_cols - 34) / 2 : 1;
         printf("\033[%d;%dH\033[1;31mPLEASE ENLARGE TERMINAL\033[0m", row, col);
-        printf("\033[%d;%dHCurrent: %dx%d  Needed: %dx%d", row + 1, col - 2, term_cols, term_rows, MIN_LAYOUT_WIDTH, MIN_LAYOUT_HEIGHT);
+        printf("\033[%d;%dHCurrent: %dx%d  Needed: %dx%d", row + 1, col - 2, term_cols, term_rows, LAYOUT_WIDTH, LAYOUT_HEIGHT);
         fflush(stdout);
         return;
     }
 
-    int offset_top = (term_rows - MIN_LAYOUT_HEIGHT) / 2 + 1;
-    int offset_left = (term_cols - MIN_LAYOUT_WIDTH) / 2 + 1;
+    int offset_top = (term_rows - LAYOUT_HEIGHT) / 2 + 1;
+    int offset_left = (term_cols - LAYOUT_WIDTH) / 2 + 1;
 
-    char buffer[16384];
+    char buffer[32768];
     int buf_len = 0;
 
     #define APPEND(...) buf_len += snprintf(buffer + buf_len, sizeof(buffer) - buf_len, __VA_ARGS__)
 
     APPEND("\033[H");
 
-    // Title banner
-    APPEND("\033[%d;%dH%s.========================================================.%s", offset_top, offset_left, ANSI_CYAN, ANSI_RESET);
-    APPEND("\033[%d;%dH%s|%s                   %sT E T R I S   I I%s                    %s|%s", offset_top + 1, offset_left, ANSI_CYAN, ANSI_RESET, ANSI_WHITE, ANSI_RESET, ANSI_CYAN, ANSI_RESET);
-    APPEND("\033[%d;%dH%s|========================================================|%s", offset_top + 2, offset_left, ANSI_CYAN, ANSI_RESET);
+    // Title banner: exactly 58 visible columns
+    APPEND("\033[%d;%dH%s.========================================================.%s", offset_top, offset_left, ANSI_BORDER, ANSI_RESET);
+    APPEND("\033[%d;%dH%s|%s                   %sT E T R I S   I I%s                    %s|%s", offset_top + 1, offset_left, ANSI_BORDER, ANSI_RESET, ANSI_TITLE, ANSI_RESET, ANSI_BORDER, ANSI_RESET);
+    APPEND("\033[%d;%dH%s|========================================================|%s", offset_top + 2, offset_left, ANSI_BORDER, ANSI_RESET);
 
     // Active piece and ghost piece position masks
     int active_mask[BOARD_HEIGHT][BOARD_WIDTH] = {{0}};
@@ -441,78 +450,83 @@ static void render_screen(const GameState *game)
         }
     }
 
-    // Render 20 rows of board + side stats and controls
+    // Render 20 rows of board + side panels
+    // Layout columns: 1 (left wall) + 15 (left panel) + 3 (board left wall) + 20 (playfield) + 3 (board right wall) + 15 (right panel) + 1 (right wall) = 58 columns
     for (int y = 0; y < BOARD_HEIGHT; ++y) {
         int line_row = offset_top + 3 + y;
-        APPEND("\033[%d;%dH| ", line_row, offset_left);
+        APPEND("\033[%d;%dH%s|%s", line_row, offset_left, ANSI_BORDER, ANSI_RESET);
 
-        // Left Panel: Statistics with piece colors
-        if (y == 0)      APPEND("%sSTATISTICS%s    ", ANSI_WHITE, ANSI_RESET);
-        else if (y == 2) APPEND(" T %s[]%s  %03d ", PIECE_COLORS[6], ANSI_RESET, game->stats[5]);
-        else if (y == 4) APPEND(" J %s[]%s  %03d ", PIECE_COLORS[2], ANSI_RESET, game->stats[1]);
-        else if (y == 6) APPEND(" Z %s[]%s  %03d ", PIECE_COLORS[7], ANSI_RESET, game->stats[6]);
-        else if (y == 8) APPEND(" O %s[]%s  %03d ", PIECE_COLORS[4], ANSI_RESET, game->stats[3]);
-        else if (y == 10) APPEND(" S %s[]%s  %03d ", PIECE_COLORS[5], ANSI_RESET, game->stats[4]);
-        else if (y == 12) APPEND(" L %s[]%s  %03d ", PIECE_COLORS[3], ANSI_RESET, game->stats[2]);
-        else if (y == 14) APPEND(" I %s[]%s  %03d ", PIECE_COLORS[1], ANSI_RESET, game->stats[0]);
+        // Left Panel: Exactly 15 visible characters
+        if (y == 0)      APPEND("  %sSTATISTICS%s   ", ANSI_HEADER, ANSI_RESET);
+        else if (y == 2) APPEND("  T  %s  %03d   ", PIECE_PATTERNS[6], game->stats[5]);
+        else if (y == 4) APPEND("  J  %s  %03d   ", PIECE_PATTERNS[2], game->stats[1]);
+        else if (y == 6) APPEND("  Z  %s  %03d   ", PIECE_PATTERNS[7], game->stats[6]);
+        else if (y == 8) APPEND("  O  %s  %03d   ", PIECE_PATTERNS[4], game->stats[3]);
+        else if (y == 10) APPEND("  S  %s  %03d   ", PIECE_PATTERNS[5], game->stats[4]);
+        else if (y == 12) APPEND("  L  %s  %03d   ", PIECE_PATTERNS[3], game->stats[2]);
+        else if (y == 14) APPEND("  I  %s  %03d   ", PIECE_PATTERNS[1], game->stats[0]);
         else             APPEND("               ");
 
-        // Center: Board left wall
-        APPEND("%s|<|%s", ANSI_CYAN, ANSI_RESET);
+        // Center: Board left wall (3 chars)
+        APPEND("%s|<|%s", ANSI_BORDER, ANSI_RESET);
 
-        // Center: Playfield cells (10 cells x 2 chars = 20 chars)
+        // Center: Playfield cells (10 cells x 2 chars = 20 visible chars)
         for (int x = 0; x < BOARD_WIDTH; ++x) {
             if (active_mask[y][x]) {
                 int piece_num = active_mask[y][x];
-                APPEND("%s[]%s", PIECE_COLORS[piece_num], ANSI_RESET);
+                APPEND("%s", PIECE_PATTERNS[piece_num]);
             } else if (game->board[y][x]) {
                 int piece_num = game->board[y][x];
-                APPEND("%s[]%s", PIECE_COLORS[piece_num], ANSI_RESET);
+                APPEND("%s", PIECE_PATTERNS[piece_num]);
             } else if (ghost_mask[y][x]) {
-                APPEND("%s..%s", ANSI_GRAY, ANSI_RESET);
+                APPEND("%s", GHOST_PATTERN);
             } else {
                 APPEND("  ");
             }
         }
 
-        // Center: Board right wall
-        APPEND("%s|>|%s ", ANSI_CYAN, ANSI_RESET);
+        // Center: Board right wall (3 chars)
+        APPEND("%s|>|%s", ANSI_BORDER, ANSI_RESET);
 
-        // Right Panel: Info and Next piece
-        if (y == 0)       APPEND("%sSCORE%s        |", ANSI_WHITE, ANSI_RESET);
-        else if (y == 1)  APPEND(" %06d        |", game->score);
-        else if (y == 3)  APPEND("%sLINES%s        |", ANSI_WHITE, ANSI_RESET);
-        else if (y == 4)  APPEND(" %03d           |", game->lines);
-        else if (y == 6)  APPEND("%sLEVEL%s        |", ANSI_WHITE, ANSI_RESET);
-        else if (y == 7)  APPEND(" %02d            |", game->level);
-        else if (y == 9)  APPEND("%sNEXT%s         |", ANSI_WHITE, ANSI_RESET);
+        // Right Panel: Exactly 15 visible characters
+        if (y == 0)       APPEND("  %sSCORE%s        ", ANSI_HEADER, ANSI_RESET);
+        else if (y == 1)  APPEND("  %06d       ", game->score);
+        else if (y == 3)  APPEND("  %sLINES%s        ", ANSI_HEADER, ANSI_RESET);
+        else if (y == 4)  APPEND("  %03d          ", game->lines);
+        else if (y == 6)  APPEND("  %sLEVEL%s        ", ANSI_HEADER, ANSI_RESET);
+        else if (y == 7)  APPEND("  %02d           ", game->level);
+        else if (y == 9)  APPEND("  %sNEXT%s         ", ANSI_HEADER, ANSI_RESET);
         else if (y >= 10 && y <= 13) {
             int nr = y - 10;
-            APPEND(" ");
+            APPEND("   ");
             for (int nc = 0; nc < 4; ++nc) {
                 if (TETROMINOES[game->next_type][0][nr][nc]) {
-                    APPEND("%s[]%s", PIECE_COLORS[game->next_type + 1], ANSI_RESET);
+                    APPEND("%s", PIECE_PATTERNS[game->next_type + 1]);
                 } else {
                     APPEND("  ");
                 }
             }
-            APPEND("     |");
+            APPEND("    ");
         }
-        else if (y == 15) APPEND("A/D: Move      |");
-        else if (y == 16) APPEND("%sZ: Rot L%s        |", ANSI_WHITE, ANSI_RESET);
-        else if (y == 17) APPEND("%sX: Rot R%s        |", ANSI_WHITE, ANSI_RESET);
-        else if (y == 18) APPEND("S: Drop  SPC:Hd|");
-        else if (y == 19) APPEND("P: Pause Q:Quit|");
-        else              APPEND("               |");
+        else if (y == 15) APPEND("  A/D: Move    ");
+        else if (y == 16) APPEND("  %sZ  : Rot L%s   ", ANSI_HEADER, ANSI_RESET);
+        else if (y == 17) APPEND("  %sX  : Rot R%s   ", ANSI_HEADER, ANSI_RESET);
+        else if (y == 18) APPEND("  S  : Drop    ");
+        else if (y == 19) APPEND("  SPC: DropMax ");
+        else              APPEND("               ");
+
+        // Right wall (1 char)
+        APPEND("%s|%s", ANSI_BORDER, ANSI_RESET);
     }
 
-    // Bottom border
-    APPEND("\033[%d;%dH%s|-----------------|====================|---------------|%s", offset_top + 23, offset_left, ANSI_CYAN, ANSI_RESET);
+    // Bottom border: 1 + 15 + 3 + 20 + 3 + 15 + 1 = 58 columns
+    APPEND("\033[%d;%dH%s|===============|<|====================|>|===============|%s", offset_top + 23, offset_left, ANSI_BORDER, ANSI_RESET);
+    APPEND("\033[%d;%dH%s'--------------------------------------------------------'%s", offset_top + 24, offset_left, ANSI_BORDER, ANSI_RESET);
 
     // Overlay Game Over or Paused status
     if (game->game_over) {
         int mid_r = offset_top + 10;
-        int mid_c = offset_left + 22;
+        int mid_c = offset_left + 20;
         APPEND("\033[%d;%dH\033[1;41;37m+------------------+\033[0m", mid_r, mid_c);
         APPEND("\033[%d;%dH\033[1;41;37m|    GAME  OVER    |\033[0m", mid_r + 1, mid_c);
         APPEND("\033[%d;%dH\033[1;41;37m|  R: Play Again   |\033[0m", mid_r + 2, mid_c);
@@ -520,7 +534,7 @@ static void render_screen(const GameState *game)
         APPEND("\033[%d;%dH\033[1;41;37m+------------------+\033[0m", mid_r + 4, mid_c);
     } else if (game->paused) {
         int mid_r = offset_top + 10;
-        int mid_c = offset_left + 22;
+        int mid_c = offset_left + 20;
         APPEND("\033[%d;%dH\033[1;44;37m+------------------+\033[0m", mid_r, mid_c);
         APPEND("\033[%d;%dH\033[1;44;37m|      PAUSED      |\033[0m", mid_r + 1, mid_c);
         APPEND("\033[%d;%dH\033[1;44;37m|  Press P resume  |\033[0m", mid_r + 2, mid_c);

@@ -59,6 +59,7 @@ libs/drag.js
 pages/ascii.js
 pages/bookmarklets/gmail/extract.js
 pages/children/caesar/moduleCaesarCypher.js
+pages/children/tetris/tetris.js
 pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.js
 pages/html/checkbox/handleCheckboxDynamic/index.js
 pages/html/checkbox/handleCheckboxFixed/handleCheckboxFixed.js
