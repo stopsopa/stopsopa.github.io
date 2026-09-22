@@ -7,4 +7,4 @@ running:
     ./c/printenv/bin/executable
 
 EE
-./c/printenv/bin/executable
+# ./c/printenv/bin/executable

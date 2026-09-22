@@ -7,4 +7,4 @@ running:
     ./c/tetris/bin/executable
 
 EE
-./c/tetris/bin/executable
+# ./c/tetris/bin/executable
