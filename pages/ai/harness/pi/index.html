@@ -57,26 +57,49 @@
 
             # either edit in vscode ~/.pi/agent/models.json
             # or create fresh
+
             cat <<EEE > ~/.pi/agent/models.json
             {
-                "providers": {
-                    "lmstudio": {
-                        "baseUrl": "http://192.168.8.49:1234/v1",
-                        "api": "openai-completions",
-                        "apiKey": "lm-studio",
-                        "models": [
-                            {
-                                "id": "google/gemma-4-12b-qat",
-                                "input": [
-                                    "text",
-                                    "image"
-                                ]
-                            }
-                        ]
+              "providers": {
+                "bonsai": {
+                  "baseUrl": "http://127.0.0.1:11434/v1",
+                  "api": "openai-completions",
+                  "apiKey": "none",
+                  "models": [
+                    {
+                      "id": "bonsai2-27b-mlx",
+                      "input": ["text", "image"]
                     }
+                  ]
+                },
+            
+                "lmstudio": {
+                  "baseUrl": "http://192.168.8.49:1234/v1",
+                  "api": "openai-completions",
+                  "apiKey": "lm-studio",
+                  "models": [
+                    {
+                      "id": "google/gemma-4-12b-qat",
+                      "input": ["text", "image"]
+                    }
+                  ]
+                },
+            
+                "freellmapi": {
+                  "baseUrl": "http://127.0.0.1:31415/v1",
+                  "api": "openai-completions",
+                  "apiKey": "freellmapi-3327xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx103a2",
+                  "models": [
+                    {
+                      "id": "auto",
+                      "input": ["text"]
+                    }
+                  ]
                 }
+              }
             }
             EEE
+
 
             # see later also Open WebUI https://youtu.be/fTf-LZaGnpM
           </script>
