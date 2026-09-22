@@ -1,7 +1,13 @@
 /**
- * NES Tetris - Web Version
+ * NES Tetris - Web Version with Native Web Audio Chiptune Synthesizer
  *
  * Board size: 10 columns x 20 rows (identical to NES Tetris).
+ * Audio:
+ * - Native Web Audio API (Square-wave chiptune synthesizer matching NES 2A03 APU)
+ * - Synthesizes Korobeiniki (Theme A) with lead square melody & bassline
+ * - Sound is ON by default (auto-starts on first user interaction per browser policy)
+ * - Sound toggle keyboard binding: 'M' (Mute / Unmute)
+ *
  * Controls:
  * - Z: Rotate left (counter-clockwise)
  * - X / W / ArrowUp: Rotate right (clockwise)
@@ -9,6 +15,7 @@
  * - D / ArrowRight: Move right
  * - S / ArrowDown: Soft drop
  * - Space: Hard drop
+ * - M: Toggle music / sound
  * - P: Pause
  * - R: Restart after game over
  */
@@ -19,13 +26,6 @@ const BOARD_HEIGHT: number = 20;
 
 /*
  * Tetromino shapes in 4 rotations (4x4 matrix).
- * 0: I piece
- * 1: J piece
- * 2: L piece
- * 3: O piece
- * 4: S piece
- * 5: T piece
- * 6: Z piece
  */
 const TETROMINOES: number[][][][] = [
   // 0: I
@@ -226,7 +226,7 @@ interface PieceStyle {
   color: string;
   light: string;
   dark: string;
-  pattern: string; // 'solid' | 'shade-dark' | 'shade-med' | 'shade-light'
+  pattern: string;
 }
 
 const PIECE_STYLES: PieceStyle[] = [
@@ -258,6 +258,7 @@ interface GameState {
   bag: number[];
   bagIndex: number;
   lastDropTime: number;
+  soundEnabled: boolean;
 }
 
 const game: GameState = {
@@ -276,6 +277,7 @@ const game: GameState = {
   bag: [],
   bagIndex: 0,
   lastDropTime: 0,
+  soundEnabled: true,
 };
 
 // Canvas elements and contexts
@@ -288,9 +290,256 @@ const nextCtx = nextCanvas.getContext("2d")!;
 const scoreEl = document.getElementById("score-val") as HTMLElement;
 const linesEl = document.getElementById("lines-val") as HTMLElement;
 const levelEl = document.getElementById("level-val") as HTMLElement;
+const soundStatusEl = document.getElementById("sound-status") as HTMLElement;
 const overlayEl = document.getElementById("game-overlay") as HTMLElement;
 const overlayTitle = document.getElementById("overlay-title") as HTMLElement;
 const overlaySub = document.getElementById("overlay-sub") as HTMLElement;
+
+/*
+ * ============================================================================
+ * Native Web Audio Chiptune Synthesizer (NES 2A03 Square Wave APU)
+ * Generates Korobeiniki (Theme A) programmatically without any external files.
+ * ============================================================================
+ */
+class ChiptuneSynth {
+  private ctx: AudioContext | null = null;
+  private masterGain: GainNode | null = null;
+  private isPlaying: boolean = true;
+  private schedulerTimer: number | null = null;
+  private nextNoteTime: number = 0;
+  private currentStep: number = 0;
+
+  // Frequencies of musical notes (Hz)
+  private static readonly NOTES: { [key: string]: number } = {
+    REST: 0,
+    E3: 164.81,
+    A3: 220.0,
+    B3: 246.94,
+    C4: 261.63,
+    D4: 293.66,
+    E4: 329.63,
+    F4: 349.23,
+    G4: 392.0,
+    "G#4": 415.3,
+    A4: 440.0,
+    B4: 493.88,
+    C5: 523.25,
+    D5: 587.33,
+    E5: 659.25,
+    F5: 698.46,
+    "G#5": 830.61,
+    A5: 880.0,
+  };
+
+  // Melody: [Note, sixteenth notes duration]
+  private static readonly MELODY: [string, number][] = [
+    ["E5", 4],
+    ["B4", 2],
+    ["C5", 2],
+    ["D5", 4],
+    ["C5", 2],
+    ["B4", 2],
+    ["A4", 4],
+    ["A4", 2],
+    ["C5", 2],
+    ["E5", 4],
+    ["D5", 2],
+    ["C5", 2],
+    ["B4", 6],
+    ["C5", 2],
+    ["D5", 4],
+    ["E5", 4],
+    ["C5", 4],
+    ["A4", 4],
+    ["A4", 4],
+    ["REST", 4],
+
+    ["D5", 4],
+    ["F5", 2],
+    ["A5", 4],
+    ["G5", 2],
+    ["F5", 2],
+    ["E5", 6],
+    ["C5", 2],
+    ["E5", 4],
+    ["D5", 2],
+    ["C5", 2],
+    ["B4", 4],
+    ["B4", 2],
+    ["C5", 2],
+    ["D5", 4],
+    ["E5", 4],
+    ["C5", 4],
+    ["A4", 4],
+    ["A4", 4],
+    ["REST", 4],
+  ];
+
+  // Bassline: [Note, sixteenth notes duration]
+  private static readonly BASS: [string, number][] = [
+    ["E3", 4],
+    ["B3", 4],
+    ["E3", 4],
+    ["B3", 4],
+    ["A3", 4],
+    ["E3", 4],
+    ["A3", 4],
+    ["E3", 4],
+    ["G#4", 4],
+    ["E3", 4],
+    ["G#4", 4],
+    ["E3", 4],
+    ["A3", 4],
+    ["E3", 4],
+    ["A3", 4],
+    ["REST", 4],
+
+    ["D4", 4],
+    ["A3", 4],
+    ["D4", 4],
+    ["A3", 4],
+    ["C4", 4],
+    ["G4", 4],
+    ["C4", 4],
+    ["G4", 4],
+    ["B3", 4],
+    ["E3", 4],
+    ["B3", 4],
+    ["E3", 4],
+    ["A3", 4],
+    ["E3", 4],
+    ["A3", 4],
+    ["REST", 4],
+  ];
+
+  public init(): void {
+    if (!this.ctx) {
+      const AudioCtx =
+        window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      this.ctx = new AudioCtx();
+      this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+      this.masterGain.connect(this.ctx.destination);
+    }
+    if (this.ctx.state === "suspended") {
+      this.ctx.resume();
+    }
+  }
+
+  public ensureStarted(): void {
+    this.init();
+    if (this.isPlaying && this.schedulerTimer === null) {
+      this.startMusic();
+    }
+  }
+
+  public toggle(enable?: boolean): boolean {
+    this.init();
+    if (enable === undefined) {
+      this.isPlaying = !this.isPlaying;
+    } else {
+      this.isPlaying = enable;
+    }
+
+    if (this.isPlaying) {
+      this.startMusic();
+    } else {
+      this.stopMusic();
+    }
+    return this.isPlaying;
+  }
+
+  private startMusic(): void {
+    if (!this.ctx) return;
+    this.nextNoteTime = this.ctx.currentTime + 0.05;
+    this.currentStep = 0;
+    this.scheduleNotes();
+  }
+
+  private stopMusic(): void {
+    if (this.schedulerTimer !== null) {
+      clearTimeout(this.schedulerTimer);
+      this.schedulerTimer = null;
+    }
+  }
+
+  private scheduleNotes = (): void => {
+    if (!this.isPlaying || !this.ctx || !this.masterGain) return;
+
+    const sixteenthDuration = 0.095; // ~158 BPM (NES tempo)
+
+    while (this.nextNoteTime < this.ctx.currentTime + 0.25) {
+      const melodyItem = ChiptuneSynth.MELODY[this.currentStep % ChiptuneSynth.MELODY.length];
+      const bassItem = ChiptuneSynth.BASS[this.currentStep % ChiptuneSynth.BASS.length];
+
+      const noteDuration = melodyItem[1] * sixteenthDuration;
+
+      const mFreq = ChiptuneSynth.NOTES[melodyItem[0]];
+      if (mFreq > 0) {
+        this.playTone(mFreq, this.nextNoteTime, noteDuration * 0.85, "square", 0.16);
+      }
+
+      const bFreq = ChiptuneSynth.NOTES[bassItem[0]];
+      if (bFreq > 0) {
+        this.playTone(bFreq, this.nextNoteTime, noteDuration * 0.8, "triangle", 0.24);
+      }
+
+      this.nextNoteTime += noteDuration;
+      this.currentStep = (this.currentStep + 1) % ChiptuneSynth.MELODY.length;
+    }
+
+    this.schedulerTimer = window.setTimeout(this.scheduleNotes, 40);
+  };
+
+  private playTone(freq: number, startTime: number, duration: number, type: OscillatorType, gainLevel: number): void {
+    if (!this.ctx || !this.masterGain) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, startTime);
+
+    gain.gain.setValueAtTime(gainLevel, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+
+    osc.start(startTime);
+    osc.stop(startTime + duration);
+  }
+
+  public playLineClear(): void {
+    if (!this.isPlaying || !this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+    const freqs = [523.25, 659.25, 783.99, 1046.5];
+    freqs.forEach((f, idx) => {
+      this.playTone(f, now + idx * 0.05, 0.08, "square", 0.2);
+    });
+  }
+
+  public playDrop(): void {
+    if (!this.isPlaying || !this.ctx || !this.masterGain) return;
+    const now = this.ctx.currentTime;
+    this.playTone(180, now, 0.05, "triangle", 0.22);
+  }
+}
+
+const synth = new ChiptuneSynth();
+
+// Start sound on first user gesture to satisfy browser autoplay policy
+const unlockAudio = (): void => {
+  if (game.soundEnabled) {
+    synth.ensureStarted();
+  }
+  window.removeEventListener("keydown", unlockAudio);
+  window.removeEventListener("click", unlockAudio);
+  window.removeEventListener("touchstart", unlockAudio);
+};
+window.addEventListener("keydown", unlockAudio);
+window.addEventListener("click", unlockAudio);
+window.addEventListener("touchstart", unlockAudio);
 
 /*
  * Refill 7-bag randomizer to guarantee fair piece distribution.
@@ -402,6 +651,9 @@ function lockAndClear(): void {
     game.lines += cleared;
     game.level = Math.floor(game.lines / 10);
     updateScoreDisplay();
+    synth.playLineClear();
+  } else {
+    synth.playDrop();
   }
 
   spawnPiece();
@@ -460,11 +712,9 @@ function drawBlock(
     return;
   }
 
-  // Block base
   ctx.fillStyle = style.color;
   ctx.fillRect(x, y, size, size);
 
-  // NES style beveled 3D borders
   const bevel = Math.max(2, Math.floor(size / 6));
 
   // Top & Left highlight
@@ -507,11 +757,9 @@ function drawBlock(
 function render(): void {
   const cellSize = boardCanvas.width / BOARD_WIDTH;
 
-  // Clear board with retro background
   boardCtx.fillStyle = "#0a0a12";
   boardCtx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
 
-  // Subtle background grid
   boardCtx.strokeStyle = "rgba(255, 255, 255, 0.04)";
   boardCtx.lineWidth = 1;
   for (let c = 0; c <= BOARD_WIDTH; c++) {
@@ -527,7 +775,6 @@ function render(): void {
     boardCtx.stroke();
   }
 
-  // Render locked blocks on board
   for (let y = 0; y < BOARD_HEIGHT; y++) {
     for (let x = 0; x < BOARD_WIDTH; x++) {
       if (game.board[y][x] > 0) {
@@ -536,7 +783,6 @@ function render(): void {
     }
   }
 
-  // Render ghost piece & active piece
   if (!game.gameOver) {
     const shape = TETROMINOES[game.currentType][game.currentRotation];
     const ghostY = calculateGhostY();
@@ -568,7 +814,7 @@ function render(): void {
     }
   }
 
-  // Render Next Piece preview canvas
+  // Render Next Piece preview
   nextCtx.fillStyle = "#0a0a12";
   nextCtx.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
 
@@ -604,6 +850,17 @@ function updateStatsDisplay(): void {
       el.textContent = game.stats[typeIdx].toString().padStart(3, "0");
     }
   });
+}
+
+/*
+ * Toggle music playback on/off.
+ */
+function toggleSound(enable?: boolean): void {
+  game.soundEnabled = synth.toggle(enable);
+  if (soundStatusEl) {
+    soundStatusEl.textContent = game.soundEnabled ? "ON" : "OFF";
+    soundStatusEl.style.color = game.soundEnabled ? "#4ade80" : "#f87171";
+  }
 }
 
 /*
@@ -644,11 +901,17 @@ function resetGame(): void {
 
 /*
  * Keyboard controls:
+ * - M: Toggle sound
  * - Z: Rotate left (counter-clockwise)
  * - X: Rotate right (clockwise)
  */
 window.addEventListener("keydown", (e: KeyboardEvent) => {
   const key = e.key.toLowerCase();
+
+  if (key === "m") {
+    toggleSound();
+    return;
+  }
 
   if (key === "q") return;
 
@@ -673,19 +936,16 @@ window.addEventListener("keydown", (e: KeyboardEvent) => {
   if (game.paused) return;
 
   if (key === "a" || e.key === "ArrowLeft") {
-    // Move Left
     if (pieceFits(game.currentType, game.currentRotation, game.currentX - 1, game.currentY)) {
       game.currentX--;
       render();
     }
   } else if (key === "d" || e.key === "ArrowRight") {
-    // Move Right
     if (pieceFits(game.currentType, game.currentRotation, game.currentX + 1, game.currentY)) {
       game.currentX++;
       render();
     }
   } else if (key === "z") {
-    // Z: Rotate left (counter-clockwise)
     const nextRot = (game.currentRotation + 3) % 4;
     if (pieceFits(game.currentType, nextRot, game.currentX, game.currentY)) {
       game.currentRotation = nextRot;
@@ -700,7 +960,6 @@ window.addEventListener("keydown", (e: KeyboardEvent) => {
       render();
     }
   } else if (key === "x" || key === "w" || e.key === "ArrowUp") {
-    // X: Rotate right (clockwise)
     const nextRot = (game.currentRotation + 1) % 4;
     if (pieceFits(game.currentType, nextRot, game.currentX, game.currentY)) {
       game.currentRotation = nextRot;
@@ -715,7 +974,6 @@ window.addEventListener("keydown", (e: KeyboardEvent) => {
       render();
     }
   } else if (key === "s" || e.key === "ArrowDown") {
-    // Soft drop
     if (pieceFits(game.currentType, game.currentRotation, game.currentX, game.currentY + 1)) {
       game.currentY++;
       game.score += 1;
@@ -728,7 +986,6 @@ window.addEventListener("keydown", (e: KeyboardEvent) => {
       render();
     }
   } else if (e.key === " ") {
-    // Hard drop
     e.preventDefault();
     let dropped = 0;
     while (pieceFits(game.currentType, game.currentRotation, game.currentX, game.currentY + 1)) {
@@ -762,13 +1019,15 @@ function gameLoop(time: number): void {
   requestAnimationFrame(gameLoop);
 }
 
-// Mobile on-screen button bindings
+// On-screen buttons
 document.querySelectorAll("[data-action]").forEach((btn) => {
   btn.addEventListener("click", () => {
     const action = btn.getAttribute("data-action");
     if (!action) return;
 
-    if (action === "left") {
+    if (action === "sound") {
+      toggleSound();
+    } else if (action === "left") {
       if (pieceFits(game.currentType, game.currentRotation, game.currentX - 1, game.currentY)) {
         game.currentX--;
         render();

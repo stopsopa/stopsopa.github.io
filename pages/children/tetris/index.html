@@ -43,7 +43,9 @@
 
       .title-banner {
         width: 100%;
-        text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         border-bottom: 2px solid #3b82f6;
         padding-bottom: 8px;
         margin-bottom: 16px;
@@ -54,6 +56,21 @@
         letter-spacing: 6px;
         color: #facc15;
         text-shadow: 2px 2px 0px #000, 0 0 10px rgba(250, 204, 21, 0.4);
+      }
+
+      .sound-indicator {
+        font-size: 13px;
+        font-weight: bold;
+        color: #94a3b8;
+        background: #0f172a;
+        padding: 4px 10px;
+        border-radius: 4px;
+        border: 1px solid #1e293b;
+        cursor: pointer;
+      }
+
+      #sound-status {
+        color: #f87171;
       }
 
       .main-game-layout {
@@ -197,7 +214,7 @@
         border: 1px solid #1e293b;
       }
 
-      /* On-Screen Controller / Controls Guide */
+      /* Controls Guide */
       .controls-guide {
         margin-top: 14px;
         width: 100%;
@@ -250,6 +267,11 @@
         color: #facc15;
       }
 
+      .btn-sound {
+        background: #1e293b;
+        color: #38bdf8;
+      }
+
       @media (max-width: 600px) {
         .main-game-layout {
           flex-direction: column;
@@ -278,6 +300,9 @@
     <div class="tetris-cabinet">
       <div class="title-banner">
         <h1>T E T R I S</h1>
+        <div class="sound-indicator" data-action="sound">
+          M: SOUND [<span id="sound-status" style="color: #4ade80;">ON</span>]
+        </div>
       </div>
 
       <div class="main-game-layout">
@@ -356,6 +381,7 @@
         <span>X : Rotate Right</span>
         <span>S / &darr; : Drop</span>
         <span>Space : Hard Drop</span>
+        <span>M : Sound ON/OFF</span>
         <span>P : Pause</span>
       </div>
 
@@ -367,6 +393,7 @@
         <button class="btn" data-action="right">Right &rarr;</button>
         <button class="btn" data-action="down">&darr; Down</button>
         <button class="btn" data-action="drop">&#8650; Hard Drop</button>
+        <button class="btn btn-sound" data-action="sound">M: Sound</button>
         <button class="btn" data-action="pause">Pause</button>
       </div>
     </div>
