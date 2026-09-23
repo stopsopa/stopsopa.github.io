@@ -943,14 +943,14 @@ function resetGame(): void {
 
 /*
  * Keyboard controls:
- * - M: Toggle sound
- * - Z: Rotate left (counter-clockwise)
- * - X: Rotate right (clockwise)
+ * - U: Toggle sound
+ * - Z / N: Rotate left (counter-clockwise)
+ * - X / M: Rotate right (clockwise)
  */
 window.addEventListener("keydown", (e: KeyboardEvent) => {
   const key = e.key.toLowerCase();
 
-  if (key === "m") {
+  if (key === "u") {
     toggleSound();
     return;
   }
@@ -987,7 +987,7 @@ window.addEventListener("keydown", (e: KeyboardEvent) => {
       game.currentX++;
       render();
     }
-  } else if (key === "z") {
+  } else if (key === "z" || key === "n") {
     const nextRot = (game.currentRotation + 3) % 4;
     if (pieceFits(game.currentType, nextRot, game.currentX, game.currentY)) {
       game.currentRotation = nextRot;
@@ -1001,7 +1001,7 @@ window.addEventListener("keydown", (e: KeyboardEvent) => {
       game.currentRotation = nextRot;
       render();
     }
-  } else if (key === "x" || key === "w") {
+  } else if (key === "x" || key === "m") {
     const nextRot = (game.currentRotation + 1) % 4;
     if (pieceFits(game.currentType, nextRot, game.currentX, game.currentY)) {
       game.currentRotation = nextRot;
@@ -1027,7 +1027,7 @@ window.addEventListener("keydown", (e: KeyboardEvent) => {
       game.lastDropTime = performance.now();
       render();
     }
-  } else if (e.key === " " || e.key === "ArrowUp") {
+  } else if (e.key === " " || e.key === "ArrowUp" || key === "w") {
     e.preventDefault();
     let dropped = 0;
     while (pieceFits(game.currentType, game.currentRotation, game.currentX, game.currentY + 1)) {

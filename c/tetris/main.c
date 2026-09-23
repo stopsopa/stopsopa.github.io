@@ -542,6 +542,11 @@ static long long current_time_ms(void)
 
 /*
  * Read non-blocking input key, parsing ANSI escape sequences for arrow keys.
+ * Arrow key mappings match TypeScript bindings:
+ * - Up Arrow    -> hard drop sentinel (value 1)
+ * - Down Arrow  -> 's' (soft drop)
+ * - Right Arrow -> 'd' (move right)
+ * - Left Arrow  -> 'a' (move left)
  */
 static int read_key(void)
 {
@@ -557,10 +562,10 @@ static int read_key(void)
 
         if (seq[0] == '[') {
             switch (seq[1]) {
-                case 'A': return 'w'; // Up Arrow -> Rotate CW
-                case 'B': return 's'; // Down Arrow -> Soft drop
-                case 'C': return 'd'; // Right Arrow -> Move right
-                case 'D': return 'a'; // Left Arrow -> Move left
+                case 'A': return 1;   // Up Arrow -> hard drop
+                case 'B': return 's'; // Down Arrow -> soft drop
+                case 'C': return 'd'; // Right Arrow -> move right
+                case 'D': return 'a'; // Left Arrow -> move left
             }
         }
         return 0;
@@ -639,8 +644,8 @@ int main(int argc, char **argv)
                             game.current_x++;
                             render_screen(&game);
                         }
-                    } else if (key == 'w' || key == 'W' || key == 'x' || key == 'X') {
-                        // Rotate clockwise with wall kick
+                    } else if (key == 'w' || key == 'W' || key == 'x' || key == 'X' || key == 'm' || key == 'M') {
+                        // Rotate clockwise with wall kick (W / X / M)
                         int next_rot = (game.current_rotation + 1) % 4;
                         if (piece_fits(&game, game.current_type, next_rot, game.current_x, game.current_y)) {
                             game.current_rotation = next_rot;
@@ -654,8 +659,8 @@ int main(int argc, char **argv)
                             game.current_rotation = next_rot;
                             render_screen(&game);
                         }
-                    } else if (key == 'z' || key == 'Z') {
-                        // Rotate counter-clockwise with wall kick
+                    } else if (key == 'z' || key == 'Z' || key == 'n' || key == 'N') {
+                        // Rotate counter-clockwise with wall kick (Z / N)
                         int next_rot = (game.current_rotation + 3) % 4;
                         if (piece_fits(&game, game.current_type, next_rot, game.current_x, game.current_y)) {
                             game.current_rotation = next_rot;
@@ -681,8 +686,8 @@ int main(int argc, char **argv)
                             last_drop = current_time_ms();
                             render_screen(&game);
                         }
-                    } else if (key == ' ') {
-                        // Hard drop
+                    } else if (key == ' ' || key == 1) {
+                        // Hard drop (Space or Up Arrow)
                         int dropped_rows = 0;
                         while (piece_fits(&game, game.current_type, game.current_rotation, game.current_x, game.current_y + 1)) {
                             game.current_y++;
