@@ -1,11 +1,14 @@
 Create a complete, standalone NES-style Tetris game in a single HTML file using raw HTML, CSS, and Vanilla JavaScript.
 
 ### Specifications:
+
 1. **Layout & Style**:
+
    - Retro arcade cabinet container with ASCII-art borders and double lines.
    - Centered and responsive for mobile and desktop.
 
 2. **Block Rendering**:
+
    - Each tetromino type has a distinct bright color and shaded character texture (`░░`, `▒▒`, `▓▓`, `██`):
      - I: Cyan (`#00e5ff`, `██`)
      - J: Blue (`#2979ff`, `▓▓`)
@@ -18,6 +21,7 @@ Create a complete, standalone NES-style Tetris game in a single HTML file using 
    - Subtle ghost piece (`░░`, low-opacity outline).
 
 3. **Controls & Keybindings**:
+
    - `Z`: Rotate Left (counter-clockwise) with wall-kick
    - `X`: Rotate Right (clockwise) with wall-kick
    - `A` / `ArrowLeft`: Move Left
@@ -30,6 +34,7 @@ Create a complete, standalone NES-style Tetris game in a single HTML file using 
    - On-screen touch buttons for mobile/mouse play.
 
 4. **Game Mechanics**:
+
    - Standard 7-bag randomizer (no piece drought).
    - NES scoring: 40 / 100 / 300 / 1200 × (level + 1) for 1/2/3/4 lines cleared.
    - Level increments every 10 lines, with authentic frame drop speed curve (800ms down to 30ms).

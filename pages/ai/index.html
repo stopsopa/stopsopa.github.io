@@ -391,6 +391,85 @@
              g(Claude api docs pricing)
         </script>
 
+        <h2>llama.cpp</h2>
+        <script type="editor" data-lang="sh">
+
+          Install via brew:
+            brew install llama.cpp
+            # from: https://llama-cpp.com/getting-started/#:~:text=brew%20install%20llama.cpp
+
+          # ===============
+          # let's try to load Gemma 4 using llama.cpp
+            https://huggingface.co/unsloth/gemma-4-E4B-it-UD-MLX-4bit
+
+            # first we need to make sure uv exist
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+              # to install
+              uv --help
+
+            curl -fsSL https://raw.githubusercontent.com/unslothai/unsloth/refs/heads/main/scripts/install_gemma4_mlx.sh | sh
+              source ~/.unsloth/unsloth_gemma4_mlx/bin/activate
+              python -m mlx_vlm.chat --model unsloth/gemma-4-E4B-it-UD-MLX-4bit
+              # that will download and run model
+
+            # but after exiting with `/exit` from session
+            # you can run again by first searching for that model in hf cache
+              find ~/.cache/huggingface/hub \
+                -maxdepth 3 \
+                -type d \
+                -iname '*gemma*' 2>/dev/null
+            # we can also list models in hf cache:
+              hf cache ls
+              hf cache ls --sort size:desc
+            # we can delete particular
+              hf cache rm model/ggml-org/gemma-4-12b-it-GGUF
+
+            # to run again
+              source ~/.unsloth/unsloth_gemma4_mlx/bin/activate
+              python -m mlx_vlm.chat --model unsloth/gemma-4-E4B-it-UD-MLX-4bit
+              # which are really last two command from curl version
+
+
+                  # about hf cache which seems to be involved here
+                    ~/.cache/huggingface
+                    # so just copy this directory to another machine and you should be good to go
+                    # or redirect the cache dir:
+                      export LLAMA_CACHE=/some/shared/location
+                    # you can also load model directly from file
+                      llama-server -m /Volumes/m4mini/Models/gemma-4-12b-it-Q4_K_M.gguf
+
+            # now run as a server
+              source ~/.unsloth/unsloth_gemma4_mlx/bin/activate
+              python -m mlx_vlm.server --model unsloth/gemma-4-E4B-it-UD-MLX-4bit
+
+              # now find the endpoints
+                curl -s http://localhost:8080/openapi.json \
+                  | python3 -c 'import json,sys; print("\n".join(json.load(sys.stdin)["paths"]))'
+
+              # then use
+                curl -s http://localhost:8080/v1/chat/completions \
+                  -H 'Content-Type: application/json' \
+                  -d '{
+                    "model": "unsloth/gemma-4-E4B-it-UD-MLX-4bit",
+                    "messages": [
+                      {
+                        "role": "user",
+                        "content": "Explain recursion in two sentences."
+                      }
+                    ]
+                  }' | python3 -m json.tool
+          # ===============
+          # let's run Bonsai 2 27B using modified/fork of llama.cpp
+            # https://prismml.com/news/bonsai-2-27b
+            # https://github.com/PrismML-Eng/llama.cpp/releases/tag/prism-b10709-9a9394a#:~:text=macOS%20Apple%20Silicon%20(arm64)
+            # MOST IMPORTANTLY https://github.com/PrismML-Eng/Bonsai-demo
+
+            # start server
+                  ./scripts/start_llama_server.sh
+
+            # single query
+                  ./scripts/run_llama.sh -p "What is the capital of France?"
+        </script>
         <h2>Local LLMs</h2>
 
         <script type="editor" data-lang="sh">
