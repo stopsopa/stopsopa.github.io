@@ -465,7 +465,7 @@
             # MOST IMPORTANTLY https://github.com/PrismML-Eng/Bonsai-demo
 
             # start server
-                  ./scripts/start_llama_server.sh
+                  BONSAI_HOST="0.0.0.0" ./scripts/start_llama_server.sh
 
             # single query
                   ./scripts/run_llama.sh -p "What is the capital of France?"
