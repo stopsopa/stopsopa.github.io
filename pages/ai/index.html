@@ -403,14 +403,50 @@
             https://huggingface.co/unsloth/gemma-4-E4B-it-UD-MLX-4bit
             read: https://unsloth.ai/docs/models/gemma-4
 
+
+          # run 12b variant  https://huggingface.co/unsloth/gemma-4-12b-it-GGUF/tree/main
+          # see          
+              gemma-4-12b-it-UD-Q2_K_XL.gguf    4.66 GB              
+              gemma-4-12b-it-UD-Q3_K_XL.gguf    6.02 GB              
+              gemma-4-12b-it-UD-Q4_K_XL.gguf    7.37 GB
+              
+            llama cli -hf unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL
+            llama serve \
+              -hf unsloth/gemma-4-12b-it-GGUF:UD-Q3_K_XL \
+              -np 1 \
+              -c 8192 \
+              --host 0.0.0.0 \
+              --port 2345 \
+              --spec-type draft-mtp \
+              --spec-draft-n-max 2 
+
+                # where 
+                # -np 1 prevents multiple inference slots
+                # -c 8192 limits the context
+
+              # ran with MTP, read more: https://unsloth.ai/docs/models/mtp#llama.cpp-mtp-guide
+
+              # takes 15gb from 16gb of ram 
+              # WARNING: to exit Ctrl+\
+            llama serve \
+              -hf unsloth/gemma-4-12b-it-GGUF:UD-Q3_K_XL \
+              -np 1 \
+              -c 8192 \
+              --host 0.0.0.0 \
+              --port 2345
+
+              # takes
+
+
             # first we need to make sure uv exist
             curl -LsSf https://astral.sh/uv/install.sh | sh
               # to install
               uv --help
 
+            # MLX
             curl -fsSL https://raw.githubusercontent.com/unslothai/unsloth/refs/heads/main/scripts/install_gemma4_mlx.sh | sh
               source ~/.unsloth/unsloth_gemma4_mlx/bin/activate
-              python -m mlx_vlm.chat --model unsloth/gemma-4-E4B-it-UD-MLX-4bit
+              python -m mlx_vlm.chat --model unsloth/gemma-4-12b-it-GGUF
               # that will download and run model
 
             # but after exiting with `/exit` from session
