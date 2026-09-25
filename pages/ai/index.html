@@ -421,6 +421,14 @@
             # we can also list models in hf cache:
               hf cache ls
               hf cache ls --sort size:desc
+              # list all remote
+                hf models ls --author unsloth --search "gemma-4"
+                # then download the one you picked
+                hf download unsloth/gemma-4-12b
+                hf download unsloth/gemma-4-12b-it-GGUF
+                hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf
+                                                        ^-- apparently this one is recomended?
+          
             # we can delete particular
               hf cache rm model/ggml-org/gemma-4-12b-it-GGUF
 
