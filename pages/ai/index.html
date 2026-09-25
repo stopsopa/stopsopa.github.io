@@ -412,7 +412,7 @@
               
             llama cli -hf unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL
             llama serve \
-              -hf unsloth/gemma-4-12b-it-GGUF:UD-Q3_K_XL \
+              -hf unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL \
               -np 1 \
               -c 8192 \
               --host 0.0.0.0 \
@@ -444,6 +444,7 @@
               uv --help
 
             # MLX
+            pyenv shell 3.11.13
             curl -fsSL https://raw.githubusercontent.com/unslothai/unsloth/refs/heads/main/scripts/install_gemma4_mlx.sh | sh
               source ~/.unsloth/unsloth_gemma4_mlx/bin/activate
               python -m mlx_vlm.chat --model unsloth/gemma-4-12b-it-GGUF
