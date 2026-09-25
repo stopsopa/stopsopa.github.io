@@ -61,18 +61,29 @@
             cat <<EEE > ~/.pi/agent/models.json
             {
               "providers": {
-                "bonsai": {
-                  "baseUrl": "http://127.0.0.1:11434/v1",
+                "gemma4-e4b": {
+                  "baseUrl": "http://192.168.8.49:8080/v1",
                   "api": "openai-completions",
                   "apiKey": "none",
                   "models": [
                     {
-                      "id": "bonsai2-27b-mlx",
+                      "id": "unsloth/gemma-4-E4B-it-UD-MLX-4bit",
                       "input": ["text", "image"]
                     }
                   ]
                 },
-
+                "gemma4-12B": {
+                  "baseUrl": "http://192.168.8.49:2345/v1",
+                  "api": "openai-completions",
+                  "apiKey": "none",
+                  "models": [
+                    {
+                      "id": "unsloth/gemma-4-12b-it-GGUF",
+                      "input": ["text", "image"]
+                    }
+                  ]
+                },
+            
                 "lmstudio": {
                   "baseUrl": "http://192.168.8.49:1234/v1",
                   "api": "openai-completions",
@@ -84,11 +95,35 @@
                     }
                   ]
                 },
-
+            
+                "bonsai2-27b-local": {
+                  "baseUrl": "http://0.0.0.0:8080/v1",
+                  "api": "openai-completions",
+                  "apiKey": "none",
+                  "models": [
+                    {
+                      "id": "Bonsai-2-27B",
+                      "input": ["text", "image"]
+                    }
+                  ]
+                },
+            
+                "bonsai2-27b-M4": {
+                  "baseUrl": "http://192.168.8.49:8080/v1",
+                  "api": "openai-completions",
+                  "apiKey": "none",
+                  "models": [
+                    {
+                      "id": "Bonsai-2-27B",
+                      "input": ["text", "image"]
+                    }
+                  ]
+                },
+            
                 "freellmapi": {
                   "baseUrl": "http://127.0.0.1:31415/v1",
                   "api": "openai-completions",
-                  "apiKey": "freellmapi-3327xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx103a2",
+                  "apiKey": "freellmapi-332xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxa2",
                   "models": [
                     {
                       "id": "auto",
