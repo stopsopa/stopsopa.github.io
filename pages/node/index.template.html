@@ -215,6 +215,24 @@
           # which could cause memory crash app
             # see tab 'backpressure' in : urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/index.rendered.html#streams
         </script>
+        <h2>Render link in terminal</h2>
+        
+        <script type="editor" data-lang="sh">
+
+          const OSC = '\x1B]';
+          const BEL = '\x07';
+          
+          export function terminalLink(text, url, icon = '🔗') {
+          	const open = `${OSC}8;;${url}${BEL}`;
+          	const close = `${OSC}8;;${BEL}`;
+          
+          	return `${icon} ${open}${text}${close}`;
+          }
+          
+          console.log(terminalLink('OpenAI', 'https://openai.com'));
+          console.log(terminalLink('GitHub', 'https://github.com'));          
+          
+        </script>
         <h2>getLine</h2>
         <script type="editor" data-lang="sh">
 
