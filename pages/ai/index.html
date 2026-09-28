@@ -405,11 +405,11 @@
 
 
           # run 12b variant  https://huggingface.co/unsloth/gemma-4-12b-it-GGUF/tree/main
-          # see          
-              gemma-4-12b-it-UD-Q2_K_XL.gguf    4.66 GB              
-              gemma-4-12b-it-UD-Q3_K_XL.gguf    6.02 GB              
+          # see
+              gemma-4-12b-it-UD-Q2_K_XL.gguf    4.66 GB
+              gemma-4-12b-it-UD-Q3_K_XL.gguf    6.02 GB
               gemma-4-12b-it-UD-Q4_K_XL.gguf    7.37 GB
-              
+
             llama cli -hf unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL
             llama serve \
               -hf unsloth/gemma-4-12b-it-GGUF:UD-Q4_K_XL \
@@ -418,15 +418,15 @@
               --host 0.0.0.0 \
               --port 2345 \
               --spec-type draft-mtp \
-              --spec-draft-n-max 2 
+              --spec-draft-n-max 2
 
-                # where 
+                # where
                 # -np 1 prevents multiple inference slots
                 # -c 8192 limits the context
 
               # ran with MTP, read more: https://unsloth.ai/docs/models/mtp#llama.cpp-mtp-guide
 
-              # takes 15gb from 16gb of ram 
+              # takes 15gb from 16gb of ram
               # WARNING: to exit Ctrl+\
             llama serve \
               -hf unsloth/gemma-4-12b-it-GGUF:UD-Q3_K_XL \
@@ -466,7 +466,7 @@
                 hf download unsloth/gemma-4-12b-it-GGUF
                 hf download unsloth/gemma-4-12b-it-GGUF gemma-4-12b-it-UD-Q4_K_XL.gguf
                                                         ^-- apparently this one is recomended?
-          
+
             # we can delete particular
               hf cache rm model/ggml-org/gemma-4-12b-it-GGUF
 
