@@ -233,7 +233,7 @@ async function main(): Promise<void> {
     ttyOutFd = fs.openSync("/dev/tty", "w");
   } catch (err) {
     process.stderr.write(
-      `fuzzy.ts error: cannot open /dev/tty (${err instanceof Error ? err.message : String(err)})\n`,
+      `fuzzy.ts error: cannot open /dev/tty (${err instanceof Error ? err.message : String(err)})\n`
     );
     process.exit(1);
   }
