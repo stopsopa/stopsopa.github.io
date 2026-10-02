@@ -45,6 +45,7 @@ pages/services/xor.js
 bash/env_repack.js
 bash/env_repack.unit.parallel.test.js
 bash/exportsource.js
+bash/file/fuzzy.js
 bash/fs/touchWatch.js
 bash/fs/watch.js
 bash/git/addToGitignore.js
@@ -60,6 +61,8 @@ pages/ascii.js
 pages/bookmarklets/gmail/extract.js
 pages/children/caesar/moduleCaesarCypher.js
 pages/children/tetris/tetris.js
+pages/children/wotb/controls/antigravity/index.js
+pages/children/wotb/controls/ver1/index.js
 pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.js
 pages/html/checkbox/handleCheckboxDynamic/index.js
 pages/html/checkbox/handleCheckboxFixed/handleCheckboxFixed.js
