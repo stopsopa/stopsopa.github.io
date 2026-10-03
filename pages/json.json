@@ -53,7 +53,7 @@
     "type": "cell",
     "label": "shell 1",
     "default": "`",
-    "value": "T"
+    "value": "X"
   },
   {
     "type": "cell",
@@ -72,7 +72,7 @@
     "type": "cell",
     "label": "shell 2",
     "default": "Z",
-    "value": "G"
+    "value": "C"
   },
   {
     "type": "cell",
@@ -91,7 +91,7 @@
     "type": "cell",
     "label": "shell 3",
     "default": "X",
-    "value": "B"
+    "value": "V"
   },
   {
     "type": "cell",
@@ -266,7 +266,7 @@
     "label": "attack!",
     "subtitle": "Command in Battle",
     "default": "N",
-    "value": "Y"
+    "value": "T"
   },
   {
     "type": "cell",
