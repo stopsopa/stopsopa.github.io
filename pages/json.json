@@ -1,0 +1,313 @@
+[
+  {
+    "type": "range",
+    "label": "mouse sensitivity",
+    "default": 100,
+    "value": 100,
+    "min": 0,
+    "max": 100,
+    "step": 1
+  },
+  {
+    "type": "range",
+    "label": "mouse sensitivity in aiming mode",
+    "default": 100,
+    "value": 100,
+    "min": 0,
+    "max": 150,
+    "step": 1
+  },
+  {
+    "type": "checkbox",
+    "label": "inverted zoom",
+    "default": false,
+    "value": false
+  },
+  {
+    "type": "checkbox",
+    "label": "inverted vertical mouse movement",
+    "default": false,
+    "value": false
+  },
+  {
+    "type": "checkbox",
+    "label": "aiming mode",
+    "subtitle": "Manual zoom",
+    "default": false,
+    "value": false
+  },
+  {
+    "type": "checkbox",
+    "label": "reverse zoom",
+    "subtitle": "The camera provides a wider angle behind the vehicle while reversing",
+    "default": true,
+    "value": true
+  },
+  {
+    "type": "cell",
+    "label": "move forward",
+    "default": "W",
+    "value": "W"
+  },
+  {
+    "type": "cell",
+    "label": "shell 1",
+    "default": "`",
+    "value": "T"
+  },
+  {
+    "type": "cell",
+    "label": "capture the base!",
+    "subtitle": "Command in Battle",
+    "default": "F4",
+    "value": "F4"
+  },
+  {
+    "type": "cell",
+    "label": "move backward",
+    "default": "S",
+    "value": "S"
+  },
+  {
+    "type": "cell",
+    "label": "shell 2",
+    "default": "Z",
+    "value": "G"
+  },
+  {
+    "type": "cell",
+    "label": "affirmative!",
+    "subtitle": "Command in Battle",
+    "default": "F5",
+    "value": "F5"
+  },
+  {
+    "type": "cell",
+    "label": "turn left",
+    "default": "A",
+    "value": "A"
+  },
+  {
+    "type": "cell",
+    "label": "shell 3",
+    "default": "X",
+    "value": "B"
+  },
+  {
+    "type": "cell",
+    "label": "negative!",
+    "subtitle": "Command in Battle",
+    "default": "F6",
+    "value": "F6"
+  },
+  {
+    "type": "cell",
+    "label": "turn right",
+    "default": "D",
+    "value": "D"
+  },
+  {
+    "type": "cell",
+    "label": "consumables 1",
+    "subtitle": "Slot one",
+    "default": "1",
+    "value": "1"
+  },
+  {
+    "type": "cell",
+    "label": "help!",
+    "subtitle": "Command in Battle",
+    "default": "F",
+    "value": "N"
+  },
+  {
+    "type": "cell",
+    "label": "fire",
+    "default": "L MOUSE",
+    "value": "L MOUSE"
+  },
+  {
+    "type": "cell",
+    "label": "consumables 2",
+    "subtitle": "Slot two",
+    "default": "2",
+    "value": "2"
+  },
+  {
+    "type": "cell",
+    "label": "moving here!",
+    "subtitle": "Command in Battle",
+    "default": "]",
+    "value": "E"
+  },
+  {
+    "type": "cell",
+    "label": "auto-aim",
+    "default": "R MOUSE",
+    "value": "R MOUSE"
+  },
+  {
+    "type": "cell",
+    "label": "consumables 3",
+    "subtitle": "Slot three",
+    "default": "3",
+    "value": "3"
+  },
+  {
+    "type": "cell",
+    "label": "driving to base a",
+    "subtitle": "Command in Battle",
+    "default": "LCTRL+1",
+    "value": "LCTRL+1"
+  },
+  {
+    "type": "cell",
+    "label": "sniper mode",
+    "default": "LShift",
+    "value": "LShift"
+  },
+  {
+    "type": "cell",
+    "label": "ability 1",
+    "default": "Space",
+    "value": "Space"
+  },
+  {
+    "type": "cell",
+    "label": "driving to base b",
+    "subtitle": "Command in Battle",
+    "default": "LCTRL+2",
+    "value": "LCTRL+2"
+  },
+  {
+    "type": "cell",
+    "label": "quick commands",
+    "default": "V",
+    "value": "F"
+  },
+  {
+    "type": "cell",
+    "label": "driving to base c",
+    "subtitle": "Command in Battle",
+    "default": "LCTRL+3",
+    "value": "LCTRL+3"
+  },
+  {
+    "type": "cell",
+    "label": "hide minimap",
+    "default": "M",
+    "value": "M"
+  },
+  {
+    "type": "cell",
+    "label": "team chat",
+    "default": "Enter",
+    "value": "Enter"
+  },
+  {
+    "type": "cell",
+    "label": "driving to base d",
+    "subtitle": "Command in Battle",
+    "default": "LCTRL+4",
+    "value": "LCTRL+4"
+  },
+  {
+    "type": "cell",
+    "label": "zoom minimap out",
+    "default": "-",
+    "value": "-"
+  },
+  {
+    "type": "cell",
+    "label": "platoon chat",
+    "default": "LCTRL+Enter",
+    "value": "LCTRL+Enter"
+  },
+  {
+    "type": "cell",
+    "label": "driving to base e",
+    "subtitle": "Command in Battle",
+    "default": "LCTRL+5",
+    "value": "LCTRL+5"
+  },
+  {
+    "type": "cell",
+    "label": "zoom minimap in",
+    "default": "=",
+    "value": "="
+  },
+  {
+    "type": "cell",
+    "label": "gun reload",
+    "default": "R",
+    "value": "Q"
+  },
+  {
+    "type": "cell",
+    "label": "driving to base f",
+    "subtitle": "Command in Battle",
+    "default": "LCTRL+6",
+    "value": "LCTRL+6"
+  },
+  {
+    "type": "cell",
+    "label": "list of players",
+    "default": "Tab",
+    "value": "Tab"
+  },
+  {
+    "type": "cell",
+    "label": "booster slot 1",
+    "default": "Y",
+    "value": "U"
+  },
+  {
+    "type": "cell",
+    "label": "attack!",
+    "subtitle": "Command in Battle",
+    "default": "N",
+    "value": "Y"
+  },
+  {
+    "type": "cell",
+    "label": "booster slot 6",
+    "default": "H",
+    "value": "J"
+  },
+  {
+    "type": "cell",
+    "label": "booster slot 2",
+    "default": "U",
+    "value": "I"
+  },
+  {
+    "type": "cell",
+    "label": "booster slot 4",
+    "default": "O",
+    "value": "P"
+  },
+  {
+    "type": "cell",
+    "label": "booster slot 7",
+    "default": "J",
+    "value": "K"
+  },
+  {
+    "type": "cell",
+    "label": "booster slot 3",
+    "default": "I",
+    "value": "O"
+  },
+  {
+    "type": "cell",
+    "label": "booster slot 5",
+    "default": "P",
+    "value": "H"
+  },
+  {
+    "type": "cell",
+    "label": "booster slot 8",
+    "default": "K",
+    "value": "L"
+  }
+]
