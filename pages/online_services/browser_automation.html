@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Browser Automation</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%; margin: 0; overflow: hidden;
+    background: #050812;
+  }
+  body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  canvas {
+    position: fixed; inset: 0; display: block;
+    width: 100%; height: 100%;
+  }
+  .vignette {
+    position: fixed; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse at 50% 48%, transparent 0%, rgba(5,8,18,.12) 44%, rgba(5,8,18,.88) 100%),
+      linear-gradient(180deg, rgba(5,8,18,.16), transparent 30%, transparent 70%, rgba(5,8,18,.32));
+  }
+  .center {
+    position: fixed; inset: 0; display: grid; place-items: center;
+    padding: 24px; pointer-events: none;
+  }
+  h1 {
+    margin: 0; text-align: center; color: #f5f8ff;
+    font-size: clamp(2rem, 6.2vw, 5.8rem);
+    line-height: 1.02; letter-spacing: -.065em; font-weight: 650;
+    text-wrap: balance;
+    text-shadow: 0 0 28px rgba(81, 190, 255, .22), 0 0 80px rgba(83, 88, 255, .16);
+    animation: arrive 1.4s cubic-bezier(.2,.8,.2,1) both;
+  }
+  h1 span {
+    background: linear-gradient(100deg, #ffffff 10%, #bcecff 46%, #a8a8ff 90%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .eyebrow {
+    position: fixed; left: 28px; top: 25px; color: rgba(190,211,255,.58);
+    font: 500 10px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .22em; text-transform: uppercase;
+  }
+  .status {
+    position: fixed; right: 28px; bottom: 25px; display: flex; align-items: center; gap: 9px;
+    color: rgba(190,211,255,.52); font: 500 10px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .16em; text-transform: uppercase;
+  }
+  .status i {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: #68f4d2; box-shadow: 0 0 12px #68f4d2;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes arrive { from { opacity: 0; transform: translateY(14px); filter: blur(8px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+  @keyframes pulse { 50% { opacity: .35; transform: scale(.75); } }
+  @media (prefers-reduced-motion: reduce) {
+    h1, .status i { animation: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="field" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="eyebrow">AUTOMATION / SYSTEM 01</div>
+<main class="center"><h1><span>browser automation</span></h1></main>
+<div class="status"><i></i> Ready to execute</div>
+<script>
+(() => {
+  const canvas = document.getElementById('field');
+  const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let width = 0, height = 0, dpr = 1, dots = [], raf = 0, last = 0;
+  const spacing = 23;
+  const pointer = { x: -1000, y: -1000, active: false };
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    dots = [];
+    const cols = Math.ceil(width / spacing) + 1;
+    const rows = Math.ceil(height / spacing) + 1;
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        dots.push({ x: x * spacing, y: y * spacing, phase: Math.random() * Math.PI * 2 });
+      }
+    }
+    draw(performance.now());
+  }
+
+  function draw(now) {
+    if (document.hidden) { raf = 0; return; }
+    const t = now * 0.00045;
+    ctx.fillStyle = '#050812';
+    ctx.fillRect(0, 0, width, height);
+
+    const maxDist = 170;
+    for (let i = 0; i < dots.length; i++) {
+      const p = dots[i];
+      const dx = p.x - pointer.x, dy = p.y - pointer.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const influence = pointer.active ? Math.max(0, 1 - dist / maxDist) : 0;
+      const wave = (Math.sin(p.x * .009 + p.y * .006 - t * 3 + p.phase) + 1) * .5;
+      const shimmer = .25 + wave * .48;
+      const radius = .65 + shimmer * .5 + influence * 1.5;
+      const alpha = .16 + shimmer * .38 + influence * .5;
+      const hue = 190 + 48 * Math.sin(p.x * .002 + t);
+      ctx.beginPath();
+      ctx.fillStyle = `hsla(${hue}, 90%, ${62 + influence * 20}%, ${alpha})`;
+      ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // A subtle moving glow adds depth without drawing expensive connections.
+    const gx = width * (.5 + Math.sin(t * .8) * .22);
+    const gy = height * (.5 + Math.cos(t * .65) * .2);
+    const glow = ctx.createRadialGradient(gx, gy, 0, gx, gy, Math.min(width, height) * .42);
+    glow.addColorStop(0, 'rgba(34, 102, 180, 0.075)');
+    glow.addColorStop(1, 'rgba(34, 102, 180, 0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, width, height);
+
+    if (!reduceMotion) raf = requestAnimationFrame(draw);
+  }
+
+  function scheduleDraw() {
+    if (!raf && !reduceMotion && !document.hidden) raf = requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', resize, { passive: true });
+  window.addEventListener('pointermove', e => {
+    pointer.x = e.clientX; pointer.y = e.clientY; pointer.active = true;
+    scheduleDraw();
+  }, { passive: true });
+  window.addEventListener('pointerleave', () => { pointer.active = false; scheduleDraw(); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { if (raf) cancelAnimationFrame(raf); raf = 0; }
+    else scheduleDraw();
+  });
+  resize();
+  if (reduceMotion) draw(performance.now());
+})();
+</script>
+</body>
+</html>
