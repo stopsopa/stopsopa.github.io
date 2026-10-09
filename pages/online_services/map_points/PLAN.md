@@ -63,3 +63,18 @@ transpilation will output bundle to
   <script type="module" src="/dist/map_points.entry.bundle.js"></script>
 
   load it from here
+
+# map styles and overlays
+
+- allow choosing from different map styles/views (e.g. Standard OpenStreetMap, Terrain OpenTopoMap, Satellite ESRI, Light Carto Positron, Dark Carto Matter)
+- place the layer selector control in the bottom-left corner of the viewport (matching Google Maps position)
+- support independent toggle overlays on top of the base map:
+  - roads & transit
+  - place names / labels
+- selected map style (`style`) and enabled overlays (`overlays`) must be persisted in the URL query string so refreshing or sharing the URL restores the exact view
+
+# reset button
+
+- render a small button in the top-right corner to reset/clear all pins
+- clicking the reset button clears all pins from the map and removes the pins parameter from the URL
+- the selected view (style) and overlays must be preserved when pins are reset
