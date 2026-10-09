@@ -55,3 +55,11 @@ so as you can probably deduct loading url with data in url should recreate map w
 regarding colors
 
 when map already have pins on the screen when selecting color under color selector all colors already used should be presented to select from - to make it easier to reuse colors
+
+# loading
+
+transpilation will output bundle to 
+
+  <script type="module" src="/dist/map_points.entry.bundle.js"></script>
+
+  load it from here

@@ -15,6 +15,94 @@ interface PinData {
 }
 
 /**
+ * Tile layer configurations for different map styles.
+ * Free, keyless tile providers supported.
+ */
+interface MapLayerConfig {
+  id: string;
+  name: string;
+  url: string;
+  options: L.TileLayerOptions;
+}
+
+const MAP_LAYERS: Record<string, MapLayerConfig> = {
+  standard: {
+    id: "standard",
+    name: "Standard (OSM)",
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    options: {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+    },
+  },
+  terrain: {
+    id: "terrain",
+    name: "Terrain (OpenTopoMap)",
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    options: {
+      maxZoom: 17,
+      attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+    },
+  },
+  satellite: {
+    id: "satellite",
+    name: "Satellite (ESRI World Imagery)",
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    options: {
+      maxZoom: 19,
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+    },
+  },
+  carto_light: {
+    id: "carto_light",
+    name: "Light (Carto Positron)",
+    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    options: {
+      maxZoom: 20,
+      subdomains: "abcd",
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    },
+  },
+  carto_dark: {
+    id: "carto_dark",
+    name: "Dark (Carto Dark Matter)",
+    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    options: {
+      maxZoom: 20,
+      subdomains: "abcd",
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    },
+  },
+};
+
+const DEFAULT_MAP_LAYER = "standard";
+
+/**
+ * Loads selected map style from URL query parameters.
+ */
+function loadMapStyleFromUrl(): string {
+  const params = new URLSearchParams(window.location.search);
+  const style = params.get("style");
+  if (style && MAP_LAYERS[style]) {
+    return style;
+  }
+  return DEFAULT_MAP_LAYER;
+}
+
+/**
+ * Saves selected map style to URL query parameter.
+ */
+function saveMapStyleToUrl(styleId: string): void {
+  const url = new URL(window.location.href);
+  if (styleId === DEFAULT_MAP_LAYER) {
+    url.searchParams.delete("style");
+  } else {
+    url.searchParams.set("style", styleId);
+  }
+  window.history.replaceState({}, "", url.toString());
+}
+
+/**
  * Parses pins array encoded in URL search parameters.
  * Format in query string: pins=encodeURIComponent(JSON.stringify(pins))
  */
@@ -111,14 +199,37 @@ async function initApp(): Promise<void> {
   // Initial fallback center: Belfast coordinates from PLAN
   const defaultCenter: [number, number] = [54.5973, -5.9301];
   let pins: PinData[] = loadPinsFromUrl();
+  const initialStyleId = loadMapStyleFromUrl();
 
   const map = L.map("map").setView(defaultCenter, 12);
 
-  const tileUrl = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-  L.tileLayer(tileUrl, {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
-  }).addTo(map);
+  // Initialize base tile layers dictionary
+  const baseLayers: Record<string, L.TileLayer> = {};
+  const layerIdMap = new Map<L.Layer, string>();
+
+  Object.entries(MAP_LAYERS).forEach(([id, config]) => {
+    const layer = L.tileLayer(config.url, config.options);
+    baseLayers[config.name] = layer;
+    layerIdMap.set(layer, id);
+  });
+
+  // Add the active base layer to the map based on URL state
+  const activeConfig = MAP_LAYERS[initialStyleId] || MAP_LAYERS[DEFAULT_MAP_LAYER];
+  const activeLayer = baseLayers[activeConfig.name];
+  if (activeLayer) {
+    activeLayer.addTo(map);
+  }
+
+  // Add Leaflet Layers Control for style switching (positioned in bottom-left like Google Maps)
+  L.control.layers(baseLayers, undefined, { position: "bottomleft" }).addTo(map);
+
+  // Synchronize layer selection with URL
+  map.on("baselayerchange", (e: any) => {
+    const styleId = layerIdMap.get(e.layer);
+    if (styleId) {
+      saveMapStyleToUrl(styleId);
+    }
+  });
 
   const markerInstances = new Map<string, L.Marker>();
 
