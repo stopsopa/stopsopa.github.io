@@ -33,7 +33,7 @@ find . -type d \( \
     -o -name .opencode \
 \) -prune \
 -o -type f \
-\( -name "*.entry.js" -o -name "*.entry.jsx" \) \
+\( -name "*.entry.js" -o -name "*.entry.jsx" -o -name "*.entry.ts" -o -name "*.entry.tsx" \) \
 -print \
 | node gitignore.js "${IGNORE_FILE}" \
 | npx tsx bundle.ts "$@"

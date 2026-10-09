@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Map Points</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+    .custom-leaflet-marker {
+      background: transparent;
+      border: none;
+    }
+    .context-menu {
+      position: fixed;
+      z-index: 10000;
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 4px 0;
+      min-width: 150px;
+      display: none;
+    }
+    .context-menu-item {
+      padding: 8px 14px;
+      font-size: 14px;
+      color: #1f2937;
+      cursor: pointer;
+      user-select: none;
+    }
+    .context-menu-item:hover {
+      background-color: #f3f4f6;
+    }
+    .context-menu-item.danger {
+      color: #dc2626;
+    }
+    .context-menu-item.danger:hover {
+      background-color: #fee2e2;
+    }
+    .popover-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10001;
+      background: rgba(0, 0, 0, 0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .popover-dialog {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 320px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .popover-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+    }
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 14px;
+      outline: none;
+    }
+    .form-group input[type="text"]:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .color-row input[type="color"] {
+      width: 40px;
+      height: 36px;
+      padding: 0;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      cursor: pointer;
+      background: none;
+    }
+    .palette-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .palette-chip {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 0 1px #d1d5db;
+    }
+    .palette-chip:hover {
+      transform: scale(1.1);
+    }
+    .palette-chip.active {
+      box-shadow: 0 0 0 2px #2563eb;
+    }
+    .popover-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .btn {
+      padding: 6px 14px;
+      font-size: 13px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      outline: none;
+    }
+    .btn-cancel {
+      background: #f3f4f6;
+      border-color: #d1d5db;
+      color: #374151;
+    }
+    .btn-cancel:hover {
+      background: #e5e7eb;
+    }
+    .btn-save {
+      background: #2563eb;
+      color: #ffffff;
+    }
+    .btn-save:hover {
+      background: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <div id="context-menu" class="context-menu">
+    <div id="menu-add-pin" class="context-menu-item">Add pin here</div>
+    <div id="menu-edit-pin" class="context-menu-item" style="display: none;">Edit pin</div>
+    <div id="menu-delete-pin" class="context-menu-item danger" style="display: none;">Delete pin</div>
+  </div>
+
+  <div id="pin-modal-backdrop" class="popover-backdrop">
+    <div class="popover-dialog">
+      <div id="modal-title" class="popover-title">Add Pin</div>
+      <form id="pin-form">
+        <div class="form-group">
+          <label for="pin-label-input">Label / Name</label>
+          <input type="text" id="pin-label-input" placeholder="e.g. Meeting point" autocomplete="off" />
+        </div>
+        <div class="form-group" style="margin-top: 8px;">
+          <label for="pin-color-input">Color</label>
+          <div class="color-row">
+            <input type="color" id="pin-color-input" value="#ea4335" />
+            <span id="pin-color-text" style="font-size: 13px; color: #6b7280;">#ea4335</span>
+          </div>
+          <div id="palette-wrapper" style="margin-top: 6px;">
+            <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Used colors:</div>
+            <div id="palette-container" class="palette-container"></div>
+          </div>
+        </div>
+        <div class="popover-actions">
+          <button type="button" id="btn-cancel" class="btn btn-cancel">Cancel</button>
+          <button type="submit" id="btn-save" class="btn btn-save">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/public/preprocessed.js"></script>
+  <script type="module" src="/dist/map_points.entry.bundle.js"></script>
+</body>
+</html>
