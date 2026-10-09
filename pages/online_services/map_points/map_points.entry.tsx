@@ -78,6 +78,41 @@ const MAP_LAYERS: Record<string, MapLayerConfig> = {
 const DEFAULT_MAP_LAYER = "standard";
 
 /**
+ * Overlay layers (transparent overlays that can be toggled independently on top of any base layer).
+ */
+interface OverlayConfig {
+  id: string;
+  name: string;
+  url: string;
+  options: L.TileLayerOptions;
+}
+
+const OVERLAY_LAYERS: Record<string, OverlayConfig> = {
+  labels: {
+    id: "labels",
+    name: "Place Names / Labels",
+    url: "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+    options: {
+      maxZoom: 20,
+      subdomains: "abcd",
+      pane: "overlayPane",
+      zIndex: 650,
+      attribution: '&copy; <a href="https://carto.com/attributions">CARTO</a>',
+    },
+  },
+  roads: {
+    id: "roads",
+    name: "Roads & Transit (CyclOSM)",
+    url: "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
+    options: {
+      maxZoom: 20,
+      opacity: 0.8,
+      attribution: '&copy; <a href="https://www.cyclosm.org">CyclOSM</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    },
+  },
+};
+
+/**
  * Loads selected map style from URL query parameters.
  */
 function loadMapStyleFromUrl(): string {
@@ -87,6 +122,31 @@ function loadMapStyleFromUrl(): string {
     return style;
   }
   return DEFAULT_MAP_LAYER;
+}
+
+/**
+ * Loads active overlays from URL query parameters.
+ * Format in query string: overlays=labels,roads
+ */
+function loadOverlaysFromUrl(): Set<string> {
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get("overlays");
+  if (!raw) return new Set();
+  const items = raw.split(",").map((s) => s.trim()).filter((s) => Boolean(OVERLAY_LAYERS[s]));
+  return new Set(items);
+}
+
+/**
+ * Saves active overlays to URL query parameter.
+ */
+function saveOverlaysToUrl(activeOverlayIds: Set<string>): void {
+  const url = new URL(window.location.href);
+  if (activeOverlayIds.size === 0) {
+    url.searchParams.delete("overlays");
+  } else {
+    url.searchParams.set("overlays", Array.from(activeOverlayIds).sort().join(","));
+  }
+  window.history.replaceState({}, "", url.toString());
 }
 
 /**
@@ -200,6 +260,7 @@ async function initApp(): Promise<void> {
   const defaultCenter: [number, number] = [54.5973, -5.9301];
   let pins: PinData[] = loadPinsFromUrl();
   const initialStyleId = loadMapStyleFromUrl();
+  const activeOverlayIds = loadOverlaysFromUrl();
 
   const map = L.map("map").setView(defaultCenter, 12);
 
@@ -213,6 +274,16 @@ async function initApp(): Promise<void> {
     layerIdMap.set(layer, id);
   });
 
+  // Initialize overlay tile layers dictionary
+  const overlayLayers: Record<string, L.TileLayer> = {};
+  const overlayIdMap = new Map<L.Layer, string>();
+
+  Object.entries(OVERLAY_LAYERS).forEach(([id, config]) => {
+    const layer = L.tileLayer(config.url, config.options);
+    overlayLayers[config.name] = layer;
+    overlayIdMap.set(layer, id);
+  });
+
   // Add the active base layer to the map based on URL state
   const activeConfig = MAP_LAYERS[initialStyleId] || MAP_LAYERS[DEFAULT_MAP_LAYER];
   const activeLayer = baseLayers[activeConfig.name];
@@ -220,14 +291,40 @@ async function initApp(): Promise<void> {
     activeLayer.addTo(map);
   }
 
-  // Add Leaflet Layers Control for style switching (positioned in bottom-left like Google Maps)
-  L.control.layers(baseLayers, undefined, { position: "bottomleft" }).addTo(map);
+  // Add any active overlay layers from URL state
+  activeOverlayIds.forEach((overlayId) => {
+    const overlayConfig = OVERLAY_LAYERS[overlayId];
+    if (overlayConfig && overlayLayers[overlayConfig.name]) {
+      overlayLayers[overlayConfig.name].addTo(map);
+    }
+  });
 
-  // Synchronize layer selection with URL
+  // Add Leaflet Layers Control for base styles and overlays (positioned in bottom-left like Google Maps)
+  L.control.layers(baseLayers, overlayLayers, { position: "bottomleft" }).addTo(map);
+
+  // Synchronize base layer selection with URL
   map.on("baselayerchange", (e: any) => {
     const styleId = layerIdMap.get(e.layer);
     if (styleId) {
       saveMapStyleToUrl(styleId);
+    }
+  });
+
+  // Synchronize overlay additions with URL
+  map.on("overlayadd", (e: any) => {
+    const overlayId = overlayIdMap.get(e.layer);
+    if (overlayId) {
+      activeOverlayIds.add(overlayId);
+      saveOverlaysToUrl(activeOverlayIds);
+    }
+  });
+
+  // Synchronize overlay removals with URL
+  map.on("overlayremove", (e: any) => {
+    const overlayId = overlayIdMap.get(e.layer);
+    if (overlayId) {
+      activeOverlayIds.delete(overlayId);
+      saveOverlaysToUrl(activeOverlayIds);
     }
   });
 
@@ -295,6 +392,24 @@ async function initApp(): Promise<void> {
   const pinColorText = document.getElementById("pin-color-text")!;
   const paletteContainer = document.getElementById("palette-container")!;
   const btnCancel = document.getElementById("btn-cancel")!;
+  const btnResetPins = document.getElementById("btn-reset-pins");
+
+  /**
+   * Resets and clears all pins from map and URL while preserving current view/style.
+   */
+  function handleResetPins(): void {
+    if (pins.length === 0) return;
+    markerInstances.forEach((marker) => marker.remove());
+    markerInstances.clear();
+    pins = [];
+    savePinsToUrl(pins);
+  }
+
+  if (btnResetPins) {
+    btnResetPins.addEventListener("click", () => {
+      handleResetPins();
+    });
+  }
 
   let contextMenuTargetLatLng: { lat: number; lng: number } | null = null;
   let contextMenuTargetPinId: string | null = null;
