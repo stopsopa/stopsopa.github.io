@@ -343,6 +343,19 @@ async function initApp(): Promise<void> {
       title: pin.label || "Pin",
     }).addTo(map);
 
+    if (pin.label) {
+      marker.bindTooltip(pin.label, {
+        direction: "top",
+        offset: [0, -38],
+        opacity: 0.95,
+      });
+
+      marker.bindPopup(pin.label, {
+        closeButton: false,
+        offset: [0, -38],
+      });
+    }
+
     // Right-click on marker triggers context menu for edit/delete
     marker.on("contextmenu", (e: L.LeafletMouseEvent) => {
       L.DomEvent.stopPropagation(e as any);
