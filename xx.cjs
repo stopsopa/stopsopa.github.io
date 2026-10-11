@@ -69,6 +69,19 @@ ${enter}
       confirm: false,
       source: false,
     },
+    [`cert`]: {
+      command: `
+cat <<EEE
+
+/bin/bash cert/cert-info.sh
+/bin/bash cert/refresh.sh
+
+EEE
+`,
+      description: `launch esbuild - will NOT launch browser nor IDE`,
+      confirm: false,
+      source: false,
+    },
     [`type`]: {
       command: `
 set -e  

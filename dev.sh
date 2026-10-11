@@ -37,6 +37,35 @@ fi
 
 set -e
 
+# -------------------------------------------------------
+# Check TLS cert exists and has more than 30 days left
+# cert-info.sh --machine returns the integer days remaining
+# and exits 1 if the cert file is missing/unreadable
+# -------------------------------------------------------
+_CERT_DAYS="$(/bin/bash "${_DIR}/cert/cert-info.sh" --machine)" || {
+  cat <<EEE
+
+${0} error: could not read TLS cert - it may be missing or corrupted.
+  Generate fresh certs by running:
+
+    /bin/bash cert/refresh.sh
+
+EEE
+  exit 1
+}
+
+if [[ "${_CERT_DAYS}" -le 30 ]]; then
+  cat <<EEE
+
+${0} error: TLS cert expires in =>${_CERT_DAYS}<= days (30-day minimum required).
+  Generate fresh certs by running:
+
+    /bin/bash cert/refresh.sh
+
+EEE
+  exit 1
+fi
+
 if [ ! -d "${_DIR}/node_modules" ]; then
 
   yarn

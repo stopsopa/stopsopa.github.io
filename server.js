@@ -162,8 +162,8 @@ function createServer(protocol = "http") {
   let server;
   if (protocol === "https") {
     const options = {
-      key: fs.readFileSync(path.resolve(__dirname, "cert", `server.key`)),
-      cert: fs.readFileSync(path.resolve(__dirname, "cert", `server.crt`)),
+      key: fs.readFileSync(path.resolve(__dirname, "cert", "cert", `server.key`)),
+      cert: fs.readFileSync(path.resolve(__dirname, "cert", "cert", `server.crt`)),
     };
 
     server = https.createServer(options, app);
