@@ -3625,190 +3625,159 @@
             </div>
           </div>
         </div>
-        
-              <script type="editor" data-lang="js">
-https
-TLS = Transport Layer Security.
 
-Certificate Authority (CA)   -  an organisation trusted to issue certificates
-	An entity that issues and signs certificates. It can be a public organization or a CA you operate for yourself.
-	there is also "public certificate authority" because it might be local too
+        <script type="editor" data-lang="js">
+          https
+          TLS = Transport Layer Security.
 
-CA certificate	
-	A certificate representing a CA and containing its public key.	
-Root CA	   [Trust anchor]
-	A CA at the top of a particular certificate trust chain.
-	A certificate or public key that a client explicitly trusts as the starting point for validating a certificate chain.
-	Also called: trust root in some contexts. A root CA certificate commonly serves as a trust anchor, but the terms are not interchangeable.
-	What it does: It provides the trusted starting point from which the browser can validate the signatures linking the server certificate to an accepted authority.
-	Where it lives: Typically in the browser's or operating system's trust store, or in another explicitly configured trust store.
-Intermediate CA	
-	A CA authorized by another CA to issue certificates, usually beneath a root CA.
-Trust store (trusted certificate store)	
-	A collection of certificates and trust settings used by an operating system or application to decide which certificate authorities to trust.	
-Trust anchor	
-	The trusted starting point for validating a certificate chain, usually a root CA certificate.	
-Certificate chain (certification path)	
-	The sequence of certificates linking the server certificate to a trusted CA.	
-Certificate issuer	
-	The CA identified as having issued a certificate. The issuer is named inside the certificate.	
-Certificate signing	
-	A CA uses its private key to create a digital signature over the certificate's signed data.	
-Digital signature	
-	Cryptographic data that can be verified using the corresponding public key. It detects unauthorized changes to the signed data and proves that the signer controlled the corresponding private key.
-Certificate Signing Request (CSR)	
-	A request containing a public key and requested identity information, signed using the corresponding private key. It can be submitted to a CA when requesting a certificate.
-Certificate validity period	
-	The time interval defined by a certificate's notBefore and notAfter fields.
-Certificate validation	
-	Checking whether a certificate is acceptable for a particular connection, including its hostname, dates, signature chain, and applicable trust rules.
-Authentication	
-	Establishing a cryptographically supported identity claim. In HTTPS, server authentication means verifying that the server controls the private key corresponding to a trusted certificate for the requested hostname.
-Symmetric encryption	
-	Encryption and decryption using the same secret key, or related secret key material.
-Session keys	
-	Secret keys derived for protecting data in a particular TLS connection.
-TLS record	
-	A unit of data carried by TLS. Application data is protected using the connection's traffic keys.
-TLS termination	
-	The point where TLS protection is applied or removed, such as in Node.js or at a reverse proxy.
-Self-signed certificate	
-	A certificate whose signature is made using the private key corresponding to its own public key.
-Locally trusted CA	
-	A CA you create and explicitly trust on your own machine for local development.
-Public CA	
-	A CA whose certificates are trusted by relevant browsers or operating systems under their public trust policies.
-Revocation	
-	A mechanism for declaring that a certificate should no longer be trusted before its expiration date.	
-TLS certificates 
-	The domain names for which the certificate is valid.
-	The public key associated with the server's identity.
-	The certificate issuer.
-	The validity period, including the start and expiration dates.
-	A digital signature from the issuer.
-	File		What it contains															Should it be secret?
-	server.crt	The server's certificate, including its public key and issuer's signature	No
-	server.key	The corresponding private key												Yes, absolutely
+          Certificate Authority (CA)   -  an organisation trusted to issue certificates
+          	An entity that issues and signs certificates. It can be a public organization or a CA you operate for yourself.
+          	there is also "public certificate authority" because it might be local too
 
-	Certificate: server.crt   	[Your server certificate]
-		The server gives this to the browser. It contains the public key and identity information. The browser uses it to validate the server's identity.
-	Private key: server.key		[Your private key]
-		The server keeps this private. It proves possession of the key corresponding to the certificate during the TLS handshake.
-	chain.crt           [		Intermediate CA certificates] 
-		You might also encounter a CA certificate or a certificate chain file.
-		
+          CA certificate
+          	A certificate representing a CA and containing its public key.
+          Root CA	   [Trust anchor]
+          	A CA at the top of a particular certificate trust chain.
+          	A certificate or public key that a client explicitly trusts as the starting point for validating a certificate chain.
+          	Also called: trust root in some contexts. A root CA certificate commonly serves as a trust anchor, but the terms are not interchangeable.
+          	What it does: It provides the trusted starting point from which the browser can validate the signatures linking the server certificate to an accepted authority.
+          	Where it lives: Typically in the browser's or operating system's trust store, or in another explicitly configured trust store.
+          Intermediate CA
+          	A CA authorized by another CA to issue certificates, usually beneath a root CA.
+          Trust store (trusted certificate store)
+          	A collection of certificates and trust settings used by an operating system or application to decide which certificate authorities to trust.
+          Trust anchor
+          	The trusted starting point for validating a certificate chain, usually a root CA certificate.
+          Certificate chain (certification path)
+          	The sequence of certificates linking the server certificate to a trusted CA.
+          Certificate issuer
+          	The CA identified as having issued a certificate. The issuer is named inside the certificate.
+          Certificate signing
+          	A CA uses its private key to create a digital signature over the certificate's signed data.
+          Digital signature
+          	Cryptographic data that can be verified using the corresponding public key. It detects unauthorized changes to the signed data and proves that the signer controlled the corresponding private key.
+          Certificate Signing Request (CSR)
+          	A request containing a public key and requested identity information, signed using the corresponding private key. It can be submitted to a CA when requesting a certificate.
+          Certificate validity period
+          	The time interval defined by a certificate's notBefore and notAfter fields.
+          Certificate validation
+          	Checking whether a certificate is acceptable for a particular connection, including its hostname, dates, signature chain, and applicable trust rules.
+          Authentication
+          	Establishing a cryptographically supported identity claim. In HTTPS, server authentication means verifying that the server controls the private key corresponding to a trusted certificate for the requested hostname.
+          Symmetric encryption
+          	Encryption and decryption using the same secret key, or related secret key material.
+          Session keys
+          	Secret keys derived for protecting data in a particular TLS connection.
+          TLS record
+          	A unit of data carried by TLS. Application data is protected using the connection's traffic keys.
+          TLS termination
+          	The point where TLS protection is applied or removed, such as in Node.js or at a reverse proxy.
+          Self-signed certificate
+          	A certificate whose signature is made using the private key corresponding to its own public key.
+          Locally trusted CA
+          	A CA you create and explicitly trust on your own machine for local development.
+          Public CA
+          	A CA whose certificates are trusted by relevant browsers or operating systems under their public trust policies.
+          Revocation
+          	A mechanism for declaring that a certificate should no longer be trusted before its expiration date.
+          TLS certificates
+          	The domain names for which the certificate is valid.
+          	The public key associated with the server's identity.
+          	The certificate issuer.
+          	The validity period, including the start and expiration dates.
+          	A digital signature from the issuer.
+          	File		What it contains															Should it be secret?
+          	server.crt	The server's certificate, including its public key and issuer's signature	No
+          	server.key	The corresponding private key												Yes, absolutely
 
-expiration
- 	Is the certificate within its validity period?
-
-DNS
-
-Your browser or operating system already has a collection of trusted root certificates
-
-Signing: 
-	A certificate authority uses its private key to sign a certificate.
-
-Trust: 
-	Your browser or operating system has a trust configuration that determines which certificate authorities it accepts.
+          	Certificate: server.crt   	[Your server certificate]
+          		The server gives this to the browser. It contains the public key and identity information. The browser uses it to validate the server's identity.
+          	Private key: server.key		[Your private key]
+          		The server keeps this private. It proves possession of the key corresponding to the certificate during the TLS handshake.
+          	chain.crt           [		Intermediate CA certificates]
+          		You might also encounter a CA certificate or a certificate chain file.
 
 
-| File | Description |
-|---|---|
-| `rootCA.crt` | Your local CA certificate. Contains the CA's public key, identity information, validity dates, and its self-signature. This is the certificate you can install into the Mac's trust store. |
-| `rootCA.key` | The CA's private key. Used to sign server certificates. It is highly sensitive and should never be exposed to your Node.js server or browser. |
-| `rootCA.srl` | Usually an OpenSSL serial-number file. When OpenSSL issues certificates, it can use this file to track the next certificate serial number. It is not a certificate or a private key. |
-| `server.key` | The target server's private key. Node.js uses it during the TLS handshake to prove possession of the key corresponding to the server certificate. |
-| `server.crt` | The target server's certificate. It contains the server's public key and information identifying the hostname or hostnames it covers. Your local CA should have signed it. |
-| `server.csr` | The Certificate Signing Request. It normally contains the server's public key and requested identity details. The CSR is used when requesting a signed certificate. |
-| `server.v3.ext` | An OpenSSL configuration file that likely specifies X.509 v3 extensions for the server certificate, such as Subject Alternative Names, key usage, or extended key usage. The exact contents determine what it actually configures. |
+          expiration
+           	Is the certificate within its validity period?
+
+          DNS
+
+          Your browser or operating system already has a collection of trusted root certificates
+
+          Signing:
+          	A certificate authority uses its private key to sign a certificate.
+
+          Trust:
+          	Your browser or operating system has a trust configuration that determines which certificate authorities it accepts.
 
 
-## What does the certificate actually contain?
-
-A typical X.509 certificate includes:
-
-| Field | What it means |
-|---|---|
-| Subject | The entity or identity the certificate represents. |
-| Subject Alternative Name (SAN) | The DNS names or IP addresses for which the certificate is valid. |
-| Subject Public Key Info | The public key and information about its cryptographic algorithm. |
-| Issuer | The identity of the CA that issued the certificate. |
-| Not Before | The date and time from which the certificate is valid. |
-| Not After | The date and time at which the certificate expires. |
-| Signature algorithm | The algorithm used by the issuer to sign the certificate. |
-| Certificate signature | The issuer's cryptographic signature over the certificate's signed data. |
-| Key usage and extended key usage | Restrictions on how the certificate and key may be used. |
-| Serial number | An identifier assigned to the certificate by its issuer. |
-example:
-Hostname: stopsopa.github.io.local
-Public key: K_public
-Valid until: a particular date
-Issuer: My Local CA
-	The CA signs the certificate's data using the CA's private signing key.
-	The browser can then verify the signature using the CA's public key.
-	If somebody changes the hostname, public key, or other signed information after issuance, the signature verification will fail.
-
-Who generates symmetric password?	
-	The browser does not normally generate a symmetric password, encrypt that password with the server's certificate public key, and send it to the server.
-	That describes an older key-exchange approach, not the usual mechanism in modern TLS 1.3.
-	Modern TLS typically uses ephemeral Diffie-Hellman key exchange, commonly ECDHE. The browser and server each contribute temporary key-exchange values. By combining their own private temporary value with the other party's public value, they independently calculate the same shared secret.
-	They do not send the shared secret itself across the network.
-
-Two scenarios:
-	A self-signed server certificate
-	Your Mac trusts the local CA
-
-mkcert --version
-v1.4.4	
-brew install mkcert
+          | File | Description |
+          |---|---|
+          | `rootCA.crt` | Your local CA certificate. Contains the CA's public key, identity information, validity dates, and its self-signature. This is the certificate you can install into the Mac's trust store. |
+          | `rootCA.key` | The CA's private key. Used to sign server certificates. It is highly sensitive and should never be exposed to your Node.js server or browser. |
+          | `rootCA.srl` | Usually an OpenSSL serial-number file. When OpenSSL issues certificates, it can use this file to track the next certificate serial number. It is not a certificate or a private key. |
+          | `server.key` | The target server's private key. Node.js uses it during the TLS handshake to prove possession of the key corresponding to the server certificate. |
+          | `server.crt` | The target server's certificate. It contains the server's public key and information identifying the hostname or hostnames it covers. Your local CA should have signed it. |
+          | `server.csr` | The Certificate Signing Request. It normally contains the server's public key and requested identity details. The CSR is used when requesting a signed certificate. |
+          | `server.v3.ext` | An OpenSSL configuration file that likely specifies X.509 v3 extensions for the server certificate, such as Subject Alternative Names, key usage, or extended key usage. The exact contents determine what it actually configures. |
 
 
-mkcert -install
-	Then initialize the local CA:
+          ## What does the certificate actually contain?
 
-mkcert stopsopa.github.io.local
-	And generate a certificate for your current hostname:
-	This generates certificate and key files in your current working directory.
+          A typical X.509 certificate includes:
 
-inpsect:
-	openssl x509 -in server.crt -noout -dates
-		notAfter is the expiration date.
-	openssl x509 -in server.crt -noout -subject -issuer -ext subjectAltName
-		The subjectAltName extension is particularly important. Modern browsers expect the hostname to be covered there. Do not rely on the old Common Name field alone.
-	openssl x509 -in server.crt -checkend 2592000 -noout
-		This checks whether the certificate remains valid for at least 30 days from now. It exits successfully if it does, and returns a non-zero exit status otherwise.
+          | Field | What it means |
+          |---|---|
+          | Subject | The entity or identity the certificate represents. |
+          | Subject Alternative Name (SAN) | The DNS names or IP addresses for which the certificate is valid. |
+          | Subject Public Key Info | The public key and information about its cryptographic algorithm. |
+          | Issuer | The identity of the CA that issued the certificate. |
+          | Not Before | The date and time from which the certificate is valid. |
+          | Not After | The date and time at which the certificate expires. |
+          | Signature algorithm | The algorithm used by the issuer to sign the certificate. |
+          | Certificate signature | The issuer's cryptographic signature over the certificate's signed data. |
+          | Key usage and extended key usage | Restrictions on how the certificate and key may be used. |
+          | Serial number | An identifier assigned to the certificate by its issuer. |
+          example:
+          Hostname: stopsopa.github.io.local
+          Public key: K_public
+          Valid until: a particular date
+          Issuer: My Local CA
+          	The CA signs the certificate's data using the CA's private signing key.
+          	The browser can then verify the signature using the CA's public key.
+          	If somebody changes the hostname, public key, or other signed information after issuance, the signature verification will fail.
 
+          Who generates symmetric password?
+          	The browser does not normally generate a symmetric password, encrypt that password with the server's certificate public key, and send it to the server.
+          	That describes an older key-exchange approach, not the usual mechanism in modern TLS 1.3.
+          	Modern TLS typically uses ephemeral Diffie-Hellman key exchange, commonly ECDHE. The browser and server each contribute temporary key-exchange values. By combining their own private temporary value with the other party's public value, they independently calculate the same shared secret.
+          	They do not send the shared secret itself across the network.
 
+          Two scenarios:
+          	A self-signed server certificate
+          	Your Mac trusts the local CA
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          mkcert --version
+          v1.4.4
+          brew install mkcert
 
 
+          mkcert -install
+          	Then initialize the local CA:
 
+          mkcert stopsopa.github.io.local
+          	And generate a certificate for your current hostname:
+          	This generates certificate and key files in your current working directory.
 
-
-              </script>
+          inpsect:
+          	openssl x509 -in server.crt -noout -dates
+          		notAfter is the expiration date.
+          	openssl x509 -in server.crt -noout -subject -issuer -ext subjectAltName
+          		The subjectAltName extension is particularly important. Modern browsers expect the hostname to be covered there. Do not rely on the old Common Name field alone.
+          	openssl x509 -in server.crt -checkend 2592000 -noout
+          		This checks whether the certificate remains valid for at least 30 days from now. It exits successfully if it does, and returns a non-zero exit status otherwise.
+        </script>
 
         <h2>Inline - oneline - HEREDOC</h2>
 

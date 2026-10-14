@@ -7,9 +7,7 @@
  * Interactive display and key handling are directed to /dev/tty,
  * while the final chosen line is written to stdout so it can be captured
  * into a bash variable like:
- *   FOUND="$(bash/file/fuzzy.ts)"
- *   FOUND="$(find . -iname '*.e2e*' | bash/file/fuzzy.ts)"
- *   FOUND="$(node --experimental-strip-types bash/file/fuzzy.ts)"
+ *   FOUND="$(find bash -iname '*.sh' | NODE_OPTIONS= node bash/file/fuzzy.ts)"
  *
  * find . \( -type d \( -name 'node_modules' -o -name '.git' -o -name '.venv' \) -prune \) -o \( -type f -iname '*.e2e*' -print \) | NODE_OPTIONS= node bash/file/fuzzy.ts
  */

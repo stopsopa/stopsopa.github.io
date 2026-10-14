@@ -15,7 +15,7 @@ scripts/template.ts
 scripts/template.v2.ts
 server-template.ts
 bash/fs/relative.ts
-pages/online_services/generator/index.ts
+pages/services/generator/index.ts
 pages/node/env/env.ts
 pages/node/env/env.unit.ts
 pages/js/flipget/dataFactory.ts

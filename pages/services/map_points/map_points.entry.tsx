@@ -41,7 +41,8 @@ const MAP_LAYERS: Record<string, MapLayerConfig> = {
     url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
     options: {
       maxZoom: 17,
-      attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+      attribution:
+        'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
     },
   },
   satellite: {
@@ -50,7 +51,8 @@ const MAP_LAYERS: Record<string, MapLayerConfig> = {
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     options: {
       maxZoom: 19,
-      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+      attribution:
+        "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
     },
   },
   carto_light: {
@@ -60,7 +62,8 @@ const MAP_LAYERS: Record<string, MapLayerConfig> = {
     options: {
       maxZoom: 20,
       subdomains: "abcd",
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     },
   },
   carto_dark: {
@@ -70,7 +73,8 @@ const MAP_LAYERS: Record<string, MapLayerConfig> = {
     options: {
       maxZoom: 20,
       subdomains: "abcd",
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     },
   },
 };
@@ -107,7 +111,8 @@ const OVERLAY_LAYERS: Record<string, OverlayConfig> = {
     options: {
       maxZoom: 20,
       opacity: 0.8,
-      attribution: '&copy; <a href="https://www.cyclosm.org">CyclOSM</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      attribution:
+        '&copy; <a href="https://www.cyclosm.org">CyclOSM</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     },
   },
 };
@@ -132,7 +137,10 @@ function loadOverlaysFromUrl(): Set<string> {
   const params = new URLSearchParams(window.location.search);
   const raw = params.get("overlays");
   if (!raw) return new Set();
-  const items = raw.split(",").map((s) => s.trim()).filter((s) => Boolean(OVERLAY_LAYERS[s]));
+  const items = raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => Boolean(OVERLAY_LAYERS[s]));
   return new Set(items);
 }
 

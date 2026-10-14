@@ -78,7 +78,7 @@ cat <<EEE
 
 EEE
 `,
-      description: `launch esbuild - will NOT launch browser nor IDE`,
+      description: `check or regenerate https cert`,
       confirm: false,
       source: false,
     },

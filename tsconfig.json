@@ -14,6 +14,6 @@
     "allowJs": false,
     "useUnknownInCatchVariables": false
   },
-  "include": ["**/*.ts", "pages/online_services/map_points/map_points.entry.tsx"],
+  "include": ["**/*.ts", "pages/services/map_points/map_points.entry.tsx"],
   "exclude": ["node_modules"]
 }

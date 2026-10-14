@@ -1,15 +1,13 @@
+I need to create in
 
-I need to create in 
-
-pages/online_services/map_points/index.html
+pages/services/map_points/index.html
 &
-pages/online_services/map_points/map_points.entry.tsx
+pages/services/map_points/map_points.entry.tsx
 
 (
-    don't worry about transpilation i will take care of it
-    just load map_points.entry.js in index.html which will be genereated right next to map_points.entry.tsx
+don't worry about transpilation i will take care of it
+just load map_points.entry.js in index.html which will be genereated right next to map_points.entry.tsx
 )
-
 
 Now. We have to create single page with map on the entire screen using Leaflet
 
@@ -51,18 +49,17 @@ only when no pin specified browser should prompt user for lon and lat (for locat
 
 so as you can probably deduct loading url with data in url should recreate map with all pins
 
-
 regarding colors
 
 when map already have pins on the screen when selecting color under color selector all colors already used should be presented to select from - to make it easier to reuse colors
 
 # loading
 
-transpilation will output bundle to 
+transpilation will output bundle to
 
   <script type="module" src="/dist/map_points.entry.bundle.js"></script>
 
-  load it from here
+load it from here
 
 # map styles and overlays
 

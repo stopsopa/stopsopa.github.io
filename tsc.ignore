@@ -16,7 +16,7 @@ scripts/template.v2.ts
 server-template.ts
 bash/fs/relative.ts
 
-# pages/online_services/generator/index.ts
+# pages/services/generator/index.ts
 # pages/js/flipget/dataFactory.ts
 # pages/bookmarklets/gmail/extract.ts
 # pages/node/libs/lib.ts

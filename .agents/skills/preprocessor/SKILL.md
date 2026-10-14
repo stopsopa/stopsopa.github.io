@@ -17,9 +17,7 @@ Generated file: `public/preprocessed.js` (loaded before bundled code in HTML).
 Just make sure loading is done like this
 
 ```html
-
 <script src="/public/preprocessed.js"></script>
-
 ```
 
 just before loading bundled code on to the page.
@@ -55,6 +53,7 @@ import {
 ```
 
 Methods:
+
 - `all()` - all exposed env vars
 - `get(key)` - get value or undefined
 - `has(key)` - check existence
