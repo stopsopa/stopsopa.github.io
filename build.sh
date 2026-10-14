@@ -132,7 +132,13 @@ time /bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write .
 time /bin/bash .github/clicksecure.sh
 
 if [ -n "${CI}" ]; then
-  time /bin/bash .github/injectServiceWorker.sh
+
+  # DEPRECATED: we don't use this idea anymore. It is not speeding up anything yet it causes problems
+  # DEPRECATED: we don't use this idea anymore. It is not speeding up anything yet it causes problems
+  # DEPRECATED: we don't use this idea anymore. It is not speeding up anything yet it causes problems
+  # DEPRECATED: we don't use this idea anymore. It is not speeding up anything yet it causes problems
+  # DEPRECATED: we don't use this idea anymore. It is not speeding up anything yet it causes problems
+  # time /bin/bash .github/injectServiceWorker.sh
 
   time /bin/bash bash/sync.sh pack
 fi
