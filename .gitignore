@@ -74,6 +74,8 @@ pages/js/events/createSubscriber.js
 pages/js/events/createSubscriber.unit.js
 pages/node/levenshtein/levenshtein.js
 pages/node/semaphore/Semaphore.js
+pages/services/google_drive_application_data_explorer/google_drive_application_data_explorer.entry.js
+pages/services/google_drive_application_data_explorer/index.js
 pages/services/map_points/map_points.entry.js
 pages/services/xor.js
 root.js

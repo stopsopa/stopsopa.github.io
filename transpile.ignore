@@ -39,3 +39,7 @@ bash/socket/*
 
 # and run
 # time /bin/bash transpile.sh transpile.ignore
+
+**/*.entry.ts
+**/*.entry.js
+**/*.entry.tsx
