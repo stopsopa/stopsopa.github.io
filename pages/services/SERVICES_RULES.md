@@ -21,7 +21,26 @@ and if css is linked in that *.entry.(ts|js|tsx) then also load
 
 ```
 
+normally when css is needed then just create css file right next to *.entry.(ts|js|tsx)
+ideally by the same name and do 
+
+```ts
+
+import "./<filename>.scss";
+
+```
+
+this way separate /dist/*.entry.bundle.css will be generated. And only when that file is generated then do 
+
+```html
+
+    <link rel="stylesheet" href="/dist/*.entry.bundle.css" />
+
+```
+
 good example might be pages/macro/002multi_tabs/index.html how to import and run 
+
+
 
 <warning>
 Remember though to import in these *.entry.(ts|js|tsx) only libraries which makes sens to import in the browser context
