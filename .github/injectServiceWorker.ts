@@ -4,7 +4,7 @@
  * DEPRECATED: we don't use this idea anymore. It is not speeding up anything yet it causes problems
  * DEPRECATED: we don't use this idea anymore. It is not speeding up anything yet it causes problems
  * DEPRECATED: we don't use this idea anymore. It is not speeding up anything yet it causes problems
- * 
+ *
  * Purpose:
  *   Injects a Service Worker registration script into HTML files and updates
  *   the cache version (CACHE_NAME) in sw.js based on the execution or server start time.

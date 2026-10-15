@@ -38,6 +38,7 @@ Build a browser-only HTML page with JS (bundled via esbuild) that acts as an exp
 ## File Detail Panel
 
 Shows on file click:
+
 - id, name, mimeType, size (human-readable), modifiedTime, createdTime
 - "Download" button — fetches file content and triggers browser download
 
@@ -45,11 +46,11 @@ Shows on file click:
 
 All via `fetch` to `https://www.googleapis.com/drive/v3/`:
 
-| Operation | Endpoint |
-|---|---|
-| List files | `GET /files?spaces=appDataFolder&fields=...` |
-| Get metadata | `GET /files/{id}?fields=...` |
-| Download content | `GET /files/{id}?alt=media` |
+| Operation        | Endpoint                                     |
+| ---------------- | -------------------------------------------- |
+| List files       | `GET /files?spaces=appDataFolder&fields=...` |
+| Get metadata     | `GET /files/{id}?fields=...`                 |
+| Download content | `GET /files/{id}?alt=media`                  |
 
 - Handle `nextPageToken` pagination (load all pages)
 - Errors shown inline (not alert())
