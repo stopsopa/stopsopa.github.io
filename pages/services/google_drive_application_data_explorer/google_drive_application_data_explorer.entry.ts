@@ -7,6 +7,9 @@
    No Node.js-only imports allowed here.
    ============================================================ */
 
+import { get as getEnv } from "envprocessor";
+import "./google_drive_application_data_explorer.scss";
+
 /* ---- Types ---- */
 
 interface DriveFile {
@@ -330,8 +333,6 @@ function signIn(clientId: string): void {
         }
         if (response.access_token) {
           accessToken = response.access_token;
-          /* Save client ID to localStorage for convenience */
-          localStorage.setItem("gdrive_explorer_client_id", clientId.trim());
           showExplorerView();
         }
       },
@@ -410,7 +411,7 @@ body {
 }
 
 .auth-section input {
-  width: 360px;
+  width: 660px;
   max-width: 100%;
   background: #2d2d2d;
   border: 1px solid #555;
@@ -727,8 +728,8 @@ function mount(): void {
   styleEl.textContent = css;
   document.head.appendChild(styleEl);
 
-  /* Restore saved client ID */
-  const savedClientId = localStorage.getItem("gdrive_explorer_client_id") || "";
+  /* Client ID from preprocessor env vars */
+  const defaultClientId = getEnv("GOOGLE_DRIVE_APPDATA_CLIENT_ID") || "";
 
   app.innerHTML = `
     <div class="header">
@@ -742,7 +743,7 @@ function mount(): void {
         id="client-id-input"
         type="text"
         placeholder="xxxxxxxx.apps.googleusercontent.com"
-        value="${escapeHtml(savedClientId)}"
+        value="${escapeHtml(defaultClientId)}"
         autocomplete="off"
         spellcheck="false"
       />

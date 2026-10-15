@@ -21,8 +21,7 @@ Build a browser-only HTML page with JS (bundled via esbuild) that acts as an exp
 
 - OAuth scope: `https://www.googleapis.com/auth/drive.appdata`
 - OAuth client type: **Web application** (created in Google Cloud Console)
-- GIS `google.accounts.oauth2.initTokenClient` for token-based flow (implicit grant, no backend needed)
-- Client ID stored in a config input field on the page (not hardcoded — user pastes their own)
+- Client ID loaded by default from exposed environment variable `GOOGLE_DRIVE_APPDATA_CLIENT_ID` via `envprocessor`, populated into config input field on page
 - Token stored in memory only (not localStorage)
 
 ## UI — Windows-style Tree Explorer
@@ -77,4 +76,3 @@ All via `fetch` to `https://www.googleapis.com/drive/v3/`:
 - Must run from `localhost` or a real origin (not `file://`) due to OAuth restrictions
 - appDataFolder is scoped to the OAuth app — files from other apps (e.g. Tampermonkey) may not be visible unless same client ID
 - No destructive operations in v1 (no delete, no upload)
-- Client ID is saved to localStorage for convenience across page reloads
