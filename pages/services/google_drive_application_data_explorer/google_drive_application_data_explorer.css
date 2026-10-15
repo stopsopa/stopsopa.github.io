@@ -210,12 +210,15 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  height: calc(100vh - 42px);
+  overflow: hidden;
 }
 
 .explorer-layout {
   flex: 1;
   display: flex;
   border-top: 1px solid #3c3c3c;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -223,7 +226,7 @@ body {
 
 .tree-panel {
   width: 50%;
-  min-width: 200px;
+  min-width: 250px;
   max-width: 700px;
   border-right: 1px solid #3c3c3c;
   overflow-y: auto;
@@ -231,6 +234,7 @@ body {
   padding: 8px 4px;
   background: #1e1e1e;
   resize: horizontal;
+  height: 100%;
 }
 
 .tree-panel-header {
@@ -243,11 +247,32 @@ body {
   justify-content: space-between;
   align-items: center;
   gap: 8px;
+  position: sticky;
+  top: 0;
+  background: #1e1e1e;
+  z-index: 2;
 }
 
 .tree-header-actions {
   display: flex;
   gap: 6px;
+  align-items: center;
+}
+
+.sort-select {
+  background: #2d2d2d;
+  color: #d4d4d4;
+  border: 1px solid #555;
+  font-family: monospace;
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.sort-select:focus {
+  outline: 1px solid #569cd6;
+  border-color: #569cd6;
 }
 
 /* ---- Tree nodes ---- */
@@ -263,12 +288,17 @@ body {
 
 .tree-row {
   display: flex;
-  align-items: baseline;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
   padding: 2px 6px;
   cursor: default;
   white-space: nowrap;
   border-radius: 2px;
+}
+
+.tree-checkbox {
+  cursor: pointer;
+  margin: 0 2px 0 0;
 }
 
 .tree-row:hover {
@@ -284,7 +314,7 @@ body {
   cursor: pointer;
   user-select: none;
   font-size: 11px;
-  min-width: 24px;
+  min-width: 20px;
 }
 
 .tree-toggle:hover {
@@ -352,6 +382,7 @@ body {
   padding: 16px;
   overflow-y: auto;
   background: #1e1e1e;
+  height: 100%;
 }
 
 .detail-empty {

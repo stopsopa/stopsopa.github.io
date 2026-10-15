@@ -33,8 +33,61 @@ interface DriveListResponse {
 
 let accessToken: string | null = null;
 let selectedFile: DriveFile | null = null;
+const selectedFileIds = new Set<string>();
 
 /* ---- Drive API helpers ---- */
+
+/* Delete a file from appDataFolder */
+async function deleteFile(fileId: string): Promise<void> {
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Delete failed ${res.status}: ${text}`);
+  }
+}
+
+/*
+ * Delete multiple files sequentially (one-by-one).
+ * onProgress callback provides current progress (done count / total).
+ */
+async function deleteFilesSequentially(
+  fileIds: string[],
+  onProgress?: (done: number, total: number) => void
+): Promise<void> {
+  let done = 0;
+  for (const id of fileIds) {
+    await deleteFile(id);
+    done++;
+    if (onProgress) {
+      onProgress(done, fileIds.length);
+    }
+  }
+}
+
+/*
+ * Download multiple files sequentially with a small delay so browser doesn't block multiple downloads.
+ */
+async function downloadFilesSequentially(
+  files: DriveFile[],
+  onProgress?: (done: number, total: number) => void
+): Promise<void> {
+  let done = 0;
+  for (const file of files) {
+    await downloadFile(file);
+    done++;
+    if (onProgress) {
+      onProgress(done, files.length);
+    }
+    /* Small delay to let browser process download dialog / queue */
+    if (done < files.length) {
+      await new Promise((r) => setTimeout(r, 400));
+    }
+  }
+}
 
 /* List ALL files in appDataFolder, following nextPageToken pages */
 async function listAllAppDataFiles(): Promise<DriveFile[]> {
@@ -67,18 +120,6 @@ async function listAllAppDataFiles(): Promise<DriveFile[]> {
   return allFiles;
 }
 
-/* Delete a file from appDataFolder */
-async function deleteFile(fileId: string): Promise<void> {
-  const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Delete failed ${res.status}: ${text}`);
-  }
-}
 
 /* Upload a new file to appDataFolder */
 async function uploadNewFile(fileObj: File): Promise<DriveFile> {
@@ -286,11 +327,26 @@ function renderDetailPanel(file: DriveFile | null): void {
 /*
  * Build a tree node element for a single file.
  * Clicking the row selects the file and shows its detail panel.
+ * Checkbox toggles file selection for bulk delete.
  * The [+]/[-] toggle expands an inline content row (for text preview future use).
  */
 function buildFileNode(file: DriveFile): HTMLElement {
   const row = document.createElement("div");
   row.className = "tree-row";
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.className = "tree-checkbox";
+  checkbox.checked = selectedFileIds.has(file.id);
+  checkbox.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (checkbox.checked) {
+      selectedFileIds.add(file.id);
+    } else {
+      selectedFileIds.delete(file.id);
+    }
+    updateBulkActionButtons();
+  });
 
   const toggle = document.createElement("span");
   toggle.className = "tree-toggle";
@@ -312,6 +368,7 @@ function buildFileNode(file: DriveFile): HTMLElement {
   size.className = "tree-size";
   size.textContent = formatSize(file.size);
 
+  row.appendChild(checkbox);
   row.appendChild(toggle);
   row.appendChild(icon);
   row.appendChild(label);
@@ -356,9 +413,64 @@ function selectFile(file: DriveFile, rowEl: HTMLElement): void {
   renderDetailPanel(file);
 }
 
+/* All currently loaded files in tree */
+let currentLoadedFiles: DriveFile[] = [];
+
+type SortField = "modifiedTime" | "name" | "size";
+type SortOrder = "asc" | "desc";
+
+let currentSortField: SortField = "modifiedTime";
+let currentSortOrder: SortOrder = "desc";
+
+/* Sort files array in place according to current criteria */
+function sortFiles(files: DriveFile[]): DriveFile[] {
+  return files.sort((a, b) => {
+    let cmp = 0;
+    if (currentSortField === "name") {
+      cmp = a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" });
+    } else if (currentSortField === "size") {
+      const sa = parseInt(a.size || "0", 10);
+      const sb = parseInt(b.size || "0", 10);
+      cmp = sa - sb;
+    } else if (currentSortField === "modifiedTime") {
+      const ta = new Date(a.modifiedTime || 0).getTime();
+      const tb = new Date(b.modifiedTime || 0).getTime();
+      cmp = ta - tb;
+    }
+    return currentSortOrder === "asc" ? cmp : -cmp;
+  });
+}
+
+/* Update visibility and text of bulk action buttons in tree header */
+function updateBulkActionButtons(): void {
+  const bulkDeleteBtn = document.getElementById("bulk-delete-btn");
+  const bulkDownloadBtn = document.getElementById("bulk-download-btn");
+
+  if (bulkDeleteBtn) {
+    if (selectedFileIds.size > 0) {
+      bulkDeleteBtn.classList.remove("hidden");
+      bulkDeleteBtn.textContent = `🗑 Delete Selected (${selectedFileIds.size})`;
+    } else {
+      bulkDeleteBtn.classList.add("hidden");
+    }
+  }
+
+  if (bulkDownloadBtn) {
+    if (selectedFileIds.size > 0) {
+      bulkDownloadBtn.classList.remove("hidden");
+      bulkDownloadBtn.textContent = `⬇ Download Selected (${selectedFileIds.size})`;
+    } else if (currentLoadedFiles.length > 0) {
+      bulkDownloadBtn.classList.remove("hidden");
+      bulkDownloadBtn.textContent = `⬇ Download All (${currentLoadedFiles.length})`;
+    } else {
+      bulkDownloadBtn.classList.add("hidden");
+    }
+  }
+}
+
 /*
  * Build the root "appDataFolder" tree node.
- * Starts collapsed. On expand, fetches all files and renders them as children.
+ * Starts expanded by default, fetches all files and renders them as children.
  */
 function buildRootNode(): HTMLElement {
   const wrapper = document.createElement("div");
@@ -367,9 +479,14 @@ function buildRootNode(): HTMLElement {
   const row = document.createElement("div");
   row.className = "tree-row root-row";
 
+  const selectAll = document.createElement("input");
+  selectAll.type = "checkbox";
+  selectAll.className = "tree-checkbox";
+  selectAll.title = "Select / Deselect all loaded files";
+
   const toggle = document.createElement("span");
   toggle.className = "tree-toggle";
-  toggle.textContent = "[+]";
+  toggle.textContent = "[-]";
 
   const icon = document.createElement("span");
   icon.className = "tree-icon";
@@ -381,49 +498,86 @@ function buildRootNode(): HTMLElement {
 
   const status = document.createElement("span");
   status.className = "tree-status";
+  status.textContent = " (loading…)";
 
+  row.appendChild(selectAll);
   row.appendChild(toggle);
   row.appendChild(icon);
   row.appendChild(label);
   row.appendChild(status);
 
   const children = document.createElement("div");
-  children.className = "tree-children hidden";
+  children.className = "tree-children";
 
-  let expanded = false;
-  let loaded = false;
+  let expanded = true;
 
-  toggle.addEventListener("click", async () => {
+  selectAll.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isChecked = selectAll.checked;
+    for (const f of currentLoadedFiles) {
+      if (isChecked) {
+        selectedFileIds.add(f.id);
+      } else {
+        selectedFileIds.delete(f.id);
+      }
+    }
+    const fileCheckboxes = children.querySelectorAll<HTMLInputElement>(".tree-checkbox");
+    fileCheckboxes.forEach((cb) => (cb.checked = isChecked));
+    updateBulkActionButtons();
+  });
+
+  /* Re-render child nodes using sorted currentLoadedFiles */
+  const renderChildren = () => {
+    children.innerHTML = "";
+    if (currentLoadedFiles.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "tree-empty";
+      empty.textContent = "(no files found)";
+      children.appendChild(empty);
+    } else {
+      const sorted = sortFiles([...currentLoadedFiles]);
+      for (const file of sorted) {
+        children.appendChild(buildFileNode(file));
+      }
+    }
+    updateBulkActionButtons();
+  };
+
+  const loadFiles = async () => {
+    status.textContent = " (loading…)";
+    children.innerHTML = "";
+    try {
+      currentLoadedFiles = await listAllAppDataFiles();
+      status.textContent = ` (${currentLoadedFiles.length} files)`;
+      renderChildren();
+    } catch (e: any) {
+      status.textContent = "";
+      const errEl = document.createElement("div");
+      errEl.className = "error-msg";
+      errEl.textContent = e.message;
+      children.appendChild(errEl);
+      updateBulkActionButtons();
+    }
+  };
+
+  /* Hook sort change to re-render children without re-fetching */
+  const sortSelect = document.getElementById("sort-select") as HTMLSelectElement | null;
+  if (sortSelect) {
+    sortSelect.onchange = () => {
+      const [field, order] = sortSelect.value.split(":") as [SortField, SortOrder];
+      currentSortField = field;
+      currentSortOrder = order;
+      renderChildren();
+    };
+  }
+
+  /* Auto-load files immediately */
+  loadFiles();
+
+  toggle.addEventListener("click", () => {
     expanded = !expanded;
     toggle.textContent = expanded ? "[-]" : "[+]";
     children.classList.toggle("hidden", !expanded);
-
-    /* Load children only once on first expand */
-    if (expanded && !loaded) {
-      loaded = true;
-      status.textContent = " (loading…)";
-      try {
-        const files = await listAllAppDataFiles();
-        status.textContent = ` (${files.length} files)`;
-
-        if (files.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "tree-empty";
-          empty.textContent = "(no files found)";
-          children.appendChild(empty);
-        } else {
-          for (const file of files) {
-            children.appendChild(buildFileNode(file));
-          }
-        }
-      } catch (e: any) {
-        status.textContent = "";
-        const errEl = document.createElement("div");
-        errEl.className = "error-msg";
-        errEl.textContent = e.message;
-        children.appendChild(errEl);
-      }
-    }
   });
 
   wrapper.appendChild(row);
@@ -441,7 +595,58 @@ function renderExplorer(): void {
   const refreshBtn = document.getElementById("refresh-tree-btn");
   if (refreshBtn) {
     refreshBtn.onclick = () => {
+      selectedFileIds.clear();
       renderExplorer();
+    };
+  }
+
+  const bulkDeleteBtn = document.getElementById("bulk-delete-btn");
+  if (bulkDeleteBtn) {
+    bulkDeleteBtn.onclick = async () => {
+      const ids = Array.from(selectedFileIds);
+      if (ids.length === 0) return;
+      if (!confirm(`Delete ${ids.length} selected files sequentially from appDataFolder?`)) return;
+
+      bulkDeleteBtn.disabled = true;
+      try {
+        await deleteFilesSequentially(ids, (done, total) => {
+          bulkDeleteBtn.textContent = `Deleting ${done}/${total}...`;
+        });
+      } catch (e: any) {
+        alert(`Bulk delete error: ${e.message}`);
+      } finally {
+        bulkDeleteBtn.disabled = false;
+        selectedFileIds.clear();
+        selectedFile = null;
+        renderExplorer();
+      }
+    };
+  }
+
+  const bulkDownloadBtn = document.getElementById("bulk-download-btn");
+  if (bulkDownloadBtn) {
+    bulkDownloadBtn.onclick = async () => {
+      let targetFiles: DriveFile[];
+      if (selectedFileIds.size > 0) {
+        targetFiles = currentLoadedFiles.filter((f) => selectedFileIds.has(f.id));
+      } else {
+        targetFiles = currentLoadedFiles;
+      }
+
+      if (targetFiles.length === 0) return;
+      if (!confirm(`Download ${targetFiles.length} files sequentially?`)) return;
+
+      bulkDownloadBtn.disabled = true;
+      try {
+        await downloadFilesSequentially(targetFiles, (done, total) => {
+          bulkDownloadBtn.textContent = `Downloading ${done}/${total}...`;
+        });
+      } catch (e: any) {
+        alert(`Bulk download error: ${e.message}`);
+      } finally {
+        bulkDownloadBtn.disabled = false;
+        updateBulkActionButtons();
+      }
     };
   }
 }
@@ -562,6 +767,16 @@ function mount(): void {
           <div class="tree-panel-header">
             <span>// Click [+] to expand · Click filename to inspect</span>
             <div class="tree-header-actions">
+              <select id="sort-select" class="sort-select" title="Sort files">
+                <option value="modifiedTime:desc">Modified (newest)</option>
+                <option value="modifiedTime:asc">Modified (oldest)</option>
+                <option value="name:asc">Name (A-Z)</option>
+                <option value="name:desc">Name (Z-A)</option>
+                <option value="size:desc">Size (largest)</option>
+                <option value="size:asc">Size (smallest)</option>
+              </select>
+              <button id="bulk-download-btn" class="btn-tool hidden"></button>
+              <button id="bulk-delete-btn" class="btn-danger hidden"></button>
               <button id="refresh-tree-btn" class="btn-tool">↻ Refresh</button>
               <button id="change-token-btn" class="btn-tool">🔑 Change Token</button>
             </div>
