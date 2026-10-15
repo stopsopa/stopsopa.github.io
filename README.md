@@ -1,5 +1,8 @@
 ![example workflow](https://github.com/stopsopa/stopsopa.github.io/actions/workflows/pipeline.yml/badge.svg)
 
+# Language
+Speak english
+
 # What is it?
 
 Just my private webpage with my code snippets for this and that—things I use once in a while, so there’s no point in memorizing them.

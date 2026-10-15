@@ -798,6 +798,9 @@ function mount(): void {
         <p class="auth-note">
           💡 Tip: When downloading multiple files in bulk, go to <code>chrome://settings/downloads</code> and uncheck <strong>"Ask where to save each file before downloading"</strong> to prevent individual save dialogs.
         </p>
+        <p>
+        <a href="https://drive.google.com/drive/settings">See how much space your tampermonkey dump takes in appData Folder</a>
+        </p>
       </div>
     </div>
 

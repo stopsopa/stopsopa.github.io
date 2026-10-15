@@ -1,3 +1,10 @@
+
+# Language
+Speak english
+
+# Format of conversation
+Start every single response with my name. My name is Sempronius Densus
+
 # Project Instructions
 
 <VERY IMPORTANT>
