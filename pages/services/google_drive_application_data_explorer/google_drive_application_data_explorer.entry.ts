@@ -120,7 +120,6 @@ async function listAllAppDataFiles(): Promise<DriveFile[]> {
   return allFiles;
 }
 
-
 /* Upload a new file to appDataFolder */
 async function uploadNewFile(fileObj: File): Promise<DriveFile> {
   const metadata = {
@@ -324,27 +323,65 @@ function renderDetailPanel(file: DriveFile | null): void {
   });
 }
 
+/* Index of the last clicked checkbox for shift-click range selection */
+let lastClickedIndex = -1;
+
 /*
  * Build a tree node element for a single file.
  * Clicking the row selects the file and shows its detail panel.
- * Checkbox toggles file selection for bulk delete.
+ * Checkbox toggles file selection for bulk delete / download, supporting Shift+click range selection.
  * The [+]/[-] toggle expands an inline content row (for text preview future use).
  */
-function buildFileNode(file: DriveFile): HTMLElement {
+function buildFileNode(
+  file: DriveFile,
+  index: number,
+  allFilesList: DriveFile[],
+  containerEl: HTMLElement
+): HTMLElement {
   const row = document.createElement("div");
   row.className = "tree-row";
 
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
   checkbox.className = "tree-checkbox";
+  checkbox.dataset.index = String(index);
   checkbox.checked = selectedFileIds.has(file.id);
-  checkbox.addEventListener("click", (e) => {
+
+  checkbox.addEventListener("click", (e: MouseEvent) => {
     e.stopPropagation();
-    if (checkbox.checked) {
-      selectedFileIds.add(file.id);
+    const isChecked = checkbox.checked;
+
+    if (e.shiftKey && lastClickedIndex !== -1 && lastClickedIndex !== index) {
+      const start = Math.min(lastClickedIndex, index);
+      const end = Math.max(lastClickedIndex, index);
+
+      for (let i = start; i <= end; i++) {
+        const targetFile = allFilesList[i];
+        if (!targetFile) continue;
+        if (isChecked) {
+          selectedFileIds.add(targetFile.id);
+        } else {
+          selectedFileIds.delete(targetFile.id);
+        }
+      }
+
+      /* Synchronize all visible checkboxes in the container */
+      const checkboxes = containerEl.querySelectorAll<HTMLInputElement>(".tree-checkbox");
+      checkboxes.forEach((cb) => {
+        const idx = parseInt(cb.dataset.index || "-1", 10);
+        if (idx >= start && idx <= end) {
+          cb.checked = isChecked;
+        }
+      });
     } else {
-      selectedFileIds.delete(file.id);
+      if (isChecked) {
+        selectedFileIds.add(file.id);
+      } else {
+        selectedFileIds.delete(file.id);
+      }
     }
+
+    lastClickedIndex = index;
     updateBulkActionButtons();
   });
 
@@ -529,6 +566,7 @@ function buildRootNode(): HTMLElement {
   /* Re-render child nodes using sorted currentLoadedFiles */
   const renderChildren = () => {
     children.innerHTML = "";
+    lastClickedIndex = -1;
     if (currentLoadedFiles.length === 0) {
       const empty = document.createElement("div");
       empty.className = "tree-empty";
@@ -536,9 +574,9 @@ function buildRootNode(): HTMLElement {
       children.appendChild(empty);
     } else {
       const sorted = sortFiles([...currentLoadedFiles]);
-      for (const file of sorted) {
-        children.appendChild(buildFileNode(file));
-      }
+      sorted.forEach((file, idx) => {
+        children.appendChild(buildFileNode(file, idx, sorted, children));
+      });
     }
     updateBulkActionButtons();
   };
@@ -765,7 +803,6 @@ function mount(): void {
       <div class="explorer-layout">
         <div class="tree-panel">
           <div class="tree-panel-header">
-            <span>// Click [+] to expand · Click filename to inspect</span>
             <div class="tree-header-actions">
               <select id="sort-select" class="sort-select" title="Sort files">
                 <option value="modifiedTime:desc">Modified (newest)</option>
