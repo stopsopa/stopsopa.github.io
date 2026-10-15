@@ -45,7 +45,7 @@ async function listAllAppDataFiles(): Promise<DriveFile[]> {
     const params = new URLSearchParams({
       spaces: "appDataFolder",
       pageSize: "100",
-      orderBy: "name",
+      orderBy: "modifiedTime desc",
       fields: "nextPageToken,files(id,name,mimeType,size,modifiedTime,createdTime)",
     });
     if (pageToken) params.set("pageToken", pageToken);
@@ -65,6 +65,68 @@ async function listAllAppDataFiles(): Promise<DriveFile[]> {
   } while (pageToken);
 
   return allFiles;
+}
+
+/* Delete a file from appDataFolder */
+async function deleteFile(fileId: string): Promise<void> {
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Delete failed ${res.status}: ${text}`);
+  }
+}
+
+/* Upload a new file to appDataFolder */
+async function uploadNewFile(fileObj: File): Promise<DriveFile> {
+  const metadata = {
+    name: fileObj.name,
+    parents: ["appDataFolder"],
+  };
+
+  const form = new FormData();
+  form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json; charset=UTF-8" }));
+  form.append("file", fileObj);
+
+  const res = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: form,
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Upload failed ${res.status}: ${text}`);
+  }
+
+  return await res.json();
+}
+
+/* Overwrite existing file content and/or metadata */
+async function updateExistingFile(fileId: string, fileObj: File): Promise<DriveFile> {
+  const metadata = {
+    name: fileObj.name,
+  };
+
+  const form = new FormData();
+  form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json; charset=UTF-8" }));
+  form.append("file", fileObj);
+
+  const res = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=multipart`, {
+    method: "PATCH",
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: form,
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Update failed ${res.status}: ${text}`);
+  }
+
+  return await res.json();
 }
 
 /* Download a file's raw content and trigger browser download */
@@ -109,13 +171,42 @@ function formatDate(iso?: string): string {
 
 /*
  * Render the detail panel on the right side.
- * Shows metadata for the selected file and a download button.
+ * Shows metadata for the selected file, download, overwrite/update, and delete buttons.
  */
 function renderDetailPanel(file: DriveFile | null): void {
   const panel = document.getElementById("detail-panel")!;
 
   if (!file) {
-    panel.innerHTML = "<p class='detail-empty'>Select a file to view details.</p>";
+    panel.innerHTML = `
+      <div class="panel-section">
+        <p class="detail-empty">Select a file to view details or upload a new file below.</p>
+        <div class="upload-box">
+          <h3>Upload New File to appDataFolder</h3>
+          <input type="file" id="upload-new-input" />
+          <button id="upload-new-btn" class="btn-tool">Upload</button>
+          <div id="upload-new-status" class="status-msg"></div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("upload-new-btn")?.addEventListener("click", async () => {
+      const input = document.getElementById("upload-new-input") as HTMLInputElement;
+      const statusEl = document.getElementById("upload-new-status")!;
+      statusEl.textContent = "";
+      if (!input.files || input.files.length === 0) {
+        statusEl.textContent = "Select a file first.";
+        return;
+      }
+      try {
+        statusEl.textContent = "Uploading...";
+        await uploadNewFile(input.files[0]);
+        statusEl.textContent = "Uploaded successfully!";
+        renderExplorer();
+      } catch (e: any) {
+        statusEl.textContent = e.message;
+      }
+    });
+
     return;
   }
 
@@ -129,18 +220,65 @@ function renderDetailPanel(file: DriveFile | null): void {
         <tr><th>Modified</th><td>${formatDate(file.modifiedTime)}</td></tr>
         <tr><th>Created</th><td>${formatDate(file.createdTime)}</td></tr>
       </table>
-      <button id="download-btn" class="btn-download">⬇ Download</button>
-      <div id="download-error" class="error-msg"></div>
+      <div class="detail-actions">
+        <button id="download-btn" class="btn-download">⬇ Download</button>
+        <button id="delete-btn" class="btn-danger">🗑 Delete</button>
+      </div>
+
+      <div class="detail-update-box">
+        <h4>Overwrite with new content:</h4>
+        <input type="file" id="update-file-input" />
+        <button id="update-file-btn" class="btn-tool">Overwrite</button>
+      </div>
+
+      <div id="detail-op-status" class="status-msg"></div>
     </div>
   `;
 
+  /* Download handler */
   document.getElementById("download-btn")!.addEventListener("click", async () => {
-    const errEl = document.getElementById("download-error")!;
-    errEl.textContent = "";
+    const statusEl = document.getElementById("detail-op-status")!;
+    statusEl.textContent = "";
     try {
       await downloadFile(file);
     } catch (e: any) {
-      errEl.textContent = e.message;
+      statusEl.textContent = e.message;
+    }
+  });
+
+  /* Delete handler */
+  document.getElementById("delete-btn")!.addEventListener("click", async () => {
+    if (!confirm(`Delete "${file.name}" permanently from appDataFolder?`)) return;
+    const statusEl = document.getElementById("detail-op-status")!;
+    statusEl.textContent = "Deleting...";
+    try {
+      await deleteFile(file.id);
+      statusEl.textContent = "Deleted!";
+      selectedFile = null;
+      renderExplorer();
+    } catch (e: any) {
+      statusEl.textContent = e.message;
+    }
+  });
+
+  /* Overwrite handler */
+  document.getElementById("update-file-btn")!.addEventListener("click", async () => {
+    const input = document.getElementById("update-file-input") as HTMLInputElement;
+    const statusEl = document.getElementById("detail-op-status")!;
+    statusEl.textContent = "";
+    if (!input.files || input.files.length === 0) {
+      statusEl.textContent = "Select a file to overwrite with.";
+      return;
+    }
+    if (!confirm(`Overwrite "${file.name}" with "${input.files[0].name}"?`)) return;
+    try {
+      statusEl.textContent = "Updating...";
+      const updated = await updateExistingFile(file.id, input.files[0]);
+      statusEl.textContent = "Updated successfully!";
+      selectedFile = updated;
+      renderExplorer();
+    } catch (e: any) {
+      statusEl.textContent = e.message;
     }
   });
 }
@@ -298,50 +436,52 @@ function renderExplorer(): void {
   const explorerEl = document.getElementById("explorer")!;
   explorerEl.innerHTML = "";
   explorerEl.appendChild(buildRootNode());
-  renderDetailPanel(null);
+  renderDetailPanel(selectedFile);
+
+  const refreshBtn = document.getElementById("refresh-tree-btn");
+  if (refreshBtn) {
+    refreshBtn.onclick = () => {
+      renderExplorer();
+    };
+  }
 }
 
 /* ---- Auth ---- */
 
+const STORAGE_KEY_TOKEN = "gdrive_appdata_bearer_token";
+
 /*
- * Trigger Google OAuth token flow using GIS.
- * Waits for window.google to be available (GIS async load).
+ * Parse input to extract clean Bearer token.
+ * Accepts "Bearer xxxx" or raw "xxxx".
  */
-function signIn(clientId: string): void {
+function parseBearerToken(raw: string): string {
+  const trimmed = raw.trim();
+  if (trimmed.toLowerCase().startsWith("bearer ")) {
+    return trimmed.slice(7).trim();
+  }
+  return trimmed;
+}
+
+/*
+ * Use a direct Bearer token and persist to localStorage.
+ */
+function useDirectToken(rawInput: string): void {
   const errEl = document.getElementById("auth-error")!;
   errEl.textContent = "";
 
-  if (!clientId.trim()) {
-    errEl.textContent = "Enter your OAuth Client ID first.";
+  const token = parseBearerToken(rawInput);
+  if (!token) {
+    errEl.textContent = "Please provide a valid token.";
     return;
   }
 
-  /* Wait for GIS library to load */
-  const tryInit = () => {
-    if (!(window as any).google?.accounts?.oauth2) {
-      setTimeout(tryInit, 200);
-      return;
-    }
-
-    const tokenClient = (window as any).google.accounts.oauth2.initTokenClient({
-      client_id: clientId.trim(),
-      scope: "https://www.googleapis.com/auth/drive.appdata",
-      callback: (response: { access_token?: string; error?: string }) => {
-        if (response.error) {
-          errEl.textContent = `Auth error: ${response.error}`;
-          return;
-        }
-        if (response.access_token) {
-          accessToken = response.access_token;
-          showExplorerView();
-        }
-      },
-    });
-
-    tokenClient.requestAccessToken();
-  };
-
-  tryInit();
+  accessToken = token;
+  try {
+    localStorage.setItem(STORAGE_KEY_TOKEN, token);
+  } catch (e) {
+    console.warn("Could not save token to localStorage", e);
+  }
+  showExplorerView();
 }
 
 /* Switch from auth view to explorer view */
@@ -361,8 +501,8 @@ function escapeHtml(str: string): string {
 function mount(): void {
   const app = document.getElementById("app")!;
 
-  /* Client ID from preprocessor env vars */
-  const defaultClientId = getEnv("GOOGLE_DRIVE_APPDATA_CLIENT_ID") || "";
+  /* Load stored token from localStorage if present */
+  const savedToken = localStorage.getItem(STORAGE_KEY_TOKEN) || "";
 
   app.innerHTML = `
     <div class="header">
@@ -371,59 +511,47 @@ function mount(): void {
 
     <!-- Auth section (shown before sign-in) -->
     <div id="auth-section" class="auth-section">
-      <label for="client-id-input">OAuth 2.0 Client ID (Web application)</label>
-      <input
-        id="client-id-input"
-        type="text"
-        placeholder="xxxxxxxx.apps.googleusercontent.com"
-        value="${escapeHtml(defaultClientId)}"
-        autocomplete="off"
-        spellcheck="false"
-      />
-      <button id="signin-btn" class="btn-signin">Sign In with Google</button>
+      <div class="auth-block">
+        <label for="token-input">Bearer Token (accepts "Bearer ya29..." or raw "ya29..."):</label>
+        <div class="auth-row">
+          <input
+            id="token-input"
+            type="password"
+            placeholder="Bearer ya29.a0AX07..."
+            value="${escapeHtml(savedToken)}"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button id="token-btn" class="btn-signin">Explore AppData</button>
+        </div>
+      </div>
+
       <div id="auth-error" class="error-msg"></div>
+
       <div class="auth-hint">
-        <strong>One-time setup — <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">console.cloud.google.com</a>:</strong>
+        <strong>How to extract Bearer token from Tampermonkey:</strong>
         <ol class="auth-steps">
           <li>
             <span class="step-num">1.</span>
-            <span>Create or select a project (suggested name: <code>Google Drive appDataFolder</code>).</span>
+            <span>Open Tampermonkey dashboard, then open browser DevTools (F12 or right-click → Inspect).</span>
           </li>
           <li>
             <span class="step-num">2.</span>
-            <span>
-              Quick access → <strong>APIs and services</strong> → <strong>Library</strong> (left menu) →
-              search <code>Google Drive API</code> → <strong>Enable</strong>.
-            </span>
+            <span>Switch to the <strong>Network</strong> tab in DevTools (filter by <code>Fetch/XHR</code>).</span>
           </li>
           <li>
             <span class="step-num">3.</span>
-            <span>
-              Go to <a href="https://console.cloud.google.com/auth/overview" target="_blank" rel="noopener">Auth overview</a> →
-              left menu <strong>Data access</strong> → <strong>Add or remove scopes</strong> →
-              search <code>drive.appdata</code> → pick
-              <code>https://www.googleapis.com/auth/drive.appdata</code> → <strong>Update</strong>.
-            </span>
+            <span>In Tampermonkey dashboard, navigate to <strong>Utilities</strong> tab.</span>
           </li>
           <li>
             <span class="step-num">4.</span>
-            <span>
-              Left menu <strong>Clients</strong> → Application type: <strong>Web application</strong> →
-              name e.g. <code>Google Drive appDataFolder Web Client</code> →
-              add to <em>Authorized JavaScript origins</em>:
-              <code>https://stopsopa.github.io</code> and <code>https://stopsopa.github.io:4339</code>
-              (port must be explicit if used) → <strong>Create</strong>.
-            </span>
+            <span>Scroll to Cloud Backup section and click the <strong>Show backups</strong> button.</span>
           </li>
           <li>
             <span class="step-num">5.</span>
-            <span>Copy the <strong>Client ID</strong> (ends in <code>.apps.googleusercontent.com</code>) and paste it in the field above.</span>
+            <span>Click any request to <code>googleapis.com</code> in Network tab, find <code>authorization: Bearer ...</code> header, and copy/paste the value above.</span>
           </li>
         </ol>
-        <p class="auth-note">
-          // "Sign In" opens a Google account picker popup — works with any account you're currently logged into.<br>
-          // appDataFolder is scoped per OAuth app: only files created by the same Client ID are visible.
-        </p>
       </div>
     </div>
 
@@ -431,7 +559,13 @@ function mount(): void {
     <div id="explorer-section" class="explorer-section hidden">
       <div class="explorer-layout">
         <div class="tree-panel">
-          <div class="tree-panel-header">// Click [+] to expand · Click filename to inspect</div>
+          <div class="tree-panel-header">
+            <span>// Click [+] to expand · Click filename to inspect</span>
+            <div class="tree-header-actions">
+              <button id="refresh-tree-btn" class="btn-tool">↻ Refresh</button>
+              <button id="change-token-btn" class="btn-tool">🔑 Change Token</button>
+            </div>
+          </div>
           <div id="explorer"></div>
         </div>
         <div class="detail-panel" id="detail-panel">
@@ -441,17 +575,23 @@ function mount(): void {
     </div>
   `;
 
-  document.getElementById("signin-btn")!.addEventListener("click", () => {
-    const clientId = (document.getElementById("client-id-input") as HTMLInputElement).value;
-    signIn(clientId);
+  /* Token submit */
+  document.getElementById("token-btn")!.addEventListener("click", () => {
+    const raw = (document.getElementById("token-input") as HTMLInputElement).value;
+    useDirectToken(raw);
   });
 
-  /* Allow pressing Enter in the client ID field to sign in */
-  document.getElementById("client-id-input")!.addEventListener("keydown", (e) => {
+  document.getElementById("token-input")!.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-      const clientId = (document.getElementById("client-id-input") as HTMLInputElement).value;
-      signIn(clientId);
+      const raw = (document.getElementById("token-input") as HTMLInputElement).value;
+      useDirectToken(raw);
     }
+  });
+
+  /* Change token button in explorer view */
+  document.getElementById("change-token-btn")?.addEventListener("click", () => {
+    document.getElementById("explorer-section")!.classList.add("hidden");
+    document.getElementById("auth-section")!.classList.remove("hidden");
   });
 }
 
