@@ -795,6 +795,9 @@ function mount(): void {
             <span>Click any request to <code>googleapis.com</code> in Network tab, find <code>authorization: Bearer ...</code> header, and copy/paste the value above.</span>
           </li>
         </ol>
+        <p class="auth-note">
+          💡 Tip: When downloading multiple files in bulk, go to <code>chrome://settings/downloads</code> and uncheck <strong>"Ask where to save each file before downloading"</strong> to prevent individual save dialogs.
+        </p>
       </div>
     </div>
 
