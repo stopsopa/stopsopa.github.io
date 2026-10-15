@@ -638,7 +638,7 @@ function renderExplorer(): void {
     };
   }
 
-  const bulkDeleteBtn = document.getElementById("bulk-delete-btn");
+  const bulkDeleteBtn = document.getElementById("bulk-delete-btn") as HTMLButtonElement | null;
   if (bulkDeleteBtn) {
     bulkDeleteBtn.onclick = async () => {
       const ids = Array.from(selectedFileIds);
@@ -661,7 +661,7 @@ function renderExplorer(): void {
     };
   }
 
-  const bulkDownloadBtn = document.getElementById("bulk-download-btn");
+  const bulkDownloadBtn = document.getElementById("bulk-download-btn") as HTMLButtonElement | null;
   if (bulkDownloadBtn) {
     bulkDownloadBtn.onclick = async () => {
       let targetFiles: DriveFile[];
