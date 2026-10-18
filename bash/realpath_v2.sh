@@ -123,8 +123,12 @@ relative_path() {
     fi
 
     if [ -n "$result" ]; then
-        printf '%s\n' "$result"
+        printf '%s' "$result"
     else
-        printf '.\n'
+        printf '.'
     fi
 }
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    relative_path "$@"
+fi
