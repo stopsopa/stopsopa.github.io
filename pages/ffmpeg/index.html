@@ -114,6 +114,27 @@
         </script>
         <h2>Cut video</h2>
 
+        <h2>gif to mp4 (socialmedia)</h2>
+        
+        <script type="editor" data-lang="sh">
+
+          # MP4 with H.264
+          
+          INPUT="sheep.gif"
+          OUTPUT="sheep.mp4"
+          ffmpeg -i "${INPUT}" -an -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -pix_fmt yuv420p -crf 20 -preset slow -movflags +faststart "${OUTPUT}"
+          
+        </script>
+
+        <h2>gif to avi</h2>
+        
+        <script type="editor" data-lang="sh">
+
+          INPUT="sheep.gif"
+          OUTPUT="sheep.webm"
+          ffmpeg -i "${INPUT}" -an -c:v libvpx-vp9 -pix_fmt yuv420p -crf 20 -b:v 0 "${OUTPUT}"
+          
+        </script>
         <h2>Two pass encoding</h2>
         <script type="editor" data-lang="sh">
 
