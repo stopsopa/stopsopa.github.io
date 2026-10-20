@@ -84,3 +84,70 @@ cat <<EEE
 EEE
 
 ```
+
+# colors
+
+
+
+When using colors use 
+
+```
+
+GRAY=$'\033[38;5;244m'
+BLACK=$'\033[30m'
+RED=$'\033[31m'
+GREEN=$'\033[32m'
+YELLOW=$'\033[33m'
+BLUE=$'\033[34m'
+MAGENTA=$'\033[35m'
+CYAN=$'\033[36m'
+WHITE=$'\033[37m'
+BOLD=$'\033[1m'
+REVERSE=$'\033[7m'
+RESET=$'\033[0m'
+
+```
+
+or if file enter_esc.sh exist use 
+
+```
+
+source bash/enter_esc.sh;
+
+```
+
+which have these env vars defined in it
+
+# heredoc
+
+It is absolutely very important to always use heredoc the moment we have to print just 2 lines to the stdout or stderr.
+
+and avoid formatting for every line when color spans across multiple lines like
+
+```
+
+    cat <<EEE
+
+${YELLOW}line one${RESET}
+${YELLOW}line two${RESET}
+${YELLOW}line three${RESET}
+
+EEE
+
+```
+
+use rather
+
+```
+
+    cat <<EEE
+${YELLOW}
+line one
+line two
+line three
+${RESET}
+EEE
+
+```
+
+
