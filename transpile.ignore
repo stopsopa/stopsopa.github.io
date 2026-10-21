@@ -34,6 +34,7 @@ bash/exportsource.js
 pages/services/xor.ts
 bash/fs/watch.js
 bash/GLOSSARY.ts
+pages/experiments/solar/css.d.js
 
 bash/socket/*
 

@@ -20,15 +20,7 @@
         <div class="hud-controls" data-testid="hud-controls">
           <div class="control-group">
             <label for="speed-range">Simulation Speed</label>
-            <input
-              id="speed-range"
-              data-testid="input-speed"
-              type="range"
-              min="0"
-              max="4"
-              step="0.1"
-              value="1"
-            />
+            <input id="speed-range" data-testid="input-speed" type="range" min="0" max="4" step="0.1" value="1" />
           </div>
 
           <div class="control-group">
@@ -45,7 +37,9 @@
           </div>
 
           <div class="control-group">
-            <label for="flight-elevation">Flight Elevation (° above ecliptic) <span id="flight-elevation-val">60°</span></label>
+            <label for="flight-elevation"
+              >Flight Elevation (° above ecliptic) <span id="flight-elevation-val">60°</span></label
+            >
             <input
               id="flight-elevation"
               data-testid="input-flight-elevation"
@@ -84,36 +78,21 @@
           </div>
 
           <div class="control-group buttons-row">
-            <button id="btn-toggle-pause" data-testid="btn-toggle-pause" class="btn">
-              Pause
-            </button>
-            <button id="btn-reset-cam" data-testid="btn-reset-cam" class="btn">
-              Reset View
-            </button>
+            <button id="btn-toggle-pause" data-testid="btn-toggle-pause" class="btn">Pause</button>
+            <button id="btn-reset-cam" data-testid="btn-reset-cam" class="btn">Reset View</button>
           </div>
 
           <div class="control-group toggle-row">
             <label class="toggle-label" for="chk-galaxy" data-testid="label-galaxy">
-              <input
-                id="chk-galaxy"
-                data-testid="chk-galaxy"
-                type="checkbox"
-                checked
-              />
+              <input id="chk-galaxy" data-testid="chk-galaxy" type="checkbox" checked />
               Show Milky Way Galaxy
             </label>
           </div>
 
           <div class="control-group camera-presets">
-            <button id="btn-cam-follow" data-testid="btn-cam-follow" class="btn active">
-              Follow Sun
-            </button>
-            <button id="btn-cam-side" data-testid="btn-cam-side" class="btn">
-              Side Profile (Vortex)
-            </button>
-            <button id="btn-cam-top" data-testid="btn-cam-top" class="btn">
-              Top Down (Heliocentric)
-            </button>
+            <button id="btn-cam-follow" data-testid="btn-cam-follow" class="btn active">Follow Sun</button>
+            <button id="btn-cam-side" data-testid="btn-cam-side" class="btn">Side Profile (Vortex)</button>
+            <button id="btn-cam-top" data-testid="btn-cam-top" class="btn">Top Down (Heliocentric)</button>
           </div>
         </div>
 

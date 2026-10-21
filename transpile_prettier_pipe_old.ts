@@ -1,6 +1,6 @@
 /**
  * =================
- * Transpiled with transpile.ts
+ * Transpiled with transpile.ts, see transpile.ignore
  * =================
  */
 /**

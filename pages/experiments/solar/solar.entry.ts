@@ -1,4 +1,4 @@
-import './solar.entry.css';
+import "./solar.entry.css";
 
 /**
  * 3D Vector interface representing positions and directions in space.
@@ -86,15 +86,15 @@ interface Camera {
   target: Vec3;
 }
 
-const canvas = document.getElementById('solar-canvas') as HTMLCanvasElement;
-const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+const canvas = document.getElementById("solar-canvas") as HTMLCanvasElement;
+const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 // Simulation parameters
 let isPaused = false;
 let simulationSpeed = 1.0;
 let sunForwardSpeed = 1.5;
 let maxTrailLength = 240;
-let cameraMode: 'follow' | 'side' | 'top' = 'follow';
+let cameraMode: "follow" | "side" | "top" = "follow";
 let showGalaxy = true;
 
 /**
@@ -162,80 +162,80 @@ const BASE_EARTH_SPEED = 0.025;
 // Planet configurations scaled for aesthetic clarity in simulation
 const PLANETS_CONFIG: PlanetConfig[] = [
   {
-    name: 'Mercury',
+    name: "Mercury",
     radius: 3.5,
-    color: '#c2beb8',
-    trailColor: 'rgba(194, 190, 184, ',
+    color: "#c2beb8",
+    trailColor: "rgba(194, 190, 184, ",
     distance: 65,
     orbitalSpeed: BASE_EARTH_SPEED / 0.2408467,
     initialAngle: 0.2,
     inclination: 0.12,
   },
   {
-    name: 'Venus',
+    name: "Venus",
     radius: 5.5,
-    color: '#e5c07b',
-    trailColor: 'rgba(229, 192, 123, ',
+    color: "#e5c07b",
+    trailColor: "rgba(229, 192, 123, ",
     distance: 105,
     orbitalSpeed: BASE_EARTH_SPEED / 0.61519726,
     initialAngle: 1.1,
     inclination: 0.05,
   },
   {
-    name: 'Earth',
+    name: "Earth",
     radius: 6.0,
-    color: '#61afef',
-    trailColor: 'rgba(97, 175, 239, ',
+    color: "#61afef",
+    trailColor: "rgba(97, 175, 239, ",
     distance: 155,
     orbitalSpeed: BASE_EARTH_SPEED / 1.0,
     initialAngle: 2.5,
     inclination: 0.0,
   },
   {
-    name: 'Mars',
+    name: "Mars",
     radius: 4.5,
-    color: '#e06c75',
-    trailColor: 'rgba(224, 108, 117, ',
+    color: "#e06c75",
+    trailColor: "rgba(224, 108, 117, ",
     distance: 210,
     orbitalSpeed: BASE_EARTH_SPEED / 1.8808158,
     initialAngle: 4.1,
     inclination: 0.03,
   },
   {
-    name: 'Jupiter',
+    name: "Jupiter",
     radius: 13.0,
-    color: '#d19a66',
-    trailColor: 'rgba(209, 154, 102, ',
+    color: "#d19a66",
+    trailColor: "rgba(209, 154, 102, ",
     distance: 310,
     orbitalSpeed: BASE_EARTH_SPEED / 11.862615,
     initialAngle: 0.8,
     inclination: 0.02,
   },
   {
-    name: 'Saturn',
+    name: "Saturn",
     radius: 10.5,
-    color: '#f0d38d',
-    trailColor: 'rgba(240, 211, 141, ',
+    color: "#f0d38d",
+    trailColor: "rgba(240, 211, 141, ",
     distance: 420,
     orbitalSpeed: BASE_EARTH_SPEED / 29.447498,
     initialAngle: 3.3,
     inclination: 0.04,
   },
   {
-    name: 'Uranus',
+    name: "Uranus",
     radius: 8.0,
-    color: '#56b6c2',
-    trailColor: 'rgba(86, 182, 194, ',
+    color: "#56b6c2",
+    trailColor: "rgba(86, 182, 194, ",
     distance: 530,
     orbitalSpeed: BASE_EARTH_SPEED / 84.016846,
     initialAngle: 5.2,
     inclination: 0.01,
   },
   {
-    name: 'Neptune',
+    name: "Neptune",
     radius: 7.5,
-    color: '#4c78dd',
-    trailColor: 'rgba(76, 120, 221, ',
+    color: "#4c78dd",
+    trailColor: "rgba(76, 120, 221, ",
     distance: 630,
     orbitalSpeed: BASE_EARTH_SPEED / 164.79132,
     initialAngle: 2.1,
@@ -266,11 +266,11 @@ const planets: PlanetInstance[] = PLANETS_CONFIG.map((cfg) => ({
 const MOONS_CONFIG: MoonConfig[] = [
   // Earth
   {
-    name: 'Moon',
-    planetName: 'Earth',
+    name: "Moon",
+    planetName: "Earth",
     radius: 1.8,
-    color: '#e0dedb',
-    trailColor: 'rgba(224, 222, 219, ',
+    color: "#e0dedb",
+    trailColor: "rgba(224, 222, 219, ",
     distance: 14,
     orbitalSpeed: BASE_EARTH_SPEED * 13.37,
     inclination: 0.09,
@@ -278,44 +278,44 @@ const MOONS_CONFIG: MoonConfig[] = [
   },
   // Jupiter (Galilean moons)
   {
-    name: 'Io',
-    planetName: 'Jupiter',
+    name: "Io",
+    planetName: "Jupiter",
     radius: 1.5,
-    color: '#e5c158',
-    trailColor: 'rgba(229, 193, 88, ',
+    color: "#e5c158",
+    trailColor: "rgba(229, 193, 88, ",
     distance: 20,
     orbitalSpeed: BASE_EARTH_SPEED * (365.25 / 1.77) * 0.1, // scaled for smooth rendering
     inclination: 0.01,
     initialAngle: 0.2,
   },
   {
-    name: 'Europa',
-    planetName: 'Jupiter',
+    name: "Europa",
+    planetName: "Jupiter",
     radius: 1.4,
-    color: '#b9cbe0',
-    trailColor: 'rgba(185, 203, 224, ',
+    color: "#b9cbe0",
+    trailColor: "rgba(185, 203, 224, ",
     distance: 26,
     orbitalSpeed: BASE_EARTH_SPEED * (365.25 / 3.55) * 0.1,
     inclination: 0.02,
     initialAngle: 1.6,
   },
   {
-    name: 'Ganymede',
-    planetName: 'Jupiter',
+    name: "Ganymede",
+    planetName: "Jupiter",
     radius: 2.1,
-    color: '#9e968c',
-    trailColor: 'rgba(158, 150, 140, ',
+    color: "#9e968c",
+    trailColor: "rgba(158, 150, 140, ",
     distance: 33,
     orbitalSpeed: BASE_EARTH_SPEED * (365.25 / 7.15) * 0.1,
     inclination: 0.01,
     initialAngle: 3.0,
   },
   {
-    name: 'Callisto',
-    planetName: 'Jupiter',
+    name: "Callisto",
+    planetName: "Jupiter",
     radius: 1.9,
-    color: '#7b7268',
-    trailColor: 'rgba(123, 114, 104, ',
+    color: "#7b7268",
+    trailColor: "rgba(123, 114, 104, ",
     distance: 40,
     orbitalSpeed: BASE_EARTH_SPEED * (365.25 / 16.69) * 0.1,
     inclination: 0.03,
@@ -323,11 +323,11 @@ const MOONS_CONFIG: MoonConfig[] = [
   },
   // Saturn
   {
-    name: 'Titan',
-    planetName: 'Saturn',
+    name: "Titan",
+    planetName: "Saturn",
     radius: 2.1,
-    color: '#e8aa53',
-    trailColor: 'rgba(232, 170, 83, ',
+    color: "#e8aa53",
+    trailColor: "rgba(232, 170, 83, ",
     distance: 28,
     orbitalSpeed: BASE_EARTH_SPEED * (365.25 / 15.95) * 0.12,
     inclination: 0.06,
@@ -335,11 +335,11 @@ const MOONS_CONFIG: MoonConfig[] = [
   },
   // Uranus
   {
-    name: 'Titania',
-    planetName: 'Uranus',
+    name: "Titania",
+    planetName: "Uranus",
     radius: 1.5,
-    color: '#b8c9cb',
-    trailColor: 'rgba(184, 201, 203, ',
+    color: "#b8c9cb",
+    trailColor: "rgba(184, 201, 203, ",
     distance: 18,
     orbitalSpeed: BASE_EARTH_SPEED * (365.25 / 8.7) * 0.1,
     inclination: 0.1,
@@ -347,11 +347,11 @@ const MOONS_CONFIG: MoonConfig[] = [
   },
   // Neptune
   {
-    name: 'Triton',
-    planetName: 'Neptune',
+    name: "Triton",
+    planetName: "Neptune",
     radius: 1.6,
-    color: '#cad7e6',
-    trailColor: 'rgba(202, 215, 230, ',
+    color: "#cad7e6",
+    trailColor: "rgba(202, 215, 230, ",
     distance: 18,
     orbitalSpeed: -BASE_EARTH_SPEED * (365.25 / 5.88) * 0.1, // Retrograde
     inclination: -0.28,
@@ -418,7 +418,9 @@ function initStars(): void {
     const w = (Math.random() + Math.random() - 1.0) * 1500;
     const pos = toWorld(GC_U + u, GC_V + v, w);
     stars.push({
-      x: pos.x, y: pos.y, z: pos.z,
+      x: pos.x,
+      y: pos.y,
+      z: pos.z,
       size: Math.random() * 1.4 + 0.5,
       alpha: Math.random() * 0.5 + 0.2,
     });
@@ -444,7 +446,9 @@ function initStars(): void {
 
     const pos = toWorld(u, v, w);
     stars.push({
-      x: pos.x, y: pos.y, z: pos.z,
+      x: pos.x,
+      y: pos.y,
+      z: pos.z,
       size: Math.random() * 1.3 + 0.4,
       alpha: Math.random() * 0.4 + 0.12,
     });
@@ -468,7 +472,7 @@ function handleResize(): void {
   canvas.height = window.innerHeight * dpr;
 }
 
-window.addEventListener('resize', handleResize);
+window.addEventListener("resize", handleResize);
 handleResize();
 initStars();
 
@@ -546,8 +550,8 @@ function project(point: Vec3): { x: number; y: number; scale: number; visible: b
   const fov = 900;
   const scale = fov / zCamera;
   const dpr = window.devicePixelRatio || 1;
-  const screenX = (canvas.width / 2) + x1 * scale * dpr;
-  const screenY = (canvas.height / 2) - y2 * scale * dpr;
+  const screenX = canvas.width / 2 + x1 * scale * dpr;
+  const screenY = canvas.height / 2 - y2 * scale * dpr;
 
   return { x: screenX, y: screenY, scale, visible: true };
 }
@@ -693,13 +697,13 @@ function renderTrail(trail: TrailPoint[], colorBase: string, width: number): voi
  * Main draw loop.
  */
 function render(): void {
-  ctx.fillStyle = '#03050d';
+  ctx.fillStyle = "#03050d";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   renderStars();
 
   // Draw Sun trail
-  renderTrail(sunTrail, 'rgba(255, 220, 90, ', 4);
+  renderTrail(sunTrail, "rgba(255, 220, 90, ", 4);
 
   // Draw planet trails (the famous helical vortex spirals)
   for (const p of planets) {
@@ -726,10 +730,10 @@ function render(): void {
       sunProj.y,
       Math.max(2, sunRadius * 3.5)
     );
-    gradient.addColorStop(0, 'rgba(255, 235, 120, 1)');
-    gradient.addColorStop(0.35, 'rgba(255, 170, 40, 0.7)');
-    gradient.addColorStop(0.7, 'rgba(255, 80, 10, 0.25)');
-    gradient.addColorStop(1, 'rgba(255, 50, 0, 0)');
+    gradient.addColorStop(0, "rgba(255, 235, 120, 1)");
+    gradient.addColorStop(0.35, "rgba(255, 170, 40, 0.7)");
+    gradient.addColorStop(0.7, "rgba(255, 80, 10, 0.25)");
+    gradient.addColorStop(1, "rgba(255, 50, 0, 0)");
 
     ctx.fillStyle = gradient;
     ctx.beginPath();
@@ -737,7 +741,7 @@ function render(): void {
     ctx.fill();
 
     // Solid bright core
-    ctx.fillStyle = '#fff8e7';
+    ctx.fillStyle = "#fff8e7";
     ctx.beginPath();
     ctx.arc(sunProj.x, sunProj.y, Math.max(2, sunRadius), 0, Math.PI * 2);
     ctx.fill();
@@ -756,8 +760,8 @@ function render(): void {
       ctx.fill();
 
       // Saturn rings
-      if (p.name === 'Saturn') {
-        ctx.strokeStyle = 'rgba(240, 211, 141, 0.75)';
+      if (p.name === "Saturn") {
+        ctx.strokeStyle = "rgba(240, 211, 141, 0.75)";
         ctx.lineWidth = Math.max(1, 2 * proj.scale * dpr);
         ctx.beginPath();
         ctx.ellipse(proj.x, proj.y, pRadius * 2.3, pRadius * 0.7, -0.4, 0, Math.PI * 2);
@@ -765,7 +769,7 @@ function render(): void {
       }
 
       // Planet label
-      ctx.fillStyle = '#9cb3d1';
+      ctx.fillStyle = "#9cb3d1";
       ctx.font = `${Math.max(10, 11 * dpr)}px sans-serif`;
       ctx.fillText(p.name, proj.x + pRadius + 5, proj.y + 4);
     }
@@ -799,17 +803,17 @@ let isDragging = false;
 let lastMouseX = 0;
 let lastMouseY = 0;
 
-canvas.addEventListener('mousedown', (e) => {
+canvas.addEventListener("mousedown", (e) => {
   isDragging = true;
   lastMouseX = e.clientX;
   lastMouseY = e.clientY;
 });
 
-window.addEventListener('mouseup', () => {
+window.addEventListener("mouseup", () => {
   isDragging = false;
 });
 
-window.addEventListener('mousemove', (e) => {
+window.addEventListener("mousemove", (e) => {
   if (isDragging) {
     const dx = e.clientX - lastMouseX;
     const dy = e.clientY - lastMouseY;
@@ -823,7 +827,7 @@ window.addEventListener('mousemove', (e) => {
 
 // Wheel zoom
 canvas.addEventListener(
-  'wheel',
+  "wheel",
   (e) => {
     e.preventDefault();
     camera.distance = Math.max(300, Math.min(4500, camera.distance + e.deltaY * 1.5));
@@ -832,70 +836,70 @@ canvas.addEventListener(
 );
 
 // UI controls
-const speedRange = document.getElementById('speed-range') as HTMLInputElement;
-const forwardSpeedRange = document.getElementById('sun-forward-speed') as HTMLInputElement;
-const trailLengthRange = document.getElementById('trail-length') as HTMLInputElement;
-const btnTogglePause = document.getElementById('btn-toggle-pause') as HTMLButtonElement;
-const btnResetCam = document.getElementById('btn-reset-cam') as HTMLButtonElement;
-const btnCamFollow = document.getElementById('btn-cam-follow') as HTMLButtonElement;
-const btnCamSide = document.getElementById('btn-cam-side') as HTMLButtonElement;
-const btnCamTop = document.getElementById('btn-cam-top') as HTMLButtonElement;
+const speedRange = document.getElementById("speed-range") as HTMLInputElement;
+const forwardSpeedRange = document.getElementById("sun-forward-speed") as HTMLInputElement;
+const trailLengthRange = document.getElementById("trail-length") as HTMLInputElement;
+const btnTogglePause = document.getElementById("btn-toggle-pause") as HTMLButtonElement;
+const btnResetCam = document.getElementById("btn-reset-cam") as HTMLButtonElement;
+const btnCamFollow = document.getElementById("btn-cam-follow") as HTMLButtonElement;
+const btnCamSide = document.getElementById("btn-cam-side") as HTMLButtonElement;
+const btnCamTop = document.getElementById("btn-cam-top") as HTMLButtonElement;
 
-speedRange?.addEventListener('input', () => {
+speedRange?.addEventListener("input", () => {
   simulationSpeed = parseFloat(speedRange.value);
 });
 
-forwardSpeedRange?.addEventListener('input', () => {
+forwardSpeedRange?.addEventListener("input", () => {
   sunForwardSpeed = parseFloat(forwardSpeedRange.value);
 });
 
-const flightElevationRange = document.getElementById('flight-elevation') as HTMLInputElement;
-const flightElevationVal = document.getElementById('flight-elevation-val') as HTMLSpanElement;
-const flightAzimuthRange = document.getElementById('flight-azimuth') as HTMLInputElement;
-const flightAzimuthVal = document.getElementById('flight-azimuth-val') as HTMLSpanElement;
+const flightElevationRange = document.getElementById("flight-elevation") as HTMLInputElement;
+const flightElevationVal = document.getElementById("flight-elevation-val") as HTMLSpanElement;
+const flightAzimuthRange = document.getElementById("flight-azimuth") as HTMLInputElement;
+const flightAzimuthVal = document.getElementById("flight-azimuth-val") as HTMLSpanElement;
 
-flightElevationRange?.addEventListener('input', () => {
+flightElevationRange?.addEventListener("input", () => {
   flightElevationDeg = parseFloat(flightElevationRange.value);
   if (flightElevationVal) flightElevationVal.textContent = `${flightElevationDeg}°`;
 });
 
-flightAzimuthRange?.addEventListener('input', () => {
+flightAzimuthRange?.addEventListener("input", () => {
   flightAzimuthDeg = parseFloat(flightAzimuthRange.value);
   if (flightAzimuthVal) flightAzimuthVal.textContent = `${flightAzimuthDeg}°`;
 });
 
-trailLengthRange?.addEventListener('input', () => {
+trailLengthRange?.addEventListener("input", () => {
   maxTrailLength = parseInt(trailLengthRange.value, 10);
 });
 
-btnTogglePause?.addEventListener('click', () => {
+btnTogglePause?.addEventListener("click", () => {
   isPaused = !isPaused;
-  btnTogglePause.textContent = isPaused ? 'Resume' : 'Pause';
+  btnTogglePause.textContent = isPaused ? "Resume" : "Pause";
 });
 
-btnResetCam?.addEventListener('click', () => {
+btnResetCam?.addEventListener("click", () => {
   camera.yaw = 0.45;
   camera.pitch = 0.3;
   camera.distance = 1400;
 });
 
 function setActiveCamBtn(btn: HTMLButtonElement): void {
-  btnCamFollow.classList.remove('active');
-  btnCamSide.classList.remove('active');
-  btnCamTop.classList.remove('active');
-  btn.classList.add('active');
+  btnCamFollow.classList.remove("active");
+  btnCamSide.classList.remove("active");
+  btnCamTop.classList.remove("active");
+  btn.classList.add("active");
 }
 
-btnCamFollow?.addEventListener('click', () => {
-  cameraMode = 'follow';
+btnCamFollow?.addEventListener("click", () => {
+  cameraMode = "follow";
   setActiveCamBtn(btnCamFollow);
   camera.yaw = 0.45;
   camera.pitch = 0.3;
   camera.distance = 1400;
 });
 
-btnCamSide?.addEventListener('click', () => {
-  cameraMode = 'side';
+btnCamSide?.addEventListener("click", () => {
+  cameraMode = "side";
   setActiveCamBtn(btnCamSide);
   // View from perpendicular angle to highlight helical vortex trails
   camera.yaw = 1.57;
@@ -903,8 +907,8 @@ btnCamSide?.addEventListener('click', () => {
   camera.distance = 1700;
 });
 
-btnCamTop?.addEventListener('click', () => {
-  cameraMode = 'top';
+btnCamTop?.addEventListener("click", () => {
+  cameraMode = "top";
   setActiveCamBtn(btnCamTop);
   // Heliocentric top-down look
   camera.yaw = 0;
@@ -913,11 +917,10 @@ btnCamTop?.addEventListener('click', () => {
 });
 
 // Galaxy toggle checkbox
-const chkGalaxy = document.getElementById('chk-galaxy') as HTMLInputElement;
-chkGalaxy?.addEventListener('change', () => {
+const chkGalaxy = document.getElementById("chk-galaxy") as HTMLInputElement;
+chkGalaxy?.addEventListener("change", () => {
   showGalaxy = chkGalaxy.checked;
 });
 
 // Kick off simulation loop
 requestAnimationFrame(animate);
-

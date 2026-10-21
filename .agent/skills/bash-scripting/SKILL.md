@@ -87,9 +87,7 @@ EEE
 
 # colors
 
-
-
-When using colors use 
+When using colors use
 
 ```
 
@@ -108,7 +106,7 @@ RESET=$'\033[0m'
 
 ```
 
-or if file enter_esc.sh exist use 
+or if file enter_esc.sh exist use
 
 ```
 
@@ -149,5 +147,3 @@ ${RESET}
 EEE
 
 ```
-
-

@@ -63,6 +63,7 @@ pages/children/caesar/moduleCaesarCypher.js
 pages/children/tetris/tetris.js
 pages/children/wotb/controls/antigravity/index.js
 pages/children/wotb/controls/ver1/index.js
+pages/experiments/solar/css.d.js
 pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.js
 pages/html/checkbox/handleCheckboxDynamic/index.js
 pages/html/checkbox/handleCheckboxFixed/handleCheckboxFixed.js
