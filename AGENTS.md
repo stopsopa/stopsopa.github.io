@@ -67,6 +67,7 @@ VERY IMPORTANT
 VERY IMPORTANT
 VERY IMPORTANT
 when working with bash and generally any shell script absolutely always follow 'bash-scripting' skill
+when editing and when creating new shell scripts
 </bash>
 
 <existing code comments>
