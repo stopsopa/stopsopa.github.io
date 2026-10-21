@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <title>Simulation of Solar System movement through space</title>
+    <link rel="stylesheet" href="/dist/solar.entry.bundle.css" />
+  </head>
+  <body nohead nofoot noprofileribbon nogithublink>
+    <div id="app" data-testid="solar-system-app">
+      <canvas id="solar-canvas" data-testid="solar-canvas"></canvas>
+
+      <div class="hud-panel" data-testid="hud-panel">
+        <h1 class="hud-title" data-testid="hud-title">Solar System in Motion</h1>
+        <p class="hud-subtitle">Helical vortex trajectory through the Milky Way</p>
+
+        <div class="hud-controls" data-testid="hud-controls">
+          <div class="control-group">
+            <label for="speed-range">Simulation Speed</label>
+            <input
+              id="speed-range"
+              data-testid="input-speed"
+              type="range"
+              min="0"
+              max="4"
+              step="0.1"
+              value="1"
+            />
+          </div>
+
+          <div class="control-group">
+            <label for="sun-forward-speed">Travel Speed (Forward Vector)</label>
+            <input
+              id="sun-forward-speed"
+              data-testid="input-forward-speed"
+              type="range"
+              min="0"
+              max="5"
+              step="0.1"
+              value="1.5"
+            />
+          </div>
+
+          <div class="control-group">
+            <label for="flight-elevation">Flight Elevation (° above ecliptic) <span id="flight-elevation-val">60°</span></label>
+            <input
+              id="flight-elevation"
+              data-testid="input-flight-elevation"
+              type="range"
+              min="-90"
+              max="90"
+              step="1"
+              value="60"
+            />
+          </div>
+
+          <div class="control-group">
+            <label for="flight-azimuth">Flight Azimuth (° around Y) <span id="flight-azimuth-val">0°</span></label>
+            <input
+              id="flight-azimuth"
+              data-testid="input-flight-azimuth"
+              type="range"
+              min="-180"
+              max="180"
+              step="1"
+              value="0"
+            />
+          </div>
+
+          <div class="control-group">
+            <label for="trail-length">Trail Length</label>
+            <input
+              id="trail-length"
+              data-testid="input-trail-length"
+              type="range"
+              min="50"
+              max="500"
+              step="10"
+              value="240"
+            />
+          </div>
+
+          <div class="control-group buttons-row">
+            <button id="btn-toggle-pause" data-testid="btn-toggle-pause" class="btn">
+              Pause
+            </button>
+            <button id="btn-reset-cam" data-testid="btn-reset-cam" class="btn">
+              Reset View
+            </button>
+          </div>
+
+          <div class="control-group toggle-row">
+            <label class="toggle-label" for="chk-galaxy" data-testid="label-galaxy">
+              <input
+                id="chk-galaxy"
+                data-testid="chk-galaxy"
+                type="checkbox"
+                checked
+              />
+              Show Milky Way Galaxy
+            </label>
+          </div>
+
+          <div class="control-group camera-presets">
+            <button id="btn-cam-follow" data-testid="btn-cam-follow" class="btn active">
+              Follow Sun
+            </button>
+            <button id="btn-cam-side" data-testid="btn-cam-side" class="btn">
+              Side Profile (Vortex)
+            </button>
+            <button id="btn-cam-top" data-testid="btn-cam-top" class="btn">
+              Top Down (Heliocentric)
+            </button>
+          </div>
+        </div>
+
+        <div class="hud-legend" data-testid="hud-legend">
+          <div class="legend-item"><span class="swatch sun"></span>Sun</div>
+          <div class="legend-item"><span class="swatch mercury"></span>Mercury</div>
+          <div class="legend-item"><span class="swatch venus"></span>Venus</div>
+          <div class="legend-item"><span class="swatch earth"></span>Earth</div>
+          <div class="legend-item"><span class="swatch mars"></span>Mars</div>
+          <div class="legend-item"><span class="swatch jupiter"></span>Jupiter</div>
+          <div class="legend-item"><span class="swatch saturn"></span>Saturn</div>
+          <div class="legend-item"><span class="swatch uranus"></span>Uranus</div>
+          <div class="legend-item"><span class="swatch neptune"></span>Neptune</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/dist/solar.entry.bundle.js"></script>
+  </body>
+</html>
