@@ -1,4 +1,13 @@
-When I tell you to code in file _.entry.(ts|js|tsx) then assume that this file will be transpiled into dist/_.entry.bundle.js and if css is involved then also dist/\*.entry.bundle.css will be generated.
+# most important instruction
+
+When directed to this skill aks me first which mode to use and then stick to it.
+
+<mode:imports>
+# Mode: When imports needed
+
+In this mode I will either point you to file which name matches pattern _.entry.(ts|js|tsx) or I will tell you to just work in this mode then you create _.entry.(ts|js|tsx) file next to html file I've pointed you to.
+
+Anyway in any case just work in _.entry.(ts|js|tsx) file then assume that this file will be transpiled into dist/_.entry.bundle.js and if css is involved then also dist/\*.entry.bundle.css will be generated.
 
 Simply import whatever you need in that _.entry.(ts|js|tsx) from node.js dependencies and know that all of that will be bundled to dist/_.entry.bundle.js.
 
@@ -42,3 +51,31 @@ import fs from 'fs'
 
 because this is builtin node.js library for working with files. and we can't normally work with hard drive files from browser.
 </warning>
+
+</mode:imports>
+
+<mode:flat>
+
+# no need for imports just transpilation mode (flat mode)
+
+In this mode I will either point you to file *.ts or in that mode just create file with *.ts extension and put your code there.
+
+Main property about this is that when creating code for browser we won't be able to do imports of other libraries because this file will not be bundled with esbuild.
+
+So it will just be transpiled.
+
+## example
+
+when you work with file
+
+/pages/expermient/directory/deeperdirectory/file.ts
+
+I have transpilation setup in place which will generate from it
+
+/pages/expermient/directory/deeperdirectory/file.js
+
+fight next to *.ts file.
+
+Your job is to just import that output transpiled file *.js (usually using relative path ./file.js) in given html file
+
+</mode:flat>
