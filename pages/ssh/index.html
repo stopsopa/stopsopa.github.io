@@ -52,6 +52,9 @@
         <h2>Useful commands</h2>
         <script type="editor" data-lang="sh">
 
+          ssh-keygen -t ed25519 -C 'email@gmail.com'
+            # more modern and faster, use for github git clone
+
           ssh-keygen -t rsa -b 4096 -C "dev+build@myorg.com"
               # from: https://buildkite.com/docs/agent/v3/ssh-keys#creating-a-single-ssh-key
               # g(Buildkite Agent SSH Keys Creating a single SSH key)
