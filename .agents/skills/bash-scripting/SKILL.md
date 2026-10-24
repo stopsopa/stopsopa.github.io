@@ -87,7 +87,9 @@ EEE
 
 # colors
 
-When using colors use
+
+
+When using colors use 
 
 ```
 
@@ -106,7 +108,7 @@ RESET=$'\033[0m'
 
 ```
 
-or if file enter_esc.sh exist use
+or if file enter_esc.sh exist use 
 
 ```
 
@@ -147,3 +149,22 @@ ${RESET}
 EEE
 
 ```
+
+<produce_value_for_variable>
+
+when producing value for variable
+
+```sh
+LOCAL_MSG=$(echo "${LOCAL_COMMIT}" | cut -d' ' -f2-)
+```
+
+always wrap in quotes, because when value with spaces will be produced it might cause issues.
+So use rather:
+
+
+```sh
+LOCAL_MSG="$(echo "${LOCAL_COMMIT}" | cut -d' ' -f2-)"
+```
+
+</produce_value_for_variable>
+
