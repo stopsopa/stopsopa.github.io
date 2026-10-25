@@ -38,11 +38,6 @@ require_non_empty_var() {
     exit 1
   fi
 
-  if [ ! -e "${script_name}" ]; then
-    echo "${script_name} error: Script file does not exist"
-    exit 1
-  fi
-
   value="${!env_var_name}"
   value=$(echo "${value}" | tr -d '[:space:]')  # Trim leading and trailing whitespace
 
