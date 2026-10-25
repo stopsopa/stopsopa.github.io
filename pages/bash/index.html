@@ -760,7 +760,7 @@
             _SHELL="$(basename ${_SHELL//-/})"
             case ${_SHELL} in
               zsh)
-                _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+                _DIR="$( cd "$( dirname "${(%):-%x}" )" && pwd -P )"
                 _0="$( basename "${(%):-%N}" )"
                 _SCRIPT="${(%):-%N}"
                 _BINARY="/bin/zsh"
@@ -3224,7 +3224,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           _SHELL="$(basename ${_SHELL//-/})"
           case ${_SHELL} in
             zsh)
-              _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+              _DIR="$( cd "$( dirname "${(%):-%x}" )" && pwd -P )"
               _0="$( basename "${(%):-%N}" )"
               _SCRIPT="${(%):-%N}"
               _BINARY="/bin/zsh"
@@ -3769,7 +3769,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
           gdircolors -b
         </script>
 
-        <h2>prompt: </h2>
+        <h2>prompt:</h2>
         <script type="editor" data-lang="sh">
           if cat ~/.bashrc 2> /dev/null | grep '#colors mod' > /dev/null; then echo -e "\033[31m -=file .bashrc have been already modified before=-"; else echo -e "\n#colors mod\nexport EDITOR=vi\ncolor_prompt=yes;\nPS1='${debian_chroot:+($debian_chroot)}\[\033[`if [ "$(id -u)" != "0" ]; then echo '00;32'; else echo '1;30'; fi`m\]\u@\h\[\033[00;31m\]:\[\033[01;34m\]\w\[\033[00;33m\]\$ '\neval \"`dircolors -b || gdircolors -b`\"\nexport HISTCONTROL=ignoreboth:erasedups\n" >> ~/.bashrc && source ~/.bashrc && echo -e "\033[32m -= .bashrc has been modified =-"; fi &&        if cat ~/.vimrc 2> /dev/null | grep '" colors mod' > /dev/null; then echo -e "\033[31m -=file .vimrc has been already modified before=-"; else echo -e "\n\" colors mod\n:set number\n:set hlsearch\n:syntax on\n" >> ~/.vimrc && echo -e "\033[32m -= .vimrc has been modified =-"; fi        &&  history -d `history | tail -n 1 | awk '{\$1=\$1;print}' | sed -E 's#^([0-9]*).*#\1#g'` && if [ ! -f ~/.history_backup ] ; then history > ~/.history_backup; fi
         </script>
@@ -3793,7 +3793,7 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
               echo -e "\n#colors mod\nexport EDITOR=vi\ncolor_prompt=yes;\nPS1='\[\033[`if [ \"$(id -u)\" != \"0\" ]; then echo '38;5;214'; else echo '1;30'; fi`m\]\u@\h:\[\033[01;34m\]\w \$(code=\$?; if [ \$code -eq 0 ]; then echo \"\\[\\033[00;32m\\]√\\[\\033[00m\\]\"; else echo \"\\[\\033[00;31m\\]\$code\\[\\033[00m\\]\"; fi) \[\033[00;33m\]\$ '\neval \"`dircolors -b || gdircolors -b`\"\nexport HISTCONTROL=ignoreboth:erasedups\n" >> ~/.bashrc
               source ~/.bashrc
               echo -e "\033[32m -= .bashrc has been modified =-";
-          fi          
+          fi
 
           if cat ~/.vimrc 2> /dev/null | grep '" colors mod' > /dev/null; then
               echo -e "\033[31m -=file .vimrc has been already modified before=-"

@@ -6,13 +6,14 @@ description: Instructions in case if any bash (or any shell in general) script i
 When determining where script is if needed, always use
 
 Version A
+
 ```sh
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
 case ${_SHELL} in
   zsh)
-    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+    _DIR="$( cd "$( dirname "${(%):-%x}" )" && pwd -P )"
     _0="$( basename "${(%):-%N}" )"
     _SCRIPT="${(%):-%N}"
     _BINARY="/bin/zsh"
@@ -41,13 +42,15 @@ esac
 I was using in the past
 
 Version B
+
 ```sh
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ```
-but I have discovered that just using that will not work in zsh. 
+
+but I have discovered that just using that will not work in zsh.
 So from now on everywhere you see Version B just replace it with Version A.
 
-also rename DIR to _DIR everywhere you do that modification
+also rename DIR to \_DIR everywhere you do that modification
 
 if refering something from ROOT directory is needed then define ROOT based on DIR in relative manner from current script like:
 
@@ -65,12 +68,12 @@ ROOT="$(cd "${DIR}/../.." && pwd)"
 _ROOT="$(cd "${_DIR}/../.." && pwd)"
 ```
 
-... depends how many directories up we have to go and which version of dir you derriving it from _DIR or DIR.
+... depends how many directories up we have to go and which version of dir you derriving it from \_DIR or DIR.
 
 But to be specific:
 
-- _DIR (preferred) or DIR is to determine current script location
-- _ROOT (preferred) or ROOT is to determine project root location
+- \_DIR (preferred) or DIR is to determine current script location
+- \_ROOT (preferred) or ROOT is to determine project root location
 
 When you have to go up from current script location use ../ or ../../ but the general target is to reach root directory of the project and then from there somewhere else then define ROOT by rerriving it from DIR and from that point use ROOT to reach wherever you need to reach.
 
@@ -136,9 +139,7 @@ EEE
 
 # colors
 
-
-
-When using colors use 
+When using colors use
 
 ```
 
@@ -157,7 +158,7 @@ RESET=$'\033[0m'
 
 ```
 
-or if file enter_esc.sh exist use 
+or if file enter_esc.sh exist use
 
 ```
 
@@ -210,10 +211,8 @@ LOCAL_MSG=$(echo "${LOCAL_COMMIT}" | cut -d' ' -f2-)
 always wrap in quotes, because when value with spaces will be produced it might cause issues.
 So use rather:
 
-
 ```sh
 LOCAL_MSG="$(echo "${LOCAL_COMMIT}" | cut -d' ' -f2-)"
 ```
 
 </produce_value_for_variable>
-

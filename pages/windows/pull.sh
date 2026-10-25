@@ -4,7 +4,7 @@ _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
 case ${_SHELL} in
   zsh)
-    DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+    DIR="$( cd "$( dirname "${(%):-%x}" )" && pwd -P )"
     _0="$( basename "${(%):-%N}" )"
     _SCRIPT="${(%):-%N}"
     _BINARY="/bin/zsh"

@@ -58,7 +58,7 @@ _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
 case ${_SHELL} in
   zsh)
-    __DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+    __DIR="$( cd "$( dirname "${(%):-%x}" )" && pwd -P )"
     ;;
   sh)
     __DIR="$( cd "$( dirname "${0}" )" && pwd -P )"

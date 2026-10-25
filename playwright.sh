@@ -5,7 +5,7 @@ S="\\" # will be used later
 _SHELL="$(ps "${$}" | grep "${$} " | grep -v grep | sed -rn "s/.*[-\/]+(bash|z?sh) .*/\1/p")"; # bash || sh || zsh
 case ${_SHELL} in
   zsh)
-    _DIR="$( cd "$( dirname "${(%):-%N}" )" && pwd -P )"
+    _DIR="$( cd "$( dirname "${(%):-%x}" )" && pwd -P )"
     _0="$( basename "${(%):-%N}" )"
     _SCRIPT="${(%):-%N}"
     _BINARY="/bin/zsh"

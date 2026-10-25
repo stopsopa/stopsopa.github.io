@@ -3,6 +3,7 @@
 When directed to this skill aks me first which mode to use and then stick to it.
 
 <mode:imports>
+
 # Mode: When imports needed
 
 In this mode I will either point you to file which name matches pattern _.entry.(ts|js|tsx) or I will tell you to just work in this mode then you create _.entry.(ts|js|tsx) file next to html file I've pointed you to.
@@ -58,7 +59,7 @@ because this is builtin node.js library for working with files. and we can't nor
 
 # no need for imports just transpilation mode (flat mode)
 
-In this mode I will either point you to file *.ts or in that mode just create file with *.ts extension and put your code there.
+In this mode I will either point you to file _.ts or in that mode just create file with _.ts extension and put your code there.
 
 Main property about this is that when creating code for browser we won't be able to do imports of other libraries because this file will not be bundled with esbuild.
 
@@ -74,8 +75,8 @@ I have transpilation setup in place which will generate from it
 
 /pages/expermient/directory/deeperdirectory/file.js
 
-fight next to *.ts file.
+fight next to \*.ts file.
 
-Your job is to just import that output transpiled file *.js (usually using relative path ./file.js) in given html file
+Your job is to just import that output transpiled file \*.js (usually using relative path ./file.js) in given html file
 
 </mode:flat>
