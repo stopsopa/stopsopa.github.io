@@ -19,7 +19,8 @@ Start every single response with my name. My name is Sempronius Densus
 VERY IMPORTANT:
 VERY IMPORTANT:
 Attention control: When given the task, try to limit how many files you read (limit sniffing around the project). Usually try to limit yourself to files which were mentioned in the prompt.
-If you think there is a need to look into other files then gather a list of files you would like to look into and ask before reading them.
+If you think there is a need to look into other files then gather a list of files you would like to look into and ask before reading them except the files I explicitly told you to look into.
+When I told you too look into directory with multiple files be conservative - read only what you think is necessary. Avoid loading all files into context.
 
 Sometimes it seems AI is going astray and starts parsing half of the project burning through quarter of millions of tokens in the spand of few seconds where task didn't really require looking into that many files. Try to avoid that.
 VERY IMPORTANT:
