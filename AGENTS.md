@@ -136,3 +136,17 @@ When building end to end tests make sure that all elements we interact with have
 When building interactive elements. Generally when building UI make sure to always add unique data-testid to every interactive element user will be pressing, touching and any other interaction. Also all emenents you suspsect will be touched by end to end testing
 
 </ui>
+
+<xx.cjs>
+
+Files xx.cjs is just config tool similar to Makefile or to https://just.systems/man/en/
+
+This is just config which defines list of commans user will run often. To make running them more convenient.
+
+so xx.cjs is just file with name of command which is normally selected from the list in interactive mode when user types `xx` and presses enter.
+
+Then it will execute as shell script what is in `command` field of given element.
+
+There is also description field to fill in describing what given command is doing.
+
+</xx.cjs>
