@@ -1,0 +1,22 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+  .:
+    dependencies:
+      gitignore-parser:
+        specifier: ^0.0.2
+        version: 0.0.2
+
+packages:
+
+  gitignore-parser@0.0.2:
+    resolution: {integrity: sha512-X6mpqUv59uWLGD4n3hZ8Cu8KbF2PMWPSFYmxZjdkpm3yOU7hSUYnzTkZI1mcWqchphvqyuz3/BhgBR4E/JtkCg==}
+    engines: {node: '>=0.10.0'}
+
+snapshots:
+
+  gitignore-parser@0.0.2: {}

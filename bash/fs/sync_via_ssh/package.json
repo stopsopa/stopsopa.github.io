@@ -1,0 +1,6 @@
+{
+	"type": "module",
+	"dependencies": {
+		"gitignore-parser": "^0.0.2"
+	}
+}
