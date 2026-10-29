@@ -156,3 +156,5 @@ descriptions so an AI pass can fill them in afterwards.
 
 - [cli/yt-to-mp3/terminal_link.sh](cli/yt-to-mp3/terminal_link.sh): Creates clickable terminal hyperlinks using ANSI escape sequences, with optional icon prefix (default 🔗).
 - [file/fuzzy.ts](file/fuzzy.ts): Interactive fuzzy search filter for terminal pipelines and file selection. Reads lines from stdin (or defaults to find command if stdin is a terminal), presents an interactive list with search, highlights matches, and outputs the selected line to stdout.
+
+- [fs/sync_via_ssh/sync.sh](fs/sync_via_ssh/sync.sh): 
