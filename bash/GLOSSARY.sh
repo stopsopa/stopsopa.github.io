@@ -63,7 +63,7 @@ SEARCH="bash"
 #   - *.js only when no same-dir, same-basename *.ts sibling exists
 build_list() {
     {
-        find "${SEARCH}" -type f \( -name '*.sh' -o -name '*.ts' \) -print | NODE_OPTIONS="" node gitignore.js bash/GLOSSARY.ignore
+        find "${SEARCH}" -type f \( -name '*.sh' -o -name '*.ts' \) -print
 
         # *.js candidates, filtered: drop any with a sibling .ts next to it.
         find "${SEARCH}" -type f -name '*.js' -print \
@@ -72,7 +72,7 @@ build_list() {
                   [[ -e "${ts}" ]] || printf '%s\n' "${js}"
               done
     } \
-        | sort -u
+        | sort -u | NODE_OPTIONS="" node gitignore.js bash/GLOSSARY.ignore
 }
 
 case "${1:-}" in
