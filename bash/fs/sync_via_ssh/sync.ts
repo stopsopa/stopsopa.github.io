@@ -1,6 +1,10 @@
 
 /**
  * Continuous SSH file synchronization
+ * In other words:
+ * I have watch on directory what is registered as create/update/delete is passed through gitignore.ts [ignorefile]
+ * then what is ignored goes to it's stderr and what is not goes to stdout
+ * then we pipe stdout to script sync.sh which is responsible by syncing via rsync to remote in batches
  *
  * Usage:
  *   export SSH_USER="administrator"
