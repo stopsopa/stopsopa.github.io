@@ -17,7 +17,6 @@ case ${_SHELL} in
     _0="$( basename "${(%):-%N}" )"
     _SCRIPT="${(%):-%N}"
     _BINARY="/bin/zsh"
-    _PWD="$(pwd)"
     ;;
   sh)
     # be carefull this will not work when sourcing this file in sh shell
@@ -26,16 +25,15 @@ case ${_SHELL} in
     _0="$( basename "${0}" )"
     _SCRIPT="${0}"
     _BINARY="/bin/sh"
-    _PWD="$(pwd)"
     ;;
   *)
     _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
     _0="$( basename "${BASH_SOURCE[0]}" )"
     _SCRIPT="${BASH_SOURCE[0]}"
     _BINARY="/bin/bash"
-    _PWD="$(pwd)"
     ;;
 esac
+_PWD="$(pwd)"
 
 ```
 

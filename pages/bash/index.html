@@ -764,7 +764,6 @@
                 _0="$( basename "${(%):-%N}" )"
                 _SCRIPT="${(%):-%N}"
                 _BINARY="/bin/zsh"
-                _PWD="$(pwd)"
                 ;;
               sh)
                 # be carefull this will not work when sourcing this file in sh shell
@@ -773,16 +772,15 @@
                 _0="$( basename "${0}" )"
                 _SCRIPT="${0}"
                 _BINARY="/bin/sh"
-                _PWD="$(pwd)"
                 ;;
               *)
                 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
                 _0="$( basename "${BASH_SOURCE[0]}" )"
                 _SCRIPT="${BASH_SOURCE[0]}"
                 _BINARY="/bin/bash"
-                _PWD="$(pwd)"
                 ;;
             esac
+            _PWD="$(pwd)"
             ROOT="$(cd "${_DIR}/../.." && pwd)"
             cd "${ROOT}"
             ROOT="$(pwd)"
@@ -3228,23 +3226,21 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
               _0="$( basename "${(%):-%N}" )"
               _SCRIPT="${(%):-%N}"
               _BINARY="/bin/zsh"
-              _PWD="$(pwd)"
               ;;
             sh)
               _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
               _0="$( basename "${0}" )"
               _SCRIPT="${0}"
               _BINARY="/bin/sh"
-              _PWD="$(pwd)"
               ;;
             *)
               _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
               _0="$( basename "${BASH_SOURCE[0]}" )"
               _SCRIPT="${BASH_SOURCE[0]}"
               _BINARY="/bin/bash"
-              _PWD="$(pwd)"
               ;;
           esac
+          _PWD="$(pwd)"
 
           # test of above
           mkdir -p aaaa_aaaa/bbb/ccc
@@ -3256,21 +3252,19 @@ AFAIK, you can't do it without ugly hacks. Writing to a pipe (or reading from it
               _DIR="\$( cd "\$( dirname "\${(%):-%N}" )" && pwd -P )"
               _SCRIPT="\${(%):-%N}"
               _BINARY="/bin/zsh"
-              _PWD="$(pwd)"
               ;;
             sh)
               _DIR="\$( cd "\$( dirname "\${0}" )" && pwd -P )"
               _SCRIPT="\${0}"
               _BINARY="/bin/sh"
-              _PWD="$(pwd)"
               ;;
             *)
               _DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd -P )"
               _SCRIPT="\${BASH_SOURCE[0]}"
               _BINARY="/bin/bash"
-              _PWD="$(pwd)"
               ;;
           esac
+          _PWD="$(pwd)"
           echo "_ROOT=\${_DIR}"
           echo "_SCRIPT=\${_SCRIPT}"
           echo "_BINARY=\${_BINARY}"

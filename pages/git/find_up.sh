@@ -102,7 +102,6 @@ case ${_SHELL} in
 esac
 _PWD="$(pwd)"
 
-
 ORIGINAL_PWD="${_PWD}"
 
 echo "SCRIPT: ${_SCRIPT}"

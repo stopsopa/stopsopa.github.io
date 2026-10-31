@@ -22,9 +22,6 @@ case ${_SHELL} in
 esac
 _PWD="$(pwd)"
 
-
-_PWD="$(pwd)"
-
 GIT=".git"
 
 if [ ! -d "${GIT}" ]; then

@@ -82,8 +82,6 @@ case ${_SHELL} in
 esac
 _PWD="$(pwd)"
 
-_PWD="$(pwd)"
-
 ROOT="${_DIR}/.."
 
 function ec {
