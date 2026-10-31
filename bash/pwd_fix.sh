@@ -9,7 +9,7 @@
 # -type f \( \
 #   -name '*.sh' \
 # \) \
-# -print | NODE_OPTIONS= /bin/bash ./pwd_change.sh
+# -print | NODE_OPTIONS= /bin/bash ./bash/pwd_fix.sh
 
 # Read file paths line by line from stdin
 while IFS= read -r file; do
