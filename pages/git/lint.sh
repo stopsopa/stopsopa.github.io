@@ -8,21 +8,19 @@ case ${_SHELL} in
     _DIR="$( cd "$( dirname "${(%):-%x}" )" && pwd -P )"
     _SCRIPT="${(%):-%N}"
     _BINARY="/bin/zsh"
-    _PWD="$(pwd)"
     ;;
   sh)
     _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
     _SCRIPT="${0}"
     _BINARY="/bin/sh"
-    _PWD="$(pwd)"
     ;;
   *)
     _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
     _SCRIPT="${BASH_SOURCE[0]}"
     _BINARY="/bin/bash"
-    _PWD="$(pwd)"
     ;;
 esac
+_PWD="$(pwd)"
 
 
 _PWD="$(pwd)"
