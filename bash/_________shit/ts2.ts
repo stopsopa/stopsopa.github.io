@@ -2,73 +2,74 @@ function solution(A: number[][]): number {
   const rows = A.length;
   const cols = A[0].length;
 
-  const count2 = Array.from({ length: rows }, () => new Array(cols).fill(0));
-  const count5 = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  const twos = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  const fives = Array.from({ length: rows }, () => new Array(cols).fill(0));
 
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      let num = A[i][j];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      let num = A[r][c];
 
       while (num % 2 === 0) {
-        count2[i][j]++;
+        twos[r][c]++;
         num /= 2;
       }
 
       while (num % 5 === 0) {
-        count5[i][j]++;
+        fives[r][c]++;
         num /= 5;
       }
     }
   }
 
-  const l2 = Array.from({ length: rows }, () => new Array(cols).fill(0));
-  const l5 = Array.from({ length: rows }, () => new Array(cols).fill(0));
-  const u2 = Array.from({ length: rows }, () => new Array(cols).fill(0));
-  const u5 = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  const leftTwos = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  const leftFives = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  const topTwos = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  const topFives = Array.from({ length: rows }, () => new Array(cols).fill(0));
 
-  const r2 = Array.from({ length: rows }, () => new Array(cols).fill(0));
-  const r5 = Array.from({ length: rows }, () => new Array(cols).fill(0));
-  const d2 = Array.from({ length: rows }, () => new Array(cols).fill(0));
-  const d5 = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      leftTwos[r][c] = twos[r][c] + (c > 0 ? leftTwos[r][c - 1] : 0);
+      leftFives[r][c] = fives[r][c] + (c > 0 ? leftFives[r][c - 1] : 0);
 
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      l2[i][j] = count2[i][j] + (j > 0 ? l2[i][j - 1] : 0);
-      l5[i][j] = count5[i][j] + (j > 0 ? l5[i][j - 1] : 0);
-
-      u2[i][j] = count2[i][j] + (i > 0 ? u2[i - 1][j] : 0);
-      u5[i][j] = count5[i][j] + (i > 0 ? u5[i - 1][j] : 0);
+      topTwos[r][c] = twos[r][c] + (r > 0 ? topTwos[r - 1][c] : 0);
+      topFives[r][c] = fives[r][c] + (r > 0 ? topFives[r - 1][c] : 0);
     }
   }
 
-  for (let i = rows - 1; i >= 0; i--) {
-    for (let j = cols - 1; j >= 0; j--) {
-      r2[i][j] = count2[i][j] + (j < cols - 1 ? r2[i][j + 1] : 0);
-      r5[i][j] = count5[i][j] + (j < cols - 1 ? r5[i][j + 1] : 0);
+  const rightTwos = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  const rightFives = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  const bottomTwos = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  const bottomFives = Array.from({ length: rows }, () => new Array(cols).fill(0));
 
-      d2[i][j] = count2[i][j] + (i < rows - 1 ? d2[i + 1][j] : 0);
-      d5[i][j] = count5[i][j] + (i < rows - 1 ? d5[i + 1][j] : 0);
+  for (let r = rows - 1; r >= 0; r--) {
+    for (let c = cols - 1; c >= 0; c--) {
+      rightTwos[r][c] = twos[r][c] + (c < cols - 1 ? rightTwos[r][c + 1] : 0);
+      rightFives[r][c] = fives[r][c] + (c < cols - 1 ? rightFives[r][c + 1] : 0);
+
+      bottomTwos[r][c] = twos[r][c] + (r < rows - 1 ? bottomTwos[r + 1][c] : 0);
+      bottomFives[r][c] = fives[r][c] + (r < rows - 1 ? bottomFives[r + 1][c] : 0);
     }
   }
 
-  let result = 0;
+  let best = 0;
 
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
       const paths = [
-        [l2[i][j], l5[i][j], u2[i][j], u5[i][j]],
-        [l2[i][j], l5[i][j], d2[i][j], d5[i][j]],
-        [r2[i][j], r5[i][j], u2[i][j], u5[i][j]],
-        [r2[i][j], r5[i][j], d2[i][j], d5[i][j]],
+        [leftTwos[r][c], leftFives[r][c], topTwos[r][c], topFives[r][c]],
+        [leftTwos[r][c], leftFives[r][c], bottomTwos[r][c], bottomFives[r][c]],
+        [rightTwos[r][c], rightFives[r][c], topTwos[r][c], topFives[r][c]],
+        [rightTwos[r][c], rightFives[r][c], bottomTwos[r][c], bottomFives[r][c]],
       ];
 
-      for (const [a2, a5, b2, b5] of paths) {
-        const zeros = Math.min(a2 + b2 - count2[i][j], a5 + b5 - count5[i][j]);
+      for (const [a, b, d, e] of paths) {
+        const totalTwos = a + d - twos[r][c];
+        const totalFives = b + e - fives[r][c];
 
-        result = Math.max(result, zeros);
+        best = Math.max(best, Math.min(totalTwos, totalFives));
       }
     }
   }
 
-  return result;
+  return best;
 }
