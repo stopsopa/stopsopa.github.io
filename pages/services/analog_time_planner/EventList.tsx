@@ -77,6 +77,21 @@ export default function EventList({
 
   const endTime = computeEndTime(startHour, startMinute, events);
 
+  // ── Step start / end time by delta minutes (e.g. +/-5 min) ───────────────────
+  function stepStart(deltaMinutes: number) {
+    const currentMin = startHour * 60 + startMinute;
+    const newMin = (((currentMin + deltaMinutes) % 1440) + 1440) % 1440;
+    onStartChange(Math.floor(newMin / 60), newMin % 60);
+  }
+
+  function stepEnd(deltaMinutes: number) {
+    const totalEventMinutes = events.reduce((sum, ev) => sum + ev.time, 0);
+    const currentEndMin = startHour * 60 + startMinute + totalEventMinutes;
+    const targetEndMin = (((currentEndMin + deltaMinutes) % 1440) + 1440) % 1440;
+    const newStartTotalMin = (((targetEndMin - totalEventMinutes) % 1440) + 1440) % 1440;
+    onStartChange(Math.floor(newStartTotalMin / 60), newStartTotalMin % 60);
+  }
+
   // ── Start time input handler ────────────────────────────────────────────────
   function handleStartChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value;
@@ -313,6 +328,28 @@ export default function EventList({
             onChange={handleStartChange}
             onInput={handleStartChange}
           />
+          <div className="atp-time-step-btns">
+            <button
+              type="button"
+              className="atp-time-step-btn"
+              data-testid="atp-start-step-up"
+              aria-label="Add 5 minutes to start"
+              title="+5 minutes"
+              onClick={() => stepStart(5)}
+            >
+              ▲
+            </button>
+            <button
+              type="button"
+              className="atp-time-step-btn"
+              data-testid="atp-start-step-down"
+              aria-label="Subtract 5 minutes from start"
+              title="-5 minutes"
+              onClick={() => stepStart(-5)}
+            >
+              ▼
+            </button>
+          </div>
           <span
             className={`atp-anchor-badge ${anchor === "start" ? "constant" : "movable"}`}
             title={anchor === "start" ? "Start is constant" : "Start is movable (updates on edit)"}
@@ -342,6 +379,28 @@ export default function EventList({
             onChange={handleEndChange}
             onInput={handleEndChange}
           />
+          <div className="atp-time-step-btns">
+            <button
+              type="button"
+              className="atp-time-step-btn"
+              data-testid="atp-end-step-up"
+              aria-label="Add 5 minutes to end"
+              title="+5 minutes"
+              onClick={() => stepEnd(5)}
+            >
+              ▲
+            </button>
+            <button
+              type="button"
+              className="atp-time-step-btn"
+              data-testid="atp-end-step-down"
+              aria-label="Subtract 5 minutes from end"
+              title="-5 minutes"
+              onClick={() => stepEnd(-5)}
+            >
+              ▼
+            </button>
+          </div>
           <span
             className={`atp-anchor-badge ${anchor === "end" ? "constant" : "movable"}`}
             title={anchor === "end" ? "End is constant" : "End is movable (updates on edit)"}
