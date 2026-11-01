@@ -332,22 +332,22 @@ export default function EventList({
             <button
               type="button"
               className="atp-time-step-btn"
-              data-testid="atp-start-step-up"
-              aria-label="Add 5 minutes to start"
-              title="+5 minutes"
-              onClick={() => stepStart(5)}
-            >
-              ▲
-            </button>
-            <button
-              type="button"
-              className="atp-time-step-btn"
               data-testid="atp-start-step-down"
               aria-label="Subtract 5 minutes from start"
               title="-5 minutes"
               onClick={() => stepStart(-5)}
             >
               ▼
+            </button>
+            <button
+              type="button"
+              className="atp-time-step-btn"
+              data-testid="atp-start-step-up"
+              aria-label="Add 5 minutes to start"
+              title="+5 minutes"
+              onClick={() => stepStart(5)}
+            >
+              ▲
             </button>
           </div>
           <span
@@ -383,22 +383,22 @@ export default function EventList({
             <button
               type="button"
               className="atp-time-step-btn"
-              data-testid="atp-end-step-up"
-              aria-label="Add 5 minutes to end"
-              title="+5 minutes"
-              onClick={() => stepEnd(5)}
-            >
-              ▲
-            </button>
-            <button
-              type="button"
-              className="atp-time-step-btn"
               data-testid="atp-end-step-down"
               aria-label="Subtract 5 minutes from end"
               title="-5 minutes"
               onClick={() => stepEnd(-5)}
             >
               ▼
+            </button>
+            <button
+              type="button"
+              className="atp-time-step-btn"
+              data-testid="atp-end-step-up"
+              aria-label="Add 5 minutes to end"
+              title="+5 minutes"
+              onClick={() => stepEnd(5)}
+            >
+              ▲
             </button>
           </div>
           <span
