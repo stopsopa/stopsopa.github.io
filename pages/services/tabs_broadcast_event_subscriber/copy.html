@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>copy</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        font-family: monospace;
+        background: #1e1e1e;
+        color: #ccc;
+      }
+
+      textarea {
+        flex: 1;
+        width: 100%;
+        resize: none;
+        border: none;
+        outline: none;
+        padding: 12px;
+        font-family: monospace;
+        font-size: 14px;
+        background: #1e1e1e;
+        color: #d4d4d4;
+      }
+
+      pre {
+        padding: 12px;
+        background: #111;
+        color: #9cdcfe;
+        font-size: 13px;
+        white-space: pre-wrap;
+        border-top: 1px solid #333;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea
+      id="output"
+      placeholder="Waiting for other_tabs:copy event..."
+    ></textarea>
+
+    <pre id="example">
+// Run this in any other tab to send data to the textarea above.
+// Works across all tabs in all browsers connected to the server.
+
+document.documentElement.dispatchEvent(
+  new CustomEvent("os_browser_bridge", {
+    detail: {
+      event: "other_tabs:copy",
+      payload: { text: "Hello from other tab: " + (new Date().toISOString()) },
+    },
+  })
+);
+
+// This tab listens for the arriving event:
+// document.addEventListener("other_tabs:copy", (event) => {
+//   // event.detail = { text: "Hello from other tab" }
+// });</pre
+    >
+
+    <script>
+      const output = document.getElementById("output");
+
+      document.addEventListener("other_tabs:copy", (event) => {
+        const { detail } = event;
+
+        if (detail && typeof detail.text !== "undefined") {
+          output.value = detail.text;
+        } else {
+          output.value = JSON.stringify(detail, null, 2);
+        }
+      });
+    </script>
+  </body>
+</html>
