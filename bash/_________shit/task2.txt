@@ -1,0 +1,114 @@
+
+
+
+https://chatgpt.com/share/6ae7cd85-42c0-83eb-b9ec-0c79b3c0dbca
+
+
+// you can write to stdout for debugging purposes, e.g.
+// console.log('this is a debug message');
+
+function createArray(rows: number, cols: number) {
+    return Array.from({length: rows }, () => new Array(cols).fill(0));
+}
+function solution(A: number[][]): number {
+
+    const rows = A.length;
+    const cols = A[0].length;
+    const twos = createArray(rows, cols);    const fives = createArray(rows, cols);
+    for (let r = 0; r < rows; r += 1) {
+
+        for (let c = 0; c < cols ; c += 1 ) {
+            let num = A[r][c];
+
+            while (num % 2 === 0) {
+                twos[r][c] += 1;
+                num = num / 2;
+            }
+            while (num % 5 === 0) {
+                fives[r][c] += 1;
+                num = num / 5;
+            }
+        }
+    }
+
+
+    const leftTwos = createArray(rows, cols);    const leftFives = createArray(rows, cols);
+    const topTwos = createArray(rows, cols);    const topFives = createArray(rows, cols);
+
+    for (let r = 0 ; r < rows ; r += 1) {
+        for (let c = 0 ; c < cols ; c += 1 ) {
+            leftTwos[r][c] = twos[r][c] + (c > 0 ? leftTwos[r][c - 1]: 0);
+            leftFives[r][c] = fives[r][c] + (c > 0 ? leftFives[r][c - 1]: 0);
+
+            topTwos[r][c] = twos[r][c] + (r > 0 ? topTwos[r - 1][c]: 0);
+            topFives[r][c] = twos[r][c] + (r > 0 ? topFives[r - 1][c]: 0);
+
+        }
+    }
+
+
+    const rightTwos = createArray(rows, cols);    const rightFives = createArray(rows, cols);
+    const bottomTwos = createArray(rows, cols);    const bottomFives = createArray(rows, cols);
+
+    for (let r = rows - 1 ; r >= 0 ; r -= 1) {
+        for (let c = cols - 1 ; c >= 0 ; c -= 1 ) {
+
+
+            rightTwos[r][c] = twos[r][c] + (c < cols - 1 ? rightTwos[r][c + 1]: 0);
+            rightFives[r][c] = fives[r][c] + (c < cols - 1 ? rightFives[r][c + 1]: 0);
+
+            bottomTwos[r][c] = twos[r][c] + (r < rows ? bottomTwos[r + 1][c]: 0);
+            bottomFives[r][c] = twos[r][c] + (r < rows ? bottomFives[r + 1][c]: 0);
+
+        }
+    }
+
+    let best;
+
+    for (let r = 0 ; r < rows ; r += 1 ) {
+        for (let c = 0; c < cols ; c += 1) {
+            const paths = [
+                [leftTwos[r][c],leftFives[r][c],topTwos[r][c],topFives[r][c]],
+                [leftTwos[r][c],leftFives[r][c],bottomTwos[r][c],bottomFives[r][c]],
+                [rightTwos[r][c],rightFives[r][c],topTwos[r][c],topFives[r][c]],
+                [rightTwos[r][c],rightFives[r][c],bottomTwos[r][c],bottomFives[r][c]],
+
+            ]
+
+            for (cosnt [a, b, d, e] of paths) {
+
+                const totalTwos = a + d - twos[r][c];
+                const totalFives = b + e - fives[r][c];
+
+                best = Math.max(best, Math.min(totalTwos, totalFives))
+            }
+
+        }
+    }
+
+
+    return best;
+}
+
+
+
+
+Compilation successful.
+
+Example test:   [[10, 100, 10], [1, 10, 1], [1, 10, 1]]
+OK
+
+Example test:   [[6, 25, 4, 10], [12, 25, 1, 15], [7, 15, 15, 5]]
+OK
+
+Example test:   [[5, 8, 3, 1], [4, 15, 12, 1], [6, 7, 10, 1], [9, 1, 2, 1]]
+OK
+
+Example test:   [[7500, 10, 11, 12], [6250, 13, 14, 15], [134, 17, 16, 1], [5500, 2093, 5120, 238]]
+OK
+
+Your code is syntactically correct and works properly on the example test.
+Note that the example tests are not part of your score. On submission at least 8 test cases not shown here will assess your solution.
+
+
+
