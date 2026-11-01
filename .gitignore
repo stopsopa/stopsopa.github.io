@@ -58,6 +58,8 @@ bash/node/json/unwrap.js
 bash/node/preamble.js
 bash/node/versioncheck.js
 es.mjs
+lib/addCss.js
+lib/TextareaResize.js
 libs/drag_v2.js
 libs/drag.js
 libs/modURLSearchParams.js

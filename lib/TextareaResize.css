@@ -1,0 +1,16 @@
+/* 
+This is apparently modern and standalone solution but is quite new so recomendation is not to use it at this stage
+use js polyfil src/components/TextareaResize.ts
+
+textarea.textareaautoresize {
+  field-sizing: content;
+  width: 100%;
+  max-width: 500px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  resize: none;
+  overflow-y: hidden;
+  box-sizing: border-box;
+} */
