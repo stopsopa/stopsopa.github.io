@@ -4,7 +4,7 @@
       --env .env \
       --filter "grep aes.jasmine.unit" 
 
-  NODE_OPTIONS="" /bin/bash test.sh pages/encryptor/aes.jasmine.unit.js
+  NODE_OPTIONS="" /bin/bash test.sh pages/services/encryptor/aes.jasmine.unit.js
 
       see more in xx.cjs
  */

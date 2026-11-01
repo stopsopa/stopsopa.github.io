@@ -379,7 +379,7 @@ set -e
 cat <<EEE
 
 # generate new key:
-https://stopsopa.github.io/pages/encryptor/index.rendered.html
+https://stopsopa.github.io/pages/services/encryptor/index.rendered.html
 
 # controlled via .env 
 

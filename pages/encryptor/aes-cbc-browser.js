@@ -11,7 +11,7 @@
  *      https://security.stackexchange.com/a/184350
  *
  * WARNING:
- *    LATER UNCOMMENT 'pages/encryptor/aes.jasmine.unit.js' FROM vitest.config.ts
+ *    LATER UNCOMMENT 'pages/services/encryptor/aes.jasmine.unit.js' FROM vitest.config.ts
  */
 
 const enc = new TextEncoder();

@@ -1,5 +1,5 @@
 /**
- * see comments in pages/encryptor/aes-cbc-browser.js
+ * see comments in pages/services/encryptor/aes-cbc-browser.js
  */
 
 // const crypto = require("crypto");

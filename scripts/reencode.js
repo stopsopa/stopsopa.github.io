@@ -22,7 +22,7 @@ import {
   getIntegerThrow,
 } from "envprocessor";
 
-import { encryptMessage, decryptMessage } from "../pages/encryptor/aes-cbc-node.js";
+import { encryptMessage, decryptMessage } from "../pages/services/encryptor/aes-cbc-node.js";
 
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);

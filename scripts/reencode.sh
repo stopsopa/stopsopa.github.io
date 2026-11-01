@@ -67,7 +67,7 @@ EOF
 #    from: https://unix.stackexchange.com/a/226514
 # that's why we will use additional grep at the end instead of --exclude-dir
 # for filtering nested directoriess
-FIND_LIST="${FIND//-Pzo/-Pzl} | grep -v \"^pages/encryptor/\""
+FIND_LIST="${FIND//-Pzo/-Pzl} | grep -v \"^pages/services/encryptor/\""
 
 cat <<EEE
 ${0}: to test searching grep and see what it has found command run:
