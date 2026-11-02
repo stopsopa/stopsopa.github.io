@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -191,12 +191,12 @@
         <span class="record-dot" data-testid="indicator-record-pulse"></span>
         <span id="record-btn-text">Record</span>
       </button>
-      <button id="revert-btn" type="button" data-testid="btn-revert-memory" style="display: none;">Revert</button>
+      <button id="revert-btn" type="button" data-testid="btn-revert-memory" style="display: none">Revert</button>
     </div>
 
     <textarea
       id="output"
-      placeholder="Waiting for other_tabs:copy event... Any text selected on other tabs via Tampermonkey script &quot;OS Browser Bridge - selection copy&quot; will be captured and displayed here."
+      placeholder='Waiting for other_tabs:copy event... Any text selected on other tabs via Tampermonkey script "OS Browser Bridge - selection copy" will be captured and displayed here.'
     ></textarea>
 
     <div id="joiner-panel" class="joiner-container" data-testid="container-joiner">
@@ -272,11 +272,7 @@ document.documentElement.dispatchEvent(
        * Newline -> pilcrow / enter symbol (¶)
        */
       function formatNonPrintable(text) {
-        return text
-          .replace(/ /g, "·")
-          .replace(/\t/g, "→")
-          .replace(/\r/g, "↵")
-          .replace(/\n/g, "¶\n");
+        return text.replace(/ /g, "·").replace(/\t/g, "→").replace(/\r/g, "↵").replace(/\n/g, "¶\n");
       }
 
       function updateJoinerPreview() {

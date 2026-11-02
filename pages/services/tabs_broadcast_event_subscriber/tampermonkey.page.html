@@ -1,99 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tampermonkey selection test page</title>
-  <style>
-    body {
-      max-width: 760px;
-      margin: 40px auto;
-      font-family: Georgia, serif;
-      font-size: 18px;
-      line-height: 1.7;
-      color: #222;
-      padding: 0 20px 60px;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tampermonkey selection test page</title>
+    <style>
+      body {
+        max-width: 760px;
+        margin: 40px auto;
+        font-family: Georgia, serif;
+        font-size: 18px;
+        line-height: 1.7;
+        color: #222;
+        padding: 0 20px 60px;
+      }
 
-    h1, h2 {
-      font-family: sans-serif;
-    }
+      h1,
+      h2 {
+        font-family: sans-serif;
+      }
 
-    p {
-      margin-bottom: 1.2em;
-    }
+      p {
+        margin-bottom: 1.2em;
+      }
 
-    .divider {
-      border: none;
-      border-top: 2px dashed #ccc;
-      margin: 40px 0;
-    }
+      .divider {
+        border: none;
+        border-top: 2px dashed #ccc;
+        margin: 40px 0;
+      }
 
-    .label {
-      font-family: sans-serif;
-      font-size: 13px;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 8px;
-    }
+      .label {
+        font-family: sans-serif;
+        font-size: 13px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 8px;
+      }
 
-    lorem-block {
-      display: block;
-      border: 2px dashed #1565c0;
-      padding: 16px;
-      margin-top: 12px;
-      border-radius: 4px;
-    }
-  </style>
-</head>
-<body>
+      lorem-block {
+        display: block;
+        border: 2px dashed #1565c0;
+        padding: 16px;
+        margin-top: 12px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Selection test page</h1>
+    <p class="label">Regular DOM paragraphs</p>
 
-  <h1>Selection test page</h1>
-  <p class="label">Regular DOM paragraphs</p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore
+      magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat.
+    </p>
 
-  <p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore
-    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-    aliquip ex ea commodo consequat.
-  </p>
+    <p>
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+      sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
 
-  <p>
-    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </p>
+    <p>
+      Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis molestie dictum semper, enim
+      libero sodales ligula, quis bibendum erat nisi id augue. Maecenas sed diam eget risus varius blandit sit amet non
+      magna.
+    </p>
 
-  <p>
-    Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis molestie dictum semper,
-    enim libero sodales ligula, quis bibendum erat nisi id augue. Maecenas sed diam eget risus varius blandit
-    sit amet non magna.
-  </p>
+    <p>
+      Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor
+      quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
+      ultricies mi vitae est.
+    </p>
 
-  <p>
-    Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum
-    tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas
-    semper. Aenean ultricies mi vitae est.
-  </p>
+    <hr class="divider" />
 
-  <hr class="divider" />
+    <h2>Inside a web component (open shadow root)</h2>
+    <p class="label">Text below is rendered by &lt;lorem-block&gt; web component</p>
 
-  <h2>Inside a web component (open shadow root)</h2>
-  <p class="label">Text below is rendered by &lt;lorem-block&gt; web component</p>
+    <lorem-block></lorem-block>
 
-  <lorem-block></lorem-block>
+    <script>
+      /*
+       * Web component with an open shadow root.
+       * window.getSelection() CAN reach text inside open shadow roots,
+       * so the tampermonkey script should capture selections made here too.
+       */
+      class LoremBlock extends HTMLElement {
+        constructor() {
+          super();
+          const shadow = this.attachShadow({ mode: "open" });
 
-  <script>
-    /*
-     * Web component with an open shadow root.
-     * window.getSelection() CAN reach text inside open shadow roots,
-     * so the tampermonkey script should capture selections made here too.
-     */
-    class LoremBlock extends HTMLElement {
-      constructor() {
-        super();
-        const shadow = this.attachShadow({ mode: 'open' });
-
-        shadow.innerHTML = `
+          shadow.innerHTML = `
           <style>
             :host {
               display: block;
@@ -138,11 +138,10 @@
             Morbi auctor lorem non justo. Nam lacus libero, pretium at, lobortis vitae, ornare et, elit.
           </p>
         `;
+        }
       }
-    }
 
-    customElements.define('lorem-block', LoremBlock);
-  </script>
-
-</body>
+      customElements.define("lorem-block", LoremBlock);
+    </script>
+  </body>
 </html>

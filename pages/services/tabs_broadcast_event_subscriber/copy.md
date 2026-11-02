@@ -5,6 +5,7 @@ Build `copy.html` as a standalone web tool capturing `other_tabs:copy` cross-tab
 ## Features
 
 ### 1. Modes
+
 - **Regular mode (default)**:
   - Each incoming event overwrites `#output` textarea.
   - Shows `<pre id="example">` instructions at bottom.
@@ -18,13 +19,16 @@ Build `copy.html` as a standalone web tool capturing `other_tabs:copy` cross-tab
   - Hides `<pre id="example">`, shows `#joiner-panel` and `#revert-btn`.
 
 ### 2. Controls & Toolbar
+
 - **Link**: `<a href="tampermonkey.page.html" target="_blank" data-testid="link-tampermonkey-page">`.
 - **Copy button**: `#copy-btn` (`data-testid="btn-copy-textarea"`). Copies `#output` value to clipboard, shows "Copied!" for 1.5s.
 - **Record button**: `#record-btn` (`data-testid="btn-record-mode"`). Toggles mode, contains `.record-dot` (`data-testid="indicator-record-pulse"`).
 - **Revert button**: `#revert-btn` (`data-testid="btn-revert-memory"`). Visible in record mode only. Executes `memory.pop()` and rebuilds `#output.value = memory.join(joiner)` (can clear completely back to empty). Disabled when `memory` is empty.
 
 ### 3. Joiner Panel (`#joiner-panel`, `data-testid="container-joiner"`)
+
 Two columns:
+
 - **Left**: `<textarea id="joiner-input" data-testid="input-joiner">`, default value `"\n"`. Used as delimiter between items.
 - **Right**: `<div id="joiner-preview" data-testid="preview-joiner">`. Renders non-printable characters in real-time:
   - ` ` $\rightarrow$ `·` (middle dot)
@@ -33,6 +37,7 @@ Two columns:
   - `\n` $\rightarrow$ `¶\n` (pilcrow + newline)
 
 ### 4. Event Logic
+
 - Listen on `document` for `"other_tabs:copy"`.
 - Text extraction: `detail.text !== undefined ? String(detail.text) : JSON.stringify(detail, null, 2)`.
 - If recording: `memory.push(text)`, rebuild output (`memory.join(joiner)`), update revert button.
