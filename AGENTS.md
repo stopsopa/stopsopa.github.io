@@ -150,3 +150,19 @@ Then it will execute as shell script what is in `command` field of given element
 There is also description field to fill in describing what given command is doing.
 
 </xx.cjs>
+
+
+
+<create-description>
+When creating module or shell script and explanation what is the purpose of given script or libarry is beyond what can be deducted from the code, like reason why it was created or intended purpose in grand picture.
+Put that in the top comment section (can be multiline).
+
+Pay special attention to type of comment you should use. I've seen AI mixing style of multiline comment across different programming languages.
+
+Use comments with # at the begining for shell scripts and // or /* */ type for typescript/javascript. and so on. Just use proper comment style typical for each programming language.
+
+Also when shell script especially create in that comment section examples of calling that script with different arguments and outcomes and additional explanation what will be the result of this or that call with such and such arguments.
+The same for typescript/javascript modules as well and other units of code - where code is not obvious or self explanatory.
+
+If you are not sure then just ask if that is needed.
+</create-description>
