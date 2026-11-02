@@ -43,7 +43,7 @@
  *   ignored lab/ui/pnpm-lock.yaml
  * 
  * So generally use it like this:
-  fswatch -e "/\\.git/" -r -x --event-flag-separator=, . |
+  fswatch -e "/\\.git/" -e "/node_modules/" -r -x --event-flag-separator=, . |
   NODE_OPTIONS= node scripts/sync/transform.ts | NODE_OPTIONS= node scripts/sync/filter-gitignored.ts .syncignore \
       > >(sed 's/^/[stdout] /') \
       2> >(sed 's/^/[stderr] /' >&2)
