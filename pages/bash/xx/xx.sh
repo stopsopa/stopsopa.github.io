@@ -465,7 +465,7 @@ if [ "${CODE}" = "10" ]; then
 
 EEE
 
-    exit ${CODE}
+    return ${CODE}
 fi
 
 

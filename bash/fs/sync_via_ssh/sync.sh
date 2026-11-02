@@ -46,7 +46,7 @@ source "${_PWD}/scripts/.env.sh"
 
 export NODE_OPTIONS=
 
-fswatch -r -x --event-flag-separator=, . | \
+fswatch -e "/\\.git/" -r -x --event-flag-separator=, . | \
     NODE_OPTIONS= node scripts/sync/transform.ts | \
     NODE_OPTIONS= node scripts/sync/filter-gitignored.ts .syncignore | \
     NODE_OPTIONS= node scripts/sync/sync.ts

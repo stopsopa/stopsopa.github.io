@@ -1,7 +1,7 @@
 /**
  * 
  * regular use of fswatch like:
- *  fswatch -r -x --event-flag-separator=, .
+ *  fswatch -e "/\\.git/" -r -x --event-flag-separator=, .
  * 
  * produces
     /Users/szdz/Workspace/STOPSOPA__telazekah-machines/STOPSOPA__telazekah-machines/scripts/sync/transform.ts AttributeModified,IsFile,Updated
@@ -13,7 +13,7 @@
     and we pipe it to this script
     and we get
  
- fswatch -r -x --event-flag-separator=, . |  NODE_OPTIONS= node scripts/sync/transform.ts
+ fswatch -e "/\\.git/" -r -x --event-flag-separator=, . |  NODE_OPTIONS= node scripts/sync/transform.ts
 update scripts/sync/transform.ts
 update lab/ui/types.sh
 update lab/ui/pnpm-lock.yaml
