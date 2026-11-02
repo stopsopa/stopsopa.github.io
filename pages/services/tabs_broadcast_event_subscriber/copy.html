@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>copy</title>
+    <script
+      type="module"
+      src="https://stopsopa.github.io/ace-editor-webcomponent/ace-web-component.js"
+      data-main-ace="https://stopsopa.github.io/ace-editor-webcomponent/noprettier/ace/ace-builds-1.43.4/src-min-noconflict/ace.js"
+    ></script>
     <style>
       * {
         box-sizing: border-box;
@@ -72,6 +77,29 @@
         cursor: not-allowed;
       }
 
+      .toolbar-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .toolbar select {
+        padding: 4px 8px;
+        font-size: 13px;
+        font-family: inherit;
+        background: #3c3c3c;
+        color: #cccccc;
+        border: 1px solid #555;
+        border-radius: 2px;
+        outline: none;
+        cursor: pointer;
+      }
+
+      .toolbar select:focus {
+        border-color: #0e639c;
+      }
+
       .record-dot {
         display: none;
         width: 10px;
@@ -103,26 +131,18 @@
         }
       }
 
-      textarea {
+      #programmatic-demo {
         flex: 1;
         width: 100%;
-        resize: none;
-        border: none;
-        outline: none;
-        padding: 12px;
-        font-family: monospace;
-        font-size: 14px;
-        background: #1e1e1e;
-        color: #d4d4d4;
+        min-height: 0;
+        display: block;
       }
 
-      pre {
-        padding: 12px;
-        background: #111;
-        color: #9cdcfe;
-        font-size: 13px;
-        white-space: pre-wrap;
+      #example {
+        height: 220px;
+        width: 100%;
         border-top: 1px solid #333;
+        display: block;
       }
 
       .joiner-container {
@@ -192,12 +212,37 @@
         <span id="record-btn-text">Record</span>
       </button>
       <button id="revert-btn" type="button" data-testid="btn-revert-memory" style="display: none">Revert</button>
+
+      <div class="toolbar-right">
+        <select id="lang-select" data-testid="select-editor-lang">
+          <option value="python" selected>Python</option>
+          <option value="typescript">TypeScript</option>
+          <option value="java">Java</option>
+          <option value="javascript">JavaScript</option>
+          <option value="html">HTML</option>
+          <option value="css">CSS</option>
+          <option value="json">JSON</option>
+          <option value="markdown">Markdown</option>
+          <option value="sh">Shell (sh)</option>
+          <option value="sql">SQL</option>
+          <option value="c_cpp">C / C++</option>
+          <option value="csharp">C#</option>
+          <option value="golang">Go</option>
+          <option value="rust">Rust</option>
+          <option value="php">PHP</option>
+          <option value="ruby">Ruby</option>
+          <option value="yaml">YAML</option>
+          <option value="xml">XML</option>
+          <option value="text">Plain Text</option>
+        </select>
+      </div>
     </div>
 
-    <textarea
-      id="output"
-      placeholder='Waiting for other_tabs:copy event... Any text selected on other tabs via Tampermonkey script "OS Browser Bridge - selection copy" will be captured and displayed here.'
-    ></textarea>
+    <ace-editor id="programmatic-demo" lang="python" data-testid="editor-output">
+      <script type="ace">
+# Waiting for other_tabs:copy event... Any text selected on other tabs via Tampermonkey script "OS Browser Bridge - selection copy" will be captured and displayed here.
+      </script>
+    </ace-editor>
 
     <div id="joiner-panel" class="joiner-container" data-testid="container-joiner">
       <div class="joiner-pane">
@@ -210,8 +255,9 @@
       </div>
     </div>
 
-    <pre id="example">
-// Run this in any other tab to send data to the textarea above.
+    <ace-editor id="example" lang="javascript" data-testid="editor-example">
+      <script type="ace">
+// Run this in any other tab to send data to the editor above.
 // Works across all tabs in all browsers connected to the server.
 
 document.documentElement.dispatchEvent(
@@ -228,21 +274,22 @@ document.documentElement.dispatchEvent(
 //   // event.detail = { text: "Hello from other tab" }
 // });
 // there is also tampermonkey script look by name "OS Browser Bridge - selection copy"
-</pre
-    >
+      </script>
+    </ace-editor>
 
     <script>
-      const output = document.getElementById("output");
+      const editor = document.getElementById("programmatic-demo");
       const copyBtn = document.getElementById("copy-btn");
       const recordBtn = document.getElementById("record-btn");
       const recordBtnText = document.getElementById("record-btn-text");
       const revertBtn = document.getElementById("revert-btn");
-      const examplePre = document.getElementById("example");
+      const langSelect = document.getElementById("lang-select");
+      const exampleEditor = document.getElementById("example");
       const joinerPanel = document.getElementById("joiner-panel");
       const joinerInput = document.getElementById("joiner-input");
       const joinerPreview = document.getElementById("joiner-preview");
 
-      // Regular mode (isRecording = false) overrides output on every new event
+      // Regular mode (isRecording = false) overrides editor on every new event
       // Record mode (isRecording = true) appends joiner delimiter followed by new incoming text
       let isRecording = false;
 
@@ -253,11 +300,28 @@ document.documentElement.dispatchEvent(
       joinerInput.value = "\n";
 
       /**
-       * Rebuilds output textarea content solely from memory array joined with current joiner.
+       * Safely sets text value on ace-editor web component
+       */
+      function setEditorValue(value) {
+        editor.setAttribute("value", value);
+      }
+
+      /**
+       * Safely gets current text value from ace-editor web component
+       */
+      function getEditorValue() {
+        if (typeof editor.value === "string") {
+          return editor.value;
+        }
+        return editor.getAttribute("value") || "";
+      }
+
+      /**
+       * Rebuilds output content solely from memory array joined with current joiner.
        */
       function rebuildOutputFromMemory() {
         const joiner = joinerInput.value;
-        output.value = memory.join(joiner);
+        setEditorValue(memory.join(joiner));
       }
 
       function updateRevertBtnState() {
@@ -279,6 +343,10 @@ document.documentElement.dispatchEvent(
         joinerPreview.textContent = formatNonPrintable(joinerInput.value);
       }
 
+      langSelect.addEventListener("change", () => {
+        editor.setAttribute("lang", langSelect.value);
+      });
+
       joinerInput.addEventListener("input", () => {
         updateJoinerPreview();
         if (isRecording) {
@@ -293,20 +361,21 @@ document.documentElement.dispatchEvent(
           recordBtn.classList.add("recording");
           recordBtnText.textContent = "Recording...";
           joinerPanel.classList.add("active");
-          examplePre.style.display = "none";
+          exampleEditor.style.display = "none";
           revertBtn.style.display = "inline-flex";
 
           // Seed memory with existing content if present so everything is in memory
           memory.length = 0;
-          if (output.value.length > 0) {
-            memory.push(output.value);
+          const currentVal = getEditorValue();
+          if (currentVal.length > 0) {
+            memory.push(currentVal);
           }
           updateRevertBtnState();
         } else {
           recordBtn.classList.remove("recording");
           recordBtnText.textContent = "Record";
           joinerPanel.classList.remove("active");
-          examplePre.style.display = "";
+          exampleEditor.style.display = "block";
           revertBtn.style.display = "none";
 
           memory.length = 0;
@@ -323,7 +392,7 @@ document.documentElement.dispatchEvent(
 
       copyBtn.addEventListener("click", async () => {
         try {
-          await navigator.clipboard.writeText(output.value);
+          await navigator.clipboard.writeText(getEditorValue());
           const originalText = copyBtn.innerText;
           copyBtn.innerText = "Copied!";
           setTimeout(() => {
@@ -349,7 +418,7 @@ document.documentElement.dispatchEvent(
           rebuildOutputFromMemory();
           updateRevertBtnState();
         } else {
-          output.value = incomingText;
+          setEditorValue(incomingText);
         }
       });
     </script>
