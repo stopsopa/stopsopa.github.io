@@ -26,44 +26,84 @@
       }
 
       .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 12px;
-      background: #252526;
-      border-bottom: 1px solid #333;
-    }
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        background: #252526;
+        border-bottom: 1px solid #333;
+      }
 
-    .toolbar a {
-      color: #4fc1ff;
-      text-decoration: none;
-      font-size: 13px;
-    }
+      .toolbar a {
+        color: #4fc1ff;
+        text-decoration: none;
+        font-size: 13px;
+      }
 
-    .toolbar a:hover {
-      text-decoration: underline;
-    }
+      .toolbar a:hover {
+        text-decoration: underline;
+      }
 
-    .toolbar button {
-      padding: 4px 10px;
-      font-size: 13px;
-      font-family: inherit;
-      background: #0e639c;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      border-radius: 2px;
-    }
+      .toolbar button {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        font-size: 13px;
+        font-family: inherit;
+        background: #0e639c;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 2px;
+      }
 
-    .toolbar button:hover {
-      background: #1177bb;
-    }
+      .toolbar button:hover {
+        background: #1177bb;
+      }
 
-    .toolbar button:active {
-      background: #0d5c8a;
-    }
+      .toolbar button:active {
+        background: #0d5c8a;
+      }
 
-    textarea {
+      .toolbar button:disabled {
+        background: #333;
+        color: #777;
+        cursor: not-allowed;
+      }
+
+      .record-dot {
+        display: none;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #ff3b30;
+      }
+
+      .recording .record-dot {
+        display: inline-block;
+        animation: pulse 1s infinite ease-in-out;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(0.9);
+          opacity: 0.5;
+          box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7);
+        }
+        50% {
+          transform: scale(1.15);
+          opacity: 1;
+          box-shadow: 0 0 0 5px rgba(255, 59, 48, 0);
+        }
+        100% {
+          transform: scale(0.9);
+          opacity: 0.5;
+          box-shadow: 0 0 0 0 rgba(255, 59, 48, 0);
+        }
+      }
+
+      textarea {
         flex: 1;
         width: 100%;
         resize: none;
@@ -84,18 +124,91 @@
         white-space: pre-wrap;
         border-top: 1px solid #333;
       }
+
+      .joiner-container {
+        display: none;
+        height: 160px;
+        border-top: 1px solid #333;
+        background: #181818;
+      }
+
+      .joiner-container.active {
+        display: flex;
+      }
+
+      .joiner-pane {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .joiner-pane:first-child {
+        border-right: 1px solid #333;
+      }
+
+      .joiner-pane-header {
+        padding: 4px 8px;
+        background: #252526;
+        font-size: 11px;
+        color: #888;
+        border-bottom: 1px solid #333;
+        user-select: none;
+      }
+
+      .joiner-pane textarea {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        resize: none;
+        border: none;
+        outline: none;
+        padding: 8px;
+        font-family: monospace;
+        font-size: 13px;
+        background: #1e1e1e;
+        color: #d4d4d4;
+      }
+
+      .joiner-view {
+        flex: 1;
+        padding: 8px;
+        font-family: monospace;
+        font-size: 13px;
+        background: #181818;
+        color: #e5c07b;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
     </style>
   </head>
   <body>
     <div class="toolbar">
       <a href="tampermonkey.page.html" target="_blank" data-testid="link-tampermonkey-page">tampermonkey.page.html</a>
       <button id="copy-btn" type="button" data-testid="btn-copy-textarea">Copy to clipboard</button>
+      <button id="record-btn" type="button" data-testid="btn-record-mode">
+        <span class="record-dot" data-testid="indicator-record-pulse"></span>
+        <span id="record-btn-text">Record</span>
+      </button>
+      <button id="revert-btn" type="button" data-testid="btn-revert-memory" style="display: none;">Revert</button>
     </div>
 
     <textarea
       id="output"
       placeholder="Waiting for other_tabs:copy event... Any text selected on other tabs via Tampermonkey script &quot;OS Browser Bridge - selection copy&quot; will be captured and displayed here."
     ></textarea>
+
+    <div id="joiner-panel" class="joiner-container" data-testid="container-joiner">
+      <div class="joiner-pane">
+        <div class="joiner-pane-header">Joiner delimiter (appended before incoming event text)</div>
+        <textarea id="joiner-input" data-testid="input-joiner" placeholder="Type joiner string..."></textarea>
+      </div>
+      <div class="joiner-pane">
+        <div class="joiner-pane-header">Joiner view (visible non-printable characters)</div>
+        <div id="joiner-preview" class="joiner-view" data-testid="preview-joiner"></div>
+      </div>
+    </div>
 
     <pre id="example">
 // Run this in any other tab to send data to the textarea above.
@@ -121,6 +234,96 @@ document.documentElement.dispatchEvent(
     <script>
       const output = document.getElementById("output");
       const copyBtn = document.getElementById("copy-btn");
+      const recordBtn = document.getElementById("record-btn");
+      const recordBtnText = document.getElementById("record-btn-text");
+      const revertBtn = document.getElementById("revert-btn");
+      const examplePre = document.getElementById("example");
+      const joinerPanel = document.getElementById("joiner-panel");
+      const joinerInput = document.getElementById("joiner-input");
+      const joinerPreview = document.getElementById("joiner-preview");
+
+      // Regular mode (isRecording = false) overrides output on every new event
+      // Record mode (isRecording = true) appends joiner delimiter followed by new incoming text
+      let isRecording = false;
+
+      // Array storing all events data in record mode
+      const memory = [];
+
+      // Default joiner delimiter is single newline character \n
+      joinerInput.value = "\n";
+
+      /**
+       * Rebuilds output textarea content solely from memory array joined with current joiner.
+       */
+      function rebuildOutputFromMemory() {
+        const joiner = joinerInput.value;
+        output.value = memory.join(joiner);
+      }
+
+      function updateRevertBtnState() {
+        revertBtn.disabled = memory.length === 0;
+      }
+
+      /**
+       * Converts text containing invisible or non-printable characters into readable Word-like symbols.
+       * Space -> middle dot (·)
+       * Tab -> right arrow with stroke / arrow (→)
+       * Carriage Return -> left arrow with hook (↵)
+       * Newline -> pilcrow / enter symbol (¶)
+       */
+      function formatNonPrintable(text) {
+        return text
+          .replace(/ /g, "·")
+          .replace(/\t/g, "→")
+          .replace(/\r/g, "↵")
+          .replace(/\n/g, "¶\n");
+      }
+
+      function updateJoinerPreview() {
+        joinerPreview.textContent = formatNonPrintable(joinerInput.value);
+      }
+
+      joinerInput.addEventListener("input", () => {
+        updateJoinerPreview();
+        if (isRecording) {
+          rebuildOutputFromMemory();
+        }
+      });
+      updateJoinerPreview();
+
+      recordBtn.addEventListener("click", () => {
+        isRecording = !isRecording;
+        if (isRecording) {
+          recordBtn.classList.add("recording");
+          recordBtnText.textContent = "Recording...";
+          joinerPanel.classList.add("active");
+          examplePre.style.display = "none";
+          revertBtn.style.display = "inline-flex";
+
+          // Seed memory with existing content if present so everything is in memory
+          memory.length = 0;
+          if (output.value.length > 0) {
+            memory.push(output.value);
+          }
+          updateRevertBtnState();
+        } else {
+          recordBtn.classList.remove("recording");
+          recordBtnText.textContent = "Record";
+          joinerPanel.classList.remove("active");
+          examplePre.style.display = "";
+          revertBtn.style.display = "none";
+
+          memory.length = 0;
+        }
+      });
+
+      revertBtn.addEventListener("click", () => {
+        if (memory.length > 0) {
+          memory.pop();
+          rebuildOutputFromMemory();
+          updateRevertBtnState();
+        }
+      });
 
       copyBtn.addEventListener("click", async () => {
         try {
@@ -137,11 +340,20 @@ document.documentElement.dispatchEvent(
 
       document.addEventListener("other_tabs:copy", (event) => {
         const { detail } = event;
+        let incomingText = "";
 
         if (detail && typeof detail.text !== "undefined") {
-          output.value = detail.text;
+          incomingText = String(detail.text);
         } else {
-          output.value = JSON.stringify(detail, null, 2);
+          incomingText = JSON.stringify(detail, null, 2);
+        }
+
+        if (isRecording) {
+          memory.push(incomingText);
+          rebuildOutputFromMemory();
+          updateRevertBtnState();
+        } else {
+          output.value = incomingText;
         }
       });
     </script>
