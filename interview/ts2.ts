@@ -1,4 +1,4 @@
-function solution(A: number[][]): number {
+function solution2(A: number[][]): number {
   const rows = A.length;
   const cols = A[0].length;
 
