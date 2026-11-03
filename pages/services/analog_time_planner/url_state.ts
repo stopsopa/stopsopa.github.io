@@ -15,6 +15,9 @@ export type Event = {
 // Anchor mode: "start" (default) anchors start time; "end" anchors end time and recalculates start time.
 export type AnchorMode = "start" | "end";
 
+// Tab mode: "clock" (default, omitted from url) or "schedule" (represented by presence of get param 't')
+export type TabMode = "clock" | "schedule";
+
 /**
  * Compact URL serializer for events:
  * Formats each event as: `<time>~<colorWithoutHash>~<label>`
@@ -94,6 +97,7 @@ const { useQueryParams } = modURLSearchParams<{
   leftWidth: number;
   anchor: AnchorMode;
   animate: boolean;
+  tab: TabMode;
 }>({
   events: {
     getParam: "e",
@@ -145,6 +149,17 @@ const { useQueryParams } = modURLSearchParams<{
     default: true,
     encode: (v) => (v ? "1" : "0"),
     decode: (v) => (v === "0" ? false : true),
+  },
+  /*
+   * tab — controls active view ("clock" vs "schedule").
+   * Lack of 't' get param in URL means 'clock' tab should be active.
+   * Presence of 't' means schedule.
+   */
+  tab: {
+    getParam: "t",
+    default: "clock" as TabMode,
+    encode: (v) => (v === "schedule" ? "1" : ""),
+    decode: (_raw) => "schedule",
   },
 });
 

@@ -18,7 +18,7 @@ import { createRoot } from "react-dom/client";
 import "./analog_time_planner.entry.css";
 import "../../js/popper/html-vanilla/popover.css";
 
-import { useQueryParams, Event, AnchorMode } from "./url_state.ts";
+import { useQueryParams, Event, AnchorMode, TabMode } from "./url_state.ts";
 import EventList from "./EventList.tsx";
 import ClockFace from "./ClockFace.tsx";
 import ScheduleBreakdown from "./ScheduleBreakdown.tsx";
@@ -62,9 +62,7 @@ function App() {
   const leftWidth: number = params.leftWidth;
   const anchor: AnchorMode = params.anchor;
   const animate: boolean = params.animate;
-
-  // Active view tab in the right panel: "clock" (default) or "schedule"
-  const [activeTab, setActiveTab] = useState<"clock" | "schedule">("clock");
+  const activeTab: TabMode = params.tab;
 
   // ── Resize divider ──────────────────────────────────────────────────────────
   // During drag: track live width locally (no URL spam per-frame).
@@ -168,7 +166,7 @@ function App() {
                 aria-selected={activeTab === "clock"}
                 data-testid="atp-tab-clock"
                 className={`atp-tab-btn ${activeTab === "clock" ? "active" : ""}`}
-                onClick={() => setActiveTab("clock")}
+                onClick={() => setParam("tab", "clock")}
               >
                 Clock
               </button>
@@ -178,7 +176,7 @@ function App() {
                 aria-selected={activeTab === "schedule"}
                 data-testid="atp-tab-schedule"
                 className={`atp-tab-btn ${activeTab === "schedule" ? "active" : ""}`}
-                onClick={() => setActiveTab("schedule")}
+                onClick={() => setParam("tab", "schedule")}
               >
                 Schedule
               </button>
