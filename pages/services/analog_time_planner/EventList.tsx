@@ -273,11 +273,13 @@ export default function EventList({
   function handleTouchStart(e: React.TouchEvent, index: number) {
     dragIndexRef.current = index;
     dragOverIndexRef.current = index;
+
     setTouchDraggingIndex(index);
     setDragOverIndex(index);
 
     function onWindowTouchMove(moveEv: TouchEvent) {
       if (dragIndexRef.current === null) return;
+
       if (moveEv.cancelable) {
         moveEv.preventDefault();
       }
@@ -287,35 +289,44 @@ export default function EventList({
 
       const el = document.elementFromPoint(touch.clientX, touch.clientY);
       const rowEl = el?.closest<HTMLElement>("[data-event-row-index]");
-      if (rowEl) {
-        const targetIdxStr = rowEl.getAttribute("data-event-row-index");
-        if (targetIdxStr !== null) {
-          const targetIdx = parseInt(targetIdxStr, 10);
-          if (!isNaN(targetIdx) && dragOverIndexRef.current !== targetIdx) {
-            dragOverIndexRef.current = targetIdx;
-            setDragOverIndex(targetIdx);
-          }
-        }
+
+      if (!rowEl) return;
+
+      const targetIdx = Number(rowEl.dataset.eventRowIndex);
+
+      if (!Number.isNaN(targetIdx) && dragOverIndexRef.current !== targetIdx) {
+        dragOverIndexRef.current = targetIdx;
+        setDragOverIndex(targetIdx);
       }
     }
 
-    function onWindowTouchEnd() {
+    function cleanup() {
       window.removeEventListener("touchmove", onWindowTouchMove);
       window.removeEventListener("touchend", onWindowTouchEnd);
       window.removeEventListener("touchcancel", onWindowTouchEnd);
+    }
+
+    function onWindowTouchEnd() {
+      cleanup();
 
       const from = dragIndexRef.current;
       const to = dragOverIndexRef.current;
+
       if (from !== null && to !== null && from !== to) {
         reorderEvent(from, to);
       }
+
       dragIndexRef.current = null;
       dragOverIndexRef.current = null;
+
       setTouchDraggingIndex(null);
       setDragOverIndex(null);
     }
 
-    window.addEventListener("touchmove", onWindowTouchMove, { passive: false });
+    window.addEventListener("touchmove", onWindowTouchMove, {
+      passive: false,
+    });
+
     window.addEventListener("touchend", onWindowTouchEnd);
     window.addEventListener("touchcancel", onWindowTouchEnd);
   }
