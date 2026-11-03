@@ -165,4 +165,6 @@ Also when shell script especially create in that comment section examples of cal
 The same for typescript/javascript modules as well and other units of code - where code is not obvious or self explanatory.
 
 If you are not sure then just ask if that is needed.
+
+Keep it short. If possible use list of steps given script is taking if we can distinguish them and it would be good format to explain its functioning. Don't explain obvious things.
 </create-description>
