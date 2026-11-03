@@ -4,11 +4,11 @@
  * Renders:
  *  - Start time input (HH:MM)
  *  - Derived end time display
- *  - Drag-and-drop reorderable list of event rows
+ *  - Drag-and-drop reorderable list of event rows (supports mouse and touch)
  *  - Inline edit form per row (label, minutes, color)
  *  - Add Event button
  *
- * DnD approach: native HTML5 draggable API — no external library.
+ * DnD approach: native HTML5 draggable API for mouse, native Touch Events API for phones/mobile.
  */
 
 import React, { useRef, useState } from "react";
@@ -74,6 +74,7 @@ export default function EventList({
   const dragIndexRef = useRef<number | null>(null);
   const dragOverIndexRef = useRef<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [touchDraggingIndex, setTouchDraggingIndex] = useState<number | null>(null);
 
   const endTime = computeEndTime(startHour, startMinute, events);
 
@@ -197,7 +198,33 @@ export default function EventList({
     setEditState(null);
   }
 
-  // ── DnD handlers ───────────────────────────────────────────────────────────
+  /**
+   * Reorders event from index 'from' to index 'to'.
+   * Updates state, adjusts editState if open, and notifies parent.
+   */
+  function reorderEvent(from: number, to: number) {
+    if (from === to) return;
+    const next = [...events];
+    const [removed] = next.splice(from, 1);
+    next.splice(to, 0, removed);
+
+    // Adjust edit index if we are editing something that moved
+    if (editState !== null) {
+      let newIdx = editState.index;
+      if (editState.index === from) {
+        newIdx = to;
+      } else if (from < to && editState.index > from && editState.index <= to) {
+        newIdx = editState.index - 1;
+      } else if (from > to && editState.index < from && editState.index >= to) {
+        newIdx = editState.index + 1;
+      }
+      setEditState({ ...editState, index: newIdx });
+    }
+
+    onEventsChange(next);
+  }
+
+  // ── DnD handlers (Mouse / HTML5 Drag and Drop) ──────────────────────────────
 
   function handleDragStart(index: number) {
     dragIndexRef.current = index;
@@ -212,30 +239,9 @@ export default function EventList({
   function handleDrop(e: React.DragEvent, index: number) {
     e.preventDefault();
     const from = dragIndexRef.current;
-    if (from === null || from === index) {
-      dragIndexRef.current = null;
-      dragOverIndexRef.current = null;
-      setDragOverIndex(null);
-      return;
+    if (from !== null && from !== index) {
+      reorderEvent(from, index);
     }
-    const next = [...events];
-    const [removed] = next.splice(from, 1);
-    next.splice(index, 0, removed);
-
-    // Adjust edit index if we are editing something that moved
-    if (editState !== null) {
-      let newIdx = editState.index;
-      if (editState.index === from) {
-        newIdx = index;
-      } else if (from < index && editState.index > from && editState.index <= index) {
-        newIdx = editState.index - 1;
-      } else if (from > index && editState.index < from && editState.index >= index) {
-        newIdx = editState.index + 1;
-      }
-      setEditState({ ...editState, index: newIdx });
-    }
-
-    onEventsChange(next);
     dragIndexRef.current = null;
     dragOverIndexRef.current = null;
     setDragOverIndex(null);
@@ -244,6 +250,57 @@ export default function EventList({
   function handleDragEnd() {
     dragIndexRef.current = null;
     dragOverIndexRef.current = null;
+    setDragOverIndex(null);
+  }
+
+  // ── Touch DnD handlers (Mobile / Phones) ───────────────────────────────────
+
+  /**
+   * Starts touch drag on handle touchstart.
+   */
+  function handleTouchStart(e: React.TouchEvent, index: number) {
+    dragIndexRef.current = index;
+    dragOverIndexRef.current = index;
+    setTouchDraggingIndex(index);
+    setDragOverIndex(index);
+  }
+
+  /**
+   * Updates drag target as touch moves over other event rows.
+   */
+  function handleTouchMove(e: React.TouchEvent) {
+    if (dragIndexRef.current === null) return;
+
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    // Identify element directly under finger
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const rowEl = el?.closest<HTMLElement>("[data-event-row-index]");
+    if (rowEl) {
+      const targetIdxStr = rowEl.getAttribute("data-event-row-index");
+      if (targetIdxStr !== null) {
+        const targetIdx = parseInt(targetIdxStr, 10);
+        if (!isNaN(targetIdx) && dragOverIndexRef.current !== targetIdx) {
+          dragOverIndexRef.current = targetIdx;
+          setDragOverIndex(targetIdx);
+        }
+      }
+    }
+  }
+
+  /**
+   * Finalizes touch reorder when touch ends or cancels.
+   */
+  function handleTouchEnd() {
+    const from = dragIndexRef.current;
+    const to = dragOverIndexRef.current;
+    if (from !== null && to !== null && from !== to) {
+      reorderEvent(from, to);
+    }
+    dragIndexRef.current = null;
+    dragOverIndexRef.current = null;
+    setTouchDraggingIndex(null);
     setDragOverIndex(null);
   }
 
@@ -479,18 +536,30 @@ export default function EventList({
             );
           }
 
+          const isRowDragOver = dragOverIndex === i;
+          const isRowTouching = touchDraggingIndex === i;
+
           return (
             <div
               key={i}
               data-testid={`atp-event-row-${i}`}
-              className={`atp-event-row${dragOverIndex === i ? " atp-dragging-over" : ""}`}
+              data-event-row-index={i}
+              className={`atp-event-row${isRowDragOver ? " atp-dragging-over" : ""}${isRowTouching ? " atp-touch-active" : ""}`}
               draggable
               onDragStart={() => handleDragStart(i)}
               onDragOver={(e) => handleDragOver(e, i)}
               onDrop={(e) => handleDrop(e, i)}
               onDragEnd={handleDragEnd}
             >
-              <span className="atp-drag-handle" title="Drag to reorder">
+              <span
+                className="atp-drag-handle"
+                title="Drag to reorder"
+                data-testid={`atp-drag-handle-${i}`}
+                onTouchStart={(e) => handleTouchStart(e, i)}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onTouchCancel={handleTouchEnd}
+              >
                 ☰
               </span>
               <span className="atp-event-time">{ev.time}m</span>
