@@ -70,11 +70,21 @@ export default function EventList({
 }: Props) {
   const [editState, setEditState] = useState<EditState | null>(null);
 
-  // Drag state refs — no re-render needed for DnD tracking
+  // ── Drag state refs — no re-render needed for DnD tracking ──────────────────
   const dragIndexRef = useRef<number | null>(null);
   const dragOverIndexRef = useRef<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [touchDraggingIndex, setTouchDraggingIndex] = useState<number | null>(null);
+
+  // Latest events kept in a ref for touch window listeners
+  const eventsRef = useRef(events);
+  eventsRef.current = events;
+
+  const editStateRef = useRef(editState);
+  editStateRef.current = editState;
+
+  const onEventsChangeRef = useRef(onEventsChange);
+  onEventsChangeRef.current = onEventsChange;
 
   const endTime = computeEndTime(startHour, startMinute, events);
 
@@ -204,24 +214,26 @@ export default function EventList({
    */
   function reorderEvent(from: number, to: number) {
     if (from === to) return;
-    const next = [...events];
+    const currentList = eventsRef.current;
+    const next = [...currentList];
     const [removed] = next.splice(from, 1);
     next.splice(to, 0, removed);
 
     // Adjust edit index if we are editing something that moved
-    if (editState !== null) {
-      let newIdx = editState.index;
-      if (editState.index === from) {
+    const currentEdit = editStateRef.current;
+    if (currentEdit !== null) {
+      let newIdx = currentEdit.index;
+      if (currentEdit.index === from) {
         newIdx = to;
-      } else if (from < to && editState.index > from && editState.index <= to) {
-        newIdx = editState.index - 1;
-      } else if (from > to && editState.index < from && editState.index >= to) {
-        newIdx = editState.index + 1;
+      } else if (from < to && currentEdit.index > from && currentEdit.index <= to) {
+        newIdx = currentEdit.index - 1;
+      } else if (from > to && currentEdit.index < from && currentEdit.index >= to) {
+        newIdx = currentEdit.index + 1;
       }
-      setEditState({ ...editState, index: newIdx });
+      setEditState({ ...currentEdit, index: newIdx });
     }
 
-    onEventsChange(next);
+    onEventsChangeRef.current(next);
   }
 
   // ── DnD handlers (Mouse / HTML5 Drag and Drop) ──────────────────────────────
@@ -256,52 +268,56 @@ export default function EventList({
   // ── Touch DnD handlers (Mobile / Phones) ───────────────────────────────────
 
   /**
-   * Starts touch drag on handle touchstart.
+   * Starts touch drag on handle touchstart. Attaches non-passive move/end listeners to window.
    */
   function handleTouchStart(e: React.TouchEvent, index: number) {
     dragIndexRef.current = index;
     dragOverIndexRef.current = index;
     setTouchDraggingIndex(index);
     setDragOverIndex(index);
-  }
 
-  /**
-   * Updates drag target as touch moves over other event rows.
-   */
-  function handleTouchMove(e: React.TouchEvent) {
-    if (dragIndexRef.current === null) return;
+    function onWindowTouchMove(moveEv: TouchEvent) {
+      if (dragIndexRef.current === null) return;
+      if (moveEv.cancelable) {
+        moveEv.preventDefault();
+      }
 
-    const touch = e.touches[0];
-    if (!touch) return;
+      const touch = moveEv.touches[0];
+      if (!touch) return;
 
-    // Identify element directly under finger
-    const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    const rowEl = el?.closest<HTMLElement>("[data-event-row-index]");
-    if (rowEl) {
-      const targetIdxStr = rowEl.getAttribute("data-event-row-index");
-      if (targetIdxStr !== null) {
-        const targetIdx = parseInt(targetIdxStr, 10);
-        if (!isNaN(targetIdx) && dragOverIndexRef.current !== targetIdx) {
-          dragOverIndexRef.current = targetIdx;
-          setDragOverIndex(targetIdx);
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      const rowEl = el?.closest<HTMLElement>("[data-event-row-index]");
+      if (rowEl) {
+        const targetIdxStr = rowEl.getAttribute("data-event-row-index");
+        if (targetIdxStr !== null) {
+          const targetIdx = parseInt(targetIdxStr, 10);
+          if (!isNaN(targetIdx) && dragOverIndexRef.current !== targetIdx) {
+            dragOverIndexRef.current = targetIdx;
+            setDragOverIndex(targetIdx);
+          }
         }
       }
     }
-  }
 
-  /**
-   * Finalizes touch reorder when touch ends or cancels.
-   */
-  function handleTouchEnd() {
-    const from = dragIndexRef.current;
-    const to = dragOverIndexRef.current;
-    if (from !== null && to !== null && from !== to) {
-      reorderEvent(from, to);
+    function onWindowTouchEnd() {
+      window.removeEventListener("touchmove", onWindowTouchMove);
+      window.removeEventListener("touchend", onWindowTouchEnd);
+      window.removeEventListener("touchcancel", onWindowTouchEnd);
+
+      const from = dragIndexRef.current;
+      const to = dragOverIndexRef.current;
+      if (from !== null && to !== null && from !== to) {
+        reorderEvent(from, to);
+      }
+      dragIndexRef.current = null;
+      dragOverIndexRef.current = null;
+      setTouchDraggingIndex(null);
+      setDragOverIndex(null);
     }
-    dragIndexRef.current = null;
-    dragOverIndexRef.current = null;
-    setTouchDraggingIndex(null);
-    setDragOverIndex(null);
+
+    window.addEventListener("touchmove", onWindowTouchMove, { passive: false });
+    window.addEventListener("touchend", onWindowTouchEnd);
+    window.addEventListener("touchcancel", onWindowTouchEnd);
   }
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -556,9 +572,6 @@ export default function EventList({
                 title="Drag to reorder"
                 data-testid={`atp-drag-handle-${i}`}
                 onTouchStart={(e) => handleTouchStart(e, i)}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                onTouchCancel={handleTouchEnd}
               >
                 ☰
               </span>
