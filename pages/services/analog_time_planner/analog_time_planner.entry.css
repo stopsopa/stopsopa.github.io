@@ -412,18 +412,57 @@ body,
   -webkit-user-select: none;
   -webkit-user-drag: none;
   flex-shrink: 0;
-  padding: 4px 6px;
-  touch-action: none;
+  padding: 2px 4px;
 
   &:active {
     cursor: grabbing;
   }
 }
 
-.atp-event-row.atp-touch-active {
-  opacity: 0.5;
-  border-color: #93c5fd;
-  background: #eff6ff;
+/* ── Up / Down reorder buttons (shown on portrait / mobile, hidden on desktop) ── */
+.atp-order-btns {
+  display: none;
+  flex-direction: column;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.atp-order-btn {
+  background: #e5e7eb;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  color: #374151;
+  font-size: 9px;
+  width: 22px;
+  height: 16px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):active {
+    background: #bfdbfe;
+    border-color: #2563eb;
+    color: #2563eb;
+  }
+}
+
+/* ── When viewport is higher than wider (portrait / mobile replacement): show up/down, hide drag handle ── */
+@media (orientation: portrait) {
+  .atp-drag-handle {
+    display: none !important;
+  }
+
+  .atp-order-btns {
+    display: inline-flex;
+  }
 }
 
 .atp-event-time {

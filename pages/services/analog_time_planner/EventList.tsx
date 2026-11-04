@@ -4,11 +4,11 @@
  * Renders:
  *  - Start time input (HH:MM)
  *  - Derived end time display
- *  - Drag-and-drop reorderable list of event rows (supports mouse and touch)
+ *  - Reorderable list of event rows:
+ *      * Desktop (landscape / width >= height): HTML5 drag-and-drop with handle
+ *      * Mobile (portrait / height > width): ▲ / ▼ buttons per event row
  *  - Inline edit form per row (label, minutes, color)
  *  - Add Event button
- *
- * DnD approach: native HTML5 draggable API for mouse, native Touch Events API for phones/mobile.
  */
 
 import React, { useRef, useState } from "react";
@@ -74,9 +74,7 @@ export default function EventList({
   const dragIndexRef = useRef<number | null>(null);
   const dragOverIndexRef = useRef<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const [touchDraggingIndex, setTouchDraggingIndex] = useState<number | null>(null);
 
-  // Latest events kept in a ref for touch window listeners
   const eventsRef = useRef(events);
   eventsRef.current = events;
 
@@ -101,6 +99,19 @@ export default function EventList({
     const targetEndMin = (((currentEndMin + deltaMinutes) % 1440) + 1440) % 1440;
     const newStartTotalMin = (((targetEndMin - totalEventMinutes) % 1440) + 1440) % 1440;
     onStartChange(Math.floor(newStartTotalMin / 60), newStartTotalMin % 60);
+  }
+
+  // ── Move event up or down ───────────────────────────────────────────────────
+  function moveUp(index: number) {
+    if (index > 0) {
+      reorderEvent(index, index - 1);
+    }
+  }
+
+  function moveDown(index: number) {
+    if (index < events.length - 1) {
+      reorderEvent(index, index + 1);
+    }
   }
 
   // ── Start time input handler ────────────────────────────────────────────────
@@ -263,72 +274,6 @@ export default function EventList({
     dragIndexRef.current = null;
     dragOverIndexRef.current = null;
     setDragOverIndex(null);
-  }
-
-  // ── Touch DnD handlers (Mobile / Phones) ───────────────────────────────────
-
-  /**
-   * Starts touch drag on handle touchstart. Attaches non-passive move/end listeners to window.
-   */
-  function handleTouchStart(e: React.TouchEvent, index: number) {
-    dragIndexRef.current = index;
-    dragOverIndexRef.current = index;
-
-    setTouchDraggingIndex(index);
-    setDragOverIndex(index);
-
-    function onWindowTouchMove(moveEv: TouchEvent) {
-      if (dragIndexRef.current === null) return;
-
-      if (moveEv.cancelable) {
-        moveEv.preventDefault();
-      }
-
-      const touch = moveEv.touches[0];
-      if (!touch) return;
-
-      const el = document.elementFromPoint(touch.clientX, touch.clientY);
-      const rowEl = el?.closest<HTMLElement>("[data-event-row-index]");
-
-      if (!rowEl) return;
-
-      const targetIdx = Number(rowEl.dataset.eventRowIndex);
-
-      if (!Number.isNaN(targetIdx) && dragOverIndexRef.current !== targetIdx) {
-        dragOverIndexRef.current = targetIdx;
-        setDragOverIndex(targetIdx);
-      }
-    }
-
-    function cleanup() {
-      window.removeEventListener("touchmove", onWindowTouchMove);
-      window.removeEventListener("touchend", onWindowTouchEnd);
-      window.removeEventListener("touchcancel", onWindowTouchEnd);
-    }
-
-    function onWindowTouchEnd() {
-      cleanup();
-
-      const from = dragIndexRef.current;
-      const to = dragOverIndexRef.current;
-
-      if (from !== null && to !== null && from !== to) {
-        reorderEvent(from, to);
-      }
-
-      dragIndexRef.current = null;
-      dragOverIndexRef.current = null;
-
-      setTouchDraggingIndex(null);
-      setDragOverIndex(null);
-    }
-
-    window.addEventListener("touchmove", onWindowTouchMove, {
-      passive: false,
-    });
-
-    window.addEventListener("touchend", onWindowTouchEnd);
-    window.addEventListener("touchcancel", onWindowTouchEnd);
   }
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -564,28 +509,44 @@ export default function EventList({
           }
 
           const isRowDragOver = dragOverIndex === i;
-          const isRowTouching = touchDraggingIndex === i;
 
           return (
             <div
               key={i}
               data-testid={`atp-event-row-${i}`}
               data-event-row-index={i}
-              className={`atp-event-row${isRowDragOver ? " atp-dragging-over" : ""}${isRowTouching ? " atp-touch-active" : ""}`}
+              className={`atp-event-row${isRowDragOver ? " atp-dragging-over" : ""}`}
               draggable
               onDragStart={() => handleDragStart(i)}
               onDragOver={(e) => handleDragOver(e, i)}
               onDrop={(e) => handleDrop(e, i)}
               onDragEnd={handleDragEnd}
             >
-              <span
-                className="atp-drag-handle"
-                title="Drag to reorder"
-                data-testid={`atp-drag-handle-${i}`}
-                onTouchStart={(e) => handleTouchStart(e, i)}
-              >
+              <span className="atp-drag-handle" title="Drag to reorder" data-testid={`atp-drag-handle-${i}`}>
                 ☰
               </span>
+              <div className="atp-order-btns">
+                <button
+                  type="button"
+                  data-testid={`atp-move-up-${i}`}
+                  className="atp-order-btn"
+                  title="Move event up"
+                  disabled={i === 0}
+                  onClick={() => moveUp(i)}
+                >
+                  ▲
+                </button>
+                <button
+                  type="button"
+                  data-testid={`atp-move-down-${i}`}
+                  className="atp-order-btn"
+                  title="Move event down"
+                  disabled={i === events.length - 1}
+                  onClick={() => moveDown(i)}
+                >
+                  ▼
+                </button>
+              </div>
               <span className="atp-event-time">{ev.time}m</span>
               <span className="atp-event-label">{ev.label}</span>
               <span className="atp-color-swatch" style={{ backgroundColor: ev.color }} title={ev.color} />
