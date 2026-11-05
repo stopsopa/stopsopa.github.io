@@ -655,6 +655,7 @@ export function AntigravityTracker() {
             : emailB.localeCompare(emailA);
         }
 
+        if (!sortConfig.modelName) return 0;
         const statusA = getModelStatus(a[1], sortConfig.modelName);
         const statusB = getModelStatus(b[1], sortConfig.modelName);
 

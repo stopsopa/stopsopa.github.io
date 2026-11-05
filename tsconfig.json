@@ -12,8 +12,13 @@
     "outDir": "./",
     "rootDir": "./",
     "allowJs": false,
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
+    "jsx": "react-jsx"
   },
-  "include": ["**/*.ts", "pages/services/map_points/map_points.entry.tsx"],
+  "include": [
+    "**/*.ts",
+    "pages/services/map_points/map_points.entry.tsx",
+    "pages/services/antigravity/antigravity.entry.tsx"
+  ],
   "exclude": ["node_modules"]
 }
