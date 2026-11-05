@@ -9,6 +9,7 @@ import "./antigravity.entry.css";
 interface AntigravitySettings {
   renewalHours: number;
   models: string[];
+  current?: string;
 }
 
 /**
@@ -114,9 +115,18 @@ export function AntigravityTracker() {
   const [isFakeTimeEnabled, setIsFakeTimeEnabled] = useState<boolean>(false);
   const [fakeTimeOffsetHours, setFakeTimeOffsetHours] = useState<number>(0);
 
-  // Account Edit Modal state (for editing email)
+  // Account Edit Modal state (for editing email, disabled state, or deleting)
   const [editingAccountKey, setEditingAccountKey] = useState<string | null>(null);
   const [editedEmailValue, setEditedEmailValue] = useState<string>("");
+  const [editedDisabledValue, setEditedDisabledValue] = useState<boolean>(false);
+
+  // Confirmation dialog state for two-stage disabling & deletion
+  type ConfirmActionType = "disable" | "delete";
+  interface ConfirmDialogState {
+    accountKey: string;
+    action: ConfirmActionType;
+  }
+  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState | null>(null);
 
   // Account Note Modal state
   const [editingNoteKey, setEditingNoteKey] = useState<string | null>(null);
@@ -134,10 +144,10 @@ export function AntigravityTracker() {
   }
   const [activeQuotaModal, setActiveQuotaModal] = useState<ModalQuotaState | null>(null);
 
-  // Table sorting state: can sort by any model's percentage or renewsAt
-  type SortType = "percentage" | "renewsAt";
+  // Table sorting state: can sort by account email, or any model's percentage or renewsAt
+  type SortType = "email" | "percentage" | "renewsAt";
   interface SortConfig {
-    modelName: string;
+    modelName?: string;
     type: SortType;
     direction: "asc" | "desc";
   }
@@ -159,6 +169,21 @@ export function AntigravityTracker() {
   }
 
   /**
+   * Handles email column sort click: unsorted -> asc -> desc -> unsorted
+   */
+  function handleEmailSortClick() {
+    if (sortConfig && sortConfig.type === "email") {
+      if (sortConfig.direction === "asc") {
+        setSortConfig({ type: "email", direction: "desc" });
+      } else {
+        setSortConfig(null);
+      }
+    } else {
+      setSortConfig({ type: "email", direction: "asc" });
+    }
+  }
+
+  /**
    * Refreshes settings and list from Firebase Realtime Database
    */
   async function loadData() {
@@ -169,6 +194,7 @@ export function AntigravityTracker() {
           setSettings({
             renewalHours: typeof data.settings.renewalHours === "number" ? data.settings.renewalHours : 24,
             models: Array.isArray(data.settings.models) ? data.settings.models : ["gemini-2.5-pro", "gemini-2.5-flash"],
+            current: typeof data.settings.current === "string" ? data.settings.current : undefined,
           });
         }
         if (data.list) {
@@ -268,7 +294,7 @@ export function AntigravityTracker() {
   }
 
   /**
-   * Handles editing an account's email identifier
+   * Handles editing an account's email identifier and disabled status
    */
   async function handleSaveEditedAccount() {
     if (editingAccountKey) {
@@ -276,24 +302,50 @@ export function AntigravityTracker() {
       if (newRawEmail) {
         const newEncoded = encodeEmailKey(newRawEmail);
         const existingData = accounts[editingAccountKey] || {};
+        const updatedData: AccountUsage = {
+          ...existingData,
+          disabled: editedDisabledValue,
+          updatedAt: new Date().toISOString(),
+        };
 
         if (newEncoded === editingAccountKey) {
-          setEditingAccountKey(null);
+          try {
+            await set({
+              key: ["list", editingAccountKey],
+              data: updatedData,
+            });
+            setAccounts((prev) => ({
+              ...prev,
+              [editingAccountKey]: updatedData,
+            }));
+            setEditingAccountKey(null);
+          } catch (err) {
+            console.error("Failed to update account:", err);
+          }
         } else {
           try {
             await set({
               key: ["list", newEncoded],
-              data: {
-                ...existingData,
-                updatedAt: new Date().toISOString(),
-              },
+              data: updatedData,
             });
             await del(["list", editingAccountKey]);
+
+            // If this was current account, update settings.current
+            if (settings.current === editingAccountKey) {
+              await set({
+                key: ["settings", "current"],
+                data: newEncoded,
+              });
+              setSettings((prev) => ({
+                ...prev,
+                current: newEncoded,
+              }));
+            }
 
             setAccounts((prev) => {
               const copy = { ...prev };
               delete copy[editingAccountKey];
-              copy[newEncoded] = existingData;
+              copy[newEncoded] = updatedData;
               return copy;
             });
             setEditingAccountKey(null);
@@ -301,6 +353,39 @@ export function AntigravityTracker() {
             console.error("Failed to update account email:", err);
           }
         }
+      }
+    }
+  }
+
+  /**
+   * Toggles whether an account is the 'current' active account.
+   * If already selected, unselects and clears/removes settings.current.
+   */
+  async function handleToggleCurrentAccount(encodedEmail: string) {
+    const isCurrentlyActive = settings.current === encodedEmail;
+    if (isCurrentlyActive) {
+      try {
+        await del(["settings", "current"]);
+        setSettings((prev) => {
+          const copy = { ...prev };
+          delete copy.current;
+          return copy;
+        });
+      } catch (err) {
+        console.error("Failed to remove current account:", err);
+      }
+    } else {
+      try {
+        await set({
+          key: ["settings", "current"],
+          data: encodedEmail,
+        });
+        setSettings((prev) => ({
+          ...prev,
+          current: encodedEmail,
+        }));
+      } catch (err) {
+        console.error("Failed to set current account:", err);
       }
     }
   }
@@ -553,9 +638,23 @@ export function AntigravityTracker() {
   if (user) {
     const rawAccountEntries = Object.entries(accounts);
 
-    // Sort accounts dynamically by column if configured
+    // Sort accounts dynamically: if an account is marked 'current', it stays on top.
     const accountEntries = [...rawAccountEntries].sort((a, b) => {
+      const aIsCurrent = settings.current === a[0];
+      const bIsCurrent = settings.current === b[0];
+
+      if (aIsCurrent && !bIsCurrent) return -1;
+      if (!aIsCurrent && bIsCurrent) return 1;
+
       if (sortConfig) {
+        if (sortConfig.type === "email") {
+          const emailA = decodeEmailKey(a[0]);
+          const emailB = decodeEmailKey(b[0]);
+          return sortConfig.direction === "asc"
+            ? emailA.localeCompare(emailB)
+            : emailB.localeCompare(emailA);
+        }
+
         const statusA = getModelStatus(a[1], sortConfig.modelName);
         const statusB = getModelStatus(b[1], sortConfig.modelName);
 
@@ -871,8 +970,18 @@ export function AntigravityTracker() {
                 <table className="cf-table" data-testid="table-accounts">
                   <thead>
                     <tr>
-                      <th style={{ width: "60px", textAlign: "center" }}>Disabled</th>
-                      <th style={{ minWidth: "160px" }}>Account Email</th>
+                      <th style={{ width: "60px", textAlign: "center" }}>Current</th>
+                      <th
+                        style={{ minWidth: "160px", cursor: "pointer", userSelect: "none" }}
+                        onClick={() => handleEmailSortClick()}
+                        title="Sort by account email (unsorted / asc / desc)"
+                        data-testid="header-sort-email"
+                      >
+                        Account Email{" "}
+                        {sortConfig && sortConfig.type === "email"
+                          ? sortConfig.direction === "asc" ? "▲" : "▼"
+                          : "↕"}
+                      </th>
                       <th style={{ width: "60px", textAlign: "center" }}>Note</th>
                       {settings.models.map((modelName) => {
                         const isSortedPct =
@@ -932,6 +1041,7 @@ export function AntigravityTracker() {
                     {accountEntries.length > 0 ? (
                       accountEntries.map(([encodedEmail, acc]) => {
                         const rawEmail = decodeEmailKey(encodedEmail);
+                        const isCurrent = settings.current === encodedEmail;
                         const isDisabled = Boolean(acc.disabled);
                         const hasNote = Boolean(acc.notes && acc.notes.trim().length > 0);
 
@@ -940,22 +1050,33 @@ export function AntigravityTracker() {
                           return null;
                         }
 
+                        // Background: highlighted orange tint if current, gray if disabled, normal white
+                        let rowBackground: string | undefined = undefined;
+                        if (isCurrent) {
+                          rowBackground = "#fff7ed"; // soft orange/amber highlight
+                        } else if (isDisabled) {
+                          rowBackground = "#f1f5f9";
+                        }
+
                         return (
                           <tr
                             key={encodedEmail}
                             style={{
                               opacity: isDisabled ? 0.45 : 1,
-                              backgroundColor: isDisabled ? "#f1f5f9" : undefined,
+                              backgroundColor: rowBackground,
+                              borderLeft: isCurrent ? "4px solid #f38020" : undefined,
                             }}
                             data-testid={`row-account-${encodedEmail}`}
                           >
                             <td style={{ textAlign: "center" }}>
                               <input
-                                type="checkbox"
-                                checked={isDisabled}
-                                onChange={() => handleToggleAccountDisabled(encodedEmail)}
-                                title="Disable or enable this account"
-                                data-testid={`checkbox-disabled-${encodedEmail}`}
+                                type="radio"
+                                checked={isCurrent}
+                                onClick={() => handleToggleCurrentAccount(encodedEmail)}
+                                readOnly
+                                style={{ cursor: "pointer", accentColor: "#f38020" }}
+                                title="Click to select as current account (or click again to unselect)"
+                                data-testid={`radio-current-${encodedEmail}`}
                               />
                             </td>
                             <td>
@@ -1150,20 +1271,12 @@ export function AntigravityTracker() {
                                   onClick={() => {
                                     setEditingAccountKey(encodedEmail);
                                     setEditedEmailValue(rawEmail);
+                                    setEditedDisabledValue(Boolean(acc.disabled));
                                   }}
-                                  title="Edit account email"
+                                  title="Edit account email, disabled state, or delete"
                                   data-testid={`button-edit-account-${encodedEmail}`}
                                 >
                                   Edit
-                                </button>
-                                <button
-                                  type="button"
-                                  className="cf-btn cf-btn-danger cf-btn-sm"
-                                  onClick={() => handleDeleteAccount(encodedEmail)}
-                                  title="Remove account"
-                                  data-testid={`button-delete-account-${encodedEmail}`}
-                                >
-                                  Delete
                                 </button>
                               </div>
                             </td>
@@ -1277,7 +1390,7 @@ export function AntigravityTracker() {
           <div className="cf-modal-backdrop" data-testid="modal-edit-account">
             <div className="cf-modal-dialog">
               <div className="cf-modal-header">
-                <h3>Edit Account Email</h3>
+                <h3>Edit Account: {decodeEmailKey(editingAccountKey)}</h3>
                 <button
                   type="button"
                   className="cf-btn-close"
@@ -1303,24 +1416,189 @@ export function AntigravityTracker() {
                     Renaming the email address will transfer usage and percentages to the new key.
                   </span>
                 </div>
+
+                <div className="cf-form-group" style={{ marginTop: "0.5rem" }}>
+                  <label
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      cursor: "pointer",
+                      fontSize: "0.9rem",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={editedDisabledValue}
+                      onChange={(e) => setEditedDisabledValue(e.target.checked)}
+                      data-testid="checkbox-edit-account-disabled"
+                    />
+                    Mark account as disabled
+                  </label>
+                  <span className="cf-help-text">
+                    Disabled accounts are hidden from view unless "Show disabled accounts" is checked.
+                  </span>
+                </div>
+
+                {/* Two-stage explanation notice */}
+                <div
+                  style={{
+                    backgroundColor: "#f8fafc",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "4px",
+                    padding: "0.75rem",
+                    fontSize: "0.8rem",
+                    color: "#475569",
+                    lineHeight: 1.4,
+                  }}
+                  data-testid="notice-two-stage-process"
+                >
+                  <strong>Two-Stage Deletion Process:</strong>
+                  <br />
+                  1. Active accounts must first be marked as <em>Disabled</em>.
+                  <br />
+                  2. Permanent <em>Delete</em> is available only after an account has been disabled.
+                </div>
+              </div>
+
+              <div className="cf-modal-footer" style={{ display: "flex", justifyContent: "space-between" }}>
+                <div>
+                  {editedDisabledValue ? (
+                    <button
+                      type="button"
+                      className="cf-btn cf-btn-danger"
+                      onClick={() => {
+                        setConfirmDialog({
+                          accountKey: editingAccountKey,
+                          action: "delete",
+                        });
+                      }}
+                      title="Permanently remove account"
+                      data-testid="button-delete-from-modal"
+                    >
+                      Delete Account
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="cf-btn cf-btn-secondary"
+                      style={{ color: "#d97706", borderColor: "#fde68a", backgroundColor: "#fffbeb" }}
+                      onClick={() => {
+                        setConfirmDialog({
+                          accountKey: editingAccountKey,
+                          action: "disable",
+                        });
+                      }}
+                      title="Disable this account"
+                      data-testid="button-disable-from-modal"
+                    >
+                      Disable Account
+                    </button>
+                  )}
+                </div>
+
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <button
+                    type="button"
+                    className="cf-btn cf-btn-secondary"
+                    onClick={() => setEditingAccountKey(null)}
+                    data-testid="button-cancel-edit-modal"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="cf-btn cf-btn-primary"
+                    onClick={handleSaveEditedAccount}
+                    data-testid="button-save-edit-modal"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {/* Confirmation Modal for Two-Stage Disabling & Deletion */}
+        {confirmDialog ? (
+          <div className="cf-modal-backdrop" style={{ zIndex: 1100 }} data-testid="modal-confirm-action">
+            <div className="cf-modal-dialog" style={{ maxWidth: "420px" }}>
+              <div className="cf-modal-header">
+                <h3>
+                  {confirmDialog.action === "delete"
+                    ? "Confirm Permanent Deletion"
+                    : "Confirm Account Disabling"}
+                </h3>
+                <button
+                  type="button"
+                  className="cf-btn-close"
+                  onClick={() => setConfirmDialog(null)}
+                  data-testid="button-close-confirm-modal"
+                >
+                  &times;
+                </button>
+              </div>
+
+              <div className="cf-modal-body" style={{ fontSize: "0.9rem", color: "#334155" }}>
+                {confirmDialog.action === "delete" ? (
+                  <p>
+                    Are you sure you want to permanently delete account{" "}
+                    <strong>{decodeEmailKey(confirmDialog.accountKey)}</strong>? This operation cannot be undone.
+                  </p>
+                ) : (
+                  <p>
+                    Are you sure you want to disable account{" "}
+                    <strong>{decodeEmailKey(confirmDialog.accountKey)}</strong>? It will be hidden from the default view until you enable "Show disabled accounts".
+                  </p>
+                )}
               </div>
 
               <div className="cf-modal-footer">
                 <button
                   type="button"
                   className="cf-btn cf-btn-secondary"
-                  onClick={() => setEditingAccountKey(null)}
-                  data-testid="button-cancel-edit-modal"
+                  onClick={() => setConfirmDialog(null)}
+                  data-testid="button-cancel-confirm"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  className="cf-btn cf-btn-primary"
-                  onClick={handleSaveEditedAccount}
-                  data-testid="button-save-edit-modal"
+                  className={confirmDialog.action === "delete" ? "cf-btn cf-btn-danger" : "cf-btn cf-btn-primary"}
+                  onClick={async () => {
+                    const targetKey = confirmDialog.accountKey;
+                    if (confirmDialog.action === "delete") {
+                      await handleDeleteAccount(targetKey);
+                      setConfirmDialog(null);
+                      setEditingAccountKey(null);
+                    } else {
+                      // Mark account as disabled
+                      setEditedDisabledValue(true);
+                      const targetAccount = accounts[targetKey] || {};
+                      const updatedAccount: AccountUsage = {
+                        ...targetAccount,
+                        disabled: true,
+                        updatedAt: new Date().toISOString(),
+                      };
+                      try {
+                        await set({
+                          key: ["list", targetKey],
+                          data: updatedAccount,
+                        });
+                        setAccounts((prev) => ({
+                          ...prev,
+                          [targetKey]: updatedAccount,
+                        }));
+                      } catch (err) {
+                        console.error("Failed to disable account:", err);
+                      }
+                      setConfirmDialog(null);
+                    }
+                  }}
+                  data-testid="button-confirm-action"
                 >
-                  Save Changes
+                  {confirmDialog.action === "delete" ? "Yes, Permanently Delete" : "Yes, Disable Account"}
                 </button>
               </div>
             </div>
