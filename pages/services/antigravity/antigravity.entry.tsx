@@ -343,6 +343,44 @@ export function AntigravityTracker() {
   }
 
   /**
+   * Marks a model as expired right now for an account:
+   * Sets renewsAt = Date.now() + settings.renewalHours
+   * Sets modelPercentage = 0%
+   */
+  async function handleMarkModelExpiredNow(encodedEmail: string, modelName: string) {
+    const renewsAtMs = Date.now() + settings.renewalHours * 60 * 60 * 1000;
+    const renewsAtIso = new Date(renewsAtMs).toISOString();
+
+    const targetAccount = accounts[encodedEmail] || {};
+    const currentModels = { ...(targetAccount.models || {}) };
+    const modelKey = encodeModelKey(modelName);
+
+    currentModels[modelKey] = {
+      modelPercentage: 0,
+      renewsAt: renewsAtIso,
+    };
+
+    const updatedAccount: AccountUsage = {
+      ...targetAccount,
+      models: currentModels,
+      updatedAt: new Date().toISOString(),
+    };
+
+    try {
+      await set({
+        key: ["list", encodedEmail],
+        data: updatedAccount,
+      });
+      setAccounts((prev) => ({
+        ...prev,
+        [encodedEmail]: updatedAccount,
+      }));
+    } catch (err) {
+      console.error("Failed to mark model expired now:", err);
+    }
+  }
+
+  /**
    * Directly updates percentage for a model. If quota was in cooldown, updates modelPercentage directly.
    */
   async function handleDirectPercentChange(encodedEmail: string, modelName: string, newPercent: number) {
@@ -847,23 +885,35 @@ export function AntigravityTracker() {
                                         <span style={{ color: "#64748b", fontWeight: 600 }}>%</span>
                                       </div>
 
-                                      <button
-                                        type="button"
-                                        className="cf-btn cf-btn-secondary cf-btn-sm"
-                                        style={{ fontSize: "0.7rem", padding: "2px 5px" }}
-                                        onClick={() => {
-                                          setActiveQuotaModal({
-                                            encodedEmail,
-                                            modelName,
-                                            percent: status.percentage,
-                                            hoursUntilRenew: "3.5",
-                                          });
-                                        }}
-                                        title="Set model percentage and hours until renew"
-                                        data-testid={`btn-set-quota-${encodedEmail}-${modelName}`}
-                                      >
-                                        Set Quota...
-                                      </button>
+                                      <div style={{ display: "inline-flex", gap: "4px" }}>
+                                        <button
+                                          type="button"
+                                          className="cf-btn cf-btn-secondary cf-btn-sm"
+                                          style={{ fontSize: "0.7rem", padding: "2px 5px" }}
+                                          onClick={() => {
+                                            setActiveQuotaModal({
+                                              encodedEmail,
+                                              modelName,
+                                              percent: status.percentage,
+                                              hoursUntilRenew: "3.5",
+                                            });
+                                          }}
+                                          title="Set model percentage and hours until renew"
+                                          data-testid={`btn-set-quota-${encodedEmail}-${modelName}`}
+                                        >
+                                          Set Quota...
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className="cf-btn cf-btn-secondary cf-btn-sm"
+                                          style={{ fontSize: "0.7rem", padding: "2px 5px" }}
+                                          onClick={() => handleMarkModelExpiredNow(encodedEmail, modelName)}
+                                          title={`Mark expired now (0%, renews in ${settings.renewalHours}h)`}
+                                          data-testid={`btn-expired-now-${encodedEmail}-${modelName}`}
+                                        >
+                                          Expired Now
+                                        </button>
+                                      </div>
                                     </div>
 
                                     {/* Progress bar */}
