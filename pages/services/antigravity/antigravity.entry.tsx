@@ -27,6 +27,7 @@ interface ModelUsageData {
 interface AccountUsage {
   models?: Record<string, ModelUsageData>;
   notes?: string;
+  disabled?: boolean;
   updatedAt?: string;
 }
 
@@ -116,6 +117,13 @@ export function AntigravityTracker() {
   // Account Edit Modal state (for editing email)
   const [editingAccountKey, setEditingAccountKey] = useState<string | null>(null);
   const [editedEmailValue, setEditedEmailValue] = useState<string>("");
+
+  // Account Note Modal state
+  const [editingNoteKey, setEditingNoteKey] = useState<string | null>(null);
+  const [editedNoteValue, setEditedNoteValue] = useState<string>("");
+
+  // Show disabled accounts filter toggle
+  const [showDisabledAccounts, setShowDisabledAccounts] = useState<boolean>(false);
 
   // Model Quota Update Modal state: (account, model, hours, percent)
   interface ModalQuotaState {
@@ -298,6 +306,61 @@ export function AntigravityTracker() {
   }
 
   /**
+   * Toggles disabled state of an account
+   */
+  async function handleToggleAccountDisabled(encodedEmail: string) {
+    const targetAccount = accounts[encodedEmail] || {};
+    const newDisabled = !targetAccount.disabled;
+
+    const updatedAccount: AccountUsage = {
+      ...targetAccount,
+      disabled: newDisabled,
+      updatedAt: new Date().toISOString(),
+    };
+
+    try {
+      await set({
+        key: ["list", encodedEmail],
+        data: updatedAccount,
+      });
+      setAccounts((prev) => ({
+        ...prev,
+        [encodedEmail]: updatedAccount,
+      }));
+    } catch (err) {
+      console.error("Failed to toggle disabled state:", err);
+    }
+  }
+
+  /**
+   * Saves updated note for an account
+   */
+  async function handleSaveAccountNote() {
+    if (editingNoteKey) {
+      const targetAccount = accounts[editingNoteKey] || {};
+      const updatedAccount: AccountUsage = {
+        ...targetAccount,
+        notes: editedNoteValue,
+        updatedAt: new Date().toISOString(),
+      };
+
+      try {
+        await set({
+          key: ["list", editingNoteKey],
+          data: updatedAccount,
+        });
+        setAccounts((prev) => ({
+          ...prev,
+          [editingNoteKey]: updatedAccount,
+        }));
+        setEditingNoteKey(null);
+      } catch (err) {
+        console.error("Failed to save note:", err);
+      }
+    }
+  }
+
+  /**
    * Saves updated model quota (percentage & renewsAt date) for an account
    */
   async function handleSaveQuotaModal() {
@@ -378,6 +441,16 @@ export function AntigravityTracker() {
     } catch (err) {
       console.error("Failed to mark model expired now:", err);
     }
+  }
+
+  /**
+   * Calculates percentage from a mouse event on the progress bar track
+   */
+  function calculatePercentFromEvent(e: React.MouseEvent<HTMLDivElement>): number {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+    return Math.round(ratio * 100);
   }
 
   /**
@@ -755,6 +828,27 @@ export function AntigravityTracker() {
           <section className="cf-panel" data-testid="accounts-panel">
             <div className="cf-panel-header">
               <h2>Antigravity Accounts</h2>
+              <div className="cf-panel-actions">
+                <label
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    color: "#475569",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={showDisabledAccounts}
+                    onChange={(e) => setShowDisabledAccounts(e.target.checked)}
+                    data-testid="checkbox-show-disabled-accounts"
+                  />
+                  Show disabled accounts
+                </label>
+              </div>
             </div>
             <div className="cf-panel-body">
               {/* Add Account Inline Form */}
@@ -777,7 +871,9 @@ export function AntigravityTracker() {
                 <table className="cf-table" data-testid="table-accounts">
                   <thead>
                     <tr>
+                      <th style={{ width: "60px", textAlign: "center" }}>Disabled</th>
                       <th style={{ minWidth: "160px" }}>Account Email</th>
+                      <th style={{ width: "60px", textAlign: "center" }}>Note</th>
                       {settings.models.map((modelName) => {
                         const isSortedPct =
                           sortConfig && sortConfig.modelName === modelName && sortConfig.type === "percentage";
@@ -836,11 +932,49 @@ export function AntigravityTracker() {
                     {accountEntries.length > 0 ? (
                       accountEntries.map(([encodedEmail, acc]) => {
                         const rawEmail = decodeEmailKey(encodedEmail);
+                        const isDisabled = Boolean(acc.disabled);
+                        const hasNote = Boolean(acc.notes && acc.notes.trim().length > 0);
+
+                        // If account is disabled and user has not ticked "Show disabled accounts", hide it
+                        if (isDisabled && !showDisabledAccounts) {
+                          return null;
+                        }
 
                         return (
-                          <tr key={encodedEmail} data-testid={`row-account-${encodedEmail}`}>
+                          <tr
+                            key={encodedEmail}
+                            style={{
+                              opacity: isDisabled ? 0.45 : 1,
+                              backgroundColor: isDisabled ? "#f1f5f9" : undefined,
+                            }}
+                            data-testid={`row-account-${encodedEmail}`}
+                          >
+                            <td style={{ textAlign: "center" }}>
+                              <input
+                                type="checkbox"
+                                checked={isDisabled}
+                                onChange={() => handleToggleAccountDisabled(encodedEmail)}
+                                title="Disable or enable this account"
+                                data-testid={`checkbox-disabled-${encodedEmail}`}
+                              />
+                            </td>
                             <td>
                               <strong>{rawEmail}</strong>
+                            </td>
+                            <td style={{ textAlign: "center", fontSize: "1.1rem" }}>
+                              {hasNote ? (
+                                <span
+                                  style={{ cursor: "pointer" }}
+                                  title={acc.notes}
+                                  onClick={() => {
+                                    setEditingNoteKey(encodedEmail);
+                                    setEditedNoteValue(acc.notes || "");
+                                  }}
+                                  data-testid={`icon-note-${encodedEmail}`}
+                                >
+                                  📝
+                                </span>
+                              ) : null}
                             </td>
 
                             {/* Individual Model Columns */}
@@ -935,14 +1069,28 @@ export function AntigravityTracker() {
                                       </div>
                                     </div>
 
-                                    {/* Progress bar */}
+                                    {/* Interactive Progress bar */}
                                     <div
                                       style={{
                                         width: "100%",
-                                        height: "6px",
+                                        height: "10px",
                                         backgroundColor: "#e2e8f0",
-                                        borderRadius: "3px",
+                                        borderRadius: "5px",
                                         overflow: "hidden",
+                                        cursor: "pointer",
+                                        position: "relative",
+                                        userSelect: "none",
+                                      }}
+                                      title="Click or drag to adjust percentage"
+                                      onMouseDown={(e) => {
+                                        const newPct = calculatePercentFromEvent(e);
+                                        handleDirectPercentChange(encodedEmail, modelName, newPct);
+                                      }}
+                                      onMouseMove={(e) => {
+                                        if (e.buttons === 1) {
+                                          const newPct = calculatePercentFromEvent(e);
+                                          handleDirectPercentChange(encodedEmail, modelName, newPct);
+                                        }
                                       }}
                                       data-testid={`progressbar-wrapper-${encodedEmail}-${modelName}`}
                                     >
@@ -951,7 +1099,8 @@ export function AntigravityTracker() {
                                           width: `${status.percentage}%`,
                                           height: "100%",
                                           backgroundColor: barColor,
-                                          transition: "width 0.25s ease, background-color 0.25s ease",
+                                          pointerEvents: "none",
+                                          transition: "width 0.1s ease, background-color 0.25s ease",
                                         }}
                                         data-testid={`progressbar-fill-${encodedEmail}-${modelName}`}
                                       />
@@ -987,6 +1136,18 @@ export function AntigravityTracker() {
                                   type="button"
                                   className="cf-btn cf-btn-secondary cf-btn-sm"
                                   onClick={() => {
+                                    setEditingNoteKey(encodedEmail);
+                                    setEditedNoteValue(acc.notes || "");
+                                  }}
+                                  title="Add or edit note for this account"
+                                  data-testid={`button-note-account-${encodedEmail}`}
+                                >
+                                  Note
+                                </button>
+                                <button
+                                  type="button"
+                                  className="cf-btn cf-btn-secondary cf-btn-sm"
+                                  onClick={() => {
                                     setEditingAccountKey(encodedEmail);
                                     setEditedEmailValue(rawEmail);
                                   }}
@@ -1012,7 +1173,7 @@ export function AntigravityTracker() {
                     ) : (
                       <tr>
                         <td
-                          colSpan={settings.models.length + 2}
+                          colSpan={settings.models.length + 4}
                           style={{ textAlign: "center", padding: "2rem", color: "#64748b" }}
                         >
                           No Antigravity accounts registered yet. Use the form above to add an account.
@@ -1160,6 +1321,79 @@ export function AntigravityTracker() {
                   data-testid="button-save-edit-modal"
                 >
                   Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {/* Note Modal */}
+        {editingNoteKey ? (
+          <div className="cf-modal-backdrop" data-testid="modal-edit-note">
+            <div className="cf-modal-dialog">
+              <div className="cf-modal-header">
+                <h3>Account Note: {decodeEmailKey(editingNoteKey)}</h3>
+                <button
+                  type="button"
+                  className="cf-btn-close"
+                  onClick={() => setEditingNoteKey(null)}
+                  data-testid="button-close-note-modal"
+                >
+                  &times;
+                </button>
+              </div>
+
+              <div className="cf-modal-body">
+                <div className="cf-form-group">
+                  <label htmlFor="editNoteTextarea">Note</label>
+                  <textarea
+                    id="editNoteTextarea"
+                    rows={5}
+                    value={editedNoteValue}
+                    onChange={(e) => setEditedNoteValue(e.target.value)}
+                    placeholder="Enter any notes, credentials reminder, or usage details..."
+                    style={{
+                      width: "100%",
+                      padding: "0.5rem",
+                      fontSize: "0.9rem",
+                      border: "1px solid #cbd5e1",
+                      borderRadius: "4px",
+                      boxSizing: "border-box",
+                      fontFamily: "inherit",
+                    }}
+                    data-testid="textarea-account-note"
+                  />
+                  <span className="cf-help-text">
+                    When note is not empty, a 📝 icon will appear in the table column.
+                  </span>
+                </div>
+              </div>
+
+              <div className="cf-modal-footer">
+                <button
+                  type="button"
+                  className="cf-btn cf-btn-secondary"
+                  onClick={() => setEditedNoteValue("")}
+                  title="Clear note text"
+                  data-testid="button-clear-note-modal"
+                >
+                  Clear
+                </button>
+                <button
+                  type="button"
+                  className="cf-btn cf-btn-secondary"
+                  onClick={() => setEditingNoteKey(null)}
+                  data-testid="button-cancel-note-modal"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="cf-btn cf-btn-primary"
+                  onClick={handleSaveAccountNote}
+                  data-testid="button-save-note-modal"
+                >
+                  Save Note
                 </button>
               </div>
             </div>
