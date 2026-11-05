@@ -891,11 +891,30 @@ export function AntigravityTracker() {
                                           className="cf-btn cf-btn-secondary cf-btn-sm"
                                           style={{ fontSize: "0.7rem", padding: "2px 5px" }}
                                           onClick={() => {
+                                            const modelKey = encodeModelKey(modelName);
+                                            const existingModelData = acc.models ? acc.models[modelKey] : undefined;
+
+                                            let initialPercent = 0;
+                                            let initialHours = String(settings.renewalHours);
+
+                                            if (existingModelData) {
+                                              if (typeof existingModelData.modelPercentage === "number") {
+                                                initialPercent = existingModelData.modelPercentage;
+                                              }
+                                              if (existingModelData.renewsAt) {
+                                                const renewsAtMs = new Date(existingModelData.renewsAt).getTime();
+                                                const diffHours = (renewsAtMs - Date.now()) / (1000 * 60 * 60);
+                                                if (diffHours > 0) {
+                                                  initialHours = (Math.round(diffHours * 10) / 10).toString();
+                                                }
+                                              }
+                                            }
+
                                             setActiveQuotaModal({
                                               encodedEmail,
                                               modelName,
-                                              percent: status.percentage,
-                                              hoursUntilRenew: "3.5",
+                                              percent: initialPercent,
+                                              hoursUntilRenew: initialHours,
                                             });
                                           }}
                                           title="Set model percentage and hours until renew"
