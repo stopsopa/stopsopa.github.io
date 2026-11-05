@@ -72,6 +72,7 @@ pages/children/caesar/moduleCaesarCypher.js
 pages/children/tetris/tetris.js
 pages/children/wotb/controls/antigravity/index.js
 pages/children/wotb/controls/ver1/index.js
+pages/databases/firebase/useFirebase.js
 pages/experiments/solar/css.d.js
 pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.js
 pages/html/checkbox/handleCheckboxDynamic/index.js
@@ -89,6 +90,7 @@ pages/services/google_drive_application_data_explorer/google_drive_application_d
 pages/services/google_drive_application_data_explorer/index.js
 pages/services/map_points/map_points.entry.js
 pages/services/xor.js
+pages/useCustomState.js
 root.js
 tests/url/001_url.unit.js
 tests/url/toolsURLSearchParams.js

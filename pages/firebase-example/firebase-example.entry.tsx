@@ -143,16 +143,6 @@ const Main = () => {
           </button>
         </div>
       )}
-
-      <hr />
-      <div>
-        <a href="urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fdatabases%2Ffirebase%2FUSAGE.md">
-          USAGE.md
-        </a>
-      </div>
-      <div>
-        <a href="https://console.firebase.google.com/">https://console.firebase.google.com/</a>
-      </div>
     </div>
   );
 };
