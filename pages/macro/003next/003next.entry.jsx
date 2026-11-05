@@ -6,7 +6,7 @@ import classnames from "classnames";
 
 import { set, get } from "nlab/lcstorage";
 
-import useCustomState from "../../useCustomState.js";
+import useCustomState from "../../useCustomState.ts";
 
 const section = "editor";
 

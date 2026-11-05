@@ -1,5 +1,4 @@
-// @ts-ignore
-import useFirebase from "./databases/firebase/useFirebase.js";
+import useFirebase, { UseFirebaseOptions, UseFirebaseReturn, FirebaseMutationOptions } from "./databases/firebase/useFirebase.ts";
 
 /**
  * Options for useCustomState hook

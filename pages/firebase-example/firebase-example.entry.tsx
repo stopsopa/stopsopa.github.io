@@ -19,6 +19,7 @@ const section = "todo_example";
 const Main = () => {
   const [todos, setTodos] = useState<Record<string, TodoItem> | null>(null);
   const [text, setText] = useState("");
+  const [selectedItem, setSelectedItem] = useState<{ key: string; data: TodoItem } | null>(null);
 
   const { error, id, set, get, del, push } = useCustomState({
     section,
@@ -27,6 +28,11 @@ const Main = () => {
   const refreshTodos = async () => {
     const data = await get("todos");
     setTodos(data || {});
+  };
+
+  const handleFetchOne = async (key: string) => {
+    const single = await get<TodoItem>(`todos/${key}`);
+    setSelectedItem({ key, data: single });
   };
 
   useEffect(() => {
@@ -84,6 +90,8 @@ const Main = () => {
 
   return (
     <div>
+      <a href="../..">up ..</a>
+      <hr />
       <h2>Todo List</h2>
       <form onSubmit={handleAdd}>
         <input
@@ -116,12 +124,35 @@ const Main = () => {
             >
               {item.text}
             </span>
+            <button data-testid={`todo-view-${key}`} onClick={() => handleFetchOne(key)}>
+              view details (fetch single)
+            </button>
             <button data-testid={`todo-del-${key}`} onClick={() => handleDelete(key)}>
               delete
             </button>
           </li>
         ))}
       </ul>
+
+      {selectedItem && (
+        <div data-testid="todo-details-box" style={{ marginTop: "16px", padding: "8px", border: "1px solid #ccc" }}>
+          <h4>Single Fetched Item ({selectedItem.key})</h4>
+          <pre>{JSON.stringify(selectedItem.data, null, 2)}</pre>
+          <button data-testid="todo-close-details" onClick={() => setSelectedItem(null)}>
+            Close
+          </button>
+        </div>
+      )}
+
+      <hr />
+      <div>
+        <a href="urlwizzard.schema://urlwizzard.hostnegotiated/viewer.html?file=%2Fpages%2Fdatabases%2Ffirebase%2FUSAGE.md">
+          USAGE.md
+        </a>
+      </div>
+      <div>
+        <a href="https://console.firebase.google.com/">https://console.firebase.google.com/</a>
+      </div>
     </div>
   );
 };

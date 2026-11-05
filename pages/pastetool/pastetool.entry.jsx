@@ -4,7 +4,7 @@ import { render } from "react-dom";
 
 import log from "inspc";
 
-import useCustomState from "../useCustomState.js";
+import useCustomState from "../useCustomState.ts";
 
 import Textarea from "../../components/Textarea.js";
 

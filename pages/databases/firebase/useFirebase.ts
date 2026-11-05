@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
+// @ts-ignore
 import log from "inspc";
 
+// @ts-ignore
 import se from "nlab/serializeError";
 
-const th = (msg) => new Error(`useFirebase hook error: ${msg}`);
+const th = (msg: string) => new Error(`useFirebase hook error: ${msg}`);
 
 const fix = `
 useEffect(() => {
@@ -18,14 +20,14 @@ useEffect(() => {
 }, [id]);            
 `;
 
-function decodeJwtPayload(token) {
+function decodeJwtPayload(token: string | null | undefined): any {
   if (typeof token === "string" && token.trim()) {
     const segments = token.split(".");
 
     // console.log("expirationData segments", segments);
 
     if (segments.length === 3) {
-      let json;
+      let json: any;
 
       try {
         json = JSON.parse(atob(segments[1]));
@@ -36,7 +38,7 @@ function decodeJwtPayload(token) {
       if (json) {
         json._exp = new Date(json.exp * 1000);
 
-        json._minutes_left = parseInt((json.exp - new Date().getTime() / 1000) / 60, 10);
+        json._minutes_left = parseInt(String((json.exp - new Date().getTime() / 1000) / 60), 10);
 
         return json;
       }
@@ -44,7 +46,7 @@ function decodeJwtPayload(token) {
   }
 }
 
-function logCurrentToken(comment = "", token) {
+function logCurrentToken(comment = "", token?: string | null) {
   if (!token) {
     token = localStorage.getItem("idToken");
   }
@@ -54,23 +56,61 @@ function logCurrentToken(comment = "", token) {
 
 let autoTryToReAuthenticate = true;
 
+declare global {
+  interface Window {
+    firebaseCoreEntry?: () => Promise<any>;
+    __refresh?: () => Promise<void>;
+    expirationData?: () => any;
+  }
+}
+
+const getFirebaseCoreEntry = () => {
+  if (typeof window.firebaseCoreEntry !== "function") {
+    throw new ReferenceError("firebaseCoreEntry is not defined");
+  }
+  return window.firebaseCoreEntry();
+};
+
+export interface UseFirebaseOptions {
+  section: string;
+}
+
+export interface FirebaseMutationOptions<T = any> {
+  data?: T;
+  key?: string | string[];
+}
+
+export interface UseFirebaseReturn {
+  firebase: boolean;
+  error: any;
+  user: string | undefined;
+  set: <T = any>(opt?: FirebaseMutationOptions<T>) => Promise<void>;
+  get: <T = any>(key?: string | string[]) => Promise<T>;
+  del: (key?: string | string[]) => Promise<void>;
+  push: <T = any>(opt?: FirebaseMutationOptions<T>) => Promise<string>;
+  getroot: (key?: string | string[]) => Promise<string>;
+  expirationData: () => any;
+  reCreateSession: () => Promise<void>;
+  signOut: () => Promise<void>;
+}
+
 /**
  * to see how to use this hook look for firebase.entry.jsx
  *
  * Read more about API: https://firebase.google.com/docs/reference/js
  */
-export default ({ section }) => {
+export default function useFirebase({ section }: UseFirebaseOptions): UseFirebaseReturn {
   const [firebase, setFirebase] = useState(false);
 
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<any>(false);
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<string | undefined>();
 
-  async function reCreateSession() {
+  async function reCreateSession(): Promise<void> {
     try {
       const {
         auth: { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut, getIdToken },
-      } = await firebaseCoreEntry();
+      } = await getFirebaseCoreEntry();
 
       const auth = getAuth();
 
@@ -161,7 +201,7 @@ export default ({ section }) => {
               logCurrentToken("after");
             };
           }
-        } catch (e) {
+        } catch (e: any) {
           e.customMessage = ">>>>>>>>>>Origin: set() method<<<<<<<<<<<<";
 
           throw e;
@@ -188,7 +228,7 @@ export default ({ section }) => {
             firebase_mode: "signInWithCredential",
             user: result.user,
           });
-        } catch (e) {
+        } catch (e: any) {
           log("firebase_catch: signInWithCredential", se(e));
 
           setError({
@@ -231,13 +271,17 @@ export default ({ section }) => {
           result,
         });
 
-        localStorage.setItem("idToken", idToken);
+        if (idToken) {
+          localStorage.setItem("idToken", idToken);
+        }
 
-        localStorage.setItem("accessToken", accessToken);
+        if (accessToken) {
+          localStorage.setItem("accessToken", accessToken);
+        }
       }
 
       await set();
-    } catch (e) {
+    } catch (e: any) {
       log("catch: signInWithPopup", se(e));
 
       setError({
@@ -253,20 +297,21 @@ export default ({ section }) => {
     reCreateSession();
   }, []);
 
-  async function getroot(key) {
+  async function getroot(key?: string | string[]): Promise<string> {
     if (typeof section !== "string" || !section.trim()) {
       throw th(`getroot: section is not specified`);
     }
 
-    if (Array.isArray(key)) {
-      key = key.join("/");
+    let processedKey = key;
+    if (Array.isArray(processedKey)) {
+      processedKey = processedKey.join("/");
     }
 
     // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
     let internalkey = `users/${user}/${section}`;
 
-    if (typeof key === "string") {
-      internalkey += "/" + key;
+    if (typeof processedKey === "string") {
+      internalkey += "/" + processedKey;
     }
 
     log.dump({
@@ -276,30 +321,31 @@ export default ({ section }) => {
     return internalkey;
   }
 
-  async function set(opt) {
-    let { data = {}, key } = { ...opt };
+  async function set<T = any>(opt?: FirebaseMutationOptions<T>): Promise<void> {
+    let { data = {} as T, key } = { ...opt };
 
-    let internalkey;
+    let internalkey: string | undefined;
 
     try {
       const {
         firebaseApp,
         database: { getDatabase, ref, set: fbset },
-      } = await firebaseCoreEntry();
+      } = await getFirebaseCoreEntry();
 
       if (typeof section !== "string" || !section.trim()) {
         throw th(`set: section is not specified`);
       }
 
-      if (Array.isArray(key)) {
-        key = key.join("/");
+      let processedKey = key;
+      if (Array.isArray(processedKey)) {
+        processedKey = processedKey.join("/");
       }
 
       // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
       internalkey = `users/${user}/${section}`;
 
-      if (typeof key === "string") {
-        internalkey += "/" + key;
+      if (typeof processedKey === "string") {
+        internalkey += "/" + processedKey;
       }
 
       const db = getDatabase(firebaseApp);
@@ -321,7 +367,7 @@ export default ({ section }) => {
       });
 
       autoTryToReAuthenticate = true;
-    } catch (e) {
+    } catch (e: any) {
       log.dump({
         "set() error:": {
           error: se(e),
@@ -352,32 +398,33 @@ export default ({ section }) => {
     }
   }
 
-  async function push(opt) {
+  async function push<T = any>(opt?: FirebaseMutationOptions<T>): Promise<string> {
     console.log("push...", JSON.stringify(opt));
 
-    let { data = {}, key } = { ...opt };
+    let { data = {} as T, key } = { ...opt };
 
-    let internalkey;
+    let internalkey: string | undefined;
 
     try {
       const {
         firebaseApp,
         database: { getDatabase, ref, push: fbpush, child, update },
-      } = await firebaseCoreEntry();
+      } = await getFirebaseCoreEntry();
 
       if (typeof section !== "string" || !section.trim()) {
         throw th(`push: section is not specified`);
       }
 
-      if (Array.isArray(key)) {
-        key = key.join("/");
+      let processedKey = key;
+      if (Array.isArray(processedKey)) {
+        processedKey = processedKey.join("/");
       }
 
       // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
       internalkey = `users/${user}/${section}`;
 
-      if (typeof key === "string") {
-        internalkey += "/" + key;
+      if (typeof processedKey === "string") {
+        internalkey += "/" + processedKey;
       }
       const db = getDatabase(firebaseApp);
 
@@ -404,7 +451,7 @@ export default ({ section }) => {
       autoTryToReAuthenticate = true;
 
       return newid;
-    } catch (e) {
+    } catch (e: any) {
       log.dump({
         "push() error:": {
           error: se(e),
@@ -435,48 +482,49 @@ export default ({ section }) => {
     }
   }
 
-  async function get(key) {
-    let internalkey;
+  async function get<T = any>(key?: string | string[]): Promise<T> {
+    let internalkey: string | undefined;
 
     try {
       const {
         firebaseApp,
         database: { getDatabase, ref, onValue },
-      } = await firebaseCoreEntry();
+      } = await getFirebaseCoreEntry();
 
       if (typeof section !== "string" || !section.trim()) {
         throw th(`get: section is not specified`);
       }
 
-      if (Array.isArray(key)) {
-        key = key.join("/");
+      let processedKey = key;
+      if (Array.isArray(processedKey)) {
+        processedKey = processedKey.join("/");
       }
 
       // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
       internalkey = `users/${user}/${section}`;
 
-      if (typeof key === "string") {
-        internalkey += "/" + key;
+      if (typeof processedKey === "string") {
+        internalkey += "/" + processedKey;
       }
       // https://firebase.google.com/docs/database/web/read-and-write#read_data_once_with_an_observer
       const db = getDatabase(firebaseApp);
 
       const dbRef = ref(db, internalkey);
 
-      const snapshot = await new Promise((res) => {
+      const snapshot: any = await new Promise((res) => {
         // https://firebase.google.com/docs/database/web/read-and-write#web-version-9_4
 
         try {
           onValue(
             dbRef,
-            (snapshot) => {
+            (snapshot: any) => {
               res(snapshot);
             },
             {
               onlyOnce: true,
             }
           );
-        } catch (e) {
+        } catch (e: any) {
           log.dump({
             "get() onValue error:": {
               error: se(e),
@@ -498,7 +546,7 @@ export default ({ section }) => {
       autoTryToReAuthenticate = true;
 
       return data;
-    } catch (e) {
+    } catch (e: any) {
       log.dump({
         "get() error:": {
           error: se(e),
@@ -522,41 +570,42 @@ export default ({ section }) => {
     }
   }
 
-  async function del(key) {
-    let internalkey;
+  async function del(key?: string | string[]): Promise<void> {
+    let internalkey: string | undefined;
 
     try {
       const {
         firebaseApp,
         database: { getDatabase, ref, remove },
-      } = await firebaseCoreEntry();
+      } = await getFirebaseCoreEntry();
 
       if (typeof section !== "string" || !section.trim()) {
         throw th(`del: section is not specified`);
       }
 
-      if (Array.isArray(key)) {
-        key = key.join("/");
+      let processedKey = key;
+      if (Array.isArray(processedKey)) {
+        processedKey = processedKey.join("/");
       }
 
       // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
       internalkey = `users/${user}/${section}`;
 
-      if (typeof key === "string") {
-        internalkey += "/" + key;
+      if (typeof processedKey === "string") {
+        internalkey += "/" + processedKey;
       }
       const db = getDatabase(firebaseApp);
 
       const dbRef = ref(db, internalkey);
 
-      await remove(dbRef, key);
+      await remove(dbRef);
 
       log.dump({
         firebase_del: internalkey,
       });
 
       autoTryToReAuthenticate = true;
-    } catch (e) {
+    } catch (e: any) {
       log.dump({
         "del() error: ": {
           error: se(e),
@@ -609,12 +658,12 @@ export default ({ section }) => {
     getroot,
     expirationData,
     reCreateSession,
-    signOut: async function () {
+    signOut: async function (): Promise<void> {
       log("destroy session");
 
       const {
-        auth: { getAuth, signInWithPopup, GoogleAuthProvider, signInWithCredential, signOut, getIdToken },
-      } = await firebaseCoreEntry();
+        auth: { getAuth, signOut },
+      } = await getFirebaseCoreEntry();
 
       const auth = getAuth();
 
@@ -626,4 +675,4 @@ export default ({ section }) => {
       localStorage.removeItem("accessToken");
     },
   };
-};
+}
