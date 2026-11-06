@@ -111,6 +111,21 @@ export function AntigravityTracker() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState<number>(Date.now());
 
+  /*
+   * Optimistic local percentage overrides for the progress bar drag interaction.
+   * Key format: `${encodedEmail}::${modelName}`.
+   * Written immediately on drag; cleared after Firebase write completes.
+   */
+  const [draftPercents, setDraftPercents] = useState<Record<string, number>>({});
+
+  /*
+   * Throttle timer refs for progress bar drag — one timer per bar (same key format).
+   * Prevents flooding Firebase on every mousemove pixel.
+   * The pending call fires at most once per THROTTLE_MS; a final flush fires on mouseUp.
+   */
+  const THROTTLE_MS = 500;
+  const throttleTimers = React.useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
   // Time simulation state
   const [isFakeTimeEnabled, setIsFakeTimeEnabled] = useState<boolean>(false);
   const [fakeTimeOffsetHours, setFakeTimeOffsetHours] = useState<number>(0);
@@ -585,6 +600,46 @@ export function AntigravityTracker() {
     } catch (err) {
       console.error("Failed to update percentage directly:", err);
     }
+  }
+
+  /*
+   * Throttled wrapper for progress bar drag interaction.
+   * - Updates draftPercents immediately so the bar moves without lag.
+   * - Schedules a Firebase write that fires THROTTLE_MS after the last drag event.
+   * - Call flushDraftPercent on mouseUp to force an immediate final write and clear the draft.
+   */
+  function handleDraftPercentChange(encodedEmail: string, modelName: string, newPercent: number) {
+    const key = `${encodedEmail}::${modelName}`;
+    const safePercent = Math.max(0, Math.min(100, isNaN(newPercent) ? 0 : newPercent));
+
+    // Update optimistic UI immediately
+    setDraftPercents((prev) => ({ ...prev, [key]: safePercent }));
+
+    // Clear any pending throttle timer and schedule a new write
+    clearTimeout(throttleTimers.current[key]);
+    throttleTimers.current[key] = setTimeout(() => {
+      delete throttleTimers.current[key];
+      handleDirectPercentChange(encodedEmail, modelName, safePercent);
+    }, THROTTLE_MS);
+  }
+
+  /* Flush the pending throttled write immediately (call on mouseUp). */
+  function flushDraftPercent(encodedEmail: string, modelName: string) {
+    const key = `${encodedEmail}::${modelName}`;
+    const pending = draftPercents[key];
+    if (pending === undefined) return;
+
+    clearTimeout(throttleTimers.current[key]);
+    delete throttleTimers.current[key];
+
+    // Clear draft first so UI falls back to Firebase state after write
+    setDraftPercents((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+
+    handleDirectPercentChange(encodedEmail, modelName, pending);
   }
 
   /**
@@ -1147,7 +1202,10 @@ export function AntigravityTracker() {
                             {/* Individual Model Columns */}
                             {settings.models.map((modelName) => {
                               const status = getModelStatus(acc, modelName);
-                              const barColor = getProgressColor(status.percentage);
+                              // Use draft percentage for instant visual feedback during drag
+                              const draftKey = `${encodedEmail}::${modelName}`;
+                              const displayPct = draftPercents[draftKey] ?? status.percentage;
+                              const barColor = getProgressColor(displayPct);
 
                               return (
                                 <td key={modelName} data-testid={`cell-${encodedEmail}-${modelName}`}>
@@ -1165,7 +1223,7 @@ export function AntigravityTracker() {
                                           type="number"
                                           min="0"
                                           max="100"
-                                          value={status.percentage}
+                                          value={displayPct}
                                           onChange={(e) =>
                                             handleDirectPercentChange(
                                               encodedEmail,
@@ -1251,19 +1309,22 @@ export function AntigravityTracker() {
                                       title="Click or drag to adjust percentage"
                                       onMouseDown={(e) => {
                                         const newPct = calculatePercentFromEvent(e);
-                                        handleDirectPercentChange(encodedEmail, modelName, newPct);
+                                        handleDraftPercentChange(encodedEmail, modelName, newPct);
                                       }}
                                       onMouseMove={(e) => {
                                         if (e.buttons === 1) {
                                           const newPct = calculatePercentFromEvent(e);
-                                          handleDirectPercentChange(encodedEmail, modelName, newPct);
+                                          handleDraftPercentChange(encodedEmail, modelName, newPct);
                                         }
+                                      }}
+                                      onMouseUp={() => {
+                                        flushDraftPercent(encodedEmail, modelName);
                                       }}
                                       data-testid={`progressbar-wrapper-${encodedEmail}-${modelName}`}
                                     >
                                       <div
                                         style={{
-                                          width: `${status.percentage}%`,
+                                          width: `${displayPct}%`,
                                           height: "100%",
                                           backgroundColor: barColor,
                                           pointerEvents: "none",
