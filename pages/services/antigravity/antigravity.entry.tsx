@@ -540,6 +540,8 @@ export function AntigravityTracker() {
 
   /**
    * Directly updates percentage for a model. If quota was in cooldown, updates modelPercentage directly.
+   * If the model was in 'renewed' state (renewsAt in the past) when the user starts dragging,
+   * automatically set renewsAt to now + settings.renewalHours so it enters cooldown tracking.
    */
   async function handleDirectPercentChange(encodedEmail: string, modelName: string, newPercent: number) {
     const safePercent = Math.max(0, Math.min(100, isNaN(newPercent) ? 0 : newPercent));
@@ -551,9 +553,18 @@ export function AntigravityTracker() {
       renewsAt: new Date().toISOString(),
     };
 
+    // If quota is currently renewed (renewsAt in the past), set a fresh renewsAt
+    // so the cooldown window starts from now when user begins adjusting percentage.
+    const renewsAtMs = new Date(existingModelData.renewsAt).getTime();
+    const isRenewed = renewsAtMs <= Date.now();
+    const renewsAt = isRenewed
+      ? new Date(Date.now() + settings.renewalHours * 60 * 60 * 1000).toISOString()
+      : existingModelData.renewsAt;
+
     currentModels[modelKey] = {
       ...existingModelData,
       modelPercentage: safePercent,
+      renewsAt,
     };
 
     const updatedAccount: AccountUsage = {
@@ -705,6 +716,14 @@ export function AntigravityTracker() {
               >
                 Sign out
               </button>
+              <button
+                className="cf-btn-settings"
+                onClick={() => setSettingsOpen(true)}
+                data-testid="button-open-settings"
+                title="Configuration & Models"
+              >
+                ⚙ Settings
+              </button>
             </div>
           </div>
         </header>
@@ -814,6 +833,21 @@ export function AntigravityTracker() {
                   {new Date(effectiveNow).toLocaleString()}
                 </strong>
                 {isFakeTimeEnabled ? " (Fast-forwarded)" : " (Real time)"}
+                {" — "}
+                <span style={{ color: "#64748b" }}>
+                  {(() => {
+                    const diffMs = effectiveNow - Date.now();
+                    const totalHours = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60));
+                    const days = Math.floor(totalHours / 24);
+                    const hours = totalHours % 24;
+                    const weekday = new Date(effectiveNow).toLocaleDateString(undefined, { weekday: "long" });
+                    const parts: string[] = [];
+                    if (days > 0) parts.push(`${days}d`);
+                    if (hours > 0 || days === 0) parts.push(`${hours}h`);
+                    const offset = diffMs >= 0 ? `+${parts.join(" ")}` : `-${parts.join(" ")}`;
+                    return `${weekday} (${offset})`;
+                  })()}
+                </span>
               </span>
               <span>
                 Real Time: {new Date(currentTime).toLocaleTimeString()}
@@ -821,108 +855,119 @@ export function AntigravityTracker() {
             </div>
           </div>
 
-          {/* Settings Panel */}
-          <section className="cf-panel" data-testid="settings-panel">
-            <div className="cf-panel-header">
-              <h2>Configuration & Models</h2>
-              <div className="cf-panel-actions">
-                <button
-                  type="button"
-                  className="cf-btn cf-btn-secondary cf-btn-sm"
-                  onClick={() => setSettingsOpen(!settingsOpen)}
-                  data-testid="button-toggle-settings"
-                >
-                  {settingsOpen ? "Hide Settings" : "Configure Settings"}
-                </button>
-              </div>
-            </div>
+          {/* Settings Modal — opened via ⚙ Settings button in the header */}
+          {settingsOpen ? (
+            <div className="cf-modal-backdrop" data-testid="modal-settings">
+              <div className="cf-modal-dialog" style={{ maxWidth: "480px" }}>
+                <div className="cf-modal-header">
+                  <h3>⚙ Configuration & Models</h3>
+                  <button
+                    type="button"
+                    className="cf-btn-close"
+                    onClick={() => setSettingsOpen(false)}
+                    data-testid="button-close-settings"
+                  >
+                    &times;
+                  </button>
+                </div>
 
-            {settingsOpen ? (
-              <div className="cf-panel-body" data-testid="settings-body">
-                <div className="cf-settings-form">
-                  <div className="cf-form-group">
-                    <label htmlFor="renewalHoursInput">Default Renewal Interval (Hours)</label>
-                    <input
-                      id="renewalHoursInput"
-                      type="number"
-                      min="1"
-                      max="168"
-                      value={settings.renewalHours}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value, 10);
-                        const updated = {
-                          ...settings,
-                          renewalHours: isNaN(val) ? 24 : val,
-                        };
-                        handleSaveSettings(updated);
-                      }}
-                      data-testid="input-renewal-hours"
-                    />
-                    <span className="cf-help-text">
-                      Default interval window used for tracking and simulation slider bounds.
-                    </span>
-                  </div>
-
-                  <div className="cf-form-group">
-                    <label>Available Models</label>
-                    <div className="cf-models-list" data-testid="models-list-container">
-                      {settings.models.map((model) => (
-                        <span key={model} className="cf-model-tag" data-testid={`tag-model-${model}`}>
-                          {model}
-                          <button
-                            type="button"
-                            className="cf-btn-remove-tag"
-                            onClick={() => {
-                              const updated = {
-                                ...settings,
-                                models: settings.models.filter((m) => m !== model),
-                              };
-                              handleSaveSettings(updated);
-                            }}
-                            data-testid={`button-remove-model-${model}`}
-                          >
-                            &times;
-                          </button>
-                        </span>
-                      ))}
+                <div className="cf-modal-body">
+                  <div className="cf-settings-form">
+                    <div className="cf-form-group">
+                      <label htmlFor="renewalHoursInput">Default Renewal Interval (Hours)</label>
+                      <input
+                        id="renewalHoursInput"
+                        type="number"
+                        min="1"
+                        max="168"
+                        value={settings.renewalHours}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value, 10);
+                          const updated = {
+                            ...settings,
+                            renewalHours: isNaN(val) ? 24 : val,
+                          };
+                          handleSaveSettings(updated);
+                        }}
+                        data-testid="input-renewal-hours"
+                      />
+                      <span className="cf-help-text">
+                        Default interval window used for tracking and simulation slider bounds.
+                      </span>
                     </div>
 
-                    <div className="cf-add-model-row">
-                      <input
-                        type="text"
-                        placeholder="e.g. Gemini 3.8 Flash"
-                        value={newModelName}
-                        onChange={(e) => setNewModelName(e.target.value)}
-                        data-testid="input-new-model-name"
-                      />
-                      <button
-                        type="button"
-                        className="cf-btn cf-btn-secondary"
-                        onClick={() => {
-                          const trimmed = newModelName.trim();
-                          if (trimmed) {
-                            if (settings.models.includes(trimmed)) {
-                              setNewModelName("");
-                            } else {
-                              const updated = {
-                                ...settings,
-                                models: [...settings.models, trimmed],
-                              };
-                              handleSaveSettings(updated);
-                              setNewModelName("");
+                    <div className="cf-form-group">
+                      <label>Available Models</label>
+                      <div className="cf-models-list" data-testid="models-list-container">
+                        {settings.models.map((model) => (
+                          <span key={model} className="cf-model-tag" data-testid={`tag-model-${model}`}>
+                            {model}
+                            <button
+                              type="button"
+                              className="cf-btn-remove-tag"
+                              onClick={() => {
+                                const updated = {
+                                  ...settings,
+                                  models: settings.models.filter((m) => m !== model),
+                                };
+                                handleSaveSettings(updated);
+                              }}
+                              data-testid={`button-remove-model-${model}`}
+                            >
+                              &times;
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="cf-add-model-row">
+                        <input
+                          type="text"
+                          placeholder="e.g. Gemini 3.8 Flash"
+                          value={newModelName}
+                          onChange={(e) => setNewModelName(e.target.value)}
+                          data-testid="input-new-model-name"
+                        />
+                        <button
+                          type="button"
+                          className="cf-btn cf-btn-secondary"
+                          onClick={() => {
+                            const trimmed = newModelName.trim();
+                            if (trimmed) {
+                              if (settings.models.includes(trimmed)) {
+                                setNewModelName("");
+                              } else {
+                                const updated = {
+                                  ...settings,
+                                  models: [...settings.models, trimmed],
+                                };
+                                handleSaveSettings(updated);
+                                setNewModelName("");
+                              }
                             }
-                          }
-                        }}
-                        data-testid="button-add-model"
-                      >
-                        Add Model
-                      </button>
+                          }}
+                          data-testid="button-add-model"
+                        >
+                          Add Model
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                <div className="cf-modal-footer">
+                  <button
+                    type="button"
+                    className="cf-btn cf-btn-primary"
+                    onClick={() => setSettingsOpen(false)}
+                    data-testid="button-close-settings-footer"
+                  >
+                    Done
+                  </button>
+                </div>
               </div>
-            ) : null}
-          </section>
+            </div>
+          ) : null}
 
           {/* Accounts Management Panel */}
           <section className="cf-panel" data-testid="accounts-panel">
