@@ -28,6 +28,7 @@ list: {
 ```
 
 **Key encoding:**
+
 - Email: replace `.` → `,` (`encodeEmailKey` / `decodeEmailKey`)
 - Model name: `encodeURIComponent(name).replace(/\./g, "%2E")` (`encodeModelKey`) — required because model names like "Gemini 3.8 Flash" contain dots and spaces
 
@@ -45,15 +46,18 @@ list: {
 ## UI Sections
 
 ### Header
+
 - Badge "AGY", title "Antigravity AI Tracker"
 - Logged-in user email (decoded), Sign Out button
 
 ### Time Simulation Bar (sticky top)
+
 - Checkbox "Simulate Future Time" + range slider offset (0 → `renewalHours * 2`)
 - Shows active effective clock vs real clock
 - All renewal calculations use effective time when simulation enabled
 
 ### Configuration & Models (collapsible)
+
 - `renewalHours` number input
 - Model tag pills with remove (×) button
 - Add model text input + button
@@ -65,6 +69,7 @@ list: {
 **Add account form:** email input + "Add Account" button
 
 **Accounts table columns:**
+
 1. **Current** — radio button per row; click selects as current, click again deselects; selected row is pinned to top, highlighted with orange-left-border and soft orange background (`#fff7ed`)
 2. **Account Email** — clickable sortable header (↕ / ▲ / ▼, 3-cycle: unsorted → asc → desc)
 3. **Note** — shows 📝 icon only when `notes.trim().length > 0`; clicking icon opens note modal
@@ -84,11 +89,13 @@ list: {
 ## Modals
 
 ### Set Quota Modal
+
 - "Model Available Percentage (0–100%)" number input; default `0`
 - "In how many hours will quota renew?" float input; default `settings.renewalHours`
 - Cancel / Save Quota
 
 ### Edit Account Modal
+
 - Email input (renaming transfers all data to new key, also updates `settings.current` if needed)
 - "Mark account as disabled" checkbox
 - Two-stage process notice explaining disable-first-then-delete flow
@@ -96,10 +103,12 @@ list: {
 - Footer right: Cancel / Save Changes
 
 ### Confirm Dialog (zIndex 1100, sits above edit modal)
+
 - Shown for both "disable" and "delete" confirm steps
 - Different title/text/button label per action type
 
 ### Note Modal
+
 - Textarea for free-form note
 - Clear button (clears textarea text in-place, does not save)
 - Cancel / Save Note

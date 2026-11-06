@@ -240,7 +240,7 @@
 
     <ace-editor id="programmatic-demo" lang="python" data-testid="editor-output">
       <script type="ace">
-# Waiting for other_tabs:copy event... Any text selected on other tabs via Tampermonkey script "OS Browser Bridge - selection copy" will be captured and displayed here.
+        # Waiting for other_tabs:copy event... Any text selected on other tabs via Tampermonkey script "OS Browser Bridge - selection copy" will be captured and displayed here.
       </script>
     </ace-editor>
 
@@ -257,23 +257,23 @@
 
     <ace-editor id="example" lang="javascript" data-testid="editor-example">
       <script type="ace">
-// Run this in any other tab to send data to the editor above.
-// Works across all tabs in all browsers connected to the server.
+        // Run this in any other tab to send data to the editor above.
+        // Works across all tabs in all browsers connected to the server.
 
-document.documentElement.dispatchEvent(
-  new CustomEvent("os_browser_bridge", {
-    detail: {
-      event: "other_tabs:copy",
-      payload: { text: "Hello from other tab: " + (new Date().toISOString()) },
-    },
-  })
-);
+        document.documentElement.dispatchEvent(
+          new CustomEvent("os_browser_bridge", {
+            detail: {
+              event: "other_tabs:copy",
+              payload: { text: "Hello from other tab: " + (new Date().toISOString()) },
+            },
+          })
+        );
 
-// This tab listens for the arriving event:
-// document.addEventListener("other_tabs:copy", (event) => {
-//   // event.detail = { text: "Hello from other tab" }
-// });
-// there is also tampermonkey script look by name "OS Browser Bridge - selection copy"
+        // This tab listens for the arriving event:
+        // document.addEventListener("other_tabs:copy", (event) => {
+        //   // event.detail = { text: "Hello from other tab" }
+        // });
+        // there is also tampermonkey script look by name "OS Browser Bridge - selection copy"
       </script>
     </ace-editor>
 

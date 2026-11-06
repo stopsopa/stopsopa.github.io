@@ -130,7 +130,7 @@ function _kill {
 
   kill "${PID6}" 1> /dev/null 2> /dev/null || :
 
-  kill "${PID7}" 1> /dev/null 2> /dev/null || :
+  # kill "${PID7}" 1> /dev/null 2> /dev/null || :
 
   /bin/bash .github/stop-server.sh
 
@@ -163,8 +163,9 @@ PID4="${!}"
 /bin/bash node_modules/.bin/chokidar '**/*.template.html' --ignore '**/node_modules/**/*' -c "/bin/bash scripts/template.sh {path} \"${FLAG}__chokidar__template.sh\"" 1> >(/bin/bash bash/dlogger.sh " " template >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e template >> "${LOGFILE}") &
 PID6="${!}"
 
-npx tsc --preserveWatchOutput --watch 1> >(/bin/bash bash/dlogger.sh " " typescript >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e typescript >> "${LOGFILE}") &
-PID7="${!}"
+# let's not do typechecking when running dev server
+# npx tsc --preserveWatchOutput --watch 1> >(/bin/bash bash/dlogger.sh " " typescript >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e typescript >> "${LOGFILE}") &
+# PID7="${!}"
 
 WAITINGMESSAGE="exbuilddone2" # this text shows at the end of esbuild build
 
@@ -211,7 +212,8 @@ set -e
 
 /bin/bash bash/proc/pid-is-running.sh ${PID6} "template process" 
 
-/bin/bash bash/proc/pid-is-running.sh ${PID7} "typescript process" 
+# no typechecking when running dev server
+# /bin/bash bash/proc/pid-is-running.sh ${PID7} "typescript process" 
 
 # tail -n 10000 -f "${LOGFILE}"
 

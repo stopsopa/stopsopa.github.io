@@ -4,7 +4,6 @@
  * Use rather pages/useCustomState.ts as instructed in pages/databases/firebase/USAGE.md
  */
 
-
 import { useEffect, useState } from "react";
 
 // @ts-ignore

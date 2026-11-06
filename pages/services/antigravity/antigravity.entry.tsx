@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
-import useFirebase from "../../databases/firebase/useFirebase";
+import useCustomState from "../../useCustomState";
 import "./antigravity.entry.css";
 
 /**
@@ -96,7 +96,7 @@ function getProgressColor(percent: number): string {
  * Main Antigravity AI Usage Tracker Component
  */
 export function AntigravityTracker() {
-  const { user, error, get, set, del, signOut } = useFirebase({
+  const { id, error, get, set, del, signOut } = useCustomState({
     section: "antigravity_cli",
   });
 
@@ -203,7 +203,7 @@ export function AntigravityTracker() {
    */
   async function loadData() {
     try {
-      const data = await get<AntigravityDatabaseData>();
+      const data = await get<AntigravityDatabaseData>([]);
       if (data) {
         if (data.settings) {
           setSettings({
@@ -225,10 +225,10 @@ export function AntigravityTracker() {
 
   // Ready gate: initialize data when authenticated user is present
   useEffect(() => {
-    if (user) {
+    if (id) {
       loadData();
     }
-  }, [user]);
+  }, [id]);
 
   // Periodic ticker to recalculate dynamic remaining countdown every 30 seconds
   useEffect(() => {
@@ -648,9 +648,7 @@ export function AntigravityTracker() {
    * Otherwise: model is in cooldown -> displays stored modelPercentage and time left.
    */
   function getModelStatus(account: AccountUsage, modelName: string) {
-    const effectiveNow = isFakeTimeEnabled
-      ? currentTime + fakeTimeOffsetHours * 60 * 60 * 1000
-      : currentTime;
+    const effectiveNow = isFakeTimeEnabled ? currentTime + fakeTimeOffsetHours * 60 * 60 * 1000 : currentTime;
 
     const modelKey = encodeModelKey(modelName);
     const modelData = account.models ? account.models[modelKey] : undefined;
@@ -701,7 +699,7 @@ export function AntigravityTracker() {
     );
   }
 
-  if (user) {
+  if (id) {
     const rawAccountEntries = Object.entries(accounts);
 
     // Sort accounts dynamically: if an account is marked 'current', it stays on top.
@@ -716,9 +714,7 @@ export function AntigravityTracker() {
         if (sortConfig.type === "email") {
           const emailA = decodeEmailKey(a[0]);
           const emailB = decodeEmailKey(b[0]);
-          return sortConfig.direction === "asc"
-            ? emailA.localeCompare(emailB)
-            : emailB.localeCompare(emailA);
+          return sortConfig.direction === "asc" ? emailA.localeCompare(emailB) : emailB.localeCompare(emailA);
         }
 
         if (!sortConfig.modelName) return 0;
@@ -747,9 +743,7 @@ export function AntigravityTracker() {
     });
 
     const maxOffsetHours = settings.renewalHours * 2;
-    const effectiveNow = isFakeTimeEnabled
-      ? currentTime + fakeTimeOffsetHours * 60 * 60 * 1000
-      : currentTime;
+    const effectiveNow = isFakeTimeEnabled ? currentTime + fakeTimeOffsetHours * 60 * 60 * 1000 : currentTime;
 
     return (
       <div className="cf-app-container" data-testid="antigravity-app">
@@ -762,13 +756,9 @@ export function AntigravityTracker() {
             </div>
             <div className="cf-user-info">
               <span className="cf-user-email" data-testid="user-display">
-                {user.replace(/,/g, ".")}
+                {id.replace(/,/g, ".")}
               </span>
-              <button
-                className="cf-btn-signout"
-                onClick={() => signOut()}
-                data-testid="button-signout"
-              >
+              <button className="cf-btn-signout" onClick={() => signOut()} data-testid="button-signout">
                 Sign out
               </button>
               <button
@@ -904,9 +894,7 @@ export function AntigravityTracker() {
                   })()}
                 </span>
               </span>
-              <span>
-                Real Time: {new Date(currentTime).toLocaleTimeString()}
-              </span>
+              <span>Real Time: {new Date(currentTime).toLocaleTimeString()}</span>
             </div>
           </div>
 
@@ -1079,9 +1067,7 @@ export function AntigravityTracker() {
                         data-testid="header-sort-email"
                       >
                         Account Email{" "}
-                        {sortConfig && sortConfig.type === "email"
-                          ? sortConfig.direction === "asc" ? "▲" : "▼"
-                          : "↕"}
+                        {sortConfig && sortConfig.type === "email" ? (sortConfig.direction === "asc" ? "▲" : "▼") : "↕"}
                       </th>
                       <th style={{ width: "60px", textAlign: "center" }}>Note</th>
                       {settings.models.map((modelName) => {
@@ -1127,8 +1113,7 @@ export function AntigravityTracker() {
                                   title="Sort by renewsAt date (unsorted / asc / desc)"
                                   data-testid={`sort-renews-${modelName}`}
                                 >
-                                  Renews{" "}
-                                  {isSortedRenews ? (sortConfig.direction === "asc" ? "▲" : "▼") : "↕"}
+                                  Renews {isSortedRenews ? (sortConfig.direction === "asc" ? "▲" : "▼") : "↕"}
                                 </button>
                               </div>
                             </div>
@@ -1349,9 +1334,7 @@ export function AntigravityTracker() {
                                           status.timeLeftLabel
                                         )}
                                       </span>
-                                      <span title={`Renews at: ${status.renewsAt}`}>
-                                        {status.renewsAt}
-                                      </span>
+                                      <span title={`Renews at: ${status.renewsAt}`}>{status.renewsAt}</span>
                                     </div>
                                   </div>
                                 </td>
@@ -1413,8 +1396,7 @@ export function AntigravityTracker() {
             <div className="cf-modal-dialog">
               <div className="cf-modal-header">
                 <h3>
-                  Set Quota: {activeQuotaModal.modelName} (
-                  {decodeEmailKey(activeQuotaModal.encodedEmail)})
+                  Set Quota: {activeQuotaModal.modelName} ({decodeEmailKey(activeQuotaModal.encodedEmail)})
                 </h3>
                 <button
                   type="button"
@@ -1633,9 +1615,7 @@ export function AntigravityTracker() {
             <div className="cf-modal-dialog" style={{ maxWidth: "420px" }}>
               <div className="cf-modal-header">
                 <h3>
-                  {confirmDialog.action === "delete"
-                    ? "Confirm Permanent Deletion"
-                    : "Confirm Account Disabling"}
+                  {confirmDialog.action === "delete" ? "Confirm Permanent Deletion" : "Confirm Account Disabling"}
                 </h3>
                 <button
                   type="button"
@@ -1655,8 +1635,8 @@ export function AntigravityTracker() {
                   </p>
                 ) : (
                   <p>
-                    Are you sure you want to disable account{" "}
-                    <strong>{decodeEmailKey(confirmDialog.accountKey)}</strong>? It will be hidden from the default view until you enable "Show disabled accounts".
+                    Are you sure you want to disable account <strong>{decodeEmailKey(confirmDialog.accountKey)}</strong>
+                    ? It will be hidden from the default view until you enable "Show disabled accounts".
                   </p>
                 )}
               </div>

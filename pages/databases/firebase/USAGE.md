@@ -3,6 +3,7 @@
 Universal state hook persisting tree-structured data to Firebase Realtime Database scoped per user and section namespace.
 
 ## 1. Prerequisites in HTML
+
 The runtime requires environment variables (`preprocessed.js`) and the core Firebase bridge (`firebase.core.entry.bundle.js`) loaded before your entry bundle:
 
 ```html
@@ -12,6 +13,7 @@ The runtime requires environment variables (`preprocessed.js`) and the core Fire
 ```
 
 ## 2. Import & Hook Setup
+
 ```tsx
 import useCustomState from "./path/to/useCustomState";
 
@@ -24,6 +26,7 @@ This is where we specify 'section'. Section is main root level of key in the dat
 This way we can keep the logic isolated from other data points and at least reduce danger of overriding any data in firebase
 
 ## 3. Ready Gate
+
 Always guard initialization until `id` (authenticated user string) is present:
 
 ```tsx
@@ -40,10 +43,12 @@ if (!id) return <div>Connecting...</div>;
 ## 4. Path Resolution & Operations (Concrete Example)
 
 Assume:
+
 - Authenticated user `id`: `"john,doe@gmail,com"`
 - Hook configured with: `section: "my_namespace"`
 
 Internal database root is:
+
 ```text
 users/john,doe@gmail,com/my_namespace
 ```
@@ -51,6 +56,7 @@ users/john,doe@gmail,com/my_namespace
 ---
 
 ### A. Insert (`push`)
+
 Creates a new child under the given parent collection using a unique Firebase push ID.
 
 ```ts
@@ -68,14 +74,16 @@ const newPath = await push({
   ```text
   "-Nxi98AbCdEf12345"
   ```
-  *(To get only `itemId` from `newPath`: `const itemId = newPath.split("/").pop();`)*
+  _(To get only `itemId` from `newPath`: `const itemId = newPath.split("/").pop();`)_
 
 ---
 
 ### B. Read (`get`)
+
 Fetches the entire subtree/collection or a single specific item:
 
 **1. Read entire collection:**
+
 ```ts
 const list = await get<Record<string, TodoItem>>("todos");
 ```
@@ -97,6 +105,7 @@ const list = await get<Record<string, TodoItem>>("todos");
 
 **2. Read single individual item:**
 Pass the exact sub-path directly to `get()`:
+
 ```ts
 const itemId = "-Nxi99ZzYyXx67890";
 
@@ -115,6 +124,7 @@ const item = await get<TodoItem>(`todos/${itemId}`);
 ---
 
 ### C. Update (`set`)
+
 Updates or overwrites a single item directly. Provide the relative key path using the `itemId`:
 
 ```ts
@@ -134,6 +144,7 @@ await set({
 ---
 
 ### D. Delete (`del`)
+
 Removes an item or entire branch. Pass the relative path including `itemId`:
 
 ```ts
@@ -147,10 +158,11 @@ await del(`todos/${itemId}`); // or del(["todos", itemId])
 ---
 
 ## 5. Example
+
 Working todo implementation:
+
 - HTML entry: [index.html](../../firebase-example/index.html)
 - React component: [firebase-example.entry.tsx](../../firebase-example/firebase-example.entry.tsx)
-
 
 ## link firebase dashboard
 
@@ -161,4 +173,3 @@ If it won't cause any problems then in whatever we create what would be using th
 <a href="https://console.firebase.google.com/">https://console.firebase.google.com/</a>
 
 ```
-
