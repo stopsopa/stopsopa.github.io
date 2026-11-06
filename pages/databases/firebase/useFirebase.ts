@@ -1,3 +1,10 @@
+/**
+ * This script is not what end user should use.
+ * The main interface is implemented in pages/useCustomState.ts in this project
+ * Use rather pages/useCustomState.ts as instructed in pages/databases/firebase/USAGE.md
+ */
+
+
 import { useEffect, useState } from "react";
 
 // @ts-ignore
