@@ -17,8 +17,7 @@
   },
   "include": [
     "**/*.ts",
-    "pages/services/map_points/map_points.entry.tsx",
-    "pages/services/antigravity/antigravity.entry.tsx"
+    "**/*.entry.tsx",
   ],
   "exclude": ["node_modules"]
 }

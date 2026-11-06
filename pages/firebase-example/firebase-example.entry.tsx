@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import useCustomState from "../useCustomState";
 
 /**
@@ -149,5 +149,5 @@ const Main = () => {
 
 const appContainer = document.getElementById("app");
 if (appContainer) {
-  render(<Main />, appContainer);
+  createRoot(appContainer).render(<Main />);
 }

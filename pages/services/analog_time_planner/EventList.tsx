@@ -291,8 +291,7 @@ export default function EventList({
             className="atp-info-btn"
             data-testid="atp-anchor-info-btn"
             aria-label="How start and end anchors work"
-            popovertarget="atp-anchor-popover"
-            interestfor="atp-anchor-popover"
+            popoverTarget="atp-anchor-popover"
             onMouseEnter={() => {
               const el = document.getElementById("atp-anchor-popover");
               if (el && typeof (el as any).showPopover === "function") {
@@ -355,7 +354,6 @@ export default function EventList({
             className="atp-time-input"
             value={startVal}
             onChange={handleStartChange}
-            onInput={handleStartChange}
           />
           <div className="atp-time-step-btns">
             <button
@@ -406,7 +404,6 @@ export default function EventList({
             className="atp-time-input"
             value={endTime}
             onChange={handleEndChange}
-            onInput={handleEndChange}
           />
           <div className="atp-time-step-btns">
             <button
