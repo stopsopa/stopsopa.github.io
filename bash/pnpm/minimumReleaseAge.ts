@@ -22,6 +22,8 @@ EEE
 
  */
 
+export {};
+
 type TimeMap = Record<string, string>;
 
 const MIN_AGE_DAYS = Number(process.env.MIN_AGE_DAYS ?? 30);

@@ -6,6 +6,52 @@ import { sassPlugin } from "esbuild-sass-plugin";
 
 const log = (...args: any) => console.log("bundle.ts:", ...args);
 
+/**
+ * esbuild plugin that tracks rebuilt inputs in watch mode and logs changed files
+ */
+const watchNotifyPlugin: esbuild.Plugin = {
+  name: "watch-notify",
+  setup(build) {
+    let prevInputs: Record<string, number> = {};
+    let isInitialBuild = true;
+
+    build.onEnd((result) => {
+      const meta = result.metafile;
+      const currentInputs: Record<string, number> = {};
+
+      if (meta) {
+        for (const [file, info] of Object.entries(meta.inputs)) {
+          currentInputs[file] = info.bytes;
+        }
+      }
+
+      if (isInitialBuild) {
+        isInitialBuild = false;
+        prevInputs = currentInputs;
+        return;
+      }
+
+      if (meta) {
+        const changedFiles = Object.keys(currentInputs).filter(
+          (file) => !(file in prevInputs) || prevInputs[file] !== currentInputs[file]
+        );
+
+        if (changedFiles.length > 0) {
+          for (const file of changedFiles) {
+            log(`rebuilt (changed): ${file}`);
+          }
+        } else {
+          log("rebuild triggered");
+        }
+      } else {
+        log("rebuild triggered");
+      }
+
+      prevInputs = currentInputs;
+    });
+  },
+};
+
 const watch = process.argv.includes("--watch");
 
 async function getEntryPointsFromStdin(): Promise<string[]> {
@@ -44,7 +90,8 @@ const options: esbuild.BuildOptions = {
   sourcemap: true,
   target: "esnext",
   format: "esm",
-  plugins: [sassPlugin()],
+  plugins: [sassPlugin(), ...(watch ? [watchNotifyPlugin] : [])],
+  metafile: watch,
   loader: {
     ".js": "jsx",
     ".jsx": "jsx",

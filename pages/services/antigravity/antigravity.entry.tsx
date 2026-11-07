@@ -110,6 +110,7 @@ export function AntigravityTracker() {
   const [newModelName, setNewModelName] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState<number>(Date.now());
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   /*
    * Optimistic local percentage overrides for the progress bar drag interaction.
@@ -202,6 +203,7 @@ export function AntigravityTracker() {
    * Refreshes settings and list from Firebase Realtime Database
    */
   async function loadData() {
+    setIsRefreshing(true);
     try {
       const data = await get<AntigravityDatabaseData>([]);
       if (data) {
@@ -220,15 +222,49 @@ export function AntigravityTracker() {
       }
     } catch (err) {
       console.error("Failed to load Antigravity data from Firebase:", err);
+    } finally {
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 300);
     }
   }
+
+  const loadDataRef = React.useRef(loadData);
+  loadDataRef.current = loadData;
 
   // Ready gate: initialize data when authenticated user is present
   useEffect(() => {
     if (id) {
-      loadData();
+      loadDataRef.current();
     }
   }, [id]);
+
+  // Always refresh data when page gains focus / visibility
+  useEffect(() => {
+    function handleFocus() {
+      setTimeout(() => {
+        loadDataRef.current();
+      }, 100);
+    }
+
+    function handleVisibilityChange() {
+      if (!document.hidden) {
+        setTimeout(() => {
+          loadDataRef.current();
+        }, 100);
+      }
+    }
+
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("pageshow", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("pageshow", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   // Periodic ticker to recalculate dynamic remaining countdown every 30 seconds
   useEffect(() => {
@@ -1015,7 +1051,18 @@ export function AntigravityTracker() {
           {/* Accounts Management Panel */}
           <section className="cf-panel" data-testid="accounts-panel">
             <div className="cf-panel-header">
-              <h2>Antigravity Accounts</h2>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "0.75rem" }}>
+                <h2>Antigravity Accounts</h2>
+                <button
+                  type="button"
+                  className="cf-btn cf-btn-secondary cf-btn-sm"
+                  onClick={() => loadData()}
+                  title="Refresh data"
+                  data-testid="button-refresh-accounts"
+                >
+                  ↻ Refresh
+                </button>
+              </div>
               <div className="cf-panel-actions">
                 <label
                   style={{
@@ -1055,7 +1102,15 @@ export function AntigravityTracker() {
               </form>
 
               {/* Accounts Table with Split Model Columns */}
-              <div className="cf-table-container">
+              <div
+                className="cf-table-container"
+                style={{
+                  opacity: isRefreshing ? 0.35 : 1,
+                  filter: isRefreshing ? "grayscale(100%)" : "none",
+                  transition: "opacity 0.25s ease, filter 0.25s ease",
+                  pointerEvents: isRefreshing ? "none" : "auto",
+                }}
+              >
                 <table className="cf-table" data-testid="table-accounts">
                   <thead>
                     <tr>

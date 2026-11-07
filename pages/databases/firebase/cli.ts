@@ -80,7 +80,7 @@ try {
   switch (method) {
     case "get": {
       const result = await sec.get(key);
-      console.log(result);
+      console.log(JSON.stringify(result));
       break;
     }
     case "set": {

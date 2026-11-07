@@ -87,6 +87,13 @@ export function normalizeUser(user: string): string {
 }
 
 /**
+ * Normalizes key or path component by replacing dots with commas for Firebase RTDB safety.
+ */
+export function normalizeKey(key: string): string {
+  return key.replace(/\./g, ",");
+}
+
+/**
  * Global helper to resolve a database path under users/<user>/<section>/<key>.
  * Takes user from parameter or process.env.FB_EMAIL.
  */
@@ -104,7 +111,9 @@ export function resolvePath(section?: string, key?: string | string[], user?: st
 
   let processedKey = key;
   if (Array.isArray(processedKey)) {
-    processedKey = processedKey.filter(Boolean).join("/");
+    processedKey = processedKey.filter(Boolean).map(normalizeKey).join("/");
+  } else if (typeof processedKey === "string") {
+    processedKey = normalizeKey(processedKey);
   }
 
   let internalkey = `users/${processedUser}/${section}`;
