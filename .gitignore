@@ -72,6 +72,11 @@ pages/children/caesar/moduleCaesarCypher.js
 pages/children/tetris/tetris.js
 pages/children/wotb/controls/antigravity/index.js
 pages/children/wotb/controls/ver1/index.js
+pages/databases/firebase/cli.js
+pages/databases/firebase/lib.js
+pages/databases/firebase/lib.test.js
+pages/databases/firebase/server.js
+pages/databases/firebase/server.test.js
 pages/databases/firebase/useFirebase.js
 pages/experiments/solar/css.d.js
 pages/html/checkbox/handleCheckboxDynamic/handleCheckboxDynamic.js

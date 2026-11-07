@@ -36,21 +36,12 @@ try {
   const stdinRaw = await readStdin();
   const stdinJson = stdinRaw ? parseJsonSafe(stdinRaw) : undefined;
 
-  let method = args[0]?.toLowerCase();
+  let method = args[0]?.toLowerCase() || "get";
   let key: string | string[] | undefined = args[1];
   let section: string | undefined = process.env.FB_SECTION?.trim() || undefined;
   let data: any;
 
-  // Default behavior when no arguments or stdin are passed (preserves legacy cli behavior)
-  if (!method && !stdinJson) {
-    method = "get";
-    key = "settings";
-    if (!section) {
-      section = "antigravity_cli";
-    }
-  }
-
-  // Extract section and data from stdin JSON if present
+  // Extract section, key, and data from stdin JSON if present
   if (stdinJson !== undefined) {
     if (typeof stdinJson === "object" && stdinJson !== null && !Array.isArray(stdinJson)) {
       if (stdinJson.section !== undefined) {
@@ -62,7 +53,6 @@ try {
       if (stdinJson.data !== undefined) {
         data = stdinJson.data;
       } else {
-        // If stdin has no "data" field, but has other fields
         const { section: _s, key: _k, ...rest } = stdinJson;
         if (Object.keys(rest).length > 0 || (stdinJson.section === undefined && stdinJson.key === undefined)) {
           data = stdinJson.section !== undefined || stdinJson.key !== undefined ? rest : stdinJson;

@@ -67,7 +67,9 @@ export function createApp(sectionName: string | undefined = getEnvSection()) {
 <body>
   <h1>Firebase RTDB Server</h1>
   <p>User: <code>${sec.user}</code></p>
-  <p>Section: <code>${sec.section || "NOT CONFIGURED (required per-request via ?section=, body, or x-section)"}</code></p>
+  <p>Section: <code>${
+    sec.section || "NOT CONFIGURED (required per-request via ?section=, body, or x-section)"
+  }</code></p>
   <ul>
     <li><code>POST /push</code>, <code>POST /push/*key</code> - Insert child with push ID</li>
     <li><code>GET /get</code>, <code>GET /get/*key</code>, <code>POST /get</code> - Read item/tree</li>

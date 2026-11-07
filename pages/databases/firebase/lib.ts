@@ -41,16 +41,8 @@ export interface FirebaseQueryOptions {
 export interface FirebaseSection {
   user: string;
   section?: string;
-  getroot: (
-    key?: string | string[] | FirebaseQueryOptions,
-    optSection?: string,
-    optUser?: string
-  ) => string;
-  resolvePath: (
-    key?: string | string[] | FirebaseQueryOptions,
-    optSection?: string,
-    optUser?: string
-  ) => string;
+  getroot: (key?: string | string[] | FirebaseQueryOptions, optSection?: string, optUser?: string) => string;
+  resolvePath: (key?: string | string[] | FirebaseQueryOptions, optSection?: string, optUser?: string) => string;
   get: <T = any>(
     keyOrOpt?: string | string[] | FirebaseQueryOptions,
     optSection?: string,
@@ -66,16 +58,17 @@ export interface FirebaseSection {
     optData?: T,
     optSection?: string
   ) => Promise<string>;
-  del: (
-    keyOrOpt?: string | string[] | FirebaseQueryOptions,
-    optSection?: string,
-    optUser?: string
-  ) => Promise<void>;
+  del: (keyOrOpt?: string | string[] | FirebaseQueryOptions, optSection?: string, optUser?: string) => Promise<void>;
 
   // Aliases for backward compatibility
   getPath: <T = any>(user: string, key?: string | string[], optSection?: string) => Promise<T>;
   setPath: (user: string, key: string | string[], data: unknown, optSection?: string) => Promise<string>;
-  pushPath: (user: string, key: string | string[], data: unknown, optSection?: string) => Promise<{ path: string; itemId: string }>;
+  pushPath: (
+    user: string,
+    key: string | string[],
+    data: unknown,
+    optSection?: string
+  ) => Promise<{ path: string; itemId: string }>;
   delPath: (user: string, key: string | string[], optSection?: string) => Promise<string>;
 }
 
@@ -97,11 +90,7 @@ export function normalizeUser(user: string): string {
  * Global helper to resolve a database path under users/<user>/<section>/<key>.
  * Takes user from parameter or process.env.FB_EMAIL.
  */
-export function resolvePath(
-  section?: string,
-  key?: string | string[],
-  user?: string
-): string {
+export function resolvePath(section?: string, key?: string | string[], user?: string): string {
   if (!section || !section.trim()) {
     throw new Error("resolvePath: section is not specified");
   }
@@ -135,9 +124,7 @@ export function resolvePath(
 export function getFirebase(options?: GetFirebaseOptions): FirebaseInstance {
   const email = options?.email || process.env.FB_EMAIL;
   if (!email || !email.trim()) {
-    throw new Error(
-      "getFirebase: email is required (provide options.email or FB_EMAIL env variable)"
-    );
+    throw new Error("getFirebase: email is required (provide options.email or FB_EMAIL env variable)");
   }
 
   const normalizedUser = normalizeUser(email);
@@ -206,8 +193,7 @@ export function getFirebase(options?: GetFirebaseOptions): FirebaseInstance {
   const db = getDatabase(app);
 
   const getSection = (defaultSection?: string): FirebaseSection => {
-    const normalizedDefaultSection =
-      defaultSection && defaultSection.trim() ? defaultSection.trim() : undefined;
+    const normalizedDefaultSection = defaultSection && defaultSection.trim() ? defaultSection.trim() : undefined;
 
     const activeSection = (optSection?: string): string => {
       const sec = optSection?.trim() || normalizedDefaultSection;
@@ -361,11 +347,7 @@ export function getFirebase(options?: GetFirebaseOptions): FirebaseInstance {
     };
 
     // Backward-compatibility wrappers
-    const getPath = async <T = any>(
-      user: string,
-      key?: string | string[],
-      optSection?: string
-    ): Promise<T> => {
+    const getPath = async <T = any>(user: string, key?: string | string[], optSection?: string): Promise<T> => {
       return get<T>(key, optSection, user);
     };
 
@@ -390,11 +372,7 @@ export function getFirebase(options?: GetFirebaseOptions): FirebaseInstance {
       return { path: fullPath, itemId };
     };
 
-    const delPath = async (
-      user: string,
-      key: string | string[],
-      optSection?: string
-    ): Promise<string> => {
+    const delPath = async (user: string, key: string | string[], optSection?: string): Promise<string> => {
       await del(key, optSection, user);
       return resolvePath(activeSection(optSection), key, user);
     };

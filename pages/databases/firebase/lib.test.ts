@@ -1,7 +1,7 @@
 /**
  * Tests for Firebase Admin library.
  * Uses native node:test runner and section = 'stopsopa_web_tests'.
- * 
+ *
  * node --env-file .env --test pages/databases/firebase/lib.test.ts
  */
 
@@ -39,19 +39,13 @@ describe("Firebase library", () => {
 
   it("resolvePath uses FB_EMAIL when user is omitted", () => {
     assert.strictEqual(resolvePath(SECTION), `users/${NORMALIZED_USER}/${SECTION}`);
-    assert.strictEqual(
-      resolvePath(SECTION, "todos"),
-      `users/${NORMALIZED_USER}/${SECTION}/todos`
-    );
+    assert.strictEqual(resolvePath(SECTION, "todos"), `users/${NORMALIZED_USER}/${SECTION}/todos`);
   });
 
   it("getroot resolves correct database path without passing user to getSection", () => {
     assert.strictEqual(sec.getroot(), `users/${NORMALIZED_USER}/${SECTION}`);
     assert.strictEqual(sec.getroot("todos"), `users/${NORMALIZED_USER}/${SECTION}/todos`);
-    assert.strictEqual(
-      sec.getroot(["todos", "item1"]),
-      `users/${NORMALIZED_USER}/${SECTION}/todos/item1`
-    );
+    assert.strictEqual(sec.getroot(["todos", "item1"]), `users/${NORMALIZED_USER}/${SECTION}/todos/item1`);
   });
 
   it("unbound getSection() demands section and throws when not given", async () => {
@@ -59,33 +53,21 @@ describe("Firebase library", () => {
 
     assert.throws(() => unboundSec.getroot("todos"), /section is not specified/);
 
-    await assert.rejects(
-      async () => {
-        await unboundSec.get("todos");
-      },
-      /section is not specified/
-    );
+    await assert.rejects(async () => {
+      await unboundSec.get("todos");
+    }, /section is not specified/);
 
-    await assert.rejects(
-      async () => {
-        await unboundSec.set({ key: "todos", data: { a: 1 } });
-      },
-      /section is not specified/
-    );
+    await assert.rejects(async () => {
+      await unboundSec.set({ key: "todos", data: { a: 1 } });
+    }, /section is not specified/);
 
-    await assert.rejects(
-      async () => {
-        await unboundSec.push({ key: "todos", data: { a: 1 } });
-      },
-      /section is not specified/
-    );
+    await assert.rejects(async () => {
+      await unboundSec.push({ key: "todos", data: { a: 1 } });
+    }, /section is not specified/);
 
-    await assert.rejects(
-      async () => {
-        await unboundSec.del("todos");
-      },
-      /section is not specified/
-    );
+    await assert.rejects(async () => {
+      await unboundSec.del("todos");
+    }, /section is not specified/);
 
     // When section is provided per-call, it succeeds
     const rootPath = unboundSec.getroot({ section: SECTION, key: "todos" });
@@ -96,12 +78,9 @@ describe("Firebase library", () => {
     const origFbEmail = process.env.FB_EMAIL;
     try {
       delete process.env.FB_EMAIL;
-      assert.throws(
-        () => {
-          getFirebase({ email: "" });
-        },
-        /getFirebase: email is required/
-      );
+      assert.throws(() => {
+        getFirebase({ email: "" });
+      }, /getFirebase: email is required/);
     } finally {
       process.env.FB_EMAIL = origFbEmail;
     }
@@ -136,10 +115,7 @@ describe("Firebase library", () => {
       key: ["todos", itemId],
       data: { text: "Buy sourdough bread", done: true },
     });
-    const updated = await sec.get<{ text: string; done: boolean }>([
-      "todos",
-      itemId,
-    ]);
+    const updated = await sec.get<{ text: string; done: boolean }>(["todos", itemId]);
     assert.ok(updated);
     assert.strictEqual(updated.text, "Buy sourdough bread");
     assert.strictEqual(updated.done, true);

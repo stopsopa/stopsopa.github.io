@@ -1,6 +1,6 @@
 /**
  * Tests for Firebase Express server HTTP endpoints.
- * 
+ *
  * node --env-file .env --test pages/databases/firebase/server.test.ts
  */
 

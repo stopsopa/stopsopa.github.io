@@ -3,16 +3,19 @@
 Compact reference for using `lib.ts` and `server.ts` to interact with Firebase Realtime Database.
 
 Database root format:
+
 ```text
 users/<FB_EMAIL>/<section>/<key>
 ```
-*(User email dots `.` are automatically normalized to commas `,` for Firebase path compliance).*
+
+_(User email dots `.` are automatically normalized to commas `,` for Firebase path compliance)._
 
 ---
 
 ## 1. Setup & Requirements
 
 Add to your `.env`:
+
 ```bash
 FB_EMAIL="user@gmail.com"
 FB_PROJECT_ID="your-project-id"
@@ -121,10 +124,13 @@ try {
 ## 4. Express Server (`server.ts`)
 
 ### Mode 1: Pre-bound with `FB_SECTION`
+
 ```bash
 PORT=4398 HOST=0.0.0.0 FB_SECTION=my_section node --env-file .env pages/databases/firebase/server.ts
 ```
+
 Calls don't need to specify `section`:
+
 ```bash
 # Push:
 curl -X POST http://localhost:4398/push/todos -H "Content-Type: application/json" -d '{"text":"Buy milk"}'
@@ -140,18 +146,22 @@ curl -X DELETE http://localhost:4398/del/todos/item123
 ```
 
 ### Mode 2: Unbound (Requires `section` per request)
+
 ```bash
 PORT=4398 HOST=0.0.0.0 node --env-file .env pages/databases/firebase/server.ts
 ```
 
 > **Overriding `.env` on CLI**:
 > If `FB_SECTION` is defined in `.env`, you can override it to `undefined` from the command line by passing an empty value:
+>
 > ```bash
 > PORT=4398 HOST=0.0.0.0 FB_SECTION= node --env-file .env pages/databases/firebase/server.ts
 > ```
+>
 > In Node.js `--env-file`, environment variables passed in the shell command take precedence over `.env`. Passing `FB_SECTION=` leaves it empty in `process.env`, which the server treats as `undefined` (unbound mode), requiring `section` on every request.
 
 Provide `section` via query param `?section=...`, body `{ "section": "..." }`, or header `x-section`:
+
 ```bash
 # Via query param:
 curl "http://localhost:4398/get/todos?section=my_section"
@@ -165,4 +175,5 @@ curl -X POST http://localhost:4398/push/todos \
 curl -X DELETE http://localhost:4398/del/todos/item123 \
   -H "x-section: my_section"
 ```
-*(If omitted in unbound mode, server returns HTTP `400 Bad Request` with `{"error": "section is not specified"}`).*
+
+_(If omitted in unbound mode, server returns HTTP `400 Bad Request` with `{"error": "section is not specified"}`)._
