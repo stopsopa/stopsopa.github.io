@@ -1,7 +1,7 @@
 /**
  * Firebase Admin Database helper library.
  * Initializes Firebase Admin app using service account credentials from environment variables or custom options
- * and returns database instance along with getSection(section) factory matching USAGE.md and useFirebase.ts conventions.
+ * and returns database instance along with getSection(defaultSection?) factory matching USAGE.md and useFirebase.ts conventions.
  */
 
 import {
@@ -28,31 +28,62 @@ export interface GetFirebaseOptions {
 export interface FirebaseMutationOptions<T = any> {
   data?: T;
   key?: string | string[];
+  section?: string;
+  user?: string;
+}
+
+export interface FirebaseQueryOptions {
+  key?: string | string[];
+  section?: string;
   user?: string;
 }
 
 export interface FirebaseSection {
   user: string;
-  section: string;
-  getroot: (key?: string | string[], optUser?: string) => string;
-  resolvePath: (key?: string | string[], optUser?: string) => string;
-  get: <T = any>(key?: string | string[] | { key?: string | string[]; user?: string }, optUser?: string) => Promise<T>;
-  set: <T = any>(opt?: FirebaseMutationOptions<T> | string | string[], optData?: T) => Promise<void>;
-  push: <T = any>(opt?: FirebaseMutationOptions<T> | string | string[], optData?: T) => Promise<string>;
-  del: (key?: string | string[] | { key?: string | string[]; user?: string }, optUser?: string) => Promise<void>;
+  section?: string;
+  getroot: (
+    key?: string | string[] | FirebaseQueryOptions,
+    optSection?: string,
+    optUser?: string
+  ) => string;
+  resolvePath: (
+    key?: string | string[] | FirebaseQueryOptions,
+    optSection?: string,
+    optUser?: string
+  ) => string;
+  get: <T = any>(
+    keyOrOpt?: string | string[] | FirebaseQueryOptions,
+    optSection?: string,
+    optUser?: string
+  ) => Promise<T>;
+  set: <T = any>(
+    opt?: FirebaseMutationOptions<T> | string | string[],
+    optData?: T,
+    optSection?: string
+  ) => Promise<void>;
+  push: <T = any>(
+    opt?: FirebaseMutationOptions<T> | string | string[],
+    optData?: T,
+    optSection?: string
+  ) => Promise<string>;
+  del: (
+    keyOrOpt?: string | string[] | FirebaseQueryOptions,
+    optSection?: string,
+    optUser?: string
+  ) => Promise<void>;
 
   // Aliases for backward compatibility
-  getPath: <T = any>(user: string, key?: string | string[]) => Promise<T>;
-  setPath: (user: string, key: string | string[], data: unknown) => Promise<string>;
-  pushPath: (user: string, key: string | string[], data: unknown) => Promise<{ path: string; itemId: string }>;
-  delPath: (user: string, key: string | string[]) => Promise<string>;
+  getPath: <T = any>(user: string, key?: string | string[], optSection?: string) => Promise<T>;
+  setPath: (user: string, key: string | string[], data: unknown, optSection?: string) => Promise<string>;
+  pushPath: (user: string, key: string | string[], data: unknown, optSection?: string) => Promise<{ path: string; itemId: string }>;
+  delPath: (user: string, key: string | string[], optSection?: string) => Promise<string>;
 }
 
 export interface FirebaseInstance {
   app: App;
   db: Database;
   email: string;
-  getSection: (section: string) => FirebaseSection;
+  getSection: (defaultSection?: string) => FirebaseSection;
 }
 
 /**
@@ -67,7 +98,7 @@ export function normalizeUser(user: string): string {
  * Takes user from parameter or process.env.FB_EMAIL.
  */
 export function resolvePath(
-  section: string,
+  section?: string,
   key?: string | string[],
   user?: string
 ): string {
@@ -174,130 +205,203 @@ export function getFirebase(options?: GetFirebaseOptions): FirebaseInstance {
 
   const db = getDatabase(app);
 
-  const getSection = (section: string): FirebaseSection => {
-    const getroot = (key?: string | string[], optUser?: string): string => {
-      const activeUser = optUser ? normalizeUser(optUser) : normalizedUser;
-      return resolvePath(section, key, activeUser);
+  const getSection = (defaultSection?: string): FirebaseSection => {
+    const normalizedDefaultSection =
+      defaultSection && defaultSection.trim() ? defaultSection.trim() : undefined;
+
+    const activeSection = (optSection?: string): string => {
+      const sec = optSection?.trim() || normalizedDefaultSection;
+      if (!sec) {
+        throw new Error("section is not specified");
+      }
+      return sec;
     };
 
-    const get = async <T = any>(
-      keyOrOpt?: string | string[] | { key?: string | string[]; user?: string },
+    const getroot = (
+      keyOrOpt?: string | string[] | FirebaseQueryOptions,
+      optSection?: string,
       optUser?: string
-    ): Promise<T> => {
+    ): string => {
       let key: string | string[] | undefined;
-      let user = optUser ? normalizeUser(optUser) : normalizedUser;
+      let sectionToUse: string | undefined = optSection;
+      let userToUse: string | undefined = optUser;
 
       if (keyOrOpt && typeof keyOrOpt === "object" && !Array.isArray(keyOrOpt)) {
         key = keyOrOpt.key;
+        if (keyOrOpt.section) {
+          sectionToUse = keyOrOpt.section;
+        }
         if (keyOrOpt.user) {
-          user = normalizeUser(keyOrOpt.user);
+          userToUse = keyOrOpt.user;
         }
       } else {
         key = keyOrOpt as string | string[] | undefined;
       }
 
-      const fullPath = resolvePath(section, key, user);
+      const finalSection = activeSection(sectionToUse);
+      const activeUser = userToUse ? normalizeUser(userToUse) : normalizedUser;
+      return resolvePath(finalSection, key, activeUser);
+    };
+
+    const get = async <T = any>(
+      keyOrOpt?: string | string[] | FirebaseQueryOptions,
+      optSection?: string,
+      optUser?: string
+    ): Promise<T> => {
+      let key: string | string[] | undefined;
+      let sectionToUse: string | undefined = optSection;
+      let userToUse: string | undefined = optUser;
+
+      if (keyOrOpt && typeof keyOrOpt === "object" && !Array.isArray(keyOrOpt)) {
+        key = keyOrOpt.key;
+        if (keyOrOpt.section) {
+          sectionToUse = keyOrOpt.section;
+        }
+        if (keyOrOpt.user) {
+          userToUse = keyOrOpt.user;
+        }
+      } else {
+        key = keyOrOpt as string | string[] | undefined;
+      }
+
+      const finalSection = activeSection(sectionToUse);
+      const activeUser = userToUse ? normalizeUser(userToUse) : normalizedUser;
+      const fullPath = resolvePath(finalSection, key, activeUser);
       const snapshot = await db.ref(fullPath).get();
       return snapshot.val() as T;
     };
 
     const set = async <T = any>(
       opt?: FirebaseMutationOptions<T> | string | string[],
-      optData?: T
+      optData?: T,
+      optSection?: string
     ): Promise<void> => {
       let key: string | string[] | undefined;
       let data: T;
-      let user = normalizedUser;
+      let sectionToUse: string | undefined = optSection;
+      let userToUse: string | undefined;
 
       if (opt && typeof opt === "object" && !Array.isArray(opt)) {
         key = opt.key;
         data = opt.data as T;
+        if (opt.section) {
+          sectionToUse = opt.section;
+        }
         if (opt.user) {
-          user = normalizeUser(opt.user);
+          userToUse = opt.user;
         }
       } else {
         key = opt as string | string[] | undefined;
         data = optData as T;
       }
 
-      const fullPath = resolvePath(section, key, user);
+      const finalSection = activeSection(sectionToUse);
+      const activeUser = userToUse ? normalizeUser(userToUse) : normalizedUser;
+      const fullPath = resolvePath(finalSection, key, activeUser);
       await db.ref(fullPath).set(data);
     };
 
     const push = async <T = any>(
       opt?: FirebaseMutationOptions<T> | string | string[],
-      optData?: T
+      optData?: T,
+      optSection?: string
     ): Promise<string> => {
       let key: string | string[] | undefined;
       let data: T;
-      let user = normalizedUser;
+      let sectionToUse: string | undefined = optSection;
+      let userToUse: string | undefined;
 
       if (opt && typeof opt === "object" && !Array.isArray(opt)) {
         key = opt.key;
         data = opt.data as T;
+        if (opt.section) {
+          sectionToUse = opt.section;
+        }
         if (opt.user) {
-          user = normalizeUser(opt.user);
+          userToUse = opt.user;
         }
       } else {
         key = opt as string | string[] | undefined;
         data = optData as T;
       }
 
-      const fullPath = resolvePath(section, key, user);
+      const finalSection = activeSection(sectionToUse);
+      const activeUser = userToUse ? normalizeUser(userToUse) : normalizedUser;
+      const fullPath = resolvePath(finalSection, key, activeUser);
       const newRef = db.ref(fullPath).push();
       await newRef.set(data);
-      const newid = `${fullPath}/${newRef.key}`;
-      return newid;
+      return `${fullPath}/${newRef.key}`;
     };
 
     const del = async (
-      keyOrOpt?: string | string[] | { key?: string | string[]; user?: string },
+      keyOrOpt?: string | string[] | FirebaseQueryOptions,
+      optSection?: string,
       optUser?: string
     ): Promise<void> => {
       let key: string | string[] | undefined;
-      let user = optUser ? normalizeUser(optUser) : normalizedUser;
+      let sectionToUse: string | undefined = optSection;
+      let userToUse: string | undefined = optUser;
 
       if (keyOrOpt && typeof keyOrOpt === "object" && !Array.isArray(keyOrOpt)) {
         key = keyOrOpt.key;
+        if (keyOrOpt.section) {
+          sectionToUse = keyOrOpt.section;
+        }
         if (keyOrOpt.user) {
-          user = normalizeUser(keyOrOpt.user);
+          userToUse = keyOrOpt.user;
         }
       } else {
         key = keyOrOpt as string | string[] | undefined;
       }
 
-      const fullPath = resolvePath(section, key, user);
+      const finalSection = activeSection(sectionToUse);
+      const activeUser = userToUse ? normalizeUser(userToUse) : normalizedUser;
+      const fullPath = resolvePath(finalSection, key, activeUser);
       await db.ref(fullPath).remove();
     };
 
     // Backward-compatibility wrappers
-    const getPath = async <T = any>(user: string, key?: string | string[]): Promise<T> => {
-      return get<T>(key, user);
+    const getPath = async <T = any>(
+      user: string,
+      key?: string | string[],
+      optSection?: string
+    ): Promise<T> => {
+      return get<T>(key, optSection, user);
     };
 
-    const setPath = async (user: string, key: string | string[], data: unknown): Promise<string> => {
-      await set({ user, key, data });
-      return resolvePath(section, key, user);
+    const setPath = async (
+      user: string,
+      key: string | string[],
+      data: unknown,
+      optSection?: string
+    ): Promise<string> => {
+      await set({ user, key, data, section: optSection });
+      return resolvePath(activeSection(optSection), key, user);
     };
 
     const pushPath = async (
       user: string,
       key: string | string[],
-      data: unknown
+      data: unknown,
+      optSection?: string
     ): Promise<{ path: string; itemId: string }> => {
-      const fullPath = await push({ user, key, data });
+      const fullPath = await push({ user, key, data, section: optSection });
       const itemId = fullPath.split("/").pop()!;
       return { path: fullPath, itemId };
     };
 
-    const delPath = async (user: string, key: string | string[]): Promise<string> => {
-      await del(key, user);
-      return resolvePath(section, key, user);
+    const delPath = async (
+      user: string,
+      key: string | string[],
+      optSection?: string
+    ): Promise<string> => {
+      await del(key, optSection, user);
+      return resolvePath(activeSection(optSection), key, user);
     };
 
     return {
       user: normalizedUser,
-      section,
+      section: normalizedDefaultSection,
       getroot,
       resolvePath: getroot,
       get,

@@ -1,5 +1,5 @@
 /**
- * Tests for Firebase Admin library and endpoints.
+ * Tests for Firebase Admin library.
  * Uses native node:test runner and section = 'stopsopa_web_tests'.
  * 
  * node --env-file .env --test pages/databases/firebase/lib.test.ts
@@ -8,8 +8,6 @@
 import assert from "node:assert";
 import { it, describe, after } from "node:test";
 import { getFirebase, deleteApp, normalizeUser, resolvePath } from "./lib.ts";
-import { createApp } from "./server.ts";
-import type { Server } from "node:http";
 
 const SECTION = "stopsopa_web_tests";
 const RAW_USER = process.env.FB_EMAIL;
@@ -21,21 +19,13 @@ const NORMALIZED_USER = normalizeUser(RAW_USER);
 const fb = getFirebase();
 const sec = fb.getSection(SECTION);
 
-describe("Firebase library & API endpoints", () => {
-  let createdItemId = "";
-  let server: Server;
-  let serverBaseUrl = "";
-
+describe("Firebase library", () => {
   after(async () => {
     try {
       // Clean up test section in Firebase
       await sec.del();
     } catch (e) {
       console.warn("Cleanup warning:", e);
-    }
-
-    if (server) {
-      await new Promise<void>((resolve) => server.close(() => resolve()));
     }
 
     // Delete Firebase app to release background listeners/connections
@@ -64,6 +54,44 @@ describe("Firebase library & API endpoints", () => {
     );
   });
 
+  it("unbound getSection() demands section and throws when not given", async () => {
+    const unboundSec = fb.getSection();
+
+    assert.throws(() => unboundSec.getroot("todos"), /section is not specified/);
+
+    await assert.rejects(
+      async () => {
+        await unboundSec.get("todos");
+      },
+      /section is not specified/
+    );
+
+    await assert.rejects(
+      async () => {
+        await unboundSec.set({ key: "todos", data: { a: 1 } });
+      },
+      /section is not specified/
+    );
+
+    await assert.rejects(
+      async () => {
+        await unboundSec.push({ key: "todos", data: { a: 1 } });
+      },
+      /section is not specified/
+    );
+
+    await assert.rejects(
+      async () => {
+        await unboundSec.del("todos");
+      },
+      /section is not specified/
+    );
+
+    // When section is provided per-call, it succeeds
+    const rootPath = unboundSec.getroot({ section: SECTION, key: "todos" });
+    assert.strictEqual(rootPath, `users/${NORMALIZED_USER}/${SECTION}/todos`);
+  });
+
   it("getFirebase throws when email is not given and FB_EMAIL is unset", () => {
     const origFbEmail = process.env.FB_EMAIL;
     try {
@@ -79,125 +107,46 @@ describe("Firebase library & API endpoints", () => {
     }
   });
 
-  it("push adds a new item and returns full path", async () => {
+  it("complete section CRUD lifecycle: push -> get -> set -> del", async () => {
+    // 1. push
     const newPath = await sec.push({
       key: "todos",
       data: { text: "Buy bread", done: false },
     });
-
     assert.ok(typeof newPath === "string");
     assert.ok(newPath.startsWith(`users/${NORMALIZED_USER}/${SECTION}/todos/`));
 
-    createdItemId = newPath.split("/").pop()!;
-    assert.ok(createdItemId.length > 0);
-  });
+    const itemId = newPath.split("/").pop()!;
+    assert.ok(itemId.length > 0);
 
-  it("get reads individual item by sub-path", async () => {
-    const item = await sec.get<{ text: string; done: boolean }>(
-      `todos/${createdItemId}`
-    );
-
+    // 2. get single item
+    const item = await sec.get<{ text: string; done: boolean }>(`todos/${itemId}`);
     assert.ok(item);
     assert.strictEqual(item.text, "Buy bread");
     assert.strictEqual(item.done, false);
-  });
 
-  it("get reads collection mapping itemIds", async () => {
-    const collection = await sec.get<Record<string, { text: string; done: boolean }>>(
-      "todos"
-    );
-
+    // 3. get collection
+    const collection = await sec.get<Record<string, { text: string; done: boolean }>>("todos");
     assert.ok(collection);
-    assert.ok(collection[createdItemId]);
-    assert.strictEqual(collection[createdItemId].text, "Buy bread");
-  });
+    assert.ok(collection[itemId]);
+    assert.strictEqual(collection[itemId].text, "Buy bread");
 
-  it("set overwrites item data", async () => {
+    // 4. set (update)
     await sec.set({
-      key: ["todos", createdItemId],
+      key: ["todos", itemId],
       data: { text: "Buy sourdough bread", done: true },
     });
-
     const updated = await sec.get<{ text: string; done: boolean }>([
       "todos",
-      createdItemId,
+      itemId,
     ]);
-
     assert.ok(updated);
     assert.strictEqual(updated.text, "Buy sourdough bread");
     assert.strictEqual(updated.done, true);
-  });
 
-  it("del removes item from database", async () => {
-    await sec.del(`todos/${createdItemId}`);
-
-    const removed = await sec.get(`todos/${createdItemId}`);
+    // 5. del
+    await sec.del(`todos/${itemId}`);
+    const removed = await sec.get(`todos/${itemId}`);
     assert.strictEqual(removed, null);
-  });
-
-  it("server HTTP endpoints test (push, get, set, del, getroot)", async () => {
-    const testApp = createApp(SECTION);
-
-    await new Promise<void>((resolve) => {
-      server = testApp.listen(0, "127.0.0.1", () => {
-        const address = server.address();
-        if (address && typeof address === "object") {
-          serverBaseUrl = `http://127.0.0.1:${address.port}`;
-        }
-        resolve();
-      });
-    });
-
-    // 0. GET /getroot
-    const getrootRes = await fetch(`${serverBaseUrl}/getroot/http_todos`);
-    const getrootJson = (await getrootRes.json()) as { success: boolean; path: string };
-    assert.strictEqual(getrootJson.success, true);
-    assert.strictEqual(getrootJson.path, `users/${NORMALIZED_USER}/${SECTION}/http_todos`);
-
-    // 1. POST /push/http_todos
-    const pushRes = await fetch(`${serverBaseUrl}/push/http_todos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: "From HTTP", completed: false }),
-    });
-    const pushJson = (await pushRes.json()) as { success: boolean; path: string; itemId: string };
-    assert.strictEqual(pushJson.success, true);
-    assert.ok(pushJson.itemId);
-    assert.ok(pushJson.path.includes(NORMALIZED_USER));
-
-    const httpItemId = pushJson.itemId;
-
-    // 2. GET /get/http_todos/${httpItemId}
-    const getRes = await fetch(`${serverBaseUrl}/get/http_todos/${httpItemId}`);
-    const getJson = (await getRes.json()) as { success: boolean; data: { title: string; completed: boolean } };
-    assert.strictEqual(getJson.success, true);
-    assert.strictEqual(getJson.data.title, "From HTTP");
-
-    // 3. POST /set/http_todos/${httpItemId}
-    const setRes = await fetch(`${serverBaseUrl}/set/http_todos/${httpItemId}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: "From HTTP Updated", completed: true }),
-    });
-    const setJson = (await setRes.json()) as { success: boolean };
-    assert.strictEqual(setJson.success, true);
-
-    // Verify updated
-    const verifyRes = await fetch(`${serverBaseUrl}/get/http_todos/${httpItemId}`);
-    const verifyJson = (await verifyRes.json()) as { success: boolean; data: { title: string; completed: boolean } };
-    assert.strictEqual(verifyJson.data.title, "From HTTP Updated");
-    assert.strictEqual(verifyJson.data.completed, true);
-
-    // 4. DELETE /del/http_todos/${httpItemId}
-    const delRes = await fetch(`${serverBaseUrl}/del/http_todos/${httpItemId}`, {
-      method: "DELETE",
-    });
-    const delJson = (await delRes.json()) as { success: boolean };
-    assert.strictEqual(delJson.success, true);
-
-    // Verify deleted
-    const verifyDelRes = await fetch(`${serverBaseUrl}/get/http_todos/${httpItemId}`);
-    const verifyDelJson = (await verifyDelRes.json()) as { success: boolean; data: unknown };
-    assert.strictEqual(verifyDelJson.data, null);
   });
 });

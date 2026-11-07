@@ -1,39 +1,21 @@
 /**
  * Express server providing HTTP endpoints for Firebase CRUD operations from getSection().
- * User is set at the getFirebase() level (via FB_EMAIL) and section via getSection().
  *
- * Each express endpoint represents a CRUD method returned from getSection():
- * - sec.push()    -> POST /push, POST /push/*key
- * - sec.get()     -> GET /get, GET /get/*key, POST /get
- * - sec.set()     -> POST /set, POST /set/*key, PUT /*key
- * - sec.del()     -> POST /del, DELETE /del, DELETE /del/*key, DELETE /*key
- * - sec.getroot() -> GET /getroot, GET /getroot/*key
+ * User is set at getFirebase() level (via FB_EMAIL).
+ * Section can be set via FB_SECTION env var:
+ *   PORT=4398 HOST=0.0.0.0 FB_SECTION=test node --env-file .env pages/databases/firebase/server.ts
  *
- * Examples:
+ * If FB_SECTION is not set, section is required on every request:
+ *   - Query param: ?section=my_section
+ *   - Request body: { "section": "my_section", ... }
+ *   - Header: x-section: my_section
  *
- * 1. Insert new item (push):
- *    curl -X POST http://localhost:7898/push \
- *      -H "Content-Type: application/json" \
- *      -d '{"key":"todos","data":{"text":"Buy bread","done":false}}'
- *    # or
- *    curl -X POST http://localhost:7898/push/todos \
- *      -H "Content-Type: application/json" \
- *      -d '{"text":"Buy bread","done":false}'
- *
- * 2. Read collection or item (get):
- *    curl "http://localhost:7898/get?key=todos"
- *    # or
- *    curl "http://localhost:7898/get/todos"
- *
- * 3. Update/overwrite item (set):
- *    curl -X POST http://localhost:7898/set \
- *      -H "Content-Type: application/json" \
- *      -d '{"key":"todos/-Nxi98AbCdEf12345","data":{"text":"Buy bread","done":true}}'
- *
- * 4. Delete item or branch (del):
- *    curl -X POST http://localhost:7898/del \
- *      -H "Content-Type: application/json" \
- *      -d '{"key":"todos/-Nxi98AbCdEf12345"}'
+ * Endpoints:
+ * - POST /push, POST /push/*key
+ * - GET /get, GET /get/*key, POST /get
+ * - POST /set, POST /set/*key, PUT /*key
+ * - POST /del, DELETE /del, DELETE /del/*key, DELETE /*key
+ * - GET /getroot, GET /getroot/*key
  */
 
 import express, { type Request, type Response } from "express";
@@ -42,15 +24,38 @@ import { getFirebase } from "./lib.ts";
 const PORT = Number(process.env.PORT || process.env.NODE_API_PORT || 7898);
 const HOST = process.env.HOST || "0.0.0.0";
 
+const getEnvSection = (): string | undefined => {
+  const val = process.env.FB_SECTION?.trim();
+  if (val) {
+    return val;
+  }
+  return undefined;
+};
+
 /**
- * Creates and configures the Express application bound to a specific section.
+ * Creates and configures the Express application.
+ * If sectionName is provided (or FB_SECTION env var), requests use it automatically.
+ * Otherwise, each request must specify section via body, query (?section=...), or header (x-section).
  */
-export function createApp(sectionName: string = process.env.FB_SECTION || "antigravity_cli") {
+export function createApp(sectionName: string | undefined = getEnvSection()) {
+  const cleanSection = sectionName?.trim() || undefined;
   const app = express();
   app.use(express.json());
 
   const fb = getFirebase();
-  const sec = fb.getSection(sectionName);
+  const sec = fb.getSection(cleanSection);
+
+  /**
+   * Helper to extract section from request or fall back to pre-bound section
+   */
+  const extractSection = (req: Request): string | undefined => {
+    return (
+      (req.body?.section as string) ||
+      (req.query.section as string) ||
+      (req.headers["x-section"] as string) ||
+      undefined
+    );
+  };
 
   /**
    * Root overview and Firebase Console link
@@ -62,7 +67,7 @@ export function createApp(sectionName: string = process.env.FB_SECTION || "antig
 <body>
   <h1>Firebase RTDB Server</h1>
   <p>User: <code>${sec.user}</code></p>
-  <p>Section: <code>${sec.section}</code></p>
+  <p>Section: <code>${sec.section || "NOT CONFIGURED (required per-request via ?section=, body, or x-section)"}</code></p>
   <ul>
     <li><code>POST /push</code>, <code>POST /push/*key</code> - Insert child with push ID</li>
     <li><code>GET /get</code>, <code>GET /get/*key</code>, <code>POST /get</code> - Read item/tree</li>
@@ -81,10 +86,12 @@ export function createApp(sectionName: string = process.env.FB_SECTION || "antig
   const handleGet = async (req: Request, res: Response) => {
     try {
       const key = (req.params as Record<string, any>).key || req.body?.key || (req.query.key as string) || "";
-      const data = await sec.get(key);
+      const section = extractSection(req);
+      const data = await sec.get({ key, section });
       res.json({ success: true, data });
-    } catch (error) {
-      res.status(500).json({ error: String(error) });
+    } catch (error: any) {
+      const isClientError = error?.message?.includes("section is not specified");
+      res.status(isClientError ? 400 : 500).json({ error: String(error?.message || error) });
     }
   };
 
@@ -94,11 +101,14 @@ export function createApp(sectionName: string = process.env.FB_SECTION || "antig
   const handleSet = async (req: Request, res: Response) => {
     try {
       const key = (req.params as Record<string, any>).key || req.body?.key || (req.query.key as string) || "";
+      const section = extractSection(req);
       const data = req.body?.data !== undefined ? req.body.data : req.body;
-      await sec.set({ key, data });
-      res.json({ success: true, path: sec.getroot(key) });
-    } catch (error) {
-      res.status(500).json({ error: String(error) });
+      await sec.set({ key, data, section });
+      const path = sec.getroot({ key, section });
+      res.json({ success: true, path });
+    } catch (error: any) {
+      const isClientError = error?.message?.includes("section is not specified");
+      res.status(isClientError ? 400 : 500).json({ error: String(error?.message || error) });
     }
   };
 
@@ -108,12 +118,14 @@ export function createApp(sectionName: string = process.env.FB_SECTION || "antig
   const handlePush = async (req: Request, res: Response) => {
     try {
       const key = (req.params as Record<string, any>).key || req.body?.key || (req.query.key as string) || "";
+      const section = extractSection(req);
       const data = req.body?.data !== undefined ? req.body.data : req.body;
-      const newPath = await sec.push({ key, data });
+      const newPath = await sec.push({ key, data, section });
       const itemId = newPath.split("/").pop() || "";
       res.json({ success: true, path: newPath, itemId });
-    } catch (error) {
-      res.status(500).json({ error: String(error) });
+    } catch (error: any) {
+      const isClientError = error?.message?.includes("section is not specified");
+      res.status(isClientError ? 400 : 500).json({ error: String(error?.message || error) });
     }
   };
 
@@ -123,10 +135,13 @@ export function createApp(sectionName: string = process.env.FB_SECTION || "antig
   const handleDel = async (req: Request, res: Response) => {
     try {
       const key = (req.params as Record<string, any>).key || req.body?.key || (req.query.key as string) || "";
-      await sec.del(key);
-      res.json({ success: true, path: sec.getroot(key) });
-    } catch (error) {
-      res.status(500).json({ error: String(error) });
+      const section = extractSection(req);
+      await sec.del({ key, section });
+      const path = sec.getroot({ key, section });
+      res.json({ success: true, path });
+    } catch (error: any) {
+      const isClientError = error?.message?.includes("section is not specified");
+      res.status(isClientError ? 400 : 500).json({ error: String(error?.message || error) });
     }
   };
 
@@ -136,9 +151,12 @@ export function createApp(sectionName: string = process.env.FB_SECTION || "antig
   const handleGetroot = (req: Request, res: Response) => {
     try {
       const key = (req.params as Record<string, any>).key || req.body?.key || (req.query.key as string) || "";
-      res.json({ success: true, path: sec.getroot(key) });
-    } catch (error) {
-      res.status(500).json({ error: String(error) });
+      const section = extractSection(req);
+      const path = sec.getroot({ key, section });
+      res.json({ success: true, path });
+    } catch (error: any) {
+      const isClientError = error?.message?.includes("section is not specified");
+      res.status(isClientError ? 400 : 500).json({ error: String(error?.message || error) });
     }
   };
 
