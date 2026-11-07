@@ -1,7 +1,7 @@
 /**
  * Firebase Admin Database helper library.
  * Initializes Firebase Admin app using service account credentials from environment variables or custom options
- * and returns database instance along with helper methods (getPath, setPath, pushPath, delPath).
+ * and returns database instance along with getSection(section) factory matching USAGE.md and useFirebase.ts conventions.
  */
 
 import {
@@ -22,42 +22,94 @@ export interface GetFirebaseOptions {
   jwt?: JWTOptions;
   initialize?: AppOptions;
   appName?: string;
+  email?: string; // required, throw if not given, by default take from FB_EMAIL
+}
+
+export interface FirebaseMutationOptions<T = any> {
+  data?: T;
+  key?: string | string[];
+  user?: string;
+}
+
+export interface FirebaseSection {
+  user: string;
+  section: string;
+  getroot: (key?: string | string[], optUser?: string) => string;
+  resolvePath: (key?: string | string[], optUser?: string) => string;
+  get: <T = any>(key?: string | string[] | { key?: string | string[]; user?: string }, optUser?: string) => Promise<T>;
+  set: <T = any>(opt?: FirebaseMutationOptions<T> | string | string[], optData?: T) => Promise<void>;
+  push: <T = any>(opt?: FirebaseMutationOptions<T> | string | string[], optData?: T) => Promise<string>;
+  del: (key?: string | string[] | { key?: string | string[]; user?: string }, optUser?: string) => Promise<void>;
+
+  // Aliases for backward compatibility
+  getPath: <T = any>(user: string, key?: string | string[]) => Promise<T>;
+  setPath: (user: string, key: string | string[], data: unknown) => Promise<string>;
+  pushPath: (user: string, key: string | string[], data: unknown) => Promise<{ path: string; itemId: string }>;
+  delPath: (user: string, key: string | string[]) => Promise<string>;
 }
 
 export interface FirebaseInstance {
   app: App;
   db: Database;
-  resolvePath: (user: string, section: string, key?: string | string[]) => string;
-  getPath: <T = unknown>(user: string, section: string, key?: string | string[]) => Promise<T>;
-  setPath: (user: string, section: string, key: string | string[], data: unknown) => Promise<string>;
-  pushPath: (user: string, section: string, key: string | string[], data: unknown) => Promise<{ path: string; itemId: string }>;
-  delPath: (user: string, section: string, key: string | string[]) => Promise<string>;
+  email: string;
+  getSection: (section: string) => FirebaseSection;
 }
 
 /**
- * Resolves a database path under users/<user>/<section>/<key>
+ * Normalizes user email by replacing dots with commas for Firebase RTDB path safety.
+ */
+export function normalizeUser(user: string): string {
+  return user.replace(/\./g, ",");
+}
+
+/**
+ * Global helper to resolve a database path under users/<user>/<section>/<key>.
+ * Takes user from parameter or process.env.FB_EMAIL.
  */
 export function resolvePath(
-  user: string,
   section: string,
-  key?: string | string[]
+  key?: string | string[],
+  user?: string
 ): string {
-  const normalizedKey = Array.isArray(key)
-    ? key.filter(Boolean).join("/")
-    : key || "";
-  const cleanKey = normalizedKey.replace(/^\/+|\/+$/g, "");
-  const base = `users/${user}/${section}`;
-  if (cleanKey) {
-    return `${base}/${cleanKey}`;
-  } else {
-    return base;
+  if (!section || !section.trim()) {
+    throw new Error("resolvePath: section is not specified");
   }
+
+  const rawUser = user || process.env.FB_EMAIL;
+  if (!rawUser || !rawUser.trim()) {
+    throw new Error("resolvePath: user is not specified (provide user or set FB_EMAIL)");
+  }
+
+  const processedUser = normalizeUser(rawUser);
+
+  let processedKey = key;
+  if (Array.isArray(processedKey)) {
+    processedKey = processedKey.filter(Boolean).join("/");
+  }
+
+  let internalkey = `users/${processedUser}/${section}`;
+  if (typeof processedKey === "string" && processedKey.trim()) {
+    const cleanKey = processedKey.replace(/^\/+|\/+$/g, "");
+    if (cleanKey) {
+      internalkey += `/${cleanKey}`;
+    }
+  }
+
+  return internalkey;
 }
 
 /**
- * Initializes and returns Firebase app, database, and scoped helper methods.
+ * Initializes and returns Firebase app, database, and getSection factory.
  */
 export function getFirebase(options?: GetFirebaseOptions): FirebaseInstance {
+  const email = options?.email || process.env.FB_EMAIL;
+  if (!email || !email.trim()) {
+    throw new Error(
+      "getFirebase: email is required (provide options.email or FB_EMAIL env variable)"
+    );
+  }
+
+  const normalizedUser = normalizeUser(email);
   const existingApps = getApps();
 
   const jwtOptions: JWTOptions = {
@@ -122,58 +174,147 @@ export function getFirebase(options?: GetFirebaseOptions): FirebaseInstance {
 
   const db = getDatabase(app);
 
-  const getPath = async <T = unknown>(
-    user: string,
-    section: string,
-    key?: string | string[]
-  ): Promise<T> => {
-    const fullPath = resolvePath(user, section, key);
-    const snapshot = await db.ref(fullPath).get();
-    return snapshot.val() as T;
-  };
+  const getSection = (section: string): FirebaseSection => {
+    const getroot = (key?: string | string[], optUser?: string): string => {
+      const activeUser = optUser ? normalizeUser(optUser) : normalizedUser;
+      return resolvePath(section, key, activeUser);
+    };
 
-  const setPath = async (
-    user: string,
-    section: string,
-    key: string | string[],
-    data: unknown
-  ): Promise<string> => {
-    const fullPath = resolvePath(user, section, key);
-    await db.ref(fullPath).set(data);
-    return fullPath;
-  };
+    const get = async <T = any>(
+      keyOrOpt?: string | string[] | { key?: string | string[]; user?: string },
+      optUser?: string
+    ): Promise<T> => {
+      let key: string | string[] | undefined;
+      let user = optUser ? normalizeUser(optUser) : normalizedUser;
 
-  const pushPath = async (
-    user: string,
-    section: string,
-    key: string | string[],
-    data: unknown
-  ): Promise<{ path: string; itemId: string }> => {
-    const fullPath = resolvePath(user, section, key);
-    const newRef = db.ref(fullPath).push();
-    await newRef.set(data);
-    const itemId = newRef.key!;
-    const newPath = `${fullPath}/${itemId}`;
-    return { path: newPath, itemId };
-  };
+      if (keyOrOpt && typeof keyOrOpt === "object" && !Array.isArray(keyOrOpt)) {
+        key = keyOrOpt.key;
+        if (keyOrOpt.user) {
+          user = normalizeUser(keyOrOpt.user);
+        }
+      } else {
+        key = keyOrOpt as string | string[] | undefined;
+      }
 
-  const delPath = async (
-    user: string,
-    section: string,
-    key: string | string[]
-  ): Promise<string> => {
-    const fullPath = resolvePath(user, section, key);
-    await db.ref(fullPath).remove();
-    return fullPath;
+      const fullPath = resolvePath(section, key, user);
+      const snapshot = await db.ref(fullPath).get();
+      return snapshot.val() as T;
+    };
+
+    const set = async <T = any>(
+      opt?: FirebaseMutationOptions<T> | string | string[],
+      optData?: T
+    ): Promise<void> => {
+      let key: string | string[] | undefined;
+      let data: T;
+      let user = normalizedUser;
+
+      if (opt && typeof opt === "object" && !Array.isArray(opt)) {
+        key = opt.key;
+        data = opt.data as T;
+        if (opt.user) {
+          user = normalizeUser(opt.user);
+        }
+      } else {
+        key = opt as string | string[] | undefined;
+        data = optData as T;
+      }
+
+      const fullPath = resolvePath(section, key, user);
+      await db.ref(fullPath).set(data);
+    };
+
+    const push = async <T = any>(
+      opt?: FirebaseMutationOptions<T> | string | string[],
+      optData?: T
+    ): Promise<string> => {
+      let key: string | string[] | undefined;
+      let data: T;
+      let user = normalizedUser;
+
+      if (opt && typeof opt === "object" && !Array.isArray(opt)) {
+        key = opt.key;
+        data = opt.data as T;
+        if (opt.user) {
+          user = normalizeUser(opt.user);
+        }
+      } else {
+        key = opt as string | string[] | undefined;
+        data = optData as T;
+      }
+
+      const fullPath = resolvePath(section, key, user);
+      const newRef = db.ref(fullPath).push();
+      await newRef.set(data);
+      const newid = `${fullPath}/${newRef.key}`;
+      return newid;
+    };
+
+    const del = async (
+      keyOrOpt?: string | string[] | { key?: string | string[]; user?: string },
+      optUser?: string
+    ): Promise<void> => {
+      let key: string | string[] | undefined;
+      let user = optUser ? normalizeUser(optUser) : normalizedUser;
+
+      if (keyOrOpt && typeof keyOrOpt === "object" && !Array.isArray(keyOrOpt)) {
+        key = keyOrOpt.key;
+        if (keyOrOpt.user) {
+          user = normalizeUser(keyOrOpt.user);
+        }
+      } else {
+        key = keyOrOpt as string | string[] | undefined;
+      }
+
+      const fullPath = resolvePath(section, key, user);
+      await db.ref(fullPath).remove();
+    };
+
+    // Backward-compatibility wrappers
+    const getPath = async <T = any>(user: string, key?: string | string[]): Promise<T> => {
+      return get<T>(key, user);
+    };
+
+    const setPath = async (user: string, key: string | string[], data: unknown): Promise<string> => {
+      await set({ user, key, data });
+      return resolvePath(section, key, user);
+    };
+
+    const pushPath = async (
+      user: string,
+      key: string | string[],
+      data: unknown
+    ): Promise<{ path: string; itemId: string }> => {
+      const fullPath = await push({ user, key, data });
+      const itemId = fullPath.split("/").pop()!;
+      return { path: fullPath, itemId };
+    };
+
+    const delPath = async (user: string, key: string | string[]): Promise<string> => {
+      await del(key, user);
+      return resolvePath(section, key, user);
+    };
+
+    return {
+      user: normalizedUser,
+      section,
+      getroot,
+      resolvePath: getroot,
+      get,
+      set,
+      push,
+      del,
+      getPath,
+      setPath,
+      pushPath,
+      delPath,
+    };
   };
 
   return {
     app,
     db,
-    resolvePath,
-    getPath,
-    setPath,
-    pushPath,
-    delPath,
+    email: normalizedUser,
+    getSection,
   };
 }

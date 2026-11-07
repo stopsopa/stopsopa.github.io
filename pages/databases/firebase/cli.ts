@@ -10,14 +10,14 @@
 
 import { getFirebase, deleteApp } from "./lib.ts";
 
-const { app, db } = getFirebase();
+const { app, getSection } = getFirebase();
 
 try {
-  const ref = db.ref("users/grytysek@gmail,com/antigravity_cli/settings");
+  const { get } = getSection("antigravity_cli");
 
-  const snapshot = await ref.get();
+  const snapshot = await get("settings");
 
-  console.log(snapshot.val());
+  console.log(snapshot);
 } finally {
   await deleteApp(app);
 }
