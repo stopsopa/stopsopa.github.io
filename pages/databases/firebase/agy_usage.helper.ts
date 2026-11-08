@@ -198,15 +198,15 @@ function printDiff(beforeJsonStr: string, afterJsonStr: string): void {
   const beforeRows: Record<string, Record<string, string | number>> = {
     modelPercentage: {},
     renewsAt: {},
-    "renewsAt remaining": {},
-    "renewsAt hours and minutes": {},
+    "remaining": {},
+    "hours and minutes": {},
   };
 
   const afterRows: Record<string, Record<string, string | number>> = {
     modelPercentage: {},
     renewsAt: {},
-    "renewsAt remaining": {},
-    "renewsAt hours and minutes": {},
+    "remaining": {},
+    "hours and minutes": {},
     "renewsAt shifted": {},
   };
 
@@ -218,13 +218,13 @@ function printDiff(beforeJsonStr: string, afterJsonStr: string): void {
     beforeRows["modelPercentage"][colName] =
       beforeItem.modelPercentage !== undefined ? beforeItem.modelPercentage : "-";
     beforeRows["renewsAt"][colName] = beforeItem.renewsAt || "-";
-    beforeRows["renewsAt remaining"][colName] = formatRemainingFromNow(beforeItem.renewsAt, now);
-    beforeRows["renewsAt hours and minutes"][colName] = formatRemainingHoursMinutesFromNow(beforeItem.renewsAt, now);
+    beforeRows["remaining"][colName] = formatRemainingFromNow(beforeItem.renewsAt, now);
+    beforeRows["hours and minutes"][colName] = formatRemainingHoursMinutesFromNow(beforeItem.renewsAt, now);
 
     afterRows["modelPercentage"][colName] = afterItem.modelPercentage !== undefined ? afterItem.modelPercentage : "-";
     afterRows["renewsAt"][colName] = afterItem.renewsAt || "-";
-    afterRows["renewsAt remaining"][colName] = formatRemainingFromNow(afterItem.renewsAt, now);
-    afterRows["renewsAt hours and minutes"][colName] = formatRemainingHoursMinutesFromNow(afterItem.renewsAt, now);
+    afterRows["remaining"][colName] = formatRemainingFromNow(afterItem.renewsAt, now);
+    afterRows["hours and minutes"][colName] = formatRemainingHoursMinutesFromNow(afterItem.renewsAt, now);
     afterRows["renewsAt shifted"][colName] = formatTimeShift(beforeItem.renewsAt, afterItem.renewsAt);
   }
 
