@@ -198,14 +198,14 @@ function printDiff(beforeJsonStr: string, afterJsonStr: string): void {
   const beforeRows: Record<string, Record<string, string | number>> = {
     modelPercentage: {},
     renewsAt: {},
-    "remaining": {},
+    remaining: {},
     "hours and minutes": {},
   };
 
   const afterRows: Record<string, Record<string, string | number>> = {
     modelPercentage: {},
     renewsAt: {},
-    "remaining": {},
+    remaining: {},
     "hours and minutes": {},
     "renewsAt shifted": {},
   };

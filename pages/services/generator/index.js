@@ -1,3 +1,8 @@
+/**
+ * =================
+ * Transpiled with transpile.ts, see transpile.ignore
+ * =================
+ */
 const left = [
   "admiring",
   "adoring",
@@ -106,9 +111,8 @@ const left = [
   "xenodochial",
   "youthful",
   "zealous",
-  "zen",
+  "zen"
 ];
-
 const right = [
   "agnesi",
   "albattani",
@@ -345,60 +349,43 @@ const right = [
   "wu",
   "yalow",
   "yonath",
-  "zhukovsky",
+  "zhukovsky"
 ];
-
-/**
- * getParts returns two random words from the adjectives and surnames lists.
- */
-export function getParts(rng = Math.random) {
+function getParts(rng = Math.random) {
   const l = left[Math.floor(rng() * left.length)];
   const r = right[Math.floor(rng() * right.length)];
   return { l, r };
 }
-
-/**
- * GetRandomName generates a random name from the list of adjectives and surnames
- * formatted as "adjective_surname". For example 'focused_turing'.
- * If retry is non-zero, a random integer between 0 and 10 will be added
- * to the end of the name, e.g `focused_turing3`
- */
-export function getRandomName(retry = 0, sep = "_", rng = Math.random) {
-  let name;
-
+function getRandomName(retry = 0, sep = "_", rng = Math.random) {
+  let l, r, name;
   while (true) {
-    const { l, r } = getParts(rng);
+    ({ l, r } = getParts(rng));
     name = `${l}${sep}${r}`;
-
-    // Steve Wozniak is not boring
     if (name !== `boring${sep}wozniak`) {
       break;
     }
   }
-
   if (retry > 0) {
     name += Math.floor(rng() * 10);
   }
-
   return name;
 }
-
-// If executed directly, print a random name
-if (typeof process !== "undefined" && process.argv && process.argv[1]) {
-  const { fileURLToPath } = await import("node:url");
-  const { realpathSync } = await import("node:fs");
-
-  const isMain = () => {
-    try {
-      const scriptPath = realpathSync(process.argv[1]);
-      const modulePath = fileURLToPath(import.meta.url);
-      return scriptPath === modulePath;
-    } catch {
-      return false;
-    }
-  };
-
-  if (isMain()) {
-    console.log(getRandomName());
+import { fileURLToPath } from "node:url";
+import { realpathSync } from "node:fs";
+const isMain = () => {
+  if (typeof process === "undefined" || !process.argv[1]) return false;
+  try {
+    const scriptPath = realpathSync(process.argv[1]);
+    const modulePath = fileURLToPath(import.meta.url);
+    return scriptPath === modulePath;
+  } catch {
+    return false;
   }
+};
+if (isMain()) {
+  console.log(getRandomName());
 }
+export {
+  getParts,
+  getRandomName
+};

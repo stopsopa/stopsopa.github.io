@@ -20,15 +20,24 @@ bash/exportsource.js
 
 bash/fs/watch.js
 bash/GLOSSARY.ts
-pages/
+
+pages/*
+!pages/children/
+pages/children/*
+!pages/children/wotb/
+pages/children/wotb/*
+!pages/children/wotb/controls/
+pages/children/wotb/controls/*
+!pages/children/wotb/controls/antigravity/
+
 transpile_prettier_pipe_old.ts
 root.ts
 es.ts
 bash/socket/*
 
-# and run
-# time /bin/bash transpile.sh transpile.ignore
-
 **/*.entry.ts
 **/*.entry.js
 **/*.entry.tsx
+
+# and run
+# time /bin/bash transpile.sh transpile.ignore
