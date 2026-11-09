@@ -181,13 +181,15 @@ function printDiff(beforeJsonStr: string, afterJsonStr: string): void {
   let afterObj: Record<string, ModelEntry> = {};
 
   try {
-    beforeObj = JSON.parse(beforeJsonStr || "{}");
+    const parsed = JSON.parse(beforeJsonStr || "{}");
+    beforeObj = parsed && typeof parsed === "object" ? parsed : {};
   } catch {
     beforeObj = {};
   }
 
   try {
-    afterObj = JSON.parse(afterJsonStr || "{}");
+    const parsed = JSON.parse(afterJsonStr || "{}");
+    afterObj = parsed && typeof parsed === "object" ? parsed : {};
   } catch {
     afterObj = {};
   }

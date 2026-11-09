@@ -60,11 +60,41 @@ MAPPING_JSON='{
     "Claude and GPT models": "Claude%20Sonnet%204%2E6%20(Thinking)"
 }'
 
-EMAIL="$(jq -r '.id_token_email' ~/.gemini/antigravity-cli/antigravity-oauth-token | tr -d '\n')"
+agy_usage() {
+    local session="agy-usage-$$"
 
-if [ "${EMAIL}" = "" ]; then
+    tmux new-session -d -s "$session" -x 120 -y 45 'agy'
 
-    echo "${0} error: EMAIL can't be extracted"
+    sleep 3
+
+    tmux send-keys -t "$session" -l '/usage'
+    tmux send-keys -t "$session" Enter
+
+    sleep 3
+
+    tmux capture-pane -t "$session" -p
+
+    tmux kill-session -t "$session" 2>/dev/null
+}
+
+TOKEN_FILE=~/.gemini/antigravity-cli/antigravity-oauth-token
+
+EMAIL=""
+
+# Try primary method: extract email from oauth token file
+if [[ -f "${TOKEN_FILE}" ]]; then
+    EMAIL="$(jq -r '.id_token_email' "${TOKEN_FILE}" | tr -d '\n')"
+else
+    # Fallback: launch agy in tmux, capture /usage output and parse email from it
+    AGY_USAGE="$(agy_usage)"
+
+    # Email appears on a line like: "  xxxxxxxxxxxxx@gmail.com (Antigravity Starter Quota)"
+    # Extract just the email address portion (before the space and parenthetical)
+    EMAIL="$(echo "${AGY_USAGE}" | grep -oE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}' | head -1 | tr -d '\n')"
+fi
+
+if [[ -z "${EMAIL}" ]]; then
+    echo "${0} error: EMAIL can't be extracted (token file =>TOKEN_FILE=${TOKEN_FILE}< does not exist and agy_usage fallback also failed)"
     exit 1
 fi
 
