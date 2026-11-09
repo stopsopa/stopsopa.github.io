@@ -1,7 +1,7 @@
 /**
  * Continuous SSH file synchronization
  * In other words:
- * I have watch on directory what is registered as create/update/delete is passed through gitignore.ts [ignorefile]
+ * I have watch on directory which reports create/update/delete is passed through gitignore.ts [ignorefile]
  * then what is ignored goes to it's stderr and what is not goes to stdout
  * then we pipe stdout to script sync.sh which is responsible by syncing via rsync to remote in batches
  *
@@ -166,8 +166,20 @@ const input = createInterface({
   crlfDelay: Infinity,
 });
 
+function getTimestamp(): string {
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const YYYY = now.getFullYear();
+  const MM = pad(now.getMonth() + 1);
+  const DD = pad(now.getDate());
+  const HH = pad(now.getHours());
+  const mm = pad(now.getMinutes());
+  const ss = pad(now.getSeconds());
+  return `[${YYYY}-${MM}-${DD} ${HH}:${mm}:${ss}]`;
+}
+
 input.on("line", (line) => {
-  console.log(`\x1b[32m${line}\x1b[0m`);
+  console.log(`\x1b[32m${getTimestamp()} ${line}\x1b[0m`);
 
   const match = /^(?:create|update|deleted)\s+(.+)$/.exec(line);
 
