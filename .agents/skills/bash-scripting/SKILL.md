@@ -214,3 +214,19 @@ LOCAL_MSG="$(echo "${LOCAL_COMMIT}" | cut -d' ' -f2-)"
 ```
 
 </produce_value_for_variable>
+
+
+
+<iterating>
+When working with multiline value in variable and iterating over it use syntax
+
+```sh
+while IFS="\n" read -r LINE; do
+  echo ">${LINE}<"
+done <<< "${LINE}"
+
+```
+because this syntax avoids using subshel which in some cases might introduce unnecessary isoloation of scope of variables in such created shell from outside variables.
+
+</iterating>
+
