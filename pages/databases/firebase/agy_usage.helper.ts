@@ -235,6 +235,8 @@ function printDiff(beforeJsonStr: string, afterJsonStr: string): void {
 
   console.log("After update:");
   console.table(afterRows);
+
+  console.log(`Script executed: `, (new Date()).toISOString().substring(0, 19).replace('T', ' '))
 }
 
 async function main() {
