@@ -42,7 +42,9 @@ const relativeFilename = filenameRelative(import.meta.url);
 
 // then you can use for example to customise error message
 
-throw new Error(`${relativeFilename} error: whatever error...`);
+const th = (msg: string) => new Error(`${relativeFilename} error: ${msg}`);
+
+throw th(`domain is not a string.`);
 ```
 
 ... but generally make sure each error clearly states it's origin
