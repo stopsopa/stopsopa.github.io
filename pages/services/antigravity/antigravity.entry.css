@@ -310,6 +310,7 @@ body {
     table.cf-table {
       width: 100%;
       border-collapse: collapse;
+      table-layout: fixed;
       text-align: left;
       font-size: 0.875rem;
 
@@ -322,12 +323,32 @@ body {
         text-transform: uppercase;
         font-size: 0.75rem;
         letter-spacing: 0.05em;
+        position: relative;
+        box-sizing: border-box;
+        overflow: hidden;
+
+        .cf-col-resizer {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 6px;
+          height: 100%;
+          cursor: col-resize;
+          user-select: none;
+          z-index: 10;
+
+          &:hover,
+          &.is-resizing {
+            background-color: var(--cf-orange);
+          }
+        }
       }
 
       td {
-        padding: 0.85rem 1rem;
+        padding: -0.15rem 1rem;
         border-bottom: 1px solid var(--cf-border);
         vertical-align: middle;
+        box-sizing: border-box;
       }
 
       tr:last-child td {

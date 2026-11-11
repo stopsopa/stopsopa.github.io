@@ -170,6 +170,75 @@ export function AntigravityTracker() {
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
 
   /**
+   * Resizable columns state backed by localStorage.
+   * Model and fixed utility columns have explicit pixel widths.
+   * "account" is excluded so it takes all remaining horizontal space.
+   */
+  const STORAGE_KEY_COL_WIDTHS = "antigravity_table_col_widths_v2";
+  const [colWidths, setColWidths] = useState<Record<string, number>>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_COL_WIDTHS);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.error("Failed to parse column widths from localStorage", e);
+    }
+    return {
+      current: 60,
+      note: 60,
+      actions: 120,
+    };
+  });
+
+  const resizingRef = React.useRef<{
+    colKey: string;
+    startX: number;
+    startWidth: number;
+  } | null>(null);
+
+  /**
+   * Starts dragging column resizer handle
+   */
+  function handleResizeMouseDown(e: React.MouseEvent, colKey: string) {
+    e.preventDefault();
+    e.stopPropagation();
+    const th = (e.currentTarget as HTMLElement).closest("th");
+    const currentWidth = th ? th.getBoundingClientRect().width : (colWidths[colKey] || 150);
+
+    resizingRef.current = {
+      colKey,
+      startX: e.clientX,
+      startWidth: currentWidth,
+    };
+
+    function handleMouseMove(moveEv: MouseEvent) {
+      if (resizingRef.current) {
+        const delta = moveEv.clientX - resizingRef.current.startX;
+        const newWidth = Math.max(50, Math.round(resizingRef.current.startWidth + delta));
+        setColWidths((prev) => {
+          const updated = { ...prev, [resizingRef.current!.colKey]: newWidth };
+          try {
+            localStorage.setItem(STORAGE_KEY_COL_WIDTHS, JSON.stringify(updated));
+          } catch (err) {
+            // ignore localStorage quota error
+          }
+          return updated;
+        });
+      }
+    }
+
+    function handleMouseUp() {
+      resizingRef.current = null;
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    }
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  }
+
+  /**
    * Handles 3-mode header sort click: unsorted -> asc -> desc -> unsorted
    */
   function handleModelSortClick(modelName: string, type: SortType) {
@@ -1114,9 +1183,25 @@ export function AntigravityTracker() {
                 <table className="cf-table" data-testid="table-accounts">
                   <thead>
                     <tr>
-                      <th style={{ width: "60px", textAlign: "center" }}>Current</th>
                       <th
-                        style={{ minWidth: "160px", cursor: "pointer", userSelect: "none" }}
+                        style={{
+                          width: colWidths["current"] ? `${colWidths["current"]}px` : "60px",
+                          textAlign: "center",
+                          position: "relative",
+                        }}
+                      >
+                        Current
+                        <div
+                          className="cf-col-resizer"
+                          onMouseDown={(e) => handleResizeMouseDown(e, "current")}
+                        />
+                      </th>
+                      <th
+                        style={{
+                          minWidth: "180px",
+                          cursor: "pointer",
+                          userSelect: "none",
+                        }}
                         onClick={() => handleEmailSortClick()}
                         title="Sort by account email (unsorted / asc / desc)"
                         data-testid="header-sort-email"
@@ -1124,18 +1209,38 @@ export function AntigravityTracker() {
                         Account Email{" "}
                         {sortConfig && sortConfig.type === "email" ? (sortConfig.direction === "asc" ? "▲" : "▼") : "↕"}
                       </th>
-                      <th style={{ width: "60px", textAlign: "center" }}>Note</th>
+                      <th
+                        style={{
+                          width: `${colWidths["note"] ?? 60}px`,
+                          textAlign: "center",
+                          position: "relative",
+                        }}
+                      >
+                        Note
+                        <div
+                          className="cf-col-resizer"
+                          onMouseDown={(e) => handleResizeMouseDown(e, "note")}
+                        />
+                      </th>
                       {settings.models.map((modelName) => {
                         const isSortedPct =
                           sortConfig && sortConfig.modelName === modelName && sortConfig.type === "percentage";
                         const isSortedRenews =
                           sortConfig && sortConfig.modelName === modelName && sortConfig.type === "renewsAt";
+                        const colKey = `model_${encodeModelKey(modelName)}`;
+                        const modelColWidth = colWidths[colKey] ?? 460;
 
                         return (
-                          <th key={modelName} style={{ minWidth: "220px" }}>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-                              <span style={{ fontWeight: 700, color: "#0f172a" }}>{modelName}</span>
-                              <div style={{ display: "flex", gap: "0.5rem", fontSize: "0.7rem" }}>
+                          <th
+                            key={modelName}
+                            style={{
+                              width: `${modelColWidth}px`,
+                              position: "relative",
+                            }}
+                          >
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem" }}>
+                              <span style={{ fontWeight: 700, color: "#0f172a", whiteSpace: "nowrap" }}>{modelName}</span>
+                              <div style={{ display: "flex", gap: "0.35rem", fontSize: "0.7rem" }}>
                                 <button
                                   type="button"
                                   onClick={() => handleModelSortClick(modelName, "percentage")}
@@ -1172,10 +1277,25 @@ export function AntigravityTracker() {
                                 </button>
                               </div>
                             </div>
+                            <div
+                              className="cf-col-resizer"
+                              onMouseDown={(e) => handleResizeMouseDown(e, colKey)}
+                            />
                           </th>
                         );
                       })}
-                      <th style={{ width: "120px" }}>Actions</th>
+                      <th
+                        style={{
+                          width: `${colWidths["actions"] ?? 120}px`,
+                          position: "relative",
+                        }}
+                      >
+                        Actions
+                        <div
+                          className="cf-col-resizer"
+                          onMouseDown={(e) => handleResizeMouseDown(e, "actions")}
+                        />
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1249,95 +1369,46 @@ export function AntigravityTracker() {
 
                               return (
                                 <td key={modelName} data-testid={`cell-${encodedEmail}-${modelName}`}>
-                                  <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        fontSize: "0.8rem",
-                                      }}
-                                    >
-                                      <div style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
-                                        <input
-                                          type="number"
-                                          min="0"
-                                          max="100"
-                                          value={displayPct}
-                                          onChange={(e) =>
-                                            handleDirectPercentChange(
-                                              encodedEmail,
-                                              modelName,
-                                              parseFloat(e.target.value)
-                                            )
-                                          }
-                                          style={{
-                                            width: "48px",
-                                            padding: "2px 4px",
-                                            fontSize: "0.8rem",
-                                            textAlign: "right",
-                                            border: "1px solid #cbd5e1",
-                                            borderRadius: "4px",
-                                          }}
-                                          data-testid={`input-percent-${encodedEmail}-${modelName}`}
-                                        />
-                                        <span style={{ color: "#64748b", fontWeight: 600 }}>%</span>
-                                      </div>
-
-                                      <div style={{ display: "inline-flex", gap: "4px" }}>
-                                        <button
-                                          type="button"
-                                          className="cf-btn cf-btn-secondary cf-btn-sm"
-                                          style={{ fontSize: "0.7rem", padding: "2px 5px" }}
-                                          onClick={() => {
-                                            const modelKey = encodeModelKey(modelName);
-                                            const existingModelData = acc.models ? acc.models[modelKey] : undefined;
-
-                                            let initialPercent = 0;
-                                            let initialHours = String(settings.renewalHours);
-
-                                            if (existingModelData) {
-                                              if (typeof existingModelData.modelPercentage === "number") {
-                                                initialPercent = existingModelData.modelPercentage;
-                                              }
-                                              if (existingModelData.renewsAt) {
-                                                const renewsAtMs = new Date(existingModelData.renewsAt).getTime();
-                                                const diffHours = (renewsAtMs - Date.now()) / (1000 * 60 * 60);
-                                                if (diffHours > 0) {
-                                                  initialHours = (Math.round(diffHours * 10) / 10).toString();
-                                                }
-                                              }
-                                            }
-
-                                            setActiveQuotaModal({
-                                              encodedEmail,
-                                              modelName,
-                                              percent: initialPercent,
-                                              hoursUntilRenew: initialHours,
-                                            });
-                                          }}
-                                          title="Set model percentage and hours until renew"
-                                          data-testid={`btn-set-quota-${encodedEmail}-${modelName}`}
-                                        >
-                                          Set Quota...
-                                        </button>
-                                        <button
-                                          type="button"
-                                          className="cf-btn cf-btn-secondary cf-btn-sm"
-                                          style={{ fontSize: "0.7rem", padding: "2px 5px" }}
-                                          onClick={() => handleMarkModelExpiredNow(encodedEmail, modelName)}
-                                          title={`Mark expired now (0%, renews in ${settings.renewalHours}h)`}
-                                          data-testid={`btn-expired-now-${encodedEmail}-${modelName}`}
-                                        >
-                                          Expired Now
-                                        </button>
-                                      </div>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.5rem",
+                                      whiteSpace: "nowrap",
+                                    }}
+                                  >
+                                    {/* 1. Percent input */}
+                                    <div style={{ display: "inline-flex", alignItems: "center", gap: "2px", flexShrink: 0 }}>
+                                      <input
+                                        type="number"
+                                        min="0"
+                                        max="100"
+                                        value={displayPct}
+                                        onChange={(e) =>
+                                          handleDirectPercentChange(
+                                            encodedEmail,
+                                            modelName,
+                                            parseFloat(e.target.value)
+                                          )
+                                        }
+                                        style={{
+                                          width: "44px",
+                                          padding: "2px 4px",
+                                          fontSize: "0.8rem",
+                                          textAlign: "right",
+                                          border: "1px solid #cbd5e1",
+                                          borderRadius: "4px",
+                                        }}
+                                        data-testid={`input-percent-${encodedEmail}-${modelName}`}
+                                      />
+                                      <span style={{ color: "#64748b", fontWeight: 600, fontSize: "0.8rem" }}>%</span>
                                     </div>
 
-                                    {/* Interactive Progress bar */}
+                                    {/* 2. Progress bar */}
                                     <div
                                       style={{
-                                        width: "100%",
+                                        flex: "1 1 80px",
+                                        minWidth: "60px",
                                         height: "10px",
                                         backgroundColor: "#e2e8f0",
                                         borderRadius: "5px",
@@ -1374,22 +1445,81 @@ export function AntigravityTracker() {
                                       />
                                     </div>
 
-                                    <div
+                                    {/* 3. Time left label */}
+                                    <span
                                       style={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
                                         fontSize: "0.75rem",
                                         color: "#64748b",
+                                        flexShrink: 0,
                                       }}
                                     >
-                                      <span>
-                                        {status.isRenewed ? (
-                                          <strong style={{ color: "#10b981" }}>Renewed</strong>
-                                        ) : (
-                                          status.timeLeftLabel
-                                        )}
-                                      </span>
-                                      <span title={`Renews at: ${status.renewsAt}`}>{status.renewsAt}</span>
+                                      {status.isRenewed ? (
+                                        <strong style={{ color: "#10b981" }}>Renewed</strong>
+                                      ) : (
+                                        status.timeLeftLabel
+                                      )}
+                                    </span>
+
+                                    {/* 4. Renews at timestamp */}
+                                    <span
+                                      style={{
+                                        fontSize: "0.75rem",
+                                        color: "#64748b",
+                                        flexShrink: 0,
+                                      }}
+                                      title={`Renews at: ${status.renewsAt}`}
+                                    >
+                                      {status.renewsAt}
+                                    </span>
+
+                                    {/* 5. Set Quota & Expired Now buttons */}
+                                    <div style={{ display: "inline-flex", gap: "4px", flexShrink: 0 }}>
+                                      <button
+                                        type="button"
+                                        className="cf-btn cf-btn-secondary cf-btn-sm"
+                                        style={{ fontSize: "0.7rem", padding: "2px 5px" }}
+                                        onClick={() => {
+                                          const modelKey = encodeModelKey(modelName);
+                                          const existingModelData = acc.models ? acc.models[modelKey] : undefined;
+
+                                          let initialPercent = 0;
+                                          let initialHours = String(settings.renewalHours);
+
+                                          if (existingModelData) {
+                                            if (typeof existingModelData.modelPercentage === "number") {
+                                              initialPercent = existingModelData.modelPercentage;
+                                            }
+                                            if (existingModelData.renewsAt) {
+                                              const renewsAtMs = new Date(existingModelData.renewsAt).getTime();
+                                              const diffHours = (renewsAtMs - Date.now()) / (1000 * 60 * 60);
+                                              if (diffHours > 0) {
+                                                initialHours = (Math.round(diffHours * 10) / 10).toString();
+                                              }
+                                            }
+                                          }
+
+                                          setActiveQuotaModal({
+                                            encodedEmail,
+                                            modelName,
+                                            percent: initialPercent,
+                                            hoursUntilRenew: initialHours,
+                                          });
+                                        }}
+                                        title="Set model percentage and hours until renew"
+                                        data-testid={`btn-set-quota-${encodedEmail}-${modelName}`}
+                                      >
+                                        Set Quota...
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className="cf-btn cf-btn-secondary cf-btn-sm"
+                                        style={{ fontSize: "0.7rem", padding: "2px 5px" }}
+                                        onClick={() => handleMarkModelExpiredNow(encodedEmail, modelName)}
+                                        title={`Mark expired now (0%, renews in ${settings.renewalHours}h)`}
+                                        data-testid={`btn-expired-now-${encodedEmail}-${modelName}`}
+                                      >
+                                        Expired Now
+                                      </button>
                                     </div>
                                   </div>
                                 </td>
