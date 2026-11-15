@@ -1,0 +1,5 @@
+*
+!.gitignore
+!test.sh
+!manifests/
+!manifests/config.md

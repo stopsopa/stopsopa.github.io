@@ -1,0 +1,5 @@
+*
+!.gitignore
+!test.sh
+!cfg/
+!cfg/config.md

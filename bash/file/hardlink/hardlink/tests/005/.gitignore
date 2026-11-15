@@ -1,0 +1,6 @@
+*
+!.gitignore
+!test.sh
+!sub/
+!sub/deep/
+!sub/deep/config.md
