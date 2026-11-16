@@ -151,6 +151,28 @@ export function AntigravityTracker() {
   // Show disabled accounts filter toggle
   const [showDisabledAccounts, setShowDisabledAccounts] = useState<boolean>(false);
 
+  // Compact mode: hides Set Quota / Expired Now buttons and the Actions column
+  // Persisted in localStorage so it survives page reloads
+  const [compactMode, setCompactMode] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("antigravity_compact_mode") === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  function toggleCompactMode() {
+    setCompactMode((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("antigravity_compact_mode", String(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  }
+
   // Model Quota Update Modal state: (account, model, hours, percent)
   interface ModalQuotaState {
     encodedEmail: string;
@@ -1152,6 +1174,20 @@ export function AntigravityTracker() {
                   />
                   Show disabled accounts
                 </label>
+                <button
+                  type="button"
+                  className="cf-btn cf-btn-secondary cf-btn-sm"
+                  onClick={toggleCompactMode}
+                  title={compactMode ? "Show actions & quota buttons" : "Hide actions & quota buttons"}
+                  data-testid="button-toggle-compact-mode"
+                  style={{
+                    background: compactMode ? "#0284c7" : undefined,
+                    color: compactMode ? "#ffffff" : undefined,
+                    borderColor: compactMode ? "#0284c7" : undefined,
+                  }}
+                >
+                  {compactMode ? "⊞ Full" : "⊟ Compact"}
+                </button>
               </div>
             </div>
             <div className="cf-panel-body">
@@ -1288,6 +1324,7 @@ export function AntigravityTracker() {
                         style={{
                           width: `${colWidths["actions"] ?? 120}px`,
                           position: "relative",
+                          display: compactMode ? "none" : undefined,
                         }}
                       >
                         Actions
@@ -1481,7 +1518,8 @@ export function AntigravityTracker() {
                                     </span>
 
                                     {/* 5. Set Quota & Expired Now buttons */}
-                                    <div style={{ display: "inline-flex", gap: "4px", flexShrink: 0 }}>
+                                    {!compactMode ? (
+                                      <div style={{ display: "inline-flex", gap: "4px", flexShrink: 0 }}>
                                       <button
                                         type="button"
                                         className="cf-btn cf-btn-secondary cf-btn-sm"
@@ -1529,12 +1567,13 @@ export function AntigravityTracker() {
                                         Expired Now
                                       </button>
                                     </div>
+                                    ) : null}
                                   </div>
                                 </td>
                               );
                             })}
 
-                            <td>
+                            <td style={{ display: compactMode ? "none" : undefined }}>
                               <div className="cf-action-buttons">
                                 <button
                                   type="button"
