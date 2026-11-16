@@ -173,6 +173,39 @@ export function AntigravityTracker() {
     });
   }
 
+  // Hide emails mode: replaces the username part of emails with stars
+  // Persisted in localStorage so it survives page reloads
+  const [hideEmails, setHideEmails] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("antigravity_hide_emails") === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  function toggleHideEmails() {
+    setHideEmails((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("antigravity_hide_emails", String(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  }
+
+  /*
+   * Masks the username part of an email address with stars when hideEmails is on.
+   * e.g. "user@gmail.com" -> "****@gmail.com"
+   */
+  function maskEmail(email: string): string {
+    if (!hideEmails) return email;
+    const atIdx = email.indexOf("@");
+    if (atIdx <= 0) return email;
+    return "*".repeat(atIdx) + email.slice(atIdx);
+  }
+
   // Model Quota Update Modal state: (account, model, hours, percent)
   interface ModalQuotaState {
     encodedEmail: string;
@@ -883,7 +916,7 @@ export function AntigravityTracker() {
             </div>
             <div className="cf-user-info">
               <span className="cf-user-email" data-testid="user-display">
-                {id.replace(/,/g, ".")}
+                {maskEmail(id.replace(/,/g, "."))}
               </span>
               <button className="cf-btn-signout" onClick={() => signOut()} data-testid="button-signout">
                 Sign out
@@ -1188,6 +1221,20 @@ export function AntigravityTracker() {
                 >
                   {compactMode ? "⊞ Full" : "⊟ Compact"}
                 </button>
+                <button
+                  type="button"
+                  className="cf-btn cf-btn-secondary cf-btn-sm"
+                  onClick={toggleHideEmails}
+                  title={hideEmails ? "Show emails" : "Hide emails (mask username with stars)"}
+                  data-testid="button-toggle-hide-emails"
+                  style={{
+                    background: hideEmails ? "#0284c7" : undefined,
+                    color: hideEmails ? "#ffffff" : undefined,
+                    borderColor: hideEmails ? "#0284c7" : undefined,
+                  }}
+                >
+                  {hideEmails ? "👁 Show Emails" : "🙈 Hide Emails"}
+                </button>
               </div>
             </div>
             <div className="cf-panel-body">
@@ -1375,7 +1422,7 @@ export function AntigravityTracker() {
                               />
                             </td>
                             <td>
-                              <strong>{rawEmail}</strong>
+                              <strong>{maskEmail(rawEmail)}</strong>
                             </td>
                             <td style={{ textAlign: "center", fontSize: "1.1rem" }}>
                               {hasNote ? (
