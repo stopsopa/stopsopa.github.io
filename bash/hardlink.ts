@@ -347,6 +347,29 @@ export async function run(args: string[]): Promise<void> {
   const rawConfigPath = options.configFile;
   const configPath = path.resolve(process.cwd(), expandHome(rawConfigPath));
 
+  // Determine resolution base directory
+  const { baseDir, reason } = resolveBaseDir(rawConfigPath, options);
+  console.log(`Resolved paths relative to: ${baseDir} (reason: ${reason})`);
+
+  // Check if --gitignore exists immediately after determining base directory
+  let resolvedGitignore: string | undefined;
+  if (options.gitignorePath) {
+    resolvedGitignore = path.resolve(process.cwd(), expandHome(options.gitignorePath));
+    if (!fs.existsSync(resolvedGitignore)) {
+      console.error(`Error: Gitignore file "${options.gitignorePath}" does not exist: "${resolvedGitignore}"`);
+      process.exit(1);
+    }
+    const gitignoreStat = fs.statSync(resolvedGitignore);
+    if (!gitignoreStat.isFile()) {
+      console.error(`Error: Gitignore path "${options.gitignorePath}" is not a file: "${resolvedGitignore}"`);
+      process.exit(1);
+    }
+    if (!isWritable(resolvedGitignore)) {
+      console.error(`Error: Gitignore file "${resolvedGitignore}" is not writable.`);
+      process.exit(1);
+    }
+  }
+
   // Check if config.md exists, is file, and is readable
   if (!fs.existsSync(configPath)) {
     console.error(`Error: Config file "${rawConfigPath}" does not exist.`);
@@ -369,25 +392,6 @@ export async function run(args: string[]): Promise<void> {
   if (!isReadable(configPath)) {
     console.error(`Error: Config file "${rawConfigPath}" is not readable.`);
     process.exit(1);
-  }
-
-  // Determine resolution base directory
-  const { baseDir, reason } = resolveBaseDir(rawConfigPath, options);
-  console.log(`Resolved paths relative to: ${baseDir} (reason: ${reason})`);
-
-  // If --gitignore specified, validate parent exists and is writable
-  let resolvedGitignore: string | undefined;
-  if (options.gitignorePath) {
-    resolvedGitignore = path.resolve(process.cwd(), expandHome(options.gitignorePath));
-    const parent = path.dirname(resolvedGitignore);
-    if (!fs.existsSync(parent) || !isWritable(parent)) {
-      console.error(`Error: Gitignore directory "${parent}" does not exist or is not writable.`);
-      process.exit(1);
-    }
-    if (fs.existsSync(resolvedGitignore) && !isWritable(resolvedGitignore)) {
-      console.error(`Error: Gitignore file "${resolvedGitignore}" is not writable.`);
-      process.exit(1);
-    }
   }
 
   const content = fs.readFileSync(configPath, "utf-8");
@@ -484,7 +488,7 @@ export async function run(args: string[]): Promise<void> {
   const reset = isTTY ? "\x1b[0m" : "";
 
   for (const pair of pairs) {
-    console.log(pair.rawLine);
+    console.log(`\n${pair.rawLine}`);
 
     const statA = fs.statSync(pair.resolvedA);
 
@@ -529,7 +533,7 @@ export async function run(args: string[]): Promise<void> {
       return rel;
     });
 
-    console.log(`Gitignore check: "${resolvedGitignore}"`);
+    console.log(`\nGitignore check: "${resolvedGitignore}"`);
     const { changed, added } = updateGitignore(resolvedGitignore, relPathsToAdd);
     if (changed) {
       console.log(`   ${green}CHANGED${reset}: Added to gitignore:`);
