@@ -30,16 +30,19 @@
 
 # simple reusable functon to check if env var is defined and not empty
 require_non_empty_var() {
-  script_name="${1}"
-  env_var_name="${2}"
+  local script_name="${1}"
+  local env_var_name="${2}"
 
   if [ -z "${script_name}" ] || [ -z "${env_var_name}" ]; then
-    echo "Usage: ${FUNCNAME[0]} SCRIPT_NAME ENV_VAR_NAME"
+    echo "Usage: require_non_empty_var SCRIPT_NAME ENV_VAR_NAME"
     exit 1
   fi
 
-  value="${!env_var_name}"
-  value=$(echo "${value}" | tr -d '[:space:]')  # Trim leading and trailing whitespace
+  # eval-based indirect expansion works in both bash and zsh
+  # Use :-  default so unset vars yield empty string instead of erroring under set -u
+  local value
+  eval "value=\"\${${env_var_name}:-}\""
+  value="$(echo "${value}" | tr -d '[:space:]')"  # Trim leading and trailing whitespace
 
   if [ -z "${value}" ]; then
     echo "${script_name} error: ${env_var_name} is not defined or is an empty string"
@@ -49,13 +52,18 @@ require_non_empty_var() {
 
 # simple reusable functon to check if env var is defined and not empty and matches regex
 require_non_empty_and_matching_var() {
-  script_name="${1}"
-  env_var_name="${2}"
-  regex="${3}"
+  local script_name="${1}"
+  local env_var_name="${2}"
+  local regex="${3}"
 
   require_non_empty_var "${@}"
 
-  if ! [[ ${!env_var_name} =~ ${regex} ]]; then
+  # eval-based indirect expansion works in both bash and zsh
+  # Use :- default so unset vars yield empty string instead of erroring under set -u
+  local actual_value
+  eval "actual_value=\"\${${env_var_name}:-}\""
+
+  if ! [[ "${actual_value}" =~ ${regex} ]]; then
     echo "${script_name} error: ${env_var_name} don't match regex ${regex}"
     exit 1
   fi
