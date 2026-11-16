@@ -131,10 +131,7 @@ export function extractPathString(token: string): string {
   if (mdMatch) {
     cleaned = mdMatch[1].trim();
   }
-  if (
-    (cleaned.startsWith('"') && cleaned.endsWith('"')) ||
-    (cleaned.startsWith("'") && cleaned.endsWith("'"))
-  ) {
+  if ((cleaned.startsWith('"') && cleaned.endsWith('"')) || (cleaned.startsWith("'") && cleaned.endsWith("'"))) {
     cleaned = cleaned.slice(1, -1);
   }
   return cleaned;
@@ -180,10 +177,7 @@ export function parseArgs(args: string[]): CliOptions {
 /**
  * Determine the base resolution directory and reason
  */
-export function resolveBaseDir(
-  configFilePath: string,
-  options: CliOptions
-): { baseDir: string; reason: string } {
+export function resolveBaseDir(configFilePath: string, options: CliOptions): { baseDir: string; reason: string } {
   if (options.pwdOverride) {
     const resolved = path.resolve(process.cwd(), expandHome(options.pwdOverride));
     return {
@@ -447,7 +441,9 @@ export async function run(args: string[]): Promise<void> {
           fs.renameSync(tempPath, pair.resolvedB);
           const newStatB = fs.statSync(pair.resolvedB);
           console.log(`\n${pair.rawLine}`);
-          console.log(`   ${green}UNLINKED${reset}: Disconnected hardlink, preserved independent file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
+          console.log(
+            `   ${green}UNLINKED${reset}: Disconnected hardlink, preserved independent file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
+          );
         } catch (err) {
           console.error(`Error unlinking "${pair.resolvedB}": ${(err as Error).message}`);
         }
@@ -525,7 +521,9 @@ export async function run(args: string[]): Promise<void> {
         // if directory doesn't exist then check if we have rights to create it
         const parentCheck = canCreateInParent(pair.resolvedB);
         if (!parentCheck.ok) {
-          errors.push(`File B [${pair.rawB}] error:\n   Cannot create parent directory for "${pair.resolvedB}": ${parentCheck.error}`);
+          errors.push(
+            `File B [${pair.rawB}] error:\n   Cannot create parent directory for "${pair.resolvedB}": ${parentCheck.error}`
+          );
           continue;
         }
       }
@@ -557,7 +555,9 @@ export async function run(args: string[]): Promise<void> {
       fs.unlinkSync(pair.resolvedB);
       fs.linkSync(pair.resolvedA, pair.resolvedB);
       const newStatB = fs.statSync(pair.resolvedB);
-      console.log(`   ${green}CHANGED${reset}: Replaced file B with hardlink to file A (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
+      console.log(
+        `   ${green}CHANGED${reset}: Replaced file B with hardlink to file A (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
+      );
     } else {
       // if file B doesn't exist:
       // - make sure parent directory of file B exist, if not then create it
@@ -568,7 +568,9 @@ export async function run(args: string[]): Promise<void> {
       // - create hardlink from file A to file B
       fs.linkSync(pair.resolvedA, pair.resolvedB);
       const newStatB = fs.statSync(pair.resolvedB);
-      console.log(`   ${green}CHANGED${reset}: Created hardlink from file A to file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
+      console.log(
+        `   ${green}CHANGED${reset}: Created hardlink from file A to file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
+      );
     }
   }
 

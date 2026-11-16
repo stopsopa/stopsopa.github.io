@@ -1445,12 +1445,16 @@ export function AntigravityTracker() {
                                       />
                                     </div>
 
-                                    {/* 3. Time left label */}
+                                    {/* 3. Time left label — fixed width so progress bar is same size in every row */}
                                     <span
                                       style={{
                                         fontSize: "0.75rem",
                                         color: "#64748b",
+                                        width: "90px",
                                         flexShrink: 0,
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
                                       }}
                                     >
                                       {status.isRenewed ? (
@@ -1460,12 +1464,16 @@ export function AntigravityTracker() {
                                       )}
                                     </span>
 
-                                    {/* 4. Renews at timestamp */}
+                                    {/* 4. Renews at timestamp — fixed width so progress bar is same size in every row */}
                                     <span
                                       style={{
                                         fontSize: "0.75rem",
                                         color: "#64748b",
+                                        width: "160px",
                                         flexShrink: 0,
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
                                       }}
                                       title={`Renews at: ${status.renewsAt}`}
                                     >
