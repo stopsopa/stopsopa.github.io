@@ -182,3 +182,13 @@ also update help page explaining --gitignore param and delimiters
 
 also extend PLAN.md with new  description of new tests
 
+# unlink
+
+we have to add also --unlink flag which cannot work with --gitignore flag
+
+and it will just iterate over config.md and find all matching files and just check if both file A and file B exist, then it will check if these are hardlinks and it will unlink
+
+this mode have to be very leanient, what I mean is
+it will just iterate and only try to unlink when both files exist and if one of them doesn't exist or one of paths is a directory or any other anomaly then just skip that line
+
+report on stdout only what was unlinked

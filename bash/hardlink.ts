@@ -61,6 +61,7 @@ export interface CliOptions {
   pwdOverride?: string;
   useCwd?: boolean;
   gitignorePath?: string;
+  unlink?: boolean;
   help?: boolean;
 }
 
@@ -76,6 +77,7 @@ Options:
   --pwd                     Resolve paths relative to current working directory (process.cwd())
   --pwd <path>              Resolve paths relative to explicit <path>
   --gitignore <path>        Path to .gitignore to ensure target file B paths are ignored
+  --unlink                  Unlink existing hardlinked pairs (cannot be used with --gitignore)
   --help, -h                Show this help page
 
 Gitignore delimiters:
@@ -129,7 +131,10 @@ export function extractPathString(token: string): string {
   if (mdMatch) {
     cleaned = mdMatch[1].trim();
   }
-  if ((cleaned.startsWith('"') && cleaned.endsWith('"')) || (cleaned.startsWith("'") && cleaned.endsWith("'"))) {
+  if (
+    (cleaned.startsWith('"') && cleaned.endsWith('"')) ||
+    (cleaned.startsWith("'") && cleaned.endsWith("'"))
+  ) {
     cleaned = cleaned.slice(1, -1);
   }
   return cleaned;
@@ -152,6 +157,8 @@ export function parseArgs(args: string[]): CliOptions {
       } else {
         options.useCwd = true;
       }
+    } else if (arg === "--unlink") {
+      options.unlink = true;
     } else if (arg === "--gitignore") {
       const nextArg = args[i + 1];
       if (nextArg && !nextArg.startsWith("-")) {
@@ -173,7 +180,10 @@ export function parseArgs(args: string[]): CliOptions {
 /**
  * Determine the base resolution directory and reason
  */
-export function resolveBaseDir(configFilePath: string, options: CliOptions): { baseDir: string; reason: string } {
+export function resolveBaseDir(
+  configFilePath: string,
+  options: CliOptions
+): { baseDir: string; reason: string } {
   if (options.pwdOverride) {
     const resolved = path.resolve(process.cwd(), expandHome(options.pwdOverride));
     return {
@@ -344,6 +354,11 @@ export async function run(args: string[]): Promise<void> {
     showHelp();
   }
 
+  if (options.unlink && options.gitignorePath) {
+    console.error("Error: --unlink flag cannot be used together with --gitignore flag.");
+    process.exit(1);
+  }
+
   const rawConfigPath = options.configFile;
   const configPath = path.resolve(process.cwd(), expandHome(rawConfigPath));
 
@@ -396,6 +411,50 @@ export async function run(args: string[]): Promise<void> {
 
   const content = fs.readFileSync(configPath, "utf-8");
   const pairs = parseConfigFile(content, baseDir);
+
+  const isTTY = process.stdout.isTTY;
+  const green = isTTY ? "\x1b[32m" : "";
+  const reset = isTTY ? "\x1b[0m" : "";
+
+  // # unlink mode
+  if (options.unlink) {
+    for (const pair of pairs) {
+      // Check if both file A and file B exist
+      if (!fs.existsSync(pair.resolvedA) || !fs.existsSync(pair.resolvedB)) {
+        continue;
+      }
+
+      let statA: fs.Stats;
+      let statB: fs.Stats;
+      try {
+        statA = fs.statSync(pair.resolvedA);
+        statB = fs.statSync(pair.resolvedB);
+      } catch {
+        continue;
+      }
+
+      // Check both are regular files
+      if (!statA.isFile() || !statB.isFile()) {
+        continue;
+      }
+
+      // Check if they are hardlinks to the same inode
+      if (statA.dev === statB.dev && statA.ino === statB.ino) {
+        try {
+          const tempPath = `${pair.resolvedB}.unlink_tmp_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+          fs.copyFileSync(pair.resolvedA, tempPath);
+          fs.unlinkSync(pair.resolvedB);
+          fs.renameSync(tempPath, pair.resolvedB);
+          const newStatB = fs.statSync(pair.resolvedB);
+          console.log(`\n${pair.rawLine}`);
+          console.log(`   ${green}UNLINKED${reset}: Disconnected hardlink, preserved independent file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
+        } catch (err) {
+          console.error(`Error unlinking "${pair.resolvedB}": ${(err as Error).message}`);
+        }
+      }
+    }
+    return;
+  }
 
   // # validation phase
   const errors: string[] = [];
@@ -466,9 +525,7 @@ export async function run(args: string[]): Promise<void> {
         // if directory doesn't exist then check if we have rights to create it
         const parentCheck = canCreateInParent(pair.resolvedB);
         if (!parentCheck.ok) {
-          errors.push(
-            `File B [${pair.rawB}] error:\n   Cannot create parent directory for "${pair.resolvedB}": ${parentCheck.error}`
-          );
+          errors.push(`File B [${pair.rawB}] error:\n   Cannot create parent directory for "${pair.resolvedB}": ${parentCheck.error}`);
           continue;
         }
       }
@@ -483,10 +540,6 @@ export async function run(args: string[]): Promise<void> {
   }
 
   // # execution phase
-  const isTTY = process.stdout.isTTY;
-  const green = isTTY ? "\x1b[32m" : "";
-  const reset = isTTY ? "\x1b[0m" : "";
-
   for (const pair of pairs) {
     console.log(`\n${pair.rawLine}`);
 
@@ -504,9 +557,7 @@ export async function run(args: string[]): Promise<void> {
       fs.unlinkSync(pair.resolvedB);
       fs.linkSync(pair.resolvedA, pair.resolvedB);
       const newStatB = fs.statSync(pair.resolvedB);
-      console.log(
-        `   ${green}CHANGED${reset}: Replaced file B with hardlink to file A (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
-      );
+      console.log(`   ${green}CHANGED${reset}: Replaced file B with hardlink to file A (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
     } else {
       // if file B doesn't exist:
       // - make sure parent directory of file B exist, if not then create it
@@ -517,9 +568,7 @@ export async function run(args: string[]): Promise<void> {
       // - create hardlink from file A to file B
       fs.linkSync(pair.resolvedA, pair.resolvedB);
       const newStatB = fs.statSync(pair.resolvedB);
-      console.log(
-        `   ${green}CHANGED${reset}: Created hardlink from file A to file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
-      );
+      console.log(`   ${green}CHANGED${reset}: Created hardlink from file A to file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
     }
   }
 
