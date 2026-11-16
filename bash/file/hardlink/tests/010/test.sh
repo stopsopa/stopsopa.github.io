@@ -10,7 +10,7 @@
 # with clean relative path (without "../").
 #
 # Usage:
-# /bin/bash lab/hardlink/tests/010/test.sh
+# /bin/bash bash/file/hardlink/tests/010/test.sh
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"

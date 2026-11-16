@@ -1,7 +1,7 @@
 # main test runner for hardlink tests
 #
 # Purpose:
-# Runs all hardlink test suites in lab/hardlink/tests/[0-9]*/test.sh sequentially.
+# Runs all hardlink test suites in bash/file/hardlink/tests/[0-9]*/test.sh sequentially.
 # Exits with 0 if all pass, or 1 if any fail.
 #
 # Usage:

@@ -5,7 +5,7 @@
 # and exits 1 with error without modifying files.
 #
 # Usage:
-# /bin/bash lab/hardlink/tests/003/test.sh
+# /bin/bash bash/file/hardlink/tests/003/test.sh
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"

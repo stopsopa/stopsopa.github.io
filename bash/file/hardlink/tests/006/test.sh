@@ -9,7 +9,7 @@
 # and hardlink inode check succeeds.
 #
 # Usage:
-# /bin/bash lab/hardlink/tests/006/test.sh
+# /bin/bash bash/file/hardlink/tests/006/test.sh
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"

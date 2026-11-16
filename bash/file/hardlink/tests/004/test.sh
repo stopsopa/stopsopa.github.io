@@ -5,7 +5,7 @@
 # and --pwd explicit path override.
 #
 # Usage:
-# /bin/bash lab/hardlink/tests/004/test.sh
+# /bin/bash bash/file/hardlink/tests/004/test.sh
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"

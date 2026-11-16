@@ -13,7 +13,7 @@
 # are inserted inside the delimiter block in .gitignore.
 #
 # Usage:
-# /bin/bash lab/hardlink/tests/011/test.sh
+# /bin/bash bash/file/hardlink/tests/011/test.sh
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"

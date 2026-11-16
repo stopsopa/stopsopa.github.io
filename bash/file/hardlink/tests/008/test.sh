@@ -7,7 +7,7 @@
 # hardlink.ts prints validation error for file A and exits with code 1.
 #
 # Usage:
-# /bin/bash lab/hardlink/tests/008/test.sh
+# /bin/bash bash/file/hardlink/tests/008/test.sh
 # NODE_OPTIONS= /bin/bash test.sh
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh

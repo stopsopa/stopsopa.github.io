@@ -10,7 +10,7 @@
 # not next to config.md, and hardlink inode verification passes.
 #
 # Usage:
-# /bin/bash lab/hardlink/tests/005/test.sh
+# /bin/bash bash/file/hardlink/tests/005/test.sh
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"

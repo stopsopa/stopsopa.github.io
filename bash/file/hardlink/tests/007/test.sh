@@ -8,7 +8,7 @@
 # hardlink.ts outputs validation error indicating path B is not a regular file and exits with code 1.
 #
 # Usage:
-# /bin/bash lab/hardlink/tests/007/test.sh
+# /bin/bash bash/file/hardlink/tests/007/test.sh
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
