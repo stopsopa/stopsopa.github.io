@@ -30,7 +30,7 @@ case ${_SHELL} in
     ;;
 esac
 
-_ROOT="$(cd "${_DIR}/../../../../../.." && pwd)"
+_ROOT="$(cd "${_DIR}/../../../../.." && pwd)"
 
 echo "Running 004: quoted spaces and --pwd override..."
 

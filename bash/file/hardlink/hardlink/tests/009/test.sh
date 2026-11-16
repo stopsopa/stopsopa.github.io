@@ -36,7 +36,7 @@ case ${_SHELL} in
     ;;
 esac
 
-_ROOT="$(cd "${_DIR}/../../../../../.." && pwd)"
+_ROOT="$(cd "${_DIR}/../../../../.." && pwd)"
 
 echo "Running 009: deep repo with dummy .gitignore and delimiters..."
 

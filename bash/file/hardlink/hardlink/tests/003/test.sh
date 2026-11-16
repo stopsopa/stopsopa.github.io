@@ -30,7 +30,7 @@ case ${_SHELL} in
     ;;
 esac
 
-_ROOT="$(cd "${_DIR}/../../../../../.." && pwd)"
+_ROOT="$(cd "${_DIR}/../../../../.." && pwd)"
 
 echo "Running 003: validation failure on content mismatch..."
 

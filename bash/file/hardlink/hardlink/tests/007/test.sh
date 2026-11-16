@@ -33,7 +33,7 @@ case ${_SHELL} in
     ;;
 esac
 
-_ROOT="$(cd "${_DIR}/../../../../../.." && pwd)"
+_ROOT="$(cd "${_DIR}/../../../../.." && pwd)"
 
 echo "Running 007: validation failure when path B is a directory..."
 

@@ -5,7 +5,7 @@
 # Exits with 0 if all pass, or 1 if any fail.
 #
 # Usage:
-# /bin/bash lab/hardlink/test.sh
+# /bin/bash bash/file/hardlink/hardlink/test.sh
 
 GRAY="$(printf '\033[38;5;244m')"
 BLACK="$(printf '\033[30m')"
