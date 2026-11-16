@@ -1,11 +1,11 @@
 # main test runner for hardlink tests
 #
 # Purpose:
-# Runs all hardlink test suites in bash/file/hardlink/tests/[0-9]*/test.sh sequentially.
+# Runs all hardlink test suites in bash/tests/[0-9]*/test.sh sequentially.
 # Exits with 0 if all pass, or 1 if any fail.
 #
 # Usage:
-# /bin/bash bash/file/hardlink/hardlink/test.sh
+# /bin/bash bash/hardlink/test.sh
 
 GRAY="$(printf '\033[38;5;244m')"
 BLACK="$(printf '\033[30m')"

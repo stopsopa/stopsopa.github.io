@@ -215,8 +215,6 @@ LOCAL_MSG="$(echo "${LOCAL_COMMIT}" | cut -d' ' -f2-)"
 
 </produce_value_for_variable>
 
-
-
 <iterating>
 When working with multiline value in variable and iterating over it use syntax
 
@@ -226,14 +224,15 @@ while IFS="\n" read -r LINE; do
 done <<< "${LINE}"
 
 ```
+
 because this syntax avoids using subshel which in some cases might introduce unnecessary isoloation of scope of variables in such created shell from outside variables.
 
 </iterating>
 
 <script_overview_comment>
-When working on new shell script always add multiline comments above of the script. 
+When working on new shell script always add multiline comments above of the script.
+
 - what is the purpose of this script (keep it short but still don't miss important stuff - especially if there are some non obvious information about purpose in the AI current context)
 - how it should be used (examples covering most important combination of arguments and from what directory it is designed to be used)
 - any other important information
-</script_overview_comment>
-
+  </script_overview_comment>

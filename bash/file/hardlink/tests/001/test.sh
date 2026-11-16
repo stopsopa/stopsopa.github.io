@@ -5,7 +5,7 @@
 # and creates a hardlink when target file B does not exist.
 #
 # Usage:
-# /bin/bash bash/file/hardlink/tests/001/test.sh
+# /bin/bash bash/tests/001/test.sh
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"

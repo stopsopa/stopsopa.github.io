@@ -3,7 +3,7 @@ I need a tool which I will call like this
 
 ```bash
 
-node bash/file/hardlink/hardlink.ts ./path/to/config.md
+node bash/hardlink.ts ./path/to/config.md
 
 ```
 
@@ -61,6 +61,7 @@ resolution paths should be presented immediately on stdout with reason why this 
 after that we will extract all pairs of paths from config.md and first we will run validateion:
 (for further discussion from now on let's indicate first path in each pair as path A and second path in each pair as path B)
 
+```txt
 - we will check if something exist under path A (it has to exist, if nothing is there then error)
 - check the thing under path A is a file
 - check if file A is readable
@@ -76,7 +77,7 @@ if all checks about file A are ok only then continue all checks for path B:
             - check if parent directory of file B exist
             - check if parent directory of file B is writable (if I have rights to create new hardlink in this directory)
             if directory doesn't exist then check if we have rights to create it
-
+```
 
 none of these checks above should change anything, these are just checks checking if we have all rights to do what we want to do. before we start executing the changes.
 If any condition is not met then generate clear error message with involved path and state the clear error message.
@@ -113,7 +114,7 @@ if file B doesn't exist:
     - make sure parent directory of file B exist, if not then create it
     - create hardlink from file A to file B
 
-create logic of bash/file/hardlink/hardlink.ts in the way to reflect with if/else conditions the logic of validationa as presented in this document. The same phase of exection carry to each condition and if/else block the comment from this document to the source code to make it clear what piece of logic is implemented in each if/else block.
+create logic of bash/hardlink.ts in the way to reflect with if/else conditions the logic of validationa as presented in this document. The same phase of exection carry to each condition and if/else block the comment from this document to the source code to make it clear what piece of logic is implemented in each if/else block.
 
 also when iterating through each line in config.md first present the line from config.md as is in stdout and under it with indentation present the action taken on each. Make lines which actually made any changes to be proceded with "CHANGED" prefix and print this prefix in green color when interactive stdout tty detected.
 At the end of each synchronization operation (both for newly created hardlinks, replaced hardlinks, and already linked files), always present the final inodes of file A and file B as proof that both files are hardlinked to the same inode.

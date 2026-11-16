@@ -204,7 +204,7 @@ export function AntigravityTracker() {
     e.preventDefault();
     e.stopPropagation();
     const th = (e.currentTarget as HTMLElement).closest("th");
-    const currentWidth = th ? th.getBoundingClientRect().width : (colWidths[colKey] || 150);
+    const currentWidth = th ? th.getBoundingClientRect().width : colWidths[colKey] || 150;
 
     resizingRef.current = {
       colKey,
@@ -1191,10 +1191,7 @@ export function AntigravityTracker() {
                         }}
                       >
                         Current
-                        <div
-                          className="cf-col-resizer"
-                          onMouseDown={(e) => handleResizeMouseDown(e, "current")}
-                        />
+                        <div className="cf-col-resizer" onMouseDown={(e) => handleResizeMouseDown(e, "current")} />
                       </th>
                       <th
                         style={{
@@ -1217,10 +1214,7 @@ export function AntigravityTracker() {
                         }}
                       >
                         Note
-                        <div
-                          className="cf-col-resizer"
-                          onMouseDown={(e) => handleResizeMouseDown(e, "note")}
-                        />
+                        <div className="cf-col-resizer" onMouseDown={(e) => handleResizeMouseDown(e, "note")} />
                       </th>
                       {settings.models.map((modelName) => {
                         const isSortedPct =
@@ -1238,8 +1232,17 @@ export function AntigravityTracker() {
                               position: "relative",
                             }}
                           >
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem" }}>
-                              <span style={{ fontWeight: 700, color: "#0f172a", whiteSpace: "nowrap" }}>{modelName}</span>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                              }}
+                            >
+                              <span style={{ fontWeight: 700, color: "#0f172a", whiteSpace: "nowrap" }}>
+                                {modelName}
+                              </span>
                               <div style={{ display: "flex", gap: "0.35rem", fontSize: "0.7rem" }}>
                                 <button
                                   type="button"
@@ -1277,10 +1280,7 @@ export function AntigravityTracker() {
                                 </button>
                               </div>
                             </div>
-                            <div
-                              className="cf-col-resizer"
-                              onMouseDown={(e) => handleResizeMouseDown(e, colKey)}
-                            />
+                            <div className="cf-col-resizer" onMouseDown={(e) => handleResizeMouseDown(e, colKey)} />
                           </th>
                         );
                       })}
@@ -1291,10 +1291,7 @@ export function AntigravityTracker() {
                         }}
                       >
                         Actions
-                        <div
-                          className="cf-col-resizer"
-                          onMouseDown={(e) => handleResizeMouseDown(e, "actions")}
-                        />
+                        <div className="cf-col-resizer" onMouseDown={(e) => handleResizeMouseDown(e, "actions")} />
                       </th>
                     </tr>
                   </thead>
@@ -1378,18 +1375,21 @@ export function AntigravityTracker() {
                                     }}
                                   >
                                     {/* 1. Percent input */}
-                                    <div style={{ display: "inline-flex", alignItems: "center", gap: "2px", flexShrink: 0 }}>
+                                    <div
+                                      style={{
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "2px",
+                                        flexShrink: 0,
+                                      }}
+                                    >
                                       <input
                                         type="number"
                                         min="0"
                                         max="100"
                                         value={displayPct}
                                         onChange={(e) =>
-                                          handleDirectPercentChange(
-                                            encodedEmail,
-                                            modelName,
-                                            parseFloat(e.target.value)
-                                          )
+                                          handleDirectPercentChange(encodedEmail, modelName, parseFloat(e.target.value))
                                         }
                                         style={{
                                           width: "44px",

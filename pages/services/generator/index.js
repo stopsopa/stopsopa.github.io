@@ -111,7 +111,7 @@ const left = [
   "xenodochial",
   "youthful",
   "zealous",
-  "zen"
+  "zen",
 ];
 const right = [
   "agnesi",
@@ -349,7 +349,7 @@ const right = [
   "wu",
   "yalow",
   "yonath",
-  "zhukovsky"
+  "zhukovsky",
 ];
 function getParts(rng = Math.random) {
   const l = left[Math.floor(rng() * left.length)];
@@ -385,7 +385,4 @@ const isMain = () => {
 if (isMain()) {
   console.log(getRandomName());
 }
-export {
-  getParts,
-  getRandomName
-};
+export { getParts, getRandomName };

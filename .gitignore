@@ -52,6 +52,7 @@ bash/fs/sync_via_ssh/transform.js
 bash/fs/touchWatch.js
 bash/fs/watch.js
 bash/git/addToGitignore.js
+bash/hardlink.js
 bash/node/is-port-free.js
 bash/node/json/sortObjectNested.js
 bash/node/json/unwrap.js

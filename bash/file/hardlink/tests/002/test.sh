@@ -5,7 +5,7 @@
 # removes it, and replaces it with a hardlink to file A. Also tests nested directory creation.
 #
 # Usage:
-# /bin/bash bash/file/hardlink/tests/002/test.sh
+# /bin/bash bash/tests/002/test.sh
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
