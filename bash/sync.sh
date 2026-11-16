@@ -162,7 +162,7 @@ HELP=1
 if [ "${1}" = "pack" ]; then
     HELP=0
 
-    FOUND="$(find bash -type f ! -path "${DUMPFILE}" | sort)"
+    FOUND="$(find bash -type f ! -path "${DUMPFILE}" | NODE_OPTIONS="" node gitignore.js bash/sync.sh.ignore | sort)"
 
     rm -f "${DUMPFILE}"
 
