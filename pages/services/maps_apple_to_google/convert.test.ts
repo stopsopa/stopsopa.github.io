@@ -1,7 +1,7 @@
 /**
  * Tests for convert.ts (offline part only - convertShort() needs network so it is not tested here)
  *
- * node --test map/convert.test.ts
+ * node --test pages/services/maps_apple_to_google/convert.test.ts
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -65,7 +65,7 @@ test("short link can't be converted offline", () => {
 });
 
 /**
- * Every link from map/TASK.md in the same order, with exactly the result predicted there
+ * Every link from RESEARCH.md in the same order, with exactly the result predicted there
  * (null = "can't be converted offline").
  */
 const taskMdCases: [string, string | null][] = [
@@ -89,7 +89,7 @@ const taskMdCases: [string, string | null][] = [
 ];
 
 taskMdCases.forEach(([link, expected], i) => {
-  test(`TASK.md link ${i + 1}: ${link.slice(0, 50)}`, () => {
+  test(`RESEARCH.md link ${i + 1}: ${link.slice(0, 50)}`, () => {
     assert.equal(convert(link), expected);
   });
 });

@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Apple Maps to Google Maps link converter</title>
+    <style>
+      /* Discord look, light theme */
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f2f3f5;
+        --bg-tertiary: #e3e5e8;
+        --bg-input: #ebedef;
+        --text: #313338;
+        --text-muted: #5c5e66;
+        --header: #060607;
+        --blurple: #5865f2;
+        --blurple-hover: #4752c4;
+        --link: #006ce7;
+        --green: #248046;
+        --red: #da373c;
+        --yellow: #f0b232;
+        --radius: 8px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: var(--bg-tertiary);
+        color: var(--text);
+        font-family: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 15px;
+        line-height: 1.375;
+      }
+
+      #matg-root {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+
+      #matg-header {
+        height: 48px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 16px;
+        background: var(--bg-primary);
+        color: var(--header);
+        border-bottom: 1px solid var(--bg-tertiary);
+        box-shadow: 0 1px 0 rgba(6, 6, 7, 0.08);
+        z-index: 1;
+
+        .hash {
+          color: var(--text-muted);
+          font-size: 22px;
+          font-weight: 500;
+        }
+
+        .title {
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        a {
+          margin-left: auto;
+          color: var(--link);
+          font-size: 14px;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      #matg-main {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: row;
+      }
+
+      #matg-left {
+        flex: 0 0 44%;
+        min-width: 0;
+        overflow-y: auto;
+        padding: 16px;
+        background: var(--bg-secondary);
+      }
+
+      #matg-right {
+        flex: 1;
+        min-width: 0;
+        position: relative;
+        background: var(--bg-tertiary);
+
+        iframe {
+          width: 100%;
+          height: 100%;
+          border: 0;
+          display: block;
+        }
+
+        .placeholder {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+          text-align: center;
+          color: var(--text-muted);
+        }
+      }
+
+      label,
+      h3 {
+        display: block;
+        margin: 0 0 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        color: var(--text-muted);
+      }
+
+      /* every section is a card, like discord embed / settings block */
+      section {
+        margin-bottom: 16px;
+        padding: 16px;
+        background: var(--bg-primary);
+        border-radius: var(--radius);
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      #matg-input {
+        flex: 1;
+        min-width: 0;
+        height: 40px;
+        padding: 0 12px;
+        font: inherit;
+        color: var(--text);
+        background: var(--bg-input);
+        border: 1px solid transparent;
+        border-radius: var(--radius);
+        outline: none;
+
+        &::placeholder {
+          color: var(--text-muted);
+        }
+
+        &:focus {
+          border-color: var(--blurple);
+        }
+      }
+
+      button {
+        flex-shrink: 0;
+        height: 40px;
+        padding: 0 16px;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text);
+        background: var(--bg-tertiary);
+        border: 0;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: background 0.17s ease;
+
+        &:hover {
+          background: #d4d7dc;
+        }
+
+        &.primary {
+          color: #fff;
+          background: var(--blurple);
+
+          &:hover {
+            background: var(--blurple-hover);
+          }
+        }
+
+        &.copied,
+        &.copied:hover {
+          color: #fff;
+          background: var(--green);
+        }
+
+        &.link {
+          height: auto;
+          padding: 0;
+          background: none;
+          border-radius: 0;
+          color: var(--link);
+          font-weight: 400;
+          text-align: left;
+          text-transform: none;
+          letter-spacing: 0;
+          word-break: break-all;
+
+          &:hover {
+            background: none;
+            text-decoration: underline;
+          }
+        }
+      }
+
+      #matg-result {
+        margin-top: 12px;
+
+        a {
+          min-width: 0;
+          color: var(--link);
+          text-decoration: none;
+          word-break: break-all;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      /* discord embed: tinted block with coloured left bar */
+      #matg-status {
+        margin-top: 12px;
+        padding: 10px 12px;
+        background: var(--bg-secondary);
+        border-left: 4px solid var(--text-muted);
+        border-radius: 4px;
+
+        &.ok {
+          border-left-color: var(--green);
+        }
+
+        &.warn {
+          border-left-color: var(--yellow);
+        }
+
+        &.error {
+          border-left-color: var(--red);
+        }
+
+        a {
+          color: var(--link);
+        }
+
+        ol {
+          margin: 6px 0 0;
+          padding-left: 20px;
+        }
+      }
+
+      code {
+        padding: 1px 4px;
+        font-family: Consolas, "Andale Mono WT", "Andale Mono", Menlo, Monaco, monospace;
+        font-size: 85%;
+        background: var(--bg-tertiary);
+        border-radius: 4px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+
+        th,
+        td {
+          padding: 6px 8px;
+          border-bottom: 1px solid var(--bg-tertiary);
+          text-align: left;
+          vertical-align: top;
+          word-break: break-word;
+        }
+
+        tr:last-child td {
+          border-bottom: 0;
+        }
+
+        th {
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          color: var(--text-muted);
+        }
+
+        td:first-child,
+        td:last-child {
+          white-space: nowrap;
+        }
+
+        td.dropped {
+          opacity: 0.55;
+        }
+      }
+
+      ul.list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+          padding: 4px 0;
+          font-size: 14px;
+        }
+      }
+
+      .options {
+        margin-top: 12px;
+        flex-wrap: wrap;
+        gap: 16px;
+
+        label {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          margin: 0;
+          font-size: 14px;
+          font-weight: 400;
+          text-transform: none;
+          letter-spacing: 0;
+          color: var(--text);
+          cursor: pointer;
+        }
+
+        input {
+          width: 18px;
+          height: 18px;
+          margin: 0;
+          accent-color: var(--blurple);
+        }
+      }
+
+      #matg-apikey {
+        font-size: 14px;
+
+        p {
+          margin: 0 0 8px;
+        }
+
+        ol {
+          margin: 0;
+          padding-left: 20px;
+        }
+
+        li {
+          padding: 2px 0;
+        }
+
+        a {
+          color: var(--link);
+        }
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      @media (max-width: 800px) {
+        #matg-root {
+          height: auto;
+          min-height: 100vh;
+        }
+
+        #matg-main {
+          flex-direction: column;
+        }
+
+        #matg-left {
+          flex: none;
+        }
+
+        #matg-right {
+          flex: none;
+          height: 70vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="matg-root">
+      <div id="matg-header">
+        <span class="hash">#</span>
+        <span class="title">apple-maps-to-google-maps</span>
+        <a href="/index.html">home</a>
+      </div>
+
+      <div id="matg-main">
+        <div id="matg-left" data-testid="left">
+          <section>
+            <label for="matg-input">Apple Maps link</label>
+            <div class="row">
+              <input
+                id="matg-input"
+                data-testid="input"
+                type="text"
+                placeholder="Paste https://maps.apple.com/... link (or any text containing it)"
+                autocomplete="off"
+                spellcheck="false"
+                autofocus
+              />
+              <button id="matg-paste" data-testid="paste" title="Read link from clipboard">paste</button>
+              <button id="matg-clear" data-testid="clear" title="Clear (Esc)">clear</button>
+            </div>
+
+            <div id="matg-result" class="row" data-testid="result" hidden>
+              <button id="matg-copy" class="primary" data-testid="copy" title="Copy Google Maps link (Enter)">
+                copy
+              </button>
+              <a id="matg-link" data-testid="link" target="_blank" rel="noopener noreferrer"></a>
+            </div>
+
+            <div id="matg-status" data-testid="status" hidden></div>
+
+            <div class="row options">
+              <label>
+                <input id="matg-autocopy" data-testid="autocopy" type="checkbox" />
+                copy automatically after paste
+              </label>
+            </div>
+          </section>
+
+          <section id="matg-breakdown" data-testid="breakdown" hidden>
+            <h3>What happened to the link parameters</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Apple param</th>
+                  <th>value</th>
+                  <th>Google param</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </section>
+
+          <section>
+            <h3>Examples (click to try)</h3>
+            <ul id="matg-examples" class="list" data-testid="examples"></ul>
+          </section>
+
+          <section id="matg-apikey" data-testid="apikey">
+            <h3>Google Maps API key (optional)</h3>
+            <p>
+              The map on the right works without any key. Official way of embedding Google map needs free "Maps Embed
+              API" key though. It is not a secret - it is visible in the url of the map iframe - it is protected by
+              restricting it to given website.
+            </p>
+            <p>Map is currently using: <strong id="matg-apikey-mode" data-testid="apikey-mode"></strong></p>
+            <ol>
+              <li>
+                open
+                <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer"
+                  >console.cloud.google.com</a
+                >
+                and create (or pick) a project
+              </li>
+              <li>"APIs &amp; Services" → "Library" → find <strong>Maps Embed API</strong> → "Enable"</li>
+              <li>"APIs &amp; Services" → "Credentials" → "Create credentials" → "API key"</li>
+              <li>
+                edit the key → "Application restrictions" → "Websites" → add addresses of the pages allowed to use it,
+                e.g. <code>https://your-domain.example/*</code>
+              </li>
+              <li>"API restrictions" → "Restrict key" → select only <strong>Maps Embed API</strong></li>
+              <li>
+                add it to <code>.env</code> as <code>PUBLIC_GOOGLE_MAPS_EMBED_KEY="..."</code> and rebuild / restart the
+                server
+              </li>
+            </ol>
+          </section>
+        </div>
+
+        <div id="matg-right" data-testid="right">
+          <div id="matg-placeholder" class="placeholder" data-testid="map-placeholder">
+            Paste Apple Maps link on the left - location will show up here.
+          </div>
+          <iframe
+            id="matg-map"
+            data-testid="map"
+            title="Google map"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+            hidden
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+    <script src="/public/preprocessed.js"></script>
+    <script type="module">
+      // convert.js is transpiled from convert.ts (flat mode, see pages/services/SERVICES_RULES.md)
+      import { convert, convertShort } from "./convert.js";
+
+      const LS_AUTOCOPY = "matg_autocopy";
+
+      /**
+       * Optional key of official "Maps Embed API", comes from .env through /public/preprocessed.js
+       * (exposed because of the PUBLIC_ prefix, see EXPOSE_EXTRA_ENV_VARIABLES).
+       * It is not a secret - it ends up in the iframe url anyway, it is protected by referrer restriction in Google console.
+       * When not defined keyless embed is used.
+       */
+      const MAPS_KEY = window.process?.env?.PUBLIC_GOOGLE_MAPS_EMBED_KEY || "";
+
+      const EXAMPLES = [
+        "https://maps.apple.com/place?coordinate=55.119257,-6.659260&name=62%20Mountsandel%20Road&map=explore",
+        "https://maps.apple/p/W~5mr5ufkx8uuu",
+      ];
+
+      const $ = (id) => document.getElementById(id);
+
+      const input = $("matg-input");
+      const result = $("matg-result");
+      const link = $("matg-link");
+      const copyBtn = $("matg-copy");
+      const status = $("matg-status");
+      const breakdown = $("matg-breakdown");
+      const map = $("matg-map");
+      const placeholder = $("matg-placeholder");
+      const autocopy = $("matg-autocopy");
+
+      let current = null; // currently generated google link
+      let run = 0; // guards against out of order async results
+
+      const storage = {
+        get(key, def) {
+          try {
+            return localStorage.getItem(key) ?? def;
+          } catch {
+            return def;
+          }
+        },
+        set(key, value) {
+          try {
+            value === null ? localStorage.removeItem(key) : localStorage.setItem(key, value);
+          } catch {}
+        },
+      };
+
+      // user might paste whole message, so pick the apple link out of it
+      function extract(text) {
+        const match = text.match(/https?:\/\/maps\.apple(?:\.com)?\/[^\s<>"']*/i);
+
+        return match ? match[0] : text.trim();
+      }
+
+      function isShort(text) {
+        try {
+          return new URL(text).hostname === "maps.apple";
+        } catch {
+          return false;
+        }
+      }
+
+      // google "Maps URLs" link (output of convert()) -> url for the iframe
+      function embedUrl(google) {
+        const url = new URL(google);
+        const p = url.searchParams;
+        const key = MAPS_KEY;
+        const directions = url.pathname.includes("/dir/");
+        const origin = p.get("origin");
+        const destination = p.get("destination");
+        const mode = p.get("travelmode");
+
+        if (key) {
+          // official Maps Embed API
+          if (directions && origin) {
+            const out = new URLSearchParams({ key, origin, destination });
+
+            if (mode) {
+              out.set("mode", mode);
+            }
+
+            return `https://www.google.com/maps/embed/v1/directions?${out}`;
+          }
+
+          return `https://www.google.com/maps/embed/v1/place?${new URLSearchParams({
+            key,
+            q: destination || p.get("query"),
+          })}`;
+        }
+
+        // keyless embed
+        if (directions && origin) {
+          const out = new URLSearchParams({ saddr: origin, daddr: destination, output: "embed" });
+          const dirflg = { driving: "d", walking: "w", transit: "r", bicycling: "b" }[mode];
+
+          if (dirflg) {
+            out.set("dirflg", dirflg);
+          }
+
+          return `https://maps.google.com/maps?${out}`;
+        }
+
+        // directions without origin start from "current location" which iframe doesn't know - show just destination
+        return `https://maps.google.com/maps?${new URLSearchParams({
+          q: destination || p.get("query"),
+          z: "15",
+          output: "embed",
+        })}`;
+      }
+
+      function setStatus(type, html) {
+        status.hidden = !type;
+        status.className = type || "";
+        status.innerHTML = html || "";
+      }
+
+      function showMap(google) {
+        const src = google ? embedUrl(google) : null;
+
+        placeholder.hidden = Boolean(src);
+        map.hidden = !src;
+
+        if (src) {
+          if (map.dataset.src !== src) {
+            map.dataset.src = src;
+            map.src = src;
+          }
+        } else {
+          delete map.dataset.src;
+          map.removeAttribute("src");
+        }
+      }
+
+      function showBreakdown(apple, google) {
+        const tbody = breakdown.querySelector("tbody");
+
+        tbody.textContent = "";
+
+        const g = [...new URL(google).searchParams];
+        const rows = [...new URL(apple).searchParams];
+
+        for (const [name, value] of rows) {
+          let target = g.find(([, v]) => v === value)?.[0];
+
+          if (!target && (name === "mode" || name === "dirflg")) {
+            const travelmode = g.find(([n]) => n === "travelmode");
+
+            target = travelmode && `travelmode=${travelmode[1]}`;
+          }
+
+          const tr = document.createElement("tr");
+
+          for (const text of [name, value, target || "dropped"]) {
+            const td = document.createElement("td");
+            const code = document.createElement("code");
+
+            code.textContent = text;
+            td.append(code);
+
+            if (!target) {
+              td.className = "dropped";
+            }
+
+            tr.append(td);
+          }
+
+          tbody.append(tr);
+        }
+
+        breakdown.hidden = rows.length === 0;
+      }
+
+      function showResult(apple, google) {
+        current = google;
+        result.hidden = !google;
+        link.textContent = google || "";
+
+        if (google) {
+          link.href = google;
+          showBreakdown(apple, google);
+        } else {
+          link.removeAttribute("href");
+          breakdown.hidden = true;
+        }
+
+        showMap(google);
+      }
+
+      function syncUrl(value) {
+        const url = new URL(location.href);
+
+        value ? url.searchParams.set("link", value) : url.searchParams.delete("link");
+        history.replaceState(null, "", url);
+      }
+
+      async function copy() {
+        if (!current) {
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(current);
+          copyBtn.textContent = "copied";
+          copyBtn.classList.add("copied");
+        } catch {
+          copyBtn.textContent = "failed";
+        }
+
+        setTimeout(() => {
+          copyBtn.textContent = "copy";
+          copyBtn.classList.remove("copied");
+        }, 1200);
+      }
+
+      function renderList(ul, list) {
+        ul.textContent = "";
+
+        for (const item of list) {
+          const li = document.createElement("li");
+          const button = document.createElement("button");
+
+          button.className = "link";
+          button.textContent = item;
+          button.addEventListener("click", () => setInput(item));
+          li.append(button);
+          ul.append(li);
+        }
+      }
+
+      /**
+       * Main flow: called on every input change.
+       * pasted = true when the value came from paste (then autocopy might kick in)
+       */
+      async function process(pasted = false) {
+        const id = ++run;
+        const raw = input.value;
+        const apple = extract(raw);
+
+        syncUrl(raw.trim());
+
+        if (!apple) {
+          showResult(null, null);
+          setStatus(null);
+
+          return;
+        }
+
+        let google = convert(apple);
+        let source = apple;
+
+        if (!google && isShort(apple)) {
+          showResult(null, null);
+          setStatus("warn", "Short link - asking Apple where it points...");
+
+          try {
+            // will work only if the browser is allowed to read the redirect (CORS), normally it is not
+            google = await convertShort(apple);
+          } catch {}
+
+          if (id !== run) {
+            return;
+          }
+
+          if (!google) {
+            const a = document.createElement("a");
+
+            a.href = apple;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.textContent = "open the short link in new tab";
+
+            setStatus(
+              "warn",
+              `Short link - the id in it is opaque and only Apple's server knows where it points, and browser is not allowed to ask from this page (CORS).
+              <ol>
+                <li>${a.outerHTML}</li>
+                <li>Apple will redirect to long <code>https://maps.apple.com/...</code> link</li>
+                <li>copy it from the address bar and paste it here</li>
+              </ol>`
+            );
+
+            return;
+          }
+        }
+
+        if (!google) {
+          showResult(null, null);
+          setStatus(
+            "error",
+            "Can't convert - expecting <code>https://maps.apple.com/...</code> link with a location in it (coordinate, address, q, destination ...)."
+          );
+
+          return;
+        }
+
+        showResult(source, google);
+
+        const directions = google.includes("/maps/dir/");
+        const noOrigin = directions && !new URL(google).searchParams.get("origin");
+
+        setStatus(
+          "ok",
+          (directions ? "Directions link converted." : "Place link converted.") +
+            (noOrigin
+              ? " No origin in the link - Google will start from your current location, map shows only the destination."
+              : "")
+        );
+
+        if (pasted && autocopy.checked) {
+          copy();
+        }
+      }
+
+      function setInput(value, pasted = false) {
+        input.value = value;
+        process(pasted);
+      }
+
+      // --- events ---
+
+      let pasted = false;
+
+      input.addEventListener("paste", () => {
+        pasted = true;
+      });
+
+      input.addEventListener("input", () => {
+        process(pasted);
+        pasted = false;
+      });
+
+      input.addEventListener("focus", () => input.select());
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          copy();
+        }
+
+        if (e.key === "Escape") {
+          setInput("");
+        }
+      });
+
+      // paste anywhere on the page lands in the input
+      document.addEventListener("paste", (e) => {
+        if (e.target instanceof HTMLInputElement) {
+          return;
+        }
+
+        const text = e.clipboardData?.getData("text");
+
+        if (text) {
+          e.preventDefault();
+          setInput(text, true);
+        }
+      });
+
+      $("matg-paste").addEventListener("click", async () => {
+        try {
+          setInput(await navigator.clipboard.readText(), true);
+        } catch {
+          setStatus("error", "Browser refused access to the clipboard - paste with Ctrl/Cmd+V instead.");
+        }
+      });
+
+      $("matg-clear").addEventListener("click", () => {
+        setInput("");
+        input.focus();
+      });
+
+      copyBtn.addEventListener("click", copy);
+
+      autocopy.checked = storage.get(LS_AUTOCOPY, "") === "1";
+      autocopy.addEventListener("change", () => storage.set(LS_AUTOCOPY, autocopy.checked ? "1" : null));
+
+      // --- init ---
+
+      $("matg-apikey-mode").textContent = MAPS_KEY
+        ? "official Maps Embed API (key found)"
+        : "keyless embed (no key defined)";
+
+      renderList($("matg-examples"), EXAMPLES);
+
+      // state from url: matg.html?link=<apple link> - shareable / bookmarkable
+      const initial = new URL(location.href).searchParams.get("link");
+
+      if (initial) {
+        setInput(initial);
+      }
+    </script>
+  </body>
+</html>
