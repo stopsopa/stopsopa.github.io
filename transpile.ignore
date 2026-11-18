@@ -1,3 +1,7 @@
+# used by transpile.sh (see TRANSPILATION.md), run:
+#   /bin/bash transpile.sh transpile.ignore
+#   /bin/bash transpile.sh transpile.ignore --watch
+
 # for tsc.sh
 
 tsc.ignore.ts
@@ -29,6 +33,19 @@ pages/children/wotb/*
 !pages/children/wotb/controls/
 pages/children/wotb/controls/*
 !pages/children/wotb/controls/antigravity/
+
+# --- BEGIN: maps_apple_to_google convert.ts ---
+# Transpile only pages/services/maps_apple_to_google/convert.ts -> convert.js (right next to it).
+# 'pages/*' above ignores everything in pages/, and gitignore can't re-include a file
+# whose parent directory is excluded - so each directory level is un-ignored, its other
+# contents re-ignored, and finally the single file un-ignored (convert.test.ts stays ignored).
+# These rules work only together and must stay below 'pages/*'.
+!pages/services/
+pages/services/*
+!pages/services/maps_apple_to_google/
+pages/services/maps_apple_to_google/*
+!pages/services/maps_apple_to_google/convert.ts
+# --- END: maps_apple_to_google convert.ts ---
 
 transpile_prettier_pipe_old.ts
 root.ts

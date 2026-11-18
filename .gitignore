@@ -104,6 +104,7 @@ pages/services/generator/index.js
 pages/services/google_drive_application_data_explorer/google_drive_application_data_explorer.entry.js
 pages/services/google_drive_application_data_explorer/index.js
 pages/services/map_points/map_points.entry.js
+pages/services/maps_apple_to_google/convert.js
 pages/services/xor.js
 pages/typescript/node/lib.js
 pages/typescript/node/transform-types.js

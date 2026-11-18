@@ -164,10 +164,7 @@ export function extractPathString(token: string): string {
   if (mdMatch) {
     cleaned = mdMatch[1].trim();
   }
-  if (
-    (cleaned.startsWith('"') && cleaned.endsWith('"')) ||
-    (cleaned.startsWith("'") && cleaned.endsWith("'"))
-  ) {
+  if ((cleaned.startsWith('"') && cleaned.endsWith('"')) || (cleaned.startsWith("'") && cleaned.endsWith("'"))) {
     cleaned = cleaned.slice(1, -1);
   }
   return cleaned;
@@ -215,10 +212,7 @@ export function parseArgs(args: string[]): CliOptions {
 /**
  * Determine the base resolution directory and reason
  */
-export function resolveBaseDir(
-  configFilePath: string,
-  options: CliOptions
-): { baseDir: string; reason: string } {
+export function resolveBaseDir(configFilePath: string, options: CliOptions): { baseDir: string; reason: string } {
   if (options.pwdOverride) {
     const resolved = path.resolve(process.cwd(), expandHome(options.pwdOverride));
     return {
@@ -390,12 +384,16 @@ function validateDirPair(pair: ParsedPair): string | null {
     }
 
     // - symlink B points somewhere else - don't touch it, operator has to decide
-    return errB(`Symlink points to "${current}" but expected "${pair.symlinkTarget}" (directory A: "${pair.resolvedA}")`);
+    return errB(
+      `Symlink points to "${current}" but expected "${pair.symlinkTarget}" (directory A: "${pair.resolvedA}")`
+    );
   }
 
   // - path B is a real directory - we have no way to compare it with directory A
   if (lstatB.isDirectory()) {
-    return errB(`Path is a real directory, not a symlink - no way to compare it with directory A, remove it manually if it should become a symlink: "${pair.resolvedB}"`);
+    return errB(
+      `Path is a real directory, not a symlink - no way to compare it with directory A, remove it manually if it should become a symlink: "${pair.resolvedB}"`
+    );
   }
 
   // - anything else under path B (regular file, socket, ...)
@@ -430,7 +428,9 @@ function executeDirPair(pair: ParsedPair, changedLabel: string): void {
     }
   }
 
-  console.log(`   (B resolves to: ${fs.realpathSync(pair.resolvedB)}, directory A: ${fs.realpathSync(pair.resolvedA)})`);
+  console.log(
+    `   (B resolves to: ${fs.realpathSync(pair.resolvedB)}, directory A: ${fs.realpathSync(pair.resolvedA)})`
+  );
 }
 
 /**
@@ -649,7 +649,9 @@ export async function run(args: string[]): Promise<void> {
           fs.renameSync(tempPath, pair.resolvedB);
           const newStatB = fs.statSync(pair.resolvedB);
           console.log(`\n${pair.rawLine}`);
-          console.log(`   ${green}UNLINKED${reset}: Disconnected hardlink, preserved independent file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
+          console.log(
+            `   ${green}UNLINKED${reset}: Disconnected hardlink, preserved independent file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
+          );
         } catch (err) {
           console.error(`Error unlinking "${pair.resolvedB}": ${(err as Error).message}`);
         }
@@ -673,7 +675,9 @@ export async function run(args: string[]): Promise<void> {
 
     // - path B ends with "/" (directory) but path A doesn't - mixed pair, most likely "/" is missing at the end of path A
     if (pair.rawB.endsWith("/")) {
-      errors.push(`File B [${pair.rawB}] error:\n   Path B ends with "/" (directory) but path A doesn't - add "/" to the end of path A to link directories`);
+      errors.push(
+        `File B [${pair.rawB}] error:\n   Path B ends with "/" (directory) but path A doesn't - add "/" to the end of path A to link directories`
+      );
       continue;
     }
 
@@ -721,13 +725,17 @@ export async function run(args: string[]): Promise<void> {
       //   which has to be writable - write permission on file B itself doesn't matter
       const parentOfB = path.dirname(pair.resolvedB);
       if (!isWritable(parentOfB)) {
-        errors.push(`File B [${pair.rawB}] error:\n   Parent directory "${parentOfB}" is not writable (needed to replace file B)`);
+        errors.push(
+          `File B [${pair.rawB}] error:\n   Parent directory "${parentOfB}" is not writable (needed to replace file B)`
+        );
         continue;
       }
 
       // - hardlinks cannot cross filesystems - check it upfront so file B is never touched when linking would fail anyway
       if (statA.dev !== statB.dev) {
-        errors.push(`File B [${pair.rawB}] error:\n   File A and file B are on different filesystems (hardlinks cannot cross filesystems): "${pair.resolvedA}" vs "${pair.resolvedB}"`);
+        errors.push(
+          `File B [${pair.rawB}] error:\n   File A and file B are on different filesystems (hardlinks cannot cross filesystems): "${pair.resolvedA}" vs "${pair.resolvedB}"`
+        );
         continue;
       }
 
@@ -785,7 +793,9 @@ export async function run(args: string[]): Promise<void> {
        */
       replaceAtomically(pair.resolvedB, (tmpB) => fs.linkSync(pair.resolvedA, tmpB));
       const newStatB = fs.statSync(pair.resolvedB);
-      console.log(`   ${green}CHANGED${reset}: Replaced file B with hardlink to file A (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
+      console.log(
+        `   ${green}CHANGED${reset}: Replaced file B with hardlink to file A (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
+      );
     } else {
       // if file B doesn't exist:
       // - make sure parent directory of file B exist, if not then create it
@@ -796,7 +806,9 @@ export async function run(args: string[]): Promise<void> {
       // - create hardlink from file A to file B
       fs.linkSync(pair.resolvedA, pair.resolvedB);
       const newStatB = fs.statSync(pair.resolvedB);
-      console.log(`   ${green}CHANGED${reset}: Created hardlink from file A to file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
+      console.log(
+        `   ${green}CHANGED${reset}: Created hardlink from file A to file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
+      );
     }
   }
 
