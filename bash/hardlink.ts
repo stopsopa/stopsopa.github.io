@@ -14,6 +14,7 @@
  *   node bash/hardlink.ts ./path/to/config.md --pwd
  *   node bash/hardlink.ts ./path/to/config.md --pwd /custom/base/dir
  *   node bash/hardlink.ts ./path/to/config.md --gitignore ./path/to/.gitignore
+ *   node bash/hardlink.ts ./path/to/config.md --absolute-symlink-dir   # directory pairs get absolute symlinks
  *   node bash/hardlink.ts --help
  *
  * Base resolution directory:
@@ -40,6 +41,16 @@
  *     (link A under temporary name next to B, then rename over B - B is never missing).
  *   - If file B does not exist, ensure parent directory exists and create hardlink from A to B.
  *   - Update .gitignore if --gitignore was specified.
+ *
+ * Directory pairs (path A ends with "/", e.g. "./lib/ -> ./bin/lib"):
+ *   - Hardlinks to directories are not possible, so path B becomes a symlink to directory A.
+ *   - Symlink target is relative to the directory of B by default, absolute with --absolute-symlink-dir.
+ *   - Validation: A must be an existing directory; B must be missing (parent checks as for files),
+ *     or a symlink resolving to A. B pointing elsewhere, B being a real directory or a file -> error.
+ *   - Execution: create symlink (creating parent dirs), skip when symlink is exactly as expected,
+ *     replace atomically when it resolves to A but in other form (relative vs absolute).
+ *   - --gitignore adds B like for files (no trailing "/" - git sees symlink as a file, "link/" would not match it).
+ *   - --unlink skips directory pairs.
  */
 
 import fs from "node:fs";
@@ -57,6 +68,10 @@ export interface ParsedPair {
   rawB: string;
   resolvedA: string;
   resolvedB: string;
+  // true when path A ends with "/" - pair of directories, B becomes symlink to A
+  isDir: boolean;
+  // only for directory pairs: what symlink B should contain (relative or absolute path to A)
+  symlinkTarget: string;
 }
 
 export interface CliOptions {
@@ -65,6 +80,7 @@ export interface CliOptions {
   useCwd?: boolean;
   gitignorePath?: string;
   unlink?: boolean;
+  absoluteSymlinkDir?: boolean;
   help?: boolean;
 }
 
@@ -81,6 +97,9 @@ Options:
   --pwd <path>              Resolve paths relative to explicit <path>
   --gitignore <path>        Path to .gitignore to ensure target file B paths are ignored
   --unlink                  Unlink existing hardlinked pairs (cannot be used with --gitignore)
+                            (directory pairs are skipped)
+  --absolute-symlink-dir    Directory pairs: create symlinks with absolute target path
+                            (default: target relative to the directory of symlink B)
   --help, -h                Show this help page
 
 Gitignore delimiters:
@@ -104,6 +123,17 @@ Examples of valid pairs in config.md:
   [one](./test/ttt.sh) -> ./test/ttt2.sh
   "path/with/ spaces /file log.log" -> [two](./bin/path/with/ spaces /file log2.log)
   ~/.test/ttt.sh -> [in home user](./test/ttt2.sh)
+
+Directory pairs:
+  When path A ends with "/" the pair links directories. Directory hardlinks are not possible,
+  so path B becomes a symlink to directory A:
+    [lib dir](./lib/) -> [link](./bin/lib)
+    ./lib/ -> ./bin/lib
+  - A must be an existing directory
+  - B must be missing (symlink is created) or already a symlink resolving to A
+    (if its form differs - relative vs absolute - it is replaced)
+  - B pointing elsewhere, B being a real directory or a file -> error (nothing is changed)
+  - path B ending with "/" while path A doesn't -> error
 `;
   console.log(helpText.trim());
   process.exit(1);
@@ -162,6 +192,8 @@ export function parseArgs(args: string[]): CliOptions {
       }
     } else if (arg === "--unlink") {
       options.unlink = true;
+    } else if (arg === "--absolute-symlink-dir") {
+      options.absoluteSymlinkDir = true;
     } else if (arg === "--gitignore") {
       const nextArg = args[i + 1];
       if (nextArg && !nextArg.startsWith("-")) {
@@ -244,10 +276,167 @@ function findExistingAncestor(p: string): string {
   return curr;
 }
 
+// lstat (does not follow symlinks) returning null when nothing exists under the path
+function lstatOrNull(p: string): fs.Stats | null {
+  try {
+    return fs.lstatSync(p);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Validate the place where missing path B will be created (shared by file and directory pairs).
+ * statA given -> also check B lands on the same filesystem as A (needed for hardlinks).
+ * statA null  -> skip filesystem check (symlinks can cross filesystems).
+ * Returns error message or null when all good.
+ */
+function validateMissingBParent(resolvedB: string, statA: fs.Stats | null): string | null {
+  const parentB = path.dirname(resolvedB);
+
+  // - check if parent directory of file B exist
+  //   ancestor === parentB when parent exists, otherwise it is the first existing path above it
+  const ancestor = findExistingAncestor(parentB);
+  const statAncestor = fs.statSync(ancestor);
+
+  // - parent (or nearest existing ancestor) has to be a directory - if it is a file then neither mkdir nor link can succeed
+  if (!statAncestor.isDirectory()) {
+    return `Parent path "${ancestor}" is not a directory`;
+  }
+
+  if (ancestor === parentB) {
+    // - check if parent directory of file B is writable (if I have rights to create new hardlink in this directory)
+    if (!isWritable(parentB)) {
+      return `Parent directory "${parentB}" is not writable`;
+    }
+  } else {
+    // if directory doesn't exist then check if we have rights to create it
+    if (!isWritable(ancestor)) {
+      return `Cannot create parent directory for "${resolvedB}": Directory "${ancestor}" is not writable.`;
+    }
+  }
+
+  // - hardlinks cannot cross filesystems - file B will land on the filesystem of its nearest existing ancestor
+  if (statA !== null && statAncestor.dev !== statA.dev) {
+    return `File A and file B are on different filesystems (hardlinks cannot cross filesystems): file B would land on "${ancestor}"`;
+  }
+
+  return null;
+}
+
+/**
+ * Replace path B atomically: create new entry under temporary name next to B (via create callback)
+ * and rename it over B. rename is atomic, so B is never missing even if something fails midway.
+ */
+function replaceAtomically(resolvedB: string, create: (tmpB: string) => void): void {
+  const tmpB = `${resolvedB}.hardlink_tmp_${process.pid}`;
+  fs.rmSync(tmpB, { force: true });
+  create(tmpB);
+  try {
+    fs.renameSync(tmpB, resolvedB);
+  } catch (err) {
+    fs.rmSync(tmpB, { force: true });
+    throw err;
+  }
+}
+
+/**
+ * Validation of directory pair (path A ends with "/").
+ * Directory A has to exist, path B has to be missing (symlink will be created)
+ * or be a symlink resolving to directory A.
+ * Returns error message (already formatted with "Directory A"/"Symlink B" header) or null when all good.
+ */
+function validateDirPair(pair: ParsedPair): string | null {
+  const errA = (msg: string) => `Directory A [${pair.rawA}] error:\n   ${msg}`;
+  const errB = (msg: string) => `Symlink B [${pair.rawB}] error:\n   ${msg}`;
+
+  // - directory A has to exist
+  if (!fs.existsSync(pair.resolvedA)) {
+    return errA(`Directory does not exist: "${pair.resolvedA}"`);
+  }
+
+  // - thing under path A has to be a directory (trailing "/" in config.md promises that)
+  if (!fs.statSync(pair.resolvedA).isDirectory()) {
+    return errA(`Path is not a directory (path A ends with "/"): "${pair.resolvedA}"`);
+  }
+
+  const lstatB = lstatOrNull(pair.resolvedB);
+
+  // - path B doesn't exist: symlink will be created, check its parent (no filesystem check - symlinks can cross filesystems)
+  if (lstatB === null) {
+    const parentError = validateMissingBParent(pair.resolvedB, null);
+    if (parentError === null) {
+      return null;
+    }
+    return errB(parentError);
+  }
+
+  if (lstatB.isSymbolicLink()) {
+    const current = fs.readlinkSync(pair.resolvedB);
+
+    // - symlink B points exactly where it should - all is good, skip
+    if (current === pair.symlinkTarget) {
+      return null;
+    }
+
+    // - symlink B resolves to directory A but in different form (relative vs absolute, e.g. after toggling --absolute-symlink-dir)
+    //   it will be replaced, so parent directory has to be writable
+    if (path.resolve(path.dirname(pair.resolvedB), current) === pair.resolvedA) {
+      const parentB = path.dirname(pair.resolvedB);
+      if (isWritable(parentB)) {
+        return null;
+      }
+      return errB(`Parent directory "${parentB}" is not writable (needed to replace symlink B)`);
+    }
+
+    // - symlink B points somewhere else - don't touch it, operator has to decide
+    return errB(`Symlink points to "${current}" but expected "${pair.symlinkTarget}" (directory A: "${pair.resolvedA}")`);
+  }
+
+  // - path B is a real directory - we have no way to compare it with directory A
+  if (lstatB.isDirectory()) {
+    return errB(`Path is a real directory, not a symlink - no way to compare it with directory A, remove it manually if it should become a symlink: "${pair.resolvedB}"`);
+  }
+
+  // - anything else under path B (regular file, socket, ...)
+  return errB(`Path exists but is not a symlink: "${pair.resolvedB}"`);
+}
+
+/**
+ * Execution of directory pair. Validation phase guarantees path B is missing
+ * or is a symlink resolving to directory A.
+ *   - B missing                      -> create parent dirs and symlink
+ *   - B exactly as expected          -> skip
+ *   - B resolves to A in other form  -> replace atomically
+ * Prints final proof: where B resolves to vs directory A.
+ */
+function executeDirPair(pair: ParsedPair, changedLabel: string): void {
+  const lstatB = lstatOrNull(pair.resolvedB);
+
+  if (lstatB === null) {
+    // - make sure parent directory of symlink B exist, if not then create it
+    fs.mkdirSync(path.dirname(pair.resolvedB), { recursive: true });
+    // - create symlink B -> A
+    fs.symlinkSync(pair.symlinkTarget, pair.resolvedB, "dir");
+    console.log(`   ${changedLabel}: Created symlink B -> "${pair.symlinkTarget}"`);
+  } else {
+    const current = fs.readlinkSync(pair.resolvedB);
+    if (current === pair.symlinkTarget) {
+      console.log(`   Already linked (symlink B -> "${current}")`);
+    } else {
+      // - symlink resolves to A but has different form - replace it atomically
+      replaceAtomically(pair.resolvedB, (tmpB) => fs.symlinkSync(pair.symlinkTarget, tmpB, "dir"));
+      console.log(`   ${changedLabel}: Replaced symlink B "${current}" -> "${pair.symlinkTarget}"`);
+    }
+  }
+
+  console.log(`   (B resolves to: ${fs.realpathSync(pair.resolvedB)}, directory A: ${fs.realpathSync(pair.resolvedA)})`);
+}
+
 /**
  * Parse config file lines into pairs of paths
  */
-export function parseConfigFile(content: string, baseDir: string): ParsedPair[] {
+export function parseConfigFile(content: string, baseDir: string, absoluteSymlinkDir = false): ParsedPair[] {
   const lines = content.split(/\r?\n/);
   const pairs: ParsedPair[] = [];
 
@@ -268,12 +457,23 @@ export function parseConfigFile(content: string, baseDir: string): ParsedPair[] 
       const resolvedA = path.resolve(baseDir, expandedA);
       const resolvedB = path.resolve(baseDir, expandedB);
 
+      // path A ending with "/" marks pair of directories (path.resolve above already stripped that "/")
+      const isDir = rawA.endsWith("/");
+
+      // symlink content for directory pairs: absolute path to A, or path to A relative to the directory of B
+      let symlinkTarget = "";
+      if (isDir) {
+        symlinkTarget = absoluteSymlinkDir ? resolvedA : path.relative(path.dirname(resolvedB), resolvedA) || ".";
+      }
+
       pairs.push({
         rawLine: line,
         rawA,
         rawB,
         resolvedA,
         resolvedB,
+        isDir,
+        symlinkTarget,
       });
     }
   }
@@ -407,7 +607,7 @@ export async function run(args: string[]): Promise<void> {
   }
 
   const content = fs.readFileSync(configPath, "utf-8");
-  const pairs = parseConfigFile(content, baseDir);
+  const pairs = parseConfigFile(content, baseDir, options.absoluteSymlinkDir === true);
 
   const isTTY = process.stdout.isTTY;
   const green = isTTY ? "\x1b[32m" : "";
@@ -416,6 +616,11 @@ export async function run(args: string[]): Promise<void> {
   // # unlink mode
   if (options.unlink) {
     for (const pair of pairs) {
+      // directory pairs (symlinks) are not handled by --unlink - skip them
+      if (pair.isDir) {
+        continue;
+      }
+
       // Check if both file A and file B exist
       if (!fs.existsSync(pair.resolvedA) || !fs.existsSync(pair.resolvedB)) {
         continue;
@@ -457,6 +662,21 @@ export async function run(args: string[]): Promise<void> {
   const errors: string[] = [];
 
   for (const pair of pairs) {
+    // directory pair (path A ends with "/") - path B has to be (or become) a symlink to directory A
+    if (pair.isDir) {
+      const dirError = validateDirPair(pair);
+      if (dirError !== null) {
+        errors.push(dirError);
+      }
+      continue;
+    }
+
+    // - path B ends with "/" (directory) but path A doesn't - mixed pair, most likely "/" is missing at the end of path A
+    if (pair.rawB.endsWith("/")) {
+      errors.push(`File B [${pair.rawB}] error:\n   Path B ends with "/" (directory) but path A doesn't - add "/" to the end of path A to link directories`);
+      continue;
+    }
+
     // - we will check if something exist under path A (it has to exist, if nothing is there then error)
     if (!fs.existsSync(pair.resolvedA)) {
       errors.push(`File A [${pair.rawA}] error:\n   File does not exist: "${pair.resolvedA}"`);
@@ -520,36 +740,11 @@ export async function run(args: string[]): Promise<void> {
       }
     } else {
       // when file B doesn't exist:
-      const parentB = path.dirname(pair.resolvedB);
-
-      // - check if parent directory of file B exist
-      //   ancestor === parentB when parent exists, otherwise it is the first existing path above it
-      const ancestor = findExistingAncestor(parentB);
-      const statAncestor = fs.statSync(ancestor);
-
-      // - parent (or nearest existing ancestor) has to be a directory - if it is a file then neither mkdir nor link can succeed
-      if (!statAncestor.isDirectory()) {
-        errors.push(`File B [${pair.rawB}] error:\n   Parent path "${ancestor}" is not a directory`);
-        continue;
-      }
-
-      if (ancestor === parentB) {
-        // - check if parent directory of file B is writable (if I have rights to create new hardlink in this directory)
-        if (!isWritable(parentB)) {
-          errors.push(`File B [${pair.rawB}] error:\n   Parent directory "${parentB}" is not writable`);
-          continue;
-        }
-      } else {
-        // if directory doesn't exist then check if we have rights to create it
-        if (!isWritable(ancestor)) {
-          errors.push(`File B [${pair.rawB}] error:\n   Cannot create parent directory for "${pair.resolvedB}": Directory "${ancestor}" is not writable.`);
-          continue;
-        }
-      }
-
-      // - hardlinks cannot cross filesystems - file B will land on the filesystem of its nearest existing ancestor
-      if (statAncestor.dev !== statA.dev) {
-        errors.push(`File B [${pair.rawB}] error:\n   File A and file B are on different filesystems (hardlinks cannot cross filesystems): "${pair.resolvedA}" vs "${ancestor}"`);
+      //   parent directory checks (exists / is directory / writable / can be created / same filesystem as A)
+      //   live in validateMissingBParent() since directory pairs use them too
+      const parentError = validateMissingBParent(pair.resolvedB, statA);
+      if (parentError !== null) {
+        errors.push(`File B [${pair.rawB}] error:\n   ${parentError}`);
         continue;
       }
     }
@@ -565,6 +760,12 @@ export async function run(args: string[]): Promise<void> {
   // # execution phase
   for (const pair of pairs) {
     console.log(`\n${pair.rawLine}`);
+
+    // directory pair - symlink B -> A
+    if (pair.isDir) {
+      executeDirPair(pair, `${green}CHANGED${reset}`);
+      continue;
+    }
 
     const statA = fs.statSync(pair.resolvedA);
 
@@ -582,15 +783,7 @@ export async function run(args: string[]): Promise<void> {
        * rename is atomic, so B is never missing even if something fails midway
        * (unlink B + link A -> B would leave B removed when link fails).
        */
-      const tmpB = `${pair.resolvedB}.hardlink_tmp_${process.pid}`;
-      fs.rmSync(tmpB, { force: true });
-      fs.linkSync(pair.resolvedA, tmpB);
-      try {
-        fs.renameSync(tmpB, pair.resolvedB);
-      } catch (err) {
-        fs.rmSync(tmpB, { force: true });
-        throw err;
-      }
+      replaceAtomically(pair.resolvedB, (tmpB) => fs.linkSync(pair.resolvedA, tmpB));
       const newStatB = fs.statSync(pair.resolvedB);
       console.log(`   ${green}CHANGED${reset}: Replaced file B with hardlink to file A (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
     } else {
@@ -611,6 +804,7 @@ export async function run(args: string[]): Promise<void> {
   if (resolvedGitignore) {
     const gitignoreDir = path.dirname(resolvedGitignore);
     const relPathsToAdd = pairs.map((p) => {
+      // for directory pairs B is a symlink - no trailing "/" on purpose, git sees symlink as a file and "link/" would not match it
       let rel = path.relative(gitignoreDir, p.resolvedB);
       // normalize Windows backslashes if any to forward slashes for gitignore consistency
       rel = rel.split(path.sep).join("/");
