@@ -29,12 +29,15 @@
  * Validation phase checks:
  *   - Path A must exist, be a regular file, and be readable.
  *   - Path B:
- *     - If it exists: must be a file; if same inode as A, skip; must be readable and writable; content must match file A.
- *     - If it does not exist: parent directory must exist (and be writable) or ancestors must permit creation.
+ *     - If it exists: must be a file; if same inode as A, skip; must be readable; its parent directory must be writable
+ *       (replacing B is a directory operation); must be on the same filesystem as A; content must match file A.
+ *     - If it does not exist: parent directory must exist (and be a writable directory) or nearest existing ancestor
+ *       must be a writable directory; it must be on the same filesystem as A (hardlinks cannot cross filesystems).
  *
  * Execution phase:
  *   - If same inode, skip.
- *   - If file B exists (and content matches), unlink file B and create hardlink from A to B.
+ *   - If file B exists (and content matches), replace file B atomically with hardlink to A
+ *     (link A under temporary name next to B, then rename over B - B is never missing).
  *   - If file B does not exist, ensure parent directory exists and create hardlink from A to B.
  *   - Update .gitignore if --gitignore was specified.
  */
@@ -131,7 +134,10 @@ export function extractPathString(token: string): string {
   if (mdMatch) {
     cleaned = mdMatch[1].trim();
   }
-  if ((cleaned.startsWith('"') && cleaned.endsWith('"')) || (cleaned.startsWith("'") && cleaned.endsWith("'"))) {
+  if (
+    (cleaned.startsWith('"') && cleaned.endsWith('"')) ||
+    (cleaned.startsWith("'") && cleaned.endsWith("'"))
+  ) {
     cleaned = cleaned.slice(1, -1);
   }
   return cleaned;
@@ -177,7 +183,10 @@ export function parseArgs(args: string[]): CliOptions {
 /**
  * Determine the base resolution directory and reason
  */
-export function resolveBaseDir(configFilePath: string, options: CliOptions): { baseDir: string; reason: string } {
+export function resolveBaseDir(
+  configFilePath: string,
+  options: CliOptions
+): { baseDir: string; reason: string } {
   if (options.pwdOverride) {
     const resolved = path.resolve(process.cwd(), expandHome(options.pwdOverride));
     return {
@@ -223,22 +232,16 @@ function isWritable(p: string): boolean {
 }
 
 /**
- * Check if parent directory exists and is writable, or can be created
+ * Find nearest existing ancestor of given path (the path itself if it exists).
+ * Used to validate the place where file B will land when its parent directories still have to be created
+ * (that ancestor has to be a writable directory and has to be on the same filesystem as file A).
  */
-function canCreateInParent(filePath: string): { ok: boolean; error?: string } {
-  let curr = path.dirname(path.resolve(filePath));
-  const toCheck: string[] = [];
-  while (curr !== path.dirname(curr)) {
-    if (fs.existsSync(curr)) {
-      if (isWritable(curr)) {
-        return { ok: true };
-      }
-      return { ok: false, error: `Directory "${curr}" is not writable.` };
-    }
-    toCheck.push(curr);
+function findExistingAncestor(p: string): string {
+  let curr = path.resolve(p);
+  while (!fs.existsSync(curr) && curr !== path.dirname(curr)) {
     curr = path.dirname(curr);
   }
-  return { ok: false, error: `Cannot find existing writable ancestor directory for "${filePath}".` };
+  return curr;
 }
 
 /**
@@ -441,9 +444,7 @@ export async function run(args: string[]): Promise<void> {
           fs.renameSync(tempPath, pair.resolvedB);
           const newStatB = fs.statSync(pair.resolvedB);
           console.log(`\n${pair.rawLine}`);
-          console.log(
-            `   ${green}UNLINKED${reset}: Disconnected hardlink, preserved independent file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
-          );
+          console.log(`   ${green}UNLINKED${reset}: Disconnected hardlink, preserved independent file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
         } catch (err) {
           console.error(`Error unlinking "${pair.resolvedB}": ${(err as Error).message}`);
         }
@@ -496,8 +497,17 @@ export async function run(args: string[]): Promise<void> {
       }
 
       // - check if file B is writable (if I have rights to remove it and create new hardlink in its place)
-      if (!isWritable(pair.resolvedB)) {
-        errors.push(`File B [${pair.rawB}] error:\n   File is not writable: "${pair.resolvedB}"`);
+      //   removing/replacing file B is an operation on its parent directory, so it is the parent directory
+      //   which has to be writable - write permission on file B itself doesn't matter
+      const parentOfB = path.dirname(pair.resolvedB);
+      if (!isWritable(parentOfB)) {
+        errors.push(`File B [${pair.rawB}] error:\n   Parent directory "${parentOfB}" is not writable (needed to replace file B)`);
+        continue;
+      }
+
+      // - hardlinks cannot cross filesystems - check it upfront so file B is never touched when linking would fail anyway
+      if (statA.dev !== statB.dev) {
+        errors.push(`File B [${pair.rawB}] error:\n   File A and file B are on different filesystems (hardlinks cannot cross filesystems): "${pair.resolvedA}" vs "${pair.resolvedB}"`);
         continue;
       }
 
@@ -511,7 +521,19 @@ export async function run(args: string[]): Promise<void> {
     } else {
       // when file B doesn't exist:
       const parentB = path.dirname(pair.resolvedB);
-      if (fs.existsSync(parentB)) {
+
+      // - check if parent directory of file B exist
+      //   ancestor === parentB when parent exists, otherwise it is the first existing path above it
+      const ancestor = findExistingAncestor(parentB);
+      const statAncestor = fs.statSync(ancestor);
+
+      // - parent (or nearest existing ancestor) has to be a directory - if it is a file then neither mkdir nor link can succeed
+      if (!statAncestor.isDirectory()) {
+        errors.push(`File B [${pair.rawB}] error:\n   Parent path "${ancestor}" is not a directory`);
+        continue;
+      }
+
+      if (ancestor === parentB) {
         // - check if parent directory of file B is writable (if I have rights to create new hardlink in this directory)
         if (!isWritable(parentB)) {
           errors.push(`File B [${pair.rawB}] error:\n   Parent directory "${parentB}" is not writable`);
@@ -519,13 +541,16 @@ export async function run(args: string[]): Promise<void> {
         }
       } else {
         // if directory doesn't exist then check if we have rights to create it
-        const parentCheck = canCreateInParent(pair.resolvedB);
-        if (!parentCheck.ok) {
-          errors.push(
-            `File B [${pair.rawB}] error:\n   Cannot create parent directory for "${pair.resolvedB}": ${parentCheck.error}`
-          );
+        if (!isWritable(ancestor)) {
+          errors.push(`File B [${pair.rawB}] error:\n   Cannot create parent directory for "${pair.resolvedB}": Directory "${ancestor}" is not writable.`);
           continue;
         }
+      }
+
+      // - hardlinks cannot cross filesystems - file B will land on the filesystem of its nearest existing ancestor
+      if (statAncestor.dev !== statA.dev) {
+        errors.push(`File B [${pair.rawB}] error:\n   File A and file B are on different filesystems (hardlinks cannot cross filesystems): "${pair.resolvedA}" vs "${ancestor}"`);
+        continue;
       }
     }
   }
@@ -552,12 +577,22 @@ export async function run(args: string[]): Promise<void> {
       }
 
       // - if file A and file B are not hardlinks to the same inode then we know from validation phase that contents of file A and file B are the same because we wouldn't reach this point if they were not the same. in that case remove file B and create hardlink from file A to file B
-      fs.unlinkSync(pair.resolvedB);
-      fs.linkSync(pair.resolvedA, pair.resolvedB);
+      /**
+       * Replace atomically: hardlink A under temporary name next to B and rename it over B.
+       * rename is atomic, so B is never missing even if something fails midway
+       * (unlink B + link A -> B would leave B removed when link fails).
+       */
+      const tmpB = `${pair.resolvedB}.hardlink_tmp_${process.pid}`;
+      fs.rmSync(tmpB, { force: true });
+      fs.linkSync(pair.resolvedA, tmpB);
+      try {
+        fs.renameSync(tmpB, pair.resolvedB);
+      } catch (err) {
+        fs.rmSync(tmpB, { force: true });
+        throw err;
+      }
       const newStatB = fs.statSync(pair.resolvedB);
-      console.log(
-        `   ${green}CHANGED${reset}: Replaced file B with hardlink to file A (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
-      );
+      console.log(`   ${green}CHANGED${reset}: Replaced file B with hardlink to file A (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
     } else {
       // if file B doesn't exist:
       // - make sure parent directory of file B exist, if not then create it
@@ -568,9 +603,7 @@ export async function run(args: string[]): Promise<void> {
       // - create hardlink from file A to file B
       fs.linkSync(pair.resolvedA, pair.resolvedB);
       const newStatB = fs.statSync(pair.resolvedB);
-      console.log(
-        `   ${green}CHANGED${reset}: Created hardlink from file A to file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
-      );
+      console.log(`   ${green}CHANGED${reset}: Created hardlink from file A to file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`);
     }
   }
 
