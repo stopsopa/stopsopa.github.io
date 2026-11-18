@@ -12,6 +12,29 @@
   <body class="layout bg" toc>
     <div class="body">
       <div class="inside">
+        <h2>I've started writing prompt but then realised I have selected wront model</h2>
+        <script type="editor" data-lang="python">
+            ### Claude Code - Switching models in VS Code terminal (Mac)
+            
+            To switch models without losing your current prompt, press **Option + P** in the terminal. (option or aka alt)
+            
+            If the shortcut doesn't work, enable `macOptionIsMeta` in VS Code:
+            
+            1. Open Settings (`Cmd + ,`).
+            2. Search for `macOptionIsMeta`.
+            3. Enable **Terminal › Integrated: Mac Option Is Meta**.
+            
+            Alternatively, add this to `settings.json`:
+            
+            ```json
+            "terminal.integrated.macOptionIsMeta": true
+            ```
+            
+            This setting makes the Option key behave as a Meta key in the integrated terminal, allowing Claude Code to recognise the `Option + P` shortcut.
+            
+            **Note:** The shortcut changes the model while preserving your unsent prompt.
+        </script>
+        
         <h2>Claude Code</h2>
         <script type="editor" data-lang="python">
 
