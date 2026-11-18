@@ -29,17 +29,19 @@ g(Google Sans font)
 .gcp-css :is(a),
 .gcp-css:is(a) {
   color: rgb(12, 103, 223);
-  border-bottom: 1px solid currentColor;
-  text-decoration: none;
+  /* real text underline (not border-bottom) - it is not drawn under inline-block children like the ::after icon */
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
   &[target="_blank"] {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
     &::after {
       content: "";
+      /* inline-block is essential: underline doesn't propagate into inline-block boxes */
       display: inline-block;
       width: 14px;
       height: 14px;
+      margin-left: 4px;
+      vertical-align: -2px;
       background-color: currentColor;
       mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z'/%3E%3C/svg%3E")
         no-repeat center;
