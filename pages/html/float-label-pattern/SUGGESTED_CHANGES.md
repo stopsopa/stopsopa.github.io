@@ -1,212 +1,239 @@
 # Suggested changes for `floating-label-pattern.css`
 
-Review based on reading `floating-label-pattern.css` and `index.html` (not on browser testing).
-Ordered by how much each item matters for the stated goals: simplicity, browser compatibility, native HTML.
+Status after the third round. Checked in Chrome on the local dev server. Not checked in Firefox or Safari.
 
-Already done: the `target="_blank"` link icon is no longer underlined (see the last section).
+Legend: **DONE** = implemented, **OPEN** = waiting for your decision, **NOT A CONCERN** = noticed, deliberately left.
 
-## 1. Bugs
+Related files:
 
-### 1.1 `.error` in checkbox/radio wrappers is never hidden
+- `skill.md`: instructions for an AI assistant on how to use this library. Keep it in sync with the CSS.
+- `index.html`: demo. The panel on the right prints the HTML of the form straight from the page.
 
-The only rule that hides the error is `.input-wrapper > .error { display: none }`.
-Inside `.checkbox-wrapper` / `.radio-wrapper` the error sits in `.content-cell`, so nothing hides it:
-"You must check this box to continue." and "This plan is currently unavailable in your region." are visible all the time, as plain unstyled text (the red colour, icon and font size also live in the `.input-wrapper > .error` rule).
+## Open items (need your decision)
 
-Fix: make one rule for all three wrappers, e.g.
+| #   | Item                           | Section |
+| --- | ------------------------------ | ------- |
+| 2.3 | Autofill                       | below   |
+| 4.7 | Viewport meta in the demo page | below   |
+
+## New thing to know: `@scope`
+
+The "closest `.gcp-css` or `.no-gcp-css` wins" rule you asked for (3.3) cannot be written with ordinary selectors. It needs the CSS `@scope` rule:
 
 ```css
-.gcp-css .error {
-  display: none; /* + colour, font-size, icon */
-}
-.gcp-css [data-error] .error,
-.gcp-css[data-error] .error {
-  display: flex;
+@scope (.gcp-css) to (.no-gcp-css) {
+  ...;
 }
 ```
 
-### 1.2 The usage example in `index.html` does not work
+Browser support: Chrome 118, Safari 17.4, Firefox 146 (December 2025).
+Firefox is the limit here: a Firefox older than about a year ignores the whole file.
+You said the nesting floor (2.1) is not a concern, and this is the same kind of trade, only about two years more recent for Firefox.
+If that is too new, the fallback is "`.no-gcp-css` turns it off, but nesting `.gcp-css` inside it does not turn it back on", which works with plain selectors.
 
-The snippet at the bottom shows `<div class="gcp-css">` with `<input>` + `<label>` directly inside.
-The floating label styles need `.input-wrapper`, so that markup renders unstyled.
-The example should be `<div class="gcp-css input-wrapper">`.
+---
 
-### 1.3 `.helper-text` and `.input-wrapper > .error` are not scoped
+## 1. Bugs
 
-Everything else is under `.gcp-css`, but these two rules are global.
-Importing the file changes any `.helper-text` on the host page, and hides any `.error` that is a direct child of an `.input-wrapper`.
-Both are very common class names. Scope them under `.gcp-css` like the rest.
+### 1.1 `.error` in checkbox/radio wrappers was never hidden - DONE
 
-### 1.4 Error fade-in never runs
+One rule now covers all three wrappers: hidden by default, shown in the error state.
 
-`.error` goes from `display: none; opacity: 0` to `display: flex; opacity: 1`.
-A transition cannot start from `display: none`, so the `opacity` and `transition` lines do nothing.
-Simplest: delete `opacity`, `transition` and `z-index` from `.error`.
+### 1.2 The usage example in `index.html` - DONE
 
-### 1.5 Disabled buttons contradict themselves
+The box at the bottom now holds only the link to the CSS file and the `<link rel="stylesheet">` line. The broken HTML snippet is removed.
+The box is marked as `data-lang="html"` without `data-eval`, so the `SyntaxError` in the console on page load is gone.
+A working, copyable example of every component is now the HTML panel next to the form.
 
-`cursor: not-allowed` plus `pointer-events: none`: with pointer events off the cursor is never shown.
-Drop `pointer-events: none` (a disabled button does not fire clicks anyway), and guard hover with `&:hover:not(:disabled)`.
+### 1.3 `.helper-text` and `.error` scoping - DONE
 
-### 1.6 Focused select in error state shows a blue arrow with a red ring
+You were right about most of the file, but not about these two rules. They were written like this:
 
-The error arrow is set through `:where([data-error]) &`, which has lower specificity than `&:focus`.
-That block is also duplicated: the two selectors in it match the same elements, and text colour is set again in the `& [data-error], &[data-error]` block further down.
-Move the error arrow into that later block and delete the `:where` block.
+```css
+.helper-text {
+  ...;
+}
+.input-wrapper > .error {
+  display: none;
+  ...;
+}
+```
+
+There is no `.gcp-css` in either selector, so they applied to the whole page, also outside `.gcp-css`.
+Now everything in the file lives inside the `@scope` block, so nothing leaks out.
+Tested: an `.input-wrapper > .error` outside `.gcp-css` is left alone.
+
+### 1.4 Error fade-in never ran - DONE
+
+Removed `opacity`, `transition` and `z-index` from `.error`. It looked the same before and after, because the fade could never start from `display: none`.
+
+### 1.5 Disabled buttons contradicted themselves - DONE (option B)
+
+`cursor: not-allowed` is removed, `pointer-events: none` stays. A disabled button shows the normal arrow cursor and has no hover effect.
+
+### 1.6 Select arrow: blue arrow with a red ring - DONE
+
+The ▾ triangle of a select is now red when the field is in the error state, also while it has focus. Confirmed in the browser.
 
 ## 2. Browser compatibility
 
-### 2.1 Native CSS nesting is the highest compatibility floor in the file
+### 2.1 Native CSS nesting - NOT A CONCERN
 
-The file uses nesting with bare element selectors (`label { ... }` inside a rule, without `&`).
-That needs Chrome 120, Safari 17.2, Firefox 117 (all late 2023).
-A browser without nesting support does not degrade: it drops nearly every rule in the file.
+Noticed: needs Chrome 120, Safari 17.2, Firefox 117. Decision: keep nesting and rely on it.
+(See the `@scope` note at the top: that is now the highest floor in the file.)
 
-Options:
+### 2.2 Windows high-contrast mode - NOT A CONCERN
 
-- Accept it. Everything from the last ~3 years works. `:has()` (Firefox 121, Dec 2023) sets a similar floor anyway.
-- Flatten the selectors. More repetition, but the file then works in much older browsers, with `:has()` only affecting the select label and the disabled look.
+Noticed, not a goal. Side effect of 3.2: the field now has a real `border`, so the field outline does show up in that mode anyway. The focus ring (a `box-shadow`) still does not.
 
-If compatibility is a real priority, flattening is the one change that buys the most.
+### 2.3 Autofill - OPEN (explanation only, nothing changed)
 
-### 2.2 Windows high-contrast mode (forced colors) loses the field border
+Autofill is when the browser offers to fill a field with something it remembers: your name, email, a saved password.
+I have not reproduced the two issues below on this page; they are known behaviours of this kind of floating label.
 
-The field border and focus ring are drawn with `box-shadow` on `::after`, and the input has `border: none; outline: none`.
-Forced-colors mode removes box-shadows, so fields have no border and no focus indicator at all.
-See 3.2 for a fix that also simplifies the code.
+**Issue A: label can sit on top of the filled-in text.**
+The label decides "should I float up?" with one question: "is the field empty?".
+There are moments when the browser shows text in the field but still reports the field as empty:
 
-### 2.3 Autofill
+- You click the field, the browser shows a list of saved emails, and you move the mouse over one of them. The browser shows that email in the field as a preview. It is not really typed in until you click.
+- A login page opens and Chrome has already put the saved password in. For security reasons Chrome can hide that value from the page until the user clicks or presses a key.
 
-- Add `:autofill` to the float condition, so the label also floats while Chrome previews an autofill value:
-  `&:is(input, textarea):is(:not(:placeholder-shown), :focus, :autofill) + label`
-- Chrome paints autofilled inputs with a light blue background. The label has a white background, so it shows as a white patch. Low priority, purely cosmetic.
+In those moments the label stays in the middle of the field, on top of the previewed text, and the two overlap.
 
-### 2.4 Small things
+Fix: the browser has a second signal, "I am autofilling this field" (`:autofill`). Adding it to the float condition makes the label float in those moments too. It is one extra word in one selector:
 
-- `appearance: none` has no `-webkit-appearance: none` next to it. Only matters for Safari before 15.4.
-- In the link icon the unprefixed `mask` comes before `-webkit-mask`. The convention is prefixed first, standard last, so the standard one wins.
+```css
+:is(input, textarea): is(: not(: placeholder-shown), : focus, : autofill) + label;
+```
+
+**Issue B: white patch behind the label.**
+After autofill, the browser paints the field light blue (Chrome) or yellow, to mark "I filled this, not you".
+The floated label has its own white background (that is how it "cuts" the border line). On a light blue field it shows as a small white rectangle.
+Purely cosmetic. The fix is more awkward (overriding the browser's tint), so I would do A and leave B.
+
+### 2.4 Small things - DONE / dropped
+
+- `mask` order (prefixed first, standard last): done.
+- `-webkit-appearance`: dropped, irrelevant with the current browser floor.
 
 ## 3. Simplification
 
-### 3.1 Checkbox/radio: drop `.checkbox-row` and `.content-cell`
+### 3.1 Flat checkbox/radio markup - DONE
 
-Currently a checkbox needs three wrapper levels, and the radio group in `index.html` needs inline styles (`style="grid-row: 1; display: flex; flex-direction: column; gap: 16px"`), which breaks "import one file and you are ready".
-
-A two-column grid gives the same "text never goes under the checkbox" result with the same flat markup shape as `.input-wrapper`:
+`.checkbox-row` and `.content-cell` are gone, and so are the inline styles in the radio group.
 
 ```html
 <div class="gcp-css checkbox-wrapper">
   <input type="checkbox" id="agree" />
-  <label for="agree">I agree to the terms and conditions</label>
-  <div class="helper-text">Please ensure you have read the policies.</div>
-  <div class="error">You must check this box to continue.</div>
+  <label for="agree">I agree</label>
+  <div class="helper-text">...</div>
+  <div class="error">...</div>
 </div>
 ```
 
-```css
-.gcp-css .checkbox-wrapper {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 12px;
-  row-gap: 4px;
-}
-.gcp-css .checkbox-wrapper > :not(input) {
-  grid-column: 2;
-}
-```
+A group repeats `input`, `label`, `helper-text`, `error` inside one wrapper. The only rule: `<label>` directly after its `<input>`.
+`checkbox-wrapper` and `radio-wrapper` are now the same thing; the look depends on the `type` of the input.
 
-A radio group can repeat `input, label, helper-text` in the same grid, with a `margin-top` on every input after the first and on its label.
-For the group itself, native `<fieldset>` + `<legend>` is the semantic element and could replace the `<h2>` + `<div>`.
+### 3.2 Border on the input itself - DONE
 
-### 3.2 Draw the border on the input itself, remove the `::after` layer
+The wrapper `::after` layer and every `z-index` are gone. The border is on the control; focus adds a 1px shadow, so the ring is 2px as before and nothing moves.
+Field size and text position are the same as before (padding went from `8px 12px` to `7px 11px` to make room for the 1px border).
 
-The wrapper `::after` exists only to draw the border, and it forces the `z-index: 0 / 2 / 3` stack.
-Alternative:
+Because of the border, the textarea auto-grow script in `index.html` needed a 2px correction (done).
 
-```css
-input,
-textarea,
-select {
-  border: 1px solid var(--gcp-css-border);
-  border-radius: 4px;
-  background: var(--gcp-css-bg);
-}
-:is(input, textarea, select):focus {
-  border-color: var(--gcp-css-primary);
-  outline: 1px solid var(--gcp-css-primary); /* 1px border + 1px outline = 2px ring, no layout shift */
-  outline-offset: 0;
-}
-```
+### 3.3 Scoping: closest `.gcp-css` / `.no-gcp-css` wins - DONE
 
-This removes the pseudo-element and all `z-index` lines, fixes 2.2, and the ring follows a resized textarea for free.
-The label then only needs `position: relative` to stay above the input.
+- `.gcp-css` on an element styles that element and everything inside.
+- `.no-gcp-css` turns it off for that element and everything inside.
+- `.gcp-css` inside `.no-gcp-css` turns it on again.
 
-### 3.3 One selector instead of two for "inside or on `.gcp-css`"
+Tested all three, plus `.gcp-css` directly on a `<p>` and on an `.input-wrapper`.
+Each block is now written once instead of twice. See the `@scope` note at the top for the browser floor.
 
-Every block is written twice: `.gcp-css :is(X), .gcp-css:is(X)`.
-The same can be said once:
+### 3.4 Dead and redundant code - DONE
 
-```css
-:is(.gcp-css, .gcp-css *):is(h2) { ... }
-/* or simply */
-.input-wrapper:is(.gcp-css, .gcp-css *) { ... }
-```
+Everything listed in the first round is removed.
 
-Even simpler: decide that `.gcp-css` always goes on a container, and drop the "on the element itself" variant.
-The same applies to the repeated `& [data-error], &[data-error]` pairs: `data-error` is only ever set on the wrapper.
+### 3.5 Variables - DONE
 
-Also `:is(a)`, `:is(h2)`, `:is(p)`, `:is(select)` with a single argument are the same as the plain selector.
+- New: `--gcp-css-field-gap`, `--gcp-css-link`, `--gcp-css-primary-hover`.
+- Field background and label background both use `--gcp-css-bg`.
+- Input text uses `--gcp-css-text`.
+- Select arrow: one icon, coloured from the variables.
+- `.white` button hover/active tints are derived from `--gcp-css-primary` with `color-mix()`.
 
-### 3.4 Dead and redundant code
-
-- `& .checkbox-wrapper, &.checkbox-wrapper` and `& .radio-wrapper, &.radio-wrapper` inside the shared block: the descendant variants match only a wrapper nested in a wrapper, and `position / display / margin-bottom` are declared again with the same values.
-- `& :checked` (with a space) can never match: an input has no children.
-- `border-color: ... !important` on the checkbox error rule: specificity is already higher, `!important` is not needed.
-- The radio error block repeats the border colour that the shared error block already sets.
-- The `label` reset in the checkbox block (`grid-area: auto; align-self: auto; justify-self: auto; margin-left: 0; pointer-events: auto; background: transparent; padding: 0`) undoes `.input-wrapper label` rules that never apply there.
-- `.white:hover` and `.white:active` repeat `border-color: transparent` and `box-shadow: none`.
-- `textarea { font-family: inherit }` and `textarea + label { align-self: start }` repeat what is already set.
-- `transform: translateY(0)` on the label, `/* height: 36px; */`, the commented `.helper-text` block and the commented font `@import`.
-
-### 3.5 Variables
-
-- `margin-bottom: 19px` appears four times: make it `--gcp-css-field-gap`.
-- Hard-coded colours next to variables: `background-color: white` on the wrapper `::after` (the label uses `var(--gcp-css-bg)`, so changing the variable gives a mismatched patch), link colour `rgb(12, 103, 223)` versus `--gcp-css-primary`, button hover `#1765cc`, the `%231a73e8` / `%235f6368` / `%23d93025` arrow SVGs.
-  The three arrow SVGs can become one `mask` + `background-color: currentColor`, as already done for the link and error icons.
-- Input text colour is never set, so it comes from the page. Add `color: var(--gcp-css-text)`.
-- Checkbox uses `transition: all 0.2s` instead of `var(--gcp-css-transition)`.
+Left as they were: the `h2` / `p` text colours and the button shadows.
 
 ## 4. Robustness and accessibility
 
-- **Long labels**: a label wider than the field overflows it. Add
-  `max-width: calc(100% - 14px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;`
-- **Markup contract is undocumented**: the pattern needs (a) `<label>` directly after the control, and (b) a non-empty `placeholder` (`" "` is enough, `&nbsp;` is not required). A short comment at the top of the CSS file with the minimal markup for each component would make it a real "import and go" file.
-  Worth mentioning there: a real placeholder text works too, it stays hidden until the field is focused.
-- **Native validation instead of `data-error`**: `.input-wrapper:has(:user-invalid)` (Chrome 119, Safari 16.5, Firefox 88) shows the error state for `required`, `type="email"`, `pattern` and so on with no JavaScript. `data-error` can stay as the manual override.
-- **Screen readers**: nothing connects the error/helper text to the control. `aria-describedby` on the input pointing at the helper/error ids fixes that. It is markup only, no CSS change.
-- **Links have no `:hover` / `:focus-visible` style.** Buttons do.
-- **`.white`** is a very generic class name. It is scoped to buttons so it is safe, but `.secondary` or `.text` describes it better. `input[type="reset"]` is missing from the button selector.
-- **Radio group disabled state**: `:has(:disabled)` dims the whole group when a single option is disabled. With the flat markup from 3.1 it can target one option: `input:disabled, input:disabled + label`.
-- **Demo page only**: the viewport meta has `user-scalable=no, maximum-scale=1.0`, which blocks pinch zoom.
+- **4.1 Long labels - DONE.** Cut with "…" instead of sticking out of the field.
+- **4.2 Markup contract - DONE.** Comment block at the top of the CSS file: how to turn it on/off, markup for each component, states.
+- **4.3 Native validation - DONE.** `:user-invalid` triggers the same error look as `data-error`, for all three wrappers. It appears only after the user has interacted with the field or tried to submit. `data-error` still works.
+- **4.4 Screen readers - DONE in the demo.** Every control has `aria-describedby` pointing at its helper text. The first field has a long HTML comment explaining why. A small `setError()` function in the page script adds `aria-invalid` and the error id when the error is switched on. It relies on the id convention `name` → `name-helper`, `name-error`.
+- **4.5 Links - DONE.** Hover: underline gets thicker (1px → 2px). Keyboard focus: the same blue outline as buttons.
+- **4.6 Radio group disabled - DONE.** Only the disabled option (input, its label, its helper text) is dimmed. "Toggle All Disabled" in the demo now disables every control, not only the first one in each wrapper.
+
+### 4.7 Viewport meta in the demo page - OPEN (explanation only)
+
+`index.html` has:
+
+```html
+<meta
+  name="viewport"
+  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+/>
+```
+
+`user-scalable=no` and `maximum-scale=1.0` tell a phone browser: do not let the user zoom this page with two fingers.
+
+Why that is a problem:
+
+- People with weaker eyesight zoom in to read. Here the helper and error texts are 12px, exactly the kind of text people zoom for. Blocking zoom is a listed accessibility failure (WCAG 1.4.4, "Resize text").
+- It does not work consistently: iOS Safari has ignored it since iOS 10, Android Chrome obeys it.
+
+Why it is usually there: to stop iOS from zooming in when you tap an input. iOS only does that for inputs with a font smaller than 16px, and this file already uses 16px, so the restriction buys nothing.
+
+It affects only this demo page, not the CSS file. Replacement, if you want it:
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+```
+
+### 4.8 Button class name and reset buttons - DONE
+
+- The secondary button class is now `secondary`. `white` still works as an alias, so existing pages do not break. New code should use `secondary`.
+- `input[type="reset"]` is styled like the other buttons.
+
+## Demo page: HTML panel - DONE
+
+Next to the form there is a panel with the HTML of the whole form.
+
+- It is generated by a script from the real `<form>` element when the page loads, so it cannot get out of sync with the form.
+- Hovering any element in the form (fields, labels, helper texts, links, the buttons) highlights its HTML in the panel and scrolls the panel to it.
+- The panel is plain selectable text. Select any part and copy, or use "copy all".
+- It is live. Typing, selecting and checking in the form, and the demo controls (error, disabled, hide helper), are reflected at once as `value`, `selected`, `checked`, textarea text, `data-error`, `disabled` and so on. The panel always shows the HTML that produces the form in its current state.
+- Not printed on purpose: `style` attributes (form width, textarea height) and the value of the password field (the browser may autofill a real saved password).
+- `&nbsp;` in `placeholder` is printed as the entity, so a copied snippet keeps working.
+
+## Visible differences after this round
+
+Things that look different from before, so you know they are intentional:
+
+- Checkbox in error state and checked: the fill is red (before: blue fill with a red border).
+- Error message order follows the HTML order (before, in text fields it was forced above the helper text; the demo markup already has it first).
+- Checkbox/radio error messages are hidden until the error state (this was bug 1.1).
+- "Toggle All Disabled" on the radio group dims both options, because both are disabled now.
 
 ## 5. What is good and should stay
 
 - CSS grid stacking (`grid-area: 1 / 1`) for label over input: no absolute positioning, no fixed heights.
-- `:placeholder-shown` for the float: no JavaScript, works with autofill and browser-restored values.
+- `:placeholder-shown` for the float: no JavaScript.
 - `select:has(option:not([value=""]):checked)` for the select label.
-- Icons as `mask` + `currentColor`: they follow the text colour with no extra assets.
+- Icons as `mask` + `currentColor`.
 - 16px input font size: no zoom on focus in iOS Safari.
-- `--gcp-css-` prefixed variables: no collisions with a host page.
-- `:focus-visible` on buttons and checkboxes.
+- `--gcp-css-` prefixed variables.
 
-## Done: link icon underline
+## Done in round one: link icon underline
 
-The underline was a `border-bottom` on the `<a>`, and the icon is a `::after` inside the `<a>`, so the border ran under both.
-Now the link uses a real text underline (`text-decoration-line` + `text-decoration-thickness: 1px` + `text-underline-offset: 3px`).
-Text decoration is not drawn under `inline-block` boxes, so the icon is skipped.
-
-Side effects of the change:
-
-- `display: inline-flex` is gone, so a long external link now wraps across lines like normal text (before, it moved to the next line as one block).
-- The underline sits 3px below the baseline instead of at the bottom of the line box. Adjust `text-underline-offset` to taste.
-- The icon is positioned with `vertical-align: -2px` and `margin-left: 4px` instead of flex `align-items` / `gap`.
+The link uses a real text underline, which is not drawn under the `inline-block` icon.
+Long external links now wrap like normal text.
