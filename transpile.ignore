@@ -47,18 +47,6 @@ pages/services/maps_apple_to_google/*
 !pages/services/maps_apple_to_google/convert.ts
 # --- END: maps_apple_to_google convert.ts ---
 
-# --- BEGIN: float-label-pattern index.ts ---
-# Transpile only pages/html/float-label-pattern/index.ts -> index.js (right next to it).
-# The same technique as in the block above: each directory level is un-ignored,
-# its other contents re-ignored, and finally the single file un-ignored.
-# These rules work only together and must stay below 'pages/*'.
-!pages/html/
-pages/html/*
-!pages/html/float-label-pattern/
-pages/html/float-label-pattern/*
-!pages/html/float-label-pattern/index.ts
-# --- END: float-label-pattern index.ts ---
-
 transpile_prettier_pipe_old.ts
 root.ts
 es.ts
