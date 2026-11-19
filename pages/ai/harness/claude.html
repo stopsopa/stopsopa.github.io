@@ -13,44 +13,42 @@
     <div class="body">
       <div class="inside">
         <h2>CLAUDE.md</h2>
-        
+
         <script type="editor" data-lang="python">
 
           # about CLAUDE.md https://code.claude.com/docs/en/memory
-            Claude Code does read AGENTS.md. The docs say it reads AGENTS.md as project instructions when there is 
-            no CLAUDE.md in your working directory or above it (this needs Claude Code v2.1.277 or later). 
+            Claude Code does read AGENTS.md. The docs say it reads AGENTS.md as project instructions when there is
+            no CLAUDE.md in your working directory or above it (this needs Claude Code v2.1.277 or later).
             If you have both files, the docs recommend putting an @AGENTS.md import in CLAUDE.md.
             https://github.com/anthropics/claude-code/releases/tag/v2.1.277#:~:text=Added%20AGENTS.md%20support
 
           # claude still doesn't read .agents/skills/popover-api/  unfortunately but only .claude/skills/popover-api
             # see https://github.com/stopsopa/skill-popover-api/tree/main/comprehensive_guide
-
-          
         </script>
-        
+
         <h2>I've started writing prompt but then realised I have selected wront model</h2>
         <script type="editor" data-lang="python">
-            ### Claude Code - Switching models in VS Code terminal (Mac)
-            
-            To switch models without losing your current prompt, press **Option + P** in the terminal. (option or aka alt)
-            
-            If the shortcut doesn't work, enable `macOptionIsMeta` in VS Code:
-            
-            1. Open Settings (`Cmd + ,`).
-            2. Search for `macOptionIsMeta`.
-            3. Enable **Terminal › Integrated: Mac Option Is Meta**.
-            
-            Alternatively, add this to `settings.json`:
-            
-            ```json
-            "terminal.integrated.macOptionIsMeta": true
-            ```
-            
-            This setting makes the Option key behave as a Meta key in the integrated terminal, allowing Claude Code to recognise the `Option + P` shortcut.
-            
-            **Note:** The shortcut changes the model while preserving your unsent prompt.
+          ### Claude Code - Switching models in VS Code terminal (Mac)
+
+          To switch models without losing your current prompt, press **Option + P** in the terminal. (option or aka alt)
+
+          If the shortcut doesn't work, enable `macOptionIsMeta` in VS Code:
+
+          1. Open Settings (`Cmd + ,`).
+          2. Search for `macOptionIsMeta`.
+          3. Enable **Terminal › Integrated: Mac Option Is Meta**.
+
+          Alternatively, add this to `settings.json`:
+
+          ```json
+          "terminal.integrated.macOptionIsMeta": true
+          ```
+
+          This setting makes the Option key behave as a Meta key in the integrated terminal, allowing Claude Code to recognise the `Option + P` shortcut.
+
+          **Note:** The shortcut changes the model while preserving your unsent prompt.
         </script>
-        
+
         <h2>Claude Code</h2>
         <script type="editor" data-lang="python">
 

@@ -1,4 +1,3 @@
-
 I need a tool which I will call like this
 
 ```bash
@@ -17,8 +16,6 @@ when calling this tool the we will extract links from config.md
 we will look for format like this
 
 ```markdown
-
-
 [one](./lib/test.ts) -> [two](./bin/test.ts)
 [one](./node_modules/some_lib/test.ts) -> [two](somewhere else/test.ts)
 path/to/file.log -> [two](./bin/path/to/file2.log)
@@ -28,9 +25,6 @@ path/to/file.log -> [two](./bin/path/to/file2.log)
 "path/with/ spaces /file log.log" -> [two](./bin/path/with/ spaces /file log2.log)
 
 ~/.test/ttt.sh -> [in home user](./test/ttt2.sh)
-
-
-
 ```
 
 so as you can see empty lines are allowed in our md file
@@ -40,15 +34,13 @@ then we define pairs of paths to files separeated by \s+->\s+ and generally our 
 so there should be path on the left and path on the right.
 
 both paths can be defined in either plane text or in markdown link format like [name](path/to/file)
-where label for link doesn't really matter, it is just for human readability. as a label for given path for the operator. 
+where label for link doesn't really matter, it is just for human readability. as a label for given path for the operator.
 
 we can also use quotes for paths with spaces in them, so we can have "path/with/ spaces /file log.log" -> [two](./bin/path/with/ spaces /file log2.log)
 
-
 in our format we can also have ~ indicating home directory, our script will expand ~ to home directory of the user running the script.
 
-all paths should be resolved relative to the location of the config.md file unless param --pwd is given  then we would resolve paths relative to current working directory where we called the script.
-
+all paths should be resolved relative to the location of the config.md file unless param --pwd is given then we would resolve paths relative to current working directory where we called the script.
 
 Also we can pass --pwd [resolved path] then we specify exactly what path we want to use as pwd.
 
@@ -66,7 +58,7 @@ after that we will extract all pairs of paths from config.md and first we will r
 - check the thing under path A is a file
 - check if file A is readable
 if all checks about file A are ok only then continue all checks for path B:
-    - check if something exist under path B -> 
+    - check if something exist under path B ->
         only if it does then run some more tests:
             - check if file B is a file
             - VERY IMPORTANT: check if file A and file B are are hardlinks to the same inode if yes then skip further checking and move on to next line in config.md - all is good
@@ -87,7 +79,7 @@ none of these checks above should change anything, these are just checks checkin
 If any condition is not met then generate clear error message with involved path and state the clear error message.
 and exit with error code 1
 
-Generate error for each line in config.md and go through all found lines in config.md and check them separately. 
+Generate error for each line in config.md and go through all found lines in config.md and check them separately.
 
 Only when all conditions are met then continue the logic. if even one condition is not met then exit 1 after printing all errors.
 
@@ -104,20 +96,22 @@ File A [./path/as is in the config.md] error:
 File B [./path/as is in the config.md] error:
    [error message]
 
-.. and so on   
+.. and so on
 
 ```
 
 # execution phase
+
 once we go through the validation we will start doing actuall work:
 
 if file B exist:
-   - check if file A and file B are hardlinks to the same inode if yes, then just skip this line form config.md and move on to next line in config.md
-   - if file A and file B are not hardlinks to the same inode then we know from validation phase that contents of file A and file B are the same because we wouldn't reach this point if they were not the same. in that case remove file B and create hardlink from file A to file B
-     (done atomically: hardlink A under temporary name next to B, then rename it over B - B is never missing even if something fails midway)
-if file B doesn't exist:
-    - make sure parent directory of file B exist, if not then create it
-    - create hardlink from file A to file B
+
+- check if file A and file B are hardlinks to the same inode if yes, then just skip this line form config.md and move on to next line in config.md
+- if file A and file B are not hardlinks to the same inode then we know from validation phase that contents of file A and file B are the same because we wouldn't reach this point if they were not the same. in that case remove file B and create hardlink from file A to file B
+  (done atomically: hardlink A under temporary name next to B, then rename it over B - B is never missing even if something fails midway)
+  if file B doesn't exist:
+- make sure parent directory of file B exist, if not then create it
+- create hardlink from file A to file B
 
 create logic of bash/hardlink.ts in the way to reflect with if/else conditions the logic of validationa as presented in this document. The same phase of exection carry to each condition and if/else block the comment from this document to the source code to make it clear what piece of logic is implemented in each if/else block.
 
@@ -127,7 +121,7 @@ At the end of each synchronization operation (both for newly created hardlinks, 
 # testing
 
 Create separate test to cover as much logic as possible with tests in bash/file/hardlink/tests directory. For each test create new subdirectory [001] then [002], [003] and so on. In each of these subdirectores create separate test.sh which will drive the logic.
-Next to each test.sh create config.md and call hardlink.ts in the way to point it to that config.md. Test in first tests chaning resolution directory with different ways. Create any formation of files in given [subdirectory]/\d+/ directory whatever is needed for given test. 
+Next to each test.sh create config.md and call hardlink.ts in the way to point it to that config.md. Test in first tests chaning resolution directory with different ways. Create any formation of files in given [subdirectory]/\d+/ directory whatever is needed for given test.
 
 call each [subdirectory]/\d+/test.sh in sequence one after another in main bash/file/hardlink/test.sh
 
@@ -136,6 +130,7 @@ this way we will be able to just call bash/file/hardlink/test.sh and it will run
 any test fails it should exit 1 with clear message - ideally generated by hardlink.ts itself. If all tests pass then exit 0.
 
 ## Test Cases Overview:
+
 - `001`: Basic hardlink creation when file B does not exist, default resolution to config.md directory.
 - `002`: Replace existing file B (with identical content to file A, but different inode) with hardlink to file A.
 - `003`: Validation failure when file B already exists and is not hardlinked to file A, but content differs from file A.
@@ -166,8 +161,7 @@ any test fails it should exit 1 with clear message - ideally generated by hardli
 
 script when called with --help or without path to config should geneate help page and exit 1
 
-help page should present all the ways config.md can present pair of the paths 
-
+help page should present all the ways config.md can present pair of the paths
 
 # update gitignore
 
@@ -192,6 +186,7 @@ and search in gitignore for these two `# hardlink.ts vvv` and `# hardlink.ts ^^^
 if either of these delimiters are not present then just append new path to gitignore
 
 The script must explicitly report and talk on stdout regarding gitignore updates:
+
 - when entries are added, state that gitignore was changed and list each added entry with a `+ ` prefix (proceeded with green `CHANGED` when interactive tty).
 - when all entries are already present in gitignore and nothing needs to be added, explicitly report that no changes were made and gitignore is already up to date.
 
@@ -199,7 +194,7 @@ make sure to generate tests cases for that. Make these tests to use --pwd with c
 
 also update help page explaining --gitignore param and delimiters
 
-also extend PLAN.md with new  description of new tests
+also extend PLAN.md with new description of new tests
 
 # directory pairs
 
@@ -215,18 +210,20 @@ directory hardlinks are not possible, so path B becomes a symlink to directory A
 symlink target is relative to the directory of B by default. With `--absolute-symlink-dir` absolute path to A is used.
 
 validation:
+
 - directory A has to exist (error otherwise)
 - thing under path A has to be a directory (error otherwise)
 - path B (checked with lstat - symlink itself, not what it points to):
-    - doesn't exist -> same parent checks as for files (parent is directory, writable or can be created), no filesystem check since symlinks can cross filesystems
-    - is symlink with exactly expected target -> all good, skip
-    - is symlink resolving to directory A but in other form (relative vs absolute) -> will be replaced, parent dir has to be writable
-    - is symlink pointing elsewhere -> error (operator decides, nothing touched)
-    - is real directory -> error, we have no way to compare it with directory A
-    - anything else (file, ...) -> error
+  - doesn't exist -> same parent checks as for files (parent is directory, writable or can be created), no filesystem check since symlinks can cross filesystems
+  - is symlink with exactly expected target -> all good, skip
+  - is symlink resolving to directory A but in other form (relative vs absolute) -> will be replaced, parent dir has to be writable
+  - is symlink pointing elsewhere -> error (operator decides, nothing touched)
+  - is real directory -> error, we have no way to compare it with directory A
+  - anything else (file, ...) -> error
 - path B ending with `/` while path A doesn't -> error (most likely missing `/` in path A)
 
 execution:
+
 - B missing -> create parent dirs, create symlink (CHANGED)
 - B exactly as expected -> "Already linked"
 - B resolves to A in other form -> replace atomically (temp symlink + rename) (CHANGED)

@@ -11,23 +11,23 @@ import { convert } from "./convert.ts";
 test("place link with coordinate", () => {
   assert.equal(
     convert("https://maps.apple.com/place?coordinate=55.119257,-6.659260&name=62%20Mountsandel%20Road&map=explore"),
-    "https://www.google.com/maps/search/?api=1&query=55.119257%2C-6.659260",
+    "https://www.google.com/maps/search/?api=1&query=55.119257%2C-6.659260"
   );
 });
 
 test("directions link with address destination and coordinate source", () => {
   assert.equal(
     convert(
-      "https://maps.apple.com/directions?destination=29A%20New%20Row,%20Coleraine,%20BT52%201AD,%20Northern%20Ireland&destination-place-id=IF1BEBD1631DCFAF9&mode=driving&source=55.075455,-6.640447",
+      "https://maps.apple.com/directions?destination=29A%20New%20Row,%20Coleraine,%20BT52%201AD,%20Northern%20Ireland&destination-place-id=IF1BEBD1631DCFAF9&mode=driving&source=55.075455,-6.640447"
     ),
-    "https://www.google.com/maps/dir/?api=1&origin=55.075455%2C-6.640447&destination=29A+New+Row%2C+Coleraine%2C+BT52+1AD%2C+Northern+Ireland&travelmode=driving",
+    "https://www.google.com/maps/dir/?api=1&origin=55.075455%2C-6.640447&destination=29A+New+Row%2C+Coleraine%2C+BT52+1AD%2C+Northern+Ireland&travelmode=driving"
   );
 });
 
 test("directions link without source and mode", () => {
   assert.equal(
     convert("https://maps.apple.com/directions?destination=55.1,-6.6"),
-    "https://www.google.com/maps/dir/?api=1&destination=55.1%2C-6.6",
+    "https://www.google.com/maps/dir/?api=1&destination=55.1%2C-6.6"
   );
 });
 

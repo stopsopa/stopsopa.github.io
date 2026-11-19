@@ -1567,53 +1567,53 @@ export function AntigravityTracker() {
                                     {/* 5. Set Quota & Expired Now buttons */}
                                     {!compactMode ? (
                                       <div style={{ display: "inline-flex", gap: "4px", flexShrink: 0 }}>
-                                      <button
-                                        type="button"
-                                        className="cf-btn cf-btn-secondary cf-btn-sm"
-                                        style={{ fontSize: "0.7rem", padding: "2px 5px" }}
-                                        onClick={() => {
-                                          const modelKey = encodeModelKey(modelName);
-                                          const existingModelData = acc.models ? acc.models[modelKey] : undefined;
+                                        <button
+                                          type="button"
+                                          className="cf-btn cf-btn-secondary cf-btn-sm"
+                                          style={{ fontSize: "0.7rem", padding: "2px 5px" }}
+                                          onClick={() => {
+                                            const modelKey = encodeModelKey(modelName);
+                                            const existingModelData = acc.models ? acc.models[modelKey] : undefined;
 
-                                          let initialPercent = 0;
-                                          let initialHours = String(settings.renewalHours);
+                                            let initialPercent = 0;
+                                            let initialHours = String(settings.renewalHours);
 
-                                          if (existingModelData) {
-                                            if (typeof existingModelData.modelPercentage === "number") {
-                                              initialPercent = existingModelData.modelPercentage;
-                                            }
-                                            if (existingModelData.renewsAt) {
-                                              const renewsAtMs = new Date(existingModelData.renewsAt).getTime();
-                                              const diffHours = (renewsAtMs - Date.now()) / (1000 * 60 * 60);
-                                              if (diffHours > 0) {
-                                                initialHours = (Math.round(diffHours * 10) / 10).toString();
+                                            if (existingModelData) {
+                                              if (typeof existingModelData.modelPercentage === "number") {
+                                                initialPercent = existingModelData.modelPercentage;
+                                              }
+                                              if (existingModelData.renewsAt) {
+                                                const renewsAtMs = new Date(existingModelData.renewsAt).getTime();
+                                                const diffHours = (renewsAtMs - Date.now()) / (1000 * 60 * 60);
+                                                if (diffHours > 0) {
+                                                  initialHours = (Math.round(diffHours * 10) / 10).toString();
+                                                }
                                               }
                                             }
-                                          }
 
-                                          setActiveQuotaModal({
-                                            encodedEmail,
-                                            modelName,
-                                            percent: initialPercent,
-                                            hoursUntilRenew: initialHours,
-                                          });
-                                        }}
-                                        title="Set model percentage and hours until renew"
-                                        data-testid={`btn-set-quota-${encodedEmail}-${modelName}`}
-                                      >
-                                        Set Quota...
-                                      </button>
-                                      <button
-                                        type="button"
-                                        className="cf-btn cf-btn-secondary cf-btn-sm"
-                                        style={{ fontSize: "0.7rem", padding: "2px 5px" }}
-                                        onClick={() => handleMarkModelExpiredNow(encodedEmail, modelName)}
-                                        title={`Mark expired now (0%, renews in ${settings.renewalHours}h)`}
-                                        data-testid={`btn-expired-now-${encodedEmail}-${modelName}`}
-                                      >
-                                        Expired Now
-                                      </button>
-                                    </div>
+                                            setActiveQuotaModal({
+                                              encodedEmail,
+                                              modelName,
+                                              percent: initialPercent,
+                                              hoursUntilRenew: initialHours,
+                                            });
+                                          }}
+                                          title="Set model percentage and hours until renew"
+                                          data-testid={`btn-set-quota-${encodedEmail}-${modelName}`}
+                                        >
+                                          Set Quota...
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className="cf-btn cf-btn-secondary cf-btn-sm"
+                                          style={{ fontSize: "0.7rem", padding: "2px 5px" }}
+                                          onClick={() => handleMarkModelExpiredNow(encodedEmail, modelName)}
+                                          title={`Mark expired now (0%, renews in ${settings.renewalHours}h)`}
+                                          data-testid={`btn-expired-now-${encodedEmail}-${modelName}`}
+                                        >
+                                          Expired Now
+                                        </button>
+                                      </div>
                                     ) : null}
                                   </div>
                                 </td>
