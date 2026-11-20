@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "ace-editor-web-component": {
+      "source": "stopsopa/ace-editor-webcomponent",
+      "sourceType": "github",
+      "skillPath": "ace-editor-web-component/SKILL.md",
+      "computedHash": "9795662dfe36c047ca027668f7e546984f9ac7a2b787ca959f1e5f552bacfb74"
+    },
     "gcp-css": {
       "source": "stopsopa/gcp-css",
       "sourceType": "github",
