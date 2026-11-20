@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "gcp-css/SKILL.md",
       "computedHash": "37e3f6299c39c720ef2bfb296bdf61c952c96dd71c4274a44565c748d52b01c4"
+    },
+    "vanilla-tabs": {
+      "source": "stopsopa/tabs",
+      "sourceType": "github",
+      "skillPath": "skills/vanilla-tabs/SKILL.md",
+      "computedHash": "571f6fb80b068d6b7d4eb6fafbb17ece1cc1eaf4b5dbfa21ac609c2d2eec4d89"
     }
   }
 }
