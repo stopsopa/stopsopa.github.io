@@ -256,6 +256,9 @@
               # to bring all skills based on skills-lock.json  
               # -y                 npx flag (not skills): auto-answers "Ok to proceed?" when skills@1.9.0 isn't in the npm cache, so the command never waits for input
               # --frozen-lockfile  fail instead of modifying skills-lock.json if the restore doesn't match it (like `npm ci` vs `npm install`); already the default in CI
+
+                # to fix potential issues with --frozen-lockfile
+                  NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --no-frozen-lockfile
               
 
 
