@@ -34,6 +34,8 @@
         width: 100%;
         height: 100%;
         cursor: default;
+        /* canvas handles pan/draw gestures itself (pointer events) */
+        touch-action: none;
       }
 
       #ascii-canvas {
@@ -54,7 +56,8 @@
       /* Floating draggable tool panel */
       .tool-panel {
         position: absolute;
-        top: 24px;
+        /* bottom-left corner, right above the status bar - top-left stays free for the drawing origin */
+        bottom: 52px;
         left: 24px;
         width: 220px;
         background: rgba(247, 244, 238, 0.96);
@@ -81,6 +84,7 @@
         font-weight: 600;
         letter-spacing: 0.5px;
         color: #4a463f;
+        touch-action: none;
         border-radius: 7px 7px 0 0;
       }
 
@@ -211,6 +215,11 @@
       [data-popover].right-top {
         left: calc(anchor(right) + var(--popover-offset));
         top: anchor(top);
+      }
+
+      [data-popover].right-bottom {
+        left: calc(anchor(right) + var(--popover-offset));
+        bottom: anchor(bottom);
       }
 
       [data-popover].bottom-left {
@@ -535,7 +544,7 @@
     </div>
 
     <!-- Popover Frame Style Selector -->
-    <div id="stylePopover" popover data-popover class="right-top style-popover-menu">
+    <div id="stylePopover" popover data-popover class="right-bottom style-popover-menu">
       <div class="style-popover-header">
         <span class="style-popover-title">Choose Frame Style</span>
       </div>
@@ -554,6 +563,8 @@
       <div class="status-right">
         <span class="status-item"><span class="hint-badge">Space + Drag</span> Pan</span>
         <span class="status-item"><span class="hint-badge">Alt + Drag</span> Duplicate</span>
+        <span class="status-item"><span class="hint-badge">Arrows</span> Nudge selection</span>
+        <span class="status-item"><span class="hint-badge">Esc</span> Cancel</span>
         <span class="status-item"><span class="hint-badge">Shift</span> Invert Zigzag</span>
         <span class="status-item"><span class="hint-badge">Ctrl+C</span> Copy</span>
         <span class="status-item"><span class="hint-badge">Ctrl+X</span> Cut</span>
@@ -566,6 +577,6 @@
     <!-- Toast Notification -->
     <div id="toast">Message</div>
 
-    <script type="module" src="ascii.js"></script>
+    <script type="module" src="./index.js"></script>
   </body>
 </html>

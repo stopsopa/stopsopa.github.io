@@ -1,6 +1,6 @@
 <first stage>
 
-create ascii.ts next to ascii.html
+create ascii.ts next to ascii.html (NOTE: since moved to pages/services/ascii/index.html + index.ts)
 
 and allow me to always transpile it
 

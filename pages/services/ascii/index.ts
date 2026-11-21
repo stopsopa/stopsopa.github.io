@@ -531,7 +531,7 @@ export type DragState =
       startY: number;
     }
   | { type: "draw"; startX: number; startY: number }
-  | { type: "erase" };
+  | { type: "erase"; lastX: number; lastY: number };
 
 export interface AppState {
   tool: ToolType;
@@ -546,6 +546,7 @@ export interface AppState {
   selection: SelectionRect | null;
   drag: DragState | null;
   lineDrag: LineDragState | null;
+  previewGrid: AsciiGrid | null;
   drawingPreview: DrawingPreview | null;
   isSpacePressed: boolean;
   isPanning: boolean;
@@ -567,7 +568,7 @@ export const state: AppState = {
   cellWidth: 10,
   cellHeight: 20,
   // Caret position for text typing
-  cursor: { x: 5, y: 5, visible: true },
+  cursor: { x: 1, y: 1, visible: true },
   caretBlinkTimer: null,
   // Selection bounding box in grid coordinates: { x1, y1, x2, y2 } or null
   selection: null,
@@ -575,6 +576,8 @@ export const state: AppState = {
   drag: null,
   // Line dragging state in select mode
   lineDrag: null,
+  // Copy of the grid with the line drag in progress applied (rendered instead of the grid)
+  previewGrid: null,
   // Live drawing preview state
   drawingPreview: null,
   // Space key state for infinite canvas panning
@@ -591,6 +594,8 @@ export const state: AppState = {
  */
 export class AsciiGrid {
   private cells: Map<string, string>;
+  // Incremented on every mutation - lets autosave know when there is something new to store
+  version = 0;
 
   constructor() {
     this.cells = new Map<string, string>();
@@ -608,6 +613,7 @@ export class AsciiGrid {
    */
   set(x: number, y: number, char: string): void {
     const key = `${x},${y}`;
+    this.version++;
     if (!char || char === " ") {
       this.cells.delete(key);
     } else {
@@ -619,6 +625,7 @@ export class AsciiGrid {
    * Deletes character at (x, y)
    */
   delete(x: number, y: number): void {
+    this.version++;
     this.cells.delete(`${x},${y}`);
   }
 
@@ -626,6 +633,7 @@ export class AsciiGrid {
    * Clears all cells from the grid
    */
   clear(): void {
+    this.version++;
     this.cells.clear();
   }
 
@@ -663,6 +671,7 @@ export class AsciiGrid {
    * Restores grid state from a plain JavaScript object
    */
   fromJSON(obj: Record<string, string> | null): void {
+    this.version++;
     this.cells.clear();
     if (!obj) return;
     for (const k of Object.keys(obj)) {
@@ -700,20 +709,17 @@ export const grid = new AsciiGrid();
  * History / Undo-Redo Manager
  */
 export class HistoryManager {
-  private undoStack: Array<Record<string, string>>;
-  private redoStack: Array<Record<string, string>>;
-  private maxHistory: number;
-
-  constructor() {
-    this.undoStack = [];
-    this.redoStack = [];
-    this.maxHistory = 50;
-  }
+  private undoStack: Array<Record<string, string>> = [];
+  private redoStack: Array<Record<string, string>> = [];
+  private maxHistory = 200;
+  // True while a run of typed characters is being folded into a single undo step
+  private typing = false;
 
   /**
    * Saves a snapshot of the current grid state
    */
   saveState(): void {
+    this.typing = false;
     this.undoStack.push(grid.toJSON());
     if (this.undoStack.length > this.maxHistory) {
       this.undoStack.shift();
@@ -722,13 +728,33 @@ export class HistoryManager {
   }
 
   /**
+   * Saves a snapshot only at the start of a typing run, so that a whole run
+   * of keystrokes is undone in one step instead of one step per character
+   */
+  beginTyping(): void {
+    if (this.typing) return;
+    this.saveState();
+    this.typing = true;
+  }
+
+  /**
+   * Closes the current typing run - the next keystroke starts a new undo step
+   */
+  endTyping(): void {
+    this.typing = false;
+  }
+
+  /**
    * Reverts to the previous snapshot
    */
   undo(): void {
     if (this.undoStack.length === 0) return;
+    this.typing = false;
     this.redoStack.push(grid.toJSON());
     const previousState = this.undoStack.pop();
     grid.fromJSON(previousState || null);
+    state.selection = null;
+    updateStatus();
     requestRender();
     showToast("Undo");
   }
@@ -738,9 +764,12 @@ export class HistoryManager {
    */
   redo(): void {
     if (this.redoStack.length === 0) return;
+    this.typing = false;
     this.undoStack.push(grid.toJSON());
     const nextState = this.redoStack.pop();
     grid.fromJSON(nextState || null);
+    state.selection = null;
+    updateStatus();
     requestRender();
     showToast("Redo");
   }
@@ -834,21 +863,24 @@ export function resizeCanvas(): void {
 /**
  * Center viewport around canvas origin or existing content
  */
-export function resetView(): void {
+export function resetView(announce: boolean = true): void {
   state.zoom = 1.0;
   const bounds = grid.getBounds();
   if (bounds) {
-    const centerGridX = (bounds.minX + bounds.maxX) / 2;
-    const centerGridY = (bounds.minY + bounds.maxY) / 2;
-    state.panX = window.innerWidth / 2 - centerGridX * state.cellWidth;
-    state.panY = window.innerHeight / 2 - centerGridY * state.cellHeight;
+    const centerGridX = (bounds.minX + bounds.maxX + 1) / 2;
+    const centerGridY = (bounds.minY + bounds.maxY + 1) / 2;
+    state.panX = Math.round(window.innerWidth / 2 - centerGridX * state.cellWidth);
+    state.panY = Math.round(window.innerHeight / 2 - centerGridY * state.cellHeight);
   } else {
-    state.panX = 80;
-    state.panY = 80;
+    // Empty canvas: origin marker sits one cell height away from the top and left window borders.
+    // Cells are half as wide as they are tall, so the same distance on the left is two columns -
+    // a single column (10px) looks like no margin at all.
+    state.panX = state.cellHeight;
+    state.panY = state.cellHeight;
   }
   updateStatus();
   requestRender();
-  showToast("Centered view");
+  if (announce) showToast("Centered view");
 }
 
 /**
@@ -863,9 +895,24 @@ export function getCharStyle(char: string): LineStyle {
   return state.style;
 }
 
+/**
+ * "-", "|" and "+" are everyday text characters ("--verbose", "a+b", "x | y").
+ * They only behave as line characters while the Classic ASCII style is the active style,
+ * otherwise typed text would be dragged, stretched and rewritten as if it were a line.
+ */
+const ASCII_LINE_CHARS = new Set<string>(["-", "|", "+"]);
+
+/**
+ * Gets port connection bitmask for a character
+ */
+export function getCharPorts(char: string): number {
+  if (!char || char === " ") return 0;
+  if (ASCII_LINE_CHARS.has(char) && state.style !== "ascii") return 0;
+  return GLOBAL_CHAR_PORTS[char] || 0;
+}
+
 export function isAnyLineChar(char: string): boolean {
-  if (!char || char === " ") return false;
-  return GLOBAL_CHAR_PORTS[char] !== undefined;
+  return getCharPorts(char) !== 0;
 }
 
 export function isBoxChar(char: string, styleKey?: LineStyle): boolean {
@@ -878,50 +925,98 @@ export function isBoxChar(char: string, styleKey?: LineStyle): boolean {
 }
 
 /**
- * Gets port connection bitmask for a character
+ * Stroke weight of the horizontal and the vertical strokes of every style.
+ * Used to pick a junction character that matches BOTH lines meeting in a cell
+ * (e.g. a single horizontal line touching a double vertical one gives "╟", not "├").
  */
-export function getCharPorts(char: string): number {
-  if (!char || char === " ") return 0;
-  return GLOBAL_CHAR_PORTS[char] || 0;
+type StrokeKind = "light" | "heavy" | "double" | "ascii";
+
+const STYLE_KINDS: Record<LineStyle, { h: StrokeKind; v: StrokeKind }> = {
+  "box-single": { h: "light", v: "light" },
+  "box-heavy": { h: "heavy", v: "heavy" },
+  "box-double": { h: "double", v: "double" },
+  "box-rounded": { h: "light", v: "light" },
+  "box-double-h-single-v": { h: "double", v: "light" },
+  "box-single-h-double-v": { h: "light", v: "double" },
+  "box-heavy-h-light-v": { h: "heavy", v: "light" },
+  "box-light-h-heavy-v": { h: "light", v: "heavy" },
+  "box-dashed-light": { h: "light", v: "light" },
+  "box-dashed-heavy": { h: "heavy", v: "heavy" },
+  ascii: { h: "ascii", v: "ascii" },
+};
+
+const CHAR_KINDS: Record<string, { h?: StrokeKind; v?: StrokeKind }> = {
+  "┈": { h: "light" },
+  "┊": { v: "light" },
+  "┉": { h: "heavy" },
+  "┋": { v: "heavy" },
+};
+
+for (const [key, set] of Object.entries(BOX_SETS) as Array<[LineStyle, BoxSet]>) {
+  for (let mask = 1; mask <= 15; mask++) {
+    const ch = set.junctions[mask];
+    if (!ch || ch === " ") continue;
+    const entry = CHAR_KINDS[ch] || (CHAR_KINDS[ch] = {});
+    if (mask & (DIR_LEFT | DIR_RIGHT) && !entry.h) entry.h = STYLE_KINDS[key].h;
+    if (mask & (DIR_UP | DIR_DOWN) && !entry.v) entry.v = STYLE_KINDS[key].v;
+  }
 }
+
+const STYLE_KEYS = Object.keys(BOX_SETS) as LineStyle[];
 
 /**
  * Computes and updates proper junction character at (x, y) based on existing neighbor connectivity.
  * IMPORTANT: NEVER writes into empty cells ' '. Only resolves non-empty line characters!
+ *
+ * preferredStyle is used when it is compatible with the strokes meeting in the cell
+ * (that is how rounded corners / dashed strokes are kept), otherwise a style matching
+ * the weights of the horizontal and vertical strokes is looked up.
  */
-export function resolveJunction(x: number, y: number, gridInstance: AsciiGrid = grid, forcedStyle?: LineStyle): void {
+export function resolveJunction(
+  x: number,
+  y: number,
+  gridInstance: AsciiGrid = grid,
+  preferredStyle?: LineStyle
+): void {
   const char = gridInstance.get(x, y);
-  if (!char || char === " " || !isAnyLineChar(char)) return;
+  if (!isAnyLineChar(char)) return;
 
-  const styleKey = forcedStyle || getCharStyle(char) || state.style;
-  let mask = 0;
-
-  // Check UP neighbor
   const upChar = gridInstance.get(x, y - 1);
-  if (upChar !== " " && getCharPorts(upChar) & DIR_DOWN) {
-    mask |= DIR_UP;
-  }
-
-  // Check RIGHT neighbor
   const rightChar = gridInstance.get(x + 1, y);
-  if (rightChar !== " " && getCharPorts(rightChar) & DIR_LEFT) {
-    mask |= DIR_RIGHT;
-  }
-
-  // Check DOWN neighbor
   const downChar = gridInstance.get(x, y + 1);
-  if (downChar !== " " && getCharPorts(downChar) & DIR_UP) {
-    mask |= DIR_DOWN;
-  }
-
-  // Check LEFT neighbor
   const leftChar = gridInstance.get(x - 1, y);
-  if (leftChar !== " " && getCharPorts(leftChar) & DIR_RIGHT) {
-    mask |= DIR_LEFT;
-  }
+
+  let mask = 0;
+  if (getCharPorts(upChar) & DIR_DOWN) mask |= DIR_UP;
+  if (getCharPorts(rightChar) & DIR_LEFT) mask |= DIR_RIGHT;
+  if (getCharPorts(downChar) & DIR_UP) mask |= DIR_DOWN;
+  if (getCharPorts(leftChar) & DIR_RIGHT) mask |= DIR_LEFT;
 
   // If mask is 0 (isolated point), keep original char
   if (mask === 0) return;
+
+  const own = CHAR_KINDS[char] || {};
+  const needH = (mask & (DIR_LEFT | DIR_RIGHT)) !== 0;
+  const needV = (mask & (DIR_UP | DIR_DOWN)) !== 0;
+  const hKind =
+    own.h ||
+    (mask & DIR_LEFT ? (CHAR_KINDS[leftChar] || {}).h : undefined) ||
+    (mask & DIR_RIGHT ? (CHAR_KINDS[rightChar] || {}).h : undefined);
+  const vKind =
+    own.v ||
+    (mask & DIR_UP ? (CHAR_KINDS[upChar] || {}).v : undefined) ||
+    (mask & DIR_DOWN ? (CHAR_KINDS[downChar] || {}).v : undefined);
+
+  const fits = (key: LineStyle): boolean => {
+    const kinds = STYLE_KINDS[key];
+    return (!needH || !hKind || kinds.h === hKind) && (!needV || !vKind || kinds.v === vKind);
+  };
+
+  const ownStyle = getCharStyle(char);
+  let styleKey: LineStyle = preferredStyle || ownStyle;
+  if (!fits(styleKey)) {
+    styleKey = fits(ownStyle) ? ownStyle : STYLE_KEYS.find(fits) || ownStyle;
+  }
 
   const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
   const resolvedChar = set.junctions[mask];
@@ -932,28 +1027,27 @@ export function resolveJunction(x: number, y: number, gridInstance: AsciiGrid = 
 }
 
 /**
- * Resolves junctions for modified points and their immediately connected neighbors
+ * Resolves junctions for modified points and their immediately connected neighbors.
+ * forcedStyle applies only to the given points - neighbors always keep their own style.
  */
 export function resolveJunctionsAround(points: Point[], gridInstance: AsciiGrid = grid, forcedStyle?: LineStyle): void {
+  const own = new Set<string>();
+  for (const pt of points) own.add(`${pt.x},${pt.y}`);
+
   const checked = new Set<string>();
+  const visit = (x: number, y: number): void => {
+    const key = `${x},${y}`;
+    if (checked.has(key)) return;
+    checked.add(key);
+    resolveJunction(x, y, gridInstance, own.has(key) ? forcedStyle : undefined);
+  };
+
   for (const pt of points) {
-    const neighbors = [
-      { x: pt.x, y: pt.y },
-      { x: pt.x, y: pt.y - 1 },
-      { x: pt.x + 1, y: pt.y },
-      { x: pt.x, y: pt.y + 1 },
-      { x: pt.x - 1, y: pt.y },
-    ];
-    for (const n of neighbors) {
-      const key = `${n.x},${n.y}`;
-      if (!checked.has(key)) {
-        checked.add(key);
-        const cellChar = gridInstance.get(n.x, n.y);
-        if (cellChar && cellChar !== " " && isAnyLineChar(cellChar)) {
-          resolveJunction(n.x, n.y, gridInstance, forcedStyle);
-        }
-      }
-    }
+    visit(pt.x, pt.y);
+    visit(pt.x, pt.y - 1);
+    visit(pt.x + 1, pt.y);
+    visit(pt.x, pt.y + 1);
+    visit(pt.x - 1, pt.y);
   }
 }
 
@@ -962,56 +1056,69 @@ export function resolveJunctionsAround(points: Point[], gridInstance: AsciiGrid 
  */
 
 /**
- * Generates straight line path between (x1, y1) and (x2, y2)
+ * Assigns line characters to an ordered, 4-connected list of cells:
+ * straight strokes along the way and proper corners wherever the path turns.
+ */
+export function charsForPath(cells: Point[], set: BoxSet): CharPoint[] {
+  return cells.map((c, i) => {
+    let mask = 0;
+    for (const n of [cells[i - 1], cells[i + 1]]) {
+      if (!n) continue;
+      if (n.x < c.x) mask |= DIR_LEFT;
+      else if (n.x > c.x) mask |= DIR_RIGHT;
+      else if (n.y < c.y) mask |= DIR_UP;
+      else if (n.y > c.y) mask |= DIR_DOWN;
+    }
+    const char = mask === 0 ? set.h : set.junctions[mask] || set.h;
+    return { x: c.x, y: c.y, char };
+  });
+}
+
+/**
+ * Generates straight line path between (x1, y1) and (x2, y2).
+ * Diagonals are drawn as a connected staircase (every step is joined with corner characters).
  */
 export function getStraightLinePath(x1: number, y1: number, x2: number, y2: number): CharPoint[] {
-  const points: CharPoint[] = [];
   const set = BOX_SETS[state.style] || BOX_SETS["box-single"];
+  const cells: Point[] = [];
 
-  if (y1 === y2) {
-    // Pure horizontal line
-    const minX = Math.min(x1, x2);
-    const maxX = Math.max(x1, x2);
-    for (let x = minX; x <= maxX; x++) {
-      points.push({ x, y: y1, char: set.h });
-    }
-    return points;
-  }
-
-  if (x1 === x2) {
-    // Pure vertical line
-    const minY = Math.min(y1, y2);
-    const maxY = Math.max(y1, y2);
-    for (let y = minY; y <= maxY; y++) {
-      points.push({ x: x1, y, char: set.v });
-    }
-    return points;
-  }
-
-  // Diagonal Bresenham line
   const dx = Math.abs(x2 - x1);
   const dy = Math.abs(y2 - y1);
   const sx = x1 < x2 ? 1 : -1;
   const sy = y1 < y2 ? 1 : -1;
+  const isHorizDominant = dx >= dy;
   let err = dx - dy;
   let cx = x1;
   let cy = y1;
-  const isHorizDominant = dx >= dy;
 
-  while (true) {
-    points.push({ x: cx, y: cy, char: isHorizDominant ? set.h : set.v });
-    if (cx === x2 && cy === y2) break;
+  cells.push({ x: cx, y: cy });
+  while (cx !== x2 || cy !== y2) {
     const e2 = 2 * err;
-    if (e2 > -dy) {
+    const stepX = e2 > -dy;
+    const stepY = e2 < dx;
+    if (stepX && stepY) {
+      // Diagonal step: go through an elbow cell so the staircase stays connected
+      if (isHorizDominant) {
+        cx += sx;
+        cells.push({ x: cx, y: cy });
+        cy += sy;
+      } else {
+        cy += sy;
+        cells.push({ x: cx, y: cy });
+        cx += sx;
+      }
+      err += dx - dy;
+    } else if (stepX) {
       err -= dy;
       cx += sx;
-    }
-    if (e2 < dx) {
+    } else {
       err += dx;
       cy += sy;
     }
+    cells.push({ x: cx, y: cy });
   }
-  return points;
+
+  return charsForPath(cells, set);
 }
 
 /**
@@ -1269,249 +1376,395 @@ export function detectLineAt(x: number, y: number): LineSegment | null {
 }
 
 /**
- * Executes dragging of a horizontal line up/down, stretching/shrinking perpendicular connections.
- * If duplicate is true, preserves the original line and stretches connections to pull a new row.
+ * Line moving (select mode)
+ *
+ * All the logic below is written once, for a HORIZONTAL line moved up/down.
+ * Vertical lines go through exactly the same code using a transposed view of the grid
+ * (x and y swapped, ports mirrored accordingly).
  */
-export function applyHorizontalLineDrag(segment: HorizontalSegment, dy: number, duplicate: boolean = false): void {
-  if (dy === 0) return;
-  history.saveState();
+interface GridView {
+  get(x: number, y: number): string;
+  set(x: number, y: number, char: string): void;
+  delete(x: number, y: number): void;
+  ports(char: string): number;
+  real(x: number, y: number): Point;
+}
 
-  const oldY = segment.y;
-  const newY = oldY + dy;
-  const segmentChar = grid.get(segment.startX, oldY);
-  const styleKey = getCharStyle(segmentChar) || state.style;
-  const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
+interface ViewSegment {
+  y: number;
+  startX: number;
+  endX: number;
+}
 
-  // Find perpendicular vertical connections along the horizontal segment
-  const connections: Array<{ x: number; hasUp: boolean; hasDown: boolean }> = [];
-  for (let x = segment.startX; x <= segment.endX; x++) {
-    const curChar = grid.get(x, oldY);
-    const upChar = grid.get(x, oldY - 1);
-    const downChar = grid.get(x, oldY + 1);
-    const hasUp = upChar !== " " && (getCharPorts(upChar) & DIR_DOWN) !== 0;
-    const hasDown = downChar !== " " && (getCharPorts(downChar) & DIR_UP) !== 0;
-    const curPorts = curChar !== " " ? getCharPorts(curChar) : 0;
-    if (
-      hasUp ||
-      hasDown ||
-      (duplicate && (x === segment.startX || x === segment.endX || (curPorts & (DIR_UP | DIR_DOWN)) !== 0))
-    ) {
-      connections.push({
-        x,
-        hasUp: hasUp || (curPorts & DIR_UP) !== 0,
-        hasDown: hasDown || (curPorts & DIR_DOWN) !== 0,
-      });
-    }
+function transposePorts(p: number): number {
+  return (
+    (p & DIR_UP ? DIR_LEFT : 0) |
+    (p & DIR_LEFT ? DIR_UP : 0) |
+    (p & DIR_DOWN ? DIR_RIGHT : 0) |
+    (p & DIR_RIGHT ? DIR_DOWN : 0)
+  );
+}
+
+function makeView(g: AsciiGrid, transposed: boolean): GridView {
+  if (!transposed) {
+    return {
+      get: (x, y) => g.get(x, y),
+      set: (x, y, char) => g.set(x, y, char),
+      delete: (x, y) => g.delete(x, y),
+      ports: (char) => getCharPorts(char),
+      real: (x, y) => ({ x, y }),
+    };
   }
+  return {
+    get: (x, y) => g.get(y, x),
+    set: (x, y, char) => g.set(y, x, char),
+    delete: (x, y) => g.delete(y, x),
+    ports: (char) => transposePorts(getCharPorts(char)),
+    real: (x, y) => ({ x: y, y: x }),
+  };
+}
 
-  // 1. Erase old horizontal line cells (only when not duplicating)
-  if (!duplicate) {
-    for (let x = segment.startX; x <= segment.endX; x++) {
-      grid.delete(x, oldY);
-    }
-  }
-
-  // 2. Adjust vertical perpendicular lines
-  for (const conn of connections) {
-    const x = conn.x;
-    if (dy > 0) {
-      // Dragged DOWN
-      if (duplicate) {
-        for (let y = oldY + 1; y < newY; y++) {
-          grid.set(x, y, set.v);
-        }
-      } else {
-        if (conn.hasUp && conn.hasDown) {
-          // Vertical line continues through the moved horizontal line
-          for (let y = oldY; y < newY; y++) {
-            grid.set(x, y, set.v);
-          }
-        } else if (conn.hasUp) {
-          // Vertical line from above extends down to newY
-          for (let y = oldY; y < newY; y++) {
-            grid.set(x, y, set.v);
-          }
-        } else if (conn.hasDown) {
-          // Vertical line below shrinks from oldY to newY
-          for (let y = oldY + 1; y < newY; y++) {
-            grid.delete(x, y);
-          }
-        }
-      }
-    } else {
-      // Dragged UP
-      if (duplicate) {
-        for (let y = newY + 1; y < oldY; y++) {
-          grid.set(x, y, set.v);
-        }
-      } else {
-        if (conn.hasUp && conn.hasDown) {
-          // Vertical line continues through the moved horizontal line
-          for (let y = newY + 1; y <= oldY; y++) {
-            grid.set(x, y, set.v);
-          }
-        } else if (conn.hasUp) {
-          // Vertical line above shrinks from oldY back up to newY
-          for (let y = newY + 1; y <= oldY; y++) {
-            grid.delete(x, y);
-          }
-        } else if (conn.hasDown) {
-          // Vertical line below extends up to newY
-          for (let y = newY + 1; y <= oldY; y++) {
-            grid.set(x, y, set.v);
-          }
-        }
-      }
-    }
-  }
-
-  // 3. Draw new horizontal line at newY
-  const affectedPoints: Point[] = [];
-  for (let x = segment.startX; x <= segment.endX; x++) {
-    grid.set(x, newY, set.h);
-    affectedPoints.push({ x, y: newY });
-    affectedPoints.push({ x, y: oldY });
-  }
-
-  for (const conn of connections) {
-    const minY = Math.min(oldY, newY) - 1;
-    const maxY = Math.max(oldY, newY) + 1;
-    for (let y = minY; y <= maxY; y++) {
-      affectedPoints.push({ x: conn.x, y });
-    }
-  }
-
-  // 4. Resolve junctions for all affected non-empty cells
-  resolveJunctionsAround(affectedPoints, grid, styleKey);
+function toViewSegment(seg: LineSegment): ViewSegment {
+  return seg.type === "horizontal"
+    ? { y: seg.y, startX: seg.startX, endX: seg.endX }
+    : { y: seg.x, startX: seg.startY, endX: seg.endY };
 }
 
 /**
- * Executes dragging of a vertical line left/right, stretching/shrinking perpendicular connections.
- * If duplicate is true, preserves the original line and stretches connections to pull a new column.
+ * Style of a line segment. Corners and junctions of rounded/dashed/mixed styles share
+ * characters with the plain single style, so any non-single character on the line wins.
  */
-export function applyVerticalLineDrag(segment: VerticalSegment, dx: number, duplicate: boolean = false): void {
-  if (dx === 0) return;
-  history.saveState();
+export function segmentStyle(g: AsciiGrid, seg: LineSegment): LineStyle {
+  let found: LineStyle | null = null;
+  const length = seg.type === "horizontal" ? seg.endX - seg.startX : seg.endY - seg.startY;
+  for (let i = 0; i <= length; i++) {
+    const char = seg.type === "horizontal" ? g.get(seg.startX + i, seg.y) : g.get(seg.x, seg.startY + i);
+    if (!isAnyLineChar(char)) continue;
+    const style = getCharStyle(char);
+    if (style !== "box-single") return style;
+    found = style;
+  }
+  return found || state.style;
+}
 
-  const oldX = segment.x;
-  const newX = oldX + dx;
-  const segmentChar = grid.get(oldX, segment.startY);
-  const styleKey = getCharStyle(segmentChar) || state.style;
-  const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
+const connectsUp = (v: GridView, x: number, y: number): boolean => (v.ports(v.get(x, y - 1)) & DIR_DOWN) !== 0;
+const connectsDown = (v: GridView, x: number, y: number): boolean => (v.ports(v.get(x, y + 1)) & DIR_UP) !== 0;
 
-  // Find perpendicular horizontal connections along the vertical segment
-  const connections: Array<{ y: number; hasLeft: boolean; hasRight: boolean }> = [];
-  for (let y = segment.startY; y <= segment.endY; y++) {
-    const curChar = grid.get(oldX, y);
-    const leftChar = grid.get(oldX - 1, y);
-    const rightChar = grid.get(oldX + 1, y);
-    const hasLeft = leftChar !== " " && (getCharPorts(leftChar) & DIR_RIGHT) !== 0;
-    const hasRight = rightChar !== " " && (getCharPorts(rightChar) & DIR_LEFT) !== 0;
-    const curPorts = curChar !== " " ? getCharPorts(curChar) : 0;
-    if (
-      hasLeft ||
-      hasRight ||
-      (duplicate && (y === segment.startY || y === segment.endY || (curPorts & (DIR_LEFT | DIR_RIGHT)) !== 0))
-    ) {
-      connections.push({
-        y,
-        hasLeft: hasLeft || (curPorts & DIR_LEFT) !== 0,
-        hasRight: hasRight || (curPorts & DIR_RIGHT) !== 0,
-      });
+/**
+ * Decides how a line is moved:
+ *  - "push" (table mode): the line is a row separator of a grid - both of its ends sit on
+ *    lines continuing above AND below ("├────┤"). Moving it resizes the row above it and
+ *    everything below (lines and text) travels together with the line.
+ *  - otherwise "stretch": only the line moves, perpendicular lines attached to it stretch/shrink.
+ * For push mode `end` is the last row of the structure hanging below the line.
+ */
+function planLineMove(v: GridView, vs: ViewSegment): { push: boolean; end: number } {
+  const stretch = { push: false, end: vs.y };
+  const a = vs.startX;
+  const b = vs.endX;
+  if (!(connectsUp(v, a, vs.y) && connectsDown(v, a, vs.y) && connectsUp(v, b, vs.y) && connectsDown(v, b, vs.y))) {
+    return stretch;
+  }
+
+  // Walk all lines connected below the separator. If any of them leaves the column range
+  // of the separator, shifting just those columns would tear the drawing apart -> stretch.
+  const seen = new Set<string>();
+  const queue: Array<[number, number]> = [];
+  for (let x = a; x <= b; x++) {
+    if (connectsDown(v, x, vs.y)) queue.push([x, vs.y + 1]);
+  }
+  let end = vs.y;
+  const steps: Array<[number, number, number, number]> = [
+    [0, -1, DIR_UP, DIR_DOWN],
+    [1, 0, DIR_RIGHT, DIR_LEFT],
+    [0, 1, DIR_DOWN, DIR_UP],
+    [-1, 0, DIR_LEFT, DIR_RIGHT],
+  ];
+  while (queue.length) {
+    const [x, y] = queue.pop() as [number, number];
+    if (y <= vs.y) continue;
+    const key = `${x},${y}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    if (x < a || x > b || seen.size > 50000) return stretch;
+    if (y > end) end = y;
+    const p = v.ports(v.get(x, y));
+    for (const [sx, sy, bit, opposite] of steps) {
+      if (p & bit && v.ports(v.get(x + sx, y + sy)) & opposite) queue.push([x + sx, y + sy]);
     }
   }
-
-  // 1. Erase old vertical line cells (only when not duplicating)
-  if (!duplicate) {
-    for (let y = segment.startY; y <= segment.endY; y++) {
-      grid.delete(oldX, y);
-    }
-  }
-
-  // 2. Adjust horizontal perpendicular lines
-  for (const conn of connections) {
-    const y = conn.y;
-    if (dx > 0) {
-      // Dragged RIGHT
-      if (duplicate) {
-        for (let x = oldX + 1; x < newX; x++) {
-          grid.set(x, y, set.h);
-        }
-      } else {
-        if (conn.hasLeft && conn.hasRight) {
-          // Horizontal line continues through the moved vertical line
-          for (let x = oldX; x < newX; x++) {
-            grid.set(x, y, set.h);
-          }
-        } else if (conn.hasLeft) {
-          // Horizontal line from left extends right to newX
-          for (let x = oldX; x < newX; x++) {
-            grid.set(x, y, set.h);
-          }
-        } else if (conn.hasRight) {
-          // Horizontal line on right shrinks from oldX to newX
-          for (let x = oldX + 1; x < newX; x++) {
-            grid.delete(x, y);
-          }
-        }
-      }
-    } else {
-      // Dragged LEFT
-      if (duplicate) {
-        for (let x = newX + 1; x < oldX; x++) {
-          grid.set(x, y, set.h);
-        }
-      } else {
-        if (conn.hasLeft && conn.hasRight) {
-          // Horizontal line continues through the moved vertical line
-          for (let x = newX + 1; x <= oldX; x++) {
-            grid.set(x, y, set.h);
-          }
-        } else if (conn.hasLeft) {
-          // Horizontal line on left shrinks from oldX back to newX
-          for (let x = newX + 1; x <= oldX; x++) {
-            grid.delete(x, y);
-          }
-        } else if (conn.hasRight) {
-          // Horizontal line on right extends left to newX
-          for (let x = newX + 1; x <= oldX; x++) {
-            grid.set(x, y, set.h);
-          }
-        }
-      }
-    }
-  }
-
-  // 3. Draw new vertical line at newX
-  const affectedPoints: Point[] = [];
-  for (let y = segment.startY; y <= segment.endY; y++) {
-    grid.set(newX, y, set.v);
-    affectedPoints.push({ x: newX, y });
-    affectedPoints.push({ x: oldX, y });
-  }
-
-  for (const conn of connections) {
-    const minX = Math.min(oldX, newX) - 1;
-    const maxX = Math.max(oldX, newX) + 1;
-    for (let x = minX; x <= maxX; x++) {
-      affectedPoints.push({ x, y: conn.y });
-    }
-  }
-
-  // 4. Resolve junctions for all affected non-empty cells
-  resolveJunctionsAround(affectedPoints, grid, styleKey);
+  return { push: true, end };
 }
 
 /**
- * Executes prolonging or shortening of a horizontal line from either endpoint
+ * Limits how far a line may be moved, so that moving it never destroys anything:
+ *  - push mode, shrinking the row above: only rows holding nothing but vertical strokes can go
+ *  - stretch mode: no limit at all
  */
-export function applyHorizontalLineExtend(segment: HorizontalSegment, newStartX: number, newEndX: number): void {
+function clampLineMove(v: GridView, vs: ViewSegment, delta: number, push: boolean): number {
+  if (delta === 0) return 0;
+  const dir = delta > 0 ? 1 : -1;
+  let limit = Math.abs(delta);
+
+  if (push) {
+    if (dir > 0) return delta;
+    let removable = 0;
+    while (removable < limit) {
+      const row = vs.y - 1 - removable;
+      let ok = true;
+      for (let x = vs.startX; x <= vs.endX && ok; x++) {
+        const char = v.get(x, row);
+        if (char === " ") continue;
+        const p = v.ports(char);
+        if (p === 0 || p & (DIR_LEFT | DIR_RIGHT)) ok = false;
+      }
+      if (!ok) break;
+      removable++;
+    }
+    return -removable;
+  }
+
+  // Stretch mode is never limited: perpendicular lines keep their far end where it is
+  // and simply get longer, shorter or flip to the other side of the moved line
+  return delta;
+}
+
+/**
+ * Returns the distance a line can really be moved by (see clampLineMove)
+ */
+export function clampLineDrag(seg: LineSegment, delta: number, duplicate: boolean, g: AsciiGrid = grid): number {
+  if (duplicate || delta === 0) return delta;
+  const v = makeView(g, seg.type === "vertical");
+  const vs = toViewSegment(seg);
+  return clampLineMove(v, vs, delta, planLineMove(v, vs).push);
+}
+
+/**
+ * Moves a line segment by delta cells perpendicular to its direction
+ * (horizontal lines up/down, vertical lines left/right) inside the given grid.
+ * If duplicate is true, the original line is preserved and a new row/column is pulled out of it.
+ * Does not touch history - callers decide when to snapshot.
+ */
+export function applyLineMove(g: AsciiGrid, seg: LineSegment, delta: number, duplicate: boolean = false): void {
+  if (delta === 0) return;
+  const transposed = seg.type === "vertical";
+  const v = makeView(g, transposed);
+  const vs = toViewSegment(seg);
+  const a = vs.startX;
+  const b = vs.endX;
+  const y0 = vs.y;
+
+  const styleKey = segmentStyle(g, seg);
+  const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
+  const along = transposed ? set.v : set.h;
+  const perp = transposed ? set.h : set.v;
+  // Reuse the stroke of the perpendicular line being prolonged when there is one
+  const perpChar = (x: number, y: number): string => {
+    const char = v.get(x, y);
+    return v.ports(char) === (DIR_UP | DIR_DOWN) ? char : perp;
+  };
+
+  const forced: Point[] = [];
+  const touched: Point[] = [];
+
+  if (duplicate) {
+    const newY = y0 + delta;
+    const lo = Math.min(y0, newY);
+    const hi = Math.max(y0, newY);
+    for (let x = a; x <= b; x++) {
+      const cur = v.ports(v.get(x, y0));
+      if (connectsUp(v, x, y0) || connectsDown(v, x, y0) || x === a || x === b || cur & (DIR_UP | DIR_DOWN)) {
+        for (let y = lo + 1; y < hi; y++) {
+          v.set(x, y, perp);
+          forced.push(v.real(x, y));
+        }
+      }
+    }
+    for (let x = a; x <= b; x++) {
+      v.set(x, newY, along);
+      forced.push(v.real(x, newY));
+      touched.push(v.real(x, y0));
+    }
+    resolveJunctionsAround(forced, g, styleKey);
+    resolveJunctionsAround(touched, g);
+    return;
+  }
+
+  const plan = planLineMove(v, vs);
+  delta = clampLineMove(v, vs, delta, plan.push);
+  if (delta === 0) return;
+  const newY = y0 + delta;
+  const lo = Math.min(y0, newY);
+  const hi = Math.max(y0, newY);
+
+  const conns: Array<{ x: number; up: boolean; down: boolean; upChar: string; downChar: string }> = [];
+  for (let x = a; x <= b; x++) {
+    const up = connectsUp(v, x, y0);
+    const down = connectsDown(v, x, y0);
+    if (up || down) conns.push({ x, up, down, upChar: perpChar(x, y0 - 1), downChar: perpChar(x, y0 + 1) });
+  }
+
+  if (plan.push) {
+    // Table mode: the line and everything below it (within its columns) travels together
+    let end = plan.end;
+    if (delta > 0) {
+      // Whatever sits right below the structure is pushed as well, up to the first gap big enough
+      const bounds = g.getBounds();
+      const last = bounds ? (transposed ? bounds.maxX : bounds.maxY) : end;
+      let emptyRows = 0;
+      for (let y = end + 1; y <= last && emptyRows < delta; y++) {
+        let empty = true;
+        for (let x = a; x <= b && empty; x++) {
+          if (v.get(x, y) !== " ") empty = false;
+        }
+        if (empty) {
+          emptyRows++;
+        } else {
+          end = y;
+          emptyRows = 0;
+        }
+      }
+    }
+
+    const block: Array<{ x: number; y: number; char: string }> = [];
+    for (let y = y0; y <= end; y++) {
+      for (let x = a; x <= b; x++) {
+        const char = v.get(x, y);
+        if (char !== " ") block.push({ x, y, char });
+      }
+    }
+    for (const cell of block) v.delete(cell.x, cell.y);
+    if (delta < 0) {
+      for (let y = newY; y < y0; y++) {
+        for (let x = a; x <= b; x++) v.delete(x, y);
+      }
+    }
+    for (const cell of block) v.set(cell.x, cell.y + delta, cell.char);
+    if (delta > 0) {
+      for (const conn of conns) {
+        if (!conn.up) continue;
+        for (let y = y0; y < newY; y++) v.set(conn.x, y, conn.upChar);
+      }
+    }
+    for (let y = lo - 1; y <= hi + 1; y++) {
+      for (let x = a; x <= b; x++) touched.push(v.real(x, y));
+    }
+    resolveJunctionsAround(touched, g);
+    return;
+  }
+
+  // Stretch mode: only the line moves. Every perpendicular line attached to it keeps its far end
+  // (next corner/junction, or its loose end) exactly where it is and is redrawn between that
+  // far end and the new position of the line - so it gets longer, shorter, or flips to the
+  // other side when the line is dragged past the far end. Nothing ever locks the line.
+  const links: Array<{ x: number; far: number; junction: boolean; char: string }> = [];
+  for (const conn of conns) {
+    for (const dir of [-1, 1]) {
+      if (dir < 0 ? !conn.up : !conn.down) continue;
+      const toward = dir > 0 ? DIR_DOWN : DIR_UP;
+      const back = dir > 0 ? DIR_UP : DIR_DOWN;
+      let y = y0 + dir;
+      let junction = false;
+      while (true) {
+        const p = v.ports(v.get(conn.x, y));
+        if (p & (DIR_LEFT | DIR_RIGHT)) {
+          junction = true;
+          break;
+        }
+        if (!(p & toward) || !(v.ports(v.get(conn.x, y + dir)) & back)) break;
+        y += dir;
+      }
+      links.push({ x: conn.x, far: y, junction, char: dir < 0 ? conn.upChar : conn.downChar });
+    }
+  }
+
+  const lineChars: string[] = [];
+  for (let x = a; x <= b; x++) {
+    lineChars.push(v.get(x, y0));
+    v.delete(x, y0);
+    touched.push(v.real(x, y0));
+  }
+
+  // Remove the plain strokes of every attached perpendicular line (its far corner/junction stays)
+  for (const link of links) {
+    const dir = link.far > y0 ? 1 : -1;
+    const last = link.junction ? link.far - dir : link.far;
+    for (let y = y0 + dir; dir > 0 ? y <= last : y >= last; y += dir) v.delete(link.x, y);
+  }
+
+  for (let x = a; x <= b; x++) {
+    v.set(x, newY, lineChars[x - a]);
+    forced.push(v.real(x, newY));
+  }
+
+  // Redraw every perpendicular line between the moved line and its far end
+  for (const link of links) {
+    if (link.far !== newY) {
+      const dir = link.far > newY ? 1 : -1;
+      const last = link.junction ? link.far - dir : link.far;
+      for (let y = newY + dir; dir > 0 ? y <= last : y >= last; y += dir) v.set(link.x, y, link.char);
+    }
+    const from = Math.min(y0, newY, link.far) - 1;
+    const to = Math.max(y0, newY, link.far) + 1;
+    for (let y = from; y <= to; y++) touched.push(v.real(link.x, y));
+  }
+
+  resolveJunctionsAround(forced, g, styleKey);
+  resolveJunctionsAround(touched, g);
+}
+
+/**
+ * Applies the line drag described by `ld` (move or prolong/shorten) to the given grid.
+ * Used both for the live preview (on a clone) and for the final commit.
+ */
+export function applyLineDragTo(g: AsciiGrid, ld: LineDragState): void {
+  const seg = ld.segment;
+  if (ld.mode === "shift") {
+    applyLineMove(g, seg, seg.type === "horizontal" ? ld.dy : ld.dx, !!ld.duplicate);
+  } else if (seg.type === "horizontal") {
+    applyHorizontalLineExtend(
+      g,
+      seg,
+      ld.newStartX !== undefined ? ld.newStartX : seg.startX,
+      ld.newEndX !== undefined ? ld.newEndX : seg.endX
+    );
+  } else {
+    applyVerticalLineExtend(
+      g,
+      seg,
+      ld.newStartY !== undefined ? ld.newStartY : seg.startY,
+      ld.newEndY !== undefined ? ld.newEndY : seg.endY
+    );
+  }
+}
+
+export function isLineDragNoop(ld: LineDragState): boolean {
+  const seg = ld.segment;
+  if (ld.mode === "shift") return (seg.type === "horizontal" ? ld.dy : ld.dx) === 0;
+  if (seg.type === "horizontal") {
+    return (
+      (ld.newStartX === undefined || ld.newStartX === seg.startX) &&
+      (ld.newEndX === undefined || ld.newEndX === seg.endX)
+    );
+  }
+  return (
+    (ld.newStartY === undefined || ld.newStartY === seg.startY) && (ld.newEndY === undefined || ld.newEndY === seg.endY)
+  );
+}
+
+/**
+ * Executes prolonging or shortening of a horizontal line from either endpoint (no history snapshot)
+ */
+export function applyHorizontalLineExtend(
+  g: AsciiGrid,
+  segment: HorizontalSegment,
+  newStartX: number,
+  newEndX: number
+): void {
   if (newStartX === segment.startX && newEndX === segment.endX) return;
-  history.saveState();
 
   const y = segment.y;
-  const segmentChar = grid.get(segment.startX, y);
-  const styleKey = getCharStyle(segmentChar) || state.style;
+  const styleKey = segmentStyle(g, segment);
   const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
   const affectedPoints: Point[] = [];
 
@@ -1519,18 +1772,18 @@ export function applyHorizontalLineExtend(segment: HorizontalSegment, newStartX:
   if (newStartX < segment.startX) {
     // Extend left
     for (let x = newStartX; x < segment.startX; x++) {
-      grid.set(x, y, set.h);
+      g.set(x, y, set.h);
       affectedPoints.push({ x, y });
     }
   } else if (newStartX > segment.startX) {
     // Shrink from left
     for (let x = segment.startX; x < newStartX; x++) {
-      const cur = grid.get(x, y);
+      const cur = g.get(x, y);
       const ports = getCharPorts(cur);
       if ((ports & (DIR_UP | DIR_DOWN)) !== 0) {
         affectedPoints.push({ x, y });
       } else {
-        grid.delete(x, y);
+        g.delete(x, y);
         affectedPoints.push({ x, y });
       }
     }
@@ -1540,18 +1793,18 @@ export function applyHorizontalLineExtend(segment: HorizontalSegment, newStartX:
   if (newEndX > segment.endX) {
     // Extend right
     for (let x = segment.endX + 1; x <= newEndX; x++) {
-      grid.set(x, y, set.h);
+      g.set(x, y, set.h);
       affectedPoints.push({ x, y });
     }
   } else if (newEndX < segment.endX) {
     // Shrink from right
     for (let x = newEndX + 1; x <= segment.endX; x++) {
-      const cur = grid.get(x, y);
+      const cur = g.get(x, y);
       const ports = getCharPorts(cur);
       if ((ports & (DIR_UP | DIR_DOWN)) !== 0) {
         affectedPoints.push({ x, y });
       } else {
-        grid.delete(x, y);
+        g.delete(x, y);
         affectedPoints.push({ x, y });
       }
     }
@@ -1566,19 +1819,22 @@ export function applyHorizontalLineExtend(segment: HorizontalSegment, newStartX:
     affectedPoints.push({ x, y: y + 1 });
   }
 
-  resolveJunctionsAround(affectedPoints, grid, styleKey);
+  resolveJunctionsAround(affectedPoints, g);
 }
 
 /**
  * Executes prolonging or shortening of a vertical line from either endpoint
  */
-export function applyVerticalLineExtend(segment: VerticalSegment, newStartY: number, newEndY: number): void {
+export function applyVerticalLineExtend(
+  g: AsciiGrid,
+  segment: VerticalSegment,
+  newStartY: number,
+  newEndY: number
+): void {
   if (newStartY === segment.startY && newEndY === segment.endY) return;
-  history.saveState();
 
   const x = segment.x;
-  const segmentChar = grid.get(x, segment.startY);
-  const styleKey = getCharStyle(segmentChar) || state.style;
+  const styleKey = segmentStyle(g, segment);
   const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
   const affectedPoints: Point[] = [];
 
@@ -1586,18 +1842,18 @@ export function applyVerticalLineExtend(segment: VerticalSegment, newStartY: num
   if (newStartY < segment.startY) {
     // Extend up
     for (let y = newStartY; y < segment.startY; y++) {
-      grid.set(x, y, set.v);
+      g.set(x, y, set.v);
       affectedPoints.push({ x, y });
     }
   } else if (newStartY > segment.startY) {
     // Shrink from top
     for (let y = segment.startY; y < newStartY; y++) {
-      const cur = grid.get(x, y);
+      const cur = g.get(x, y);
       const ports = getCharPorts(cur);
       if ((ports & (DIR_LEFT | DIR_RIGHT)) !== 0) {
         affectedPoints.push({ x, y });
       } else {
-        grid.delete(x, y);
+        g.delete(x, y);
         affectedPoints.push({ x, y });
       }
     }
@@ -1607,18 +1863,18 @@ export function applyVerticalLineExtend(segment: VerticalSegment, newStartY: num
   if (newEndY > segment.endY) {
     // Extend down
     for (let y = segment.endY + 1; y <= newEndY; y++) {
-      grid.set(x, y, set.v);
+      g.set(x, y, set.v);
       affectedPoints.push({ x, y });
     }
   } else if (newEndY < segment.endY) {
     // Shrink from bottom
     for (let y = newEndY + 1; y <= segment.endY; y++) {
-      const cur = grid.get(x, y);
+      const cur = g.get(x, y);
       const ports = getCharPorts(cur);
       if ((ports & (DIR_LEFT | DIR_RIGHT)) !== 0) {
         affectedPoints.push({ x, y });
       } else {
-        grid.delete(x, y);
+        g.delete(x, y);
         affectedPoints.push({ x, y });
       }
     }
@@ -1633,7 +1889,7 @@ export function applyVerticalLineExtend(segment: VerticalSegment, newStartY: num
     affectedPoints.push({ x: x + 1, y });
   }
 
-  resolveJunctionsAround(affectedPoints, grid, styleKey);
+  resolveJunctionsAround(affectedPoints, g);
 }
 
 /**
@@ -1701,6 +1957,8 @@ export async function copySelectionToClipboard(): Promise<void> {
       hiddenInput.value = text;
       hiddenInput.select();
       document.execCommand("copy");
+      hiddenInput.value = "";
+      if (state.tool !== TOOLS.TEXT) hiddenInput.blur();
       showToast("Copied to clipboard");
     }
   }
@@ -1726,25 +1984,32 @@ export function pasteAsciiText(text: string, targetX: number, targetY: number): 
   if (!text) return;
   history.saveState();
 
-  const lines = text.split(/\r?\n/);
+  const lines = text.replace(/\t/g, "    ").split(/\r?\n/);
   let maxLineLen = 0;
 
   for (let r = 0; r < lines.length; r++) {
-    const line = lines[r];
-    if (line.length > maxLineLen) maxLineLen = line.length;
-    for (let c = 0; c < line.length; c++) {
-      const char = line[c];
-      grid.set(targetX + c, targetY + r, char);
+    // Array.from iterates by code point, so emoji & co. land in one cell instead of two broken halves
+    const chars = Array.from(lines[r]);
+    if (chars.length > maxLineLen) maxLineLen = chars.length;
+    for (let c = 0; c < chars.length; c++) {
+      grid.set(targetX + c, targetY + r, chars[c]);
     }
   }
 
-  // Set selection around the pasted content
-  state.selection = {
-    x1: targetX,
-    y1: targetY,
-    x2: targetX + maxLineLen - 1,
-    y2: targetY + lines.length - 1,
-  };
+  if (state.tool === TOOLS.TEXT) {
+    // Keep typing right after the pasted text
+    state.cursor.x = targetX + Array.from(lines[lines.length - 1]).length;
+    state.cursor.y = targetY + lines.length - 1;
+    state.cursor.visible = true;
+  } else if (state.tool === TOOLS.SELECT) {
+    // Set selection around the pasted content
+    state.selection = {
+      x1: targetX,
+      y1: targetY,
+      x2: targetX + Math.max(maxLineLen, 1) - 1,
+      y2: targetY + lines.length - 1,
+    };
+  }
 
   updateStatus();
   requestRender();
@@ -1778,8 +2043,20 @@ export function deleteSelection(): void {
 /**
  * Text Input Handling
  */
+
+// Column where the current line of text was started - Enter returns the caret there
+let textLineStartX = 1;
+
+export function setTextCursor(x: number, y: number): void {
+  state.cursor.x = x;
+  state.cursor.y = y;
+  state.cursor.visible = true;
+  textLineStartX = x;
+  history.endTyping();
+}
+
 export function handleTextInputChar(char: string): void {
-  history.saveState();
+  history.beginTyping();
   grid.set(state.cursor.x, state.cursor.y, char);
   state.cursor.x++;
   state.cursor.visible = true;
@@ -1788,7 +2065,7 @@ export function handleTextInputChar(char: string): void {
 }
 
 export function handleBackspace(): void {
-  history.saveState();
+  history.beginTyping();
   state.cursor.x--;
   grid.delete(state.cursor.x, state.cursor.y);
   state.cursor.visible = true;
@@ -1796,9 +2073,27 @@ export function handleBackspace(): void {
   updateStatus();
 }
 
+export function handleDeleteKey(): void {
+  history.beginTyping();
+  grid.delete(state.cursor.x, state.cursor.y);
+  state.cursor.visible = true;
+  requestRender();
+  updateStatus();
+}
+
 export function handleEnter(): void {
-  state.cursor.x = 5;
+  history.endTyping();
+  state.cursor.x = textLineStartX;
   state.cursor.y++;
+  state.cursor.visible = true;
+  requestRender();
+  updateStatus();
+}
+
+export function moveTextCursor(dx: number, dy: number): void {
+  history.endTyping();
+  state.cursor.x += dx;
+  state.cursor.y += dy;
   state.cursor.visible = true;
   requestRender();
   updateStatus();
@@ -1826,8 +2121,14 @@ export function setTool(toolName: ToolType): void {
   document.querySelectorAll<HTMLElement>(".tool-btn").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.tool === toolName);
   });
-  if (toolName === TOOLS.TEXT && hiddenInput) {
-    hiddenInput.focus();
+  history.endTyping();
+  if (hiddenInput) {
+    hiddenInput.value = "";
+    if (toolName === TOOLS.TEXT) hiddenInput.focus();
+    else hiddenInput.blur();
+  }
+  if (toolName === TOOLS.TEXT) {
+    setTextCursor(state.cursor.x, state.cursor.y);
   }
   updateStatus();
   requestRender();
@@ -1836,7 +2137,7 @@ export function setTool(toolName: ToolType): void {
 /**
  * Select Line Style & Update Popover / Panel UI
  */
-export function selectStyle(styleKey: LineStyle): void {
+export function selectStyle(styleKey: LineStyle, silent: boolean = false): void {
   state.style = styleKey;
   const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
 
@@ -1860,7 +2161,10 @@ export function selectStyle(styleKey: LineStyle): void {
   }
 
   requestRender();
-  showToast(`Style: ${set.name}`);
+  if (!silent) {
+    scheduleSave();
+    showToast(`Style: ${set.name}`);
+  }
 }
 
 /**
@@ -1932,6 +2236,12 @@ export function render(): void {
 
   ctx.clearRect(0, 0, width, height);
 
+  // Every change of the drawing ends up here - good place to notice there is something to autosave
+  if (grid.version !== savedVersion && !saveTimer) scheduleSave();
+
+  // While a line is being dragged, the preview copy of the grid is shown instead of the real one
+  const g = state.previewGrid || grid;
+
   // 1. Draw Grid Background
   const startGridX = Math.floor(-state.panX / (state.cellWidth * state.zoom)) - 1;
   const endGridX = Math.ceil((width - state.panX) / (state.cellWidth * state.zoom)) + 1;
@@ -1986,30 +2296,8 @@ export function render(): void {
           continue;
         }
       }
-      const char = grid.get(gx, gy);
+      const char = g.get(gx, gy);
       if (char !== " ") {
-        if (state.lineDrag && state.lineDrag.mode !== "shift") {
-          const ld = state.lineDrag;
-          if (ld.segment.type === "horizontal" && gy === ld.segment.y) {
-            const startX = ld.newStartX !== undefined ? ld.newStartX : ld.segment.startX;
-            const endX = ld.newEndX !== undefined ? ld.newEndX : ld.segment.endX;
-            if (gx >= ld.segment.startX && gx <= ld.segment.endX && (gx < startX || gx > endX)) {
-              const ports = getCharPorts(char);
-              if ((ports & (DIR_UP | DIR_DOWN)) === 0) {
-                continue;
-              }
-            }
-          } else if (ld.segment.type === "vertical" && gx === ld.segment.x) {
-            const startY = ld.newStartY !== undefined ? ld.newStartY : ld.segment.startY;
-            const endY = ld.newEndY !== undefined ? ld.newEndY : ld.segment.endY;
-            if (gy >= ld.segment.startY && gy <= ld.segment.endY && (gy < startY || gy > endY)) {
-              const ports = getCharPorts(char);
-              if ((ports & (DIR_LEFT | DIR_RIGHT)) === 0) {
-                continue;
-              }
-            }
-          }
-        }
         const spos = gridToScreen(gx, gy);
         ctx.fillText(char, spos.x, spos.y + 2 * state.zoom);
       }
@@ -2048,100 +2336,6 @@ export function render(): void {
     for (const pt of previewPoints) {
       const spos = gridToScreen(pt.x, pt.y);
       ctx.fillText(pt.char || "─", spos.x, spos.y + 2 * state.zoom);
-    }
-  }
-
-  // 4. Draw Line Drag Preview in Select Mode
-  if (state.lineDrag) {
-    const ld = state.lineDrag;
-    const segmentChar = grid.get(
-      ld.segment.type === "horizontal" ? ld.segment.startX : ld.segment.x,
-      ld.segment.type === "horizontal" ? ld.segment.y : ld.segment.startY
-    );
-    const styleKey = getCharStyle(segmentChar) || state.style;
-    const set = BOX_SETS[styleKey] || BOX_SETS["box-single"];
-    ctx.fillStyle = "#6e6659";
-
-    if (ld.mode === "shift") {
-      if (ld.segment.type === "horizontal") {
-        const targetY = ld.segment.y + ld.dy;
-        for (let x = ld.segment.startX; x <= ld.segment.endX; x++) {
-          const spos = gridToScreen(x, targetY);
-          ctx.fillText(set.h, spos.x, spos.y + 2 * state.zoom);
-        }
-        if (ld.duplicate) {
-          const minY = Math.min(ld.segment.y, targetY);
-          const maxY = Math.max(ld.segment.y, targetY);
-          for (let x = ld.segment.startX; x <= ld.segment.endX; x++) {
-            const curChar = grid.get(x, ld.segment.y);
-            const upChar = grid.get(x, ld.segment.y - 1);
-            const downChar = grid.get(x, ld.segment.y + 1);
-            const hasUp = upChar !== " " && (getCharPorts(upChar) & DIR_DOWN) !== 0;
-            const hasDown = downChar !== " " && (getCharPorts(downChar) & DIR_UP) !== 0;
-            const curPorts = curChar !== " " ? getCharPorts(curChar) : 0;
-            if (
-              hasUp ||
-              hasDown ||
-              x === ld.segment.startX ||
-              x === ld.segment.endX ||
-              (curPorts & (DIR_UP | DIR_DOWN)) !== 0
-            ) {
-              for (let y = minY + 1; y < maxY; y++) {
-                const spos = gridToScreen(x, y);
-                ctx.fillText(set.v, spos.x, spos.y + 2 * state.zoom);
-              }
-            }
-          }
-        }
-      } else {
-        const targetX = ld.segment.x + ld.dx;
-        for (let y = ld.segment.startY; y <= ld.segment.endY; y++) {
-          const spos = gridToScreen(targetX, y);
-          ctx.fillText(set.v, spos.x, spos.y + 2 * state.zoom);
-        }
-        if (ld.duplicate) {
-          const minX = Math.min(ld.segment.x, targetX);
-          const maxX = Math.max(ld.segment.x, targetX);
-          for (let y = ld.segment.startY; y <= ld.segment.endY; y++) {
-            const curChar = grid.get(ld.segment.x, y);
-            const leftChar = grid.get(ld.segment.x - 1, y);
-            const rightChar = grid.get(ld.segment.x + 1, y);
-            const hasLeft = leftChar !== " " && (getCharPorts(leftChar) & DIR_RIGHT) !== 0;
-            const hasRight = rightChar !== " " && (getCharPorts(rightChar) & DIR_LEFT) !== 0;
-            const curPorts = curChar !== " " ? getCharPorts(curChar) : 0;
-            if (
-              hasLeft ||
-              hasRight ||
-              y === ld.segment.startY ||
-              y === ld.segment.endY ||
-              (curPorts & (DIR_LEFT | DIR_RIGHT)) !== 0
-            ) {
-              for (let x = minX + 1; x < maxX; x++) {
-                const spos = gridToScreen(x, y);
-                ctx.fillText(set.h, spos.x, spos.y + 2 * state.zoom);
-              }
-            }
-          }
-        }
-      }
-    } else {
-      if (ld.segment.type === "horizontal") {
-        const y = ld.segment.y;
-        const startX = ld.newStartX !== undefined ? ld.newStartX : ld.segment.startX;
-        const endX = ld.newEndX !== undefined ? ld.newEndX : ld.segment.endX;
-        for (let x = startX; x <= endX; x++) {
-          const spos = gridToScreen(x, y);
-          ctx.fillText(set.h, spos.x, spos.y + 2 * state.zoom);
-        }
-      } else {
-        const x = ld.segment.x;
-        const startY = ld.newStartY !== undefined ? ld.newStartY : ld.segment.startY;
-        const endY = ld.newEndY !== undefined ? ld.newEndY : ld.segment.endY;
-        for (let y = startY; y <= endY; y++) {
-          const spos = gridToScreen(x, y);
-          ctx.fillText(set.v, spos.x, spos.y + 2 * state.zoom);
-        }
-      }
     }
   }
 
@@ -2191,266 +2385,364 @@ export function render(): void {
 }
 
 /**
+ * Persistence: the drawing is autosaved to localStorage, so a refresh does not lose it
+ */
+const STORAGE_KEY = "ascii-editor:v1";
+let savedVersion = 0;
+let saveTimer: any = null;
+
+export function saveToStorage(): void {
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+  savedVersion = grid.version;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ cells: grid.toJSON(), style: state.style }));
+  } catch (err) {
+    // storage unavailable or full - the editor keeps working without persistence
+  }
+}
+
+export function scheduleSave(): void {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveToStorage, 400);
+}
+
+export function loadFromStorage(): void {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (data && data.cells && typeof data.cells === "object") {
+      const cells: Record<string, string> = {};
+      for (const key of Object.keys(data.cells)) {
+        if (/^-?\d+,-?\d+$/.test(key) && typeof data.cells[key] === "string") cells[key] = data.cells[key];
+      }
+      grid.fromJSON(cells);
+    }
+    if (data && typeof data.style === "string" && BOX_SETS[data.style as LineStyle]) {
+      selectStyle(data.style as LineStyle, true);
+    }
+  } catch (err) {
+    // corrupted entry - start with an empty canvas
+  }
+  savedVersion = grid.version;
+}
+
+/**
+ * Selection block helpers
+ */
+type BlockCell = { relX: number; relY: number; char: string };
+
+export function selectionBounds(sel: SelectionRect): Bounds {
+  return {
+    minX: Math.min(sel.x1, sel.x2),
+    maxX: Math.max(sel.x1, sel.x2),
+    minY: Math.min(sel.y1, sel.y2),
+    maxY: Math.max(sel.y1, sel.y2),
+  };
+}
+
+export function captureCells(bounds: Bounds): BlockCell[] {
+  const cells: BlockCell[] = [];
+  for (let y = bounds.minY; y <= bounds.maxY; y++) {
+    for (let x = bounds.minX; x <= bounds.maxX; x++) {
+      cells.push({ relX: x - bounds.minX, relY: y - bounds.minY, char: grid.get(x, y) });
+    }
+  }
+  return cells;
+}
+
+/**
+ * Moves (or duplicates) a captured block by (dx, dy), re-resolves the junctions
+ * around both the old and the new location and moves the selection with it
+ */
+export function moveCells(bounds: Bounds, cells: BlockCell[], dx: number, dy: number, duplicate: boolean): void {
+  if (dx === 0 && dy === 0) return;
+  history.saveState();
+  const touched: Point[] = [];
+  if (!duplicate) {
+    for (let y = bounds.minY; y <= bounds.maxY; y++) {
+      for (let x = bounds.minX; x <= bounds.maxX; x++) {
+        grid.delete(x, y);
+        touched.push({ x, y });
+      }
+    }
+  }
+  for (const item of cells) {
+    if (item.char === " ") continue;
+    const x = bounds.minX + dx + item.relX;
+    const y = bounds.minY + dy + item.relY;
+    grid.set(x, y, item.char);
+    touched.push({ x, y });
+  }
+  resolveJunctionsAround(touched);
+  state.selection = {
+    x1: bounds.minX + dx,
+    y1: bounds.minY + dy,
+    x2: bounds.maxX + dx,
+    y2: bounds.maxY + dy,
+  };
+}
+
+/**
+ * Erases every cell on the way from (x1, y1) to (x2, y2), so fast mouse moves leave no gaps,
+ * and tidies up the junctions of the lines that were cut
+ */
+export function eraseBetween(x1: number, y1: number, x2: number, y2: number): void {
+  const points: Point[] = [];
+  const dx = Math.abs(x2 - x1);
+  const dy = Math.abs(y2 - y1);
+  const sx = x1 < x2 ? 1 : -1;
+  const sy = y1 < y2 ? 1 : -1;
+  let err = dx - dy;
+  let cx = x1;
+  let cy = y1;
+  while (true) {
+    grid.delete(cx, cy);
+    points.push({ x: cx, y: cy });
+    if (cx === x2 && cy === y2) break;
+    const e2 = 2 * err;
+    if (e2 > -dy) {
+      err -= dy;
+      cx += sx;
+    }
+    if (e2 < dx) {
+      err += dx;
+      cy += sy;
+    }
+  }
+  resolveJunctionsAround(points);
+}
+
+/**
+ * Aborts whatever drag is in progress (drawing, selecting, moving, line dragging, panning)
+ * without changing the drawing. Returns true when there was something to cancel.
+ */
+export function cancelDrag(): boolean {
+  if (!state.drag && !state.drawingPreview && !state.isPanning) return false;
+  const drag = state.drag;
+  if (drag && drag.type === "move_selection") {
+    state.selection = { x1: drag.initialX1, y1: drag.initialY1, x2: drag.initialX2, y2: drag.initialY2 };
+  } else if (drag && drag.type === "create_selection") {
+    state.selection = null;
+  }
+  state.drag = null;
+  state.lineDrag = null;
+  state.previewGrid = null;
+  state.drawingPreview = null;
+  state.isPanning = false;
+  updateStatus();
+  requestRender();
+  return true;
+}
+
+/**
+ * Recomputes the line drag (what is dragged, how far) and its live preview
+ */
+function updateLineDrag(drag: Extract<DragState, { type: "drag_line" }>, gridPos: Point, alt: boolean): void {
+  const dx = gridPos.x - drag.startX;
+  const dy = gridPos.y - drag.startY;
+  const { hSeg, vSeg } = drag;
+
+  const shift = (segment: LineSegment, delta: number, duplicate: boolean): LineDragState => {
+    const d = clampLineDrag(segment, delta, duplicate);
+    return segment.type === "horizontal"
+      ? { segment, mode: "shift", dx: 0, dy: d, duplicate }
+      : { segment, mode: "shift", dx: d, dy: 0, duplicate };
+  };
+  const extendH = (seg: HorizontalSegment): LineDragState =>
+    drag.startX <= (seg.startX + seg.endX) / 2
+      ? { segment: seg, mode: "extend_start", dx, dy: 0, newStartX: Math.min(seg.endX, seg.startX + dx) }
+      : { segment: seg, mode: "extend_end", dx, dy: 0, newEndX: Math.max(seg.startX, seg.endX + dx) };
+  const extendV = (seg: VerticalSegment): LineDragState =>
+    drag.startY <= (seg.startY + seg.endY) / 2
+      ? { segment: seg, mode: "extend_start", dx: 0, dy, newStartY: Math.min(seg.endY, seg.startY + dy) }
+      : { segment: seg, mode: "extend_end", dx: 0, dy, newEndY: Math.max(seg.startY, seg.endY + dy) };
+
+  let ld: LineDragState | null = null;
+  if (hSeg && vSeg) {
+    // Corner or junction clicked
+    if (alt) ld = Math.abs(dy) >= Math.abs(dx) ? shift(hSeg, dy, true) : shift(vSeg, dx, true);
+    else ld = Math.abs(dx) >= Math.abs(dy) ? extendH(hSeg) : extendV(vSeg);
+  } else if (hSeg) {
+    if (alt) ld = shift(hSeg, dy, true);
+    else ld = Math.abs(dx) >= Math.abs(dy) ? extendH(hSeg) : shift(hSeg, dy, false);
+  } else if (vSeg) {
+    if (alt) ld = shift(vSeg, dx, true);
+    else ld = Math.abs(dy) >= Math.abs(dx) ? extendV(vSeg) : shift(vSeg, dx, false);
+  }
+
+  state.lineDrag = ld;
+  if (ld && !isLineDragNoop(ld)) {
+    // The preview is the real operation applied to a copy of the grid,
+    // so what is shown while dragging is exactly what gets committed on release
+    const preview = grid.clone();
+    applyLineDragTo(preview, ld);
+    state.previewGrid = preview;
+  } else {
+    state.previewGrid = null;
+  }
+}
+
+/**
  * Setup All Event Listeners on Initialization
  */
 export function setupEventListeners(): void {
   const container = document.getElementById("canvas-container");
   if (!container) return;
 
-  // Mouse Move Handler
-  container.addEventListener("mousemove", (e: MouseEvent) => {
+  let lastPointer = { x: 0, y: 0 };
+
+  const updateHoverCursor = (gridPos: Point): void => {
+    if (state.isSpacePressed) {
+      container.style.cursor = "grab";
+    } else if (state.tool === TOOLS.SELECT) {
+      if (state.selection) {
+        container.style.cursor = isInsideSelection(gridPos.x, gridPos.y) ? "move" : "default";
+      } else {
+        const hSeg = findHorizontalSegment(gridPos.x, gridPos.y);
+        const vSeg = findVerticalSegment(gridPos.x, gridPos.y);
+        if (hSeg && vSeg) container.style.cursor = "move";
+        else if (hSeg) container.style.cursor = "ns-resize";
+        else if (vSeg) container.style.cursor = "ew-resize";
+        else container.style.cursor = "default";
+      }
+    } else if (state.tool === TOOLS.TEXT) {
+      container.style.cursor = "text";
+    } else {
+      container.style.cursor = "crosshair";
+    }
+  };
+
+  // Keeps keyboard focus where we put it (hidden input in text mode) and stops middle-click autoscroll
+  container.addEventListener("mousedown", (e: MouseEvent) => e.preventDefault());
+
+  // Pointer Move Handler (pointer is captured while dragging, so moves keep coming
+  // even when the pointer travels over the tool panel / status bar or leaves the window)
+  container.addEventListener("pointermove", (e: PointerEvent) => {
+    lastPointer = { x: e.clientX, y: e.clientY };
     const gridPos = screenToGrid(e.clientX, e.clientY);
     state.hoverGrid = gridPos;
     updateStatus();
 
     // Panning drag
     if (state.isPanning) {
-      const dx = e.clientX - state.panStart.x;
-      const dy = e.clientY - state.panStart.y;
-      state.panX = state.panStart.initialPanX + dx;
-      state.panY = state.panStart.initialPanY + dy;
+      state.panX = state.panStart.initialPanX + (e.clientX - state.panStart.x);
+      state.panY = state.panStart.initialPanY + (e.clientY - state.panStart.y);
       requestRender();
       return;
     }
 
-    // Tool previews and interaction updates
-    if (state.drag) {
-      if (state.drag.type === "create_selection") {
-        state.selection = {
-          x1: state.drag.startX,
-          y1: state.drag.startY,
-          x2: gridPos.x,
-          y2: gridPos.y,
-        };
-        updateStatus();
-        requestRender();
-      } else if (state.drag.type === "move_selection") {
-        const dx = gridPos.x - state.drag.startX;
-        const dy = gridPos.y - state.drag.startY;
-        state.drag.duplicate = e.altKey;
-        state.selection = {
-          x1: state.drag.initialX1 + dx,
-          y1: state.drag.initialY1 + dy,
-          x2: state.drag.initialX2 + dx,
-          y2: state.drag.initialY2 + dy,
-        };
-        requestRender();
-      } else if (state.drag.type === "drag_line") {
-        const dx = gridPos.x - state.drag.startX;
-        const dy = gridPos.y - state.drag.startY;
-        const hSeg = state.drag.hSeg;
-        const vSeg = state.drag.vSeg;
-        const isAlt = e.altKey;
-
-        if (hSeg && vSeg) {
-          // Corner or junction clicked
-          if (isAlt) {
-            if (Math.abs(dy) >= Math.abs(dx)) {
-              state.lineDrag = { segment: hSeg, mode: "shift", dx: 0, dy, duplicate: true };
-            } else {
-              state.lineDrag = { segment: vSeg, mode: "shift", dx, dy: 0, duplicate: true };
-            }
-          } else if (Math.abs(dx) >= Math.abs(dy)) {
-            const isLeft = state.drag.startX <= (hSeg.startX + hSeg.endX) / 2;
-            if (isLeft) {
-              const newStartX = Math.min(hSeg.endX, hSeg.startX + dx);
-              state.lineDrag = { segment: hSeg, mode: "extend_start", dx, dy: 0, newStartX };
-            } else {
-              const newEndX = Math.max(hSeg.startX, hSeg.endX + dx);
-              state.lineDrag = { segment: hSeg, mode: "extend_end", dx, dy: 0, newEndX };
-            }
-          } else {
-            const isTop = state.drag.startY <= (vSeg.startY + vSeg.endY) / 2;
-            if (isTop) {
-              const newStartY = Math.min(vSeg.endY, vSeg.startY + dy);
-              state.lineDrag = { segment: vSeg, mode: "extend_start", dx: 0, dy, newStartY };
-            } else {
-              const newEndY = Math.max(vSeg.startY, vSeg.endY + dy);
-              state.lineDrag = { segment: vSeg, mode: "extend_end", dx: 0, dy, newEndY };
-            }
-          }
-        } else if (hSeg) {
-          // Horizontal line
-          if (isAlt) {
-            state.lineDrag = { segment: hSeg, mode: "shift", dx: 0, dy, duplicate: true };
-          } else if (Math.abs(dx) >= Math.abs(dy)) {
-            const isLeft = state.drag.startX <= (hSeg.startX + hSeg.endX) / 2;
-            if (isLeft) {
-              const newStartX = Math.min(hSeg.endX, hSeg.startX + dx);
-              state.lineDrag = { segment: hSeg, mode: "extend_start", dx, dy: 0, newStartX };
-            } else {
-              const newEndX = Math.max(hSeg.startX, hSeg.endX + dx);
-              state.lineDrag = { segment: hSeg, mode: "extend_end", dx, dy: 0, newEndX };
-            }
-          } else {
-            state.lineDrag = { segment: hSeg, mode: "shift", dx: 0, dy, duplicate: false };
-          }
-        } else if (vSeg) {
-          // Vertical line
-          if (isAlt) {
-            state.lineDrag = { segment: vSeg, mode: "shift", dx, dy: 0, duplicate: true };
-          } else if (Math.abs(dy) >= Math.abs(dx)) {
-            const isTop = state.drag.startY <= (vSeg.startY + vSeg.endY) / 2;
-            if (isTop) {
-              const newStartY = Math.min(vSeg.endY, vSeg.startY + dy);
-              state.lineDrag = { segment: vSeg, mode: "extend_start", dx: 0, dy, newStartY };
-            } else {
-              const newEndY = Math.max(vSeg.startY, vSeg.endY + dy);
-              state.lineDrag = { segment: vSeg, mode: "extend_end", dx: 0, dy, newEndY };
-            }
-          } else {
-            state.lineDrag = { segment: vSeg, mode: "shift", dx, dy: 0, duplicate: false };
-          }
-        }
-        requestRender();
-      } else if (state.drag.type === "draw") {
-        state.drawingPreview = {
-          tool: state.tool,
-          startX: state.drag.startX,
-          startY: state.drag.startY,
-          currentX: gridPos.x,
-          currentY: gridPos.y,
-          shiftKey: e.shiftKey,
-        };
-        requestRender();
-      } else if (state.drag.type === "erase") {
-        grid.delete(gridPos.x, gridPos.y);
-        requestRender();
-      }
-    } else {
-      // Update cursor icon dynamically in select mode
-      if (state.isSpacePressed) {
-        container.style.cursor = "grab";
-      } else if (state.tool === TOOLS.SELECT) {
-        if (state.selection) {
-          if (isInsideSelection(gridPos.x, gridPos.y)) {
-            container.style.cursor = "move";
-          } else {
-            container.style.cursor = "default";
-          }
-        } else {
-          const hSeg = findHorizontalSegment(gridPos.x, gridPos.y);
-          const vSeg = findVerticalSegment(gridPos.x, gridPos.y);
-          if (hSeg && vSeg) {
-            container.style.cursor = "move";
-          } else if (hSeg) {
-            container.style.cursor = "ns-resize";
-          } else if (vSeg) {
-            container.style.cursor = "ew-resize";
-          } else {
-            container.style.cursor = "default";
-          }
-        }
-      } else if (state.tool === TOOLS.TEXT) {
-        container.style.cursor = "text";
-      } else {
-        container.style.cursor = "crosshair";
-      }
+    const drag = state.drag;
+    if (!drag) {
+      updateHoverCursor(gridPos);
       requestRender();
+      return;
     }
+
+    if (drag.type === "create_selection") {
+      state.selection = { x1: drag.startX, y1: drag.startY, x2: gridPos.x, y2: gridPos.y };
+      updateStatus();
+    } else if (drag.type === "move_selection") {
+      const dx = gridPos.x - drag.startX;
+      const dy = gridPos.y - drag.startY;
+      drag.duplicate = e.altKey;
+      state.selection = {
+        x1: drag.initialX1 + dx,
+        y1: drag.initialY1 + dy,
+        x2: drag.initialX2 + dx,
+        y2: drag.initialY2 + dy,
+      };
+    } else if (drag.type === "drag_line") {
+      updateLineDrag(drag, gridPos, e.altKey);
+    } else if (drag.type === "draw") {
+      state.drawingPreview = {
+        tool: state.tool,
+        startX: drag.startX,
+        startY: drag.startY,
+        currentX: gridPos.x,
+        currentY: gridPos.y,
+        shiftKey: e.shiftKey,
+      };
+    } else if (drag.type === "erase") {
+      eraseBetween(drag.lastX, drag.lastY, gridPos.x, gridPos.y);
+      drag.lastX = gridPos.x;
+      drag.lastY = gridPos.y;
+    }
+    requestRender();
   });
 
-  // Mouse Down Handler
-  container.addEventListener("mousedown", (e: MouseEvent) => {
+  // Pointer Down Handler
+  container.addEventListener("pointerdown", (e: PointerEvent) => {
+    lastPointer = { x: e.clientX, y: e.clientY };
+
+    // A panel button must never keep keyboard focus while working on the canvas,
+    // otherwise Space / Enter would "click" it again
+    if (state.tool === TOOLS.TEXT && hiddenInput) {
+      hiddenInput.focus();
+    } else if (document.activeElement instanceof HTMLElement && document.activeElement !== document.body) {
+      document.activeElement.blur();
+    }
+
+    const startPan = e.button === 1 || (e.button === 0 && state.isSpacePressed);
+    if (!startPan && e.button !== 0) return;
+
+    try {
+      container.setPointerCapture(e.pointerId);
+    } catch (err) {}
+
     // Middle click or Space + Left click initiates panning
-    if (e.button === 1 || (e.button === 0 && state.isSpacePressed)) {
+    if (startPan) {
       state.isPanning = true;
-      state.panStart = {
-        x: e.clientX,
-        y: e.clientY,
-        initialPanX: state.panX,
-        initialPanY: state.panY,
-      };
+      state.panStart = { x: e.clientX, y: e.clientY, initialPanX: state.panX, initialPanY: state.panY };
       container.style.cursor = "grabbing";
       return;
     }
 
-    if (e.button !== 0) return;
-
     const gridPos = screenToGrid(e.clientX, e.clientY);
+    state.hoverGrid = gridPos;
 
     if (state.tool === TOOLS.SELECT) {
-      if (state.selection) {
-        if (isInsideSelection(gridPos.x, gridPos.y)) {
-          // Start moving (or copying with Alt) existing selection block
-          const blockCells: Array<{ relX: number; relY: number; char: string }> = [];
-          const minX = Math.min(state.selection.x1, state.selection.x2);
-          const maxX = Math.max(state.selection.x1, state.selection.x2);
-          const minY = Math.min(state.selection.y1, state.selection.y2);
-          const maxY = Math.max(state.selection.y1, state.selection.y2);
-
-          for (let y = minY; y <= maxY; y++) {
-            for (let x = minX; x <= maxX; x++) {
-              blockCells.push({ relX: x - minX, relY: y - minY, char: grid.get(x, y) });
-            }
-          }
-
-          state.drag = {
-            type: "move_selection",
-            startX: gridPos.x,
-            startY: gridPos.y,
-            initialX1: minX,
-            initialY1: minY,
-            initialX2: maxX,
-            initialY2: maxY,
-            cells: blockCells,
-            duplicate: e.altKey,
-          };
-        } else {
-          // Clicked outside existing selection -> clear selection and start creating a new selection
-          state.selection = null;
-          state.drag = {
-            type: "create_selection",
-            startX: gridPos.x,
-            startY: gridPos.y,
-          };
-          updateStatus();
-          requestRender();
-        }
+      if (state.selection && isInsideSelection(gridPos.x, gridPos.y)) {
+        // Start moving (or copying with Alt) existing selection block
+        const bounds = selectionBounds(state.selection);
+        state.drag = {
+          type: "move_selection",
+          startX: gridPos.x,
+          startY: gridPos.y,
+          initialX1: bounds.minX,
+          initialY1: bounds.minY,
+          initialX2: bounds.maxX,
+          initialY2: bounds.maxY,
+          cells: captureCells(bounds),
+          duplicate: e.altKey,
+        };
+      } else if (state.selection) {
+        // Clicked outside existing selection -> clear selection and start creating a new selection
+        state.selection = null;
+        state.drag = { type: "create_selection", startX: gridPos.x, startY: gridPos.y };
       } else {
         // No active selection: detect lines for table/line editing, or create selection
         const hSeg = findHorizontalSegment(gridPos.x, gridPos.y);
         const vSeg = findVerticalSegment(gridPos.x, gridPos.y);
         const line = detectLineAt(gridPos.x, gridPos.y);
-
         if (line) {
-          // Start dragging line segment
-          state.drag = {
-            type: "drag_line",
-            segment: line,
-            hSeg,
-            vSeg,
-            startX: gridPos.x,
-            startY: gridPos.y,
-          };
+          state.drag = { type: "drag_line", segment: line, hSeg, vSeg, startX: gridPos.x, startY: gridPos.y };
         } else {
-          // Start creating new rectangular selection
-          state.drag = {
-            type: "create_selection",
-            startX: gridPos.x,
-            startY: gridPos.y,
-          };
+          state.drag = { type: "create_selection", startX: gridPos.x, startY: gridPos.y };
         }
       }
     } else if (state.tool === TOOLS.TEXT) {
-      state.cursor.x = gridPos.x;
-      state.cursor.y = gridPos.y;
-      state.cursor.visible = true;
-      if (hiddenInput) hiddenInput.focus();
-      requestRender();
-      updateStatus();
+      setTextCursor(gridPos.x, gridPos.y);
     } else if (state.tool === TOOLS.ERASER) {
       history.saveState();
-      grid.delete(gridPos.x, gridPos.y);
-      state.drag = { type: "erase" };
-      requestRender();
+      eraseBetween(gridPos.x, gridPos.y, gridPos.x, gridPos.y);
+      state.drag = { type: "erase", lastX: gridPos.x, lastY: gridPos.y };
     } else {
       // Line, Zigzag, Rect drawing tools
-      state.drag = {
-        type: "draw",
-        startX: gridPos.x,
-        startY: gridPos.y,
-      };
+      state.drag = { type: "draw", startX: gridPos.x, startY: gridPos.y };
       state.drawingPreview = {
         tool: state.tool,
         startX: gridPos.x,
@@ -2459,99 +2751,67 @@ export function setupEventListeners(): void {
         currentY: gridPos.y,
         shiftKey: e.shiftKey,
       };
-      requestRender();
     }
+    updateStatus();
+    requestRender();
   });
 
-  // Mouse Up Handler
-  window.addEventListener("mouseup", (e: MouseEvent) => {
+  // Pointer Up Handler
+  container.addEventListener("pointerup", (e: PointerEvent) => {
     if (state.isPanning) {
       state.isPanning = false;
       container.style.cursor = state.isSpacePressed ? "grab" : "default";
     }
 
-    if (state.drag) {
-      const gridPos = screenToGrid(e.clientX, e.clientY);
+    const drag = state.drag;
+    if (!drag) return;
+    const gridPos = screenToGrid(e.clientX, e.clientY);
 
-      if (state.drag.type === "drag_line") {
-        if (state.lineDrag) {
-          if (state.lineDrag.mode === "shift") {
-            if (state.lineDrag.segment.type === "horizontal") {
-              applyHorizontalLineDrag(state.lineDrag.segment, state.lineDrag.dy, !!state.lineDrag.duplicate);
-            } else {
-              applyVerticalLineDrag(state.lineDrag.segment, state.lineDrag.dx, !!state.lineDrag.duplicate);
-            }
-          } else {
-            if (state.lineDrag.segment.type === "horizontal") {
-              const newStartX =
-                state.lineDrag.newStartX !== undefined ? state.lineDrag.newStartX : state.lineDrag.segment.startX;
-              const newEndX =
-                state.lineDrag.newEndX !== undefined ? state.lineDrag.newEndX : state.lineDrag.segment.endX;
-              applyHorizontalLineExtend(state.lineDrag.segment, newStartX, newEndX);
-            } else {
-              const newStartY =
-                state.lineDrag.newStartY !== undefined ? state.lineDrag.newStartY : state.lineDrag.segment.startY;
-              const newEndY =
-                state.lineDrag.newEndY !== undefined ? state.lineDrag.newEndY : state.lineDrag.segment.endY;
-              applyVerticalLineExtend(state.lineDrag.segment, newStartY, newEndY);
-            }
-          }
-        }
-        state.lineDrag = null;
-      } else if (state.drag.type === "move_selection") {
-        const dx = gridPos.x - state.drag.startX;
-        const dy = gridPos.y - state.drag.startY;
-        if (dx !== 0 || dy !== 0) {
-          history.saveState();
-          if (!state.drag.duplicate) {
-            // Clear old bounds only when not duplicating
-            for (let y = state.drag.initialY1; y <= state.drag.initialY2; y++) {
-              for (let x = state.drag.initialX1; x <= state.drag.initialX2; x++) {
-                grid.delete(x, y);
-              }
-            }
-          }
-          // Write to new position
-          for (const item of state.drag.cells) {
-            if (item.char !== " ") {
-              grid.set(state.drag.initialX1 + dx + item.relX, state.drag.initialY1 + dy + item.relY, item.char);
-            }
-          }
-          state.selection = {
-            x1: state.drag.initialX1 + dx,
-            y1: state.drag.initialY1 + dy,
-            x2: state.drag.initialX2 + dx,
-            y2: state.drag.initialY2 + dy,
-          };
-        }
-      } else if (state.drag.type === "draw") {
+    if (drag.type === "drag_line") {
+      if (state.previewGrid) {
         history.saveState();
-        let points: CharPoint[] = [];
-        const startX = state.drag.startX;
-        const startY = state.drag.startY;
-
-        if (state.tool === TOOLS.ZIGZAG) {
-          points = getZigzagPath(startX, startY, gridPos.x, gridPos.y, e.shiftKey);
-        } else if (state.tool === TOOLS.LINE) {
-          points = getStraightLinePath(startX, startY, gridPos.x, gridPos.y);
-        } else if (state.tool === TOOLS.RECT) {
-          points = getRectanglePath(startX, startY, gridPos.x, gridPos.y);
-        }
-
-        // Apply points to grid
-        for (const pt of points) {
-          grid.set(pt.x, pt.y, pt.char || "─");
-        }
-
-        // Resolve junctions for all newly drawn points and connected neighbors
-        resolveJunctionsAround(points, grid, state.style);
-        state.drawingPreview = null;
+        grid.fromJSON(state.previewGrid.toJSON());
       }
-
-      state.drag = null;
-      requestRender();
-      updateStatus();
+      state.lineDrag = null;
+      state.previewGrid = null;
+    } else if (drag.type === "move_selection") {
+      moveCells(
+        { minX: drag.initialX1, minY: drag.initialY1, maxX: drag.initialX2, maxY: drag.initialY2 },
+        drag.cells,
+        gridPos.x - drag.startX,
+        gridPos.y - drag.startY,
+        !!drag.duplicate
+      );
+    } else if (drag.type === "draw") {
+      // A plain click (no movement) draws nothing - no stray single characters
+      if (gridPos.x !== drag.startX || gridPos.y !== drag.startY) {
+        let points: CharPoint[] = [];
+        if (state.tool === TOOLS.ZIGZAG) {
+          points = getZigzagPath(drag.startX, drag.startY, gridPos.x, gridPos.y, e.shiftKey);
+        } else if (state.tool === TOOLS.LINE) {
+          points = getStraightLinePath(drag.startX, drag.startY, gridPos.x, gridPos.y);
+        } else if (state.tool === TOOLS.RECT) {
+          points = getRectanglePath(drag.startX, drag.startY, gridPos.x, gridPos.y);
+        }
+        if (points.length) {
+          history.saveState();
+          for (const pt of points) {
+            grid.set(pt.x, pt.y, pt.char || "─");
+          }
+          // Resolve junctions for all newly drawn points and connected neighbors
+          resolveJunctionsAround(points, grid, state.style);
+        }
+      }
+      state.drawingPreview = null;
     }
+
+    state.drag = null;
+    requestRender();
+    updateStatus();
+  });
+
+  container.addEventListener("pointercancel", () => {
+    cancelDrag();
   });
 
   // Mouse Wheel Zoom and Pan
@@ -2560,154 +2820,197 @@ export function setupEventListeners(): void {
     (e: WheelEvent) => {
       e.preventDefault();
       if (e.ctrlKey || e.metaKey) {
-        // Zoom
+        // Zoom anchored at the exact (fractional) grid position under the pointer
         const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
         const newZoom = Math.min(Math.max(state.zoom * zoomFactor, 0.4), 3.0);
-
-        // Zoom centered around mouse pointer
-        const mouseScreenX = e.clientX;
-        const mouseScreenY = e.clientY;
-        const mouseGridBefore = screenToGrid(mouseScreenX, mouseScreenY);
-
+        const anchorX = (e.clientX - state.panX) / (state.cellWidth * state.zoom);
+        const anchorY = (e.clientY - state.panY) / (state.cellHeight * state.zoom);
         state.zoom = newZoom;
-        const mouseScreenAfter = gridToScreen(mouseGridBefore.x, mouseGridBefore.y);
-        state.panX += mouseScreenX - mouseScreenAfter.x;
-        state.panY += mouseScreenY - mouseScreenAfter.y;
+        state.panX = e.clientX - anchorX * state.cellWidth * newZoom;
+        state.panY = e.clientY - anchorY * state.cellHeight * newZoom;
       } else {
         // Pan
         state.panX -= e.deltaX;
         state.panY -= e.deltaY;
       }
+      state.hoverGrid = screenToGrid(e.clientX, e.clientY);
       updateStatus();
       requestRender();
     },
     { passive: false }
   );
 
+  /**
+   * Text typing goes through the hidden textarea, so everything the keyboard layout / IME
+   * can produce works (Option/AltGr letters like ą ę ł, dead keys, composition, emoji picker)
+   */
+  const flushHiddenInput = (): void => {
+    if (!hiddenInput) return;
+    const text = hiddenInput.value;
+    hiddenInput.value = "";
+    if (!text || state.tool !== TOOLS.TEXT) return;
+    for (const char of Array.from(text)) {
+      if (char === "\n" || char === "\r") handleEnter();
+      else if (char === "\t") continue;
+      else handleTextInputChar(char);
+    }
+  };
+  if (hiddenInput) {
+    hiddenInput.addEventListener("input", (e: Event) => {
+      if ((e as InputEvent).isComposing) return;
+      flushHiddenInput();
+    });
+    hiddenInput.addEventListener("compositionend", () => flushHiddenInput());
+  }
+
+  const nudgeSelection = (dx: number, dy: number): void => {
+    if (!state.selection) return;
+    const bounds = selectionBounds(state.selection);
+    moveCells(bounds, captureCells(bounds), dx, dy, false);
+    updateStatus();
+    requestRender();
+  };
+
   // Global Keyboard Shortcuts
   window.addEventListener("keydown", (e: KeyboardEvent) => {
-    // Space key for panning
-    if (e.code === "Space" && !state.isSpacePressed && state.tool !== TOOLS.TEXT) {
-      state.isSpacePressed = true;
-      container.style.cursor = "grab";
-      return;
-    }
-
-    // Global Shortcuts with Ctrl / Cmd
-    if (e.ctrlKey || e.metaKey) {
-      if (e.key.toLowerCase() === "z") {
-        e.preventDefault();
-        if (e.shiftKey) {
-          history.redo();
-        } else {
-          history.undo();
-        }
-        return;
-      }
-      if (e.key.toLowerCase() === "y") {
-        e.preventDefault();
-        history.redo();
-        return;
-      }
-      if (e.key.toLowerCase() === "c") {
-        e.preventDefault();
-        copySelectionToClipboard();
-        return;
-      }
-      if (e.key.toLowerCase() === "x") {
-        e.preventDefault();
-        cutSelectionToClipboard();
-        return;
-      }
-      if (e.key.toLowerCase() === "v") {
-        return;
-      }
-    }
-
-    // Tool Shortcuts (when not actively typing text)
-    if (state.tool !== TOOLS.TEXT) {
-      switch (e.key.toLowerCase()) {
-        case "v":
-          setTool(TOOLS.SELECT);
-          break;
-        case "t":
-          setTool(TOOLS.TEXT);
-          break;
-        case "z":
-          setTool(TOOLS.ZIGZAG);
-          break;
-        case "l":
-          setTool(TOOLS.LINE);
-          break;
-        case "r":
-          setTool(TOOLS.RECT);
-          break;
-        case "e":
-          setTool(TOOLS.ERASER);
-          break;
-        case "delete":
-        case "backspace":
-          deleteSelection();
-          break;
-        case "escape":
-          state.selection = null;
-          state.drawingPreview = null;
-          updateStatus();
-          requestRender();
-          break;
-      }
-    } else {
-      // Text Mode Navigation & Typing
-      if (e.key === "ArrowLeft") {
-        state.cursor.x--;
-        state.cursor.visible = true;
-        requestRender();
-        updateStatus();
-        e.preventDefault();
-      } else if (e.key === "ArrowRight") {
-        state.cursor.x++;
-        state.cursor.visible = true;
-        requestRender();
-        updateStatus();
-        e.preventDefault();
-      } else if (e.key === "ArrowUp") {
-        state.cursor.y--;
-        state.cursor.visible = true;
-        requestRender();
-        updateStatus();
-        e.preventDefault();
-      } else if (e.key === "ArrowDown") {
-        state.cursor.y++;
-        state.cursor.visible = true;
-        requestRender();
-        updateStatus();
-        e.preventDefault();
-      } else if (e.key === "Backspace") {
-        handleBackspace();
-        e.preventDefault();
-      } else if (e.key === "Enter") {
-        handleEnter();
-        e.preventDefault();
-      } else if (e.key === "Escape") {
-        setTool(TOOLS.SELECT);
-        e.preventDefault();
-      } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        handleTextInputChar(e.key);
-        e.preventDefault();
-      }
-    }
-
     // Live update for Shift key in Zigzag preview
     if (e.key === "Shift" && state.drawingPreview) {
       state.drawingPreview.shiftKey = true;
       requestRender();
     }
+
+    // Escape aborts any drag in progress before doing anything else
+    if (e.key === "Escape" && cancelDrag()) {
+      e.preventDefault();
+      return;
+    }
+
+    // Shortcuts with Ctrl / Cmd. Everything else with Ctrl / Cmd belongs to the browser
+    // and must never fall through to the single-letter tool shortcuts below.
+    if (e.ctrlKey || e.metaKey) {
+      const key = e.key.toLowerCase();
+      if (key === "z") {
+        e.preventDefault();
+        if (e.shiftKey) history.redo();
+        else history.undo();
+      } else if (key === "y") {
+        e.preventDefault();
+        history.redo();
+      } else if (key === "c") {
+        e.preventDefault();
+        copySelectionToClipboard();
+      } else if (key === "x") {
+        e.preventDefault();
+        cutSelectionToClipboard();
+      }
+      return;
+    }
+
+    if (state.tool === TOOLS.TEXT) {
+      // Printable characters are not handled here: they land in the hidden textarea ("input" event)
+      if (e.isComposing) return;
+      if (hiddenInput && document.activeElement !== hiddenInput) hiddenInput.focus();
+      switch (e.key) {
+        case "ArrowLeft":
+          moveTextCursor(-1, 0);
+          break;
+        case "ArrowRight":
+          moveTextCursor(1, 0);
+          break;
+        case "ArrowUp":
+          moveTextCursor(0, -1);
+          break;
+        case "ArrowDown":
+          moveTextCursor(0, 1);
+          break;
+        case "Backspace":
+          handleBackspace();
+          break;
+        case "Delete":
+          handleDeleteKey();
+          break;
+        case "Enter":
+          handleEnter();
+          break;
+        case "Escape":
+          setTool(TOOLS.SELECT);
+          break;
+        case "Tab":
+          break;
+        default:
+          return;
+      }
+      e.preventDefault();
+      return;
+    }
+
+    // Space key for panning (never let it activate a focused button or scroll)
+    if (e.code === "Space") {
+      e.preventDefault();
+      if (!state.isSpacePressed) {
+        state.isSpacePressed = true;
+        if (!state.isPanning) container.style.cursor = "grab";
+        requestRender();
+      }
+      return;
+    }
+
+    if (e.altKey) return;
+
+    // Tool Shortcuts (when not actively typing text)
+    switch (e.key.toLowerCase()) {
+      case "v":
+        setTool(TOOLS.SELECT);
+        break;
+      case "t":
+        setTool(TOOLS.TEXT);
+        // do not let this very keystroke be typed into the freshly focused hidden input
+        e.preventDefault();
+        break;
+      case "z":
+        setTool(TOOLS.ZIGZAG);
+        break;
+      case "l":
+        setTool(TOOLS.LINE);
+        break;
+      case "r":
+        setTool(TOOLS.RECT);
+        break;
+      case "e":
+        setTool(TOOLS.ERASER);
+        break;
+      case "delete":
+      case "backspace":
+        deleteSelection();
+        break;
+      case "escape":
+        state.selection = null;
+        updateStatus();
+        requestRender();
+        break;
+      case "arrowleft":
+      case "arrowright":
+      case "arrowup":
+      case "arrowdown":
+        if (state.tool === TOOLS.SELECT && state.selection) {
+          e.preventDefault();
+          const key = e.key.toLowerCase();
+          nudgeSelection(
+            key === "arrowleft" ? -1 : key === "arrowright" ? 1 : 0,
+            key === "arrowup" ? -1 : key === "arrowdown" ? 1 : 0
+          );
+        }
+        break;
+    }
   });
 
   window.addEventListener("keyup", (e: KeyboardEvent) => {
-    if (e.code === "Space") {
+    if (e.code === "Space" && state.tool !== TOOLS.TEXT) {
+      // Buttons are activated by Space on keyup - prevent that as well
+      e.preventDefault();
       state.isSpacePressed = false;
-      container.style.cursor = "default";
+      if (!state.isPanning) updateHoverCursor(state.hoverGrid);
+      requestRender();
     }
     if (e.key === "Shift" && state.drawingPreview) {
       state.drawingPreview.shiftKey = false;
@@ -2715,44 +3018,56 @@ export function setupEventListeners(): void {
     }
   });
 
+  // Keys released while the window is not focused never send keyup - do not leave Space "stuck"
+  window.addEventListener("blur", () => {
+    state.isSpacePressed = false;
+    if (state.isPanning) {
+      state.isPanning = false;
+    }
+    container.style.cursor = "default";
+    requestRender();
+  });
+
   // Global Paste Event
-  window.addEventListener("paste", async (e: ClipboardEvent) => {
+  window.addEventListener("paste", (e: ClipboardEvent) => {
     e.preventDefault();
     const text = e.clipboardData?.getData("text");
     if (!text) return;
-    const target = state.tool === TOOLS.TEXT ? state.cursor : state.hoverGrid || { x: 5, y: 5 };
+    const target = state.tool === TOOLS.TEXT ? state.cursor : state.hoverGrid;
     pasteAsciiText(text, target.x, target.y);
   });
 
   /**
    * Floating Tool Panel Draggable Logic
    */
-  let isDraggingPanel = false;
-  let panelOffset = { x: 0, y: 0 };
+  const clampPanel = (left: number, top: number): void => {
+    if (!toolPanel) return;
+    const maxLeft = Math.max(10, window.innerWidth - toolPanel.offsetWidth - 10);
+    const maxTop = Math.max(10, window.innerHeight - toolPanel.offsetHeight - 40);
+    toolPanel.style.left = `${Math.max(10, Math.min(maxLeft, left))}px`;
+    toolPanel.style.top = `${Math.max(10, Math.min(maxTop, top))}px`;
+    toolPanel.style.bottom = "auto";
+  };
 
   if (panelHandle && toolPanel) {
-    panelHandle.addEventListener("mousedown", (e: MouseEvent) => {
-      isDraggingPanel = true;
-      panelOffset.x = e.clientX - toolPanel.offsetLeft;
-      panelOffset.y = e.clientY - toolPanel.offsetTop;
-      e.stopPropagation();
-    });
+    let panelDrag: { x: number; y: number } | null = null;
 
-    window.addEventListener("mousemove", (e: MouseEvent) => {
-      if (isDraggingPanel && toolPanel) {
-        let newLeft = e.clientX - panelOffset.x;
-        let newTop = e.clientY - panelOffset.y;
-        // Clamp within viewport
-        newLeft = Math.max(10, Math.min(window.innerWidth - toolPanel.offsetWidth - 10, newLeft));
-        newTop = Math.max(10, Math.min(window.innerHeight - toolPanel.offsetHeight - 40, newTop));
-        toolPanel.style.left = `${newLeft}px`;
-        toolPanel.style.top = `${newTop}px`;
-      }
+    panelHandle.addEventListener("pointerdown", (e: PointerEvent) => {
+      if (e.button !== 0) return;
+      panelDrag = { x: e.clientX - toolPanel.offsetLeft, y: e.clientY - toolPanel.offsetTop };
+      try {
+        panelHandle.setPointerCapture(e.pointerId);
+      } catch (err) {}
+      e.preventDefault();
     });
-
-    window.addEventListener("mouseup", () => {
-      isDraggingPanel = false;
+    panelHandle.addEventListener("pointermove", (e: PointerEvent) => {
+      if (panelDrag) clampPanel(e.clientX - panelDrag.x, e.clientY - panelDrag.y);
     });
+    const stopPanelDrag = (): void => {
+      panelDrag = null;
+    };
+    panelHandle.addEventListener("pointerup", stopPanelDrag);
+    panelHandle.addEventListener("pointercancel", stopPanelDrag);
   }
 
   /**
@@ -2778,10 +3093,28 @@ export function setupEventListeners(): void {
   });
   document.getElementById("btnUndo")?.addEventListener("click", () => history.undo());
   document.getElementById("btnRedo")?.addEventListener("click", () => history.redo());
-  document.getElementById("btnResetView")?.addEventListener("click", resetView);
+  document.getElementById("btnResetView")?.addEventListener("click", () => resetView());
+
+  // Buttons never keep keyboard focus after a mouse click (Space / Enter would re-trigger them)
+  document.addEventListener("click", (e: MouseEvent) => {
+    const button = (e.target as HTMLElement | null)?.closest?.("button");
+    if (!button) return;
+    if (state.tool === TOOLS.TEXT && hiddenInput) hiddenInput.focus();
+    else button.blur();
+  });
 
   // Window resize handler
-  window.addEventListener("resize", resizeCanvas);
+  window.addEventListener("resize", () => {
+    resizeCanvas();
+    // Keep a manually placed panel inside the window
+    if (toolPanel && toolPanel.style.top) clampPanel(toolPanel.offsetLeft, toolPanel.offsetTop);
+  });
+
+  // Never lose the last few hundred milliseconds of work
+  window.addEventListener("pagehide", () => saveToStorage());
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") saveToStorage();
+  });
 }
 
 /**
@@ -2808,9 +3141,10 @@ export function init(): void {
 
   measureFont();
   resizeCanvas();
-  resetView();
-  startCaretBlinker();
   renderStyleSelector();
+  loadFromStorage();
+  resetView(false);
+  startCaretBlinker();
   setupEventListeners();
   updateStatus();
 }
