@@ -16,6 +16,43 @@ All examples follow the principle of using `popover="manual"` to maintain full c
 
 </about>
 
+<bundled-files>
+
+This skill ships with the files the examples depend on. They live next to this document:
+
+- [assets/Modal.tsx](assets/Modal.tsx) - the React `Modal` component used by every example below
+- [assets/Modal.css](assets/Modal.css) - styles for the component (imported by `Modal.tsx` as `./Modal.css`)
+
+When asked to create a modal for the first time in a project:
+
+1. Copy **both** files together into the same directory in the project (e.g. `src/components/`). Keep them side by side, because `Modal.tsx` imports `./Modal.css`.
+2. Adjust the import path in the examples (they use `../components/Modal`) to match where the files were copied. Consult with the user where they should go if it is not clear.
+3. Do not copy them twice - if the project already has a `Modal` from this skill, reuse it.
+
+If the files in this skill are updated, the project's copies should be updated too.
+
+Component API (`ModalProps`):
+
+| prop        | type               | default | meaning                                                                         |
+| ----------- | ------------------ | ------- | ------------------------------------------------------------------------------- |
+| `open`      | `boolean`          | `false` | controls visibility (calls `showPopover()` / `hidePopover()`); renders nothing when `false` |
+| `onClose`   | `() => void`       | -       | called on `Escape` and on the "x" button in the header; parent must set `open` to `false` |
+| `header`    | `ReactNode`        | -       | header content; when provided, a close "x" button is rendered next to it         |
+| `footer`    | `ReactNode`        | -       | optional footer content                                                         |
+| `width`     | `string \| number` | -       | any CSS width, e.g. `"600px"` or `"90%"`; a number is treated as px              |
+| `backdrop`  | `boolean`          | `true`  | semi-transparent, click-blocking overlay behind the modal                       |
+| `className` | `string`           | -       | extra CSS class on the root element                                             |
+| `data-id`   | `string`           | `modal` | `data-id` attribute on the root, for testing                                    |
+
+The component uses `popover="manual"`, so clicking outside never closes it. The modal is dismissed only via `Escape`, the header "x" button, or your own buttons.
+
+Notes:
+
+- `Modal.css` uses native CSS nesting (supported by all current browsers); no preprocessor and no `popover.css` from the popover-api skill is required.
+- The modal is hidden by the `open` prop, so no `display` toggling is needed on the caller side.
+
+</bundled-files>
+
 <examples>
 
 ## Basic Modal

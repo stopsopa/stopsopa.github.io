@@ -2,7 +2,7 @@
  * hardlink.ts
  *
  * Plan, documentation and tests:
- *   bash/file/hardlink/PLAN.md
+ *   bash/tests/hardlink/PLAN.md
  *
  * Purpose:
  * Reads a markdown configuration file containing pairs of file paths (path A -> path B)

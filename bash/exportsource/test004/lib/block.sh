@@ -1,0 +1,23 @@
+_SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
+_SHELL="${_SHELL##*/}"
+case ${_SHELL} in
+  zsh)
+    _DIR="$( cd "$( dirname "${(%):-%x}" )" && pwd -P )"
+    _0="$( basename "${(%):-%N}" )"
+    _SCRIPT="${(%):-%N}"
+    _BINARY="/bin/zsh"
+    ;;
+  sh)
+    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+    _0="$( basename "${0}" )"
+    _SCRIPT="${0}"
+    _BINARY="/bin/sh"
+    ;;
+  *)
+    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+    _0="$( basename "${BASH_SOURCE[0]}" )"
+    _SCRIPT="${BASH_SOURCE[0]}"
+    _BINARY="/bin/bash"
+    ;;
+esac
+_PWD="$( pwd)"

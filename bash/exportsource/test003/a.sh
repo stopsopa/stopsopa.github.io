@@ -1,0 +1,28 @@
+_SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
+_SHELL="${_SHELL##*/}"
+case ${_SHELL} in
+  zsh)
+    _DIR="$( cd "$( dirname "${(%):-%x}" )" && pwd -P )"
+    _0="$( basename "${(%):-%N}" )"
+    _SCRIPT="${(%):-%N}"
+    _BINARY="/bin/zsh"
+    ;;
+  sh)
+    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+    _0="$( basename "${0}" )"
+    _SCRIPT="${0}"
+    _BINARY="/bin/sh"
+    ;;
+  *)
+    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+    _0="$( basename "${BASH_SOURCE[0]}" )"
+    _SCRIPT="${BASH_SOURCE[0]}"
+    _BINARY="/bin/bash"
+    ;;
+esac
+_PWD="$( pwd)"
+echo "a before: _SHELL=${_SHELL} _DIR=${_DIR} _0=${_0} _SCRIPT=${_SCRIPT} _BINARY=${_BINARY}"
+source "${_DIR}/sub/b.sh"
+echo "a after sourcing b: _SHELL=${_SHELL} _DIR=${_DIR} _0=${_0} _SCRIPT=${_SCRIPT} _BINARY=${_BINARY}"
+/bin/bash "$(dirname "${BASH_SOURCE[0]:-${(%):-%x}}")/sub/b.sh" > /dev/null
+echo "a after executing b: _SHELL=${_SHELL} _DIR=${_DIR} _0=${_0} _SCRIPT=${_SCRIPT} _BINARY=${_BINARY}"
