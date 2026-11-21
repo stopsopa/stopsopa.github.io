@@ -157,4 +157,7 @@ descriptions so an AI pass can fill them in afterwards.
 - [cli/yt-to-mp3/terminal_link.sh](cli/yt-to-mp3/terminal_link.sh): Creates clickable terminal hyperlinks using ANSI escape sequences, with optional icon prefix (default 🔗).
 - [file/fuzzy.ts](file/fuzzy.ts): Interactive fuzzy search filter for terminal pipelines and file selection. Reads lines from stdin (or defaults to find command if stdin is a terminal), presents an interactive list with search, highlights matches, and outputs the selected line to stdout.
 
-- [fs/sync_via_ssh/sync.sh](fs/sync_via_ssh/sync.sh):
+- [fs/sync_via_ssh/sync.sh](fs/sync_via_ssh/sync.sh): Live-syncs a machine directory to a remote host: sources the machine's scripts/.env.sh, runs hostwall check, then pipes recursive fswatch events (ignoring .git/node_modules) through transform.ts, filter-gitignored.ts (.syncignore) and sync.ts.
+
+- [hardlink.ts](hardlink.ts): Reads a markdown config of "A -> B" path pairs and, after strict validation (existence, readability, same filesystem, matching content), creates hardlinks from A to B (symlinks for directory pairs); optional --pwd base dir and --gitignore to register B paths between "# hardlink.ts" markers.
+- [pwd_fix.sh](pwd_fix.sh): Codemod reading file paths from stdin: in each script whose $_SHELL case block repeats _PWD="$(pwd)" inside the zsh/sh/* branches, removes those lines and emits a single _PWD="$(pwd)" after esac, reporting updated files. 

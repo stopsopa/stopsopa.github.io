@@ -1,3 +1,5 @@
 
 bash/fs/sync_via_ssh/*
 !bash/fs/sync_via_ssh/sync.sh
+bash/file/hardlink/tests/
+bash/file/hardlink/test.sh

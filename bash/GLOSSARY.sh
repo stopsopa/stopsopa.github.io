@@ -24,27 +24,9 @@
 # After resolving ${ROOT} the script cd's into it, so every subsequent path
 # (find, node, the produced list) is relative to the project root.
 
-# 
-# Prompt to create descriptions for rest of the scripts:
-# -------------------------------------------------------
-# bash/GLOSSARY.md in this md file we have long list where ach line          
-# represent individual scripts from bash script,                                                                             
-                                                                                                                           
-# and each line should have path and description for it (short but still descriptive enough) for given script                
-                                                                                                                           
-# in our md file right now there are some descriptions missing for many scripts                                              
-                                                                                                                           
-# create descriptions for missing scripts                                                                                    
-                                                                                                                           
-# just go to individual scripts, inspect what each do and generate short summary ( but still self descriptive) descriptions 
-# 
-# inspect one script and then produce and write description, and then another one but again, write immediately.              
-                                                                                                                           
-# I want you to do it one by one. Don't buffer too many descriptions in memory.                                              
-                                                                                                                           
-# This way when something will break (AI will be interrupted) we will at least progress with something  
-# 
-# 
+#
+# Descriptions in bash/GLOSSARY.md are filled by AI - the prompt for that
+# lives in bash/GLOSSARY.prompt
 
 set -euo pipefail
 
