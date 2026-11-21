@@ -413,6 +413,40 @@
             done
           }
         </script>
+        <h2>play sound when claude finishes (hooks) + sounds.sh picker</h2>
+        <script type="editor" data-lang="sh">
+
+          # TUI to audition macOS sounds and get the ready to paste "afplay ..." command:
+          #   pages/ai/harness/sounds/sounds.sh
+          /bin/bash pages/ai/harness/sounds/sounds.sh
+          #   ↑/↓ (or k/j) - move, PgUp/PgDn - jump 10, g/G - first/last
+          #   Space - play only
+          #   Enter - play, print command on stdout (e.g. "afplay /System/Library/Sounds/Glass.aiff") and exit
+          #   q / Esc - quit (Esc takes ~1s to register, macOS bash 3.2 has no fractional read -t)
+          # the UI is drawn on /dev/tty so stdout contains only the command, so this works:
+          CMD="$(/bin/bash pages/ai/harness/sounds/sounds.sh)"; echo "$CMD"
+
+          # sources scanned:
+          #   /System/Library/Sounds (Basso Blow Bottle Frog Funk Glass Hero Morse Ping Pop Purr Sosumi Submarine Tink)
+          #   /Library/Sounds
+          #   ~/Library/Sounds
+          #   /System/Library/Components/CoreAudio.component/Contents/SharedSupport/SystemSounds
+
+          # then put the picked command into ~/.claude/settings.json (global) or .claude/settings.json (project)
+          {
+            "hooks": {
+              "Stop":         [{ "hooks": [{ "type": "command", "command": "afplay /System/Library/Sounds/Glass.aiff" }] }],
+              "SubagentStop": [{ "hooks": [{ "type": "command", "command": "afplay /System/Library/Sounds/Pop.aiff" }] }],
+              "Notification": [{ "hooks": [{ "type": "command", "command": "afplay /System/Library/Sounds/Ping.aiff" }] }]
+            }
+          }
+          # Stop         - main agent finished responding
+          # SubagentStop - subagent finished
+          # Notification - claude needs attention (permission prompt, idle wait)
+          # alternative, just a terminal bell (no per event control):
+          #   claude config set --global preferredNotifChannel terminal_bell
+        </script>
+
         <h2>Claude alternatives</h2>
         <script type="editor" data-lang="sh">
 
