@@ -55,15 +55,15 @@ Put the code between `<script type="ace">` and `</script>` and choose the langua
 
 ### Attributes
 
-| Attribute          | Default                       | Notes                                                                                                                                                                            |
-| ------------------ | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | auto-generated `ace-editor-N` | Must be unique. See section 5.                                                                                                                                                   |
-| `lang`             | `javascript`                  | Ace mode name: `python`, `typescript`, `html`, `css`, `json`, `sh`, `text` (no highlighting), ... Full list: https://github.com/ajaxorg/ace/blob/v1.43.4/src/ext/modelist.js#L72 |
-| `value`            | empty                         | Editor content. Overrides `<script type="ace">` and text content.                                                                                                                |
-| `readonly`         | off                           | Boolean attribute.                                                                                                                                                               |
-| `theme`            | `idle_fingers`                | Leave the default unless asked.                                                                                                                                                  |
-| `min-height-lines` | none                          | Minimum height in lines.                                                                                                                                                         |
-| `min-height-px`    | none                          | Minimum height in pixels. Wins if both are set.                                                                                                                                  |
+| Attribute | Default | Notes |
+| --- | --- | --- |
+| `id` | auto-generated `ace-editor-N` | Must be unique. See section 5. |
+| `lang` | `javascript` | Ace mode name: `python`, `typescript`, `html`, `css`, `json`, `sh`, `text` (no highlighting), ... Full list: https://github.com/ajaxorg/ace/blob/v1.43.4/src/ext/modelist.js#L72 |
+| `value` | empty | Editor content. Overrides `<script type="ace">` and text content. |
+| `readonly` | off | Boolean attribute. |
+| `theme` | `idle_fingers` | Leave the default unless asked. |
+| `min-height-lines` | none | Minimum height in lines. |
+| `min-height-px` | none | Minimum height in pixels. Wins if both are set. |
 
 Initial content priority: `value` attribute, then `<script type="ace">`, then plain text content, then `content` attribute.
 
@@ -112,11 +112,11 @@ editor.value = "console.log('new content');";
 
 Differences between the two ways of setting content:
 
-|                         | `setAttribute("value", ...)`                                  | `editor.value = ...`           |
-| ----------------------- | ------------------------------------------------------------- | ------------------------------ |
-| Before initialization   | Safe. The attribute is picked up when the editor initializes. | Unsafe. See section 4.         |
-| On a `readonly` editor  | Deferred. Applied only when `readonly` is removed.            | Applied immediately.           |
-| Fires the `input` event | Yes                                                           | No (same as a native textarea) |
+| | `setAttribute("value", ...)` | `editor.value = ...` |
+| --- | --- | --- |
+| Before initialization | Safe. The attribute is picked up when the editor initializes. | Unsafe. See section 4. |
+| On a `readonly` editor | Deferred. Applied only when `readonly` is removed. | Applied immediately. |
+| Fires the `input` event | Yes | No (same as a native textarea) |
 
 So to update a `readonly` code block, use `editor.value = ...` inside an `onLoad` callback (section 4).
 
@@ -161,9 +161,7 @@ This does **not** work:
 
     // Runs before the editor exists: editor.value is "" here,
     // and the assignment is thrown away when initialization finishes.
-    editor.value =
-      editor.value +
-      `
+    editor.value = editor.value + `
 console.log("Let's try to append this console.log");
 `;
   }
@@ -189,9 +187,7 @@ Wrap every read or write of the editor in an `onLoad` listener registered on the
     const editor = document.getElementById("problematic-editor2");
 
     editor.addEventListener("onLoad", () => {
-      editor.value =
-        editor.value +
-        `
+      editor.value = editor.value + `
 console.log("Let's try to append this console.log");
 `;
     });
@@ -243,7 +239,7 @@ Rules to follow when generating code:
 Two editors on one page (Ace is still downloaded only once): a read-only block with an auto-generated id, and an editable one that is updated from JavaScript.
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />

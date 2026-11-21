@@ -3,16 +3,17 @@
  *
  * GENERATED FILE - don't edit. Edit vanilla-tabs.ts and run: /bin/bash transpile.sh
  */
-window.vanillaTabs = (function () {
+window.vanillaTabs = (function() {
   const onChangeEvents = {};
   const dataidkey = "data-vanilla-tab-id";
   const changeEventName = "vanilla-tabs:change";
   let i = 0;
-  const warn = (function () {
+  const warn = (function() {
     try {
       return (...args) => console.warn("vanilla-tabs:", ...args);
     } catch (e) {
-      return () => {};
+      return () => {
+      };
     }
   })();
   const th = (msg, ..._context) => new Error(`vanilla-tabs error: ${msg}`);
@@ -39,14 +40,16 @@ window.vanillaTabs = (function () {
      *  - colors from attributes data-background-color & data-lines-color
      *  - prev/next arrows for the case when buttons don't fit in available width
      */
-    setup: function (parent) {
-      const buttons = parent.querySelector(":scope > [data-buttons]");
+    setup: function(parent) {
+      const buttons = parent.querySelector(
+        ":scope > [data-buttons]"
+      );
       if (!buttons) {
         return;
       }
       [
         ["data-background-color", "--vanilla-tabs-background-color"],
-        ["data-lines-color", "--vanilla-tabs-lines-color"],
+        ["data-lines-color", "--vanilla-tabs-lines-color"]
       ].forEach(([attr, variable]) => {
         const value = parent.getAttribute(attr);
         if (typeof value === "string" && value.trim()) {
@@ -55,7 +58,7 @@ window.vanillaTabs = (function () {
       });
       [
         ["prev", "‹", "previous tabs"],
-        ["next", "›", "next tabs"],
+        ["next", "›", "next tabs"]
       ].forEach(([dir, label, aria]) => {
         if (parent.querySelector(`:scope > [data-vanilla-tabs-nav="${dir}"]`)) {
           return;
@@ -70,7 +73,7 @@ window.vanillaTabs = (function () {
       if (!prepared.has(buttons)) {
         prepared.add(buttons);
         buttons.addEventListener("scroll", () => this.updateOverflow(parent), {
-          passive: true,
+          passive: true
         });
         if (typeof ResizeObserver === "function") {
           if (!resizeObserver) {
@@ -93,8 +96,10 @@ window.vanillaTabs = (function () {
      * Called automatically on resize, scroll and (in watch mode) when buttons are added/removed.
      * Call it manually if you change buttons and you don't use watchMutationsEnable()
      */
-    updateOverflow: function (parent) {
-      const buttons = parent.querySelector(":scope > [data-buttons]");
+    updateOverflow: function(parent) {
+      const buttons = parent.querySelector(
+        ":scope > [data-buttons]"
+      );
       if (!buttons) {
         return;
       }
@@ -107,8 +112,12 @@ window.vanillaTabs = (function () {
         }
       }
       const max = buttons.scrollWidth - buttons.clientWidth;
-      const prev = parent.querySelector(':scope > [data-vanilla-tabs-nav="prev"]');
-      const next = parent.querySelector(':scope > [data-vanilla-tabs-nav="next"]');
+      const prev = parent.querySelector(
+        ':scope > [data-vanilla-tabs-nav="prev"]'
+      );
+      const next = parent.querySelector(
+        ':scope > [data-vanilla-tabs-nav="next"]'
+      );
       if (prev) {
         prev.disabled = buttons.scrollLeft <= 1;
       }
@@ -119,7 +128,7 @@ window.vanillaTabs = (function () {
     /**
      * Scrolls only the row of buttons (never the page) to make given button fully visible
      */
-    scrollToButton: function (button) {
+    scrollToButton: function(button) {
       const container = button.parentElement;
       if (!container) {
         return;
@@ -132,46 +141,43 @@ window.vanillaTabs = (function () {
         container.scrollLeft += b.right - c.right;
       }
     },
-    getNewId: function () {
+    getNewId: function() {
       i += 1;
       return `vanilla-tabs-${i}`;
     },
-    produceId: function (parent) {
+    produceId: function(parent) {
       if (!isNode(parent)) {
         throw th(`parent argument is not valid DOM element`, parent);
       }
       let id = parent.getAttribute(dataidkey);
       if (typeof id !== "string") {
-        parent.setAttribute(dataidkey, (id = this.getNewId()));
+        parent.setAttribute(dataidkey, id = this.getNewId());
       }
       return id;
     },
-    active: function (opt) {
+    active: function(opt) {
       const ids = [];
       const { onChange } = { ...opt };
-      Array.from(document.querySelectorAll("[data-vanilla-tabs]"))
-        .map((parent) => {
-          ids.push(this.produceId(parent));
-          this.setup(parent);
-          return parent.querySelector(":scope > [data-buttons]");
-        })
-        .map((buttons) => {
-          if (!buttons) {
-            return null;
-          }
-          return buttons.querySelector(":scope > .active") || buttons.querySelector(":scope > *");
-        })
-        .forEach((target) => {
-          const parent = target?.parentElement?.parentElement;
-          if (target && parent) {
-            this.activeByButtonElement(parent, target, {
-              onChange,
-            });
-          }
-        });
+      Array.from(document.querySelectorAll("[data-vanilla-tabs]")).map((parent) => {
+        ids.push(this.produceId(parent));
+        this.setup(parent);
+        return parent.querySelector(":scope > [data-buttons]");
+      }).map((buttons) => {
+        if (!buttons) {
+          return null;
+        }
+        return buttons.querySelector(":scope > .active") || buttons.querySelector(":scope > *");
+      }).forEach((target) => {
+        const parent = target?.parentElement?.parentElement;
+        if (target && parent) {
+          this.activeByButtonElement(parent, target, {
+            onChange
+          });
+        }
+      });
       return ids;
     },
-    activeByButtonElement: function (parent, target, extra) {
+    activeByButtonElement: function(parent, target, extra) {
       const id = this.produceId(parent);
       let { buttons, onChange } = { ...extra };
       if (!buttons) {
@@ -181,12 +187,12 @@ window.vanillaTabs = (function () {
       this.activeByIndex(parent, zeroIndex, { buttons, onChange });
       return id;
     },
-    bindOnChange: function (id, onChange) {
+    bindOnChange: function(id, onChange) {
       if (typeof onChange === "function") {
         onChangeEvents[id] = onChange;
       }
     },
-    activeByIndex: function (parent, zeroIndex = 0, extra) {
+    activeByIndex: function(parent, zeroIndex = 0, extra) {
       const id = this.produceId(parent);
       let { buttons, tabs, onChange } = { ...extra };
       this.bindOnChange(id, onChange);
@@ -213,7 +219,7 @@ window.vanillaTabs = (function () {
       {
         const onChange2 = onChangeEvents[id];
         const list = tabs;
-        buttons.forEach(function (button, i2) {
+        buttons.forEach(function(button, i2) {
           if (i2 === zeroIndex) {
             const changed = !button.classList.contains("active") || !list[i2].classList.contains("active");
             button.classList.add("active");
@@ -224,15 +230,17 @@ window.vanillaTabs = (function () {
                 parent,
                 button,
                 tab: list[i2],
-                index: i2,
+                index: i2
               };
-              list[i2].dispatchEvent(new CustomEvent(changeEventName, { bubbles: true, detail }));
+              list[i2].dispatchEvent(
+                new CustomEvent(changeEventName, { bubbles: true, detail })
+              );
             }
             if (onChange2) {
               onChange2({
                 button,
                 tab: list[i2],
-                index: i2,
+                index: i2
               });
             }
           } else {
@@ -243,7 +251,7 @@ window.vanillaTabs = (function () {
       }
       return id;
     },
-    bind: function () {
+    bind: function() {
       if (bound) {
         warn(`already bound`);
         return this;
@@ -254,19 +262,25 @@ window.vanillaTabs = (function () {
         if (!(target instanceof Element)) {
           return;
         }
-        const nav = target.closest("[data-vanilla-tabs] > [data-vanilla-tabs-nav]");
+        const nav = target.closest(
+          "[data-vanilla-tabs] > [data-vanilla-tabs-nav]"
+        );
         if (nav) {
-          const buttons = nav.parentElement?.querySelector(":scope > [data-buttons]");
+          const buttons = nav.parentElement?.querySelector(
+            ":scope > [data-buttons]"
+          );
           if (buttons) {
             const direction = nav.getAttribute("data-vanilla-tabs-nav") === "prev" ? -1 : 1;
             buttons.scrollBy({
               left: direction * Math.max(buttons.clientWidth * 0.7, 50),
-              behavior: "smooth",
+              behavior: "smooth"
             });
           }
           return;
         }
-        const match = target.matches("[data-vanilla-tabs] > [data-buttons] > *");
+        const match = target.matches(
+          "[data-vanilla-tabs] > [data-buttons] > *"
+        );
         const parent = target.parentElement?.parentElement;
         if (match && parent) {
           const buttons = children(parent, "[data-buttons]");
@@ -279,7 +293,7 @@ window.vanillaTabs = (function () {
         document.body.removeEventListener("click", event);
       };
     },
-    on: function (parent, callback) {
+    on: function(parent, callback) {
       if (!isNode(parent)) {
         throw th(`on(): parent argument is not valid DOM element`, parent);
       }
@@ -294,18 +308,15 @@ window.vanillaTabs = (function () {
         parent.removeEventListener(changeEventName, handler);
       };
     },
-    watchMutationsEnable: function () {
+    watchMutationsEnable: function() {
       if (observer) {
         return;
       }
-      observer = new MutationObserver(function (mutations) {
-        const found = mutations.some(function (mutation) {
+      observer = new MutationObserver(function(mutations) {
+        const found = mutations.some(function(mutation) {
           if (mutation.type === "childList") {
-            return Array.from(mutation.addedNodes).some(function (node) {
-              return (
-                node instanceof Element &&
-                (node.matches("[data-buttons]") || Boolean(node.querySelector("[data-buttons]")))
-              );
+            return Array.from(mutation.addedNodes).some(function(node) {
+              return node instanceof Element && (node.matches("[data-buttons]") || Boolean(node.querySelector("[data-buttons]")));
             });
           }
           return false;
@@ -314,37 +325,32 @@ window.vanillaTabs = (function () {
           tool.active();
         }
         const changed = /* @__PURE__ */ new Set();
-        mutations.forEach(function (mutation) {
+        mutations.forEach(function(mutation) {
           const target = mutation.target;
-          if (
-            mutation.type === "childList" &&
-            target instanceof Element &&
-            target.matches("[data-vanilla-tabs] > [data-buttons]") &&
-            target.parentElement
-          ) {
+          if (mutation.type === "childList" && target instanceof Element && target.matches("[data-vanilla-tabs] > [data-buttons]") && target.parentElement) {
             changed.add(target.parentElement);
           }
         });
-        changed.forEach(function (parent) {
+        changed.forEach(function(parent) {
           tool.setup(parent);
         });
       });
       observer.observe(document.body, { childList: true, subtree: true });
     },
-    watchMutationsDisable: function () {
+    watchMutationsDisable: function() {
       if (observer && typeof observer.disconnect === "function") {
         observer.disconnect();
       }
       observer = void 0;
     },
-    autoenable: function () {
+    autoenable: function() {
       if (tool.autoenableUnbind) {
         return;
       }
       const unbind = tool.bind();
       tool.active();
       tool.watchMutationsEnable();
-      tool.autoenableUnbind = function () {
+      tool.autoenableUnbind = function() {
         tool.watchMutationsDisable();
         if (typeof unbind === "function") {
           unbind();
@@ -352,9 +358,9 @@ window.vanillaTabs = (function () {
         bound = false;
         delete tool.autoenableUnbind;
       };
-    },
+    }
   };
-  const autoenable = (function () {
+  const autoenable = (function() {
     if (document.body.classList.contains("vanilla-tabs-autoenable")) {
       return true;
     }
