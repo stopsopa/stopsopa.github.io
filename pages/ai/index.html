@@ -232,6 +232,31 @@
         </script>
         <h2>Skills</h2>
         <script type="editor" data-lang="sh">
+          
+                    # daily use TLDR cheatsheet
+                      npx skills init page
+                      npx skills add . --list
+                      npx skills add stopsopa/stopsopa.github.io -s page -a claude-code universal -y
+                        # use to install and also to the same to update
+
+                    # or do it manually:
+                    export SKILL_NAME="mysuperskill"
+                    mkdir -p ".agents/skills/${SKILL_NAME}"
+                    CREATED="$(date -u +"%Y-%m-%d %H:%M:%S")"
+                    cat <<EEE > ".agents/skills/${SKILL_NAME}/SKILL.md"
+                    ---
+                    name: ${SKILL_NAME}
+                    description: >
+                      My super skill
+                      name: ${SKILL_NAME}
+                    license: GPL-2.0-only
+                    metadata:
+                      author: stopsopa
+                      version: "1.0.0"
+                      website: https://github.com/stopsopa/${SKILL_NAME}
+                      created: "${CREATED}"
+                    ---          
+                    EEE
 
                     # my quide and my list
                       # https://github.com/stopsopa/skill-popover-api/tree/main/comprehensive_guide
@@ -243,25 +268,35 @@
                         npx skills add stopsopa/ace-editor-webcomponent -a claude-code universal -y
                         npx skills add stopsopa/xx -a claude-code universal -y
                         npx skills add stopsopa/envprocessor -a claude-code universal -y
+          
+                        npx skills add stopsopa/stopsopa.github.io -s bash-scripting -a claude-code universal -y
+                        npx skills add stopsopa/stopsopa.github.io -s coding-style -a claude-code universal -y
+                        npx skills add stopsopa/stopsopa.github.io -s docker-coding-style -a claude-code universal -y
+                        npx skills add stopsopa/stopsopa.github.io -s grug -a claude-code universal -y
+                        npx skills add stopsopa/stopsopa.github.io -s modal -a claude-code universal -y
+                        npx skills add stopsopa/stopsopa.github.io -s popover-api -a claude-code universal -y  
+          
                           # from: https://github.com/stopsopa/xx#skill-for-ai-agents
                           # from: https://github.com/stopsopa/gcp-css
                           # from: https://github.com/stopsopa/tabs
                           # from: https://github.com/stopsopa/ace-editor-webcomponent
-                          # from: https://github.com/stopsopa/envprocessor                            
+                          # from: https://github.com/stopsopa/envprocessor    
+                          # from: https://github.com/stopsopa/stopsopa.github.io    
 
-                      # daily use TLDR cheatsheet
-                        npx skills init page
-                        npx skills add . --list
-                        npx skills add stopsopa/stopsopa.github.io -s page -a claude-code universal -y
-                          # use to install and also to the same to update
-
+                    # to install based on skills-lock.json                
                         NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --frozen-lockfile
                         # to bring all skills based on skills-lock.json
                         # -y                 npx flag (not skills): auto-answers "Ok to proceed?" when skills@1.9.0 isn't in the npm cache, so the command never waits for input
                         # --frozen-lockfile  fail instead of modifying skills-lock.json if the restore doesn't match it (like `npm ci` vs `npm install`); already the default in CI
                             
-                          # to fix potential issues with --frozen-lockfile
+                          # to fix potential issues with --frozen-lockfile  (BEWARE: THAT WILL NOT UPDATE EVEN THOUGH IT IS REASONABLE TO THINK THAT IT WILL, at least not when lockfile is fine)
                             NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --no-frozen-lockfile
+          
+                    # to update skills-lock.json (fetch latest all)
+                      NODE_OPTIONS= npx -y skills@1.9.0 update -p -y
+                        # Updates project skills (-p) to the latest upstream commits and re-pins skills-lock.json.
+                        # Target agents are not stored anywhere: they are detected from folders in the project root
+                        # (.agents/ => Universal, .claude/ => Claude Code, .cursor/ => Cursor, ...).
                             
                               // ---- prompt ----- vvv
                               
