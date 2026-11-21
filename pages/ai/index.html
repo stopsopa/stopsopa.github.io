@@ -234,6 +234,9 @@
         <script type="editor" data-lang="sh">
           
                     https://www.skills.sh/
+
+                    # manage global skills:
+                       to any command just add -g, thats all          
           
                     # daily use TLDR cheatsheet
                       npx skills init page
@@ -263,6 +266,9 @@
                     ---          
                     EEE
 
+                    # list skills
+                      npx skills ls -g
+
                     # my quide and my list
                       # https://github.com/stopsopa/skill-popover-api/tree/main/comprehensive_guide
 
@@ -286,7 +292,11 @@
                           # from: https://github.com/stopsopa/tabs
                           # from: https://github.com/stopsopa/ace-editor-webcomponent
                           # from: https://github.com/stopsopa/envprocessor    
-                          # from: https://github.com/stopsopa/stopsopa.github.io    
+                          # from: https://github.com/stopsopa/stopsopa.github.io   
+
+                    # remove
+                      npx skills remove find-skills -y
+                      npx skills remove find-skills -y -g
 
                     # to install based on skills-lock.json                
                         NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --frozen-lockfile
@@ -299,6 +309,8 @@
           
                     # to update skills-lock.json (fetch latest all)
                       NODE_OPTIONS= npx -y skills@1.9.0 update -p -y
+                      NODE_OPTIONS= npx -y skills@1.9.0 update -p -y -g
+                      NODE_OPTIONS= npx -y skills@1.9.0 update xx -y -g
                         # Updates project skills (-p) to the latest upstream commits and re-pins skills-lock.json.
                         # Target agents are not stored anywhere: they are detected from folders in the project root
                         # (.agents/ => Universal, .claude/ => Claude Code, .cursor/ => Cursor, ...).
