@@ -26,7 +26,6 @@ bash/fs/watch.js
 bash/GLOSSARY.ts
 
 pages/*
-!pages/ascii.ts
 !pages/children/
 pages/children/*
 !pages/children/wotb/
@@ -47,6 +46,14 @@ pages/services/*
 pages/services/maps_apple_to_google/*
 !pages/services/maps_apple_to_google/convert.ts
 # --- END: maps_apple_to_google convert.ts ---
+
+# --- BEGIN: ascii editor index.ts ---
+# Transpile only pages/services/ascii/index.ts -> index.js (right next to it).
+# Relies on '!pages/services/' + 'pages/services/*' from the block above.
+!pages/services/ascii/
+pages/services/ascii/*
+!pages/services/ascii/index.ts
+# --- END: ascii editor index.ts ---
 
 transpile_prettier_pipe_old.ts
 root.ts

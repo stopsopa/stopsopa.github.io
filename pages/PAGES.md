@@ -20,7 +20,6 @@ with an empty description so an AI pass can fill them in afterwards
 - [ai/latest/index.html](ai/latest/index.html): Latest in AI news log sorted by time, e.g. Gemma 4 small multimodal Apache 2 model, Google AI Studio
 - [ai/mcp.template.html](ai/mcp.template.html): MCP (Model Context Protocol): launching servers, MCP inspector via docker/npm, notable MCPs, mcp-server-fetch with uvx, intercept.js download with sha384 check
 - [alternatives/index.html](alternatives/index.html): Link list of alternatives to Google services: search (Ecosia, Startpage), photos (Immich), DNS (Quad9, NextDNS), email (Proton, Tuta, Fastmail), Prisma, GitHub Actions runners
-- [ascii.html](ascii.html): Interactive ASCII art and diagram editor on a canvas: select/move, text, line, zigzag, rectangle, eraser tools, undo/redo
 - [aws/index.html](aws/index.html): AWS notes: glossary, connecting to RDS from MySQL Workbench, IP addresses, IPv6, Lambda
 - [bash/awk.html](bash/awk.html): AWK text processing reference: POSIX awk spec links, tutorials, one-liners and examples
 - [bash/diff/index.html](bash/diff/index.html): Diffing files and curl outputs, generating test diff files, binary diff and patch with bsdiff/bspatch and xdelta3
@@ -241,6 +240,7 @@ with an empty description so an AI pass can fill them in afterwards
 - [security/index.html](security/index.html): Security notes: CSRF auto-submit form exploit example, Diffie-Hellman key exchange video, AES-256 in JavaScript links, browser fingerprint tools (coveryourtracks, browserleaks)
 - [services/analog_time_planner/index.html](services/analog_time_planner/index.html): Analog Time Planner: React/TSX app placing an ordered list of timed events as colored slices on an analog clock face, start or end time anchoring, state kept in URL query params
 - [services/antigravity/index.html](services/antigravity/index.html): Antigravity AI Usage Tracker: React app with Firebase core bundle for tracking AI usage
+- [services/ascii/index.html](services/ascii/index.html): Interactive ASCII art and diagram editor on a canvas: select/move, text, line, zigzag, rectangle, eraser tools, undo/redo
 - [services/browser_automation.html](services/browser_automation.html): Browser Automation: dark animated canvas landing/splash screen with vignette and "Ready to execute" status; purely visual, no real automation logic
 - [services/encryptor/index.template.html](services/encryptor/index.template.html): Encryptor: key-based message encrypt/decrypt tool with key generate/show/clear, copy-link, lorem ipsum and result textareas; template page with bind.js and zero-md markdown
 - [services/generator/index.html](services/generator/index.html): Resource Name Generator in AWS console style: generates 10 random names from a seedable Mulberry32 PRNG, seed kept in URL, copy all and clear buttons

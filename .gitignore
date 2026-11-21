@@ -67,7 +67,7 @@ libs/drag_v2.js
 libs/drag.js
 libs/modURLSearchParams.js
 libs/toolsURLSearchParams.js
-pages/ascii.js
+pages/services/ascii/index.js
 pages/bookmarklets/gmail/extract.js
 pages/children/caesar/moduleCaesarCypher.js
 pages/children/tetris/tetris.js
