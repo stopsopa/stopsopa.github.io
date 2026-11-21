@@ -1,0 +1,71 @@
+pages/PAGES.md is an index of the `pages` directory of this repository (personal collection
+of notes, code snippets and small tools, served as a static site). It has two sections:
+
+  "## Pages"       - one line per html file:  - [bash/index.html](bash/index.html): description
+  "## Directories" - one line per directory:  - [bash/](bash/): description
+
+All paths are relative to the `pages` directory. Lines are registered there by a script
+(pages/PAGES.sh) with an EMPTY description - nothing after the colon. Your job is to fill in
+every empty description. The index is later used (by me and by AI) to quickly find where
+a given topic lives and to decide where new content belongs, so descriptions have to be good
+for searching: name the concrete topics, tools, commands and keywords found there.
+
+Work in two phases, in this order.
+
+Phase 1 - section "## Pages"
+
+For each line with an empty description:
+  - open that html file and read it (when the file is huge, read enough of it to know what it covers)
+  - write one line description: short but still self descriptive, roughly 10-30 words, plain text.
+    Say what the page really contains (e.g. "Cheatsheet for find, xargs, sed and awk one-liners,
+    process substitution, traps and heredocs") instead of generic filler like "Page about bash"
+    or "Various notes". Don't start with "This page...".
+  - when the page is an interactive tool or demo rather than notes, say what it does
+  - when the page is just a stub, a redirect or is empty, say exactly that
+  - describe the content of the file, don't guess from its file name alone
+
+Phase 2 - section "## Directories" (only after Phase 1 is finished)
+
+For each line with an empty description:
+  - base the description on the descriptions of the pages inside that directory which are
+    already in "## Pages", plus a listing of that directory (it may contain no html at all:
+    only scripts, images, data files or nested projects - then look at those files)
+  - write one line saying what the directory as a whole is for - its theme, and what kind of
+    content is kept there. Don't just repeat the description of its index.html and don't
+    enumerate every file.
+  - go from the deepest directories up, so a parent directory can be summarised from its children
+
+Rules for both phases:
+
+  - Do it one by one: inspect one item, write its description to pages/PAGES.md immediately,
+    then take the next one. Don't buffer many descriptions in memory. This way when something
+    breaks (AI gets interrupted) the progress made so far is already saved, and running this
+    prompt again simply continues with the lines which are still empty.
+  - Touch only lines with an empty description. Never change, reword, reorder or remove lines
+    which already have a description, and never add or remove entries - the list itself is
+    owned by the script.
+  - Keep the line format exactly as it is: "- [path](path): description", everything in one line.
+  - Don't modify any file other than pages/PAGES.md.
+  - When you can't work out what a page or a directory is for, write your best factual
+    statement of what is in it rather than leaving the line empty or inventing a purpose.
+
+When done, report how many descriptions you added in each section and list the entries you
+were not sure about.
+
+# Limiter 
+
+Limit the number of files processed in one prompt to 15 and each time you process one file (to generate description and after adding it to PAGES.md) count how many you have processed and present that counter in ai output.
+
+After processing that many files just stop with message
+
+```
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │                                                                      │
+  │   Processing finished, Description for [x] lines produced in total   │
+  │                                                                      │
+  └──────────────────────────────────────────────────────────────────────┘
+
+```
+
+forget about all of that if you can use subagents, just split work by given number for each subagents

@@ -1,0 +1,169 @@
+#!/usr/bin/env node
+//
+// PAGES.ts
+//
+// Companion to pages/PAGES.sh (sibling of the bash/GLOSSARY.* tool).
+//
+// Reads a newline-separated list of paths from stdin (produced by `find`
+// inside PAGES.sh) and reconciles it against the PAGES.md file passed as
+// argv[2]. The stdin list mixes two kinds of paths:
+//
+//   - paths ending with "/"  -> directories, registered in "## Directories"
+//   - every other path       -> html files,  registered in "## Pages"
+//
+// Rules:
+//
+//   - The existing file is preserved VERBATIM. Every line (entry, header,
+//     blank, prose) stays exactly where it is and exactly as it was written.
+//   - For each stdin path that is not already present anywhere in the file
+//     (matched by the entry name), a new link-form entry with an empty
+//     description is appended at the bottom of ITS section, in sorted (stdin)
+//     order, ready for an AI pass (see pages/PAGES.prompt).
+//   - If a section heading is missing it is created at the end of the file.
+//
+// First run (PAGES.md missing) seeds the file with a header block and both
+// sections. Subsequent runs only extend the lists - so it is always safe to
+// run again.
+//
+// Usage (driven by PAGES.sh):
+//   find ... | node pages/PAGES.ts pages/PAGES.md
+
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { createInterface } from "node:readline";
+
+const SECTION_PAGES = "## Pages";
+const SECTION_DIRS = "## Directories";
+
+// Path to the markdown file. argv[2] is supplied by PAGES.sh.
+const target = process.argv[2];
+if (!target) {
+  console.error("PAGES.ts: missing path to PAGES.md (argv[2])");
+  process.exit(2);
+}
+
+// Collect stdin paths (already sorted/deduped by PAGES.sh) preserving order.
+const stdinPaths: string[] = [];
+const rl = createInterface({ input: process.stdin });
+for await (const line of rl) {
+  const trimmed = line.trim();
+  if (trimmed) stdinPaths.push(trimmed);
+}
+
+// Strip the target's parent directory from a path so the resulting name
+// matches whatever is stored inside the PAGES.md entry link.
+// E.g. for target="pages/PAGES.md", "pages/bash/index.html" -> "bash/index.html".
+const parent = target.substring(0, target.lastIndexOf("/") + 1);
+function rel(p: string): string {
+  return p.startsWith(parent) ? p.slice(parent.length) : p;
+}
+
+/*
+ * Match an entry line in either of the two supported shapes.
+ *
+ *   group 1: path/name (backtick form)
+ *   group 2: path/name (link form)
+ *
+ * Backtick form:  - `name`: desc
+ * Link form:      - [name](name): desc
+ */
+const ENTRY_RE = /^\s*-\s+(?:`([^`]+)`|\[([^\]]+)\]\([^)]+\))\s*:/;
+
+// Any markdown heading of level 1 or 2 closes the section opened before it.
+const SECTION_END_RE = /^#{1,2}\s/;
+
+// Render a brand-new entry in link form with an empty description.
+function toLinkLine(name: string): string {
+  return `- [${name}](${name}): `;
+}
+
+// Names already present in the file, extracted from any entry line, no matter
+// which section it sits in. Directory names end with "/" so they can never
+// collide with file names.
+function collectExistingNames(lines: string[]): Set<string> {
+  const names = new Set<string>();
+  for (const line of lines) {
+    const m = line.match(ENTRY_RE);
+    if (m) names.add(m[1] ?? m[2]);
+  }
+  return names;
+}
+
+// Insert `entries` at the bottom of the section started by `heading`
+// (right after its last non-blank line). Creates the section at the end of
+// the file when the heading doesn't exist. Mutates and returns `lines`.
+function appendToSection(lines: string[], heading: string, entries: string[]): string[] {
+  if (!entries.length) return lines;
+
+  const start = lines.findIndex((l) => l.trim() === heading);
+
+  if (start === -1) {
+    // Drop trailing blank lines, then add the section separated by one blank line.
+    while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
+    if (lines.length) lines.push("");
+    lines.push(heading, "", ...entries);
+    return lines;
+  }
+
+  // Section body spans up to the next level 1/2 heading (or EOF).
+  let end = lines.length;
+  for (let i = start + 1; i < lines.length; i += 1) {
+    if (SECTION_END_RE.test(lines[i])) {
+      end = i;
+      break;
+    }
+  }
+
+  // Last non-blank line inside the section (the heading itself at minimum).
+  let last = end - 1;
+  while (last > start && lines[last].trim() === "") last -= 1;
+
+  const block = last === start ? ["", ...entries] : entries;
+  lines.splice(last + 1, 0, ...block);
+
+  // Keep exactly one blank line before whatever follows the section.
+  const after = last + 1 + block.length;
+  if (after < lines.length && lines[after].trim() !== "") lines.splice(after, 0, "");
+
+  return lines;
+}
+
+const names = stdinPaths.map(rel);
+const isDir = (n: string) => n.endsWith("/");
+
+let lines: string[];
+
+if (existsSync(target)) {
+  lines = readFileSync(target, "utf8").split("\n");
+} else {
+  // Seed path: a brand-new file. Header + both (still empty) sections.
+  lines = [
+    "# Pages Index",
+    "",
+    "Auto-generated by PAGES.sh + PAGES.ts (control what lands here with PAGES.ignore).",
+    "New entries are appended to their section in `- [name](name): ` link form",
+    "with an empty description so an AI pass can fill them in afterwards",
+    "(prompt for that pass lives in PAGES.prompt).",
+    "",
+    SECTION_PAGES,
+    "",
+    SECTION_DIRS,
+    "",
+  ];
+}
+
+const known = collectExistingNames(lines);
+const fresh = names.filter((n) => !known.has(n));
+
+const freshPages = fresh.filter((n) => !isDir(n)).map(toLinkLine);
+const freshDirs = fresh.filter(isDir).map(toLinkLine);
+
+if (fresh.length || !existsSync(target)) {
+  appendToSection(lines, SECTION_PAGES, freshPages);
+  appendToSection(lines, SECTION_DIRS, freshDirs);
+
+  let body = lines.join("\n");
+  if (!body.endsWith("\n")) body += "\n";
+  writeFileSync(target, body);
+}
+
+console.error(`PAGES.ts: added ${freshPages.length} page(s) and ${freshDirs.length} directory(ies) to ${target}`);

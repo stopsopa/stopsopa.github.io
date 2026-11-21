@@ -14,3 +14,21 @@ inspect one script and then produce and write description, and then another one 
 I want you to do it one by one. Don't buffer too many descriptions in memory.
 
 This way when something will break (AI will be interrupted) we will at least progress with something
+
+# Limiter 
+
+Limit the number of files processed in one prompt to 15 and each time you process one file (to generate description and after adding it to PAGES.md) count how many you have processed and present that counter in ai output.
+
+After processing that many files just stop with message
+
+```
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │                                                                      │
+  │   Processing finished, Description for [x] lines produced in total   │
+  │                                                                      │
+  └──────────────────────────────────────────────────────────────────────┘
+
+```
+
+forget about all of that if you can use subagents, just split work by given number for each subagents

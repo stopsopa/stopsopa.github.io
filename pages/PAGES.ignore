@@ -1,0 +1,14 @@
+# Controls what pages/PAGES.sh registers in pages/PAGES.md.
+# gitignore syntax, paths relative to the project root.
+#
+#   pages/foo/              - skip directory foo and everything inside it
+#   pages/foo/*             - skip content of foo but still list foo/ itself
+#   !pages/foo/index.html   - ...and bring one file back
+#
+# NOTE: this only stops NEW entries from being added. An entry already
+#       present in PAGES.md has to be removed from there by hand.
+
+# build artefacts of *.template.html (gitignored)
+*.rendered.html
+
+node_modules/
