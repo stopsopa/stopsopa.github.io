@@ -51,6 +51,16 @@
  *     replace atomically when it resolves to A but in other form (relative vs absolute).
  *   - --gitignore adds B like for files (no trailing "/" - git sees symlink as a file, "link/" would not match it).
  *   - --unlink skips directory pairs.
+ *
+ * Safety nets:
+ *   - Unknown options and extra positional arguments are errors (typo like --unlnk must not silently run link mode).
+ *   - Path B used by two pairs with different path A -> validation error.
+ *   - Path B being a symlink (file pair): broken symlink -> error, symlink to a file with content of A -> replaced
+ *     with real hardlink (symlink is never reported as "Already linked").
+ *   - --gitignore: path B outside of the directory of gitignore -> validation error (gitignore can't reach it),
+ *     entry without "/" is anchored with leading "/" (otherwise it would match on every level),
+ *     special characters of gitignore (\ * ? [ leading # and !, trailing spaces) are escaped.
+ *   - Expected failures are thrown as HardlinkError - only the entry point at the bottom calls process.exit().
  */
 
 import fs from "node:fs";
@@ -59,8 +69,16 @@ import os from "node:os";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-const filename = path.basename(fileURLToPath(import.meta.url));
-const th = (msg: string) => new Error(`${filename} error: ${msg}`);
+/**
+ * Expected, operator facing failure (wrong arguments, failed validation, ...).
+ * Entry point at the bottom of this file prints its message as is and exits with code 1.
+ * Thrown instead of calling process.exit() so the logic stays testable.
+ */
+export class HardlinkError extends Error {}
+
+function fail(msg: string): never {
+  throw new HardlinkError(msg);
+}
 
 export interface ParsedPair {
   rawLine: string;
@@ -94,13 +112,15 @@ Usage:
 
 Options:
   --pwd                     Resolve paths relative to current working directory (process.cwd())
-  --pwd <path>              Resolve paths relative to explicit <path>
-  --gitignore <path>        Path to .gitignore to ensure target file B paths are ignored
+  --pwd <path>              Resolve paths relative to explicit <path> (also --pwd=<path>)
+  --gitignore <path>        Path to .gitignore to ensure target file B paths are ignored (also --gitignore=<path>)
   --unlink                  Unlink existing hardlinked pairs (cannot be used with --gitignore)
                             (directory pairs are skipped)
   --absolute-symlink-dir    Directory pairs: create symlinks with absolute target path
                             (default: target relative to the directory of symlink B)
   --help, -h                Show this help page
+
+  Unknown options and more than one config file are errors.
 
 Gitignore delimiters:
   If the target gitignore contains the block delimiters:
@@ -108,6 +128,8 @@ Gitignore delimiters:
     # hardlink.ts ^^^
   new file B entries (relative to gitignore) are inserted inside this block (if not already present).
   If either delimiter is missing, entries are appended to the end of the file.
+  Entry without "/" inside gets leading "/" (otherwise gitignore would match it on every level).
+  Path B outside of the directory of gitignore is an error.
 
 Config file format:
   The config file defines pairs of paths separated by " -> " (one pair per line).
@@ -172,9 +194,15 @@ export function extractPathString(token: string): string {
 
 /**
  * Parse CLI arguments into options
+ *
+ * Unknown options and extra positional arguments are errors: silently ignoring a typo
+ * like --unlnk would run link mode instead of unlink mode.
  */
 export function parseArgs(args: string[]): CliOptions {
   const options: CliOptions = {};
+  // true when value of --pwd was taken from the next argument (not from --pwd=<path>)
+  let pwdFromNextArg = false;
+
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === "--help" || arg === "-h") {
@@ -183,10 +211,18 @@ export function parseArgs(args: string[]): CliOptions {
       const nextArg = args[i + 1];
       if (nextArg && !nextArg.startsWith("-")) {
         options.pwdOverride = nextArg;
+        pwdFromNextArg = true;
         i++;
       } else {
         options.useCwd = true;
       }
+    } else if (arg.startsWith("--pwd=")) {
+      const value = arg.slice("--pwd=".length);
+      if (value === "") {
+        fail("Error: --pwd= requires a path (use --pwd alone for current working directory).");
+      }
+      options.pwdOverride = value;
+      pwdFromNextArg = false;
     } else if (arg === "--unlink") {
       options.unlink = true;
     } else if (arg === "--absolute-symlink-dir") {
@@ -197,15 +233,31 @@ export function parseArgs(args: string[]): CliOptions {
         options.gitignorePath = nextArg;
         i++;
       } else {
-        console.error("Error: --gitignore requires a file path argument.");
-        process.exit(1);
+        fail("Error: --gitignore requires a file path argument.");
       }
-    } else if (!arg.startsWith("-")) {
-      if (!options.configFile) {
-        options.configFile = arg;
+    } else if (arg.startsWith("--gitignore=")) {
+      const value = arg.slice("--gitignore=".length);
+      if (value === "") {
+        fail("Error: --gitignore requires a file path argument.");
       }
+      options.gitignorePath = value;
+    } else if (arg.startsWith("-")) {
+      fail(`Error: Unknown option "${arg}" (use --help to list available options).`);
+    } else if (options.configFile === undefined) {
+      options.configFile = arg;
+    } else {
+      fail(`Error: Unexpected extra argument "${arg}" (config file already given: "${options.configFile}").`);
     }
   }
+
+  // "hardlink.ts --pwd config.md": --pwd swallowed the only positional argument.
+  // Without config file there is nothing to do, so it can only mean: bare --pwd (cwd) + config file.
+  if (options.configFile === undefined && options.pwdOverride !== undefined && pwdFromNextArg) {
+    options.configFile = options.pwdOverride;
+    options.pwdOverride = undefined;
+    options.useCwd = true;
+  }
+
   return options;
 }
 
@@ -258,6 +310,32 @@ function isWritable(p: string): boolean {
 }
 
 /**
+ * Check if new entries can be created/replaced in the directory (needs write and search permission)
+ */
+function isWritableDir(p: string): boolean {
+  try {
+    fs.accessSync(p, fs.constants.W_OK | fs.constants.X_OK);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// true when both paths lead to the same place after resolving all symlinks
+function sameRealPath(a: string, b: string): boolean {
+  try {
+    return fs.realpathSync(a) === fs.realpathSync(b);
+  } catch {
+    return false;
+  }
+}
+
+// true when both stats describe the same inode on the same filesystem
+function sameInode(a: fs.Stats, b: fs.Stats): boolean {
+  return a.dev === b.dev && a.ino === b.ino;
+}
+
+/**
  * Find nearest existing ancestor of given path (the path itself if it exists).
  * Used to validate the place where file B will land when its parent directories still have to be created
  * (that ancestor has to be a writable directory and has to be on the same filesystem as file A).
@@ -300,12 +378,12 @@ function validateMissingBParent(resolvedB: string, statA: fs.Stats | null): stri
 
   if (ancestor === parentB) {
     // - check if parent directory of file B is writable (if I have rights to create new hardlink in this directory)
-    if (!isWritable(parentB)) {
+    if (!isWritableDir(parentB)) {
       return `Parent directory "${parentB}" is not writable`;
     }
   } else {
     // if directory doesn't exist then check if we have rights to create it
-    if (!isWritable(ancestor)) {
+    if (!isWritableDir(ancestor)) {
       return `Cannot create parent directory for "${resolvedB}": Directory "${ancestor}" is not writable.`;
     }
   }
@@ -375,9 +453,13 @@ function validateDirPair(pair: ParsedPair): string | null {
 
     // - symlink B resolves to directory A but in different form (relative vs absolute, e.g. after toggling --absolute-symlink-dir)
     //   it will be replaced, so parent directory has to be writable
-    if (path.resolve(path.dirname(pair.resolvedB), current) === pair.resolvedA) {
+    //   (compared as written and after resolving all symlinks on the way)
+    if (
+      path.resolve(path.dirname(pair.resolvedB), current) === pair.resolvedA ||
+      sameRealPath(pair.resolvedB, pair.resolvedA)
+    ) {
       const parentB = path.dirname(pair.resolvedB);
-      if (isWritable(parentB)) {
+      if (isWritableDir(parentB)) {
         return null;
       }
       return errB(`Parent directory "${parentB}" is not writable (needed to replace symlink B)`);
@@ -431,6 +513,240 @@ function executeDirPair(pair: ParsedPair, changedLabel: string): void {
   console.log(
     `   (B resolves to: ${fs.realpathSync(pair.resolvedB)}, directory A: ${fs.realpathSync(pair.resolvedA)})`
   );
+}
+
+/**
+ * Compare content of two files. Sizes first, so files of different size are never read.
+ */
+function sameContent(fileA: string, sizeA: number, fileB: string, sizeB: number): boolean {
+  if (sizeA !== sizeB) {
+    return false;
+  }
+  return fs.readFileSync(fileA).equals(fs.readFileSync(fileB));
+}
+
+/**
+ * Validation of file pair. Nothing is changed here, only checks.
+ * Returns error message (already formatted with "File A"/"File B" header) or null when all good.
+ */
+function validateFilePair(pair: ParsedPair): string | null {
+  const errA = (msg: string) => `File A [${pair.rawA}] error:\n   ${msg}`;
+  const errB = (msg: string) => `File B [${pair.rawB}] error:\n   ${msg}`;
+
+  // - path B ends with "/" (directory) but path A doesn't - mixed pair, most likely "/" is missing at the end of path A
+  if (pair.rawB.endsWith("/")) {
+    return errB(
+      `Path B ends with "/" (directory) but path A doesn't - add "/" to the end of path A to link directories`
+    );
+  }
+
+  // - we will check if something exist under path A (it has to exist, if nothing is there then error)
+  if (!fs.existsSync(pair.resolvedA)) {
+    return errA(`File does not exist: "${pair.resolvedA}"`);
+  }
+
+  // - check the thing under path A is a file
+  const statA = fs.statSync(pair.resolvedA);
+  if (!statA.isFile()) {
+    return errA(`Path is not a regular file: "${pair.resolvedA}"`);
+  }
+
+  // - check if file A is readable
+  if (!isReadable(pair.resolvedA)) {
+    return errA(`File is not readable: "${pair.resolvedA}"`);
+  }
+
+  // if all checks about file A are ok only then continue all checks for path B:
+  // lstat on purpose (not existsSync/stat): broken symlink under path B "doesn't exist" for existsSync,
+  // but link() would then fail with EEXIST in the middle of execution phase
+  const lstatB = lstatOrNull(pair.resolvedB);
+
+  if (lstatB === null) {
+    // when file B doesn't exist:
+    //   parent directory checks (exists / is directory / writable / can be created / same filesystem as A)
+    //   live in validateMissingBParent() since directory pairs use them too
+    const parentError = validateMissingBParent(pair.resolvedB, statA);
+    return parentError === null ? null : errB(parentError);
+  }
+
+  const isSymlinkB = lstatB.isSymbolicLink();
+
+  // what path B leads to (the file itself, or target of the symlink)
+  let statB: fs.Stats;
+  try {
+    statB = fs.statSync(pair.resolvedB);
+  } catch (err) {
+    if (isSymlinkB) {
+      return errB(
+        `Path is a broken symlink (points to "${fs.readlinkSync(pair.resolvedB)}"), remove it manually: "${
+          pair.resolvedB
+        }"`
+      );
+    }
+    return errB(`Cannot access path: "${pair.resolvedB}": ${(err as Error).message}`);
+  }
+
+  // - check if file B is a file
+  if (!statB.isFile()) {
+    return errB(`Path is not a regular file: "${pair.resolvedB}"`);
+  }
+
+  // - VERY IMPORTANT: check if file A and file B are hardlinks to the same inode if yes then skip further checking and move on to next line in config.md - all is good
+  //   symlink B pointing to file A also leads to the inode of A, but it is not a hardlink - it will be replaced with one
+  if (!isSymlinkB && sameInode(statA, statB)) {
+    return null;
+  }
+
+  // - check if file B is readable
+  if (!isReadable(pair.resolvedB)) {
+    return errB(`File is not readable: "${pair.resolvedB}"`);
+  }
+
+  // - check if file B is writable (if I have rights to remove it and create new hardlink in its place)
+  //   removing/replacing file B is an operation on its parent directory, so it is the parent directory
+  //   which has to be writable - write permission on file B itself doesn't matter
+  const parentOfB = path.dirname(pair.resolvedB);
+  if (!isWritableDir(parentOfB)) {
+    return errB(`Parent directory "${parentOfB}" is not writable (needed to replace file B)`);
+  }
+
+  // - hardlinks cannot cross filesystems - check it upfront so file B is never touched when linking would fail anyway
+  //   lstat: for symlink B it is the place where the symlink lives which matters, not where it points to
+  if (statA.dev !== lstatB.dev) {
+    return errB(
+      `File A and file B are on different filesystems (hardlinks cannot cross filesystems): "${pair.resolvedA}" vs "${pair.resolvedB}"`
+    );
+  }
+
+  // - check if file A and file B have the same content (if they don't then error)
+  if (!sameContent(pair.resolvedA, statA.size, pair.resolvedB, statB.size)) {
+    return errB(`Content of file B does not match content of file A`);
+  }
+
+  return null;
+}
+
+/**
+ * Execution of file pair. Validation phase guarantees path B is missing, is already a hardlink to file A,
+ * or leads to a file with the same content as file A.
+ * Prints final proof: inodes of file A and file B.
+ */
+function executeFilePair(pair: ParsedPair, changedLabel: string): void {
+  const statA = fs.statSync(pair.resolvedA);
+  const lstatB = lstatOrNull(pair.resolvedB);
+
+  if (lstatB !== null) {
+    // - check if file A and file B are hardlinks to the same inode if yes, then just skip this line form config.md and move on to next line in config.md
+    if (!lstatB.isSymbolicLink() && sameInode(statA, lstatB)) {
+      console.log(`   Already linked (inode A: ${statA.ino}, inode B: ${lstatB.ino})`);
+      return;
+    }
+
+    // - if file A and file B are not hardlinks to the same inode then we know from validation phase that contents of file A and file B are the same because we wouldn't reach this point if they were not the same. in that case remove file B and create hardlink from file A to file B
+    /**
+     * Replace atomically: hardlink A under temporary name next to B and rename it over B.
+     * rename is atomic, so B is never missing even if something fails midway
+     * (unlink B + link A -> B would leave B removed when link fails).
+     */
+    replaceAtomically(pair.resolvedB, (tmpB) => fs.linkSync(pair.resolvedA, tmpB));
+    const newStatB = fs.lstatSync(pair.resolvedB);
+    const what = lstatB.isSymbolicLink() ? "symlink B" : "file B";
+    console.log(
+      `   ${changedLabel}: Replaced ${what} with hardlink to file A (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
+    );
+    return;
+  }
+
+  // if file B doesn't exist:
+  // - make sure parent directory of file B exist, if not then create it
+  fs.mkdirSync(path.dirname(pair.resolvedB), { recursive: true });
+  // - create hardlink from file A to file B
+  fs.linkSync(pair.resolvedA, pair.resolvedB);
+  const newStatB = fs.lstatSync(pair.resolvedB);
+  console.log(
+    `   ${changedLabel}: Created hardlink from file A to file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
+  );
+}
+
+/**
+ * Unlink mode: turn file B of every hardlinked pair back into independent copy of file A.
+ * Very lenient - anything unusual (missing file, directory, symlink, not hardlinked, directory pair) is skipped
+ * and only what was unlinked is reported.
+ * File B is replaced atomically (copy under temporary name + rename), it is never missing.
+ * Returns number of pairs which should have been unlinked but failed.
+ */
+function unlinkPairs(pairs: ParsedPair[], unlinkedLabel: string): number {
+  let failures = 0;
+
+  for (const pair of pairs) {
+    // directory pairs (symlinks) are not handled by --unlink - skip them
+    if (pair.isDir) {
+      continue;
+    }
+
+    let statA: fs.Stats;
+    try {
+      statA = fs.statSync(pair.resolvedA);
+    } catch {
+      continue;
+    }
+    // lstat: file B has to be a real file, symlink leading to file A is not a hardlink
+    const lstatB = lstatOrNull(pair.resolvedB);
+
+    // Check if both file A and file B exist and both are regular files
+    if (lstatB === null || !statA.isFile() || !lstatB.isFile()) {
+      continue;
+    }
+
+    // Check if they are hardlinks to the same inode
+    if (!sameInode(statA, lstatB)) {
+      continue;
+    }
+
+    const tempPath = `${pair.resolvedB}.unlink_tmp_${process.pid}_${Math.random().toString(36).slice(2)}`;
+    try {
+      fs.copyFileSync(pair.resolvedA, tempPath);
+      // rename replaces file B atomically - no unlink first, so file B is never missing
+      fs.renameSync(tempPath, pair.resolvedB);
+      const newStatB = fs.statSync(pair.resolvedB);
+      console.log(`\n${pair.rawLine}`);
+      console.log(
+        `   ${unlinkedLabel}: Disconnected hardlink, preserved independent file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
+      );
+    } catch (err) {
+      fs.rmSync(tempPath, { force: true });
+      failures++;
+      console.error(`Error unlinking "${pair.resolvedB}": ${(err as Error).message}`);
+    }
+  }
+
+  return failures;
+}
+
+/**
+ * Turn path B into entry for given gitignore file (path relative to the directory of that gitignore).
+ *   - returns null when path B is not inside of the directory of gitignore - gitignore has no way to reach it
+ *   - entry without "/" gets leading "/": "b.txt" would ignore b.txt on every level, "/b.txt" only this one
+ *     (entry with "/" in the middle is already anchored to the directory of gitignore)
+ *   - characters special for gitignore are escaped: \ * ? [ leading # and !, trailing spaces
+ */
+export function toGitignoreEntry(gitignoreDir: string, resolvedB: string): string | null {
+  // normalize Windows backslashes if any to forward slashes for gitignore consistency
+  const rel = path.relative(gitignoreDir, resolvedB).split(path.sep).join("/");
+
+  if (rel === "" || rel === ".." || rel.startsWith("../") || path.isAbsolute(rel)) {
+    return null;
+  }
+
+  let entry = rel.replace(/[\\*?[]/g, "\\$&").replace(/ +$/, (spaces) => "\\ ".repeat(spaces.length));
+
+  if (!entry.includes("/")) {
+    entry = `/${entry}`;
+  } else if (entry.startsWith("#") || entry.startsWith("!")) {
+    entry = `\\${entry}`;
+  }
+
+  return entry;
 }
 
 /**
@@ -503,11 +819,14 @@ export function updateGitignore(
   const hasDelimiters = startIndex !== -1 && endIndex !== -1 && startIndex < endIndex;
   const added: string[] = [];
 
+  // the same entry requested twice (duplicated line in config.md) is added once
+  relativePathsToAdd = [...new Set(relativePathsToAdd)];
+
   if (hasDelimiters) {
     const insideLines = lines.slice(startIndex + 1, endIndex).map((l) => l.trim());
     const toInsert: string[] = [];
     for (const relPath of relativePathsToAdd) {
-      if (!insideLines.includes(relPath)) {
+      if (!insideLines.includes(relPath.trim())) {
         toInsert.push(relPath);
         added.push(relPath);
       }
@@ -523,7 +842,7 @@ export function updateGitignore(
     const existingLines = lines.map((l) => l.trim());
     const toAppend: string[] = [];
     for (const relPath of relativePathsToAdd) {
-      if (!existingLines.includes(relPath)) {
+      if (!existingLines.includes(relPath.trim())) {
         toAppend.push(relPath);
         added.push(relPath);
       }
@@ -552,8 +871,7 @@ export async function run(args: string[]): Promise<void> {
   }
 
   if (options.unlink && options.gitignorePath) {
-    console.error("Error: --unlink flag cannot be used together with --gitignore flag.");
-    process.exit(1);
+    fail("Error: --unlink flag cannot be used together with --gitignore flag.");
   }
 
   const rawConfigPath = options.configFile;
@@ -568,42 +886,35 @@ export async function run(args: string[]): Promise<void> {
   if (options.gitignorePath) {
     resolvedGitignore = path.resolve(process.cwd(), expandHome(options.gitignorePath));
     if (!fs.existsSync(resolvedGitignore)) {
-      console.error(`Error: Gitignore file "${options.gitignorePath}" does not exist: "${resolvedGitignore}"`);
-      process.exit(1);
+      fail(`Error: Gitignore file "${options.gitignorePath}" does not exist: "${resolvedGitignore}"`);
     }
     const gitignoreStat = fs.statSync(resolvedGitignore);
     if (!gitignoreStat.isFile()) {
-      console.error(`Error: Gitignore path "${options.gitignorePath}" is not a file: "${resolvedGitignore}"`);
-      process.exit(1);
+      fail(`Error: Gitignore path "${options.gitignorePath}" is not a file: "${resolvedGitignore}"`);
     }
     if (!isWritable(resolvedGitignore)) {
-      console.error(`Error: Gitignore file "${resolvedGitignore}" is not writable.`);
-      process.exit(1);
+      fail(`Error: Gitignore file "${resolvedGitignore}" is not writable.`);
     }
   }
 
   // Check if config.md exists, is file, and is readable
   if (!fs.existsSync(configPath)) {
-    console.error(`Error: Config file "${rawConfigPath}" does not exist.`);
-    process.exit(1);
+    fail(`Error: Config file "${rawConfigPath}" does not exist.`);
   }
 
   let configStat: fs.Stats;
   try {
     configStat = fs.statSync(configPath);
   } catch (err) {
-    console.error(`Error: Cannot access config file "${rawConfigPath}": ${(err as Error).message}`);
-    process.exit(1);
+    fail(`Error: Cannot access config file "${rawConfigPath}": ${(err as Error).message}`);
   }
 
   if (!configStat.isFile()) {
-    console.error(`Error: Config path "${rawConfigPath}" is not a file.`);
-    process.exit(1);
+    fail(`Error: Config path "${rawConfigPath}" is not a file.`);
   }
 
   if (!isReadable(configPath)) {
-    console.error(`Error: Config file "${rawConfigPath}" is not readable.`);
-    process.exit(1);
+    fail(`Error: Config file "${rawConfigPath}" is not readable.`);
   }
 
   const content = fs.readFileSync(configPath, "utf-8");
@@ -615,47 +926,9 @@ export async function run(args: string[]): Promise<void> {
 
   // # unlink mode
   if (options.unlink) {
-    for (const pair of pairs) {
-      // directory pairs (symlinks) are not handled by --unlink - skip them
-      if (pair.isDir) {
-        continue;
-      }
-
-      // Check if both file A and file B exist
-      if (!fs.existsSync(pair.resolvedA) || !fs.existsSync(pair.resolvedB)) {
-        continue;
-      }
-
-      let statA: fs.Stats;
-      let statB: fs.Stats;
-      try {
-        statA = fs.statSync(pair.resolvedA);
-        statB = fs.statSync(pair.resolvedB);
-      } catch {
-        continue;
-      }
-
-      // Check both are regular files
-      if (!statA.isFile() || !statB.isFile()) {
-        continue;
-      }
-
-      // Check if they are hardlinks to the same inode
-      if (statA.dev === statB.dev && statA.ino === statB.ino) {
-        try {
-          const tempPath = `${pair.resolvedB}.unlink_tmp_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-          fs.copyFileSync(pair.resolvedA, tempPath);
-          fs.unlinkSync(pair.resolvedB);
-          fs.renameSync(tempPath, pair.resolvedB);
-          const newStatB = fs.statSync(pair.resolvedB);
-          console.log(`\n${pair.rawLine}`);
-          console.log(
-            `   ${green}UNLINKED${reset}: Disconnected hardlink, preserved independent file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
-          );
-        } catch (err) {
-          console.error(`Error unlinking "${pair.resolvedB}": ${(err as Error).message}`);
-        }
-      }
+    const failures = unlinkPairs(pairs, `${green}UNLINKED${reset}`);
+    if (failures > 0) {
+      fail(`Error: failed to unlink ${failures} pair(s) - see errors above.`);
     }
     return;
   }
@@ -663,168 +936,80 @@ export async function run(args: string[]): Promise<void> {
   // # validation phase
   const errors: string[] = [];
 
-  for (const pair of pairs) {
-    // directory pair (path A ends with "/") - path B has to be (or become) a symlink to directory A
-    if (pair.isDir) {
-      const dirError = validateDirPair(pair);
-      if (dirError !== null) {
-        errors.push(dirError);
-      }
-      continue;
-    }
+  // entries for gitignore are computed here (not after execution phase),
+  // so path B which gitignore can't reach is reported before anything is changed
+  const gitignoreEntries: string[] = [];
 
-    // - path B ends with "/" (directory) but path A doesn't - mixed pair, most likely "/" is missing at the end of path A
-    if (pair.rawB.endsWith("/")) {
+  // resolved path B -> first pair using it
+  const seenB = new Map<string, ParsedPair>();
+
+  for (const pair of pairs) {
+    const labelB = pair.isDir ? "Symlink B" : "File B";
+
+    // - the same path B used by two pairs with different path A - only one of them can win,
+    //   and the second one would replace B without content check (B didn't exist yet during validation)
+    const first = seenB.get(pair.resolvedB);
+    if (first === undefined) {
+      seenB.set(pair.resolvedB, pair);
+    } else if (first.resolvedA !== pair.resolvedA || first.isDir !== pair.isDir) {
       errors.push(
-        `File B [${pair.rawB}] error:\n   Path B ends with "/" (directory) but path A doesn't - add "/" to the end of path A to link directories`
+        `${labelB} [${pair.rawB}] error:\n   Path B is used by more than one pair with different path A: [${first.rawA}] and [${pair.rawA}]: "${pair.resolvedB}"`
       );
       continue;
     }
 
-    // - we will check if something exist under path A (it has to exist, if nothing is there then error)
-    if (!fs.existsSync(pair.resolvedA)) {
-      errors.push(`File A [${pair.rawA}] error:\n   File does not exist: "${pair.resolvedA}"`);
+    // directory pair (path A ends with "/") - path B has to be (or become) a symlink to directory A
+    // file pair otherwise - checks in the order described in PLAN.md live in validateFilePair()
+    const pairError = pair.isDir ? validateDirPair(pair) : validateFilePair(pair);
+    if (pairError !== null) {
+      errors.push(pairError);
       continue;
     }
 
-    // - check the thing under path A is a file
-    const statA = fs.statSync(pair.resolvedA);
-    if (!statA.isFile()) {
-      errors.push(`File A [${pair.rawA}] error:\n   Path is not a regular file: "${pair.resolvedA}"`);
-      continue;
-    }
-
-    // - check if file A is readable
-    if (!isReadable(pair.resolvedA)) {
-      errors.push(`File A [${pair.rawA}] error:\n   File is not readable: "${pair.resolvedA}"`);
-      continue;
-    }
-
-    // if all checks about file A are ok only then continue all checks for path B:
-    if (fs.existsSync(pair.resolvedB)) {
-      // - check if file B is a file
-      const statB = fs.statSync(pair.resolvedB);
-      if (!statB.isFile()) {
-        errors.push(`File B [${pair.rawB}] error:\n   Path is not a regular file: "${pair.resolvedB}"`);
-        continue;
-      }
-
-      // - VERY IMPORTANT: check if file A and file B are hardlinks to the same inode if yes then skip further checking and move on to next line in config.md - all is good
-      if (statA.dev === statB.dev && statA.ino === statB.ino) {
-        continue;
-      }
-
-      // - check if file B is readable
-      if (!isReadable(pair.resolvedB)) {
-        errors.push(`File B [${pair.rawB}] error:\n   File is not readable: "${pair.resolvedB}"`);
-        continue;
-      }
-
-      // - check if file B is writable (if I have rights to remove it and create new hardlink in its place)
-      //   removing/replacing file B is an operation on its parent directory, so it is the parent directory
-      //   which has to be writable - write permission on file B itself doesn't matter
-      const parentOfB = path.dirname(pair.resolvedB);
-      if (!isWritable(parentOfB)) {
+    // - with --gitignore: path B has to be inside of the directory of gitignore file
+    if (resolvedGitignore) {
+      // for directory pairs B is a symlink - no trailing "/" on purpose, git sees symlink as a file and "link/" would not match it
+      const entry = toGitignoreEntry(path.dirname(resolvedGitignore), pair.resolvedB);
+      if (entry === null) {
         errors.push(
-          `File B [${pair.rawB}] error:\n   Parent directory "${parentOfB}" is not writable (needed to replace file B)`
+          `${labelB} [${pair.rawB}] error:\n   Path is outside of the directory of gitignore file "${resolvedGitignore}" - gitignore cannot ignore it: "${pair.resolvedB}"`
         );
         continue;
       }
-
-      // - hardlinks cannot cross filesystems - check it upfront so file B is never touched when linking would fail anyway
-      if (statA.dev !== statB.dev) {
-        errors.push(
-          `File B [${pair.rawB}] error:\n   File A and file B are on different filesystems (hardlinks cannot cross filesystems): "${pair.resolvedA}" vs "${pair.resolvedB}"`
-        );
-        continue;
-      }
-
-      // - check if file A and file B have the same content (if they don't then error)
-      const contentA = fs.readFileSync(pair.resolvedA);
-      const contentB = fs.readFileSync(pair.resolvedB);
-      if (!contentA.equals(contentB)) {
-        errors.push(`File B [${pair.rawB}] error:\n   Content of file B does not match content of file A`);
-        continue;
-      }
-    } else {
-      // when file B doesn't exist:
-      //   parent directory checks (exists / is directory / writable / can be created / same filesystem as A)
-      //   live in validateMissingBParent() since directory pairs use them too
-      const parentError = validateMissingBParent(pair.resolvedB, statA);
-      if (parentError !== null) {
-        errors.push(`File B [${pair.rawB}] error:\n   ${parentError}`);
-        continue;
-      }
+      gitignoreEntries.push(entry);
     }
   }
 
   if (errors.length > 0) {
-    for (const err of errors) {
-      console.error(err + "\n");
-    }
-    process.exit(1);
+    // every error followed by empty line
+    fail(errors.join("\n\n") + "\n");
   }
 
   // # execution phase
   for (const pair of pairs) {
     console.log(`\n${pair.rawLine}`);
 
-    // directory pair - symlink B -> A
-    if (pair.isDir) {
-      executeDirPair(pair, `${green}CHANGED${reset}`);
-      continue;
-    }
-
-    const statA = fs.statSync(pair.resolvedA);
-
-    if (fs.existsSync(pair.resolvedB)) {
-      const statB = fs.statSync(pair.resolvedB);
-      // - check if file A and file B are hardlinks to the same inode if yes, then just skip this line form config.md and move on to next line in config.md
-      if (statA.dev === statB.dev && statA.ino === statB.ino) {
-        console.log(`   Already linked (inode A: ${statA.ino}, inode B: ${statB.ino})`);
-        continue;
+    try {
+      if (pair.isDir) {
+        // directory pair - symlink B -> A
+        executeDirPair(pair, `${green}CHANGED${reset}`);
+      } else {
+        executeFilePair(pair, `${green}CHANGED${reset}`);
       }
-
-      // - if file A and file B are not hardlinks to the same inode then we know from validation phase that contents of file A and file B are the same because we wouldn't reach this point if they were not the same. in that case remove file B and create hardlink from file A to file B
-      /**
-       * Replace atomically: hardlink A under temporary name next to B and rename it over B.
-       * rename is atomic, so B is never missing even if something fails midway
-       * (unlink B + link A -> B would leave B removed when link fails).
-       */
-      replaceAtomically(pair.resolvedB, (tmpB) => fs.linkSync(pair.resolvedA, tmpB));
-      const newStatB = fs.statSync(pair.resolvedB);
-      console.log(
-        `   ${green}CHANGED${reset}: Replaced file B with hardlink to file A (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
-      );
-    } else {
-      // if file B doesn't exist:
-      // - make sure parent directory of file B exist, if not then create it
-      const parentB = path.dirname(pair.resolvedB);
-      if (!fs.existsSync(parentB)) {
-        fs.mkdirSync(parentB, { recursive: true });
-      }
-      // - create hardlink from file A to file B
-      fs.linkSync(pair.resolvedA, pair.resolvedB);
-      const newStatB = fs.statSync(pair.resolvedB);
-      console.log(
-        `   ${green}CHANGED${reset}: Created hardlink from file A to file B (inode A: ${statA.ino}, inode B: ${newStatB.ino})`
+    } catch (err) {
+      // something changed on disk between validation and execution (or validation missed something)
+      fail(
+        `Error: failed on line "${pair.rawLine.trim()}": ${
+          (err as Error).message
+        }\n   Lines above were already processed, this line and lines below were not.`
       );
     }
   }
 
   // Gitignore update phase
   if (resolvedGitignore) {
-    const gitignoreDir = path.dirname(resolvedGitignore);
-    const relPathsToAdd = pairs.map((p) => {
-      // for directory pairs B is a symlink - no trailing "/" on purpose, git sees symlink as a file and "link/" would not match it
-      let rel = path.relative(gitignoreDir, p.resolvedB);
-      // normalize Windows backslashes if any to forward slashes for gitignore consistency
-      rel = rel.split(path.sep).join("/");
-      return rel;
-    });
-
     console.log(`\nGitignore check: "${resolvedGitignore}"`);
-    const { changed, added } = updateGitignore(resolvedGitignore, relPathsToAdd);
+    const { changed, added } = updateGitignore(resolvedGitignore, gitignoreEntries);
     if (changed) {
       console.log(`   ${green}CHANGED${reset}: Added to gitignore:`);
       for (const entry of added) {
@@ -836,9 +1021,26 @@ export async function run(args: string[]): Promise<void> {
   }
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)) {
+/**
+ * true when this file is the script executed by node (not imported by other module).
+ * fileURLToPath (not URL.pathname - that one stays percent-encoded and never matches path with spaces),
+ * realpath to also match when script is launched through a symlink.
+ */
+function isMain(): boolean {
+  if (!process.argv[1]) {
+    return false;
+  }
+  const self = fileURLToPath(import.meta.url);
+  try {
+    return fs.realpathSync(process.argv[1]) === fs.realpathSync(self);
+  } catch {
+    return path.resolve(process.argv[1]) === self;
+  }
+}
+
+if (isMain()) {
   run(process.argv.slice(2)).catch((err) => {
-    console.error((err as Error).message);
+    console.error(err instanceof Error ? err.message : String(err));
     process.exit(1);
   });
 }

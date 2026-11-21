@@ -122,4 +122,31 @@ echo "${REVERSE}tests/024/test.sh${RESET}"
 echo "${REVERSE}tests/025/test.sh${RESET}"
 /bin/bash "${_DIR}/tests/025/test.sh"
 
+echo "${REVERSE}tests/026/test.sh${RESET}"
+/bin/bash "${_DIR}/tests/026/test.sh"
+
+echo "${REVERSE}tests/027/test.sh${RESET}"
+/bin/bash "${_DIR}/tests/027/test.sh"
+
+echo "${REVERSE}tests/028/test.sh${RESET}"
+/bin/bash "${_DIR}/tests/028/test.sh"
+
+echo "${REVERSE}tests/029/test.sh${RESET}"
+/bin/bash "${_DIR}/tests/029/test.sh"
+
+echo "${REVERSE}tests/030/test.sh${RESET}"
+/bin/bash "${_DIR}/tests/030/test.sh"
+
+echo "${REVERSE}tests/031/test.sh${RESET}"
+/bin/bash "${_DIR}/tests/031/test.sh"
+
+echo "${REVERSE}tests/032/test.sh${RESET}"
+/bin/bash "${_DIR}/tests/032/test.sh"
+
+echo "${REVERSE}tests/033/test.sh${RESET}"
+/bin/bash "${_DIR}/tests/033/test.sh"
+
+echo "${REVERSE}tests/034/test.sh${RESET}"
+/bin/bash "${_DIR}/tests/034/test.sh"
+
 echo "All hardlink tests passed!"
