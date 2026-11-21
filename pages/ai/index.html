@@ -238,18 +238,18 @@
 
             # my list of skills
               npm install -g skills
-              npx skills add stopsopa/gcp-css -a claude-code -y
+              npx skills add stopsopa/gcp-css -a claude-code universal -y
                 # from: https://github.com/stopsopa/gcp-css
-              npx skills add stopsopa/tabs -a claude-code -y
+              npx skills add stopsopa/tabs -a claude-code universal -y
                 # from: https://github.com/stopsopa/tabs
-              npx skills add stopsopa/ace-editor-webcomponent -a claude-code -y
+              npx skills add stopsopa/ace-editor-webcomponent -a claude-code universal -y
                 # from: https://github.com/stopsopa/ace-editor-webcomponent
-              npx skills add stopsopa/xx -a claude-code -y
+              npx skills add stopsopa/xx -a claude-code universal -y
                 # from: https://github.com/stopsopa/xx#skill-for-ai-agents
 
             # daily use TLDR cheatsheet
               npx skills init page
-              npx skills add stopsopa/stopsopa.github.io -s page -a claude-code -y
+              npx skills add stopsopa/stopsopa.github.io -s page -a claude-code universal -y
                 # use to install and also to the same to update
               
               NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --frozen-lockfile
@@ -261,7 +261,18 @@
                   NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --no-frozen-lockfile
               
 
+          // ---- prompt ----- vvv
+          
+I have skill defined in this repository installed in other project and when I ran against that project prettier formatting I found that these skills are reformatted. I think it would be nice to preformat them here too
+so first add prettier here
+create configuration for prettier to use
+printWidth: 120,
+then use skill xx and register commands for handling prettier from it's template (use xx init to bring the prettier template, but in the end modify that template)
+so leave the group of prettier commands from xx skill tempalate
+create xx.ts in this project not in .git/xx.ts
+also make sure to make prettifying part of github action pipeline (if one exist in this project)
 
+          // ---- prompt ----- ^^^
 
 
           deterministic + ai: https://youtu.be/F0pH9aQeDrY?t=204
