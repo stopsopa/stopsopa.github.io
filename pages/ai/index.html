@@ -233,61 +233,60 @@
         <h2>Skills</h2>
         <script type="editor" data-lang="sh">
 
-          # my quide and my list
-            # https://github.com/stopsopa/skill-popover-api/tree/main/comprehensive_guide
+                    # my quide and my list
+                      # https://github.com/stopsopa/skill-popover-api/tree/main/comprehensive_guide
 
-            # my list of skills
-              npm install -g skills
-              npx skills add stopsopa/gcp-css -a claude-code universal -y
-                # from: https://github.com/stopsopa/gcp-css
-              npx skills add stopsopa/tabs -a claude-code universal -y
-                # from: https://github.com/stopsopa/tabs
-              npx skills add stopsopa/ace-editor-webcomponent -a claude-code universal -y
-                # from: https://github.com/stopsopa/ace-editor-webcomponent
-              npx skills add stopsopa/xx -a claude-code universal -y
-                # from: https://github.com/stopsopa/xx#skill-for-ai-agents
+                      # my list of skills
+                        npm install -g skills
+                        npx skills add stopsopa/gcp-css -a claude-code universal -y
+                          # from: https://github.com/stopsopa/gcp-css
+                        npx skills add stopsopa/tabs -a claude-code universal -y
+                          # from: https://github.com/stopsopa/tabs
+                        npx skills add stopsopa/ace-editor-webcomponent -a claude-code universal -y
+                          # from: https://github.com/stopsopa/ace-editor-webcomponent
+                        npx skills add stopsopa/xx -a claude-code universal -y
+                          # from: https://github.com/stopsopa/xx#skill-for-ai-agents
 
-            # daily use TLDR cheatsheet
-              npx skills init page
-              npx skills add stopsopa/stopsopa.github.io -s page -a claude-code universal -y
-                # use to install and also to the same to update
-              
-              NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --frozen-lockfile
-              # to bring all skills based on skills-lock.json  
-              # -y                 npx flag (not skills): auto-answers "Ok to proceed?" when skills@1.9.0 isn't in the npm cache, so the command never waits for input
-              # --frozen-lockfile  fail instead of modifying skills-lock.json if the restore doesn't match it (like `npm ci` vs `npm install`); already the default in CI
+                      # daily use TLDR cheatsheet
+                        npx skills init page
+                        npx skills add stopsopa/stopsopa.github.io -s page -a claude-code universal -y
+                          # use to install and also to the same to update
 
-                # to fix potential issues with --frozen-lockfile
-                  NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --no-frozen-lockfile
-              
+                        NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --frozen-lockfile
+                        # to bring all skills based on skills-lock.json
+                        # -y                 npx flag (not skills): auto-answers "Ok to proceed?" when skills@1.9.0 isn't in the npm cache, so the command never waits for input
+                        # --frozen-lockfile  fail instead of modifying skills-lock.json if the restore doesn't match it (like `npm ci` vs `npm install`); already the default in CI
+                            
+                          # to fix potential issues with --frozen-lockfile
+                            NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --no-frozen-lockfile
+                            
+                              // ---- prompt ----- vvv
+                              
+                    I have skill defined in this repository installed in other project and when I ran against that project prettier formatting I found that these skills are reformatted. I think it would be nice to preformat them here too
+                    so first add prettier here
+                    create configuration for prettier to use
+                    printWidth: 120,
+                    then use skill xx and register commands for handling prettier from it's template (use xx init to bring the prettier template, but in the end modify that template)
+                    so leave the group of prettier commands from xx skill tempalate
+                    create xx.ts in this project not in .git/xx.ts
+                    also make sure to make prettifying part of github action pipeline (if one exist in this project)
 
-          // ---- prompt ----- vvv
-          
-I have skill defined in this repository installed in other project and when I ran against that project prettier formatting I found that these skills are reformatted. I think it would be nice to preformat them here too
-so first add prettier here
-create configuration for prettier to use
-printWidth: 120,
-then use skill xx and register commands for handling prettier from it's template (use xx init to bring the prettier template, but in the end modify that template)
-so leave the group of prettier commands from xx skill tempalate
-create xx.ts in this project not in .git/xx.ts
-also make sure to make prettifying part of github action pipeline (if one exist in this project)
+                    Additionally if xx.* any version of config exist other than xx.ts then convert and migrate already existing commands from it to xx.ts. In the end I would prefer xx.ts
 
-Additionally if xx.* any version of config exist other than xx.ts then convert and migrate already existing commands from it to xx.ts. In the end I would prefer xx.ts
-
-          // ---- prompt ----- ^^^
+                              // ---- prompt ----- ^^^
 
 
-          deterministic + ai: https://youtu.be/F0pH9aQeDrY?t=204
+                    deterministic + ai: https://youtu.be/F0pH9aQeDrY?t=204
 
-          https://agentskills.io/specification
-          https://www.skills.sh/
-            # from: https://youtu.be/cxQLKsktiBA
-             # see how to use references: PROGRESSIVE DISCLOSURE
-                https://youtu.be/cxQLKsktiBA?t=927
-                https://agentskills.io/specification#progressive-disclosure
+                    https://agentskills.io/specification
+                    https://www.skills.sh/
+                      # from: https://youtu.be/cxQLKsktiBA
+                       # see how to use references: PROGRESSIVE DISCLOSURE
+                          https://youtu.be/cxQLKsktiBA?t=927
+                          https://agentskills.io/specification#progressive-disclosure
 
-          Matt Pocock's Claude Code Skills Beat Superpowers Now
-            https://youtu.be/8D8ewFBJfFM?t=126
+                    Matt Pocock's Claude Code Skills Beat Superpowers Now
+                      https://youtu.be/8D8ewFBJfFM?t=126
         </script>
         <h2>Certificates</h2>
         <script type="editor" data-lang="sh">

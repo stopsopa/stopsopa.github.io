@@ -97,10 +97,10 @@ Rules:
 
 Transparent by default (the page background shows through). Two CSS variables:
 
-| variable | default | what |
-| --- | --- | --- |
+| variable                          | default       | what                             |
+| --------------------------------- | ------------- | -------------------------------- |
 | `--vanilla-tabs-background-color` | `transparent` | active button + panel background |
-| `--vanilla-tabs-lines-color` | `#565656` | borders, button text, arrows |
+| `--vanilla-tabs-lines-color`      | `#565656`     | borders, button text, arrows     |
 
 ```html
 <!-- all instances -->
@@ -167,17 +167,17 @@ which was active on page load - handle the initial state directly or use the glo
 
 Needed only without autoenable or for programmatic control.
 
-| call | what |
-| --- | --- |
-| `bind()` | start handling clicks (one delegated listener on `document.body`); returns unbind function |
-| `active()` | activate initial tab in every `[data-vanilla-tabs]` on the page; returns array of ids |
-| `watchMutationsEnable()` / `watchMutationsDisable()` | automatically handle tabs added later |
-| `activeByIndex(element, zeroIndex)` | switch tab programmatically |
-| `activeByButtonElement(element, buttonElement)` | switch tab programmatically by its button |
-| `on(element, callback)` | see section 5 |
-| `updateOverflow(element)` | see section 4 |
-| `autoenable()` | `bind()` + `active()` + `watchMutationsEnable()` in one call; what `?vanilla-tabs-autoenable` does |
-| `autoenableUnbind()` | exists only in autoenable mode; stops everything |
+| call                                                 | what                                                                                               |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `bind()`                                             | start handling clicks (one delegated listener on `document.body`); returns unbind function         |
+| `active()`                                           | activate initial tab in every `[data-vanilla-tabs]` on the page; returns array of ids              |
+| `watchMutationsEnable()` / `watchMutationsDisable()` | automatically handle tabs added later                                                              |
+| `activeByIndex(element, zeroIndex)`                  | switch tab programmatically                                                                        |
+| `activeByButtonElement(element, buttonElement)`      | switch tab programmatically by its button                                                          |
+| `on(element, callback)`                              | see section 5                                                                                      |
+| `updateOverflow(element)`                            | see section 4                                                                                      |
+| `autoenable()`                                       | `bind()` + `active()` + `watchMutationsEnable()` in one call; what `?vanilla-tabs-autoenable` does |
+| `autoenableUnbind()`                                 | exists only in autoenable mode; stops everything                                                   |
 
 Manual setup equal to autoenable:
 

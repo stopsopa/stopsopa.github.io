@@ -80,7 +80,7 @@ with an empty description so an AI pass can fill them in afterwards
 - [css/variables.html](css/variables.html): CSS custom properties driven from JS: mousemove sets --mouse-x and --mouse-y on document root, with getPropertyValue/setProperty snippets
 - [databases/dbeaver/index.html](databases/dbeaver/index.html): DBeaver tip: enable Show all databases checkbox when creating a connection in a project
 - [databases/dynamodb/index.html](databases/dynamodb/index.html): DynamoDB notes: DynamoDB Local install, aws dynamodb scan with endpoint-url, best practices link, version/revision pattern for create and update in Java
-- [databases/es/index.html](databases/es/index.html): Elasticsearch notes: Elastic Common Schema (ECS) links, curl examples for _cat/indices and indexing docs, Kibana link, Helm commands for gitlab-runner
+- [databases/es/index.html](databases/es/index.html): Elasticsearch notes: Elastic Common Schema (ECS) links, curl examples for \_cat/indices and indexing docs, Kibana link, Helm commands for gitlab-runner
 - [databases/firebase/firebase.html](databases/firebase/firebase.html): Firebase page: link to Firebase console and mount point for React/esbuild firebase entry bundles using preprocessed env
 - [databases/graphql.html](databases/graphql.html): GraphQL query examples against Linear API (workflowStates, issues filtering with and/neq) with Apollo Studio variables
 - [databases/index.html](databases/index.html): Databases index linking DBeaver, MySQL, DynamoDB, Elasticsearch, Firebase, Redis, SQL Server, GraphQL, SQLite, Postgres; dbdiagram.io relation examples (one-to-many, composite keys, enum) and normalization 1NF-3NF
@@ -386,7 +386,7 @@ with an empty description so an AI pass can fill them in afterwards
 - [html/checkbox/handleCheckboxFixed/](html/checkbox/handleCheckboxFixed/): TypeScript checkbox-group handler demo for a fixed set of checkboxes in a form, with compiled JS and the demo page
 - [html/input/](html/input/): Demo and TypeScript helper (handleInput) for text inputs, observing mutations and logging input, change and keydown events
 - [html/tabs/](html/tabs/): Minimal vanilla-tabs demo with three tabs and panels
-- [htmx/](htmx/): Single notes page on htmx: hx-* attributes, triggers, swap, forms, file upload, configuration and security
+- [htmx/](htmx/): Single notes page on htmx: hx-\* attributes, triggers, swap, forms, file upload, configuration and security
 - [http/](http/): HTTP notes: protocol versions, cache-control, REST verbs and idempotency, status codes, URL naming; single page.
 - [humanjson/](humanjson/): Small tool converting pasted JSON into human-readable format, with a React/JS entry bundle source.
 - [ide/](ide/): Notes on code editors and IDEs, with a cross-IDE shortcut mapping page and subfolders per IDE: VS Code, IntelliJ, Visual Studio, Cursor, Antigravity
