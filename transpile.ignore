@@ -26,6 +26,7 @@ bash/fs/watch.js
 bash/GLOSSARY.ts
 
 pages/*
+!pages/ascii.ts
 !pages/children/
 pages/children/*
 !pages/children/wotb/
