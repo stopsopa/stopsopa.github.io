@@ -13,6 +13,12 @@
       "skillPath": "gcp-css/SKILL.md",
       "computedHash": "37e3f6299c39c720ef2bfb296bdf61c952c96dd71c4274a44565c748d52b01c4"
     },
+    "page": {
+      "source": "stopsopa/stopsopa.github.io",
+      "sourceType": "github",
+      "skillPath": "page/SKILL.md",
+      "computedHash": "8b270ff430998259e6d04614ae0e7000f75cb3e53b80d91777a21ca0f01eb6e1"
+    },
     "vanilla-tabs": {
       "source": "stopsopa/tabs",
       "sourceType": "github",
