@@ -154,6 +154,8 @@ window.doace();
 
 [template minimal](#template-minimal)
 
+See skill for it [skill for creating new page](.agents/skills/page/SKILL.md)
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
