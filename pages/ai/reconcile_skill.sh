@@ -104,11 +104,18 @@ const names = JSON.parse(process.env.GLOBAL_JSON)
   .map((s) => s.name)
   .sort();
 
+// widths of the longest source and name, to align arguments of printed commands vertically
+const known = names.filter((name) => lock[name] && lock[name].source);
+const sourceWidth = Math.max(0, ...known.map((name) => lock[name].source.length));
+const nameWidth = Math.max(0, ...known.map((name) => name.length));
+
 console.log("    npm install -g skills");
 for (const name of names) {
   const source = lock[name] && lock[name].source;
   if (source) {
-    console.log(`    npx skills add ${source} --skill ${name} -g -a ${agents} -y`);
+    console.log(
+      `    npx skills add ${source.padEnd(sourceWidth)} --skill ${name.padEnd(nameWidth)} -g -a ${agents} -y`,
+    );
   } else {
     console.log(`    # ${name} - unknown source (not found in ${lockFile})`);
   }
