@@ -64,29 +64,54 @@ function findTargets(root: Node): Target[] {
   return targets;
 }
 
-async function fetchHash(endpoint: string, path: string): Promise<string | null> {
+type Hashes = {
+  hashes: Record<string, string>;
+  errors: Record<string, string>;
+};
+
+/**
+ * One request for all paths found on the page.
+ * Never throws - when entire request fails then every path gets the same error
+ */
+async function fetchHashes(endpoint: string, paths: string[]): Promise<Hashes> {
+  const fail = (error: string): Hashes => ({
+    hashes: {},
+    errors: Object.fromEntries(paths.map((path) => [path, error])),
+  });
+
   try {
-    const res = await fetch(`${endpoint}?path=${encodeURIComponent(path)}`);
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ paths }),
+    });
 
-    const json = await res.json();
+    const text = await res.text();
 
-    if (!res.ok || typeof json?.hash !== "string") {
-      console.warn(`sha384.browser: can't get hash for >${path}<: ${json?.error || `status ${res.status}`}`);
+    let json: any;
 
-      return null;
+    try {
+      json = JSON.parse(text);
+    } catch (e) {
+      return fail(`POST ${endpoint} status ${res.status}: response is not valid json: >${text.slice(0, 200)}<`);
     }
 
-    return json.hash;
-  } catch (e) {
-    console.warn(`sha384.browser: can't get hash for >${path}<: ${e}`);
+    if (!res.ok) {
+      return fail(`POST ${endpoint} status ${res.status}: ${json?.error || text.slice(0, 200)}`);
+    }
 
-    return null;
+    return {
+      hashes: json?.hashes || {},
+      errors: json?.errors || {},
+    };
+  } catch (e) {
+    return fail(`POST ${endpoint} failed: ${e}`);
   }
 }
 
 /**
  * Returns number of replaced markers.
- * Marker for which hash can't be obtained is left untouched (with warning in the console).
+ * Marker for which hash can't be obtained is left untouched and reported in the console.
  */
 export default async function sha384(endpoint: string = "/sha384/hash"): Promise<number> {
   const targets = findTargets(document.documentElement);
@@ -103,17 +128,18 @@ export default async function sha384(endpoint: string = "/sha384/hash"): Promise
     }
   }
 
-  const hashes = new Map<string, string>();
+  const { hashes, errors } = await fetchHashes(endpoint, Array.from(paths));
 
-  await Promise.all(
-    Array.from(paths).map(async (path) => {
-      const hash = await fetchHash(endpoint, path);
-
-      if (hash) {
-        hashes.set(path, hash);
-      }
-    })
-  );
+  for (const path of paths) {
+    if (typeof hashes[path] !== "string") {
+      // >< to make leading and trailing spaces visible
+      console.error(
+        `sha384.browser error: marker >${MARKER}${path}< not replaced: ${
+          errors[path] || "server returned no hash and no error"
+        }`
+      );
+    }
+  }
 
   let replaced = 0;
 
@@ -121,9 +147,9 @@ export default async function sha384(endpoint: string = "/sha384/hash"): Promise
     const value = getValue(target);
 
     const transformed = value.replace(createRegex(), (wholematch: string, path: string) => {
-      const hash = hashes.get(path);
+      const hash = hashes[path];
 
-      if (!hash) {
+      if (typeof hash !== "string") {
         return wholematch;
       }
 
