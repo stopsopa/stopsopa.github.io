@@ -11,6 +11,10 @@ ROOT="$(pwd -P)"
 # make output independent from location of the repository
 N="2>&1 | sed 's#${ROOT}#<ROOT>#g'"
 
+# executable bit is not stored in the repository, it is needed only for the time of this test
+# for cases: "executed directly (shebang)" and "found through PATH"
+chmod +x "${D}/script.sh"
+
 COMMAND="/bin/bash ${D}/script.sh ${N}"
 EXPECTED_STDOUT="script: _SHELL=bash _DIR=<ROOT>/${D} _0=script.sh _SCRIPT=${D}/script.sh _BINARY=/bin/bash"
 EXPECTED_STDERR=""
@@ -112,3 +116,5 @@ EXPECTED_STDOUT="[<ROOT>][][]"
 EXPECTED_STDERR=""
 EXPECTED_CODE="0"
 test "self.sh sourced with no script at all"
+
+chmod -x "${D}/script.sh"
