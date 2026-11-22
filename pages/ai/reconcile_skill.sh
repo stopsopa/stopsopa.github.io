@@ -116,6 +116,13 @@ for (const name of names) {
 if (names.length === 0) {
   console.log("    # no skills installed globally");
 }
+
+console.log(`
+
+  cd ~/Workspace/SPECIAL_storage/SPECIAL_storage
+  gits diff
+
+`)
 EEE
 
 echo ""
