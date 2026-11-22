@@ -19,7 +19,7 @@
     "cross-fetch": "^4.0.0",
     "dotenv": "^16.4.7",
     "dotenv-up": "^1.0.32",
-    "envprocessor": "^1.8.15",
+    "envprocessor": "^1.11.2",
     "express": "^5.1.0",
     "firebase": "^9.17.2",
     "firebase-admin": "^14.5.0",
