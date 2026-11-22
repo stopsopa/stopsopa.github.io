@@ -119,8 +119,12 @@ if (names.length === 0) {
 
 console.log(`
 
+  NODE_OPTIONS= npx -y skills@1.9.0 update -p -y -g
+
   cd ~/Workspace/SPECIAL_storage/SPECIAL_storage
   gits diff
+
+  https://stopsopa.github.io/pages/ai/index.html#skills
 `)
 EEE
 
