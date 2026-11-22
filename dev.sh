@@ -144,7 +144,6 @@ EEE
 
 trap _kill EXIT;
 
-# node libs/preprocessor.js
 node node_modules/envprocessor/dist/esm/cli.js --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
 
 

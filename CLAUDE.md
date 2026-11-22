@@ -230,7 +230,7 @@ The site uses Firebase for authentication and database. Configuration is loaded 
 
 ### Supporting Directories
 
-- **`libs/`** - Shared JavaScript libraries for Node.js (utilities like `preprocessor.js`, `IndexedDBPromised.js`, `easing.js`, `secure.mjs`)
+- **`libs/`** - Shared JavaScript libraries for Node.js (utilities like `IndexedDBPromised.js`, `easing.js`, `secure.mjs`)
 
 - **`noprettier/`** - Third-party libraries excluded from Prettier formatting:
 

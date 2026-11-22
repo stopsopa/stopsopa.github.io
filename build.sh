@@ -88,7 +88,6 @@ time /bin/bash scripts/uglify.sh
 time /bin/bash scripts/template.sh
 # call those together in this order ^^^
 
-# node libs/preprocessor.js
 time node node_modules/envprocessor/dist/esm/cli.js --maskEnv EXPOSE_EXTRA_ENV_VARIABLES --verbose --debug build/preprocessed.js public/preprocessed.js
 cp node_modules/envprocessor/dist/esm/env.js public/env.js
 
