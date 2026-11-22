@@ -40,6 +40,29 @@
 #     rm -f "${FILE}"
 #   fi
 #
+# example snippet to only execute the script (download to temporary file, verify,
+# pass to bash only when verified, nothing is left on the disk):
+# only first two lines change from case to case, arguments for the script go after "${FILE}"
+#
+#   URL="urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/curl.js"
+#   SHA384="sha384.sh::pages/node/curl.js"
+#   FILE="$(mktemp)"
+#
+#   if command -v wget > /dev/null; then
+#     wget --no-cache -O "${FILE}" "${URL}"
+#   else
+#     curl -fL "${URL}" -o "${FILE}"
+#   fi
+#
+#   if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
+#     echo "checksum verified"
+#     /bin/bash "${FILE}"
+#   else
+#     echo "checksum corrupted - not executing"
+#   fi
+#
+#   rm -f "${FILE}"
+#
 # NOTICE: marker ends on first double quote, so keep it as the last thing inside "..."
 # NOTICE: path in the marker is relative to the root of the repository
 #

@@ -330,6 +330,27 @@
 
                               // ---- prompt ----- ^^^
 
+                    # reconcile_skill.sh
+                    # removes from the current project every skill that is also installed globally,
+                    # then prints the commands needed to reinstall all global skills
+                    # add --dry-run after "${FILE}" to only see what would happen
+
+                    URL="urlwizzard.schema://urlwizzard.hostnegotiated/pages/ai/reconcile_skill.sh"
+                    SHA384="sha384.sh::pages/ai/reconcile_skill.sh"
+                    FILE="$(mktemp)"
+                    if command -v wget > /dev/null; then
+                      wget --no-cache -O "${FILE}" "${URL}"
+                    else
+                      curl -fL "${URL}" -o "${FILE}"
+                    fi
+                    if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
+                      echo "checksum verified"
+                      /bin/bash "${FILE}"
+                    else
+                      echo "checksum corrupted - not executing"
+                    fi
+                    rm -f "${FILE}"
+
 
                     deterministic + ai: https://youtu.be/F0pH9aQeDrY?t=204
 
@@ -342,6 +363,8 @@
 
                     Matt Pocock's Claude Code Skills Beat Superpowers Now
                       https://youtu.be/8D8ewFBJfFM?t=126
+
+       
         </script>
         <h2>Certificates</h2>
         <script type="editor" data-lang="sh">
