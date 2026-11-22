@@ -230,6 +230,26 @@
 
           Mac Studio Ultra ai workstation
         </script>
+        <h2>AGENTS.md & CLAUDE.md</h2>
+        <script type="editor" data-lang="sh">
+          
+          cat <<EEE > CLAUDE.md
+          @AGENTS.md
+          EEE
+          
+          # If you would like to have single place for shared file just create in 
+          ~/.agents/AGENTS.md
+          and then link like so:
+          ln -s ~/.agents/AGENTS.md ~/.codex/AGENTS.md
+          ln -s ~/.agents/AGENTS.md ~/.claude/CLAUDE.md  
+          
+          # Other typical locations are:
+          ~/.claude/CLAUDE.md
+          ~/.codex/AGENTS.md
+          ~/.config/opencode/AGENTS.md
+          .. and so one        
+          
+        </script>
         <h2>Skills</h2>
         <script type="editor" data-lang="sh">
 
