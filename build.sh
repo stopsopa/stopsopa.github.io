@@ -114,16 +114,17 @@ time /bin/bash .github/injector.sh
 
 time /bin/bash es.sh
 
-# NOTICE: remember it will not process if --run not passed or CI env var is not present
-# I'm deliberately suppressing error to continue if above is not provided for local dev environment
-time /bin/bash .github/sha384.sh
-
 # time /bin/bash pages/typescript/defaults/getconfig.sh 6.0.3
 
 # /bin/bash .github/toc-check.sh README.md 
 /bin/bash node_modules/.bin/markdown-toc -i README.md
 
 time /bin/bash node_modules/.bin/prettier --config prettier.config.cjs --write . 1> >(/bin/bash bash/dlogger.sh o prettier) 2> >(/bin/bash bash/dlogger.sh e prettier)
+
+# this one after prettier, to hash final content of the files (prettier might reformat hashed *.js files)
+# NOTICE: remember it will not process if --run not passed or CI env var is not present
+# I'm deliberately suppressing error to continue if above is not provided for local dev environment
+time /bin/bash .github/sha384.sh
 
 # this one after style_fix
 # inject special blocking code

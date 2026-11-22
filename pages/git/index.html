@@ -746,18 +746,22 @@
           # when you have installed gits then just run
           # gits init
 
-          wget --help 1> /dev/null 2> /dev/null
-          if [ "$?" = "0" ]; then
-            wget --no-cache -O ".git/gitstorage-core.sh" "urlwizzard.schema://urlwizzard.hostnegotiated/gitstorage-core.sh"
-          else # curl
-            curl "urlwizzard.schema://urlwizzard.hostnegotiated/gitstorage-core.sh" -o ".git/gitstorage-core.sh"
+          URL="urlwizzard.schema://urlwizzard.hostnegotiated/gitstorage-core.sh"
+          FILE=".git/gitstorage-core.sh"
+          SHA384="sha384.sh::gitstorage-core.sh"
+
+          if command -v wget > /dev/null; then
+            wget --no-cache -O "${FILE}" "${URL}"
+          else
+            curl -fL "${URL}" -o "${FILE}"
           fi
-          if [ "$(printf "sha384-$(cat ".git/gitstorage-core.sh" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::gitstorage-core.sh" ]; then
+
+          if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
             echo "checksum verified"
-            /bin/bash ".git/gitstorage-core.sh"
+            /bin/bash "${FILE}"
           else
             echo "checksum corrupted - deleting file"
-            rm ".git/gitstorage-core.sh"
+            rm -f "${FILE}"
           fi
         </script>
         more info: <a href="https://github.com/stopsopa/gitstorage">https://github.com/stopsopa/gitstorage</a>
@@ -1365,18 +1369,22 @@ git rebase --continue
         <br />
         <script type="editor" data-lang="sh">
 
-          wget --help 1> /dev/null 2> /dev/null
-          if [ "$?" = "0" ]; then
-            wget --no-cache -O ".git/list-relative-branches.sh" "urlwizzard.schema://urlwizzard.hostnegotiated/bash/git/list-relative-branches.sh"
-          else # curl
-            curl "urlwizzard.schema://urlwizzard.hostnegotiated/bash/git/list-relative-branches.sh" -o ".git/list-relative-branches.sh"
+          URL="urlwizzard.schema://urlwizzard.hostnegotiated/bash/git/list-relative-branches.sh"
+          FILE=".git/list-relative-branches.sh"
+          SHA384="sha384.sh::bash/git/list-relative-branches.sh"
+
+          if command -v wget > /dev/null; then
+            wget --no-cache -O "${FILE}" "${URL}"
+          else
+            curl -fL "${URL}" -o "${FILE}"
           fi
-          if [ "$(printf "sha384-$(cat ".git/list-relative-branches.sh" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::bash/git/list-relative-branches.sh" ]; then
+
+          if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
             echo "checksum verified"
-            /bin/bash ".git/list-relative-branches.sh"
+            /bin/bash "${FILE}"
           else
             echo "checksum corrupted - deleting file"
-            rm ".git/list-relative-branches.sh"
+            rm -f "${FILE}"
           fi
 
           # then run

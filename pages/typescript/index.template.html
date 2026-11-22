@@ -616,13 +616,17 @@
           EEE
 
           // ====== tsx.sh ====== vvv
-          wget --help 1> /dev/null 2> /dev/null
-          if [ "$?" = "0" ]; then
-            wget --no-cache -O "tsx.sh" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/tsx.sh"
-          else # curl
-            curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/tsx.sh" -o "tsx.sh"
+          URL="urlwizzard.schema://urlwizzard.hostnegotiated/pages/typescript/tsx.sh"
+          FILE="tsx.sh"
+          SHA384="sha384.sh::pages/typescript/tsx.sh"
+
+          if command -v wget > /dev/null; then
+            wget --no-cache -O "${FILE}" "${URL}"
+          else
+            curl -fL "${URL}" -o "${FILE}"
           fi
-          if [ "$(printf "sha384-$(cat "tsx.sh" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/typescript/tsx.sh" ]; then
+
+          if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
             echo "checksum verified"
             cat <<EEE
 
@@ -633,7 +637,7 @@
           EEE
           else
             echo "checksum corrupted - deleting file"
-            rm "tsx.sh"
+            rm -f "${FILE}"
           fi
           // ====== tsx.sh ====== ^^^
 

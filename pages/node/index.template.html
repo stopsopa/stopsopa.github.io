@@ -1181,18 +1181,22 @@
         <h2>Extract engines script</h2>
         <script type="editor" data-lang="sh">
 
-          wget --help 1> /dev/null 2> /dev/null
-          if [ "$?" = "0" ]; then
-            wget --no-cache -O "vault.sh" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/engines.js"
-          else # curl
-            curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/engines.js" -o "vault.sh"
+          URL="urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/engines.js"
+          FILE="engines.js"
+          SHA384="sha384.sh::pages/node/engines.js"
+
+          if command -v wget > /dev/null; then
+            wget --no-cache -O "${FILE}" "${URL}"
+          else
+            curl -fL "${URL}" -o "${FILE}"
           fi
-          if [ "$(printf "sha384-$(cat "vault.sh" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/vault/vault.sh" ]; then
+
+          if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
             echo "checksum verified"
-            /bin/bash vault.sh jest
+            node "${FILE}" jest
           else
             echo "checksum corrupted - deleting file"
-            rm "vault.sh"
+            rm -f "${FILE}"
           fi
         </script>
         <h2>hash pbkdf2</h2>
@@ -4383,18 +4387,22 @@
 
 
 
-          wget --help 1> /dev/null 2> /dev/null
-          if [ "$?" = "0" ]; then
-            wget --no-cache -O "curl.js" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/curl.js"
-          else # curl
-            curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/curl.js" -o "curl.js"
+          URL="urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/curl.js"
+          FILE="curl.js"
+          SHA384="sha384.sh::pages/node/curl.js"
+
+          if command -v wget > /dev/null; then
+            wget --no-cache -O "${FILE}" "${URL}"
+          else
+            curl -fL "${URL}" -o "${FILE}"
           fi
-          if [ "$(printf "sha384-$(cat "curl.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/node/curl.js" ]; then
+
+          if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
             echo "checksum verified"
-            /bin/bash "curl.js"
+            /bin/bash "${FILE}"
           else
             echo "checksum corrupted - deleting file"
-            rm "curl.js"
+            rm -f "${FILE}"
           fi
 
           // healtcheck for docker:

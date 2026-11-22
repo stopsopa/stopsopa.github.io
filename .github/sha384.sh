@@ -14,6 +14,37 @@
 # or
 #   /bin/bash .github/sha384.sh --run
 #
+# to list files which will be processed (those containing the marker at least once):
+#   { find "pages" -type f -name "*.html"; echo "index.html"; } | xargs grep -l "sha384\.sh::"
+# to list every occurrence with line numbers:
+#   { find "pages" -type f -name "*.html"; echo "index.html"; } | xargs grep -n "sha384\.sh::"
+#
+# example snippet for the html page (download, verify, run or delete):
+# only first three lines change from case to case, rest stays identical
+#
+#   URL="urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/curl.js"
+#   FILE="curl.js"
+#   SHA384="sha384.sh::pages/node/curl.js"
+#
+#   if command -v wget > /dev/null; then
+#     wget --no-cache -O "${FILE}" "${URL}"
+#   else
+#     curl -fL "${URL}" -o "${FILE}"
+#   fi
+#
+#   if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
+#     echo "checksum verified"
+#     /bin/bash "${FILE}"
+#   else
+#     echo "checksum corrupted - deleting file"
+#     rm -f "${FILE}"
+#   fi
+#
+# NOTICE: marker ends on first double quote, so keep it as the last thing inside "..."
+# NOTICE: path in the marker is relative to the root of the repository
+#
+# more: .github/sha384.md
+#
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
 _SHELL="$(basename ${_SHELL//-/})"
@@ -42,7 +73,7 @@ cd "${ROOT}"
 #           For help, see: https://nodejs.org/en/docs/inspector
 # but for local machine node part will not be called normally, unless forced. 
 # I don't necessarily care about forced cases locally
-# export NODE_OPTIONS="" 
+export NODE_OPTIONS="" 
 
 S="\\"
 FIND="$(cat <<EOF

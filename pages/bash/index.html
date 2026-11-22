@@ -1540,28 +1540,34 @@
 
           # see also: https://github.com/casey/just
 
-          wget --help 1> /dev/null 2> /dev/null
-          WGETSTATUS="${?}"
-          function wgetshim {
-            eval _SOURCE="${1}"
-            eval _TARGET="${2}"
-            echo -n "\n\nwget downloading \"${_SOURCE}\" to \"${_TARGET}\"\n\n"
-            if [ "${WGETSTATUS}" = "0" ]; then
-              wget --no-cache -O "${_TARGET}" "${_SOURCE}"
+          function download_verified {
+            URL="${1}"
+            FILE="${2}"
+            SHA384="${3}"
+
+            if command -v wget > /dev/null; then
+              wget --no-cache -O "${FILE}" "${URL}"
             else
-              curl "${_SOURCE}" -o "${_TARGET}"
+              curl -fL "${URL}" -o "${FILE}"
+            fi
+
+            if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
+              echo "checksum verified"
+            else
+              echo "checksum corrupted - deleting file"
+              rm -f "${FILE}"
+              return 1
             fi
           }
-          mkdir ~/xx
-          wgetshim "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.node.bundled.gitignored.cjs" ~/xx/xx.node.bundled.gitignored.cjs
-          wgetshim "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.sh" ~/xx/xx.sh
-          wgetshim "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx-template.cjs" ~/xx/xx-template.cjs
+          mkdir -p ~/xx
           if \
-            [ "$(printf "sha384-$(cat ~/xx/xx.node.bundled.gitignored.cjs | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.node.bundled.gitignored.cjs" ] \
-          || \
-            [ "$(printf "sha384-$(cat ~/xx/xx.sh | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/bash/xx/xx.sh" ] \
+            download_verified "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.node.bundled.gitignored.cjs" ~/xx/xx.node.bundled.gitignored.cjs "sha384.sh::pages/bash/xx/xx.node.bundled.gitignored.cjs" \
+          && \
+            download_verified "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx.sh" ~/xx/xx.sh "sha384.sh::pages/bash/xx/xx.sh" \
+          && \
+            download_verified "urlwizzard.schema://urlwizzard.hostnegotiated/pages/bash/xx/xx-template.cjs" ~/xx/xx-template.cjs "sha384.sh::pages/bash/xx/xx-template.cjs" \
           ; then
-            echo "checksum verified - installing"
+            echo "all checksums verified - installing"
             eval _SCRIPT="~/xx/xx.sh"
             BASHADD="alias xx=\"/bin/bash ${_SCRIPT}\" # xx mount"
             if ! grep -qF "$BASHADD" ~/.bashrc; then
@@ -1570,9 +1576,7 @@
             source ~/.bashrc
             xx
           else
-            echo "checksum corrupted - deleting file"
-            rm ~/xx/xx.node.bundled.gitignored.cjs
-            rm ~/xx/xx.sh
+            echo "xx not installed"
           fi
         </script>
         <h2>test.sh</h2>

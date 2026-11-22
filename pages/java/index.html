@@ -403,21 +403,25 @@
         <a href="https://marketplace.visualstudio.com/items?itemName=ilkka.google-java-format"
           >https://marketplace.visualstudio.com/items?itemName=ilkka.google-java-format</a
         >
-        <script type="editor" data-lang="java">
+        <script type="editor" data-lang="sh">
 
-          wget --help 1> /dev/null 2> /dev/null
-          if [ "$?" = "0" ]; then
-              sudo wget --no-cache -O "/usr/local/bin/gjf" "urlwizzard.schema://urlwizzard.hostnegotiated/bash/java/gjf.sh"
-          else # curl
-              sudo curl "urlwizzard.schema://urlwizzard.hostnegotiated/bash/java/gjf.sh" -o "/usr/local/bin/gjf"
+          URL="urlwizzard.schema://urlwizzard.hostnegotiated/bash/java/gjf.sh"
+          FILE="/usr/local/bin/gjf"
+          SHA384="sha384.sh::bash/java/gjf.sh"
+
+          if command -v wget > /dev/null; then
+            sudo wget --no-cache -O "${FILE}" "${URL}"
+          else
+            sudo curl -fL "${URL}" -o "${FILE}"
           fi
-          if [ "$(printf "sha384-$(sudo cat "/usr/local/bin/gjf" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::bash/java/gjf.sh" ]; then
+
+          if [ "sha384-$(sudo openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
             echo "checksum verified"
-            sudo chmod +x /usr/local/bin/gjf
+            sudo chmod +x "${FILE}"
             gjf
           else
             echo "checksum corrupted - deleting file"
-            sudo rm "/usr/local/bin/gjf"
+            sudo rm -f "${FILE}"
           fi
 
 

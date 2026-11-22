@@ -86,17 +86,21 @@
           <h2>Intercept.js</h2>
           <script type="editor" data-lang="sh">
 
-            wget --help 1> /dev/null 2> /dev/null
-            if [ "$?" = "0" ]; then
-              wget --no-cache -O "intercept.js" "urlwizzard.schema://urlwizzard.hostnegotiated/pages/ai/intercept.js"
-            else # curl
-              curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/ai/intercept.js" -o "intercept.js"
+            URL="urlwizzard.schema://urlwizzard.hostnegotiated/pages/ai/intercept.js"
+            FILE="intercept.js"
+            SHA384="sha384.sh::pages/ai/intercept.js"
+
+            if command -v wget > /dev/null; then
+              wget --no-cache -O "${FILE}" "${URL}"
+            else
+              curl -fL "${URL}" -o "${FILE}"
             fi
-            if [ "$(printf "sha384-$(cat "intercept.js" | openssl dgst -sha384 -binary | base64)")" = "sha384.sh::pages/ai/intercept.js" ]; then
+
+            if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
               echo "checksum verified"
             else
               echo "checksum corrupted - deleting file"
-              rm "intercept.js"
+              rm -f "${FILE}"
             fi
 
             node intercept.js var/mcp-server-filesystem -- /bin/bash node_modules/.bin/mcp-server-filesystem .
