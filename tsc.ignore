@@ -21,8 +21,6 @@ bash/fs/relative.ts
 # pages/bookmarklets/gmail/extract.ts
 # pages/node/libs/lib.ts
 # pages/node/libs/tstest.ts
-# pages/node/env/env.ts
-# pages/node/env/env.unit.ts
 # pages/node/semaphore/Semaphore.test.ts
 # pages/node/semaphore/Semaphore.ts
 # pages/node/builtin-test-runner.test.ts
