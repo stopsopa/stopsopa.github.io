@@ -101,7 +101,12 @@ for (const dir of localDirs) {
 
 const sorted = Object.keys(rows)
   .sort()
-  .map((name) => rows[name]);
+  .map((name) => {
+    const r = rows[name];
+
+    // mark skills existing in both scopes: global and local
+    return { ...r, duplicated: r.global !== "" && r.local !== "" ? "[duplicated]" : "" };
+  });
 
 console.log(`\nskills (global: ~/.agents/skills, local: ${process.cwd()})\n`);
 
@@ -114,7 +119,7 @@ EEE
 
 cat <<EEE
 
-    Run: reconcile_skill.sh ${REVERSE}https://stopsopa.github.io/pages/ai/index.html#skills-reconcile-skill-sh${RESET}
+    For duplicated run: ${REVERSE}https://stopsopa.github.io/pages/ai/index.html#skills-reconcile-skill-sh${RESET}
 
 EEE
 
