@@ -33,16 +33,16 @@ If the files in this skill are updated, the project's copies should be updated t
 
 Component API (`ModalProps`):
 
-| prop        | type               | default | meaning                                                                         |
-| ----------- | ------------------ | ------- | ------------------------------------------------------------------------------- |
+| prop        | type               | default | meaning                                                                                     |
+| ----------- | ------------------ | ------- | ------------------------------------------------------------------------------------------- |
 | `open`      | `boolean`          | `false` | controls visibility (calls `showPopover()` / `hidePopover()`); renders nothing when `false` |
-| `onClose`   | `() => void`       | -       | called on `Escape` and on the "x" button in the header; parent must set `open` to `false` |
-| `header`    | `ReactNode`        | -       | header content; when provided, a close "x" button is rendered next to it         |
-| `footer`    | `ReactNode`        | -       | optional footer content                                                         |
-| `width`     | `string \| number` | -       | any CSS width, e.g. `"600px"` or `"90%"`; a number is treated as px              |
-| `backdrop`  | `boolean`          | `true`  | semi-transparent, click-blocking overlay behind the modal                       |
-| `className` | `string`           | -       | extra CSS class on the root element                                             |
-| `data-id`   | `string`           | `modal` | `data-id` attribute on the root, for testing                                    |
+| `onClose`   | `() => void`       | -       | called on `Escape` and on the "x" button in the header; parent must set `open` to `false`   |
+| `header`    | `ReactNode`        | -       | header content; when provided, a close "x" button is rendered next to it                    |
+| `footer`    | `ReactNode`        | -       | optional footer content                                                                     |
+| `width`     | `string \| number` | -       | any CSS width, e.g. `"600px"` or `"90%"`; a number is treated as px                         |
+| `backdrop`  | `boolean`          | `true`  | semi-transparent, click-blocking overlay behind the modal                                   |
+| `className` | `string`           | -       | extra CSS class on the root element                                                         |
+| `data-id`   | `string`           | `modal` | `data-id` attribute on the root, for testing                                                |
 
 The component uses `popover="manual"`, so clicking outside never closes it. The modal is dismissed only via `Escape`, the header "x" button, or your own buttons.
 

@@ -232,139 +232,137 @@
         </script>
         <h2>Skills</h2>
         <script type="editor" data-lang="sh">
-          
-                    https://www.skills.sh/
 
-                    # manage global skills:
-                       to any command just add -g, thats all          
-          
-                    # daily use TLDR cheatsheet
-                      npx skills init page
-                      npx skills add . --list
-                      npx skills add stopsopa/stopsopa.github.io -s page -a claude-code universal -y
-                        # use to install and also to the same to update
-                      # interesting: that generates list when 
-                        # npx skills add https://github.com/vercel-labs/skills --skill find-skills
-                        # https://github.com/vercel-labs/skills/blob/v1.9.0/src/agents.ts#L117
+          https://www.skills.sh/
 
-                    # or do it manually:
-                    export SKILL_NAME="mysuperskill"
-                    mkdir -p ".agents/skills/${SKILL_NAME}"
-                    CREATED="$(date -u +"%Y-%m-%d %H:%M:%S")"
-                    cat <<EEE > ".agents/skills/${SKILL_NAME}/SKILL.md"
-                    ---
-                    name: ${SKILL_NAME}
-                    description: >
-                      My super skill
-                      name: ${SKILL_NAME}
-                    license: GPL-2.0-only
-                    metadata:
-                      author: stopsopa
-                      version: "1.0.0"
-                      website: https://github.com/stopsopa/${SKILL_NAME}
-                      created: "${CREATED}"
-                    ---          
-                    EEE
+          # manage global skills:
+             to any command just add -g, thats all
 
-                    # list skills
-                      npx skills ls -g
+          # daily use TLDR cheatsheet
+            npx skills init page
+            npx skills add . --list
+            npx skills add stopsopa/stopsopa.github.io -s page -a claude-code universal -y
+              # use to install and also to the same to update
+            # interesting: that generates list when
+              # npx skills add https://github.com/vercel-labs/skills --skill find-skills
+              # https://github.com/vercel-labs/skills/blob/v1.9.0/src/agents.ts#L117
 
-                    # my quide and my list
-                      # https://github.com/stopsopa/skill-popover-api/tree/main/comprehensive_guide
+          # or do it manually:
+          export SKILL_NAME="mysuperskill"
+          mkdir -p ".agents/skills/${SKILL_NAME}"
+          CREATED="$(date -u +"%Y-%m-%d %H:%M:%S")"
+          cat <<EEE > ".agents/skills/${SKILL_NAME}/SKILL.md"
+          ---
+          name: ${SKILL_NAME}
+          description: >
+            My super skill
+            name: ${SKILL_NAME}
+          license: GPL-2.0-only
+          metadata:
+            author: stopsopa
+            version: "1.0.0"
+            website: https://github.com/stopsopa/${SKILL_NAME}
+            created: "${CREATED}"
+          ---
+          EEE
 
-                      # my list of skills
-                        npm install -g skills
-                        npx skills add stopsopa/gcp-css -a claude-code universal -y
-                        npx skills add stopsopa/tabs -a claude-code universal -y
-                        npx skills add stopsopa/ace-editor-webcomponent -a claude-code universal -y
-                        npx skills add stopsopa/xx -a claude-code universal -y
-                        npx skills add stopsopa/envprocessor -a claude-code universal -y
-          
-                        npx skills add stopsopa/stopsopa.github.io -s bash-scripting -a claude-code universal -y
-                        npx skills add stopsopa/stopsopa.github.io -s coding-style -a claude-code universal -y
-                        npx skills add stopsopa/stopsopa.github.io -s docker-coding-style -a claude-code universal -y
-                        npx skills add stopsopa/stopsopa.github.io -s grug -a claude-code universal -y
-                        npx skills add stopsopa/stopsopa.github.io -s modal -a claude-code universal -y
-                        npx skills add stopsopa/stopsopa.github.io -s popover-api -a claude-code universal -y  
-          
-                          # from: https://github.com/stopsopa/xx#skill-for-ai-agents
-                          # from: https://github.com/stopsopa/gcp-css
-                          # from: https://github.com/stopsopa/tabs
-                          # from: https://github.com/stopsopa/ace-editor-webcomponent
-                          # from: https://github.com/stopsopa/envprocessor    
-                          # from: https://github.com/stopsopa/stopsopa.github.io   
+          # list skills
+            npx skills ls -g
 
-                    # remove
-                      npx skills remove find-skills -y
-                      npx skills remove find-skills -y -g
+          # my quide and my list
+            # https://github.com/stopsopa/skill-popover-api/tree/main/comprehensive_guide
 
-                    # to install based on skills-lock.json                
-                        NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --frozen-lockfile
-                        # to bring all skills based on skills-lock.json
-                        # -y                 npx flag (not skills): auto-answers "Ok to proceed?" when skills@1.9.0 isn't in the npm cache, so the command never waits for input
-                        # --frozen-lockfile  fail instead of modifying skills-lock.json if the restore doesn't match it (like `npm ci` vs `npm install`); already the default in CI
-                            
-                          # to fix potential issues with --frozen-lockfile  (BEWARE: THAT WILL NOT UPDATE EVEN THOUGH IT IS REASONABLE TO THINK THAT IT WILL, at least not when lockfile is fine)
-                            NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --no-frozen-lockfile
-          
-                    # to update skills-lock.json (fetch latest all)
-                      NODE_OPTIONS= npx -y skills@1.9.0 update -p -y
-                      NODE_OPTIONS= npx -y skills@1.9.0 update -p -y -g
-                      NODE_OPTIONS= npx -y skills@1.9.0 update xx -y -g
-                        # Updates project skills (-p) to the latest upstream commits and re-pins skills-lock.json.
-                        # Target agents are not stored anywhere: they are detected from folders in the project root
-                        # (.agents/ => Universal, .claude/ => Claude Code, .cursor/ => Cursor, ...).
-                            
-                              // ---- prompt ----- vvv
-                              
-                    I have skill defined in this repository installed in other project and when I ran against that project prettier formatting I found that these skills are reformatted. I think it would be nice to preformat them here too
-                    so first add prettier here
-                    create configuration for prettier to use
-                    printWidth: 120,
-                    then use skill xx and register commands for handling prettier from it's template (use xx init to bring the prettier template, but in the end modify that template)
-                    so leave the group of prettier commands from xx skill tempalate
-                    create xx.ts in this project not in .git/xx.ts
-                    also make sure to make prettifying part of github action pipeline (if one exist in this project)
+            # my list of skills
+              npm install -g skills
+              npx skills add stopsopa/gcp-css -a claude-code universal -y
+              npx skills add stopsopa/tabs -a claude-code universal -y
+              npx skills add stopsopa/ace-editor-webcomponent -a claude-code universal -y
+              npx skills add stopsopa/xx -a claude-code universal -y
+              npx skills add stopsopa/envprocessor -a claude-code universal -y
 
-                    Additionally if xx.* any version of config exist other than xx.ts then convert and migrate already existing commands from it to xx.ts. In the end I would prefer xx.ts
+              npx skills add stopsopa/stopsopa.github.io -s bash-scripting -a claude-code universal -y
+              npx skills add stopsopa/stopsopa.github.io -s coding-style -a claude-code universal -y
+              npx skills add stopsopa/stopsopa.github.io -s docker-coding-style -a claude-code universal -y
+              npx skills add stopsopa/stopsopa.github.io -s grug -a claude-code universal -y
+              npx skills add stopsopa/stopsopa.github.io -s modal -a claude-code universal -y
+              npx skills add stopsopa/stopsopa.github.io -s popover-api -a claude-code universal -y
 
-                              // ---- prompt ----- ^^^
+                # from: https://github.com/stopsopa/xx#skill-for-ai-agents
+                # from: https://github.com/stopsopa/gcp-css
+                # from: https://github.com/stopsopa/tabs
+                # from: https://github.com/stopsopa/ace-editor-webcomponent
+                # from: https://github.com/stopsopa/envprocessor
+                # from: https://github.com/stopsopa/stopsopa.github.io
 
-                    # reconcile_skill.sh
-                    # removes from the current project every skill that is also installed globally,
-                    # then prints the commands needed to reinstall all global skills
-                    # add --dry-run after "${FILE}" to only see what would happen
+          # remove
+            npx skills remove find-skills -y
+            npx skills remove find-skills -y -g
 
-                    URL="urlwizzard.schema://urlwizzard.hostnegotiated/pages/ai/reconcile_skill.sh"
-                    SHA384="sha384.sh::pages/ai/reconcile_skill.sh"
-                    FILE="$(mktemp)"
-                    if command -v wget > /dev/null; then
-                      wget --no-cache -O "${FILE}" "${URL}"
-                    else
-                      curl -fL "${URL}" -o "${FILE}"
-                    fi
-                    if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
-                      echo "checksum verified"
-                      /bin/bash "${FILE}"
-                    else
-                      echo "checksum corrupted - not executing"
-                    fi
-                    rm -f "${FILE}"
+          # to install based on skills-lock.json
+              NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --frozen-lockfile
+              # to bring all skills based on skills-lock.json
+              # -y                 npx flag (not skills): auto-answers "Ok to proceed?" when skills@1.9.0 isn't in the npm cache, so the command never waits for input
+              # --frozen-lockfile  fail instead of modifying skills-lock.json if the restore doesn't match it (like `npm ci` vs `npm install`); already the default in CI
+
+                # to fix potential issues with --frozen-lockfile  (BEWARE: THAT WILL NOT UPDATE EVEN THOUGH IT IS REASONABLE TO THINK THAT IT WILL, at least not when lockfile is fine)
+                  NODE_OPTIONS= npx -y skills@1.9.0 experimental_install --no-frozen-lockfile
+
+          # to update skills-lock.json (fetch latest all)
+            NODE_OPTIONS= npx -y skills@1.9.0 update -p -y
+            NODE_OPTIONS= npx -y skills@1.9.0 update -p -y -g
+            NODE_OPTIONS= npx -y skills@1.9.0 update xx -y -g
+              # Updates project skills (-p) to the latest upstream commits and re-pins skills-lock.json.
+              # Target agents are not stored anywhere: they are detected from folders in the project root
+              # (.agents/ => Universal, .claude/ => Claude Code, .cursor/ => Cursor, ...).
+
+                    // ---- prompt ----- vvv
+
+          I have skill defined in this repository installed in other project and when I ran against that project prettier formatting I found that these skills are reformatted. I think it would be nice to preformat them here too
+          so first add prettier here
+          create configuration for prettier to use
+          printWidth: 120,
+          then use skill xx and register commands for handling prettier from it's template (use xx init to bring the prettier template, but in the end modify that template)
+          so leave the group of prettier commands from xx skill tempalate
+          create xx.ts in this project not in .git/xx.ts
+          also make sure to make prettifying part of github action pipeline (if one exist in this project)
+
+          Additionally if xx.* any version of config exist other than xx.ts then convert and migrate already existing commands from it to xx.ts. In the end I would prefer xx.ts
+
+                    // ---- prompt ----- ^^^
+
+          # reconcile_skill.sh
+          # removes from the current project every skill that is also installed globally,
+          # then prints the commands needed to reinstall all global skills
+          # add --dry-run after "${FILE}" to only see what would happen
+
+          URL="urlwizzard.schema://urlwizzard.hostnegotiated/pages/ai/reconcile_skill.sh"
+          SHA384="sha384.sh::pages/ai/reconcile_skill.sh"
+          FILE="$(mktemp)"
+          if command -v wget > /dev/null; then
+            wget --no-cache -O "${FILE}" "${URL}"
+          else
+            curl -fL "${URL}" -o "${FILE}"
+          fi
+          if [ "sha384-$(openssl dgst -sha384 -binary "${FILE}" | base64)" = "${SHA384}" ]; then
+            echo "checksum verified"
+            /bin/bash "${FILE}"
+          else
+            echo "checksum corrupted - not executing"
+          fi
+          rm -f "${FILE}"
 
 
-                    deterministic + ai: https://youtu.be/F0pH9aQeDrY?t=204
+          deterministic + ai: https://youtu.be/F0pH9aQeDrY?t=204
 
-                    https://agentskills.io/specification
-                    https://www.skills.sh/
-                      # from: https://youtu.be/cxQLKsktiBA
-                       # see how to use references: PROGRESSIVE DISCLOSURE
-                          https://youtu.be/cxQLKsktiBA?t=927
-                          https://agentskills.io/specification#progressive-disclosure
+          https://agentskills.io/specification
+          https://www.skills.sh/
+            # from: https://youtu.be/cxQLKsktiBA
+             # see how to use references: PROGRESSIVE DISCLOSURE
+                https://youtu.be/cxQLKsktiBA?t=927
+                https://agentskills.io/specification#progressive-disclosure
 
-                    Matt Pocock's Claude Code Skills Beat Superpowers Now
-                      https://youtu.be/8D8ewFBJfFM?t=126
-
-       
+          Matt Pocock's Claude Code Skills Beat Superpowers Now
+            https://youtu.be/8D8ewFBJfFM?t=126
         </script>
         <h2>Certificates</h2>
         <script type="editor" data-lang="sh">

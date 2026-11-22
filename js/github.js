@@ -7,7 +7,9 @@ import {
   has,
   getDefault,
   getThrow,
-  getIntegerThrowInvalid, // equivalent to get
+  getTrimmedThrow,
+  getValidatedThrow,
+  getDefaultIfInvalid,
   getIntegerDefault,
   getIntegerThrow,
   mockEnv,
@@ -45,7 +47,9 @@ window.ppp = {
   has,
   getDefault,
   getThrow,
-  getIntegerThrowInvalid, // equivalent to get
+  getTrimmedThrow,
+  getValidatedThrow,
+  getDefaultIfInvalid,
   getIntegerDefault,
   getIntegerThrow,
 };

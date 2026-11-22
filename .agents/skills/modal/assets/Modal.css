@@ -97,9 +97,7 @@
         color: #555;
         padding: 0;
         margin: -4px -4px -4px 0;
-        transition:
-          background-color 0.15s ease,
-          color 0.15s ease;
+        transition: background-color 0.15s ease, color 0.15s ease;
 
         &:hover {
           background-color: #e0e0e0;

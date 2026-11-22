@@ -12,7 +12,9 @@ import {
   has,
   getDefault,
   getThrow,
-  getIntegerThrowInvalid, // equivalent to get
+  getTrimmedThrow,
+  getValidatedThrow,
+  getDefaultIfInvalid,
   getIntegerDefault,
   getIntegerThrow,
 } from "../public/env.js";
