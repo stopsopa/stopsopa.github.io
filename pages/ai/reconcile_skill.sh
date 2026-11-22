@@ -19,6 +19,8 @@
 set -e
 set -o pipefail
 
+export NODE_OPTIONS=
+
 DRY_RUN="0"
 if [ "${1}" = "--dry-run" ]; then
   DRY_RUN="1"
