@@ -43,6 +43,8 @@ pages/services/xor.js
 # es_ts ^^^
 
 # transpile_sh vvv
+.github/sha384.browser.js
+.github/sha384.express.js
 bash/env_repack.js
 bash/env_repack.unit.parallel.test.js
 bash/exportsource.js
@@ -68,7 +70,6 @@ libs/drag_v2.js
 libs/drag.js
 libs/modURLSearchParams.js
 libs/toolsURLSearchParams.js
-pages/services/ascii/index.js
 pages/bookmarklets/gmail/extract.js
 pages/children/caesar/moduleCaesarCypher.js
 pages/children/tetris/tetris.js
@@ -101,6 +102,7 @@ pages/node/libs/tstest.js
 pages/node/semaphore/Semaphore.js
 pages/node/semaphore/Semaphore.test.js
 pages/services/analog_time_planner/url_state.js
+pages/services/ascii/index.js
 pages/services/generator/index.js
 pages/services/google_drive_application_data_explorer/google_drive_application_data_explorer.entry.js
 pages/services/google_drive_application_data_explorer/index.js

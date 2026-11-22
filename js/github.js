@@ -475,6 +475,25 @@ body .github-profile:hover {
 
     await urlwizzard();
 
+    // replace sha384.sh:: markers with real hashes - only in dev mode (local server.js),
+    // on production .github/sha384.sh already replaced them during the build, see .github/sha384.md
+    // dev mode: hostname is different than PROD_HOSTNAME from .env (exposed through envprocessor)
+    const prodHostname = get("PROD_HOSTNAME");
+
+    const isDevMode = typeof prodHostname === "string" && prodHostname !== "" && location.hostname !== prodHostname;
+
+    if (isDevMode && document.documentElement.innerHTML.includes("sha384.sh" + "::")) {
+      try {
+        const { default: sha384 } = await import("/sha384/browser.js");
+
+        const replaced = await sha384();
+
+        log.green("sha384", `replaced ${replaced} sha384.sh marker(s)`);
+      } catch (e) {
+        log.red("sha384", `can't process sha384.sh markers: ${e}`);
+      }
+    }
+
     if (typeof window.beforeAceEventPromise === "function") {
       log.blue("executed", "window.doace() waiting for window.beforeAceEventPromise() found");
 

@@ -21,6 +21,9 @@ import sharp from "sharp";
 // 👇 ADD THIS
 // import { injectServiceWorkerMiddleware } from "./.github/injectServiceWorker_middleware.ts";
 
+// transpiled from .github/sha384.express.ts by transpile.sh, see .github/sha384.md
+import sha384Express from "./.github/sha384.express.js";
+
 const env = path.resolve(".", ".env");
 
 if (!fs.existsSync(env)) {
@@ -128,6 +131,11 @@ app.use((req, res, next) => {
   log(`${req.method} ${req.url}`);
   next();
 });
+
+// 👇 hashes for sha384.sh:: markers, used by .github/sha384.browser.ts (loaded in js/github.js)
+//      GET /sha384/hash?path=pages/node/curl.js
+//      GET /sha384/browser.js
+app.use("/sha384", sha384Express(web));
 
 // 👇 SERVICE WORKER INJECTION MIDDLEWARE (IMPORTANT)
 // app.use(injectServiceWorkerMiddleware(web));
