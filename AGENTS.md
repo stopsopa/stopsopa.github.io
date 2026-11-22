@@ -431,3 +431,193 @@ tests in .github/workflows/pipeline.yml (build and deploy still run). README men
 `q` as a separate word, so `[q]` alone doesn't match.
 
 </project-features>
+
+<project-overview>
+
+# Project overview (setup, commands, directories)
+
+Moved here from the old CLAUDE.md. Behaviour of pages (github.js, body attributes, ACE editors, tabs, urlwizzard,
+templates, uglify, CI skip) is described in "Project features" above - not repeated here.
+
+## What it is
+
+Personal code snippet repository and webpage hosted on GitHub Pages: a collection of code examples, commands and
+utilities across various technologies (bash, JavaScript, Node, React, Python, etc.).
+Pages have interactive code editors (ACE editor) and dynamically rendered content.
+
+- The site is designed to be "difficult to open" (author's preference) but not impossible (see clicksecure above).
+- Most pages are self-contained with embedded code snippets.
+- Direct editing via GitHub web editor (github.dev) is a common workflow.
+- The site intentionally exposes some (not secure) environment variables to the client for dynamic URL handling.
+- Use Context7 to check up-to-date docs when implementing new libraries or frameworks, or adding features using them.
+
+## Node version
+
+Specified in `.nvmrc`.
+
+## Environment setup
+
+`.env` is required for local development and for build. Key variables:
+
+- `PROJECT_NAME` - project identifier
+- `NODE_API_PORT` - port for local dev server
+- `LOCAL_HOSTS` - local domain for development
+- `FIREBASE_*` - Firebase configuration variables
+- `GITSTORAGE_CORE_REPOSITORY` - GitHub repository reference
+- `GITHUB_SOURCES_PREFIX` - prefix for GitHub source links
+- `EXPOSE_EXTRA_ENV_VARIABLES` - controls which env vars are exposed to the client (see `envprocessor` skill)
+
+`.env.sh` is also required, it is sourced by build scripts.
+build.sh fails when `PROJECT_NAME`, `GITSTORAGE_CORE_REPOSITORY`, `GITHUB_SOURCES_PREFIX` or
+`EXPOSE_EXTRA_ENV_VARIABLES` is empty.
+
+## Commands
+
+### Development
+
+```bash
+make start                  # Start dev server (no browser)
+/bin/bash dev.sh            # Same as make start
+/bin/bash dev.sh browser    # Start dev server and open browser
+/bin/bash dev.sh launch_ide # Start dev server, open browser and IDE
+```
+
+The dev server:
+
+- runs on port from `NODE_API_PORT`, host from `LOCAL_HOSTS` if defined
+- watches for file changes (TypeScript, templates, bundles)
+- logs to `var/log.log`
+
+### Build
+
+```bash
+make build        # Full production build
+/bin/bash build.sh
+```
+
+Order of steps in build.sh:
+
+1. `npx tsc`
+2. `node pages/portsregistry/lists/ports-generator.js`
+3. `scripts/uglify.sh` (`*.uglify.js` -> `*.uglify.min.js`)
+4. `scripts/template.sh` (`*.template.html` -> `*.rendered.html`)
+5. envprocessor: `build/preprocessed.js` -> `public/preprocessed.js` (masked by `EXPOSE_EXTRA_ENV_VARIABLES`), `public/env.js`
+6. `bundle.sh bundle.ignore`, `transpile.sh transpile.ignore` (TypeScript handling is described in TRANSPILATION.md)
+7. `.github/ytlinksfix.sh`
+8. substitute variables in `gitstorage-core.sh`
+9. `.github/urlwizzard.sh`, `.github/injector.sh`
+10. `es.sh`
+11. `markdown-toc -i README.md`, prettier on the whole project
+12. `.github/sha384.sh`, `.github/clicksecure.sh`
+13. only in CI: `bash/sync.sh pack`
+
+### Testing
+
+```bash
+make test              # Run unit tests (vitest, with coverage)
+/bin/bash test.sh      # Same as above
+/bin/bash test.sh --watch       # Watch mode (changed tests only)
+/bin/bash test.sh --watchAll    # Watch mode (all tests)
+/bin/bash test.sh -t 'filter'   # Run specific test by name
+/bin/bash test.sh tests/...     # Run one test file or directory
+
+make testall           # Run all test types
+/bin/bash testall.sh   # healthcheck + vitest + Jasmine + Playwright E2E
+
+# Jasmine tests (integration)
+/bin/bash jasmine/test.sh --env .env -- --target docker
+
+# Playwright tests (E2E)
+/bin/bash playwright.sh --target docker
+```
+
+- **Vitest** (unit tests): `tests/`
+- **Jasmine** (integration): `jasmine/`
+- **Playwright** (E2E): verify page functionality across browsers
+
+### Code style (prettier, config in prettier.config.cjs)
+
+```bash
+make style_check   # Check code formatting
+make style_fix     # Auto-fix code formatting
+make style_list    # List files with formatting issues
+```
+
+## CI/CD pipeline
+
+`.github/workflows/pipeline.yml` runs on push to `master`, on pull requests and on manual workflow dispatch.
+Commits to other branches don't trigger it - create a PR for that.
+
+1. job `test`: unit tests, Jasmine tests and Playwright E2E tests
+2. job `github-pages`: deploys to GitHub Pages (needs `test`, only on master)
+
+## Firebase
+
+The site uses Firebase for authentication and database (e.g. pages/todo, pages/pastetool, pages/portsregistry).
+Configuration comes from `FIREBASE_*` environment variables. Database rules restrict read/write to authenticated
+users by email.
+
+## Key scripts and files
+
+- `server.js` - local development server (Express + HTTPS/HTTP)
+- `dev-tail.js` - multiplexes log output during development
+- `.github/injector.sh` - injects dynamic content during build
+- `.github/clicksecure.sh` - adds security blocking code (only in CI)
+- `.github/sha384.sh` - generates SRI hashes (only in CI)
+- `.github/ytlinksfix.sh` - fixes YouTube embed links
+- `bash/exportsource.sh` - exports .env variables to bash
+
+## Directory structure
+
+### Core directories
+
+- `pages/` - main content: topic-specific subdirectories (bash, javascript, react, docker, kubernetes, etc.),
+  each typically with an `index.html` with code snippets and examples. This is the primary content served to users.
+- `js/` - core JavaScript utilities and the main entry point (`github.js`). Reusable modules like `doace.js`, `toc.js`,
+  `urlwizzard.js`, `manipulation.js`, etc. Loaded by most pages.
+- `css/` - stylesheets, `normalize.css` and `main.css`. Loaded globally by `github.js`.
+- `bash/` - bash utility scripts organized by category:
+  - file system operations (`fs/`)
+  - git helpers (`git/`)
+  - process management (`proc/`)
+  - environment variable handling (`exportsource.sh`, `envrender.sh`)
+  - utilities like `colours.sh`, `dlogger.sh`, `args.sh`
+- `scripts/` - build-time processing scripts:
+  - `template.sh` / `template.ts` - `*.template.html` -> `*.rendered.html`
+  - `uglify.sh` / `uglify.mjs` - `*.uglify.js` -> `*.uglify.min.js`
+  - `reencode.sh` - file encoding utilities
+- `.github/` - CI/CD scripts and GitHub Actions workflows:
+  - `workflows/pipeline.yml` - main CI/CD pipeline
+  - build-time processors: `injector.sh`, `clicksecure.sh`, `sha384.sh`, `urlwizzard.sh`, `ytlinksfix.sh`
+  - `healtcheck.js` - server health check for CI
+  - `clean_before_artifact.sh` - cleans up before deployment
+
+### Supporting directories
+
+- `libs/` - shared JavaScript libraries for Node.js (`IndexedDBPromised.js`, `easing.js`, `secure.mjs`, ...)
+- `noprettier/` - third-party libraries excluded from prettier formatting:
+  - ACE editor (`ace/`)
+  - Bootstrap (`bootstrap/`, `bootstrap-3.3.4/`)
+  - jQuery, lodash, vanilla-tabs, polyfills
+  - `anchor.min.js` for anchor links
+- `components/` - reusable React/UI components (e.g. `Textarea.js`)
+- `demos/` - standalone demo projects (e.g. `amazon-menu`, `xor`)
+- `research/` - experimental/research code (flexbox, indexeddb, urlwizzard, math.js experiments)
+- `cert/` - SSL certificates for local HTTPS development
+- `docker/` - docker-related configuration files
+- `img/` - static images and icons
+- `override/` - override configurations or files
+- `.vscode/` / `.idea/` - IDE configuration files
+
+### Generated directories (gitignored)
+
+- `dist/` - bundles
+- `build/` - intermediate build artifacts
+- `public/` - generated public assets (`env.js`, `preprocessed.js`, coverage reports)
+- `bin/` - generated executable scripts
+- `var/` - runtime logs and temporary files (e.g. `var/log.log`)
+- `playwright-report/` - Playwright test reports
+- `coverage/` - test coverage reports
+- `test-results/` - test execution results
+
+</project-overview>
