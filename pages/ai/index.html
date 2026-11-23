@@ -251,6 +251,114 @@
           
         </script>
         <h2>Skills</h2>
+        <div id="skill-generator">
+          <label>
+            skill name:
+            <input type="text" value="mysuperskill" data-testid="skill-generator-name" spellcheck="false" />
+          </label>
+          <div data-vanilla-tabs>
+            <div data-buttons>
+              <span class="active" data-testid="skill-generator-tab-skillmd">SKILL.md</span>
+              <span data-testid="skill-generator-tab-sh">shell</span>
+            </div>
+            <div data-tabs>
+              <div data-skill-generator="md">
+                <script type="editor" data-lang="yaml"></script>
+              </div>
+              <div data-skill-generator="sh">
+                <script type="editor" data-lang="sh"></script>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          /**
+           * Skill generator: takes skill name from the input and renders
+           *   - tab "SKILL.md" - content of .agents/skills/<name>/SKILL.md (what the shell script would generate)
+           *   - tab "shell"    - the shell script itself with SKILL_NAME filled in
+           *
+           * Editor in not active tab is created lazily by github.js (see AGENTS.md - Tabs), so:
+           *   - <script type="editor"> still in the DOM -> set its content, doace() will pick it up later
+           *   - already replaced by ACE                  -> set value of the existing ACE editor
+           */
+          (function () {
+            const root = document.querySelector("#skill-generator");
+
+            const input = root.querySelector("input");
+
+            // the same format as: date -u +"%Y-%m-%d %H:%M:%S"
+            function created() {
+              return new Date().toISOString().slice(0, 19).replace("T", " ");
+            }
+
+            function skillMd(name) {
+              return [
+                "# .agents/skills/" + name + "/SKILL.md",
+                "---",
+                "name: " + name,
+                "description: >",
+                "  My super skill",
+                "  name: " + name,
+                "license: GPL-2.0-only",
+                "metadata:",
+                "  author: stopsopa",
+                '  version: "1.0.0"',
+                "  website: https://github.com/stopsopa/" + name,
+                '  created: "' + created() + '"',
+                "---",
+              ].join("\n");
+            }
+
+            function shell(name) {
+              return [
+                'export SKILL_NAME="' + name + '"',
+                'mkdir -p ".agents/skills/${SKILL_NAME}"',
+                'CREATED="$(date -u +"%Y-%m-%d %H:%M:%S")"',
+                'cat <<EEE > ".agents/skills/${SKILL_NAME}/SKILL.md"',
+                "---",
+                "name: ${SKILL_NAME}",
+                "description: >",
+                "  My super skill",
+                "  name: ${SKILL_NAME}",
+                "license: GPL-2.0-only",
+                "metadata:",
+                "  author: stopsopa",
+                '  version: "1.0.0"',
+                "  website: https://github.com/stopsopa/${SKILL_NAME}",
+                '  created: "${CREATED}"',
+                "---",
+                "EEE",
+              ].join("\n");
+            }
+
+            // puts text into the editor of given tab, no matter if ACE was already created there or not
+            function setCode(type, text) {
+              const panel = root.querySelector('[data-skill-generator="' + type + '"]');
+
+              const script = panel.querySelector('script[type="editor"]');
+
+              if (script) {
+                script.textContent = text;
+
+                return;
+              }
+
+              window.ace.edit(panel.querySelector(".ace_editor")).setValue(text, -1);
+            }
+
+            function render() {
+              const name = input.value.trim() || "mysuperskill";
+
+              setCode("md", skillMd(name));
+
+              setCode("sh", shell(name));
+            }
+
+            input.addEventListener("input", render);
+
+            render();
+          })();
+        </script>
         <script type="editor" data-lang="sh">
 
           https://www.skills.sh/
@@ -266,25 +374,6 @@
             # interesting: that generates list when
               # npx skills add https://github.com/vercel-labs/skills --skill find-skills
               # https://github.com/vercel-labs/skills/blob/v1.9.0/src/agents.ts#L117
-
-          # or do it manually:
-          export SKILL_NAME="mysuperskill"
-          mkdir -p ".agents/skills/${SKILL_NAME}"
-          CREATED="$(date -u +"%Y-%m-%d %H:%M:%S")"
-          cat <<EEE > ".agents/skills/${SKILL_NAME}/SKILL.md"
-          ---
-          name: ${SKILL_NAME}
-          description: >
-            My super skill
-            name: ${SKILL_NAME}
-          license: GPL-2.0-only
-          metadata:
-            author: stopsopa
-            version: "1.0.0"
-            website: https://github.com/stopsopa/${SKILL_NAME}
-            created: "${CREATED}"
-          ---
-          EEE
 
           # list skills
             npx skills ls -g
