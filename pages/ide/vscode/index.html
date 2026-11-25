@@ -163,7 +163,56 @@
               // prettier svg ---- ^^^
           }
         </script>
+        <h2>Turn VSCode into just editor - no indexing, no watch</h2>
+        <script type="editor" data-lang="sh">
 
+          mkdir -p .vscode
+          touch .vscode/settings.json
+          # and put content
+          {
+            // Disable recursive filesystem watching
+            "files.watcherExclude": {
+              "**/*": true
+            },
+          
+            // Disable file searching and text search in the workspace
+            "search.exclude": {
+              "**/*": true
+            },
+          
+            // Disable automatic file associations and detection
+            "files.autoGuessEncoding": false,
+            "files.autoSave": "off",
+          
+            // Disable Git integration
+            "git.enabled": false,
+            "git.autorefresh": false,
+            "git.decorations.enabled": false,
+          
+            // Disable automatic updates and background suggestions
+            "extensions.autoUpdate": false,
+            "extensions.autoCheckUpdates": false,
+          
+            // Disable editor features that can trigger background work
+            "editor.minimap.enabled": false,
+            "editor.semanticHighlighting.enabled": false,
+            "editor.wordBasedSuggestions": "off",
+            "editor.suggestOnTriggerCharacters": false,
+            "editor.quickSuggestions": {
+              "other": "off",
+              "comments": "off",
+              "strings": "off"
+            },
+          
+            // Do not automatically detect or configure tasks
+            "task.autoDetect": "off",
+          
+            // Do not restore previous editors
+            "workbench.startupEditor": "none"
+          }
+          
+
+        </script>
         <h2>Interesting</h2>
         <script type="editor" data-lang="sh">
 
