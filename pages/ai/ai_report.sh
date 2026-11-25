@@ -141,6 +141,7 @@ ${BOLD}ai${RESET} - report + tools for AI agents setup
                 __linked.json is json array of shortened paths (as shown in the picker), e.g.
                   ["SPECIAL_web/SPECIAL_web", "tabs"]
                 names not found on the current list of directories are reported and exit code is 1
+                comments are allowed in that file: whole lines starting with //
 
 EEE
 }
@@ -148,6 +149,7 @@ EEE
 #
 # Reads content of __linked.json from stdin (json array of strings)
 # and prints its elements one per line. Exit 1 with message when the content is not valid.
+# Comments are allowed in the file: only whole lines starting with // (not at the end of a line with data).
 #
 #   linked_json_to_lines < __linked.json
 #
@@ -158,8 +160,15 @@ const fs = require("fs");
 
 let data;
 
+// json with comments: lines starting with // (after optional whitespace) are removed before parsing
+const content = fs
+  .readFileSync(0, "utf8")
+  .split("\n")
+  .filter((line) => !/^\s*\/\//.test(line))
+  .join("\n");
+
 try {
-  data = JSON.parse(fs.readFileSync(0, "utf8"));
+  data = JSON.parse(content);
 } catch (e) {
   console.error("ai_report.sh error: __linked.json: invalid json: " + e.message);
 
@@ -387,7 +396,15 @@ EEE
   JSON="$(printf '%s\n' "${SELECTED}" | node -e '
 const lines = require("fs").readFileSync(0, "utf8").split("\n").filter((l) => l.length > 0);
 
-process.stdout.write(JSON.stringify(lines, null, 2));
+// comment at the top of the file: how to use it, linked_json_to_lines() strips it when reading
+const header = [
+  "// call it:",
+  "// ai linkrepo restore __linked.json",
+  "// to restore",
+  "// see more: https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fai%2Fai_report.sh",
+].join("\n");
+
+process.stdout.write(header + "\n" + JSON.stringify(lines, null, 2));
 ')"
 
   # printed always, so the file can be created by hand even if the question below is rejected
