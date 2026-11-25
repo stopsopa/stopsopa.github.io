@@ -12,13 +12,33 @@
 #        ./AGENTS.md
 #        ./CLAUDE.md
 #
+#   3. print help (list of all commands)
+#
 # Usage:
 #   cd /any/project/directory
 #   /bin/bash /path/to/pages/ai/ai_report.sh
 #
+#   alias ai='/bin/bash "/path/to/pages/ai/ai_report.sh"'
+#   ai            # report (steps above)
+#   ai help       # only help
+#   ai linkrepo   # pick directories from WORKSPACE_DIR and link them in ./__linked
+#
+# ai linkrepo:
+#   1. requires env var WORKSPACE_DIR (e.g. WORKSPACE_DIR=/Users/szdz/Workspace), exit 1 if missing
+#   2. list of directories to choose from is produced by script executed with cwd = WORKSPACE_DIR:
+#        env var WORKSPACE_DIR_LIST (path to custom script) if defined
+#        otherwise ai_report_find.sh next to this script (all direct subdirectories)
+#      the script have to print absolute paths, one per line
+#   3. paths are shortened (bash/file/progressivePaths.ts) and shown in multi select picker
+#      (bash/file/fuzzyMultiple.ts), esc in the picker = exit 1 and nothing is linked
+#   4. for each selected: ln -s [absolute path] ./__linked/[shortened path]
+#      shortened path abc/cde -> directory ./__linked/abc is created and link cde in it
+#      already existing links/files are skipped
+#
 # Exit code:
 #   0 - all four instruction files exist
 #   1 - at least one instruction file is missing (table is printed anyway)
+#   linkrepo: 0 - done, 1 - missing WORKSPACE_DIR, empty list, nothing selected or some link not created
 #
 # Requires: node
 #
@@ -37,7 +57,33 @@ BOLD="$(printf '\033[1m')"
 REVERSE="$(printf '\033[7m')"
 RESET="$(printf '\033[0m')"
 
+_SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
+_SHELL="$(basename ${_SHELL//-/})"
+case ${_SHELL} in
+  zsh)
+    _DIR="$( cd "$( dirname "${(%):-%x}" )" && pwd -P )"
+    _0="$( basename "${(%):-%N}" )"
+    _SCRIPT="${(%):-%N}"
+    _BINARY="/bin/zsh"
+    ;;
+  sh)
+    # be carefull this will not work when sourcing this file in sh shell
+    # will though work when called /bin/sh my_script.sh from any shell
+    _DIR="$( cd "$( dirname "${0}" )" && pwd -P )"
+    _0="$( basename "${0}" )"
+    _SCRIPT="${0}"
+    _BINARY="/bin/sh"
+    ;;
+  *)
+    _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
+    _0="$( basename "${BASH_SOURCE[0]}" )"
+    _SCRIPT="${BASH_SOURCE[0]}"
+    _BINARY="/bin/bash"
+    ;;
+esac
 _PWD="$(pwd)"
+
+_ROOT="$(cd "${_DIR}/../.." && pwd)"
 
 if ! command -v node >/dev/null 2>&1; then
 
@@ -45,6 +91,205 @@ if ! command -v node >/dev/null 2>&1; then
 
   exit 1
 fi
+
+# help page: list of all commands of this tool
+function help {
+
+  cat <<EEE
+
+${BOLD}ai${RESET} - report + tools for AI agents setup
+
+  ${GREEN}ai${RESET}            report: table of skills (global and local), validation of instruction files
+                (AGENTS.md, CLAUDE.md in home and in current directory), then this help
+  ${GREEN}ai help${RESET}       this help only
+  ${GREEN}ai linkrepo${RESET}   pick one or more directories from WORKSPACE_DIR
+                and link them in ./__linked (in current directory)
+
+                env vars:
+                  WORKSPACE_DIR      (required) directory with repositories
+                                     e.g. export WORKSPACE_DIR="/Users/szdz/Workspace"
+                  WORKSPACE_DIR_LIST (optional) script executed in WORKSPACE_DIR, prints absolute
+                                     paths of directories to choose from, one per line
+                                     default: ${_DIR}/ai_report_find.sh
+
+                picker: type to filter, Tab toggle, Ctrl+A all, Ctrl+X none, Ctrl+T invert,
+                        Enter confirm, Esc cancel
+
+EEE
+}
+
+#
+# ai linkrepo
+# Lists directories from WORKSPACE_DIR, lets user pick one or more of them
+# and creates symlinks to them in __linked directory in current working directory.
+# Details in the comment at the top of this file.
+#
+function linkrepo {
+
+  if [[ -z "${WORKSPACE_DIR}" ]]; then
+
+    cat <<EEE
+${RED}
+${0} error: env var WORKSPACE_DIR is not defined, WORKSPACE_DIR=>${WORKSPACE_DIR}<
+
+It should point to the directory with repositories, for example:
+
+  export WORKSPACE_DIR="/Users/szdz/Workspace"
+${RESET}
+EEE
+
+    return 1
+  fi
+
+  if [[ ! -d "${WORKSPACE_DIR}" ]]; then
+
+    echo "${0} error: WORKSPACE_DIR is not a directory, WORKSPACE_DIR=>${WORKSPACE_DIR}<"
+
+    return 1
+  fi
+
+  local LIST_SCRIPT="${_DIR}/ai_report_find.sh"
+
+  if [[ -n "${WORKSPACE_DIR_LIST}" ]]; then
+
+    LIST_SCRIPT="${WORKSPACE_DIR_LIST}"
+  fi
+
+  if [[ ! -f "${LIST_SCRIPT}" ]]; then
+
+    echo "${0} error: script listing directories doesn't exist, WORKSPACE_DIR_LIST=>${WORKSPACE_DIR_LIST}< LIST_SCRIPT=>${LIST_SCRIPT}<"
+
+    return 1
+  fi
+
+  local LIST
+
+  LIST="$(cd "${WORKSPACE_DIR}" && /bin/bash "${LIST_SCRIPT}")"
+
+  if [[ -z "${LIST}" ]]; then
+
+    echo "${0} error: list of directories is empty, WORKSPACE_DIR=>${WORKSPACE_DIR}< LIST_SCRIPT=>${LIST_SCRIPT}<"
+
+    return 1
+  fi
+
+  # two columns separated by tab: [original absolute path][TAB][shortened path]
+  local PAIRS
+
+  PAIRS="$(printf '%s\n' "${LIST}" | node "${_ROOT}/bash/file/progressivePaths.ts")"
+
+  if [[ -z "${PAIRS}" ]]; then
+
+    echo "${0} error: progressivePaths.ts returned nothing"
+
+    return 1
+  fi
+
+  # shortened paths are presented in the picker, original paths are found later in PAIRS
+  local SELECTED
+
+  SELECTED="$(printf '%s\n' "${PAIRS}" | cut -f2 | node "${_ROOT}/bash/file/fuzzyMultiple.ts")"
+
+  if [[ "${?}" != "0" || -z "${SELECTED}" ]]; then
+
+    echo "${0} error: nothing selected"
+
+    return 1
+  fi
+
+  local LINKED="${_PWD}/__linked"
+
+  if ! mkdir -p "${LINKED}"; then
+
+    echo "${0} error: can't create directory LINKED=>${LINKED}<"
+
+    return 1
+  fi
+
+  local STATUS="0"
+  local ORIGINAL
+  local SHORT
+  local TARGET
+  local PARENT
+  local CONFLICT
+
+  # IFS is tab here (not "\n"): we need to split line into two columns
+  while IFS=$'\t' read -r ORIGINAL SHORT; do
+
+    if ! printf '%s\n' "${SELECTED}" | grep -Fxq -- "${SHORT}"; then
+
+      continue
+    fi
+
+    TARGET="${LINKED}/${SHORT}"
+
+    if [[ -e "${TARGET}" || -L "${TARGET}" ]]; then
+
+      echo "${YELLOW}exists:  __linked/${SHORT} - skipping${RESET}"
+
+      continue
+    fi
+
+    # parent directory of the link can't be a symlink itself (link from previous run),
+    # otherwise we would create things inside linked repository
+    CONFLICT=""
+    PARENT="${SHORT}"
+
+    while [[ "${PARENT}" == */* ]]; do
+
+      PARENT="${PARENT%/*}"
+
+      if [[ -L "${LINKED}/${PARENT}" ]]; then
+
+        CONFLICT="${PARENT}"
+      fi
+    done
+
+    if [[ -n "${CONFLICT}" ]]; then
+
+      echo "${RED}${0} error: can't create __linked/${SHORT}, __linked/${CONFLICT} is a link already${RESET}"
+
+      STATUS="1"
+
+      continue
+    fi
+
+    if mkdir -p "$(dirname "${TARGET}")" && ln -s "${ORIGINAL}" "${TARGET}"; then
+
+      echo "${GREEN}linked:  __linked/${SHORT} -> ${ORIGINAL}${RESET}"
+    else
+
+      echo "${RED}${0} error: can't create link TARGET=>${TARGET}< ORIGINAL=>${ORIGINAL}<${RESET}"
+
+      STATUS="1"
+    fi
+  done <<< "${PAIRS}"
+
+  return "${STATUS}"
+}
+
+case "${1}" in
+  "")
+    # no command: report below
+    ;;
+  linkrepo)
+    linkrepo
+
+    exit "${?}"
+    ;;
+  help|--help|-h)
+    help
+
+    exit 0
+    ;;
+  *)
+    help
+
+    echo "${0} error: unknown command >${1}<"
+
+    exit 1
+    ;;
+esac
 
 # prints the table of skills, global and local merged by skill name
 node - <<'EEE'
@@ -146,5 +391,9 @@ ${0} error: some instruction files are missing (listed above)
 ${RESET}
 EEE
 
+  help
+
   exit 1
 fi
+
+help
