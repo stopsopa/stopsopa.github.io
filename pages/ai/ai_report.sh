@@ -34,6 +34,18 @@
 #   4. for each selected: ln -s [absolute path] ./__linked/[shortened path]
 #      shortened path abc/cde -> directory ./__linked/abc is created and link cde in it
 #      already existing links/files are skipped
+#   5. print the selection as json array (ready to paste: cat <<'EEE' > __linked.json ...)
+#      and (interactive mode only) ask if to save it to ./__linked.json
+#
+# ai linkrepo restore                         # no picker, selection from ./__linked.json
+# ai linkrepo restore path/to/__linked.json   # no picker, selection from given file
+# ai linkrepo < path/to/__linked.json         # no picker, selection from stdin
+#   the rest (steps 1, 2, 4, 5 without the question) is the same.
+#   __linked.json is snapshot of what was linked: json array of shortened paths
+#   so the same set of links can be recreated later / elsewhere.
+#   WARNING: shortened paths depend on the whole list of directories - when new directory
+#   with the same name shows up in WORKSPACE_DIR then old name (e.g. "api") becomes "a/api"
+#   and restore reports it as not found.
 #
 # Exit code:
 #   0 - all four instruction files exist
@@ -115,11 +127,59 @@ ${BOLD}ai${RESET} - report + tools for AI agents setup
                 picker: type to filter, Tab toggle, Ctrl+A all, Ctrl+X none, Ctrl+T invert,
                         Enter confirm, Esc cancel
 
+                at the end the selection is printed as json array (content of __linked.json)
+                and you are asked if to save it to ./__linked.json (snapshot of what was linked)
+
+  ${GREEN}ai linkrepo restore${RESET}
+                no picker: link again everything listed in ./__linked.json
+  ${GREEN}ai linkrepo restore path/to/__linked.json${RESET}
+                the same but from given file (links are still created in ./__linked)
+  ${GREEN}ai linkrepo < path/to/__linked.json${RESET}
+  ${GREEN}cat path/to/__linked.json | ai linkrepo${RESET}
+                the same but content of the file is given on stdin
+
+                __linked.json is json array of shortened paths (as shown in the picker), e.g.
+                  ["SPECIAL_web/SPECIAL_web", "tabs"]
+                names not found on the current list of directories are reported and exit code is 1
+
 EEE
 }
 
 #
+# Reads content of __linked.json from stdin (json array of strings)
+# and prints its elements one per line. Exit 1 with message when the content is not valid.
+#
+#   linked_json_to_lines < __linked.json
+#
+function linked_json_to_lines {
+
+  node -e '
+const fs = require("fs");
+
+let data;
+
+try {
+  data = JSON.parse(fs.readFileSync(0, "utf8"));
+} catch (e) {
+  console.error("ai_report.sh error: __linked.json: invalid json: " + e.message);
+
+  process.exit(1);
+}
+
+if (Array.isArray(data) && data.every((x) => typeof x === "string")) {
+  process.stdout.write(data.join("\n"));
+} else {
+  console.error("ai_report.sh error: __linked.json: expected json array of strings");
+
+  process.exit(1);
+}
+'
+}
+
+#
 # ai linkrepo
+# ai linkrepo restore [path/to/__linked.json]
+# ai linkrepo < __linked.json
 # Lists directories from WORKSPACE_DIR, lets user pick one or more of them
 # and creates symlinks to them in __linked directory in current working directory.
 # Details in the comment at the top of this file.
@@ -188,7 +248,48 @@ EEE
   # shortened paths are presented in the picker, original paths are found later in PAIRS
   local SELECTED
 
-  SELECTED="$(printf '%s\n' "${PAIRS}" | cut -f2 | node "${_ROOT}/bash/file/fuzzyMultiple.ts")"
+  # where the selection comes from: interactive (picker) | file (restore) | stdin
+  local MODE="interactive"
+  local FILE=""
+
+  if [[ "${1}" == "restore" ]]; then
+
+    MODE="file"
+
+    FILE="${_PWD}/__linked.json"
+
+    if [[ -n "${2}" ]]; then
+
+      FILE="${2}"
+    fi
+
+    if [[ ! -f "${FILE}" ]]; then
+
+      echo "${0} error: file to restore from doesn't exist, FILE=>${FILE}<"
+
+      return 1
+    fi
+  elif [[ -n "${1}" ]]; then
+
+    echo "${0} error: unknown argument of linkrepo >${1}<, the only allowed is: restore"
+
+    return 1
+  elif [[ ! -t 0 ]]; then
+
+    MODE="stdin"
+  fi
+
+  case "${MODE}" in
+    file)
+      SELECTED="$(linked_json_to_lines < "${FILE}")"
+      ;;
+    stdin)
+      SELECTED="$(linked_json_to_lines)"
+      ;;
+    *)
+      SELECTED="$(printf '%s\n' "${PAIRS}" | cut -f2 | node "${_ROOT}/bash/file/fuzzyMultiple.ts")"
+      ;;
+  esac
 
   if [[ "${?}" != "0" || -z "${SELECTED}" ]]; then
 
@@ -265,6 +366,73 @@ EEE
     fi
   done <<< "${PAIRS}"
 
+  # names from the selection (__linked.json) which are not on the current list of directories
+  local SHORTS
+
+  SHORTS="$(printf '%s\n' "${PAIRS}" | cut -f2)"
+
+  while IFS= read -r SHORT; do
+
+    if ! printf '%s\n' "${SHORTS}" | grep -Fxq -- "${SHORT}"; then
+
+      echo "${RED}${0} error: >${SHORT}< not found on the list of directories of WORKSPACE_DIR=>${WORKSPACE_DIR}<${RESET}"
+
+      STATUS="1"
+    fi
+  done <<< "${SELECTED}"
+
+  # snapshot of the selection: json array of shortened paths, can be used later with: ai linkrepo restore
+  local JSON
+
+  JSON="$(printf '%s\n' "${SELECTED}" | node -e '
+const lines = require("fs").readFileSync(0, "utf8").split("\n").filter((l) => l.length > 0);
+
+process.stdout.write(JSON.stringify(lines, null, 2));
+')"
+
+  # printed always, so the file can be created by hand even if the question below is rejected
+  # outer delimiter is not EEE on purpose: EEE is part of the printed text
+  cat <<OUTER
+
+cat <<'EEE' > __linked.json
+${JSON}
+EEE
+
+OUTER
+
+  # only in interactive mode: in other modes the snapshot exists already (and stdin might be taken)
+  if [[ "${MODE}" == "interactive" ]]; then
+
+    local QUESTION="save the selection above to ${_PWD}/__linked.json ?"
+
+    if [[ -f "${_PWD}/__linked.json" ]]; then
+
+      QUESTION="${_PWD}/__linked.json exists, ${RED}overwrite${RESET} it with the selection above ?"
+    fi
+
+    local ANSWER
+
+    printf '%s' "${QUESTION} [y/N] "
+
+    read -r ANSWER
+
+    if [[ "${ANSWER}" == "y" || "${ANSWER}" == "Y" ]]; then
+
+      if printf '%s\n' "${JSON}" > "${_PWD}/__linked.json"; then
+
+        echo "${GREEN}saved:   ${_PWD}/__linked.json${RESET}"
+      else
+
+        echo "${RED}${0} error: can't write file >${_PWD}/__linked.json<${RESET}"
+
+        STATUS="1"
+      fi
+    else
+
+      echo "not saved"
+    fi
+  fi
+
   return "${STATUS}"
 }
 
@@ -273,7 +441,7 @@ case "${1}" in
     # no command: report below
     ;;
   linkrepo)
-    linkrepo
+    linkrepo "${2}" "${3}"
 
     exit "${?}"
     ;;
