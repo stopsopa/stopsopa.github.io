@@ -43,6 +43,21 @@ function Viewer() {
     setFileRaw(decodeURIComponent(value));
   }
 
+  /**
+   * Selected tab of markdown mode is kept in the url:
+   *   /viewer.html?file=...             - "rendered" (default, no extra parameter)
+   *   /viewer.html?file=...&tab=source  - "source"
+   */
+  function getTab() {
+    if (new URL(window.location.href).searchParams.get("tab") === "source") {
+      return "source";
+    }
+
+    return "rendered";
+  }
+
+  const [tab, setTab] = useState(getTab());
+
   const [ace, setAceRaw] = useState({});
 
   function setAce(value, mime, more) {
@@ -105,6 +120,9 @@ function Viewer() {
 
         if (!dontPush) {
           window.history.pushState({}, "", changed);
+
+          // new file submitted by user - back to default tab (url in 'changed' has no &tab=...)
+          setTab("rendered");
         }
 
         res = await fetch(customFile);
@@ -113,6 +131,7 @@ function Viewer() {
 
         setAce(text, contentTypeForAceFromMap, {
           header: rawContentTypeHeader,
+          file: customFile, // really loaded file (state 'file' changes on every keystroke) - used as src of <zero-md>
         });
       } catch (e) {
         setAce(
@@ -143,11 +162,68 @@ function Viewer() {
 
       setFile(file);
 
+      setTab(getTab());
+
       onSubmit(null, file, true);
     });
 
     onSubmit(null, file, true);
   }, []);
+
+  /**
+   * Markdown mode: when loaded file is markdown we render vanilla-tabs:
+   *   tab 1 - markdown rendered by <zero-md> (the same library as in pages/services/encryptor)
+   *   tab 2 - raw source in ACE editor (as for any other file)
+   * More in viewer.entry.md
+   *
+   * Tabs markup is rendered always (also for not markdown files) - only buttons are hidden by css ([data-md="0"])
+   * and "source" tab is forced. This way <Ace> is never unmounted (unmounting and mounting it again on every
+   * loaded file is fragile and pointless).
+   */
+  const isMarkdown = ace.mime === "markdown";
+
+  const tabsRef = useRef(null);
+
+  /**
+   * Tabs are added to the DOM after github.js finished its init, so nothing activates initial tab for us.
+   * We do it manually. allLoaded.push() runs callback immediately when github.js is already initialised.
+   * markdown -> open tab from state 'tab' ("rendered" - 0, "source" - 1), anything else -> "source" tab (1)
+   */
+  useEffect(() => {
+    window.allLoaded = window.allLoaded || [];
+
+    window.allLoaded.push(() => {
+      if (tabsRef.current) {
+        const index = isMarkdown && tab === "rendered" ? 0 : 1;
+
+        window.vanillaTabs.activeByIndex(tabsRef.current, index, {
+          onChange: ({ index }) => {
+            // ACE created in hidden tab has no dimensions - resize event makes it recalculate when tab is shown
+            window.dispatchEvent(new Event("resize"));
+
+            /**
+             * Memorise clicked tab in the url (replaceState - switching tabs doesn't create history entries).
+             * Only for markdown - for other files "source" tab is forced and it is not user's choice.
+             */
+            if (isMarkdown) {
+              const clicked = index === 1 ? "source" : "rendered";
+
+              window.history.replaceState(
+                {},
+                "",
+                `${location.pathname}?file=${encodeURIComponent(getFile())}${clicked === "source" ? "&tab=source" : ""}`
+              );
+
+              setTab(clicked);
+            }
+          },
+        });
+      }
+    });
+  }, [isMarkdown, tab]);
+
+  // appended to all generated links with ?file=... below
+  const tabSuffix = isMarkdown && tab === "source" ? "&tab=source" : "";
 
   return (
     <>
@@ -162,13 +238,13 @@ function Viewer() {
         <input
           type="search"
           readOnly
-          value={`${location.protocol}//${location.host}${location.pathname}?file=${encodeURIComponent(file)}`}
+          value={`${location.protocol}//${location.host}${location.pathname}?file=${encodeURIComponent(file)}${tabSuffix}`}
         />
       </label>
 
       <label>
         <span>pathname + search:</span>
-        <input type="search" readOnly value={`${location.pathname}?file=${encodeURIComponent(file)}`} />
+        <input type="search" readOnly value={`${location.pathname}?file=${encodeURIComponent(file)}${tabSuffix}`} />
       </label>
 
       <label>
@@ -176,7 +252,7 @@ function Viewer() {
         <input
           type="search"
           readOnly
-          value={`${zz}${location.pathname}?file=${encodeURIComponent(file)}`}
+          value={`${zz}${location.pathname}?file=${encodeURIComponent(file)}${tabSuffix}`}
           style={{ color: "green" }}
         />
       </label>
@@ -193,7 +269,30 @@ function Viewer() {
         </a>
       </label>
 
-      <Ace content={ace.value || ""} lang={ace.mime || "text"} />
+      <div
+        data-vanilla-tabs
+        data-md={isMarkdown ? "1" : "0"}
+        ref={tabsRef}
+        style={{ "--background-color": "white" }}
+        data-testid="viewer-md-tabs"
+      >
+        <div data-buttons>
+          <span data-testid="viewer-md-tab-rendered">rendered</span>
+          <span data-testid="viewer-md-tab-source">source</span>
+        </div>
+        <div data-tabs>
+          <div>
+            {isMarkdown && (
+              <div className="zero-md-container" data-testid="viewer-md-rendered">
+                <zero-md key={ace.file} src={ace.file}></zero-md>
+              </div>
+            )}
+          </div>
+          <div>
+            <Ace content={ace.value || ""} lang={ace.mime || "text"} />
+          </div>
+        </div>
+      </div>
 
       <h3>extracted meta</h3>
 

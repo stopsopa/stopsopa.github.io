@@ -10,7 +10,18 @@
     <title>Code Viewer - Interactive Search Tool</title>
     <link rel="preconnect" href="https://rsms.me/" />
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <!-- <zero-md> web component - renders markdown files in first tab, see pages/viewer/viewer.entry.md -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@3?register"></script>
     <style>
+      .zero-md-container {
+        padding: 8px;
+        background: #fff;
+        min-height: 50px;
+      }
+      /* not markdown file: no tab buttons, only "source" tab (ACE) is visible - see pages/viewer/viewer.entry.md */
+      [data-vanilla-tabs][data-md="0"] > [data-buttons] {
+        display: none;
+      }
       body input,
       #root > label > input,
       #root > label > a {

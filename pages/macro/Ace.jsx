@@ -353,9 +353,12 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap, passRefTo
       }
 
       try {
-        div.removeAttribute("class");
+        // divRef.current is null when element is already detached
+        if (divRef.current) {
+          divRef.current.removeAttribute("class");
 
-        div.removeAttribute("style");
+          divRef.current.removeAttribute("style");
+        }
       } catch (e) {
         console.error("Ace.jsx error removing class: ", e);
       }
@@ -364,9 +367,14 @@ export default ({ id, content, onChange, onInit, recordOn, lang, wrap, passRefTo
 
       document.removeEventListener("scroll", refId.current.heightUpdateFunction);
 
-      onInit(undefined);
+      // onInit is optional (see "Minimal number of params" above) - without the check unmount crashed whole react tree
+      if (typeof onInit === "function") {
+        onInit(undefined);
+      }
 
-      delete window.editors[id];
+      if (window.editors) {
+        delete window.editors[id];
+      }
     };
   }, []);
 
