@@ -27,7 +27,15 @@
 #      shortened path abc/cde -> directory ./__linked/abc is created and link cde in it.
 #      Target of the link is relative path from directory of the link to the selected directory.
 #      Already existing links/files are skipped
-#   5. ./__linked.json is saved with the selection (json array)
+#   5. __linked.json is saved with the selection (json array)
+#
+#      Location of __linked.json: ./__linked.json (can be committed) or .git/__linked.json (private).
+#        - found in one of them: that one is used and updated where it is
+#        - found in both: error, exit 1. Remove one of them and run again
+#        - found in none (fresh start), picker mode: you are asked once (before the picker) where to keep it
+#          (no .git directory = no question, ./ is used). Next runs find it there.
+#      The file in use is printed just above the picker ("config: ...").
+#      Wherever "./__linked.json" is mentioned in this comment it means the one found by these rules.
 #
 #      In picker mode there is exactly ONE question [y/N], right after the picker and before any change.
 #      It covers all: removing links (3a), creating links (4), saving __linked.json (5).
@@ -130,6 +138,10 @@ ${BOLD}ai linkrepo${RESET} - link directories from WORKSPACE_DIR in ./__linked (
                 picker: type to filter, Tab toggle, Ctrl+A all, Ctrl+X none, Ctrl+T invert,
                         Enter confirm, Esc cancel
                         elements of ./__linked.json and existing links are ticked already
+
+                __linked.json lives in ./ or in .git/ (private): found in one = used and updated there,
+                found in both = error (remove one), found in none = you are asked once where to keep it.
+                Line above the picker shows which one is in use.
 
                 unticking: link of unticked element is removed
                            everything unticked = ./__linked and ./__linked.json are removed too
@@ -327,6 +339,38 @@ walk(linked, "");
 # links which are already in ./__linked: [path of the link relative to __linked][TAB][shortened path]
 EXISTING="$(printf '%s\n' "${PAIRS}" | existing_links)"
 
+# Location of the snapshot, relative to current directory: __linked.json or .git/__linked.json
+# Empty = doesn't exist yet. Existing in both places = error, user has to decide which one stays.
+JSON_REL=""
+
+if [[ -f "${_PWD}/.git/__linked.json" ]]; then
+
+  JSON_REL=".git/__linked.json"
+fi
+
+if [[ -f "${_PWD}/./__linked.json" ]]; then
+
+  if [[ -n "${JSON_REL}" ]]; then
+
+    cat <<EEE
+${RED}
+${0} error: two configs found:
+
+  ${_PWD}/__linked.json
+  ${_PWD}/.git/__linked.json
+
+Only one is allowed. Decide which one should stay, remove the other one and run again.
+${RESET}
+EEE
+
+    exit 1
+  fi
+
+  JSON_REL="__linked.json"
+fi
+
+JSON_FILE="${_PWD}/${JSON_REL}"
+
 # where the selection comes from: interactive (picker) | file (restore) | stdin
 MODE="interactive"
 FILE=""
@@ -335,11 +379,16 @@ if [[ "${1}" == "restore" ]]; then
 
   MODE="file"
 
-  FILE="${_PWD}/__linked.json"
+  FILE="${JSON_FILE}"
 
   if [[ -n "${2}" ]]; then
 
     FILE="${2}"
+  elif [[ -z "${JSON_REL}" ]]; then
+
+    echo "${0} error: nothing to restore from: no ${_PWD}/__linked.json and no ${_PWD}/.git/__linked.json"
+
+    exit 1
   fi
 
   if [[ ! -f "${FILE}" ]]; then
@@ -367,16 +416,60 @@ case "${MODE}" in
     SELECTED="$(linked_json_to_lines)"
     ;;
   *)
-    # elements of existing ./__linked.json are ticked in the picker already
+    # no snapshot yet (fresh start): ask once where to keep it, next runs find it there.
+    # No .git directory = no choice, it goes to ./
+    HEADER="config: ${JSON_FILE}"
+
+    if [[ -z "${JSON_REL}" ]]; then
+
+      JSON_REL="__linked.json"
+
+      if [[ -d "${_PWD}/.git" ]]; then
+
+        cat <<EEE
+
+no __linked.json yet in ${_PWD}
+where to keep it?
+
+  1) ./__linked.json      in the repository, can be committed
+  2) .git/__linked.json   private, never committed
+
+EEE
+
+        printf '%s' "[1/2] "
+
+        read -r ANSWER
+
+        case "${ANSWER}" in
+          1)
+            JSON_REL="__linked.json"
+            ;;
+          2)
+            JSON_REL=".git/__linked.json"
+            ;;
+          *)
+            echo "${0} error: expected 1 or 2, given >${ANSWER}< - nothing changed"
+
+            exit 1
+            ;;
+        esac
+      fi
+
+      JSON_FILE="${_PWD}/${JSON_REL}"
+
+      HEADER="config: ${JSON_FILE} (new, will be created)"
+    fi
+
+    # elements of existing __linked.json are ticked in the picker already
     PRESELECT=""
 
-    if [[ -f "${_PWD}/__linked.json" ]]; then
+    if [[ -f "${JSON_FILE}" ]]; then
 
-      PRESELECT="$(linked_json_to_lines < "${_PWD}/__linked.json")"
+      PRESELECT="$(linked_json_to_lines < "${JSON_FILE}")"
 
       if [[ "${?}" != "0" ]]; then
 
-        echo "${YELLOW}${_PWD}/__linked.json is not valid - nothing will be preselected${RESET}"
+        echo "${YELLOW}${JSON_FILE} is not valid - nothing will be preselected${RESET}"
 
         PRESELECT=""
       fi
@@ -386,6 +479,9 @@ case "${MODE}" in
     # otherwise confirming the picker would remove them
     # so ticked = union of __linked.json and links found in ./__linked (found by target, see existing_links)
     PRESELECT="${PRESELECT}"$'\n'"$(printf '%s\n' "${EXISTING}" | cut -f2)"
+
+    # printed just above the picker: which config we are working with
+    echo "${GRAY}${HEADER}${RESET}"
 
     # <(...) instead of temporary file: stdin of the picker is taken by the list
     # --allow-empty: unticking everything is valid answer here (= remove all links), esc is still exit 1
@@ -409,20 +505,31 @@ if [[ -z "${SELECTED}" && "${MODE}" != "interactive" ]]; then
   exit 1
 fi
 
+# modes without picker when no snapshot exists: only for printing (nothing is written in these modes)
+if [[ -z "${JSON_REL}" ]]; then
+
+  JSON_REL="__linked.json"
+
+  JSON_FILE="${_PWD}/${JSON_REL}"
+fi
+
 # snapshot of the selection: json array of shortened paths, can be used later with: ai linkrepo restore
 JSON="$(printf '%s\n' "${SELECTED}" | node -e '
 const lines = require("fs").readFileSync(0, "utf8").split("\n").filter((l) => l.length > 0);
 
+// __linked.json or .git/__linked.json
+const rel = process.argv[1];
+
 // comment at the top of the file: how to use it, linked_json_to_lines() strips it when reading
 const header = [
   "// call it:",
-  "// ai linkrepo restore __linked.json",
+  "// ai linkrepo restore " + rel,
   "// to restore",
   "// see more: https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fai%2Fxx%2Flinkrepo.sh",
 ].join("\n");
 
 process.stdout.write(header + "\n" + JSON.stringify(lines, null, 2));
-')"
+' "${JSON_REL}")"
 
 # interactive mode only: links of elements unticked in the picker are removed (after confirmation).
 # Only symlinks of directories from the list are touched, anything else in __linked stays.
@@ -440,7 +547,7 @@ if [[ "${MODE}" == "interactive" ]]; then
   done <<< "${EXISTING}"
 
   # nothing ticked and nothing to clean up: no question needed
-  if [[ -z "${SELECTED}" && -z "${TO_REMOVE}" && ! -f "${_PWD}/__linked.json" ]]; then
+  if [[ -z "${SELECTED}" && -z "${TO_REMOVE}" && ! -f "${JSON_FILE}" ]]; then
 
     echo "nothing selected - nothing is linked"
 
@@ -464,17 +571,17 @@ EEE
     # outer delimiter is not EEE on purpose: EEE is part of the printed text
     cat <<OUTER
 
-cat <<'EEE' > __linked.json
+cat <<'EEE' > ${JSON_REL}
 ${JSON}
 EEE
 
 OUTER
 
-    QUESTION="link what is selected and save ${_PWD}/__linked.json as above?"
+    QUESTION="link what is selected and save ${JSON_FILE} as above?"
 
     if [[ -n "${TO_REMOVE}" ]]; then
 
-      QUESTION="${RED}remove${RESET} links listed above, link what is selected and save ${_PWD}/__linked.json as above?"
+      QUESTION="${RED}remove${RESET} links listed above, link what is selected and save ${JSON_FILE} as above?"
     fi
   else
 
@@ -534,14 +641,14 @@ OUTER
       echo "${YELLOW}${_PWD}/__linked is not empty (something not from the list is in it) - left in place${RESET}"
     fi
 
-    if [[ -f "${_PWD}/__linked.json" ]]; then
+    if [[ -f "${JSON_FILE}" ]]; then
 
-      if rm "${_PWD}/__linked.json"; then
+      if rm "${JSON_FILE}"; then
 
-        echo "${YELLOW}removed: __linked.json${RESET}"
+        echo "${YELLOW}removed: ${JSON_REL}${RESET}"
       else
 
-        echo "${0} error: can't remove file >${_PWD}/__linked.json<"
+        echo "${0} error: can't remove file >${JSON_FILE}<"
 
         exit 1
       fi
@@ -667,12 +774,12 @@ done <<< "${SELECTED}"
 if [[ "${MODE}" == "interactive" ]]; then
 
   # no question here: the one question before any change (see above) covered also this file
-  if printf '%s\n' "${JSON}" > "${_PWD}/__linked.json"; then
+  if printf '%s\n' "${JSON}" > "${JSON_FILE}"; then
 
-    echo "${GREEN}saved:   ${_PWD}/__linked.json${RESET}"
+    echo "${GREEN}saved:   ${JSON_FILE}${RESET}"
   else
 
-    echo "${RED}${0} error: can't write file >${_PWD}/__linked.json<${RESET}"
+    echo "${RED}${0} error: can't write file >${JSON_FILE}<${RESET}"
 
     STATUS="1"
   fi
@@ -682,7 +789,7 @@ else
   # outer delimiter is not EEE on purpose: EEE is part of the printed text
   cat <<OUTER
 
-cat <<'EEE' > __linked.json
+cat <<'EEE' > ${JSON_REL}
 ${JSON}
 EEE
 

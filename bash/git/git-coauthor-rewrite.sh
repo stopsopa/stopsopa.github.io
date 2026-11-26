@@ -27,10 +27,13 @@
 #   echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash bash/git/git-coauthor-rewrite.sh a374d0e3 f116f56c
 #
 #   # multiline string
-#   cat <<EEE | /bin/bash /path/to/git-coauthor-rewrite.sh a374d0e3
-#   Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>
-#   Co-Authored-By: Somebody Else <somebody@example.com>
-#   EEE
+# cat <<EEE | /bin/bash /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/bash/git/git-coauthor-rewrite.sh  --nmatch 'Claude'
+# npm ci fails on CI with npm 11.7+: @emnapi/core and @emnapi/runtime
+# 2.0.0-beta.2 are required by an optional peer but missing from the lock.
+# Regenerated with npm 11.9.0; package.json unchanged.
+
+# Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>
+# EEE
 #
 #   # append only to commits which message does NOT match given regex (--nmatch can be anywhere among arguments)
 #   echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash bash/git/git-coauthor-rewrite.sh --nmatch '^Co-[Aa]uthored-[Bb]y: Claude' a374d0e3
