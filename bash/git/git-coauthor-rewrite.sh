@@ -20,6 +20,9 @@
 #
 # Usage:
 #
+#   # no hashes: entire history of current branch (from root commit to HEAD)
+#   echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash bash/git/git-coauthor-rewrite.sh --nmatch 'Claude'
+#
 #   # from given commit (inclusive) to HEAD
 #   echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash bash/git/git-coauthor-rewrite.sh a374d0e3
 #
@@ -179,10 +182,11 @@ Works on the git repository in current working directory.
 
 Usage:
 
-  echo "string to append" | /bin/bash ${0} [--nmatch 'regex'] <from_hash> [<to_hash>]
+  echo "string to append" | /bin/bash ${0} [--nmatch 'regex'] [<from_hash> [<to_hash>]]
 
 Arguments:
 
+  (no hashes)        entire history of current branch
   <from_hash>        oldest commit to change (inclusive)
   <to_hash>          newest commit to change (inclusive), default HEAD
                      <from_hash> has to be older than <to_hash>, both in history of current branch
@@ -192,6 +196,9 @@ Arguments:
   --help, -h         this page
 
 Examples:
+
+  # entire history, skip commits mentioning Claude
+  echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash ${0} --nmatch 'Claude'
 
   # from given commit to HEAD
   echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash ${0} a374d0e3
@@ -246,11 +253,12 @@ fi
 # validation
 # ---------------------------------------------------------------------------------------------
 
-if [[ "${#}" -lt 1 || "${#}" -gt 2 ]]; then
+if [[ "${#}" -gt 2 ]]; then
   cat <<EEE
 ${RED}
-${0} error: expected one or two commit hashes, given >${#}< arguments
+${0} error: expected zero, one or two commit hashes, given >${#}< arguments
 
+  echo "Co-Authored-By: Name <email>" | /bin/bash ${0}
   echo "Co-Authored-By: Name <email>" | /bin/bash ${0} <from_hash>
   echo "Co-Authored-By: Name <email>" | /bin/bash ${0} <older_hash> <newer_hash>
   echo "Co-Authored-By: Name <email>" | /bin/bash ${0} --nmatch 'regex' <older_hash> [<newer_hash>]
@@ -275,10 +283,14 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit 1
 fi
 
-FROM="$(git rev-parse --verify --quiet "${1}^{commit}")"
-if [[ -z "${FROM}" ]]; then
-  echo "${0} error: first argument is not existing commit >${1}<"
-  exit 1
+# empty FROM means: no hashes given, entire history of current branch
+FROM=""
+if [[ -n "${1}" ]]; then
+  FROM="$(git rev-parse --verify --quiet "${1}^{commit}")"
+  if [[ -z "${FROM}" ]]; then
+    echo "${0} error: first argument is not existing commit >${1}<"
+    exit 1
+  fi
 fi
 
 if [[ -n "${2}" ]]; then
@@ -297,7 +309,7 @@ if [[ -z "${BRANCH}" ]]; then
   exit 1
 fi
 
-if ! git merge-base --is-ancestor "${FROM}" "${TO}"; then
+if [[ -n "${FROM}" ]] && ! git merge-base --is-ancestor "${FROM}" "${TO}"; then
   if git merge-base --is-ancestor "${TO}" "${FROM}"; then
     echo "${0} error: first commit >${1}< is newer than the second >${2}<, swap them (older first)"
   else
@@ -338,11 +350,15 @@ fi
 # what will be touched
 # ---------------------------------------------------------------------------------------------
 
-# everything reachable from parents of FROM stays untouched
+# everything reachable from parents of FROM stays untouched (no FROM: nothing excluded - entire history)
 NEG=()
-for PARENT in $(git rev-list --parents -n 1 "${FROM}" | cut -d' ' -f2- -s); do
-  NEG+=("^${PARENT}")
-done
+RANGE="entire history .. ${TO} (inclusive)"
+if [[ -n "${FROM}" ]]; then
+  RANGE="${FROM} .. ${TO} (inclusive)"
+  for PARENT in $(git rev-list --parents -n 1 "${FROM}" | cut -d' ' -f2- -s); do
+    NEG+=("^${PARENT}")
+  done
+fi
 
 # commits which will get the string (newest first)
 git rev-list "${TO}" "${NEG[@]}" > "${TMP}/targets.txt"
@@ -354,7 +370,7 @@ while IFS= read -r LINE; do
   if [[ -n "${LINE}" ]]; then
     TAG_REFS+=("refs/tags/${LINE}")
   fi
-done <<< "$(git tag --contains "${FROM}")"
+done <<< "$(if [[ -n "${FROM}" ]]; then git tag --contains "${FROM}"; else git tag; fi)"
 
 # ---------------------------------------------------------------------------------------------
 # preview, then: continue / edit / quit
@@ -368,24 +384,38 @@ ${GRAY}--------------------------------------------------${RESET}
 ${YELLOW}${APPEND}${RESET}
 ${GRAY}--------------------------------------------------${RESET}
 
-${BOLD}Preview (${PREVIEW_COUNT} newest of ${TARGETS_COUNT} commits to change):${RESET}
+${BOLD}Preview (up to ${PREVIEW_COUNT} newest commits which will really change, of ${TARGETS_COUNT} in range):${RESET}
 EEE
 
+  # show only commits which message will really change (skipped ones are not interesting)
+  SHOWN="0"
   while IFS= read -r LINE; do
-    cat <<EEE
+    ORIGINAL="$(git log -1 --format=%B "${LINE}")"
+    CHANGED="$(transform "${ORIGINAL}")"
+    if [[ "${CHANGED}" != "${ORIGINAL}" ]]; then
+      SHOWN="$((SHOWN + 1))"
+      cat <<EEE
 
 ${GREEN}commit ${LINE}${RESET}
 ${GRAY}--------------------------------------------------${RESET}
-$(transform "$(git log -1 --format=%B "${LINE}")")
+${CHANGED}
 ${GRAY}--------------------------------------------------${RESET}
 EEE
-  done <<< "$(head -n "${PREVIEW_COUNT}" "${TMP}/targets.txt")"
+    fi
+    if [[ "${SHOWN}" -ge "${PREVIEW_COUNT}" ]]; then
+      break
+    fi
+  done < "${TMP}/targets.txt"
+
+  if [[ "${SHOWN}" -eq 0 ]]; then
+    echo "${YELLOW}no commit in range would change (all contain the string already or match --nmatch)${RESET}"
+  fi
 
   cat <<EEE
 
 branch:           ${BRANCH}
-range:            ${FROM} .. ${TO} (inclusive)
-commits to change: ${TARGETS_COUNT} (minus those already containing the string or matching --nmatch)
+range:            ${RANGE}
+commits in range: ${TARGETS_COUNT} (those already containing the string or matching --nmatch are skipped)
 nmatch:           >${NMATCH}<
 tags to move:     ${#TAG_REFS[@]} ${GRAY}${TAG_REFS[*]#refs/tags/}${RESET}
 
