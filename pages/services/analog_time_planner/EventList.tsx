@@ -449,31 +449,35 @@ export default function EventList({
 
           if (isEditing) {
             return (
-              <div key={i} className="atp-inline-edit" data-testid={`atp-event-edit-${i}`}>
-                <div className="atp-inline-edit-row">
+              /* form styled by /css/gcp-css.css: control first, label directly after it, placeholder not empty */
+              <div key={i} className="atp-inline-edit gcp-css" data-testid={`atp-event-edit-${i}`}>
+                <div className="input-wrapper">
                   <input
                     data-testid={`atp-edit-label-${i}`}
-                    className="atp-inline-input"
+                    id={`atp-edit-label-${i}`}
                     type="text"
-                    placeholder="Label"
+                    placeholder=" "
                     value={editState.label}
                     onChange={(e) => handleLabelInput(e.target.value)}
                     onInput={(e) => handleLabelInput((e.target as HTMLInputElement).value)}
                     autoFocus
                   />
+                  <label htmlFor={`atp-edit-label-${i}`}>Label</label>
                 </div>
                 <div className="atp-inline-edit-row">
-                  <input
-                    data-testid={`atp-edit-time-${i}`}
-                    className="atp-inline-input-sm"
-                    type="number"
-                    min={1}
-                    placeholder="min"
-                    value={editState.time}
-                    onChange={(e) => handleTimeInput(e.target.value)}
-                    onInput={(e) => handleTimeInput((e.target as HTMLInputElement).value)}
-                  />
-                  <span style={{ fontSize: 12, color: "#6b7280" }}>minutes</span>
+                  <div className="input-wrapper">
+                    <input
+                      data-testid={`atp-edit-time-${i}`}
+                      id={`atp-edit-time-${i}`}
+                      type="number"
+                      min={1}
+                      placeholder=" "
+                      value={editState.time}
+                      onChange={(e) => handleTimeInput(e.target.value)}
+                      onInput={(e) => handleTimeInput((e.target as HTMLInputElement).value)}
+                    />
+                    <label htmlFor={`atp-edit-time-${i}`}>Minutes</label>
+                  </div>
                   <input
                     data-testid={`atp-edit-color-${i}`}
                     className="atp-color-input"
@@ -486,7 +490,7 @@ export default function EventList({
                 <div className="atp-inline-edit-actions">
                   <button
                     data-testid={`atp-edit-cancel-${i}`}
-                    className="atp-btn atp-btn-cancel"
+                    className="secondary"
                     type="button"
                     onClick={handleEditCancel}
                   >
@@ -494,7 +498,6 @@ export default function EventList({
                   </button>
                   <button
                     data-testid={`atp-edit-save-${i}`}
-                    className="atp-btn atp-btn-save"
                     type="button"
                     onClick={handleEditSave}
                   >
@@ -571,9 +574,11 @@ export default function EventList({
       </div>
 
       {/* ── Add Event button ── */}
-      <button data-testid="atp-add-event-btn" className="atp-add-btn" type="button" onClick={handleAddEvent}>
-        <span>＋</span> Add event
-      </button>
+      <div className="atp-add-wrap gcp-css">
+        <button data-testid="atp-add-event-btn" className="secondary" type="button" onClick={handleAddEvent}>
+          ＋ Add event
+        </button>
+      </div>
     </>
   );
 }

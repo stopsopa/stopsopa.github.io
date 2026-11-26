@@ -109,36 +109,15 @@ body,
 }
 
 /* ── Animate toggle checkbox ── */
+/* look of the checkbox and its label comes from /css/gcp-css.css (checkbox-wrapper), here only position */
 .atp-animate-toggle {
+  --gcp-css-field-gap: 0;
+  --gcp-css-font-size: 14px;
+
   position: absolute;
   right: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
   user-select: none;
-  font-size: 13px;
-  color: #4b5563;
   padding: 4px 8px;
-  border-radius: 6px;
-  transition: background 0.15s;
-
-  &:hover {
-    background: #f3f4f6;
-    color: #111827;
-  }
-}
-
-.atp-animate-checkbox {
-  cursor: pointer;
-  accent-color: #2563eb;
-  width: 15px;
-  height: 15px;
-  margin: 0;
-}
-
-.atp-animate-label {
-  font-weight: 500;
 }
 
 .atp-tab-btn {
@@ -508,11 +487,18 @@ body,
 }
 
 /* ── Inline edit form ── */
+/*
+  Fields and buttons inside are styled by /css/gcp-css.css (class gcp-css on .atp-inline-edit) - here only layout.
+  Background has to stay white: gcp-css floating label covers the border with --gcp-css-bg (default #fff).
+*/
 .atp-inline-edit {
+  /* space between fields is done with gap below, not with margin of the wrappers */
+  --gcp-css-field-gap: 0;
+
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 8px;
+  gap: 14px;
+  padding: 14px 10px 10px;
   background: #ffffff;
   border: 1px solid #2563eb;
   border-radius: 6px;
@@ -521,40 +507,17 @@ body,
 .atp-inline-edit-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
+  gap: 10px;
 
-.atp-inline-input {
-  flex: 1 1 auto;
-  padding: 4px 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 13px;
-  outline: none;
-
-  &:focus {
-    border-color: #2563eb;
+  .input-wrapper {
+    flex: 0 1 130px;
   }
 }
 
-.atp-inline-input-sm {
-  width: 60px;
-  flex: 0 0 60px;
-  padding: 4px 6px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 13px;
-  font-family: monospace;
-  outline: none;
-
-  &:focus {
-    border-color: #2563eb;
-  }
-}
-
+/* native colour picker - not a gcp-css component */
 .atp-color-input {
-  width: 32px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   padding: 0;
   border: 1px solid #d1d5db;
   border-radius: 4px;
@@ -569,53 +532,9 @@ body,
   gap: 6px;
 }
 
-.atp-btn {
-  padding: 4px 12px;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  outline: none;
-}
-
-.atp-btn-save {
-  background: #2563eb;
-  color: #ffffff;
-
-  &:hover {
-    background: #1d4ed8;
-  }
-}
-
-.atp-btn-cancel {
-  background: #f3f4f6;
-  border-color: #d1d5db;
-  color: #374151;
-
-  &:hover {
-    background: #e5e7eb;
-  }
-}
-
-/* ── Add Event button ── */
-.atp-add-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border: 1px dashed #d1d5db;
-  border-radius: 6px;
-  background: none;
-  font-size: 13px;
-  color: #6b7280;
-  cursor: pointer;
+/* ── Add Event button (gcp-css secondary button) ── */
+.atp-add-wrap {
   margin-top: 4px;
-
-  &:hover {
-    border-color: #2563eb;
-    color: #2563eb;
-    background: #eff6ff;
-  }
 }
 
 /* ── Clock SVG container ── */

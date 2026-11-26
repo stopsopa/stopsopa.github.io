@@ -4,6 +4,7 @@
    Imported in:
      pages/services/custom_state/index.html   <link rel="stylesheet" href="/css/gcp-css.css" />
      pages/portsregistry/portsregistry.html   <link rel="stylesheet" href="/css/gcp-css.css" />
+     pages/services/analog_time_planner/index.html   <link rel="stylesheet" href="/css/gcp-css.css" />
 
    How to use it in this project:
      - static file, served as it is from /css/gcp-css.css. Link it with <link> in the html of

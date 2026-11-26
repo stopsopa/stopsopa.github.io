@@ -32,7 +32,14 @@ If you determine that that index.html will be placed in pages/[my_new_section]/i
 
 If you've determined that I'm asking about service then link it into "services" section in the file index.html which sits in the main directory of this project.
 
-When linking something to Services section of index.html which sits in the main directory of this project you can add emoji matching the service purpose at the beginning of the link.
+When linking something to Services section of index.html which sits in the main directory of this project always add emoji icon matching the service purpose on the left side of the link (only in Services section, other sections have no icons).
+Every link there has one. Add it as `data-icon` attribute of the `<li>`, not as text:
+
+```html
+<li data-icon="🔌"><a href="pages/portsregistry/portsregistry.html">Ports Registry</a></li>
+```
+
+It is rendered by css `li[data-icon]::before` defined in `<style>` of that index.html. Reason: the list has `data-do-sort` which sorts by text of `<li>` - emoji typed as text would break alphabetical order.
 
 # When taking template content
 

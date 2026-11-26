@@ -182,16 +182,17 @@ function App() {
               </button>
             </div>
 
-            <label className="atp-animate-toggle" title="Toggle clock animation">
+            {/* gcp-css checkbox: flat structure, label directly after input */}
+            <div className="atp-animate-toggle gcp-css checkbox-wrapper" title="Toggle clock animation">
               <input
                 data-testid="atp-animate-checkbox"
+                id="atp-animate-checkbox"
                 type="checkbox"
                 checked={animate}
                 onChange={(e) => setParam("animate", e.target.checked)}
-                className="atp-animate-checkbox"
               />
-              <span className="atp-animate-label">Animate</span>
-            </label>
+              <label htmlFor="atp-animate-checkbox">Animate</label>
+            </div>
           </div>
 
           <div className="atp-tab-content">

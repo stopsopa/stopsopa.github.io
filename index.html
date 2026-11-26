@@ -15,6 +15,15 @@
       #enc {
         color: #404040;
       }
+      /*
+        Emoji icon on the left of the links in "Services" section: <li data-icon="🔌"><a ...>
+        Rendered from attribute (not as text in li) on purpose: data-do-sort sorts by innerText,
+        text emoji would break alphabetical order of the list. ::before is not part of innerText.
+      */
+      li[data-icon]::before {
+        content: attr(data-icon);
+        margin-right: 8px;
+      }
     </style>
   </head>
   <body class="layout bg">
@@ -121,53 +130,54 @@
           </ul>
           <h2>Services</h2>
           <ul data-do-sort>
-            <li><a href="/start.html">start</a></li>
-            <li><a href="/learn.html">learn</a></li>
-            <li>
+            <li data-icon="🚀"><a href="/start.html">start</a></li>
+            <li data-icon="🎓"><a href="/learn.html">learn</a></li>
+            <li data-icon="🖼️">
               <a href="/i.html">imgur handler</a>
             </li>
-            <li><a href="pages/portsregistry/portsregistry.html">Ports Registry</a></li>
-            <li><a href="pages/pastetool/pastetool.html">Paste tool</a></li>
-            <li><a href="pages/todo/todo.html">Todo</a></li>
-            <li><a href="/xor.html">XOR</a></li>
-            <li><a href="pages/utils/sortlines.html">Sort lines</a></li>
-            <li><a href="/viewer.html?file=/pages/viewer/viewer.entry.js">Viewer</a></li>
-            <li><a href="pages/utils/diff.html">Diff diff2html</a></li>
-            <li><a href="pages/utils/diff.text.html">Diff text</a></li>
-            <li><a href="pages/utils/diff.clipboard.html">Diff clipboard</a></li>
-            <li><a href="pages/humanjson/index.html">Human JSON</a></li>
-            <li><a href="pages/firebase-example/index.html">firebase-example</a></li>
-            <li><a href="pages/macro/index.html">Other editors</a></li>
-            <li><a href="pages/macro/003next/index.html">Editor</a></li>
-            <li><a href="pages/services/ascii/index.html">ASCII Editor</a></li>
-            <li><a href="/short.html">Short url</a></li>
-            <li><a href="/pages/services/browser_automation.html">Browser automation landing page</a></li>
-            <li><a href="pages/services/encryptor/index.rendered.html">Encryptor</a></li>
-            <li><a href="https://stopsopa.github.io/encrypt/encryptor/">Encryptor - Improved</a></li>
-            <li><a href="pages/services/markdown/index.html">Markdown Editor</a></li>
-            <li><a href="/pages/hardtoclassify/index.html">Hard to clasify</a></li>
-            <li>
+            <li data-icon="🔌"><a href="pages/portsregistry/portsregistry.html">Ports Registry</a></li>
+            <li data-icon="📋"><a href="pages/pastetool/pastetool.html">Paste tool</a></li>
+            <li data-icon="✅"><a href="pages/todo/todo.html">Todo</a></li>
+            <li data-icon="🔀"><a href="/xor.html">XOR</a></li>
+            <li data-icon="🔤"><a href="pages/utils/sortlines.html">Sort lines</a></li>
+            <li data-icon="👁️"><a href="/viewer.html?file=/pages/viewer/viewer.entry.js">Viewer</a></li>
+            <li data-icon="🆚"><a href="pages/utils/diff.html">Diff diff2html</a></li>
+            <li data-icon="📝"><a href="pages/utils/diff.text.html">Diff text</a></li>
+            <li data-icon="📎"><a href="pages/utils/diff.clipboard.html">Diff clipboard</a></li>
+            <li data-icon="🧾"><a href="pages/humanjson/index.html">Human JSON</a></li>
+            <li data-icon="🔥"><a href="pages/firebase-example/index.html">firebase-example</a></li>
+            <li data-icon="🗂️"><a href="pages/macro/index.html">Other editors</a></li>
+            <li data-icon="✏️"><a href="pages/macro/003next/index.html">Editor</a></li>
+            <li data-icon="🔡"><a href="pages/services/ascii/index.html">ASCII Editor</a></li>
+            <li data-icon="🔗"><a href="/short.html">Short url</a></li>
+            <li data-icon="🤖">
+              <a href="/pages/services/browser_automation.html">Browser automation landing page</a>
+            </li>
+            <li data-icon="🔐"><a href="pages/services/encryptor/index.rendered.html">Encryptor</a></li>
+            <li data-icon="🔏"><a href="https://stopsopa.github.io/encrypt/encryptor/">Encryptor - Improved</a></li>
+            <li data-icon="📄"><a href="pages/services/markdown/index.html">Markdown Editor</a></li>
+            <li data-icon="🤷"><a href="/pages/hardtoclassify/index.html">Hard to clasify</a></li>
+            <li data-icon="🏞️">
               <a href="https://gphotos-research.onrender.com/index.html">Gallery</a> ------
               <a href="http://192.168.40.80:8080">local</a> ------ <a href="https://dashboard.render.com/">Manage</a>
             </li>
-            <li><a href="pages/services/generator/index.html">Name Generator</a></li>
-            <li><a href="pages/services/map_points/index.html">Map Points</a></li>
-            <li>
-              🍎 ➡️ 🗺️ 📍
+            <li data-icon="🎲"><a href="pages/services/generator/index.html">Name Generator</a></li>
+            <li data-icon="📍"><a href="pages/services/map_points/index.html">Map Points</a></li>
+            <li data-icon="🍎 ➡️ 🗺️ 📍">
               <a href="pages/services/maps_apple_to_google/matg.html">Apple Maps to Google Maps link converter</a>
             </li>
-            <li>
+            <li data-icon="💾">
               <a href="pages/services/google_drive_application_data_explorer/index.html"
                 >Google Drive AppData Explorer</a
               >
             </li>
-            <li>
+            <li data-icon="📡">
               <a href="pages/services/tabs_broadcast_event_subscriber/copy.html">Tabs broadcast event subscriber</a>
             </li>
-            <li><a href="pages/services/analog_time_planner/index.html">Analog Time Planner</a></li>
-            <li><a href="pages/services/antigravity/index.html">Antigravity AI Tracker</a></li>
-            <li><a href="pages/services/custom_state/index.html">useCustomState demo</a></li>
-            <li><a href="pages/services/index.html">Services</a></li>
+            <li data-icon="🕒"><a href="pages/services/analog_time_planner/index.html">Analog Time Planner</a></li>
+            <li data-icon="🛸"><a href="pages/services/antigravity/index.html">Antigravity AI Tracker</a></li>
+            <li data-icon="🧪"><a href="pages/services/custom_state/index.html">useCustomState demo</a></li>
+            <li data-icon="🧰"><a href="pages/services/index.html">Services</a></li>
           </ul>
           <h2>Other</h2>
           <ul data-do-sort>
