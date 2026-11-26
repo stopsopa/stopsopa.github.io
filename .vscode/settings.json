@@ -39,5 +39,6 @@
     "pages/bash/xx/*.bundled.gitignored.*": true
   },
   "editor.rulers": [120],
-  "prettier.printWidth": 120
+  "prettier.printWidth": 120,
+  "js/ts.tsdk.path": "node_modules/typescript"
 }
