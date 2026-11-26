@@ -4,22 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Apple Maps to Google Maps link converter</title>
+    <link rel="stylesheet" href="/css/gcp-css.css" />
     <style>
-      /* Discord look, light theme */
+      /*
+        Form controls, buttons, links, h2 and p are styled by /css/gcp-css.css (class gcp-css, see gcp-css skill).
+        Here only layout, cards, status box and table. gcp-css doesn't set a font - it inherits the one from body.
+      */
       :root {
+        /* has to stay white: gcp-css floating label covers the border with --gcp-css-bg (default #fff) */
         --bg-primary: #ffffff;
-        --bg-secondary: #f2f3f5;
-        --bg-tertiary: #e3e5e8;
-        --bg-input: #ebedef;
-        --text: #313338;
-        --text-muted: #5c5e66;
-        --header: #060607;
-        --blurple: #5865f2;
-        --blurple-hover: #4752c4;
-        --link: #006ce7;
-        --green: #248046;
-        --red: #da373c;
-        --yellow: #f0b232;
+        --bg-secondary: #f8f9fa;
+        --bg-tertiary: #e8eaed;
+        --text: #3c4043;
+        --text-muted: #5f6368;
+        --header: #202124;
+        --green: #137333;
+        --red: #d93025;
+        --yellow: #f9ab00;
         --radius: 8px;
       }
 
@@ -36,7 +37,7 @@
         height: 100%;
         background: var(--bg-tertiary);
         color: var(--text);
-        font-family: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-family: Roboto, Arial, sans-serif;
         font-size: 15px;
         line-height: 1.375;
       }
@@ -73,13 +74,7 @@
 
         a {
           margin-left: auto;
-          color: var(--link);
           font-size: 14px;
-          text-decoration: none;
-
-          &:hover {
-            text-decoration: underline;
-          }
         }
       }
 
@@ -123,123 +118,64 @@
         }
       }
 
-      label,
-      h3 {
-        display: block;
-        margin: 0 0 8px;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.02em;
-        color: var(--text-muted);
-      }
-
-      /* every section is a card, like discord embed / settings block */
+      /* every section is a white card */
       section {
         margin-bottom: 16px;
         padding: 16px;
         background: var(--bg-primary);
+        border: 1px solid #dadce0;
         border-radius: var(--radius);
       }
 
+      /*
+        One line: field + buttons. Aligned to the top (helper text under the field must not move the buttons),
+        so field and buttons get the same height to sit on one line.
+      */
       .row {
+        --row-height: 36px;
+        --gcp-css-field-gap: 0;
+
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 8px;
-      }
 
-      #matg-input {
-        flex: 1;
-        min-width: 0;
-        height: 40px;
-        padding: 0 12px;
-        font: inherit;
-        color: var(--text);
-        background: var(--bg-input);
-        border: 1px solid transparent;
-        border-radius: var(--radius);
-        outline: none;
+        .input-wrapper {
+          flex: 1;
+          min-width: 0;
 
-        &::placeholder {
-          color: var(--text-muted);
-        }
-
-        &:focus {
-          border-color: var(--blurple);
-        }
-      }
-
-      button {
-        flex-shrink: 0;
-        height: 40px;
-        padding: 0 16px;
-        font: inherit;
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text);
-        background: var(--bg-tertiary);
-        border: 0;
-        border-radius: var(--radius);
-        cursor: pointer;
-        transition: background 0.17s ease;
-
-        &:hover {
-          background: #d4d7dc;
-        }
-
-        &.primary {
-          color: #fff;
-          background: var(--blurple);
-
-          &:hover {
-            background: var(--blurple-hover);
+          input {
+            height: var(--row-height);
           }
         }
 
-        &.copied,
-        &.copied:hover {
-          color: #fff;
-          background: var(--green);
+        button {
+          flex-shrink: 0;
+          box-sizing: border-box;
+          height: var(--row-height);
         }
+      }
 
-        &.link {
-          height: auto;
-          padding: 0;
-          background: none;
-          border-radius: 0;
-          color: var(--link);
-          font-weight: 400;
-          text-align: left;
-          text-transform: none;
-          letter-spacing: 0;
-          word-break: break-all;
-
-          &:hover {
-            background: none;
-            text-decoration: underline;
-          }
-        }
+      /* "copy" button right after successful copy: gcp-css primary button in green */
+      button.copied {
+        --gcp-css-primary: var(--green);
+        --gcp-css-primary-hover: var(--green);
       }
 
       #matg-result {
         margin-top: 12px;
+        align-items: center;
 
         a {
           min-width: 0;
-          color: var(--link);
-          text-decoration: none;
           word-break: break-all;
-
-          &:hover {
-            text-decoration: underline;
-          }
         }
       }
 
-      /* discord embed: tinted block with coloured left bar */
+      /* tinted block with coloured left bar */
       #matg-status {
         margin-top: 12px;
         padding: 10px 12px;
+        font-size: 14px;
         background: var(--bg-secondary);
         border-left: 4px solid var(--text-muted);
         border-radius: 4px;
@@ -254,10 +190,6 @@
 
         &.error {
           border-left-color: var(--red);
-        }
-
-        a {
-          color: var(--link);
         }
 
         ol {
@@ -315,35 +247,27 @@
         list-style: none;
 
         li {
-          padding: 4px 0;
+          padding: 2px 0;
           font-size: 14px;
+        }
+
+        /* examples: gcp-css secondary buttons with long urls inside - let them wrap */
+        button {
+          height: auto;
+          padding-top: 6px;
+          padding-bottom: 6px;
+          line-height: 1.4;
+          text-align: left;
+          word-break: break-all;
+          white-space: normal;
         }
       }
 
+      /* checkbox "copy automatically" (gcp-css checkbox-wrapper) */
       .options {
+        --gcp-css-field-gap: 0;
+
         margin-top: 12px;
-        flex-wrap: wrap;
-        gap: 16px;
-
-        label {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          margin: 0;
-          font-size: 14px;
-          font-weight: 400;
-          text-transform: none;
-          letter-spacing: 0;
-          color: var(--text);
-          cursor: pointer;
-        }
-
-        input {
-          width: 18px;
-          height: 18px;
-          margin: 0;
-          accent-color: var(--blurple);
-        }
       }
 
       #matg-apikey {
@@ -360,10 +284,6 @@
 
         li {
           padding: 2px 0;
-        }
-
-        a {
-          color: var(--link);
         }
       }
 
@@ -397,46 +317,54 @@
       <div id="matg-header">
         <span class="hash">#</span>
         <span class="title">apple-maps-to-google-maps</span>
-        <a href="/index.html">home</a>
+        <a class="gcp-css" href="/index.html" data-testid="home">home</a>
       </div>
 
       <div id="matg-main">
-        <div id="matg-left" data-testid="left">
+        <div id="matg-left" class="gcp-css" data-testid="left">
           <section>
-            <label for="matg-input">Apple Maps link</label>
+            <!-- gcp-css: control first, label directly after it, placeholder must not be empty -->
             <div class="row">
-              <input
-                id="matg-input"
-                data-testid="input"
-                type="text"
-                placeholder="Paste https://maps.apple.com/... link (or any text containing it)"
-                autocomplete="off"
-                spellcheck="false"
-                autofocus
-              />
-              <button id="matg-paste" data-testid="paste" title="Read link from clipboard">paste</button>
-              <button id="matg-clear" data-testid="clear" title="Clear (Esc)">clear</button>
+              <div class="input-wrapper">
+                <input
+                  id="matg-input"
+                  data-testid="input"
+                  type="text"
+                  placeholder="https://maps.apple.com/..."
+                  autocomplete="off"
+                  spellcheck="false"
+                  aria-describedby="matg-input-helper"
+                  autofocus
+                />
+                <label for="matg-input">Apple Maps link</label>
+                <div class="helper-text" id="matg-input-helper">
+                  paste the link or any text containing it (works anywhere on the page)
+                </div>
+              </div>
+              <button type="button" id="matg-paste" class="secondary" data-testid="paste" title="Read link from clipboard">
+                paste
+              </button>
+              <button type="button" id="matg-clear" class="secondary" data-testid="clear" title="Clear (Esc)">
+                clear
+              </button>
             </div>
 
             <div id="matg-result" class="row" data-testid="result" hidden>
-              <button id="matg-copy" class="primary" data-testid="copy" title="Copy Google Maps link (Enter)">
-                copy
-              </button>
+              <button type="button" id="matg-copy" data-testid="copy" title="Copy Google Maps link (Enter)">copy</button>
               <a id="matg-link" data-testid="link" target="_blank" rel="noopener noreferrer"></a>
             </div>
 
+            <!-- outside of any gcp-css wrapper on purpose: js sets class "error" on it, which gcp-css uses inside wrappers -->
             <div id="matg-status" data-testid="status" hidden></div>
 
-            <div class="row options">
-              <label>
-                <input id="matg-autocopy" data-testid="autocopy" type="checkbox" />
-                copy automatically after paste
-              </label>
+            <div class="checkbox-wrapper options">
+              <input id="matg-autocopy" data-testid="autocopy" type="checkbox" />
+              <label for="matg-autocopy">copy automatically after paste</label>
             </div>
           </section>
 
           <section id="matg-breakdown" data-testid="breakdown" hidden>
-            <h3>What happened to the link parameters</h3>
+            <h2>What happened to the link parameters</h2>
             <table>
               <thead>
                 <tr>
@@ -450,12 +378,12 @@
           </section>
 
           <section>
-            <h3>Examples (click to try)</h3>
+            <h2>Examples (click to try)</h2>
             <ul id="matg-examples" class="list" data-testid="examples"></ul>
           </section>
 
           <section id="matg-apikey" data-testid="apikey">
-            <h3>Google Maps API key (optional)</h3>
+            <h2>Google Maps API key (optional)</h2>
             <p>
               The map on the right works without any key. Official way of embedding Google map needs free "Maps Embed
               API" key though. It is not a secret - it is visible in the url of the map iframe - it is protected by
@@ -726,7 +654,9 @@
           const li = document.createElement("li");
           const button = document.createElement("button");
 
-          button.className = "link";
+          // gcp-css secondary (text only) button
+          button.type = "button";
+          button.className = "secondary";
           button.textContent = item;
           button.addEventListener("click", () => setInput(item));
           li.append(button);

@@ -1,7 +1,37 @@
 # gitignore for es.sh
-*
-!es.ts
-!pages/node/semaphore/Semaphore.ts
-!pages/bash/xx/xx.node.cjs
-!pages/bash/xx/xx.lock.gits-update-config.node.cjs
-!pages/services/xor.ts
+#
+# WARNING: gitignore can't re-include a file whose parent directory is excluded.
+# So single "*" followed by "!some/deep/file.ts" doesn't work: only files from the root directory are found
+# (that is how pages/services/xor.js stopped being bundled and /xor.html broke).
+# Each directory level has to be un-ignored separately, and its other content ignored again:
+#
+#   !/pages/              <- let the directory in
+#   /pages/*              <- but ignore everything in it
+#   !/pages/services/     <- let the next level in
+#   /pages/services/*     <- ...
+#   !/pages/services/xor.ts
+#
+# To check what es.sh will process:
+#   echo "./pages/services/xor.ts" | node gitignore.js es.ignore
+/*
+!/es.ts
+
+!/pages/
+/pages/*
+
+!/pages/node/
+/pages/node/*
+!/pages/node/semaphore/
+/pages/node/semaphore/*
+!/pages/node/semaphore/Semaphore.ts
+
+!/pages/bash/
+/pages/bash/*
+!/pages/bash/xx/
+/pages/bash/xx/*
+!/pages/bash/xx/xx.node.cjs
+!/pages/bash/xx/xx.lock.gits-update-config.node.cjs
+
+!/pages/services/
+/pages/services/*
+!/pages/services/xor.ts

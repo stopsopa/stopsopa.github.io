@@ -157,6 +157,38 @@
       "
     ></pre>
 
+    <!-- explanation why this page exists - see alert-webcomponent skill (https://stopsopa.github.io/alert-webcomponent/) -->
+    <alert-box type="note" alert="What is this page for" data-testid="alert-purpose">
+      Markdown editor which keeps the whole text in the link (<code>?d=...</code>): the text is XOR-ed with a key and
+      then compressed with lz-string. Share or bookmark the link and the text travels with it - nothing is stored on any
+      server.
+      <br />
+      <br />
+      What the XOR step gives on top of plain lz-string compression:
+      <ul>
+        <li>
+          <strong>Hidden from anything that reads urls</strong> - plain lz-string can be decoded by anyone who recognises
+          the format, there is no key in it. XOR-ed text can be read only with the key, so it is not readable for link
+          preview bots of chats, proxy and server logs, browser history sync, keyword filters.
+        </li>
+        <li>
+          <strong>No casual reading</strong> - somebody looking at the url, or pasting <code>d=</code> value into online
+          lz-string decoder, gets garbage.
+        </li>
+        <li>
+          <strong>The link opens only here</strong> - it can be read only through this page, so the content is tied to
+          this site, not to any lz-string tool.
+        </li>
+        <li>
+          <strong>All old links can be invalidated at once</strong> - changing the key (<code>PASSWORD</code> in
+          <code>pages/services/xor.ts</code>) makes every link sent in the past unreadable.
+        </li>
+      </ul>
+      It is obfuscation, not encryption: the key is public in the source of this site, so anyone who really cares can
+      decode a link. Don't put real secrets here.
+    </alert-box>
+    <script src="https://stopsopa.github.io/alert-webcomponent/alert-box.js"></script>
+
     <script type="module">
       import { encode, decode } from "/pages/services/xor.js";
 
