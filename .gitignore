@@ -49,12 +49,15 @@ bash/env_repack.js
 bash/env_repack.unit.parallel.test.js
 bash/exportsource.js
 bash/file/fuzzy.js
+bash/file/fuzzyMultiple.js
+bash/file/progressivePaths.js
 bash/fs/sync_via_ssh/filter-gitignored.js
 bash/fs/sync_via_ssh/sync.js
 bash/fs/sync_via_ssh/transform.js
 bash/fs/touchWatch.js
 bash/fs/watch.js
 bash/git/addToGitignore.js
+bash/git/submodules/xx.template.js
 bash/hardlink.js
 bash/node/is-port-free.js
 bash/node/json/sortObjectNested.js

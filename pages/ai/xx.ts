@@ -99,10 +99,10 @@ export default (setup: Commands, ctx: Ctx): Commands => {
   const dir = ctx.configPath.replace(/\/[^/]*$/, "");
 
   return {
-    [`report`]: {
+    [`skills`]: {
       command: `
 set -e
-/bin/bash "${dir}/xx/report.sh" "\${@}"
+/bin/bash "${dir}/xx/skills.sh" "\${@}"
 `,
       description: `table of skills (global and local) + validation of AGENTS.md / CLAUDE.md in home and in current directory`,
     },
@@ -112,34 +112,6 @@ set -e
 /bin/bash "${dir}/xx/linkrepo.sh" "\${@}"
 `,
       description: `pick directories from WORKSPACE_DIR and link them in ./__linked. Arguments: restore [path/to/__linked.json] | --help`,
-    },
-    help: {
-      command: `
-set -e
-
-cat <<EEE
-
-  🐙 GitHub: $(git -C "${dir}" ls-remote --get-url origin | awk '{\$1=\$1};1' | tr -d '\\n' | sed -E 's/git@github\\.com:([^/]+)\\/(.+)\\.git/https:\\/\\/github.com\\/\\1\\/\\2/g')
-
-  ai - AI related tools, available from any directory
-
-    config : ${ctx.configPath}
-    scripts: ${dir}/xx/
-
-    ai report             skills + instruction files of current directory
-    ai linkrepo           link repositories from WORKSPACE_DIR in ./__linked
-    ai linkrepo restore   link again what is listed in ./__linked.json
-    ai linkrepo --help    all details
-
-  env vars:
-    WORKSPACE_DIR=>\${WORKSPACE_DIR}<
-    WORKSPACE_DIR_LIST=>\${WORKSPACE_DIR_LIST}<
-
-  docs: https://stopsopa.github.io/pages/ai/index.html
-
-EEE
-`,
-      description: `what is available under alias "ai" and current values of env vars`,
     },
     ...setup,
   };
