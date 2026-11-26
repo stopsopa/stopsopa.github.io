@@ -27,8 +27,13 @@
 #      shortened path abc/cde -> directory ./__linked/abc is created and link cde in it.
 #      Target of the link is relative path from directory of the link to the selected directory.
 #      Already existing links/files are skipped
-#   5. print the selection as json array (ready to paste: cat <<'EEE' > __linked.json ...)
-#      and (interactive mode only) ask if to save it to ./__linked.json
+#   5. ./__linked.json is saved with the selection (json array)
+#
+#      In picker mode there is exactly ONE question [y/N], right after the picker and before any change.
+#      It covers all: removing links (3a), creating links (4), saving __linked.json (5).
+#      Before the question the plan is printed: links to remove and new content of __linked.json
+#      (ready to paste: cat <<'EEE' > __linked.json ...). Rejected = exit 1, nothing changed.
+#      Modes without picker: no questions, nothing removed, __linked.json only printed, not written
 #
 # Usage:
 #   cd /any/project/directory
@@ -126,12 +131,13 @@ ${BOLD}ai linkrepo${RESET} - link directories from WORKSPACE_DIR in ./__linked (
                         Enter confirm, Esc cancel
                         elements of ./__linked.json and existing links are ticked already
 
-                unticking: link of unticked element is removed (you are asked to confirm first)
+                unticking: link of unticked element is removed
                            everything unticked = ./__linked and ./__linked.json are removed too
                            just pressing Enter changes nothing: existing links stay ticked
 
-                at the end the selection is printed as json array (content of __linked.json)
-                and you are asked if to save it to ./__linked.json (snapshot of what was linked)
+                after the picker the plan is printed (links to remove, new content of __linked.json)
+                and ONE question [y/N] is asked for all: remove links, create links,
+                save ./__linked.json (snapshot of what is linked). Rejected = nothing changed
 
   ${GREEN}ai linkrepo restore${RESET}
                 no picker: link again everything listed in ./__linked.json
@@ -403,6 +409,21 @@ if [[ -z "${SELECTED}" && "${MODE}" != "interactive" ]]; then
   exit 1
 fi
 
+# snapshot of the selection: json array of shortened paths, can be used later with: ai linkrepo restore
+JSON="$(printf '%s\n' "${SELECTED}" | node -e '
+const lines = require("fs").readFileSync(0, "utf8").split("\n").filter((l) => l.length > 0);
+
+// comment at the top of the file: how to use it, linked_json_to_lines() strips it when reading
+const header = [
+  "// call it:",
+  "// ai linkrepo restore __linked.json",
+  "// to restore",
+  "// see more: https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fai%2Fxx%2Flinkrepo.sh",
+].join("\n");
+
+process.stdout.write(header + "\n" + JSON.stringify(lines, null, 2));
+')"
+
 # interactive mode only: links of elements unticked in the picker are removed (after confirmation).
 # Only symlinks of directories from the list are touched, anything else in __linked stays.
 if [[ "${MODE}" == "interactive" ]]; then
@@ -418,6 +439,16 @@ if [[ "${MODE}" == "interactive" ]]; then
     fi
   done <<< "${EXISTING}"
 
+  # nothing ticked and nothing to clean up: no question needed
+  if [[ -z "${SELECTED}" && -z "${TO_REMOVE}" && ! -f "${_PWD}/__linked.json" ]]; then
+
+    echo "nothing selected - nothing is linked"
+
+    exit 0
+  fi
+
+  # the plan is printed first (links to remove + new content of __linked.json), then ONE question for all of it.
+  # The json is printed before the question, so the file can be created by hand even after rejecting.
   if [[ -n "${TO_REMOVE}" ]]; then
 
     cat <<EEE
@@ -426,17 +457,42 @@ links to remove (unticked) from ${_PWD}/__linked:
 
 ${TO_REMOVE}${RESET}
 EEE
+  fi
 
-    printf '%s' "remove them? [y/N] "
+  if [[ -n "${SELECTED}" ]]; then
 
-    read -r ANSWER
+    # outer delimiter is not EEE on purpose: EEE is part of the printed text
+    cat <<OUTER
 
-    if [[ "${ANSWER}" != "y" && "${ANSWER}" != "Y" ]]; then
+cat <<'EEE' > __linked.json
+${JSON}
+EEE
 
-      echo "${0} error: rejected - nothing changed"
+OUTER
 
-      exit 1
+    QUESTION="link what is selected and save ${_PWD}/__linked.json as above?"
+
+    if [[ -n "${TO_REMOVE}" ]]; then
+
+      QUESTION="${RED}remove${RESET} links listed above, link what is selected and save ${_PWD}/__linked.json as above?"
     fi
+  else
+
+    QUESTION="nothing is ticked: ${RED}remove${RESET} links listed above, directory __linked and file __linked.json?"
+  fi
+
+  printf '%s' "${QUESTION} [y/N] "
+
+  read -r ANSWER
+
+  if [[ "${ANSWER}" != "y" && "${ANSWER}" != "Y" ]]; then
+
+    echo "${0} error: rejected - nothing changed"
+
+    exit 1
+  fi
+
+  if [[ -n "${TO_REMOVE}" ]]; then
 
     while IFS= read -r SHORT; do
 
@@ -608,60 +664,29 @@ while IFS= read -r SHORT; do
   fi
 done <<< "${SELECTED}"
 
-# snapshot of the selection: json array of shortened paths, can be used later with: ai linkrepo restore
-JSON="$(printf '%s\n' "${SELECTED}" | node -e '
-const lines = require("fs").readFileSync(0, "utf8").split("\n").filter((l) => l.length > 0);
+if [[ "${MODE}" == "interactive" ]]; then
 
-// comment at the top of the file: how to use it, linked_json_to_lines() strips it when reading
-const header = [
-  "// call it:",
-  "// ai linkrepo restore __linked.json",
-  "// to restore",
-  "// see more: https://stopsopa.github.io/viewer.html?file=%2Fpages%2Fai%2Fxx%2Flinkrepo.sh",
-].join("\n");
+  # no question here: the one question before any change (see above) covered also this file
+  if printf '%s\n' "${JSON}" > "${_PWD}/__linked.json"; then
 
-process.stdout.write(header + "\n" + JSON.stringify(lines, null, 2));
-')"
+    echo "${GREEN}saved:   ${_PWD}/__linked.json${RESET}"
+  else
 
-# printed always, so the file can be created by hand even if the question below is rejected
-# outer delimiter is not EEE on purpose: EEE is part of the printed text
-cat <<OUTER
+    echo "${RED}${0} error: can't write file >${_PWD}/__linked.json<${RESET}"
+
+    STATUS="1"
+  fi
+else
+
+  # restore / stdin: the snapshot exists already, just print it (nothing is written)
+  # outer delimiter is not EEE on purpose: EEE is part of the printed text
+  cat <<OUTER
 
 cat <<'EEE' > __linked.json
 ${JSON}
 EEE
 
 OUTER
-
-# only in interactive mode: in other modes the snapshot exists already (and stdin might be taken)
-if [[ "${MODE}" == "interactive" ]]; then
-
-  QUESTION="save the selection above to ${_PWD}/__linked.json ?"
-
-  if [[ -f "${_PWD}/__linked.json" ]]; then
-
-    QUESTION="${_PWD}/__linked.json exists, ${RED}overwrite${RESET} it with the selection above ?"
-  fi
-
-  printf '%s' "${QUESTION} [y/N] "
-
-  read -r ANSWER
-
-  if [[ "${ANSWER}" == "y" || "${ANSWER}" == "Y" ]]; then
-
-    if printf '%s\n' "${JSON}" > "${_PWD}/__linked.json"; then
-
-      echo "${GREEN}saved:   ${_PWD}/__linked.json${RESET}"
-    else
-
-      echo "${RED}${0} error: can't write file >${_PWD}/__linked.json<${RESET}"
-
-      STATUS="1"
-    fi
-  else
-
-    echo "not saved"
-  fi
 fi
 
 exit "${STATUS}"
