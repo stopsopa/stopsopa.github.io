@@ -8,58 +8,52 @@
     />
 
     <title>Ports Registry - Port Management & Configuration</title>
-    <style>
-      * {
-        font-family: Monaco, monospace;
-      }
-      .date {
-        color: #a0a0a0;
-        padding-right: 12px;
-        white-space: nowrap;
-      }
-      .port {
-        width: 62px;
-        display: inline-block;
-        white-space: nowrap;
-      }
-      .list * {
-        font-size: 11px;
-      }
-      textarea {
-        width: 95%;
-        min-height: 100px;
-      }
-      table {
-        width: 100%;
-      }
-      .red {
-        color: red;
-      }
-      .green {
-        color: green;
-      }
-    </style>
+    <link rel="stylesheet" href="/css/gcp-css.css" />
+    <link rel="stylesheet" href="/dist/portsregistry.entry.bundle.css" />
   </head>
   <body class="layout bg">
     <div class="body">
       <div class="inside">
-        <a href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml"
-          >Service Name and Transport Protocol Port Number Registry</a
-        >
-        <br />
-        <a href="https://kubernetes.io/docs/concepts/services-networking/service/#nodeport"
-          >kubernetes ports range [30000 - 32767]</a
-        >
-        <br />
-        <a href="https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PortMapping.html"
-          >Amazon ECS container agent ports [51678-51680]</a
-        >
-        <br />
-        <a href="https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PortMapping.html"
-          >Dynamic ports—Ports in the range [49152-65535]</a
-        >
-
-        <div id="app"></div>
+        <!-- tabs: css/js of vanilla-tabs are loaded and initialised by /js/github.js, here only markup -->
+        <div data-vanilla-tabs>
+          <div data-buttons>
+            <span class="active" data-testid="tab-ports">ports</span>
+            <span data-testid="tab-links">links</span>
+          </div>
+          <div data-tabs>
+            <div>
+              <div id="app"></div>
+            </div>
+            <div>
+              <div class="gcp-css pr-links">
+                <a
+                  href="https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml"
+                  target="_blank"
+                  data-testid="link-iana"
+                  >Service Name and Transport Protocol Port Number Registry</a
+                >
+                <a
+                  href="https://kubernetes.io/docs/concepts/services-networking/service/#nodeport"
+                  target="_blank"
+                  data-testid="link-kubernetes"
+                  >kubernetes ports range [30000 - 32767]</a
+                >
+                <a
+                  href="https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PortMapping.html"
+                  target="_blank"
+                  data-testid="link-ecs-agent"
+                  >Amazon ECS container agent ports [51678-51680]</a
+                >
+                <a
+                  href="https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PortMapping.html"
+                  target="_blank"
+                  data-testid="link-ecs-dynamic"
+                  >Dynamic ports—Ports in the range [49152-65535]</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -1,0 +1,198 @@
+/*
+  Layout of pages/portsregistry/portsregistry.html.
+  Form controls, buttons, links, h2, p are styled by /css/gcp-css.css (class gcp-css) - here only layout,
+  cards, list of ports and status chip. Classes with prefix "pr-".
+*/
+
+/* no font-family here on purpose: gcp-css inherits the font of the page (css/main.css) */
+
+/*
+  Only this page: .inside from css/main.css is display: flex - switched off here.
+  Selector is deliberately heavy: main.css is loaded later (by /js/github.js), so with equal specificity it would win.
+*/
+html body.layout.bg > .body > .inside {
+  display: block;
+  margin-top: 20px;
+}
+
+/* links in the second tab (in portsregistry.html) */
+.pr-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+}
+
+/* first tab: some air between tab border and the cards */
+#app {
+  padding: 16px 16px 0;
+}
+
+.pr-app {
+  /* white cards: gcp-css floating label needs --gcp-css-bg equal to background behind the field (default #fff) */
+  .pr-card {
+    background: #fff;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    padding: 16px;
+  }
+
+  /*
+    port field + status chip + "next" button in one line.
+    Aligned to the top (error message under the field must not move chip and button),
+    so all three get the same height to sit on one line.
+  */
+  .pr-port-row {
+    --pr-row-height: 36px;
+
+    align-items: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    .input-wrapper {
+      flex: 0 1 180px;
+
+      input {
+        height: var(--pr-row-height);
+      }
+    }
+
+    .pr-chip,
+    button {
+      align-items: center;
+      box-sizing: border-box;
+      display: inline-flex;
+      height: var(--pr-row-height);
+      margin: 0;
+    }
+  }
+
+  /* is the port in the field really free */
+  .pr-chip {
+    border-radius: 18px;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0 14px;
+    white-space: nowrap;
+
+    &.pr-chip-free {
+      background: #e6f4ea;
+      color: #137333;
+    }
+
+    &.pr-chip-taken,
+    &.pr-chip-invalid {
+      background: #fce8e6;
+      color: #c5221f;
+    }
+
+    &.pr-chip-empty {
+      background: #f1f3f4;
+      color: #5f6368;
+    }
+  }
+
+  .pr-list-head {
+    align-items: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+
+    h2 {
+      margin-top: 12px;
+    }
+
+    .input-wrapper {
+      flex: 0 1 320px;
+    }
+  }
+
+  /* one record: [port + date] [comment] [actions] */
+  .pr-item {
+    align-items: start;
+    border-top: 1px solid #e8eaed;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 110px 1fr auto;
+    padding: 12px 0;
+
+    &:hover {
+      background: #f8f9fa;
+    }
+
+    /* record in edit mode: fields one under another */
+    &.pr-item-edit {
+      display: block;
+
+      &:hover {
+        background: none;
+      }
+    }
+  }
+
+  .pr-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  @media (max-width: 600px) {
+    .pr-item {
+      gap: 6px;
+      grid-template-columns: 1fr;
+    }
+
+    .pr-meta {
+      align-items: baseline;
+      flex-direction: row;
+      gap: 12px;
+    }
+  }
+}
+
+/* also used in the delete modal, which is rendered outside of .pr-app */
+.pr-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .pr-port {
+    color: #202124;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .pr-date {
+    color: #5f6368;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+}
+
+.pr-description {
+  color: #3c4043;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.pr-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pr-modal-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+
+  /* destructive action: gcp-css primary button in error colour */
+  .pr-danger {
+    --gcp-css-primary: #d93025;
+    --gcp-css-primary-hover: #b3261e;
+  }
+}
