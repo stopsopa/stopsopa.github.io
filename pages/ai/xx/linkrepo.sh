@@ -15,7 +15,14 @@
 #      the script prints paths, one per line: absolute or relative to WORKSPACE_DIR
 #   3. paths are shortened (bash/file/progressivePaths.ts) and shown in multi select picker
 #      (bash/file/fuzzyMultiple.ts), esc in the picker = exit 1 and nothing is linked.
-#      If ./__linked.json exists then its elements are ticked in the picker already (--preselect)
+#      Ticked in the picker already (--preselect): union of elements of ./__linked.json
+#      and symlinks found in ./__linked pointing to a directory from the list.
+#      Links are recognised by their target, not by name: also those created by hand
+#      or named differently (xx -> ../../../STOPSOPA__xx/STOPSOPA__xx ticks STOPSOPA__xx)
+#   3a. (picker only) links of unticked elements are removed after confirmation [y/N],
+#      with parent directories left empty. Only symlinks pointing to directories from the list are removed
+#      (also those not created by this tool), broken links and links to anything else stay.
+#      Everything unticked: also ./__linked (if empty) and ./__linked.json are removed, exit 0
 #   4. for each selected: ln -s [relative path to the directory] ./__linked/[shortened path]
 #      shortened path abc/cde -> directory ./__linked/abc is created and link cde in it.
 #      Target of the link is relative path from directory of the link to the selected directory.
@@ -117,7 +124,11 @@ ${BOLD}ai linkrepo${RESET} - link directories from WORKSPACE_DIR in ./__linked (
 
                 picker: type to filter, Tab toggle, Ctrl+A all, Ctrl+X none, Ctrl+T invert,
                         Enter confirm, Esc cancel
-                        if ./__linked.json exists then its elements are ticked already
+                        elements of ./__linked.json and existing links are ticked already
+
+                unticking: link of unticked element is removed (you are asked to confirm first)
+                           everything unticked = ./__linked and ./__linked.json are removed too
+                           just pressing Enter changes nothing: existing links stay ticked
 
                 at the end the selection is printed as json array (content of __linked.json)
                 and you are asked if to save it to ./__linked.json (snapshot of what was linked)
@@ -236,6 +247,80 @@ if [[ -z "${PAIRS}" ]]; then
   exit 1
 fi
 
+#
+# Finds symlinks already existing in ./__linked (any depth) which point to a directory from the list.
+# Matched by the real path of the target, not by the name of the link: so links created by hand
+# or with different name (xx -> ../../../STOPSOPA__xx/STOPSOPA__xx) are recognised too.
+# Broken links and links to something not on the list are ignored.
+#
+# stdin:  PAIRS ([original path][TAB][shortened path])
+# stdout: [path of the link relative to __linked][TAB][shortened path]
+#
+#   EXISTING="$(printf '%s\n' "${PAIRS}" | existing_links)"
+#
+function existing_links {
+
+  node -e '
+const fs = require("fs");
+const path = require("path");
+
+const [linked, workspace] = process.argv.slice(1);
+
+// real path (all symlinks resolved), empty string when it does not exist
+function real(p) {
+  try {
+    return fs.realpathSync(p);
+  } catch (e) {
+    return "";
+  }
+}
+
+const byReal = new Map();
+
+for (const line of fs.readFileSync(0, "utf8").split("\n")) {
+  const [original, short] = line.split("\t");
+
+  if (original && short) {
+    const r = real(path.resolve(workspace, original));
+
+    if (r) {
+      byReal.set(r, short);
+    }
+  }
+}
+
+// symlinks are never followed here, only inspected
+function walk(dir, rel) {
+  let entries;
+
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch (e) {
+    return;
+  }
+
+  for (const entry of entries) {
+    const r = rel ? rel + "/" + entry.name : entry.name;
+
+    if (entry.isSymbolicLink()) {
+      const short = byReal.get(real(path.join(dir, entry.name)));
+
+      if (short) {
+        console.log(r + "\t" + short);
+      }
+    } else if (entry.isDirectory()) {
+      walk(path.join(dir, entry.name), r);
+    }
+  }
+}
+
+walk(linked, "");
+' "${_PWD}/__linked" "${WORKSPACE_DIR}"
+}
+
+# links which are already in ./__linked: [path of the link relative to __linked][TAB][shortened path]
+EXISTING="$(printf '%s\n' "${PAIRS}" | existing_links)"
+
 # where the selection comes from: interactive (picker) | file (restore) | stdin
 MODE="interactive"
 FILE=""
@@ -291,16 +376,125 @@ case "${MODE}" in
       fi
     fi
 
+    # existing links are ticked too (also when they are not in __linked.json),
+    # otherwise confirming the picker would remove them
+    # so ticked = union of __linked.json and links found in ./__linked (found by target, see existing_links)
+    PRESELECT="${PRESELECT}"$'\n'"$(printf '%s\n' "${EXISTING}" | cut -f2)"
+
     # <(...) instead of temporary file: stdin of the picker is taken by the list
-    SELECTED="$(printf '%s\n' "${PAIRS}" | cut -f2 | node "${_ROOT}/bash/file/fuzzyMultiple.ts" --preselect <(printf '%s\n' "${PRESELECT}"))"
+    # --allow-empty: unticking everything is valid answer here (= remove all links), esc is still exit 1
+    SELECTED="$(printf '%s\n' "${PAIRS}" | cut -f2 | node "${_ROOT}/bash/file/fuzzyMultiple.ts" --allow-empty --preselect <(printf '%s\n' "${PRESELECT}"))"
     ;;
 esac
 
-if [[ "${?}" != "0" || -z "${SELECTED}" ]]; then
+CODE="${?}"
+
+if [[ "${CODE}" != "0" ]]; then
+
+  echo "${0} error: selection cancelled or not valid - nothing changed"
+
+  exit 1
+fi
+
+if [[ -z "${SELECTED}" && "${MODE}" != "interactive" ]]; then
 
   echo "${0} error: nothing selected"
 
   exit 1
+fi
+
+# interactive mode only: links of elements unticked in the picker are removed (after confirmation).
+# Only symlinks of directories from the list are touched, anything else in __linked stays.
+if [[ "${MODE}" == "interactive" ]]; then
+
+  TO_REMOVE=""
+
+  # TO_REMOVE: paths of links relative to __linked (name of the link might differ from shortened path)
+  while IFS=$'\t' read -r LINK SHORT; do
+
+    if [[ -n "${LINK}" ]] && ! printf '%s\n' "${SELECTED}" | grep -Fxq -- "${SHORT}"; then
+
+      TO_REMOVE="${TO_REMOVE}${LINK}"$'\n'
+    fi
+  done <<< "${EXISTING}"
+
+  if [[ -n "${TO_REMOVE}" ]]; then
+
+    cat <<EEE
+${YELLOW}
+links to remove (unticked) from ${_PWD}/__linked:
+
+${TO_REMOVE}${RESET}
+EEE
+
+    printf '%s' "remove them? [y/N] "
+
+    read -r ANSWER
+
+    if [[ "${ANSWER}" != "y" && "${ANSWER}" != "Y" ]]; then
+
+      echo "${0} error: rejected - nothing changed"
+
+      exit 1
+    fi
+
+    while IFS= read -r SHORT; do
+
+      if [[ -z "${SHORT}" ]]; then
+
+        continue
+      fi
+
+      if rm "${_PWD}/__linked/${SHORT}"; then
+
+        echo "${YELLOW}removed: __linked/${SHORT}${RESET}"
+      else
+
+        echo "${0} error: can't remove link >${_PWD}/__linked/${SHORT}<"
+
+        exit 1
+      fi
+
+      # remove parent directories left empty (abc/cde -> abc), rmdir refuses not empty ones
+      PARENT="${SHORT}"
+
+      while [[ "${PARENT}" == */* ]]; do
+
+        PARENT="${PARENT%/*}"
+
+        if ! rmdir "${_PWD}/__linked/${PARENT}" 2>/dev/null; then
+
+          break
+        fi
+      done
+    done <<< "${TO_REMOVE}"
+  fi
+
+  # nothing left selected: no links, so no __linked directory and no snapshot
+  if [[ -z "${SELECTED}" ]]; then
+
+    if [[ -d "${_PWD}/__linked" ]] && ! rmdir "${_PWD}/__linked" 2>/dev/null; then
+
+      echo "${YELLOW}${_PWD}/__linked is not empty (something not from the list is in it) - left in place${RESET}"
+    fi
+
+    if [[ -f "${_PWD}/__linked.json" ]]; then
+
+      if rm "${_PWD}/__linked.json"; then
+
+        echo "${YELLOW}removed: __linked.json${RESET}"
+      else
+
+        echo "${0} error: can't remove file >${_PWD}/__linked.json<"
+
+        exit 1
+      fi
+    fi
+
+    echo "nothing selected - nothing is linked"
+
+    exit 0
+  fi
 fi
 
 if ! mkdir -p "${_PWD}/__linked"; then
@@ -319,6 +513,16 @@ STATUS="0"
 while IFS=$'\t' read -r ORIGINAL SHORT; do
 
   if ! printf '%s\n' "${SELECTED}" | grep -Fxq -- "${SHORT}"; then
+
+    continue
+  fi
+
+  # directory is linked already, maybe under different name: no second link to the same directory
+  FOUND="$(printf '%s\n' "${EXISTING}" | awk -F'\t' -v s="${SHORT}" '$2 == s { print $1; exit }')"
+
+  if [[ -n "${FOUND}" ]]; then
+
+    echo "${YELLOW}exists:  __linked/${FOUND} (${SHORT}) - skipping${RESET}"
 
     continue
   fi

@@ -15,6 +15,10 @@
  *                        stdin is taken by the list, that's why it is a file. No need for real file though:
  *     FOUND="$(printf 'a\nb\nc\n' | NODE_OPTIONS= node bash/file/fuzzyMultiple.ts --preselect <(printf 'a\nc\n'))"
  *
+ *   --allow-empty        Enter with nothing ticked = exit 0 and nothing on stdout
+ *                        (without it Enter with nothing ticked returns current row).
+ *                        Esc is still exit 1, so the caller can tell "unticked everything" from "cancelled".
+ *
  * Header shows counter: (visible after filtering/all, selected: selected/all)
  *
  * Keys:
@@ -222,6 +226,9 @@ async function main(): Promise<void> {
   // selected lines, survives changes of the filter
   const selected = new Set<string>();
 
+  // --allow-empty: Enter with nothing ticked is valid answer (exit 0, empty stdout)
+  const allowEmpty = process.argv.includes("--allow-empty");
+
   // --preselect [file]: tick lines listed in that file (only those which exist on the list)
   const preselectIndex = process.argv.indexOf("--preselect");
 
@@ -294,7 +301,10 @@ async function main(): Promise<void> {
       // Ignore cleanup close errors
     }
 
-    if (selectedLines !== null && selectedLines.length > 0 && exitCode === 0) {
+    if (selectedLines !== null && selectedLines.length === 0 && exitCode === 0) {
+      // --allow-empty: confirmed with nothing ticked
+      process.exit(0);
+    } else if (selectedLines !== null && exitCode === 0) {
       process.stdout.write(selectedLines.join("\n") + "\n", () => {
         process.exit(0);
       });
@@ -424,6 +434,8 @@ async function main(): Promise<void> {
           allLines.filter((line) => selected.has(line)),
           0
         );
+      } else if (allowEmpty) {
+        cleanupAndExit([], 0);
       } else if (filtered.length > 0) {
         cleanupAndExit([filtered[currentIndex].line], 0);
       } else {
