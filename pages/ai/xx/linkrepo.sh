@@ -11,7 +11,7 @@
 #   1. requires env var WORKSPACE_DIR (e.g. WORKSPACE_DIR=/Users/szdz/Workspace), exit 1 if missing
 #   2. list of directories to choose from is produced by script executed with cwd = WORKSPACE_DIR:
 #        env var WORKSPACE_DIR_LIST (path to custom script) if defined
-#        otherwise pages/ai/ai_report_find.sh (all direct subdirectories)
+#        otherwise pages/ai/xx/linkrepo_find.sh (all direct subdirectories)
 #      the script prints paths, one per line: absolute or relative to WORKSPACE_DIR
 #   3. paths are shortened (bash/file/progressivePaths.ts) and shown in multi select picker
 #      (bash/file/fuzzyMultiple.ts), esc in the picker = exit 1 and nothing is linked.
@@ -134,7 +134,7 @@ ${BOLD}ai linkrepo${RESET} - link directories from WORKSPACE_DIR in ./__linked (
                   WORKSPACE_DIR_LIST (optional) script executed in WORKSPACE_DIR, prints paths
                                      of directories to choose from, one per line
                                      (absolute or relative to WORKSPACE_DIR)
-                                     default: ${_ROOT}/pages/ai/ai_report_find.sh
+                                     default: ${_ROOT}/pages/ai/xx/linkrepo_find.sh
 
                 picker: type to filter, Tab toggle, Ctrl+A all, Ctrl+X none, Ctrl+T invert,
                         Enter confirm, Esc cancel
@@ -233,7 +233,7 @@ if [[ ! -d "${WORKSPACE_DIR}" ]]; then
   exit 1
 fi
 
-LIST_SCRIPT="${_ROOT}/pages/ai/ai_report_find.sh"
+LIST_SCRIPT="${_ROOT}/pages/ai/xx/linkrepo_find.sh"
 
 if [[ -n "${WORKSPACE_DIR_LIST}" ]]; then
 

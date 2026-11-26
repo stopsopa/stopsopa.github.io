@@ -78,10 +78,10 @@ type Ctx = {
  *
  *   # optional, used by: ai linkrepo. Script executed in WORKSPACE_DIR, it prints directories
  *   # to choose from, one per line (absolute, or relative to WORKSPACE_DIR but without ./ at the beginning).
- *   # Not defined = pages/ai/ai_report_find.sh (direct subdirectories of WORKSPACE_DIR).
+ *   # Not defined = pages/ai/xx/linkrepo_find.sh (direct subdirectories of WORKSPACE_DIR).
  *   # Own script is needed e.g. for layout WORKSPACE_DIR/[group]/[repository]:
  *   #     find "$(pwd)" -mindepth 2 -maxdepth 2 -type d | sort
- *   export WORKSPACE_DIR_LIST="/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/ai/ai_report_find.sh"
+ *   export WORKSPACE_DIR_LIST="/Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/pages/ai/xx/linkrepo_find.sh"
  *
  * Usage:
  *   cd /any/project/directory
