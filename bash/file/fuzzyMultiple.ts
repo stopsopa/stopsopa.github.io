@@ -9,8 +9,16 @@
  * so it can be captured into a bash variable like:
  *   FOUND="$(find bash -iname '*.sh' | NODE_OPTIONS= node bash/file/fuzzyMultiple.ts)"
  *
+ * Arguments:
+ *   --preselect [file]   file with lines (one per line) which should be ticked already when the list shows up.
+ *                        Lines not present on the list from stdin are ignored.
+ *                        stdin is taken by the list, that's why it is a file. No need for real file though:
+ *     FOUND="$(printf 'a\nb\nc\n' | NODE_OPTIONS= node bash/file/fuzzyMultiple.ts --preselect <(printf 'a\nc\n'))"
+ *
+ * Header shows counter: (visible after filtering/all, selected: selected/all)
+ *
  * Keys:
- *   typing       - filter the list (space separated tokens, all have to match)
+ *   typing      - filter the list (space separated tokens, all have to match)
  *   up / down    - move (also Ctrl+P / Ctrl+N, PageUp / PageDown)
  *   Tab          - select / unselect current row and move down
  *   Ctrl+A       - select all
@@ -214,6 +222,26 @@ async function main(): Promise<void> {
   // selected lines, survives changes of the filter
   const selected = new Set<string>();
 
+  // --preselect [file]: tick lines listed in that file (only those which exist on the list)
+  const preselectIndex = process.argv.indexOf("--preselect");
+
+  if (preselectIndex !== -1) {
+    const preselectFile = process.argv[preselectIndex + 1];
+
+    if (!preselectFile) {
+      process.stderr.write("fuzzyMultiple.ts error: --preselect requires path to a file\n");
+      process.exit(1);
+    }
+
+    const known = new Set(allLines);
+
+    for (const line of fs.readFileSync(preselectFile, "utf8").split("\n")) {
+      if (known.has(line.trim())) {
+        selected.add(line.trim());
+      }
+    }
+  }
+
   /**
    * Filters and sorts candidate lines according to current search query.
    */
@@ -310,7 +338,7 @@ async function main(): Promise<void> {
     const linesToRender: string[] = [];
 
     // Prompt header with cursor position
-    const countStr = ` (${filtered.length}/${allLines.length}, selected: ${selected.size})`;
+    const countStr = ` (${filtered.length}/${allLines.length}, selected: ${selected.size}/${allLines.length})`;
     let queryWithCursor = "";
     if (cursorIndex < query.length) {
       const before = query.slice(0, cursorIndex);
