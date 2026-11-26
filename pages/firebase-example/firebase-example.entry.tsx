@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import useCustomState from "../useCustomState";
+import CustomStateGate from "../CustomStateGate";
 
 /**
  * Todo item interface
@@ -29,7 +30,7 @@ const Main = () => {
   const [text, setText] = useState("");
   const [selectedItem, setSelectedItem] = useState<{ key: string; data: TodoItem } | null>(null);
 
-  const { error, ready, set, get, del, push } = useCustomState<TodoExampleState>({
+  const { error, ready, set, get, del, push, signIn } = useCustomState<TodoExampleState>({
     section,
   });
 
@@ -53,12 +54,8 @@ const Main = () => {
     }
   }, [ready]);
 
-  if (error) {
-    return <pre>{JSON.stringify({ error }, null, 4)}</pre>;
-  }
-
-  if (!ready) {
-    return <div>Connecting to custom state...</div>;
+  if (error || !ready) {
+    return <CustomStateGate ready={ready} error={error} signIn={signIn} />;
   }
 
   if (todos === null) {

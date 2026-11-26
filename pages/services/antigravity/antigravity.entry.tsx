@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import useCustomState from "../../useCustomState";
+import CustomStateGate from "../../CustomStateGate";
 import "./antigravity.entry.css";
 
 /**
@@ -852,9 +853,8 @@ export function AntigravityTracker() {
   if (error) {
     return (
       <div className="cf-app-container">
-        <div className="cf-state-screen" data-testid="error-screen">
-          <h2>Authentication or Database Error</h2>
-          <pre>{JSON.stringify(error, null, 2)}</pre>
+        <div data-testid="error-screen">
+          <CustomStateGate ready={ready} error={error} signIn={signIn} />
         </div>
       </div>
     );
@@ -2062,13 +2062,9 @@ export function AntigravityTracker() {
   } else {
     return (
       <div className="cf-app-container">
-        <div className="cf-state-screen" data-testid="connecting-screen">
-          <h3>Connecting...</h3>
-          <p>Authenticating Antigravity AI service session</p>
-          {/* the only way back in after "Sign out" (ready: false) */}
-          <button onClick={() => signIn()} data-testid="button-signin">
-            Sign in
-          </button>
+        {/* shared "not ready" screen with "Sign in" button - the only way back in after "Sign out" (ready: false) */}
+        <div data-testid="connecting-screen">
+          <CustomStateGate ready={ready} error={error} signIn={signIn} />
         </div>
       </div>
     );

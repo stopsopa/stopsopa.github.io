@@ -370,11 +370,11 @@ function getRandomName(retry = 0, sep = "_", rng = Math.random) {
   }
   return name;
 }
-import { fileURLToPath } from "node:url";
-import { realpathSync } from "node:fs";
-const isMain = () => {
-  if (typeof process === "undefined" || !process.argv[1]) return false;
+const isMain = async () => {
+  if (typeof process === "undefined" || !process.argv?.[1]) return false;
   try {
+    const { fileURLToPath } = await import("node:url");
+    const { realpathSync } = await import("node:fs");
     const scriptPath = realpathSync(process.argv[1]);
     const modulePath = fileURLToPath(import.meta.url);
     return scriptPath === modulePath;
@@ -382,7 +382,9 @@ const isMain = () => {
     return false;
   }
 };
-if (isMain()) {
-  console.log(getRandomName());
-}
+isMain().then((main) => {
+  if (main) {
+    console.log(getRandomName());
+  }
+});
 export { getParts, getRandomName };

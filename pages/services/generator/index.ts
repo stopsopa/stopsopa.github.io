@@ -383,13 +383,18 @@ export function getRandomName(retry: number = 0, sep: string = "_", rng: () => n
   return name;
 }
 
-import { fileURLToPath } from "node:url";
-import { realpathSync } from "node:fs";
-
-// If executed directly, print a random name
-const isMain = () => {
-  if (typeof process === "undefined" || !process.argv[1]) return false;
+/**
+ * If executed directly (node pages/services/generator/index.ts), print a random name.
+ *
+ * node:url and node:fs are imported dynamically and only when running in node:
+ * this module is also loaded by the browser (index.html) and static import of "node:*" there
+ * fails the whole module ("Access to script at 'node:url' ... blocked by CORS policy").
+ */
+const isMain = async () => {
+  if (typeof process === "undefined" || !process.argv?.[1]) return false;
   try {
+    const { fileURLToPath } = await import("node:url");
+    const { realpathSync } = await import("node:fs");
     const scriptPath = realpathSync(process.argv[1]);
     const modulePath = fileURLToPath(import.meta.url);
     return scriptPath === modulePath;
@@ -398,6 +403,8 @@ const isMain = () => {
   }
 };
 
-if (isMain()) {
-  console.log(getRandomName());
-}
+isMain().then((main) => {
+  if (main) {
+    console.log(getRandomName());
+  }
+});

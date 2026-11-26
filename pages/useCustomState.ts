@@ -27,7 +27,7 @@
  *   push({ key: "todos", data })          -> data has to be Todo (element of the collection)
  *
  * When key is not known in compile time (plain `string` variable) types fall back to `any`.
- * Without <MyState> everything is `any`. In *.jsx files describe the type with JSDoc (see pages/todo/todo.entry.jsx).
+ * Without <MyState> everything is `any`. In *.jsx files describe the type with JSDoc (see pages/portsregistry/portsregistry.entry.jsx).
  *
  * Example:
  *
@@ -50,8 +50,8 @@
  *     }
  *   }, [ready]);
  *
- *   if (error) return <pre>{JSON.stringify(error, null, 4)}</pre>;
- *   if (!ready) return <div>Connecting...</div>;
+ *   // shared screen for "signing in / signed out / error" with "Sign in" button: pages/CustomStateGate.tsx
+ *   if (error || !ready) return <CustomStateGate ready={ready} error={error} signIn={signIn} />;
  */
 import useFirebase from "./databases/firebase/useFirebase.ts";
 

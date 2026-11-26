@@ -17,6 +17,8 @@ import { render } from "react-dom";
 
 import useCustomState from "../useCustomState";
 
+import CustomStateGate from "../CustomStateGate.tsx";
+
 import Modal from "../../components/Modal.tsx";
 
 import "./portsregistry.entry.css";
@@ -114,7 +116,7 @@ const Main = () => {
   const [deleting, setDeleting] = useState(null);
 
   /** @type {import("../useCustomState.ts").UseCustomStateReturn<PortsRegistryState>} */
-  const { error, ready, set, get, del, push } = useCustomState({
+  const { error, ready, set, get, del, push, signIn } = useCustomState({
     section,
   });
 
@@ -137,22 +139,8 @@ const Main = () => {
     }
   }, [ready]);
 
-  if (error) {
-    return (
-      <pre>
-        {JSON.stringify(
-          {
-            error,
-          },
-          null,
-          4
-        )}
-      </pre>
-    );
-  }
-
-  if (!ready) {
-    return <div>Connecting to custom state...</div>;
+  if (error || !ready) {
+    return <CustomStateGate ready={ready} error={error} signIn={signIn} />;
   }
 
   if (ports === false) {

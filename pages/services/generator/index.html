@@ -4,40 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Name Generator - AWS Style</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&family=Roboto+Mono&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="/css/gcp-css.css" />
     <script
       type="module"
       src="https://stopsopa.github.io/ace-editor-webcomponent/ace-web-component.js"
       data-main-ace="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/ace.min.js"
     ></script>
     <style>
-      :root {
-        --aws-orange-dark: #ec7211;
-        --aws-gray-bg: #f2f3f3;
-        --aws-border: #eaeded;
-        --aws-text: #16191f;
-        --aws-text-light: #545b64;
-        --aws-white: #ffffff;
-        --aws-blue: #0073bb;
-      }
-
+      /*
+        Form controls, buttons and links are styled by /css/gcp-css.css (class gcp-css, see gcp-css skill).
+        Here only layout. gcp-css doesn't set a font - it inherits the one from body.
+      */
       body {
         margin: 0;
         padding: 0;
-        font-family: "Public Sans", sans-serif;
-        background-color: var(--aws-gray-bg);
-        color: var(--aws-text);
+        font-family: Roboto, Arial, sans-serif;
+        background-color: #f8f9fa;
+        color: #3c4043;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
       }
 
       .container {
+        box-sizing: border-box;
         width: 100%;
         max-width: 800px;
         margin: 40px auto;
@@ -45,81 +35,53 @@
         flex: 1;
       }
 
+      /* white card: gcp-css floating label needs --gcp-css-bg equal to background behind the field (default #fff) */
       .card {
-        background-color: var(--aws-white);
-        border: 1px solid var(--aws-border);
-        border-radius: 2px;
-        box-shadow: 0 1px 1px 0 rgba(0, 28, 36, 0.3), 1px 1px 1px 0 rgba(0, 28, 36, 0.15);
+        background-color: #fff;
+        border: 1px solid #dadce0;
+        border-radius: 8px;
         padding: 24px;
       }
 
       h1 {
-        font-size: 24px;
-        font-weight: 600;
-        margin: 0 0 20px 0;
+        font-size: 22px;
+        font-weight: 500;
+        margin: 0 0 24px 0;
       }
 
-      .field-group {
-        margin-bottom: 20px;
-      }
-
-      .field-label {
-        display: block;
-        font-size: 14px;
-        font-weight: 700;
-        margin-bottom: 8px;
-        color: var(--aws-text);
-      }
-
-      .field-input {
-        width: 100%;
-        max-width: 200px;
-        padding: 8px;
-        border: 1px solid var(--aws-border);
-        border-radius: 2px;
-        font-family: "Roboto Mono", monospace;
-        font-size: 14px;
-        background-color: var(--aws-white);
-      }
-
-      .field-input:focus {
-        border-color: var(--aws-blue);
-        outline: none;
-        box-shadow: 0 0 0 1px var(--aws-blue);
-      }
-
+      /* one line of fields / buttons, all items of the same height so they sit on one line */
       .controls {
+        --row-height: 36px;
+        /* space between rows is done with margin of .controls, not with margin of the wrappers */
+        --gcp-css-field-gap: 0;
+
+        align-items: flex-start;
         display: flex;
+        flex-wrap: wrap;
         gap: 12px;
         margin-bottom: 20px;
-      }
 
-      .btn-primary {
-        background-color: var(--aws-orange-dark);
-        border: 1px solid var(--aws-orange-dark);
-        color: white;
-        padding: 4px 15px;
-        font-size: 14px;
-        font-weight: 700;
-        border-radius: 2px;
-        cursor: pointer;
-        line-height: 20px;
-      }
+        .input-wrapper {
+          flex: 0 1 140px;
 
-      .btn-primary:hover {
-        background-color: #eb5f07;
-      }
+          input {
+            height: var(--row-height);
+          }
+        }
 
-      .btn-secondary {
-        background-color: var(--aws-white);
-        border: 1px solid var(--aws-text-light);
-        color: var(--aws-text);
-        padding: 4px 15px;
-        font-size: 14px;
-        font-weight: 700;
-        border-radius: 2px;
-        cursor: pointer;
-        line-height: 20px;
+        button {
+          box-sizing: border-box;
+          height: var(--row-height);
+        }
+
+        .checkbox-wrapper {
+          align-self: center;
+        }
+
+        /* pushes "group by" checkbox to the right */
+        .spacer {
+          flex: 1 1 auto;
+        }
       }
 
       ace-editor {
@@ -127,8 +89,8 @@
         width: 100%;
         min-height: 320px;
         height: auto;
-        border: 1px solid var(--aws-border);
-        border-radius: 2px;
+        border: 1px solid #dadce0;
+        border-radius: 4px;
         background-color: #fafbfc;
       }
 
@@ -137,7 +99,7 @@
         bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
-        background: #232f3e;
+        background: #3c4043;
         color: white;
         padding: 10px 20px;
         border-radius: 4px;
@@ -145,28 +107,18 @@
         font-size: 14px;
       }
 
-      .aws-footer {
+      footer {
         margin-top: 40px;
         padding: 20px 0;
-        background-color: #f1f3f3;
-        background-image: radial-gradient(#d1d3d4 0.5px, transparent 0.5px);
-        background-size: 8px 8px;
-        border-top: 1px solid #879596;
+        border-top: 1px solid #dadce0;
         width: 100%;
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 14px;
-        color: var(--aws-text-light);
+        color: #5f6368;
         gap: 5px;
-      }
-      .aws-footer a {
-        color: var(--aws-blue);
-        text-decoration: none;
-      }
-      .aws-footer a:hover {
-        text-decoration: underline;
       }
     </style>
   </head>
@@ -174,84 +126,55 @@
     <div class="container">
       <div class="card">
         <h1>Resource Name Generator</h1>
-        <div class="controls" style="align-items: center">
-          <button id="generateBtn" class="btn-primary">Generate 10 names</button>
-          <button id="copyBtn" class="btn-secondary">Copy all</button>
-          <button id="clearBtn" class="btn-secondary">Clear</button>
-          <div style="margin-left: auto; display: flex; align-items: center; gap: 12px">
-            <label
-              style="
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                font-size: 12px;
-                color: var(--aws-text-light);
-                font-weight: 700;
-                cursor: pointer;
-              "
-            >
-              <input type="checkbox" id="groupCheck" checked style="cursor: pointer" /> Group by 10
-            </label>
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                border-left: 1px solid var(--aws-border);
-                padding-left: 12px;
-              "
-            >
-              <span style="font-size: 12px; color: var(--aws-text-light); font-weight: 700">Separator:</span>
-              <input
-                type="text"
-                id="sepInput"
-                class="field-input"
-                title="Separator"
-                value="_"
-                onclick="this.select()"
-                style="height: 28px; width: 40px; text-align: center; padding: 0 4px"
-              />
-            </div>
-          </div>
-        </div>
-        <div
-          class="controls"
-          style="
-            border-top: 1px solid var(--aws-border);
-            padding-top: 15px;
-            margin-top: -5px;
-            justify-content: flex-start;
-          "
-        >
-          <div style="display: flex; align-items: center; gap: 8px">
-            <span style="font-size: 12px; color: var(--aws-text-light); font-weight: 700">Seed:</span>
+        <!-- gcp-css: control first, label directly after it, placeholder must not be empty -->
+        <div class="controls gcp-css">
+          <div class="input-wrapper">
             <input
               type="text"
               id="seedInput"
-              class="field-input"
+              placeholder=" "
               title="Random seed"
               onclick="this.select()"
-              style="height: 28px; width: 70px; text-align: center; padding: 0 4px"
+              data-testid="input-seed"
             />
-            <button
-              id="randBtn"
-              class="btn-secondary"
-              style="height: 28px; padding: 0 8px; font-size: 11px; line-height: 26px"
-            >
-              rand
-            </button>
+            <label for="seedInput">Seed</label>
+          </div>
+          <button type="button" id="randBtn" class="secondary" data-testid="button-rand">rand</button>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="sepInput"
+              placeholder=" "
+              title="Separator"
+              value="_"
+              onclick="this.select()"
+              data-testid="input-separator"
+            />
+            <label for="sepInput">Separator</label>
+          </div>
+          <div class="spacer"></div>
+          <div class="checkbox-wrapper">
+            <input type="checkbox" id="groupCheck" checked data-testid="checkbox-group" />
+            <label for="groupCheck">Group by 10</label>
           </div>
         </div>
+        <div class="controls gcp-css">
+          <button type="button" id="generateBtn" data-testid="button-generate">Generate 10 names</button>
+          <button type="button" id="copyBtn" class="secondary" data-testid="button-copy">Copy all</button>
+          <button type="button" id="clearBtn" class="secondary" data-testid="button-clear">Clear</button>
+        </div>
+        <!-- editor is outside of .gcp-css on purpose, so gcp-css doesn't touch internals of ace -->
         <ace-editor lang="text" id="nameOutput">
           <script type="ace"></script>
         </ace-editor>
       </div>
     </div>
-    <footer class="aws-footer">
+    <footer class="gcp-css">
       Inspiration:
       <a
         href="https://github.com/moby/moby/blob/8bb58153e75b4310f3ae9ec6d03924aa286fbf20/pkg/namesgenerator/names-generator.go"
         target="_blank"
+        data-testid="link-inspiration"
         >Docker names generator (GitHub)</a
       >
     </footer>

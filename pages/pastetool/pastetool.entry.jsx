@@ -6,7 +6,12 @@ import log from "inspc";
 
 import useCustomState from "../useCustomState.ts";
 
+import CustomStateGate from "../CustomStateGate.tsx";
+
 import Textarea from "../../components/Textarea.js";
+
+// layout only - controls, buttons and links are styled by /css/gcp-css.css (class gcp-css, see gcp-css skill)
+import "./pastetool.entry.css";
 
 const section = "pastetool";
 
@@ -16,39 +21,56 @@ const section = "pastetool";
  * @typedef {{ list?: Record<string, PasteEntry> }} PasteToolState
  */
 
+/**
+ * Card of one pasted item: content (children) on the left, actions on the right.
+ * text - when given (string items) "copy" button is rendered and copies it to the clipboard
+ */
 const Wrapper = ({
-  error,
-  ready,
-  set,
-  get,
   del,
-  push,
 
   ckey,
+  text,
   children,
   refreshList,
-}) => (
-  <div>
-    <table>
-      <tbody>
-        <tr>
-          <td valign="top">
-            <button
-              onClick={async () => {
-                await del(`list/${ckey}`);
+}) => {
+  const [copied, setCopied] = useState(false);
 
-                await refreshList();
-              }}
-            >
-              🗑️
-            </button>
-          </td>
-          <td>{children}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+  return (
+    <div className="pt-item" data-testid={`item-${ckey}`}>
+      <div className="pt-content">{children}</div>
+      <div className="pt-actions">
+        {typeof text === "string" && (
+          <button
+            type="button"
+            className="secondary"
+            onClick={async () => {
+              await navigator.clipboard.writeText(text);
+
+              setCopied(true);
+
+              setTimeout(() => setCopied(false), 1500);
+            }}
+            data-testid={`button-copy-${ckey}`}
+          >
+            {copied ? "copied" : "copy"}
+          </button>
+        )}
+        <button
+          type="button"
+          className="secondary"
+          onClick={async () => {
+            await del(`list/${ckey}`);
+
+            await refreshList();
+          }}
+          data-testid={`button-delete-${ckey}`}
+        >
+          delete
+        </button>
+      </div>
+    </div>
+  );
+};
 
 function unique(pattern) {
   // node.js require('crypto').randomBytes(16).toString('hex');
@@ -195,22 +217,8 @@ const Main = () => {
     }
   }, [ready]);
 
-  if (error) {
-    return (
-      <pre>
-        {JSON.stringify(
-          {
-            error,
-          },
-          null,
-          4
-        )}
-      </pre>
-    );
-  }
-
-  if (!ready) {
-    return <div>Connecting to custom state...</div>;
+  if (error || !ready) {
+    return <CustomStateGate ready={ready} error={error} signIn={signIn} />;
   }
 
   if (!list) {
@@ -218,14 +226,35 @@ const Main = () => {
   }
 
   return (
-    <>
-      <button onClick={signOut}>signOut</button>
-      <button onClick={signIn}>signIn</button>
-      <button onClick={refreshList}>refreshList</button>
-      <button onClick={testSet}>testSet</button>
-      <button onClick={testGet}>testGet</button>
-      <button onClick={testPush}>testPush</button>
-      <hr />
+    <div className="pt-app gcp-css">
+      <div className="pt-card">
+        <h2>Paste tool</h2>
+        <p>Paste (CMD + V) anywhere on this page - text or image from the clipboard is stored and listed below.</p>
+        <div className="pt-buttons">
+          <button type="button" onClick={refreshList} data-testid="button-refresh">
+            refresh list
+          </button>
+          <button type="button" className="secondary" onClick={signOut} data-testid="button-signout">
+            sign out
+          </button>
+          <button type="button" className="secondary" onClick={signIn} data-testid="button-signin">
+            sign in
+          </button>
+        </div>
+        <div className="pt-buttons">
+          <span className="pt-debug-label">debug:</span>
+          <button type="button" className="secondary" onClick={testSet} data-testid="button-test-set">
+            testSet
+          </button>
+          <button type="button" className="secondary" onClick={testGet} data-testid="button-test-get">
+            testGet
+          </button>
+          <button type="button" className="secondary" onClick={testPush} data-testid="button-test-push">
+            testPush
+          </button>
+        </div>
+      </div>
+
       {(function (list) {
         list.reverse();
 
@@ -234,18 +263,26 @@ const Main = () => {
             return (
               <Wrapper
                 {...{
-                  error,
-                  ready,
-                  set,
-                  get,
                   del,
-                  push,
                   refreshList,
                   key,
                   ckey: key,
+                  text: data || "",
                 }}
               >
-                <Textarea value={data || ""} onClick={(e) => e.target.select()} />
+                {/* gcp-css: control first, label directly after it, placeholder must not be empty */}
+                <div className="input-wrapper">
+                  <Textarea
+                    id={`pt-text-${key}`}
+                    placeholder=" "
+                    readOnly
+                    correct={2}
+                    value={data || ""}
+                    onClick={(e) => e.target.select()}
+                    data-testid={`textarea-${key}`}
+                  />
+                  <label htmlFor={`pt-text-${key}`}>text</label>
+                </div>
               </Wrapper>
             );
           }
@@ -253,12 +290,7 @@ const Main = () => {
             return (
               <Wrapper
                 {...{
-                  error,
-                  ready,
-                  set,
-                  get,
                   del,
-                  push,
                   refreshList,
                   key,
                   ckey: key,
@@ -270,7 +302,7 @@ const Main = () => {
           }
         });
       })(Object.entries(list))}
-    </>
+    </div>
   );
 };
 

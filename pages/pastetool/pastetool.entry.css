@@ -1,0 +1,68 @@
+/*
+  Layout of pages/pastetool/pastetool.html.
+  Form controls, buttons, h2, p are styled by /css/gcp-css.css (class gcp-css) - here only layout and cards.
+  Classes with prefix "pt-". No font-family on purpose: gcp-css inherits the font of the page (css/main.css).
+*/
+
+.pt-app {
+  width: 100%;
+
+  /* white cards: gcp-css floating label needs --gcp-css-bg equal to background behind the field (default #fff) */
+  .pt-card,
+  .pt-item {
+    background: #fff;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    padding: 16px;
+  }
+
+  .pt-buttons {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .pt-debug-label {
+    color: #5f6368;
+    font-size: 12px;
+  }
+
+  /* one pasted item: [content] [actions] */
+  .pt-item {
+    align-items: start;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr auto;
+
+    /* field is the only thing in the card, no need for the space under it */
+    --gcp-css-field-gap: 0;
+  }
+
+  .pt-content {
+    min-width: 0;
+
+    textarea {
+      resize: vertical;
+    }
+
+    img {
+      border-radius: 4px;
+      display: block;
+      max-width: 100%;
+    }
+  }
+
+  .pt-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  @media (max-width: 600px) {
+    .pt-item {
+      grid-template-columns: 1fr;
+    }
+  }
+}

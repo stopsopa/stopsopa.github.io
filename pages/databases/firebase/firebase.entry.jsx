@@ -6,6 +6,8 @@ import log from "inspc";
 
 import useCustomState from "../../useCustomState";
 
+import CustomStateGate from "../../CustomStateGate.tsx";
+
 const section = "test";
 
 /**
@@ -22,7 +24,7 @@ const Main = () => {
   const [groupname, setGroupnameRaw] = useState("");
 
   /** @type {import("../../useCustomState.ts").UseCustomStateReturn<TestState>} */
-  const { error, ready, set, get, del, push } = useCustomState({
+  const { error, ready, set, get, del, push, signIn } = useCustomState({
     section,
   });
 
@@ -38,22 +40,8 @@ const Main = () => {
     }
   }, [ready]);
 
-  if (error) {
-    return (
-      <pre>
-        {JSON.stringify(
-          {
-            error,
-          },
-          null,
-          4
-        )}
-      </pre>
-    );
-  }
-
-  if (!ready) {
-    return <div>Connecting to custom state...</div>;
+  if (error || !ready) {
+    return <CustomStateGate ready={ready} error={error} signIn={signIn} />;
   }
 
   const setGroupname = (name) => {

@@ -553,7 +553,7 @@ Commits to other branches don't trigger it - create a PR for that.
 
 ## Firebase
 
-The site uses Firebase for authentication and database (e.g. pages/todo, pages/pastetool, pages/portsregistry).
+The site uses Firebase for authentication and database (e.g. pages/pastetool, pages/portsregistry).
 Configuration comes from `FIREBASE_*` environment variables. Database rules restrict read/write to authenticated
 users by email.
 

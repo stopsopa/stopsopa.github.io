@@ -36,7 +36,7 @@ Every page/service has to use its own unique `section` and should define and pas
 With it `get` / `set` / `push` are typed by the key: `get("todos")` returns `Record<string, TodoItem> | undefined | null`,
 `get(`todos/${id}`)` returns `TodoItem | null`, `data` of `set({ key: ["todos", id], data })` and `push({ key: "todos", data })`
 has to be `TodoItem`. Key known only in runtime (plain `string`) gives `any`. In `*.jsx` describe the type with JSDoc
-(example: `pages/todo/todo.entry.jsx`).
+(example: `pages/portsregistry/portsregistry.entry.jsx`).
 
 That is the complete interface (contract: `UseCustomStateReturn` in `pages/useCustomState.ts`). Nothing in it is Firebase specific -
 Firebase is only the current implementation (`pages/databases/firebase/useFirebase.ts`) and can be swapped in
@@ -72,12 +72,12 @@ useEffect(() => {
   }
 }, [ready]);
 
-if (error) return <div>Error: {JSON.stringify(error)}</div>;
-if (!ready) return <div>Connecting...</div>;
+if (error || !ready) return <CustomStateGate ready={ready} error={error} signIn={signIn} />;
 ```
 
-If the app has "sign out" button then the `!ready` screen should have a button calling `signIn()` -
-after `signOut()` it is the only way back in.
+`CustomStateGate` (`pages/CustomStateGate.tsx`, `import CustomStateGate from "./path/to/CustomStateGate"`) is the shared
+screen for "signing in / signed out / error": short message, "Sign in" button (after `signOut()` it is the only way
+back in) and the full error collapsed under "technical details". Use it instead of dumping json of the error.
 
 ## 4. Path Resolution & Operations (Concrete Example)
 

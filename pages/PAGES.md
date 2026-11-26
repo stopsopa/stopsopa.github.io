@@ -259,7 +259,6 @@ with an empty description so an AI pass can fill them in afterwards
 - [tests/index.html](tests/index.html): Testing notes: mock vs stub (Mockito example), Selenium webdriver, Puppeteer with example repo links
 - [tetris/60frames.html](tetris/60frames.html): Small demo of 60 frames timing: row of 20px cells with start/stop, up/down level and boost buttons, hold space to test fuze (tetris gravity speed experiment)
 - [tetris/index.html](tetris/index.html): Tetris notes and links: Sanrio Tetris, brick probability in Game Boy Tetris, Tetris Guideline from harddrop wiki
-- [todo/todo.html](todo/todo.html): Todo list app: React bundle with Firebase backend, rows with edit and completed strike-through
 - [typescript/defaults/index.html](typescript/defaults/index.html): TypeScript config diff viewer: pick two tsconfig files from dropdowns and see side-by-side diff rendered with jsdiff and diff2html
 - [typescript/index.template.html](typescript/index.template.html): TypeScript guide: setup, tsconfig defaults, npm publish prep, tsgo, transpile, source maps, dependency injection, strip-types in Node, ts-node/tsx/tsimp/SWC, watch mode, Promise types, express path params
 - [typescript/jsdoc.html](typescript/jsdoc.html): JSDoc notes for typing plain JavaScript: tsconfig checkJs, ambient declarations, tricks, examples and snippets

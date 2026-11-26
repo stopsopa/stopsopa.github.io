@@ -89,8 +89,9 @@ useEffect(() => {
   }
 }, [ready]);
 
-if (error) return <pre>{JSON.stringify(error, null, 4)}</pre>;
-if (!ready) return <div>Connecting...</div>; // + button calling signIn() if the page has "sign out"
+// shared screen for "signing in / signed out / error" with "Sign in" button - always use it, don't dump json of the error
+// import CustomStateGate from "../../CustomStateGate";
+if (error || !ready) return <CustomStateGate ready={ready} error={error} signIn={signIn} />;
 ```
 
 Rules:
