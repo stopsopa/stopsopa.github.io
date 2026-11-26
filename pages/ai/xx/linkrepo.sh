@@ -26,7 +26,8 @@
 #   4. for each selected: ln -s [relative path to the directory] ./__linked/[shortened path]
 #      shortened path abc/cde -> directory ./__linked/abc is created and link cde in it.
 #      Target of the link is relative path from directory of the link to the selected directory.
-#      Already existing links/files are skipped
+#      Under that name already: correct link = skipped, broken link (target doesn't exist) = replaced,
+#      anything else (file, directory, link to other existing place) = left alone, reported, exit code 1
 #   5. __linked.json is saved with the selection (json array)
 #
 #      Location of __linked.json: ./__linked.json (can be committed) or .git/__linked.json (private).
@@ -692,9 +693,19 @@ while IFS=$'\t' read -r ORIGINAL SHORT; do
 
   TARGET="${LINKED}/${SHORT}"
 
-  if [[ -e "${TARGET}" || -L "${TARGET}" ]]; then
+  # correct links were skipped above (FOUND), so what is under that name now is something else:
+  #   broken symlink (target doesn't exist)  -> replaced with correct one
+  #   anything else (file, directory, link to other existing place) -> left alone, reported
+  REPLACE=""
 
-    echo "${YELLOW}exists:  __linked/${SHORT} - skipping${RESET}"
+  if [[ -L "${TARGET}" && ! -e "${TARGET}" ]]; then
+
+    REPLACE="1"
+  elif [[ -e "${TARGET}" ]]; then
+
+    echo "${RED}${0} error: __linked/${SHORT} exists and it is not a link to that directory - skipping${RESET}"
+
+    STATUS="1"
 
     continue
   fi
@@ -746,6 +757,13 @@ while IFS=$'\t' read -r ORIGINAL SHORT; do
 
   # relative link is resolved from the directory where the link lives, not from cwd
   RELATIVE="$(node -e 'process.stdout.write(require("path").relative(process.argv[1], process.argv[2]))' "${TARGET_DIR}" "${ABSOLUTE}")"
+
+  if [[ "${REPLACE}" == "1" ]]; then
+
+    echo "${YELLOW}broken:  __linked/${SHORT} -> $(readlink "${TARGET}") - replacing${RESET}"
+
+    rm "${TARGET}"
+  fi
 
   if [[ -n "${RELATIVE}" ]] && mkdir -p "${TARGET_DIR}" && ln -s "${RELATIVE}" "${TARGET}"; then
 
