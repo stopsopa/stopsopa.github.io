@@ -10,6 +10,17 @@ import useCustomState from "../../useCustomState.ts";
 
 const section = "editor";
 
+/**
+ * Type of the whole tree stored in section "editor" (S of useCustomState<S>, see pages/useCustomState.ts).
+ * Both collections are keyed by `index` of the tab.
+ * @typedef {{ value: string, updated: any }} EditorValue
+ * @typedef {{ zeroIndexOrderTab: number, valueMD5?: string, [key: string]: any }} TabDataExceptValue
+ * @typedef {{
+ *   allEditorsValues?: Record<string, EditorValue>,
+ *   allTabsDataExceptValues?: Record<string, TabDataExceptValue>,
+ * }} EditorState
+ */
+
 import Ace, { languages, bringFocus, pokeEditorsToRerenderBecauseSometimesTheyStuck } from "../Ace.jsx";
 
 import RecordLog from "../RecordLog";
@@ -107,6 +118,7 @@ const Main = ({ portal }) => {
   const [allTabsDataExceptValues, setAllTabsDataExceptValuesDontUseDirectly, getAllTabsDataExceptValuesFetcher] =
     useStateFetcher([]);
 
+  /** @type {import("../../useCustomState.ts").UseCustomStateReturn<EditorState>} */
   const { error, ready, set, get, del, push } = useCustomState({
     section,
   });

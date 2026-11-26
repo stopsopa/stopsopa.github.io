@@ -8,6 +8,12 @@ import useCustomState from "../useCustomState";
 
 const section = "portsregistry";
 
+/**
+ * Type of the whole tree stored in section "portsregistry" (S of useCustomState<S>, see pages/useCustomState.ts)
+ * @typedef {{ port: string, description: string }} PortEntry
+ * @typedef {{ ports?: Record<string, PortEntry> }} PortsRegistryState
+ */
+
 import isObject from "nlab/isObject";
 
 import generatePort from "./generatePort.js";
@@ -38,6 +44,7 @@ const Main = () => {
     setInputRaw(nset({ ...input }, key, value));
   };
 
+  /** @type {import("../useCustomState.ts").UseCustomStateReturn<PortsRegistryState>} */
   const { error, ready, set, get, del, push } = useCustomState({
     section,
   });

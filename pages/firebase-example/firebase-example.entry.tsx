@@ -11,6 +11,14 @@ interface TodoItem {
   createdAt: string;
 }
 
+/**
+ * Type of the whole tree stored in section "todo_example" - passed to useCustomState<TodoExampleState>(),
+ * get/set/push are typed from it by the key
+ */
+interface TodoExampleState {
+  todos?: Record<string, TodoItem>;
+}
+
 const section = "todo_example";
 
 /**
@@ -21,7 +29,7 @@ const Main = () => {
   const [text, setText] = useState("");
   const [selectedItem, setSelectedItem] = useState<{ key: string; data: TodoItem } | null>(null);
 
-  const { error, ready, set, get, del, push } = useCustomState({
+  const { error, ready, set, get, del, push } = useCustomState<TodoExampleState>({
     section,
   });
 
@@ -31,8 +39,12 @@ const Main = () => {
   };
 
   const handleFetchOne = async (key: string) => {
-    const single = await get<TodoItem>(`todos/${key}`);
-    setSelectedItem({ key, data: single });
+    // type TodoItem | null is resolved from TodoExampleState by the key
+    const single = await get(`todos/${key}`);
+
+    if (single) {
+      setSelectedItem({ key, data: single });
+    }
   };
 
   useEffect(() => {

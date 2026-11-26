@@ -24,6 +24,24 @@ import "./custom_state.entry.css";
 
 const section = "custom_state_demo";
 
+interface DemoTodo {
+  text: string;
+  done: boolean;
+}
+
+/**
+ * Type of the whole tree stored in the section - passed to useCustomState<DemoState>().
+ * get/set/push are typed from it by the key, see typedExample() below.
+ *
+ * Index signature is here only because this playground accepts any key typed into the form -
+ * normal page/service shouldn't have it, describe exactly what you store.
+ */
+interface DemoState {
+  todos?: Record<string, DemoTodo>;
+  settings?: { ui?: { theme?: string } };
+  [key: string]: any;
+}
+
 interface LogEntry {
   time: string;
   call: string;
@@ -41,9 +59,29 @@ const presets: { label: string; key: string; data: string }[] = [
 const json = (value: any) => JSON.stringify(value, null, 4);
 
 const Main = () => {
-  const { ready, error, username, userId, get, set, push, del, signIn, signOut } = useCustomState({
+  const { ready, error, username, userId, get, set, push, del, signIn, signOut } = useCustomState<DemoState>({
     section,
   });
+
+  /**
+   * Demonstrates typing by the key (keys known in compile time) - hover over variables in the editor.
+   * The form below uses keys known only in runtime, so there everything is `any`.
+   */
+  const typedExample = async () => {
+    // data has to be DemoTodo, returns generated key
+    const id = await push({ key: "todos", data: { text: "typed todo", done: false } });
+
+    // DemoTodo | null
+    const todo = await get(`todos/${id}`);
+
+    if (todo) {
+      // array form of the key, data has to be DemoTodo
+      await set({ key: ["todos", id], data: { ...todo, done: !todo.done } });
+    }
+
+    // Record<string, DemoTodo> | undefined | null
+    return get("todos");
+  };
 
   const [keyText, setKeyText] = useState("todos");
 
@@ -289,6 +327,14 @@ const Main = () => {
                 data-testid="button-del"
               >
                 del
+              </button>
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => run("typedExample() /* push + get + set + get, all typed by key */", typedExample)}
+                data-testid="button-typed-example"
+              >
+                typed example
               </button>
             </div>
             <ul>

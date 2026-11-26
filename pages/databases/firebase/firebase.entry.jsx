@@ -8,6 +8,12 @@ import useCustomState from "../../useCustomState";
 
 const section = "test";
 
+/**
+ * Type of the whole tree stored in section "test" (S of useCustomState<S>, see pages/useCustomState.ts)
+ * @typedef {{ groupname: string }} GroupEntry
+ * @typedef {{ groupslist?: Record<string, GroupEntry> }} TestState
+ */
+
 import isObject from "nlab/isObject";
 
 const Main = () => {
@@ -15,6 +21,7 @@ const Main = () => {
 
   const [groupname, setGroupnameRaw] = useState("");
 
+  /** @type {import("../../useCustomState.ts").UseCustomStateReturn<TestState>} */
   const { error, ready, set, get, del, push } = useCustomState({
     section,
   });

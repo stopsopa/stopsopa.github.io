@@ -89,7 +89,7 @@ const getFirebaseCoreEntry = () => {
  *
  * Read more about API: https://firebase.google.com/docs/reference/js
  */
-export default function useFirebase({ section }: UseCustomStateOptions): UseCustomStateReturn {
+export default function useFirebase<S = any>({ section }: UseCustomStateOptions): UseCustomStateReturn<S> {
   const [error, setError] = useState<any>(false);
 
   /**
@@ -292,8 +292,12 @@ export default function useFirebase({ section }: UseCustomStateOptions): UseCust
     reCreateSession();
   }, []);
 
-  async function set<T = any>(opt?: StateMutationOptions<T>): Promise<void> {
-    let { data = {} as T, key } = { ...opt };
+  /**
+   * get/set/push are deliberately loosely typed (any) here - precise types by key (generic S)
+   * are provided by UseCustomStateReturn<S> in pages/useCustomState.ts, firebase doesn't care about the shape.
+   */
+  async function set(opt?: StateMutationOptions): Promise<void> {
+    let { data = {}, key } = { ...opt };
 
     let internalkey: string | undefined;
 
@@ -373,10 +377,10 @@ export default function useFirebase({ section }: UseCustomStateOptions): UseCust
    * Returns only generated key of the new child (not full firebase path) - full path is firebase specific
    * and must not leak through the universal interface.
    */
-  async function push<T = any>(opt?: StateMutationOptions<T>): Promise<string> {
+  async function push(opt?: StateMutationOptions): Promise<string> {
     console.log("push...", JSON.stringify(opt));
 
-    let { data = {} as T, key } = { ...opt };
+    let { data = {}, key } = { ...opt };
 
     let internalkey: string | undefined;
 
@@ -457,7 +461,7 @@ export default function useFirebase({ section }: UseCustomStateOptions): UseCust
     }
   }
 
-  async function get<T = any>(key?: StateKey): Promise<T> {
+  async function get(key?: StateKey): Promise<any> {
     let internalkey: string | undefined;
 
     try {

@@ -14,6 +14,13 @@ import useCustomState from "../useCustomState";
 
 const section = "todo";
 
+/**
+ * Type of the whole tree stored in section "todo" (S of useCustomState<S>, see pages/useCustomState.ts).
+ * Items sit directly in the root of the section, keyed by generated id.
+ * @typedef {{ title: string, description?: string, completed?: boolean, created: string, sort?: number }} TodoItem
+ * @typedef {Record<string, TodoItem>} TodoState
+ */
+
 import isObject from "nlab/isObject";
 
 import Textarea from "../../components/Textarea";
@@ -45,6 +52,7 @@ function processList(objList, completed) {
 }
 
 const List = ({ completed = null, edit, list = {}, refreshList, setEdit }) => {
+  /** @type {import("../useCustomState.ts").UseCustomStateReturn<TodoState>} */
   const { error, ready, set, get, del, push } = useCustomState({
     section,
   });
@@ -156,6 +164,7 @@ const List = ({ completed = null, edit, list = {}, refreshList, setEdit }) => {
 };
 
 const Main = () => {
+  /** @type {import("../useCustomState.ts").UseCustomStateReturn<TodoState>} */
   const { error, ready, set, get, del, push } = useCustomState({
     section,
   });

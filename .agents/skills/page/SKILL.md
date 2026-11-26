@@ -43,3 +43,57 @@ You might also ask what sections from template to take, there are few:
 - also ask if we need `<h1>Table of Contents</h1>` see section "manual TOC" of the README.md, normally TOC is needed but ask for it and if I say I don't need TOC then don't add toc to body element and don't create .cards.toc at all
 
 rest of the template have to be taken as is - especially loading /js/github.js
+
+# Storing data: pages/useCustomState.ts
+
+Default library for storing data of a page/service (per user, survives reload, shared between devices).
+It is a general interface for storing tree like structure. Firebase under the hood is just transport protocol and
+storage source - never call anything firebase specific from a page, the interface provides what it provides.
+Don't import pages/databases/firebase/useFirebase.ts directly.
+
+Needs React and imports, so `*.entry.tsx` (mode "imports" from pages/services/SERVICES_RULES.md). In html before the bundle of the page:
+
+```html
+<script src="/public/preprocessed.js?my_page"></script>
+<script type="module" src="/dist/firebase.core.entry.bundle.js"></script>
+<script type="module" src="/dist/my_page.entry.bundle.js"></script>
+```
+
+```tsx
+import useCustomState from "../../useCustomState";
+
+interface Todo {
+  text: string;
+  done: boolean;
+}
+
+// type of the whole tree stored in the section - whole page/service has to follow/use this type
+interface MyState {
+  todos?: Record<string, Todo>;
+}
+
+const { ready, error, username, userId, get, set, push, del, signIn, signOut } = useCustomState<MyState>({
+  section: "my_namespace", // root of the tree, own (unique) for each page/service
+});
+
+useEffect(() => {
+  if (ready) {
+    loadData();
+  }
+}, [ready]);
+
+if (error) return <pre>{JSON.stringify(error, null, 4)}</pre>;
+if (!ready) return <div>Connecting...</div>; // + button calling signIn() if the page has "sign out"
+```
+
+Rules:
+
+- `section` - each page/service uses own unique one (check that it is not used already: search for `section` next to `useCustomState` in pages/).
+- Always define type of stored data and pass it as `useCustomState<MyState>` - then `get` / `set` / `push` are typed by the key. Use these types across the whole page.
+- Authentication happens behind the scene. Page only waits for `ready: true` before touching data and rendering final UI. `signOut()` -> `ready: false`, `signIn()` -> back.
+- Keys are relative to the section: `"todos/abc"` or `["todos", "abc"]`, no key = whole section.
+  `get(key)` (null when empty), `set({ key, data })` overwrites, `push({ key, data })` adds child and returns its generated key, `del(key)`.
+- `username` - human readable, `userId` - stable unique id.
+- Rest (shape of the data, when to load/save) is up to particular page.
+
+Details: pages/databases/firebase/USAGE.md. Working demo of everything: pages/services/custom_state/custom_state.entry.tsx

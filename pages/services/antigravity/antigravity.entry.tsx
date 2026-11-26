@@ -96,7 +96,7 @@ function getProgressColor(percent: number): string {
  * Main Antigravity AI Usage Tracker Component
  */
 export function AntigravityTracker() {
-  const { ready, username, error, get, set, del, signIn, signOut } = useCustomState({
+  const { ready, username, error, get, set, del, signIn, signOut } = useCustomState<AntigravityDatabaseData>({
     section: "antigravity_cli",
   });
 
@@ -329,7 +329,8 @@ export function AntigravityTracker() {
   async function loadData() {
     setIsRefreshing(true);
     try {
-      const data = await get<AntigravityDatabaseData>([]);
+      // no key = whole section, type AntigravityDatabaseData | null comes from useCustomState<AntigravityDatabaseData>
+      const data = await get([]);
       if (data) {
         if (data.settings) {
           setSettings({

@@ -17,10 +17,26 @@ The runtime requires environment variables (`preprocessed.js`) and the core Fire
 ```tsx
 import useCustomState from "./path/to/useCustomState";
 
-const { ready, error, username, userId, get, set, push, del, signIn, signOut } = useCustomState({
+interface TodoItem {
+  text: string;
+  done: boolean;
+}
+
+// type of the whole tree stored in the section
+interface MyState {
+  todos?: Record<string, TodoItem>;
+}
+
+const { ready, error, username, userId, get, set, push, del, signIn, signOut } = useCustomState<MyState>({
   section: "my_namespace", // isolates database root: users/<user_email>/<section>
 });
 ```
+
+Every page/service has to use its own unique `section` and should define and pass its own type of data (`MyState` above).
+With it `get` / `set` / `push` are typed by the key: `get("todos")` returns `Record<string, TodoItem> | undefined | null`,
+`get(`todos/${id}`)` returns `TodoItem | null`, `data` of `set({ key: ["todos", id], data })` and `push({ key: "todos", data })`
+has to be `TodoItem`. Key known only in runtime (plain `string`) gives `any`. In `*.jsx` describe the type with JSDoc
+(example: `pages/todo/todo.entry.jsx`).
 
 That is the complete interface (contract: `UseCustomStateReturn` in `pages/useCustomState.ts`). Nothing in it is Firebase specific -
 Firebase is only the current implementation (`pages/databases/firebase/useFirebase.ts`) and can be swapped in

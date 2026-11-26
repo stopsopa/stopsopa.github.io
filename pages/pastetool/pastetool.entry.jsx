@@ -10,6 +10,12 @@ import Textarea from "../../components/Textarea.js";
 
 const section = "pastetool";
 
+/**
+ * Type of the whole tree stored in section "pastetool" (S of useCustomState<S>, see pages/useCustomState.ts)
+ * @typedef {{ mime: "string" | "img", data: string }} PasteEntry
+ * @typedef {{ list?: Record<string, PasteEntry> }} PasteToolState
+ */
+
 const Wrapper = ({
   error,
   ready,
@@ -57,6 +63,7 @@ function unique(pattern) {
 const Main = () => {
   const [list, setList] = useState(false);
 
+  /** @type {import("../useCustomState.ts").UseCustomStateReturn<PasteToolState>} */
   const { error, ready, set, get, del, push, signIn, signOut } = useCustomState({
     section,
   });
