@@ -15,7 +15,7 @@ const Main = () => {
 
   const [groupname, setGroupnameRaw] = useState("");
 
-  const { error, id, set, get, del, push } = useCustomState({
+  const { error, ready, set, get, del, push } = useCustomState({
     section,
   });
 
@@ -26,10 +26,10 @@ const Main = () => {
   };
 
   useEffect(() => {
-    if (id) {
+    if (ready) {
       refreshGroupList();
     }
-  }, [id]);
+  }, [ready]);
 
   if (error) {
     return (
@@ -45,7 +45,7 @@ const Main = () => {
     );
   }
 
-  if (!id) {
+  if (!ready) {
     return <div>Connecting to custom state...</div>;
   }
 

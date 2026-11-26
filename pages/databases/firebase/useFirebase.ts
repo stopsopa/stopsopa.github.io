@@ -2,9 +2,16 @@
  * This script is not what end user should use.
  * The main interface is implemented in pages/useCustomState.ts in this project
  * Use rather pages/useCustomState.ts as instructed in pages/databases/firebase/USAGE.md
+ *
+ * This is firebase implementation of the contract defined in pages/useCustomState.ts (UseCustomStateReturn).
+ * Everything firebase specific (popup with choice of google account, tokens in localStorage,
+ * re-authentication on failure, database paths) has to stay inside this file.
+ * Don't return from this hook anything what is not part of UseCustomStateReturn.
  */
 
 import { useEffect, useState } from "react";
+
+import type { UseCustomStateOptions, UseCustomStateReturn, StateMutationOptions, StateKey } from "../../useCustomState.ts";
 
 // @ts-ignore
 import log from "inspc";
@@ -77,40 +84,22 @@ const getFirebaseCoreEntry = () => {
   return window.firebaseCoreEntry();
 };
 
-export interface UseFirebaseOptions {
-  section: string;
-}
-
-export interface FirebaseMutationOptions<T = any> {
-  data?: T;
-  key?: string | string[];
-}
-
-export interface UseFirebaseReturn {
-  firebase: boolean;
-  error: any;
-  user: string | undefined;
-  set: <T = any>(opt?: FirebaseMutationOptions<T>) => Promise<void>;
-  get: <T = any>(key?: string | string[]) => Promise<T>;
-  del: (key?: string | string[]) => Promise<void>;
-  push: <T = any>(opt?: FirebaseMutationOptions<T>) => Promise<string>;
-  getroot: (key?: string | string[]) => Promise<string>;
-  expirationData: () => any;
-  reCreateSession: () => Promise<void>;
-  signOut: () => Promise<void>;
-}
-
 /**
  * to see how to use this hook look for firebase.entry.jsx
  *
  * Read more about API: https://firebase.google.com/docs/reference/js
  */
-export default function useFirebase({ section }: UseFirebaseOptions): UseFirebaseReturn {
-  const [firebase, setFirebase] = useState(false);
-
+export default function useFirebase({ section }: UseCustomStateOptions): UseCustomStateReturn {
   const [error, setError] = useState<any>(false);
 
+  /**
+   * email with dots replaced by commas (firebase keys can't have dots) - data is stored under users/<user>/<section>.
+   * Defined only when authenticated, so it also drives the `ready` flag. Exposed as `userId`.
+   */
   const [user, setUser] = useState<string | undefined>();
+
+  // email of authenticated user as it is, exposed as `username`
+  const [username, setUsername] = useState<string | undefined>();
 
   async function reCreateSession(): Promise<void> {
     try {
@@ -154,13 +143,13 @@ export default function useFirebase({ section }: UseFirebaseOptions): UseFirebas
 
       async function set() {
         try {
-          setFirebase(firebase);
-
           setError(false);
 
           const processedUser = auth.currentUser.email.replace(/\./g, ",");
 
           console.log("current user", auth.currentUser, "processedUser: ", processedUser);
+
+          setUsername(auth.currentUser.email);
 
           setUser(processedUser);
 
@@ -303,31 +292,7 @@ export default function useFirebase({ section }: UseFirebaseOptions): UseFirebas
     reCreateSession();
   }, []);
 
-  async function getroot(key?: string | string[]): Promise<string> {
-    if (typeof section !== "string" || !section.trim()) {
-      throw th(`getroot: section is not specified`);
-    }
-
-    let processedKey = key;
-    if (Array.isArray(processedKey)) {
-      processedKey = processedKey.join("/");
-    }
-
-    // https://firebase.google.com/docs/reference/security/database#replacesubstring_replacement
-    let internalkey = `users/${user}/${section}`;
-
-    if (typeof processedKey === "string") {
-      internalkey += "/" + processedKey;
-    }
-
-    log.dump({
-      firebase_getroot: internalkey,
-    });
-
-    return internalkey;
-  }
-
-  async function set<T = any>(opt?: FirebaseMutationOptions<T>): Promise<void> {
+  async function set<T = any>(opt?: StateMutationOptions<T>): Promise<void> {
     let { data = {} as T, key } = { ...opt };
 
     let internalkey: string | undefined;
@@ -404,7 +369,11 @@ export default function useFirebase({ section }: UseFirebaseOptions): UseFirebas
     }
   }
 
-  async function push<T = any>(opt?: FirebaseMutationOptions<T>): Promise<string> {
+  /**
+   * Returns only generated key of the new child (not full firebase path) - full path is firebase specific
+   * and must not leak through the universal interface.
+   */
+  async function push<T = any>(opt?: StateMutationOptions<T>): Promise<string> {
     console.log("push...", JSON.stringify(opt));
 
     let { data = {} as T, key } = { ...opt };
@@ -456,7 +425,7 @@ export default function useFirebase({ section }: UseFirebaseOptions): UseFirebas
 
       autoTryToReAuthenticate = true;
 
-      return newid;
+      return newPostKey;
     } catch (e: any) {
       log.dump({
         "push() error:": {
@@ -488,7 +457,7 @@ export default function useFirebase({ section }: UseFirebaseOptions): UseFirebas
     }
   }
 
-  async function get<T = any>(key?: string | string[]): Promise<T> {
+  async function get<T = any>(key?: StateKey): Promise<T> {
     let internalkey: string | undefined;
 
     try {
@@ -576,7 +545,7 @@ export default function useFirebase({ section }: UseFirebaseOptions): UseFirebas
     }
   }
 
-  async function del(key?: string | string[]): Promise<void> {
+  async function del(key?: StateKey): Promise<void> {
     let internalkey: string | undefined;
 
     try {
@@ -651,19 +620,20 @@ export default function useFirebase({ section }: UseFirebaseOptions): UseFirebas
     console.log("expirationData", "no data");
   };
 
+  // debugging helper available only from the browser console - deliberately not part of the returned interface
   window.expirationData = expirationData;
 
+  // only what is defined in UseCustomStateReturn (pages/useCustomState.ts)
   return {
-    firebase,
+    ready: Boolean(user),
     error,
-    user,
+    username,
+    userId: user,
     set,
     get,
     del,
     push,
-    getroot,
-    expirationData,
-    reCreateSession,
+    signIn: reCreateSession,
     signOut: async function (): Promise<void> {
       log("destroy session");
 
@@ -679,6 +649,10 @@ export default function useFirebase({ section }: UseFirebaseOptions): UseFirebas
 
       localStorage.removeItem("idToken");
       localStorage.removeItem("accessToken");
+
+      // flips ready to false
+      setUser(undefined);
+      setUsername(undefined);
     },
   };
 }

@@ -21,7 +21,7 @@ const Main = () => {
   const [text, setText] = useState("");
   const [selectedItem, setSelectedItem] = useState<{ key: string; data: TodoItem } | null>(null);
 
-  const { error, id, set, get, del, push } = useCustomState({
+  const { error, ready, set, get, del, push } = useCustomState({
     section,
   });
 
@@ -36,16 +36,16 @@ const Main = () => {
   };
 
   useEffect(() => {
-    if (id) {
+    if (ready) {
       refreshTodos();
     }
-  }, [id]);
+  }, [ready]);
 
   if (error) {
     return <pre>{JSON.stringify({ error }, null, 4)}</pre>;
   }
 
-  if (!id) {
+  if (!ready) {
     return <div>Connecting to custom state...</div>;
   }
 

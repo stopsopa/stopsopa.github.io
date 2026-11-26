@@ -107,7 +107,7 @@ const Main = ({ portal }) => {
   const [allTabsDataExceptValues, setAllTabsDataExceptValuesDontUseDirectly, getAllTabsDataExceptValuesFetcher] =
     useStateFetcher([]);
 
-  const { error, id, set, get, del, push } = useCustomState({
+  const { error, ready, set, get, del, push } = useCustomState({
     section,
   });
 
@@ -693,17 +693,17 @@ const Main = ({ portal }) => {
     return () => {
       document.removeEventListener("keydown", keydown);
     };
-  }, [id, allTabsDataExceptValues, allEditorsValues, indexeddb]);
+  }, [ready, allTabsDataExceptValues, allEditorsValues, indexeddb]);
 
   useEffect(() => {
-    if (!id || !indexeddb) {
+    if (!ready || !indexeddb) {
       return;
     }
 
     setIsPageFocused(document.hasFocus()); // https://developer.mozilla.org/en-US/docs/Web/API/Document/hasFocus
 
     queue(() => syncAll(), "dontAutoPullTabsAgainWhenItIsAlreadyOnTheEndOfTheQueue");
-  }, [id, indexeddb]);
+  }, [ready, indexeddb]);
 
   // useEffect(() => {
   //   if (!id) {

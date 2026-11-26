@@ -96,7 +96,7 @@ function getProgressColor(percent: number): string {
  * Main Antigravity AI Usage Tracker Component
  */
 export function AntigravityTracker() {
-  const { id, error, get, set, del, signOut } = useCustomState({
+  const { ready, username, error, get, set, del, signIn, signOut } = useCustomState({
     section: "antigravity_cli",
   });
 
@@ -358,10 +358,10 @@ export function AntigravityTracker() {
 
   // Ready gate: initialize data when authenticated user is present
   useEffect(() => {
-    if (id) {
+    if (ready) {
       loadDataRef.current();
     }
-  }, [id]);
+  }, [ready]);
 
   // Always refresh data when page gains focus / visibility
   useEffect(() => {
@@ -859,7 +859,7 @@ export function AntigravityTracker() {
     );
   }
 
-  if (id) {
+  if (ready) {
     const rawAccountEntries = Object.entries(accounts);
 
     // Sort accounts dynamically: if an account is marked 'current', it stays on top.
@@ -916,7 +916,7 @@ export function AntigravityTracker() {
             </div>
             <div className="cf-user-info">
               <span className="cf-user-email" data-testid="user-display">
-                {maskEmail(id.replace(/,/g, "."))}
+                {maskEmail(username || "")}
               </span>
               <button className="cf-btn-signout" onClick={() => signOut()} data-testid="button-signout">
                 Sign out
@@ -2062,8 +2062,12 @@ export function AntigravityTracker() {
     return (
       <div className="cf-app-container">
         <div className="cf-state-screen" data-testid="connecting-screen">
-          <h3>Connecting to Firebase...</h3>
+          <h3>Connecting...</h3>
           <p>Authenticating Antigravity AI service session</p>
+          {/* the only way back in after "Sign out" (ready: false) */}
+          <button onClick={() => signIn()} data-testid="button-signin">
+            Sign in
+          </button>
         </div>
       </div>
     );

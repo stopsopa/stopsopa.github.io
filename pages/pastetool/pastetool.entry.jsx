@@ -12,7 +12,7 @@ const section = "pastetool";
 
 const Wrapper = ({
   error,
-  id,
+  ready,
   set,
   get,
   del,
@@ -57,7 +57,7 @@ function unique(pattern) {
 const Main = () => {
   const [list, setList] = useState(false);
 
-  const { error, id, set, get, del, push, reCreateSession, signOut } = useCustomState({
+  const { error, ready, set, get, del, push, signIn, signOut } = useCustomState({
     section,
   });
 
@@ -108,7 +108,7 @@ const Main = () => {
   };
 
   useEffect(() => {
-    if (id) {
+    if (ready) {
       refreshList();
 
       document.onpaste = async function (event) {
@@ -186,7 +186,7 @@ const Main = () => {
         }
       };
     }
-  }, [id]);
+  }, [ready]);
 
   if (error) {
     return (
@@ -202,7 +202,7 @@ const Main = () => {
     );
   }
 
-  if (!id) {
+  if (!ready) {
     return <div>Connecting to custom state...</div>;
   }
 
@@ -213,7 +213,7 @@ const Main = () => {
   return (
     <>
       <button onClick={signOut}>signOut</button>
-      <button onClick={reCreateSession}>reCreateSession</button>
+      <button onClick={signIn}>signIn</button>
       <button onClick={refreshList}>refreshList</button>
       <button onClick={testSet}>testSet</button>
       <button onClick={testGet}>testGet</button>
@@ -228,7 +228,7 @@ const Main = () => {
               <Wrapper
                 {...{
                   error,
-                  id,
+                  ready,
                   set,
                   get,
                   del,
@@ -247,7 +247,7 @@ const Main = () => {
               <Wrapper
                 {...{
                   error,
-                  id,
+                  ready,
                   set,
                   get,
                   del,

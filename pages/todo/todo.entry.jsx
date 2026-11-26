@@ -45,7 +45,7 @@ function processList(objList, completed) {
 }
 
 const List = ({ completed = null, edit, list = {}, refreshList, setEdit }) => {
-  const { error, id, set, get, del, push } = useCustomState({
+  const { error, ready, set, get, del, push } = useCustomState({
     section,
   });
 
@@ -156,7 +156,7 @@ const List = ({ completed = null, edit, list = {}, refreshList, setEdit }) => {
 };
 
 const Main = () => {
-  const { error, id, set, get, del, push } = useCustomState({
+  const { error, ready, set, get, del, push } = useCustomState({
     section,
   });
 
@@ -171,10 +171,10 @@ const Main = () => {
   };
 
   useEffect(() => {
-    if (id) {
+    if (ready) {
       refreshList();
     }
-  }, [id]);
+  }, [ready]);
 
   if (error) {
     return (
@@ -190,7 +190,7 @@ const Main = () => {
     );
   }
 
-  if (!id) {
+  if (!ready) {
     return <div>Connecting to custom state...</div>;
   }
 

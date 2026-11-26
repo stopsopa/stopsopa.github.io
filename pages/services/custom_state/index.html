@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>useCustomState demo</title>
+    <link rel="stylesheet" href="/css/gcp-css.css" />
+    <link rel="stylesheet" href="/dist/custom_state.entry.bundle.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <hr />
+    <div class="gcp-css">
+      <a href="/viewer.html?file=%2Fpages%2Fdatabases%2Ffirebase%2FUSAGE.md" data-testid="link-usage">USAGE.md</a>
+    </div>
+    <div class="gcp-css">
+      current implementation is firebase:
+      <a href="https://console.firebase.google.com/" data-testid="link-firebase-dashboard"
+        >https://console.firebase.google.com/</a
+      >
+    </div>
+
+    <script src="/public/preprocessed.js?custom_state"></script>
+    <script type="module" src="/dist/firebase.core.entry.bundle.js"></script>
+    <script type="module" src="/dist/custom_state.entry.bundle.js"></script>
+  </body>
+</html>

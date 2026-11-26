@@ -1,0 +1,90 @@
+body {
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 16px;
+}
+
+.cs-demo {
+  section {
+    border: 1px solid #c9c9c9;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    padding: 0 12px 12px;
+  }
+
+  table {
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    width: 100%;
+
+    td {
+      border: 1px solid #e0e0e0;
+      padding: 4px 8px;
+      vertical-align: top;
+
+      &:first-child {
+        font-weight: bold;
+      }
+
+      &:last-child {
+        color: #6b6b6b;
+        font-size: 13px;
+      }
+    }
+  }
+
+  /* form controls and buttons are styled by /css/gcp-css.css (class gcp-css on .cs-demo), here only layout */
+
+  input[type="text"],
+  textarea {
+    font-family: monospace;
+  }
+
+  .cs-buttons {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .cs-heading {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+  }
+
+  pre {
+    background: #f5f5f5;
+    margin: 4px 0;
+    overflow: auto;
+    padding: 6px;
+  }
+
+  td pre {
+    background: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cs-yes {
+    color: #1a7f37;
+    font-weight: bold;
+  }
+
+  .cs-no {
+    color: #c62828;
+    font-weight: bold;
+  }
+
+  .cs-log-entry {
+    border-top: 1px solid #e0e0e0;
+    padding: 6px 0;
+
+    span {
+      color: #6b6b6b;
+      font-size: 12px;
+    }
+  }
+}
