@@ -1,72 +1,55 @@
 
 #
-# Appends given string (usually trailer like "Co-Authored-By: ...") at the end of the message
-# of each commit in given range of current branch.
-# That rewrites history, so all tags pointing to rewritten commits are moved to the new
-# corresponding commits - locally and (after confirmation) on the remote too.
+# Appends string given on stdin at the end of commit messages of current branch (git filter-branch).
+# Works on the repository in current working directory, script itself can live anywhere.
 #
-# String to append is taken from stdin.
-# Works on the git repository found in current working directory (pwd), so call it from inside
-# of the repository you want to rewrite. Script itself can live anywhere.
+# WARNING: it rewrites history - all rewritten commits get new hashes.
+#   Force pushing it overrides history on the remote: other clones and open PRs based on old commits
+#   will diverge, everybody has to re-clone or hard reset. Make sure nobody works on that branch.
 #
-# Steps:
-#   1. validate: hashes exist, first is older (ancestor) than the second, both are in history of HEAD,
-#      no uncommitted changes
-#   2. preview: show few commit messages as they will look after the change and ask:
-#      continue / edit the string to append (in ${EDITOR}, then preview again) / quit
-#   3. rewrite (git filter-branch): messages of commits in range are extended,
-#      newer commits (up to HEAD) are only recreated on top with untouched messages
-#   4. list moved tags and ask if force push those which exist on the remote
+# Usage (more: --help):
 #
-# Usage:
+#   # entire history, skip commits which message matches regex 'Claude'
+#   cat <<EEE | /bin/bash bash/git/git-coauthor-rewrite.sh --nmatch 'Claude'
+#   npm ci fails on CI with npm 11.7+: @emnapi/core and @emnapi/runtime
+#   2.0.0-beta.2 are required by an optional peer but missing from the lock.
+#   Regenerated with npm 11.9.0; package.json unchanged.
 #
-#   # no hashes: entire history of current branch (from root commit to HEAD)
-#   echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash bash/git/git-coauthor-rewrite.sh --nmatch 'Claude'
+#   Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>
+#   EEE
 #
-#   # from given commit (inclusive) to HEAD
-#   echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash bash/git/git-coauthor-rewrite.sh a374d0e3
+#   # one hash: from that commit (inclusive) to HEAD
+#   cat <<EEE | /bin/bash bash/git/git-coauthor-rewrite.sh --nmatch '^Co-[Aa]uthored-[Bb]y:' a374d0e3
+#   Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>
+#   EEE
 #
-#   # from older commit to newer commit (both inclusive), commits after f116f56c keep their messages
-#   echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash bash/git/git-coauthor-rewrite.sh a374d0e3 f116f56c
+#   # two hashes: from older to newer (both inclusive), commits after f116f56c keep their messages
+#   cat <<EEE | /bin/bash bash/git/git-coauthor-rewrite.sh --nmatch '^Co-[Aa]uthored-[Bb]y: (Claude|Copilot)' a374d0e3 f116f56c
+#   Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>
+#   EEE
 #
-#   # multiline string
-# cat <<EEE | /bin/bash /Users/szdz/Workspace/SPECIAL_web/SPECIAL_web/bash/git/git-coauthor-rewrite.sh  --nmatch 'Claude'
-# npm ci fails on CI with npm 11.7+: @emnapi/core and @emnapi/runtime
-# 2.0.0-beta.2 are required by an optional peer but missing from the lock.
-# Regenerated with npm 11.9.0; package.json unchanged.
-
-# Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>
-# EEE
+# What happens:
+#   1. validation: hashes exist, first older than second, both in history of HEAD, no uncommitted changes
+#   2. preview of few changed messages, then: continue / edit the string in ${EDITOR} / quit
+#   3. rewrite. Skipped (message untouched): commits already containing the string
+#      and commits where any line matches --nmatch (grep -E, case sensitive)
+#   4. tags: every tag pointing to rewritten commit is moved to its new counterpart (the same place in history)
+#      - locally automatically, for the remote only command is printed (force push of tags existing there)
+#   Script never pushes anything, it only prints commands to run.
 #
-#   # append only to commits which message does NOT match given regex (--nmatch can be anywhere among arguments)
-#   echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash bash/git/git-coauthor-rewrite.sh --nmatch '^Co-[Aa]uthored-[Bb]y: Claude' a374d0e3
+# New lines: string is separated from the message with one empty line, unless message already ends with
+#   trailers block and the string is a trailer too - then it is added directly under, to keep one block.
 #
-#   # skip commits which have any co-author already, range from older to newer commit
-#   echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash bash/git/git-coauthor-rewrite.sh a374d0e3 f116f56c --nmatch '^Co-[Aa]uthored-[Bb]y:'
+# After it finishes (the same commands are printed at the end):
+#   git log                                              # check the result
+#   git diff refs/original/refs/heads/<branch> HEAD      # should print nothing, files are not changed
+#   git push --force-with-lease <remote> <branch>        # DANGER: overrides history on the remote
+#   git push --force <remote> refs/tags/<tag> ...        # DANGER: moves tags on the remote
+#   git reset --hard refs/original/refs/heads/<branch>   # undo (local branch only, before cleanup)
+#   git for-each-ref --format='%(refname)' refs/original | xargs -n 1 git update-ref -d   # cleanup of backup
 #
-#   # skip commits co-authored by Claude or Copilot, in any model version
-#   echo "Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>" | /bin/bash bash/git/git-coauthor-rewrite.sh a374d0e3 --nmatch '^Co-[Aa]uthored-[Bb]y: (Claude|Copilot)'
-#
-#   # print help
-#   /bin/bash bash/git/git-coauthor-rewrite.sh --help
-#
-# --nmatch 'regex':
-#   - extended regex (grep -E), case sensitive, tested against each line of the commit message separately
-#     (so ^ and $ mean beginning and end of a line)
-#   - if any line matches then the commit message is left untouched
-#
-# New lines:
-#   - leading and trailing empty lines of the string and of the commit message are removed
-#   - string is separated from the message with one empty line
-#   - exception: when message already ends with trailers block (e.g. other Co-Authored-By) and the string
-#     is a trailer too, then it is added directly under (no empty line) to keep one valid trailers block
-#   - commits which already contain the string are left untouched (safe to run twice)
-#
-# Other:
-#   - branch itself is NOT pushed by this script, command to do it is printed at the end
-#   - previous state of rewritten refs is kept by git in refs/original/ (undo instruction printed at the end)
-#   - signatures of rewritten commits and annotated tags are lost (nature of rewriting)
-#   - --msg-filter as first argument is internal mode used by git filter-branch (message on stdin -> new message on stdout)
+# Other: signatures of rewritten commits and annotated tags are lost.
+#   --msg-filter as first argument is internal mode used by git filter-branch.
 #
 
 _SHELL="$(ps -p $$ -o comm=)"; # bash || sh || zsh
@@ -177,7 +160,7 @@ while [[ "${#}" -gt 0 ]]; do
 
 Appends string given on stdin at the end of the message of each commit in given range
 of current branch (rewrites history) and moves tags to the rewritten commits
-(locally, and on the remote after confirmation).
+(locally only - nothing is pushed, commands to push branch and tags are printed at the end).
 Works on the git repository in current working directory.
 
 Usage:
@@ -480,69 +463,53 @@ done <<< "$(cat "${TMP}/tags_after.txt")"
 REMOTE="$(git config "branch.${BRANCH}.remote")"
 REMOTE="${REMOTE:-origin}"
 
+# Command moving tags on the remote - only printed, never executed by this script.
+# Limited to moved tags which exist on the remote (read only git ls-remote),
+# if the remote can't be listed then all moved tags are proposed.
+TO_PUSH=("${MOVED[@]}")
+if git ls-remote --tags "${REMOTE}" > "${TMP}/tags_remote.txt" 2>/dev/null; then
+  TO_PUSH=()
+  for TAG_REF in "${MOVED[@]}"; do
+    if grep -qE "[[:space:]]${TAG_REF}\$" "${TMP}/tags_remote.txt"; then
+      TO_PUSH+=("${TAG_REF}")
+    fi
+  done
+fi
+
+TAGS_COMMAND="# no moved tags exist on the remote, nothing to push"
+if [[ "${#TO_PUSH[@]}" -gt 0 ]]; then
+  TAGS_COMMAND="git push --force ${REMOTE} ${TO_PUSH[*]}"
+fi
+
 cat <<EEE
 
 ${GREEN}history rewritten${RESET}
 
 tags moved locally: ${#MOVED[@]} ${GRAY}${MOVED[*]#refs/tags/}${RESET}
 
-branch is not pushed by this script, to do it:
+What next:
+
+  # check the result
+  git log
+
+  # should print nothing, files are not changed
+  git diff refs/original/refs/heads/${BRANCH} HEAD
+
+  # undo (local branch only, works until cleanup below)
+  git reset --hard refs/original/refs/heads/${BRANCH}
+${RED}${BOLD}
+  WARNING: two commands below override history (branch >${BRANCH}< and tags) on remote >${REMOTE}<.
+  All rewritten commits have new hashes. Other clones and open PRs based on old commits
+  will diverge - everybody has to re-clone or hard reset. It can't be undone on the remote
+  once old commits are garbage collected there. Make sure nobody else works on that branch.
+${RESET}
+  # push the branch
   git push --force-with-lease ${REMOTE} ${BRANCH}
 
-previous state is kept in refs/original/, to undo the branch:
-  git reset --hard refs/original/refs/heads/${BRANCH}
+  # move tags on the remote to the same places in the new history
+  ${TAGS_COMMAND}
+
+  # cleanup of backup refs, when sure all is fine
+  git for-each-ref --format='%(refname)' refs/original | xargs -n 1 git update-ref -d
 
 EEE
-
-# ---------------------------------------------------------------------------------------------
-# move tags on the remote
-# ---------------------------------------------------------------------------------------------
-
-if [[ "${#MOVED[@]}" -eq 0 ]]; then
-  exit 0
-fi
-
-if ! git remote get-url "${REMOTE}" >/dev/null 2>&1; then
-  echo "remote >${REMOTE}< doesn't exist, skipping remote tags"
-  exit 0
-fi
-
-if ! git ls-remote --tags "${REMOTE}" > "${TMP}/tags_remote.txt"; then
-  echo "${0} error: can't list tags of remote >${REMOTE}<"
-  exit 1
-fi
-
-# only tags which already exist on the remote
-TO_PUSH=()
-for TAG_REF in "${MOVED[@]}"; do
-  if grep -qE "[[:space:]]${TAG_REF}\$" "${TMP}/tags_remote.txt"; then
-    TO_PUSH+=("${TAG_REF}")
-  fi
-done
-
-if [[ "${#TO_PUSH[@]}" -eq 0 ]]; then
-  echo "none of moved tags exist on remote >${REMOTE}<, nothing to push"
-  exit 0
-fi
-
-cat <<EEE
-${YELLOW}
-tags to force push to remote >${REMOTE}<:
-${TO_PUSH[*]#refs/tags/}
-${RESET}
-EEE
-
-read -r -p "force push these tags to ${REMOTE}? [y/N]: " ANSWER < /dev/tty
-
-if [[ "${ANSWER}" == "y" || "${ANSWER}" == "Y" ]]; then
-  if ! git push --force "${REMOTE}" "${TO_PUSH[@]}"; then
-    echo "${0} error: pushing tags to remote >${REMOTE}< failed"
-    exit 1
-  fi
-  echo "${GREEN}remote tags moved${RESET}"
-else
-  cat <<EEE
-skipped, to do it later:
-  git push --force ${REMOTE} ${TO_PUSH[*]}
-EEE
-fi
