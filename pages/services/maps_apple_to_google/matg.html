@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Apple Maps to Google Maps link converter</title>
     <link rel="stylesheet" href="/css/gcp-css.css" />
+    <!-- css of matg.entry.tsx ("Saved links" card): only components/Modal.css ends up here -->
+    <link rel="stylesheet" href="/dist/matg.entry.bundle.css" />
     <style>
       /*
         Form controls, buttons, links, h2 and p are styled by /css/gcp-css.css (class gcp-css, see gcp-css skill).
@@ -171,26 +173,13 @@
         }
       }
 
-      /* tinted block with coloured left bar */
+      /*
+        Status of the conversion: <alert-box> web component (alert-webcomponent skill).
+        Its look lives in shadow DOM, only the host and the slotted content can be styled from here.
+      */
       #matg-status {
-        margin-top: 12px;
-        padding: 10px 12px;
+        margin: 12px 0 0;
         font-size: 14px;
-        background: var(--bg-secondary);
-        border-left: 4px solid var(--text-muted);
-        border-radius: 4px;
-
-        &.ok {
-          border-left-color: var(--green);
-        }
-
-        &.warn {
-          border-left-color: var(--yellow);
-        }
-
-        &.error {
-          border-left-color: var(--red);
-        }
 
         ol {
           margin: 6px 0 0;
@@ -263,6 +252,77 @@
         }
       }
 
+      /* ── "Saved links" card, rendered by matg.entry.tsx ── */
+      .saved-message {
+        min-height: 18px;
+        margin: 6px 0;
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+
+      /* one saved link: [name + date + link] [delete] */
+      .saved-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          padding: 8px 0;
+          border-top: 1px solid var(--bg-tertiary);
+        }
+
+        .saved-main {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .saved-name {
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--header);
+        }
+
+        .saved-date {
+          margin-left: 8px;
+          font-size: 12px;
+          color: var(--text-muted);
+        }
+
+        /* long url inside gcp-css secondary button - let it wrap */
+        .saved-link {
+          display: block;
+          height: auto;
+          padding: 4px 0;
+          line-height: 1.4;
+          text-align: left;
+          word-break: break-all;
+          white-space: normal;
+        }
+      }
+
+      .saved-modal-body {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 14px;
+        word-break: break-all;
+      }
+
+      .saved-modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+
+        /* destructive action: gcp-css primary button in error colour */
+        .saved-danger {
+          --gcp-css-primary: var(--red);
+          --gcp-css-primary-hover: #b3261e;
+        }
+      }
+
       /* checkbox "copy automatically" (gcp-css checkbox-wrapper) */
       .options {
         --gcp-css-field-gap: 0;
@@ -270,8 +330,60 @@
         margin-top: 12px;
       }
 
+      /* <alert-box> with the table of link parameters */
+      #matg-breakdown {
+        margin: 0 0 16px;
+
+        /*
+          The table sits on light blue background of the alert: gray chips and gray lines from the general
+          table / code styles below blend with it. Here: white chips with dark text, darker lines.
+        */
+        table {
+          margin-top: 6px;
+
+          th,
+          td {
+            border-bottom-color: rgba(9, 105, 218, 0.25);
+          }
+
+          th {
+            color: var(--header);
+          }
+
+          code {
+            color: var(--header);
+            background: #fff;
+            border: 1px solid rgba(9, 105, 218, 0.25);
+          }
+
+          /* params which didn't make it to the google link: readable, just struck out (no opacity) */
+          td.dropped {
+            opacity: 1;
+
+            code {
+              color: var(--text-muted);
+              text-decoration: line-through;
+            }
+
+            &:last-child code {
+              color: var(--red);
+              text-decoration: none;
+            }
+          }
+        }
+      }
+
+      /* <alert-box>: its look lives in shadow DOM, only the host and the slotted content can be styled from here */
       #matg-apikey {
+        margin: 0 0 16px;
         font-size: 14px;
+
+        /* the same reason as in #matg-breakdown: gray chips blend with light blue background of the alert */
+        code {
+          color: var(--header);
+          background: #fff;
+          border: 1px solid rgba(9, 105, 218, 0.25);
+        }
 
         p {
           margin: 0 0 8px;
@@ -354,8 +466,11 @@
               <a id="matg-link" data-testid="link" target="_blank" rel="noopener noreferrer"></a>
             </div>
 
-            <!-- outside of any gcp-css wrapper on purpose: js sets class "error" on it, which gcp-css uses inside wrappers -->
-            <div id="matg-status" data-testid="status" hidden></div>
+            <!--
+              alert-box web component (alert-webcomponent skill), type is set from js in setStatus().
+              Outside of any gcp-css wrapper on purpose: js sets class "error" on it, which gcp-css uses inside wrappers
+            -->
+            <alert-box id="matg-status" data-testid="status" hidden></alert-box>
 
             <div class="checkbox-wrapper options">
               <input id="matg-autocopy" data-testid="autocopy" type="checkbox" />
@@ -363,8 +478,14 @@
             </div>
           </section>
 
-          <section id="matg-breakdown" data-testid="breakdown" hidden>
-            <h2>What happened to the link parameters</h2>
+          <!-- alert-box web component (alert-webcomponent skill), the title is its label -->
+          <alert-box
+            id="matg-breakdown"
+            type="note"
+            alert="What happened to the link parameters"
+            data-testid="breakdown"
+            hidden
+          >
             <table>
               <thead>
                 <tr>
@@ -375,15 +496,13 @@
               </thead>
               <tbody></tbody>
             </table>
-          </section>
+          </alert-box>
 
-          <section>
-            <h2>Examples (click to try)</h2>
-            <ul id="matg-examples" class="list" data-testid="examples"></ul>
-          </section>
+          <!-- React island: matg.entry.tsx (saved Apple links in useCustomState) -->
+          <section id="matg-saved" data-testid="saved"></section>
 
-          <section id="matg-apikey" data-testid="apikey">
-            <h2>Google Maps API key (optional)</h2>
+          <!-- alert-box web component (alert-webcomponent skill), the title is its label -->
+          <alert-box id="matg-apikey" type="note" alert="Google Maps API key (optional)" data-testid="apikey">
             <p>
               The map on the right works without any key. Official way of embedding Google map needs free "Maps Embed
               API" key though. It is not a secret - it is visible in the url of the map iframe - it is protected by
@@ -410,6 +529,11 @@
                 server
               </li>
             </ol>
+          </alert-box>
+
+          <section>
+            <h2>Examples (click to try)</h2>
+            <ul id="matg-examples" class="list" data-testid="examples"></ul>
           </section>
         </div>
 
@@ -431,6 +555,7 @@
     </div>
 
     <script src="/public/preprocessed.js"></script>
+    <script src="https://stopsopa.github.io/alert-webcomponent/alert-box.js"></script>
     <script type="module">
       // convert.js is transpiled from convert.ts (flat mode, see pages/services/SERVICES_RULES.md)
       import { convert, convertShort } from "./convert.js";
@@ -444,6 +569,9 @@
        * When not defined keyless embed is used.
        */
       const MAPS_KEY = window.process?.env?.PUBLIC_GOOGLE_MAPS_EMBED_KEY || "";
+
+      // default type of the map in the iframe (keyless embed): "p" = terrain
+      const MAP_TYPE = "p";
 
       const EXAMPLES = [
         "https://maps.apple.com/place?coordinate=55.119257,-6.659260&name=62%20Mountsandel%20Road&map=explore",
@@ -523,9 +651,13 @@
           })}`;
         }
 
-        // keyless embed
+        /**
+         * keyless embed
+         * t - map type: m = roadmap, k = satellite, h = hybrid, p = terrain. Terrain is the default here.
+         * (official Maps Embed API above has no terrain: its "maptype" accepts only roadmap | satellite)
+         */
         if (directions && origin) {
-          const out = new URLSearchParams({ saddr: origin, daddr: destination, output: "embed" });
+          const out = new URLSearchParams({ saddr: origin, daddr: destination, t: MAP_TYPE, output: "embed" });
           const dirflg = { driving: "d", walking: "w", transit: "r", bicycling: "b" }[mode];
 
           if (dirflg) {
@@ -539,13 +671,26 @@
         return `https://maps.google.com/maps?${new URLSearchParams({
           q: destination || p.get("query"),
           z: "15",
+          t: MAP_TYPE,
           output: "embed",
         })}`;
       }
 
+      // our status -> type (and so colour, icon and label) of <alert-box>
+      const ALERT_TYPES = { ok: "tip", warn: "warning", error: "caution" };
+
+      // labels instead of default "Tip" / "Warning" / "Caution" of the component
+      const ALERT_LABELS = { ok: "Converted", warn: "Short link", error: "Error" };
+
+      /**
+       * type: "ok" | "warn" | "error" | null (null hides the box)
+       * Class with our type is kept on the element too (tests / debugging).
+       */
       function setStatus(type, html) {
         status.hidden = !type;
         status.className = type || "";
+        status.setAttribute("type", ALERT_TYPES[type] || "note");
+        status.setAttribute("alert", ALERT_LABELS[type] || "");
         status.innerHTML = html || "";
       }
 
@@ -687,7 +832,7 @@
 
         if (!google && isShort(apple)) {
           showResult(null, null);
-          setStatus("warn", "Short link - asking Apple where it points...");
+          setStatus("warn", "Asking Apple where it points...");
 
           try {
             // will work only if the browser is allowed to read the redirect (CORS), normally it is not
@@ -708,7 +853,7 @@
 
             setStatus(
               "warn",
-              `Short link - the id in it is opaque and only Apple's server knows where it points, and browser is not allowed to ask from this page (CORS).
+              `The id in it is opaque and only Apple's server knows where it points, and browser is not allowed to ask from this page (CORS).
               <ol>
                 <li>${a.outerHTML}</li>
                 <li>Apple will redirect to long <code>https://maps.apple.com/...</code> link</li>
@@ -752,6 +897,22 @@
         input.value = value;
         process(pasted);
       }
+
+      /**
+       * Bridge for the "Saved links" React island (matg.entry.tsx):
+       * getAppleLink() - Apple Maps link currently in the input (picked out of pasted text), "" when there is none
+       * setInput(value) - loads saved link back into the converter
+       */
+      window.matg = {
+        getAppleLink() {
+          const apple = extract(input.value);
+
+          return /^https?:\/\/maps\.apple(\.com)?\//i.test(apple) ? apple : "";
+        },
+        setInput(value) {
+          setInput(value);
+        },
+      };
 
       // --- events ---
 
@@ -825,5 +986,8 @@
         setInput(initial);
       }
     </script>
+    <!-- "Saved links" card: storage (useCustomState) needs the firebase bridge loaded before the bundle -->
+    <script type="module" src="/dist/firebase.core.entry.bundle.js"></script>
+    <script type="module" src="/dist/matg.entry.bundle.js"></script>
   </body>
 </html>
