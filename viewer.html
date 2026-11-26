@@ -18,13 +18,16 @@
         background: #fff;
         min-height: 50px;
       }
-      /* not markdown file: no tab buttons, only "source" tab (ACE) is visible - see pages/viewer/viewer.entry.md */
-      [data-vanilla-tabs][data-md="0"] > [data-buttons] {
+      /* not markdown file: no "rendered" button, tabs are: source, links - see pages/viewer/viewer.entry.md */
+      [data-vanilla-tabs][data-md="0"] > [data-buttons] > :first-child {
         display: none;
       }
+      .viewer-links {
+        padding: 8px;
+      }
       body input,
-      #root > label > input,
-      #root > label > a {
+      #root label > input,
+      #root label > a {
         width: 100%;
         margin-bottom: 1px;
         border: 1px solid #f6f6f6;

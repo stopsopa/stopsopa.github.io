@@ -30,6 +30,13 @@ Object.keys(mimesMap).forEach((k) => {
   mimes[k.toLowerCase().split(";")[0]] = mimesMap[k];
 });
 
+/**
+ * Names of tabs in the order of buttons/panels in the DOM (index in this array = index for vanilla-tabs).
+ * All three are always in the DOM, for not markdown files button "rendered" is hidden by css.
+ * More in viewer.entry.md
+ */
+const tabsOrder = ["rendered", "source", "meta", "links"];
+
 function Viewer() {
   const zz = "urlw" + "izzard.schema://url" + "wizzard.hostnegotiated";
 
@@ -44,16 +51,32 @@ function Viewer() {
   }
 
   /**
-   * Selected tab of markdown mode is kept in the url:
-   *   /viewer.html?file=...             - "rendered" (default, no extra parameter)
-   *   /viewer.html?file=...&tab=source  - "source"
+   * Selected tab is kept in the url. First visible tab is default and has no parameter:
+   *   markdown file:
+   *     /viewer.html?file=...      - "rendered" (default)
+   *     /viewer.html?file=...&t=s  - "source"
+   *     /viewer.html?file=...&t=m  - "meta"
+   *     /viewer.html?file=...&t=l  - "links"
+   *   any other file:
+   *     /viewer.html?file=...      - "source" (default)
+   *     /viewer.html?file=...&t=m  - "meta"
+   *     /viewer.html?file=...&t=l  - "links"
+   *
+   * To keep urls short parameter is one letter "t" and its value is the first letter of the tab name
+   * (so first letters of names in tabsOrder have to be unique).
+   *
+   * State 'tab' is full name of the tab found by the letter from the url (empty string when not present/unknown),
+   * what is really shown is resolved in 'activeTab' below.
    */
   function getTab() {
-    if (new URL(window.location.href).searchParams.get("tab") === "source") {
-      return "source";
-    }
+    const letter = new URL(window.location.href).searchParams.get("t") || "";
 
-    return "rendered";
+    return tabsOrder.find((name) => name[0] === letter) || "";
+  }
+
+  // "source" -> "&t=s"
+  function tabParam(name) {
+    return `&t=${name[0]}`;
   }
 
   const [tab, setTab] = useState(getTab());
@@ -121,8 +144,8 @@ function Viewer() {
         if (!dontPush) {
           window.history.pushState({}, "", changed);
 
-          // new file submitted by user - back to default tab (url in 'changed' has no &tab=...)
-          setTab("rendered");
+          // new file submitted by user - back to default tab (url in 'changed' has no &t=...)
+          setTab("");
         }
 
         res = await fetch(customFile);
@@ -171,47 +194,60 @@ function Viewer() {
   }, []);
 
   /**
-   * Markdown mode: when loaded file is markdown we render vanilla-tabs:
-   *   tab 1 - markdown rendered by <zero-md> (the same library as in pages/services/encryptor)
-   *   tab 2 - raw source in ACE editor (as for any other file)
+   * Tabs (vanilla-tabs) are rendered always:
+   *   "rendered" - only for markdown: rendered by <zero-md> (the same library as in pages/services/encryptor)
+   *   "source"   - raw source in ACE editor
+   *   "meta"     - extracted meta (content-type header, resolved ACE mode, map of mimes) as json in ACE editor
+   *   "links"    - generated links to this viewer / to the file (inputs to copy from)
    * More in viewer.entry.md
    *
-   * Tabs markup is rendered always (also for not markdown files) - only buttons are hidden by css ([data-md="0"])
-   * and "source" tab is forced. This way <Ace> is never unmounted (unmounting and mounting it again on every
-   * loaded file is fragile and pointless).
+   * All buttons and panels are always in the DOM (for not markdown files button "rendered" is hidden
+   * by css [data-md="0"]). This way number of buttons and panels never changes and <Ace> is never unmounted
+   * (unmounting and mounting it again on every loaded file is fragile and pointless).
    */
   const isMarkdown = ace.mime === "markdown";
+
+  // first visible tab - the one without parameter in the url
+  const defaultTab = isMarkdown ? "rendered" : "source";
+
+  // "rendered" requested for not markdown file or unknown name -> default
+  const activeTab = tabsOrder.includes(tab) && (isMarkdown || tab !== "rendered") ? tab : defaultTab;
+
+  // appended to all generated links with ?file=... below
+  const tabSuffix = activeTab === defaultTab ? "" : tabParam(activeTab);
 
   const tabsRef = useRef(null);
 
   /**
    * Tabs are added to the DOM after github.js finished its init, so nothing activates initial tab for us.
    * We do it manually. allLoaded.push() runs callback immediately when github.js is already initialised.
-   * markdown -> open tab from state 'tab' ("rendered" - 0, "source" - 1), anything else -> "source" tab (1)
    */
   useEffect(() => {
     window.allLoaded = window.allLoaded || [];
 
     window.allLoaded.push(() => {
       if (tabsRef.current) {
-        const index = isMarkdown && tab === "rendered" ? 0 : 1;
+        const activeIndex = tabsOrder.indexOf(activeTab);
 
-        window.vanillaTabs.activeByIndex(tabsRef.current, index, {
+        window.vanillaTabs.activeByIndex(tabsRef.current, activeIndex, {
           onChange: ({ index }) => {
             // ACE created in hidden tab has no dimensions - resize event makes it recalculate when tab is shown
             window.dispatchEvent(new Event("resize"));
 
             /**
              * Memorise clicked tab in the url (replaceState - switching tabs doesn't create history entries).
-             * Only for markdown - for other files "source" tab is forced and it is not user's choice.
+             * onChange is called also for our own activeByIndex() above - then index is equal to activeIndex
+             * and there is nothing to memorise. Different index means click of the user.
              */
-            if (isMarkdown) {
-              const clicked = index === 1 ? "source" : "rendered";
+            if (index !== activeIndex) {
+              const clicked = tabsOrder[index];
 
               window.history.replaceState(
                 {},
                 "",
-                `${location.pathname}?file=${encodeURIComponent(getFile())}${clicked === "source" ? "&tab=source" : ""}`
+                `${location.pathname}?file=${encodeURIComponent(getFile())}${
+                  clicked === defaultTab ? "" : tabParam(clicked)
+                }`
               );
 
               setTab(clicked);
@@ -220,65 +256,28 @@ function Viewer() {
         });
       }
     });
-  }, [isMarkdown, tab]);
-
-  // appended to all generated links with ?file=... below
-  const tabSuffix = isMarkdown && tab === "source" ? "&tab=source" : "";
+  }, [isMarkdown, activeTab]);
 
   return (
     <>
       <form onSubmit={onSubmit}>
-        <input type="search" onChange={(e) => setFile(e.target.value)} value={file} />
+        <input type="search" onChange={(e) => setFile(e.target.value)} value={file} data-testid="viewer-file" />
       </form>
 
       <br />
-
-      <label>
-        <span>href:</span>
-        <input
-          type="search"
-          readOnly
-          value={`${location.protocol}//${location.host}${location.pathname}?file=${encodeURIComponent(file)}${tabSuffix}`}
-        />
-      </label>
-
-      <label>
-        <span>pathname + search:</span>
-        <input type="search" readOnly value={`${location.pathname}?file=${encodeURIComponent(file)}${tabSuffix}`} />
-      </label>
-
-      <label>
-        <span>zz + href:</span>
-        <input
-          type="search"
-          readOnly
-          value={`${zz}${location.pathname}?file=${encodeURIComponent(file)}${tabSuffix}`}
-          style={{ color: "green" }}
-        />
-      </label>
-
-      <label>
-        <span>zz + file:</span>
-        <input type="search" readOnly value={`${zz}${file}`} style={{ color: "red" }} />
-      </label>
-
-      <label>
-        <span>download</span>
-        <a href={file} download>
-          {file}
-        </a>
-      </label>
 
       <div
         data-vanilla-tabs
         data-md={isMarkdown ? "1" : "0"}
         ref={tabsRef}
         style={{ "--background-color": "white" }}
-        data-testid="viewer-md-tabs"
+        data-testid="viewer-tabs"
       >
         <div data-buttons>
-          <span data-testid="viewer-md-tab-rendered">rendered</span>
-          <span data-testid="viewer-md-tab-source">source</span>
+          <span data-testid="viewer-tab-rendered">rendered</span>
+          <span data-testid="viewer-tab-source">source</span>
+          <span data-testid="viewer-tab-meta">meta</span>
+          <span data-testid="viewer-tab-links">links</span>
         </div>
         <div data-tabs>
           <div>
@@ -291,24 +290,78 @@ function Viewer() {
           <div>
             <Ace content={ace.value || ""} lang={ace.mime || "text"} />
           </div>
+          <div>
+            <Ace
+              content={(function ({ value, ...rest }) {
+                return JSON.stringify(
+                  {
+                    ...rest,
+                    mimes,
+                  },
+                  null,
+                  4
+                );
+              })(ace)}
+              lang="json"
+            />
+          </div>
+          <div>
+            <div className="viewer-links" data-testid="viewer-links">
+              <label>
+                <span>href:</span>
+                <input
+                  type="search"
+                  readOnly
+                  value={`${location.protocol}//${location.host}${location.pathname}?file=${encodeURIComponent(
+                    file
+                  )}${tabSuffix}`}
+                  data-testid="viewer-link-href"
+                />
+              </label>
+
+              <label>
+                <span>pathname + search:</span>
+                <input
+                  type="search"
+                  readOnly
+                  value={`${location.pathname}?file=${encodeURIComponent(file)}${tabSuffix}`}
+                  data-testid="viewer-link-pathname-search"
+                />
+              </label>
+
+              <label>
+                <span>zz + href:</span>
+                <input
+                  type="search"
+                  readOnly
+                  value={`${zz}${location.pathname}?file=${encodeURIComponent(file)}${tabSuffix}`}
+                  style={{ color: "green" }}
+                  data-testid="viewer-link-zz-href"
+                />
+              </label>
+
+              <label>
+                <span>zz + file:</span>
+                <input
+                  type="search"
+                  readOnly
+                  value={`${zz}${file}`}
+                  style={{ color: "red" }}
+                  data-testid="viewer-link-zz-file"
+                />
+              </label>
+
+              <label>
+                <span>download</span>
+                <a href={file} download data-testid="viewer-link-download">
+                  {file}
+                </a>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
-      <h3>extracted meta</h3>
-
-      <Ace
-        content={(function ({ value, ...rest }) {
-          return JSON.stringify(
-            {
-              ...rest,
-              mimes,
-            },
-            null,
-            4
-          );
-        })(ace)}
-        lang="json"
-      />
       <br />
       <br />
     </>
