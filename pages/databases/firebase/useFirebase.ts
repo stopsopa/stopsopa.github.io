@@ -11,7 +11,12 @@
 
 import { useEffect, useState } from "react";
 
-import type { UseCustomStateOptions, UseCustomStateReturn, StateMutationOptions, StateKey } from "../../useCustomState.ts";
+import type {
+  UseCustomStateOptions,
+  UseCustomStateReturn,
+  StateMutationOptions,
+  StateKey,
+} from "../../useCustomState.ts";
 
 // @ts-ignore
 import log from "inspc";

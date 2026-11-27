@@ -496,11 +496,7 @@ export default function EventList({
                   >
                     Cancel
                   </button>
-                  <button
-                    data-testid={`atp-edit-save-${i}`}
-                    type="button"
-                    onClick={handleEditSave}
-                  >
+                  <button data-testid={`atp-edit-save-${i}`} type="button" onClick={handleEditSave}>
                     Done
                   </button>
                 </div>

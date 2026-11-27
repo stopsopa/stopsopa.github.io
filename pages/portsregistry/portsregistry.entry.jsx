@@ -288,9 +288,7 @@ const Main = () => {
 
         <div className="pr-card">
           <div className="pr-list-head">
-            <h2>
-              Registered ports ({list.length === all.length ? all.length : `${list.length} of ${all.length}`})
-            </h2>
+            <h2>Registered ports ({list.length === all.length ? all.length : `${list.length} of ${all.length}`})</h2>
             <div className="input-wrapper">
               <input
                 type="search"

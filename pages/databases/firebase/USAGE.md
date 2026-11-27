@@ -42,18 +42,18 @@ That is the complete interface (contract: `UseCustomStateReturn` in `pages/useCu
 Firebase is only the current implementation (`pages/databases/firebase/useFirebase.ts`) and can be swapped in
 `pages/useCustomState.ts` without touching components. Don't import `useFirebase.ts` in components.
 
-| field      | meaning                                                                                       |
-| ---------- | --------------------------------------------------------------------------------------------- |
-| `ready`    | `false` during authentication, `true` when all methods are ready to use                       |
-| `error`    | `false` or error object                                                                       |
-| `username` | human readable user name (Firebase: email `john.doe@gmail.com`), `undefined` when not ready   |
-| `userId`   | stable unique user id (Firebase: `john,doe@gmail,com`), `undefined` when not ready            |
-| `get`      | read value / subtree                                                                          |
-| `set`      | write (overwrite) value / subtree                                                             |
-| `push`     | add new child with generated key, returns that key                                            |
-| `del`      | remove value / subtree                                                                        |
-| `signOut`  | destroy the session, `ready` goes back to `false`                                             |
-| `signIn`   | authenticate again (after `signOut` or error), `ready` goes to `true` when done               |
+| field      | meaning                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| `ready`    | `false` during authentication, `true` when all methods are ready to use                     |
+| `error`    | `false` or error object                                                                     |
+| `username` | human readable user name (Firebase: email `john.doe@gmail.com`), `undefined` when not ready |
+| `userId`   | stable unique user id (Firebase: `john,doe@gmail,com`), `undefined` when not ready          |
+| `get`      | read value / subtree                                                                        |
+| `set`      | write (overwrite) value / subtree                                                           |
+| `push`     | add new child with generated key, returns that key                                          |
+| `del`      | remove value / subtree                                                                      |
+| `signOut`  | destroy the session, `ready` goes back to `false`                                           |
+| `signIn`   | authenticate again (after `signOut` or error), `ready` goes to `true` when done             |
 
 Authentication (popup with choice of google account, tokens, re-authentication) happens behind the scene
 when the hook is mounted. Component only watches `ready`.

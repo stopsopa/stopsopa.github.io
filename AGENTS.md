@@ -215,16 +215,16 @@ Page hooks:
 
 `<body class="layout bg" toc>` is the standard. Attributes (presence only, no value):
 
-| attribute          | effect                                                                         |
-| ------------------ | ------------------------------------------------------------------------------ |
-| `toc`              | generate Table of Contents (see below)                                         |
-| `wide`             | `.inside` gets `max-width: 90%` instead of 900px (css/main.css)                |
-| `nohead`           | don't create `<header>` (pipeline badge linking to /index.html)                |
-| `nofoot`           | don't create `<footer>`                                                        |
-| `nogithublink`     | hide "edit" ribbon **and** the burger menu in the top left corner              |
-| `noprofileribbon`  | hide "profile" ribbon                                                          |
-| `no-anchor-links`  | skip js/addAnchorLinks.js - headings get no ids, so TOC will be empty too      |
-| `no-main-css`      | don't load /css/main.css                                                       |
+| attribute         | effect                                                                    |
+| ----------------- | ------------------------------------------------------------------------- |
+| `toc`             | generate Table of Contents (see below)                                    |
+| `wide`            | `.inside` gets `max-width: 90%` instead of 900px (css/main.css)           |
+| `nohead`          | don't create `<header>` (pipeline badge linking to /index.html)           |
+| `nofoot`          | don't create `<footer>`                                                   |
+| `nogithublink`    | hide "edit" ribbon **and** the burger menu in the top left corner         |
+| `noprofileribbon` | hide "profile" ribbon                                                     |
+| `no-anchor-links` | skip js/addAnchorLinks.js - headings get no ids, so TOC will be empty too |
+| `no-main-css`     | don't load /css/main.css                                                  |
 
 Header/footer are created only when the page has no own `body > header` / `body > footer`.
 The "edit" ribbon links to the github editor of the current file; for `*.rendered.html` it points to the `*.template.html`.
@@ -349,14 +349,14 @@ markup rules and the library in general** - it is always available. Here only wh
 
 Placeholders to write urls which work on local dev server and on production:
 
-| placeholder                  | value                                                          |
-| ---------------------------- | -------------------------------------------------------------- |
-| `urlwizzard.schema`          | `http` / `https`                                               |
-| `urlwizzard.hostname`        | `location.hostname`                                            |
-| `urlwizzard.hostnegotiated`  | hostname + `:port` when the port is not default for the schema |
-| `urlwizzard.portnegotiated`  | `:port` or empty string                                        |
-| `urlwizzard.port`            | `location.port`                                                |
-| `GITHUB_SOURCES_PREFIX`      | env var, url of the github repository                          |
+| placeholder                 | value                                                          |
+| --------------------------- | -------------------------------------------------------------- |
+| `urlwizzard.schema`         | `http` / `https`                                               |
+| `urlwizzard.hostname`       | `location.hostname`                                            |
+| `urlwizzard.hostnegotiated` | hostname + `:port` when the port is not default for the schema |
+| `urlwizzard.portnegotiated` | `:port` or empty string                                        |
+| `urlwizzard.port`           | `location.port`                                                |
+| `GITHUB_SOURCES_PREFIX`     | env var, url of the github repository                          |
 
 Typical: `curl "urlwizzard.schema://urlwizzard.hostnegotiated/pages/node/curl.js"`,
 `GITHUB_SOURCES_PREFIX/blob/master/pages/bash/rsync.sh`.
@@ -381,14 +381,14 @@ Consequences:
 
 ## `*.template.html` -> `*.rendered.html` (scripts/template.sh, scripts/template.ts)
 
-Every `X.template.html` (outside node_modules) is rendered to `X.rendered.html` next to it.
-(README says "`_.html`" - the real output name is `*.rendered.html`.)
+Every `X.template.html` (outside node*modules) is rendered to `X.rendered.html` next to it.
+(README says "`*.html`" - the real output name is `\*.rendered.html`.)
 
-| placeholder              | effect                                                                        |
-| ------------------------ | ----------------------------------------------------------------------------- |
-| `<%inject path %>`       | content of the file as is                                                     |
-| `<%url path %>`          | content with every `"` replaced by `%22` (for `href="javascript:..."`)       |
-| `<%script path %>`       | content with `</script>` replaced by `&lt;/script>` (to show html in editor)  |
+| placeholder        | effect                                                                       |
+| ------------------ | ---------------------------------------------------------------------------- |
+| `<%inject path %>` | content of the file as is                                                    |
+| `<%url path %>`    | content with every `"` replaced by `%22` (for `href="javascript:..."`)       |
+| `<%script path %>` | content with `</script>` replaced by `&lt;/script>` (to show html in editor) |
 
 - `path` starting with `/` is resolved from the project root, otherwise relative to the directory of the template.
 - Every line of the injected file is prefixed with the indentation the placeholder had.
@@ -426,7 +426,7 @@ the whole project.
 
 ## CI skip
 
-Commit message equal to `q`, starting with `q `, ending with ` q` or containing ` q ` skips unit, jasmine and e2e
+Commit message equal to `q`, starting with `q `, ending with ` q` or containing `q` skips unit, jasmine and e2e
 tests in .github/workflows/pipeline.yml (build and deploy still run). README mentions `[q]` - the workflow matches
 `q` as a separate word, so `[q]` alone doesn't match.
 

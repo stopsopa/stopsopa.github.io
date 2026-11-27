@@ -232,23 +232,22 @@
         </script>
         <h2>AGENTS.md & CLAUDE.md</h2>
         <script type="editor" data-lang="sh">
-          
+
           cat <<EEE > CLAUDE.md
           @AGENTS.md
           EEE
-          
-          # If you would like to have single place for shared file just create in 
+
+          # If you would like to have single place for shared file just create in
           ~/.agents/AGENTS.md
           and then link like so:
           ln -s ~/.agents/AGENTS.md ~/.codex/AGENTS.md
-          ln -s ~/.agents/AGENTS.md ~/.claude/CLAUDE.md  
-          
+          ln -s ~/.agents/AGENTS.md ~/.claude/CLAUDE.md
+
           # Other typical locations are:
           ~/.claude/CLAUDE.md
           ~/.codex/AGENTS.md
           ~/.config/opencode/AGENTS.md
-          .. and so one        
-          
+          .. and so one
         </script>
         <h2>Skills</h2>
         <div id="skill-generator">
@@ -454,7 +453,7 @@
             https://youtu.be/8D8ewFBJfFM?t=126
         </script>
         <h2>skills - reconcile_skill.sh</h2>
-        <script type="editor" data-lang="sh">          
+        <script type="editor" data-lang="sh">
 
           # reconcile_skill.sh
           # removes from the current project every skill that is also installed globally,
@@ -476,7 +475,6 @@
                 echo "checksum corrupted - not executing"
               fi
               rm -f "${FILE}"
-          
         </script>
         <h2>Certificates</h2>
         <script type="editor" data-lang="sh">

@@ -83,17 +83,17 @@ type StateValueByString<S, K extends string> = K extends `${infer H}/${infer R}`
     ? StateValueByString<NonNullable<S>[H], R>
     : any
   : K extends keyof NonNullable<S>
-    ? NonNullable<S>[K]
-    : any;
+  ? NonNullable<S>[K]
+  : any;
 
 // resolves type under the key given as array: StateValueByArray<S, ["a", "b"]> -> S["a"]["b"], unknown path -> any
 type StateValueByArray<S, K extends readonly unknown[]> = K extends readonly []
   ? S
   : K extends readonly [infer H, ...infer R]
-    ? H extends keyof NonNullable<S>
-      ? StateValueByArray<NonNullable<S>[H], R>
-      : any
-    : any;
+  ? H extends keyof NonNullable<S>
+    ? StateValueByArray<NonNullable<S>[H], R>
+    : any
+  : any;
 
 /**
  * Type of the value stored under key K in the tree of type S.
@@ -102,10 +102,10 @@ type StateValueByArray<S, K extends readonly unknown[]> = K extends readonly []
 export type StateValue<S, K> = [K] extends [undefined]
   ? S
   : K extends string
-    ? StateValueByString<S, K>
-    : K extends readonly unknown[]
-      ? StateValueByArray<S, K>
-      : any;
+  ? StateValueByString<S, K>
+  : K extends readonly unknown[]
+  ? StateValueByArray<S, K>
+  : any;
 
 /**
  * Type of single element of the collection stored under key K - that is what push() adds.
@@ -126,10 +126,7 @@ export interface UseCustomStateReturn<S = any> {
   // stable unique identifier of authenticated user, undefined when not ready
   userId: string | undefined;
   // write (overwrite) data under the key
-  set: <const K extends StateKey | undefined = undefined>(opt?: {
-    key?: K;
-    data?: StateValue<S, K>;
-  }) => Promise<void>;
+  set: <const K extends StateKey | undefined = undefined>(opt?: { key?: K; data?: StateValue<S, K> }) => Promise<void>;
   // read data (single value or whole subtree) from under the key, null when nothing is there
   get: <const K extends StateKey | undefined = undefined>(key?: K) => Promise<StateValue<S, K> | null>;
   // remove the key with the whole subtree
