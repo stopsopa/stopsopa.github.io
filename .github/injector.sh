@@ -35,6 +35,7 @@ S="\\"
 FIND="$(cat <<EOF
 find . \( $S
     -type d -name node_modules -prune -o $S
+    -type d -name __linked -prune -o $S
     -type d -name .git -prune -o $S
     -type d -name .github -prune -o $S
     -type d -name dist -prune -o $S
@@ -116,6 +117,8 @@ EEE
     exit ${STATUS}
 fi
 
+# --ignore as regex (chokidar-cli: /.../ form): matches the directory itself, so chokidar doesn't even enter
+# node_modules, __linked (symlinks to other projects - huge trees), .git and generated reports
 /bin/bash node_modules/.bin/chokidar '**/*.inject.js' \
-  --ignore '**/node_modules/**/*' \
+  --ignore '/(^|[\/\\])(node_modules|__linked|\.git|coverage|playwright-report|test-results)([\/\\]|$)/' \
   -c 'node .github/injector.js {path} "${FLAG}__chokidar__injector.js"'

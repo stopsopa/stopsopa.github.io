@@ -3,6 +3,7 @@
 tsc.ignore.ts
 node_modules
 bundle.ts
+/__linked/
 
 es.ts
 bash/tee.ts

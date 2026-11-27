@@ -3,6 +3,7 @@ bash/exportsource/
 bash/tests/
 bash/GLOSSARY*
 !bash/GLOSSARY.md
+/__linked/
 
 
 

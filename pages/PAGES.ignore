@@ -12,3 +12,5 @@
 *.rendered.html
 
 node_modules/
+
+/__linked/

@@ -159,7 +159,11 @@ PID3="${!}"
 PID4="${!}"
 
 /bin/bash scripts/template.sh # just call it once to process all - and btw I've removed --initial from below chokidar call
-/bin/bash node_modules/.bin/chokidar '**/*.template.html' --ignore '**/node_modules/**/*' -c "/bin/bash scripts/template.sh {path} \"${FLAG}__chokidar__template.sh\"" 1> >(/bin/bash bash/dlogger.sh " " template >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e template >> "${LOGFILE}") &
+# --ignore as regex (chokidar-cli: /.../ form): matches the directory itself, so chokidar doesn't even enter
+# node_modules, __linked (symlinks to other projects - huge trees), .git and generated reports
+/bin/bash node_modules/.bin/chokidar '**/*.template.html' \
+  --ignore '/(^|[\/\\])(node_modules|__linked|\.git|coverage|playwright-report|test-results)([\/\\]|$)/' \
+  -c "/bin/bash scripts/template.sh {path} \"${FLAG}__chokidar__template.sh\"" 1> >(/bin/bash bash/dlogger.sh " " template >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e template >> "${LOGFILE}") &
 PID6="${!}"
 
 # let's not do typechecking when running dev server
@@ -185,11 +189,15 @@ do
   echo "================================ waiting for esbuild to finish build ================================" 1> >(/bin/bash bash/dlogger.sh " " server >> "${LOGFILE}") 
 done
 
+    printf "\n      Press Enter to continue : server\n"
+    read
 # /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "2_${FLAG}" \
 # node server.js --flag "3_${FLAG}" 2>&1 >> "${LOGFILE}" &
 node server.js --flag "${FLAG}__server.js" 1> >(/bin/bash bash/dlogger.sh " " server >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e server >> "${LOGFILE}") &
 PID2="${!}"  
 
+    printf "\n      Press Enter to continue : open-cli\n"
+    read
 if [ "${OPENBROWSER}" = "1" ]; then
   sleep 3 && /bin/bash "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_API_PORT}/index.html 1> >(/bin/bash bash/dlogger.sh " " opencli >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e opencli >> "${LOGFILE}") &
 fi

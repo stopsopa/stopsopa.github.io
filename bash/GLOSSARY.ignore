@@ -3,3 +3,5 @@ bash/fs/sync_via_ssh/*
 !bash/fs/sync_via_ssh/sync.sh
 bash/tests/hardlink/tests/
 bash/tests/hardlink/test.sh
+
+/__linked/

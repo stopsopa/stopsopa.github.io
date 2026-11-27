@@ -4,6 +4,8 @@
 
 # for tsc.sh
 
+/__linked/
+
 tsc.ignore.ts
 node_modules
 bundle.ts

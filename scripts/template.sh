@@ -14,7 +14,8 @@
 set -e
 
 if [ "$1" = "" ]; then
-  find . -type d -name 'node_modules' -prune -o -type f -name '*.template.html' -print \
+  # -prune: don't even enter node_modules and __linked (symlinks to other projects - huge trees)
+  find . -type d \( -name 'node_modules' -o -name '__linked' \) -prune -o -type f -name '*.template.html' -print \
     | SILENT=true /bin/bash ts.sh scripts/template.v2.ts
 else
   echo "${1}" \

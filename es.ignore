@@ -35,3 +35,5 @@
 !/pages/services/
 /pages/services/*
 !/pages/services/xor.ts
+
+/__linked/
