@@ -11,7 +11,7 @@
 #   1. requires env var WORKSPACE_DIR (e.g. WORKSPACE_DIR=/Users/szdz/Workspace), exit 1 if missing
 #   2. list of directories to choose from is produced by script executed with cwd = WORKSPACE_DIR:
 #        env var WORKSPACE_DIR_LIST (path to custom script) if defined
-#        otherwise pages/ai/xx/linkrepo_find.sh (all direct subdirectories)
+#        otherwise pages/ai/xx/linkrepo_find.sh (directories with .git in it, up to 3 levels deep)
 #      the script prints paths, one per line: absolute or relative to WORKSPACE_DIR
 #   3. paths are shortened (bash/file/progressivePaths.ts) and shown in multi select picker
 #      (bash/file/fuzzyMultiple.ts), esc in the picker = exit 1 and nothing is linked.
