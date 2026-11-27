@@ -8,6 +8,7 @@
     />
 
     <title>Encryptor - Data Encryption Tool</title>
+    <link rel="stylesheet" href="/css/gcp-css.css" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/zero-md@3?register"></script>
   </head>
   <body nofoot nohead>
@@ -45,6 +46,13 @@
             padding: 8px;
             color: #111;
 
+            /**
+             * gcp-css (/css/gcp-css.css) draws fields, labels, buttons and links.
+             * Here only layout. Spacing between fields is done by flex/grid gap,
+             * so the default space below each wrapper is switched off.
+             */
+            --gcp-css-field-gap: 0px;
+
             h2 {
               font-size: 18px;
               padding: 10px 16px;
@@ -64,25 +72,13 @@
               padding: 10px 16px;
               margin-bottom: 8px;
 
-              label {
-                display: flex;
-                flex-direction: column;
-                gap: 4px;
-
-                span {
-                  font-size: 12px;
-                  font-weight: 700;
-                  color: #555;
-                }
-              }
-
               .key-row {
                 display: flex;
                 gap: 8px;
                 align-items: center;
                 flex-wrap: wrap;
 
-                input {
+                .input-wrapper {
                   flex: 1;
                   min-width: 150px;
                 }
@@ -126,50 +122,18 @@
                 border-bottom: 1px solid #eee;
                 padding-bottom: 6px;
                 margin-bottom: 4px;
-
-                .lorem-btn {
-                  background: none;
-                  border: none;
-                  color: #007185;
-                  font-size: 11px;
-                  text-decoration: underline;
-                  cursor: pointer;
-                  &:hover {
-                    color: #c45500;
-                  }
-                }
-              }
-
-              label {
-                display: flex;
-                flex-direction: column;
-                gap: 4px;
-                width: 100%;
-
-                span {
-                  display: none; /* Hide internal labels since headers are clear */
-                }
               }
 
               textarea {
-                width: 100%;
                 min-height: 120px;
                 height: 120px;
                 font-family: "Cascadia Code", Monaco, Consolas, monospace;
-                font-size: 12px;
-                padding: 8px;
-                border: 1px solid #bbb;
-                border-radius: 4px;
                 resize: vertical;
-                box-sizing: border-box;
-                &:focus {
-                  border-color: #e47911;
-                  outline: none;
-                  box-shadow: 0 0 0 2px rgba(228, 121, 17, 0.2);
-                }
               }
 
               &.special {
+                /* field background has to match the panel - floating label covers the border with it */
+                --gcp-css-bg: #f4f6f8;
                 background-color: #f4f6f8;
                 background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
                   linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
@@ -181,12 +145,6 @@
 
                 .panel-header {
                   border-bottom-color: #d1d1d1;
-                }
-
-                textarea {
-                  background-color: rgba(255, 255, 255, 0.95);
-                  border-color: #999;
-                  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
                 }
               }
             }
@@ -201,11 +159,9 @@
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                font-size: 11px;
                 overflow: hidden;
 
                 .sharing-link {
-                  color: #007185;
                   white-space: nowrap;
                   overflow: hidden;
                   text-overflow: ellipsis;
@@ -213,47 +169,9 @@
                 }
               }
 
-              .encrypt {
+              .encrypt,
+              .decrypt {
                 margin-left: auto;
-              }
-            }
-
-            button.action-btn {
-              background: #ffd814;
-              border: 1px solid #fcd200;
-              border-radius: 20px;
-              padding: 6px 16px;
-              font-size: 13px;
-              font-weight: 500;
-              cursor: pointer;
-              transition: background 0.2s;
-
-              &:hover {
-                background: #f7ca00;
-              }
-
-              &.copy-btn {
-                background: #f0f2f2;
-                border-color: #d5dbdb;
-                &:hover {
-                  background: #e3e6e6;
-                }
-              }
-
-              &.copy-link-btn {
-                background: #002f5d;
-                border-color: #001a35;
-                color: #fff;
-                &:hover {
-                  background: #003d7a;
-                  border-color: #001a35;
-                }
-              }
-
-              &.copy-btn,
-              &.copy-link-btn {
-                font-size: 11px;
-                padding: 4px 12px;
               }
             }
 
@@ -261,24 +179,6 @@
               grid-column: span 2;
               @media (max-width: 800px) {
                 grid-column: span 1;
-              }
-            }
-
-            #encryptor input,
-            #encryptor button.generate,
-            #encryptor button.show {
-              padding: 19px 10px;
-              font-size: 12px;
-              border: 1px solid #bbb;
-              border-radius: 4px;
-            }
-
-            #encryptor a {
-              font-size: 11px;
-              color: #007185;
-              text-decoration: none;
-              &:hover {
-                text-decoration: underline;
               }
             }
 
@@ -312,23 +212,23 @@
           }
         </style>
 
-        <div id="encryptor">
+        <!-- class gcp-css switches on styles from /css/gcp-css.css (see comment at the top of that file) -->
+        <div id="encryptor" class="gcp-css">
           <form class="compact-form" action="#" onsubmit="return false;" autocomplete="off" spellcheck="false">
-            <label>
-              <span>Encryption Key</span>
-              <div class="key-row">
-                <!-- Visually hidden username field to satisfy password managers -->
-                <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  autocomplete="off"
-                  autocorrect="off"
-                  autocapitalize="off"
-                  spellcheck="false"
-                  value="default"
-                  style="position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none"
-                />
+            <!-- Visually hidden username field to satisfy password managers -->
+            <input
+              type="text"
+              name="username"
+              id="username"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              value="default"
+              style="position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none"
+            />
+            <div class="key-row">
+              <div class="input-wrapper">
                 <input
                   type="password"
                   class="key"
@@ -339,21 +239,24 @@
                   autocapitalize="off"
                   spellcheck="false"
                   placeholder="Key..."
+                  data-testid="encryptor-key"
                 />
-                <div class="btn-group">
-                  <button type="button" class="generate">Gen</button>
-                  <button type="button" class="show">Show</button>
-                  <button type="button" class="clear">Clear</button>
-                </div>
-                <a
-                  href="https://github.com/stopsopa/gitstorage/blob/master/git%40github.com%3Astopsopa__stopsopa.github.io.git/.env#L63"
-                  target="_blank"
-                  >Docs</a
-                >
-                <span style="display: inline; color: #ccc">|</span>
-                <a href="/pages/pastetool/pastetool.html" target="_blank">Paste</a>
+                <label for="password">Encryption Key</label>
               </div>
-            </label>
+              <div class="btn-group">
+                <button type="button" class="secondary generate" data-testid="encryptor-generate">Gen</button>
+                <button type="button" class="secondary show" data-testid="encryptor-show">Show</button>
+                <button type="button" class="secondary clear" data-testid="encryptor-clear">Clear</button>
+              </div>
+              <a
+                href="https://github.com/stopsopa/gitstorage/blob/master/git%40github.com%3Astopsopa__stopsopa.github.io.git/.env#L63"
+                target="_blank"
+                data-testid="encryptor-docs-link"
+                >Docs</a
+              >
+              <span style="display: inline; color: #ccc">|</span>
+              <a href="/pages/pastetool/pastetool.html" target="_blank" data-testid="encryptor-paste-link">Paste</a>
+            </div>
             <!-- Dummy submit button to help Bitwarden trigger 'Save' dialog -->
             <button type="submit" style="display: none"></button>
           </form>
@@ -362,30 +265,63 @@
             <div class="panel">
               <div class="panel-header">
                 Input Message
-                <button type="button" class="lorem-btn">Lorem Ipsum</button>
+                <button type="button" class="secondary lorem-btn" data-testid="encryptor-lorem">Lorem Ipsum</button>
               </div>
-              <textarea class="message" placeholder="Message to encrypt..."></textarea>
+              <div class="input-wrapper">
+                <textarea
+                  class="message"
+                  id="message"
+                  placeholder="Message to encrypt..."
+                  data-testid="encryptor-message"
+                ></textarea>
+                <label for="message">Message</label>
+              </div>
               <div class="panel-actions">
                 <div class="link-group" style="display: none">
-                  <button type="button" class="action-btn copy-link-btn">Copy</button>
-                  <a href="#" class="sharing-link"></a>
+                  <button type="button" class="secondary action-btn copy-link-btn" data-testid="encryptor-copy-link">
+                    Copy
+                  </button>
+                  <a href="#" class="sharing-link" data-testid="encryptor-sharing-link"></a>
                 </div>
-                <button class="action-btn encrypt">🔒 Encrypt</button>
+                <button type="button" class="action-btn encrypt" data-testid="encryptor-encrypt">🔒 Encrypt</button>
               </div>
             </div>
 
             <div class="panel special">
               <div class="panel-header">Encrypted Output</div>
-              <textarea class="encrypted" placeholder="Result..."></textarea>
+              <div class="input-wrapper">
+                <textarea
+                  class="encrypted"
+                  id="encrypted"
+                  placeholder="Result..."
+                  data-testid="encryptor-encrypted"
+                ></textarea>
+                <label for="encrypted">Encrypted</label>
+              </div>
               <div class="panel-actions">
-                <button type="button" class="action-btn copy-btn" style="display: none">📋 Copy</button>
-                <button type="button" class="action-btn decrypt">🔓 Decrypt</button>
+                <button
+                  type="button"
+                  class="secondary action-btn copy-btn"
+                  style="display: none"
+                  data-testid="encryptor-copy"
+                >
+                  📋 Copy
+                </button>
+                <button type="button" class="action-btn decrypt" data-testid="encryptor-decrypt">🔓 Decrypt</button>
               </div>
             </div>
 
             <div class="panel full-width-panel" id="d">
               <div class="panel-header">Decrypted Output</div>
-              <textarea class="decrypted" placeholder="Decrypted result..."></textarea>
+              <div class="input-wrapper">
+                <textarea
+                  class="decrypted"
+                  id="decrypted"
+                  placeholder="Decrypted result..."
+                  data-testid="encryptor-decrypted"
+                ></textarea>
+                <label for="decrypted">Decrypted</label>
+              </div>
               <div class="zero-md-container">
                 <zero-md class="decrypted-md"></zero-md>
               </div>

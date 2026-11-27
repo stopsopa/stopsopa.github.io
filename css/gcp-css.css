@@ -8,6 +8,7 @@
      pages/pastetool/pastetool.html   <link rel="stylesheet" href="/css/gcp-css.css" />
      pages/services/generator/index.html   <link rel="stylesheet" href="/css/gcp-css.css" />
      pages/services/maps_apple_to_google/matg.html   <link rel="stylesheet" href="/css/gcp-css.css" />
+     pages/services/encryptor/index.template.html   <link rel="stylesheet" href="/css/gcp-css.css" />
 
    How to use it in this project:
      - static file, served as it is from /css/gcp-css.css. Link it with <link> in the html of

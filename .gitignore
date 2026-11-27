@@ -119,6 +119,7 @@ tests/url/001_url.unit.js
 tests/url/toolsURLSearchParams.js
 tests/url/toolsURLSearchParams.test.js
 transpile_prettier_pipe_old.js
+xx.js
 # transpile_sh ^^^
 
 
