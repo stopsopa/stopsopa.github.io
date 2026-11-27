@@ -178,8 +178,64 @@ function hashchange() {
   }
 }
 
+/**
+ * Short "keep me on target" window after page load, not a permanent listener.
+ *
+ * Why: page opened from outside of the browser (terminal: open "https://...#hash") might scroll
+ * before the layout is final (ACE editors still collapsed), then the layout grows and the target moves away.
+ *
+ * 1. watch height of <body> (ResizeObserver - change of content, not only resize of the window)
+ * 2. on each change scroll to the hash and highlight again
+ * 3. stop for good (observer disconnected) on whichever comes first:
+ *    - user takes control: first wheel, touch, key or mouse button - so it never fights the user
+ *    - 5 sec after the page is visible (for tab loaded in the background counting starts when it is shown)
+ *
+ * Later change of the hash still scrolls once, but doesn't start new watching window.
+ * Side effect: each repeated scroll restarts the yellow highlight.
+ */
+function followLayout() {
+  const events = ["wheel", "touchstart", "keydown", "mousedown"];
+
+  // ResizeObserver always fires once just after observe() - that one is not a change of layout
+  let first = true;
+
+  const observer = new ResizeObserver(function () {
+    if (first) {
+      first = false;
+
+      return;
+    }
+
+    log.gray("resize", "window.scrollToHashAndHighlight layout changed - scrolling again");
+
+    hashchange();
+  });
+
+  observer.observe(document.body);
+
+  function stop() {
+    observer.disconnect();
+
+    events.forEach((name) => window.removeEventListener(name, stop));
+  }
+
+  events.forEach((name) => window.addEventListener(name, stop, { passive: true }));
+
+  function arm() {
+    setTimeout(stop, 5000);
+  }
+
+  if (document.hidden) {
+    document.addEventListener("visibilitychange", arm, { once: true });
+  } else {
+    arm();
+  }
+}
+
 export default function scrollToHashAndHighlight() {
   hashchange();
 
   window.addEventListener("hashchange", hashchange);
+
+  followLayout();
 }
