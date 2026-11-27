@@ -578,8 +578,15 @@
        */
       const MAPS_KEY = window.process?.env?.PUBLIC_GOOGLE_MAPS_EMBED_KEY || "";
 
-      // default type of the map in the iframe (keyless embed): "p" = terrain
-      const MAP_TYPE = "p";
+      /**
+       * default type of the map in the iframe (keyless embed): "h" = hybrid (satellite imagery + labels)
+       * NOTICE: "p" (terrain) is NOT satellite - it is street map with relief shading, at street zoom it looks
+       * like regular street map
+       */
+      const MAP_TYPE = "h";
+
+      // the same for official Maps Embed API: roadmap | satellite
+      const MAP_TYPE_OFFICIAL = "satellite";
 
       const EXAMPLES = [
         "https://maps.apple.com/place?coordinate=55.119257,-6.659260&name=62%20Mountsandel%20Road&map=explore",
@@ -644,7 +651,7 @@
         if (key) {
           // official Maps Embed API
           if (directions && origin) {
-            const out = new URLSearchParams({ key, origin, destination });
+            const out = new URLSearchParams({ key, origin, destination, maptype: MAP_TYPE_OFFICIAL });
 
             if (mode) {
               out.set("mode", mode);
@@ -656,13 +663,14 @@
           return `https://www.google.com/maps/embed/v1/place?${new URLSearchParams({
             key,
             q: destination || p.get("query"),
+            maptype: MAP_TYPE_OFFICIAL,
           })}`;
         }
 
         /**
          * keyless embed
-         * t - map type: m = roadmap, k = satellite, h = hybrid, p = terrain. Terrain is the default here.
-         * (official Maps Embed API above has no terrain: its "maptype" accepts only roadmap | satellite)
+         * t - map type: m = roadmap, k = satellite, h = hybrid, p = terrain. Hybrid is the default here.
+         * (official Maps Embed API above has no terrain / hybrid: its "maptype" accepts only roadmap | satellite)
          */
         if (directions && origin) {
           const out = new URLSearchParams({ saddr: origin, daddr: destination, t: MAP_TYPE, output: "embed" });
