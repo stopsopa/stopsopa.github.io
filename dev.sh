@@ -189,15 +189,11 @@ do
   echo "================================ waiting for esbuild to finish build ================================" 1> >(/bin/bash bash/dlogger.sh " " server >> "${LOGFILE}") 
 done
 
-    printf "\n      Press Enter to continue : server\n"
-    read
 # /bin/bash "${_DIR}/bash/proc/run-with-flag-and-kill.sh" "2_${FLAG}" \
 # node server.js --flag "3_${FLAG}" 2>&1 >> "${LOGFILE}" &
 node server.js --flag "${FLAG}__server.js" 1> >(/bin/bash bash/dlogger.sh " " server >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e server >> "${LOGFILE}") &
 PID2="${!}"  
 
-    printf "\n      Press Enter to continue : open-cli\n"
-    read
 if [ "${OPENBROWSER}" = "1" ]; then
   sleep 3 && /bin/bash "${_DIR}/node_modules/.bin/open-cli" http://${__HOST}:${NODE_API_PORT}/index.html 1> >(/bin/bash bash/dlogger.sh " " opencli >> "${LOGFILE}") 2> >(/bin/bash bash/dlogger.sh e opencli >> "${LOGFILE}") &
 fi
