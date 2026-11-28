@@ -270,48 +270,43 @@ body,
   margin-top: 2px;
 }
 
+/*
+  Radio and time input inside are styled by /css/gcp-css.css (class gcp-css on .atp-time-row) - here only layout.
+  No flex-wrap on purpose: when there is not enough space the time input shrinks, nothing goes to the next line.
+  "&.gcp-css" in selectors below is there to win with rules from /css/gcp-css.css (compact row for the phone).
+*/
 .atp-time-row {
+  /* space between rows is done with gap of .atp-time-header, not with margin of the wrappers */
+  --gcp-css-field-gap: 0;
+
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-}
-
-.atp-anchor-radio-wrap {
-  display: inline-flex;
-  align-items: center;
   gap: 6px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.atp-anchor-radio {
-  cursor: pointer;
-  accent-color: #2563eb;
-  width: 15px;
-  height: 15px;
-  margin: 0;
-}
-
-.atp-time-label {
-  font-weight: 600;
-  color: #374151;
-  min-width: 38px;
-}
-
-.atp-time-input {
-  padding: 4px 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
   font-size: 14px;
-  font-family: monospace;
-  width: 130px;
-  min-width: 130px;
-  outline: none;
 
-  &:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  &.gcp-css .radio-wrapper {
+    flex-shrink: 0;
+    user-select: none;
+    column-gap: 6px;
+
+    /* the same width for "Start" and "End" so time inputs are aligned */
+    label {
+      min-width: 38px;
+    }
+  }
+
+  &.gcp-css .input-wrapper {
+    flex: 0 1 100px;
+    min-width: 0;
+
+    input {
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+  }
+
+  .atp-anchor-badge {
+    flex-shrink: 0;
   }
 }
 
@@ -322,31 +317,45 @@ body,
   flex-shrink: 0;
 }
 
-.atp-time-step-btn {
+/*
+  Narrow on purpose (small left/right padding, no fixed width) - whole row has to fit on the phone.
+  Not a gcp-css component, but always inside .gcp-css area (time rows, inline edit form):
+  ".gcp-css" in the selector is there to win with button styles from /css/gcp-css.css.
+*/
+.gcp-css .atp-time-step-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  font-size: 10px;
+  width: auto;
+  min-width: 0;
+  height: 28px;
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: monospace;
+  text-transform: none;
+  letter-spacing: 0;
+  box-shadow: none;
   background: #f3f4f6;
   border: 1px solid #d1d5db;
   border-radius: 4px;
   color: #4b5563;
   cursor: pointer;
-  padding: 0;
+  padding: 0 2px;
   line-height: 1;
   transition: all 0.1s ease;
 
   &:hover {
     background: #e5e7eb;
     color: #111827;
+    box-shadow: none;
   }
 
   &:active {
     background: #dbeafe;
     border-color: #2563eb;
     color: #2563eb;
+    box-shadow: none;
   }
 }
 
@@ -510,7 +519,8 @@ body,
   gap: 10px;
 
   .input-wrapper {
-    flex: 0 1 130px;
+    flex: 0 1 90px;
+    min-width: 0;
   }
 }
 

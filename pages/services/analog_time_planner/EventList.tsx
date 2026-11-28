@@ -197,6 +197,14 @@ export default function EventList({
     }
   }
 
+  // ── Step event duration by delta minutes (e.g. +/-5 min), never below 1 ─────
+  function stepTime(deltaMinutes: number) {
+    if (!editState) return;
+    const parsed = parseInt(editState.time, 10);
+    const current = isNaN(parsed) ? 0 : parsed;
+    handleTimeInput(String(Math.max(1, current + deltaMinutes)));
+  }
+
   // ── Real-time update for event color ────────────────────────────────────────
   function handleColorInput(newColor: string) {
     if (!editState) return;
@@ -335,26 +343,33 @@ export default function EventList({
           </div>
         </div>
 
-        <div className="atp-time-row">
-          <label className="atp-anchor-radio-wrap" title="Anchor to Start Time">
+        {/*
+          rows styled by /css/gcp-css.css (class gcp-css on the row, not on the whole header - info button and popover stay as they are):
+          radio-wrapper: input and label directly after it, input-wrapper: one control per wrapper
+        */}
+        <div className="atp-time-row gcp-css">
+          <div className="radio-wrapper" title="Anchor to Start Time">
             <input
               data-testid="atp-anchor-start-radio"
+              id="atp-anchor-start-radio"
               type="radio"
               name="atp-time-anchor"
               value="start"
               checked={anchor === "start"}
               onChange={() => onAnchorChange("start")}
-              className="atp-anchor-radio"
             />
-            <span className="atp-time-label">Start:</span>
-          </label>
-          <input
-            data-testid="atp-start-input"
-            type="time"
-            className="atp-time-input"
-            value={startVal}
-            onChange={handleStartChange}
-          />
+            <label htmlFor="atp-anchor-start-radio">Start</label>
+          </div>
+          <div className="input-wrapper">
+            <input
+              data-testid="atp-start-input"
+              type="time"
+              placeholder=" "
+              aria-label="Start time"
+              value={startVal}
+              onChange={handleStartChange}
+            />
+          </div>
           <div className="atp-time-step-btns">
             <button
               type="button"
@@ -364,7 +379,7 @@ export default function EventList({
               title="-5 minutes"
               onClick={() => stepStart(-5)}
             >
-              ▼
+              -5
             </button>
             <button
               type="button"
@@ -374,7 +389,7 @@ export default function EventList({
               title="+5 minutes"
               onClick={() => stepStart(5)}
             >
-              ▲
+              +5
             </button>
           </div>
           <span
@@ -385,26 +400,29 @@ export default function EventList({
           </span>
         </div>
 
-        <div className="atp-time-row">
-          <label className="atp-anchor-radio-wrap" title="Anchor to End Time">
+        <div className="atp-time-row gcp-css">
+          <div className="radio-wrapper" title="Anchor to End Time">
             <input
               data-testid="atp-anchor-end-radio"
+              id="atp-anchor-end-radio"
               type="radio"
               name="atp-time-anchor"
               value="end"
               checked={anchor === "end"}
               onChange={() => onAnchorChange("end")}
-              className="atp-anchor-radio"
             />
-            <span className="atp-time-label">End:</span>
-          </label>
-          <input
-            data-testid="atp-end-input"
-            type="time"
-            className="atp-time-input"
-            value={endTime}
-            onChange={handleEndChange}
-          />
+            <label htmlFor="atp-anchor-end-radio">End</label>
+          </div>
+          <div className="input-wrapper">
+            <input
+              data-testid="atp-end-input"
+              type="time"
+              placeholder=" "
+              aria-label="End time"
+              value={endTime}
+              onChange={handleEndChange}
+            />
+          </div>
           <div className="atp-time-step-btns">
             <button
               type="button"
@@ -414,7 +432,7 @@ export default function EventList({
               title="-5 minutes"
               onClick={() => stepEnd(-5)}
             >
-              ▼
+              -5
             </button>
             <button
               type="button"
@@ -424,7 +442,7 @@ export default function EventList({
               title="+5 minutes"
               onClick={() => stepEnd(5)}
             >
-              ▲
+              +5
             </button>
           </div>
           <span
@@ -477,6 +495,28 @@ export default function EventList({
                       onInput={(e) => handleTimeInput((e.target as HTMLInputElement).value)}
                     />
                     <label htmlFor={`atp-edit-time-${i}`}>Minutes</label>
+                  </div>
+                  <div className="atp-time-step-btns">
+                    <button
+                      type="button"
+                      className="atp-time-step-btn"
+                      data-testid={`atp-edit-time-step-down-${i}`}
+                      aria-label="Subtract 5 minutes from event"
+                      title="-5 minutes"
+                      onClick={() => stepTime(-5)}
+                    >
+                      -5
+                    </button>
+                    <button
+                      type="button"
+                      className="atp-time-step-btn"
+                      data-testid={`atp-edit-time-step-up-${i}`}
+                      aria-label="Add 5 minutes to event"
+                      title="+5 minutes"
+                      onClick={() => stepTime(5)}
+                    >
+                      +5
+                    </button>
                   </div>
                   <input
                     data-testid={`atp-edit-color-${i}`}
