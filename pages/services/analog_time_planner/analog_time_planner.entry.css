@@ -37,8 +37,8 @@ body,
 /* ── Left panel: event list ── */
 .atp-left {
   /* Width driven by --atp-left-width CSS variable set from JS (desktop only). */
-  flex: 0 0 var(--atp-left-width, 360px);
-  max-width: var(--atp-left-width, 360px);
+  flex: 0 0 var(--atp-left-width, 382px);
+  max-width: var(--atp-left-width, 382px);
   height: 100vh;
   padding: 24px 20px;
   background: #ffffff;

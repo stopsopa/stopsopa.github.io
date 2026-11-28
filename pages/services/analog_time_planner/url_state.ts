@@ -124,7 +124,7 @@ const { useQueryParams } = modURLSearchParams<{
    */
   leftWidth: {
     getParam: "lw",
-    default: 360,
+    default: 382,
     encode: String,
     decode: Number,
   },
